@@ -88,6 +88,10 @@ function CGRectToRect(const ARect: CGRect): TRect;
 function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
 
+function PointToHIPoint(const APoint: TPoint): HIPoint;
+function PointToHISize(const APoint: TPoint): HISize;
+function HIPointToPoint(const APoint: HIPoint): TPoint;
+
 function ColorToRGBColor(const AColor: TColor): RGBColor;
 function RGBColorToColor(const AColor: RGBColor): TColor;
 function CreateCGColor(const AColor: TColor): CGColorRef;
@@ -636,6 +640,39 @@ begin
   Result.Top := ARect.Top;
   Result.Right := ARect.Right;
   Result.Bottom := ARect.Bottom;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    PointToHIPoint
+  Params:  APoint - Point
+  Returns: HIPoint
+ ------------------------------------------------------------------------------}
+function PointToHIPoint(const APoint: TPoint): HIPoint;
+begin
+  Result.X := APoint.X;
+  Result.Y := APoint.Y;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    PointToHISize
+  Params:  APoint - Point
+  Returns: HISize
+ ------------------------------------------------------------------------------}
+function PointToHISize(const APoint: TPoint): HISize;
+begin
+  Result.Width := APoint.X;
+  Result.Height := APoint.Y;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    HIPointToPoint
+  Params:  APoint - HIPoint
+  Returns: Point
+ ------------------------------------------------------------------------------}
+function HIPointToPoint(const APoint: HIPoint): TPoint;
+begin
+  Result.X := Trunc(APoint.X);
+  Result.Y := Trunc(APoint.Y);
 end;
 
 {------------------------------------------------------------------------------

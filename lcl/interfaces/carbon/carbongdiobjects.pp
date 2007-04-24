@@ -116,6 +116,7 @@ type
     constructor Create(AWidth, AHeight, ABitsPerPixel: Integer; AData: Pointer);
     destructor Destroy; override;
     procedure Update;
+    function GetSubImage(const ARect: TRect): CGImageRef;
   public
     property BitsPerComponent: Integer read GetBitsPerComponent;
     property BytesPerRow: Integer read FBytesPerRow;
@@ -789,6 +790,17 @@ begin
   finally
     CGDataProviderRelease(CGDataProvider);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.GetSubImage
+  Returns: New image ref to portion of image data according to the rect
+ ------------------------------------------------------------------------------}
+function TCarbonBitmap.GetSubImage(const ARect: TRect): CGImageRef;
+begin
+  if CGImage = nil then Result := nil
+  else
+    Result := CGImageCreateWithImageInRect(CGImage, RectToCGRect(ARect));
 end;
 
 { TCarbonCursor }

@@ -80,49 +80,6 @@ begin
   (AWidget as TCarbonControl).IndicatorMoved;
 end;
 
-{------------------------------------------------------------------------------
-  Name: CarbonControl_TextDidChange
-  Handles text change
- ------------------------------------------------------------------------------}
-function CarbonControl_TextDidChange(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-begin
-  {$IFDEF VerboseControlEvent}
-    DebugLn('CarbonControl_TextDidChange: ', DbgSName(AWidget.LCLObject));
-  {$ENDIF}
-  
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-
-  (AWidget as TCarbonControl).TextDidChange;
-end;
-
-{------------------------------------------------------------------------------
-  Name: CarbonControl_ListItemSelected
-  Handles list item change
- ------------------------------------------------------------------------------}
-function CarbonControl_ListItemSelected(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  Index: CFIndex;
-begin
-  {$IFDEF VerboseControlEvent}
-    DebugLn('CarbonControl_ListItemSelected: ', DbgSName(AWidget.LCLObject));
-  {$ENDIF}
-  
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-  
-  // get selected item index
-  if OSError(
-    GetEventParameter(AEvent, kEventParamComboBoxListSelectedItemIndex,
-      typeCFIndex, nil, SizeOf(CFIndex), nil, @Index),
-    'CarbonControl_ListItemSelected', SGetEvent,
-    'kEventParamComboBoxListSelectedItemIndex') then Index := -1;
-
-  (AWidget as TCarbonControl).ListItemSelected(Index);
-end;
-
 { TCarbonControl }
 
 {------------------------------------------------------------------------------
@@ -180,17 +137,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonControl.TextDidChange
-
-  Text changed event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonControl.TextDidChange;
-begin
-  DebugLn('TCarbonControl.TextDidChange is invalid! ', ClassName, ' ',
-    LCLObject.Name, ': ', LCLObject.ClassName);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonControl.DoAction
   Params:  AControlPart - Control part to perform the action
 
@@ -199,18 +145,6 @@ end;
 procedure TCarbonControl.DoAction(AControlPart: ControlPartCode);
 begin
   DebugLn('TCarbonControl.DoAction is invalid ', ClassName, ' ',
-    LCLObject.Name, ': ', LCLObject.ClassName);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonControl.ListItemSelected
-  Params:  AIndex - Selected item index
-
-  List item selected event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonControl.ListItemSelected(AIndex: Integer);
-begin
-  DebugLn('TCarbonControl.ListItemSelected is invalid ', ClassName, ' ',
     LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
@@ -226,7 +160,7 @@ begin
   OSError(HIViewAddSubview(AParent.Content, Frame), Self, 'AddToWidget',
     SViewAddView);
     
-  DebugLn('TCarbonControl.AddToWidget ' + LCLObject.Name + ' ' + DbgS(LCLObject.Parent.ClientRect));
+  //DebugLn('TCarbonControl.AddToWidget ' + LCLObject.Name + ' ' + DbgS(LCLObject.Parent.ClientRect));
 end;
 
 {------------------------------------------------------------------------------
@@ -314,22 +248,6 @@ begin
       1, @TmpSpec, Pointer(Self), nil);
   end;
 
-  if cceTextDidChange in Events then
-  begin
-    TmpSpec := MakeEventSpec(kEventClassTextField, kEventTextDidChange);
-    InstallControlEventHandler(Widget,
-      RegisterEventHandler(@CarbonControl_TextDidChange),
-      1, @TmpSpec, Pointer(Self), nil);
-  end;
-  
-  if cceListItemSelected in Events then
-  begin
-    TmpSpec := MakeEventSpec(kEventClassHIComboBox, kEventComboBoxListItemSelected);
-    InstallControlEventHandler(Widget,
-      RegisterEventHandler(@CarbonControl_ListItemSelected),
-      1, @TmpSpec, Pointer(Self), nil);
-  end;
-
   {$IFDEF VerboseControlEvent}
     DebugLn('TCarbonControl.RegisterEvents ', ClassName, ' ',
       LCLObject.Name, ': ', LCLObject.ClassName);
@@ -365,10 +283,6 @@ begin
     UnregisterEventHandler(@CarbonControl_ValueChanged);
   if cceIndicatorMoved in Events then
     UnregisterEventHandler(@CarbonControl_IndicatorMoved);
-  if cceTextDidChange in Events then
-    UnregisterEventHandler(@CarbonControl_TextDidChange);
-  if cceListItemSelected in Events then
-    UnregisterEventHandler(@CarbonControl_ListItemSelected);
 end;
 
 {------------------------------------------------------------------------------
@@ -416,6 +330,117 @@ end;
 function TCarbonControl.GetFrame: ControlRef;
 begin
   Result := ControlRef(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.GetForceEmbedInScrollView
+  Returns: Whether use scroll view even if no scroll bars are needed
+ ------------------------------------------------------------------------------}
+function TCarbonControl.GetForceEmbedInScrollView: Boolean;
+begin
+  Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.EmbedInScrollView
+  Params:  AParams     - Creation parameters
+  Returns: Scroll view
+  
+  Should be called right after widget creation only
+ ------------------------------------------------------------------------------}
+function TCarbonControl.EmbedInScrollView(const AParams: TCreateParams): HIViewRef;
+var
+ ScrollBars: TScrollStyle;
+begin
+  case AParams.Style and (WS_VSCROLL or WS_HSCROLL) of
+  WS_VSCROLL: ScrollBars := ssVertical;
+  WS_HSCROLL: ScrollBars := ssHorizontal;
+  WS_VSCROLL or WS_HSCROLL: ScrollBars := ssBoth;
+  else
+    ScrollBars := ssNone;
+  end;
+  
+  Result := EmbedInScrollView(ScrollBars);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.EmbedInScrollView
+  Params:  AScrollBars - Scroll style
+  Returns: Scroll view
+
+  Should be called right after widget creation only
+ ------------------------------------------------------------------------------}
+function TCarbonControl.EmbedInScrollView(AScrollBars: TScrollStyle): HIViewRef;
+var
+  ScrollOptions: FPCMacOSAll.OptionBits;
+const
+  SName = 'EmbedInScrollView';
+begin
+  Result := nil;
+  
+  if (not GetForceEmbedInScrollView) and (AScrollBars = ssNone) then
+  begin
+    Result := Widget;
+    Exit;
+  end;
+
+  case AScrollBars of
+    ssNone, ssBoth, ssAutoBoth:
+      ScrollOptions := kHIScrollViewOptionsVertScroll or
+        kHIScrollViewOptionsHorizScroll;
+    ssVertical, ssAutoVertical:
+      ScrollOptions := kHIScrollViewOptionsVertScroll;
+    ssHorizontal, ssAutoHorizontal:
+      ScrollOptions := kHIScrollViewOptionsHorizScroll;
+  end;
+
+  if OSError(HIScrollViewCreate(ScrollOptions, Result), Self, SName,
+    'HIScrollViewCreate') then Exit;
+  
+  OSError(HIScrollViewSetScrollBarAutoHide(Result,
+      AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
+    Self, SName, SViewSetScrollBarAutoHide);
+    
+  if OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView) then Exit;
+  OSError(HIViewSetVisible(Widget, True), Self, SName, SViewVisible);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.ChangeScrollBars
+  Params:  AScrollView - Scroll view
+           AScrollBars - Actual scroll style
+           ANewValue   - New scroll style
+
+  Changes scroll style of scroll view
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.ChangeScrollBars(AScrollView: HIViewRef;
+  var AScrollBars: TScrollStyle; ANewValue: TScrollStyle);
+begin
+  if ANewValue <> AScrollBars then
+  begin
+    if (not GetForceEmbedInScrollView) and (ANewValue = ssNone) or
+      (AScrollBars = ssNone) then
+    begin
+      RecreateWnd(LCLObject);
+      Exit;
+    end;
+    
+    if ((ANewValue in [ssNone, ssBoth, ssAutoBoth]) and
+      (AScrollBars in [ssNone, ssBoth, ssAutoBoth])) or
+      ((ANewValue in [ssVertical, ssAutoVertical]) and
+      (AScrollBars in [ssVertical, ssAutoVertical])) or
+      ((ANewValue in [ssHorizontal, ssAutoHorizontal]) and
+      (AScrollBars in [ssHorizontal, ssAutoHorizontal])) then
+    begin
+      AScrollBars := ANewValue;
+
+      OSError(HIScrollViewSetScrollBarAutoHide(AScrollView,
+          AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
+        Self, 'ChangeScrollBars', SViewSetScrollBarAutoHide);
+    end
+    else
+      RecreateWnd(LCLObject);
+  end;
 end;
 
 {------------------------------------------------------------------------------

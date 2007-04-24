@@ -47,6 +47,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSScrollBox }
@@ -126,6 +127,24 @@ implementation
 
 uses
   CarbonProc, CarbonDbgConsts;
+  
+
+{ TCarbonWSScrollingWinControl }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSScrollingWinControl.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the window in Carbon interface
+
+  Creates new scrolling window control in Carbon interface with the specified
+  parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonScrollingWinControl.Create(AWinControl, AParams));
+end;
 
 { TCarbonWSCustomForm }
 
@@ -199,7 +218,6 @@ begin
   TCarbonWindow(AForm.Handle).SetFormBorderStyle(AFormBorderStyle);
 end;
 
-
 { TCarbonWSHintWindow }
 
 {------------------------------------------------------------------------------
@@ -224,7 +242,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TCarbonWSScrollingWinControl);
+  RegisterWSComponent(TScrollingWinControl, TCarbonWSScrollingWinControl);
 //  RegisterWSComponent(TScrollBox, TCarbonWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TCarbonWSCustomFrame);
 //  RegisterWSComponent(TFrame, TCarbonWSFrame);

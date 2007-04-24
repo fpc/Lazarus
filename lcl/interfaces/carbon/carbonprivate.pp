@@ -42,8 +42,8 @@ uses
   Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
   
 type
-  TCarbonControlEvent = (cceValueChanged, cceIndicatorMoved,
-    cceTextDidChange, cceDoAction, cceDraw, cceHit, cceListItemSelected);
+  TCarbonControlEvent = (cceValueChanged, cceIndicatorMoved, cceDoAction,
+    cceDraw, cceHit);
   TCarbonControlEvents = set of TCarbonControlEvent;
   
   { TCarbonControl }
@@ -56,15 +56,17 @@ type
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
     function GetFrame: ControlRef; virtual;
+    function GetForceEmbedInScrollView: Boolean; virtual;
+    function EmbedInScrollView(const AParams: TCreateParams): HIViewRef;
+    function EmbedInScrollView(AScrollBars: TScrollStyle): HIViewRef;
+    procedure ChangeScrollBars(AScrollView: HIViewRef; var AScrollBars: TScrollStyle; ANewValue: TScrollStyle);
   public
     class function GetValidEvents: TCarbonControlEvents; virtual;
     procedure Hit(AControlPart: ControlPartCode); dynamic;
     procedure Draw; virtual;
     procedure ValueChanged; dynamic;
     procedure IndicatorMoved; dynamic;
-    procedure TextDidChange; dynamic;
     procedure DoAction(AControlPart: ControlPartCode); dynamic;
-    procedure ListItemSelected(AIndex: Integer); dynamic;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetTopParentWindow: WindowRef; override;
@@ -163,11 +165,33 @@ type
   { TCarbonCustomControl }
 
   TCarbonCustomControl = class(TCarbonControl)
+  private
+    FScrollView: HIViewRef;
+    FScrollOrigin: TPoint;
+    FScrollSize: TPoint;
+    FScrollPageSize: TPoint;
   protected
+    procedure RegisterEvents; override;
+    procedure UnregisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
+    function GetFrame: ControlRef; override;
+  public
+    procedure GetInfo(out AImageSize, AViewSize, ALineSize, AOrigin: TPoint); dynamic;
+    procedure ScrollTo(const ANewOrigin: TPoint); dynamic;
   public
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
+    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer;
+    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo);
+  end;
+  
+  { TCarbonScrollingWinControl }
+
+  TCarbonScrollingWinControl = class(TCarbonCustomControl)
+  protected
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    function GetForceEmbedInScrollView: Boolean; override;
   end;
   
   { TCarbonGroupBox }
@@ -251,6 +275,8 @@ type
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Hit(AControlPart: ControlPartCode); override;
+  public
+    procedure SetDefault(ADefault: Boolean); virtual;
   end;
   
   { TCarbonButton }
@@ -258,8 +284,6 @@ type
   TCarbonButton = class(TCarbonCustomButton)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    procedure SetDefault(ADefault: Boolean); virtual;
   end;
   
   { TCarbonBitBtn }
@@ -268,7 +292,7 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
-    procedure SetGlyph(AGlyph: TBitmap); virtual;
+    procedure SetGlyph(const AGlyph: TBitmap); virtual;
     procedure SetLayout(ALayout: TButtonLayout); virtual;
   end;
   
@@ -311,8 +335,8 @@ type
 
   TCarbonTrackBar = class(TCarbonMovableBar)
   private
-    FTicks: LongWord;
-    function GetTicks: LongWord;
+    FTicks: Word;
+    function GetTicks: Word;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
@@ -449,6 +473,108 @@ end;
 { TCarbonCustomControl }
 
 {------------------------------------------------------------------------------
+  Name: CarbonScrollable_GetInfo
+  Handles scrollable get info
+ ------------------------------------------------------------------------------}
+function CarbonScrollable_GetInfo(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  ImageSize, ViewSize, LineSize, Origin: TPoint;
+  ImageHISize, ViewHISize, LineHISize: HISize;
+  HIOrigin: HIPoint;
+const
+  SName = 'CarbonScrollable_GetInfo';
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonScrollable_GetInfo ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  (AWidget as TCarbonCustomControl).GetInfo(ImageSize, ViewSize, LineSize, Origin);
+  
+  ImageHISize := PointToHISize(ImageSize);
+  ViewHISize := PointToHISize(ViewSize);
+  LineHISize := PointToHISize(LineSize);
+  HIOrigin := PointToHIPoint(Origin);
+  
+  OSError(SetEventParameter(AEvent, kEventParamImageSize, typeHISize,
+    SizeOf(HISize), @ImageHISize), SName, SSetEvent, 'kEventParamImageSize');
+  OSError(SetEventParameter(AEvent, kEventParamViewSize, typeHISize,
+    SizeOf(HISize), @ViewHISize), SName, SSetEvent, 'kEventParamViewSize');
+  OSError(SetEventParameter(AEvent, kEventParamLineSize, typeHISize,
+    SizeOf(HISize), @LineHISize), SName, SSetEvent, 'kEventParamLineSize');
+  OSError(SetEventParameter(AEvent, kEventParamOrigin, typeHISize,
+    SizeOf(HIPoint), @HIOrigin), SName, SSetEvent, 'kEventParamOrigin');
+  
+  Result := noErr;
+end;
+
+{------------------------------------------------------------------------------
+  Name: CarbonScrollable_ScrollTo
+  Handles scrollable get info
+ ------------------------------------------------------------------------------}
+function CarbonScrollable_ScrollTo(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Origin: HIPoint;
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonScrollable_ScrollTo ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
+  if OSError(
+    GetEventParameter(AEvent, kEventParamOrigin, typeHIPoint, nil,
+      SizeOf(HIPoint), nil, @Origin), 'CarbonScrollable_ScrollTo', SGetEvent,
+    'kEventParamOrigin') then Exit;
+  
+  (AWidget as TCarbonCustomControl).ScrollTo(HIPointToPoint(Origin));
+  
+  Result := noErr;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.RegisterEvents
+
+  Registers event handlers for custom control
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  inherited RegisterEvents;
+  
+  if FScrollView <> Widget then
+  begin
+    TmpSpec := MakeEventSpec(kEventClassScrollable, kEventScrollableGetInfo);
+    InstallControlEventHandler(Widget,
+      RegisterEventHandler(@CarbonScrollable_GetInfo),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    TmpSpec := MakeEventSpec(kEventClassScrollable, kEventScrollableScrollTo);
+    InstallControlEventHandler(Widget,
+      RegisterEventHandler(@CarbonScrollable_ScrollTo),
+      1, @TmpSpec, Pointer(Self), nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.UnregisterEvents
+
+  Unregisters event handlers
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.UnregisterEvents;
+begin
+  if FScrollView <> Widget then
+  begin
+    UnregisterEventHandler(@CarbonScrollable_GetInfo);
+    UnregisterEventHandler(@CarbonScrollable_ScrollTo);
+  end;
+  
+  inherited UnregisterEvents;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonCustomControl.CreateWidget
   Params:  AParams - Creation parameters
 
@@ -469,8 +595,88 @@ begin
     Self, SCreateWidget, 'CreateUserPaneControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
+  
+  FScrollView := EmbedInScrollView(AParams);
+  FScrollSize := Classes.Point(0, 0);
+  FScrollPageSize := Classes.Point(0, 0);
+  FScrollOrigin := Classes.Point(0, 0);
     
   inherited;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.DestroyWidget
+
+  Clean-up
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.DestroyWidget;
+begin
+  if (FScrollView <> Widget) and (FScrollView <> nil) then DisposeControl(FScrollView);
+  
+  inherited DestroyWidget;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.GetFrame
+  Returns: Frame area control
+ ------------------------------------------------------------------------------}
+function TCarbonCustomControl.GetFrame: ControlRef;
+begin
+  Result := FScrollView;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.GetInfo
+  Params:  AImageSize - Size of entire scrollable area
+           AViewSize  - Size of scrollable page
+           ALineSize  - Size of scrollable line
+           AOrigin    - Scroll position
+
+  Handles scrollableget info event
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.GetInfo(out AImageSize, AViewSize,
+  ALineSize, AOrigin: TPoint);
+begin
+  AOrigin := FScrollOrigin;
+  AImageSize := FScrollSize;
+  AViewSize := FScrollPageSize;
+  ALineSize := Classes.Point(1, 1);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControlScrollTo
+  Params:  ANewOrigin - New scroll position
+
+  Handles scrollable scroll to event
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.ScrollTo(const ANewOrigin: TPoint);
+var
+  ScrollMsg: TLMScroll;
+begin
+  FScrollOrigin := ANewOrigin;
+  
+  // send vertical scroll
+  FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
+  with ScrollMsg do
+  begin
+    Msg := LM_VSCROLL;
+    Pos := ANewOrigin.Y;
+    ScrollCode := SB_THUMBPOSITION;
+  end;
+  DeliverMessage(LCLObject, ScrollMsg);
+  
+  // send horizontal scroll
+  FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
+  with ScrollMsg do
+  begin
+    Msg := LM_HSCROLL;
+    Pos := ANewOrigin.X;
+    ScrollCode := SB_THUMBPOSITION;
+  end;
+  DeliverMessage(LCLObject, ScrollMsg);
+  
+  OSError(
+    HiViewSetNeedsDisplay(Widget, True), Self, 'ScrollTo', SViewNeedsDisplay);
 end;
 
 {------------------------------------------------------------------------------
@@ -493,6 +699,134 @@ end;
 procedure TCarbonCustomControl.SetFont(const AFont: TFont);
 begin
   // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.SetScrollInfo
+  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
+           ScrollInfo - Scrolling info
+  Returns: The old scroll bar position
+
+  Sets the scrolling info of the specified scroll bar
+ ------------------------------------------------------------------------------}
+function TCarbonCustomControl.SetScrollInfo(SBStyle: Integer;
+  const ScrollInfo: TScrollInfo): Integer;
+var
+  Event: EventRef;
+const
+  SName = 'SetScrollInfo';
+begin
+  if SBStyle = SB_HORZ then
+    Result := FScrollOrigin.X;
+  if SBStyle = SB_VERT then
+    Result := FScrollOrigin.Y;
+
+  if (SIF_RANGE and ScrollInfo.fMask) > 0 then
+  begin
+    if SBStyle = SB_HORZ then
+      FScrollSize.X := (ScrollInfo.nMax - ScrollInfo.nMin);
+    if SBStyle = SB_VERT then
+      FScrollSize.Y := (ScrollInfo.nMax - ScrollInfo.nMin);
+  end;
+  
+  if (SIF_POS and ScrollInfo.fMask) > 0 then
+  begin
+    if SBStyle = SB_HORZ then
+      FScrollOrigin.X := ScrollInfo.nPos;
+    if SBStyle = SB_VERT then
+      FScrollOrigin.Y := ScrollInfo.nPos;
+  end;
+  
+  if (SIF_PAGE and ScrollInfo.fMask) > 0 then
+  begin
+    if SBStyle = SB_HORZ then
+      FScrollPageSize.X := ScrollInfo.nPage;
+    if SBStyle = SB_VERT then
+      FScrollPageSize.Y := ScrollInfo.nPage;
+  end;
+  
+  if (SBStyle in [SB_HORZ, SB_VERT]) and
+    ((ScrollInfo.fMask and (SIF_RANGE or SIF_POS or SIF_PAGE)) > 0) then
+  begin
+    if OSError(
+      CreateEvent(nil, kEventClassScrollable, kEventScrollableInfoChanged, 0,
+        kEventAttributeUserEvent, Event),
+      Self, SName, 'CreateEvent') then Exit;
+    try
+      OSError(SendEventToEventTarget(Event, GetControlEventTarget(Widget)),
+        Self, SName, 'SendEventToEventTarget');
+    finally
+      ReleaseEvent(Event);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.GetScrollInfo
+  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
+           ScrollInfo - Record fo scrolling info
+  Returns: If the function suceeds
+
+  Gets the scrolling info of the specified scroll bar
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.GetScrollInfo(SBStyle: Integer;
+  var ScrollInfo: TScrollInfo);
+const
+  SName = 'GetScrollInfo';
+begin
+  if (SIF_RANGE and ScrollInfo.fMask) > 0 then
+  begin
+    ScrollInfo.nMin := 0;
+    
+    if SBStyle = SB_HORZ then
+      ScrollInfo.nMax := FScrollSize.X;
+    if SBStyle = SB_VERT then
+      ScrollInfo.nMax := FScrollSize.Y;
+  end;
+
+  if (SIF_POS and ScrollInfo.fMask) > 0 then
+  begin
+    if SBStyle = SB_HORZ then
+      ScrollInfo.nPos := FScrollOrigin.X;
+    if SBStyle = SB_VERT then
+      ScrollInfo.nPos := FScrollOrigin.Y;
+  end;
+
+  if (SIF_PAGE and ScrollInfo.fMask) > 0 then
+  begin
+    if SBStyle = SB_HORZ then
+      ScrollInfo.nPage := FScrollPageSize.X;
+    if SBStyle = SB_VERT then
+      ScrollInfo.nPage := FScrollPageSize.Y;
+  end;
+end;
+
+{ TCarbonScrollingWinControl }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonScrollingWinControl.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon scrolling window control
+ ------------------------------------------------------------------------------}
+procedure TCarbonScrollingWinControl.CreateWidget(const AParams: TCreateParams);
+var
+  Params: TCreateParams;
+begin
+  Params := AParams;
+  // add both scrollbars
+  Params.Style := Params.Style or WS_HSCROLL or WS_VSCROLL;
+  
+  inherited CreateWidget(Params);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonScrollingWinControl.GetForceEmbedInScrollView
+  Returns: Whether use scroll view even if no scroll bars are needed
+ ------------------------------------------------------------------------------}
+function TCarbonScrollingWinControl.GetForceEmbedInScrollView: Boolean;
+begin
+  Result := True;
 end;
 
 { TCarbonGroupBox }
@@ -959,6 +1293,20 @@ begin
   LCLSendClickedMsg(LCLObject);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomButton.SetDefault
+  Params:  ADefault - Is default
+
+  Sets the default indication
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomButton.SetDefault(ADefault: Boolean);
+begin
+  OSError(
+    SetControlData(ControlRef(Widget), kControlEntireControl,
+      kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault),
+    Self, 'SetDefault', SSetData);
+end;
+
 { TCarbonButton }
 
 {------------------------------------------------------------------------------
@@ -982,20 +1330,6 @@ begin
   inherited;
 
   SetText(AParams.Caption);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonButton.SetDefault
-  Params:  ADefault - Is default
-
-  Sets the default indication
- ------------------------------------------------------------------------------}
-procedure TCarbonButton.SetDefault(ADefault: Boolean);
-begin
-  OSError(
-    SetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault),
-    Self, 'SetDefault', SSetData);
 end;
 
 { TCarbonBitBtn }
@@ -1036,19 +1370,42 @@ end;
 
   Sets the glyph bitmap
  ------------------------------------------------------------------------------}
-procedure TCarbonBitBtn.SetGlyph(AGlyph: TBitmap);
+procedure TCarbonBitBtn.SetGlyph(const AGlyph: TBitmap);
 var
   ContentInfo: ControlButtonContentInfo;
+  FreeImage: Boolean;
+  BitBtn: TCustomBitBtn;
+  R: TRect;
 begin
   ContentInfo.contentType := kControlContentCGImageRef;
   
-  if AGlyph = nil then
-    ContentInfo.imageRef := nil
-  else
-    ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).CGImage;
-
-  OSError(SetBevelButtonContentInfo(ControlRef(Widget), @ContentInfo),
-    Self, 'SetGlyph', 'SetBevelButtonContentInfo');
+  FreeImage := False;
+  ContentInfo.imageRef := nil;
+  
+  if AGlyph <> nil then
+  begin
+    if TObject(AGlyph.Handle) is TCarbonBitmap then
+    begin
+      BitBtn := LCLObject as TCustomBitBtn;
+      
+      if BitBtn.NumGlyphs <= 1 then
+        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).CGImage
+      else
+      begin
+        // TODO: consider button style (down, disabled)
+        R := Classes.Rect(0, 0, AGlyph.Width div BitBtn.NumGlyphs, AGlyph.Height);
+        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).GetSubImage(R);
+        FreeImage := True;
+      end;
+    end;
+  end;
+  
+  try
+    OSError(SetBevelButtonContentInfo(ControlRef(Widget), @ContentInfo),
+      Self, 'SetGlyph', 'SetBevelButtonContentInfo');
+  finally
+    if FreeImage then CGImageRelease(ContentInfo.imageRef);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1251,7 +1608,7 @@ end;
 
   Returns the number of ticks for the track bar
  ------------------------------------------------------------------------------}
-function TCarbonTrackBar.GetTicks: LongWord;
+function TCarbonTrackBar.GetTicks: Word;
 var
   TrackBar: TCustomTrackBar;
 begin

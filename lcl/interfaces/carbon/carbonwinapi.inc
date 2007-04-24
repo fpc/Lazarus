@@ -158,13 +158,7 @@ begin
     DebugLn('TCarbonWidgetSet.ComboBoxDropDown Handle: ' + DbgS(Handle) + ' Drop: ' + DbgS(DropDown));
   {$ENDIF}
   
-  if not CheckWidget(Handle, 'ComboBoxDropDown') then Exit;
-  if not (TCarbonWidget(Handle) is TCarbonComboBox) then
-  begin
-    DebugLn('TCarbonWidgetSet.ComboBoxDropDown failed - passed widget ' +
-      TCarbonWidget(Handle).ClassName + ' is not TCarbonComboBox!');
-    Exit;
-  end;
+  if not CheckWidget(Handle, 'ComboBoxDropDown', TCarbonComboBox) then Exit;
   
   Result := TCarbonComboBox(Handle).DropDown(DropDown);
 end;
@@ -339,7 +333,8 @@ end;
 function TCarbonWidgetSet.CreatePixmapIndirect(const Data: Pointer;
   const TransColor: Longint): HBITMAP;
 begin
-  Result:=inherited CreatePixmapIndirect(Data, TransColor);
+  DebugLn('TCarbonWidgetSet.CreatePixmapIndirect TODO');
+  Result := 0;
 end;
 
 function TCarbonWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
@@ -475,9 +470,6 @@ end;
   by using the current brush.
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
-var
-  ADC: TCarbonDeviceContext;
-  R: CGRect;
 begin
   Result := False;
 
@@ -485,25 +477,9 @@ begin
     DebugLn('TCarbonWidgetSet.Ellipse DC: ' + DbgS(DC) + ' R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
   {$ENDIF}
   
-  if (X1 = X2) or (Y1 = Y2) then
-  begin
-    Result := True;
-    Exit;
-  end;
-  
   if not CheckDC(DC, 'Ellipse') then Exit;
 
-  ADC := TCarbonDeviceContext(DC);
-  
-  R := GetCGRectSorted(X1, Y1, X2, Y2);
-  R.origin.x := R.origin.x + 0.5;
-  R.origin.y := R.origin.y + 0.5;
-  R.size.width := R.size.width - 1;
-  R.size.height := R.size.height - 1;
-  
-  CGContextBeginPath(ADC.CGContext);
-  CGContextAddEllipseInRect(ADC.CGContext, R);
-  CGContextDrawPath(ADC.CGContext, kCGPathFillStroke);
+  TCarbonDeviceContext(DC).Ellipse(X1, Y1, X2, Y2);
 
   Result := True;
 end;
@@ -647,7 +623,7 @@ begin
   end
   else
   begin
-    DebugLn(SName + ' with specific face or specific char set is not implemented!');
+    DebugLn(SName + ' with specific face or char set is not implemented!');
   end;
 end;
 
@@ -663,9 +639,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ExcludeClipRect(DC: HDC; Left, Top, Right,
   Bottom: Integer): Integer;
-var
-  ClipBox: TRect;
-  Rects: CGRectArray;
 begin
   Result := ERROR;
 
@@ -676,19 +649,7 @@ begin
   
   if not CheckDC(DC, 'ExcludeClipRect') then Exit;
   
-  if (Left < Right) and (Top < Bottom) then
-  begin
-    ClipBox := CGRectToRect(
-      CGContextGetClipBoundingBox(TCarbonDeviceContext(DC).CGContext));
-      
-    Rects := ExcludeRect(ClipBox, Classes.Rect(Left, Top, Right, Bottom));
-
-    if Length(Rects) > 0 then
-      CGContextClipToRects(TCarbonDeviceContext(DC).CGContext, @Rects[0],
-        Length(Rects))
-    else
-      CGContextClipToRect(TCarbonDeviceContext(DC).CGContext, CGRectZero);
-  end;
+  TCarbonDeviceContext(DC).ExcludeClipRect(Left, Top, Right, Bottom);
   
   Result := COMPLEXREGION;
 end;
@@ -709,12 +670,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-var
-  TextLayout: ATSUTextLayout;
-  ADC: TCarbonDeviceContext;
-  TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
-const
-  SName = 'ExtTextOut';
 begin
   Result := False;
 
@@ -724,37 +679,9 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'ExtTextOut') then Exit;
-  ADC := TCarbonDeviceContext(DC);
-
-  if not ADC.BeginTextRender(Str, Count, TextLayout) then Exit;
-  try
-    // get text ascent
-    if OSError(
-      ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
-        TextBefore, TextAfter, Ascent, Descent),
-      Self, SName, SGetUnjustifiedBounds) then Exit;
-
-    // fill drawed text background
-    if (Options and ETO_OPAQUE) > 0 then
-    begin
-      ADC.BkBrush.Apply(ADC, False); // do not use ROP2
-      CGContextFillRect(ADC.CGContext, GetCGRectSorted(X - TextBefore shr 16,
-        -Y, X + TextAfter shr 16, -Y - (Ascent + Descent) shr 16));
-    end;
-        
-    // apply text color
-    ADC.TextBrush.Apply(ADC, False); // do not use ROP2
-
-
-    // finally draw the text
-    if OSError(ATSUDrawText(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
-        X shl 16 - TextBefore, -(Y shl 16) - Ascent),
-       Self, SName, 'ATSUDrawText') then Exit;
-
-    Result := True;
-  finally
-    ADC.EndTextRender(TextLayout);
-  end;
+  
+  Result :=
+    TCarbonDeviceContext(DC).ExtTextOut(X, Y, Options, Rect, Str, Count, Dx);
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.ExtTextOut Result: ' + DbgS(Result));
@@ -780,9 +707,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
   ): Boolean;
-var
-  ADC: TCarbonDeviceContext;
-  SavedBrush: HBRUSH;
 begin
   Result := False;
 
@@ -798,18 +722,8 @@ begin
     Exit;
   end;
 
-  ADC := TCarbonDeviceContext(DC);
-  
-  SavedBrush := HBRUSH(ADC.CurrentBrush);
-  TCarbonBrush(Brush).Apply(ADC, False); // do not use ROP2
-  try
-    CGContextFillRect(ADC.CGContext, RectToCGRect(Rect));
-  finally
-    SelectObject(DC, SavedBrush);
-    if SavedBrush = Brush then
-      TCarbonBrush(SavedBrush).Apply(ADC); // ensure that saved brush is applied
-  end;
-  
+  TCarbonDeviceContext(DC).FillRect(Rect, TCarbonBrush(Brush));
+
   Result := True;
 end;
 
@@ -847,12 +761,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Frame3D(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
-var
-  I, D: Integer;
-  DrawInfo: HIThemeGroupBoxDrawInfo;
-  ADC: TCarbonDeviceContext;
-const
-  SName = 'Frame3D';
 begin
   Result := False;
 
@@ -861,30 +769,11 @@ begin
       ' Width: ' + DbgS(FrameWidth) + ' Style: ' + DbgS(Integer(Style)));
   {$ENDIF}
   
-  if not CheckDC(DC, SName) then Exit;
+  if not CheckDC(DC, 'Frame3D') then Exit;
+  
   if FrameWidth <= 0 then Exit;
-  
-  ADC := TCarbonDeviceContext(DC);
-  
-  if Style = bvRaised then
-  begin
-    if OSError(GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D),
-      Self, SName, SGetThemeMetric) then D := 1;
 
-    // draw frame as group box
-    DrawInfo.version := 0;
-    DrawInfo.state := kThemeStateActive;
-    DrawInfo.kind := kHIThemeGroupBoxKindPrimary;
-
-    for I := 1 to FrameWidth do
-    begin
-      OSError(HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo,
-          ADC.CGContext, kHIThemeOrientationNormal),
-        Self, SName, 'HIThemeDrawGroupBox');
-        
-      InflateRect(ARect, -D, -D);
-    end;
-  end;
+  TCarbonDeviceContext(DC).Frame3D(ARect, FrameWidth, Style);
   
   Result := True;
 end;
@@ -1171,9 +1060,6 @@ end;
   Returns device specific information
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
-var
-  ADC: TCarbonDeviceContext;
-  ResX, ResY: FPCMacOSAll.SInt16;
 begin
   Result := 0;
 
@@ -1182,16 +1068,12 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'GetDeviceCaps') then Exit;
-  ADC := TCarbonDeviceContext(DC);
 
   case Index of
   LOGPIXELSX,
   LOGPIXELSY:
-    begin
-      FPCMacOSAll.ScreenRes(ResX, ResY);
-      if Index = LOGPIXELSX then Result := ResX
-                            else Result := ResY;
-    end;
+    // logical is allways 72 dpi, although physical can differ
+    Result := 72; // TODO: test scaling and magnification
   BITSPIXEL:  Result := CGDisplayBitsPerPixel(CGMainDisplayID);
   else
     DebugLn('TCarbonWidgetSet.GetDeviceCaps TODO Index: ' + DbgS(Index));
@@ -1234,8 +1116,6 @@ end;
   Retrieves the size of the specified device context
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
-var
-  ADC: TCarbonDeviceContext;
 begin
   Result := False;
 
@@ -1244,9 +1124,8 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'GetDeviceSize') then Exit;
-  ADC := TCarbonDeviceContext(DC);
   
-  P := ADC.Size;
+  P := TCarbonDeviceContext(DC).Size;
   Result := True;
   
   {$IFDEF VerboseWinAPI}
@@ -1319,18 +1198,24 @@ begin
 
   case nVirtKey of
   VK_MENU:
-    if (GetCurrentKeyModifiers and optionKey) > 0 then
+    if (GetCurrentEventKeyModifiers and optionKey) > 0 then
       // the ssAlt/VK_MENU is mapped to optionKey under MacOS
       Result:=-1;
   VK_SHIFT:
-    if (GetCurrentKeyModifiers and shiftKey) > 0 then
+    if (GetCurrentEventKeyModifiers and shiftKey) > 0 then
       Result:=-1;
   VK_CONTROL:
-    if (GetCurrentKeyModifiers and cmdKey) > 0 then
+    if (GetCurrentEventKeyModifiers and cmdKey) > 0 then
       // the ssCtrl/VK_CONTROL is mapped to cmdKey under MacOS
       Result:=-1;
+  VK_LBUTTON:
+    if (GetCurrentEventButtonState and 1) > 0 then Result := -1;
+  VK_RBUTTON:
+    if (GetCurrentEventButtonState and 2) > 0 then Result := -1;
+  VK_MBUTTON:
+    if (GetCurrentEventButtonState and 4) > 0 then Result := -1;
   else
-    DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgSVKCode(nVirtkey));
+    DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
   end;
   
   {$IFDEF VerboseKeyboard}
@@ -1531,10 +1416,30 @@ begin
   Result:=inherited GetScrollbarVisible(Handle, SBStyle);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetScrollInfo
+  Params:  Handle     - Handle of window
+           SBStyle    - Scroll bar flag
+           ScrollInfo - Record fo scrolling info
+  Returns: If the function succeeds
+
+  Gets the parameters of a scroll bar
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
 begin
-  Result:=inherited GetScrollInfo(Handle, SBStyle, ScrollInfo);
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetScrollInfo Handle: ' + DbgS(Handle) +
+      ' SBStyle: ' + DbgS(SBStyle));
+  {$ENDIF}
+
+  if not CheckWidget(Handle, 'GetScrollInfo', TCarbonCustomControl) then Exit;
+
+  TCarbonCustomControl(Handle).GetScrollInfo(SBStyle, ScrollInfo);
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1689,16 +1594,10 @@ end;
            Size  - The record for the dimensions of the string
   Returns: If the function succeeds
 
-  Computes the width and height of the specified string of text.
+  Computes the width and height of the specified string of text
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
   Count: Integer; var Size: TSize): Boolean;
-var
-  TextLayout: ATSUTextLayout;
-  ADC: TCarbonDeviceContext;
-  TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
-const
-  SName = 'GetTextExtentPoint';
 begin
   Result := False;
 
@@ -1706,26 +1605,9 @@ begin
     DebugLn('TCarbonWidgetSet.GetTextExtentPoint DC: ' + DbgS(DC) + ' Str: ' + Str);
   {$ENDIF}
   
-  if not CheckDC(DC, SName) then Exit;
-  {  // workaround for calculating metrics of invisible controls
-    ADC := DefaultContext
-  else}
-    ADC := TCarbonDeviceContext(DC);
+  if not CheckDC(DC, 'GetTextExtentPoint') then Exit;
 
-  if not ADC.BeginTextRender(Str, Count, TextLayout) then Exit;
-  try
-    // finally compute the text dimensions
-    if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
-        kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
-      Self, SName, SGetUnjustifiedBounds) then Exit;
-      
-    Size.cx := (TextAfter - TextBefore) shr 16;
-    Size.cy := (Descent + Ascent) shr 16;
-
-    Result := True;
-  finally
-    ADC.EndTextRender(TextLayout);
-  end;
+  Result := TCarbonDeviceContext(DC).GetTextExtentPoint(Str, Count, Size);
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetTextExtentPoint Size: ' + DbgS(Size));
@@ -1742,16 +1624,6 @@ end;
   TODO: get exact max. and av. char width, pitch and charset
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-var
-  TextStyle: ATSUStyle;
-  ADC: TCarbonDeviceContext;
-  M: ATSUTextMeasurement;
-  B: Boolean;
-  TextLayout: ATSUTextLayout;
-  TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
-const
-  SName = 'GetTextMetrics';
-  SGetAttrName = 'ATSUGetAttribute';
 begin
   Result := False;
 
@@ -1759,72 +1631,9 @@ begin
     DebugLn('TCarbonWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
   {$ENDIF}
   
-  if not CheckDC(DC, SName) then Exit;
-  {  // workaround for calculating metrics of invisible controls
-    ADC := DefaultContext
-  else   }
-    ADC := TCarbonDeviceContext(DC);
-    
-  if not (ADC.CurrentFont is TCarbonFont) then
-    TextStyle := DefaultTextStyle
-  else
-    TextStyle := ADC.CurrentFont.Style;
-  
-  FillChar(TM, SizeOf(TM), 0);
+  if not CheckDC(DC, 'GetTextMetrics') then Exit;
 
-  // According to the MSDN library, TEXTMETRIC:
-  // the average char width is generally defined as the width of the letter x
-  if not ADC.BeginTextRender('x', 1, TextLayout) then Exit;
-  try
-    if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
-        kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent), SName,
-      SGetUnjustifiedBounds) then Exit
-  finally
-    ADC.EndTextRender(TextLayout);
-  end;
-  
-  TM.tmAscent := Ascent shr 16;
-  TM.tmDescent := Descent shr 16;
-  TM.tmHeight := (Ascent + Descent) shr 16;
-  
-  if OSError(ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil),
-    Self, SName, SGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
-  TM.tmInternalLeading := M shr 16;
-  TM.tmExternalLeading := 0;
-  
-  TM.tmAveCharWidth := (TextAfter - TextBefore) shr 16;
-  
-  TM.tmMaxCharWidth := TM.tmAscent; // TODO: don't know how to determine this right
-  TM.tmOverhang := 0;
-  TM.tmDigitizedAspectX := 0;
-  TM.tmDigitizedAspectY := 0;
-  TM.tmFirstChar := 'a';
-  TM.tmLastChar := 'z';
-  TM.tmDefaultChar := 'x';
-  TM.tmBreakChar := '?';
-  
-  if OSError(ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUQDBoldfaceTag', kATSUNotSetErr) then Exit;
-  if B then TM.tmWeight := FW_NORMAL
-       else TM.tmWeight := FW_BOLD;
-  
-  if OSError(ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUQDItalicTag', kATSUNotSetErr) then Exit;
-  TM.tmItalic := Byte(B);
-  
-  if OSError(ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUQDUnderlineTag', kATSUNotSetErr) then Exit;
-  TM.tmUnderlined := Byte(B);
-  
-  if OSError(ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr) then Exit;
-  TM.tmStruckOut := Byte(B);
-
-  // TODO: get these from font
-  TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
-  TM.tmCharSet := DEFAULT_CHARSET;
-  
-  Result := True;
+  Result := TCarbonDeviceContext(DC).GetTextMetrics(TM);
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
@@ -1990,6 +1799,7 @@ begin
   
   CGContextClipToRect(TCarbonContext(DC).CGContext,
     RectToCGRect(Classes.Rect(Left, Top, Right, Bottom)));
+    
   Result := COMPLEXREGION;
 end;
 
@@ -2089,8 +1899,6 @@ end;
   the current position
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
-var
-  ADC: TCarbonDeviceContext;
 begin
   Result := False;
 
@@ -2101,17 +1909,9 @@ begin
   
   if not CheckDC(DC, 'LineTo') then Exit;
 
-  ADC := TCarbonDeviceContext(DC);
+  TCarbonDeviceContext(DC).LineTo(X, Y);
 
-  CGContextBeginPath(ADC.CGContext);
-  // add 0.5 to both coordinates for better rasterization
-  CGContextMoveToPoint(ADC.CGContext, ADC.PenPos.x + 0.5, ADC.PenPos.y + 0.5);
-  CGContextAddLineToPoint(ADC.CGContext, X + 0.5, Y + 0.5);
-  CGContextStrokePath(ADC.CGContext);
-  
   Result := True;
-  ADC.PenPos.x := X;
-  ADC.PenPos.y := Y;
 end;
 
 function TCarbonWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
@@ -2198,9 +1998,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
-var
-  ADC: TCarbonDeviceContext;
-  C1, C2: TPoint;
 begin
   Result := False;
 
@@ -2214,48 +2011,7 @@ begin
   if Points = nil then Exit;
   if NumPts < 4 then Exit;
 
-  ADC := TCarbonDeviceContext(DC);
-
-  CGContextBeginPath(ADC.CGContext);
-
-  if Continuous then
-  begin
-    CGContextMoveToPoint(ADC.CGContext, Points^.x, Points^.y);
-    Dec(NumPts);
-
-    while NumPts >= 3 do
-    begin
-      Inc(Points);
-      C1 := Points^;
-      Inc(Points);
-      C2 := Points^;
-      Inc(Points);
-      CGContextAddCurveToPoint(ADC.CGContext, C1.x, C1.y, C2.x, C2.y,
-        Points^.x, Points^.y);
-      Dec(NumPts, 3);
-    end;
-  end
-  else
-  begin
-    while NumPts >= 4 do
-    begin
-      CGContextMoveToPoint(ADC.CGContext, Points^.x, Points^.y);
-      Inc(Points);
-      C1 := Points^;
-      Inc(Points);
-      C2 := Points^;
-      Inc(Points);
-      CGContextAddCurveToPoint(ADC.CGContext, C1.x, C1.y, C2.x, C2.y,
-        Points^.x, Points^.y);
-      Inc(Points);
-      Dec(NumPts, 4);
-    end;
-  end;
-
-  if Filled and Continuous then
-    CGContextDrawPath(ADC.CGContext, kCGPathFillStroke)
-  else
-    CGContextDrawPath(ADC.CGContext, kCGPathStroke);
+  TCarbonDeviceContext(DC).PolyBezier(Points, NumPts, Filled, Continuous);
 
   Result := True;
 end;
@@ -2275,8 +2031,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
-var
-  ADC: TCarbonDeviceContext;
 begin
   Result := False;
 
@@ -2289,25 +2043,7 @@ begin
   if Points = nil then Exit;
   if NumPts < 2 then Exit;
 
-  ADC := TCarbonDeviceContext(DC);
-
-  CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
-  Dec(NumPts);
-
-  while NumPts > 0 do
-  begin
-    Inc(Points);
-    CGContextAddLineToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
-    Dec(NumPts);
-  end;
-
-  CGContextClosePath(ADC.CGContext);
-  
-  if Winding then
-    CGContextDrawPath(ADC.CGContext, kCGPathFillStroke)
-  else
-    CGContextDrawPath(ADC.CGContext, kCGPathEOFillStroke);
+  TCarbonDeviceContext(DC).Polygon(Points, NumPts, Winding);
     
   Result := True;
 end;
@@ -2323,8 +2059,6 @@ end;
   array
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
-var
-  ADC: TCarbonDeviceContext;
 begin
   Result := False;
 
@@ -2335,20 +2069,7 @@ begin
   if not CheckDC(DC, 'Polyline') then Exit;
   if Points = nil then Exit;
 
-  ADC := TCarbonDeviceContext(DC);
-  
-  CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
-  Dec(NumPts);
-
-  while NumPts > 0 do
-  begin
-    Inc(Points);
-    CGContextAddLineToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
-    Dec(NumPts);
-  end;
-  
-  CGContextStrokePath(ADC.CGContext);
+  TCarbonDeviceContext(DC).Polyline(Points, NumPts);
 
   Result := True;
 end;
@@ -2389,9 +2110,6 @@ end;
   filled by using the current brush.
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
-var
-  ADC: TCarbonDeviceContext;
-  R: CGRect;
 begin
   Result := False;
   
@@ -2400,25 +2118,9 @@ begin
       DbgS(Classes.Rect(X1, Y1, X2, Y2)));
   {$ENDIF}
   
-  if (X1 = X2) or (Y1 = Y2) then
-  begin
-    Result := True;
-    Exit;
-  end;
-  
   if not CheckDC(DC, 'Rectangle') then Exit;
 
-  ADC := TCarbonDeviceContext(DC);
-
-  R := GetCGRectSorted(X1, Y1, X2, Y2);
-  R.origin.x := R.origin.x + 0.5;
-  R.origin.y := R.origin.y + 0.5;
-  R.size.width := R.size.width - 1;
-  R.size.height := R.size.height - 1;
-
-  CGContextBeginPath(ADC.CGContext);
-  CGContextAddRect(ADC.CGContext, R);
-  CGContextDrawPath(ADC.CGContext, kCGPathFillStroke);
+  TCarbonDeviceContext(DC).Rectangle(X1, Y1, X2, Y2);
 
   Result := True;
 end;
@@ -2676,8 +2378,6 @@ end;
   Sets focus to the specified window.
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetActiveWindow(Handle: HWND): HWND;
-const
-  SName = 'SetActiveWindow';
 begin
   Result := 0;
 
@@ -2685,13 +2385,7 @@ begin
     DebugLn('TCarbonWidgetSet.SetActiveWindow Handle: ' + DbgS(Handle));
   {$ENDIF}
   
-  if not CheckWidget(Handle, SName) then Exit;
-  if not (TCarbonWidget(Handle) is TCarbonWindow) then
-  begin
-    DebugLn('TCarbonWidgetSet.SetActiveWindow failed - widget ' +
-      TCarbonWidget(Handle).ClassName + ' is not TCarbonWindow!');
-    Exit;
-  end;
+  if not CheckWidget(Handle, 'SetActiveWindow', TCarbonWindow) then Exit;
   
   Result := GetActiveWindow;
   if not TCarbonWindow(Handle).Activate then Result := 0;
@@ -2824,8 +2518,6 @@ end;
   Brings the specified window to the top
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
-const
-  SName = 'SetForegroundWindow';
 begin
   Result := False;
 
@@ -2833,13 +2525,7 @@ begin
     DebugLn('TCarbonWidgetSet.SetForegroundWindow HWnd: ' + DbgS(HWnd));
   {$ENDIF}
 
-  if not CheckWidget(HWnd, SName) then Exit;
-  if not (TCarbonWidget(HWnd) is TCarbonWindow) then
-  begin
-    DebugLn('TCarbonWidgetSet.SetForegroundWindow failed - widget ' +
-      TCarbonWidget(HWnd).ClassName + ' is not TCarbonWindow!');
-    Exit;
-  end;
+  if not CheckWidget(HWnd, 'SetForegroundWindow', TCarbonWindow) then Exit;
   
   Result := TCarbonWindow(HWnd).Activate;
 end;
@@ -2901,7 +2587,6 @@ end;
   Returns: The old position value
 
   Sets the parameters of a scroll bar
-  TODO: set info of window scrollbars
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
   ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
@@ -2915,10 +2600,10 @@ begin
       ' SBStyle: ' + DbgS(SBStyle));
   {$ENDIF}
   
-  if not CheckWidget(Handle, 'SetScrollInfo') then Exit;
-  
   if SBStyle = SB_CTL then
   begin
+    if not CheckWidget(Handle, 'SetScrollInfo', TCarbonControl) then Exit;
+
     CarbonControl := TCarbonControl(Handle);
     Result := CarbonControl.GetValue;
     
@@ -2933,8 +2618,12 @@ begin
       CarbonControl.SetViewSize(ScrollInfo.nPage);
   end
   else
-    // TODO: SB_VERT, SB_HORZ
-    DebugLn('TCarbonWidgetSet.SetScrollInfo TODO SB_VERT, SB_HORZ');
+  begin
+    // TODO: form scrollbars
+    if not CheckWidget(Handle, 'SetScrollInfo', TCarbonCustomControl) then Exit;
+
+    Result := TCarbonCustomControl(Handle).SetScrollInfo(SBStyle, ScrollInfo);
+  end;
 end;
 
 function TCarbonWidgetSet.SetSysColors(cElements: Integer; const lpaElements;
@@ -3017,13 +2706,7 @@ begin
       DbgS(nCmdShow));
   {$ENDIF}
   
-  if not CheckWidget(HWnd, 'ShowWindow') then Exit;
-  if not (TCarbonWidget(HWnd) is TCarbonWindow) then
-  begin
-    DebugLn('TCarbonWidgetSet.ShowWindow failed - widget ' +
-      TCarbonWidget(HWnd).ClassName + ' is not TCarbonWindow!');
-    Exit;
-  end;
+  if not CheckWidget(HWnd, 'ShowWindow', TCarbonWindow) then Exit;
 
   Result := TCarbonWindow(HWnd).Show(nCmdShow);
 end;
@@ -3082,26 +2765,8 @@ begin
     Exit;
   end;
   
-  // save dest context
-  CGContextSaveGState(TCarbonDeviceContext(DestDC).CGContext);
-
-  CGContextSetBlendMode(TCarbonDeviceContext(DestDC).CGContext, kCGBlendModeNormal);
-
-  try
-    if OSError(
-      HIViewDrawCGImage(TCarbonDeviceContext(DestDC).CGContext,
-        GetCGRectSorted(X, Y, X + Width, Y + Height),
-        TCarbonBitmapContext(SrcDC).GetBitmap.CGImage),
-      SName, 'HIViewDrawCGImage') then Exit;
-      
-    Result := True;
-   {DebugLn('StretchMaskBlt succeeds: ', Format('Dest %d Src %d X %d Y %d',
-      [Integer(TCarbonDeviceContext(SrcDC).CGContext),
-      Integer(TCarbonBitmapContext(SrcDC).Bitmap.CGImage),
-      X, Y]));}
-  finally
-    CGContextRestoreGState(TCarbonDeviceContext(DestDC).CGContext);
-  end;
+  Result := TCarbonDeviceContext(DestDC).StretchDraw(X, Y, Width, Height,
+    TCarbonBitmapContext(SrcDC), XSrc, YSrc, SrcWidth, SrcHeight, Rop);
 end;
 
 {------------------------------------------------------------------------------

@@ -48,9 +48,10 @@ type
     procedure LimitTextLength;
     procedure AdaptCharCase;
     class function GetEditPart: ControlPartCode; virtual;
+    procedure RegisterEvents; override;
+    procedure UnregisterEvents; override;
   public
-    class function GetValidEvents: TCarbonControlEvents; override;
-    procedure TextDidChange; override;
+    procedure TextDidChange; dynamic;
   public
     function GetSelStart(var ASelStart: Integer): Boolean;
     function GetSelLength(var ASelLength: Integer): Boolean;
@@ -70,11 +71,12 @@ type
   private
     FItemIndex: Integer;
   protected
+    procedure RegisterEvents; override;
+    procedure UnregisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     class function GetEditPart: ControlPartCode; override;
   public
-    class function GetValidEvents: TCarbonControlEvents; override;
-    procedure ListItemSelected(AIndex: Integer); override;
+    procedure ListItemSelected(AIndex: Integer); virtual;
   public
     function GetItemIndex: Integer;
     function SetItemIndex(AIndex: Integer): Boolean;
@@ -114,6 +116,7 @@ type
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
     function GetFrame: ControlRef; override;
+    function GetForceEmbedInScrollView: Boolean; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
   public
@@ -133,6 +136,23 @@ implementation
 uses CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonWSStdCtrls;
 
 { TCarbonControlWithEdit }
+
+{------------------------------------------------------------------------------
+  Name: CarbonTextField_DidChange
+  Handles text change
+ ------------------------------------------------------------------------------}
+function CarbonTextField_DidChange(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonTextField_DidChange: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  (AWidget as TCarbonControlWithEdit).TextDidChange;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonControlWithEdit.LimitTextLength
@@ -178,12 +198,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonControlWithEdit.GetValidEvents
-  Returns: Set of events with installed handlers
+  Method:  TCarbonControlWithEdit.RegisterEvents
+
+  Registers event handlers for control with edit
  ------------------------------------------------------------------------------}
-class function TCarbonControlWithEdit.GetValidEvents: TCarbonControlEvents;
+procedure TCarbonControlWithEdit.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
 begin
-  Result := [cceTextDidChange];
+  inherited RegisterEvents;
+  
+  TmpSpec := MakeEventSpec(kEventClassTextField, kEventTextDidChange);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonTextField_DidChange),
+    1, @TmpSpec, Pointer(Self), nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.UnregisterEvents
+
+  Unregisters event handlers
+ ------------------------------------------------------------------------------}
+procedure TCarbonControlWithEdit.UnregisterEvents;
+begin
+  UnregisterEventHandler(@CarbonTextField_DidChange);
+  
+  inherited UnregisterEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -390,6 +430,61 @@ end;
 { TCarbonComboBox }
 
 {------------------------------------------------------------------------------
+  Name: CarbonComboBox_ListItemSelected
+  Handles combo box list item change
+ ------------------------------------------------------------------------------}
+function CarbonComboBox_ListItemSelected(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Index: CFIndex;
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonComboBox_ListItemSelected: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  // get selected item index
+  if OSError(
+    GetEventParameter(AEvent, kEventParamComboBoxListSelectedItemIndex,
+      typeCFIndex, nil, SizeOf(CFIndex), nil, @Index),
+    'CarbonComboBox_ListItemSelected', SGetEvent,
+    'kEventParamComboBoxListSelectedItemIndex') then Index := -1;
+
+  (AWidget as TCarbonComboBox).ListItemSelected(Index);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.RegisterEvents
+
+  Registers event handlers for combo box
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  inherited RegisterEvents;
+  
+  TmpSpec := MakeEventSpec(kEventClassHIComboBox, kEventComboBoxListItemSelected);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonComboBox_ListItemSelected),
+    1, @TmpSpec, Pointer(Self), nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.UnregisterEvents
+
+  Unregisters event handlers
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.UnregisterEvents;
+begin
+  UnregisterEventHandler(@CarbonComboBox_ListItemSelected);
+
+  inherited UnregisterEvents;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonComboBox.CreateWidget
   Params:  AParams - Creation parameters
 
@@ -424,15 +519,6 @@ end;
 class function TCarbonComboBox.GetEditPart: ControlPartCode;
 begin
   Result := kHIComboBoxEditTextPart;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonComboBox.GetValidEvents
-  Returns: Set of events with installed handlers
- ------------------------------------------------------------------------------}
-class function TCarbonComboBox.GetValidEvents: TCarbonControlEvents;
-begin
-  Result := [cceTextDidChange, cceListItemSelected];
 end;
 
 {------------------------------------------------------------------------------
@@ -654,24 +740,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemo.SetScrollBars(const AValue: TScrollStyle);
 begin
-  if AValue <> FScrollBars then
-  begin
-    if ((AValue in [ssNone, ssBoth, ssAutoBoth]) and
-      (FScrollBars in [ssNone, ssBoth, ssAutoBoth])) or
-      ((AValue in [ssVertical, ssAutoVertical]) and
-      (FScrollBars in [ssVertical, ssAutoVertical])) or
-      ((AValue in [ssHorizontal, ssAutoHorizontal]) and
-      (FScrollBars in [ssHorizontal, ssAutoHorizontal])) then
-    begin
-      FScrollBars := AValue;
-      
-      OSError(HIScrollViewSetScrollBarAutoHide(FScrollView,
-          FScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
-        Self, SCreateWidget, SViewSetScrollBarAutoHide);
-    end
-    else
-      RecreateWnd(LCLObject);
-  end;
+  ChangeScrollBars(FScrollView, FScrollBars, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -684,6 +753,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonMemo.GetForceEmbedInScrollView
+  Returns: Whether use scroll view even if no scroll bars are needed
+ ------------------------------------------------------------------------------}
+function TCarbonMemo.GetForceEmbedInScrollView: Boolean;
+begin
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonMemo.CreateWidget
   Params:  AParams - Creation parameters
 
@@ -692,52 +770,24 @@ end;
 procedure TCarbonMemo.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
-  Options, ScrollOptions: FPCMacOSAll.OptionBits;
+  Options: FPCMacOSAll.OptionBits;
   R: HIRect;
 begin
   Options := kTXNMonostyledTextMask or kOutputTextInUnicodeEncodingMask;
-
-  FScrollBars := (LCLObject as TCustomMemo).ScrollBars;
-  case FScrollBars of
-    ssNone, ssBoth, ssAutoBoth:
-      ScrollOptions := kHIScrollViewOptionsVertScroll or
-        kHIScrollViewOptionsHorizScroll;
-    ssVertical, ssAutoVertical:
-      ScrollOptions := kHIScrollViewOptionsVertScroll;
-    ssHorizontal, ssAutoHorizontal:
-      ScrollOptions := kHIScrollViewOptionsHorizScroll;
-  end;
-
-  // ssNone is mapped to ssAutoBoth because HITextView is not scrolling into
-  // caret position
 
   R := ParamsToHIRect(AParams);
   if OSError(HITextViewCreate(@R, 0, Options, Control),
     Self, SCreateWidget, 'HITextViewCreate') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
+  
+  // force embed in scroll view because HITextView is not scrolling into
+  // caret position when not embedded
 
-  if OSError(HIScrollViewCreate(ScrollOptions, FScrollView), Self, SCreateWidget,
-    'HIScrollViewCreate') then
-  begin
-    DebugLn('TCarbonMemo.CreateWidget Error - unable to create scroll view!');
-    Exit;
-  end;
-
-  if OSError(HIViewAddSubview(FScrollView, Control), Self, SCreateWidget,
-    SViewAddView) then
-  begin
-    DebugLn('TCarbonMemo.CreateWidget Error - unable to embed conrtol in scroll view!');
-    Exit;
-  end;
-
-  OSError(HIViewSetVisible(Control, True), Self, SCreateWidget, SViewVisible);
+  FScrollBars := (LCLObject as TCustomMemo).ScrollBars;
+  FScrollView := EmbedInScrollView(FScrollBars);
 
   inherited;
-
-  OSError(HIScrollViewSetScrollBarAutoHide(FScrollView,
-      FScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
-    Self, SCreateWidget, SViewSetScrollBarAutoHide);
 
   FMaxLength := 0;
 end;

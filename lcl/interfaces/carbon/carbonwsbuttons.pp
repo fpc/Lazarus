@@ -105,7 +105,7 @@ class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
 begin
   if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
 
-  TCarbonButton(AButton.Handle).SetDefault(ADefault);
+  TCarbonCustomButton(AButton.Handle).SetDefault(ADefault);
 end;
 
 { TCarbonWSBitBtn }

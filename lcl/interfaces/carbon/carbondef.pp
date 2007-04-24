@@ -131,6 +131,7 @@ const
 
 function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const DbgText: String): Boolean;
 function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: String = ''): Boolean;
+function CheckWidget(const Handle: HWND; const AMethodName: String; AClass: TClass): Boolean;
 
 function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
 procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
@@ -180,7 +181,7 @@ end;
   Params:  Handle      - Handle of window
            AMethodName - Method name
            AParamName  - Param name
-  Returns: If the window is valid
+  Returns: If the window is valid widget
  ------------------------------------------------------------------------------}
 function CheckWidget(const Handle: HWND; const AMethodName: String;
   AParamName: String): Boolean;
@@ -189,7 +190,7 @@ begin
   else
   begin
     Result := False;
-        
+
     if Pos('.', AMethodName) = 0 then
       DebugLn(SCarbonWSPrefix + AMethodName + ' Error - invalid widget ' +
         AParamName + ' = ' + DbgS(Handle) + '!')
@@ -197,6 +198,39 @@ begin
       DebugLn(AMethodName + ' Error - invalid widget ' + AParamName + ' = ' +
         DbgS(Handle) + '!');
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CheckWidget
+  Params:  Handle      - Handle of window
+           AMethodName - Method name
+           AClass      - Class
+  Returns: If the window is valid widget and class
+ ------------------------------------------------------------------------------}
+function CheckWidget(const Handle: HWND; const AMethodName: String;
+  AClass: TClass): Boolean;
+var
+  S: String;
+begin
+  if TObject(Handle) is TCarbonWidget then
+  begin
+    if TObject(Handle) is AClass then
+    begin
+      Result := True;
+      Exit;
+    end;
+    
+    S := ' Error - Widget ' + TObject(Handle).ClassName + ' is not ' +
+      AClass.ClassName + '!';
+  end
+  else S := ' Error - Handle ' + DbgS(Handle) + ' is not valid widget!';
+  
+  Result := False;
+  
+  if Pos('.', AMethodName) = 0 then
+    DebugLn(SCarbonWSPrefix + AMethodName + S)
+  else
+    DebugLn(AMethodName + S);
 end;
 
 //=====================================================

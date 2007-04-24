@@ -96,7 +96,7 @@ begin
   {$ENDIF}
   
   Result := nil;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetLCLOwnerObject') then Exit;
+  if not CheckWidget(Handle, 'GetLCLOwnerObject') then Exit;
   
   Result := TCarbonWidget(Handle).LCLObject;
   
