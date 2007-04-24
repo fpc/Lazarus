@@ -1030,6 +1030,7 @@ type
     property OnResize;
     property OnStartDrag;
     property ParentColor;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -1182,6 +1183,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Hint;
     property OnChange;
     property OnChangeBounds;
@@ -1198,6 +1200,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
