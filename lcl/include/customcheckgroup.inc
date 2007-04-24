@@ -116,6 +116,7 @@ begin
         BorderSpacing.CellAlignVertical:=ccaCenter;
         Parent := Self;
         OnClick :=@Self.Clicked;
+        ParentFont := true;
         Include(ControlStyle, csNoDesignSelectable);
       end;
       FButtonList.Add(CheckBox);

@@ -156,6 +156,7 @@ begin
         OnExit :=@Self.ItemExit;
         OnKeyDown :=@Self.ItemKeyDown;
         OnResize := @Self.ItemResize;
+        ParentFont := true;
         BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
         BorderSpacing.CellAlignVertical:=ccaCenter;
         Include(ControlStyle, csNoDesignSelectable);
