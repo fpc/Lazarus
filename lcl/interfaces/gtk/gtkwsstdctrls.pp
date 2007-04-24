@@ -520,6 +520,7 @@ begin
   Handle := ACustomListBox.Handle;
   if Handle<>0 then 
   begin
+    LockOnChange(PGtkObject(Handle),+1);
     Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
     if GtkWidgetIsA(Widget,gtk_list_get_type) then begin
       if AIndex >= 0 then
@@ -531,6 +532,7 @@ begin
       gtk_clist_select_row(PGtkCList(Widget), AIndex, 1);    // column
     end else
       raise Exception.Create('');
+    LockOnChange(PGtkObject(Handle),-1);
   end;
 end;
 

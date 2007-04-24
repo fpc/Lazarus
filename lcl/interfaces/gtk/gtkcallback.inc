@@ -3276,14 +3276,14 @@ begin
   {$IFDEF EventTrace}
   EventTrace('gtkListSelectionChangedAfter', data);
   {$ENDIF}
+  GtkList:=PGtkList(widget);
+  if (GtkList^.selection = nil) or (LockOnChange(PGtkObject(widget),0) > 0) then
+    Exit;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
-  GtkList:=PGtkList(widget);
-  if (data=nil) or (GtkList^.selection<>nil) then begin
-    if gtkListGetSelectionMode(GtkList)=GTK_SELECTION_SINGLE then
-      gtk_list_set_selection_mode(GtkList,GTK_SELECTION_BROWSE);
-    DeliverMessage(Data, Mess);
-  end;
+  if gtkListGetSelectionMode(GtkList)=GTK_SELECTION_SINGLE then
+    gtk_list_set_selection_mode(GtkList,GTK_SELECTION_BROWSE);
+  DeliverMessage(Data, Mess);
 end;
 
 {$I gtkDragCallback.inc}
