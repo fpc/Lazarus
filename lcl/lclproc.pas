@@ -240,6 +240,10 @@ function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgS(const Shift: TShiftState): string; overload;
 function DbgsVKCode(c: word): string;
 
+function DbgS(const ASize: TSize): string; overload;
+function DbgS(const ATM: TTextMetric): string; overload;
+function DbgS(const AScrollInfo: TScrollInfo): string; overload;
+
 procedure DbgOutThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(Args: array of const); overload;
@@ -1911,6 +1915,54 @@ begin
   else
     Result:='VK_('+dbgs(c)+')';
   end;
+end;
+
+function DbgS(const ASize: TSize): string;
+begin
+   Result := 'cx: ' + DbgS(ASize.cx) + ' cy: ' + DbgS(ASize.cy);
+end;
+
+function DbgS(const ATM: TTextMetric): string;
+begin
+  with ATM do
+    Result :=
+      'tmHeight: ' + DbgS(tmHeight) +
+      ' tmAscent: ' + DbgS(tmAscent) +
+      ' tmDescent: ' + DbgS(tmDescent) +
+      ' tmInternalLeading: ' + DbgS(tmInternalLeading) +
+      ' tmExternalLeading: ' + DbgS(tmExternalLeading) +
+      ' tmAveCharWidth: ' + DbgS(tmAveCharWidth) +
+      ' tmMaxCharWidth: ' + DbgS(tmMaxCharWidth) +
+      ' tmWeight: ' + DbgS(tmWeight) +
+      ' tmOverhang: ' + DbgS(tmOverhang) +
+      ' tmDigitizedAspectX: ' + DbgS(tmDigitizedAspectX) +
+      ' tmDigitizedAspectY: ' + DbgS(tmDigitizedAspectY) +
+      ' tmFirstChar: ' + tmFirstChar +
+      ' tmLastChar: ' + tmLastChar +
+      ' tmDefaultChar: ' + tmDefaultChar +
+      ' tmBreakChar: ' + tmBreakChar +
+      ' tmItalic: ' + DbgS(tmItalic) +
+      ' tmUnderlined: ' + DbgS(tmUnderlined) +
+      ' tmStruckOut: ' + DbgS(tmStruckOut) +
+      ' tmPitchAndFamily: ' + DbgS(tmPitchAndFamily) +
+      ' tmCharSet: ' + DbgS(tmCharSet);
+end;
+
+function DbgS(const AScrollInfo: TScrollInfo): string;
+begin
+  Result := '';
+
+  if (SIF_POS and AScrollInfo.fMask) > 0 then
+    Result := 'Pos: ' + DbgS(AScrollInfo.nPos);
+  if (SIF_RANGE and AScrollInfo.fMask) > 0 then
+    Result := Result + ' Min: ' + DbgS(AScrollInfo.nMin) + ' Max: ' +
+      DbgS(AScrollInfo.nMax);
+  if (SIF_PAGE and AScrollInfo.fMask) > 0 then
+    Result := Result + ' Page: ' + DbgS(AScrollInfo.nPage);
+  if (SIF_TRACKPOS and AScrollInfo.fMask) > 0 then
+    Result := Result + ' TrackPos: ' + DbgS(AScrollInfo.nTrackPos);
+
+  if Result = '' then Result := '(no scrollinfo)';
 end;
 
 procedure DbgOutThreadLog(const Msg: string);
