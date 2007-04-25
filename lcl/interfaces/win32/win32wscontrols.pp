@@ -439,8 +439,8 @@ End;
 class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 begin
-  Windows.SetCursor(ACursor);
-  //Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
+  // in win32 controls have no cursor property. they can change their cursor
+  // by listening WM_SETCURSOR and adjusting global cursor
 end;
 
 class procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
