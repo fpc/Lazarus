@@ -3396,7 +3396,7 @@ begin
   EndPos:=1;
   repeat
     StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
-    if StartPos>SrcLen then break;
+    if StartPos<1 then break;
     EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
     DirectiveList.Add(copy(Src,StartPos,EndPos-StartPos));
     if EndPos>SrcLen then break;
@@ -3421,7 +3421,7 @@ begin
 
   // find first old IDE directive
   InsertPos:=FindNextIDEDirective(Src,1,Scanner.NestedComments);
-  if InsertPos>SrcLen then InsertPos:=0;
+  if InsertPos<1 then InsertPos:=0;
 
   // remove all old IDE directives
   if InsertPos>=1 then
@@ -3431,7 +3431,7 @@ begin
   repeat
     // find next IDE directive
     StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
-    if StartPos>SrcLen then break;
+    if StartPos<1 then break;
     EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
     // remove also space in front of directive
     while (StartPos>1) and (Src[StartPos-1] in [' ',#9]) do dec(StartPos);

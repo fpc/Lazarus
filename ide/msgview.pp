@@ -133,6 +133,7 @@ type
                                           FirstLine, LineCount: Integer);
     procedure UpdateMsgLineInListBox(Line: TLazMessageLine);
     function ExecuteMsgLinePlugin(Step: TIMQuickFixStep): boolean;
+    procedure HideLine(Line: TLazMessageLine);
     procedure ConsistencyCheck;
   public
     property LastLineIsProgress: boolean read FLastLineIsProgress
@@ -436,6 +437,7 @@ procedure TMessagesView.CollectLineParts(Sender: TObject;
     QuickFixItem: TIDEMsgQuickFixItem;
     j: Integer;
     OldMsg: String;
+    OldVisible: Boolean;
   begin
     for i:=StartIndex to FItems.Count-1 do begin
       ALine:=Items[i];
@@ -444,10 +446,17 @@ procedure TMessagesView.CollectLineParts(Sender: TObject;
         if (imqfoImproveMessage in QuickFixItem.Steps)
         and QuickFixItem.IsApplicable(ALine) then begin
           OldMsg:=ALine.Msg;
+          OldVisible:=ALine.VisiblePosition>=0;
+          ALine.Visible:=OldVisible;
           QuickFixItem.Execute(ALine,imqfoImproveMessage);
           UpdateMsgSrcPos(ALine);
-          if OldMsg<>ALine.Msg then
+          if (OldVisible<>ALine.Visible) then begin
+            if not ALine.Visible then
+              HideLine(ALine);
+          end;
+          if (OldMsg<>ALine.Msg) then begin
             UpdateMsgLineInListBox(ALine);
+          end;
         end;
       end;
     end;
@@ -562,8 +571,9 @@ begin
       Line.VisiblePosition := FVisibleItems.Count;
       FVisibleItems.Add(Line);
     end
-    else
+    else begin
       Line.VisiblePosition := -1;
+    end;
   end;
   // rebuild MessageTreeView.Items
   MessageTreeView.BeginUpdate;
@@ -669,6 +679,34 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure TMessagesView.HideLine(Line: TLazMessageLine);
+var
+  i: Integer;
+  OldIndex: LongInt;
+begin
+  OldIndex:=Line.VisiblePosition;
+  if OldIndex<0 then exit;
+  //DebugLn(['TMessagesView.HideLine ',OldIndex]);
+  if (OldIndex>=0) and (OldIndex<FVisibleItems.Count)
+  then begin
+    // adjust all VisiblePosition
+    for i:=OldIndex+1 to FVisibleItems.Count-1 do begin
+      TLazMessageLine(FVisibleItems[i]).VisiblePosition:=
+        TLazMessageLine(FVisibleItems[i]).VisiblePosition-1;
+    end;
+    FVisibleItems.Delete(OldIndex);
+    Line.VisiblePosition:=-1;
+  end;
+  // remove from FVisibleItems and from LCL control
+  if (OldIndex>=0)
+  and (OldIndex<MessageTreeView.Items.TopLvlCount) then begin
+    MessageTreeView.Items.TopLvlItems[OldIndex].Delete;
+  end;
+  //for i:=0 to MessageTreeView.Items.TopLvlCount-1 do begin
+  //  DebugLn(['TMessagesView.HideLine ',i,' ',MessageTreeView.Items.TopLvlItems[i].Text]);
+  //end;
 end;
 
 {------------------------------------------------------------------------------

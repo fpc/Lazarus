@@ -25,7 +25,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
   WSLCLClasses, GtkWSControls,
   {$IFDEF LCLGTK2}
-  gdk2x, glib2, gdk2, gtk2, Gtk2Int,
+  GtkDef, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
   {$ENDIF}
   {$IFDEF LCLGTK}
   glib, gdk, gtk, GtkInt,
@@ -74,9 +74,9 @@ type
 function gdk_gl_query: boolean;
 function gdk_gl_choose_visual(attrlist: Plongint): PGdkVisual;
 function gdk_gl_get_config(visual: PGdkVisual; attrib: longint):longint;
-function gdk_gl_context_new(visual: PGdkVisual): PGdkGLContext;
+function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
-                                  direct: Integer): PGdkGLContext;
+                                  direct: Integer; attrlist: plongint): PGdkGLContext;
 function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
                sharelist: PGdkGLContext; direct: Integer): PGdkGLContext;
 function gdk_gl_context_ref(context: PGdkGLContext): PGdkGLContext;
@@ -274,6 +274,7 @@ begin
   DebugLn('get_xvisualinfo dpy=',XDisplayAsString(dpy));
   
   DebugLn('get_xvisualinfo visual=',GdkVisualAsString(Visual));
+  RaiseGDBException('not implemented for gtk2');
   {$ENDIF}
 
   // 'GLX uses VisualInfo records because they uniquely identify
@@ -341,6 +342,11 @@ var
   vi: PXVisualInfo;
   visual: PGdkVisual;
 begin
+  {$IFDEF lclgtk2}
+  DebugLn(['gdk_gl_choose_visual not implemented yet for gtk2']);
+  RaiseGDBException('');
+  {$ENDIF}
+
   //writeln('gdk_gl_choose_visual A ');
   if attrList=nil then begin
     Result:=nil;
@@ -381,13 +387,13 @@ begin
     XFree(vi);
 end;
 
-function gdk_gl_context_new(visual: PGdkVisual): PGdkGLContext;
+function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 begin
-  Result:=gdk_gl_context_share_new(visual,nil,0);
+  Result:=gdk_gl_context_share_new(visual,nil,0,attrlist);
 end;
 
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
-  direct: integer): PGdkGLContext;
+  direct: integer; attrlist: plongint): PGdkGLContext;
 var
   dpy: PDisplay;
   vi: PXVisualInfo;
@@ -396,11 +402,17 @@ var
   glxcontext: TGLXContext;
 begin
   Result:=nil;
-  if visual=nil then exit;
-
-  vi := get_xvisualinfo(visual);
 
   dpy := GetDefaultXDisplay;
+
+  {$IFDEF lclgtk2}
+  DebugLn(['gdk_gl_context_share_new AAA1']);
+  vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
+  DebugLn(['gdk_gl_context_share_new AAA2']);
+  {$ELSE}
+  if visual=nil then exit;
+  vi := get_xvisualinfo(visual);
+  {$ENDIF}
 
   PrivateShareList:=PGdkGLContextPrivate(sharelist);
   if (sharelist<>nil) then
@@ -408,6 +420,7 @@ begin
                                    direct=1)
   else
     glxcontext := glXCreateContext(dpy, vi, nil, direct=1);
+  DebugLn(['gdk_gl_context_share_new AAA3']);
 
   XFree(vi);
   if (glxcontext = nil) then exit;
@@ -425,11 +438,16 @@ function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
 var
   visual: PGdkVisual;
 begin
+  {$IFDEF lclgtk2}
+  visual :=nil;
+  Result:=gdk_gl_context_share_new(visual, sharelist, direct,attrlist);
+  {$ELSE}
   visual := gdk_gl_choose_visual(attrlist);
   if (visual<>nil) then
-    Result:=gdk_gl_context_share_new(visual, sharelist, direct)
+    Result:=gdk_gl_context_share_new(visual, sharelist, direct,attrlist)
   else
     Result:=nil;
+  {$ENDIF}
 end;
 
 function gdk_gl_context_ref(context: PGdkGLContext): PGdkGLContext;
@@ -513,10 +531,13 @@ procedure gtk_gl_area_init(
   ); cdecl;
 begin
   if theClass=nil then ;
+  DebugLn(['gtk_gl_area_init START']);
   PGtkGLArea(gl_area)^.glcontext:=nil;
-  {$IFDEF Gtk2}
+  {$IFDEF LclGtk2}
   gtk_widget_set_double_buffered(PGtkWidget(gl_area),gdkFALSE);
+  GTK_WIDGET_UNSET_FLAGS(PGtkWidget(gl_area),GTK_NO_WINDOW);
   {$ENDIF}
+  DebugLn(['gtk_gl_area_init END']);
 end;
 
 function GTK_TYPE_GL_AREA: TGtkType;
@@ -600,36 +621,48 @@ var
   gl_area: PGtkGLArea;
 begin
   Result:=nil;
+  DebugLn(['gtk_gl_area_share_new START']);
   //writeln('gtk_gl_area_share_new A ');
   if (share<>nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
   {$IFNDEF MSWindows}
   //writeln('gtk_gl_area_share_new B ');
+  {$IFDEF lclgtk2}
+  visual := nil;
+  {$ELSE}
   visual := gdk_gl_choose_visual(attrlist);
   if (visual = nil) then exit;
+  {$ENDIF}
   {$ENDIF non MSWindows}
 
   //writeln('gtk_gl_area_share_new C ');
+  DebugLn(['gtk_gl_area_share_new BBB1']);
   sharelist := nil;
   if share<>nil then sharelist:=share^.glcontext;
-  glcontext := gdk_gl_context_share_new(visual, sharelist, 1);
+  glcontext := gdk_gl_context_share_new(visual, sharelist, 1, attrlist);
   if (glcontext = nil) then exit;
+  DebugLn(['gtk_gl_area_share_new BBB2']);
   //writeln('gtk_gl_area_share_new D ');
 
   {$IFNDEF MSWindows}
-  // use colormap and visual suitable for OpenGL rendering
-  gtk_widget_push_colormap(gdk_colormap_new(visual,gtk_TRUE));
-  gtk_widget_push_visual(visual);
+  if visual<>nil then begin
+    // use colormap and visual suitable for OpenGL rendering
+    gtk_widget_push_colormap(gdk_colormap_new(visual,gtk_TRUE));
+    gtk_widget_push_visual(visual);
+  end;
   {$ENDIF non MSWindows}
 
   gl_area := gtk_type_new (gtk_gl_area_get_type);
   gl_area^.glcontext := glcontext;
   //writeln('gtk_gl_area_share_new E ',gl_area<>nil);
+  DebugLn(['gtk_gl_area_share_new BBB3']);
 
   {$IFNDEF MSWindows}
-  // pop back defaults
-  gtk_widget_pop_visual;
-  gtk_widget_pop_colormap;
+  if visual<>nil then begin
+    // pop back defaults
+    gtk_widget_pop_visual;
+    gtk_widget_pop_colormap;
+  end;
   {$ENDIF non MSWindows}
   Result:=PGtkWidget(gl_area);
 end;
@@ -641,7 +674,9 @@ begin
   if not GTK_IS_GL_AREA(glarea) then exit;
   if not GTK_WIDGET_REALIZED(PGtkWidget(glarea)) then exit;
 
+  DebugLn(['gtk_gl_area_make_current START']);
   Result:=gdk_gl_make_current(PGtkWidget(glarea)^.window, glarea^.glcontext);
+  DebugLn(['gtk_gl_area_make_current END']);
 end;
 
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;

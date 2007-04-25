@@ -53,7 +53,7 @@ uses
   GLGtkGlxContext;
 {$ENDIF}
 {$IFDEF UseGtk2GLX}
-  GLGtk2GlxContext;
+  GLGtkGlxContext;
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;

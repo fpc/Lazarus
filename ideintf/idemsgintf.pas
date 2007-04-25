@@ -68,6 +68,7 @@ type
     FOriginalIndex: integer;
     FParts: TStrings;
     FPosition: integer;
+    FVisible: boolean;
     FVisiblePosition: integer;
     procedure SetDirectory(const AValue: string);
     procedure SetMsg(const AValue: string);
@@ -84,6 +85,7 @@ type
     property VisiblePosition: integer read FVisiblePosition write FVisiblePosition;// filtered position
     property OriginalIndex: integer read FOriginalIndex write FOriginalIndex;// unsorted, unfiltered position
     property Parts: TStrings read FParts write FParts;
+    property Visible: boolean read FVisible write FVisible;
   end;
 
   TOnFilterLine = procedure(MsgLine: TIDEMessageLine; var Show: boolean) of object;
@@ -113,9 +115,9 @@ type
   { TIDEMsgQuickFixItem }
   
   TIMQuickFixStep = (
-    imqfoMenuItem,       // add menu item in popup menu for this item
-    imqfoImproveMessage, // rewrites message
-    imqfoJump            // user clicks on message
+    imqfoMenuItem,      // Popup menu opens. Add now the menu item.
+    imqfoImproveMessage,// Message can now be rewritten/beautified.
+    imqfoJump           // Override what happens, when user clicks on message.
     );
   TIMQuickFixSteps = set of TIMQuickFixStep;
 

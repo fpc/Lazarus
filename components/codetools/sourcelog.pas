@@ -111,7 +111,7 @@ type
     Data: Pointer;
     function LineCount: integer;
     function GetLine(Index: integer): string;
-    procedure GetLineRange(Index: integer; var LineRange: TLineRange);
+    procedure GetLineRange(Index: integer; out LineRange: TLineRange);
     property Items[Index: integer]: TSourceLogEntry
        read GetItems write SetItems; default;
     function Count: integer; // # Items
@@ -286,7 +286,7 @@ begin
     Result:='';
 end;
 
-procedure TSourceLog.GetLineRange(Index: integer; var LineRange: TLineRange);
+procedure TSourceLog.GetLineRange(Index: integer; out LineRange: TLineRange);
 begin
   BuildLineRanges;
   LineRange:=FLineRanges[Index];

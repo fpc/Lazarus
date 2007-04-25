@@ -66,7 +66,6 @@ var
 begin
   if (not AWinControl.HandleAllocated) then exit;
   Widget:=PGtkWidget(AWinControl.Handle);
-  if not GTK_WIDGET_MAPPED(Widget) then exit;
   Info:=PLOpenGLInfo(gtk_object_get_data(PGtkObject(Widget),'LOpenGLInfo'));
 
   DebugLn(['InternalResizeWnd ',dbgs(AWinControl.BoundsRect)]);

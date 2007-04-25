@@ -302,7 +302,7 @@ type
   TKeyPressEvent = procedure(Sender: TObject; var Key: char) of Object;
   TUTF8KeyPressEvent = procedure(Sender: TObject; var UTF8Key: TUTF8Char) of Object;
 
-  TMouseEvent = Procedure(Sender: TOBject; Button: TMouseButton;
+  TMouseEvent = Procedure(Sender: TObject; Button: TMouseButton;
                           Shift: TShiftState; X, Y: Integer) of object;
   TMouseMoveEvent = Procedure(Sender: TObject; Shift: TShiftState;
                               X, Y: Integer) of object;

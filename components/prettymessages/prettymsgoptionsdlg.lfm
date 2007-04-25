@@ -1,0 +1,30 @@
+object PrettyMsgOptionsDialog: TPrettyMsgOptionsDialog
+  Left = 294
+  Height = 300
+  Top = 164
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Caption = 'PrettyMsgOptionsDialog'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  object OkButton: TButton
+    Left = 192
+    Height = 25
+    Top = 264
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OkButton'
+    TabOrder = 0
+  end
+  object CancelButton: TButton
+    Left = 288
+    Height = 25
+    Top = 264
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 1
+  end
+end

@@ -129,10 +129,10 @@ type
     ImageList: TImageList;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
-    procedure AddToUsesPkgSectionCheckBoxClick(Sender: TObject);
+    procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
-    procedure CallRegisterProcCheckBoxClick(Sender: TObject);
+    procedure CallRegisterProcCheckBoxChange(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
     procedure CompileAllCleanClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
@@ -171,8 +171,8 @@ type
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
-    procedure UseMaxVersionCheckBoxClick(Sender: TObject);
-    procedure UseMinVersionCheckBoxClick(Sender: TObject);
+    procedure UseMaxVersionCheckBoxChange(Sender: TObject);
+    procedure UseMinVersionCheckBoxChange(Sender: TObject);
     procedure ViewPkgSourceClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
@@ -899,13 +899,13 @@ begin
   PackageEditors.ViewPkgSourcePackage(LazPackage);
 end;
 
-procedure TPackageEditorForm.UseMaxVersionCheckBoxClick(Sender: TObject);
+procedure TPackageEditorForm.UseMaxVersionCheckBoxChange(Sender: TObject);
 begin
   MaxVersionEdit.Enabled:=UseMaxVersionCheckBox.Checked;
   UpdateApplyDependencyButton;
 end;
 
-procedure TPackageEditorForm.UseMinVersionCheckBoxClick(Sender: TObject);
+procedure TPackageEditorForm.UseMinVersionCheckBoxChange(Sender: TObject);
 begin
   MinVersionEdit.Enabled:=UseMinVersionCheckBox.Checked;
   UpdateApplyDependencyButton;
@@ -1116,7 +1116,7 @@ begin
   PackageGraph.EndUpdate;
 end;
 
-procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxClick(Sender: TObject);
+procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
   Removed: boolean;
@@ -1183,7 +1183,7 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.CallRegisterProcCheckBoxClick(Sender: TObject);
+procedure TPackageEditorForm.CallRegisterProcCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
   Removed: boolean;
@@ -1462,7 +1462,7 @@ begin
     Parent:=FilePropsGroupBox;
     Caption:=lisPckEditRegisterUnit;
     UseOnChange:=true;
-    OnClick:=@CallRegisterProcCheckBoxClick;
+    OnChange:=@CallRegisterProcCheckBoxChange;
     Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
     ShowHint:=true;
   end;
@@ -1472,7 +1472,7 @@ begin
     Name:='AddToUsesPkgSectionCheckBox';
     Caption:=lisPkgMangUseUnit;
     UseOnChange:=true;
-    OnClick:=@AddToUsesPkgSectionCheckBoxClick;
+    OnChange:=@AddToUsesPkgSectionCheckBoxChange;
     Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
     ShowHint:=true;
     Parent:=FilePropsGroupBox;
@@ -1501,7 +1501,7 @@ begin
     Name:='UseMinVersionCheckBox';
     Caption:=lisPckEditMinimumVersion;
     UseOnChange:=true;
-    OnClick:=@UseMinVersionCheckBoxClick;
+    OnChange:=@UseMinVersionCheckBoxChange;
     Parent:=FilePropsGroupBox;
   end;
   
@@ -1518,7 +1518,7 @@ begin
     Name:='UseMaxVersionCheckBox';
     Caption:=lisPckEditMaximumVersion;
     UseOnChange:=true;
-    OnClick:=@UseMaxVersionCheckBoxClick;
+    OnChange:=@UseMaxVersionCheckBoxChange;
     Parent:=FilePropsGroupBox;
   end;
 

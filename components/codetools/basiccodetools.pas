@@ -54,7 +54,7 @@ function FindNextIncludeDirective(const ASource: string;
     out FilenameStartPos, FileNameEndPos,
     CommentStartPos, CommentEndPos: integer): integer;
 function FindNextIDEDirective(const ASource: string; StartPos: integer;
-    NestedComments: boolean): integer;
+    NestedComments: boolean; EndPos: integer = 0): integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 function FindMainUnitHint(const ASource: string; var Filename: string): boolean;
@@ -2400,11 +2400,13 @@ begin
 end;
 
 function FindNextIDEDirective(const ASource: string; StartPos: integer;
-  NestedComments: boolean): integer;
+  NestedComments: boolean; EndPos: integer): integer;
 var
   MaxPos: integer;
 begin
   MaxPos:=length(ASource);
+  if (EndPos>0) and (EndPos<=MaxPos) then
+    MaxPos:=EndPos-1;
   Result:=StartPos;
   while (Result<=MaxPos) do begin
     case ASource[Result] of
@@ -2453,7 +2455,7 @@ begin
     end;
 
   end;
-  if Result>MaxPos+1 then Result:=MaxPos+1;
+  Result:=-1;
 end;
 
 function CleanCodeFromComments(const DirtyCode: string;

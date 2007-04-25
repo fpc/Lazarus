@@ -296,6 +296,7 @@ begin
   BeginUpdate;
   BeginUndoBlock;
   SelectText(StartPos,EndPos);
+  CursorTextXY:=StartPos;
   Selection:=NewText;
   EndUndoBlock;
   EndUpdate;
