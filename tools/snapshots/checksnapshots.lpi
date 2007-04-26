@@ -4,11 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus snapshots monitor"/>
-      <ActiveEditorIndexAtStart Value="6"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -37,358 +37,42 @@
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="31">
+    <Units Count="7">
       <Unit0>
         <Filename Value="checksnapshots.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="checksnapshots"/>
-        <CursorPos X="57" Y="6"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="218"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="snapshotsuptodate.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SnapshotsUptodate"/>
-        <CursorPos X="72" Y="46"/>
-        <TopLine Value="29"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="218"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\components\fpcunit\console\consoletestrunner.pas"/>
-        <UnitName Value="consoletestrunner"/>
-        <CursorPos X="32" Y="30"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="109"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\fpc\fpcprojects\lnet\tags\release_0_4_0\examples\console\lftp\lftpclient.pas"/>
-        <UnitName Value="lFTPClient"/>
-        <CursorPos X="25" Y="146"/>
-        <TopLine Value="12"/>
-        <UsageCount Value="75"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\..\..\fpc\fpcprojects\lnet\trunk\lib\lftp.pas"/>
-        <UnitName Value="lFTP"/>
-        <CursorPos X="3" Y="825"/>
-        <TopLine Value="823"/>
-        <UsageCount Value="66"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="..\..\..\fpc\fpcprojects\lnet\trunk\examples\visual\ftp\main.pas"/>
-        <UnitName Value="main"/>
-        <CursorPos X="19" Y="102"/>
-        <TopLine Value="322"/>
-        <UsageCount Value="36"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\testlpi.pas"/>
-        <UnitName Value="TestLpi"/>
-        <CursorPos X="1" Y="70"/>
-        <TopLine Value="66"/>
-        <UsageCount Value="24"/>
-      </Unit6>
-      <Unit7>
         <Filename Value="ftplister.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ftplister"/>
-        <CursorPos X="1" Y="55"/>
-        <TopLine Value="25"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="235"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
+      </Unit2>
+      <Unit3>
         <Filename Value="ftplistertest.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ftplistertest"/>
-        <CursorPos X="53" Y="68"/>
-        <TopLine Value="36"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="232"/>
-        <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="monitorconfig.xml"/>
-        <CursorPos X="16" Y="22"/>
-        <TopLine Value="12"/>
-        <UsageCount Value="113"/>
-        <SyntaxHighlighter Value="XML"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\fpc\fpcprojects\lnet\trunk\lib\lhttp.pas"/>
-        <UnitName Value="lhttp"/>
-        <CursorPos X="75" Y="10"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="5"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\fpcbuild\2.0.4\fpcsrc\fcl\xml\xmlcfg.pp"/>
-        <UnitName Value="XMLCfg"/>
-        <CursorPos X="44" Y="136"/>
-        <TopLine Value="128"/>
-        <UsageCount Value="146"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\fpc\fpcprojects\lnet\trunk\lib\lftp.pp"/>
-        <UnitName Value="lFTP"/>
-        <CursorPos X="3" Y="38"/>
-        <TopLine Value="20"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="126"/>
-        <Loaded Value="True"/>
-      </Unit12>
-      <Unit13>
+      </Unit3>
+      <Unit4>
         <Filename Value="monitorcfg.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="MonitorCfg"/>
-        <CursorPos X="1" Y="175"/>
-        <TopLine Value="63"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="230"/>
-        <Loaded Value="True"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\..\fpc\2.1\rtl\win32\classes.pp"/>
-        <UnitName Value="Classes"/>
-        <CursorPos X="13" Y="35"/>
-        <TopLine Value="14"/>
-        <UsageCount Value="113"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\..\..\fpc\2.1\rtl\objpas\classes\classesh.inc"/>
-        <CursorPos X="17" Y="483"/>
-        <TopLine Value="465"/>
-        <UsageCount Value="113"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="..\..\..\fpc\2.1\fcl\inc\contnrs.pp"/>
-        <UnitName Value="contnrs"/>
-        <CursorPos X="3" Y="491"/>
-        <TopLine Value="489"/>
-        <UsageCount Value="113"/>
-      </Unit16>
-      <Unit17>
+      </Unit4>
+      <Unit5>
         <Filename Value="testmonitorcfg.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMonitorCfg"/>
-        <CursorPos X="5" Y="48"/>
-        <TopLine Value="14"/>
-        <UsageCount Value="168"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\..\fpc\2.1\fcl\inc\custapp.pp"/>
-        <UnitName Value="CustApp"/>
-        <CursorPos X="90" Y="25"/>
-        <TopLine Value="8"/>
-        <UsageCount Value="82"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\lcl\dialogs.pp"/>
-        <UnitName Value="Dialogs"/>
-        <CursorPos X="17" Y="566"/>
-        <TopLine Value="493"/>
-        <UsageCount Value="79"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\..\..\fpc\2.1\compiler\x86\cgx86.pas"/>
-        <UnitName Value="cgx86"/>
-        <CursorPos X="49" Y="185"/>
-        <TopLine Value="183"/>
-        <UsageCount Value="65"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\..\lcl\interfaces\win32\win32wsmenus.pp"/>
-        <UnitName Value="Win32WSMenus"/>
-        <CursorPos X="7" Y="580"/>
-        <TopLine Value="27"/>
-        <UsageCount Value="8"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="..\..\..\..\projects\TAGraph\Component\TAGraph.pas"/>
-        <UnitName Value="tagraph"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="33"/>
-        <UsageCount Value="10"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="..\..\lcl\graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <CursorPos X="15" Y="913"/>
-        <TopLine Value="895"/>
-        <UsageCount Value="10"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="..\..\lcl\interfaces\win32\win32listsl.inc"/>
-        <CursorPos X="21" Y="144"/>
-        <TopLine Value="104"/>
-        <UsageCount Value="10"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="..\..\..\fpc\2.1\rtl\objpas\classes\stringl.inc"/>
-        <CursorPos X="62" Y="574"/>
-        <TopLine Value="558"/>
-        <UsageCount Value="10"/>
-      </Unit25>
-      <Unit26>
+      </Unit5>
+      <Unit6>
         <Filename Value="runchecksnapshots.bat"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="67" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="27"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="..\..\..\fpc\2.1\rtl\inc\wstringh.inc"/>
-        <CursorPos X="10" Y="84"/>
-        <TopLine Value="63"/>
-        <UsageCount Value="12"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="..\..\..\fpc\2.1\rtl\inc\wstrings.inc"/>
-        <CursorPos X="20" Y="1458"/>
-        <TopLine Value="1458"/>
-        <UsageCount Value="10"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="..\..\lcl\dbgrids.pas"/>
-        <UnitName Value="DBGrids"/>
-        <CursorPos X="15" Y="590"/>
-        <TopLine Value="586"/>
-        <UsageCount Value="12"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="..\..\lcl\include\defaultbitbtnimages.inc"/>
-        <CursorPos X="28" Y="513"/>
-        <TopLine Value="477"/>
-        <UsageCount Value="12"/>
-      </Unit30>
+      </Unit6>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
-      <Position1>
-        <Filename Value="snapshotsuptodate.pas"/>
-        <Caret Line="47" Column="1" TopLine="29"/>
-      </Position1>
-      <Position2>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position2>
-      <Position3>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position3>
-      <Position4>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position4>
-      <Position5>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position5>
-      <Position6>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position6>
-      <Position7>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position7>
-      <Position8>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position8>
-      <Position9>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position9>
-      <Position10>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position10>
-      <Position11>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position11>
-      <Position12>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position12>
-      <Position13>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position13>
-      <Position14>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position14>
-      <Position15>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position15>
-      <Position16>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position16>
-      <Position17>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position17>
-      <Position18>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position18>
-      <Position19>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position19>
-      <Position20>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position20>
-      <Position21>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position21>
-      <Position22>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position22>
-      <Position23>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position23>
-      <Position24>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="148" Column="1" TopLine="130"/>
-      </Position24>
-      <Position25>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="147" Column="1" TopLine="129"/>
-      </Position25>
-      <Position26>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="178" Column="1" TopLine="126"/>
-      </Position26>
-      <Position27>
-        <Filename Value="ftplister.pas"/>
-        <Caret Line="101" Column="35" TopLine="83"/>
-      </Position27>
-      <Position28>
-        <Filename Value="checksnapshots.lpr"/>
-        <Caret Line="6" Column="57" TopLine="1"/>
-      </Position28>
-      <Position29>
-        <Filename Value="ftplistertest.pas"/>
-        <Caret Line="16" Column="30" TopLine="15"/>
-      </Position29>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -403,62 +87,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <BreakPoints Count="11">
-      <Item1>
-        <Source Value="..\..\..\source\lazarus\ide\main.pp"/>
-        <Line Value="5295"/>
-      </Item1>
-      <Item2>
-        <Source Value="..\..\..\source\fpc\2.1\rtl\objpas\classes\stringl.inc"/>
-        <Line Value="188"/>
-      </Item2>
-      <Item3>
-        <Source Value="..\..\..\source\lazarus\lcl\lresources.pp"/>
-        <Line Value="2114"/>
-      </Item3>
-      <Item4>
-        <Source Value="..\..\..\source\lazarus\lcl\lresources.pp"/>
-        <Line Value="2176"/>
-      </Item4>
-      <Item5>
-        <Source Value="..\..\..\source\lazarus\lcl\lresources.pp"/>
-        <Line Value="1075"/>
-      </Item5>
-      <Item6>
-        <Source Value="..\..\..\source\lazarus\lcl\lresources.pp"/>
-        <Line Value="1077"/>
-      </Item6>
-      <Item7>
-        <Source Value="..\..\..\source\lazarus\ide\main.pp"/>
-        <Line Value="9215"/>
-      </Item7>
-      <Item8>
-        <Source Value="..\..\..\source\lazarus\lcl\lresources.pp"/>
-        <Line Value="2530"/>
-      </Item8>
-      <Item9>
-        <Source Value="snapshotsuptodate.pas"/>
-        <Line Value="47"/>
-      </Item9>
-      <Item10>
-        <Source Value="..\..\..\fpc\fpcprojects\lnet\trunk\lib\lftp.pp"/>
-        <Line Value="904"/>
-      </Item10>
-      <Item11>
-        <Source Value="..\..\..\fpc\fpcprojects\lnet\trunk\lib\lftp.pp"/>
-        <Line Value="903"/>
-      </Item11>
-    </BreakPoints>
-    <Watches Count="1">
-      <Item1>
-        <Expression Value="name"/>
-      </Item1>
-    </Watches>
-    <Exceptions Count="1">
-      <Item1>
-        <Name Value="EAssertionFailedError"/>
-      </Item1>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

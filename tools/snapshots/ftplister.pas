@@ -98,22 +98,22 @@ procedure TFTPLister.FtpReceive(Sender: TLSocket);
 var
   s: string;
 begin
-  Write('D:');
+  //Write('D:');
   s := FFtp.GetDataMessage;
   if FInternalStatus = fsCWD then
     FDirList := FDirList + s;
-  Writeln(s);
+  //Writeln(s);
 end;
 
 procedure TFTPLister.FtpSuccess(Sender: TLSocket; const aStatus: TLFTPStatus);
 begin
   FInternalStatus := aStatus;
-  Writeln('Success on status: ' + FTPStatusToStr(aStatus));
+  //Writeln('Success on status: ' + FTPStatusToStr(aStatus));
 end;
 
 procedure TFTPLister.FtpFailure(Sender: TLSocket; const aStatus: TLFTPStatus);
 begin
-  Writeln('Failure on status: ' + FTPStatusToStr(aStatus));
+  //Writeln('Failure on status: ' + FTPStatusToStr(aStatus));
 end;
 
 procedure TFTPLister.FtpError(const msg: string; aSocket: TLSocket);
@@ -124,15 +124,16 @@ end;
 
 procedure TFTPLister.FtpConnect(Sender: TLSocket);
 begin
-  writeln('Connected');
+  //writeln('Connected');
 end;
 
 procedure TFTPLister.FtpControl(Sender: TLSocket);
 var
   s: string;
 begin
-  if FFtp.GetMessage(s) > 0 then
-    writeln('C: ', s);
+  if FFtp.GetMessage(s) > 0 then begin
+    //writeln('C: ', s);
+  end;
 end;
 
 constructor TFTPLister.Create;
@@ -141,7 +142,7 @@ begin
 
   FFtp := TLFTPClient.Create(nil);
 
-  FFtp.StatusSet := [fsAuth, fsType, fsCon, fsCWD, fsList]; // let's watch for these only, these will call OnSuccess or OnFailure
+  FFtp.StatusSet := [fsType, fsCon, fsCWD, fsList]; // let's watch for these only, these will call OnSuccess or OnFailure
   FFtp.PipeLine := False; // this means CLIENT pipeline emulation
   FFtp.Timeout := 100;
   FFtp.OnConnect := @FtpConnect;
