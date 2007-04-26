@@ -818,7 +818,7 @@ procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
 
   procedure DoWriteOriginal;
   begin
-    DoWriteStreamSize(Stream,longint(FImage.SaveStream.Size));
+    DoWriteStreamSize(Stream, NtoLE(LongInt(FImage.SaveStream.Size)));
     FImage.SaveStream.Position:=0;
     if Stream is TMemoryStream then
       TMemoryStream(Stream).SetSize(Stream.Position+FImage.SaveStream.Size);
