@@ -218,6 +218,8 @@ type
     procedure Draw; override;
   public
     function GetPreferredSize: TPoint; override;
+    procedure SetColor(const AColor: TColor); override;
+    procedure SetFont(const AFont: TFont); override;
     procedure UpdatePanel(AIndex: Integer = -1);
   end;
   
@@ -641,6 +643,12 @@ begin
   AImageSize := FScrollSize;
   AViewSize := FScrollPageSize;
   ALineSize := Classes.Point(1, 1);
+  
+  {$IFDEF VerboseScroll}
+    DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +
+      DbgS(AOrigin) + ' Image: ' + DbgS(AImageSize) + ' View: ' +
+      DbgS(AViewSize) + 'Line: ' + DbgS(ALineSize));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -653,6 +661,11 @@ procedure TCarbonCustomControl.ScrollTo(const ANewOrigin: TPoint);
 var
   ScrollMsg: TLMScroll;
 begin
+  {$IFDEF VerboseScroll}
+    DebugLn('TCarbonCustomControl.ScrollTo ' + LCLObject.Name + ' Origin: ' +
+      DbgS(ANewOrigin));
+  {$ENDIF}
+  
   FScrollOrigin := ANewOrigin;
   
   // send vertical scroll
@@ -716,6 +729,11 @@ var
 const
   SName = 'SetScrollInfo';
 begin
+  {$IFDEF VerboseScroll}
+    DebugLn('TCarbonCustomControl.SetScrollInfo ' + LCLObject.Name +
+      ' SBStyle: ' + DbgS(SBStyle) + ' ' + DbgS(ScrollInfo));
+  {$ENDIF}
+
   if SBStyle = SB_HORZ then
     Result := FScrollOrigin.X;
   if SBStyle = SB_VERT then
@@ -774,6 +792,11 @@ procedure TCarbonCustomControl.GetScrollInfo(SBStyle: Integer;
 const
   SName = 'GetScrollInfo';
 begin
+  {$IFDEF VerboseScroll}
+    DebugLn('TCarbonCustomControl.GetScrollInfo ' + LCLObject.Name +
+      ' SBStyle: ' + DbgS(SBStyle) + ' ' + DbgS(ScrollInfo));
+  {$ENDIF}
+  
   if (SIF_RANGE and ScrollInfo.fMask) > 0 then
   begin
     ScrollInfo.nMin := 0;
@@ -799,6 +822,10 @@ begin
     if SBStyle = SB_VERT then
       ScrollInfo.nPage := FScrollPageSize.Y;
   end;
+  
+  {$IFDEF VerboseScroll}
+    DebugLn('TCarbonCustomControl.GetScrollInfo Result: ' + DbgS(ScrollInfo));
+  {$ENDIF}
 end;
 
 { TCarbonScrollingWinControl }
@@ -966,6 +993,28 @@ begin
   // stretch status bar to whole window width
   if LCLObject.Parent <> nil then
     Result.X := LCLObject.Parent.ClientWidth;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonStatusBar.SetColor
+  Params:  AColor - New color
+
+  Sets the color of control (for edit like controls)
+ ------------------------------------------------------------------------------}
+procedure TCarbonStatusBar.SetColor(const AColor: TColor);
+begin
+  // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonStatusBar.SetFont
+  Params:  AFont - New font
+
+  Sets the font of control
+ ------------------------------------------------------------------------------}
+procedure TCarbonStatusBar.SetFont(const AFont: TFont);
+begin
+  // not supported
 end;
 
 {------------------------------------------------------------------------------

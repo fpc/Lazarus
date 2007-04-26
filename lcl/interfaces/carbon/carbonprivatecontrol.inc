@@ -353,9 +353,9 @@ var
  ScrollBars: TScrollStyle;
 begin
   case AParams.Style and (WS_VSCROLL or WS_HSCROLL) of
-  WS_VSCROLL: ScrollBars := ssVertical;
-  WS_HSCROLL: ScrollBars := ssHorizontal;
-  WS_VSCROLL or WS_HSCROLL: ScrollBars := ssBoth;
+  WS_VSCROLL: ScrollBars := ssAutoVertical;
+  WS_HSCROLL: ScrollBars := ssAutoHorizontal;
+  WS_VSCROLL or WS_HSCROLL: ScrollBars := ssAutoBoth;
   else
     ScrollBars := ssNone;
   end;
@@ -401,8 +401,8 @@ begin
       AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
     Self, SName, SViewSetScrollBarAutoHide);
     
-  if OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView) then Exit;
   OSError(HIViewSetVisible(Widget, True), Self, SName, SViewVisible);
+  if OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView) then Exit;
 end;
 
 {------------------------------------------------------------------------------

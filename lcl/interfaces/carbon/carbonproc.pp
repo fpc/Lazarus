@@ -96,10 +96,8 @@ function ColorToRGBColor(const AColor: TColor): RGBColor;
 function RGBColorToColor(const AColor: RGBColor): TColor;
 function CreateCGColor(const AColor: TColor): CGColorRef;
 
-function DbgS(const ASize: TSize): string; overload;
 function DbgS(const ARect: FPCMacOSAll.Rect): string; overload;
 function DbgS(const AColor: FPCMacOSAll.RGBColor): string; overload;
-function DbgS(const ATM: TTextMetric): string; overload;
 
 implementation
 
@@ -726,11 +724,6 @@ begin
   Result := CGColorCreate(RGBColorSpace, @F[0]);
 end;
 
-function DbgS(const ASize: TSize): string;
-begin
-   Result := 'cx: ' + DbgS(ASize.cx) + ' cy: ' + DbgS(ASize.cy);
-end;
-
 function DbgS(const ARect: FPCMacOSAll.Rect): String;
 begin
   Result := DbgS(ARect.left) + ', ' + DbgS(ARect.top)
@@ -743,32 +736,6 @@ begin
     'R: ' + IntToHex(AColor.Red, 4) +
     ' G: ' + IntToHex(AColor.Green, 4) +
     ' B: ' + IntToHex(AColor.Blue, 4);
-end;
-
-function DbgS(const ATM: TTextMetric): string;
-begin
-  with ATM do
-    Result :=
-      'tmHeight: ' + DbgS(tmHeight) +
-      ' tmAscent: ' + DbgS(tmAscent) +
-      ' tmDescent: ' + DbgS(tmDescent) +
-      ' tmInternalLeading: ' + DbgS(tmInternalLeading) +
-      ' tmExternalLeading: ' + DbgS(tmExternalLeading) +
-      ' tmAveCharWidth: ' + DbgS(tmAveCharWidth) +
-      ' tmMaxCharWidth: ' + DbgS(tmMaxCharWidth) +
-      ' tmWeight: ' + DbgS(tmWeight) +
-      ' tmOverhang: ' + DbgS(tmOverhang) +
-      ' tmDigitizedAspectX: ' + DbgS(tmDigitizedAspectX) +
-      ' tmDigitizedAspectY: ' + DbgS(tmDigitizedAspectY) +
-      ' tmFirstChar: ' + tmFirstChar +
-      ' tmLastChar: ' + tmLastChar +
-      ' tmDefaultChar: ' + tmDefaultChar +
-      ' tmBreakChar: ' + tmBreakChar +
-      ' tmItalic: ' + DbgS(tmItalic) +
-      ' tmUnderlined: ' + DbgS(tmUnderlined) +
-      ' tmStruckOut: ' + DbgS(tmStruckOut) +
-      ' tmPitchAndFamily: ' + DbgS(tmPitchAndFamily) +
-      ' tmCharSet: ' + DbgS(tmCharSet);
 end;
 
 

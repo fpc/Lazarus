@@ -31,7 +31,8 @@
 {off $DEFINE VerboseKeyboard}
 {off $DEFINE VerbosePaint}
 {off $DEFINE VerboseCanvas}
-{$DEFINE VerboseMenu}      // Carbon menu
+{off $DEFINE VerboseMenu}      // Carbon menu
+{$DEFINE VerboseScroll}      // Carbon scrollable
 
 {off $DEFINE VerboseWidget}    // Carbon widget
 {off $DEFINE VerboseAppEvent}  // Carbon application event handlers
