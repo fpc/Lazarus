@@ -1,97 +1,110 @@
 object StringsPropEditorFrm: TStringsPropEditorFrm
+  Left = 333
+  Height = 302
+  Top = 169
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 301
   ActiveControl = Memo
   Caption = 'StringsPropEditorFrm'
-  ClientHeight = 300
-  ClientWidth = 400
   Constraints.MinHeight = 160
   Constraints.MinWidth = 180
   OnCreate = FormCreate
-  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
-  Left = 290
-  Height = 300
-  Top = 153
-  Width = 400
   object GroupBox1: TGroupBox
+    AnchorSideBottom.Control = OKButton
+    Left = 6
+    Height = 259
+    Top = 6
+    Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 238
-    ClientWidth = 384
     TabOrder = 0
-    AnchorSideBottom.Control = OKButton
-    Left = 6
-    Height = 255
-    Top = 6
-    Width = 388
     object StatusLabel: TLabel
+      AnchorSideBottom.Control = GroupBox1
+      AnchorSideBottom.Side = asrBottom
+      Left = 9
+      Height = 17
+      Top = 215
+      Width = 87
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'StatusLabel'
       Color = clNone
       ParentColor = False
-      Left = 9
-      Height = 14
-      Top = 216
-      Width = 57
     end
     object Memo: TMemo
+      AnchorSideBottom.Control = StatusLabel
+      Left = 6
+      Height = 203
+      Top = 6
+      Width = 274
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       OnChange = MemoChange
       ScrollBars = ssAutoBoth
       TabOrder = 0
       WordWrap = False
-      Left = 6
-      Height = 206
-      Top = 6
-      Width = 290
     end
     object SortButton: TButton
-      Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'Sort'
-      OnClick = SortButtonClick
-      TabOrder = 1
-      Left = 304
+      Left = 288
       Height = 25
       Top = 6
       Width = 75
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Sort'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = SortButtonClick
+      TabOrder = 1
     end
   end
   object OKButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 226
+    Height = 25
+    Top = 271
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = '&OK'
+    Constraints.MaxHeight = 25
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 1
-    Left = 338
-    Height = 28
-    Top = 267
-    Width = 55
   end
   object CancelButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 307
+    Height = 25
+    Top = 271
+    Width = 87
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Right = 6
     BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MaxHeight = 25
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 2
-    AnchorSideRight.Control = OKButton
-    Left = 249
-    Height = 28
-    Top = 267
-    Width = 77
   end
 end
