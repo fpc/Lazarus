@@ -1571,6 +1571,11 @@ begin
     MessI.Result := 0;
     NotifyApplicationUserInput(MessI.Msg);
     DeliverMessage(AWinControl, MessI);
+    if MessI.Result<>0 then begin
+      // handled by the LCL
+      //DebugLn(['DeliverMouseUpMessage msg was handled by the LCL, Stopping signal ...']);
+      g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
+    end;
   end;
 end;
 

@@ -2895,8 +2895,8 @@ begin
     then Control := CaptureControl;
   end
   else begin
-    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
-                            [capfAllowWinControls,capfRecursive]);
+    // do not query wincontrol childs, because they get their own messages
+    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),[]);
   end;
 
   //DebugLn('TWinControl.IsControlMouseMsg B ',DbgSName(Self),' Control=',DbgSName(Control));
@@ -3456,7 +3456,7 @@ Begin
        {$IFDEF VerboseMouseBugfix}
        DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
        {$ENDIF}
-       //if Message.Msg=LM_RBUTTONUP then DumpStack;
+       //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
        if IsControlMouseMSG(TLMMouse(Message)) then
          Exit;
        {$IFDEF VerboseMouseBugfix}

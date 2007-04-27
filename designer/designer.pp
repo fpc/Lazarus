@@ -2746,7 +2746,7 @@ var
     end;
     
     DesignerMenuChangeParent.Visible:=Candidates.Count>0;
-    DebugLn(['UpdateChangeParentMenu ',DesignerMenuChangeParent.Visible]);
+    //DebugLn(['UpdateChangeParentMenu ',DesignerMenuChangeParent.Visible]);
     DesignerMenuChangeParent.Clear;
     for i:=0 to DesignerMenuChangeParent.Count-1 do begin
       Item:=TIDEMenuCommand.Create(DesignerMenuChangeParent.Name+'_'+IntToStr(i));
