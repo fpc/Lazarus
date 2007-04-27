@@ -309,6 +309,13 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
+procedure StoreFirstSelectedPath(model:PGtkTreeModel; path:PGtkTreePath;
+  iter:PGtkTreeIter; data:gpointer); cdecl;
+begin
+  //DebugLn(['StoreFirstSelectedPath ',PInteger(Data)^,' ',gtk_tree_path_get_indices(Path)^]);
+  if PInteger(Data)^<0 then PInteger(Data)^:=gtk_tree_path_get_indices(Path)^;
+end;
+
 class function TGtk2WSCustomListBox.GetItemIndex(
   const ACustomListBox: TCustomListBox): integer;
 var
@@ -316,10 +323,7 @@ var
   Widget: PGtkWidget;
   TreeView: PGtkTreeView;
   Selection: PGtkTreeSelection;
-  Model: PGtkTreeModel;
-  ListModel: TGtkListStore;
-  Iter: TGtkTreeIter;
-  Path: PGtkTreePath;
+  Index: Integer;// ! keep this integer
 begin
   Result := -1;
   Handle := ACustomListBox.Handle;
@@ -329,14 +333,9 @@ begin
     if GtkWidgetIsA(Widget,gtk_tree_view_get_type) then begin
       TreeView := PGtkTreeView(Widget);
       Selection := Gtk_tree_view_get_selection(TreeView);
-      Model := @ListModel;
-      if gtk_tree_selection_get_selected(Selection, @Model, @Iter) then begin
-        Path := gtk_tree_model_get_path(Model, @Iter);
-        if Path <> nil then begin
-          Result := gtk_tree_path_get_indices(Path)^;
-          gtk_tree_path_free(Path);
-        end;
-      end;
+      Index:=-1;
+      gtk_tree_selection_selected_foreach(Selection,@StoreFirstSelectedPath,@Index);
+      Result:=Index;
     end;
   end;
 end;
