@@ -473,7 +473,7 @@ end;
 class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  TempWidget: PGtkWidget;
+  TVWidget: PGtkWidget;
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
   liststore : PGtkListStore;
   Selection: PGtkTreeSelection;
@@ -495,24 +495,24 @@ begin
 
   liststore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
 
-  TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
+  TVWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
   g_object_unref (G_OBJECT (liststore));
 
   renderer := LCLIntfCellRenderer_New();
   column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer,
                                                       ['text', 0, nil]);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (TVWidget), column);
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
-  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TempWidget), False);
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TVWidget), False);
 
-  gtk_container_add(GTK_CONTAINER(p), TempWidget);
-  gtk_widget_show(TempWidget);
+  gtk_container_add(GTK_CONTAINER(p), TVWidget);
+  gtk_widget_show(TVWidget);
 
-  SetMainWidget(p, TempWidget);
-  GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
+  SetMainWidget(p, TVWidget);
+  GetWidgetInfo(p, True)^.CoreWidget := TVWidget;
 
-  Selection := gtk_tree_view_get_selection(PGtkTreeView(TempWidget));
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(TVWidget));
 
   case TCustomListBox(AWinControl).MultiSelect of
     True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
@@ -520,7 +520,7 @@ begin
   end;
 
   WidgetInfo := GetWidgetInfo(p, False);
-  SetCallbacks(TempWidget, WidgetInfo);
+  SetCallbacks(p, WidgetInfo);
 end;
 
 class procedure TGtk2WSCustomListBox.SetCallbacks(

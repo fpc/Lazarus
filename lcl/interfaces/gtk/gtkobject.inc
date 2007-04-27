@@ -3673,6 +3673,8 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt;
 
 var
   gObject, gFixed, gCore, Adjustment: PGTKObject;
+  Info: PWidgetInfo;
+  gMain: PGtkObject;
 begin
   //debugln('TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
   if AGTKObject = nil
@@ -3684,8 +3686,14 @@ begin
   gFixed := PGTKObject(GetFixedWidget(gObject));
   if gFixed = nil then gFixed := gObject;
 
-  // gCore is the main widget (e.g. TListView has this)
-  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.CoreWidget);
+  // gCore is the working widget (e.g. TListBox has a scrolling widget (=main widget) and a tree widget (=core widget))
+  Info:=GetWidgetInfo(gObject, True);
+  gCore:=PGtkObject(Info^.CoreWidget);
+  gMain:=GetMainWidget(gObject);
+  if (gMain=nil) then
+    gMain:=gObject;
+  if (gMain<>gObject) then
+    DebugLn(['TGtkWidgetSet.SetCallback WARNING: gObject<>MainWidget ',DbgSName(ALCLObject)]);
 
   case AMsg of
     LM_SHOWWINDOW :

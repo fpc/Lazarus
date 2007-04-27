@@ -1064,12 +1064,14 @@ begin
       DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
       ' User=',Dbgs(FLeft,FTop,FWidth,FHeight));
     {$ENDIF}
+    //DebugLn(['TControlSelection.DoApplyUserBounds BEFORE ',Items[0].Left,' ',Items[0].Top]);
     Items[0].SetFormRelativeBounds(
       Min(NewLeft,NewRight),
       Min(NewTop,NewBottom),
       Abs(FWidth),
       Abs(FHeight)
     );
+    //DebugLn(['TControlSelection.DoApplyUserBounds AFTER ',Items[0].Left,' ',Items[0].Top]);
     InvalidateGuideLinesCache;
   end else if Count>1 then begin
     // multi selection

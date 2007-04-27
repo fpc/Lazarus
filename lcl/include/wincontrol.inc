@@ -28,7 +28,7 @@
 { $DEFINE CHECK_POSITION}
 { $IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'TButtonX';
-const CheckPostionName = 'OIDefaultItemHeightSpinEdit';
+const CheckPostionName = 'ListBox1';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -5711,13 +5711,14 @@ begin
   {$IFDEF CHECK_POSITION}
   //if csDesigning in ComponentState then
   if CheckPosition(Self) then
-  DebugLn('[TWinControl.SetBounds] START ',Name,':',ClassName,
-  ' Old=',DbgS(Left,Top,Width,Height),
-  ' -> New=',DbgS(ALeft,ATop,AWidth,AHeight),
-  ' Lock=',DbgS(BoundsLockCount),
-  ' Realized=',DbgS(FBoundsRealized.Left,FBoundsRealized.Top,
-  FBoundsRealized.Right-FBoundsRealized.Left,FBoundsRealized.Bottom-FBoundsRealized.Top)
-  );
+  DebugLn(['[TWinControl.SetBounds] START ',DbgSName(Self),
+  ' Old=',dbgs(Bounds(Left,Top,Width,Height)),
+  ' -> New=',dbgs(Bounds(ALeft,ATop,AWidth,AHeight)),
+  ' Lock=',BoundsLockCount,
+  ' Realized=',dbgs(FBoundsRealized)
+  ]);
+  if CheckPosition(Self) and (AWidth=128) then
+    DumpStack;
   {$ENDIF}
   if BoundsLockCount<>0 then exit;
   OldBounds:=BoundsRect;
@@ -5732,9 +5733,9 @@ begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
       if CheckPosition(Self) then
-      DebugLn('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
-      ' OldBounds=',Dbgs(Left,Top,Left+Width,Top+Height),
-      ' -> New=',Dbgs(ALeft,ATop,ALeft+AWidth,ATop+AHeight));
+      DebugLn(['[TWinControl.SetBounds] Set LCL Bounds ',DbgSName(Self),
+      ' OldBounds=',Dbgs(Bounds(Left,Top,Width,Height)),
+      ' -> New=',Dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
       NewBounds:=Bounds(Left, Top, Width, Height);

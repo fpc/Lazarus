@@ -442,6 +442,7 @@ begin
   if (AWidth>100000) or (AHeight>100000) then
     BoundsOutOfBounds;
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   if csDesigning in ComponentState then
     DebugLn('TControl.DoSetBounds ',Name,':',ClassName,
       ' Old=',DbgS(Left,Top,Width,Height),
@@ -2173,6 +2174,7 @@ end;
 Procedure TControl.SetBoundsRect(const ARect : TRect);
 Begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.SetBoundsRect] ',Name,':',ClassName);
   {$ENDIF}
   with ARect do
@@ -4088,6 +4090,7 @@ end;
 procedure TControl.WMSize(Var Message : TLMSize);
 begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',DbgS(Message.Width),' Message.Height=',DbgS(Message.Height),' Width=',DbgS(Width),' Height=',DbgS(Height));
   {$ENDIF}
   //Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
@@ -4107,6 +4110,7 @@ end;
 procedure TControl.WMMove(var Message: TLMMove);
 begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',DbgS(Message.XPos),' Message.YPos=',DbgS(Message.YPos),' OldLeft=',DbgS(Left),' OldTop=',DbgS(Top));
   {$ENDIF}
   { Just sync the coordinates }

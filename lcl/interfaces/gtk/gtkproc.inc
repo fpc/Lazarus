@@ -3620,6 +3620,10 @@ begin
   then raise EInterfaceException.Create('SetMainWidget ChildWidget=nil');
   if ParentWidget = ChildWidget
   then raise EInterfaceException.Create('SetMainWidget ParentWidget=ChildWidget');
+  {$IFDEF Gtk2}
+  if PGtkWidget(ParentWidget)^.parent=ChildWidget
+  then raise EInterfaceException.Create('SetMainWidget Parent^.Parent=ChildWidget');
+  {$ENDIF}
 
   gtk_object_set_data(ChildWidget, 'Main', ParentWidget)
 end;
