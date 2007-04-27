@@ -1795,13 +1795,17 @@ begin
 
   if theDialog is TFileDialog then
   begin
+    {$IfDef GTK2}
+    FileName:=gtk_file_chooser_get_filename(PGtkFileChooser(FPointer));
+    {$ELSE}
+    FileName:=gtk_file_selection_get_filename(
+                                PGtkFileSelection(FPointer));
+    {$ENDIF}
     if theDialog is TOpenDialog then
     begin
       // check extra options
       if ofAllowMultiSelect in TOpenDialog(theDialog).Options then
       begin
-        FileName:=gtk_file_selection_get_filename(
-                                    PGtkFileSelection(FPointer));
         DirName:=ExtractFilePath(FileName);
         TFileDialog(data).FileName := '';
         Files:=TStringList(TFileDialog(theDialog).Files);
@@ -1852,17 +1856,14 @@ begin
         end;
         {$EndIf}
       end else begin
-        CurFilename:=
-                   gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
-        Result:=CheckOpenedFilename(CurFilename);
+        Result:=CheckOpenedFilename(Filename);
         if not Result then exit;
-        TFileDialog(data).FileName := CurFilename;
+        TFileDialog(data).FileName := Filename;
       end;
     end
     else
     begin
-      TFileDialog(data).FileName :=
-        gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
+      TFileDialog(data).FileName := Filename;
     end;
   end
   else if theDialog is TColorDialog then
@@ -2018,9 +2019,15 @@ procedure UpdateDetailView(OpenDialog: TOpenDialog);
 var
   FileDetailLabel: PGtkWidget;
   Filename, OldFilename, Details: string;
+  Widget: PGtkWidget;
 begin
-  Filename:=
-    gtk_file_selection_get_filename(PGtkFileSelection(OpenDialog.Handle));
+  Widget:=PGtkWidget(OpenDialog.Handle);
+  {$IfDef GTK2}
+  FileName:=gtk_file_chooser_get_filename(PGtkFileChooser(Widget));
+  {$ELSE}
+  FileName:=gtk_file_selection_get_filename(
+                              PGtkFileSelection(Widget));
+  {$ENDIF}
   OldFilename:=OpenDialog.Filename;
   if Filename=OldFilename then exit;
   OpenDialog.Filename:=Filename;

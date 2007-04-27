@@ -127,7 +127,8 @@ begin
     Result := False;
 end;
 
-procedure Gtk2FileChooserNotifyCB(dialog: PGObject; pspec: PGParamSpec; user_data: gpointer); cdecl;
+procedure Gtk2FileChooserNotifyCB(dialog: PGObject; pspec: PGParamSpec;
+  user_data: gpointer); cdecl;
 var
   TheDialog: TFileDialog;
   GtkFilter: PGtkFileFilter;
@@ -145,7 +146,8 @@ begin
   end;
 end;
 
-procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint; data: gpointer); cdecl;
+procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint;
+  data: gpointer); cdecl;
 
   procedure AddFile(List: TStrings; const NewFile: string);
   var

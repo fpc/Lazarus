@@ -1545,6 +1545,8 @@ type
     procedure Remove(AControl: TControl);
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
+    function IsClientHeightStored: boolean;
+    function IsClientWidthStored: boolean;
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AdjustClientRect(var ARect: TRect); virtual;
@@ -1692,6 +1694,8 @@ type
     property Brush: TBrush read GetBrush;
     property CachedClientHeight: integer read FClientHeight;
     property CachedClientWidth: integer read FClientWidth;
+    property ClientHeight stored IsClientHeightStored;
+    property ClientWidth stored IsClientWidthStored;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
     property ControlCount: Integer read GetControlCount;
     property Controls[Index: Integer]: TControl read GetControl;

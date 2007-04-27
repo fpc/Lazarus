@@ -4262,6 +4262,18 @@ begin
   end;
 end;
 
+function TWinControl.IsClientHeightStored: boolean;
+begin
+  // The ClientHeight is needed to restore childs anchored akBottom
+  Result:=ControlCount>0;
+end;
+
+function TWinControl.IsClientWidthStored: boolean;
+begin
+  // The ClientWidth is needed to restore childs anchored akRight
+  Result:=ControlCount>0;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl RemoveFocus
 ------------------------------------------------------------------------------}
