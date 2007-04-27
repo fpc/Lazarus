@@ -3675,6 +3675,7 @@ var
   gObject, gFixed, gCore, Adjustment: PGTKObject;
   Info: PWidgetInfo;
   gMain: PGtkObject;
+  MouseWidget: PGtkObject;
 begin
   //debugln('TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
   if AGTKObject = nil
@@ -3694,6 +3695,12 @@ begin
     gMain:=gObject;
   if (gMain<>gObject) then
     DebugLn(['TGtkWidgetSet.SetCallback WARNING: gObject<>MainWidget ',DbgSName(ALCLObject)]);
+  if gFixed<>gMain then
+    MouseWidget:=gFixed
+  else
+    MouseWidget:=gCore;
+  if MouseWidget=nil then
+    DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
 
   case AMsg of
     LM_SHOWWINDOW :
@@ -3864,9 +3871,9 @@ begin
       else
       {$ENDIF}
       begin
-        ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
+        ConnectSenderSignal(MouseWidget, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(gFixed, 'motion-notify-event',
+        ConnectSenderSignalAfter(MouseWidget, 'motion-notify-event',
                       @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end;
     end;
@@ -3896,9 +3903,9 @@ begin
       else
       {$ENDIF}
       begin
-        ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
+        ConnectSenderSignal(MouseWidget, 'button-press-event', @gtkMouseBtnPress,
                             GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(gFixed, 'button-press-event',
+        ConnectSenderSignalAfter(MouseWidget, 'button-press-event',
                                  @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
       end;
     end;
@@ -3929,9 +3936,9 @@ begin
       else
       {$ENDIF}
       begin
-        ConnectSenderSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
+        ConnectSenderSignal(MouseWidget, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
-        ConnectSenderSignalAfter(gFixed, 'button-release-event',
+        ConnectSenderSignalAfter(MouseWidget, 'button-release-event',
                            @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
       end;
     end;

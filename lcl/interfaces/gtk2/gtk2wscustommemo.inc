@@ -74,13 +74,13 @@ end;
 class procedure TGtk2WSCustomMemo.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 var
-TextBuf: PGtkTextBuffer;
+  TextBuf: PGtkTextBuffer;
 begin
   TextBuf := gtk_text_view_get_buffer(PGtkTextView(AWidgetInfo^.CoreWidget));
 
   //TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget, AWidgetInfo);
 
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidgetInfo^.CoreWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   
   SignalConnect(PGtkWidget(TextBuf), 'changed', @Gtk2WS_MemoChanged, AWidgetInfo);
   SignalConnect(PGtkWidget(TextBuf), 'insert-text', @Gtk2WS_MemoTextInserting, AWidgetInfo);
@@ -90,8 +90,6 @@ begin
   SignalConnect(AWidgetInfo^.CoreWidget, 'cut-clipboard', @Gtk2WS_MemoCutToClip, AWidgetInfo);
   SignalConnect(AWidgetInfo^.CoreWidget, 'copy-clipboard', @Gtk2WS_MemoCopyToClip, AWidgetInfo);
   SignalConnect(AWidgetInfo^.CoreWidget, 'paste-clipboard', @Gtk2WS_MemoPasteFromClip, AWidgetInfo);
-
-
 end;
 
 class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
