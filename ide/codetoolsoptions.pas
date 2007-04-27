@@ -825,7 +825,9 @@ begin
     with NoteBook do begin
       Name:='NoteBook';
       Parent:=Self;
-      SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+      SetBounds(0,0,
+      Self.ClientWidth,
+      Self.ClientHeight-50);
       if PageCount>0 then
         Pages[0]:=lisMenuInsertGeneral
       else
@@ -1516,7 +1518,8 @@ end;
 procedure TCodeToolsOptsDlg.CodeToolsOptsDlgResize(Sender: TObject);
 begin
   with NoteBook do begin
-    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+    SetBounds(0,0,Self.ClientWidth,
+      Self.ClientHeight-50);
   end;
 
   ResizeGeneralPage;

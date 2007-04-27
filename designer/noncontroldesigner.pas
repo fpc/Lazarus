@@ -128,9 +128,10 @@ begin
   with Canvas do begin
     Brush.Color:=clWhite;
     ARect:=Rect(FrameWidth,FrameWidth,
-                                ClientWidth-FrameWidth,ClientHeight-FrameWidth);
+        Self.ClientWidth-FrameWidth,
+        Self.ClientHeight-FrameWidth);
     FillRect(ARect);
-    ARect:=Rect(0,0,ClientWidth+1,ClientHeight+1);
+    ARect:=Rect(0,0,Self.ClientWidth+1,Self.ClientHeight+1);
     Pen.Color:=clBlack;
     Frame3d(ARect, FrameWidth, bvLowered);
   end;

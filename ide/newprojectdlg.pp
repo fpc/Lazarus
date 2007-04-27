@@ -104,7 +104,7 @@ end;
 procedure TNewProjectDialog.FillHelpLabel;
 begin
   HelpLabel.Caption:=GetProjectDescriptor.GetLocalizedDescription;
-  HelpLabel.Width:=ClientWidth-HelpLabel.Left-10;
+  HelpLabel.Width:=Self.ClientWidth-HelpLabel.Left-10;
 end;
 
 procedure TNewProjectDialog.SetupComponents;

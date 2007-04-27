@@ -3456,6 +3456,7 @@ Begin
        {$IFDEF VerboseMouseBugfix}
        DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
        {$ENDIF}
+       //if Message.Msg=LM_RBUTTONUP then DumpStack;
        if IsControlMouseMSG(TLMMouse(Message)) then
          Exit;
        {$IFDEF VerboseMouseBugfix}

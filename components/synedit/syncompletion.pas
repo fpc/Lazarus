@@ -457,7 +457,8 @@ begin
   if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) then
   begin
     FHint.Index := AIndex;
-    if FHint.CalcHintRect(Screen.Width, ItemList[AIndex], nil).Right <= ClientWidth then
+    if FHint.CalcHintRect(Screen.Width, ItemList[AIndex], nil).Right <=
+      ClientWidth then
     begin
       FHint.Hide;
       Exit;

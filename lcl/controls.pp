@@ -972,6 +972,8 @@ type
     function GetScrolledClientRect: TRect; virtual;
     function GetClientScrollOffset: TPoint; virtual;
     function GetControlOrigin: TPoint; virtual;
+    function IsClientHeightStored: boolean; virtual;
+    function IsClientWidthStored: boolean; virtual;
   protected
     // protected messages
     procedure WMContextMenu(Var Message: TLMMouse); message LM_CONTEXTMENU;
@@ -1248,10 +1250,10 @@ type
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
     property CaptureMouseButtons: TCaptureMouseButtons read FCaptureMouseButtons
       write FCaptureMouseButtons stored CaptureMouseButtonsIsStored default [mbLeft];
-    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
+    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored  IsClientHeightStored;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
-    property ClientWidth: Integer read GetClientWidth write SetClientWidth stored False;
+    property ClientWidth: Integer read GetClientWidth write SetClientWidth stored IsClientWidthStored;
     property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
     property Constraints: TSizeConstraints read FConstraints write SetConstraints;
     property ControlOrigin: TPoint read GetControlOrigin;
@@ -1545,8 +1547,8 @@ type
     procedure Remove(AControl: TControl);
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
-    function IsClientHeightStored: boolean;
-    function IsClientWidthStored: boolean;
+    function IsClientHeightStored: boolean; override;
+    function IsClientWidthStored: boolean; override;
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AdjustClientRect(var ARect: TRect); virtual;
@@ -1694,8 +1696,6 @@ type
     property Brush: TBrush read GetBrush;
     property CachedClientHeight: integer read FClientHeight;
     property CachedClientWidth: integer read FClientWidth;
-    property ClientHeight stored IsClientHeightStored;
-    property ClientWidth stored IsClientWidthStored;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
     property ControlCount: Integer read GetControlCount;
     property Controls[Index: Integer]: TControl read GetControl;

@@ -1635,7 +1635,10 @@ begin
       if not TempPopupMenu.AutoPopup then Exit;
 //      SendCancelMode(nil);
       TempPopupMenu.PopupComponent := Control;
+      DumpStack;
+      //DebugLn(['TControl.WMContextMenu Message.pos=',dbgs(P2)]);
       P2 := ClientToScreen(P2);
+      //DebugLn(['TControl.WMContextMenu P2=',dbgs(P2)]);
       TempPopupMenu.Popup(P2.X, P2.Y);
       Message.Result:= 1;
       Exit;
@@ -2425,6 +2428,16 @@ end;
 Function TControl.IsCaptionStored : Boolean;
 Begin
   Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
+end;
+
+function TControl.IsClientHeightStored: boolean;
+begin
+  Result:=false;
+end;
+
+function TControl.IsClientWidthStored: boolean;
+begin
+  Result:=false;
 end;
 
 function TControl.IsColorStored: Boolean;
