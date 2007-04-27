@@ -6378,6 +6378,7 @@ var
 begin
   Widget := PGtkWidget(AWinControl.Handle);
   // set size to default
+  //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
   gtk_widget_set_usize(Widget,-1,-1);
   // ask default size
   gtk_widget_size_request(Widget,@Requisition);

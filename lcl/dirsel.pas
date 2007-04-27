@@ -203,7 +203,7 @@ end;//GetAbsolutePath
 
 procedure TDirSelDlg.FormCreate(Sender: TObject);
 begin
-  TV.HandleNeeded;
+
 end;
 
 procedure TDirSelDlg.FormShow(Sender: TObject);

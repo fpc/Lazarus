@@ -27,7 +27,7 @@
 
 { $DEFINE CHECK_POSITION}
 { $IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TButtonX';
+const CheckPostionClassName = 'THintWindow';
 const CheckPostionName = 'ListBox1';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -4802,7 +4802,7 @@ begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
     ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
-    ' SourceIsInterface=',Message.MoveType=Move_SourceIsInterface,
+    ' FromIntf=',Message.MoveType=Move_SourceIsInterface,
     ',',FBoundsRealized.Right-FBoundsRealized.Left,
     'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
   {$ENDIF}
@@ -4838,7 +4838,7 @@ begin
   {$IFDEF VerboseSizeMsg}
   if CheckPosition(Self) then
   DebugLn('TWinControl.WMSize A ',Name,':',ClassName,' Message=',dbgs(Message.Width),',',dbgs(Message.Height),
-    ' BoundsRealized=',dbgs(FBoundsRealized));
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0));
   {$ENDIF}
   NewLeft:=Left;
   NewTop:=Top;
@@ -5717,7 +5717,7 @@ begin
   ' Lock=',BoundsLockCount,
   ' Realized=',dbgs(FBoundsRealized)
   ]);
-  if CheckPosition(Self) and (AWidth=128) then
+  if CheckPosition(Self) and (AWidth=1) then
     DumpStack;
   {$ENDIF}
   if BoundsLockCount<>0 then exit;

@@ -1753,8 +1753,6 @@ var
   Control: TWinControl;
 begin
   inherited Loaded;
-  if FMenu<>nil then
-    FMenu.HandleNeeded;
   if (ActiveControl <> nil) and (Parent=nil) then
   begin
     Control := ActiveControl;

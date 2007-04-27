@@ -23,7 +23,7 @@ const
   DefHintPause = 500;       { default pause before hint window displays (ms) }
   DefHintShortPause = 0;    { default reshow pause }
   DefHintHidePause = 5*DefHintPause; { default pause before hint is hidden (ms) }
-  DefHintHidePausePerChar = 100;     { added to DefHintHidePause (ms) }
+  DefHintHidePausePerChar = 200;     { added to DefHintHidePause (ms) }
 
 function FindApplicationComponent(const ComponentName: string): TComponent;
 begin
@@ -568,8 +568,6 @@ end;
 function TApplication.IsHintMsg(var Msg: TMsg): Boolean;
 begin
   Result := False;
-  {if (FHintWindow <> nil) and FHintWindow.IsHintMsg(Msg) then
-    CancelHint;}
 end;
 
 {------------------------------------------------------------------------------
@@ -678,6 +676,7 @@ begin
     with HintInfo do
       HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
     OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
+    //DebugLn(['TApplication.ShowHintWindow HintStr="',HintInfo.HintStr,'" HintWinRect=',dbgs(HintWinRect)]);
     {if FHintWindow.UseRightToLeftAlignment then
       with HintWinRect do
       begin

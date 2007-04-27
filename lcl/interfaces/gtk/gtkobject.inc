@@ -634,28 +634,33 @@ begin
   //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
     gtk_window_set_default_size(Window,Width,Height);
 
+  {$IFDEF Gtk2}
+  // resize
+  gtk_window_set_default_size(Window,Width,Height);
+  gtk_window_resize(Window,Width,Height);
+  // reposition
+  gtk_window_move(Window,AWinControl.Left,AWinControl.Top);
+  {$ELSE}
   // resize
   if assigned(PGtkWidget(Window)^.Window) then
     // widget is realized, resize gdkwindow directly
     gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
       AWinControl.Top,Width,Height)
-  else
-    // widget is not yet realized, force resize needed for shrinking under gtk1)
+  else begin
+    // widget is not yet realized, force resize needed for shrinking under gtk1
     gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
-  //if (PGtkWidget(Window)^.allocation.Width<>Width)
-  //and (PGtkWidget(Window)^.allocation.Height<>Height) then begin
-    //gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
-    gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
-  //end;
-
+  end;
   // reposition
-  {$IFDEF VerboseSizeMsg}
-  DebugLn('TGtkWidgetSet.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,
-    ' Visible=',dbgs(AWinControl.Visible),
-    ' Old=',dbgs(PGtkWidget(Window)^.allocation.X)+','+dbgs(PGtkWidget(Window)^.allocation.Y),
-    ' New=',dbgs(AWinControl.Left)+','+dbgs(AWinControl.Top)+','+dbgs(Width)+'x'+dbgs(Height));
-  {$ENDIF}
+  gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
   gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
+  {$ENDIF}
+
+  {$IFDEF VerboseSizeMsg}
+  DebugLn(['TGtkWidgetSet.SetWindowSizeAndPosition B ',DbgSName(AWinControl),
+    ' Visible=',AWinControl.Visible,
+    ' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,
+    ' New=',AWinControl.Left,',',AWinControl.Top,',',Width,'x',Height]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1115,6 +1120,10 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
         // -> ignore
         exit;
       end;
+      if (GtkWidth=1) and (GtkHeight=1) then begin
+        // this is default size of the gtk. Ignore.
+        exit;
+      end;
       if GetControlWindow(MainWidget)<>nil then begin
         gdk_window_get_root_origin(GetControlWindow(MainWidget), @GtkLeft, @GtkTop);
       end else begin
@@ -1122,8 +1131,8 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
         GtkTop:=LCLControl.Top;
       end;
       {$IFDEF VerboseFormPositioning}
-      DebugLn('VFP SendSizeNotificationToLCL ',LCLControl.ClassName,' ',
-        GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight);
+      DebugLn(['VFP SendSizeNotificationToLCL ',DbgSName(LCLControl),' ',
+        GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight,' ',GetWidgetDebugReport(MainWidget)]);
       {$ENDIF}
     end;
 
@@ -1493,6 +1502,8 @@ end;
 {------------------------------------------------------------------------------
   procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
     NewHeight: integer);
+    
+  Note: gtk_window is resized in TGtkWidgetSet.SetWindowSizeAndPosition
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
@@ -1532,6 +1543,7 @@ begin
   end;
 
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
+  //DebugLn(['TGtkWidgetSet.RealizeWidgetSize ',GetWidgetDebugReport(Widget),' NewWidth=',NewWidth,' NewHeight=',NewHeight]);
 
   if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
   begin
@@ -4425,6 +4437,13 @@ begin
         end;
       end;
 
+      csHintWindow:
+      begin
+        if (TControl(ALCLObject).Parent=nil) then begin
+          SetCallback(LM_CONFIGUREEVENT, AGTKObject, ALCLObject);
+        end;
+      end;
+
       csStaticText:
       Begin
         SetCallback(LM_GRABFOCUS, AGTKObject, ALCLObject);
@@ -5087,8 +5106,11 @@ begin
     gtk_window_set_title(pGtkWindow(Result), PCaption);
 
     // Shows in taskbar only Main Form.
+    // MG: on some systems like the default under ubuntu, this also removes
+    // it from the window cycle list, so you can no longer switch to each window.
+    // So I disabled it until a better solution is found.
     {$IFDEF HasGTK2_2}
-      if Assigned(ACustomForm) then
+      {if Assigned(ACustomForm) then
       if (ACustomForm=Application.MainForm) OR (Application.MainForm = Nil) then
       begin
         gtk_window_set_skip_taskbar_hint(pGtkWindow(Result),False); //SHOW
@@ -5096,7 +5118,7 @@ begin
       else
       begin
         gtk_window_set_skip_taskbar_hint(pGtkWindow(Result),True); //HIDE
-      end;
+      end;}
     {$ENDIF}
 
     // the clipboard needs a widget
@@ -5535,7 +5557,7 @@ begin
        gdk_window_set_functions(AWindow,
          GetWindowFunction(TCustomForm(Sender)));
        {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-       gtk_widget_show_all(p);
+       gtk_widget_show_all(TempWidget);// Important: do not show the window yet, only make its content visible
     end;
 
   csImage :
