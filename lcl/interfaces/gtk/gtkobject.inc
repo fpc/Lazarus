@@ -3581,18 +3581,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGtkWidgetSet.SetCallback
+  Function: TGtkWidgetSet.SetCallbackEx
   Params: AMsg - message for which to set a callback
           AGTKObject - object to which callback will be send
           ALCLObject - for compatebility reasons provided, will be used when
                        AGTKObject = nil
+          Direct - true: connect the signal to the AGTKObject
+                   false: choose smart what gtkobject to use
   Returns:  nothing
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
 //TODO: remove ALCLObject when creation splitup is finished
-procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt;
-  const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGtkWidgetSet.SetCallbackEx(const AMsg: LongInt;
+  const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -3675,32 +3677,40 @@ var
   gObject, gFixed, gCore, Adjustment: PGTKObject;
   Info: PWidgetInfo;
   gMain: PGtkObject;
-  MouseWidget: PGtkObject;
+  gMouse: PGtkObject;
 begin
   //debugln('TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
-  if AGTKObject = nil
-  then gObject := ObjectToGTKObject(ALCLObject)
-  else gObject := AGTKObject;
-  if gObject = nil then Exit;
+  if Direct then begin
+    gMain:=AGTKObject;
+    gCore:=AGTKObject;
+    gFixed:=AGTKObject;
+    gMouse:=AGTKObject;
+  end else begin
+    if AGTKObject = nil
+    then gObject := ObjectToGTKObject(ALCLObject)
+    else gObject := AGTKObject;
+    if gObject = nil then Exit;
 
-  // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
-  gFixed := PGTKObject(GetFixedWidget(gObject));
-  if gFixed = nil then gFixed := gObject;
+    // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
+    gFixed := PGTKObject(GetFixedWidget(gObject));
+    if gFixed = nil then gFixed := gObject;
 
-  // gCore is the working widget (e.g. TListBox has a scrolling widget (=main widget) and a tree widget (=core widget))
-  Info:=GetWidgetInfo(gObject, True);
-  gCore:=PGtkObject(Info^.CoreWidget);
-  gMain:=GetMainWidget(gObject);
-  if (gMain=nil) then
-    gMain:=gObject;
-  if (gMain<>gObject) then
-    DebugLn(['TGtkWidgetSet.SetCallback WARNING: gObject<>MainWidget ',DbgSName(ALCLObject)]);
-  if gFixed<>gMain then
-    MouseWidget:=gFixed
-  else
-    MouseWidget:=gCore;
-  if MouseWidget=nil then
-    DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
+    // gCore is the working widget (e.g. TListBox has a scrolling widget (=main widget) and a tree widget (=core widget))
+    Info:=GetWidgetInfo(gObject, True);
+    gCore:=PGtkObject(Info^.CoreWidget);
+    gMain:=GetMainWidget(gObject);
+    if (gMain=nil) then
+      gMain:=gObject;
+    if (gMain<>gObject) then
+      DebugLn(['TGtkWidgetSet.SetCallback WARNING: gObject<>MainWidget ',DbgSName(ALCLObject)]);
+    if gFixed<>gMain then
+      gMouse:=gFixed
+    else
+      gMouse:=gCore;
+    if gMouse=nil then
+      DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
+  end;
+  //DebugLn(['TGtkWidgetSet.SetCallbackSmart MouseWidget=',GetWidgetDebugReport(PGtkWidget(gMouse))]);
 
   case AMsg of
     LM_SHOWWINDOW :
@@ -3871,9 +3881,9 @@ begin
       else
       {$ENDIF}
       begin
-        ConnectSenderSignal(MouseWidget, 'motion-notify-event', @GTKMotionNotify,
+        ConnectSenderSignal(gMouse, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(MouseWidget, 'motion-notify-event',
+        ConnectSenderSignalAfter(gMouse, 'motion-notify-event',
                       @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end;
     end;
@@ -3903,9 +3913,9 @@ begin
       else
       {$ENDIF}
       begin
-        ConnectSenderSignal(MouseWidget, 'button-press-event', @gtkMouseBtnPress,
+        ConnectSenderSignal(gMouse, 'button-press-event', @gtkMouseBtnPress,
                             GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(MouseWidget, 'button-press-event',
+        ConnectSenderSignalAfter(gMouse, 'button-press-event',
                                  @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
       end;
     end;
@@ -3936,9 +3946,9 @@ begin
       else
       {$ENDIF}
       begin
-        ConnectSenderSignal(MouseWidget, 'button-release-event', @gtkMouseBtnRelease,
+        ConnectSenderSignal(gMouse, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
-        ConnectSenderSignalAfter(MouseWidget, 'button-release-event',
+        ConnectSenderSignalAfter(gMouse, 'button-release-event',
                            @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
       end;
     end;
@@ -4114,6 +4124,18 @@ begin
   else
     Assert(False, Format('Trace:ERROR:  Signal %d not found!', [AMsg]));
   end;
+end;
+
+procedure TGTKWidgetSet.SetCallbackDirect(const AMsg: LongInt;
+  const AGTKObject: PGTKObject; const ALCLObject: TObject);
+begin
+  SetCallbackEx(AMsg,AGTKObject,ALCLObject,true);
+end;
+
+procedure TGTKWidgetSet.SetCallback(const AMsg: LongInt;
+  const AGTKObject: PGTKObject; const ALCLObject: TObject);
+begin
+  SetCallbackEx(AMsg,AGTKObject,ALCLObject,false);
 end;
 
 

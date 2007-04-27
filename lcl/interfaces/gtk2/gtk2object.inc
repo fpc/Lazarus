@@ -391,14 +391,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGtk2WidgetSet.SetCallback
+  Function: TGtk2WidgetSet.SetCallbackEx
   Params: Msg - message for which to set a callback
           sender - object to which callback will be send
   Returns:  nothing
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-procedure TGTK2WidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
+  const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -452,15 +453,21 @@ var
   gObject, gFixed, gCore: PGTKObject;
 begin
   //debugln('gtk2object.inc TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
-  gObject := AGTKObject;
-  if gObject = nil then Exit;
+  if Direct then begin
+    gObject := AGTKObject;
+    gFixed := AGTKObject;
+    gCore := AGTKObject;
+  end else begin
+    gObject := AGTKObject;
+    if gObject = nil then Exit;
 
-  // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
-  gFixed := PGTKObject(GetFixedWidget(gObject));
-  if gFixed = nil then gFixed := gObject;
+    // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
+    gFixed := PGTKObject(GetFixedWidget(gObject));
+    if gFixed = nil then gFixed := gObject;
 
-  // gCore is the main widget (e.g. TListView has this)
-  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.CoreWidget);
+    // gCore is the main widget (e.g. TListView has this)
+    gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.CoreWidget);
+  end;
 
   case AMsg of
     LM_FOCUS :
@@ -490,7 +497,6 @@ begin
       ConnectKeyPressReleaseEvents(gCore);
     end;
 
-
     LM_SHOWWINDOW :
     begin
       ConnectSenderSignal(gObject, 'show', @gtk2showCB);
@@ -498,7 +504,7 @@ begin
     end;
 
   else
-    Inherited SetCallback(AMsg, AGTKObject, ALCLObject);
+    Inherited SetCallbackEx(AMsg, AGTKObject, ALCLObject, Direct);
   end;
 end;
 

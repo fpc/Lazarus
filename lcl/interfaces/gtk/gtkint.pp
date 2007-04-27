@@ -253,8 +253,12 @@ type
                              const FGColor,BGColor : TColor;
                              const Mask : tGtkStateEnum);
     procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont);
+    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject;
+                          const ALCLObject: TObject; Direct: boolean); virtual;
+    procedure SetCallbackDirect(const AMsg: LongInt; const AGTKObject: PGTKObject;
+                          const ALCLObject: TObject);
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject;
-                          const ALCLObject: TObject); virtual;
+                          const ALCLObject: TObject);
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
