@@ -352,6 +352,8 @@ images/codetoolsdefines/*.bak
 images/codetoolsdefines/units
 images/components/*.bak
 images/components/units
+images/debugger/*.bak
+images/debugger/units
 images/designer/*.bak
 images/designer/units
 images/menu/*.bak

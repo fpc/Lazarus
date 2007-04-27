@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager;
+  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf, InputHistory;
 
 type
 
@@ -57,6 +57,7 @@ type
     tbWatch: TToolButton;
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure cmbExpressionChange(Sender: TObject);
@@ -70,6 +71,7 @@ type
     procedure SetFindText(const NewFindText: string);
 
   public
+    constructor Create(TheOwner: TComponent); override;
     property FindText: string read GetFindText write SetFindText;
 
   end;
@@ -77,6 +79,14 @@ type
 implementation
 
 { TEvaluateDlg }
+
+constructor TEvaluateDlg.Create(TheOwner:TComponent);
+begin
+  inherited Create(TheOwner);
+
+  IDEDialogLayoutList.ApplyLayout(Self, 400, 290);
+  cmbExpression.Items.Assign(InputHistories.HistoryLists.GetList(ClassName, True));
+end;
 
 procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
 var
@@ -114,6 +124,13 @@ begin
   Result := cmbExpression.Text;
 end;
 
+
+procedure TEvaluateDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+  InputHistories.HistoryLists.GetList(ClassName, True).Assign(cmbExpression.Items);
+end;
 
 procedure TEvaluateDlg.FormShow(Sender: TObject);
 begin
