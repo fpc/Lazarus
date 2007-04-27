@@ -613,8 +613,10 @@ begin
   while GListItem<>nil do begin
     ListItemWidget:=PGtkWidget(GListItem^.data);
     if i>=NewTopIndex then break;
-    gtk_widget_size_request(ListItemWidget,@requisition);
-    inc(AdjValue,requisition.height);
+    if ListItemWidget<>nil then begin
+      gtk_widget_size_request(ListItemWidget,@requisition);
+      inc(AdjValue,requisition.height);
+    end;
     //DebugLn(['TGtkWSCustomListBox.SetTopIndex ',i,' AdjValue=',AdjValue,' Flags=',WidgetFlagsToString(ListItemWidget)]);
     inc(i);
     GListItem:=GListItem^.next;

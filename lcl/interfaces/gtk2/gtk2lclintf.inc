@@ -71,10 +71,11 @@ begin
   p := GetWidgetInfo(Pointer(Handle), False)^.CoreWidget;
   
   Menu := PGtkWidget(g_object_get_data(G_OBJECT(p), 'Menu'));
-
-  Requisition.width := MinItemsWidth;
-  Requisition.height := MinItemsHeight * MinItemCount;
-  gtk_widget_size_request(Menu, @Requisition);
+  if Menu<>nil then begin
+    Requisition.width := MinItemsWidth;
+    Requisition.height := MinItemsHeight * MinItemCount;
+    gtk_widget_size_request(Menu, @Requisition);
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

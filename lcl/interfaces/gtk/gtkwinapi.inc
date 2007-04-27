@@ -2272,7 +2272,12 @@ function TGtkWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolea
     avail_height := gdk_screen_height () - y;
 
     New(list_requisition);
-    gtk_widget_size_request (combo^.list, list_requisition);
+    if combo^.list<>nil then begin
+      gtk_widget_size_request (combo^.list, list_requisition);
+    end else begin
+      list_requisition^.height:=1;
+      list_requisition^.width:=1;
+    end;
 
     min_height := MIN (list_requisition^.height,popup^.vscrollbar^.requisition.height);
     if  GTK_LIST (combo^.list)^.children = nil then
@@ -8429,9 +8434,13 @@ begin
     FirstChild:=PGTkList(ListWidget)^.children;
     if FirstChild<>nil then begin
       FirstChildWidget:=PGtkWidget(FirstChild^.Data);
-      gtk_widget_size_request(FirstChildWidget,@item_requisition);
-      CurItemHeight:=Max(FirstChildWidget^.Allocation.Height,
-                         item_requisition.Height);
+      if FirstChildWidget<>nil then begin
+        gtk_widget_size_request(FirstChildWidget,@item_requisition);
+        CurItemHeight:=Max(FirstChildWidget^.Allocation.Height,
+                           item_requisition.Height);
+      end else begin
+        CurItemHeight:=1;
+      end;
       if MinItemsHeight<CurItemHeight*MinItemCount then
         MinItemsHeight:=CurItemHeight*MinItemCount;
     end;
