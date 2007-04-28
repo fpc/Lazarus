@@ -4,8 +4,8 @@ Version: LAZVERSION
 Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@freepascal.org>
-Architecture: i386
-Depends: fp-compiler (>=FPCVERSION), fpc-src (>=FPCVERSION), fp-ide (>=FPCVERSION), fp-units-base (>=FPCVERSION), fp-units-db (>=FPCVERSION), fp-units-fcl (>=FPCVERSION), fp-units-fv (>=FPCVERSION), fp-units-gfx (>=FPCVERSION), fp-units-gnome1 (>=FPCVERSION), fp-units-gtk (>=FPCVERSION), fp-units-gtk2 (>=FPCVERSION), fp-units-misc (>=FPCVERSION), fp-units-net (>=FPCVERSION), fp-units-rtl (>=FPCVERSION), fp-utils (>=FPCVERSION), libgdk-pixbuf-dev (>=0.17.0), libgtk1.2-dev
+Architecture: ARCH 
+Depends: libgdk-pixbuf-dev (>=0.17.0), libgtk1.2-dev, fpc (>=FPCVERSION) | fp-compiler (>=FPCVERSION), fpc-src (>=FPCVERSION), fpc (>=FPCVERSION) | fp-ide (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-base (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-db (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-fcl (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-fv (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gfx (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gnome1 (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gtk (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gtk2 (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-misc (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-net (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-rtl (>=FPCVERSION), fpc (>=FPCVERSION) | fp-utils (>=FPCVERSION)  
 Description: RAD tool for freepascal
   Lazarus is a free and opensource IDE and RAD tool for Free Pascal using the
   Lazarus component library LCL. The LCL is included in this package too.

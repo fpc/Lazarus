@@ -3,7 +3,7 @@ Version: FPCVERSION
 Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
-Architecture: i386
+Architecture: ARCH 
 Description: Free Pascal Sources
  The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 
  32/64bit Object Pascal Compiler. It comes with fully TP 7.0

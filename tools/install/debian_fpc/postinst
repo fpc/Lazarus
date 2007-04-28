@@ -1,4 +1,4 @@
 #!/bin/sh
-ln -s /usr/lib/fpc/FPCVERSION/ppc386 /usr/bin/ppc386
+ln -s /usr/lib/fpc/FPCVERSION/PPCBIN /usr/bin/PPCBIN 
 sh /usr/lib/fpc/FPCVERSION/samplecfg /usr/lib/fpc/\$fpcversion/ /etc
 

@@ -3,7 +3,7 @@ Version: FPCVERSION
 Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
-Architecture: i386
+Architecture: ARCH 
 Pre-Depends: binutils
 Replaces: fp-compiler, fp-utils, fp-ide, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-fv, fp-units-gtk, fp-units-gtk2, fp-units-gnome1, fp-units-db, fp-units-gfx, fp-units-net, fp-units-misc
 Description: Free Pascal Compiler

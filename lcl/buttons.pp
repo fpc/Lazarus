@@ -285,7 +285,7 @@ type
   private
     FAllowAllUp: Boolean;
     FDown: Boolean;
-    FDownBuffered : Boolean;//buffered value of FDown
+    FDownLoaded : Boolean;// value of Down set during loading
     FDragging: Boolean;
     FFlat: Boolean;
     FGlyph:   TButtonGlyph;

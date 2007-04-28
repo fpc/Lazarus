@@ -103,12 +103,33 @@ else
   TmpDir=$FPCSrcDir
 fi
 
+#------------------------------------------------------------------------------ 
+# architecture dependent stuff 
 
+Arch=`dpkg --print-architecture` 
+if [  "$Arch" = i386 ]; then 
+  ppcbin=ppc386 
+else 
+  if [ "$Arch" = amd64 ]; then 
+    ppcbin=ppcx64 
+  else   
+    if [  "$Arch" = powerpc ]; then 
+      ppcbin=ppcppc 
+    else 
+      if [  "$Arch" = sparc ]; then 
+        ppcbin=ppcsparc 
+      else 
+        echo "$Arch is not supported." 
+        exit -1 
+      fi 
+    fi 
+  fi 
+fi 
+ 
 #------------------------------------------------------------------------------
 # setup variables
 
 CurDir=`pwd`
-Arch=i386
 FPCBuildDir=$TmpDir/fpc_build
 FPCDeb=$CurDir/${PackageName}_$FPCVersion-${FPCRelease}_$Arch.deb
 ResourceDir=$CurDir/debian_$PackageName
@@ -138,8 +159,8 @@ mkdir -p $DebianRulezDir
 
 # create debian control file, which contains the package description
 echo "creating DEBIAN/control file"
-cat $ResourceDir/control | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/control
-
+cat $ResourceDir/control | sed -e "s/FPCVERSION/$FPCVersion/g" \ 
+   -e "s/ARCH/$Arch/g" > $DebianRulezDir/control 
 # create debian changelog file, needed for version
 echo "creating usr/share/doc/fpc/changelog file ..."
 File=$DebianDocDir/changelog
@@ -154,7 +175,8 @@ gzip --best $File
 # create postinst if needed
 if [ -f "$ResourceDir/postinst" ]; then
     echo "creating DEBIAN/postinst file"
-    cat $ResourceDir/postinst | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/postinst
+    cat $ResourceDir/postinst | sed -e "s/FPCVERSION/$FPCVersion/g" \ 
+      -e "s/PPCBIN/$ppcbin/g" > $DebianRulezDir/postinst 
     chmod a+x $DebianRulezDir/postinst
 fi
 

@@ -23,7 +23,28 @@ LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
 LazDestDirInstalled=/usr/share/lazarus
-FPCVersion=$(ppc386 -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
+ 
+Arch=`dpkg --print-architecture` 
+if [  "$Arch" = i386 ]; then 
+  ppcbin=ppc386 
+else 
+  if [ "$Arch" = amd64 ]; then 
+    ppcbin=ppcx64 
+  else   
+    if [  "$Arch" = powerpc ]; then 
+      ppcbin=ppcppc 
+    else 
+      if [  "$Arch" = sparc ]; then 
+        ppcbin=ppcsparc 
+      else 
+        echo "$Arch is not supported." 
+        exit -1 
+      fi 
+    fi 
+  fi 
+fi 
+ 
+FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/') 
 ChangeLogDate=`date --rfc-822`
 
 # download/export lazarus svn if needed
@@ -71,6 +92,7 @@ mkdir -p $LazBuildDir/DEBIAN
 cat $DebianSrcDir/control | \
   sed -e "s/FPCVERSION/$FPCVersion/g" \
       -e "s/LAZVERSION/$LazVersion/g" \
+      -e "s/ARCH/$Arch/g" \ 
   > $LazBuildDir/DEBIAN/control
 
 # copyright and changelog files

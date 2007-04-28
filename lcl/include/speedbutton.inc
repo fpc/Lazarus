@@ -136,7 +136,7 @@ begin
   //since Down needs GroupIndex, then we need to wait that all properties
   //loaded before we continue
   if (csLoading in ComponentState) then begin
-    FDownBuffered := Value;
+    FDownLoaded := Value;
     exit;
   end else begin
     if FGroupIndex = 0 then Value:= false;
@@ -762,7 +762,7 @@ procedure TCustomSpeedButton.Loaded;
 begin
   inherited Loaded;
   UpdateExclusive;
-  if FDownBuffered then SetDown(FDownBuffered);
+  if FDownLoaded then SetDown(FDownLoaded);
 end;
 
 function TCustomSpeedButton.GetGlyphSize(PaintRect: TRect): TSize;
