@@ -1725,22 +1725,28 @@ var
   Child: TControl;
   AWinControl: TWinControl;
 begin
+  if ControlCount=0 then exit;
   if AutoSizeDelayed then exit;
-  for i:=0 to ControlCount-1 do begin
-    Child:=Controls[i];
-    if Child.AutoSizeDelayed then continue;
+  DisableAlign;
+  try
+    for i:=0 to ControlCount-1 do begin
+      Child:=Controls[i];
+      if Child.AutoSizeDelayed then continue;
 
-    if cfRequestAlignNeeded in Child.FControlFlags then
-      Child.RequestAlign;
-    if cfAutoSizeNeeded in Child.FControlFlags then
-      Child.AdjustSize;
+      if cfRequestAlignNeeded in Child.FControlFlags then
+        Child.RequestAlign;
+      if cfAutoSizeNeeded in Child.FControlFlags then
+        Child.AdjustSize;
 
-    if Child is TWinControl then begin
-      AWinControl:=TWinControl(Child);
-      AWinControl.ResizeDelayedAutoSizeChildren;
-      if wcfReAlignNeeded in AWinControl.FWinControlFlags then
-        AWinControl.ReAlign;
+      if Child is TWinControl then begin
+        AWinControl:=TWinControl(Child);
+        AWinControl.ResizeDelayedAutoSizeChildren;
+        if wcfReAlignNeeded in AWinControl.FWinControlFlags then
+          AWinControl.ReAlign;
+      end;
     end;
+  finally
+    EnableAlign;
   end;
 end;
 
