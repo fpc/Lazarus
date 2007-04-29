@@ -679,10 +679,23 @@ class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
   NewMode: TEchoMode);
 var
   Entry: PGtkEntry;
+  PWChar: Integer;
 begin
-  inherited SetEchoMode(ACustomEdit, NewMode);
   Entry := PGtkEntry(ACustomEdit.Handle);
-
+  if NewMode in [emNone,emPassword] then begin
+    gtk_entry_set_visibility(Entry,false);
+    if NewMode=emNone then
+      PWChar:=0
+    else begin
+      PWChar:=ord(ACustomEdit.PasswordChar);
+      if (PWChar<192) or (PWChar=ord('*')) then
+        PWChar:=9679;
+    end;
+    //DebugLn(['TGtk2WSCustomEdit.SetEchoMode ',gtk_entry_get_invisible_char(Entry)]);
+    gtk_entry_set_invisible_char(Entry,PWChar);
+  end else begin
+    gtk_entry_set_visibility(Entry,true);
+  end;
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(
