@@ -83,7 +83,7 @@ begin
                              ncpPublishedProcs);
   end;
 
-  if not Tool.ApplyClassCompletion then
+  if not Tool.ApplyClassCompletion(true) then
     raise Exception.Create('Explore failed');
   writeln('Method added: ');
   writeln(Code.Source);
