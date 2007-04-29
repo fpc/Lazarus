@@ -918,6 +918,7 @@ type
   TLabeledEdit = class(TCustomLabeledEdit)
   published
     property Anchors;
+    property AutoSelect;
     property AutoSize;
     property BorderSpacing;
     property CharCase;
@@ -925,6 +926,7 @@ type
     property Constraints;
     property DragCursor;
     property DragMode;
+    property EchoMode;
     property EditLabel;
     property Enabled;
     property LabelPosition;
