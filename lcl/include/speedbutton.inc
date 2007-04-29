@@ -841,6 +841,7 @@ begin
   then begin
     FMouseInControl := True;
     UpdateState(true);
+    if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
   end;
 end;
 
@@ -859,7 +860,10 @@ begin
   then begin
     FMouseInControl := False;
     if Enabled then
+    begin
       UpdateState(true);
+      if Assigned(FOnMouseExit) then FOnMouseExit(Self);
+    end;
   end;
 end;
 

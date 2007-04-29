@@ -294,6 +294,8 @@ type
     FLayout: TButtonLayout;
     FMargin: integer;
     FMouseInControl: Boolean;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseExit: TNotifyEvent;
     FShortcut: TShortCut;
     FShowAccelChar: boolean;
     FShowCaption: boolean;
@@ -359,6 +361,8 @@ type
     property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
     property Spacing: integer read FSpacing write SetSpacing default 4;
     property Transparent: Boolean read FTransparent write SetTransparent default true;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseExit: TNotifyEvent read FOnMouseExit write FOnMouseExit;
   end;
 
 
@@ -389,6 +393,8 @@ type
     property OnClick;
     property OnDblClick;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseExit;
     property OnMouseMove;
     property OnMouseUp;
     property OnPaint;
