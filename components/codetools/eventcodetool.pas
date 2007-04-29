@@ -348,7 +348,7 @@ begin
   if SectionNode=nil then exit;
   ANode:=SectionNode.FirstChild;
   {$IFDEF CTDEBUG}
-  DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] A MethodName=',UpperClassName,'.',UpperMethodName);
+  DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] A UpperMethodName=',UpperClassName,'.',UpperMethodName);
   {$ENDIF}
   while (ANode<>nil) do begin
     if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)

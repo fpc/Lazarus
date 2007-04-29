@@ -378,6 +378,8 @@ type
     procedure OIOnAddToFavourites(Sender: TObject);
     procedure OIOnRemoveFromFavourites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
+    function OnPropHookGetMethodName(const Method: TMethod;
+                                     CheckOwner: TObject): ShortString;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName: ShortString;
                                     TypeData: PTypeData;
@@ -1274,6 +1276,24 @@ begin
   end;
 end;
 
+function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
+  CheckOwner: TObject): ShortString;
+begin
+  if Assigned(Method.Code) then begin
+    if Method.Data<>nil then begin
+      if (CheckOwner<>nil) and (TObject(Method.Data)<>CheckOwner) then
+        Result:=''
+      else begin
+        Result:=TObject(Method.Data).MethodName(Method.Code);
+        if Result='' then
+          Result:='<Unpublished>';
+      end;
+    end else
+      Result:='<No LookupRoot>';
+  end else
+    Result:='';
+end;
+
 procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
   Proc:TGetStringProc);
 var ActiveSrcEdit: TSourceEditor;
@@ -1503,6 +1523,7 @@ begin
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
+  GlobalDesignHook.AddHandlerGetMethodName(@OnPropHookGetMethodName);
   GlobalDesignHook.AddHandlerGetMethods(@OnPropHookGetMethods);
   GlobalDesignHook.AddHandlerMethodExists(@OnPropHookMethodExists);
   GlobalDesignHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
@@ -10512,6 +10533,7 @@ begin
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
     OnFindDefineProperty:=@OnCodeToolBossFindDefineProperty;
+    OnGetMethodName:=@OnPropHookGetMethodName;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -11844,7 +11866,9 @@ var
         PropInfo:=PropList^[i];
         if PropInfo^.PropType^.Kind<>tkMethod then continue;
         CurMethod:=GetMethodProp(AComponent,PropInfo);
-        CurMethodName:=Root.MethodName(CurMethod.Code);
+        if (CurMethod.Data=nil) and (CurMethod.Code=nil) then continue;
+        CurMethodName:=GlobalDesignHook.GetMethodName(CurMethod,Root);
+        if CurMethodName='' then continue;
         DefaultName:=TMethodPropertyEditor.GetDefaultMethodName(
                           Root,AComponent,RootClassName,OldName,PropInfo^.Name);
         if (DefaultName<>CurMethodName) then continue;

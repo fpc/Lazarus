@@ -39,7 +39,7 @@ uses
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
   // IDE
-  ComponentReg, PackageIntf, IDEWindowIntf,
+  PropEdits, ComponentReg, PackageIntf, IDEWindowIntf,
   LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
 
 type
@@ -351,7 +351,7 @@ begin
       p:=PInstancePropInfo(ListOfPInstancePropInfo[i]);
       PropName:=p^.PropInfo^.Name;
       CurMethod:=GetMethodProp(p^.Instance,p^.PropInfo);
-      CurMethodName:=RootComponent.MethodName(CurMethod.Code);
+      CurMethodName:=GlobalDesignHook.GetMethodName(CurMethod,nil);
       s:=s+DbgSName(p^.Instance)+' '+PropName+'='+CurMethodName+#13;
     end;
     //debugln('RemoveDanglingEvents ',s);

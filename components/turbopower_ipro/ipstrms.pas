@@ -86,7 +86,7 @@ type
       { Current position in the file. }
 
     { Verification methods }
-    procedure CheckClosed(const MethodName : string);
+    procedure CheckClosed(const aMethodName : string);
     procedure CheckFileName;
 
     procedure CloseFile;
@@ -330,10 +330,10 @@ end;
 
 {-----------------------------------------------------------------------------}
 
-procedure TIpMemMapStream.CheckClosed(const MethodName : string);
+procedure TIpMemMapStream.CheckClosed(const aMethodName : string);
 begin
   if mmFileHandle <> 0 then
-    raise EIpBaseException.CreateFmt(SMemMapMustBeClosed, [MethodName]);
+    raise EIpBaseException.CreateFmt(SMemMapMustBeClosed, [aMethodName]);
 end;
 
 {-----------------------------------------------------------------------------}

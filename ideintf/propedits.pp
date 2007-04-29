@@ -1102,14 +1102,15 @@ type
   // methods
   TPropHookCreateMethod = function(const Name:ShortString;
     ATypeInfo:PTypeInfo; const ATypeUnitName: string): TMethod of object;
-  TPropHookGetMethodName = function(const Method:TMethod): ShortString of object;
+  TPropHookGetMethodName = function(const Method: TMethod;
+                                    CheckOwner: TObject): ShortString of object;
   TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
   TPropHookMethodExists = function(const Name:ShortString; TypeData: PTypeData;
     var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean of object;
   TPropHookRenameMethod = procedure(const CurName, NewName:ShortString) of object;
   TPropHookShowMethod = procedure(const Name:ShortString) of object;
   TPropHookMethodFromAncestor = function(const Method:TMethod):boolean of object;
-  TPropHookChainCall = procedure(const MethodName, InstanceName,
+  TPropHookChainCall = procedure(const AMethodName, InstanceName,
     InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
   TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
@@ -1202,7 +1203,7 @@ type
     // methods
     function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo;
                           const ATypeUnitName: string): TMethod;
-    function GetMethodName(const Method:TMethod): ShortString;
+    function GetMethodName(const Method: TMethod; CheckOwner: TObject): ShortString;
     procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function MethodExists(const Name:ShortString; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
@@ -3714,14 +3715,16 @@ end;
 function TMethodPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
-  V, T: TMethod;
+  CurFirstValue, AnotherValue: TMethod;
 begin
   Result := False;
   if PropCount > 1 then begin
-    V := GetMethodValue;
+    CurFirstValue := GetMethodValue;
     for I := 1 to PropCount - 1 do begin
-      T := GetMethodValueAt(I);
-      if (T.Code <> V.Code) or (T.Data <> V.Data) then Exit;
+      AnotherValue := GetMethodValueAt(I);
+      if (AnotherValue.Code <> CurFirstValue.Code)
+      or (AnotherValue.Data <> CurFirstValue.Data) then
+        Exit;
     end;
   end;
   Result := True;
@@ -3837,7 +3840,7 @@ end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
 begin
-  Result:=PropertyHook.GetMethodName(GetMethodValue);
+  Result:=PropertyHook.GetMethodName(GetMethodValue,nil);
 end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
@@ -5051,25 +5054,30 @@ begin
     while GetNextHandlerIndex(htCreateMethod,i) do begin
       Handler:=TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
       Result:=Handler(Name,ATypeInfo,ATypeUnitName);
-      if Result.Code<>nil then exit;
+      if (Result.Data<>nil) or (Result.Code<>nil) then exit;
     end;
   end;
 end;
 
-function TPropertyEditorHook.GetMethodName(const Method:TMethod): ShortString;
+function TPropertyEditorHook.GetMethodName(const Method: TMethod;
+  CheckOwner: TObject): ShortString;
 var
   i: Integer;
 begin
   i:=GetHandlerCount(htGetMethodName);
   if GetNextHandlerIndex(htGetMethodName,i) then begin
-    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method);
+    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,CheckOwner);
   end else begin
     // search the method name with the given code pointer
     if Assigned(Method.Code) then begin
-      if Assigned(LookupRoot) then begin
-        Result:=LookupRoot.MethodName(Method.Code);
-        if Result='' then
-          Result:='<Unpublished>';
+      if Method.Data<>nil then begin
+        if (CheckOwner<>nil) and (TObject(Method.Data)<>CheckOwner) then
+          Result:=''
+        else begin
+          Result:=TObject(Method.Data).MethodName(Method.Code);
+          if Result='' then
+            Result:='<Unpublished>';
+        end;
       end else
         Result:='<No LookupRoot>';
     end else
@@ -5144,7 +5152,7 @@ begin
     Handler:=TPropHookMethodFromAncestor(FHandlers[htMethodFromAncestor][i]);
     Result:=Handler(Method);
   end else begin
-    if (Method.Data<>nil) then begin
+    if (Method.Data<>nil) and (Method.Code<>nil) then begin
       AncestorClass:=TObject(Method.Data).ClassParent;
       Result:=(AncestorClass<>nil)
               and (AncestorClass.MethodName(Method.Code)<>'');

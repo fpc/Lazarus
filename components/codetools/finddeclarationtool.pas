@@ -135,6 +135,10 @@ type
     function(Sender: TObject; const Filename: string): string of object;
 
   //----------------------------------------------------------------------------
+  TOnGetMethodname = function(const AMethod: TMethod;
+                              CheckOwner: TObject): shortstring of object;
+
+  //----------------------------------------------------------------------------
   // flags/states for searching
   TFindDeclarationFlag = (
     fdfSearchInAncestors,   // if context is a class, search also in
@@ -514,6 +518,7 @@ type
     FOnFindUsedUnit: TOnFindUsedUnit;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnGetDirectoryCache: TOnGetDirectoryCache;
+    FOnGetMethodName: TOnGetMethodname;
     FOnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit;
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     FFirstNodeCache: TCodeTreeNodeCache;
@@ -739,6 +744,8 @@ type
                                                      write FOnGetDirectoryCache;
     property OnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit
            read FOnGetSrcPathForCompiledUnit write fOnGetSrcPathForCompiledUnit;
+    property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
+                                               write FOnGetMethodName;
     property AdjustTopLineDueToComment: boolean
                read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
     property DirectoryCache: TCTDirectoryCache read FDirectoryCache;

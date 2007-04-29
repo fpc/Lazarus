@@ -980,7 +980,7 @@ begin
     if IsFunction then Include(ParseAttr,pphIsFunction);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   end else begin
-    // Method resolution clause (e.g. function Intf.Method = MethodName)
+    // Method resolution clause (e.g. function Intf.Method = Method_Name)
     CurNode.Parent.Desc:=ctnMethodMap;
     // read Method name of interface
     ReadNextAtom;

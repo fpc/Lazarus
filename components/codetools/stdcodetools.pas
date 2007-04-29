@@ -4245,7 +4245,7 @@ var
           // RTTI property is method
           // -> search method in source
           CurMethod:=GetMethodProp(AComponent,PropInfo);
-          CurMethodName:=RootComponent.MethodName(CurMethod.Code);
+          CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
           if CurMethodName<>'' then begin
             NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
             if NodeExt=nil then begin

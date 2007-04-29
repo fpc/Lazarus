@@ -92,6 +92,7 @@ type
     FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
     FOnFindDefineProperty: TOnFindDefineProperty;
+    FOnGetMethodName: TOnGetMethodname;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -111,6 +112,8 @@ type
           TheUnitInFilename: string): TCodeBuffer;
     function DoOnGetSrcPathForCompiledUnit(Sender: TObject;
           const AFilename: string): string;
+    function OnInternalGetMethodName(const AMethod: TMethod;
+                                     CheckOwner: TObject): shortstring;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     procedure SetAbortable(const AValue: boolean);
@@ -263,6 +266,10 @@ type
                                         UseCache: boolean = false): string;
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
+
+    // miscellaneous
+    property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
+                                               write FOnGetMethodName;
 
     // data function
     procedure FreeListOfPCodeXYPosition(var List: TFPList);
@@ -3668,6 +3675,19 @@ begin
     Result:=GetCompiledSrcPathForDirectory(ExtractFilePath(AFilename));
 end;
 
+function TCodeToolManager.OnInternalGetMethodName(const AMethod: TMethod;
+  CheckOwner: TObject): shortstring;
+begin
+  if Assigned(OnGetMethodName) then
+    Result:=OnGetMethodName(AMethod,CheckOwner)
+  else if (AMethod.Data=nil) or (AMethod.Code=nil) then
+    Result:=''
+  else if (CheckOwner<>nil) and (TObject(AMethod.Data)<>CheckOwner) then
+    Result:=''
+  else
+    Result:=TObject(AMethod.Data).MethodName(AMethod.Code);
+end;
+
 function TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool): boolean;
 begin
   Result:=true;
@@ -3857,6 +3877,7 @@ begin
   TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
   TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
   TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
+  TCodeTool(Result).OnGetMethodName:=@OnInternalGetMethodName;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
   Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
   TCodeTool(Result).OnParserProgress:=@OnParserProgress;
