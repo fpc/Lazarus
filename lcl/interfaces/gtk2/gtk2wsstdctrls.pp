@@ -171,6 +171,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
   end;
 
   { TGtk2WSCustomMemo }
@@ -672,6 +673,16 @@ var
 begin
   Entry := PGtkEntry(ACustomEdit.Handle);
   Result :=  ABS(Entry^.current_pos - Entry^.selection_bound);
+end;
+
+class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
+  NewMode: TEchoMode);
+var
+  Entry: PGtkEntry;
+begin
+  inherited SetEchoMode(ACustomEdit, NewMode);
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  gtk_entry_append_text();
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(

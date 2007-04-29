@@ -51,7 +51,9 @@ begin
     and ((Node.SubDesc and ctnsForwardDeclaration)=0) then begin
       CurClassName:=Tool.ExtractClassName(Node,false);
       writeln(CurClassName);
-    end;
+    end
+    else if Node.Desc=ctnImplementation then
+      break;
     Node:=Node.Next;
   end
 end.
