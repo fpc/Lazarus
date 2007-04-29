@@ -85,6 +85,7 @@ type
     Property Button;
   published
     property AutoSize;
+    property AutoSelect;
     property Align;
     property Anchors;
     property BorderSpacing;
@@ -96,6 +97,7 @@ type
     Property DirectInput;
     property DragCursor;
     property DragMode;
+    property EchoMode;
     property Enabled;
     Property Flat;
     property Font;
@@ -123,6 +125,7 @@ type
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
+    property PasswordChar;
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
@@ -181,6 +184,7 @@ type
     // Other properties
     property Align;
     property Anchors;
+    property AutoSelect;
     property BorderSpacing;
     property AutoSize;
     property Color;
@@ -255,8 +259,9 @@ type
     // Other properties
     property Align;
     property Anchors;
-    property BorderSpacing;
     property AutoSize;
+    property AutoSelect;
+    property BorderSpacing;
     property Color;
     property Ctl3D;
     property DragCursor;
@@ -335,6 +340,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property AutoSelect;
     property BorderSpacing;
     property Color;
     property Constraints;
@@ -410,6 +416,7 @@ type
     property Anchors;
     property BorderSpacing;
     property AutoSize;
+    property AutoSelect;
     property Color;
     property Ctl3D;
     property DragCursor;
