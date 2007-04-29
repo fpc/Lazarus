@@ -682,7 +682,7 @@ var
 begin
   inherited SetEchoMode(ACustomEdit, NewMode);
   Entry := PGtkEntry(ACustomEdit.Handle);
-  gtk_entry_append_text();
+
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(
