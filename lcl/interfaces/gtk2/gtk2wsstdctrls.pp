@@ -172,6 +172,7 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
   end;
 
   { TGtk2WSCustomMemo }
@@ -679,23 +680,31 @@ class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
   NewMode: TEchoMode);
 var
   Entry: PGtkEntry;
-  PWChar: Integer;
 begin
   Entry := PGtkEntry(ACustomEdit.Handle);
   if NewMode in [emNone,emPassword] then begin
     gtk_entry_set_visibility(Entry,false);
-    if NewMode=emNone then
-      PWChar:=0
-    else begin
-      PWChar:=ord(ACustomEdit.PasswordChar);
-      if (PWChar<192) or (PWChar=ord('*')) then
-        PWChar:=9679;
-    end;
-    //DebugLn(['TGtk2WSCustomEdit.SetEchoMode ',gtk_entry_get_invisible_char(Entry)]);
-    gtk_entry_set_invisible_char(Entry,PWChar);
+    SetPasswordChar(ACustomEdit,ACustomEdit.PasswordChar);
   end else begin
     gtk_entry_set_visibility(Entry,true);
   end;
+end;
+
+class procedure TGtk2WSCustomEdit.SetPasswordChar(
+  const ACustomEdit: TCustomEdit; NewChar: char);
+var
+  PWChar: Integer;
+  Entry: PGtkEntry;
+begin
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  if ACustomEdit.EchoMode=emNone then
+    PWChar:=0
+  else begin
+    PWChar:=ord(ACustomEdit.PasswordChar);
+    if (PWChar<192) or (PWChar=ord('*')) then
+      PWChar:=9679;
+  end;
+  gtk_entry_set_invisible_char(Entry,PWChar);
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(
