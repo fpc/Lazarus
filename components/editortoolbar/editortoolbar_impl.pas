@@ -34,6 +34,12 @@ uses
   ,MenuIntf
   ;
 
+
+const
+  cSettingsFile = 'editortoolbar.xml';
+  cDivider      = '---------------';
+
+
 type
 
   TEditorToolbar = class(TObject)
@@ -46,11 +52,13 @@ type
     function    CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
     procedure   DoConfigureToolbar(Sender: TObject);
   protected
+    procedure   AddButton(AMenuItem: TIDEMenuItem);
   public
     constructor Create;
     destructor  Destroy; override;
     procedure   InitEditorToolBar;
-    procedure   AddButton(AMenuItem: TIDEMenuItem);
+    procedure   AddCustomItems;
+    procedure   AddDivider;
     procedure   AddStaticItems;
     procedure   ClearToolbar;
   end;
@@ -70,6 +78,8 @@ uses
   ,SysUtils
   ,LResources
   ,EdtTbConfigFrm
+  ,LazConfigStorage
+  ,BaseIDEIntf
   ;
 
 
@@ -121,7 +131,6 @@ begin
   inherited Destroy;
 end;
 
-
 procedure TEditorToolbar.InitEditorToolBar;
 begin
   if not Assigned(W) then
@@ -131,6 +140,8 @@ begin
     TB := nil;
     CreateEditorToolBar(W, TB, BI);
   end;
+
+  AddCustomItems;
   AddStaticItems;
 end;
 
@@ -139,7 +150,7 @@ var
   B: TToolButton;
   i: integer;
 begin
-  B := TToolbutton.Create(W);
+  B := TToolButton.Create(TB);
   B.Parent      := TB;
   B.Caption     := AMenuItem.Caption;
   B.Hint        := AMenuItem.Caption; // or should we use AMenuItem.Hint?
@@ -151,8 +162,46 @@ begin
   end
   else
     B.ImageIndex  := BI.AddLazarusResource('execute16');
+
   B.Style       := tbsButton;
   B.OnClick     := AMenuItem.OnClick;
+end;
+
+procedure TEditorToolbar.AddCustomItems;
+var
+  i: integer;
+  c: integer;
+  cfg: TConfigStorage;
+  value: string;
+  mi: TIDEMenuItem;
+begin
+  cfg := GetIDEConfigStorage(cSettingsFile, True);
+  try
+    c := cfg.GetValue('Count', 0);
+    for i := c - 1 downto 0 do
+    begin
+      value := cfg.GetValue('Button' + Format('%2.2d', [i+1]) + '/Value', '');
+      if value = cDivider then
+        AddDivider
+      else
+      begin
+        mi := IDEMenuRoots.FindByPath(value, True);
+        if Assigned(mi) then
+          AddButton(mi);
+      end;
+    end;
+  finally
+    cfg.Free;
+  end;
+end;
+
+procedure TEditorToolbar.AddDivider;
+var
+  B: TToolButton;
+begin
+  B := TToolbutton.Create(TB);
+  B.Parent      := TB;
+  B.Style       := tbsDivider;
 end;
 
 procedure TEditorToolbar.AddStaticItems;
@@ -163,16 +212,11 @@ var
 begin
   TB.BeginUpdate;
   try
-    if TB.ButtonList.Count <> 0 then
-    begin
-      // divider button
-      B := TToolbutton.Create(W);
-      B.Parent      := TB;
-      B.Style       := tbsDivider;
-    end;
+    if TB.ButtonCount <> 0 then
+      AddDivider;
 
     // JumpTo Button
-    B := TToolbutton.Create(W);
+    B := TToolbutton.Create(TB);
     B.Parent      := TB;
     B.Caption     := 'Jump To';
     B.Hint        := B.Caption;
@@ -186,13 +230,10 @@ begin
     for T := Low(TJumpType) to High(TJumpType) do
       PM.Items.Add(CreateJumpItem(T,W));
 
-    // divider button
-    B := TToolbutton.Create(W);
-    B.Parent      := TB;
-    B.Style       := tbsDivider;
+    AddDivider;
 
     // Config Button
-    B := TToolbutton.Create(W);
+    B := TToolbutton.Create(TB);
     B.Parent      := TB;
     B.Caption     := 'Configure Toolbar';
     B.Hint        := B.Caption;
@@ -220,7 +261,7 @@ end;
 
 procedure Register;
 begin
-  If (SourceEditorWindow <> nil) then
+  if (SourceEditorWindow <> nil) then
     gEditorToolbar.InitEditorToolBar;
 end;
 

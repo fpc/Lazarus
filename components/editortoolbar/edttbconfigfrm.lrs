@@ -30,16 +30,17 @@ LazarusResources.Add('TEdtTbConfigForm','FORMDATA',[
   +'ht'#2#25#3'Top'#3#0#1#5'Width'#2's'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8
   +'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'btnAddDivider'
   +#21'Constraints.MaxHeight'#2#25#21'Constraints.MinHeight'#2#25#20'Constraint'
-  +'s.MinWidth'#2'K'#8'TabOrder'#2#1#0#0#8'TListBox'#9'lbToolbar'#4'Left'#3#200
-  +#1#6'Height'#3#225#0#3'Top'#2#28#5'Width'#3#183#0#8'TabOrder'#2#2#8'TopIndex'
-  +#2#255#0#0#7'TBitBtn'#9'btnRemove'#4'Left'#3#176#1#6'Height'#2#26#3'Top'#2'J'
-  +#5'Width'#2#22#9'NumGlyphs'#2#0#7'OnClick'#7#14'btnRemoveClick'#8'TabOrder'#2
-  +#3#0#0#7'TBitBtn'#6'btnAdd'#4'Left'#3#176#1#6'Height'#2#26#3'Top'#2'c'#5'Wid'
-  +'th'#2#22#9'NumGlyphs'#2#0#7'OnClick'#7#11'btnAddClick'#8'TabOrder'#2#4#0#0#7
-  +'TBitBtn'#9'btnMoveUp'#4'Left'#3#176#1#6'Height'#2#26#3'Top'#3#157#0#5'Width'
-  +#2#22#7'Enabled'#8#9'NumGlyphs'#2#0#8'TabOrder'#2#5#0#0#7'TBitBtn'#11'btnMov'
-  +'eDown'#4'Left'#3#176#1#6'Height'#2#26#3'Top'#3#182#0#5'Width'#2#22#7'Enable'
-  +'d'#8#9'NumGlyphs'#2#0#8'TabOrder'#2#6#0#0#9'TTreeView'#2'TV'#4'Left'#2#16#6
-  +'Height'#3#253#0#3'Top'#2#28#5'Width'#3#136#1#17'DefaultItemHeight'#2#18#8'T'
-  +'abOrder'#2#7#8'OnChange'#7#8'TVChange'#0#0#0
+  +'s.MinWidth'#2'K'#7'OnClick'#7#18'btnAddDividerClick'#8'TabOrder'#2#1#0#0#8
+  +'TListBox'#9'lbToolbar'#4'Left'#3#200#1#6'Height'#3#225#0#3'Top'#2#28#5'Widt'
+  +'h'#3#183#0#8'TabOrder'#2#2#8'TopIndex'#2#255#0#0#7'TBitBtn'#9'btnRemove'#4
+  +'Left'#3#176#1#6'Height'#2#26#3'Top'#2'J'#5'Width'#2#22#9'NumGlyphs'#2#0#7'O'
+  +'nClick'#7#14'btnRemoveClick'#8'TabOrder'#2#3#0#0#7'TBitBtn'#6'btnAdd'#4'Lef'
+  +'t'#3#176#1#6'Height'#2#26#3'Top'#2'c'#5'Width'#2#22#9'NumGlyphs'#2#0#7'OnCl'
+  +'ick'#7#11'btnAddClick'#8'TabOrder'#2#4#0#0#7'TBitBtn'#9'btnMoveUp'#4'Left'#3
+  +#176#1#6'Height'#2#26#3'Top'#3#157#0#5'Width'#2#22#9'NumGlyphs'#2#0#7'OnClic'
+  +'k'#7#14'btnMoveUpClick'#8'TabOrder'#2#5#0#0#7'TBitBtn'#11'btnMoveDown'#4'Le'
+  +'ft'#3#176#1#6'Height'#2#26#3'Top'#3#182#0#5'Width'#2#22#9'NumGlyphs'#2#0#7
+  +'OnClick'#7#16'btnMoveDownClick'#8'TabOrder'#2#6#0#0#9'TTreeView'#2'TV'#4'Le'
+  +'ft'#2#16#6'Height'#3#253#0#3'Top'#2#28#5'Width'#3#136#1#17'DefaultItemHeigh'
+  +'t'#2#18#8'TabOrder'#2#7#8'OnChange'#7#8'TVChange'#0#0#0
 ]);

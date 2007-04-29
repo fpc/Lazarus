@@ -44,11 +44,16 @@ type
     procedure FormCreate(Sender: TObject);
     procedure TVChange(Sender: TObject; Node: TTreeNode);
     procedure btnAddClick(Sender: TObject);
+    procedure btnAddDividerClick(Sender: TObject);
+    procedure btnMoveDownClick(Sender: TObject);
+    procedure btnMoveUpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
   private
     procedure SetupCaptions;
     procedure LoadCategories;
+    procedure LoadSettings;
+    procedure SaveSettings;
     procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem);
   public
     class function Execute: boolean;
@@ -59,6 +64,9 @@ implementation
 
 uses
   editortoolbar_impl
+  ,LazConfigStorage
+  ,BaseIDEIntf
+  ,LazIDEIntf
   ;
 
 
@@ -85,6 +93,7 @@ begin
 
   SetupCaptions;
   LoadCategories;
+  LoadSettings;
 end;
 
 procedure TEdtTbConfigForm.TVChange(Sender: TObject; Node: TTreeNode);
@@ -109,10 +118,39 @@ begin
   end;
 end;
 
+procedure TEdtTbConfigForm.btnAddDividerClick(Sender: TObject);
+begin
+  lbToolbar.Items.Add(cDivider);
+end;
+
+procedure TEdtTbConfigForm.btnMoveDownClick(Sender: TObject);
+begin
+  if lbToolbar.ItemIndex = -1 then
+    exit;
+  if lbToolbar.ItemIndex < lbToolbar.Items.Count - 1 then
+  begin
+    lbToolbar.Items.Exchange(lbToolbar.ItemIndex, lbToolbar.ItemIndex+1);
+    lbToolbar.ItemIndex := lbToolbar.ItemIndex+1;
+  end;
+end;
+
+procedure TEdtTbConfigForm.btnMoveUpClick(Sender: TObject);
+begin
+  if lbToolbar.ItemIndex = -1 then
+    exit;
+  if lbToolbar.ItemIndex > 0 then
+  begin
+    lbToolbar.Items.Exchange(lbToolbar.ItemIndex, lbToolbar.ItemIndex-1);
+    lbToolbar.ItemIndex := lbToolbar.ItemIndex-1;
+  end;
+end;
+
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
 var
   i: integer;
 begin
+  SaveSettings;
+  
   if lbToolbar.Items.Count = 0 then
   begin
     { resets the toolbar to only contain static (default) items }
@@ -122,11 +160,7 @@ begin
   end;
 
   gEditorToolbar.ClearToolbar;
-  for i := 0 to lbToolbar.Items.Count-1 do
-  begin
-    gEditorToolbar.AddButton(TIDEMenuItem(lbToolBar.Items.Objects[i]));
-  end;
-
+  gEditorToolbar.AddCustomItems;
   gEditorToolbar.AddStaticItems;
 end;
 
@@ -157,6 +191,56 @@ begin
       AddMenuItem(nil, IDEMenuRoots[i]);
   finally
     TV.Items.EndUpdate;
+  end;
+end;
+
+procedure TEdtTbConfigForm.LoadSettings;
+var
+  i: integer;
+  c: integer;
+  cfg: TConfigStorage;
+  value: string;
+  mi: TIDEMenuItem;
+begin
+  cfg := GetIDEConfigStorage(cSettingsFile, True);
+  try
+    c := cfg.GetValue('Count', 0);
+    for i := 0 to c - 1 do
+    begin
+      value := cfg.GetValue('Button' + Format('%2.2d', [i+1]) + '/Value', '');
+      if value = cDivider then
+      begin
+        lbToolbar.Items.Add(value);
+        Continue;
+      end;
+      
+      mi := IDEMenuRoots.FindByPath(value, true);
+      if Assigned(mi) then
+        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+    end;
+  finally
+    cfg.Free;
+  end;
+end;
+
+procedure TEdtTbConfigForm.SaveSettings;
+var
+  i: integer;
+  cfg: TConfigStorage;
+begin
+  cfg := GetIDEConfigStorage(cSettingsFile, False);
+  try
+    cfg.SetValue('Count', lbToolbar.Items.Count);
+    for i := 0 to lbToolbar.Items.Count - 1 do
+    begin
+      if lbToolbar.Items[i] = cDivider then
+        cfg.SetDeleteValue('Button' + Format('%2.2d', [i+1]) + '/Value', cDivider, '')
+      else
+        cfg.SetDeleteValue('Button' + Format('%2.2d', [i+1]) + '/Value', TIDEMenuItem(lbToolbar.Items.Objects[i]).GetPath, '');
+    end;
+    cfg.WriteToDisk;
+  finally
+    cfg.Free;
   end;
 end;
 

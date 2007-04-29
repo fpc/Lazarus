@@ -95,6 +95,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Constraints.MaxHeight = 25
     Constraints.MinHeight = 25
     Constraints.MinWidth = 75
+    OnClick = btnAddDividerClick
     TabOrder = 1
   end
   object lbToolbar: TListBox
@@ -128,8 +129,8 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Height = 26
     Top = 157
     Width = 22
-    Enabled = False
     NumGlyphs = 0
+    OnClick = btnMoveUpClick
     TabOrder = 5
   end
   object btnMoveDown: TBitBtn
@@ -137,8 +138,8 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Height = 26
     Top = 182
     Width = 22
-    Enabled = False
     NumGlyphs = 0
+    OnClick = btnMoveDownClick
     TabOrder = 6
   end
   object TV: TTreeView

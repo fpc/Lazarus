@@ -19,7 +19,7 @@
 "/>
     <License Value="GPL
 "/>
-    <Version Minor="3"/>
+    <Version Minor="4"/>
     <Files Count="3">
       <Item1>
         <Filename Value="jumpto_impl.pas"/>
@@ -38,14 +38,14 @@
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item3>
       <Item4>
         <PackageName Value="CodeTools"/>
