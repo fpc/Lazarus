@@ -48,6 +48,7 @@ implementation
 var
   LazarusDir: string;
   ExamplesDir: string;
+  CTExamplesDir: string;
   LCLTestDir: string;
   ScriptEngine: string;
   
@@ -55,6 +56,7 @@ procedure InitDirectories;
 begin
   LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
   ExamplesDir := LazarusDir + 'examples' + PathDelim;
+  CTExamplesDir := SetDirSeparators(LazarusDir + 'components/codetools/examples/');
   LCLTestDir := LazarusDir + 'lcl' + PathDelim + 'tests' + PathDelim;
   ScriptEngine := 'C:\Program Files\AutoHotkey\AutoHotKey.exe';
 end;
@@ -182,6 +184,8 @@ initialization
   InitDirectories;
   GetTestRegistry.AddTest(
     TLpiTest.CreateSuiteFromDirectory('Examples', ExamplesDir));
+  GetTestRegistry.AddTest(
+    TLpiTest.CreateSuiteFromDirectory('Codetools Examples', CTExamplesDir));
   GetTestRegistry.AddTest(
     TLpiTest.CreateSuiteFromDirectory('LCL test', LCLTestDir));
 end.
