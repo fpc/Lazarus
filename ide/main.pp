@@ -1405,10 +1405,10 @@ begin
   MainIDEBar.OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
 
-  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
-  MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
-  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
-  MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
+  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'menu_save_16_dual'   , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
+  MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_saveall_16', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
+  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
+  MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform' , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
   // new row
   ButtonLeft := 2;
