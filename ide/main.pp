@@ -94,7 +94,7 @@ uses
   // help manager
   IDEContextHelpEdit, HelpManager,
   // designer
-  JITForm, ComponentPalette, ComponentReg, ObjInspExt,
+  JITForm, JITForms, ComponentPalette, ComponentReg, ObjInspExt,
   Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   {$DEFINE UseNewMenuEditor}
@@ -400,7 +400,7 @@ type
     procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
     procedure OnPropHookAddDependency(const AClass: TClass;
                                       const AnUnitName: shortstring);
-
+                                      
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
                                  var RegisteredComponent: TRegisteredComponent);
@@ -1279,7 +1279,7 @@ end;
 function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
   CheckOwner: TObject): ShortString;
 begin
-  if Assigned(Method.Code) then begin
+  if Method.Code<>nil then begin
     if Method.Data<>nil then begin
       if (CheckOwner<>nil) and (TObject(Method.Data)<>CheckOwner) then
         Result:=''
@@ -1290,6 +1290,8 @@ begin
       end;
     end else
       Result:='<No LookupRoot>';
+  end else if IsJITMethod(Method) then begin
+    Result:=TJITMethod(Method.Data).TheMethodName;
   end else
     Result:='';
 end;
@@ -4195,6 +4197,7 @@ begin
           Grubber:=TLRTGrubber.Create;
           Writer.OnWriteStringProperty:=@Grubber.Grub;
           {$ENDIF}
+          Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           AncestorUnit:=GetAncestorUnit(AnUnitInfo);
           if AncestorUnit<>nil then
             AncestorInstance:=AncestorUnit.Component

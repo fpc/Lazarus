@@ -47,8 +47,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, LCLIntf,
-  Dialogs, JITForm, ComponentReg, IDEProcs;
+  Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
+  LCLIntf, Dialogs, JITForm, ComponentReg, IDEProcs;
 
 type
   //----------------------------------------------------------------------------
@@ -150,7 +150,6 @@ type
     function FindComponentByClass(AClass: TComponentClass): integer;
     function FindComponentByName(const AName: shortstring): integer;
     procedure GetUnusedNames(var ComponentName, ComponentClassName: shortstring);
-    procedure AddNewMethod(JITComponent: TComponent; const AName: ShortString);
     function CreateNewMethod(JITComponent: TComponent;
                              const AName: ShortString): TMethod;
     procedure RemoveMethod(JITComponent: TComponent; const AName: ShortString);
@@ -197,7 +196,56 @@ type
   public
     function IsJITNonForm(AComponent: TComponent): boolean;
   end;
+
+
+  TJITMethods = class;
+
+  { TJITMethod }
+
+  TJITMethod = class
+  private
+    FMethod: TMethod;
+    FOwner: TJITMethods;
+    FTheClass: TClass;
+    FTheMethodName: shortstring;
+  public
+    constructor Create(AnOwner: TJITMethods; aClass: TClass;
+                       const aMethodName: shortstring);
+    destructor Destroy; override;
+    property Method: TMethod read FMethod;
+    property TheClass: TClass read FTheClass;
+    property TheMethodName: shortstring read FTheMethodName;
+    property Owner: TJITMethods read FOwner;
+  end;
   
+  
+  { TJITMethods }
+
+  TJITMethods = class
+  private
+    fClearing: boolean;
+    fMethods: TAvgLvlTree;// sorted with CompareJITMethod
+    procedure InternalAdd(const AMethod: TJITMethod);
+    procedure InternalRemove(const AMethod: TJITMethod);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Add(aClass: TClass; const aMethodName: shortstring): TJITMethod;
+    function Find(aClass: TClass; const aMethodName: shortstring): TJITMethod;
+    function Delete(aMethod: TJITMethod): boolean;
+    function Delete(aClass: TClass; const aMethodName: shortstring): boolean;
+    procedure DeleteAllOfClass(aClass: TClass);
+    function Rename(aClass: TClass;
+                    const OldMethodName, NewMethodName: shortstring): boolean;
+  end;
+  
+function IsJITMethod(const aMethod: TMethod): boolean;
+function CompareJITMethod(Data1, Data2: Pointer): integer;
+
+var
+  JITMethods: TJITMethods = nil;
+
 
 function ClassAsString(AClass: TClass): string;
 function ClassMethodTableAsString(AClass: TClass): string;
@@ -364,6 +412,12 @@ begin
   Result:=MyFindGlobalComponentProc(AName);
 end;
 
+function IsJITMethod(const aMethod: TMethod): boolean;
+begin
+  Result:=(aMethod.Data<>nil) and (aMethod.Code=nil)
+      and (TObject(aMethod.Data).ClassType=TJITMethod);
+end;
+
 function ClassAsString(AClass: TClass): string;
 var
   ParentClass: TClass;
@@ -516,6 +570,18 @@ begin
   {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
   Result := Align(Result, SizeOf(Pointer));
   {$endif}
+end;
+
+function CompareJITMethod(Data1, Data2: Pointer): integer;
+var
+  JITMethod1: TJITMethod;
+  JITMethod2: TJITMethod;
+begin
+  JITMethod1:=TJITMethod(Data1);
+  JITMethod2:=TJITMethod(Data2);
+  Result:=ComparePointers(JITMethod1.TheClass,JITMethod2.TheClass);
+  if Result<>0 then exit;
+  Result:=CompareText(JITMethod1.TheMethodName,JITMethod2.TheMethodName);
 end;
 
 function CalculateTypeInfoSize(const AClassName: shortstring;
@@ -843,12 +909,6 @@ begin
 
 end;
 
-procedure TJITComponentList.AddNewMethod(JITComponent:TComponent;
-  const AName:ShortString);
-begin
-  CreateNewmethod(JITComponent,AName);
-end;
-
 procedure TJITComponentList.RemoveMethod(JITComponent:TComponent;
   const AName:ShortString);
 var OldCode:Pointer;
@@ -863,6 +923,14 @@ begin
       JITComponent.ClassName);
   if (AName='') or (not IsValidIdent(AName)) then
     raise Exception.Create('TJITComponentList.RemoveMethod invalid name: "'+AName+'"');
+
+  // delete TJITMethod
+  if JITMethods.Delete(JITComponent.ClassType,AName) then begin
+    // this was a TJITmethod
+    exit;
+  end;
+  
+  // delete real method
   OldCode:=nil;
   DoRemoveMethod(JITComponent.ClassType,AName,OldCode);
   FreeMem(OldCode);
@@ -881,6 +949,14 @@ begin
       JITComponent.ClassName);
   if (NewName='') or (not IsValidIdent(NewName)) then
     raise Exception.Create('TJITComponentList.RenameMethod invalid name: "'+NewName+'"');
+    
+  // rename TJITMethod
+  if JITMethods.Rename(JITComponent.ClassType,OldName,NewName) then begin
+    // this was a TJITMethod
+    exit;
+  end;
+    
+  // rename real method
   DoRenameMethod(JITComponent.ClassType,OldName,NewName);
 end;
 
@@ -982,6 +1058,9 @@ function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
 var CodeTemplate,NewCode:Pointer;
   CodeSize:integer;
   OldCode: Pointer;
+  {$IFDEF EnableFakeMethods}
+  JITMethod: TJITMethod;
+  {$ENDIF}
 begin
   {$IFDEF VerboseJITForms}
   debugln('TJITComponentList.CreateNewMethod ',JITComponent.Name,':',JITComponent.Name,' Method=',AName);
@@ -995,10 +1074,16 @@ begin
     raise Exception.Create('TJITComponentList.CreateNewMethod invalid name: "'+AName+'"');
   OldCode:=JITComponent.MethodAddress(AName);
   if OldCode<>nil then begin
+    // there is already a real method with this name
     Result.Data:=JITComponent;
     Result.Code:=OldCode;
     exit;
   end;
+  {$IFDEF EnableFakeMethods}
+  // create a TJITMethod
+  JITMethod:=JITMethods.Add(JITComponent.ClassType,AName);
+  Result:=JITMethod.Method;
+  {$ELSE}
   CodeTemplate:=MethodAddress('DoNothing');
   CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
   GetMem(NewCode,CodeSize);
@@ -1006,6 +1091,7 @@ begin
   DoAddNewMethod(JITComponent.ClassType,AName,NewCode);
   Result.Data:=JITComponent;
   Result.Code:=NewCode;
+  {$ENDIF}
 end;
 
 function TJITComponentList.CreateNewJITClass(ParentClass: TClass;
@@ -1129,6 +1215,9 @@ var
   OldTypeInfo: PTypeInfo;
   OldMethodTable: PMethodNameTable;
 begin
+  // free TJITMethods
+  JITMethods.DeleteAllOfClass(AClass);
+
   OldVMT:=Pointer(AClass);
   // free methodtable
   OldMethodTable:=PMethodNameTable((OldVMT+vmtMethodTable)^);
@@ -1288,7 +1377,7 @@ end;
   descendent, all methods and components are published members and TReader can
   set these values.
   But at design time we do not have the corresponding TForm descendent. And
-  there is no compiled code, thus it must be produced it at runtime
+  there is no compiled code, thus it must be produced
   (just-in-time).
 }
 procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
@@ -1298,6 +1387,9 @@ begin
   {$IFDEF IDE_DEBUG}
   debugln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
   {$ENDIF}
+  {$IFDEF EnableFakeMethods}
+  RaiseGDBException('TJITComponentList.ReaderFindMethod this event should never be called -> this is a bug in TReader, or misuse of TReader.OnFindMethod');
+  {$ELSE}
   if Address=nil then begin
     // there is no method in the ancestor class with this name
     // => add a JIT method with this name to the JITForm
@@ -1305,6 +1397,7 @@ begin
     Address:=NewMethod.Code;
     Error:=false;
   end;
+  {$ENDIF}
 end;
 
 procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
@@ -1319,8 +1412,27 @@ end;
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
   Instance: TPersistent; PropInfo: PPropInfo; const TheMethodName: string;
   var Handled: boolean);
+{$IFDEF EnableFakeMethods}
+var
+  Method: TMethod;
+  JITMethod: TJITMethod;
+{$ENDIF}
 begin
   //debugln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
+  {$IFDEF EnableFakeMethods}
+  Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
+  if Method.Code<>nil then begin
+    // there is a real method with this name
+    Method.Data := FCurReadJITComponent;
+  end else begin
+    // create a fake TJITMethod
+    JITMethod:=JITMethods.Add(FCurReadJITComponent.ClassType,TheMethodName);
+    Method:=JITMethod.Method;
+  end;
+  SetMethodProp(Instance, PropInfo, Method);
+  
+  Handled:=true;
+  {$ENDIF}
 end;
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
@@ -1442,8 +1554,184 @@ begin
           and (IndexOf(AComponent)>=0);
 end;
 
+{ TJITMethod }
+
+constructor TJITMethod.Create(AnOwner: TJITMethods;
+  aClass: TClass; const aMethodName: shortstring);
+begin
+  FMethod.Data:=Self;
+  FMethod.Code:=nil;
+  fTheClass:=AClass;
+  fTheMethodName:=aMethodName;
+  Owner.InternalAdd(Self);
+end;
+
+destructor TJITMethod.Destroy;
+begin
+  if Owner<>nil then
+    Owner.InternalRemove(Self);
+  inherited Destroy;
+end;
+
+{ TJITMethods }
+
+procedure TJITMethods.InternalAdd(const AMethod: TJITMethod);
+begin
+  fMethods.Add(AMethod);
+  AMethod.fOwner:=Self;
+end;
+
+procedure TJITMethods.InternalRemove(const AMethod: TJITMethod);
+begin
+  AMethod.fOwner:=nil;
+  if not fClearing then
+    fMethods.Remove(AMethod);
+end;
+
+constructor TJITMethods.Create;
+begin
+  fMethods:=TAvgLvlTree.Create(@CompareJITMethod);
+end;
+
+destructor TJITMethods.Destroy;
+begin
+  Clear;
+  FreeAndNil(fMethods);
+  inherited Destroy;
+end;
+
+procedure TJITMethods.Clear;
+begin
+  fClearing:=true;
+  fMethods.FreeAndClear;
+  fClearing:=false;
+end;
+
+function TJITMethods.Add(aClass: TClass;
+  const aMethodName: shortstring): TJITMethod;
+begin
+  Result:=Find(aClass,aMethodName);
+  if Result=nil then
+    Result:=TJITMethod.Create(Self,aClass,aMethodName);
+end;
+
+function TJITMethods.Find(aClass: TClass;
+  const aMethodName: shortstring): TJITMethod;
+var
+  CurMethod: TJITMethod;
+  Node: TAvgLvlTreeNode;
+  Comp: LongInt;
+begin
+  Node:=fMethods.Root;
+  while (Node<>nil) do begin
+    CurMethod:=TJITMethod(Node.Data);
+    Comp:=ComparePointers(aClass,CurMethod.TheClass);
+    if Comp=0 then
+      Comp:=CompareText(aMethodName,CurMethod.TheMethodName);
+    if Comp=0 then
+      exit(CurMethod);
+    if Comp<0 then begin
+      Node:=Node.Left
+    end else begin
+      Node:=Node.Right
+    end;
+  end;
+  Result:=nil;
+end;
+
+function TJITMethods.Delete(aMethod: TJITMethod): boolean;
+begin
+  if (aMethod=nil) then
+    Result:=false
+  else if aMethod.Owner<>Self then
+    RaiseGDBException('TJITMethods.DeleteJITMethod')
+  else begin
+    Result:=true;
+    InternalRemove(aMethod);
+    aMethod.Free;
+  end;
+end;
+
+function TJITMethods.Delete(aClass: TClass;
+  const aMethodName: shortstring): boolean;
+var
+  CurMethod: TJITMethod;
+begin
+  CurMethod:=Find(aClass,aMethodName);
+  if CurMethod=nil then begin
+    Result:=false;
+  end else begin
+    Result:=true;
+    InternalRemove(CurMethod);
+    CurMethod.Free;
+  end;
+end;
+
+procedure TJITMethods.DeleteAllOfClass(aClass: TClass);
+var
+  CurMethod: TJITMethod;
+  Node: TAvgLvlTreeNode;
+  Comp: LongInt;
+  NextNode: TAvgLvlTreeNode;
+begin
+  Node:=fMethods.Root;
+  while (Node<>nil) do begin
+    CurMethod:=TJITMethod(Node.Data);
+    Comp:=ComparePointers(aClass,CurMethod.TheClass);
+    if Comp<0 then begin
+      Node:=Node.Left
+    end else if Comp>0 then begin
+      Node:=Node.Right
+    end else begin
+      // one node found
+      
+      // search lowest
+      repeat
+        NextNode:=fMethods.FindPrecessor(Node);
+        if (NextNode=nil)
+           or (ComparePointers(aClass,TJITMethod(NextNode.Data).TheClass)<>0)
+        then
+          break;
+        Node:=NextNode;
+      until false;
+      
+      // delete all nodes of this class
+      repeat
+        NextNode:=fMethods.FindSuccessor(Node);
+        CurMethod:=TJITMethod(Node.Data);
+        CurMethod.FOwner:=nil;
+        fMethods.Delete(Node);
+        CurMethod.Free;
+        Node:=NextNode;
+      until (Node=nil)
+           or (ComparePointers(aClass,TJITMethod(Node.Data).TheClass)<>0);
+      exit;
+    end;
+  end;
+end;
+
+function TJITMethods.Rename(aClass: TClass; const OldMethodName,
+  NewMethodName: shortstring): boolean;
+var
+  CurMethod: TJITMethod;
+begin
+  CurMethod:=Find(aClass,OldMethodName);
+  if CurMethod=nil then begin
+    Result:=false;
+  end else begin
+    Result:=true;
+    fMethods.Remove(CurMethod);
+    CurMethod.fTheMethodName:=NewMethodName;
+    fMethods.Add(CurMethod);
+  end;
+end;
+
 Initialization
   TComponentValidateRenameOffset:=GetTComponentValidateRenameVMTOffset;
+  JITMethods:=TJITMethods.Create;
+  
+finalization
+  FreeAndNil(JITMethods);
 
 end.
 

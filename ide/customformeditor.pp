@@ -183,6 +183,9 @@ each control that's dropped onto the form
                                          ): TComponent;
     function FindJITComponentByClass(AComponentClass: TComponentClass
                                      ): TComponent;
+    procedure WriteMethodPropertyEvent(Writer: TWriter; Instance: TPersistent;
+      PropInfo: PPropInfo; const MethodValue: TMethod;
+      const DefMethodCodeValue: Pointer; var Handled: boolean);
 
     // designers
     function DesignerCount: integer; override;
@@ -1259,6 +1262,40 @@ begin
     Result:=JITNonFormList[i];
     exit;
   end;
+end;
+
+procedure TCustomFormEditor.WriteMethodPropertyEvent(Writer: TWriter;
+  Instance: TPersistent; PropInfo: PPropInfo; const MethodValue: TMethod;
+  const DefMethodCodeValue: Pointer; var Handled: boolean);
+{$IFDEF EnableFakeMethods}
+var
+  DefaultValue: TMethod;
+  PropPath: String;
+  CurName: String;
+{$ENDIF}
+begin
+  {$IFDEF EnableFakeMethods}
+  Handled:=true;
+
+  DebugLn(['TCustomFormEditor.WriteMethodPropertyEvent ',GlobalDesignHook.GetMethodName(MethodValue,nil)]);
+
+  // find ancestor method value
+  DefaultValue := GetMethodProp(Writer.Ancestor, PropInfo);
+  if (DefaultValue.Data=MethodValue.Data)
+  and (DefaultValue.Code=MethodValue.Code) then
+    exit;
+
+  PropPath:='';// ToDo: Writer.FPropPath
+  Writer.Driver.BeginProperty(PropPath + PPropInfo(PropInfo)^.Name);
+  if IsJITMethod(MethodValue) then
+    CurName:=TJITMethod(MethodValue.Data).TheMethodName
+  else if MethodValue.Code<>nil then
+    CurName:=Writer.LookupRoot.MethodName(MethodValue.Code)
+  else
+    CurName:='';
+  Writer.Driver.WriteMethodName(CurName);
+  Writer.Driver.EndProperty;
+  {$ENDIF}
 end;
 
 function TCustomFormEditor.DesignerCount: integer;

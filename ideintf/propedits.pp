@@ -3722,6 +3722,7 @@ begin
     CurFirstValue := GetMethodValue;
     for I := 1 to PropCount - 1 do begin
       AnotherValue := GetMethodValueAt(I);
+      // Note: compare Code and Data
       if (AnotherValue.Code <> CurFirstValue.Code)
       or (AnotherValue.Data <> CurFirstValue.Data) then
         Exit;
@@ -3827,7 +3828,7 @@ begin
         System.Delete(Result, I, 1);
   end;
   if Result = '' then begin
-    {raise EPropertyError.CreateRes(@SCannotCreateName);}
+    DebugLn(['TMethodPropertyEditor.GetDefaultMethodName can not create name - this should never happen']);
     exit;
   end;
   Postfix := PropName;
@@ -3897,7 +3898,7 @@ begin
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
     // rename the method
     // Note:
-    //   All other not selected properties that use this method, contains just
+    //   All other not selected properties that use this method, contain just
     //   the TMethod record. So, changing the name in the jitform will change
     //   all other event names in all other components automatically.
     //writeln('### TMethodPropertyEditor.SetValue D');
@@ -3906,7 +3907,6 @@ begin
   begin
     //writeln('### TMethodPropertyEditor.SetValue E');
     CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
-    //OldMethod := GetMethodValue;
     SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType,GetUnitName));
     //writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
