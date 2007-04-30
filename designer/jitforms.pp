@@ -1418,8 +1418,8 @@ var
   JITMethod: TJITMethod;
 {$ENDIF}
 begin
-  //debugln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
   {$IFDEF EnableFakeMethods}
+  debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' ',PropInfo^.Name,':=',TheMethodName);
   Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
   if Method.Code<>nil then begin
     // there is a real method with this name
@@ -1563,6 +1563,7 @@ begin
   FMethod.Code:=nil;
   fTheClass:=AClass;
   fTheMethodName:=aMethodName;
+  FOwner:=AnOwner;
   Owner.InternalAdd(Self);
 end;
 
@@ -1611,8 +1612,10 @@ function TJITMethods.Add(aClass: TClass;
   const aMethodName: shortstring): TJITMethod;
 begin
   Result:=Find(aClass,aMethodName);
-  if Result=nil then
+  if Result=nil then begin
+    DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
     Result:=TJITMethod.Create(Self,aClass,aMethodName);
+  end;
 end;
 
 function TJITMethods.Find(aClass: TClass;
@@ -1622,6 +1625,7 @@ var
   Node: TAvgLvlTreeNode;
   Comp: LongInt;
 begin
+  DebugLn(['TJITMethods.Find  Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
   Node:=fMethods.Root;
   while (Node<>nil) do begin
     CurMethod:=TJITMethod(Node.Data);
@@ -1641,6 +1645,7 @@ end;
 
 function TJITMethods.Delete(aMethod: TJITMethod): boolean;
 begin
+  DebugLn(['TJITMethods.Delete  Class=',dbgsname(AMethod.TheClass),' aMethodName=',aMethod.TheMethodName]);
   if (aMethod=nil) then
     Result:=false
   else if aMethod.Owner<>Self then
@@ -1705,6 +1710,7 @@ begin
         Node:=NextNode;
       until (Node=nil)
            or (ComparePointers(aClass,TJITMethod(Node.Data).TheClass)<>0);
+
       exit;
     end;
   end;
@@ -1720,6 +1726,7 @@ begin
     Result:=false;
   end else begin
     Result:=true;
+    DebugLn(['TJITMethods.Rename Class=',DbgSName(aClass),' Old=',CurMethod.TheMethodName,' New=',NewMethodName]);
     fMethods.Remove(CurMethod);
     CurMethod.fTheMethodName:=NewMethodName;
     fMethods.Add(CurMethod);
