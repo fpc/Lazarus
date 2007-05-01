@@ -2009,7 +2009,6 @@ function TGtkWidgetSet.CreatePixmapIndirect(const Data: Pointer;
 var
   GdiObject: PGdiObject;
   GDKColor: TGDKColor;
-  Window: PGdkWindow;
   ColorMap: PGdkColormap;
   P: Pointer;
   Depth : Longint;
@@ -2020,20 +2019,16 @@ begin
     p := @GDKColor;
   end else
     p:=nil; // automatically create transparency mask
-  Window:=nil; // use the X root window for colormap
 
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
 
-  if Window<>nil then
-    ColorMap:=gdk_window_get_colormap(Window)
-  else
-    ColorMap:=gdk_colormap_get_system;
+  ColorMap:=gdk_colormap_get_system;
 
   try
     GdiObject^.GDIPixmapObject :=
-      gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
+      gdk_pixmap_colormap_create_from_xpm_d(nil,Colormap,
              GdiObject^.GDIBitmapMaskObject, p, Data);
 
     Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
