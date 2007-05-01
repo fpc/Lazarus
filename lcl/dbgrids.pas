@@ -176,8 +176,8 @@ type
     function  MoveBy(Distance: Integer): Integer; override;
     property  Modified: Boolean read FModified write FModified;
   public
-    Property OnRecordChanged: TFieldNotifyEvent read FOnRecordChanged write FOnRecordChanged;
-    Property OnDataSetChanged: TDatasetNotifyEvent read FOnDatasetChanged write FOnDataSetChanged;
+    property OnRecordChanged: TFieldNotifyEvent read FOnRecordChanged write FOnRecordChanged;
+    property OnDataSetChanged: TDatasetNotifyEvent read FOnDatasetChanged write FOnDataSetChanged;
     property OnNewDataSet: TDataSetNotifyEvent read fOnNewDataSet write fOnNewDataSet;
     property OnDataSetOpen: TDataSetNotifyEvent read fOnDataSetOpen write fOnDataSetOpen;
     property OnInvalidDataSet: TDataSetNotifyEvent read fOnInvalidDataSet write fOnInvalidDataSet;
@@ -188,8 +188,8 @@ type
     property OnEditingChanged: TDataSetNotifyEvent read FOnEditingChanged write FOnEditingChanged;
     property OnUpdateData: TDataSetNotifyEvent read FOnUpdateData write FOnUpdateData;
     property DataSetName:string read GetDataSetName write SetDataSetName;
-    Property Fields[Index: Integer]: TField read GetFields;
-    Property VisualControl;
+    property Fields[Index: Integer]: TField read GetFields;
+    property VisualControl;
   end;
 
   { TColumn }

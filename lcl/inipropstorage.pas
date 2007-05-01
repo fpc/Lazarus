@@ -22,38 +22,38 @@ interface
 uses
   Classes, SysUtils, Forms, IniFiles, PropertyStorage;
 
-Type
+type
   { TCustomIniPropStorage }
 
-  TIniFileClass = Class of TCustomIniFile;
+  TIniFileClass = class of TCustomIniFile;
   
-  TCustomIniPropStorage = Class(TFormPropertyStorage)
+  TCustomIniPropStorage = class(TFormPropertyStorage)
   private
     FCount : Integer;
     FReadOnly : Boolean;
     FIniFile: TCustomIniFile;
-    FIniFileName: String;
-    FIniSection: String;
+    FIniFileName: string;
+    FIniSection: string;
   protected
-    Function IniFileClass: TIniFileClass; virtual;
-    Function GetIniFileName: string; virtual;
-    Function RootSection: String; Override;
-    Property IniFile: TCustomIniFile Read FIniFile;
+    function IniFileClass: TIniFileClass; virtual;
+    function GetIniFileName: string; virtual;
+    function RootSection: string; override;
+    property IniFile: TCustomIniFile read FIniFile;
   public
     procedure StorageNeeded(ReadOnly: Boolean); override;
     procedure FreeStorage; override;
-    function  DoReadString(const Section, Ident, Default: string): string; override;
+    function  DoReadString(const Section, Ident, default: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
-    procedure DoEraseSections(const ARootSection : String);override;
+    procedure DoEraseSections(const ARootSection : string);override;
   public
-    property IniFileName: String Read FIniFileName Write FIniFileName;
-    property IniSection: String Read FIniSection Write FIniSection;
+    property IniFileName: string read FIniFileName write FIniFileName;
+    property IniSection: string read FIniSection write FIniSection;
   end;
   
   { TIniPropStorage }
   
   TIniPropStorage = class(TCustomIniPropStorage)
-  Published
+  published
     Property StoredValues;
     property IniFileName;
     property IniSection;

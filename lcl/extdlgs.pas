@@ -146,7 +146,7 @@ type
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property Ctl3D: Boolean read FCtl3D write FCtl3D default True;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    Property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
+    property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
     property Title: string read GetTitle write SetTitle stored TitleStored;
     property Value: Double read FValue write FValue;
@@ -173,15 +173,15 @@ type
     procedure CancelClick(Sender: TObject);
     procedure CalcKey(Sender: TObject; var Key: char);
     procedure DisplayChange(Sender: TObject);
-    Procedure InitForm(ALayout : TCalculatorLayout); virtual;
-    Property MainPanel: TPanel Read FMainPanel;
-    Property CalcPanel: TPanel Read FCalcPanel;
-    Property DisplayPanel: TPanel Read FDisplayPanel;
-    Property DisplayLabel: TLabel Read FDisplayLabel;
+    procedure InitForm(ALayout : TCalculatorLayout); virtual;
+    property MainPanel: TPanel read FMainPanel;
+    property CalcPanel: TPanel read FCalcPanel;
+    property DisplayPanel: TPanel read FDisplayPanel;
+    property DisplayLabel: TLabel read FDisplayLabel;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
-    Property Value : Double Read GetValue Write SetValue;
+    property Value : Double read GetValue write SetValue;
   end;
 
 function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; AHelpContext: THelpContext): TCalculatorForm;

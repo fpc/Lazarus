@@ -48,7 +48,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
     property Selection: TColor read GetSelection write SetSelection;
-    Property Colors[Index : Integer] : TColor Read GetColor;
+    property Colors[Index : Integer] : TColor Read GetColor;
   published
     property Align;
     property Anchors;
@@ -122,7 +122,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
     property Selection: TColor read GetSelection write SetSelection;
-    Property Colors[Index : Integer] : TColor Read GetColor;
+    property Colors[Index : Integer] : TColor Read GetColor;
   published
     property Align;
     property Anchors;
