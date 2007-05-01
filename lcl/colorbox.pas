@@ -32,9 +32,12 @@ uses
 type
   TColorPalette = (cpDefault, cpFull);
 
+  { TColorBox }
+
   TColorBox = class(TCustomComboBox)
   private
     FPalette: TColorPalette;
+    function GetColor(Index : Integer): TColor;
     function GetSelection: TColor;
     procedure SetSelection(Value: TColor);
     procedure SetPalette(Value: TColorPalette);
@@ -45,6 +48,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
     property Selection: TColor read GetSelection write SetSelection;
+    Property Colors[Index : Integer] : TColor Read GetColor;
   published
     property Align;
     property Anchors;
@@ -102,9 +106,12 @@ type
     property OnSelect;
   end;
 
+  { TColorListBox }
+
   TColorListBox = class(TCustomListBox)
   private
     FPalette: TColorPalette;
+    function GetColor(Index : Integer): TColor;
     function GetSelection: TColor;
     procedure SetSelection(Value: TColor);
     procedure SetPalette(Value: TColorPalette);
@@ -115,6 +122,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
     property Selection: TColor read GetSelection write SetSelection;
+    Property Colors[Index : Integer] : TColor Read GetColor;
   published
     property Align;
     property Anchors;
@@ -220,6 +228,22 @@ begin
     if not IdentToColor(Items[ItemIndex], LongInt(Result)) then
       Result := 0;
 end;
+
+{------------------------------------------------------------------------------
+  Method:   TColorBox.GetColor
+  Params:   Index
+  Returns:  Color at position Index
+
+  Used as read procedure from Colors property.
+
+ ------------------------------------------------------------------------------}
+
+function TColorBox.GetColor(Index : Integer): TColor;
+begin
+  if Not IdentToColor(Items[Index],Result) then
+    Result:=clNone;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TColorBox.SetSelection
   Params:   Value
@@ -390,6 +414,21 @@ begin
     if not IdentToColor(Items[ItemIndex], LongInt(Result)) then
       Result := 0;
 end;
+
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.GetColor
+  Params:   Index
+  Returns:  Color at position Index
+
+  Used as read procedure from Colors property.
+
+ ------------------------------------------------------------------------------}
+function TColorListBox.GetColor(Index : Integer): TColor;
+begin
+  if Not IdentToColor(Items[Index],Result) then
+    Result:=clNone;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TColorListBox.SetSelection
   Params:   Value
