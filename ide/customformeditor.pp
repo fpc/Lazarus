@@ -1269,14 +1269,13 @@ procedure TCustomFormEditor.WriteMethodPropertyEvent(Writer: TWriter;
   const MethodValue, DefMethodValue: TMethod; var Handled: boolean);
 {$IFDEF EnableFakeMethods}
 var
-  PropPath: String;
   CurName: String;
 {$ENDIF}
 begin
   {$IFDEF EnableFakeMethods}
   Handled:=true;
 
-  DebugLn(['TCustomFormEditor.WriteMethodPropertyEvent ',GlobalDesignHook.GetMethodName(MethodValue,nil)]);
+  //DebugLn(['TCustomFormEditor.WriteMethodPropertyEvent ',GlobalDesignHook.GetMethodName(MethodValue,nil)]);
 
   // find ancestor method value
   if (DefMethodValue.Data=MethodValue.Data)

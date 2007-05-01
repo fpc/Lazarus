@@ -1055,11 +1055,13 @@ end;
 
 function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
   const AName: ShortString): TMethod;
-var CodeTemplate,NewCode:Pointer;
-  CodeSize:integer;
+var
   OldCode: Pointer;
   {$IFDEF EnableFakeMethods}
   JITMethod: TJITMethod;
+  {$ELSE}
+  CodeTemplate, NewCode: Pointer;
+  CodeSize: integer;
   {$ENDIF}
 begin
   {$IFDEF VerboseJITForms}
@@ -1382,7 +1384,9 @@ end;
 }
 procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
+{$IFNDEF EnableFakeMethods}
 var NewMethod: TMethod;
+{$ENDIF}
 begin
   {$IFDEF IDE_DEBUG}
   debugln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
@@ -1613,7 +1617,7 @@ function TJITMethods.Add(aClass: TClass;
 begin
   Result:=Find(aClass,aMethodName);
   if Result=nil then begin
-    DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
+    //DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
     Result:=TJITMethod.Create(Self,aClass,aMethodName);
   end;
 end;
@@ -1625,7 +1629,7 @@ var
   Node: TAvgLvlTreeNode;
   Comp: LongInt;
 begin
-  DebugLn(['TJITMethods.Find  Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
+  //DebugLn(['TJITMethods.Find  Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
   Node:=fMethods.Root;
   while (Node<>nil) do begin
     CurMethod:=TJITMethod(Node.Data);
@@ -1645,7 +1649,7 @@ end;
 
 function TJITMethods.Delete(aMethod: TJITMethod): boolean;
 begin
-  DebugLn(['TJITMethods.Delete  Class=',dbgsname(AMethod.TheClass),' aMethodName=',aMethod.TheMethodName]);
+  //DebugLn(['TJITMethods.Delete  Class=',dbgsname(AMethod.TheClass),' aMethodName=',aMethod.TheMethodName]);
   if (aMethod=nil) then
     Result:=false
   else if aMethod.Owner<>Self then
@@ -1726,7 +1730,7 @@ begin
     Result:=false;
   end else begin
     Result:=true;
-    DebugLn(['TJITMethods.Rename Class=',DbgSName(aClass),' Old=',CurMethod.TheMethodName,' New=',NewMethodName]);
+    //DebugLn(['TJITMethods.Rename Class=',DbgSName(aClass),' Old=',CurMethod.TheMethodName,' New=',NewMethodName]);
     fMethods.Remove(CurMethod);
     CurMethod.fTheMethodName:=NewMethodName;
     fMethods.Add(CurMethod);

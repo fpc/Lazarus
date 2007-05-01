@@ -91,6 +91,7 @@ Type
     property Anchors;
     property BorderStyle;
     property Constraints;
+    property Directory;
     property DragCursor;
     property DragMode;
     property ExtendedSelect;
