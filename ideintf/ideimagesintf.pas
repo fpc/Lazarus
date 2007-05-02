@@ -96,7 +96,7 @@ begin
   begin
     Result := List.IndexOf(ImageName);
     if Result <> -1 then
-      Result := Integer(List.Objects[Result]);
+      Result := PtrInt(List.Objects[Result]);
   end
   else
     Result := -1;
@@ -146,7 +146,7 @@ begin
               Stream.Position := 0;
               Graphic.LoadFromStream(Stream);
               Result := List.Add(TBitmap(Graphic), nil);
-              Names.AddObject(ImageName, TObject(Result));
+              Names.AddObject(ImageName, TObject(PtrInt(Result)));
             finally
               Stream.Free;
             end;
