@@ -115,6 +115,12 @@ LAZARUS_OPT+= -WG
 BIG_IDE_OPTIONS+= -WG
 endif
 
+# define EnableFakeMethods for win64
+ifneq ($(findstring $(OS_TARGET),win64),)
+LAZARUS_OPT+= -dEnableFakeMethods
+BIG_IDE_OPTIONS+= -dEnableFakeMethods
+endif
+
 #-----------------------------------------------------------------------------
 [rules]
 .PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge
