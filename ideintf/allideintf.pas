@@ -35,6 +35,7 @@ uses
   IDEDialogs,
   IDEExternToolIntf,
   IDEHelpIntf,
+  IDEImagesIntf,
   IDEMsgIntf,
   IDETextConverter,
   IDEWindowIntf,

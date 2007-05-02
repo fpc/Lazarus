@@ -1652,6 +1652,7 @@ ideintf/idecommands.pas svneol=native#text/pascal
 ideintf/idedialogs.pas svneol=native#text/plain
 ideintf/ideexterntoolintf.pas svneol=native#text/plain
 ideintf/idehelpintf.pas svneol=native#text/plain
+ideintf/ideimagesintf.pas svneol=native#text/pascal
 ideintf/idemsgintf.pas svneol=native#text/plain
 ideintf/idetextconverter.pas svneol=native#text/plain
 ideintf/idewindowintf.pas svneol=native#text/plain

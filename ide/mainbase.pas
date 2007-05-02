@@ -172,6 +172,8 @@ var
 
 implementation
 
+uses
+  IDEImagesIntf;
 
 { TMainIDEBase }
 
@@ -270,7 +272,7 @@ begin
   MenuItem.Enabled:=mnuEnabled;
   MenuItem.Checked:=mnuChecked;
   if bmpName<>'' then
-    MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
+    MenuItem.ImageIndex := IDEImages.LoadImage(16, bmpName);
 end;
 
 procedure TMainIDEBase.CreateMenuSeparatorSection(
@@ -287,7 +289,7 @@ procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
 begin
   Section:=RegisterIDESubMenu(ParentSection,AName,ACaption);
   if bmpName<>'' then
-    Section.Bitmap.LoadFromLazarusResource(bmpName);
+    Section.ImageIndex := IDEImages.LoadImage(16, bmpName);
 end;
 
 procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
@@ -299,6 +301,7 @@ end;
 procedure TMainIDEBase.SetupMainMenu;
 begin
   MainIDEBar.mnuMainMenu := TMainMenu.Create(MainIDEBar);
+  MainIDEBar.mnuMainMenu.Images := IDEImages.Images_16;
   with MainIDEBar do begin
     mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',nil);
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
@@ -1045,4 +1048,5 @@ begin
 end;
 
 end.
+
 
