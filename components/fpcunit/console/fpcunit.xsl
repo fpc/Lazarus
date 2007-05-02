@@ -17,10 +17,10 @@
   <xsl:apply-templates/>
 
 	<address>
-		<a href="http://opensoft.homeip.net">fpcUnit Report</a> 0.3.0 © 2006 by 
+		<a href="http://opensoft.homeip.net">fpcUnit Report</a> 0.3.1 © 2006-2007 by 
 		<a href="mailto:graemeg@gmail.com?subject=Comments about fpcUnit Report">Graeme Geldenhuys</a>.<br></br>
 		Licensed under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a>.<br></br>
-		Modified by Vincent Snijders.<br></br>
+		Modified by Vincent Snijders and Darius Blaszyk.<br></br>
 	</address>
 </body>
 </html>
@@ -28,7 +28,7 @@
 
 
 <xsl:template match="TestResults">
-  <xsl:variable name="runnedCount" select="NumberOfRunTests" />
+  <xsl:variable name="runnedCount" select="NumberOfRunnedTests" />
   <xsl:variable name="failureCount" select="NumberOfFailures" />
   <xsl:variable name="errorCount" select="NumberOfErrors" />
   <xsl:variable name="elapsedTime" select="TotalElapsedTime" />
@@ -109,10 +109,10 @@ unexpected results.</p>
 		</tr>
     <xsl:for-each select="TestListing/Test">
     <xsl:variable name="testName" select="@Name" />
-    <xsl:variable name="elapsedTime" select="ElapsedTime" />
+    <xsl:variable name="testElapsedTime" select="@ElapsedTime" />
     <tr class="success">
       <td><xsl:value-of select="$testName"/></td>
-      <td><xsl:value-of select="ElapsedTime"/></td>
+      <td><xsl:value-of select="$testElapsedTime"/></td>
     </tr>
 	  </xsl:for-each>
   </table>
