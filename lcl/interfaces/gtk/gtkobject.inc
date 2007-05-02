@@ -4958,7 +4958,6 @@ begin
 
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(Widget^.entry),guint16(ComboBox.MaxLength));
-
 end;
 
 

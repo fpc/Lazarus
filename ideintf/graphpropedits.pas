@@ -27,7 +27,7 @@ uses
   ExtDlgs, ObjInspStrConsts, PropEdits;
 
 type
- {TGraphicPropertyEditor
+{ TGraphicPropertyEditor
   The default property editor for all TGraphic's and sub types (e.g. TBitmap,
   TPixmap, TIcon, etc.). }
 
@@ -316,7 +316,8 @@ end;
 
 function TColorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect,paDialog,paValueList,paRevertable,paHasDefaultValue];
+  Result := [paMultiSelect,paDialog,paValueList,paCustomDrawn,paRevertable,
+             paHasDefaultValue];
 end;
 
 function TColorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -554,7 +555,7 @@ end;
 
 function TBrushStylePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=(inherited GetAttributes)-[paHasDefaultValue];
+  Result:=(inherited GetAttributes)-[paHasDefaultValue]+[paCustomDrawn];
 end;
 
 procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
@@ -624,7 +625,7 @@ end;
 
 function TPenStylePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=(inherited GetAttributes)-[paHasDefaultValue];
+  Result:=(inherited GetAttributes)-[paHasDefaultValue]+[paCustomDrawn];
 end;
 
 procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;

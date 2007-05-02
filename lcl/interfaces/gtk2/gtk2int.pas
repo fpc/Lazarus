@@ -83,12 +83,15 @@ type
 
   TGtkListStoreStringList = class(TStrings)
   private
+    FChangeStamp: integer;
     FColumnIndex : Integer;
     FGtkListStore : PGtkListStore;
     FOwner: TWinControl;
     FSorted : boolean;
     FStates: TGtkListStringsStates;
     FCachedCount: integer;
+    FCachedCapacity: integer;
+    FCachedSize: integer;
     FCachedItems: PGtkTreeIter;
     FUpdateCount: integer;
   protected
@@ -99,8 +102,11 @@ type
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     procedure SetSorted(Val : boolean); virtual;
     procedure UpdateItemCache;
+    procedure GrowCache;
+    procedure ShrinkCache;
+    procedure IncreaseChangeStamp;
   public
-    constructor Create(ListStore : PGtkListStore;
+    constructor Create(TheListStore : PGtkListStore;
                        ColumnIndex : Integer; TheOwner: TWinControl);
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
@@ -116,6 +122,7 @@ type
   public
     property Sorted : boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
 var
@@ -177,16 +184,16 @@ const
   Returns:
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore;
+constructor TGtkListStoreStringList.Create(TheListStore : PGtkListStore;
   ColumnIndex : Integer; TheOwner: TWinControl);
 begin
   inherited Create;
-  if ListStore = nil then RaiseGDBException(
+  if TheListStore = nil then RaiseGDBException(
     'TGtkListStoreStringList.Create Unspecified list store');
-  FGtkListStore:= ListStore;
+  fGtkListStore:=TheListStore;
 
   if (ColumnIndex < 0) or
-    (ColumnIndex >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(ListStore)))
+    (ColumnIndex >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(fGtkListStore)))
   then
     RaiseGDBException('TGtkListStoreStringList.Create Invalid Column Index');
   FColumnIndex:=ColumnIndex;
@@ -194,11 +201,12 @@ begin
   if TheOwner = nil then RaiseGDBException(
     'TGtkListStoreStringList.Create Unspecified owner');
   FOwner:=TheOwner;
-  Include(FStates,glsItemCacheNeedsUpdate);
+  FStates:=[glsItemCacheNeedsUpdate,glsCountNeedsUpdate];
 end;
 
 destructor TGtkListStoreStringList.Destroy;
 begin
+  fGtkListStore:=nil;
   // don't destroy the widgets
   ReAllocMem(FCachedItems,0);
   inherited Destroy;
@@ -207,6 +215,7 @@ end;
 function TGtkListStoreStringList.Add(const S: string): Integer;
 begin
   Result:=Count;
+  //DebugLn(['TGtkListStoreStringList.Add ',S,' Count=',Result]);
   Insert(Count,S);
 end;
 
@@ -243,16 +252,36 @@ var
   i: integer;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then exit;
-  if (FGtkListStore<>nil) then
-    FCachedCount:= gtk_tree_model_iter_n_children(GTK_TREE_MODEL(FGtkListStore),nil)
-  else
-    FCachedCount:=0;
-  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCount);
+  DebugLn(['TGtkListStoreStringList.UpdateItemCache ']);
+  DumpStack;
+  FCachedSize:=Count;
+  FCachedCapacity:=Count;
+  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
   if FGtkListStore<>nil then
-    For I := 0 to FCachedCount - 1 do
+    For I := 0 to FCachedSize - 1 do
       gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(FGtkListStore),
         @FCachedItems[i], nil, I);
   Exclude(FStates,glsItemCacheNeedsUpdate);
+end;
+
+procedure TGtkListStoreStringList.GrowCache;
+begin
+  FCachedCapacity:=((FCachedCapacity*5) div 4)+10;
+  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
+end;
+
+procedure TGtkListStoreStringList.ShrinkCache;
+begin
+  FCachedCapacity:=FCachedSize+1;
+  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
+end;
+
+procedure TGtkListStoreStringList.IncreaseChangeStamp;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
 end;
 
 procedure TGtkListStoreStringList.PutObject(Index: Integer; AnObject: TObject);
@@ -266,6 +295,7 @@ begin
     ListItem:=FCachedItems[Index];
     gtk_list_store_set(FGtkListStore, @ListItem,
                        [FColumnIndex+1, Pointer(AnObject), -1]);
+    IncreaseChangeStamp;
   end;
 end;
 
@@ -358,6 +388,7 @@ begin
       Cnt:=TStrings(Source).Count;
       for i:=0 to Cnt - 1 do begin
         AddObject(CmpList[i],CmpList.Objects[i]);
+        //DebugLn(['TGtkListStoreStringList.Assign ',i,' ',CmpList[i],' ',Count]);
       end;
       // ToDo: restore other settings
 
@@ -424,6 +455,7 @@ begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
     gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex, PChar(S), -1]);
+    IncreaseChangeStamp;
   end;
 end;
 
@@ -435,12 +467,14 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkListStoreStringList.GetCount: integer;
 begin
-  if (FGtkListStore<>nil) then begin
-    UpdateItemCache;
-    Result:=FCachedCount;
-  end else begin
-    Result:= 0
+  if (glsCountNeedsUpdate in FStates) then begin
+    if FGtkListStore<>nil then
+      FCachedCount:=gtk_tree_model_iter_n_children(GTK_TREE_MODEL(FGtkListStore),nil)
+    else
+      FCachedCount:=0;
+    Exclude(FStates,glsCountNeedsUpdate);
   end;
+  Result:=FCachedCount;
 end;
 
 {------------------------------------------------------------------------------
@@ -451,8 +485,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Clear;
 begin
-  Include(FStates,glsItemCacheNeedsUpdate);
+  //DebugLn(['TGtkListStoreStringList.Clear ']);
+  //while Count>0 do Delete(Count-1);
   gtk_list_store_clear(FGtkListStore);
+  IncreaseChangeStamp;
+
+  ReAllocMem(FCachedItems,0);
+  FCachedCapacity:=0;
+  FCachedSize:=0;
+  Exclude(FStates,glsItemCacheNeedsUpdate);
+  FCachedCount:=0;
+  Exclude(FStates,glsCountNeedsUpdate);
 end;
 
 {------------------------------------------------------------------------------
@@ -465,9 +508,23 @@ procedure TGtkListStoreStringList.Delete(Index : integer);
 var
   ListItem : TGtkTreeIter;
 begin
-  Include(FStates,glsItemCacheNeedsUpdate);
-  gtk_tree_model_iter_nth_child (FGtkListStore, @ListItem, nil, Index);
+  if not (glsItemCacheNeedsUpdate in FStates) then
+    ListItem:=FCachedItems[Index]
+  else
+    gtk_tree_model_iter_nth_child(FGtkListStore, @ListItem, nil, Index);
+    
   gtk_list_store_remove(FGtkListStore, @ListItem);
+  IncreaseChangeStamp;
+  
+  if not (glsCountNeedsUpdate in FStates) then
+    dec(FCachedCount);
+  if (not (glsItemCacheNeedsUpdate in FStates)) and (Index=Count) then begin
+    // cache is valid and the last item was deleted -> just remove last item
+    dec(FCachedSize);
+    if (FCachedSize<FCachedCapacity div 2) then
+      ShrinkCache;
+  end else
+    Include(FStates,glsItemCacheNeedsUpdate);
 end;
 
 function TGtkListStoreStringList.IndexOf(const S: string): Integer;
@@ -509,6 +566,28 @@ procedure TGtkListStoreStringList.Insert(Index : integer; const S : string);
 var
   li : TGtkTreeIter;
   l, m, r, cmp: integer;
+  
+  {procedure TestNewItem;
+  var
+    Item: PChar;
+    CurString: String;
+  begin
+    Item := nil;
+    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @li,
+                       [FColumnIndex, @Item, -1]);
+    if (Item <> nil) then begin
+      CurString:= StrPas(Item);
+      DebugLn(['TestNewItem NewItem="',dbgstr(CurString),'"']);
+      g_free(Item);
+      if (not (glsItemCacheNeedsUpdate in FStates))
+      and (not CompareMem(@li,@FCachedItems[Index],SizeOf(li))) then begin
+        DebugLn(['TestNewItem Cache item invalid: Index=',Index]);
+      end;
+    end
+    else
+      DebugLn(['TestNewItem FAILED: new item missing']);
+  end;}
+  
 begin
   BeginUpdate;
   try
@@ -536,10 +615,27 @@ begin
     if Owner = nil then RaiseGDBException(
       'TGtkListStoreStringList.Insert Unspecified owner');
 
-    gtk_list_store_insert(FGtkListStore, @li, Index);
+    if Index=Count then
+      gtk_list_store_append(FGtkListStore, @li)
+    else
+      gtk_list_store_insert(FGtkListStore, @li, Index);
     gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
+    IncreaseChangeStamp;
 
-    Include(FStates,glsItemCacheNeedsUpdate);
+    if not (glsCountNeedsUpdate in FStates) then
+      inc(FCachedCount);
+
+    if (not (glsItemCacheNeedsUpdate in FStates)) and (Index=Count-1) then begin
+      // cache is valid and item was added as last
+      // Add item to cache (instead of updating the whole cache)
+      // This accelerates Assign.
+      if FCachedSize=FCachedCapacity then GrowCache;
+      FCachedItems[FCachedSize]:=li;
+      inc(FCachedSize);
+    end else
+      Include(FStates,glsItemCacheNeedsUpdate);
+
+    //TestNewItem;
   finally
     EndUpdate;
   end;

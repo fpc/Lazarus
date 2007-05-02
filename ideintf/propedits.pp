@@ -247,7 +247,8 @@ type
     paDisableSubProperties,
     paReference,
     paNotNestable,
-    paHasDefaultValue
+    paHasDefaultValue,
+    paCustomDrawn
     );
   TPropertyAttributes=set of TPropertyAttribute;
 

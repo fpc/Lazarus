@@ -73,6 +73,7 @@ var
   Column: PGtkTreeViewColumn;
   Menu: PGtkMenuShell;
   MenuItem: PGtkMenuItem;
+  DCWidget: PGtkWidget;
 begin
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
     ' ',GetWidgetDebugReport(Widget),' ',
@@ -84,12 +85,13 @@ begin
   CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkRender(cell,Window,Widget,background_area,cell_area,
                               expose_area,flags);
+  
   // send LM_DrawListItem message
   MainWidget:=GetMainWidget(Widget);
   if MainWidget=nil then exit;
   WidgetInfo:=GetWidgetInfo(MainWidget,false);
   if WidgetInfo=nil then exit;
-  LCLObject:=WidgetInfo^.LCLObject; // the listbox
+  LCLObject:=WidgetInfo^.LCLObject; // the listbox or combobox
   AWinControl:=LCLObject as TWinControl;
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
 
@@ -124,7 +126,8 @@ begin
         ItemIndex := g_list_index(Menu^.children, MenuItem);
       if ItemIndex > -1 then begin
         AreaRect:=Bounds(0,0,
-                   PGtkWidget(MenuItem)^.allocation.Width,PGtkWidget(MenuItem)^.allocation.height);
+                         PGtkWidget(MenuItem)^.allocation.width,
+                         PGtkWidget(MenuItem)^.allocation.height);
       end;
     end
     else begin // it is a renderer not in the dropdown but the combo renderer itself
@@ -156,7 +159,15 @@ begin
     with Msg.DrawListItemStruct^ do begin
       ItemID:=ItemIndex;
       Area:=AreaRect;
-      DC:=GTK2WidgetSet.CreateDCForWidget(Widget,Window,false);
+      //DebugLn(['LCLIntfCellRenderer_Render Widget=',GetWidgetDebugReport(Widget^.parent),' Area=',dbgs(Area)]);
+      DCWidget:=Widget;
+      if (DCWidget^.parent<>nil)
+      and (GtkWidgetIsA(DCWidget^.parent,gtk_menu_item_get_type)) then begin
+        // the Widget is a sub widget of a menu item
+        // -> allow the LCL to paint over the whole menu item
+        DCWidget:=DCWidget^.parent;
+      end;
+      DC:=GTK2WidgetSet.CreateDCForWidget(DCWidget,Window,false);
       ItemState:=State;
     end;
     DeliverMessage(AWinControl, Msg);

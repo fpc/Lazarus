@@ -21,7 +21,7 @@
 type
   { TGtkListStringList }
 
-  TGtkListStringsState = (glsItemCacheNeedsUpdate);
+  TGtkListStringsState = (glsItemCacheNeedsUpdate,glsCountNeedsUpdate);
   TGtkListStringsStates = set of TGtkListStringsState;
   
   PPGtkListItem = ^PGtkListItem;

@@ -773,7 +773,6 @@ begin
     Enabled:=false;
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
-    Style := csOwnerDrawFixed;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
     OnDblClick := @ValueEditDblClick;
@@ -1325,6 +1324,7 @@ end;
 procedure TOICustomPropertyGrid.SetItemIndex(NewIndex:integer);
 var NewRow:TOIPropertyGridRow;
   NewValue:string;
+  EditorAttributes: TPropertyAttributes;
 begin
   if GridIsUpdating or (FItemIndex=NewIndex) then
     exit;
@@ -1357,9 +1357,11 @@ begin
 
     if CanFocus then
       NewRow.Editor.Activate;
-    if paDialog in NewRow.Editor.GetAttributes then begin
+    EditorAttributes:=NewRow.Editor.GetAttributes;
+    if paDialog in EditorAttributes then begin
       FCurrentButton:=ValueButton;
       FCurrentButton.Visible:=true;
+      //DebugLn(['TOICustomPropertyGrid.SetItemIndex FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect)]);
     end;
     NewValue:=NewRow.Editor.GetVisualValue;
     {$IFDEF UseOICheckBox}
@@ -1370,12 +1372,16 @@ begin
       ValueCheckBox.Checked:=(NewValue='True');
     end else
     {$ENDIF}
-    if paValueList in NewRow.Editor.GetAttributes then begin
+    if paValueList in EditorAttributes then begin
       FCurrentEdit:=ValueComboBox;
+      if paCustomDrawn in EditorAttributes then
+        ValueComboBox.Style:=csOwnerDrawVariable
+      else
+        ValueComboBox.Style:=csSimple;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
-      // Do not fill the items here, it can be very slow.
+      // Do not fill the items here, because it can be very slow.
       // Just fill in some values and update the values, before the combobox
       // popups
       ValueComboBox.Items.Text:=NewValue;
@@ -2060,8 +2066,8 @@ begin
       end;
       if not CompareRectangles(FCurrentButton.BoundsRect,EditBtnRect) then begin
         FCurrentButton.BoundsRect:=EditBtnRect;
-        //FCurrentButton.Invalidate;
       end;
+      //DebugLn(['TOICustomPropertyGrid.AlignEditComponents FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect),' EditBtnRect=',dbgs(EditBtnRect)]);
     end;
     if FCurrentEdit<>nil then begin
       // resize the edit component

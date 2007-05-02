@@ -42,6 +42,7 @@ uses
 
 type
 
+  { !!! Both are used: TGtkComboBoxEntry and TGtkComboBox, but not the old TGtkCombo !!! }
 
   PGtkComboBoxPrivate = ^TGtkComboBoxPrivate;
   TGtkComboBoxPrivate = record
@@ -91,6 +92,7 @@ type
   end;
 
   { TGtk2WSCustomComboBox }
+  { !!! Both are used: TGtkComboBoxEntry and TGtkComboBox, but not the old TGtkCombo !!! }
 
   TGtk2WSCustomComboBox = class(TGtkWSCustomComboBox)
   private
@@ -106,7 +108,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
-      NewTraverseList: boolean); override;
+                                             NewTraverseList: boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
@@ -121,6 +123,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TGtk2WSComboBox }
@@ -291,9 +294,19 @@ type
 {$I gtk2memostrings.inc}
 {$UNDEF MEMOHEADER}
 
+function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
+
 implementation
 
 uses GtkWSControls, LCLMessageGlue;
+
+function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
+begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_COMBO_BOX_ENTRY) then
+    Result:= PGtkEntry(GTK_BIN(Widget)^.child)
+  else
+    Result:=nil;
+end;
 
 {$I gtk2memostrings.inc}
 
@@ -716,12 +729,17 @@ var
   Index: Integer;
   Text: String;
   Box: PGtkWidget;
+  ItemList: TGtkListStoreStringList;
 begin
   Box:=PGtkWidget(ACustomComboBox.Handle);
   ComboWidget := AWidgetInfo^.CoreWidget;
+  
+  // keep the model (increase ref count)
   Model := gtk_combo_box_get_model(PGtkComboBox(ComboWidget));
   g_object_ref(G_OBJECT(Model));
-  
+  // keep items
+  ItemList := ACustomComboBox.Items as TGtkListStoreStringList;
+
   // this should work but may not in all circumstances
   Index := -1;
   if AWithEntry = False then begin // the current widget HAS an entry
@@ -729,15 +747,20 @@ begin
     Index := ACustomComboBox.Items.IndexOf(Text);
   end;
   if Index = -1 then Index := GetItemIndex(ACustomComboBox);
-  
+
+  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,nil);
   gtk_widget_destroy(ComboWidget);
-  
+
+  // create the new widget with the old model
   case AWithEntry of
     True : ComboWidget := gtk_combo_box_entry_new_with_model(Model, 0);
     False: ComboWidget := gtk_combo_box_new_with_model(Model);
   end;
-  SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
+  // undone the above increase of the ref count
+  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
   g_object_unref (G_OBJECT(Model));
+
+  SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
   AWidgetInfo^.CoreWidget := ComboWidget;
   gtk_object_set_data(Pointer(ComboWidget), 'widgetinfo', AWidgetInfo);
   
@@ -789,11 +812,12 @@ end;
 
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
 begin
+  // let the LCL change the items on the fly:
+  LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
+  
   // here we insure that the combo's menu items are using our internal renderer
   // so we can use custom drawing
   g_list_foreach(AMenu^.children, TGFunc(@UpdateMenuItemsCB), WidgetInfo);
-  
-  LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
 procedure GtkChangedCB(AWidget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
@@ -807,7 +831,7 @@ class procedure TGtk2WSCustomComboBox.SetCallbacks(
   const AWidgetInfo: PWidgetInfo);
 var
   AGtkObject: PGtkObject;
-  AChild: PGtkObject;
+  AEntry: PGtkObject;
   AButton: PGtkObject;
   APrivate: PGtkComboBoxPrivate;
   BtnPressID: guint;
@@ -817,7 +841,7 @@ var
 begin
   ComboWidget:=PGtkComboBox(AWidgetInfo^.CoreWidget);
   AGtkObject := PGtkObject(AWidget);
-  AChild := PGtkObject(PGtkBin(ComboWidget)^.child);// the entry
+  AEntry := PGtkObject(GetComboBoxEntry(PGtkWidget(ComboWidget)));
   APrivate := PGtkComboBoxPrivate(ComboWidget^.priv);
   AButton := PGtkObject(APrivate^.button);
 
@@ -832,7 +856,7 @@ begin
 
   // First the combo (or the entry)
   if gtk_is_combo_box_entry(ComboWidget) then begin
-    InputObject:=AChild;
+    InputObject:=AEntry;
   end else begin
     InputObject:=AGTKObject;
   end;
@@ -850,25 +874,28 @@ begin
   Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, InputObject, AWinControl);
   
   // And now the same for the Button in the combo
-  Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEENTER, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_MOUSELEAVE, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEMOVE, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONDOWN, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_RBUTTONDOWN, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_RBUTTONUP, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONDOWN, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONUP, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEWHEEL, AButton, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, AButton, AWinControl);
+  if AButton<>nil then begin
+    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEENTER, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSELEAVE, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEMOVE, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONDOWN, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_RBUTTONDOWN, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_RBUTTONUP, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONDOWN, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONUP, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEWHEEL, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, AButton, AWinControl);
+  end;
   
   // if we are a GtkComboBoxEntry
-  if GtkWidgetIsA(PGtkWidget(AChild), GTK_TYPE_ENTRY) then begin
+  if GtkWidgetIsA(PGtkWidget(AEntry), GTK_TYPE_ENTRY) then begin
     // Anything?
   end;
 
   g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
+  //g_signal_connect(ComboWidget, 'popup-shown', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
 end;
 
@@ -882,8 +909,8 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
   // if the combo is an editable ...
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_ENTRY(GTK_BIN(WidgetInfo^.CoreWidget)^.child);
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
     Result := Min(Entry^.current_pos, Entry^.selection_bound);
   end;
 end;
@@ -898,8 +925,8 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
   // if the combo is an editable ...
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_ENTRY(GTK_BIN(WidgetInfo^.CoreWidget)^.child);
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
     Result := ABS(Entry^.current_pos - Entry^.selection_bound);
   end;
 end;
@@ -916,10 +943,12 @@ begin
   Result := gtk_combo_box_get_active(PGtkComboBox(WidgetInfo^.CoreWidget));
 
   // if the combo is an editable ...
-  if (Result = -1) and gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_ENTRY(GTK_BIN(WidgetInfo^.CoreWidget)^.child);
-    Text := gtk_entry_get_text(Entry);
-    Result := ACustomComboBox.Items.IndexOf(Text);
+  if (Result = -1) then begin
+    Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+    if Entry<>nil then begin
+      Text := gtk_entry_get_text(Entry);
+      Result := ACustomComboBox.Items.IndexOf(Text);
+    end;
   end;
 end;
 
@@ -932,12 +961,12 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
   // if the combo is an editable ...
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_ENTRY(GTK_BIN(WidgetInfo^.CoreWidget)^.child);
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
     Result := gtk_entry_get_max_length(Entry);
   end
   else begin
-     Result := PtrInt(g_object_get_data(PGObject(WidgetInfo^.ClientWidget), 'max-length'));
+     Result := PtrInt(g_object_get_data(PGObject(WidgetInfo^.CoreWidget), 'max-length'));
   end;
 end;
 
@@ -945,16 +974,16 @@ class function TGtk2WSCustomComboBox.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
   WidgetInfo: PWidgetInfo;
-  Entry: PGtkWidget;
+  Entry: PGtkEntry;
   Index: Integer;
 begin
   Result := True;
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
 
   // if the combo is an editable ...
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
-    AText := gtk_entry_get_text(PGtkEntry(Entry));
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
+    AText := gtk_entry_get_text(Entry);
     exit;
   end;
   
@@ -976,13 +1005,13 @@ class procedure TGtk2WSCustomComboBox.SetSelStart(
   const ACustomComboBox: TCustomComboBox; NewStart: integer);
 var
   WidgetInfo: PWidgetInfo;
-  Entry: PGtkWidget;
+  Entry: PGtkEntry;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
   
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
-    gtk_entry_select_region(PGtkEntry(Entry), NewStart, NewStart);
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
+    gtk_entry_select_region(Entry, NewStart, NewStart);
   end;
 end;
 
@@ -990,15 +1019,15 @@ class procedure TGtk2WSCustomComboBox.SetSelLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 var
   WidgetInfo: PWidgetInfo;
-  Entry: PGtkWidget;
+  Entry: PGtkEntry;
   Start: Integer;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
     Start := GetSelStart(ACustomComboBox);
-    gtk_entry_select_region(PGtkEntry(Entry), Start, NewLength);
+    gtk_entry_select_region(Entry, Start, NewLength);
   end;
 end;
 
@@ -1022,16 +1051,16 @@ class procedure TGtk2WSCustomComboBox.SetMaxLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 var
   WidgetInfo: PWidgetInfo;
-  Entry: PGtkWidget;
+  Entry: PGtkEntry;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
-    Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
-    gtk_entry_set_max_length(PGtkEntry(Entry), NewLength);
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
+    gtk_entry_set_max_length(Entry, NewLength);
   end;
-  // We save this in the ClientWidget for when the Entry Changes styles
-  g_object_set_data(PGObject(WidgetInfo^.ClientWidget), 'max-length', Pointer(PtrInt(NewLength)));
+  // We save this in the CoreWidget for when the Entry Changes styles
+  g_object_set_data(PGObject(WidgetInfo^.CoreWidget), 'max-length', Pointer(PtrInt(NewLength)));
 end;
 
 class procedure TGtk2WSCustomComboBox.SetStyle(
@@ -1074,19 +1103,16 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox
-  ): TStrings;
+class function TGtk2WSCustomComboBox.GetItems(
+  const ACustomComboBox: TCustomComboBox): TStrings;
 var
-  Widget: PGtkWidget;// pointer to gtk-widget
+  ComboWidget: PGtkWidget;
   Handle: HWND;
 begin
   Handle := ACustomComboBox.Handle;
-
-  Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-  Result := TGtkListStoreStringList.Create(
-                                gtk_combo_box_get_model(PGtkComboBox(Widget)),
-                                0,
-                                ACustomComboBox);
+  ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+  Result :=  TGtkListStoreStringList(gtk_object_get_data(PGtkObject(ComboWidget),
+                                     GtkListItemLCLListTag));
 end;
 
 class procedure TGtk2WSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
@@ -1103,25 +1129,25 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
 
   Child := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
-  Gtk2WidgetSet.SetWidgetColor(Child, AWinControl.Font.Color, AWinControl.Color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+  Gtk2WidgetSet.SetWidgetColor(Child, AWinControl.Font.Color, AWinControl.Color,
+   [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
   const AFont : TFont);
 var
-  AWidget: PGTKWidget;
-  EntryWidget: PGtkWidget;
+  Entry: PGtkEntry;
+  WidgetInfo: PWidgetInfo;
 begin
   if not AWinControl.HandleAllocated then exit;
   if AFont.IsDefault then exit;
 
-  AWidget:= PGtkWidget(AWinControl.Handle);
-  EntryWidget:=PGtkCombo(AWidget)^.entry;
-
-  if EntryWidget<>nil then begin
-    Gtk2WidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, clNone,
+  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
+  Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
+  if Entry<>nil then begin
+    Gtk2WidgetSet.SetWidgetColor(PGtkWidget(Entry), AWinControl.font.color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_TEXT]);
-    Gtk2WidgetSet.SetWidgetFont(EntryWidget, AFont);
+    Gtk2WidgetSet.SetWidgetFont(PGtkWidget(Entry), AFont);
   end;
 end;
 
@@ -1152,21 +1178,26 @@ class function TGtk2WSCustomComboBox.CreateHandle(const AWinControl: TWinControl
 var
   Box,      // this makes it easy to switch between GtkComBox and GtkComboBoxEntry
   ComboWidget: PGtkWidget; // ptr to the newly created GtkWidget
-  
   ListStore : PGtkListStore;
   WidgetInfo: PWidgetInfo;
+  ACustomComboBox: TCustomComboBox;
+  ItemList: TGtkListStoreStringList;
 begin
+  ACustomComboBox:=TCustomComboBox(AWinControl);
+
   Box := gtk_event_box_new;
-  
+
   WidgetInfo := CreateWidgetInfo(Box, AWinControl, AParams);
 
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
 
-  case TCustomComboBox(AWinControl).Style of
-    csDropDown, csSimple: ComboWidget := gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL (ListStore), 0);
+  case ACustomComboBox.Style of
+    csDropDown, csSimple:
+      ComboWidget := gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL (ListStore), 0);
     csDropDownList,
     csOwnerDrawFixed,
-    csOwnerDrawVariable : ComboWidget := gtk_combo_box_new_with_model(GTK_TREE_MODEL (ListStore));
+    csOwnerDrawVariable :
+      ComboWidget := gtk_combo_box_new_with_model(GTK_TREE_MODEL (ListStore));
   end;
 
   g_object_unref (G_OBJECT (liststore));
@@ -1174,19 +1205,41 @@ begin
   gtk_container_add(PGtkContainer(Box), ComboWidget);
   gtk_widget_show_all(Box);
 
-  SetRenderer(TCustomComboBox(AWinControl), ComboWidget);
+  SetRenderer(ACustomComboBox, ComboWidget);
 
   SetMainWidget(Box, ComboWidget);
   SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
 
   WidgetInfo^.CoreWidget := ComboWidget;
-  //WidgetInfo^.ClientWidget := Box;
+  WidgetInfo^.ClientWidget := Box;
 
   //gtk_widget_add_events(Box, GDK_ALL_EVENTS_MASK);
 
   SetCallbacks(AWinControl, Box, WidgetInfo);
 
+  // Items
+  ItemList:= TGtkListStoreStringList.Create(
+          gtk_combo_box_get_model(PGtkComboBox(ComboWidget)),0,ACustomComboBox);
+  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
+  ItemList.Assign(ACustomComboBox.Items);
+  if ACustomComboBox.Items is TStringList then
+    ItemList.Sorted:=TStringList(ACustomComboBox.Items).Sorted;
+
   Result := TLCLIntfHandle(Box);
+end;
+
+class procedure TGtk2WSCustomComboBox.DestroyHandle(
+  const AWinControl: TWinControl);
+var
+  Handle: HWND;
+  ComboWidget: PGtkWidget;
+  ItemList: TGtkListStoreStringList;
+begin
+  Handle := AWinControl.Handle;
+  ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,nil);
+
+  inherited DestroyHandle(AWinControl);
 end;
 
 initialization
