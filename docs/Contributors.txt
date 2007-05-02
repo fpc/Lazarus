@@ -63,6 +63,7 @@ Michael A. Hess
 Micha Nelissen
 Michal Bukovjan
 Olivier Guilbaud
+Patrick Chevalley
 Paul Ishenin
 Peter Dyson
 Philip J. Hess
