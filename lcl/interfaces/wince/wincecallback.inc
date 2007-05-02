@@ -1516,8 +1516,7 @@ begin
       NotifyUserInput := True;
       LMessage.Msg := LM_LEAVE;
     End;
-//roozbeh : we dont have mousemove right?so any need for this?
-{    WM_MOUSEMOVE:
+    WM_MOUSEMOVE:
     Begin
       NotifyUserInput := True;
       PLMsg:=@LMMouseMove;
@@ -1541,7 +1540,7 @@ begin
           WindowInfo^.MouseY := YPos;
         end;
       End;
-    End;}
+    End;
     WM_MOUSEWHEEL:
     Begin
       NotifyUserInput := True;
