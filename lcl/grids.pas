@@ -466,6 +466,7 @@ type
   public
     constructor Create(AGrid: TCustomGrid; aItemClass: TCollectionItemClass);
     function Add: TGridColumn;
+    procedure Clear;
     function RealIndex(Index: Integer): Integer;
     function IndexOf(Column: TGridColumn): Integer;
     function IsDefault: boolean;
@@ -8238,6 +8239,13 @@ end;
 function TGridColumns.Add: TGridColumn;
 begin
   result := TGridColumn( inherited add );
+end;
+
+procedure TGridColumns.Clear;
+begin
+  BeginUpdate;
+  inherited Clear;
+  EndUpdate
 end;
 
 function TGridColumns.RealIndex(Index: Integer): Integer;
