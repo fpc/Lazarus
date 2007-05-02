@@ -44,9 +44,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Buttons, Graphics, 
+  Classes, Controls, Buttons, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSStdCtrls, WSControls, LCLType;
+  WSLCLClasses, WSStdCtrls, WSControls, LCLType, LCLIntf;
 
 type
 
@@ -71,6 +71,7 @@ type
   { TWSSpeedButton }
 
   TWSSpeedButton = class(TWSGraphicControl)
+    class procedure DrawFrame(const ASpeedButton: TCustomSpeedButton; const ADrawFlags: Integer; var ARect: TRect); virtual;
   end;
 
 
@@ -111,6 +112,56 @@ begin
 end;
 
 
+{ TWSSpeedButton }
+
+{------------------------------------------------------------------------------
+  Method:  TWSSpeedButton.DrawFrame
+  Params:  ASpeedButton - LCL custom speed button
+           ADrawFlags   - Frame draw flags (DFCS_*)
+           ARect        - Frame rectangle, returned adjusted to frame client
+                          area
+
+  Draws a speed button frame according to the specified draw flags
+ ------------------------------------------------------------------------------}
+class procedure TWSSpeedButton.DrawFrame(const ASpeedButton: TCustomSpeedButton;
+  const ADrawFlags: Integer; var ARect: TRect);
+var
+  Bevel: TBevelCut;
+begin
+  // do not draw anything if flat and mouse not in control (simplified)
+  if ASpeedButton.Transparent then
+  begin
+    if (ADrawFlags and DFCS_FLAT) = 0 then
+    begin
+      if (ADrawFlags and DFCS_PUSHED) <> 0 then
+        Bevel := bvLowered
+      else
+        Bevel := bvRaised;
+
+      ASpeedButton.Canvas.Frame3D(ARect, 1, Bevel);
+      InflateRect(ARect, -1, -1);
+    end;
+  end
+  else
+  begin
+    if (ADrawFlags and DFCS_FLAT) = 0 then
+    begin
+      DrawFrameControl(
+        ASpeedButton.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+        ARect, DFC_BUTTON, ADrawFlags);
+        
+      InflateRect(ARect, -1, -1);
+    end;
+  end;
+
+  if (not ASpeedButton.Transparent) and ASpeedButton.Enabled and
+    (ASpeedButton.Color <> clBtnFace) then
+  begin
+    ASpeedButton.Canvas.Brush.Color := ASpeedButton.Color;
+    ASpeedButton.Canvas.FillRect(ARect);
+  end;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -119,6 +170,6 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomButton, TWSButton);
 //  RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
-//  RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
+  RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
 ////////////////////////////////////////////////////
 end.
