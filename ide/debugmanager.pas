@@ -1725,6 +1725,7 @@ begin
   // set filename after workingdir
   FDebugger.FileName := LaunchingApplication;
   FDebugger.Arguments := LaunchingParams;
+  FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
 
   // check if debugging needs restart
   // mwe: can this still happen ?
