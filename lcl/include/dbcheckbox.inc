@@ -149,9 +149,11 @@ end;
 
 procedure TDBCheckBox.EditingDone;
 begin
-  FDatalink.Edit;
-  FDatalink.Modified;
-  FDataLink.UpdateRecord;
+  if FDatalink.Edit then begin
+    FDatalink.Modified;
+    FDataLink.UpdateRecord;
+  end else
+    State:=GetFieldCheckState;
   inherited EditingDone;
 end;
 

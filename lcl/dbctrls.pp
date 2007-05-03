@@ -494,6 +494,7 @@ Type
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
     procedure EditingDone; override;
+    procedure UpdateText;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

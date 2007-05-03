@@ -157,7 +157,11 @@ begin
   //so if a user changed the selection it can be
   //updated, and if not canel out ala ReadOnly
   if not FDataLink.Edit then
+  begin
+    // restore value
+    DataChange(self);
     exit;
+  end;
 
   inherited Click;
   FDataLink.Modified;

@@ -1533,16 +1533,12 @@ begin
 
   SelField := SelectedField;
   TempColumn := TColumn(ColumnFromGridColumn(Col));
-  if (TempColumn<>nil) and not TempColumn.ReadOnly then
+  if (TempColumn<>nil) and not TempColumn.ReadOnly and FDatalink.Edit then
   begin
     if SelField.DataType=ftBoolean then
-    begin
-      SelField.DataSet.Edit;
     	SelField.AsBoolean := not SelField.AsBoolean
-    end
     else
     begin
-      SelField.DataSet.Edit;
       if ValueMatch(TempColumn.ValueChecked, SelField.AsString) then
         SelField.AsString := TempColumn.ValueUnchecked
       else

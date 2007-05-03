@@ -141,8 +141,10 @@ begin
   Value := GetButtonValue(ItemIndex);
   if (Value<>OldValue) and FDatalink.CanModify and not SettingValue then
   begin
-    FDatalink.Edit; // ensure that we are in edit state
-    FDataLink.Modified;
+    if FDatalink.Edit then  // ensure that we are in edit state
+      FDataLink.Modified
+    else
+      DataChange(Self);
   end;
 end;
 

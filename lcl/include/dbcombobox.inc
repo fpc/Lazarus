@@ -36,10 +36,12 @@ begin
   //need to override this to make sure the datalink gets notified
   //its been modified, then when post etc, it will call
   //updatedata to update the field data with current value
-  FDatalink.Edit;
-  FDataLink.Modified;
-
-  inherited Change;
+  if FDatalink.Edit then
+  begin
+    FDataLink.Modified;
+    inherited change;
+  end else
+    UpdateText;
 end;
 
 
@@ -69,15 +71,9 @@ end;
 
 procedure TDBComboBox.DataChange(Sender: TObject);
 begin
-  if not (Style=csSimple) and DroppedDown then Exit;
-  if FDataLink.Field <> nil then
-    // ToDo: use Field.Text
-      Text := FDataLink.Field.DisplayText
-  else
-    if csDesigning in ComponentState then
-      Text := Name
-    else
-      Text := '';
+  if not (Style=csSimple) and DroppedDown then
+    Exit;
+  UpdateText;
 end;
 
 procedure TDBComboBox.EditingChange(Sender: TObject);
@@ -121,6 +117,18 @@ procedure TDBComboBox.EditingDone;
 begin
   FDataLink.UpdateRecord;
   inherited EditingDone;
+end;
+
+procedure TDBComboBox.UpdateText;
+begin
+  if FDataLink.Field <> nil then
+    // ToDo: use Field.Text
+      Text := FDataLink.Field.DisplayText
+  else
+    if csDesigning in ComponentState then
+      Text := Name
+    else
+      Text := '';
 end;
 
 procedure TDBComboBox.ActiveChange(Sender: TObject);
