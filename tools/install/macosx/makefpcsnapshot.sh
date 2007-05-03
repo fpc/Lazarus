@@ -34,9 +34,12 @@ INSTALLDIR=~/tmp/fpc
 INSTALLFPCDIR=~/fpc
 
 PPCARCH=ppcppc
+CREATECROSSPPC=0
+
 ARCH=`uname -p`
 if [ "$ARCH" = "i386" ]; then
   PPCARCH=ppc386
+  CREATECROSSPPC=1
 fi
 
 SVN=`which svn`
@@ -86,12 +89,22 @@ FPCARCH=`$COMPILER -iSP`
 if [ ! -d /tmp/`whoami`/trash ] ; then
   mkdir -p /tmp/`whoami`/trash
 fi
+
+set +e
 rm -rf $INSTALLDIR
+set -e
+
 if [ -d $INSTALLDIR ]; then
   mv $INSTALLDIR /tmp/`whoami`/trash/
 fi
 mkdir -p $INSTALLDIR
 make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR
+
+if [ CREATECROSSPPC=1 ]; then
+  make all PP=$COMPILER CPU_TARGET=powerpc
+  CROSSCOMPILER=$FPCBUILDDIR/fpcsrc/compiler/ppcppc
+  make packages_install CPU_TARGET=powerpc PP=$CROSSCOMPILER CROSSINSTALL=1 INSTALL_PREFIX=$INSTALLDIR
+fi
 
 # create symlink using relative paths, make symlinkinstall uses absolute path, 
 # which then ends up as link to the temporary build path
