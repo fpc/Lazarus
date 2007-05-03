@@ -482,15 +482,16 @@ end;
 
 class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 var
-  OPENFILE: LPOPENFILENAME;
+  OpenFile: LPOPENFILENAME;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
-    OPENFILE := LPOPENFILENAME(ACommonDialog.Handle);
-    if OPENFILE^.lCustData <> 0 then
+    OpenFile := LPOPENFILENAME(ACommonDialog.Handle);
+    if OpenFile^.lCustData <> 0 then
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
     StrDispose(OpenFile^.lpStrFilter);
     FreeMem(OpenFile^.lpStrFile);
+    FreeMem(OpenFile);
   end;
 end;
 
@@ -519,6 +520,7 @@ begin
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
     StrDispose(OpenFile^.lpStrFilter);
     FreeMem(OpenFile^.lpStrFile);
+    FreeMem(OpenFile);
   end;
 end;
 
