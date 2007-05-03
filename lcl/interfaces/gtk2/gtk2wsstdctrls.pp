@@ -1233,7 +1233,6 @@ class procedure TGtk2WSCustomComboBox.DestroyHandle(
 var
   Handle: HWND;
   ComboWidget: PGtkWidget;
-  ItemList: TGtkListStoreStringList;
 begin
   Handle := AWinControl.Handle;
   ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
