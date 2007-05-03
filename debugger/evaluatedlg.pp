@@ -47,7 +47,6 @@ type
   TEvaluateDlg = class(TDebuggerDlg)
     cmbExpression: TComboBox;
     cmbNewValue: TComboBox;
-    ImageList1: TImageList;
     Label1: TLabel;
     Label2: TLabel;
     lblNewValue: TLabel;
@@ -77,6 +76,8 @@ type
   end;
 
 implementation
+uses
+  IDEImagesIntf;
 
 { TEvaluateDlg }
 
@@ -86,6 +87,12 @@ begin
 
   IDEDialogLayoutList.ApplyLayout(Self, 400, 290);
   cmbExpression.Items.Assign(InputHistories.HistoryLists.GetList(ClassName, True));
+
+  ToolBar1.Images := IDEImages.Images_16;
+  tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
+  tbWatch.ImageIndex := IDEImages.LoadImage(16, 'menu_watches');
+  tbModify.ImageIndex := IDEImages.LoadImage(16, 'debugger_modify');
+  tbEvaluate.ImageIndex := IDEImages.LoadImage(16, 'debugger_evaluate');
 end;
 
 procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
