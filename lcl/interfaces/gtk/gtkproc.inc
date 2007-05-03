@@ -5674,19 +5674,22 @@ procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem;
 var
   Widget: PGtkWidget;
   Container: PgtkContainer;
-  ALeft, ATop, BorderWidth: gint;
+  ALeft, ATop, dx, dy, BorderWidth: gint;
   LCLMenuItem: TMenuItem;
   IconImg, IconMask: PGdkPixmap;
   AWindow: PGdkWindow;
   IconWidth, IconHeight: integer;
   IconSize: TPoint;
 begin
-  if (MenuItem=nil) then exit;
-  if not (GTK_WIDGET_DRAWABLE (PGtkWidget(MenuItem))) then exit;
+  if (MenuItem=nil) then
+    exit;
+  if not (GTK_WIDGET_DRAWABLE (PGtkWidget(MenuItem))) then
+    exit;
 
   // get icon
   LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
-  if not LCLMenuItem.HasIcon then begin
+  if not LCLMenuItem.HasIcon then
+  begin
     // call default draw function
     OldCheckMenuItemDrawProc(MenuItem,Area);
     exit;
@@ -5698,27 +5701,41 @@ begin
   // calculate left and top
   Widget := PGtkWidget(MenuItem);
   AWindow:=GetControlWindow(Widget);
-  if AWindow=nil then exit;
+  if AWindow = nil then
+    exit;
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
-  ALeft := {$Ifdef GTK2}Widget^.Allocation.x + {$EndIf}
-           (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
+  ALeft := (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
            +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
-  ATop := {$Ifdef GTK2} Widget^.Allocation.y + {$EndIf}
-          (Widget^.Allocation.Height - IconHeight) div 2;
+
+{$Ifdef GTK2}
+  dx := Widget^.Allocation.x;
+{$else}
+  dx := 0;
+{$EndIf}
+
+  ATop := (Widget^.Allocation.Height - IconHeight) div 2;
+  
+{$Ifdef GTK2}
+  dy := Widget^.Allocation.y;
+{$else}
+  dy := 0;
+{$EndIf}
 
   // draw icon
-  if (LCLMenuItem.HasBitmap) then begin
+  if (LCLMenuItem.HasBitmap) then
+  begin
     GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
     gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, IconMask);
-    gdk_gc_set_clip_origin(gtk_widget_get_style(Widget)^.Black_gc,ALeft,ATop);
+    gdk_gc_set_clip_origin(gtk_widget_get_style(Widget)^.Black_gc,ALeft+dx,ATop+dy);
     gdk_draw_pixmap(AWindow,gtk_widget_get_style(Widget)^.Black_gc,
-       IconImg,0,0,ALeft,ATop,-1,-1);
+       IconImg,0,0,ALeft+dx,ATop+dy,-1,-1);
     gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
-  end else begin
+  end else
+  begin
     {$ifdef IMGLIST_OLDSTYLE}
-    DrawImageListIconOnWidget(LCLMenuItem.GetImageList,LCLMenuItem.ImageIndex,
-      Widget,false,false,ALeft,ATop);
+    DrawImageListIconOnWidget(LCLMenuItem.GetImageList, LCLMenuItem.ImageIndex,
+      Widget, false, false, ALeft, ATop);
     {$else}
     {$note Implement}
     {$endif}
