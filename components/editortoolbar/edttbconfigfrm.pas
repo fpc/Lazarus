@@ -67,6 +67,7 @@ uses
   ,LazConfigStorage
   ,BaseIDEIntf
   ,LazIDEIntf
+  ,IDEImagesIntf
   ;
 
 
@@ -91,6 +92,7 @@ begin
   btnMoveUp.Glyph.LoadFromLazarusResource('arrowup_blue16');
   btnMoveDown.Glyph.LoadFromLazarusResource('arrowdown_blue16');
 
+  TV.Images := IDEImages.Images_16;
   SetupCaptions;
   LoadCategories;
   LoadSettings;
@@ -146,22 +148,8 @@ begin
 end;
 
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
-var
-  i: integer;
 begin
   SaveSettings;
-  
-  if lbToolbar.Items.Count = 0 then
-  begin
-    { resets the toolbar to only contain static (default) items }
-    gEditorToolbar.ClearToolbar;
-    gEditorToolbar.AddStaticItems;
-    Exit; //==>
-  end;
-
-  gEditorToolbar.ClearToolbar;
-  gEditorToolbar.AddCustomItems;
-  gEditorToolbar.AddStaticItems;
 end;
 
 procedure TEdtTbConfigForm.btnRemoveClick(Sender: TObject);
@@ -252,6 +240,7 @@ var
   sec: TIDEMenuSection;
 begin
   n := TV.Items.AddChild(ParentNode, Format('%s', [Item.Caption]));
+  n.ImageIndex := Item.ImageIndex;
   n.Data := Item;
   if Item is TIDEMenuSection then
   begin

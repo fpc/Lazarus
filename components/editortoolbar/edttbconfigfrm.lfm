@@ -75,6 +75,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       BorderSpacing.InnerBorder = 4
+      Cancel = True
       Caption = 'btnCancel'
       Constraints.MaxHeight = 25
       Constraints.MinHeight = 25

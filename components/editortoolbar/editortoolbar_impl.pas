@@ -32,6 +32,7 @@ uses
   ,Controls
   ,Menus
   ,MenuIntf
+  ,IDEImagesIntf
   ;
 
 
@@ -47,8 +48,9 @@ type
     FJumpHandler: TJumpHandler;
     W: TForm;
     TB: TToolbar;
-    BI: TImageList;
-    procedure   CreateEditorToolbar(AW: TForm; var ATB: TToolbar; var ABI: TImageList);
+    PM: TPopupMenu;
+    CfgButton: TToolButton;
+    procedure   CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
     function    CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
     procedure   DoConfigureToolbar(Sender: TObject);
   protected
@@ -95,15 +97,14 @@ begin
   result := uEditorToolbar;
 end;
 
-procedure TEditorToolbar.CreateEditorToolbar(AW: TForm; var ATB: TToolbar; var ABI: TImageList);
+procedure TEditorToolbar.CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
 begin
-  ABI := TImageList.Create(AW);
   ATB := TToolbar.Create(AW);
   ATB.Parent   := AW;
   ATB.Height   := 26;
   ATB.Align    := alTop;
   ATB.Flat     := True;
-  ATB.Images   := ABI;
+  ATB.Images   := IDEImages.Images_16;
   ATB.ShowHint := True;
 end;
 
@@ -117,7 +118,12 @@ end;
 
 procedure TEditorToolbar.DoConfigureToolbar(Sender: TObject);
 begin
-  TEdtTbConfigForm.Execute;
+  if TEdtTbConfigForm.Execute then
+  begin
+    ClearToolbar;
+    AddCustomItems;
+    AddStaticItems;
+  end;
 end;
 
 constructor TEditorToolbar.Create;
@@ -132,13 +138,19 @@ begin
 end;
 
 procedure TEditorToolbar.InitEditorToolBar;
+var
+  T: TJumpType;
 begin
   if not Assigned(W) then
   begin
     W := SourceEditorWindow;
-    BI := nil;
     TB := nil;
-    CreateEditorToolBar(W, TB, BI);
+    CfgButton := nil;
+    CreateEditorToolBar(W, TB);
+
+    PM := TPopupMenu.Create(W);
+    for T := Low(TJumpType) to High(TJumpType) do
+      PM.Items.Add(CreateJumpItem(T,W));
   end;
 
   AddCustomItems;
@@ -155,13 +167,10 @@ begin
   B.Caption     := AMenuItem.Caption;
   B.Hint        := AMenuItem.Caption; // or should we use AMenuItem.Hint?
   // If we have a image, us it. Otherwise supply a default.
-  if AMenuItem.HasBitmap then
-  begin
-    i := BI.Add(AMenuItem.Bitmap, AMenuItem.Bitmap);
-    B.ImageIndex := i;
-  end
+  if AMenuItem.ImageIndex <> -1 then
+    B.ImageIndex := AMenuItem.ImageIndex
   else
-    B.ImageIndex  := BI.AddLazarusResource('execute16');
+    B.ImageIndex  := IDEImages.LoadImage(16, 'execute16');
 
   B.Style       := tbsButton;
   B.OnClick     := AMenuItem.OnClick;
@@ -176,6 +185,7 @@ var
   mi: TIDEMenuItem;
 begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
+  TB.BeginUpdate;
   try
     c := cfg.GetValue('Count', 0);
     for i := c - 1 downto 0 do
@@ -192,6 +202,7 @@ begin
     end;
   finally
     cfg.Free;
+    TB.EndUpdate;
   end;
 end;
 
@@ -206,9 +217,7 @@ end;
 
 procedure TEditorToolbar.AddStaticItems;
 var
-  B: TToolButton;
-  PM: TPopupMenu;
-  T: TJumpType;
+  B: TToolButton;  
 begin
   TB.BeginUpdate;
   try
@@ -220,26 +229,24 @@ begin
     B.Parent      := TB;
     B.Caption     := 'Jump To';
     B.Hint        := B.Caption;
-    B.ImageIndex  := BI.AddLazarusResource('jumpto16');
+    B.ImageIndex  := IDEImages.LoadImage(16, 'jumpto16');
     B.Style       := tbsDropDown;
     B.OnClick     := @FJumpHandler.DoJumpToImplementation;
 
-    PM := TPopupMenu.Create(W);
     B.DropdownMenu := PM;
-
-    for T := Low(TJumpType) to High(TJumpType) do
-      PM.Items.Add(CreateJumpItem(T,W));
 
     AddDivider;
 
     // Config Button
-    B := TToolbutton.Create(TB);
-    B.Parent      := TB;
-    B.Caption     := 'Configure Toolbar';
-    B.Hint        := B.Caption;
-    B.ImageIndex  := BI.AddLazarusResource('preferences16');
-    B.Style       := tbsButton;
-    B.OnClick     := @DoConfigureToolbar;
+    if CfgButton = nil then
+      CfgButton := TToolbutton.Create(TB);
+
+    CfgButton.Parent      := TB;
+    CfgButton.Caption     := 'Configure Toolbar';
+    CfgButton.Hint        := B.Caption;
+    CfgButton.ImageIndex  := IDEImages.LoadImage(16, 'preferences16');
+    CfgButton.Style       := tbsButton;
+    CfgButton.OnClick     := @DoConfigureToolbar;
   finally
     TB.EndUpdate;
   end;
@@ -251,9 +258,11 @@ var
 begin
   TB.BeginUpdate;
   try
-    for i := TB.ButtonCount-1 downto 0 do
-      TB.Buttons[i].Visible := False;
-//      TB.Controls[i].Free;    // This causes a crash!
+    for i := TB.ButtonCount - 1 downto 0 do
+      if TB.Buttons[i] <> CfgButton then
+        TB.Buttons[i].Free
+      else
+        TB.Buttons[i].Parent := nil;
   finally
     TB.EndUpdate;
   end;
