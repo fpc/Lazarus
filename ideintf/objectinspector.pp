@@ -46,7 +46,7 @@ const
 
 type
   EObjectInspectorException = class(Exception);
-  
+
   TObjectInspector = class;
 
   // standard ObjectInspector pages
@@ -56,8 +56,8 @@ type
     oipgpFavourite
     );
   TObjectInspectorPages = set of TObjectInspectorPage;
-  
-  
+
+
   { TOIFavouriteProperty
     BaseClassName }
   TOIFavouriteProperty = class
@@ -248,9 +248,9 @@ type
     pgsBuildPropertyListNeeded
     );
   TOIPropertyGridStates = set of TOIPropertyGridState;
-  
+
   { TOICustomPropertyGrid }
-  
+
   TOICustomPropertyGridColumn = (
     oipgcName,
     oipgcValue
@@ -312,7 +312,7 @@ type
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetItemIndex(NewIndex:integer);
-    
+
     function GetNameRowHeight: Integer; // temp solution untill TFont.height returns its actual value
 
     procedure SetItemsTops;
@@ -378,14 +378,14 @@ type
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
-    
+
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure HandleKeyUp(var Key: Word; Shift: TShiftState); virtual;
     procedure DoTabKey; virtual;
 
     procedure EraseBackground(DC: HDC); override;
-    
+
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   public
     ValueEdit: TEdit;
@@ -459,10 +459,10 @@ type
     property Favourites: TOIFavouriteProperties read FFavourites
                                                 write SetFavourites;
   end;
-  
-  
+
+
   { TOIPropertyGrid }
-  
+
   TOIPropertyGrid = class(TOICustomPropertyGrid)
   published
     property Align;
@@ -495,7 +495,7 @@ type
     property ValueFont;
     property Visible;
   end;
-  
+
 
   { TCustomPropertiesGrid }
 
@@ -518,10 +518,10 @@ type
 
 
   //============================================================================
-  
-  
+
+
   { TObjectInspector }
-  
+
   TOnAddAvailablePersistent = procedure(APersistent: TPersistent;
     var Allowed: boolean) of object;
 
@@ -529,7 +529,7 @@ type
     oifRebuildPropListsNeeded
     );
   TOIFlags = set of TOIFlag;
-  
+
   { TObjectInspector }
 
   TObjectInspector = class(TForm)
@@ -668,7 +668,7 @@ type
 
 const
   DefaultObjectInspectorName: string = 'ObjectInspector';
-  
+
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
     'EventPage',
@@ -691,7 +691,7 @@ implementation
 const
   ScrollBarWidth=0;
 
-function SortGridRows(Item1, Item2 : pointer) : integer; 
+function SortGridRows(Item1, Item2 : pointer) : integer;
 begin
   Result:= AnsiCompareText(TOIPropertyGridRow(Item1).Name, TOIPropertyGridRow(Item2).Name);
 end;
@@ -951,7 +951,7 @@ end;
 function TOICustomPropertyGrid.InitHints: boolean;
 begin
   if not ShowHint then exit(false);
-  
+
   Result:=true;
   if FHintTimer=nil then begin
     FHintTimer := TTimer.Create(nil);
@@ -1136,7 +1136,7 @@ begin
       // => CurRow does not exist any more
       exit;
     end;
-    
+
     // set value in edit control
     SetCurrentEditValue(CurRow.Editor.GetVisualValue);
 
@@ -1204,7 +1204,7 @@ begin
       RefreshPropertyValues;
       exit;
     end;
-    
+
     // update value
     RefreshValueEdit;
 
@@ -1328,16 +1328,16 @@ var NewRow:TOIPropertyGridRow;
 begin
   if GridIsUpdating or (FItemIndex=NewIndex) then
     exit;
-    
+
   // save old edit value
   SetRowValue;
-  
+
   Include(FStates,pgsChangingItemIndex);
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
     Rows[FItemIndex].Editor.Deactivate;
   if CanFocus then
     SetCaptureControl(nil);
-  
+
   FItemIndex:=NewIndex;
   if FCurrentEdit<>nil then begin
     FCurrentEdit.Visible:=false;
@@ -1377,7 +1377,7 @@ begin
       if paCustomDrawn in EditorAttributes then
         ValueComboBox.Style:=csOwnerDrawVariable
       else
-        ValueComboBox.Style:=csSimple;
+        ValueComboBox.Style:=csDropDown;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
@@ -1435,7 +1435,7 @@ var a:integer;
 begin
   if OnlyIfNeeded and (not (pgsBuildPropertyListNeeded in FStates)) then exit;
   Exclude(FStates,pgsBuildPropertyListNeeded);
-  
+
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   // unselect
   ItemIndex:=-1;
@@ -1717,7 +1717,7 @@ begin
   //hide the hint
   if FHintWindow<>nil then
     FHintWindow.Visible := False;
-  
+
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin
       FDragging:=true;
@@ -1739,7 +1739,7 @@ begin
               ExpandRow(Index);
           end;
         end;
-        
+
         SetItemIndexAndFocus(Index);
         SetCaptureControl(Self);
       end;
@@ -1772,14 +1772,14 @@ begin
     end else begin
       Cursor:=crDefault;
     end;
-    
+
     if ssLeft in Shift then
     begin
       Index := MouseToIndex(Y, False);
       SetItemIndexAndFocus(Index);
       SetCaptureControl(Self);
     end;
-    
+
     // to check if the property text fits in its box, if not show a hint
     if ShowHint then begin
       Index := MouseToIndex(y,false);
@@ -1839,13 +1839,13 @@ begin
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key);
   Handled:=true;
   case Key of
-  
+
   VK_UP:
     if (ItemIndex>0) then SetItemIndexAndFocus(ItemIndex-1);
 
   VK_Down:
     if (ItemIndex<FRows.Count-1) then SetItemIndexAndFocus(ItemIndex+1);
-    
+
   VK_TAB:
     DoTabKey;
 
@@ -1855,7 +1855,7 @@ begin
       ShrinkRow(ItemIndex)
     else
       Handled:=false;
-    
+
   VK_RIGHT:
     if (FCurrentEdit=nil)
     and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
@@ -1986,7 +1986,7 @@ begin
       IsObjectSubProperty:=true;
     ParentRow:=ParentRow.Parent;
   end;
-  
+
   if IsObjectSubProperty then
     Result := FSubPropertiesColor
   else if ARow.Editor is TPersistentPropertyEditor then
@@ -2427,7 +2427,7 @@ begin
       NewItemIndex:=ValueComboBox.Items.IndexOf(CurValue);
       if NewItemIndex>=0 then
         ValueComboBox.ItemIndex:=NewItemIndex;
-        
+
       // ItemWidth
       MaxItemWidth:=ValueComboBox.Width;
       Cnt:=ValueComboBox.Items.Count;
@@ -2469,7 +2469,7 @@ begin
       Include(AState,pedsInEdit)
     else
       Include(AState,pedsInComboList);
-      
+
     // clear background
     with ValueComboBox.Canvas do begin
       Brush.Color:=clWhite;
@@ -2507,7 +2507,7 @@ begin
   if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
   or (Position.Y >= Height)) then
     Exit;
-  
+
   AHint := '';
   Index:=MouseToIndex(Position.Y,false);
   if (Index>=0) and (Index<FRows.Count) then
@@ -2539,7 +2539,7 @@ begin
 
   if FHintWIndow.Visible then
     FHintWindow.Visible := False;
-     
+
   FHintTimer.Enabled := False;
   if RowCount > 0 then
     FHintTimer.Enabled := not FDragging;
@@ -2870,7 +2870,7 @@ begin
   try
     Path:='ObjectInspectorOptions/';
     FileVersion:=ConfigStore.GetValue(Path+'Version/Value',0);
-  
+
     FSaveBounds:=ConfigStore.GetValue(Path+'Bounds/Valid'
                                       ,false);
     if FSaveBounds then begin
@@ -2996,7 +2996,7 @@ begin
   FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
   FShowComponentTree:=AnObjInspector.ShowComponentTree;
   FComponentTreeHeight:=AnObjInspector.ComponentTreeHeight;
-  
+
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
   FSubPropertiesColor:=AnObjInspector.PropertyGrid.SubPropertiesColor;
   FReferencesColor:=AnObjInspector.PropertyGrid.ReferencesColor;
@@ -3165,7 +3165,7 @@ begin
     Align:= alTop;
     Visible:=not FShowComponentTree;
   end;
-  
+
   // Component Tree at top (filled with available components)
   ComponentTree:=TComponentTreeView.Create(Self);
   with ComponentTree do begin
@@ -3181,7 +3181,7 @@ begin
     CreateSplitter;
 
   CreateNoteBook;
-  
+
   OnResize:=@ObjectInspectorResize;
 end;
 
@@ -3739,7 +3739,7 @@ begin
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
   end;
-  
+
   CreateFavouritePage;
 end;
 
@@ -3836,7 +3836,7 @@ begin
     SetDefaultPopupMenuItem.Caption:=Format(oisSetToDefault, [DefaultStr])
   else
     SetDefaultPopupMenuItem.Caption:=oisSetToDefaultValue;
-    
+
   AddToFavoritesPopupMenuItem.Visible:=(Favourites<>nil)
                 and ShowFavouritePage
                 and (GetActivePropertyGrid<>FavouriteGrid)
@@ -4352,7 +4352,7 @@ end;
 
 function TOIFavouriteProperty.Compare(AFavourite: TOIFavouriteProperty
   ): integer;
-  
+
   function CompareBaseClass: integer;
   begin
     if BaseClass<>nil then begin
