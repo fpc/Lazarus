@@ -1265,7 +1265,7 @@ begin
   {$IFDEF VerboseGdkPixbuf}
   debugln('ScalePixmap A1');
   {$ENDIF}
-  gtkextra.gdk_pixbuf_render_pixmap_and_mask(ScaleDest,NewPixmap,DummyMask,0);
+  {$IFDEF gtk}gtkextra.{$ENDIF}gdk_pixbuf_render_pixmap_and_mask(ScaleDest,NewPixmap,DummyMask,0);
   {$IFDEF VerboseGdkPixbuf}
   debugln('ScalePixmap A2');
   {$ENDIF}
