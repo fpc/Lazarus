@@ -70,6 +70,7 @@ type
 
   { TWSSpeedButton }
 
+  TWSSpeedButtonClass = class of TWSSpeedButton;
   TWSSpeedButton = class(TWSGraphicControl)
     class procedure DrawFrame(const ASpeedButton: TCustomSpeedButton; const ADrawFlags: Integer; var ARect: TRect); virtual;
   end;

@@ -451,7 +451,7 @@ begin
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
   
-  TWSSpeedButton.DrawFrame(Self, FLastDrawFlags, PaintRect);
+  TWSSpeedButtonClass(WidgetSetClass).DrawFrame(Self, FLastDrawFlags, PaintRect);
   
   //debugln(['TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
   //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,

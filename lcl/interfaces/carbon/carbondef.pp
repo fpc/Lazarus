@@ -326,6 +326,7 @@ begin
   // Tweaking the memmanager is also not possible since only the class is public
   // and not the manager itself.
 
+
   Node.Clear;
   UPPTree.Delete(Node);
 end;

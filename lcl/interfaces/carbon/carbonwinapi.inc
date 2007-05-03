@@ -438,10 +438,34 @@ begin
   TCarbonCursor(Handle).Free;
 end;
 
-function TCarbonWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
-  uState: Cardinal): Boolean;
+{------------------------------------------------------------------------------
+  Method:  DrawFrameControl
+  Params:  DC     - Handle to device context
+           Rect   - Bounding rectangle
+           UType  - Frame-control type
+           UState - Frame-control state
+  Returns: If the function succeeds
+
+  Draws a frame control of the specified type and style.
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; UType,
+  UState: Cardinal): Boolean;
+var
+  R: TRect;
 begin
-  Result:=inherited DrawFrameControl(DC, Rect, uType, uState);
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DrawFrameControl DC: ' + DbgS(DC) + ' R: ' +
+      DbgS(Rect) + ' Type: ' + DbgS(UType) + ' Style: ' + DbgS(Style);
+  {$ENDIF}
+
+  if not CheckDC(DC, 'DrawFrameControl') then Exit;
+
+  R := Rect;
+  TCarbonDeviceContext(DC).DrawFrameControl(R, UType, UState);
+
+  Result := True;
 end;
 
 function TCarbonWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;

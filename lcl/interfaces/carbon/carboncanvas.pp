@@ -99,6 +99,7 @@ type
     
     procedure SetAntialiasing(AValue: Boolean);
   public
+    procedure DrawFrameControl(var ARect: TRect; AType, AState: Cardinal);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
     function ExtTextOut(X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -594,6 +595,53 @@ end;
 procedure TCarbonDeviceContext.SetAntialiasing(AValue: Boolean);
 begin
   CGContextSetShouldAntialias(CGContext, CBool(AValue));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.DrawFrameControl
+  Params:  Rect   - Bounding rectangle, returned adujsted to frame client area
+           UType  - Frame-control type
+           UState - Frame-control state
+
+  Draws a frame control of the specified type and style
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.DrawFrameControl(var ARect: TRect; AType,
+  AState: Cardinal);
+var
+  DrawInfo: HIThemeButtonDrawInfo;
+  LabelRect: HIRect;
+begin
+  case AType of
+  DFC_BUTTON:
+    begin
+      DrawInfo.version := 0;
+      
+      if (AState and DFCS_INACTIVE > 0) then
+        DrawInfo.state := kThemeStateInactive
+      else
+      begin
+        if (AState and DFCS_PUSHED > 0) then
+          DrawInfo.state := kThemeStatePressed
+        else
+          DrawInfo.state := kThemeStateActive;
+      end;
+        
+      DrawInfo.kind := kThemeBevelButtonSmall;
+      DrawInfo.value := 0;
+      DrawInfo.adornment := kThemeAdornmentNone;
+    
+      LabelRect := RectToCGRect(ARect);
+      
+      OSError(
+        HIThemeDrawButton(LabelRect, DrawInfo, CGContext,
+          kHIThemeOrientationNormal, @LabelRect),
+        Self, 'DrawFrameControl', 'HIThemeDrawButton');
+        
+      ARect := CGRectToRect(LabelRect);
+    end;
+  else
+    DebugLn('TCarbonDeviceContext.DrawFrameControl TODO Type: ' + DbgS(AType));
+  end;
 end;
 
 {------------------------------------------------------------------------------

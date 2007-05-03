@@ -502,7 +502,7 @@ end;
            B - Rectangle to be excluded
   Returns: Array of CGRect, which are product of exclusion rectangle B from
   rectangle A.
-  Note: The returned rectangles may overlay.
+  Note: The returned rectangles may overlap.
  ------------------------------------------------------------------------------}
 function ExcludeRect(const A, B: TRect): CGRectArray;
 begin

@@ -313,9 +313,9 @@ const
   SName = 'CarbonWindow_KeyboardProc';
   AGetEvent = 'GetEventParameter';
 
-  //See what changed in the modifiers flag so that we can emulate a keyup/keydown
-  //note: this function assumes that only a bit of the flag can be modified at
-  //once
+  // See what changed in the modifiers flag so that we can emulate a keyup/keydown
+  // Note: this function assumes that only a bit of the flag can be modified at
+  // once
   function EmulateModifiersDownUp : boolean;
   var CurMod, diff : UInt32;
   begin
@@ -490,12 +490,12 @@ const
         end;
       end;
 
-      //There is no known VK_ code for this characther. Use a dummy keycode
-      //(E8, which is unused by Windows) so that KeyUp/KeyDown events will be
-      //triggered by LCL.
-      //Note: we can't use the raw mac keycode, since it could collide with
-      //well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
-      //"&egrave;" is 33, which is the same as VK_PRIOR)
+      // There is no known VK_ code for this characther. Use a dummy keycode
+      // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
+      // triggered by LCL.
+      // Note: we can't use the raw mac keycode, since it could collide with
+      // well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
+      // "&egrave;" is 33, which is the same as VK_PRIOR)
       if VKKeyCode=VK_UNKNOWN then VKKeyCode:=$E8;
 
       {$IFDEF VerboseKeyboard}
@@ -601,8 +601,15 @@ const
         Result := CallNextEventHandler(ANextHandler, AEvent);
 
       //Send a LM_(SYS)CHAR
-      if IsSysKey then CharMsg.Msg := LM_SYSCHAR
+      if IsSysKey then
+      begin
+        //CharMsg.Msg := LM_SYSCHAR
+        // Do not send LM_SYSCHAR message - workaround for disabling
+        // accelerators like "Cmd + C" for &Caption
+        Exit;
+      end
       else CharMsg.Msg := LM_CHAR;
+      
       if DeliverMessage(Widget.LCLObject, CharMsg) <> 0 then
       begin
         // the LCL handled the key
@@ -759,9 +766,7 @@ begin
   
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
-
   EventKind := GetEventKind(AEvent);
-  
   
   Kind := -1;
   case EventKind of

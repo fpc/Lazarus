@@ -977,8 +977,8 @@ begin
   begin
     GetClientRect(R);
     
-    WidgetSet.ExtTextOut(HDC(Context), R.Top, R.Left, 0, nil, PChar(StatusBar.SimpleText),
-      Length(StatusBar.SimpleText), nil);
+    (Context as TCarbonDeviceContext).ExtTextOut(R.Top, R.Left, 0, nil,
+      PChar(StatusBar.SimpleText), Length(StatusBar.SimpleText), nil);
   end;
 end;
 
