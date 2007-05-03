@@ -728,6 +728,7 @@ type
     FTag: Integer;
     function GetWidth: TWidth;
     procedure WSCreateColumn;
+    procedure WSDestroyColumn;
     function  WSUpdateAllowed: Boolean;
     procedure SetVisible(const AValue: Boolean);
     procedure SetAutoSize(const AValue: Boolean);

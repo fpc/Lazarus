@@ -101,6 +101,16 @@ begin
   WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 
+procedure TListColumn.WSDestroyColumn;
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
+begin
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnDelete(LV, Index);
+end;
+
 function TListColumn.WSUpdateAllowed: Boolean;
 begin
   Result := (Collection <> nil)

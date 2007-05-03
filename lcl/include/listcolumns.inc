@@ -98,7 +98,11 @@ procedure TListColumns.WSCreateColumns;
 var
   n: Integer;
 begin
-  for n :=0 to Count - 1 do
+  // remove columns at first if exists to prevent doubling them
+  for n := Count - 1 downto 0 do
+    GetItem(n).WSDestroyColumn;
+    
+  for n := 0 to Count - 1 do
     GetItem(n).WSCreateColumn;
 end;
 
