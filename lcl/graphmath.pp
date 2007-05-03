@@ -474,10 +474,10 @@ end;
   Use BezierToPolyline to convert a 4-Point Bezier into a Pointer Array of
   TPoint and a Count variable which can then be used within either a Polyline,
   or Polygon routine. It is primarily for use within PolyBezier2Polyline. If
-  Points is not initialized or Count is less then 0, it is automatically
-  initialized and the array starts at 0, otherwise it tries too append points
+  Points is not initialized or Count is less then 0, it is set to nil and
+  the array starts at 0, otherwise it tries to append points
   to the array starting at Count. Points should ALWAYS be Freed when done
-  by calling to ReallocMem(Points, 0).
+  by calling to ReallocMem(Points, 0) or FreeMem.
 
 ------------------------------------------------------------------------------}
 Procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
@@ -528,9 +528,16 @@ var
 
 begin
   Pt := Point(-1,-1);
-  If (not Assigned(Points)) or (Count <= 0) then begin
-    Points := AllocMem(SizeOf(TPoint));
+  If (not Assigned(Points)) or (Count <= 0) then
+  begin
     Count := 0;
+
+    if Assigned(Points) then
+    try
+      ReallocMem(Points, 0);
+    finally
+      Points := nil;
+    end;
   end;
   SplitRecursive(Bezier);
 end;
@@ -551,9 +558,9 @@ end;
   a full circle equals 5760 (16*360). Positive values of Angle and AngleLength
   mean counter-clockwise while negative values mean clockwise direction. Zero
   degrees is at the 3'o clock position. If Points is not initialized or Count
-  is less then 0, it is automatically initialized and the array starts at 0,
-  otherwise it tries too append points to the array starting at Count. Points
-  should ALWAYS be Freed when done by calling to ReallocMem(Points, 0).
+  is less then 0, it is set to nil and the array starts at 0,
+  otherwise it tries to append points to the array starting at Count. Points
+  should ALWAYS be Freed when done by calling ReallocMem(Points, 0) or FreeMem.
 
 ------------------------------------------------------------------------------}
 Procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
@@ -568,10 +575,19 @@ begin
   end;
   If Angle2 = 0 then
     exit;
-  If (not Assigned(Points)) or (Count <= 0) then begin
-    Points := AllocMem(SizeOf(TPoint));
+
+  If (not Assigned(Points)) or (Count <= 0) then
+  begin
     Count := 0;
+    
+    if Assigned(Points) then
+    try
+      ReallocMem(Points, 0);
+    finally
+      Points := nil;
+    end;
   end;
+  
   Arc2Bezier(X, Y, Width, Height, Angle1, Angle2, Rotation, B);
   Bezier2Polyline(B,Points,Count);
 end;
