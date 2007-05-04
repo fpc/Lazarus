@@ -149,6 +149,12 @@ begin
     Include(State,odDefault);
   if GTK_WIDGET_HAS_FOCUS(Widget) then
     Include(State,odFocused);
+    
+  if AWinControl is TCustomCombobox then begin
+    if TCustomComboBox(AWinControl).DroppedDown
+    and ((flags and GTK_CELL_RENDERER_PRELIT)>0) then
+    Include(State,odSelected);
+  end;
 
   // create message and deliver
   FillChar(Msg,SizeOf(Msg),0);

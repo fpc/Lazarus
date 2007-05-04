@@ -820,6 +820,11 @@ begin
   g_list_foreach(AMenu^.children, TGFunc(@UpdateMenuItemsCB), WidgetInfo);
 end;
 
+procedure GtkPopupHideCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
+begin
+  LCLSendCloseUpMsg(TControl(WidgetInfo^.LCLObject));
+end;
+
 procedure GtkChangedCB(AWidget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
 begin
   if WidgetInfo^.UserData <> nil then Exit;
@@ -895,6 +900,7 @@ begin
   end;
 
   g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
+  g_signal_connect(APrivate^.popup_widget, 'hide', TGCallback(@GtkPopupHideCB), AWidgetInfo);
   //g_signal_connect(ComboWidget, 'popup-shown', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
 end;
