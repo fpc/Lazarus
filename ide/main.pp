@@ -4197,7 +4197,7 @@ begin
           Grubber:=TLRTGrubber.Create;
           Writer.OnWriteStringProperty:=@Grubber.Grub;
           {$ENDIF}
-          {$IFDEF EnableFakeMethod}
+          {$IFDEF EnableFakeMethods}
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           {$ENDIF}
           AncestorUnit:=GetAncestorUnit(AnUnitInfo);
