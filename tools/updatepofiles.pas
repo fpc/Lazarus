@@ -54,7 +54,7 @@ var
 begin
   MsgItem1:=PMsgItem(Data1);
   MsgItem2:=PMsgItem(Data2);
-  Result:=AnsiCompareStr(MsgItem1^.ID,MsgItem2^.ID);
+  Result:=CompareStr(MsgItem1^.ID,MsgItem2^.ID);
 end;
 
 procedure DisposeMsgTree(var Tree: TAVLTree);
@@ -414,10 +414,12 @@ begin
   if not ParamsValid then begin
     writeln('Usage: ',ExtractFileName(ParamStr(0))
        ,' filename1.po [filename2.po ... filenameN.po]');
+    readln;
     exit;
   end else begin
     UpdateAllPoFiles;
   end;
   Files.Free;
+  readln;
 end.
 
