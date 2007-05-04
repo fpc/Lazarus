@@ -2825,6 +2825,8 @@ end;
 function TLazPackage.AddFile(const NewFilename, NewUnitName: string;
   NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
   CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+var
+  NewComponentPriority: TComponentPriority;
 begin
   Result:=FindRemovedPkgFile(NewFilename);
   if Result=nil then begin
@@ -2839,8 +2841,9 @@ begin
     UnitName:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
-    ComponentPriority:=ComponentPriorityNormal;
-    ComponentPriority.Category:=CompPriorityCat;
+    NewComponentPriority:=ComponentPriorityNormal;
+    NewComponentPriority.Category:=CompPriorityCat;
+    ComponentPriority:=NewComponentPriority;
     Removed:=false;
     AutoReferenceSourceDir:=true;
   end;
@@ -2851,6 +2854,8 @@ end;
 function TLazPackage.AddRemovedFile(const NewFilename, NewUnitName: string;
   NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
   CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+var
+  NewComponentPriority: TComponentPriority;
 begin
   Result:=FindRemovedPkgFile(NewFilename);
   if Result=nil then begin
@@ -2862,8 +2867,9 @@ begin
     UnitName:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
-    ComponentPriority:=ComponentPriorityNormal;
-    ComponentPriority.Category:=CompPriorityCat;
+    NewComponentPriority:=ComponentPriorityNormal;
+    NewComponentPriority.Category:=CompPriorityCat;
+    ComponentPriority:=NewComponentPriority;
     Removed:=false;
     AutoReferenceSourceDir:=true;
   end;

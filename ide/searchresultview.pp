@@ -106,7 +106,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShortenPaths;
-    procedure FreeObjects(var slItems: TStrings);
+    procedure FreeObjects(slItems: TStrings);
     function BeautifyLine(const Filename: string; X, Y: integer;
                           const Line: string): string;
     function BeautifyLine(SearchPos: TLazSearchMatchPos): string;
@@ -218,7 +218,7 @@ procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   ALayout: TIDEWindowLayout;
 begin
-  FMaxItems:=500;
+  FMaxItems:=50000;
   
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
   ResultsNoteBook.Update;
@@ -1123,7 +1123,7 @@ begin
   end;
 end;
 
-procedure TLazSearchResultLB.FreeObjects(var slItems: TStrings);
+procedure TLazSearchResultLB.FreeObjects(slItems: TStrings);
 var i: Integer;
 begin
  if (slItems.Count <= 0) then Exit;

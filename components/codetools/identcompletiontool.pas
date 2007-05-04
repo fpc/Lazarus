@@ -1123,6 +1123,8 @@ end;
 
 procedure TIdentCompletionTool.InitCollectIdentifiers(
   const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList);
+var
+  StartContext: TFindContext;
 begin
   if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
   CurrentIdentifierList:=IdentifierList;
@@ -1130,12 +1132,16 @@ begin
   LastGatheredIdentParent:=nil;
   LastGatheredIdentLevel:=0;
   CurrentIdentifierList.StartContextPos:=CursorPos;
-  CurrentIdentifierList.StartContext.Tool:=Self;
+  StartContext := CurrentIdentifierList.StartContext;
+  StartContext.Tool := Self;
+  CurrentIdentifierList.StartContext:=StartContext;
 end;
 
 procedure TIdentCompletionTool.ParseSourceTillCollectionStart(
   const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
   out CursorNode: TCodeTreeNode; out IdentStartPos, IdentEndPos: integer);
+var
+  StartContext: TFindContext;
 begin
   CleanCursorPos:=0;
   CursorNode:=nil;
@@ -1151,9 +1157,12 @@ begin
 
   // find node at position
   CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
-  if CurrentIdentifierList<>nil then
-    CurrentIdentifierList.StartContext.Node:=CursorNode;
-
+  if CurrentIdentifierList<>nil then begin
+    StartContext:=CurrentIdentifierList.StartContext;
+    StartContext.Node:=CursorNode;
+    CurrentIdentifierList.StartContext:=StartContext;
+  end;
+  
   // get identifier position
   GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
 end;

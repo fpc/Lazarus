@@ -2576,6 +2576,7 @@ end;
 procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
 var
   AColor: TColor;
+  CurrentTextStyle: TTextStyle;
 begin
   if DefaultDrawing then begin
     Canvas.Pen.Mode := pmCopy;
@@ -2599,9 +2600,10 @@ begin
       Canvas.Brush.Color := AColor;
       SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
     end;
-    Canvas.TextStyle := DefaultTextStyle;
-    Canvas.TextStyle.Alignment := GetColumnAlignment(aCol, gdFixed in AState);
-    Canvas.TextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
+    CurrentTextStyle := DefaultTextStyle;
+    CurrentTextStyle.Alignment := GetColumnAlignment(aCol, gdFixed in AState);
+    CurrentTextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
+    Canvas.TextStyle := CurrentTextStyle;
   end else begin
     Canvas.TextStyle := DefaultTextStyle;
     Canvas.Brush.Color := clWindow;
@@ -4294,7 +4296,7 @@ begin
 
               if not SelectActive then begin
                 FPivot:=FSplitter;
-                Include(GridFlags, gfNeedsSelectActive);
+                GridFlags := GridFlags + [gfNeedsSelectActive];
                 // delay select active until mouse reachs another cell
               end;
             end;
@@ -4430,7 +4432,7 @@ begin
       
   end;
   fGridState:=gsNormal;
-  Exclude(GridFlags, gfNeedsSelectActive);
+  GridFlags := GridFlags - [gfNeedsSelectActive];
   {$IfDef dbgGrid}DebugLn('MouseUP  END  RND=', FloatToStr(Random));{$Endif}
 end;
 
@@ -4712,9 +4714,9 @@ begin
           DebugLn('Got TAB, shift=',dbgs(sh));
           {$endif}
           if sh then
-            include(GridFlags, gfRevEditorTab)
+            GridFlags := GridFlags + [gfRevEditorTab]
           else
-            include(GridFlags, gfEditorTab);
+            GridFlags := GridFlags + [gfEditorTab];
         end;
       end;
     VK_LEFT:
@@ -7174,10 +7176,12 @@ var
   Ts: Tsize;
   nc: PcellProps;
   i: integer;
+  TextStyle : TTextStyle;
 begin
   inherited CalcCellExtent(acol,arow, aRect);
   S:=Cells[aCol,aRow];
-  if not Canvas.TextStyle.Clipping then begin
+  TextStyle := Canvas.TextStyle;
+  if not TextStyle.Clipping then begin
   //if not FCellAttr.TextStyle.Clipping then begin
     // Calcular el numero de celdas necesarias para contener todo
     // El Texto
@@ -7190,7 +7194,8 @@ begin
       aRect.Right:=aRect.Right + getColWidths(i);
     end;
     //fcellAttr.TextStyle.Clipping:=i<>aCol;
-    Canvas.TextStyle.clipping:=i<>aCol;
+    TextStyle.Clipping:=i<>aCol;
+    Canvas.TextStyle:=TextStyle;
   end;
 end;
 
@@ -7394,12 +7399,12 @@ end;
 
 procedure TCustomStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
-  Include(GridFlags, gfEditorUpdateLock);
+  GridFlags := GridFlags + [gfEditorUpdateLock];
   try
     if Cells[aCol, aRow]<>aValue then
       Cells[aCol, aRow]:= aValue;
   finally
-    Exclude(GridFlags, gfEditorUpdateLock);
+    GridFlags := GridFlags - [gfEditorUpdateLock];
   end;
   inherited SetEditText(aCol, aRow, aValue);
 end;

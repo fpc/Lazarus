@@ -333,8 +333,8 @@ procedure TProjectBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   ID:=XMLConfig.GetValue(Path+'ID',-1);
-  CursorPos.X:=XMLConfig.GetValue(Path+'CursorPosX',0);
-  CursorPos.Y:=XMLConfig.GetValue(Path+'CursorPosY',0);
+  CursorPos:=Point(XMLConfig.GetValue(Path+'CursorPosX',0),
+                  XMLConfig.GetValue(Path+'CursorPosY',0));
   EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex',-1);
 end;
 

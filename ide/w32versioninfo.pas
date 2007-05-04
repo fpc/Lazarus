@@ -326,7 +326,7 @@ begin
                if AutoIncrementBuild then
                   begin
                      { project indicate to use autoincrementbuild }
-                     Inc(BuildNr);
+                     BuildNr := BuildNr + 1;
                   end;
                if ProductVersionString = '' then
                   ProductVersionString := IntToStr(VersionNr) + '.' +

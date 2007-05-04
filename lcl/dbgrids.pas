@@ -2935,7 +2935,7 @@ var
 begin
   if HasAutomaticColumns then begin
     G := TCustomDBGrid(Grid);
-    Include(G.GridStatus, gsRemovingAutoColumns);
+    G.GridStatus := G.GridStatus + [gsRemovingAutoColumns];
     BeginUpdate;
     try
       for i:=Count-1 downto 0 do
@@ -2943,7 +2943,7 @@ begin
           Delete(i);
     finally
       EndUpdate;
-      Exclude(G.GridStatus, gsRemovingAutoColumns);
+      G.GridStatus := G.GridStatus - [gsRemovingAutoColumns];
     end;
   end;
 end;

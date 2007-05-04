@@ -437,9 +437,12 @@ begin
   fOptions.Key:=EditorKeyStringToVKCode(KeyComboBox.Text);
   fOptions.Shift:=[];
   if fOptions.Key<>VK_UNKNOWN then begin
-    if KeyCtrlCheckBox.Checked then include(fOptions.Shift,ssCtrl);
-    if KeyAltCheckBox.Checked then include(fOptions.Shift,ssAlt);
-    if KeyShiftCheckBox.Checked then include(fOptions.Shift,ssShift);
+    if KeyCtrlCheckBox.Checked then
+      fOptions.Shift := fOptions.Shift + [ssCtrl];
+    if KeyAltCheckBox.Checked then
+      fOptions.Shift := fOptions.Shift + [ssAlt];
+    if KeyShiftCheckBox.Checked then
+      fOptions.Shift := fOptions.Shift + [ssShift];
   end;
   fOptions.ScanOutputForFPCMessages:=
     OptionScanOutputForFPCMessagesCheckBox.Checked;

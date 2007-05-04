@@ -159,7 +159,7 @@ begin
         ParentFont := true;
         BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
         BorderSpacing.CellAlignVertical:=ccaCenter;
-        Include(ControlStyle, csNoDesignSelectable);
+        ControlStyle := ControlStyle + [csNoDesignSelectable];
       end;
       FButtonList.Add(ARadioButton);
     end;
@@ -168,7 +168,7 @@ begin
       with FHiddenButton do begin
         Name:='HiddenRadioButton';
         Visible:=false;
-        Include(ControlStyle, csNoDesignSelectable);
+        ControlStyle := ControlStyle + [csNoDesignSelectable];
       end;
     end;
 

@@ -779,7 +779,7 @@ begin
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete A ',Component.Name,':',Component.ClassName);
   {$ENDIF}
-  Result:=TryFreeComponent(component);
+  Result:=TryFreeComponent(FComponent);
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete B ');
   {$ENDIF}

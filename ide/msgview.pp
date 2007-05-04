@@ -55,6 +55,7 @@ type
     FLineNumber: integer;
     FNode: TAVLTreeNode;
   public
+    procedure UpdateSourcePosition;
     property Node: TAVLTreeNode read FNode write FNode;
     property Filename: string read FFilename write FFilename;
     property LineNumber: integer read FLineNumber write FLineNumber;
@@ -630,7 +631,7 @@ begin
       Line.LineNumber:=FirstLine;
     end else begin
       // line moved
-      inc(Line.LineNumber,LineCount);
+      Line.LineNumber:= Line.LineNumber+LineCount;
     end;
     if OldLineNumber<>Line.LineNumber then begin
       // update line number
@@ -1050,7 +1051,7 @@ begin
     FSrcPositions.Delete(Line.Node);
     Line.Node:=nil;
   end;
-  Line.GetSourcePosition(Line.Filename,Line.LineNumber,Line.Column);
+  Line.UpdateSourcePosition;
   if Line.LineNumber>0 then
     Line.Node:=FSrcPositions.Add(Line);
 end;
@@ -1121,6 +1122,13 @@ begin
       end;
     end;
   end;
+end;
+
+{ TLazMessageLine }
+
+procedure TLazMessageLine.UpdateSourcePosition;
+begin
+  GetSourcePosition(FFilename, FLineNumber, FColumn);
 end;
 
 initialization

@@ -7051,7 +7051,7 @@ begin
   // search file in path (search especially for pascal files)
   if FindFile(FName,SPath) then begin
     Result:=mrOk;
-    InputHistories.FileDialogSettings.InitialDir:=ExtractFilePath(FName);
+    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FName));
     if DoOpenEditorFile(FName,-1,[ofAddToRecent])=mrOk then begin
       // success
     end;

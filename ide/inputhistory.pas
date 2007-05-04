@@ -222,6 +222,7 @@ type
     // filedialog
     procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
     procedure StoreFileDialogSettings(SourceDialog: TFileDialog);
+    procedure SetFileDialogSettingsInitialDir(const InitialDir: string);
     function SelectDirectory(const Title: string;
                              MustExist: boolean = true;
                              const InitialDir: string = '';
@@ -588,6 +589,11 @@ begin
   if s<>'' then
     AddToRecentList(s,FFileDialogSettings.HistoryList,
                     FFileDialogSettings.MaxHistory);
+end;
+
+procedure TInputHistories.SetFileDialogSettingsInitialDir(const InitialDir: string);
+begin
+  FFileDialogSettings.InitialDir := InitialDir;
 end;
 
 function TInputHistories.SelectDirectory(const Title: string;

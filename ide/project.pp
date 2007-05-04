@@ -1051,8 +1051,8 @@ begin
   end;
 
   // session data
-  CursorPos.X:=XMLConfig.GetValue(Path+'CursorPos/X',-1);
-  CursorPos.Y:=XMLConfig.GetValue(Path+'CursorPos/Y',-1);
+  CursorPos:=Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
+                   XMLConfig.GetValue(Path+'CursorPos/Y',-1));
   EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);

@@ -268,7 +268,7 @@ begin
     CurButton.Visible:=CurButtonType in FVisibleButtons;
     CurButton.OnClick:=@ButtonClickHandler;
     CurButton.Parent:=Self;
-    include(CurButton.ControlStyle, csNoDesignSelectable);
+    CurButton.ControlStyle := CurButton.ControlStyle + [csNoDesignSelectable];
     if CurButton.Visible then begin
       inc(ButtonNumber);
       ButtonStartPos:=ButtonEndPos;

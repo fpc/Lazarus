@@ -117,7 +117,7 @@ begin
         Parent := Self;
         OnClick :=@Self.Clicked;
         ParentFont := true;
-        Include(ControlStyle, csNoDesignSelectable);
+        ControlStyle := ControlStyle + [csNoDesignSelectable];
       end;
       FButtonList.Add(CheckBox);
     end;

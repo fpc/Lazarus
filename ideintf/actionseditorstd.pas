@@ -236,13 +236,15 @@ end;
 procedure TActStdProp.Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
 var
   ActItem: TActStdPropItem;
+  ActionProperty: TRecActStdProp;
 begin
   if Assigned(IndexOfClass(ActClassType.ClassName)) then Exit;
   ActItem := TActStdPropItem.Create;
   ActItem.ActClassName := ActClassType.ClassName;
-  ActItem.ActionProperty.Caption := HeadLine;
-  ActItem.ActionProperty.ShortCut := TextToShortCut(ShortCut);
-  ActItem.ActionProperty.Hint := Hint;
+  ActionProperty.Caption := HeadLine;
+  ActionProperty.ShortCut := TextToShortCut(ShortCut);
+  ActionProperty.Hint := Hint;
+  ActItem.ActionProperty := ActionProperty;
   fPropList.Add(ActItem);
 end;
 
