@@ -351,6 +351,10 @@ msgstr "向前"
 msgid "Grid file doesn't exists"
 msgstr "网格文件不存在"
 
+#: lclstrconsts:rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr ""
+
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex 不能比之前的菜单项目的 GroupIndex 少"

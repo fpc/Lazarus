@@ -338,6 +338,10 @@ msgstr "Eteenpäin"
 msgid "Grid file doesn't exists"
 msgstr ""
 
+#: lclstrconsts:rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr ""
+
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr ""

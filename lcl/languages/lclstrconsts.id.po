@@ -351,6 +351,10 @@ msgstr "Maju"
 msgid "Grid file doesn't exists"
 msgstr "File grid tidak ada"
 
+#: lclstrconsts:rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr ""
+
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex tidak bisa kurang dari item GroupIndex menu sebelumnya"

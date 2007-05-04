@@ -338,6 +338,10 @@ msgstr "Adiante"
 msgid "Grid file doesn't exists"
 msgstr "Arquivo de grade não existe"
 
+#: lclstrconsts:rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr ""
+
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex não pode ser menor que o GroupIndex dos items de menu"

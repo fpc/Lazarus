@@ -4667,8 +4667,8 @@ msgid "License:"
 msgstr "Licenza:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
-msgstr "Licenza: GPL/LGPL%sLazarus è un insieme di librerie di classi per il Free Pascal che emulano Delphi. Free Pascal è un compilatore con licenza (L)GPL che funziona su Linux, Win32, OS/2, 68K e altri. Free Pascal è progettato per essere in grado di capire e compilare la sintassi Delphi, che è naturalmente OOP.%sLazarus è il pezzo mancante che vi permetterà di sviluppare programmi stile Delphi in tutte queste piattaforme. L'IDE sarà anche uno strumento RAD come Delphi.%sPiù il progetto Lazarus si ingrandisce e più c'è necessità di un gran numero di programmatori."
+msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs for all of the above platforms. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"

@@ -348,6 +348,10 @@ msgstr ""
 msgid "Grid file doesn't exists"
 msgstr "No existe el archivo de rejilla"
 
+#: lclstrconsts:rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr ""
+
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex no puede ser menor que un elemento de menú de GroupIndex"

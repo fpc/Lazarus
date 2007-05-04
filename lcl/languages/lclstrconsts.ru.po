@@ -349,6 +349,10 @@ msgstr "Вперёд"
 msgid "Grid file doesn't exists"
 msgstr "Файл сетки не существует"
 
+#: lclstrconsts:rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr ""
+
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex не может быть меньше GroupIndex для предыдущего элемента меню"
