@@ -191,7 +191,7 @@ type
     csTripleClicks,// control understands mouse triple clicks
     csQuadClicks,  // control understands mouse quad clicks
     csFixedWidth,
-    csFixedHeight,
+    csFixedHeight, // control cannot change it height (for example combobox)
     csNoDesignVisible,
     csReplicatable,
     csNoStdEvents,

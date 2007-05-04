@@ -42,18 +42,6 @@ Begin
   Result := StrComp(AStr, BStr);
 end;
 
-Procedure SetComboHeight(Sender: TWinControl; AHeight:Integer);
-var
-  Left, Top, Width: integer;
-begin
-  Left := Sender.Left;
-  Top := Sender.Top;
-  Width := Sender.Width;
-  LCLBoundsToWin32Bounds(Sender, Left, Top, Width, AHeight);
-  MoveWindow(Sender.Handle, Left, Top, Width, AHeight, true);
-  LCLControlSizeNeedsUpdate(Sender, true);
-end;
-
 {*************************************************************}
 {                      TWin32ListStringList methods           }
 {*************************************************************}
@@ -277,10 +265,10 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.PutObject(Index: Integer; AObject: TObject);
-Begin
+procedure TWin32ListStringList.PutObject(Index: Integer; AObject: TObject);
+begin
   Windows.SendMessage(FWin32List, FFlagSetItemData, Index, LPARAM(AObject));
-End;
+end;
 
 procedure TWin32ListStringList.SetCapacity(NewCapacity: Integer);
 begin
@@ -316,11 +304,11 @@ begin
   FFlagSetSelected  := UINT(0);
   FFlagInitStorage  := UINT(CB_INITSTORAGE);
   //Get edit and item sizes
-  Windows.GetClientRect(FWin32List,@R);
+  Windows.GetClientRect(FWin32List, @R);
   FEditHeight := R.Bottom;
   FItemHeight := Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0);
   FDropDownCount := TComboBox(FSender).DropDownCount;
-  If FDropDownCount = 0 then
+  if FDropDownCount = 0 then
     FDropDownCount := 8;
 end;
 
@@ -337,7 +325,7 @@ begin
     inherited Assign(Source);
     
     // restore text in edit box
-    SetComboHeight(FSender, ComboHeight);
+    ComboHeight := ComboHeight;
     TWin32WSCustomComboBox.SetText(FSender, EditText);
     lItemIndex := IndexOf(EditText);
     if lItemIndex <> -1 then
@@ -348,32 +336,53 @@ end;
 
 function TWin32ComboBoxStringList.GetComboHeight: integer;
 begin
-  if Count = 0 then
+  if (FSender is TCustomComboBox) and (TCustomComboBox(FSender).Style = csSimple) then
   begin
-    Result := FEditHeight + FItemHeight + 2;
-  end else begin
-    Result := FEditHeight + FDropDownCount*FItemHeight + 2;
+    // combobox workaround:
+    // if style = csSimple FEditHeight = Edit Height + Listbox Height
+    Result := FEditHeight;
+  end else
+  begin
+    if Count = 0 then
+    begin
+      Result := FEditHeight + FItemHeight + 2;
+    end else
+    begin
+      Result := FEditHeight + FDropDownCount * FItemHeight + 2;
+    end;
   end;
 end;
 
-procedure TWin32ComboBoxStringList.Clear; 
+procedure TWin32ComboBoxStringList.SetComboHeight(AValue: Integer);
+var
+  Left, Top, Width: integer;
 begin
-  SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
+  Left := FSender.Left;
+  Top := FSender.Top;
+  Width := FSender.Width;
+  LCLBoundsToWin32Bounds(FSender, Left, Top, Width, AValue);
+  MoveWindow(FSender.Handle, Left, Top, Width, AValue, true);
+  LCLControlSizeNeedsUpdate(FSender, true);
+end;
+
+procedure TWin32ComboBoxStringList.Clear;
+begin
   inherited;
+  ComboHeight := ComboHeight;
 end;
 
 procedure TWin32ComboBoxStringList.Delete(Index: integer); 
 begin
-  if GetCount <= 1 then
-    SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
   inherited Delete(Index);
+  if Count <= 1 then
+    ComboHeight := ComboHeight;
 end;
 
 procedure TWin32ComboBoxStringList.Insert(Index: integer; const S: string); 
 begin
-  if GetCount = 0 then
-    SetComboHeight(FSender, FEditHeight + FDropDownCount*FItemHeight + 2);
   inherited Insert(Index, S);
+  if GetCount = 0 then
+    ComboHeight := ComboHeight;
 end;
 
     
@@ -382,7 +391,8 @@ end;
 constructor TWin32CheckListBoxStrings.Create(List : HWND; TheOwner: TWinControl);
 begin
   inherited Create(List, TheOwner);
-  with FDefaultItem do begin
+  with FDefaultItem do
+  begin
     Checked := false;
     TheObject := nil;
   end;
@@ -410,8 +420,10 @@ function TWin32CheckListBoxStrings.GetItemRecord(const Index: Integer;
   const CreateNew: boolean): PWin32CheckListBoxItemRecord;
 begin
   Result := PWin32CheckListBoxItemRecord(Windows.SendMessage(FWin32List, LB_GETITEMDATA, Index, 0));
-  if (not Assigned(Result)) then begin
-    if CreateNew then begin
+  if (not Assigned(Result)) then
+  begin
+    if CreateNew then
+    begin
       Result := new(PWin32CheckListBoxItemRecord);
       Result^ := FDefaultItem;
     end
