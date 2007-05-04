@@ -85,6 +85,9 @@ type
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; virtual;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); virtual;
+    
+    class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; virtual;
+    class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); virtual;
   end;
   TWSCustomComboBoxClass = class of TWSCustomComboBox;
 
@@ -332,6 +335,15 @@ end;
 
 class procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
   AList: TStrings; IsSorted: boolean);
+begin
+end;
+
+class function TWSCustomComboBox.GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer;
+begin
+  Result := 0;
+end;
+
+class procedure TWSCustomComboBox.SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
 begin
 end;
 

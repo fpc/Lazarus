@@ -576,7 +576,17 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemHeight: Integer;
 begin
-  Result:=FItemHeight;
+  // FItemHeight is not initialized at class creating. we can, but with what value?
+  // so, if it still uninitialized (=0), then we ask widgetset
+  if (FStyle in [csOwnerDrawFixed, csOwnerDrawVariable]) and (FItemHeight > 0) then
+  begin
+    Result := FItemHeight
+  end else
+  begin
+    Result := TWSCustomComboBoxClass(WidgetSetClass).GetItemHeight(Self);
+    if Result <> 0 then
+      FItemHeight := Result;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -597,9 +607,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItemHeight(const AValue: Integer);
 begin
-  if AValue=FItemHeight then exit;
-  FItemHeight:=AValue;
-  // ToDo
+  if AValue = FItemHeight then
+    exit;
+
+  FItemHeight := AValue;
+  if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemHeight(Self, FItemHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -904,20 +917,23 @@ procedure TCustomComboBox.LMMeasureItem(var TheMessage: TLMMeasureItem);
 var
   AHeight: Integer;
 begin
-  with TheMessage.MeasureItemStruct^ do begin
+  with TheMessage.MeasureItemStruct^ do
+  begin
     if Self.ItemHeight <> 0 then
       AHeight := Self.ItemHeight
     else
-      Aheight := ItemHeight;
-    MeasureItem(Integer(ItemId), AHeight);
-    if AHeight>0 then
+      AHeight := ItemHeight;
+    if FStyle = csOwnerDrawVariable then
+      MeasureItem(ItemId, AHeight);
+    if AHeight > 0 then
       ItemHeight := AHeight;
   end;
 end;
 
 procedure TCustomComboBox.LMSelChange(var TheMessage);
 begin
-  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  if [csLoading, csDestroying, csDesigning] * ComponentState <> [] then
+    exit;
   Select;
 end;
 

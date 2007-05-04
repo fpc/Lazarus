@@ -99,6 +99,9 @@ type
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
+
+    class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; override;
+    class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); override;
   end;
 
   { TWin32WSComboBox }
@@ -774,6 +777,18 @@ begin
   TWin32ListStringList(AList).Sorted := IsSorted;
 end;
 
+class function TWin32WSCustomComboBox.GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer;
+begin
+  Result := SendMessage(ACustomComboBox.Handle, CB_GETITEMHEIGHT, 0, 0);
+end;
+
+class procedure TWin32WSCustomComboBox.SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
+begin
+  // size requests are done through WM_MeasureItem
+  // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, -1);
+  // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, 0);
+  RecreateWnd(ACustomComboBox);
+end;
 { TWin32WSCustomEdit helper functions }
 
 function EditGetSelStart(WinHandle: HWND): integer;

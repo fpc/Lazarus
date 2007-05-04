@@ -413,6 +413,7 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMeasureItem;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -1372,5 +1373,6 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
