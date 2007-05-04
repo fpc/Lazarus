@@ -312,7 +312,7 @@ begin
     FDropDownCount := 8;
 end;
 
-procedure TWin32ComboBoxStringList.Assign(Source: TPersistent); 
+procedure TWin32ComboBoxStringList.Assign(Source: TPersistent);
 var
   EditText: string;
   lItemIndex: integer;
@@ -325,7 +325,7 @@ begin
     inherited Assign(Source);
     
     // restore text in edit box
-    ComboHeight := ComboHeight;
+    UpdateComboHeight;
     TWin32WSCustomComboBox.SetText(FSender, EditText);
     lItemIndex := IndexOf(EditText);
     if lItemIndex <> -1 then
@@ -353,36 +353,37 @@ begin
   end;
 end;
 
-procedure TWin32ComboBoxStringList.SetComboHeight(AValue: Integer);
+procedure TWin32ComboBoxStringList.UpdateComboHeight;
 var
-  Left, Top, Width: integer;
+  Left, Top, Width, Height: integer;
 begin
   Left := FSender.Left;
   Top := FSender.Top;
   Width := FSender.Width;
-  LCLBoundsToWin32Bounds(FSender, Left, Top, Width, AValue);
-  MoveWindow(FSender.Handle, Left, Top, Width, AValue, true);
+  Height := ComboHeight;
+  LCLBoundsToWin32Bounds(FSender, Left, Top, Width, Height);
+  MoveWindow(FSender.Handle, Left, Top, Width, Height, true);
   LCLControlSizeNeedsUpdate(FSender, true);
 end;
 
 procedure TWin32ComboBoxStringList.Clear;
 begin
   inherited;
-  ComboHeight := ComboHeight;
+  UpdateComboHeight;
 end;
 
 procedure TWin32ComboBoxStringList.Delete(Index: integer); 
 begin
   inherited Delete(Index);
   if Count <= 1 then
-    ComboHeight := ComboHeight;
+    UpdateComboHeight;
 end;
 
 procedure TWin32ComboBoxStringList.Insert(Index: integer; const S: string); 
 begin
   inherited Insert(Index, S);
-  if GetCount = 0 then
-    ComboHeight := ComboHeight;
+  if GetCount = 1 then
+    UpdateComboHeight;
 end;
 
     

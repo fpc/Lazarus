@@ -75,6 +75,8 @@ Type
     Property Sorted: Boolean Read FSorted Write SetSorted;
   End;
 
+  { TWin32ComboBoxStringList }
+
   TWin32ComboBoxStringList = class(TWin32ListStringList)
   private
     FEditHeight: Integer;
@@ -82,15 +84,15 @@ Type
     FDropDownCount: Integer;
   protected
     function GetComboHeight: integer;
-    procedure SetComboHeight(AValue: Integer);
     procedure InitFlags; override;
+    procedure UpdateComboHeight;
   public
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: integer); override;
     procedure Insert(Index: integer; const S: string); override;
 
-    property ComboHeight: integer read GetComboHeight write SetComboHeight;
+    property ComboHeight: integer read GetComboHeight;
   end;
     
   PWin32CheckListBoxItemRecord = ^TWin32CheckListBoxItemRecord;
