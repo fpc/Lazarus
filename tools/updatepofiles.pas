@@ -414,12 +414,10 @@ begin
   if not ParamsValid then begin
     writeln('Usage: ',ExtractFileName(ParamStr(0))
        ,' filename1.po [filename2.po ... filenameN.po]');
-    readln;
     exit;
   end else begin
     UpdateAllPoFiles;
   end;
   Files.Free;
-  readln;
 end.
 
