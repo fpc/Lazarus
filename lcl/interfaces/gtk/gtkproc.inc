@@ -8632,13 +8632,13 @@ end;
   StaticXinerama also. MAC OSX is in this latter category, but it crashed the
   X server when I tried it on a real two monitor display.
 }
-var
-  FirstScreenCalled: Boolean = False;
-  FirstScreenResult: Boolean = False;
 {$IFDEF UseXinerama}
 {$IFDEF StaticXinerama}
 {$LINKLIB Xinerama}
 {$ENDIF}
+var
+  FirstScreenCalled: Boolean = False;
+  FirstScreenResult: Boolean = False;
 { Copy record definition from Xinerama unit.
   Can't use the unit itself, as it forces the executable to
   refer to the libraray }

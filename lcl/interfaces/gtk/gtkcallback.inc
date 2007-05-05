@@ -1631,7 +1631,6 @@ begin
   // multiple incorrect mousemove messages
   if TWinControl(Data).FCompStyle = csWinControl then Result := True;
   {$ENDIF}
-
 end;
 
 {-------------------------------------------------------------------------------

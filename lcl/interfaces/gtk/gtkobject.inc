@@ -3721,6 +3721,11 @@ begin
       gMouse:=gCore;
     if gMouse=nil then
       DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
+
+    {$IFDEF GTK1}
+    if ALCLObject is TCustomListBox then
+      gMouse:=gMain;
+    {$ENDIF}
   end;
   //DebugLn(['TGtkWidgetSet.SetCallbackSmart MouseWidget=',GetWidgetDebugReport(PGtkWidget(gMouse))]);
 
@@ -3938,7 +3943,7 @@ begin
     begin
       {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then
-      Begin
+      begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'button-release-event',  @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
@@ -4120,10 +4125,10 @@ begin
       if ALCLObject is TCustomListBox then begin
         ConnectSenderSignalAfter(PgtkObject(gCore),
           'selection_changed', @gtkListBoxSelectionChangedAfter);
-      end else if ALCLObject is TCustomCombobox then
+      end else if ALCLObject is TCustomCombobox then begin
          ConnectSenderSignal (PGtkObject(PGtkCombo(gObject)^.list),
-                              'unselect_child', @gtkListSelectChild)
-       else
+                              'unselect_child', @gtkListSelectChild);
+      end;
     end;
 
 (*
