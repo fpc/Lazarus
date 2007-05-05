@@ -112,6 +112,7 @@ procedure TCustomLabeledEdit.CreateInternalLabel;
 begin
   if FEditLabel<>nil then exit;
   FEditLabel := TBoundLabel.Create(Self);
+  //Include(FEditLabel.ComponentStyle,csSubComponent);
   FEditLabel.ControlStyle := FEditLabel.ControlStyle + [csNoDesignSelectable];
   FEditLabel.FreeNotification(Self);
   FEditLabel.FocusControl := Self;

@@ -85,6 +85,7 @@ function LCLSendMouseMultiClickMsg(const Target: TControl; XPos, YPos: SmallInt;
 function LCLSendDrawListItemMsg(const Target: TControl; const DrawListItemStruct: PDrawListItemStruct): PtrInt;
 function LCLSendInternalPaintMsg(const Target: TControl; DC: HDC): PtrInt;
 function LCLSendDropDownMsg(const Target: TControl): PtrInt;
+function LCLSendCloseUpMsg(const Target: TControl): PtrInt;
 
 implementation
 
@@ -1236,6 +1237,17 @@ begin
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := CN_Command;
   Mess.NotifyCode := CBN_DROPDOWN;
+
+  Result := DeliverMessage(Target, Mess);
+end;
+
+function LCLSendCloseUpMsg(const Target: TControl): PtrInt;
+var
+  Mess : TLMCommand;
+begin
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := CN_Command;
+  Mess.NotifyCode := CBN_CLOSEUP;
 
   Result := DeliverMessage(Target, Mess);
 end;

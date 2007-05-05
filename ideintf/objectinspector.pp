@@ -2044,21 +2044,21 @@ begin
   then begin
     RRect := RowRect(ItemIndex);
     EditCompRect := RRect;
+    EditCompRect.Bottom := EditCompRect.Bottom - 1;
 
     if Layout = oilHorizontal
     then begin
-      EditCompRect.Top := RRect.Top - 1;
       EditCompRect.Left := RRect.Left + SplitterX;
     end
     else begin
-      EditCompRect.Top := RRect.Top + GetNameRowHeight - 1;
+      EditCompRect.Top := RRect.Top + GetNameRowHeight;
       EditCompRect.Left := RRect.Left + GetTreeIconX(ItemIndex) + Indent;
     end;
 
     if FCurrentButton<>nil then begin
       // edit dialog button
       with EditBtnRect do begin
-        Top := EditCompRect.Top + 1;
+        Top := EditCompRect.Top;
         Left := EditCompRect.Right - 20;
         Bottom := EditCompRect.Bottom;
         Right := EditCompRect.Right;
@@ -2071,7 +2071,9 @@ begin
     end;
     if FCurrentEdit<>nil then begin
       // resize the edit component
-      EditCompRect.Left := EditCompRect.Left - 1;
+      Dec(EditCompRect.Left);
+      Dec(EditCompRect.Top);
+      Inc(EditCompRect.Bottom);
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
@@ -2111,6 +2113,14 @@ begin
   NameRect := FullRect;
   ValueRect := FullRect;
   Inc(FullRect.Bottom, FRowSpacing);
+
+  if ARow = FItemIndex then begin
+    if Assigned(FCurrentButton) and (FCurrentButton.Visible) then
+      Dec(FullRect.Right, FCurrentButton.Width);
+
+    if Assigned(FCurrentEdit) and (FCurrentEdit.Visible) then
+      Dec(FullRect.Right, FCurrentEdit.Width);
+  end;
 
   if Layout = oilHorizontal
   then begin
