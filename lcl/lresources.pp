@@ -334,6 +334,9 @@ procedure ReverseByteOrderInWords(p: PWord; Count: integer);
 function ConvertLRSExtendedToDouble(p: Pointer): Double;
 procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
                                               LRSExtended: Pointer);
+                                              
+procedure ConvertLEDoubleToLRSExtended(LEDouble, LRSExtended: Pointer);
+
 
 function ReadLRSShortInt(s: TStream): shortint;
 function ReadLRSByte(s: TStream): byte;
@@ -370,6 +373,7 @@ procedure WriteLRS10BytesReversed(s: TStream; p: Pointer);
 procedure WriteLRSNull(s: TStream; Count: integer);
 procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
   EndBigDouble: PByte);
+procedure WriteLRSDoubleAsExtended(s: TStream; ADouble: PByte);
 procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 
 function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
@@ -2808,6 +2812,42 @@ begin
   end;
 end;
 
+procedure ConvertLEDoubleToLRSExtended(LEDouble, LRSExtended: Pointer);
+type
+  TMantissaWrap = record
+    case boolean of
+      True: (Q: QWord);
+      False: (B: array[0..7] of Byte);
+  end;
+
+  TExpWrap = packed record
+    Mantissa: TMantissaWrap;
+    Exp: Word;
+  end;
+
+var
+  Q: PQWord absolute LEDouble;
+  C: PCardinal absolute LEDouble;
+  W: PWord absolute LEDouble;
+  E: ^TExpWrap absolute LRSExtended;
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  Mantissa: TMantissaWrap;
+  {$endif}
+begin
+  if W[3] and $7FF0 = $7FF0 // infinite or NaN
+  then E^.Exp := $7FFF
+  else E^.Exp := (W[3] and $7FFF) shr 4 - $3FF + $3FFF;
+  E^.Exp := E^.Exp or (W[3] and $8000); // sign
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  Mantissa.Q := (Q^ shl 11);
+  Mantissa.B[7] := Mantissa.B[7] or $80; // add ignored 1
+  System.Move(Mantissa, E^.Mantissa, 8);
+  {$else}
+  E^.Mantissa.Q := (Q^ shl 11);
+  E^.Mantissa.B[7] := E^.Mantissa.B[7] or $80; // add ignored 1
+  {$endif}
+end;
+
 function ReadLRSShortInt(s: TStream): shortint;
 begin
   Result:=0;
@@ -3113,6 +3153,19 @@ begin
   s.Write(e[0],10);
 end;
 
+procedure WriteLRSDoubleAsExtended(s: TStream; ADouble: PByte);
+var
+  e: array[0..9] of byte;
+begin
+  {$ifdef FPC_LITTLE_ENDIAN}
+  ConvertLEDoubleToLRSExtended(ADouble,@e);
+  {$else}
+  ConvertEndianBigDoubleToLRSExtended(ADouble,@e);
+  {$endif}
+  s.Write(e[0],10);
+end;
+
+
 procedure WriteLRSSmallInt(s: TStream; const i: SmallInt);
 begin
   {$IFDEF FPC_LITTLE_ENDIAN}
@@ -3176,11 +3229,7 @@ begin
       s.Write(e,10);
     {$ENDIF}
   {$ELSE}
-    {$IFDEF FPC_BIG_ENDIAN}
-      WriteLRSEndianBigDoubleAsEndianLittleExtended(s,pbyte(@e))
-    {$ELSE}
-      debugln('WARNING: WriteLRSExtended not implemented yet for little endian cpu without 80 bits extended');
-    {$ENDIF}
+    WriteLRSDoubleAsExtended(s,pbyte(@e))
   {$ENDIF}
 end;
 
