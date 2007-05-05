@@ -114,5 +114,16 @@ object AboutForm: TAboutForm
         TabOrder = 0
       end
     end
+    object ThirdPartyPage: TPage
+      Caption = 'Third party products'
+      object ThirdPartyMemo: TMemo
+        Height = 231
+        Width = 385
+        Align = alClient
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
   end
 end

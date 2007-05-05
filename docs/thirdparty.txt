@@ -1,0 +1,6 @@
+Lazarus is using folowing third party libraries and tools
+
+Icon sets:
+
+- Silk icon set 1.3 by Mark James (http://www.famfamfam.com/lab/icons/silk/)
+- Tango Icon Library (http://tango.freedesktop.org/Tango_Icon_Library)

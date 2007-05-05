@@ -40,14 +40,17 @@ type
     PlatformLabel: TLabel;
     VersionLabel: TLABEL;
     ContributorsMemo:TMemo;
+    ThirdPartyMemo:TMemo;
     RevisionLabel: TLabel;
     Notebook1:TNotebook;
     AboutPage:TPage;
     ContributorsPage:TPage;
+    ThirdPartyPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
   private
     FPixmap : TPixmap;
     procedure LoadContributors;
+    procedure LoadThirdParty;
   public
     procedure Paint; override;
     constructor Create(TheOwner: TComponent); override;
@@ -139,6 +142,7 @@ begin
     +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
     ;
   LoadContributors;
+  LoadThirdParty;
   CloseButton.Caption:=lisClose;
 end;
 
@@ -154,6 +158,19 @@ begin
     ContributorsMemo.Lines.LoadFromFile(ContributorsFileName)
   else
     ContributorsMemo.Text:=lisAboutNoContributors;
+end;
+
+procedure TAboutForm.LoadThirdParty;
+var
+  ThirdPartyFileName: string;
+begin
+  ThirdPartyFileName:=
+    AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+    +'docs'+PathDelim+'thirdparty.txt';
+  if FileExists(ThirdPartyFileName) then
+    ThirdPartyMemo.Lines.LoadFromFile(ThirdPartyFileName)
+  else
+    ThirdPartyMemo.Text:=lisAboutNoContributors;
 end;
 
 procedure TAboutForm.Paint;
