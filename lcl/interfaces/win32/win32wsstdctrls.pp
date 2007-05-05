@@ -118,6 +118,8 @@ type
   private
   protected
   public
+    class procedure AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
@@ -125,8 +127,10 @@ type
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
       AMultiSelect: boolean); override;
@@ -433,6 +437,17 @@ end;
 
 { TWin32WSCustomListBox }
 
+class procedure TWin32WSCustomListBox.AdaptBounds(
+  const AWinControl: TWinControl; var Left, Top, Width, Height: integer;
+  var SuppressMove: boolean);
+var
+  ColCount: Integer;
+begin
+  ColCount := TCustomListBox(AWinControl).Columns;
+  if ColCount > 1 then
+    SendMessage(AWinControl.Handle, LB_SETCOLUMNWIDTH, Max(1, Width div ColCount), 0);
+end;
+
 class function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -452,6 +467,8 @@ begin
           Flags := Flags or LBS_EXTENDEDSEL
         else
           Flags := Flags or LBS_MULTIPLESEL;
+      if Columns > 1 then
+        Flags := Flags or LBS_MULTICOLUMN;
       if AWinControl.FCompStyle = csCheckListBox then
         Flags := Flags or LBS_OWNERDRAWFIXED
       else case Style of
@@ -552,6 +569,13 @@ begin
   else
     StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
   SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
+end;
+
+class procedure TWin32WSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox;
+  ACount: Integer);
+begin
+  // The listbox styles can't be updated, so recreate the listbox
+  RecreateWnd(ACustomListBox);
 end;
 
 class procedure TWin32WSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);

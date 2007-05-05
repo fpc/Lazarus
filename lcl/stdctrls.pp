@@ -448,6 +448,7 @@ type
     FCanvas: TCanvas;
     FClickOnSelChange: boolean;
     FClickTriggeredBySelectionChange: Boolean;
+    FColumns: Integer;
     FExtendedSelect: boolean;
     FIntegralHeight: boolean;
     FItemHeight: Integer;
@@ -463,6 +464,7 @@ type
     FTopIndex: integer;
     function GetCount: Integer;
     function GetTopIndex: Integer;
+    procedure SetColumns(const AValue: Integer);
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
     procedure UpdateSorted;
@@ -521,6 +523,7 @@ type
     property Canvas: TCanvas read FCanvas;
     property ClickOnSelChange: boolean read FClickOnSelChange
                write FClickOnSelChange default true; // true is Delphi behaviour
+    property Columns: Integer read FColumns write SetColumns default 0;
     property Constraints;
     property Count: Integer read GetCount; // for Delphi compatability
     property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
@@ -575,6 +578,7 @@ type
     property BorderStyle;
     property ClickOnSelChange;
     property Color;
+    property Columns;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -1373,6 +1377,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

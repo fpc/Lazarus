@@ -105,7 +105,9 @@ type
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); virtual;
+
     class procedure SetBorder(const ACustomListBox: TCustomListBox); virtual;
+    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); virtual;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, 
       AMultiSelect: boolean); virtual;
@@ -240,6 +242,11 @@ begin
 end;
 
 class procedure TWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+begin
+end;
+
+class procedure TWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox;
+  ACount: Integer);
 begin
 end;
 

@@ -157,6 +157,15 @@ begin
   Result := FTopIndex;
 end;
 
+procedure TCustomListBox.SetColumns(const AValue: Integer);
+begin
+  if (FColumns = AValue) or (AValue < 0) then
+    exit;
+  FColumns := AValue;
+  if HandleAllocated then
+    TWSCustomListBoxClass(WidgetSetClass).SetColumnCount(Self, FColumns);
+end;
+
 {------------------------------------------------------------------------------
   function TCustomListBox.GetCount: Integer;
 ------------------------------------------------------------------------------}
