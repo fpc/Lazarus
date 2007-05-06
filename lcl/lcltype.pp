@@ -1866,7 +1866,12 @@ type
   PLogFontW = ^TLogFontW;
   PLogFont = PLogFontA;
 
-  tagLOGFONTA = record
+  {$ifdef WINDOWS}
+  LOGFONTA = Windows.LogFont;
+  LOGFONTW = Windows.LogFontW;
+  {$else}
+
+  LOGFONTA = record
     lfHeight: Longint;
     lfWidth: Longint;
     lfEscapement: Longint;
@@ -1883,7 +1888,7 @@ type
     lfFaceName: array[0..LF_FACESIZE - 1] of AnsiChar;
   end;
 
-  tagLOGFONTW = record
+  LOGFONTW = record
     lfHeight: Longint;
     lfWidth: Longint;
     lfEscapement: Longint;
@@ -1899,15 +1904,15 @@ type
     lfPitchAndFamily: Byte;
     lfFaceName: array[0..LF_FACESIZE - 1] of WideChar;
   end;
-
+  {$endif}
+  tagLOGFONTA = LOGFONTA;
+  tagLOGFONTW = LOGFONTW;
   tagLOGFONT = tagLOGFONTA;
+
   TLogFontA = tagLOGFONTA;
   TLogFontW = tagLOGFONTW;
   TLogFont = TLogFontA;
 
-  LOGFONTA = tagLOGFONTA;
-
-  LOGFONTW = tagLOGFONTW;
 
   LOGFONT = LOGFONTA;
   LPLOGFONT = ^LOGFONT;
