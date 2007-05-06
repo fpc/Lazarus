@@ -922,6 +922,7 @@ docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
 docs/Packages.txt svneol=native#text/plain
 docs/RemoteDebugging.txt svneol=native#text/plain
 docs/TODO svneol=native#text/plain
+docs/acknowledgements.txt svneol=native#text/plain
 docs/html/README.txt svneol=native#text/plain
 docs/html/fpdoc.css svneol=native#text/css
 docs/html/localfclfooter.xml svneol=native#text/plain
@@ -935,7 +936,6 @@ docs/images/cheetah1.png -text svneol=unset#image/png
 docs/images/laztitle.jpg -text svneol=unset#image/jpeg
 docs/index.html svneol=native#text/html
 docs/lazbuild.1 svneol=native#text/plain
-docs/thirdparty.txt svneol=native#text/plain
 docs/xml/README.txt svneol=native#text/plain
 docs/xml/find_cvs_fpdoc_files.pl -text svneol=native#application/x-perl
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf

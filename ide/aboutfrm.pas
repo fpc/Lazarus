@@ -40,17 +40,17 @@ type
     PlatformLabel: TLabel;
     VersionLabel: TLABEL;
     ContributorsMemo:TMemo;
-    ThirdPartyMemo:TMemo;
+    AcknowledgementsMemo:TMemo;
     RevisionLabel: TLabel;
     Notebook1:TNotebook;
     AboutPage:TPage;
     ContributorsPage:TPage;
-    ThirdPartyPage:TPage;
+    AcknowledgementsPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
   private
     FPixmap : TPixmap;
     procedure LoadContributors;
-    procedure LoadThirdParty;
+    procedure LoadAcknowledgements;
   public
     procedure Paint; override;
     constructor Create(TheOwner: TComponent); override;
@@ -130,9 +130,9 @@ begin
   PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
                          +'-'+GetDefaultLCLWidgetType;
 
-
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
+  AcknowledgementsPage.Caption:=lisAcknowledgements;
   Constraints.MinWidth:= 600;
   Constraints.MinHeight:= 300;
 
@@ -142,7 +142,7 @@ begin
     +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
     ;
   LoadContributors;
-  LoadThirdParty;
+  LoadAcknowledgements;
   CloseButton.Caption:=lisClose;
 end;
 
@@ -160,17 +160,17 @@ begin
     ContributorsMemo.Text:=lisAboutNoContributors;
 end;
 
-procedure TAboutForm.LoadThirdParty;
+procedure TAboutForm.LoadAcknowledgements;
 var
-  ThirdPartyFileName: string;
+  AcknowledgementsFileName: string;
 begin
-  ThirdPartyFileName:=
+  AcknowledgementsFileName:=
     AppendPathDelim(EnvironmentOptions.LazarusDirectory)
-    +'docs'+PathDelim+'thirdparty.txt';
-  if FileExists(ThirdPartyFileName) then
-    ThirdPartyMemo.Lines.LoadFromFile(ThirdPartyFileName)
+    +'docs'+PathDelim+'acknowledgements.txt';
+  if FileExists(AcknowledgementsFileName) then
+    AcknowledgementsMemo.Lines.LoadFromFile(AcknowledgementsFileName)
   else
-    ThirdPartyMemo.Text:=lisAboutNoContributors;
+    AcknowledgementsMemo.Text:=lisAboutNoContributors;
 end;
 
 procedure TAboutForm.Paint;
