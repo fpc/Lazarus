@@ -535,7 +535,10 @@ var
   ARect: TRect;
   TS : TTextStyle;
 begin
-  ARect := GetClientRect;
+  //DebugLn(['TCustomTabControl.Paint Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CientOrigin=',dbgs(ClientOrigin)]);
+  // clear the whole area
+  // ToDo: this clears the tabs as well on some widgetset, namely gtk2
+  ARect:=ClientRect;
   Canvas.Brush.Color:=clBackground;
   Canvas.FillRect(ARect);
   ARect:=GetDisplayRect;

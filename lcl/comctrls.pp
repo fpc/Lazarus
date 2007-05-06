@@ -408,7 +408,7 @@ type
     FStyle: TTabStyle;
     FTabControlCreating: Boolean;
     FTabPosition: TTabPosition;
-    FTabs: TStrings;
+    FTabs: TStrings;// this is a TTabControlNoteBookStrings
     function GetDisplayRect: TRect;
     function GetHotTrack: Boolean;
     function GetMultiLine: Boolean;
