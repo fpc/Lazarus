@@ -95,9 +95,9 @@ end;
 class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-Widget,
-TempWidget: PGtkWidget;
-WidgetInfo: PWidgetInfo;
+  Widget,
+  TempWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
 
   Widget := gtk_scrolled_window_new(nil, nil);
@@ -118,6 +118,7 @@ begin
   GetWidgetInfo(Widget, True)^.CoreWidget := TempWidget;
 
   gtk_text_view_set_editable (PGtkTextView(TempWidget), not TCustomMemo(AWinControl).ReadOnly);
+  gtk_text_view_set_justification(PGtkTextView(TempWidget), aGtkJustification[TCustomMemo(AWinControl).Alignment]);
   if TCustomMemo(AWinControl).WordWrap then
     gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_WORD)
   else
@@ -135,6 +136,15 @@ TextView: PGtkTextView;
 begin
   TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
   Result := TGtk2MemoStrings.Create(TextView, ACustomMemo);
+end;
+
+class procedure TGtk2WSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
+  const AAlignment: TAlignment);
+var
+  TextView: PGtkTextView;
+begin
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
+  gtk_text_view_set_justification(TextView, aGtkJustification[ACustomMemo.Alignment]);
 end;
 
 
@@ -175,7 +185,7 @@ var
   TextIter: TGtkTextIter;
 begin
   if not ACustomEdit.HandleAllocated then exit;
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
   TextBuffer := gtk_text_view_get_buffer(TextView);
   gtk_text_buffer_get_iter_at_offset(TextBuffer, @TextIter, NewStart);
   gtk_text_buffer_place_cursor(TextBuffer, @TextIter);
@@ -190,7 +200,7 @@ var
   SelStart: Integer;
 begin
   if not ACustomEdit.HandleAllocated then exit;
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
   TextBuffer := gtk_text_view_get_buffer(TextView);
   SelStart := GetSelStart(ACustomEdit);
 
@@ -217,7 +227,7 @@ begin
   Result := 0;
   if not ACustomEdit.HandleAllocated then exit;
   
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
   TextBuffer := gtk_text_view_get_buffer(TextView);
   TextMark := gtk_text_buffer_get_insert(TextBuffer);
   gtk_text_buffer_get_iter_at_mark(TextBuffer, @TextIter, TextMark);
@@ -243,7 +253,7 @@ begin
   Result := 0;
   if not ACustomEdit.HandleAllocated then exit;
 
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
   TextBuffer := gtk_text_view_get_buffer(TextView);
   if not gtk_text_buffer_get_selection_bounds(TextBuffer, @StartIter, @EndIter) then Exit;
 

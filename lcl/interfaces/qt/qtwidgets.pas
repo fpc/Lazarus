@@ -276,6 +276,7 @@ type
   public
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
+    procedure SetAlignment(const AAlignment: TAlignment);
   end;
 
   { TQtTabWidget }
@@ -412,6 +413,13 @@ type
   end;
   
 implementation
+const
+  AlignmentMap: array[TAlignment] of QtAlignment =
+  (
+{taLeftJustify } QtAlignLeft,
+{taRightJustify} QtAlignRight,
+{taCenter      } QtAlignHCenter
+  );
 
 { TQtWidget }
 
@@ -2448,10 +2456,12 @@ begin
 
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Str := (LCLObject as TCustomMemo).Text;
-  Result := QTextEdit_create(@Str, Parent);
+  Result := QTextEdit_create(Parent);
+  QTextEdit_setAlignment(QTextEditH(Result), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
+  QTextEdit_setPlainText(QTextEditH(Result), @Str);
 
-  QTextEdit_setReadOnly(QTextEditH(Result),(LCLObject as TCustomMemo).ReadOnly);
-  
+  QTextEdit_setReadOnly(QTextEditH(Result), (LCLObject as TCustomMemo).ReadOnly);
+
   if (LCLObject as TCustomMemo).WordWrap then
      QTextEdit_setLineWrapMode(QTextEditH(Result),QTextEditWidgetWidth)
   else
@@ -2492,6 +2502,29 @@ begin
   // Set the Palette
   QWidget_setPalette(Widget,Palette);
   QPalette_destroy(Palette);
+end;
+
+procedure TQtTextEdit.SetAlignment(const AAlignment: TAlignment);
+var
+  TextCursor: QTextCursorH;
+begin
+  // Paul Ishenin:
+  // QTextEdit supports alignment for every paragraph. We need to align all text.
+  // So, we should select all text, set format, and clear selection
+  
+  // 1. Select all text
+  QTextEdit_selectAll(QTextEditH(Widget));
+  
+  // 2. Set format
+  QTextEdit_setAlignment(QTextEditH(Widget), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
+  
+  // 3. Clear selection. To unselect all document we must create new text cursor,
+  // get format from Text Edit, clear selection in cursor and set it back to Text Edit
+  TextCursor := QTextCursor_create();
+  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+  QTextCursor_clearSelection(TextCursor);
+  QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
+  QTextCursor_destroy(TextCursor);
 end;
 
 { TQtTabWidget }

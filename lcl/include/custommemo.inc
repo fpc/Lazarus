@@ -75,6 +75,15 @@ begin
   FHorzScrollBar:=AValue;
 end;
 
+procedure TCustomMemo.SetAlignment(const AValue: TAlignment);
+begin
+  if FAlignment = AValue then
+    exit;
+  FAlignment := AValue;
+  if HandleAllocated then
+    TWSCustomMemoClass(WidgetSetClass).SetAlignment(Self, AValue);
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
  ------------------------------------------------------------------------------}
@@ -191,7 +200,8 @@ procedure TCustomMemo.Loaded;
 begin
   inherited Loaded;
 
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, FScrollbars);
     TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, FWordWrap);
   end;

@@ -718,6 +718,7 @@ type
 
   TCustomMemo = class(TCustomEdit)
   private
+    FAlignment: TAlignment;
     FHorzScrollBar: TMemoScrollBar;
     FLines: TStrings;
     FScrollBars: TScrollStyle;
@@ -733,6 +734,7 @@ type
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
+    procedure SetAlignment(const AValue: TAlignment);
     procedure SetLines(const Value: TStrings);
     procedure SetSelText(const Val: string); override;
     procedure SetWantTabs(const NewWantTabs: boolean);
@@ -741,21 +743,21 @@ type
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
-
-    property WantTabs: boolean read FWantTabs write SetWantTabs default false;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Append(const Value: String);
   public
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Lines: TStrings read FLines write SetLines;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
     //property Font: TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TMemoScrollBar
       read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property WantTabs: boolean read FWantTabs write SetWantTabs default false;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
   end;
 
 
@@ -789,11 +791,11 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    Property OnKeyDown;
+    property OnKeyDown;
     property OnKeyPress;
-    Property OnKeyUp;
-    Property OnMouseDown;
-    Property OnMouseMove;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
@@ -815,6 +817,7 @@ type
   TMemo = class(TCustomMemo)
   published
     property Align;
+    property Alignment;
     property Anchors;
     property BorderSpacing;
     property Color;

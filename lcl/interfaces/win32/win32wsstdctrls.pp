@@ -179,6 +179,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
@@ -287,6 +288,14 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 {$UNDEF MEMOHEADER}
 
 implementation
+
+const
+  AlignmentMap: array[TAlignment] of DWORD =
+  (
+{taLeftJustify } ES_LEFT,
+{taRightJustify} ES_RIGHT,
+{taCenter      } ES_CENTER
+  );
 
 {$I win32memostrings.inc}
 
@@ -950,6 +959,7 @@ begin
     Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
     if TCustomMemo(AWinControl).ReadOnly then
       Flags := Flags or ES_READONLY;
+    Flags := Flags or AlignmentMap[TCustomMemo(AWinControl).Alignment];
     case TCustomMemo(AWinControl).ScrollBars of
       ssHorizontal, ssAutoHorizontal:
         Flags := Flags or WS_HSCROLL;
@@ -989,6 +999,13 @@ begin
     S := S + AText;
     SetText(ACustomMemo, S);
   end;
+end;
+
+class procedure TWin32WSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
+  const AAlignment: TAlignment);
+begin
+  // SetWidowLong is not working here
+  RecreateWnd(ACustomMemo);
 end;
 
 class procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);

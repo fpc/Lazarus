@@ -175,6 +175,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 //    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
@@ -595,6 +596,12 @@ begin
   //QTextEdit_append(QTextEditH(ACustomMemo.Handle),@Astr);
   QTextEdit_append(QTextEditH(TQtWidget(ACustomMemo.Handle).Widget),@Astr);
 
+end;
+
+class procedure TQtWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
+  const AAlignment: TAlignment);
+begin
+  TQtTextEdit(ACustomMemo.Handle).SetAlignment(ACustomMemo.Alignment);
 end;
 
 

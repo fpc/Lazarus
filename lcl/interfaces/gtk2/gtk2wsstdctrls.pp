@@ -189,6 +189,7 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class procedure SetColor(const AWinControl: TWinControl);override;
     class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont);override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
