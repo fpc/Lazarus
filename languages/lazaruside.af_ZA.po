@@ -368,6 +368,10 @@ msgstr "Aangaande Lazarus"
 msgid "Accept"
 msgstr "Aanvaar"
 
+#: lazarusidestrconsts:lisacknowledgements
+msgid "Acknowledgements"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "Aksie: %s"
@@ -4669,7 +4673,7 @@ msgid "License:"
 msgstr ""
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs for all of the above platforms. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
