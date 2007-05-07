@@ -706,8 +706,8 @@ resourcestring
       +'compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.'
       +'%s'
       +'Lazarus is the missing part of the puzzle that will allow you to '
-      +'develop Delphi like programs for all of the above platforms. The IDE '
-      +'is a RAD tool that includes a form designer.'
+      +'develop programs for all of the above platforms in a Delphi like '
+      +'environment. The IDE is a RAD tool that includes a form designer.'
       +'%s'
       +'As Lazarus is growing we need more developers.';
   lisAboutNoContributors = 'Cannot find contributors list.';
