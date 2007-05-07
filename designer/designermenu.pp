@@ -1470,7 +1470,7 @@ begin
     if (MenuItem^.SubMenu <> nil) then
       Result := AddNewItemBefore(MenuItem^.SubMenu,Ident);
     if (Result = nil) and (MenuItem^.NextItem <> nil) then
-      AddNewItemBefore(MenuItem^.NextItem,Ident);
+      Result := AddNewItemBefore(MenuItem^.NextItem, Ident);
   end;
 end;
 
