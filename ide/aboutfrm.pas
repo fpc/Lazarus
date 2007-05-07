@@ -100,10 +100,12 @@ begin
 end;
 
 procedure TAboutForm.AboutFormCreate(Sender:TObject);
+const
+  DoubleLineEnding = LineEnding + LineEnding;
+
   {The compiler generated date string is always of the form y/m/d.
    This function gives it a string respresentation according to the
    shortdateformat}
-
   function GetLocalizedBuildDate(): string;
   var
     BuildDate: string;
@@ -136,11 +138,11 @@ begin
   Constraints.MinWidth:= 600;
   Constraints.MinHeight:= 300;
 
-  AboutMemo.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding])
-    +LineEnding+LineEnding
+  AboutMemo.Lines.Text:=
+    Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding])
+    +DoubleLineEnding
     +'Official: http://sourceforge.net/projects/lazarus/'+LineEnding
-    +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
-    ;
+    +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding;
   LoadContributors;
   LoadAcknowledgements;
   CloseButton.Caption:=lisClose;
