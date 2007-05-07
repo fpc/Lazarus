@@ -1,0 +1,4 @@
+#: registerdbf:dbfsalldbasefiles
+msgid "DBase Files"
+msgstr "Arquivos DBase"
+

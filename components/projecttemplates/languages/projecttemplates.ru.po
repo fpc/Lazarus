@@ -9,10 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: projecttemplates:serrnosuchtemplate
-msgid "\"%s\": No such template."
-msgstr "\"%s\": Нет такого шаблона."
-
 #: projecttemplates:serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Невозможно создать каталог \"%s\""
@@ -20,4 +16,8 @@ msgstr "Невозможно создать каталог \"%s\""
 #: projecttemplates:serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Невозможно скопировать файл \"%s\" в \"%s\""
+
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Нет такого шаблона."
 

@@ -12,15 +12,15 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: pfidesource:sdescrpfselection
-msgid "Pretty-Format Selection"
-msgstr "Verschönerungs-Datei"
+#: pfidesource:sdescrformatting
+msgid "Formatting commands"
+msgstr "Formatierbefehle"
 
 #: pfidesource:sdescrpffile
 msgid "Pretty-Format File"
 msgstr "Verschönerungs-Datei"
 
-#: pfidesource:sdescrformatting
-msgid "Formatting commands"
-msgstr "Formatierbefehle"
+#: pfidesource:sdescrpfselection
+msgid "Pretty-Format Selection"
+msgstr "Verschönerungs-Datei"
 

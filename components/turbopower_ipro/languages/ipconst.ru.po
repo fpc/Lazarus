@@ -169,13 +169,13 @@ msgstr " (psPass)"
 msgid " (psQuit)"
 msgstr " (psQuit)"
 
-#: ipconst:slogpsretr
-msgid " (psRetr)"
-msgstr " (psRetr)"
-
 #: ipconst:slogpsrset
 msgid " (psRSet)"
 msgstr " (psRSet)"
+
+#: ipconst:slogpsretr
+msgid " (psRetr)"
+msgstr " (psRetr)"
 
 #: ipconst:slogpsspecial
 msgid " (psSpecial)"
@@ -261,6 +261,10 @@ msgstr " (ssNoOp)"
 msgid " (ssQuit)"
 msgstr " (ssQuit)"
 
+#: ipconst:slogrset
+msgid " (ssRSet)"
+msgstr " (ssRSet)"
+
 #: ipconst:slogrcptbcc
 msgid " (ssRcptBcc)"
 msgstr " (ssRcptBcc)"
@@ -272,10 +276,6 @@ msgstr " (ssRcptCc)"
 #: ipconst:slogrcptto
 msgid " (ssRcptTo)"
 msgstr " (ssRcptTo)"
-
-#: ipconst:slogrset
-msgid " (ssRSet)"
-msgstr " (ssRSet)"
 
 #: ipconst:slogsaml
 msgid " (ssSaml)"
@@ -321,6 +321,14 @@ msgstr " (stNoTask)"
 msgid " (stSendMail)"
 msgstr " (stSendMail)"
 
+#: ipconst:sfilename
+msgid " Filename: "
+msgstr "Имя файла:"
+
+#: ipconst:sftpbytestransferred
+msgid " bytes Transferred"
+msgstr "байт передано"
+
 #: ipconst:sbytesfromstream
 msgid " bytes from stream"
 msgstr "байт из потока"
@@ -332,10 +340,6 @@ msgstr "байт прочитано из потока"
 #: ipconst:sbytestostream
 msgid " bytes to stream"
 msgstr "байт в поток"
-
-#: ipconst:sftpbytestransferred
-msgid " bytes Transferred"
-msgstr "байт передано"
 
 #: ipconst:sbyteswrittentostream
 msgid " bytes written to stream"
@@ -349,10 +353,6 @@ msgstr "кодировка не поддерживается"
 msgid " expected"
 msgstr "ожидается"
 
-#: ipconst:sfilename
-msgid " Filename: "
-msgstr "Имя файла:"
-
 #: ipconst:sftplogin
 msgid " logged in"
 msgstr "вход выполнен"
@@ -364,10 +364,6 @@ msgstr "вы не вошли"
 #: ipconst:slogpsnoop
 msgid " {psNoOp)"
 msgstr " (psNoOp)"
-
-#: ipconst:sbinhexcolonexpected
-msgid "\":\" expected"
-msgstr "ожидается \":\""
 
 #: ipconst:spop3nottransacting
 msgid "%s can not be called in authentication state"
@@ -433,6 +429,22 @@ msgstr "-ERR"
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr ""
 
+#: ipconst:spop3cmdapop
+msgid "APOP"
+msgstr "APOP"
+
+#: ipconst:snntpcmdarticle
+msgid "ARTICLE"
+msgstr "ARTICLE"
+
+#: ipconst:snntpcmdauthpass
+msgid "AUTHINFO PASS"
+msgstr "AUTHINFO PASS"
+
+#: ipconst:snntpcmdauthuser
+msgid "AUTHINFO USER"
+msgstr "AUTHINFO USER"
+
 #: ipconst:swsaeaddrinuse
 msgid "Address already in use"
 msgstr ""
@@ -452,14 +464,6 @@ msgstr ""
 #: ipconst:spterror
 msgid "An error occured with the last task."
 msgstr ""
-
-#: ipconst:spop3cmdapop
-msgid "APOP"
-msgstr "APOP"
-
-#: ipconst:snntpcmdarticle
-msgid "ARTICLE"
-msgstr "ARTICLE"
 
 #: ipconst:swsa_qos_senders
 msgid "At least one Path has arrived"
@@ -529,14 +533,6 @@ msgstr ""
 msgid "Authenticating username"
 msgstr ""
 
-#: ipconst:snntpcmdauthpass
-msgid "AUTHINFO PASS"
-msgstr "AUTHINFO PASS"
-
-#: ipconst:snntpcmdauthuser
-msgid "AUTHINFO USER"
-msgstr "AUTHINFO USER"
-
 #: ipconst:snsauthpass
 msgid "Authorizing password"
 msgstr ""
@@ -544,6 +540,10 @@ msgstr ""
 #: ipconst:snsauthuser
 msgid "Authorizing user"
 msgstr ""
+
+#: ipconst:snntpcmdbody
+msgid "BODY"
+msgstr "BODY"
 
 #: ipconst:swsaefault
 msgid "Bad address"
@@ -617,10 +617,6 @@ msgstr ""
 msgid "Block size error"
 msgstr ""
 
-#: ipconst:snntpcmdbody
-msgid "BODY"
-msgstr "BODY"
-
 #: ipconst:shtmldefbrowsecaption
 msgid "Browse..."
 msgstr ""
@@ -639,6 +635,10 @@ msgstr ""
 
 #: ipconst:sipicmp_buf_too_small
 msgid "Buffer too small"
+msgstr ""
+
+#: ipconst:spngtruncatedcrc
+msgid "CRC Code is truncated"
 msgstr ""
 
 #: ipconst:cachedirnotexist
@@ -721,12 +721,12 @@ msgstr ""
 msgid "Color Type: %d"
 msgstr ""
 
-#: ipconst:ssslcompressionfailure
-msgid "Compression failure."
-msgstr ""
-
 #: ipconst:spngcompressionmethod
 msgid "Compression Method: %d"
+msgstr ""
+
+#: ipconst:ssslcompressionfailure
+msgid "Compression failure."
 msgstr ""
 
 #: ipconst:ssslbadcompressionvalue
@@ -791,10 +791,6 @@ msgstr ""
 
 #: ipconst:suuencodecounterr
 msgid "Count <> Len or Count > 63"
-msgstr ""
-
-#: ipconst:spngtruncatedcrc
-msgid "CRC Code is truncated"
 msgstr ""
 
 #: ipconst:ssmtpresponse76
@@ -971,21 +967,25 @@ msgstr ""
 msgid "File name too long"
 msgstr ""
 
-#: ipconst:spngfilterchange
-msgid "Filter changed on Row %d to %x"
-msgstr ""
-
 #: ipconst:spngfiltermethod
 msgid "Filter Method: %d"
 msgstr ""
 
-#: ipconst:spnggamatoolong
-msgid "gAMA chunk is long"
+#: ipconst:spngfilterchange
+msgid "Filter changed on Row %d to %x"
 msgstr ""
 
-#: ipconst:spnggamatooshort
-msgid "gAMA chunk is short"
-msgstr ""
+#: ipconst:httpget
+msgid "GET: (%s)"
+msgstr "GET: (%s)"
+
+#: ipconst:httpgeterror
+msgid "GET: (%s) FAILED"
+msgstr "GET: (%s) - неудачно"
+
+#: ipconst:snntpcmdgroup
+msgid "GROUP"
+msgstr "GROUP"
 
 #: ipconst:spnggammacorrection
 msgid "Gamma Correction: %f"
@@ -1031,14 +1031,6 @@ msgstr ""
 msgid "Generating OnTop event"
 msgstr ""
 
-#: ipconst:httpget
-msgid "GET: (%s)"
-msgstr "GET: (%s)"
-
-#: ipconst:httpgeterror
-msgid "GET: (%s) FAILED"
-msgstr "GET: (%s) - неудачно"
-
 #: ipconst:snsnewnews
 msgid "Getting new articles"
 msgstr ""
@@ -1049,18 +1041,6 @@ msgstr ""
 
 #: ipconst:swsaediscon
 msgid "Graceful shutdown in progress"
-msgstr ""
-
-#: ipconst:snntpcmdgroup
-msgid "GROUP"
-msgstr "GROUP"
-
-#: ipconst:ssslhandshakefailure
-msgid "Handshake failure."
-msgstr ""
-
-#: ipconst:sipicmp_hw_error
-msgid "Hardware error"
 msgstr ""
 
 #: ipconst:snntpcmdhead
@@ -1075,6 +1055,14 @@ msgstr "HEAD: (%s)"
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) - неудачно"
 
+#: ipconst:ssslhandshakefailure
+msgid "Handshake failure."
+msgstr ""
+
+#: ipconst:sipicmp_hw_error
+msgid "Hardware error"
+msgstr ""
+
 #: ipconst:ssshelp
 msgid "Help"
 msgstr ""
@@ -1087,12 +1075,12 @@ msgstr ""
 msgid "Host not found"
 msgstr ""
 
-#: ipconst:spngihdrtoolong
-msgid "IHDR chunk is long."
-msgstr ""
-
 #: ipconst:spngmissingihdr
 msgid "IHDR Chunk is missing"
+msgstr ""
+
+#: ipconst:spngihdrtoolong
+msgid "IHDR chunk is long."
 msgstr ""
 
 #: ipconst:spngihdrtooshort
@@ -1131,20 +1119,32 @@ msgstr ""
 msgid "Interrupted function call"
 msgstr ""
 
-#: ipconst:shtmlinvalign
-msgid "Invalid alignment specified"
-msgstr ""
-
-#: ipconst:swsaeinval
-msgid "Invalid argument"
-msgstr ""
-
 #: ipconst:sbinhexbadchar
 msgid "Invalid BinHex character"
 msgstr ""
 
 #: ipconst:sbinhexbadformat
 msgid "Invalid BinHex format"
+msgstr ""
+
+#: ipconst:spngbadmodificationtime
+msgid "Invalid Modification Time"
+msgstr ""
+
+#: ipconst:spngbadsignature
+msgid "Invalid PNG Signature"
+msgstr ""
+
+#: ipconst:spngbadpalettelength
+msgid "Invalid Palette Length"
+msgstr ""
+
+#: ipconst:shtmlinvalign
+msgid "Invalid alignment specified"
+msgstr ""
+
+#: ipconst:swsaeinval
+msgid "Invalid argument"
 msgstr ""
 
 #: ipconst:ssslinvalidcipher
@@ -1199,24 +1199,12 @@ msgstr ""
 msgid "Invalid method specified"
 msgstr ""
 
-#: ipconst:spngbadmodificationtime
-msgid "Invalid Modification Time"
-msgstr ""
-
-#: ipconst:spngbadpalettelength
-msgid "Invalid Palette Length"
-msgstr ""
-
 #: ipconst:providerunknownpicture
 msgid "Invalid picture format"
 msgstr ""
 
 #: ipconst:shtmlinvpicture
 msgid "Invalid picture returned"
-msgstr ""
-
-#: ipconst:spngbadsignature
-msgid "Invalid PNG Signature"
 msgstr ""
 
 #: ipconst:swsaeinvalidproctable
@@ -1295,10 +1283,6 @@ msgstr "LIST EXTENSIONS"
 msgid "LIST NEWSGROUPS"
 msgstr "LIST NEWSGROUPS"
 
-#: ipconst:slistnotassigned
-msgid "List not assigned"
-msgstr ""
-
 #: ipconst:snntpcmdlistoverfmt
 msgid "LIST OVERVIEW.FMT"
 msgstr "LIST OVERVIEW.FMT"
@@ -1306,6 +1290,10 @@ msgstr "LIST OVERVIEW.FMT"
 #: ipconst:snntpcmdlistgroup
 msgid "LISTGROUP"
 msgstr "LISTGROUP"
+
+#: ipconst:slistnotassigned
+msgid "List not assigned"
+msgstr ""
 
 #: ipconst:cacheretrieving
 msgid "Loading from Cache (%s = %s)"
@@ -1347,6 +1335,10 @@ msgstr ""
 msgid "MAC did not match."
 msgstr ""
 
+#: ipconst:ssslbadmd5hash
+msgid "MD5 hash did not match."
+msgstr ""
+
 #: ipconst:ssmtpresponse31
 msgid "Mail system full"
 msgstr ""
@@ -1373,10 +1365,6 @@ msgstr ""
 
 #: ipconst:spsdele
 msgid "Marking message for deletion"
-msgstr ""
-
-#: ipconst:ssslbadmd5hash
-msgid "MD5 hash did not match."
 msgstr ""
 
 #: ipconst:ssmtpresponse61
@@ -1407,6 +1395,22 @@ msgstr ""
 msgid "Modification Date: %s"
 msgstr ""
 
+#: ipconst:snntpcmdnewgroups
+msgid "NEWGROUPS"
+msgstr "NEWGROUPS"
+
+#: ipconst:snntpcmdnewnews
+msgid "NEWNEWS"
+msgstr "NEWNEWS"
+
+#: ipconst:snntpcmdnext
+msgid "NEXT"
+msgstr "NEXT"
+
+#: ipconst:spop3cmdnoop
+msgid "NOOP"
+msgstr "NOOP"
+
 #: ipconst:ssmtpresponse45
 msgid "Network congestion"
 msgstr ""
@@ -1427,24 +1431,28 @@ msgstr ""
 msgid "Network subsystem is unavailable"
 msgstr ""
 
-#: ipconst:snntpcmdnewgroups
-msgid "NEWGROUPS"
-msgstr "NEWGROUPS"
-
-#: ipconst:snntpcmdnewnews
-msgid "NEWNEWS"
-msgstr "NEWNEWS"
-
-#: ipconst:snntpcmdnext
-msgid "NEXT"
-msgstr "NEXT"
-
 #: ipconst:slognextmessagenotready
 msgid "Next message not ready"
 msgstr ""
 
 #: ipconst:slognextmessageready
 msgid "Next message ready"
+msgstr ""
+
+#: ipconst:httpnoheaderdata
+msgid "No Header Data for Entity"
+msgstr ""
+
+#: ipconst:snomemorystreamerr
+msgid "No Memory Stream assigned"
+msgstr ""
+
+#: ipconst:snoboundary
+msgid "No Mime boundary"
+msgstr ""
+
+#: ipconst:shtmlnogetimage
+msgid "No OnGetImage event handler assigned"
 msgstr ""
 
 #: ipconst:ssmtpresponse41
@@ -1463,28 +1471,12 @@ msgstr ""
 msgid "No hash type selected."
 msgstr ""
 
-#: ipconst:httpnoheaderdata
-msgid "No Header Data for Entity"
-msgstr ""
-
-#: ipconst:snomemorystreamerr
-msgid "No Memory Stream assigned"
-msgstr ""
-
 #: ipconst:ssslnomessageencslected
 msgid "No message encoding type selected."
 msgstr ""
 
-#: ipconst:snoboundary
-msgid "No Mime boundary"
-msgstr ""
-
 #: ipconst:swsaenomore
 msgid "No more data available"
-msgstr ""
-
-#: ipconst:shtmlnogetimage
-msgid "No OnGetImage event handler assigned"
 msgstr ""
 
 #: ipconst:sssnoop
@@ -1522,10 +1514,6 @@ msgstr ""
 #: ipconst:sstnotask
 msgid "None"
 msgstr ""
-
-#: ipconst:spop3cmdnoop
-msgid "NOOP"
-msgstr "NOOP"
 
 #: ipconst:snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
@@ -1595,6 +1583,42 @@ msgstr ""
 msgid "Other or undefined security status"
 msgstr ""
 
+#: ipconst:spop3cmdpass
+msgid "PASS"
+msgstr "PASS"
+
+#: ipconst:snntpcmdpat
+msgid "PAT"
+msgstr "PAT"
+
+#: ipconst:spngbuffertoosmall
+msgid "PNG Buffer too small."
+msgstr ""
+
+#: ipconst:spngchunkidandlength
+msgid "PNG Chunk: %s  Length: %d"
+msgstr ""
+
+#: ipconst:spngnoclipboard
+msgid "PNG Clipboard support is not supported."
+msgstr ""
+
+#: ipconst:spngcannotsave
+msgid "PNG Saving is not supported"
+msgstr ""
+
+#: ipconst:snntpcmdpost
+msgid "POST"
+msgstr "POST"
+
+#: ipconst:httppost
+msgid "POST: (%s)"
+msgstr "POST: (%s)"
+
+#: ipconst:httpposterror
+msgid "POST: (%s) FAILED"
+msgstr "POST: (%s) передать не удалось"
+
 #: ipconst:sipicmp_packet_too_big
 msgid "Packet too large"
 msgstr ""
@@ -1623,17 +1647,9 @@ msgstr ""
 msgid "Parsing error."
 msgstr ""
 
-#: ipconst:spop3cmdpass
-msgid "PASS"
-msgstr "PASS"
-
 #: ipconst:sraspasswordexpired
 msgid "Password expired"
 msgstr ""
-
-#: ipconst:snntpcmdpat
-msgid "PAT"
-msgstr "PAT"
 
 #: ipconst:sbadpath
 msgid "Path does not exist"
@@ -1659,22 +1675,6 @@ msgstr ""
 msgid "Pinging %s with %d bytes data"
 msgstr ""
 
-#: ipconst:spngbuffertoosmall
-msgid "PNG Buffer too small."
-msgstr ""
-
-#: ipconst:spngchunkidandlength
-msgid "PNG Chunk: %s  Length: %d"
-msgstr ""
-
-#: ipconst:spngnoclipboard
-msgid "PNG Clipboard support is not supported."
-msgstr ""
-
-#: ipconst:spngcannotsave
-msgid "PNG Saving is not supported"
-msgstr ""
-
 #: ipconst:ssslpointernotassigned
 msgid "Pointer not assigned."
 msgstr ""
@@ -1682,18 +1682,6 @@ msgstr ""
 #: ipconst:srasportopened
 msgid "Port opened"
 msgstr ""
-
-#: ipconst:snntpcmdpost
-msgid "POST"
-msgstr "POST"
-
-#: ipconst:httppost
-msgid "POST: (%s)"
-msgstr "POST: (%s)"
-
-#: ipconst:httpposterror
-msgid "POST: (%s) FAILED"
-msgstr "POST: (%s) передать не удалось"
 
 #: ipconst:snspost
 msgid "Posting article"
@@ -1738,6 +1726,14 @@ msgstr ""
 #: ipconst:sssquit
 msgid "Quit"
 msgstr ""
+
+#: ipconst:spop3cmdretr
+msgid "RETR"
+msgstr "RETR"
+
+#: ipconst:spop3cmdrset
+msgid "RSET"
+msgstr "RSET"
 
 #: ipconst:sraserr
 msgid "Ras Error (%d): on API '%s'"
@@ -1811,10 +1807,6 @@ msgstr ""
 msgid "Resource unavailable:"
 msgstr ""
 
-#: ipconst:spop3cmdretr
-msgid "RETR"
-msgstr "RETR"
-
 #: ipconst:sftpretrieve
 msgid "Retrieving "
 msgstr ""
@@ -1863,16 +1855,16 @@ msgstr ""
 msgid "Retrieving list of extended commands"
 msgstr ""
 
+#: ipconst:spsuidl
+msgid "Retrieving mailbox UID list"
+msgstr ""
+
 #: ipconst:spslist
 msgid "Retrieving mailbox list"
 msgstr ""
 
 #: ipconst:spsstat
 msgid "Retrieving mailbox status"
-msgstr ""
-
-#: ipconst:spsuidl
-msgid "Retrieving mailbox UID list"
 msgstr ""
 
 #: ipconst:spsretr
@@ -1923,9 +1915,25 @@ msgstr ""
 msgid "Routing server failure"
 msgstr ""
 
-#: ipconst:spop3cmdrset
-msgid "RSET"
-msgstr "RSET"
+#: ipconst:ssslshabuf2small
+msgid "SHA1 buffer to small."
+msgstr ""
+
+#: ipconst:ssslbadsha1hash
+msgid "SHA1 hash did not match."
+msgstr ""
+
+#: ipconst:ssockserr
+msgid "SOCKS request refused - %d"
+msgstr ""
+
+#: ipconst:ssslunprocesseddata
+msgid "SSL data processing error."
+msgstr ""
+
+#: ipconst:spop3cmdstat
+msgid "STAT"
+msgstr "STAT"
 
 #: ipconst:ssmtpresponse73
 msgid "Security conversion required but not possible"
@@ -1967,16 +1975,16 @@ msgstr ""
 msgid "Sending Envelope"
 msgstr ""
 
-#: ipconst:sstsendmail
-msgid "Sending mail"
-msgstr ""
-
 #: ipconst:sssrcptto
 msgid "Sending MailTo info"
 msgstr ""
 
 #: ipconst:ssssendmessage
 msgid "Sending Message"
+msgstr ""
+
+#: ipconst:sstsendmail
+msgid "Sending mail"
 msgstr ""
 
 #: ipconst:sssmailfrom
@@ -2015,14 +2023,6 @@ msgstr ""
 msgid "Session ID is longer than 32 bytes."
 msgstr ""
 
-#: ipconst:ssslshabuf2small
-msgid "SHA1 buffer to small."
-msgstr ""
-
-#: ipconst:ssslbadsha1hash
-msgid "SHA1 hash did not match."
-msgstr ""
-
 #: ipconst:swsaeisconn
 msgid "Socket is already connected"
 msgstr ""
@@ -2043,36 +2043,12 @@ msgstr ""
 msgid "Socket type not supported"
 msgstr ""
 
-#: ipconst:ssockserr
-msgid "SOCKS request refused - %d"
-msgstr ""
-
 #: ipconst:swsaeconnaborted
 msgid "Software caused connection abort"
 msgstr ""
 
 #: ipconst:spsspecial
 msgid "Special command"
-msgstr ""
-
-#: ipconst:ssslunprocesseddata
-msgid "SSL data processing error."
-msgstr ""
-
-#: ipconst:ssssaml
-msgid "ssSaml"
-msgstr ""
-
-#: ipconst:ssssend
-msgid "ssSend"
-msgstr ""
-
-#: ipconst:ssssoml
-msgid "ssSoml"
-msgstr ""
-
-#: ipconst:sssturn
-msgid "ssTurn"
 msgstr ""
 
 #: ipconst:swsaestale
@@ -2086,10 +2062,6 @@ msgstr ""
 #: ipconst:slogtaskstart
 msgid "Starting task: "
 msgstr ""
-
-#: ipconst:spop3cmdstat
-msgid "STAT"
-msgstr "STAT"
 
 #: ipconst:slogstate
 msgid "State change: "
@@ -2151,6 +2123,22 @@ msgstr ""
 msgid "System not capable of selected features"
 msgstr ""
 
+#: ipconst:sinvitemsize
+msgid "TIpTerminalArray.GetItemPtr: invalid item size"
+msgstr ""
+
+#: ipconst:srowrowoor
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr ""
+
+#: ipconst:sinvscrollrow
+msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+msgstr ""
+
+#: ipconst:spop3cmdtop
+msgid "TOP"
+msgstr "TOP"
+
 #: ipconst:smemmapmustbeclosed
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr ""
@@ -2179,32 +2167,12 @@ msgstr ""
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr ""
 
-#: ipconst:spngtimetoolong
-msgid "tIME chunk is long."
-msgstr ""
-
-#: ipconst:spngtimetooshort
-msgid "tIME chunk is short."
-msgstr ""
-
 #: ipconst:sipicmp_ttl_expired_reassem
 msgid "Time to live expired during reassembly"
 msgstr ""
 
 #: ipconst:sipicmp_ttl_expired_transit
 msgid "Time to live expired during transmit"
-msgstr ""
-
-#: ipconst:sinvitemsize
-msgid "TIpTerminalArray.GetItemPtr: invalid item size"
-msgstr ""
-
-#: ipconst:srowrowoor
-msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
-msgstr ""
-
-#: ipconst:sinvscrollrow
-msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
 msgstr ""
 
 #: ipconst:shtmltokenstackoverfl
@@ -2243,10 +2211,6 @@ msgstr ""
 msgid "Too many users"
 msgstr ""
 
-#: ipconst:spop3cmdtop
-msgid "TOP"
-msgstr "TOP"
-
 #: ipconst:sicmptracecomplete
 msgid "Trace complete (%s), %d hops"
 msgstr ""
@@ -2282,6 +2246,10 @@ msgstr ""
 #: ipconst:spop3cmduidl
 msgid "UIDL"
 msgstr "UIDL"
+
+#: ipconst:spop3cmduser
+msgid "USER"
+msgstr "USER"
 
 #: ipconst:swsaeproviderfailedinit
 msgid "Unable to initialize a service provider"
@@ -2339,16 +2307,16 @@ msgstr ""
 msgid "Unrecognized Chunk Type: %s"
 msgstr ""
 
+#: ipconst:spngbadinterlacemethod
+msgid "Unrecognized Interlace Method"
+msgstr ""
+
 #: ipconst:spngbadcolortype
 msgid "Unrecognized color type of %d"
 msgstr ""
 
 #: ipconst:sbadimagelibfileformat
 msgid "Unrecognized file format"
-msgstr ""
-
-#: ipconst:spngbadinterlacemethod
-msgid "Unrecognized Interlace Method"
 msgstr ""
 
 #: ipconst:sbadframelistobject
@@ -2378,10 +2346,6 @@ msgstr ""
 #: ipconst:ssslunsupportedencoding
 msgid "Unsupported public encoding."
 msgstr ""
-
-#: ipconst:spop3cmduser
-msgid "USER"
-msgstr "USER"
 
 #: ipconst:swsano_data
 msgid "Valid name, no data record of requested type"
@@ -2446,4 +2410,40 @@ msgstr "[POP3] "
 #: ipconst:slogsmtpclass
 msgid "[SMTP] "
 msgstr "[SMTP] "
+
+#: ipconst:sbinhexcolonexpected
+msgid "\":\" expected"
+msgstr "ожидается \":\""
+
+#: ipconst:spnggamatoolong
+msgid "gAMA chunk is long"
+msgstr ""
+
+#: ipconst:spnggamatooshort
+msgid "gAMA chunk is short"
+msgstr ""
+
+#: ipconst:ssssaml
+msgid "ssSaml"
+msgstr ""
+
+#: ipconst:ssssend
+msgid "ssSend"
+msgstr ""
+
+#: ipconst:ssssoml
+msgid "ssSoml"
+msgstr ""
+
+#: ipconst:sssturn
+msgid "ssTurn"
+msgstr ""
+
+#: ipconst:spngtimetoolong
+msgid "tIME chunk is long."
+msgstr ""
+
+#: ipconst:spngtimetooshort
+msgid "tIME chunk is short."
+msgstr ""
 

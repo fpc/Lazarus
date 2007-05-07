@@ -24,7 +24,7 @@ msgstr "&Copiar"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
-msgstr "&Deletar"
+msgstr "&Eliminar"
 
 #: objinspstrconsts:oistdactdataseteditheadline
 msgid "&Edit"
@@ -80,7 +80,7 @@ msgstr "&Salvar"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr "&Pesquisar Tópico"
+msgstr "&Pesquisar Topico"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
@@ -112,11 +112,11 @@ msgstr "1 linha, %d caracteres"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr "Ação"
+msgstr "Acao"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr "Editor Action List"
+msgstr "Editor de lista de acao"
 
 #: objinspstrconsts:oicoleditadd
 msgid "Add"
@@ -136,7 +136,7 @@ msgstr "Adicionar novo Item"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr "Adicionar página"
+msgstr "Adicionar pagina"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
@@ -196,11 +196,11 @@ msgstr "Cancelar"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Legenda"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
-msgstr "Título:"
+msgstr "Legenda:"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -260,7 +260,7 @@ msgstr "Componentes"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Confirmar deleção"
+msgstr "Confirmar eliminacao"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
@@ -268,7 +268,7 @@ msgstr "Copiar"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Copiar componentes"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -276,11 +276,11 @@ msgstr "Criar uma nova unit pascal."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Criar Evento Padrão"
+msgstr "Criar Evento Padrao"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
-msgstr "Coleção"
+msgstr "Colecao"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -316,7 +316,7 @@ msgstr "Recortar"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Recortar componentes"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -328,39 +328,39 @@ msgstr "Del"
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
-msgstr "Deletar"
+msgstr "Eliminarar"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr "Deletar Ação"
+msgstr "Eliminar Acao"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Eliminar componentes"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr "Deletar item %s%s%s?"
+msgstr "Eliminar item %s%s%s?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr "Deletar página"
+msgstr "Eliminar pagina"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Eliminar tab"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr "Deletar o Item %d \"%s\"?"
+msgstr "Eliminar o Item %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr "Diálogo"
+msgstr "Caixa de dialogo"
 
 #: objinspstrconsts:s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr ""
+msgstr "Voce quer separar a imagem?"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -448,7 +448,7 @@ msgstr "Ajuda"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Conteúdo da Ajuda"
+msgstr "Conteudo da Ajuda"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
@@ -604,7 +604,7 @@ msgstr "Novo Item"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "Nova Acão Padrao"
+msgstr "Nova Acao Padrao"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
@@ -628,7 +628,7 @@ msgstr "Objeto"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr "Object Inspector"
+msgstr "Inspetor de Objetos"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
@@ -668,11 +668,11 @@ msgstr "Colar"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Colar componentes"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Imagem"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -708,7 +708,7 @@ msgstr "Remover dos Favoritos"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "Direita"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -736,7 +736,7 @@ msgstr "Salvar Caracteres Literais"
 
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr ""
+msgstr "Salvar imagem como"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -784,7 +784,7 @@ msgstr "Ajustar como valor padrao"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr "Ajustar com o padrao: %s"
+msgstr "Ajustar ao padrao: %s"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
@@ -796,7 +796,7 @@ msgstr "Mostrar Dicas"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr "Mostrar página ..."
+msgstr "Mostrar pagina ..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -804,11 +804,11 @@ msgstr "Ordenar"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
-msgstr ""
+msgstr "Separar imagem"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr "Classes de Acão Padrao"
+msgstr "Classes de Acao Padrao"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
@@ -832,7 +832,7 @@ msgstr "Editor StrinGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Diálogo do Editor de Strings"
+msgstr ""
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -840,7 +840,7 @@ msgstr "Testar Entrada"
 
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
-msgstr "Testar Diálogo..."
+msgstr "Testar caixa de dialogo..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -848,7 +848,7 @@ msgstr "Texto:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway? "
-msgstr ""
+msgstr "O item \"%s\" já está listado. Adicionar assim mesmo?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -888,11 +888,11 @@ msgstr "Variant"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "Visivel"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Largura"
 
 #: objinspstrconsts:oisword
 msgid "Word"
@@ -900,5 +900,5 @@ msgstr "Palavra"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
-msgstr ""
+msgstr "Numero de colunas"
 

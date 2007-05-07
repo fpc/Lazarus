@@ -11,15 +11,15 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: frmtemplatevariables:svariable
-msgid "Variable"
-msgstr "Zmienna"
+#: frmtemplatevariables:sdescription
+msgid "Description"
+msgstr "Opis"
 
 #: frmtemplatevariables:svalue
 msgid "Value"
 msgstr "Wartość"
 
-#: frmtemplatevariables:sdescription
-msgid "Description"
-msgstr "Opis"
+#: frmtemplatevariables:svariable
+msgid "Variable"
+msgstr "Zmienna"
 

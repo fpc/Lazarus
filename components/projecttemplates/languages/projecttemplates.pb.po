@@ -1,0 +1,12 @@
+#: projecttemplates:serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr "Impossivel criar diretorio \"%s\""
+
+#: projecttemplates:serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Falha ao copiar arquivo  \"%s\" para \"%s\""
+
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Modelo nao existe."
+

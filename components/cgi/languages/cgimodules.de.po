@@ -9,11 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cgimodules:serrnomainmodule
-msgid "No CGI datamodule to handle CGI request."
-msgstr "Kein CGI-Datenmodul um CGI-Anfrage zu bearbeiten"
-
 #: cgimodules:serrnorequesthandler
 msgid "%s: No CGI request handler set."
 msgstr "%s: Kein CGI-Abfrage-Handler gesetzt."
+
+#: cgimodules:serrnomainmodule
+msgid "No CGI datamodule to handle CGI request."
+msgstr "Kein CGI-Datenmodul um CGI-Anfrage zu bearbeiten"
 

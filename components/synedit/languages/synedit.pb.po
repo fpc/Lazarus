@@ -1,0 +1,212 @@
+#: syneditstrconst:syns_scrollinfofmt
+msgid "%d - %d"
+msgstr ""
+
+#: syneditstrconst:syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr ""
+
+#: syneditstrconst:syns_shortcutnone
+msgid "<none>"
+msgstr ""
+
+#: syneditstrconst:syns_filterawk
+msgid "AWK Script (*.awk)|*.awk"
+msgstr ""
+
+#: syneditstrconst:syns_filterbaan
+msgid "Baan 4GL Files (*.cln)|*.cln"
+msgstr ""
+
+#: syneditstrconst:syns_filterdfm
+msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr ""
+
+#: syneditstrconst:syns_filtercpp
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr ""
+
+#: syneditstrconst:syns_filtercaclipper
+msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+msgstr ""
+
+#: syneditstrconst:syns_filtercorbaidl
+msgid "CORBA IDL files (*.idl)|*.idl"
+msgstr ""
+
+#: syneditstrconst:syns_filtercpm
+msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+msgstr ""
+
+#: syneditstrconst:syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr ""
+
+#: syneditstrconst:syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr ""
+
+#: syneditstrconst:syns_filteradsp21xx
+msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr ""
+
+#: syneditstrconst:syns_filterfortran
+msgid "Fortran Files (*.for)|*.for"
+msgstr ""
+
+#: syneditstrconst:syns_filterfoxpro
+msgid "Foxpro Files (*.prg)|*.prg"
+msgstr ""
+
+#: syneditstrconst:syns_filtergembase
+msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
+msgstr ""
+
+#: syneditstrconst:syns_filtergws
+msgid "GW-TEL Script Files (*.gws)|*.gws"
+msgstr ""
+
+#: syneditstrconst:syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr ""
+
+#: syneditstrconst:syns_filterhp
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
+msgstr ""
+
+#: syneditstrconst:syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr ""
+
+#: syneditstrconst:syns_exporterformathtml
+msgid "HTML"
+msgstr ""
+
+#: syneditstrconst:syns_filterhtml
+msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
+msgstr ""
+
+#: syneditstrconst:syns_filterini
+msgid "INI Files (*.ini)|*.ini"
+msgstr ""
+
+#: syneditstrconst:syns_filterinno
+msgid "Inno Setup Script Files (*.iss)|*.iss"
+msgstr ""
+
+#: syneditstrconst:syns_filterjava
+msgid "Java Files (*.java)|*.java"
+msgstr ""
+
+#: syneditstrconst:syns_filterjscript
+msgid "Javascript Files (*.js)|*.js"
+msgstr ""
+
+#: syneditstrconst:syns_filterkix
+msgid "KiXtart scripts (*.kix)|*.kix"
+msgstr ""
+
+#: syneditstrconst:syns_filterlfm
+msgid "Lazarus Form Files (*.lfm)|*.lfm"
+msgstr ""
+
+#: syneditstrconst:syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr ""
+
+#: syneditstrconst:syns_filtermodelica
+msgid "Modelica Files (*.mo)|*.mo"
+msgstr ""
+
+#: syneditstrconst:syns_filtermodula3
+msgid "Modula-3 Files (*.m3)|*.m3"
+msgstr ""
+
+#: syneditstrconst:syns_filtersyngenmsgfiles
+msgid "Msg files (*.msg)|*.msg"
+msgstr ""
+
+#: syneditstrconst:syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr ""
+
+#: syneditstrconst:syns_previewscrollinfofmt
+msgid "Page: %d"
+msgstr ""
+
+#: syneditstrconst:syns_filterpascal
+msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr ""
+
+#: syneditstrconst:syns_filterperl
+msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr ""
+
+#: syneditstrconst:syns_filterprogress
+msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr ""
+
+#: syneditstrconst:syns_filterpython
+msgid "Python Files (*.py)|*.py"
+msgstr ""
+
+#: syneditstrconst:syns_exporterformatrtf
+msgid "RTF"
+msgstr ""
+
+#: syneditstrconst:syns_filterrtf
+msgid "Rich Text Format (*.rtf)|*.rtf"
+msgstr ""
+
+#: syneditstrconst:syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr ""
+
+#: syneditstrconst:syns_filtersdd
+msgid "Semanta DD files (*.sdd)|*.sdd"
+msgstr ""
+
+#: syneditstrconst:syns_eduplicateshortcut
+msgid "Shortcut already exists"
+msgstr ""
+
+#: syneditstrconst:syns_filtersml
+msgid "Standard ML Files (*.sml)|*.sml"
+msgstr ""
+
+#: syneditstrconst:syns_filtertcltk
+msgid "Tcl/Tk Files (*.tcl)|*.tcl"
+msgstr ""
+
+#: syneditstrconst:syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr ""
+
+#: syneditstrconst:syns_duplicateshortcutmsg
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr ""
+
+#: syneditstrconst:syns_scrollinfofmttop
+msgid "Top Line: %d"
+msgstr ""
+
+#: syneditstrconst:syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr ""
+
+#: syneditstrconst:syns_filtervbscript
+msgid "VBScript Files (*.vbs)|*.vbs"
+msgstr ""
+
+#: syneditstrconst:syns_filtervisualbasic
+msgid "Visual Basic Files (*.bas)|*.bas"
+msgstr ""
+
+#: syneditstrconst:syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr ""
+
+#: syneditstrconst:syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr ""
+

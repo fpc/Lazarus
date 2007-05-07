@@ -1,3 +1,4 @@
+#: h2passtrconsts:bla
 msgid ""
 msgstr ""
 "Project-Id-Version: h2passtrconsts\n"
@@ -15,13 +16,13 @@ msgstr ""
 msgid "C header file converter"
 msgstr ""
 
-#: h2passtrconsts:h2ph2pas
-msgid "H2Pas"
-msgstr "H2Pas"
-
 #: h2passtrconsts:h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
 msgstr ""
+
+#: h2passtrconsts:h2ph2pas
+msgid "H2Pas"
+msgstr "H2Pas"
 
 #: h2passtrconsts:h2ph2pastool
 msgid "H2PasTool"

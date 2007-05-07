@@ -11,11 +11,11 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: cgimodules:serrnomainmodule
-msgid "No CGI datamodule to handle CGI request."
-msgstr ""
-
 #: cgimodules:serrnorequesthandler
 msgid "%s: No CGI request handler set."
+msgstr ""
+
+#: cgimodules:serrnomainmodule
+msgid "No CGI datamodule to handle CGI request."
 msgstr ""
 

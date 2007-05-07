@@ -11,10 +11,6 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: projecttemplates:serrnosuchtemplate
-msgid "\"%s\": No such template."
-msgstr ""
-
 #: projecttemplates:serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Nie udało się utworzyć katalogu \"%s\"."
@@ -22,4 +18,8 @@ msgstr "Nie udało się utworzyć katalogu \"%s\"."
 #: projecttemplates:serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Nie udało się skopiować pliku \"%s\" do \"%s\"."
+
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr ""
 
