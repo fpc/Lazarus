@@ -1009,7 +1009,8 @@ begin
     try
 
       // Saving clip rect and clip region
-      with PaintData do begin
+      with PaintData do
+      begin
         ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
         if ClipRect=nil then
           New(ClipRect);
@@ -1020,7 +1021,7 @@ begin
         LCLObject.WindowProc(TLMessage(Msg));
       finally
         Dispose(PaintData.ClipRect);
-        Fillchar(PaintData, SizeOf(PaintData), 0);
+        Fillchar(FPaintData, SizeOf(FPaintData), 0);
       end;
     except
       Application.HandleException(nil);
