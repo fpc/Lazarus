@@ -121,7 +121,7 @@ uses
 // FpGuiWSMenus,
 // FpGuiWSPairSplitter,
 // FpGuiWSSpin,
-// FpGuiWSStdCtrls,
+ FpGuiWSStdCtrls,
 // FpGuiWSToolwin,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus;

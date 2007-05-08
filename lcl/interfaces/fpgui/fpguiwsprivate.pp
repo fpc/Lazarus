@@ -151,7 +151,32 @@ type
     // ISimpleText
     procedure SetText(const AText: String);
     function GetText: String;
+  end;
 
+  { TFPGUIPrivateComboBox }
+
+  TFPGUIPrivateComboBox = class(TFPGUIPrivateWidget)
+  private
+  protected
+  public
+    function ComboBox: TFComboBox;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+  end;
+
+
+  { TFPGUIPrivateEdit }
+
+  TFPGUIPrivateEdit = class(TFPGUIPrivateWidget, ISimpleText)
+  private
+  protected
+  public
+    function Edit: TFEdit;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    // ISimpleText
+    procedure SetText(const AText: String);
+    function GetText: String;
   end;
   
   {TFPGUIPrivateNotebook = class(TPrivateNotebook)
@@ -267,7 +292,9 @@ end;
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := TFForm.Create(LCLObject);
+  
   Form.Wnd.SetSize(Size(AParams.Width, AParams.Height));
+  
   Form.Wnd.SetPosition(Point(AParams.X, AParams.Y));
 end;
 
@@ -288,40 +315,166 @@ end;
 
 { TFPGUIPrivateButton }
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.Clicked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateButton.Clicked(Sender: TObject);
 begin
-  LCLSendClickedMsg(TControl(LCLObject));
+  LCLSendClickedMsg(LCLObject);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.Button
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TFPGUIPrivateButton.Button: TFButton;
 begin
   Result := TFButton(Widget);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateButton.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
 begin
-  Widget := TFButton.Create(TFPGUIPrivateWidget(LCLObject.Parent.Handle).Widget);
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TFButton.Create(ParentContainer.Widget);
   
-  TFPGUIPrivateContainer(LCLObject.Parent.Handle).AddChild(Widget);
+  ParentContainer.AddChild(Widget);
+
   Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TFPGUIPrivateButton.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-  
+
   // Events
   Button.OnClick := @Clicked;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateButton.SetText(const AText: String);
 begin
   Button.Text := AText;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TFPGUIPrivateButton.GetText: String;
 begin
   Result := Button.Text;
+end;
+
+{ TFPGUIPrivateComboBox }
+
+function TFPGUIPrivateComboBox.ComboBox: TFComboBox;
+begin
+  Result := TFComboBox(Widget);
+end;
+
+procedure TFPGUIPrivateComboBox.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TFComboBox.Create(ParentContainer.Widget);
+
+  ParentContainer.AddChild(Widget);
+
+  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+constructor TFPGUIPrivateComboBox.Create(ALCLObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(ALCLObject, AParams);
+
+  // Events
+end;
+
+{ TFPGUIPrivateEdit }
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateEdit.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TFPGUIPrivateEdit.Create(ALCLObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(ALCLObject, AParams);
+  
+  // Events
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateEdit.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateEdit.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TFEdit.Create(ParentContainer.Widget);
+
+  ParentContainer.AddChild(Widget);
+
+  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateEdit.Edit
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TFPGUIPrivateEdit.Edit: TFEdit;
+begin
+  Result := TFEdit(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateEdit.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateEdit.SetText(const AText: String);
+begin
+  Edit.Text := AText;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateEdit.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TFPGUIPrivateEdit.GetText: String;
+begin
+  Result := Edit.Text;
 end;
 
 end.

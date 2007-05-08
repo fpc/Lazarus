@@ -27,14 +27,11 @@ unit FpGuiWSControls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
+  // Bindings
+  fpgui, fpguiwsprivate,
+  // LCL
   Controls, LCLType,
-////////////////////////////////////////////////////
+  // Widgetset
   WSControls, WSLCLClasses;
 
 type
@@ -61,9 +58,30 @@ type
   private
   protected
   public
-    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+//    class procedure Invalidate(const AWinControl: TWinControl); override;
+  public
+//    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
+//    class procedure SetColor(const AWinControl: TWinControl); override;
+//    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+
+//    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+//    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+
+{    class procedure AddControl(const AControl: TControl); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
+                                      const AOldPos, ANewPos: Integer;
+                                      const AChildren: TFPList); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
   end;
 
   { TFpGuiWSGraphicControl }
@@ -93,16 +111,33 @@ type
 
 implementation
 
-uses fpgui, FPGUIWSPrivate;
-
 { TFpGuiWSWinControl }
 
-class procedure TFpGuiWSWinControl.ShowHide(const AWinControl: TWinControl);
-var
-  FPWidget: TFPGUIPrivateWidget;
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TFpGuiWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle);
-  FPWidget.Visible := not FPWidget.Visible;
+  {$ifdef VerboseFPGUI}
+    WriteLn('TFpGuiWSWinControl.CreateHandle for ',AWinControl.Name);
+  {$endif}
+
+  Result := TLCLIntfHandle(TFPGUIPrivateWidget.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TFpGuiWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+//  TFPGUIPrivateWidget(AWinControl.Handle).Free;
+
+//  AWinControl.Handle := 0;
 end;
 
 class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
@@ -121,6 +156,14 @@ var
 begin
   FPWidget := TFWidget(AWincontrol.Handle);
   FPWIdget.SetBounds(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
+end;
+
+class procedure TFpGuiWSWinControl.ShowHide(const AWinControl: TWinControl);
+var
+  FPWidget: TFPGUIPrivateWidget;
+begin
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle);
+  FPWidget.Visible := not FPWidget.Visible;
 end;
 
 initialization
