@@ -736,7 +736,7 @@ begin
   ItemsListBox.Canvas.FillRect(CurRect);
   // draw the buttons
   x:=0;
-  ButtonWidth := ImageList.Width+4;
+  ButtonWidth := 24;
   ButtonHeight := ButtonWidth;
   for mm:=Low(TMakeMode) to High(TMakeMode) do begin
     // draw button
@@ -847,7 +847,7 @@ var
   i: integer;
 begin
   Result:=True;
-  ButtonWidth:=ImageList.Width+4;
+  ButtonWidth := 24;
   i := X div ButtonWidth;
   case i of
     0: MakeMode:=mmNone;

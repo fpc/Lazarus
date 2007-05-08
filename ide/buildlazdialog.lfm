@@ -9,8 +9,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSizeToolWin
   Caption = 'ConfigureBuildLazarusDlg'
-  ClientHeight = 500
-  ClientWidth = 500
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -19,9 +17,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideTop.Control = OptionsEdit
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 17
-    Top = 283
-    Width = 46
+    Height = 14
+    Top = 284
+    Width = 42
     Caption = 'Options:'
     Color = clNone
     ParentColor = False
@@ -30,9 +28,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideTop.Control = TargetOSEdit
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 17
-    Top = 313
-    Width = 55
+    Height = 14
+    Top = 314
+    Width = 54
     Caption = 'Target OS:'
     Color = clNone
     ParentColor = False
@@ -41,9 +39,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideTop.Control = TargetDirectoryComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 17
-    Top = 344
-    Width = 88
+    Height = 14
+    Top = 345
+    Width = 84
     Caption = 'Target Directory:'
     Color = clNone
     ParentColor = False
@@ -52,9 +50,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideTop.Control = TargetCPUComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 17
-    Top = 374
-    Width = 59
+    Height = 14
+    Top = 375
+    Width = 56
     Caption = 'Target CPU'
     Color = clNone
     ParentColor = False
@@ -72,9 +70,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   object CleanAllCheckBox: TCheckBox
     AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 338
-    Height = 15
+    Height = 13
     Top = 12
-    Width = 63
+    Width = 61
     Caption = 'Clean All'
     TabOrder = 1
   end
@@ -102,7 +100,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 307
     Anchors = [akLeft, akRight, akBottom]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
     MaxLength = 0
     TabOrder = 7
   end
@@ -138,27 +135,27 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   object WithStaticPackagesCheckBox: TCheckBox
     AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 338
-    Height = 15
-    Top = 246
-    Width = 168
+    Height = 13
+    Top = 248
+    Width = 166
     Anchors = [akLeft, akBottom]
     Caption = 'WithStaticPackagesCheckBox'
     TabOrder = 4
   end
   object RestartAfterBuildCheckBox: TCheckBox
     Left = 10
-    Height = 15
-    Top = 414
-    Width = 150
+    Height = 13
+    Top = 416
+    Width = 148
     Anchors = [akLeft, akBottom]
     Caption = 'RestartAfterBuildCheckBox'
     TabOrder = 10
   end
   object ConfirmBuildCheckBox: TCheckBox
     Left = 10
-    Height = 15
-    Top = 440
-    Width = 129
+    Height = 13
+    Top = 442
+    Width = 127
     Anchors = [akLeft, akBottom]
     Caption = 'ConfirmBuildCheckBox'
     TabOrder = 11
@@ -212,7 +209,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 307
     Anchors = [akLeft, akRight, akBottom]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
     MaxLength = 0
     TabOrder = 9
   end
