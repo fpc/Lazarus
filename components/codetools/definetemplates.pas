@@ -436,7 +436,8 @@ type
                           Owner: TObject): TDefineTemplate;
     function CreateFPCCommandLineDefines(const Name, CmdLine: string;
                                          RecursiveDefines: boolean;
-                                         Owner: TObject): TDefineTemplate;
+                                         Owner: TObject;
+                                         AlwaysCreate: boolean = false): TDefineTemplate;
     // Lazarus templates
     function CreateLazarusSrcTemplate(
                           const LazarusSrcDir, WidgetType, ExtraOptions: string;
@@ -4623,7 +4624,7 @@ begin
 end;
 
 function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
-  RecursiveDefines: boolean; Owner: TObject): TDefineTemplate;
+  RecursiveDefines: boolean; Owner: TObject; AlwaysCreate: boolean): TDefineTemplate;
   
   function ReadNextParam(LastEndPos: integer;
     var StartPos, EndPos: integer): boolean;
@@ -4637,6 +4638,13 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
     Result:=StartPos<=length(CmdLine);
   end;
   
+  procedure CreateMainTemplate;
+  begin
+    if Result=nil then
+      Result:=TDefineTemplate.Create(Name,ctsCommandLineParameters,'','',
+                                     da_Block);
+  end;
+  
   procedure AddDefine(const AName, ADescription, AVariable, AValue: string;
     AnAction: TDefineAction);
   var
@@ -4645,9 +4653,7 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
     if AName='' then exit;
     NewTempl:=TDefineTemplate.Create(AName, ADescription, AVariable, AValue,
                                      AnAction);
-    if Result=nil then
-      Result:=TDefineTemplate.Create(Name,ctsCommandLineParameters,'','',
-                                     da_Block);
+    CreateMainTemplate;
     Result.AddChild(NewTempl);
   end;
   
@@ -4657,6 +4663,8 @@ var
   NewAction: TDefineAction;
 begin
   Result:=nil;
+  if AlwaysCreate then
+    CreateMainTemplate;
   EndPos:=1;
   while ReadNextParam(EndPos,StartPos,EndPos) do begin
     if (StartPos<length(CmdLine)) and (CmdLine[StartPos]='-') then begin
