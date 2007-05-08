@@ -533,11 +533,7 @@ begin
     Count := 0;
 
     if Assigned(Points) then
-    try
       ReallocMem(Points, 0);
-    finally
-      Points := nil;
-    end;
   end;
   SplitRecursive(Bezier);
 end;
@@ -581,11 +577,7 @@ begin
     Count := 0;
     
     if Assigned(Points) then
-    try
       ReallocMem(Points, 0);
-    finally
-      Points := nil;
-    end;
   end;
   
   Arc2Bezier(X, Y, Width, Height, Angle1, Angle2, Rotation, B);
