@@ -286,6 +286,7 @@ var
       NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurControl));
       NewNode.Data:=CurControl;
       NewNode.ImageIndex:=GetImageFor(CurControl);
+      NewNode.SelectedIndex:=NewNode.ImageIndex;
       NewNode.MultiSelected:=Selection.IndexOf(CurControl)>=0;
       if CurControl is TWinControl then
         AddChildControls(TWinControl(CurControl),NewNode);
@@ -313,6 +314,7 @@ var
       NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurMenuItem));
       NewNode.Data:=CurMenuItem;
       NewNode.ImageIndex:=1;
+      NewNode.SelectedIndex:=NewNode.ImageIndex;
       NewNode.MultiSelected:=Selection.IndexOf(CurMenuItem)>=0;
       AddMenuItemChilds(CurMenuItem,NewNode);
     end;
@@ -344,6 +346,7 @@ begin
       RootNode:=Items.Add(nil,CreateNodeCaption(RootObject));
       RootNode.Data:=RootObject;
       RootNode.ImageIndex:=0;
+      RootNode.SelectedIndex:=RootNode.ImageIndex;
       RootNode.MultiSelected:=Selection.IndexOf(RootObject)>=0;
     
       // create candidate nodes for every child
@@ -392,6 +395,7 @@ begin
           NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
           NewNode.Data:=AComponent;
           NewNode.ImageIndex:=GetImageFor(AComponent);
+          NewNode.SelectedIndex:=NewNode.ImageIndex;
           NewNode.MultiSelected:=Selection.IndexOf(AComponent)>=0;
           if AComponent is TWinControl then
             AddChildControls(TWinControl(AComponent),NewNode)
