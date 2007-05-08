@@ -92,7 +92,7 @@ mkdir -p $LazBuildDir/DEBIAN
 cat $DebianSrcDir/control | \
   sed -e "s/FPCVERSION/$FPCVersion/g" \
       -e "s/LAZVERSION/$LazVersion/g" \
-      -e "s/ARCH/$Arch/g" \ 
+      -e "s/ARCH/$Arch/g" \
   > $LazBuildDir/DEBIAN/control
 
 # copyright and changelog files
