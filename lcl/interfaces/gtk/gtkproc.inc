@@ -1421,8 +1421,6 @@ end;
   Creates a copy DC from the given DC
  ------------------------------------------------------------------------------}
 function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
-var
-  GCValues: TGDKGCValues;
 begin
 //  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
@@ -1433,6 +1431,7 @@ begin
       DCWidget := SourceDC.DCWidget;
       Drawable := SourceDC.Drawable;
       if GC<>nil then begin
+        // free old GC
         BeginGDKErrorTrap;
         gdk_gc_unref(GC);
         EndGDKErrorTrap;
@@ -1515,13 +1514,13 @@ begin
     {$IFDEF DebugGDK}
     BeginGDKErrorTrap;
     {$ENDIF}
-    gdk_gc_set_clip_region(gc,  nil);
-    gdk_gc_set_clip_rectangle (gc,  nil);
+    gdk_gc_set_clip_region(GetGC,  nil);
+    gdk_gc_set_clip_rectangle (GetGC,  nil);
     If (ClipRegion <> 0) then begin
       Region:=PGDIObject(ClipRegion);
       RGNType := RegionType(Region^.GDIRegionObject);
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-        gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
+        gdk_gc_set_clip_region(GetGC,  PGDIObject(ClipRegion)^.GDIRegionObject);
       end;
     end;
     {$IFDEF DebugGDK}
@@ -1685,7 +1684,7 @@ var
   end;
 
 begin
-  GC:=TDeviceContext(DC).GC;
+  GC:=TDeviceContext(DC).GetGC;
   GDIColor:=nil;
   with TDeviceContext(DC) do
   begin
@@ -7330,7 +7329,7 @@ begin
   GetStyleWithName(WName);
   // return widget
   l:=IndexOfStyleWithName(WName);
-  If l>=0 then
+  if l>=0 then
     Result := PStyleObject(Styles.Objects[l])^.Widget;
 end;
 

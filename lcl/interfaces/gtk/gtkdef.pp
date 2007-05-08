@@ -185,14 +185,19 @@ type
     dcscFont
     );
     
+  { TDeviceContext }
+
   TDeviceContext = class
   public
+    WithChildWindows: boolean;// this DC covers sub gdkwindows
+  
     // device handles
     DCWidget: PGtkWidget; // the owner
-    GC: pgdkGC;
     Drawable: PGDKDrawable;
     OriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
-    
+    GC: pgdkGC;
+    GCValues: TGdkGCValues;
+
     // origins
     Origin: TPoint;
     SpecialOrigin: boolean;
@@ -217,7 +222,9 @@ type
     SelectedColors: TDevContextSelectedColorsType;
     SavedContext: TDeviceContext; // linked list of saved DCs
     DCFlags: TDeviceContextsFlags;
+
     procedure Clear;
+    function GetGC: pgdkGC;
   end;
   
   
@@ -388,6 +395,11 @@ procedure InternalDisposePGDIObject(GDIObject: PGdiObject);
 function NewDeviceContext: TDeviceContext;
 procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 
+type
+  TCreateGCForDC = procedure(DC: TDeviceContext) of object;
+var
+  CreateGCForDC: TCreateGCForDC = nil;
+
 {$IFDEF DebugLCLComponents}
 var
   DebugGtkWidgets: TDebugLCLItems = nil;
@@ -396,7 +408,6 @@ var
 {$ENDIF}
 
 procedure GtkDefDone;
-
 
 implementation
 
@@ -587,9 +598,10 @@ end;
 procedure TDeviceContext.Clear;
 begin
   DCWidget:=nil;
-  GC:=nil;
   Drawable:=nil;
-  
+  GC:=nil;
+  FillChar(GCValues, SizeOf(GCValues), #0);
+
   Origin.X:=0;
   Origin.Y:=0;
   SpecialOrigin:=false;
@@ -608,6 +620,13 @@ begin
   SelectedColors:=dcscCustom;
   SavedContext:=nil;
   DCFlags:=[];
+end;
+
+function TDeviceContext.GetGC: pgdkGC;
+begin
+  if GC=nil then
+    CreateGCForDC(Self);
+  Result:=GC;
 end;
 
 procedure GtkDefInit;

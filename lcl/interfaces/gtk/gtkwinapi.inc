@@ -62,31 +62,24 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.Arc] Uninitialized GC');
-      Result := False;
-    end
-    else begin
-      // Draw outline
-      SelectGDKPenProps(DC);
+    // Draw outline
+    SelectGDKPenProps(DC);
 
-      If (dcfPenSelected in DCFlags) then begin
-        Result := True;
-        if (CurrentPen^.IsNullPen) then exit;
+    If (dcfPenSelected in DCFlags) then begin
+      Result := True;
+      if (CurrentPen^.IsNullPen) then exit;
 
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        inc(Left,DCOrigin.X);
-        inc(Top,DCOrigin.Y);
-        inc(Right,DCOrigin.X);
-        inc(Bottom,DCOrigin.Y);
-        {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_arc(Drawable, GC, 0, left, top, right - left, bottom - top,
-                     Angle1*4, Angle2*4);
-        {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-      end else
-        Result:=false;
-    end;
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      inc(Left,DCOrigin.X);
+      inc(Top,DCOrigin.Y);
+      inc(Right,DCOrigin.X);
+      inc(Bottom,DCOrigin.Y);
+      {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
+      gdk_draw_arc(Drawable, GetGC, 0, left, top, right - left, bottom - top,
+                   Angle1*4, Angle2*4);
+      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+    end else
+      Result:=false;
   end;
 end;
 
@@ -105,18 +98,7 @@ end;
 function TGtkWidgetSet.AngleChord(DC: HDC;
   x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
 begin
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.AngleChord] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited AngleChord(DC, x1, y1, x2, y2, angle1, angle2);
-  end;
+  Result := Inherited AngleChord(DC, x1, y1, x2, y2, angle1, angle2);
 end;
 
 {------------------------------------------------------------------------------
@@ -2775,7 +2757,7 @@ var
   begin
     inc(X1,Origin.X);
     inc(Y1,Origin.Y);
-    gdk_draw_point(TDeviceContext(DC).Drawable, TDeviceContext(DC).GC, X1, Y1);
+    gdk_draw_point(TDeviceContext(DC).Drawable, TDeviceContext(DC).GetGC, X1, Y1);
   end;
   
   procedure DrawVertLine(X1,Y1,Y2: integer);
@@ -2889,85 +2871,78 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
+    R := ARect;
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    OffsetRect(R,DCOrigin.X,DCOrigin.Y);
+
+    // try to use the gdk functions, so that the current theme is used
+    BInner := False;
+    BOuter := False;
+
+    // TODO: change this to real colors
+    if (edge and BDR_RAISEDINNER) = BDR_RAISEDINNER
     then begin
-      Assert(False, 'Trace:[TGtkWidgetSet.DrawEdge] Uninitialized GC');
-      Result := False;
-    end
-    else begin
-      R := ARect;
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      OffsetRect(R,DCOrigin.X,DCOrigin.Y);
+      InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+      InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+      BInner := True;
+    end;
+    if (edge and BDR_SUNKENINNER) = BDR_SUNKENINNER
+    then begin
+      InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+      InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+      BInner := True;
+    end;
+    if (edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER
+    then begin
+      OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+      OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+      BOuter := True;
+    end;
+    if (edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER
+    then begin
+      OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+      OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+      BOuter := True;
+    end;
 
-      // try to use the gdk functions, so that the current theme is used
-      BInner := False;
-      BOuter := False;
+    gdk_gc_set_fill(GetGC, GDK_SOLID);
+    SelectedColors := dcscCustom;
 
-      // TODO: change this to real colors
-      if (edge and BDR_RAISEDINNER) = BDR_RAISEDINNER
-      then begin
-        InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-        InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-        BInner := True;
-      end;
-      if (edge and BDR_SUNKENINNER) = BDR_SUNKENINNER
-      then begin
-        InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-        InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-        BInner := True;
-      end;
-      if (edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER
-      then begin
-        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-        BOuter := True;
-      end;
-      if (edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER
-      then begin
-        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-        BOuter := True;
-      end;
+    // Draw outer rect
+    if BOuter then
+      DrawEdges(R,GetGC,Drawable,OuterTL,OuterBR);
 
-      gdk_gc_set_fill(GC, GDK_SOLID);
-      SelectedColors := dcscCustom;
-
-      // Draw outer rect
-      if BOuter then
-        DrawEdges(R,GC,Drawable,OuterTL,OuterBR);
-
-      // Draw inner rect
-      if BInner then
-        DrawEdges(R,GC,Drawable,InnerTL,InnerBR);
+    // Draw inner rect
+    if BInner then
+      DrawEdges(R,GetGC,Drawable,InnerTL,InnerBR);
 
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterTL, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerTL, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
 
-      //Draw interiour
-      if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and
-        not CurrentBrush^.IsNullBrush
-      then begin
-        Width := R.Right - R.Left + 1;
-        Height := R.Bottom - R.Top + 1;
-        SelectGDKBrushProps(DC);
-        If not CurrentBrush^.IsNullBrush then
-          if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
-          then
-            StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef,
-                               R.Left, R.Top, Width, Height)
-          else
-            gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
-      end;
-
-      // adjust rect if needed
-      if (grfFlags and BF_ADJUST) = BF_ADJUST
-      then ARect := R;
-
-      Result := True;
+    //Draw interiour
+    if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and
+      not CurrentBrush^.IsNullBrush
+    then begin
+      Width := R.Right - R.Left + 1;
+      Height := R.Bottom - R.Top + 1;
+      SelectGDKBrushProps(DC);
+      If not CurrentBrush^.IsNullBrush then
+        if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
+        and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
+        then
+          StyleFillRectangle(Drawable, GetGC, CurrentBrush^.GDIBrushColor.ColorRef,
+                             R.Left, R.Top, Width, Height)
+        else
+          gdk_draw_rectangle(Drawable, GetGC, 1, R.Left, R.Top, Width, Height);
     end;
+
+    // adjust rect if needed
+    if (grfFlags and BF_ADJUST) = BF_ADJUST
+    then ARect := R;
+
+    Result := True;
   end;
 end;
 
@@ -3170,11 +3145,6 @@ begin
   if Boolean(Result)
   then with TDeviceContext(DC) do
   begin
-    if GC = nil then begin
-      DebugLn('WARNING: [TGtkWidgetSet.DrawText] Uninitialized GC');
-      Result := 0;
-      exit;
-    end;
     Result := 0;
     Lines := nil;
     NumLines := 0;
@@ -3319,13 +3289,13 @@ begin
       {$IFDEF VerboseDoubleBuffer}
       DebugLn('TGtkWidgetSet.EndPaint Copying from buffer to window: ',Width,' ',Height);
       {$ENDIF}
-      gdk_gc_set_clip_region(DevContext.GC, nil);
-      gdk_gc_set_clip_rectangle(DevContext.GC, nil);
+      gdk_gc_set_clip_region(DevContext.GetGC, nil);
+      gdk_gc_set_clip_rectangle(DevContext.GetGC, nil);
 
       // hide caret
       HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
       // draw
-      gdk_window_copy_area(Widget^.Window, DevContext.GC, 0,0,
+      gdk_window_copy_area(Widget^.Window, DevContext.GetGC, 0,0,
         DCDrawable, 0, 0, Width, Height);
 
       {LCLObject:=GetParentLCLObject(Widget);
@@ -3802,54 +3772,47 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.Ellipse] Uninitialized GC');
-      Result := False;
-    end
-    else begin
-      if x1<x2 then begin
-        x:=x1;
-        width:=x2-x1;
-      end else begin
-        x:=x2;
-        width:=x1-x2;
-      end;
-      if y1<y2 then begin
-        y:=y1;
-        height:=y2-y1;
-      end else begin
-        y:=y2;
-        height:=y1-y2;
-      end;
-
-      // first draw interior in brush color
-      SelectGDKBrushProps(DC);
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-
-      {$IFDEF DebugGDKTraps}
-      BeginGDKErrorTrap;
-      {$ENDIF}
-
-      If not CurrentBrush^.IsNullBrush then
-        gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
-                   0, 360 shl 6);
-
-      // Draw outline
-      SelectGDKPenProps(DC);
-
-      If (dcfPenSelected in DCFlags) then begin
-        Result := True;
-        if (CurrentPen^.IsNullPen) then exit;
-        gdk_draw_arc(Drawable, GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
-                     0, 360 shl 6);
-      end else
-        Result := False;
-
-      {$IFDEF DebugGDKTraps}
-      EndGDKErrorTrap;
-      {$ENDIF}
+    if x1<x2 then begin
+      x:=x1;
+      width:=x2-x1;
+    end else begin
+      x:=x2;
+      width:=x1-x2;
     end;
+    if y1<y2 then begin
+      y:=y1;
+      height:=y2-y1;
+    end else begin
+      y:=y2;
+      height:=y1-y2;
+    end;
+
+    // first draw interior in brush color
+    SelectGDKBrushProps(DC);
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+    {$IFDEF DebugGDKTraps}
+    BeginGDKErrorTrap;
+    {$ENDIF}
+
+    If not CurrentBrush^.IsNullBrush then
+      gdk_draw_arc(Drawable, GetGC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+                 0, 360 shl 6);
+
+    // Draw outline
+    SelectGDKPenProps(DC);
+
+    If (dcfPenSelected in DCFlags) then begin
+      Result := True;
+      if (CurrentPen^.IsNullPen) then exit;
+      gdk_draw_arc(Drawable, GetGC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+                   0, 360 shl 6);
+    end else
+      Result := False;
+
+    {$IFDEF DebugGDKTraps}
+    EndGDKErrorTrap;
+    {$ENDIF}
   end;
 end;
 
@@ -3917,48 +3880,41 @@ begin
     Result := ERROR
   else with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.ExtSelectClipRGN] Uninitialized GC');
-      Result := ERROR;
-    end
-    else begin
-      //DebugLn('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',dbgs(DCClipRegionValid(DC)),
-      //  ' Mode=',dbgs(Mode),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
-      If ClipRegion=0 then begin
-        // there is no clipping region in the DC
-        Case Mode of
-          RGN_COPY:
-            begin
-              Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
-              If Result <> ERROR then
-                Result := SelectClipRGN(DC, RGN);
-            end;
-          RGN_OR,
-          RGN_XOR,
-          RGN_AND,
-          RGN_DIFF:
-            begin
-              // get existing clip
-              GDK_Window_Get_Size(Drawable, @X, @Y);
-              DCOrigin:=GetDCOffset(TDeviceContext(DC));
-              Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
-              // create target clip
-              Tmp := CreateEmptyRegion;
-              // combine
-              Result := CombineRGN(Tmp, Clip, RGN, Mode);
-              // commit
-              //DebugLn('TGtkWidgetSet.ExtSelectClipRGN B ClipRegValid=',dbgs(ClipRegion),' TmpRGN=',GDKRegionAsString(PGdiObject(Tmp)^.GDIRegionObject));
-              SelectClipRGN(DC, Tmp);
-              // clean up
-              DeleteObject(Clip);
-              DeleteObject(Tmp);
-            end;
+    //DebugLn('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',dbgs(DCClipRegionValid(DC)),
+    //  ' Mode=',dbgs(Mode),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
+    If ClipRegion=0 then begin
+      // there is no clipping region in the DC
+      Case Mode of
+        RGN_COPY:
+          begin
+            Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
+            If Result <> ERROR then
+              Result := SelectClipRGN(DC, RGN);
           end;
-        end
-      else
-        Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
-    end;
+        RGN_OR,
+        RGN_XOR,
+        RGN_AND,
+        RGN_DIFF:
+          begin
+            // get existing clip
+            GDK_Window_Get_Size(Drawable, @X, @Y);
+            DCOrigin:=GetDCOffset(TDeviceContext(DC));
+            Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
+            // create target clip
+            Tmp := CreateEmptyRegion;
+            // combine
+            Result := CombineRGN(Tmp, Clip, RGN, Mode);
+            // commit
+            //DebugLn('TGtkWidgetSet.ExtSelectClipRGN B ClipRegValid=',dbgs(ClipRegion),' TmpRGN=',GDKRegionAsString(PGdiObject(Tmp)^.GDIRegionObject));
+            SelectClipRGN(DC, Tmp);
+            // clean up
+            DeleteObject(Clip);
+            DeleteObject(Tmp);
+          end;
+        end;
+      end
+    else
+      Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
   end;
 end;
 
@@ -4003,7 +3959,7 @@ var
       if (Dx=nil) then begin
         // no dist array -> write as one block
         
-        gdk_draw_text(Buffer, UseFont, GC, TxtPt.X, TxtPt.Y,
+        gdk_draw_text(Buffer, UseFont, GetGC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
       end else begin
         // dist array -> write each char separately
@@ -4020,7 +3976,7 @@ var
         i:=1;
         while (i<=LineLen) do begin
           //debugln('TGtkWidgetSet.ExtTextOut.DrawTextLine ',dbgs(CharLen),' ',dbgs(ord(LinePos^)));
-          gdk_draw_text(Buffer, UseFont, GC, CurX, TxtPt.Y, LinePos, CharLen);
+          gdk_draw_text(Buffer, UseFont, GetGC, CurX, TxtPt.Y, LinePos, CharLen);
           inc(LinePos,CharLen);
           inc(CurX,CurDistX^);
           inc(CurDistX);
@@ -4033,7 +3989,7 @@ var
         else
           UnderLineLen := gdk_text_width(UseFont,LineStart, LineLen);
         Y := TxtPt.Y + 1;
-        gdk_draw_line(Buffer, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
+        gdk_draw_line(Buffer, GetGC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
       end;
     end;
     {$IFDEF DebugGDKTraps}
@@ -4047,12 +4003,6 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Uninitialized GC');
-      Result := False;
-      exit;
-    end;
     if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
       DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Rect=nil');
@@ -4108,10 +4058,10 @@ begin
       BeginGDKErrorTrap;
       {$ENDIF}
       if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
-        StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef,
+        StyleFillRectangle(buffer, GetGC, CurrentBackColor.ColorRef,
                            Left, Top, Width, Height)
       else
-        gdk_draw_rectangle(buffer, GC, 1, Left, Top, Width, Height);
+        gdk_draw_rectangle(buffer, GetGC, 1, Left, Top, Width, Height);
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
@@ -4177,12 +4127,6 @@ begin
   if not Result then exit;
   with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.FillRect] Uninitialized GC');
-      Result := False;
-      exit;
-    end;
     if not PGdiObject(Brush)^.IsNullBrush then begin
       Width := Rect.Right - Rect.Left;
       Height := Rect.Bottom - Rect.Top;
@@ -4202,12 +4146,12 @@ begin
       if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
       and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
       then begin
-        StyleFillRectangle(drawable, GC,
+        StyleFillRectangle(drawable, GetGC,
                            CurrentBrush^.GDIBrushColor.ColorRef,
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height)
       end else begin
-        gdk_draw_rectangle(Drawable, GC, 1,
+        gdk_draw_rectangle(Drawable, GetGC, 1,
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height);
       end;
@@ -4234,7 +4178,7 @@ var
   DCOrigin: TPoint;
 begin
   Result:=0;
-  if IsValidDC(DC) and (TDeviceContext(DC).GC<>nil) then begin
+  if IsValidDC(DC) then begin
     with TDeviceContext(DC) do
     begin
       // Draw outline
@@ -4243,7 +4187,7 @@ begin
         Result := 1;
         if (not CurrentPen^.IsNullPen) then begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
-          gdk_draw_rectangle(Drawable, GC, 0,
+          gdk_draw_rectangle(Drawable, GetGC, 0,
                              ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
                              ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
         end;
@@ -4285,11 +4229,6 @@ begin
 
   with TDeviceContext(DC) do
   begin
-    if GC = nil then begin
-      Result:= False;
-      exit;
-    end;
-
     Widget:=TDeviceContext(DC).DCWidget;
     ClientWidget:=Widget;
     if Widget<>nil then begin
@@ -4337,8 +4276,7 @@ var
   DCOrigin: TPoint;
 begin
   Result:=0;
-  if IsValidDC(DC) and (TDeviceContext(DC).GC<>nil)
-  and IsValidGDIObject(hBr) then begin
+  if IsValidDC(DC) and IsValidGDIObject(hBr) then begin
     // Draw outline
     Result := 1;
     if (not PGdiObject(hBr)^.IsNullBrush) then begin
@@ -4347,7 +4285,7 @@ begin
         SelectedColors:=dcscCustom;
         EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        gdk_draw_rectangle(Drawable, GC, 0,
+        gdk_draw_rectangle(Drawable, GetGC, 0,
                            ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
                            ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
       end;
@@ -4785,13 +4723,8 @@ begin
     result := 0
   end else
     with TDeviceContext(DC) do begin
-      if GC = nil then begin
-        Assert(False, 'Trace:[TGtkWidgetSet.GetROP2] Uninitialized GC');
-        Result := 0;
-      end else begin
-        gdk_gc_get_values(GC, @Values);
-        result := GdkFunctionToROP2Mode( Values.{$ifdef gtk1}thefunction{$else}_function{$endif} )
-      end;
+      gdk_gc_get_values(GetGC, @Values);
+      Result := GdkFunctionToROP2Mode(Values.{$ifdef gtk1}thefunction{$else}_function{$endif} )
     end;
 end;
 
@@ -6814,34 +6747,29 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC <> nil then begin
-      SelectGDKPenProps(DC);
+    SelectGDKPenProps(DC);
 
-      If (dcfPenSelected in DCFlags) then begin
-        Result := True;
-        if (CurrentPen^.IsNullPen) then exit;
+    If (dcfPenSelected in DCFlags) then begin
+      Result := True;
+      if (CurrentPen^.IsNullPen) then exit;
 
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-        FromX:=PenPos.X+DCOrigin.X;
-        FromY:=PenPos.Y+DCOrigin.Y;
-        ToX:=X+DCOrigin.X;
-        ToY:=Y+DCOrigin.Y;
-        {debugln('TGtkWidgetSet.LineTo A ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
-        if (FromX>ToX) or ((FromX=ToX) and (FromY>ToY)) then begin
-          // in these cases gdk starts and ends drawing a line one point later
-          debugln('TGtkWidgetSet.LineTo SWAPPED ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
-        end;}
-        //gdk_gc_set_line_attributes(gc,1,GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-        gdk_draw_line(Drawable, GC, FromX, FromY, ToX, ToY);
-        {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-        PenPos:= Point(X, Y);
-      end else
-        Result := False;
-    end else begin
-      DebugLn('WARNING: [TGtkWidgetSet.LineTo] Uninitialized GC');
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      FromX:=PenPos.X+DCOrigin.X;
+      FromY:=PenPos.Y+DCOrigin.Y;
+      ToX:=X+DCOrigin.X;
+      ToY:=Y+DCOrigin.Y;
+      {debugln('TGtkWidgetSet.LineTo A ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
+      if (FromX>ToX) or ((FromX=ToX) and (FromY>ToY)) then begin
+        // in these cases gdk starts and ends drawing a line one point later
+        debugln('TGtkWidgetSet.LineTo SWAPPED ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
+      end;}
+      //gdk_gc_set_line_attributes(gc,1,GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+      gdk_draw_line(Drawable, GetGC, FromX, FromY, ToX, ToY);
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+      PenPos:= Point(X, Y);
+    end else
       Result := False;
-    end;
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
@@ -7056,22 +6984,11 @@ end;
   then the resulting Poly-Bézier will be drawn as a Polygon.
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+function TGtkWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
-Begin
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.PolyBezier] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
-  end;
-End;
+begin
+  Result := Inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
+end;
 
 {------------------------------------------------------------------------------
   Method:   TGtkWidgetSet.Polygon
@@ -7106,74 +7023,67 @@ begin
   then with TDeviceContext(DC) do
   begin
     if NumPts<=0 then exit;
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.Polygon] Uninitialized GC');
-      Result := False;
-    end
-    else begin
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
-      // create the PointsArray, which is a copy of Points moved by the DCOrigin
-      GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
-      for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x;
-        PointArray[i].y:=Points[i].y;
-        Inc(PointArray[i].x, DCOrigin.X);
-        Inc(PointArray[i].y, DCOrigin.Y);
-      end;
-
-      OldNumPts:=NumPts;
-      If (Points[NumPts-1].X <> Points[0].X) or
-        (Points[NumPts-1].Y <> Points[0].Y)
-      then begin
-        // add last point to return to first
-        PointArray[NumPts].x:=PointArray[0].x;
-        PointArray[NumPts].y:=PointArray[0].y;
-        Inc(NumPts);
-      end;
-
-      // first draw interior in brush color
-      SelectGDKBrushProps(DC);
-
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-
-      If not CurrentBrush^.IsNullBrush then
-        if Winding then begin
-          // store old clipping
-          Tmp := CreateEmptyRegion;
-          GetClipRGN(DC, Tmp);
-          // apply new clipping
-          RGN := CreatePolygonRgn(Points, OldNumPts, LCLType.Winding);
-          ExtSelectClipRGN(DC, RGN, RGN_AND);
-          DeleteObject(RGN);
-          GetClipBox(DC, @ClipRect);
-          // draw polygon area
-          FillRect(DC, ClipRect, HBrush(CurrentBrush));
-          // restore old clipping
-          SelectClipRGN(DC, Tmp);
-          DeleteObject(Tmp);
-        end else
-          gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
-
-      // draw outline
-
-      SelectGDKPenProps(DC);
-
-      If (dcfPenSelected in DCFlags) then begin
-        Result := True;
-        if (not CurrentPen^.IsNullPen) then begin
-          gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
-        end;
-      end else
-        Result:=false;
-
-      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-
-      FreeMem(PointArray);
-
-      Result := True;
+    // create the PointsArray, which is a copy of Points moved by the DCOrigin
+    GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
+    for i:=0 to NumPts-1 do begin
+      PointArray[i].x:=Points[i].x;
+      PointArray[i].y:=Points[i].y;
+      Inc(PointArray[i].x, DCOrigin.X);
+      Inc(PointArray[i].y, DCOrigin.Y);
     end;
+
+    OldNumPts:=NumPts;
+    If (Points[NumPts-1].X <> Points[0].X) or
+      (Points[NumPts-1].Y <> Points[0].Y)
+    then begin
+      // add last point to return to first
+      PointArray[NumPts].x:=PointArray[0].x;
+      PointArray[NumPts].y:=PointArray[0].y;
+      Inc(NumPts);
+    end;
+
+    // first draw interior in brush color
+    SelectGDKBrushProps(DC);
+
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+
+    If not CurrentBrush^.IsNullBrush then
+      if Winding then begin
+        // store old clipping
+        Tmp := CreateEmptyRegion;
+        GetClipRGN(DC, Tmp);
+        // apply new clipping
+        RGN := CreatePolygonRgn(Points, OldNumPts, LCLType.Winding);
+        ExtSelectClipRGN(DC, RGN, RGN_AND);
+        DeleteObject(RGN);
+        GetClipBox(DC, @ClipRect);
+        // draw polygon area
+        FillRect(DC, ClipRect, HBrush(CurrentBrush));
+        // restore old clipping
+        SelectClipRGN(DC, Tmp);
+        DeleteObject(Tmp);
+      end else
+        gdk_draw_polygon(Drawable, GetGC, 1, PointArray, NumPts);
+
+    // draw outline
+
+    SelectGDKPenProps(DC);
+
+    If (dcfPenSelected in DCFlags) then begin
+      Result := True;
+      if (not CurrentPen^.IsNullPen) then begin
+        gdk_draw_polygon(Drawable, GetGC, 0, PointArray, NumPts);
+      end;
+    end else
+      Result:=false;
+
+    {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+
+    FreeMem(PointArray);
+
+    Result := True;
   end;
 end;
 
@@ -7186,35 +7096,28 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.Polyline] Uninitialized GC');
-      Result := False;
-    end
-    else begin
-      if NumPts<=0 then exit;
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
-      for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x+DCOrigin.X;
-        PointArray[i].y:=Points[i].y+DCOrigin.Y;
-      end;
-
-      // draw outline
-      SelectGDKPenProps(DC);
-
-      If (dcfPenSelected in DCFlags) then begin
-        Result := True;
-        if (not CurrentPen^.IsNullPen) then begin
-          {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-          gdk_draw_lines(Drawable, GC, PointArray, NumPts);
-          {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-        end;
-      end else
-        Result:=false;
-
-      FreeMem(PointArray);
+    if NumPts<=0 then exit;
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
+    for i:=0 to NumPts-1 do begin
+      PointArray[i].x:=Points[i].x+DCOrigin.X;
+      PointArray[i].y:=Points[i].y+DCOrigin.Y;
     end;
+
+    // draw outline
+    SelectGDKPenProps(DC);
+
+    If (dcfPenSelected in DCFlags) then begin
+      Result := True;
+      if (not CurrentPen^.IsNullPen) then begin
+        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+        gdk_draw_lines(Drawable, GetGC, PointArray, NumPts);
+        {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+      end;
+    end else
+      Result:=false;
+
+    FreeMem(PointArray);
   end;
 end;
 
@@ -7335,21 +7238,11 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
-Begin
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.RadialArc] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited RadialArc(DC, left, top, right, bottom, sx, sy, ex, ey);
-  end;
-End;
+function TGtkWidgetSet.RadialArc(DC: HDC; left, top, right, bottom,
+  sx, sy, ex, ey: Integer): Boolean;
+begin
+  Result := Inherited RadialArc(DC, left, top, right, bottom, sx, sy, ex, ey);
+end;
 
 {------------------------------------------------------------------------------
   Method:   RadialChord
@@ -7361,21 +7254,11 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
+function TGtkWidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2,
+  sx, sy, ex, ey: Integer): Boolean;
 begin
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.RadialChord] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited RadialChord(DC, x1, y1, x2, y2, sx, sy, ex, ey);
-  end;
-End;
+  Result := Inherited RadialChord(DC, x1, y1, x2, y2, sx, sy, ex, ey);
+end;
 
 {------------------------------------------------------------------------------
   Function: RealizePalette
@@ -7413,41 +7296,34 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.Rectangle] Uninitialized GC');
-      Result := False;
-    end
-    else begin
-      CalculateLeftTopWidthHeight(X1,Y1,X2,Y2,Left,Top,Width,Height);
-      // X2, Y2 is not part of the rectangle
-      dec(Width);
-      dec(Height);
-      // first draw interior in brush color
-      SelectGDKBrushProps(DC);
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      If not CurrentBrush^.IsNullBrush then
-        if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-        and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
-          StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef, Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
-        else
-          gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
+    CalculateLeftTopWidthHeight(X1,Y1,X2,Y2,Left,Top,Width,Height);
+    // X2, Y2 is not part of the rectangle
+    dec(Width);
+    dec(Height);
+    // first draw interior in brush color
+    SelectGDKBrushProps(DC);
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+    If not CurrentBrush^.IsNullBrush then
+      if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
+      and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
+        StyleFillRectangle(Drawable, GetGC, CurrentBrush^.GDIBrushColor.ColorRef, Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
+      else
+        gdk_draw_rectangle(Drawable, GetGC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
+                         Width, Height);
+
+    // Draw outline
+    SelectGDKPenProps(DC);
+
+    If (dcfPenSelected in DCFlags) then begin
+      Result := True;
+      if (not CurrentPen^.IsNullPen) then
+        gdk_draw_rectangle(Drawable, GetGC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
                            Width, Height);
+    end else
+      Result:=false;
 
-      // Draw outline
-      SelectGDKPenProps(DC);
-
-      If (dcfPenSelected in DCFlags) then begin
-        Result := True;
-        if (not CurrentPen^.IsNullPen) then
-          gdk_draw_rectangle(Drawable, GC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
-                             Width, Height);
-      end else
-        Result:=false;
-
-      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-    end;
+    {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
@@ -7855,22 +7731,10 @@ end;
   of the corner arcs, RX is the radial width. If either is less than or equal to
   0, the routine simly calls to standard Rectangle.
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+function TGtkWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer;
+  RX,RY : Integer): Boolean;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.RoundRect] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
-  end;
-  Assert(False, Format('trace:< [TGtkWidgetSet.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
+  Result := Inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
 end;
 
 {------------------------------------------------------------------------------
@@ -7998,43 +7862,34 @@ begin
   Result := SIMPLEREGION;
   with TDeviceContext(DC) do
   begin
-    if (GC = nil) and (RGN <> 0)
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Uninitialized GC');
-      Result := ERROR;
+    // clear old clipregion
+    if (ClipRegion<>0)
+    and ((SavedContext=nil) or (SavedContext.ClipRegion<>ClipRegion)) then
+      DeleteObject(ClipRegion);
+    ClipRegion := 0;
+
+    If (RGN = 0) then begin
+      SelectGDIRegion(DC);
+    end
+    else If IsValidGDIObject(RGN) then begin
+      ClipRegion := CreateRegionCopy(RGN);
+      RegObj:=PGdiObject(ClipRegion)^.GDIRegionObject;
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      //DebugLn('TGtkWidgetSet.SelectClipRGN A RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
+      gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
+      Result := RegionType(RegObj);
+      //DebugLn('TGtkWidgetSet.SelectClipRGN B RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin));
+      SelectGDIRegion(DC);
     end
     else begin
-      // clear old clipregion
-      if (ClipRegion<>0)
-      and ((SavedContext=nil) or (SavedContext.ClipRegion<>ClipRegion)) then
-        DeleteObject(ClipRegion);
-      ClipRegion := 0;
-
-      If (GC = nil) or (RGN = 0) then begin
-        if GC<>nil then
-          SelectGDIRegion(DC);
-      end
-      else
-        If IsValidGDIObject(RGN) then begin
-          ClipRegion := CreateRegionCopy(RGN);
-          RegObj:=PGdiObject(ClipRegion)^.GDIRegionObject;
-          DCOrigin:=GetDCOffset(TDeviceContext(DC));
-          //DebugLn('TGtkWidgetSet.SelectClipRGN A RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
-          gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
-          Result := RegionType(RegObj);
-          //DebugLn('TGtkWidgetSet.SelectClipRGN B RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin));
-          SelectGDIRegion(DC);
-        end
-        else begin
-          Result := ERROR;
-          DebugLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Invalid RGN');
-          {$ifdef TraceGdiCalls}
-          DebugLn();
-          DebugLn('TraceCall for invalid object: ');
-          DumpBackTrace(PgdiObject(RGN)^.StackAddrs);
-          DebugLn();
-          {$endif}
-        end;
+      Result := ERROR;
+      DebugLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Invalid RGN');
+      {$ifdef TraceGdiCalls}
+      DebugLn();
+      DebugLn('TraceCall for invalid object: ');
+      DumpBackTrace(PgdiObject(RGN)^.StackAddrs);
+      DebugLn();
+      {$endif}
     end;
   end;
 end;
@@ -8130,13 +7985,10 @@ begin
           Result := HBRUSH(CurrentBrush);
           if CurrentBrush<>PGDIObject(GDIObj) then begin
             CurrentBrush := PGDIObject(GDIObj);
-            if GC <> nil
-            then begin
-              gdk_gc_set_fill(GC, GDIBrushFill);
-              case GDIBrushFill of
-                GDK_STIPPLED: gdk_gc_set_stipple(GC, GDIBrushPixMap);
-                GDK_TILED:    gdk_gc_set_tile(GC, GDIBrushPixMap);
-              end;
+            gdk_gc_set_fill(GetGC, GDIBrushFill);
+            case GDIBrushFill of
+              GDK_STIPPLED: gdk_gc_set_stipple(GetGC, GDIBrushPixMap);
+              GDK_TILED:    gdk_gc_set_tile(GetGC, GDIBrushPixMap);
             end;
             SelectedColors := dcscCustom;
           end;
@@ -8150,8 +8002,7 @@ begin
           if CurrentFont<> PGDIObject(GDIObj) then begin
             CurrentFont := PGDIObject(GDIObj);
             {$IfDef GTK1}
-            if GC <> nil then
-              gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
+            gdk_gc_set_font(GetGC, PGdiObject(GDIObj)^.GDIFontObject);
             {$ENDIF}
             Exclude(DCFlags,dcfTextMetricsValid);
             SelectedColors := dcscCustom;
@@ -8165,7 +8016,7 @@ begin
           if CurrentPen<> PGDIObject(GDIObj) then begin
             CurrentPen := PGDIObject(GDIObj);
             DCFlags:=DCFlags-[dcfPenSelected];
-            if GC <> nil then SelectGDKPenProps(DC);
+            SelectGDKPenProps(DC);
             SelectedColors := dcscCustom;
           end;
         end;
@@ -8174,10 +8025,7 @@ begin
         with TDeviceContext(DC) do
         begin
           Result := ClipRegion;
-          if GC <> nil then
-            SelectClipRGN(DC, GDIObj)
-          else
-            ClipRegion:=0;
+          SelectClipRGN(DC, GDIObj)
         end;
 
     else
@@ -8189,8 +8037,7 @@ begin
     {$ENDIF}
   end;
 
-//DebugLn('[TGtkWidgetSet.SelectObject] GDI=',DbgS(GDIObj)
-// ,'  Old=',DbgS(Result));
+  //DebugLn('[TGtkWidgetSet.SelectObject] GDI=',DbgS(GDIObj),'  Old=',DbgS(Result));
 end;
 
 {------------------------------------------------------------------------------
@@ -8931,16 +8778,12 @@ end;
  ------------------------------------------------------------------------------}
 Function TGtkWidgetSet.SetROP2(DC: HDC; Mode: Integer) : Integer;
 Begin
-  if IsValidDC(DC) then with TDeviceContext(DC) do begin
-    if GC=nil then begin
-      Assert(False, 'Trace:[TGtkWidgetSet.SetROP2] Uninitialized GC');
-      result := 0
-    end else begin
-      Result := GetROP2(DC);
-      gdk_gc_set_function(GC, ROP2ModeToGdkFunction(Mode));
-    end;
+  if IsValidDC(DC)
+  then with TDeviceContext(DC) do begin
+    Result := GetROP2(DC);
+    gdk_gc_set_function(GetGC, ROP2ModeToGdkFunction(Mode));
   end else begin
-    Assert(False, 'Trace:[TGtkWidgetSet.SetROP2] Invalid GC');
+    Assert(False, 'Trace:[TGtkWidgetSet.SetROP2] Invalid DC');
     Result := 0;
   end;
 end;
@@ -9668,82 +9511,76 @@ begin
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
-      DebugLn('WARNING: [TGtkWidgetSet.TextOut] Uninitialized GC');
+      UseFont := GetDefaultGtkFont(false);
+      Underline := False;
+      StrikeOut := False;
     end
     else begin
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFont := GetDefaultGtkFont(false);
-        Underline := False;
-        StrikeOut := False;
-      end
-      else begin
-        UseFont := CurrentFont^.GDIFontObject;
-        Underline := LongBool(CurrentFont^.LogFont.lfUnderline);
-        StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
-      end;
-      If UseFont = nil then
-        DebugLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
-      else begin
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        descent:=0;
-        gdk_text_extents(UseFont, Str, Count,
-                         @lbearing, @rBearing, @width, @ascent, @descent);
-        sz.cx:=width;
-        Sz.cY :={$IFDEF Win32}
-                GDK_String_Height(UseFont, Str)
-                {$ELSE}
-                ascent+descent;
-                {$ENDIF}
+      UseFont := CurrentFont^.GDIFontObject;
+      Underline := LongBool(CurrentFont^.LogFont.lfUnderline);
+      StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
+    end;
+    If UseFont = nil then
+      DebugLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
+    else begin
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      descent:=0;
+      gdk_text_extents(UseFont, Str, Count,
+                       @lbearing, @rBearing, @width, @ascent, @descent);
+      sz.cx:=width;
+      Sz.cY :={$IFDEF Win32}
+              GDK_String_Height(UseFont, Str)
+              {$ELSE}
+              ascent+descent;
+              {$ENDIF}
 
 
-        
-        aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
-        //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
-        FillRect(DC,aRect,hBrush(CurrentBrush));
-        UpdateDCTextMetric(TDeviceContext(DC));
-        TxtPt.X := X;
-        {$IfDef Win32}
-          TxtPt.Y := Y + DCTextMetric.TextMetric.tmHeight div 2;
-        {$Else}
-          TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
-        {$EndIf}
-        SelectGDKTextProps(DC);
-        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_text(Drawable, UseFont,
-          GC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
-        {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-        If Underline or StrikeOut then begin
-          {Create & select pen of font color}
-          LogP.lopnStyle := PS_SOLID;
-          LogP.lopnWidth.X := 1;
-          LogP.lopnColor := GetTextColor(DC);
-          TempPen := SelectObject(DC, CreatePenIndirect(LogP));
+      
+      aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
+      //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
+      FillRect(DC,aRect,hBrush(CurrentBrush));
+      UpdateDCTextMetric(TDeviceContext(DC));
+      TxtPt.X := X;
+      {$IfDef Win32}
+        TxtPt.Y := Y + DCTextMetric.TextMetric.tmHeight div 2;
+      {$Else}
+        TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
+      {$EndIf}
+      SelectGDKTextProps(DC);
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      gdk_draw_text(Drawable, UseFont,
+        GetGC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+      If Underline or StrikeOut then begin
+        {Create & select pen of font color}
+        LogP.lopnStyle := PS_SOLID;
+        LogP.lopnWidth.X := 1;
+        LogP.lopnColor := GetTextColor(DC);
+        TempPen := SelectObject(DC, CreatePenIndirect(LogP));
 
-          {Get line(s) horizontal position(s)}
-          Points[0].cX := X;
-          Points[1].cX := X + sz.cX;
+        {Get line(s) horizontal position(s)}
+        Points[0].cX := X;
+        Points[1].cX := X + sz.cX;
 
-          {Draw line(s)}
-          If Underline then begin
-            Points[0].cY := Y + 2 + DCTextMetric.TextMetric.tmHeight -
-                            DCTextMetric.TextMetric.tmDescent;
-            Points[1].cY := Points[0].cY;
-            Polyline(DC, PPoint(@Points[0]), 2);
-          end;
-
-          If StrikeOut then begin
-            Points[0].cY := Y + 2 + (TxtPt.Y - Y) div 2;
-            Points[1].cY := Points[0].cY;
-            Polyline(DC, PPoint(@Points[0]), 2);
-          end;
-
-          DeleteObject(SelectObject(DC, TempPen));
+        {Draw line(s)}
+        If Underline then begin
+          Points[0].cY := Y + 2 + DCTextMetric.TextMetric.tmHeight -
+                          DCTextMetric.TextMetric.tmDescent;
+          Points[1].cY := Points[0].cY;
+          Polyline(DC, PPoint(@Points[0]), 2);
         end;
-        Result := True;
+
+        If StrikeOut then begin
+          Points[0].cY := Y + 2 + (TxtPt.Y - Y) div 2;
+          Points[1].cY := Points[0].cY;
+          Polyline(DC, PPoint(@Points[0]), 2);
+        end;
+
+        DeleteObject(SelectObject(DC, TempPen));
       end;
+      Result := True;
     end;
   end;
 end;

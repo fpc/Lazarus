@@ -243,6 +243,7 @@ type
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
     function ROP2ModeToGdkFunction(Mode: Integer): TGdkFunction;
     function gdkFunctionToROP2Mode(aFunction: TGdkFunction): Integer;
+    procedure OnCreateGCForDC(DC: TDeviceContext);
 
     // for gtk specific components:
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String;

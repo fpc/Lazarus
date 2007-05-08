@@ -175,6 +175,7 @@ begin
   // DCs, GDIObjects
   FDeviceContexts := TDynHashArray.Create(-1);
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
+  CreateGCForDC:=@OnCreateGCForDC;
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
 
@@ -3078,7 +3079,7 @@ var
         SelectGDKBrushProps(DC);
 
         If not CurrentBrush^.IsNullBrush then begin
-          gdk_draw_rectangle(TempPixmap, GC, 1, 0, 0, Width, Height);
+          gdk_draw_rectangle(TempPixmap, GetGC, 1, 0, 0, Width, Height);
         end;
         // Restore current brush
         SelectedColors := dcscCustom;
@@ -3117,7 +3118,7 @@ var
       {$IFDEF VerboseStretchCopyArea}
       DebugLn('SrcDevBitmapToDrawable Simple copy');
       {$ENDIF}
-      gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
+      gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GetGC, X, Y,
         SrcPixmap, XSrc, YSrc, Width, Height);
 
       exit;
@@ -3129,7 +3130,7 @@ var
 
     // perform raster operation and scaling into Scale and fGC
     DestDevContext.SelectedColors := dcscCustom;
-    If not ScaleAndROP(DestDevContext.GC, SrcDevContext.Drawable, SrcPixmap,
+    If not ScaleAndROP(DestDevContext.GetGC, SrcDevContext.Drawable, SrcPixmap,
       MaskPixmap)
     then begin
       DebugLn('WARNING: SrcDevBitmapToDrawable: ScaleAndROP failed');
@@ -3168,20 +3169,20 @@ var
     {$ENDIF}
 
     // set clipping mask for transparency
-    MergeClipping(DestDevContext, DestDevContext.GC, X,Y,Width,Height,
+    MergeClipping(DestDevContext, DestDevContext.GetGC, X,Y,Width,Height,
                   MaskPixmap,XMask,YMask,
                   NewClipMask);
 
     // draw image
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
+    gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GetGC, X, Y,
       SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight);
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     // unset clipping mask for transparency
-    ResetClipping(DestDevContext.GC);
+    ResetClipping(DestDevContext.GetGC);
 
     // restore raster operation to SRCCOPY
-    GDK_GC_Set_Function(DestDevContext.GC, GDK_Copy);
+    GDK_GC_Set_Function(DestDevContext.GetGC, GDK_Copy);
 
     Result:=True;
   end;
@@ -6130,9 +6131,9 @@ begin
 
   aDC.SelectedColors := dcscCustom;
   GDKColor:=AllocGDKColor(AColor);
-  gdk_gc_set_foreground(aDC.GC, @GDKColor);
+  gdk_gc_set_foreground(aDC.GetGC, @GDKColor);
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  gdk_draw_point(aDC.Drawable, aDC.GC, X, Y);
+  gdk_draw_point(aDC.Drawable, aDC.GetGC, X, Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 end;
 
@@ -6141,7 +6142,6 @@ var
   fWindow :pGdkWindow;
   widget : PgtkWIdget;
   PixMap : pgdkPixMap;
-  //gc : PGDKGc;
   Child: PGtkWidget;
 begin
   Assert(False, 'Trace:In AutoRedraw in GTKObject');
@@ -6151,7 +6151,6 @@ begin
   pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
   if PixMap = nil then Exit;
   fWindow := GetControlWindow(widget);
-  //gc := gdk_gc_new(PgdkWindow(fWindow));
 
   if fWindow<>nil then begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
@@ -6306,8 +6305,8 @@ begin
 
     If GDIBrushFill <> GDK_Solid then
       If GDIBrushPixmap <> nil then begin
-        gdk_gc_set_fill(GC, GDIBrushFill);
-        gdk_gc_set_Stipple(GC,GDIBrushPixmap);
+        gdk_gc_set_fill(GetGC, GDIBrushFill);
+        gdk_gc_set_Stipple(GetGC,GDIBrushPixmap);
       end
   end;
   TDeviceContext(DC).SelectedColors:=dcscBrush;
@@ -6344,7 +6343,7 @@ procedure TGtkWidgetSet.SelectGDKPenProps(DC: HDC);
   procedure SetDashes(const Dashes: array of gint8);
   begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    laz_gdk_gc_set_dashes(TDeviceContext(DC).GC,0,Pgint8(@Dashes[Low(Dashes)]),
+    laz_gdk_gc_set_dashes(TDeviceContext(DC).GetGC,0,Pgint8(@Dashes[Low(Dashes)]),
       High(Dashes)-Low(Dashes)+1);
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
@@ -6360,7 +6359,7 @@ begin
 
   if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
     Exclude(TDeviceContext(DC).DCFlags,dcfPenInvalid);
-    if TDeviceContext(DC).GC<>nil then begin
+    if TDeviceContext(DC).GetGC<>nil then begin
       with TDeviceContext(DC), CurrentPen^ do
       begin
         IsNullPen := GDIPenStyle = PS_NULL;
@@ -6447,11 +6446,11 @@ var
   aDC: TDeviceContext;
   ClientWidget: PGtkWidget;
   FontGdiObject: PGdiObject;
-  GCValues: TGdkGCValues;
 begin
   aDC := nil;
 
   aDC := NewDC;
+  aDC.WithChildWindows := WithChildWindows;
   aDC.DCWidget := TheWidget;
 
   FontGdiObject := nil;
@@ -6460,7 +6459,6 @@ begin
   if TheWidget = nil
   then begin
     // screen: ToDo: multiple desktops
-    FillChar(GCValues, SizeOf(GCValues), #0);
   end
   else begin
     // create a new devicecontext for this window
@@ -6479,29 +6477,19 @@ begin
       ClientWidget:=TheWidget;
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     aDC.Drawable := TheWindow;
-    // create GC
-    if WithChildWindows then begin
-      //DebugLn('TGtkWidgetSet.CreateDCForWidget A WithChildWindows');
-      FillChar(GCValues, SizeOf(GCValues), #0);
-      GCValues.subwindow_mode := GDK_INCLUDE_INFERIORS;
-      aDC.GC := gdk_gc_new_with_values(aDC.Drawable,
-                                 @GCValues,GDK_GC_FUNCTION or GDK_GC_SUBWINDOW);
-    end else begin
-      aDC.GC := gdk_gc_new(aDC.Drawable);
-    end;
-    gdk_gc_set_function(aDC.GC, GDK_COPY);
-
-    gdk_gc_get_values(aDC.GC, @GCValues);
+    {$IFDEF Gtk1}
+    aDC.GetGC;
+    {$ENDIF}
   end;
 
   if aDC <> nil
   then begin
     {$Ifdef GTK1}
     // ToDo: create font on demand
-    if GCValues.Font <> nil
+    if aDC.GCValues.Font <> nil
     then begin
       FontGdiObject:=NewGDIObject(gdiFont);
-      FontGdiObject^.GDIFontObject := GCValues.Font;
+      FontGdiObject^.GDIFontObject := aDC.GCValues.Font;
       FontCache.Reference(FontGdiObject^.GDIFontObject);
     end
     else FontGdiObject := CreateDefaultFont;
@@ -6524,7 +6512,7 @@ begin
   end;
 
   Result := HDC(aDC);
-  Assert(False, Format('trace:< [TGtkWidgetSet.GetDC] Got 0x%x', [Result]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.CreateDCForWidget] Got 0x%x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6542,6 +6530,7 @@ var
   DevContext: TDeviceContext;
   CaretWasVisible: Boolean;
   MainWidget: PGtkWidget;
+  GC: PGdkGC;
   //LCLObject: TObject;
   //x, y: integer;
 begin
@@ -6595,14 +6584,16 @@ begin
   Include(DevContext.DCFlags,dcfDoubleBuffer);
 
   if BufferCreated then begin
+    // create GC
+    GC:=DevContext.GetGC;
     // copy old context to buffer
-    gdk_gc_set_clip_region(DevContext.GC, nil);
-    gdk_gc_set_clip_rectangle(DevContext.GC, nil);
+    gdk_gc_set_clip_region(GC, nil);
+    gdk_gc_set_clip_rectangle(GC, nil);
 
     // hide caret
     HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
     // copy
-    gdk_window_copy_area(DoubleBuffer, DevContext.GC,0,0,
+    gdk_window_copy_area(DoubleBuffer, GC,0,0,
       Widget^.Window,0,0,Width,Height);
 
     {LCLObject:=GetParentLCLObject(Widget);
@@ -7415,6 +7406,39 @@ begin
     GDK_SET:          result := R2_WHITE;
     else
       result := R2_COPYPEN;
+  end;
+end;
+
+procedure TGTKWidgetSet.OnCreateGCForDC(DC: TDeviceContext);
+var
+  CurWidget: PGtkWidget;
+  CurWindow: PGdkWindow;
+begin
+  if DC.GC=nil then begin
+    // create GC
+    if DC.Drawable<>nil then begin
+      if DC.WithChildWindows then begin
+        FillChar(DC.GCValues, SizeOf(DC.GCValues), #0);
+        DC.GCValues.subwindow_mode := GDK_INCLUDE_INFERIORS;
+        DC.GC:=gdk_gc_new_with_values(DC.Drawable,
+                                   @DC.GCValues,GDK_GC_FUNCTION or GDK_GC_SUBWINDOW);
+      end else begin
+        DC.GC:=gdk_gc_new(DC.Drawable);
+      end;
+    end else begin
+      // create default GC
+      {$IFDEF Gtk1}
+      CurWidget:=GetStyleWidget(lgsWindow);
+      CurWindow:=CurWidget^.window;
+      DC.GC:=gdk_gc_new(CurWindow);
+      {$ELSE}
+      DC.GC:=gdk_gc_new(gdk_screen_get_root_window(gdk_screen_get_default));
+      {$ENDIF}
+    end;
+    if DC.GC<>nil then begin
+      gdk_gc_set_function(DC.GC, GDK_COPY);
+      gdk_gc_get_values(DC.GC, @DC.GCValues);
+    end;
   end;
 end;
 

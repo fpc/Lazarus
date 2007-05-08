@@ -337,7 +337,7 @@ var
         CharLen:=UTF8CharacterLength(CurStr);
         //gdk_draw_glyphs(DevCtx.drawable,DevCtx.gc );
         pango_layout_set_text(UseFont, CurStr, CharLen);
-        gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.gc, CurScreenX, Y,
+        gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC, CurScreenX, Y,
                                     UseFont, Foreground, nil);
         //gdk_draw_rectangle(DevCtx.Drawable,DevCtx.GC,1,CurScreenX,Y,3,3);
         inc(CurScreenX,CurDx^);
@@ -347,7 +347,7 @@ var
       end;
     end else begin
       pango_layout_set_text(UseFont, Str, Count);
-      gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.gc, X, Y, UseFont,
+      gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC, X, Y, UseFont,
                                   Foreground, nil);
     end;
   end;
@@ -359,12 +359,7 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Uninitialized GC');
-      Result := False;
-      exit;
-    end;
+    GetGC; // create GC
     if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
       DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
@@ -521,11 +516,6 @@ begin
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Uninitialized GC');
-      exit(false);
-    end;
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
       UseFont := GetDefaultGtkFont(false);
@@ -552,7 +542,7 @@ begin
     EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
     //DebugLn(['TGtk2WidgetSet.TextOut Str="',copy(Str,1,Count),'" X=',X+DCOrigin.X,',',Y+DCOrigin.Y+yOffset]);
-    gdk_draw_layout_with_colors(drawable, GC,
+    gdk_draw_layout_with_colors(drawable, GetGC,
                         X+DCOrigin.X, Y+DCOrigin.Y+yOffset, UseFont, nil, nil);
 
     Result := True;
