@@ -1866,7 +1866,8 @@ type
   PLogFontW = ^TLogFontW;
   PLogFont = PLogFontA;
 
-  {$ifdef WINDOWS}
+  //win32, win64, but not wince because that is lfFaceName has WideChar on wince
+  {$ifdef MSWINDOWS}
   LOGFONTA = Windows.LogFont;
   LOGFONTW = Windows.LogFontW;
   {$else}
