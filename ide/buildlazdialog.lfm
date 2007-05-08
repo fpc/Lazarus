@@ -9,6 +9,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSizeToolWin
   Caption = 'ConfigureBuildLazarusDlg'
+  ClientHeight = 500
+  ClientWidth = 500
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -100,6 +102,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 307
     Anchors = [akLeft, akRight, akBottom]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
     MaxLength = 0
     TabOrder = 7
   end
@@ -199,6 +202,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     ItemHeight = 25
     OnDrawItem = ItemsListBoxDrawItem
     OnMouseDown = ItemsListBoxMouseDown
+    OnShowHint = ItemsListBoxShowHint
+    ParentShowHint = False
+    ShowHint = True
     Style = lbOwnerDrawFixed
     TabOrder = 2
   end
@@ -209,6 +215,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 307
     Anchors = [akLeft, akRight, akBottom]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
     MaxLength = 0
     TabOrder = 9
   end
