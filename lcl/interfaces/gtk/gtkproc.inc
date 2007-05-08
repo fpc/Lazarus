@@ -971,7 +971,7 @@ var
 begin
   Result.Msg:=LM_PAINT;
   New(PS);
-  PS^.hDC:=0;
+  FillChar(PS^,SizeOf(TPaintStruct),0);
   Widget:=GtkPaintMsg.Data.Widget;
   If GtkPaintMsg.Data.RepaintAll then
     PS^.rcPaint := Rect(0,0,Widget^.Allocation.Width,Widget^.Allocation.Height)
@@ -997,7 +997,7 @@ begin
          DC := TDeviceContext(Msg^.WParam)
        else
          DC := TDeviceContext(PS^.hdc);
-       EndPaint(THandle(DC.wnd), PS^);
+       EndPaint(THandle(DC.DCWidget), PS^);
        Dispose(PS);
        Msg^.LParam:=0;
        Msg^.WParam:=0;
@@ -1024,7 +1024,7 @@ begin
          DC := TDeviceContext(Msg^.WParam)
        else
          DC := TDeviceContext(PS^.hdc);
-       EndPaint(THandle(DC.wnd), PS^);
+       EndPaint(THandle(DC.DCWidget), PS^);
        Dispose(PS);
        Msg^.LParam:=0;
        Msg^.WParam:=0;
@@ -1430,7 +1430,7 @@ begin
   then begin
     with DestinationDC do
     begin
-      Wnd := SourceDC.Wnd;
+      DCWidget := SourceDC.DCWidget;
       Drawable := SourceDC.Drawable;
       if GC<>nil then begin
         BeginGDKErrorTrap;
@@ -1637,7 +1637,7 @@ var
   begin
     FreeGDIColor(GDIColor);
     SysGCValues:=GetSysGCValues(GDIColor^.ColorRef,
-                               PGtkWidget(TDeviceContext(DC).Wnd));
+                                TDeviceContext(DC).DCWidget);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     With SysGCValues do begin
       gdk_gc_set_fill(GC, fill);
@@ -3928,15 +3928,15 @@ begin
   if (DC<>nil) then begin
     Result:=DC.Origin;
     {$Ifdef GTK2}
-      if (DC.Wnd<>0) and GTK_WIDGET_NO_WINDOW(PGTKWidget(DC.Wnd))
-        and (not GtkWidgetIsA(PGTKWidget(DC.Wnd),GTKAPIWidget_GetType))
+      if (DC.DCWidget<>nil) and GTK_WIDGET_NO_WINDOW(DC.DCWidget)
+        and (not GtkWidgetIsA(DC.DCWidget,GTKAPIWidget_GetType))
       then begin
-        Inc(Result.X, PGTKWidget(DC.Wnd)^.Allocation.x);
-        Inc(Result.y, PGTKWidget(DC.Wnd)^.Allocation.y);
+        Inc(Result.X, DC.DCWidget^.Allocation.x);
+        Inc(Result.y, DC.DCWidget^.Allocation.y);
       end;
     {$EndIf}
-    if (DC.SpecialOrigin) and (DC.Wnd<>0) then begin
-      Fixed := GetFixedWidget(PGTKWidget(DC.Wnd));
+    if (DC.SpecialOrigin) and (DC.DCWidget<>nil) then begin
+      Fixed := GetFixedWidget(DC.DCWidget);
       if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
         Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
         if Adjustment<>nil then

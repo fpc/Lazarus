@@ -2709,7 +2709,7 @@ var ClientWidget: PGtkWidget;
 begin
   Result := False;
   if IsValidDC(DC) then begin
-    Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
+    Widget:=TDeviceContext(DC).DCWidget;
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget<>nil then
       Widget:=ClientWidget;
@@ -3309,7 +3309,7 @@ begin
     {$IFDEF Gtk1}
     Widget:=PGtkWidget(Handle);
     DevContext:=TDeviceContext(PS.HDC);
-    if Widget<>PGtkWidget(DevContext.Wnd) then
+    if Widget<>DevContext.DCWidget then
       RaiseGDBException('');
     DCDrawable:=DevContext.Drawable;
     IsDoubleBuffer:=dcfDoubleBuffer in DevContext.DCFlags;
@@ -4290,7 +4290,7 @@ begin
       exit;
     end;
 
-    Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
+    Widget:=TDeviceContext(DC).DCWidget;
     ClientWidget:=Widget;
     if Widget<>nil then begin
       ClientWidget:=GetFixedWidget(Widget);
@@ -5070,7 +5070,7 @@ begin
   P := Point(0,0);
   If IsValidDC(DC) then
   with TDeviceContext(DC) do begin
-    if Wnd<>0 then begin
+    if DCWidget<>nil then begin
       if Drawable<>nil then begin
         gdk_window_get_size(PGdkWindow(Drawable), @P.X, @P.Y);
         Result := true;
@@ -5080,7 +5080,7 @@ begin
         {$ENDIF}
         DebugLn('TGtkWidgetSet.GetDeviceSize:',
           ' WARNING: DC ',DbgS(DC),' without gdkwindow.',
-          ' Widget=',DbgS(wnd));
+          ' Widget=',DbgS(DCWidget));
       end;
     end else begin
       // screen size
@@ -5111,7 +5111,7 @@ function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
     {$ENDIF}
     DebugLn('TGtkWidgetSet.GetDCOriginRelativeToWindow:',
       ' WARNING: PaintDC ',DbgS(PaintDC),' without gdkwindow.',
-      ' Widget=',DbgS(TDeviceContext(PaintDC).wnd));
+      ' Widget=',DbgS(TDeviceContext(PaintDC).DCWidget));
   end;
 
 var
@@ -5493,7 +5493,7 @@ begin
   ARect:=SrcRect;
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
 
-  if TDeviceContext(SrcDC).Wnd<>0 then begin
+  if TDeviceContext(SrcDC).DCWidget<>nil then begin
     GDKWindow:=PGdkWindow(TDeviceContext(SrcDC).Drawable);
   end else begin
     // get screen shot

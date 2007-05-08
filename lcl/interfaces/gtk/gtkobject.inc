@@ -3807,10 +3807,13 @@ begin
     LM_PAINT :
     begin
       //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject)]);
-      ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
       {$Ifdef GTK1}
       ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
       {$EndIf}
+      {$Ifdef GTK2}
+      ConnectSenderSignal(gFixed, 'expose-event', @GTKExposeEvent);
+      {$EndIf}
+      ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
@@ -6449,7 +6452,7 @@ begin
   aDC := nil;
 
   aDC := NewDC;
-  aDC.Wnd := HWND(TheWidget);
+  aDC.DCWidget := TheWidget;
 
   FontGdiObject := nil;
   ClientWidget := nil;
@@ -6817,7 +6820,7 @@ begin
           TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
         {$ELSE Gtk2}
         // get pango context (= association to a widget)
-        AWidget:=PGtkWidget(Wnd);
+        AWidget:=DCWidget;
         if AWidget=nil then
           AWidget:=GetStyleWidget(lgsLabel);
         APangoContext := gtk_widget_get_pango_context(AWidget);

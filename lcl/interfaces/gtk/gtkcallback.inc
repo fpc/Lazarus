@@ -66,7 +66,7 @@ begin
 end;
 
 function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
-  Area: PGDKRectangle; RepaintAll: boolean): GBoolean;
+  Area: PGDKRectangle; RepaintAll, IsAfterGtk: boolean): GBoolean;
 {$IFDEF Gtk2}
 // the gtk2 has a working double buffering and expose event area
 {$DEFINE DirectPaintMsg}
@@ -77,6 +77,8 @@ var
   PaintMsg: TLMPaint;
   {$ENDIF}
 begin
+  if not IsAfterGtk then exit;
+  
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Width<1)) then exit;
 
   MSG.Msg := LM_GtkPAINT;
@@ -454,9 +456,40 @@ begin
     {$ENDIF}
   end;
 
-  DeliverGtkPaintMessage(Data,Widget,Area,false);
+  DeliverGtkPaintMessage(Data,Widget,Area,false,true);
 end;
 {$ENDIF}
+
+function gtkExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
+var
+  DesignOnlySignal: boolean;
+begin
+  Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
+  EventTrace('ExposeAfter', data);
+  {$ENDIF}
+  if (Event^.Count > 0) then exit;
+
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstExposeAfter);
+    if DesignOnlySignal then exit;
+  end else begin
+    {$IFDEF VerboseDesignerDraw}
+    DebugLn('gtkExpose',
+      ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
+      ' ',TComponent(Data).Name,
+      ' ',dbgs(Event^.area.x),',',dbgs(Event^.area.y),',',dbgs(Event^.area.width),',',dbgs(Event^.area.height),
+      '');
+    {$ENDIF}
+  end;
+
+  //DebugLn(['gtkExposeEvent ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
+
+  // the expose area is ok, but some gtk widgets repaint everything on expose
+  // -> maximize the area
+  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true,false);
+end;
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
@@ -489,7 +522,7 @@ begin
 
   // the expose area is ok, but some gtk widgets repaints everything on expose
   // -> maximize the area
-  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true);
+  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true,true);
   {$IFDEF GTK2}
   // Some widgets in gtk2 don't have their own exclusive "windows" so a synthetic event must be sent
   // MG: That is already done by the gtk2. For which widgets does this not work?

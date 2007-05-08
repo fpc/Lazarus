@@ -188,7 +188,7 @@ type
   TDeviceContext = class
   public
     // device handles
-    Wnd: HWND; // the owner PGtkWidget
+    DCWidget: PGtkWidget; // the owner
     GC: pgdkGC;
     Drawable: PGDKDrawable;
     OriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
@@ -586,7 +586,7 @@ end;
 
 procedure TDeviceContext.Clear;
 begin
-  Wnd:=0;
+  DCWidget:=nil;
   GC:=nil;
   Drawable:=nil;
   

@@ -537,11 +537,13 @@ var
 begin
   //DebugLn(['TCustomTabControl.Paint Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CientOrigin=',dbgs(ClientOrigin)]);
   // clear the whole area
-  // ToDo: this clears the tabs as well on some widgetset, namely gtk2
+  // Note: The tabs are painted above and are not opaque. So the background of
+  // the tabs must be painted here
   ARect:=ClientRect;
   Canvas.Brush.Color:=clBackground;
   Canvas.FillRect(ARect);
-  ARect:=GetDisplayRect;
+  // draw a frame
+  ARect:=GetDisplayRectWithBorder;
   InflateRect(ARect,BorderWidth,BorderWidth);
   Canvas.Frame3d(ARect, BorderWidth, bvRaised);
 

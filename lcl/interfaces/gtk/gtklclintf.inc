@@ -207,7 +207,7 @@ begin
   Result := False;
   if not IsValidDC(DC) then exit;
 
-  Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
+  Widget:=TDeviceContext(DC).DCWidget;
   ClientWidget:=GetFixedWidget(Widget);
   if ClientWidget<>nil then
     Widget:=ClientWidget;

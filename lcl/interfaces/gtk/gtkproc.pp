@@ -113,6 +113,8 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;
 {$EndIf}
+function gtkExposeEvent(Widget: PGtkWidget; Event: PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
 function gtkExposeEventAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 function gtkfrmactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
