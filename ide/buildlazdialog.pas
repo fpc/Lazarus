@@ -41,7 +41,7 @@ uses
   IDEExternToolIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
-  CompilerOptions;
+  CompilerOptions, ImgList;
 
 type
   { TBuildLazarusItem }
@@ -175,7 +175,6 @@ type
     CancelButton: TButton;
     CleanAllCheckBox: TCheckBox;
     ConfirmBuildCheckBox: TCheckBox;
-    ImageList: TImageList;
     ItemsListBox: TListBox;
     LCLInterfaceRadioGroup: TRadioGroup;
     SaveSettingsButton: TButton;
@@ -211,6 +210,7 @@ type
     function GetMakeModeAtX(const X: Integer; var MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
+    function ImageList: TCustomImageList;
   public
     procedure Load(SourceOptions: TBuildLazarusOptions);
     procedure Save(DestOptions: TBuildLazarusOptions);
@@ -234,6 +234,8 @@ function GetMakeIDEConfigFilename: string;
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 
 implementation
+uses
+  IDEImagesIntf;
 
 const
   DefaultIDEMakeOptionFilename = 'idemake.cfg';
@@ -671,9 +673,11 @@ var
   LCLInterface: TLCLPlatform;
 begin
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
-  ImageIndexNone := 0;
-  ImageIndexBuild := 1;
-  ImageIndexCleanBuild := 2;
+
+  ImageIndexNone := IDEImages.LoadImage(16, 'menu_close');
+  ImageIndexBuild := IDEImages.LoadImage(16, 'menu_build');
+  ImageIndexCleanBuild := IDEImages.LoadImage(16, 'menu_build_clean');
+
   Options := TBuildLazarusOptions.Create;
   CleanAllCheckBox.Caption := lisLazBuildCleanAll;
   BuildAllButton.Caption := Format(lisLazBuildSetToBuildAll, ['"', '"']);
@@ -702,6 +706,11 @@ begin
   Options.Free;
 end;
 
+function TConfigureBuildLazarusDlg.ImageList: TCustomImageList;
+begin
+  Result := IDEImages.Images_16;
+end;
+
 procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -727,8 +736,8 @@ begin
   ItemsListBox.Canvas.FillRect(CurRect);
   // draw the buttons
   x:=0;
-  ButtonWidth:=ImageList.Width+4;
-  ButtonHeight:=ButtonWidth;
+  ButtonWidth := ImageList.Width+4;
+  ButtonHeight := ButtonWidth;
   for mm:=Low(TMakeMode) to High(TMakeMode) do begin
     // draw button
     ButtonRect.Left:=x;
@@ -839,12 +848,13 @@ var
 begin
   Result:=True;
   ButtonWidth:=ImageList.Width+4;
-  i:=X div ButtonWidth;
+  i := X div ButtonWidth;
   case i of
-  0: MakeMode:=mmNone;
-  1: MakeMode:=mmBuild;
-  2: MakeMode:=mmCleanBuild;
-  else Result:=False;
+    0: MakeMode:=mmNone;
+    1: MakeMode:=mmBuild;
+    2: MakeMode:=mmCleanBuild;
+  else
+    Result:=False;
   end;
 end;
 
