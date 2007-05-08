@@ -166,10 +166,11 @@ begin
   // but not enough to parse the units
   
   // set Delphi mode for all project source directories
+  AProject.DefineTemplates.CustomDefinesChanged;
   SetCompilerModeForDefineTempl(AProject.DefineTemplates.CustomDefines);
   try
 
-    // init codetools
+    // sync IDE and codetools
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn('ConvertDelphiToLazarusProject failed BeginCodeTools');
       Result:=mrCancel;
@@ -419,6 +420,7 @@ begin
   // but not enough to parse the units
 
   // set Delphi mode for all package source directories
+  APackage.DefineTemplates.CustomDefinesChanged;
   SetCompilerModeForDefineTempl(APackage.DefineTemplates.CustomDefines);
   try
     // init codetools

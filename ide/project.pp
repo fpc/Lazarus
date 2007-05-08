@@ -4275,16 +4275,22 @@ begin
 
   // check if something has changed
   NewCustomOptions:=Project.CompilerOptions.GetCustomOptions;
-  if FLastCustomOptions=NewCustomOptions then exit;
+  if (FLastCustomOptions=NewCustomOptions) then exit;
 
   FLastCustomOptions:=NewCustomOptions;
-  // Note: create a custom define, even if the project does not need it.
-  // This way IDE add-ons can add their own settings.
   OptionsDefTempl:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-                        'Custom Options',FLastCustomOptions,false,Project,true);
-  UpdateSrcDirIfDef;
-  FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
-  CodeToolBoss.DefineTree.ClearCache;
+                        'Custom Options',FLastCustomOptions,false,Project);
+  if OptionsDefTempl=nil then begin
+    // no custom options -> delete old template
+    if FSrcDirIfDef<>nil then begin
+      if FSrcDirIfDef.DeleteChild('Custom Options') then
+        CodeToolBoss.DefineTree.ClearCache;
+    end;
+  end else begin
+    UpdateSrcDirIfDef;
+    FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
+    CodeToolBoss.DefineTree.ClearCache;
+  end;
 end;
 
 constructor TProjectDefineTemplates.Create(OwnerProject: TProject);
@@ -4342,6 +4348,7 @@ begin
   CustomDefinesChanged;
   SourceDirectoriesChanged;
   UpdateGlobalValues;
+  UpdateSrcDirIfDef;
   CodeToolBoss.DefineTree.ClearCache;
 end;
 

@@ -472,7 +472,7 @@ type
   TLazPackageDefineTemplates = class
   private
     FActive: boolean;
-    FCustomDefines: TDefineTemplate;
+    FSrcDirIfDef: TDefineTemplate;
     FFlags: TLazPkgDefineTemplatesFlags;
     fLastOutputDirSrcPathIDAsString: string;
     fLastSourceDirectories: TStringList;
@@ -509,7 +509,7 @@ type
     property SrcDirectories: TDefineTemplate read FSrcDirectories;
     property OutputDir: TDefineTemplate read FOutputDir;
     property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
-    property CustomDefines: TDefineTemplate read FCustomDefines;
+    property CustomDefines: TDefineTemplate read FSrcDirIfDef;
     property Active: boolean read FActive write SetActive;
   end;
   
@@ -3685,9 +3685,10 @@ begin
     if (CodeToolBoss<>nil) then
       CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
+    FSrcDirIfDef:=nil;
+    FSrcDirectories:=nil;
     FOutputDir:=nil;
     FOutPutSrcPath:=nil;
-    FSrcDirectories:=nil;
     fLastOutputDirSrcPathIDAsString:='';
     FLastCustomOptions:='';
     fLastUnitPath:='';
@@ -3765,6 +3766,7 @@ end;
 procedure TLazPackageDefineTemplates.AllChanged;
 begin
   PackageIDChanged;
+  UpdateSrcDirIfDef;// always create the SrcDirIfDef for IDE add-ons
   SourceDirectoriesChanged;
   OutputDirectoryChanged;
   CustomDefinesChanged;
@@ -3796,35 +3798,37 @@ begin
   // Each source directory defines this variable, so that the settings can be
   // activated for each source directory by a simple DEFINE.
   if (FMain=nil) then UpdateMain;
+  if FMain=nil then exit;
   if FSrcDirectories=nil then begin
     FSrcDirectories:=TDefineTemplate.Create('Source Directories',
       'Source Directories','','',
       da_Block);
     FMain.AddChild(FSrcDirectories);
   end;
-  if FCustomDefines=nil then begin
-    FCustomDefines:=TDefineTemplate.Create('Source Directory Additions',
+  DebugLn(['TLazPackageDefineTemplates.UpdateSrcDirIfDef BBB1 ',FSrcDirIfDef=nil,' ',LazPackage.IDAsString]);
+  if FSrcDirIfDef=nil then begin
+    FSrcDirIfDef:=TDefineTemplate.Create('Source Directory Additions',
       'Additional defines for package source directories',
       '#PkgSrcMark'+LazPackage.IDAsWord,'',
       da_IfDef);
-    FMain.AddChild(FCustomDefines);
+    FMain.AddChild(FSrcDirIfDef);
 
     // create unit path template for this directory
     UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
       '#UnitPath','$(#UnitPath);$PkgUnitPath('+LazPackage.IDAsString+')',
       da_Define);
-    FCustomDefines.AddChild(UnitPathDefTempl);
+    FSrcDirIfDef.AddChild(UnitPathDefTempl);
     // create include path template for this directory
     IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
       '#IncPath','$(#IncPath);$PkgIncPath('+LazPackage.IDAsString+')',
       da_Define);
-    FCustomDefines.AddChild(IncPathDefTempl);
+    FSrcDirIfDef.AddChild(IncPathDefTempl);
 
     Changed:=true;
   end else begin
     NewValue:='#PkgSrcMark'+LazPackage.IDAsWord;
-    if NewValue<>FCustomDefines.Value then begin
-      FCustomDefines.Value:=NewValue;
+    if NewValue<>FSrcDirIfDef.Value then begin
+      FSrcDirIfDef.Value:=NewValue;
       Changed:=true;
     end;
   end;
@@ -3841,8 +3845,8 @@ end;
 
 procedure TLazPackageDefineTemplates.UpdateOutputDirectory;
 begin
-  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
   if FMain=nil then UpdateMain;
+  if FMain=nil then exit;
 
   if FOutputDir=nil then begin
     FOutputDir:=TDefineTemplate.Create(PkgOutputDirDefTemplName,
@@ -3924,7 +3928,7 @@ begin
       
     // build source directory define templates
     fLastSourceDirectories.Assign(NewSourceDirs);
-    if (FCustomDefines=nil) and (fLastSourceDirectories.Count>0) then
+    if (FSrcDirIfDef=nil) and (fLastSourceDirectories.Count>0) then
       UpdateSrcDirIfDef;
     for i:=0 to fLastSourceDirectories.Count-1 do begin
       // create directory template
@@ -3964,13 +3968,13 @@ begin
                           'Custom Options',FLastCustomOptions,false,LazPackage);
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
-    if FCustomDefines<>nil then begin
-      if FCustomDefines.DeleteChild('Custom Options') then
+    if FSrcDirIfDef<>nil then begin
+      if FSrcDirIfDef.DeleteChild('Custom Options') then
         CodeToolBoss.DefineTree.ClearCache;
     end;
   end else begin
     UpdateSrcDirIfDef;
-    FCustomDefines.ReplaceChild(OptionsDefTempl);
+    FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
     CodeToolBoss.DefineTree.ClearCache;
   end;
 end;
