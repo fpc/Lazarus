@@ -55,6 +55,7 @@ type
     procedure   DoConfigureToolbar(Sender: TObject);
   protected
     procedure   AddButton(AMenuItem: TIDEMenuItem);
+    procedure   PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
   public
     constructor Create;
     destructor  Destroy; override;
@@ -121,8 +122,8 @@ begin
   if TEdtTbConfigForm.Execute then
   begin
     ClearToolbar;
-    AddCustomItems;
     AddStaticItems;
+    AddCustomItems;
   end;
 end;
 
@@ -153,17 +154,15 @@ begin
       PM.Items.Add(CreateJumpItem(T,W));
   end;
 
-  AddCustomItems;
   AddStaticItems;
+  AddCustomItems;
 end;
 
 procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
 var
   B: TToolButton;
-  i: integer;
 begin
   B := TToolButton.Create(TB);
-  B.Parent      := TB;
   B.Caption     := AMenuItem.Caption;
   B.Hint        := AMenuItem.Caption; // or should we use AMenuItem.Hint?
   // If we have a image, us it. Otherwise supply a default.
@@ -174,6 +173,21 @@ begin
 
   B.Style       := tbsButton;
   B.OnClick     := AMenuItem.OnClick;
+  PositionAtEnd(TB, B);
+end;
+
+// position the button next to the last button
+procedure TEditorToolbar.PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
+var
+  SiblingButton: TToolButton;
+begin
+  if AToolbar.ButtonCount > 0 then
+  begin
+    SiblingButton := AToolbar.Buttons[AToolbar.ButtonCount-1];
+    AButton.SetBounds(SiblingButton.Left + SiblingButton.Width,
+      SiblingButton.Top, AButton.Width, AButton.Height);
+  end;
+  AButton.Parent := AToolbar;
 end;
 
 procedure TEditorToolbar.AddCustomItems;
@@ -188,9 +202,9 @@ begin
   TB.BeginUpdate;
   try
     c := cfg.GetValue('Count', 0);
-    for i := c - 1 downto 0 do
+    for i := 1 to c do
     begin
-      value := cfg.GetValue('Button' + Format('%2.2d', [i+1]) + '/Value', '');
+      value := cfg.GetValue('Button' + Format('%2.2d', [i]) + '/Value', '');
       if value = cDivider then
         AddDivider
       else
@@ -211,8 +225,8 @@ var
   B: TToolButton;
 begin
   B := TToolbutton.Create(TB);
-  B.Parent      := TB;
-  B.Style       := tbsDivider;
+  B.Style := tbsDivider;
+  PositionAtEnd(TB, B);
 end;
 
 procedure TEditorToolbar.AddStaticItems;
@@ -221,32 +235,30 @@ var
 begin
   TB.BeginUpdate;
   try
-    if TB.ButtonCount <> 0 then
-      AddDivider;
-
-    // JumpTo Button
-    B := TToolbutton.Create(TB);
-    B.Parent      := TB;
-    B.Caption     := 'Jump To';
-    B.Hint        := B.Caption;
-    B.ImageIndex  := IDEImages.LoadImage(16, 'jumpto16');
-    B.Style       := tbsDropDown;
-    B.OnClick     := @FJumpHandler.DoJumpToImplementation;
-
-    B.DropdownMenu := PM;
-
-    AddDivider;
-
     // Config Button
     if CfgButton = nil then
       CfgButton := TToolbutton.Create(TB);
-
-    CfgButton.Parent      := TB;
     CfgButton.Caption     := 'Configure Toolbar';
-    CfgButton.Hint        := B.Caption;
+    CfgButton.Hint        := CfgButton.Caption;
     CfgButton.ImageIndex  := IDEImages.LoadImage(16, 'preferences16');
     CfgButton.Style       := tbsButton;
     CfgButton.OnClick     := @DoConfigureToolbar;
+    PositionAtEnd(TB, CfgButton);
+    
+    AddDivider;
+    
+    // JumpTo Button
+    B := TToolbutton.Create(TB);
+    B.Caption       := 'Jump To';
+    B.Hint          := B.Caption;
+    B.ImageIndex    := IDEImages.LoadImage(16, 'jumpto16');
+    B.Style         := tbsDropDown;
+    B.OnClick       := @FJumpHandler.DoJumpToImplementation;
+    B.DropdownMenu  := PM;
+    PositionAtEnd(TB, B);
+
+    if TB.ButtonCount <> 0 then
+      AddDivider;
   finally
     TB.EndUpdate;
   end;
