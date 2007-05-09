@@ -881,7 +881,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
             Result := Result + '''';
           end;
           Result := Result + AString[n];
-          if AString[n] = '''' then Result := Result + '''';
+          //if AString[n] = '''' then Result := Result + '''';
         end;
       else
         if InString
