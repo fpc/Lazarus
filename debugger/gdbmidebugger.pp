@@ -1218,11 +1218,21 @@ begin
         // scan till end
         while idx <= len do
         begin
-          if S[idx] = ''''
-          then begin
-            Inc(idx);
-            if idx > len then Break;
-            if S[idx] <> '''' then Break;
+          case S[idx] of
+            '''' : begin
+              Inc(idx);
+              if idx > len then Break;
+              if S[idx] <> '''' then Break;
+            end;
+            '\' : begin
+              Inc(idx);
+              if idx > len then Break;
+              case S[idx] of
+                't': S[idx] := #9;
+                'n': S[idx] := #10;
+                'r': S[idx] := #13;
+              end;
+            end;
           end;
           Inc(n);
           Result[n] := S[idx];
