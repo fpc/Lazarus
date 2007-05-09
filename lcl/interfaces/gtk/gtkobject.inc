@@ -7410,9 +7410,11 @@ begin
 end;
 
 procedure TGTKWidgetSet.OnCreateGCForDC(DC: TDeviceContext);
+{$IFDEF Gtk1}
 var
   CurWidget: PGtkWidget;
   CurWindow: PGdkWindow;
+{$ENDIF}
 begin
   if DC.GC=nil then begin
     // create GC
