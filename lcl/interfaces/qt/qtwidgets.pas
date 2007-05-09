@@ -413,6 +413,7 @@ type
   end;
   
 implementation
+
 const
   AlignmentMap: array[TAlignment] of QtAlignment =
   (
@@ -1565,6 +1566,7 @@ var
 begin
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Widget := QWidget_create(Parent);
+  Result := Widget;
 end;
 
 procedure TQtWidget.SetGeometry;

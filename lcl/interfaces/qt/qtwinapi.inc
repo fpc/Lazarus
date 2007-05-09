@@ -864,7 +864,7 @@ end;
 function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 begin
-
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

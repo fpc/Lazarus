@@ -250,7 +250,6 @@ end;
 {------------------------------------------------------------------------------
   Method: TQtWSWinControl.SetColor
   Params:  AWinControl     - the calling object
-
   Returns: Nothing
 
   Sets the color of the widget.
@@ -267,7 +266,7 @@ begin
   if AWinControl.Color = CLR_INVALID then exit;
 
   // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  Color:=ColorToRGB(AWinControl.Color);
+  Color := ColorToRGB(AWinControl.Color);
   
   // Fill QColor
   QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
@@ -276,6 +275,13 @@ begin
   TQtWidget(AWinControl.Handle).SetColor(@QColor);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetCursor
+  Params:  AWinControl     - the calling object
+  Returns: Nothing
+
+  Sets the cursor of the widget.
+ ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
 begin
   if AWinControl = nil then exit;
