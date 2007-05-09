@@ -83,7 +83,7 @@ make lcl LCL_PLATFORM=carbon PP=$COMPILER
 make lcl LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER
 
 # cross compilation units?
-if [ "$ARCH" == "i386NotYet" ]; then
+if [ "$ARCH" == "i386" ]; then
   make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=carbon PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
