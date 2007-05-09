@@ -27,15 +27,12 @@ unit FpGuiWSForms;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Forms,
-////////////////////////////////////////////////////
-  WSForms, WSLCLClasses, LCLType, Controls;
+  // Bindings
+  fpgui, fpgfx, gfxbase, fpguiwsprivate,
+  // LCL
+  Classes, Forms, LCLType, Controls,
+  // Widgetset
+  WSForms, WSLCLClasses;
 
 type
 
@@ -120,19 +117,16 @@ type
 
 
 implementation
-uses FPGuiWSPrivate, fpgui, fpgfx, gfxbase, Classes;
 
 { TFpGuiWSCustomForm }
 
-class function TFpGuiWSCustomForm.GetText(const AWinControl: TWinControl;
-  var AText: String): Boolean;
-var
-  FPForm: TFPGUIPrivateWindow;
-begin
-  Result := True;
-  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
-  AText := FPForm.GetText;
-end;
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSCustomForm.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
 class function TFpGuiWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -142,6 +136,26 @@ begin
   Result := TLCLIntfHandle(FPForm);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSCustomForm.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TFpGuiWSCustomForm.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  Result := True;
+  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
+  AText := FPForm.GetText;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSCustomForm.SetFormBorderStyle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomForm.SetFormBorderStyle(const AForm: Forms.TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 var
@@ -151,6 +165,11 @@ begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSCustomForm.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomForm.SetText(const AWinControl: TWinControl;
   const AText: String);
 var

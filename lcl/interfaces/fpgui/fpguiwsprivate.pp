@@ -26,6 +26,7 @@
 }
 
 unit fpguiwsprivate;
+
 {$mode objfpc}{$H+}
 
 interface
@@ -73,6 +74,7 @@ type
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
+    procedure DestroyWidget; virtual; abstract;
     procedure SetSize(AWidth, AHeight: LongInt); virtual;
     procedure SetPosition(AX, AY: Integer); virtual;
 
@@ -161,6 +163,7 @@ type
   public
     function ComboBox: TFComboBox;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
   end;
 
@@ -224,6 +227,7 @@ end;
 destructor TFPGUIPrivateWidget.Destroy;
 begin
   FreeAndNil(Widget);
+
   inherited Destroy;
 end;
 
@@ -261,8 +265,7 @@ end;
 
 procedure TFPGUIPrivateContainer.RemoveChild(AWidget: TFWidget);
 begin
-  //fFixed.RemoveChild(TFPGUIPrivateWidget(AControl.Handle).Widget);
-  // !!
+//  fFixed.RemoveChild(AWidget);
 end;
 
 { TFPGUIPrivateWindow }
@@ -388,11 +391,21 @@ end;
 
 { TFPGUIPrivateComboBox }
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateComboBox.ComboBox
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TFPGUIPrivateComboBox.ComboBox: TFComboBox;
 begin
   Result := TFComboBox(Widget);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateComboBox.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateComboBox.CreateWidget(const AParams: TCreateParams);
 var
   ParentContainer: TFPGUIPrivateContainer;
@@ -406,12 +419,35 @@ begin
   Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateComboBox.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TFPGUIPrivateComboBox.Create(ALCLObject: TWinControl;
   const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
 
   // Events
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateComboBox.DestroyWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateComboBox.DestroyWidget;
+begin
+{
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  ParentContainer.RemoveChild(Widget);
+  
+  Widget.Free;}
 end;
 
 { TFPGUIPrivateEdit }

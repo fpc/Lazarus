@@ -61,19 +61,19 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-//    class procedure Invalidate(const AWinControl: TWinControl); override;
+    class procedure Invalidate(const AWinControl: TWinControl); override;
   public
-//    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
 //    class procedure SetColor(const AWinControl: TWinControl); override;
-//    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
 
-//    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-//    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+{    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
-{    class procedure AddControl(const AControl: TControl); override;
+    class procedure AddControl(const AControl: TControl); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -140,30 +140,97 @@ begin
 //  AWinControl.Handle := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.Invalidate
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TFpGuiWSWinControl.Invalidate(const AWinControl: TWinControl);
+var
+  FPWidget: TFWidget;
+begin
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
+  FPWIdget.Redraw;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.SetBounds
+  Params:  AWinControl - the calling object
+           ALeft, ATop - Position
+           AWidth, AHeight - Size
+  Returns: Nothing
+
+  Sets the position and size of a widget
+ ------------------------------------------------------------------------------}
+class procedure TFpGuiWSWinControl.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  FPWidget: TFWidget;
+begin
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
+  FPWIdget.SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.SetPos
+  Params:  AWinControl - the calling object
+           ALeft, ATop - Position
+  Returns: Nothing
+
+  Sets the position of a widget
+ ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
 var
   FPWidget: TFWidget;
 begin
-  FPWidget := TFWidget(AWincontrol.Handle);
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
   FPWIdget.SetBounds(ALeft, ATop, AWincontrol.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.SetSize
+  Params:  AWinControl     - the calling object
+           AWidth, AHeight - Size
+  Returns: Nothing
+
+  Sets the size of a widget
+ ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 var
   FPWidget: TFWidget;
 begin
-  FPWidget := TFWidget(AWincontrol.Handle);
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
   FPWIdget.SetBounds(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.ShowHide
+  Params:  AWinControl     - the calling object
+  Returns: Nothing
+
+  Shows or hides a widget.
+ ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
-  FPWidget: TFPGUIPrivateWidget;
+  FPWidget: TFWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle);
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
   FPWidget.Visible := not FPWidget.Visible;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSWinControl.SetCursor
+  Params:  AWinControl     - the calling object
+  Returns: Nothing
+
+  Sets the cursor of the widget.
+ ------------------------------------------------------------------------------}
+class procedure TFpGuiWSWinControl.SetCursor(const AWinControl: TWinControl;
+  const ACursor: HCursor);
+begin
+
 end;
 
 initialization

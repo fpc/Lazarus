@@ -246,8 +246,7 @@ end;
 
   Releases allocated memory and resources
  ------------------------------------------------------------------------------}
-class procedure TFpGuiWSCustomComboBox.DestroyHandle(
-  const AWinControl: TWinControl);
+class procedure TFpGuiWSCustomComboBox.DestroyHandle(const AWinControl: TWinControl);
 begin
 //  TFPGUIPrivateComboBox(AWinControl.Handle).Free;
 
