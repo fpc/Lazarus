@@ -3160,7 +3160,7 @@ begin
     try
       inherited Assign(Source);
       FieldName := TColumn(Source).FieldName;
-      DisplayFormat := TColumn(Source).FieldName;
+      DisplayFormat := TColumn(Source).DisplayFormat;
       ValueChecked := TColumn(Source).ValueChecked;
       ValueUnchecked := TColumn(Source).ValueUnchecked;
     finally
