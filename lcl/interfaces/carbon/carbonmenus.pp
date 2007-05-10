@@ -196,6 +196,8 @@ end;
   Frees Carbon menu item
  ------------------------------------------------------------------------------}
 destructor TCarbonMenu.Destroy;
+var
+  I: Integer;
 begin
   if Menu <> nil then
   begin
@@ -206,8 +208,9 @@ begin
   if FParentMenu <> nil then
   begin // remove menu from parent
     FParentMenu.Remove(Self);
-    FItems.Free;
   end;
+
+  FItems.Free;
   
   inherited Destroy;
 end;

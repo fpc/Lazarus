@@ -58,13 +58,13 @@ type
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;
     FMainMenu: TMainMenu; // Main menu attached to menu bar
+    FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
   protected
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
 
     procedure RegisterEvents;
-    procedure UnregisterEvents;
   public
     constructor Create;
     destructor Destroy; override;
@@ -99,6 +99,8 @@ type
 
   public
     procedure SetMainMenuEnabled(AEnabled: Boolean);
+  public
+    procedure SetCaptureWidget(const AWidget: HWND);
   end;
 
 var

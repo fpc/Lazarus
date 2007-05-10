@@ -44,6 +44,8 @@ begin
 
   // send postponed mouse up event
   DeliverMessage(AWidget.LCLObject, SavedMouseUpMsg);
+  
+  NotifyApplicationUserInput(SavedMouseUpMsg.Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -252,37 +254,6 @@ begin
     DebugLn('TCarbonControl.RegisterEvents ', ClassName, ' ',
       LCLObject.Name, ': ', LCLObject.ClassName);
   {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonControl.UnregisterEvents
-
-  Unregisters event handlers
- ------------------------------------------------------------------------------}
-procedure TCarbonControl.UnregisterEvents;
-var
-  Events: TCarbonControlEvents;
-begin
-  Events := GetValidEvents;
-
-  UnregisterEventHandler(@CarbonCommon_Dispose);
-  UnregisterEventHandler(@CarbonCommon_Draw);
-  UnregisterEventHandler(@CarbonCommon_BoundsChanged);
-  UnregisterEventHandler(@CarbonCommon_ContextualMenuClick);
-  UnregisterEventHandler(@CarbonCommon_Track);
-  if Content <> ControlRef(Widget) then
-    UnregisterEventHandler(@CarbonCommon_Track);
-    
-  UnregisterEventHandler(@CarbonCommon_SetFocusPart);
-  UnregisterEventHandler(@CarbonCommon_GetNextFocusCandidate);
-  UnregisterEventHandler(@CarbonCommon_SetCursor);
-  
-  if cceHit in Events then
-    UnregisterEventHandler(@CarbonControl_Hit);
-  if cceValueChanged in Events then
-    UnregisterEventHandler(@CarbonControl_ValueChanged);
-  if cceIndicatorMoved in Events then
-    UnregisterEventHandler(@CarbonControl_IndicatorMoved);
 end;
 
 {------------------------------------------------------------------------------

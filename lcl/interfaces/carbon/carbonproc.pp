@@ -55,6 +55,8 @@ var
 
 function VirtualKeyCodeToMac(AKey: Word): Word;
 
+function FormBorderToWindowAttrs(const AFormBorder: TFormBorderStyle): WindowAttributes;
+
 function GetCarbonMsgKeyState: PtrInt;
 function GetCarbonShiftState: TShiftState;
 function ShiftStateToModifiers(const Shift: TShiftState): Byte;
@@ -253,6 +255,30 @@ begin
   VK_SCROLL    : Result := MK_SCRLOCK;
   else
     Result := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    FormBorderToWindowAttrs
+  Returns: Converts the form border style to Carbon window attributes
+ ------------------------------------------------------------------------------}
+function FormBorderToWindowAttrs(const AFormBorder: TFormBorderStyle): WindowAttributes;
+begin
+  case AFormBorder of
+  bsNone:
+    Result := kWindowNoTitleBarAttribute;
+  bsToolWindow, bsSingle:
+    Result := kWindowCloseBoxAttribute or
+      kWindowCollapseBoxAttribute;
+  bsSizeable:
+    Result := kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute
+      or kWindowFullZoomAttribute or kWindowResizableAttribute;
+  bsDialog:
+    Result := kWindowCloseBoxAttribute;
+  bsSizeToolWin:
+    Result := kWindowCloseBoxAttribute or kWindowResizableAttribute;
+  else
+    Result := kWindowNoAttributes;
   end;
 end;
 

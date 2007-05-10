@@ -890,9 +890,15 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetCapture
+  Returns: The handle of the capture window
+
+  Retrieves the handle of the window (if any) that has captured the mouse
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetCapture: HWND;
 begin
-  Result:=inherited GetCapture;
+  Result := FCaptureWidget;
 end;
 
 function TCarbonWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;

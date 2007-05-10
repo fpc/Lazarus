@@ -433,13 +433,14 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonWidgetSet.Create;
 begin
-  CarbonWidgetSet:=Self;
+  CarbonWidgetSet := Self;
   inherited Create;
   FTerminating := False;
 
   FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
   FCurrentCursor := 0;
   FMainMenu := nil;
+  FCaptureWidget := 0;
   
   RegisterEvents;
 end;
@@ -451,12 +452,10 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCarbonWidgetSet.Destroy;
 begin
-  UnregisterEvents;
-
   FreeAndNil(FTimerMap);
   
   inherited Destroy;
-  CarbonWidgetSet:=nil;
+  CarbonWidgetSet := nil;
 end;
 
 procedure TCarbonWidgetSet.PassCmdLineOptions;
@@ -541,17 +540,6 @@ begin
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppHidden);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Hidden),
     1, @TmpSpec, nil, nil);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.UnregisterEvents
-  Unregisters events for Carbon application
- ------------------------------------------------------------------------------}
-procedure TCarbonWidgetSet.UnregisterEvents;
-begin
-  UnregisterEventHandler(@CarbonApp_CommandProcess);
-  UnregisterEventHandler(@CarbonApp_Shown);
-  UnregisterEventHandler(@CarbonApp_Hidden);
 end;
 
 {------------------------------------------------------------------------------

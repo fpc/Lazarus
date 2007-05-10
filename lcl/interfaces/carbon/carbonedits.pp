@@ -49,7 +49,6 @@ type
     procedure AdaptCharCase;
     class function GetEditPart: ControlPartCode; virtual;
     procedure RegisterEvents; override;
-    procedure UnregisterEvents; override;
   public
     procedure TextDidChange; dynamic;
   public
@@ -72,7 +71,6 @@ type
     FItemIndex: Integer;
   protected
     procedure RegisterEvents; override;
-    procedure UnregisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     class function GetEditPart: ControlPartCode; override;
   public
@@ -212,18 +210,6 @@ begin
   InstallControlEventHandler(Widget,
     RegisterEventHandler(@CarbonTextField_DidChange),
     1, @TmpSpec, Pointer(Self), nil);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomControl.UnregisterEvents
-
-  Unregisters event handlers
- ------------------------------------------------------------------------------}
-procedure TCarbonControlWithEdit.UnregisterEvents;
-begin
-  UnregisterEventHandler(@CarbonTextField_DidChange);
-  
-  inherited UnregisterEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -470,18 +456,6 @@ begin
   InstallControlEventHandler(Widget,
     RegisterEventHandler(@CarbonComboBox_ListItemSelected),
     1, @TmpSpec, Pointer(Self), nil);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonComboBox.UnregisterEvents
-
-  Unregisters event handlers
- ------------------------------------------------------------------------------}
-procedure TCarbonComboBox.UnregisterEvents;
-begin
-  UnregisterEventHandler(@CarbonComboBox_ListItemSelected);
-
-  inherited UnregisterEvents;
 end;
 
 {------------------------------------------------------------------------------

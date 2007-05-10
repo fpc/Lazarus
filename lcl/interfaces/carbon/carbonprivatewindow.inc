@@ -167,6 +167,8 @@ const
     Msg^.XPos := MousePoint.X;                         
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
+    
+    CarbonWidgetSet.SetCaptureWidget(HWND(Widget));
   end;
 
   procedure HandleMouseUpEvent(var AMsg);
@@ -193,6 +195,8 @@ const
     Msg^.XPos := MousePoint.X;
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
+    
+    CarbonWidgetSet.SetCaptureWidget(0);
   end;
 
   procedure HandleMouseMovedEvent(var AMsg);
@@ -922,31 +926,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWindow.UnregisterEvents
-
-  Unregisters event handlers
- ------------------------------------------------------------------------------}
-procedure TCarbonWindow.UnregisterEvents;
-begin
-  UnregisterEventHandler(@CarbonWindow_Close);
-  UnregisterEventHandler(@CarbonCommon_Dispose);
-
-  UnregisterEventHandler(@CarbonWindow_MouseProc);
-  UnregisterEventHandler(@CarbonWindow_KeyboardProc);
-  UnregisterEventHandler(@CarbonWindow_ActivateProc);
-  UnregisterEventHandler(@CarbonWindow_ShowWindow);
-
-  UnregisterEventHandler(@CarbonCommon_Draw);
-  UnregisterEventHandler(@CarbonCommon_Track);
-  UnregisterEventHandler(@CarbonCommon_BoundsChanged);
-  UnregisterEventHandler(@CarbonCommon_ContextualMenuClick);
-  UnregisterEventHandler(@CarbonCommon_SetFocusPart);
-  UnregisterEventHandler(@CarbonCommon_GetNextFocusCandidate);
-  UnregisterEventHandler(@CarbonCommon_SetCursor);
-  UnregisterEventHandler(@CarbonCommon_CursorChange);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWindow.CreateWidget
   Params:  AParams - Creation parameters
 
@@ -959,7 +938,8 @@ var
   MinSize, MaxSize: HISize;
   Attributes: WindowAttributes;
 begin
-  // apply appropriate form border style and form style
+  // apply appropriate form style and form border style
+  
   case (LCLObject as TCustomForm).FormStyle of
   fsStayOnTop, fsSplash:
     begin
@@ -970,21 +950,9 @@ begin
     NewWindowClass := kDocumentWindowClass;
     Attributes := kWindowInWindowMenuAttribute;
   end;
-
-  case (LCLObject as TCustomForm).BorderStyle of
-  bsNone:
-    Attributes := Attributes or kWindowNoTitleBarAttribute;
-  bsToolWindow, bsSingle:
-    Attributes := Attributes or kWindowCloseBoxAttribute or
-      kWindowCollapseBoxAttribute;
-  bsSizeable:
-    Attributes := Attributes or kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute
-      or kWindowFullZoomAttribute or kWindowResizableAttribute;
-  bsDialog:
-    Attributes := Attributes or kWindowCloseBoxAttribute;
-  bsSizeToolWin:
-    Attributes := Attributes or kWindowCloseBoxAttribute or kWindowResizableAttribute;
-  end;
+  
+  Attributes := Attributes or
+    FormBorderToWindowAttrs((LCLObject as TCustomForm).BorderStyle);
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
   
@@ -1002,7 +970,7 @@ begin
   OSError(
     SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
-    
+
   FBorderStyle := (LCLObject as TCustomForm).BorderStyle;
 
   SetBounds(Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
@@ -1494,6 +1462,24 @@ end;
   Sets the form border style of Carbon window
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle);
+var
+  AttrsSet, AttrsRemove: WindowAttributes;
 begin
-  if AFormBorderStyle <> FBorderStyle then RecreateWnd(LCLObject);
+  if AFormBorderStyle = FBorderStyle then Exit;
+  if (AFormBorderStyle = bsNone) or (FBorderStyle = bsNone) then
+  begin
+    RecreateWnd(LCLObject);
+    Exit;
+  end;
+
+  AttrsSet := FormBorderToWindowAttrs(AFormBorderStyle);
+  AttrsRemove := (kWindowNoTitleBarAttribute or kWindowCloseBoxAttribute or
+    kWindowCollapseBoxAttribute or kWindowFullZoomAttribute or
+    kWindowResizableAttribute) and (not AttrsSet);
+  
+  if OSError(
+    ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsRemove), Self,
+    'SetFormBorderStyle', SChangeWindowAttrs) then Exit;
+    
+  FBorderStyle := AFormBorderStyle;
 end;

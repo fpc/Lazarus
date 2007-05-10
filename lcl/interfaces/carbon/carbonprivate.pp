@@ -51,7 +51,6 @@ type
   TCarbonControl = class(TCarbonWidget)
   protected
     procedure RegisterEvents; override;
-    procedure UnregisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
@@ -115,7 +114,6 @@ type
     FBorderStyle: TFormBorderStyle;
   protected
     procedure RegisterEvents; override;
-    procedure UnregisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
@@ -172,7 +170,6 @@ type
     FScrollPageSize: TPoint;
   protected
     procedure RegisterEvents; override;
-    procedure UnregisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetFrame: ControlRef; override;
@@ -558,22 +555,6 @@ begin
       RegisterEventHandler(@CarbonScrollable_ScrollTo),
       1, @TmpSpec, Pointer(Self), nil);
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomControl.UnregisterEvents
-
-  Unregisters event handlers
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomControl.UnregisterEvents;
-begin
-  if FScrollView <> Widget then
-  begin
-    UnregisterEventHandler(@CarbonScrollable_GetInfo);
-    UnregisterEventHandler(@CarbonScrollable_ScrollTo);
-  end;
-  
-  inherited UnregisterEvents;
 end;
 
 {------------------------------------------------------------------------------

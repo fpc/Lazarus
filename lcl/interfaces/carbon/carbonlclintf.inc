@@ -348,6 +348,17 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetCaptureWidget
+  Params:  AWidget - Carbon widget to capture
+
+  Sets captured Carbon widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.SetCaptureWidget(const AWidget: HWND);
+begin
+  FCaptureWidget := AWidget;
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas

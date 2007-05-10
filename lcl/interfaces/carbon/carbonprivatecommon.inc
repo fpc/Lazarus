@@ -124,6 +124,8 @@ begin
     Msg.YPos := P.X;
     Msg.Keys := GetCarbonMsgKeyState;
     DeliverMessage(Widget.LCLObject, Msg);
+    
+    NotifyApplicationUserInput(Msg.Msg);
   end;
 end;
 
@@ -184,6 +186,8 @@ begin
   Msg.XPos := P.X;
   Msg.YPos := P.Y;
   Msg.Keys := GetCarbonMsgKeyState;
+  
+  CarbonWidgetSet.SetCaptureWidget(0); // capture is released
 
   if (AWidget is TCarbonControl) and
     (cceHit in (AWidget as TCarbonControl).GetValidEvents) then
@@ -205,6 +209,8 @@ begin
   end;
 
   DeliverMessage(AWidget.LCLObject, Msg);
+  
+  NotifyApplicationUserInput(Msg.Msg);
 end;
 
 {------------------------------------------------------------------------------

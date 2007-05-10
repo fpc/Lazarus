@@ -67,7 +67,6 @@ type
     procedure SetProperty(AIndex: String; const AValue: Pointer);
   protected
     procedure RegisterEvents; virtual; abstract;
-    procedure UnregisterEvents; virtual; abstract;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
     procedure DestroyWidget; virtual; abstract;
     function GetContent: ControlRef; virtual; abstract;
@@ -134,7 +133,6 @@ function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: 
 function CheckWidget(const Handle: HWND; const AMethodName: String; AClass: TClass): Boolean;
 
 function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
-procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
 
 implementation
 
@@ -240,7 +238,6 @@ type
   TUPPAVLTreeNode = class(TAVLTreeNode)
   public
     UPP: EventHandlerUPP;
-    RefCount: Integer;
     procedure Clear; reintroduce; // not overridable, so reintroduce since we only will call this clear
     destructor Destroy; override;
   end;
@@ -292,43 +289,7 @@ begin
     UPPTree.Add(Node);
   end;
 
-  Inc(Node.Refcount);
   Result := Node.UPP;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    UnRegisterEventHandler
-  Params:  AHandler - Carbon event handler procedure
-
-  Unregisters event handler procedure
- ------------------------------------------------------------------------------}
-procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
-var
-  Node: TUPPAVLTreeNode;
-begin
-  if UPPTree = nil then Exit; //???
-  Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
-  if Node = nil then Exit; //???
-  if Node.Refcount <= 0 then
-  begin
-    DebugLn('[UnRegisterEventHandler] UPPInconsistency, Node.RefCount <= 0');
-    Exit;
-  end;
-
-  Dec(Node.Refcount);
-  if Node.Refcount > 0 then Exit;
-
-  // Sigh !
-  // there doesn't exist a light version of the avltree without buildin memmanager
-  // So, just free it and "pollute" the memmanager with our classes;
-  // Freeing our node is also not an option, since that would
-  // corrupt the tree (no handling for that).
-  // Tweaking the memmanager is also not possible since only the class is public
-  // and not the manager itself.
-
-
-  Node.Clear;
-  UPPTree.Delete(Node);
 end;
   
 { TCarbonContext }
@@ -495,8 +456,6 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCarbonWidget.Destroy;
 begin
-  UnregisterEvents;
-  
   DestroyWidget;
   
   FProperties.Free;
