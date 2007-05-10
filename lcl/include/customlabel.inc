@@ -394,7 +394,7 @@ begin
       SystemFont:=false;
     end;
     TextLeft := R.Left;
-    if layout = tlTop then begin
+    if Layout = tlTop then begin
       TextTop := R.Top;
     end else begin
       CalcSize(lTextWidth, lTextHeight);

@@ -62,7 +62,12 @@ type
   end;
   
   
-  { TGtkFontCache }
+  { TGtkFontCache
+    Notes:
+    Each font can be used by several Device Contexts.
+    Each font can have several font descriptors.
+    A font descriptor has one font.
+    }
   
   TGtkFontCache = class(TResourceCache)
   protected

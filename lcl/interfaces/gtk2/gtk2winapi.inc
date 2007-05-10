@@ -367,18 +367,7 @@ begin
       exit;
     end;
 
-    UseFont:=nil;
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-      UseFont := GetDefaultGtkFont(false);
-    end else begin
-      UseFont := CurrentFont^.GDIFontObject;
-    end;
-    
-    if (UseFont = nil) then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font');
-      Result:=false;
-      exit;
-    end;
+    UseFont:=GetGtkFont(TDeviceContext(DC));
 
     // to reduce flickering calculate first and then paint
     
@@ -471,19 +460,7 @@ begin
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      UseFont := GetDefaultGtkFont(false);
-    end
-    else begin
-      UseFont := CurrentFont^.GDIFontObject;
-    end;
-
-    if UseFont = nil then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font');
-      Result:=false;
-      exit;
-    end;
+    UseFont:=GetGtkFont(TDeviceContext(DC));
 
     UpdateDCTextMetric(TDeviceContext(DC));
 
@@ -516,18 +493,8 @@ begin
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      UseFont := GetDefaultGtkFont(false);
-    end
-    else begin
-      UseFont := CurrentFont^.GDIFontObject;
-    end;
+    UseFont:=GetGtkFont(TDeviceContext(DC));
 
-    If UseFont = nil then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font');
-      exit(false);
-    end;
     UpdateDCTextMetric(TDeviceContext(DC));
 
     DCOrigin:=GetDCOffset(TDeviceContext(DC));

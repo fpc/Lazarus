@@ -178,7 +178,11 @@ end;
 procedure TCanvas.CreateFont;
 var OldHandle: HFONT;
 begin
+  // The first time the font handle is selected, the default font handle
+  // is returned. Save this font handle to restore it later in DeselectHandles.
+  // The TFont will call DeleteObject itself, so we never need to call it.
   OldHandle:=SelectObject(FHandle, Font.Handle);
+  //DebugLn(['TCanvas.CreateFont OldHandle=',dbghex(OldHandle),' Font.Handle=',dbghex(Font.Handle)]);
   if (OldHandle<>Font.Handle) and (FSavedFontHandle=0) then
     FSavedFontHandle:=OldHandle;
   Include(FState, csFontValid);
@@ -186,9 +190,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TCanvas.CreateRegion;
+  procedure TCanvas.CreateRegion;
  ------------------------------------------------------------------------------}
-Procedure TCanvas.CreateRegion;
+procedure TCanvas.CreateRegion;
 var OldHandle: HRGN;
 begin
   OldHandle:=SelectObject(FHandle, Region.Handle);
@@ -1016,6 +1020,7 @@ begin
     Options := Options or DT_INTERNAL;
     RequiredState([csHandleValid]);
     SelectObject(Self.Handle, GetStockObject(DEFAULT_GUI_FONT));
+    Exclude(FState, csFontValid);
   end
   else
     RequiredState([csHandleValid, csFontValid]);
@@ -1390,14 +1395,11 @@ begin
     if FHandle <> 0 then
     begin
       DeselectHandles;
-      FHandle := 0;
       Exclude(FState, csHandleValid);
     end;
-    if NewHandle <> 0 then
-    begin
+    FHandle := NewHandle;
+    if FHandle <> 0 then
       Include(FState, csHandleValid);
-      FHandle := NewHandle;
-    end;
     //DebugLn('[TCanvas.SetHandle] END Self=',DbgS(Self),' Handle=',DbgS(FHandle,8));
   end;
 end;
@@ -1414,20 +1416,17 @@ begin
   //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',DbgS(Self),' Handle=',DbgS(FHandle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle)));
   if (FHandle<>0) then begin
     // select default sub handles in the device context without deleting owns
-    if FSavedBrushHandle<>0 then begin
+    if FSavedBrushHandle<>0 then
       SelectObject(FHandle,FSavedBrushHandle);
-      FSavedBrushHandle:=0;
-    end;
-    if FSavedPenHandle<>0 then begin
+    if FSavedPenHandle<>0 then
       SelectObject(FHandle,FSavedPenHandle);
-      FSavedPenHandle:=0;
-    end;
-    if FSavedFontHandle<>0 then begin
+    if FSavedFontHandle<>0 then
       SelectObject(FHandle,FSavedFontHandle);
-      FSavedFontHandle:=0;
-    end;
     FState := FState - [csPenValid, csBrushValid, csFontValid];
   end;
+  FSavedBrushHandle:=0;
+  FSavedPenHandle:=0;
+  FSavedFontHandle:=0;
 end;
 
 {------------------------------------------------------------------------------

@@ -3805,7 +3805,6 @@ begin
       da_Block);
     FMain.AddChild(FSrcDirectories);
   end;
-  DebugLn(['TLazPackageDefineTemplates.UpdateSrcDirIfDef BBB1 ',FSrcDirIfDef=nil,' ',LazPackage.IDAsString]);
   if FSrcDirIfDef=nil then begin
     FSrcDirIfDef:=TDefineTemplate.Create('Source Directory Additions',
       'Additional defines for package source directories',

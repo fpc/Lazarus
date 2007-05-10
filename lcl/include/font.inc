@@ -171,18 +171,8 @@ begin
 end;
 
 function GetDefFontCharSet: TFontCharSet;
-//var
-//  DisplayDC: HDC;
-//  TxtMetric: TTEXTMETRIC;
 begin
   Result := DEFAULT_CHARSET;
-  {DisplayDC := GetDC(0);
-  if (DisplayDC <> 0) then begin
-    if (SelectObject(DisplayDC, StockFont) <> 0) then
-      if (GetTextMetrics(DisplayDC, TxtMetric)) then
-        Result := TxtMetric.tmCharSet;
-    ReleaseDC(0, DisplayDC);
-  end;}
 end;
 
 {------------------------------------------------------------------------------

@@ -379,6 +379,25 @@ uses
 { TSynBaseCompletionForm }
 
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
+
+  function GetDefaultFontHeight: integer;
+  {$IFDEF SYN_LAZARUS}
+  var
+    TextMetric: TTextMetric;
+    DC: HDC;
+  begin
+    DC:=GetDC(0);
+    FillChar(TextMetric,SizeOf(TextMetric),0);
+    GetTextMetrics(DC,TextMetric);
+    Result := TextMetric.tmHeight+2;
+    ReleaseDC(0,DC);
+  end;
+  {$ELSE}
+  begin
+    Result := Canvas.TextHeight('Cyrille de Brebisson')+2;
+  end;
+  {$ENDIF}
+
 begin
   {$IFDEF SYN_LAZARUS}
   inherited Create(AOwner);
@@ -410,7 +429,7 @@ begin
   FHint := TSynBaseCompletionHint.Create(Self);
   {$ENDIF}
   Visible := false;
-  FFontHeight := Canvas.TextHeight('Cyrille de Brebisson')+2;
+  FFontHeight := GetDefaultFontHeight;
   {$IFNDEF SYN_LAZARUS}
   Color := clWindow;
   {$ENDIF}

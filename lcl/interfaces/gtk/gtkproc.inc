@@ -1416,20 +1416,23 @@ end;
   Function: CopyDCData
   Params:  DestinationDC:  a dc to copy data to
            SourceDC: a dc to copy data from
+           FreeObjects: boolean
   Returns: True if succesful
 
   Creates a copy DC from the given DC
  ------------------------------------------------------------------------------}
 function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 begin
-//  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
+  //  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
   if Result
   then begin
     with DestinationDC do
     begin
       DCWidget := SourceDC.DCWidget;
+      WithChildWindows := SourceDC.WithChildWindows;
       Drawable := SourceDC.Drawable;
+      OriginalDrawable := SourceDC.OriginalDrawable;
       if GC<>nil then begin
         // free old GC
         BeginGDKErrorTrap;
@@ -1455,11 +1458,21 @@ begin
         DCTextMetric := SourceDC.DCTextMetric;
       end else
         Exclude(DCFlags,dcfTextMetricsValid);
+      // ToDo: should the bitmap be freed automatically?
       CurrentBitmap := SourceDC.CurrentBitmap;
+      //DebugLn(['CopyDCData DC=',dbghex(PtrInt(DestinationDC)),' OldFont=',dbghex(PtrInt(CurrentFont2)),' NewFont=',dbghex(PtrInt(SourceDC.CurrentFont2))]);
+      if (CurrentFont<>nil) and (CurrentFont<>SourceDC.CurrentFont) then
+        DeleteObject(HGDIObj(CurrentFont));
       CurrentFont := SourceDC.CurrentFont;
+      if (CurrentPen<>nil) and (CurrentPen<>SourceDC.CurrentPen) then
+        DeleteObject(HGDIObj(CurrentPen));
       CurrentPen := SourceDC.CurrentPen;
+      if (CurrentBrush<>nil) and (CurrentBrush<>SourceDC.CurrentBrush) then
+        DeleteObject(HGDIObj(CurrentBrush));
       CurrentBrush := SourceDC.CurrentBrush;
-      //CurrentPalette := SourceDC.CurrentPalette;
+      if (CurrentPalette<>nil) and (CurrentPalette<>SourceDC.CurrentPalette) then
+        DeleteObject(HGDIObj(CurrentPalette));
+      CurrentPalette := SourceDC.CurrentPalette;
       CopyGDIColor(SourceDC.CurrentTextColor,CurrentTextColor);
       CopyGDIColor(SourceDC.CurrentBackColor,CurrentBackColor);
       ClipRegion := SourceDC.ClipRegion;
@@ -3910,6 +3923,10 @@ begin
       Result := PGTKWidget(Widget)^.Window
     else
       Result := PGtkLayout(Widget)^.bin_window;
+    {$IFDEF Gtk2}
+    if (Result=nil) and (GTK_WIDGET_NO_WINDOW(Widget)) then
+      Result:=gtk_widget_get_parent_window(Widget);
+    {$ENDIF}
   end else
     RaiseGDBException('GetControlWindow Widget=nil');
 end;

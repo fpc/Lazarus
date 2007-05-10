@@ -1228,8 +1228,18 @@ begin
     // Wait till a bitmap get selected
   end;
 *)
+  with pNewDC do
+  begin
+    {$ifdef TraceGdiCalls}
+    FillStackAddrs(get_caller_frame(get_frame), @StackAddrs);
+    {$endif}
+    gdk_color_black(gdk_colormap_get_system, @CurrentTextColor.Color);
+    BuildColorRefFromGDKColor(CurrentTextColor);
+    gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
+    BuildColorRefFromGDKColor(CurrentBackColor);
+  end;
 
-  pNewDC.CurrentFont := CreateDefaultFont;
+  pNewDC.GetFont;
   pNewDC.CurrentBrush := CreateDefaultBrush;
   pNewDC.CurrentPen := CreateDefaultPen;
 
@@ -4019,12 +4029,9 @@ begin
 
     UnderLine:=false;
     if (Str<>nil) and (Count>0) then begin
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-        UseFont := GetDefaultGtkFont(false);
-      end else begin
-        UseFont := CurrentFont^.GDIFontObject;
+      Usefont:=GetGtkFont(TDeviceContext(DC));
+      if (CurrentFont <> nil) and (CurrentFont^.GDIFontObject <> nil) then
         UnderLine:= (CurrentFont^.LogFont.lfUnderline<>0);
-      end;
 
       if UseFont <> nil then begin
         if (Options and ETO_CLIPPED) <> 0 then
@@ -6156,41 +6163,31 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      UseFont := GetDefaultGtkFont(false);
-    end
-    else begin
-      UseFont := CurrentFont^.GDIFontObject;
-    end;
-    If UseFont = nil then
-      DebugLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
-    else begin
-      descent:=0;
-      UpdateDCTextMetric(TDeviceContext(DC));
-      IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
-      if IsDBCSFont then begin
-        NewCount:=Count*2;
-        if FExtUTF8OutCacheSize<NewCount then begin
-          ReAllocMem(FExtUTF8OutCache,NewCount);
-          FExtUTF8OutCacheSize:=NewCount;
-        end;
-        NewCount:=UTF8ToDoubleByte(Str,Count,FExtUTF8OutCache)*2;
-        gdk_text_extents(UseFont, FExtUTF8OutCache, NewCount,
-                         @lbearing, @rBearing, @width, @ascent, @descent);
-      end else begin
-        gdk_text_extents(UseFont, Str, Count,
-                         @lbearing, @rBearing, @width, @ascent, @descent);
+    UseFont:=GetGtkFont(TDeviceContext(DC));
+    descent:=0;
+    UpdateDCTextMetric(TDeviceContext(DC));
+    IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
+    if IsDBCSFont then begin
+      NewCount:=Count*2;
+      if FExtUTF8OutCacheSize<NewCount then begin
+        ReAllocMem(FExtUTF8OutCache,NewCount);
+        FExtUTF8OutCacheSize:=NewCount;
       end;
-      Size.cX := Width;
-      // I THINK this is accurate...
-      Size.cY :={$IFDEF Win32}
-                GDK_String_Height(UseFont, Str)
-                {$ELSE}
-                ascent+descent;
-                {$ENDIF}
-      //debugln('TGtkWidgetSet.GetTextExtentPoint END Str="'+DbgStr(Str)+'" Size=',dbgs(Size.cX),'x',dbgs(Size.cY),' ascent=',dbgs(ascent),' descent=',dbgs(descent),' tmDescent=',dbgs(TDeviceContext(DC).DCTextMetric.TextMetric.tmDescent));
+      NewCount:=UTF8ToDoubleByte(Str,Count,FExtUTF8OutCache)*2;
+      gdk_text_extents(UseFont, FExtUTF8OutCache, NewCount,
+                       @lbearing, @rBearing, @width, @ascent, @descent);
+    end else begin
+      gdk_text_extents(UseFont, Str, Count,
+                       @lbearing, @rBearing, @width, @ascent, @descent);
     end;
+    Size.cX := Width;
+    // I THINK this is accurate...
+    Size.cY :={$IFDEF Win32}
+              GDK_String_Height(UseFont, Str)
+              {$ELSE}
+              ascent+descent;
+              {$ENDIF}
+    //debugln('TGtkWidgetSet.GetTextExtentPoint END Str="'+DbgStr(Str)+'" Size=',dbgs(Size.cX),'x',dbgs(Size.cY),' ascent=',dbgs(ascent),' descent=',dbgs(descent),' tmDescent=',dbgs(TDeviceContext(DC).DCTextMetric.TextMetric.tmDescent));
   end;
   Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
 
@@ -7564,16 +7561,16 @@ function TGtkWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   aDC, pSavedDC: TDeviceContext;
 begin
-//DebugLn('[TGtkWidgetSet.ReleaseDC] ',DbgS(DC,8),'  ',FDeviceContexts.Count);
+  //DebugLn('[TGtkWidgetSet.ReleaseDC] ',DbgS(DC),'  ',FDeviceContexts.Count);
   Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
-  if {(hWnd <> 0) and} (DC <> 0)
+  if (DC <> 0)
   then begin
     if FDeviceContexts.Contains(Pointer(DC))
     then begin
       aDC := TDeviceContext(DC);
-      { Release all saved device contexts }
+      // Release all saved device contexts
       pSavedDC:=aDC.SavedContext;
       if pSavedDC<>nil then begin
         if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
@@ -7589,8 +7586,9 @@ begin
         if pSavedDC.CurrentBrush = aDC.CurrentBrush
         then
           aDC.CurrentBrush := nil;
-        {if pSavedDC.CurrentPalette = aDC.CurrentPalette
-        then aDC.CurrentPalette := nil;}
+        if pSavedDC.CurrentPalette = aDC.CurrentPalette
+        then
+          aDC.CurrentPalette := nil;
         if pSavedDC.ClipRegion = aDC.ClipRegion
         then
           pSavedDC.ClipRegion := 0;
@@ -7601,11 +7599,12 @@ begin
       // Release all graphic objects
       DeleteObject(HGDIObj(aDC.CurrentBrush));
       DeleteObject(HGDIObj(aDC.CurrentPen));
+      //DebugLn(['TGtkWidgetSet.ReleaseDC DC=',dbghex(PtrInt(DC)),' Font=',dbghex(PtrInt(aDC.CurrentFont))]);
       DeleteObject(HGDIObj(aDC.CurrentFont));
       // bitmaps are not auto created, they are set via SelectObject
       // -> user must free it
       // ... DeleteObject(HGDIObj(aDC.CurrentBitmap));
-      //DeleteObject(HGDIObj(aDC.CurrentPalette));
+      DeleteObject(HGDIObj(aDC.CurrentPalette));
       DeleteObject(HGDIObj(aDC.ClipRegion));
       {FreeGDIColor(aDC.CurrentTextColor);
       FreeGDIColor(aDC.CurrentBackColor);}
@@ -7618,8 +7617,8 @@ begin
         end;
       except
         on E:Exception do begin
-          //Nothing, just try to unref it
-          //(it segfaults if the window doesnt exist anymore :-)
+          // Nothing, just try to unref it
+          // (it segfaults if the window doesnt exist anymore :-)
           DebugLn('TGtkWidgetSet.ReleaseDC: ',E.Message);
         end;
       end;
@@ -7658,6 +7657,7 @@ var
   ClipRegionChanged: Boolean;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
+
   Result := IsValidDC(DC) and (SavedDC <> 0);
   if Result
   then begin
@@ -7695,7 +7695,7 @@ begin
 
     // free saved DC
 
-    //prevent deleting of copied objects:
+    //prevent deletion of copied objects:
     if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
     then
       pSavedDC.CurrentBitmap := nil;
@@ -7998,8 +7998,10 @@ begin
         with TDeviceContext(DC) do
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
-          Result := HFONT(CurrentFont);
+          Result := HFONT(GetFont);// always create: a valid GDIObject is needed to restore
           if CurrentFont<> PGDIObject(GDIObj) then begin
+            //DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' Font Old=',dbghex(PtrInt(CurrentFont)),' New=',dbghex(GDIObj)]);
+            //dumpstack;
             CurrentFont := PGDIObject(GDIObj);
             {$IfDef GTK1}
             gdk_gc_set_font(GetGC, PGdiObject(GDIObj)^.GDIFontObject);
@@ -9511,77 +9513,72 @@ begin
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
+    UseFont:=GetGtkFont(TDeviceContext(DC));
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
-      UseFont := GetDefaultGtkFont(false);
       Underline := False;
       StrikeOut := False;
     end
     else begin
-      UseFont := CurrentFont^.GDIFontObject;
       Underline := LongBool(CurrentFont^.LogFont.lfUnderline);
       StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
     end;
-    If UseFont = nil then
-      DebugLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
-    else begin
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      descent:=0;
-      gdk_text_extents(UseFont, Str, Count,
-                       @lbearing, @rBearing, @width, @ascent, @descent);
-      sz.cx:=width;
-      Sz.cY :={$IFDEF Win32}
-              GDK_String_Height(UseFont, Str)
-              {$ELSE}
-              ascent+descent;
-              {$ENDIF}
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    descent:=0;
+    gdk_text_extents(UseFont, Str, Count,
+                     @lbearing, @rBearing, @width, @ascent, @descent);
+    sz.cx:=width;
+    Sz.cY :={$IFDEF Win32}
+            GDK_String_Height(UseFont, Str)
+            {$ELSE}
+            ascent+descent;
+            {$ENDIF}
 
 
-      
-      aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
-      //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
-      FillRect(DC,aRect,hBrush(CurrentBrush));
-      UpdateDCTextMetric(TDeviceContext(DC));
-      TxtPt.X := X;
-      {$IfDef Win32}
-        TxtPt.Y := Y + DCTextMetric.TextMetric.tmHeight div 2;
-      {$Else}
-        TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
-      {$EndIf}
-      SelectGDKTextProps(DC);
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      gdk_draw_text(Drawable, UseFont,
-        GetGC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
-      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-      If Underline or StrikeOut then begin
-        {Create & select pen of font color}
-        LogP.lopnStyle := PS_SOLID;
-        LogP.lopnWidth.X := 1;
-        LogP.lopnColor := GetTextColor(DC);
-        TempPen := SelectObject(DC, CreatePenIndirect(LogP));
+    
+    aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
+    //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
+    FillRect(DC,aRect,hBrush(CurrentBrush));
+    UpdateDCTextMetric(TDeviceContext(DC));
+    TxtPt.X := X;
+    {$IfDef Win32}
+      TxtPt.Y := Y + DCTextMetric.TextMetric.tmHeight div 2;
+    {$Else}
+      TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
+    {$EndIf}
+    SelectGDKTextProps(DC);
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+    gdk_draw_text(Drawable, UseFont,
+      GetGC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+    {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+    If Underline or StrikeOut then begin
+      {Create & select pen of font color}
+      LogP.lopnStyle := PS_SOLID;
+      LogP.lopnWidth.X := 1;
+      LogP.lopnColor := GetTextColor(DC);
+      TempPen := SelectObject(DC, CreatePenIndirect(LogP));
 
-        {Get line(s) horizontal position(s)}
-        Points[0].cX := X;
-        Points[1].cX := X + sz.cX;
+      {Get line(s) horizontal position(s)}
+      Points[0].cX := X;
+      Points[1].cX := X + sz.cX;
 
-        {Draw line(s)}
-        If Underline then begin
-          Points[0].cY := Y + 2 + DCTextMetric.TextMetric.tmHeight -
-                          DCTextMetric.TextMetric.tmDescent;
-          Points[1].cY := Points[0].cY;
-          Polyline(DC, PPoint(@Points[0]), 2);
-        end;
-
-        If StrikeOut then begin
-          Points[0].cY := Y + 2 + (TxtPt.Y - Y) div 2;
-          Points[1].cY := Points[0].cY;
-          Polyline(DC, PPoint(@Points[0]), 2);
-        end;
-
-        DeleteObject(SelectObject(DC, TempPen));
+      {Draw line(s)}
+      If Underline then begin
+        Points[0].cY := Y + 2 + DCTextMetric.TextMetric.tmHeight -
+                        DCTextMetric.TextMetric.tmDescent;
+        Points[1].cY := Points[0].cY;
+        Polyline(DC, PPoint(@Points[0]), 2);
       end;
-      Result := True;
+
+      If StrikeOut then begin
+        Points[0].cY := Y + 2 + (TxtPt.Y - Y) div 2;
+        Points[1].cY := Points[0].cY;
+        Polyline(DC, PPoint(@Points[0]), 2);
+      end;
+
+      DeleteObject(SelectObject(DC, TempPen));
     end;
+    Result := True;
   end;
 end;
 {$EndIf}

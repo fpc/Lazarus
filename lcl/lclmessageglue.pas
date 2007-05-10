@@ -419,7 +419,6 @@ function LCLSendMouseWheelMsg(const Target: TControl; XPos, YPos,
   WheelDelta: SmallInt; ShiftState: TShiftState): PtrInt;
 var
   Mess: TLMMouseEvent;
-  Keys: PtrInt;
 begin
   FillChar(Mess, SizeOf(Mess), 0);
 

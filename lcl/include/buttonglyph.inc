@@ -113,10 +113,11 @@ begin
 
   //Canvas.CopyRect(DestRect, FOriginal.Canvas, SrcRect)
   UseMaskHandle:=FOriginal.MaskHandle;
-  MaskBlt(Canvas.Handle,
+  MaskBlt(Canvas.GetUpdatedHandle([csHandleValid]),
           DestRect.Left,DestRect.Top,
           DestRect.Right-DestRect.Left,DestRect.Bottom-DestRect.Top,
-          FOriginal.Canvas.Handle,SrcRect.Left,SrcRect.Top,
+          FOriginal.Canvas.GetUpdatedHandle([csHandleValid]),
+          SrcRect.Left,SrcRect.Top,
           UseMaskHandle,SrcRect.Left,SrcRect.Top);
 
   // ToDo: VCL returns the text rectangle
@@ -124,9 +125,9 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{       TButtonGlyph SetNumGlyphs                                               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TButtonGlyph SetNumGlyphs
+------------------------------------------------------------------------------}
 procedure TButtonGlyph.SetNumGlyphs(Value : TNumGlyphs);
 begin
   if Value <> FNumGlyphs then begin

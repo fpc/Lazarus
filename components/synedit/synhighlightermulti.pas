@@ -239,6 +239,7 @@ end;
 { TSynMultiSyn }
 
 procedure TSynMultiSyn.ClearMarkers;
+{$IFNDEF FPC}
 const
   { if the compiler stops here, something is wrong with the constants above }
   { there is no special reason for this to be here. the constant must be
@@ -246,6 +247,7 @@ const
   so this function was randomly chosen }
   RangeInfoSize: byte = ( SizeOf(pointer) * 8 ) -
     ( (MaxNestedMultiSyn * SchemeIndexSize) + SchemeRangeSize );
+{$ENDIF}
 var
   i: integer;
 begin

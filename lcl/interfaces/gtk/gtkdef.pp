@@ -225,6 +225,7 @@ type
 
     procedure Clear;
     function GetGC: pgdkGC;
+    function GetFont: PGdiObject;
   end;
   
   
@@ -397,8 +398,10 @@ procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 
 type
   TCreateGCForDC = procedure(DC: TDeviceContext) of object;
+  TCreateFontForDC = procedure(DC: TDeviceContext) of object;
 var
   CreateGCForDC: TCreateGCForDC = nil;
+  CreateFontForDC: TCreateFontForDC = nil;
 
 {$IFDEF DebugLCLComponents}
 var
@@ -627,6 +630,13 @@ begin
   if GC=nil then
     CreateGCForDC(Self);
   Result:=GC;
+end;
+
+function TDeviceContext.GetFont: PGdiObject;
+begin
+  if CurrentFont=nil then
+    CreateFontForDC(Self);
+  Result:=CurrentFont;
 end;
 
 procedure GtkDefInit;

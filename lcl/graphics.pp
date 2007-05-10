@@ -465,15 +465,6 @@ type
     function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
   protected
-    procedure DoAllocateResources; override;
-    procedure DoDeAllocateResources; override;
-    procedure DoCopyProps(From: TFPCanvasHelper); override;
-    procedure SetFlags(Index: integer; AValue: boolean); override;
-    procedure SetName(AValue: string); override;
-    procedure SetSize(AValue: integer); override;
-    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
-    procedure SetFPColor(const AValue: TFPColor); override;
-    procedure Changed; override;
     function  GetCharSet: TFontCharSet;
     function  GetHandle: HFONT;
     function  GetHeight: Integer;
@@ -481,11 +472,20 @@ type
     function  GetPitch: TFontPitch;
     function  GetSize: Integer;
     function  GetStyle: TFontStyles;
+    procedure Changed; override;
+    procedure DoAllocateResources; override;
+    procedure DoCopyProps(From: TFPCanvasHelper); override;
+    procedure DoDeAllocateResources; override;
     procedure SetCharSet(const AValue: TFontCharSet);
+    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetColor(Value: TColor);
+    procedure SetFlags(Index: integer; AValue: boolean); override;
+    procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetHandle(const Value: HFONT);
     procedure SetHeight(value: Integer);
+    procedure SetName(AValue: string); override;
     procedure SetPitch(Value: TFontPitch);
+    procedure SetSize(AValue: integer); override;
     procedure SetStyle(Value: TFontStyles);
   public
     constructor Create; override;

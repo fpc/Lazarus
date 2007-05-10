@@ -315,6 +315,7 @@ procedure TResourceCache.ItemUsed(Item: TResourceCacheItem);
 // called after creation or when Item is used again
 begin
   if not ItemIsUsed(Item) then begin
+    // remove from unused list
     Item.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
     dec(FUnUsedItemCount);
   end;
