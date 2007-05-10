@@ -30,6 +30,7 @@ constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
+  FWantReturns := true;
   FWantTabs := false;
   FWordWrap := True;
   //FLines := TMemoStrings.Create(Self);
@@ -91,6 +92,15 @@ procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
 begin
   if FVertScrollBar=AValue then exit;
   FVertScrollBar:=AValue;
+end;
+
+procedure TCustomMemo.SetWantReturns(const AValue: Boolean);
+begin
+  if FWantReturns = AValue then
+    exit;
+  FWantReturns := AValue;
+  if HandleAllocated then
+    TWSCustomMemoClass(WidgetSetClass).SetWantReturns(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -217,11 +227,25 @@ end;
 
 procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if not ReadOnly then begin
-    if (Key=VK_RETURN) and (Shift=[]) then exit;
-    if FWantTabs and (Key=VK_TAB) and (Shift-[ssShift]=[]) then exit;
+  if not ReadOnly then
+  begin
+    if FWantReturns and (Key=VK_RETURN) and (Shift=[]) then
+      exit;
+    if FWantTabs and (Key=VK_TAB) and (Shift-[ssShift]=[]) then
+      exit;
   end;
   inherited ControlKeyDown(Key, Shift);
+end;
+
+procedure TCustomMemo.CNChar(var Message: TLMKeyUp);
+begin
+  inherited CNChar(Message);
+  
+  if not FWantReturns and (Message.CharCode = VK_RETURN) then
+  begin
+    Message.CharCode := VK_UNKNOWN;
+    Message.Result := 1;
+  end;
 end;
 
 procedure TCustomMemo.SetWantTabs(const NewWantTabs: boolean);
