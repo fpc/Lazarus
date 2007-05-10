@@ -104,9 +104,12 @@ if [ $CREATECROSSPPC == 1 ]; then
   make all PP=$COMPILER CPU_TARGET=powerpc
   cp fpcsrc/compiler/ppcrossppc fpcsrc/compiler/ppcppc
   CROSSCOMPILER=$FPCBUILDDIR/fpcsrc/compiler/ppcppc
-  make install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 INSTALL_PREFIX=$INSTALLDIR
+  make -C fpcsrc compiler_install rtl_install packages_install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 \
+     INSTALL_PREFIX=$INSTALLDIR FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
   # install for use by lazarus
-  make install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=1 INSTALL_PREFIX=$INSTALLFPCDIR
+  make -C fpcsrc compiler_install rtl_install packages_install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 \
+    INSTALL_PREFIX=$INSTALLFPCDIR FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
+
   make -C fpcsrc/compiler CPU_TARGET=powerpc installsymlink FPC=$CROSSCOMPILER INSTALL_PREFIX=$INSTALLFPCDIR
 fi
 
