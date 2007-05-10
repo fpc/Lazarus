@@ -1557,14 +1557,20 @@ end.</descr>
         <short>The vertical position of the messagebox.</short>
       </element>
       <!-- function Visibility: default -->
-      <element name="InputQuery">
-        <short>Input Query</short>
-        <descr>Function InputQuery(const ACaption, APrompt : String; 
-                    MaskInput : Boolean; var Value : String) : Boolean;
-Function InputQuery(const ACaption, APrompt : String; 
-                                         var Value : String) : Boolean;
+      <element name="InputQuery">        <short>Use InputQuery to show a dialog box to get some input from the user</short>
+        <descr><p>Two versions of this function which displays a prompt and expects user input of textual data;</p>
 
-    Two versions of this function which displays a prompt and expects user input of textual data;<br/> the first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password), <br/> the second omits this property. <br/>The text entered by the user is returned in the variable argument 'Value'; <br/>the function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). <br/>Omitting the MaskInput argument is equivalent to setting it FALSE.</descr>
+
+<p>The first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password),
+ the second omits this property. </p>
+
+
+<p>The text entered by the user is returned in the variable argument 'Value'. 
+The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). </p>
+
+
+<p>Omitting the MaskInput argument is equivalent to setting it FALSE.</p></descr>
+        <seealso><link id="InputBox"/></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="InputQuery.Result">
@@ -1590,60 +1596,25 @@ Function InputQuery(const ACaption, APrompt : String;
         <descr>When the DialogBox is shown the text in the Editbox will be Value. When ENTER is pressed or OK clicked, Value will be the text from the Editbox.</descr>
       </element>
       <!-- function Visibility: default -->
-      <element name="InputQuery">
-        <short>Use InputQuery to show a dialog box to get some input from the user</short>
-        <descr>InputQuery works a lot like InputBox, however the result of InputQuery is a Boolean indicating whether the user pressed OK. If the result is false the user pressed Cancel.
-If you want a default value to be returned when the user presses Cancel, use InputBox
-There are two versions of this function, the difference between them is the ability to mask the users input.</descr>
+      <element name="InputBox">        <short>Displays a box with defined title and prompt, and expects user input in a text box</short>
+        <descr><p><printshort id="InputBox"/>. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
+</p>
+<p>If the user selects the OK button, the text in the text box is returned. If the user selects the Cancel button, the default string is returned.
+</p></descr>
+        <seealso><link id="ShowMessage"/></seealso>
+        <example file="dialogs/inputbox.pas"/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="InputQuery.Result">
-        <short>This function returns a Boolean as result</short>
-        <descr>If the result is True, the user pressed OK in the dialog box. Did the user press Cancel the result will be false.</descr>
+      <element name="InputBox.Result">        <short>The result of this function is the string the user entered in the editbox or the default string</short>
+        <descr><printshort id="InputBox.Result"/>.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="InputQuery.ACaption">
-        <short>The caption for the dialogbox</short>
+      <element name="InputBox.ACaption">        <short>The caption for the dialogbox</short>
+        <descr><printshort id="InputBox.ACaption"/>.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="InputQuery.APrompt">
-        <short>The text asking the user for his input.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="InputQuery.Value">
-        <short>The value the user entered.</short>
-        <descr>When the DialogBox is shown the text in the Editbox will be Value. When ENTER is pressed or OK clicked, Value will be the text from the Editbox.</descr>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="InputBox">
-        <short>InputBox</short>
-        <descr>Function InputBox(const ACaption, APrompt, ADefault : String) : String;
-
-    Displays a box with defined title and prompt, and expects user input in a text box. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
-
-Example
-
-Uses forms, lcltype, dialogs, controls;
-procedure TryInputBox;
-var userstring: string;
-begin
-  userstring := InputBox ('Get some text input', 
-                          'Please type in some information', 'Some sample text');
-  ShowMessage (userstring)
-end;</descr>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="InputBox.Result">
-        <short>The result of this function is the string the user entered in the editbox.</short>
-        <descr>The result of this function is the string the user entered in the editbox.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="InputBox.ACaption">
-        <short>The caption for the dialogbox</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="InputBox.APrompt">
-        <short>The text asking the user for his input.</short>
+      <element name="InputBox.APrompt">        <short>The text asking the user for his input</short>
+        <descr><printshort id="InputBox.APrompt"/>.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="InputBox.ADefault">
