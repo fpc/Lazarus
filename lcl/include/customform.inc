@@ -471,11 +471,11 @@ end;
 
 procedure TCustomForm.CMShowingChanged(var Message: TLMessage);
 begin
-  inherited;
   if Showing then
     DoShow
   else
     DoHide;
+  inherited;
 end;
 {------------------------------------------------------------------------------
   Method: TCustomForm.Activate

@@ -2608,7 +2608,8 @@ begin
   end;
   
   //DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' FShowing=',FShowing,' AutoSizeDelayed=',AutoSizeDelayed]);
-  if FShowing then begin
+  if FShowing then
+  begin
     ResizeDelayedAutoSizeChildren;
     AdjustSize;
   end;
@@ -5187,6 +5188,9 @@ begin
     //RaiseGDBException('');
   end;
 
+  // Control is not showing at this moment. It will be showed in UpdateShowing
+  // call later in CreateWnd
+  FShowing := False;
   Include(FWinControlFlags,wcfCreatingHandle);
   try
     CreateParams(Params);
@@ -5278,7 +5282,6 @@ begin
     ' -> NewBounds=',dbgs(BoundsRect));
   {$ENDIF}
   DoSendBoundsToInterface;
-  TWSWinControlClass(WidgetSetClass).ShowHide(Self);
 
   if wcfColorChanged in FWinControlFlags then begin
     // replace by update style call

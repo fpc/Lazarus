@@ -412,8 +412,11 @@ Begin
   end;
 
   if not (wcfCreatingHandle in FWinControlFlags) then
+  begin
     Modified := True;
-  if HandleAllocated then Change;
+    if HandleAllocated then
+      Change;
+  end;
 End;
 
 Procedure TCustomEdit.Change;
