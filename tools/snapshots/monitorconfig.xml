@@ -1,73 +1,79 @@
 <?xml version="1.0" ?>
-<CONFIG LazVersion="0.9.21">
+<CONFIG>
+    <Version
+        Lazarus="0.9.23"
+        FPC_Release="2.0.4"
+        FPC_Fixes="2.1.5"
+        FPC_Devel="2.3.1"
+    />
     <Server Type="ftp" Name="Snapshot on scenergy">
         <File
-            Mask="lazarus-0.9.23-*-src.zip"
+            Mask="lazarus-$LAZVER-*-src.zip"
             Description="Lazarus source zip"
         />
         <File
-            Mask="lazarus-0.9.23-*-src.tar.bz2"
+            Mask="lazarus-$LAZVER-*-src.tar.bz2"
             Description="Lazarus source bzip2"
         />
         <File
-            Mask="Lazarus-0.9.23-fpc-2.0.4-*-win32.exe"
-            Description="Lazarus win32 fpc 2.0.4"
+            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-*-win32.exe"
+            Description="Lazarus win32 with fpc fixes branch ($FPCRELEASEVER)"
         />
         <File
-            Mask="Lazarus-0.9.23-fpc-2.1.3-*-win32.exe"
-            Description="Lazarus win32 fpc 2.1.3"
+            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-*-win32.exe"
+            Description="Lazarus win32 with fpc fixes branch ($FPCFIXESVER)"
         />
         <File
-            Mask="Lazarus-0.9.23-fpc-2.1.3-*-win64.exe"
-            Description="Lazarus win64 fpc 2.1.3"
+            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-*-win64.exe"
+            Description="Lazarus win64 with fpc fixes branch ($FPCFIXESVER)"
         />
         <File
-            Mask="fpc-2.0.4-*-powerpc-macosx.dmg"
-            Description="fpc 2.0.4 Mac OS X powerpc"
+            Mask="fpc-$FPCRELEASEVER-*-powerpc-macosx.dmg"
+            Description="fpc $FPCRELEASEVER Mac OS X powerpc"
         />
         <File
-            Mask="fpcsrc-2.0.4-*-powerpc-macosx.dmg"
-            Description="fpc source 2.0.4 Mac OS X powerpc"
+            Mask="fpcsrc-$FPCRELEASEVER-*-powerpc-macosx.dmg"
+            Description="fpc source $FPCRELEASEVER Mac OS X powerpc"
         />
         <File
-            Mask="lazarus-0.9.23-*-powerpc-macosx.dmg"
+            Mask="lazarus-$LAZVER-*-powerpc-macosx.dmg"
             Description="lazarus Mac OS X powerpc"
         />
         <File
-            Mask="fpc-2.1.3-*-i386-macosx.dmg"
-            Description="fpc 2.1.3 Mac OS X i386"
+            Mask="fpc-$FPCFIXESVER-*-i386-macosx.dmg"
+            Description="fpc $FPCFIXESVER Mac OS X i386"
         />
         <File
-            Mask="fpcsrc-2.1.3-*-i386-macosx.dmg"
-            Description="fpc source 2.1.3 Mac OS X i386"
+            Mask="fpcsrc-$FPCFIXESVER-*-i386-macosx.dmg"
+            Description="fpc source $FPCFIXESVER Mac OS X i386"
         />
         <File
-            Mask="lazarus-0.9.23-*-i386-macosx.dmg"
+            Mask="lazarus-$LAZVER-*-i386-macosx.dmg"
             Description="lazarus Mac OS X i386"
         />
         <File
-            Mask="fpc-2.0.4-*.src.rpm"
-            Description="fpc 2.0.4 source rpm"
+            Mask="fpc-$FPCRELEASEVER-*.src.rpm"
+            Description="fpc $FPCRELEASEVER source rpm"
         />
         <File
-            Mask="fpc-2.0.4-*.i386.rpm"
-            Description="fpc 2.0.4 i386 rpm"
+            Mask="fpc-$FPCRELEASEVER-*.i386.rpm"
+            Description="fpc $FPCRELEASEVER i386 rpm"
         />
         <File
-            Mask="fpc-src-2.0.4-*.i386.rpm"
-            Description="fpc source 2.0.4 i386 rpm"
+            Mask="fpc-src-$FPCRELEASEVER-*.i386.rpm"
+            Description="fpc source $FPCRELEASEVER i386 rpm"
         />
         <File
             Mask="lazarus-*.i386.rpm"
             Description="lazarus i386 rpm"
         />
         <File
-            Mask="fpc-2.0.4-*.x86_64.rpm"
-            Description="fpc 2.0.4 x86_64 rpm"
+            Mask="fpc-$FPCRELEASEVER-*.x86_64.rpm"
+            Description="fpc $FPCRELEASEVER x86_64 rpm"
         />
         <File
-            Mask="fpc-src-2.0.4-*.x86_64.rpm"
-            Description="fpc source 2.0.4 x86_64 rpm"
+            Mask="fpc-src-$FPCRELEASEVER-*.x86_64.rpm"
+            Description="fpc source $FPCRELEASEVER x86_64 rpm"
         />
         <File
             Mask="lazarus-*.x86_64.rpm"

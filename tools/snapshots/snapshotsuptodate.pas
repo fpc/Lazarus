@@ -121,7 +121,7 @@ begin
   FtpFile := TFtpFile(MatchingFiles.Objects[0]);
   AssertTrue(
     FtpFile.FileName +' is too old: ' + DateTimeToStr(FtpFile.FileDate),
-    (Now - FtpFile.FileDate) < 1.0);
+    (Now - FtpFile.FileDate) < (26/24));
 end;
 
 procedure InitFromXml;

@@ -5,7 +5,7 @@ unit MonitorCfg;
 interface
 
 uses
-  contnrs, dom, xmlread;
+  strutils, contnrs, dom, xmlread;
   
 type
   TServerType = (stFtp, stHttp);
@@ -13,21 +13,33 @@ type
   TServer = class;
   TFile = class;
   
+  TReplaceStringEvent = function (const value: string):string of object;
+  
   { TMonitorConfig }
 
   TMonitorConfig = class
   private
     FFileName: string;
+    FFPCDevelVersion: string;
+    FFPCFixesVersion: string;
+    FFPCReleaseVersion: string;
+    FLazVersion: string;
     FServers: TFPObjectList;
     function GetServer(index: integer): TServer;
     function GetServerCount: integer;
     procedure AddServer(const ServerNode: TDOMNode);
+    procedure ReadVersions(const VersionNode: TDOMNode);
+    function ServerReplaceString(const value: string): string;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Load(const AFileName: string);
     procedure AddServer(AServer: TServer);
     property FileName: string read FFileName write FFileName;
+    property LazVersion: string read FLazVersion;
+    property FPCReleaseVersion: string read FFPCReleaseVersion;
+    property FPCFixesVersion: string read FFPCFixesVersion;
+    property FPCDevelVersion: string read FFPCDevelVersion;
     property Servers[index: integer] : TServer read GetServer;
     property ServerCount: integer read GetServerCount;
   end;
@@ -38,6 +50,7 @@ type
   private
     FFiles: TFPObjectList;
     FDescription: string;
+    FOnReplaceString: TReplaceStringEvent;
     FServerType: TServerType;
     function GetFile(index: integer): TFile;
     function GetFileCount: integer;
@@ -50,6 +63,7 @@ type
     property ServerType : TServerType read FServerType write FServerType;
     property Files[index: integer] : TFile read GetFile;
     property FileCount: integer read GetFileCount;
+    property OnReplaceString: TReplaceStringEvent read FOnReplaceString write FOnReplaceString;
   end;
 
   { TFile }
@@ -66,6 +80,15 @@ type
 
 implementation
 
+function GetAttributeValue(const ANode: TDomNode; const AName: string): string;
+var
+  Attribute: TDOMNode;
+begin
+  Attribute := ANode.Attributes.GetNamedItem(AName);
+  if assigned(Attribute) then
+    Result := Attribute.NodeValue;
+end;
+
 { TServer }
 
 function TServer.GetFile(index: integer): TFile;
@@ -81,15 +104,11 @@ end;
 procedure TServer.AddFile(const ServerNode: TDOMNode);
 var
   NewFile: TFile;
-  Attribute: TDOMNode;
 begin
   NewFile := TFile.Create;
-  Attribute := ServerNode.Attributes.GetNamedItem('Description');
-  if assigned(Attribute) then
-    NewFile.Description := Attribute.NodeValue;
-  Attribute := ServerNode.Attributes.GetNamedItem('Mask');
-  if assigned(Attribute) then
-    NewFile.Mask := Attribute.NodeValue;
+  NewFile.Description := OnReplaceString(GetAttributeValue(ServerNode, 'Description'));
+  NewFile.Mask := OnReplaceString(GetAttributeValue(ServerNode, 'Mask'));
+
   AddFile(NewFile);
 end;
 
@@ -134,6 +153,7 @@ var
   Node: TDomNode;
 begin
   Server := TServer.Create;
+  Server.OnReplaceString := @ServerReplaceString;
   Attribute := ServerNode.Attributes.GetNamedItem('Name');
   if assigned(Attribute) then
     Server.Description := Attribute.NodeValue;
@@ -150,6 +170,22 @@ begin
     Node := Node.NextSibling;
   end;
   AddServer(Server);
+end;
+
+procedure TMonitorConfig.ReadVersions(const VersionNode: TDOMNode);
+begin
+  FLazVersion := GetAttributeValue(VersionNode, 'Lazarus');
+  FFPCReleaseVersion := GetAttributeValue(VersionNode, 'FPC_Release');
+  FFPCFixesVersion := GetAttributeValue(VersionNode, 'FPC_Fixes');
+  FFPCDevelVersion := GetAttributeValue(VersionNode, 'FPC_Devel');
+end;
+
+function TMonitorConfig.ServerReplaceString(const value: string): string;
+begin
+  Result := AnsiReplaceStr(Value, '$LAZVER', LazVersion);
+  Result := AnsiReplaceStr(Result, '$FPCRELEASEVER', FPCReleaseVersion);
+  Result := AnsiReplaceStr(Result, '$FPCFIXESVER', FPCFixesVersion);
+  Result := AnsiReplaceStr(Result, '$FPCDEVELVER', FPCDevelVersion);
 end;
 
 constructor TMonitorConfig.Create;
@@ -175,7 +211,9 @@ begin
     Node := XmlDoc.DocumentElement.FirstChild;
     while Node<>nil do begin
       if Node.NodeName='Server' then
-        AddServer(Node);
+        AddServer(Node)
+      else if Node.NodeName='Version' then
+        ReadVersions(Node);
       Node := Node.NextSibling;
     end;
   finally
