@@ -82,6 +82,7 @@ type
     function FindADescriptor(TheGtkFont: TGtkIntfFont): TGtkFontCacheDescriptor;
     function Add(TheGtkFont: TGtkIntfFont; const LogFont: TLogFont;
                  const LongFontName: string): TGtkFontCacheDescriptor;
+    function AddWithoutName(TheGtkFont: TGtkIntfFont): TGtkFontCacheDescriptor;
     procedure Reference(TheGtkFont: TGtkIntfFont);
     procedure Unreference(TheGtkFont: TGtkIntfFont);
     procedure DumpDescriptors;
@@ -243,6 +244,8 @@ function TGtkFontCache.Add(TheGtkFont: TGtkIntfFont; const LogFont: TLogFont;
 var
   Item: TGtkFontCacheItem;
 begin
+  if TheGtkFont=nil then
+    RaiseGDBException('TGtkFontCache.Add TheGtkFont=nil');
   if FindGtkFontDesc(LogFont,LongFontName)<>nil then
     RaiseGDBException('TGtkFontCache.Add font desc added twice');
     
@@ -266,6 +269,17 @@ begin
     DumpDescriptors;
     RaiseGDBException('');
   end;
+end;
+
+function TGtkFontCache.AddWithoutName(TheGtkFont: TGtkIntfFont
+  ): TGtkFontCacheDescriptor;
+var
+  LogFont: TLogFont;
+  LongFontName: string;
+begin
+  FillChar(LogFont,SizeOf(LogFont),0);
+  LongFontName:=dbghex(PtrInt(TheGtkFont));
+  Result:=Add(TheGtkFont,LogFont,LongFontName);
 end;
 
 procedure TGtkFontCache.Reference(TheGtkFont: TGtkIntfFont);

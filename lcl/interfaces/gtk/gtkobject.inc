@@ -176,7 +176,7 @@ begin
   FDeviceContexts := TDynHashArray.Create(-1);
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
   CreateGCForDC:=@OnCreateGCForDC;
-  CreateFontForDC:=@OnCreateFontForDC;
+  CreateGDIObjectForDC:=@OnCreateGDIObjectForDC;
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
 
@@ -352,8 +352,6 @@ end;
 destructor TGtkWidgetSet.Destroy;
 const
   ProcName = '[TGtkWidgetSet.Destroy]';
-  GDITYPENAME: array[TGDIType] of String = (
-     'gdiBitmap', 'gdiBrush', 'gdiFont', 'gdiPen', 'gdiRegion', 'gdiPalette');
 var
   n: Integer;
   pTimerInfo  : PGtkITimerinfo;
@@ -364,7 +362,7 @@ var
   NextQueueItem : TGtkMessageQueueItem;
 begin
   CreateGCForDC:=nil;
-  CreateFontForDC:=nil;
+  CreateGDIObjectForDC:=nil;
 
   ReAllocMem(FExtUTF8OutCache,0);
   FExtUTF8OutCacheSize:=0;
@@ -390,12 +388,13 @@ begin
     QueueItem := NextQueueItem;
   end;
 
+  // warn about unremoved paint messages
   if fMessageQueue.HasPaintMessages then begin
     DebugLn(ProcName, Format(rsWarningUnremovedPaintMessages,
       [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
   end;
 
-  {$ifndef TraceGdiCalls}
+  // warn about unreleased DC
   if (FDeviceContexts.Count > 0)
   then begin
     DebugLn(ProcName, Format(rsWarningUnreleasedDCsDump,
@@ -412,8 +411,8 @@ begin
     end;
     DebugLn();
   end;
-  {$endif}
-  
+
+  // warn about unreleased gdi objects
   if (FGDIObjects.Count > 0)
   then begin
     DebugLn(ProcName,Format(rsWarningUnreleasedGDIObjectsDump,
@@ -440,11 +439,11 @@ begin
     end;
     {$ifndef TraceGdiCalls}
     DebugLn();
+    {$endif}
 
     for GDIType := Low(GDIType) to High(GDIType) do
       if GDITypeCount[GDIType] > 0 then
-        DebugLn(ProcName,Format('   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
-    {$endif}
+        DebugLn(ProcName,Format('   %s: %d', [dbgs(GDIType), GDITypeCount[GDIType]]));
   end;
 
 
@@ -455,6 +454,7 @@ begin
       fMessageQueue.RemoveMessage(fMessageQueue.FirstMessageItem,FPMF_All,true);
   end;
 
+  // warn about unreleased timers
   n := FTimerData.Count;
   if (n > 0) then
   begin
@@ -469,28 +469,6 @@ begin
   end;
 
   {$ifdef TraceGdiCalls}
-  if (FGDIObjects.Count > 0)
-  then begin
-    //DebugLn('BackTrace for unreleased gdi objects follows:');
-    for GDIType := Low(TGDIType) to High(TGDIType) do begin
-      if GDITypeCount[GDIType]<>0 then begin
-        n:=0;
-        HashItem := FGDIObjects.FirstHashItem;
-        while (HashItem <> nil) and (n<MaxTraces) do begin
-          DebugLn(GdiTypeName[gdiType],': ', dbgs(HashItem^.Item));
-          DumpBackTrace(PgdiObject(HashItem^.Item)^.StackAddrs);
-          DebugLn();
-          HashItem := HashItem^.Next;
-          inc(n);
-        end;
-        if (n>=MaxTraces) then begin
-          DebugLn('... Truncated ',GDITYPENAME[GDIType],' leakage dump.');
-          DebugLn();
-        end;
-      end;
-    end;
-  end;
-
   if FDeviceContexts.Count>0 then begin
     //DebugLn('BackTrace for unreleased device contexts follows:');
     n:=0;
@@ -505,6 +483,28 @@ begin
     if (n>=MaxTraces) then begin
       DebugLn('... Truncated dump DeviceContext leakage dump.');
       DebugLn();
+    end;
+  end;
+
+  if (FGDIObjects.Count > 0)
+  then begin
+    //DebugLn('BackTrace for unreleased gdi objects follows:');
+    for GDIType := Low(TGDIType) to High(TGDIType) do begin
+      if GDITypeCount[GDIType]<>0 then begin
+        n:=0;
+        HashItem := FGDIObjects.FirstHashItem;
+        while (HashItem <> nil) and (n<MaxTraces) do begin
+          DebugLn(dbgs(gdiType),': ', dbgs(HashItem^.Item));
+          DumpBackTrace(PgdiObject(HashItem^.Item)^.StackAddrs);
+          DebugLn();
+          HashItem := HashItem^.Next;
+          inc(n);
+        end;
+        if (n>=MaxTraces) then begin
+          DebugLn('... Truncated ',dbgs(GDIType),' leakage dump.');
+          DebugLn();
+        end;
+      end;
     end;
   end;
   {$endif}
@@ -2120,11 +2120,11 @@ begin
   gdk_drawable_get_size(GdiObject^.GDIPixmapObject,@Width, @Height);
   Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
 
- If GdiObject^.Visual <> nil then
-   GDK_Visual_UnRef(GdiObject^.Visual);
+  If GdiObject^.Visual <> nil then
+    GDK_Visual_UnRef(GdiObject^.Visual);
 
- If GdiObject^.Colormap <> nil then
-   GDK_Colormap_UnRef(GdiObject^.Colormap);
+  If GdiObject^.Colormap <> nil then
+    GDK_Colormap_UnRef(GdiObject^.Colormap);
 
   GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIpixmapObject);
   If GdiObject^.Visual = nil then
@@ -3081,10 +3081,9 @@ var
         CurrentBrush := PGdiObject(Brush);
         SelectedColors := dcscCustom;
         SelectGDKBrushProps(DC);
-
-        If not CurrentBrush^.IsNullBrush then begin
+        If not IsNullBrush(TDeviceContext(DC)) then
           gdk_draw_rectangle(TempPixmap, GetGC, 1, 0, 0, Width, Height);
-        end;
+          
         // Restore current brush
         SelectedColors := dcscCustom;
         CurrentBrush := OldCurrentBrush;
@@ -3101,11 +3100,15 @@ var
     DebugLn('SrcDevBitmapToDrawable Start');
     {$ENDIF}
     SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
-    if (SrcGDIBitmap=nil) then begin
+    if (SrcGDIBitmap=nil)then begin
       DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil');
       exit;
     end;
     SrcPixmap:=SrcGDIBitmap^.GDIPixmapObject;
+    if (SrcPixmap=nil)then begin
+      DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap^.GDIPixmapObject=nil');
+      exit;
+    end;
     MaskPixmap:=nil;
     if (Mask<>0) then
       MaskPixmap:=PGdiObject(Mask)^.GDIBitmapMaskObject;
@@ -4282,7 +4285,7 @@ begin
 
   // Remove control accelerators - has to be done due to GTK+ bug?
   //DebugLn('TGtkWidgetSet.DestroyLCLComponent B  Widget=',GetWidgetDebugReport(Widget));
-  {$IFNDef GTK2}
+  {$IFDef GTK1}
   Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Widget));
   while Accelerators <> nil do begin
     AccelEntry:= Accelerators^.data;
@@ -6295,22 +6298,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SelectGDKBrushProps(DC: HDC);
 begin
-  if (TDeviceContext(DC).SelectedColors=dcscBrush) or
-     TDeviceContext(DC).CurrentBrush^.IsNullBrush
+  if (TDeviceContext(DC).SelectedColors=dcscBrush)
+    or IsNullBrush(TDeviceContext(DC))
   then
     exit;
 
-  with TDeviceContext(DC), CurrentBrush^ do
+  with TDeviceContext(DC) do
   begin
     //DebugLn('TGtkWidgetSet.SelectGDKBrushProps Setting BKColor ...');
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
     //DebugLn('TGtkWidgetSet.SelectGDKBrushProps Setting Brush Color ...');
-    EnsureGCColor(DC, dccGDIBrushColor, GDIBrushFill = GDK_Solid, False);//Brush Color
+    EnsureGCColor(DC, dccGDIBrushColor, GetBrush^.GDIBrushFill = GDK_Solid, False);//Brush Color
 
-    If GDIBrushFill <> GDK_Solid then
-      If GDIBrushPixmap <> nil then begin
-        gdk_gc_set_fill(GetGC, GDIBrushFill);
-        gdk_gc_set_Stipple(GetGC,GDIBrushPixmap);
+    If GetBrush^.GDIBrushFill <> GDK_Solid then
+      If GetBrush^.GDIBrushPixmap <> nil then begin
+        gdk_gc_set_fill(GetGC, GetBrush^.GDIBrushFill);
+        gdk_gc_set_Stipple(GetGC, GetBrush^.GDIBrushPixmap);
       end
   end;
   TDeviceContext(DC).SelectedColors:=dcscBrush;
@@ -6354,7 +6357,7 @@ procedure TGtkWidgetSet.SelectGDKPenProps(DC: HDC);
 
 begin
   if TDeviceContext(DC).SelectedColors<>dcscPen then begin
-    with TDeviceContext(DC), CurrentPen^ do begin
+    with TDeviceContext(DC), GetPen^ do begin
       EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
       EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
     end;
@@ -6364,7 +6367,7 @@ begin
   if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
     Exclude(TDeviceContext(DC).DCFlags,dcfPenInvalid);
     if TDeviceContext(DC).GetGC<>nil then begin
-      with TDeviceContext(DC), CurrentPen^ do
+      with TDeviceContext(DC), GetPen^ do
       begin
         IsNullPen := GDIPenStyle = PS_NULL;
         if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
@@ -6406,8 +6409,34 @@ begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.NewDC]', []));
   Result:=NewDeviceContext;
   FDeviceContexts.Add(Result);
-//DebugLn('[TGtkWidgetSet.NewDC] ',DbgS(Result),'  ',FDeviceContexts.Count);
-//  Assert(False, Format('Trace:< [TGtkWidgetSet.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+  {$ifdef TraceGdiCalls}
+  FillStackAddrs(get_caller_frame(get_frame), @Result.StackAddrs);
+  {$endif}
+  //DebugLn(['[TGtkWidgetSet.NewDC] ',DbgS(Result),'  ',FDeviceContexts.Count]);
+  //  Assert(False, Format('Trace:< [TGtkWidgetSet.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+end;
+
+function TGTKWidgetSet.FindDCWithGDIObject(GDIObject: PGdiObject
+  ): TDeviceContext;
+var
+  HashItem: PDynHashArrayItem;
+  DC: TDeviceContext;
+  g: TGDIType;
+  Cnt: Integer;
+begin
+  Result:=nil;
+  if GdiObject=nil then exit;
+  HashItem:=FDeviceContexts.FirstHashItem;
+  Cnt:=0;
+  while HashItem<>nil do begin
+    DC:=TDeviceContext(HashItem^.Item);
+    for g:=Low(TGDIType) to High(TGDIType) do
+      if DC.GDIObjects[g]=GdiObject then exit(DC);
+    inc(Cnt);
+    HashItem:=HashItem^.Next;
+  end;
+  if Cnt<>FDeviceContexts.Count then
+    RaiseGDBException('');
 end;
 
 {------------------------------------------------------------------------------
@@ -6485,14 +6514,13 @@ begin
     aDC.Drawable := TheWindow;
     {$IFDEF Gtk1}
     aDC.GetGC;
+    {$ELSE}
+    // GC is created on demand
     {$ENDIF}
   end;
 
   with aDC do
   begin
-    {$ifdef TraceGdiCalls}
-    FillStackAddrs(get_caller_frame(get_frame), @StackAddrs);
-    {$endif}
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor.Color);
     BuildColorRefFromGDKColor(CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
@@ -6501,12 +6529,11 @@ begin
 
   {$Ifdef GTK1}
   aDC.GetFont;
+  aDC.GetBrush;
+  aDC.GetPen;
   {$ELSE}
-  // font is created on demand
+  // font, brush, pen are created on demand
   {$EndIf}
-
-  aDC.CurrentBrush := CreateDefaultBrush;
-  aDC.CurrentPen := CreateDefaultPen;
 
   Result := HDC(aDC);
   Assert(False, Format('trace:< [TGtkWidgetSet.CreateDCForWidget] Got 0x%x', [Result]));
@@ -6547,6 +6574,18 @@ begin
   end;
 end;
 
+procedure TGTKWidgetSet.OnCreateGDIObjectForDC(DC: TDeviceContext;
+  aGDIType: TGDIType);
+begin
+  case aGDIType of
+  gdiFont: OnCreateFontForDC(DC);
+  gdiBrush: OnCreateBrushForDC(DC);
+  gdiPen: OnCreatePenForDC(DC);
+  gdiBitmap: OnCreateGDIBitmapForDC(DC);
+  else RaiseGDBException('TGTKWidgetSet.OnCreateGDIObjectForDC');
+  end;
+end;
+
 procedure TGTKWidgetSet.OnCreateFontForDC(DC: TDeviceContext);
 {$IFDEF Gtk2}
 var
@@ -6562,18 +6601,42 @@ begin
     DC.CurrentFont^.GDIFontObject := DC.GCValues.Font;
     FontCache.Reference(DC.CurrentFont^.GDIFontObject);
   end else
-    DC.CurrentFont := CreateDefaultFont;
+    DC.CurrentFont:=CreateDefaultFont;
   {$ELSE}
   if DC.DCWidget<>nil then begin
     ClientWidget:=GetFixedWidget(DC.DCWidget);
     DC.CurrentFont:=NewGDIObject(gdiFont);
     DC.CurrentFont^.GDIFontObject:=
                                gtk_widget_create_pango_layout(ClientWidget,nil);
-    FontCache.Reference(DC.CurrentFont^.GDIFontObject);
+    FontCache.AddWithoutName(DC.CurrentFont^.GDIFontObject);
+    if FontCache.FindGTKFont(GetGtkFont(DC))=nil then
+      RaiseGDBException('');
   end else
-    DC.CurrentFont := CreateDefaultFont;
+    DC.CurrentFont:=CreateDefaultFont;
   //DebugLn(['TGTKWidgetSet.OnCreateFontForDC DC=',dbghex(PtrInt(DC)),' Font=',dbghex(PtrInt(DC.CurrentFont))]);
   {$ENDIF}
+  DC.OwnedGDIObjects[gdiFont]:=DC.CurrentFont;
+end;
+
+procedure TGTKWidgetSet.OnCreateBrushForDC(DC: TDeviceContext);
+begin
+  if DC.CurrentBrush<>nil then exit;
+  DC.CurrentBrush := CreateDefaultBrush;
+  DC.OwnedGDIObjects[gdiBrush]:=DC.CurrentBrush;
+end;
+
+procedure TGTKWidgetSet.OnCreatePenForDC(DC: TDeviceContext);
+begin
+  if DC.CurrentPen<>nil then exit;
+  DC.CurrentPen := CreateDefaultPen;
+  DC.OwnedGDIObjects[gdiPen]:=DC.CurrentPen;
+end;
+
+procedure TGTKWidgetSet.OnCreateGDIBitmapForDC(DC: TDeviceContext);
+begin
+  if DC.CurrentBitmap<>nil then exit;
+  DC.CurrentBitmap := CreateDefaultGDIBitmap;
+  DC.OwnedGDIObjects[gdiBitmap]:=DC.CurrentBitmap;
 end;
 
 {------------------------------------------------------------------------------
@@ -6677,6 +6740,16 @@ begin
   {$ENDIF}
 end;
 
+function TGTKWidgetSet.IsNullBrush(DC: TDeviceContext): boolean;
+begin
+  Result:=(DC.CurrentBrush<>nil) and (DC.CurrentBrush^.IsNullBrush);
+end;
+
+function TGTKWidgetSet.IsNullPen(DC: TDeviceContext): boolean;
+begin
+  Result:=(DC.CurrentPen<>nil) and (DC.CurrentPen^.IsNullBrush);
+end;
+
 {------------------------------------------------------------------------------
   Function: NewGDIObject
   Params:  none
@@ -6694,7 +6767,7 @@ begin
   Result^.GDIType := GDIType;
   inc(Result^.RefCount);
   FGDIObjects.Add(Result);
-//DebugLn('[TGtkWidgetSet.NewGDIObject] ',DbgS(Result),'  ',FGDIObjects.Count);
+  //DebugLn('[TGtkWidgetSet.NewGDIObject] ',DbgS(Result),'  ',FGDIObjects.Count);
   Assert(False, Format('Trace:< [TGtkWidgetSet.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
 end;
 
@@ -6772,6 +6845,11 @@ begin
   Result^.GDIPenColor.Colormap := gdk_colormap_get_system;
   gdk_color_black(Result^.GDIPenColor.Colormap, @Result^.GDIPenColor.Color);
   BuildColorRefFromGDKColor(Result^.GDIPenColor);
+end;
+
+function TGTKWidgetSet.CreateDefaultGDIBitmap: PGdiObject;
+begin
+  Result := NewGDIObject(gdiBitmap);
 end;
 
 {------------------------------------------------------------------------------
@@ -7002,12 +7080,12 @@ end;
 
 function TGtkWidgetSet.DCClipRegionValid(DC: HDC): boolean;
 var
-  ClipRegion: hRGN;
+  CurClipRegion: hRGN;
 begin
   Result:=false;
   if not IsValidDC(DC) then exit;
-  ClipRegion:=TDeviceContext(DC).ClipRegion;
-  if (ClipRegion<>0) and (not IsValidGDIObject(ClipRegion)) then exit;
+  CurClipRegion:=HRGN(TDeviceContext(DC).ClipRegion);
+  if (CurClipRegion<>0) and (not IsValidGDIObject(CurClipRegion)) then exit;
   Result:=true;
 end;
 
@@ -7422,7 +7500,7 @@ begin
   LinesList.Free;
 end;
 
-function TGtkWidgetSet.ROP2ModeToGdkFunction(Mode: IntegeR): TGdkFunction;
+function TGtkWidgetSet.ROP2ModeToGdkFunction(Mode: Integer): TGdkFunction;
 begin
   case Mode of
     R2_COPYPEN:     result := GDK_COPY;
@@ -7445,7 +7523,8 @@ begin
   end;
 end;
 
-function TGtkWidgetSet.GdkFunctionToROP2Mode(aFunction: TGdkFunction): Integer;
+function TGtkWidgetSet.GdkFunctionToROP2Mode(const aFunction: TGdkFunction
+  ): Integer;
 begin
   case aFunction of
     GDK_COPY:         result := R2_COPYPEN;

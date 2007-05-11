@@ -1022,18 +1022,21 @@ begin
       lfPitchAndFamily := DEFAULT_PITCH;
     end;
 
-    // ask the interface for the nearest font
+    // ask the font cache for the nearest font
     CachedFont:=FontResourceCache.FindFontDesc(ALogFont,Name);
+    //DebugLn(['TFont.GetHandle in cache: ',CachedFont<>nil]);
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
       FHandle := CachedFont.Item.Handle;
     end else begin
+      // ask the interface for the nearest font
       FHandle := CreateFontIndirectEx(ALogFont,Name);
       FontResourceCache.Add(FHandle,ALogFont,Name);
     end;
     FFontHandleCached:=true;
-    FCanUTF8:=FontCanUTF8(FHandle);
-    FIsMonoSpace:=FontIsMonoSpace(FHandle);
+    FCanUTF8Valid:=false;
+    FIsMonoSpaceValid:=false;
+    if IsMonoSpace then ;
   end;
   
   Result := FHandle;
@@ -1050,6 +1053,8 @@ procedure TFont.FreeHandle;
 begin
   if FHandle <> 0
   then begin
+    // Changing triggers deselecting the current handle
+    Changing;
     if FFontHandleCached then begin
       FontResourceCache.FindFont(FHandle).DecreaseRefCount;
       FFontHandleCached:=false;
@@ -1057,6 +1062,15 @@ begin
       DeleteObject(FHandle);
     FHandle := 0;
   end;
+end;
+
+function TFont.GetCanUTF8: boolean;
+begin
+  if not FCanUTF8Valid then begin
+    FCanUTF8:=FontCanUTF8(Handle);
+    FCanUTF8Valid:=true;
+  end;
+  Result:=FCanUTF8;
 end;
 
 function TFont.GetCharSet: TFontCharSet;
@@ -1082,6 +1096,15 @@ begin
   FontData.Style:=Style;
   FontData.CharSet:=CharSet;
   FontData.Name:=LeftStr(Name,SizeOf(FontData.Name)-1);
+end;
+
+function TFont.GetIsMonoSpace: boolean;
+begin
+  if not FIsMonoSpaceValid then begin
+    FIsMonoSpace:=FontIsMonoSpace(Handle);
+    FIsMonoSpaceValid:=true;
+  end;
+  Result:=FIsMonoSpace;
 end;
 
 function TFont.IsNameStored: boolean;

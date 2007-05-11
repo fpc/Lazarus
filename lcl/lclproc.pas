@@ -269,7 +269,7 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADe
 
 // MWE: define (missing) UTF16string similar to UTF8 
 //      strictly spoken, a widestring <> utf16string
-// todo: use it in exiting functions
+// todo: use it in existing functions
 type
   UTF16String = type WideString;
   PUTF16String = ^UTF16String;

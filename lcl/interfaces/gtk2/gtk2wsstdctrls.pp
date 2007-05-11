@@ -502,7 +502,10 @@ begin
   p:= PGtkWidget(Result);
   
   if Result = 0 then exit;
-  
+  {$IFDEF DebugLCLComponents}
+  // already called by inherited: DebugGtkWidgets.MarkCreated(p,dbgsName(AWinControl));
+  {$ENDIF}
+
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
   gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
@@ -663,12 +666,14 @@ class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
 var
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
 begin
-   p :=  gtk_entry_new();
-   gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);
-   gtk_widget_show_all(P);
-   Result := TLCLIntfHandle(P);
-   if result = 0 then exit;
-   gtk2WidgetSet.FinishComponentCreate(AWinControl, P);
+  p :=  gtk_entry_new();
+  gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);
+  gtk_widget_show_all(P);
+  Result := TLCLIntfHandle(P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(p,dbgsName(AWinControl));
+  {$ENDIF}
+  gtk2WidgetSet.FinishComponentCreate(AWinControl, P);
 end;
 
 
@@ -1193,6 +1198,9 @@ begin
   ACustomComboBox:=TCustomComboBox(AWinControl);
 
   Box := gtk_event_box_new;
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Box,dbgsName(AWinControl));
+  {$ENDIF}
 
   WidgetInfo := CreateWidgetInfo(Box, AWinControl, AParams);
 

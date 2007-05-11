@@ -392,7 +392,8 @@ procedure FinalizePaintTagMsg(Msg: PMsg);
 
 // DC
 function GetDCOffset(DC: TDeviceContext): TPoint;
-function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
+function CopyDCData(SourceDC, DestinationDC: TDeviceContext;
+                    ClearSource, MoveGDIOwnerShip: boolean): Boolean;
 
 // region
 Function RegionType(RGN: PGDKRegion): Longint;

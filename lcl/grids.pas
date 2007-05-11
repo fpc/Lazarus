@@ -47,8 +47,8 @@ interface
 
 uses
   Types, Classes, SysUtils, Math, LCLStrConsts, LCLProc, LCLType, LCLIntf,
-  Controls, GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg,
-  StdCtrls, LResources, MaskEdit, Buttons, Clipbrd;
+  FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray, LMessages,
+  XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -6779,22 +6779,24 @@ end;
 
 procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 var
-  DCIndex: Integer;
   FOldFocusColor: TColor;
+  OldPenMode: TFPPenMode;
 begin
   // Draw focused cell if we have the focus
   if Self.Focused or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
   begin
     CalcFocusRect(aRect);
     if FUseXORFeatures then begin
-      DCIndex := SaveDC(Canvas.Handle);
+      Canvas.SaveHandleState;
       FOldFocusColor := FFocusColor;
       FFocusColor:= clWhite;
+      OldPenMode:=Canvas.Pen.Mode;
       Canvas.Pen.Mode := pmXOR;
     end;
     DrawRubberRect(Canvas, aRect, FFocusColor);
     if FUseXORFeatures then begin
-      RestoreDC(Canvas.Handle, DCIndex);
+      Canvas.Pen.Mode := OldPenMode;
+      Canvas.RestoreHandleState;
       FFocusColor := FOldFocusColor;
     end;
   end;

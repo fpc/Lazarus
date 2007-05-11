@@ -27,7 +27,7 @@ unit Gtk2WSExtCtrls;
 interface
 
 uses
-// libs
+ // libs
   GLib2, Gtk2, Gdk2, Gtk2Int, gtkProc, GtkDef,
   // LCL
   ExtCtrls, Classes, Controls, LCLType,

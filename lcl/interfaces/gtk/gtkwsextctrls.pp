@@ -234,6 +234,9 @@ var
   AWidget: PGtkNoteBook;
 begin
   AWidget := PGtkNoteBook(gtk_notebook_new());
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Pointer(AWidget),'notebook '+dbgsName(AWinControl));
+  {$ENDIF}
   gtk_notebook_set_scrollable(AWidget, true);
   gtk_notebook_popup_enable(AWidget);
   if TCustomNotebook(AWinControl).PageCount=0 then

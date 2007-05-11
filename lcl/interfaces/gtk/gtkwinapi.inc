@@ -67,7 +67,7 @@ begin
 
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if (CurrentPen^.IsNullPen) then exit;
+      if IsNullPen(TDeviceContext(DC)) then exit;
 
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       inc(Left,DCOrigin.X);
@@ -1230,18 +1230,17 @@ begin
 *)
   with pNewDC do
   begin
-    {$ifdef TraceGdiCalls}
-    FillStackAddrs(get_caller_frame(get_frame), @StackAddrs);
-    {$endif}
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor.Color);
     BuildColorRefFromGDKColor(CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
     BuildColorRefFromGDKColor(CurrentBackColor);
   end;
 
+  {$IFDEF Gtk1}
   pNewDC.GetFont;
-  pNewDC.CurrentBrush := CreateDefaultBrush;
-  pNewDC.CurrentPen := CreateDefaultPen;
+  pNewDC.GetBrush;
+  pNewDC.GetPen;
+  {$ENDIF}
 
   Result := HDC(pNewDC);
 
@@ -2387,13 +2386,62 @@ function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
   begin
     {$ifdef TraceGdiCalls}
     DebugLn();
-    DebugLn('TraceCall for invalid object: ');
+    DebugLn('TGtkWidgetSet.DeleteObject: TraceCall for invalid object: ');
     DumpBackTrace(PgdiObject(GdiObject)^.StackAddrs);
     DebugLn();
     DebugLn('Exception will follow:');
     DebugLn();
     {$endif}
-    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+DbgS(GdiObject));
+    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+dbghex(GdiObject));
+  end;
+  
+  procedure RaiseGDIObjectIsStillUsed;
+  var
+    CurGDIObject: PGDIObject;
+    DC: TDeviceContext;
+  begin
+    {$ifdef TraceGdiCalls}
+    DebugLn();
+    DebugLn('TGtkWidgetSet.DeleteObject: TraceCall for still used object: ');
+    DumpBackTrace(PgdiObject(GdiObject)^.StackAddrs);
+    DebugLn();
+    DebugLn('Exception will follow:');
+    DebugLn();
+    {$endif}
+    // do not raise an exception, because this is a common bug in many programs
+    // just give a warning
+    CurGDIObject:=PGdiObject(GdiObject);
+    debugln('TGtkWidgetSet.DeleteObject GdiObject='+dbgs(CurGDIObject)
+       +' '+dbgs(CurGDIObject^.GDIType)
+       +' is still used. DCCount='+dbgs(CurGDIObject^.DCCount));
+    DC:=FindDCWithGDIObject(CurGDIObject);
+    if DC<>nil then begin
+      DebugLn(['DC: ',dbgs(Pointer(DC)),' ',
+        GetWidgetDebugReport(DC.DCWidget)]);
+    end else begin
+      DebugLn(['No DC found with this GDIObject => either the DCCount is wrong or the DC is not in the DC list']);
+    end;
+    //DumpStack;
+    RaiseGDBException('');
+  end;
+  
+  procedure RaiseInvalidGDIOwner;
+  var
+    o: PGDIObject;
+  begin
+    {$ifdef TraceGdiCalls}
+    DebugLn();
+    DebugLn('TGtkWidgetSet.DeleteObject: TraceCall for invalid object: ');
+    DumpBackTrace(PgdiObject(GdiObject)^.StackAddrs);
+    DebugLn();
+    DebugLn('Exception will follow:');
+    DebugLn();
+    {$endif}
+    o:=PGdiObject(GdiObject);
+    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid owner of'
+      +' GdiObject='+dbgs(o)
+      +' Owner='+dbgs(o^.Owner)
+      +' Owner.OwnedGDIObjects='+dbgs(o^.Owner.OwnedGDIObjects[o^.GDIType]));
   end;
 
 var
@@ -2417,8 +2465,20 @@ begin
   if not GDIObjectExists then begin
     RaiseInvalidGDIObject;
   end;
+  
   with PGdiObject(GDIObject)^ do
   begin
+    if DCCount>0 then begin
+      RaiseGDIObjectIsStillUsed;
+      exit(false);
+    end;
+
+    if Owner<>nil then begin
+      if Owner.OwnedGDIObjects[GDIType]<>PGdiObject(GDIObject) then
+        RaiseInvalidGDIOwner;
+      Owner.OwnedGDIObjects[GDIType]:=nil;
+    end;
+
     case GDIType of
       gdiFont:
         begin
@@ -2481,8 +2541,8 @@ begin
           EndGDKErrorTrap;
           {$ENDIF}
 
-          RGBTable.Free;
-          IndexTable.Free;
+          FreeAndNil(RGBTable);
+          FreeAndNil(IndexTable);
         end;
       else begin
         Result:= false;
@@ -2933,19 +2993,18 @@ begin
 
     //Draw interiour
     if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and
-      not CurrentBrush^.IsNullBrush
+      not IsNullBrush(TDeviceContext(DC))
     then begin
       Width := R.Right - R.Left + 1;
       Height := R.Bottom - R.Top + 1;
       SelectGDKBrushProps(DC);
-      If not CurrentBrush^.IsNullBrush then
-        if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-        and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
-        then
-          StyleFillRectangle(Drawable, GetGC, CurrentBrush^.GDIBrushColor.ColorRef,
-                             R.Left, R.Top, Width, Height)
-        else
-          gdk_draw_rectangle(Drawable, GetGC, 1, R.Left, R.Top, Width, Height);
+      if (GetBrush^.GDIBrushFill = GDK_SOLID)
+      and (IsBackgroundColor(TColor(GetBrush^.GDIBrushColor.ColorRef)))
+      then
+        StyleFillRectangle(Drawable, GetGC, GetBrush^.GDIBrushColor.ColorRef,
+                           R.Left, R.Top, Width, Height)
+      else
+        gdk_draw_rectangle(Drawable, GetGC, 1, R.Left, R.Top, Width, Height);
     end;
 
     // adjust rect if needed
@@ -3182,9 +3241,9 @@ begin
         CopyRect(Rect, theRect);
         Result := 1;
         exit;
-      end else begin
-        TempDC := SaveDC(DC);
       end;
+
+      TempDC := SaveDC(DC);
 
       if (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
         if theRect.Right > Rect.Right then
@@ -3223,7 +3282,7 @@ begin
     finally
       Reallocmem(Lines, 0);
       if TempBrush <> HBRUSH(-1) then
-        SelectObject(DC, TempBrush);
+        SelectObject(DC, TempBrush);// DeleteObject not needed here, because it was a default Brush
       if TempPen <> HPEN(-1) then
         DeleteObject(SelectObject(DC, TempPen));
       if TempDC <> HDC(-1) then
@@ -3798,25 +3857,27 @@ begin
     end;
 
     // first draw interior in brush color
-    SelectGDKBrushProps(DC);
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
     {$IFDEF DebugGDKTraps}
     BeginGDKErrorTrap;
     {$ENDIF}
 
-    If not CurrentBrush^.IsNullBrush then
+    If not IsNullBrush(TDeviceContext(DC)) then begin
+      SelectGDKBrushProps(DC);
       gdk_draw_arc(Drawable, GetGC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                  0, 360 shl 6);
+    end;
 
     // Draw outline
-    SelectGDKPenProps(DC);
 
+    SelectGDKPenProps(DC);
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if (CurrentPen^.IsNullPen) then exit;
-      gdk_draw_arc(Drawable, GetGC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
-                   0, 360 shl 6);
+      if not IsNullPen(TDeviceContext(DC)) then begin
+        gdk_draw_arc(Drawable, GetGC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+                     0, 360 shl 6);
+      end;
     end else
       Result := False;
 
@@ -3892,7 +3953,7 @@ begin
   begin
     //DebugLn('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',dbgs(DCClipRegionValid(DC)),
     //  ' Mode=',dbgs(Mode),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
-    If ClipRegion=0 then begin
+    If ClipRegion=nil then begin
       // there is no clipping region in the DC
       Case Mode of
         RGN_COPY:
@@ -4139,7 +4200,7 @@ begin
       Height := Rect.Bottom - Rect.Top;
       // Temporary hold the old brush to
       // replace it with the given brush
-      OldCurrentBrush := CurrentBrush;
+      OldCurrentBrush := GetBrush;
       if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
         BrushChanged:=true;
         CurrentBrush := PGdiObject(Brush);
@@ -4192,7 +4253,7 @@ begin
       SelectGDKPenProps(DC);
       If (dcfPenSelected in DCFlags) then begin
         Result := 1;
-        if (not CurrentPen^.IsNullPen) then begin
+        if not IsNullPen(TDeviceContext(DC)) then begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
           gdk_draw_rectangle(Drawable, GetGC, 0,
                              ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
@@ -4658,7 +4719,7 @@ begin
   then with TDeviceContext(DC) do
   begin
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
-    If Not IsValidGDIObject(ClipRegion) then begin
+    If ClipRegion=nil then begin
       {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
       {$ENDIF}
@@ -4670,8 +4731,8 @@ begin
       Result := SIMPLEREGION;
     end
     else begin
-      Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
-      gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject,
+      Result := RegionType(ClipRegion^.GDIRegionObject);
+      gdk_region_get_clipbox(ClipRegion^.GDIRegionObject,
         @CRect);
       lpRect^.Left   := CRect.X-DCOrigin.X;
       lpRect^.Top    := CRect.Y-DCOrigin.Y;
@@ -4761,14 +4822,14 @@ begin
     Result := ERROR;
     DebugLn('WARNING: [TGtkWidgetSet.GetClipRGN] Invalid HRGN');
   end
-  else if (TDeviceContext(DC).ClipRegion<>0)
-  and (not IsValidGDIObject(TDeviceContext(DC).ClipRegion)) then
+  else if (TDeviceContext(DC).ClipRegion<>nil)
+  and (not IsValidGDIObject(HGDIOBJ(TDeviceContext(DC).ClipRegion))) then
     Result := ERROR
   else with TDeviceContext(DC) do
   begin
     CurRegionObject:=nil;
-    if ClipRegion<>0 then
-      CurRegionObject:=PGdiObject(ClipRegion)^.GDIRegionObject;
+    if ClipRegion<>nil then
+      CurRegionObject:=ClipRegion^.GDIRegionObject;
     ARect:=Rect(0,0,0,0);
     if CurRegionObject<>nil then begin
       // create a copy of the current clipregion
@@ -6745,10 +6806,9 @@ begin
   then with TDeviceContext(DC) do
   begin
     SelectGDKPenProps(DC);
-
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if (CurrentPen^.IsNullPen) then exit;
+      if IsNullPen(TDeviceContext(DC)) then exit;
 
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
@@ -7042,11 +7102,11 @@ begin
     end;
 
     // first draw interior in brush color
-    SelectGDKBrushProps(DC);
 
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
-    If not CurrentBrush^.IsNullBrush then
+    If not IsNullBrush(TDeviceContext(DC)) then begin
+      SelectGDKBrushProps(DC);
       if Winding then begin
         // store old clipping
         Tmp := CreateEmptyRegion;
@@ -7057,24 +7117,21 @@ begin
         DeleteObject(RGN);
         GetClipBox(DC, @ClipRect);
         // draw polygon area
-        FillRect(DC, ClipRect, HBrush(CurrentBrush));
+        FillRect(DC, ClipRect, HBrush(GetBrush));
         // restore old clipping
         SelectClipRGN(DC, Tmp);
         DeleteObject(Tmp);
       end else
         gdk_draw_polygon(Drawable, GetGC, 1, PointArray, NumPts);
-
+    end;
+    
     // draw outline
 
+    Result := True;
     SelectGDKPenProps(DC);
-
-    If (dcfPenSelected in DCFlags) then begin
-      Result := True;
-      if (not CurrentPen^.IsNullPen) then begin
-        gdk_draw_polygon(Drawable, GetGC, 0, PointArray, NumPts);
-      end;
-    end else
-      Result:=false;
+    if not IsNullPen(TDeviceContext(DC)) then begin
+      gdk_draw_polygon(Drawable, GetGC, 0, PointArray, NumPts);
+    end;
 
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 
@@ -7106,7 +7163,7 @@ begin
 
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if (not CurrentPen^.IsNullPen) then begin
+      if not IsNullPen(TDeviceContext(DC)) then begin
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
         gdk_draw_lines(Drawable, GetGC, PointArray, NumPts);
         {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
@@ -7301,10 +7358,11 @@ begin
     SelectGDKBrushProps(DC);
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    If not CurrentBrush^.IsNullBrush then
-      if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-      and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
-        StyleFillRectangle(Drawable, GetGC, CurrentBrush^.GDIBrushColor.ColorRef, Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
+    If not IsNullBrush(TDeviceContext(DC)) then
+      if (GetBrush^.GDIBrushFill = GDK_SOLID)
+      and (IsBackgroundColor(TColor(GetBrush^.GDIBrushColor.ColorRef))) then
+        StyleFillRectangle(Drawable, GetGC, GetBrush^.GDIBrushColor.ColorRef,
+                           Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
       else
         gdk_draw_rectangle(Drawable, GetGC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
@@ -7314,7 +7372,7 @@ begin
 
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if (not CurrentPen^.IsNullPen) then
+      if not IsNullPen(TDeviceContext(DC)) then
         gdk_draw_rectangle(Drawable, GetGC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
                            Width, Height);
     end else
@@ -7560,6 +7618,8 @@ end;
 function TGtkWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   aDC, pSavedDC: TDeviceContext;
+  g: TGDIType;
+  CurGDIObject: PGDIObject;
 begin
   //DebugLn('[TGtkWidgetSet.ReleaseDC] ',DbgS(DC),'  ',FDeviceContexts.Count);
   Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
@@ -7570,42 +7630,37 @@ begin
     if FDeviceContexts.Contains(Pointer(DC))
     then begin
       aDC := TDeviceContext(DC);
-      // Release all saved device contexts
+
+      // clear references to all GDI objects
+      for g:=Low(TGDIType) to high(TGDIType) do begin
+        {if aDC.GDIObjects[g]<>nil then
+          if FindDCWithGDIObject(aDC.GDIObjects[g])=nil then
+            RaiseGDBException('');}
+        aDC.GDIObjects[g]:=nil; // clear the reference, decrease DCCount
+      end;
+
+      // Release all saved device contexts (the owned GDI objects will be freed)
       pSavedDC:=aDC.SavedContext;
       if pSavedDC<>nil then begin
-        if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
-        then
-          aDC.CurrentBitmap := nil;
-        if pSavedDC.CurrentFont = aDC.CurrentFont
-        then
-          aDC.CurrentFont := nil;
-        if (pSavedDC.CurrentPen = aDC.CurrentPen)
-        and (aDC.CurrentPen<>nil)
-        then
-          aDC.CurrentPen := nil;
-        if pSavedDC.CurrentBrush = aDC.CurrentBrush
-        then
-          aDC.CurrentBrush := nil;
-        if pSavedDC.CurrentPalette = aDC.CurrentPalette
-        then
-          aDC.CurrentPalette := nil;
-        if pSavedDC.ClipRegion = aDC.ClipRegion
-        then
-          pSavedDC.ClipRegion := 0;
         ReleaseDC(0,HDC(pSavedDC));
         aDC.SavedContext:=nil;
       end;
 
-      // Release all graphic objects
-      DeleteObject(HGDIObj(aDC.CurrentBrush));
-      DeleteObject(HGDIObj(aDC.CurrentPen));
+      //DebugLn(['TGtkWidgetSet.ReleaseDC DC=',dbgs(TDeviceContext(aDC)),' ClipRegion=',dbgs(aDC.ClipRegion)]);
+      // free all owned GDI objects
+      for g:=Low(TGDIType) to high(TGDIType) do begin
+        CurGDIObject:=aDC.OwnedGDIObjects[g];
+        if CurGDIObject<>nil then begin
+          if CurGDIObject^.Owner<>aDC then
+            RaiseGDBException('');
+          DeleteObject(HGDIOBJ(CurGDIObject));
+          if aDC.OwnedGDIObjects[g]<>nil then
+            RaiseGDBException('');
+        end;
+      end;
+
       //DebugLn(['TGtkWidgetSet.ReleaseDC DC=',dbghex(PtrInt(DC)),' Font=',dbghex(PtrInt(aDC.CurrentFont))]);
-      DeleteObject(HGDIObj(aDC.CurrentFont));
-      // bitmaps are not auto created, they are set via SelectObject
-      // -> user must free it
-      // ... DeleteObject(HGDIObj(aDC.CurrentBitmap));
-      DeleteObject(HGDIObj(aDC.CurrentPalette));
-      DeleteObject(HGDIObj(aDC.ClipRegion));
+
       {FreeGDIColor(aDC.CurrentTextColor);
       FreeGDIColor(aDC.CurrentBackColor);}
 
@@ -7653,70 +7708,31 @@ end;
 function TGtkWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
   aDC, pSavedDC: TDeviceContext;
-  Count: Integer;
   ClipRegionChanged: Boolean;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
 
-  Result := IsValidDC(DC) and (SavedDC <> 0);
-  if Result
-  then begin
-    pSavedDC := TDeviceContext(DC);
-    Count:=Abs(SavedDC);
-    while (Count>0) and (pSavedDC<>nil) do begin
-      aDC:=pSavedDC;
-      pSavedDC:=aDC.SavedContext;
-      dec(Count);
-    end;
+  Result := IsValidDC(DC) and (SavedDC > 0);
+  if not Result then exit;
+  while SavedDC>0 do begin
+    aDC:=TDeviceContext(DC);
+    pSavedDC:=aDC.SavedContext;
+    dec(SavedDC);
 
-    // TODO copy bitmap also
+    // TODO copy bitmap too
 
-    ClipRegionChanged:=false;
-    if (aDC.ClipRegion<>0) and (pSavedDC.ClipRegion <> aDC.ClipRegion) then
-    begin
-      // clipping region has changed
-      DeleteObject(aDC.ClipRegion);
-      ClipRegionChanged:=true;
-      aDC.ClipRegion := 0;
-    end;
-
-    if aDC.GC<>nil then begin
-      gdk_gc_unref(aDC.GC);
-      aDC.GC:=nil;
-    end;
-
-    Result := CopyDCData(aDC, pSavedDC);
+    ClipRegionChanged:=aDC.ClipRegion<>pSavedDC.ClipRegion;
+    
+    // clear the GDIObjects in pSavedDC, so they are not freed by DeleteDC
+    Result := CopyDCData(pSavedDC, aDC, true, true);
     aDC.SavedContext := pSavedDC.SavedContext;
     pSavedDC.SavedContext := nil;
+
     if ClipRegionChanged then
       SelectGDIRegion(HDC(aDC));
     //DebugLn('TGtkWidgetSet.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
 
-
     // free saved DC
-
-    //prevent deletion of copied objects:
-    if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
-    then
-      pSavedDC.CurrentBitmap := nil;
-    if pSavedDC.CurrentFont = aDC.CurrentFont
-    then
-      pSavedDC.CurrentFont := nil;
-    if (pSavedDC.CurrentPen = aDC.CurrentPen)
-    and (pSavedDC.CurrentPen<>nil) then
-      pSavedDC.CurrentPen := nil;
-    if pSavedDC.CurrentBrush = aDC.CurrentBrush
-    then
-      pSavedDC.CurrentBrush := nil;
-    if pSavedDC.CurrentBrush = aDC.CurrentBrush
-    then
-      pSavedDC.CurrentBrush := nil;
-    {if pSavedDC.CurrentPalette = aDC.CurrentPalette
-    then pSavedDC.CurrentPalette := nil;}
-    if pSavedDC.ClipRegion = aDC.ClipRegion
-    then
-      pSavedDC.ClipRegion := 0;
-
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
@@ -7757,7 +7773,7 @@ begin
   then begin
     aDC := TDeviceContext(DC);
     aSavedDC := NewDC;
-    CopyDCData(aSavedDC, aDC);
+    CopyDCData(aDC,aSavedDC,false,true);
     aSavedDC.SavedContext:=aDC.SavedContext;
     aDC.SavedContext:= aSavedDC;
     Result:=1;
@@ -7854,6 +7870,7 @@ Function TGtkWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 var
   RegObj: PGdkRegion;
   DCOrigin: TPoint;
+  OldClipRegion: PGDIObject;
 begin
   If not IsValidDC(DC) then begin
     Result := ERROR;
@@ -7863,17 +7880,20 @@ begin
   with TDeviceContext(DC) do
   begin
     // clear old clipregion
-    if (ClipRegion<>0)
-    and ((SavedContext=nil) or (SavedContext.ClipRegion<>ClipRegion)) then
-      DeleteObject(ClipRegion);
-    ClipRegion := 0;
+    if ClipRegion<>nil then begin
+      OldClipRegion:=ClipRegion;
+      ClipRegion := nil;// decrease DCCount
+      if (OldClipRegion=OwnedGDIObjects[gdiRegion]) then
+        DeleteObject(HGDIOBJ(OldClipRegion));
+    end;
 
     If (RGN = 0) then begin
       SelectGDIRegion(DC);
     end
     else If IsValidGDIObject(RGN) then begin
-      ClipRegion := CreateRegionCopy(RGN);
-      RegObj:=PGdiObject(ClipRegion)^.GDIRegionObject;
+      ClipRegion := PGdiObject(CreateRegionCopy(RGN));
+      OwnedGDIObjects[gdiRegion]:=ClipRegion;
+      RegObj:=ClipRegion^.GDIRegionObject;
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       //DebugLn('TGtkWidgetSet.SelectClipRGN A RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
       gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
@@ -7923,9 +7943,7 @@ function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
     end;
     {$ENDIF}
   end;
-
-var
-  NewDrawable: PGdkPixmap;
+  
 begin
   Result := 0;
 
@@ -7945,35 +7963,26 @@ begin
         with TDeviceContext(DC) do
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
-          if CurrentBitmap=nil then begin
-            // creating HBitmap on the fly (To find mem leaks)
-            CurrentBitmap:=NewGDIObject(gdiBitmap);
-          end;
-          Result := HBITMAP(CurrentBitmap);
+          Result := HBITMAP(GetBitmap);// always create, because a valid GDIObject is needed to restore
           if CurrentBitmap<>PGDIObject(GDIObj) then begin
             CurrentBitmap := PGDIObject(GDIObj);
             with CurrentBitmap^ do
               case GDIBitmapType of
-                gbPixmap: NewDrawable := GDIPixmapObject;
-                gbBitmap: NewDrawable := GDIBitmapObject;
+                gbPixmap: Drawable := GDIPixmapObject;
+                gbBitmap: Drawable := GDIBitmapObject;
               else
-                NewDrawable := nil;
+                Drawable := nil;
               end;
-            if NewDrawable<>nil then begin
+            if Drawable<>nil then begin
               //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
               //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
               if GC <> nil then begin
                 gdk_gc_unref(GC);
                 GC:=nil;
               end;
-              Drawable:=NewDrawable;
               GC := gdk_gc_new(Drawable);
               gdk_gc_set_function(GC, GDK_COPY);
               SelectedColors := dcscCustom;
-            end else begin
-              // use defaults, free dummy gdiobject
-              DisposeGDIObject(CurrentBitmap);
-              CurrentBitmap:=nil;
             end;
           end;
         end;
@@ -7982,7 +7991,7 @@ begin
         with TDeviceContext(DC), PGdiObject(GDIObj)^ do
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
-          Result := HBRUSH(CurrentBrush);
+          Result := HBRUSH(GetBrush);// always create, because a valid GDIObject is needed to restore
           if CurrentBrush<>PGDIObject(GDIObj) then begin
             CurrentBrush := PGDIObject(GDIObj);
             gdk_gc_set_fill(GetGC, GDIBrushFill);
@@ -7998,7 +8007,7 @@ begin
         with TDeviceContext(DC) do
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
-          Result := HFONT(GetFont);// always create: a valid GDIObject is needed to restore
+          Result := HFONT(GetFont);// always create, because a valid GDIObject is needed to restore
           if CurrentFont<> PGDIObject(GDIObj) then begin
             //DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' Font Old=',dbghex(PtrInt(CurrentFont)),' New=',dbghex(GDIObj)]);
             //dumpstack;
@@ -8014,7 +8023,7 @@ begin
       gdiPen:
         with TDeviceContext(DC) do
         begin
-          Result := HPEN(CurrentPen);
+          Result := HPEN(GetPen);// always create, because a valid GDIObject is needed to restore
           if CurrentPen<> PGDIObject(GDIObj) then begin
             CurrentPen := PGDIObject(GDIObj);
             DCFlags:=DCFlags-[dcfPenSelected];
@@ -8026,7 +8035,7 @@ begin
       gdiRegion:
         with TDeviceContext(DC) do
         begin
-          Result := ClipRegion;
+          Result := HRGN(ClipRegion);
           SelectClipRGN(DC, GDIObj)
         end;
 
@@ -9538,7 +9547,7 @@ begin
     
     aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
     //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
-    FillRect(DC,aRect,hBrush(CurrentBrush));
+    FillRect(DC,aRect,hBrush(GetBrush));
     UpdateDCTextMetric(TDeviceContext(DC));
     TxtPt.X := X;
     {$IfDef Win32}

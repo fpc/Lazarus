@@ -99,11 +99,13 @@ var
   TempWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
-
   Widget := gtk_scrolled_window_new(nil, nil);
   Result := TLCLIntfHandle(Widget);
   if Result = 0 then Exit;
-  
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
+  {$ENDIF}
+
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
 
   TempWidget := gtk_text_view_new();

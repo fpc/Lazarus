@@ -53,6 +53,8 @@ type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
   TGDIBitmapType = (gbBitmap, gbPixmap{obsolete:, gbImage});
 
+  TDeviceContext = class;
+
   {$IFDEF Gtk1}
   TGtkIntfFont = PGDKFont;
   {$ELSE}
@@ -86,9 +88,14 @@ type
   end;
   PGDIColor = ^TGDIColor;
 
+  { Create a GDIObject with NewGDIObject. Then RefCount is 1.
+    Free a GDIObject with DeleteObject. This will decrease the RefCount
+    and when 0 calls DisposeGDIObject. }
   PGDIObject = ^TGDIObject;
   TGDIObject = record
     RefCount: integer;
+    DCCount: integer; // number of DeviceContexts using this GDIObject
+    Owner: TDeviceContext;
     {$ifdef TraceGdiCalls}
     StackAddrs: TCallBacksArray;
     {$endif}
@@ -188,6 +195,26 @@ type
   { TDeviceContext }
 
   TDeviceContext = class
+  private
+    FClipRegion: PGdiObject;
+    FCurrentBitmap: PGdiObject;
+    FCurrentBrush: PGdiObject;
+    FCurrentFont: PGdiObject;
+    FCurrentPalette: PGdiObject;
+    FCurrentPen: PGdiObject;
+    fOwnedGDIObjects: array[TGDIType] of PGdiObject;
+    function GetGDIObjects(ID: TGDIType): PGdiObject;
+    function GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
+    procedure SetClipRegion(const AValue: PGdiObject);
+    procedure SetCurrentBitmap(const AValue: PGdiObject);
+    procedure SetCurrentBrush(const AValue: PGdiObject);
+    procedure SetCurrentFont(const AValue: PGdiObject);
+    procedure SetCurrentPalette(const AValue: PGdiObject);
+    procedure SetCurrentPen(const AValue: PGdiObject);
+    procedure ChangeGDIObject(var GDIObject: PGdiObject;
+                              const NewValue: PGdiObject);
+    procedure SetGDIObjects(ID: TGDIType; const AValue: PGdiObject);
+    procedure SetOwnedGDIObjects(ID: TGDIType; const AValue: PGdiObject);
   public
     WithChildWindows: boolean;// this DC covers sub gdkwindows
   
@@ -208,24 +235,29 @@ type
     {$endif}
     
     // drawing settings
-    CurrentBitmap: PGdiObject;
-    CurrentFont: PGdiObject;
-    CurrentPen: PGdiObject;
-    CurrentBrush: PGdiObject;
-    CurrentPalette: PGdiObject;
+    property CurrentBitmap: PGdiObject read FCurrentBitmap write SetCurrentBitmap;
+    property CurrentFont: PGdiObject read FCurrentFont write SetCurrentFont;
+    property CurrentPen: PGdiObject read FCurrentPen write SetCurrentPen;
+    property CurrentBrush: PGdiObject read FCurrentBrush write SetCurrentBrush;
+    property CurrentPalette: PGdiObject read FCurrentPalette write SetCurrentPalette;
+    property ClipRegion: PGdiObject read FClipRegion write SetClipRegion;
+    property GDIObjects[ID: TGDIType]: PGdiObject read GetGDIObjects write SetGDIObjects;
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;
-    ClipRegion: hRGN;
     DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
     
     // control
     SelectedColors: TDevContextSelectedColorsType;
     SavedContext: TDeviceContext; // linked list of saved DCs
     DCFlags: TDeviceContextsFlags;
+    property OwnedGDIObjects[ID: TGDIType]: PGdiObject read GetOwnedGDIObjects write SetOwnedGDIObjects;
 
     procedure Clear;
     function GetGC: pgdkGC;
     function GetFont: PGdiObject;
+    function GetBrush: PGdiObject;
+    function GetPen: PGdiObject;
+    function GetBitmap: PGdiObject;
   end;
   
   
@@ -398,10 +430,10 @@ procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 
 type
   TCreateGCForDC = procedure(DC: TDeviceContext) of object;
-  TCreateFontForDC = procedure(DC: TDeviceContext) of object;
+  TCreateGDIObjectForDC = procedure(DC: TDeviceContext; aGDIType: TGDIType) of object;
 var
   CreateGCForDC: TCreateGCForDC = nil;
-  CreateFontForDC: TCreateFontForDC = nil;
+  CreateGDIObjectForDC: TCreateGDIObjectForDC = nil;
 
 {$IFDEF DebugLCLComponents}
 var
@@ -411,6 +443,9 @@ var
 {$ENDIF}
 
 procedure GtkDefDone;
+
+function dbgs(g: TGDIType): string; overload;
+
 
 implementation
 
@@ -423,8 +458,8 @@ type
   protected
     procedure FreeFirstItem; override;
   public
-    procedure DisposeGDIObject(AGDIObject: PGDIObject);
-    function NewGDIObject: PGDIObject;
+    procedure DisposeGDIObjectMem(AGDIObject: PGDIObject);
+    function NewGDIObjectMem: PGDIObject;
   end;
   
 const
@@ -436,7 +471,7 @@ begin
     GDIObjectMemManager:=TGDIObjectMemManager.Create;
     GDIObjectMemManager.MinimumFreeCount:=1000;
   end;
-  Result:=GDIObjectMemManager.NewGDIObject;
+  Result:=GDIObjectMemManager.NewGDIObjectMem;
   {$IFDEF DebugLCLComponents}
   DebugGdiObjects.MarkCreated(Result,'NewPGDIObject');
   {$ENDIF}
@@ -447,7 +482,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGdiObjects.MarkDestroyed(GDIObject);
   {$ENDIF}
-  GDIObjectMemManager.DisposeGDIObject(GDIObject);
+  GDIObjectMemManager.DisposeGDIObjectMem(GDIObject);
 end;
 
 { TGDIObjectMemManager }
@@ -464,9 +499,9 @@ begin
   {$IfDef RangeChecksOn}{$R+}{$Endif}
 end;
 
-procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
+procedure TGDIObjectMemManager.DisposeGDIObjectMem(AGDIObject: PGDIObject);
 begin
-  //DebugLn('TGDIObjectMemManager.DisposeGDIObject ',DbgS(AGDIObject));
+  //DebugLn('TGDIObjectMemManager.DisposeGDIObjectMem ',DbgS(AGDIObject));
   if AGDIObject^.RefCount<>0 then
     RaiseGDBException('');
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
@@ -478,7 +513,7 @@ begin
   end else begin
     // free list full -> free the ANode
     Dispose(AGDIObject);
-    //DebugLn('TGDIObjectMemManager.DisposeGDIObject B FFreedCount=',FFreedCount);
+    //DebugLn('TGDIObjectMemManager.DisposeGDIObjectMem B FFreedCount=',FFreedCount);
     {$R-}
     inc(FFreedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -486,7 +521,7 @@ begin
   dec(FCount);
 end;
 
-function TGDIObjectMemManager.NewGDIObject: PGDIObject;
+function TGDIObjectMemManager.NewGDIObjectMem: PGDIObject;
 begin
   if FFirstFree<>nil then begin
     // take from free list
@@ -496,14 +531,14 @@ begin
   end else begin
     // free list empty -> create new node
     New(Result);
-    // DebugLn('TGDIObjectMemManager.NewGDIObject FAllocatedCount=',FAllocatedCount);
+    // DebugLn('TGDIObjectMemManager.NewGDIObjectMem FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
   end;
   FillChar(Result^, SizeOf(TGDIObject), 0);
   inc(FCount);
-  //DebugLn('TGDIObjectMemManager.NewGDIObject ',DbgS(Result));
+  //DebugLn('TGDIObjectMemManager.NewGDIObjectMem ',DbgS(Result));
 end;
 
 
@@ -598,7 +633,103 @@ end;
 
 { TDeviceContext }
 
+procedure TDeviceContext.SetClipRegion(const AValue: PGdiObject);
+begin
+  ChangeGDIObject(fClipRegion,AValue);
+end;
+
+function TDeviceContext.GetGDIObjects(ID: TGDIType): PGdiObject;
+begin
+  case ID of
+  gdiBitmap: Result:=CurrentBitmap;
+  gdiFont: Result:=CurrentFont;
+  gdiBrush: Result:=CurrentBrush;
+  gdiPen: Result:=CurrentPen;
+  gdiPalette: Result:=CurrentPalette;
+  gdiRegion: Result:=ClipRegion;
+  end;
+end;
+
+function TDeviceContext.GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
+begin
+  Result:=fOwnedGDIObjects[ID];
+end;
+
+procedure TDeviceContext.SetCurrentBitmap(const AValue: PGdiObject);
+begin
+  ChangeGDIObject(FCurrentBitmap,AValue);
+end;
+
+procedure TDeviceContext.SetCurrentBrush(const AValue: PGdiObject);
+begin
+  ChangeGDIObject(FCurrentBrush,AValue);
+end;
+
+procedure TDeviceContext.SetCurrentFont(const AValue: PGdiObject);
+begin
+  ChangeGDIObject(FCurrentFont,AValue);
+end;
+
+procedure TDeviceContext.SetCurrentPalette(const AValue: PGdiObject);
+begin
+  ChangeGDIObject(FCurrentPalette,AValue);
+end;
+
+procedure TDeviceContext.SetCurrentPen(const AValue: PGdiObject);
+begin
+  ChangeGDIObject(FCurrentPen,AValue);
+end;
+
+procedure TDeviceContext.ChangeGDIObject(var GDIObject: PGdiObject;
+  const NewValue: PGdiObject);
+begin
+  if GdiObject=NewValue then exit;
+  if GdiObject<>nil then begin
+    dec(GdiObject^.DCCount);
+    if GdiObject^.DCCount<0 then
+      RaiseGDBException('');
+  end;
+  //if GdiObject<>nil then
+  //  DebugLn(['TDeviceContext.ChangeGDIObject DC=',dbgs(Self),' OldGDIObject=',dbgs(GdiObject),' Old.DCCount=',GdiObject^.DCCount]);
+  GdiObject:=NewValue;
+  if GdiObject<>nil then
+    inc(GdiObject^.DCCount);
+  //if GdiObject<>nil then
+  //  DebugLn(['TDeviceContext.ChangeGDIObject DC=',dbgs(Self),' NewGDIObject=',dbgs(GdiObject),' New.DCCount=',GdiObject^.DCCount]);
+end;
+
+procedure TDeviceContext.SetGDIObjects(ID: TGDIType; const AValue: PGdiObject);
+begin
+  case ID of
+  gdiBitmap:  ChangeGDIObject(fCurrentBitmap,AValue);
+  gdiFont:    ChangeGDIObject(fCurrentFont,AValue);
+  gdiBrush:   ChangeGDIObject(fCurrentBrush,AValue);
+  gdiPen:     ChangeGDIObject(fCurrentPen,AValue);
+  gdiPalette: ChangeGDIObject(fCurrentPalette,AValue);
+  gdiRegion:  ChangeGDIObject(fClipRegion,AValue);
+  end;
+end;
+
+procedure TDeviceContext.SetOwnedGDIObjects(ID: TGDIType;
+  const AValue: PGdiObject);
+begin
+  if fOwnedGDIObjects[ID]=AValue then exit;
+  if fOwnedGDIObjects[ID]<>nil then
+    fOwnedGDIObjects[ID]^.Owner:=nil;
+  fOwnedGDIObjects[ID]:=AValue;
+  if fOwnedGDIObjects[ID]<>nil then
+    fOwnedGDIObjects[ID]^.Owner:=Self;
+end;
+
 procedure TDeviceContext.Clear;
+var
+  g: TGDIType;
+  
+  procedure WarnOwnedGDIObject;
+  begin
+    DebugLn(['TDeviceContext.Clear ',dbghex(PtrInt(Self)),' OwnedGDIObjects[',ord(g),']<>nil']);
+  end;
+  
 begin
   DCWidget:=nil;
   Drawable:=nil;
@@ -616,13 +747,17 @@ begin
   CurrentPen:=nil;
   CurrentBrush:=nil;
   CurrentPalette:=nil;
+  ClipRegion:=nil;
   FillChar(CurrentTextColor,SizeOf(CurrentTextColor),0);
   FillChar(CurrentBackColor,SizeOf(CurrentBackColor),0);
-  ClipRegion:=0;
-  
+
   SelectedColors:=dcscCustom;
   SavedContext:=nil;
   DCFlags:=[];
+  
+  for g:=Low(TGDIType) to high(TGDIType) do
+    if OwnedGDIObjects[g]<>nil then
+      WarnOwnedGDIObject;
 end;
 
 function TDeviceContext.GetGC: pgdkGC;
@@ -635,8 +770,29 @@ end;
 function TDeviceContext.GetFont: PGdiObject;
 begin
   if CurrentFont=nil then
-    CreateFontForDC(Self);
+    CreateGDIObjectForDC(Self,gdiFont);
   Result:=CurrentFont;
+end;
+
+function TDeviceContext.GetBrush: PGdiObject;
+begin
+  if CurrentBrush=nil then
+    CreateGDIObjectForDC(Self,gdiBrush);
+  Result:=CurrentBrush;
+end;
+
+function TDeviceContext.GetPen: PGdiObject;
+begin
+  if CurrentPen=nil then
+    CreateGDIObjectForDC(Self,gdiPen);
+  Result:=CurrentPen;
+end;
+
+function TDeviceContext.GetBitmap: PGdiObject;
+begin
+  if CurrentBitmap=nil then
+    CreateGDIObjectForDC(Self,gdiBitmap);
+  Result:=CurrentBitmap;
 end;
 
 procedure GtkDefInit;
@@ -659,6 +815,19 @@ begin
   FreeAndNil(DebugGdiObjects);
   FreeAndNil(DebugDeviceContexts);
   {$ENDIF}
+end;
+
+function dbgs(g: TGDIType): string;
+begin
+  case g of
+  gdiBitmap: Result:='gdiBitmap';
+  gdiBrush: Result:='gdiBrush';
+  gdiFont: Result:='gdiFont';
+  gdiPen: Result:='gdiPen';
+  gdiRegion: Result:='gdiRegion';
+  gdiPalette: Result:='gdiPalette';
+  else Result:='<?? unknown gdi type '+dbgs(ord(g))+'>';
+  end;
 end;
 
 initialization

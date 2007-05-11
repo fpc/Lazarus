@@ -992,9 +992,24 @@ var
   Options : Longint;
   fRect : TRect;
   DCIndex: Integer;
+
+  procedure SaveState;
+  begin
+    if DCIndex<>0 then exit;
+    RequiredState([csHandleValid]);
+    DCIndex:=SaveDC(Handle);
+  end;
+  
+  procedure RestoreState;
+  begin
+    if DCIndex=0 then exit;
+    RestoreDC(Handle,DCIndex);
+  end;
+  
 begin
   //debugln(['TCanvas.TextRect ',DbgSName(Self),' Text="',Text,'" ',dbgs(ARect),' X=',X,',Y=',Y]);
   Changing;
+  
   Options := 0;
   case Style.Alignment of
     taRightJustify : Options := DT_RIGHT;
@@ -1016,9 +1031,12 @@ begin
   If not Style.ShowPrefix then
     Options := Options or DT_NOPREFIX;
 
+  DCIndex:=0;
+  if Style.SystemFont or Style.Clipping or (not Style.Opaque) then
+    SaveState;
+
   If Style.SystemFont then begin
     Options := Options or DT_INTERNAL;
-    RequiredState([csHandleValid]);
     SelectObject(Self.Handle, GetStockObject(DEFAULT_GUI_FONT));
     Exclude(FState, csFontValid);
   end
@@ -1047,7 +1065,6 @@ begin
   end;
 
   if Style.Clipping then begin
-    DCIndex := SaveDC(Self.Handle);
     IntersectRect(ARect, ARect, fRect);
     with ARect do
       InterSectClipRect(Self.Handle, Left, Top, Right, Bottom);
@@ -1072,10 +1089,7 @@ begin
       SetBkMode(FHandle, OPAQUE)
   end;
 
-  if Style.Clipping then begin
-    if DCIndex <> -1 then
-      RestoreDC(Self.Handle, DCIndex);
-  end;
+  RestoreState;
 
   Changed;
 end;
@@ -1240,6 +1254,36 @@ begin
   end;
 end;
 
+procedure TCanvas.FontChanging(APen: TObject);
+begin
+  if [csFontValid, csHandleValid] * FState = [csFontValid, csHandleValid] then
+  begin
+    Exclude(FState, csFontValid);
+    SelectObject(FHandle, FSavedFontHandle);
+    FSavedFontHandle := 0;
+  end;
+end;
+
+procedure TCanvas.BrushChanging(APen: TObject);
+begin
+  if [csBrushValid, csHandleValid] * FState = [csBrushValid, csHandleValid] then
+  begin
+    Exclude(FState, csBrushValid);
+    SelectObject(FHandle, FSavedBrushHandle);
+    FSavedBrushHandle := 0;
+  end;
+end;
+
+procedure TCanvas.RegionChanging(APen: TObject);
+begin
+  if [csRegionValid, csHandleValid] * FState = [csRegionValid, csHandleValid] then
+  begin
+    Exclude(FState, csRegionValid);
+    SelectObject(FHandle, FSavedRegionHandle);
+    FSavedRegionHandle := 0;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.PenChanged
   Params:   APen: The changed pen
@@ -1285,14 +1329,17 @@ begin
   FFont := TFont(inherited Font);
   FPen := TPen(inherited Pen);
   FBrush := TBrush(inherited Brush);
+  FFont.OnChanging := @FontChanging;
   FFont.OnChange := @FontChanged;
   FSavedFontHandle := 0;
   FPen.OnChanging := @PenChanging;
   FPen.OnChange := @PenChanged;
   FSavedPenHandle := 0;
+  FBrush.OnChanging := @BrushChanging;
   FBrush.OnChange := @BrushChanged;
   FSavedBrushHandle := 0;
   FRegion := TRegion.Create;
+  FRegion.OnChanging := @RegionChanging;
   FRegion.OnChange := @RegionChanged;
   FSavedRegionHandle := 0;
   FCopyMode := cmSrcCopy;
@@ -1358,6 +1405,7 @@ begin
 //DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',DbgS(Self));
   Handle := 0;
   FreeThenNil(FRegion);
+  FreeThenNil(FSavedHandleStates);
   if FLock <> 0 then
     DeleteCriticalSection(FLock);
   inherited Destroy;
@@ -1483,6 +1531,27 @@ end;
 procedure TCanvas.Changed;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TCanvas.SaveHandleState;
+var
+  DCIndex: LongInt;
+begin
+  if FSavedHandleStates=nil then FSavedHandleStates:=TFPList.Create;
+  DeselectHandles;
+  RequiredState([csHandleValid]);
+  DCIndex:=SaveDC(Handle);
+  FSavedHandleStates.Add(Pointer(PtrInt(DCIndex)));
+end;
+
+procedure TCanvas.RestoreHandleState;
+var
+  DCIndex: LongInt;
+begin
+  DCIndex:=integer(PtrInt(FSavedHandleStates[FSavedHandleStates.Count-1]));
+  FSavedHandleStates.Delete(FSavedHandleStates.Count-1);
+  DeselectHandles;
+  RestoreDC(Handle,DCIndex);
 end;
 
 procedure TCanvas.Changing;

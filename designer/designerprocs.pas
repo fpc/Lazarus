@@ -400,9 +400,9 @@ end;
 procedure TDesignerDeviceContext.Restore;
 begin
   if FSavedDC<>0 then begin
+    FCanvas.Handle:=0;
     RestoreDC(DC,FSavedDC);
     FSavedDC:=0;
-    FCanvas.Handle:=0;
   end;
 end;
 

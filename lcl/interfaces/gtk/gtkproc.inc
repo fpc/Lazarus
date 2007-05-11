@@ -1078,7 +1078,6 @@ procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
 var
   temp_gc : PGDKGC;
   temp_color : TGDKColor;
-  Region: PGdiObject;
   RGNType : Longint;
   OffsetXY: TPoint;
   //ClipMergeMaskWidth, ClipMergeMaskHeight: integer;
@@ -1112,9 +1111,8 @@ begin
 
   // copy the destination clipping mask into the temporary mask
   with DestinationDC do begin
-    If (ClipRegion <> 0) then begin
-      Region:=PGDIObject(ClipRegion);
-      RGNType := RegionType(Region^.GDIRegionObject);
+    If (ClipRegion <> nil) then begin
+      RGNType := RegionType(ClipRegion^.GDIRegionObject);
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
         // destination has a clipping mask
         {$IFDEF VerboseStretchCopyArea}
@@ -1126,11 +1124,11 @@ begin
         //    The clip region of dest is always at 0,0 in dest
         OffsetXY:=Point(-X,-Y);
         // 1. Move the region
-        gdk_region_offset(Region^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
+        gdk_region_offset(ClipRegion^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
         // 2. Apply region to temporary mask
-        gdk_gc_set_clip_region(temp_gc, Region^.GDIRegionObject);
+        gdk_gc_set_clip_region(temp_gc, ClipRegion^.GDIRegionObject);
         // 3. Undo moving the region
-        gdk_region_offset(Region^.GDIRegionObject,-OffsetXY.X,-OffsetXY.Y);
+        gdk_region_offset(ClipRegion^.GDIRegionObject,-OffsetXY.X,-OffsetXY.Y);
       end;
     end;
   end;
@@ -1413,15 +1411,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CopyDCData
+  Function: CopyDCData - used by RestoreDC and SaveDC
   Params:  DestinationDC:  a dc to copy data to
            SourceDC: a dc to copy data from
-           FreeObjects: boolean
+           ClearSource: set true to make a move operation
+           MoveGDIOwnerShip: set true to pass the ownership of the GDI objects
+                             to Destination
   Returns: True if succesful
 
   Creates a copy DC from the given DC
  ------------------------------------------------------------------------------}
-function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
+function CopyDCData(SourceDC, DestinationDC: TDeviceContext;
+  ClearSource, MoveGDIOwnerShip: boolean): Boolean;
+var
+  g: TGDIType;
+  CurGDIObject: PGDIObject;
 begin
   //  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
@@ -1442,10 +1446,10 @@ begin
         DCFlags:=DCFlags-[dcfPenSelected];
       end;
       if (SourceDC.GC <> nil) and (Drawable <> nil) then begin
-        BeginGDKErrorTrap;
+        {$IFDEF DebugGDK} BeginGDKErrorTrap; {$ENDIF}
         gdk_gc_get_values(SourceDC.GC, @GCValues);
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
-        EndGDKErrorTrap;
+        {$IFDEF DebugGDK} EndGDKErrorTrap; {$ENDIF}
         DCFlags:=DCFlags-[dcfPenSelected];
       end;
       
@@ -1458,24 +1462,24 @@ begin
         DCTextMetric := SourceDC.DCTextMetric;
       end else
         Exclude(DCFlags,dcfTextMetricsValid);
-      // ToDo: should the bitmap be freed automatically?
-      CurrentBitmap := SourceDC.CurrentBitmap;
-      //DebugLn(['CopyDCData DC=',dbghex(PtrInt(DestinationDC)),' OldFont=',dbghex(PtrInt(CurrentFont2)),' NewFont=',dbghex(PtrInt(SourceDC.CurrentFont2))]);
-      if (CurrentFont<>nil) and (CurrentFont<>SourceDC.CurrentFont) then
-        DeleteObject(HGDIObj(CurrentFont));
-      CurrentFont := SourceDC.CurrentFont;
-      if (CurrentPen<>nil) and (CurrentPen<>SourceDC.CurrentPen) then
-        DeleteObject(HGDIObj(CurrentPen));
-      CurrentPen := SourceDC.CurrentPen;
-      if (CurrentBrush<>nil) and (CurrentBrush<>SourceDC.CurrentBrush) then
-        DeleteObject(HGDIObj(CurrentBrush));
-      CurrentBrush := SourceDC.CurrentBrush;
-      if (CurrentPalette<>nil) and (CurrentPalette<>SourceDC.CurrentPalette) then
-        DeleteObject(HGDIObj(CurrentPalette));
-      CurrentPalette := SourceDC.CurrentPalette;
+        
+      for g:=Low(TGDIType) to High(TGDIType) do begin
+        GDIObjects[g]:=SourceDC.GDIObjects[g];
+        if ClearSource then
+          SourceDC.GDIObjects[g]:=nil;
+        if MoveGDIOwnerShip then begin
+          if OwnedGDIObjects[g]<>nil then begin
+            DeleteObject(HGDIOBJ(OwnedGDIObjects[g]));
+          end;
+          CurGDIObject:=SourceDC.OwnedGDIObjects[g];
+          if CurGDIObject<>nil then begin
+            SourceDC.OwnedGDIObjects[g]:=nil;
+            OwnedGDIObjects[g]:=CurGDIObject;
+          end;
+        end;
+      end;
       CopyGDIColor(SourceDC.CurrentTextColor,CurrentTextColor);
       CopyGDIColor(SourceDC.CurrentBackColor,CurrentBackColor);
-      ClipRegion := SourceDC.ClipRegion;
 
       SelectedColors := dcscCustom;
       SavedContext := nil;
@@ -1519,7 +1523,6 @@ end;
  ------------------------------------------------------------------------------}
 Procedure SelectGDIRegion(const DC: HDC);
 var
-  Region: PGdiObject;
   RGNType : Longint;
 begin
   with TDeviceContext(DC) do
@@ -1529,11 +1532,10 @@ begin
     {$ENDIF}
     gdk_gc_set_clip_region(GetGC,  nil);
     gdk_gc_set_clip_rectangle (GetGC,  nil);
-    If (ClipRegion <> 0) then begin
-      Region:=PGDIObject(ClipRegion);
-      RGNType := RegionType(Region^.GDIRegionObject);
+    If (ClipRegion <> nil) then begin
+      RGNType := RegionType(ClipRegion^.GDIRegionObject);
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-        gdk_gc_set_clip_region(GetGC,  PGDIObject(ClipRegion)^.GDIRegionObject);
+        gdk_gc_set_clip_region(GetGC,  ClipRegion^.GDIRegionObject);
       end;
     end;
     {$IFDEF DebugGDK}
@@ -1704,8 +1706,8 @@ begin
     case ColorType of
     dccCurrentBackColor: GDIColor:=@CurrentBackColor;
     dccCurrentTextColor: GDIColor:=@CurrentTextColor;
-    dccGDIBrushColor   : GDIColor:=@(CurrentBrush^.GDIBrushColor);
-    dccGDIPenColor     : GDIColor:=@(CurrentPen^.GDIPenColor);
+    dccGDIBrushColor   : GDIColor:=@(GetBrush^.GDIBrushColor);
+    dccGDIPenColor     : GDIColor:=@(GetPen^.GDIPenColor);
     end;
   end;
   if GDIColor=nil then exit;
@@ -4066,6 +4068,10 @@ var
   AWinControl: TWinControl;
   Mess: TLMessage;
 begin
+  {$IFDEF DebugLCLComponents}
+  if DebugGtkWidgets.FindInfo(Widget)=nil then
+    DebugLn(['DestroyWidget ',GetWidgetDebugReport(Widget)]);
+  {$ENDIF}
   Info:=GetWidgetInfo(Widget);
   if Info<>nil then begin
     if (Info^.LCLObject is TWinControl) then begin

@@ -449,8 +449,10 @@ type
   TFont = class(TFPCustomFont)
   private
     FCanUTF8: boolean;
+    FCanUTF8Valid: boolean;
     FHandle: HFont;
     FIsMonoSpace: boolean;
+    FIsMonoSpaceValid: boolean;
     FPitch: TFontPitch;
     FStyle: TFontStylesBase;
     FCharSet: TFontCharSet;
@@ -461,7 +463,9 @@ type
     FColor: TColor;
     FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
     procedure FreeHandle;
+    function GetCanUTF8: boolean;
     procedure GetData(var FontData: TFontData);
+    function GetIsMonoSpace: boolean;
     function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
   protected
@@ -497,16 +501,10 @@ type
     procedure EndUpdate;
     function HandleAllocated: boolean;
     function IsDefault: boolean;
-    // Extra properties
-    // TODO: implement them through GetTextMetrics, not here
-    //Function GetWidth(Value: String): Integer;
-    //property Width: Integer read FWidth write FWidth;
-    //property XBias: Integer read FXBias write FXBias;
-    //property YBias: Integer read FYBias write FYBias;
     property Handle: HFONT read GetHandle write SetHandle;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
-    property CanUTF8: boolean read FCanUTF8;
-    property IsMonoSpace: boolean read FIsMonoSpace;
+    property CanUTF8: boolean read GetCanUTF8;
+    property IsMonoSpace: boolean read GetIsMonoSpace;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default clWindowText;
@@ -873,6 +871,7 @@ type
     FPen: TPen;
     FFont: TFont;
     FBrush: TBrush;
+    FSavedHandleStates: TFPList;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
     procedure PenChanged(APen: TObject);
@@ -930,6 +929,9 @@ type
     Procedure CreateRegion; virtual;
     procedure DeselectHandles; virtual;
     procedure PenChanging(APen: TObject); virtual;
+    procedure FontChanging(APen: TObject); virtual;
+    procedure BrushChanging(APen: TObject); virtual;
+    procedure RegionChanging(APen: TObject); virtual;
     procedure RealizeAutoRedraw; virtual;
     procedure RequiredState(ReqState: TCanvasState); virtual;
     procedure SetHandle(NewHandle: HDC); virtual;
@@ -944,6 +946,8 @@ type
     procedure Refresh; virtual;
     procedure Changing; virtual;
     procedure Changed; virtual;
+    procedure SaveHandleState; virtual;
+    procedure RestoreHandleState; virtual;
 
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;

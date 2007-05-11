@@ -56,6 +56,7 @@ type
   THashFunction = function(Sender: TDynHashArray; Item: Pointer): integer;
   TOwnerHashFunction = function(Item: Pointer): integer of object;
   TOnGetKeyForHashItem = function(Item: pointer): pointer;
+  TOnEachHashItem = function(Sender: TDynHashArray; Item: Pointer): boolean;
 
   PDynHashArrayItem = ^TDynHashArrayItem;
   TDynHashArrayItem = record
@@ -118,6 +119,7 @@ type
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
     procedure AssignTo(List: TList);
     procedure AssignTo(List: TFPList);
+    procedure ForEach(const Func: TOnEachHashItem);
 
     function SlowAlternativeHashMethod(Sender: TDynHashArray;
        Item: Pointer): integer;
@@ -579,6 +581,17 @@ begin
   while HashItem<>nil do begin
     List[i]:=HashItem^.Item;
     inc(i);
+    HashItem:=HashItem^.Next;
+  end;
+end;
+
+procedure TDynHashArray.ForEach(const Func: TOnEachHashItem);
+var
+  HashItem: PDynHashArrayItem;
+begin
+  HashItem:=FFirstItem;
+  while HashItem<>nil do begin
+    if not Func(Self,HashItem^.Item) then break;
     HashItem:=HashItem^.Next;
   end;
 end;
