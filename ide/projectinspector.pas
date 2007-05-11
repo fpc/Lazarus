@@ -69,7 +69,6 @@ type
     RemoveBitBtn: TBitBtn;
     OptionsBitBtn: TBitBtn;
     ItemsTreeView: TTreeView;
-    ImageList: TImageList;
     ItemsPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
@@ -154,6 +153,8 @@ var
 
 
 implementation
+uses
+  IDEImagesIntf;
 
 { TProjectInspectorForm }
 
@@ -412,38 +413,17 @@ begin
 end;
 
 procedure TProjectInspectorForm.SetupComponents;
-
-  procedure AddResImg(const ResName: string);
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.Add(Pixmap,nil);
-    Pixmap.Free;
-  end;
-
 begin
-  with ImageList do begin
-    ImageIndexFiles:=Count;
-    AddResImg('pkg_files');
-    ImageIndexRequired:=Count;
-    AddResImg('pkg_required');
-    ImageIndexConflict:=Count;
-    AddResImg('pkg_conflict');
-    ImageIndexRemovedRequired:=Count;
-    AddResImg('pkg_removedrequired');
-    ImageIndexProject:=Count;
-    AddResImg('pkg_project');
-    ImageIndexUnit:=Count;
-    AddResImg('pkg_unit');
-    ImageIndexRegisterUnit:=Count;
-    AddResImg('pkg_registerunit');
-    ImageIndexText:=Count;
-    AddResImg('pkg_text');
-    ImageIndexBinary:=Count;
-    AddResImg('pkg_binary');
-  end;
+  ItemsTreeView.Images := IDEImages.Images_16;
+  ImageIndexFiles := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
+  ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
+  ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
+  ImageIndexProject := IDEImages.LoadImage(16, 'pkg_project');
+  ImageIndexUnit := IDEImages.LoadImage(16, 'pkg_unit');
+  ImageIndexRegisterUnit := IDEImages.LoadImage(16, 'pkg_registerunit');
+  ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
+  ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
 
   OpenBitBtn.Caption:=lisMenuOpen;
   AddBitBtn.Caption:=lisCodeTemplAdd;

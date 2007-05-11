@@ -63,7 +63,6 @@ object ProjectInspectorForm: TProjectInspectorForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 2
     DefaultItemHeight = 16
-    Images = ImageList
     PopupMenu = ItemsPopupMenu
     RightClickSelect = True
     TabOrder = 4
@@ -76,10 +75,6 @@ object ProjectInspectorForm: TProjectInspectorForm
     Height = 281
     Top = 28
     Width = 433
-  end
-  object ImageList: TImageList
-    left = 39
-    top = 20
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup

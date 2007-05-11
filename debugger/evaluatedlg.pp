@@ -90,7 +90,7 @@ begin
 
   ToolBar1.Images := IDEImages.Images_16;
   tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
-  tbWatch.ImageIndex := IDEImages.LoadImage(16, 'menu_watches');
+  tbWatch.ImageIndex := IDEImages.LoadImage(16, 'debugger_watches');
   tbModify.ImageIndex := IDEImages.LoadImage(16, 'debugger_modify');
   tbEvaluate.ImageIndex := IDEImages.LoadImage(16, 'debugger_evaluate');
 end;

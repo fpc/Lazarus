@@ -100,7 +100,6 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     object PkgTreeView: TTreeView
       Align = alClient
       DefaultItemHeight = 17
-      Images = ImageList
       PopupMenu = PkgPopupMenu
       RightClickSelect = True
       TabOrder = 0
@@ -113,12 +112,6 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       Top = 25
       Width = 229
     end
-  end
-  object ImageList: TImageList
-    Height = 17
-    Width = 17
-    left = 32
-    top = 8
   end
   object PkgPopupMenu: TPopupMenu
     OnPopup = PkgPopupMenuPopup

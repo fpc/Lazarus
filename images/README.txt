@@ -52,7 +52,7 @@ cd <lazarusdir>/images/
 6. laz_images.lrs
 
 cd <lazarusdir>/images/
-../tools/lazres laz_images.lrs btn_*.xpm pkg_*.xpm arrow_*.xpm menu/menu_*.xpm menu/menu_*.png codeexplorer/*.xpm designer/*.xpm debugger/*.png
+../tools/lazres laz_images.lrs btn_*.xpm pkg_*.xpm arrow_*.xpm menu/menu_*.xpm menu/menu_*.png codeexplorer/*.xpm designer/*.xpm debugger/*.png packages/*.png
 rm ../main.ppu
 
 

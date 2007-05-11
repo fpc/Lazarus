@@ -52,7 +52,6 @@ type
   { TPkgGraphExplorerDlg }
 
   TPkgGraphExplorerDlg = class(TForm)
-    ImageList: TImageList;
     PkgTreeLabel: TLabel;
     PkgTreeView: TTreeView;
     PkgListPanel: TPanel;
@@ -126,7 +125,7 @@ var
 
 implementation
 
-uses Math;
+uses Math, IDEImagesIntf;
 
 { TPkgGraphExplorerDlg }
 procedure TPkgGraphExplorerDlg.PkgGraphExplorerShow(Sender: TObject);
@@ -270,12 +269,13 @@ end;
 
 procedure TPkgGraphExplorerDlg.SetupComponents;
 begin
-  ImgIndexPackage := ImageList.AddLazarusResource('pkg_package');
-  ImgIndexInstalledPackage := ImageList.AddLazarusResource('pkg_package_install');
-  ImgIndexInstallPackage := ImageList.AddLazarusResource('pkg_package_autoinstall');
-  ImgIndexUninstallPackage := ImageList.AddLazarusResource('pkg_package_uninstall');
-  ImgIndexCirclePackage := ImageList.AddLazarusResource('pkg_package_circle');
-  ImgIndexMissingPackage := ImageList.AddLazarusResource('pkg_conflict');
+  PkgTreeView.Images := IDEImages.Images_16;
+  ImgIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
+  ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
+  ImgIndexInstallPackage := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
+  ImgIndexUninstallPackage := IDEImages.LoadImage(16, 'pkg_package_uninstall');
+  ImgIndexCirclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
+  ImgIndexMissingPackage := IDEImages.LoadImage(16, 'pkg_conflict');
 
   PkgTreeLabel.Caption:=lisPckExplLoadedPackages;
   PkgListLabel.Caption:=lisPckExplIsRequiredBy;

@@ -27,15 +27,14 @@ LazarusResources.Add('TPkgGraphExplorerDlg','FORMDATA',[
   +'BorderSpacing.Around'#2#6#7'Caption'#6#12'PkgTreeLabel'#5'Color'#7#6'clNone'
   +#11'ParentColor'#8#4'Left'#2#6#6'Height'#2#13#3'Top'#2#6#5'Width'#3#217#0#0#0
   +#9'TTreeView'#11'PkgTreeView'#5'Align'#7#8'alClient'#17'DefaultItemHeight'#2
-  +#17#6'Images'#7#9'ImageList'#9'PopupMenu'#7#12'PkgPopupMenu'#16'RightClickSe'
-  +'lect'#9#8'TabOrder'#2#0#10'OnDblClick'#7#19'PkgTreeViewDblClick'#11'OnExpan'
-  +'ding'#7#20'PkgTreeViewExpanding'#9'OnKeyDown'#7#15'InfoMemoKeyDown'#18'OnSe'
-  +'lectionChanged'#7#27'PkgTreeViewSelectionChanged'#7'Options'#11#17'tvoAutoI'
-  +'temHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#19'tvoRightClickS'
-  +'elect'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0
-  +#6'Height'#3#239#0#3'Top'#2#25#5'Width'#3#229#0#0#0#0#10'TImageList'#9'Image'
-  +'List'#6'Height'#2#17#5'Width'#2#17#4'left'#2' '#3'top'#2#8#0#0#10'TPopupMen'
-  +'u'#12'PkgPopupMenu'#7'OnPopup'#7#17'PkgPopupMenuPopup'#4'left'#2' '#3'top'#2
-  +'('#0#9'TMenuItem'#17'UninstallMenuItem'#7'Caption'#6#9'New Item1'#7'OnClick'
-  +#7#22'UninstallMenuItemClick'#0#0#0#0
+  +#17#9'PopupMenu'#7#12'PkgPopupMenu'#16'RightClickSelect'#9#8'TabOrder'#2#0#10
+  +'OnDblClick'#7#19'PkgTreeViewDblClick'#11'OnExpanding'#7#20'PkgTreeViewExpan'
+  +'ding'#9'OnKeyDown'#7#15'InfoMemoKeyDown'#18'OnSelectionChanged'#7#27'PkgTre'
+  +'eViewSelectionChanged'#7'Options'#11#17'tvoAutoItemHeight'#16'tvoHideSelect'
+  +'ion'#21'tvoKeepCollapsedNodes'#19'tvoRightClickSelect'#14'tvoShowButtons'#12
+  +'tvoShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0#6'Height'#3#239#0#3'Top'#2
+  +#25#5'Width'#3#229#0#0#0#0#10'TPopupMenu'#12'PkgPopupMenu'#7'OnPopup'#7#17'P'
+  +'kgPopupMenuPopup'#4'left'#2' '#3'top'#2'('#0#9'TMenuItem'#17'UninstallMenuI'
+  +'tem'#7'Caption'#6#9'New Item1'#7'OnClick'#7#22'UninstallMenuItemClick'#0#0#0
+  +#0
 ]);

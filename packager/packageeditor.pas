@@ -126,7 +126,6 @@ type
     // statusbar
     StatusBar: TStatusBar;
     // hidden components
-    ImageList: TImageList;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
@@ -319,7 +318,7 @@ var
 
 implementation
 
-uses Math;
+uses Math, IDEImagesIntf;
 
 var
   ImageIndexFiles: integer;
@@ -1282,16 +1281,6 @@ begin
 end;
 
 procedure TPackageEditorForm.SetupComponents;
-
-  procedure AddResImg(const ResName: string);
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.Add(Pixmap,nil);
-    Pixmap.Free;
-  end;
   
   procedure LoadBitBtnGlyph(ABitBtn: TBitBtn; const ResName: string);
   begin
@@ -1299,36 +1288,18 @@ procedure TPackageEditorForm.SetupComponents;
   end;
 
 begin
-  ImageList:=TImageList.Create(Self);
-  with ImageList do begin
-    Width:=16;
-    Height:=16;
-    Name:='ImageList';
-    ImageIndexFiles:=Count;
-    AddResImg('pkg_files');
-    ImageIndexRemovedFiles:=Count;
-    AddResImg('pkg_removedfiles');
-    ImageIndexRequired:=Count;
-    AddResImg('pkg_required');
-    ImageIndexRemovedRequired:=Count;
-    AddResImg('pkg_removedrequired');
-    ImageIndexUnit:=Count;
-    AddResImg('pkg_unit');
-    ImageIndexRegisterUnit:=Count;
-    AddResImg('pkg_registerunit');
-    ImageIndexLFM:=Count;
-    AddResImg('pkg_lfm');
-    ImageIndexLRS:=Count;
-    AddResImg('pkg_lrs');
-    ImageIndexInclude:=Count;
-    AddResImg('pkg_include');
-    ImageIndexText:=Count;
-    AddResImg('pkg_text');
-    ImageIndexBinary:=Count;
-    AddResImg('pkg_binary');
-    ImageIndexConflict:=Count;
-    AddResImg('pkg_conflict');
-  end;
+  ImageIndexFiles := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexRemovedFiles := IDEImages.LoadImage(16, 'pkg_removedfiles');
+  ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
+  ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
+  ImageIndexUnit := IDEImages.LoadImage(16, 'pkg_unit');
+  ImageIndexRegisterUnit := IDEImages.LoadImage(16, 'pkg_registerunit');
+  ImageIndexLFM := IDEImages.LoadImage(16, 'pkg_lfm');
+  ImageIndexLRS := IDEImages.LoadImage(16, 'pkg_lrs');
+  ImageIndexInclude := IDEImages.LoadImage(16, 'pkg_include');
+  ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
+  ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
+  ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
   
   SaveBitBtn:=TBitBtn.Create(Self);
   with SaveBitBtn do begin
@@ -1432,7 +1403,7 @@ begin
     Name:='FilesTreeView';
     Parent:=Self;
     BeginUpdate;
-    Images:=ImageList;
+    Images := IDEImages.Images_16;
     FilesNode:=Items.Add(nil, dlgEnvFiles);
     FilesNode.ImageIndex:=ImageIndexFiles;
     FilesNode.SelectedIndex:=FilesNode.ImageIndex;

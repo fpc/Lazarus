@@ -49,8 +49,6 @@ type
 
   TfrmCompilerOptions = class(TForm)
     nbMain: TNotebook;
-    ImageList: TImageList;
-
     { Search Paths Controls }
     PathPage: TPage;
     
@@ -295,6 +293,9 @@ type
 
 implementation
 
+uses
+  IDEImagesIntf;
+
 const
   XMARGIN = 6;
   YMARGIN = 6;
@@ -315,18 +316,8 @@ type
 {  TfrmCompilerOptions Constructor                                             }
 {------------------------------------------------------------------------------}
 constructor TfrmCompilerOptions.Create(TheOwner: TComponent);
-
-  procedure AddResImg(const ResName: string);
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.Add(Pixmap,nil);
-    Pixmap.Free;
-  end;
-
-var Page: integer;
+var 
+  Page: integer;
 begin
   inherited Create(TheOwner);
   Name:='CompilerOptionsDlg';
@@ -335,18 +326,9 @@ begin
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,550,450);
 
-  ImageList:=TImageList.Create(Self);
-  with ImageList do begin
-    Width:=17;
-    Height:=17;
-    Name:='ImageList';
-    ImageIndexPackage:=Count;
-    AddResImg('pkg_package');
-    ImageIndexRequired:=Count;
-    AddResImg('pkg_required');
-    ImageIndexInherited:=Count;
-    AddResImg('pkg_inherited');
-  end;
+  ImageIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
+  ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
+  ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
 
   DisableAlign;
   try
@@ -1969,7 +1951,7 @@ begin
     Name:='InhTreeView';
     Options:=Options+[tvoReadOnly, tvoRightClickSelect, tvoShowRoot,
                       tvoKeepCollapsedNodes];
-    Images:=ImageList;
+    Images := IDEImages.Images_16;
     AnchorToNeighbour(akTop,6,InhNoteLabel);
     AnchorParallel(akLeft,0,InheritedPage);
     AnchorParallel(akRight,0,InheritedPage);
