@@ -1,4 +1,4 @@
-Lazarus is using folowing third party libraries and tools
+Lazarus is using following third party libraries and tools
 
 Icon sets:
 
