@@ -126,6 +126,8 @@ begin
   else
     gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_NONE);
 
+  gtk_text_view_set_accepts_tab(PGtkTextView(TempWidget), TCustomMemo(AWinControl).WantTabs);
+  
   gtk_widget_show_all(Widget);
 
   SetCallbacks(Widget, WidgetInfo);
@@ -214,6 +216,17 @@ begin
   
   // remove this line when gtk_text_buffer_select_range is available
   gtk_text_buffer_move_mark(TextBuffer, gtk_text_buffer_get_insert(TextBuffer), @StartIter);
+end;
+
+class procedure TGtk2WSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
+  const NewWantTabs: boolean);
+var
+  TextView: PGtkTextView;
+begin
+  if not ACustomMemo.HandleAllocated then exit;
+
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
+  gtk_text_view_set_accepts_tab(TextView, NewWantTabs);
 end;
 
 class function TGtk2WSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit

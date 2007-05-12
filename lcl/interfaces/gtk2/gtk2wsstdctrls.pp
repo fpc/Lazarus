@@ -194,6 +194,7 @@ type
     class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont);override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
   end;
 
   { TGtk2WSEdit }
