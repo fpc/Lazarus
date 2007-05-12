@@ -2160,6 +2160,7 @@ begin
     Exit;
   end;
 
+  DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="',WorkingDir,'"']);
   if WorkingDir <> ''
   then ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(WorkingDir)], []);
 

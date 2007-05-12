@@ -1719,8 +1719,23 @@ begin
 
   Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
   NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-  if NewWorkingDir='' then
+  if (NewWorkingDir<>'') and (not DirectoryExists(NewWorkingDir)) then begin
+    MessageDlg('Unable to run',
+      'The working directory "'+NewWorkingDir+'" does not exist.'#13
+      +'Please check the working directory in Menu > Project > Run parameters.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  if NewWorkingDir='' then begin
     NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename);
+    if (NewWorkingDir<>'') and (not DirectoryExists(NewWorkingDir)) then begin
+      MessageDlg('Unable to run',
+        'The destination directory "'+NewWorkingDir+'" does not exist.'#13
+        +'Please check the project target file name Menu > Project > Project Options.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
   FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
   // set filename after workingdir
   FDebugger.FileName := LaunchingApplication;

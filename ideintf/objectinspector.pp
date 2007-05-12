@@ -271,7 +271,7 @@ type
     FRowSpacing: integer;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
-    FCurrentButton: TWinControl; // nil or ValueButton
+    FCurrentButton: TControl; // nil or ValueButton
     FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox or ValueCheckBox
     FCurrentEditorLookupRoot: TPersistent;
     FDefaultItemHeight:integer;
@@ -391,7 +391,7 @@ type
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
     ValueCheckBox: TCheckBox;
-    ValueButton: TButton;
+    ValueButton: TSpeedButton;
 
     constructor Create(TheOwner: TComponent); override;
     constructor CreateWithParams(AnOwner: TComponent;
@@ -801,7 +801,7 @@ begin
     OnKeyUp:=@ValueCheckBoxKeyUp;
   end;
 
-  ValueButton:=TButton.Create(Self);
+  ValueButton:=TSpeedButton.Create(Self);
   with ValueButton do begin
     Name:='ValueButton';
     Visible:=false;
