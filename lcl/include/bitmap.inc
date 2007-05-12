@@ -151,10 +151,7 @@ end;
 function TBitmap.GetCanvas: TCanvas;
 begin
   if FCanvas = nil then
-  begin
-    HandleNeeded;
     CreateCanvas;
-  end;
   Result := FCanvas;
 end;
 

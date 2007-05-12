@@ -7974,8 +7974,8 @@ begin
                 Drawable := nil;
               end;
             if Drawable<>nil then begin
-              //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
-              //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
+              //DebugLn(['TGtkWidgetSet.SelectObject DC=',DbgS(Pointer(DC)),' GDIBitmap=',DbgS(CurrentBitmap),
+              //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable)]);
               if GC <> nil then begin
                 gdk_gc_unref(GC);
                 GC:=nil;

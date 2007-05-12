@@ -642,6 +642,8 @@ begin
   {$ENDIF}
   Scroll.LargeChange := NbLinesInWindow;
 
+  bitmap.Width:=ClientWidth;
+  bitmap.Height:=ClientHeight;
   with bitmap do begin
     {$IFNDEF SYN_LAZARUS}
     canvas.pen.color := fbcolor;

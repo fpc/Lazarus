@@ -599,6 +599,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InitMacros(AMacroList: TTransferMacroList);
+    procedure CreateCompletionForm;
 
     procedure ShowLazDoc;
     procedure UpdateLazDoc;
@@ -1450,6 +1451,7 @@ Begin
 
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
+      SourceNotebook.CreateCompletionForm;
       CurrentCompletionType:=ctWordCompletion;
       TextS := FEditor.LineText;
       LogCaret:=FEditor.LogicalCaretXY;
@@ -2118,7 +2120,8 @@ Begin
     end;
     if FCodeTemplates<>nil then
       FCodeTemplates.AddEditor(FEditor);
-    aCompletion.AddEditor(FEditor);
+    if aCompletion<>nil then
+      aCompletion.AddEditor(FEditor);
     RefreshEditorSettings;
     FEditor.EndUpdate;
   end else begin
@@ -2246,7 +2249,7 @@ begin
   //debugln('TSourceEditor.StartIdentCompletion');
   if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
   SourceNotebook.fIdentCompletionJumpToError:=JumpToError;
-  
+  SourceNotebook.CreateCompletionForm;
   CurrentCompletionType:=ctIdentCompletion;
   TextS := FEditor.LineText;
   LogCaret:=FEditor.LogicalCaretXY;
@@ -2414,7 +2417,8 @@ Begin
     FOnBeforeClose(Self);
 
   Visible := False;
-  aCompletion.RemoveEditor(FEditor);
+  if aCompletion<>nil then
+    aCompletion.RemoveEditor(FEditor);
   SourceEditorMarks.DeleteAllForEditor(FEditor);
   FEditor.Parent:=nil;
   CodeBuffer := nil;
@@ -2903,26 +2907,6 @@ begin
   // popup menu
   BuildPopupMenu;
 
-  // completion form
-  aCompletion := TSynCompletion.Create(Self);
-    with aCompletion do
-      Begin
-        EndOfTokenChr:='()[].,;:-+=^*<>/';
-        Width:=400;
-        OnExecute := @ccExecute;
-        OnCancel := @ccCancel;
-        OnCodeCompletion := @ccComplete;
-        OnPaintItem:=@OnSynCompletionPaintItem;
-        OnMeasureItem := @OnSynCompletionMeasureItem;
-        OnSearchPosition:=@OnSynCompletionSearchPosition;
-        OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
-        OnKeyNextChar:=@OnSynCompletionNextChar;
-        OnKeyPrevChar:=@OnSynCompletionPrevChar;
-        OnKeyPress:=@OnSynCompletionKeyPress;
-        OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
-        ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
-      end;
-
   // HintTimer
   FHintTimer := TTimer.Create(Self);
   with FHintTimer do begin
@@ -2983,6 +2967,34 @@ begin
                  lisExpandedFilenameOfCurrentEditor,@MacroFuncEdFile,[]));
   AMacroList.Add(TTransferMacro.Create('Prompt','',
                  lisPromptForValue,@MacroFuncPrompt,[tmfInteractive]));
+end;
+
+procedure TSourceNotebook.CreateCompletionForm;
+var
+  i: Integer;
+begin
+  // completion form
+  aCompletion := TSynCompletion.Create(Self);
+    with aCompletion do
+      Begin
+        EndOfTokenChr:='()[].,;:-+=^*<>/';
+        Width:=400;
+        OnExecute := @ccExecute;
+        OnCancel := @ccCancel;
+        OnCodeCompletion := @ccComplete;
+        OnPaintItem:=@OnSynCompletionPaintItem;
+        OnMeasureItem := @OnSynCompletionMeasureItem;
+        OnSearchPosition:=@OnSynCompletionSearchPosition;
+        OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
+        OnKeyNextChar:=@OnSynCompletionNextChar;
+        OnKeyPrevChar:=@OnSynCompletionPrevChar;
+        OnKeyPress:=@OnSynCompletionKeyPress;
+        OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
+        ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
+      end;
+
+  for i:=0 to EditorCount-1 do
+    aCompletion.AddEditor(Editors[i].FEditor);
 end;
 
 procedure TSourceNotebook.ShowLazDoc;
@@ -3096,6 +3108,7 @@ var P:TPoint;
 begin
   //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and (CurrentCompletionType=ctNone) then begin
+    SourceNotebook.CreateCompletionForm;
     CurrentCompletionType:=ctTemplateCompletion;
     with AnEditor do begin
       P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight);
