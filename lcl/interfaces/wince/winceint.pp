@@ -137,6 +137,9 @@ type
     Constructor Create;
     { Destructor of the class }
     Destructor Destroy; Override;
+
+    function LCLPlatform: TLCLPlatform; override;
+
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
@@ -146,7 +149,6 @@ type
     procedure AppWaitMessage; override;
     Procedure AppTerminate; Override;
     procedure AppSetTitle(const ATitle: string); override;
-    function  WidgetSetName: string; override;
     //Function  InitHintFont(HintFont: TObject): Boolean; override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
 //    procedure AppRun(const ALoop: TApplicationMainLoop); override;

@@ -304,7 +304,7 @@ begin
       Result:='';
   end;
   if (Result='') or (Result='default') then
-    Result:=GetDefaultLCLWidgetType;
+    Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
 end;
 
 function TBuildManager.GetRunCommandLine: string;
@@ -1194,13 +1194,11 @@ var
 begin
   NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
   NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
-  NewLCLWidgetSet:=LCLPlatformNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform];
+  NewLCLWidgetSet:=LCLPlatformDirNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform];
   if (NewTargetOS='') or (NewTargetOS='default') then
     NewTargetOS:=GetDefaultTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
-  if (NewLCLWidgetSet='') or (NewLCLWidgetSet='default') then
-    NewLCLWidgetSet:=GetDefaultLCLWidgetType;
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet);
 end;
 

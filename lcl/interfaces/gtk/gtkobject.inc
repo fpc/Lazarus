@@ -1989,9 +1989,9 @@ begin
 
 end;
 
-function TGTKWidgetSet.WidgetSetName: string;
+function TGTKWidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:='gtk';
+  Result:= lpGtk;
 end;
 
 {------------------------------------------------------------------------------

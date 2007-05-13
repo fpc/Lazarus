@@ -69,6 +69,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    function LCLPlatform: TLCLPlatform; override;
+
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure AppWaitMessage; override;
@@ -79,7 +81,6 @@ type
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
 
-    function  WidgetSetName: string; override;
     procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
     
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

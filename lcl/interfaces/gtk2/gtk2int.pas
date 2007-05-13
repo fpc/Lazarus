@@ -40,7 +40,7 @@ uses
   {$EndIf}
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
-
+  InterfaceBase,
   LMessages, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
   DynHashArray, GraphType, GraphMath, Graphics, Menus,
   GTKWinApiWindow, StdCtrls, ComCtrls,
@@ -74,7 +74,7 @@ type
     procedure CreatePreviewDialogControl(
       PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); override;
   public
-    function WidgetSetName: string; override;
+    function LCLPlatform: TLCLPlatform; override;
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   end;

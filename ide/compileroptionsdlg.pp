@@ -36,7 +36,8 @@ unit CompilerOptionsDlg;
 interface
 
 uses
-  Forms, Classes, LCLProc, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls,
+  Forms, Classes, LCLProc, SysUtils, InterfaceBase,
+  ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
   ProjectIntf, IDEWindowIntf,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
@@ -510,6 +511,7 @@ procedure TfrmCompilerOptions.GetCompilerOptions(
   SrcCompilerOptions: TBaseCompilerOptions);
 var
   i: integer;
+  LCLPlatform: TLCLPlatform;
   EnabledLinkerOpts: Boolean;
   Options: TBaseCompilerOptions;
 begin
@@ -531,9 +533,11 @@ begin
   edtUnitOutputDir.Text := Options.UnitOutputDirectory;
   edtDebugPath.Text := Options.DebugPath;
 
-  i:=LCLWidgetTypeComboBox.Items.IndexOf(Options.LCLWidgetType);
-  if i<0 then i:=0;
-  LCLWidgetTypeComboBox.ItemIndex:=i;
+  LCLPlatform := DirNameToLCLPlatform(Options.LCLWidgetType);
+  if CompareText(Options.LCLWidgetType,LCLPlatformDirNames[LCLPlatform])=0 then
+    LCLWidgetTypeComboBox.ItemIndex := ord(LCLPlatform)+1
+  else
+    LCLWidgetTypeComboBox.ItemIndex := 0;
 
   // parsing
   if (Options.AssemblerStyle in [1,2,3])  then
@@ -809,7 +813,7 @@ begin
   if i<=0 then
     Options.LCLWidgetType:=''
   else
-    Options.LCLWidgetType:= LCLWidgetTypeComboBox.Items[i];
+    Options.LCLWidgetType:= LCLPlatformDirNames[TLCLPlatform(i-1)];
 
   // parsing;
   Options.AssemblerStyle := grpStyle.ItemIndex;
@@ -2386,9 +2390,10 @@ begin
     AnchorToNeighbour(akTop,10,edtDebugPath);
     with Items do begin
       BeginUpdate;
-      Add(Format(lisCOdefault, [GetDefaultLCLWidgetType]));
+      Add(Format(lisCOdefault,
+                   [LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]));
       for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
-        Items.Add(LCLPlatformNames[LCLInterface]);
+        Items.Add(LCLPlatformDisplayNames[LCLInterface]);
       end;
       EndUpdate;
     end;

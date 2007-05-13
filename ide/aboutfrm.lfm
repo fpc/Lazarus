@@ -93,7 +93,7 @@ object AboutForm: TAboutForm
     Top = 6
     Width = 389
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 2
     object AboutPage: TPage
       Caption = 'About'
       ClientWidth = 381

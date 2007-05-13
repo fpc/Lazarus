@@ -154,9 +154,9 @@ begin
 
 end;
 
-function TFpGuiWidgetSet.WidgetSetName: string;
+function TFpGuiWidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:='fpgui';
+  Result:= lpfpGUI;
 end;
 
 function TFpGuiWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;

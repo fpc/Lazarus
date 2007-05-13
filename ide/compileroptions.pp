@@ -1670,7 +1670,7 @@ function TBaseCompilerOptions.GetEffectiveLCLWidgetType: string;
 begin
   Result:=LCLWidgetType;
   if (Result='') or (Result='default') then
-    Result:=GetDefaultLCLWidgetType;
+    Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
 end;
 
 function TBaseCompilerOptions.ShortenPath(const SearchPath: string;

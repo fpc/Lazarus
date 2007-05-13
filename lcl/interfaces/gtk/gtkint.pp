@@ -285,6 +285,7 @@ type
     procedure HookSignals(const AGTKObject: PGTKObject;
                           const ALCLObject: TObject); virtual;  //hooks all signals for controls
   public
+    function LCLPlatform: TLCLPlatform; override;
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppProcessMessages; override;
@@ -294,7 +295,6 @@ type
     procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
-    function  WidgetSetName: string; override;
     // notebook
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
   public

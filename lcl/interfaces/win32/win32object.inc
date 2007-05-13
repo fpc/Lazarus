@@ -439,9 +439,9 @@ begin
   {$endif}
 end;
 
-function TWin32WidgetSet.WidgetSetName: string;
+function TWin32WidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:='win32';
+  Result:= lpWin32;
 end;
 
 {------------------------------------------------------------------------------

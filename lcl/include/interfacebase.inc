@@ -46,9 +46,3 @@ procedure TWidgetSet.AppSetTitle(const ATitle: string);
 begin
   Debugln('TWidgetSet.AppSetTitle not implemented by ', ClassName);
 end;
-
-function TWidgetSet.WidgetSetName: string;
-begin
-  Result := '';
-  Debugln('TWidgetSet.WidgetSetName not implemented by ', ClassName);
-end;

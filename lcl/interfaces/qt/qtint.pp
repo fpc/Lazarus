@@ -51,6 +51,7 @@ type
     App: QApplicationH;
     SavedDCList: TList;
   public
+    function LCLPlatform: TLCLPlatform; override;
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
@@ -60,7 +61,6 @@ type
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
 //    procedure AppSetTitle(const ATitle: string); override;
-    function  WidgetSetName: string; override;
   public
     constructor Create;
     destructor Destroy; override;

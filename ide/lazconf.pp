@@ -49,20 +49,14 @@ uses
   SysUtils, Classes, FileUtil, InterfaceBase;
 
 type
-  TLCLPlatform = (
-    lpGtk,
-    lpGtk2,
-    lpWin32,
-    lpWinCE,
-    lpCarbon,
-    lpQT,
-    lpfpGUI
-    );
   TLCLPlatforms = set of TLCLPlatform;
   
 const
-  LCLPlatformNames: array[TLCLPlatform] of string = (
+  LCLPlatformDirNames: array[TLCLPlatform] of string = (
       'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt', 'fpgui'
+    );
+  LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
+      'gtk', 'gtk 2', 'win32/64', 'wince', 'carbon', 'qt', 'fpgui'
     );
 
 
@@ -115,7 +109,8 @@ const
   function GetDefaultTargetCPU: string;
   function GetDefaultTargetOS: string;
 
-  function GetDefaultLCLWidgetType: string;
+  function GetDefaultLCLWidgetType: TLCLPlatform;
+  function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
   procedure GetDefaultLCLLibPaths(List: TStrings);
   function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
   
@@ -143,18 +138,25 @@ begin
                              [sffDontSearchInBasePath]);
 end;
 
-function GetDefaultLCLWidgetType: string;
+function GetDefaultLCLWidgetType: TLCLPlatform;
 begin
   if WidgetSet<>nil then
-    Result:=WidgetSet.WidgetSetName
+    Result:=WidgetSet.LCLPlatform
   else begin
     {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
-    Result:='win32';
+    Result:= lpWin32;
     {$ENDIF}
     {$IFNDEF WidgetSetDefined}
-    Result:='gtk';
+    Result:= lpGtk;
     {$ENDIF}
   end;
+end;
+
+function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
+begin
+  for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
+    if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
+  Result:=lpGtk;
 end;
 
 function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;

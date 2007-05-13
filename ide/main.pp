@@ -10466,7 +10466,8 @@ begin
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.FPCSourceDirectory;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
-    Variables[ExternalMacroStart+'LCLWidgetType']:=GetDefaultLCLWidgetType;
+    Variables[ExternalMacroStart+'LCLWidgetType']:=
+      LCLPlatformDirNames[GetDefaultLCLWidgetType];
   end;
 
   // build DefinePool and Define Tree

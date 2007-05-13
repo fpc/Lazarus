@@ -150,9 +150,9 @@ begin
 
 end;
 
-function TQtWidgetSet.WidgetSetName: string;
+function TQtWidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:='qt';
+  Result:= lpQT;
 end;
 
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;

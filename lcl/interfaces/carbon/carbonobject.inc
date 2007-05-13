@@ -632,12 +632,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.WidgetSetName
-  Returns: Name of Carbon widget set
+  Method:  TCarbonWidgetSet.LCLPlatform
+  Returns: lpCarbon - enum value for Carbon widgetset
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.WidgetSetName: string;
+function TCarbonWidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result := 'carbon';
+  Result:= lpCarbon;
 end;
 
 {------------------------------------------------------------------------------

@@ -925,9 +925,9 @@ begin
   gtk_widget_show(PreviewWidget);
 end;
 
-function TGtk2WidgetSet.WidgetSetName: string;
+function TGtk2WidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:='gtk2';
+  Result:= lpGtk2;
 end;
 
 {$IFDEF ASSERT_IS_ON}

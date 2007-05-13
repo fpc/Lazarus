@@ -434,9 +434,9 @@ begin
 end;
 
 
-function TWinCEWidgetSet.WidgetSetName: string;
+function TWinCEWidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:='wince';
+  Result:= lpWinCE;
 end;
 
 {------------------------------------------------------------------------------

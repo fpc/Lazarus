@@ -54,6 +54,16 @@ type
 
   TLCLWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
+  TLCLPlatform = (
+    lpGtk,
+    lpGtk2,
+    lpWin32,
+    lpWinCE,
+    lpCarbon,
+    lpQT,
+    lpfpGUI
+    );
+
   { TWidgetSet }
 
   TWidgetSet = class(TObject)
@@ -73,7 +83,7 @@ type
     procedure AppBringToFront; virtual; abstract;
     procedure AppSetTitle(const ATitle: string); virtual;
     
-    function  WidgetSetName: string; virtual;
+    function  LCLPlatform: TLCLPlatform; virtual; abstract;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;

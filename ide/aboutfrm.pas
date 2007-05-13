@@ -130,7 +130,7 @@ begin
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
   PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
-                         +'-'+GetDefaultLCLWidgetType;
+                         +'-'+LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
 
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;

@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
-  LResources,  Laz_XMLCfg,
+  LResources,  Laz_XMLCfg, InterfaceBase,
   IDEExternToolIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
@@ -261,13 +261,6 @@ begin
   Result:=mmNone;
 end;
 
-function StrToLCLPlatform(const s: string): TLCLPlatform;
-begin
-  for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
-    if CompareText(s,LCLPlatformNames[Result])=0 then exit;
-  Result:=lpGtk;
-end;
-
 function ShowConfigureBuildLazarusDlg(
   Options: TBuildLazarusOptions): TModalResult;
 // mrOk=save
@@ -303,7 +296,7 @@ begin
     // setup external tool
     Tool.Filename:=MakePath;
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
-      LCLPlatformNames[Options.LCLPlatform];
+      LCLPlatformDirNames[Options.LCLPlatform];
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     if blfOnlyIDE in Flags then
       Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC']:= '0';
@@ -684,7 +677,7 @@ begin
   OptionsLabel.Caption := lisLazBuildOptions;
   LCLInterfaceRadioGroup.Caption := lisLazBuildLCLInterface;
   for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do begin
-    LCLInterfaceRadioGroup.Items.Add(LCLPlatformNames[LCLInterface]);
+    LCLInterfaceRadioGroup.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
   end;
   WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
@@ -1117,7 +1110,7 @@ begin
   FTargetDirectory:=DefaultTargetDirectory;
   TargetOS:='';
   TargetCPU:='';
-  fLCLPlatform:=StrToLCLPlatform(GetDefaultLCLWidgetType);
+  fLCLPlatform:=GetDefaultLCLWidgetType;
 
   // auto install packages
   fStaticAutoInstallPackages.Clear;
@@ -1199,6 +1192,7 @@ end;
 procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);
 var
   i: Integer;
+  LCLPlatformStr: string;
 begin
   Clear;
   CreateDefaults;
@@ -1211,8 +1205,11 @@ begin
   FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
   TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU/Value','');
-  fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
-                                 GetDefaultLCLWidgetType));
+  LCLPlatformStr:= XMLConfig.GetValue(Path+'LCLPlatform/Value','');
+  if LCLPlatformStr='' then
+    fLCLPlatform:=GetDefaultLCLWidgetType
+  else
+    fLCLPlatform:=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
                   XMLConfig.GetValue(Path+'TargetDirectory/Value',
                                      DefaultTargetDirectory)));
@@ -1241,8 +1238,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
-                           LCLPlatformNames[fLCLPlatform],
-                           GetDefaultLCLWidgetType);
+                           LCLPlatformDirNames[fLCLPlatform],
+                           LCLPlatformDirNames[GetDefaultLCLWidgetType]);
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
   XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,
