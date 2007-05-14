@@ -1709,13 +1709,22 @@ begin
       cbsCheckBoxColumn:
         DrawCheckBoxBitmaps(aCol, aRect, F);
       else begin
+        {$ifdef dbggridpaint}
+        DbgOut('Col=%d',[ACol]);
+        {$endif}
         if F<>nil then begin
+          {$ifdef dbgGridPaint}
+          DbgOut('Field=%s',[F.FieldName]);
+          {$endif}
           if F.dataType <> ftBlob then
             S := F.DisplayText
           else
             S := '(blob)';
         end else
           S := '';
+        {$ifdef dbggridpaint}
+        DbgOut('Value=%s ',[S]);
+        {$endif}
         DrawCellText(aCol,aRow,aRect,aState,S);
       end;
     end;
@@ -1835,7 +1844,7 @@ var
     {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
   end;
 begin
-  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
+  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown ',Name,' INIT Key= ',IntToStr(Key));{$Endif}
   case Key of
 
     VK_TAB:
@@ -2350,7 +2359,8 @@ var
 begin
   if FDataLink.Active then begin
     {$ifdef dbgGridPaint}
-    DebugLn('DrawAllRows: Link.ActiveRecord=%d, Row=%d',[FDataLink.ActiveRecord, Row]);
+    DebugLn;
+    DebugLn('%s DrawAllRows: Link.ActiveRecord=%d, Row=%d',[Name, FDataLink.ActiveRecord, Row]);
     {$endif}
     CurActiveRecord:=FDataLink.ActiveRecord;
     FDrawingEmptyDataset:=FDatalink.DataSet.IsEmpty;
@@ -2359,8 +2369,13 @@ begin
   try
     inherited DrawAllRows;
   finally
-    if FDataLink.Active then
+    if FDataLink.Active then begin
       FDataLink.ActiveRecord:=CurActiveRecord;
+      {$ifdef dbgGridPaint}
+      DebugLn('%s DrawAllRows END Link.ActiveRecord=%d, Row=%d',[Name, FDataLink.ActiveRecord, Row]);
+      DebugLn;
+      {$endif}
+    end;
   end;
 end;
 
@@ -2389,7 +2404,7 @@ begin
     FDrawingMultiSelRecord := False;
   end;
   {$ifdef dbgGridPaint}
-  DbgOut('DrawRow Row=', IntToStr(ARow), ' Act=', Copy(BoolToStr(FDrawingActiveRecord),1,1));
+  DbgOut('DrawRow Row=', IntToStr(ARow), ' Act=', dbgs(FDrawingActiveRecord));
   {$endif}
   inherited DrawRow(ARow);
   {$ifdef dbgGridPaint}

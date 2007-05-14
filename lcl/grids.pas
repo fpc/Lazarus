@@ -3246,11 +3246,17 @@ procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
 begin
   {$ifdef dbgGrid}
   if csDestroying in ComponentState then exit;
-  DbgOut('*** grid.WMKillFocus, FocusedWnd=', dbgs(Message.FocusedWnd),'[',dbgs(pointer(Message.FocusedWnd)),'] ');
+  
+  DbgOut('*** grid.WMKillFocus, FocusedWnd=%x WillFocus=',[Message.FocusedWnd]);
   if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
     DebugLn('Editor')
-  else
-    DebugLn('ExternalWindow');
+  else begin
+    DbgOut('ExternalWindow: ');
+    if GetProp(Message.FocusedWnd, 'WinControl')<>nil then
+      DebugLn(dbgsname(TObject(GetProp(Message.FocusedWnd, 'WinControl'))))
+    else
+      DebugLn(' Unknown Window');
+  end;
   {$endif}
   inherited WMKillFocus(Message);
 end;
@@ -4226,7 +4232,7 @@ begin
   Gz:=MouseToGridZone(X,Y);
 
   {$IFDEF dbgGrid}
-  DebugOut('Mouse was in ');
+  DbgOut('Mouse was in ');
   case Gz of
     gzFixedCells: DebugLn('gzFixedCells');
     gzFixedCols:  DebugLn('gzFixedCols');
@@ -4559,12 +4565,13 @@ end;
 
 procedure TCustomGrid.DoEditorHide;
 begin
+  {$ifdef dbgGrid}DebugLn('grid.DoEditorHide INIT');{$endif}
   Editor.Visible:=False;
   if HandleAllocated
   and ([csLoading,csDesigning,csDestroying]*ComponentState=[]) then
     LCLIntf.SetFocus(Handle);
+  {$ifdef dbgGrid}DebugLn('grid.DoEditorHide END');{$endif}
 end;
-
 procedure TCustomGrid.DoEditorShow;
 begin
   //DebugLn(['TCustomGrid.DoEditorShow ']);
@@ -4576,7 +4583,7 @@ begin
   Editor.Visible:=True;
   Editor.SetFocus;
   InvalidateCell(FCol,FRow,True);
-  {$ifdef dbgGrid}DebugLn('grid.DoEditorShow FIN');{$endif}
+  {$ifdef dbgGrid}DebugLn('grid.DoEditorShow END');{$endif}
 end;
 
 procedure TCustomGrid.DoOnChangeBounds;
@@ -4612,7 +4619,7 @@ begin
     end;
   end;
   inherited DoExit;
-  {$IfDef dbgGrid}DebugLn('DoExit - FIN');{$Endif}
+  {$IfDef dbgGrid}DebugLn('DoExit - END');{$Endif}
 end;
 
 procedure TCustomGrid.DoEnter;
@@ -4636,7 +4643,7 @@ begin
     end else
       InvalidateFocused;
   end;
-  {$IfDef dbgGrid}DebugLn('DoEnter - FIN');{$Endif}
+  {$IfDef dbgGrid}DebugLn('DoEnter - END');{$Endif}
 end;
 
 function TCustomGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
@@ -4652,7 +4659,7 @@ begin
       MoveExtend(true, 0, 1);
     Result := true;
   end;
-  {$ifdef dbgGrid}DebugLn('doMouseWheelDown FIN');{$endif}
+  {$ifdef dbgGrid}DebugLn('doMouseWheelDown END');{$endif}
 end;
 
 function TCustomGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
@@ -4668,7 +4675,7 @@ begin
       MoveExtend(true, 0, -1);
     Result := True;
   end;
-  {$ifdef dbgGrid}DebugLn('doMouseWheelUP FIN');{$endif}
+  {$ifdef dbgGrid}DebugLn('doMouseWheelUP END');{$endif}
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -4804,7 +4811,7 @@ begin
         end;
       end;
   end;
-  {$ifdef dbgGrid}DebugLn('Grid.KeyDown FIN Key=',IntToStr(Key));{$endif}
+  {$ifdef dbgGrid}DebugLn('Grid.KeyDown END Key=',IntToStr(Key));{$endif}
 end;
 
 
@@ -4940,7 +4947,7 @@ begin
   if (FEditor<>nil) and EditorAlwaysShown then
     EditorShow(true);
 
-  {$IfDef dbgGrid}DebugLn(' MoveExtend FIN FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
+  {$IfDef dbgGrid}DebugLn(' MoveExtend END FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
 
 function TCustomGrid.MoveNextAuto(const Inverse: boolean): boolean;
@@ -5289,7 +5296,7 @@ begin
     finally
       UnLockEditor;
     end;
-    {$ifdef dbgGrid}DebugLn('EditorHide FIN');{$endif}
+    {$ifdef dbgGrid}DebugLn('EditorHide END');{$endif}
   end;
 end;
 
@@ -5316,7 +5323,7 @@ begin
     FEditorShowing:=False;
     if SelAll then
       EditorSelectAll;
-    {$ifdef dbgGrid} DebugLn('EditorShow FIN');{$endif}
+    {$ifdef dbgGrid} DebugLn('EditorShow END');{$endif}
   end;
 end;
 
@@ -5382,7 +5389,7 @@ begin
       FEditor.Dispatch(Msg);
     end;
   end;
-  {$ifdef dbgGrid} DebugLn('Grid.EditorPos FIN');{$endif}
+  {$ifdef dbgGrid} DebugLn('Grid.EditorPos END');{$endif}
 end;
 
 procedure TCustomGrid.EditorSelectAll;
@@ -5395,7 +5402,7 @@ begin
       Msg.MsgID:=GM_SELECTALL;
       FEditor.Dispatch(Msg);
     end;
-  {$ifdef dbgGrid}DebugLn('EditorSelectALL FIN');{$endif}
+  {$ifdef dbgGrid}DebugLn('EditorSelectALL END');{$endif}
 end;
 
 procedure TCustomGrid.EditordoGetValue;
@@ -5471,14 +5478,12 @@ begin
     try
       EditorGetValue;
       if (FEditor<>nil)and(FEditor.Visible) then begin
-        Editor.Visible:=False;
-        //Editor.Parent:=nil;
+        DoEditorHide;
         FEditorMode := False;
-        //InvalidateCell(FCol,FRow, True);
       end;
     finally
       UnlockEditor;
-      {$IfDef dbgGrid} DebugLn('EditorExit FIN'); {$Endif}
+      {$IfDef dbgGrid} DebugLn('EditorExit END'); {$Endif}
     end;
   end;
 end;
@@ -5517,7 +5522,7 @@ begin
       end;
   end;
   FEditorKey:=False;
-  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' FIN');{$endif}
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' END');{$endif}
 end;
 
 procedure TCustomGrid.EditorKeyPress(Sender: TObject; var Key: Char);
@@ -5544,7 +5549,7 @@ begin
       EditorCanProcessKey(Key)
   end;
   FEditorKey := False;
-  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: FIN Key=',PrintKey);{$Endif}
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: END Key=',PrintKey);{$Endif}
 end;
 
 procedure TCustomGrid.EditorKeyUp(Sender: TObject; var key: Word;
@@ -5660,7 +5665,7 @@ begin
     EditorHide
   else
     EditorShow(false);
-  {$ifdef dbgGrid}DebugLn('Grid.EditorSetMode FIN');{$endif}
+  {$ifdef dbgGrid}DebugLn('Grid.EditorSetMode END');{$endif}
 end;
 
 function TCustomGrid.GetSelectedColor: TColor;
@@ -6312,7 +6317,7 @@ begin
   end;
   inherited SetFocus;
   {$IFDEF dbgGrid}
-  DebugLn('TCustomGrid.SetFocus FIN');
+  DebugLn('TCustomGrid.SetFocus END');
   {$ENDIF}
 end;
 
@@ -6627,7 +6632,7 @@ begin
   if FGrid<>nil then begin
     FGrid.SetEditText(FCol, FRow, Text);
   end;
-  {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change FIN');{$ENDIF}
+  {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change END');{$ENDIF}
 end;
 
 procedure TStringCellEditor.EditingDone;
@@ -6676,7 +6681,7 @@ var
   IntSel: boolean;
 begin
   {$IfDef dbgGrid}
-  DebugLn('TStringCellEditor.KeyDown INI: Key=', Dbgs(Key),
+  DebugLn('TStringCellEditor.KeyDown INIT: Key=', Dbgs(Key),
     ' SelStart=',Dbgs(SelStart),' SelLenght=',dbgs(SelLength),
     ' Len(text)=',dbgs(Length(Text)),' Utf8Len(Text)=',dbgs(UTF8Length(Text)));
   {$Endif}
@@ -6706,7 +6711,7 @@ begin
       doEditorKeyDown;
   end;
   {$IfDef dbgGrid}
-  DebugLn('TStringCellEditor.KeyDown FIN: Key=', Dbgs(Key),
+  DebugLn('TStringCellEditor.KeyDown END: Key=', Dbgs(Key),
     ' SelStart=',Dbgs(SelStart),' SelLenght=',Dbgs(SelLength));
   {$Endif}
 end;
@@ -8374,7 +8379,7 @@ var
   IntSel: boolean;
 begin
   {$IfDef dbgGrid}
-  DebugLn('TPickListCellEditor.KeyDown INI: Key=',Dbgs(Key));
+  DebugLn('TPickListCellEditor.KeyDown INIT: Key=',Dbgs(Key));
   {$Endif}
   inherited KeyDown(Key,Shift);
   case Key of
@@ -8419,7 +8424,7 @@ begin
       doEditorKeyDown;
   end;
   {$IfDef dbgGrid}
-  DebugLn('TPickListCellEditor.KeyDown FIN: Key=',Dbgs(Key));
+  DebugLn('TPickListCellEditor.KeyDown END: Key=',Dbgs(Key));
   {$Endif}
 end;
 
@@ -8429,21 +8434,21 @@ begin
   inherited EditingDone;
   if FGrid<>nil then
     FGrid.EditingDone;
-  {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone DONE');{$ENDIF}
+  {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone END');{$ENDIF}
 end;
 
 procedure TPickListCellEditor.DropDown;
 begin
   {$ifDef dbgGrid} DebugLn('TPickListCellEditor.DropDown INIT'); {$Endif}
   inherited DropDown;
-  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.DropDown DONE'); {$Endif}
+  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.DropDown END'); {$Endif}
 end;
 
 procedure TPickListCellEditor.CloseUp;
 begin
   {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp INIT'); {$Endif}
   inherited CloseUp;
-  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp DONE'); {$Endif}
+  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp END'); {$Endif}
 end;
 
 procedure TPickListCellEditor.Select;
