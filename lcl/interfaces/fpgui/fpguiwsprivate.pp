@@ -182,6 +182,34 @@ type
     function GetText: String;
   end;
 
+  { TFPGUIPrivateCheckBox }
+
+  TFPGUIPrivateCheckBox = class(TFPGUIPrivateWidget, ISimpleText)
+  private
+  protected
+  public
+    function CheckBox: TFCheckBox;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    // ISimpleText
+    procedure SetText(const AText: String);
+    function GetText: String;
+  end;
+
+  { TFPGUIPrivateRadioButton }
+
+  TFPGUIPrivateRadioButton = class(TFPGUIPrivateWidget, ISimpleText)
+  private
+  protected
+  public
+    function RadioButton: TFRadioButton;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    // ISimpleText
+    procedure SetText(const AText: String);
+    function GetText: String;
+  end;
+
   {TFPGUIPrivateNotebook = class(TPrivateNotebook)
   private
   protected
@@ -511,6 +539,78 @@ end;
 function TFPGUIPrivateEdit.GetText: String;
 begin
   Result := Edit.Text;
+end;
+
+{ TFPGUIPrivateCheckBox }
+
+function TFPGUIPrivateCheckBox.CheckBox: TFCheckBox;
+begin
+  Result := TFCheckBox(Widget);
+end;
+
+constructor TFPGUIPrivateCheckBox.Create(ALCLObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(ALCLObject, AParams);
+end;
+
+procedure TFPGUIPrivateCheckBox.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TFCheckBox.Create(ParentContainer.Widget);
+
+  ParentContainer.AddChild(Widget);
+
+  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+procedure TFPGUIPrivateCheckBox.SetText(const AText: String);
+begin
+  CheckBox.Text := AText;
+end;
+
+function TFPGUIPrivateCheckBox.GetText: String;
+begin
+  Result := CheckBox.Text;
+end;
+
+{ TFPGUIPrivateRadioButton }
+
+function TFPGUIPrivateRadioButton.RadioButton: TFRadioButton;
+begin
+  Result := TFRadioButton(Widget);
+end;
+
+constructor TFPGUIPrivateRadioButton.Create(ALCLObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(ALCLObject, AParams);
+end;
+
+procedure TFPGUIPrivateRadioButton.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TFRadioButton.Create(ParentContainer.Widget);
+
+  ParentContainer.AddChild(Widget);
+
+  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+procedure TFPGUIPrivateRadioButton.SetText(const AText: String);
+begin
+  RadioButton.Text := AText;
+end;
+
+function TFPGUIPrivateRadioButton.GetText: String;
+begin
+  Result := RadioButton.Text;
 end;
 
 end.

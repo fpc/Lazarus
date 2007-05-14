@@ -178,6 +178,18 @@ type
   private
   protected
   public
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+      const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
+  public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCheckBox }
@@ -202,6 +214,18 @@ type
   private
   protected
   public
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+      const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
+  public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCustomStaticText }
@@ -352,6 +376,140 @@ begin
   vEdit.Text := AText;
 end;
 
+{ TFpGuiWSCustomCheckBox }
+
+class function TFpGuiWSCustomCheckBox.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  vCheckBox: TFCheckBox;
+begin
+  vCheckBox := TFPGUIPrivateCheckBox(ACustomCheckBox.Handle).CheckBox;
+
+  if vCheckBox.Checked then Result := cbChecked
+  else Result := cbUnchecked;
+end;
+
+class procedure TFpGuiWSCustomCheckBox.SetShortCut(
+  const ACustomCheckBox: TCustomCheckBox; const OldShortCut,
+  NewShortCut: TShortCut);
+begin
+
+end;
+
+class procedure TFpGuiWSCustomCheckBox.SetState(
+  const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  vCheckBox: TFCheckBox;
+begin
+  vCheckBox := TFPGUIPrivateCheckBox(ACustomCheckBox.Handle).CheckBox;
+
+  if NewState = cbChecked then vCheckBox.Checked := True
+  else vCheckBox.Checked := False;
+end;
+
+class function TFpGuiWSCustomCheckBox.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  vCheckBox: TFCheckBox;
+begin
+  Result := False;
+
+  vCheckBox := TFPGUIPrivateCheckBox(AWinControl.Handle).CheckBox;
+
+  AText := vCheckBox.Text;
+  
+  Result := True;
+end;
+
+class procedure TFpGuiWSCustomCheckBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  vCheckBox: TFCheckBox;
+begin
+  vCheckBox := TFPGUIPrivateCheckBox(AWinControl.Handle).CheckBox;
+
+  vCheckBox.Text := AText;
+end;
+
+class function TFpGuiWSCustomCheckBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateCheckBox.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSCustomCheckBox.DestroyHandle(
+  const AWinControl: TWinControl);
+begin
+
+end;
+
+{ TFpGuiWSRadioButton }
+
+class function TFpGuiWSRadioButton.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  vRadioButton: TFRadioButton;
+begin
+  vRadioButton := TFPGUIPrivateRadioButton(ACustomCheckBox.Handle).RadioButton;
+
+  if vRadioButton.Checked then Result := cbChecked
+  else Result := cbUnchecked;
+end;
+
+class procedure TFpGuiWSRadioButton.SetShortCut(
+  const ACustomCheckBox: TCustomCheckBox; const OldShortCut,
+  NewShortCut: TShortCut);
+begin
+
+end;
+
+class procedure TFpGuiWSRadioButton.SetState(
+  const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  vRadioButton: TFRadioButton;
+begin
+  vRadioButton := TFPGUIPrivateRadioButton(ACustomCheckBox.Handle).RadioButton;
+
+  if NewState = cbChecked then vRadioButton.Checked := True
+  else vRadioButton.Checked := False;
+end;
+
+class function TFpGuiWSRadioButton.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  vRadioButton: TFRadioButton;
+begin
+  Result := False;
+
+  vRadioButton := TFPGUIPrivateRadioButton(AWinControl.Handle).RadioButton;
+
+  AText := vRadioButton.Text;
+
+  Result := True;
+end;
+
+class procedure TFpGuiWSRadioButton.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  vRadioButton: TFRadioButton;
+begin
+  vRadioButton := TFPGUIPrivateRadioButton(AWinControl.Handle).RadioButton;
+
+  vRadioButton.Text := AText;
+end;
+
+class function TFpGuiWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateRadioButton.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
+begin
+
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -374,11 +532,10 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TFpGuiWSCustomLabel);
 //  RegisterWSComponent(TLabel, TFpGuiWSLabel);
 //  RegisterWSComponent(TButtonControl, TFpGuiWSButtonControl);
-//  RegisterWSComponent(TCustomCheckBox, TFpGuiWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TFpGuiWSCheckBox);
+  RegisterWSComponent(TCustomCheckBox, TFpGuiWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TFpGuiWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TFpGuiWSToggleBox);
-//  RegisterWSComponent(TRadioButton, TFpGuiWSRadioButton);
+  RegisterWSComponent(TRadioButton, TFpGuiWSRadioButton);
 //  RegisterWSComponent(TCustomStaticText, TFpGuiWSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TFpGuiWSStaticText);
 ////////////////////////////////////////////////////
