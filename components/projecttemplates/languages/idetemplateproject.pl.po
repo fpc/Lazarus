@@ -11,11 +11,11 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: idetemplateproject:sprojecttemplatesettings
-msgid "Project templates options"
-msgstr ""
-
 #: idetemplateproject:snewfromtemplate
 msgid "New project from template"
+msgstr ""
+
+#: idetemplateproject:sprojecttemplatesettings
+msgid "Project templates options"
 msgstr ""
 

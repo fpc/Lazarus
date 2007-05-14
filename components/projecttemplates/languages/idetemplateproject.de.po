@@ -9,11 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: idetemplateproject:sprojecttemplatesettings
-msgid "Project templates options"
-msgstr "Optionen für Projektschablonen"
-
 #: idetemplateproject:snewfromtemplate
 msgid "New project from template"
 msgstr "Neues Projekt aus Schablone"
+
+#: idetemplateproject:sprojecttemplatesettings
+msgid "Project templates options"
+msgstr "Optionen für Projektschablonen"
 

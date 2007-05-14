@@ -1,0 +1,8 @@
+#: idetemplateproject:snewfromtemplate
+msgid "New project from template"
+msgstr "Novo projeto de modelo"
+
+#: idetemplateproject:sprojecttemplatesettings
+msgid "Project templates options"
+msgstr "OpÃ§Ãµes de modelos de projeto"
+

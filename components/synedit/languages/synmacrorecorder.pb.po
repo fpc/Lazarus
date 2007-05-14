@@ -1,0 +1,16 @@
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
+msgstr "Somente possível pausar enquanto grava"
+
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
+msgstr "Somente possível reiniciar enquanto pausado"
+
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Impossível executar macro enquanto grava"
+
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Impossível gravar macro enquanto grava"
+
