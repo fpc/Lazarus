@@ -8,7 +8,7 @@
  @lastmod($Date: 2007-02-27 18:17:33 -0500 (Tue, 27 Feb 2007) $)
  @author(Marc Weustink <marc@@lazarus.dommelstein.net>)
 
- This unit contains the private classhierarchy for the fpgui implemetation
+ This unit contains the private class hierarchy for the fpgui implemetation
  This hierarchy reflects (more or less) the  widget hierarchy
 
  *****************************************************************************
@@ -46,12 +46,12 @@ type
     procedure AddChild(AWidget: TFWidget);
     procedure RemoveChild(AWidget: TFWidget);
   end;
-  
+
   ISimpleText = interface(IInterface)
     procedure SetText(const AText: String);
     function GetText: String;
   end;
-  
+
   { TFPGUIPrivate }
 
   TFPGUIPrivate = class(TInterfacedObject)
@@ -82,8 +82,8 @@ type
     property Visible: Boolean read GetVisible write SetVisible;
     property Widget: TFWidget read FWidget write FWidget;
   end;
-  
-  
+
+
   { TFPGUIPrivateContainer }
   { Private class for containers }
 
@@ -181,7 +181,7 @@ type
     procedure SetText(const AText: String);
     function GetText: String;
   end;
-  
+
   {TFPGUIPrivateNotebook = class(TPrivateNotebook)
   private
   protected
@@ -220,7 +220,7 @@ end;
 constructor TFPGUIPrivateWidget.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   FLCLObject := ALCLObject;
-  
+
   CreateWidget(AParams);
 end;
 
@@ -295,9 +295,9 @@ end;
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := TFForm.Create(LCLObject);
-  
+
   Form.Wnd.SetSize(Size(AParams.Width, AParams.Height));
-  
+
   Form.Wnd.SetPosition(Point(AParams.X, AParams.Y));
 end;
 
@@ -350,7 +350,7 @@ begin
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
   Widget := TFButton.Create(ParentContainer.Widget);
-  
+
   ParentContainer.AddChild(Widget);
 
   Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
@@ -446,7 +446,7 @@ begin
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
   ParentContainer.RemoveChild(Widget);
-  
+
   Widget.Free;}
 end;
 
@@ -461,7 +461,7 @@ constructor TFPGUIPrivateEdit.Create(ALCLObject: TWinControl;
   const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-  
+
   // Events
 end;
 

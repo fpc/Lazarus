@@ -233,8 +233,7 @@ implementation
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TFpGuiWSCustomComboBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TLCLIntfHandle(TFPGUIPrivateComboBox.Create(AWinControl, AParams));
 end;
@@ -290,8 +289,12 @@ end;
  ------------------------------------------------------------------------------}
 class function TFpGuiWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
+var
+  FComboBox: TFComboBox;
 begin
-  Result := TStringList.Create;
+  FComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
+
+  Result := FComboBox.Items;
 end;
 
 { TFpGuiWSCustomEdit }
