@@ -1875,8 +1875,8 @@ type
   LOGFONTA = record
     lfHeight: Longint;
     lfWidth: Longint;
-    lfEscapement: Longint;
-    lfOrientation: Longint;
+    lfEscapement: Longint; // angle, in tenths of degrees of each line of text
+    lfOrientation: Longint;// angle, in tenths of degrees of each character's base line
     lfWeight: Longint;
     lfItalic: Byte;
     lfUnderline: Byte;

@@ -66,3 +66,31 @@ function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdec
 function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
 }
 
+// pango 1.6
+type
+   PPangoGravity = ^TPangoGravity;
+   TPangoGravity = (
+     PANGO_GRAVITY_SOUTH,
+     PANGO_GRAVITY_EAST,
+     PANGO_GRAVITY_NORTH,
+     PANGO_GRAVITY_WEST,
+     PANGO_GRAVITY_AUTO
+   );
+   
+   PPangoMatrix = ^TPangoMatrix;
+   TPangoMatrix = record
+     xx: double;
+     xy: double;
+     yx: double;
+     yy: double;
+     x0: double;
+     y0: double;
+   end;
+
+function pango_context_get_gravity(Context: PPangoContext): TPangoGravity; cdecl; external pangolib;
+function pango_context_get_matrix(Context: PPangoContext): PPangoMatrix; cdecl; external pangolib;
+
+// pango 1.16
+function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
+
+

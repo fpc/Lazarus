@@ -229,6 +229,18 @@ begin
   gtk_text_view_set_accepts_tab(TextView, NewWantTabs);
 end;
 
+class procedure TGtk2WSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit;
+  NewMode: TEchoMode);
+begin
+  // not supported
+end;
+
+class procedure TGtk2WSCustomMemo.SetPasswordChar(
+  const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+  // not supported
+end;
+
 class function TGtk2WSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 var

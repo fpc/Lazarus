@@ -235,6 +235,15 @@ begin
       pango_layout_set_single_paragraph_mode(CurFont, TRUE);
       pango_layout_set_width(CurFont, -1);
       pango_layout_set_alignment(CurFont, PANGO_ALIGN_LEFT);
+
+      if (lfEscapement<>0) then begin
+        DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx rotating font is not implemented yet, because it needs pango 1.16: lfEscapement=',lfEscapement]);
+        {DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx ',pango_version_check(1,16,0)]);
+        if pango_version_check(1,16,0)<>null then begin
+          DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx rotating text requires pango 1.16, but this is ',pango_version_check(1,16,0)]);
+        end;}
+        //pango_context_get_base_dir(PangoDesc, aSize);
+      end;
     end;
   finally
     if (CachedFont=nil)
