@@ -546,6 +546,11 @@ begin
     end;
   end;
 
+  if not Transparent then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(PaintRect);
+  end;
   DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if FShowCaption and (Caption <> '') then
   begin
@@ -705,9 +710,9 @@ begin
   if Value <> FTransparent then begin
     FTransparent:= Value;
     if Value then
-      ControlStyle:= ControlStyle + [csOpaque]
+      ControlStyle:= ControlStyle - [csOpaque]
     else
-      ControlStyle:= ControlStyle - [csOpaque];
+      ControlStyle:= ControlStyle + [csOpaque];
     Invalidate;
   end;
 end;

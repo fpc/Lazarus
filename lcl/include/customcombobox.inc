@@ -584,7 +584,7 @@ begin
   end else
   begin
     Result := TWSCustomComboBoxClass(WidgetSetClass).GetItemHeight(Self);
-    if Result <> 0 then
+    if (FItemHeight = 0) then
       FItemHeight := Result;
   end;
 end;
