@@ -46,6 +46,7 @@ begin
   DeliverMessage(AWidget.LCLObject, SavedMouseUpMsg);
   
   NotifyApplicationUserInput(SavedMouseUpMsg.Msg);
+  CarbonWidgetSet.SetCaptureWidget(0); // capture is released
 end;
 
 {------------------------------------------------------------------------------

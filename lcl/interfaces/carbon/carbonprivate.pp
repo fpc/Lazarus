@@ -110,8 +110,6 @@ type
   { TCarbonWindow }
 
   TCarbonWindow = class(TCarbonWidget)
-  private
-    FBorderStyle: TFormBorderStyle;
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;

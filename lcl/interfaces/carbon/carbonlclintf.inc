@@ -356,7 +356,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.SetCaptureWidget(const AWidget: HWND);
 begin
-  FCaptureWidget := AWidget;
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.SetCaptureWidget AWidget: ' + DbgS(AWidget));
+  {$ENDIF}
+  
+  if AWidget <> FCaptureWidget then
+  begin
+    FCaptureWidget := AWidget;
+    
+    if FCaptureWidget <> 0 then
+      LCLSendCaptureChangedMsg(TCarbonWidget(FCaptureWidget).LCLObject);
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

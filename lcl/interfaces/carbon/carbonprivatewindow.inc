@@ -971,8 +971,6 @@ begin
     SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
 
-  FBorderStyle := (LCLObject as TCustomForm).BorderStyle;
-
   SetBounds(Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
   SetText(AParams.Caption);
   DebugLn('TCarbonWindow.CreateWidget succeeds');
@@ -1465,21 +1463,17 @@ procedure TCarbonWindow.SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle);
 var
   AttrsSet, AttrsRemove: WindowAttributes;
 begin
-  if AFormBorderStyle = FBorderStyle then Exit;
-  if (AFormBorderStyle = bsNone) or (FBorderStyle = bsNone) then
-  begin
-    RecreateWnd(LCLObject);
-    Exit;
-  end;
+  BeginUpdate(WindowRef(Widget));
+  try
+    AttrsSet := FormBorderToWindowAttrs(AFormBorderStyle);
+    AttrsRemove := (kWindowNoTitleBarAttribute or kWindowCloseBoxAttribute or
+      kWindowCollapseBoxAttribute or kWindowFullZoomAttribute or
+      kWindowResizableAttribute) and (not AttrsSet);
 
-  AttrsSet := FormBorderToWindowAttrs(AFormBorderStyle);
-  AttrsRemove := (kWindowNoTitleBarAttribute or kWindowCloseBoxAttribute or
-    kWindowCollapseBoxAttribute or kWindowFullZoomAttribute or
-    kWindowResizableAttribute) and (not AttrsSet);
-  
-  if OSError(
-    ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsRemove), Self,
-    'SetFormBorderStyle', SChangeWindowAttrs) then Exit;
-    
-  FBorderStyle := AFormBorderStyle;
+    if OSError(
+      ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsRemove), Self,
+        'SetFormBorderStyle', SChangeWindowAttrs) then Exit;
+  finally
+    EndUpdate(WindowRef(Widget));
+  end;
 end;

@@ -261,7 +261,6 @@ end;
   Returns: If the function succeeds
 
   Sets the enabled of menu item in Carbon interface
-  TODO: disable menu bar items
  ------------------------------------------------------------------------------}
 class function TCarbonWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
   const Enabled: boolean): boolean;

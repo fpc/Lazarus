@@ -196,8 +196,6 @@ end;
   Frees Carbon menu item
  ------------------------------------------------------------------------------}
 destructor TCarbonMenu.Destroy;
-var
-  I: Integer;
 begin
   if Menu <> nil then
   begin

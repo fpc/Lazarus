@@ -2192,9 +2192,25 @@ begin
   Result:=inherited RegroupMenuItem(hndMenu, GroupIndex);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ReleaseCapture
+  Returns: If the function succeeds
+
+  Releases the mouse capture from a window and restores normal mouse input
+  processing
+  TODO: not only release capture indicator
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ReleaseCapture: Boolean;
 begin
-  Result:=inherited ReleaseCapture;
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ReleaseCapture');
+  {$ENDIF}
+  
+  SetCaptureWidget(0);
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

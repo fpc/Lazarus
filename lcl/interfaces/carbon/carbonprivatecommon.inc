@@ -120,8 +120,8 @@ begin
 
     FillChar(Msg, SizeOf(TLMMouseMove), 0);
     Msg.Msg := LM_MOUSEMOVE;
-    Msg.XPos := P.Y;
-    Msg.YPos := P.X;
+    Msg.XPos := P.X;
+    Msg.YPos := P.Y;
     Msg.Keys := GetCarbonMsgKeyState;
     DeliverMessage(Widget.LCLObject, Msg);
     
@@ -187,8 +187,6 @@ begin
   Msg.YPos := P.Y;
   Msg.Keys := GetCarbonMsgKeyState;
   
-  CarbonWidgetSet.SetCaptureWidget(0); // capture is released
-
   if (AWidget is TCarbonControl) and
     (cceHit in (AWidget as TCarbonControl).GetValidEvents) then
   begin
@@ -211,6 +209,7 @@ begin
   DeliverMessage(AWidget.LCLObject, Msg);
   
   NotifyApplicationUserInput(Msg.Msg);
+  CarbonWidgetSet.SetCaptureWidget(0); // capture is released
 end;
 
 {------------------------------------------------------------------------------
