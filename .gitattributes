@@ -1069,7 +1069,7 @@ docs/xml/lcl/toolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/translations.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/xmlpropstorage.xml svneol=LF#text/xml eol=lf
-docs/xml/multi_makeskel.pl -text svneol=native#application/x-perl
+docs/xml/multi_makeskel.pl svneol=native#text/plain
 examples/address_book/addrbook.dpr svneol=native#text/pascal
 examples/address_book/addrbook.lpi svneol=native#text/plain
 examples/address_book/addrbook.lpr svneol=native#text/pascal

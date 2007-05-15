@@ -12,10 +12,15 @@
 # *****************************************************************************
 #
 # Author: Mattias Gaertner
+#
+# 14-May-2007 Added recursive search by Darius Blaszyk 
 
 use vars qw/ %opt /;
 use Getopt::Std;
-my $opt_string = 'hp:s:o:i:m:x';
+use File::Find;
+use File::Basename;
+
+my $opt_string = 'hp:s:o:i:m:xr';
 getopts( "$opt_string", \%opt ) or usage();
 usage() if $opt{h};
 
@@ -29,6 +34,7 @@ usage: $0 [-hpsoimx]
  -h                    : this (help) message
  -p <packagename>      : the FPDoc package name to which the units belong
  -s <source directory> : the source directory with the .pp and .pas files
+ -r                    : search the sourcedir recursively
  -o <output directory> : the output directory for the xml files
  
  optional:
@@ -41,6 +47,18 @@ examples:
 
 EOF
   exit;
+}
+
+sub wanted { 
+  #$File::Find::dir  = /some/path/
+  #$_                = foo.ext
+  #$File::Find::name = /some/path/foo.ext
+    
+  my(undef, undef, $ftype) = fileparse($_, qr"\..*");
+
+  if (($ftype eq ".pp") || ($ftype eq ".pas")) {
+    unshift(@Files, $File::Find::name);  
+  }
 }
 
 ($opt{p}) || usage(); # packagename needed
@@ -71,15 +89,26 @@ if($opt{p}){
 }
 
 # get pascal unit files
-opendir(DIR, $SrcDir);
-@Files = grep(/\.(pas|pp)$/,readdir(DIR));
-closedir(DIR);
-
+if($opt{r}){
+  #recursively find unit files
+  find(\&wanted, $SrcDir);
+} else {
+  opendir(DIR, $SrcDir);
+  @Files = grep(/\.(pas|pp)$/,readdir(DIR));
+  closedir(DIR);
+}
 for $SrcFile(@Files){
-  $OutFile=$SrcFile;
+  $OutFile = fileparse($SrcFile);
   ($OutFile=~s/\.(pas|pp)$/.xml/);
   print $SrcFile." -> ".$OutFile."\n";
-  $Input=$SrcDir."/".$SrcFile;
+  
+  #create the input filename
+  if($opt{r}){
+    $Input=$SrcFile;
+  } else {
+    $Input=$SrcDir."/".$SrcFile;
+  }  
+  
   if ($opt{i}){
     $Input.="' ".$opt{i}."'";
   }
