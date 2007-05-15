@@ -77,7 +77,15 @@ var
   PaintMsg: TLMPaint;
   {$ENDIF}
 begin
-  if not IsAfterGtk then exit;
+  // default is, that a control receives the paint message after gtk (including the child paints)
+  // In case of TCustomControl, there is no gtk painting only the
+  // child paintings. Let the TCudtomControl paint the background.
+  // ToDo: Eventually there must be a 'before paint message'.
+  if IsAfterGtk then begin
+    if TObject(Target) is TCustomControl then exit;
+  end else begin
+    if not (TObject(Target) is TCustomControl) then exit;
+  end;
   
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Width<1)) then exit;
 
