@@ -301,27 +301,8 @@ begin
 end;
 
 function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
-var
-  p: PGtkWidget;                 // ptr to the newly created GtkWidget
-  CompStyle: integer;            // componentstyle (type) of GtkWidget which will be created
 begin
-  p := nil;
-  CompStyle := GetCompStyle(Sender);
-
-  case CompStyle of
-  csEdit :
-    begin
-      p :=  gtk_entry_new();
-      gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(Sender).ReadOnly);
-      gtk_widget_show_all(P);
-    end;
-    else begin
-      Result:=Inherited CreateComponent(Sender);
-      Exit;
-    end;
-  end; //end case
-  FinishComponentCreate(Sender, P);
-  Result := THandle(P);
+  Result:=Inherited CreateComponent(Sender);
 end;
 
 function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
@@ -356,6 +337,8 @@ end;
 
 
 procedure Tgtk2widgetset.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
+var
+  Info: PWidgetInfo;
 begin
   if (ALCLObject is TWinControl) then
      Begin
@@ -363,25 +346,23 @@ begin
      End;
 
   if (ALCLObject is TControl) then begin
-    case TControl(ALCLObject).FCompStyle of
-    csEdit:
-      begin
-        SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
-        SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
-        SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
-        SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
-        SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-      end;
-
-    csMemo:
-      begin
-        // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
-        //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
-        SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
-        SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
-        SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-       //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
-      end;
+    Info:=GetWidgetInfo(AGTKObject,false);
+  
+    if GtkWidgetIsA(PGtkWidget(AGTKObject),GTK_TYPE_ENTRY) then begin
+      // TEdit, TSpinEdit
+      SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
+      SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
+      SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
+      SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
+      SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
+    end else if GtkWidgetIsA(Info^.CoreWidget,GTK_TYPE_TEXT_VIEW) then begin
+      // TMemo
+      // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
+      //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
+      SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
+      SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
+      SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
+      //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
     end; //case
   end
   else

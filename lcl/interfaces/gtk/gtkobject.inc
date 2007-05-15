@@ -5776,10 +5776,7 @@ begin
     end;
 
   csSpinEdit :
-    begin
-      p := gtk_spin_button_new(PgtkAdjustment(
-                                        gtk_adjustment_new(1,1,100,1,1,1)),1,0);
-    end;
+    RaiseGDBException('this should never be called');
 
   csStatusBar :
     begin

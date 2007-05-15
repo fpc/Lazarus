@@ -667,7 +667,7 @@ end;
 class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  p: PGtkWidget;                 // ptr to the newly created GtkWidget
+  p: PGtkWidget; // ptr to the newly created GtkWidget
 begin
   p :=  gtk_entry_new();
   gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);

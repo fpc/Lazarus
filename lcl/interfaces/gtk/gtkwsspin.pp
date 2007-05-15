@@ -32,7 +32,9 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  LCLProc, Spin, GtkProc, gtkExtra, GtkWSStdCtrls, WSSpin, WSLCLClasses, LCLType;
+  GtkInt,
+  LCLProc, Spin, GtkProc, gtkExtra, GtkWSStdCtrls, WSSpin, WSLCLClasses, Controls,
+  LCLType;
 
 type
 
@@ -50,6 +52,7 @@ type
     class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
 function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
@@ -81,15 +84,11 @@ end;
 
 { TGtkWSCustomFloatSpinEdit }
 
-//const
-//  GtkValueEmpty: array[boolean] of integer = (0,1);
-
 class function TGtkWSCustomFloatSpinEdit.GetSelStart(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit
   ): integer;
 begin
-  Result :=
-           WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)));
+  Result :=WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)));
 end;
 
 class function TGtkWSCustomFloatSpinEdit.GetSelLength(
@@ -140,6 +139,19 @@ begin
   gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
   gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
   AnAdjustment^.step_increment := ACustomFloatSpinEdit.Increment;
+end;
+
+class function TGtkWSCustomFloatSpinEdit.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  p: PGtkWidget;
+begin
+  p := gtk_spin_button_new(PgtkAdjustment(
+                                        gtk_adjustment_new(1,1,100,1,1,1)),1,0);
+  gtk_widget_show_all(p);
+  gtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  Result := THandle(P);
 end;
 
 initialization
