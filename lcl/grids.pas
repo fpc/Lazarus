@@ -952,6 +952,7 @@ type
     function  CreateVirtualGrid: TVirtualGrid; virtual;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
+    procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
@@ -6780,6 +6781,8 @@ begin
     DefaultDrawCell(aCol,aRow,aRect,aState);
   end;
   DrawCellGrid(aCol,aRow,aRect,aState);
+  if FTitleStyle=tsNative then
+    DrawColumnText(aCol,aRow,aRect,aState);
 end;
 
 procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
@@ -6917,6 +6920,20 @@ begin
   Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, aValue);
 end;
 
+procedure TCustomDrawGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+var
+  C: TGridColumn;
+begin
+  if Columns.Enabled and (gdFixed in aState) and
+    (aCol>=FixedCols) and (aRow=0) then begin
+    // draw the column title if there is any
+    C := ColumnFromGridColumn(aCol);
+    if C<>nil then
+      DrawCellText(aCol,aRow,aRect,aState,C.Title.Caption);
+  end;
+end;
+
 function TCustomDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
@@ -6983,19 +7000,13 @@ end;
 
 procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
-var
-  C: TGridColumn;
 begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
-  Canvas.FillRect(aRect);
 
-  if Columns.Enabled and (gdFixed in aState) and
-    (aCol>=FixedCols) and (aRow=0) then begin
-    // draw the column title if there is any
-    C := ColumnFromGridColumn(aCol);
-    if C<>nil then
-      DrawCellText(aCol,aRow,aRect,aState,C.Title.Caption);
-  end;
+  Canvas.FillRect(aRect);
+  
+  if FTitleStyle<>tsNative then
+    DrawColumnText(aCol,aRow,aRect,aState);
 
   if (goFixedRowNumbering in Options) and (FixedCols >= 1) and (aCol = 0) then
     DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow));
