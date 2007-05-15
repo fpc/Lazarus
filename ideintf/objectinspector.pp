@@ -771,7 +771,7 @@ begin
     Name:='ValueComboBox';
     Visible:=false;
     Enabled:=false;
-    SetBounds(0,-30,80,25); // hidden
+    SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
@@ -792,7 +792,7 @@ begin
     Visible:=false;
     AutoSize:=false;
     Enabled:=false;
-    SetBounds(0,-30,80,25); // hidden
+    SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
@@ -806,9 +806,10 @@ begin
     Name:='ValueButton';
     Visible:=false;
     Enabled:=false;
+    Transparent:=false;
     OnClick:=@ValueButtonClick;
     Caption := '...';
-    SetBounds(0,-30,25,25); // hidden
+    SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
   end;
 
@@ -2077,6 +2078,9 @@ begin
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
+        if FCurrentEdit is TComboBox then
+          TComboBox(FCurrentEdit).ItemHeight:=
+                                         EditCompRect.Bottom-EditCompRect.Top-6;
         FCurrentEdit.Invalidate;
       end;
     end;
@@ -2492,7 +2496,7 @@ begin
   end;
 end;
 
-Procedure TOICustomPropertyGrid.HintTimer(sender : TObject);
+procedure TOICustomPropertyGrid.HintTimer(sender : TObject);
 var
   Rect : TRect;
   AHint : String;
@@ -3738,7 +3742,7 @@ begin
 
   // event grid
   EventGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
-                                              [tkMethod],FDefaultItemHeight);
+                                                 [tkMethod],FDefaultItemHeight);
   with EventGrid do begin
     Name:=DefaultOIGridNames[oipgpEvents];
     Parent:=NoteBook.Page[1];

@@ -128,7 +128,6 @@ var
   Allocation: TGTKAllocation;
 begin
   Button := AWinControl as TCustomButton;
-
   Result := TLCLIntfHandle(gtk_button_new_with_label('button'));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
@@ -136,7 +135,7 @@ begin
   {$ENDIF}
 
   WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
-  
+
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
