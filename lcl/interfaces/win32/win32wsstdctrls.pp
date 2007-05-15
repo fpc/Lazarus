@@ -820,7 +820,8 @@ begin
   // size requests are done through WM_MeasureItem
   // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, -1);
   // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, 0);
-  RecreateWnd(ACustomComboBox);
+  if ACustomComboBox.HandleAllocated then
+    RecreateWnd(ACustomComboBox);
 end;
 { TWin32WSCustomEdit helper functions }
 
