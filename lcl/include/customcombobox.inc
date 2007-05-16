@@ -611,6 +611,10 @@ begin
     exit;
 
   FItemHeight := AValue;
+
+  if (not HandleAllocated) then 
+    exit;
+
   if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
     TWSCustomComboBoxClass(WidgetSetClass).SetItemHeight(Self, FItemHeight);
 end;

@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, Windows, LCLType,
+  WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType,
   Win32Int, Win32Proc, InterfaceBase, Win32WSControls;
 
 type
@@ -817,11 +817,12 @@ end;
 
 class procedure TWin32WSCustomComboBox.SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemHeight') then 
+    Exit;
   // size requests are done through WM_MeasureItem
   // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, -1);
   // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, 0);
-  if ACustomComboBox.HandleAllocated then
-    RecreateWnd(ACustomComboBox);
+  RecreateWnd(ACustomComboBox);
 end;
 { TWin32WSCustomEdit helper functions }
 
