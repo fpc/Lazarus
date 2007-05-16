@@ -1682,6 +1682,7 @@ begin
             (WindowInfo^.WinControl is TCustomListView) then
           begin
             WinProcess := false;
+            lWinControl := WindowInfo^.WinControl;
             PLMsg:=@LMMouse;
             With LMMouse Do
             Begin
@@ -2084,7 +2085,7 @@ begin
   // are expected.
   if (PLMsg = @LMMouseMove) and not (lWinControl is TScrollingWinControl) then
   begin
-    if GetLCLClientBoundsOffset(Window, R) then
+    if GetLCLClientBoundsOffset(lWinControl, R) then
     begin
       Dec(LMMouseMove.XPos, R.Left);
       Dec(LMMouseMove.YPos, R.Top);
@@ -2092,7 +2093,7 @@ begin
   end else
   if (PLMsg = @LMMouse) and not (lWinControl is TScrollingWinControl) then
   begin
-    if GetLCLClientBoundsOffset(Window, R) then
+    if GetLCLClientBoundsOffset(lWinControl, R) then
     begin
       Dec(LMMouse.XPos, R.Left);
       Dec(LMMouse.YPos, R.Top);
