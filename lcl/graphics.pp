@@ -194,10 +194,8 @@ type
         contain trailing periods, and should be used only for
         display purposes.  (do not: if Msg = 'Loading' then...)
   }
-  TProgressStage = (psStarting, psRunning, psEnding);
-  TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
-                          PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-                          const Msg: string; var DoContinue: Boolean) of object;
+  TProgressStage = TFPImgProgressStage;
+  TProgressEvent = TFPImgProgressEvent;
 
   { For Delphi compatibility }
   TPixelFormat = (
