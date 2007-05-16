@@ -1020,11 +1020,13 @@ type
   published
     property AutoRedraw: Boolean read FAutoRedraw write SetAutoRedraw;
     property Brush: TBrush read FBrush write SetLazBrush;
+    property Color: TColor read GetColor write SetColor;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetLazFont;
+    property Height : integer read GetHeight;
     property Pen: TPen read FPen write SetLazPen;
     property Region: TRegion read FRegion write SetRegion;
-    property Color: TColor read GetColor write SetColor;
+    property Width : integer read GetWidth;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
