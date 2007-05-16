@@ -194,9 +194,11 @@ function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; A
 Type
 { TCalendarDialog }
   TCalendarDialog = class(TCommonDialog)
+    procedure CalendarDblClick(Sender: TObject);
   private
     FDate: TDateTime;
     FDayChanged: TNotifyEvent;
+    FDialogPosition: TPosition;
     FDisplaySettings: TDisplaySettings;
     FHelpContext: THelpContext;
     FMonthChanged: TNotifyEvent;
@@ -219,6 +221,7 @@ Type
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
+    property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poMainFormCenter;
     property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsTitleStored;
     property OKCaption:TCaption Read FOKCaption Write FOKCaption;
     property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
@@ -1155,8 +1158,8 @@ end;
 constructor TCalendarDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDate:=Now;
-  Date:=trunc(FDate);
+  Date:=trunc(Now);
+  DialogPosition:=poMainFormCenter;
   DialogTitle:=rsPickDate;
   OKCaption:=rsMbOK;
   CancelCaption:=rsMbCancel;
@@ -1172,6 +1175,16 @@ begin
   Date:=FCalendar.DateTime;
 end;
 
+procedure TCalendarDialog.CalendarDblClick(Sender: TObject);
+var
+  CalendarForm: TForm;
+begin
+  GetNewDate(Sender);
+  CalendarForm:=TForm(TComponent(Sender).Owner);
+  // close the calendar dialog
+  CalendarForm.ModalResult:=mrOk;
+end;
+
 function TCalendarDialog.IsTitleStored: Boolean;
 begin
   Result:=DialogTitle<>rsPickDate;//controllare
@@ -1183,13 +1196,13 @@ var DF:TForm;
     okButton,cancelButton:TButton;
     panel:TPanel;
 begin
-  DF:=TForm.Create(Self);
-  DF.Caption:=FDialogTitle;
-  DF.Position:=poMainFormCenter;
+  DF:=TForm.Create(Self.Owner); // Self.Owner, so that poOwnerFormCenter works
+  DF.Caption:=DialogTitle;
+  DF.Position:=DialogPosition;
   DF.BorderStyle:=bsDialog;
   //DF.AutoSize:=true;
 
-  FCalendar:=TCalendar.Create(Self);
+  FCalendar:=TCalendar.Create(DF);
   with FCalendar do begin
     Parent:=DF;
     Align:=alTop;
@@ -1198,9 +1211,10 @@ begin
     OnDayChanged:=Self.OnDayChanged;
     OnMonthChanged:=Self.OnMonthChanged;
     OnYearChanged:=Self.OnYearChanged;
+    OnDblClick:=@CalendarDblClick;
   end;
 
-  panel:=TPanel.Create(Self);
+  panel:=TPanel.Create(DF);
   with panel do begin
     Parent:=DF;
     Caption:='';
@@ -1209,7 +1223,7 @@ begin
     BevelOuter:=bvLowered;
   end;
 
-  okButton:=TButton.Create(Self);
+  okButton:=TButton.Create(DF);
   with okButton do begin
     Parent:=panel;
     Caption:=OKCaption;
@@ -1222,7 +1236,7 @@ begin
     Default:=True;
   end;
 
-  cancelButton:=TButton.Create(Self);
+  cancelButton:=TButton.Create(DF);
   with cancelButton do begin
     Parent:=panel;
     Caption:=CancelCaption;
@@ -1237,10 +1251,6 @@ begin
   DF.ClientHeight := panel.Top+panel.Height;
 
   Result:=DF.ShowModal=mrOK;
-  FreeAndNil(FCalendar);
-  FreeAndNil(panel);
-  FreeAndNil(okButton);
-  FreeAndNil(cancelButton);
   FreeAndNil(DF);
 end;
 
