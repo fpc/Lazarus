@@ -64,6 +64,7 @@ begin
   if ImgReader is TFPReaderJPEG then begin
     JPEGReader:=TFPReaderJPEG(ImgReader);
     JPEGReader.Performance:=Performance;
+    JPEGReader.OnProgress:=@Progress;
   end;
   inherited InitFPImageReader(ImgReader);
 end;
@@ -88,6 +89,7 @@ begin
     if JPEGWriter<>nil then ;
     JPEGWriter.ProgressiveEncoding:=ProgressiveEncoding;
     JPEGWriter.CompressionQuality:=CompressionQuality;
+    JPEGWriter.OnProgress:=@Progress;
   end;
   inherited InitFPImageWriter(ImgWriter);
 end;
