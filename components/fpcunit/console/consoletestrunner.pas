@@ -140,7 +140,7 @@ var
   procedure doXMLTestRun(aTest: TTest);
   var
     XMLResultsWriter: TXMLResultsWriter;
-    
+    stream: TStringStream;
   begin
     try
       XMLResultsWriter := TXMLResultsWriter.Create;
@@ -151,7 +151,13 @@ var
       if FileName<>'' then
         WriteXMLFile(XMLResultsWriter.Document, FileName)
       else
-        WriteXMLFile(XMLResultsWriter.Document, output);
+      begin
+        // write to output, use stream, because WriteXMLFile(Doc, Output) is broken
+        stream := TStringStream.Create('');
+        WriteXMLFile(XMLResultsWriter.Document, stream);
+        writeln(stream.DataString);
+        stream.Free;
+      end;
     finally
       XMLResultsWriter.Free;
     end;
