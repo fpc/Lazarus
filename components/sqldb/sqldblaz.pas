@@ -7,8 +7,7 @@ unit SQLDBLaz;
 interface
 
 uses
-  registersqldb, sqldb, ibconnection, pqconnection, mysql4conn, 
-    LazarusPackageIntf; 
+  registersqldb, sqldb, ibconnection, pqconnection, LazarusPackageIntf; 
 
 implementation
 

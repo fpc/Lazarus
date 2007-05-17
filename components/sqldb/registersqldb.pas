@@ -18,22 +18,26 @@
 unit registersqldb;
 
 {$mode objfpc}{$H+}
-{$DEFINE HASODBCCONNECTION}
-{$IFNDEF ver2_0_2}{$IFNDEF ver2_0_3}
-  {$DEFINE HASMYSQL50CONNECTION}
-  {$DEFINE HASORACLECONNECTION}
-{$ENDIF}{$ENDIF}
+{$IFNDEF win64}
+{$DEFINE HASMYSQL4CONNECTION}
+{$DEFINE HASORACLECONNECTION}
+{$DEFINE HASPQCONNECTION}
+{$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, sqldb, ibconnection, pqconnection,
-  oracleconnection, odbcconn,
-{$IFDEF HASMYSQL50CONNECTION}
-  mysql40conn, mysql41conn, mysql50conn,
-{$ELSE}
-  mysql4conn,
+  Classes, SysUtils, LResources, sqldb, ibconnection, odbcconn,
+{$IFDEF HASPQCONNECTION}
+  pqconnection,
 {$ENDIF}
+{$IFDEF HASORACLECONNECTION}
+  oracleconnection,
+{$ENDIF}
+{$IFDEF HASMYSQL4CONNECTION}
+  mysql40conn, mysql41conn,
+{$ENDIF}
+  mysql50conn,
   LazarusPackageIntf;
 
 procedure Register;
@@ -44,19 +48,19 @@ procedure RegisterUnitSQLdb;
 begin
   RegisterComponents('SQLdb',[TSQLQuery,
                               TSQLTransaction,
-                              TIBConnection,
-                              TODBCConnection,
+{$IFDEF HASPQCONNECTION}
+                              TPQConnection,
+{$ENDIF}
 {$IFDEF HASORACLECONNECTION}
                               TOracleConnection,
 {$ENDIF}
-{$IFDEF HASMYSQL50CONNECTION}
+                              TODBCConnection,
+{$IFDEF HASMYSQL4CONNECTION}
                               TMySQL40Connection,
                               TMySQL41Connection,
-                              TMySQL50Connection,
-{$ELSE}
-                              TMySQLConnection,
 {$ENDIF}
-                              TPQConnection]);
+                              TMySQL50Connection,
+                              TIBConnection]);
 end;
 
 procedure Register;
