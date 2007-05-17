@@ -119,6 +119,7 @@ type
   public
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
     destructor Destroy; override;
     function Form: TFForm;
     procedure SetSize(AWidth, AHeight: LongInt); override;
@@ -298,21 +299,41 @@ end;
 
 { TFPGUIPrivateWindow }
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.Form
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TFPGUIPrivateWindow.Form: TFForm;
 begin
   Result := TFForm(Widget);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.SetSize
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.SetSize(AWidth, AHeight: LongInt);
 begin
   Form.Wnd.SetSize(Size(AWidth, AHeight));
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.SetPosition
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.SetPosition(AX, AY: Integer);
 begin
   Form.Wnd.SetPosition(Point(AX, AY));
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TFPGUIPrivateWindow.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
@@ -320,25 +341,55 @@ begin
   Form.InsertChild(fFixed);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
-  Widget := TFForm.Create(LCLObject);
+  Widget := TFForm.Create(nil);
 
   Form.Wnd.SetSize(Size(AParams.Width, AParams.Height));
 
   Form.Wnd.SetPosition(Point(AParams.X, AParams.Y));
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.DestroyWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateWindow.DestroyWidget;
+begin
+  Form.Free;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TFPGUIPrivateWindow.Destroy;
 begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.SetText(const AText: String);
 begin
   Form.Wnd.Title := AText;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TFPGUIPrivateWindow.GetText: String;
 begin
   Result := Form.Wnd.Title;

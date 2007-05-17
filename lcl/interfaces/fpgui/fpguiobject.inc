@@ -92,7 +92,16 @@ end;
   Enter the main message loop
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+var
+  vMainForm: TFForm;
 begin
+  { Shows the main form }
+  if Assigned(Application.MainForm) then
+  begin
+    vMainForm := TFPGUIPrivateWindow(Application.MainForm.Handle).Form;
+    vMainForm.Show;
+  end;
+
   // GFApplication.EventFilter can maybe be used on X11 for aloop but it is X only
   GFApplication.Run;
 end;

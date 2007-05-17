@@ -76,8 +76,8 @@ type
   public
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     
-    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetFormBorderStyle(const AForm: Forms.TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -132,8 +132,29 @@ class function TFpGuiWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   FPForm: TFPGUIPrivateWindow;
 begin
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn('TFpGuiWSCustomForm.CreateHandle');
+  {$endif}
+
   FPForm := TFPGUIPrivateWindow.Create(AWinControl, AParams);
   Result := TLCLIntfHandle(FPForm);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFpGuiWSCustomForm.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TFpGuiWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn('TFpGuiWSCustomForm.DestroyHandle');
+  {$endif}
+
+  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
+  FPForm.Free;
 end;
 
 {------------------------------------------------------------------------------
