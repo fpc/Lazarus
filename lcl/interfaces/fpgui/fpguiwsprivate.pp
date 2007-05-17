@@ -74,7 +74,6 @@ type
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
-    procedure DestroyWidget; virtual; abstract;
     procedure SetSize(AWidth, AHeight: LongInt); virtual;
     procedure SetPosition(AX, AY: Integer); virtual;
 
@@ -117,11 +116,11 @@ type
   private
   protected
   public
+    function Form: TFForm;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     destructor Destroy; override;
-    function Form: TFForm;
     procedure SetSize(AWidth, AHeight: LongInt); override;
     procedure SetPosition(AX, AY: Integer); override;
   // ISimpleText
@@ -151,6 +150,7 @@ type
     function Button: TFButton;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
     // ISimpleText
     procedure SetText(const AText: String);
     function GetText: String;
@@ -348,21 +348,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
+{$IFDEF VerboseFPGUIIntf}
+  WriteLn('[TFPGUIPrivateWindow.CreateWidget]');
+{$ENDIF}
+
   Widget := TFForm.Create(nil);
 
   Form.Wnd.SetSize(Size(AParams.Width, AParams.Height));
 
   Form.Wnd.SetPosition(Point(AParams.X, AParams.Y));
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFPGUIPrivateWindow.DestroyWidget
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TFPGUIPrivateWindow.DestroyWidget;
-begin
-  Form.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -372,6 +366,10 @@ end;
  ------------------------------------------------------------------------------}
 destructor TFPGUIPrivateWindow.Destroy;
 begin
+{$IFDEF VerboseFPGUIIntf}
+  WriteLn('[TFPGUIPrivateWindow.Destroy]');
+{$ENDIF}
+
   inherited Destroy;
 end;
 
@@ -426,6 +424,10 @@ procedure TFPGUIPrivateButton.CreateWidget(const AParams: TCreateParams);
 var
   ParentContainer: TFPGUIPrivateContainer;
 begin
+{$IFDEF VerboseFPGUIIntf}
+  WriteLn('[TFPGUIPrivateButton.CreateWidget]');
+{$ENDIF}
+
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
   Widget := TFButton.Create(ParentContainer.Widget);
