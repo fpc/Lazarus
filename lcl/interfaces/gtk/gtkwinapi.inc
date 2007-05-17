@@ -6407,11 +6407,33 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
+var
+  aWidget: PGtkWidget;
+  {$IFDEF Gtk2}
+  GdkWindow: PGdkWindow;
+  GtkLeft, GtkTop: gint;
+  {$ENDIF}
 begin
-  if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
+  aWidget:=PGtkWidget(Handle);
+  if GtkWidgetIsA(aWidget,GTK_TYPE_WIDGET) then begin
     Result:=true;
-    Left:=PGtkWidget(Handle)^.Allocation.X;
-    Top:=PGtkWidget(Handle)^.Allocation.Y;
+    Left:=aWidget^.allocation.X;
+    Top:=aWidget^.allocation.Y;
+    {$IFDEF Gtk2}
+    if (aWidget^.window=nil) and (aWidget^.parent<>nil) then begin
+      inc(Left,aWidget^.parent^.allocation.X);
+      inc(Top,aWidget^.parent^.allocation.Y);
+    end;
+    if GtkWidgetIsA(aWidget,GTK_TYPE_WINDOW) then begin
+      GdkWindow:=GetControlWindow(aWidget);
+      if GdkWindow<>nil then begin
+        gdk_window_get_root_origin(GdkWindow, @GtkLeft, @GtkTop);
+        Left:=GtkLeft;
+        Top:=GtkTop;
+      end;
+    end;
+    //DebugLn(['TGtkWidgetSet.GetWindowRelativePosition ',GetWidgetDebugReport(aWidget),' Left=',Left,' Top=',Top]);
+    {$ENDIF}
   end else
     Result:=false;
 end;

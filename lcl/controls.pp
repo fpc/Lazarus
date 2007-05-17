@@ -1465,7 +1465,8 @@ type
     wcfEraseBackground,
     wcfCreatingHandle,      // Set while constructing the handle of this control
     wcfInitializing,        // Set while initializing during handle creation
-    wcfCreatingChildHandles // Set while constructing the handles of the childs
+    wcfCreatingChildHandles, // Set while constructing the handles of the childs
+    wcfHandleVisible
     );
   TWinControlFlags = set of TWinControlFlag;
   
@@ -1563,6 +1564,7 @@ type
     procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
+    procedure DoSendShowHideToInterface; virtual;
     procedure ControlsAligned; virtual;
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;

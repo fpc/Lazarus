@@ -704,6 +704,11 @@ procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
+procedure SendCachedGtkResizeNotifications;
+procedure RealizeWidgetSize(Widget: PGtkWidget; NewWidth, NewHeight: integer);
+procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);
+procedure SetWindowSizeAndPosition(Window: PGtkWindow; AWinControl: TWinControl);
 
 // debug
 procedure ReportNotObsolete(const Texts: String);
@@ -723,6 +728,18 @@ function GdkAtomToStr(const Atom: TGdkAtom): string;
 function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
 
 // styles
+type
+  PStyleObject = ^TStyleObject;
+  TStyleObject = Record
+    Style : PGTKStyle;
+    Widget : PGTKWidget;
+    FrameBordersValid: boolean;
+    FrameBorders: TRect;
+  end;
+
+var
+  StandardStyles: array[TLazGtkStyle] of PStyleObject;
+
 function IndexOfStyle(aStyle: TLazGtkStyle): integer;
 function IndexOfStyleWithName(const WName: String): integer;
 procedure ReleaseAllStyles;
@@ -732,6 +749,9 @@ function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
 function GetStyleWithName(const WName: String): PGTKStyle;
 function GetStyleWidget(aStyle: TLazGtkStyle): PGTKWidget;
 function GetStyleWidgetWithName(const WName: String): PGTKWidget;
+{$IFDEF Gtk2}
+function GetStyleGroupboxFrameBorders: TRect;
+{$ENDIF}
 procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
                              Color: TColorRef; x, y, width, height: gint);
 function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKColor;

@@ -1752,7 +1752,12 @@ procedure TCustomForm.Loaded;
 var
   Control: TWinControl;
 begin
-  inherited Loaded;
+  DisableAlign;
+  try
+    inherited Loaded;
+  finally
+    EnableAlign;
+  end;
   if (ActiveControl <> nil) and (Parent=nil) then
   begin
     Control := ActiveControl;

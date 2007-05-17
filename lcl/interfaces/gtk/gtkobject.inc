@@ -615,60 +615,6 @@ end;
 {$endif}
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetWindowSizeAndPosition
-  Params:  Widget: PGtkWidget; AWinControl: TWinControl
-  Returns: Nothing
-
-  Set the size and position of a top level window.
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetWindowSizeAndPosition(Window: PGtkWindow;
-  AWinControl: TWinControl);
-var
-  Width, Height: integer;
-  //Info: PGtkWindowGeometryInfo;
-begin
-  Width:=AWinControl.Width;
-  // 0 and negative values have a special meaning, so don't use them
-  if Width<=0 then Width:=1;
-  Height:=AWinControl.Height;
-  if Height<=0 then Height:=1;
-
-  //DebugLn('TGtkWidgetSet.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
-  // set geometry default size
-  //Info:=gtk_window_get_geometry_info(Window, TRUE);
-  //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
-    gtk_window_set_default_size(Window,Width,Height);
-
-  {$IFDEF Gtk2}
-  // resize
-  gtk_window_set_default_size(Window,Width,Height);
-  gtk_window_resize(Window,Width,Height);
-  // reposition
-  gtk_window_move(Window,AWinControl.Left,AWinControl.Top);
-  {$ELSE}
-  // resize
-  if assigned(PGtkWidget(Window)^.Window) then
-    // widget is realized, resize gdkwindow directly
-    gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
-      AWinControl.Top,Width,Height)
-  else begin
-    // widget is not yet realized, force resize needed for shrinking under gtk1
-    gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
-  end;
-  // reposition
-  gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
-  gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
-  {$ENDIF}
-
-  {$IFDEF VerboseSizeMsg}
-  DebugLn(['TGtkWidgetSet.SetWindowSizeAndPosition B ',DbgSName(AWinControl),
-    ' Visible=',AWinControl.Visible,
-    ' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,
-    ' New=',AWinControl.Left,',',AWinControl.Top,',',Width,'x',Height]);
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
   procedure TGtkWidgetSet.UpdateTransientWindows;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.UpdateTransientWindows;
@@ -935,35 +881,16 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
 
   procedure SendCachedLCLResizeRequests;
   var
-    Widget, ParentFixed, ParentWidget: PGtkWidget;
-    LCLControl: TControl;
+    Widget: PGtkWidget;
+    LCLControl: TWinControl;
     IsTopLevelWidget: boolean;
     TopologicalList: TFPList; // list of PGtkWidget;
-    i, LCLWidth, LCLHeight: integer;
-    WinWidgetInfo: PWinWidgetInfo;
-
-    procedure WriteBigWarning;
-    begin
-      DebugLn('WARNING: resizing BIG ',
-        ' Control=',LCLControl.Name,':',LCLControl.ClassName,
-        ' NewSize=',dbgs(LCLWidth),',',dbgs(LCLHeight));
-      //RaiseException('');
-    end;
+    i: integer;
 
     procedure RaiseWidgetWithoutControl;
     begin
       RaiseGDBException('ERROR: TGtkWidgetSet.SendCachedLCLMessages Widget '
         +DbgS(Widget)+' without LCL control');
-    end;
-
-    procedure WriteWarningParentWidgetNotFound;
-    begin
-      DebugLn('WARNING: TGtkWidgetSet.SendCachedLCLMessages - '
-              ,'Parent''s Fixed Widget not found');
-      DebugLn('  Control=',LCLControl.Name,':',LCLControl.ClassName,
-        ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
-        ' ParentWidget=',DbgS(ParentWidget),
-        '');
     end;
 
   begin
@@ -977,12 +904,12 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
       Widget:=TopologicalList[i];
 
       // resize widget
-      LCLControl:=TControl(GetLCLObject(Widget));
+      LCLControl:=TWinControl(GetLCLObject(Widget));
       if (LCLControl=nil) or (not (LCLControl is TControl)) then begin
         RaiseWidgetWithoutControl;
       end;
       {$IFDEF VerboseSizeMsg}
-      if AnsiCompareText(LCLControl.ClassName,'TScrollBar')=0 then
+      if CompareText(LCLControl.ClassName,'TScrollBar')=0 then
       DebugLn('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
         ' ',dbgs(LCLControl.Left)+','+dbgs(LCLControl.Top)+','+dbgs(LCLControl.Width)+'x'+dbgs(LCLControl.Height));
       {$ENDIF}
@@ -991,38 +918,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
                          and (LCLControl.Parent = nil);
 
       if not IsTopLevelWidget then begin
-        // resize widget
-        LCLWidth:=LCLControl.Width;
-        if LCLWidth<=0 then
-          LCLWidth:=1;
-        LCLHeight:=LCLControl.Height;
-        if LCLHeight<=0 then
-          LCLHeight:=1;
-        if (LCLWidth>10000) or (LCLHeight>10000) then begin
-          WriteBigWarning;
-          if LCLWidth>10000 then
-            LCLWidth:=10000
-          else
-            LCLHeight:=10000;
-        end;
-        RealizeWidgetSize(Widget,LCLWidth, LCLHeight);
-
-        // move widget on the fixed widget of parent control
-        if (LCLControl.Parent<>nil) and (LCLControl.Parent.HandleAllocated) then
-        begin
-          ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
-          ParentFixed := GetFixedWidget(ParentWidget);
-          if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
-          or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
-            FixedMoveControl(ParentFixed, Widget,
-                             LCLControl.Left,LCLControl.Top);
-          end else begin
-            WinWidgetInfo:=GetWidgetInfo(Widget,false);
-            if (WinWidgetInfo=nil)
-            or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
-              WriteWarningParentWidgetNotFound;
-          end;
-        end;
+        SetWidgetSizeAndPosition(LCLControl);
       end
       else begin
         // resize form
@@ -1065,257 +961,6 @@ end;
   Some Gtk messages are not sent directly to the LCL. Send them now.
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SendCachedGtkMessages;
-
-  procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
-  var
-    LCLControl: TWinControl;
-    LCLLeft, LCLTop, LCLWidth, LCLHeight: integer;
-    GtkLeft, GtkTop, GtkWidth, GtkHeight: integer;
-    TopLeftChanged, WidthHeightChanged, IsTopLevelWidget: boolean;
-    MessageDelivered: boolean;
-    PosMsg : TLMWindowPosChanged;
-    SizeMsg: TLMSize;
-    MoveMsg: TLMMove;
-
-    procedure UpdateLCLRect;
-    begin
-      LCLLeft:=LCLControl.Left;
-      LCLTop:=LCLControl.Top;
-      LCLWidth:=LCLControl.Width;
-      LCLHeight:=LCLControl.Height;
-
-      TopLeftChanged:=(LCLLeft<>GtkLeft) or (LCLTop<>GtkTop);
-      WidthHeightChanged:=(LCLWidth<>GtkWidth) or (LCLHeight<>GtkHeight);
-    end;
-
-  begin
-    if not GTK_WIDGET_REALIZED(MainWidget) then begin
-      {$IFDEF VerboseSizeMsg}
-      DebugLn('SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName,' MainWidget=',WidgetFlagsToString(MainWidget),' Ignored, because not realized ');
-      {$ENDIF}
-      exit;
-    end;
-
-    LCLControl:=TWinControl(GetLCLObject(MainWidget));
-    if LCLControl=nil then exit;
-    {$IFDEF VerboseSizeMsg}
-    DebugLn('JJJ1 SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName,' MainWidget=',WidgetFlagsToString(MainWidget));
-    {$ENDIF}
-
-    GtkLeft:=MainWidget^.Allocation.X;
-    GtkTop:=MainWidget^.Allocation.Y;
-
-    {$Ifdef GTK2}
-    if GTK_WIDGET_NO_WINDOW(MainWidget) and GTK_WIDGET_NO_WINDOW(MainWidget^.Parent)
-  //   and (not GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType))
-    then begin
-      Dec(GtkLeft, MainWidget^.parent^.Allocation.X);
-      Dec(GtkTop, MainWidget^.parent^.Allocation.Y);
-    end;
-    {$EndIf}
-    GtkWidth:=MainWidget^.Allocation.Width;
-    if GtkWidth<0 then GtkWidth:=0;
-    GtkHeight:=MainWidget^.Allocation.Height;
-    if GtkHeight<0 then GtkHeight:=0;
-
-    IsTopLevelWidget:=(LCLControl is TCustomForm) and (LCLControl.Parent=nil);
-    if IsTopLevelWidget then begin
-      if not GTK_WIDGET_VISIBLE(MainWidget) then begin
-        // size/move messages of invisible windows are not reliable
-        // -> ignore
-        exit;
-      end;
-      if (GtkWidth=1) and (GtkHeight=1) then begin
-        // this is default size of the gtk. Ignore.
-        exit;
-      end;
-      if GetControlWindow(MainWidget)<>nil then begin
-        gdk_window_get_root_origin(GetControlWindow(MainWidget), @GtkLeft, @GtkTop);
-      end else begin
-        GtkLeft:=LCLControl.Left;
-        GtkTop:=LCLControl.Top;
-      end;
-      {$IFDEF VerboseFormPositioning}
-      DebugLn(['VFP SendSizeNotificationToLCL ',DbgSName(LCLControl),' ',
-        GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight,' ',GetWidgetDebugReport(MainWidget)]);
-      {$ENDIF}
-    end;
-
-    UpdateLCLRect;
-
-    {$IFDEF VerboseSizeMsg}
-    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),
-      ' GTK=',dbgs(GtkLeft)+','+dbgs(GtkTop)+','+dbgs(GtkWidth)+'x'+dbgs(GtkHeight),
-      ' LCL=',dbgs(LCLLeft)+','+dbgs(LCLTop)+','+dbgs(LCLWidth)+'x'+dbgs(LCLHeight)
-      );
-    {$ENDIF}
-    // first send a LM_WINDOWPOSCHANGED message
-    if TopLeftChanged or WidthHeightChanged then begin
-      PosMsg.Msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
-      PosMsg.Result := 0;
-      New(PosMsg.WindowPos);
-      try
-        with PosMsg.WindowPos^ do begin
-          hWndInsertAfter := 0;
-          x := GtkLeft;
-          y := GtkTop;
-          cx := GtkWidth;
-          cy := GtkHeight;
-          flags := 0;
-        end;
-        MessageDelivered := DeliverMessage(LCLControl, PosMsg) = 0;
-      finally
-        Dispose(PosMsg.WindowPos);
-      end;
-      if (not MessageDelivered) then exit;
-      if FWidgetsWithResizeRequest.Contains(MainWidget) then exit;
-      UpdateLCLRect;
-    end;
-
-    // then send a LM_SIZE message
-    if WidthHeightChanged then begin
-      {$IFDEF VerboseSizeMsg}
-      DebugLn('Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
-      {$ENDIF}
-      with SizeMsg do
-      begin
-        Result := 0;
-        Msg := LM_SIZE;
-        {$IFDEF GTK1}
-        if GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(MainWidget^.window)) then
-          SizeType := SIZEFULLSCREEN or Size_SourceIsInterface
-        else
-          SizeType := SIZENORMAL or Size_SourceIsInterface;
-        {$ELSE}
-        if LCLControl is TCustomForm then begin
-          // if the LCL gets an event without a State it resets it to SIZENORMAL
-          // so we send it the state it already is
-          case TCustomForm(LCLControl).WindowState of
-            wsNormal: SizeType := SIZENORMAL or Size_SourceIsInterface;
-            wsMinimized: SizeType := SIZEICONIC or Size_SourceIsInterface;
-            wsMaximized: SizeType := SIZEFULLSCREEN or Size_SourceIsInterface;
-          end;
-        end
-        else
-        SizeType := Size_SourceIsInterface;
-        {$ENDIF}
-        Width := SmallInt(GtkWidth);
-        Height := SmallInt(GtkHeight);
-      end;
-      MessageDelivered := (DeliverMessage(LCLControl, SizeMsg) = 0);
-      if not MessageDelivered then exit;
-      if FWidgetsWithResizeRequest.Contains(MainWidget) then exit;
-      UpdateLCLRect;
-    end;
-
-    // then send a LM_MOVE message
-    if TopLeftChanged then begin
-      {$IFDEF VerboseSizeMsg}
-      DebugLn('Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
-      {$ENDIF}
-      with MoveMsg do
-      begin
-        Result := 0;
-        Msg := LM_MOVE;
-        MoveType := Move_SourceIsInterface;
-        XPos := SmallInt(GtkLeft);
-        YPos := SmallInt(GtkTop);
-      end;
-      MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
-      if not MessageDelivered then exit;
-    end;
-  end;
-
-  procedure SendCachedGtkResizeNotifications;
-  { This proc sends all cached size messages from the gtk to lcl but in an
-    optimized order.
-    When sending the LCL a size/move/windowposchanged messages the LCL will
-    automatically realign all child controls. This realigning is based on the
-    clientrect.
-    Therefore, before a size message is sent to the lcl, all clientrect must be
-    updated.
-    If a size message results in resizing a widget that was also resized, then
-    the message for the dependent widget is not sent to the lcl, because the lcl
-    resize was after the gtk resize.
-  }
-  var
-    FixWidget, MainWidget: PGtkWidget;
-    LCLControl: TWinControl;
-    List: TFPList;
-    i: integer;
-
-    procedure RaiseInvalidLCLControl;
-    begin
-      RaiseGDBException(Format('SendCachedGtkResizeNotifications FixWidget=%p MainWidget=%p LCLControl=%p',
-                    [FixWidget, MainWidget, Pointer(LCLControl)]));
-    end;
-
-  begin
-    if (FFixWidgetsResized.Count=0) and (FWidgetsResized.Count=0) then exit;
-
-    List:=TFPList.Create;
-
-    { if any fixed widget was resized then a client area of a LCL control was
-      resized
-      -> invalidate client rectangles
-    }
-    {$IFDEF VerboseSizeMsg}
-    DebugLn('HHH1 SendCachedGtkClientResizeNotifications Invalidating ClientRects ... '
-    ,' FixSizeMsgCount=',dbgs(FFixWidgetsResized.Count));
-    {$ENDIF}
-    FFixWidgetsResized.AssignTo(List);
-    for i:=0 to List.Count-1 do begin
-      FixWidget:=List[i];
-      MainWidget:=GetMainWidget(FixWidget);
-      LCLControl:=TWinControl(GetLCLObject(MainWidget));
-      if (LCLControl=nil) or (not (LCLControl is TWinControl)) then
-        RaiseInvalidLCLControl;
-      LCLControl.InvalidateClientRectCache(false);
-    end;
-
-    { if any main widget (= not fixed widget) was resized
-      then a LCL control was resized
-      -> send WMSize, WMMove, and WMWindowPosChanged messages
-    }
-    {$IFDEF VerboseSizeMsg}
-    DebugLn('HHH2 SendCachedGtkClientResizeNotifications SizeMsgCount=',dbgs(FWidgetsResized.Count));
-    {$ENDIF}
-    repeat
-      MainWidget:=FWidgetsResized.First;
-      if MainWidget<>nil then begin
-        FWidgetsResized.Remove(MainWidget);
-        if not FWidgetsWithResizeRequest.Contains(MainWidget) then begin
-          SendSizeNotificationToLCL(MainWidget);
-          FixWidget:=GetFixedWidget(MainWidget);
-        end;
-      end else break;
-    until Application.Terminated;
-
-    { if any client area was resized, which MainWidget Size was already in sync
-      with the LCL, no message was sent. So, tell each changed client area to
-      check its size.
-    }
-    {$IFDEF VerboseSizeMsg}
-    DebugLn('HHH3 SendCachedGtkClientResizeNotifications Updating ClientRects ...');
-    {$ENDIF}
-    repeat
-      FixWidget:=FFixWidgetsResized.First;
-      if FixWidget<>nil then begin
-        FFixWidgetsResized.Remove(FixWidget);
-        MainWidget:=GetMainWidget(FixWidget);
-        LCLControl:=TWinControl(GetLCLObject(MainWidget));
-        LCLControl.DoAdjustClientRectChange;
-      end else begin
-        break;
-      end;
-    until Application.Terminated;
-
-    List.Free;
-    {$IFDEF VerboseSizeMsg}
-    DebugLn('HHH4 SendCachedGtkClientResizeNotifications  completed.');
-    {$ENDIF}
-  end;
-
 begin
   SendCachedGtkResizeNotifications;
 end;
@@ -1500,71 +1145,6 @@ begin
   gtk_widget_modify_font(AWidget,font_desc);
   pango_font_description_free(font_desc);
 {$ENDIF}
-end;
-
-
-
-{------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
-    NewHeight: integer);
-    
-  Note: gtk_window is resized in TGtkWidgetSet.SetWindowSizeAndPosition
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
-  NewHeight: integer);
-var
-  Requisition: TGtkRequisition;
-  {$IFDEF VerboseSizeMsg}
-  LCLObject: TObject;
-  {$ENDIF}
-  FixedWidget: PGtkWidget;
-begin
-  if NewWidth<=0 then NewWidth:=1;
-  if NewHeight<=0 then NewHeight:=1;
-
-  {$IFDEF VerboseSizeMsg}
-  LCLObject:=GetNearestLCLObject(Widget);
-  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+DbgS(Widget)+WidgetFlagsToString(Widget)+
-    ' New='+dbgs(NewWidth)+','+dbgs(NewHeight));
-  if (LCLObject<>nil) and (LCLObject is TControl) then begin
-    with TControl(LCLObject) do
-      DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
-  end else begin
-    DebugLn(' LCL=',DbgS(LCLObject));
-  end;
-  {$ENDIF}
-
-  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
-  begin
-    // the width of a scrollbar is fixed and depends only on the theme
-    gtk_widget_size_request(widget, @Requisition);
-    if GtkWidgetIsA(Widget, GTK_TYPE_HSCROLLBAR) then
-    begin
-      NewHeight:=Requisition.height;
-    end else begin
-      NewWidth:=Requisition.width;
-    end;
-    //DebugLn('TGtkWidgetSet.RealizeWidgetSize A ',Newwidth,',',Newheight);
-  end;
-
-  gtk_widget_set_usize(Widget, NewWidth, NewHeight);
-  //DebugLn(['TGtkWidgetSet.RealizeWidgetSize ',GetWidgetDebugReport(Widget),' NewWidth=',NewWidth,' NewHeight=',NewHeight]);
-
-  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
-  begin
-    // the combobox has an entry, which height is not resized
-    // automatically. Do it manually.
-    gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
-      PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
-  end;
-
-  if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
-    FixedWidget:=GetFixedWidget(Widget);
-    if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
-      //DebugLn('WARNING: ToDo TGtkWidgetSet.RealizeWidgetSize for TToolBar ',NewWidth,',',NewHeight);
-      gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1831,7 +1411,6 @@ begin
     end;
 
     // proceed until all messages are handled
-    
   until (not PendingGtkMessagesExists) or Application.Terminated;
 end;
 
@@ -3584,16 +3163,35 @@ procedure TGtkWidgetSet.ResizeChild(Sender : TObject;
   Left, Top, Width, Height : Integer);
 var
   Widget: PGtkWidget;
+  LCLControl: TWinControl;
+  Later: boolean;
+  {$IFDEF Gtk2}
+  IsTopLevelWidget: Boolean;
+  {$ENDIF}
 begin
   //DebugLn('[TGtkWidgetSet.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TGtkWidgetSet.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
   if Sender is TWinControl then begin
-    if TWinControl(Sender).HandleAllocated then begin
-      Widget := pgtkWidget(TWinControl(Sender).Handle);
-      SetResizeRequest(Widget);
+    LCLControl:=TWinControl(Sender);
+    if LCLControl.HandleAllocated then begin
+      Widget := pgtkWidget(LCLControl.Handle);
+      Later:=true;
+      {$IFDEF Gtk2}
+      if GTK_WIDGET_REALIZED(Widget) then begin
+        // add resize request immediately
+        IsTopLevelWidget:= (LCLControl is TCustomForm)
+                           and (LCLControl.Parent = nil);
+        if not IsTopLevelWidget then begin
+          SetWidgetSizeAndPosition(LCLControl);
+          Later:=false;
+        end;
+      end;
+      {$ENDIF}
+      if Later then
+        SetResizeRequest(Widget);
       //if (Sender is TCustomForm) then
-      //if AnsiCompareText(Sender.ClassName,'TScrollBar')=0 then
+      //if CompareText(Sender.ClassName,'TScrollBar')=0 then
       //  DebugLn(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top,',',Width,',',Height);
     end;
   end;
@@ -5909,11 +5507,13 @@ procedure TGtkWidgetSet.ShowHide(Sender : TObject);
   end;
 
 var FormIconGdiObject: PGDIObject;
-  SenderWidget, ParentFixed, ParentWidget: PGTKWidget;
+  SenderWidget: PGTKWidget;
   LCLControl: TWinControl;
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
+  ParentFixed: PGTKWidget;
+  ParentWidget: PGTKWidget;
   {$IFDEF Gtk1}
   AWindowPrivate: PGdkWindowPrivate;
   {$ENDIF}
@@ -5941,9 +5541,6 @@ begin
       ShareWindowAccelGroups(SenderWidget);
     end;
 
-    if gtk_widget_visible(SenderWidget) then
-      exit;
-
     // before making the widget visible, set the position and size
     if FWidgetsWithResizeRequest.Contains(SenderWidget) then begin
       if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
@@ -5958,6 +5555,9 @@ begin
         SetWindowSizeAndPosition(PgtkWindow(SenderWidget),LCLControl);
       end else if (LCLControl.Parent<>nil) then begin
         // resize widget
+        {$IFDEF VerboseSizeMsg}
+        DebugLn(['TGtkWidgetSet.ShowHide ',DbgSName(LCLControl)]);
+        {$ENDIF}
         RealizeWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
@@ -5993,6 +5593,9 @@ begin
       // -> release our capture
       ReleaseMouseCapture;
     end;
+
+    if gtk_widget_visible(SenderWidget) then
+      exit;
 
     gtk_widget_show(SenderWidget);
 
@@ -7157,9 +6760,9 @@ end;
   Because the gtk puts all size requests into a queue, it will process the
   requests not immediately, but _after_ all requests. This results in changing
   the widget size four times and everytime the LCL gets a message. If the
-  control has childs, this will result resizing the childs four times.
+  control has childs, this will resize the childs four times.
   Therefore LCL size requests for a widget are cached and only the final one is
-  sent.
+  sent in: TGtkWidgetSet.SendCachedLCLMessages.
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SetResizeRequest(Widget: PGtkWidget);
 {$IFDEF VerboseSizeMsg}
@@ -7169,15 +6772,11 @@ var
 begin
   {$IFDEF VerboseSizeMsg}
   LCLControl:=TWinControl(GetLCLObject(Widget));
-  DbgOut('PPP TGtkWidgetSet.SetResizeRequest Widget=',DbgS(Widget));
-  if (LCLControl<>nil) then begin
-    if LCLControl is TWinControl then
-      DebugLn(' ',LCLControl.Name,':',LCLControl.ClassName)
-    else
-      DebugLn(' ERROR: ',LCLControl.ClassName);
-  end else begin
-    DebugLn(' ERROR: LCLControl=nil');
-  end;
+  DbgOut('TGtkWidgetSet.SetResizeRequest Widget=',DbgS(Widget));
+  if LCLControl is TWinControl then
+    DebugLn(' ',DbgSName(LCLControl),' LCLBounds=',dbgs(LCLControl.BoundsRect))
+  else
+    DebugLn(' ERROR: ',DbgSName(LCLControl));
   {$ENDIF}
   if not FWidgetsWithResizeRequest.Contains(Widget) then
     FWidgetsWithResizeRequest.Add(Widget);
@@ -7194,6 +6793,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.UnsetResizeRequest(Widget: PGtkWidget);
 begin
+  {$IFDEF VerboseSizeMsg}
+  if FWidgetsWithResizeRequest.Contains(Widget) then begin
+    DebugLn(['TGtkWidgetSet.UnsetResizeRequest ',GetWidgetDebugReport(Widget)]);
+  end;
+  {$ENDIF}
   FWidgetsWithResizeRequest.Remove(Widget);
 end;
 

@@ -1115,11 +1115,12 @@ begin
 
   // if iconified in changed then OnIconify...
 
-  if TObject(Data) is TCustomForm then begin
-    TheForm := TCustomForm(Data);
-    //DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),' new_window_state=',state^.new_window_state,' changed_mask=',state^.changed_mask]);
-    if TheForm.Parent = nil then begin (* toplevel window, just as a sanity check *)
-      if GTK_WIDGET_REALIZED(Widget) then begin
+  if GTK_WIDGET_REALIZED(Widget) then begin
+    if TObject(Data) is TCustomForm then begin
+      TheForm := TCustomForm(Data);
+      //DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),' new_window_state=',state^.new_window_state,' changed_mask=',state^.changed_mask]);
+      if TheForm.Parent = nil then begin
+        // toplevel window
         // send a WMSize Message (see TCustomForm.WMSize)
         GtkWidth:=Widget^.Allocation.Width;
         if GtkWidth<0 then GtkWidth:=0;
@@ -1130,12 +1131,13 @@ begin
           {$IFDEF HasX}
           NetAtom := gdk_atom_intern('_NET_WM_DESKTOP', True);
           if NetAtom > 0 then begin
-            if gdk_property_get(Widget^.window, NetAtom, XA_CARDINAL,0, 4, 0, @AtomType, @AFormat, @ALength, @AIndex)
+            if gdk_property_get(Widget^.window, NetAtom, XA_CARDINAL,
+              0, 4, 0, @AtomType, @AFormat, @ALength, @AIndex)
             then begin
-
               NetAtom := gdk_atom_intern('_NET_CURRENT_DESKTOP', True);
               if gdk_property_get(gdk_get_default_root_window, NetAtom, XA_CARDINAL,0, 4, 0, @AtomType, @AFormat, @ALength, @ADesktop)
               then if ADesktop^ <> AIndex^ then begin
+                // form is not on active desktop => ignore
                 g_free(ADesktop);
                 g_free(AIndex);
                 exit;
@@ -1164,6 +1166,13 @@ begin
           Width := SmallInt(GtkWidth);
           Height := SmallInt(GtkHeight);
         end;
+        {$IFDEF VerboseSizeMsg}
+        DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),
+          ' GTK=',GtkWidth,'x',GtkHeight,
+          ' LCL=',TheForm.Width,'x',TheForm.Height,
+          ' SizeType=',SizeMsg.SizeType-Size_SourceIsInterface,'+Size_SourceIsInterface'
+          ]);
+        {$ENDIF}
         DeliverMessage(TheForm, SizeMsg);
       end;
     end;
@@ -2353,8 +2362,9 @@ begin
     TControl(Data).Name+':'+TControl(Data).ClassName,
     ' widget='+DbgS(Widget)+WidgetFlagsToString(widget)+
     ' fixwidget=',DbgS(GetFixedWidget(Widget)),
+    ' NewSize=',dbgs(Size^.Width),',',dbgs(Size^.Height),
     ' GtkPos=',dbgs(Widget^.allocation.x)+','+dbgs(Widget^.allocation.y),
-               ','+dbgs(Widget^.allocation.width)+'x'+dbgs(Widget^.allocation.width)+
+               ','+dbgs(Widget^.allocation.width)+'x'+dbgs(Widget^.allocation.height)+
     ' LCLPos='+dbgs(TControl(Data).Left)+','+dbgs(TControl(Data).Top),
                ','+dbgs(TControl(Data).Width)+'x'+dbgs(TControl(Data).Height));
   {$ENDIF}
@@ -2362,8 +2372,16 @@ begin
   if TControl(Data) is TCustomForm then
     DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',dbgs(Size^.X),',',dbgs(Size^.Y));
   {$ENDIF}
-  if GTK_WIDGET_REALIZED(Widget) then
+  if GTK_WIDGET_REALIZED(Widget) then begin
+    {$IFDEF Gtk1}
     SaveSizeNotification(Widget);
+    {$ELSE}
+    if GetFixedWidget(Widget)=Widget then
+      SendSizeNotificationToLCL(Widget)
+    else
+      SaveSizeNotification(Widget);
+    {$ENDIF}
+  end;
 end;
 
 function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;
@@ -2390,8 +2408,13 @@ begin
     end;
     MainWidget:=PGtkWidget(TWinControl(Data).Handle);
     ClientWidget:=GetFixedWidget(MainWidget);
-    if GTK_WIDGET_REALIZED(ClientWidget) then
+    if GTK_WIDGET_REALIZED(ClientWidget) then begin
+      {$IFDEF Gtk1}
       SaveClientSizeNotification(ClientWidget);
+      {$ELSE}
+      SendSizeNotificationToLCL(MainWidget);
+      {$ENDIF}
+    end;
   end else begin
     // owner is not TWinControl -> ignore
     DebugLn('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',

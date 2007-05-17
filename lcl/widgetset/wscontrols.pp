@@ -86,6 +86,7 @@ type
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
+    class function  GetDefaultClientRect(const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect): boolean; virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
@@ -99,9 +100,10 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); virtual;
 
-    { TODO: this procedure is only used in win32 interface }
+    { TODO: move AdaptBounds: it is only used in winapi interfaces }
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); virtual;
+          
     class procedure ConstraintsChange(const AWinControl: TWinControl); virtual;
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; virtual;
@@ -200,6 +202,13 @@ end;
 class procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
+end;
+
+class function TWSWinControl.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+begin
+  Result:=false;
 end;
 
 class procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);

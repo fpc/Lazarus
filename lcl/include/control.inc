@@ -336,6 +336,7 @@ begin
   DebugLn('TControl.ChangeBounds A ',Name,':',ClassName,
     ' Old='+dbgs(Left)+','+dbgs(Top)+','+dbgs(Width),',',dbgs(Height),
     ' New='+dbgs(ALeft)+','+dbgs(ATop)+','+dbgs(AWidth),',',dbgs(AHeight));
+  //if (Parent=nil) and (Left>0) and (ALeft=0) then DumpStack; // This can happen if the interface has not yet moved the window and for some reason something applies the interface coords back to the LCL
   {$ENDIF}
   // constraint the size
   DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
@@ -1212,17 +1213,17 @@ begin
   Result:=ClientRect.Right;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl GetEnabled                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl GetEnabled
+------------------------------------------------------------------------------}
 function TControl.GetEnabled: Boolean;
 begin
   Result := FEnabled;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl GetMouseCapture                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl GetMouseCapture
+------------------------------------------------------------------------------}
 Function TControl.GetMouseCapture : Boolean;
 Begin
   Result := GetCaptureControl = Self;
@@ -1236,9 +1237,9 @@ begin
     Result := UndockHeight;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl GetPopupMenu                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl GetPopupMenu
+------------------------------------------------------------------------------}
 function TControl.GetPopupMenu: TPopupMenu;
 begin
   Result := FPopupMenu;
@@ -2195,8 +2196,10 @@ end;
 procedure TControl.SetClientHeight(Value: Integer);
 begin
   if csLoading in ComponentState then begin
+    {$IFDEF DisableLoadedClientSize}
     FLoadedClientSize.Y:=Value;
     Include(FControlFlags,cfClientHeightLoaded);
+    {$ENDIF}
   end else begin
     // during loading the ClientHeight is not used to set the Height of the
     // control, but only to restore autosizing. For example Anchors=[akBottom]
@@ -2223,8 +2226,10 @@ end;
 procedure TControl.SetClientWidth(Value: Integer);
 begin
   if csLoading in ComponentState then begin
+    {$IFDEF DisableLoadedClientSize}
     FLoadedClientSize.X:=Value;
     Include(FControlFlags,cfClientWidthLoaded);
+    {$ENDIF}
   end else begin
     // during loading the ClientWidth is not used to set the Width of the
     // control, but only to restore autosizing. For example Anchors=[akRight]

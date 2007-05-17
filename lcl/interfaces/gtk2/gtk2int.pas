@@ -60,10 +60,8 @@ type
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
-    //procedure SetLabel(Sender : TObject; Data : Pointer);
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
-    //function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
 
     procedure InitializeFileDialog(FileDialog: TFileDialog;
       var SelWidget: PGtkWidget; Title: PChar); override;

@@ -398,8 +398,8 @@ type
   {$ENDIF}
 
   { TGraphicsObject
-    In Delphi VCL this is the ancestor of TFon, TPen and TBrush.
-    With FPC 2.0 the LCL uses TFPCanvasHelper. }
+    In Delphi VCL this is the ancestor of TFont, TPen and TBrush.
+    Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor. }
 
   TGraphicsObject = class(TPersistent)
   private

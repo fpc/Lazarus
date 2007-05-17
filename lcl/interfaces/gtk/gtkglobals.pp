@@ -113,6 +113,7 @@ type
     lgsStatusBar,
     lgsHScale,
     lgsVScale,
+    lgsGroupBox,
     // user defined
     lgsUserDefined
     );
@@ -138,6 +139,7 @@ const
     'notebook',
     'hscale',
     'vscale',
+    'groupbox',
     ''
     );
 
@@ -372,6 +374,7 @@ var
   // each fixed widget that was resized by the gtk is stored here
   // (hasharray of PGtkWidget)
   FFixWidgetsResized: TDynHashArray;
+  FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
 
 const
   aGtkJustification: array[TAlignment] of TGTKJustification =

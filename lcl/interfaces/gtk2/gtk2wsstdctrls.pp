@@ -81,6 +81,9 @@ type
   private
   protected
   public
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
   end;
 
   { TGtk2WSGroupBox }
@@ -1259,6 +1262,28 @@ begin
   inherited DestroyHandle(AWinControl);
 end;
 
+{ TGtk2WSCustomGroupBox }
+
+class function TGtk2WSCustomGroupBox.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+var
+  FrameBorders: TRect;
+begin
+  Result:=false;
+  //DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect ',DbgSName(AWinControl),' ',aWidth,'x',aHeight]);
+  if AWinControl.HandleAllocated then begin
+
+  end else begin
+    FrameBorders:=GetStyleGroupboxFrameBorders;
+    aClientRect:=Rect(0,0,
+                 Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
+                 Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
+    Result:=true;
+  end;
+  //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect AAA2 FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -1268,7 +1293,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TGtk2WSCustomGroupBox);
+  RegisterWSComponent(TCustomGroupBox, TGtk2WSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TGtk2WSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtk2WSComboBox);

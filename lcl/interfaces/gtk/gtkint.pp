@@ -92,7 +92,6 @@ type
     FRCFilename: string;
     FRCFileParsed: boolean;
     FRCFileAge: integer;
-    FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
 
     FLogHandlerID: guint; // ID returend by set_handler
@@ -230,8 +229,6 @@ type
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
-    procedure SetWindowSizeAndPosition(Window: PGtkWindow;
-      AWinControl: TWinControl);virtual;
     procedure UntransientWindow(GtkWindow: PGtkWindow);
     procedure InitializeFileDialog(FileDialog: TFileDialog;
       var SelWidget: PGtkWidget; Title: PChar); virtual;
@@ -273,8 +270,6 @@ type
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
-    procedure RealizeWidgetSize(Widget: PGtkWidget;
-                                NewWidth, NewHeight: integer); virtual;
     procedure FinishComponentCreate(const ALCLObject: TObject;
               const AGTKObject: Pointer); virtual;
 

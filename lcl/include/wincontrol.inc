@@ -27,8 +27,8 @@
 
 { $DEFINE CHECK_POSITION}
 { $IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'THintWindow';
-const CheckPostionName = 'ListBox1';
+const CheckPostionClassName = 'xxTHintWindow';
+const CheckPostionName = 'xxListBox1';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -1065,6 +1065,8 @@ var
   var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
     ParentBaseClientSize: TPoint;
+    ParentClientWidth: integer;
+    ParentClientHeight: integer;
     CurBaseBounds: TRect;
     NewRight: Integer;// temp variable, not always valid, use with care !
     NewBottom: Integer;// temp variable, not always valid, use with care !
@@ -1194,8 +1196,9 @@ var
       ConstraintWidth(NewLeft,NewWidth);
       ConstraintHeight(NewTop,NewHeight);
     end;
+    ParentClientWidth:=Control.Parent.ClientWidth;
+    ParentClientHeight:=Control.Parent.ClientHeight;
 
-    
     InitAnchorSideCache;
     
     { Recalculate the anchors
@@ -1205,7 +1208,7 @@ var
       This is controlled with the AnchorSide properties.
 
       1. If AnchorSide[].Control is not set, the distance is kept relative to
-      the edges of the client are of its parent.
+      the edges of the client area of its parent.
       When its parent is resized, the control holds its position relative to the
       edges to which it is anchored.
       If a control is anchored to opposite edges of its parent, the control
@@ -1230,8 +1233,7 @@ var
       ParentBaseClientSize:=Control.FBaseParentClientSize;
       if (ParentBaseClientSize.X=0)
       and (ParentBaseClientSize.Y=0) then
-        ParentBaseClientSize:=Point(Control.Parent.ClientWidth,
-                                    Control.Parent.ClientHeight);
+        ParentBaseClientSize:=Point(ParentClientWidth,ParentClientHeight);
 
       // get base bounds of Control
       CurBaseBounds:=Control.FBaseBounds;
@@ -1246,7 +1248,7 @@ var
         ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
         ' ParentBaseClientSize='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
-        ' ControlParent.Client='+dbgs(Control.Parent.ClientWidth)+','+dbgs(Control.Parent.ClientHeight),
+        ' ControlParent.Client='+dbgs(ParentClientWidth)+','+dbgs(ParentClientHeight),
         ' NewBounds='+dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewWidth)+','+dbgs(NewHeight),
         '');
       {$ENDIF}
@@ -1257,7 +1259,7 @@ var
         if akRight in CurAnchors then begin
           // keep distance to right side of parent or another sibling
           // -> change the width
-          NewRight:=Control.Parent.ClientWidth
+          NewRight:=ParentClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
           and (akRight in Control.Anchors) then
@@ -1272,7 +1274,7 @@ var
         if akRight in CurAnchors then begin
           // keep distance to right side of parent
           // and keep new width
-          NewRight:=Control.Parent.ClientWidth
+          NewRight:=ParentClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
           and (akRight in Control.Anchors) then
@@ -1281,7 +1283,7 @@ var
         end else begin
           // do not anchor to the right
           // -> keep new width and center horizontally
-          NewLeft:=(Control.Parent.ClientWidth-NewWidth) div 2;
+          NewLeft:=(ParentClientWidth-NewWidth) div 2;
         end;
       end;
 
@@ -2146,21 +2148,11 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
 begin
-  if wcfClientRectNeedsUpdate in FWinControlFlags then begin
-    GetClientRect;
-  end;
   {$IFDEF VerboseClientRectBugFix}
-  DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',DbgS(FClientWidth),',',DbgS(FClientHeight),
+  DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,
   ' OldHeight=',DbgS(FHeight),' NewHeight=',DbgS(AHeight));
   {$ENDIF}
-  inc(FClientWidth,AWidth-FWidth);
-  if (FClientWidth<0) then FClientWidth:=0;
-  inc(FClientHeight,AHeight-FHeight);
-  if (FClientHeight<0) then FClientHeight:=0;
-  {$IFDEF VerboseClientRectBugFix}
-  DebugLn(' NewClient=',DbgS(FClientWidth),',',DbgS(FClientHeight));
-  {$ENDIF}
-
+  InvalidateClientRectCache(false);
   inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
 end;
 
@@ -2307,20 +2299,35 @@ function TWinControl.GetClientRect: TRect;
 var
   InterfaceWidth, InterfaceHeight: integer;
 begin
-  if not HandleAllocated then begin
-    Result:=inherited GetClientRect;
-    StoreClientRect(Result);
-  end else if wcfClientRectNeedsUpdate in FWinControlFlags then begin
-    // update clientrect from interface
-    LCLIntf.GetClientRect(Handle, Result);
-    // the LCL is not always in sync with the interface
-    // -> adjust client rect based on LCL bounds
-    // for example: if the Width in LCL differ from the Width of the Interface
-    // object, then adjust the clientwidth accordingly
-    LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
-    //debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
-    Result.Right:=Width-(InterfaceWidth-Result.Right);
-    Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
+  if wcfClientRectNeedsUpdate in FWinControlFlags then begin
+    if TWSWinControlClass(WidgetSetClass).GetDefaultClientRect(Self,
+      Left, Top, Width, Height, Result)
+    then begin
+      // the LCL interface provided a ClientRect
+    end
+    else if HandleAllocated then begin
+      // update clientrect from interface
+      LCLIntf.GetClientRect(Handle, Result);
+      // the LCL is not always in sync with the interface
+      // -> adjust client rect based on LCL bounds
+      // for example: if the Width in LCL differ from the Width of the Interface
+      // object, then adjust the clientwidth accordingly
+      // this often anticipates later LM_SIZE messages from the interface
+      // and reduces resizes
+      LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
+      //debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
+      Result.Right:=Width-(InterfaceWidth-Result.Right);
+      Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
+    end else begin
+      // no handle and no interface help => use defaults
+      Result:=inherited GetClientRect;
+      if csLoading in ComponentState then begin
+        if cfClientWidthLoaded in FControlFlags then
+          Result.Right:=FLoadedClientSize.X;
+        if cfClientHeightLoaded in FControlFlags then
+          Result.Bottom:=FLoadedClientSize.Y;
+      end;
+    end;
     StoreClientRect(Result);
 
     {r:=inherited GetClientRect;
@@ -4509,7 +4516,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TWinControl.Create(TheOwner : TComponent);
 begin
-  // do not set borderstyle, as tcustomform needs to set it before calling
+  // do not set borderstyle, because TCustomForm needs to set it before calling
   // inherited, to have it set before handle is created via streaming
   // use property that bsNone is zero
   //FBorderStyle := bsNone;
@@ -4521,11 +4528,12 @@ begin
   FParentCtl3D:=true;
   FTabOrder := -1;
   FTabStop := False;
+  InvalidateClientRectCache(false);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl CreateParented                                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl CreateParented
+------------------------------------------------------------------------------}
 constructor TWinControl.CreateParented(ParentWindow: hwnd);
 begin
   FParentWindow := ParentWindow;
@@ -4845,8 +4853,8 @@ var
 begin
   {$IFDEF VerboseSizeMsg}
   if CheckPosition(Self) then
-  DebugLn('TWinControl.WMSize A ',Name,':',ClassName,' Message=',dbgs(Message.Width),',',dbgs(Message.Height),
-    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0));
+  DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
   NewLeft:=Left;
   NewTop:=Top;
@@ -4859,7 +4867,7 @@ begin
       GetWindowRelativePosition(Handle,NewLeft,NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
-    If CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
     FBoundsRealized:=NewBoundsRealized;
     InvalidatePreferredSize;
   end;
@@ -5390,54 +5398,57 @@ var
   AChild: TControl;
   LoadedClientSize: TPoint;
 begin
-  //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
-  if cfClientWidthLoaded in FControlFlags then
-    LoadedClientSize.X:=FLoadedClientSize.X
-  else begin
-    LoadedClientSize.X:=ClientWidth;
-    if LoadedClientSize.X<=0 then
-      LoadedClientSize.X:=Width;
-  end;
-  if cfClientHeightLoaded in FControlFlags then
-    LoadedClientSize.Y:=FLoadedClientSize.Y
-  else begin
-    LoadedClientSize.Y:=ClientHeight;
-    if LoadedClientSize.Y<=0 then
-      LoadedClientSize.Y:=Height;
-  end;
-  for i:=0 to ControlCount-1 do begin
-    AChild:=Controls[i];
-    if AChild=nil then ;
-    AChild.FBaseParentClientSize:=LoadedClientSize;
-    //DebugLn(['TWinControl.Loaded Self=',DbgSName(Self),' AChild=',AChild,' AChild.FBaseParentClientSize=',dbgs(AChild.FBaseParentClientSize)]);
-  end;
-  if HandleAllocated then begin
-    // Set cached caption
-    if GetCachedText(CachedText) then
-      TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
-    InvalidatePreferredSize;
-
-    if wcfColorChanged in FWinControlFlags then begin
-      TWSWinControlClass(WidgetSetClass).SetColor(Self);
-      Exclude(FWinControlFlags,wcfColorChanged);
+  DisableAlign;
+  try
+    //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
+    if cfClientWidthLoaded in FControlFlags then
+      LoadedClientSize.X:=FLoadedClientSize.X
+    else begin
+      LoadedClientSize.X:=ClientWidth;
+      if LoadedClientSize.X<=0 then
+        LoadedClientSize.X:=Width;
     end;
-    if wcfFontChanged in FWinControlFlags then begin
-      TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
-      NotifyControls(CM_PARENTCOLORCHANGED);
-      for i := 0 to ControlCount - 1 do
-        Controls[i].ParentFontChanged;
-      FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
+    if cfClientHeightLoaded in FControlFlags then
+      LoadedClientSize.Y:=FLoadedClientSize.Y
+    else begin
+      LoadedClientSize.Y:=ClientHeight;
+      if LoadedClientSize.Y<=0 then
+        LoadedClientSize.Y:=Height;
     end;
+    for i:=0 to ControlCount-1 do begin
+      AChild:=Controls[i];
+      if AChild=nil then ;
+      AChild.FBaseParentClientSize:=LoadedClientSize;
+      //DebugLn(['TWinControl.Loaded Self=',DbgSName(Self),' AChild=',AChild,' AChild.FBaseParentClientSize=',dbgs(AChild.FBaseParentClientSize)]);
+    end;
+    if HandleAllocated then begin
+      // Set cached caption
+      if GetCachedText(CachedText) then
+        TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
+      InvalidatePreferredSize;
+
+      if wcfColorChanged in FWinControlFlags then begin
+        TWSWinControlClass(WidgetSetClass).SetColor(Self);
+        Exclude(FWinControlFlags,wcfColorChanged);
+      end;
+      if wcfFontChanged in FWinControlFlags then begin
+        TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
+        NotifyControls(CM_PARENTCOLORCHANGED);
+        for i := 0 to ControlCount - 1 do
+          Controls[i].ParentFontChanged;
+        FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
+      end;
+    end;
+
+    inherited Loaded;
+
+    FixupTabList;
+    RealizeBounds;
+    if HandleAllocated and ([csDestroying]*ComponentState=[]) then
+      DoSendShowHideToInterface;
+  finally
+    EnableAlign;
   end;
-
-  inherited Loaded;
-  
-  FixupTabList;
-  RealizeBounds;
-
-  // align the childs
-  if wcfReAlignNeeded in FWinControlFlags then
-    ReAlign;
 end;
 
 procedure TWinControl.FormEndUpdated;
@@ -5774,7 +5785,7 @@ end;
   are relevant.
 
   WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
-  has a minimum size. But for staking multiple TRadioButtons there should be
+  has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so it passed parameter to
   the widgetset.
  ------------------------------------------------------------------------------}
@@ -5799,7 +5810,7 @@ begin
     if PreferredHeight>0 then
       inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   end;
-  
+
   if ControlCount>0 then begin
 
     // get the size requirements for the child controls
@@ -5997,6 +6008,20 @@ begin
   ResizeDelayedAutoSizeChildren;
 end;
 
+procedure TWinControl.DoSendShowHideToInterface;
+var
+  NewVisible: Boolean;
+begin
+  NewVisible:=HandleObjectShouldBeVisible;
+  if NewVisible<>(wcfHandleVisible in FWinControlFlags) then begin
+    if NewVisible then
+      Include(FWinControlFlags,wcfHandleVisible)
+    else
+      Exclude(FWinControlFlags,wcfHandleVisible);
+    TWSWinControlClass(WidgetSetClass).ShowHide(Self);
+  end;
+end;
+
 procedure TWinControl.ControlsAligned;
 begin
 
@@ -6052,9 +6077,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
-  // ToDo: do not send this while loading, send it after loading.
-  if HandleAllocated and ([csDestroying]*ComponentState=[])then
-    TWSWinControlClass(WidgetSetClass).ShowHide(Self);
+  if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
+    DoSendShowHideToInterface;
 end;
 
 {------------------------------------------------------------------------------

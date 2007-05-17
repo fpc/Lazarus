@@ -445,6 +445,7 @@ var
 procedure GtkDefDone;
 
 function dbgs(g: TGDIType): string; overload;
+function dbgs(r: TGDKRectangle): string; overload;
 
 
 implementation
@@ -828,6 +829,11 @@ begin
   gdiPalette: Result:='gdiPalette';
   else Result:='<?? unknown gdi type '+dbgs(ord(g))+'>';
   end;
+end;
+
+function dbgs(r: TGDKRectangle): string;
+begin
+  Result:=dbgs(Rect(r.x,r.y,r.width,r.height));
 end;
 
 initialization

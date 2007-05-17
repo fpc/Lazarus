@@ -6441,6 +6441,446 @@ begin
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
+procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
+var
+  LCLControl: TWinControl;
+  LCLLeft, LCLTop, LCLWidth, LCLHeight: integer;
+  GtkLeft, GtkTop, GtkWidth, GtkHeight: integer;
+  TopLeftChanged, WidthHeightChanged, IsTopLevelWidget: boolean;
+  MessageDelivered: boolean;
+  SizeMsg: TLMSize;
+  MoveMsg: TLMMove;
+  PosMsg : TLMWindowPosChanged;
+
+  procedure UpdateLCLRect;
+  begin
+    LCLLeft:=LCLControl.Left;
+    LCLTop:=LCLControl.Top;
+    LCLWidth:=LCLControl.Width;
+    LCLHeight:=LCLControl.Height;
+
+    TopLeftChanged:=(LCLLeft<>GtkLeft) or (LCLTop<>GtkTop);
+    WidthHeightChanged:=(LCLWidth<>GtkWidth) or (LCLHeight<>GtkHeight);
+  end;
+
+begin
+  if not GTK_WIDGET_REALIZED(MainWidget) then begin
+    {$IFDEF VerboseSizeMsg}
+    LCLControl:=TWinControl(GetLCLObject(MainWidget));
+    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),' MainWidget=',WidgetFlagsToString(MainWidget),' Ignored, because not realized ');
+    {$ENDIF}
+    exit;
+  end;
+
+  LCLControl:=TWinControl(GetLCLObject(MainWidget));
+  if LCLControl=nil then exit;
+  {$IFDEF VerboseSizeMsg}
+  DebugLn('SendSizeNotificationToLCL checking ... ',DbgSName(LCLControl),' MainWidget=',WidgetFlagsToString(MainWidget));
+  {$ENDIF}
+
+  GtkLeft:=MainWidget^.Allocation.X;
+  GtkTop:=MainWidget^.Allocation.Y;
+
+  {$Ifdef GTK2}
+  if GTK_WIDGET_NO_WINDOW(MainWidget) and GTK_WIDGET_NO_WINDOW(MainWidget^.Parent)
+  // and (not GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType))
+  then begin
+    //DebugLn(['SendSizeNotificationToLCL widget has no gdkwindow, fixing coords by adding parent coords: MainWidget^.Allocation=',MainWidget^.Allocation.X,',',MainWidget^.Allocation.Y,' MainWidget^.parent^.Allocation=',MainWidget^.parent^.Allocation.X,',',MainWidget^.parent^.Allocation.Y,' ',GetWidgetDebugReport(MainWidget)]);
+    Dec(GtkLeft, MainWidget^.parent^.Allocation.X);
+    Dec(GtkTop, MainWidget^.parent^.Allocation.Y);
+  end;
+  {$EndIf}
+  GtkWidth:=MainWidget^.Allocation.Width;
+  if GtkWidth<0 then GtkWidth:=0;
+  GtkHeight:=MainWidget^.Allocation.Height;
+  if GtkHeight<0 then GtkHeight:=0;
+
+  IsTopLevelWidget:=(LCLControl is TCustomForm) and (LCLControl.Parent=nil);
+  if IsTopLevelWidget then begin
+    if not GTK_WIDGET_VISIBLE(MainWidget) then begin
+      // size/move messages of invisible windows are not reliable
+      // -> ignore
+      exit;
+    end;
+    if (GtkWidth=1) and (GtkHeight=1) then begin
+      // this is default size of the gtk. Ignore.
+      exit;
+    end;
+    //DebugLn(['SendSizeNotificationToLCL FORM ',GetWidgetDebugReport(MainWidget)]);
+    if GetControlWindow(MainWidget)<>nil then begin
+      gdk_window_get_root_origin(GetControlWindow(MainWidget), @GtkLeft, @GtkTop);
+    end else begin
+      GtkLeft:=LCLControl.Left;
+      GtkTop:=LCLControl.Top;
+    end;
+
+    {$IFDEF VerboseFormPositioning}
+    DebugLn(['VFP SendSizeNotificationToLCL ',DbgSName(LCLControl),' ',
+      GtkLeft,',',GtkTop,',',GtkWidth,'x',GtkHeight,' ',GetWidgetDebugReport(MainWidget)]);
+    {$ENDIF}
+  end;
+
+  UpdateLCLRect;
+
+  // first send a LM_WINDOWPOSCHANGED message
+  if TopLeftChanged or WidthHeightChanged then begin
+    {$IFDEF VerboseSizeMsg}
+    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),
+      ' GTK=',dbgs(GtkLeft)+','+dbgs(GtkTop)+','+dbgs(GtkWidth)+'x'+dbgs(GtkHeight),
+      ' LCL=',dbgs(LCLLeft)+','+dbgs(LCLTop)+','+dbgs(LCLWidth)+'x'+dbgs(LCLHeight)
+      );
+    {$ENDIF}
+    PosMsg.Msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
+    PosMsg.Result := 0;
+    New(PosMsg.WindowPos);
+    try
+      with PosMsg.WindowPos^ do begin
+        hWndInsertAfter := 0;
+        x := GtkLeft;
+        y := GtkTop;
+        cx := GtkWidth;
+        cy := GtkHeight;
+        flags := 0;
+      end;
+      MessageDelivered := DeliverMessage(LCLControl, PosMsg) = 0;
+    finally
+      Dispose(PosMsg.WindowPos);
+    end;
+    if (not MessageDelivered) then exit;
+    if FWidgetsWithResizeRequest.Contains(MainWidget) then exit;
+    UpdateLCLRect;
+  end;
+
+  // then send a LM_SIZE message
+  if WidthHeightChanged then begin
+    {$IFDEF VerboseSizeMsg}
+    DebugLn('Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+    {$ENDIF}
+    with SizeMsg do
+    begin
+      Result := 0;
+      Msg := LM_SIZE;
+      {$IFDEF GTK1}
+      if GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(MainWidget^.window)) then
+        SizeType := SIZEFULLSCREEN
+      else
+        SizeType := SIZENORMAL;
+      {$ELSE}
+      if LCLControl is TCustomForm then begin
+        // if the LCL gets an event without a State it resets it to SIZENORMAL
+        // so we send it the state it already is
+        case TCustomForm(LCLControl).WindowState of
+          wsNormal: SizeType := SIZENORMAL;
+          wsMinimized: SizeType := SIZEICONIC;
+          wsMaximized: SizeType := SIZEFULLSCREEN;
+        end;
+      end
+      else
+        SizeType := 0;
+      {$ENDIF}
+      SizeType := SizeType or Size_SourceIsInterface;
+      Width := SmallInt(GtkWidth);
+      Height := SmallInt(GtkHeight);
+    end;
+    MessageDelivered := (DeliverMessage(LCLControl, SizeMsg) = 0);
+    if not MessageDelivered then exit;
+    if FWidgetsWithResizeRequest.Contains(MainWidget) then exit;
+    UpdateLCLRect;
+  end;
+
+  // then send a LM_MOVE message
+  if TopLeftChanged then begin
+    {$IFDEF VerboseSizeMsg}
+    DebugLn('Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+    {$ENDIF}
+    with MoveMsg do
+    begin
+      Result := 0;
+      Msg := LM_MOVE;
+      MoveType := Move_SourceIsInterface;
+      XPos := SmallInt(GtkLeft);
+      YPos := SmallInt(GtkTop);
+    end;
+    MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
+    if not MessageDelivered then exit;
+  end;
+end;
+
+procedure SendCachedGtkResizeNotifications;
+{ This proc sends all cached size messages from the gtk to lcl but in an
+  optimized order.
+  When sending the LCL a size/move/windowposchanged messages the LCL will
+  automatically realign all child controls. This realigning is based on the
+  clientrect.
+  Therefore, before a size message is sent to the lcl, all clientrect must be
+  updated.
+  If a size message results in resizing a widget that was also resized, then
+  the message for the dependent widget is not sent to the lcl, because the lcl
+  resize was after the gtk resize.
+}
+var
+  FixWidget, MainWidget: PGtkWidget;
+  LCLControl: TWinControl;
+  List: TFPList;
+  i: integer;
+
+  procedure RaiseInvalidLCLControl;
+  begin
+    RaiseGDBException(Format('SendCachedGtkResizeNotifications FixWidget=%p MainWidget=%p LCLControl=%p',
+                  [FixWidget, MainWidget, Pointer(LCLControl)]));
+  end;
+
+begin
+  if (FWidgetsResized.Count=0) and (FFixWidgetsResized.Count=0) then exit;
+
+  List:=TFPList.Create;
+
+  { if any fixed widget was resized then a client area of a LCL control was
+    resized
+    -> invalidate client rectangles
+  }
+  {$IFDEF VerboseSizeMsg}
+  DebugLn('HHH1 SendCachedGtkClientResizeNotifications Invalidating ClientRects ... '
+  ,' FixSizeMsgCount=',dbgs(FFixWidgetsResized.Count));
+  {$ENDIF}
+  FFixWidgetsResized.AssignTo(List);
+  for i:=0 to List.Count-1 do begin
+    FixWidget:=List[i];
+    MainWidget:=GetMainWidget(FixWidget);
+    LCLControl:=TWinControl(GetLCLObject(MainWidget));
+    if (LCLControl=nil) or (not (LCLControl is TWinControl)) then
+      RaiseInvalidLCLControl;
+    LCLControl.InvalidateClientRectCache(false);
+  end;
+
+  { if any main widget (= not fixed widget) was resized
+    then a LCL control was resized
+    -> send WMSize, WMMove, and WMWindowPosChanged messages
+  }
+  {$IFDEF VerboseSizeMsg}
+  if FWidgetsResized.First<>nil then
+    DebugLn('HHH2 SendCachedGtkClientResizeNotifications SizeMsgCount=',dbgs(FWidgetsResized.Count));
+  {$ENDIF}
+  repeat
+    MainWidget:=FWidgetsResized.First;
+    if MainWidget<>nil then begin
+      FWidgetsResized.Remove(MainWidget);
+      if not FWidgetsWithResizeRequest.Contains(MainWidget) then begin
+        SendSizeNotificationToLCL(MainWidget);
+      end;
+    end else break;
+  until Application.Terminated;
+
+  { if any client area was resized, which MainWidget Size was already in sync
+    with the LCL, no message was sent. So, tell each changed client area to
+    check its size.
+  }
+  {$IFDEF VerboseSizeMsg}
+  if FFixWidgetsResized.First<>nil then
+    DebugLn('HHH3 SendCachedGtkClientResizeNotifications Updating ClientRects ...');
+  {$ENDIF}
+  repeat
+    FixWidget:=FFixWidgetsResized.First;
+    if FixWidget<>nil then begin
+      FFixWidgetsResized.Remove(FixWidget);
+      MainWidget:=GetMainWidget(FixWidget);
+      LCLControl:=TWinControl(GetLCLObject(MainWidget));
+      LCLControl.DoAdjustClientRectChange;
+    end else begin
+      break;
+    end;
+  until Application.Terminated;
+
+  List.Free;
+  {$IFDEF VerboseSizeMsg}
+  DebugLn('HHH4 SendCachedGtkClientResizeNotifications  completed.');
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  procedure RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
+    NewHeight: integer);
+
+  Note: gtk_window is resized in SetWindowSizeAndPosition
+ ------------------------------------------------------------------------------}
+procedure RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
+  NewHeight: integer);
+var
+  Requisition: TGtkRequisition;
+  {$IFDEF VerboseSizeMsg}
+  LCLObject: TObject;
+  {$ENDIF}
+  FixedWidget: PGtkWidget;
+begin
+  if NewWidth<=0 then NewWidth:=1;
+  if NewHeight<=0 then NewHeight:=1;
+
+  {$IFDEF VerboseSizeMsg}
+  LCLObject:=GetNearestLCLObject(Widget);
+  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+DbgS(Widget)+WidgetFlagsToString(Widget)+
+    ' New='+dbgs(NewWidth)+','+dbgs(NewHeight));
+  if (LCLObject<>nil) and (LCLObject is TControl) then begin
+    with TControl(LCLObject) do
+      DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
+  end else begin
+    DebugLn(' LCL=',DbgS(LCLObject));
+  end;
+  {$ENDIF}
+
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
+  begin
+    // the width of a scrollbar is fixed and depends only on the theme
+    gtk_widget_size_request(widget, @Requisition);
+    if GtkWidgetIsA(Widget, GTK_TYPE_HSCROLLBAR) then
+    begin
+      NewHeight:=Requisition.height;
+    end else begin
+      NewWidth:=Requisition.width;
+    end;
+    //DebugLn('TGtkWidgetSet.RealizeWidgetSize A ',Newwidth,',',Newheight);
+  end;
+
+  gtk_widget_set_usize(Widget, NewWidth, NewHeight);
+  //DebugLn(['TGtkWidgetSet.RealizeWidgetSize ',GetWidgetDebugReport(Widget),' NewWidth=',NewWidth,' NewHeight=',NewHeight]);
+
+  {$IFDEF Gtk1}
+  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
+  begin
+    // the combobox has an entry, which height is not resized
+    // automatically. Do it manually.
+    gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
+      PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
+  end;
+  {$ENDIF}
+
+  if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
+    FixedWidget:=GetFixedWidget(Widget);
+    if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
+      //DebugLn('WARNING: ToDo TGtkWidgetSet.RealizeWidgetSize for TToolBar ',NewWidth,',',NewHeight);
+      gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
+    end;
+  end;
+end;
+
+procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);
+var
+  LCLWidth: LongInt;
+  LCLHeight: LongInt;
+  Widget: PGtkWidget;
+  ParentWidget: PGtkWidget;
+  ParentFixed: PGtkWidget;
+  WinWidgetInfo: PWidgetInfo;
+
+  procedure WriteBigWarning;
+  begin
+    DebugLn('WARNING: SetWidgetSizeAndPosition: resizing BIG ',
+      ' Control=',LCLControl.Name,':',LCLControl.ClassName,
+      ' NewSize=',dbgs(LCLWidth),',',dbgs(LCLHeight));
+    //RaiseException('');
+  end;
+
+  procedure WriteWarningParentWidgetNotFound;
+  begin
+    DebugLn('WARNING: SetWidgetSizeAndPosition - '
+            ,'Parent''s Fixed Widget not found');
+    DebugLn('  Control=',LCLControl.Name,':',LCLControl.ClassName,
+      ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
+      ' ParentWidget=',DbgS(ParentWidget),
+      '');
+  end;
+
+begin
+  // resize widget
+  LCLWidth:=LCLControl.Width;
+  if LCLWidth<=0 then
+    LCLWidth:=1;
+  LCLHeight:=LCLControl.Height;
+  if LCLHeight<=0 then
+    LCLHeight:=1;
+  if (LCLWidth>10000) or (LCLHeight>10000) then begin
+    WriteBigWarning;
+    if LCLWidth>10000 then
+      LCLWidth:=10000
+    else
+      LCLHeight:=10000;
+  end;
+  {$IFDEF VerboseSizeMsg}
+  DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl)]);
+  {$ENDIF}
+  Widget:=PGtkWidget(LCLControl.Handle);
+  RealizeWidgetSize(Widget,LCLWidth, LCLHeight);
+
+  // move widget on the fixed widget of parent control
+  if (LCLControl.Parent<>nil) and (LCLControl.Parent.HandleAllocated) then
+  begin
+    ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
+    ParentFixed := GetFixedWidget(ParentWidget);
+    if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
+    or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
+      FixedMoveControl(ParentFixed, Widget,
+                       LCLControl.Left,LCLControl.Top);
+    end else begin
+      WinWidgetInfo:=GetWidgetInfo(Widget,false);
+      if (WinWidgetInfo=nil)
+      or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
+        WriteWarningParentWidgetNotFound;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: SetWindowSizeAndPosition
+  Params:  Widget: PGtkWidget; AWinControl: TWinControl
+  Returns: Nothing
+
+  Set the size and position of a top level window.
+ ------------------------------------------------------------------------------}
+procedure SetWindowSizeAndPosition(Window: PGtkWindow;
+  AWinControl: TWinControl);
+var
+  Width, Height: integer;
+  //Info: PGtkWindowGeometryInfo;
+begin
+  Width:=AWinControl.Width;
+  // 0 and negative values have a special meaning, so don't use them
+  if Width<=0 then Width:=1;
+  Height:=AWinControl.Height;
+  if Height<=0 then Height:=1;
+
+  //DebugLn('TGtkWidgetSet.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
+  // set geometry default size
+  //Info:=gtk_window_get_geometry_info(Window, TRUE);
+  //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
+    gtk_window_set_default_size(Window,Width,Height);
+
+  {$IFDEF Gtk2}
+  // resize
+  gtk_window_resize(Window,Width,Height);
+  // reposition
+  gtk_window_move(Window,AWinControl.Left,AWinControl.Top);
+  {$ELSE}
+  // resize
+  if assigned(PGtkWidget(Window)^.Window) then
+    // widget is realized, resize gdkwindow directly
+    gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
+      AWinControl.Top,Width,Height)
+  else begin
+    // widget is not yet realized, force resize needed for shrinking under gtk1
+    gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
+  end;
+  // reposition
+  gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
+  gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
+  {$ENDIF}
+
+  {$IFDEF VerboseSizeMsg}
+  DebugLn(['SetWindowSizeAndPosition B ',DbgSName(AWinControl),
+    ' Visible=',AWinControl.Visible,
+    ' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,
+    ' New=',AWinControl.Left,',',AWinControl.Top,',',Width,'x',Height]);
+  {$ENDIF}
+end;
+
 Procedure ReportNotObsolete(const Texts : String);
 Begin
   DebugLn('*********************************************');
@@ -6932,7 +7372,7 @@ function IndexOfStyleWithName(const WName : String): integer;
 begin
   if Styles<>nil then begin
     for Result:=0 to Styles.Count-1 do
-      if AnsiCompareText(WName,Styles[Result])=0 then exit;
+      if CompareText(WName,Styles[Result])=0 then exit;
   end;
   Result:=-1;
 end;
@@ -6946,24 +7386,13 @@ end;
   'default', checkbox', etc. This should only be called on theme change or on
   application terminate.
  ------------------------------------------------------------------------------}
-Type
-  PStyleObject = ^TStyleObject;
-  TStyleObject = Record
-    Style : PGTKStyle;
-    Widget : PGTKWidget;
-  end;
-  
-var
-  StandardStyles: array[TLazGtkStyle] of PStyleObject;
-
-Function NewStyleObject : PStyleObject;
+function NewStyleObject : PStyleObject;
 begin
   New(Result);
-  Result^.Widget := nil;
-  Result^.Style := nil;
+  FillChar(Result^,SizeOf(TStyleObject),0);
 end;
 
-Procedure FreeStyleObject(var StyleObject : PStyleObject);
+procedure FreeStyleObject(var StyleObject : PStyleObject);
 // internal function to dispose a styleobject
 // it does *not* remove it from the style lists
 begin
@@ -7066,6 +7495,8 @@ end;
   of Styles.
  ------------------------------------------------------------------------------}
 function GetStyleWithName(const WName: String) : PGTKStyle;
+var
+  StyleObject : PStyleObject;
 
   function CreateStyleNotebook: PGTKWidget;
   var
@@ -7091,11 +7522,29 @@ function GetStyleWithName(const WName: String) : PGTKStyle;
                                   NoteBookTabLabel,NoteBookTabMenuLabel);
     gtk_widget_set_usize(Result,200,200);
   end;
+  
+  procedure ResizeWidget(CurWidget: PGTKWidget; NewWidth, NewHeight: integer);
+  {$IFDEF Gtk1}
+  begin
+    gtk_widget_set_usize(StyleObject^.Widget,NewWidth,NewHeight);
+  end;
+  {$ELSE}
+  var
+    allocation: TGtkAllocation;
+  begin
+    allocation.x:=0;
+    allocation.y:=0;
+    allocation.width:=NewWidth;
+    allocation.height:=NewHeight;
+    //gtk_widget_set_usize(StyleObject^.Widget,NewWidth,NewHeight);
+    gtk_widget_size_allocate(CurWidget,@allocation);
+    StyleObject^.FrameBordersValid:=false;
+  end;
+  {$ENDIF}
 
 var
   Tp : Pointer;
   l : Longint;
-  StyleObject : PStyleObject;
   NoName: PGChar;
   lgs: TLazGtkStyle;
   WidgetName: String;
@@ -7111,11 +7560,11 @@ begin
   exit;
   {$ENDIF}
   
-  If (WName='') then exit;
+  if (WName='') then exit;
   l:=IndexOfStyleWithName(WName);
-  //DebugLn('GetStyleWithName START ',WName,' ',l);
+  //DebugLn(['GetStyleWithName START ',WName,' ',l]);
 
-  If l >= 0 then begin
+  if l >= 0 then begin
     StyleObject:=PStyleObject(Styles.Objects[l]);
     Result := StyleObject^.Style;
 
@@ -7237,16 +7686,23 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
         lgs:=lgsHScale;
-        AddToStyleWindow:=true;
         TP := PGtkWidget( gtk_adjustment_new (0, 0, 100, 1, 10, 0));
         StyleObject^.Widget := gtk_hscale_new (PGTKADJUSTMENT (TP));
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsVScale])=0 then begin
         lgs:=lgsVScale;
-        AddToStyleWindow:=true;
         TP := PGtkWidget( gtk_adjustment_new (0, 0, 100, 1, 10, 0));
         StyleObject^.Widget := gtk_vscale_new (PGTKADJUSTMENT (TP));
+      end
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsGroupBox])=0 then begin
+        lgs:=lgsGroupBox;
+        StyleObject^.Widget := gtk_frame_new('GroupBox');
+        WindowFixedWidget:=CreateFixedClientWidget;
+        gtk_widget_show(WindowFixedWidget);
+        gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
+        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
@@ -7277,10 +7733,9 @@ begin
         StyleWindowWidget:=GetStyleWidget(lgsWindow);
         WindowFixedWidget:=PGTKWidget(
                gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
-        //DebugLn('AddToStyleWindow A ',GetWidgetDebugReport(StyleObject^.Widget));
+        //DebugLn('AddToStyleWindow adding on hidden stylewindow ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
         //gtk_box_pack_end(PGTKBox(VBox), WindowFixedWidget, True, True, 0);
-        gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,0,0);
-        gtk_widget_set_usize(StyleObject^.Widget,200,200);
+        gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,10,10);
       end;
 
       WidgetName:='LazStyle'+WName;
@@ -7290,19 +7745,24 @@ begin
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
-      If CompareText(WName,'button')=0 then begin
+      if CompareText(WName,'button')=0 then begin
         if StyleObject^.Style^.light_gc[GTK_STATE_NORMAL]=nil then begin
           //DebugLn('GetStyleWithName ',WName);
-          if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_GET_TYPE) then begin
-            gtk_widget_realize(StyleObject^.Widget);
-          end;
         end;
       end;
+      if AddToStyleWindow then begin
+        if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_GET_TYPE) then begin
+          //DebugLn(['GetStyleWithName realizing ...']);
+          gtk_widget_realize(StyleObject^.Widget);
+          //DebugLn('AddToStyleWindow realized: ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
+        end;
+        ResizeWidget(StyleObject^.Widget,200,200);
+      end;
     end;
-    
+
     // increase refcount of style
     If StyleObject^.Style <> nil then
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsGTK_Default])<>0 then
+      If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])<>0 then
         StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
         
     // if successful add to style objects list
@@ -7312,7 +7772,7 @@ begin
         StandardStyles[lgs]:=StyleObject;
       Result:=StyleObject^.Style;
       If (StyleObject^.Widget <> nil)
-      and (AnsiCompareText(WName,LazGtkStyleNames[lgsWindow])=0) then
+      and (CompareText(WName,LazGtkStyleNames[lgsWindow])=0) then
         UpdateSysColorMap(StyleObject^.Widget);
         
       // ToDo: create all gc of the style
@@ -7877,6 +8337,38 @@ begin
   if (Result <> nil) and (Result <> DefaultColor) then
     RealizeGtkStyleColor(Style,Result);
 end;
+
+{$IFDEF Gtk2}
+function GetStyleGroupboxFrameBorders: TRect;
+var
+  StyleObject: PStyleObject;
+  allocation: TGtkAllocation;
+  FrameWidget: PGtkFrame;
+  f: TRect;
+begin
+  GetStyleWidget(lgsGroupBox);
+  StyleObject:=StandardStyles[lgsGroupBox];
+  if not StyleObject^.FrameBordersValid then begin
+    allocation.x:=0;
+    allocation.y:=0;
+    allocation.width:=200;
+    allocation.height:=200;
+    gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
+    FrameWidget:=pGtkFrame(StyleObject^.Widget);
+    GTK_FRAME_GET_CLASS(FrameWidget)^.compute_child_allocation(
+      FrameWidget,@allocation);
+    //DebugLn(['GetStyleGroupboxFrame BBB2 ',dbgs(allocation)]);
+    f.Left:=Min(200,Max(0,allocation.x));
+    f.Top:=Min(200,Max(0,allocation.y));
+    f.Right:=Max(0,Min(200-f.Left,200-allocation.x-allocation.width));
+    f.Bottom:=Max(0,Min(200-f.Top,200-allocation.x-allocation.width));
+    StyleObject^.FrameBorders:=f;
+    //DebugLn(['GetStyleGroupboxFrame FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
+    StyleObject^.FrameBordersValid:=true;
+  end;
+  Result:=StyleObject^.FrameBorders
+end;
+{$ENDIF}
 
 procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
 var
