@@ -40,7 +40,7 @@ interface
 uses
   Types, Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms,
-  Menus {for ShortCut procedures};
+  Themes, Menus {for ShortCut procedures};
 
 type
   { TButton }
@@ -278,6 +278,7 @@ type
     procedure SetChecked(Value: Boolean); override;
   end;
 
+  //{$define UseThemes}
 
   { TCustomSpeedButton }
 
@@ -290,7 +291,11 @@ type
     FFlat: Boolean;
     FGlyph:   TButtonGlyph;
     FGroupIndex: Integer;
+  {$ifndef UseThemes}
     FLastDrawFlags: integer;
+  {$else}
+    FLastDrawDetails: TThemedElementDetails;
+  {$endif}
     FLayout: TButtonLayout;
     FMargin: integer;
     FMouseInControl: Boolean;
@@ -333,7 +338,11 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure SetEnabled(NewEnabled: boolean); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
+  {$ifndef UseThemes}
     function GetDrawFlags: integer; virtual;
+  {$else}
+    function GetDrawDetails: TThemedElementDetails; virtual;
+  {$endif}
     property MouseInControl: Boolean read FMouseInControl;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;

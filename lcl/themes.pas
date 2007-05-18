@@ -470,7 +470,7 @@ type
   end;
 
 function ThemeServices: TThemeServices;
-
+function ThemedElementDetailsEqual(D1, D2: TThemedElementDetails): Boolean;
 //----------------------------------------------------------------------------------------------------------------------
 
 implementation
@@ -488,6 +488,11 @@ const
 function ThemeServices: TThemeServices;
 begin
   Result := WidgetSet.ThemeServices;
+end;
+
+function ThemedElementDetailsEqual(D1, D2: TThemedElementDetails): Boolean;
+begin
+  Result := CompareMem(@D1, @D2, SizeOf(TThemedElementDetails));
 end;
 
 //----------------- TThemeServices -------------------------------------------------------------------------------------

@@ -294,8 +294,15 @@ begin
     if (Action is TCustomAction) then
       TCustomAction(Action).Checked := FState=bsDown;
 
-  if InvalidateOnChange
-  and ((FState<>OldState) or (FLastDrawFlags<>GetDrawFlags))
+  if InvalidateOnChange and
+     (
+       (FState<>OldState) or
+     {$ifndef UseThemes}
+       (FLastDrawFlags<>GetDrawFlags)
+     {$else}
+       not ThemedElementDetailsEqual(FLastDrawDetails, GetDrawDetails)
+     {$endif}
+     )
   then
     Invalidate;
 end;
@@ -303,6 +310,7 @@ end;
 {------------------------------------------------------------------------------
   function TCustomSpeedButton.GetDrawFlags: integer;
  ------------------------------------------------------------------------------}
+ {$ifndef UseThemes}
 function TCustomSpeedButton.GetDrawFlags: integer;
 begin
   // if flat and not mouse in control and not down, don't draw anything
@@ -321,6 +329,57 @@ begin
       inc(Result,DFCS_CHECKED);
   end;
 end;
+{$else}
+function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
+  function ButtonPart: TThemedButton;
+  begin
+    //tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed, tbPushButtonDisabled, tbPushButtonDefaulted
+
+    // no check states available
+    
+    Result := tbPushButtonNormal;
+    if not Enabled then
+      inc(Result, 3)
+    else
+    if FState in [bsDown, bsExclusive] then
+      inc(Result, 2)
+    else
+    if fMouseInControl then
+      inc(Result, 1);
+  end;
+
+  function ToolButtonPart: TThemedToolBar;
+  begin
+    //ttbButtonNormal, ttbButtonHot, ttbButtonPressed, ttbButtonDisabled
+    Result := ttbButtonNormal;
+    if not Enabled then
+      inc(Result, 3)
+    else
+    begin
+      if Down then
+      begin // checked states
+        if fMouseInControl then
+          inc(Result, 5)
+        else
+          inc(Result, 4);
+      end
+      else
+      begin
+        if FState in [bsDown, bsExclusive] then
+          inc(Result, 2) else
+        if fMouseInControl then
+          inc(Result, 1);
+      end;
+    end;
+  end;
+  
+begin
+  if Flat then
+    Result := ThemeServices.GetElementDetails(ToolButtonPart)
+  else
+    Result := ThemeServices.GetElementDetails(ButtonPart)
+end;
+{$endif}
 
 procedure TCustomSpeedButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
@@ -439,15 +498,18 @@ var
   Offset, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize, GlyphSize: TSize;
   M, S : integer;
-  TXTStyle : TTextStyle;
   SIndex : Longint;
   TMP : String;
+{$ifndef UseThemes}
+  TXTStyle : TTextStyle;
+{$endif}
 begin
   UpdateState(false);
   if FGlyph=nil then exit;
 
   PaintRect:=ClientRect;
 
+{$ifndef UseThemes}
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
   
@@ -459,7 +521,16 @@ begin
   //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
   //  ' DFCS_FLAT=',FLastDrawFlags and DFCS_FLAT,
   //  '']);
-
+{$else}
+  FLastDrawDetails := GetDrawDetails;
+  if not Transparent and ThemeServices.HasTransparentParts(FLastDrawDetails) then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(PaintRect);
+  end;
+  ThemeServices.DrawElement(Canvas.Handle, FLastDrawDetails, PaintRect);
+  PaintRect := ThemeServices.ContentRect(Canvas.Handle, FLastDrawDetails, PaintRect);
+{$endif}
   GlyphSize := GetGlyphSize(PaintRect);
   GlyphWidth := GlyphSize.CX;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -546,9 +617,16 @@ begin
     end;
   end;
 
+  // todo: for Themed painting we need imagelist here. Wait for it implementation
   DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if FShowCaption and (Caption <> '') then
   begin
+    with PaintRect, OffsetCap do
+    begin
+      Left := Left + X;
+      Top := Top + Y;
+    end;
+  {$ifndef UseThemes}
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
     TXTStyle.Clipping := True;
@@ -558,20 +636,17 @@ begin
     // set color here, otherwise SystemFont is wrong if the button was disabled before
     Canvas.Font.Color := Font.Color;
     TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
-
-    With PaintRect, OffsetCap do begin
-      Left := Left + X;
-      Top := Top + Y;
-    end;
-
-    If not Enabled then begin
+    
+    if not Enabled then
+    begin
       Canvas.Font.Color := clBtnHighlight;
       OffsetRect(PaintRect, 1, 1);
       Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(PaintRect, -1, -1);
     end
-    else begin
+    else
+    begin
       // if pushed, move text 1 pixel right and down
       if (FLastDrawFlags and DFCS_PUSHED) <>0 then
       begin
@@ -581,6 +656,10 @@ begin
     end;
     //DebugLn(['TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption,', ', TXTStyle.SystemFont]);
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
+  {$else}
+    ThemeServices.DrawText(Canvas, FLastDrawDetails, Caption, PaintRect,
+      DT_LEFT or DT_TOP, 0);
+  {$endif}
   end;
 
   inherited Paint;
