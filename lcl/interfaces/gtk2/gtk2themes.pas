@@ -124,7 +124,7 @@ end;
 
 { TGtk2ThemeServices }
 
-function TGtk2ThemeServices.GtkStateFromDetails(
+class function TGtk2ThemeServices.GtkStateFromDetails(
   Details: TThemedElementDetails): TGtkStateType;
 begin
   Result := GTK_STATE_NORMAL;
@@ -144,7 +144,7 @@ begin
   end;
 end;
 
-function TGtk2ThemeServices.GdkRectFromRect(R: TRect): TGdkRectangle;
+class function TGtk2ThemeServices.GdkRectFromRect(R: TRect): TGdkRectangle;
 begin
   with Result, R do
   begin
@@ -155,7 +155,7 @@ begin
   end;
 end;
 
-function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
+class function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails): TGtkStyleParams;
 var
   ClientWidget: PGtkWidget;
