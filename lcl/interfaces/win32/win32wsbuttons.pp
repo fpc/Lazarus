@@ -83,7 +83,7 @@ procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
 implementation
 
 uses
-  Win32Int, InterfaceBase, Win32Proc;
+  Win32Int, InterfaceBase, Win32Proc, Themes;
 
 { TWin32WSButton }
 
@@ -235,9 +235,10 @@ var
       if MaskBmp <> 0 then
         BitBlt(hdcNewBitmap, XDestBitmap, YDestBitmap, glyphWidth,
           glyphHeight, MaskDC, glyphLeft, 0, SRCCOPY);
-    end else begin
+    end else
+    begin
       // when not themed, windows wants a white background picture for disabled button image
-      themesActive := TWin32WidgetSet(WidgetSet).ThemesActive;
+      themesActive := ThemeServices.ThemesEnabled;
       if not themesActive then
         FillRect(hdcNewBitmap, BitmapRect, GetStockObject(WHITE_BRUSH));
       if BitmapHandle <> 0 then
@@ -399,7 +400,7 @@ begin
   end;
 
   // destroy previous bitmap, set new bitmap
-  if TWin32WidgetSet(WidgetSet).ThemesActive then
+  if ThemeServices.ThemesEnabled then
   begin
     // winxp draws BM_SETIMAGE bitmap with old style button!
     // need to use BCM_SETIMAGELIST

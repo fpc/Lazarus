@@ -26,15 +26,22 @@
 constructor TWidgetSet.Create;
 begin
   inherited Create;
+  FThemeServices := CreateThemeServices;
 end;
 
 destructor TWidgetSet.Destroy;
 begin
+  FreeAndNil(FThemeServices);
   inherited Destroy;
 end;
 
 procedure TWidgetSet.PassCmdLineOptions;
 begin
+end;
+
+function TWidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TThemeServices.Create;
 end;
 
 procedure TWidgetSet.AppRun(const ALoop: TApplicationMainLoop);

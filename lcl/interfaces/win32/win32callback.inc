@@ -323,7 +323,7 @@ Var
 
     // create a paint message
     GetClassName(Window, winClassName, 20);
-    isNotebook := TWin32WidgetSet(WidgetSet).ThemesActive and
+    isNotebook := ThemeServices.ThemesEnabled and
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
     isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
     ParentPaintWindow := 0;
@@ -352,7 +352,7 @@ Var
 
     // check if double buffering is requested
     useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered
-      or TWin32WidgetSet(WidgetSet).ThemesActive);
+      or ThemeServices.ThemesEnabled);
 {$ifdef MSG_DEBUG}
     if useDoubleBuffer and (DoubleBufferDC <> 0) then
     begin
@@ -390,10 +390,10 @@ Var
       if ControlDC = 0 then
       begin
         // ignore first erase background on themed control, paint will do everything
-        if TWin32WidgetSet(WidgetSet).ThemesActive then
+        if ThemeServices.ThemesEnabled then
           PushEraseBkgndCommand(ecDoubleBufferNoRemove);
         DC := Windows.BeginPaint(Window, @PS);
-        if TWin32WidgetSet(WidgetSet).ThemesActive then
+        if ThemeServices.ThemesEnabled then
           EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
         if useDoubleBuffer then
         begin
@@ -1325,7 +1325,7 @@ begin
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be
       // recreated when the enabled state is changed
-      if not TWin32WidgetSet(WidgetSet).ThemesActive
+      if not ThemeServices.ThemesEnabled
       and (lWinControl is TCustomBitBtn)
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
     End;
@@ -1356,7 +1356,7 @@ begin
       end;
       if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
-        if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox
+        if ThemeServices.ThemesEnabled and WindowInfo^.isGroupBox
             and (lWinControl <> nil) then
         begin
           // Groupbox (which is a button) doesn't erase it's background properly; force repaint
@@ -1944,7 +1944,8 @@ begin
     WM_THEMECHANGED:
     begin
       // winxp theme changed, recheck whether themes are enabled
-      TWin32WidgetSet(WidgetSet).UpdateThemesActive;
+      ThemeServices.UpdateThemes;
+      ThemeServices.IntfDoOnThemeChange;
     end;
 
     { >= WM_USER }

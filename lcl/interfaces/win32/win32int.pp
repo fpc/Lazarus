@@ -43,7 +43,7 @@ Interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl;
+  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, Themes;
 
 const
 
@@ -148,10 +148,6 @@ Type
     FWaitHandlers: array of TWaitHandler;
     FWaitPipeHandlers: PPipeEventInfo;
 
-    FThemesActive: boolean;
-    FThemeLibrary: HMODULE;
-    IsThemeActive: function: LongBool; stdcall;
-    IsAppThemed: function: LongBool; stdcall;
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
     FOnAsyncSocketMsg: TSocketEvent;
@@ -172,6 +168,7 @@ Type
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
 
+    function CreateThemeServices: TThemeServices; override;
   Public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -203,7 +200,6 @@ Type
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
-    procedure UpdateThemesActive;
     procedure ShowHide(Sender: TObject);
 
     // create and destroy
@@ -219,7 +215,6 @@ Type
 
     property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
-    property ThemesActive: boolean read FThemesActive;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   End;
 
@@ -282,6 +277,7 @@ Uses
  Win32WSSpin,
  Win32WSStdCtrls,
 // Win32WSToolwin,
+ Win32Themes,
 ////////////////////////////////////////////////////
  Arrow, Calendar, Spin, CheckLst, WinExt, LclProc;
 

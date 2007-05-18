@@ -40,25 +40,7 @@ Begin
     FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
   end;
   OnClipBoardRequest := nil;
-  // see if XP themes are available, first check if correct
-  // common control library is loaded for themes support
-  if ((GetFileVersion('comctl32.dll') shr 16) and $FFFF) >= 6 then
-  begin
-    FThemeLibrary := LoadLibrary('uxtheme.dll');
-    if FThemeLibrary <> 0 then
-    begin
-      // load functions
-      Pointer(IsThemeActive) := GetProcAddress(FThemeLibrary, 'IsThemeActive');
-      Pointer(IsAppThemed) := GetProcAddress(FThemeLibrary, 'IsAppThemed');
-    end else begin
-      IsThemeActive := nil;
-      IsAppThemed := nil;
-    end;
-  end;
   Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle('comctl32.dll'), 'InitCommonControlsEx');
-
-  // init
-  UpdateThemesActive;
 End;
 
 {------------------------------------------------------------------------------
@@ -110,10 +92,6 @@ Begin
     DestroyWindow(FAppHandle);
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
-
-  if FThemeLibrary <> 0 then
-    FreeLibrary(FThemeLibrary);
-
   inherited Destroy;
 End;
 
@@ -575,21 +553,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.UpdateThemesActive
-  Params:  None
-  Returns: Nothing
-
-  Updates the field FThemesActive to save whether xp themes are active
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.UpdateThemesActive;
-begin
-  if (IsThemeActive <> nil) and (IsAppThemed <> nil) then
-    FThemesActive := IsThemeActive() and IsAppThemed()
-  else
-    FThemesActive := false;
-end;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.NormalizeIconName
   Params: IconName - The name of the icon to normalize
   Returns: Nothing
@@ -617,6 +580,11 @@ Begin
   NormalizeIconName(Str);
   IconName := StrToPChar(Str);
 End;
+
+function TWin32WidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TWin32ThemeServices.Create;
+end;
 
  {------------------------------------------------------------------------------
   Function: TWin32WidgetSet.CreateComponent

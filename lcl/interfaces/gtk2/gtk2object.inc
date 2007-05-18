@@ -906,6 +906,11 @@ begin
   gtk_widget_show(PreviewWidget);
 end;
 
+function TGtk2WidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TGtk2ThemeServices.Create;
+end;
+
 function TGtk2WidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpGtk2;

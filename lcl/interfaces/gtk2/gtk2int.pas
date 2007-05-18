@@ -44,7 +44,7 @@ uses
   LMessages, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
   DynHashArray, GraphType, GraphMath, Graphics, Menus,
   GTKWinApiWindow, StdCtrls, ComCtrls,
-  Dialogs, ExtDlgs, LResources, Math, GTKGlobals,
+  Dialogs, ExtDlgs, Themes, LResources, Math, GTKGlobals,
   {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
   gtkDef, gtkFontCache, gtkInt, GtkExtra;
 
@@ -71,6 +71,8 @@ type
       SelWidget: PGtkWidget); override;
     procedure CreatePreviewDialogControl(
       PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); override;
+
+    function CreateThemeServices: TThemeServices; override;
   public
     function LCLPlatform: TLCLPlatform; override;
     {$I gtk2winapih.inc}
@@ -161,6 +163,7 @@ uses
 // Gtk2WSSpin,
  Gtk2WSStdCtrls,
 // Gtk2WSToolwin,
+ Gtk2Themes,
 ////////////////////////////////////////////////////
   gtkProc;
 

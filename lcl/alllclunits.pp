@@ -48,7 +48,7 @@ uses
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
-  CalendarPopup,
+  CalendarPopup, Themes,
   LCLMessageGlue,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
@@ -66,4 +66,6 @@ uses
 implementation
 
 end.
+
+
 

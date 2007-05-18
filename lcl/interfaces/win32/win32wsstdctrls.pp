@@ -288,7 +288,9 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 {$UNDEF MEMOHEADER}
 
 implementation
-
+uses
+  Themes;
+  
 const
   AlignmentMap: array[TAlignment] of DWORD =
   (
@@ -379,7 +381,7 @@ begin
   // customization of Params
   with Params do
   begin
-    if TWin32WidgetSet(WidgetSet).ThemesActive and (AWinControl.Parent <> nil) and
+    if ThemeServices.ThemesEnabled and (AWinControl.Parent <> nil) and
       (AWinControl.Parent is TCustomGroupBox) then
     begin
       // the parent of this groupbox is another groupbox: there is a bug in
@@ -421,8 +423,7 @@ begin
   end;
   // if themed but does not have tabpage as parent
   // remember we are a groupbox in need of erasebackground hack
-  if TWin32WidgetSet(WidgetSet).ThemesActive
-      and not Params.WindowInfo^.needParentPaint then
+  if ThemeServices.ThemesEnabled and not Params.WindowInfo^.needParentPaint then
     Params.WindowInfo^.isGroupBox := true;
   AWinControl.InvalidateClientRectCache(true);
   Result := Params.Window;

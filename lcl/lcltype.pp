@@ -87,6 +87,7 @@ type
   HRGN  = type THandle;
   HINST = type THandle;
   HICON = type THandle;
+  HIMAGELIST = type THandle;
   HCURSOR = HICON;
   HGLOBAL = type THandle;
   HWND    = type THandle;
@@ -114,6 +115,7 @@ type
   HRGN    = Windows.HRGN;
   HINST   = Windows.HINST;
   HICON   = Windows.HICON;
+  HIMAGELIST = Windows.HIMAGELIST;
   HCURSOR = HICON;
   BOOL    = Windows.BOOL;
   HGLOBAL = Windows.HGLOBAL;

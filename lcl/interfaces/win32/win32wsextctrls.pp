@@ -221,7 +221,7 @@ function  NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: i
 implementation
 
 uses
-  LMessages;
+  LMessages, Themes;
 
 function IsNotebookGroupFocused(const ANotebook: TCustomNotebook): boolean;
 var
@@ -305,12 +305,12 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // return window handle
   Result := Params.Window;
-  if TWin32WidgetSet(WidgetSet).ThemesActive then
-  with Params.WindowInfo^ do
-  begin
-    needParentPaint := true;
-    isTabPage := true;
-  end;
+  if ThemeServices.ThemesEnabled then
+    with Params.WindowInfo^ do
+    begin
+      needParentPaint := true;
+      isTabPage := true;
+    end;
 end;
 
 class procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);

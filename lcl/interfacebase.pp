@@ -34,7 +34,7 @@ interface
 
 uses
   Types, Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LMessages,
-  GraphType, GraphMath;
+  GraphType, GraphMath, Themes;
 
 type
   PEventHandler = type Pointer;
@@ -68,7 +68,9 @@ type
 
   TWidgetSet = class(TObject)
   protected
+    FThemeServices: TThemeServices;
     procedure PassCmdLineOptions; virtual;
+    function CreateThemeServices: TThemeServices; virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -101,6 +103,8 @@ type
     {$I winapih.inc}
     {$I lclintfh.inc}
     {$UNDEF IF_BASE_MEMBER}
+    
+    property ThemeServices: TThemeServices read FThemeServices;
   end;
 
 type
