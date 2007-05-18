@@ -546,11 +546,6 @@ begin
     end;
   end;
 
-  if not Transparent then
-  begin
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(PaintRect);
-  end;
   DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if FShowCaption and (Caption <> '') then
   begin

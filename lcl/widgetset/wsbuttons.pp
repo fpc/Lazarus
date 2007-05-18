@@ -155,8 +155,7 @@ begin
     end;
   end;
 
-  if (not ASpeedButton.Transparent) and ASpeedButton.Enabled and
-    (ASpeedButton.Color <> clBtnFace) then
+  if (not ASpeedButton.Transparent) and ASpeedButton.Enabled then
   begin
     ASpeedButton.Canvas.Brush.Color := ASpeedButton.Color;
     ASpeedButton.Canvas.FillRect(ARect);
