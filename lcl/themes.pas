@@ -476,7 +476,7 @@ function ThemedElementDetailsEqual(D1, D2: TThemedElementDetails): Boolean;
 implementation
 
 uses
-  SysUtils, ComCtrls, InterfaceBase, LCLIntf, Graphics;
+  SysUtils, ComCtrls, InterfaceBase, LCLIntf, GraphType, Graphics;
 
 const
   // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
@@ -1759,23 +1759,39 @@ end;
 procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil);
 var
   ADrawFlags: DWord;
+  Bevel: TGraphicsBevelCut;
+  ARect: TRect;
 begin
   // default painting
+  ARect := R; // in order to pass by reference
   if Details.Element in [teButton, teToolBar] then
   begin
     ADrawFlags := DFCS_BUTTONPUSH;
     
     if Details.Element = teToolBar then
-      ADrawFlags := ADrawFlags or DFCS_FLAT;
-      
-    if IsDisabled(Details) then
-      ADrawFlags := ADrawFlags or DFCS_INACTIVE else
-    if IsPushed(Details) then
-      ADrawFlags := ADrawFlags or DFCS_PUSHED else
-    if IsHot(Details) then
-      ADrawFlags := ADrawFlags or DFCS_CHECKED;
-      
-    WidgetSet.DrawFrameControl(DC, R, DFC_BUTTON, ADrawFlags);
+    begin
+      //ADrawFlags := ADrawFlags or DFCS_FLAT;
+      if IsPushed(Details) then
+        Bevel := bvLowered
+      else
+      if IsHot(Details) then
+        Bevel := bvRaised
+      else
+        Bevel := bvNone;
+
+      Frame3D(DC, ARect, 1, Bevel);
+    end
+    else
+    begin
+      if IsDisabled(Details) then
+        ADrawFlags := ADrawFlags or DFCS_INACTIVE else
+      if IsPushed(Details) then
+        ADrawFlags := ADrawFlags or DFCS_PUSHED else
+      if IsHot(Details) then
+        ADrawFlags := ADrawFlags or DFCS_CHECKED;
+
+      WidgetSet.DrawFrameControl(DC, ARect, DFC_BUTTON, ADrawFlags);
+    end;
   end;
 end;
 
@@ -1822,14 +1838,14 @@ function TThemeServices.IsPushed(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
   if (Details.Element in [teButton, teToolBar]) then
-    Result := Details.State = 3;
+    Result := Details.State in [3, 5, 6];
 end;
 
 function TThemeServices.IsHot(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
   if (Details.Element in [teButton, teToolBar]) then
-    Result := Details.State = 2;
+    Result := Details.State in [2, 6];
 end;
 
 function TThemeServices.InitThemes: Boolean;
