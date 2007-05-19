@@ -45,6 +45,7 @@ type
     State  : TGtkStateType;   // Style state
     Shadow : TGtkShadowType;  // Shadow
     Detail : String;          // Detail (button, checkbox, ...)
+    IsHot  : Boolean;
   end;
 
   { TGtk2ThemeServices }
@@ -52,9 +53,8 @@ type
   TGtk2ThemeServices = class(TThemeServices)
   private
   protected
-    class function GtkStateFromDetails(Details: TThemedElementDetails): TGtkStateType;
-    class function GdkRectFromRect(R: TRect): TGdkRectangle;
-    class function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails): TGtkStyleParams;
+    function GdkRectFromRect(R: TRect): TGdkRectangle;
+    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails): TGtkStyleParams;
 
     function InitThemes: Boolean; override;
     function UseThemes: Boolean; override;
@@ -98,16 +98,16 @@ const
 // { gptResizeGrip } @gtk_paint_resize_grip
   );
 
-  // most common map
-  GtkStatesMap_0: array[0..6] of TGtkStateType =
+  // most common maps
+  GtkButtonMap: array[0..6] of TGtkStateType =
   (
 { filter ?          } GTK_STATE_NORMAL,
 { normal            } GTK_STATE_NORMAL,
 { hot               } GTK_STATE_PRELIGHT,
 { pressed           } GTK_STATE_ACTIVE,
 { disabled          } GTK_STATE_INSENSITIVE,
-{ defaulted/checked } GTK_STATE_SELECTED,
-{ hot + checked     } GTK_STATE_SELECTED
+{ defaulted/checked } GTK_STATE_ACTIVE,
+{ hot + checked     } GTK_STATE_INSENSITIVE // PRELIGHT IS TOO LIGHT
   );
 
 procedure wrap_gtk_paint_hline(style:PGtkStyle; window:PGdkWindow; state_type:TGtkStateType; shadow_type:TGtkShadowType;
@@ -124,27 +124,7 @@ end;
 
 { TGtk2ThemeServices }
 
-class function TGtk2ThemeServices.GtkStateFromDetails(
-  Details: TThemedElementDetails): TGtkStateType;
-begin
-  Result := GTK_STATE_NORMAL;
-  case Details.Element of
-    teButton:
-      begin
-        case Details.Part of
-          BP_PUSHBUTTON: Result := GtkStatesMap_0[Details.State];
-        end;
-      end;
-    teToolBar:
-      begin
-        case Details.Part of
-          BP_PUSHBUTTON: Result := GtkStatesMap_0[Details.State];
-        end;
-      end;
-  end;
-end;
-
-class function TGtk2ThemeServices.GdkRectFromRect(R: TRect): TGdkRectangle;
+function TGtk2ThemeServices.GdkRectFromRect(R: TRect): TGdkRectangle;
 begin
   with Result, R do
   begin
@@ -155,7 +135,7 @@ begin
   end;
 end;
 
-class function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
+function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails): TGtkStyleParams;
 var
   ClientWidget: PGtkWidget;
@@ -174,19 +154,53 @@ begin
       Result.Style := gtk_widget_get_style(Result.Widget);
       if Result.Style = nil then
         Result.Style := gtk_widget_get_default_style();
-      Result.State := GtkStateFromDetails(Details);
-      
-      // todo: shadow customization
-      Result.Shadow := GTK_SHADOW_IN;
-      
-      // todo: detail customization
-      Result.Detail := 'button';
-      
+
+      Result.Painter := gptDefault;
+      Result.State := GTK_STATE_NORMAL;
+      Result.Detail := '';
+      Result.Shadow := GTK_SHADOW_NONE;
+      Result.IsHot := False;
+
       case Details.Element of
-        teButton : Result.Painter := gptBox;
-        teToolBar: Result.Painter := gptFlatBox;
-      else
-        Result.Painter := gptDefault;
+        teButton:
+          begin
+            case Details.Part of
+              BP_PUSHBUTTON:
+                begin
+                  Result.State := GtkButtonMap[Details.State];
+                  if Details.State = PBS_PRESSED then
+                    Result.Shadow := GTK_SHADOW_IN
+                  else
+                    Result.Shadow := GTK_SHADOW_OUT;
+                    
+                  Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
+
+                  Result.Detail := 'button';
+                  Result.Painter := gptBox;
+                end;
+            end;
+          end;
+        teToolBar:
+          begin
+            case Details.Part of
+              TP_BUTTON:
+                begin
+                  Result.State := GtkButtonMap[Details.State];
+                  if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
+                    Result.Shadow := GTK_SHADOW_IN
+                  else
+                  if Details.State in [TS_HOT] then
+                    Result.Shadow := GTK_SHADOW_ETCHED_IN
+                  else
+                    Result.Shadow := GTK_SHADOW_NONE;
+
+                  Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
+
+                  Result.Detail := 'togglebutton';
+                  Result.Painter := gptBox;
+                end;
+            end;
+          end;
       end;
     end;
 end;
@@ -232,10 +246,8 @@ var
   ClipArea: TGdkRectangle;
   p_ClipArea: PGdkRectangle;
   StyleParams: TGtkStyleParams;
+  R1: TRect;
 begin
-  // todo:
-  // - gtk_paint_... customization
-  // - draw focus when needed
   StyleParams := GetGtkStyleParams(DC, Details);
   if StyleParams.Style <> nil then
   begin
@@ -251,19 +263,26 @@ begin
 
     with StyleParams do
     begin
+      R1 := R;
+      if IsHot then
+      begin
+        // todo: draw rectanle with selected state
+        {gtk_paint_box(
+          Style, Window,
+          GTK_STATE_SELECTED, Shadow,
+          p_ClipArea, Widget, PChar(Detail),
+          R1.Left + Origin.x, R1.Top + Origin.y,
+          R1.Right - R1.Left, R1.Bottom - R1.Top);
+        inflateRect(R1, -1, -1);
+        }
+      end;
+
       GtkPainterMap[Painter](
           Style, Window,
           State, Shadow,
           p_ClipArea, Widget, PChar(Detail),
-          R.Left + Origin.x, R.Top + Origin.y,
-          R.Right - R.Left, R.Bottom - R.Top);
-
-     {  // for test
-      gtk_paint_focus(Style, Window,
-        State,
-        p_ClipArea, Widget, 'button',
-        R.Left + Origin.x, R.Top + Origin.y,
-        R.Right - R.Left, R.Bottom - R.Top);}
+          R1.Left + Origin.x, R1.Top + Origin.y,
+          R1.Right - R1.Left, R1.Bottom - R1.Top);
     end;
   end;
 end;
