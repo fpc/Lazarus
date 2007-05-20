@@ -141,7 +141,7 @@ begin
     GtkFilter := gtk_file_chooser_get_filter(dialog);
     GtkFilterList := gtk_file_chooser_list_filters(dialog);
     NewFilterIndex := g_slist_index(GtkFilterList, GtkFilter);
-    theDialog.IntfFileTypeChanged(NewFilterIndex);
+    theDialog.IntfFileTypeChanged(NewFilterIndex + 1);
     g_slist_free(GtkFilterList);
   end;
 end;

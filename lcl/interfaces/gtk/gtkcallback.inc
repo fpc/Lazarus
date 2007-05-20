@@ -2201,7 +2201,7 @@ var
     begin
       PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
         AFilterEntry^.Mask);
-      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry^.FilterIndex);
+      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry^.FilterIndex + 1);
       UpdateDetailView(TOpenDialog(theDialog));
     end;
   end;

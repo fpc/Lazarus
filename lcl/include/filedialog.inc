@@ -27,6 +27,7 @@ begin
   fCompStyle := csFileDialog;
   FFiles := TStringList.Create;
   FHistoryList:=TStringList.Create;
+  FFilterIndex := 1;
 end;
 
 {------------------------------------------------------------------------------}
