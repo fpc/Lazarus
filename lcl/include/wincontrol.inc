@@ -5196,9 +5196,11 @@ begin
     //RaiseGDBException('');
   end;
 
-  // Control is not showing at this moment. It will be showed in UpdateShowing
+  // Control is not visible at this moment. It will be showed in UpdateShowing
   // call later in CreateWnd
   FShowing := False;
+  Exclude(FWinControlFlags, wcfHandleVisible);
+  
   Include(FWinControlFlags,wcfCreatingHandle);
   try
     CreateParams(Params);
