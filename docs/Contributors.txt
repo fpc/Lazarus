@@ -86,6 +86,7 @@ Taras Boychuk
 Tomas Gregorovic
 Tom Lisjac
 Tony Maro
+Valdas Janknas
 Vasily I. Volchenko
 Vincent Beuselinck
 Vincent Snijders
