@@ -6231,6 +6231,7 @@ begin
 
   FDefaultTextStyle := Canvas.TextStyle;
   FDefaultTextStyle.Wordbreak := False;
+  FDefaultTextStyle.SingleLine:= True;
 
   FButtonEditor := TButtonCellEditor.Create(nil);
   FButtonEditor.Name:='ButtonEditor';
