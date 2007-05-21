@@ -106,6 +106,7 @@ var
   WordIsBlockKeyWord,
   EndKeyWordFuncList,
   PackedTypesKeyWordFuncList,
+  BitPackedTypesKeyWordFuncList,
   GenericTypesKeyWordFuncList,
   BlockStatementStartKeyWordFuncList,
   WordIsLogicalBlockStart,
@@ -1016,6 +1017,17 @@ begin
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
+  BitPackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(BitPackedTypesKeyWordFuncList);
+  with BitPackedTypesKeyWordFuncList do begin
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
   GenericTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(GenericTypesKeyWordFuncList);
   with GenericTypesKeyWordFuncList do begin

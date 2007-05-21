@@ -2503,7 +2503,7 @@ begin
   // search the ancestor name
   MoveCursorToNodeStart(ClassNode);
   ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
-  if UpAtomIs('PACKED') then ReadNextAtom;
+  if UpAtomIs('PACKED') or UpAtomIs('BITPACKED') then ReadNextAtom;
   ReadNextAtom;
   if AtomIsChar('(') then begin
     ReadNextAtom;

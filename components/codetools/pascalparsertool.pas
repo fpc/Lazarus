@@ -139,6 +139,7 @@ type
     function KeyWordFuncClass: boolean;
     function KeyWordFuncClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
+    function KeyWordFuncTypeBitPacked: boolean;
     function KeyWordFuncGeneric: boolean;
     function KeyWordFuncSpecialize: boolean;
     function KeyWordFuncTypeArray: boolean;
@@ -162,6 +163,7 @@ type
     function KeyWordFuncClassIdentifier: boolean;
     function KeyWordFuncClassVarTypeClass: boolean;
     function KeyWordFuncClassVarTypePacked: boolean;
+    function KeyWordFuncClassVarTypeBitPacked: boolean;
     function KeyWordFuncClassVarTypeRecord: boolean;
     function KeyWordFuncClassVarTypeArray: boolean;
     function KeyWordFuncClassVarTypeSet: boolean;
@@ -369,6 +371,7 @@ begin
     Add('INTERFACE',@KeyWordFuncClassInterface);
     Add('DISPINTERFACE',@KeyWordFuncClassInterface);
     Add('PACKED',@KeyWordFuncTypePacked);
+    Add('BITPACKED',@KeyWordFuncTypeBitPacked);
     Add('GENERIC',@KeyWordFuncGeneric);
     Add('SPECIALIZE',@KeyWordFuncSpecialize);
     Add('ARRAY',@KeyWordFuncTypeArray);
@@ -416,6 +419,7 @@ begin
     Add('CLASS',@KeyWordFuncClassVarTypeClass);
     Add('OBJECT',@KeyWordFuncClassVarTypeClass);
     Add('PACKED',@KeyWordFuncClassVarTypePacked);
+    Add('BITPACKED',@KeyWordFuncClassVarTypeBitPacked);
     Add('RECORD',@KeyWordFuncClassVarTypeRecord);
     Add('ARRAY',@KeyWordFuncClassVarTypeArray);
     Add('SET',@KeyWordFuncClassVarTypeSet);
@@ -609,7 +613,7 @@ begin
     // first parse the inheritage
     // read the "class"/"object" keyword
     ReadNextAtom;
-    if UpAtomIs('PACKED') then ReadNextAtom;
+    if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
     if (not UpAtomIs('CLASS')) and (not UpAtomIs('OBJECT')) then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
@@ -796,6 +800,18 @@ begin
     Result:=KeyWordFuncClassVarTypeRecord
   else begin
     RaiseStringExpectedButAtomFound('"record"');
+    Result:=true;
+  end;
+end;
+
+function TPascalParserTool.KeyWordFuncClassVarTypeBitPacked: boolean;
+// 'bitpacked' array
+begin
+  ReadNextAtom;
+  if UpAtomIs('ARRAY') then
+    Result:=KeyWordFuncClassVarTypeArray
+  else begin
+    RaiseStringExpectedButAtomFound('"array"');
     Result:=true;
   end;
 end;
@@ -2921,6 +2937,17 @@ begin
                                             CurPos.EndPos-CurPos.StartPos);
 end;
 
+function TPascalParserTool.KeyWordFuncTypeBitPacked: boolean;
+begin
+  ReadNextAtom;
+  if not BitPackedTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos)
+  then
+    RaiseStringExpectedButAtomFound('"array"');
+  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+                                            CurPos.EndPos-CurPos.StartPos);
+end;
+
 function TPascalParserTool.KeyWordFuncGeneric: boolean;
 // generic type
 // examples:
@@ -3040,7 +3067,7 @@ begin
   then begin
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
   end;
-  if (LastUpAtomIs(0,'PACKED')) then begin
+  if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then begin
     ClassAtomPos:=LastAtoms.GetValueAt(0);
   end else begin
     ClassAtomPos:=CurPos;
@@ -3487,7 +3514,7 @@ function TPascalParserTool.KeyWordFuncTypeRecord: boolean;
 begin
   CreateChildNode;
   CurNode.Desc:=ctnRecordType;
-  if LastUpAtomIs(0,'PACKED') then
+  if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then
     CurNode.StartPos:=LastAtoms.GetValueAt(0).StartPos;
   // read all variables
   repeat

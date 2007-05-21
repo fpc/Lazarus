@@ -551,10 +551,10 @@ begin
     if IsUnderScoreOrNumberChar[ToHash^] then
       inc(ToHash);
     fStringLen := PtrInt(ToHash) - PtrInt(Start);
+    //if CompareText(copy(fLineStr,fToIdent+1,fStringLen),'bitpacked')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent+1,fStringLen)+'='+dbgs(Result));
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLineStr,fToIdent,fStringLen),'nostackframe')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent,fStringLen)+'='+dbgs(Result));
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -866,8 +866,16 @@ end;
 
 function TSynPasSyn.Func71: TtkTokenKind;
 begin
-  if KeyComp('Stdcall') then Result := tkKey else
-    if KeyComp('Const') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Stdcall') then
+    Result := tkKey
+  else if KeyComp('Const') then
+    Result := tkKey
+  {$IFDEF SYN_LAZARUS}
+  else if KeyComp('Bitpacked') then
+    Result := tkKey
+  {$ENDIF}
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func73: TtkTokenKind;

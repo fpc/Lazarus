@@ -791,9 +791,10 @@ var
 {$ENDIF}
 begin
   {$IFDEF GTK2}
-   If AValue then
-   GTK_Window_FullScreen(PGTKWindow(AForm.Handle)) else
-   GTK_Window_UnFullScreen(PGTKWindow(AForm.Handle));
+  If AValue then
+    GTK_Window_FullScreen(PGTKWindow(AForm.Handle))
+  else
+    GTK_Window_UnFullScreen(PGTKWindow(AForm.Handle));
   {$ENDIF}
   {$IFDEF GTK1}
   XDisplay := gdk_display;
