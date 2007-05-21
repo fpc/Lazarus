@@ -458,6 +458,11 @@ begin
   CarbonWidgetSet := nil;
 end;
 
+function TCarbonWidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TCarbonThemeServices.Create;
+end;
+
 procedure TCarbonWidgetSet.PassCmdLineOptions;
 begin
   inherited PassCmdLineOptions;

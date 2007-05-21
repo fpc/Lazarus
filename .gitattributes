@@ -2474,6 +2474,7 @@ lcl/interfaces/carbon/carbonprivatewindow.inc svneol=native#text/pascal
 lcl/interfaces/carbon/carbonproc.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonstrings.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbontabs.pp svneol=native#text/pascal
+lcl/interfaces/carbon/carbonthemes.pas svneol=native#text/pascal
 lcl/interfaces/carbon/carbonutils.pas svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwinapi.inc svneol=native#text/plain
 lcl/interfaces/carbon/carbonwinapih.inc svneol=native#text/plain

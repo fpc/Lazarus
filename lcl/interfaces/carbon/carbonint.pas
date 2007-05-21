@@ -44,7 +44,7 @@ uses
   InterfaceBase,
  // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
-  GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps;
+  GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;
 
 type
 
@@ -60,6 +60,7 @@ type
     FMainMenu: TMainMenu; // Main menu attached to menu bar
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
   protected
+    function CreateThemeServices: TThemeServices; override;
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
@@ -141,6 +142,7 @@ uses
 // CarbonWSSpin,
   CarbonWSStdCtrls,
 // CarbonWSToolwin,
+  CarbonThemes,
 ////////////////////////////////////////////////////
   CarbonDef, CarbonPrivate, CarbonCanvas, CarbonGDIObjects, CarbonMenus,
   CarbonEdits, CarbonTabs, CarbonStrings, CarbonProc, CarbonDbgConsts, CarbonUtils,

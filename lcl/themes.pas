@@ -407,9 +407,6 @@ type
     FOnThemeChange: TNotifyEvent;      // Called when the current window theme has changed.
 
     function GetThemesEnabled: Boolean;
-    function IsDisabled(Details: TThemedElementDetails): Boolean;
-    function IsPushed(Details: TThemedElementDetails): Boolean;
-    function IsHot(Details: TThemedElementDetails): Boolean;
   protected
     function InitThemes: Boolean; virtual;
     procedure UnloadThemeData; virtual;
@@ -418,6 +415,10 @@ type
 
     function InternalColorToRGB(Details: TThemedElementDetails; Color: LongInt): LongInt; virtual;
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); virtual;
+
+    function IsDisabled(Details: TThemedElementDetails): Boolean;
+    function IsPushed(Details: TThemedElementDetails): Boolean;
+    function IsHot(Details: TThemedElementDetails): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
