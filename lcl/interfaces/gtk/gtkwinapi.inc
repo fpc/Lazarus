@@ -2422,7 +2422,7 @@ function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
       DebugLn(['No DC found with this GDIObject => either the DCCount is wrong or the DC is not in the DC list']);
     end;
     //DumpStack;
-    RaiseGDBException('');
+    //RaiseGDBException('');
   end;
   
   procedure RaiseInvalidGDIOwner;
