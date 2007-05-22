@@ -3251,7 +3251,6 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         Min:=TypeData^.MinValue;
         Max:=TypeData^.MaxValue;
-        Frequency:=1;
       end;
 
     else
