@@ -342,8 +342,8 @@ begin
   if Constraints is TSizeConstraints then begin
     MinWidth := 0;
     MinHeight := 0;
-    MaxWidth:=10000;
-    MaxHeight:=10000;
+    MaxWidth:=0;
+    MaxHeight:=0;
     SizeConstraints:=TSizeConstraints(Constraints);
 
     if (SizeConstraints.Control=nil) then exit;
