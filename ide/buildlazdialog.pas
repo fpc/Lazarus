@@ -707,13 +707,8 @@ end;
 procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
-{$ifndef UseThemes}
-  ButtonState: integer;
-  InnerButtonRect: TRect;
-{$else}
   ButtonState: TThemedButton;
   ButtonDetails: TThemedElementDetails;
-{$endif}
   x: Integer;
   ButtonWidth: Integer;
   ButtonHeight: Integer;
@@ -743,34 +738,23 @@ begin
     ButtonRect.Right:=x+ButtonWidth;
     ButtonRect.Bottom:=ButtonRect.Top+ButtonHeight;
 
-  {$ifndef UseThemes}
-    ButtonState:=DFCS_BUTTONPUSH;
-    if CurItem.MakeMode=mm then begin
-      inc(ButtonState,DFCS_PUSHED);
-      ItemsListBox.Canvas.Brush.Color := clHighlight;
-    end
-    else
-      ItemsListBox.Canvas.Brush.Color := clBtnFace;
-    // draw button background
-    InnerButtonRect := ButtonRect;
-    inc(InnerButtonRect.Top); inc(InnerButtonRect.Left);
-    dec(InnerButtonRect.Bottom); dec(InnerButtonRect.Right);
-    ItemsListBox.Canvas.FillRect(InnerButtonRect);
-
-    DrawFrameControl(
-      ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-      ButtonRect, DFC_BUTTON, ButtonState);
-  {$else}
     ButtonState := tbPushButtonNormal;
 
     if CurItem.MakeMode = mm then // Pushed
+    begin
+      // when we have no themes we need to paint then ourself and define bg color 
+      ItemsListBox.Canvas.Brush.Color := clHighlight; 
       inc(ButtonState, 2);
+    end
+    else
+      ItemsListBox.Canvas.Brush.Color := clBtnFace;
 
     ButtonDetails := ThemeServices.GetElementDetails(ButtonState);
+    if ThemeServices.HasTransparentParts(ButtonDetails) then
+      ItemsListBox.Canvas.FillRect(ButtonRect);
     ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);
     ButtonRect := ThemeServices.ContentRect(ItemsListBox.Canvas.Handle, ButtonDetails, ButtonRect);
     // TODO: Use theme services to draw icon when ImageList will be ready
-  {$endif}
     // draw icon
     case mm of
       mmBuild: ImgIndex:=ImageIndexBuild;

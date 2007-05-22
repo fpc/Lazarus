@@ -297,39 +297,15 @@ begin
   if InvalidateOnChange and
      (
        (FState<>OldState) or
-     {$ifndef UseThemes}
-       (FLastDrawFlags<>GetDrawFlags)
-     {$else}
        not ThemedElementDetailsEqual(FLastDrawDetails, GetDrawDetails)
-     {$endif}
      )
   then
     Invalidate;
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomSpeedButton.GetDrawFlags: integer;
+  function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
  ------------------------------------------------------------------------------}
- {$ifndef UseThemes}
-function TCustomSpeedButton.GetDrawFlags: integer;
-begin
-  // if flat and not mouse in control and not down, don't draw anything
-  if FFlat and not FMouseInControl and not (FState in [bsDown, bsExclusive]) then
-  begin
-    Result := DFCS_FLAT;
-    if not Enabled then
-      inc(Result,DFCS_INACTIVE)
-  end else begin
-    Result:=DFCS_BUTTONPUSH;
-    if FState in [bsDown, bsExclusive] then 
-      inc(Result,DFCS_PUSHED);
-    if not Enabled then
-      inc(Result,DFCS_INACTIVE)
-    else if fMouseInControl then
-      inc(Result,DFCS_CHECKED);
-  end;
-end;
-{$else}
 function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
   function ButtonPart: TThemedButton;
   begin
@@ -379,7 +355,6 @@ begin
   else
     Result := ThemeServices.GetElementDetails(ButtonPart)
 end;
-{$endif}
 
 procedure TCustomSpeedButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
@@ -500,28 +475,12 @@ var
   M, S : integer;
   SIndex : Longint;
   TMP : String;
-{$ifndef UseThemes}
-  TXTStyle : TTextStyle;
-{$endif}
 begin
   UpdateState(false);
   if FGlyph=nil then exit;
 
   PaintRect:=ClientRect;
 
-{$ifndef UseThemes}
-  FLastDrawFlags:=GetDrawFlags;
-  //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
-  
-  TWSSpeedButtonClass(WidgetSetClass).DrawFrame(Self, FLastDrawFlags, PaintRect);
-  
-  //debugln(['TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
-  //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,
-  //  ' DFCS_PUSHED=',FLastDrawFlags and DFCS_PUSHED,
-  //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
-  //  ' DFCS_FLAT=',FLastDrawFlags and DFCS_FLAT,
-  //  '']);
-{$else}
   FLastDrawDetails := GetDrawDetails;
   if not Transparent and ThemeServices.HasTransparentParts(FLastDrawDetails) then
   begin
@@ -530,7 +489,7 @@ begin
   end;
   ThemeServices.DrawElement(Canvas.Handle, FLastDrawDetails, PaintRect);
   PaintRect := ThemeServices.ContentRect(Canvas.Handle, FLastDrawDetails, PaintRect);
-{$endif}
+
   GlyphSize := GetGlyphSize(PaintRect);
   GlyphWidth := GlyphSize.CX;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -626,40 +585,9 @@ begin
       Left := Left + X;
       Top := Top + Y;
     end;
-  {$ifndef UseThemes}
-    TXTStyle := Canvas.TextStyle;
-    TXTStyle.Opaque := False;
-    TXTStyle.Clipping := True;
-    TXTStyle.ShowPrefix := ShowAccelChar;
-    TXTStyle.Alignment := taLeftJustify;
-    TXTStyle.Layout := tlTop;
-    // set color here, otherwise SystemFont is wrong if the button was disabled before
-    Canvas.Font.Color := Font.Color;
-    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
-    
-    if not Enabled then
-    begin
-      Canvas.Font.Color := clBtnHighlight;
-      OffsetRect(PaintRect, 1, 1);
-      Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
-      Canvas.Font.Color := clBtnShadow;
-      OffsetRect(PaintRect, -1, -1);
-    end
-    else
-    begin
-      // if pushed, move text 1 pixel right and down
-      if (FLastDrawFlags and DFCS_PUSHED) <>0 then
-      begin
-        Inc(PaintRect.Left, 1);
-        Inc(PaintRect.Top, 1);
-      end;
-    end;
-    //DebugLn(['TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption,', ', TXTStyle.SystemFont]);
-    Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
-  {$else}
+
     ThemeServices.DrawText(Canvas, FLastDrawDetails, Caption, PaintRect,
       DT_LEFT or DT_TOP, 0);
-  {$endif}
   end;
 
   inherited Paint;

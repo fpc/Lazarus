@@ -278,8 +278,6 @@ type
     procedure SetChecked(Value: Boolean); override;
   end;
 
-  //{$define UseThemes}
-
   { TCustomSpeedButton }
 
   TCustomSpeedButton = class(TGraphicControl)
@@ -291,11 +289,7 @@ type
     FFlat: Boolean;
     FGlyph:   TButtonGlyph;
     FGroupIndex: Integer;
-  {$ifndef UseThemes}
-    FLastDrawFlags: integer;
-  {$else}
     FLastDrawDetails: TThemedElementDetails;
-  {$endif}
     FLayout: TButtonLayout;
     FMargin: integer;
     FMouseInControl: Boolean;
@@ -338,11 +332,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure SetEnabled(NewEnabled: boolean); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
-  {$ifndef UseThemes}
-    function GetDrawFlags: integer; virtual;
-  {$else}
     function GetDrawDetails: TThemedElementDetails; virtual;
-  {$endif}
     property MouseInControl: Boolean read FMouseInControl;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
