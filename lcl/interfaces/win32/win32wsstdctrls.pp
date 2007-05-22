@@ -34,6 +34,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
+  Themes,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType,
   Win32Int, Win32Proc, InterfaceBase, Win32WSControls;
@@ -288,8 +289,6 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 {$UNDEF MEMOHEADER}
 
 implementation
-uses
-  Themes;
   
 const
   AlignmentMap: array[TAlignment] of DWORD =

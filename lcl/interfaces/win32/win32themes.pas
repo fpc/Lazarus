@@ -10,7 +10,7 @@ uses
   // rtl
   Classes, SysUtils,
   // lcl
-  Graphics, Themes;
+  Controls, Graphics, Themes;
   
 type
 
@@ -49,9 +49,6 @@ type
   end;
 
 implementation
-
-uses
-  Controls;
 
 const
   ComCtlVersionIE6 = $00060000;

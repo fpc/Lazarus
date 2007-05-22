@@ -36,7 +36,7 @@ uses
   Windows, Buttons, Graphics, Controls,
 ////////////////////////////////////////////////////
   WSProc, WSControls, WSButtons, WSLCLClasses, 
-  Win32WSControls, LCLType;
+  Win32WSControls, LCLType, Themes;
 
 type
 
@@ -83,7 +83,7 @@ procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
 implementation
 
 uses
-  Win32Int, InterfaceBase, Win32Proc, Themes;
+  Win32Int, InterfaceBase, Win32Proc;
 
 { TWin32WSButton }
 

@@ -32,7 +32,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  SysUtils, Windows, ExtCtrls, Classes, Controls, LCLType, LCLIntf,
+  SysUtils, Windows, ExtCtrls, Classes, Controls, LCLType, LCLIntf, Themes,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, WinExt, Win32Int, Win32Proc, InterfaceBase,
   Win32WSControls;
@@ -221,7 +221,7 @@ function  NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: i
 implementation
 
 uses
-  LMessages, Themes;
+  LMessages;
 
 function IsNotebookGroupFocused(const ANotebook: TCustomNotebook): boolean;
 var

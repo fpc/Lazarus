@@ -41,7 +41,7 @@ uses
   IDEExternToolIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
-  CompilerOptions, ImgList;
+  CompilerOptions, ImgList, Themes;
 
 type
   { TBuildLazarusItem }
@@ -707,12 +707,17 @@ end;
 procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
+{$ifndef UseThemes}
   ButtonState: integer;
+  InnerButtonRect: TRect;
+{$else}
+  ButtonState: TThemedButton;
+  ButtonDetails: TThemedElementDetails;
+{$endif}
   x: Integer;
   ButtonWidth: Integer;
   ButtonHeight: Integer;
   ButtonRect: TRect;
-  InnerButtonRect: TRect;
   CurItem: TBuildLazarusItem;
   CurStr: String;
   TxtH: Integer;
@@ -737,6 +742,8 @@ begin
     ButtonRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-ButtonWidth) div 2);
     ButtonRect.Right:=x+ButtonWidth;
     ButtonRect.Bottom:=ButtonRect.Top+ButtonHeight;
+
+  {$ifndef UseThemes}
     ButtonState:=DFCS_BUTTONPUSH;
     if CurItem.MakeMode=mm then begin
       inc(ButtonState,DFCS_PUSHED);
@@ -749,9 +756,21 @@ begin
     inc(InnerButtonRect.Top); inc(InnerButtonRect.Left);
     dec(InnerButtonRect.Bottom); dec(InnerButtonRect.Right);
     ItemsListBox.Canvas.FillRect(InnerButtonRect);
+
     DrawFrameControl(
       ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       ButtonRect, DFC_BUTTON, ButtonState);
+  {$else}
+    ButtonState := tbPushButtonNormal;
+
+    if CurItem.MakeMode = mm then // Pushed
+      inc(ButtonState, 2);
+
+    ButtonDetails := ThemeServices.GetElementDetails(ButtonState);
+    ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);
+    ButtonRect := ThemeServices.ContentRect(ItemsListBox.Canvas.Handle, ButtonDetails, ButtonRect);
+    // TODO: Use theme services to draw icon when ImageList will be ready
+  {$endif}
     // draw icon
     case mm of
       mmBuild: ImgIndex:=ImageIndexBuild;
