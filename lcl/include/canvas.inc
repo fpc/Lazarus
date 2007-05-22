@@ -992,18 +992,19 @@ var
   Options : Longint;
   fRect : TRect;
   DCIndex: Integer;
+  DC: HDC;
+  ReqState: TCanvasState;
 
   procedure SaveState;
   begin
     if DCIndex<>0 then exit;
-    RequiredState([csHandleValid]);
-    DCIndex:=SaveDC(Handle);
+    DCIndex:=SaveDC(DC);
   end;
   
   procedure RestoreState;
   begin
     if DCIndex=0 then exit;
-    RestoreDC(Handle,DCIndex);
+    RestoreDC(DC,DCIndex);
   end;
   
 begin
@@ -1031,17 +1032,21 @@ begin
   If not Style.ShowPrefix then
     Options := Options or DT_NOPREFIX;
 
+  ReqState:=[csHandleValid];
+  if not Style.SystemFont then
+    Include(ReqState,csFontValid);
+  if Style.Opaque then
+    Include(ReqState,csBrushValid);
+  DC:=GetUpdatedHandle(ReqState);
+
   DCIndex:=0;
   if Style.SystemFont or Style.Clipping or (not Style.Opaque) then
     SaveState;
 
-  If Style.SystemFont then begin
+  if Style.SystemFont then begin
     Options := Options or DT_INTERNAL;
-    SelectObject(Self.Handle, GetStockObject(DEFAULT_GUI_FONT));
-    Exclude(FState, csFontValid);
-  end
-  else
-    RequiredState([csHandleValid, csFontValid]);
+    SelectObject(DC, GetStockObject(DEFAULT_GUI_FONT));
+  end;
 
   // calculate text rectangle
   fRect := ARect;
@@ -1052,7 +1057,7 @@ begin
 
   if (Style.Alignment in [taRightJustify,taCenter])
   or (Style.Layout in [tlCenter,tlBottom]) then begin
-    DrawText(Self.Handle,pChar(Text),Length(Text),fRect,DT_CALCRECT or Options);
+    DrawText(DC,pChar(Text),Length(Text),fRect,DT_CALCRECT or Options);
     case Style.Alignment of
       taRightJustify : OffsetRect(fRect, ARect.Right - fRect.Right, 0);
       taCenter : OffsetRect(fRect, (ARect.Right - fRect.Right) div 2, 0);
@@ -1067,26 +1072,25 @@ begin
   if Style.Clipping then begin
     IntersectRect(ARect, ARect, fRect);
     with ARect do
-      InterSectClipRect(Self.Handle, Left, Top, Right, Bottom);
+      InterSectClipRect(DC, Left, Top, Right, Bottom);
     Options := Options or DT_NOCLIP; // no clipping as we are handling it here
   end;
 
   if Style.Opaque then begin
-    RequiredState([csHandleValid, csBrushValid]);
     FillRect(fRect);
   end else begin
-    SetBkMode(FHandle, TRANSPARENT);
+    SetBkMode(DC, TRANSPARENT);
   end;
   
   if Style.SystemFont then
-    SetTextColor(Self.Handle, Font.Color);
+    SetTextColor(DC, Font.Color);
   //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
-  DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
+  DrawText(DC, pChar(Text), Length(Text), fRect, Options);
   
   if Style.Opaque and (csBrushValid in FState) then begin
     if Brush.Style=bsSolid then
       // restore BKMode
-      SetBkMode(FHandle, OPAQUE)
+      SetBkMode(DC, OPAQUE)
   end;
 
   RestoreState;
