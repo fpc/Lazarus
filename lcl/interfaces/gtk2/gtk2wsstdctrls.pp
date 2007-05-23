@@ -1281,7 +1281,7 @@ begin
                  Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
     Result:=true;
   end;
-  //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect AAA2 FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+  //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
 end;
 
 initialization

@@ -23,7 +23,6 @@ implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
    methodjumptool eventcodetool codecompletiontool codeatom codetree \
    definetemplates expreval keywordfunclists linkscanner sourcechanger \
    fileprocs codetoolsstructs codetoolmanager \
-   memcheck \
    laz_dom laz_xmlcfg laz_xmlread laz_xmlwrite
 
 [clean]

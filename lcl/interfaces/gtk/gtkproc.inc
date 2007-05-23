@@ -6442,7 +6442,7 @@ begin
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
-procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
+procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
 var
   LCLControl: TWinControl;
   LCLLeft, LCLTop, LCLWidth, LCLHeight: integer;
@@ -6452,6 +6452,8 @@ var
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
   PosMsg : TLMWindowPosChanged;
+  MainWidget: PGtkWidget;
+  FixedWidget: PGtkWidget;
 
   procedure UpdateLCLRect;
   begin
@@ -6465,19 +6467,26 @@ var
   end;
 
 begin
-  if not GTK_WIDGET_REALIZED(MainWidget) then begin
+  LCLControl:=TWinControl(GetLCLObject(aWidget));
+  if LCLControl=nil then exit;
+  {$IFDEF VerboseSizeMsg}
+  DebugLn('SendSizeNotificationToLCL checking ... ',DbgSName(LCLControl),' aidget=',WidgetFlagsToString(aWidget));
+  {$ENDIF}
+  MainWidget:=PGtkWidget(LCLControl.Handle);
+  FixedWidget:=PGtkWidget(GetFixedWidget(MainWidget));
+
+  FWidgetsResized.Remove(MainWidget);
+  FFixWidgetsResized.Remove(FixedWidget);
+
+  if not GTK_WIDGET_REALIZED(aWidget) then begin
+    // the widget is not yet realized, so this GTK resize was not a user change.
+    // => ignore
     {$IFDEF VerboseSizeMsg}
-    LCLControl:=TWinControl(GetLCLObject(MainWidget));
-    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),' MainWidget=',WidgetFlagsToString(MainWidget),' Ignored, because not realized ');
+    LCLControl:=TWinControl(GetLCLObject(aWidget));
+    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),' aWidget=',WidgetFlagsToString(aWidget),' Ignored, because not realized ');
     {$ENDIF}
     exit;
   end;
-
-  LCLControl:=TWinControl(GetLCLObject(MainWidget));
-  if LCLControl=nil then exit;
-  {$IFDEF VerboseSizeMsg}
-  DebugLn('SendSizeNotificationToLCL checking ... ',DbgSName(LCLControl),' MainWidget=',WidgetFlagsToString(MainWidget));
-  {$ENDIF}
 
   GtkLeft:=MainWidget^.Allocation.X;
   GtkTop:=MainWidget^.Allocation.Y;

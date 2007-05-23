@@ -704,7 +704,7 @@ procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
+procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
 procedure SendCachedGtkResizeNotifications;
 procedure RealizeWidgetSize(Widget: PGtkWidget; NewWidth, NewHeight: integer);
 procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);

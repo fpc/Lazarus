@@ -474,15 +474,15 @@ function ThemeServices: TThemeServices;
 function ThemedElementDetailsEqual(D1, D2: TThemedElementDetails): Boolean;
 //----------------------------------------------------------------------------------------------------------------------
 
+const
+  // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
+  // in the compiled binary file.
+  ThemeManagerCopyright: string = 'Theme manager © 2001-2005 Mike Lischke';
+
 implementation
 
 uses
   SysUtils, ComCtrls, InterfaceBase, LCLIntf, GraphType, Graphics;
-
-const
-  // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
-  // in the compiled binary file.
-  Copyright: string = 'Theme manager © 2001-2005 Mike Lischke';
 
 //----------------------------------------------------------------------------------------------------------------------
 

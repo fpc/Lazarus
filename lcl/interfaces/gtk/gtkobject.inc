@@ -1592,6 +1592,7 @@ Begin
     aWinControl.Parent := nil;
     aWinControl.Parent := aParent;
   end;
+  DebugLn(['TGtkWidgetSet.RecreateWnd ',DbgSName(Sender)]);
   ResizeChild(Sender,aWinControl.Left,aWinControl.Top,
                      aWinControl.Width,aWinControl.Height);
   ShowHide(Sender);

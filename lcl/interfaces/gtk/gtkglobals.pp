@@ -374,6 +374,8 @@ var
   // each fixed widget that was resized by the gtk is stored here
   // (hasharray of PGtkWidget)
   FFixWidgetsResized: TDynHashArray;
+  // each widget that should be to the LCL bounds is stored here
+  // (hasharray of PGtkWidget)
   FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
 
 const

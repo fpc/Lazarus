@@ -717,6 +717,8 @@ type
     property BorderSpacing;
     property Caption;
     property ChildSizing;
+    property ClientHeight;
+    property ClientWidth;
     property Color;
     property ColumnLayout;
     property Columns;

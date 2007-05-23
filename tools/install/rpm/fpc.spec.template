@@ -60,9 +60,11 @@ automatical-code generation purposes.
 %build
 # The source-files:
 mkdir -p fpcsrc
-cp -a rtl fpcsrc
-cp -a fcl fpcsrc
-cp -a packages fpcsrc
+cp -a rtl fpcsrc/
+if [ -d fcl ]; then
+  cp -a fcl fpcsrc/
+fi
+cp -a packages fpcsrc/
 rm -rf packages/extra/amunits
 rm -rf packages/extra/winunits
 
@@ -72,14 +74,15 @@ fi
 NEWPP=`pwd`/compiler/%{ppcname}
 NEWFPDOC=`pwd`/utils/fpdoc/fpdoc
 DATA2INC=`pwd`/utils/data2inc
-make compiler_cycle FPC=${STARTPP}
-make rtl_clean rtl_smart FPC=${NEWPP}
-make packages_base_smart FPC=${NEWPP}
-make fcl_smart FPC=${NEWPP}
+make clean all FPC=${STARTPP}
+#make compiler_cycle FPC=${STARTPP}
+#make rtl_clean rtl_smart FPC=${NEWPP}
+#make packages_base_smart FPC=${NEWPP}
+#make fcl_smart FPC=${NEWPP}
 #make fv_smart FPC=${NEWPP}
-make packages_extra_smart FPC=${NEWPP}
+#make packages_extra_smart FPC=${NEWPP}
 #make ide_all FPC=${NEWPP}
-make utils_all FPC=${NEWPP} DATA2INC=${DATA2INC}
+#make utils_all FPC=${NEWPP} DATA2INC=${DATA2INC}
 
 # disable the debuginfo package
 %define debug_package %{nil}
@@ -100,7 +103,7 @@ INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} \
 make compiler_install ${INSTALLOPTS}
 make rtl_install ${INSTALLOPTS}
 make packages_install ${INSTALLOPTS}
-make fcl_install ${INSTALLOPTS}
+#make fcl_install ${INSTALLOPTS}
 #make fv_install ${INSTALLOPTS}
 #make ide_install ${INSTALLOPTS}
 make utils_install ${INSTALLOPTS}

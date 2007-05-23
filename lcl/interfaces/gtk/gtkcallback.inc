@@ -1122,6 +1122,8 @@ begin
       if TheForm.Parent = nil then begin
         // toplevel window
         // send a WMSize Message (see TCustomForm.WMSize)
+        // ToDo: this might be too early to use the Widget^.Allocation
+        //    Either send this message later or find a better way to determine the size (including the client area)
         GtkWidth:=Widget^.Allocation.Width;
         if GtkWidth<0 then GtkWidth:=0;
         GtkHeight:=Widget^.Allocation.Height;
@@ -2350,13 +2352,6 @@ begin
     exit;
   end;
 
-  { The gtk sends the size messages after the resizing. Therefore the parent
-    widget is already resized, but the parent resize message will be emitted
-    after all its childs. So, the gtk resizes in top-bottom order, just like the
-    LCL. But it sends size messages in bottom-top order, which results in
-    many resizes in the LCL.
-    Therefore all resize messages between lcl and gtk are cached.
-  }
   {$IFDEF VerboseSizeMsg}
   DebugLn('gtksize_allocateCB: ',
     TControl(Data).Name+':'+TControl(Data).ClassName,
@@ -2373,13 +2368,19 @@ begin
     DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',dbgs(Size^.X),',',dbgs(Size^.Y));
   {$ENDIF}
   if GTK_WIDGET_REALIZED(Widget) then begin
+    { The gtk sends the size messages after the resizing. Therefore the parent
+      widget is already resized, but the parent resize message will be emitted
+      after all its childs. So, the gtk resizes in top-bottom order, just like the
+      LCL. But it sends size messages in bottom-top order, which can result in
+      many resizes in the LCL.
+    }
     {$IFDEF Gtk1}
+    // All resize messages between lcl and gtk1 are cached.
     SaveSizeNotification(Widget);
     {$ELSE}
-    if GetFixedWidget(Widget)=Widget then
-      SendSizeNotificationToLCL(Widget)
-    else
-      SaveSizeNotification(Widget);
+    // The resize messages of the inner widget of a Control is cached.
+    // This is the resize of a outer widget and sent to the LCL immediately.
+    SendSizeNotificationToLCL(Widget);
     {$ENDIF}
   end;
 end;
@@ -2409,11 +2410,10 @@ begin
     MainWidget:=PGtkWidget(TWinControl(Data).Handle);
     ClientWidget:=GetFixedWidget(MainWidget);
     if GTK_WIDGET_REALIZED(ClientWidget) then begin
-      {$IFDEF Gtk1}
+      // the gtk resizes bottom to top, that means the
+      // inner widget (client area) is resized before the outer widget
+      // is resized. Because the LCL reads both sizes, keep this message back.
       SaveClientSizeNotification(ClientWidget);
-      {$ELSE}
-      SendSizeNotificationToLCL(MainWidget);
-      {$ENDIF}
     end;
   end else begin
     // owner is not TWinControl -> ignore
