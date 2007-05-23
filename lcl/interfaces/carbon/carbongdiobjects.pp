@@ -40,6 +40,15 @@ type
   { TCarbonGDIObject }
 
   TCarbonGDIObject = class
+  private
+    FSelCount: Integer;
+  public
+    constructor Create;
+    
+    procedure Select;
+    procedure Unselect;
+    
+    property SelCount: Integer read FSelCount;
   end;
 
   { TCarbonFont }
@@ -337,6 +346,44 @@ begin
   end;
 end;
 
+{ TCarbonGDIObject }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonGDIObject.Create
+
+  Creates custom GDI object
+ ------------------------------------------------------------------------------}
+constructor TCarbonGDIObject.Create;
+begin
+  FSelCount := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonGDIObject.Select
+
+  Selects custom GDI object
+ ------------------------------------------------------------------------------}
+procedure TCarbonGDIObject.Select;
+begin
+  Inc(FSelCount);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonGDIObject.Unselect
+
+  Unselects custom GDI object
+ ------------------------------------------------------------------------------}
+procedure TCarbonGDIObject.Unselect;
+begin
+  if FSelCount > 0 then
+    Dec(FSelCount)
+  else
+  begin
+    DebugLn('TCarbonGDIObject.Unselect Error - ', DbgSName(Self), ' SelCount = ',
+      DbgS(FSelCount), '!');
+  end;
+end;
+
 { TCarbonFont }
 
 {------------------------------------------------------------------------------
@@ -346,6 +393,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonFont.Create;
 begin
+  inherited;
+  
   FStyle := DefaultTextStyle;
 end;
 
@@ -367,6 +416,8 @@ var
 const
   SSetAttrs = 'ATSUSetAttributes';
 begin
+  inherited Create;
+  
   OSError(ATSUCreateStyle(FStyle), Self, SCreate, SCreateStyle);
 
   ID := FindCarbonFontID(AFaceName);
@@ -463,6 +514,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonColorObject.Create(const AColor: TColor; ASolid: Boolean);
 begin
+  inherited Create;
+  
   SetColor(AColor, ASolid);
 end;
 
@@ -558,11 +611,11 @@ begin
     BS_SOLID,
     BS_HATCHED..BS_MONOPATTERN:
       begin
-        SetColor(ColorToRGB(ALogBrush.lbColor), True);
+        inherited Create(ColorToRGB(ALogBrush.lbColor), True);
         // TODO: patterns
       end;
     else
-      SetColor(ColorToRGB(ALogBrush.lbColor), False);
+      inherited Create(ColorToRGB(ALogBrush.lbColor), False);
   end;
 end;
 
@@ -619,12 +672,12 @@ begin
     PS_SOLID..PS_DASHDOTDOT,
     PS_INSIDEFRAME:
       begin
-        SetColor(ColorToRGB(ALogPen.lopnColor), True);
+        inherited Create(ColorToRGB(ALogPen.lopnColor), True);
         FWidth := Max(1, ALogPen.lopnWidth.x);
       end;
     else
     begin
-      SetColor(ColorToRGB(ALogPen.lopnColor), False);
+      inherited Create(ColorToRGB(ALogPen.lopnColor), False);
       FWidth := 1;
     end;
   end;
@@ -731,6 +784,8 @@ end;
 constructor TCarbonBitmap.Create(AWidth, AHeight, ABitsPerPixel: Integer;
   AData: Pointer);
 begin
+  inherited Create;
+  
   FCGImage := nil;
   
   if AWidth < 1 then AWidth := 1;
@@ -1177,6 +1232,9 @@ initialization
   ScreenContext.CGContext := DefaultContext.CGContext; // workaround
 
 finalization
+  DefaultContext.Free;
+  ScreenContext.Free;
+  
   BlackPen.Free;
   WhiteBrush.Free;
 
@@ -1184,7 +1242,5 @@ finalization
   StockSystemFont.Free;
   
   DefaultBitmap.Free;
-  DefaultContext.Free;
-  ScreenContext.Free;
 
 end.

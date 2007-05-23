@@ -458,11 +458,20 @@ begin
   CarbonWidgetSet := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.CreateThemeServices
+  Returns: Theme Services object for Carbon interface
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateThemeServices: TThemeServices;
 begin
   Result := TCarbonThemeServices.Create;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.PassCmdLineOptions
+
+  Not used
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.PassCmdLineOptions;
 begin
   inherited PassCmdLineOptions;

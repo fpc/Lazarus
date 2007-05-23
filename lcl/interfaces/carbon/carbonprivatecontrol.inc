@@ -273,6 +273,8 @@ begin
     OSError(
       SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
       SCreateWidget, SSetControlProp, 'Content');
+      
+  OSError(HIViewSetVisible(Frame, LCLObject.Visible), Self, SCreateWidget, SViewVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -748,6 +750,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.ShowHide(AVisible: Boolean);
 begin
+  //DebugLn('TCarbonControl.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
   OSError(HIViewSetVisible(Frame, AVisible), Self, 'ShowHide', SViewVisible);
 end;
 

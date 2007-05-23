@@ -59,6 +59,7 @@ const
   SViewVisible  = 'HIViewSetVisible';
   SViewConvert = 'HIViewConvertPoint';
   SViewRender  = 'HIViewRenderle';
+  SViewFrame = 'HIViewSetFrame';
   SViewNeedsDisplay = 'HiViewSetNeedsDisplay';
   SViewNeedsDisplayRect = 'HiViewSetNeedsDisplayInRect';
   SViewAddView = 'HIViewAddSubview';

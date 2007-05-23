@@ -410,7 +410,16 @@ begin
   
   if not CheckGDIObject(GDIObject, 'DeleteObject') then Exit;
   
-  TCarbonGDIObject(GDIObject).Free;
+  if TCarbonGDIObject(GDIObject).SelCount = 0 then
+    TCarbonGDIObject(GDIObject).Free
+  else
+  begin
+    DebugLn('TCarbonWidgetSet.DeleteObject Error - GDIObject: ' +
+      DbgSName(TCarbonGDIObject(GDIObject)) +
+      ' is still selected!');
+    Exit;
+  end;
+  
   Result := True;
 end;
 
@@ -1521,7 +1530,6 @@ begin
   
   Depth := CGDisplayBitsPerPixel(CGMainDisplayID);
   case NIndex of
-  //COLOR_BACKGROUND:
   //COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION:
   //COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION:
   COLOR_MENU:
@@ -1558,7 +1566,7 @@ begin
   COLOR_3DLIGHT:
     R := GetThemeBrushAsColor(kThemeBrushButtonActiveLightShadow, Depth, True, C);
   //COLOR_HOTLIGHT:
-  COLOR_INFOBK,
+  COLOR_BACKGROUND, COLOR_INFOBK,
   COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
   else

@@ -100,6 +100,8 @@ type
     procedure SetAntialiasing(AValue: Boolean);
   public
     procedure DrawFrameControl(var ARect: TRect; AType, AState: Cardinal);
+    procedure DrawSplitter(const ARect: TRect);
+    
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
     function ExtTextOut(X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -253,7 +255,10 @@ begin
   
   if FCurrentBrush <> AValue then
   begin
+    if FCurrentBrush <> nil then FCurrentBrush.Unselect;
+    
     FCurrentBrush := AValue;
+    FCurrentBrush.Select;
     FCurrentBrush.Apply(Self);
   end;
 end;
@@ -274,7 +279,11 @@ begin
   
   if FCurrentFont <> AValue then
   begin
+    //DebugLn('TCarbonDeviceContext.SetCurrentFont ', DbgS(FCurrentFont), '->',
+    //  DbgS(AValue));
+    if FCurrentFont <> nil then FCurrentFont.Unselect;
     FCurrentFont := AValue;
+    FCurrentFont.Select;
   end;
 end;
 
@@ -294,7 +303,10 @@ begin
   
   if FCurrentPen <> AValue then
   begin
+    if FCurrentPen <> nil then FCurrentPen.Unselect;
+    
     FCurrentPen := AValue;
+    FCurrentPen.Select;
     FCurrentPen.Apply(Self);
   end;
 end;
@@ -339,6 +351,13 @@ constructor TCarbonDeviceContext.Create;
 begin
   FBkBrush := TCarbonBrush.Create;
   FTextBrush := TCarbonBrush.Create;
+  
+  FCurrentPen := BlackPen;
+  FCurrentPen.Select;
+  FCurrentBrush := WhiteBrush;
+  FCurrentBrush.Select;
+  FCurrentFont := StockSystemFont;
+  FCurrentFont.Select;
 end;
 
 {------------------------------------------------------------------------------
@@ -352,6 +371,10 @@ begin
   TextBrush.Free;
   
   FSavedDCList.Free;
+  
+  if FCurrentPen <> nil then FCurrentPen.Unselect;
+  if FCurrentBrush <> nil then FCurrentBrush.Unselect;
+  if FCurrentFont <> nil then FCurrentFont.Unselect;
 
   inherited Destroy;
 end;
@@ -378,11 +401,8 @@ begin
   // set raster operation to copy
   FROP2 := R2_COPYPEN;
 
-  // set initial pen, brush and font
-  FCurrentPen := BlackPen;
-  FCurrentBrush := WhiteBrush;
-  FCurrentFont := StockSystemFont;
-
+  CurrentFont := StockSystemFont;
+  
   if CGContext <> nil then
   begin
     {$IFDEF VerboseCanvas}
@@ -391,12 +411,10 @@ begin
     
     // enable anti-aliasing
     CGContextSetShouldAntialias(CGContext, 1);
-    CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
     
-    CGContextSetRGBFillColor(CGContext, 1, 1, 1, 1);
-    CGContextSetRGBStrokeColor(CGContext, 0, 0, 0, 1);
-    CGContextSetLineWidth(CGContext, 1);
-    CGContextSetLineDash(CGContext, 0, nil, 0);
+    // set initial pen, brush and font
+    CurrentPen := BlackPen;
+    CurrentBrush := WhiteBrush;
   end;
 end;
 
@@ -498,8 +516,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.RestoreDCData(const AData: TCarbonDCData);
 begin
+  if (FCurrentFont <> AData.CurrentFont) and (FCurrentFont <> nil) then
+    FCurrentFont.Unselect;
   FCurrentFont := AData.CurrentFont;
+  
+  if (FCurrentBrush <> AData.CurrentBrush) and (FCurrentBrush <> nil) then
+    FCurrentBrush.Unselect;
   FCurrentBrush := AData.CurrentBrush;
+  
+  if (FCurrentPen <> AData.CurrentPen) and (FCurrentPen <> nil) then
+    FCurrentPen.Unselect;
   FCurrentPen := AData.CurrentPen;
 
   FBkColor := AData.BkColor;
@@ -599,9 +625,9 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.DrawFrameControl
-  Params:  Rect   - Bounding rectangle, returned adujsted to frame client area
-           UType  - Frame-control type
-           UState - Frame-control state
+  Params:  ARect   - Bounding rectangle, returned adujsted to frame client area
+           AType   - Frame-control type
+           AUState - Frame-control state
 
   Draws a frame control of the specified type and style
  ------------------------------------------------------------------------------}
@@ -642,6 +668,25 @@ begin
   else
     DebugLn('TCarbonDeviceContext.DrawFrameControl TODO Type: ' + DbgS(AType));
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.DrawSplitter
+  Params:  ARect    - Bounding rectangle
+
+  Draws a splitter
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.DrawSplitter(const ARect: TRect);
+var
+  DrawInfo: HIThemeSplitterDrawInfo;
+begin
+  DrawInfo.version := 0;
+  DrawInfo.adornment := kHIThemeSplitterAdornmentNone;
+  DrawInfo.state := kThemeStateActive;
+  
+  OSError(
+    HIThemeDrawPaneSplitter(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal),
+    Self, 'DrawSplitter', 'HIThemeDrawPaneSplitter');
 end;
 
 {------------------------------------------------------------------------------
@@ -1241,6 +1286,7 @@ begin
   if FBitmap <> AValue then
   begin
     FBitmap := AValue;
+    
     Reset;
   end;
 end;

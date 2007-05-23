@@ -84,6 +84,8 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
+
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -441,12 +443,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetReadOnly
+  Params:  ACustomComboBox - LCL custom combo box
+           NewReadOnly     - Read only behavior
+
+  Sets the read only behavior of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+  NewReadOnly: boolean);
+begin
+  if not CheckHandle(ACustomComboBox, Self, 'SetReadOnly') then Exit;
+
+  // TODO
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWSCustomComboBox.GetItems
   Params:  ACustomEdit - LCL custom combo box
   Returns: Items of combo box in Carbon interface
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomComboBox.GetItems(
-  const ACustomComboBox: TCustomComboBox): TStrings;
+class function TCarbonWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 begin
   Result := nil;
   if not CheckHandle(ACustomComboBox, Self, 'GetItems') then Exit;

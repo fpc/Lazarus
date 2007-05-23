@@ -37,7 +37,7 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonTabs, CarbonStrings, CarbonWSControls;
+  CarbonWSControls;
 
 type
 
@@ -102,6 +102,7 @@ type
   private
   protected
   public
+    class procedure DrawSplitter(const ASplitter: TCustomSplitter); override;
   end;
 
   { TCarbonWSSplitter }
@@ -212,7 +213,7 @@ type
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonDef, CarbonTabs, CarbonCanvas;
 
 { TCarbonWSCustomPage }
 
@@ -354,6 +355,19 @@ begin
   TCarbonTabsControl(ANotebook.Handle).ShowTabs(AShowTabs);
 end;
 
+{ TCarbonWSCustomSplitter }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomSplitter.DrawSplitter
+  Params:  ASplitter - LCL custom splitter
+
+  Draws a splitter in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
+begin
+  TCarbonDeviceContext(ASplitter.Canvas.Handle).DrawSplitter(ASplitter.ClientRect);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -367,7 +381,7 @@ initialization
 //  RegisterWSComponent(TPage, TCarbonWSPage);
 //  RegisterWSComponent(TNotebook, TCarbonWSNotebook);
 //  RegisterWSComponent(TShape, TCarbonWSShape);
-//  RegisterWSComponent(TCustomSplitter, TCarbonWSCustomSplitter);
+  RegisterWSComponent(TCustomSplitter, TCarbonWSCustomSplitter);
 //  RegisterWSComponent(TSplitter, TCarbonWSSplitter);
 //  RegisterWSComponent(TPaintBox, TCarbonWSPaintBox);
 //  RegisterWSComponent(TCustomImage, TCarbonWSCustomImage);

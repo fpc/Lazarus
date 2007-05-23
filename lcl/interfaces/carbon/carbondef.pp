@@ -46,6 +46,9 @@ var
   LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
   WIDGETINFO_FOURCC: FourCharCode; // = 'WInf';
   MENU_FOURCC: FourCharCode;       // = 'Menu';
+  
+  HIViewClassID: CFStringRef; // class CFString for HIView
+  CustomControlClassID: CFStringRef; // class CFString for custom control
 
 type
 

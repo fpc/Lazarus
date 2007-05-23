@@ -190,9 +190,11 @@ begin
   end;
 
   if OSError(
-    CreateUserPaneControl(GetTopParentWindow, GetCarbonRect(R),
-      kControlSupportsEmbedding or kControlHandlesTracking, FUserPane),
-    Self, SCreateWidget, 'CreateUserPaneControl') then Exit;
+    HIObjectCreate(CustomControlClassID, nil, FUserPane),
+    Self, SCreateWidget, 'HIObjectCreate') then RaiseCreateWidgetError(LCLObject);
+
+  OSError(HIViewSetFrame(FUserPane, RectToCGRect(R)), Self, SCreateWidget, SViewFrame);
+  OSError(HIViewSetVisible(FUserPane, True), Self, SCreateWidget, SViewVisible);
 
   if OSError(HIViewAddSubview(Control, FUserPane), Self, SCreateWidget,
     SViewAddView) then Exit;

@@ -305,9 +305,13 @@ type
   { TCarbonCustomBar }
   
   TCarbonCustomBar = class(TCarbonControl)
+  private
   public
     function GetPosition: Integer; virtual;
     procedure SetPosition(APosition: Integer); virtual;
+
+    procedure SetColor(const AColor: TColor); override;
+    procedure SetFont(const AFont: TFont); override;
   end;
   
   { TCarbonProgressBar }
@@ -470,6 +474,46 @@ end;
 { TCarbonCustomControl }
 
 {------------------------------------------------------------------------------
+  Name: CustomControlHandler
+  Handles custom control class methods
+ ------------------------------------------------------------------------------}
+function CustomControlHandler(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  EventClass, EventKind: LongWord;
+  Part: ControlPartCode;
+const
+  SName = 'CustomControlHandler';
+begin
+  EventClass := GetEventClass(AEvent);
+  EventKind := GetEventKind(AEvent);
+
+  case EventClass of
+    kEventClassHIObject:
+      case EventKind of
+        kEventHIObjectConstruct, kEventHIObjectInitialize,
+        kEventHIObjectDestruct: Result := noErr;
+      end;
+    kEventClassControl:
+      case EventKind of
+        kEventControlHitTest:
+          begin
+            {$IFDEF VerboseMouse}
+              DebugLn('CustomControlHandler HitTest');
+            {$ENDIF}
+
+            Part := kControlButtonPart;
+          
+            Result := SetEventParameter(AEvent, kEventParamControlPart,
+              typeControlPartCode, SizeOf(Part), @Part);
+            OSError(Result, SName, SSetEvent)
+          end;
+      end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Name: CarbonScrollable_GetInfo
   Handles scrollable get info
  ------------------------------------------------------------------------------}
@@ -564,18 +608,15 @@ end;
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
-  Attrs: LongWord;
 begin
-  Attrs := kControlSupportsEmbedding or kControlSupportsFocus or
-    kControlWantsActivate or kControlHandlesTracking or
-    kControlGetsFocusOnClick or kControlSupportsSetCursor or
-    kControlSupportsContextualMenus or kControlSupportsClickActivation;
-  
   if OSError(
-    CreateUserPaneControl(GetTopParentWindow, ParamsToCarbonRect(AParams), Attrs, Control),
-    Self, SCreateWidget, 'CreateUserPaneControl') then RaiseCreateWidgetError(LCLObject);
+    HIObjectCreate(CustomControlClassID, nil, Control),
+    Self, SCreateWidget, 'HIObjectCreate') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
+  
+  with AParams do
+    SetBounds(Bounds(X, Y, Width, Height));
   
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
@@ -862,9 +903,11 @@ begin
   end;
   
   if OSError(
-    CreateUserPaneControl(GetTopParentWindow, GetCarbonRect(R),
-      kControlSupportsEmbedding or kControlHandlesTracking, FUserPane),
-    Self, SCreateWidget, 'CreateUserPaneControl') then Exit;
+    HIObjectCreate(CustomControlClassID, nil, FUserPane),
+    Self, SCreateWidget, 'HIObjectCreate') then RaiseCreateWidgetError(LCLObject);
+    
+  OSError(HIViewSetFrame(FUserPane, RectToCGRect(R)), Self, SCreateWidget, SViewFrame);
+  OSError(HIViewSetVisible(FUserPane, True), Self, SCreateWidget, SViewVisible);
   
   if OSError(HIViewAddSubview(Control, FUserPane), Self, SCreateWidget,
     SViewAddView) then Exit;
@@ -1555,6 +1598,28 @@ begin
   SetValue(APosition);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomBar.SetColor
+  Params:  AColor - New color
+
+  Sets the color of control (for edit like controls)
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomBar.SetColor(const AColor: TColor);
+begin
+  // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomBar.SetFont
+  Params:  AFont - New font
+
+  Sets the font of control
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomBar.SetFont(const AFont: TFont);
+begin
+  // not supported
+end;
+
 { TCarbonProgressBar }
 
 {------------------------------------------------------------------------------
@@ -1804,6 +1869,40 @@ begin
   SetValue(ScrollBar.Position);
   SetViewSize(ScrollBar.PageSize);
 end;
+
+var
+  EventSpec: Array [0..3] of EventTypeSpec;
+  CustomControlHandlerUPP: EventHandlerUPP;
+
+initialization
+
+  EventSpec[0].eventClass := kEventClassHIObject;
+  EventSpec[0].eventKind := kEventHIObjectConstruct;
+  EventSpec[1].eventClass := kEventClassHIObject;
+  EventSpec[1].eventKind := kEventHIObjectInitialize;
+  EventSpec[2].eventClass := kEventClassHIObject;
+  EventSpec[2].eventKind := kEventHIObjectDestruct;
+  EventSpec[3].eventClass := kEventClassControl;
+  EventSpec[3].eventKind := kEventControlHitTest;
+  
+  CustomControlHandlerUPP := NewEventHandlerUPP(EventHandlerProcPtr(@CustomControlHandler));
+
+  CreateCFString('com.lazarus.customcontrol', CustomControlClassID);
+  CreateCFString('com.apple.hiview', HIViewClassID);
+  try
+    OSError(
+      HIObjectRegisterSubclass(CustomControlClassID, HIViewClassID, 0,
+        CustomControlHandlerUPP, 4, @EventSpec[0], nil, nil),
+      'CarbonPtivate.initialization', 'HIObjectRegisterSubclass');
+  finally
+
+  end;
+  
+finalization
+
+   FreeCFString(CustomControlClassID);
+   FreeCFString(HIViewClassID);
+   DisposeEventHandlerUPP(CustomControlHandlerUPP);
 
 
 end.
