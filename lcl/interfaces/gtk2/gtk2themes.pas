@@ -162,7 +162,7 @@ begin
       Result.IsHot := False;
 
       case Details.Element of
-        teButton:
+        teButton, teHeader:
           begin
             case Details.Part of
               BP_PUSHBUTTON:

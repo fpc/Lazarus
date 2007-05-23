@@ -1765,7 +1765,7 @@ var
 begin
   // default painting
   ARect := R; // in order to pass by reference
-  if Details.Element in [teButton, teToolBar] then
+  if Details.Element in [teButton, teToolBar, teHeader] then
   begin
     ADrawFlags := DFCS_BUTTONPUSH;
     
@@ -1838,14 +1838,14 @@ end;
 function TThemeServices.IsPushed(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar]) then
+  if (Details.Element in [teButton, teToolBar, teHeader]) then
     Result := Details.State in [3, 5, 6];
 end;
 
 function TThemeServices.IsHot(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar]) then
+  if (Details.Element in [teButton, teToolBar, teHeader]) then
     Result := Details.State in [2, 6];
 end;
 
