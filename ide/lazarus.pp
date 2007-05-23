@@ -65,10 +65,7 @@ uses
     MemDSLaz, SDFLaz, TurboPowerIPro, JPEGForLazarus,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     {$IFDEF windows}
-      DBFLaz,
-      {$IFDEF win32}
-        SQLDBLaz,
-      {$ENDIF}
+      SQLDBLaz, DBFLaz,
     {$ENDIF}
     {$IFDEF Linux}
       SQLDBLaz, DBFLaz,
