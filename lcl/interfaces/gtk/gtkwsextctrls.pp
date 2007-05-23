@@ -275,6 +275,10 @@ begin
   {$ENDIF}
   NoteBookWidget:=PGtkWidget(ANoteBook.Handle);
   PageWidget:=PGtkWidget(AChild.Handle);
+
+  // set LCL size
+  AChild.SetBounds(AChild.Left,AChild.Top,ANotebook.ClientWidth,ANotebook.ClientHeight);
+
   if AChild.TabVisible then
     gtk_widget_show(PageWidget);
 

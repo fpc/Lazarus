@@ -4034,6 +4034,7 @@ var
   Info: PWidgetInfo;
 begin
   if AWidget = nil then Exit;
+  //DebugLn(['FreeWidgetInfo ',GetWidgetDebugReport(AWidget)]);
   Info := gtk_object_get_data(AWidget, 'widgetinfo');
   if Info = nil then Exit;
 
@@ -4047,6 +4048,7 @@ begin
   gtk_object_set_data(AWidget,'widgetinfo',nil);
 
   Dispose(Info);
+  //DebugLn(['FreeWidgetInfo END']);
 end;
 
 {-------------------------------------------------------------------------------
@@ -4057,7 +4059,7 @@ end;
   - destroys the widget in the gtk
   
   IMPORTANT:
-    The above order must be kept, to avoid callbacks working with danging
+    The above order must be kept, to avoid callbacks working with dangling
     pointers.
     
   Some widgets have a LM_DESTROY set, so if the gtk or some other code
@@ -4069,6 +4071,7 @@ var
   AWinControl: TWinControl;
   Mess: TLMessage;
 begin
+  //DebugLn(['DestroyWidget A ',GetWidgetDebugReport(Widget)]);
   {$IFDEF DebugLCLComponents}
   if DebugGtkWidgets.FindInfo(Widget)=nil then
     DebugLn(['DestroyWidget ',GetWidgetDebugReport(Widget)]);
@@ -4091,6 +4094,7 @@ begin
   DebugGtkWidgets.MarkDestroyed(Widget);
   {$ENDIF}
   gtk_widget_destroy(Widget);
+  //DebugLn(['DestroyWidget B']);
 end;
 
 {-------------------------------------------------------------------------------
@@ -7530,7 +7534,7 @@ var
     gtk_widget_show(NoteBookTabMenuLabel);
     gtk_notebook_append_page_menu(NoteBookWidget,NoteBookPageClientAreaWidget,
                                   NoteBookTabLabel,NoteBookTabMenuLabel);
-    gtk_widget_set_usize(Result,200,200);
+    gtk_widget_set_usize(Result,400,400);
   end;
   
   procedure ResizeWidget(CurWidget: PGTKWidget; NewWidth, NewHeight: integer);
@@ -8350,6 +8354,7 @@ end;
 
 {$IFDEF Gtk2}
 function GetStyleGroupboxFrameBorders: TRect;
+const s = 200;
 var
   StyleObject: PStyleObject;
   allocation: TGtkAllocation;
@@ -8361,19 +8366,48 @@ begin
   if not StyleObject^.FrameBordersValid then begin
     allocation.x:=0;
     allocation.y:=0;
-    allocation.width:=200;
-    allocation.height:=200;
+    allocation.width:=s;
+    allocation.height:=s;
     gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
     FrameWidget:=pGtkFrame(StyleObject^.Widget);
     GTK_FRAME_GET_CLASS(FrameWidget)^.compute_child_allocation(
       FrameWidget,@allocation);
     //DebugLn(['GetStyleGroupboxFrame BBB2 ',dbgs(allocation)]);
-    f.Left:=Min(200,Max(0,allocation.x));
-    f.Top:=Min(200,Max(0,allocation.y));
-    f.Right:=Max(0,Min(200-f.Left,200-allocation.x-allocation.width));
-    f.Bottom:=Max(0,Min(200-f.Top,200-allocation.x-allocation.width));
+    f.Left:=Min(s,Max(0,allocation.x));
+    f.Top:=Min(s,Max(0,allocation.y));
+    f.Right:=Max(0,Min(s-f.Left,s-allocation.x-allocation.width));
+    f.Bottom:=Max(0,Min(s-f.Top,s-allocation.x-allocation.width));
     StyleObject^.FrameBorders:=f;
     //DebugLn(['GetStyleGroupboxFrame FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
+    StyleObject^.FrameBordersValid:=true;
+  end;
+  Result:=StyleObject^.FrameBorders
+end;
+
+function GetStyleNotebookFrameBorders: TRect;
+const s = 400;
+var
+  StyleObject: PStyleObject;
+  allocation: TGtkAllocation;
+  f: TRect;
+  PageWidget: PGtkWidget;
+begin
+  GetStyleWidget(lgsNotebook);
+  StyleObject:=StandardStyles[lgsNotebook];
+  if not StyleObject^.FrameBordersValid then begin
+    allocation.x:=0;
+    allocation.y:=0;
+    allocation.width:=s;
+    allocation.height:=s;
+    gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
+    PageWidget:=gtk_notebook_get_nth_page(PGtkNoteBook(StyleObject^.Widget),0);
+    //DebugLn(['GetStyleNotebookFrameBorders BBB2 ',dbgs(allocation)]);
+    f.Left:=Min(s,Max(0,PageWidget^.allocation.x));
+    f.Top:=Min(s,Max(0,PageWidget^.allocation.y));
+    f.Right:=Max(0,Min(s-f.Left,s-PageWidget^.allocation.x-PageWidget^.allocation.width));
+    f.Bottom:=Max(0,Min(s-f.Top,s-PageWidget^.allocation.x-PageWidget^.allocation.width));
+    StyleObject^.FrameBorders:=f;
+    //DebugLn(['GetStyleNotebookFrameBorders FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
     StyleObject^.FrameBordersValid:=true;
   end;
   Result:=StyleObject^.FrameBorders

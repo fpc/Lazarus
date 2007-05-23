@@ -442,7 +442,7 @@ begin
   DebugLn(['TCustomNotebook.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
     APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
-  APage.DisableAutoSizing;
+  APage.DisableAlign;
   try
     if Index<FPageList.Count then
       NewZPosition:=GetControlIndex(TCustomPage(fPageList[Index]))
@@ -463,7 +463,7 @@ begin
         DoSendPageIndex;
     end;
   finally
-    APage.EnableAutoSizing;
+    APage.EnableAlign;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomNotebook.InsertPage END ',dbgsName(Self),' Index=',

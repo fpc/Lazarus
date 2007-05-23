@@ -27,10 +27,10 @@ unit Gtk2WSExtCtrls;
 interface
 
 uses
- // libs
-  GLib2, Gtk2, Gdk2, Gtk2Int, gtkProc, GtkDef,
+  // libs
+  Math, GLib2, Gtk2, Gdk2, Gtk2Int, gtkProc, GtkDef,
   // LCL
-  ExtCtrls, Classes, Controls, LCLType,
+  LCLProc, ExtCtrls, Classes, Controls, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
   GtkWSExtCtrls, gtk2WSPrivate;
@@ -39,11 +39,14 @@ type
 
   { TGtk2WSCustomPage }
 
-  {TGtk2WSCustomPage = class(TWSCustomPage)
+  TGtk2WSCustomPage = class(TWSCustomPage)
   private
   protected
   public
-  end;}
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
+  end;
 
   { TGtk2WSCustomNotebook }
   
@@ -52,6 +55,9 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
   end;
 
   { TGtk2WSPage }
@@ -241,6 +247,44 @@ begin
   Result := HWND(P);
 end;
 
+class function TGtk2WSCustomNotebook.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+var
+  FrameBorders: TRect;
+begin
+  Result:=false;
+  //DebugLn(['TGtk2WSCustomNotebook.GetDefaultClientRect ',DbgSName(AWinControl),' ',aWidth,'x',aHeight]);
+  if AWinControl.HandleAllocated then begin
+
+  end else begin
+    FrameBorders:=GetStyleNotebookFrameBorders;
+    aClientRect:=Rect(0,0,
+                 Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
+                 Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
+    Result:=true;
+  end;
+  //if Result then DebugLn(['TGtk2WSCustomNotebook.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+end;
+
+
+{ TGtk2WSCustomPage }
+
+class function TGtk2WSCustomPage.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+begin
+  Result:=false;
+  if AWinControl.Parent=nil then exit;
+  if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated then
+  begin
+
+  end else begin
+    Result:=true;
+    aClientRect:=AWinControl.Parent.ClientRect;
+  end;
+  //DebugLn(['TGtk2WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' aClientRect=',dbgs(aClientRect)]);
+end;
 
 initialization
 
@@ -252,7 +296,7 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
   RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook, TGtk2PrivateNotebook);
-//  RegisterWSComponent(TPage, TGtk2WSPage);
+  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
 //  RegisterWSComponent(TNotebook, TGtk2WSNotebook);
 //  RegisterWSComponent(TShape, TGtk2WSShape);
 //  RegisterWSComponent(TCustomSplitter, TGtk2WSCustomSplitter);

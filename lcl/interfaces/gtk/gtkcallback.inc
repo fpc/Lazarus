@@ -875,6 +875,7 @@ var
   Info: PWidgetInfo;
 begin
   Result := CallBackDefaultReturn;
+  //DebugLn(['gtkdestroyCB ',GetWidgetDebugReport(Widget)]);
   
   Info:=GetWidgetInfo(Widget,false);
   if Info=nil then begin

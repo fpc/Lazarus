@@ -2299,6 +2299,7 @@ function TWinControl.GetClientRect: TRect;
 var
   InterfaceWidth, InterfaceHeight: integer;
 begin
+  //DebugLn(['TWinControl.GetClientRect ',DbgSName(Self),' ',DbgSName(Parent)]);
   if wcfClientRectNeedsUpdate in FWinControlFlags then begin
     if TWSWinControlClass(WidgetSetClass).GetDefaultClientRect(Self,
       Left, Top, Width, Height, Result)

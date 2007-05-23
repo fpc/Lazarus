@@ -237,7 +237,6 @@ begin
   ClientClass := PGTKAPIWidgetClientClass(theClass);
   
   MParentClass := gtk_type_class(gtk_fixed_get_type);
-
   SignalID := gtk_signal_new(
     'set_scroll_adjustments',
     GTK_RUN_FIRST,

@@ -200,6 +200,11 @@ begin
     FOnShow(Self);
 end;
 
+procedure TCustomPage.DoSendBoundsToInterface;
+begin
+  // a page is only sized by the interface
+end;
+
 function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then

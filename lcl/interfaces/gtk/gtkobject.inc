@@ -3774,10 +3774,13 @@ end;
   Removes Call Back Signals from the Widget
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.RemoveCallbacks(Widget: PGtkWidget);
+{$IFDEF Gtk1}
 var
   MainWidget, ClientWidget, ImplWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
+{$ENDIF}
 begin
+  {$IFDEF Gtk1}
   MainWidget := Widget;
   if MainWidget = nil then Exit;
   if GtkWidgetIsA(Widget,GTK_MENU_ITEM_GET_TYPE) then exit;
@@ -3788,13 +3791,13 @@ begin
     ImplWidget:=WinWidgetInfo^.CoreWidget
   else
     ImplWidget:=nil;
-
   g_signal_handlers_destroy(PGtkObject(MainWidget));
   if (ClientWidget<>nil) and (ClientWidget<>MainWidget) then
     g_signal_handlers_destroy(PGtkObject(ClientWidget));
   if (ImplWidget<>nil)
   and (ImplWidget<>ClientWidget) and (ImplWidget<>MainWidget) then
-    g_signal_handlers_destroy(PGtkObject(ImplWidget));
+    g_signal_handlers_destroy(PGtkObject(ImplWidget));}
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
