@@ -73,11 +73,11 @@ procedure TCarbonThemeServices.DrawButtonElement(DC: TCarbonDeviceContext;
 const
   ButtonMap: array[BP_PUSHBUTTON..BP_USERBUTTON] of ThemeButtonKind =
   (
-{BP_PUSHBUTTON } kThemePushButton,
+{BP_PUSHBUTTON } kThemeBevelButtonSmall,
 {BP_RADIOBUTTON} kThemeRadioButton,
 {BP_CHECKBOX   } kThemeCheckBox,
 {BP_GROUPBOX   } kHIThemeGroupBoxKindPrimary, // ??
-{BP_USERBUTTON } kThemePushButton
+{BP_USERBUTTON } kThemeBevelButtonSmall
   );
 var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
