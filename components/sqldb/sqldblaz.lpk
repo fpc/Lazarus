@@ -21,7 +21,7 @@
     <Description Value="Lazarus package for the FCL SQLdb components."/>
     <License Value="Modified LGPL"/>
     <Version Major="1"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="registersqldb.pas"/>
         <HasRegisterProc Value="True"/>
@@ -37,11 +37,6 @@
         <Type Value="Virtual Unit"/>
         <UnitName Value="ibconnection"/>
       </Item3>
-      <Item4>
-        <Filename Value="pqconnection.pp"/>
-        <Type Value="Virtual Unit"/>
-        <UnitName Value="pqconnection"/>
-      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
