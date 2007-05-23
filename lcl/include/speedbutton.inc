@@ -309,42 +309,46 @@ end;
 function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
   function ButtonPart: TThemedButton;
   begin
-    //tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed, tbPushButtonDisabled, tbPushButtonDefaulted
-
-    // no check states available
+    // tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed,
+    // tbPushButtonDisabled, tbPushButtonDefaulted
     
+    // no check states available
     Result := tbPushButtonNormal;
     if not Enabled then
-      inc(Result, 3)
+      Result := tbPushButtonDisabled
     else
     if FState in [bsDown, bsExclusive] then
-      inc(Result, 2)
+      Result := tbPushButtonPressed
     else
     if fMouseInControl then
-      inc(Result, 1);
+      Result := tbPushButtonHot
+    else
+      Result := tbPushButtonNormal
   end;
 
   function ToolButtonPart: TThemedToolBar;
   begin
-    //ttbButtonNormal, ttbButtonHot, ttbButtonPressed, ttbButtonDisabled
-    Result := ttbButtonNormal;
+    // ttbButtonNormal, ttbButtonHot, ttbButtonPressed, ttbButtonDisabled
+    // ttbButtonChecked, ttbButtonCheckedHot
     if not Enabled then
-      inc(Result, 3)
+      Result := ttbButtonDisabled
     else
     begin
       if Down then
       begin // checked states
         if fMouseInControl then
-          inc(Result, 5)
+          Result := ttbButtonCheckedHot
         else
-          inc(Result, 4);
+          Result := ttbButtonChecked
       end
       else
       begin
         if FState in [bsDown, bsExclusive] then
-          inc(Result, 2) else
+          Result := ttbButtonPressed else
         if fMouseInControl then
-          inc(Result, 1);
+          Result := ttbButtonHot
+        else
+          Result := ttbButtonNormal
       end;
     end;
   end;
