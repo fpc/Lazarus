@@ -3796,7 +3796,7 @@ begin
     g_signal_handlers_destroy(PGtkObject(ClientWidget));
   if (ImplWidget<>nil)
   and (ImplWidget<>ClientWidget) and (ImplWidget<>MainWidget) then
-    g_signal_handlers_destroy(PGtkObject(ImplWidget));}
+    g_signal_handlers_destroy(PGtkObject(ImplWidget));
   {$ENDIF}
 end;
 
