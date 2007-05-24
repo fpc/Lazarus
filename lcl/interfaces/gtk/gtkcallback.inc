@@ -1161,6 +1161,14 @@ begin
         end
         else
           SizeMsg.SizeType:=SIZENORMAL;
+          
+        // don't bother the LCL if nothing changed
+        case SizeMsg.SizeType of
+        SIZENORMAL: if TheForm.WindowState=wsNormal then exit;
+        SIZEICONIC: if TheForm.WindowState=wsMinimized then exit;
+        SIZEFULLSCREEN: if TheForm.WindowState=wsMaximized then exit;
+        end;
+        
         with SizeMsg do
         begin
           Result := 0;
