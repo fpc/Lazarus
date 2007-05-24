@@ -103,7 +103,9 @@ INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} \
 make compiler_install ${INSTALLOPTS}
 make rtl_install ${INSTALLOPTS}
 make packages_install ${INSTALLOPTS}
-#make fcl_install ${INSTALLOPTS}
+if [ -d fcl ]; then
+  make fcl_install ${INSTALLOPTS}
+fi
 #make fv_install ${INSTALLOPTS}
 #make ide_install ${INSTALLOPTS}
 make utils_install ${INSTALLOPTS}
