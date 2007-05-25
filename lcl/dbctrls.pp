@@ -765,6 +765,7 @@ Type
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
+    procedure UpdateDate(const AValue: string);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;

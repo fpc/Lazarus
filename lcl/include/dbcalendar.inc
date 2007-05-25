@@ -26,10 +26,10 @@
 //update the caption on next record etc...
 procedure TDBCalendar.DataChange(Sender: TObject);
 begin
-  if FDataLink.Field <> nil then
-    inherited Date := FDataLink.Field.AsString//this is wrong, but Text seems Broken
+  if FDatalink.Active and (FDataLink.Field <> nil) then
+    UpdateDate(FDatalink.Field.Text)
   else
-    inherited Date := '';
+    UpdateDate('');
 end;
 
 procedure TDBCalendar.EditingChange(Sender: TObject);
@@ -44,7 +44,6 @@ end;
 procedure TDBCalendar.UpdateData(Sender: TObject);
 begin
   FDataLink.Field.Text := Text;
-  FDataLink.Field.AsString := Text;// I shouldn't have to do this, but text seems broken
 end;
 
 procedure TDBCalendar.FocusRequest(Sender: TObject);
@@ -102,6 +101,15 @@ end;
 procedure TDBCalendar.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
+end;
+
+procedure TDBCalendar.UpdateDate(const AValue: string);
+begin
+  if AValue='' then
+    // TODO: do dbcalendar needs some visual feedback
+    //       that current date is invalid?
+  else
+    inherited date := AValue;
 end;
 
 { Protected Methods}
