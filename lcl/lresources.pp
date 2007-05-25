@@ -1171,38 +1171,35 @@ begin
 end;
 
 function TLResourceList.Find(const Name:AnsiString):TLResource;
-var p:integer;
+var
+  P: Integer;
 begin
-  p:=FindPosition(Name);
-  if (p>=0) and (p<FList.Count)
-  and (AnsiCompareText(TLResource(FList[p]).Name,Name)=0) then begin
-    Result:=TLResource(FList[p]);
-  end
+  P := FindPosition(Name);
+  if P >= 0 then
+    Result:=TLResource(FList[P])
   else
-  begin
     Result:=nil;
-  end;
 end;
 
-function TLResourceList.FindPosition(const Name:AnsiString):integer;
-var l,r,cmp:integer;
+function TLResourceList.FindPosition(const Name: AnsiString): Integer;
+var L,R,C: Integer;
 begin
-  if FSortedCount<FList.Count then
-     Sort;
-  Result:=-1;
-  l:=0;
-  r:=FList.Count-1;
-  while (l<=r) do begin
-    Result:=(l+r) shr 1;
-    cmp:=AnsiCompareText(Name,TLResource(FList[Result]).Name);
-    if cmp<0 then
-      r:=Result-1
+  if FSortedCount < FList.Count then
+    Sort;
+  L := 0;
+  R := FList.Count-1;
+  while (L <= R) do begin
+    Result:=(L + R) shr 1;
+    C := AnsiCompareText(Name,TLResource(FList[Result]).Name);
+    if C < 0 then
+      R := Result - 1
     else
-    if cmp>0 then
-      l:=Result+1
+    if C > 0 then
+      L := Result + 1
     else
-      exit;
+      Exit;
   end;
+  Result := -1;
 end;
 
 function TLResourceList.GetItems(Index: integer): TLResource;
