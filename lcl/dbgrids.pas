@@ -67,7 +67,9 @@ type
     dgAlwaysShowSelection,              // Ya
     dgConfirmDelete,
     dgCancelOnExit,                     // Ya
-    dgMultiselect                       // Ya
+    dgMultiselect,                      // Ya
+    dgHeaderHotTracking,
+    dgHeaderPushedLook
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -491,8 +493,11 @@ type
     property DragMode;
     property Enabled;
     property FixedColor;
+    property FixedHotColor;
     property Flat;
     property Font;
+    property HeaderHotZones;
+    property HeaderPushZones;
     //property ImeMode;
     //property ImeName;
     property Options;
@@ -1037,6 +1042,16 @@ begin
       Include(OldOptions, goTabs)
     else
       Exclude(OldOptions, goTabs);
+      
+    if dgHeaderHotTracking in FOptions then
+      Include(OldOptions, goHeaderHotTracking)
+    else
+      Exclude(OldOptions, goHeaderHotTracking);
+
+    if dgHeaderPushedLook in FOptions then
+      Include(OldOptions, goHeaderPushedLook)
+    else
+      Exclude(OldOptions, goHeaderPushedLook);
 
     inherited Options := OldOptions;
     
@@ -1700,8 +1715,9 @@ begin
     if (ACol=0) and FDrawingMultiSelRecord then
       DrawIndicator(Canvas, aRect, dsCurValue{dummy}, True)
     else
-    if (aRow=0)and(ACol>=FixedCols) then
-      DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
+    if TitleStyle<>tsNative then
+      DrawColumnText(aCol, aRow, aRect, aState);
+
   end else
   if not FDrawingEmptyDataset then begin
     F := GetFieldFromGridColumn(aCol);
@@ -2055,7 +2071,7 @@ begin
   {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
   case Gz of
-    gzFixedRows, gzFixedCols:
+    gzFixedCells, gzFixedRows, gzFixedCols:
       doInherited;
     else
       begin
@@ -2429,6 +2445,8 @@ begin
   else
     DefaultDrawCell(aCol, aRow, aRect, aState);
   DrawCellGrid(aCol, aRow, aRect, aState);
+  if TitleStyle=tsNative then
+    DrawColumnText(aCol,aRow,aRect,aState);
 end;
 
 procedure TCustomDBGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;

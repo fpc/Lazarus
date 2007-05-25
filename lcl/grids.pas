@@ -48,7 +48,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray, LMessages,
-  XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd;
+  XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -101,8 +101,9 @@ type
     goDblClickAutoSize,   // dblclicking columns borders (on hdrs) resize col.
     goSmoothScroll,       // Switch scrolling mode (pixel scroll is by default)
     goFixedRowNumbering,  // Ya
-    goScrollKeepVisible   // keeps focused cell visible while scrolling
-    
+    goScrollKeepVisible,  // keeps focused cell visible while scrolling
+    goHeaderHotTracking,  // Header cells change look when mouse is over them
+    goHeaderPushedLook    // Header cells looks pushed when clicked
   );
   TGridOptions = set of TGridOption;
 
@@ -114,9 +115,12 @@ type
   );
   TSaveOptions = set of TGridSaveOptions;
 
-  TGridDrawState = set of (gdSelected, gdFocused, gdFixed);
-  TGridState =(gsNormal, gsSelecting, gsRowSizing, gsColSizing, gsRowMoving, gsColMoving);
+  TGridDrawState = set of (gdSelected, gdFocused, gdFixed, gdHot, gdPushed);
+  TGridState =(gsNormal, gsSelecting, gsRowSizing, gsColSizing, gsRowMoving,
+    gsColMoving, gsHeaderClicking);
+  
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells, gzInvalid);
+  TGridZoneSet = set of TGridZone;
 
   TUpdateOption = (uoNone, uoQuick, uoFull);
   TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown,
@@ -125,7 +129,7 @@ type
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
 
   TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn); //SSY
-  TCleanOptions = set of TGridZone;
+
 
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
   
@@ -499,6 +503,14 @@ type
       AccumHeight: TList;     // Accumulated Height per row
       TLColOff,TLRowOff: Integer;   // TopLeft Offset in pixels
       MaxTopLeft: TPoint;     // Max Top left ( cell coorditates)
+      HotCell: TPoint;        // currently hot cell
+      HotCellPainted: boolean;// HotCell was already painter?
+      HotGridZone: TGridZone; // GridZone of last MouseMove
+      ClickCell: TPoint;      // Cell coords of the latest mouse click
+      ClickMouse: TPoint;     // mouse coords of the latest mouse click
+      PushedCell: TPoint;     // Cell coords of cell being pushed
+      PushedMouse: TPoint;    // mouse Coords of the cell being pushed
+      ClickCellPushed: boolean;   // Header Cell is currently pushed?
     end;
 
 type
@@ -533,7 +545,7 @@ type
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
     FGridLineColor: TColor;
-    FFixedcolor, FFocusColor, FSelectedColor: TColor;
+    FFixedcolor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
     FFocusRectVisible: boolean;
     FCols,FRows: TList;
     FsaveOptions: TSaveOptions;
@@ -574,6 +586,8 @@ type
     FStrictSort: boolean;
     FIgnoreClick: boolean;
     FAllowOutboundEvents: boolean;
+    FHeaderHotZones: TGridZoneSet;
+    FHeaderPushZones: TGridZoneSet;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -623,6 +637,7 @@ type
     function  GetVisibleColCount: Integer;
     function  GetVisibleGrid: TRect;
     function  GetVisibleRowCount: Integer;
+    procedure HeadersMouseMove(const X,Y:Integer);
     procedure InternalAutoFillColumns;
     function  InternalNeedBorder: boolean;
     procedure InternalSetColWidths(aCol,aValue: Integer);
@@ -631,10 +646,13 @@ type
     procedure InvalidateMovement(DCol,DRow: Integer; OldRange: TRect);
     function  IsAltColorStored: boolean;
     function  IsColumnsStored: boolean;
+    function  IsPushCellActive: boolean;
     procedure OnTitleFontChanged(Sender: TObject);
     procedure ReadColumns(Reader: TReader);
     procedure ReadColWidths(Reader: TReader);
     procedure ReadRowHeights(Reader: TReader);
+    procedure ResetHotCell;
+    procedure ResetPushedCell(ResetColRow: boolean=True);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
@@ -679,6 +697,7 @@ type
     procedure CellClick(const aCol,aRow: Integer); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
+    procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
     procedure ColRowInserted(IsColumn: boolean; index: integer); dynamic;
@@ -719,6 +738,7 @@ type
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
     procedure DrawColRowMoving;
+    procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
     procedure DrawEdges;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); virtual;
     procedure DrawRow(aRow: Integer); virtual;
@@ -850,6 +870,7 @@ type
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
     property FixedColor: TColor read GetFixedColor write SetFixedcolor;
+    property FixedHotColor: TColor read FFixedHotColor write FFixedHotColor;
     property Flat: Boolean read FFlat write SetFlat default false;
     property FocusColor: TColor read FFocusColor write SetFocusColor;
     property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible;
@@ -860,6 +881,8 @@ type
     property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
     property GridLineWidth: Integer read FGridLineWidth write SetGridLineWidth default 1;
     property GridWidth: Integer read FGCache.GridWidth;
+    property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
+    property HeaderPushZones: TGridZoneSet read FHeaderPushZones write FHeaderPushZones default [gzFixedCols];
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
@@ -952,7 +975,6 @@ type
     function  CreateVirtualGrid: TVirtualGrid; virtual;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
-    procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
@@ -1030,6 +1052,7 @@ type
     property Enabled;
     property FixedColor;
     property FixedCols;
+    property FixedHotColor;
     property FixedRows;
     property Flat;
     property Font;
@@ -1126,6 +1149,8 @@ type
     property Flat;
     property Font;
     property GridLineWidth;
+    property HeaderHotZones;
+    property HeaderPushZones;
     property Options;
     //property ParentBiDiMode;
     //property ParentColor;
@@ -1230,9 +1255,9 @@ type
       procedure AutoSizeColumn(aCol: Integer);
       procedure AutoSizeColumns;
       procedure Clean; overload;
-      procedure Clean(CleanOptions: TCleanOptions); overload;
-      procedure Clean(aRect: TRect; CleanOptions: TCleanOptions); overload;
-      procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TCleanOptions); overload;
+      procedure Clean(CleanOptions: TGridZoneSet); overload;
+      procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
+      procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property DefaultTextStyle;
@@ -1276,6 +1301,8 @@ type
     property Flat;
     property Font;
     property GridLineWidth;
+    property HeaderHotZones;
+    property HeaderPushZones;
     property Options;
     //property ParentBiDiMode;
     //property ParentColor;
@@ -1435,6 +1462,36 @@ begin
 end;
 {$Endif GridTraceMsg}
 
+function dbgs(zone: TGridZone):string;
+begin
+  case Zone of
+    gzFixedCells: Result := 'gzFixedCells';
+    gzFixedCols:  Result := 'gzFixedCols';
+    gzFixedRows:  Result := 'gzFixedRows';
+    gzNormal:     Result := 'gzNormal';
+    gzInvalid:    Result := 'gzInvalid';
+    else
+      result:= 'gz-error';
+  end;
+end;
+
+function Dbgs(zones: TGridZoneSet):string;
+  procedure add(const s:string);
+  begin
+    if result<>'' then
+      result := result + ',' + s
+    else
+      result := s;
+  end;
+begin
+  result:='';
+  if gzFixedCells in zones then add('gzFixedCells');
+  if gzFixedCols  in zones then add('gzFixedCols');
+  if gzFixedRows  in zones then add('gzFixedRows');
+  if gzNormal in zones then add('gzNormal');
+  if gzInvalid in zones then add('gzInvalid');
+  result := '['+result+']';
+end;
 
 procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
   procedure DrawVertLine(X1,Y1,Y2: integer);
@@ -1502,6 +1559,43 @@ var
 begin
   R:=FGCache.VisibleGrid;
   Result:=r.bottom-r.top+1;
+end;
+
+procedure TCustomGrid.HeadersMouseMove(const X, Y: Integer);
+var
+  P: TPoint;
+  Gz: TGridZone;
+begin
+
+  with FGCache do begin
+
+    Gz := MouseToGridZone(X,Y);
+    P := MouseToCell(Point(X,Y));
+
+    if (goHeaderHotTracking in Options) and
+      ((gz<>HotGridZone) or (P.x<>HotCell.x) or (P.y<>HotCell.y)) then begin
+      ResetHotCell;
+      if Gz in FHeaderHotZones then begin
+        InvalidateCell(P.X, P.Y);
+        HotCell := P;
+      end;
+    end;
+
+    if goHeaderPushedLook in Options then begin
+      if ClickCellPushed then begin
+        if (P.X<>PushedCell.x) or (P.Y<>PushedCell.Y) then
+          ResetPushedCell(False);
+      end else
+      if IsPushCellActive() then begin
+        if (P.X=PushedCell.X) and (P.Y=PushedCell.Y) then begin
+          ClickCellPushed:=True;
+          InvalidateCell(P.X, P.Y);
+        end;
+      end;
+    end;
+
+    HotGridZone := Gz;
+  end;
 end;
 
 procedure TCustomGrid.InternalAutoFillColumns;
@@ -1741,6 +1835,12 @@ end;
 function TCustomGrid.IsColumnsStored: boolean;
 begin
   result := Columns.Enabled;
+end;
+
+function TCustomGrid.IsPushCellActive: boolean;
+begin
+  with FGCache do
+    result := (PushedCell.X<>-1) and (PushedCell.Y<>-1);
 end;
 
 function TCustomGrid.GetLeftCol: Integer;
@@ -2588,6 +2688,8 @@ begin
       FLastFont:=nil;
     end else begin
       AColor := GetColumnColor(aCol, gdFixed in AState);
+      if (gdFixed in AState) and (gdHot in aState) then
+        aColor := FFixedHotColor;
       if not (gdFixed in AState) and (FAlternateColor<>AColor) then  begin
         if AColor=Color then begin
           // column color = grid Color, Allow override color
@@ -2612,6 +2714,28 @@ begin
   end;
   if Assigned(OnPrepareCanvas) then
     OnPrepareCanvas(Self, aCol, aRow, aState);
+end;
+
+procedure TCustomGrid.ResetHotCell;
+begin
+  with FGCache do begin
+    if HotCellPainted then
+      InvalidateCell(HotCell.X, HotCell.Y);
+    HotCell := Point(-1,-1);
+    HotCellPainted := False;
+    HotGridZone := gzInvalid;
+  end;
+end;
+
+procedure TCustomGrid.ResetPushedCell(ResetColRow: boolean=True);
+begin
+  with FGCache do begin
+    if ClickCellPushed then
+      InvalidateCell(PushedCell.X, PushedCell.Y);
+    if ResetColRow then
+      PushedCell := Point(-1,-1);
+    ClickCellPushed := False;
+  end;
 end;
 
 procedure TCustomGrid.ResetOffset(chkCol, ChkRow: Boolean);
@@ -2781,6 +2905,13 @@ begin
   end;
 end;
 
+procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+begin
+  if (gdFixed in aState) and (aRow=0) and (aCol>=FixedCols) then
+    DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
+end;
+
 procedure TCustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
@@ -2815,10 +2946,25 @@ end;
 procedure TCustomGrid.DrawRow(aRow: Integer);
 var
   Gds: TGridDrawState;
-  i: Integer;
+  aCol: Integer;
   Rs: Boolean;
   R: TRect;
   ClipArea: Trect;
+  
+  procedure DoDrawCell;
+  begin
+    with FGCache do begin
+      if (aCol=HotCell.x) and (aRow=HotCell.y) and not IsPushCellActive() then begin
+        Include(gds, gdHot);
+        HotCellPainted:=True;
+      end;
+      if ClickCellPushed and (aCol=PushedCell.x) and (aRow=PushedCell.y) then begin
+        Include(gds, gdPushed);
+       end;
+    end;
+    DrawCell(aCol, aRow, R, gds);
+  end;
+  
 begin
 
   // Upper and Lower bounds for this row
@@ -2835,8 +2981,8 @@ begin
 
   // Draw columns in this row
   with FGCache.VisibleGrid do begin
-    for i:=left to Right do begin
-      ColRowToOffset(True, True, i, R.Left, R.Right);
+    for aCol:=left to Right do begin
+      ColRowToOffset(True, True, aCol, R.Left, R.Right);
       if not HorizontalIntersect(R, ClipArea) then
         continue;
       gds := [];
@@ -2844,16 +2990,17 @@ begin
       if ARow<FFixedRows then
         include(gds, gdFixed)
       else begin
-        if (i=FCol)and(aRow=FRow) then begin
+        if (aCol=FCol)and(aRow=FRow) then begin
           Include(gds, gdFocused);
           if (goDrawFocusSelected in Options) or
             (Rs and not(goRelaxedRowSelect in Options)) then
             include(gds, gdSelected);
         end else
-        if IsCellSelected[i, aRow] then
+        if IsCellSelected[aCol, aRow] then
           include(gds, gdSelected);
       end;
-      DrawCell(i, aRow, R, gds);
+      
+      DoDrawCell;
     end;
 
     // Draw the focus Rect
@@ -2875,12 +3022,12 @@ begin
 
 
   // Draw Fixed Columns
-  gds:=[gdFixed];
-  For i:=0 to FFixedCols-1 do begin
-    ColRowToOffset(True, True, i, R.Left, R.Right);
+  For aCol:=0 to FFixedCols-1 do begin
+    gds:=[gdFixed];
+    ColRowToOffset(True, True, aCol, R.Left, R.Right);
     // is this column within the ClipRect?
     if HorizontalIntersect( R, ClipArea) then
-      DrawCell(i,aRow, R,gds);
+      DoDrawCell;
   end;
 end;
 
@@ -2958,7 +3105,7 @@ end;
 procedure TCustomGrid.DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
 var
   dv,dh: Boolean;
-  aR: TRect;
+  details: TThemedElementDetails;
 begin
   // Draw Cell Grid or Maybe in the future Borders..
   with Canvas, aRect do begin
@@ -2975,22 +3122,34 @@ begin
       begin
         if FTitleStyle=tsNative then
         begin
-          aR := aRect;
-          DrawFrameControl(Handle, ar, DFC_BUTTON, DFCS_BUTTONPUSH);
+          if gdPushed in aState then
+            Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
+          else
+          if gdHot in aState then
+            Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+          else
+            Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
+          ThemeSErvices.DrawElement(Handle, Details, aRect, nil);
           exit;
         end
         else
         begin
           if FGridLineWidth > 0 then
           begin
-            Pen.Color := cl3DHilight;
+            if gdPushed in aState then
+              Pen.Color := cl3DShadow
+            else
+              Pen.Color := cl3DHilight;
             MoveTo(Right - 1, Top);
             LineTo(Left, Top);
             LineTo(Left, Bottom);
             if FTitleStyle=tsStandard then
             begin
               // more contrast
-              Pen.Color := cl3DShadow;
+              if gdPushed in aState then
+                Pen.Color := cl3DHilight
+              else
+                Pen.Color := cl3DShadow;
               MoveTo(Left+1, Bottom-2);
               LineTo(Right-2, Bottom-2);
               LineTo(Right-2, Top);
@@ -3867,52 +4026,69 @@ end;
 
 procedure TCustomGrid.doColMoving(X, Y: Integer);
 var
-  P: TPoint;
+  CurCell: TPoint;
   R: TRect;
 begin
   //debugLn('DoColMoving: FDragDX=',IntToStr(FDragDX), ' Sp.x= ', IntTOStr(FSplitter.X), 'Sp.y= ', IntToStr(FSplitter.y));
-  P:=MouseToCell(Point(X,Y));
-  if (Abs(FSplitter.Y-X)>fDragDx)and(Cursor<>crMultiDrag) then begin
-    Cursor:=crMultiDrag;
-    FMoveLast:=Point(-1,-1);
-    ResetOffset(True, False);
-  end;
-  if (Cursor=crMultiDrag)and
-     (P.x>=FFixedCols) and
-     ((P.X<=FSplitter.X)or(P.X>FSplitter.X))and
-     (P.X<>FMoveLast.X) then begin
-      R:=CellRect(P.x, P.y);
-      if P.x<=FSplitter.X then fMoveLast.Y:=R.left
-      else                     FMoveLast.Y:=R.Right;
-      fMoveLast.X:=P.X;
+  CurCell:=MouseToCell(Point(X,Y));
+
+  with FGCache do begin
+
+    if (Abs(ClickMouse.X-X)>FDragDX) and (Cursor<>crMultiDrag) then begin
+      Cursor:=crMultiDrag;
+      FMoveLast:=Point(-1,-1);
+      ResetOffset(True, False);
+    end;
+    
+    if (Cursor=crMultiDrag) and
+       (CurCell.X>=FFixedCols) and
+       ((CurCell.X<=ClickCell.X) or (CurCell.X>ClickCell.X)) and
+       (CurCell.X<>FMoveLast.X) then begin
+       
+      R := CellRect(CurCell.X, CurCell.Y);
+      if CurCell.X<=ClickCell.X then
+        FMoveLast.Y := R.Left
+      else
+        FMoveLast.Y := R.Right;
+        
+      FMoveLast.X := CurCell.X;
       {$ifdef AlternativeMoveIndicator}
       InvalidateRow(0);
       {$else}
       Invalidate;
       {$endif}
+    end;
   end;
 end;
 
 procedure TCustomGrid.doRowMoving(X, Y: Integer);
 var
-  P: TPoint;
+  CurCell: TPoint;
   R: TRect;
 begin
-  P:=MouseToCell(Point(X,Y));
-  if (Cursor<>crMultiDrag)and(Abs(FSplitter.X-Y)>fDragDx) then begin
-    Cursor:=crMultiDrag;
-    FMoveLast:=Point(-1,-1);
-    ResetOffset(False, True);
-  end;
-  if (Cursor=crMultiDrag)and
-     (P.y>=FFixedRows) and
-     ((P.y<=FSplitter.Y)or(P.Y>FSplitter.Y))and
-     (P.y<>FMoveLast.Y) then begin
-      R:=CellRect(P.x, P.y);
-      if P.y<=FSplitter.y then fMoveLast.X:=R.Top
-      else                     FMoveLast.X:=R.Bottom;
-      fMoveLast.Y:=P.Y;
+  CurCell:=MouseToCell(Point(X,Y));
+  
+  with FGCache do begin
+  
+    if (Cursor<>crMultiDrag) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
+      Cursor:=crMultiDrag;
+      FMoveLast:=Point(-1,-1);
+      ResetOffset(False, True);
+    end;
+    
+    if (Cursor=crMultiDrag)and
+       (CurCell.Y>=FFixedRows) and
+       ((CurCell.Y<=ClickCell.Y) or (CurCell.Y>ClickCell.Y))and
+       (CurCell.Y<>FMoveLast.Y) then begin
+       
+      R:=CellRect(CurCell.X, CurCell.Y);
+      if CurCell.Y<=ClickCell.Y then
+        FMoveLast.X:=R.Top
+      else
+        FMoveLast.X:=R.Bottom;
+      FMoveLast.Y:=CurCell.Y;
       Invalidate;
+    end;
   end;
 end;
 
@@ -4218,9 +4394,20 @@ end;
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
-  Gz: TGridZone;
   R: TRect;
   WasFocused: boolean;
+  
+  procedure DoPushCell;
+  begin
+    with FGCache do
+    if (goHeaderPushedLook in Options) and (HotGridZone in FHeaderPushZones) then
+    begin
+      PushedCell := ClickCell;
+      ClickCellPushed:=True;
+      InvalidateCell(PushedCell.x, PushedCell.y);
+    end;
+  end;
+
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
@@ -4230,20 +4417,22 @@ begin
   {$IfDef dbgGrid} DebugLn('MouseDown INIT'); {$Endif}
 
   FIgnoreClick := True;
-  Gz:=MouseToGridZone(X,Y);
 
   {$IFDEF dbgGrid}
-  DbgOut('Mouse was in ');
-  case Gz of
-    gzFixedCells: DebugLn('gzFixedCells');
-    gzFixedCols:  DebugLn('gzFixedCols');
-    gzFixedRows:  DebugLn('gzFixedRows');
-    gzNormal:     DebugLn('gzNormal');
-    gzInvalid:    DebugLn('gzInvalid');
-  end;
+  DbgOut('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
+  
+  FGCache.ClickMouse := Point(X,Y);
+  FGCache.ClickCell  := MouseToCell(FGCache.ClickMouse);
 
-  case Gz of
+  case FGCache.HotGridZone of
+  
+    gzFixedCells:
+      begin
+        FGridState := gsHeaderClicking;
+        DoPushCell;
+      end;
+
     gzFixedCols:
       begin
         if (goColSizing in Options)and(Cursor=crHSplit) then begin
@@ -4253,9 +4442,8 @@ begin
         end else begin
           // ColMoving or Clicking
           fGridState:=gsColMoving;
-          FSplitter:=MouseToCell(Point(X,Y));
           FMoveLast:=Point(-1,-1);
-          FSplitter.Y:=X;
+          DoPushCell;
         end;
       end;
       
@@ -4267,9 +4455,8 @@ begin
       end else begin
         // RowMoving or Clicking
         fGridState:=gsRowMoving;
-        fSplitter:=MouseToCell(Point(X,Y));
         FMoveLast:=Point(-1,-1);
-        FSplitter.X:=Y;
+        DoPushCell;
       end;
       
     gzNormal:
@@ -4336,7 +4523,12 @@ var
 begin
   inherited MouseMove(Shift, X, Y);
 
-  case fGridState of
+  HeadersMouseMove(X,Y);
+
+  case FGridState of
+
+    gsHeaderClicking:
+      ;
 
     gsSelecting:
       if not FixedGrid and (not (goEditing in Options) or
@@ -4357,8 +4549,11 @@ begin
       
     else
       begin
-        if goColSizing in Options then doColSizing(X,Y);
-        if goRowSizing in Options then doRowSizing(X,Y);
+        if goColSizing in Options then
+          doColSizing(X,Y);
+          
+        if goRowSizing in Options then
+          doRowSizing(X,Y);
       end;
   end;
 end;
@@ -4372,8 +4567,13 @@ begin
   {$IfDef dbgGrid}DebugLn('MouseUP INIT');{$Endif}
   
   Cur:=MouseToCell(Point(x,y));
+
   case fGridState of
   
+    gsHeaderClicking:
+      if (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then
+        HeaderClick(True, FGCache.ClickCell.X);
+
     gsNormal:
       if not FixedGrid then
         CellClick(cur.x, cur.y);
@@ -4390,27 +4590,28 @@ begin
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
         if FMoveLast.X>=0 then begin
-          if FMoveLast.X=FSplitter.X then
+          if FMoveLast.X=FGCache.ClickCell.X then
             {$ifdef AlternativeMoveIndicator}
             InvalidateRow(0);
             {$else}
             Invalidate;
             {$endif}
-          DoOPMoveColRow(True, Fsplitter.X, FMoveLast.X);
+          DoOPMoveColRow(True, FGCache.ClickCell.X, FMoveLast.X);
           Cursor:=crDefault;
         end else
-          if Cur.X=FSplitter.X then
-            HeaderClick(True, FSplitter.X);
+          if Cur.X=FGCache.ClickCell.X then
+            HeaderClick(True, FGCache.ClickCell.X);
       end;
       
     gsRowMoving:
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
         if FMoveLast.Y>=0 then begin
-          DoOPMoveColRow(False, Fsplitter.Y, FMoveLast.Y);
+          DoOPMoveColRow(False, FGCache.ClickCell.Y, FMoveLast.Y);
           Cursor:=crDefault;
         end else
-          if Cur.Y=FSplitter.Y then HeaderClick(False, FSplitter.Y);
+          if Cur.Y=FGCache.ClickCell.Y then
+            HeaderClick(False, FGCache.ClickCell.Y);
       end;
       
     gsColSizing:
@@ -4440,6 +4641,12 @@ begin
   end;
   fGridState:=gsNormal;
   GridFlags := GridFlags - [gfNeedsSelectActive];
+  
+  if (goHeaderPushedLook in Options) and IsPushCellActive() then
+  begin
+    ResetPushedCell;
+  end;
+
   {$IfDef dbgGrid}DebugLn('MouseUP  END  RND=', FloatToStr(Random));{$Endif}
 end;
 
@@ -5133,6 +5340,12 @@ procedure TCustomGrid.CheckLimitsWithError(const aCol, aRow: Integer);
 begin
   if (aCol < 0) or (aRow < 0) or (aCol >= ColCount) or (aRow >= RowCount) then
     raise EGridException.Create(rsGridIndexOutOfRange);
+end;
+
+procedure TCustomGrid.CMMouseLeave(var Message: TLMessage);
+begin
+  ResetHotCell;
+  inherited CMMouseLeave(Message);
 end;
 
 // This procedure checks if cursor cell position is allowed
@@ -6211,6 +6424,7 @@ begin
   FGridLineWidth := 1;
   fFocusColor:=clRed;
   FFixedColor:=clBtnFace;
+  FFixedHotColor:=cl3DLight;
   FSelectedColor:= clHighlight;
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
@@ -6252,6 +6466,11 @@ begin
   FFastEditing := True;
   TabStop := True;
   FAllowOutboundEvents:=True;
+  
+  FHeaderHotZones := [gzFixedCols];
+  FHeaderPushZones := [gzFixedCols];
+  ResetHotCell;
+  ResetPushedCell;
 end;
 
 destructor TCustomGrid.Destroy;
@@ -6364,6 +6583,7 @@ begin
   FRange:=Rect(-1,-1,-1,-1);
   FGCache.TLColOff := 0;
   FGCache.TlRowOff := 0;
+  FGCache.HotCell := Point(-1, -1);
   VisualChange;
   SizeChanged(OldR,OldC);
 end;
@@ -6921,20 +7141,6 @@ begin
   Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, aValue);
 end;
 
-procedure TCustomDrawGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
-  aState: TGridDrawState);
-var
-  C: TGridColumn;
-begin
-  if Columns.Enabled and (gdFixed in aState) and
-    (aCol>=FixedCols) and (aRow=0) then begin
-    // draw the column title if there is any
-    C := ColumnFromGridColumn(aCol);
-    if C<>nil then
-      DrawCellText(aCol,aRow,aRect,aState,C.Title.Caption);
-  end;
-end;
-
 function TCustomDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
@@ -7458,19 +7664,19 @@ begin
   Clean([gzNormal, gzFixedCols, gzFixedRows, gzFixedCells]);
 end;
 
-procedure TCustomStringGrid.Clean(CleanOptions: TCleanOptions);
+procedure TCustomStringGrid.Clean(CleanOptions: TGridZoneSet);
 begin
   Clean(0,0,ColCount-1,RowCount-1, CleanOptions);
 end;
 
-procedure TCustomStringGrid.Clean(aRect: TRect; CleanOptions: TCleanOptions);
+procedure TCustomStringGrid.Clean(aRect: TRect; CleanOptions: TGridZoneSet);
 begin
   with aRect do
   Clean(Left, Top, Right, Bottom, CleanOptions);
 end;
 
 procedure TCustomStringGrid.Clean(StartCol, StartRow, EndCol, EndRow: integer;
-  CleanOptions: TCleanOptions);
+  CleanOptions: TGridZoneSet);
 var
   aCol: LongInt;
   aRow: LongInt;
