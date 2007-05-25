@@ -4783,16 +4783,13 @@ begin
 end;
 
 Function TGtkWidgetSet.GetROP2(DC: HDC): Integer;
-var
-  Values: TGdkGCValues;
 begin
   if not IsValidDC(DC) then begin
     Assert(False, 'Trace:[TGtkWidgetSet.GetROP2] Invalid GC');
     result := 0
   end else
     with TDeviceContext(DC) do begin
-      gdk_gc_get_values(GetGC, @Values);
-      Result := GdkFunctionToROP2Mode(Values.{$ifdef gtk1}thefunction{$else}_function{$endif} )
+      Result := GdkFunctionToROP2Mode(GCValues.{$ifdef gtk1}thefunction{$else}_function{$endif} )
     end;
 end;
 
@@ -6844,6 +6841,16 @@ begin
         debugln('TGtkWidgetSet.LineTo SWAPPED ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
       end;}
       //gdk_gc_set_line_attributes(gc,1,GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+      // if line width is 1, then we need
+      // "GDK_CAP_NOT_LAST - for zero width lines, the final point on the line
+      //                     will not be drawn"
+      if (GCValues.line_width=1) then
+      begin
+        {gc_values.line_width:=0; // fp not have "gdk_gc_set_values" implementation
+        gdk_gc_set_values(GC, @gc_values, GDK_GC_LINE_WIDTH);}
+        gdk_gc_set_line_attributes(GC, 0, GCValues.line_style, GDK_CAP_NOT_LAST,
+                                   GCValues.join_style);
+      end;
       gdk_draw_line(Drawable, GetGC, FromX, FromY, ToX, ToY);
       {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       PenPos:= Point(X, Y);
