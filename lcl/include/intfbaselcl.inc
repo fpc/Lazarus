@@ -440,46 +440,10 @@ begin
   Result:=true;
 end;
 
-Function TWidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
+function TWidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
 begin
-  Case StockID of
-    idButtonOk :
-      Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
-    idButtonYes :
-      Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
-    idButtonNo :
-      Result := CreatePixmapIndirect(@IMG_NO[0], GetSysColor(COLOR_BTNFACE));
-    idButtonCancel :
-      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
-    idButtonHelp :
-      Result := CreatePixmapIndirect(@IMGHELP[0], GetSysColor(COLOR_BTNFACE));
-    idButtonAll :
-      Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
-    idButtonYesToAll :
-      Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
-    idButtonNoToAll :
-      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
-    idButtonAbort :
-      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
-    idButtonRetry :
-      Result := CreatePixmapIndirect(@IMG_RETRY[0], GetSysColor(COLOR_BTNFACE));
-    idButtonIgnore :
-      Result := CreatePixmapIndirect(@IMG_IGNIORE[0], GetSysColor(COLOR_BTNFACE));
-    idButtonClose :
-      Result := CreatePixmapIndirect(@IMGClose[0], GetSysColor(COLOR_BTNFACE));
-
-    idDialogWarning :
-      Result := CreatePixmapIndirect(@IMGWarning[0], GetSysColor(COLOR_BTNFACE));
-    idDialogError :
-      Result := CreatePixmapIndirect(@IMGError[0], GetSysColor(COLOR_BTNFACE));
-    idDialogInfo :
-      Result := CreatePixmapIndirect(@IMGInfo[0], GetSysColor(COLOR_BTNFACE));
-    idDialogConfirm :
-      Result := CreatePixmapIndirect(@IMGConfirmation[0], GetSysColor(COLOR_BTNFACE));
-
-    else
-      Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
-  end;
+  Mask := 0;
+  Result := 0;
 end;
 
 function TWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;

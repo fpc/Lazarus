@@ -113,10 +113,6 @@ type
   EInterfaceCritical = class(EInterfaceException);
   EInterfaceWarning = class(EInterfaceException);
 
-
-{$I defaultbitbtnimages.inc}
-{$I messagedialogpixmaps.inc}
-
 type
   TInputDialogFunction = Function (const InputCaption, InputPrompt : String;
                              MaskInput : Boolean; var Value : String) : Boolean;

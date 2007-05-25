@@ -333,9 +333,9 @@ begin
   Result := WidgetSet.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
 
-function LoadStockPixmap(StockID: longint) : HBitmap;
+function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
 begin
-  Result := WidgetSet.LoadStockPixmap(StockID);
+  Result := WidgetSet.LoadStockPixmap(StockID, Mask);
 end;
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;

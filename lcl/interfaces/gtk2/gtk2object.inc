@@ -489,14 +489,15 @@ begin
   end;
 end;
 
-Function TGtk2WidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
+function TGtk2WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
 var
   Pixmap : PGDIObject;
   StockName : PChar;
   IconSet : PGtkIconSet;
   Pixbuf : PGDKPixbuf;
 begin
-  Case StockID Of
+  Mask := 0;
+  case StockID Of
     idButtonOk : StockName := GTK_STOCK_OK;
     idButtonCancel : StockName := GTK_STOCK_CANCEL;
     idButtonYes : StockName := GTK_STOCK_YES;
@@ -510,7 +511,7 @@ begin
     idDialogInfo : StockName := GTK_STOCK_DIALOG_INFO;
     idDialogConfirm : StockName := GTK_STOCK_DIALOG_QUESTION;
    else begin
-      Result := inherited LoadStockPixmap(StockID);
+      Result := inherited LoadStockPixmap(StockID, Mask);
       exit;
     end;
   end;

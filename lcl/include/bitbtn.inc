@@ -168,31 +168,52 @@ end;
 procedure TCustomBitBtn.RealizeKind;
 var
   GlyphValid: Boolean;
-  CustomGlyph: TBitmap;
+  CustomGlyph: TGraphic;
+  BitmapHandle, MaskHandle: HBitmap;
 begin
-  if (Kind<>bkCustom) 
-  then begin
+  if (Kind<>bkCustom) then
+  begin
     GlyphValid:=false;
     
     // first let the user override
-    if GetDefaultBitBtnGlyph<>nil then begin
-      CustomGlyph:=GetDefaultBitBtnGlyph(Kind);
-      if CustomGlyph<>nil then begin
+    if GetDefaultBitBtnGlyph <> nil then
+    begin
+      CustomGlyph := GetDefaultBitBtnGlyph(Kind);
+      if CustomGlyph <> nil then
+      begin
         Glyph.Assign(CustomGlyph);
         CustomGlyph.Free;
-        GlyphValid:=true;
+        GlyphValid := True;
       end;
     end;
 
     // then ask the widgetset
-    if not GlyphValid then begin
-      Glyph.Handle := LoadStockPixmap(BitBtnImages[FKind]);
-      GlyphValid:=true;
+    if not GlyphValid then 
+    begin
+      BitmapHandle := LoadStockPixmap(BitBtnImages[FKind], MaskHandle);
+      if BitmapHandle <> 0 then
+      begin
+        Glyph.Handle := BitmapHandle;
+        if MaskHandle <> 0 then
+          Glyph.MaskHandle := MaskHandle;
+        GlyphValid := true;
+      end;
+    end;
+    
+    if not GlyphValid then
+    begin
+      CustomGlyph := GetLCLDefaultBtnGlyph(Kind);
+      if CustomGlyph <> nil then
+      begin
+        Glyph.Assign(CustomGlyph);
+        CustomGlyph.Free;
+        GlyphValid := True;
+      end;
     end;
   end;
 
-  if not (csLoading in ComponentState) 
-  then begin
+  if not (csLoading in ComponentState) then
+  begin
     Caption := GetCaptionOfKind(fKind);
     ModalResult := BitBtnModalResults[FKind];
     Default := FKind in [bkOk,bkYes];

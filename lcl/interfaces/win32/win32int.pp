@@ -22,11 +22,11 @@
  *****************************************************************************
 }
 
-Unit Win32Int;
+unit Win32Int;
 
 {$mode objfpc}{$H+}{$T-}{$message warning Fix implicit pointer conversions}
 
-Interface
+interface
 
 {$IFDEF Trace}
 {$ASSERTIONS ON}
@@ -40,13 +40,13 @@ Interface
   When editing this unit list, be sure to keep Windows listed first to ensure
   successful compilation.
 }
-Uses
+uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, Themes;
 
 const
-
+// standard windows cursors
   IDC_ARROW     = System.MakeIntResource(32512);
   IDC_IBEAM     = System.MakeIntResource(32513);
   IDC_WAIT      = System.MakeIntResource(32514);
@@ -94,7 +94,19 @@ const
   { month picker, date picker, time picker, updown }
   ICC_DATE_CLASSES       = $00000100;
 
-Type
+// standard windows icons (WinUser.h)
+  IDI_APPLICATION = System.MakeIntResource(32512);
+  IDI_HAND        = System.MakeIntResource(32513);
+  IDI_QUESTION    = System.MakeIntResource(32514);
+  IDI_EXCLAMATION = System.MakeIntResource(32515);
+  IDI_ASTERISK    = System.MakeIntResource(32516);
+  IDI_WINLOGO     = System.MakeIntResource(32517); // XP only
+
+  IDI_WARNING     = IDI_EXCLAMATION;
+  IDI_ERROR       = IDI_HAND;
+  IDI_INFORMATION = IDI_ASTERISK;
+
+type
   PInitCommonControlsEx = ^TInitCommonControlsEx;
   TInitCommonControlsEx = record
     dwSize: dword;
@@ -123,8 +135,8 @@ Type
 
   { TWin32WidgetSet }
 
-  TWin32WidgetSet = Class(TWidgetSet)
-  Private
+  TWin32WidgetSet = class(TWidgetSet)
+  private
     // The parent of all windows, represents the button of the taskbar
     // This window is also the owner of the clipboard.
     // Assoc. windowproc also acts as handler for popup menus
@@ -159,6 +171,7 @@ Type
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
     procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
         Desc: PRawImageDescription);
+    function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
 
     { event handler helper functions }
     procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
@@ -169,7 +182,7 @@ Type
     Procedure NormalizeIconName(Var IconName: PChar);
 
     function CreateThemeServices: TThemeServices; override;
-  Public
+  public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
@@ -216,7 +229,7 @@ Type
     property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
-  End;
+  end;
 
   {$I win32listslh.inc}
 
@@ -242,9 +255,9 @@ function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
 
-Implementation
+implementation
 
-Uses
+uses
   Win32Proc,
 ////////////////////////////////////////////////////
 // I M P O R T A N T
@@ -313,7 +326,7 @@ var
 {$I win32winapi.inc}
 {$I win32lclintf.inc}
 
-Initialization
+initialization
 
   Assert(False, 'Trace:win32int.pp - Initialization');
   { initialize mousedownclick to far before double click time }

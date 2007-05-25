@@ -594,6 +594,7 @@ initialization
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
   {$I forms/finddlgunit.lrs}
   {$I forms/replacedlgunit.lrs}
+  {$I dialog_icons.lrs}
 
 finalization
   InterfaceBase.InputDialogFunction:=nil;

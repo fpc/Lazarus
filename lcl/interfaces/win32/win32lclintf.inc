@@ -367,4 +367,34 @@ begin
                 LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR;
 end;
 
+function TWin32WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap): HBitmap;
+{$ifdef NoMaskProblem}
+var
+  AIconHandle: HIcon;
+  AIconInfo: TIconInfo;
+{$endif}
+begin
+{$ifdef NoMaskProblem}
+  Result := 0;
+  case StockID of
+    idDialogWarning: AIconHandle := LoadIcon(0, IDI_EXCLAMATION);
+    idDialogError  : AIconHandle := LoadIcon(0, IDI_HAND);
+    idDialogInfo   : AIconHandle := LoadIcon(0, IDI_ASTERISK);
+    idDialogConfirm: AIconHandle := LoadIcon(0, IDI_QUESTION);
+  else
+    AIconHandle := 0;
+  end;
+  if AIconHandle <> 0 then
+  begin
+    if GetIconInfo(AIconHandle, @AIconInfo) then
+    begin
+      Result := AIconInfo.hbmColor;
+      Mask := AIconInfo.hbmMask;
+    end
+  end;
+  if Result = 0 then
+{$endif}
+    Result := inherited LoadStockPixmap(StockID, Mask);
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

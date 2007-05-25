@@ -58,7 +58,7 @@ type
     function CreateComponent(Sender : TObject): THandle; override;
     function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
-    function LoadStockPixmap(StockID: longint) : HBitmap; override;
+    function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;

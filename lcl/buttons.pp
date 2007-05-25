@@ -39,8 +39,8 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts,
-  GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms,
-  Themes, Menus {for ShortCut procedures};
+  GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
+  Themes, Menus{for ShortCut procedures}, LResources;
 
 type
   { TButton }
@@ -220,7 +220,6 @@ type
     property Margin: integer read FMargin write SetMargin default -1;
     property Spacing: Integer read FSpacing write SetSpacing default 3;
   end;
-
 
   { TBitBtn }
   { To set custom bitbtn glyphs for the whole application, see below for
@@ -426,6 +425,7 @@ type
 var
   GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 
+function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
 
 procedure Register;
 
@@ -445,6 +445,31 @@ const
     idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
     idButtonAll, idButtonNoToAll, idButtonYesToAll);
 
+  BitBtnResNames: array[TBitBtnKind] of String =
+  (
+{bkCustom  } '',
+{bkOK      } 'btn_ok',
+{bkCancel  } 'btn_cancel',
+{bkHelp    } 'btn_help',
+{bkYes     } 'btn_yes',
+{bkNo      } 'btn_no',
+{bkClose   } 'btn_close',
+{bkAbort   } 'btn_abort',
+{bkRetry   } 'btn_retry',
+{bkIgnore  } 'btn_ignore',
+{bkAll     } 'btn_all',
+{bkNoToAll } 'btn_no',
+{bkYesToAll} 'btn_all'
+  );
+
+function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
+begin
+  Result := nil;
+  if BitBtnResNames[Kind] = '' then
+    Exit;
+  Result := LoadBitmapFromLazarusResource(BitBtnResNames[Kind]);
+end;
+
 procedure Register;
 begin
   RegisterComponents('Standard',[TButton]);
@@ -456,4 +481,6 @@ end;
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
 
+initialization
+  {$I btn_icons.lrs}
 end.

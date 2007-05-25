@@ -295,6 +295,8 @@ type
     property PageIndex;
     property PopupMenu;
     property ShowTabs;
+    property TabOrder;
+    property TabStop;
   end;
 
 

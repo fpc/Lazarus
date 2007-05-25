@@ -22,14 +22,15 @@ const
 
   DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (
     bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
-    bkIgnore, bkAll, bkCustom, bkCustom);
+    bkIgnore, bkAll, bkYesToAll, bkNoToAll);
 
-  {DialogButtonText : Array[idButtonOK..idButtonNoToAll] of String = (
-    rsmbOk, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, rsmbClose, rsmbAbort,
-    rsmbRetry, rsmbIgnore, rsmbAll, rsmbYesToAll, rsmbNoToAll);}
-
-  {DialogCaption : Array[idDialogWarning..idDialogConfirm] of String = (
-    rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);}
+  DialogResName: array[idDialogWarning..idDialogConfirm] of String =
+  (
+{idDialogWarning} 'dialog_warning',
+{idDialogError  } 'dialog_error',
+{idDialogInfo   } 'dialog_information',
+{idDialogConfirm} 'dialog_confirmation'
+  );
 
 type
   TPromptDialog = class(TForm)
@@ -38,7 +39,7 @@ type
   public
     TheDefaultIndex : Longint;
 
-    FBitmap : TBitmap;
+    FBitmap: TBitmap;
     MSG : AnsiString;
     NumButtons : Longint;
     Buttons : PLongint;
@@ -65,23 +66,21 @@ begin
   end;
 end;
 
-{** Return the text associed a an standard button}
-function GetDialogButtonText(idBut: Integer): string;
+function GetDialogIcon(idDiag: Integer): TBitmap;
+var
+  BitmapHandle, MaskHandle: HBitmap;
 begin
-  Result:='';
-  Case idBut of
-    idButtonOk       : Result:=rsmbOk;
-    idButtonCancel   : Result:=rsmbCancel;
-    idButtonHelp     : Result:=rsmbHelp;
-    idButtonYes      : Result:=rsmbYes;
-    idButtonNo       : Result:=rsmbNo;
-    idButtonClose    : Result:=rsmbClose;
-    idButtonAbort    : Result:=rsmbAbort;
-    idButtonRetry    : Result:=rsmbRetry;
-    idButtonIgnore   : Result:=rsmbIgnore;
-    idButtonAll      : Result:=rsmbAll;
-    idButtonYesToAll : Result:=rsmbYesToAll;
-    idButtonNoToAll  : Result:=rsmbNoToAll;
+  BitmapHandle := LoadStockPixmap(idDiag, MaskHandle);
+  if BitmapHandle <> 0 then
+  begin
+    Result := TBitmap.Create;
+    Result.Handle := BitmapHandle;
+    if MaskHandle <> 0 then
+      Result.MaskHandle := MaskHandle;
+  end
+  else
+  begin // load default icon from resource
+    Result := LoadBitmapFromLazarusResource(DialogResName[idDiag]);
   end;
 end;
 
@@ -143,13 +142,20 @@ begin
 end;
 
 procedure TPromptDialog.Paint;
+var
+  UseMaskHandle: HBitmap;
 begin
-  Inherited Paint;
+  inherited Paint;
   Canvas.Brush := Brush;
   Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MSG, TextStyle);
-  if assigned (FBitmap) then
-    Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,FBitmap.Width,FBitmap.Height),
-                    FBitmap.Canvas, Rect(0,0,FBitmap.Width,FBitmap.Height));
+  if Assigned (FBitmap) then
+  begin
+    UseMaskHandle := FBitmap.MaskHandle;
+    MaskBlt(Canvas.GetUpdatedHandle([csHandleValid]),
+            cBitmapX, cBitmapY, FBitmap.Width, FBitmap.Height,
+            FBitmap.Canvas.GetUpdatedHandle([csHandleValid]),
+            0, 0, UseMaskHandle, 0, 0);
+  end;
 end;
 
 constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
@@ -167,27 +173,27 @@ begin
   MSG         := AMSG;
   Buttons     := nil;
   FBitmap := nil;
-  Case DialogType of
+  case DialogType of
     idDialogConfirm,
     idDialogInfo,
     idDialogWarning,
     idDialogError :
       begin
-        FBitmap := TBitmap.Create;
-        FBitmap.Handle := LoadStockPixmap(DialogType);
-        If ACaption <> '' then
+        FBitmap := GetDialogIcon(DialogType);
+
+        if ACaption <> '' then
           Caption := ACaption
         else
           Caption := GetDialogCaption(DialogType);
       end;
-    else begin
-      FBitmap := TBitmap.Create;
-      FBitmap.Handle := LoadStockPixmap(idDialogInfo);
-      If ACaption <> '' then
-        Caption := ACaption
-      else
-        Caption := Application.Title;
-    end
+    else
+      begin
+        FBitmap := GetDialogIcon(idDialogInfo);
+        if ACaption <> '' then
+          Caption := ACaption
+        else
+          Caption := Application.Title;
+      end
   end;
   NumButtons := ButtonCount;
   Buttons := TheButtons;
@@ -291,35 +297,18 @@ begin
     begin
       inc(ButtonIndex);
 
-      CurButton:=TBitBtn.Create(Self);
+      CurButton := TBitBtn.Create(Self);
       with CurButton do
       begin
         Parent:= Self;
         Layout  := blGlyphLeft;
         OnKeyDown := @PromptDialogKeyDown;
-        Case Buttons[curBtn] of
-          idButtonYesToAll,
-          idButtonNoToAll :
-            begin
-              Glyph.Handle := LoadStockPixmap(Buttons[curBtn]);
-              If Buttons[curBtn] = idButtonYesToAll then
-              begin
-                ModalResult := mrYesToAll;
-                Caption := rsmbYesToAll;
-              end
-              else
-              begin
-                ModalResult := mrNoToAll;
-                Caption := rsmbNoToAll;
-              end;
-            end;
-          else
-            Kind := DialogButtonKind[Buttons[curBtn]];
-        end;
+        Kind := DialogButtonKind[Buttons[curBtn]];
         if Height < Glyph.Height + 5 then
           Height := Glyph.Height + 5;
 
-        if ButtonIndex = TheDefaultIndex then Default := true;
+        if ButtonIndex = TheDefaultIndex then
+          Default := true;
 
         CurBtnSize:=GetButtonSize(CurButton);
         if reqBtnWidth > 0 then inc(reqBtnWidth, cBtnDist);
@@ -436,16 +425,18 @@ type
 { TQuestionDlg }
 
 procedure TQuestionDlg.Paint;
+var
+  UseMaskHandle: HBitmap;
 begin
-  Inherited Paint;
-  //Canvas.Brush.Color := clRed;
-  //Canvas.FillRect(TextBox);
+  inherited Paint;
   Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MessageTxt, TextStyle);
-  if Assigned(FBitmap) then begin
-    //Canvas.Brush.Color := clBlue;
-    //Canvas.FillRect(Bounds(FBitmapX,FBitmapY,FBitmap.Width,FBitmap.Height));
-    Canvas.CopyRect(Bounds(FBitmapX,FBitmapY,FBitmap.Width,FBitmap.Height),
-                    FBitmap.Canvas, Rect(0,0,FBitmap.Width,FBitmap.Height));
+  if Assigned (FBitmap) then
+  begin
+    UseMaskHandle := FBitmap.MaskHandle;
+    MaskBlt(Canvas.GetUpdatedHandle([csHandleValid]),
+            cBitmapX, cBitmapY, FBitmap.Width, FBitmap.Height,
+            FBitmap.Canvas.GetUpdatedHandle([csHandleValid]),
+            0, 0, UseMaskHandle, 0, 0);
   end;
 end;
 
@@ -712,18 +703,16 @@ begin
 
   FBitmap := nil;
   NewCaption:=ACaption;
-  FBitmap := TBitmap.Create;
-  Case DlgType of
+  case DlgType of
     mtWarning, mtError, mtInformation, mtConfirmation:
       begin
         dlgId:=DialogIds[DlgType];
-        FBitmap.Handle := LoadStockPixmap(dlgId);
+        FBitmap := GetDialogIcon(dlgId);
         if NewCaption='' then
           NewCaption := GetDialogCaption(dlgId);
       end;
-    else begin
-      FBitmap.Handle := LoadStockPixmap(idDialogInfo);
-    end
+    else
+      FBitmap := GetDialogIcon(idDialogInfo);
   end;
   if NewCaption='' then
     NewCaption := Application.Title;

@@ -1396,6 +1396,7 @@ function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
                      ): boolean;
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
+function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;
 
 var
   { Stores information about the current screen
@@ -1466,6 +1467,32 @@ begin
   CursorImage.OwnHandle := False;
   Result := CursorImage.CursorHandle;
   CursorImage.Free;
+end;
+
+function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;
+var
+  Res: TLResource;
+  Stream: TStream;
+  GraphicClass: TGraphicClass;
+begin
+  Result := nil;
+  Res := LazarusResources.Find(ResourceName);
+  if (Res <> nil) and (Res.Value <> '') then
+  begin
+    GraphicClass := GetGraphicClassForFileExtension(Res.ValueType);
+    if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
+    begin
+      Result := TBitmap(GraphicClass.Create);
+      Stream := TMemoryStream.Create;
+      try
+        Stream.Write(Res.Value[1], length(Res.Value));
+        Stream.Position := 0;
+        Result.LoadFromStream(Stream);
+      finally
+        Stream.Free;
+      end;
+    end;
+  end;
 end;
 
 procedure Register;
