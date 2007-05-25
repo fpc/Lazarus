@@ -1833,12 +1833,14 @@ var
   //SelectedFont: PGdkFont;
 
   function CheckOpenedFilename(const AFilename: string): boolean;
+  {$IFDEF GTK1}
   var
     MenuWidget: PGtkWidget;
     AFilterEntry: PFileSelFilterEntry;
+  {$ENDIF}
   begin
     Result:=true;
-    {$IFNDEF GTK2}
+    {$IFDEF GTK1}
     // check if entered file are a real directory
     if DirectoryExists(AFileName) then
     begin

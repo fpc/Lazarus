@@ -667,28 +667,93 @@ end;
           Shift:
           X, Y:
   Returns:  nothing
-
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomSpeedButton.DoBeforeMouseMessage;
+------------------------------------------------------------------------------}
+procedure TCustomSpeedButton.DoBeforeMouseMessage;
+begin
+  if Application<>nil then
+    Application.DoBeforeMouseMessage(Self);
+end;
+
+{------------------------------------------------------------------------------
+       TCustomSpeedButton DoMouseUp  "Event Handler"
+------------------------------------------------------------------------------}
+procedure TCustomSpeedButton.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+begin
+  if not (csNoStdEvents in ControlStyle)
+  then with Message do
+    MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomSpeedButton.WMLButtonUp
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TCustomSpeedButton.WMLButtonUp(var Message: TLMLButtonUp);
 var
   OldState: TButtonState;
+  OldDown: Boolean;
 begin
+  DoBeforeMouseMessage;
+  //DebugLn('TCustomSpeedButton.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
+  if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TCustomSpeedButton.WMLButtonUp ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := False;
+  end;
+
   if not (csDesigning in ComponentState) and FDragging
   then begin
-    FDragging := False;
     OldState:=FState;
 
     if FGroupIndex = 0
     then begin
       FState := bsUp;
       if OldState<>FState then Invalidate;
-    end 
-    else if (X >= 0) and (X < Width)
-        and (Y >= 0) and (Y < Height) then
+      OldDown := FDown;
+      FDown := True;
+    end
+    else if (Message.XPos >= 0) and (Message.XPos < Width)
+        and (Message.YPos >= 0) and (Message.YPos < Height) then
       SetDown(not FDown);
   end;
-  inherited MouseUp(Button, Shift, X, Y);
+
+  if csClicked in ControlState then
+  begin
+    Exclude(FControlState, csClicked);
+    //DebugLn('TCustomSpeedButton.WMLButtonUp B ',dbgs(ClientRect.Left),',',dbgs(ClientRect.Top),',',dbgs(ClientRect.Right),',',dbgs(ClientRect.Bottom),' ',dbgs(Message.Pos.X),',',dbgs(Message.Pos.Y));
+    if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
+    then begin
+      //DebugLn('TCustomSpeedButton.WMLButtonUp C');
+      Click;
+    end;
+  end;
+
+  if not (csDesigning in ComponentState) and FDragging
+  then begin
+    FDragging := False;
+    if FGroupIndex = 0 then
+    begin
+      FDown := OldDown;
+      FDragging := False;
+    end;
+  end;
+
+  DoMouseUp(Message, mbLeft);
+  //DebugLn('TCustomSpeedButton.WMLButtonUp END');
 end;
 
 {------------------------------------------------------------------------------

@@ -522,7 +522,7 @@ begin
     IconSet := gtk_style_lookup_icon_set(GetStyle(lgsWindow), StockName);
 
   If (IconSet = nil) then begin
-    Result := inherited LoadStockPixmap(StockID);
+    Result := inherited LoadStockPixmap(StockID,Mask);
     exit;
   end;
 

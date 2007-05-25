@@ -309,6 +309,9 @@ type
     procedure SetTransparent(const Value: boolean);
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+  private
+    procedure DoBeforeMouseMessage;
+    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
   protected
     FState: TButtonState;
     function GetNumGlyphs: Integer;
@@ -341,6 +344,8 @@ type
     function GetTextSize(PaintRect: TRect): TSize; virtual;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; virtual;
+  protected
+    procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
