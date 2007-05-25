@@ -72,7 +72,7 @@ begin
     PWord(textbuf)^ := Word(fLength+1);
     SendMessage(fHandle, EM_GETLINE, Index, lparam(textbuf));
     Result := WideStringToString(WideString(textbuf));
-    FreeMem(textbuf);
+    SysFreeString(textbuf);
   end;
 end;
 
