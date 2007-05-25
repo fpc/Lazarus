@@ -129,6 +129,7 @@ type
     function MsgCount: integer;
     procedure FilterLines(Filter: TOnFilterLine);
     function GetVisibleMessagesAsText: string;
+    function GetSelectedMessagesAsText: string;
     procedure SaveMessagesToFile(const Filename: string);
     procedure SrcEditLinesInsertedDeleted(const Filename: string;
                                           FirstLine, LineCount: Integer);
@@ -603,6 +604,22 @@ begin
   sl.Free;
 end;
 
+function TMessagesView.GetSelectedMessagesAsText: string;
+var
+  sl: TStringList;
+  node: TTreeNode;
+begin
+  sl:=TStringList.Create;
+  node := MessageTreeView.GetFirstMultiSelected;
+  while assigned(node) do
+  begin
+    sl.Add(node.Text);
+    node := node.GetNextMultiSelected;
+  end;
+  Result:=sl.Text;
+  sl.Free;
+end;
+
 procedure TMessagesView.SaveMessagesToFile(const Filename: string);
 // save visible messages to file
 begin
@@ -826,8 +843,8 @@ end;
 
 procedure TMessagesView.CopyMenuItemClick(Sender: TObject);
 begin
-  if MessageTreeView.Selected=nil then exit;
-  Clipboard.AsText := MessageTreeView.Selected.Text;
+  if MessageTreeView.GetFirstMultiSelected=nil then exit;
+  Clipboard.AsText := GetSelectedMessagesAsText;
 end;
 
 procedure TMessagesView.FormDeactivate(Sender: TObject);
