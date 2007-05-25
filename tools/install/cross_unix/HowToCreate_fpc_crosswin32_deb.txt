@@ -2,7 +2,9 @@ How to create the fpc_crosswin32 deb
 
 This deb was only tested under linux.
 
-For configuration see below.
+The base directory is $BuildRoot. Default value is ~/freepascal
+  To change it use for example:
+  []$ export BuildRoot=/home/user/freepascal
 
 First get the FPC sources and the binutils.
 
@@ -26,11 +28,4 @@ Then build the fpc_crosswin32 deb and install it:
   []$ sudo dpkg -i fpc_crosswin32-<version>.i386.rpm
 
 Now you can cross compile from linux to win32.
-
-
-================================================================================
-
-The following environment variables are handled:
-The base directory BuildRoot. Default value is ~/freepascal
-  []$ export BuildRoot=/home/user/freepascal
 

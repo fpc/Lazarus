@@ -45,6 +45,7 @@ type
   protected
   public
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   { TGtkWSCustomNotebook }
@@ -224,6 +225,12 @@ const
 class procedure TGtkWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
   UpdateNotebookPageTab(nil, ACustomPage);
+end;
+
+class procedure TGtkWSCustomPage.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  // ignore resizes from the LCL
 end;
 
 { TGtkWSCustomNotebook }

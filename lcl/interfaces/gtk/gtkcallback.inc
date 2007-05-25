@@ -1833,8 +1833,47 @@ var
   //SelectedFont: PGdkFont;
 
   function CheckOpenedFilename(const AFilename: string): boolean;
+  var
+    MenuWidget: PGtkWidget;
+    AFilterEntry: PFileSelFilterEntry;
   begin
     Result:=true;
+    {$IFNDEF GTK2}
+    // check if entered file are a real directory
+    if DirectoryExists(AFileName) then
+    begin
+      // if allowed then jump to that directory
+      if not (ofNoChangeDir in TOpenDialog(TheDialog).Options) then
+      begin
+        // change dir
+        gtk_file_selection_set_filename(PGtkFileSelection(FPointer),
+                                        PChar(AppendPathDelim(AFileName)));
+        // populate file list
+        MenuWidget := gtk_object_get_data(PGtkObject(PGtkFileSelection(FPointer)), 'LCLFilterMenu');
+        if (MenuWidget <> nil) then begin
+          AFilterEntry := gtk_object_get_data(PGtkObject(gtk_menu_get_active(
+                                              PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
+          if ((AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil)) then
+          PopulateFileAndDirectoryLists(PGtkFileSelection(FPointer), AFilterEntry^.Mask);
+        end;
+      end;
+      // wait for correct input
+      result:=False;
+      Exit;
+    end;
+    // maybe user entered nonexistent dir
+    if ((AFileName<>'') and (IsPathDelimiter(AFileName, Length(AFileName)))) then
+    begin
+      // cant jump to nonexistent dir
+      if not (ofNoChangeDir in TOpenDialog(TheDialog).Options) then
+        MessageDlg(rsfdDirectoryMustExist, Format(rsfdDirectoryNotExist,[AFileName]),
+                   mtError, [mbCancel], 0); // GTK2 shows "The folder contents could not be displayed"
+      // wait for correct input
+      result:=False;
+      Exit;
+    end;
+    {$ENDIF}
+    // maybe file already exists
     if (ofOverwritePrompt in TOpenDialog(theDialog).Options)
     and FileExists(AFilename) then
     begin

@@ -69,9 +69,6 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
-    {$IFDEF EnableSizePatch}
-    procedure DoSendBoundsToInterface; override;
-    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
