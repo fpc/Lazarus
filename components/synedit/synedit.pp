@@ -5767,16 +5767,20 @@ begin
         nMaxScroll := Lines.Count{$IFDEF SYN_LAZARUS}+1{$ENDIF};
         if (eoScrollPastEof in Options) then
           Inc(nMaxScroll, LinesInWindow - 1);
+{$IFNDEF SYN_LAZARUS}
         if nMaxScroll <= MAX_SCROLL then begin
+{$ENDIF}
           ScrollInfo.nMax := Max(1, nMaxScroll);
           ScrollInfo.nPage := LinesInWindow;
           ScrollInfo.nPos := TopLine;
+{$IFNDEF SYN_LAZARUS}
         end else begin
           ScrollInfo.nMin := 0;
           ScrollInfo.nMax := MAX_SCROLL;
           ScrollInfo.nPage := MulDiv(MAX_SCROLL, LinesInWindow, nMaxScroll);
           ScrollInfo.nPos := MulDiv(MAX_SCROLL, TopLine, nMaxScroll);
         end;
+{$ENDIF}
         {$IFDEF SYN_LAZARUS}
         { for win32 target, need to call showscrollbar before setscrollinfo }
         ShowScrollBar(Handle, SB_VERT, True);
@@ -5951,10 +5955,12 @@ begin
     SB_THUMBPOSITION,
     SB_THUMBTRACK:
       begin
+{$IFNDEF SYN_LAZARUS}
         if Lines.Count > MAX_SCROLL then
           TopLine := MulDiv(LinesInWindow + Lines.Count - 1, Msg.Pos,
             MAX_SCROLL)
         else
+{$ENDIF}
           TopLine := Msg.Pos;
 
         if eoShowScrollHint in fOptions then begin
