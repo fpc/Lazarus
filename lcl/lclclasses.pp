@@ -124,9 +124,12 @@ end;
 
 procedure TLCLHandleComponent.DestroyHandle;
 begin
-  HandleDestroying;
-  WSDestroyHandle;
-  FHandle := 0;
+  if FHandle <> 0 then
+  begin
+    HandleDestroying;
+    WSDestroyHandle;
+    FHandle := 0;
+  end;
 end;
 
 function TLCLHandleComponent.GetHandle: TLCLIntfHandle;
