@@ -79,6 +79,7 @@ var
   DestRect, SrcRect: TRect;
   ImgID: integer;
   UseMaskHandle: HBitmap;
+  src_wh, dst_wh: Integer;
 begin
   Result:=Client;
   if (FOriginal = nil) then exit;
@@ -100,17 +101,33 @@ begin
 
   SrcRect := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
   DestRect:=Client;
-  inc(DestRect.Left,Offset.X);
-  inc(DestRect.Top,Offset.Y);
-  If DestRect.Right > DestRect.Left + SrcRect.Right - SrcRect.Left then
-    DestRect.Right := DestRect.Left + SrcRect.Right - SrcRect.Left;
-  If DestRect.Bottom > DestRect.Top + gHeight then
-    DestRect.Bottom := DestRect.Top + gHeight;
-  If (SrcRect.Right - SrcRect.Left) <> (DestRect.Right - DestRect.Left) then
-    SrcRect.Right := SrcRect.Left + DestRect.Right - DestRect.Left;
-  If (SrcRect.Bottom - SrcRect.Top) <> (DestRect.Bottom - DestRect.Top) then
-    SrcRect.Bottom := SrcRect.Top + DestRect.Bottom - DestRect.Top;
+  
+  if (Offset.X>=0) then begin
+    Inc(DestRect.Left, Offset.X);
+    Dec(DestRect.Right, Offset.X); // image couldn't overlap rigth window edge
+  end else begin
+    Dec(SrcRect.Left, Offset.X);
+    Inc(SrcRect.Right, Offset.X);
+  end;
+  src_wh:=SrcRect.Right-SrcRect.Left; dst_wh:=DestRect.Right-DestRect.Left;
+  if (dst_wh>src_wh) then
+    DestRect.Right:=DestRect.Left+src_wh // if window for image is wider
+  else if (dst_wh<src_wh) then
+      SrcRect.Right:=SrcRect.Left+dst_wh; // if image not fits in their window width
 
+  if (Offset.Y>=0) then begin
+    Inc(DestRect.Top, Offset.Y);
+    Dec(DestRect.Bottom, Offset.Y); // image couldn't overlap bottom window edge
+  end else begin
+    Dec(SrcRect.Top, Offset.Y);
+    Inc(SrcRect.Bottom, Offset.Y);
+  end;
+  src_wh:=SrcRect.Bottom-SrcRect.Top; dst_wh:=DestRect.Bottom-DestRect.Top;
+  if (dst_wh>src_wh) then
+    DestRect.Bottom:=DestRect.Top+src_wh // if window for image is higher
+  else if (dst_wh<src_wh) then
+      SrcRect.Bottom:=SrcRect.Top+dst_wh; // if image not fits in their window height
+  
   //Canvas.CopyRect(DestRect, FOriginal.Canvas, SrcRect)
   UseMaskHandle:=FOriginal.MaskHandle;
   MaskBlt(Canvas.GetUpdatedHandle([csHandleValid]),
