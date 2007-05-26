@@ -33,8 +33,8 @@ uses
   glib, gdk, gtk,
   {$ENDIF}
   GtkInt,
-  LCLProc, Spin, GtkProc, gtkExtra, GtkWSStdCtrls, WSSpin, WSLCLClasses, Controls,
-  LCLType;
+  LCLProc, Spin, StdCtrls, GtkProc, gtkExtra, GtkWSStdCtrls, WSSpin,
+  WSLCLClasses, Controls, LCLType;
 
 type
 
@@ -44,21 +44,21 @@ type
   private
   protected
   public
-    class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
-    class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
-    class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
 function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
-function GetSpinGtkEntry(Spin: TCustomFloatSpinEdit): PGtkEntry;
+function GetSpinGtkEntry(const Spin: TWinControl): PGtkEntry;
 function GetGtkFloatSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
-function GetSpinGtkEditable(Spin: TCustomFloatSpinEdit): PGtkOldEditable;
+function GetSpinGtkEditable(const Spin: TWinControl): PGtkOldEditable;
 
 implementation
 
@@ -67,7 +67,7 @@ begin
   Result:=PGtkEntry(@(Spin^.entry));
 end;
 
-function GetSpinGtkEntry(Spin: TCustomFloatSpinEdit): PGtkEntry;
+function GetSpinGtkEntry(const Spin: TWinControl): PGtkEntry;
 begin
   Result:=GetGtkSpinEntry(PGtkSpinButton(Spin.Handle));
 end;
@@ -77,24 +77,21 @@ begin
   Result:=PGtkOldEditable(@(Spin^.entry));
 end;
 
-function GetSpinGtkEditable(Spin: TCustomFloatSpinEdit): PGtkOldEditable;
+function GetSpinGtkEditable(const Spin: TWinControl): PGtkOldEditable;
 begin
   Result:=GetGtkFloatSpinEditable(PGtkSpinButton(Spin.Handle));
 end;
 
 { TGtkWSCustomFloatSpinEdit }
 
-class function TGtkWSCustomFloatSpinEdit.GetSelStart(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit
-  ): integer;
+class function TGtkWSCustomFloatSpinEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
-  Result :=WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)));
+  Result :=WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomEdit)));
 end;
 
-class function TGtkWSCustomFloatSpinEdit.GetSelLength(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
+class function TGtkWSCustomFloatSpinEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
-  with GetSpinGtkEditable(ACustomFloatSpinEdit)^ do
+  with GetSpinGtkEditable(ACustomEdit)^ do
     Result := Abs(integer(selection_end_pos)-integer(selection_start_pos));
 end;
 
@@ -105,16 +102,16 @@ begin
                                    PGtkSpinButton(ACustomFloatSpinEdit.Handle));
 end;
 
-class procedure TGtkWSCustomFloatSpinEdit.SetSelStart(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
+class procedure TGtkWSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
 begin
-  gtk_editable_set_position(GetSpinGtkEditable(ACustomFloatSpinEdit), NewStart);
+  gtk_editable_set_position(GetSpinGtkEditable(ACustomEdit), NewStart);
 end;
 
-class procedure TGtkWSCustomFloatSpinEdit.SetSelLength(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
+class procedure TGtkWSCustomFloatSpinEdit.SetSelLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
 begin
-  WidgetSetSelLength(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)),
+  WidgetSetSelLength(PGtkWidget(GetSpinGtkEntry(ACustomEdit)),
                      NewLength);
 end;
 

@@ -1126,19 +1126,22 @@ begin
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
             BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
           end
-        else if (lWinControl is TCustomEdit) then
-          case HIWORD(WParam) of
-            EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
-          end
-        else if (lWinControl is TCustomFloatSpinEdit) then
-          case HIWORD(WParam) of
-            EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
-          end
-        else if (lWinControl is TCustomMemo) then
+        else
+        if (lWinControl is TCustomEdit) then
+        begin
+          if (lWinControl is TCustomMemo) then
           case HIWORD(WParam) of
             // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
             EN_UPDATE: LMessage.Msg := CM_TEXTCHANGED;
           end
+          else
+          case HIWORD(WParam) of
+            EN_CHANGE:
+              if (lWinControl is TCustomFloatSpinEdit) then
+                HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl))
+              else LMessage.Msg := CM_TEXTCHANGED;
+          end;
+        end
         else if (lWinControl is TCustomListBox) then
           case HIWORD(WParam) of
             LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;

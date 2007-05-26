@@ -69,7 +69,7 @@ object TableForm: TTableForm
   end
   object SERows: TSpinEdit
     BorderSpacing.OnChange = nil
-    ClimbRate = 1
+    Increment = 1
     MaxValue = 100
     TabOrder = 3
     Left = 72
@@ -79,7 +79,7 @@ object TableForm: TTableForm
   end
   object SEColumns: TSpinEdit
     BorderSpacing.OnChange = nil
-    ClimbRate = 1
+    Increment = 1
     MaxValue = 100
     TabOrder = 4
     Left = 72

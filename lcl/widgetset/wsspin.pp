@@ -46,19 +46,14 @@ uses
 ////////////////////////////////////////////////////
   Spin,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  WSLCLClasses, WSControls, WSStdCtrls;
 
 type
   { TWSCustomFloatSpinEdit }
 
-  TWSCustomFloatSpinEdit = class(TWSWinControl)
-    class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
-    class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
+  TWSCustomFloatSpinEdit = class(TWSCustomEdit)
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; virtual;
 
-    class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); virtual;
-    class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); virtual;
-   
 (*  TODO: seperation into properties instead of bulk update
     class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: single); virtual;
     class procedure SetMinValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: single); virtual;
@@ -80,27 +75,9 @@ implementation
 
 { TWSCustomFloatSpinEdit }
 
-class function  TWSCustomFloatSpinEdit.GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
-begin
-  result := -1;
-end;
-
-class function  TWSCustomFloatSpinEdit.GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
-begin
-  result := 0;
-end;
-
 class function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
-  result := 0.0;
-end;
-
-class procedure TWSCustomFloatSpinEdit.SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
-begin
-end;
-
-class procedure TWSCustomFloatSpinEdit.SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
-begin
+  Result := 0.0;
 end;
 
 class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);

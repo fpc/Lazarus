@@ -1,4 +1,4 @@
- {
+{
  /***************************************************************************
                                   Spin.pp
                                   --------
@@ -35,68 +35,42 @@ uses
 type
   { TCustomFloatSpinEdit }
 
-  TCustomFloatSpinEdit = class(TWinControl)
+  TCustomFloatSpinEdit = class(TCustomEdit)
   private
-    FIncrement: single;
-    FDecimals: integer;
-    FMaxValue: single;
-    FMinValue: single;
-    FModified: boolean;
-    FOnChange: TNotifyEvent;
-    FSelLength: integer;
-    FSelStart: integer;
+    FIncrement: Single;
+    FDecimals: Integer;
+    FMaxValue: Single;
+    FMinValue: Single;
     FValue: Single;
-    FValueEmpty: boolean;
-    FUpdatePending: boolean;
-    FValueChanged: boolean;
-    function GetModified: Boolean;
-    function GetSelLength: integer;
-    function GetSelStart: integer;
-    function GetSelText: String;
-    function MaxValueIsStored: boolean;
-    function MinValueIsStored: boolean;
-    procedure SetMaxValue(const AValue: single);
-    procedure SetMinValue(const AValue: single);
-    procedure SetModified(const AValue: Boolean);
-    procedure SetSelLength(const AValue: integer);
-    procedure SetSelStart(const AValue: integer);
-    procedure SetSelText(const AValue: String);
-    procedure SetValueEmpty(const AValue: boolean);
-    Procedure UpdateControl;
-    function ValueIsStored: boolean;
+    FValueEmpty: Boolean;
+    FUpdatePending: Boolean;
+    FValueChanged: Boolean;
+    function MaxValueIsStored: Boolean;
+    function MinValueIsStored: Boolean;
+    procedure SetMaxValue(const AValue: Single);
+    procedure SetMinValue(const AValue: Single);
+    procedure SetValueEmpty(const AValue: Boolean);
+    procedure UpdateControl;
+    function ValueIsStored: Boolean;
   protected
     function  RealGetText: TCaption; override;
     procedure TextChanged; override;
-    procedure SetDecimals(Num: Integer);
+    procedure SetDecimals(ADecimals: Integer);
     function GetValue: Single;
-    procedure SetValue(const Num: Single);
-    procedure SetIncrement(const NewIncrement: single);
+    procedure SetValue(const AValue: Single);
+    procedure SetIncrement(const AIncrement: Single);
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
-    procedure Change; dynamic;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure SelectAll;
-    procedure ClearSelection; virtual;
-    procedure CopyToClipboard; virtual;
-    procedure CutToClipboard; virtual;
-    procedure PasteFromClipboard; virtual;
-    property SelLength: integer read GetSelLength write SetSelLength;
-    property SelStart: integer read GetSelStart write SetSelStart;
-    property SelText: String read GetSelText write SetSelText;
-    property Modified: Boolean read GetModified write SetModified;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Text;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
     property Increment: Single read FIncrement write SetIncrement default 1;
-    property MinValue: single read FMinValue write SetMinValue default 0;
-    property MaxValue: single read FMaxValue write SetMaxValue default 100;
-    property TabStop default true;
+    property MinValue: Single read FMinValue write SetMinValue default 0;
+    property MaxValue: Single read FMaxValue write SetMaxValue default 100;
     property Value: Single read GetValue write SetValue default 0;
-    property ValueEmpty: boolean read FValueEmpty write SetValueEmpty default False;
+    property ValueEmpty: Boolean read FValueEmpty write SetValueEmpty default False;
   end;
   
   { TFloatSpinEdit }
@@ -165,7 +139,6 @@ type
     property Anchors;
     property AutoSize;
     property BorderSpacing;
-    property ClimbRate: integer write SetIncrement stored false; // TODO: remove, deprecated
     property Constraints;
     property Enabled;
     property Increment;
@@ -203,7 +176,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Misc',[TSpinEdit,TFloatSpinEdit]);
+  RegisterComponents('Misc', [TSpinEdit, TFloatSpinEdit]);
 end;
 
 {$I spinedit.inc}
