@@ -507,7 +507,9 @@ begin
     Widget:=ClientWidget;
   AWindow:=DevContext.Drawable;
 
-  Style:=GetStyle(lgsButton);
+  Style := gtk_widget_get_style(Widget);
+  if Style = nil then
+    Style:=GetStyle(lgsButton);
 
   DCOrigin:=GetDCOffset(DevContext);
   Area.X:=DCOrigin.X;
@@ -525,27 +527,35 @@ begin
   end;
 
   {$IFDEF Gtk1}
-  if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
-    Detail:='vpaned';
-  end else begin
+  if ASplitter.ResizeAnchor in [akTop,akBottom] then
+    Detail:='vpaned'
+  else
     Detail:='hpaned';
-  end;
+    
   gtk_paint_box(Style, AWindow,
     GTK_WIDGET_STATE(Widget),
     GTK_SHADOW_NONE,
     @Area, Widget, Detail,
     Area.X,Area.Y,Area.Width,Area.Height);
   {$ELSE}
-  if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
-    Orientation:=GTK_ORIENTATION_VERTICAL;
-  end else begin
-    Orientation:=GTK_ORIENTATION_HORIZONTAL;
-  end;
-  gtk_paint_handle(Style,AWindow,
+  if ASplitter.ResizeAnchor in [akTop,akBottom] then
+    Orientation := GTK_ORIENTATION_HORIZONTAL
+  else
+    Orientation := GTK_ORIENTATION_VERTICAL;
+
+  // fill area
+  gtk_paint_flat_box(Style, AWindow,
     GTK_WIDGET_STATE(Widget),
     GTK_SHADOW_NONE,
     @Area, Widget, 'paned',
-    Area.X,Area.Y,Area.Width,Area.Height,
+    Area.X, Area.Y, Area.Width, Area.Height);
+
+  // draw size grip
+  gtk_paint_handle(Style, AWindow,
+    GTK_WIDGET_STATE(Widget),
+    GTK_SHADOW_NONE,
+    @Area, Widget, 'paned',
+    Area.X, Area.Y, Area.Width, Area.Height,
     Orientation);
   {$ENDIF}
 end;
