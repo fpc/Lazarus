@@ -21,6 +21,7 @@ type
 
   TGtkPainterType =
   (
+    gptNone,
     gptDefault,
     gptHLine,
     gptVLine,
@@ -83,6 +84,7 @@ implementation
 const
   GtkPainterMap: array[TGtkPainterType] of TGtkPainter =
   (
+{ gptNone       } nil,
 { gptDefault    } @gtk_paint_box,          // maybe smth else ??
 { gptHLine      } @wrap_gtk_paint_hline,
 { gptVLine      } @wrap_gtk_paint_vline,
@@ -197,7 +199,10 @@ begin
                   Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
 
                   Result.Detail := 'togglebutton';
-                  Result.Painter := gptBox;
+                  if Result.Shadow = GTK_SHADOW_NONE then
+                    Result.Painter := gptNone
+                  else
+                    Result.Painter := gptBox;
                 end;
             end;
           end;
@@ -277,12 +282,13 @@ begin
         }
       end;
 
-      GtkPainterMap[Painter](
-          Style, Window,
-          State, Shadow,
-          p_ClipArea, Widget, PChar(Detail),
-          R1.Left + Origin.x, R1.Top + Origin.y,
-          R1.Right - R1.Left, R1.Bottom - R1.Top);
+      if Painter <> gptNone then
+        GtkPainterMap[Painter](
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top);
     end;
   end;
 end;
