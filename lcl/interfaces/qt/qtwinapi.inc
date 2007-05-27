@@ -504,6 +504,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: DeleteCriticalSection
+  Params:  var CritSection: TCriticalSection
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.DoneCriticalsection(ACritSec^);
+  Dispose(ACritSec);
+  CritSection:=0;
+end;
+
+{------------------------------------------------------------------------------
   Function: DeleteObject
   Params:  none
   Returns: Nothing
@@ -775,6 +790,19 @@ begin
     
      TQtDeviceContext(PS.HDC).Free;
    end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: EnterCriticalSection
+  Params:  var CritSection: TCriticalSection
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.EnterCriticalsection(ACritSec^);
 end;
 
 {------------------------------------------------------------------------------
@@ -2111,6 +2139,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: InitializeCriticalSection
+  Params: var CritSection: TCriticalSection
+  Returns:
+ ------------------------------------------------------------------------------}
+procedure TQtWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  New(ACritSec);
+  System.InitCriticalSection(ACritSec^);
+  CritSection:=TCriticalSection(ACritSec);
+end;
+
+{------------------------------------------------------------------------------
   Function: InvalidateRect
   Params: aHandle:
           Rect:
@@ -2130,6 +2172,19 @@ begin
   TQtWidget(aHandle).Update;
   
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: LeaveCriticalSection
+  Params:  var CritSection: TCriticalSection
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.LeaveCriticalsection(ACritSec^);
 end;
 
 {------------------------------------------------------------------------------

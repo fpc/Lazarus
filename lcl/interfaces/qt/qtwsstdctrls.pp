@@ -691,8 +691,16 @@ var
   QtLineEdit: TQtLineEdit;
   QColor: TQColor;
   Color: TColor;
+  Method: TMethod;
+  Hook : QLineEdit_hookH;
 begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
+
+  Hook := QLineEdit_hook_create(QtLineEdit.Widget);
+
+  TEventFilterMethod(Method) := QtLineEdit.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
 
   Result := THandle(QtLineEdit);
 end;

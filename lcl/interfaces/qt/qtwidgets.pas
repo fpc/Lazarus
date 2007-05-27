@@ -264,6 +264,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SetColor(const Value: PQColor); override;
   end;
 
@@ -2423,6 +2424,20 @@ begin
   Widget:=nil;
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtLineEdit.EventFilter
+  Params:  QObjectH, QEventH
+  Returns: boolean
+
+  Overrides TQtWidget EventFilter()
+ ------------------------------------------------------------------------------}
+function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  
+  inherited EventFilter(Sender, Event);
 end;
 
 {------------------------------------------------------------------------------

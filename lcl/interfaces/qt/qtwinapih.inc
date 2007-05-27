@@ -41,12 +41,14 @@ function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: strin
 function CreatePenIndirect(const LogPen: TLogPen): HBRUSH; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
+procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DestroyCursor(Handle: hCursor): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
+procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
@@ -79,7 +81,9 @@ function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolea
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 
+procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
