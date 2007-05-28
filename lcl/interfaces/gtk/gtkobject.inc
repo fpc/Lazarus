@@ -3177,6 +3177,7 @@ begin
     LCLControl:=TWinControl(Sender);
     if LCLControl.HandleAllocated then begin
       Widget := pgtkWidget(LCLControl.Handle);
+      if not WidgetSizeIsEditable(Widget) then exit;
       Later:=true;
       {$IFDEF Gtk2}
       if GTK_WIDGET_REALIZED(Widget) then begin
@@ -6774,6 +6775,9 @@ var
   LCLControl: TWinControl;
 {$ENDIF}
 begin
+  {$IFDEF Gtk2}
+  if not WidgetSizeIsEditable(Widget) then exit;
+  {$ENDIF}
   {$IFDEF VerboseSizeMsg}
   LCLControl:=TWinControl(GetLCLObject(Widget));
   DbgOut('TGtkWidgetSet.SetResizeRequest Widget=',DbgS(Widget));
@@ -6784,6 +6788,24 @@ begin
   {$ENDIF}
   if not FWidgetsWithResizeRequest.Contains(Widget) then
     FWidgetsWithResizeRequest.Add(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  function TGTKWidgetSet.WidgetSizeIsEditable(Widget: PGtkWidget): boolean;
+  
+  True if the widget can be resized.
+  False if the size is under complete control of the gtk.
+------------------------------------------------------------------------------}
+function TGTKWidgetSet.WidgetSizeIsEditable(Widget: PGtkWidget): boolean;
+begin
+  if Widget=nil then exit(false);
+  if (GtkWidgetIsA(Widget,GTK_TYPE_WINDOW))
+  or (GtkWidgetIsA(Widget^.Parent,GTK_TYPE_FIXED))
+  or (GtkWidgetIsA(Widget^.Parent,GTK_TYPE_LAYOUT))
+  then
+    Result:=true
+  else
+    Result:=false;
 end;
 
 {------------------------------------------------------------------------------

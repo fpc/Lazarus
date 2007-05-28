@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
 //  Forms,
 ////////////////////////////////////////////////////
-  WSForms, WSLCLClasses;
+  WSForms, WSLCLClasses, Forms, GTKProc;
 
 type
 
@@ -77,6 +77,9 @@ type
   private
   protected
   public
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
   end;
 
   { TGtk2WSForm }
@@ -114,6 +117,24 @@ type
 
 implementation
 
+{ TGtk2WSCustomForm }
+
+class function TGtk2WSCustomForm.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+begin
+  Result:=false;
+  if AWinControl.HandleAllocated then begin
+
+  end else begin
+    FrameBorders:=GetStyleFormFrameBorders(TCustomForm(AWinControl).Menu<>nil);
+    aClientRect:=Rect(0,0,
+                 Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
+                 Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
+    Result:=true;
+  end;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -126,7 +147,7 @@ initialization
 //  RegisterWSComponent(TScrollBox, TGtk2WSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TGtk2WSCustomFrame);
 //  RegisterWSComponent(TFrame, TGtk2WSFrame);
-//  RegisterWSComponent(TCustomForm, TGtk2WSCustomForm);
+  RegisterWSComponent(TCustomForm, TGtk2WSCustomForm);
 //  RegisterWSComponent(TForm, TGtk2WSForm);
 //  RegisterWSComponent(THintWindow, TGtk2WSHintWindow);
 //  RegisterWSComponent(TScreen, TGtk2WSScreen);

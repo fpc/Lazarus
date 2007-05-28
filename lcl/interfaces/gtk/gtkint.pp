@@ -304,6 +304,7 @@ type
     // helper routines needed by interface methods
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
+    function WidgetSizeIsEditable(Widget: PGtkWidget): boolean;virtual;
     // |-forms
     procedure UpdateTransientWindows; virtual;
     // |-listbox

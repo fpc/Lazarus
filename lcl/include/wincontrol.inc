@@ -2286,7 +2286,7 @@ function TWinControl.GetClientRect: TRect;
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
       {$IFDEF VerboseSizeMsg}
-      DebugLn('StoreClientRect ',Name,':',ClassName,' ',dbgs(FClientWidth),',',dbgs(FClientHeight));
+      DebugLn(['StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight,' HandleAllocated=',HandleAllocated]);
       {$ENDIF}
       if ClientSizeChanged then begin
         for i:=0 to ControlCount-1 do
@@ -4208,8 +4208,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
-  if ([csLoading,csDestroying]*ComponentState<>[]) or (not HandleAllocated) then
-  begin
+  if (csDestroying in ComponentState) then exit;
+  if (csLoading in ComponentState) or (not HandleAllocated) then begin
     Include(FWinControlFlags,wcfReAlignNeeded);
     exit;
   end;
@@ -4347,7 +4347,8 @@ begin
       if HandleAllocated then AControl.Invalidate;
     //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
   end;
-  AControl.RequestAlign;
+  if not (csDestroying in ComponentState) then
+    AControl.RequestAlign;
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
 end;
 
@@ -4367,7 +4368,8 @@ Begin
     if HandleAllocated then
       AControl.InvalidateControl(AControl.IsVisible, False, True);
   Remove(AControl);
-  Realign;
+  if not (csDestroying in ComponentState) then
+    Realign;
 End;
 
 {------------------------------------------------------------------------------

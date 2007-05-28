@@ -61,7 +61,8 @@ begin
   // optional: ProjectDir and TestPascalFile exists only to easily test some
   // things.
   Options.ProjectDir:=SetDirSeparators(GetCurrentDir+'/scanexamples/');
-  Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
+  //Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
+  Options.TestPascalFile:=Options.ProjectDir+'modemacpas.pas';
 
   // init the codetools
   if not Options.UnitLinkListValid then

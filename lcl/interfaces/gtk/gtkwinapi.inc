@@ -4579,8 +4579,12 @@ end;
 Function TGtkWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
-  MainOrigin, ClientOrigin: TPoint;
+  {$IFDEF Gtk1}
+  MainOrigin: TPoint;
+  {$ENDIF}
+  ClientOrigin: TPoint;
   ClientWindow, MainWindow: PGdkWindow;
+  CurGDKWindow: PGdkWindow;
 begin
   Result := False;
   if Handle = 0 then Exit;
@@ -4590,6 +4594,8 @@ begin
     ClientWindow:=GetControlWindow(ClientWidget);
     MainWindow:=GetControlWindow(Widget);
     if MainWindow<>ClientWindow then begin
+      // widget and client are on different gdk windows
+      {$IFDEF Gtk1}
       if MainWindow<>nil then begin
         gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
       end else begin
@@ -4606,30 +4612,46 @@ begin
         inc(MainOrigin.Y,Widget^.Allocation.Y);
       end;
       if ClientWindow<>nil then begin
-        {$Ifdef GTK2}
-        if GTK_WIDGET_NO_WINDOW(ClientWidget)
-        then begin
-          ClientOrigin.X := ClientWidget^.Allocation.X;
-          ClientOrigin.Y := ClientWidget^.Allocation.Y;
-        end else
-       {$EndIf}
         gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y);
       end else begin
         // client widget not realized
-        {$Ifdef GTK2}
-        if GTK_WIDGET_NO_WINDOW(ClientWidget)
-        then begin
-          ClientOrigin.X := ClientWidget^.Allocation.X;
-          ClientOrigin.Y := ClientWidget^.Allocation.Y;
-        end else
-       {$EndIf}
         ClientOrigin:=MainOrigin;
       end;
       ARect.Left:=ClientOrigin.X-MainOrigin.X;
       ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
+      {$ELSE}
+      if (GTK_WIDGET_NO_WINDOW(ClientWidget)) then begin
+        // ClientWidget is a sub widget
+        ARect.Left:=ClientWidget^.allocation.x;
+        ARect.Top:=ClientWidget^.allocation.y;
+      end else begin
+        // ClientWidget owns the gdkwindow
+        ARect.Left:=0;
+        ARect.Top:=0;
+      end;
+      CurGDKWindow:=ClientWindow;
+      while (CurGDKWindow<>MainWindow) do begin
+        gdk_window_get_position(CurGDKWindow,@ClientOrigin.x,@ClientOrigin.y);
+        inc(ARect.Left,ClientOrigin.x);
+        inc(ARect.Top,ClientOrigin.y);
+        CurGDKWindow:=gdk_window_get_parent(CurGDKWindow);
+      end;
+      if GTK_WIDGET_NO_WINDOW(Widget) then begin
+        // Widget is a sub widget
+        dec(ARect.Left,Widget^.allocation.x);
+        dec(ARect.Top,Widget^.allocation.y);
+      end;
+      {$ENDIF}
       ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
       ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
 
+      Result:=true;
+    end else if MainWindow<>nil then begin
+      // both are on the same gdkwindow
+      ARect.Left:=ClientWidget^.allocation.X-Widget^.allocation.X;
+      ARect.Top:=ClientWidget^.allocation.Y-Widget^.allocation.Y;
+      ARect.Right:=ARect.Left+ClientWidget^.allocation.Width;
+      ARect.Bottom:=ARect.Top+ClientWidget^.allocation.Height;
       Result:=true;
     end;
   end;
@@ -4682,6 +4704,9 @@ begin
        ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
        ' Allocation=',dbgs(Widget^.Allocation.Width),',',dbgs(Widget^.Allocation.Height)
        );
+  end;
+  if GetLCLObject(Widget) is TCustomPage then begin
+    DebugLn(['TGtkWidgetSet.GetClientRect Rect=',dbgs(aRect),' ',GetWidgetDebugReport(Widget)]);
   end;
   {$EndIf}
   Result:=true;
@@ -5096,8 +5121,8 @@ end;
   Example:
     A PaintDC of a TButton at 20,10 with a DC Offset of 0,0 on a form and the
     WindowHandle is the form.
-    Then OriginDiff will be the the difference between the Forms client origin
-    and the PaintDC will be 20,10.
+    Then OriginDiff is the difference between the Forms client origin
+    and the PaintDC: 20,10.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;

@@ -2405,7 +2405,7 @@ begin
   {$IFDEF VerboseSizeMsg}
   DebugLn('gtksize_allocateCB: ',
     TControl(Data).Name+':'+TControl(Data).ClassName,
-    ' widget='+DbgS(Widget)+WidgetFlagsToString(widget)+
+    ' widget='+GetWidgetDebugReport(Widget)+
     ' fixwidget=',DbgS(GetFixedWidget(Widget)),
     ' NewSize=',dbgs(Size^.Width),',',dbgs(Size^.Height),
     ' GtkPos=',dbgs(Widget^.allocation.x)+','+dbgs(Widget^.allocation.y),

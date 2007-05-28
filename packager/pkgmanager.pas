@@ -1756,6 +1756,8 @@ destructor TPkgManager.Destroy;
 var
   Dependency: TPkgDependency;
 begin
+  if IDEComponentPalette<>nil then
+    TComponentPalette(IDEComponentPalette).Notebook:=nil;
   FreeThenNil(LazPackageDescriptors);
   while FirstAutoInstallDependency<>nil do begin
     Dependency:=FirstAutoInstallDependency;

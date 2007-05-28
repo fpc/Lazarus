@@ -338,6 +338,7 @@ begin
     ' New='+dbgs(ALeft)+','+dbgs(ATop)+','+dbgs(AWidth),',',dbgs(AHeight));
   //if (Parent=nil) and (Left>0) and (ALeft=0) then DumpStack; // This can happen if the interface has not yet moved the window and for some reason something applies the interface coords back to the LCL
   {$ENDIF}
+
   // constraint the size
   DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
 

@@ -39,7 +39,7 @@ type
 
   { TGtk2WSCustomPage }
 
-  TGtk2WSCustomPage = class(TWSCustomPage)
+  TGtk2WSCustomPage = class(TGtkWSCustomPage)
   private
   protected
   public
@@ -276,14 +276,15 @@ class function TGtk2WSCustomPage.GetDefaultClientRect(
 begin
   Result:=false;
   if AWinControl.Parent=nil then exit;
-  if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated then
+  if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated
+  and (PGtkWidget(AWinControl.Handle)^.parent=nil) then
   begin
 
   end else begin
     Result:=true;
     aClientRect:=AWinControl.Parent.ClientRect;
   end;
-  //DebugLn(['TGtk2WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' aClientRect=',dbgs(aClientRect)]);
+  //if Result then DebugLn(['TGtk2WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' aClientRect=',dbgs(aClientRect)]);
 end;
 
 initialization

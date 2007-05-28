@@ -6474,7 +6474,7 @@ begin
   LCLControl:=TWinControl(GetLCLObject(aWidget));
   if LCLControl=nil then exit;
   {$IFDEF VerboseSizeMsg}
-  DebugLn('SendSizeNotificationToLCL checking ... ',DbgSName(LCLControl),' aidget=',WidgetFlagsToString(aWidget));
+  DebugLn('SendSizeNotificationToLCL checking ... ',DbgSName(LCLControl),' Widget=',WidgetFlagsToString(aWidget));
   {$ENDIF}
   MainWidget:=PGtkWidget(LCLControl.Handle);
   FixedWidget:=PGtkWidget(GetFixedWidget(MainWidget));
@@ -7567,6 +7567,7 @@ var
   StyleWindowWidget: PGtkWidget;
   Requisition: TGtkRequisition;
   WindowFixedWidget: PGtkWidget;
+  VBox: PGtkWidget;
 begin
   Result := nil;
   if Styles=nil then exit;
@@ -7619,13 +7620,13 @@ begin
         gtk_widget_hide(StyleObject^.Widget);
         // create the fixed widget
         // (where to put all style widgets, that need a parent for realize)
-        //VBox:=gtk_vbox_new(false,0);
-        //gtk_widget_show(VBox);
-        //gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
-        //gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
+        VBox:=gtk_vbox_new(false,0);// vbox is needed for menu above and fixed widget below
+        gtk_widget_show(VBox);
+        gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
+        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
         WindowFixedWidget:=CreateFixedClientWidget;
         gtk_widget_show(WindowFixedWidget);
-        gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
+        gtk_container_add(PGtkContainer(VBox), WindowFixedWidget);
         gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
         gtk_widget_realize(StyleObject^.Widget);
       end
@@ -7642,14 +7643,26 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
         lgs:=lgsMenu;
+        {$IFDEF Gtk1}
         AddToStyleWindow:=false;
-        StyleObject^.Widget := GTK_MENU_NEW;
+        {$ENDIF}
+        StyleObject^.Widget := gtk_menu_new;
+      end
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsMenuBar])=0 then begin
+        lgs:=lgsMenuBar;
+        {$IFDEF Gtk1}
+        AddToStyleWindow:=false;
+        {$ENDIF}
+        StyleObject^.Widget := gtk_menu_bar_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsMenuitem])=0 then begin
         lgs:=lgsMenuitem;
+        {$IFDEF Gtk1}
         AddToStyleWindow:=false;
-        StyleObject^.Widget := GTK_MENU_ITEM_NEW;
+        {$ENDIF}
+        StyleObject^.Widget := gtk_menu_item_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsStatusBar])=0 then begin
@@ -7660,7 +7673,7 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsList])=0 then begin
         lgs:=lgsList;
-        StyleObject^.Widget := GTK_LIST_NEW;
+        StyleObject^.Widget := gtk_list_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsVerticalScrollbar])=0 then begin
@@ -7744,18 +7757,37 @@ begin
       // put style widget on style window, so that it can be realized
       if AddToStyleWindow then begin
         gtk_widget_show_all(StyleObject^.Widget);
-        StyleWindowWidget:=GetStyleWidget(lgsWindow);
-        WindowFixedWidget:=PGTKWidget(
-               gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
-        //DebugLn('AddToStyleWindow adding on hidden stylewindow ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
-        //gtk_box_pack_end(PGTKBox(VBox), WindowFixedWidget, True, True, 0);
-        gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,10,10);
+        if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU) then begin
+          StyleWindowWidget:=GetStyleWidget(lgsWindow);
+          // add menu above the forms client area (fixed widget)
+          VBox:=PGTKWidget(
+                     gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
+          DebugLn(['GetStyleWithName adding menu to form']);
+          gtk_box_pack_start(PGTKBox(VBox), StyleObject^.Widget, false, True, 0);
+        end else if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_BAR) then begin
+          DebugLn(['GetStyleWithName adding menubar to menu']);
+          gtk_menu_append(GetStyleWidget(lgsMenu),StyleObject^.Widget);
+        end else if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_ITEM) then begin
+          DebugLn(['GetStyleWithName adding menuitem to menubar']);
+          gtk_menu_bar_append(GetStyleWidget(lgsMenuBar),StyleObject^.Widget);
+        end else begin
+          StyleWindowWidget:=GetStyleWidget(lgsWindow);
+          // add widget on client area of form
+          WindowFixedWidget:=PGTKWidget(
+                 gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
+          //DebugLn('GetStyleWithName adding on hidden stylewindow ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
+          gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,10,10);
+        end;
       end;
 
       WidgetName:='LazStyle'+WName;
       gtk_widget_set_name(StyleObject^.Widget,PChar(WidgetName));
       gtk_widget_ensure_style(StyleObject^.Widget);
+      
+      // request default sizing
+      FillChar(Requisition,SizeOf(Requisition),0);
       gtk_widget_size_request(StyleObject^.Widget, @Requisition);
+      
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
@@ -8381,7 +8413,7 @@ begin
     //DebugLn(['GetStyleGroupboxFrame FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
     StyleObject^.FrameBordersValid:=true;
   end;
-  Result:=StyleObject^.FrameBorders
+  Result:=StyleObject^.FrameBorders;
 end;
 
 function GetStyleNotebookFrameBorders: TRect;
@@ -8402,15 +8434,63 @@ begin
     gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
     PageWidget:=gtk_notebook_get_nth_page(PGtkNoteBook(StyleObject^.Widget),0);
     //DebugLn(['GetStyleNotebookFrameBorders BBB2 ',dbgs(allocation)]);
-    f.Left:=Min(s,Max(0,PageWidget^.allocation.x));
-    f.Top:=Min(s,Max(0,PageWidget^.allocation.y));
-    f.Right:=Max(0,Min(s-f.Left,s-PageWidget^.allocation.x-PageWidget^.allocation.width));
-    f.Bottom:=Max(0,Min(s-f.Top,s-PageWidget^.allocation.x-PageWidget^.allocation.width));
+    allocation:=PageWidget^.allocation;
+    f.Left:=Min(s,Max(0,allocation.x));
+    f.Top:=Min(s,Max(0,allocation.y));
+    f.Right:=Max(0,Min(s-f.Left,s-allocation.x-allocation.width));
+    f.Bottom:=Max(0,Min(s-f.Top,s-allocation.x-allocation.width));
     StyleObject^.FrameBorders:=f;
     //DebugLn(['GetStyleNotebookFrameBorders FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
     StyleObject^.FrameBordersValid:=true;
   end;
-  Result:=StyleObject^.FrameBorders
+  Result:=StyleObject^.FrameBorders;
+end;
+
+function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
+const s = 400;
+var
+  StyleObject: PStyleObject;
+  allocation: TGtkAllocation;
+  f: TRect;
+  InnerWidget: PGtkWidget;
+  Outer: TGdkRectangle;
+  Inner: TGdkRectangle;
+begin
+  GetStyleWidget(lgsMenu);
+  StyleObject:=StandardStyles[lgsWindow];
+  if not StyleObject^.FrameBordersValid then begin
+    allocation.x:=0;
+    allocation.y:=0;
+    allocation.width:=s;
+    allocation.height:=s;
+    gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
+    InnerWidget:=PGTKWidget(
+          gtk_object_get_data(PGtkObject(StyleObject^.Widget),'fixedwidget'));
+    allocation:=InnerWidget^.allocation;
+    DebugLn(['GetStyleFormFrameBorders BBB2 ',dbgs(allocation),' WithMenu=',WithMenu,' ClientWidget=',GetWidgetDebugReport(InnerWidget)]);
+    f.Left:=Min(s,Max(0,allocation.x));
+    f.Top:=Min(s,Max(0,allocation.y));
+    f.Right:=Max(0,Min(s-f.Left,s-allocation.x-allocation.width));
+    f.Bottom:=Max(0,Min(s-f.Top,s-allocation.x-allocation.width));
+    StyleObject^.FrameBorders:=f;
+    DebugLn(['GetStyleFormFrameBorders FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
+    StyleObject^.FrameBordersValid:=true;
+  end;
+  
+  if WithMenu then begin
+    InnerWidget:=PGTKWidget(
+                 gtk_object_get_data(PGtkObject(StyleObject^.Widget),'vbox'));
+  end else begin
+    InnerWidget:=PGTKWidget(
+          gtk_object_get_data(PGtkObject(StyleObject^.Widget),'fixedwidget'));
+  end;
+  Outer:=StyleObject^.Widget^.allocation;
+  Inner:=InnerWidget^.allocation;
+  Result.Left:=Min(Outer.width,Max(0,Inner.x));
+  Result.Top:=Min(Outer.height,Max(0,Inner.y));
+  Result.Right:=Max(0,Min(Outer.width-f.Left,Outer.width-Inner.x-Inner.width));
+  Result.Bottom:=Max(0,Min(Outer.height-f.Top,Outer.height-Inner.x-Inner.width));
+  DebugLn(['GetStyleFormFrameBorders BBB3 Inner=',dbgs(Inner),' Outer=',dbgs(Outer),' WithMenu=',WithMenu,' InnerWidget=',GetWidgetDebugReport(InnerWidget),' Result=',dbgs(Result)]);
 end;
 {$ENDIF}
 

@@ -280,7 +280,7 @@ begin
     end;
   end;
   // select button
-  if FSelected<>nil then begin
+  if (FSelected<>nil) and (FNoteBook<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
     FNoteBook.ActivePageComponent:=TPage(FSelected.Page.PageComponent);
   end;
@@ -419,6 +419,8 @@ end;
 
 procedure TComponentPalette.ClearButtons;
 begin
+  if FNoteBook<>nil then
+    FNoteBook.DisableAlign;
   Selected:=nil;
   if PopupMenu<>nil then begin
     PopupMenu.Free;
@@ -426,6 +428,8 @@ begin
     OpenPackageMenuItem:=nil;
   end;
   inherited ClearButtons;
+  if FNoteBook<>nil then
+    FNoteBook.EnableAlign;
 end;
 
 function TComponentPalette.SelectButton(Button: TComponent): boolean;

@@ -288,6 +288,11 @@ begin
       if FDown and (GroupIndex <> 0)
       then FState := bsExclusive
       else FState := bsUp;
+    end
+    else if (FState = bsDown) and (not FMouseInControl) and (not FDragging)
+    and (not FDown) then begin
+      // return to normal
+      FState := bsUp;
     end;
   end;
   if FState<>OldState then
@@ -307,6 +312,7 @@ end;
   function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
  ------------------------------------------------------------------------------}
 function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
+
   function ButtonPart: TThemedButton;
   begin
     // tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed,
@@ -703,10 +709,9 @@ end;
 procedure TCustomSpeedButton.WMLButtonUp(var Message: TLMLButtonUp);
 var
   OldState: TButtonState;
-  OldDown: Boolean;
 begin
   DoBeforeMouseMessage;
-  //DebugLn('TCustomSpeedButton.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
+  //DebugLn('TCustomSpeedButton.WMLButtonUp A ',DbgSName(Self),' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
   if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
   begin
     {$IFDEF VerboseMouseCapture}
@@ -718,18 +723,19 @@ begin
   if not (csDesigning in ComponentState) and FDragging
   then begin
     OldState:=FState;
+    FDragging := False;
 
     if FGroupIndex = 0
     then begin
       FState := bsUp;
       if OldState<>FState then Invalidate;
-      OldDown := FDown;
-      FDown := True;
     end
     else if (Message.XPos >= 0) and (Message.XPos < Width)
         and (Message.YPos >= 0) and (Message.YPos < Height) then
       SetDown(not FDown);
   end;
+
+  DoMouseUp(Message, mbLeft);
 
   if csClicked in ControlState then
   begin
@@ -738,21 +744,12 @@ begin
     if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
     then begin
       //DebugLn('TCustomSpeedButton.WMLButtonUp C');
+      // Important: Calling Click can invoke modal dialogs, so call this as last
       Click;
     end;
   end;
-
-  if not (csDesigning in ComponentState) and FDragging
-  then begin
-    FDragging := False;
-    if FGroupIndex = 0 then
-    begin
-      FDown := OldDown;
-      FDragging := False;
-    end;
-  end;
-
-  DoMouseUp(Message, mbLeft);
+  
+  
   //DebugLn('TCustomSpeedButton.WMLButtonUp END');
 end;
 
@@ -912,12 +909,16 @@ procedure TCustomSpeedButton.MouseLeave;
 begin
   inherited MouseLeave;
   if csDesigning in ComponentState then exit;
-
+  ///DebugLn(['TCustomSpeedButton.MouseLeave ',DbgSName(Self),' FMouseInControl=',FMouseInControl,' FDragging=',FDragging]);
   if FMouseInControl
   then begin
     FMouseInControl := False;
     if Enabled then
     begin
+      if FDragging and (not MouseCapture) then begin
+        // something fetched our mouse capture
+        FDragging:=false;
+      end;
       UpdateState(true);
       if Assigned(FOnMouseExit) then FOnMouseExit(Self);
     end;

@@ -50,7 +50,7 @@ type
     bsUp,       // button is up
     bsDisabled, // button disabled (grayed)
     bsDown,     // button is down
-    bsExclusive // button is the only up in his group
+    bsExclusive // button is the only down in his group
     );
 
   {TNumGlyphs holds the number of glyphs in an image.
@@ -314,6 +314,7 @@ type
   private
     procedure DoBeforeMouseMessage;
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
   protected
     FState: TButtonState;
     function GetNumGlyphs: Integer;
@@ -346,8 +347,6 @@ type
     function GetTextSize(PaintRect: TRect): TSize; virtual;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; virtual;
-  protected
-    procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

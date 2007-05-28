@@ -2163,16 +2163,18 @@ function TLinkScanner.IfCDirective: boolean;
 // {$ifc expression} or indirectly called by {$elifc expression}
 var Expr, ResultStr: string;
 begin
+  //DebugLn(['TLinkScanner.IfCDirective  FSkippingTillEndif=',FSkippingTillEndif]);
   inc(IfLevel);
   inc(SrcPos);
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
   Result:=true;
+  //DebugLn(['TLinkScanner.IfCDirective ResultStr=',ResultStr]);
   if Values.ErrorPosition>=0 then begin
     inc(SrcPos,Values.ErrorPosition);
     RaiseException(ctsErrorInDirectiveExpression)
   end else if ResultStr='0' then
-    SkipTillEndifElse
+    SkipTillEndCifElse
 end;
 
 procedure TLinkScanner.SkipSpace;
@@ -2250,6 +2252,7 @@ function TLinkScanner.EndCDirective: boolean;
   end;
 
 begin
+  //DebugLn(['TLinkScanner.EndCDirective  FSkippingTillEndif=',FSkippingTillEndif]);
   dec(IfLevel);
   if IfLevel<0 then
     RaiseAWithoutB
@@ -2286,6 +2289,7 @@ function TLinkScanner.ElseCDirective: boolean;
   end;
 
 begin
+  //DebugLn(['TLinkScanner.ElseCDirective FSkippingTillEndif=',FSkippingTillEndif]);
   if IfLevel=0 then
     RaiseAWithoutB;
   if not FSkippingTillEndif then
@@ -2322,10 +2326,11 @@ function TLinkScanner.ElIfCDirective: boolean;
   end;
 
 begin
+  //DebugLn(['TLinkScanner.ElIfCDirective  FSkippingTillEndif=',FSkippingTillEndif]);
   if IfLevel=0 then
     RaiseAWithoutB;
   if not FSkippingTillEndif then begin
-    SkipTillEndifElse;
+    SkipTillEndCifElse;
     Result:=true;
   end else if IfLevel=FSkipIfLevel then
     Result:=IfCDirective;

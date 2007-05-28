@@ -752,6 +752,7 @@ function GetStyleWidgetWithName(const WName: String): PGTKWidget;
 {$IFDEF Gtk2}
 function GetStyleGroupboxFrameBorders: TRect;
 function GetStyleNotebookFrameBorders: TRect;
+function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
 {$ENDIF}
 procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
                              Color: TColorRef; x, y, width, height: gint);

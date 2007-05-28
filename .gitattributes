@@ -101,6 +101,7 @@ components/codetools/examples/scanexamples/completion1.pas svneol=native#text/pl
 components/codetools/examples/scanexamples/empty.inc svneol=native#text/plain
 components/codetools/examples/scanexamples/getcontextexample.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/identcomplexample.pas svneol=native#text/plain
+components/codetools/examples/scanexamples/modemacpas.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/simpleunit1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/tgeneric2.pas svneol=native#text/plain
 components/codetools/examples/setincludepath.lpi svneol=native#text/plain
