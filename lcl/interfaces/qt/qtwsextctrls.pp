@@ -292,7 +292,7 @@ class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
 var
   QtWidget: TQtWidget;
   Method: TMethod;
-  Hook : QObject_hookH;
+  Hook : QTabBar_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomPage.CreateHandle]');
@@ -302,7 +302,7 @@ begin
 
   // Various Events
 
-  Hook := QObject_hook_create(QtWidget.Widget);
+  Hook := QTabBar_hook_create(QtWidget.Widget);
 
   TEventFilterMethod(Method) := @QtWidget.EventFilter;
 
@@ -350,7 +350,7 @@ class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; 
 var
   QtTabWidget: TQtTabWidget;
   Method: TMethod;
-  Hook : QObject_hookH;
+  Hook : QTabWidget_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomNotebook.CreateHandle');
@@ -361,7 +361,8 @@ begin
 
   // Various Events
 
-  Hook := QObject_hook_create(QtTabWidget.Widget);
+  Hook := QTabWidget_hook_create(QtTabWidget.Widget);
+
 
   TEventFilterMethod(Method) := @QtTabWidget.EventFilter;
 

@@ -288,6 +288,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
@@ -829,8 +830,9 @@ begin
   {$ifdef VerboseQt}
     WriteLn(' message: ', Msg.Msg);
   {$endif}
-
   try
+    {TODO: TStringGrid raises AV here while calling
+     editor ... fixme}
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
@@ -2573,6 +2575,20 @@ begin
   Widget:=nil;
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.EventFilter
+  Params:  QObjectH, QEventH
+  Returns: boolean
+
+  Overrides TQtWidget EventFilter()
+ ------------------------------------------------------------------------------}
+function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+
+  inherited EventFilter(Sender, Event);
 end;
 
 {------------------------------------------------------------------------------

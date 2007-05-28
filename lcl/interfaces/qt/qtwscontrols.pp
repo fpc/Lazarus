@@ -58,6 +58,7 @@ type
   private
   protected
   public
+    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -110,6 +111,32 @@ type
 
 
 implementation
+
+{------------------------------------------------------------------------------
+  Function: TQtWSWinControl.CanFocus
+  Params:  TWinControl
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+class function TQtWSWinControl.CanFocus(const AWinControl: TWinControl): Boolean;
+var
+  Widget: TQtWidget;
+  FocusWidget: QWidgetH;
+begin
+  if AWinControl.HandleAllocated then
+  begin
+    Widget := TQtWidget(AWinControl.Handle);
+    if Assigned(Widget.LCLObject.Parent) then
+    FocusWidget := QWidget_focusWidget(TQtWidget(Widget.LCLObject.Parent.Handle).Widget)
+    else
+    FocusWidget := QWidget_focusWidget(Widget.Widget);
+    
+    Result := (FocusWidget <> nil)
+                and QWidget_isEnabled(FocusWidget)
+                and QWidget_isVisible(FocusWidget)
+                and (QWidget_focusPolicy(FocusWidget) <> QtNoFocus);
+  end else
+    Result := False;
+end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSWinControl.CreateHandle
