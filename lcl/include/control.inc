@@ -2631,6 +2631,11 @@ begin
       Font := Parent.Font;
       ParentFont := true;
     end;
+
+    if ParentBidiMode then begin
+      BiDiMode := Parent.BiDiMode;
+      ParentBidiMode := true;
+    end;
   end;
 
   UpdateBaseBounds(true,true,true);
@@ -3690,6 +3695,7 @@ begin
   FHelpType := htContext;
   FDragCursor := crDrag;
   FFloatingDockSiteClass := TCustomDockForm;
+  FParentBidiMode := True;
   //DebugLn('TControl.Create END ',Name,':',ClassName);
 end;
 
@@ -4134,6 +4140,102 @@ begin
   SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height,Parent<>nil);
 end;
 
+{------------------------------------------------------------------------------
+   Method:  TControl.SetBiDiMode
+ ------------------------------------------------------------------------------}
+
+procedure TControl.SetBiDiMode(const AValue: TBiDiMode);
+begin
+  if FBiDiMode=AValue then exit;
+  FBiDiMode:=AValue;
+  FParentBiDiMode := False;
+  Perform(CM_BIDIMODECHANGED, 0, 0);
+end;
+
+{------------------------------------------------------------------------------
+   Method:  TControl.SetParentBiDiMode
+ ------------------------------------------------------------------------------}
+
+procedure TControl.SetParentBiDiMode(const AValue: Boolean);
+begin
+  if FParentBiDiMode=AValue then exit;
+  FParentBiDiMode:=AValue;
+  if (FParent <> nil) and not (csReading in ComponentState) then
+    Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
+end;
+
+{------------------------------------------------------------------------------
+   Method:  TControl.CMBiDiModeChanged
+ ------------------------------------------------------------------------------}
+
+procedure TControl.CMBiDiModeChanged(var Message: TLMessage);
+begin
+  if (Message.wParam = 0) then
+    Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+       TControl.CMParentBidiModeChanged
+
+       assumes: FParent <> nil
+------------------------------------------------------------------------------}
+
+procedure TControl.CMParentBidiModeChanged(var Message: TLMessage);
+begin
+  if csLoading in ComponentState then exit;
+
+  if FParentBidiMode then
+  begin
+    if FParent <> nil then
+      BidiMode := FParent.BidiMode;
+    FParentBidiMode := true;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+       TControl.IsBiDiModeStored
+------------------------------------------------------------------------------}
+function TControl.IsBiDiModeStored: boolean;
+begin
+  Result := not FParentBidiMode;
+end;
+
+
+{------------------------------------------------------------------------------
+       TControl.IsRightToLeft
+------------------------------------------------------------------------------}
+
+function TControl.IsRightToLeft: Boolean;
+begin
+  Result := UseRightToLeftReading;
+end;
+
+{------------------------------------------------------------------------------
+       TControl.UseRightToLeftAlignment
+------------------------------------------------------------------------------}
+
+function TControl.UseRightToLeftAlignment: Boolean;
+begin
+  Result := (BiDiMode = bdRightToLeft);
+end;
+
+{------------------------------------------------------------------------------
+       TControl.UseRightToLeftReading
+------------------------------------------------------------------------------}
+
+function TControl.UseRightToLeftReading: Boolean;
+begin
+  Result := (BiDiMode <> bdLeftToRight);
+end;
+
+{------------------------------------------------------------------------------
+       TControl.UseRightToLeftScrollBar
+------------------------------------------------------------------------------}
+
+function TControl.UseRightToLeftScrollBar: Boolean;
+begin
+  Result := (BiDiMode in [bdRightToLeft, bdRightToLeftNoAlign]);
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}

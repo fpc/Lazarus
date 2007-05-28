@@ -776,6 +776,7 @@ type
     property Anchors;
     property AutoSize;
     property AutoSelect;
+    property BidiMode;
     property BorderSpacing;
     property Color;
     property Constraints;
@@ -786,6 +787,7 @@ type
     property Enabled;
     property Font;
     property MaxLength;
+    property ParentBidiMode;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -823,6 +825,7 @@ type
     property Align;
     property Alignment;
     property Anchors;
+    property BidiMode;
     property BorderSpacing;
     property Color;
     property Constraints;
@@ -832,6 +835,7 @@ type
     property Font;
     property Lines;
     property MaxLength;
+    property ParentBidiMode;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -1385,6 +1389,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

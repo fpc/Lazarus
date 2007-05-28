@@ -4668,6 +4668,14 @@ begin
   NotifyControls(CM_PARENTSHOWHINTCHANGED);
 end;
 
+procedure TWinControl.CMBiDiModeChanged(var Message: TLMessage);
+begin
+  inherited;
+  NotifyControls(CM_PARENTBIDIMODECHANGED);
+  if HandleAllocated and (Message.wParam = 0) then
+    TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self, BiDiMode);
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinControl.WMSetFocus
   Params: Message

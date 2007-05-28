@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Buttons, Graphics, Controls,
+  Windows, Classes, Buttons, Graphics, Controls,
 ////////////////////////////////////////////////////
   WSProc, WSControls, WSButtons, WSLCLClasses, 
   Win32WSControls, LCLType, Themes;
@@ -48,6 +48,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
   end;
@@ -101,12 +102,23 @@ begin
       Flags := Flags or BS_DEFPUSHBUTTON
     else
       Flags := Flags or BS_PUSHBUTTON;
+    with Params do {BidiMode}
+    begin
+      if AWinControl.UseRightToLeftReading then
+        FlagsEx := FlagsEx or WS_EX_RTLREADING;
+    end;
     pClassName := 'BUTTON';
     WindowTitle := StrCaption;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+class procedure TWin32WSButton.SetBiDiMode(const AWinControl: TWinControl;
+  const ABiDiMode: TBiDiMode);
+begin
+  RecreateWnd(AWinControl);
 end;
 
 class procedure TWin32WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);

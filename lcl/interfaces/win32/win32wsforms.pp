@@ -245,6 +245,13 @@ begin
        ( not (csDesigning in lForm.ComponentState) and
         (lForm.ShowInTaskBar = stAlways)) then
       Parent := 0;
+    with Params do {BidiMode}
+    begin
+      if AWinControl.UseRightToLeftAlignment then
+        FlagsEx := FlagsEx or WS_EX_LEFTSCROLLBAR or WS_EX_RIGHT;
+      if AWinControl.UseRightToLeftReading then
+        FlagsEx := FlagsEx or WS_EX_RTLREADING ;
+    end;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

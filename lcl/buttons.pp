@@ -112,6 +112,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Cancel;
     property Caption;
@@ -122,6 +123,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property ParentBidiMode;
     property ModalResult;
     property OnChangeBounds;
     property OnClick;

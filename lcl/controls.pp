@@ -1282,6 +1282,22 @@ type
     property TBDockHeight: Integer read GetTBDockHeight write FTBDockHeight;
     property UndockHeight: Integer read GetUndockHeight write FUndockHeight;// Height used when undocked
     property UndockWidth: Integer read GetUndockWidth write FUndockWidth;// Width used when undocked
+  private
+    //BidiMode property, RightToLeft
+    FBiDiMode: TBiDiMode;
+    FParentBiDiMode: Boolean;
+    function IsBiDiModeStored: boolean;
+    procedure SetBiDiMode(const AValue: TBiDiMode);
+    procedure SetParentBiDiMode(const AValue: Boolean);
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
+  public
+    function UseRightToLeftAlignment: Boolean; virtual;
+    function UseRightToLeftReading: Boolean; virtual;
+    function UseRightToLeftScrollBar: Boolean;
+    function IsRightToLeft: Boolean;
+    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored default bdLeftToRight;
+    property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode default True;
   published
     property AnchorSideLeft: TAnchorSide index 0 read GetAnchorSideIndex write SetAnchorSideIndex;
     property AnchorSideTop: TAnchorSide index 1 read GetAnchorSideIndex write SetAnchorSideIndex;
@@ -1586,6 +1602,7 @@ type
     // messages
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
@@ -3242,4 +3259,5 @@ finalization
   FreeThenNil(Mouse);
 
 end.
+
 

@@ -185,7 +185,7 @@ type
     property AutoSize;
     //property AutoScroll;
     property BorderSpacing;
-    //property BiDiMode;
+    property BiDiMode;
     property BorderStyle;
     property ChildSizing;
     property Constraints;
@@ -198,7 +198,7 @@ type
     property Color nodefault;
     property Ctl3D;
     property Font;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -571,6 +571,7 @@ type
     property ActiveControl;
     property Align;
     property AutoSize;
+    property BiDiMode;
     property BorderIcons;
     property BorderStyle;
     property Caption;
@@ -617,6 +618,7 @@ type
     property OnStartDock;
     property OnUnDock;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentFont;
     property PixelsPerInch;
     property PopupMenu;
@@ -1782,4 +1784,5 @@ finalization
   FreeThenNil(Screen);
 
 end.
+
 
