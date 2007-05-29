@@ -3163,12 +3163,7 @@ end;
 procedure TGtkWidgetSet.ResizeChild(Sender : TObject;
   Left, Top, Width, Height : Integer);
 var
-  Widget: PGtkWidget;
   LCLControl: TWinControl;
-  Later: boolean;
-  {$IFDEF Gtk2}
-  IsTopLevelWidget: Boolean;
-  {$ENDIF}
 begin
   //DebugLn('[TGtkWidgetSet.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TGtkWidgetSet.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
@@ -3176,22 +3171,7 @@ begin
   if Sender is TWinControl then begin
     LCLControl:=TWinControl(Sender);
     if LCLControl.HandleAllocated then begin
-      Widget := pgtkWidget(LCLControl.Handle);
-      if not WidgetSizeIsEditable(Widget) then exit;
-      Later:=true;
-      {$IFDEF Gtk2}
-      if GTK_WIDGET_REALIZED(Widget) then begin
-        // add resize request immediately
-        IsTopLevelWidget:= (LCLControl is TCustomForm)
-                           and (LCLControl.Parent = nil);
-        if not IsTopLevelWidget then begin
-          SetWidgetSizeAndPosition(LCLControl);
-          Later:=false;
-        end;
-      end;
-      {$ENDIF}
-      if Later then
-        SetResizeRequest(Widget);
+      ResizeHandle(LCLControl);
       //if (Sender is TCustomForm) then
       //if CompareText(Sender.ClassName,'TScrollBar')=0 then
       //  DebugLn(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top,',',Width,',',Height);
@@ -5563,7 +5543,7 @@ begin
         {$IFDEF VerboseSizeMsg}
         DebugLn(['TGtkWidgetSet.ShowHide ',DbgSName(LCLControl)]);
         {$ENDIF}
-        RealizeWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
+        SetWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
@@ -6747,84 +6727,6 @@ begin
     FRCFileParsed:=true;
     FRCFileAge:=FileAge(FRCFilename);
   end;
-end;
-
-
-{------------------------------------------------------------------------------
-  TGtkWidgetSet SetResizeRequest
-  Params: Widget: PGtkWidget
-
-  Marks the widget to send a ResizeRequest to the gtk.
-  When the LCL resizes a control the new bounds will not be set directly, but
-  cached. This is needed, because it is common behaviour to set the bounds step
-  by step. For example: Left:=10; Top:=10; Width:=100; Height:=50; results in
-  SetBounds(10,0,0,0);
-  SetBounds(10,10,0,0);
-  SetBounds(10,10,100,0);
-  SetBounds(10,10,100,50);
-  Because the gtk puts all size requests into a queue, it will process the
-  requests not immediately, but _after_ all requests. This results in changing
-  the widget size four times and everytime the LCL gets a message. If the
-  control has childs, this will resize the childs four times.
-  Therefore LCL size requests for a widget are cached and only the final one is
-  sent in: TGtkWidgetSet.SendCachedLCLMessages.
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetResizeRequest(Widget: PGtkWidget);
-{$IFDEF VerboseSizeMsg}
-var
-  LCLControl: TWinControl;
-{$ENDIF}
-begin
-  {$IFDEF Gtk2}
-  if not WidgetSizeIsEditable(Widget) then exit;
-  {$ENDIF}
-  {$IFDEF VerboseSizeMsg}
-  LCLControl:=TWinControl(GetLCLObject(Widget));
-  DbgOut('TGtkWidgetSet.SetResizeRequest Widget=',DbgS(Widget));
-  if LCLControl is TWinControl then
-    DebugLn(' ',DbgSName(LCLControl),' LCLBounds=',dbgs(LCLControl.BoundsRect))
-  else
-    DebugLn(' ERROR: ',DbgSName(LCLControl));
-  {$ENDIF}
-  if not FWidgetsWithResizeRequest.Contains(Widget) then
-    FWidgetsWithResizeRequest.Add(Widget);
-end;
-
-{------------------------------------------------------------------------------
-  function TGTKWidgetSet.WidgetSizeIsEditable(Widget: PGtkWidget): boolean;
-  
-  True if the widget can be resized.
-  False if the size is under complete control of the gtk.
-------------------------------------------------------------------------------}
-function TGTKWidgetSet.WidgetSizeIsEditable(Widget: PGtkWidget): boolean;
-begin
-  if Widget=nil then exit(false);
-  if (GtkWidgetIsA(Widget,GTK_TYPE_WINDOW))
-  or (GtkWidgetIsA(Widget^.Parent,GTK_TYPE_FIXED))
-  or (GtkWidgetIsA(Widget^.Parent,GTK_TYPE_LAYOUT))
-  then
-    Result:=true
-  else
-    Result:=false;
-end;
-
-{------------------------------------------------------------------------------
-  TGtkWidgetSet UnsetResizeRequest
-  Params: Widget: PGtkWidget
-
-  Unset the mark for the Widget to send a ResizeRequest to the gtk.
-  LCL size requests for a widget are cached and only the last one is sent. Some
-  widgets like forms send a resize request immediately. To avoid sending resize
-  requests multiple times they can unset the mark with this procedure.
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.UnsetResizeRequest(Widget: PGtkWidget);
-begin
-  {$IFDEF VerboseSizeMsg}
-  if FWidgetsWithResizeRequest.Contains(Widget) then begin
-    DebugLn(['TGtkWidgetSet.UnsetResizeRequest ',GetWidgetDebugReport(Widget)]);
-  end;
-  {$ENDIF}
-  FWidgetsWithResizeRequest.Remove(Widget);
 end;
 
 {------------------------------------------------------------------------------

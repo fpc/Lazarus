@@ -4581,10 +4581,11 @@ var
   Widget, ClientWidget: PGtkWidget;
   {$IFDEF Gtk1}
   MainOrigin: TPoint;
+  {$ELSE}
+  CurGDKWindow: PGdkWindow;
   {$ENDIF}
   ClientOrigin: TPoint;
   ClientWindow, MainWindow: PGdkWindow;
-  CurGDKWindow: PGdkWindow;
 begin
   Result := False;
   if Handle = 0 then Exit;
@@ -4675,6 +4676,42 @@ end;
 Function TGtkWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
+  
+  {$IFDEF Gtk2}
+  procedure GetNoteBookClientRect(NBWidget: PGtkNotebook);
+  var
+    PageIndex: LongInt;
+    PageWidget: PGtkWidget;
+    FrameBorders: TRect;
+    aWidth: LongInt;
+    aHeight: LongInt;
+  begin
+    // get current page
+    PageIndex:=gtk_notebook_get_current_page(NBWidget);
+    if PageIndex>=0 then
+      PageWidget:=gtk_notebook_get_nth_page(NBWidget,PageIndex)
+    else
+      PageWidget:=nil;
+    if (PageWidget<>nil)
+    and ((PageWidget^.Allocation.Width>1) or (PageWidget^.Allocation.Height>1))
+    then begin
+      // get the size of the current page
+      ARect.Right:=PageWidget^.Allocation.Width;
+      ARect.Bottom:=PageWidget^.Allocation.Height;
+      //DebugLn(['GetNoteBookClientRect using pagewidget: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+    end else begin
+      // use defaults
+      FrameBorders:=GetStyleNotebookFrameBorders;
+      aWidth:=Widget^.allocation.width;
+      aHeight:=Widget^.allocation.height;
+      ARect:=Rect(0,0,
+         Max(0,AWidth-FrameBorders.Left-FrameBorders.Right),
+         Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
+      //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+    end;
+  end;
+  {$ENDIF}
+
 begin
   Result := false;
   if Handle = 0 then Exit;
@@ -4691,6 +4728,10 @@ begin
     ARect.Right:=0;
     ARect.Bottom:=0;
   end;
+  {$IFDEF Gtk2}
+  if GtkWidgetIsA(Widget,GTK_TYPE_NOTEBOOK) then
+    GetNoteBookClientRect(PGtkNoteBook(Widget));
+  {$ENDIF}
   {$IfDef VerboseGetClientRect}
   if ClientWidget<>nil then begin
     DebugLn('GetClientRect  Widget=',DbgS(handle),
@@ -6431,31 +6472,11 @@ function TGtkWidgetSet.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 var
   aWidget: PGtkWidget;
-  {$IFDEF Gtk2}
-  GdkWindow: PGdkWindow;
-  GtkLeft, GtkTop: gint;
-  {$ENDIF}
 begin
   aWidget:=PGtkWidget(Handle);
   if GtkWidgetIsA(aWidget,GTK_TYPE_WIDGET) then begin
     Result:=true;
-    Left:=aWidget^.allocation.X;
-    Top:=aWidget^.allocation.Y;
-    {$IFDEF Gtk2}
-    if (aWidget^.window=nil) and (aWidget^.parent<>nil) then begin
-      inc(Left,aWidget^.parent^.allocation.X);
-      inc(Top,aWidget^.parent^.allocation.Y);
-    end;
-    if GtkWidgetIsA(aWidget,GTK_TYPE_WINDOW) then begin
-      GdkWindow:=GetControlWindow(aWidget);
-      if GdkWindow<>nil then begin
-        gdk_window_get_root_origin(GdkWindow, @GtkLeft, @GtkTop);
-        Left:=GtkLeft;
-        Top:=GtkTop;
-      end;
-    end;
-    //DebugLn(['TGtkWidgetSet.GetWindowRelativePosition ',GetWidgetDebugReport(aWidget),' Left=',Left,' Top=',Top]);
-    {$ENDIF}
+    GetWidgetRelativePosition(aWidget,Left,Top);
   end else
     Result:=false;
 end;

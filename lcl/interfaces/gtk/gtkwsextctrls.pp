@@ -262,7 +262,7 @@ class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   Inserts a new page to a notebook at position Index. The ANotebook is a
   TCustomNoteBook, the AChild one of its TCustomPage. Both handles must already
   be created. ANoteBook Handle is a PGtkNoteBook and APage handle is a
-  PGtkFixed.
+  PGtkHBox.
   This procedure creates a new tab with an optional image, the page caption and
   an optional close button. The image and the caption will also be added to the
   tab popup menu.
@@ -330,7 +330,7 @@ begin
   // remove the dummy page (a gtk_notebook needs at least one page)
   RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
   // insert the page
-  gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget), PageWidget,
+  gtk_notebook_insert_page_menu(PGtkNotebook(NotebookWidget), PageWidget,
     TabWidget, MenuWidget, AIndex);
 
   UpdateNotebookPageTab(ANoteBook, AChild);
@@ -341,7 +341,7 @@ begin
   allocation.y:=ANoteBook.Top;
   allocation.width:=ANoteBook.Width;
   allocation.height:=ANoteBook.Height;
-  gtk_widget_size_allocate(PageWidget^.parent,@allocation);
+  gtk_widget_size_allocate(NotebookWidget,@allocation);
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TGtkWSCustomNotebook.AddPage PageWidget^.allocation=',dbgs(PageWidget^.allocation),' NotebookWidget=',dbgs(NotebookWidget^.allocation)]);
   {$ENDIF}

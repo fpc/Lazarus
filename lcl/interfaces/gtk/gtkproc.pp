@@ -701,14 +701,19 @@ function gtkListGetSelectionMode(list: PGtkList): TGtkSelectionMode;cdecl;
 // sizing
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
+procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
 procedure SendCachedGtkResizeNotifications;
-procedure RealizeWidgetSize(Widget: PGtkWidget; NewWidth, NewHeight: integer);
-procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);
-procedure SetWindowSizeAndPosition(Window: PGtkWindow; AWinControl: TWinControl);
+procedure ResizeHandle(LCLControl: TWinControl);
+procedure SetWidgetSize(Widget: PGtkWidget; NewWidth, NewHeight: integer);
+procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);// for child controls
+procedure SetWindowSizeAndPosition(Window: PGtkWindow; AWinControl: TWinControl);// for top level control
+procedure GetWidgetRelativePosition(aWidget: PGtkWidget; var Left, Top: integer);
+procedure UnsetResizeRequest(Widget: PGtkWidget);
+procedure SetResizeRequest(Widget: PGtkWidget);
+function WidgetSizeIsEditable(Widget: PGtkWidget): boolean;
 
 // debug
 procedure ReportNotObsolete(const Texts: String);

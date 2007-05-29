@@ -2125,8 +2125,12 @@ function TWinControl.ClientRectNeedsInterfaceUpdate: boolean;
 var
   IntfClientRect: TRect;
 begin
-  Result:=false;
-  if not HandleAllocated then exit;
+  if (not HandleAllocated) or (csDestroyingHandle in ControlState)
+  or (csDestroying in ComponentState)
+  then
+    exit(false);
+  if wcfClientRectNeedsUpdate in FWinControlFlags then
+    exit(true);
   LCLIntf.GetClientRect(Handle,IntfClientRect);
   Result:=(FClientWidth<>IntfClientRect.Right)
        or (FClientHeight<>IntfClientRect.Bottom);
@@ -4863,7 +4867,7 @@ var
   NewBoundsRealized: TRect;
 begin
   {$IFDEF VerboseSizeMsg}
-  if CheckPosition(Self) then
+  //if CheckPosition(Self) then
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
@@ -4878,12 +4882,15 @@ begin
       GetWindowRelativePosition(Handle,NewLeft,NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized)
+    and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then exit;
     FBoundsRealized:=NewBoundsRealized;
     InvalidatePreferredSize;
   end;
 
   SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
+  if ClientRectNeedsInterfaceUpdate then
+    DoAdjustClientRectChange;
 end;
 
 {------------------------------------------------------------------------------

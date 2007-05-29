@@ -449,9 +449,8 @@ var
   Rows: Integer;
 begin
   Rows:=Page.ClientHeight div ComponentPaletteBtnHeight;
-  // patch by JernejL 12.11.2006
-  // Ok, this is nice.. this is called when Tnotebook or its pages resize, it will
-  // automaticly set optimal row count and re-position controls to use height optimally
+  //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
+  // automatically set optimal row count and re-position controls to use height optimally
 
   if Rows = 0 then Rows:= 1; // avoid division by zero
 

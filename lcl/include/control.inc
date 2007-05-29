@@ -337,6 +337,7 @@ begin
     ' Old='+dbgs(Left)+','+dbgs(Top)+','+dbgs(Width),',',dbgs(Height),
     ' New='+dbgs(ALeft)+','+dbgs(ATop)+','+dbgs(AWidth),',',dbgs(AHeight));
   //if (Parent=nil) and (Left>0) and (ALeft=0) then DumpStack; // This can happen if the interface has not yet moved the window and for some reason something applies the interface coords back to the LCL
+  if AWidth=314 then DumpStack;
   {$ENDIF}
 
   // constraint the size

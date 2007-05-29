@@ -264,7 +264,9 @@ begin
                  Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
     Result:=true;
   end;
-  //if Result then DebugLn(['TGtk2WSCustomNotebook.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+  {$IFDEF VerboseSizeMsg}
+  if Result then DebugLn(['TGtk2WSCustomNotebook.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+  {$ENDIF}
 end;
 
 
@@ -277,14 +279,17 @@ begin
   Result:=false;
   if AWinControl.Parent=nil then exit;
   if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated
-  and (PGtkWidget(AWinControl.Handle)^.parent=nil) then
+  and (PGtkWidget(AWinControl.Handle)^.parent<>nil) then
   begin
 
   end else begin
     Result:=true;
     aClientRect:=AWinControl.Parent.ClientRect;
+    //DebugLn(['TGtk2WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' Parent=',DbgSName(AWinControl.Parent),' ParentBounds=',dbgs(AWinControl.Parent.BoundsRect),' ParentClient=',dbgs(AWinControl.Parent.ClientRect)]);
   end;
-  //if Result then DebugLn(['TGtk2WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' aClientRect=',dbgs(aClientRect)]);
+  {$IFDEF VerboseSizeMsg}
+  if Result then DebugLn(['TGtk2WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' aClientRect=',dbgs(aClientRect)]);
+  {$ENDIF}
 end;
 
 initialization

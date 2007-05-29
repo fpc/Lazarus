@@ -282,12 +282,13 @@ begin
   TGtkWidgetSet(WidgetSet).ShowHide(AWinControl);
 end;
 
-class procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+class procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds')
   then Exit;
 
-  TGtkWidgetSet(WidgetSet).SetResizeRequest(PGtkWidget(AWinControl.Handle));
+  ResizeHandle(AWinControl);
 end;
 
 class procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
@@ -634,7 +635,7 @@ end;
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
 begin
   if (GtkWindow=nil) then exit;
-  TGtkWidgetSet(WidgetSet).UnsetResizeRequest(PgtkWidget(GtkWindow));
+  UnsetResizeRequest(PgtkWidget(GtkWindow));
 
   if ModalWindows=nil then ModalWindows:=TFPList.Create;
   ModalWindows.Add(GtkWindow);
