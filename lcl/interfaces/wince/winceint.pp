@@ -62,6 +62,8 @@ const
      IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT, IDC_UPARROW, IDC_SIZEWE,
      IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE, IDC_IBEAM, IDC_CROSS,
      IDC_ARROW, IDC_ARROW, IDC_ARROW);
+     
+  WM_LCL_SOCK_ASYNC = WM_USER;
 
 type
 
@@ -80,6 +82,8 @@ type
     UserData: PtrInt;
     OnEvent: TWaitHandleEvent;
   end;
+  
+  TSocketEvent = function(ASocket: THandle; Flags: dword): Integer of object;
 
   { WinCE interface-object class }
 
@@ -111,6 +115,9 @@ type
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
     FWaitPipeHandlers: PPipeEventInfo;
+    
+    FOnAsyncSocketMsg: TSocketEvent;
+    
     procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const BitmapHandle: HBITMAP;
       const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
@@ -172,6 +179,7 @@ type
     property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
     property ThemesActive: boolean read FThemesActive;//just for not removing all those refrences
+    property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   end;
 
  {$I wincelistslh.inc}

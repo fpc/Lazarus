@@ -1874,7 +1874,12 @@ begin
         end;
       end;
     End;
-
+    WM_LCL_SOCK_ASYNC:
+    begin
+      if (Window = TWinCEWidgetSet(WidgetSet).AppHandle) and
+          Assigned(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg) then
+        exit(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
+    end;
 
 {$ifdef PassWin32MessagesToLCL}
   else

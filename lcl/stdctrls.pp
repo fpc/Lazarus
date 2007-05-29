@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
-  GraphType, GraphMath, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
+  GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
   Forms;
 
 type
