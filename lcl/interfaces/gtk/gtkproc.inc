@@ -6883,6 +6883,9 @@ procedure SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
 var
   Width, Height: integer;
+  {$IFDEF Gtk2}
+  allocation: TGdkRectangle;
+  {$ENDIF}
   //Info: PGtkWindowGeometryInfo;
 begin
   Width:=AWinControl.Width;
@@ -6902,6 +6905,12 @@ begin
   gtk_window_resize(Window,Width,Height);
   // reposition
   gtk_window_move(Window,AWinControl.Left,AWinControl.Top);
+
+  // commit size
+  allocation:=PgtkWidget(Window)^.allocation;
+  allocation.width:=Width;
+  allocation.height:=Height;
+  gtk_widget_size_allocate(PgtkWidget(Window),@allocation);
   {$ELSE}
   // resize
   if assigned(PGtkWidget(Window)^.Window) then
@@ -6950,15 +6959,20 @@ begin
   {$ENDIF}
   if GtkWidgetIsA(aWidget,GTK_TYPE_WINDOW) then begin
     GdkWindow:=GetControlWindow(aWidget);
-    if GdkWindow<>nil then begin
+    if (GdkWindow<>nil) and (GTK_WIDGET_MAPPED(aWidget)) then begin
+      // window is mapped = window manager has put the window somewhere
       gdk_window_get_root_origin(GdkWindow, @GtkLeft, @GtkTop);
       Left:=GtkLeft;
       Top:=GtkTop;
     end else begin
+      // the gtk has not yet put the window to the final position
+      // => the gtk/gdk position is not reliable
+      // => use the LCL coords
       LCLControl:=GetLCLObject(aWidget) as TWinControl;
       Left:=LCLControl.Left;
       Top:=LCLControl.Top;
     end;
+    //DebugLn(['TGtkWidgetSet.GetWindowRelativePosition ',GetWidgetDebugReport(aWidget),' Left=',Left,' Top=',Top,' GdkWindow=',GdkWindow<>nil]);
   end;
   //DebugLn(['TGtkWidgetSet.GetWindowRelativePosition ',GetWidgetDebugReport(aWidget),' Left=',Left,' Top=',Top]);
 end;
