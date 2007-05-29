@@ -38,8 +38,6 @@ function AddProcessEventHandler(AHandle: THandle;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 
-function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
-
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
                     Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;

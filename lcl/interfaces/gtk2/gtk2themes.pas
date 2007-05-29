@@ -15,10 +15,6 @@ uses
   gtkdef, gtk2int, gtkproc;
   
 type
-  // todo: more common painter
-  TGtkPainter = procedure (style:PGtkStyle; window:PGdkWindow; state_type:TGtkStateType; shadow_type:TGtkShadowType; 
-     area:PGdkRectangle; widget:PGtkWidget; detail:Pgchar; x:gint; y:gint; width:gint; height:gint); cdecl;
-
   TGtkPainterType =
   (
     gptNone,
@@ -30,23 +26,24 @@ type
     gptFlatBox,
     gptCheck,
     gptOption,
-    gptTab
+    gptTab,
 //    gptSlider,
-//    gptHandle,
+    gptHandle
 //    gptExpander,
 //    gptResizeGrip
   );
 
   TGtkStyleParams = record
-    Style  : PGtkStyle;       // paint style
-    Painter: TGtkPainterType; // type of paint handler
-    Widget : PGtkWidget;      // widget
-    Window : PGdkWindow;      // paint window
-    Origin : TPoint;          // offset
-    State  : TGtkStateType;   // Style state
-    Shadow : TGtkShadowType;  // Shadow
-    Detail : String;          // Detail (button, checkbox, ...)
-    IsHot  : Boolean;
+    Style      : PGtkStyle;       // paint style
+    Painter    : TGtkPainterType; // type of paint handler
+    Widget     : PGtkWidget;      // widget
+    Window     : PGdkWindow;      // paint window
+    Origin     : TPoint;          // offset
+    State      : TGtkStateType;   // Style state
+    Shadow     : TGtkShadowType;  // Shadow
+    Detail     : String;          // Detail (button, checkbox, ...)
+    Orientation: TGtkOrientation; // Orientation (horizontal/vertical)
+    IsHot      : Boolean;
   end;
 
   { TGtk2ThemeServices }
@@ -63,9 +60,7 @@ type
 
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
   public
-
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
-    procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
 
@@ -73,33 +68,9 @@ type
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
   end;
 
-  procedure wrap_gtk_paint_hline(style:PGtkStyle; window:PGdkWindow; state_type:TGtkStateType; shadow_type:TGtkShadowType;
-     area:PGdkRectangle; widget:PGtkWidget; detail:Pgchar; x:gint; y:gint; width:gint; height:gint); cdecl;
-
-  procedure wrap_gtk_paint_vline(style:PGtkStyle; window:PGdkWindow; state_type:TGtkStateType; shadow_type:TGtkShadowType;
-     area:PGdkRectangle; widget:PGtkWidget; detail:Pgchar; x:gint; y:gint; width:gint; height:gint); cdecl;
-
 implementation
 
 const
-  GtkPainterMap: array[TGtkPainterType] of TGtkPainter =
-  (
-{ gptNone       } nil,
-{ gptDefault    } @gtk_paint_box,          // maybe smth else ??
-{ gptHLine      } @wrap_gtk_paint_hline,
-{ gptVLine      } @wrap_gtk_paint_vline,
-{ gptShadow     } @gtk_paint_shadow,
-{ gptBox        } @gtk_paint_box,
-{ gptFlatBox    } @gtk_paint_flat_box,
-{ gptCheck      } @gtk_paint_check,
-{ gptOption     } @gtk_paint_option,
-{ gptTab,       } @gtk_paint_tab
-// { gptSlider     } @gtk_paint_slider,
-// { gptHandle     } @gtk_paint_handle,
-// { gptExpander   } @gtk_paint_expander,
-// { gptResizeGrip } @gtk_paint_resize_grip
-  );
-
   // most common maps
   GtkButtonMap: array[0..6] of TGtkStateType =
   (
@@ -111,18 +82,6 @@ const
 { defaulted/checked } GTK_STATE_ACTIVE,
 { hot + checked     } GTK_STATE_INSENSITIVE // PRELIGHT IS TOO LIGHT
   );
-
-procedure wrap_gtk_paint_hline(style:PGtkStyle; window:PGdkWindow; state_type:TGtkStateType; shadow_type:TGtkShadowType;
-   area:PGdkRectangle; widget:PGtkWidget; detail:Pgchar; x:gint; y:gint; width:gint; height:gint); cdecl;
-begin
-  gtk_paint_hline(style, window, state_type, area, widget, detail, x, width, y);
-end;
-
-procedure wrap_gtk_paint_vline(style:PGtkStyle; window:PGdkWindow; state_type:TGtkStateType; shadow_type:TGtkShadowType;
-   area:PGdkRectangle; widget:PGtkWidget; detail:Pgchar; x:gint; y:gint; width:gint; height:gint); cdecl;
-begin
-  gtk_paint_vline(style, window, state_type, area, widget, detail, y, height, x);
-end;
 
 { TGtk2ThemeServices }
 
@@ -206,6 +165,29 @@ begin
                 end;
             end;
           end;
+        teRebar:
+          begin
+            case Details.Part of
+              RP_GRIPPER, RP_GRIPPERVERT:
+                begin
+                  Result.State := GTK_STATE_NORMAL;
+                  Result.Shadow := GTK_SHADOW_NONE;
+                  Result.Detail := 'paned';
+                  Result.Painter := gptHandle;
+                  if Details.Part = RP_GRIPPER then
+                    Result.Orientation := GTK_ORIENTATION_VERTICAL
+                  else
+                    Result.Orientation := GTK_ORIENTATION_HORIZONTAL;
+                end;
+              RP_BAND:
+                begin
+                  Result.State := GtkButtonMap[Details.State];
+                  Result.Shadow := GTK_SHADOW_NONE;
+                  Result.Detail := 'paned';
+                  Result.Painter := gptFlatBox;
+                end;
+            end;
+          end;
       end;
     end;
 end;
@@ -236,13 +218,6 @@ begin
     InflateRect(Result,
       -StyleParams.Style^.xthickness,
       -StyleParams.Style^.ythickness);
-end;
-
-procedure TGtk2ThemeServices.DrawEdge(DC: HDC;
-  Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
-  AContentRect: PRect);
-begin
-
 end;
 
 procedure TGtk2ThemeServices.DrawElement(DC: HDC;
@@ -282,13 +257,62 @@ begin
         }
       end;
 
-      if Painter <> gptNone then
-        GtkPainterMap[Painter](
+      case Painter of
+        gptBox,
+        gptDefault: gtk_paint_box(
             Style, Window,
             State, Shadow,
             p_ClipArea, Widget, PChar(Detail),
             R1.Left + Origin.x, R1.Top + Origin.y,
             R1.Right - R1.Left, R1.Bottom - R1.Top);
+        gptHLine  : gtk_paint_hline(
+            Style, Window,
+            State, p_ClipArea,
+            Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Right + Origin.x, R1.Top + Origin.y);
+        gptVLine  : gtk_paint_vline(
+            Style, Window,
+            State, p_ClipArea,
+            Widget, PChar(Detail),
+            R1.Top + Origin.y, R1.Bottom + Origin.y, R1.Left + Origin.x);
+        gptShadow : gtk_paint_shadow(
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top);
+        gptFlatBox: gtk_paint_flat_box(
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top);
+        gptCheck  : gtk_paint_check(
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top);
+        gptOption : gtk_paint_option(
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top);
+        gptTab    : gtk_paint_tab(
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top);
+        gptHandle : gtk_paint_handle(
+            Style, Window,
+            State, Shadow,
+            p_ClipArea, Widget, PChar(Detail),
+            R1.Left + Origin.x, R1.Top + Origin.y,
+            R1.Right - R1.Left, R1.Bottom - R1.Top,
+            Orientation);
+      end;
     end;
   end;
 end;

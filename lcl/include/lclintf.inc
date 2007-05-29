@@ -426,11 +426,6 @@ procedure SendCachedLCLMessages;
 begin
 end;
 
-function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean;
-begin
-  Result := WidgetSet.DrawSplitter(DC,ARect,Horizontal);
-end;
-
 function SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
 begin
   Result := WidgetSet.SetCaretRespondToFocus(Handle,ShowHideOnFocus);

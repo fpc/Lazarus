@@ -810,7 +810,6 @@ type
     FControlHandlers: array[TControlHandlerType] of TMethodList;
     FControlStyle: TControlStyle;
     FCtl3D: Boolean;
-    FCursor: TCursor;
     FDockOrientation: TDockOrientation;
     FDragCursor: TCursor;
     FDragKind: TDragKind;
@@ -914,7 +913,6 @@ type
     procedure SetClientSize(const Value: TPoint);
     procedure SetClientWidth(Value: Integer);
     procedure SetConstraints(const Value: TSizeConstraints);
-    procedure SetCursor(Value: TCursor);
     procedure SetDragCursor(const AValue: TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
@@ -934,6 +932,9 @@ type
     procedure SetWidth(Value: Integer);
   protected
     FControlState: TControlState;
+    FCursor: TCursor;
+    function GetCursor: TCursor; virtual;
+    procedure SetCursor(Value: TCursor); virtual;
   protected
     // sizing/aligning
     AutoSizing: Boolean;
@@ -1303,7 +1304,7 @@ type
     property AnchorSideTop: TAnchorSide index 1 read GetAnchorSideIndex write SetAnchorSideIndex;
     property AnchorSideRight: TAnchorSide index 2 read GetAnchorSideIndex write SetAnchorSideIndex;
     property AnchorSideBottom: TAnchorSide index 3 read GetAnchorSideIndex write SetAnchorSideIndex;
-    property Cursor: TCursor read FCursor write SetCursor default crDefault;
+    property Cursor: TCursor read GetCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
     property Height: Integer read FHeight write SetHeight;
     property Hint: TTranslateString read FHint write SetHint;

@@ -52,3 +52,16 @@ begin
   end;
 end;
 
+{ TGtkPrivatePaned }
+
+class procedure TGtkPrivatePaned.UpdateCursor(AInfo: PWidgetInfo);
+var
+  Widget: PGtkWidget;
+  Window: PGdkWindow;
+begin
+  Widget := AInfo^.CoreWidget;
+  Window := PGTkPaned(Widget)^.handle;
+  if Window = nil then Exit;
+  SetWindowCursor(Window, AInfo^.ControlCursor, False);
+end;
+

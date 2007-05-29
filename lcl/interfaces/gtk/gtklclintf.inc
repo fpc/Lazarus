@@ -189,53 +189,6 @@ end;
 {$endif}
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
-    Horizontal: boolean): Integer;
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
-  Horizontal: boolean): boolean;
-var
-  Widget: PGtkWidget;
-  ClientWidget: Pointer;
-  DCOrigin: TPoint;
-  Detail: PChar;
-  Area: TGdkRectangle;
-  Style: PGtkStyle;
-  AWindow: PGdkWindow;
-begin
-  Result := False;
-  if not IsValidDC(DC) then exit;
-
-  Widget:=TDeviceContext(DC).DCWidget;
-  ClientWidget:=GetFixedWidget(Widget);
-  if ClientWidget<>nil then
-    Widget:=ClientWidget;
-  AWindow:=TDeviceContext(DC).Drawable;
-
-  Style:=GetStyle(lgsButton);
-  if Horizontal then begin
-    Detail:='vpaned';
-  end else begin
-    Detail:='hpaned';
-  end;
-
-  DCOrigin:=GetDCOffset(TDeviceContext(DC));
-  Area.X:=ARect.Left+DCOrigin.X;
-  Area.Y:=ARect.Top+DCOrigin.Y;
-  Area.Width:=ARect.Right-ARect.Left;
-  Area.Height:=ARect.Bottom-ARect.Top;
-
-  gtk_paint_box(Style, AWindow,
-    GTK_WIDGET_STATE(Widget),
-    GTK_SHADOW_OUT,
-    @Area, Widget, Detail,
-    Area.X,Area.Y,Area.Width,Area.Height);
-
-  Result:=true;
-end;
-
-{------------------------------------------------------------------------------
   function TGtkWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
     Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 

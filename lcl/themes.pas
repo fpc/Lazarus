@@ -1751,8 +1751,14 @@ end;
 
 procedure TThemeServices.DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
   AContentRect: PRect = nil);
+var
+  ARect: TRect;
 begin
   // deafult painting
+  ARect := R;
+  WidgetSet.DrawEdge(DC, ARect, Edge, Flags);
+  if (Flags and DFCS_ADJUSTRECT <> 0) and (AContentRect <> nil) then
+    AContentRect^ := R;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

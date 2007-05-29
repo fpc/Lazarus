@@ -154,6 +154,14 @@ type
   public
   end;
   
+  { TGtkPrivatePaned }
+  { Private class for gtkpaned }
+  TGtkPrivatePaned = class(TGtkPrivateContainer)
+  private
+  protected
+  public
+    class procedure UpdateCursor(AInfo: PWidgetInfo); override;
+  end;
   
 
 function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
@@ -290,8 +298,6 @@ begin
     end;
   end;
 end;
-
-
 
 {$I gtkprivatewidget.inc}
 

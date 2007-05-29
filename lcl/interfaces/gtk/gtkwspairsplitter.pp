@@ -32,7 +32,8 @@ uses
   {$ELSE}
   Gtk, //Glib, Gdk,
   {$ENDIF}
-  PairSplitter,
+  GtkWSPrivate,
+  Controls, PairSplitter,
   WSPairSplitter, WSLCLClasses, WSProc;
 
 type
@@ -53,6 +54,9 @@ type
   public
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; override;
+    // special cursor handling
+    class function GetSplitterCursor(ASplitter: TCustomPairSplitter; var ACursor: TCursor): Boolean; override;
+    class function SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean; override;
   end;
 
   { TGtkWSPairSplitter }
@@ -99,6 +103,18 @@ begin
   Result:=true;
 end;
 
+class function TGtkWSCustomPairSplitter.GetSplitterCursor(
+  ASplitter: TCustomPairSplitter; var ACursor: TCursor): Boolean;
+begin
+  Result := False;
+end;
+
+class function TGtkWSCustomPairSplitter.SetSplitterCursor(
+  ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean;
+begin
+  Result := False;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -108,7 +124,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide);
-  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter);
+  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter, TGtkPrivatePaned);
 //  RegisterWSComponent(TPairSplitter, TGtkWSPairSplitter);
 ////////////////////////////////////////////////////
 end.

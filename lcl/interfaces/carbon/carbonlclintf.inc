@@ -56,31 +56,6 @@ begin
   {$ENDIF}
 end;
 
-{------------------------------------------------------------------------------
-  Method:  DrawSplitter
-  Params:  DC         - Handle to device context
-           ARect      - Bounding rectangle
-           Horizontal - If the splitter is horizontal or vertical
-
-  Draws a splitter
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
-  Horizontal: boolean): boolean;
-begin
-  Result := False;
-
-  {$IFDEF VerboseLCLIntf}
-    DebugLn('TCarbonWidgetSet.DrawSplitter DC: ' + DbgS(DC) + ' R: ' +
-      DbgS(ARect) + ' Horizontal: ' + DbgS(Horizontal);
-  {$ENDIF}
-
-  if not CheckDC(DC, 'DrawSplitter') then Exit;
-
-  TCarbonDeviceContext(DC).DrawSplitter(ARect);
-
-  Result := True;
-end;
-
 function TCarbonWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin

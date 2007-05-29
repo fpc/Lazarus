@@ -2941,6 +2941,11 @@ begin
   SetBounds(FLeft, FTop, Max(0,Value), FHeight);
 end;
 
+function TControl.GetCursor: TCursor;
+begin
+  Result := FCursor;
+end;
+
 {------------------------------------------------------------------------------
   TControl SetHeight
 ------------------------------------------------------------------------------}

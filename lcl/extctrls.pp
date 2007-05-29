@@ -34,7 +34,7 @@ interface
 
 uses
   SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
-  Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer;
+  Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes;
 
 type
   { workaround problem with fcl }
@@ -409,6 +409,7 @@ type
     FAutoSnap: boolean;
     FBeveled: boolean;
     FMinSize: integer;
+    FMouseInControl: Boolean;
     FOnCanResize: TCanResizeEvent;
     FOnMoved: TNotifyEvent;
     FResizeAnchor: TAnchorKind;
@@ -424,17 +425,21 @@ type
     procedure SetResizeControl(const AValue: TControl);
     procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
-    procedure StartSplitterMove(const MouseXY: TPoint);
-    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    function FindAlignControl: TControl;
-    function FindAlignOtherControl: TControl;
-    procedure SetAlign(Value: TAlign); override;
-    procedure SetAnchors(const AValue: TAnchors); override;
     procedure CheckAlignment;
     function CheckNewSize(var NewSize: integer): boolean; virtual;
+    function FindAlignControl: TControl;
+    function FindAlignOtherControl: TControl;
+
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    
     procedure Paint; override;
+    procedure SetAlign(Value: TAlign); override;
+    procedure SetAnchors(const AValue: TAnchors); override;
+    procedure StartSplitterMove(const MouseXY: TPoint);
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AnchorSplitter(Kind: TAnchorKind; AControl: TControl);

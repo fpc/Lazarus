@@ -43,7 +43,7 @@ uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
-  PairSplitter, WSLCLClasses, WSControls;
+  Controls, ExtCtrls, PairSplitter, WSLCLClasses, WSControls;
 
 type
   { TWSPairSplitterSide }
@@ -57,6 +57,10 @@ type
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
     class function RemoveSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; virtual;
+
+    // special cursor handling
+    class function GetSplitterCursor(ASplitter: TCustomPairSplitter; var ACursor: TCursor): Boolean; virtual;
+    class function SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean; virtual;
   end;
   TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
 
@@ -68,7 +72,7 @@ type
 
 implementation
 uses
-  WSProc, Controls, ExtCtrls;
+  WSProc;
   
 function GetInternalSplitter(ASplitter: TCustomPairSplitter): TSplitter;
 var
@@ -103,7 +107,8 @@ begin
   if Side = 0 then
   begin
     if ASplitter.SplitterType = pstHorizontal then
-      ASide.Align := alLeft else
+      ASide.Align := alLeft
+    else
       ASide.Align := alTop;
   end else
   begin
@@ -154,10 +159,37 @@ begin
     end;
   end;
   if ASplitter.SplitterType = pstHorizontal then
-    NewPosition := ASplitter.Sides[0].Width else
+    NewPosition := ASplitter.Sides[0].Width
+  else
     NewPosition := ASplitter.Sides[0].Height;
 
   Result := True;
+end;
+
+class function TWSCustomPairSplitter.GetSplitterCursor(ASplitter: TCustomPairSplitter; var ACursor: TCursor): Boolean;
+var
+  InternalSplitter: TSplitter;
+begin
+  Result := True;
+  InternalSplitter := GetInternalSplitter(ASplitter);
+  if InternalSplitter <> nil then
+    ACursor := InternalSplitter.Cursor
+  else
+    ACursor := crDefault;
+end;
+
+class function TWSCustomPairSplitter.SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean;
+var
+  InternalSplitter: TSplitter;
+begin
+  Result := True;
+  InternalSplitter := GetInternalSplitter(ASplitter);
+  if InternalSplitter <> nil then
+  begin
+    InternalSplitter.Cursor := ACursor;
+    ASplitter.Sides[0].Cursor := crArrow;
+    ASplitter.Sides[1].Cursor := crArrow;
+  end;
 end;
 
 initialization

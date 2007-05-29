@@ -677,23 +677,102 @@ begin
 end;
 
 procedure TCustomSplitter.Paint;
+{$ifdef UseThemes}
+const
+  GripperSize = 30; // todo: look at gtk size
+  GripperDetailsPart: array[Boolean] of TThemedRebar =
+  (
+    trGripperVert,
+    trGripper
+  );
+var
+  ARect, GripperRect: TRect;
+  BgPart: TThemedRebar;
+  BgDetails, GripperDetails: TThemedElementDetails;
+{$endif}
 begin
+  inherited Paint;
+
+{$ifdef UseThemes}
+  ARect := ClientRect;
+  GripperDetails := ThemeServices.GetElementDetails(GripperDetailsPart[ResizeAnchor in [akLeft,akRight]]);
+
+  if not Enabled then
+    BgPart := trBandDisabled
+  else
+  if FMouseInControl then
+    BgPart := trBandHot
+  else
+    BgPart := trBandNormal;
+
+  BgDetails := ThemeServices.GetElementDetails(BgPart);
+  ThemeServices.DrawElement(Canvas.Handle, BgDetails, Arect, nil);
+
+  if Beveled then
+    ThemeServices.DrawEdge(Canvas.Handle, BgDetails, ARect, BDR_RAISEDOUTER,
+      BF_ADJUST or BF_RECT, @ARect);
+
+  GripperRect := ARect;
+  
+  if ResizeAnchor in [akLeft,akRight] then
+  begin
+    if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
+    begin
+      GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) shr 1;
+      GripperRect.Bottom := GripperRect.Top + GripperSize;
+    end;
+  end
+  else
+  begin
+    if (GripperRect.Right - GripperRect.Left) > GripperSize then
+    begin
+      GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) shr 1;
+      GripperRect.Right := GripperRect.Left + GripperSize;
+    end;
+  end;
+    
+  ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect, nil);
+{$else}
   TWSCustomSplitterClass(WidgetSetClass).DrawSplitter(Self);
-  //DrawSplitter(Canvas.Handle,Rect(0,0,Width,Height),
-  //             FResizeAnchor in [akTop,akBottom]);
+{$endif}
+end;
+
+procedure TCustomSplitter.MouseEnter;
+begin
+  inherited MouseEnter;
+  if csDesigning in ComponentState then exit;
+
+  if not FMouseInControl and Enabled and (GetCapture = 0) then
+  begin
+    FMouseInControl := True;
+    invalidate;
+  end;
+end;
+
+procedure TCustomSplitter.MouseLeave;
+begin
+  inherited MouseLeave;
+  if csDesigning in ComponentState then exit;
+  
+  if FMouseInControl then
+  begin
+    FMouseInControl := False;
+    invalidate;
+  end;
 end;
 
 constructor TCustomSplitter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FResizeStyle:=rsUpdate;
-  fAutoSnap:=true;
-  FBeveled:=false;
-  FMinSize:=30;
-  FResizeAnchor:=akLeft;
+  FResizeStyle := rsUpdate;
+  fAutoSnap := True;
+  FBeveled := False;
+  FMinSize := 30;
+  FMouseInControl := False;
+  FResizeAnchor := akLeft;
 
-  Align:=alLeft;
-  Width:=5;
+  Align := alLeft;
+  Width := 5;
 end;
 
 procedure TCustomSplitter.AnchorSplitter(Kind: TAnchorKind; AControl: TControl

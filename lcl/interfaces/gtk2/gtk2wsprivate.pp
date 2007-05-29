@@ -108,9 +108,18 @@ type
   public
     class procedure UpdateCursor(AInfo: PWidgetInfo); override;
   end;
+  
+  { TGtk2PrivatePaned }
+
+  TGtk2PrivatePaned = class(TGtkPrivatePaned)
+  private
+  protected
+  public
+  end;
 
 
 implementation
 {$I Gtk2PrivateWidget.inc}
+
 end.
   

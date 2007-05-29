@@ -561,15 +561,6 @@ procedure TWidgetSet.SendCachedLCLMessages;
 begin
 end;
 
-function TWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
-  Horizontal: boolean): boolean;
-var
-  DrawingRect: TRect;
-begin
-  DrawingRect:=ARect;
-  Result := Frame3D(DC,DrawingRect,1,bvRaised);
-end;
-
 function TWidgetSet.SetCaretRespondToFocus(Handle: HWnd;
   ShowHideOnFocus: Boolean): Boolean;
 begin

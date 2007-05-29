@@ -67,6 +67,7 @@ type
     property ChildSizing;
     property ClientWidth;
     property ClientHeight;
+    property Cursor;
     property Enabled;
     property OnMouseDown;
     property OnMouseMove;
@@ -76,7 +77,6 @@ type
     property ParentShowHint;
     property PopupMenu;
   end;
-  
   
   { TCustomPairSplitter }
   
@@ -90,13 +90,17 @@ type
     FPosition: integer;
     FSides: array[0..1] of TPairSplitterSide;
     FSplitterType: TPairSplitterType;
-    fDoNotCreateSides: boolean;
+    FDoNotCreateSides: boolean;
+    FLoadCursor: TCursor;
     function GetPosition: integer;
     function GetSides(Index: integer): TPairSplitterSide;
     procedure SetPosition(const AValue: integer);
     procedure SetSplitterType(const AValue: TPairSplitterType);
     procedure AddSide(ASide: TPairSplitterSide);
     procedure RemoveSide(ASide: TPairSplitterSide);
+  protected
+    function GetCursor: TCursor; override;
+    procedure SetCursor(Value: TCursor); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -106,6 +110,7 @@ type
     procedure Loaded; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
+    property Cursor default crHSplit;
     property Sides[Index: integer]: TPairSplitterSide read GetSides;
     property SplitterType: TPairSplitterType read FSplitterType
                                     write SetSplitterType default pstHorizontal;
@@ -120,17 +125,18 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
+    property Cursor;
     property Enabled;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
     property OnChangeBounds;
-    property ShowHint;
-    property SplitterType;
     property ParentShowHint;
     property PopupMenu;
     property Position;
+    property ShowHint;
+    property SplitterType;
     property Visible;
   end;
   
@@ -138,7 +144,7 @@ procedure Register;
   
 implementation
 uses
-  WSPairSplitter, extctrls;
+  WSPairSplitter, ExtCtrls;
   
 procedure Register;
 begin
@@ -162,23 +168,22 @@ var
 begin
   CheckNewParent(AParent);
   // remove from side list of old parent
-  ASplitter:=Splitter;
-  if ASplitter<>nil then begin
+  ASplitter := Splitter;
+  if ASplitter <> nil then
     ASplitter.RemoveSide(Self);
-  end;
 
   inherited SetParent(AParent);
 
   // add to side list of new parent
   ASplitter:=Splitter;
-  if ASplitter<>nil then begin
+  if ASplitter <> nil then
     ASplitter.AddSide(Self);
-  end;
 end;
 
 procedure TPairSplitterSide.WMPaint(var PaintMessage: TLMPaint);
 begin
-  if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
+  if (csDestroying in ComponentState) or (not HandleAllocated) then
+    Exit;
   Include(FControlState, csCustomPaint);
   inherited WMPaint(PaintMessage);
   Paint;
@@ -189,9 +194,11 @@ procedure TPairSplitterSide.Paint;
 var
   ACanvas: TControlCanvas;
 begin
-  if csDesigning in ComponentState then begin
+  if csDesigning in ComponentState then
+  begin
     ACanvas := TControlCanvas.Create;
-    with ACanvas do begin
+    with ACanvas do
+    begin
       Control := Self;
       Pen.Style := psDash;
       Frame(0,0,Width-1,Height-1);
@@ -204,7 +211,7 @@ constructor TPairSplitterSide.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csPairSplitterSide;
-  ControlStyle:=ControlStyle+[csAcceptsControls];
+  ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 destructor TPairSplitterSide.Destroy;
@@ -216,78 +223,121 @@ end;
 
 function TCustomPairSplitter.GetSides(Index: integer): TPairSplitterSide;
 begin
-  if (Index<0) or (Index>1) then
+  if (Index < 0) or (Index > 1) then
     RaiseGDBException('TCustomPairSplitter.GetSides: Index out of bounds');
-  Result:=FSides[Index];
+  Result := FSides[Index];
 end;
 
 function TCustomPairSplitter.GetPosition: integer;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
     UpdatePosition;
-  Result:=FPosition;
+  Result := FPosition;
 end;
 
 procedure TCustomPairSplitter.SetPosition(const AValue: integer);
 begin
-  if FPosition=AValue then exit;
-  FPosition:=AValue;
-  if FPosition<0 then
-    FPosition:=0;
+  if FPosition = AValue then
+    Exit;
+  FPosition := AValue;
+  if FPosition < 0 then
+    FPosition := 0;
   if HandleAllocated and (not (csLoading in ComponentState)) then
     TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, FPosition);
 end;
 
 procedure TCustomPairSplitter.SetSplitterType(const AValue: TPairSplitterType);
+const
+  DefaultCursors: array[TPairSplitterType] of TCursor =
+  (
+{ pstHorizontal } crHSplit,
+{ pstVertical   } crVSplit
+  );
 begin
-  if FSplitterType=AValue then exit;
-  FSplitterType:=AValue;
+  if FSplitterType = AValue then
+    Exit;
+
+  if Cursor = DefaultCursors[FSplitterType] then
+    Cursor := DefaultCursors[AValue];
+  FSplitterType := AValue;
+  
   // TODO: Remove RecreateWnd
-  if HandleAllocated then RecreateWnd(Self);
+  if HandleAllocated then
+    RecreateWnd(Self);
 end;
 
 procedure TCustomPairSplitter.AddSide(ASide: TPairSplitterSide);
 var
   i: Integer;
 begin
-  if ASide=nil then exit;
-  i:=Low(FSides);
+  if ASide = nil then
+    Exit;
+  i := Low(FSides);
   repeat
-    if FSides[i]=ASide then exit;
-    if FSides[i]=nil then begin
-      FSides[i]:=ASide;
+    if FSides[i] = ASide then
+    Exit;
+    if FSides[i] =nil then
+    begin
+      FSides[i] := ASide;
       if HandleAllocated then
         TWSCustomPairSplitterClass(WidgetSetClass).AddSide(Self, ASide, i);
       break;
     end;
     inc(i);
-    if i>High(FSides) then
+    if i > High(FSides) then
     RaiseGDBException('TCustomPairSplitter.AddSide no free side left');
-  until false;
+  until False;
 end;
 
 procedure TCustomPairSplitter.RemoveSide(ASide: TPairSplitterSide);
 var
   i: Integer;
 begin
-  if ASide=nil then exit;
-  for i:=Low(FSides) to High(FSides) do
-    if FSides[i]=ASide then begin
+  if ASide = nil then
+    Exit;
+  for i := Low(FSides) to High(FSides) do
+    if FSides[i]=ASide then
+    begin
       if HandleAllocated and ASide.HandleAllocated then
         TWSCustomPairSplitterClass(WidgetSetClass).RemoveSide(Self, ASide, i);
-      FSides[i]:=nil;
+      FSides[i] := nil;
     end;
   // if the user deletes a side at designtime, autocreate a new one
   if (csDesigning in ComponentState) then
     CreateSides;
 end;
 
+function TCustomPairSplitter.GetCursor: TCursor;
+begin
+  // Paul Ishenin: I dont know another method to tell internal splitter about
+  // cursor changes
+  
+  // if widgetset class dont want to get cursor (has no internal splitter) then
+  // use default lcl handler
+  if not TWSCustomPairSplitterClass(WidgetSetClass).GetSplitterCursor(Self, Result) then
+    Result := inherited GetCursor;
+end;
+
+procedure TCustomPairSplitter.SetCursor(Value: TCursor);
+begin
+  if not HandleAllocated then
+  begin
+    FLoadCursor := Value;
+    Exit;
+  end;
+  // if widgetset class dont want to set cursor (has no internal splitter) then
+  // use default lcl handler
+  if not TWSCustomPairSplitterClass(WidgetSetClass).SetSplitterCursor(Self, Value) then
+    inherited SetCursor(Value);
+end;
+
 constructor TCustomPairSplitter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csPairSplitter;
-  ControlStyle:=ControlStyle-[csAcceptsControls];
-  FSplitterType:=pstHorizontal;
+  ControlStyle := ControlStyle - [csAcceptsControls];
+  FSplitterType := pstHorizontal;
+  Cursor := crHSplit;
   SetInitialBounds(0, 0, 90, 90);
   FPosition:=45;
   CreateSides;
@@ -311,13 +361,14 @@ var
   APosition: Integer;
 begin
   inherited CreateWnd;
-  for i:=Low(FSides) to High(FSides) do
-    if FSides[i]<>nil then
+  for i := Low(FSides) to High(FSides) do
+    if FSides[i] <> nil then
       TWSCustomPairSplitterClass(WidgetSetClass).AddSide(Self, FSides[i], i);
-  APosition:=FPosition;
+  APosition := FPosition;
   TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, APosition);
+  SetCursor(FLoadCursor);
   if not (csLoading in ComponentState) then
-    FPosition:=APosition;
+    FPosition := APosition;
 end;
 
 procedure TCustomPairSplitter.UpdatePosition;
@@ -326,9 +377,9 @@ var
 begin
   if HandleAllocated then
   begin
-    CurPosition:=-1;
+    CurPosition := -1;
     TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, CurPosition);
-    FPosition:=CurPosition;
+    FPosition := CurPosition;
   end;
 end;
 
@@ -341,8 +392,9 @@ begin
   or (csLoading in ComponentState)
   or ((Owner<>nil) and (csLoading in Owner.ComponentState)) then exit;
   // create the missing side controls
-  for i:=Low(FSides) to High(FSides) do
-    if FSides[i]=nil then begin
+  for i := Low(FSides) to High(FSides) do
+    if FSides[i]=nil then
+    begin
       // For streaming it is important that the side controls are owned by
       // the owner of the splitter
       ASide:=TPairSplitterSide.Create(Owner);
