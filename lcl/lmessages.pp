@@ -350,6 +350,9 @@ type
 
   TLMDrawItems = record
     Msg: Cardinal;
+{$ifdef cpu64}
+   UnusedMsg: Cardinal;
+{$endif}
     Ctl: HWND;
     DrawItemStruct: PDrawItemStruct;
     Result: LRESULT;
@@ -358,6 +361,9 @@ type
   TLMDrawListItem = record
     // message from the interface to the LCL
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Unused: PtrInt;
     DrawListItemStruct : PDrawListItemStruct;
     Result: LRESULT;
@@ -366,6 +372,9 @@ type
   TLMMeasureItem = record
     // message from the interface to the LCL
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     idCtl: PtrUint;
     MeasureItemStruct: PMeasureItemStruct;
     Result: LRESULT;
@@ -374,6 +383,9 @@ type
 {$ifndef WINDOWS}
   TLMNoParams = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Unused: array[0..1] of PtrInt;
     Result: LRESULT;
   end;
@@ -383,6 +395,9 @@ type
 
   TLMEraseBkgnd = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     DC: HDC;
     Unused: PtrInt;
     Result: LRESULT;
@@ -390,6 +405,9 @@ type
 
   TLMGetText = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     TextMax: PtrInt;
     Text: PChar;
     Result: LRESULT;
@@ -399,6 +417,9 @@ type
 
   TLMKey = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     CharCode: Word; // VK_XXX constants as TLMKeyDown/Up, ascii if TLMChar
     Unused: Word;
 {$ifdef cpu64}
@@ -434,6 +455,9 @@ type
 
   TLMMove = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     MoveType: PtrInt; // 0 = update, 1 = force RequestAlign,
                       // 128 = Source is Interface (Widget has moved)
     case Integer of
@@ -449,6 +473,9 @@ type
 
   TLMActivate = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Active: WordBool;
     Minimized: WordBool;
 {$ifdef cpu64}
@@ -460,6 +487,9 @@ type
 
   TLMNCActivate = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Active: LongBool;
 {$ifdef cpu64}
     Unused2 : Longint;
@@ -470,6 +500,9 @@ type
 
   TLMNotify = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     IDCtrl: PtrInt;
     NMHdr: PNMHdr;
     Result: LRESULT;
@@ -477,6 +510,9 @@ type
 
   TLMNotifyFormat = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     From: HWND;
     Command: LPARAM;
     Result: LRESULT;
@@ -484,6 +520,9 @@ type
 
   TLMPaint = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     DC: HDC;
     PaintStruct: PPaintStruct;
     Result: LRESULT;
@@ -504,6 +543,9 @@ type
 
   TLMWindowPosMsg = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Unused: WPARAM;
     WindowPos: PWindowPos;
     Result: LPARAM;
@@ -524,6 +566,9 @@ type
 
   TLMNCCalcSize = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     CalcValidRects: LongBool;
 {$ifdef cpu64}
     Unused : Longint;
@@ -536,6 +581,9 @@ type
 
   TLMSysCommand = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     case CmdType: PtrInt of
       SC_HOTKEY: (
         ActivateWnd: HWND;
@@ -551,6 +599,9 @@ type
 
   TLMSysDeadChar = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     CharCode: Word;
     Unused: Word;
 {$ifdef cpu64}
@@ -563,6 +614,9 @@ type
 
   TLMSystemError = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     ErrSpec: Word;
     Unused1 : Word;
 {$ifdef cpu64}
@@ -576,6 +630,9 @@ type
 
   TLMSetText = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Unused: WPARAM;
     Text: PChar;
     Result: LRESULT;
@@ -583,7 +640,10 @@ type
 
   PLMMouseEvent = ^TLMMouseEvent;
   TLMMouseEvent = record
-    Msg: cardinal;
+    Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Button: Word;         // 1=left, 2=right, 3=middle
     WheelDelta: SmallInt; // -1 for up, 1 for down
 {$ifdef cpu64}
@@ -617,6 +677,9 @@ type
 
   TLMSetFocus = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     FocusedWnd: HWND;
     Unused: LPARAM;
     Result: LRESULT;
@@ -625,6 +688,9 @@ type
 {$ifndef windows}
   TLMSize = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     SizeType: PtrInt; // see LCLType.pp (e.g. Size_Restored)
     Width: Word;
     Height: Word;
@@ -645,6 +711,9 @@ type
 {$ifndef windows}
   TLMessage = record
     Msg : Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     case Integer of
       0 : (
         WParam: LclType.WPARAM;
@@ -659,7 +728,7 @@ type
       	LParamHi: Word;
       	ResultLo: Word;
       	ResultHi: Word);
-      {$ENDIF}
+      {$endif}
     end;
 {$else}
   TLMessage = TMessage;
@@ -674,9 +743,11 @@ type
 // So POS: SmallInt -> LongInt and a win32compatible smallpos is added
 // Due to this, the record is a LongInt to large.
 
-{.$if defined(ver1_0) or not(defined(WINDOWS))}
   TLMScroll = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     ScrollCode: SmallInt; // SB_xxx
     SmallPos: SmallInt;
 {$ifdef cpu64}
@@ -689,15 +760,13 @@ type
 
   TLMHScroll = TLMScroll;
   TLMVScroll = TLMScroll;
-{.$else}
-//  TLMScroll = TWMScroll;
-//  TLMHScroll = TWMScroll;
-//  TLMVScroll = TWMScroll;
-{.$endif}
 
 {$ifndef windows}
   TLMShowWindow = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Show: LongBool;
 {$ifdef cpu64}
     Unused : Longint;
@@ -716,7 +785,10 @@ type
 {$endif}
 
   TLMNCHITTEST = record
-    Msg: cardinal;
+    Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     Unused: WPARAM;
     case Integer of
     0 : (
@@ -733,6 +805,9 @@ type
 
   TLMCommand = record
     Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
     ItemID: Word;
     NotifyCode: Word;
 {$ifdef cpu64}
