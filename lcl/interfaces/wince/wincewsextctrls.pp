@@ -573,13 +573,15 @@ end;
 
 { TWinCEWSCustomSplitter }
 
-class procedure TWinCEWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
-  );
+class procedure TWinCEWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
+var
+  ARect: TRect;
 begin
-  // TODO: beveled
-  LCLIntf.DrawSplitter(ASplitter.Canvas.Handle,
-                       Rect(0,0,ASplitter.Width,ASplitter.Height),
-                       ASplitter.ResizeAnchor in [akTop,akBottom]);
+  if ASplitter.Beveled then
+  begin
+    ARect := Rect(0, 0, ASplitter.Width, ASplitter.Height);
+    Frame3D(ASplitter.Canvas.Handle, ARect, 1, bvRaised);
+  end;
 end;
 
 initialization
