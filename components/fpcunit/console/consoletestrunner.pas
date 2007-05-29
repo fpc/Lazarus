@@ -278,8 +278,8 @@ begin
   if HasOption('format') then
   begin
     if GetOptionValue('format') = 'latex' then
-      FormatParam := fLatex;
-    if GetOptionValue('format') = 'plain' then
+      FormatParam := fLatex
+    else if GetOptionValue('format') = 'plain' then
       FormatParam := fPlain;
   end;
 

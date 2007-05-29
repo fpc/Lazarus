@@ -617,6 +617,7 @@ begin
     w := TXMLResultsWriter.Create;
     {$ELSE}
     w := TXMLResultsWriter.Create(nil);
+    w.FileName := 'null'; // prevents output to the console
     {$ENDIF}
     testResult.AddListener(w);
 
