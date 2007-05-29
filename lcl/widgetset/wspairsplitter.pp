@@ -116,6 +116,8 @@ begin
     if InternalSplitter = nil then
     begin
       InternalSplitter := TSplitter.Create(ASplitter);
+      InternalSplitter.AutoSnap := False;
+      InternalSplitter.MinSize := 1;
       InternalSplitter.Parent := ASplitter;
     end;
     InternalSplitter.Align := ASplitter.Sides[0].Align;
