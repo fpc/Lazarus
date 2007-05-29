@@ -107,6 +107,12 @@ type
 
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas);
   TPascalCompiler = (pcFPC, pcDelphi);
+  
+  TLSSkippingDirective = (
+    lssdNone,
+    lssdTillElse,
+    lssdTillEndIf
+    );
 
   { TMissingIncludeFile is a missing include file together with all
     params involved in the search }
@@ -153,7 +159,7 @@ type
     constructor Create(ASender: TLinkScanner; const AMessage: string;
       ABuffer: Pointer; ABufferPos: integer);
   end;
-
+  
   { TLinkScanner }
   
   TLinkScanner = class(TObject)
@@ -233,18 +239,19 @@ type
     // directives
     FDirectiveName: shortstring;
     FDirectiveFuncList: TKeyWordFunctionList;
+    FDefaultDirectiveFuncList: TKeyWordFunctionList;
     FSkipDirectiveFuncList: TKeyWordFunctionList;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
-    FSkippingTillEndif: boolean;
+    FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
     FPascalCompiler: TPascalCompiler;
     procedure SetCompilerMode(const AValue: TCompilerMode);
-    procedure SkipTillEndifElse;
-    procedure SkipTillEndCifElse;
+    procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     function SkipIfDirective: boolean;
+    function InternalIfDirective: boolean;
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -252,11 +259,11 @@ type
     function IfOptDirective: boolean;
     function EndifDirective: boolean;
     function EndCDirective: boolean;
+    function IfEndDirective: boolean;
     function ElseDirective: boolean;
     function ElseCDirective: boolean;
     function ElseIfDirective: boolean;
     function ElIfCDirective: boolean;
-    function IfEndDirective: boolean;
     function DefineDirective: boolean;
     function UndefDirective: boolean;
     function SetCDirective: boolean;
@@ -659,7 +666,7 @@ begin
   Values.Free;
   FInitValues.Free;
   ReAllocMem(FLinks,0);
-  FDirectiveFuncList.Free;
+  FDefaultDirectiveFuncList.Free;
   FSkipDirectiveFuncList.Free;
   inherited Destroy;
 end;
@@ -1086,7 +1093,8 @@ begin
   CompilerMode:=cmFPC;
   PascalCompiler:=pcFPC;
   IfLevel:=0;
-  FSkippingTillEndif:=false;
+  FSkippingDirectives:=lssdNone;
+  FDirectiveFuncList:=FDefaultDirectiveFuncList;
   //DebugLn('TLinkScanner.Scan D --------');
   
   // initialize Defines
@@ -1149,11 +1157,15 @@ begin
         LastTokenType:=TokenType;
       until false;
     finally
-      if not FSkippingTillEndif then begin
+      if FSkippingDirectives=lssdNone then begin
         {$IFDEF ShowUpdateCleanedSrc}
         DebugLn('TLinkScanner.Scan UpdatePos=',DbgS(SrcPos-1));
         {$ENDIF}
         UpdateCleanedSource(SrcPos-1);
+      end else begin
+        {$IFDEF ShowUpdateCleanedSrc}
+        DebugLn(['TLinkScanner.Scan missing $ENDIF']);
+        {$ENDIF}
       end;
     end;
     IncreaseChangeStep;
@@ -2003,8 +2015,8 @@ end;
 procedure TLinkScanner.BuildDirectiveFuncList;
 var c: char;
 begin
-  FDirectiveFuncList:=TKeyWordFunctionList.Create;
-  with FDirectiveFuncList do begin
+  FDefaultDirectiveFuncList:=TKeyWordFunctionList.Create;
+  with FDefaultDirectiveFuncList do begin
     for c:='A' to 'Z' do begin
       if CompilerSwitchesNames[c]<>'' then begin
         Add(c,{$ifdef FPC}@{$endif}ShortSwitchDirective);
@@ -2155,26 +2167,16 @@ begin
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') and (not Values.IsDefined(VariableName)) then
-    SkipTillEndifElse;
+    SkipTillEndifElse(lssdTillElse);
   Result:=true;
 end;
 
 function TLinkScanner.IfCDirective: boolean;
 // {$ifc expression} or indirectly called by {$elifc expression}
-var Expr, ResultStr: string;
 begin
-  //DebugLn(['TLinkScanner.IfCDirective  FSkippingTillEndif=',FSkippingTillEndif]);
+  //DebugLn(['TLinkScanner.IfCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
   inc(IfLevel);
-  inc(SrcPos);
-  Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-  ResultStr:=Values.Eval(Expr);
-  Result:=true;
-  //DebugLn(['TLinkScanner.IfCDirective ResultStr=',ResultStr]);
-  if Values.ErrorPosition>=0 then begin
-    inc(SrcPos,Values.ErrorPosition);
-    RaiseException(ctsErrorInDirectiveExpression)
-  end else if ResultStr='0' then
-    SkipTillEndCifElse
+  Result:=InternalIfDirective;
 end;
 
 procedure TLinkScanner.SkipSpace;
@@ -2221,7 +2223,7 @@ begin
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') and (Values.IsDefined(VariableName)) then
-    SkipTillEndifElse;
+    SkipTillEndifElse(lssdTillElse);
   Result:=true;
 end;
 
@@ -2234,11 +2236,11 @@ function TLinkScanner.EndifDirective: boolean;
   end;
   
 begin
+  if IfLevel<=0 then
+    RaiseAWithoutB;
   dec(IfLevel);
-  if IfLevel<0 then
-    RaiseAWithoutB
-  else if IfLevel<FSkipIfLevel then begin
-    FSkippingTillEndif:=false;
+  if IfLevel<FSkipIfLevel then begin
+    FSkippingDirectives:=lssdNone;
   end;
   Result:=true;
 end;
@@ -2252,12 +2254,30 @@ function TLinkScanner.EndCDirective: boolean;
   end;
 
 begin
-  //DebugLn(['TLinkScanner.EndCDirective  FSkippingTillEndif=',FSkippingTillEndif]);
+  //DebugLn(['TLinkScanner.EndCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
+  if IfLevel<=0 then
+    RaiseAWithoutB;
   dec(IfLevel);
-  if IfLevel<0 then
-    RaiseAWithoutB
-  else if IfLevel<FSkipIfLevel then begin
-    FSkippingTillEndif:=false;
+  if IfLevel<FSkipIfLevel then begin
+    FSkippingDirectives:=lssdNone;
+  end;
+  Result:=true;
+end;
+
+function TLinkScanner.IfEndDirective: boolean;
+// {$IfEnd comment}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$IfEnd','$ElseIf'])
+  end;
+
+begin
+  if IfLevel<=0 then
+    RaiseAWithoutB;
+  dec(IfLevel);
+  if IfLevel<FSkipIfLevel then begin
+    FSkippingDirectives:=lssdNone;
   end;
   Result:=true;
 end;
@@ -2273,10 +2293,15 @@ function TLinkScanner.ElseDirective: boolean;
 begin
   if IfLevel=0 then
     RaiseAWithoutB;
-  if not FSkippingTillEndif then
-    SkipTillEndifElse
-  else if IfLevel=FSkipIfLevel then
-    FSkippingTillEndif:=false;
+  case FSkippingDirectives of
+  lssdNone:
+    SkipTillEndifElse(lssdTillEndIf);
+  lssdTillElse:
+    if IfLevel=FSkipIfLevel then
+      FSkippingDirectives:=lssdNone;
+    // else: continue skip;
+  lssdTillEndIf: ; // continue skip
+  end;
   Result:=true;
 end;
 
@@ -2289,13 +2314,18 @@ function TLinkScanner.ElseCDirective: boolean;
   end;
 
 begin
-  //DebugLn(['TLinkScanner.ElseCDirective FSkippingTillEndif=',FSkippingTillEndif]);
+  //DebugLn(['TLinkScanner.ElseCDirective FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
   if IfLevel=0 then
     RaiseAWithoutB;
-  if not FSkippingTillEndif then
-    SkipTillEndCifElse
-  else if IfLevel=FSkipIfLevel then
-    FSkippingTillEndif:=false;
+  case FSkippingDirectives of
+  lssdNone:
+    SkipTillEndifElse(lssdTillEndIf);
+  lssdTillElse:
+    if IfLevel=FSkipIfLevel then
+      FSkippingDirectives:=lssdNone;
+    // else: continue skip;
+  lssdTillEndIf: ; // continue skip
+  end;
   Result:=true;
 end;
 
@@ -2310,11 +2340,13 @@ function TLinkScanner.ElseIfDirective: boolean;
 begin
   if IfLevel=0 then
     RaiseAWithoutB;
-  if not FSkippingTillEndif then begin
-    SkipTillEndifElse;
+  if (FSkippingDirectives=lssdTillElse) and (IfLevel=FSkipIfLevel) then begin
+    Result:=InternalIfDirective;
+  end else begin
+    if (FSkippingDirectives=lssdNone) then
+      SkipTillEndifElse(lssdTillEndIf);
     Result:=true;
-  end else if IfLevel=FSkipIfLevel then
-    Result:=IfDirective;
+  end;
 end;
 
 function TLinkScanner.ElIfCDirective: boolean;
@@ -2326,32 +2358,16 @@ function TLinkScanner.ElIfCDirective: boolean;
   end;
 
 begin
-  //DebugLn(['TLinkScanner.ElIfCDirective  FSkippingTillEndif=',FSkippingTillEndif]);
+  //DebugLn(['TLinkScanner.ElIfCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
   if IfLevel=0 then
     RaiseAWithoutB;
-  if not FSkippingTillEndif then begin
-    SkipTillEndCifElse;
+  if (FSkippingDirectives=lssdTillElse) and (IfLevel=FSkipIfLevel) then begin
+    Result:=InternalIfDirective;
+  end else begin
+    if (FSkippingDirectives=lssdNone) then
+      SkipTillEndifElse(lssdTillEndIf);
     Result:=true;
-  end else if IfLevel=FSkipIfLevel then
-    Result:=IfCDirective;
-end;
-
-function TLinkScanner.IfEndDirective: boolean;
-// {$IfEnd comment}
-
-  procedure RaiseAWithoutB;
-  begin
-    RaiseExceptionFmt(ctsAwithoutB,['$IfEnd','$ElseIf'])
   end;
-
-begin
-  dec(IfLevel);
-  if IfLevel<0 then
-    RaiseAWithoutB
-  else if IfLevel<FSkipIfLevel then begin
-    FSkippingTillEndif:=false;
-  end;
-  Result:=true;
 end;
 
 function TLinkScanner.DefineDirective: boolean;
@@ -2650,18 +2666,9 @@ end;
 
 function TLinkScanner.IfDirective: boolean;
 // {$if expression} or indirectly called by {$elseif expression}
-var Expr, ResultStr: string;
 begin
   inc(IfLevel);
-  inc(SrcPos);
-  Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-  ResultStr:=Values.Eval(Expr);
-  Result:=true;
-  if Values.ErrorPosition>=0 then begin
-    inc(SrcPos,Values.ErrorPosition);
-    RaiseException(ctsErrorInDirectiveExpression)
-  end else if ResultStr='0' then
-    SkipTillEndifElse
+  Result:=InternalIfDirective;
 end;
 
 function TLinkScanner.IfOptDirective: boolean;
@@ -2669,6 +2676,7 @@ function TLinkScanner.IfOptDirective: boolean;
 var Option, c: char;
 begin
   inc(IfLevel);
+  Result:=true;
   inc(SrcPos);
   Option:=UpChars[Src[SrcPos]];
   if (IsWordChar[Option]) and (CompilerSwitchesNames[Option]<>'')
@@ -2678,11 +2686,13 @@ begin
       c:=Src[SrcPos];
       if c in ['+','-'] then begin
         if (c='-')<>(Values.Variables[CompilerSwitchesNames[Option]]='0') then
-          SkipTillEndifElse;
+        begin
+          SkipTillEndifElse(lssdTillElse);
+          exit;
+        end;
       end;
     end;
   end;
-  Result:=true;
 end;
 
 procedure TLinkScanner.SetIgnoreMissingIncludeFiles(const Value: boolean);
@@ -2755,7 +2765,7 @@ end;
 function TLinkScanner.ReturnFromIncludeFile: boolean;
 var OldPos: TSourceLink;
 begin
-  if not FSkippingTillEndif then begin
+  if FSkippingDirectives=lssdNone then begin
     {$IFDEF ShowUpdateCleanedSrc}
     DebugLn('TLinkScanner.ReturnFromIncludeFile A UpdatePos=',DbgS(SrcPos-1));
     {$ENDIF}
@@ -2804,122 +2814,77 @@ begin
   Result:=true;
 end;
 
-procedure TLinkScanner.SkipTillEndifElse;
-var OldDirectiveFuncList: TKeyWordFunctionList;
-  c1: Char;
-begin
-  SrcPos:=CommentEndPos;
-  {$IFDEF ShowUpdateCleanedSrc}
-  DebugLn('TLinkScanner.SkipTillEndifElse A UpdatePos=',DbgS(SrcPos-1));
-  {$ENDIF}
-  UpdateCleanedSource(SrcPos-1);
-  OldDirectiveFuncList:=FDirectiveFuncList;
-  FDirectiveFuncList:=FSkipDirectiveFuncList;
-  try
-    // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
-    FSkippingTillEndif:=true;
-    FSkipIfLevel:=IfLevel;
-    if (SrcPos<=SrcLen) then begin
-      while true do begin
-        c1:=Src[SrcPos];
-        if IsCommentStartChar[c1] then begin
-          case c1 of
-            '{': begin
-                   SkipComment;
-                   if not FSkippingTillEndif then break;
-                 end;
-            '/': if (Src[SrcPos+1]='/') then begin
-                   SkipDelphiComment;
-                   if not FSkippingTillEndif then break;
-                 end else
-                   inc(SrcPos);
-            '(': if (Src[SrcPos+1]='*') then begin
-                   SkipOldTPComment;
-                   if not FSkippingTillEndif then break;
-                 end else
-                   inc(SrcPos);
-          end;
-        end else if c1='''' then begin
-          // skip string constant
-          inc(SrcPos);
-          while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
-          inc(SrcPos);
-        end else begin
-          inc(SrcPos);
-          if (SrcPos>SrcLen) and not ReturnFromIncludeFile then
-            break;
-        end;
-      end;
-    end;
-    LastCleanSrcPos:=CommentStartPos-1;
-    AddLink(CleanedLen+1,CommentStartPos,Code);
-    {$IFDEF ShowUpdateCleanedSrc}
-    DebugLn('TLinkScanner.SkipTillEndifElse B Continuing after: ',
-      '"',StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),'"');
-    {$ENDIF}
-  finally
-    FDirectiveFuncList:=OldDirectiveFuncList;
-    FSkippingTillEndif:=false;
-  end;
-end;
+procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
 
-procedure TLinkScanner.SkipTillEndCifElse;
-var OldDirectiveFuncList: TKeyWordFunctionList;
+  procedure RaiseAlreadySkipping;
+  begin
+    raise Exception.Create('TLinkScanner.SkipTillEndifElse inconsistency: already skipping '
+      +' Old='+dbgs(ord(FSkippingDirectives))
+      +' New='+dbgs(ord(SkippingUntil)));
+  end;
+
+var
+  OldDirectiveFuncList: TKeyWordFunctionList;
   c1: Char;
 begin
+  if FSkippingDirectives<>lssdNone then begin
+    FSkippingDirectives:=SkippingUntil;
+    exit;
+  end;
+  FSkippingDirectives:=SkippingUntil;
+
   SrcPos:=CommentEndPos;
   {$IFDEF ShowUpdateCleanedSrc}
-  DebugLn('TLinkScanner.SkipTillEndCifElse A UpdatePos=',DbgS(SrcPos-1));
+  DebugLn('TLinkScanner.SkipTillEndifElse A UpdatePos=',DbgS(SrcPos-1),' Src=',DbgStr(copy(Src,SrcPos-15,15))+'|'+DbgStr(copy(Src,SrcPos,15)));
   {$ENDIF}
   UpdateCleanedSource(SrcPos-1);
+  
   OldDirectiveFuncList:=FDirectiveFuncList;
   FDirectiveFuncList:=FSkipDirectiveFuncList;
-  try
-    // parse till $elsec, $elifc or $endc without adding the code to FCleanedSrc
-    FSkippingTillEndif:=true;
-    FSkipIfLevel:=IfLevel;
-    if (SrcPos<=SrcLen) then begin
-      while true do begin
-        c1:=Src[SrcPos];
-        if IsCommentStartChar[c1] then begin
-          case c1 of
-            '{': begin
-                   SkipComment;
-                   if not FSkippingTillEndif then break;
-                 end;
-            '/': if (Src[SrcPos+1]='/') then begin
-                   SkipDelphiComment;
-                   if not FSkippingTillEndif then break;
-                 end else
-                   inc(SrcPos);
-            '(': if (Src[SrcPos+1]='*') then begin
-                   SkipOldTPComment;
-                   if not FSkippingTillEndif then break;
-                 end else
-                   inc(SrcPos);
-          end;
-        end else if c1='''' then begin
-          // skip string constant
-          inc(SrcPos);
-          while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
-          inc(SrcPos);
-        end else begin
-          inc(SrcPos);
-          if (SrcPos>SrcLen) and not ReturnFromIncludeFile then
-            break;
+
+  // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
+  FSkipIfLevel:=IfLevel;
+  if (SrcPos<=SrcLen) then begin
+    while true do begin
+      c1:=Src[SrcPos];
+      if IsCommentStartChar[c1] then begin
+        case c1 of
+          '{': begin
+                 SkipComment;
+                 if FSkippingDirectives=lssdNone then break;
+               end;
+          '/': if (Src[SrcPos+1]='/') then begin
+                 SkipDelphiComment;
+                 if FSkippingDirectives=lssdNone then break;
+               end else
+                 inc(SrcPos);
+          '(': if (Src[SrcPos+1]='*') then begin
+                 SkipOldTPComment;
+                 if FSkippingDirectives=lssdNone then break;
+               end else
+                 inc(SrcPos);
         end;
+      end else if c1='''' then begin
+        // skip string constant
+        inc(SrcPos);
+        while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
+        inc(SrcPos);
+      end else begin
+        inc(SrcPos);
+        if (SrcPos>SrcLen) and not ReturnFromIncludeFile then
+          break;
       end;
     end;
-    LastCleanSrcPos:=CommentStartPos-1;
-    AddLink(CleanedLen+1,CommentStartPos,Code);
-    {$IFDEF ShowUpdateCleanedSrc}
-    DebugLn('TLinkScanner.SkipTillEndifElse B Continuing after: ',
-      '"',StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),'"');
-    {$ENDIF}
-  finally
-    FDirectiveFuncList:=OldDirectiveFuncList;
-    FSkippingTillEndif:=false;
   end;
+  LastCleanSrcPos:=CommentStartPos-1;
+  AddLink(CleanedLen+1,CommentStartPos,Code);
+  {$IFDEF ShowUpdateCleanedSrc}
+  DebugLn('TLinkScanner.SkipTillEndifElse B Continuing after: ',
+    ' Src=',DbgStr(copy(Src,CommentStartPos-15,15))+'|'+DbgStr(copy(Src,CommentStartPos,15)));
+  {$ENDIF}
+
+  FDirectiveFuncList:=OldDirectiveFuncList;
+  FSkippingDirectives:=lssdNone;
 end;
 
 procedure TLinkScanner.SetCompilerMode(const AValue: TCompilerMode);
@@ -2934,6 +2899,25 @@ function TLinkScanner.SkipIfDirective: boolean;
 begin
   inc(IfLevel);
   Result:=true;
+end;
+
+function TLinkScanner.InternalIfDirective: boolean;
+// {$if expression} or {$ifc expression} or indirectly called by {$elifc expression}
+var Expr, ResultStr: string;
+begin
+  //DebugLn(['TLinkScanner.InternalIfDirective FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
+  inc(SrcPos);
+  Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
+  ResultStr:=Values.Eval(Expr);
+  Result:=true;
+  //DebugLn(['TLinkScanner.InternalIfDirective ResultStr=',ResultStr]);
+  if Values.ErrorPosition>=0 then begin
+    inc(SrcPos,Values.ErrorPosition);
+    RaiseException(ctsErrorInDirectiveExpression)
+  end else if ResultStr='0' then
+    SkipTillEndifElse(lssdTillElse)
+  else
+    FSkippingDirectives:=lssdNone;
 end;
 
 function TLinkScanner.CursorToCleanPos(ACursorPos: integer; ACode: pointer;

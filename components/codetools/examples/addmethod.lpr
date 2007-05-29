@@ -47,12 +47,12 @@ begin
   // Example: find declaration of 'TObject'
 
   // load the file
-  Filename:=AppendPathDelim(GetCurrentDir)
-            +'scanexamples'+PathDelim+'simpleunit1.pas';
+  Filename:=AppendPathDelim(GetCurrentDir)+'scanexamples'+PathDelim
+    +'simpleunit1.pas';
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
-
+    
   // Example 1: add a method compatible to TMyMethodType
   if CodeToolBoss.CreatePublishedMethod(Code,'TMyClass','NewMethod',
     typeinfo(TMyMethodType),true) then

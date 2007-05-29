@@ -51,18 +51,18 @@ begin
   { Linux }
   Options.FPCPath:='/usr/bin/ppc386';
   Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+  Options.FPCSrcDir:=ExpandFileName('/home/mattias/pascal/fpc_sources/22/fpc');
   Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
 
   { Windows
-  Options.FPCPath:='C:\lazarus\fpc\2.0.4\bin\i386-win32\ppc386.exe'; //'/usr/bin/ppc386';
-  Options.FPCSrcDir:='C:\lazarus\fpc\2.0.4\source'; // ExpandFileName('~/freepascal/fpc');
-  Options.LazarusSrcDir:='C:\lazarus\'; // ExpandFileName('~/pascal/lazarus');}
+  Options.FPCPath:='C:\lazarus\fpc\2.0.4\bin\i386-win32\ppc386.exe';
+  Options.FPCSrcDir:='C:\lazarus\fpc\2.0.4\source';
+  Options.LazarusSrcDir:='C:\lazarus\';}
   
   // optional: ProjectDir and TestPascalFile exists only to easily test some
   // things.
   Options.ProjectDir:=SetDirSeparators(GetCurrentDir+'/scanexamples/');
-  //Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
-  Options.TestPascalFile:=Options.ProjectDir+'modemacpas.pas';
+  Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
 
   // init the codetools
   if not Options.UnitLinkListValid then
