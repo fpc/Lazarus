@@ -243,9 +243,10 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     end
     else begin
       // keep original WSPrivate (only when different than default class)
-      if  (PClass(ANode^.VClass + vmtWSPrivate)^ <> nil)
-      and (PClass(ANode^.VClass + vmtWSPrivate)^ <> TWSPrivate)
-      then WSPrivate := PClass(ANode^.VClass + vmtWSPrivate)^;
+      if (AWSPrivate = nil) and
+         (PClass(ANode^.VClass + vmtWSPrivate)^ <> nil) and
+         (PClass(ANode^.VClass + vmtWSPrivate)^ <> TWSPrivate) then 
+        WSPrivate := PClass(ANode^.VClass + vmtWSPrivate)^;
     end;
 
     // Initially copy the WSClass
