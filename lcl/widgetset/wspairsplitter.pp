@@ -117,10 +117,11 @@ begin
     begin
       InternalSplitter := TSplitter.Create(ASplitter);
       InternalSplitter.Parent := ASplitter;
-      InternalSplitter.Align := ASplitter.Sides[0].Align;
     end;
+    InternalSplitter.Align := ASplitter.Sides[0].Align;
     if ASplitter.SplitterType = pstHorizontal then
-      InternalSplitter.Left := ASplitter.Sides[0].Width + 1 else
+      InternalSplitter.Left := ASplitter.Sides[0].Width + 1
+    else
       InternalSplitter.Top := ASplitter.Sides[0].Height + 1;
     ASide.Align := alClient;
   end;
