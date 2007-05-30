@@ -409,13 +409,16 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetPos')
   then Exit;
+  {$IFDEF VerboseSizeMsg}
+  DebugLn(['TGtkWSWinControl.SetPos ',DbgSName(AWinControl),' ',ALeft,',',ATop]);
+  {$ENDIF}
   
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := gint16(ALeft);
   Allocation.Y := gint16(ATop);
   Allocation.Width := guint16(Widget^.Allocation.Width);
   Allocation.Height := guint16(Widget^.Allocation.Height);
-  gtk_widget_size_allocate(Widget, @Allocation);
+  gtk_widget_size_allocate(Widget, @Allocation);// Beware: this triggers callbacks
 end;
 
 class procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl;
@@ -426,13 +429,16 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetSize')
   then Exit;
+  {$IFDEF VerboseSizeMsg}
+  DebugLn(['TGtkWSWinControl.SetSize ',DbgSName(AWinControl),' ',AWidth,',',AHeight]);
+  {$ENDIF}
 
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := Widget^.Allocation.X;
   Allocation.Y := Widget^.Allocation.Y;
   Allocation.Width := guint16(AWidth);
   Allocation.Height := guint16(AHeight);
-  gtk_widget_size_allocate(Widget, @Allocation);
+  gtk_widget_size_allocate(Widget, @Allocation);// Beware: this triggers callbacks
 end;
 
 class procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);

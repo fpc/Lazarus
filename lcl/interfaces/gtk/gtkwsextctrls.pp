@@ -341,7 +341,7 @@ begin
   allocation.y:=ANoteBook.Top;
   allocation.width:=ANoteBook.Width;
   allocation.height:=ANoteBook.Height;
-  gtk_widget_size_allocate(NotebookWidget,@allocation);
+  gtk_widget_size_allocate(NotebookWidget,@allocation);// Beware: this triggers callbacks
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TGtkWSCustomNotebook.AddPage PageWidget^.allocation=',dbgs(PageWidget^.allocation),' NotebookWidget=',dbgs(NotebookWidget^.allocation)]);
   {$ENDIF}

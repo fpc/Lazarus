@@ -6801,7 +6801,7 @@ begin
   allocation:=Widget^.allocation;
   allocation.width:=NewWidth;
   allocation.height:=NewHeight;
-  gtk_widget_size_allocate(Widget,@allocation);
+  gtk_widget_size_allocate(Widget,@allocation);// Beware: this triggers callbacks
   {$ENDIF}
 end;
 
@@ -6894,7 +6894,9 @@ begin
   Height:=AWinControl.Height;
   if Height<=0 then Height:=1;
 
-  //DebugLn('TGtkWidgetSet.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
+  {$IFDEF VerboseSizeMsg}
+  DebugLn(['TGtkWidgetSet.SetWindowSizeAndPosition START ',DbgSName(AWinControl),' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height]);
+  {$ENDIF}
   // set geometry default size
   //Info:=gtk_window_get_geometry_info(Window, TRUE);
   //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
@@ -6905,12 +6907,17 @@ begin
   gtk_window_resize(Window,Width,Height);
   // reposition
   gtk_window_move(Window,AWinControl.Left,AWinControl.Top);
-
-  // commit size
+  // force early resize
   allocation:=PgtkWidget(Window)^.allocation;
   allocation.width:=Width;
   allocation.height:=Height;
-  gtk_widget_size_allocate(PgtkWidget(Window),@allocation);
+  gtk_widget_size_allocate(PgtkWidget(Window),@allocation);// Beware: this triggers callbacks
+
+  if (PGtkWidget(Window)^.Window<>nil) then begin
+    // resize gdkwindow directly (sometimes the gtk forgets this)
+    gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
+      AWinControl.Top,Width,Height)
+  end;
   {$ELSE}
   // resize
   if assigned(PGtkWidget(Window)^.Window) then
@@ -6929,7 +6936,7 @@ begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['SetWindowSizeAndPosition B ',DbgSName(AWinControl),
     ' Visible=',AWinControl.Visible,
-    ' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,
+    ' Cur=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,
     ' New=',AWinControl.Left,',',AWinControl.Top,',',Width,'x',Height]);
   {$ENDIF}
 end;

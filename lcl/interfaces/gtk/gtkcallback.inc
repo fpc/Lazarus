@@ -2385,6 +2385,10 @@ end;
 
 function gtksize_allocateCB(widget: PGtkWidget; size: pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
+{$IFDEF VerboseSizeMsg}
+var
+  w, h: Gint;
+{$ENDIF}
 begin
   Result := CallBackDefaultReturn;
 
@@ -2403,15 +2407,19 @@ begin
   end;
 
   {$IFDEF VerboseSizeMsg}
-  DebugLn('gtksize_allocateCB: ',
-    TControl(Data).Name+':'+TControl(Data).ClassName,
-    ' widget='+GetWidgetDebugReport(Widget)+
+  w:=0; h:=0;
+  if Widget^.window<>nil then
+    gdk_window_get_size(Widget^.window,@w,@h);
+  DebugLn(['gtksize_allocateCB: ',
+    DbgSName(TControl(Data)),
+    ' widget=',GetWidgetDebugReport(Widget),
     ' fixwidget=',DbgS(GetFixedWidget(Widget)),
-    ' NewSize=',dbgs(Size^.Width),',',dbgs(Size^.Height),
-    ' GtkPos=',dbgs(Widget^.allocation.x)+','+dbgs(Widget^.allocation.y),
-               ','+dbgs(Widget^.allocation.width)+'x'+dbgs(Widget^.allocation.height)+
-    ' LCLPos='+dbgs(TControl(Data).Left)+','+dbgs(TControl(Data).Top),
-               ','+dbgs(TControl(Data).Width)+'x'+dbgs(TControl(Data).Height));
+    ' NewSize=',Size^.Width,',',Size^.Height,
+    ' GtkPos=',Widget^.allocation.x,',',Widget^.allocation.y,
+               ',',Widget^.allocation.width,'x',Widget^.allocation.height,
+    ' LCLPos=',TControl(Data).Left,',',TControl(Data).Top,
+               ',',TControl(Data).Width,'x',TControl(Data).Height,
+    ' gdkwindow=',w,'x',h]);
   {$ENDIF}
   {$IFDEF VerboseFormPositioning}
   if TControl(Data) is TCustomForm then

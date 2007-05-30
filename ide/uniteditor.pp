@@ -3611,7 +3611,7 @@ var i:integer;
 begin
   if (not Force) and FProcessingCommand then exit;
   for i:=FUnUsedEditorComponents.Count-1 downto 0 do
-    TSynEdit(FUnUsedEditorComponents[i]).Free;
+    Application.ReleaseComponent(TSynEdit(FUnUsedEditorComponents[i]));
   FUnUsedEditorComponents.Clear;
 end;
 
@@ -3981,8 +3981,8 @@ Begin
 end;
 
 function TSourceNotebook.FindSourceEditorWithPageIndex(
-  PageIndex:integer):TSourceEditor;
-var I:integer;
+  PageIndex: integer): TSourceEditor;
+var I: integer;
   TempEditor: TControl;
 begin
   ClearUnUsedEditorComponents(false);
