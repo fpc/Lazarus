@@ -342,7 +342,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
-    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl/inc',
                                    '*.pp;*.pas',false);// and once as normal page
     HTMLHelp.RegisterItem(DirItem);
   end;
