@@ -22,7 +22,7 @@
 }
 unit QtWSExtCtrls;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
@@ -30,7 +30,7 @@ uses
   // Bindings
   qt4, qtwidgets,
   // LCL
-  SysUtils, Controls, LCLType, Forms, ExtCtrls,
+  SysUtils, Controls, Forms, ExtCtrls, LCLType,
   // Widgetset
   WSExtCtrls, WSLCLClasses;
 
@@ -249,7 +249,7 @@ begin
 
   Hook := QObject_hook_create(QtFrame.Widget);
 
-  TEventFilterMethod(Method) := @QtFrame.EventFilter;
+  TEventFilterMethod(Method) := QtFrame.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
 
@@ -304,7 +304,7 @@ begin
 
   Hook := QTabBar_hook_create(QtWidget.Widget);
 
-  TEventFilterMethod(Method) := @QtWidget.EventFilter;
+  TEventFilterMethod(Method) := QtWidget.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
 
@@ -364,9 +364,11 @@ begin
   Hook := QTabWidget_hook_create(QtTabWidget.Widget);
 
 
-  TEventFilterMethod(Method) := @QtTabWidget.EventFilter;
+  TEventFilterMethod(Method) := QtTabWidget.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
+  QTabWidget_currentChanged_Event(Method) := QtTabWidget.SignalCurrentChanged;
+  QTabWidget_hook_hook_currentChanged(QTabWidget_hook_create(QtTabWidget.Widget), Method);
 
   // Returns the Handle
 

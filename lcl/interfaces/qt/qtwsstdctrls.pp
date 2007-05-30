@@ -447,7 +447,7 @@ begin
 
   QListWidget_currentItemChanged_Event(Method) := QtListWidget.SlotSelectionChange;
 
-  QListWidget_hook_hook_currentItemChanged(Hook, Method);
+  QListWidget_hook_hook_currentItemChanged(QListWidget_hook_create(QtListWidget.Widget), Method);
 
   Result := THandle(QtListWidget);
 end;
@@ -793,7 +793,7 @@ begin
   Color:=ColorToRGB(AWinControl.Color);
 
   // Fill QColor
-  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtLineEdit(AWinControl.Handle).SetColor(@QColor);

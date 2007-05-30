@@ -2728,10 +2728,10 @@ var
   R: TRect;
   FRepaint: Boolean;
 
-function PrepareScrollInfo: Boolean;
+function PrepareScrollInfo: Integer;
 begin
 
-  Result := False;
+  Result := 0;
   
   if not Assigned(ScrollBar) then exit;
 
@@ -2741,6 +2741,8 @@ begin
 
   if GetScrollInfo(Handle, SBStyle, FScrollInfo) then
   begin
+    {impossible cases}
+    if (ScrollInfo.nPage > ScrollInfo.nMax) then exit;
   
     if (ScrollInfo.FMask or SIF_RANGE) = ScrollInfo.FMask then
     begin
@@ -2789,9 +2791,10 @@ begin
     
     if (ScrollInfo.FMask or SIF_DISABLENOSCROLL) = ScrollInfo.FMask then
     begin
-      {This value is used only when setting a scroll bar's parameters.
+      {This value is used only when setting a scroll bar''s parameters.
        If the scroll bar's new parameters make the scroll bar unnecessary,
        disable the scroll bar instead of removing it.}
+
        ScrollBar.Enabled := False;
     end else
     begin
@@ -2803,7 +2806,7 @@ begin
     end;
     
     ScrollInfo := FScrollInfo;
-    Result := True;
+    Result := FScrollInfo.nPos;
   end;
 end;
 
@@ -2850,10 +2853,6 @@ begin
       or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
       exit;
 
-
-      if  TQtWidget(Handle).LCLObject.InheritsFrom(TScrollingWinControl) then
-        if not TScrollingWinControl(TQtWidget(Handle).LCLObject).HorzScrollBar.Visible then exit;;
-
       {do not localize !}
       ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
 
@@ -2881,10 +2880,6 @@ begin
       or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
       exit;
 
-                   
-      if  TQtWidget(Handle).LCLObject.InheritsFrom(TScrollingWinControl) then
-        if not TScrollingWinControl(TQtWidget(Handle).LCLObject).VertScrollBar.Visible then exit;
-
       {do not localize !}
       ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
                    
@@ -2905,15 +2900,16 @@ begin
       Scrollbar.Height := R.Bottom;
 
       ScrollBar.Top := 0;
-      ScrollBar.Left := R.Right - ScrollBar.Width;
+      {TODO: Check why BorderWidth is 0 when BorderStyle is eg. bsSingle ?!? }
+      ScrollBar.Left := R.Right - ScrollBar.Width - (TQtWidget(Handle).LCLObject.BorderWidth * 2);
     end; {SB_VERT}
     
   end;
   
   if FRepaint then ScrollBar.Invalidate;
 
-  PrepareScrollInfo;
-  Result := ScrollInfo.nPos;
+  if bRedraw then
+  Result := PrepareScrollInfo;
 
 end;
 

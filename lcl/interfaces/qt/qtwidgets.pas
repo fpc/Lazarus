@@ -301,6 +301,7 @@ type
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
+    procedure SignalCurrentChanged(Index: Integer); cdecl;
   end;
 
   { TQtComboBox }
@@ -2698,7 +2699,6 @@ end;
 function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
-
   inherited EventFilter(Sender, Event);
 end;
 
@@ -2712,10 +2712,48 @@ begin
   Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.setTabPosition
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtTabWidget.SetTabPosition(ATabPosition: QTabWidgetTabPosition);
 begin
   QTabWidget_setTabPosition(QTabWidgetH(Widget), ATabPosition);
 end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.SignalCurrentChanged
+  Params:  None
+  Returns: Nothing
+           Changes ActivePage of TPageControl
+ ------------------------------------------------------------------------------}
+procedure TQtTabWidget.SignalCurrentChanged(Index: Integer); cdecl;
+var
+   TS: TTabSheet;
+begin
+
+  TS := TPageControl(LCLObject).ActivePage;
+  
+  if Assigned(TS) then
+  begin
+    if TS.PageIndex <> Index then TS := TPageControl(LCLObject).Pages[Index]
+    else
+      TS := NiL;
+  end;
+  
+  try
+  if Assigned(TS) then
+  begin
+    if TPageControl(LCLObject).CanChangePageIndex then
+      TPageControl(LCLObject).ActivePage := TS;
+  end;
+  except
+  Application.HandleException(nil);
+  end;
+  
+end;
+
 
 { TQtComboBox }
 
