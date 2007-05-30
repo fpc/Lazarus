@@ -374,6 +374,7 @@ end;
 class procedure TQtWSScrollBar.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtScrollBar(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
 end;
 
 

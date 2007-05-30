@@ -22,7 +22,7 @@
 }
 unit QtWSComCtrls;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
@@ -30,7 +30,7 @@ uses
   // Bindings
   qt4, qtwidgets,
   // LCL
-  ComCtrls, Controls, LCLType,
+  Classes, ComCtrls, Controls, LCLType,
   // Widgetset
   WSComCtrls, WSLCLClasses;
 
@@ -136,6 +136,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
+    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
 
@@ -163,35 +164,36 @@ implementation
 class function TQtWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTrackBar: TQtTrackBar;
-{  Method: TMethod;
-  Hook : QObject_hookH;}
+  Method: TMethod;
+  Hook : QSlider_hookH;
 begin
   QtTrackBar := TQtTrackBar.Create(AWinControl, AParams);
 
-  with AParams do
-  begin
-    if TCustomTrackBar(AWinControl).Orientation = trVertical then
-    begin
-        QtTrackBar.setInvertedAppereance(True);
-        QtTrackBar.setInvertedControls(True);
-    end else
-    begin
-        QtTrackBar.setInvertedAppereance(False);
-        QtTrackBar.setInvertedControls(False);
-    end;
-  end;
+  Hook := QSlider_hook_create(QtTrackBar.Widget);
+  TEventFilterMethod(Method) := QtTrackBar.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
 
-{  Hook := QObject_hook_create(QtWidget.Widget);
+  QAbstractSlider_rangeChanged_Event(Method) := QtTrackbar.SlotRangeChanged;
+  QAbstractSlider_hook_hook_rangeChanged(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
 
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
+  QAbstractSlider_sliderMoved_Event(Method) := QtTrackBar.SlotSliderMoved;
+  QAbstractSlider_hook_hook_sliderMoved(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
 
-  QObject_hook_hook_events(Hook, Method);}
+  QAbstractSlider_sliderPressed_Event(Method) := QtTrackBar.SlotSliderPressed;
+  QAbstractSlider_hook_hook_sliderPressed(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
+
+  QAbstractSlider_sliderReleased_Event(Method) := QtTrackBar.SlotSliderReleased;
+  QAbstractSlider_hook_hook_sliderReleased(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
+
+  QAbstractSlider_valueChanged_Event(Method) := QtTrackBar.SlotValueChanged;
+  QAbstractSlider_hook_hook_valueChanged(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
 
   Result := THandle(QtTrackBar);
 end;
 
 class procedure TQtWSTrackBar.DestroyHandle(const AWinControl: TWinControl);
 begin
+  TQtTrackBar(AWinControl.Handle).Free;
   AWinControl.Handle := 0;
 end;
 
@@ -199,35 +201,50 @@ class procedure TQtWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   QtTrackBar: TQtTrackBar;
 begin
+
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
 
   QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
 
-    case ATrackBar.TickMarks of
-       tmBoth:QtTrackBar.SetTickPosition(QSliderTicksBothSides);
-       tmTopLeft:QtTrackBar.SetTickPosition(QSliderTicksAbove);
-       tmBottomRight:QtTrackBar.SetTickPosition(QSliderTicksBelow);
-    end;
+  case ATrackBar.TickMarks of
+    tmBoth:QtTrackBar.SetTickPosition(QSliderTicksBothSides);
+    tmTopLeft:QtTrackBar.SetTickPosition(QSliderTicksAbove);
+    tmBottomRight:QtTrackBar.SetTickPosition(QSliderTicksBelow);
+  end;
 
+  if QAbstractSlider_pageStep(QAbstractSliderH(QtTrackBar.Widget)) <> ATrackBar.PageSize then
     QtTrackBar.setPageStep(ATrackBar.PageSize);
+  if QSlider_tickInterval(QSliderH(QtTrackBar.Widget)) <> ATrackBar.Frequency then
     QtTrackBar.setTickInterval(ATrackBar.Frequency);
+  if QAbstractSlider_value(QAbstractSliderH(QtTrackBar.Widget)) <> ATrackBar.Position then
     QtTrackBar.setSliderPosition(ATrackBar.Position);
 
   case ATrackBar.Orientation of
     trVertical:
     begin
+      QtTrackBar.Hide;
       QtTrackBar.setOrientation(QtVertical);
-      QtTrackBar.setInvertedAppereance(True);
-      QtTrackBar.setInvertedControls(True);
+      QtTrackBar.setInvertedAppereance(False);
+      QtTrackBar.setInvertedControls(False);
+      QtTrackBar.Show;
     end;
-  else 
-  begin
-    QtTrackBar.setOrientation(QtHorizontal);
-    QtTrackBar.setInvertedAppereance(False);
-    QtTrackBar.setInvertedControls(False);
+    else {trHorizontal}
+    begin
+      QtTrackBar.Hide;
+      QtTrackBar.setOrientation(QtHorizontal);
+      QtTrackBar.setInvertedAppereance(False);
+      QtTrackBar.setInvertedControls(False);
+      QtTrackBar.Show;
+    end;
   end;
-  end;
+end;
 
+class function  TQtWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+var
+  QtTrackBar: TQtTrackBar;
+begin
+  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
+  Result := QAbstractSlider_value(QAbstractSliderH(QtTrackBar.Widget));
 end;
 
 class procedure TQtWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
@@ -325,15 +342,15 @@ class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const
 var
   QtStatusBar: TQtStatusBar;
   Method: TMethod;
-  Hook : QObject_hookH;
+  Hook : QStatusBar_hookH;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
 
   // Various Events
 
-  Hook := QObject_hook_create(QtStatusBar.Widget);
+  Hook := QStatusBar_hook_create(QtStatusBar.Widget);
 
-  TEventFilterMethod(Method) := @QtStatusBar.EventFilter;
+  TEventFilterMethod(Method) := QtStatusBar.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
 

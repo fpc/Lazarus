@@ -237,9 +237,9 @@ type
     procedure setSliderPosition(p1: Integer); virtual;
     procedure setTracking(p1: Boolean); virtual;
     procedure setValue(p1: Integer); virtual; 
-    procedure SlotSliderMoved(p1: Integer); cdecl;
-    procedure SlotValueChanged(p1: Integer); cdecl;
-    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl;
+    procedure SlotSliderMoved(p1: Integer); cdecl; virtual;
+    procedure SlotValueChanged(p1: Integer); cdecl; virtual;
+    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
     procedure SlotSliderPressed; cdecl;
     procedure SlotSliderReleased; cdecl;
     property SliderPressed: Boolean read FSliderPressed;
@@ -263,6 +263,9 @@ type
   public
      procedure SetTickPosition(Value: QSliderTickPosition);
      procedure SetTickInterval(Value: Integer);
+    procedure SlotSliderMoved(p1: Integer); cdecl; override;
+    procedure SlotValueChanged(p1: Integer); cdecl; override;
+    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; override;
   end;
 
   { TQtLineEdit }
@@ -2506,6 +2509,60 @@ begin
   QSlider_setTickInterval(QSliderH(Widget), Value);
 end;
 
+procedure TQtTrackBar.SlotSliderMoved(p1: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtTrackBar.SlotSliderMoved()');
+ {$endif}
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_CHANGED;
+  try
+    if (TTrackBar(LCLObject).Position<>p1) then
+      LCLObject.WindowProc(Msg);
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+procedure TQtTrackBar.SlotValueChanged(p1: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtTrackBar.SlotValueChanged()');
+ {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_CHANGED;
+  try
+    if not SliderPressed and (TTrackBar(LCLObject).Position<>p1) then
+      LCLObject.WindowProc(Msg);
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+procedure TQtTrackBar.SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtTrackBar.SlotRangeChanged()');
+ {$endif}
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_CHANGED;
+  try
+    DeliverMessage(Msg);
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
 
 { TQtLineEdit }
 
@@ -2730,28 +2787,24 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtTabWidget.SignalCurrentChanged(Index: Integer); cdecl;
 var
-   TS: TTabSheet;
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
 begin
 
-  TS := TPageControl(LCLObject).ActivePage;
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := CN_NOTIFY;
   
-  if Assigned(TS) then
-  begin
-    if TS.PageIndex <> Index then TS := TPageControl(LCLObject).Pages[Index]
-    else
-      TS := NiL;
-  end;
+  Hdr.hwndFrom := LCLObject.Handle;
+  Hdr.Code := TCN_SELCHANGE;
+  Hdr.idFrom := Index;
   
+  Msg.NMHdr := @Hdr;
   try
-  if Assigned(TS) then
-  begin
-    if TPageControl(LCLObject).CanChangePageIndex then
-      TPageControl(LCLObject).ActivePage := TS;
-  end;
+    DeliverMessage(Msg);
   except
-  Application.HandleException(nil);
+    Application.HandleException(nil);
   end;
-  
 end;
 
 
