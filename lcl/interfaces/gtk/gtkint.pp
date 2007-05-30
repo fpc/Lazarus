@@ -71,7 +71,7 @@ uses
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
-  Graphics, Menus, Maps,
+  Graphics, Menus, Maps, Themes,
   // widgetset
   GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
 
@@ -123,6 +123,7 @@ type
     FExtUTF8OutCacheSize: integer;
     FGlobalCursor: HCursor;
 
+    function CreateThemeServices: TThemeServices; override;
   public
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
@@ -366,6 +367,7 @@ uses
  GtkWSSpin,
  GtkWSStdCtrls,
 // GtkWSToolwin,
+  GtkThemes,
 ////////////////////////////////////////////////////
   Buttons, StdCtrls, PairSplitter,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,

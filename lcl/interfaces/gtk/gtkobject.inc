@@ -1466,6 +1466,11 @@ begin
   //gtk_main_quit;
 end;
 
+function TGTKWidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TGtkThemeServices.Create;
+end;
+
 Procedure TGtkWidgetSet.InitStockItems;
 var
   LogBrush: TLogBrush;
