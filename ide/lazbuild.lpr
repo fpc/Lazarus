@@ -29,7 +29,7 @@ uses
   // codetools
   CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf
-  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf,
+  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
@@ -104,10 +104,13 @@ type
     Files: TStringList;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+
     procedure Run;
     function ParseParameters: boolean;
     procedure WriteUsage;
     procedure Error(ErrorCode: Byte; const ErrorMsg: string);
+    function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
+
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
     property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
                                      write FBuildRecursive;
@@ -761,6 +764,7 @@ begin
   SetupDialogs;
   TOutputFilterProcess:=TProcess;
   Files:=TStringList.Create;
+  RunExternalTool := @OnRunExternalTool;
 end;
 
 destructor TLazBuildApplication.Destroy;
@@ -955,6 +959,12 @@ procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);
 begin
   writeln('ERROR: ',ErrorMsg);
   Halt(ErrorCode);
+end;
+
+function TLazBuildApplication.OnRunExternalTool(Tool: TIDEExternalToolOptions
+  ): TModalResult;
+begin
+  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
 end;
 
 begin
