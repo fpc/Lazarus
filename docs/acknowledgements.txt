@@ -1,5 +1,9 @@
 Lazarus is using following third party libraries and tools
 
+Component libraries:
+
+- Windows XP Theme Manager (http://www.soft-gems.net/)
+
 Icon sets:
 
 - Silk icon set 1.3 by Mark James (http://www.famfamfam.com/lab/icons/silk/)
