@@ -143,14 +143,17 @@ begin
 
   UnregisterFindGlobalComponentProc(@FindApplicationComponent);
 
+  DebugLn(['TApplication.Destroy AAA6']);
   inherited Destroy;
 
   Include(FFlags,AppDoNotCallAsyncQueue);
+  DebugLn(['TApplication.Destroy AAA7']);
   ProcessAsyncCallQueue;
 
   // restore exception handling
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
+  DebugLn(['TApplication.Destroy END']);
 end;
 
 {------------------------------------------------------------------------------
@@ -193,21 +196,22 @@ procedure TApplication.Notification(AComponent : TComponent;
 begin
   if Operation = opRemove then begin
     FLastMouseControlValid:=false;
-    if AComponent=FMouseControl then FMouseControl:=nil;
-    if AComponent=FCreatingForm then begin
+    if AComponent=FMouseControl then
+      FMouseControl:=nil;
+    if AComponent=FCreatingForm then
       FCreatingForm:=nil;
-    end;
-    if AComponent=FHintWindow then begin
+    if AComponent=FHintWindow then
       FHintWindow:=nil;
-    end;
-    if AComponent=FHintTimer then begin
+    if AComponent=FHintTimer then
       FHintTimer:=nil;
-    end;
+    if FComponentsToRelease<>nil then
+      FComponentsToRelease.Remove(AComponent);
     if AComponent = MainForm then begin
       FMainForm:= nil;
       Terminate;
     end;
   end;
+  inherited Notification(AComponent,Operation);
 end;
 
 {------------------------------------------------------------------------------
@@ -1611,7 +1615,7 @@ begin
     FMainForm := AForm;
 end;
 
-procedure TApplication.QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);
+procedure TApplication.QueueAsyncCall(const AMethod: TDataEvent; Data: PtrInt);
 var
   lItem: PAsyncCallQueueItem;
 begin
@@ -1629,13 +1633,39 @@ begin
 end;
 
 procedure TApplication.FreeComponent(Data: PtrInt);
+var
+  OldComponents: TAvgLvlTree;
 begin
   TComponent(Data).Free;
+  if FComponentsToRelease<>nil then begin
+    OldComponents:=FComponentsToRelease;
+    FComponentsToRelease:=nil;
+    OldComponents.FreeAndClear;
+    OldComponents.Free;
+  end;
 end;
 
 procedure TApplication.ReleaseComponent(AComponent: TComponent);
+var
+  IsFirstItem: Boolean;
 begin
-  QueueAsyncCall(@FreeComponent, PtrInt(AComponent));
+  if csDestroying in AComponent.ComponentState then exit;
+  if AppDestroying in FFlags then begin
+    // free immediately
+    AComponent.Free;
+  end else begin
+    // free later
+    // => add to the FComponentsToRelease
+    IsFirstItem:=FComponentsToRelease=nil;
+    if IsFirstItem then
+      FComponentsToRelease:=TAvgLvlTree.Create(@ComparePointers)
+    else if FComponentsToRelease.Find(AComponent)<>nil then
+      exit;
+    FComponentsToRelease.Add(AComponent);
+    AComponent.FreeNotification(Self);
+    if IsFirstItem then
+      QueueAsyncCall(@FreeComponent, 0);
+  end;
 end;
 
 function TApplication.ExecuteAction(ExeAction: TBasicAction): Boolean;

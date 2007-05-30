@@ -37,9 +37,10 @@ interface
 {$DEFINE HasDefaultValues}
 
 uses
-  Classes, SysUtils, TypInfo, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
+  Classes, SysUtils, TypInfo, Math,
+  AvgLvlTree, Maps, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
-  ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls, maps;
+  ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
 
 type
   TProcedure = procedure;
@@ -890,6 +891,7 @@ type
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
     FApplicationType: TApplicationType;
     FCaptureExceptions: boolean;
+    FComponentsToRelease: TAvgLvlTree;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
     FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;
@@ -992,7 +994,7 @@ type
     procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; out Reference);
     procedure UpdateMainForm(AForm: TForm);
-    procedure QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);
+    procedure QueueAsyncCall(const AMethod: TDataEvent; Data: PtrInt);
     procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function UpdateAction(TheAction: TBasicAction): Boolean; override;
