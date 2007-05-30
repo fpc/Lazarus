@@ -1,14 +1,15 @@
 # translation of lazaruside.po to français translation of lazarusidenew.po to  translation of lazaruside.po to  , 2005. , 2005. beuz_ <lazarus@beuselinck.com>, 2006.
 msgid ""
 msgstr ""
-"Last-Translator: beuz_ <lazarus@beuselinck.com>\n"
-"PO-Revision-Date: 2006-03-17 09:43+0100\n"
+"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
+"PO-Revision-Date: 2007-05-30 22:32+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.10.2\n"
 "Project-Id-Version: lazaruside\n"
 "MIME-Version: 1.0\n"
+"POT-Creation-Date: \n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -40,7 +41,7 @@ msgstr "%s (débogage ...)"
 
 #: lazarusidestrconsts:liscovarious
 msgid "%s (various)"
-msgstr ""
+msgstr "%s (divers)"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
@@ -152,11 +153,11 @@ msgstr "%sCe paquet a été créé automatiquement"
 
 #: lazarusidestrconsts:lisnone
 msgid "%snone"
-msgstr ""
+msgstr "%s aucun "
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
-msgstr ""
+msgstr "&Ajouter"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
@@ -164,7 +165,7 @@ msgstr "&Ajouter un point d'arrêt"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
-msgstr ""
+msgstr "&Fermer"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -176,7 +177,7 @@ msgstr "&Composants"
 
 #: lazarusidestrconsts:liswldelete
 msgid "&Delete"
-msgstr ""
+msgstr "&Supprimer"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
@@ -184,7 +185,7 @@ msgstr "&Edition"
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
-msgstr ""
+msgstr "&Activer"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -204,7 +205,7 @@ msgstr "&Aide"
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
-msgstr ""
+msgstr "&Objets"
 
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
@@ -220,7 +221,7 @@ msgstr "&Projet"
 
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Propriétés"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -272,7 +273,7 @@ msgstr "(macro inconnue: %s)"
 
 #: lazarusidestrconsts:lisplistall
 msgid "<All>"
-msgstr ""
+msgstr "<Tous>"
 
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
@@ -280,7 +281,7 @@ msgstr "<NONE>"
 
 #: lazarusidestrconsts:lisplistnone
 msgid "<None>"
-msgstr ""
+msgstr "<Aucun>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -344,7 +345,7 @@ msgstr "Arrêter tous les chargements"
 
 #: lazarusidestrconsts:liskmabortbuilding
 msgid "Abort building"
-msgstr ""
+msgstr "Arrêter le construction"
 
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
@@ -368,7 +369,7 @@ msgstr "Accepter"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
+msgstr "Remerciements"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -412,7 +413,7 @@ msgstr "Ajouter l'unité active au projet"
 
 #: lazarusidestrconsts:liskmaddactiveunittoproject
 msgid "Add active unit to project"
-msgstr ""
+msgstr "Ajouter l'unité active au projet"
 
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
@@ -420,7 +421,7 @@ msgstr "Ajouter un élément"
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
-msgstr ""
+msgstr "Ajouter un point d'arrêt "
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -480,7 +481,7 @@ msgstr "Ajouter les chemins aux paquets/projets dépendants"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "Ajouter un point-virgule"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -588,7 +589,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
-msgstr ""
+msgstr "Toujours construire avant l'exécution"
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -920,7 +921,7 @@ msgstr "Construire les outils de code"
 
 #: lazarusidestrconsts:lisbfbuildcommand
 msgid "Build Command"
-msgstr ""
+msgstr "Commande de construction"
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
@@ -1120,7 +1121,7 @@ msgstr "Modifier la classe"
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
-msgstr ""
+msgstr "Changer la police"
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -1764,7 +1765,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr " ..."
+msgstr "Convertir un package Delphi vers Lazarus ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi project to Lazarus project"
@@ -1772,7 +1773,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr " ..."
+msgstr "Convertir un projet Delphi vers Lazarus ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi unit to Lazarus unit"
@@ -2812,7 +2813,7 @@ msgstr "Nom étendu du fichier de l'éditeur courant"
 
 #: lazarusidestrconsts:lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Exporter..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2820,7 +2821,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexists
 msgid "Export file exists"
-msgstr ""
+msgstr "Le fichier d'exportation existe"
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2832,11 +2833,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
-msgstr ""
+msgstr "Prolonger le chemin d'unité ?"
 
 #: lazarusidestrconsts:liskmexternaltoolssettings
 msgid "External Tools settings"
-msgstr ""
+msgstr "Configuration d'outils externes "
 
 #: lazarusidestrconsts:srkmecexttool
 msgid "External tool %d"
@@ -2948,7 +2949,7 @@ msgstr "Fichier déjà dans le paquet"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
-msgstr ""
+msgstr "Extension de fichier"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3024,7 +3025,7 @@ msgstr "Nom de fichier utilisé par un projet"
 
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
-msgstr ""
+msgstr "Nom de fichier:"
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -3036,7 +3037,7 @@ msgstr "Fichiers"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3104,7 +3105,7 @@ msgstr "Chercher le début du bloc de code"
 
 #: lazarusidestrconsts:liscomppalfindcomponent
 msgid "Find component"
-msgstr ""
+msgstr "Rechercher un Composant"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -3180,7 +3181,7 @@ msgstr "Activer l'éditeur de source"
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
-msgstr ""
+msgstr "Suivre le curseur"
 
 #: lazarusidestrconsts:lisuefontwith
 msgid "Font without UTF-8"
@@ -3344,43 +3345,43 @@ msgstr "Aller à la ligne"
 
 #: lazarusidestrconsts:liskmgotomarker0
 msgid "Go to marker 0"
-msgstr ""
+msgstr "Aller au marqueur 0"
 
 #: lazarusidestrconsts:liskmgotomarker1
 msgid "Go to marker 1"
-msgstr ""
+msgstr "Aller au marqueur 1"
 
 #: lazarusidestrconsts:liskmgotomarker2
 msgid "Go to marker 2"
-msgstr ""
+msgstr "Aller au marqueur 2"
 
 #: lazarusidestrconsts:liskmgotomarker3
 msgid "Go to marker 3"
-msgstr ""
+msgstr "Aller au marqueur 3"
 
 #: lazarusidestrconsts:liskmgotomarker4
 msgid "Go to marker 4"
-msgstr ""
+msgstr "Aller au marqueur 4"
 
 #: lazarusidestrconsts:liskmgotomarker5
 msgid "Go to marker 5"
-msgstr ""
+msgstr "Aller au marqueur 5"
 
 #: lazarusidestrconsts:liskmgotomarker6
 msgid "Go to marker 6"
-msgstr ""
+msgstr "Aller au marqueur 6"
 
 #: lazarusidestrconsts:liskmgotomarker7
 msgid "Go to marker 7"
-msgstr ""
+msgstr "Aller au marqueur 7"
 
 #: lazarusidestrconsts:liskmgotomarker8
 msgid "Go to marker 8"
-msgstr ""
+msgstr "Aller au marqueur 8"
 
 #: lazarusidestrconsts:liskmgotomarker9
 msgid "Go to marker 9"
-msgstr ""
+msgstr "Aller au marqueur 9"
 
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
@@ -3396,43 +3397,43 @@ msgstr "Aller à l'éditeur précédent"
 
 #: lazarusidestrconsts:liskmgotosourceeditor1
 msgid "Go to source editor 1"
-msgstr ""
+msgstr "Aller à éditeur de source 1"
 
 #: lazarusidestrconsts:liskmgotosourceeditor10
 msgid "Go to source editor 10"
-msgstr ""
+msgstr "Aller à éditeur de source 10"
 
 #: lazarusidestrconsts:liskmgotosourceeditor2
 msgid "Go to source editor 2"
-msgstr ""
+msgstr "Aller à éditeur de source 2"
 
 #: lazarusidestrconsts:liskmgotosourceeditor3
 msgid "Go to source editor 3"
-msgstr ""
+msgstr "Aller à éditeur de source 3"
 
 #: lazarusidestrconsts:liskmgotosourceeditor4
 msgid "Go to source editor 4"
-msgstr ""
+msgstr "Aller à éditeur de source 4"
 
 #: lazarusidestrconsts:liskmgotosourceeditor5
 msgid "Go to source editor 5"
-msgstr ""
+msgstr "Aller à éditeur de source 5"
 
 #: lazarusidestrconsts:liskmgotosourceeditor6
 msgid "Go to source editor 6"
-msgstr ""
+msgstr "Aller à éditeur de source 6"
 
 #: lazarusidestrconsts:liskmgotosourceeditor7
 msgid "Go to source editor 7"
-msgstr ""
+msgstr "Aller à éditeur de source 7"
 
 #: lazarusidestrconsts:liskmgotosourceeditor8
 msgid "Go to source editor 8"
-msgstr ""
+msgstr "Aller à éditeur de source 8"
 
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
-msgstr ""
+msgstr "Aller à éditeur de source 9"
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -3580,7 +3581,7 @@ msgstr "Options de l'aide"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
-msgstr ""
+msgstr "Aide pour le message du compilateur FreePascal"
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -3588,7 +3589,7 @@ msgstr "Commandes du menu Aide"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
-msgstr ""
+msgstr "Sélecteur d'aide"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -3720,11 +3721,11 @@ msgstr "Ignorer le nombre d'espaces"
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
-msgstr ""
+msgstr "Ignorer et sauver le paquet maintenant "
 
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
-msgstr ""
+msgstr "Ignorer les binaires"
 
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
@@ -3740,7 +3741,7 @@ msgstr "Ignorer lignes vides ajoutées ou supprimées"
 
 #: lazarusidestrconsts:lisignoremissingfile
 msgid "Ignore missing file"
-msgstr ""
+msgstr "Ignorer le fichier absent"
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -3756,11 +3757,11 @@ msgstr "Ignorer les espaces en début de ligne"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr ""
+msgstr "Ignorer ces exceptions"
 
 #: lazarusidestrconsts:lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
-msgstr ""
+msgstr "Ignorer, employer TForm comme ancêtre "
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -5964,7 +5965,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr " ..."
+msgstr "Liste de procédure ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -9480,7 +9481,7 @@ msgstr "Largeur:"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
-msgstr ""
+msgstr "Fenêtre "
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
@@ -9552,7 +9553,7 @@ msgstr "Préfixe \"Write\""
 
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
-msgstr ""
+msgstr "fichier XML"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
@@ -9628,7 +9629,7 @@ msgstr "Fichier de configuration de la construction"
 
 #: lazarusidestrconsts:liscontains
 msgid "contains"
-msgstr ""
+msgstr "contient "
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
@@ -9732,7 +9733,7 @@ msgstr "sans_nom"
 
 #: lazarusidestrconsts:lisnone2
 msgid "none"
-msgstr ""
+msgstr "Aucun"
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
@@ -9744,7 +9745,7 @@ msgstr "Chemin du code objet"
 
 #: lazarusidestrconsts:lisor
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved
 msgid "package %s not saved"
@@ -9760,15 +9761,15 @@ msgstr "suspendre le programme"
 
 #: lazarusidestrconsts:lisctpleaseselectamacro
 msgid "please select a macro"
-msgstr ""
+msgstr "veuillez choisir une macro"
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgstr ""
+msgstr "Premier répertoire de configuration, là où Lazarrus stocke ses dossiers de configuration. Par défaut c'est"
 
 #: lazarusidestrconsts:srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr ""
+msgstr "compiler vite, aucun lien"
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
@@ -9824,7 +9825,7 @@ msgstr "Sec"
 
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr ""
+msgstr "Deuxième répertoire de configuration, là où Lazarre recherche ses fichiers template. Par défaut c'est"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
