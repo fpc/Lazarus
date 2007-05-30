@@ -1497,6 +1497,42 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetScrollInfo
+  Params: BarFlag
+           SB_CTL Retrieves the parameters for a scroll bar control. The hwnd parameter must be the handle to the scroll bar control.
+           SB_HORZ Retrieves the parameters for the window's standard horizontal scroll bar.
+           SB_VERT Retrieves the parameters for the window's standard vertical scroll bar.
+           
+          ScrollInfo returns TScrollInfo structure.
+          
+  Returns: boolean
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
+var
+  FScrollBar: TScrollBar;
+begin
+  Result := False;
+  if Handle = 0 then exit;
+
+  FScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
+
+  if Assigned(FScrollBar) then
+  begin
+
+    if (csDestroying in FScrollBar.ComponentState) then exit;
+
+    ScrollInfo.nTrackPos := 0; {TODO: according to msdn this is ignored in SetScrollInfo()}
+    ScrollInfo.nPage := FScrollBar.PageSize;
+    ScrollInfo.nMax := FScrollBar.Max;
+    ScrollInfo.nMin := FScrollBar.Min;
+    ScrollInfo.nPos := FScrollBar.Position;
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    Result := True;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: TQtWidgetSet.GetSysColor
   Params:   index to the syscolors array
   Returns:  RGB value
@@ -2673,6 +2709,212 @@ begin
     {$endif}
   end else
     result:=False;
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: SetScrollInfo
+  Params:  none
+  Returns: The old position value
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
+  ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+var
+  i: Integer;
+  ScrollBar: TScrollBar;
+  FScrollInfo: TScrollInfo;
+  R: TRect;
+  FRepaint: Boolean;
+
+function PrepareScrollInfo: Boolean;
+begin
+
+  Result := False;
+  
+  if not Assigned(ScrollBar) then exit;
+
+  FillChar(FScrollInfo, SizeOf(FScrollInfo), #0);
+  FScrollInfo.cbSize := SizeOf(FScrollInfo);
+  FScrollInfo.FMask := ScrollInfo.FMask;
+
+  if GetScrollInfo(Handle, SBStyle, FScrollInfo) then
+  begin
+  
+    if (ScrollInfo.FMask or SIF_RANGE) = ScrollInfo.FMask then
+    begin
+      FScrollInfo.nMin := ScrollInfo.nMin;
+      FScrollInfo.nMax := ScrollInfo.nMax;
+      ScrollBar.Min := ScrollInfo.nMin;
+      ScrollBar.Max := ScrollInfo.nMax - ScrollInfo.nPage;
+      { - (ScrollInfo.nMax div 4 PageStep property)); }
+    end;
+
+    if (ScrollInfo.FMask or SIF_PAGE) = ScrollInfo.FMask then
+    begin
+      FScrollInfo.nPage := ScrollInfo.nPage;
+      {segfaults if we don't check Enabled property !}
+      if ScrollBar.Enabled  then
+        ScrollBar.PageSize := ScrollInfo.nPage;
+    end;
+    
+    if (ScrollInfo.FMask or SIF_POS) = ScrollInfo.FMask then
+    begin
+      FScrollInfo.nPos := ScrollInfo.nPos;
+      if ScrollBar.Position <> ScrollInfo.nPos then
+        ScrollBar.Position := ScrollInfo.nPos;
+    end;
+
+    if (ScrollInfo.FMask or SIF_TRACKPOS) = ScrollInfo.FMask then
+    begin
+      FScrollInfo.nTrackPos := ScrollInfo.nTrackPos;
+      {TODO: TQtScrollBar(ScrollBar.Handle).setTracking(True); via SB_THUMBTRACK }
+    end;
+
+    if (ScrollInfo.FMask or SIF_ALL) = ScrollInfo.FMask then
+    begin
+      FScrollInfo.nPage := ScrollInfo.nPage;
+      FScrollInfo.nPos := ScrollInfo.nPos;
+      FScrollInfo.nMin := ScrollInfo.nMin;
+      FScrollInfo.nMax := ScrollInfo.nMax;
+      ScrollBar.Min := ScrollInfo.nMin;
+      ScrollBar.Max := ScrollInfo.nMax;
+      {segfaults if we don't check Enabled property !}
+      if ScrollBar.Enabled then
+        ScrollBar.PageSize := ScrollInfo.nPage;
+      if ScrollBar.Position<>ScrollInfo.nPos then
+        ScrollBar.Position := ScrollInfo.nPos;
+    end;
+    
+    if (ScrollInfo.FMask or SIF_DISABLENOSCROLL) = ScrollInfo.FMask then
+    begin
+      {This value is used only when setting a scroll bar's parameters.
+       If the scroll bar's new parameters make the scroll bar unnecessary,
+       disable the scroll bar instead of removing it.}
+       ScrollBar.Enabled := False;
+    end else
+    begin
+       if not ScrollBar.Enabled then
+       begin
+         ScrollBar.Enabled := True;
+         ScrollBar.Invalidate;
+       end;
+    end;
+    
+    ScrollInfo := FScrollInfo;
+    Result := True;
+  end;
+end;
+
+begin
+  Result := 0;
+  
+  if (Handle = 0) then exit;
+  
+  FRepaint := False;
+  ScrollBar := NiL;
+  case SBStyle of
+  
+    SB_BOTH:
+    begin
+      {TODO: SB_BOTH fixme }
+      // writeln('TODO: ############## SB_BOTH CALLED HERE .... #################');
+    end; {SB_BOTH}
+    
+    SB_CTL:
+    begin
+      {HWND is always TScrollBar, but seem that Create ScrollBar should be called here }
+      if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
+      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
+      exit;
+
+      ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
+
+      if not Assigned(ScrollBar) then exit;
+
+      if not Assigned(ScrollBar.Parent) then
+      begin
+       ScrollBar := NiL;
+       exit; {still creating ... set it to Nil because of PrepareScrollInfo() }
+      end;
+
+      FRepaint := bRedraw and not ScrollBar.Visible;
+                   
+      ScrollBar.Visible := bRedraw;
+    end; {SB_CTL}
+    
+    SB_HORZ:
+    begin
+      if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
+      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
+      exit;
+
+
+      if  TQtWidget(Handle).LCLObject.InheritsFrom(TScrollingWinControl) then
+        if not TScrollingWinControl(TQtWidget(Handle).LCLObject).HorzScrollBar.Visible then exit;;
+
+      {do not localize !}
+      ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
+
+      if not Assigned(ScrollBar) then
+      begin
+        ScrollBar := TScrollBar.Create(TQtWidget(Handle).LCLObject);
+        ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'; {do not localize !}
+        ScrollBar.Parent := TQtWidget(Handle).LCLObject;
+        ScrollBar.Kind := sbHorizontal;
+      end;
+                   
+      FRepaint := bRedraw and not ScrollBar.Visible;
+                   
+      ScrollBar.Visible := bRedraw;
+
+      R := TQtWidget(Handle).LCLObject.ClientRect;
+
+      Scrollbar.Width := R.Right - ScrollBar.Height;
+      ScrollBar.Top := R.Bottom - ScrollBar.Height;
+    end; {SB_HORZ}
+    
+    SB_VERT:
+    begin
+      if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
+      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
+      exit;
+
+                   
+      if  TQtWidget(Handle).LCLObject.InheritsFrom(TScrollingWinControl) then
+        if not TScrollingWinControl(TQtWidget(Handle).LCLObject).VertScrollBar.Visible then exit;
+
+      {do not localize !}
+      ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
+                   
+      if not Assigned(ScrollBar) then
+      begin
+        ScrollBar := TScrollBar.Create(TQtWidget(Handle).LCLObject);
+        ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR';  {do not localize !}
+        ScrollBar.Parent := TQtWidget(Handle).LCLObject;
+        ScrollBar.Kind := sbVertical;
+      end;
+                   
+      FRepaint := bRedraw and not ScrollBar.Visible;
+                   
+      ScrollBar.Visible := bRedraw;
+                   
+      R := TQtWidget(Handle).LCLObject.ClientRect;
+      
+      Scrollbar.Height := R.Bottom;
+
+      ScrollBar.Top := 0;
+      ScrollBar.Left := R.Right - ScrollBar.Width;
+    end; {SB_VERT}
+    
+  end;
+  
+  if FRepaint then ScrollBar.Invalidate;
+
+  PrepareScrollInfo;
+  Result := ScrollInfo.nPos;
+
 end;
 
 {------------------------------------------------------------------------------

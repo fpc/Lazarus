@@ -216,6 +216,8 @@ type
 
   TQtAbstractSlider = class(TQtWidget)
   private
+    FSliderPressed: Boolean;
+    FSliderReleased: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -235,6 +237,13 @@ type
     procedure setSliderPosition(p1: Integer); virtual;
     procedure setTracking(p1: Boolean); virtual;
     procedure setValue(p1: Integer); virtual; 
+    procedure SlotSliderMoved(p1: Integer); cdecl;
+    procedure SlotValueChanged(p1: Integer); cdecl;
+    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl;
+    procedure SlotSliderPressed; cdecl;
+    procedure SlotSliderReleased; cdecl;
+    property SliderPressed: Boolean read FSliderPressed;
+    property SliderReleased: Boolean read FSliderReleased;
   end;
 
   { TQtScrollBar }
@@ -415,7 +424,6 @@ type
   end;
   
 implementation
-
 const
   AlignmentMap: array[TAlignment] of QtAlignment =
   (
@@ -2205,6 +2213,10 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSlider.Create');
   {$endif}
+  
+  FSliderPressed := False;
+  FSliderReleased:= False;
+
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QAbstractSlider_create(Parent);
 end;
@@ -2223,6 +2235,19 @@ begin
   Widget:=nil;
   
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.rangeChanged
+  Params:  minimum,maximum: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl;
+begin
+  {TODO: what to do on rangeChanged ? repaint or recount pageSize() }
+ {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.rangeChanged() to min=',minimum,' max=',maximum);
+ {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2345,6 +2370,92 @@ procedure TQtAbstractSlider.setValue(p1: Integer);
 begin
   QAbstractSlider_setValue(QAbstractSliderH(Widget), p1);
 end;
+
+procedure TQtAbstractSlider.SlotSliderMoved(p1: Integer); cdecl;
+var
+   Msg: PLMessage;
+   LMScroll: TLMScroll;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.sliderMoved() to pos=',p1);
+ {$endif}
+ 
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(LMScroll, SizeOf(LMScroll), #0);
+
+  LMScroll.ScrollBar := LCLObject.Handle;
+   
+  if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
+  LMScroll.Msg := LM_HSCROLL
+  else
+  LMScroll.Msg := LM_VSCROLL;
+
+  LMScroll.Pos := p1;
+  LMScroll.ScrollCode := SIF_POS; {what about SIF_TRACKPOS ?!?}
+
+  Msg := @LMScroll;
+  
+  try
+    if (TScrollBar(LCLObject).Position <> p1)
+    and (Assigned(LCLObject.Parent)) then
+    LCLObject.Parent.WindowProc(Msg^);
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+procedure TQtAbstractSlider.SlotSliderPressed; cdecl;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.sliderPressed()');
+ {$endif}
+ FSliderPressed := True;
+ FSliderReleased := False;
+end;
+
+procedure TQtAbstractSlider.SlotSliderReleased; cdecl;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.sliderReleased()');
+ {$endif}
+ FSliderPressed := False;
+ FSliderReleased := True;
+end;
+
+procedure TQtAbstractSlider.SlotValueChanged(p1: Integer); cdecl;
+var
+  Msg: PLMessage;
+  LMScroll: TLMScroll;
+begin
+ {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.SlotValueChanged()');
+ {$endif}
+ 
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(LMScroll, SizeOf(LMScroll), #0);
+
+  LMScroll.ScrollBar := LCLObject.Handle;
+
+  if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
+  LMScroll.Msg := LM_HSCROLL
+  else
+  LMScroll.Msg := LM_VSCROLL;
+  
+  LMScroll.Pos := p1;
+  LMScroll.ScrollCode := SIF_POS;
+
+  Msg := @LMScroll;
+  try
+    if not SliderPressed and Assigned(LCLObject.Parent)
+    and (p1 <> TScrollBar(LCLObject).Position) then
+    begin
+      LCLObject.Parent.WindowProc(Msg^);
+    end;
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
 
 { TQtScrollBar }
 

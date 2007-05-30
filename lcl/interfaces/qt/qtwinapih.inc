@@ -70,6 +70,7 @@ function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; ov
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
+function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
@@ -101,6 +102,7 @@ function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;

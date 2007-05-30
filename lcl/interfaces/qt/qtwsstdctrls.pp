@@ -30,7 +30,7 @@ uses
   // Bindings
   qt4, qtprivate, qtwidgets,
   // LCL
-  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf,
+  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf, LCLProc,
   // Widgetset
   WSStdCtrls, WSLCLClasses;
 
@@ -318,6 +318,7 @@ var
   Method: TMethod;
   Hook : QScrollBar_hookH;
 begin
+
   QtScrollBar := TQtScrollBar.Create(AWinControl, AParams);
 
   case TScrollBar(AWinControl).Kind of
@@ -326,24 +327,42 @@ begin
       QtScrollBar.SetOrientation(QtHorizontal);
       QtScrollBar.setInvertedAppereance(False);
       QTScrollBar.setInvertedControls(False);
+      TScrollBar(AWinControl).Height := TScrollBar(AWinControl).Height + 1;
     end;
     sbVertical:
     begin
       QtScrollBar.SetOrientation(QtVertical);
       QtScrollBar.setInvertedAppereance(False);
       QTScrollBar.setInvertedControls(False);
+      TScrollBar(AWinControl).Width := TScrollBar(AWinControl).Width + 1;
     end;
   end;
-
-  QtScrollbar.setWidth(TScrollBar(AWinControl).Width);
-  QtScrollbar.setHeight(TScrollBar(AWinControl).Height);
+  
+  QWidget_setGeometry(QtScrollbar.Widget,TScrollBar(AWinControl).Left,TScrollBar(AWinControl).Top,TScrollBar(AWinControl).Width,TScrollBar(AWinControl).Height);
+  QtScrollBar.setRange(TScrollBar(AWinControl).Min, TScrollBar(AWinControl).Max);
   QtScrollbar.setValue(TScrollBar(AWinControl).Position);
   QtScrollBar.setPageStep(TScrollBar(AWinControl).PageSize);
 
   // Various Events
-//  Hook := QScrollBar_hook_create(QtScrollBar.Widget);
-  // TEventFilterMethod(Method) := QtScrollBar.EventFilter;
+  Hook := QScrollBar_hook_create(QtScrollBar.Widget);
+  TEventFilterMethod(Method) := QtScrollBar.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+
+  QAbstractSlider_rangeChanged_Event(Method) := QtScrollBar.SlotRangeChanged;
+  QAbstractSlider_hook_hook_rangeChanged(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
+
+  QAbstractSlider_sliderMoved_Event(Method) := QtScrollBar.SlotSliderMoved;
+  QAbstractSlider_hook_hook_sliderMoved(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
   
+  QAbstractSlider_sliderPressed_Event(Method) := QtScrollBar.SlotSliderPressed;
+  QAbstractSlider_hook_hook_sliderPressed(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
+  
+  QAbstractSlider_sliderReleased_Event(Method) := QtScrollBar.SlotSliderReleased;
+  QAbstractSlider_hook_hook_sliderReleased(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
+  
+  QAbstractSlider_valueChanged_Event(Method) := QtScrollBar.SlotValueChanged;
+  QAbstractSlider_hook_hook_valueChanged(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
+
   Result := THandle(QtScrollbar);
 end;
 
@@ -366,17 +385,23 @@ end;
 class procedure TQtWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   QtScrollBar: TQtScrollBar;
+  RA,RB: TRect;
+  IsSameGeometry: Boolean;
 begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
-// TODO: Check HeightForWidth() set here or we have lazarus bug ?
-// AScrollBar.Width;
 
   QtScrollBar.setValue(AScrollBar.Position);
   QtScrollBar.setPageStep(AScrollBar.PageSize);
   QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
      
-  QtScrollbar.setWidth(AscrollBar.Width);
-  QtScrollbar.setHeight(AscrollBar.Height);
+  RA := QtScrollBar.LCLObject.ClientRect;
+  RB := AScrollBar.ClientRect;
+  
+  IsSameGeometry := (RA.Left = RB.Left) and (RA.Top = RB.Top) and (RA.Right = RB.Right) and (RA.Bottom = RB.Bottom);
+
+  if not IsSameGeometry then
+    QWidget_setGeometry(QtScrollbar.Widget,AScrollBar.Left,AScrollBar.Top,AScrollBar.Width,AScrollBar.Height);
+    {don't update geometry each time}
 
   case AScrollBar.Kind of
     sbHorizontal:
