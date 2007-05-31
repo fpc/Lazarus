@@ -7870,7 +7870,11 @@ procedure CopyUnicodeToPWideString(Unicode: PWideChar; var S: WideString;
   Len: Integer); cdecl; export;
 {$IFDEF LINUX}
 begin
-  SetLength(S, Len);
+  try
+    SetLength(S, Len);
+  except
+    Exit;
+  end;		
   Move(Unicode[0],S[1],Len*2);
 end;
 {$ENDIF}
