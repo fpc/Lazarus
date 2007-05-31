@@ -3770,21 +3770,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+  Procedure FixedMoveControl(Parent, Child : PGTKWidget; Left, Top : Longint);
   
   Move a childwidget on a client area (fixed or layout widget).
 ------------------------------------------------------------------------------}
-Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+Procedure FixedMoveControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 begin
-  If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
+  If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then begin
     // parent is layout
     gtk_Layout_move(PGtkLayout(Parent), Child, Left, Top)
-  else If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then begin
+  end else If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then begin
     // parent is fixed
-    gtk_fixed_move(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
-  end else
+    gtk_fixed_move(PGtkFixed(Parent), Child, gint16(Left), gint16(Top));
+  end else begin
     // parent is invalid
     DebugLn('[FixedMoveControl] WARNING: Invalid Fixed Widget');
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6770,90 +6771,24 @@ begin
     SetResizeRequest(Widget);
 end;
 
-{------------------------------------------------------------------------------
-  procedure SetWidgetSize(Widget: PGtkWidget; NewWidth,
-    NewHeight: integer);
-
-  Note: gtk_window is resized in SetWindowSizeAndPosition
- ------------------------------------------------------------------------------}
-procedure SetWidgetSize(Widget: PGtkWidget; NewWidth,
-  NewHeight: integer);
+procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);
 var
   Requisition: TGtkRequisition;
-  {$IFDEF VerboseSizeMsg}
-  LCLObject: TObject;
-  {$ENDIF}
   FixedWidget: PGtkWidget;
   {$IFDEF Gtk2}
   allocation: TGtkAllocation;
   {$ENDIF}
-begin
-  if NewWidth<=0 then NewWidth:=1;
-  if NewHeight<=0 then NewHeight:=1;
-
-  {$IFDEF VerboseSizeMsg}
-  LCLObject:=GetNearestLCLObject(Widget);
-  DbgOut('TGtkWidgetSet.SetWidgetSize Widget='+DbgS(Widget)+WidgetFlagsToString(Widget)+
-    ' New='+dbgs(NewWidth)+','+dbgs(NewHeight));
-  if (LCLObject<>nil) and (LCLObject is TControl) then begin
-    with TControl(LCLObject) do
-      DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
-  end else begin
-    DebugLn(' LCL=',DbgS(LCLObject));
-  end;
-  {$ENDIF}
-
-  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
-  begin
-    // the width of a scrollbar is fixed and depends only on the theme
-    gtk_widget_size_request(widget, @Requisition);
-    if GtkWidgetIsA(Widget, GTK_TYPE_HSCROLLBAR) then
-    begin
-      NewHeight:=Requisition.height;
-    end else begin
-      NewWidth:=Requisition.width;
-    end;
-    //DebugLn('TGtkWidgetSet.SetWidgetSize A ',Newwidth,',',Newheight);
-  end;
-
-  gtk_widget_set_usize(Widget, NewWidth, NewHeight);
-  //DebugLn(['TGtkWidgetSet.SetWidgetSize ',GetWidgetDebugReport(Widget),' NewWidth=',NewWidth,' NewHeight=',NewHeight]);
-
-  {$IFDEF Gtk1}
-  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
-  begin
-    // the combobox has an entry, which height is not resized
-    // automatically. Do it manually.
-    gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
-      PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
-  end;
-  {$ENDIF}
-
-  if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
-    FixedWidget:=GetFixedWidget(Widget);
-    if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
-      //DebugLn('WARNING: ToDo TGtkWidgetSet.SetWidgetSize for TToolBar ',NewWidth,',',NewHeight);
-      gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
-    end;
-  end;
-
-  {$IFDEF Gtk2}
-  // commit size
-  allocation:=Widget^.allocation;
-  allocation.width:=NewWidth;
-  allocation.height:=NewHeight;
-  gtk_widget_size_allocate(Widget,@allocation);// Beware: this triggers callbacks
-  {$ENDIF}
-end;
-
-procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);
-var
+  LCLLeft: LongInt;
+  LCLTop: LongInt;
   LCLWidth: LongInt;
   LCLHeight: LongInt;
   Widget: PGtkWidget;
   ParentWidget: PGtkWidget;
   ParentFixed: PGtkWidget;
   WinWidgetInfo: PWidgetInfo;
+  {$IFDEF VerboseSizeMsg}
+  LCLObject: TObject;
+  {$ENDIF}
 
   procedure WriteBigWarning;
   begin
@@ -6878,6 +6813,9 @@ begin
   DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl)]);
   {$ENDIF}
   Widget:=PGtkWidget(LCLControl.Handle);
+  
+  LCLLeft:=LCLControl.Left;
+  LCLTop:=LCLControl.Top;
 
   // move widget on the fixed widget of parent control
   if (LCLControl.Parent<>nil) and (LCLControl.Parent.HandleAllocated) then
@@ -6886,8 +6824,7 @@ begin
     ParentFixed := GetFixedWidget(ParentWidget);
     if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
     or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
-      FixedMoveControl(ParentFixed, Widget,
-                       LCLControl.Left,LCLControl.Top);
+      FixedMoveControl(ParentFixed, Widget,LCLLeft,LCLTop);
     end else begin
       WinWidgetInfo:=GetWidgetInfo(Widget,false);
       if (WinWidgetInfo=nil)
@@ -6906,11 +6843,66 @@ begin
   if (LCLWidth>10000) or (LCLHeight>10000) then begin
     WriteBigWarning;
     if LCLWidth>10000 then
-      LCLWidth:=10000
-    else
+      LCLWidth:=10000;
+    if LCLHeight>10000 then
       LCLHeight:=10000;
   end;
-  SetWidgetSize(Widget,LCLWidth, LCLHeight);
+
+  {$IFDEF VerboseSizeMsg}
+  LCLObject:=GetNearestLCLObject(Widget);
+  DbgOut('TGtkWidgetSet.SetWidgetSizeAndPosition Widget='+DbgS(Widget)+WidgetFlagsToString(Widget)+
+    ' New='+dbgs(LCLWidth)+','+dbgs(LCLHeight));
+  if (LCLObject<>nil) and (LCLObject is TControl) then begin
+    with TControl(LCLObject) do
+      DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
+  end else begin
+    DebugLn(' LCL=',DbgS(LCLObject));
+  end;
+  {$ENDIF}
+
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
+  begin
+    // the width of a scrollbar is fixed and depends only on the theme
+    gtk_widget_size_request(widget, @Requisition);
+    if GtkWidgetIsA(Widget, GTK_TYPE_HSCROLLBAR) then
+    begin
+      LCLHeight:=Requisition.height;
+    end else begin
+      LCLWidth:=Requisition.width;
+    end;
+    //DebugLn('TGtkWidgetSet.SetWidgetSizeAndPosition A ',LCLwidth,',',LCLheight);
+  end;
+
+  gtk_widget_set_usize(Widget, LCLWidth, LCLHeight);
+  //DebugLn(['TGtkWidgetSet.SetWidgetSizeAndPosition ',GetWidgetDebugReport(Widget),' LCLWidth=',LCLWidth,' LCLHeight=',LCLHeight]);
+
+  {$IFDEF Gtk1}
+  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
+  begin
+    // the combobox has an entry, which height is not resized
+    // automatically. Do it manually.
+    gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
+      PGtkCombo(Widget)^.entry^.allocation.width, LCLHeight);
+  end;
+  {$ENDIF}
+
+  if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
+    FixedWidget:=GetFixedWidget(Widget);
+    if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
+      //DebugLn('WARNING: ToDo TGtkWidgetSet.SetWidgetSizeAndPosition for TToolBar ',LCLWidth,',',LCLHeight);
+      gtk_widget_set_usize(FixedWidget,LCLWidth,LCLHeight);
+    end;
+  end;
+
+  {$IFDEF Gtk2}
+  // commit size and position
+  allocation:=Widget^.allocation;
+  allocation.x:=LCLLeft;
+  allocation.y:=LCLTop;
+  allocation.width:=LCLWidth;
+  allocation.height:=LCLHeight;
+  gtk_widget_size_allocate(Widget,@allocation);// Beware: this triggers callbacks
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

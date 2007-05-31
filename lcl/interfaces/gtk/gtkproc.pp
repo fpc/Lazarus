@@ -357,7 +357,7 @@ function GetFixedChildListWidget(Item: PGList): PGtkWidget;
 
 // fixed widgets
 function CreateFixedClientWidget: PGTKWidget;
-Procedure FixedMoveControl(Parent, Child: PGTKWIdget; Left, Top: Longint);
+Procedure FixedMoveControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 Procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 
 // caret
@@ -707,7 +707,6 @@ procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 procedure SendCachedGtkResizeNotifications;
 procedure ResizeHandle(LCLControl: TWinControl);
-procedure SetWidgetSize(Widget: PGtkWidget; NewWidth, NewHeight: integer);
 procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);// for child controls
 procedure SetWindowSizeAndPosition(Window: PGtkWindow; AWinControl: TWinControl);// for top level control
 procedure GetWidgetRelativePosition(aWidget: PGtkWidget; var Left, Top: integer);

@@ -5494,14 +5494,13 @@ procedure TGtkWidgetSet.ShowHide(Sender : TObject);
     RaiseGDBException('TGtkWidgetSet.ShowHide Sender.ClassName='+Sender.ClassName);
   end;
 
-var FormIconGdiObject: PGDIObject;
+var
+  FormIconGdiObject: PGDIObject;
   SenderWidget: PGTKWidget;
   LCLControl: TWinControl;
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
-  ParentFixed: PGTKWidget;
-  ParentWidget: PGTKWidget;
   {$IFDEF Gtk1}
   AWindowPrivate: PGdkWindowPrivate;
   {$ENDIF}
@@ -5546,18 +5545,7 @@ begin
         {$IFDEF VerboseSizeMsg}
         DebugLn(['TGtkWidgetSet.ShowHide ',DbgSName(LCLControl)]);
         {$ENDIF}
-        SetWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
-        // move widget on the fixed widget of parent control
-        ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
-        ParentFixed := GetFixedWidget(ParentWidget);
-        if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
-        or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
-          FixedMoveControl(ParentFixed, SenderWidget,
-                         LCLControl.Left, LCLControl.Top);
-        end else if not (LCLControl.Parent is TCustomNoteBook) then begin
-          DebugLn('WARNING: TGtkWidgetSet.ShowHide - no Fixed Widget found');
-          DebugLn('  Control=',LCLControl.Name,':',LCLControl.ClassName);
-        end;
+        SetWidgetSizeAndPosition(LCLControl);
       end;
       UnsetResizeRequest(SenderWidget);
     end;
