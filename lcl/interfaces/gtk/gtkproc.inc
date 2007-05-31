@@ -2135,7 +2135,8 @@ var
     // emulate the keys
     if not ABeforeEvent then exit;
 
-    //DebugLn(['EmulateKeysEatenByGtk ',GetWidgetDebugReport(TargetWidget),' gdk_event_get_type(Event)=',gdk_event_get_type(Event),' GDK_KEY_PRESS=',GDK_KEY_PRESS,' VKey.VKey=',VKey.VKey]);
+    //DebugLn(['EmulateEatenKeys TargetWidget=',dbghex(PtrInt(TargetWidget))]);
+    //DebugLn(['EmulateEatenKeys ',GetWidgetDebugReport(TargetWidget),' gdk_event_get_type(AEvent)=',gdk_event_get_type(AEvent),' GDK_KEY_PRESS=',GDK_KEY_PRESS,' VKey=',VKey]);
     {$IFDEF Gtk2}
     // the gtk2 gtkentry handles the return key and emits an activate signal
     // The LCL does not use that and needs the return key event
@@ -2212,6 +2213,8 @@ begin
   RememberKeyEventWasHandledByLCL(AEvent, ABeforeEvent);
 
   if TargetWidget = nil then Exit;
+  
+  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget)]);
 
   gdk_event_key_get_string(AEvent, EventString);
   FillChar(Msg, SizeOf(Msg), 0);
@@ -2258,7 +2261,7 @@ begin
     then Flags := Flags or KF_ALTDOWN;
 
     CommonKeyData := KeyCode shl 16; // Not really scancode, but will do
-    
+
     if AHandleDown
     then begin
       {$IFDEF VerboseKeyboard}
@@ -2401,9 +2404,9 @@ begin
       end;
     end;
   end;
-  
+
   EmulateEatenKeys;
-  
+
   {$IFDEF Gtk1}
   Result:=true;
   {$ELSE}
@@ -4485,6 +4488,39 @@ end;
   on the screen.
 -------------------------------------------------------------------------------}
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
+
+  {$IFDEF Gtk2}
+  procedure GetNoteBookClientOrigin(NBWidget: PGtkNotebook);
+  var
+    PageIndex: LongInt;
+    PageWidget: PGtkWidget;
+    ClientWidget: PGTKWidget;
+    FrameBorders: TRect;
+  begin
+    // get current page
+    PageIndex:=gtk_notebook_get_current_page(NBWidget);
+    if PageIndex>=0 then
+      PageWidget:=gtk_notebook_get_nth_page(NBWidget,PageIndex)
+    else
+      PageWidget:=nil;
+    // get client widget of page
+    if (PageWidget<>nil) then
+      ClientWidget:=GetFixedWidget(PageWidget)
+    else
+      ClientWidget:=nil;
+    if ClientWidget^.window<>nil then begin
+      // get the position of the current page
+      gdk_window_get_origin(ClientWidget^.window,@Result.X,@Result.Y);
+    end else begin
+      // use defaults
+      Result:=GetWidgetOrigin(TheWidget);
+      FrameBorders:=GetStyleNotebookFrameBorders;
+      GetWidgetClientOrigin.x:=Result.x+FrameBorders.Left;
+      GetWidgetClientOrigin.y:=Result.y+FrameBorders.Top;
+    end;
+  end;
+  {$ENDIF}
+
 var
   ClientWidget: PGtkWidget;
   ClientWindow: PGdkWindow;
@@ -4493,7 +4529,9 @@ begin
   if ClientWidget<>TheWidget then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     if ClientWindow<>nil then begin
+      {$IFDEF DebugGDK}
       BeginGDKErrorTrap;
+      {$ENDIF}
       gdk_window_get_origin(ClientWindow,@Result.X,@Result.Y);
       {$Ifdef GTK2}
       if GTK_WIDGET_NO_WINDOW(ClientWidget)
@@ -4502,10 +4540,18 @@ begin
         Inc(Result.Y, ClientWidget^.Allocation.Y);
       end;
       {$EndIf}
+      {$IFDEF DebugGDK}
       EndGDKErrorTrap;
+      {$ENDIF}
       exit;
     end;
+  {$IFDEF Gtk2}
+  end
+  else if GtkWidgetIsA(TheWidget,GTK_TYPE_NOTEBOOK) then begin
+    GetNoteBookClientOrigin(PGtkNoteBook(TheWidget));
+    exit;
   end;
+  {$ENDIF}
   Result:=GetWidgetOrigin(TheWidget);
 end;
 

@@ -987,18 +987,18 @@ begin
   LabelFromAmpersands(Caption, Pattern, AccelKey);
   gtk_label_set_text(ALabel, PChar(Caption));
 
-  {$ifdef gtk1}
   gtk_label_set_pattern(ALabel, PChar(Pattern));
-  {$endif gtk1}
 
   if AComponent = nil then Exit;
   if ASignalWidget = nil then Exit;
   if ASignal = '' then Exit;
 
+  {$IFDEF Gtk1}
   // update the Accelerator
   if AccelKey = #0
   then Accelerate(AComponent, ASignalWidget, GDK_VOIDSYMBOL, 0, ASignal)
   else Accelerate(AComponent, ASignalWidget, Ord(AccelKey), 0, ASignal);
+  {$ENDIF}
 end;
 
 procedure TGtkWidgetSet.SetWidgetColor(const AWidget: PGtkWidget;

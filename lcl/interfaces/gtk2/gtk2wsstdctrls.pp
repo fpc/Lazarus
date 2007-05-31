@@ -864,9 +864,11 @@ begin
 
   // we have to remove the handler gtk sets up because we will never get the mouse down messages
   BtnPressID := g_signal_lookup('button_press_event', GTK_TYPE_COMBO_BOX);
-  HandlerID := g_signal_handler_find(AButton, G_SIGNAL_MATCH_ID, BtnPressID, 0, nil, nil, nil);
-  if HandlerID > 0 then begin
-    g_signal_handler_disconnect(AButton, HandlerID);
+  if AButton<>nil then begin
+    HandlerID := g_signal_handler_find(AButton, G_SIGNAL_MATCH_ID, BtnPressID, 0, nil, nil, nil);
+    if HandlerID > 0 then begin
+      g_signal_handler_disconnect(AButton, HandlerID);
+    end;
   end;
   
   g_signal_connect(ComboWidget, 'changed', TGCallback(@GtkChangedCB), AWidgetInfo);
@@ -911,8 +913,10 @@ begin
     // Anything?
   end;
 
-  g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
-  g_signal_connect(APrivate^.popup_widget, 'hide', TGCallback(@GtkPopupHideCB), AWidgetInfo);
+  if APrivate^.popup_widget<>nil then begin
+    g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
+    g_signal_connect(APrivate^.popup_widget, 'hide', TGCallback(@GtkPopupHideCB), AWidgetInfo);
+  end;
   //g_signal_connect(ComboWidget, 'popup-shown', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
 end;

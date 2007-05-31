@@ -33,8 +33,8 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLIntf, Forms, Controls, LCLType, Graphics,
-  FormEditingIntf;
+  Classes, SysUtils, Types, LCLProc, LCLIntf, LCLType, Forms, Controls,
+  Graphics, FormEditingIntf;
 
 type
   TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
