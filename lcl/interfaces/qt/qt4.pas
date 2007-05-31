@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.27 }
+{ Version : 1.30 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -14,7 +14,7 @@ uses Types;
 
 
 const
-  QT_VERSION = 4 shl 16 + 2 shl 8 + 2;
+  QT_VERSION = 4 shl 16 + 2 shl 8 + 3;
   
 {$IFDEF MSWINDOWS}
   QtIntf = 'libqt4intf.dll';
@@ -294,6 +294,39 @@ QSizeH = class(TObject) end;
 QSizeFH = class(TObject) end;
 QSizePolicyH = class(TObject) end;
 QStringH = class(TObject) end;
+QStyleHintReturnH = class(TObject) end;
+  QStyleHintReturnMaskH = class(QStyleHintReturnH) end;
+QStyleOptionH = class(TObject) end;
+  QStyleOptionButtonH = class(QStyleOptionH) end;
+  QStyleOptionComplexH = class(QStyleOptionH) end;
+    QStyleOptionComboBoxH = class(QStyleOptionComplexH) end;
+    QStyleOptionGroupBoxH = class(QStyleOptionComplexH) end;
+    QStyleOptionQ3ListViewH = class(QStyleOptionComplexH) end;
+    QStyleOptionSizeGripH = class(QStyleOptionComplexH) end;
+    QStyleOptionSliderH = class(QStyleOptionComplexH) end;
+    QStyleOptionSpinBoxH = class(QStyleOptionComplexH) end;
+    QStyleOptionTitleBarH = class(QStyleOptionComplexH) end;
+    QStyleOptionToolButtonH = class(QStyleOptionComplexH) end;
+  QStyleOptionDockWidgetH = class(QStyleOptionH) end;
+  QStyleOptionFocusRectH = class(QStyleOptionH) end;
+  QStyleOptionFrameH = class(QStyleOptionH) end;
+    QStyleOptionFrameV2H = class(QStyleOptionFrameH) end;
+  QStyleOptionGraphicsItemH = class(QStyleOptionH) end;
+  QStyleOptionHeaderH = class(QStyleOptionH) end;
+  QStyleOptionMenuItemH = class(QStyleOptionH) end;
+  QStyleOptionProgressBarH = class(QStyleOptionH) end;
+    QStyleOptionProgressBarV2H = class(QStyleOptionProgressBarH) end;
+  QStyleOptionQ3DockWindowH = class(QStyleOptionH) end;
+  QStyleOptionQ3ListViewItemH = class(QStyleOptionH) end;
+  QStyleOptionRubberBandH = class(QStyleOptionH) end;
+  QStyleOptionTabH = class(QStyleOptionH) end;
+    QStyleOptionTabV2H = class(QStyleOptionTabH) end;
+  QStyleOptionTabBarBaseH = class(QStyleOptionH) end;
+  QStyleOptionTabWidgetFrameH = class(QStyleOptionH) end;
+  QStyleOptionToolBarH = class(QStyleOptionH) end;
+  QStyleOptionToolBoxH = class(QStyleOptionH) end;
+  QStyleOptionViewItemH = class(QStyleOptionH) end;
+    QStyleOptionViewItemV2H = class(QStyleOptionViewItemH) end;
 QTextBlockH = class(TObject) end;
 QTextCursorH = class(TObject) end;
 QTextDocumentFragmentH = class(TObject) end;
@@ -2837,6 +2870,37 @@ procedure QToolTip_setPalette(p1: QPaletteH); cdecl; external QtIntf name 'QTool
 procedure QToolTip_font(retval: QFontH); cdecl; external QtIntf name 'QToolTip_font';
 procedure QToolTip_setFont(p1: QFontH); cdecl; external QtIntf name 'QToolTip_setFont';
 
+{$ifdef LINUX }
+function QX11Info_create(): QX11InfoH; overload; cdecl; external QtIntf name 'QX11Info_create';
+procedure QX11Info_destroy(handle: QX11InfoH); cdecl; external QtIntf name 'QX11Info_destroy'; 
+function QX11Info_create(other: QX11InfoH): QX11InfoH; overload; cdecl; external QtIntf name 'QX11Info_create2';
+function QX11Info_display(): PDisplay; cdecl; external QtIntf name 'QX11Info_display';
+function QX11Info_appClass(): PAnsiChar; cdecl; external QtIntf name 'QX11Info_appClass';
+function QX11Info_screen(handle: QX11InfoH): Integer; cdecl; external QtIntf name 'QX11Info_screen';
+function QX11Info_depth(handle: QX11InfoH): Integer; cdecl; external QtIntf name 'QX11Info_depth';
+function QX11Info_cells(handle: QX11InfoH): Integer; cdecl; external QtIntf name 'QX11Info_cells';
+function QX11Info_colormap(handle: QX11InfoH): QtHANDLE; cdecl; external QtIntf name 'QX11Info_colormap';
+function QX11Info_defaultColormap(handle: QX11InfoH): Boolean; cdecl; external QtIntf name 'QX11Info_defaultColormap';
+function QX11Info_visual(handle: QX11InfoH): Pointer; cdecl; external QtIntf name 'QX11Info_visual';
+function QX11Info_defaultVisual(handle: QX11InfoH): Boolean; cdecl; external QtIntf name 'QX11Info_defaultVisual';
+function QX11Info_appScreen(): Integer; cdecl; external QtIntf name 'QX11Info_appScreen';
+function QX11Info_appDepth(screen: Integer = -1): Integer; cdecl; external QtIntf name 'QX11Info_appDepth';
+function QX11Info_appCells(screen: Integer = -1): Integer; cdecl; external QtIntf name 'QX11Info_appCells';
+function QX11Info_appColormap(screen: Integer = -1): QtHANDLE; cdecl; external QtIntf name 'QX11Info_appColormap';
+function QX11Info_appVisual(screen: Integer = -1): Pointer; cdecl; external QtIntf name 'QX11Info_appVisual';
+function QX11Info_appRootWindow(screen: Integer = -1): QtHANDLE; cdecl; external QtIntf name 'QX11Info_appRootWindow';
+function QX11Info_appDefaultColormap(screen: Integer = -1): Boolean; cdecl; external QtIntf name 'QX11Info_appDefaultColormap';
+function QX11Info_appDefaultVisual(screen: Integer = -1): Boolean; cdecl; external QtIntf name 'QX11Info_appDefaultVisual';
+function QX11Info_appDpiX(screen: Integer = -1): Integer; cdecl; external QtIntf name 'QX11Info_appDpiX';
+function QX11Info_appDpiY(screen: Integer = -1): Integer; cdecl; external QtIntf name 'QX11Info_appDpiY';
+procedure QX11Info_setAppDpiX(screen: Integer; dpi: Integer); cdecl; external QtIntf name 'QX11Info_setAppDpiX';
+procedure QX11Info_setAppDpiY(screen: Integer; dpi: Integer); cdecl; external QtIntf name 'QX11Info_setAppDpiY';
+function QX11Info_appTime(): Longword; cdecl; external QtIntf name 'QX11Info_appTime';
+function QX11Info_appUserTime(): Longword; cdecl; external QtIntf name 'QX11Info_appUserTime';
+procedure QX11Info_setAppTime(time: Longword); cdecl; external QtIntf name 'QX11Info_setAppTime';
+procedure QX11Info_setAppUserTime(time: Longword); cdecl; external QtIntf name 'QX11Info_setAppUserTime';
+{$endif}
+
 
 type
   QColorSpec = ( // QColor::Spec (1)
@@ -4136,7 +4200,6 @@ function QImage_create(size: PSize; format: QImageFormat): QImageH; overload; cd
 function QImage_create(width: Integer; height: Integer; format: QImageFormat): QImageH; overload; cdecl; external QtIntf name 'QImage_create3';
 function QImage_create(data: PByte; width: Integer; height: Integer; format: QImageFormat): QImageH; overload; cdecl; external QtIntf name 'QImage_create4';
 function QImage_create(xpm: PAnsiChar): QImageH; overload; cdecl; external QtIntf name 'QImage_create6';
-function QImage_create(fileName: PWideString; format: PAnsiChar = nil): QImageH; overload; cdecl; external QtIntf name 'QImage_create7';
 function QImage_create(fileName: PAnsiChar; format: PAnsiChar = nil): QImageH; overload; cdecl; external QtIntf name 'QImage_create8';
 function QImage_create(p1: QImageH): QImageH; overload; cdecl; external QtIntf name 'QImage_create9';
 function QImage_isNull(handle: QImageH): Boolean; cdecl; external QtIntf name 'QImage_isNull';
@@ -6305,6 +6368,1118 @@ type
   QSystemTrayIcon_activated_Event = procedure (reason: QSystemTrayIconActivationReason) of object cdecl;
   QSystemTrayIcon_messageClicked_Event = procedure () of object cdecl;
 
+
+type
+  QStyleStateFlag = cardinal; // QStyle::StateFlag
+  QStyleState = QStyleStateFlag; //QFlags<> (3)
+const
+  QStyleState_None =   $00000000;
+  QStyleState_Enabled =   $00000001;
+  QStyleState_Raised =   $00000002;
+  QStyleState_Sunken =   $00000004;
+  QStyleState_Off =   $00000008;
+  QStyleState_NoChange =   $00000010;
+  QStyleState_On =   $00000020;
+  QStyleState_DownArrow =   $00000040;
+  QStyleState_Horizontal =   $00000080;
+  QStyleState_HasFocus =   $00000100;
+  QStyleState_Top =   $00000200;
+  QStyleState_Bottom =   $00000400;
+  QStyleState_FocusAtBorder =   $00000800;
+  QStyleState_AutoRaise =   $00001000;
+  QStyleState_MouseOver =   $00002000;
+  QStyleState_UpArrow =   $00004000;
+  QStyleState_Selected =   $00008000;
+  QStyleState_Active =   $00010000;
+  QStyleState_Open =   $00040000;
+  QStyleState_Children =   $00080000;
+  QStyleState_Item =   $00100000;
+  QStyleState_Sibling =   $00200000;
+  QStyleState_Editing =   $00400000;
+  QStyleState_KeyboardFocusChange =   $00800000;
+  QStyleState_ReadOnly =   $02000000;
+
+
+type
+  QStylePrimitiveElement = (  //QStyle::PrimitiveElement (2)
+    QStylePE_Q3CheckListController,
+    QStylePE_Q3CheckListExclusiveIndicator,
+    QStylePE_Q3CheckListIndicator,
+    QStylePE_Q3DockWindowSeparator,
+    QStylePE_Q3Separator,
+    QStylePE_Frame,
+    QStylePE_FrameDefaultButton,
+    QStylePE_FrameDockWidget,
+    QStylePE_FrameFocusRect,
+    QStylePE_FrameGroupBox,
+    QStylePE_FrameLineEdit,
+    QStylePE_FrameMenu,
+    QStylePE_FrameStatusBar,
+    QStylePE_FrameTabWidget,
+    QStylePE_FrameWindow,
+    QStylePE_FrameButtonBevel,
+    QStylePE_FrameButtonTool,
+    QStylePE_FrameTabBarBase,
+    QStylePE_PanelButtonCommand,
+    QStylePE_PanelButtonBevel,
+    QStylePE_PanelButtonTool,
+    QStylePE_PanelMenuBar,
+    QStylePE_PanelToolBar,
+    QStylePE_PanelLineEdit,
+    QStylePE_IndicatorArrowDown,
+    QStylePE_IndicatorArrowLeft,
+    QStylePE_IndicatorArrowRight,
+    QStylePE_IndicatorArrowUp,
+    QStylePE_IndicatorBranch,
+    QStylePE_IndicatorButtonDropDown,
+    QStylePE_IndicatorViewItemCheck,
+    QStylePE_IndicatorCheckBox,
+    QStylePE_IndicatorDockWidgetResizeHandle,
+    QStylePE_IndicatorHeaderArrow,
+    QStylePE_IndicatorMenuCheckMark,
+    QStylePE_IndicatorProgressChunk,
+    QStylePE_IndicatorRadioButton,
+    QStylePE_IndicatorSpinDown,
+    QStylePE_IndicatorSpinMinus,
+    QStylePE_IndicatorSpinPlus,
+    QStylePE_IndicatorSpinUp,
+    QStylePE_IndicatorToolBarHandle,
+    QStylePE_IndicatorToolBarSeparator,
+    QStylePE_PanelTipLabel,
+    QStylePE_IndicatorTabTear,
+    QStylePE_PanelScrollAreaCorner,
+    QStylePE_Widget,
+    QStylePE_CustomBase = $f000000 );
+
+  QStyleControlElement = (  //QStyle::ControlElement (2)
+    QStyleCE_PushButton,
+    QStyleCE_PushButtonBevel,
+    QStyleCE_PushButtonLabel,
+    QStyleCE_CheckBox,
+    QStyleCE_CheckBoxLabel,
+    QStyleCE_RadioButton,
+    QStyleCE_RadioButtonLabel,
+    QStyleCE_TabBarTab,
+    QStyleCE_TabBarTabShape,
+    QStyleCE_TabBarTabLabel,
+    QStyleCE_ProgressBar,
+    QStyleCE_ProgressBarGroove,
+    QStyleCE_ProgressBarContents,
+    QStyleCE_ProgressBarLabel,
+    QStyleCE_MenuItem,
+    QStyleCE_MenuScroller,
+    QStyleCE_MenuVMargin,
+    QStyleCE_MenuHMargin,
+    QStyleCE_MenuTearoff,
+    QStyleCE_MenuEmptyArea,
+    QStyleCE_MenuBarItem,
+    QStyleCE_MenuBarEmptyArea,
+    QStyleCE_ToolButtonLabel,
+    QStyleCE_Header,
+    QStyleCE_HeaderSection,
+    QStyleCE_HeaderLabel,
+    QStyleCE_Q3DockWindowEmptyArea,
+    QStyleCE_ToolBoxTab,
+    QStyleCE_SizeGrip,
+    QStyleCE_Splitter,
+    QStyleCE_RubberBand,
+    QStyleCE_DockWidgetTitle,
+    QStyleCE_ScrollBarAddLine,
+    QStyleCE_ScrollBarSubLine,
+    QStyleCE_ScrollBarAddPage,
+    QStyleCE_ScrollBarSubPage,
+    QStyleCE_ScrollBarSlider,
+    QStyleCE_ScrollBarFirst,
+    QStyleCE_ScrollBarLast,
+    QStyleCE_FocusFrame,
+    QStyleCE_ComboBoxLabel,
+    QStyleCE_ToolBar,
+    QStyleCE_CustomBase = $f0000000 );
+
+  QStyleSubElement = (  //QStyle::SubElement (2)
+    QStyleSE_PushButtonContents,
+    QStyleSE_PushButtonFocusRect,
+    QStyleSE_CheckBoxIndicator,
+    QStyleSE_CheckBoxContents,
+    QStyleSE_CheckBoxFocusRect,
+    QStyleSE_CheckBoxClickRect,
+    QStyleSE_RadioButtonIndicator,
+    QStyleSE_RadioButtonContents,
+    QStyleSE_RadioButtonFocusRect,
+    QStyleSE_RadioButtonClickRect,
+    QStyleSE_ComboBoxFocusRect,
+    QStyleSE_SliderFocusRect,
+    QStyleSE_Q3DockWindowHandleRect,
+    QStyleSE_ProgressBarGroove,
+    QStyleSE_ProgressBarContents,
+    QStyleSE_ProgressBarLabel,
+    QStyleSE_DialogButtonAccept,
+    QStyleSE_DialogButtonReject,
+    QStyleSE_DialogButtonApply,
+    QStyleSE_DialogButtonHelp,
+    QStyleSE_DialogButtonAll,
+    QStyleSE_DialogButtonAbort,
+    QStyleSE_DialogButtonIgnore,
+    QStyleSE_DialogButtonRetry,
+    QStyleSE_DialogButtonCustom,
+    QStyleSE_ToolBoxTabContents,
+    QStyleSE_HeaderLabel,
+    QStyleSE_HeaderArrow,
+    QStyleSE_TabWidgetTabBar,
+    QStyleSE_TabWidgetTabPane,
+    QStyleSE_TabWidgetTabContents,
+    QStyleSE_TabWidgetLeftCorner,
+    QStyleSE_TabWidgetRightCorner,
+    QStyleSE_ViewItemCheckIndicator,
+    QStyleSE_TabBarTearIndicator,
+    QStyleSE_TreeViewDisclosureItem,
+    QStyleSE_LineEditContents,
+    QStyleSE_FrameContents,
+    QStyleSE_CustomBase = $f0000000 );
+
+  QStyleComplexControl = (  //QStyle::ComplexControl (2)
+    QStyleCC_SpinBox,
+    QStyleCC_ComboBox,
+    QStyleCC_ScrollBar,
+    QStyleCC_Slider,
+    QStyleCC_ToolButton,
+    QStyleCC_TitleBar,
+    QStyleCC_Q3ListView,
+    QStyleCC_Dial,
+    QStyleCC_GroupBox,
+    QStyleCC_CustomBase = $f0000000 );
+
+type
+  QStyleSubControl = cardinal; // QStyle::SubControl
+  QStyleSubControls = QStyleSubControl; //QFlags<> (3)
+const
+  QStyleSC_None =   $00000000;
+  QStyleSC_ScrollBarAddLine =   $00000001;
+  QStyleSC_ScrollBarSubLine =   $00000002;
+  QStyleSC_ScrollBarAddPage =   $00000004;
+  QStyleSC_ScrollBarSubPage =   $00000008;
+  QStyleSC_ScrollBarFirst =   $00000010;
+  QStyleSC_ScrollBarLast =   $00000020;
+  QStyleSC_ScrollBarSlider =   $00000040;
+  QStyleSC_ScrollBarGroove =   $00000080;
+  QStyleSC_SpinBoxUp =   $00000001;
+  QStyleSC_SpinBoxDown =   $00000002;
+  QStyleSC_SpinBoxFrame =   $00000004;
+  QStyleSC_SpinBoxEditField =   $00000008;
+  QStyleSC_ComboBoxFrame =   $00000001;
+  QStyleSC_ComboBoxEditField =   $00000002;
+  QStyleSC_ComboBoxArrow =   $00000004;
+  QStyleSC_ComboBoxListBoxPopup =   $00000008;
+  QStyleSC_SliderGroove =   $00000001;
+  QStyleSC_SliderHandle =   $00000002;
+  QStyleSC_SliderTickmarks =   $00000004;
+  QStyleSC_ToolButton =   $00000001;
+  QStyleSC_ToolButtonMenu =   $00000002;
+  QStyleSC_TitleBarSysMenu =   $00000001;
+  QStyleSC_TitleBarMinButton =   $00000002;
+  QStyleSC_TitleBarMaxButton =   $00000004;
+  QStyleSC_TitleBarCloseButton =   $00000008;
+  QStyleSC_TitleBarNormalButton =   $00000010;
+  QStyleSC_TitleBarShadeButton =   $00000020;
+  QStyleSC_TitleBarUnshadeButton =   $00000040;
+  QStyleSC_TitleBarContextHelpButton =   $00000080;
+  QStyleSC_TitleBarLabel =   $00000100;
+  QStyleSC_Q3ListView =   $00000001;
+  QStyleSC_Q3ListViewBranch =   $00000002;
+  QStyleSC_Q3ListViewExpand =   $00000004;
+  QStyleSC_DialGroove =   $00000001;
+  QStyleSC_DialHandle =   $00000002;
+  QStyleSC_DialTickmarks =   $00000004;
+  QStyleSC_GroupBoxCheckBox =   $00000001;
+  QStyleSC_GroupBoxLabel =   $00000002;
+  QStyleSC_GroupBoxContents =   $00000004;
+  QStyleSC_GroupBoxFrame =   $00000008;
+  QStyleSC_All =   $ffffffff;
+
+
+type
+  QStylePixelMetric = (  //QStyle::PixelMetric (2)
+    QStylePM_ButtonMargin,
+    QStylePM_ButtonDefaultIndicator,
+    QStylePM_MenuButtonIndicator,
+    QStylePM_ButtonShiftHorizontal,
+    QStylePM_ButtonShiftVertical,
+    QStylePM_DefaultFrameWidth,
+    QStylePM_SpinBoxFrameWidth,
+    QStylePM_ComboBoxFrameWidth,
+    QStylePM_MaximumDragDistance,
+    QStylePM_ScrollBarExtent,
+    QStylePM_ScrollBarSliderMin,
+    QStylePM_SliderThickness,
+    QStylePM_SliderControlThickness,
+    QStylePM_SliderLength,
+    QStylePM_SliderTickmarkOffset,
+    QStylePM_SliderSpaceAvailable,
+    QStylePM_DockWidgetSeparatorExtent,
+    QStylePM_DockWidgetHandleExtent,
+    QStylePM_DockWidgetFrameWidth,
+    QStylePM_TabBarTabOverlap,
+    QStylePM_TabBarTabHSpace,
+    QStylePM_TabBarTabVSpace,
+    QStylePM_TabBarBaseHeight,
+    QStylePM_TabBarBaseOverlap,
+    QStylePM_ProgressBarChunkWidth,
+    QStylePM_SplitterWidth,
+    QStylePM_TitleBarHeight,
+    QStylePM_MenuScrollerHeight,
+    QStylePM_MenuHMargin,
+    QStylePM_MenuVMargin,
+    QStylePM_MenuPanelWidth,
+    QStylePM_MenuTearoffHeight,
+    QStylePM_MenuDesktopFrameWidth,
+    QStylePM_MenuBarPanelWidth,
+    QStylePM_MenuBarItemSpacing,
+    QStylePM_MenuBarVMargin,
+    QStylePM_MenuBarHMargin,
+    QStylePM_IndicatorWidth,
+    QStylePM_IndicatorHeight,
+    QStylePM_ExclusiveIndicatorWidth,
+    QStylePM_ExclusiveIndicatorHeight,
+    QStylePM_CheckListButtonSize,
+    QStylePM_CheckListControllerSize,
+    QStylePM_DialogButtonsSeparator,
+    QStylePM_DialogButtonsButtonWidth,
+    QStylePM_DialogButtonsButtonHeight,
+    QStylePM_MDIFrameWidth,
+    QStylePM_MDIMinimizedWidth,
+    QStylePM_HeaderMargin,
+    QStylePM_HeaderMarkSize,
+    QStylePM_HeaderGripMargin,
+    QStylePM_TabBarTabShiftHorizontal,
+    QStylePM_TabBarTabShiftVertical,
+    QStylePM_TabBarScrollButtonWidth,
+    QStylePM_ToolBarFrameWidth,
+    QStylePM_ToolBarHandleExtent,
+    QStylePM_ToolBarItemSpacing,
+    QStylePM_ToolBarItemMargin,
+    QStylePM_ToolBarSeparatorExtent,
+    QStylePM_ToolBarExtensionExtent,
+    QStylePM_SpinBoxSliderHeight,
+    QStylePM_DefaultTopLevelMargin,
+    QStylePM_DefaultChildMargin,
+    QStylePM_DefaultLayoutSpacing,
+    QStylePM_ToolBarIconSize,
+    QStylePM_ListViewIconSize,
+    QStylePM_IconViewIconSize,
+    QStylePM_SmallIconSize,
+    QStylePM_LargeIconSize,
+    QStylePM_FocusFrameVMargin,
+    QStylePM_FocusFrameHMargin,
+    QStylePM_ToolTipLabelFrameWidth,
+    QStylePM_CheckBoxLabelSpacing,
+    QStylePM_TabBarIconSize,
+    QStylePM_SizeGripSize,
+    QStylePM_DockWidgetTitleMargin,
+    QStylePM_MessageBoxIconSize,
+    QStylePM_ButtonIconSize,
+    QStylePM_CustomBase = $f0000000 );
+
+  QStyleContentsType = (  //QStyle::ContentsType (2)
+    QStyleCT_PushButton,
+    QStyleCT_CheckBox,
+    QStyleCT_RadioButton,
+    QStyleCT_ToolButton,
+    QStyleCT_ComboBox,
+    QStyleCT_Splitter,
+    QStyleCT_Q3DockWindow,
+    QStyleCT_ProgressBar,
+    QStyleCT_MenuItem,
+    QStyleCT_MenuBarItem,
+    QStyleCT_MenuBar,
+    QStyleCT_Menu,
+    QStyleCT_TabBarTab,
+    QStyleCT_Slider,
+    QStyleCT_ScrollBar,
+    QStyleCT_Q3Header,
+    QStyleCT_LineEdit,
+    QStyleCT_SpinBox,
+    QStyleCT_SizeGrip,
+    QStyleCT_TabWidget,
+    QStyleCT_DialogButtons,
+    QStyleCT_HeaderSection,
+    QStyleCT_GroupBox,
+    QStyleCT_CustomBase = $f0000000 );
+
+  QStyleStandardPixmap = (  //QStyle::StandardPixmap (2)
+    QStyleSP_TitleBarMenuButton,
+    QStyleSP_TitleBarMinButton,
+    QStyleSP_TitleBarMaxButton,
+    QStyleSP_TitleBarCloseButton,
+    QStyleSP_TitleBarNormalButton,
+    QStyleSP_TitleBarShadeButton,
+    QStyleSP_TitleBarUnshadeButton,
+    QStyleSP_TitleBarContextHelpButton,
+    QStyleSP_DockWidgetCloseButton,
+    QStyleSP_MessageBoxInformation,
+    QStyleSP_MessageBoxWarning,
+    QStyleSP_MessageBoxCritical,
+    QStyleSP_MessageBoxQuestion,
+    QStyleSP_DesktopIcon,
+    QStyleSP_TrashIcon,
+    QStyleSP_ComputerIcon,
+    QStyleSP_DriveFDIcon,
+    QStyleSP_DriveHDIcon,
+    QStyleSP_DriveCDIcon,
+    QStyleSP_DriveDVDIcon,
+    QStyleSP_DriveNetIcon,
+    QStyleSP_DirOpenIcon,
+    QStyleSP_DirClosedIcon,
+    QStyleSP_DirLinkIcon,
+    QStyleSP_FileIcon,
+    QStyleSP_FileLinkIcon,
+    QStyleSP_ToolBarHorizontalExtensionButton,
+    QStyleSP_ToolBarVerticalExtensionButton,
+    QStyleSP_FileDialogStart,
+    QStyleSP_FileDialogEnd,
+    QStyleSP_FileDialogToParent,
+    QStyleSP_FileDialogNewFolder,
+    QStyleSP_FileDialogDetailedView,
+    QStyleSP_FileDialogInfoView,
+    QStyleSP_FileDialogContentsView,
+    QStyleSP_FileDialogListView,
+    QStyleSP_FileDialogBack,
+    QStyleSP_DirIcon,
+    QStyleSP_DialogOkButton,
+    QStyleSP_DialogCancelButton,
+    QStyleSP_DialogHelpButton,
+    QStyleSP_DialogOpenButton,
+    QStyleSP_DialogSaveButton,
+    QStyleSP_DialogCloseButton,
+    QStyleSP_DialogApplyButton,
+    QStyleSP_DialogResetButton,
+    QStyleSP_DialogDiscardButton,
+    QStyleSP_DialogYesButton,
+    QStyleSP_DialogNoButton,
+    QStyleSP_ArrowUp,
+    QStyleSP_ArrowDown,
+    QStyleSP_ArrowLeft,
+    QStyleSP_ArrowRight,
+    QStyleSP_ArrowBack,
+    QStyleSP_ArrowForward,
+    QStyleSP_CustomBase = $f0000000 );
+
+type
+  QStyleStyleHint = cardinal; //  QStyle::StyleHint (4)
+
+const
+    QStyleSH_EtchDisabledText = 0 { $0 };
+    QStyleSH_DitherDisabledText = 1 { $1 };
+    QStyleSH_ScrollBar_MiddleClickAbsolutePosition = 2 { $2 };
+    QStyleSH_ScrollBar_ScrollWhenPointerLeavesControl = 3 { $3 };
+    QStyleSH_TabBar_SelectMouseType = 4 { $4 };
+    QStyleSH_TabBar_Alignment = 5 { $5 };
+    QStyleSH_Header_ArrowAlignment = 6 { $6 };
+    QStyleSH_Slider_SnapToValue = 7 { $7 };
+    QStyleSH_Slider_SloppyKeyEvents = 8 { $8 };
+    QStyleSH_ProgressDialog_CenterCancelButton = 9 { $9 };
+    QStyleSH_ProgressDialog_TextLabelAlignment = 10 { $a };
+    QStyleSH_PrintDialog_RightAlignButtons = 11 { $b };
+    QStyleSH_MainWindow_SpaceBelowMenuBar = 12 { $c };
+    QStyleSH_FontDialog_SelectAssociatedText = 13 { $d };
+    QStyleSH_Menu_AllowActiveAndDisabled = 14 { $e };
+    QStyleSH_Menu_SpaceActivatesItem = 15 { $f };
+    QStyleSH_Menu_SubMenuPopupDelay = 16 { $10 };
+    QStyleSH_ScrollView_FrameOnlyAroundContents = 17 { $11 };
+    QStyleSH_MenuBar_AltKeyNavigation = 18 { $12 };
+    QStyleSH_ComboBox_ListMouseTracking = 19 { $13 };
+    QStyleSH_Menu_MouseTracking = 20 { $14 };
+    QStyleSH_MenuBar_MouseTracking = 21 { $15 };
+    QStyleSH_ItemView_ChangeHighlightOnFocus = 22 { $16 };
+    QStyleSH_Widget_ShareActivation = 23 { $17 };
+    QStyleSH_Workspace_FillSpaceOnMaximize = 24 { $18 };
+    QStyleSH_ComboBox_Popup = 25 { $19 };
+    QStyleSH_TitleBar_NoBorder = 26 { $1a };
+    QStyleSH_Slider_StopMouseOverSlider = 27 { $1b };
+    QStyleSH_ScrollBar_StopMouseOverSlider = 27 { $1b };
+    QStyleSH_BlinkCursorWhenTextSelected = 28 { $1c };
+    QStyleSH_RichText_FullWidthSelection = 29 { $1d };
+    QStyleSH_Menu_Scrollable = 30 { $1e };
+    QStyleSH_GroupBox_TextLabelVerticalAlignment = 31 { $1f };
+    QStyleSH_GroupBox_TextLabelColor = 32 { $20 };
+    QStyleSH_Menu_SloppySubMenus = 33 { $21 };
+    QStyleSH_Table_GridLineColor = 34 { $22 };
+    QStyleSH_LineEdit_PasswordCharacter = 35 { $23 };
+    QStyleSH_DialogButtons_DefaultButton = 36 { $24 };
+    QStyleSH_ToolBox_SelectedPageTitleBold = 37 { $25 };
+    QStyleSH_TabBar_PreferNoArrows = 38 { $26 };
+    QStyleSH_ScrollBar_LeftClickAbsolutePosition = 39 { $27 };
+    QStyleSH_Q3ListViewExpand_SelectMouseType = 40 { $28 };
+    QStyleSH_UnderlineShortcut = 41 { $29 };
+    QStyleSH_SpinBox_AnimateButton = 42 { $2a };
+    QStyleSH_SpinBox_KeyPressAutoRepeatRate = 43 { $2b };
+    QStyleSH_SpinBox_ClickAutoRepeatRate = 44 { $2c };
+    QStyleSH_Menu_FillScreenWithScroll = 45 { $2d };
+    QStyleSH_ToolTipLabel_Opacity = 46 { $2e };
+    QStyleSH_DrawMenuBarSeparator = 47 { $2f };
+    QStyleSH_TitleBar_ModifyNotification = 48 { $30 };
+    QStyleSH_Button_FocusPolicy = 49 { $31 };
+    QStyleSH_MenuBar_DismissOnSecondClick = 50 { $32 };
+    QStyleSH_MessageBox_UseBorderForButtonSpacing = 51 { $33 };
+    QStyleSH_TitleBar_AutoRaise = 52 { $34 };
+    QStyleSH_ToolButton_PopupDelay = 53 { $35 };
+    QStyleSH_FocusFrame_Mask = 54 { $36 };
+    QStyleSH_RubberBand_Mask = 55 { $37 };
+    QStyleSH_WindowFrame_Mask = 56 { $38 };
+    QStyleSH_SpinControls_DisableOnBounds = 57 { $39 };
+    QStyleSH_Dial_BackgroundRole = 58 { $3a };
+    QStyleSH_ComboBox_LayoutDirection = 59 { $3b };
+    QStyleSH_ItemView_EllipsisLocation = 60 { $3c };
+    QStyleSH_ItemView_ShowDecorationSelected = 61 { $3d };
+    QStyleSH_ItemView_ActivateItemOnSingleClick = 62 { $3e };
+    QStyleSH_ScrollBar_ContextMenu = 63 { $3f };
+    QStyleSH_ScrollBar_RollBetweenButtons = 64 { $40 };
+    QStyleSH_Slider_AbsoluteSetButtons = 65 { $41 };
+    QStyleSH_Slider_PageSetButtons = 66 { $42 };
+    QStyleSH_Menu_KeyboardSearch = 67 { $43 };
+    QStyleSH_TabBar_ElideMode = 68 { $44 };
+    QStyleSH_DialogButtonLayout = 69 { $45 };
+    QStyleSH_ComboBox_PopupFrameStyle = 70 { $46 };
+    QStyleSH_MessageBox_TextInteractionFlags = 71 { $47 };
+    QStyleSH_DialogButtonBox_ButtonsHaveIcons = 72 { $48 };
+    QStyleSH_SpellCheckUnderlineStyle = 73 { $49 };
+    QStyleSH_MessageBox_CenterButtons = 74 { $4a };
+    QStyleSH_Menu_SelectionWrap = 75 { $4b };
+    QStyleSH_ItemView_MovementWithoutUpdatingSelection = 76 { $4c };
+    QStyleSH_CustomBase = 4026531840 { $f0000000 };
+
+
+procedure QStyle_polish(handle: QStyleH; p1: QWidgetH); overload; cdecl; external QtIntf name 'QStyle_polish';
+procedure QStyle_unpolish(handle: QStyleH; p1: QWidgetH); overload; cdecl; external QtIntf name 'QStyle_unpolish';
+procedure QStyle_polish(handle: QStyleH; p1: QApplicationH); overload; cdecl; external QtIntf name 'QStyle_polish2';
+procedure QStyle_unpolish(handle: QStyleH; p1: QApplicationH); overload; cdecl; external QtIntf name 'QStyle_unpolish2';
+procedure QStyle_polish(handle: QStyleH; p1: QPaletteH); overload; cdecl; external QtIntf name 'QStyle_polish3';
+procedure QStyle_itemTextRect(handle: QStyleH; retval: PRect; fm: QFontMetricsH; r: PRect; flags: Integer; enabled: Boolean; text: PWideString); cdecl; external QtIntf name 'QStyle_itemTextRect';
+procedure QStyle_itemPixmapRect(handle: QStyleH; retval: PRect; r: PRect; flags: Integer; pixmap: QPixmapH); cdecl; external QtIntf name 'QStyle_itemPixmapRect';
+procedure QStyle_drawItemText(handle: QStyleH; painter: QPainterH; rect: PRect; flags: Integer; pal: QPaletteH; enabled: Boolean; text: PWideString; textRole: QPaletteColorRole = QPaletteNoRole); cdecl; external QtIntf name 'QStyle_drawItemText';
+procedure QStyle_drawItemPixmap(handle: QStyleH; painter: QPainterH; rect: PRect; alignment: Integer; pixmap: QPixmapH); cdecl; external QtIntf name 'QStyle_drawItemPixmap';
+procedure QStyle_standardPalette(handle: QStyleH; retval: QPaletteH); cdecl; external QtIntf name 'QStyle_standardPalette';
+procedure QStyle_drawPrimitive(handle: QStyleH; pe: QStylePrimitiveElement; opt: QStyleOptionH; p: QPainterH; w: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_drawPrimitive';
+procedure QStyle_drawControl(handle: QStyleH; element: QStyleControlElement; opt: QStyleOptionH; p: QPainterH; w: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_drawControl';
+procedure QStyle_subElementRect(handle: QStyleH; retval: PRect; subElement: QStyleSubElement; option: QStyleOptionH; widget: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_subElementRect';
+procedure QStyle_drawComplexControl(handle: QStyleH; cc: QStyleComplexControl; opt: QStyleOptionComplexH; p: QPainterH; widget: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_drawComplexControl';
+function QStyle_hitTestComplexControl(handle: QStyleH; cc: QStyleComplexControl; opt: QStyleOptionComplexH; pt: PPoint; widget: QWidgetH = nil): QStyleSubControl; cdecl; external QtIntf name 'QStyle_hitTestComplexControl';
+procedure QStyle_subControlRect(handle: QStyleH; retval: PRect; cc: QStyleComplexControl; opt: QStyleOptionComplexH; sc: QStyleSubControl; widget: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_subControlRect';
+function QStyle_pixelMetric(handle: QStyleH; metric: QStylePixelMetric; option: QStyleOptionH = nil; widget: QWidgetH = nil): Integer; cdecl; external QtIntf name 'QStyle_pixelMetric';
+procedure QStyle_sizeFromContents(handle: QStyleH; retval: PSize; ct: QStyleContentsType; opt: QStyleOptionH; contentsSize: PSize; w: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_sizeFromContents';
+function QStyle_styleHint(handle: QStyleH; stylehint: QStyleStyleHint; opt: QStyleOptionH = nil; widget: QWidgetH = nil; returnData: QStyleHintReturnH = nil): Integer; cdecl; external QtIntf name 'QStyle_styleHint';
+procedure QStyle_standardPixmap(handle: QStyleH; retval: QPixmapH; standardPixmap: QStyleStandardPixmap; opt: QStyleOptionH = nil; widget: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_standardPixmap';
+procedure QStyle_standardIcon(handle: QStyleH; retval: QIconH; standardIcon: QStyleStandardPixmap; option: QStyleOptionH = nil; widget: QWidgetH = nil); cdecl; external QtIntf name 'QStyle_standardIcon';
+procedure QStyle_generatedIconPixmap(handle: QStyleH; retval: QPixmapH; iconMode: QIconMode; pixmap: QPixmapH; opt: QStyleOptionH); cdecl; external QtIntf name 'QStyle_generatedIconPixmap';
+procedure QStyle_visualRect(retval: PRect; direction: QtLayoutDirection; boundingRect: PRect; logicalRect: PRect); cdecl; external QtIntf name 'QStyle_visualRect';
+procedure QStyle_visualPos(retval: PPoint; direction: QtLayoutDirection; boundingRect: PRect; logicalPos: PPoint); cdecl; external QtIntf name 'QStyle_visualPos';
+function QStyle_sliderPositionFromValue(min: Integer; max: Integer; val: Integer; space: Integer; upsideDown: Boolean = False): Integer; cdecl; external QtIntf name 'QStyle_sliderPositionFromValue';
+function QStyle_sliderValueFromPosition(min: Integer; max: Integer; pos: Integer; space: Integer; upsideDown: Boolean = False): Integer; cdecl; external QtIntf name 'QStyle_sliderValueFromPosition';
+function QStyle_visualAlignment(direction: QtLayoutDirection; alignment: QtAlignment): QtAlignment; cdecl; external QtIntf name 'QStyle_visualAlignment';
+procedure QStyle_alignedRect(retval: PRect; direction: QtLayoutDirection; alignment: QtAlignment; size: PSize; rectangle: PRect); cdecl; external QtIntf name 'QStyle_alignedRect';
+
+
+type
+  QStyleOptionOptionType = (  //QStyleOption::OptionType (2)
+    QStyleOptionSO_Default,
+    QStyleOptionSO_FocusRect,
+    QStyleOptionSO_Button,
+    QStyleOptionSO_Tab,
+    QStyleOptionSO_MenuItem,
+    QStyleOptionSO_Frame,
+    QStyleOptionSO_ProgressBar,
+    QStyleOptionSO_ToolBox,
+    QStyleOptionSO_Header,
+    QStyleOptionSO_Q3DockWindow,
+    QStyleOptionSO_DockWidget,
+    QStyleOptionSO_Q3ListViewItem,
+    QStyleOptionSO_ViewItem,
+    QStyleOptionSO_TabWidgetFrame,
+    QStyleOptionSO_TabBarBase,
+    QStyleOptionSO_RubberBand,
+    QStyleOptionSO_ToolBar,
+    QStyleOptionSO_GraphicsItem,
+    QStyleOptionSO_Complex = $f0000,
+    QStyleOptionSO_Slider,
+    QStyleOptionSO_SpinBox,
+    QStyleOptionSO_ToolButton,
+    QStyleOptionSO_ComboBox,
+    QStyleOptionSO_Q3ListView,
+    QStyleOptionSO_TitleBar,
+    QStyleOptionSO_GroupBox,
+    QStyleOptionSO_SizeGrip,
+    QStyleOptionSO_CustomBase = $f00,
+    QStyleOptionSO_ComplexCustomBase = $f000000 );
+
+  QStyleOptionStyleOptionVersion = (  //QStyleOption::StyleOptionVersion (2s)
+    QStyleOptionVersion = 1 );
+
+
+type
+  QStyleOptionFocusRectStyleOptionVersion = (  //QStyleOptionFocusRect::StyleOptionVersion (2s)
+    QStyleOptionFocusRectVersion = 1 );
+
+
+type
+  QStyleOptionFrameStyleOptionVersion = (  //QStyleOptionFrame::StyleOptionVersion (2s)
+    QStyleOptionFrameVersion = 1 );
+
+
+type
+  QStyleOptionFrameV2StyleOptionVersion = (  //QStyleOptionFrameV2::StyleOptionVersion (2s)
+    QStyleOptionFrameV2Version = 2 );
+
+type
+  QStyleOptionFrameV2FrameFeature = cardinal; // QStyleOptionFrameV2::FrameFeature
+  QStyleOptionFrameV2FrameFeatures = QStyleOptionFrameV2FrameFeature; //QFlags<> (3)
+const
+  QStyleOptionFrameV2None =   $00;
+  QStyleOptionFrameV2Flat =   $01;
+
+
+type
+  QStyleOptionTabWidgetFrameStyleOptionVersion = (  //QStyleOptionTabWidgetFrame::StyleOptionVersion (2s)
+    QStyleOptionTabWidgetFrameVersion = 1 );
+
+
+type
+  QStyleOptionTabBarBaseStyleOptionVersion = (  //QStyleOptionTabBarBase::StyleOptionVersion (2s)
+    QStyleOptionTabBarBaseVersion = 1 );
+
+
+type
+  QStyleOptionHeaderSectionPosition = ( // QStyleOptionHeader::SectionPosition (1)
+    QStyleOptionHeaderBeginning, QStyleOptionHeaderMiddle, QStyleOptionHeaderEnd, QStyleOptionHeaderOnlyOneSection );
+
+  QStyleOptionHeaderSelectedPosition = ( // QStyleOptionHeader::SelectedPosition (1)
+    QStyleOptionHeaderNotAdjacent, QStyleOptionHeaderNextIsSelected, QStyleOptionHeaderPreviousIsSelected, QStyleOptionHeaderNextAndPreviousAreSelected );
+
+  QStyleOptionHeaderSortIndicator = ( // QStyleOptionHeader::SortIndicator (1)
+    QStyleOptionHeaderNone, QStyleOptionHeaderSortUp, QStyleOptionHeaderSortDown );
+
+  QStyleOptionHeaderStyleOptionVersion = (  //QStyleOptionHeader::StyleOptionVersion (2s)
+    QStyleOptionHeaderVersion = 1 );
+
+
+type
+  QStyleOptionButtonStyleOptionVersion = (  //QStyleOptionButton::StyleOptionVersion (2s)
+    QStyleOptionButtonVersion = 1 );
+
+type
+  QStyleOptionButtonButtonFeature = cardinal; // QStyleOptionButton::ButtonFeature
+  QStyleOptionButtonButtonFeatures = QStyleOptionButtonButtonFeature; //QFlags<> (3)
+const
+  QStyleOptionButtonNone =   $00;
+  QStyleOptionButtonFlat =   $01;
+  QStyleOptionButtonHasMenu =   $02;
+  QStyleOptionButtonDefaultButton =   $04;
+  QStyleOptionButtonAutoDefaultButton =   $08;
+
+
+type
+  QStyleOptionTabTabPosition = ( // QStyleOptionTab::TabPosition (1)
+    QStyleOptionTabBeginning, QStyleOptionTabMiddle, QStyleOptionTabEnd, QStyleOptionTabOnlyOneTab );
+
+  QStyleOptionTabSelectedPosition = ( // QStyleOptionTab::SelectedPosition (1)
+    QStyleOptionTabNotAdjacent, QStyleOptionTabNextIsSelected, QStyleOptionTabPreviousIsSelected );
+
+  QStyleOptionTabStyleOptionVersion = (  //QStyleOptionTab::StyleOptionVersion (2s)
+    QStyleOptionTabVersion = 1 );
+
+type
+  QStyleOptionTabCornerWidget = cardinal; // QStyleOptionTab::CornerWidget
+  QStyleOptionTabCornerWidgets = QStyleOptionTabCornerWidget; //QFlags<> (3)
+const
+  QStyleOptionTabNoCornerWidgets =   $00;
+  QStyleOptionTabLeftCornerWidget =   $01;
+  QStyleOptionTabRightCornerWidget =   $02;
+
+
+type
+  QStyleOptionTabV2StyleOptionVersion = (  //QStyleOptionTabV2::StyleOptionVersion (2s)
+    QStyleOptionTabV2Version = 2 );
+
+
+type
+  QStyleOptionToolBarToolBarPosition = ( // QStyleOptionToolBar::ToolBarPosition (1)
+    QStyleOptionToolBarBeginning, QStyleOptionToolBarMiddle, QStyleOptionToolBarEnd, QStyleOptionToolBarOnlyOne );
+
+  QStyleOptionToolBarStyleOptionVersion = (  //QStyleOptionToolBar::StyleOptionVersion (2s)
+    QStyleOptionToolBarVersion = 1 );
+
+type
+  QStyleOptionToolBarToolBarFeature = cardinal; // QStyleOptionToolBar::ToolBarFeature
+  QStyleOptionToolBarToolBarFeatures = QStyleOptionToolBarToolBarFeature; //QFlags<> (3)
+const
+  QStyleOptionToolBarNone =   $0;
+  QStyleOptionToolBarMovable =   $1;
+
+
+type
+  QStyleOptionProgressBarStyleOptionVersion = (  //QStyleOptionProgressBar::StyleOptionVersion (2s)
+    QStyleOptionProgressBarVersion = 1 );
+
+
+type
+  QStyleOptionProgressBarV2StyleOptionVersion = (  //QStyleOptionProgressBarV2::StyleOptionVersion (2s)
+    QStyleOptionProgressBarV2Version = 2 );
+
+
+type
+  QStyleOptionMenuItemMenuItemType = ( // QStyleOptionMenuItem::MenuItemType (1)
+    QStyleOptionMenuItemNormal, QStyleOptionMenuItemDefaultItem, QStyleOptionMenuItemSeparator, QStyleOptionMenuItemSubMenu, QStyleOptionMenuItemScroller, QStyleOptionMenuItemTearOff, QStyleOptionMenuItemMargin, 
+    QStyleOptionMenuItemEmptyArea );
+
+  QStyleOptionMenuItemCheckType = ( // QStyleOptionMenuItem::CheckType (1)
+    QStyleOptionMenuItemNotCheckable, QStyleOptionMenuItemExclusive, QStyleOptionMenuItemNonExclusive );
+
+  QStyleOptionMenuItemStyleOptionVersion = (  //QStyleOptionMenuItem::StyleOptionVersion (2s)
+    QStyleOptionMenuItemVersion = 1 );
+
+
+type
+  QStyleOptionQ3ListViewItemStyleOptionVersion = (  //QStyleOptionQ3ListViewItem::StyleOptionVersion (2s)
+    QStyleOptionQ3ListViewItemVersion = 1 );
+
+type
+  QStyleOptionQ3ListViewItemQ3ListViewItemFeature = cardinal; // QStyleOptionQ3ListViewItem::Q3ListViewItemFeature
+  QStyleOptionQ3ListViewItemQ3ListViewItemFeatures = QStyleOptionQ3ListViewItemQ3ListViewItemFeature; //QFlags<> (3)
+const
+  QStyleOptionQ3ListViewItemNone =   $00;
+  QStyleOptionQ3ListViewItemExpandable =   $01;
+  QStyleOptionQ3ListViewItemMultiLine =   $02;
+  QStyleOptionQ3ListViewItemVisible =   $04;
+  QStyleOptionQ3ListViewItemParentControl =   $08;
+
+
+type
+  QStyleOptionQ3DockWindowStyleOptionVersion = (  //QStyleOptionQ3DockWindow::StyleOptionVersion (2s)
+    QStyleOptionQ3DockWindowVersion = 1 );
+
+
+type
+  QStyleOptionDockWidgetStyleOptionVersion = (  //QStyleOptionDockWidget::StyleOptionVersion (2s)
+    QStyleOptionDockWidgetVersion = 1 );
+
+
+type
+  QStyleOptionViewItemPosition = ( // QStyleOptionViewItem::Position (1)
+    QStyleOptionViewItemLeft, QStyleOptionViewItemRight, QStyleOptionViewItemTop, QStyleOptionViewItemBottom );
+
+  QStyleOptionViewItemStyleOptionVersion = (  //QStyleOptionViewItem::StyleOptionVersion (2s)
+    QStyleOptionViewItemVersion = 1 );
+
+
+type
+  QStyleOptionViewItemV2StyleOptionVersion = (  //QStyleOptionViewItemV2::StyleOptionVersion (2s)
+    QStyleOptionViewItemV2Version = 2 );
+
+type
+  QStyleOptionViewItemV2ViewItemFeature = cardinal; // QStyleOptionViewItemV2::ViewItemFeature
+  QStyleOptionViewItemV2ViewItemFeatures = QStyleOptionViewItemV2ViewItemFeature; //QFlags<> (3)
+const
+  QStyleOptionViewItemV2None =   $00;
+  QStyleOptionViewItemV2WrapText =   $01;
+  QStyleOptionViewItemV2Alternate =   $02;
+
+
+type
+  QStyleOptionToolBoxStyleOptionVersion = (  //QStyleOptionToolBox::StyleOptionVersion (2s)
+    QStyleOptionToolBoxVersion = 1 );
+
+
+type
+  QStyleOptionRubberBandStyleOptionVersion = (  //QStyleOptionRubberBand::StyleOptionVersion (2s)
+    QStyleOptionRubberBandVersion = 1 );
+
+
+type
+  QStyleOptionComplexStyleOptionVersion = (  //QStyleOptionComplex::StyleOptionVersion (2s)
+    QStyleOptionComplexVersion = 1 );
+
+
+type
+  QStyleOptionSliderStyleOptionVersion = (  //QStyleOptionSlider::StyleOptionVersion (2s)
+    QStyleOptionSliderVersion = 1 );
+
+
+type
+  QStyleOptionSpinBoxStyleOptionVersion = (  //QStyleOptionSpinBox::StyleOptionVersion (2s)
+    QStyleOptionSpinBoxVersion = 1 );
+
+
+type
+  QStyleOptionQ3ListViewStyleOptionVersion = (  //QStyleOptionQ3ListView::StyleOptionVersion (2s)
+    QStyleOptionQ3ListViewVersion = 1 );
+
+
+type
+  QStyleOptionToolButtonStyleOptionVersion = (  //QStyleOptionToolButton::StyleOptionVersion (2s)
+    QStyleOptionToolButtonVersion = 1 );
+
+type
+  QStyleOptionToolButtonToolButtonFeature = cardinal; // QStyleOptionToolButton::ToolButtonFeature
+  QStyleOptionToolButtonToolButtonFeatures = QStyleOptionToolButtonToolButtonFeature; //QFlags<> (3)
+const
+  QStyleOptionToolButtonNone =   $00;
+  QStyleOptionToolButtonArrow =   $01;
+  QStyleOptionToolButtonMenu =   $04;
+  QStyleOptionToolButtonPopupDelay =   $08;
+
+
+type
+  QStyleOptionComboBoxStyleOptionVersion = (  //QStyleOptionComboBox::StyleOptionVersion (2s)
+    QStyleOptionComboBoxVersion = 1 );
+
+
+type
+  QStyleOptionTitleBarStyleOptionVersion = (  //QStyleOptionTitleBar::StyleOptionVersion (2s)
+    QStyleOptionTitleBarVersion = 1 );
+
+
+type
+  QStyleOptionGroupBoxStyleOptionVersion = (  //QStyleOptionGroupBox::StyleOptionVersion (2s)
+    QStyleOptionGroupBoxVersion = 1 );
+
+
+type
+  QStyleOptionSizeGripStyleOptionVersion = (  //QStyleOptionSizeGrip::StyleOptionVersion (2s)
+    QStyleOptionSizeGripVersion = 1 );
+
+
+type
+  QStyleOptionGraphicsItemStyleOptionVersion = (  //QStyleOptionGraphicsItem::StyleOptionVersion (2s)
+    QStyleOptionGraphicsItemVersion = 1 );
+
+
+type
+  QStyleHintReturnHintReturnType = (  //QStyleHintReturn::HintReturnType (2)
+    QStyleHintReturnSH_Default = $f000,
+    QStyleHintReturnSH_Mask );
+
+  QStyleHintReturnStyleOptionVersion = (  //QStyleHintReturn::StyleOptionVersion (2s)
+    QStyleHintReturnVersion = 1 );
+
+
+type
+  QStyleHintReturnMaskStyleOptionVersion = (  //QStyleHintReturnMask::StyleOptionVersion (2s)
+    QStyleHintReturnMaskVersion = 1 );
+
+type
+  QStyleOptionStyleOptionType = cardinal; //  QStyleOption::StyleOptionType (4)
+
+const
+    QStyleOptionType = 0 { $0 };
+
+type
+  QStyleOptionFocusRectStyleOptionType = cardinal; //  QStyleOptionFocusRect::StyleOptionType (4)
+
+const
+    QStyleOptionFocusRectType = 1 { $1 };
+
+type
+  QStyleOptionFrameStyleOptionType = cardinal; //  QStyleOptionFrame::StyleOptionType (4)
+
+const
+    QStyleOptionFrameType = 5 { $5 };
+
+type
+  QStyleOptionTabWidgetFrameStyleOptionType = cardinal; //  QStyleOptionTabWidgetFrame::StyleOptionType (4)
+
+const
+    QStyleOptionTabWidgetFrameType = 13 { $d };
+
+type
+  QStyleOptionTabBarBaseStyleOptionType = cardinal; //  QStyleOptionTabBarBase::StyleOptionType (4)
+
+const
+    QStyleOptionTabBarBaseType = 14 { $e };
+
+type
+  QStyleOptionHeaderStyleOptionType = cardinal; //  QStyleOptionHeader::StyleOptionType (4)
+
+const
+    QStyleOptionHeaderType = 8 { $8 };
+
+type
+  QStyleOptionButtonStyleOptionType = cardinal; //  QStyleOptionButton::StyleOptionType (4)
+
+const
+    QStyleOptionButtonType = 2 { $2 };
+
+type
+  QStyleOptionTabStyleOptionType = cardinal; //  QStyleOptionTab::StyleOptionType (4)
+
+const
+    QStyleOptionTabType = 3 { $3 };
+
+type
+  QStyleOptionToolBarStyleOptionType = cardinal; //  QStyleOptionToolBar::StyleOptionType (4)
+
+const
+    QStyleOptionToolBarType = 16 { $10 };
+
+type
+  QStyleOptionProgressBarStyleOptionType = cardinal; //  QStyleOptionProgressBar::StyleOptionType (4)
+
+const
+    QStyleOptionProgressBarType = 6 { $6 };
+
+type
+  QStyleOptionProgressBarV2StyleOptionType = cardinal; //  QStyleOptionProgressBarV2::StyleOptionType (4)
+
+const
+    QStyleOptionProgressBarV2Type = 6 { $6 };
+
+type
+  QStyleOptionMenuItemStyleOptionType = cardinal; //  QStyleOptionMenuItem::StyleOptionType (4)
+
+const
+    QStyleOptionMenuItemType = 4 { $4 };
+
+type
+  QStyleOptionQ3ListViewItemStyleOptionType = cardinal; //  QStyleOptionQ3ListViewItem::StyleOptionType (4)
+
+const
+    QStyleOptionQ3ListViewItemType = 11 { $b };
+
+type
+  QStyleOptionQ3DockWindowStyleOptionType = cardinal; //  QStyleOptionQ3DockWindow::StyleOptionType (4)
+
+const
+    QStyleOptionQ3DockWindowType = 9 { $9 };
+
+type
+  QStyleOptionDockWidgetStyleOptionType = cardinal; //  QStyleOptionDockWidget::StyleOptionType (4)
+
+const
+    QStyleOptionDockWidgetType = 10 { $a };
+
+type
+  QStyleOptionViewItemStyleOptionType = cardinal; //  QStyleOptionViewItem::StyleOptionType (4)
+
+const
+    QStyleOptionViewItemType = 12 { $c };
+
+type
+  QStyleOptionToolBoxStyleOptionType = cardinal; //  QStyleOptionToolBox::StyleOptionType (4)
+
+const
+    QStyleOptionToolBoxType = 7 { $7 };
+
+type
+  QStyleOptionRubberBandStyleOptionType = cardinal; //  QStyleOptionRubberBand::StyleOptionType (4)
+
+const
+    QStyleOptionRubberBandType = 15 { $f };
+
+type
+  QStyleOptionComplexStyleOptionType = cardinal; //  QStyleOptionComplex::StyleOptionType (4)
+
+const
+    QStyleOptionComplexType = 983040 { $f0000 };
+
+type
+  QStyleOptionSliderStyleOptionType = cardinal; //  QStyleOptionSlider::StyleOptionType (4)
+
+const
+    QStyleOptionSliderType = 983041 { $f0001 };
+
+type
+  QStyleOptionSpinBoxStyleOptionType = cardinal; //  QStyleOptionSpinBox::StyleOptionType (4)
+
+const
+    QStyleOptionSpinBoxType = 983042 { $f0002 };
+
+type
+  QStyleOptionQ3ListViewStyleOptionType = cardinal; //  QStyleOptionQ3ListView::StyleOptionType (4)
+
+const
+    QStyleOptionQ3ListViewType = 983045 { $f0005 };
+
+type
+  QStyleOptionToolButtonStyleOptionType = cardinal; //  QStyleOptionToolButton::StyleOptionType (4)
+
+const
+    QStyleOptionToolButtonType = 983043 { $f0003 };
+
+type
+  QStyleOptionComboBoxStyleOptionType = cardinal; //  QStyleOptionComboBox::StyleOptionType (4)
+
+const
+    QStyleOptionComboBoxType = 983044 { $f0004 };
+
+type
+  QStyleOptionTitleBarStyleOptionType = cardinal; //  QStyleOptionTitleBar::StyleOptionType (4)
+
+const
+    QStyleOptionTitleBarType = 983046 { $f0006 };
+
+type
+  QStyleOptionGroupBoxStyleOptionType = cardinal; //  QStyleOptionGroupBox::StyleOptionType (4)
+
+const
+    QStyleOptionGroupBoxType = 983047 { $f0007 };
+
+type
+  QStyleOptionSizeGripStyleOptionType = cardinal; //  QStyleOptionSizeGrip::StyleOptionType (4)
+
+const
+    QStyleOptionSizeGripType = 983048 { $f0008 };
+
+type
+  QStyleOptionGraphicsItemStyleOptionType = cardinal; //  QStyleOptionGraphicsItem::StyleOptionType (4)
+
+const
+    QStyleOptionGraphicsItemType = 17 { $11 };
+
+type
+  QStyleHintReturnStyleOptionType = cardinal; //  QStyleHintReturn::StyleOptionType (4)
+
+const
+    QStyleHintReturnType = 61440 { $f000 };
+
+type
+  QStyleHintReturnMaskStyleOptionType = cardinal; //  QStyleHintReturnMask::StyleOptionType (4)
+
+const
+    QStyleHintReturnMaskType = 61441 { $f001 };
+
+
+function QStyleOption_create(version: Integer = QStyleOptionVersion; _type: Integer = QStyleOptionSO_Default): QStyleOptionH; overload; cdecl; external QtIntf name 'QStyleOption_create';
+procedure QStyleOption_destroy(handle: QStyleOptionH); cdecl; external QtIntf name 'QStyleOption_destroy'; 
+function QStyleOption_create(other: QStyleOptionH): QStyleOptionH; overload; cdecl; external QtIntf name 'QStyleOption_create2';
+procedure QStyleOption_init(handle: QStyleOptionH; w: QWidgetH); cdecl; external QtIntf name 'QStyleOption_init';
+procedure QStyleOption_initFrom(handle: QStyleOptionH; w: QWidgetH); cdecl; external QtIntf name 'QStyleOption_initFrom';
+
+function QStyleOptionFocusRect_create(): QStyleOptionFocusRectH; overload; cdecl; external QtIntf name 'QStyleOptionFocusRect_create';
+procedure QStyleOptionFocusRect_destroy(handle: QStyleOptionFocusRectH); cdecl; external QtIntf name 'QStyleOptionFocusRect_destroy'; 
+function QStyleOptionFocusRect_create(other: QStyleOptionFocusRectH): QStyleOptionFocusRectH; overload; cdecl; external QtIntf name 'QStyleOptionFocusRect_create2';
+
+function QStyleOptionFrame_create(): QStyleOptionFrameH; overload; cdecl; external QtIntf name 'QStyleOptionFrame_create';
+procedure QStyleOptionFrame_destroy(handle: QStyleOptionFrameH); cdecl; external QtIntf name 'QStyleOptionFrame_destroy'; 
+function QStyleOptionFrame_create(other: QStyleOptionFrameH): QStyleOptionFrameH; overload; cdecl; external QtIntf name 'QStyleOptionFrame_create2';
+
+function QStyleOptionFrameV2_create(): QStyleOptionFrameV2H; overload; cdecl; external QtIntf name 'QStyleOptionFrameV2_create';
+procedure QStyleOptionFrameV2_destroy(handle: QStyleOptionFrameV2H); cdecl; external QtIntf name 'QStyleOptionFrameV2_destroy'; 
+function QStyleOptionFrameV2_create(other: QStyleOptionFrameV2H): QStyleOptionFrameV2H; overload; cdecl; external QtIntf name 'QStyleOptionFrameV2_create2';
+function QStyleOptionFrameV2_create(other: QStyleOptionFrameH): QStyleOptionFrameV2H; overload; cdecl; external QtIntf name 'QStyleOptionFrameV2_create3';
+
+function QStyleOptionTabWidgetFrame_create(): QStyleOptionTabWidgetFrameH; overload; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_create';
+procedure QStyleOptionTabWidgetFrame_destroy(handle: QStyleOptionTabWidgetFrameH); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_destroy'; 
+function QStyleOptionTabWidgetFrame_create(other: QStyleOptionTabWidgetFrameH): QStyleOptionTabWidgetFrameH; overload; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_create2';
+
+function QStyleOptionTabBarBase_create(): QStyleOptionTabBarBaseH; overload; cdecl; external QtIntf name 'QStyleOptionTabBarBase_create';
+procedure QStyleOptionTabBarBase_destroy(handle: QStyleOptionTabBarBaseH); cdecl; external QtIntf name 'QStyleOptionTabBarBase_destroy'; 
+function QStyleOptionTabBarBase_create(other: QStyleOptionTabBarBaseH): QStyleOptionTabBarBaseH; overload; cdecl; external QtIntf name 'QStyleOptionTabBarBase_create2';
+
+function QStyleOptionHeader_create(): QStyleOptionHeaderH; overload; cdecl; external QtIntf name 'QStyleOptionHeader_create';
+procedure QStyleOptionHeader_destroy(handle: QStyleOptionHeaderH); cdecl; external QtIntf name 'QStyleOptionHeader_destroy'; 
+function QStyleOptionHeader_create(other: QStyleOptionHeaderH): QStyleOptionHeaderH; overload; cdecl; external QtIntf name 'QStyleOptionHeader_create2';
+
+function QStyleOptionButton_create(): QStyleOptionButtonH; overload; cdecl; external QtIntf name 'QStyleOptionButton_create';
+procedure QStyleOptionButton_destroy(handle: QStyleOptionButtonH); cdecl; external QtIntf name 'QStyleOptionButton_destroy'; 
+function QStyleOptionButton_create(other: QStyleOptionButtonH): QStyleOptionButtonH; overload; cdecl; external QtIntf name 'QStyleOptionButton_create2';
+
+function QStyleOptionTab_create(): QStyleOptionTabH; overload; cdecl; external QtIntf name 'QStyleOptionTab_create';
+procedure QStyleOptionTab_destroy(handle: QStyleOptionTabH); cdecl; external QtIntf name 'QStyleOptionTab_destroy'; 
+function QStyleOptionTab_create(other: QStyleOptionTabH): QStyleOptionTabH; overload; cdecl; external QtIntf name 'QStyleOptionTab_create2';
+
+function QStyleOptionTabV2_create(): QStyleOptionTabV2H; overload; cdecl; external QtIntf name 'QStyleOptionTabV2_create';
+procedure QStyleOptionTabV2_destroy(handle: QStyleOptionTabV2H); cdecl; external QtIntf name 'QStyleOptionTabV2_destroy'; 
+function QStyleOptionTabV2_create(other: QStyleOptionTabV2H): QStyleOptionTabV2H; overload; cdecl; external QtIntf name 'QStyleOptionTabV2_create2';
+function QStyleOptionTabV2_create(other: QStyleOptionTabH): QStyleOptionTabV2H; overload; cdecl; external QtIntf name 'QStyleOptionTabV2_create3';
+
+function QStyleOptionToolBar_create(): QStyleOptionToolBarH; overload; cdecl; external QtIntf name 'QStyleOptionToolBar_create';
+procedure QStyleOptionToolBar_destroy(handle: QStyleOptionToolBarH); cdecl; external QtIntf name 'QStyleOptionToolBar_destroy'; 
+function QStyleOptionToolBar_create(other: QStyleOptionToolBarH): QStyleOptionToolBarH; overload; cdecl; external QtIntf name 'QStyleOptionToolBar_create2';
+
+function QStyleOptionProgressBar_create(): QStyleOptionProgressBarH; overload; cdecl; external QtIntf name 'QStyleOptionProgressBar_create';
+procedure QStyleOptionProgressBar_destroy(handle: QStyleOptionProgressBarH); cdecl; external QtIntf name 'QStyleOptionProgressBar_destroy'; 
+function QStyleOptionProgressBar_create(other: QStyleOptionProgressBarH): QStyleOptionProgressBarH; overload; cdecl; external QtIntf name 'QStyleOptionProgressBar_create2';
+
+function QStyleOptionProgressBarV2_create(): QStyleOptionProgressBarV2H; overload; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_create';
+procedure QStyleOptionProgressBarV2_destroy(handle: QStyleOptionProgressBarV2H); cdecl; external QtIntf name 'QStyleOptionProgressBarV2_destroy'; 
+function QStyleOptionProgressBarV2_create(other: QStyleOptionProgressBarH): QStyleOptionProgressBarV2H; overload; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_create2';
+function QStyleOptionProgressBarV2_create(other: QStyleOptionProgressBarV2H): QStyleOptionProgressBarV2H; overload; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_create3';
+
+function QStyleOptionMenuItem_create(): QStyleOptionMenuItemH; overload; cdecl; external QtIntf name 'QStyleOptionMenuItem_create';
+procedure QStyleOptionMenuItem_destroy(handle: QStyleOptionMenuItemH); cdecl; external QtIntf name 'QStyleOptionMenuItem_destroy'; 
+function QStyleOptionMenuItem_create(other: QStyleOptionMenuItemH): QStyleOptionMenuItemH; overload; cdecl; external QtIntf name 'QStyleOptionMenuItem_create2';
+
+function QStyleOptionQ3ListViewItem_create(): QStyleOptionQ3ListViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_create';
+procedure QStyleOptionQ3ListViewItem_destroy(handle: QStyleOptionQ3ListViewItemH); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_destroy'; 
+function QStyleOptionQ3ListViewItem_create(other: QStyleOptionQ3ListViewItemH): QStyleOptionQ3ListViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_create2';
+
+function QStyleOptionQ3DockWindow_create(): QStyleOptionQ3DockWindowH; overload; cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_create';
+procedure QStyleOptionQ3DockWindow_destroy(handle: QStyleOptionQ3DockWindowH); cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_destroy'; 
+function QStyleOptionQ3DockWindow_create(other: QStyleOptionQ3DockWindowH): QStyleOptionQ3DockWindowH; overload; cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_create2';
+
+function QStyleOptionDockWidget_create(): QStyleOptionDockWidgetH; overload; cdecl; external QtIntf name 'QStyleOptionDockWidget_create';
+procedure QStyleOptionDockWidget_destroy(handle: QStyleOptionDockWidgetH); cdecl; external QtIntf name 'QStyleOptionDockWidget_destroy'; 
+function QStyleOptionDockWidget_create(other: QStyleOptionDockWidgetH): QStyleOptionDockWidgetH; overload; cdecl; external QtIntf name 'QStyleOptionDockWidget_create2';
+
+function QStyleOptionViewItem_create(): QStyleOptionViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionViewItem_create';
+procedure QStyleOptionViewItem_destroy(handle: QStyleOptionViewItemH); cdecl; external QtIntf name 'QStyleOptionViewItem_destroy'; 
+function QStyleOptionViewItem_create(other: QStyleOptionViewItemH): QStyleOptionViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionViewItem_create2';
+
+function QStyleOptionViewItemV2_create(): QStyleOptionViewItemV2H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV2_create';
+procedure QStyleOptionViewItemV2_destroy(handle: QStyleOptionViewItemV2H); cdecl; external QtIntf name 'QStyleOptionViewItemV2_destroy'; 
+function QStyleOptionViewItemV2_create(other: QStyleOptionViewItemV2H): QStyleOptionViewItemV2H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV2_create2';
+function QStyleOptionViewItemV2_create(other: QStyleOptionViewItemH): QStyleOptionViewItemV2H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV2_create3';
+
+function QStyleOptionToolBox_create(): QStyleOptionToolBoxH; overload; cdecl; external QtIntf name 'QStyleOptionToolBox_create';
+procedure QStyleOptionToolBox_destroy(handle: QStyleOptionToolBoxH); cdecl; external QtIntf name 'QStyleOptionToolBox_destroy'; 
+function QStyleOptionToolBox_create(other: QStyleOptionToolBoxH): QStyleOptionToolBoxH; overload; cdecl; external QtIntf name 'QStyleOptionToolBox_create2';
+
+function QStyleOptionRubberBand_create(): QStyleOptionRubberBandH; overload; cdecl; external QtIntf name 'QStyleOptionRubberBand_create';
+procedure QStyleOptionRubberBand_destroy(handle: QStyleOptionRubberBandH); cdecl; external QtIntf name 'QStyleOptionRubberBand_destroy'; 
+function QStyleOptionRubberBand_create(other: QStyleOptionRubberBandH): QStyleOptionRubberBandH; overload; cdecl; external QtIntf name 'QStyleOptionRubberBand_create2';
+
+function QStyleOptionComplex_create(version: Integer; _type: Integer): QStyleOptionComplexH; overload; cdecl; external QtIntf name 'QStyleOptionComplex_create';
+procedure QStyleOptionComplex_destroy(handle: QStyleOptionComplexH); cdecl; external QtIntf name 'QStyleOptionComplex_destroy'; 
+function QStyleOptionComplex_create(other: QStyleOptionComplexH): QStyleOptionComplexH; overload; cdecl; external QtIntf name 'QStyleOptionComplex_create2';
+
+function QStyleOptionSlider_create(): QStyleOptionSliderH; overload; cdecl; external QtIntf name 'QStyleOptionSlider_create';
+procedure QStyleOptionSlider_destroy(handle: QStyleOptionSliderH); cdecl; external QtIntf name 'QStyleOptionSlider_destroy'; 
+function QStyleOptionSlider_create(other: QStyleOptionSliderH): QStyleOptionSliderH; overload; cdecl; external QtIntf name 'QStyleOptionSlider_create2';
+
+function QStyleOptionSpinBox_create(): QStyleOptionSpinBoxH; overload; cdecl; external QtIntf name 'QStyleOptionSpinBox_create';
+procedure QStyleOptionSpinBox_destroy(handle: QStyleOptionSpinBoxH); cdecl; external QtIntf name 'QStyleOptionSpinBox_destroy'; 
+function QStyleOptionSpinBox_create(other: QStyleOptionSpinBoxH): QStyleOptionSpinBoxH; overload; cdecl; external QtIntf name 'QStyleOptionSpinBox_create2';
+
+function QStyleOptionQ3ListView_create(): QStyleOptionQ3ListViewH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListView_create';
+procedure QStyleOptionQ3ListView_destroy(handle: QStyleOptionQ3ListViewH); cdecl; external QtIntf name 'QStyleOptionQ3ListView_destroy'; 
+function QStyleOptionQ3ListView_create(other: QStyleOptionQ3ListViewH): QStyleOptionQ3ListViewH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListView_create2';
+
+function QStyleOptionToolButton_create(): QStyleOptionToolButtonH; overload; cdecl; external QtIntf name 'QStyleOptionToolButton_create';
+procedure QStyleOptionToolButton_destroy(handle: QStyleOptionToolButtonH); cdecl; external QtIntf name 'QStyleOptionToolButton_destroy'; 
+function QStyleOptionToolButton_create(other: QStyleOptionToolButtonH): QStyleOptionToolButtonH; overload; cdecl; external QtIntf name 'QStyleOptionToolButton_create2';
+
+function QStyleOptionComboBox_create(): QStyleOptionComboBoxH; overload; cdecl; external QtIntf name 'QStyleOptionComboBox_create';
+procedure QStyleOptionComboBox_destroy(handle: QStyleOptionComboBoxH); cdecl; external QtIntf name 'QStyleOptionComboBox_destroy'; 
+function QStyleOptionComboBox_create(other: QStyleOptionComboBoxH): QStyleOptionComboBoxH; overload; cdecl; external QtIntf name 'QStyleOptionComboBox_create2';
+
+function QStyleOptionTitleBar_create(): QStyleOptionTitleBarH; overload; cdecl; external QtIntf name 'QStyleOptionTitleBar_create';
+procedure QStyleOptionTitleBar_destroy(handle: QStyleOptionTitleBarH); cdecl; external QtIntf name 'QStyleOptionTitleBar_destroy'; 
+function QStyleOptionTitleBar_create(other: QStyleOptionTitleBarH): QStyleOptionTitleBarH; overload; cdecl; external QtIntf name 'QStyleOptionTitleBar_create2';
+
+function QStyleOptionGroupBox_create(): QStyleOptionGroupBoxH; overload; cdecl; external QtIntf name 'QStyleOptionGroupBox_create';
+procedure QStyleOptionGroupBox_destroy(handle: QStyleOptionGroupBoxH); cdecl; external QtIntf name 'QStyleOptionGroupBox_destroy'; 
+function QStyleOptionGroupBox_create(other: QStyleOptionGroupBoxH): QStyleOptionGroupBoxH; overload; cdecl; external QtIntf name 'QStyleOptionGroupBox_create2';
+
+function QStyleOptionSizeGrip_create(): QStyleOptionSizeGripH; overload; cdecl; external QtIntf name 'QStyleOptionSizeGrip_create';
+procedure QStyleOptionSizeGrip_destroy(handle: QStyleOptionSizeGripH); cdecl; external QtIntf name 'QStyleOptionSizeGrip_destroy'; 
+function QStyleOptionSizeGrip_create(other: QStyleOptionSizeGripH): QStyleOptionSizeGripH; overload; cdecl; external QtIntf name 'QStyleOptionSizeGrip_create2';
+
+function QStyleOptionGraphicsItem_create(): QStyleOptionGraphicsItemH; overload; cdecl; external QtIntf name 'QStyleOptionGraphicsItem_create';
+procedure QStyleOptionGraphicsItem_destroy(handle: QStyleOptionGraphicsItemH); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_destroy'; 
+function QStyleOptionGraphicsItem_create(other: QStyleOptionGraphicsItemH): QStyleOptionGraphicsItemH; overload; cdecl; external QtIntf name 'QStyleOptionGraphicsItem_create2';
+
+function QStyleHintReturn_create(version: Integer = QStyleOptionVersion; _type: Integer = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external QtIntf name 'QStyleHintReturn_create';
+procedure QStyleHintReturn_destroy(handle: QStyleHintReturnH); cdecl; external QtIntf name 'QStyleHintReturn_destroy'; 
+
+function QStyleHintReturnMask_create(): QStyleHintReturnMaskH; cdecl; external QtIntf name 'QStyleHintReturnMask_create';
+procedure QStyleHintReturnMask_destroy(handle: QStyleHintReturnMaskH); cdecl; external QtIntf name 'QStyleHintReturnMask_destroy'; 
 
 type
   QIODeviceOpenModeFlag = cardinal; //  QIODevice::OpenModeFlag (4)
