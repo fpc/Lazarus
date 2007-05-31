@@ -4330,10 +4330,6 @@ var
     {$ifdef gtk1}
     gtk_label_set_pattern(PGtkLabel(TabLabelWidget), PChar(Pattern));
     {$endif gtk1}
-    // update the Accelerator
-    {if AccelKey = #0
-    then Accelerate(ThePage, PageWidget, GDK_VOIDSYMBOL, 0, 'clicked')
-    else Accelerate(ThePage, PageWidget, Ord(AccelKey), 0, 'clicked');}
 
     if MenuLabelWidget<>nil then begin
       gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
@@ -9165,7 +9161,7 @@ end;
 {-------------------------------------------------------------------------------
   procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char)
 
-  Removes all escaping ampersands, creates an underscore pattern and returns
+  Removes all escaping ampersands &&, creates an underscore pattern and returns
   the first ampersand char as accelerator char
 -------------------------------------------------------------------------------}
 procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char);
@@ -9173,7 +9169,6 @@ var
   n: Integer;
   FirstFound: Boolean;
 begin
-  //TODO: escape underscores
   FirstFound := False;
   APattern := StringOfChar(' ', Length(AText));
   AAccelChar := #0;
@@ -9189,20 +9184,19 @@ begin
           Delete(AText, n, 1);
           Delete(APattern, n, 1);
           Inc(n);
-          Continue;
+        end else begin
+          Delete(AText, n, 1);
+          Delete(APattern, n, 1);
+          if FirstFound
+          then Continue; // simply remove it
+
+          // if we are here it's our first
+          FirstFound := True;
+          AAccelChar := System.lowerCase(AText[n]);
+          // is there a next char we can underline ?
+          if n <= Length(APattern)
+          then APattern[n] := '_';
         end;
-
-        Delete(AText, n, 1);
-        Delete(APattern, n, 1);
-        if FirstFound
-        then Continue; // simply remove it
-
-        // if we are here it's our first
-        FirstFound := True;
-        AAccelChar := System.lowerCase(AText[n]);
-        // is there a next char we can underline ?
-        if n <= Length(APattern)
-        then APattern[n] := '_';
       end;
       '_': begin
         AText[n] := ' ';

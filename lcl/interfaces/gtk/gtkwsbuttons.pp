@@ -177,13 +177,16 @@ begin
   SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
 end;
 
-class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut);
+class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton;
+  const OldShortcut, NewShortcut: TShortcut);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut')
   then Exit;
 
-  // ToDo: use accelerator group of Form
+  {$IFDEF Gtk1}
   Accelerate(AButton, PGtkWidget(AButton.Handle), NewShortcut, 'clicked');
+  {$ENDIF}
+  // gtk2: shortcuts are handled by the LCL
 end;
 
 class procedure TGtkWSButton.SetText(const AWinControl: TWinControl; const AText: String);
@@ -208,8 +211,8 @@ begin
     gtk_container_add(PGtkContainer(BtnWidget), PGtkWidget(LblWidget));
   end;
   
-  GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl,
-                               PGtkWidget(BtnWidget), 'clicked');
+  GtkWidgetSet.SetLabelCaption(LblWidget, AText
+           {$IFDEF Gtk1}, AWinControl,PGtkWidget(BtnWidget), 'clicked'{$ENDIF});
 end;
 
 class procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
@@ -410,8 +413,8 @@ begin
   if BitBtnInfo^.LabelWidget = nil then Exit;  
 
   //debugln('TGtkWSBitBtn.SetText ',DbgStr(AText));
-  GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText, AWinControl,
-                               WidgetInfo^.CoreWidget, 'clicked');
+  GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
+     {$IFDEF Gtk1},AWinControl,WidgetInfo^.CoreWidget, 'clicked'{$ENDIF});
 end;
 
 class procedure TGtkWSBitBtn.SetColor(const AWinControl: TWinControl);

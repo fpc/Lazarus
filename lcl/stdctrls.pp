@@ -886,6 +886,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetFocusControl(Val: TWinControl); virtual;
     procedure SetShowAccelChar(Val: boolean); virtual;
+    function DialogChar(var Message: TLMKey): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;

@@ -977,23 +977,26 @@ end;
   Sets the Caption of a gtklabel. If a accelerator is present, it is connected.
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
-  const ACaption: String; const AComponent: TComponent;
-  const ASignalWidget: PGTKWidget; const ASignal: PChar);
+  const ACaption: String
+  {$IFDEF Gtk1}
+  ; const AComponent: TComponent;
+  const ASignalWidget: PGTKWidget; const ASignal: PChar
+  {$ENDIF});
 var
   Caption, Pattern: String;
   AccelKey: Char;
 begin
   Caption := ACaption;
   LabelFromAmpersands(Caption, Pattern, AccelKey);
+  //DebugLn(['TGtkWidgetSet.SetLabelCaption ',GetWidgetDebugReport(PGtkWIdget(ALabel)),' Caption=',dbgstr(Caption),' Pattern=',dbgstr(Pattern),' aCaption=',dbgstr(aCaption)]);
   gtk_label_set_text(ALabel, PChar(Caption));
-
   gtk_label_set_pattern(ALabel, PChar(Pattern));
 
+  {$IFDEF Gtk1}
   if AComponent = nil then Exit;
   if ASignalWidget = nil then Exit;
   if ASignal = '' then Exit;
 
-  {$IFDEF Gtk1}
   // update the Accelerator
   if AccelKey = #0
   then Accelerate(AComponent, ASignalWidget, GDK_VOIDSYMBOL, 0, ASignal)
@@ -5004,10 +5007,9 @@ var
 
   Box       : Pointer;           // currently only used for MainMenu
   ParentForm: TCustomForm;
-  AccelText : PChar;
-  AccelKey  : guint;
   AWindow: PGdkWindow;
   Adjustment: PGtkAdjustment;
+  LabelWidget: PGtkLabel;
 begin
   p := nil;
 
@@ -5326,17 +5328,13 @@ begin
           end;
         end;
       end;
-      AccelText := Ampersands2Underscore(StrTemp);
       if TempWidget <> nil then
-        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,
-                                            AccelText)
+        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,'')
       else
-        P:= gtk_radio_button_new_with_label(nil, AccelText);
-      AccelKey:=gtk_label_parse_uline(
-                                   pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(P)^.Button))),
-                                   AccelText);
-      Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
-      StrDispose(AccelText);
+        P:= gtk_radio_button_new_with_label(nil, '');
+      LabelWidget:=pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(P)^.Button)));
+      GtkWidgetSet.SetLabelCaption(LabelWidget, StrTemp
+         {$IFDEF Gtk1}, TWinControl(Sender),PGtkWidget(p), 'clicked'{$ENDIF});
     end;
 
   csScrollBar :
@@ -7081,8 +7079,9 @@ begin
   end;
 end;
 
-function TGtkWidgetSet.ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
-  ProcessAmpersands : Boolean) : PChar;
+function TGtkWidgetSet.ForceLineBreaks(DC: hDC; Src: PChar;
+  MaxWidthInPixels: Longint;
+  ConvertAmpersandsToUnderScores: Boolean) : PChar;
 var
   Lines : PPChar;
   I, NumLines : Longint;
@@ -7095,7 +7094,7 @@ begin
     If TmpStr <> nil then
       g_string_append_c(TmpStr, #10);
 
-    If ProcessAmpersands then begin
+    If ConvertAmpersandsToUnderScores then begin
       Line := Ampersands2Underscore(Lines[I]);
       If Line <> nil then begin
         If TmpStr <> nil then begin

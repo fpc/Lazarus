@@ -965,9 +965,10 @@ class procedure TGtkWSCustomCheckBox.SetShortCut(
   const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  // ToDo: use accelerator group of Form
+  {$IFDEF Gtk1}
   Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut,
     'activate_item');
+  {$ENDIF}
 end;
 
 class procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox;

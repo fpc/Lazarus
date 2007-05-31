@@ -254,10 +254,11 @@ type
     function gdkFunctionToROP2Mode(const aFunction: TGdkFunction): Integer;
 
     // for gtk specific components:
-    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String;
-                              const AComponent: TComponent;
-                              const ASignalWidget: PGTKWidget;
-                              const ASignal: PChar); virtual;
+    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String
+                              {$IFDEF Gtk1}
+                              ; const AComponent: TComponent;
+                                const ASignalWidget: PGTKWidget;
+                                const ASignal: PChar{$ENDIF}); virtual;
     procedure SetWidgetColor(const AWidget : PGtkWidget;
                              const FGColor,BGColor : TColor;
                              const Mask : tGtkStateEnum);
@@ -309,7 +310,7 @@ type
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
                                MultiSelect, ExtendedSelect: boolean); virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
-      ProcessAmpersands : Boolean) : PChar;
+                             ConvertAmpersandsToUnderScores: Boolean) : PChar;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;

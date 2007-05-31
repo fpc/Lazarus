@@ -500,7 +500,7 @@ var
   DC : hDC;
   P : Pointer;
   aLabel, pLabel: pchar;
-  AccelKey : integer;
+  s: string;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText')
   then Exit;
@@ -554,31 +554,15 @@ begin
   csStaticText:
     begin
       if TStaticText(AWinControl).ShowAccelChar then begin
-        If {TStaticText(AWinControl).WordWrap and }(TStaticText(AWinControl).Caption<>'') then begin
-          DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, True);
-          DeleteDC(DC);
-        end
-        else
-          aLabel:= Ampersands2Underscore(pLabel);
-        try
-          AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
-          Accelerate(TComponent(AWinControl),PGtkWidget(p),AccelKey,0,'grab_focus');
-        finally
-          StrDispose(aLabel);
-        end;
+        DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
+        aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(
+                              DC, pLabel, TStaticText(AWinControl).Width, false);
+        DeleteDC(DC);
+        s:=aLabel;
+        GtkWidgetSet.SetLabelCaption(pGtkLabel(p), s
+           {$IFDEF Gtk1}, AWinControl,PGtkWidget(p), 'grab_focus'{$ENDIF});
       end else begin
-{
-        If TStaticText(AWinControl).WordWrap then begin
-          DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, False);
-          gtk_label_set_text(PGtkLabel(p), aLabel);
-          StrDispose(aLabel);
-          DeleteDC(DC);
-        end
-        else
-}
-          gtk_label_set_text(PGtkLabel(p), pLabel);
+        gtk_label_set_text(PGtkLabel(p), pLabel);
         gtk_label_set_pattern(PGtkLabel(p), nil);
       end;
     end;

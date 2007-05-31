@@ -112,6 +112,17 @@ begin
   end;
 end;
 
+function TCustomStaticText.DialogChar(var Message: TLMKey): boolean;
+begin
+  if IsAccel(Message.CharCode, Caption)
+  and (FFocusControl <> nil) and (FFocusControl.CanFocus) then
+  begin
+    FFocusControl.SetFocus;
+    Result := true;
+  end else
+    Result := inherited;
+end;
+
 Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
 
   procedure RaiseNotImplemented;
