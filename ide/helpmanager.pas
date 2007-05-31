@@ -338,12 +338,25 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.BasePathObject:=FFCLHelpDBPath;
 
     // FPDoc nodes for units in the FCL
+    // create TOC
+    HTMLHelp.TOCNode:=THelpNode.CreateURL(HTMLHelp,
+                   'FCL - Free Pascal Component Library Units',
+                   'file://index.html');
+                   
+    // fpc 2.0.x FCL source directory
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'FCL - Free Pascal Component Library Units (2.0.x)',
+                   'file://index.html');
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
+                                     '$(FPCSrcDir)/fcl/inc','*.pp;*.pas',false);
+    HTMLHelp.RegisterItem(DirItem);
+    
+    // fpc 2.2.x FCL source directory
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
-    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
-    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl/inc',
-                                   '*.pp;*.pas',false);// and once as normal page
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
+                   '$(FPCSrcDir)/packages/fcl-base/src/inc','*.pp;*.pas',false);
     HTMLHelp.RegisterItem(DirItem);
   end;
 
