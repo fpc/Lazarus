@@ -30,9 +30,9 @@ uses
   // Bindings
   qt4, qtwidgets,
   // LCL
-  Classes, ComCtrls, Controls, LCLType,
+  Classes, ComCtrls, Controls, LCLType, Graphics,
   // Widgetset
-  WSComCtrls, WSLCLClasses;
+  WSProc, WSComCtrls, WSLCLClasses;
 
 type
 
@@ -117,6 +117,11 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSToolBar }
@@ -125,6 +130,9 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSTrackBar }
@@ -158,6 +166,145 @@ type
 
 
 implementation
+
+
+{ TQtWSToolButton }
+
+class function TQtWSToolButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+   QtToolButton: TQtToolButton;
+   Hook: QToolButton_hookH;
+   Method: TMethod;
+begin
+  QtToolButton := TQtToolButton.Create(AWinControl, AParams);
+
+  Hook := QToolButton_hook_create(QtToolButton.Widget);
+  TEventFilterMethod(Method) := QtToolButton.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+  
+  Result := THandle(QtToolButton);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToolButton.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToolButton.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtToolButton(AWinControl.Handle).Free;
+  
+  AWinControl.Handle := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToolButton.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSToolButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  Str: WideString;
+begin
+  TQtToolButton(AWinControl.Handle).Text(@Str);
+
+  AText := UTF8Encode(Str);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToolButton.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToolButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  Str: WideString;
+begin
+  Str := UTF8Decode(AText);
+
+  TQtToolButton(AWinControl.Handle).SetText(@Str);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToolButton.SetColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToolButton.SetColor(const AWinControl: TWinControl);
+var
+  QColor: TQColor;
+  Color: TColor;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
+  then Exit;
+
+  if AWinControl.Color = CLR_INVALID then exit;
+
+  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+  Color:=ColorToRGB(AWinControl.Color);
+
+  // Fill QColor
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+  // Set color of the widget to QColor
+  TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
+end;
+
+{ TQtWSToolBar }
+
+class function TQtWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+   QtToolBar: TQtToolBar;
+   Hook: QToolBar_hookH;
+   Method: TMethod;
+begin
+  QtToolBar := TQtToolBar.Create(AWinControl, AParams);
+
+  Hook := QToolBar_hook_create(QtToolBar.Widget);
+  TEventFilterMethod(Method) := QtToolBar.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+     
+  Result := THandle(QtToolBar);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToolBar.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToolBar.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtToolBar(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
+end;
+
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToolBar.SetColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToolBar.SetColor(const AWinControl: TWinControl);
+var
+  QColor: TQColor;
+  Color: TColor;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
+  then Exit;
+
+  if AWinControl.Color = CLR_INVALID then exit;
+
+  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+  Color:=ColorToRGB(AWinControl.Color);
+
+  // Fill QColor
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+  // Set color of the widget to QColor
+  TQtToolBar(AWinControl.Handle).SetColor(@QColor);
+end;
 
 { TQtWSTrackBar }
 
@@ -406,8 +553,8 @@ initialization
   RegisterWSComponent(TCustomProgressBar, TQtWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TQtWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TQtWSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
+  RegisterWSComponent(TToolButton, TQtWSToolButton);
+  RegisterWSComponent(TToolBar, TQtWSToolBar);
 //  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
 //  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
   RegisterWSComponent(TCustomTrackBar, TQtWSTrackBar);

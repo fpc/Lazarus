@@ -254,6 +254,22 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   end;	
 
+  { TQtToolBar }
+  
+  TQtToolBar = class(TQtWidget)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  end;
+  
+  { TQtToolButton }
+
+  TQtToolButton = class(TQtAbstractButton)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  end;
+  
   { TQtTrackBar }
   
   TQtTrackBar = class(TQtAbstractSlider)
@@ -2498,6 +2514,34 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QScrollBar_create(Parent);
+end;
+
+{ TQtToolBar }
+
+function TQtToolBar.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtToolBar.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QToolBar_create(Parent);
+end;
+
+{ TQtToolButton }
+
+function TQtToolButton.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtToolButton.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QToolButton_create(Parent);
 end;
 
 { TQtTrackBar }
