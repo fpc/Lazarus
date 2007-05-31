@@ -1837,21 +1837,24 @@ end;
 function TThemeServices.IsDisabled(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar]) then
+  if (Details.Element in [teButton, teToolBar, teHeader]) or
+     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
     Result := (Details.State mod 4) = 0; // usual disabled = 4 / 8 / 12
 end;
 
 function TThemeServices.IsPushed(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar, teHeader]) then
+  if (Details.Element in [teButton, teToolBar, teHeader]) or
+     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
     Result := Details.State in [3, 5, 6];
 end;
 
 function TThemeServices.IsHot(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar, teHeader]) then
+  if (Details.Element in [teButton, teToolBar, teHeader]) or
+     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
     Result := Details.State in [2, 6];
 end;
 

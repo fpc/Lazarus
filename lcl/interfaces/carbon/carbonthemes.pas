@@ -28,9 +28,9 @@ type
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
     procedure DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
     procedure DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+    procedure DrawReBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
-    procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
 
@@ -114,7 +114,6 @@ var
 begin
   if Details.Part = TP_BUTTON then
   begin
-
     // TODO: if state is inactive or normal button should not have borders (or maybe I am wrong for mac?)
 
     ButtonDrawInfo.version := 0;
@@ -130,6 +129,36 @@ begin
       HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
         kHIThemeOrientationNormal, @LabelRect),
       Self, 'DrawButtonElement', 'HIThemeDrawButton');
+  end;
+end;
+
+procedure TCarbonThemeServices.DrawReBarElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+var
+  SplitterInfo: HIThemeSplitterDrawInfo;
+  PlacardInfo: HIThemePlacardDrawInfo;
+  ARect: HIRect;
+begin
+  ARect := RectToCGRect(R);
+  if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
+  begin
+    SplitterInfo.version := 0;
+    SplitterInfo.State := kThemeStateActive;
+    SplitterInfo.adornment := kHiThemeSplitterAdornmentNone;
+    
+    OSError(
+      HIThemeDrawPaneSplitter(ARect, SplitterInfo, DC.CGContext, kHIThemeOrientationNormal),
+      Self, 'DrawReBarElement', 'HIThemeDrawPaneSplitter');
+  end
+  else
+  if Details.Part = RP_BAND then
+  begin
+    PlacardInfo.version := 0;
+    PlacardInfo.State := GetDrawState(Details);
+
+    OSError(
+      HIThemeDrawPlacard(ARect, PlacardInfo, DC.CGContext, kHIThemeOrientationNormal),
+      Self, 'DrawReBarElement', 'HIThemeDrawPlacard');
   end;
 end;
 
@@ -154,13 +183,6 @@ begin
   Result := BoundingRect;
 end;
 
-procedure TCarbonThemeServices.DrawEdge(DC: HDC;
-  Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
-  AContentRect: PRect);
-begin
-
-end;
-
 procedure TCarbonThemeServices.DrawElement(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
 var
@@ -171,6 +193,8 @@ begin
     case Details.Element of
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
+      // teHeader: TODO: for grid
+      teRebar: DrawRebarElement(Context, Details, R, ClipRect);
     end;
   end;
 end;
