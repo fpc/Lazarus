@@ -143,17 +143,14 @@ begin
 
   UnregisterFindGlobalComponentProc(@FindApplicationComponent);
 
-  DebugLn(['TApplication.Destroy AAA6']);
   inherited Destroy;
 
   Include(FFlags,AppDoNotCallAsyncQueue);
-  DebugLn(['TApplication.Destroy AAA7']);
   ProcessAsyncCallQueue;
 
   // restore exception handling
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
-  DebugLn(['TApplication.Destroy END']);
 end;
 
 {------------------------------------------------------------------------------
