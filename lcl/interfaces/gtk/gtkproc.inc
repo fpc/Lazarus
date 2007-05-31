@@ -4546,12 +4546,11 @@ begin
       exit;
     end;
   {$IFDEF Gtk2}
-  end
-  else if GtkWidgetIsA(TheWidget,GTK_TYPE_NOTEBOOK) then begin
+  end else if GtkWidgetIsA(TheWidget,GTK_TYPE_NOTEBOOK) then begin
     GetNoteBookClientOrigin(PGtkNoteBook(TheWidget));
     exit;
-  end;
   {$ENDIF}
+  end;
   Result:=GetWidgetOrigin(TheWidget);
 end;
 
