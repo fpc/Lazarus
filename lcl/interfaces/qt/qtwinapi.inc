@@ -2376,6 +2376,23 @@ begin
   {$Endif}
 end;
 
+function TQtWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+var
+  Painter: QPainterH;
+begin
+  Result := False;
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseQTWinAPI}
+    WriteLn('Trace:< [WinAPI RoundRect] DC Invalid, result=', result);
+    {$Endif}
+    exit;
+  end;
+
+  Painter := TQtDeviceContext(Dc).Widget;
+  QPainter_drawRoundRect(Painter, X1, Y1, X2, Y2, RX, RY);
+  Result := True;
+end;
 {------------------------------------------------------------------------------
   Function: SaveDC: save DC state information to a stack
   Params:  DC

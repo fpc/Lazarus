@@ -461,6 +461,7 @@ end;
 class procedure TQtWSCustomListBox.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtListWidget(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -591,8 +592,22 @@ class function TQtWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtTextEdit: TQtTextEdit;
+  Method: TMethod;
+  Hook : QTextEdit_hookH;
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
+  
+  Hook := QTextEdit_hook_create(QtTextEdit.Widget);
+
+  TEventFilterMethod(Method) := QtTextEdit.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
+   workaround: add try..except around SetLength() }
+  QTextEdit_textChanged_Event(Method) := QtTextEdit.SignalTextChanged;
+  QTextEdit_hook_hook_textChanged(QTextEdit_hook_create(QtTextEdit.Widget), Method);
+
   Result := THandle(QtTextEdit);
 end;
 
@@ -728,6 +743,11 @@ begin
   TEventFilterMethod(Method) := QtLineEdit.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
+  
+  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
+   workaround: add try..except around SetLength() }
+  QLineEdit_textChanged_Event(Method) := QtLineEdit.SignalTextChanged;
+  QLineEdit_hook_hook_textChanged(QLineEdit_hook_create(QtLineEdit.Widget), Method);
 
   Result := THandle(QtLineEdit);
 end;

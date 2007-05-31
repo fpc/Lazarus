@@ -261,8 +261,8 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-     procedure SetTickPosition(Value: QSliderTickPosition);
-     procedure SetTickInterval(Value: Integer);
+    procedure SetTickPosition(Value: QSliderTickPosition);
+    procedure SetTickInterval(Value: Integer);
     procedure SlotSliderMoved(p1: Integer); cdecl; override;
     procedure SlotValueChanged(p1: Integer); cdecl; override;
     procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; override;
@@ -278,6 +278,7 @@ type
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SetColor(const Value: PQColor); override;
+    procedure SignalTextChanged(p1: PWideString); cdecl;
   end;
 
   { TQtTextEdit }
@@ -290,6 +291,7 @@ type
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     procedure SetAlignment(const AAlignment: TAlignment);
+    procedure SignalTextChanged; cdecl;
   end;
 
   { TQtTabWidget }
@@ -323,14 +325,37 @@ type
     procedure SlotSelect(index: Integer); cdecl;
   end;
 
-  { TQtSpinBox }
-
-  TQtSpinBox = class(TQtWidget)
+  { TQtAbstractSpinBox}
+  
+  TQtAbstractSpinBox = class(TQtWidget)
   private
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    function IsReadOnly: Boolean;
+    procedure SetReadOnly(r: Boolean);
+    procedure SignalEditingFinished; cdecl;
+  end;
+
+  { TQtFloatSpinBox }
+
+  TQtFloatSpinBox = class(TQtAbstractSpinBox)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    procedure SignalValueChanged(p1: Double); cdecl;
+  end;
+  
+  { TQtSpinBox }
+
+  TQtSpinBox = class(TQtAbstractSpinBox)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    procedure SignalValueChanged(p1: Integer); cdecl;
   end;
 
   { TQtAbstractItemView }
@@ -2630,6 +2655,22 @@ begin
   QPalette_destroy(Palette);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtLineEdit.SignalTextChanged
+  Params:  PWideString
+  Returns: Nothing
+
+  Fires OnChange() event of TCustomEdit
+ ------------------------------------------------------------------------------}
+procedure TQtLineEdit.SignalTextChanged(p1: PWideString); cdecl;
+var
+   Msg: TLMessage;
+begin
+   FillChar(Msg, SizeOf(Msg), #0);
+   Msg.Msg := CM_TEXTCHANGED;
+   DeliverMessage(Msg);
+end;
+
 { TQtTextEdit }
 
 function TQtTextEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -2713,6 +2754,22 @@ begin
   QTextCursor_clearSelection(TextCursor);
   QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
   QTextCursor_destroy(TextCursor);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTextEdit.SignalTextChanged
+  Params:  none
+  Returns: Nothing
+
+  Fires OnChange() event of TCustomMemo
+ ------------------------------------------------------------------------------}
+procedure TQtTextEdit.SignalTextChanged; cdecl;
+var
+   Msg: TLMessage;
+begin
+   FillChar(Msg, SizeOf(Msg), #0);
+   Msg.Msg := CM_TEXTCHANGED;
+   DeliverMessage(Msg);
 end;
 
 { TQtTabWidget }
@@ -2914,6 +2971,95 @@ begin
   end;
 end;
 
+{ TQtAbstractSpinBox }
+
+function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSpinBox.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QAbstractSpinBox_create(Parent);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSpinBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtAbstractSpinBox.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSpinBox.Destroy');
+  {$endif}
+
+  QAbstractSpinBox_destroy(QAbstractSpinBoxH(Widget));
+  Widget:=nil;
+
+  inherited Destroy;
+end;
+
+function TQtAbstractSpinBox.IsReadOnly: Boolean;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSpinBox.IsReadOnly');
+  {$endif}
+  Result := QAbstractSpinBox_isReadOnly(QAbstractSpinBoxH(Widget));
+end;
+
+procedure TQtAbstractSpinBox.SetReadOnly(r: Boolean);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSpinBox.SetReadOnly');
+  {$endif}
+  QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(Widget), r);
+end;
+
+procedure TQtAbstractSpinBox.SignalEditingFinished; cdecl;
+var
+   Msg: TLMessage;
+   s: WideString;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSpinBox.SignalEditingFinished');
+  {$endif}
+  FillChar(Msg, SizeOf(Msg), #0);
+  {TODO: What message should be sended here ?!?
+   problem:
+   everything is fine when we work with mouse,or
+   press TabKey to select next control, but if we
+   connect OnKeyDown and say eg. VK_RETURN:SelectNext(ActiveControl, true, true)
+   then spinedit text is always selected, nothing important but looks ugly.}
+//  Msg.Msg := LM_EXIT;
+//  DeliverMessage(Msg);
+end;
+
+{ TQtFloatSpinBox }
+
+function TQtFloatSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtFloatSpinBox.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QDoubleSpinBox_create(Parent);
+end;
+
+procedure TQtFloatSpinBox.SignalValueChanged(p1: Double); cdecl;
+var
+   Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(Msg);
+end;
+
 { TQtSpinBox }
 
 function TQtSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -2928,21 +3074,13 @@ begin
   Result := QSpinBox_create(Parent);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtSpinBox.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtSpinBox.Destroy;
+procedure TQtSpinBox.SignalValueChanged(p1: Integer); cdecl;
+var
+   Msg: TLMessage;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtSpinBox.Destroy');
-  {$endif}
-
-  QSpinBox_destroy(QSpinBoxH(Widget));
-  Widget:=nil;
-
-  inherited Destroy;
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(Msg);
 end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
