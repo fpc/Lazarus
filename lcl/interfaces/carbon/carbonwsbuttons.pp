@@ -68,7 +68,6 @@ type
   private
   protected
   public
-    class procedure DrawFrame(const ASpeedButton: TCustomSpeedButton; const ADrawFlags: Integer; var ARect: TRect); override;
   end;
 
 
@@ -154,31 +153,6 @@ begin
   if not CheckHandle(ABitBtn, Self, 'SetLayout') then Exit;
 
   TCarbonBitBtn(ABitBtn.Handle).SetLayout(AValue);
-end;
-
-{ TCarbonWSSpeedButton }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSSpeedButton.DrawFrame
-  Params:  ASpeedButton - LCL custom speed button
-           ADrawFlags   - Frame draw flags (DFCS_*)
-           ARect        - Frame rectangle, returned adjusted to frame client
-                          area
-
-  Draws a speed button frame according to the specified draw flags in Carbon
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSSpeedButton.DrawFrame(const ASpeedButton: TCustomSpeedButton;
-  const ADrawFlags: Integer; var ARect: TRect);
-var
-  DC: HDC;
-begin
-  if (ADrawFlags and DFCS_FLAT) = 0 then
-  begin
-    DC := ASpeedButton.Canvas.GetUpdatedHandle([csBrushValid, csPenValid]);
-    
-    TCarbonDeviceContext(DC).DrawFrameControl(ARect, DFC_BUTTON, ADrawFlags);
-  end;
-  // TODO: transparent and colored opaque style
 end;
 
 initialization
