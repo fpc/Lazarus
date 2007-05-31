@@ -147,15 +147,15 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 {    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
-    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
@@ -604,6 +604,7 @@ end;
 class procedure TQtWSCustomMemo.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtTextEdit(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
 end;
 
 
@@ -739,6 +740,7 @@ end;
 class procedure TQtWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtLineEdit(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -758,6 +760,37 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetEchoMode
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+begin
+  QLineEdit_setEchoMode(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget),QLineEditEchoMode(Ord(NewMode)));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetMaxLength
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  if NewLength >= 0 then {qt doesn't accept -1 !}
+  QLineEdit_setMaxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget),NewLength);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetReadOnly
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  QLineEdit_setReadOnly(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget), NewReadOnly);
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomEdit.SetText
   Params:  None
   Returns: Nothing
@@ -767,7 +800,6 @@ var
   AString: WideString;
 begin
   AString := UTF8Decode(AText);
-
   QLineEdit_setText(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
 end;
 

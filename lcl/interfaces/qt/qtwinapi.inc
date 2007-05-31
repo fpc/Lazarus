@@ -2869,7 +2869,8 @@ begin
       ScrollBar.Visible := bRedraw;
 
       R := TQtWidget(Handle).LCLObject.ClientRect;
-
+      {if we have -width then av raises }
+      if (R.Right - ScrollBar.Height) >= 0 then
       Scrollbar.Width := R.Right - ScrollBar.Height;
       ScrollBar.Top := R.Bottom - ScrollBar.Height;
     end; {SB_HORZ}
