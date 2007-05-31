@@ -682,6 +682,7 @@ type
     function FindDeclarationNodeInInterface(const Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;
 
+    function FindInitializationSection: TCodeTreeNode;
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationUsesSection: TCodeTreeNode;
 
@@ -1554,6 +1555,14 @@ begin
   Result:=Result.FirstChild;
   if (Result=nil) then exit;
   if (Result.Desc<>ctnUsesSection) then Result:=nil;
+end;
+
+function TFindDeclarationTool.FindInitializationSection: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  while (Result<>nil) and (Result.Desc<>ctnInitialization) do
+    Result:=Result.NextBrother;
 end;
 
 function TFindDeclarationTool.FindDeclarationInUsesSection(
