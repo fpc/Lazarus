@@ -1142,7 +1142,7 @@ var
   Flags: dword;
 Begin
   // flat button border cannot be drawn by DrawFrameControl, draw ourselves
-  if (UType = DFC_BUTTON) or ((UState and DFCS_FLAT) <> 0) then
+  if (UType = DFC_BUTTON) and ((UState and DFCS_FLAT) <> 0) then
   begin
     if (UState and DFCS_PUSHED) <> 0 then
       Flags := BDR_SUNKENOUTER

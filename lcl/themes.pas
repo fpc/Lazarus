@@ -1773,8 +1773,6 @@ begin
   ARect := R; // in order to pass by reference
   if Details.Element in [teButton, teToolBar, teHeader] then
   begin
-    ADrawFlags := DFCS_BUTTONPUSH;
-    
     if Details.Element = teToolBar then
     begin
       //ADrawFlags := ADrawFlags or DFCS_FLAT;
@@ -1790,12 +1788,31 @@ begin
     end
     else
     begin
+      ADrawFlags := DFCS_BUTTONPUSH;
+      if Details.Element = teButton then
+      begin
+        case Details.Part of
+          BP_RADIOBUTTON:
+            begin
+              ADrawFlags := DFCS_BUTTONRADIO;
+              if Details.State >= RBS_CHECKEDNORMAL then
+                ADrawFlags := ADrawFlags or DFCS_CHECKED;
+            end;
+          BP_CHECKBOX:
+            begin
+              ADrawFlags := DFCS_BUTTONCHECK;
+              if Details.State >= CBS_CHECKEDNORMAL then
+                ADrawFlags := ADrawFlags or DFCS_CHECKED;
+            end;
+        end;
+      end;
+
       if IsDisabled(Details) then
         ADrawFlags := ADrawFlags or DFCS_INACTIVE else
       if IsPushed(Details) then
         ADrawFlags := ADrawFlags or DFCS_PUSHED else
       if IsHot(Details) then
-        ADrawFlags := ADrawFlags or DFCS_CHECKED;
+        ADrawFlags := ADrawFlags or DFCS_HOT;
 
       WidgetSet.DrawFrameControl(DC, ARect, DFC_BUTTON, ADrawFlags);
     end;
