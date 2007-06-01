@@ -4031,7 +4031,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('main path addition',
     Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
     SrcPathMacroName,
-    '../ide;'+SrcPath
+     d('../ide;'+SrcPath)
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
