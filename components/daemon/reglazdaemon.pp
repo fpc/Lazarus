@@ -107,7 +107,7 @@ end;
 
 function TDaemonFileDescriptor.GetInterfaceUsesSection: String;
 begin
-  Result:=inherited GetInterfaceUsesSection+', LResources, daemonapp';
+  Result:=inherited GetInterfaceUsesSection+', daemonapp';
 end;
 
 function TDaemonFileDescriptor.GetImplementationSource(const Filename,
