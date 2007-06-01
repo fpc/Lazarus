@@ -1551,6 +1551,45 @@ begin
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
+{$IFDEF Gtk2}
+function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
+  data: gPointer): GBoolean; cdecl;
+var
+  AWinControl: TWinControl;
+  EventXY: TPoint;
+  ShiftState: TShiftState;
+  MappedXY: TPoint;
+  MessE : TLMMouseEvent;
+begin
+  Result := CallBackDefaultReturn;
+
+  AWinControl:=TWinControl(Data);
+  EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
+  ShiftState := GTKEventStateToShiftState(Event^.State);
+  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
+                                          PGtkWidget(AWinControl.Handle));
+  //DebugLn('gtkMouseWheelCB ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
+
+  // this is a mouse wheel event
+  FillChar(MessE,SizeOf(MessE),0);
+  MessE.Msg := LM_MOUSEWHEEL;
+  case event^.direction of
+  GDK_SCROLL_UP: MessE.WheelDelta:=-1;
+  GDK_SCROLL_DOWN: MessE.WheelDelta:=1;
+  else exit;
+  end;
+  MessE.X := MappedXY.X;
+  MessE.Y := MappedXY.Y;
+  MessE.State := ShiftState;
+  MessE.UserData := AWinControl;
+  MessE.Button := 0;
+
+  // send the message directly to the LCL
+  NotifyApplicationUserInput(MessE.Msg);
+  DeliverMessage(AWinControl, MessE);
+end;
+{$ENDIF}
+
 {-------------------------------------------------------------------------------
   function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 

@@ -160,6 +160,10 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
                           data: gPointer): GBoolean; cdecl;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event: pgdkEventButton;
                                data: gPointer): GBoolean; cdecl;
+{$IFDEF Gtk2}
+function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
+                         data: gPointer): GBoolean; cdecl;
+{$ENDIF}
 function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 procedure DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
                                 AWinControl: TWinControl);
