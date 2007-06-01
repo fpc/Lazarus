@@ -802,24 +802,24 @@ begin
   gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
 end;
 
-procedure UpdateMenuItemsCB(AMenuItem: PGtkBin; WidgetInfo: PWidgetInfo); cdecl;
+procedure UpdateComboItemsCB(AComboItem: PGtkBin; WidgetInfo: PWidgetInfo); cdecl;
 var
   renderer : PGtkCellRenderer;
   AItem: PGtkCellLayout;
   // AItem is really a GtkCellView which implements GtkCellRenderer
 begin
-  AItem :=  PGtkCellLayout(AMenuItem^.child);
+  AItem :=  PGtkCellLayout(AComboItem^.child);
   //WriteLn(G_OBJECT_CLASS_NAME(GTK_WIDGET_GET_CLASS(PGtkWidget(AItem))));
 
-  if g_object_get_data(G_OBJECT(AItem), 'MenuItem') <> nil then exit;
+  if g_object_get_data(G_OBJECT(AItem), 'ComboItem') <> nil then exit;
 
   renderer := LCLIntfCellRenderer_New();
   gtk_cell_layout_clear(AItem);
   gtk_cell_layout_pack_start(AItem, renderer, True);
   gtk_cell_layout_set_attributes(AItem, renderer, ['text', 0, nil]);
   SetMainWidget(WidgetInfo^.CoreWidget, AItem);
-  g_object_set_data(G_OBJECT(AItem), 'MenuItem', AMenuItem);
-  g_object_set_data(G_OBJECT(renderer), 'MenuItem', AMenuItem);
+  g_object_set_data(G_OBJECT(AItem), 'ComboItem', AComboItem);
+  g_object_set_data(G_OBJECT(renderer), 'ComboItem', AComboItem);
 end;
 
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
@@ -829,7 +829,7 @@ begin
   
   // here we insure that the combo's menu items are using our internal renderer
   // so we can use custom drawing
-  g_list_foreach(AMenu^.children, TGFunc(@UpdateMenuItemsCB), WidgetInfo);
+  g_list_foreach(AMenu^.children, TGFunc(@UpdateComboItemsCB), WidgetInfo);
 end;
 
 procedure GtkPopupHideCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;

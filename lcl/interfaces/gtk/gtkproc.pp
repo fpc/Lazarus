@@ -681,7 +681,7 @@ procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
-function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+function CreateMenuItem(LCLMenuItem: TMenuItem): PGtkWidget;
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 

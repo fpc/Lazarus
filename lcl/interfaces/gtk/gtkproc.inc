@@ -2118,6 +2118,21 @@ var
             end;
             AControl:=AForm.Parent;
           until AControl=nil;
+          
+          {$IFDEF Gtk2}
+          // check main menu of MainForm
+          if (Application.MainForm<>nil) then begin
+            AControl:=TControl(AComponent);
+            AForm:=GetParentForm(AControl);
+            if (AForm<>nil)
+            and (not (fsModal in AForm.FormState))
+            and (not Application.MainForm.IsParentOf(AControl))
+            and (Application.MainForm.Menu<>nil) then begin
+              Result:=CheckMenuChilds(Application.MainForm.Menu.Items);
+              if Result then exit;
+            end;
+          end;
+          {$ENDIF}
           {debugln('KeyActivatedAccelerator call TControl.DialogChar');
           if TControl(AComponent).DialogChar(Msg.CharCode) then begin
             debugln('KeyActivatedAccelerator C handled by LCL');
@@ -6060,11 +6075,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+  function CreateMenuItem(LCLMenuItem: TMenuItem): PGtkWidget;
 
   Creates a new menuitem widget.
  ------------------------------------------------------------------------------}
-function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+function CreateMenuItem(LCLMenuItem: TMenuItem): PGtkWidget;
 var
   MenuItemWidget: PGtkWidget;
 begin
@@ -6108,6 +6123,15 @@ begin
 
   // create the hbox containing the label and the icon
   UpdateInnerMenuItem(LCLMenuItem,MenuItemWidget);
+
+  // connect activate signal (i.e. clicked)
+  g_signal_connect(PGTKObject(MenuItemWidget), 'activate',
+                   TGTKSignalFunc(@gtkactivateCB), LCLMenuItem);
+
+  // MWE: next will be obsoleted by WinWidgetInfo
+  SetLCLObject(MenuItemWidget, LCLMenuItem);
+  gtk_object_set_data(PGtkObject(MenuItemWidget), 'Style',GtkNil);
+  gtk_object_set_data(PGtkObject(MenuItemWidget), 'ExStyle',GtkNil);
 
   gtk_widget_show(MenuItemWidget);
   Result:=MenuItemWidget;

@@ -374,9 +374,6 @@ uses
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals;
 
-const
-  GtkNil = nil;
-
 {$I gtklistsl.inc}
 {$I gtkfiledialogutils.inc}
 {$I gtkobject.inc}

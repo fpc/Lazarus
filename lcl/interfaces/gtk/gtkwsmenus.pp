@@ -152,9 +152,17 @@ begin
 end;
 
 class function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+var
+  MenuItemWidget: PGtkWidget;
 begin
-  { TODO: cleanup }
-  Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenuItem));
+  //Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenuItem));
+  MenuItemWidget:=CreateMenuItem(AMenuItem);
+  //Set_RC_Name(AMenuItem,MenuItemWidget);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(MenuItemWidget,dbgsName(AMenuItem));
+  {$ENDIF}
+  Result := THandle(MenuItemWidget);
 end;
 
 class procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);

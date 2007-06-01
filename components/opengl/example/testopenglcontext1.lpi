@@ -11,7 +11,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -38,7 +38,7 @@
         <Filename Value="testopenglcontext1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestOpenGLContext1"/>
-        <CursorPos X="48" Y="10"/>
+        <CursorPos X="8" Y="10"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="142"/>
@@ -50,8 +50,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
         <UnitName Value="MainUnit"/>
-        <CursorPos X="19" Y="20"/>
-        <TopLine Value="1"/>
+        <CursorPos X="29" Y="28"/>
+        <TopLine Value="11"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="142"/>
         <Loaded Value="True"/>
@@ -60,6 +60,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <SearchPaths>
+      <LCLWidgetType Value="gtk"/>
+    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>

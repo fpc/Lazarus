@@ -5274,7 +5274,7 @@ begin
     end;
 
   csMenuItem :
-    p:=CreateMenuItem(TMenuItem(Sender));
+    RaiseGDBException('obsolete call');
 
   csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender,true);

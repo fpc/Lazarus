@@ -151,6 +151,6 @@ procedure gtk_color_selection_set_current_color(colorsel: PGTKColorSelection;
 var
   FirstScreen: TPoint;
 
-
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
+  

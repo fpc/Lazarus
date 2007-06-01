@@ -30,6 +30,9 @@ uses
 
 {$I dragicons.inc}
 
+const
+  GtkNil = nil;
+
 var
   // gtk-interface options
   UseTransientForModalWindows: boolean;
