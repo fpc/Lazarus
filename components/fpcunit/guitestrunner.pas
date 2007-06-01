@@ -126,6 +126,7 @@ type
     procedure PaintNodeNonFailed(aNode: TTreeNode);
     procedure PaintNodeBusy(aNode: TTreeNode);
     procedure MemoLog(LogEntry: string);
+    procedure EnableRunActions(AValue: boolean);
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
     procedure AddError(ATest: TTest; AError: TTestFailure);
@@ -499,6 +500,12 @@ begin
   Memo1.Lines.Add(TimeToStr(Now) + ' - ' + LogEntry);
 end;
 
+procedure TGUITestRunner.EnableRunActions(AValue: boolean);
+begin
+  ActRunHighlightedTest.Enabled := AValue;
+  RunAction.Enabled := AValue;
+end;
+
 
 procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
 var
@@ -608,6 +615,7 @@ begin
   errorCounter := 0;
   testsCounter := 0;
   skipsCounter := 0;
+  EnableRunActions(false);
   testResult := TTestResult.Create;
   try
     SkipUncheckedTests(testResult, TestTree.Selected);
@@ -638,6 +646,8 @@ begin
 
     pbBar.Invalidate;
    finally
+    EnableRunActions(true);
+
     m.free;
     w.Free;
     testResult.Free;
