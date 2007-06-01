@@ -1378,6 +1378,8 @@ procedure TMainIDE.SetupSpeedButtons;
   function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
     var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
     const AOnClick: TNotifyEvent; const AHint: String): TSpeedButton;
+  var
+    B: TBitmap;
   begin
     Result := TSpeedButton.Create(OwningComponent);
     with Result do
@@ -1388,7 +1390,9 @@ procedure TMainIDE.SetupSpeedButtons;
       Top := ATop;
       Left := ALeft;
       OnClick := AOnClick;
-      Glyph.LoadFromLazarusResource(APixName);
+      B := LoadBitmapFromLazarusResource(APixName);
+      Glyph := B;
+      B.Free;
       NumGlyphs := ANumGlyphs;
       Flat := True;
       //Transparent:=True;
@@ -1428,7 +1432,7 @@ begin
   ButtonLeft := n+12+1;
 
   MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'menu_save_16_dual'   , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
-  MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_saveall_16', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
+  MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_save_all', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
   MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
   MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform' , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
