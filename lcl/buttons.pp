@@ -314,7 +314,9 @@ type
   private
     procedure DoBeforeMouseMessage;
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
+    procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
   protected
     FState: TButtonState;
     function GetNumGlyphs: Integer;

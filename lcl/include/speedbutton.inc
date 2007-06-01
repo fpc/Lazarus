@@ -40,7 +40,7 @@ begin
   FGlyph.OnChange := @GlyphChanged;
 
   SetInitialBounds(0, 0, 23, 22);
-  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption];
+  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents];
 
   FLayout:= blGlyphLeft;
   FAllowAllUp:= false;
@@ -697,6 +697,24 @@ begin
   if not (csNoStdEvents in ControlStyle)
   then with Message do
     MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+end;
+
+procedure TCustomSpeedButton.WMLButtonDown(var Message: TLMLButtonDown);
+begin
+  inherited;
+  
+  // because csClickEvents is not set no csClicked is set in the inherited method
+  Include(FControlState, csClicked);
+end;
+
+procedure TCustomSpeedButton.WMLButtonDBLCLK(var Message: TLMLButtonDblClk);
+begin
+  inherited;
+  
+  // if in a group, raise dblclick event, otherwise translate to click event
+  if Down
+    then DblClick
+    else Click;
 end;
 
 {------------------------------------------------------------------------------
