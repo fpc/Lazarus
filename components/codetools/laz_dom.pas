@@ -758,8 +758,8 @@ function CompareDOMStrings(const s1, s2: DOMPChar; l1, l2: integer): integer;
 var i: integer;
 begin
   Result:=l1-l2;
-  i:=1;
-  while (i<=l1) and (Result=0) do begin
+  i:=0;
+  while (i<l1) and (Result=0) do begin
     Result:=ord(s1[i])-ord(s2[i]);
     inc(i);
   end;
