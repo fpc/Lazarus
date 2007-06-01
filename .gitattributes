@@ -2035,6 +2035,7 @@ images/debugger/debugger_call_stack.png -text svneol=unset#image/png
 images/debugger/debugger_evaluate.png -text svneol=unset#images/png
 images/debugger/debugger_inspect.png -text svneol=unset#images/png
 images/debugger/debugger_modify.png -text svneol=unset#images/png
+images/debugger/debugger_options.png -text svneol=unset#image/png
 images/debugger/debugger_output.png -text svneol=unset#image/png
 images/debugger/debugger_watches.png -text svneol=unset#image/png
 images/designer/anchorbottombottom.xpm -text svneol=native#image/x-xpixmap

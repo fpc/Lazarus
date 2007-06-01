@@ -714,7 +714,7 @@ begin
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',
                    lisMenuEditCodeTemplates,'');
     CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',
-                   lisMenDebuggerOptions,'');
+                   lisMenDebuggerOptions,'debugger_options');
     CreateMenuItem(ParentMI,itmEnvCodeToolsOptions,'itmEnvCodeToolsOptions',
                    lisMenuCodeToolsOptions,'menu_codetoolsoptions');
     CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,
