@@ -71,6 +71,26 @@ begin
                   Result.Detail := 'button';
                   Result.Painter := gptBox;
                 end;
+              BP_RADIOBUTTON:
+                begin
+                  Result.State := GtkRadioMap[Details.State];
+                  if Details.State >= RBS_CHECKEDNORMAL then
+                    Result.Shadow := GTK_SHADOW_IN
+                  else
+                    Result.Shadow := GTK_SHADOW_OUT;
+                  Result.Detail := 'radiobutton';
+                  Result.Painter := gptOption;
+                end;
+              BP_CHECKBOX:
+                begin
+                  Result.State := GtkRadioMap[Details.State];
+                  Result.Detail := 'checkbutton';
+                  if Details.State >= CBS_CHECKEDNORMAL then
+                    Result.Shadow := GTK_SHADOW_IN
+                  else
+                    Result.Shadow := GTK_SHADOW_OUT;
+                  Result.Painter := gptCheck;
+                end;
             end;
           end;
         teToolBar:

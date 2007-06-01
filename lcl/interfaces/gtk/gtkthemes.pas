@@ -84,6 +84,19 @@ const
 { defaulted/checked } GTK_STATE_ACTIVE,
 { hot + checked     } GTK_STATE_INSENSITIVE // PRELIGHT IS TOO LIGHT
   );
+  GtkRadioMap: array[0..8] of TGtkStateType =
+  (
+{ Filler            } GTK_STATE_NORMAL,
+{ UNCHECKEDNORMAL   } GTK_STATE_NORMAL,
+{ UNCHECKEDHOT      } GTK_STATE_PRELIGHT,
+{ UNCHECKEDPRESSED  } GTK_STATE_ACTIVE,
+{ UNCHECKEDDISABLED } GTK_STATE_INSENSITIVE,
+{ CHECKEDNORMAL     } GTK_STATE_NORMAL,
+{ CHECKEDHOT        } GTK_STATE_PRELIGHT,
+{ CHECKEDPRESSED    } GTK_STATE_ACTIVE,
+{ CHECKEDDISABLED   } GTK_STATE_INSENSITIVE
+  );
+
   
 implementation
 
@@ -127,7 +140,7 @@ begin
       Result.IsHot := False;
 
       case Details.Element of
-        teButton, teHeader:
+        teButton, teHeader: // header => todo?
           begin
             case Details.Part of
               BP_PUSHBUTTON:
@@ -142,6 +155,26 @@ begin
 
                   Result.Detail := 'button';
                   Result.Painter := gptBox;
+                end;
+              BP_RADIOBUTTON:
+                begin
+                  Result.State := GtkRadioMap[Details.State];
+                  if Details.State >= RBS_CHECKEDNORMAL then
+                    Result.Shadow := GTK_SHADOW_IN
+                  else
+                    Result.Shadow := GTK_SHADOW_OUT;
+                  Result.Detail := 'radiobutton';
+                  Result.Painter := gptOption;
+                end;
+              BP_CHECKBOX:
+                begin
+                  Result.State := GtkRadioMap[Details.State];
+                  Result.Detail := 'checkbutton';
+                  if Details.State >= CBS_CHECKEDNORMAL then
+                    Result.Shadow := GTK_SHADOW_IN
+                  else
+                    Result.Shadow := GTK_SHADOW_OUT;
+                  Result.Painter := gptCheck;
                 end;
             end;
           end;
