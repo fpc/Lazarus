@@ -677,7 +677,6 @@ begin
 end;
 
 procedure TCustomSplitter.Paint;
-{$ifdef UseThemes}
 const
   GripperSize = 30; // todo: look at gtk size
   GripperDetailsPart: array[Boolean] of TThemedRebar =
@@ -689,11 +688,9 @@ var
   ARect, GripperRect: TRect;
   BgPart: TThemedRebar;
   BgDetails, GripperDetails: TThemedElementDetails;
-{$endif}
 begin
   inherited Paint;
 
-{$ifdef UseThemes}
   ARect := ClientRect;
   GripperDetails := ThemeServices.GetElementDetails(GripperDetailsPart[ResizeAnchor in [akLeft,akRight]]);
 
@@ -732,9 +729,6 @@ begin
   end;
     
   ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect, nil);
-{$else}
-  TWSCustomSplitterClass(WidgetSetClass).DrawSplitter(Self);
-{$endif}
 end;
 
 procedure TCustomSplitter.MouseEnter;

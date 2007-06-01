@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Math, Types,
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType;
+  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes;
 
 type
 
@@ -50,6 +50,8 @@ type
   private
     App: QApplicationH;
     SavedDCList: TList;
+  protected
+    function CreateThemeServices: TThemeServices; override;
   public
     function LCLPlatform: TLCLPlatform; override;
     // Application
@@ -140,6 +142,7 @@ uses
  QtWSSpin,
  QtWSStdCtrls,
 // QtWSToolwin,
+ QtThemes,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,
   // Bindings
