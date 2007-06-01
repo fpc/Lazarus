@@ -238,7 +238,7 @@ end;
 
 function TDaemonMapperDescriptor.GetInterfaceUsesSection: String;
 begin
-  Result:=inherited GetInterfaceUsesSection+', LResources, daemonapp';
+  Result:=inherited GetInterfaceUsesSection+', daemonapp';
 end;
 
 function TDaemonMapperDescriptor.GetImplementationSource(const Filename,
