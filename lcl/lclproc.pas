@@ -249,6 +249,8 @@ procedure DebuglnThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(Args: array of const); overload;
 procedure DebuglnThreadLog; overload;
 
+procedure CloseDebugOutput;
+
 // some string manipulation functions
 function StripLN(const ALine: String): String;
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String; overload;
@@ -1301,13 +1303,19 @@ begin
     DebugTextAllocated := true;
 end;
 
-procedure FinalizeDebugOutput;
+procedure CloseDebugOutput;
 begin
   if DebugTextAllocated then begin
     Close(DebugText^);
     Dispose(DebugText);
     DebugTextAllocated := false;
   end;
+  DebugText := nil;
+end;
+
+procedure FinalizeDebugOutput;
+begin
+  CloseDebugOutput;
 end;
 
 procedure DebugLn(Args: array of const);
