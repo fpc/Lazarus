@@ -819,6 +819,7 @@ begin
   gtk_cell_layout_set_attributes(AItem, renderer, ['text', 0, nil]);
   SetMainWidget(WidgetInfo^.CoreWidget, AItem);
   g_object_set_data(G_OBJECT(AItem), 'ComboItem', AComboItem);
+  // used in gtk2cellrenderer. if you change this update cellrenderer as well - AH
   g_object_set_data(G_OBJECT(renderer), 'ComboItem', AComboItem);
 end;
 

@@ -119,7 +119,8 @@ begin
       ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
   end
   else if AWinControl is TCustomComboBox then begin
-    MenuItem := g_object_get_data(G_OBJECT(cell), 'MenuItem');
+    // ComboItem is set in gtk2wsstdctrls
+    MenuItem := g_object_get_data(G_OBJECT(cell), 'ComboItem');
     if MenuItem <> nil then begin
       Menu := PGtkMenuShell(gtk_widget_get_parent(PGtkWidget(MenuItem)));
       if Menu <> nil then
