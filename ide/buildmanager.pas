@@ -26,6 +26,7 @@
  *                                                                         *
  ***************************************************************************
 }
+{%RunCommand $MakeEx e($(EdFile))}
 unit BuildManager;
 
 {$mode objfpc}{$H+}
@@ -114,6 +115,7 @@ type
 
     function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename: string; override;
+    function GetProjectUsesAppBundle: Boolean; override;
     function GetTestProjectFilename: string; override;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
     function GetTestBuildDirectory: string; override;
@@ -310,6 +312,18 @@ end;
 function TBuildManager.GetRunCommandLine: string;
 var
   TargetFileName: string;
+  
+  function GetTargetFilename: String;
+  begin
+    Result := GetProjectTargetFilename;
+    
+    if GetProjectUsesAppBundle then
+    begin
+      // return command line to Application Bundle (darwin only)
+      Result := ExtractFileNameWithoutExt(Result) + '.app';
+    end;
+  end;
+  
 begin
   if Project1.RunParameterOptions.UseLaunchingApplication then
     Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
@@ -320,7 +334,7 @@ begin
   then begin
     Result:=Project1.RunParameterOptions.CmdLineParams;
     if GlobalMacroList.SubstituteStr(Result) then begin
-      TargetFileName:='"'+GetProjectTargetFilename+'"';
+      TargetFileName:='"'+GetTargetFilename+'"';
       if Result='' then
         Result:=TargetFileName
       else
@@ -360,11 +374,17 @@ begin
       Result:=GetTestProjectFilename
     else begin
       if Project1.MainUnitID>=0 then begin
-        Result:=
-          Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename)
+        Result :=
+          Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
       end;
     end;
   end;
+end;
+
+function TBuildManager.GetProjectUsesAppBundle: Boolean;
+begin
+  Result := (Project1.RunParameterOptions.HostApplicationFilename = '') and
+    (GetTargetOS(False) = 'darwin') and Project1.UseAppBundle;
 end;
 
 function TBuildManager.GetTestProjectFilename: string;

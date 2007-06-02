@@ -495,10 +495,6 @@ type
     FCheckFilesOnDiskNeeded: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
 
-    {$IFDEF DoNotUseProcessDebugger}
-    FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
-    {$ENDIF}
-
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
     
     FRenamingComponents: TFPList; // list of TComponents currently renaming
@@ -8232,9 +8228,6 @@ end;
 function TMainIDE.DoInitProjectRun: TModalResult;
 var
   ProgramFilename: string;
-  {$IFDEF DoNotUseProcessDebugger}
-  WorkingDir: String;
-  {$ENDIF}
 begin
   if ToolStatus <> itNone
   then begin
@@ -8267,45 +8260,8 @@ begin
   end;
 
   // Setup debugger
-{$IFNDEF DoNotUseProcessDebugger}
-  if not DebugBoss.InitDebugger
-  then Exit;
-{$ELSE}
-  if EnvironmentOptions.DebuggerClass <> ''
-  then begin
-    if not DebugBoss.InitDebugger
-    then Exit;
-  end
-  else begin
-    // Temp solution, in future it will be run by dummy debugger
-    try
-      CheckIfFileIsExecutable(ProgramFilename);
-      FRunProcess := TProcess.Create(nil);
-      FRunProcess.CommandLine := GetRunCommandLine;
-      WorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-      if WorkingDir='' then
-        WorkingDir:=ExtractFilePath(GetProjectTargetFilename);
-      if not GlobalMacroList.SubstituteStr(WorkingDir) then begin
-        Result:=mrCancel;
-        exit;
-      end;
-      FRunProcess.CurrentDirectory:=ExpandFilename(WorkingDir);
-      Project1.RunParameterOptions.AssignEnvironmentTo(FRunProcess.Environment);
-      // Console applications in win32 need a new console
-      if (GetTargetOS='win32') and
-        not Project1.CompilerOptions.Win32GraphicApp then
-        FRunProcess.Options:= [poNewConsole]
-      else
-        FRunProcess.Options:= [poNoConsole];
-      FRunProcess.ShowWindow := swoShowNormal;
-    except
-      on e: Exception do
-        MessageDlg(Format(lisErrorInitializingProgramSErrorS,
-          [#13, '"', ProgramFilename, '"', #13, e.Message]), mterror,[mbok], 0);
-    end;
-  end;
-{$ENDIF}
-
+  if not DebugBoss.InitDebugger then Exit;
+  
   Result := mrOK;
   ToolStatus := itDebugger;
 end;
@@ -8324,38 +8280,8 @@ begin
 
   Result := mrCancel;
 
-  {$IFNDEF DoNotUseProcessDebugger}
   Result := DebugBoss.RunDebugger;
 //  if Result<>mrOk then exit;
-  {$ELSE}
-  if EnvironmentOptions.IsDebuggerClassDefined
-  then begin
-    Result := DebugBoss.RunDebugger;
-    if Result<>mrOk then exit;
-  end else begin
-    DebugLn('NOTE: No debugger defined. Starting program without debugging ...');
-    // no debugger, just start the program
-    try
-      if FRunProcess = nil then Exit;
-      try
-        DebugLn('  EXECUTING "',FRunProcess.CommandLine,'"');
-        DebugLn('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
-        // just run the program and don't care (no watch, no debugging)
-        // just check from time to time, if it has terminated and clean up
-        GetDefaultProcessList.Add(FRunProcess);
-        FRunProcess.Execute;
-        Result := mrOk;
-      except
-        on e: Exception do
-          MessageDlg(Format(lisErrorInitializingProgramSErrorS,
-            [#13, '"', FRunProcess.CommandLine, '"', #13, e.Message]),
-            mtError, [mbOk], 0);
-      end;
-    finally
-      ToolStatus:=itNone;
-    end;
-  end;
-  {$ENDIF}
 
   DebugLn('[TMainIDE.DoRunProject] END');
 end;
@@ -11865,7 +11791,7 @@ var
     CTResult: Boolean;
     RenamedMethods: TStringList;
   begin
-    PropCount:=GetPropList(AComponent,PropList);
+    PropCount:=GetPropList(PTypeInfo(AComponent.ClassInfo),PropList);
     if PropCount=0 then exit;
     RenamedMethods:=nil;
     try

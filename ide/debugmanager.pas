@@ -1639,29 +1639,42 @@ begin
   Result := False;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
 
-  LaunchingCmdLine := BuildBoss.GetRunCommandLine;
-  SplitCmdLine(LaunchingCmdLine,LaunchingApplication, LaunchingParams);
-  if not FileIsExecutable(LaunchingApplication)
-  then begin
-    MessageDlg(lisLaunchingApplicationInvalid,
-      Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-        LaunchingCmdLine, '"', #13, #13, #13]),
-      mtError, [mbOK],0);
-    Exit;
-  end;
-
   DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
-  if DebuggerClass = nil
-  then begin
-    {$IFNDEF DoNotUseProcessDebugger}
+  if DebuggerClass = nil then
     DebuggerClass := TProcessDebugger;
-    {$ELSE}
-    if FDebugger <> nil
-    then FreeDebugger;
-    DebugLn('TDebugManager.InitDebugger debugger class not found');
-    Exit;
-    {$ENDIF}
-  end;
+
+  LaunchingCmdLine := BuildBoss.GetRunCommandLine;
+    
+  SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
+  
+  if BuildBoss.GetProjectUsesAppBundle then
+  begin
+    // it is Application Bundle (darwin only)
+    
+    if not DirectoryExists(LaunchingApplication) then
+    begin
+      MessageDlg(lisLaunchingApplicationInvalid,
+        Format(lisTheLaunchingApplicationBundleDoesNotExists, ['"',
+          LaunchingCmdLine, '"', #13, #13, #13]),
+        mtError, [mbOK],0);
+      Exit;
+    end;
+    
+    if DebuggerClass = TProcessDebugger then
+    begin // set open command for running Application Bundle (darwin only)
+      LaunchingApplication := 'open';
+      LaunchingParams := LaunchingCmdLine;
+    end;
+  end
+  else
+    if not FileIsExecutable(LaunchingApplication)
+    then begin
+      MessageDlg(lisLaunchingApplicationInvalid,
+        Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
+          LaunchingCmdLine, '"', #13, #13, #13]),
+        mtError, [mbOK],0);
+      Exit;
+    end;
   
   //todo: this check depends on the debugger class
   if (DebuggerClass <> TProcessDebugger)

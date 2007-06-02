@@ -170,9 +170,7 @@ var
 begin
   List := TStringList.Create;
   List.Sorted := True;
-  {$IFDEF DoNotUseProcessDebugger}
-  List.AddObject('(none)', TObject(-1)); // temporary manual coded
-  {$ENDIF}
+
   CurClass := nil;
   for n := 0 to DebugBoss.DebuggerCount - 1 do
   begin

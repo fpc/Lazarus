@@ -494,6 +494,7 @@ type
     fFirst: array[TUnitInfoList] of TUnitInfo;
 
     fDestroying: boolean;
+    FUseAppBundle: Boolean;
     fIconPath: String;
     FJumpHistory: TProjectJumpHistory;
     FLastCompilerFileDate: integer;
@@ -754,6 +755,7 @@ type
     property PublishOptions: TPublishProjectOptions
                                      read FPublishOptions write FPublishOptions;
     property RunParameterOptions: TRunParamsOptions read FRunParameterOptions;
+    property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
@@ -1560,6 +1562,7 @@ begin
   ProjectSessionFile:='';
   FSourceDirectories:=TFileReferenceList.Create;
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
+  FUseAppBundle := True;
 
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
@@ -1747,6 +1750,7 @@ begin
       xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',IconPath,'');
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+      xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value',UseAppBundle,True);
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
@@ -2118,6 +2122,7 @@ begin
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
+      UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
 
       // Lazdoc
       LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),

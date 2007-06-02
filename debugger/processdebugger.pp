@@ -161,11 +161,7 @@ end;
 
 class function TProcessDebugger.Caption: String;
 begin
-  {$IFDEF DoNotUseProcessDebugger}
-  Result := 'Execute process only';
-  {$ELSE}
   Result := '(none)';
-  {$ENDIF}
 end;
 
 class function TProcessDebugger.HasExePath: boolean;

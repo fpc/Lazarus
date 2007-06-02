@@ -1285,6 +1285,7 @@ resourcestring
   dlgPOTitle = 'Title:';
   dlgPOOutputSettings = 'Output Settings';
   dlgPOTargetFileName = 'Target file name:';
+  dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
   dlgAutoCreateForms = 'Auto-create forms:';
   dlgAvailableForms = 'Available forms:';
   dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';
@@ -2414,6 +2415,10 @@ resourcestring
     +'application %s%s%'
     +'s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> '
     +'Local';
+  lisTheLaunchingApplicationBundleDoesNotExists = 'The launching '
+    +'Application Bundle %s%s%'
+    +'s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> '
+    +'Application.';
 
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'

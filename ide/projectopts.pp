@@ -59,9 +59,9 @@ type
     LazDocPage:    TPage;
     i18nPage: TPage;
     SavePage: TPage;
+    UseAppBundleCheckBox: TCheckBox;
     VersionInfoPage: TPage;
 
-    // Application
     AppSettingsGroupBox: TGroupBox;
     OutputSettingsGroupBox: TGroupBox;
     SelectDirectoryDialog: TSelectDirectoryDialog;
@@ -133,7 +133,6 @@ type
     CancelButton: TButton;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormsPageResize(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
@@ -251,6 +250,8 @@ begin
   OutputSettingsGroupBox.Caption := dlgPOOutputSettings;
   TargetFileLabel.Caption := dlgPOTargetFileName;
   TargetFileEdit.Text := '';
+  UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
+  UseAppBundleCheckBox.Checked := False;
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -348,6 +349,7 @@ begin
   begin
     TitleEdit.Text := Title;
     TargetFileEdit.Text := TargetFilename;
+    UseAppBundleCheckBox.Checked := UseAppBundle;
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
@@ -422,6 +424,7 @@ begin
     begin
       Title := TitleEdit.Text;
       TargetFilename := TargetFileEdit.Text;
+      UseAppBundle := UseAppBundleCheckBox.Checked;
     end;
 
     // flags
@@ -502,11 +505,6 @@ begin
    ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
    if InfoModified then
       Project.Modified:=InfoModified;
-end;
-
-procedure TProjectOptionsDialog.FormCreate(Sender: TObject);
-begin
-
 end;
 
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
