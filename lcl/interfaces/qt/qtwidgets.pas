@@ -468,6 +468,30 @@ type
     function exec: Integer;
   end;
   
+  { TQtAbstractScrollArea }
+  
+  TQtAbstractScrollArea = class(TQtFrame)
+  private
+    FCornerWidget: TQtWidget;
+    FViewPortWidget: TQtWidget;
+    FHScrollbar: TQtScrollBar;
+    FVScrollbar: TQtScrollbar;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    destructor Destroy; override;
+  public
+    function cornerWidget: TQtWidget;
+    function horizontalScrollBar: TQtScrollBar;
+    function verticalScrollBar: TQtScrollBar;
+    function viewport: TQtWidget;
+    procedure setCornerWidget(AWidget: TQtWidget);
+    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setScrollStyle(AScrollStyle: TScrollStyle);
+    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setViewPort(AWidget: TQtWidget);
+  end;
+  
 implementation
 const
   AlignmentMap: array[TAlignment] of QtAlignment =
@@ -3399,6 +3423,206 @@ end;
 function TQtDialog.exec: Integer;
 begin
   Result := QDialog_exec(QDialogH(Widget));
+end;
+
+{ TQtAbstractScrollArea }
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtAbstractScrollArea.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractScrollArea.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QAbstractScrollArea_create(Parent);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtAbstractScrollArea.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.Destroy');
+  {$endif}
+  QAbstractScrollArea_destroy(QAbstractScrollAreaH(Widget));
+  Widget:=nil;
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.cornerWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtAbstractScrollArea.cornerWidget: TQtWidget;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.cornerWidget');
+  {$endif}
+  Result := FCornerWidget;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setCornerWidget
+  Params:  TQtWidget
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setCornerWidget(AWidget: TQtWidget);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.setCornerWidget');
+  {$endif}
+  FCornerWidget := AWidget;
+  if Assigned(FCornerWidget) then
+  QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
+  else
+  QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setHorizontalScrollbar
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setHorizontalScrollBar(AScrollBar: TQtScrollBar);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.setHorizontalScrollBar');
+  {$endif}
+  FHScrollbar := AScrollBar;
+  if Assigned(FHScrollBar) then
+  QAbstractScrollArea_setHorizontalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FHScrollBar.Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setVerticalScrollbar
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setVerticalScrollBar(AScrollBar: TQtScrollBar);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.setVerticalScrollBar');
+  {$endif}
+  FVScrollBar := AScrollBar;
+  if Assigned(FVScrollBar) then
+  QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.horizontalScrollbar
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtAbstractScrollArea.horizontalScrollBar: TQtScrollBar;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.horizontalScrollBar');
+  {$endif}
+  Result := FHScrollBar;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.verticalScrollbar
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtAbstractScrollArea.verticalScrollBar: TQtScrollBar;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.verticalScrollBar');
+  {$endif}
+  Result := FVScrollBar;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.viewport
+  Params:  None
+  Returns: viewport widget of QAbstractScrollArea
+ ------------------------------------------------------------------------------}
+function TQtAbstractScrollArea.viewport: TQtWidget;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.viewport');
+  {$endif}
+  {check viewport}
+  Result := FViewPortWidget;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setViewport
+  Params:  None
+  Returns: Nothing
+           Sets viewport widget of QAbstractScrollArea
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setViewport(AWidget: TQtWidget);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.setViewport');
+  {$endif}
+  FViewPortWidget := AWidget;
+  if Assigned(FViewPortWidget) then
+  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), AWidget.Widget)
+  else
+  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), NiL);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setScrollStyle
+  Params:  None
+  Returns: Nothing
+           Setting scrollbar''s policy (LCL TScrollStyle)
+ -----------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setScrollStyle(AScrollStyle: TScrollStyle);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.setScrollStyle');
+  {$endif}
+  case AScrollStyle of
+    ssNone:
+    begin
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
+    end;
+    ssHorizontal:
+    begin
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+    end;
+    ssVertical:
+    begin
+     QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+    end;
+    ssBoth:
+    begin
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+    end;
+    ssAutoHorizontal:
+    begin
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+    end;
+    ssAutoVertical:
+    begin
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+    end;
+    ssAutoBoth:
+    begin
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+    end;
+  end;
 end;
 
 end.

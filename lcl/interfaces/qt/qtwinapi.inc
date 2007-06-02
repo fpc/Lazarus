@@ -2839,7 +2839,7 @@ begin
     SB_BOTH:
     begin
       {TODO: SB_BOTH fixme }
-      // writeln('TODO: ############## SB_BOTH CALLED HERE .... #################');
+      //writeln('TODO: ############## SB_BOTH CALLED HERE .... #################');
     end; {SB_BOTH}
     
     SB_CTL:
@@ -2879,17 +2879,25 @@ begin
         ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'; {do not localize !}
         ScrollBar.Parent := TQtWidget(Handle).LCLObject;
         ScrollBar.Kind := sbHorizontal;
+        R := TQtWidget(Handle).LCLObject.ClientRect;
+        {if we have -width then av raises }
+        if (R.Right - ScrollBar.Height) >= 0 then
+        Scrollbar.Width := R.Right - ScrollBar.Height;
+        ScrollBar.Top := R.Bottom - ScrollBar.Height;
+        
+        if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
+        begin
+          ScrollBar.Parent := TQtAbstractScrollArea(Handle).LCLObject;
+          TQtAbstractScrollArea(Handle).sethorizontalScrollBar(TQtScrollBar(ScrollBar.Handle));
+          {TODO: howto find ScrollBar style ?!?}
+          TQtAbstractScrollArea(Handle).setScrollStyle(ssAutoHorizontal);
+          TQtAbstractScrollArea(Handle).horizontalScrollBar.Show;
+        end;
       end;
                    
       FRepaint := bRedraw and not ScrollBar.Visible;
-                   
       ScrollBar.Visible := bRedraw;
-
-      R := TQtWidget(Handle).LCLObject.ClientRect;
-      {if we have -width then av raises }
-      if (R.Right - ScrollBar.Height) >= 0 then
-      Scrollbar.Width := R.Right - ScrollBar.Height;
-      ScrollBar.Top := R.Bottom - ScrollBar.Height;
+      
     end; {SB_HORZ}
     
     SB_VERT:
@@ -2907,19 +2915,27 @@ begin
         ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR';  {do not localize !}
         ScrollBar.Parent := TQtWidget(Handle).LCLObject;
         ScrollBar.Kind := sbVertical;
-      end;
-                   
-      FRepaint := bRedraw and not ScrollBar.Visible;
-                   
-      ScrollBar.Visible := bRedraw;
-                   
-      R := TQtWidget(Handle).LCLObject.ClientRect;
-      
-      Scrollbar.Height := R.Bottom;
+        R := TQtWidget(Handle).LCLObject.ClientRect;
 
-      ScrollBar.Top := 0;
-      {TODO: Check why BorderWidth is 0 when BorderStyle is eg. bsSingle ?!? }
-      ScrollBar.Left := R.Right - ScrollBar.Width - (TQtWidget(Handle).LCLObject.BorderWidth * 2);
+        Scrollbar.Height := R.Bottom;
+
+        ScrollBar.Top := 0;
+        {TODO: Check why BorderWidth is 0 when BorderStyle is eg. bsSingle ?!? }
+        ScrollBar.Left := R.Right - ScrollBar.Width;
+        if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
+        begin
+          ScrollBar.Parent := TQtAbstractScrollArea(Handle).LCLObject;
+          TQtAbstractScrollArea(Handle).setVerticalScrollBar(TQtScrollBar(ScrollBar.Handle));
+          {TODO: howto find ScrollBar style ?!?}
+          TQtAbstractScrollArea(Handle).setScrollStyle(ssAutoVertical);
+          TQtAbstractScrollArea(Handle).verticalScrollBar.Show;
+        end;
+
+      end;
+
+      FRepaint := bRedraw and not ScrollBar.Visible;
+      ScrollBar.Visible := bRedraw;
+
     end; {SB_VERT}
     
   end;

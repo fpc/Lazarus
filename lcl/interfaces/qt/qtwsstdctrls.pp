@@ -327,14 +327,14 @@ begin
       QtScrollBar.SetOrientation(QtHorizontal);
       QtScrollBar.setInvertedAppereance(False);
       QTScrollBar.setInvertedControls(False);
-      TScrollBar(AWinControl).Height := TScrollBar(AWinControl).Height + 1;
+      TScrollBar(AWinControl).Height := TScrollBar(AWinControl).Height;
     end;
     sbVertical:
     begin
       QtScrollBar.SetOrientation(QtVertical);
       QtScrollBar.setInvertedAppereance(False);
       QTScrollBar.setInvertedControls(False);
-      TScrollBar(AWinControl).Width := TScrollBar(AWinControl).Width + 1;
+      TScrollBar(AWinControl).Width := TScrollBar(AWinControl).Width;
     end;
   end;
   

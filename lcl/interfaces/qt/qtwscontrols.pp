@@ -99,6 +99,10 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure Invalidate(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSImageList }
@@ -111,6 +115,80 @@ type
 
 
 implementation
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomControl.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function  TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND;
+var
+  QtAbstractScrollArea: TQtAbstractScrollArea;
+  QtWidget: TQtWidget;
+  Method: TMethod;
+  AHook : QAbstractScrollArea_hookH;
+  Hook: QObject_hookH;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('> TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl));
+  {$endif}
+
+  QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
+
+  Hook := QAbstractScrollArea_hook_create(QtAbstractScrollArea.Widget);
+
+  TEventFilterMethod(Method) := QtAbstractScrollArea.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+
+  QtWidget := TQtWidget.Create(QtAbstractScrollArea.LCLObject, AParams);
+
+  // Various Events
+
+  Hook := QObject_hook_create(QtWidget.Widget);
+
+  TEventFilterMethod(Method) := QtWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+
+  QtAbstractScrollArea.setViewport(QtWidget);
+
+  // Finalization
+
+  Result := THandle(QtAbstractScrollArea);
+  
+  {$ifdef VerboseQt}
+    WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
+  {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomControl.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+  if Assigned(TQtAbstractScrollArea(AWinControl.Handle).viewport) then
+  TQtAbstractScrollArea(AWinControl.Handle).viewport.Free;
+  
+  TQtAbstractScrollArea(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomControl.Invalidate
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomControl.Invalidate(const AWinControl: TWinControl);
+begin
+  TQtAbstractScrollArea(AWinControl.Handle).Update;
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtWSWinControl.CanFocus
@@ -329,7 +407,7 @@ initialization
 //  RegisterWSComponent(TControl, TQtWSControl);
   RegisterWSComponent(TWinControl, TQtWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TQtWSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TQtWSCustomControl);
+  RegisterWSComponent(TCustomControl, TQtWSCustomControl);
 //  RegisterWSComponent(TImageList, TQtWSImageList);
 ////////////////////////////////////////////////////
 end.
