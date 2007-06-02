@@ -1167,7 +1167,7 @@ procedure TSourceEditor.FindNext;
 var
   OldOptions: TSynSearchOptions;
 begin
-  if FSourceNoteBook.FIncrementalSearchStr = '' then
+  if LazFindReplaceDialog.FindText = '' then
       StartFindAndReplace(False)
   else if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.fIncrementalSearchStartPos:=FEditor.LogicalCaretXY;
@@ -1190,7 +1190,7 @@ Begin
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoBackwards]
   else
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options+[ssoBackwards];
-  if FSourceNoteBook.FIncrementalSearchStr = '' then
+  if LazFindReplaceDialog.FindText = '' then
     StartFindAndReplace(False)
   else
     DoFindAndReplace;
