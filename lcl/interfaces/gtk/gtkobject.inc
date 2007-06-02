@@ -4530,6 +4530,7 @@ begin
   InitializeCommonDialog(TCommonDialog(FontDialog),SelWidget);
 end;
 
+{$IFDEF GTK1}
 {-------------------------------------------------------------------------------
   function TGtkWidgetSet.CreateComboBox(ComboBoxObject: TObject): Pointer;
 -------------------------------------------------------------------------------}
@@ -4570,6 +4571,7 @@ begin
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(Widget^.entry),guint16(ComboBox.MaxLength));
 end;
+{$ENDIF}
 
 
 procedure TGtkWidgetSet.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer);
@@ -4764,88 +4766,6 @@ begin
   end;
 end;
 
-function TGtkWidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
-var
-  MainWidget: PGtkWidget;
-  i: Integer;
-  CListWidget: PGtkCList;
-  ImpWidget: PGtkWidget;
-  RealColumnCnt: Integer;
-  Titles: PPGChar;
-begin
-  MainWidget:= gtk_scrolled_window_new(nil, nil);
-
-//  with TListView(ListViewObject)
-//  do begin
-//    RealColumnCnt:=Columns.Count;
-    RealColumnCnt := 1;
-//    if RealColumnCnt<1 then RealColumnCnt:=1;
-    CListWidget:=PGtkCList(gtk_clist_new(RealColumnCnt));
-    gtk_clist_set_shadow_type(CListWidget,GTK_SHADOW_IN);
-    gtk_clist_column_titles_passive (CListWidget);
-
-    // add items (the item properties are set via LM_SETPROPERTIES)
-    GetMem(Titles,SizeOf(PGChar)*CListWidget^.columns);
-    for i:=0 to CListWidget^.columns-1 do
-      Titles[i]:=nil;
-//    for i:=0 to Items.Count-1 do begin
-//      if Items[i].Caption<>'' then
-//        Titles[0] := PChar(Items[i].Caption)
-//      else
-//        Titles[0] := #0;
-//      gtk_clist_append(CListWidget,Titles);
-//    end;
-    FreeMem(Titles);
-
-    // set columns properties
-(*
-    for i := 0 to Columns.Count - 1 do begin
-      with Columns[i] do begin
-        // set title
-        gtk_clist_set_column_title(CListWidget,i, PChar(Caption));
-        //set column alignment
-        gtk_clist_set_column_justification(CListWidget,i,
-                 aGTKJUSTIFICATION[Alignment]);
-        //set width
-        if Width>0 then
-          gtk_clist_set_column_width(CListWidget,i,Width);
-        //set auto sizing
-        gtk_clist_set_column_auto_resize(CListWidget,i, AutoSize);
-        //set Visible
-        gtk_clist_set_column_visibility(CListWidget,i, Visible);
-        // set MinWidth
-        if MinWidth>0 then
-          gtk_clist_set_column_min_width(CListWidget, i, MinWidth);
-        // set MaxWidth
-        if (MaxWidth>=MinWidth) and (MaxWidth>0) then
-          gtk_clist_set_column_max_width(CListWidget, i, MaxWidth);
-      end;
-*)
-//    end;
-
-//  end;
-
-  gtk_clist_column_titles_passive (CListWidget);
-
-  ImpWidget:=PGtkWidget(CListWidget);
-  gtk_container_add(GTK_CONTAINER(MainWidget),ImpWidget);
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(MainWidget)^.hscrollbar, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(MainWidget)^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(PGtkScrolledWindow(MainWidget),
-                                 GTK_POLICY_AUTOMATIC,
-                                 GTK_POLICY_AUTOMATIC);
-  gtk_container_set_focus_vadjustment(PGtkContainer(CListWidget),
-           gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(MainWidget)));
-  gtk_container_set_focus_hadjustment(PGtkContainer(CListWidget),
-           gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(MainWidget)));
-  gtk_widget_show_all(ImpWidget);
-  gtk_widget_show(MainWidget);
-
-  SetMainWidget(MainWidget, ImpWidget);
-  GetWidgetInfo(MainWidget, True)^.CoreWidget := ImpWidget;
-
-  Result:=MainWidget;
-end;
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
     ): PGtkWidget;
@@ -5106,9 +5026,10 @@ begin
         'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
       InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
-
+  {$IFDEF GTK1}
   csComboBox :
     p:=CreateComboBox(TComboBox(Sender));
+  {$ENDIF}
 
   {$IfDef GTK1}
   csEdit :
@@ -5219,7 +5140,7 @@ begin
 
   csListView :
     Begin
-      p:=CreateListView(Sender);
+      DebugLn('[WARNING] Obsolete call to TGTKObject.CreateComponent for ', Sender.ClassName);
     end;
 
 

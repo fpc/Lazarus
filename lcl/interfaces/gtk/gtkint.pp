@@ -142,10 +142,11 @@ type
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
 
     // create and destroy
+    {$IFDEF GTK1}
     function CreateComboBox(ComboBoxObject: TObject): Pointer;
+    {$ENDIF}
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget; virtual;
-    function CreateListView(ListViewObject: TObject): PGtkWidget; virtual;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
     function CreateStatusBar(StatusBar: TObject): PGtkWidget;
     function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;

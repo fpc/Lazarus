@@ -73,6 +73,7 @@ type
   private
   protected
   public
+  {$IFDEF GTK1}
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -92,6 +93,7 @@ type
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+  {$ENDIF}
   end;
 
   { TGtkWSComboBox }
@@ -108,6 +110,7 @@ type
   private
   protected
   public
+  {$IFDEF GTK1}
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -122,6 +125,7 @@ type
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+  {$ENDIF}
   end;
 
   { TGtkWSListBox }
@@ -161,9 +165,9 @@ type
   private
   protected
   public
+    {$ifdef GTK1}
     class procedure AppendText(const ACustomMemo: TCustomMemo;
                                const AText: string); override;
-    {$ifdef GTK1}
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit;
                                 NewMode: TEchoMode); override;
@@ -333,7 +337,7 @@ begin
 end;
 
 { TGtkWSCustomListBox }
-
+{$IFDEF GTK1}
 class function TGtkWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
   ): integer;
 var
@@ -561,36 +565,6 @@ end;
 
 class procedure TGtkWSCustomListBox.SetTopIndex(
   const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
-{$IFdef GTK2}
-var
-  ScrolledWindow: PGtkScrolledWindow;
-  VertAdj: PGTKAdjustment;
-  AdjValue, MaxAdjValue: integer;
-  ListWidget: PGtkList;
-  AWidget: PGtkWidget;
-  GListItem: PGList;
-  ListItemWidget: PGtkWidget;
-  i: Integer;
-begin
-  AWidget:=PGtkWidget(ACustomListBox.Handle);
-  ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
-  ScrolledWindow:=PGtkScrolledWindow(AWidget);
-  AdjValue:=0;
-  GListItem:=ListWidget^.children;
-  i:=0;
-  while GListItem<>nil do begin
-    ListItemWidget:=PGtkWidget(GListItem^.data);
-    if i>=NewTopIndex then break;
-    inc(AdjValue,ListItemWidget^.Allocation.Height);
-    inc(i);
-    GListItem:=GListItem^.next;
-  end;
-  VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
-  MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
-  if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
-  gtk_adjustment_set_value(VertAdj,AdjValue);
-end;
-{$Else}
 var
   ScrolledWindow: PGtkScrolledWindow;
   VertAdj: PGTKAdjustment;
@@ -627,7 +601,6 @@ begin
   //DebugLn(['TGtkWSCustomListBox.SetTopIndex AdjValue=',AdjValue,' VertAdj^.upper=',VertAdj^.upper,' VertAdj^.page_size=',VertAdj^.page_size]);
   gtk_adjustment_set_value(VertAdj,AdjValue);
 end;
-{$EndIf}
 
 class procedure TGtkWSCustomListBox.SetColor(const AWinControl: TWinControl);
 var
@@ -668,9 +641,11 @@ begin
             end;
 end;
 
+{$ENDIF}
+
 
 { TGtkWSCustomComboBox }
-
+{$IFDEF GTK1}
 class function  TGtkWSCustomComboBox.GetSelStart(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
@@ -826,7 +801,7 @@ begin
     GtkWidgetSet.SetWidgetFont(EntryWidget, AFont);
   end;
 end;
-
+{$ENDIF}
 
 { TGtkWSCustomEdit }
 
@@ -1019,6 +994,8 @@ end;
 
 { TGtkWSCustomMemo }
 
+{$ifdef GTK1}
+
 class procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
   const AText: string);
 var
@@ -1037,8 +1014,6 @@ begin
   //debugln('TGtkWSCustomMemo.AppendText B CurMemoLen=',dbgs(CurMemoLen));
   gtk_text_thaw(PGtkText(Widget));
 end;
-
-{$ifdef GTK1}
 
 class function TGtkWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 var
