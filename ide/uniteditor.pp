@@ -1167,9 +1167,10 @@ procedure TSourceEditor.FindNext;
 var
   OldOptions: TSynSearchOptions;
 begin
-  if snIncrementalFind in FSourceNoteBook.States then begin
+  if FSourceNoteBook.FIncrementalSearchStr = '' then
+      StartFindAndReplace(False)
+  else if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.fIncrementalSearchStartPos:=FEditor.LogicalCaretXY;
-    FSourceNoteBook.DoIncrementalSearch;
   end else begin
     OldOptions:=LazFindReplaceDialog.Options;
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options
@@ -1189,7 +1190,10 @@ Begin
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoBackwards]
   else
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options+[ssoBackwards];
-  DoFindAndReplace;
+  if FSourceNoteBook.FIncrementalSearchStr = '' then
+    StartFindAndReplace(False)
+  else
+    DoFindAndReplace;
   LazFindReplaceDialog.Options:=OldOptions;
 End;
 
