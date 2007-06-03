@@ -51,15 +51,12 @@ procedure TCustomFloatSpinEdit.TextChanged;
 var
   PrevValue: Single;
 begin
-  inherited;
-  
   PrevValue := FValue;
   FValueChanged := True;
   
-  if Value = PrevValue then Exit;
+  if Value <> PrevValue then FValueEmpty := False;
   
-  Modified := True;
-  FValueEmpty := False;
+  inherited;
 end;
 
 procedure TCustomFloatSpinEdit.SetMaxValue(const AValue: Single);
