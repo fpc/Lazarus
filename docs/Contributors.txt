@@ -9,6 +9,7 @@ Andreas Hausladen
 Andreas Schneider
 Andrew Haines
 Andrew Johnson
+Antonio Galvao
 Bob Wingard
 Boguslaw Brandys
 Boris Arko
@@ -49,6 +50,7 @@ Karl Brandt
 Keith Bowes
 Ladislav Michl
 Lagunov Aleksey
+Laurent Jacques
 Luis R. Hilario B.
 Luiz Americo
 Marc Geldon
