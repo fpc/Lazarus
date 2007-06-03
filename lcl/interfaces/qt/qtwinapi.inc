@@ -2739,13 +2739,14 @@ end;
 function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 var
-  i: Integer;
   ScrollBar: TScrollBar;
   FScrollInfo: TScrollInfo;
   R: TRect;
   FRepaint: Boolean;
 
 function PrepareScrollInfo: Integer;
+var
+  iReCountMax: Integer;
 begin
 
   Result := 0;
@@ -2766,7 +2767,13 @@ begin
       FScrollInfo.nMin := ScrollInfo.nMin;
       FScrollInfo.nMax := ScrollInfo.nMax;
       ScrollBar.Min := ScrollInfo.nMin;
-      ScrollBar.Max := ScrollInfo.nMax - ScrollInfo.nPage;
+      
+      {we must recount ScrollBar.Max since invalid value raises AV}
+      iRecountMax := FScrollInfo.nMax - ScrollInfo.nPage;
+      if iRecountMax < FScrollInfo.nMin then
+      iRecountMax := FScrollInfo.nMin;
+
+      ScrollBar.Max := iRecountMax;
       { - (ScrollInfo.nMax div 4 PageStep property)); }
     end;
 

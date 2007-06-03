@@ -277,20 +277,24 @@ begin
   {$endif}
 
   TQtWidget(ACustomForm.Handle).Hide;
-  
+
   TQtWidget(ACustomForm.Handle).setWindowModality(QtApplicationModal);
 
   TQtWidget(ACustomForm.Handle).Show;
   
-  { This sleep is required, otherwise sometime the modal window will not show,
-   effectively freezing the application }
+  {give it a real modal loop, CPU consumption is OK now ... }
+//  while Assigned(ACustomForm) and (ACustomForm.Visible)
+  while (ACustomForm.ModalResult = mrNone) do
+  begin
+    sleep(10);
+    Application.ProcessMessages;
+  end;
 
-  Application.ProcessMessages;
-  
-  Sleep(10);
-
-  Application.ProcessMessages;
-
+  {BUG: if we assign OnCloseQuery(), Lazarus TCustomForm.Close() Fires ModalResult = mrCancel,
+    without counting on OnCloseQuery() result (CanClose), so if we set it up we'll jump over our
+   loop, and then comes into LCL loop with WidgetSet.AppProcessMessages
+   which burns CPU ...}
+   
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomForm.ShowModal]');
   {$endif}
