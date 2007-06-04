@@ -318,7 +318,6 @@ type
     function IsFontStored: boolean;
     function IsLayoutStored: boolean;
     procedure SetAlignment(const AValue: TAlignment);
-    procedure SetCaption(const AValue: string);
     procedure SetColor(const AValue: TColor);
     procedure SetFont(const AValue: TFont);
     procedure SetLayout(const AValue: TTextLayout);
@@ -329,6 +328,7 @@ type
     function  GetDefaultAlignment: TAlignment;
     function  GetDefaultColor: TColor;
     function  GetDefaultLayout: TTextLayout;
+    procedure SetCaption(const AValue: string); virtual;
   public
     constructor Create(TheColumn: TGridColumn); virtual;
     destructor Destroy; override;
