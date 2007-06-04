@@ -41,16 +41,17 @@ uses
   IDEExternToolIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
-  CompilerOptions, ImgList, Themes;
+  CompilerOptions, ImgList, Themes, ComCtrls;
 
 type
   { TBuildLazarusItem }
 
-  TMakeMode = (
+  TMakeMode =
+  (
     mmNone,
     mmBuild,
     mmCleanBuild
-    );
+  );
   TMakeModes = set of TMakeMode;
 
   TBuildLazarusFlag = (
@@ -135,7 +136,7 @@ type
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Assign(Source: TBuildLazarusOptions);
-    procedure SetBuildAll;
+    procedure SetMakeMode(AMode: TMakeMode);
     function FindName(const Name: string): TBuildLazarusItem;
     function CompiledUnitExt(FPCVersion, FPCRelease: integer): string;
   public
@@ -170,11 +171,11 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
-    BuildAllButton: TButton;
     CompileButton: TButton;
     CancelButton: TButton;
     CleanAllCheckBox: TCheckBox;
     ConfirmBuildCheckBox: TCheckBox;
+    ItemListHeader: THeaderControl;
     ItemsListBox: TListBox;
     LCLInterfaceRadioGroup: TRadioGroup;
     SaveSettingsButton: TButton;
@@ -189,12 +190,14 @@ type
     TargetOSEdit: TEdit;
     TargetOSLabel: TLabel;
     WithStaticPackagesCheckBox: TCheckBox;
-    procedure BuildAllButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure ItemListHeaderResize(Sender: TObject);
+    procedure ItemListHeaderSectionClick(HeaderControl: TCustomHeaderControl;
+      Section: THeaderSection);
     procedure ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
@@ -203,14 +206,10 @@ type
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
   private
-    ImageIndexNone: Integer;
-    ImageIndexBuild: Integer;
-    ImageIndexCleanBuild: Integer;
     Options: TBuildLazarusOptions;
     function GetMakeModeAtX(const X: Integer; var MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
-    function ImageList: TCustomImageList;
   public
     procedure Load(SourceOptions: TBuildLazarusOptions);
     procedure Save(DestOptions: TBuildLazarusOptions);
@@ -242,6 +241,7 @@ const
   MakeModeNames: array[TMakeMode] of string = (
       'None', 'Build', 'Clean+Build'    );
   DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
+  ButtonSize = 24;
 
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 begin
@@ -667,13 +667,35 @@ var
 begin
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
 
-  ImageIndexNone := IDEImages.LoadImage(16, 'menu_close');
-  ImageIndexBuild := IDEImages.LoadImage(16, 'menu_build');
-  ImageIndexCleanBuild := IDEImages.LoadImage(16, 'menu_build_clean');
+  ItemListHeader.Images := IDEImages.Images_16;
+  with ItemListHeader.Sections.Add do
+  begin
+    Width := ButtonSize;
+    ImageIndex := IDEImages.LoadImage(16, 'menu_close');
+  end;
+  with ItemListHeader.Sections.Add do
+  begin
+    Width := ButtonSize;
+    ImageIndex := IDEImages.LoadImage(16, 'menu_build');
+  end;
+  with ItemListHeader.Sections.Add do
+  begin
+    Width := ButtonSize;
+    ImageIndex := IDEImages.LoadImage(16, 'menu_build_clean');
+  end;
+  with ItemListHeader.Sections.Add do
+  begin
+    Width := ItemListHeader.Width - 90 - 3 * ButtonSize;
+    Text := 'Part';
+  end;
+  with ItemListHeader.Sections.Add do
+  begin
+    Width := 90;
+    Text := 'Action';
+  end;
 
   Options := TBuildLazarusOptions.Create;
   CleanAllCheckBox.Caption := lisLazBuildCleanAll;
-  BuildAllButton.Caption := Format(lisLazBuildSetToBuildAll, ['"', '"']);
   OptionsLabel.Caption := lisLazBuildOptions;
   LCLInterfaceRadioGroup.Caption := lisLazBuildLCLInterface;
   for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do begin
@@ -699,9 +721,21 @@ begin
   Options.Free;
 end;
 
-function TConfigureBuildLazarusDlg.ImageList: TCustomImageList;
+procedure TConfigureBuildLazarusDlg.ItemListHeaderResize(Sender: TObject);
 begin
-  Result := IDEImages.Images_16;
+  if ItemListHeader.Sections.Count >= 3 then
+    ItemListHeader.Sections[3].Width := ItemListHeader.Width - 90 - 3 * ButtonSize;
+end;
+
+procedure TConfigureBuildLazarusDlg.ItemListHeaderSectionClick(
+  HeaderControl: TCustomHeaderControl; Section: THeaderSection);
+begin
+  if Section.Index in [0..2] then
+  begin
+    Save(Options);
+    Options.SetMakeMode(IntToMakeMode(Section.Index));
+    Load(Options);
+  end;
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
@@ -709,9 +743,7 @@ procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
 var
   ButtonState: TThemedButton;
   ButtonDetails: TThemedElementDetails;
-  x: Integer;
-  ButtonWidth: Integer;
-  ButtonHeight: Integer;
+  x, cx, cy: Integer;
   ButtonRect: TRect;
   CurItem: TBuildLazarusItem;
   CurStr: String;
@@ -729,47 +761,37 @@ begin
   ItemsListBox.Canvas.FillRect(CurRect);
   // draw the buttons
   x:=0;
-  ButtonWidth := 24;
-  ButtonHeight := ButtonWidth;
-  for mm:=Low(TMakeMode) to High(TMakeMode) do begin
+  for mm:=Low(TMakeMode) to High(TMakeMode) do
+  begin
     // draw button
     ButtonRect.Left:=x;
-    ButtonRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-ButtonWidth) div 2);
-    ButtonRect.Right:=x+ButtonWidth;
-    ButtonRect.Bottom:=ButtonRect.Top+ButtonHeight;
+    ButtonRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-ButtonSize) div 2);
+    ButtonRect.Right:=x+ButtonSize;
+    ButtonRect.Bottom:=ButtonRect.Top + ButtonSize;
 
-    ButtonState := tbPushButtonNormal;
-
-    if CurItem.MakeMode = mm then // Pushed
-    begin
-      // when we have no themes we need to paint then ourself and define bg color 
-      ItemsListBox.Canvas.Brush.Color := clHighlight; 
-      inc(ButtonState, 2);
-    end
+    if CurItem.MakeMode = mm then // checked
+      ButtonState := tbRadioButtonCheckedNormal
     else
-      ItemsListBox.Canvas.Brush.Color := clBtnFace;
+      ButtonState := tbRadioButtonUncheckedNormal;
 
     ButtonDetails := ThemeServices.GetElementDetails(ButtonState);
     if ThemeServices.HasTransparentParts(ButtonDetails) then
       ItemsListBox.Canvas.FillRect(ButtonRect);
-    ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);
-    ButtonRect := ThemeServices.ContentRect(ItemsListBox.Canvas.Handle, ButtonDetails, ButtonRect);
-    // TODO: Use theme services to draw icon when ImageList will be ready
-    // draw icon
-    case mm of
-      mmBuild: ImgIndex:=ImageIndexBuild;
-      mmCleanBuild: ImgIndex:=ImageIndexCleanBuild;
-    else
-      ImgIndex:=ImageIndexNone;
-    end;
 
-    ImageList.Draw(
-      ItemsListBox.Canvas,
-      ARect.Left + x + ((ButtonWidth - ImageList.Width) div 2),
-      ARect.Top + ((ARect.Bottom - ARect.Top - ImageList.Height) div 2),
-      ImgIndex
-    ) ;
-    Inc(x, ButtonWidth);
+    // how to get cx and cy?
+    cx := 13;//GetSystemMetrics(SM_CXMENUCHECK);
+    cy := 13;//GetSystemMetrics(SM_CYMENUCHECK);
+
+    if (cx <> -1) and (cy <> -1) then
+    begin
+      ButtonRect.Left := (ButtonRect.Left + ButtonRect.Right - cx) div 2;
+      ButtonRect.Right := ButtonRect.Left + cx;
+      ButtonRect.Top := (ButtonRect.Top + ButtonRect.Bottom - cy) div 2;
+      ButtonRect.Bottom := ButtonRect.Top + cy;
+    end;
+    
+    ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);
+    Inc(x, ButtonSize);
   end;
   
   // draw description
@@ -790,9 +812,11 @@ var
   NewMakeMode: TMakeMode;
   i: Integer;
 begin
-  if not GetMakeModeAtX(X, NewMakeMode) then exit;
-  i:=ItemsListBox.GetIndexAtY(Y);
-  if (i<0) or (i>=Options.Count) then exit;
+  if not GetMakeModeAtX(X, NewMakeMode) then
+    exit;
+  i := ItemsListBox.GetIndexAtY(Y);
+  if (i < 0) or (i >= Options.Count) then
+    exit;
   Options.Items[i].MakeMode:=NewMakeMode;
   ItemsListBox.Invalidate;
 end;
@@ -839,12 +863,10 @@ end;
 function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
   var MakeMode: TMakeMode): boolean;
 var
-  ButtonWidth: Integer;
   i: integer;
 begin
   Result:=True;
-  ButtonWidth := 24;
-  i := X div ButtonWidth;
+  i := X div ButtonSize;
   case i of
     0: MakeMode:=mmNone;
     1: MakeMode:=mmBuild;
@@ -938,13 +960,6 @@ procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-end;
-
-procedure TConfigureBuildLazarusDlg.BuildAllButtonClick(Sender: TObject);
-begin
-  Save(Options);
-  Options.SetBuildAll;
-  Load(Options);
 end;
 
 { TBuildLazarusItem }
@@ -1292,12 +1307,12 @@ begin
   FItemExamples:=FindName('Examples');
 end;
 
-procedure TBuildLazarusOptions.SetBuildAll;
+procedure TBuildLazarusOptions.SetMakeMode(AMode: TMakeMode);
 var
   i: Integer;
 begin
-  FCleanAll:=true;
-  for i:=0 to Count-1 do Items[i].MakeMode:=mmBuild;
+  for i := 0 to Count - 1 do
+    Items[i].MakeMode := AMode;
 end;
 
 function TBuildLazarusOptions.FindName(const Name: string): TBuildLazarusItem;
