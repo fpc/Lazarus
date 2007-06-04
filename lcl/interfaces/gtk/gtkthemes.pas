@@ -188,7 +188,7 @@ begin
 
             Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
 
-            Result.Detail := 'treeview';
+            Result.Detail := 'button';
             Result.Painter := gptBox;
           end;
         teToolBar:
@@ -264,7 +264,9 @@ begin
   Result := BoundingRect;
   StyleParams := GetGtkStyleParams(DC, Details);
   if StyleParams.Style <> nil then
-    InflateRect(Result, -1, -1);
+    InflateRect(Result,
+      -StyleParams.Style^.{$ifndef gtk2}klass^.{$endif}xthickness,
+      -StyleParams.Style^.{$ifndef gtk2}klass^.{$endif}ythickness);
 end;
 
 procedure TGtkThemeServices.DrawElement(DC: HDC;

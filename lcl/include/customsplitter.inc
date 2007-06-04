@@ -715,7 +715,7 @@ begin
   begin
     if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
     begin
-      GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) shr 1;
+      GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) div 2;
       GripperRect.Bottom := GripperRect.Top + GripperSize;
     end;
   end
@@ -723,12 +723,12 @@ begin
   begin
     if (GripperRect.Right - GripperRect.Left) > GripperSize then
     begin
-      GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) shr 1;
+      GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) div 2;
       GripperRect.Right := GripperRect.Left + GripperSize;
     end;
   end;
     
-  ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect, nil);
+  ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect, @GripperRect);
 end;
 
 procedure TCustomSplitter.MouseEnter;

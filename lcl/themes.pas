@@ -1744,7 +1744,10 @@ end;
 function TThemeServices.ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
   Result := BoundingRect;
-  InflateRect(Result, -1, -1);
+  if Details.Element in [teHeader, teButton] then
+    InflateRect(Result, -2, -2)
+  else
+    InflateRect(Result, -1, -1);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
