@@ -2404,6 +2404,7 @@ lcl/include/fontdialog.inc svneol=native#text/pascal
 lcl/include/graphic.inc svneol=native#text/pascal
 lcl/include/graphiccontrol.inc svneol=native#text/pascal
 lcl/include/graphicsobject.inc svneol=native#text/pascal
+lcl/include/headercontrol.inc svneol=native#text/pascal
 lcl/include/hintwindow.inc svneol=native#text/pascal
 lcl/include/idletimer.inc svneol=native#text/pascal
 lcl/include/imglist.inc svneol=native#text/pascal

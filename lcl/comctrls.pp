@@ -40,7 +40,7 @@ interface
 uses
   SysUtils, Types, Classes, Math, LCLStrConsts, LResources, LCLIntf, LCLType,
   LCLProc, AvgLvlTree, LMessages, ImgList, ActnList, GraphType, Graphics, Menus,
-  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl, Buttons;
+  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl, Buttons, Themes;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
@@ -2466,6 +2466,148 @@ type
     procedure Apply(TreeView: TCustomTreeView);
   end;
 
+  TCustomHeaderControl = class;
+
+  { THeaderSection }
+  THeaderSectionState =
+  (
+    hsNormal,
+    hsHot,
+    hsPressed
+  );
+  THeaderSection = class(TCollectionItem)
+  private
+    FAlignment: TAlignment;
+    FText: string;
+    FWidth: Integer;
+    FImageIndex: TImageIndex;
+    FState: THeaderSectionState;
+    function GetLeft: Integer;
+    function GetRight: Integer;
+    procedure SetAlignment(const AValue: TAlignment);
+    procedure SetState(const AValue: THeaderSectionState);
+    procedure SetText(const Value: string);
+    procedure SetWidth(Value: Integer);
+    procedure SetImageIndex(const Value: TImageIndex);
+  public
+    constructor Create(ACollection: TCollection); override;
+    procedure Assign(Source: TPersistent); override;
+    property Left: Integer read GetLeft;
+    property Right: Integer read GetRight;
+    property State: THeaderSectionState read FState write SetState;
+  published
+    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+    property Text: string read FText write SetText;
+    property Width: Integer read FWidth write SetWidth;
+  end;
+  
+  THeaderSectionClass = class of THeaderSection;
+
+  { THeaderSections }
+  THeaderSections = class(TCollection)
+  private
+    FHeaderControl: TCustomHeaderControl;
+    function GetItem(Index: Integer): THeaderSection;
+    procedure SetItem(Index: Integer; Value: THeaderSection);
+  protected
+    function GetOwner: TPersistent; override;
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(HeaderControl: TCustomHeaderControl);
+    function Add: THeaderSection;
+    function AddItem(Item: THeaderSection; Index: Integer): THeaderSection;
+    function Insert(Index: Integer): THeaderSection;
+    property Items[Index: Integer]: THeaderSection read GetItem write SetItem; default;
+  end;
+
+  TCustomSectionNotifyEvent = procedure(HeaderControl: TCustomHeaderControl;
+    Section: THeaderSection) of object;
+  TCustomHCCreateSectionClassEvent = procedure(Sender: TCustomHeaderControl;
+    var SectionClass: THeaderSectionClass) of object;
+    
+  { TCustomHeaderControl }
+  TCustomHeaderControl = class(TCustomControl)
+  private
+    FSections: THeaderSections;
+    FImages: TCustomImageList;
+    FPaintRect: TRect;
+    FDown: Boolean;
+    FDownPoint: TPoint;
+    FMouseInControl: Boolean;
+    
+    FOnSectionClick: TCustomSectionNotifyEvent;
+    FOnCreateSectionClass: TCustomHCCreateSectionClassEvent;
+    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetSections(const AValue: THeaderSections);
+    procedure UpdateSection(Index: Integer);
+    procedure UpdateSections;
+  protected
+    function CreateSection: THeaderSection; virtual;
+    function CreateSections: THeaderSections; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SectionClick(Section: THeaderSection); dynamic;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure UpdateState;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    
+    procedure Click; override;
+    function GetSectionAt(P: TPoint): Integer;
+    procedure Paint; override;
+    procedure PaintSection(Index: Integer); virtual;
+  published
+    property Images: TCustomImageList read FImages write SetImages;
+    property Sections: THeaderSections read FSections write SetSections;
+
+    property OnSectionClick: TCustomSectionNotifyEvent read FOnSectionClick
+      write FOnSectionClick;
+    property OnCreateSectionClass: TCustomHCCreateSectionClassEvent read FOnCreateSectionClass
+      write FOnCreateSectionClass;
+  end;
+  
+  THeaderControl = class(TCustomHeaderControl)
+  published
+    property Align;
+    property Anchors;
+    property BiDiMode;
+    property BorderWidth;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property Images;
+    property Constraints;
+    property Sections;
+    property ShowHint;
+    property ParentBiDiMode;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property Visible;
+    // events
+    property OnContextPopup;
+    property OnCreateSectionClass;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+  end;
+
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
 function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
 
@@ -2498,7 +2640,7 @@ end;
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
-    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl]);
+    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl, THeaderControl]);
   RegisterNoIcon([TToolButton,TTabSheet]);
 end;
 
@@ -2520,5 +2662,6 @@ end;
 {$I toolbar.inc}
 {$I trackbar.inc}
 {$I treeview.inc}
+{$I headercontrol.inc}
 
 end.
