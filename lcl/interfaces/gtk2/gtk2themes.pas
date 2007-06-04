@@ -55,7 +55,7 @@ begin
       Result.IsHot := False;
 
       case Details.Element of
-        teButton, teHeader:
+        teButton:
           begin
             case Details.Part of
               BP_PUSHBUTTON:
@@ -92,6 +92,19 @@ begin
                   Result.Painter := gptCheck;
                 end;
             end;
+          end;
+        teHeader:
+          begin
+            Result.State := GtkButtonMap[Details.State];
+            if Details.State = PBS_PRESSED then
+              Result.Shadow := GTK_SHADOW_IN
+            else
+              Result.Shadow := GTK_SHADOW_OUT;
+
+            Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
+
+            Result.Detail := 'treeview';
+            Result.Painter := gptBox;
           end;
         teToolBar:
           begin
