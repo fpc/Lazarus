@@ -221,12 +221,23 @@ begin
               RP_GRIPPER, RP_GRIPPERVERT:
                 begin
                   Result.State := GTK_STATE_NORMAL;
-                  Result.Shadow := GTK_SHADOW_OUT;
+                  Result.Shadow := GTK_SHADOW_NONE;
+{ This code has problems with some (is not most) of gtk1 themes.
+  But at least Ubuntu >= 6.10 works fine. So it is commented out and switched
+  to alternate splitter painting
+
                   if Details.Part = RP_GRIPPER then
                     Result.Detail := 'hpaned'
                   else
                     Result.Detail := 'vpaned';
                   Result.Painter := gptBox;
+}
+                  Result.Detail := 'paned';
+                  Result.Painter := gptHandle;
+                  if Details.Part = RP_GRIPPER then
+                    Result.Orientation := GTK_ORIENTATION_VERTICAL
+                  else
+                    Result.Orientation := GTK_ORIENTATION_HORIZONTAL;
                 end;
               RP_BAND:
                 begin
@@ -272,94 +283,76 @@ end;
 procedure TGtkThemeServices.DrawElement(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
 var
-  ClipArea: TGdkRectangle;
-  p_ClipArea: PGdkRectangle;
+  Area: TGdkRectangle;
   StyleParams: TGtkStyleParams;
-  R1: TRect;
 begin
   StyleParams := GetGtkStyleParams(DC, Details);
   if StyleParams.Style <> nil then
   begin
     if ClipRect <> nil then
-    begin
-      ClipArea := GdkRectFromRect(ClipRect^);
-      inc(ClipArea.x, StyleParams.Origin.x);
-      inc(ClipArea.y, StyleParams.Origin.y);
-      p_ClipArea := @ClipArea;
-    end
+      Area := GdkRectFromRect(ClipRect^)
     else
-      p_ClipArea := nil;
+      Area := GdkRectFromRect(R);
+
+    inc(Area.x, StyleParams.Origin.x);
+    inc(Area.y, StyleParams.Origin.y);
 
     with StyleParams do
     begin
-      R1 := R;
-      if IsHot then
-      begin
-        // todo: draw rectanle with selected state
-        {gtk_paint_box(
-          Style, Window,
-          GTK_STATE_SELECTED, Shadow,
-          p_ClipArea, Widget, PChar(Detail),
-          R1.Left + Origin.x, R1.Top + Origin.y,
-          R1.Right - R1.Left, R1.Bottom - R1.Top);
-        inflateRect(R1, -1, -1);
-        }
-      end;
-
       case Painter of
         gptBox,
         gptDefault: gtk_paint_box(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top);
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
         gptHLine  : gtk_paint_hline(
             Style, Window,
-            State, p_ClipArea,
+            State, @Area,
             Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Right + Origin.x, R1.Top + Origin.y);
+            Area.x, Area.x + Area.Width, Area.y);
         gptVLine  : gtk_paint_vline(
             Style, Window,
-            State, p_ClipArea,
+            State, @Area,
             Widget, PChar(Detail),
-            R1.Top + Origin.y, R1.Bottom + Origin.y, R1.Left + Origin.x);
+            Area.y, Area.y + Area.Height, Area.x);
         gptShadow : gtk_paint_shadow(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top);
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
         gptFlatBox: gtk_paint_flat_box(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top);
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
         gptCheck  : gtk_paint_check(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top);
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
         gptOption : gtk_paint_option(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top);
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
         gptTab    : gtk_paint_tab(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top);
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
         gptHandle : gtk_paint_handle(
             Style, Window,
             State, Shadow,
-            p_ClipArea, Widget, PChar(Detail),
-            R1.Left + Origin.x, R1.Top + Origin.y,
-            R1.Right - R1.Left, R1.Bottom - R1.Top,
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height,
             Orientation);
       end;
     end;

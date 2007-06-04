@@ -728,7 +728,7 @@ begin
     end;
   end;
     
-  ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect, @GripperRect);
+  ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect);
 end;
 
 procedure TCustomSplitter.MouseEnter;
