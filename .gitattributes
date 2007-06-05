@@ -1937,6 +1937,7 @@ images/components/tfontdialog.ico -text svneol=unset#image/x-icon
 images/components/tfontdialog.xpm -text svneol=native#image/x-xpixmap
 images/components/tgroupbox.ico -text svneol=unset#image/x-icon
 images/components/tgroupbox.xpm -text svneol=native#image/x-xpixmap
+images/components/theadercontrol.xpm svneol=native#text/plain
 images/components/thtmlbrowserhelpviewer.xpm svneol=native#text/plain
 images/components/thtmlhelpdatabase.xpm svneol=native#text/plain
 images/components/tidedialoglayoutstorage.xpm -text svneol=unset#image/xpm
