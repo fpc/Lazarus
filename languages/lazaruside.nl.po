@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-20 13:11+0100\n"
-"Last-Translator: M. Minderhoud <brandebokje@hotmail.com>\n"
+"PO-Revision-Date: 2007-06-05 09:18+0100\n"
+"Last-Translator: Darius Blaszijk <dhkblaszyk@zeelandnet.nl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -39,7 +39,7 @@ msgstr "%s (aan het debuggen ...)"
 
 #: lazarusidestrconsts:liscovarious
 msgid "%s (various)"
-msgstr ""
+msgstr "%s (diversen)"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
@@ -151,7 +151,7 @@ msgstr "%sDit pakket was automatisch aangemaakt"
 
 #: lazarusidestrconsts:lisnone
 msgid "%snone"
-msgstr ""
+msgstr "%sgeen"
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
@@ -1287,7 +1287,7 @@ msgstr "Klassegedeelte toevoegingsbeleid"
 
 #: lazarusidestrconsts:liskmclassic
 msgid "Classic"
-msgstr ""
+msgstr "Klassiek"
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1343,11 +1343,11 @@ msgstr "Sluiten"
 
 #: lazarusidestrconsts:liskmcloseall
 msgid "Close All"
-msgstr ""
+msgstr "Sluit alles"
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "Sluit project"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1355,11 +1355,11 @@ msgstr "Sluit alle editorbestanden"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
-msgstr ""
+msgstr "Sluit pagina"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
-msgstr ""
+msgstr "Sluit project"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1587,7 +1587,7 @@ msgstr "Compilerbestandsnaam"
 
 #: lazarusidestrconsts:liskmcompileroptions
 msgid "Compiler options"
-msgstr ""
+msgstr "Compiler opties"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
@@ -1647,7 +1647,7 @@ msgstr "Configureer Bouw+Start bestand ..."
 
 #: lazarusidestrconsts:liskmconfigurehelp
 msgid "Configure Help"
-msgstr ""
+msgstr "Configureer help"
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
@@ -1671,7 +1671,7 @@ msgstr "Configureer aanpasbare hulpmiddelen ..."
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
-msgstr ""
+msgstr "Configureer geinstalleerde paketten"
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
@@ -1699,7 +1699,7 @@ msgstr "Conflict "
 
 #: lazarusidestrconsts:lispeconflictfound
 msgid "Conflict found"
-msgstr ""
+msgstr "Conflict gevonden"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -1715,7 +1715,7 @@ msgstr "Contextgevoelige help"
 
 #: lazarusidestrconsts:liskmcontextsensitivehelp
 msgid "Context sensitive help"
-msgstr ""
+msgstr "Context gevoellige help"
 
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
@@ -1751,7 +1751,7 @@ msgstr "Converteren"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
-msgstr ""
+msgstr "Converteer DFM bestand naar LFM"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
@@ -1759,7 +1759,7 @@ msgstr "Converteer .dfm-bestand naar .lfm ..."
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
-msgstr ""
+msgstr "Converteer Delphi pakket naar Lazarus pakket"
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
@@ -1767,7 +1767,7 @@ msgstr "Converteer Delphi pakket naar een Lazarus pakket ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi project to Lazarus project"
-msgstr ""
+msgstr "Converteer Delphi project naar Lazarus project"
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
@@ -1775,7 +1775,7 @@ msgstr "Converteer Delphi project naar een Lazarus project ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi unit to Lazarus unit"
-msgstr ""
+msgstr "Converteer Delphi unit naar Lazarus unit"
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -1883,7 +1883,7 @@ msgstr "Maak FPC-macro's en paden voor een fpc-projectfolder"
 
 #: lazarusidestrconsts:lismenucreatelazdocfiles
 msgid "Create LazDoc files"
-msgstr ""
+msgstr "Maak LazDoc bestanden"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
@@ -1951,7 +1951,7 @@ msgstr "Maak een nieuw bestand"
 
 #: lazarusidestrconsts:liscreatenewproject
 msgid "Create new project"
-msgstr ""
+msgstr "Maak nieuw bestand"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -2187,7 +2187,7 @@ msgstr "Verwijderen bestand mislukt"
 
 #: lazarusidestrconsts:liskmdeletelastchar
 msgid "Delete last char"
-msgstr ""
+msgstr "Verwijder laatste karakter"
 
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
@@ -2379,7 +2379,7 @@ msgstr "IDE niet sluiten"
 
 #: lazarusidestrconsts:lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr ""
+msgstr "Sluit project niet"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -2467,7 +2467,7 @@ msgstr "Bewerken"
 
 #: lazarusidestrconsts:liskmeditcodetemplates
 msgid "Edit Code Templates"
-msgstr ""
+msgstr "Bewerk Code Templates"
 
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
@@ -2503,7 +2503,7 @@ msgstr "Bewerk Toetsen voor commando's"
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
-msgstr ""
+msgstr "Bewerk virtuele unit"
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
@@ -2655,7 +2655,7 @@ msgstr "Fout tijdens initialiseren van programma%s%s%s%s%sFout: %s"
 
 #: lazarusidestrconsts:lisiecoerrorloadingxml
 msgid "Error loading xml"
-msgstr ""
+msgstr "Fout laden xml"
 
 #: lazarusidestrconsts:lisiecoerrorloadingxmlfile
 msgid "Error loading xml file %s%s%s:%s%s"
@@ -2731,7 +2731,7 @@ msgstr "Verlaat"
 
 #: lazarusidestrconsts:liskmevaluatemodify
 msgid "Evaluate/Modify"
-msgstr ""
+msgstr "Evalueer/bewerk"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -2811,7 +2811,7 @@ msgstr "Volledige bestandsnaam van huidige editor bestand"
 
 #: lazarusidestrconsts:lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Exporteer ..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2827,7 +2827,7 @@ msgstr "Export lijst"
 
 #: lazarusidestrconsts:liswlexpression
 msgid "Expression"
-msgstr ""
+msgstr "Expressie"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -3199,7 +3199,7 @@ msgstr "Formulierbewerker"
 
 #: lazarusidestrconsts:rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
-msgstr ""
+msgstr "Formulier data bestand (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -3343,43 +3343,43 @@ msgstr "Ga naar lijn nummer"
 
 #: lazarusidestrconsts:liskmgotomarker0
 msgid "Go to marker 0"
-msgstr ""
+msgstr "Ga naar marker 0"
 
 #: lazarusidestrconsts:liskmgotomarker1
 msgid "Go to marker 1"
-msgstr ""
+msgstr "Ga naar marker 1"
 
 #: lazarusidestrconsts:liskmgotomarker2
 msgid "Go to marker 2"
-msgstr ""
+msgstr "Ga naar marker 2"
 
 #: lazarusidestrconsts:liskmgotomarker3
 msgid "Go to marker 3"
-msgstr ""
+msgstr "Ga naar marker 3"
 
 #: lazarusidestrconsts:liskmgotomarker4
 msgid "Go to marker 4"
-msgstr ""
+msgstr "Ga naar marker 4"
 
 #: lazarusidestrconsts:liskmgotomarker5
 msgid "Go to marker 5"
-msgstr ""
+msgstr "Ga naar marker 5"
 
 #: lazarusidestrconsts:liskmgotomarker6
 msgid "Go to marker 6"
-msgstr ""
+msgstr "Ga naar marker 6"
 
 #: lazarusidestrconsts:liskmgotomarker7
 msgid "Go to marker 7"
-msgstr ""
+msgstr "Ga naar marker 7"
 
 #: lazarusidestrconsts:liskmgotomarker8
 msgid "Go to marker 8"
-msgstr ""
+msgstr "Ga naar marker 8"
 
 #: lazarusidestrconsts:liskmgotomarker9
 msgid "Go to marker 9"
-msgstr ""
+msgstr "Ga naar marker 9"
 
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
@@ -3439,7 +3439,7 @@ msgstr "Ga naar include opdracht van huidig include bestand"
 
 #: lazarusidestrconsts:listodogoto
 msgid "Goto"
-msgstr ""
+msgstr "Ga naar"
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -3795,7 +3795,7 @@ msgstr "Include bestand"
 
 #: lazarusidestrconsts:lisincludepaths
 msgid "Include paths"
-msgstr ""
+msgstr "Include pad"
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -3843,7 +3843,7 @@ msgstr "Invoegen"
 
 #: lazarusidestrconsts:liskminsertifdef
 msgid "Insert $IFDEF"
-msgstr ""
+msgstr "Voeg $IFDEF in"
 
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
@@ -4007,7 +4007,7 @@ msgstr "Huidige gebruikers naam invoegen"
 
 #: lazarusidestrconsts:liskminsertdateandtime
 msgid "Insert date and time"
-msgstr ""
+msgstr "Voeg datum en tijd in"
 
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
@@ -4055,7 +4055,7 @@ msgstr "Voeg \"onderstreep\" opmaak-tag in"
 
 #: lazarusidestrconsts:liskminsertusername
 msgid "Insert username"
-msgstr ""
+msgstr "Voeg gebruikersnaam in"
 
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
@@ -4063,7 +4063,7 @@ msgstr "Voeg var opmaak-tag in"
 
 #: lazarusidestrconsts:liskminspect
 msgid "Inspect"
-msgstr ""
+msgstr "Inspecteer"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -4107,11 +4107,11 @@ msgstr "De installatie van pakket %s zal automatisch de volgende pakket installe
 
 #: lazarusidestrconsts:lisdebugoptionsfrminterface
 msgid "Interface"
-msgstr ""
+msgstr "Interface"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
-msgstr ""
+msgstr "Interne compileer fout! (%d)"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -4235,7 +4235,7 @@ msgstr "Ongeldige meervoudige selectie"
 
 #: lazarusidestrconsts:liserrinvalidoption
 msgid "Invalid option at position %d: \"%s\""
-msgstr ""
+msgstr "Ongeldige optie op positie %d: \"%s\""
 
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
@@ -4579,7 +4579,7 @@ msgstr "Lazarus form"
 
 #: lazarusidestrconsts:lislazarusinclude
 msgid "Lazarus include file"
-msgstr ""
+msgstr "Lazarus include bestand"
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -4651,7 +4651,7 @@ msgstr "Level 3 (Level 2 + onzeker)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
-msgstr ""
+msgstr "Niveaus"
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5183,11 +5183,11 @@ msgstr "Nieuwe Class naam:"
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
-msgstr ""
+msgstr "Nieuw project"
 
 #: lazarusidestrconsts:liskmnewprojectfromfile
 msgid "New project from file"
-msgstr ""
+msgstr "Nieuw project van bestand"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -5219,7 +5219,7 @@ msgstr "Geen ResourceString sectie gevonden"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
-msgstr ""
+msgstr "Geen backup bestanden"
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
@@ -5455,7 +5455,7 @@ msgstr "Open Recent Project ..."
 
 #: lazarusidestrconsts:liscpopenunit
 msgid "Open Unit %s"
-msgstr ""
+msgstr "Open unit %s"
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -5463,7 +5463,7 @@ msgstr "Open als XML bestand"
 
 #: lazarusidestrconsts:lisopenexistingfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Open bestannd bestand"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -5499,7 +5499,7 @@ msgstr "Open een Pakket"
 
 #: lazarusidestrconsts:liskmopenpackagefile
 msgid "Open package file"
-msgstr ""
+msgstr "Open pakket bestand"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
@@ -5723,11 +5723,11 @@ msgstr "Pakketnaam bestaat al"
 
 #: lazarusidestrconsts:lispackagenamebeginswith
 msgid "Package name begins with ..."
-msgstr ""
+msgstr "Pakketnaam begint met ..."
 
 #: lazarusidestrconsts:lispackagenamecontains
 msgid "Package name contains ..."
-msgstr ""
+msgstr "Pakketnaam bevat ..."
 
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
@@ -5807,7 +5807,7 @@ msgstr "Plakken"
 
 #: lazarusidestrconsts:liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
-msgstr ""
+msgstr "Plak componenten van clipboard"
 
 #: lazarusidestrconsts:srkmecpaste
 msgid "Paste clipboard to current position"
@@ -5843,7 +5843,7 @@ msgstr "Pauze toets"
 
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
-msgstr ""
+msgstr "Pauseer programma"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
@@ -6063,7 +6063,7 @@ msgstr "Project is gewijzigd"
 
 #: lazarusidestrconsts:lisprojectclosed
 msgid "Project closed"
-msgstr ""
+msgstr "Project gesloten"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -6139,7 +6139,7 @@ msgstr "Publiceer Project ..."
 
 #: lazarusidestrconsts:liskmpublishproject
 msgid "Publish project"
-msgstr ""
+msgstr "Publiceer project"
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -6155,7 +6155,7 @@ msgstr "Snel-compilatie"
 
 #: lazarusidestrconsts:liskmquickcompilenolinking
 msgid "Quick compile, no linking"
-msgstr ""
+msgstr "Snel compileren, geen linken"
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6167,7 +6167,7 @@ msgstr "Afsluiten"
 
 #: lazarusidestrconsts:lisquitlazarus
 msgid "Quit Lazarus"
-msgstr ""
+msgstr "Verlaat Lazarus"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -6303,7 +6303,7 @@ msgstr "Verwijder afhankelijkheid"
 
 #: lazarusidestrconsts:liskmremoveactiveunitfromproject
 msgid "Remove active unit from project"
-msgstr ""
+msgstr "Verwijder actieve unit van project"
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
@@ -6311,7 +6311,7 @@ msgstr "Verwijder alle ongeldige properties"
 
 #: lazarusidestrconsts:liskmremovebreakpoint
 msgid "Remove break point"
-msgstr ""
+msgstr "Verwijder breekpunt"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -6331,7 +6331,7 @@ msgstr "Verwijder bestand %s van het project?"
 
 #: lazarusidestrconsts:lispckeditremovefilefrompackage
 msgid "Remove file %s%s%s%sfrom package %s%s%s?"
-msgstr ""
+msgstr "Verwijder bestand %s%s%s%svan pakket %s%s%s?"
 
 #: lazarusidestrconsts:lispckeditremovefile2
 msgid "Remove file?"
@@ -6579,7 +6579,7 @@ msgstr "Starten"
 
 #: lazarusidestrconsts:lisbfruncommand
 msgid "Run Command"
-msgstr ""
+msgstr "Run commando"
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -6599,7 +6599,7 @@ msgstr "Start parameters"
 
 #: lazarusidestrconsts:liskmrunprogram
 msgid "Run program"
-msgstr ""
+msgstr "Run programma"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
@@ -6635,7 +6635,7 @@ msgstr "Opslaan "
 
 #: lazarusidestrconsts:lissave
 msgid "Save ..."
-msgstr ""
+msgstr "Opslaan ..."
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
@@ -6735,7 +6735,7 @@ msgstr "Bestand %s%s%s%sopslaan voor het sluiten van form %s%s%s?"
 
 #: lazarusidestrconsts:lissavefileas
 msgid "Save file as"
-msgstr ""
+msgstr "Sla bestand op als"
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
@@ -6775,11 +6775,11 @@ msgstr "Pakket opslaan?"
 
 #: lazarusidestrconsts:liskmsaveproject
 msgid "Save project"
-msgstr ""
+msgstr "Sla project op"
 
 #: lazarusidestrconsts:liskmsaveprojectas
 msgid "Save project as"
-msgstr ""
+msgstr "Sla project op als"
 
 #: lazarusidestrconsts:lisposavesessioninformationin
 msgid "Save session information in"
@@ -6787,11 +6787,11 @@ msgstr "Sessie informatie opslaan in"
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
-msgstr ""
+msgstr "Sla instellingen op"
 
 #: lazarusidestrconsts:lisiecosavetofile
 msgid "Save to file"
-msgstr ""
+msgstr "Sla bestand op"
 
 #: lazarusidestrconsts:lisiecosavetorecent
 msgid "Save to recent"
@@ -7147,43 +7147,43 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmsetmarker0
 msgid "Set marker 0"
-msgstr ""
+msgstr "Zet marker 0"
 
 #: lazarusidestrconsts:liskmsetmarker1
 msgid "Set marker 1"
-msgstr ""
+msgstr "Zet marker 1"
 
 #: lazarusidestrconsts:liskmsetmarker2
 msgid "Set marker 2"
-msgstr ""
+msgstr "Zet marker 2"
 
 #: lazarusidestrconsts:liskmsetmarker3
 msgid "Set marker 3"
-msgstr ""
+msgstr "Zet marker 3"
 
 #: lazarusidestrconsts:liskmsetmarker4
 msgid "Set marker 4"
-msgstr ""
+msgstr "Zet marker 4"
 
 #: lazarusidestrconsts:liskmsetmarker5
 msgid "Set marker 5"
-msgstr ""
+msgstr "Zet marker 5"
 
 #: lazarusidestrconsts:liskmsetmarker6
 msgid "Set marker 6"
-msgstr ""
+msgstr "Zet marker 6"
 
 #: lazarusidestrconsts:liskmsetmarker7
 msgid "Set marker 7"
-msgstr ""
+msgstr "Zet marker 7"
 
 #: lazarusidestrconsts:liskmsetmarker8
 msgid "Set marker 8"
-msgstr ""
+msgstr "Zet marker 8"
 
 #: lazarusidestrconsts:liskmsetmarker9
 msgid "Set marker 9"
-msgstr ""
+msgstr "Zet marker 9"
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7363,7 +7363,7 @@ msgstr "Toon oude tab volgorde"
 
 #: lazarusidestrconsts:lisshowpackages
 msgid "Show packages"
-msgstr ""
+msgstr "Toon paketten"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
@@ -7379,7 +7379,7 @@ msgstr "Toon geteste bestanden"
 
 #: lazarusidestrconsts:lisshowunits
 msgid "Show units"
-msgstr ""
+msgstr "Toon units"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -7587,7 +7587,7 @@ msgstr "Stop debugsessie"
 
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
-msgstr ""
+msgstr "Stop programma"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -9055,11 +9055,11 @@ msgstr "Unitnaam bestaat al"
 
 #: lazarusidestrconsts:lisunitnamebeginswith
 msgid "Unit name begins with ..."
-msgstr ""
+msgstr "Unit naam begint met ..."
 
 #: lazarusidestrconsts:lisunitnamecontains
 msgid "Unit name contains ..."
-msgstr ""
+msgstr "Unit naam bevat ..."
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
@@ -9075,7 +9075,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunitpaths
 msgid "Unit paths"
-msgstr ""
+msgstr "Unit paden"
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"
@@ -9095,7 +9095,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
-msgstr ""
+msgstr "Unitnaam:"
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
@@ -9243,7 +9243,7 @@ msgstr "Versie"
 
 #: lazarusidestrconsts:versioninfotitle
 msgid "Version Info"
-msgstr ""
+msgstr "Verie informatie"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
@@ -9503,7 +9503,7 @@ msgstr "Met Packages"
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
-msgstr ""
+msgstr "Met benodigde paketten"
 
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -9599,7 +9599,7 @@ msgstr "Automatisch installeren statisch"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
-msgstr ""
+msgstr "begint met"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
@@ -9635,7 +9635,7 @@ msgstr "Configureer bouwbestand"
 
 #: lazarusidestrconsts:liscontains
 msgid "contains"
-msgstr ""
+msgstr "bevat"
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
@@ -9739,7 +9739,7 @@ msgstr "geen naam"
 
 #: lazarusidestrconsts:lisnone2
 msgid "none"
-msgstr ""
+msgstr "geen"
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
@@ -9751,7 +9751,7 @@ msgstr "obectpad"
 
 #: lazarusidestrconsts:lisor
 msgid "or"
-msgstr ""
+msgstr "of"
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved
 msgid "package %s not saved"
