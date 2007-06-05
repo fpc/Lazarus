@@ -8114,6 +8114,10 @@ msgstr ""
 msgid "The host application %s%s%s is not executable."
 msgstr "L'applicazione host %s%s%s non è eseguibile"
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "L'applicazione di partenza %s%s%s%snon esiste o non è eseguibile.%s%sVedere Esegui -> parametri di esecuzione -> Locale"
@@ -9133,6 +9137,10 @@ msgstr "Uso"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Usa stringhe Ansi"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

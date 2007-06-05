@@ -3894,6 +3894,10 @@ msgstr ""
 msgid "Target file name:"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr ""
@@ -7480,6 +7484,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
+
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
 msgstr ""
 
 #: lazarusidestrconsts:lisdebuggerinvalid

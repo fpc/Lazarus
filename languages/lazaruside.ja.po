@@ -8112,6 +8112,10 @@ msgstr "以下のユニットが見つかりませんでした：%s%s%s%s1)そ�
 msgid "The host application %s%s%s is not executable."
 msgstr "そのホストアプリケーション%s%s%sは実行ファイルではありません。"
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "起動しようとしているアプリケーション%s%s%s%sは存在しないか、実行ファイルではありません。実行→実行パラメータ→ローカル を参照のこと"
@@ -9131,6 +9135,10 @@ msgstr "使用"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Ansi 文字列を使用"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

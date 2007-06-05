@@ -8113,6 +8113,10 @@ msgstr "Unit berikut tidak ditemukan:%s%s%s%s1) Unit ini tidak dalam path unit, 
 msgid "The host application %s%s%s is not executable."
 msgstr "Aplikasi induk %s%s%s bukan eksekutabel."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Menjalankan aplikasi %s%s%s%stidak ada atau bukan yang bisa dijalankan.%s%sLihat Jalankan -> Parameter menjalankan -> Lokal"
@@ -9132,6 +9136,10 @@ msgstr "Penggunaan"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Gunakan Ansi Strings"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

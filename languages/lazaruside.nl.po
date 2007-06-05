@@ -8113,6 +8113,10 @@ msgstr "De volgende units werden niet gevonden:%s%s%s%s1) Deze units bevinden zi
 msgid "The host application %s%s%s is not executable."
 msgstr "Het \"host\" programma %s%s%s is niet uitvoerbaar."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Het startende programma %s%s%s%sbestaat niet of is niet uitvoerbaar.%s%sZie Starten -> Start paramaters -> Lokaal"
@@ -9132,6 +9136,10 @@ msgstr "Gebruik"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Gebruik ANSI strings"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

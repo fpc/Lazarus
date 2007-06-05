@@ -1885,19 +1885,18 @@ resourcestring
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
   lisCompileIDEWithoutLinking = 'Compile IDE (without linking)';
-  lisBuildLCL = 'Build LCL';
-  lisBuildComponent = 'Build Component';
-  lisBuildCodeTools = 'Build CodeTools';
-  lisBuildSynEdit = 'Build SynEdit';
-  lisBuildIDEIntf = 'Build IDE Interface';
-  lisBuildJITForm = 'Build JIT Form';
-  lisBuildPkgReg = 'Build Package Registration';
-  lisBuildIDE = 'Build IDE';
-  lisBuildStarter = 'Build Starter';
-  lisBuildExamples = 'Build Examples';
+  lisLCL = 'LCL';
+  lisComponent = 'Component';
+  lisCodeTools = 'CodeTools';
+  lisSynEdit = 'SynEdit';
+  lisIDEIntf = 'IDE Interface';
+  lisJITForm = 'JIT Form';
+  lisPkgReg = 'Package Registration';
+  lisIDE = 'IDE';
+  lisStarter = 'Starter';
+  lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildCleanAll = 'Clean all';
-  lisLazBuildSetToBuildAll = 'Set to %sBuild All%s';
   lisLazBuildBuildComponentsSynEditCodeTools = 'Build Components (SynEdit, '
     +'CodeTools)';
   lisLazBuildBuildSynEdit = 'Build SynEdit';

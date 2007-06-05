@@ -8102,6 +8102,10 @@ msgstr ""
 msgid "The host application %s%s%s is not executable."
 msgstr "Головна програма %s%s%s не є виконуваним файлом."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Виконувана програма %s%s%s%sне існує або не є виконуваною.%s%sДивіться -> Запуск -> Параметри запуску -> Локальні"
@@ -9121,6 +9125,10 @@ msgstr "Використання"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Використовувати рядки Ansi"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

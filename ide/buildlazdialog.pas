@@ -1154,50 +1154,50 @@ procedure TBuildLazarusOptions.CreateDefaults;
 begin
   // LCL
   FItemLCL:=TBuildLazarusItem.Create(
-    'LCL',lisBuildLCL,'lcl',mmCleanBuild);
+    'LCL',lisLCL,'lcl',mmCleanBuild);
   FItems.Add(FItemLCL);
 
   // SynEdit
   FItemSynEdit:=TBuildLazarusItem.Create(
-    'SynEdit',lisBuildSynEdit,'components/synedit',mmBuild);
+    'SynEdit',lisSynEdit,'components/synedit',mmBuild);
   FItems.Add(FItemSynEdit);
 
   // CodeTools
   FItemCodeTools:=TBuildLazarusItem.Create(
-    'CodeTools',lisBuildCodeTools,'components/codetools',mmBuild);
+    'CodeTools',lisCodeTools,'components/codetools',mmBuild);
   FItems.Add(FItemCodeTools);
 
   // package registration units
   FItemPkgReg:=TBuildLazarusItem.Create(
-    'PackageRegistration',lisBuildPkgReg,'packager/registration',
+    'PackageRegistration',lisPkgReg,'packager/registration',
     mmBuild);
   FItems.Add(FItemPkgReg);
 
   // IDE Interface
   FItemIDEIntf:=TBuildLazarusItem.Create(
-    'IDEIntf',lisBuildIDEIntf,'ideintf',mmBuild);
+    'IDEIntf',lisIDEIntf,'ideintf',mmBuild);
   FItems.Add(FItemIDEIntf);
 
   // JITForm
   FItemJITForm:=TBuildLazarusItem.Create(
-    'JITForm',lisBuildJITForm,'designer/jitform',mmBuild);
+    'JITForm',lisJITForm,'designer/jitform',mmBuild);
   FItems.Add(FItemJITForm);
 
   // IDE
-  FItemIDE:=TBuildLazarusItem.Create('IDE',lisBuildIDE,'',mmBuild);
+  FItemIDE:=TBuildLazarusItem.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
   FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
   FItems.Add(FItemIDE);
 
   // Starter
-  FItemStarter:=TBuildLazarusItem.Create('Starter',lisBuildStarter,'',mmBuild);
+  FItemStarter:=TBuildLazarusItem.Create('Starter',lisStarter,'',mmBuild);
   FItemStarter.Commands[mmBuild]:='starter';
   FItemStarter.Commands[mmCleanBuild]:='starter';
   FItems.Add(FItemStarter);
 
   // Examples
   FItemExamples:=TBuildLazarusItem.Create(
-    'Examples',lisBuildExamples,'examples',mmBuild);
+    'Examples',lisExamples,'examples',mmBuild);
   FItems.Add(FItemExamples);
 end;
 

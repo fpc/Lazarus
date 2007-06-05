@@ -8116,6 +8116,10 @@ msgstr "下面的单元未找到:%s%s%s%s1) 单元没有在单元目录下, 那�
 msgid "The host application %s%s%s is not executable."
 msgstr "宿主程序 %s%s%s 不是可执行程序."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "运行的应用程序 %s%s%s%s不存在或者不是可执行程序.%s%s查看 运行-> 运行参数 -> 本地"
@@ -9135,6 +9139,10 @@ msgstr "用法"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "使用 Ansi Strings"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

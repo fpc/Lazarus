@@ -8115,6 +8115,10 @@ msgstr "Die folgenden Units wurden nicht gefunden: %s%s%s%s1) Entweder sind sie 
 msgid "The host application %s%s%s is not executable."
 msgstr "Die Hostapplikation %s%s%s ist nicht ausführbar"
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Das ausführende Programm %s%s%s%sist nicht vorhanden oder nicht ausführbar.%s%sSiehe Start -> Startparameter -> Lokal"
@@ -9134,6 +9138,10 @@ msgstr "Bedienung"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Ansi-Strings verwenden"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"

@@ -8113,6 +8113,10 @@ msgstr "Следующие модули не были найдены:%s%s%s%s1) 
 msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s - не исполняемый файл."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Запускающее приложение %s%s%s%не существует или не является исполнимым файлом.%s%sСм. Запуск -> Параметры запуска... -> Локальные"
@@ -9132,6 +9136,10 @@ msgstr "Использование"
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Использовать строки Ansi"
+
+#: lazarusidestrconsts:dlgpouseappbundle
+msgid "Use Application Bundle for running and debugging (darwin only)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
