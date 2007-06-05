@@ -749,7 +749,6 @@ var
   CurStr: String;
   TxtH: Integer;
   CurRect: TRect;
-  ImgIndex: Integer;
   mm: TMakeMode;
 begin
   if (Index<0) or (Index>=Options.Count) then exit;

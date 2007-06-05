@@ -29,8 +29,6 @@ implementation
 
 function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails): TGtkStyleParams;
-var
-  ClientWidget: PGtkWidget;
 begin
   Result := inherited GetGtkStyleParams(DC, Details);
   
