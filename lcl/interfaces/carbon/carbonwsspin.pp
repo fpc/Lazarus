@@ -26,6 +26,9 @@ unit CarbonWSSpin;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
@@ -33,7 +36,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Spin,
+  Controls, Spin, StdCtrls, LCLType,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses;
 
@@ -45,6 +48,9 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Single; override;
+    class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
   { TCarbonWSFloatSpinEdit }
@@ -58,6 +64,51 @@ type
 
 implementation
 
+uses
+  CarbonEdits, CarbonDef, CarbonDbgConsts;
+
+{ TCarbonWSCustomFloatSpinEdit }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomFloatSpinEdit.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new spin edit in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonSpinEdit.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomFloatSpinEdit.GetValue
+  Params:  ACustomFloatSpinEdit - LCL custom float spin edit
+  Returns: The float spin edit value
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Single;
+begin
+  Result := 0;
+  if not CheckHandle(ACustomFloatSpinEdit, Self, 'GetValue') then Exit;
+  
+  Result := TCarbonSpinEdit(ACustomFloatSpinEdit.Handle).Value;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomFloatSpinEdit.UpdateControl
+  Params:  ACustomFloatSpinEdit - LCL custom float spin edit
+  
+  Update the value, min, max and increment of custom float spin edit in Carbon
+  interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
+begin
+  if not CheckHandle(ACustomFloatSpinEdit, Self, 'UpdateControl') then Exit;
+  TCarbonSpinEdit(ACustomFloatSpinEdit.Handle).UpdateControl;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -66,7 +117,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomFloatSpinEdit, TCarbonWSCustomFloatSpinEdit);
+  RegisterWSComponent(TCustomFloatSpinEdit, TCarbonWSCustomFloatSpinEdit);
 //  RegisterWSComponent(TFloatSpinEdit, TCarbonWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

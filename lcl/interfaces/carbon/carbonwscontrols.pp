@@ -31,7 +31,7 @@ interface
 
 uses
   // libs
-  FPCMacOSAll, CarbonUtils, Classes,
+  FPCMacOSAll, CarbonUtils, Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, LCLType, LMessages, LCLProc,
   // widgetset
@@ -64,6 +64,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
     class procedure AddControl(const AControl: TControl); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
@@ -257,6 +259,25 @@ begin
   if not CheckHandle(AWinControl, Self, 'ShowHide') then Exit;
   
   TCarbonWidget(AWinControl.Handle).ShowHide(AWinControl.Visible);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSWinControl.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new win control in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  raise
+    Exception.CreateFmt(ClassName + '.CreateHandle Error:' +
+      'Not implemented - unable to create Carbon win control for %s: %s!',
+    [AWinControl.Name, AWinControl.ClassName]);
+    
+  Result := TLCLIntfHandle(nil);
 end;
 
 {------------------------------------------------------------------------------

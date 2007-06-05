@@ -302,14 +302,30 @@ function CarbonCommon_SetFocusPart(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  FocusPart: ControlPartCode;
+  FocusPart, PrevPart: ControlPartCode;
+const
+  SName = 'CarbonCommon_SetFocusPart';
 begin
-  Result := CallNextEventHandler(ANextHandler, AEvent);
+  //if not (AWidget.LCLObject is TCustomControl) then
+    Result := CallNextEventHandler(ANextHandler, AEvent);
 
   if OSError(
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
-      SizeOf(ControlPartCode), nil, @FocusPart), 'CarbonCommon_SetFocusPart',
+      SizeOf(ControlPartCode), nil, @FocusPart), SName,
     SGetEvent, SControlPart) then Exit;
+    
+  {if not (AWidget.LCLObject is TCustomControl) then
+  begin
+    if OSError(HIViewGetFocusPart(AWidget.Widget, PrevPart),
+      SName, 'HIViewGetFocusPart') then Exit;
+      
+    if (PrevPart = kControlFocusNoPart) and (FocusPart <> kControlFocusNoPart) then
+      FocusPart := kControlEditTextPart
+    else
+      FocusPart := kControlFocusNoPart;
+      
+    Result := noErr;
+  end;   }
 
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +

@@ -37,7 +37,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonStrings, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonBars, CarbonStrings, CarbonWSControls;
 
 type
 

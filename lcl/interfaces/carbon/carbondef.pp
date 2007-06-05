@@ -70,6 +70,7 @@ type
     procedure SetProperty(AIndex: String; const AValue: Pointer);
   protected
     procedure RegisterEvents; virtual; abstract;
+    function CreateCustomHIView(const ARect: HIRect): HIViewRef;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
     procedure DestroyWidget; virtual; abstract;
     function GetContent: ControlRef; virtual; abstract;
@@ -91,6 +92,7 @@ type
     function IsVisible: Boolean; virtual; abstract;
     function Enable(AEnable: Boolean): Boolean; virtual; abstract;
     
+    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); virtual;
     function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
@@ -98,6 +100,7 @@ type
     
     procedure SetFocus; virtual; abstract;
     procedure SetColor(const AColor: TColor); virtual; abstract;
+    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; virtual;
     procedure SetFont(const AFont: TFont); virtual; abstract;
     procedure ShowHide(AVisible: Boolean); virtual; abstract;
     
@@ -370,32 +373,58 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidget.CreateCustomHIView
+  Params:  ARect - Bounds rect
+  Returns: New custom HIView
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.CreateCustomHIView(const ARect: HIRect): HIViewRef;
+const
+  SName = 'CreateCustomHIView';
+begin
+  Result := nil;
+  
+  if OSError(
+    HIObjectCreate(CustomControlClassID, nil, Result),
+    Self, SName, 'HIObjectCreate') then Exit;
+
+  OSError(
+    HIViewChangeFeatures(Result, kHIViewFeatureAllowsSubviews or
+      kHIViewFeatureGetsFocusOnClick, 0),
+    Self, SName, 'HIViewChangeFeatures');
+  OSError(HIViewSetFrame(Result, ARect), Self, SName, SViewFrame);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidget.BoundsChanged
 
   Handles bounds change
  ------------------------------------------------------------------------------}
 procedure TCarbonWidget.BoundsChanged;
 var
+{$IFDEF VerboseBounds}
+  WidgetClient,
+{$ENDIF}
   WidgetBounds, OldBounds: TRect;
-  Resized: Boolean;
+  Resized, ClientResized: Boolean;
 begin
-  //DebugLn('TCarbonWidget.BoundsChanged ' + LCLObject.Name);
+  {$IFDEF VerboseBounds}
+    DebugLn('TCarbonWidget.BoundsChanged ' + LCLObject.Name);
+  {$ENDIF}
 
   GetBounds(WidgetBounds);
   OldBounds := LCLObject.BoundsRect;
   
+  {$IFDEF VerboseBounds}
+    GetClientRect(WidgetClient);
+    DebugLn('TCarbonWidget.BoundsChanged Interface new bounds: ' + DbgS(WidgetBounds));
+    DebugLn('TCarbonWidget.BoundsChanged LCL old bounds: ' + DbgS(OldBounds));
+    DebugLn('TCarbonWidget.BoundsChanged Interface new client: ' + DbgS(WidgetClient));
+    DebugLn('TCarbonWidget.BoundsChanged LCL old client: ' + DbgS(LCLObject.ClientRect));
+  {$ENDIF}
+  
   Resized := False;
-
-  if LCLObject.ClientRectNeedsInterfaceUpdate then
-  begin
-    //DebugLn('TCarbonWidget.BoundsChanged Update client rects cache');
-    // update client rects cache
-    LCLObject.InvalidateClientRectCache(True);
-    LCLObject.DoAdjustClientRectChange;
-    
-    Resized := True;
-  end;
-    
+  ClientResized := False;
+  
   // then send a LM_SIZE message
   if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
      (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
@@ -404,6 +433,16 @@ begin
       WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
     
     Resized := True;
+  end;
+  
+  if Resized or LCLObject.ClientRectNeedsInterfaceUpdate then
+  begin
+    {$IFDEF VerboseBounds}
+      DebugLn('TCarbonWidget.BoundsChanged Update client rects cache');
+    {$ENDIF}
+    LCLObject.InvalidateClientRectCache(True);
+    LCLObject.DoAdjustClientRectChange;
+    ClientResized := True;
   end;
 
   // then send a LM_MOVE message
@@ -414,14 +453,19 @@ begin
       WidgetBounds.Top, Move_SourceIsInterface);
   end;
 
-  // invalidate control canvas
-  if Resized then Invalidate;
+  // invalidate client area
+  if ClientResized then Invalidate;
 
   // invalidate parent client area, previously covered by control
   if Resized and (LCLObject.Parent <> nil) and LCLObject.Parent.HandleAllocated then
   begin
     TCarbonWidget(LCLObject.Parent.Handle).Invalidate(@OldBounds);
   end;
+  
+  {$IFDEF VerboseBounds}
+    DebugLn('TCarbonWidget.BoundsChanged LCL new bounds: ' + DbgS(LCLObject.BoundsRect));
+    DebugLn('TCarbonWidget.BoundsChanged LCL new client: ' + DbgS(LCLObject.ClientRect));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -442,14 +486,20 @@ begin
   
   CreateWidget(AParams);
   
-  LCLObject.InvalidateClientRectCache(True);
-  
   {$IFDEF VerboseWidget}
     DebugLn('TCarbonWidget.Create ', ClassName, ' ', LCLObject.Name, ': ',
       LCLObject.ClassName);
   {$ENDIF}
   
   RegisterEvents;
+  
+  LCLObject.InvalidateClientRectCache(True);
+  BoundsChanged;
+  
+  {$IFDEF VerboseBounds}
+    DebugLn('TCarbonWidget.Create LCL bounds: ' + DbgS(LCLObject.BoundsRect));
+    DebugLn('TCarbonWidget.Create LCL client: ' + DbgS(LCLObject.ClientRect));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -479,6 +529,35 @@ function TCarbonWidget.GetPreferredSize: TPoint;
 begin
   Result.X := 0;
   Result.Y := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.GetScrollInfo
+  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
+           ScrollInfo - Record fo scrolling info
+  Returns: If the function suceeds
+
+  Gets the scrolling info of the specified scroll bar
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.GetScrollInfo(SBStyle: Integer;
+  var ScrollInfo: TScrollInfo);
+begin
+  DebugLn(ClassName + '.GetScrollInfo unsupported or not implemented!');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.SetScrollInfo
+  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
+           ScrollInfo - Scrolling info
+  Returns: The old scroll bar position
+
+  Sets the scrolling info of the specified scroll bar
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.SetScrollInfo(SBStyle: Integer;
+  const ScrollInfo: TScrollInfo): Integer;
+begin
+  Result := 0;
+  DebugLn(ClassName + '.SetScrollInfo unsupported or not implemented!');
 end;
 
 initialization

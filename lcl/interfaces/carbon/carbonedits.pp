@@ -32,6 +32,7 @@ uses
   FPCMacOSAll,
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, StdCtrls,
+  Spin,
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
@@ -47,7 +48,7 @@ type
   protected
     procedure LimitTextLength;
     procedure AdaptCharCase;
-    class function GetEditPart: ControlPartCode; virtual;
+    function GetEditPart: ControlPartCode; virtual;
     procedure RegisterEvents; override;
   public
     procedure TextDidChange; dynamic;
@@ -69,13 +70,22 @@ type
   TCarbonComboBox = class(TCarbonControlWithEdit)
   private
     FItemIndex: Integer;
+    FReadOnly: Boolean;
+    FPopupMenu: MenuRef;
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
-    class function GetEditPart: ControlPartCode; override;
+    procedure DestroyWidget; override;
+    function GetEditPart: ControlPartCode; override;
+    function GetPopupButtonMenu: MenuRef;
   public
+    class function GetValidEvents: TCarbonControlEvents; override;
     procedure ListItemSelected(AIndex: Integer); virtual;
+    procedure ValueChanged; override;
   public
+    function GetText(var S: String): Boolean; override;
+    procedure SetReadOnly(AReadOnly: Boolean); override;
+    
     function GetItemIndex: Integer;
     function SetItemIndex(AIndex: Integer): Boolean;
     
@@ -90,6 +100,36 @@ type
   TCarbonCustomEdit = class(TCarbonControlWithEdit)
   public
     procedure SetPasswordChar(AChar: Char); virtual; abstract;
+  end;
+  
+  { TCarbonSpinEdit }
+
+   TCarbonSpinEdit = class(TCarbonCustomEdit)
+  private
+    FUpDown: ControlRef;
+    FValue: Single;
+    FMin: Single;
+    FMax: Single;
+    FIncrement: Single;
+    FDecimalPlaces: Integer;
+    function UpDownThemeWidth: Integer;
+    function FocusRectThemeOutset: Integer;
+    function GetEditBounds(const ARect: HIRect): HIRect;
+    function GetUpDownBounds(const ARect: HIRect): HIRect;
+  protected
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
+    function GetFrame(Index: Integer): ControlRef; override;
+    function GetFrameBounds(var ARect: TRect): Boolean; override;
+  public
+    class function GetFrameCount: Integer; override;
+    class function GetValidEvents: TCarbonControlEvents; override;
+    procedure DoAction(AControlPart: ControlPartCode); override;
+    function SetBounds(const ARect: TRect): Boolean; override;
+    procedure SetPasswordChar(AChar: Char); override;
+  public
+    procedure UpdateControl;
+    property Value: Single read FValue;
   end;
 
   { TCarbonEdit }
@@ -113,7 +153,7 @@ type
     FScrollBars: TScrollStyle;
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
-    function GetFrame: ControlRef; override;
+    function GetFrame(Index: Integer): ControlRef; override;
     function GetForceEmbedInScrollView: Boolean; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
@@ -190,7 +230,7 @@ end;
   Method:  TCarbonControlWithEdit.GetEditPart
   Returns: Control part code of edit control
  ------------------------------------------------------------------------------}
-class function TCarbonControlWithEdit.GetEditPart: ControlPartCode;
+function TCarbonControlWithEdit.GetEditPart: ControlPartCode;
 begin
   Result := kControlEntireControl;
 end;
@@ -206,10 +246,13 @@ var
 begin
   inherited RegisterEvents;
   
-  TmpSpec := MakeEventSpec(kEventClassTextField, kEventTextDidChange);
-  InstallControlEventHandler(Widget,
-    RegisterEventHandler(@CarbonTextField_DidChange),
-    1, @TmpSpec, Pointer(Self), nil);
+  if GetEditPart >= 0 then
+  begin
+    TmpSpec := MakeEventSpec(kEventClassTextField, kEventTextDidChange);
+    InstallControlEventHandler(Widget,
+      RegisterEventHandler(@CarbonTextField_DidChange),
+      1, @TmpSpec, Pointer(Self), nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -244,6 +287,8 @@ var
   SelData: ControlEditTextSelectionRec;
 begin
   Result := False;
+  ASelStart := 0;
+  if GetEditPart < 0 then Exit;
   
   if OSError(
     GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
@@ -266,6 +311,8 @@ var
   SelData: ControlEditTextSelectionRec;
 begin
   Result := False;
+  ASelLength := 0;
+  if GetEditPart < 0 then Exit;
   
   if OSError(
     GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
@@ -290,6 +337,7 @@ const
   SName = 'SetSelStart';
 begin
   Result := False;
+  if GetEditPart < 0 then Exit;
   
   if OSError(
     GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
@@ -327,6 +375,7 @@ const
   SName = 'SetSelLength';
 begin
   Result := False;
+  if GetEditPart < 0 then Exit;
 
   if OSError(
     GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
@@ -361,6 +410,8 @@ var
   CFString: CFStringRef;
 begin
   Result := False;
+  S := '';
+  if GetEditPart < 0 then Exit;
   
   if OSError(
     GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextCFStringTag,
@@ -386,6 +437,7 @@ var
   CFString: CFStringRef;
 begin
   Result := False;
+  if GetEditPart < 0 then Exit;
   
   CreateCFString(S, CFString);
   try
@@ -408,6 +460,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonControlWithEdit.SetReadOnly(AReadOnly: Boolean);
 begin
+  if GetEditPart < 0 then Exit;
+  
   OSError(SetControlData(ControlRef(Widget), GetEditPart,
       kControlEditTextLockedTag, SizeOf(Boolean), @AReadOnly),
     Self, 'SetReadOnly', SSetData);
@@ -466,33 +520,87 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.CreateWidget(const AParams: TCreateParams);
 var
-  Control: ControlRef;
   CFString: CFStringRef;
 begin
-  CreateCFString(AParams.Caption, CFString);
-  try
-    if OSError(HIComboBoxCreate(ParamsToHIRect(AParams), CFString, nil, nil,
-        kHIComboBoxAutoSizeListAttribute, Control),
-      Self, SCreateWidget, 'HIComboBoxCreate')then RaiseCreateWidgetError(LCLObject);
+  FReadOnly := (LCLObject as TCustomComboBox).ReadOnly;
+  
+  if FReadOnly then
+  begin
+    if OSError(
+      CreatePopupButtonControl(GetTopParentWindow,
+        ParamsToCarbonRect(AParams), nil, -12345, False, 0, popupTitleLeftJust,
+        FPCMacOSAll.Normal, Widget),
+      Self, SCreateWidget, 'CreatePopupButtonControl')then RaiseCreateWidgetError(LCLObject);
+      
+    OSError(CreateNewMenu(0, kMenuAttrAutoDisable, FPopupMenu),
+      Self, SCreateWidget, 'CreateNewMenu');
+        
+    OSError(
+      SetControlData(ControlRef(Widget), kControlEntireControl,
+        kControlPopupButtonOwnedMenuRefTag, SizeOf(MenuRef), @FPopupMenu),
+      Self, SCreateWidget, SSetData);
 
-    Widget := Control;
+    // count of popup button items is initially zero
+    SetMaximum(0);
+  end
+  else
+  begin
+    CreateCFString(AParams.Caption, CFString);
+    try
+      if OSError(HIComboBoxCreate(ParamsToHIRect(AParams), CFString, nil, nil,
+          kHIComboBoxAutoSizeListAttribute, Widget),
+        Self, SCreateWidget, 'HIComboBoxCreate')then RaiseCreateWidgetError(LCLObject);
 
-    inherited;
-  finally
-    FreeCFString(CFString);
+    finally
+      FreeCFString(CFString);
+    end;
   end;
   
   FItemIndex := -1;
   FMaxLength := 0;
+  
+  inherited;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.DestroyWidget
+
+  Destroys Carbon combo box
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.DestroyWidget;
+begin
+  if FReadOnly then DisposeMenu(FPopupMenu);
+
+  inherited DestroyWidget;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBox.GetEditPart
   Returns: Control part code of edit control
  ------------------------------------------------------------------------------}
-class function TCarbonComboBox.GetEditPart: ControlPartCode;
+function TCarbonComboBox.GetEditPart: ControlPartCode;
 begin
-  Result := kHIComboBoxEditTextPart;
+  if FReadOnly then Result := -1
+  else Result := kHIComboBoxEditTextPart;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.GetPopupButtonMenu
+  Returns: Popup Button menu
+ ------------------------------------------------------------------------------}
+function TCarbonComboBox.GetPopupButtonMenu: MenuRef;
+begin
+  Result := FPopupMenu;
+
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.GetValidEvents
+  Returns: Set of events with installed handlers
+ ------------------------------------------------------------------------------}
+class function TCarbonComboBox.GetValidEvents: TCarbonControlEvents;
+begin
+  Result := [cceValueChanged];
 end;
 
 {------------------------------------------------------------------------------
@@ -503,8 +611,57 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.ListItemSelected(AIndex: Integer);
 begin
-  FItemIndex := AIndex;
-  LCLSendSelectionChangedMsg(LCLObject);
+  if FItemIndex <> AIndex then
+  begin
+    FItemIndex := AIndex;
+    LCLSendSelectionChangedMsg(LCLObject);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.ValueChanged
+
+  Value changed event handler
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.ValueChanged;
+begin
+  if FReadOnly then ListItemSelected(GetValue - 1);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.GetText
+  Params:  S - Text
+  Returns: If the function succeeds
+
+  Gets the text of combo box
+ ------------------------------------------------------------------------------}
+function TCarbonComboBox.GetText(var S: String): Boolean;
+var
+  ComboBox: TCustomComboBox;
+begin
+  if FReadOnly then
+  begin
+    ComboBox := LCLObject as TCustomComboBox;
+    if (FItemIndex >= 0) and (FItemIndex < ComboBox.Items.Count) then
+      S := ComboBox.Items[FItemIndex]
+    else
+      S := '';
+      
+    Result := True;
+  end
+  else
+    Result := inherited GetText(S);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.SetReadOnly
+  Params:  AReadOnly - Read only behavior
+
+  Sets the read only behavior of combo box
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.SetReadOnly(AReadOnly: Boolean);
+begin
+  if AReadOnly <> FReadOnly then RecreateWnd(LCLObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -525,18 +682,23 @@ end;
 function TCarbonComboBox.SetItemIndex(AIndex: Integer): Boolean;
 begin
   Result := False;
+  DebugLn('TCarbonComboBox.SetItemIndex New: ' + DbgS(AIndex) + ' Prev: ' + DbgS(FItemIndex));
   if AIndex <> FItemIndex then
   begin
-    if AIndex = -1 then
-    begin
-      FItemIndex := -1;
-      Result := SetText('');
-    end
+    if FReadOnly then SetValue(AIndex + 1)
     else
     begin
-      FItemIndex := AIndex;
-      Result := SetText((LCLObject as TCustomComboBox).Items[AIndex]);
-    end;
+      if AIndex = -1 then
+      begin
+        FItemIndex := -1;
+        Result := SetText('');
+      end
+      else
+      begin
+        FItemIndex := AIndex;
+        Result := SetText((LCLObject as TCustomComboBox).Items[AIndex]);
+      end;
+      end;
   end
   else Result := True;
 end;
@@ -554,8 +716,19 @@ var
 begin
   CreateCFString(S, CFString);
   try
-    OSError(HIComboBoxInsertTextItemAtIndex(HIViewRef(Widget), AIndex, CFString),
-      Self, 'Insert', 'HIComboBoxInsertTextItemAtIndex');
+    if FReadOnly then
+    begin
+      OSError(InsertMenuItemTextWithCFString(GetPopupButtonMenu, CFString, AIndex,
+          kMenuItemAttrIgnoreMeta, 0),
+        Self, 'Inset', 'InsertMenuItemTextWithCFString');
+        
+      SetMaximum((LCLObject as TCustomComboBox).Items.Count);
+    end
+    else
+    begin
+      OSError(HIComboBoxInsertTextItemAtIndex(HIViewRef(Widget), AIndex, CFString),
+        Self, 'Insert', 'HIComboBoxInsertTextItemAtIndex');
+     end;
   finally
     FreeCFString(CFString);
   end;
@@ -569,8 +742,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.Remove(AIndex: Integer);
 begin
-  OSError(HIComboBoxRemoveItemAtIndex(HIViewRef(Widget), AIndex),
-    Self, 'Remove', 'HIComboBoxRemoveItemAtIndex');
+  if FReadOnly then
+  begin
+    DeleteMenuItem(GetPopupButtonMenu, AIndex + 1);
+    SetMaximum((LCLObject as TCustomComboBox).Items.Count);
+  end
+  else
+  begin
+    OSError(HIComboBoxRemoveItemAtIndex(HIViewRef(Widget), AIndex),
+      Self, 'Remove', 'HIComboBoxRemoveItemAtIndex');
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -583,11 +764,251 @@ end;
 function TCarbonComboBox.DropDown(ADropDown: Boolean): Boolean;
 begin
   Result := False;
+  if FReadOnly then
+  begin
+    //P := LCLObject.ClientToScreen(Classes.Point(0, 0));
+    //PopUpMenuSelect(FPopupMenu, P.Y, P.X, FItemIndex + 1);
+    DebugLn('TCarbonComboBox.DropDown for DropDownList TODO');
+    Exit;
+  end;
   
   if OSError(HIComboBoxSetListVisible(ControlRef(Widget), ADropDown), Self,
     'DropDown', 'HIComboBoxSetListVisible') then Exit;
 
   Result := True;
+end;
+
+{ TCarbonSpinEdit }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.UpDownThemeWidth
+  Returns: UpDown theme width
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.UpDownThemeWidth: Integer;
+begin
+  OSError(GetThemeMetric(kThemeMetricLittleArrowsWidth, Result),
+    Self, 'UpDownThemeWidth', SGetThemeMetric);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.FocusRectThemeOutset
+  Returns: Focus rectangle theme outset
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.FocusRectThemeOutset: Integer;
+begin
+  OSError(GetThemeMetric(kThemeMetricFocusRectOutset, Result),
+    Self, 'UpDownThemeWidth', SGetThemeMetric);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.GetEditBounds
+  Params:  ARect - Bounding rect
+  Returns: Bounding rect for edit
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.GetEditBounds(const ARect: HIRect): HIRect;
+begin
+  Result.origin.x := ARect.origin.x;
+  Result.origin.y := ARect.origin.y;
+  Result.size.width := ARect.size.width - (UpDownThemeWidth + 2 * FocusRectThemeOutset);
+  Result.size.height := ARect.size.height;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.GetUpDownBounds
+  Params:  ARect - Bounding rect
+  Returns: Bounding rect for updown
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.GetUpDownBounds(const ARect: HIRect): HIRect;
+begin
+  Result.origin.x := ARect.origin.x + ARect.size.width - (UpDownThemeWidth);
+  Result.origin.y := ARect.origin.y;
+  Result.size.width := ARect.size.width;
+  Result.size.height := ARect.size.height;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon spin edit
+ ------------------------------------------------------------------------------}
+procedure TCarbonSpinEdit.CreateWidget(const AParams: TCreateParams);
+var
+  CFString: CFStringRef;
+begin
+  CreateCFString(AParams.Caption, CFString);
+  try
+    if OSError(
+      CreateEditUniCodeTextControl(GetTopParentWindow,
+        HIRectToCarbonRect(GetEditBounds(ParamsToHIRect(AParams))),
+        CFString, False, nil, Widget),
+      Self, SCreateWidget, 'CreateEditUniCodeTextControl') then RaiseCreateWidgetError(LCLObject);
+  finally
+    FreeCFString(CFString);
+  end;
+  
+  if OSError(
+      CreateLittleArrowsControl(GetTopParentWindow,
+        HIRectToCarbonRect(GetUpDownBounds(ParamsToHIRect(AParams))),
+        1, 0, 2, 1, FUpDown),
+      Self, SCreateWidget, 'CreateLittleArrowsControl') then RaiseCreateWidgetError(LCLObject);
+    
+  AddControlPart(FUpDown);
+    
+  inherited;
+  
+  UpdateControl;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.DestroyWidget
+
+  Destroys Carbon spin edit
+ ------------------------------------------------------------------------------}
+procedure TCarbonSpinEdit.DestroyWidget;
+begin
+  DisposeControl(FUpDown);
+
+  inherited;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.GetFrame
+  Params:  Frame index
+  Returns: Frame area control
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.GetFrame(Index: Integer): ControlRef;
+begin
+  case Index of
+  0: Result := ControlRef(Widget);
+  1: Result := FUpDown;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.GetFrameBounds
+  Params:  ARect - Rectangle
+  Returns: If function succeeds
+
+  Returns the control bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.GetFrameBounds(var ARect: TRect): Boolean;
+begin
+  Result := False;
+
+  if inherited GetFrameBounds(ARect) then
+  begin
+    // add updown width
+    ARect.Right := ARect.Right + (UpDownThemeWidth + 2 * FocusRectThemeOutset);
+    
+    Result := True;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.GetFrameCount
+  Returns: Count of control frames
+ ------------------------------------------------------------------------------}
+class function TCarbonSpinEdit.GetFrameCount: Integer;
+begin
+  Result := 2;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.GetValidEvents
+  Returns: Set of events with installed handlers
+ ------------------------------------------------------------------------------}
+class function TCarbonSpinEdit.GetValidEvents: TCarbonControlEvents;
+begin
+  Result := inherited GetValidEvents + [cceDoAction];
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.DoAction
+  Params:  AControlPart - Control part to perform the action
+
+  Action event handler
+ ------------------------------------------------------------------------------}
+procedure TCarbonSpinEdit.DoAction(AControlPart: ControlPartCode);
+var
+  PrevValue: Single;
+begin
+  PrevValue := FValue;
+  case AControlPart of
+    kControlUpButtonPart:   FValue := FValue + FIncrement;
+    kControlDownButtonPart: FValue := FValue - FIncrement;
+  end;
+  if FValue < FMin then FValue := FMin;
+  if FValue > FMax then FValue := FMax;
+
+  if FValue <> PrevValue then
+    (LCLObject as TCustomFloatSpinEdit).Text :=
+      FloatToStrF(FValue, ffFixed, 20, FDecimalPlaces);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.SetBounds
+  Params:  ARect - Record for control coordinates
+  Returns: If function succeeds
+
+  Sets the control bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonSpinEdit.SetBounds(const ARect: TRect): Boolean;
+begin
+  Result := False;
+
+  if OSError(
+    HIViewSetFrame(Widget, GetEditBounds(RectToCGRect(ARect))),
+    Self, SSetBounds, SViewFrame) then Exit;
+    
+  if OSError(HIViewSetFrame(FUpDown, GetUpDownBounds(RectToCGRect(ARect))),
+    Self, SSetBounds, SViewFrame) then Exit;
+    
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.SetPasswordChar
+  Params:  AChar     - New password char
+
+  Sets the new password char of Carbon edit
+ ------------------------------------------------------------------------------}
+procedure TCarbonSpinEdit.SetPasswordChar(AChar: Char);
+begin
+  // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonSpinEdit.UpdateControl
+
+  Updates the value, min, max and increment of Carbon spin edit
+ ------------------------------------------------------------------------------}
+procedure TCarbonSpinEdit.UpdateControl;
+var
+  SpinEdit: TCustomFloatSpinEdit;
+begin
+  SpinEdit := (LCLObject as TCustomFloatSpinEdit);
+  FValue := SpinEdit.Value;
+  FMin := SpinEdit.MinValue;
+  FMax := SpinEdit.MaxValue;
+  FIncrement := SpinEdit.Increment;
+  FDecimalPlaces :=  SpinEdit.DecimalPlaces;
+  
+  // disable/enable arrows
+  if (FValue = FMin) and (FIncrement > 0) then
+    SetControl32BitMinimum(FUpDown, 1)
+  else
+    SetControl32BitMinimum(FUpDown, 0);
+    
+  if (FValue = FMax) and (FIncrement > 0) then
+    SetControl32BitMaximum(FUpDown, 1)
+  else
+    SetControl32BitMaximum(FUpDown, 2);
+    
+  // update edit text
+  SpinEdit.Text := FloatToStrF(FValue, ffFixed, 20, FDecimalPlaces);
 end;
 
 { TCarbonEdit }
@@ -615,7 +1036,7 @@ begin
       Self, SCreateWidget, 'CreateEditUniCodeTextControl') then RaiseCreateWidgetError(LCLObject);
 
     Widget := Control;
-
+    
     inherited;
   finally
     FreeCFString(CFString);
@@ -719,9 +1140,10 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemo.GetFrame
+  Params:  Frame index
   Returns: Frame area control
  ------------------------------------------------------------------------------}
-function TCarbonMemo.GetFrame: ControlRef;
+function TCarbonMemo.GetFrame(Index: Integer): ControlRef;
 begin
   Result := FScrollView;
 end;
@@ -928,6 +1350,7 @@ begin
 
   Invalidate;
 end;
+
 
 end.
 

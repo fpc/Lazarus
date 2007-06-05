@@ -89,6 +89,7 @@ function CGRectToRect(const ARect: CGRect): TRect;
 
 function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
+function HIRectToCarbonRect(const ARect: HIRect): FPCMacOSAll.Rect;
 
 function PointToHIPoint(const APoint: TPoint): HIPoint;
 function PointToHISize(const APoint: TPoint): HISize;
@@ -664,6 +665,19 @@ begin
   Result.Top := ARect.Top;
   Result.Right := ARect.Right;
   Result.Bottom := ARect.Bottom;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    HIRectToCarbonRect
+  Params:  ARect - HIRect
+  Returns: Carbon Rect
+ ------------------------------------------------------------------------------}
+function HIRectToCarbonRect(const ARect: HIRect): FPCMacOSAll.Rect;
+begin
+  Result.Left := Floor(ARect.origin.x);
+  Result.Top := Floor(ARect.origin.y);
+  Result.Right := Ceil(ARect.origin.x + ARect.size.width);
+  Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
 end;
 
 {------------------------------------------------------------------------------

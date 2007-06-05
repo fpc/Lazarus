@@ -42,12 +42,14 @@ type
   TCarbonGDIObject = class
   private
     FSelCount: Integer;
+    FGlobal: Boolean;
   public
-    constructor Create;
+    constructor Create(AGlobal: Boolean);
     
     procedure Select;
     procedure Unselect;
     
+    property Global: Boolean read FGlobal;
     property SelCount: Integer read FSelCount;
   end;
 
@@ -57,7 +59,7 @@ type
   private
     FStyle: ATSUStyle;
   public
-    constructor Create; // default system font
+    constructor Create(AGlobal: Boolean); // default system font
     constructor Create(ALogFont: TLogFont; AFaceName: String);
     destructor Destroy; override;
   public
@@ -71,7 +73,7 @@ type
     FR, FG, FB: Byte;
     FA: Boolean; // alpha: True - solid, False - clear
   public
-    constructor Create(const AColor: TColor; ASolid: Boolean);
+    constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean);
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
     procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
   end;
@@ -82,7 +84,7 @@ type
   private
     FCGPattern: CGPatternRef; // TODO
   public
-    constructor Create; // create default brush
+    constructor Create(AGlobal: Boolean); // create default brush
     constructor Create(ALogBrush: TLogBrush);
     procedure Apply(ADC: TCarbonContext; UseROP2: Boolean = True);
   end;
@@ -102,7 +104,7 @@ type
     FWidth: Integer;
     FStyle: LongWord;
    public
-    constructor Create; // create default pen
+    constructor Create(AGlobal: Boolean); // create default pen
     constructor Create(ALogPen: TLogPen);
     procedure Apply(ADC: TCarbonContext; UseROP2: Boolean = True);
   end;
@@ -350,12 +352,14 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonGDIObject.Create
+  Params:  AGlobal - Global
 
   Creates custom GDI object
  ------------------------------------------------------------------------------}
-constructor TCarbonGDIObject.Create;
+constructor TCarbonGDIObject.Create(AGlobal: Boolean);
 begin
   FSelCount := 0;
+  FGlobal := AGlobal;
 end;
 
 {------------------------------------------------------------------------------
@@ -365,6 +369,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonGDIObject.Select;
 begin
+  if FGlobal then Exit;
   Inc(FSelCount);
 end;
 
@@ -375,6 +380,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonGDIObject.Unselect;
 begin
+  if FGlobal then Exit;
   if FSelCount > 0 then
     Dec(FSelCount)
   else
@@ -388,12 +394,13 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonFont.Create
+  Params:  AGlobal
 
   Creates default Carbon font
  ------------------------------------------------------------------------------}
-constructor TCarbonFont.Create;
+constructor TCarbonFont.Create(AGlobal: Boolean);
 begin
-  inherited;
+  inherited Create(AGlobal);
   
   FStyle := DefaultTextStyle;
 end;
@@ -416,7 +423,7 @@ var
 const
   SSetAttrs = 'ATSUSetAttributes';
 begin
-  inherited Create;
+  inherited Create(False);
   
   OSError(ATSUCreateStyle(FStyle), Self, SCreate, SCreateStyle);
 
@@ -508,13 +515,16 @@ end;
 { TCarbonColorObject }
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonColorObject.Destroy
-
+  Method:  TCarbonColorObject.Create
+  Params:  AColor  - Color
+           ASolid  - Opacity
+           AGlobal - Global
+          
   Creates Carbon color object
  ------------------------------------------------------------------------------}
-constructor TCarbonColorObject.Create(const AColor: TColor; ASolid: Boolean);
+constructor TCarbonColorObject.Create(const AColor: TColor; ASolid, AGlobal: Boolean);
 begin
-  inherited Create;
+  inherited Create(AGlobal);
   
   SetColor(AColor, ASolid);
 end;
@@ -591,12 +601,13 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonBrush.Create
+  Params:  AGlobal
 
   Creates default Carbon brush
  ------------------------------------------------------------------------------}
-constructor TCarbonBrush.Create;
+constructor TCarbonBrush.Create(AGlobal: Boolean);
 begin
-  inherited Create(clWhite, True);
+  inherited Create(clWhite, True, AGlobal);
 end;
 
 {------------------------------------------------------------------------------
@@ -611,11 +622,11 @@ begin
     BS_SOLID,
     BS_HATCHED..BS_MONOPATTERN:
       begin
-        inherited Create(ColorToRGB(ALogBrush.lbColor), True);
+        inherited Create(ColorToRGB(ALogBrush.lbColor), True, False);
         // TODO: patterns
       end;
     else
-      inherited Create(ColorToRGB(ALogBrush.lbColor), False);
+      inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
   end;
 end;
 
@@ -650,12 +661,13 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonPen.Create
+  Params:  AGlobal
 
   Creates default Carbon pen
  ------------------------------------------------------------------------------}
-constructor TCarbonPen.Create;
+constructor TCarbonPen.Create(AGlobal: Boolean);
 begin
-  inherited Create(clBlack, True);
+  inherited Create(clBlack, True, AGlobal);
   FStyle := PS_SOLID;
   FWidth := 1;
 end;
@@ -672,12 +684,12 @@ begin
     PS_SOLID..PS_DASHDOTDOT,
     PS_INSIDEFRAME:
       begin
-        inherited Create(ColorToRGB(ALogPen.lopnColor), True);
+        inherited Create(ColorToRGB(ALogPen.lopnColor), True, False);
         FWidth := Max(1, ALogPen.lopnWidth.x);
       end;
     else
     begin
-      inherited Create(ColorToRGB(ALogPen.lopnColor), False);
+      inherited Create(ColorToRGB(ALogPen.lopnColor), False, False);
       FWidth := 1;
     end;
   end;
@@ -784,7 +796,7 @@ end;
 constructor TCarbonBitmap.Create(AWidth, AHeight, ABitsPerPixel: Integer;
   AData: Pointer);
 begin
-  inherited Create;
+  inherited Create(False);
   
   FCGImage := nil;
   
@@ -867,6 +879,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonCursor.Create;
 begin
+  inherited Create(False);
+
   FCursorType := cctUnknown;
   FThemeCursor := 0;
   FAnimationStep := 0;
@@ -1215,14 +1229,14 @@ initialization
 
   InitCursor;
 
-  StockSystemFont := TCarbonFont.Create;
+  StockSystemFont := TCarbonFont.Create(True);
 
   LogBrush.lbStyle := BS_NULL;
   LogBrush.lbColor := 0;
   StockNullBrush := TCarbonBrush.Create(LogBrush);
 
-  WhiteBrush := TCarbonBrush.Create;
-  BlackPen := TCarbonPen.Create;
+  WhiteBrush := TCarbonBrush.Create(True);
+  BlackPen := TCarbonPen.Create(True);
   
   DefaultContext := TCarbonBitmapContext.Create;
   DefaultBitmap := TCarbonBitmap.Create(1, 1, 32, nil);

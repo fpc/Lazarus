@@ -37,7 +37,8 @@ uses
   // widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonEdits, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonBars, CarbonButtons, CarbonEdits,
+  CarbonWSControls;
   
 type
 
@@ -84,8 +85,8 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
-
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -443,6 +444,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetStyle
+  Params:  ACustomComboBox - LCL custom combo box
+           NewStyle        - Style
+
+  Sets the style of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
+  NewStyle: TComboBoxStyle);
+begin
+  if not CheckHandle(ACustomComboBox, Self, 'SetStyle') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(ACustomComboBox.ReadOnly);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWSCustomComboBox.SetReadOnly
   Params:  ACustomComboBox - LCL custom combo box
            NewReadOnly     - Read only behavior
@@ -454,7 +470,7 @@ class procedure TCarbonWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCust
 begin
   if not CheckHandle(ACustomComboBox, Self, 'SetReadOnly') then Exit;
 
-  // TODO
+  TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(NewReadOnly);
 end;
 
 {------------------------------------------------------------------------------

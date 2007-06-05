@@ -31,6 +31,7 @@ const
   SInvalidate = 'Invalidate';
   SEnable = 'Enable';
   SSetFocus = 'SetFocus';
+  SSetBounds = 'SetBounds';
   SSetColor = 'SetColor';
   SGetText = 'GetText';
   SSetText = 'SetText';
@@ -79,7 +80,7 @@ const
   SSetModality = 'SetWindowModality';
   
   SGetData = 'GetControlData';
-  SSetData = 'GetControlData';
+  SSetData = 'SetControlData';
   
   SGetEvent = 'GetEventParameter';
   SSetEvent = 'SetEventParameter';

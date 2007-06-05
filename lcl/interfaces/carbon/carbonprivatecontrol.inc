@@ -158,10 +158,16 @@ end;
   Adds control to parent widget
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.AddToWidget(AParent: TCarbonWidget);
+var
+  I: Integer;
 begin
   // add frame to parent content area
-  OSError(HIViewAddSubview(AParent.Content, Frame), Self, 'AddToWidget',
-    SViewAddView);
+  for I := 0 to GetFrameCount - 1 do
+  begin
+    OSError(HIViewSetVisible(Frames[I], LCLObject.Visible), Self, 'AddToWidget', SViewVisible);
+    OSError(HIViewAddSubview(AParent.Content, Frames[I]), Self, 'AddToWidget',
+      SViewAddView);
+  end;
     
   //DebugLn('TCarbonControl.AddToWidget ' + LCLObject.Name + ' ' + DbgS(LCLObject.Parent.ClientRect));
 end;
@@ -189,27 +195,9 @@ begin
     1, @TmpSpec, Pointer(Self), nil);
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlBoundsChanged);
-  InstallControlEventHandler(Frame,
+  InstallControlEventHandler(Frames[0],
     RegisterEventHandler(@CarbonCommon_BoundsChanged),
     1, @TmpSpec, Pointer(Self), nil);
-    
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlContextualMenuClick);
-  InstallControlEventHandler(Widget,
-    RegisterEventHandler(@CarbonCommon_ContextualMenuClick),
-    1, @TmpSpec, Pointer(Self), nil);
-    
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
-  InstallControlEventHandler(Widget,
-    RegisterEventHandler(@CarbonCommon_Track),
-    1, @TmpSpec, Pointer(Self), nil);
-    
-  if Content <> ControlRef(Widget) then
-  begin
-    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
-    InstallControlEventHandler(Content,
-      RegisterEventHandler(@CarbonCommon_Track),
-      1, @TmpSpec, Pointer(Self), nil);
-  end;
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetFocusPart);
   InstallControlEventHandler(Content,
@@ -223,7 +211,7 @@ begin
     
 // cursor set
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
-  InstallControlEventHandler(Widget,
+  InstallControlEventHandler(Content,
     RegisterEventHandler(@CarbonCommon_SetCursor),
     1, @TmpSpec, Pointer(Self), nil);
 
@@ -265,16 +253,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.CreateWidget(const AParams: TCreateParams);
 begin
-  OSError(
-    SetControlProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
-    Self, SCreateWidget, SSetControlProp, 'Widget');
-    
-  if Content <> ControlRef(Widget) then
-    OSError(
-      SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
-      SCreateWidget, SSetControlProp, 'Content');
-      
-  OSError(HIViewSetVisible(Frame, LCLObject.Visible), Self, SCreateWidget, SViewVisible);
+  AddControlPart(Widget);
+  if Content <> ControlRef(Widget) then AddControlPart(Content);
 end;
 
 {------------------------------------------------------------------------------
@@ -289,6 +269,31 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonControl.AddControlPart
+  Params:  AControl - Control
+
+  Adds control part of composite control
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.AddControlPart(const AControl: ControlRef);
+var
+  TmpSpec: EventTypeSpec;
+begin
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
+  InstallControlEventHandler(AControl,
+    RegisterEventHandler(@CarbonCommon_Track),
+    1, @TmpSpec, Pointer(Self), nil);
+    
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlContextualMenuClick);
+  InstallControlEventHandler(AControl,
+    RegisterEventHandler(@CarbonCommon_ContextualMenuClick),
+    1, @TmpSpec, Pointer(Self), nil);
+    
+  OSError(
+    SetControlProperty(AControl, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    Self, 'AddControlPart', SSetControlProp);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonControl.GetContent
   Returns: Content area control
  ------------------------------------------------------------------------------}
@@ -298,12 +303,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonControl.GetControlContentRect
+  Params:  ARect - Content area rectangle
+  Returns: If the function succeeds
+ ------------------------------------------------------------------------------}
+function TCarbonControl.GetControlContentRect(var ARect: TRect): Boolean;
+var
+  AClientRect: FPCMacOSAll.Rect;
+  ClientRegion: FPCMacOSAll.RgnHandle;
+begin
+  Result := False;
+
+  ClientRegion := FPCMacOSAll.NewRgn();
+  try
+    if OSError(GetControlRegion(ControlRef(Widget), kControlContentMetaPart, ClientRegion),
+      Self, 'GetControlContentRect', 'GetControlRegion') then Exit;
+
+     Result := GetRegionBounds(ClientRegion, AClientRect) <> nil;
+     if Result then ARect := CarbonRectToRect(AClientRect);
+  finally
+    FPCMacOSAll.DisposeRgn(ClientRegion);
+  end;
+  
+  {$IFDEF VerboseBounds}
+    DebugLn('TCarbonControl.GetControlContentRect ' + LCLObject.Name + ' ' + DbgS(ARect) +
+      ' ' + DbgS(Result));
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonControl.GetFrame
+  Params:  Frame index
   Returns: Frame area control
  ------------------------------------------------------------------------------}
-function TCarbonControl.GetFrame: ControlRef;
+function TCarbonControl.GetFrame(Index: Integer): ControlRef;
 begin
   Result := ControlRef(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.GetFrameCount
+  Returns: Count of control frames
+ ------------------------------------------------------------------------------}
+class function TCarbonControl.GetFrameCount: Integer;
+begin
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -313,6 +357,32 @@ end;
 function TCarbonControl.GetForceEmbedInScrollView: Boolean;
 begin
   Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.UpdateContentBounds
+
+  Updates bounds of content area
+ ------------------------------------------------------------------------------}
+function TCarbonControl.UpdateContentBounds: Boolean;
+var
+  R: TRect;
+begin
+  Result := False;
+  
+  if not GetClientRect(R) then
+  begin
+    DebugLn('TCarbonControl.UpdateContentBounds Error - unable to get client area!');
+    Exit;
+  end;
+  
+  {$IFDEF VerboseBounds}
+    DebugLn('TCarbonControl.UpdateContentBounds ' + DbgS(R));
+  {$ENDIF}
+  if OSError(HIViewSetFrame(Content, RectToCGRect(R)),
+    Self, 'UpdateContentBounds', SViewFrame) then Exit;
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -347,6 +417,7 @@ end;
 function TCarbonControl.EmbedInScrollView(AScrollBars: TScrollStyle): HIViewRef;
 var
   ScrollOptions: FPCMacOSAll.OptionBits;
+  Bounds: HIRect;
 const
   SName = 'EmbedInScrollView';
 begin
@@ -370,13 +441,17 @@ begin
 
   if OSError(HIScrollViewCreate(ScrollOptions, Result), Self, SName,
     'HIScrollViewCreate') then Exit;
+    
+  // set scroll view bounds
+  OSError(HIViewGetFrame(Widget, Bounds), Self, SName, 'HIViewGetFrame');
+  OSError(HIViewSetFrame(Result, Bounds), Self, SName, SViewFrame);
   
   OSError(HIScrollViewSetScrollBarAutoHide(Result,
       AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
     Self, SName, SViewSetScrollBarAutoHide);
     
   OSError(HIViewSetVisible(Widget, True), Self, SName, SViewVisible);
-  if OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView) then Exit;
+  OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView);
 end;
 
 {------------------------------------------------------------------------------
@@ -477,10 +552,15 @@ end;
   Invalidates the specified client rect or entire area of control
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.Invalidate(Rect: PRect);
+var
+  I: Integer;
 begin
   if Rect = nil then
-    OSError(
-      HiViewSetNeedsDisplay(Frame, True), Self, SInvalidate, SViewNeedsDisplay)
+  begin
+    for I := 0 to GetFrameCount - 1 do
+      OSError(
+        HiViewSetNeedsDisplay(Frames[I], True), Self, SInvalidate, SViewNeedsDisplay);
+  end
   else
     OSError(
       HiViewSetNeedsDisplayInRect(Content, RectToCGRect(Rect^), True), Self,
@@ -493,7 +573,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.IsEnabled: Boolean;
 begin
-  Result := IsControlEnabled(Frame);
+  Result := IsControlEnabled(Frames[0]);
 end;
 
 {------------------------------------------------------------------------------
@@ -502,7 +582,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.IsVisible: Boolean;
 begin
-  Result := FPCMacOSAll.IsControlVisible(Frame);
+  Result := FPCMacOSAll.IsControlVisible(Frames[0]);
 end;
 
 {------------------------------------------------------------------------------
@@ -513,13 +593,43 @@ end;
   Changes control enabled
  ------------------------------------------------------------------------------}
 function TCarbonControl.Enable(AEnable: Boolean): Boolean;
+var
+  I: Integer;
 begin
-  Result := not FPCMacOSAll.IsControlEnabled(Frame);
+  Result := not FPCMacOSAll.IsControlEnabled(Frames[0]);
 
   if AEnable then
-    OSError(FPCMacOSAll.EnableControl(Frame), Self, SEnable, SEnableControl)
+  begin
+    for I := 0 to GetFrameCount - 1 do
+      OSError(FPCMacOSAll.EnableControl(Frames[I]), Self, SEnable, SEnableControl);
+  end
   else
-    OSError(FPCMacOSAll.DisableControl(Frame), Self, SEnable, SDisableControl);
+    for I := 0 to GetFrameCount - 1 do
+      OSError(FPCMacOSAll.DisableControl(Frames[I]), Self, SEnable, SDisableControl);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.GetFrameBounds
+  Params:  ARect - TRect
+  Returns: If function succeeds
+
+  Returns the control bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonControl.GetFrameBounds(var ARect: TRect): Boolean;
+var
+  BoundsRect: FPCMacOSAll.Rect;
+begin
+  Result := False;
+
+  if GetControlBounds(Frames[0], BoundsRect) = nil then
+  begin
+    DebugLn('TCarbonControl.GetFrameBounds failed!');
+    Exit;
+  end;
+  
+  ARect := CarbonRectToRect(BoundsRect);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -531,14 +641,8 @@ end;
   parent
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetBounds(var ARect: TRect): Boolean;
-var
-  AWndRect: FPCMacOSAll.Rect;
 begin
-  Result := FPCMacOSAll.GetControlBounds(Frame, AWndRect) <> nil;
-  if Result then
-    ARect := CarbonRectToRect(AWndRect)
-  else
-    DebugLn('TCarbonControl.GetBounds failed for ' + DbgSName(LCLObject));
+  Result := GetFrameBounds(ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -557,8 +661,11 @@ const
 begin
   Result := False;
 
-  if OSError(HIViewGetBounds(Frame, BoundsRect), Self, SName, 'HIViewGetBounds') then Exit;
-  if OSError(HIViewConvertRect(BoundsRect, Frame, nil), Self, SName,
+  if not GetFrameBounds(ARect) then Exit;
+  BoundsRect := RectToCGRect(ARect);
+  BoundsRect.origin.x := 0;
+  BoundsRect.origin.y := 0;
+  if OSError(HIViewConvertRect(BoundsRect, Frames[0], nil), Self, SName,
     'HIViewConvertRect') then Exit;
   
   if OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn,
@@ -570,7 +677,6 @@ begin
   Result := True;
 end;
 
-
 {------------------------------------------------------------------------------
   Method:  TCarbonControl.SetBounds
   Params:  ARect - Record for control coordinates
@@ -580,21 +686,10 @@ end;
   parent
  ------------------------------------------------------------------------------}
 function TCarbonControl.SetBounds(const ARect: TRect): Boolean;
-var
-  R: TRect;
 begin
   Result := False;
-  FPCMacOSAll.SetControlBounds(Frame, GetCarbonRect(ARect));
-  
-  if Content <> ControlRef(Widget) then
-  begin // adjust content area
-    if not GetClientRect(R) then
-    begin
-      DebugLn('TCarbonControl.SetBounds Error - unable to get client area!');
-      Exit;
-    end;
-    FPCMacOSAll.SetControlBounds(Content, GetCarbonRect(R));
-  end;
+  if OSError(HIViewSetFrame(Frames[0], RectToCGRect(ARect)),
+    Self, SSetBounds, SViewFrame) then Exit;
   
   Result := True;
 end;
@@ -640,7 +735,7 @@ begin
         
         if Child.HandleAllocated then
         begin
-          RefView := ControlRef(TCarbonWidget(Child.Handle).Widget);
+          RefView := ControlRef(TCarbonControl(Child.Handle).Frames[0]);
           Order := kHIViewZOrderBelow;
           Break;
         end;
@@ -649,8 +744,12 @@ begin
       if RefView = nil then Exit;
     end;
 
-  OSError(HIViewSetZOrder(ControlRef(AChild.Widget), Order, RefView),
+  OSError(HIViewSetZOrder((AChild as TCarbonControl).Frames[0], Order, RefView),
     Self, 'SetChildZPosition', 'HIViewSetZOrder');
+    
+  if GetFrameCount = 2 then
+    OSError(HIViewSetZOrder((AChild as TCarbonControl).Frames[1], kHIViewZOrderAbove, (AChild as TCarbonControl).Frames[0]),
+      Self, 'SetChildZPosition', 'HIViewSetZOrder', 'Frames[1]');
 end;
 
 {------------------------------------------------------------------------------
@@ -749,9 +848,12 @@ end;
   Shows or hides control
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.ShowHide(AVisible: Boolean);
+var
+  I: Integer;
 begin
   //DebugLn('TCarbonControl.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
-  OSError(HIViewSetVisible(Frame, AVisible), Self, 'ShowHide', SViewVisible);
+  for I := 0 to GetFrameCount - 1 do
+    OSError(HIViewSetVisible(Frames[I], AVisible), Self, 'ShowHide', SViewVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -868,40 +970,20 @@ end;
   Returns the control client rectangle relative to the control origin
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetClientRect(var ARect: TRect): Boolean;
-var
-  AClientRect: FPCMacOSAll.Rect;
-  ClientRegion: FPCMacOSAll.RgnHandle;
-  R: OSStatus;
 begin
   Result := False;
-  //DebugLn('TCarbonControl.GetClientRect ' + LCLObject.Name);
 
-  ClientRegion := FPCMacOSAll.NewRgn();
-  try
-    R := GetControlRegion(ControlRef(Widget), kControlContentMetaPart, ClientRegion);
-    case R of
-      errInvalidPartCode:
-        begin
-          // controls without content area have clientrect = boundsrect
-          Result := FPCMacOSAll.GetControlBounds(ControlRef(Widget), AClientRect) <> nil;
-          if Result then
-          begin
-            ARect := CarbonRectToRect(AClientRect);
-            OffsetRect(ARect, -ARect.Left, -ARect.Top);
-          end;
-        end;
-      noErr:
-        begin
-          Result := GetRegionBounds(ClientRegion, AClientRect) <> nil;
-          if Result then ARect := CarbonRectToRect(AClientRect);
-          //DebugLn('TCarbonControl.GetClientRect ' + LCLObject.Name + ' ' + DbgS(Result));
-        end;
-      else
-        OSError(R, Self, 'GetClientRect', 'GetControlRegion');
-    end;
-  finally
-    FPCMacOSAll.DisposeRgn(ClientRegion);
+  // controls without content area have clientrect = boundsrect
+  if GetFrameBounds(ARect) then
+  begin
+    OffsetRect(ARect, -ARect.Left, -ARect.Top);
+    Result := True;
   end;
+
+  {$IFDEF VerboseBounds}
+    DebugLn('TCarbonControl.GetClientRect ' + LCLObject.Name + ' ' + DbgS(ARect) +
+      ' ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

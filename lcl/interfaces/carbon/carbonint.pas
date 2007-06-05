@@ -139,13 +139,14 @@ uses
 // CarbonWSMaskEdit,
   CarbonWSMenus,
 // CarbonWSPairSplitter,
-// CarbonWSSpin,
+  CarbonWSSpin,
   CarbonWSStdCtrls,
 // CarbonWSToolwin,
-  CarbonThemes,
 ////////////////////////////////////////////////////
-  CarbonDef, CarbonPrivate, CarbonCanvas, CarbonGDIObjects, CarbonMenus,
-  CarbonEdits, CarbonTabs, CarbonStrings, CarbonProc, CarbonDbgConsts, CarbonUtils,
+  CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
+  CarbonTabs,
+  CarbonThemes, CarbonCanvas, CarbonGDIObjects, CarbonStrings,
+  CarbonProc, CarbonDbgConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;

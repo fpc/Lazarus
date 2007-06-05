@@ -108,7 +108,7 @@ const
         SizeOf(MousePoint), nil, @MousePoint),
       SName, AGetEvent, 'kEventParamWindowMouseLocation') then Exit;
     
-    HIViewConvertPoint(MousePoint, nil, Control);
+    OSError(HIViewConvertPoint(MousePoint, nil, Widget.Content), SName, SViewConvert);
     Result.X := Trunc(MousePoint.X);
     Result.Y := Trunc(MousePoint.Y);
   end;
@@ -1183,6 +1183,34 @@ end;
 function TCarbonWindow.GetScreenBounds(var ARect: TRect): Boolean;
 begin
   Result := GetBounds(ARect);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.GetScrollInfo
+  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
+           ScrollInfo - Record fo scrolling info
+  Returns: If the function suceeds
+
+  Gets the scrolling info of the specified scroll bar
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo);
+begin
+  DebugLn('TCarbonWindow.GetScrollInfo TODO');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.SetScrollInfo
+  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
+           ScrollInfo - Scrolling info
+  Returns: The old scroll bar position
+
+  Sets the scrolling info of the specified scroll bar
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.SetScrollInfo(SBStyle: Integer;
+  const ScrollInfo: TScrollInfo): Integer;
+begin
+  Result := 0;
+  DebugLn('TCarbonWindow.SetScrollInfo TODO');
 end;
 
 {------------------------------------------------------------------------------

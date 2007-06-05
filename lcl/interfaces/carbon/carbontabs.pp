@@ -74,6 +74,7 @@ type
     procedure ValueChanged; override;
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
+    function SetBounds(const ARect: TRect): Boolean; override;
     procedure Add(ATab: TCarbonTab; AIndex: Integer);
     procedure Remove(AIndex: Integer);
     procedure SetTabIndex(AIndex: Integer);
@@ -189,15 +190,13 @@ begin
     Exit;
   end;
 
-  if OSError(
-    HIObjectCreate(CustomControlClassID, nil, FUserPane),
-    Self, SCreateWidget, 'HIObjectCreate') then RaiseCreateWidgetError(LCLObject);
+  FUserPane := CreateCustomHIView(RectToCGRect(R));
+  if FUserPane = nil then RaiseCreateWidgetError(LCLObject);
 
-  OSError(HIViewSetFrame(FUserPane, RectToCGRect(R)), Self, SCreateWidget, SViewFrame);
   OSError(HIViewSetVisible(FUserPane, True), Self, SCreateWidget, SViewVisible);
 
   if OSError(HIViewAddSubview(Control, FUserPane), Self, SCreateWidget,
-    SViewAddView) then Exit;
+    SViewAddView) then RaiseCreateWidgetError(LCLObject);
 
   inherited;
 
@@ -383,6 +382,24 @@ begin
   
   //DebugLn('TCarbonTabsControl.GetClientRect ' + DbgS(ARect));
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.SetBounds
+  Params:  ARect - Record for control coordinates
+  Returns: If function succeeds
+
+  Sets the control bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonTabsControl.SetBounds(const ARect: TRect): Boolean;
+begin
+  Result := False;
+  if inherited SetBounds(ARect) then
+  begin
+    UpdateContentBounds;
+    Result := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------

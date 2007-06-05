@@ -99,6 +99,7 @@ type
     
     procedure SetAntialiasing(AValue: Boolean);
   public
+    procedure DrawFocusRect(const ARect: TRect);
     procedure DrawFrameControl(var ARect: TRect; AType, AState: Cardinal);
     procedure DrawSplitter(const ARect: TRect);
     
@@ -349,8 +350,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonDeviceContext.Create;
 begin
-  FBkBrush := TCarbonBrush.Create;
-  FTextBrush := TCarbonBrush.Create;
+  FBkBrush := TCarbonBrush.Create(False);
+  FTextBrush := TCarbonBrush.Create(False);
   
   FCurrentPen := BlackPen;
   FCurrentPen.Select;
@@ -564,6 +565,8 @@ const
   SName = 'BeginTextRender';
 begin
   Result := False;
+  
+  if ACount = 0 then Exit;
 
   // save context
   CGContextSaveGState(CGContext);
@@ -621,6 +624,20 @@ end;
 procedure TCarbonDeviceContext.SetAntialiasing(AValue: Boolean);
 begin
   CGContextSetShouldAntialias(CGContext, CBool(AValue));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.DrawFocusRect
+  Params:  ARect - Bounding rectangle
+  Returns: If the function succeeds
+
+  Draws a focus rectangle
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.DrawFocusRect(const ARect: TRect);
+begin
+  OSError(
+    HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal),
+    Self, 'DrawFocusRect', 'HIThemeDrawFocusRect');
 end;
 
 {------------------------------------------------------------------------------
@@ -1317,7 +1334,7 @@ end;
 constructor TCarbonBitmapContext.Create;
 begin
   inherited Create;
-  FBitmap := nil;
+  FBitmap := DefaultBitmap;
 end;
 
 {------------------------------------------------------------------------------

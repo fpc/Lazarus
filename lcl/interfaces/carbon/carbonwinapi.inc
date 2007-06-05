@@ -45,11 +45,24 @@ begin
   Result:=inherited BeginPaint(Handle, PS);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  BitBlt
+  Params:  DestDC        - Destination device context
+           X, Y          - Left/top corner of the destination rectangle
+           Width, Height - Size of the destination rectangle
+           SrcDC         - Source device context
+           XSrc, YSrc    - Left/top corner of the source rectangle
+           Rop           - Raster operation to be performed
+  Returns: If the function succeeds
+
+  Copies a bitmap from a source context into a destination context using the
+  specified raster operation
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
-  Result:=inherited BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop
-    );
+  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
+    Width, Height, 0, 0, 0, Rop);
 end;
 
 function TCarbonWidgetSet.CallNextHookEx(hHk: HHOOK; ncode: Integer;
@@ -401,6 +414,8 @@ end;
   with the object
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+var
+  CarbonGDIObject: TCarbonGDIObject;
 begin
   Result := False;
 
@@ -409,14 +424,20 @@ begin
   {$ENDIF}
   
   if not CheckGDIObject(GDIObject, 'DeleteObject') then Exit;
+  CarbonGDIObject := TCarbonGDIObject(GDIObject);
   
-  if TCarbonGDIObject(GDIObject).SelCount = 0 then
-    TCarbonGDIObject(GDIObject).Free
+  if CarbonGDIObject.Global then
+  begin
+    DebugLn('TCarbonWidgetSet.DeleteObject Error - GDIObject: ' +
+      DbgSName(CarbonGDIObject) + ' is global!');
+    Exit;
+  end;
+  
+  if CarbonGDIObject.SelCount = 0 then CarbonGDIObject.Free
   else
   begin
     DebugLn('TCarbonWidgetSet.DeleteObject Error - GDIObject: ' +
-      DbgSName(TCarbonGDIObject(GDIObject)) +
-      ' is still selected!');
+      DbgSName(CarbonGDIObject) + ' is still selected!');
     Exit;
   end;
   
@@ -445,6 +466,29 @@ begin
   
   if not CheckCursor(Handle, 'DestroyCursor') then Exit;
   TCarbonCursor(Handle).Free;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DrawFocusRect
+  Params:  DC   - Handle to device context
+           Rect - Bounding rectangle
+  Returns: If the function succeeds
+
+  Draws a focus rectangle
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DrawFocusRect DC: ' + DbgS(DC) + ' Rect: ' + DbgS(Rect);
+  {$ENDIF}
+
+  if not CheckDC(DC, 'DrawFrameControl') then Exit;
+
+  TCarbonDeviceContext(DC).DrawFocusRect(Rect);
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -708,7 +752,7 @@ begin
 
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.ExtTextOut DC: ' + DbgS(DC) + ' ' + DbgS(X) +
-      ', ' + DbgS(Y) + ' Str: ' + Str);
+      ', ' + DbgS(Y) + ' Str: ' + Str + ' Count: ' + DbgS(Count));
   {$ENDIF}
   
   if not CheckDC(DC, 'ExtTextOut') then Exit;
@@ -1474,9 +1518,9 @@ begin
       ' SBStyle: ' + DbgS(SBStyle));
   {$ENDIF}
 
-  if not CheckWidget(Handle, 'GetScrollInfo', TCarbonCustomControl) then Exit;
+  if not CheckWidget(Handle, 'GetScrollInfo') then Exit;
 
-  TCarbonCustomControl(Handle).GetScrollInfo(SBStyle, ScrollInfo);
+  TCarbonWidget(Handle).GetScrollInfo(SBStyle, ScrollInfo);
   
   Result := True;
 end;
@@ -2673,10 +2717,9 @@ begin
   end
   else
   begin
-    // TODO: form scrollbars
-    if not CheckWidget(Handle, 'SetScrollInfo', TCarbonCustomControl) then Exit;
+    if not CheckWidget(Handle, 'SetScrollInfo') then Exit;
 
-    Result := TCarbonCustomControl(Handle).SetScrollInfo(SBStyle, ScrollInfo);
+    Result := TCarbonWidget(Handle).SetScrollInfo(SBStyle, ScrollInfo);
   end;
 end;
 
@@ -2765,12 +2808,27 @@ begin
   Result := TCarbonWindow(HWnd).Show(nCmdShow);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  StretchBlt
+  Params:  DestDC              - Destination device context
+           X, Y                - Left/top corner of the destination rectangle
+           Width, Height       - Size of the destination rectangle
+           SrcDC               - Source device context
+           XSrc, YSrc          - Left/top corner of the source rectangle
+           SrcWidth, SrcHeight - Size of the source rectangle
+           Rop                 - Raster operation to be performed
+  Returns: If the function succeeds
+
+  Copies a bitmap from a source rectangle into a destination rectangle using the
+  specified raster operation. If needed it resizes the bitmap to fit the
+  dimensions of the destination rectangle. Sizing is done according to the
+  stretching mode currently set in the destination device context.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
-  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal
-  ): Boolean;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean;
 begin
-  Result:=inherited StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
-    SrcWidth, SrcHeight, ROp);
+  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
+    SrcWidth, SrcHeight, 0, 0, 0, Rop);
 end;
 
 {------------------------------------------------------------------------------
@@ -2815,7 +2873,8 @@ begin
   if not CheckDC(SrcDC, SName, 'Src') then Exit;
   if not (TCarbonDeviceContext(SrcDC) is TCarbonBitmapContext) then
   begin
-    DebugLn(SName + ' Error - invalid source device context!');
+    DebugLn(SName + ' Error - invalid source device context ', TCarbonDeviceContext(SrcDC).ClassName,
+      ', expected TCarbonBitmapContext!');
     Exit;
   end;
   

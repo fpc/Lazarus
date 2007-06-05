@@ -53,13 +53,18 @@ type
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
+    procedure AddControlPart(const AControl: ControlRef);
     function GetContent: ControlRef; override;
-    function GetFrame: ControlRef; virtual;
+    function GetControlContentRect(var ARect: TRect): Boolean;
+    function GetFrame(Index: Integer): ControlRef; virtual;
+    function GetFrameBounds(var ARect: TRect): Boolean; virtual;
     function GetForceEmbedInScrollView: Boolean; virtual;
+    function UpdateContentBounds: Boolean;
     function EmbedInScrollView(const AParams: TCreateParams): HIViewRef;
     function EmbedInScrollView(AScrollBars: TScrollStyle): HIViewRef;
     procedure ChangeScrollBars(AScrollView: HIViewRef; var AScrollBars: TScrollStyle; ANewValue: TScrollStyle);
   public
+    class function GetFrameCount: Integer; virtual;
     class function GetValidEvents: TCarbonControlEvents; virtual;
     procedure Hit(AControlPart: ControlPartCode); dynamic;
     procedure Draw; virtual;
@@ -104,7 +109,7 @@ type
      - frame area control of control
      - determines bounds of control
      - processes only bounds changed event            }
-    property Frame: ControlRef read GetFrame;
+    property Frames[Index: Integer]: ControlRef read GetFrame;
   end;
   
   { TCarbonWindow }
@@ -127,6 +132,8 @@ type
     
     function GetBounds(var ARect: TRect): Boolean; override;
     function GetScreenBounds(var ARect: TRect): Boolean; override;
+    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
+    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
     function SetBounds(const ARect: TRect): Boolean; override;
     procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
 
@@ -170,15 +177,15 @@ type
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
-    function GetFrame: ControlRef; override;
+    function GetFrame(Index: Integer): ControlRef; override;
   public
     procedure GetInfo(out AImageSize, AViewSize, ALineSize, AOrigin: TPoint); dynamic;
     procedure ScrollTo(const ANewOrigin: TPoint); dynamic;
   public
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
-    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer;
-    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo);
+    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
+    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
   end;
   
   { TCarbonScrollingWinControl }
@@ -198,6 +205,9 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
+  public
+    function GetClientRect(var ARect: TRect): Boolean; override;
+    function SetBounds(const ARect: TRect): Boolean; override;
   end;
   
   { TCarbonStatusBar }
@@ -230,68 +240,6 @@ type
     function GetItemIndex: Integer;
     procedure SetItemIndex(AIndex: Integer);
   end;
-
-  { TCarbonCustomCheckBox }
-
-  TCarbonCustomCheckBox = class(TCarbonControl)
-  public
-    class function GetValidEvents: TCarbonControlEvents; override;
-    procedure Hit(AControlPart: ControlPartCode); override;
-    procedure ValueChanged; override;
-    
-    function RetrieveState: TCheckBoxState; virtual;
-    procedure SetState(AState: TCheckBoxState); virtual;
-  end;
-  
-  { TCarbonCheckBox }
-
-  TCarbonCheckBox = class(TCarbonCustomCheckBox)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  end;
-  
-  { TCarbonToggleBox }
-
-  TCarbonToggleBox = class(TCarbonCustomCheckBox)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  end;
-
-  { TCarbonRadioButton }
-
-  TCarbonRadioButton = class(TCarbonCustomCheckBox)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    procedure ValueChanged; override;
-  end;
-  
-  { TCarbonCustomButton }
-
-  TCarbonCustomButton = class(TCarbonControl)
-  public
-    class function GetValidEvents: TCarbonControlEvents; override;
-    procedure Hit(AControlPart: ControlPartCode); override;
-  public
-    procedure SetDefault(ADefault: Boolean); virtual;
-  end;
-  
-  { TCarbonButton }
-
-  TCarbonButton = class(TCarbonCustomButton)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  end;
-  
-  { TCarbonBitBtn }
-
-  TCarbonBitBtn = class(TCarbonCustomButton)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    procedure SetGlyph(const AGlyph: TBitmap); virtual;
-    procedure SetLayout(ALayout: TButtonLayout); virtual;
-  end;
   
   { TCarbonStaticText }
 
@@ -300,60 +248,6 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
     procedure SetAlignment(AAlignment: TAlignment); virtual;
-  end;
-  
-  { TCarbonCustomBar }
-  
-  TCarbonCustomBar = class(TCarbonControl)
-  private
-  public
-    function GetPosition: Integer; virtual;
-    procedure SetPosition(APosition: Integer); virtual;
-
-    procedure SetColor(const AColor: TColor); override;
-    procedure SetFont(const AFont: TFont); override;
-  end;
-  
-  { TCarbonProgressBar }
-
-  TCarbonProgressBar = class(TCarbonCustomBar)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    procedure ApplyChanges; virtual;
-  end;
-  
-  { TCarbonMovableBar }
-
-  TCarbonMovableBar = class(TCarbonCustomBar)
-  protected
-    class function GetValidEvents: TCarbonControlEvents; override;
-    procedure IndicatorMoved; override;
-    procedure ValueChanged; override;
-  end;
-
-  { TCarbonTrackBar }
-
-  TCarbonTrackBar = class(TCarbonMovableBar)
-  private
-    FTicks: Word;
-    function GetTicks: Word;
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    procedure ApplyChanges; virtual;
-  end;
-
-  { TCarbonScrollBar }
-
-  TCarbonScrollBar = class(TCarbonMovableBar)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    class function GetValidEvents: TCarbonControlEvents; override;
-    procedure ValueChanged; override;
-    procedure DoAction(AControlPart: ControlPartCode); override;
-    procedure SetParams; virtual;
   end;
   
 procedure RaiseCreateWidgetError(AControl: TWinControl);
@@ -503,7 +397,7 @@ begin
               DebugLn('CustomControlHandler HitTest');
             {$ENDIF}
 
-            Part := kControlButtonPart;
+            Part := kControlEditTextPart; // workaround
           
             Result := SetEventParameter(AEvent, kEventParamControlPart,
               typeControlPartCode, SizeOf(Part), @Part);
@@ -606,17 +500,9 @@ end;
   Creates Carbon custom control
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
-var
-  Control: ControlRef;
 begin
-  if OSError(
-    HIObjectCreate(CustomControlClassID, nil, Control),
-    Self, SCreateWidget, 'HIObjectCreate') then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-  
-  with AParams do
-    SetBounds(Bounds(X, Y, Width, Height));
+  Widget := CreateCustomHIView(ParamsToHIRect(AParams));
+  if Widget = nil then RaiseCreateWidgetError(LCLObject);
   
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
@@ -640,9 +526,10 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonCustomControl.GetFrame
+  Params:  Frame index
   Returns: Frame area control
  ------------------------------------------------------------------------------}
-function TCarbonCustomControl.GetFrame: ControlRef;
+function TCarbonCustomControl.GetFrame(Index: Integer): ControlRef;
 begin
   Result := FScrollView;
 end;
@@ -662,7 +549,7 @@ begin
   AOrigin := FScrollOrigin;
   AImageSize := FScrollSize;
   AViewSize := FScrollPageSize;
-  ALineSize := Classes.Point(1, 1);
+  ALineSize := Classes.Point(20, 20);
   
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +
@@ -791,7 +678,7 @@ begin
         kEventAttributeUserEvent, Event),
       Self, SName, 'CreateEvent') then Exit;
     try
-      OSError(SendEventToEventTarget(Event, GetControlEventTarget(Widget)),
+      OSError(SendEventToEventTarget(Event, GetControlEventTarget(FScrollView)),
         Self, SName, 'SendEventToEventTarget');
     finally
       ReleaseEvent(Event);
@@ -902,15 +789,13 @@ begin
     Exit;
   end;
   
-  if OSError(
-    HIObjectCreate(CustomControlClassID, nil, FUserPane),
-    Self, SCreateWidget, 'HIObjectCreate') then RaiseCreateWidgetError(LCLObject);
+  FUserPane := CreateCustomHIView(RectToCGRect(R));
+  if FUserPane = nil then RaiseCreateWidgetError(LCLObject);
     
-  OSError(HIViewSetFrame(FUserPane, RectToCGRect(R)), Self, SCreateWidget, SViewFrame);
   OSError(HIViewSetVisible(FUserPane, True), Self, SCreateWidget, SViewVisible);
   
   if OSError(HIViewAddSubview(Control, FUserPane), Self, SCreateWidget,
-    SViewAddView) then Exit;
+    SViewAddView) then RaiseCreateWidgetError(LCLObject);
   
   inherited;
 
@@ -936,6 +821,33 @@ end;
 function TCarbonGroupBox.GetContent: ControlRef;
 begin
   Result := FUserPane;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonGroupBox.GetClientRect
+  Params:  ARect - Record for client area coordinates
+  Returns: If the function succeeds
+
+  Returns the control client rectangle relative to the control origin
+ ------------------------------------------------------------------------------}
+function TCarbonGroupBox.GetClientRect(var ARect: TRect): Boolean;
+begin
+  Result := GetControlContentRect(ARect);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonGroupBox.SetBounds
+  Params:  ARect - Record for control coordinates
+  Returns: If function succeeds
+
+  Sets the control bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonGroupBox.SetBounds(const ARect: TRect): Boolean;
+begin
+  Result := False;
+  if not inherited SetBounds(ARect) then Exit;
+  Result := UpdateContentBounds;
 end;
 
 { TCarbonStatusBar }
@@ -1150,359 +1062,6 @@ begin
   // TODO
 end;
 
-{ TCarbonCustomCheckBox }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomCheckBox.GetValidEvents
-  Returns: Set of events with installed handlers
- ------------------------------------------------------------------------------}
-class function TCarbonCustomCheckBox.GetValidEvents: TCarbonControlEvents;
-begin
-  Result := [cceValueChanged, cceHit];
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomCheckBox.Hit
-  Params:  AControlPart - Hitted control part
-
-  Hit event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomCheckBox.Hit(AControlPart: ControlPartCode);
-begin
-  // do nothing, because value changed will be fired immediately
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomCheckBox.ValueChanged
-
-  Value changed event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomCheckBox.ValueChanged;
-begin
-  LCLSendChangedMsg(LCLObject);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomCheckBox.RetrieveState
-  Returns: State of Carbon custom check box
- ------------------------------------------------------------------------------}
-function TCarbonCustomCheckBox.RetrieveState: TCheckBoxState;
-begin
-  case GetControl32BitValue(ControlRef(Widget)) of
-    kControlCheckBoxCheckedValue   : Result := cbChecked;
-    kControlCheckBoxUncheckedValue : Result := cbUnchecked;
-    kControlCheckBoxMixedValue     : Result := cbGrayed;
-  else
-    Result := cbUnchecked;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomCheckBox.SetState
-  Params:  AState        - New state
-
-  Sets the new state of Carbon custom check box
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomCheckBox.SetState(AState: TCheckBoxState);
-var
-  Value: UInt32;
-begin
-  case AState of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-  
-  SetControl32BitValue(ControlRef(Widget), Value);
-end;
-
-{ TCarbonCheckBox }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCheckBox.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon check box
- ------------------------------------------------------------------------------}
-procedure TCarbonCheckBox.CreateWidget(const AParams: TCreateParams);
-var
-  Control: ControlRef;
-  Value: UInt32;
-begin
-  case (LCLObject as TCustomCheckBox).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  if OSError(
-    CreateCheckBoxControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, Value, True, Control),
-    Self, SCreateWidget, 'CreateCheckBoxControl') then RaiseCreateWidgetError(LCLObject);
-    
-  Widget := Control;
-
-  inherited;
-
-  SetText(AParams.Caption);
-end;
-
-{ TCarbonToggleBox }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonToggleBox.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon toggle box
- ------------------------------------------------------------------------------}
-procedure TCarbonToggleBox.CreateWidget(const AParams: TCreateParams);
-var
-  Control: ControlRef;
-  Value: UInt32;
-begin
-  case (LCLObject as TToggleBox).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  if OSError(
-    CreateBevelButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, kControlBevelButtonNormalBevel,
-      kControlBehaviorToggles, nil, 0, 0, 0, Control),
-    Self, SCreateWidget, SCreateBevelButton) then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-  
-  inherited;
-
-  SetText(AParams.Caption);
-  SetControl32BitValue(Control, Value);
-end;
-
-{ TCarbonRadioButton }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonRadioButton.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon radio button
- ------------------------------------------------------------------------------}
-procedure TCarbonRadioButton.CreateWidget(const AParams: TCreateParams);
-var
-  Control: ControlRef;
-  Value: UInt32;
-begin
-  case (LCLObject as TRadioButton).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  if OSError(
-    CreateRadioButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, Value, True, Control),
-    Self, SCreateWidget, 'CreateRadioButtonControl') then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-    
-  inherited;
-
-  SetText(AParams.Caption);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonRadioButton.ValueChanged
-
-  Value changed event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonRadioButton.ValueChanged;
-var
-  RadioButton: TRadioButton;
-  Sibling: TControl;
-  I: Integer;
-begin
-  if GetControl32BitValue(ControlRef(Widget)) = kControlCheckBoxCheckedValue then
-  begin
-    //DebugLn('TCarbonRadioButton.ValueChanged Uncheck Sibling');
-
-    // uncheck sibling radio buttons
-    RadioButton := (LCLObject as TRadioButton);
-    if RadioButton.Parent <> nil then
-    begin
-      for I := 0 to RadioButton.Parent.ControlCount - 1 do
-      begin
-        Sibling := RadioButton.Parent.Controls[I];
-        if (Sibling is TRadioButton) and (Sibling <> RadioButton) then
-          (Sibling as TRadioButton).Checked := False;
-      end;
-    end;
-  end;
-
-  inherited;
-end;
-
-{ TCarbonCustomButton }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomButton.GetValidEvents
-  Returns: Set of events with installed handlers
- ------------------------------------------------------------------------------}
-class function TCarbonCustomButton.GetValidEvents: TCarbonControlEvents;
-begin
-  Result := [cceHit];
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomButton.Hit
-  Params:  AControlPart - Hitted control part
-
-  Hit event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomButton.Hit(AControlPart: ControlPartCode);
-begin
-  LCLSendClickedMsg(LCLObject);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomButton.SetDefault
-  Params:  ADefault - Is default
-
-  Sets the default indication
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomButton.SetDefault(ADefault: Boolean);
-begin
-  OSError(
-    SetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault),
-    Self, 'SetDefault', SSetData);
-end;
-
-{ TCarbonButton }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonButton.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon button
- ------------------------------------------------------------------------------}
-procedure TCarbonButton.CreateWidget(const AParams: TCreateParams);
-var
-  Control: ControlRef;
-begin
-  // create the button at bounds
-  if OSError(
-    CreatePushButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, Control),
-    Self, SCreateWidget, 'CreatePushButtonControl') then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-
-  inherited;
-
-  SetText(AParams.Caption);
-end;
-
-{ TCarbonBitBtn }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonBitBtn.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon bitmap button
- ------------------------------------------------------------------------------}
-procedure TCarbonBitBtn.CreateWidget(const AParams: TCreateParams);
-var
-  Control: ControlRef;
-  ButtonKind: ThemeButtonKind;
-begin
-  if OSError(
-    CreateBevelButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, kControlBevelButtonLargeBevel, kControlBehaviorPushbutton,
-      nil, 0, 0, 0, Control),
-    Self, SCreateWidget, SCreateBevelButton) then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-    
-  inherited;
-
-  SetText(AParams.Caption);
-  
-  // set round border
-  ButtonKind := kThemeRoundedBevelButton;
-  OSError(SetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlBevelButtonKindTag, SizeOf(ThemeButtonKind), @ButtonKind),
-    Self, SCreateWidget, SSetData, 'kControlBevelButtonKindTag');
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonBitBtn.SetGlyph
-  Params:  AGlyph  - New glyph bitmap
-
-  Sets the glyph bitmap
- ------------------------------------------------------------------------------}
-procedure TCarbonBitBtn.SetGlyph(const AGlyph: TBitmap);
-var
-  ContentInfo: ControlButtonContentInfo;
-  FreeImage: Boolean;
-  BitBtn: TCustomBitBtn;
-  R: TRect;
-begin
-  ContentInfo.contentType := kControlContentCGImageRef;
-  
-  FreeImage := False;
-  ContentInfo.imageRef := nil;
-  
-  if AGlyph <> nil then
-  begin
-    if TObject(AGlyph.Handle) is TCarbonBitmap then
-    begin
-      BitBtn := LCLObject as TCustomBitBtn;
-      
-      if BitBtn.NumGlyphs <= 1 then
-        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).CGImage
-      else
-      begin
-        // TODO: consider button style (down, disabled)
-        R := Classes.Rect(0, 0, AGlyph.Width div BitBtn.NumGlyphs, AGlyph.Height);
-        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).GetSubImage(R);
-        FreeImage := True;
-      end;
-    end;
-  end;
-  
-  try
-    OSError(SetBevelButtonContentInfo(ControlRef(Widget), @ContentInfo),
-      Self, 'SetGlyph', 'SetBevelButtonContentInfo');
-  finally
-    if FreeImage then CGImageRelease(ContentInfo.imageRef);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonBitBtn.SetLayout
-  Params:  ALayout  - Bitmap and caption layout
-
-  Sets the bitmap and caption layout
- ------------------------------------------------------------------------------}
-procedure TCarbonBitBtn.SetLayout(ALayout: TButtonLayout);
-var
-  Placement: ControlButtonTextPlacement;
-begin
-  case ALayout of
-    blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
-    blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
-    blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
-    blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
-  end;
-
-  OSError(SetBevelButtonTextPlacement(ControlRef(Widget), Placement),
-    Self, 'SetLayout', 'SetBevelButtonTextPlacement');
-
-  Invalidate;
-end;
-
-
 { TCarbonStaticText }
 
 {------------------------------------------------------------------------------
@@ -1575,300 +1134,6 @@ begin
   Invalidate;
 end;
 
-
-{ TCarbonCustomBar }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomBar.GetPosition
-  Returns: The positon of Carbon bar
- ------------------------------------------------------------------------------}
-function TCarbonCustomBar.GetPosition: Integer;
-begin
-  Result := GetValue;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomBar.SetPosition
-  Params:  APosition - New position
-
-  Sets the position of Carbon bar
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomBar.SetPosition(APosition: Integer);
-begin
-  SetValue(APosition);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomBar.SetColor
-  Params:  AColor - New color
-
-  Sets the color of control (for edit like controls)
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomBar.SetColor(const AColor: TColor);
-begin
-  // not supported
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonCustomBar.SetFont
-  Params:  AFont - New font
-
-  Sets the font of control
- ------------------------------------------------------------------------------}
-procedure TCarbonCustomBar.SetFont(const AFont: TFont);
-begin
-  // not supported
-end;
-
-{ TCarbonProgressBar }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonProgressBar.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon progress bar
- ------------------------------------------------------------------------------}
-procedure TCarbonProgressBar.CreateWidget(const AParams: TCreateParams);
-var
-  ProgressBar: TCustomProgressBar;
-  Control: ControlRef;
-begin
-  ProgressBar := LCLObject as TCustomProgressBar;
-
-  // create determinate progress bar
-  if OSError(
-    CreateProgressBarControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      ProgressBar.Position, ProgressBar.Min, ProgressBar.Max, False, Control),
-    Self, SCreateWidget, 'CreateProgressBarControl') then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-    
-  inherited;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonProgressBar.ApplyChanges
-
-  Sets the parameters (Min, Max, Position) of Carbon progress bar
- ------------------------------------------------------------------------------}
-procedure TCarbonProgressBar.ApplyChanges;
-var
-  ProgressBar: TCustomProgressBar;
-begin
-  ProgressBar := LCLObject as TCustomProgressBar;
-  
-  SetValue(ProgressBar.Position);
-  SetMinimum(ProgressBar.Min);
-  SetMaximum(ProgressBar.Max);
-end;
-
-{ TCarbonMovableBar }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMovableBar.GetValidEvents
-  Returns: Set of events with installed handlers
- ------------------------------------------------------------------------------}
-class function TCarbonMovableBar.GetValidEvents: TCarbonControlEvents;
-begin
-  Result := [cceValueChanged, cceIndicatorMoved];
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMovableBar.IndicatorMoved
-
-  Indicator moved event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonMovableBar.IndicatorMoved;
-begin
-  ValueChanged;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMovableBar.ValueChanged
-
-  Value changed event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonMovableBar.ValueChanged;
-begin
-  LCLSendChangedMsg(LCLObject);
-end;
-
-{ TCarbonTrackBar }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonTrackBar.GetTicks
-  Returns: Number of ticks
-
-  Returns the number of ticks for the track bar
- ------------------------------------------------------------------------------}
-function TCarbonTrackBar.GetTicks: Word;
-var
-  TrackBar: TCustomTrackBar;
-begin
-  Result := 0;
-  TrackBar := LCLObject as TCustomTrackBar;
-  if TrackBar = nil then Exit;
-  if TrackBar.TickStyle = tsNone then Exit;
-
-  if TrackBar.Frequency > 0 then
-    Result := Math.Ceil(Abs(TrackBar.Max - TrackBar.Min) / TrackBar.Frequency) + 1
-  else
-    Result := 2;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonTrackBar.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon track bar
- ------------------------------------------------------------------------------}
-procedure TCarbonTrackBar.CreateWidget(const AParams: TCreateParams);
-var
-  TrackBar: TCustomTrackBar;
-  Control: ControlRef;
-begin
-  TrackBar := LCLObject as TCustomTrackBar;
-  
-  FTicks := GetTicks;
-
-  if OSError(
-    CreateSliderControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      TrackBar.Position, TrackBar.Min, TrackBar.Max,
-      kControlSliderPointsDownOrRight, FTicks, True, nil, Control),
-    Self, SCreateWidget, 'CreateSliderControl') then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-    
-  inherited;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonTrackBar.ApplyChanges
-
-  Sets the parameters (Min, Max, Position, Ticks) of Carbon track bar
- ------------------------------------------------------------------------------}
-procedure TCarbonTrackBar.ApplyChanges;
-var
-  TrackBar: TCustomTrackBar;
-begin
-  if FTicks <> GetTicks then
-    RecreateWnd(LCLObject) // recreate track bar if ticks have changed
-  else
-  begin
-    TrackBar := LCLObject as TCustomTrackBar;
-    
-    SetValue(TrackBar.Position);
-    SetMinimum(TrackBar.Min);
-    SetMaximum(TrackBar.Max);
-  end;
-end;
-
-{ TCarbonScrollBar }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonScrollBar.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon scroll bar
- ------------------------------------------------------------------------------}
-procedure TCarbonScrollBar.CreateWidget(const AParams: TCreateParams);
-var
-  ScrollBar: TCustomScrollBar;
-  Control: ControlRef;
-begin
-  ScrollBar := LCLObject as TCustomScrollBar;
-
-  if OSError(
-    CreateScrollBarControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      ScrollBar.Position, ScrollBar.Min, ScrollBar.Max, ScrollBar.PageSize, True,
-      nil, Control),
-    Self, SCreateWidget, 'CreateScrollBarControl') then RaiseCreateWidgetError(LCLObject);
-
-  Widget := Control;
-    
-  inherited;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonScrollBar.GetValidEvents
-  Returns: Set of events with installed handlers
- ------------------------------------------------------------------------------}
-class function TCarbonScrollBar.GetValidEvents: TCarbonControlEvents;
-begin
-  Result := inherited GetValidEvents + [cceDoAction];
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonScrollBar.ValueChanged
-
-  Value changed event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonScrollBar.ValueChanged;
-var
-  ScrollMsg: TLMScroll;
-begin
-  FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
-
-  ScrollMsg.Msg := LM_HSCROLL;
-  ScrollMsg.ScrollCode := SB_THUMBTRACK;
-  ScrollMsg.Pos := GetControl32BitValue(ControlRef(Widget));
-  ScrollMsg.ScrollBar := HWND(Widget);
-
-  DeliverMessage(LCLObject, ScrollMsg);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonScrollBar.DoAction
-  Params:  AControlPart - Control part to perform the action
-
-  Action event handler
- ------------------------------------------------------------------------------}
-procedure TCarbonScrollBar.DoAction(AControlPart: ControlPartCode);
-var
-  ScrollMsg: TLMScroll;
-  ScrollCode: SmallInt;
-begin
-  ScrollCode := -1; // valid scrollcode is >= 0
-  
-  case AControlPart of
-    kControlUpButtonPart  : ScrollCode := SB_LINEUP;
-    kControlDownButtonPart: ScrollCode := SB_LINEDOWN;
-    kControlPageUpPart    : ScrollCode := SB_PAGEUP;
-    kControlPageDownPart  : ScrollCode := SB_PAGEDOWN;
-  end;
-  
-//DebugLn('TCarbonScrollBar.DoAction ' + IntToStr(Integer(AControlPart)) + ' ' +
-//  IntToStr(ScrollCode));
-
-  if ScrollCode >= 0 then
-  begin
-    FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
-
-    ScrollMsg.Msg := LM_HSCROLL;
-    ScrollMsg.ScrollCode := ScrollCode;
-    ScrollMsg.Pos := GetControl32BitValue(ControlRef(Widget));
-    ScrollMsg.ScrollBar := HWND(Widget);
-
-    DeliverMessage(LCLObject, ScrollMsg);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonScrollBar.SetParams
-
-  Sets the parameters (Min, Max, Position, PageSize) of Carbon scroll bar
- ------------------------------------------------------------------------------}
-procedure TCarbonScrollBar.SetParams;
-var
-  ScrollBar: TCustomScrollBar;
-begin
-  ScrollBar := LCLObject as TCustomScrollBar;
-
-  SetMinimum(ScrollBar.Min);
-  SetMaximum(ScrollBar.Max);
-  SetValue(ScrollBar.Position);
-  SetViewSize(ScrollBar.PageSize);
-end;
 
 var
   EventSpec: Array [0..3] of EventTypeSpec;

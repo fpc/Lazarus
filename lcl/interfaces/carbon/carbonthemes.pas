@@ -1,3 +1,10 @@
+{ $Id: $
+                  -----------------------------------------
+                  CarbonThemes.pas  -  Carbon Theme support
+                  -----------------------------------------
+
+  See Themes.pas for licencing and other further information.
+}
 unit CarbonThemes;
 
 {$mode objfpc}{$H+}
@@ -27,10 +34,11 @@ type
 
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
     procedure DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+    procedure DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
     procedure DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
-    procedure DrawReBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
+    procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
 
@@ -42,6 +50,11 @@ implementation
 
 { TCarbonThemeServices }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.GetDrawState
+  Params:  Details - Details for themed element
+  Returns: Draw state of the themed element passed
+ ------------------------------------------------------------------------------}
 function TCarbonThemeServices.GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
 {
 	kThemeStateInactive = 0;
@@ -68,6 +81,15 @@ begin
    Result := kThemeStateActive;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawButtonElement
+  Params:  DC       - Carbon device context
+           Details  - Details for themed element
+           R        - Bounding rectangle
+           ClipRect - Clipping rectangle
+
+  Draws a button element with native Carbon look
+ ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.DrawButtonElement(DC: TCarbonDeviceContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
 const
@@ -106,6 +128,56 @@ begin
       Self, 'DrawButtonElement', 'HIThemeDrawButton');
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawRebarElement
+  Params:  DC       - Carbon device context
+           Details  - Details for themed element
+           R        - Bounding rectangle
+           ClipRect - Clipping rectangle
+
+  Draws a rebar element (splitter) with native Carbon look
+ ------------------------------------------------------------------------------}
+procedure TCarbonThemeServices.DrawRebarElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+var
+  SplitterInfo: HIThemeSplitterDrawInfo;
+  PlacardInfo: HIThemePlacardDrawInfo;
+  ARect: HIRect;
+const
+  SName = 'DrawRebarElement';
+begin
+  ARect := RectToCGRect(R);
+  if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
+  begin
+    SplitterInfo.version := 0;
+    SplitterInfo.State := kThemeStateActive;
+    SplitterInfo.adornment := kHiThemeSplitterAdornmentNone;
+    
+    OSError(
+      HIThemeDrawPaneSplitter(ARect, SplitterInfo, DC.CGContext, kHIThemeOrientationNormal),
+      Self, SName, 'HIThemeDrawPaneSplitter');
+  end
+  else
+  if Details.Part = RP_BAND then
+  begin
+    PlacardInfo.version := 0;
+    PlacardInfo.State := GetDrawState(Details);
+
+    OSError(
+      HIThemeDrawPlacard(ARect, PlacardInfo, DC.CGContext, kHIThemeOrientationNormal),
+      Self, SName, 'HIThemeDrawPlacard');
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawToolBarElement
+  Params:  DC       - Carbon device context
+           Details  - Details for themed element
+           R        - Bounding rectangle
+           ClipRect - Clipping rectangle
+
+  Draws a tool bar element with native Carbon look
+ ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.DrawToolBarElement(DC: TCarbonDeviceContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
 var
@@ -114,6 +186,7 @@ var
 begin
   if Details.Part = TP_BUTTON then
   begin
+
     // TODO: if state is inactive or normal button should not have borders (or maybe I am wrong for mac?)
 
     ButtonDrawInfo.version := 0;
@@ -132,57 +205,72 @@ begin
   end;
 end;
 
-procedure TCarbonThemeServices.DrawReBarElement(DC: TCarbonDeviceContext;
-  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
-var
-  SplitterInfo: HIThemeSplitterDrawInfo;
-  PlacardInfo: HIThemePlacardDrawInfo;
-  ARect: HIRect;
-begin
-  ARect := RectToCGRect(R);
-  if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
-  begin
-    SplitterInfo.version := 0;
-    SplitterInfo.State := kThemeStateActive;
-    SplitterInfo.adornment := kHiThemeSplitterAdornmentNone;
-    
-    OSError(
-      HIThemeDrawPaneSplitter(ARect, SplitterInfo, DC.CGContext, kHIThemeOrientationNormal),
-      Self, 'DrawReBarElement', 'HIThemeDrawPaneSplitter');
-  end
-  else
-  if Details.Part = RP_BAND then
-  begin
-    PlacardInfo.version := 0;
-    PlacardInfo.State := GetDrawState(Details);
-
-    OSError(
-      HIThemeDrawPlacard(ARect, PlacardInfo, DC.CGContext, kHIThemeOrientationNormal),
-      Self, 'DrawReBarElement', 'HIThemeDrawPlacard');
-  end;
-end;
-
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.InitThemes
+  Returns: If the themes are initialized
+ ------------------------------------------------------------------------------}
 function TCarbonThemeServices.InitThemes: Boolean;
 begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.InitThemes
+  Returns: If the themes have to be used
+ ------------------------------------------------------------------------------}
 function TCarbonThemeServices.UseThemes: Boolean;
 begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.ThemedControlsEnabled
+  Returns: If the themed controls are enabled
+ ------------------------------------------------------------------------------}
 function TCarbonThemeServices.ThemedControlsEnabled: Boolean;
 begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.ContentRect
+  Params:  DC           - Carbon device context
+           Details      - Details for themed element
+           BoundingRect - Bounding rectangle
+  Returns: Content rectangle of the passed themed element
+ ------------------------------------------------------------------------------}
 function TCarbonThemeServices.ContentRect(DC: HDC;
   Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
   Result := BoundingRect;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawEdge
+  Params:  DC      - Carbon device context
+           Details - Details for themed element
+           R       - Bounding rectangle
+           Edge    - Type of edge
+           Flags   - Type of border
+
+  Draws an edge with native Carbon look
+ ------------------------------------------------------------------------------}
+procedure TCarbonThemeServices.DrawEdge(DC: HDC;
+  Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
+  AContentRect: PRect);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawElement
+  Params:  DC       - Carbon device context
+           Details  - Details for themed element
+           R        - Bounding rectangle
+           ClipRect - Clipping rectangle
+
+  Draws an element with native Carbon look
+ ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.DrawElement(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
 var
@@ -192,13 +280,23 @@ begin
   begin
     case Details.Element of
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
-      teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
       // teHeader: TODO: for grid
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);
+      teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
     end;
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawIcon
+  Params:  DC      - Carbon device context
+           Details - Details for themed element
+           R       - Bounding rectangle
+           himl    - Image list
+           Index   - Icon index
+
+  Draws an icon with native Carbon look
+ ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.DrawIcon(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST;
   Index: Integer);
@@ -206,17 +304,41 @@ begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.HasTransparentParts
+  Params:  Details - Details for themed element
+  Returns: If the themed element has transparent parts
+ ------------------------------------------------------------------------------}
 function TCarbonThemeServices.HasTransparentParts(Details: TThemedElementDetails): Boolean;
 begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.InternalDrawParentBackground
+  Params:  Window - Handle to window
+           Target - Carbon device context
+           Bounds - Bounding rectangle
+
+  Draws the parent background with native Carbon look
+ ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.InternalDrawParentBackground(Window: HWND;
   Target: HDC; Bounds: PRect);
 begin
   // ?
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawText
+  Params:  DC      - Carbon device context
+           Details - Details for themed element
+           S       - Text string to darw
+           R       - Bounding rectangle
+           Flags   - Draw flags
+           Flags2  - Extra draw flags
+
+  Draws the passed text with native Carbon look
+ ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
   const S: WideString; R: TRect; Flags, Flags2: Cardinal);
 begin
