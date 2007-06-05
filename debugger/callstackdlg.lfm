@@ -1,17 +1,18 @@
-object CallStackDlg: TCallStackDlg
+inherited CallStackDlg: TCallStackDlg
+  Left = 637
+  Height = 200
+  Top = 321
+  Width = 500
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
   ActiveControl = lvCallStack
   Caption = 'CallStack'
   ClientHeight = 200
   ClientWidth = 500
-  PixelsPerInch = 96
   Visible = True
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 199
-  Left = 843
-  Height = 200
-  Top = 202
-  Width = 500
   object lvCallStack: TListView
+    Height = 200
+    Width = 500
     Align = alClient
     Columns = <    
       item
@@ -23,13 +24,12 @@ object CallStackDlg: TCallStackDlg
       end    
       item
         Caption = 'Function'
+        Width = 290
       end>
     PopupMenu = mnuPopup
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvCallStackDBLCLICK
-    Height = 200
-    Width = 500
   end
   object mnuPopup: TPopupMenu
     left = 66

@@ -1,16 +1,18 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TCallStackDlg','FORMDATA',[
-  'TPF0'#13'TCallStackDlg'#12'CallStackDlg'#13'ActiveControl'#7#11'lvCallStack'
-  +#7'Caption'#6#9'CallStack'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1
-  +#13'PixelsPerInch'#2'`'#7'Visible'#9#18'HorzScrollBar.Page'#3#243#1#18'VertS'
-  +'crollBar.Page'#3#199#0#4'Left'#3'K'#3#6'Height'#3#200#0#3'Top'#3#202#0#5'Wi'
-  +'dth'#3#244#1#0#9'TListView'#11'lvCallStack'#5'Align'#7#8'alClient'#7'Column'
-  +'s'#14#1#7'Caption'#6#6'Source'#5'Width'#3#150#0#0#1#7'Caption'#6#4'Line'#0#1
-  +#7'Caption'#6#8'Function'#0#0#9'PopupMenu'#7#8'mnuPopup'#8'TabOrder'#2#0#9'V'
-  +'iewStyle'#7#8'vsReport'#10'OnDblClick'#7#19'lvCallStackDBLCLICK'#6'Height'#3
-  +#200#0#5'Width'#3#244#1#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'B'#3'top'#2
-  +'X'#0#9'TMenuItem'#7'popShow'#7'Caption'#6#4'Show'#7'Default'#9#7'OnClick'#7
-  +#12'popShowClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'
-  +#15'popSetAsCurrent'#7'Caption'#6#14'Set as current'#0#0#9'TMenuItem'#10'pop'
-  +'CopyAll'#7'Caption'#6#8'Copy all'#8'ShortCut'#3'C@'#7'OnClick'#7#15'popCopy'
-  +'AllClick'#0#0#0#0
+  'TPF0'#241#13'TCallStackDlg'#12'CallStackDlg'#4'Left'#3'}'#2#6'Height'#3#200#0
+  +#3'Top'#3'A'#1#5'Width'#3#244#1#18'HorzScrollBar.Page'#3#243#1#18'VertScroll'
+  +'Bar.Page'#3#199#0#13'ActiveControl'#7#11'lvCallStack'#7'Caption'#6#9'CallSt'
+  +'ack'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1#7'Visible'#9#0#9'TLis'
+  +'tView'#11'lvCallStack'#6'Height'#3#200#0#5'Width'#3#244#1#5'Align'#7#8'alCl'
+  +'ient'#7'Columns'#14#1#7'Caption'#6#6'Source'#5'Width'#3#150#0#0#1#7'Caption'
+  +#6#4'Line'#0#1#7'Caption'#6#8'Function'#5'Width'#3'"'#1#0#0#9'PopupMenu'#7#8
+  +'mnuPopup'#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#10'OnDblClick'#7#19'lv'
+  +'CallStackDBLCLICK'#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'B'#3'top'#2'X'#0
+  +#9'TMenuItem'#7'popShow'#7'Caption'#6#4'Show'#7'Default'#9#7'OnClick'#7#12'p'
+  +'opShowClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#15'p'
+  +'opSetAsCurrent'#7'Caption'#6#14'Set as current'#0#0#9'TMenuItem'#10'popCopy'
+  +'All'#7'Caption'#6#8'Copy all'#8'ShortCut'#3'C@'#7'OnClick'#7#15'popCopyAllC'
+  +'lick'#0#0#0#0
 ]);
