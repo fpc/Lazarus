@@ -1174,7 +1174,7 @@ begin
   end else begin
     OldOptions:=LazFindReplaceDialog.Options;
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options
-                                     -[ssoEntireScope,ssoReplace,ssoReplaceAll];
+                                     -[ssoEntireScope,ssoReplaceAll];
     DoFindAndReplace;
     LazFindReplaceDialog.Options:=OldOptions;
   end;
