@@ -678,7 +678,6 @@ end;
 
 procedure TCustomSplitter.Paint;
 const
-  GripperSize = 30; // todo: look at gtk size
   GripperDetailsPart: array[Boolean] of TThemedRebar =
   (
     trGripperVert,
@@ -688,6 +687,7 @@ var
   ARect, GripperRect: TRect;
   BgPart: TThemedRebar;
   BgDetails, GripperDetails: TThemedElementDetails;
+  GripperSize: Integer;
 begin
   inherited Paint;
 
@@ -710,21 +710,24 @@ begin
       BF_ADJUST or BF_RECT, @ARect);
 
   GripperRect := ARect;
-  
-  if ResizeAnchor in [akLeft,akRight] then
+  GripperSize := ThemeServices.GetDetailSize(GripperDetails);
+  if GripperSize <> -1 then
   begin
-    if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
+    if ResizeAnchor in [akLeft,akRight] then
     begin
-      GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) div 2;
-      GripperRect.Bottom := GripperRect.Top + GripperSize;
-    end;
-  end
-  else
-  begin
-    if (GripperRect.Right - GripperRect.Left) > GripperSize then
+      if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
+      begin
+        GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) div 2;
+        GripperRect.Bottom := GripperRect.Top + GripperSize;
+      end;
+    end
+    else
     begin
-      GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) div 2;
-      GripperRect.Right := GripperRect.Left + GripperSize;
+      if (GripperRect.Right - GripperRect.Left) > GripperSize then
+      begin
+        GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) div 2;
+        GripperRect.Right := GripperRect.Left + GripperSize;
+      end;
     end;
   end;
     

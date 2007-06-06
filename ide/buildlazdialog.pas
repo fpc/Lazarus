@@ -743,7 +743,7 @@ procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
 var
   ButtonState: TThemedButton;
   ButtonDetails: TThemedElementDetails;
-  x, cx, cy: Integer;
+  x, RadioSize: Integer;
   ButtonRect: TRect;
   CurItem: TBuildLazarusItem;
   CurStr: String;
@@ -777,16 +777,13 @@ begin
     if ThemeServices.HasTransparentParts(ButtonDetails) then
       ItemsListBox.Canvas.FillRect(ButtonRect);
 
-    // how to get cx and cy?
-    cx := 13;//GetSystemMetrics(SM_CXMENUCHECK);
-    cy := 13;//GetSystemMetrics(SM_CYMENUCHECK);
-
-    if (cx <> -1) and (cy <> -1) then
+    RadioSize := ThemeServices.GetDetailSize(ButtonDetails);
+    if (RadioSize <> -1) then
     begin
-      ButtonRect.Left := (ButtonRect.Left + ButtonRect.Right - cx) div 2;
-      ButtonRect.Right := ButtonRect.Left + cx;
-      ButtonRect.Top := (ButtonRect.Top + ButtonRect.Bottom - cy) div 2;
-      ButtonRect.Bottom := ButtonRect.Top + cy;
+      ButtonRect.Left := (ButtonRect.Left + ButtonRect.Right - RadioSize) div 2;
+      ButtonRect.Right := ButtonRect.Left + RadioSize;
+      ButtonRect.Top := (ButtonRect.Top + ButtonRect.Bottom - RadioSize) div 2;
+      ButtonRect.Bottom := ButtonRect.Top + RadioSize;
     end;
     
     ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);
@@ -1340,4 +1337,3 @@ initialization
   {$I buildlazdialog.lrs}
 
 end.
-

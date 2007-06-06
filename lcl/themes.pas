@@ -448,6 +448,8 @@ type
     function GetElementDetails(Detail: TThemedTrayNotify): TThemedElementDetails; overload;
     function GetElementDetails(Detail: TThemedTreeview): TThemedElementDetails; overload;
     function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
+    
+    function GetDetailSize(Details: TThemedElementDetails): Integer; virtual;
 
     function ColorToRGB(Color: LongInt; Details: PThemedElementDetails = nil): COLORREF;
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; virtual;
@@ -1726,6 +1728,21 @@ begin
       Base := 0;
     end;
     State := Ord(Detail) - Base + 1;
+  end;
+end;
+
+function TThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+begin
+  // default values here
+  // -1 mean that we dont know size of detail
+  Result := -1;
+  case Details.Element of
+    teButton:
+      if Details.Part in [BP_RADIOBUTTON, BP_CHECKBOX] then
+        Result := 13;
+    teRebar :
+      if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
+        Result := 30;
   end;
 end;
 

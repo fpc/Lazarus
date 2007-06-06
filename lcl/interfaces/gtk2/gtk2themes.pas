@@ -21,6 +21,7 @@ type
   protected
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails): TGtkStyleParams; override;
   public
+    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
   end;
 
 implementation
@@ -72,6 +73,11 @@ begin
           end;
         end;
     end;
+end;
+
+function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+begin
+  Result := GetBaseDetailsSize(Details);
 end;
 
 end.

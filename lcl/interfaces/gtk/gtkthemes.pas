@@ -31,10 +31,11 @@ type
     gptCheck,
     gptOption,
     gptTab,
-//    gptSlider,
-    gptHandle
-//    gptExpander,
-//    gptResizeGrip
+    gptSlider,
+    gptHandle,
+    gptExpander,
+    gptResizeGrip,
+    gptFocus
   );
 
   TGtkStyleParams = record
@@ -47,10 +48,16 @@ type
     Shadow     : TGtkShadowType;  // Shadow
     Detail     : String;          // Detail (button, checkbox, ...)
     Orientation: TGtkOrientation; // Orientation (horizontal/vertical)
+{$ifdef gtk2}
+    Expander   : TGtkExpanderStyle; // treeview expander
+    Edge       : TGdkWindowEdge;
+{$endif}
     IsHot      : Boolean;
   end;
 
   { TGtk1ThemeServices }
+
+  { TGtkThemeServices }
 
   TGtkThemeServices = class(TThemeServices)
   private
@@ -63,7 +70,10 @@ type
     function ThemedControlsEnabled: Boolean; override;
 
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
+    function GetBaseDetailsSize(Details: TThemedElementDetails): Integer;
   public
+    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
@@ -224,20 +234,20 @@ begin
                   Result.Shadow := GTK_SHADOW_NONE;
 { This code has problems with some (is not most) of gtk1 themes.
   But at least Ubuntu >= 6.10 works fine. So it is commented out and switched
-  to alternate splitter painting
+  to alternate splitter painting}
 
                   if Details.Part = RP_GRIPPER then
                     Result.Detail := 'hpaned'
                   else
                     Result.Detail := 'vpaned';
                   Result.Painter := gptBox;
-}
-                  Result.Detail := 'paned';
+
+{                  Result.Detail := 'paned';
                   Result.Painter := gptHandle;
                   if Details.Part = RP_GRIPPER then
                     Result.Orientation := GTK_ORIENTATION_VERTICAL
                   else
-                    Result.Orientation := GTK_ORIENTATION_HORIZONTAL;
+                    Result.Orientation := GTK_ORIENTATION_HORIZONTAL;}
                 end;
               RP_BAND:
                 begin
@@ -347,6 +357,13 @@ begin
             @Area, Widget, PChar(Detail),
             Area.x, Area.y,
             Area.Width, Area.Height);
+        gptSlider : gtk_paint_slider(
+            Style, Window,
+            State, Shadow,
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height,
+            Orientation);
         gptHandle : gtk_paint_handle(
             Style, Window,
             State, Shadow,
@@ -354,6 +371,24 @@ begin
             Area.x, Area.y,
             Area.Width, Area.Height,
             Orientation);
+{$ifdef gtk2}
+        gptExpander: gtk_paint_expander(
+            Style, Window, State,
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Expander);
+        gptResizeGrip: gtk_paint_resize_grip(
+            Style, Window, State,
+            @Area, Widget,
+            PChar(Detail), Edge,
+            Area.x, Area.y,
+            Area.Width, Area.Height);
+{$endif}
+        gptFocus : gtk_paint_focus(
+            Style, Window, {$ifdef gtk2}State,{$endif}
+            @Area, Widget, PChar(Detail),
+            Area.x, Area.y,
+            Area.Width, Area.Height);
       end;
     end;
   end;
@@ -375,6 +410,22 @@ procedure TGtkThemeServices.InternalDrawParentBackground(Window: HWND;
   Target: HDC; Bounds: PRect);
 begin
   // ?
+end;
+
+function TGtkThemeServices.GetBaseDetailsSize(Details: TThemedElementDetails): Integer;
+begin
+  Result := inherited GetDetailSize(Details);
+end;
+
+function TGtkThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+begin
+  case Details.Element of
+    teRebar :
+      if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
+        Result := -1;
+    else
+      Result := GetBaseDetailsSize(Details);
+  end;
 end;
 
 procedure TGtkThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;

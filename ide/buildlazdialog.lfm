@@ -6,8 +6,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 499
   ActiveControl = CleanAllCheckBox
-  BorderIcons = [biSystemMenu, biMinimize]
-  BorderStyle = bsSizeToolWin
+  BorderIcons = [biSystemMenu]
   Caption = 'ConfigureBuildLazarusDlg'
   ClientHeight = 500
   ClientWidth = 500
@@ -63,7 +62,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 338
     Height = 15
-    Top = 218
+    Top = 214
     Width = 63
     Caption = 'Clean All'
     TabOrder = 0
@@ -110,7 +109,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   object LCLInterfaceRadioGroup: TRadioGroup
     Left = 338
     Height = 188
-    Top = 11
+    Top = 10
     Width = 149
     Anchors = [akTop, akRight, akBottom]
     AutoFill = True
