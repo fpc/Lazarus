@@ -34,6 +34,7 @@ type
 
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
     procedure DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+    procedure DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
     procedure DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
     procedure DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
   public
@@ -126,6 +127,31 @@ begin
       HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
         kHIThemeOrientationNormal, @LabelRect),
       Self, 'DrawButtonElement', 'HIThemeDrawButton');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawHeaderElement
+  Params:  DC       - Carbon device context
+           Details  - Details for themed element
+           R        - Bounding rectangle
+           ClipRect - Clipping rectangle
+
+  Draws a header (THeaderControl same as ListView header) element with native Carbon look
+ ------------------------------------------------------------------------------}
+procedure TCarbonThemeServices.DrawHeaderElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+var
+  HeaderDrawInfo: HiThemeHeaderDrawInfo;
+  PaintRect: HIRect;
+begin
+  HeaderDrawInfo.version := 0;
+  HeaderDrawInfo.State := GetDrawState(Details);
+  HeaderDrawInfo.kind := kHiThemeHeaderKindList;
+  PaintRect := RectToCGRect(R);
+  OSError(
+    HIThemeDrawHeader(PaintRect, HeaderDrawInfo, DC.CGContext,
+      kHIThemeOrientationNormal),
+    Self, 'DrawHeaderElement', 'HIThemeDrawHeader')
 end;
 
 {------------------------------------------------------------------------------
@@ -243,6 +269,13 @@ function TCarbonThemeServices.ContentRect(DC: HDC;
   Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
   Result := BoundingRect;
+
+  // If you know how to get actual value, please do
+  // This should be one of theme metric
+
+  case Details.Element of
+    teHeader: InflateRect(Result, -2, -2);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -280,7 +313,7 @@ begin
   begin
     case Details.Element of
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
-      // teHeader: TODO: for grid
+      teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
     end;

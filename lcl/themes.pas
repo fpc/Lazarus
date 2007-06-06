@@ -1883,8 +1883,10 @@ end;
 
 function TThemeServices.IsDisabled(Details: TThemedElementDetails): Boolean;
 begin
+  // teHeader should not be here, it has no disabled state
+
   Result := False;
-  if (Details.Element in [teButton, teToolBar, teHeader]) or
+  if (Details.Element in [teButton, teToolBar]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
     Result := (Details.State mod 4) = 0; // usual disabled = 4 / 8 / 12
 end;
