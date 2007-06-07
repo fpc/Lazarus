@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-02 03:10+0300\n"
+"PO-Revision-Date: 2007-06-07 04:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -351,7 +351,7 @@ msgstr "Файл сетки не существует"
 
 #: lclstrconsts:rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr ""
+msgstr "Индекс Grid'а вне диапазона допустимых значений."
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"

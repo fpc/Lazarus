@@ -913,7 +913,7 @@ msgstr "Melihat Kompilator (%s)"
 msgid "Build"
 msgstr "Bangun"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Bangun CodeTools"
 
@@ -921,15 +921,11 @@ msgstr "Bangun CodeTools"
 msgid "Build Command"
 msgstr "Perintah Bangun"
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr "Bangun Komponen"
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr "Bangun Komponen (SynEdit, CodeTools)"
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr "Bangun Contoh"
 
@@ -937,25 +933,13 @@ msgstr "Bangun Contoh"
 msgid "Build File"
 msgstr "Bangun File"
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
 msgstr "Bangun IDE"
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr "Bangun Antarmuka IDE"
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
-msgstr "Bangun Form JIT"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Bangun JITForm"
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
-msgstr "Bangun LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -965,15 +949,7 @@ msgstr "Bangun Lazarus"
 msgid "Build Number"
 msgstr "Angka Buatan"
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr "Bangun Registrasi Paket"
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr "Bangun Starter"
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Bangun SynEdit"
 
@@ -1409,6 +1385,10 @@ msgstr "Template kode"
 msgid "CodeExplorer Options"
 msgstr "Opsi CodeExplorer"
 
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr "CodeTools -  piranti dan fungsi untuk mengurai, melihat dan mengedit sumber pascal"
@@ -1604,6 +1584,10 @@ msgstr "Lengkpai kode"
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Lengkapi properti"
+
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
@@ -2745,6 +2729,10 @@ msgstr "Log Event"
 msgid "Example"
 msgstr "Contoh"
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Filter Kekecualian"
@@ -3645,9 +3633,17 @@ msgstr "Sudah saya bilang: Belum diimplementasikan"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Integrasi IDE"
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
+msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -4329,6 +4325,10 @@ msgstr "Miring"
 msgid "Item height"
 msgstr "Tinggi item"
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "Jepang"
@@ -4436,6 +4436,10 @@ msgstr "Kata kunci"
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
 msgstr "Kebijakan Kata kunci"
+
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
+msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5680,6 +5684,10 @@ msgstr "Nama Paket:"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opsi Paket"
+
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -7193,10 +7201,6 @@ msgstr "Set property Variable"
 msgid "Set the breakpoint anyway"
 msgstr "Tetap set titikpisah"
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr "Set ke %sBangun Semua%s"
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr "Shift"
@@ -7541,6 +7545,10 @@ msgstr "Menu Panduan Standar"
 msgid "Start with a new project"
 msgstr "Mulai dengan proyek baru"
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Kondisi"
@@ -7664,6 +7672,10 @@ msgstr "Simbol dibelakang (.pp~)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Simbol didepan (.~pp)"
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

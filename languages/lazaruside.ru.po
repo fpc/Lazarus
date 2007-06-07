@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-21 19:54+0300\n"
+"PO-Revision-Date: 2007-06-08 00:28+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -367,7 +367,7 @@ msgstr "Принять"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
+msgstr "Благодарности"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -913,7 +913,7 @@ msgstr "Обзор (поиск компилятора) (%s)"
 msgid "Build"
 msgstr "Сборка"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Собрать CodeTools"
 
@@ -921,15 +921,11 @@ msgstr "Собрать CodeTools"
 msgid "Build Command"
 msgstr "Команда Собрать"
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr "Собрать компонент"
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr "Собрать компоненты (SynEdit, CodeTools)"
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr "Собрать примеры"
 
@@ -937,25 +933,13 @@ msgstr "Собрать примеры"
 msgid "Build File"
 msgstr "Собрать файл"
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
 msgstr "Собрать IDE"
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr "Собрать интерфейс IDE"
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
-msgstr "Собрать JIT Form"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Собрать JITForm"
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
-msgstr "Собрать LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -965,15 +949,7 @@ msgstr "Собрать Lazarus"
 msgid "Build Number"
 msgstr "Номер сборки"
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr "Зарегистрировать пакет"
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr "Собрать Загрузчик"
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Собрать SynEdit"
 
@@ -1123,7 +1099,7 @@ msgstr "Изменить шрифт"
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
-msgstr ""
+msgstr "Сменить родителя ..."
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -1367,7 +1343,7 @@ msgstr "Код"
 
 #: lazarusidestrconsts:lismenuviewcodebrowser
 msgid "Code Browser"
-msgstr ""
+msgstr "Браузер кода"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
@@ -1387,7 +1363,7 @@ msgstr "CodeTools"
 
 #: lazarusidestrconsts:liscodebrowser
 msgid "Code browser"
-msgstr ""
+msgstr "Браузер кода"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
@@ -1408,6 +1384,10 @@ msgstr "Шаблоны кода"
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
 msgstr "Опции Обозревателя Кода"
+
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr "CodeTools"
 
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
@@ -1459,15 +1439,15 @@ msgstr "Настройки Codetools"
 
 #: lazarusidestrconsts:liscollapseallclasses
 msgid "Collapse all classes"
-msgstr ""
+msgstr "Свернуть все классы"
 
 #: lazarusidestrconsts:liscollapseallpackages
 msgid "Collapse all packages"
-msgstr ""
+msgstr "Свернуть все пакеты"
 
 #: lazarusidestrconsts:liscollapseallunits
 msgid "Collapse all units"
-msgstr ""
+msgstr "Свернуть все модули"
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -1605,6 +1585,10 @@ msgstr "Завершить код"
 msgid "Complete properties"
 msgstr "Завершать свойства"
 
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
+msgstr "Компонент"
+
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
 msgstr "Класс компонента %s%s%s уже определён"
@@ -1727,7 +1711,7 @@ msgstr "Продолжить, не загружая форму"
 
 #: lazarusidestrconsts:liscontributors
 msgid "Contributors"
-msgstr "Благодарности"
+msgstr "Участники"
 
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
@@ -2379,7 +2363,7 @@ msgstr "Не закрывать  IDE"
 
 #: lazarusidestrconsts:lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr ""
+msgstr "Не закрывать проект"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -2745,6 +2729,10 @@ msgstr "Протокол событий"
 msgid "Example"
 msgstr "Образец"
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr "Примеры"
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Исключающий фильтр"
@@ -2795,15 +2783,15 @@ msgstr "Выход без сохранения"
 
 #: lazarusidestrconsts:lisexpandallclasses
 msgid "Expand all classes"
-msgstr ""
+msgstr "Развернуть все классы"
 
 #: lazarusidestrconsts:lisexpandallpackages
 msgid "Expand all packages"
-msgstr ""
+msgstr "Развернуть все пакеты"
 
 #: lazarusidestrconsts:lisexpandallunits
 msgid "Expand all units"
-msgstr ""
+msgstr "Развернуть все модули"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
@@ -2811,7 +2799,7 @@ msgstr "Полное имя файла в данном редакторе"
 
 #: lazarusidestrconsts:lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Экспортировать ..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -3035,7 +3023,7 @@ msgstr "Файлы"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
-msgstr ""
+msgstr "Фильтр"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3645,9 +3633,17 @@ msgstr "Вам сказано - не реализовано"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr "IDE"
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Встраивание в IDE"
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
+msgstr "Интерфейс IDE"
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -3663,7 +3659,7 @@ msgstr "Идентификатор"
 
 #: lazarusidestrconsts:lisidentifierbeginswith
 msgid "Identifier begins with ..."
-msgstr ""
+msgstr "Идентификатор начинается с ..."
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
@@ -3671,7 +3667,7 @@ msgstr "Завершение идентификаторов"
 
 #: lazarusidestrconsts:lisidentifiercontains
 msgid "Identifier contains ..."
-msgstr ""
+msgstr "Идентификатор содержит ..."
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -3835,7 +3831,7 @@ msgstr "Информация о %s"
 
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
-msgstr "Унаследован"
+msgstr "Унаследованные"
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -4111,7 +4107,7 @@ msgstr "Интерфейс"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
-msgstr ""
+msgstr "Внутренняя ошибка компилятора! (%d)"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -4329,6 +4325,10 @@ msgstr "Курсив"
 msgid "Item height"
 msgstr "Высота элемента"
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr "JIT Form"
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "Японский"
@@ -4437,6 +4437,10 @@ msgstr "Ключевое слово"
 msgid "Keyword policy"
 msgstr "Политика ключевых слов"
 
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
+msgstr "LCL"
+
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
 msgstr "Опции LCL, зависящие от интерфейса:"
@@ -4543,7 +4547,7 @@ msgstr "Файл Lazarus"
 
 #: lazarusidestrconsts:lislazaruside
 msgid "Lazarus IDE"
-msgstr ""
+msgstr "IDE Lazarus"
 
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
@@ -4651,7 +4655,7 @@ msgstr "Уровень 3 (уровень 3 + нестандартная)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
-msgstr ""
+msgstr "Уровни"
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -4671,7 +4675,7 @@ msgstr "Лицензия:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Лицензия: GPL/LGPL%sLazarus - это IDE для создания (графических и консольных) приложений при помощи компилятора Free Pascal. Free Pascal - это компилятор языков Pascal и Object Pascal, распространяемый под лицензией (L)GPL, и работающий под Windows, Linux, Mac OS X, FreeBSD, и не только.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя дизайнер форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -5681,6 +5685,10 @@ msgstr "Имя пакета:"
 msgid "Package Options"
 msgstr "Параметры пакета"
 
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
+msgstr "Регистрация пакета"
+
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
 msgstr "Метка каталога исходника пакета"
@@ -5723,11 +5731,11 @@ msgstr "Имя пакета уже занято"
 
 #: lazarusidestrconsts:lispackagenamebeginswith
 msgid "Package name begins with ..."
-msgstr ""
+msgstr "Имя пакета начинается с ..."
 
 #: lazarusidestrconsts:lispackagenamecontains
 msgid "Package name contains ..."
-msgstr ""
+msgstr "Имя пакета содержит ..."
 
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
@@ -5943,7 +5951,7 @@ msgstr "Перед"
 
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
-msgstr ""
+msgstr "Private"
 
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
@@ -6119,7 +6127,7 @@ msgstr "Имя свойства"
 
 #: lazarusidestrconsts:lisprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7193,10 +7201,6 @@ msgstr "Переменная свойства"
 msgid "Set the breakpoint anyway"
 msgstr "Установить точку останова всё равно"
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr "Установить %sСобрать все%s"
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr "Shift"
@@ -7343,7 +7347,7 @@ msgstr "Показывать всплывающие подсказки в Инс
 
 #: lazarusidestrconsts:lisshowidentifiers
 msgid "Show identifiers"
-msgstr ""
+msgstr "Показывать идентификаторы"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -7363,7 +7367,7 @@ msgstr "Показать старый порядок перехода"
 
 #: lazarusidestrconsts:lisshowpackages
 msgid "Show packages"
-msgstr ""
+msgstr "Показывать пакеты"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
@@ -7379,7 +7383,7 @@ msgstr "Показать опробованные файлы"
 
 #: lazarusidestrconsts:lisshowunits
 msgid "Show units"
-msgstr ""
+msgstr "Показывать модули"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -7541,6 +7545,10 @@ msgstr "Стандартное меню Справка"
 msgid "Start with a new project"
 msgstr "При запуске начинать новый проект"
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr "Пускатель"
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Состояние"
@@ -7664,6 +7672,10 @@ msgstr "Символ сзади (.~pp)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Символ спереди (.~pp)"
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
+msgstr "SynEdit"
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
@@ -7843,7 +7855,7 @@ msgstr "FCL - библиотека компонентов FreePascal - обес�
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgstr ""
+msgstr "Каталог с исходным кодом FPC \"%s\" имеет некорректную структуру. Обычно он содержит такие подкаталоги, как rtl, packages, compiler, ... ."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -8115,7 +8127,7 @@ msgstr "Главное приложение %s%s%s - не исполняемый
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
 msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
+msgstr "Запускающая Application Bundle %s%s%s%sне существует либо не является исполнимой. %s%sСм. Проект -> Настройки проекта -> Приложение."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9055,11 +9067,11 @@ msgstr "Имя модуля уже существует"
 
 #: lazarusidestrconsts:lisunitnamebeginswith
 msgid "Unit name begins with ..."
-msgstr ""
+msgstr "Имя модуля начинается с ..."
 
 #: lazarusidestrconsts:lisunitnamecontains
 msgid "Unit name contains ..."
-msgstr ""
+msgstr "Имя модуля содержит ..."
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
@@ -9139,7 +9151,7 @@ msgstr "Использовать строки Ansi"
 
 #: lazarusidestrconsts:dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (darwin only)"
-msgstr ""
+msgstr "Использовать Application Bundle для запуска и отладки (только для Darwin)"
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -9347,7 +9359,7 @@ msgstr "Просмотр стека вызовов"
 
 #: lazarusidestrconsts:srkmectogglecodebrowser
 msgid "View code browser"
-msgstr ""
+msgstr "Показать браузер кода"
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"
@@ -9503,7 +9515,7 @@ msgstr "С пакетами"
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
-msgstr ""
+msgstr "С требуемыми пакетами"
 
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -9599,7 +9611,7 @@ msgstr "автоустановить статически"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
-msgstr ""
+msgstr "начинается"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
@@ -9635,7 +9647,7 @@ msgstr "файл настроек сборки"
 
 #: lazarusidestrconsts:liscontains
 msgid "contains"
-msgstr ""
+msgstr "содержит"
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"

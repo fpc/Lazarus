@@ -902,7 +902,7 @@ msgstr "Перегляд (пошук компілятора) (%s)"
 msgid "Build"
 msgstr "Побудувати"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Побудувати CodeTools"
 
@@ -910,15 +910,11 @@ msgstr "Побудувати CodeTools"
 msgid "Build Command"
 msgstr "Побудувати Команду"
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr "Побудувати компонент"
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr "Побудувати компоненти (SynEdit, CodeTools)"
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr "Побудувати приклади"
 
@@ -926,25 +922,13 @@ msgstr "Побудувати приклади"
 msgid "Build File"
 msgstr "Побудувати файл"
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
 msgstr "Побудувати IDE"
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr "Побудувати інтерфейс IDE"
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
-msgstr "Побудувати JIT Form"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Побудувати JITForm"
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
-msgstr "Побудувати LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -954,15 +938,7 @@ msgstr "Побудувати Lazarus"
 msgid "Build Number"
 msgstr "Номер побудови"
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr "Зареєструвати пакунок"
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr "Побудувати Завантажувач"
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Побудувати SynEdit"
 
@@ -1398,6 +1374,10 @@ msgstr "Кодові шаблони"
 msgid "CodeExplorer Options"
 msgstr "Параметри CodeExplorer"
 
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr "CodeTools - це інструменти для синтаксичного аналізу, переглядання і редагування текстів на pascal"
@@ -1593,6 +1573,10 @@ msgstr "Завершити код"
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Завершити властивості"
+
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
@@ -2734,6 +2718,10 @@ msgstr "Лог-файл подій"
 msgid "Example"
 msgstr "Приклад"
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Фільтр для виключення"
@@ -3634,9 +3622,17 @@ msgstr "Таки я Вам кажу, що це ще не реалізовано"
 msgid "ID"
 msgstr ""
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Інтегрування в IDE"
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
+msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -4318,6 +4314,10 @@ msgstr "Курсив"
 msgid "Item height"
 msgstr "Висота елемента"
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "Японська"
@@ -4425,6 +4425,10 @@ msgstr "Ключове слово"
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
 msgstr "Політика ключових слів"
+
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
+msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5669,6 +5673,10 @@ msgstr "Пакунок Name:"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Параметри пакунку"
+
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -7182,10 +7190,6 @@ msgstr "Встановити змінну властивості"
 msgid "Set the breakpoint anyway"
 msgstr "Встановити точку зупину за будь-яких обставин"
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr "Встановити %sПобудувати всі%s"
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr "Shift"
@@ -7530,6 +7534,10 @@ msgstr "Стандартне меню Довідка"
 msgid "Start with a new project"
 msgstr "Розпочати з нового проекту"
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Стан"
@@ -7653,6 +7661,10 @@ msgstr "Символ позаду (.~pp)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Символ попереду (.~pp)"
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

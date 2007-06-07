@@ -916,7 +916,7 @@ msgstr ""
 msgid "Build"
 msgstr "Bou"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Bou CodeTools"
 
@@ -924,15 +924,11 @@ msgstr "Bou CodeTools"
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr "Bou Komponent"
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr "Bou Voorbeelde"
 
@@ -940,25 +936,13 @@ msgstr "Bou Voorbeelde"
 msgid "Build File"
 msgstr "Bou Lêer"
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr ""
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
-msgstr "Bou LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -968,15 +952,7 @@ msgstr "Bou Lazarus"
 msgid "Build Number"
 msgstr "Bou Nommer"
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Bou SynEdit"
 
@@ -1412,6 +1388,10 @@ msgstr ""
 msgid "CodeExplorer Options"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
@@ -1606,6 +1586,10 @@ msgstr "Voltooi bron"
 
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
+msgstr ""
+
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
@@ -2748,6 +2732,10 @@ msgstr ""
 msgid "Example"
 msgstr ""
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -3648,8 +3636,16 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
+msgstr ""
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
 msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
@@ -4332,6 +4328,10 @@ msgstr ""
 msgid "Item height"
 msgstr ""
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr ""
@@ -4438,6 +4438,10 @@ msgstr "Sleutelwoord"
 
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
+msgstr ""
+
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
 msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
@@ -5682,6 +5686,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
@@ -7196,10 +7204,6 @@ msgstr ""
 msgid "Set the breakpoint anyway"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr ""
@@ -7544,6 +7548,10 @@ msgstr ""
 msgid "Start with a new project"
 msgstr ""
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Staat"
@@ -7666,6 +7674,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
+msgstr ""
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus

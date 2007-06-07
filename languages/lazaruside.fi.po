@@ -902,7 +902,7 @@ msgstr ""
 msgid "Build"
 msgstr "Käännä"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr ""
 
@@ -910,15 +910,11 @@ msgstr ""
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr ""
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr ""
 
@@ -926,24 +922,12 @@ msgstr ""
 msgid "Build File"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
 msgstr ""
 
 #: lazarusidestrconsts:lismenubuildlazarus
@@ -954,15 +938,7 @@ msgstr ""
 msgid "Build Number"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr ""
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr ""
 
@@ -1398,6 +1374,10 @@ msgstr "Koodilyhenteet"
 msgid "CodeExplorer Options"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
@@ -1592,6 +1572,10 @@ msgstr "Täydennä koodia"
 
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
+msgstr ""
+
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
@@ -2734,6 +2718,10 @@ msgstr ""
 msgid "Example"
 msgstr ""
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -3634,8 +3622,16 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
+msgstr ""
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
 msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
@@ -4318,6 +4314,10 @@ msgstr "Kursivoitu"
 msgid "Item height"
 msgstr "Rivin korkeus"
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "japani"
@@ -4424,6 +4424,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
+msgstr ""
+
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
 msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
@@ -5668,6 +5672,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
@@ -7182,10 +7190,6 @@ msgstr ""
 msgid "Set the breakpoint anyway"
 msgstr "Merkitse tämä kuitenkin keskeyskohdaksi"
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr ""
@@ -7530,6 +7534,10 @@ msgstr ""
 msgid "Start with a new project"
 msgstr ""
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Tila"
@@ -7653,6 +7661,10 @@ msgstr "Varmistustiedoston symboli tiedoston tarkenteen loppuun (.pp~)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Varmistustiedoston symboli tiedoston tarkenteen eteen (.~pp)"
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

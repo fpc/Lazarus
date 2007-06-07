@@ -913,7 +913,7 @@ msgstr "Navega pel Compilador (%s)"
 msgid "Build"
 msgstr "Munta"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Munta les eines del codi"
 
@@ -921,15 +921,11 @@ msgstr "Munta les eines del codi"
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr "Munta el component"
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr "Munta els components (SynEdit, CodeTools)"
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr "Munta els exemples"
 
@@ -937,25 +933,13 @@ msgstr "Munta els exemples"
 msgid "Build File"
 msgstr "Munta el fitxer"
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
 msgstr "Munta l'IDE"
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr "Munta l'interfície IDE"
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
-msgstr "Munta la forma JIT"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Munta la forma JIT"
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
-msgstr "Munta la LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -965,15 +949,7 @@ msgstr "Munta el Lazarus"
 msgid "Build Number"
 msgstr "Munta el número"
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr "Munta el registre del paquet"
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr "Munta l'iniciador"
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Munta el SynEdit"
 
@@ -1409,6 +1385,10 @@ msgstr "Plantilles del codi"
 msgid "CodeExplorer Options"
 msgstr "Opcions de CodeExplorer"
 
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
@@ -1604,6 +1584,10 @@ msgstr "Completa el codi"
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Completa les propietats"
+
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
@@ -2745,6 +2729,10 @@ msgstr "Bitàcora d'events"
 msgid "Example"
 msgstr "Ejemple"
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -3645,9 +3633,17 @@ msgstr "Us ho he dit: Encara NO està implementat"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Integració IDE"
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
+msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -4329,6 +4325,10 @@ msgstr "Itàlica"
 msgid "Item height"
 msgstr "Alçada de l'element"
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "Japonés"
@@ -4436,6 +4436,10 @@ msgstr "Paraula clau"
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
 msgstr "Política de paraula clau"
+
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
+msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5680,6 +5684,10 @@ msgstr "Nom del paquet:"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opcions del paquet"
+
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -7193,10 +7201,6 @@ msgstr "Variable de propietat"
 msgid "Set the breakpoint anyway"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr "Defineix %sMunta-ho tot%s"
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr "Tecla de majúscules"
@@ -7541,6 +7545,10 @@ msgstr "Menú d'ajuda normalitzat"
 msgid "Start with a new project"
 msgstr "Inicia amb un nou projecte"
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Estat"
@@ -7664,6 +7672,10 @@ msgstr "Símbol darrera (.pp~)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Símbol davant (.~pp)"
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

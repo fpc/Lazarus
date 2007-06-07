@@ -914,7 +914,7 @@ msgstr "Sfoglia per il compilatore (%s)"
 msgid "Build"
 msgstr "Esegui build"
 
-#: lazarusidestrconsts:lisbuildcodetools
+#: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Esegui build dei CodeTools"
 
@@ -922,15 +922,11 @@ msgstr "Esegui build dei CodeTools"
 msgid "Build Command"
 msgstr "Comando per la Build"
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
-msgstr "Esegui build del componente"
-
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr "Esegui build dei componenti (SynEdit, CodeTools)"
 
-#: lazarusidestrconsts:lisbuildexamples
+#: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build Examples"
 msgstr "Esegui build degli esempi"
 
@@ -938,25 +934,13 @@ msgstr "Esegui build degli esempi"
 msgid "Build File"
 msgstr "Esegui build del file"
 
-#: lazarusidestrconsts:lisbuildide
+#: lazarusidestrconsts:lislazbuildbuildide
 msgid "Build IDE"
 msgstr "Esegui build dell'IDE"
-
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
-msgstr "Esegui build dell'interfaccia IDE"
-
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
-msgstr "Esegui build della form JIT"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Esegui build della form JIT"
-
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
-msgstr "Esegui build dell'LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -966,15 +950,7 @@ msgstr "Build Lazarus"
 msgid "Build Number"
 msgstr "Numero di build"
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
-msgstr "Registrazione build del pacchetto"
-
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
-msgstr "Inizializzatore build"
-
-#: lazarusidestrconsts:lisbuildsynedit
+#: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Esegui build del SynEdit"
 
@@ -1410,6 +1386,10 @@ msgstr "Modelli di codice"
 msgid "CodeExplorer Options"
 msgstr "Opzioni dell'esploratore di codice"
 
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
@@ -1605,6 +1585,10 @@ msgstr "Completa il codice"
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Completa le proprietà"
+
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
@@ -2746,6 +2730,10 @@ msgstr "Log degli eventi"
 msgid "Example"
 msgstr "Esempio"
 
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Escludi Filtro"
@@ -3646,9 +3634,17 @@ msgstr "Ripeto: non ancora implementato!"
 msgid "ID"
 msgstr ""
 
+#: lazarusidestrconsts:liside
+msgid "IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Integrazione IDE"
+
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
+msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -4330,6 +4326,10 @@ msgstr "Corsivo"
 msgid "Item height"
 msgstr "Altezza dell'oggetto"
 
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "Giapponese"
@@ -4437,6 +4437,10 @@ msgstr "Parola chiave"
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
 msgstr "Criterio delle parolechiave"
+
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
+msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5681,6 +5685,10 @@ msgstr "Nome pacchetto:"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opzioni pacchetto"
+
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -7194,10 +7202,6 @@ msgstr "Imposta la proprietà variabile"
 msgid "Set the breakpoint anyway"
 msgstr "Imposta un breakpoint in ogni caso"
 
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
-msgstr "Imposta a %sEsegui build di tutto%s"
-
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr "Maiuscole"
@@ -7542,6 +7546,10 @@ msgstr "Menu aiuto standard"
 msgid "Start with a new project"
 msgstr "Inizia con un nuovo progetto"
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Stato"
@@ -7665,6 +7673,10 @@ msgstr "Simbolo posposto (.pp~)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Simbolo anteposto (.~pp)"
+
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-05 04:04+0300\n"
+"PO-Revision-Date: 2007-06-07 04:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -227,11 +227,11 @@ msgstr "Если TargetOS<>win32 то"
 
 #: codetoolsstrconsts:ctsifdeflinux
 msgid "IfDef Linux"
-msgstr ""
+msgstr "IfDef Linux"
 
 #: codetoolsstrconsts:ctsifdefwindows
 msgid "IfDef Windows"
-msgstr ""
+msgstr "IfDef Windows"
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -359,7 +359,7 @@ msgstr "компонент каталога в %s - не каталог"
 
 #: codetoolsstrconsts:ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr ""
+msgstr "добавляет %s к IncPath"
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"

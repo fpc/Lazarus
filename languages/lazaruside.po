@@ -5990,44 +5990,44 @@ msgstr ""
 msgid "Compile IDE (without linking)"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildlcl
-msgid "Build LCL"
+#: lazarusidestrconsts:lislcl
+msgid "LCL"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildcomponent
-msgid "Build Component"
+#: lazarusidestrconsts:liscomponent
+msgid "Component"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildcodetools
-msgid "Build CodeTools"
+#: lazarusidestrconsts:liscodetools
+msgid "CodeTools"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildsynedit
-msgid "Build SynEdit"
+#: lazarusidestrconsts:lissynedit
+msgid "SynEdit"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildideintf
-msgid "Build IDE Interface"
+#: lazarusidestrconsts:lisideintf
+msgid "IDE Interface"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JIT Form"
+#: lazarusidestrconsts:lisjitform
+msgid "JIT Form"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildpkgreg
-msgid "Build Package Registration"
+#: lazarusidestrconsts:lispkgreg
+msgid "Package Registration"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildide
-msgid "Build IDE"
+#: lazarusidestrconsts:liside
+msgid "IDE"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildstarter
-msgid "Build Starter"
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildexamples
-msgid "Build Examples"
+#: lazarusidestrconsts:lisexamples
+msgid "Examples"
 msgstr ""
 
 #: lazarusidestrconsts:lisconfigurebuildlazarus
@@ -6036,10 +6036,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanall
 msgid "Clean all"
-msgstr ""
-
-#: lazarusidestrconsts:lislazbuildsettobuildall
-msgid "Set to %sBuild All%s"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
