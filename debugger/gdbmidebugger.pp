@@ -2627,6 +2627,7 @@ function TGDBMICallStack.CheckCount: Boolean;
 var
   R: TGDBMIExecResult;
   List: TStrings;
+  i, cnt: longint;
 begin
   Result := inherited CheckCount;
   if not Result then Exit;
@@ -2634,8 +2635,25 @@ begin
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth',
                                           [cfIgnoreError], R);
   List := CreateMIValueList(R);
-  SetCount(StrToIntDef(List.Values['depth'], 0));
+  cnt := StrToIntDef(List.Values['depth'], -1);
   FreeAndNil(List);
+  if cnt = -1 then
+  begin
+    { In case of error some stackframes still can be accessed.
+      Trying to find out how many... }
+    i:=0;
+    repeat
+      Inc(i);
+      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth ' + IntToStr(i),
+                                              [cfIgnoreError], R);
+      List := CreateMIValueList(R);
+      cnt := StrToIntDef(List.Values['depth'], -1);
+      FreeAndNil(List);
+      if cnt = -1 then
+        cnt:=i - 1;
+    until cnt < i;
+  end;
+  SetCount(cnt);
 end;
 
 function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntry;
