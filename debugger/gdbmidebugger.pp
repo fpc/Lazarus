@@ -2640,18 +2640,21 @@ begin
   if cnt = -1 then
   begin
     { In case of error some stackframes still can be accessed.
-      Trying to find out how many... }
-    i:=0;
+      Trying to find out how many...
+      We try maximum 40 frames, because sometimes a corrupt stack and a bug in
+      gdb may cooperate, so that -stack-info-depth X returns always X }
     repeat
-      Inc(i);
+      inc(i);
       TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth ' + IntToStr(i),
                                               [cfIgnoreError], R);
       List := CreateMIValueList(R);
       cnt := StrToIntDef(List.Values['depth'], -1);
       FreeAndNil(List);
-      if cnt = -1 then
+      if (cnt = -1) then begin
+        // no valid stack-info-depth found, so the previous was the last valid one
         cnt:=i - 1;
-    until cnt < i;
+      end;
+    until (cnt<i) or (i=40);
   end;
   SetCount(cnt);
 end;
