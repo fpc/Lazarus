@@ -161,6 +161,13 @@ var
     if not TWinControl(Sender).HandleAllocated then
       exit;
 
+    with TLMessage(Message) do begin
+      Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+      // Windows handled it, so exit here.
+      if Result<>0 then exit;
+    end;
+
+
     // send scroll message
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);

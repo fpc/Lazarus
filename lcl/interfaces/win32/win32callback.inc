@@ -1607,17 +1607,13 @@ begin
         end;
 
         // the mousewheel message is for us
-        // windows handles combobox's mousewheel messages
-        if (lWinControl=nil) or (lWinControl.FCompStyle <> csComboBox) then
-        begin
-          Msg := LM_MOUSEWHEEL;
-          Button := LOWORD(WParam);
-          WheelDelta := SmallInt(HIWORD(WParam));
-          State := GetShiftState;
-          Result := 0;
-          UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
-          WinProcess := false;
-        end;
+        Msg := LM_MOUSEWHEEL;
+        Button := LOWORD(WParam);
+        WheelDelta := SmallInt(HIWORD(WParam));
+        State := GetShiftState;
+        Result := 0;
+        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+        WinProcess := false;
       end;
     end;
     {$IFDEF EnableWMDropFiles}
