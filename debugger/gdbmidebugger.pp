@@ -2643,6 +2643,7 @@ begin
       Trying to find out how many...
       We try maximum 40 frames, because sometimes a corrupt stack and a bug in
       gdb may cooperate, so that -stack-info-depth X returns always X }
+    i:=0;
     repeat
       inc(i);
       TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth ' + IntToStr(i),
