@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"PO-Revision-Date: 2006-10-05 03:47+0300\n"
+"PO-Revision-Date: 2007-06-07 04:30+0300\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
@@ -647,7 +647,7 @@ msgstr "Ok"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "При добавлении проверять наличие дубликатов в элементах"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -859,7 +859,7 @@ msgstr "Текст:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway? "
-msgstr ""
+msgstr "Элемент \"%s\" уже имеется. Всё равно добавить?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -911,5 +911,5 @@ msgstr "Word"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
-msgstr ""
+msgstr "n. столбцов"
 
