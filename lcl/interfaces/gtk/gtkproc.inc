@@ -5772,6 +5772,11 @@ begin
 
   // get icon
   LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
+  if LCLMenuItem=nil then begin // needed for gtk2 dialog
+    if GtkWidgetIsA(PGtkWidget(MenuItem), gtk_check_menu_item_get_type) then
+      OldCheckMenuItemDrawProc(MenuItem, Area);
+    Exit;
+  end;
   if not LCLMenuItem.HasIcon then
   begin
     // call default draw function
