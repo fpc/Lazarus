@@ -744,6 +744,12 @@ begin
   if FileDialog is TOpenDialog then
     InitializeOpenDialog(TOpenDialog(FileDialog), SelWidget);
 
+  if FileDialog.InheritsFrom(TSaveDialog) then begin
+    gtk_file_chooser_set_current_folder (SelWidget, PChar(FileDialog.InitialDir));
+    gtk_file_chooser_set_current_name (SelWidget, PChar(FileDialog.FileName));
+  end;
+
+
   InitializeCommonDialog(TCommonDialog(FileDialog), SelWidget);
 end;
 
