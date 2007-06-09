@@ -5499,6 +5499,20 @@ begin
       exit;
 
     gtk_widget_show(SenderWidget);
+    {$IFDEF GTK2}
+    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
+      case ACustomForm.WindowState of
+        wsNormal:
+        begin
+          gtk_window_deiconify(PGtkWindow(SenderWidget));
+          gtk_window_unmaximize(PGtkWindow(SenderWidget));
+        end;
+        wsMaximized: gtk_window_maximize(PGtkWindow(SenderWidget));
+        wsMinimized: gtk_window_iconify(PGtkWindow(SenderWidget));
+      end;
+    end;
+
+    {$ENDIF}
 
     if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
       AWindow:=GetControlWindow(SenderWidget);
