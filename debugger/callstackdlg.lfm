@@ -27,6 +27,7 @@ inherited CallStackDlg: TCallStackDlg
         Width = 290
       end>
     PopupMenu = mnuPopup
+    RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvCallStackDBLCLICK

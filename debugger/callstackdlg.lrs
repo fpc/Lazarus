@@ -8,11 +8,11 @@ LazarusResources.Add('TCallStackDlg','FORMDATA',[
   +'tView'#11'lvCallStack'#6'Height'#3#200#0#5'Width'#3#244#1#5'Align'#7#8'alCl'
   +'ient'#7'Columns'#14#1#7'Caption'#6#6'Source'#5'Width'#3#150#0#0#1#7'Caption'
   +#6#4'Line'#0#1#7'Caption'#6#8'Function'#5'Width'#3'"'#1#0#0#9'PopupMenu'#7#8
-  +'mnuPopup'#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#10'OnDblClick'#7#19'lv'
-  +'CallStackDBLCLICK'#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'B'#3'top'#2'X'#0
-  +#9'TMenuItem'#7'popShow'#7'Caption'#6#4'Show'#7'Default'#9#7'OnClick'#7#12'p'
-  +'opShowClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#15'p'
-  +'opSetAsCurrent'#7'Caption'#6#14'Set as current'#0#0#9'TMenuItem'#10'popCopy'
-  +'All'#7'Caption'#6#8'Copy all'#8'ShortCut'#3'C@'#7'OnClick'#7#15'popCopyAllC'
-  +'lick'#0#0#0#0
+  +'mnuPopup'#9'RowSelect'#9#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#10'OnDb'
+  +'lClick'#7#19'lvCallStackDBLCLICK'#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2
+  +'B'#3'top'#2'X'#0#9'TMenuItem'#7'popShow'#7'Caption'#6#4'Show'#7'Default'#9#7
+  +'OnClick'#7#12'popShowClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9
+  +'TMenuItem'#15'popSetAsCurrent'#7'Caption'#6#14'Set as current'#0#0#9'TMenuI'
+  +'tem'#10'popCopyAll'#7'Caption'#6#8'Copy all'#8'ShortCut'#3'C@'#7'OnClick'#7
+  +#15'popCopyAllClick'#0#0#0#0
 ]);
