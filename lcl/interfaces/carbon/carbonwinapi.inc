@@ -2012,10 +2012,10 @@ end;
 
   Updates the current position to the specified point
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint
-  ): Boolean;
+function TCarbonWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 var
   ADC: TCarbonDeviceContext;
+  TempPenPos: TPoint;
 begin
   Result := False;
 
@@ -2029,8 +2029,11 @@ begin
   ADC := TCarbonDeviceContext(DC);
 
   if OldPoint <> nil then OldPoint^ := ADC.PenPos;
-  ADC.PenPos.x := X;
-  ADC.PenPos.y := Y;
+
+  { We need a temporary variable or this wont compile with 2.3.x }
+  TempPenPos.X := X;
+  TempPenPos.Y := Y;
+  ADC.PenPos := TempPenPos;
   
   Result := True;
 end;

@@ -387,8 +387,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.Reset;
 begin
-  PenPos.x := 0;
-  PenPos.y := 0;
+  FPenPos.x := 0;
+  FPenPos.y := 0;
 
   // create brush for bk color and mode
   FBkColor := clWhite;
@@ -1008,8 +1008,8 @@ begin
   CGContextAddLineToPoint(CGContext, X + 0.5, Y + 0.5);
   CGContextStrokePath(CGContext);
   
-  PenPos.x := X;
-  PenPos.y := Y;
+  FPenPos.x := X;
+  FPenPos.y := Y;
 end;
 
 {------------------------------------------------------------------------------
