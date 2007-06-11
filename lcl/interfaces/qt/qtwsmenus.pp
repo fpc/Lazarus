@@ -267,12 +267,12 @@ begin
       library on the Virtual Magnifying Glass }
     if AMenuItem.Count > 0 then
     begin
-//      TQtMenu(AMenuItem.Handle).Free;
+      TQtMenu(AMenuItem.Handle).Free;
     end
     { Here the menu item has a QActionH handle }
     else
     begin
-//      TQtAction(AMenuItem.Handle).Free;
+      TQtAction(AMenuItem.Handle).Free;
     end;
   end;
 end;

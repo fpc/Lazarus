@@ -207,6 +207,8 @@ end;
 
 destructor TQtListStrings.Destroy;
 begin
+  Clear;
+  FStringList.Free;
   inherited Destroy;
 end;
 
@@ -226,24 +228,24 @@ begin
 end;
 
 procedure TQtListStrings.Delete(Index: integer);
-{var
-  Astr: WideString;}
 begin
   if FListChanged then InternalUpdate;
 
   if Index < FStringList.Count then
   begin
     FStringList.Delete(Index);
-//    Astr := FStringList.Text;
-    ExternalUpdate(FStringList,True);
+    FUpdating := True;
+    QListWidget_takeItem(FQtListWidget, Index);
+    FUpdating := False;
+    IsChanged;
+    FUpdating := False;
     FListChanged := False;
   end;
-
-(*  FStringList.Delete(Index);
-  QListWidget_takeitem(FQtListWidget, Index); *)
 end;
 
 procedure TQtListStrings.Insert(Index: integer; const S: string);
+var
+   AStr: WideString;
 begin
   if FListChanged then InternalUpdate;
 
@@ -251,8 +253,13 @@ begin
 
   if Index <= FStringList.Count then
   begin
+    FUpdating := True;
     FStringList.Insert(Index,S);
-    ExternalUpdate(FStringList,True);
+    AStr := UTF8Decode(S);
+    QListWidget_insertItem(FQtListWidget, Index, QListWidgetItem_create(@AStr, FQtListWidget, Integer(QListWidgetItemType)));
+    FUpdating := False;
+    IsChanged;
+    FUpdating := False;
     FListChanged := False;
   end;
 end;

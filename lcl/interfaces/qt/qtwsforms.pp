@@ -132,7 +132,7 @@ uses QtWSControls;
   Params:  None
   Returns: Nothing
 
-  Creates a Qt Form and initializes it according to it´s properties
+  Creates a Qt Form and initializes it according to it's properties
  ------------------------------------------------------------------------------}
 class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -150,8 +150,9 @@ begin
   // Creates the window
 
   QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
-
+  
   // Set´s initial properties
+
 
   Str := UTF8Decode(AWinControl.Caption);
 
@@ -161,6 +162,7 @@ begin
 
   SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
 
+
   // Sets Various Events
 
   Hook := QObject_hook_create(QtMainWindow.Widget);
@@ -168,7 +170,7 @@ begin
   TEventFilterMethod(Method) := QtMainWindow.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
-
+  
   // Return the handle
 
   Result := THandle(QtMainWindow);
@@ -231,7 +233,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
-
+ inherited CloseModal(ACustomForm);
 end;
 
 {------------------------------------------------------------------------------
@@ -276,19 +278,14 @@ begin
     WriteLn('Trace:> [TQtWSCustomForm.ShowModal]');
   {$endif}
 
+  {if we use QDialog as modal class then everything looks fine}
   TQtWidget(ACustomForm.Handle).Hide;
-
   TQtWidget(ACustomForm.Handle).setWindowModality(QtApplicationModal);
-
   TQtWidget(ACustomForm.Handle).Show;
   
-  {give it a real modal loop, CPU consumption is OK now ... }
-//  while Assigned(ACustomForm) and (ACustomForm.Visible)
-  while (ACustomForm.ModalResult = mrNone) do
-  begin
-    sleep(10);
-    Application.ProcessMessages;
-  end;
+  Application.ProcessMessages;
+  sleep(10);
+  Application.ProcessMessages;
 
   {BUG: if we assign OnCloseQuery(), Lazarus TCustomForm.Close() Fires ModalResult = mrCancel,
     without counting on OnCloseQuery() result (CanClose), so if we set it up we'll jump over our
@@ -316,10 +313,10 @@ end;
   Params:  None
   Returns: Nothing
 
-  We need this method because LCL doesn´t automatically calls SetWindowBorder
+  We need this method because LCL doesn't automatically calls SetWindowBorder
  after the window is created, so we need to do it on CreateHandle procedure,
  but CreateHandle cannot call other methods from TQtWSCustomForm because the
- Handle isn´t created yet before it is finished.
+ Handle isn't created yet before it is finished.
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetQtWindowBorderStyle(const AHandle: TQtMainWindow;
   const AFormBorderStyle: TFormBorderStyle);

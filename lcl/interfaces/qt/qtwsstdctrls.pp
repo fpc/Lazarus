@@ -445,10 +445,20 @@ begin
   QObject_hook_hook_events(Hook, Method);
 
   // OnSelectionChange event
-
   QListWidget_currentItemChanged_Event(Method) := QtListWidget.SlotSelectionChange;
-
   QListWidget_hook_hook_currentItemChanged(QListWidget_hook_create(QtListWidget.Widget), Method);
+  
+  QListWidget_itemDoubleClicked_Event(Method) := QtListWidget.SignalItemDoubleClicked;
+  QListWidget_hook_hook_ItemDoubleClicked(QListWidget_hook_create(QtListWidget.Widget), Method);
+  
+  QListWidget_itemClicked_Event(Method) := QtListWidget.SignalItemClicked;
+  QListWidget_hook_hook_ItemClicked(QListWidget_hook_create(QtListWidget.Widget), Method);
+  
+  // QListWidget_itemClicked_Event(Method;
+  
+  // create our FList helper
+  QtListWidget.FList := TQtListStrings.Create(QListWidgetH(QtListWidget.Widget), TCustomListBox(AWinControl));
+
 
   Result := THandle(QtListWidget);
 end;
@@ -493,8 +503,9 @@ class function TQtWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBo
 var
   ListWidgetH: QListWidgetH;
 begin
-  ListWidgetH := QListWidgetH((TQtWidget(ACustomListBox.Handle).Widget));
-  Result := TQtListStrings.Create(ListWidgetH, ACustomListBox);
+  if not Assigned(TQtListWidget(ACustomListBox.Handle).FList) then
+  TQtListWidget(ACustomListBox.Handle).FList := TQtListStrings.Create(ListWidgetH, ACustomListBox);
+  Result := TQtListWidget(ACustomListBox.Handle).FList;
 end;
 
 {------------------------------------------------------------------------------

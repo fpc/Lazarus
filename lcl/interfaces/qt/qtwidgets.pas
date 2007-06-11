@@ -124,14 +124,17 @@ type
   { TQtMainWindow }
 
   TQtMenuBar = class;
+  TQtToolBar = class;
 
   TQtMainWindow = class(TQtWidget)
   private
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    MDIAreaHandle: QMDIAreaH;
     Splitter: QSplitterH;
     MenuBar: TQtMenuBar;
+    ToolBar: TQtToolBar;
     Canvas: TQtDeviceContext;
     destructor Destroy; override;
     procedure setTabOrders;
@@ -393,8 +396,11 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    FList: TStrings;
     destructor Destroy; override;
     procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
+    procedure SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
+    procedure SignalItemClicked(item: QListWidgetItemH); cdecl;
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
   end;
@@ -511,6 +517,7 @@ const
 constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 begin
   // Initializes the properties
+  FProps := NiL;
   LCLObject := AWinControl;
 
   // Creates the widget
@@ -1634,9 +1641,9 @@ begin
     //FProps.CaseSensitive:=false;
     FProps.Sorted:=true;
   end;
-  i:=Fprops.IndexOf(AnIndex);
-  if i<0 then
-    i:=FProps.Add(AnIndex);
+  i := Fprops.IndexOf(AnIndex);
+  if i < 0 then
+    i := FProps.Add(AnIndex);
   Fprops.Objects[i] := TObject(AValue);
 end;
 
@@ -1787,16 +1794,57 @@ end;
 { TQtMainWindow }
 
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  w: QWidgetH;
+  r: TRect;
+  mdihandle: QMdiAreaH;
+  toolbar: QToolBarH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
-  
-  Result := QWidget_create(nil, QtWindow);
 
-  // Main menu bar
-  MenuBar := TQtMenuBar.Create(Result);
+  w := QApplication_activeWindow;
+  
+  // mainform should be TQtMainWindow ...
+  {. $define mdidevel}
+  if not Assigned(w) and not (Application.MainForm.Visible) then
+  begin
+    Result := QMainWindow_create(nil, QtWindow);
+    
+    MenuBar := TQtMenuBar.Create(Result);
+    
+
+    if Assigned(Application.MainForm.Menu) then
+     QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
+     
+    {$ifdef mdidevel}
+    MDIAreaHandle := QMdiArea_create(Result);
+
+    QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
+    {$endif}
+    
+    QMainWindow_setDockOptions(QMainWindowH(Result) ,QMainWindowAnimatedDocks);
+    
+  end else
+  begin
+    {$ifdef mdidevel}
+    if LCLObject.Tag = 9999 then
+    begin
+      Result := QMdiSubWindow_create(NiL, QtWindow);
+      
+      mdiHandle := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
+      if Assigned(mdiHandle) then
+       QMdiArea_addSubWindow(mdiHandle, QMdiSubWindowH(Result), QtWindow);
+
+    end else
+    {$endif}
+    Result := QWidget_create(nil, QtWindow);
+    // Main menu bar
+    MenuBar := TQtMenuBar.Create(Result);
+  end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -3203,6 +3251,42 @@ begin
 
   Msg.Msg := LM_SELCHANGE;
 
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.SignalItemDoubleClicked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtListWidget.SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_LBUTTONDBLCLK;
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.SignalItemClicked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtListWidget.SignalItemClicked(item: QListWidgetItemH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CLICKED;
   try
     LCLObject.WindowProc(TLMessage(Msg));
   except
