@@ -73,6 +73,13 @@ begin
   end;
 end;
 
+// Callback function for SysUtils.OnGetApplicationName;
+function GetApplicationName: string;
+begin
+  if Assigned(Application) then
+    Result := Application.Title;
+end;
+
 {------------------------------------------------------------------------------
        TApplication Constructor
 ------------------------------------------------------------------------------}
@@ -107,6 +114,8 @@ begin
 
   FOldExitProc:=ExitProc;
   ExitProc:=@BeforeFinalization;
+  
+  OnGetApplicationName := @GetApplicationName;
 end;
 
 {------------------------------------------------------------------------------
@@ -151,6 +160,7 @@ begin
   // restore exception handling
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
+  OnGetApplicationName := nil;
 end;
 
 {------------------------------------------------------------------------------

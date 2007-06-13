@@ -346,7 +346,7 @@ end;
 function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
 begin
-  Result := WidgetSet.PromptUser('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
+  Result := WidgetSet.PromptUser(ApplicationName, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
 end;
 
 function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
