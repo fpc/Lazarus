@@ -56,7 +56,7 @@ const
       'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt', 'fpgui'
     );
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
-      'gtk', 'gtk 2', 'win32/64', 'wince', 'carbon', 'qt', 'fpgui'
+      'gtk', 'gtk 2', 'win32/win64', 'wince', 'carbon', 'qt', 'fpgui'
     );
 
 
