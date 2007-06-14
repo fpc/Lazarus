@@ -1277,10 +1277,12 @@ type
     function CalcFittingFontHeight(const TheText: string;
                                    MaxWidth, MaxHeight: Integer; var FontHeight,
                                    NeededWidth, NeededHeight: integer): Boolean;
+    function ColorIsStored: boolean; override;
     function AdjustFontForOptimalFill: Boolean;
     constructor Create(TheOwner: TComponent); override;
     procedure Paint; override;
     property AutoSize default True;
+    property Color default clNone;
   end;
 
 

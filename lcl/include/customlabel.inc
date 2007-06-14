@@ -319,6 +319,13 @@ begin
   end;
 end;
 
+function TCustomLabel.ColorIsStored: boolean;
+begin
+  Result:=(Color<>clNone);
+  if Result and ParentColor and (Parent<>nil) then
+    Result:=false;
+end;
+
 {-------------------------------------------------------------------------------
   function TCustomLabel.AdjustFontForOptimalFill: Boolean;
   
