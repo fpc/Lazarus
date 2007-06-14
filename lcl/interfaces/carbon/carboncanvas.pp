@@ -31,7 +31,7 @@ uses
  // carbon bindings
   FPCMacOSAll,
  // LCL
-  LCLProc, LCLType, Graphics, Controls, Forms,
+  LCLProc, LCLType, Graphics, GraphType, Controls, Forms,
  // LCL Carbon
   CarbonDef, CarbonGDIObjects;
 
@@ -115,6 +115,7 @@ type
     procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Rectangle(X1, Y1, X2, Y2: Integer);
+    procedure SetPixel(X, Y: Integer; AColor: TGraphicsColor);
     function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCarbonBitmapContext;
       XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: DWORD): Boolean;
   public
@@ -1165,6 +1166,30 @@ begin
   CGContextBeginPath(CGContext);
   CGContextAddRect(CGContext, R);
   CGContextDrawPath(CGContext, kCGPathFillStroke);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetPixel
+  Params:  X, Y   - Position
+           AColor - New color for specified position
+
+  Sets the color of the specified pixel on the canvas
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.SetPixel(X, Y: Integer; AColor: TGraphicsColor);
+var
+  R, G, B: Byte;
+begin
+  CGContextSaveGState(CGContext);
+  try
+    // apply color to fill
+    CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
+    RedGreenBlue(ColorToRGB(AColor), R, G, B);
+    CGContextSetRGBFillColor(CGContext, R / 255, G / 255, B / 255, 1.0);
+    
+    CGContextFillRect(CGContext, GetCGRect(X, Y, X + 1, Y + 1));
+  finally
+    CGContextRestoreGState(CGContext);
+  end;
 end;
 
 {------------------------------------------------------------------------------

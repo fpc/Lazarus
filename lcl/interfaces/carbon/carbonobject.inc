@@ -707,7 +707,6 @@ end;
            AColor       - New color for specified position
 
   Sets the color of the specified pixel on the canvas
-  Not implemented!
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
   AColor: TGraphicsColor);
@@ -715,8 +714,10 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.DCSetPixel DC: ' + DbgS(CanvasHandle) + ' X: ' + DbgS(X) + ' Y: ' + DbgS(Y) + 'Color: ' + DbgS(AColor));
   {$ENDIF}
-  
-  DebugLn('TCarbonWidgetSet.DCSetPixel TODO');
+
+  if not CheckDC(CanvasHandle, 'DCSetPixel') then Exit;
+
+  TCarbonDeviceContext(CanvasHandle).SetPixel(X, Y, AColor);
 end;
 
 {------------------------------------------------------------------------------
