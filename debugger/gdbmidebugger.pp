@@ -2126,7 +2126,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     if ExecuteCommand('info address main', [cfNoMICommand, cfIgnoreError], R)
     and (R.State <> dsError)
     then begin
-      S := GetPart('at address ', '.', R.Values);
+      S := GetPart(['at address ', ' at '], ['.', ' '], R.Values);
       if S <> ''
       then begin
         FMainAddr := StrToIntDef(S, 0);
