@@ -232,18 +232,18 @@ begin
   TopSiblingComboBox.Hint:=lisTopSiblingComboBoxHint;
   TopSiblingLabel.Caption:=lisSibling;
 
-  LeftRefLeftSpeedButton.Glyph.LoadFromLazarusResource('anchorleftleft');
-  LeftRefCenterSpeedButton.Glyph.LoadFromLazarusResource('anchorcenterhorizontal');
-  LeftRefRightSpeedButton.Glyph.LoadFromLazarusResource('anchorleftright');
-  RightRefLeftSpeedButton.Glyph.LoadFromLazarusResource('anchorleftright');
-  RightRefCenterSpeedButton.Glyph.LoadFromLazarusResource('anchorcenterhorizontal');
-  RightRefRightSpeedButton.Glyph.LoadFromLazarusResource('anchorrightright');
-  TopRefTopSpeedButton.Glyph.LoadFromLazarusResource('anchortoptop');
-  TopRefCenterSpeedButton.Glyph.LoadFromLazarusResource('anchorcentervertical');
-  TopRefBottomSpeedButton.Glyph.LoadFromLazarusResource('anchortopbottom');
-  BottomRefTopSpeedButton.Glyph.LoadFromLazarusResource('anchortopbottom');
-  BottomRefCenterSpeedButton.Glyph.LoadFromLazarusResource('anchorcentervertical');
-  BottomRefBottomSpeedButton.Glyph.LoadFromLazarusResource('anchorbottombottom');
+  LeftRefLeftSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_left');
+  LeftRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_horizontal');
+  LeftRefRightSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_left_right');
+  RightRefLeftSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_left_right');
+  RightRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_horizontal');
+  RightRefRightSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_right');
+  TopRefTopSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_top');
+  TopRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_vertical');
+  TopRefBottomSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_top_bottom');
+  BottomRefTopSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_top_bottom');
+  BottomRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_vertical');
+  BottomRefBottomSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_bottom');
 
   // autosizing
   BottomSiblingLabel.AnchorToNeighbour(akLeft,10,BottomAnchoredCheckBox);
