@@ -139,7 +139,7 @@ msgstr "%sEste pacote foi instalado, mas o arquivo LPK não foi encontrado"
 
 #: lazarusidestrconsts:lisoipthispackagewasautomaticallycreated
 msgid "%sThis package was automatically created"
-msgstr "%sEste pacote foi automaticamente criado"
+msgstr "%sEste pacote foi criado automaticamente criado"
 
 #: lazarusidestrconsts:lisnone
 msgid "%snone"
@@ -223,7 +223,7 @@ msgstr "&Executar"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
-msgstr "&Executar ate o Cursor"
+msgstr "&Executar até o Cursor"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
@@ -471,7 +471,7 @@ msgstr "Adicionar caminhos para pacotes/projetos dependentes"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr "Adicionar ponto e virgula"
+msgstr "Adicionar ponto e v�rgula"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -523,7 +523,7 @@ msgstr "Ajustar linha do topo devido ao comentário em frente"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
-msgstr "Africaner"
+msgstr "AfricÂner"
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -751,7 +751,7 @@ msgstr "Formulários criados automaticamente:"
 
 #: lazarusidestrconsts:lispckexplautocreated
 msgid "AutoCreated"
-msgstr "Criado-Automaticamente"
+msgstr "Criado Automaticamente"
 
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
@@ -963,7 +963,7 @@ msgstr "Construir Novo Projeto"
 
 #: lazarusidestrconsts:liskmbuildprojectprogram
 msgid "Build project/program"
-msgstr ""
+msgstr "Construir projeto/programa"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1015,7 +1015,7 @@ msgstr "Cancelar"
 
 #: lazarusidestrconsts:liscancelloadingthiscomponent
 msgid "Cancel loading this component"
-msgstr ""
+msgstr "Cancelar carregamento deste componente"
 
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
@@ -1043,7 +1043,7 @@ msgstr "Cursor Salta a Seleção"
 
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
-msgstr "Nao diferenciar a maiusc./minusc."
+msgstr "Não diferenciar a maiusc./minusc."
 
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
@@ -1055,7 +1055,7 @@ msgstr "Diferenciar maiusc./minusc."
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
-msgstr "Catalao"
+msgstr "Catalão"
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -1131,7 +1131,7 @@ msgstr "Verificar:"
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
-msgstr "Chines"
+msgstr "Chinês"
 
 #: lazarusidestrconsts:lispochoosepofiledirectory
 msgid "Choose .po file directory"
@@ -1295,7 +1295,7 @@ msgstr "Limpar nome de arquivo de dependencia"
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
 msgid "Clear include cache"
-msgstr ""
+msgstr "Limpar cache de include"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
@@ -1419,7 +1419,7 @@ msgstr "Definir Editor de Ferramentas de Códigos ..."
 
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
-msgstr "Opcoes de ferramentas de codigo"
+msgstr "Opções de ferramentas de codigo"
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1455,7 +1455,7 @@ msgstr "Cor"
 
 #: lazarusidestrconsts:dlgclrscheme
 msgid "Color Scheme"
-msgstr ""
+msgstr "Esquema de cores"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -1467,7 +1467,7 @@ msgstr "Modo de seleção da coluna"
 
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
-msgstr "Virgula"
+msgstr "V�rgula"
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1559,7 +1559,7 @@ msgstr "Nome de arquivo do compilador"
 
 #: lazarusidestrconsts:liskmcompileroptions
 msgid "Compiler options"
-msgstr ""
+msgstr "Opções do compilador"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
@@ -1659,7 +1659,7 @@ msgstr "Confirmar antes de reconstruir o Lazarus"
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
-msgstr "Confirmar Mudancas"
+msgstr "Confirmar Mudanças"
 
 #: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -2599,7 +2599,7 @@ msgstr "Erro na escrita do Pacote"
 
 #: lazarusidestrconsts:lisiecoerroraccessingxml
 msgid "Error accessing xml"
-msgstr ""
+msgstr "Erro ao acessar XML"
 
 #: lazarusidestrconsts:lisiecoerroraccessingxmlfile
 msgid "Error accessing xml file %s%s%s:%s%s"
@@ -2727,7 +2727,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
-msgstr "Filtro Exclusor"
+msgstr "Filtro de Exclusão"
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
@@ -2851,7 +2851,7 @@ msgstr "Extrair procedimento ..."
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "Caminho do Doc HTML do FPC"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -3019,11 +3019,11 @@ msgstr "Filtro"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
-msgstr ""
+msgstr "Filtrar comparando com qualquer parte do metodo"
 
 #: lazarusidestrconsts:lisplistfilterstart
 msgid "Filter by matching with start of method"
-msgstr ""
+msgstr "Filtrar comparando com inicio do metodo"
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3179,7 +3179,7 @@ msgstr "Editor de Formulário"
 
 #: lazarusidestrconsts:rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
-msgstr ""
+msgstr "Arquivo de dados de formulario (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -3199,7 +3199,7 @@ msgstr "Formulários..."
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
-msgstr "Um à frente"
+msgstr "Um � frente"
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
@@ -3295,7 +3295,7 @@ msgstr "Gerar:"
 
 #: lazarusidestrconsts:rslanguagegerman
 msgid "German"
-msgstr "Alemao"
+msgstr "Alemão"
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
@@ -3451,15 +3451,15 @@ msgstr "Ir para linha de código selecioanda"
 
 #: lazarusidestrconsts:srkmgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Pegar tecla"
 
 #: lazarusidestrconsts:srkmgrabsecondkey
 msgid "Grab second key"
-msgstr ""
+msgstr "Pegar segunda tecla"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
-msgstr "Pegar cor"
+msgstr "Pegador de cor"
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
@@ -3747,7 +3747,7 @@ msgstr "Ignorar esta excessão"
 
 #: lazarusidestrconsts:lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
-msgstr ""
+msgstr "Ignorar e usar TForm como ancestral"
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -3775,15 +3775,15 @@ msgstr "Arquivos Include (-Fi)"
 
 #: lazarusidestrconsts:lisincludefilter
 msgid "Include Filter"
-msgstr "Filtro Inclusor"
+msgstr "Filtro de Inclusao"
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
-msgstr "Incluir Arquivo"
+msgstr "Arquivo de Inclusao"
 
 #: lazarusidestrconsts:lisincludepaths
 msgid "Include paths"
-msgstr ""
+msgstr "Caminhos de inclusao"
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -3831,7 +3831,7 @@ msgstr "Insert"
 
 #: lazarusidestrconsts:liskminsertifdef
 msgid "Insert $IFDEF"
-msgstr ""
+msgstr "Inserir $IFDEF"
 
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
@@ -4211,11 +4211,11 @@ msgstr "Nome de arquivo make inválido"
 
 #: lazarusidestrconsts:lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
-msgstr "Versão Maxima inválida"
+msgstr "Versão Máxima inválida"
 
 #: lazarusidestrconsts:lispckeditinvalidminimumversion
 msgid "Invalid minimum version"
-msgstr "Versão Minima inválida"
+msgstr "Versão M�nima inválida"
 
 #: lazarusidestrconsts:lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -4663,7 +4663,7 @@ msgstr "Biblioteca%sUma biblioteca Free Pascal (.dll sobre windows, .so sobre li
 
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
-msgstr "Licenca:"
+msgstr "Licença:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
@@ -4671,7 +4671,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
-msgstr "Limtar contagem de linha para"
+msgstr "Limitar contagem de linha para"
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4815,7 +4815,7 @@ msgstr "Resultados"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
-msgstr "Maximo de longitude de linha:"
+msgstr "Máximo de longitude de linha:"
 
 #: lazarusidestrconsts:dlgmaxrecentfiles
 msgid "Max recent files"
@@ -4823,23 +4823,23 @@ msgstr "Maximo de arquivos recentes"
 
 #: lazarusidestrconsts:dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr "Maximo de arquivos de projeto recente"
+msgstr "Máximo de arquivos de projeto recente"
 
 #: lazarusidestrconsts:lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
-msgstr "Numero Maximo de Ferramentas"
+msgstr "Numero Máximo de Ferramentas"
 
 #: lazarusidestrconsts:lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
-msgstr "Versão Maxima (opcional):"
+msgstr "Versão Máxima (opcional):"
 
 #: lazarusidestrconsts:lispckeditmaximumversion
 msgid "Maximum Version:"
-msgstr "Versão Maxima:"
+msgstr "Versão Máxima:"
 
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
-msgstr "Contador Maximo"
+msgstr "Contador Máximo"
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -4863,11 +4863,11 @@ msgstr "Minimizar todos ao minimizar a janela principal"
 
 #: lazarusidestrconsts:lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Versão Minima (opcional):"
+msgstr "Versão M�nima (opcional):"
 
 #: lazarusidestrconsts:lispckeditminimumversion
 msgid "Minimum Version:"
-msgstr "Versão Minima:"
+msgstr "Versão M�nima:"
 
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
@@ -5283,7 +5283,7 @@ msgstr "Modo de seleção normal"
 
 #: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
-msgstr "Normalmente o filtro é uma expressão regular. Em Sintaxe Simples um . é um caractere normal, um * significa qualquer coisa, um ? significa qualquer caractere, virgula e ponto-e-virugla separam alternativas. Por exemplo: Simples Sintaxe *.pas;*.pp corresponde a ^(.*\\.pas|.*\\.pp)$"
+msgstr "Normalmente o filtro é uma expressão regular. Em Sintaxe Simples um . é um caractere normal, um * significa qualquer coisa, um ? significa qualquer caractere, v�rgula e ponto-e-virugla separam alternativas. Por exemplo: Simples Sintaxe *.pas;*.pp corresponde a ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
@@ -5899,19 +5899,19 @@ msgstr "Ponto"
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
-msgstr "Polones"
+msgstr "Polonês"
 
 #: lazarusidestrconsts:rslanguagepolishwin
 msgid "Polish(CP1250)"
-msgstr "Polones(CP1250)"
+msgstr "Polonês(CP1250)"
 
 #: lazarusidestrconsts:rslanguagepolishiso
 msgid "Polish(ISO 8859-2)"
-msgstr "Polones(ISO 8859-2)"
+msgstr "Polonês(ISO 8859-2)"
 
 #: lazarusidestrconsts:rslanguageportugues
 msgid "Portuguese"
-msgstr "Portugues"
+msgstr "Português"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -5919,7 +5919,7 @@ msgstr "Pre-exibir"
 
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
-msgstr "Pre-exibir (Tamanho maximo da linha=1"
+msgstr "Pre-exibir (Tamanho máximo da linha=1"
 
 #: lazarusidestrconsts:srkmecprevbookmark
 msgid "Previous Bookmark"
@@ -5931,7 +5931,7 @@ msgstr "Ramificação anterior não pode conter ramificações filhas."
 
 #: lazarusidestrconsts:srvk_print
 msgid "Print"
-msgstr "Print"
+msgstr "Imprimir"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
@@ -5943,7 +5943,7 @@ msgstr "Prior"
 
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
-msgstr ""
+msgstr "Privado"
 
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
@@ -6599,11 +6599,11 @@ msgstr "Parâmetros de execução"
 
 #: lazarusidestrconsts:liskmrunprogram
 msgid "Run program"
-msgstr ""
+msgstr "Executar programa"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
-msgstr "Executar do cursor"
+msgstr "Executar até o Cursor"
 
 #: lazarusidestrconsts:lisruntofailed
 msgid "Run-to failed"
@@ -7115,7 +7115,7 @@ msgstr "Ferramenta de seleção"
 
 #: lazarusidestrconsts:liscodetoolsoptssemicolon
 msgid "Semicolon"
-msgstr "Ponto-e-Virgula"
+msgstr "Ponto-e-V�rgula"
 
 #: lazarusidestrconsts:dlgposavesession
 msgid "Session"
@@ -7699,7 +7699,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
-msgstr "Tabulações para recuar blocos"
+msgstr "Tabulações recuam blocos"
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."
@@ -7887,15 +7887,15 @@ msgstr "O Diretório principal do Lazarus"
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
-msgstr "A Versão Maxima %s%s%s e' invalida.%sPor favor use o formato maior.menor.lancamento.build%sPor exemplo: 1.0.20.10"
+msgstr "A Versão Máxima %s%s%s e' invalida.%sPor favor use o formato maior.menor.lancamento.build%sPor exemplo: 1.0.20.10"
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionislowerthantheminimimversion
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr "A Versão Maxima e' menor que a Versão Minima."
+msgstr "A Versão Máxima e' menor que a Versão M�nima."
 
 #: lazarusidestrconsts:lisprojaddtheminimumversionisinvalid
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
-msgstr "A Versão Minima %s%s%s e' invalida.%sPor favor use o formato maior.menor.lancamento.build%sPor exemplo: 1.0.20.10"
+msgstr "A Versão M�nima %s%s%s e' invalida.%sPor favor use o formato maior.menor.lancamento.build%sPor exemplo: 1.0.20.10"
 
 #: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
@@ -8135,11 +8135,11 @@ msgstr "O arquivo make \"%s\" não é um executável."
 
 #: lazarusidestrconsts:lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "A Versão Maxima %s%s%s não é uma versão de pacote válida.%s(bom exemplo 1.2..3.4)"
+msgstr "A Versão Máxima %s%s%s não é uma versão de pacote válida.%s(bom exemplo 1.2..3.4)"
 
 #: lazarusidestrconsts:lispckedittheminimumversionisnotavalidpackageversion
 msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "A Versão Minima %s%s%s não é uma versão de pacote válida.%s(bom exemplo 1.2..3.4)"
+msgstr "A Versão M�nima %s%s%s não é uma versão de pacote válida.%s(bom exemplo 1.2..3.4)"
 
 #: lazarusidestrconsts:listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -8343,7 +8343,7 @@ msgstr "Ha um arquivo com o mesmo nome e extensão parecido no disco:%sArquivo: 
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
-msgstr "Ha um maximo de %s ferramentas."
+msgstr "Ha um máximo de %s ferramentas."
 
 #: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
@@ -9147,7 +9147,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
-msgstr "Usar Filtro Exclusor"
+msgstr "Usar Filtro de Exclusao"
 
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
