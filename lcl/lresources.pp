@@ -364,7 +364,7 @@ procedure WriteLRSExtended(s: TStream; const e: extended);
 procedure WriteLRSInt64(s: TStream; const i: int64);
 procedure WriteLRSCurrency(s: TStream; const c: Currency);
 procedure WriteLRSWideStringContent(s: TStream; const w: WideString);
-procedure WriteLRSInt64MB(s: TStream; const Value: integer);// multibyte
+procedure WriteLRSInt64MB(s: TStream; const Value: int64);// multibyte
 
 procedure WriteLRSReversedWord(s: TStream; w: word);
 procedure WriteLRS4BytesReversed(s: TStream; p: Pointer);
@@ -3261,7 +3261,7 @@ begin
   {$ENDIF}
 end;
 
-procedure WriteLRSInt64MB(s: TStream; const Value: integer);
+procedure WriteLRSInt64MB(s: TStream; const Value: int64);
 var
   w: Word;
   i: Integer;

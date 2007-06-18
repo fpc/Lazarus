@@ -124,14 +124,16 @@ function TListColumn.GetWidth: TWidth;
 var
   LV: TCustomListView;
   WSC: TWSCustomListViewClass;
+  WSWidth: integer;
 begin
   if WSUpdateAllowed
   then begin
     LV := TListColumns(Collection).FOwner;
     WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-    Result := WSC.ColumnGetWidth(LV, Index, Self);
-    if Result < 0 
-    then Result := FWidth;
+    WSWidth := WSC.ColumnGetWidth(LV, Index, Self);
+    if WSWidth < 0
+    then Result := FWidth
+    else Result := WSWidth;
   end
   else Result := FWidth;
 end;
