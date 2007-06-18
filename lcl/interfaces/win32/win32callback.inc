@@ -707,8 +707,6 @@ Var
       if ACursor = crDefault then
       begin
         // statictext controls do not get WM_SETCURSOR messages...
-        if lWinControl.ClassName = 'TPairSplitter' then
-          P := P;
         lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
           capfAllowWinControls, capfHasScrollOffset]);
         if lControl = nil then
