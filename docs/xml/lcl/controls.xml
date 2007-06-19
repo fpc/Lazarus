@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Controls">
-      <short/>
+      <short>This unit contains basis classes for visual controls.</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -3423,7 +3423,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TControl">
-        <short/>
+        <short>The main ancestor class for visual controls.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7137,9 +7137,18 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Visible property represents visibility of an visual control.</short>
+        <descr>
+		  <p>The Visible property represents visibility of an visual control. If the Visible is True the control is shown, otherwise is hidden.</p>
+		  <p>Setting Visible to True is equivalent to calling Show method.</p>
+		  <p>Setting Visible to False is equivalent to calling Hide method.</p>
+		  <remark>The Visible poperty does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+		</descr>
+        <seealso>
+		  <link id="TControl.IsVisible"/>
+		  <link id="TControl.Show"/>
+		  <link id="TControl.Hide"/>
+		</seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.WindowProc">
