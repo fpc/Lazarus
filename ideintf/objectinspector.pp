@@ -3190,6 +3190,7 @@ begin
     Align:=alTop;
     OnSelectionChanged:=@ComponentTreeSelectionChanged;
     Visible:=FShowComponentTree;
+    Scrollbars := ssAutoBoth;
   end;
   if ShowComponentTree then
     CreateSplitter;
