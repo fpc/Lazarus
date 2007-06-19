@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-06-16 23:41+0100\n"
+"PO-Revision-Date: 2007-06-19 22:54+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -289,15 +289,15 @@ msgstr "<choisir un fichier existant>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
@@ -473,7 +473,7 @@ msgstr "Ajouter les options aux paquets et projets dépendants"
 
 #: lazarusidestrconsts:lislazdocaddpathbutton
 msgid "Add path"
-msgstr "Ajouter le chemin"
+msgstr "Ajouter chemin"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
@@ -585,7 +585,7 @@ msgstr "La touche Alt met en mode colonne"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
-msgstr ""
+msgstr "Touche alternative (ou combinaison de 2 touches)"
 
 #: lazarusidestrconsts:lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
@@ -653,19 +653,19 @@ msgstr "Editeur d'ancre - aucune commande choisie"
 
 #: lazarusidestrconsts:lisanchortobottomsidekeepborderspace
 msgid "Anchor to bottom side of sibling, keep border space"
-msgstr ""
+msgstr "Ancre du côté inférieur de l'enfant de mêmes parents, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchortoleftsidekeepborderspace
 msgid "Anchor to left side of sibling, keep border space"
-msgstr ""
+msgstr "Ancre du côté gauche de l'enfant de mêmes parents, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchortorightsidekeepborderspace
 msgid "Anchor to right side of sibling, keep border space"
-msgstr ""
+msgstr "Ancre du côté droit de l'enfant de mêmes parents, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchortotopsidekeepborderspace
 msgid "Anchor to top side of sibling, keep border space"
-msgstr ""
+msgstr "Ancre du côté supérieur de l'enfant de mêmes parents, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -845,11 +845,11 @@ msgstr "Signet"
 
 #: lazarusidestrconsts:lisborderspace
 msgid "BorderSpace"
-msgstr ""
+msgstr "Espace de bordure"
 
 #: lazarusidestrconsts:lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
-msgstr ""
+msgstr "L'espace de bordure autour de la commande. Les quatre autres espaces de bordures sont ajoutés à cette valeur."
 
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
@@ -857,7 +857,7 @@ msgstr "Sélection du bas de page"
 
 #: lazarusidestrconsts:lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
-msgstr ""
+msgstr "L'espace inférieur de bordure. Cette valeur est ajoutée à l'espace bas de bordure et employée pour l'espace au-dessous de la commande."
 
 #: lazarusidestrconsts:lisbottomspaceequally
 msgid "Bottom space equally"
@@ -1073,11 +1073,11 @@ msgstr "Centrer sur la ligne du curseur"
 
 #: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
-msgstr ""
+msgstr "Commande centrale horizontale relative à l'enfant de mêmes parents donné"
 
 #: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
-msgstr ""
+msgstr "Commande centrale verticale relative à l'enfant de mêmes parents donné"
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -1181,7 +1181,7 @@ msgstr "Choix global"
 
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
-msgstr ""
+msgstr "Choisir une classe de basse pour la propriété de favori %s%s%s."
 
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
@@ -1301,15 +1301,15 @@ msgstr "Suppr"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
-msgstr ""
+msgstr "Libérer la dépendance du Nom de fichier"
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
 msgid "Clear include cache"
-msgstr ""
+msgstr "Effacer le cache inclure"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
-msgstr ""
+msgstr "Effacer les log à l'exécution"
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1801,7 +1801,7 @@ msgstr "Copier nom de fichier"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
-msgstr ""
+msgstr "Copie depuis hérité "
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
@@ -1857,7 +1857,7 @@ msgstr "Créer les définitions pour le compilateur Free Pascal"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr ""
+msgstr "Créer Définit pour des sources Free Pascal SVN"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -2357,7 +2357,7 @@ msgstr "Différencier majuscules et minuscules (i.e. A et a)"
 
 #: lazarusidestrconsts:dlgcfdividerdrawlevel
 msgid "Divider Draw Level"
-msgstr ""
+msgstr "Niveau d'affichage de diviseur"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -2433,7 +2433,7 @@ msgstr "Abandonner les fichiers"
 
 #: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
-msgstr ""
+msgstr "Nom double : Un composant appelé %s%s%s existe déjà dans le composant hérité %s"
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -2477,11 +2477,11 @@ msgstr "Editer les modèles de code"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
-msgstr ""
+msgstr "Éditer l'aide sensible au contexte"
 
 #: lazarusidestrconsts:liskmeditcontextsensitivehelp
 msgid "Edit context sensitive help"
-msgstr ""
+msgstr "Éditer l'aide sensible au contexte"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
@@ -2489,7 +2489,7 @@ msgstr "Editer les touches de commandes"
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
-msgstr ""
+msgstr "Éditer l'unité virtuelle"
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
@@ -2529,7 +2529,7 @@ msgstr "Autrement"
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
@@ -2541,7 +2541,7 @@ msgstr "Permis "
 
 #: lazarusidestrconsts:lisanchorenabledhint
 msgid "Enabled = Include %s in Anchors"
-msgstr ""
+msgstr "Activer = Inclure %s dans des ancres"
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
@@ -2657,7 +2657,7 @@ msgstr "Erreur en déplaçant le composant %s:%s"
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
-msgstr ""
+msgstr "Erreur d'analyse du flux de composant lfm."
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
@@ -2805,7 +2805,7 @@ msgstr "Exporter..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
-msgstr ""
+msgstr "Le fichier d'exportation %s%s%s existe.%sOuvrir le fichier et remplacer seulement les options du compilateur?%s(les autres paramètres seront gardés.)"
 
 #: lazarusidestrconsts:lisiecoexportfileexists
 msgid "Export file exists"
@@ -2817,7 +2817,7 @@ msgstr "Liste d'exportation"
 
 #: lazarusidestrconsts:liswlexpression
 msgid "Expression"
-msgstr ""
+msgstr "Expression"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -2861,7 +2861,7 @@ msgstr "Extraire procédure ..."
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "Chemin FPC Doc HTML"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -3029,11 +3029,11 @@ msgstr "Filtre"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
-msgstr ""
+msgstr "Filtre en assortissant toute partie de la méthode"
 
 #: lazarusidestrconsts:lisplistfilterstart
 msgid "Filter by matching with start of method"
-msgstr ""
+msgstr "Filtre par l'assortiment avec le début de la méthode"
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3117,7 +3117,7 @@ msgstr "Trouver l'occurence suivante"
 
 #: lazarusidestrconsts:srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
-msgstr ""
+msgstr "Rechercher l'occurrence de mot Suivante"
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
@@ -3137,7 +3137,7 @@ msgstr "Chercher l'occurence précédente"
 
 #: lazarusidestrconsts:srkmecfindprevwordoccurrence
 msgid "Find previous word occurrence"
-msgstr ""
+msgstr "Rechercher l'occurrence de mot précédente"
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"
@@ -3173,7 +3173,7 @@ msgstr "Suivre le curseur"
 
 #: lazarusidestrconsts:lisuefontwith
 msgid "Font without UTF-8"
-msgstr ""
+msgstr "Police sans UTF-8"
 
 #: lazarusidestrconsts:lisforcerenaming
 msgid "Force renaming"
@@ -3189,7 +3189,7 @@ msgstr "Editeur de fiches"
 
 #: lazarusidestrconsts:rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
-msgstr ""
+msgstr "Fichier de données Fiche (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -3465,7 +3465,7 @@ msgstr "Touche d'accroche"
 
 #: lazarusidestrconsts:srkmgrabsecondkey
 msgid "Grab second key"
-msgstr ""
+msgstr "Saisir la deuxième touche"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3529,15 +3529,15 @@ msgstr "Gérer par"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmhandledbydebugger
 msgid "Handled by Debugger"
-msgstr ""
+msgstr "Handled by Debugger"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmhandledbyprogram
 msgid "Handled by Program"
-msgstr ""
+msgstr "Handled by Program"
 
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
@@ -3633,7 +3633,7 @@ msgstr "Je vous l'ai dit: pas encore implémenté"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmid
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: lazarusidestrconsts:liside
 msgid "IDE"
@@ -3689,7 +3689,7 @@ msgstr "Identificateur: %s"
 
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
-msgstr ""
+msgstr "If"
 
 #: lazarusidestrconsts:uenotimpltext
 msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
@@ -3701,7 +3701,7 @@ msgstr "IfDef"
 
 #: lazarusidestrconsts:liscodetoolsdefsifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "IfNDef"
 
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
@@ -3761,7 +3761,7 @@ msgstr "Ignorer, employer TForm comme ancêtre "
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
-msgstr ""
+msgstr "Ime Str"
 
 #: lazarusidestrconsts:lisimportlist
 msgid "Import list"
@@ -3929,7 +3929,7 @@ msgstr "Insérer un modèle projet Free Pascal"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
-msgstr ""
+msgstr "Insérer la source d'exemple Free Pascal SVN"
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -3985,11 +3985,11 @@ msgstr "Insérer par ordre alphabétique"
 
 #: lazarusidestrconsts:lislazdochintboldformat
 msgid "Insert bold formatting tag"
-msgstr ""
+msgstr "Insérer l'étiquette de formatage gras"
 
 #: lazarusidestrconsts:lislazdochintinsertcodetag
 msgid "Insert code formatting tag"
-msgstr ""
+msgstr "Insérer l'étiquette de formatage code"
 
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
@@ -4017,11 +4017,11 @@ msgstr "Insérer depuis la table des caractères"
 
 #: lazarusidestrconsts:lislazdochintitalicformat
 msgid "Insert italic formatting tag"
-msgstr ""
+msgstr "Insérer l'étiquette de formatage italique"
 
 #: lazarusidestrconsts:srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
-msgstr ""
+msgstr "Insérer la notice modifié LGPL"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
@@ -4033,7 +4033,7 @@ msgstr "Insérer un noeud ci-dessous"
 
 #: lazarusidestrconsts:lislazdochintremarktag
 msgid "Insert remark formatting tag"
-msgstr ""
+msgstr "Insérer l'étiquette de formatage remarque"
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -4049,7 +4049,7 @@ msgstr "Insérer un texte"
 
 #: lazarusidestrconsts:lislazdochintunderlineformat
 msgid "Insert underline formatting tag"
-msgstr ""
+msgstr "Insérer l'étiquette de formatage souligner"
 
 #: lazarusidestrconsts:liskminsertusername
 msgid "Insert username"
@@ -4057,7 +4057,7 @@ msgstr "Insérer le nom d'utilisateur"
 
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
-msgstr ""
+msgstr "Insérer l'étiquette de formatage variable"
 
 #: lazarusidestrconsts:liskminspect
 msgid "Inspect"
@@ -4373,11 +4373,11 @@ msgstr "Sauts"
 
 #: lazarusidestrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lazarusidestrconsts:srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -4385,7 +4385,7 @@ msgstr "Préserver tous les fichiers texte"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep caret X position"
-msgstr ""
+msgstr "Préserver la position X du curseur"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -4405,7 +4405,7 @@ msgstr "Préserver l'ordre des procédures"
 
 #: lazarusidestrconsts:liskeepthemandcontinue
 msgid "Keep them and continue"
-msgstr ""
+msgstr "Préserver et continuer"
 
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
@@ -4413,7 +4413,7 @@ msgstr "Touche"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
-msgstr ""
+msgstr "Touche (ou combinaison de 2 touches)"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4625,7 +4625,7 @@ msgstr "Côtés gauches"
 
 #: lazarusidestrconsts:lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
-msgstr ""
+msgstr "L'espace de bordure gauche. Cette valeur est ajoutée à la base de l'espace de bordure et employée pour l'espace à gauche du contrôle."
 
 #: lazarusidestrconsts:lisleftsides
 msgid "Left sides"
@@ -4677,7 +4677,7 @@ msgstr "Licence:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Licence: GPL/LGPL%sLazarus est un ide pour créer (graphique et console ) des applications avec Free Pascal. Free Pascal est un (L)GPL'ed Pascal et Objet Pascal compilateur fonctionnent sur Windows, Linux, Mac OS X, FreeBSD et plus .%sLazarus est la partie absente du puzzle cela permettra de développer des programmes pour toutes les plateformes ci-dessus comme un environnement Delphi. L'IDE est un outil de RAD qui inclut un concepteur de fiche.%sComme Lazarus est grandissant nous avons besoin de plus de développeurs."
+msgstr "Licence: GPL/LGPL%sLazarus est un IDE pour créer des applications (graphique et console ) avec Free Pascal. Free Pascal est un compilateur (L)GPL'ed Pascal et Objet Pascal fonctionnent sur Windows, Linux, Mac OS X, FreeBSD et plus .%sLazarus est la partie absente du puzzle cela permettra de développer des programmes pour toutes les plateformes ci-dessus comme un environnement Delphi. L'IDE est un outil de RAD qui inclut un concepteur de fiche.%sComme Lazarus est grandissant nous avons besoin de plus de développeurs."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -5065,11 +5065,11 @@ msgstr "Déplacer le noeud vers le haut"
 
 #: lazarusidestrconsts:lispatheditmovepathdown
 msgid "Move path down"
-msgstr "Déplacer le chemin vers le bas"
+msgstr "Descendre le chemin"
 
 #: lazarusidestrconsts:lispatheditmovepathup
 msgid "Move path up"
-msgstr "Déplacer le chemin vers le haut"
+msgstr "Monter le Chemin"
 
 #: lazarusidestrconsts:fdmordermovetoback
 msgid "Move to back"
@@ -5293,7 +5293,7 @@ msgstr "Mode de sélection normal"
 
 #: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
-msgstr ""
+msgstr "Normalement le filtre est une expression régulière. En syntaxe simple a . est un caractère normal, a * pour n'importe quoi , a ? pour tout caractère, et la virgule et le point-virgule sépare les solutions de rechange . Par exemple : Syntaxe simple  *.pas;*.pp correspond à  ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
@@ -5373,15 +5373,15 @@ msgstr "Ancienne classe"
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
-msgstr ""
+msgstr "Sur construire le projet, exécuter la commande du fichier à la place"
 
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
-msgstr "On idle"
+msgstr "Quand inoccupée."
 
 #: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
-msgstr ""
+msgstr "Sur exécution du projet, exécuter la commande du fichier à la place"
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -6365,7 +6365,7 @@ msgstr "Retirer du projet"
 
 #: lazarusidestrconsts:lislazdocdeletepathbutton
 msgid "Remove path"
-msgstr "Enlever le chemin"
+msgstr "Enlever chemin"
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
@@ -6521,7 +6521,7 @@ msgstr "Résumer le Handled"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
-msgstr ""
+msgstr "Resume Unhandled"
 
 #: lazarusidestrconsts:srvk_return
 msgid "Return"
@@ -6553,7 +6553,7 @@ msgstr "Côtés droits"
 
 #: lazarusidestrconsts:lisrightborderspacespinedithint
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
-msgstr ""
+msgstr "L'espace de bordure droit. Cette valeur est ajoutée à la base de l'espace de bordure et employée pour l'espace à droite du contrôle."
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -7201,7 +7201,7 @@ msgstr "Variable d'affectation"
 
 #: lazarusidestrconsts:lisdbgmangsetthebreakpointanyway
 msgid "Set the breakpoint anyway"
-msgstr ""
+msgstr "Placer le point d'arrêt de toute façon"
 
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
@@ -7213,7 +7213,7 @@ msgstr "Shift Tab"
 
 #: lazarusidestrconsts:lislazdocshorttag
 msgid "Short"
-msgstr ""
+msgstr "Court"
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -7393,7 +7393,7 @@ msgstr "Afficher les fichiers utilisés"
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
-msgstr ""
+msgstr "Sibling"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmsignals
 msgid "Signals"
@@ -8113,7 +8113,7 @@ msgstr "Les méthodes suivantes sont employées %s ne sont pas dans la source %s
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
-msgstr "Le paquet suivant ne charge se pas :"
+msgstr "Le paquet suivant ne se charge pas :"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
 msgid "The following packages failed to load:"
@@ -8461,7 +8461,7 @@ msgstr "Cette sélection ne peut pas être extraite.%sVeuillez sélectionner du 
 
 #: lazarusidestrconsts:lisdebugoptionsfrmthread
 msgid "Thread"
-msgstr ""
+msgstr "Thread"
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -8517,7 +8517,7 @@ msgstr "Commutation Editeur de documentation"
 
 #: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
-msgstr ""
+msgstr "Commutation IDE boutons rapide"
 
 #: lazarusidestrconsts:liskmtoggleviewlocalvariables
 msgid "Toggle view Local Variables"
@@ -8613,11 +8613,11 @@ msgstr "Ukrainien "
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
-msgstr "Incapable de convertir le flux binaire en texte"
+msgstr "Impossible de convertir le flux binaire en texte"
 
 #: lazarusidestrconsts:lisunablecopycomponentstoclipboard
 msgid "Unable copy components to clipboard"
-msgstr "Incapable de copier des composants vers le presse-papiers"
+msgstr "Impossible de copier des composants vers le presse-papiers"
 
 #: lazarusidestrconsts:lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
@@ -8649,7 +8649,7 @@ msgstr "Impossible de nettoyer le répertoire de destination"
 
 #: lazarusidestrconsts:lisunabletoconvertcomponenttextintobinaryformat
 msgid "Unable to convert component text into binary format:%s%s"
-msgstr "Incapable de convertir le composant texte en format binaire:%s%s"
+msgstr "Impossible de convertir le composant texte en format binaire:%s%s"
 
 #: lazarusidestrconsts:lisunabletoconvertfileerror
 msgid "Unable to convert file %s%s%s%sError: %s"
@@ -8673,7 +8673,7 @@ msgstr "Impossible de copier le fichier %s%s%s%s vers %s%s%s"
 
 #: lazarusidestrconsts:lisunabletocopyfileto2
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
-msgstr "Incapable de copier le fichier %s%s%s%svers %s%s%s."
+msgstr "Impossible de copier le fichier %s%s%s%svers %s%s%s."
 
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
@@ -8769,7 +8769,7 @@ msgstr "Impossible de trouver la méthode. Veuillez corriger l'erreur affichée 
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
-msgstr "Incapable de trouver l'unité de la classe composante %s%s%s."
+msgstr "Impossible de trouver l'unité de la classe composante %s%s%s."
 
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -8777,7 +8777,7 @@ msgstr "Impossible de recueillir les changements de l'éditeur."
 
 #: lazarusidestrconsts:lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
-msgstr "Incapable d'obtenir le source pour le concepteur."
+msgstr "Impossible d'obtenir le source pour le concepteur."
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -8797,11 +8797,11 @@ msgstr "Impossible de charger le paquet."
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
-msgstr "Incapable de charger le composant de classe %s%s%s, parce qu'il dépend de lui-même."
+msgstr "Impossible de charger le composant de classe %s%s%s, parce qu'il dépend de lui-même."
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
-msgstr "Incapable d'ouvrir le concepteur .%sLa classe %s ne descend pas d'une classe designable comme TForm ou TDataModule."
+msgstr "Impossible d'ouvrir le concepteur .%sLa classe %s ne descend pas d'une classe designable comme TForm ou TDataModule."
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
@@ -8877,7 +8877,7 @@ msgstr "Impossible d'enregistrer le fichier %s%s%s"
 
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
-msgstr "Incapable de placer la Commande latérale d'ancre "
+msgstr "Impossible de placer la Commande latérale d'ancre "
 
 #: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
 msgid "Unable to show method. Plz fix the error shown in the message window."
@@ -9109,7 +9109,7 @@ msgstr "Le nom d'unité et de fichier ne doivent pas être identique. %s Example
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
-msgstr " 	Nom d'unité:"
+msgstr "Nom d'unité:"
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
@@ -9613,7 +9613,7 @@ msgstr "Installation auto statique"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
-msgstr ""
+msgstr "begins"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
