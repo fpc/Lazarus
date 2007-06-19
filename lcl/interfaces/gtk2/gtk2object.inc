@@ -741,6 +741,9 @@ begin
   end;
 *)
 
+  gtk_file_chooser_set_current_folder (SelWidget, pgChar( FileDialog.InitialDir) );
+  gtk_file_chooser_set_current_name (SelWidget, pgChar( FileDialog.FileName) );
+
   if FileDialog is TOpenDialog then
     InitializeOpenDialog(TOpenDialog(FileDialog), SelWidget);
 

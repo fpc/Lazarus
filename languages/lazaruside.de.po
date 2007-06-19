@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-04-14 21:40+0100\n"
+"PO-Revision-Date: 2007-06-18 18:45+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -369,7 +369,7 @@ msgstr "Annehmen"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
+msgstr "Danksagung"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -1389,7 +1389,7 @@ msgstr "CodeExplorer Einstellungen"
 
 #: lazarusidestrconsts:liscodetools
 msgid "CodeTools"
-msgstr ""
+msgstr "CodeTools"
 
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
@@ -1589,7 +1589,7 @@ msgstr "Vollständige Eigenschaften"
 
 #: lazarusidestrconsts:liscomponent
 msgid "Component"
-msgstr ""
+msgstr "Komponente"
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
@@ -2733,7 +2733,7 @@ msgstr "Beispiel"
 
 #: lazarusidestrconsts:lisexamples
 msgid "Examples"
-msgstr ""
+msgstr "Beispiele"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3637,7 +3637,7 @@ msgstr "ID"
 
 #: lazarusidestrconsts:liside
 msgid "IDE"
-msgstr ""
+msgstr "IDE"
 
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
@@ -3645,7 +3645,7 @@ msgstr "IDE-Integration"
 
 #: lazarusidestrconsts:lisideintf
 msgid "IDE Interface"
-msgstr ""
+msgstr "IDE-Schnittstelle"
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -4329,7 +4329,7 @@ msgstr "Höhe des Eintrags"
 
 #: lazarusidestrconsts:lisjitform
 msgid "JIT Form"
-msgstr ""
+msgstr "JIT-Form"
 
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
@@ -4441,7 +4441,7 @@ msgstr "Schlüsselwortrichtlinie"
 
 #: lazarusidestrconsts:lislcl
 msgid "LCL"
-msgstr ""
+msgstr "LVL"
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -4677,7 +4677,7 @@ msgstr "Lizenz:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Lizenz: GPL/LGPL%sLazarus ist eine integrierte Entwicklungsumgebung für das Schreiben grafischer und Konsolenanwendungen mit Free Pascal. Free Pascal ist ein Pascal- und Object-Pascal-Compiler unter (L)GPL für (unter anderem) Windows, Linux, Mac OS X und FreeBSD.%sLazarus ist das fehlende Stück des Puzzles um Programme für die oben genannten Plattformen in einer Delphi-artigen Umgebung zu entwickeln. Die IDE ist ein RAD-Werkzeug mit einem Formulardesigner.%sMit der Weiterentwicklung von Lazarus brauchen wir zusätzliche Unterstützung."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -5689,7 +5689,7 @@ msgstr "Package-Einstellungen"
 
 #: lazarusidestrconsts:lispkgreg
 msgid "Package Registration"
-msgstr ""
+msgstr "Package-Registrierung"
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -7549,7 +7549,7 @@ msgstr "Mit einem neuen Projekt beginnen"
 
 #: lazarusidestrconsts:lisstarter
 msgid "Starter"
-msgstr ""
+msgstr "Starter"
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -7677,7 +7677,7 @@ msgstr "Symbol davor (*.~pp)"
 
 #: lazarusidestrconsts:lissynedit
 msgid "SynEdit"
-msgstr ""
+msgstr "SynEdit"
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
@@ -8129,7 +8129,7 @@ msgstr "Die Hostapplikation %s%s%s ist nicht ausführbar"
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
 msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
+msgstr "Es nich gibt das startende Anwendung-Bundle %s%s%s%snicht oder es ist nicht ausführbar.%s%sSiehe Projekt -> Projektoptionen -> Anwendung."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9153,7 +9153,7 @@ msgstr "Ansi-Strings verwenden"
 
 #: lazarusidestrconsts:dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (darwin only)"
-msgstr ""
+msgstr "Anwendungs-Bundle für Start und Debug verwenden (nur Darwin)"
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
