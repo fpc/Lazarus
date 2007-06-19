@@ -404,6 +404,44 @@ type
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
   end;
+  
+  { TQtHeaderView }
+
+  TQtHeaderView = class (TQtAbstractItemView)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    destructor Destroy; override;
+  end;
+
+  { TQtTreeView }
+  
+  TQtTreeView = class (TQtAbstractItemView)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    destructor Destroy; override;
+  end;
+  
+  { TQtTreeWidget }
+
+  TQtTreeWidget = class(TQtTreeView)
+  private
+    Header: TQtHeaderView;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+//    FList: TStrings;
+    destructor Destroy; override;
+//    procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
+//    procedure SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
+//    procedure SignalItemClicked(item: QListWidgetItemH); cdecl;
+//    function currentRow: Integer;
+//    procedure setCurrentRow(row: Integer);
+  end;
+
 
   { TQtMenu }
 
@@ -3313,6 +3351,122 @@ procedure TQtListWidget.setCurrentRow(row: Integer);
 begin
   QListWidget_setCurrentRow(QListWidgetH(Widget), row);
 end;
+
+
+  { TQtHeaderView }
+  
+{------------------------------------------------------------------------------
+  Function: TQtHeaderView.CreateWidget
+  Params:  None
+  Returns: Widget (QHeaderViewH)
+ ------------------------------------------------------------------------------}
+function TQtHeaderView.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtHeaderView.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QHeaderView_create(QtHorizontal, Parent);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtHeaderView.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtHeaderView.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtHeaderView.Destroy');
+  {$endif}
+
+  QHeaderView_destroy(QHeaderViewH(Widget));
+  Widget:=nil;
+
+  inherited Destroy;
+end;
+
+  { TQtTreeView }
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeView.CreateWidget
+  Params:  None
+  Returns: Widget (QTreeViewH)
+ ------------------------------------------------------------------------------}
+function TQtTreeView.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtTreeView.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QTreeView_create(Parent);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeView.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtTreeView.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtTreeView.Destroy');
+  {$endif}
+
+  QTreeView_destroy(QTreeViewH(Widget));
+  Widget:=nil;
+
+  inherited Destroy;
+end;
+
+
+  { TQtTreeWidget }
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.CreateWidget
+  Params:  None
+  Returns: Widget (QTreeWidgetH)
+ ------------------------------------------------------------------------------}
+function TQtTreeWidget.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtTreeView.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QTreeWidget_create(Parent);
+  Header := TQtHeaderView.Create(LCLObject, AParams);
+  QTreeView_setHeader(QTreeViewH(Result), QHeaderViewH(Header.Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtTreeWidget.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtTreeView.Destroy');
+  {$endif}
+
+  if Assigned(Header) then
+  Header.Free;
+
+  QTreeWidget_destroy(QTreeWidgetH(Widget));
+  Widget:=nil;
+
+  inherited Destroy;
+end;
+
 
 { TQtMenu }
 
