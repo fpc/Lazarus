@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  qt4, qtwidgets, qtprivate,
+  qt4, qtwidgets, qtprivate, qtobjects,
   // LCL
   Classes, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf,
   // Widgetset
@@ -77,11 +77,15 @@ type
      const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
+    class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
     class procedure ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer); override;
     class procedure ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean); override;
+    class procedure ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment); override;
     class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); override;
+    class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); override;
+    class procedure ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer); override;
     
     class procedure ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer); override;
     class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
@@ -93,45 +97,44 @@ type
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
+    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
+    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
+    class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
+    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
+    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
+    
+    {parent}
+    class function GetFocused(const ALV: TCustomListView): Integer; override;
+    class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
+    class function GetSelCount(const ALV: TCustomListView): Integer; override;
+    class function GetSelection(const ALV: TCustomListView): Integer; override;
+    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
+    
+    class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
 
     (*
     // Column
-    class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
-    class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; virtual;
 
     class procedure ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer); override;
 
-    class procedure ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment); virtual;
-
-    class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); virtual;
-    class procedure ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer); virtual;
 
     // Item
-    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual;
-
-    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; // returns True if supported
-
 
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
     class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; virtual;
-    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual;
-    class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); virtual;
-    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); virtual;
 
     // LV
     class procedure BeginUpdate(const ALV: TCustomListView); virtual;
     class procedure EndUpdate(const ALV: TCustomListView); virtual;
 
-    class function GetBoundingRect(const ALV: TCustomListView): TRect; virtual;
+
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
-    class function GetFocused(const ALV: TCustomListView): Integer; virtual;
+
     class function GetHoverTime(const ALV: TCustomListView): Integer; virtual;
-    class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; virtual;
-    class function GetSelCount(const ALV: TCustomListView): Integer; virtual;
-    class function GetSelection(const ALV: TCustomListView): Integer; virtual;
+
     class function GetTopItem(const ALV: TCustomListView): Integer; virtual;
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; virtual;
-    class function GetVisibleRowCount(const ALV: TCustomListView): Integer; virtual;
+    class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); virtual;
@@ -142,7 +145,7 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); virtual;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); virtual;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
-    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); virtual;
+
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); virtual;
     class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); virtual;
     *)
@@ -480,25 +483,29 @@ end;
 class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtProgressBar: TQtProgressBar;
-{  Method: TMethod;
-  Hook : QObject_hookH;}
+  Method: TMethod;
+  Hook : QProgressBar_hookH;
 begin
   QtProgressBar := TQtProgressBar.Create(AWinControl, AParams);
 
   // Various Events
 
-{  Hook := QObject_hook_create(QtWidget.Widget);
+  Hook := QProgressBar_hook_create(QtProgressBar.Widget);
 
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
+  TEventFilterMethod(Method) := QtProgressBar.EventFilter;
 
-  QObject_hook_hook_events(Hook, Method);}
+  QObject_hook_hook_events(Hook, Method);
+  
+  QProgressBar_valueChanged_Event(Method) := QtProgressBar.SignalValueChanged;
+  QProgressBar_hook_hook_valueChanged(QProgressBar_hook_create(QtProgressBar.Widget), Method);
+  
 
   Result := THandle(QtProgressBar);
 end;
 
 class procedure TQtWSProgressBar.DestroyHandle(const AWinControl: TWinControl);
 begin
-//  TQtWidget(AWinControl.Handle).Free;
+  TQtProgressBar(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
@@ -563,6 +570,9 @@ var
   QtStatusBar: TQtStatusBar;
   Method: TMethod;
   Hook : QStatusBar_hookH;
+  Str: WideString;
+  i: Integer;
+  R: TRect;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
 
@@ -574,34 +584,202 @@ begin
 
   QObject_hook_hook_events(Hook, Method);
 
+  if TStatusBar(AWinControl).SimplePanel then
+  begin
+    Str := UTF8Decode(TStatusBar(AWinControl).SimpleText);
+    QtStatusBar.showMessage(@Str);
+  end else
+  if TStatusBar(AWinControl).Panels.Count > 0 then
+  begin
+    SetLength(QtStatusBar.APanels, TStatusBar(AWinControl).Panels.Count);
+    for i := 0 to TStatusBar(AWinControl).Panels.Count - 1 do
+    begin
+      Str := UTF8Decode(TStatusBar(AWinControl).Panels[i].Text);
+      QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
+
+      QFrame_setLineWidth(QFrameH(QtStatusBar.APanels[i]), 1);
+      QFrame_setMidLineWidth(QFrameH(QtStatusBar.APanels[i]), 0);
+      
+      if TStatusBar(AWinControl).Panels[i].Bevel = pbNone then
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFrameNoFrame))
+      else
+      if TStatusBar(AWinControl).Panels[i].Bevel = pbLowered then
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]),Ord(QFramePanel) or Ord(QFrameSunken))
+      else
+      if TStatusBar(AWinControl).Panels[i].Bevel = pbRaised then
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFramePanel) or Ord(QFrameRaised));
+      
+    //  QWidget_setContentsMargins(QtStatusBar.APanels[i], 0, 0, 2, 0);
+      
+      QWidget_frameGeometry(QtStatusBar.Widget, @R);
+      QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, TStatusBar(AWinControl).Panels[i].Width, R.Bottom);
+      QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget),QtStatusBar. APanels[i], 100);
+    end;
+  end;
+  
   // Return handle
 
   Result := THandle(QtStatusBar);
 end;
 
 class procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
+var
+  QtStatusBar: TQtStatusBar;
+  i: Integer;
 begin
-  TQtWidget(AWinControl.Handle).Free;
+
+  QtStatusBar := TQtStatusBar(AWinControl.Handle);
+  
+  if length(QtStatusBar.APanels) > 0 then
+  begin
+    for i := High(QtStatusBar.APanels) downto 0 do
+    begin
+      QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
+      QLabel_destroy(QtStatusBar.APanels[i]);
+    end;
+    SetLength(QtStatusBar.APanels, 0);
+  end;
+  
+  TQtStatusBar(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
 
 class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+var
+  QtStatusBar: TQtStatusBar;
+  Str: Widestring;
+  R: TRect;
+  i: Integer;
 begin
-
+  QtStatusBar := TQtStatusBar(AStatusBar.Handle);
+  if AStatusBar.SimplePanel then
+  begin
+  
+    if Length(QtStatusBar.APanels) > 0 then
+    begin
+      for i := High(QtStatusBar.APanels) downto 0 do
+      begin
+        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
+        QLabel_destroy(QtStatusBar.APanels[i]);
+      end;
+      SetLength(QtStatusBar.APanels, 0);
+    end;
+      
+    Str := UTF8Decode(AStatusBar.SimpleText);
+    QtStatusBar.showMessage(@Str);
+    
+  end else
+  if AStatusBar.Panels.Count > 0 then
+  begin
+  
+    QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
+    
+    if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
+    begin
+    
+      Str := UTF8Decode(AStatusBar.Panels[PanelIndex].Text);
+      
+      QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
+      
+      if AStatusBar.Panels[PanelIndex].Bevel = pbNone then
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]), Ord(QFrameNoFrame))
+      else
+      if AStatusBar.Panels[PanelIndex].Bevel = pbLowered then
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]),Ord(QFrameWinPanel) or Ord(QFrameSunken))
+      else
+      if AStatusBar.Panels[PanelIndex].Bevel = pbRaised then
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]), Ord(QFrameWinPanel) or Ord(QFrameRaised));
+      
+    end;
+  end;
 end;
 
 class procedure TQtWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 var
-  Text: Widestring;
+  QtStatusBar: TQtStatusBar;
+  Str: Widestring;
 begin
-  Text := UTF8Decode(AStatusBar.SimpleText);
-  TQtStatusBar(AStatusBar.Handle).showMessage(@Text);
+  QtStatusBar := TQtStatusBar(AStatusBar.Handle);
+  if AStatusBar.SimplePanel then
+  begin
+    Str := UTF8Decode(AStatusBar.SimpleText);
+    QtStatusBar.showMessage(@Str);
+  end else
+  begin
+    if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
+    begin
+      Str := UTF8Decode(AStatusBar.Panels[PanelIndex].Text);
+      QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
+    end;
+  end;
 end;
 
 class procedure TQtWSStatusBar.Update(const AStatusBar: TStatusBar);
+var
+  QtStatusBar: TQtStatusBar;
+  i: Integer;
+  Str: WideString;
+  R: TRect;
 begin
+  QtStatusBar := TQtStatusBar(AStatusBar.Handle);
+  if AStatusBar.SimplePanel then
+  begin
+    if Length(QtStatusBar.APanels) > 0 then
+    begin
+    
+      for i := High(QtStatusBar.APanels) downto 0 do
+      begin
+        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
+        QLabel_destroy(QtStatusBar.APanels[i]);
+      end;
+        
+      SetLength(QtStatusBar.APanels, 0);
+    end;
+  end else
+  begin
+    if Length(QtStatusBar.APanels) <> AStatusBar.Panels.Count then
+    begin
+    
+      QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
+      
+      for i := High(QtStatusBar.APanels) downto 0 do
+      begin
+        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
+        QLabel_destroy(QtStatusBar.APanels[i]);
+      end;
+      
+      SetLength(QtStatusBar.APanels, 0);
+      SetLength(QtStatusBar.APanels, AStatusBar.Panels.Count);
+      
+      
+      for i := 0 to AStatusBar.Panels.Count - 1 do
+      begin
+        Str := UTF8Decode(AStatusBar.Panels[i].Text);
+        
+        QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
 
+        QFrame_setLineWidth(QFrameH(QtStatusBar.APanels[i]), 1);
+        QFrame_setMidLineWidth(QFrameH(QtStatusBar.APanels[i]), 0);
+
+        if AStatusBar.Panels[i].Bevel = pbNone then
+        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFrameNoFrame))
+        else
+        if AStatusBar.Panels[i].Bevel = pbLowered then
+        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]),Ord(QFramePanel) or Ord(QFrameSunken))
+        else
+        if AStatusBar.Panels[i].Bevel = pbRaised then
+        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFramePanel) or Ord(QFrameRaised));
+
+        QWidget_frameGeometry(QtStatusBar.Widget, @R);
+        QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
+        
+        QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget),QtStatusBar.APanels[i], 100);
+        QWidget_show(QtStatusBar. APanels[i]);
+      end;
+      
+    end
+  end;
 end;
 
 class procedure TQtWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
@@ -633,18 +811,30 @@ begin
 
   QObject_hook_hook_events(Hook, Method);
 
-  // OnSelectionChange event
-  (*
-  QListWidget_currentItemChanged_Event(Method) := QtListWidget.SlotSelectionChange;
-  QListWidget_hook_hook_currentItemChanged(QListWidget_hook_create(QtListWidget.Widget), Method);
+  QTreeWidget_currentItemChanged_Event(Method) := QtTreeWidget.SignalCurrentItemChanged;
+  QTreeWidget_hook_hook_currentItemChanged(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
+  
+  QTreeWidget_itemDoubleClicked_Event(Method) := QtTreeWidget.SignalItemDoubleClicked;
+  QTreeWidget_hook_hook_ItemDoubleClicked(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
 
-  QListWidget_itemDoubleClicked_Event(Method) := QtListWidget.SignalItemDoubleClicked;
-  QListWidget_hook_hook_ItemDoubleClicked(QListWidget_hook_create(QtListWidget.Widget), Method);
+  QTreeWidget_itemClicked_Event(Method) := QtTreeWidget.SignalItemClicked;
+  QTreeWidget_hook_hook_ItemClicked(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
+  
+  QTreeWidget_itemActivated_Event(Method) := QtTreeWidget.SignalItemActivated;
+  QTreeWidget_hook_hook_ItemActivated(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
+  
+  QTreeWidget_itemChanged_Event(Method) := QtTreeWidget.SignalItemChanged;
+  QTreeWidget_hook_hook_ItemChanged(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
+  
+  QTreeWidget_itemSelectionChanged_Event(Method) := QtTreeWidget.SignalItemSelectionChanged;
+  QTreeWidget_hook_hook_ItemSelectionChanged(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
+  
+  QTreeWidget_itemPressed_Event(Method) := QtTreeWidget.SignalItemPressed;
+  QTreeWidget_hook_hook_ItemPressed(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
+  
+  QTreeWidget_itemEntered_Event(Method) := QtTreeWidget.SignalItemEntered;
+  QTreeWidget_hook_hook_ItemEntered(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
 
-  QListWidget_itemClicked_Event(Method) := QtListWidget.SignalItemClicked;
-  QListWidget_hook_hook_ItemClicked(QListWidget_hook_create(QtListWidget.Widget), Method);
-    *)
-  // QListWidget_itemClicked_Event(Method;
 
 
   Result := THandle(QtTreeWidget);
@@ -662,27 +852,56 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ColumnDelete
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer);
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_headerItem(TW);
+  QTreeWidgetItem_takeChild(TWI, AIndex);
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ColumnInsert
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
 var
-  i: Integer;
   TW: QTreeWidgetH;
-  IH: QTreeWidgetItemH;
+  TWI: QTreeWidgetItemH;
+  TWIChild: QTreeWidgetItemH;
   HV: QHeaderViewH;
-  AIM: QAbstractItemModelH;
+  Str: WideString;
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-  i := QTreeWidget_columnCount(TW);
 
-  if i <> TListView(ALV).Columns.Count then
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+
+
+  if QTreeWidget_columnCount(TW) <> TListView(ALV).Columns.Count then
   QTreeWidget_setColumnCount(TW, TListView(ALV).Columns.Count);
+  
+  TWI := QTreeWidget_headerItem(TW);
+
+  if QTreeWidgetItem_childCount(TWI) < (AIndex + 1) then
+  begin
+    TWIChild := QTreeWidgetItem_create(0);
+    QTreeWidgetItem_setFlags(TWIChild, QtItemIsEnabled);
+    QTreeWidgetItem_addChild(TWI, TWIChild);
+    Str := UTF8Encode(ALV.Column[AIndex].Caption);
+    QTreeWidgetItem_setText(TWI, AIndex, @Str);
+  end;
 
   HV := QTreeView_header(TW);
-
+  
+  if not QHeaderView_isClickable(HV) then
   QHeaderView_setClickable(HV, True);
+
 end;
 
 {------------------------------------------------------------------------------
@@ -714,6 +933,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ColumnSetAlignment
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+  TWIChild: QTreeWidgetItemH;
+  FAlign: QtAlignment;
+begin
+
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_headerItem(TW);
+  
+  case AAlignment of
+    taLeftJustify: FAlign := QtAlignLeft;
+    taRightJustify: FAlign := QtAlignRight;
+    taCenter: FAlign := QtAlignCenter;
+    else
+      FAlign := QtAlignLeft;
+  end;
+  
+  QTreeWidgetItem_setTextAlignment(TWI, AIndex, FAlign);
+  
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ColumnSetAutoSize
   Params:  None
   Returns: Nothing
@@ -731,7 +978,46 @@ begin
   QHeaderView_setResizeMode(HV, AIndex, QHeaderViewInteractive);
   
 end;
-    
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ColumnSetCaption
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
+var
+  Str: WideString;
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_headerItem(TW);
+  if TWI <> NiL then
+  begin
+    Str := UTF8Encode(ACaption);
+    QTreeWidgetItem_setText(TWI, AIndex, @Str);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ColumnSetImage
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_headerItem(TW);
+  if Assigned(TListView(ALV).SmallImages) then
+  begin
+  {what to implement here ?!? SmallImages, LargeImages, StateImages ?!?}
+  // QTreeWidgetItem_setIcon(TWI, AIndex, QIconH ?!? -> wait for TImageList implementation ?!? );
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ColumnSetMinWidth
   Params:  None
@@ -828,6 +1114,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ItemGetState
+  Params:  None
+  Returns: TPoint
+ ------------------------------------------------------------------------------}
+class function  TQtWSCustomListView.ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean;
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+
+  TWI := QTreeWidget_topLevelItem(TW, AIndex);
+
+  case AState of
+    lisFocused: AIsSet := TWI = QTreeWidget_currentItem(TW);
+    lisSelected: AIsSet := QTreeWidgetItem_isSelected(TWI);
+    else
+    AIsSet := False;
+  end;
+  
+  Result := True;
+  
+end;
+    
+{------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ItemSetChecked
   Params:  None
   Returns: Nothing
@@ -846,6 +1158,26 @@ begin
   QTreeWidgetItem_setCheckState(TWI, 0, QtUnChecked);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ItemSetState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+
+  TWI := QTreeWidget_topLevelItem(TW, AIndex);
+
+  case AState of
+    lisFocused: QTreeWidget_setCurrentItem(TW, TWI);
+    lisSelected: QTreeWidgetItem_setSelected(TWI, AIsSet);
+  end;
+  
+end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ItemInsert
@@ -883,6 +1215,154 @@ begin
 end;
 
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ItemSetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+  Str: WideString;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+
+  Str := UTF8Decode(AText);
+  TWI := QTreeWidget_topLevelItem(TW, AIndex);
+  if TWI <> NiL then
+    QTreeWidgetItem_setText(TWI, ASubIndex, @Str);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ItemShow
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_topLevelItem(TW, AIndex);
+  QTreeWidget_setItemHidden(TW, TWI, False);
+end;
+
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.ItemDisplayRect
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function  TQtWSCustomListView.ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect;
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_topLevelItem(TW, AIndex);
+  if Qt4.QTreeWidgetItem_childCount(TWI) > 0 then
+  QTreeWidget_visualItemRect(TW, @Result, QTreeWidgetItem_child(TWI, ASubItem))
+  else
+  QTreeWidget_visualItemRect(TW, @Result, TWI);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.GetFocused
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+  i: Integer;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_currentItem(TW);
+  i := QTreeWidget_indexOfTopLevelItem(TW, TWI);
+  if QTreeWidgetItem_isSelected(TWI) then
+  Result := i
+  else
+  Result := -1;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.GetItemAt
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
+var
+  TW: QTreeWidgetH;
+  TWI: QTreeWidgetItemH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_itemAt(TW, x, y);
+  Result := QTreeWidget_indexOfTopLevelItem(TW, TWI);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.GetSelCount
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
+var
+  TW: QTreeWidgetH;
+  FPInts: TIntArray;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  QTreeWidget_selectedItems(TW, @FPInts);
+  Result := length(FPInts);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.GetSelection
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
+var
+  TW: QTreeWidgetH;
+  FPInts: TIntArray;
+begin
+{implement selection event so we can return Alv.Selected.Index}
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  QTreeWidget_selectedItems(TW, @FPInts);
+  if Length(FPInts)>0 then
+  Result := FPInts[0]
+  else
+  Result := -1;
+end;
+    
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.SetSort
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+var
+  TW: QTreeWidgetH;
+begin
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  if AType <> stNone then
+  begin
+//    QTreeWidget_setSortingEnabled(TW, True);
+//    QTreeView_sortByColumn(QTreeViewH(TW), AColumn);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.GetBoundingRect
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
+begin
+  QWidget_frameGeometry(TQtWidget(ALV.Handle).Widget, @Result);
+end;
 
 initialization
 

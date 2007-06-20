@@ -31,7 +31,8 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls, ExtCtrls, StdCtrls, Menus;
+  LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls, CommCtrl,
+  ExtCtrls, StdCtrls, Menus;
 
 type
   TPaintData = record
@@ -413,6 +414,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
   end;
 
   { TQtTreeView }
@@ -433,13 +435,22 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-//    FList: TStrings;
     destructor Destroy; override;
-//    procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
-//    procedure SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-//    procedure SignalItemClicked(item: QListWidgetItemH); cdecl;
-//    function currentRow: Integer;
-//    procedure setCurrentRow(row: Integer);
+    
+    function currentRow: Integer;
+    procedure setCurrentRow(row: Integer);
+    
+    procedure SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
+    procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
+    procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
+    procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer) cdecl;
+    procedure SignalItemEntered(item: QTreeWidgetItemH; column: Integer) cdecl;
+    procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer) cdecl;
+    procedure SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
+    procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
+    procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
+    procedure SignalItemSelectionChanged; cdecl;
+
   end;
 
 
@@ -487,6 +498,7 @@ type
     procedure setValue(value: Integer);
     procedure setOrientation(p1: QtOrientation);
     procedure setInvertedAppearance(invert: Boolean);
+    procedure SignalValueChanged(Value: Integer); cdecl;
   end;
 
   { TQtStatusBar }
@@ -498,6 +510,7 @@ type
   public
     destructor Destroy; override;
   public
+    APanels: Array of QLabelH;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
   end;
   
@@ -1846,7 +1859,7 @@ begin
   w := QApplication_activeWindow;
   
   // mainform should be TQtMainWindow ...
-  {. $define mdidevel}
+  {$define mdidevel}
   if not Assigned(w) and not (Application.MainForm.Visible) then
   begin
     Result := QMainWindow_create(nil, QtWindow);
@@ -3072,7 +3085,7 @@ end;
 
 procedure TQtComboBox.SetColor(const Value: PQColor);
 begin
-        inherited SetColor(Value);
+  inherited SetColor(Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -3389,6 +3402,32 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtHeaderView.SignalSectionClicked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtHeaderView.SignalSectionClicked(logicalIndex: Integer) cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+  
+  Msg.Msg := CN_NOTIFY;
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_COLUMNCLICK;
+  NMLV.iItem := -1;
+  NMLV.iSubItem := logicalIndex;
+  
+  Msg.NMHdr := @NMLV.hdr;
+  
+  DeliverMessage(Msg);
+  
+end;
+
   { TQtTreeView }
 
 {------------------------------------------------------------------------------
@@ -3436,14 +3475,28 @@ end;
 function TQtTreeWidget.CreateWidget(const AParams: TCreateParams):QWidgetH;
 var
   Parent: QWidgetH;
+  Hook: QHeaderView_hookH;
+  Method: TMethod;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtTreeView.Create');
+    WriteLn('TQtTreeWidget.Create');
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QTreeWidget_create(Parent);
+  
   Header := TQtHeaderView.Create(LCLObject, AParams);
+  
+  Hook := QHeaderView_hook_create(Header.Widget);
+  
+  TEventFilterMethod(Method) := Header.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+  
+  QHeaderView_sectionClicked_Event(Method) := Header.SignalSectionClicked;
+  QHeaderView_hook_hook_sectionClicked(QHeaderView_hook_create(Header.Widget), Method);
+
+  
   QTreeView_setHeader(QTreeViewH(Result), QHeaderViewH(Header.Widget));
 end;
 
@@ -3455,7 +3508,7 @@ end;
 destructor TQtTreeWidget.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtTreeView.Destroy');
+    WriteLn('TQtTreeWidget.Destroy');
   {$endif}
 
   if Assigned(Header) then
@@ -3465,6 +3518,301 @@ begin
   Widget:=nil;
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.CurrentRow
+  Params:  None
+  Returns: Integer
+ ------------------------------------------------------------------------------}
+function TQtTreeWidget.currentRow: Integer;
+var
+  TWI: QTreeWidgetItemH;
+begin
+  TWI := QTreeWidget_currentItem(QTreeWidgetH(Widget));
+  Result := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), TWI);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.setCurrentRow
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.setCurrentRow(row: Integer);
+var
+  TWI: QTreeWidgetItemH;
+begin
+  TWI := QTreeWidget_topLevelItem(QTreeWidgetH(Widget), Row);
+  QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), TWI);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemPressed
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := LM_PRESSED;
+  
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+
+  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+
+  NMLV.iSubItem := Column;
+  NMLV.uNewState := NM_KEYDOWN;
+  NMLV.uChanged := LVIS_SELECTED;
+
+  Msg.NMHdr := @NMLV.hdr;
+
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemClicked
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  R: TRect;
+  Pt: TPoint;
+begin
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := LM_CLICKED;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := NM_CLICK;
+
+  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+
+  NMLV.iSubItem := Column;
+  NMLV.uNewState := NM_CLICK;
+  NMLV.uChanged := LVIS_SELECTED;
+  QTreeWidget_visualItemRect(QTreeWidgetH(Widget), @R, Item);
+  
+  pt.X := R.Left;
+  pt.Y := R.Top;
+
+  NMLV.ptAction := pt;
+
+  Msg.NMHdr := @NMLV.hdr;
+  
+  DeliverMessage(Msg);
+  
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemDoubleClicked
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+  
+  Msg.Msg := LM_LBUTTONDBLCLK;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := NM_DBLCLK;
+
+  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+
+  NMLV.iSubItem := Column;
+  NMLV.uNewState := NM_DBLCLK;
+  NMLV.uChanged := LVIS_SELECTED;
+  // LVIF_STATE;
+  
+  Msg.NMHdr := @NMLV.hdr;
+  
+  DeliverMessage( Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemActivated
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemActivated(item: QTreeWidgetItemH; column: Integer) cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+
+  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+
+  NMLV.iSubItem := Column;
+  NMLV.uNewState := LVIS_FOCUSED;
+  NMLV.uChanged := LVIF_STATE;
+
+  Msg.NMHdr := @NMLV.hdr;
+
+  DeliverMessage( Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemEntered
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemEntered(item: QTreeWidgetItemH; column: Integer) cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_ENTER;
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemChanged
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemChanged(item: QTreeWidgetItemH; column: Integer) cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemExpanded
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
+begin
+{fixme}
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemCollapsed
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
+begin
+{fixme}
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalCurrentItemChanged
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  AParent: QTreeWidgetItemH;
+  AIndex: Integer;
+  ASubIndex: Integer;
+begin
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGING;
+  
+  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
+  
+  AParent := QTreeWidgetItem_parent(Current);
+  
+  if AParent <> NiL then
+    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Current)
+  else
+    ASubIndex := 0;
+    
+  NMLV.iSubItem := ASubIndex;
+  NMLV.uNewState := LVIS_SELECTED;
+  NMLV.uChanged := LVIF_STATE;
+
+  Msg.NMHdr := @NMLV.hdr;
+  
+  if Current <> Previous then
+  DeliverMessage(Msg);
+  
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.SignalItemSelectionChanged
+  Params:  Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.SignalItemSelectionChanged; cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  Item: QTreeWidgetItemH;
+  AParent: QTreeWidgetItemH;
+  AIndex: Integer;
+  ASubIndex: Integer;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+
+
+  Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
+  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+  AParent := QTreeWidgetItem_parent(Item);
+  if AParent <> NiL then
+    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Item)
+  else
+    ASubIndex := 0;
+
+  NMLV.iItem := AIndex;
+  NMLV.iSubItem := ASubIndex;
+  NMLV.uNewState := LVIS_SELECTED;
+  NMLV.uChanged := LVIF_STATE;
+
+
+  Msg.NMHdr := @NMLV.hdr;
+
+  DeliverMessage(Msg);
+  
 end;
 
 
@@ -3599,6 +3947,15 @@ begin
   QProgressBar_setInvertedAppearance(QProgressBarH(Widget), invert);
 end;
 
+procedure TQtProgressBar.SignalValueChanged(Value: Integer);
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  DeliverMessage(Msg);
+end;
+
 { TQtStatusBar }
 
 function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -3609,6 +3966,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtStatusBar.Create');
   {$endif}
+  
+  SetLength(APanels, 0);
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QStatusBar_create(Parent);
   
