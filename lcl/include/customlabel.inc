@@ -136,6 +136,11 @@ begin
   Result := FAlignment;
 end;
 
+function TCustomLabel.GetLabelText: string;
+begin
+  Result := Caption;
+end;
+
 Procedure TCustomLabel.SetShowAccelChar(Value : Boolean);
 begin
   If FShowAccelChar <> Value then begin
@@ -355,6 +360,7 @@ var
   R : TRect;
   TextLeft, TextTop: integer;
   lTextWidth, lTextHeight: integer;
+  LabelText: string;
 begin
   R := Rect(0,0,Width,Height);
   With Canvas do begin
@@ -411,12 +417,13 @@ begin
       end;
     end;
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
+    LabelText := GetLabelText;
     if not Enabled then begin
       Font.Color := clBtnHighlight;
-      TextRect(R, TextLeft + 1, TextTop + 1, Caption, TR);
+      TextRect(R, TextLeft + 1, TextTop + 1, LabelText, TR);
       Font.color := clBtnShadow;
     end;
-    TextRect(R, TextLeft, TextTop, Caption, TR)
+    TextRect(R, TextLeft, TextTop, LabelText, TR)
   end;
 end;
 

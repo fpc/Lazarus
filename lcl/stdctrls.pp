@@ -1256,6 +1256,7 @@ type
 
     function  GetShowAccelChar: Boolean;
     function  GetAlignment: TAlignment;
+    function  GetLabelText: string; virtual;
     function  GetTransparent: boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetColor(NewColor: TColor); override;
