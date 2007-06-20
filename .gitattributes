@@ -1066,6 +1066,7 @@ docs/xml/lcl/stdctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls/tcustomcheckbox_allowgrayed.pas svneol=native#text/plain
 docs/xml/lcl/stringhashlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/textstrings.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/themes.xml svneol=native#text/plain
 docs/xml/lcl/toolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/translations.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf
