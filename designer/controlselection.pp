@@ -2591,8 +2591,14 @@ var i, ALeft, ATop, ARight, ABottom, HorCenter, VertCenter,
   x, y: integer;
 begin
   if (Count=0) or (IsResizing) then exit;
+  // to space equally, you need at least two controls
+  if (Count<2)
+    and ((HorizAlignment=csaSpaceEqually) or (VertAlignment=csaSpaceEqually))
+  then exit;
+  
   if (Items[0].IsTopLvl)
-  or ((HorizAlignment=csaNone) and (VertAlignment=csaNone)) then exit;
+    or ((HorizAlignment=csaNone) and (VertAlignment=csaNone)) then exit;
+
   BeginResizing;
 
   // initializing
