@@ -55,12 +55,16 @@ function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer
 var AlignComponentsDialog: TAlignComponentsDialog;
 begin
   AlignComponentsDialog:=TAlignComponentsDialog.Create(nil);
-  with AlignComponentsDialog do begin
-    HorizontalRadioGroup.ItemIndex:=0;
-    VerticalRadioGroup.ItemIndex:=0;
-    Result:=ShowModal;
-    HorizAlignID:=AlignComponentsDialog.HorizontalRadioGroup.ItemIndex;
-    VertAlignID:=AlignComponentsDialog.VerticalRadioGroup.ItemIndex;
+  try
+    with AlignComponentsDialog do begin
+      HorizontalRadioGroup.ItemIndex:=0;
+      VerticalRadioGroup.ItemIndex:=0;
+      Result:=ShowModal;
+      HorizAlignID:=AlignComponentsDialog.HorizontalRadioGroup.ItemIndex;
+      VertAlignID:=AlignComponentsDialog.VerticalRadioGroup.ItemIndex;
+    end;
+  finally
+    AlignComponentsDialog.Free;
   end;
 end;
 
