@@ -189,9 +189,9 @@ begin
   ILElements:=TImageList.Create(Self);
   ILElements.Height:=22;
   ILElements.Width:=22;
-  ILElements.AddFromLazarusResource('Insert_16N');
-  ILElements.AddFromLazarusResource('Edit_16N');
-  ILElements.AddFromLazarusResource('Delete_16N');
+  ILElements.AddLazarusResource('Insert_16N');
+  ILElements.AddLazarusResource('Edit_16N');
+  ILElements.AddLazarusResource('Delete_16N');
   P0:=TPanel.Create(Self);
   With P0 do
     begin

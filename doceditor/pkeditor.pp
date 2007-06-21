@@ -270,10 +270,10 @@ Constructor TPackageEditor.Create(AOwner : TComponent);
 begin
   Inherited;
   FImageList := TImageList.Create(Self);
-  Fimagelist.AddFromLazarusResource('node_new');      // ImgIndxNew
-  Fimagelist.AddFromLazarusResource('node_edit');     // ImgIndxEdited
-  Fimagelist.AddFromLazarusResource('node_modified'); // ImgIndxModified
-  Fimagelist.AddFromLazarusResource('node_finished'); // ImgIndxFinished
+  Fimagelist.AddLazarusResource('node_new');      // ImgIndxNew
+  Fimagelist.AddLazarusResource('node_edit');     // ImgIndxEdited
+  Fimagelist.AddLazarusResource('node_modified'); // ImgIndxModified
+  Fimagelist.AddLazarusResource('node_finished'); // ImgIndxFinished
 
   FLModules:=Tlabel.Create(Self);
   With FLModules do
