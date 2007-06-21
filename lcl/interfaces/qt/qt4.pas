@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.36 }
+{ Version : 1.37 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -260,6 +260,8 @@ QObjectH = class(TObject) end;
     QComboBoxH = class(QWidgetH) end;
     QDesktopWidgetH = class(QWidgetH) end;
     QDialogH = class(QWidgetH) end;
+      QAbstractPrintDialogH = class(QDialogH) end;
+        QPrintDialogH = class(QAbstractPrintDialogH) end;
       QColorDialogH = class(QDialogH) end;
       QFileDialogH = class(QDialogH) end;
       QFontDialogH = class(QDialogH) end;
@@ -1943,9 +1945,10 @@ function QStringList_create(i: PWideString): QStringListH; overload; cdecl; exte
 function QStringList_create(l: QStringListH): QStringListH; overload; cdecl; external QtIntf name 'QStringList_create3';
 procedure QStringList_sort(handle: QStringListH); cdecl; external QtIntf name 'QStringList_sort';
 procedure QStringList_join(handle: QStringListH; retval: PWideString; sep: PWideString); cdecl; external QtIntf name 'QStringList_join';
-procedure QStringList_filter(handle: QStringListH; retval: QStringListH; str: PWideString; cs: QtCaseSensitivity = QtCaseSensitive); cdecl; external QtIntf name 'QStringList_filter';
+procedure QStringList_filter(handle: QStringListH; retval: QStringListH; str: PWideString; cs: QtCaseSensitivity = QtCaseSensitive); overload; cdecl; external QtIntf name 'QStringList_filter';
 function QStringList_contains(handle: QStringListH; str: PWideString; cs: QtCaseSensitivity = QtCaseSensitive): boolean; cdecl; external QtIntf name 'QStringList_contains';
 function QStringList_replaceInStrings(handle: QStringListH; before: PWideString; after: PWideString; cs: QtCaseSensitivity = QtCaseSensitive): QStringListH; overload; cdecl; external QtIntf name 'QStringList_replaceInStrings';
+procedure QStringList_filter(handle: QStringListH; retval: QStringListH; rx: QRegExpH); overload; cdecl; external QtIntf name 'QStringList_filter2';
 function QStringList_replaceInStrings(handle: QStringListH; rx: QRegExpH; after: PWideString): QStringListH; overload; cdecl; external QtIntf name 'QStringList_replaceInStrings2';
 function QStringList_indexOf(handle: QStringListH; rx: QRegExpH; from: Integer = 0): Integer; cdecl; external QtIntf name 'QStringList_indexOf';
 function QStringList_lastIndexOf(handle: QStringListH; rx: QRegExpH; from: Integer = -1): Integer; cdecl; external QtIntf name 'QStringList_lastIndexOf';
@@ -2085,6 +2088,97 @@ procedure QRectF_intersected(handle: QRectFH; retval: QRectFH; other: QRectFH); 
 function QRectF_intersects(handle: QRectFH; r: QRectFH): Boolean; cdecl; external QtIntf name 'QRectF_intersects';
 procedure QRectF_toRect(handle: QRectFH; retval: PRect); cdecl; external QtIntf name 'QRectF_toRect';
 procedure QRectF_toAlignedRect(handle: QRectFH; retval: PRect); cdecl; external QtIntf name 'QRectF_toAlignedRect';
+
+function QDate_create(): QDateH; overload; cdecl; external QtIntf name 'QDate_create';
+procedure QDate_destroy(handle: QDateH); cdecl; external QtIntf name 'QDate_destroy'; 
+function QDate_create(y: Integer; m: Integer; d: Integer): QDateH; overload; cdecl; external QtIntf name 'QDate_create2';
+function QDate_isNull(handle: QDateH): Boolean; cdecl; external QtIntf name 'QDate_isNull';
+function QDate_isValid(handle: QDateH): Boolean; overload; cdecl; external QtIntf name 'QDate_isValid';
+function QDate_year(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_year';
+function QDate_month(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_month';
+function QDate_day(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_day';
+function QDate_dayOfWeek(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_dayOfWeek';
+function QDate_dayOfYear(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_dayOfYear';
+function QDate_daysInMonth(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_daysInMonth';
+function QDate_daysInYear(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_daysInYear';
+function QDate_weekNumber(handle: QDateH; yearNum: PInteger = nil): Integer; cdecl; external QtIntf name 'QDate_weekNumber';
+procedure QDate_shortMonthName(retval: PWideString; month: Integer); cdecl; external QtIntf name 'QDate_shortMonthName';
+procedure QDate_shortDayName(retval: PWideString; weekday: Integer); cdecl; external QtIntf name 'QDate_shortDayName';
+procedure QDate_longMonthName(retval: PWideString; month: Integer); cdecl; external QtIntf name 'QDate_longMonthName';
+procedure QDate_longDayName(retval: PWideString; weekday: Integer); cdecl; external QtIntf name 'QDate_longDayName';
+procedure QDate_toString(handle: QDateH; retval: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QDate_toString';
+procedure QDate_toString(handle: QDateH; retval: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QDate_toString2';
+function QDate_setYMD(handle: QDateH; y: Integer; m: Integer; d: Integer): Boolean; cdecl; external QtIntf name 'QDate_setYMD';
+function QDate_setDate(handle: QDateH; year: Integer; month: Integer; date: Integer): Boolean; cdecl; external QtIntf name 'QDate_setDate';
+procedure QDate_addDays(handle: QDateH; retval: QDateH; days: Integer); cdecl; external QtIntf name 'QDate_addDays';
+procedure QDate_addMonths(handle: QDateH; retval: QDateH; months: Integer); cdecl; external QtIntf name 'QDate_addMonths';
+procedure QDate_addYears(handle: QDateH; retval: QDateH; years: Integer); cdecl; external QtIntf name 'QDate_addYears';
+function QDate_daysTo(handle: QDateH; p1: QDateH): Integer; cdecl; external QtIntf name 'QDate_daysTo';
+procedure QDate_currentDate(retval: QDateH); cdecl; external QtIntf name 'QDate_currentDate';
+procedure QDate_fromString(retval: QDateH; s: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QDate_fromString';
+procedure QDate_fromString(retval: QDateH; s: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QDate_fromString2';
+function QDate_isValid(y: Integer; m: Integer; d: Integer): Boolean; overload; cdecl; external QtIntf name 'QDate_isValid2';
+function QDate_isLeapYear(year: Integer): Boolean; cdecl; external QtIntf name 'QDate_isLeapYear';
+function QDate_gregorianToJulian(y: Integer; m: Integer; d: Integer): LongWord; cdecl; external QtIntf name 'QDate_gregorianToJulian';
+procedure QDate_julianToGregorian(jd: LongWord; y: PInteger; m: PInteger; d: PInteger); cdecl; external QtIntf name 'QDate_julianToGregorian';
+procedure QDate_fromJulianDay(retval: QDateH; jd: Integer); cdecl; external QtIntf name 'QDate_fromJulianDay';
+function QDate_toJulianDay(handle: QDateH): Integer; cdecl; external QtIntf name 'QDate_toJulianDay';
+
+function QTime_create(): QTimeH; overload; cdecl; external QtIntf name 'QTime_create';
+procedure QTime_destroy(handle: QTimeH); cdecl; external QtIntf name 'QTime_destroy'; 
+function QTime_create(h: Integer; m: Integer; s: Integer = 0; ms: Integer = 0): QTimeH; overload; cdecl; external QtIntf name 'QTime_create2';
+function QTime_isNull(handle: QTimeH): Boolean; cdecl; external QtIntf name 'QTime_isNull';
+function QTime_isValid(handle: QTimeH): Boolean; overload; cdecl; external QtIntf name 'QTime_isValid';
+function QTime_hour(handle: QTimeH): Integer; cdecl; external QtIntf name 'QTime_hour';
+function QTime_minute(handle: QTimeH): Integer; cdecl; external QtIntf name 'QTime_minute';
+function QTime_second(handle: QTimeH): Integer; cdecl; external QtIntf name 'QTime_second';
+function QTime_msec(handle: QTimeH): Integer; cdecl; external QtIntf name 'QTime_msec';
+procedure QTime_toString(handle: QTimeH; retval: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QTime_toString';
+procedure QTime_toString(handle: QTimeH; retval: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QTime_toString2';
+function QTime_setHMS(handle: QTimeH; h: Integer; m: Integer; s: Integer; ms: Integer = 0): Boolean; cdecl; external QtIntf name 'QTime_setHMS';
+procedure QTime_addSecs(handle: QTimeH; retval: QTimeH; secs: Integer); cdecl; external QtIntf name 'QTime_addSecs';
+function QTime_secsTo(handle: QTimeH; p1: QTimeH): Integer; cdecl; external QtIntf name 'QTime_secsTo';
+procedure QTime_addMSecs(handle: QTimeH; retval: QTimeH; ms: Integer); cdecl; external QtIntf name 'QTime_addMSecs';
+function QTime_msecsTo(handle: QTimeH; p1: QTimeH): Integer; cdecl; external QtIntf name 'QTime_msecsTo';
+procedure QTime_currentTime(retval: QTimeH); cdecl; external QtIntf name 'QTime_currentTime';
+procedure QTime_fromString(retval: QTimeH; s: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QTime_fromString';
+procedure QTime_fromString(retval: QTimeH; s: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QTime_fromString2';
+function QTime_isValid(h: Integer; m: Integer; s: Integer; ms: Integer = 0): Boolean; overload; cdecl; external QtIntf name 'QTime_isValid2';
+procedure QTime_start(handle: QTimeH); cdecl; external QtIntf name 'QTime_start';
+function QTime_restart(handle: QTimeH): Integer; cdecl; external QtIntf name 'QTime_restart';
+function QTime_elapsed(handle: QTimeH): Integer; cdecl; external QtIntf name 'QTime_elapsed';
+
+function QDateTime_create(): QDateTimeH; overload; cdecl; external QtIntf name 'QDateTime_create';
+procedure QDateTime_destroy(handle: QDateTimeH); cdecl; external QtIntf name 'QDateTime_destroy'; 
+function QDateTime_create(p1: QDateH): QDateTimeH; overload; cdecl; external QtIntf name 'QDateTime_create2';
+function QDateTime_create(p1: QDateH; p2: QTimeH; spec: QtTimeSpec = QtLocalTime): QDateTimeH; overload; cdecl; external QtIntf name 'QDateTime_create3';
+function QDateTime_create(other: QDateTimeH): QDateTimeH; overload; cdecl; external QtIntf name 'QDateTime_create4';
+function QDateTime_isNull(handle: QDateTimeH): Boolean; cdecl; external QtIntf name 'QDateTime_isNull';
+function QDateTime_isValid(handle: QDateTimeH): Boolean; cdecl; external QtIntf name 'QDateTime_isValid';
+procedure QDateTime_date(handle: QDateTimeH; retval: QDateH); cdecl; external QtIntf name 'QDateTime_date';
+procedure QDateTime_time(handle: QDateTimeH; retval: QTimeH); cdecl; external QtIntf name 'QDateTime_time';
+function QDateTime_timeSpec(handle: QDateTimeH): QtTimeSpec; cdecl; external QtIntf name 'QDateTime_timeSpec';
+function QDateTime_toTime_t(handle: QDateTimeH): LongWord; cdecl; external QtIntf name 'QDateTime_toTime_t';
+procedure QDateTime_setDate(handle: QDateTimeH; date: QDateH); cdecl; external QtIntf name 'QDateTime_setDate';
+procedure QDateTime_setTime(handle: QDateTimeH; time: QTimeH); cdecl; external QtIntf name 'QDateTime_setTime';
+procedure QDateTime_setTimeSpec(handle: QDateTimeH; spec: QtTimeSpec); cdecl; external QtIntf name 'QDateTime_setTimeSpec';
+procedure QDateTime_setTime_t(handle: QDateTimeH; secsSince1Jan1970UTC: LongWord); cdecl; external QtIntf name 'QDateTime_setTime_t';
+procedure QDateTime_toString(handle: QDateTimeH; retval: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QDateTime_toString';
+procedure QDateTime_toString(handle: QDateTimeH; retval: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QDateTime_toString2';
+procedure QDateTime_addDays(handle: QDateTimeH; retval: QDateTimeH; days: Integer); cdecl; external QtIntf name 'QDateTime_addDays';
+procedure QDateTime_addMonths(handle: QDateTimeH; retval: QDateTimeH; months: Integer); cdecl; external QtIntf name 'QDateTime_addMonths';
+procedure QDateTime_addYears(handle: QDateTimeH; retval: QDateTimeH; years: Integer); cdecl; external QtIntf name 'QDateTime_addYears';
+procedure QDateTime_addSecs(handle: QDateTimeH; retval: QDateTimeH; secs: Integer); cdecl; external QtIntf name 'QDateTime_addSecs';
+procedure QDateTime_addMSecs(handle: QDateTimeH; retval: QDateTimeH; msecs: int64); cdecl; external QtIntf name 'QDateTime_addMSecs';
+procedure QDateTime_toTimeSpec(handle: QDateTimeH; retval: QDateTimeH; spec: QtTimeSpec); cdecl; external QtIntf name 'QDateTime_toTimeSpec';
+procedure QDateTime_toLocalTime(handle: QDateTimeH; retval: QDateTimeH); cdecl; external QtIntf name 'QDateTime_toLocalTime';
+procedure QDateTime_toUTC(handle: QDateTimeH; retval: QDateTimeH); cdecl; external QtIntf name 'QDateTime_toUTC';
+function QDateTime_daysTo(handle: QDateTimeH; p1: QDateTimeH): Integer; cdecl; external QtIntf name 'QDateTime_daysTo';
+function QDateTime_secsTo(handle: QDateTimeH; p1: QDateTimeH): Integer; cdecl; external QtIntf name 'QDateTime_secsTo';
+procedure QDateTime_currentDateTime(retval: QDateTimeH); cdecl; external QtIntf name 'QDateTime_currentDateTime';
+procedure QDateTime_fromString(retval: QDateTimeH; s: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QDateTime_fromString';
+procedure QDateTime_fromString(retval: QDateTimeH; s: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QDateTime_fromString2';
+procedure QDateTime_fromTime_t(retval: QDateTimeH; secsSince1Jan1970UTC: LongWord); cdecl; external QtIntf name 'QDateTime_fromTime_t';
 
 
 type
@@ -2280,6 +2374,7 @@ function QPalette_highlight(handle: QPaletteH): QBrushH; cdecl; external QtIntf 
 function QPalette_highlightedText(handle: QPaletteH): QBrushH; cdecl; external QtIntf name 'QPalette_highlightedText';
 function QPalette_link(handle: QPaletteH): QBrushH; cdecl; external QtIntf name 'QPalette_link';
 function QPalette_linkVisited(handle: QPaletteH): QBrushH; cdecl; external QtIntf name 'QPalette_linkVisited';
+function QPalette_isCopyOf(handle: QPaletteH; p: QPaletteH): Boolean; cdecl; external QtIntf name 'QPalette_isCopyOf';
 function QPalette_serialNumber(handle: QPaletteH): Integer; cdecl; external QtIntf name 'QPalette_serialNumber';
 function QPalette_cacheKey(handle: QPaletteH): int64; cdecl; external QtIntf name 'QPalette_cacheKey';
 procedure QPalette_resolve(handle: QPaletteH; retval: QPaletteH; p1: QPaletteH); overload; cdecl; external QtIntf name 'QPalette_resolve';
@@ -2358,6 +2453,7 @@ procedure QKeySequence_toString(handle: QKeySequenceH; retval: PWideString; form
 procedure QKeySequence_fromString(retval: QKeySequenceH; str: PWideString; format: QKeySequenceSequenceFormat = QKeySequencePortableText); cdecl; external QtIntf name 'QKeySequence_fromString';
 function QKeySequence_matches(handle: QKeySequenceH; seq: QKeySequenceH): QKeySequenceSequenceMatch; cdecl; external QtIntf name 'QKeySequence_matches';
 procedure QKeySequence_mnemonic(retval: QKeySequenceH; text: PWideString); cdecl; external QtIntf name 'QKeySequence_mnemonic';
+function QKeySequence_isDetached(handle: QKeySequenceH): Boolean; cdecl; external QtIntf name 'QKeySequence_isDetached';
 
 type
   QWidgetRenderFlag = cardinal; // QWidget::RenderFlag
@@ -2913,9 +3009,7 @@ function QFocusEvent_create(_type: QEventType; reason: QtFocusReason = QtOtherFo
 procedure QFocusEvent_destroy(handle: QFocusEventH); cdecl; external QtIntf name 'QFocusEvent_destroy'; 
 function QFocusEvent_gotFocus(handle: QFocusEventH): Boolean; cdecl; external QtIntf name 'QFocusEvent_gotFocus';
 function QFocusEvent_lostFocus(handle: QFocusEventH): Boolean; cdecl; external QtIntf name 'QFocusEvent_lostFocus';
-{$ifdef LINUX }
-function QFocusEvent_reason(handle: QFocusEventH): QtFocusReason; overload; cdecl; external QtIntf name 'QFocusEvent_reason';
-{$endif}
+function QFocusEvent_reason(handle: QFocusEventH): QtFocusReason; cdecl; external QtIntf name 'QFocusEvent_reason';
 
 function QPaintEvent_create(paintRegion: QRegionH): QPaintEventH; overload; cdecl; external QtIntf name 'QPaintEvent_create';
 procedure QPaintEvent_destroy(handle: QPaintEventH); cdecl; external QtIntf name 'QPaintEvent_destroy'; 
@@ -3023,11 +3117,9 @@ procedure QFileOpenEvent_file(handle: QFileOpenEventH; retval: PWideString); cde
 
 function QShortcutEvent_create(key: QKeySequenceH; id: Integer; ambiguous: Boolean = False): QShortcutEventH; cdecl; external QtIntf name 'QShortcutEvent_create';
 procedure QShortcutEvent_destroy(handle: QShortcutEventH); cdecl; external QtIntf name 'QShortcutEvent_destroy'; 
-{$ifdef LINUX }
-function QShortcutEvent_key(handle: QShortcutEventH): QKeySequenceH; overload; cdecl; external QtIntf name 'QShortcutEvent_key';
-function QShortcutEvent_shortcutId(handle: QShortcutEventH): Integer; overload; cdecl; external QtIntf name 'QShortcutEvent_shortcutId';
-function QShortcutEvent_isAmbiguous(handle: QShortcutEventH): Boolean; overload; cdecl; external QtIntf name 'QShortcutEvent_isAmbiguous';
-{$endif}
+function QShortcutEvent_key(handle: QShortcutEventH): QKeySequenceH; cdecl; external QtIntf name 'QShortcutEvent_key';
+function QShortcutEvent_shortcutId(handle: QShortcutEventH): Integer; cdecl; external QtIntf name 'QShortcutEvent_shortcutId';
+function QShortcutEvent_isAmbiguous(handle: QShortcutEventH): Boolean; cdecl; external QtIntf name 'QShortcutEvent_isAmbiguous';
 
 function QWindowStateChangeEvent_create(aOldState: QtWindowStates): QWindowStateChangeEventH; overload; cdecl; external QtIntf name 'QWindowStateChangeEvent_create';
 procedure QWindowStateChangeEvent_destroy(handle: QWindowStateChangeEventH); cdecl; external QtIntf name 'QWindowStateChangeEvent_destroy'; 
@@ -4800,9 +4892,7 @@ type
 
 procedure QImageIOHandler_setDevice(handle: QImageIOHandlerH; device: QIODeviceH); cdecl; external QtIntf name 'QImageIOHandler_setDevice';
 function QImageIOHandler_device(handle: QImageIOHandlerH): QIODeviceH; cdecl; external QtIntf name 'QImageIOHandler_device';
-{$ifdef LINUX }
-procedure QImageIOHandler_setFormat(handle: QImageIOHandlerH; format: QByteArrayH); overload; cdecl; external QtIntf name 'QImageIOHandler_setFormat';
-{$endif}
+procedure QImageIOHandler_setFormat(handle: QImageIOHandlerH; format: QByteArrayH); cdecl; external QtIntf name 'QImageIOHandler_setFormat';
 procedure QImageIOHandler_format(handle: QImageIOHandlerH; retval: QByteArrayH); cdecl; external QtIntf name 'QImageIOHandler_format';
 procedure QImageIOHandler_name(handle: QImageIOHandlerH; retval: QByteArrayH); cdecl; external QtIntf name 'QImageIOHandler_name';
 function QImageIOHandler_canRead(handle: QImageIOHandlerH): Boolean; cdecl; external QtIntf name 'QImageIOHandler_canRead';
@@ -6707,9 +6797,7 @@ function QTreeWidget_topLevelItemCount(handle: QTreeWidgetH): Integer; cdecl; ex
 procedure QTreeWidget_insertTopLevelItem(handle: QTreeWidgetH; index: Integer; item: QTreeWidgetItemH); cdecl; external QtIntf name 'QTreeWidget_insertTopLevelItem';
 procedure QTreeWidget_addTopLevelItem(handle: QTreeWidgetH; item: QTreeWidgetItemH); cdecl; external QtIntf name 'QTreeWidget_addTopLevelItem';
 function QTreeWidget_takeTopLevelItem(handle: QTreeWidgetH; index: Integer): QTreeWidgetItemH; cdecl; external QtIntf name 'QTreeWidget_takeTopLevelItem';
-{$ifdef LINUX }
-function QTreeWidget_indexOfTopLevelItem(handle: QTreeWidgetH; item: QTreeWidgetItemH): Integer; overload; cdecl; external QtIntf name 'QTreeWidget_indexOfTopLevelItem';
-{$endif}
+function QTreeWidget_indexOfTopLevelItem(handle: QTreeWidgetH; item: QTreeWidgetItemH): Integer; cdecl; external QtIntf name 'QTreeWidget_indexOfTopLevelItem';
 procedure QTreeWidget_insertTopLevelItems(handle: QTreeWidgetH; index: Integer; items: PIntArray); cdecl; external QtIntf name 'QTreeWidget_insertTopLevelItems';
 procedure QTreeWidget_addTopLevelItems(handle: QTreeWidgetH; items: PIntArray); cdecl; external QtIntf name 'QTreeWidget_addTopLevelItems';
 function QTreeWidget_headerItem(handle: QTreeWidgetH): QTreeWidgetItemH; cdecl; external QtIntf name 'QTreeWidget_headerItem';
@@ -7256,6 +7344,40 @@ procedure QProgressDialog_setMinimumDuration(handle: QProgressDialogH; ms: Integ
 type
   QProgressDialog_canceled_Event = procedure () of object cdecl;
 
+
+
+type
+  QAbstractPrintDialogPrintRange = ( // QAbstractPrintDialog::PrintRange (1)
+    QAbstractPrintDialogAllPages, QAbstractPrintDialogSelection, QAbstractPrintDialogPageRange );
+
+type
+  QAbstractPrintDialogPrintDialogOption = cardinal; // QAbstractPrintDialog::PrintDialogOption
+  QAbstractPrintDialogPrintDialogOptions = QAbstractPrintDialogPrintDialogOption; //QFlags<> (3)
+const
+  QAbstractPrintDialogNone =   $0000;
+  QAbstractPrintDialogPrintToFile =   $0001;
+  QAbstractPrintDialogPrintSelection =   $0002;
+  QAbstractPrintDialogPrintPageRange =   $0004;
+  QAbstractPrintDialogPrintCollateCopies =   $0010;
+
+function QAbstractPrintDialog_exec(handle: QAbstractPrintDialogH): Integer; cdecl; external QtIntf name 'QAbstractPrintDialog_exec';
+procedure QAbstractPrintDialog_addEnabledOption(handle: QAbstractPrintDialogH; option: QAbstractPrintDialogPrintDialogOption); cdecl; external QtIntf name 'QAbstractPrintDialog_addEnabledOption';
+procedure QAbstractPrintDialog_setEnabledOptions(handle: QAbstractPrintDialogH; options: QAbstractPrintDialogPrintDialogOptions); cdecl; external QtIntf name 'QAbstractPrintDialog_setEnabledOptions';
+function QAbstractPrintDialog_enabledOptions(handle: QAbstractPrintDialogH): QAbstractPrintDialogPrintDialogOptions; cdecl; external QtIntf name 'QAbstractPrintDialog_enabledOptions';
+function QAbstractPrintDialog_isOptionEnabled(handle: QAbstractPrintDialogH; option: QAbstractPrintDialogPrintDialogOption): Boolean; cdecl; external QtIntf name 'QAbstractPrintDialog_isOptionEnabled';
+procedure QAbstractPrintDialog_setPrintRange(handle: QAbstractPrintDialogH; range: QAbstractPrintDialogPrintRange); cdecl; external QtIntf name 'QAbstractPrintDialog_setPrintRange';
+function QAbstractPrintDialog_printRange(handle: QAbstractPrintDialogH): QAbstractPrintDialogPrintRange; cdecl; external QtIntf name 'QAbstractPrintDialog_printRange';
+procedure QAbstractPrintDialog_setMinMax(handle: QAbstractPrintDialogH; min: Integer; max: Integer); cdecl; external QtIntf name 'QAbstractPrintDialog_setMinMax';
+function QAbstractPrintDialog_minPage(handle: QAbstractPrintDialogH): Integer; cdecl; external QtIntf name 'QAbstractPrintDialog_minPage';
+function QAbstractPrintDialog_maxPage(handle: QAbstractPrintDialogH): Integer; cdecl; external QtIntf name 'QAbstractPrintDialog_maxPage';
+procedure QAbstractPrintDialog_setFromTo(handle: QAbstractPrintDialogH; fromPage: Integer; toPage: Integer); cdecl; external QtIntf name 'QAbstractPrintDialog_setFromTo';
+function QAbstractPrintDialog_fromPage(handle: QAbstractPrintDialogH): Integer; cdecl; external QtIntf name 'QAbstractPrintDialog_fromPage';
+function QAbstractPrintDialog_toPage(handle: QAbstractPrintDialogH): Integer; cdecl; external QtIntf name 'QAbstractPrintDialog_toPage';
+function QAbstractPrintDialog_printer(handle: QAbstractPrintDialogH): QPrinterH; cdecl; external QtIntf name 'QAbstractPrintDialog_printer';
+
+function QPrintDialog_create(printer: QPrinterH; parent: QWidgetH = nil): QPrintDialogH; cdecl; external QtIntf name 'QPrintDialog_create';
+procedure QPrintDialog_destroy(handle: QPrintDialogH); cdecl; external QtIntf name 'QPrintDialog_destroy'; 
+function QPrintDialog_exec(handle: QPrintDialogH): Integer; cdecl; external QtIntf name 'QPrintDialog_exec';
 
 
 type
@@ -9147,7 +9269,7 @@ procedure CopyUnicodeToPWideString(Unicode: PWideChar; var S: WideString;
 {$IFDEF LINUX}
 begin
   try
-    SetLength(S, Len);
+   SetLength(S, Len);
   except
     Exit;
   end;
