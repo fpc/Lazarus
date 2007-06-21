@@ -28,25 +28,21 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, ComCtrls, ExtCtrls, FileCtrl;
+  StdCtrls, ComCtrls, ExtCtrls;
 
 type
   TDirSelDlg = class(TForm)
-    Button1: TBUTTON;
-    Button2: TBUTTON;
-    Label1: TLABEL;
-    Panel1: TPANEL;
-    Panel2: TPANEL;
-    Panel3: TPANEL;
-    Panel4: TPANEL;
-    TV: TTREEVIEW;
-    procedure FormCreate(Sender: TObject);
-    //procedure Create(AOwner: TComponent);
+    btnOK: TButton;
+    btnCancel: TButton;
+    lblDirectory: TLabel;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    TV: TTreeview;
     procedure FormShow(Sender: TObject);
     procedure TVExpanded(Sender: TObject; Node: TTreeNode);
-    procedure TVItemDoubleClick(Sender: TObject);
   private
-    { private declarations }
     FRootDir: string;
     FDir: string;
     FShowHidden: Boolean;
@@ -55,8 +51,8 @@ type
     function GetAbsolutePath(Node: TTreeNode): string;
     procedure SetDir(const Value: string);
     procedure SetRootDir(const Value: string);
+    procedure SetupCaptions;
   public
-    { public declarations }
     function SelectedDir: string;
     property Directory: string read FDir write SetDir;
     property RootDirectory: string read FRootDir write SetRootDir;
@@ -69,39 +65,49 @@ var
   
 implementation
 
-{ TDirSelDlg }
+uses
+  FileUtil, LCLStrConsts;
+
 
 {Function HasSubDirs returns True if the directory passed has subdirectories}
-function HasSubDirs(const Dir: string; IgnoreHidden: boolean): Boolean;
+function HasSubDirs(const Dir: string; AShowHidden: boolean): Boolean;
 var
-  //Result of FindFirst, FindNext
   FileInfo: TSearchRec;
   FCurrentDir: string;
 begin
- //Assume No
- Result:= False;
- if Dir <> '' then
- begin
-   FCurrentDir:= Dir;
-   FileCtrl.AppendPathDelim(FCurrentDir);
-   FCurrentDir:= Dir + GetAllFilesMask;
-   Try
-     if SysUtils.FindFirst(FCurrentDir, (faAnyFile),FileInfo)=0 then
-     begin
-       repeat
-         // check if special file
-         if ((FileInfo.Name='.') or (FileInfo.Name='..')) or (FileInfo.Name='')
-            (((faHidden and FileInfo.Attr)>0) and
-              IgnoreHidden) then continue;
-         Result:= ((faDirectory and FileInfo.Attr)>0);
-         //We found at least one non special dir, that's all we need.
-         if Result then break;
-       until SysUtils.FindNext(FileInfo)<>0;
-     end;//if
-   finally
-     SysUtils.FindClose(FileInfo);
-   end;//Try-Finally
- end;//if
+  //Assume No
+  Result := False;
+  if Dir <> '' then
+  begin
+    FCurrentDir := AppendPathDelim(Dir);
+    FCurrentDir := FCurrentDir + GetAllFilesMask;
+//    writeln('FCurrentDir=' + FCurrentDir);
+    try
+      if SysUtils.FindFirst(FCurrentDir, faAnyFile, FileInfo)=0 then
+      begin
+        repeat
+          if FileInfo.Name = '' then
+            Continue;
+
+          // check if special file
+          if ((FileInfo.Name='.') or (FileInfo.Name='..')) or
+            // unix dot directories (aka hidden directories)
+            ((FileInfo.Name[1] in ['.']) and AShowHidden) or
+            // check Hidden attribute
+            (((faHidden and FileInfo.Attr)>0) and AShowHidden) then
+            Continue;
+
+          Result := ((faDirectory and FileInfo.Attr)>0);
+
+          //We found at least one non special dir, that's all we need.
+          if Result then
+            break;
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;//if
+    finally
+      SysUtils.FindClose(FileInfo);
+    end;//Try-Finally
+  end;//if
 end;//HasSubDirs
 
 
@@ -118,10 +124,10 @@ begin
   if Dir <> '' then
   begin
     FCurrentDir:= Dir;
-    FileCtrl.AppendPathDelim(FCurrentDir);
+    AppendPathDelim(FCurrentDir);
     i:= length(FCurrentDir);
     FCurrentDir:= Dir + GetAllFilesMask;
-    Try
+    try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile,FileInfo)=0 then
       begin
         Try
@@ -129,16 +135,22 @@ begin
           SortList.Sorted:= True;
           repeat
             // check if special file
-            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-            then
-              continue;
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+              Continue;
+            // if hidden files or directories must be filtered, we test for
+            // dot files, considered hidden under unix type OS's.
+            if not FShowHidden then
+              if (FileInfo.Name[1] in ['.']) then
+                Continue;
+
             // if this is a directory then add it to the tree.
             if ((faDirectory and FileInfo.Attr)>0) then
             begin
               //if this is a hidden file and we have not been requested to show
-              //hidder files then do not add it to the list.
-              if ((faHidden and FileInfo.Attr)>0)
-                                         and not (FShowHidden) then continue;
+              //hidden files then do not add it to the list.
+              if ((faHidden and FileInfo.Attr)>0) and not FShowHidden then
+                continue;
+
               SortList.Add(FileInfo.Name);
             end;//if
           until SysUtils.FindNext(FileInfo)<>0;
@@ -146,7 +158,7 @@ begin
           begin
             NewNode:= TV.Items.AddChild(Node,SortList[i]);
             //if subdirectories then indicate so.
-            NewNode.HasChildren:= HasSubDirs(Dir + PathDelim + NewNode.Text, FShowHidden);
+            NewNode.HasChildren := HasSubDirs(AppendPathDelim(Dir) + NewNode.Text, FShowHidden);
           end;//for
         finally
           SortList.free;
@@ -180,6 +192,14 @@ begin
   TV.Selected:= RootNode;
 end;//SetRootDir
 
+procedure TDirSelDlg.SetupCaptions;
+begin
+  Caption := rsfdSelectDirectory;
+  btnOK.Caption := rsMbOK;
+  btnCancel.Caption := rsMbCancel;
+  lblDirectory.Caption := rsDirectory;
+end;
+
 {Returns the absolute path to a node.}
 function TDirSelDlg.GetAbsolutePath(Node: TTreeNode): string;
 begin
@@ -194,14 +214,9 @@ begin
   end;//while
 end;//GetAbsolutePath
 
-
-procedure TDirSelDlg.FormCreate(Sender: TObject);
-begin
-
-end;
-
 procedure TDirSelDlg.FormShow(Sender: TObject);
 begin
+  SetupCaptions;
   if TV.Selected <> nil then
     TV.Selected.Expand(false);
 end;//FormShow
@@ -211,11 +226,6 @@ begin
   if Node.Count = 0 then
     AddDirectories(Node, GetAbsolutePath(Node));
 end;//TVExpanded
-
-procedure TDirSelDlg.TVItemDoubleClick(Sender: TObject);
-begin
-
-end;
 
 procedure TDirSelDlg.SetDir(const Value: string);
 var

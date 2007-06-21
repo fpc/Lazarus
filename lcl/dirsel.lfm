@@ -1,113 +1,124 @@
 object DirSelDlg: TDirSelDlg
-  ActiveControl = TV
-  BorderStyle = BSDIALOG
-  Caption = 'Select Directory'
-  ClientHeight = 330
-  ClientWidth = 335
-  FormStyle = FSSTAYONTOP
-  OnCreate = FormCreate
-  OnShow = FormShow
-  Position = POSCREENCENTER
-  HorzScrollBar.Page = 336
-  HorzScrollBar.Range = 14
-  VertScrollBar.Page = 331
-  VertScrollBar.Range = 63
   Left = 432
   Height = 330
   Top = 234
   Width = 335
+  HorzScrollBar.Page = 334
+  HorzScrollBar.Range = 14
+  VertScrollBar.Page = 329
+  VertScrollBar.Range = 63
+  ActiveControl = TV
+  BorderStyle = bsDialog
+  Caption = 'Select Directory'
+  ClientHeight = 330
+  ClientWidth = 335
+  FormStyle = fsStayOnTop
+  OnShow = FormShow
+  Position = poScreenCenter
   object Panel1: TPanel
-    Align = ALBOTTOM
-    BevelOuter = BVNONE
-    ClientHeight = 41
-    ClientWidth = 335
-    TabOrder = 0
-    TabStop = True
     Height = 41
     Top = 289
     Width = 335
-    object Button1: TButton
-      Anchors = [AKRIGHT, AKBOTTOM]
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 335
+    TabOrder = 4
+    TabStop = True
+    object btnOK: TButton
+      AnchorSideRight.Control = btnCancel
+      AnchorSideBottom.Control = btnCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 161
+      Height = 25
+      Top = 10
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'btnOK'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
       ModalResult = 1
-      Caption = 'OK'
-      TabStop = True
       TabOrder = 0
-      Left = 169
-      Height = 25
-      Top = 9
-      Width = 75
     end
-    object Button2: TButton
-      Anchors = [AKRIGHT, AKBOTTOM]
-      ModalResult = 2
-      Cancel = True
-      Caption = 'Cancel'
-      TabStop = True
-      TabOrder = 1
-      Left = 253
+    object btnCancel: TButton
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 242
       Height = 25
-      Top = 9
-      Width = 75
+      Top = 10
+      Width = 87
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = 'btnCancel'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      ModalResult = 2
+      TabOrder = 1
     end
   end
   object Panel2: TPanel
-    Align = ALLEFT
-    BevelOuter = BVNONE
-    ClientHeight = 265
-    ClientWidth = 7
-    TabOrder = 1
-    TabStop = True
     Height = 265
     Top = 24
     Width = 7
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 1
+    TabStop = True
   end
   object Panel3: TPanel
-    Align = ALTOP
-    BevelOuter = BVNONE
+    Height = 24
+    Width = 335
+    Align = alTop
+    BevelOuter = bvNone
     ClientHeight = 24
     ClientWidth = 335
     TabOrder = 2
     TabStop = True
-    Height = 24
-    Width = 335
-    object Label1: TLabel
-      Caption = '&Directory'
-      FocusControl = TV
-      Layout = TLCENTER
+    object lblDirectory: TLabel
       Left = 140
-      Height = 15
+      Height = 17
       Top = 4
-      Width = 54
+      Width = 76
+      Caption = '&Directory'
+      Color = clNone
+      FocusControl = TV
+      Layout = tlCenter
+      ParentColor = False
     end
   end
   object Panel4: TPanel
-    Align = ALRIGHT
-    BevelOuter = BVNONE
-    ClientHeight = 265
-    ClientWidth = 7
-    TabOrder = 3
-    TabStop = True
     Left = 328
     Height = 265
     Top = 24
     Width = 7
+    Align = alRight
+    BevelOuter = bvNone
+    TabOrder = 3
+    TabStop = True
   end
   object TV: TTreeView
-    Align = ALCLIENT
-    Constraints.MinHeight = 100
-    Constraints.MinWidth = 100
-    DefaultItemHeight = 17
-    DragCursor = 65524
-    ParentColor = True
-    ParentCtl3D = False
-    ParentFont = True
-    ScrollBars = SSVERTICAL
-    TabOrder = 4
-    OnDblClick = TVItemDoubleClick
-    OnExpanded = TVExpanded
     Left = 7
     Height = 265
     Top = 24
     Width = 321
+    Align = alClient
+    Constraints.MinHeight = 100
+    Constraints.MinWidth = 100
+    DefaultItemHeight = 18
+    ParentColor = True
+    ParentCtl3D = False
+    ParentFont = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+    OnExpanded = TVExpanded
   end
 end

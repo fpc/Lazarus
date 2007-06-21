@@ -67,6 +67,7 @@ ResourceString
   rsfdFileSaveAs         = 'Save file as';
   rsAllFiles = 'All files (%s)|%s|%s';
   rsfdSelectDirectory    = 'Select Directory';
+  rsDirectory            = '&Directory';
 
   // Select color dialog
   rsSelectcolorTitle    = 'Select color';
