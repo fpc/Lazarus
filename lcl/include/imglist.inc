@@ -214,7 +214,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomImageList.AddFromLazarusResource(const ResourceName: string
+  function TCustomImageList.AddLazarusResource(const ResourceName: string
     ): integer;
     
   Load TBitmap from lazarus resources and add it.

@@ -100,9 +100,9 @@ begin
   cbPrinters.ItemIndex:=0;
   cbPrinters.OnChange:=@btnRefeshClick;
   
-  lstImg.AddFromLazarusResource('pending');
-  lstImg.AddFromLazarusResource('helded');
-  lstImg.AddFromLazarusResource('process');
+  lstImg.AddLazarusResource('pending');
+  lstImg.AddLazarusResource('helded');
+  lstImg.AddLazarusResource('process');
 end;
 
 
