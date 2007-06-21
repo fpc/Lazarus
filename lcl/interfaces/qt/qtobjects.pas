@@ -27,7 +27,11 @@ interface
 
 uses
   // Bindings
+{$ifdef USE_QT_4_2}
+  qt42,
+{$else}
   qt4,
+{$endif}
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL

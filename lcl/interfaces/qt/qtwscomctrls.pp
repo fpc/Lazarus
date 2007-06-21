@@ -28,7 +28,12 @@ interface
 
 uses
   // Bindings
-  qt4, qtwidgets, qtprivate, qtobjects,
+{$ifdef USE_QT_4_2}
+  qt42,
+{$else}
+  qt4,
+{$endif}
+  qtwidgets, qtprivate, qtobjects,
   // LCL
   Classes, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf,
   // Widgetset
@@ -1262,7 +1267,7 @@ var
 begin
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
-  if Qt4.QTreeWidgetItem_childCount(TWI) > 0 then
+  if QTreeWidgetItem_childCount(TWI) > 0 then
   QTreeWidget_visualItemRect(TW, @Result, QTreeWidgetItem_child(TWI, ASubItem))
   else
   QTreeWidget_visualItemRect(TW, @Result, TWI);

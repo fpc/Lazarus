@@ -18,7 +18,11 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // qt bindings
+{$ifdef USE_QT_4_2}
+  qt42,
+{$else}
   qt4,
+{$endif}
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset

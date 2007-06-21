@@ -27,7 +27,12 @@ interface
 
 uses
   // Bindings
-  qt4, qtobjects,
+{$ifdef USE_QT_4_2}
+  qt42,
+{$else}
+  qt4,
+{$endif}
+  qtobjects,
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
@@ -132,7 +137,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+{$ifndef USE_QT_4_2}
     MDIAreaHandle: QMDIAreaH;
+{$endif}
     Splitter: QSplitterH;
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
@@ -1848,8 +1855,10 @@ function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
   r: TRect;
+{$ifndef USE_QT_4_2}
   mdihandle: QMdiAreaH;
   toolbar: QToolBarH;
+{$endif}
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -1859,7 +1868,9 @@ begin
   w := QApplication_activeWindow;
   
   // mainform should be TQtMainWindow ...
-  {$define mdidevel}
+  {$ifndef USE_QT_4_2}
+    {$define mdidevel}
+  {$endif}
   if not Assigned(w) and not (Application.MainForm.Visible) then
   begin
     Result := QMainWindow_create(nil, QtWindow);
@@ -1876,8 +1887,10 @@ begin
     QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
     {$endif}
     
-    QMainWindow_setDockOptions(QMainWindowH(Result) ,QMainWindowAnimatedDocks);
-    
+    {$ifndef USE_QT_4_2}
+      QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
+    {$endif}
+
   end else
   begin
     {$ifdef mdidevel}

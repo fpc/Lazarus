@@ -28,7 +28,12 @@ interface
 
 uses
   // Libs
-  qt4, qtwidgets,
+{$ifdef USE_QT_4_2}
+  qt42,
+{$else}
+  qt4,
+{$endif}
+  qtwidgets,
   // LCL
   SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics,
   // Widgetset

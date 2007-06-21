@@ -28,7 +28,12 @@ interface
 
 uses
   // Bindings
-  qt4, qtprivate, qtwidgets,
+{$ifdef USE_QT_4_2}
+  qt42,
+{$else}
+  qt4,
+{$endif}
+  qtprivate, qtwidgets,
   // LCL
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf, LCLProc,
   // Widgetset
