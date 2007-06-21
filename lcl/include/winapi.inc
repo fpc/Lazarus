@@ -532,6 +532,11 @@ begin
   Result := WidgetSet.InvalidateRect(aHandle, ARect, bErase);
 end;
 
+function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+begin
+  Result := WidgetSet.InvalidateRgn(Handle, Rgn, Erase);
+end;
+
 function IsDBCSLeadByte(TestChar: Byte): boolean;
 begin
   Result := WidgetSet.IsDBCSLeadByte(TestChar);

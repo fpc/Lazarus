@@ -133,6 +133,7 @@ function HideCaret(HWnd: HWND): Boolean; Override;
 
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
+function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 
@@ -150,6 +151,7 @@ function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
 function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean; Override;
+Function PtInRegion(Rgn: HRGN; X, Y: Integer): Boolean; override;
 
 function RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean; override;
 function RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;

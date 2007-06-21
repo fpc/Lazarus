@@ -2448,6 +2448,20 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  InvalidateRgn
+  Params:  Handle - handle of window with changed update region
+           Rgn    - handle to region to invalidate
+           Erase  - specifies whether the background is to be erased
+  Returns: if the function succeeds
+
+  Adds a region to the specified window's update region.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+begin
+  Result := Boolean(Windows.InvalidateRgn(Handle, Rgn, Erase));
+end;
+
+{------------------------------------------------------------------------------
   Function: IntersectClipRect
   Params:  dc, Left, Top, Right, Bottom
   Returns: Integer
@@ -2687,6 +2701,17 @@ Function TWin32WidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam
 Begin
   Result := Boolean(Windows.PostMessage(Handle, Msg, WParam, LParam));
 End;
+
+{------------------------------------------------------------------------------
+  Method:  PtInRegion
+  Params:  Rgn  - handle of region
+           X, Y - Point coordinates to test
+  Returns: If the specified point lies in the region
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.PtInRegion(Rgn: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := Boolean(Windows.PtInRegion(Rgn, X, Y));
+end;
 
 {------------------------------------------------------------------------------
   Method:   RadialArc

@@ -1010,6 +1010,11 @@ begin
   Result := false;
 end;
 
+function TWidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.IsDBCSLeadByte(TestChar: Byte): boolean;
 begin
   Result := false;

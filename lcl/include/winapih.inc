@@ -156,6 +156,7 @@ Procedure InitializeCriticalSection(var CritSection: TCriticalSection); {$IFDEF 
 function IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IntersectRect --> independent
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsCharAlphaNumeric --> independent
 function IsDBCSLeadByte(TestChar: Byte): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsRectEmpty --> independent
