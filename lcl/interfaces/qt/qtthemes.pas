@@ -18,8 +18,8 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // qt bindings
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}

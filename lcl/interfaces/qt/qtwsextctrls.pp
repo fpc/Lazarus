@@ -28,14 +28,14 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
-  qtwidgets,
+  qtwidgets, qtobjects,
   // LCL
-  SysUtils, Controls, Forms, ExtCtrls, LCLType,
+  SysUtils, Classes, Controls, Forms, StdCtrls, ExtCtrls, LCLType,
   // Widgetset
   WSExtCtrls, WSLCLClasses;
 
@@ -158,6 +158,10 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSRadioGroup }
@@ -174,6 +178,10 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCheckGroup }
@@ -419,6 +427,117 @@ begin
   TQtTabWidget(ANotebook.Handle).SetTabPosition(QTabWidgetTabPositionMap[ATabPosition]);
 end;
 
+{ TQtWSCustomRadioGroup }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomRadioGroup.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+
+class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtGroupBox: TQtButtonGroupBox;
+  Str: WideString;
+  Method: TMethod;
+  Hook : QGroupBox_hookH;
+begin
+
+  QtGroupBox := TQtButtonGroupBox.Create(AWinControl, AParams);
+
+  QtGroupBox.VBoxLayout := QVBoxLayout_create;
+  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.VBoxLayout);
+  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.VBoxLayout));
+
+  Hook := QGroupBox_hook_create(QtGroupBox.Widget);
+  TEventFilterMethod(Method) := QtGroupBox.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+
+  Str := UTF8Decode(AWinControl.Caption);
+  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
+
+  Result := THandle(QtGroupBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomRadioGroup.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomRadioGroup.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtGroupBox(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+
+class procedure TQtWSCustomRadioGroup.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+  {without this we have invisible radio buttons}
+end;
+ 
+{ TQtWSCustomCheckGroup }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckGroup.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+
+class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtGroupBox: TQtButtonGroupBox;
+  Str: WideString;
+  Method: TMethod;
+  Hook : QGroupBox_hookH;
+begin
+
+  QtGroupBox := TQtButtonGroupBox.Create(AWinControl, AParams);
+  QtGroupBox.VBoxLayout := QVBoxLayout_create;
+  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.VBoxLayout);
+  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.VBoxLayout));
+
+  Hook := QGroupBox_hook_create(QtGroupBox.Widget);
+  TEventFilterMethod(Method) := QtGroupBox.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+
+  Str := UTF8Decode(AWinControl.Caption);
+  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
+
+  Result := THandle(QtGroupBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckGroup.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomCheckGroup.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtGroupBox(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+
+class procedure TQtWSCustomCheckGroup.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+  {without this checkboxes are invisible}
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -438,9 +557,9 @@ initialization
 //  RegisterWSComponent(TCustomImage, TQtWSCustomImage);
 //  RegisterWSComponent(TImage, TQtWSImage);
 //  RegisterWSComponent(TBevel, TQtWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TQtWSCustomRadioGroup);
+  RegisterWSComponent(TCustomRadioGroup, TQtWSCustomRadioGroup);
 //  RegisterWSComponent(TRadioGroup, TQtWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TQtWSCustomCheckGroup);
+  RegisterWSComponent(TCustomCheckGroup, TQtWSCustomCheckGroup);
 //  RegisterWSComponent(TCheckGroup, TQtWSCheckGroup);
 //  RegisterWSComponent(TCustomLabeledEdit, TQtWSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TQtWSLabeledEdit);

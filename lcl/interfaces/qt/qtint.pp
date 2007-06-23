@@ -34,9 +34,9 @@ interface
 {$endif}
  
 uses 
-  // Bindings - qt4 must come first to avoid type redefinition problems on Windows
-{$ifdef USE_QT_4_2}
-  qt42,
+  // Bindings - qt4 must come first to avoid type redefinition problems
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
@@ -44,7 +44,7 @@ uses
   Classes, SysUtils, Math, Types,
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes;
+  Dialogs, StdCtrls, Comctrls, Calendar, LCLIntf, GraphType, Themes;
 
 type
 
@@ -124,7 +124,7 @@ uses
 // QtWSActnList,
 // QtWSArrow,
  QtWSButtons,
-// QtWSCalendar,
+ QtWSCalendar,
 // QtWSCheckLst,
 // QtWSCListBox,
  QtWSComCtrls,

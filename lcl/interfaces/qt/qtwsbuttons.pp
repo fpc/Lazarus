@@ -28,8 +28,8 @@ interface
 
 uses
   // Libs
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
@@ -153,8 +153,8 @@ var
   Str: WideString;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(AWincontrol, 'GetText')
-  then Exit;
+
+  if not WSCheckHandleAllocated(AWincontrol, 'GetText') then Exit;
 
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
@@ -172,8 +172,7 @@ class procedure TQtWSButton.SetText(const AWinControl: TWinControl; const AText:
 var
   Str: WideString;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
-  then Exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
 
   Str := UTF8Decode(AText);
 
@@ -193,8 +192,7 @@ var
   QColor: TQColor;
   Color: TColor;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
-  then Exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetColor') then Exit;
 
   if AWinControl.Color = CLR_INVALID then exit;
 
@@ -273,8 +271,8 @@ var
   Str: WideString;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(AWincontrol, 'GetText')
-  then Exit;
+
+  if not WSCheckHandleAllocated(AWincontrol, 'GetText') then Exit;
 
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
@@ -293,8 +291,8 @@ class procedure TQtWSBitBtn.SetText(const AWinControl: TWinControl;
 var
   Str: WideString;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
-  then Exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
+
   Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
@@ -313,8 +311,7 @@ var
   QColor: TQColor;
   Color: TColor;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
-  then Exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetColor') then Exit;
 
   if AWinControl.Color = CLR_INVALID then exit;
 

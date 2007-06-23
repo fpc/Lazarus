@@ -27,8 +27,8 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
@@ -267,6 +267,24 @@ type
     procedure setToolTip(tip: WideString);
     procedure show;
     procedure hide;
+  end;
+  
+  { TQtButtonGroup }
+  
+  TQtButtonGroup = class(TObject)
+  private
+  public
+    constructor Create(AParent: QObjectH); virtual;
+    destructor Destroy; override;
+    Handle: QButtonGroupH;
+  public
+    procedure AddButton(AButton: QAbstractButtonH); overload;
+    procedure AddButton(AButton: QAbstractButtonH; Id: Integer); overload;
+    function ButtonFromId(id: Integer): QAbstractButtonH;
+    procedure RemoveButton(AButton: QAbstractButtonH);
+    function GetExclusive: Boolean;
+    procedure SetExclusive(AExclusive: Boolean);
+    procedure SignalButtonClicked(AButton: QAbstractButtonH); cdecl;
   end;
 
   procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
@@ -1412,6 +1430,59 @@ end;
 procedure TQtSystemTrayIcon.hide;
 begin
   QSystemTrayIcon_hide(handle);
+end;
+
+{ TQtButtonGroup }
+
+constructor TQtButtonGroup.Create(AParent: QObjectH);
+var
+  Hook: QObject_hookH;
+  Method: TMethod;
+begin
+  inherited Create;
+
+  Handle := QButtonGroup_create(AParent);
+end;
+
+destructor TQtButtonGroup.Destroy;
+begin
+  QButtonGroup_destroy(Handle);
+  inherited Destroy;
+end;
+
+procedure TQtButtonGroup.AddButton(AButton: QAbstractButtonH); overload;
+begin
+  QButtonGroup_addButton(Handle, AButton);
+end;
+
+procedure TQtButtonGroup.AddButton(AButton: QAbstractButtonH; id: Integer); overload;
+begin
+  QButtonGroup_addButton(Handle, AButton, id);
+end;
+
+function TQtButtonGroup.ButtonFromId(id: Integer): QAbstractButtonH;
+begin
+  Result := QButtonGroup_button(Handle, id);
+end;
+
+procedure TQtButtonGroup.RemoveButton(AButton: QAbstractButtonH);
+begin
+  QButtonGroup_removeButton(Handle, AButton);
+end;
+
+procedure TQtButtonGroup.SetExclusive(AExclusive: Boolean);
+begin
+  QButtonGroup_setExclusive(Handle, AExclusive);
+end;
+
+function TQtButtonGroup.GetExclusive: Boolean;
+begin
+  QButtonGroup_exclusive(Handle);
+end;
+
+procedure TQtButtonGroup.SignalButtonClicked(AButton: QAbstractButtonH); cdecl;
+begin
+  {todo}
 end;
 
 end.

@@ -27,8 +27,8 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
@@ -114,6 +114,11 @@ type
     procedure Text(retval: PWideString);
     function isChecked: Boolean;
     procedure setChecked(p1: Boolean);
+    procedure SignalPressed; cdecl;
+    procedure SignalReleased; cdecl;
+    procedure SignalClicked(Checked: Boolean = False); cdecl;
+    procedure SignalClicked2; cdecl;
+    procedure SignalToggled(Checked: Boolean); cdecl;
   end;
 
   { TQtPushButton }
@@ -137,7 +142,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-{$ifndef USE_QT_4_2}
+{$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
 {$endif}
     Splitter: QSplitterH;
@@ -186,6 +191,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
+    procedure signalStateChanged(p1: Integer); cdecl;
   end;
 
   { TQtRadioButton }
@@ -205,9 +211,16 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   private
-    VBoxLayout: QVBoxLayoutH;
   public
     destructor Destroy; override;
+  end;
+  
+  TQtButtonGroupBox = class(TQtGroupBox)
+  protected
+  private
+  public
+    ButtonGroup: TQtButtonGroup;
+    VBoxLayout: QVBoxLayoutH;
   end;
 
   { TQtFrame }
@@ -457,9 +470,7 @@ type
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
     procedure SignalItemSelectionChanged; cdecl;
-
   end;
-
 
   { TQtMenu }
 
@@ -554,6 +565,21 @@ type
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setViewPort(AWidget: TQtWidget);
+  end;
+  
+  { TQtCalendar }
+
+  TQtCalendar = class(TQtWidget)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    AYear, AMonth, ADay: Word;
+    destructor Destroy; override;
+    procedure SignalActivated(ADate: QDateH); cdecl;
+    procedure SignalClicked(ADate: QDateH); cdecl;
+    procedure SignalSelectionChanged; cdecl;
+    procedure SignalCurrentPageChanged(p1, p2: Integer); cdecl;
   end;
   
 implementation
@@ -657,7 +683,7 @@ begin
   inherited Destroy;
 end;
 
-{.$IFDEF VerboseQt}
+{$IFDEF VerboseQt}
 function EventTypeToStr(Event:QEventH):string;
 begin
   case QEvent_type(Event) of
@@ -772,7 +798,7 @@ begin
     QEventMaxUser: result:='QEventMaxUser';
   end;
 end;
-{.$ENDIF}
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: TQtWidget.EventFilter
@@ -973,8 +999,6 @@ begin
     WriteLn(' message: ', Msg.Msg);
   {$endif}
   try
-    {TODO: TStringGrid raises AV here while calling
-     editor ... fixme}
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
@@ -1012,11 +1036,10 @@ begin
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   Msg.Keys := 0;
   
-  //TODO: test this.
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   if Modifiers and qtShiftModifier <> 0 then Msg.Keys := Msg.Keys or MK_SHIFT;
   if Modifiers and qtControlModifier<>0 then Msg.Keys := Msg.Keys or MK_CONTROL;
-  //TODO: what about ALT, META, NUMKEYPAD?
+  { TODO: add support for ALT, META and NUMKEYPAD }
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -1781,6 +1804,73 @@ begin
   QAbstractButton_setChecked(QAbstractButtonH(Widget), p1);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SignalPressed
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SignalPressed; cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_KEYDOWN;
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SignalReleased
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SignalReleased; cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_KEYUP;
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SignalClicked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SignalClicked(Checked: Boolean = False); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SignalClicked2
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SignalClicked2; cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CLICKED;
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SignalToggled
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SignalToggled(Checked: Boolean); cdecl;
+begin
+ {use this for TToggleButton }
+end;
+
+
 { TQtPushButton }
 
 function TQtPushButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -1855,7 +1945,7 @@ function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
   r: TRect;
-{$ifndef USE_QT_4_2}
+{$ifdef USE_QT_4_3}
   mdihandle: QMdiAreaH;
   toolbar: QToolBarH;
 {$endif}
@@ -1867,10 +1957,6 @@ begin
 
   w := QApplication_activeWindow;
   
-  // mainform should be TQtMainWindow ...
-  {$ifndef USE_QT_4_2}
-    {$define mdidevel}
-  {$endif}
   if not Assigned(w) and not (Application.MainForm.Visible) then
   begin
     Result := QMainWindow_create(nil, QtWindow);
@@ -1881,30 +1967,31 @@ begin
     if Assigned(Application.MainForm.Menu) then
      QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
      
-    {$ifdef mdidevel}
-    MDIAreaHandle := QMdiArea_create(Result);
+    {$ifdef USE_QT_4_3}
+      MDIAreaHandle := QMdiArea_create(Result);
 
-    QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
-    {$endif}
-    
-    {$ifndef USE_QT_4_2}
+      QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
+
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
     {$endif}
-
+    
   end else
   begin
-    {$ifdef mdidevel}
-    if LCLObject.Tag = 9999 then
-    begin
-      Result := QMdiSubWindow_create(NiL, QtWindow);
+    {$ifdef USE_QT_4_3}
+      if LCLObject.Tag = 9999 then
+      begin
+        Result := QMdiSubWindow_create(NiL, QtWindow);
       
-      mdiHandle := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
-      if Assigned(mdiHandle) then
-       QMdiArea_addSubWindow(mdiHandle, QMdiSubWindowH(Result), QtWindow);
-
-    end else
+        mdiHandle := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
+        if Assigned(mdiHandle) then
+         QMdiArea_addSubWindow(mdiHandle, QMdiSubWindowH(Result), QtWindow);
+      end
+      else
+        Result := QWidget_create(nil, QtWindow);
+    {$else}
+      Result := QWidget_create(nil, QtWindow);
     {$endif}
-    Result := QWidget_create(nil, QtWindow);
+    
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
   end;
@@ -2152,17 +2239,24 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtCheckBox.Create');
   {$endif}
-
+  
   if (LCLObject.Parent is TCustomCheckGroup) then
   begin
     Result := QCheckBox_create;
-    QLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
+    
+    QLayout_addWidget(TQtButtonGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
+    
+    if TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
+    TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(False);
+    
+    TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QCheckBoxH(Result));
   end
   else
   begin
     Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
     Result := QCheckBox_create(Parent);
   end;
+
 end;
 
 procedure TQtCheckBox.SetGeometry;
@@ -2197,8 +2291,7 @@ end;
 function TQtCheckBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
-
-  // Inherited Callbacks
+  
   inherited EventFilter(Sender, Event);
 end;
 
@@ -2222,6 +2315,20 @@ begin
   QCheckBox_setCheckState(QCheckBoxH(Widget), state);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtCheckBox.signalStateChanged
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtCheckBox.signalStateChanged(p1: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  DeliverMessage(Msg);
+end;
+
 { TQtRadioButton }
 
 function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -2237,7 +2344,22 @@ begin
   if (LCLObject.Parent is TCustomRadioGroup) then
   begin
     Result := QRadioButton_create;
-    QLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
+
+{$ifdef QT_HIDDEN_BUTTON_WORKAROUND}
+    if LCLObject.Name = 'HiddenRadioButton' then
+      QWidget_hide(Result)
+    else
+    begin
+{$endif}
+      QLayout_addWidget(TQtButtonGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
+    
+      if not TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
+      TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(True);
+
+      TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QRadioButtonH(Result));
+{$ifdef QT_HIDDEN_BUTTON_WORKAROUND}
+    end;
+{$endif}
   end
   else
   begin
@@ -2288,6 +2410,8 @@ end;
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
+  R: TRect;
+  Method: TMethod;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2295,15 +2419,6 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QGroupBox_create(Parent);
-
-  {------------------------------------------------------------------------------
-    Adds a vertical layout if the control is a group
-   ------------------------------------------------------------------------------}
-  if (LCLOBject is TCustomRadioGroup) or (LCLObject is TCustomCheckGroup) then
-  begin
-    VBoxLayout := QVBoxLayout_create;
-    QWidget_setLayout(Result, VBoxLayout);
-  end;
 end;
 
 
@@ -2323,6 +2438,7 @@ begin
 
   inherited Destroy;
 end;
+
 
 { TQtFrame }
 
@@ -2425,7 +2541,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtAbstractSlider.SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl;
 begin
-  {TODO: what to do on rangeChanged ? repaint or recount pageSize() }
+  { TODO: find out what needs to be done on rangeChanged event
+    Possibilities: repaint or recount pageSize() }
  {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.rangeChanged() to min=',minimum,' max=',maximum);
  {$endif}
@@ -2572,7 +2689,7 @@ begin
   LMScroll.Msg := LM_VSCROLL;
 
   LMScroll.Pos := p1;
-  LMScroll.ScrollCode := SIF_POS; {what about SIF_TRACKPOS ?!?}
+  LMScroll.ScrollCode := SIF_POS; { SIF_TRACKPOS }
 
   Msg := @LMScroll;
   
@@ -2917,7 +3034,6 @@ procedure TQtTextEdit.SetAlignment(const AAlignment: TAlignment);
 var
   TextCursor: QTextCursorH;
 begin
-  // Paul Ishenin:
   // QTextEdit supports alignment for every paragraph. We need to align all text.
   // So, we should select all text, set format, and clear selection
   
@@ -3207,12 +3323,12 @@ begin
     WriteLn('TQtAbstractSpinBox.SignalEditingFinished');
   {$endif}
   FillChar(Msg, SizeOf(Msg), #0);
-  {TODO: What message should be sended here ?!?
-   problem:
-   everything is fine when we work with mouse,or
-   press TabKey to select next control, but if we
-   connect OnKeyDown and say eg. VK_RETURN:SelectNext(ActiveControl, true, true)
-   then spinedit text is always selected, nothing important but looks ugly.}
+  { TODO: Find out which message should be sended here
+    problem:
+     everything is fine when we work with mouse, or
+     press TabKey to select next control, but if we
+     connect OnKeyDown and say eg. VK_RETURN: SelectNext(ActiveControl, true, true)
+     then spinedit text is always selected, nothing important but looks ugly.}
 //  Msg.Msg := LM_EXIT;
 //  DeliverMessage(Msg);
 end;
@@ -4232,6 +4348,135 @@ begin
       QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
       QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
     end;
+  end;
+end;
+
+  { TQtCalendar }
+
+{------------------------------------------------------------------------------
+  Function: TQtCalendar.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtCalendar.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtCalendar.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QCalendarWidget_create(Parent);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCalendar.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtCalendar.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtCalendar.Destroy');
+  {$endif}
+  QCalendarWidget_destroy(QCalendarWidgetH(Widget));
+  Widget:=nil;
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCalendar.SignalActivated
+  Params:  None
+  Returns: Nothing
+           Sends signal when RETURN pressed on selected date.
+ ------------------------------------------------------------------------------}
+procedure TQtCalendar.SignalActivated(ADate: QDateH); cdecl;
+var
+  Msg: TLMessage;
+  y,m,d: Integer;
+begin
+  {this one triggers if we press RETURN on selected date
+   shell we send KeyDown here ?!?}
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_DAYCHANGED;
+  y := QDate_year(ADate);
+  m := QDate_month(ADate);
+  d := QDate_day(ADate);
+  if (y <> aYear) or (m <> aMonth)
+  or (d <> aDay) then
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCalendar.SignalClicked
+  Params:  None
+  Returns: Nothing
+           Sends msg LM_DAYCHANGED when OldDate<>NewDate
+ ------------------------------------------------------------------------------}
+procedure TQtCalendar.SignalClicked(ADate: QDateH); cdecl;
+var
+  Msg: TLMessage;
+  y,m,d: Integer;
+begin
+//  writeln('TQtCalendar.signalClicked');
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_DAYCHANGED;
+  y := QDate_year(ADate);
+  m := QDate_month(ADate);
+  d := QDate_day(ADate);
+  if (y <> aYear) or (m <> aMonth)
+  or (d <> aDay) then
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCalendar.SignalSelectionChanged
+  Params:  None
+  Returns: Nothing
+
+  Notes: no event for date changed by keyboard ?!?
+   always triggers even if selection isn't changed ...
+   this is not Qt4 bug ... tested with pure Qt C++ app
+ ------------------------------------------------------------------------------}
+procedure TQtCalendar.SignalSelectionChanged; cdecl;
+var
+  Msg: TLMessage;
+begin
+//  writeln('TQtCalendar.SignalSelectionChanged');
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_DAYCHANGED;
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCalendar.SignalCurrentPageChanged
+  Params:  None
+  Returns: Nothing
+
+  Notes: fixme what's wrong with those values ?!?
+   with pure Qt C++ app this works ok, but via bindings get
+   impossible year & month values ...
+ ------------------------------------------------------------------------------}
+procedure TQtCalendar.SignalCurrentPageChanged(p1, p2: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+  // writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  if AYear<>p1 then
+  begin
+    Msg.Msg := LM_YEARCHANGED;
+    DeliverMessage(Msg);
+  end;
+
+  if AMonth<>p2 then
+  begin
+    Msg.Msg := LM_MONTHCHANGED;
+    DeliverMessage(Msg);
   end;
 end;
 

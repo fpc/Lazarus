@@ -28,8 +28,8 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
@@ -96,7 +96,7 @@ var
   FIsFloat: Boolean;
 begin
 
-  {qt4 have two different QSpinBoxes, one is QSpinBox (integer), another is QDoubleSpinBox (double) }
+  { qt4 has two different QSpinBoxes, one is QSpinBox (integer), another is QDoubleSpinBox (double) }
 
   FIsFloat := TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0;
   
@@ -110,7 +110,9 @@ begin
     Hook := QAbstractSpinBox_hook_create(QtFloatSpinBox.Widget);
     TEventFilterMethod(Method) := QtFloatSpinBox.EventFilter;
     QObject_hook_hook_events(Hook, Method);
-    {TODO: what TLMessage should be sended ? }
+
+    {TODO: find out which TLMessage should be sended }
+
     QAbstractSpinBox_editingFinished_Event(Method) := QtFloatSpinBox.SignalEditingFinished;
     QAbstractSpinBox_hook_hook_editingFinished(QAbstractSpinBox_hook_create(QtFloatSpinBox.Widget), Method);
 
@@ -122,19 +124,18 @@ begin
     Hook := QAbstractSpinBox_hook_create(QtSpinBox.Widget);
     TEventFilterMethod(Method) := QtSpinBox.EventFilter;
     QObject_hook_hook_events(Hook, Method);
-    {TODO: what TLMessage should be sended ?     }
+
+    {TODO: find out which TLMessage should be sended }
+
     QAbstractSpinBox_editingFinished_Event(Method) := QtSpinBox.SignalEditingFinished;
     QAbstractSpinBox_hook_hook_editingFinished(QAbstractSpinBox_hook_create(QtSpinBox.Widget), Method);
 
     QSpinBox_valueChanged_Event(Method) := QtSpinBox.SignalValueChanged;
     QSpinBox_hook_hook_valueChanged(QSpinBox_hook_create(QtSpinBox.Widget), Method);
   end;
-    
   
-  if FIsFloat then
-  Result := THandle(QtFloatSpinBox)
-  else
-  Result := THandle(QtSpinBox);
+  if FIsFloat then Result := THandle(QtFloatSpinBox)
+  else Result := THandle(QtSpinBox);
 end;
 
 {------------------------------------------------------------------------------
@@ -144,11 +145,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
-
   if TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0 then
-  TQtFloatSpinBox(AWinControl.Handle).Free
+   TQtFloatSpinBox(AWinControl.Handle).Free
   else
-  TQtSpinBox(AWinControl.Handle).Free;
+   TQtSpinBox(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
@@ -156,17 +156,16 @@ end;
 class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
   if ACustomFloatSpinEdit.DecimalPlaces > 0 then
-  Result := QDoubleSpinBox_value(QDoubleSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget))
+   Result := QDoubleSpinBox_value(QDoubleSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget))
   else
-  Result := QSpinBox_value(QSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget));
+   Result := QSpinBox_value(QSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget));
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
-   QtSpinEdit: TQtSpinBox;
-   QtFloatSpinEdit: TQtFloatSpinBox;
+  QtSpinEdit: TQtSpinBox;
+  QtFloatSpinEdit: TQtFloatSpinBox;
 begin
-
   if ACustomFloatSpinEdit.DecimalPlaces > 0 then
   begin
     QtFloatSpinEdit := TQtFloatSpinBox(ACustomFloatSpinEdit.Handle);
@@ -175,7 +174,8 @@ begin
     QDoubleSpinBox_setMinimum(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.MinValue);
     QDoubleSpinBox_setMaximum(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.MaxValue);
     QDoubleSpinBox_setSingleStep(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.Increment);
-  end else
+  end
+  else
   begin
     QtSpinEdit := TQtSpinBox(ACustomFloatSpinEdit.Handle);
     QSpinBox_setValue(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.Value));
@@ -183,7 +183,6 @@ begin
     QSpinBox_setMaximum(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.MaxValue));
     QSpinBox_setSingleStep(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.Increment));
   end;
-  
 end;
 
 initialization

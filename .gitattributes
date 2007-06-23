@@ -2678,7 +2678,7 @@ lcl/interfaces/gtk2/tests/checkbuttononfixed.lpr svneol=native#text/plain
 lcl/interfaces/qt/README.txt svneol=native#text/plain
 lcl/interfaces/qt/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/qt/qt4.pas svneol=native#text/plain
-lcl/interfaces/qt/qt42.pas -text
+lcl/interfaces/qt/qt43.pas -text
 lcl/interfaces/qt/qtcallback.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtint.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtlclintf.inc svneol=native#text/pascal

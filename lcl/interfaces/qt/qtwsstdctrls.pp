@@ -28,8 +28,8 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_2}
-  qt42,
+{$ifdef USE_QT_4_3}
+  qt43,
 {$else}
   qt4,
 {$endif}
@@ -1024,14 +1024,29 @@ end;
 class function TQtWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtCheckBox: TQtCheckBox;
+  Method: TMethod;
+  Hook : QAbstractButton_hookH;
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
 
   // Focus
+  // QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
+  {we have a bug in LCL when parent is TCustomCheckGroup, it doesn't set sizes for items ?!? Width = 0 , Height = 0}
+  // writeln('WW=',QWidget_width(QtCheckBox.Widget),' WH=',QWidget_height(QtCheckBox.Widget),' WCW=',AWinControl.Width,' WCH=',AWinControl.Height,' CAPTION=',TCustomCheckBox(AWinControl).Caption);
 
-  //QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
-  
-  // Returns the Handle
+  Hook := QCheckBox_hook_create(QtCheckBox.Widget);
+
+  TEventFilterMethod(Method) := QtCheckBox.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+
+  QCheckBox_stateChanged_Event(Method) := QtCheckBox.SignalStateChanged;
+  QCheckBox_hook_hook_stateChanged(QCheckBox_hook_create(QtCheckBox.Widget), Method);
+    
+  {we must cheat TCustomCheckGroup here with some reasonable CheckBox size...}
+  if AWinControl.Height = 0 then
+  AWinControl.SetInitialBounds(0, 0, 100, 20);
 
   Result := THandle(QtCheckBox);
 end;
@@ -1132,19 +1147,27 @@ class function TQtWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtRadioButton: TQtRadioButton;
-{  Method: TMethod;
-  Hook : QObject_hookH;}
+  Method: TMethod;
+  Hook : QAbstractButton_hookH;
 begin
+
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
 
   // Various Events
 
-{  Hook := QObject_hook_create(QtRadioButton.Widget);
+  Hook := QAbstractButton_hook_create(QtRadioButton.Widget);
 
   TEventFilterMethod(Method) := QtRadioButton.EventFilter;
 
-  QObject_hook_hook_events(Hook, Method);}
+  QObject_hook_hook_events(Hook, Method);
   
+  {we must cheat TCustomRadioGroup here with some reasonable RadioButton size...}
+  if AWinControl.Height = 0 then
+   AWinControl.SetInitialBounds(0, 0, 100, 20);
+
+  QAbstractButton_clicked_Event(Method) := QtRadioButton.SignalClicked;
+  QAbstractButton_hook_hook_clicked(QAbstractButton_hook_create(QtRadioButton.Widget), Method);
+
   // Focus
   
   //QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);
@@ -1182,15 +1205,24 @@ class function TQtWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
+  Method: TMethod;
+  Hook : QGroupBox_hookH;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
 
 // If SetSlots is uncommented, then TRadioGroup stops working
-// This needs further investigation
-//  SetSlots(QtButtonGroup);
+// This needs further investigation --> Problem is with child controls sizes (zeljko@holobit.net)
+// SetSlots(QtButtonGroup);
 
+  Hook := QGroupBox_hook_create(QtGroupBox.Widget);
+  TEventFilterMethod(Method) := QtGroupBox.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+  
   Str := UTF8Decode(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
+  
+// LCL doesn't have such features ...
+// QGroupBox_setCheckable(QGroupBoxH(QtGroupBox.Widget), True);
 
   // Returns the Handle
 
