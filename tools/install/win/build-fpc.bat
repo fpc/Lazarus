@@ -13,7 +13,7 @@ cd %SOURCE_DIR%
 
 :: apply patch
 if [%PATCHFILE]==[] GOTO NO_PATCH
-patch -p0 -i %PATCHDIR%\%PATCHFILE%
+%PATCHEXE% -p0 -i %PATCHDIR%\%PATCHFILE%
 
 :NO_PATCH 
 
@@ -49,10 +49,10 @@ IF %HASFCL%==1 %MAKEEXE% fcl_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER%
 FOR /F %%L IN ('%INSTALL_BINDIR%\fpc.exe -PB') DO SET COMPILER=%%L
 
 :: move fpc source to final location
-gmkdir -p %INSTALL_BASE%\source
 mv %BUILDDIR%\fpc\source %INSTALL_BASE% >> %LOGFILE%
-
-rm -rf %SOURCE_DIR%
 
 %OLDCURDRIVE%
 cd %OLDCURDIR%
+
+rm -rf %SOURCE_DIR%
+
