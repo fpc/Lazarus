@@ -33,6 +33,7 @@ var
   DC : hDC;
   Flags: Cardinal;
   OldFont: HGDIOBJ;
+  LabelText: string;
 begin
   DC := GetDC(Parent.Handle);
   try
@@ -43,8 +44,9 @@ begin
       inc(Flags,DT_WordBreak)
     else if not HasMultiLine then
       inc(Flags,DT_SingleLine);
-    
-    DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
+
+    LabelText:=GetLabelText;
+    DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
     // add one to be able to display disabled label
     AWidth := R.Right - R.Left + 1;
@@ -64,7 +66,7 @@ function TCustomLabel.HasMultiLine: boolean;
 var
   s: String;
 begin
-  s:=Caption;
+  s:=GetLabelText;
   result:=(pos(#10,s)>0) or (pos(#13,s)>0);
 end;
 
@@ -238,7 +240,7 @@ begin
   if not FShowAccelChar then exit;
   if FFocusControl = nil then exit;
 
-  if IsAccel(Message.CharCode, Caption) and FFocusControl.CanFocus then
+  if IsAccel(Message.CharCode, GetLabelText) and FFocusControl.CanFocus then
   begin
     Result := true;
     FFocusControl.SetFocus;
@@ -345,7 +347,7 @@ var
   OldFontHeight: LongInt;
 begin
   Result:=false;
-  if not CalcFittingFontHeight(Caption,Width,Height,NeededWidth,NeededHeight,
+  if not CalcFittingFontHeight(GetLabelText,Width,Height,NeededWidth,NeededHeight,
                                NewFontHeight) then exit;
   if Font.Height=NewFontHeight then exit;
   //debugln('TCustomLabel.AdjustFontForOptimalFill OldFontHeight=',dbgs(Font.Height),' NewFontHeight=',dbgs(NewFontHeight));
