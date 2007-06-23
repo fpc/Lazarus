@@ -27,6 +27,9 @@ SET LAZSVNDIR=%2
 :: Path to latest release compiler
 SET RELEASE_PPC=%3
 
+:: Name of fpc patch file
+SET PATCHFILE=%4
+
 ::=====================================================================
 :: no change needed after this.
 
@@ -38,6 +41,7 @@ SET FPCFULLTARGET=%FPCTARGETCPU%-%FPCTARGETOS%
 SET FPCBINDIR=%FPCSVNDIR%\install\binw%FPCTARGETOS:~-2%
 SET MAKEEXE=%FPCBINDIR%\make.exe
 SET LOGFILE=%CD%\installer.log
+SET PATCHDIR=%CD%\..\patches
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
@@ -62,12 +66,6 @@ call build-fpc.bat
 mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
-
-:: copy fpc source
-gmkdir -p %INSTALL_BASE%\source
-%SVN% export %FPCSVNDIR%\fpcsrc\rtl %INSTALL_BASE%\source\rtl >> %LOGFILE%
-IF %HASFCL%==1 %SVN% export %FPCSVNDIR%\fpcsrc\fcl %INSTALL_BASE%\source\fcl >> %LOGFILE%
-%SVN% export %FPCSVNDIR%\fpcsrc\packages %INSTALL_BASE%\source\packages >> %LOGFILE%
 
 :: exit if no compiler has been made
 if not exist %INSTALL_BINDIR%\fpc.exe goto END
@@ -107,9 +105,10 @@ goto STOP
 :USAGE
 @echo off
 echo Usage:
-echo create_installer.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER
+echo create_installer.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER [PATCHFILE]
 echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
 echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
+echo PATCHFILE: optional patch file for the fpc sources
 
 :STOP

@@ -3,6 +3,7 @@ EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
 #define FPCVersion GetEnv('FPCVersion')
+#define FPCLongVersion GetEnv('FPCLongVersion')
 #define FPCTargetOS GetEnv('FPCTargetOS')
 #define FPCFullTarget GetEnv('FPCFullTarget')
 #define AppName "Lazarus"
@@ -18,7 +19,7 @@ AppUpdatesURL=http://www.lazarus.freepascal.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|c:\lazarus}
 DefaultGroupName={#AppName}
-OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCVersion}-{#SetupDate}-{#FPCTargetOS}
+OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCLongVersion}-{#SetupDate}-{#FPCTargetOS}
 InternalCompressLevel=ultra
 SolidCompression=true
 VersionInfoVersion={#AppVersion}
