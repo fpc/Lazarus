@@ -213,15 +213,11 @@ type
   private
   public
     destructor Destroy; override;
-  end;
-  
-  TQtButtonGroupBox = class(TQtGroupBox)
-  protected
-  private
   public
     ButtonGroup: TQtButtonGroup;
-    VBoxLayout: QVBoxLayoutH;
+    BoxLayout: QGridLayoutH;
   end;
+
 
   { TQtFrame }
 
@@ -2244,12 +2240,12 @@ begin
   begin
     Result := QCheckBox_create;
     
-    QLayout_addWidget(TQtButtonGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
-    
-    if TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
-    TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(False);
-    
-    TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QCheckBoxH(Result));
+    QGridLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).BoxLayout, Result);
+
+    if TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
+    TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(False);
+
+    TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QCheckBoxH(Result));
   end
   else
   begin
@@ -2351,12 +2347,12 @@ begin
     else
     begin
 {$endif}
-      QLayout_addWidget(TQtButtonGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
-    
-      if not TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
-      TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(True);
+      QGridLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).BoxLayout, Result);
 
-      TQtButtonGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QRadioButtonH(Result));
+      if not TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
+      TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(True);
+
+      TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QRadioButtonH(Result));
 {$ifdef QT_HIDDEN_BUTTON_WORKAROUND}
     end;
 {$endif}

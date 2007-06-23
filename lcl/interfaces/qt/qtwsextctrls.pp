@@ -440,24 +440,40 @@ end;
 class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtGroupBox: TQtButtonGroupBox;
+  QtGroupBox: TQtGroupBox;
   Str: WideString;
   Method: TMethod;
   Hook : QGroupBox_hookH;
+  i: Integer;
 begin
 
-  QtGroupBox := TQtButtonGroupBox.Create(AWinControl, AParams);
+  QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
 
-  QtGroupBox.VBoxLayout := QVBoxLayout_create;
-  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.VBoxLayout);
-  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.VBoxLayout));
+  Str := UTF8Decode(AWinControl.Caption);
+  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
+
+  QtGroupBox.BoxLayout := QGridLayout_create(QtGroupBox.Widget);
+  
+  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.BoxLayout);
+  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.BoxLayout));
+  
+  {QGridLayout don't know anything about TCustomRadioGroup Col count so initialize cols }
+  for i := 0 to TCustomRadioGroup(AWinControl).Columns - 1 do
+  begin
+    QGridLayout_setColumnMinimumWidth(QtGroupBox.BoxLayout, i, 32);
+    QGridLayout_setColumnStretch(QtGroupBox.BoxLayout, i, 0);
+  end;
+
+  {QGridLayout don't know anything about TCustomRadioGroup Row count so initialize rows }
+  for i := 0 to TCustomRadioGroup(AWinControl).Items.Count - 1 do
+  begin
+    QGridLayout_setRowMinimumHeight(QtGroupBox.BoxLayout, i, 22 {default height of radiobutton});
+    QGridLayout_setRowStretch(QtGroupBox.BoxLayout, i, 0);
+  end;
 
   Hook := QGroupBox_hook_create(QtGroupBox.Widget);
   TEventFilterMethod(Method) := QtGroupBox.EventFilter;
   QObject_hook_hook_events(Hook, Method);
-
-  Str := UTF8Decode(AWinControl.Caption);
-  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   Result := THandle(QtGroupBox);
 end;
@@ -471,6 +487,12 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomRadioGroup.DestroyHandle(const AWinControl: TWinControl);
 begin
+  if Assigned(TQtGroupBox(AWinControl.Handle).ButtonGroup) then
+  TQtGroupBox(AWinControl.Handle).ButtonGroup.Free;
+
+  if TQtGroupBox(AWinControl.Handle).BoxLayout <> NiL then
+  QGridLayout_destroy(TQtGroupBox(AWinControl.Handle).BoxLayout);
+
   TQtGroupBox(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
@@ -496,23 +518,39 @@ end;
 class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtGroupBox: TQtButtonGroupBox;
+  QtGroupBox: TQtGroupBox;
   Str: WideString;
   Method: TMethod;
   Hook : QGroupBox_hookH;
+  i: Integer;
 begin
 
-  QtGroupBox := TQtButtonGroupBox.Create(AWinControl, AParams);
-  QtGroupBox.VBoxLayout := QVBoxLayout_create;
-  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.VBoxLayout);
-  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.VBoxLayout));
+  QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
+  
+  Str := UTF8Decode(AWinControl.Caption);
+  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
+  QtGroupBox.BoxLayout := QGridLayout_create(QtGroupBox.Widget);
+  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.BoxLayout);
+  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.BoxLayout));
+  
+  {QGridLayout don't know anything about TCustomCheckGroup Col count so initialize cols }
+  for i := 0 to TCustomCheckGroup(AWinControl).Columns - 1  do
+  begin
+    QGridLayout_setColumnMinimumWidth(QtGroupBox.BoxLayout, i, 32);
+    QGridLayout_setColumnStretch(QtGroupBox.BoxLayout, i, 0);
+  end;
+  
+  {QGridLayout don't know anything about TCustomCheckGroup Row count so initialize rows }
+  for i := 0 to TCustomCheckGroup(AWinControl).Items.Count - 1 do
+  begin
+    QGridLayout_setRowMinimumHeight(QtGroupBox.BoxLayout, i, 22 {default height of checkbox});
+    QGridLayout_setRowStretch(QtGroupBox.BoxLayout, i, 0);
+  end;
+  
   Hook := QGroupBox_hook_create(QtGroupBox.Widget);
   TEventFilterMethod(Method) := QtGroupBox.EventFilter;
   QObject_hook_hook_events(Hook, Method);
-
-  Str := UTF8Decode(AWinControl.Caption);
-  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   Result := THandle(QtGroupBox);
 end;
@@ -526,6 +564,12 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckGroup.DestroyHandle(const AWinControl: TWinControl);
 begin
+  if Assigned(TQtGroupBox(AWinControl.Handle).ButtonGroup) then
+  TQtGroupBox(AWinControl.Handle).ButtonGroup.Free;
+
+  if TQtGroupBox(AWinControl.Handle).BoxLayout <> NiL then
+  QGridLayout_destroy(TQtGroupBox(AWinControl.Handle).BoxLayout);
+
   TQtGroupBox(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;

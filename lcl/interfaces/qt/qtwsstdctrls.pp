@@ -1026,6 +1026,9 @@ var
   QtCheckBox: TQtCheckBox;
   Method: TMethod;
   Hook : QAbstractButton_hookH;
+  ATextWidth: Integer;
+  FM: QFontMetricsH;
+  Str: WideString;
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
 
@@ -1046,7 +1049,22 @@ begin
     
   {we must cheat TCustomCheckGroup here with some reasonable CheckBox size...}
   if AWinControl.Height = 0 then
-  AWinControl.SetInitialBounds(0, 0, 100, 20);
+  begin
+      { we must calculate text size to get real checkbox size in TCustomCheckGroup }
+      FM := QFontMetrics_create(QWidget_font(QtCheckBox.Widget));
+      try
+      Str := UTF8Encode(AWinControl.Caption);
+      ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
+      finally
+      QFontMetrics_destroy(FM);
+      end;
+      { now, textwidth + default width of checkbox, default height
+        qt doesn't align well control with text size < 100}
+      if ATextWidth < 100 then
+      ATextWidth := 100;
+      
+      AWinControl.SetInitialBounds(0, 0, ATextWidth + 22, 22);
+  end;
 
   Result := THandle(QtCheckBox);
 end;
@@ -1149,6 +1167,9 @@ var
   QtRadioButton: TQtRadioButton;
   Method: TMethod;
   Hook : QAbstractButton_hookH;
+  ATextWidth: Integer;
+  FM: QFontMetricsH;
+  Str: WideString;
 begin
 
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
@@ -1163,7 +1184,21 @@ begin
   
   {we must cheat TCustomRadioGroup here with some reasonable RadioButton size...}
   if AWinControl.Height = 0 then
-   AWinControl.SetInitialBounds(0, 0, 100, 20);
+  begin
+    { we must calculate text size to get real radiobutton size in TCustomRadioGroup }
+    FM := QFontMetrics_create(QWidget_font(QtRadioButton.Widget));
+    try
+    Str := UTF8Encode(AWinControl.Caption);
+    ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
+    finally
+    QFontMetrics_destroy(FM);
+    end;
+    { now, textwidth + default width of radiobutton (including space), default height
+      qt doesn't well align control with textsize < 100 }
+    if ATextWidth < 100 then
+    ATextWidth := 100;
+    AWinControl.SetInitialBounds(0, 0, ATextWidth + 22, 22);
+  end;
 
   QAbstractButton_clicked_Event(Method) := QtRadioButton.SignalClicked;
   QAbstractButton_hook_hook_clicked(QAbstractButton_hook_create(QtRadioButton.Widget), Method);
