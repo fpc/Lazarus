@@ -1140,8 +1140,14 @@ end;
 
 class procedure TGtk2WSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
   AList: TStrings; IsSorted: boolean);
+var
+  ComboWidget: PGtkWidget;
+  Handle: HWND;
 begin
-  // TODO
+  Handle := ACustomComboBox.Handle;
+  ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+  TGtkListStoreStringList(gtk_object_get_data(PGtkObject(ComboWidget),
+                                     GtkListItemLCLListTag)).Sorted := IsSorted;
 end;
 
 class procedure TGtk2WSCustomComboBox.SetColor(const AWinControl: TWinControl);
