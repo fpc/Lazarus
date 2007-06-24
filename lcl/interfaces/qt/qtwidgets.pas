@@ -2040,9 +2040,17 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtMainWindow.GetContainerWidget
+  Params:  None
+  Returns: Nothing
+
+  The main window has a special container widget to handle the size of the menu
+ ------------------------------------------------------------------------------}
 function TQtMainWindow.GetContainerWidget: QWidgetH;
 begin
-  Result := CentralWidget;
+  if CentralWidget <> nil then Result := CentralWidget
+  else Result := Widget;
 end;
 
 {------------------------------------------------------------------------------
