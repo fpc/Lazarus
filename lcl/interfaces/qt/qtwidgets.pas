@@ -1972,26 +1972,36 @@ begin
     
     MenuBar := TQtMenuBar.Create(Result);
     
-    { To make sure Qt will manage automatically the size of the menu,
+    {------------------------------------------------------------------------------
+      To make sure Qt will manage automatically the size of the menu,
       we need to both use setMenuBar and also create a central widget
-      on the form, on top of which, the other components will be placed }
-    
+      on the form, on top of which, the other components will be placed
+
+      If we are supporting MDI, then the MDIArea widget can be used as
+      central widget. If not, we create an empty widget.
+
+      In both cases the widget is transparent to events, so the main
+      window will receive and handle them
+     ------------------------------------------------------------------------------}
+
     if Assigned(Application.MainForm.Menu) then
      QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
      
-    CentralWidget := QWidget_create(Result);
-
-    QMainWindow_setCentralWidget(QMainWindowH(Result), CentralWidget);
-
     {$ifdef USE_QT_4_3}
       MDIAreaHandle := QMdiArea_create(Result);
+
+      CentralWidget := MDIAreaHandle;
 
       QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
 
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
+    {$else}
+      CentralWidget := QWidget_create(Result);
+
+      QMainWindow_setCentralWidget(QMainWindowH(Result), CentralWidget);
     {$endif}
-    
-  end else
+  end
+  else
   begin
     {$ifdef USE_QT_4_3}
       if LCLObject.Tag = 9999 then
@@ -2011,7 +2021,6 @@ begin
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -2049,8 +2058,13 @@ end;
  ------------------------------------------------------------------------------}
 function TQtMainWindow.GetContainerWidget: QWidgetH;
 begin
-  if CentralWidget <> nil then Result := CentralWidget
-  else Result := Widget;
+  {$ifdef USE_QT_4_3}
+    if (CentralWidget <> nil) and (MDIAreaHandle = NiL) then Result := CentralWidget
+    else Result := Widget;
+  {$else}
+    if CentralWidget <> nil then Result := CentralWidget
+    else Result := Widget;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
