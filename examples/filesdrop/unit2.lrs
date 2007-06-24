@@ -1,0 +1,10 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm2','FORMDATA',[
+  'TPF0'#6'TForm2'#5'Form2'#4'Left'#3#166#1#6'Height'#2'8'#3'Top'#3'P'#2#5'Widt'
+  +'h'#3#217#1#18'HorzScrollBar.Page'#3#216#1#18'VertScrollBar.Page'#2'7'#7'Cap'
+  +'tion'#6#5'Form2'#12'ClientHeight'#2'8'#11'ClientWidth'#3#217#1#11'OnFilesDr'
+  +'op'#7#13'FormFilesDrop'#0#6'TLabel'#6'Label1'#4'Left'#2#13#6'Height'#2#14#3
+  +'Top'#2#18#5'Width'#3'('#1#7'Caption'#6'>Drag and drop files on this form an'
+  +'d see the results in memo. '#11'ParentColor'#8#0#0#0
+]);

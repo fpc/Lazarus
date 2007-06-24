@@ -931,6 +931,61 @@ Var
       then lmNotify.result := lmNotify.result or CDRFRESULT[ResultFlag];
     end;
   end;
+  
+  procedure HandleDropFiles;
+  var
+    Files: Array of String;
+    Drop: HDROP;
+    L: LongWord;
+    I, C: Integer;
+  {$IFDEF WindowsUnicodeSupport}
+    AnsiBuffer: string;
+    WideBuffer: WideString;
+  {$ENDIF}
+  begin
+    Drop := HDROP(WParam);
+    try
+      C := DragQueryFile(Drop, $FFFFFFFF, nil, 0); // get dropped files count
+      if C <= 0 then Exit;
+      
+      SetLength(Files, C);
+      for I := 0 to C - 1 do
+      begin
+        {$IFDEF WindowsUnicodeSupport}
+        if UnicodeEnabledOS then
+        begin
+          L := DragQueryFileW(Drop, I, nil, 0); // get I. file name length
+          SetLength(WideBuffer, L);
+          L := DragQueryFileW(Drop, I, @WideBuffer[1], L + 1);
+          SetLength(WideBuffer, L);
+          Files[I] := UTF8Encode(WideBuffer);
+        end
+        else
+        begin
+          L := DragQueryFile(Drop, I, nil, 0); // get I. file name length
+          SetLength(AnsiBuffer, L);
+          L := DragQueryFile(Drop, I, @AnsiBuffer[1], L + 1);
+          SetLength(WideBuffer, L);
+          Files[I] := ANSIToUTF8(AnsiBuffer);
+        end;
+        {$ELSE}
+        L := DragQueryFile(Drop, I, nil, 0); // get I. file name length
+        SetLength(Files[I], L);
+        DragQueryFile(Drop, I, PChar(Files[I]), L + 1);
+        {$ENDIF}
+      end;
+
+      if Length(Files) > 0 then
+      begin
+        if lWinControl is TCustomForm then
+          (lWinControl as TCustomForm).IntfFilesDrop(Files);
+        if Application <> nil then
+          Application.IntfFilesDrop(Files);
+      end;
+    finally
+      DragFinish(Drop);
+    end;
+  end;
 
   // Gets the cursor position relative to a given window
   function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
@@ -1614,14 +1669,16 @@ begin
         WinProcess := false;
       end;
     end;
-    {$IFDEF EnableWMDropFiles}
     WM_DROPFILES:
       begin
+        {$IFDEF EnableWMDropFiles}
         LMessage.Msg := LM_DROPFILES;
         LMessage.WParam := WParam;
         LMessage.LParam := LParam;
+        {$ENDIF}
+        
+        HandleDropFiles;
       end;
-    {$ENDIF}
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCACTIVATE:
     begin

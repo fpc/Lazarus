@@ -318,6 +318,8 @@ type
                                var CanClose : boolean) of object;
   THelpEvent = function(Command: Word; Data: Longint;
     var CallHelp: Boolean): Boolean of object;
+    
+  TFilesDropEvent = procedure (Sender: TObject; const FileNames: Array of String) of object;
 
   TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
 
@@ -371,6 +373,7 @@ type
     FOnCreate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
+    FOnFilesDrop: TFilesDropEvent;
     FOnHelp: THelpEvent;
     FOnHide: TNotifyEvent;
     FOnShortcut: TShortCutEvent;
@@ -498,6 +501,7 @@ type
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
     function  IsShortcut(var Message: TLMKey): boolean; virtual;
+    procedure IntfFilesDrop(const FileNames: Array of String);
     procedure IntfHelp(AComponent: TComponent);
   public
     // drag and dock
@@ -532,6 +536,7 @@ type
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
+    property OnFilesDrop: TFilesDropEvent read FOnFilesDrop write FOnFilesDrop;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnResize stored IsForm;
@@ -603,6 +608,7 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnEndDock;
+    property OnFilesDrop;
     property OnGetSiteInfo;
     property OnHide;
     property OnKeyDown;
@@ -922,6 +928,7 @@ type
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
+    FOnFilesDrop: TFilesDropEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
@@ -1055,6 +1062,7 @@ type
     procedure IntfEndSession;
     procedure IntfAppMinimize;
     procedure IntfAppRestore;
+    procedure IntfFilesDrop(const FileNames: Array of String);
   public
     procedure DoEscapeKey(AControl: TWinControl; var Key: Word;
                           Shift: TShiftState);
@@ -1087,6 +1095,7 @@ type
     property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write FOnQueryEndSession;
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
+    property OnFilesDrop: TFilesDropEvent read FOnFilesDrop write FOnFilesDrop;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
@@ -1112,6 +1121,7 @@ type
     FHintPause: Integer;
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
+    FOnFilesDrop: TFilesDropEvent;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
     FTitle: String;
@@ -1147,6 +1157,7 @@ type
     Procedure SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
     Procedure SetOnMinimize(Const AValue : TNotifyEvent);
     Procedure SetOnRestore(Const AValue : TNotifyEvent);
+    Procedure SetOnFilesDrop(const AValue: TFilesDropEvent);
     Procedure SetOnHelp(Const AValue : THelpEvent);
     Procedure SetOnHint(Const AValue : TNotifyEvent);
     Procedure SetOnShowHint(Const AValue : TShowHintEvent);
@@ -1174,6 +1185,7 @@ type
     property OnQueryEndSession : TQueryEndSessionEvent read FOnQueryEndSession write SetOnQueryEndSession;
     property OnMinimize : TNotifyEvent read FOnMinimize write SetOnMinimize;
     property OnRestore : TNotifyEvent read FOnRestore write SetOnRestore;
+    property OnFilesDrop: TFilesDropEvent read FOnFilesDrop write SetOnFilesDrop;
     property OnHelp: THelpEvent read FOnHelp write SetOnHelp;
     property OnHint: TNotifyEvent read FOnHint write SetOnHint;
     property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;

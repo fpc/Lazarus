@@ -262,6 +262,7 @@ examples/easter/*.bak
 examples/easter/units
 examples/exploremenu/*.bak
 examples/exploremenu/units
+examples/filesdrop/units[!!-~]*.bak
 examples/fontenum/*.bak
 examples/fontenum/units
 examples/grid_semaphor/*.bak

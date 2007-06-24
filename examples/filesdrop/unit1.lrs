@@ -1,0 +1,16 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'+'#1#6'Height'#3'a'#1#3'Top'#3#155#0#5'Wi'
+  +'dth'#3#189#2#18'HorzScrollBar.Page'#3#188#2#18'VertScrollBar.Page'#3'`'#1#7
+  +'Caption'#6#27'On Files Drop event example'#12'ClientHeight'#3'a'#1#11'Clien'
+  +'tWidth'#3#189#2#11'OnFilesDrop'#7#13'FormFilesDrop'#0#6'TLabel'#6'Label1'#4
+  +'Left'#2#13#6'Height'#2#14#3'Top'#2#18#5'Width'#3'('#1#7'Caption'#6'>Drag an'
+  +'d drop files on this form and see the results in memo. '#11'ParentColor'#8#0
+  +#0#5'TMemo'#5'Memo1'#4'Left'#2#12#6'Height'#3#31#1#3'Top'#2'0'#5'Width'#3#154
+  +#2#10'ScrollBars'#7#10'ssVertical'#8'TabOrder'#2#0#0#0#22'TApplicationProper'
+  +'ties'#22'ApplicationProperties1'#17'CaptureExceptions'#9#9'HintColor'#7#8'c'
+  +'lInfoBk'#13'HintHidePause'#3#196#9#9'HintPause'#3#244#1#13'HintShortCuts'#9
+  +#8'ShowHint'#9#11'OnFilesDrop'#7#31'ApplicationProperties1FilesDrop'#4'left'
+  +#2'~'#3'top'#3','#1#0#0#0
+]);

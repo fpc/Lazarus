@@ -1687,6 +1687,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCustomForm.IntfFilesDrop
+  Params:  FileNames - Dropped files
+
+  Invokes OnFilesDropEvent of the form.
+  This function is called by the interface.
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.IntfFilesDrop(const FileNames: array of String);
+begin
+  if Assigned(FOnFilesDrop) then FOnFilesDrop(Self, FileNames);
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomForm.IntfHelp(AComponent: TComponent);
 
   Show help for control or menu item.

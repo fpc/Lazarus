@@ -1449,7 +1449,17 @@ begin
   if Assigned(FOnRestore) then FOnRestore(Self);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TApplication.IntfFilesDrop
+  Params:  FileNames - Dropped files
 
+  Invokes OnFilesDropEvent of the application.
+  This function is called by the interface.
+ ------------------------------------------------------------------------------}
+procedure TApplication.IntfFilesDrop(const FileNames: array of String);
+begin
+  if Assigned(FOnFilesDrop) then FOnFilesDrop(Self, FileNames);
+end;
 
 {------------------------------------------------------------------------------
   procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);

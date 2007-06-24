@@ -257,6 +257,8 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // TODO: proper icon, for now set default icon
   SetIcon(TCustomForm(AWinControl), 0);
+  // enable accepting files drop
+  DragAcceptFiles(Params.Window, True);
   Result := Params.Window;
 end;
 
