@@ -67,6 +67,7 @@ type
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     constructor CreatePage(const AWinControl: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
+    function  GetContainerWidget: QWidgetH; virtual;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
     procedure SlotShow(vShow: Boolean); cdecl;
@@ -112,7 +113,7 @@ type
     procedure SetColor(const Value: PQColor); override;
     procedure SetText(text: PWideString);
     procedure Text(retval: PWideString);
-    function isChecked: Boolean;
+    function  isChecked: Boolean;
     procedure setChecked(p1: Boolean);
     procedure SignalPressed; cdecl;
     procedure SignalReleased; cdecl;
@@ -145,11 +146,13 @@ type
 {$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
 {$endif}
+    CentralWidget: QWidgetH;
     Splitter: QSplitterH;
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     Canvas: TQtDeviceContext;
     destructor Destroy; override;
+    function  GetContainerWidget: QWidgetH; override;
     procedure setTabOrders;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
@@ -677,6 +680,17 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.GetContainerWidget
+  Params:  None
+  Returns: The widget of the control on top of which other controls
+           should be placed
+ ------------------------------------------------------------------------------}
+function TQtWidget.GetContainerWidget: QWidgetH;
+begin
+  Result := Widget;
 end;
 
 {$IFDEF VerboseQt}
@@ -1880,8 +1894,7 @@ begin
   {$endif}
 
   Str := UTF8Decode(LCLObject.Caption);
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
-
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QPushButton_create(@Str, Parent);
 end;
 
@@ -1959,10 +1972,17 @@ begin
     
     MenuBar := TQtMenuBar.Create(Result);
     
-
+    { To make sure Qt will manage automatically the size of the menu,
+      we need to both use setMenuBar and also create a central widget
+      on the form, on top of which, the other components will be placed }
+    
     if Assigned(Application.MainForm.Menu) then
      QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
      
+    CentralWidget := QWidget_create(Result);
+
+    QMainWindow_setCentralWidget(QMainWindowH(Result), CentralWidget);
+
     {$ifdef USE_QT_4_3}
       MDIAreaHandle := QMdiArea_create(Result);
 
@@ -2005,15 +2025,24 @@ begin
     WriteLn('TQtMainWindow.Destroy');
   {$endif}
 
+  if Widget <> nil then
+  begin
+    QMainWindow_destroy(QMainWindowH(Widget));
+
+    Widget := nil;
+  end;
+
+  { The main window takes care of the menubar handle}
+  
+  MenuBar.Widget := nil;
   MenuBar.Free;
 
-  if Widget=nil then
-    WriteLn('WARNING: QtMainWindow Widget is already nil');
-    
-  QWidget_destroy(Widget);
-  Widget:=nil;
-
   inherited Destroy;
+end;
+
+function TQtMainWindow.GetContainerWidget: QWidgetH;
+begin
+  Result := CentralWidget;
 end;
 
 {------------------------------------------------------------------------------
@@ -2126,7 +2155,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtStaticText.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QLabel_create(Parent);
 end;
 
@@ -2249,7 +2279,7 @@ begin
   end
   else
   begin
-    Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+    Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
     Result := QCheckBox_create(Parent);
   end;
 
@@ -2359,7 +2389,7 @@ begin
   end
   else
   begin
-    Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+    Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
     Result := QRadioButton_create(Parent);
   end;
 end;
@@ -2413,7 +2443,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtGroupBox.Create ');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QGroupBox_create(Parent);
 end;
 
@@ -2446,7 +2476,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtFrame.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QFrame_create(Parent);
 end;
 
@@ -2510,7 +2540,7 @@ begin
   FSliderPressed := False;
   FSliderReleased:= False;
 
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractSlider_create(Parent);
 end;
 
@@ -2761,7 +2791,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QScrollBar_create(Parent);
 end;
 
@@ -2775,7 +2805,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtToolBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QToolBar_create(Parent);
 end;
 
@@ -2789,7 +2819,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtToolButton.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QToolButton_create(Parent);
 end;
 
@@ -2803,7 +2833,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QSlider_create(Parent);
 end;
 
@@ -2893,7 +2923,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtLineEdit.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Str := UTF8Decode((LCLObject as TCustomEdit).Text);
   Result := QLineEdit_create(@Str, Parent);
 end;
@@ -2976,7 +3006,7 @@ begin
     WriteLn('TQtTextEdit.Create');
   {$endif}
 
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Str := (LCLObject as TCustomMemo).Text;
   Result := QTextEdit_create(Parent);
   QTextEdit_setAlignment(QTextEditH(Result), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
@@ -3074,7 +3104,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QTabWidget_create(Parent);
 end;
 
@@ -3177,7 +3207,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QComboBox_create(Parent);
 
   // Add the items to the combo box
@@ -3273,7 +3303,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractSpinBox_create(Parent);
 end;
 
@@ -3339,7 +3369,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtFloatSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QDoubleSpinBox_create(Parent);
 end;
 
@@ -3362,7 +3392,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QSpinBox_create(Parent);
 end;
 
@@ -3385,7 +3415,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQListWidget.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QListWidget_create(Parent);
 
   // Sets the initial items
@@ -3506,7 +3536,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtHeaderView.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QHeaderView_create(QtHorizontal, Parent);
 end;
 
@@ -3568,7 +3598,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeView.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QTreeView_create(Parent);
 end;
 
@@ -3607,7 +3637,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QTreeWidget_create(Parent);
   
   Header := TQtHeaderView.Create(LCLObject, AParams);
@@ -4016,7 +4046,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQProgressBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QProgressBar_create(Parent);
 end;
 
@@ -4093,7 +4123,7 @@ begin
   {$endif}
   
   SetLength(APanels, 0);
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QStatusBar_create(Parent);
   
   {TODO: this should be made in initializeWND?
@@ -4162,7 +4192,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractScrollArea_create(Parent);
 end;
 
@@ -4362,7 +4392,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtCalendar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QCalendarWidget_create(Parent);
 end;
 
