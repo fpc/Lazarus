@@ -1450,15 +1450,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TApplication.IntfFilesDrop
+  Method:  TApplication.IntfDropFiles
   Params:  FileNames - Dropped files
 
-  Invokes OnFilesDropEvent of the application.
+  Invokes OnDropFilesEvent of the application.
   This function is called by the interface.
  ------------------------------------------------------------------------------}
-procedure TApplication.IntfFilesDrop(const FileNames: array of String);
+procedure TApplication.IntfDropFiles(const FileNames: array of String);
 begin
-  if Assigned(FOnFilesDrop) then FOnFilesDrop(Self, FileNames);
+  if Assigned(FOnDropFiles) then FOnDropFiles(Self, FileNames);
 end;
 
 {------------------------------------------------------------------------------

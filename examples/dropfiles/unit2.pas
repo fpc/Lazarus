@@ -13,7 +13,7 @@ type
 
   TForm2 = class(TForm)
     Label1: TLabel;
-    procedure FormFilesDrop(Sender: TObject; const FileNames: array of String);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
   private
     { private declarations }
   public
@@ -30,7 +30,7 @@ uses
 
 { TForm2 }
 
-procedure TForm2.FormFilesDrop(Sender: TObject; const FileNames: array of String);
+procedure TForm2.FormDropFiles(Sender: TObject; const FileNames: array of String);
 var
   I: Integer;
 begin

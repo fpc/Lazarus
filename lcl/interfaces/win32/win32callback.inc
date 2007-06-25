@@ -809,35 +809,43 @@ Var
   procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
   var
     lWindowInfo: PWindowInfo;
-    lNewValue: single;
+    NewValue: single;
   begin
     lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
     if lWindowInfo = @DefaultWindowInfo then exit;
-    lNewValue := StrToFloatDef(ASpinEdit.Text, lWindowInfo^.spinValue);
-    if lNewValue <> lWindowInfo^.spinValue then
+    
+    NewValue := StrToFloatDef(ASpinEdit.Text, lWindowInfo^.spinValue);
+    if (ASpinEdit.MaxValue > ASpinEdit.MinValue) then
     begin
-      lWindowInfo^.spinValue := lNewValue;
-      LMessage.Msg := CM_TEXTCHANGED;
+      if NewValue > ASpinEdit.MaxValue then
+        NewValue := ASpinEdit.MaxValue;
+      if NewValue < ASpinEdit.MinValue then
+        NewValue := ASpinEdit.MinValue;
     end;
+    lWindowInfo^.spinValue := NewValue;
+    
+    LMessage.Msg := CM_TEXTCHANGED;
   end;
 
   procedure HandleSpinEditDeltaPos(AUpDownMsg: PNMUpDown);
   var
-    lSpinEdit: TCustomFloatSpinEdit;
+    SpinEdit: TCustomFloatSpinEdit;
     spinHandle: HWND;
     newValue: single;
   begin
-    lSpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
-    newValue := WindowInfo^.spinValue + AUpDownMsg^.iDelta * lSpinEdit.Increment;
-    if (lSpinEdit.MinValue <> 0) or (lSpinEdit.MaxValue <> 0) then
+    SpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
+    if SpinEdit.ReadOnly then Exit;
+    
+    newValue := WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment;
+    if (SpinEdit.MaxValue > SpinEdit.MinValue) then
     begin
-      if newValue > lSpinEdit.MaxValue then
-        newValue := lSpinEdit.MaxValue;
-      if newValue < lSpinEdit.MinValue then
-        newValue := lSpinEdit.MinValue;
+      if newValue > SpinEdit.MaxValue then
+        newValue := SpinEdit.MaxValue;
+      if newValue < SpinEdit.MinValue then
+        newValue := SpinEdit.MinValue;
     end;
     spinHandle := AUpDownMsg^.hdr.hwndFrom;
-    UpdateFloatSpinEditText(spinHandle, NewValue, lSpinEdit.DecimalPlaces);
+    UpdateFloatSpinEditText(spinHandle, NewValue, SpinEdit.DecimalPlaces);
     Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
     WindowInfo^.spinValue := newValue;
   end;
@@ -978,9 +986,9 @@ Var
       if Length(Files) > 0 then
       begin
         if lWinControl is TCustomForm then
-          (lWinControl as TCustomForm).IntfFilesDrop(Files);
+          (lWinControl as TCustomForm).IntfDropFiles(Files);
         if Application <> nil then
-          Application.IntfFilesDrop(Files);
+          Application.IntfDropFiles(Files);
       end;
     finally
       DragFinish(Drop);

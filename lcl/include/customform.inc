@@ -1687,15 +1687,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomForm.IntfFilesDrop
+  Method:  TCustomForm.IntfDropFiles
   Params:  FileNames - Dropped files
 
-  Invokes OnFilesDropEvent of the form.
+  Invokes OnDropFilesEvent of the form.
   This function is called by the interface.
  ------------------------------------------------------------------------------}
-procedure TCustomForm.IntfFilesDrop(const FileNames: array of String);
+procedure TCustomForm.IntfDropFiles(const FileNames: array of String);
 begin
-  if Assigned(FOnFilesDrop) then FOnFilesDrop(Self, FileNames);
+  if Assigned(FOnDropFiles) then FOnDropFiles(Self, FileNames);
 end;
 
 {------------------------------------------------------------------------------

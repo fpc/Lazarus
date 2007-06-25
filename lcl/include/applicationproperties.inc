@@ -163,12 +163,12 @@ begin
     Application.OnRestore := AValue;
 end;
 
-Procedure TApplicationProperties.SetOnFilesDrop(const AValue: TFilesDropEvent);
+Procedure TApplicationProperties.SetOnDropFiles(const AValue: TDropFilesEvent);
 begin
-  FOnFilesDrop := AValue;
+  FOnDropFiles := AValue;
   
   If not (csDesigning in ComponentState) then
-    Application.OnFilesDrop := AValue;
+    Application.OnDropFiles := AValue;
 end;
 
 Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);

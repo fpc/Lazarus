@@ -8,7 +8,7 @@ object Form2: TForm2
   Caption = 'Form2'
   ClientHeight = 56
   ClientWidth = 473
-  OnFilesDrop = FormFilesDrop
+  OnDropFiles = FormDropFiles
   object Label1: TLabel
     Left = 13
     Height = 14

@@ -15,9 +15,9 @@ type
     ApplicationProperties1: TApplicationProperties;
     Label1: TLabel;
     Memo1: TMemo;
-    procedure ApplicationProperties1FilesDrop(Sender: TObject;
+    procedure ApplicationProperties1DropFiles(Sender: TObject;
       const FileNames: array of String);
-    procedure FormFilesDrop(Sender: TObject; const FileNames: array of String);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
   private
     { private declarations }
   public
@@ -31,21 +31,21 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.FormFilesDrop(Sender: TObject; const FileNames: array of String);
-var
-  I: Integer;
-begin
-  Memo1.Lines.Add(IntToStr(Length(FileNames)) + ' file(s) dropped on ' + Name + ':');
-  for I := 0 to High(FileNames) do
-    Memo1.Lines.Add(FileNames[I]);
-end;
-
-procedure TForm1.ApplicationProperties1FilesDrop(Sender: TObject;
+procedure TForm1.ApplicationProperties1DropFiles(Sender: TObject;
   const FileNames: array of String);
 var
   I: Integer;
 begin
   Memo1.Lines.Add(IntToStr(Length(FileNames)) + ' file(s) dropped on Application:');
+  for I := 0 to High(FileNames) do
+    Memo1.Lines.Add(FileNames[I]);
+end;
+
+procedure TForm1.FormDropFiles(Sender: TObject; const FileNames: array of String);
+var
+  I: Integer;
+begin
+  Memo1.Lines.Add(IntToStr(Length(FileNames)) + ' file(s) dropped on ' + Name + ':');
   for I := 0 to High(FileNames) do
     Memo1.Lines.Add(FileNames[I]);
 end;
