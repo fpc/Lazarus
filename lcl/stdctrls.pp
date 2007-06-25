@@ -1066,9 +1066,6 @@ type
 
   { TCustomCheckBox }
 
-  // ToDo: delete TLeftRight when in classesh.inc
-  TLeftRight = taLeftJustify..taRightJustify;
-
   TCheckBoxState = (cbUnchecked, cbChecked, cbGrayed);
 
   { TCustomCheckBox }
