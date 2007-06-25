@@ -245,6 +245,14 @@ type
   public
   end;
 
+  { TGtk2WSButton }
+
+  TGtk2WSButton = class(TWSButton)
+  private
+  protected
+  public
+  end;
+
   { TGtk2WSCustomCheckBox }
 
   TGtk2WSCustomCheckBox = class(TGtkWSCustomCheckBox)
@@ -1317,6 +1325,7 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TGtk2WSCustomLabel);
 //  RegisterWSComponent(TLabel, TGtk2WSLabel);
 //  RegisterWSComponent(TButtonControl, TGtk2WSButtonControl);
+//  RegisterWSComponent(TCustomButton, TGtk2WSButton);
 //  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
   RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox);

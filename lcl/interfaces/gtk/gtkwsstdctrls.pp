@@ -27,14 +27,16 @@ unit GtkWSStdCtrls;
 interface
 
 uses
-  Classes, SysUtils, Math, Controls, Graphics, StdCtrls,
+  Classes, SysUtils, Math,
+  LCLType, LMessages, LCLProc, Controls, Graphics, StdCtrls,
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango, Gtk2WSPrivate,
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  GtkFontCache, Gtk1WSPrivate,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, WSProc, WSControls, GtkInt, LCLType, GtkDef, LCLProc,
-  GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, GtkWSPrivate, InterfaceBase;
+  InterfaceBase, WSStdCtrls, WSLCLClasses, WSProc, WSControls,
+  GtkInt, GtkDef, GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, GtkWSPrivate;
 
 
 type
@@ -229,6 +231,30 @@ type
   private
   protected
   public
+  end;
+
+  { TGtkWSButton }
+
+  TGtkWSButton = class(TWSButton)
+  private
+  protected
+  public
+    {SetCallbacks is made public so that it can be called from
+     TGtkWSBitBtn.CreateHandle.
+     TODO: move it to TGtkPrivateButton}
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtkWSCustomCheckBox }
@@ -920,6 +946,150 @@ begin
   //debugln('TGtkWSCustomStaticText.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
+{ TGtkWSButton }
+
+function GtkWSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
+var
+  Msg: TLMessage;
+begin
+  Result := CallBackDefaultReturn;
+  if AInfo^.ChangeLock > 0 then Exit;
+  Msg.Msg := LM_CLICKED;
+  Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
+end;
+
+
+class function TGtkWSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Button: TCustomButton;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Button := AWinControl as TCustomButton;
+  Result := TLCLIntfHandle(gtk_button_new_with_label('button'));
+  if Result = 0 then Exit;
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Pointer(Result),'button');
+  {$ENDIF}
+
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
+end;
+
+class function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+begin
+  // The button text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
+class procedure TGtkWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetDefault')
+  then Exit;
+
+  if ADefault
+  and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(AButton.Handle))) then
+    //gtk_widget_grab_default(pgtkwidget(handle))
+  else begin
+    {DebugLn('LM_BTNDEFAULT_CHANGED ',TCustomButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
+      ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
+      ' realized=',GTK_WIDGET_REALIZED(PGtkWidget(Handle)),
+      ' mapped=',GTK_WIDGET_MAPPED(PGtkWidget(Handle)),
+      '');}
+    //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
+  end;
+end;
+
+class procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
+end;
+
+class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton;
+  const OldShortcut, NewShortcut: TShortcut);
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetShortcut')
+  then Exit;
+
+  {$IFDEF Gtk1}
+  Accelerate(AButton, PGtkWidget(AButton.Handle), NewShortcut, 'clicked');
+  {$ENDIF}
+  // gtk2: shortcuts are handled by the LCL
+end;
+
+class procedure TGtkWSButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  BtnWidget: PGtkButton;
+  LblWidget: PGtkLabel;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
+
+  BtnWidget := PGtkButton(AWinControl.Handle);
+  {$IFDEF GTK2}
+  LblWidget := PGtkLabel(PGtkBin(BtnWidget)^.Child);
+  {$ELSE}
+  LblWidget := PGtkLabel(BtnWidget^.Child);
+  {$ENDIF}
+
+  if LblWidget = nil
+  then begin
+    Assert(False, Format('trace: [WARNING] Button %s(%s) has no label', [AWinControl.Name, AWinControl.ClassName]));
+    LblWidget := PGtkLabel(gtk_label_new(''));
+    gtk_container_add(PGtkContainer(BtnWidget), PGtkWidget(LblWidget));
+  end;
+
+  GtkWidgetSet.SetLabelCaption(LblWidget, AText
+           {$IFDEF Gtk1}, AWinControl,PGtkWidget(BtnWidget), 'clicked'{$ENDIF});
+end;
+
+class procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
+var
+  Widget: PGTKWidget;
+begin
+  Widget:= PGtkWidget(AWinControl.Handle);
+  GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+end;
+
+class procedure TGtkWSButton.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  Widget: PGTKWidget;
+  LblWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+
+  Widget:= PGtkWidget(AWinControl.Handle);
+  LblWidget := (pGtkBin(Widget)^.Child);
+
+  if LblWidget<>nil then begin
+    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
+  end;
+end;
+
+class procedure TGtkWSButton.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
+  //debugln('TGtkWSButton.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
 { TGtkWSCustomCheckBox }
 
 class function  TGtkWSCustomCheckBox.RetrieveState(
@@ -1193,6 +1363,11 @@ initialization
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
+{$ifdef gtk1}
+  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk1PrivateButton);
+{$else}
+  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton);
+{$endif}
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);

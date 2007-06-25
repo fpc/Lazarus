@@ -178,6 +178,14 @@ type
   TWSButtonControl = class(TWSWinControl)
   end;
 
+  { TWSButton }
+
+  TWSButton = class(TWSButtonControl)
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); virtual;
+    class procedure SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut); virtual;
+  end;
+  TWSButtonClass = class of TWSButton;
+
   { TWSCustomCheckBox }
 
   TWSCustomCheckBox = class(TWSButtonControl)
@@ -431,6 +439,16 @@ end;
 { TWSCustomStaticText }
 
 class procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+begin
+end;
+
+{ TWSButton }
+
+class procedure TWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+begin
+end;
+
+class procedure TWSButton.SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut);
 begin
 end;
 

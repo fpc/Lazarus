@@ -203,6 +203,16 @@ type
   public
   end;
 
+  { TCarbonWSButton }
+
+  TCarbonWSButton = class(TWSButton)
+  private
+  protected
+  public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+  end;
+
   { TCarbonWSCustomCheckBox }
 
   TCarbonWSCustomCheckBox = class(TWSCustomCheckBox)
@@ -904,6 +914,38 @@ begin
   TCarbonMemo(ACustomMemo.Handle).SetWordWrap(NewWordWrap);
 end;
 
+{ TCarbonWSButton }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSButton.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new button control in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  // create the Carbon button widget
+  Result := TLCLIntfHandle(TCarbonButton.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSButton.SetDefault
+  Params:  AButton  - LCL button control
+           ADefault
+
+  Sets button default indication in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
+  ADefault: Boolean);
+begin
+  if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
+
+  TCarbonCustomButton(AButton.Handle).SetDefault(ADefault);
+end;
+
 { TCarbonWSCustomCheckBox }
 
 {------------------------------------------------------------------------------
@@ -1039,6 +1081,7 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TCarbonWSCustomLabel);
 //  RegisterWSComponent(TLabel, TCarbonWSLabel);
 //  RegisterWSComponent(TButtonControl, TCarbonWSButtonControl);
+  RegisterWSComponent(TCustomButton, TCarbonWSButton);
   RegisterWSComponent(TCustomCheckBox, TCarbonWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TCarbonWSCheckBox);
   RegisterWSComponent(TToggleBox, TCarbonWSToggleBox);

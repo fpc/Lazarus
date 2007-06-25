@@ -50,15 +50,7 @@ uses
 
 type
 
-  { TWSButton }
-
-  TWSButton = class(TWSButtonControl)
-    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); virtual;
-    class procedure SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut); virtual;
-  end;
-  TWSButtonClass = class of TWSButton;
-
-  { TWSBitBtn } 
+  { TWSBitBtn }
   
   TWSBitBtnClass = class of TWSBitBtn;
   TWSBitBtn = class(TWSButton)
@@ -78,16 +70,6 @@ type
 implementation 
 
 // TODO: Can't be virtual abstract ?
-
-{ TWSButton }
-
-class procedure TWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
-begin
-end;
-
-class procedure TWSButton.SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut);
-begin
-end;
 
 { TWSCustomBitBtn }
 

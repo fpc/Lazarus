@@ -233,6 +233,19 @@ type
           WithThemeSpace: Boolean); override;
   end;
 
+  { TWin32WSButton }
+
+  TWin32WSButton = class(TWSButton)
+  private
+  protected
+  public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
+  end;
+
   { TWin32WSCustomCheckBox }
 
   TWin32WSCustomCheckBox = class(TWSCustomCheckBox)
@@ -1092,6 +1105,61 @@ begin
   end;
 end;
 
+{ TWin32WSButton }
+
+class function TWin32WSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    if TCustomButton(AWinControl).Default Then
+      Flags := Flags or BS_DEFPUSHBUTTON
+    else
+      Flags := Flags or BS_PUSHBUTTON;
+    with Params do {BidiMode}
+    begin
+      if AWinControl.UseRightToLeftReading then
+        FlagsEx := FlagsEx or WS_EX_RTLREADING;
+    end;
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+class procedure TWin32WSButton.SetBiDiMode(const AWinControl: TWinControl;
+  const ABiDiMode: TBiDiMode);
+begin
+  RecreateWnd(AWinControl);
+end;
+
+class procedure TWin32WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+var
+  WindowStyle: dword;
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetDefault') then Exit;
+
+  WindowStyle := GetWindowLong(AButton.Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
+  if ADefault then
+    WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
+  else
+    WindowStyle := WindowStyle or BS_PUSHBUTTON;
+  Windows.SendMessage(AButton.Handle, BM_SETSTYLE, WindowStyle, 1);
+end;
+
+class procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word);
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
+  // TODO: implement me!
+end;
+
 { TWin32WSCustomCheckBox }
 
 class function TWin32WSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
@@ -1231,6 +1299,7 @@ initialization
 //  RegisterWSComponent(TEdit, TWin32WSEdit);
 //  RegisterWSComponent(TMemo, TWin32WSMemo);
   RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
+  RegisterWSComponent(TCustomButton, TWin32WSButton);
   RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);

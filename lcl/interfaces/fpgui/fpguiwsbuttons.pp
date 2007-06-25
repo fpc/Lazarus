@@ -36,17 +36,6 @@ uses
 
 type
 
-  { TFpGuiWSButton }
-
-  TFpGuiWSButton = class(TWSButton)
-  private
-  protected
-  public
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-  end;
-
   { TFpGuiWSBitBtn }
 
   TFpGuiWSBitBtn = class(TWSBitBtn)
@@ -66,44 +55,6 @@ type
 
 implementation
 
-{ TFpGuiWSButton }
-
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSButton.GetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TFpGuiWSButton.GetText(const AWinControl: TWinControl;
-  var AText: String): Boolean;
-begin
-  Result := True;
-  AText := TFPGUIPrivateButton(AWinControl.Handle).GetText;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSButton.SetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TFpGuiWSButton.SetText(const AWinControl: TWinControl;
-  const AText: String);
-begin
-  TFPGUIPrivateButton(AWinControl.Handle).SetText(AText);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSButton.CreateHandle
-  Params:  None
-  Returns: Nothing
-
-  Allocates memory and resources for the control and shows it
- ------------------------------------------------------------------------------}
-class function TFpGuiWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-begin
-  Result := TLCLIntfHandle(TFPGUIPrivateButton.Create(AWinControl, AParams));
-end;
-
 initialization
 
 ////////////////////////////////////////////////////
@@ -112,7 +63,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(Buttons.TCustomButton, TFpGuiWSButton);
 //  RegisterWSComponent(TCustomBitBtn, TFpGuiWSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TFpGuiWSSpeedButton);
 ////////////////////////////////////////////////////

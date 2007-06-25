@@ -41,16 +41,6 @@ uses
 
 type
 
-  { TCarbonWSButton }
-
-  TCarbonWSButton = class(TWSButton)
-  private
-  protected
-  public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-  end;
-
   { TCarbonWSBitBtn }
 
   TCarbonWSBitBtn = class(TWSBitBtn)
@@ -163,7 +153,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomButton, TCarbonWSButton);
   RegisterWSComponent(TCustomBitBtn, TCarbonWSBitBtn);
   RegisterWSComponent(TCustomSpeedButton, TCarbonWSSpeedButton);
 ////////////////////////////////////////////////////

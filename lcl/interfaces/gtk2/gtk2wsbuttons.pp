@@ -39,14 +39,6 @@ uses
 
 type
 
-  { TGtk2WSButton }
-
-  TGtk2WSButton = class(TWSButton)
-  private
-  protected
-  public
-  end;
-
   { TGtk2WSBitBtn }
 
   TGtk2WSBitBtn = class(TWSBitBtn)
@@ -74,7 +66,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomButton, TGtk2WSButton);
 //  RegisterWSComponent(TCUstomBitBtn, TGtk2WSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TGtk2WSSpeedButton);
 ////////////////////////////////////////////////////

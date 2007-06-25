@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
   GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
-  Forms;
+  Forms, Menus;
 
 type
 
@@ -216,7 +216,6 @@ type
     property OnStartDrag;
     property OnUnDock;
   end;
-
 
   { TCustomComboBox }
   TComboBoxAutoCompleteTextOption = (
@@ -973,6 +972,98 @@ type
   TButtonActionLinkClass = class of TButtonActionLink;
 
 
+  { TCustomButton }
+
+  TCustomButton = class(TButtonControl)
+  private
+    FCancel: Boolean;
+    FDefault: Boolean;
+    FActive: boolean;
+    FModalResult: TModalResult;
+    FShortCut: TShortcut;
+    procedure SetCancel(NewCancel: boolean);
+    procedure SetDefault(Value: Boolean);
+    procedure SetModalResult(const AValue: TModalResult);
+    procedure CMUIActivate(var Message: TLMessage); message CM_UIACTIVATE;
+    procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+  protected
+    procedure Click; override;
+    procedure CreateWnd; override;
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure SetParent(AParent: TWinControl); override;
+    procedure RealSetText(const Value: TCaption); override;
+    procedure WSSetDefault;
+    function DialogChar(var Message: TLMKey): boolean; override;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    function IsBorderSpacingInnerBorderStored: Boolean; override;
+    property ParentColor default false;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure ExecuteDefaultAction; override;
+    procedure ExecuteCancelAction; override;
+    procedure ActiveDefaultControlChanged(NewControl: TControl); override;
+    procedure UpdateRolesForForm; override;
+  public
+    property Active: boolean read FActive stored false;
+    property Default: Boolean read FDefault write SetDefault default false;
+    property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
+    property Cancel: Boolean read FCancel write SetCancel default false;
+    property Color default clBtnFace;
+    property TabStop default true;
+  end;
+
+
+  { TButton }
+
+  TButton = class(TCustomButton)
+  public
+    procedure Click; override;
+  published
+    property Action;
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property BidiMode;
+    property BorderSpacing;
+    property Cancel;
+    property Caption;
+    property Color;
+    property Constraints;
+    property Default;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ParentBidiMode;
+    property ModalResult;
+    property OnChangeBounds;
+    property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+  end;
+
   { TCustomCheckBox }
 
   // ToDo: delete TLeftRight when in classesh.inc
@@ -1360,7 +1451,7 @@ type
 
 procedure Register;
 begin
-  RegisterComponents('Standard',[TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
+  RegisterComponents('Standard',[TButton, TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
        TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox]);
   RegisterComponents('Additional',[TStaticText]);
 end;
@@ -1380,7 +1471,9 @@ end;
 {$I memostrings.inc}
 
 {$I edit.inc}
+
 {$I buttoncontrol.inc}
+{$I buttons.inc}
 
 {$I checkbox.inc}
 
