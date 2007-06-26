@@ -54,6 +54,10 @@ msgstr "&Alles"
 msgid "&Close"
 msgstr "&Sluiten"
 
+#: lclstrconsts:rsdirectory
+msgid "&Directory"
+msgstr ""
+
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
 msgstr "&Help"

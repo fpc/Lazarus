@@ -573,7 +573,7 @@ msgstr ""
 msgid "Alphabetically"
 msgstr "Alfabetycznie"
 
-#: lazarusidestrconsts:lisedtexttoolalt
+#: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1941,7 +1941,7 @@ msgstr ""
 msgid "Creation"
 msgstr "Tworzenie"
 
-#: lazarusidestrconsts:lisedtexttoolctrl
+#: lazarusidestrconsts:srkm_ctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -9180,6 +9180,10 @@ msgstr "U¿yj ekranu"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "U¿yj programu ³aduj¹cego"
+
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"

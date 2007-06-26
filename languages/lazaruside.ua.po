@@ -562,7 +562,7 @@ msgstr "Дозволити пошук для декількох рядків"
 msgid "Alphabetically"
 msgstr "За алфавітом"
 
-#: lazarusidestrconsts:lisedtexttoolalt
+#: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1930,7 +1930,7 @@ msgstr "Створити новий проект"
 msgid "Creation"
 msgstr "Створення"
 
-#: lazarusidestrconsts:lisedtexttoolctrl
+#: lazarusidestrconsts:srkm_ctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -9169,6 +9169,10 @@ msgstr "Використовувати дисплей"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Використовувати програму для запуску"
+
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"

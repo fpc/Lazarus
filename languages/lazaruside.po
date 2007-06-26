@@ -3898,6 +3898,10 @@ msgstr ""
 msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr ""
@@ -5672,6 +5676,14 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
+msgstr ""
+
+#: lazarusidestrconsts:srkm_alt
+msgid "Alt"
+msgstr ""
+
+#: lazarusidestrconsts:srkm_ctrl
+msgid "Ctrl"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving

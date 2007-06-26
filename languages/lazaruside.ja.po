@@ -572,7 +572,7 @@ msgstr "複数行の検索を許可する"
 msgid "Alphabetically"
 msgstr "アルファベット順に"
 
-#: lazarusidestrconsts:lisedtexttoolalt
+#: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr ""
 
@@ -1940,7 +1940,7 @@ msgstr ""
 msgid "Creation"
 msgstr "作成"
 
-#: lazarusidestrconsts:lisedtexttoolctrl
+#: lazarusidestrconsts:srkm_ctrl
 msgid "Ctrl"
 msgstr ""
 
@@ -9179,6 +9179,10 @@ msgstr "ディスプレイを使用"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "アプリケーション起動を使用"
+
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"

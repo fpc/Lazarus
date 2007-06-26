@@ -573,7 +573,7 @@ msgstr "Sta het zoeken naar meerdere lijnen toe"
 msgid "Alphabetically"
 msgstr "Alfabetisch"
 
-#: lazarusidestrconsts:lisedtexttoolalt
+#: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1941,7 +1941,7 @@ msgstr "Maak nieuw bestand"
 msgid "Creation"
 msgstr "Creatie"
 
-#: lazarusidestrconsts:lisedtexttoolctrl
+#: lazarusidestrconsts:srkm_ctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -9180,6 +9180,10 @@ msgstr "Gebruik display"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Gebruik start programma"
+
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"

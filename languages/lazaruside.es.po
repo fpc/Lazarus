@@ -572,7 +572,7 @@ msgstr "Permitir búsqueda para múltiples líneas"
 msgid "Alphabetically"
 msgstr "Alfabéticamente"
 
-#: lazarusidestrconsts:lisedtexttoolalt
+#: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1940,7 +1940,7 @@ msgstr ""
 msgid "Creation"
 msgstr "Creación"
 
-#: lazarusidestrconsts:lisedtexttoolctrl
+#: lazarusidestrconsts:srkm_ctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -9179,6 +9179,10 @@ msgstr "Usar pantalla"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Usar lanzando aplicación"
+
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"

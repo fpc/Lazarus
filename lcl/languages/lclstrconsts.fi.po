@@ -54,6 +54,10 @@ msgstr "Kaikki"
 msgid "&Close"
 msgstr "&Sulje"
 
+#: lclstrconsts:rsdirectory
+msgid "&Directory"
+msgstr ""
+
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
 msgstr "&Ohje"

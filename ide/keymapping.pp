@@ -1544,9 +1544,9 @@ var
 
   procedure AddAttributes;
   begin
-    if ssCtrl in ShiftState then AddAttribute('Ctrl');
-    if ssAlt in ShiftState then AddAttribute('Alt');
-    if ssShift in ShiftState then AddAttribute('Shift');
+    if ssCtrl in ShiftState then AddAttribute(srkm_Ctrl);
+    if ssAlt in ShiftState then AddAttribute(srkm_Alt);
+    if ssShift in ShiftState then AddAttribute(srVK_SHIFT);
   end;
 
   // Tricky routine. This only works for western languages
@@ -1715,7 +1715,7 @@ begin
         with KeyCtrlCheckBox[n] do begin
           Name := 'KeyCtrlCheckBox' + IntToStr(n);
           Parent := KeyGroupBox[j];
-          Caption := 'Ctrl';
+          Caption := srkm_Ctrl;
           Left := 5 + (k * (TGroupBox(Parent).Width div 2));
           Top := 2;
           Width := 55;
@@ -1726,7 +1726,7 @@ begin
         with KeyAltCheckBox[n] do begin
           Name := 'KeyAltCheckBox' + IntToStr(n);
           Parent := KeyGroupBox[j];
-          Caption := 'Alt';
+          Caption := srkm_Alt;
           Left := KeyCtrlCheckBox[n].Left + KeyCtrlCheckBox[n].Width+10;
           Top := KeyCtrlCheckBox[n].Top;
           Height := 20;
@@ -1737,7 +1737,7 @@ begin
         with KeyShiftCheckBox[n] do begin
           Name := 'KeyShiftCheckBox' + IntToStr(n);
           Parent := KeyGroupBox[j];
-          Caption := 'Shift';
+          Caption := srVK_SHIFT;
           Left := KeyAltCheckBox[n].Left + KeyAltCheckBox[n].Width+10;
           Top := KeyCtrlCheckBox[n].Top;
           Height := 20;
@@ -1752,7 +1752,7 @@ begin
           Top := KeyCtrlCheckBox[n].Top + KeyCtrlCheckBox[n].Height+5;
           Width := 190;
           Items.BeginUpdate;
-          Items.Add('none');
+          Items.Add(lisNone2);
           for a := 1 to 145 do
           begin
             s := KeyAndShiftStateToEditorKeyString(a, []);

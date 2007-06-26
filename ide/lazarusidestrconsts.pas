@@ -1793,7 +1793,9 @@ resourcestring
   srVK_NUMLOCK    = 'Numlock';
   srVK_SCROLL     = 'Scroll';
   srVK_IRREGULAR  = 'Irregular ';
-   
+  srkm_Alt        = 'Alt';
+  srkm_Ctrl       = 'Ctrl';
+
   // Category
   srkmCatCursorMoving   = 'Cursor moving commands';
   srkmCatSelection      = 'Text selection commands';

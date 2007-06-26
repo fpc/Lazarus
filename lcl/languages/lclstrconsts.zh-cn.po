@@ -67,6 +67,10 @@ msgstr "所有(&A)"
 msgid "&Close"
 msgstr "关闭(&C)"
 
+#: lclstrconsts:rsdirectory
+msgid "&Directory"
+msgstr ""
+
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
 msgstr "帮助(&H)"

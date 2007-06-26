@@ -573,7 +573,7 @@ msgstr ""
 msgid "Alphabetically"
 msgstr ""
 
-#: lazarusidestrconsts:lisedtexttoolalt
+#: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr ""
 
@@ -1941,7 +1941,7 @@ msgstr ""
 msgid "Creation"
 msgstr ""
 
-#: lazarusidestrconsts:lisedtexttoolctrl
+#: lazarusidestrconsts:srkm_ctrl
 msgid "Ctrl"
 msgstr ""
 
@@ -9179,6 +9179,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpousemanifest
+msgid "Use manifest file to enable themes (windows only)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg

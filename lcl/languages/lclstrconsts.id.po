@@ -67,6 +67,10 @@ msgstr "&Semua"
 msgid "&Close"
 msgstr "&Tutup"
 
+#: lclstrconsts:rsdirectory
+msgid "&Directory"
+msgstr ""
+
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
 msgstr "&Panduan"
