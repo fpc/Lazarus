@@ -80,10 +80,10 @@ begin
   QCalendarWidget_hook_hook_activated(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
 
   QCalendarWidget_selectionChanged_Event(Method) := QtCalendar.SignalSelectionChanged;
-  QCalendarWidget_hook_hook_clicked(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
+  QCalendarWidget_hook_hook_selectionChanged(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
   
   QCalendarWidget_currentPageChanged_Event(Method) := QtCalendar.SignalCurrentPageChanged;
-  QCalendarWidget_hook_hook_clicked(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
+  QCalendarWidget_hook_hook_currentPageChanged(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
 
   QWidget_setFocusPolicy(QtCalendar.Widget, QtTabFocus or QtClickFocus);
   
