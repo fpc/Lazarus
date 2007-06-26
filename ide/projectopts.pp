@@ -41,7 +41,7 @@ uses
   FileUtil,
   IDEWindowIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
-  VersionInfoAdditionalInfo;
+  VersionInfoAdditionalInfo, W32Manifest;
 
 type
 
@@ -60,6 +60,7 @@ type
     i18nPage: TPage;
     SavePage: TPage;
     UseAppBundleCheckBox: TCheckBox;
+    UseXPManifestCheckBox: TCheckBox;
     VersionInfoPage: TPage;
 
     AppSettingsGroupBox: TGroupBox;
@@ -252,6 +253,8 @@ begin
   TargetFileEdit.Text := '';
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
+  UseXPManifestCheckBox.Caption := dlgPOUseManifest;
+  UseXPManifestCheckBox.Checked := False;
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -350,6 +353,8 @@ begin
     TitleEdit.Text := Title;
     TargetFileEdit.Text := TargetFilename;
     UseAppBundleCheckBox.Checked := UseAppBundle;
+    UseXPManifestCheckBox.Checked := XPManifest.UseManifest;
+    UseVersionInfoCheckBox.Checked := VersionInfo.UseVersionInfo;
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
@@ -425,6 +430,8 @@ begin
       Title := TitleEdit.Text;
       TargetFilename := TargetFileEdit.Text;
       UseAppBundle := UseAppBundleCheckBox.Checked;
+      XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
+      Project.XPManifest.UpdateMainSourceFile(Project.MainFilename);
     end;
 
     // flags

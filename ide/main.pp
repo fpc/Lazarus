@@ -8072,12 +8072,20 @@ begin
     if Result<>mrOk then exit;
 
     // handle versioninfo
-    VersionInfo:=Project1.VersionInfo;
-    Result := VersionInfo.CompileRCFile(Project1.MainFilename,MainBuildBoss.
-                                        GetTargetOS(true));
+    VersionInfo := Project1.VersionInfo;
+    Result := VersionInfo.CompileRCFile(Project1.MainFilename,
+      MainBuildBoss.GetTargetOS(true));
     if Result <> mrOk then exit;
     for Count := 1 to VersionInfo.VersionInfoMessages.Count do
       MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[Count - 1],
+                                  ['"', Project1.ShortDescription, '"']), '' ,-1);
+
+    // handle manifest
+    Result := Project1.XPManifest.CompileRCFile(Project1.MainFilename,
+      MainBuildBoss.GetTargetOS(true));
+    if Result <> mrOk then exit;
+    for Count := 1 to Project1.XPManifest.Messages.Count do
+      MessagesView.AddMsg(Format(Project1.XPManifest.Messages[Count - 1],
                                   ['"', Project1.ShortDescription, '"']), '' ,-1);
 
     // compile required packages
@@ -8105,8 +8113,9 @@ begin
     CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     
-    CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
-                    +' '+PrepareCmdLineOption(SrcFilename);
+    CompilerParams :=
+      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[]) + ' ' +
+      PrepareCmdLineOption(SrcFilename);
     //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
     // warn for ambiguous files

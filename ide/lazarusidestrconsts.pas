@@ -1286,6 +1286,7 @@ resourcestring
   dlgPOOutputSettings = 'Output Settings';
   dlgPOTargetFileName = 'Target file name:';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
+  dlgPOUseManifest = 'Use manifest file to enable themes (windows only)';
   dlgAutoCreateForms = 'Auto-create forms:';
   dlgAvailableForms = 'Available forms:';
   dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';

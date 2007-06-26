@@ -53,7 +53,7 @@ uses
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs, MacroIntf,
   FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf,
   // for .res files
-  W32VersionInfo;
+  W32VersionInfo, W32Manifest;
 
 type
   TUnitInfo = class;
@@ -523,7 +523,10 @@ type
     FTargetFileExt: String;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
+
     FVersionInfo: TProjectVersionInfo;
+    FXPManifest: TProjectXPManifest;
+    
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -763,7 +766,9 @@ type
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
+    
     property VersionInfo: TProjectVersionInfo read FVersionInfo;
+    property XPManifest: TProjectXPManifest read FXPManifest;
   end;
 
 const
@@ -1573,6 +1578,9 @@ begin
   
   FVersionInfo := TProjectVersionInfo.Create;
   FVersionInfo.OnModified:=@VersionInfoModified;
+  
+  FXPManifest := TProjectXPManifest.Create;
+  FXPManifest.UseManifest := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1584,6 +1592,7 @@ begin
   fDestroying:=true;
   Clear;
   FreeThenNil(FVersionInfo);
+  FreeThenNil(FXPManifest);
   FreeThenNil(FBookmarks);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);
@@ -1750,7 +1759,8 @@ begin
       xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',IconPath,'');
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-      xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value',UseAppBundle,True);
+      xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
+      xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, True);
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
@@ -2123,6 +2133,7 @@ begin
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
+      XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', True);
 
       // Lazdoc
       LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
