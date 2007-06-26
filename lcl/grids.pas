@@ -1462,7 +1462,7 @@ begin
 end;
 {$Endif GridTraceMsg}
 
-function dbgs(zone: TGridZone):string;
+function dbgs(zone: TGridZone):string; overload;
 begin
   case Zone of
     gzFixedCells: Result := 'gzFixedCells';
@@ -1475,7 +1475,7 @@ begin
   end;
 end;
 
-function Dbgs(zones: TGridZoneSet):string;
+function dbgs(zones: TGridZoneSet):string; overload;
   procedure add(const s:string);
   begin
     if result<>'' then
@@ -2591,8 +2591,17 @@ begin
   //DebugLn('TCustomGrid.ScrollToCell A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
 
   Result:=not PointIgual(OldTopleft,FTopLeft);
-  if result then doTopleftChange(False)
-  else ResetOffset(True, True);
+  if result then begin
+    // current TopLeft has changed, reset ColOffset or RowOffset
+    // because these values are not valid for new TopLeft column/row.
+    if OldTopLeft.x<>FTopLeft.x then
+      FGCache.TLColOff:=0;
+    if OldTopLeft.y<>FTopLeft.y then
+      FGCache.TLRowOff:=0;
+      
+    doTopleftChange(False)
+  end else
+    ResetOffset(True, True);
 end;
 
 {Returns a valid TopLeft from a proposed TopLeft[DCol,DRow] which are
@@ -3264,8 +3273,10 @@ begin
   if FEditor<>nil then
     EditorGetValue;
 
-  TL:=  PtrInt(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCache.FixedWidth;
-  CTL:= PtrInt(FGCache.AccumWidth[ FtopLeft.X ]) - FGCache.FixedWidth;
+  with FGCache do begin
+    TL:=  PtrInt(AccumWidth[ MaxTopLeft.X ]) - FixedWidth;
+    CTL:= PtrInt(AccumWidth[ FTopLeft.X ]) - FixedWidth + TLColOff;
+  end;
 
   case message.ScrollCode of
       // Scrolls to start / end of the text
@@ -3312,7 +3323,9 @@ begin
   {$Ifdef dbgScroll}
   DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL),' TLColOFf=', IntToStr(FGCache.TLColOff));
   {$Endif}
-  if not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
+  
+  if not (goSmoothScroll in Options) then
+    FGCache.TLColOff:=0;
 
   if TL<>FTopLeft.X then begin
     Inc(FUpdateScrollBarsCount);
@@ -3323,6 +3336,8 @@ begin
     CacheVisibleGrid;
     R.Topleft:=Point(FGCache.FixedWidth, 0);
     R.BottomRight:= FGCache.MaxClientXY;
+    if FGcache.MaxClientXY.X<FGCache.ClientWidth then
+      R.BottomRight.x := FGCache.ClientWidth;
     InvalidateRect(Handle, @R, false);
   end;
 end;
@@ -3342,8 +3357,10 @@ begin
   if FEditor<>nil then
     EditorGetValue;
 
-  TL:=  PtrInt(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
-  CTL:= PtrInt(FGCache.AccumHeight[ FTopLeft.Y ]) - FGCache.FixedHeight;
+  with FGCache do begin
+    TL:=  PtrInt(AccumHeight[ MaxTopLeft.Y ]) - FixedHeight;
+    CTL:= PtrInt(AccumHeight[ FTopLeft.Y ]) - FixedHeight + TLRowOff;
+  end;
 
   case message.ScrollCode of
       // Scrolls to start / end of the text
@@ -3387,7 +3404,9 @@ begin
   {$Ifdef dbgScroll}
   DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL), ' TLRowOFf=', IntToStr(FGCache.TLRowOff));
   {$Endif}
-  if not (goSmoothScroll in Options) then FGCache.TLRowOff:=0;
+  
+  if not (goSmoothScroll in Options) then
+    FGCache.TLRowOff:=0;
 
   if TL<>FTopLeft.Y then begin
     Inc(FUpdateScrollBarsCount);
@@ -3398,6 +3417,8 @@ begin
     CacheVisibleGrid;
     R.TopLeft:=Point(0, FGCache.FixedHeight);
     R.BottomRight:=FGCache.MaxClientXY;
+    if FGcache.MaxClientXY.Y<FGCache.ClientHeight then
+      R.BottomRight.y := FGCache.ClientHeight;
     InvalidateRect(Handle, @R, false);
   end;
 end;
