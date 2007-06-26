@@ -1,157 +1,157 @@
 object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
+  Left = 300
+  Height = 296
+  Top = 402
+  Width = 395
+  HorzScrollBar.Page = 394
+  VertScrollBar.Page = 295
   ActiveControl = OKButton
   BorderIcons = []
   Caption = 'Additional Information'
   ClientHeight = 296
   ClientWidth = 395
-  PixelsPerInch = 96
   Position = poOwnerFormCenter
-  HorzScrollBar.Page = 394
-  VertScrollBar.Page = 295
-  Left = 300
-  Height = 296
-  Top = 402
-  Width = 395
   object OKButton: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'OK'
-    OnClick = Button1Click
-    TabOrder = 0
-    Left = 216
+    Left = 224
     Height = 25
     Top = 264
     Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
   end
   object AdditionalInfoGroupBox: TGroupBox
-    Caption = 'Additional Information'
-    ClientHeight = 230
-    ClientWidth = 372
-    TabOrder = 1
     Left = 8
     Height = 248
     Top = 8
     Width = 376
+    Caption = 'Additional Information'
+    ClientHeight = 230
+    ClientWidth = 372
+    TabOrder = 1
     object CommentsLabel: TLabel
-      Caption = 'Comments:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 8
-      Width = 55
+      Width = 60
+      Caption = 'Comments:'
+      ParentColor = False
     end
     object CompanyLabel: TLabel
-      Caption = 'Company:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 40
-      Width = 50
+      Width = 54
+      Caption = 'Company:'
+      ParentColor = False
     end
     object InternalNameLabel: TLabel
-      Caption = 'Internal Name:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 72
-      Width = 73
+      Width = 78
+      Caption = 'Internal Name:'
+      ParentColor = False
     end
     object LegalTrademarksLabel: TLabel
-      Caption = 'Legal Trademarks:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 104
-      Width = 89
+      Width = 95
+      Caption = 'Legal Trademarks:'
+      ParentColor = False
     end
     object OriginalFileNameLabel: TLabel
-      Caption = 'Original File Name:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 136
-      Width = 90
+      Width = 101
+      Caption = 'Original File Name:'
+      ParentColor = False
     end
     object ProductNameLabel: TLabel
-      Caption = 'Product Name:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 168
-      Width = 72
+      Width = 80
+      Caption = 'Product Name:'
+      ParentColor = False
     end
     object ProductVersionLabel: TLabel
-      Caption = 'Product Version:'
-      Color = clNone
-      ParentColor = False
       Left = 6
-      Height = 14
+      Height = 17
       Top = 200
-      Width = 80
+      Width = 88
+      Caption = 'Product Version:'
+      ParentColor = False
     end
     object CommentsEdit: TEdit
-      TabOrder = 0
-      Left = 102
+      Left = 110
       Height = 23
       Top = 8
-      Width = 264
+      Width = 256
+      TabOrder = 0
     end
     object CompanyEdit: TEdit
-      TabOrder = 1
-      Left = 102
+      AnchorSideLeft.Control = CommentsEdit
+      Left = 110
       Height = 23
       Top = 40
-      Width = 264
+      Width = 256
+      TabOrder = 1
     end
     object InternalNameEdit: TEdit
-      TabOrder = 2
-      Left = 102
+      AnchorSideLeft.Control = CommentsEdit
+      Left = 110
       Height = 23
       Top = 72
-      Width = 264
+      Width = 256
+      TabOrder = 2
     end
     object LegalTrademarksEdit: TEdit
-      TabOrder = 3
-      Left = 102
+      AnchorSideLeft.Control = CommentsEdit
+      Left = 110
       Height = 23
       Top = 104
-      Width = 264
+      Width = 256
+      TabOrder = 3
     end
     object OriginalFileNameEdit: TEdit
-      TabOrder = 4
-      Left = 102
+      AnchorSideLeft.Control = CommentsEdit
+      Left = 110
       Height = 23
       Top = 136
-      Width = 264
+      Width = 256
+      TabOrder = 4
     end
     object ProductNameEdit: TEdit
-      TabOrder = 5
-      Left = 102
+      AnchorSideLeft.Control = CommentsEdit
+      Left = 110
       Height = 23
       Top = 168
-      Width = 264
+      Width = 256
+      TabOrder = 5
     end
     object ProductVersionEdit: TEdit
-      TabOrder = 6
-      Left = 102
+      AnchorSideLeft.Control = CommentsEdit
+      Left = 110
       Height = 23
       Top = 200
-      Width = 264
+      Width = 256
+      TabOrder = 6
     end
   end
   object CancelButton: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Cancel'
-    OnClick = CancelButtonClick
-    TabOrder = 2
-    Left = 304
+    Left = 309
     Height = 25
     Top = 264
     Width = 75
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
   end
 end

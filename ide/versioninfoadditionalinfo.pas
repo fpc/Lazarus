@@ -62,8 +62,6 @@ type
     OriginalFileNameLabel: TLabel;
     ProductNameLabel: TLabel;
     ProductVersionLabel: TLabel;
-    procedure Button1Click(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -109,16 +107,6 @@ begin
 end;
 
 { TVersionInfoAdditinalInfoForm }
-
-procedure TVersionInfoAdditinalInfoForm.Button1Click(Sender: TObject);
-begin
-   ModalResult := MrOk;
-end;
-
-procedure TVersionInfoAdditinalInfoForm.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult := MrCancel;
-end;
 
 constructor TVersionInfoAdditinalInfoForm.Create(TheOwner: TComponent);
 begin

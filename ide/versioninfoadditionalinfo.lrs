@@ -1,42 +1,43 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TVersionInfoAdditinalInfoForm','FORMDATA',[
-  'TPF0'#29'TVersionInfoAdditinalInfoForm'#28'VersionInfoAdditinalInfoForm'#13
-  +'ActiveControl'#7#8'OKButton'#11'BorderIcons'#11#0#7'Caption'#6#22'Additiona'
-  +'l Information'#12'ClientHeight'#3'('#1#11'ClientWidth'#3#139#1#13'PixelsPer'
-  +'Inch'#2'`'#8'Position'#7#17'poOwnerFormCenter'#18'HorzScrollBar.Page'#3#138
-  +#1#18'VertScrollBar.Page'#3''''#1#4'Left'#3','#1#6'Height'#3'('#1#3'Top'#3
-  +#146#1#5'Width'#3#139#1#0#7'TButton'#8'OKButton'#25'BorderSpacing.InnerBorde'
-  +'r'#2#4#7'Caption'#6#2'OK'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#0#4'L'
-  +'eft'#3#216#0#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#9'TGroupBox'#22
-  +'AdditionalInfoGroupBox'#7'Caption'#6#22'Additional Information'#12'ClientHe'
-  +'ight'#3#230#0#11'ClientWidth'#3't'#1#8'TabOrder'#2#1#4'Left'#2#8#6'Height'#3
-  +#248#0#3'Top'#2#8#5'Width'#3'x'#1#0#6'TLabel'#13'CommentsLabel'#7'Caption'#6
-  +#9'Comments:'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2#6#6'Height'#2
-  +#14#3'Top'#2#8#5'Width'#2'7'#0#0#6'TLabel'#12'CompanyLabel'#7'Caption'#6#8'C'
-  +'ompany:'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2#6#6'Height'#2#14#3
-  +'Top'#2'('#5'Width'#2'2'#0#0#6'TLabel'#17'InternalNameLabel'#7'Caption'#6#14
-  +'Internal Name:'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2#6#6'Height'
-  +#2#14#3'Top'#2'H'#5'Width'#2'I'#0#0#6'TLabel'#20'LegalTrademarksLabel'#7'Cap'
-  +'tion'#6#17'Legal Trademarks:'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'
-  +#2#6#6'Height'#2#14#3'Top'#2'h'#5'Width'#2'Y'#0#0#6'TLabel'#21'OriginalFileN'
-  +'ameLabel'#7'Caption'#6#19'Original File Name:'#5'Color'#7#6'clNone'#11'Pare'
-  +'ntColor'#8#4'Left'#2#6#6'Height'#2#14#3'Top'#3#136#0#5'Width'#2'Z'#0#0#6'TL'
-  +'abel'#16'ProductNameLabel'#7'Caption'#6#13'Product Name:'#5'Color'#7#6'clNo'
-  +'ne'#11'ParentColor'#8#4'Left'#2#6#6'Height'#2#14#3'Top'#3#168#0#5'Width'#2
-  +'H'#0#0#6'TLabel'#19'ProductVersionLabel'#7'Caption'#6#16'Product Version:'#5
-  +'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2#6#6'Height'#2#14#3'Top'#3#200
-  +#0#5'Width'#2'P'#0#0#5'TEdit'#12'CommentsEdit'#8'TabOrder'#2#0#4'Left'#2'f'#6
-  +'Height'#2#23#3'Top'#2#8#5'Width'#3#8#1#0#0#5'TEdit'#11'CompanyEdit'#8'TabOr'
-  +'der'#2#1#4'Left'#2'f'#6'Height'#2#23#3'Top'#2'('#5'Width'#3#8#1#0#0#5'TEdit'
-  +#16'InternalNameEdit'#8'TabOrder'#2#2#4'Left'#2'f'#6'Height'#2#23#3'Top'#2'H'
-  +#5'Width'#3#8#1#0#0#5'TEdit'#19'LegalTrademarksEdit'#8'TabOrder'#2#3#4'Left'
-  +#2'f'#6'Height'#2#23#3'Top'#2'h'#5'Width'#3#8#1#0#0#5'TEdit'#20'OriginalFile'
-  +'NameEdit'#8'TabOrder'#2#4#4'Left'#2'f'#6'Height'#2#23#3'Top'#3#136#0#5'Widt'
-  +'h'#3#8#1#0#0#5'TEdit'#15'ProductNameEdit'#8'TabOrder'#2#5#4'Left'#2'f'#6'He'
-  +'ight'#2#23#3'Top'#3#168#0#5'Width'#3#8#1#0#0#5'TEdit'#18'ProductVersionEdit'
-  +#8'TabOrder'#2#6#4'Left'#2'f'#6'Height'#2#23#3'Top'#3#200#0#5'Width'#3#8#1#0
-  +#0#0#7'TButton'#12'CancelButton'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'
-  +#6#6'Cancel'#7'OnClick'#7#17'CancelButtonClick'#8'TabOrder'#2#2#4'Left'#3'0'
-  +#1#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#0
+  'TPF0'#29'TVersionInfoAdditinalInfoForm'#28'VersionInfoAdditinalInfoForm'#4'L'
+  +'eft'#3','#1#6'Height'#3'('#1#3'Top'#3#146#1#5'Width'#3#139#1#18'HorzScrollB'
+  +'ar.Page'#3#138#1#18'VertScrollBar.Page'#3''''#1#13'ActiveControl'#7#8'OKBut'
+  +'ton'#11'BorderIcons'#11#0#7'Caption'#6#22'Additional Information'#12'Client'
+  +'Height'#3'('#1#11'ClientWidth'#3#139#1#8'Position'#7#17'poOwnerFormCenter'#0
+  +#7'TButton'#8'OKButton'#4'Left'#3#224#0#6'Height'#2#25#3'Top'#3#8#1#5'Width'
+  +#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#2'OK'#7'Default'#9#11'M'
+  +'odalResult'#2#1#8'TabOrder'#2#0#0#0#9'TGroupBox'#22'AdditionalInfoGroupBox'
+  +#4'Left'#2#8#6'Height'#3#248#0#3'Top'#2#8#5'Width'#3'x'#1#7'Caption'#6#22'Ad'
+  +'ditional Information'#12'ClientHeight'#3#230#0#11'ClientWidth'#3't'#1#8'Tab'
+  +'Order'#2#1#0#6'TLabel'#13'CommentsLabel'#4'Left'#2#6#6'Height'#2#17#3'Top'#2
+  +#8#5'Width'#2'<'#7'Caption'#6#9'Comments:'#11'ParentColor'#8#0#0#6'TLabel'#12
+  +'CompanyLabel'#4'Left'#2#6#6'Height'#2#17#3'Top'#2'('#5'Width'#2'6'#7'Captio'
+  +'n'#6#8'Company:'#11'ParentColor'#8#0#0#6'TLabel'#17'InternalNameLabel'#4'Le'
+  +'ft'#2#6#6'Height'#2#17#3'Top'#2'H'#5'Width'#2'N'#7'Caption'#6#14'Internal N'
+  +'ame:'#11'ParentColor'#8#0#0#6'TLabel'#20'LegalTrademarksLabel'#4'Left'#2#6#6
+  +'Height'#2#17#3'Top'#2'h'#5'Width'#2'_'#7'Caption'#6#17'Legal Trademarks:'#11
+  +'ParentColor'#8#0#0#6'TLabel'#21'OriginalFileNameLabel'#4'Left'#2#6#6'Height'
+  +#2#17#3'Top'#3#136#0#5'Width'#2'e'#7'Caption'#6#19'Original File Name:'#11'P'
+  +'arentColor'#8#0#0#6'TLabel'#16'ProductNameLabel'#4'Left'#2#6#6'Height'#2#17
+  +#3'Top'#3#168#0#5'Width'#2'P'#7'Caption'#6#13'Product Name:'#11'ParentColor'
+  +#8#0#0#6'TLabel'#19'ProductVersionLabel'#4'Left'#2#6#6'Height'#2#17#3'Top'#3
+  +#200#0#5'Width'#2'X'#7'Caption'#6#16'Product Version:'#11'ParentColor'#8#0#0
+  +#5'TEdit'#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#2#8#5'Width'#3
+  +#0#1#8'TabOrder'#2#0#0#0#5'TEdit'#11'CompanyEdit'#22'AnchorSideLeft.Control'
+  +#7#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#2'('#5'Width'#3#0#1#8
+  +'TabOrder'#2#1#0#0#5'TEdit'#16'InternalNameEdit'#22'AnchorSideLeft.Control'#7
+  +#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#2'H'#5'Width'#3#0#1#8'T'
+  +'abOrder'#2#2#0#0#5'TEdit'#19'LegalTrademarksEdit'#22'AnchorSideLeft.Control'
+  +#7#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#2'h'#5'Width'#3#0#1#8
+  +'TabOrder'#2#3#0#0#5'TEdit'#20'OriginalFileNameEdit'#22'AnchorSideLeft.Contr'
+  +'ol'#7#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#3#136#0#5'Width'#3
+  +#0#1#8'TabOrder'#2#4#0#0#5'TEdit'#15'ProductNameEdit'#22'AnchorSideLeft.Cont'
+  +'rol'#7#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#3#168#0#5'Width'
+  +#3#0#1#8'TabOrder'#2#5#0#0#5'TEdit'#18'ProductVersionEdit'#22'AnchorSideLeft'
+  +'.Control'#7#12'CommentsEdit'#4'Left'#2'n'#6'Height'#2#23#3'Top'#3#200#0#5'W'
+  +'idth'#3#0#1#8'TabOrder'#2#6#0#0#0#7'TButton'#12'CancelButton'#4'Left'#3'5'#1
+  +#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4
+  +#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#2#0#0#0
 ]);
