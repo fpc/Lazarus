@@ -1021,9 +1021,9 @@ begin
     tlBottom : Options := Options or DT_BOTTOM;
   end;
   If Style.WordBreak then
-    Options := Options or DT_WORDBREAK
-  else
-    If Style.SingleLine then
+    Options := Options or DT_WORDBREAK;
+
+  If Style.SingleLine then
       Options := Options or DT_SINGLELINE;
 
   If not Style.Clipping then
@@ -1352,7 +1352,7 @@ begin
     Alignment := taLeftJustify;
     Layout := tlTop;
     WordBreak := True;
-    SingleLine := False;
+    SingleLine := True;
     Clipping := True;
     ShowPrefix := False;
     Opaque := False;
