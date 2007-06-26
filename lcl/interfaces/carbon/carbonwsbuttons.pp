@@ -66,38 +66,6 @@ implementation
 uses
   CarbonProc, CarbonDbgConsts, CarbonCanvas;
 
-{ TCarbonWSButton }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSButton.CreateHandle
-  Params:  AWinControl - LCL control
-           AParams     - Creation parameters
-  Returns: Handle to the control in Carbon interface
-  
-  Creates new button control in Carbon interface with the specified parameters
- ------------------------------------------------------------------------------}
-class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-begin
-  // create the Carbon button widget
-  Result := TLCLIntfHandle(TCarbonButton.Create(AWinControl, AParams));
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSButton.SetDefault
-  Params:  AButton  - LCL button control
-           ADefault
-
-  Sets button default indication in Carbon interface
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
-  ADefault: Boolean);
-begin
-  if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
-
-  TCarbonCustomButton(AButton.Handle).SetDefault(ADefault);
-end;
-
 { TCarbonWSBitBtn }
 
 {------------------------------------------------------------------------------
