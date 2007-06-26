@@ -1560,6 +1560,8 @@ ide/makeresstrdlg.lfm svneol=native#text/plain
 ide/makeresstrdlg.lrs svneol=native#text/plain
 ide/makeresstrdlg.pas svneol=native#text/pascal
 ide/manifest.lrs svneol=native#text/pascal
+ide/manifest.rc svneol=native#text/plain
+ide/manifest.res -text
 ide/miscoptions.pas svneol=native#text/pascal
 ide/msgquickfixes.pas svneol=native#text/plain
 ide/msgview.lfm svneol=native#text/plain
@@ -1640,6 +1642,7 @@ ide/viewunit_dlg.pp svneol=native#text/pascal
 ide/w32manifest.pas svneol=native#text/pascal
 ide/w32versioninfo.pas svneol=native#text/plain
 ide/wordcompletion.pp svneol=native#text/pascal
+ide/xp.manifest svneol=native#text/plain
 ideintf/README.txt svneol=native#text/plain
 ideintf/actionseditor.lfm svneol=native#text/plain
 ideintf/actionseditor.lrs svneol=native#text/pascal
