@@ -5676,7 +5676,7 @@ var
 begin
   if (PaintLock <> 0)
   {$IFDEF SYN_LAZARUS}
-  {or ((not Focused) and (not (eoPersistentCaret in fOptions)))}
+  or ((not Focused) and (not (eoPersistentCaret in fOptions)))
   {$ELSE}
   or not Focused
   {$ENDIF}
