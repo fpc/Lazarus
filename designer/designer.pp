@@ -1571,6 +1571,7 @@ Begin
   // and there was a mouse down before
   DesignSender:=GetDesignControl(Sender);
   SenderParentForm:=GetParentForm(DesignSender);
+  //DebugLn(['TDesigner.MouseUpOnControl DesignSender=',dbgsName(DesignSender),' SenderParentForm=',dbgsName(SenderParentForm),' ',TheMessage.XPos,',',TheMessage.YPos]);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
   or (SenderParentForm<>Form)
   or ((ControlSelection.SelectionForm<>nil)

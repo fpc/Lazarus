@@ -1636,6 +1636,7 @@ begin
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
+  //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
 
   case event^.Button of
 

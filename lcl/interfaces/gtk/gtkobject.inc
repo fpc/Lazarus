@@ -5608,7 +5608,12 @@ end;
 -------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 var
-  DummyWidget, AWidget, ALabel, MenuLabel: PGtkWidget;
+  DummyWidget: PGtkWidget;
+  ALabel: PGtkWidget;
+  MenuLabel: PGtkWidget;
+  {$IFDEF Gtk}
+  AWidget: PGtkWidget;
+  {$ENDIF}
 begin
   if NoteBookWidget=nil then exit;
   DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
@@ -5616,10 +5621,12 @@ begin
     // the notebook has no pages
     // -> add a dummy page
     DummyWidget := gtk_hbox_new(false, 0);
+    {$IFDEF Gtk}
     AWidget := CreateFixedClientWidget;
     gtk_widget_show(AWidget);
     //gtk_box_pack_start_defaults(GTK_BOX(DummyWidget),AWidget);
     gtk_container_add(GTK_CONTAINER(DummyWidget), AWidget);
+    {$ENDIF}
     gtk_widget_show(DummyWidget);
     ALabel:=gtk_label_new('');
     gtk_widget_show(ALabel);

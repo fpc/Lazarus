@@ -9392,8 +9392,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
-const
-  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
   Widget: PGtkWidget;
   NewPolicy: Integer;
@@ -9405,15 +9403,16 @@ begin
     Widget:=PGtkWidget(Handle);
     if GtkWidgetIsA(Widget,gtk_scrolled_window_get_type) then begin
       if wBar in [SB_BOTH, SB_HORZ] then begin
+        //DebugLn(['TGtkWidgetSet.ShowScrollBar ',GetWidgetDebugReport(Widget),' bShow=',bShow]);
         if bShow then
-          NewPolicy:=POLICY[bShow]
+          NewPolicy:=GTK_POLICY_ALWAYS
         else
           NewPolicy:=GTK_POLICY_NEVER;
         gtk_object_set(PGTKObject(Widget), 'hscrollbar_policy', [NewPolicy,nil]);
       end;
       if wBar in [SB_BOTH, SB_VERT] then begin
         if bShow then
-          NewPolicy:=POLICY[bShow]
+          NewPolicy:=GTK_POLICY_ALWAYS
         else
           NewPolicy:=GTK_POLICY_NEVER;
         gtk_object_set(PGTKObject(Widget), 'vscrollbar_policy', [NewPolicy,nil]);

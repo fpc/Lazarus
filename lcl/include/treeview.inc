@@ -2827,8 +2827,6 @@ begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
     Include(FStates,tvsScrollbarChanged);
-    // TODO: Remove RecreateWnd
-    RecreateWnd(Self);
     UpdateScrollBars;
   end;
 end;
@@ -3548,6 +3546,7 @@ begin
   if fScrollBars in [ssBoth, ssHorizontal, ssAutoBoth, ssAutoHorizontal] then
   begin
     // horizontal scrollbar
+    FillChar(ScrollInfo,SizeOf(ScrollInfo),0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
     ScrollInfo.nTrackPos := 0;
@@ -3555,6 +3554,7 @@ begin
     ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
     ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nPos := Max(FScrolledLeft,0);
+    //DebugLn(['TCustomTreeView.UpdateScrollbars nPage=',ScrollInfo.nPage,',nMax=',ScrollInfo.nMax,' fScrollBars=',ord(fScrollBars)]);
     if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
     then begin
       if (fScrollBars in [ssAutoBoth, ssAutoHorizontal])
@@ -3946,7 +3946,7 @@ var
       Blue:=AColor and $ff;
       if Red+Green+Blue>$180 then
         Result:=clBlack;
-    //DebugLn('[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue);
+      //DebugLn(['[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue]);
     end
     else
       Result := clHighlightText;

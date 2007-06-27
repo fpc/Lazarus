@@ -1729,7 +1729,6 @@ begin
     clInfoBk,
     clMenu,
     clHighlight,
-    clHighlightText,
     clBtnFace,
     clWindow,
     clForm:
@@ -1739,6 +1738,7 @@ begin
       else
         EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
 
+    clHighlightText,
     clBtnShadow,
     clBtnHighlight,
     clBtnText,
@@ -8511,10 +8511,10 @@ begin
         Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
-        GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
+        GC := Style^.text_gc[GTK_STATE_PRELIGHT];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+          Result.foreground := Style^.text[GTK_STATE_PRELIGHT];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -8603,10 +8603,12 @@ begin
 
     clHIGHLIGHTTEXT :
       begin
+        DebugLn(['StyleForegroundColor clHIGHLIGHTTEXT']);
         Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
-        Result := @Style^.bg[GTK_STATE_PRELIGHT];
+        Result := @Style^.text[GTK_STATE_PRELIGHT];
+        DebugLn(['StyleForegroundColor clHIGHLIGHTTEXT 2 ',Result<>nil]);
       end;
   end;
 
