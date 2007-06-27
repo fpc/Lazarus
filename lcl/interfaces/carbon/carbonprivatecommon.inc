@@ -44,17 +44,19 @@ begin
   {$IFDEF VerbosePaint}
     Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
-  
-  // first let carbon draw/update
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-  
+
+    
   AWidget.Context := TCarbonControlContext.Create(AWidget);
-  
   try
+    // set canvas context
     if OSError(
       GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
         SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
       'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
+
+    // let carbon draw/update
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+  
 
     if (AWidget is TCarbonControl) and
       (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then
@@ -302,7 +304,7 @@ function CarbonCommon_SetFocusPart(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  FocusPart, PrevPart: ControlPartCode;
+  FocusPart: ControlPartCode;
 const
   SName = 'CarbonCommon_SetFocusPart';
 begin
@@ -313,19 +315,6 @@ begin
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
       SizeOf(ControlPartCode), nil, @FocusPart), SName,
     SGetEvent, SControlPart) then Exit;
-    
-  {if not (AWidget.LCLObject is TCustomControl) then
-  begin
-    if OSError(HIViewGetFocusPart(AWidget.Widget, PrevPart),
-      SName, 'HIViewGetFocusPart') then Exit;
-      
-    if (PrevPart = kControlFocusNoPart) and (FocusPart <> kControlFocusNoPart) then
-      FocusPart := kControlEditTextPart
-    else
-      FocusPart := kControlFocusNoPart;
-      
-    Result := noErr;
-  end;   }
 
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +

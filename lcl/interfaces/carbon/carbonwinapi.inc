@@ -152,6 +152,7 @@ end;
 function TCarbonWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
   fnCombineMode: Longint): Longint;
 begin
+  DebugLn('TCarbonWidgetSet.CombineRgn TODO');
   Result:=inherited CombineRgn(Dest, Src1, Src2, fnCombineMode);
 end;
 
@@ -350,15 +351,40 @@ begin
   Result := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreatePolygonRgn
+  Params:  Points   - Pointer to array of polygon points
+           NumPts   - Number of points passed
+           FillMode - Filling mode
+  Returns: The new polygonal region
+
+  Creates a new polygonal region from the specified points
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 begin
-  Result:=inherited CreatePolygonRgn(Points, NumPts, FillMode);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreatePolygonRgn NumPts: ' + DbgS(NumPts) +
+      ' FillMode: ' + DbgS(FillMode));
+  {$ENDIF}
+  
+  Result := HRGN(TCarbonRegion.Create(Points, NumPts, FillMode));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreateRectRgn
+  Params:  X1, Y1, X2, Y2 - Region bounding rectangle
+  Returns: The new rectangular region
+
+  Creates a new rectangular region
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
 begin
-  Result:=inherited CreateRectRgn(X1, Y1, X2, Y2);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateRectRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+  {$ENDIF}
+  
+  Result := HRGN(TCarbonRegion.Create(X1, Y1, X2, Y2));
 end;
 
 {------------------------------------------------------------------------------
@@ -768,6 +794,7 @@ end;
 function TCarbonWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
   ): Integer;
 begin
+  DebugLn('TCarbonWidgetSet.ExtSelectClipRGN TODO');
   Result:=inherited ExtSelectClipRGN(dc, rgn, Mode);
 end;
 
@@ -1056,6 +1083,7 @@ end;
 
 function TCarbonWidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
 begin
+  DebugLn('TCarbonWidgetSet.GetClipRGN TODO');
   Result:=inherited GetClipRGN(DC, RGN);
 end;
 
@@ -1482,9 +1510,35 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetRgnBox
+  Params:  RGN    - Handle to region
+           lpRect - Pointer to rectangle
+  Returns: See bellow
+
+  Retrieves the specified region bounding rectangle. The result can be one of
+  the following constants: ERROR, NULLREGION, SIMPLEREGION, COMPLEXREGION.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;
 begin
-  Result:=inherited GetRgnBox(RGN, lpRect);
+  Result := ERROR;
+  if lpRect <> nil then lpRect^ := Classes.Rect(0, 0, 0, 0);
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetRgnBox RGN: ' + DbgS(RGN));
+  {$ENDIF}
+  
+  if not (TObject(RGN) is TCarbonRegion) then
+  begin
+    DebugLn('TCarbonWidgetSet.GetRgnBox Error - invalid region ', DbgS(RGN), '!');
+    Exit;
+  end;
+  
+  if lpRect <> nil then
+  begin
+    lpRect^ := TCarbonRegion(RGN).GetBounds;
+    Result := TCarbonRegion(RGN).GetType;
+  end;
 end;
 
 function TCarbonWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer
@@ -1910,6 +1964,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  InvalidateRgn
+  Params:  Handle - handle of window with changed update region
+           Rgn    - handle to region to invalidate
+           Erase  - specifies whether the background is to be erased
+  Returns: if the function succeeds
+
+  Adds a region to the specified window's update region.
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.InvalidateRgn Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
+  if not CheckWidget(Handle, 'InvalidateRgn') then Exit;
+  if (Rgn <> 0) and not (TObject(Rgn) is TCarbonRegion) then
+  begin
+    DebugLn('TCarbonWidgetSet.InvalidateRgn Error - invalid region: ', DbgS(Rgn), '!');
+    Exit;
+  end;
+
+  TCarbonWidget(Handle).InvalidateRgn(TCarbonRegion(Rgn).Shape);
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Method:  IsWindowEnabled
   Params:  Handle - Handle of window
   Returns: True if window is enabled, false otherwise
@@ -2163,6 +2245,34 @@ function TCarbonWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): Boolean;
 begin
   Result:=inherited PostMessage(Handle, Msg, wParam, lParam);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  PtInRegion
+  Params:  RNG  - Handle to region
+           X, Y - Point
+  Returns: If the specified point lies in the region
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.PtInRegion RGN: ' + DbgS(RGN), ' X: ', DbgS(X),
+      ' Y: ', DbgS(Y));
+  {$ENDIF}
+
+  if not (TObject(RGN) is TCarbonRegion) then
+  begin
+    DebugLn('TCarbonWidgetSet.PtInRegion Error - invalid region ', DbgS(RGN), '!');
+    Exit;
+  end;
+
+  Result := TCarbonRegion(RGN).ContainsPoint(Classes.Point(X, Y));
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.PtInRegion Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex,
@@ -2430,6 +2540,12 @@ begin
   begin
     Result := HFONT(ADC.CurrentFont);
     ADC.CurrentFont := TCarbonFont(GDIObj);
+  end
+  else
+  if AObject is TCarbonRegion then // select region
+  begin
+    Result := HBRUSH(ADC.CurrentRegion);
+    ADC.CurrentRegion := TCarbonRegion(GDIObj);
   end
   else
   if AObject is TCarbonBitmap then // select bitmap

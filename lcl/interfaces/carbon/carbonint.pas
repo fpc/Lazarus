@@ -59,6 +59,7 @@ type
     FCurrentCursor: HCURSOR;
     FMainMenu: TMainMenu; // Main menu attached to menu bar
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
+    FOpenEventHandlerUPP: AEEventHandlerUPP;
   protected
     function CreateThemeServices: TThemeServices; override;
     procedure PassCmdLineOptions; override;
@@ -104,6 +105,10 @@ type
   public
     procedure SetCaptureWidget(const AWidget: HWND);
   end;
+  
+const
+  // missing constant
+  kAEOpenContents = $6F636F6E (* 'ocon' *);
 
 var
   CarbonWidgetSet: TCarbonWidgetSet;
@@ -121,7 +126,7 @@ uses
 // CarbonWSArrow,
   CarbonWSButtons,
 // CarbonWSCalendar,
-// CarbonWSCheckLst,
+ CarbonWSCheckLst,
 // CarbonWSCListBox,
   CarbonWSComCtrls,
   CarbonWSControls,
@@ -144,7 +149,7 @@ uses
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
   CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
-  CarbonTabs,
+  CarbonLists, CarbonTabs,
   CarbonThemes, CarbonCanvas, CarbonGDIObjects, CarbonStrings,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   

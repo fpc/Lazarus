@@ -50,6 +50,10 @@ function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, A
 var
   DefaultTextStyle: ATSUStyle; // default Carbon text style
   RGBColorSpace: CGColorSpaceRef; // global RGB color space
+  GrayColorSpace: CGColorSpaceRef; // global Gray color space
+  
+  HIViewClassID: CFStringRef; // class CFString for HIView
+  CustomControlClassID: CFStringRef; // class CFString for custom control
 
 {$I mackeycodes.inc}
 
@@ -65,6 +69,8 @@ function FindCarbonFontID(const FontName: String): ATSUFontID;
 function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
+
+function CreateCustomHIView(const ARect: HIRect): HIViewRef;
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
@@ -425,6 +431,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:    CreateCustomHIView
+  Params:  ARect - Bounds rect
+  Returns: New custom HIView
+ ------------------------------------------------------------------------------}
+function CreateCustomHIView(const ARect: HIRect): HIViewRef;
+const
+  SName = 'CreateCustomHIView';
+begin
+  Result := nil;
+
+  if OSError(
+    HIObjectCreate(CustomControlClassID, nil, Result),
+    SName, 'HIObjectCreate') then Exit;
+
+  OSError(
+    HIViewChangeFeatures(Result, kHIViewFeatureAllowsSubviews or
+      kHIViewFeatureGetsFocusOnClick, 0),
+    SName, 'HIViewChangeFeatures');
+  OSError(HIViewSetVisible(Result, True), SName, SViewVisible);
+  OSError(HIViewSetFrame(Result, ARect), SName, SViewFrame);
+end;
+
+{------------------------------------------------------------------------------
   Name:    CreateCFString
   Params:  S       - UTF-8 string
            AString - Core Foundation string ref
@@ -778,18 +807,98 @@ begin
     ' B: ' + IntToHex(AColor.Blue, 4);
 end;
 
+{------------------------------------------------------------------------------
+  Name: CustomControlHandler
+  Handles custom control class methods
+ ------------------------------------------------------------------------------}
+function CustomControlHandler(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  EventClass, EventKind: LongWord;
+  Part: ControlPartCode;
+const
+  SName = 'CustomControlHandler';
+begin
+  EventClass := GetEventClass(AEvent);
+  EventKind := GetEventKind(AEvent);
 
+  case EventClass of
+    kEventClassHIObject:
+      case EventKind of
+        kEventHIObjectConstruct,
+        kEventHIObjectDestruct: Result := noErr;
+        kEventHIObjectInitialize: Result := CallNextEventHandler(ANextHandler, AEvent);
+      end;
+    kEventClassControl:
+      case EventKind of
+        kEventControlGetFocusPart,
+        kEventControlSetFocusPart: Result := CallNextEventHandler(ANextHandler, AEvent);
+        kEventControlHitTest:
+          begin
+            {$IFDEF VerboseMouse}
+              DebugLn('CustomControlHandler HitTest');
+            {$ENDIF}
+
+            Part := kControlEditTextPart; // workaround
+
+            Result := SetEventParameter(AEvent, kEventParamControlPart,
+              typeControlPartCode, SizeOf(Part), @Part);
+            OSError(Result, SName, SSetEvent)
+          end;
+      end;
+    kEventClassTextInput: Result := noErr;
+  end;
+end;
+
+var
+  EventSpec: Array [0..6] of EventTypeSpec;
+  CustomControlHandlerUPP: EventHandlerUPP;
+  
 initialization
 
   OSError(
     ATSUCreateStyle(DefaultTextStyle), 'CarbonProc.initialization', SCreateStyle);
   RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+  GrayColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
+
+  EventSpec[0].eventClass := kEventClassHIObject;
+  EventSpec[0].eventKind := kEventHIObjectConstruct;
+  EventSpec[1].eventClass := kEventClassHIObject;
+  EventSpec[1].eventKind := kEventHIObjectInitialize;
+  EventSpec[2].eventClass := kEventClassHIObject;
+  EventSpec[2].eventKind := kEventHIObjectDestruct;
+  EventSpec[3].eventClass := kEventClassControl;
+  EventSpec[3].eventKind := kEventControlHitTest;
+  EventSpec[4].eventClass := kEventClassTextInput;
+  EventSpec[4].eventKind := kEventTextInputUnicodeForKeyEvent;
+  EventSpec[5].eventClass := kEventClassControl;
+  EventSpec[5].eventKind := kEventControlGetFocusPart;
+  EventSpec[6].eventClass := kEventClassControl;
+  EventSpec[6].eventKind := kEventControlSetFocusPart;
+
+  CustomControlHandlerUPP := NewEventHandlerUPP(EventHandlerProcPtr(@CustomControlHandler));
+
+  CreateCFString('com.lazarus.customcontrol', CustomControlClassID);
+  CreateCFString('com.apple.hiview', HIViewClassID);
+                  // test 'com.apple.HITextView'
+  OSError(
+    HIObjectRegisterSubclass(CustomControlClassID, HIViewClassID, 0,
+      CustomControlHandlerUPP, 5, @EventSpec[0], nil, nil),
+    'CarbonProc.initialization', 'HIObjectRegisterSubclass');
 
 finalization
+
+  FreeCFString(CustomControlClassID);
+  FreeCFString(HIViewClassID);
+  DisposeEventHandlerUPP(CustomControlHandlerUPP);
+   
 
   OSError(
     ATSUDisposeStyle(DefaultTextStyle), 'CarbonProc.finalization', SDisposeStyle);
   CGColorSpaceRelease(RGBColorSpace);
+  CGColorSpaceRelease(GrayColorSpace);
+  
   
 
 end.

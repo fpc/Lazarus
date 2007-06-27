@@ -173,6 +173,7 @@ type
     FScrollOrigin: TPoint;
     FScrollSize: TPoint;
     FScrollPageSize: TPoint;
+    FFocusPart: ControlPartCode;
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
@@ -227,20 +228,7 @@ type
     procedure SetFont(const AFont: TFont); override;
     procedure UpdatePanel(AIndex: Integer = -1);
   end;
-  
-  { TCarbonListBox }
 
-  TCarbonListBox = class(TCarbonControl) // TODO
-  private
-    FItemIndex: Integer;
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  public
-    function GetItemsCount: Integer;
-    function GetItemIndex: Integer;
-    procedure SetItemIndex(AIndex: Integer);
-  end;
-  
   { TCarbonStaticText }
 
   TCarbonStaticText = class(TCarbonControl)
@@ -259,7 +247,7 @@ function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
 implementation
 
 uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
-  CarbonWSStdCtrls, CarbonStrings, CarbonCanvas, CarbonGDIObjects;
+  CarbonWSStdCtrls, CarbonCanvas, CarbonGDIObjects;
 
 {------------------------------------------------------------------------------
   Name:    RaiseCreateWidgetError
@@ -368,46 +356,6 @@ end;
 { TCarbonCustomControl }
 
 {------------------------------------------------------------------------------
-  Name: CustomControlHandler
-  Handles custom control class methods
- ------------------------------------------------------------------------------}
-function CustomControlHandler(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  EventClass, EventKind: LongWord;
-  Part: ControlPartCode;
-const
-  SName = 'CustomControlHandler';
-begin
-  EventClass := GetEventClass(AEvent);
-  EventKind := GetEventKind(AEvent);
-
-  case EventClass of
-    kEventClassHIObject:
-      case EventKind of
-        kEventHIObjectConstruct, kEventHIObjectInitialize,
-        kEventHIObjectDestruct: Result := noErr;
-      end;
-    kEventClassControl:
-      case EventKind of
-        kEventControlHitTest:
-          begin
-            {$IFDEF VerboseMouse}
-              DebugLn('CustomControlHandler HitTest');
-            {$ENDIF}
-
-            Part := kControlEditTextPart; // workaround
-          
-            Result := SetEventParameter(AEvent, kEventParamControlPart,
-              typeControlPartCode, SizeOf(Part), @Part);
-            OSError(Result, SName, SSetEvent)
-          end;
-      end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Name: CarbonScrollable_GetInfo
   Handles scrollable get info
  ------------------------------------------------------------------------------}
@@ -503,6 +451,8 @@ procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := CreateCustomHIView(ParamsToHIRect(AParams));
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
+  
+  FFocusPart := kControlNoPart;
   
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
@@ -1014,54 +964,6 @@ begin
   Invalidate;
 end;
 
-{ TCarbonListBox }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonListBox.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon list box
- ------------------------------------------------------------------------------}
-procedure TCarbonListBox.CreateWidget(const AParams: TCreateParams);
-begin
-  // TODO
-
-  Widget := nil;
-  inherited;
-
-  FItemIndex := -1;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonListBox.GetItemsCount
-  Returns: The count of items in list box
- ------------------------------------------------------------------------------}
-function TCarbonListBox.GetItemsCount: Integer;
-begin
-  Result := 0;
-  // TODO
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonListBox.GetItemIndex
-  Returns: The index of selected item in list box
- ------------------------------------------------------------------------------}
-function TCarbonListBox.GetItemIndex: Integer;
-begin
-  Result := FItemIndex;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonListBox.SetItemIndex
-  Params:  AIndex - Index of item to select
-
-  Sets the index of item to select
- ------------------------------------------------------------------------------}
-procedure TCarbonListBox.SetItemIndex(AIndex: Integer);
-begin
-  // TODO
-end;
-
 { TCarbonStaticText }
 
 {------------------------------------------------------------------------------
@@ -1135,40 +1037,8 @@ begin
 end;
 
 
-var
-  EventSpec: Array [0..3] of EventTypeSpec;
-  CustomControlHandlerUPP: EventHandlerUPP;
-
-initialization
-
-  EventSpec[0].eventClass := kEventClassHIObject;
-  EventSpec[0].eventKind := kEventHIObjectConstruct;
-  EventSpec[1].eventClass := kEventClassHIObject;
-  EventSpec[1].eventKind := kEventHIObjectInitialize;
-  EventSpec[2].eventClass := kEventClassHIObject;
-  EventSpec[2].eventKind := kEventHIObjectDestruct;
-  EventSpec[3].eventClass := kEventClassControl;
-  EventSpec[3].eventKind := kEventControlHitTest;
-  
-  CustomControlHandlerUPP := NewEventHandlerUPP(EventHandlerProcPtr(@CustomControlHandler));
-
-  CreateCFString('com.lazarus.customcontrol', CustomControlClassID);
-  CreateCFString('com.apple.hiview', HIViewClassID);
-  try
-    OSError(
-      HIObjectRegisterSubclass(CustomControlClassID, HIViewClassID, 0,
-        CustomControlHandlerUPP, 4, @EventSpec[0], nil, nil),
-      'CarbonPtivate.initialization', 'HIObjectRegisterSubclass');
-  finally
-
-  end;
-  
-finalization
-
-   FreeCFString(CustomControlClassID);
-   FreeCFString(HIViewClassID);
-   DisposeEventHandlerUPP(CustomControlHandlerUPP);
 
 
 end.
+
 

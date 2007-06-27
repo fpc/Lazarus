@@ -41,6 +41,7 @@ type
     CurrentFont: TCarbonFont;
     CurrentBrush: TCarbonBrush;
     CurrentPen: TCarbonPen;
+    CurrentRegion: TCarbonRegion;
 
     BkColor: TColor;
     BkMode: Integer;
@@ -62,6 +63,7 @@ type
     FCurrentFont: TCarbonFont;
     FCurrentBrush: TCarbonBrush;
     FCurrentPen: TCarbonPen;
+    FCurrentRegion: TCarbonRegion;
 
     FBkColor: TColor;
     FBkMode: Integer;
@@ -72,6 +74,7 @@ type
 
     FROP2: Integer;
     FPenPos: TPoint;
+    FClipRegion: TCarbonRegion;
     
     FSavedDCList: TFPObjectList;
 
@@ -80,6 +83,7 @@ type
     procedure SetCurrentBrush(const AValue: TCarbonBrush);
     procedure SetCurrentFont(const AValue: TCarbonFont);
     procedure SetCurrentPen(const AValue: TCarbonPen);
+    procedure SetCurrentRegion(const AValue: TCarbonRegion);
     procedure SetROP2(const AValue: Integer);
     procedure SetTextColor(const AValue: TColor);
   protected
@@ -124,6 +128,7 @@ type
     property CurrentFont: TCarbonFont read FCurrentFont write SetCurrentFont;
     property CurrentBrush: TCarbonBrush read FCurrentBrush write SetCurrentBrush;
     property CurrentPen: TCarbonPen read FCurrentPen write SetCurrentPen;
+    property CurrentRegion: TCarbonRegion read FCurrentRegion write SetCurrentRegion;
 
     property BkColor: TColor read FBkColor write SetBkColor;
     property BkMode: Integer read FBkMode write SetBkMode;
@@ -314,6 +319,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetCurrentRegion
+  Params:  AValue - New region
+
+  Sets the current region
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.SetCurrentRegion(const AValue: TCarbonRegion);
+begin
+  if AValue = nil then
+  begin
+    DebugLn('TCarbonDeviceContext.SetCurrentRegion Error - Value is nil!');
+    Exit;
+  end;
+
+  if FCurrentRegion <> AValue then
+  begin
+    if FCurrentRegion <> nil then FCurrentRegion.Unselect;
+
+    FCurrentRegion := AValue;
+    FCurrentRegion.Select;
+    FCurrentRegion.Apply(Self);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.SetROP2
   Params:  AValue - New binary raster operation
 
@@ -360,6 +389,11 @@ begin
   FCurrentBrush.Select;
   FCurrentFont := StockSystemFont;
   FCurrentFont.Select;
+  
+  FClipRegion := TCarbonRegion.Create;
+
+  FCurrentRegion := FClipRegion;
+  FCurrentRegion.Select;
 end;
 
 {------------------------------------------------------------------------------
@@ -377,6 +411,9 @@ begin
   if FCurrentPen <> nil then FCurrentPen.Unselect;
   if FCurrentBrush <> nil then FCurrentBrush.Unselect;
   if FCurrentFont <> nil then FCurrentFont.Unselect;
+  if FCurrentRegion <> nil then FCurrentRegion.Unselect;
+  
+  FClipRegion.Free;
 
   inherited Destroy;
 end;
@@ -498,6 +535,7 @@ begin
   Result.CurrentFont := FCurrentFont;
   Result.CurrentBrush := FCurrentBrush;
   Result.CurrentPen := FCurrentPen;
+  Result.CurrentRegion := FCurrentRegion;
 
   Result.BkColor := FBkColor;
   Result.BkMode := FBkMode;
@@ -529,6 +567,10 @@ begin
   if (FCurrentPen <> AData.CurrentPen) and (FCurrentPen <> nil) then
     FCurrentPen.Unselect;
   FCurrentPen := AData.CurrentPen;
+  
+  if (FCurrentRegion <> AData.CurrentRegion) and (FCurrentRegion <> nil) then
+    FCurrentRegion.Unselect;
+  FCurrentRegion := AData.CurrentRegion;
 
   FBkColor := AData.BkColor;
   FBkMode := AData.BkMode;
@@ -561,7 +603,7 @@ var
   W: WideString;
   Tag: ATSUAttributeTag;
   DataSize: ByteCount;
-  PContext: ATSUAttributeValuePtr;
+  PValue: ATSUAttributeValuePtr;
 const
   SName = 'BeginTextRender';
 begin
@@ -589,13 +631,21 @@ begin
       kATSUFromTextBeginning, kATSUToTextEnd, Length(W), 1, @TextLength,
       @TextStyle, ALayout), Self, SName, 'ATSUCreateTextLayoutWithTextPtr') then Exit;
       
+  // set layout line orientation
+  Tag := kATSULineRotationTag;
+  DataSize := SizeOf(Fixed);
+
+  PValue := @(CurrentFont.LineRotation);
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
+    Self, SName, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
+      
   // set layout context
   Tag := kATSUCGContextTag;
   DataSize := SizeOf(CGContextRef);
 
-  PContext := @CGContext;
-  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PContext),
-    Self, SName, 'ATSUSetLayoutControls') then Exit;
+  PValue := @CGContext;
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
+    Self, SName, 'ATSUSetLayoutControls', 'CGContext') then Exit;
     
   Result := True;
 end;
@@ -830,9 +880,10 @@ var
   SavedBrush: TCarbonBrush;
 begin
   SavedBrush := FCurrentBrush;
+  
   Brush.Apply(Self, False); // do not use ROP2
   try
-    CGContextFillRect(CGContext, RectToCGRect(Rect));
+    CGContextFillRect(CGContext, GetCGRectSorted(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom));
   finally
     FCurrentBrush := SavedBrush;
     CurrentBrush.Apply(Self); // ensure that saved brush is applied
@@ -1105,7 +1156,7 @@ begin
     CGContextAddLineToPoint(CGContext, Points^.x + 0.5, Points^.y + 0.5);
     Dec(NumPts);
   end;
-
+  
   CGContextClosePath(CGContext);
 
   if Winding then

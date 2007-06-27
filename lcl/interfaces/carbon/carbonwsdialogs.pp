@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSDialogs.pp                               * 
+ *                              CarbonWSDialogs.pp                           * 
  *                              --------------                               * 
  *                                                                           *
  *                                                                           *
@@ -115,6 +115,59 @@ uses
 
 { TCarbonWSFileDialog }
 
+function FilterByExtCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
+ callbackUD: UnivPtr; filterMode: NavFilterModes): Boolean; stdcall;
+ {Custom filter callback function. Pointer to this function is passed as
+   inFilterProc to NavCreateGetFileDialog and NavCreateChooseFolderDialog.
+  If theItem file should be highlighted in file dialog, return True;
+   if it should be dimmed in file dialog, return False.
+  The callbackUD param contains file dialog object passed as inClientData
+   to NavCreateGetFileDialog and NavCreateChooseFolderDialog.
+  Note: This function filters only by file extension, not by wildcard file spec.}
+var
+  FileRef: FSRef;
+  FileURL: CFURLRef;
+  FileCFStr: CFStringRef;
+  FilePath: string;
+begin
+  Result := True;
+  
+  if callbackUD = nil then  // No user data passed?
+    Exit;
+  if TFileDialog(callbackUD).Filter = '' then  // No filter passed?
+    Exit;
+  if TFileDialog(callbackUD) is TOpenDialog then
+  begin
+    if info^.isFolder then  // Don't dim folder?
+      Exit;
+  end
+  else  {Must be TSelectDirectoryDialog}
+  begin
+    if not info^.isFolder then  // Dim file?
+    begin
+      Result := False;
+      Exit;
+    end;
+  end;
+
+  if OSError(AEGetDescData(theItem, @FileRef, SizeOf(FSRef)), 
+             'FilterByExtCallback', '', 'AEGetDescData') then Exit;
+                     
+  FileURL := CFURLCreateFromFSRef(kCFAllocatorDefault, FileRef);
+  FileCFStr := CFURLCopyFileSystemPath(FileURL, kCFURLPOSIXPathStyle);
+          
+  FilePath := CFStringToStr(FileCFStr);
+
+  FreeCFString(FileURL);
+  FreeCFString(FileCFStr);
+
+  // TODO: use mask for filtering
+  Result := Pos(LowerCase(ExtractFileExt(FilePath)), 
+                LowerCase(TFileDialog(callbackUD).Filter)) > 0;
+
+end;  {FilterByExtCallback}
+
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWSFileDialog.ShowModal
   Params:  ACommonDialog - LCL common dialog
@@ -125,17 +178,14 @@ uses
   ACommonDialog.Files.
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
-
  {
   Called by Execute method of TOpenDialog, TSaveDialog and TSelectDirectoryDialog.
    TODO: Figure out how to use dialog's InitialDir property.
-   TODO: Figure out how to pass UPP of a custom filter callback function as 
-         inFilterProc to NavCreateGetFileDialog and pass FileDialog as
-         inClientData so callback function can access dialog's Filter property.
  }
 var
   FileDialog: TFileDialog;
   CreationOptions: NavDialogCreationOptions;
+  FilterUPP: NavObjectFilterUPP;
   DialogRef: NavDialogRef;
   DialogReply: NavReplyRecord;
   FileCount: Integer;
@@ -161,6 +211,8 @@ begin
 
   FileDialog.UserChoice := mrCancel; // Return this if user cancels or we need to exit
 
+  FilterUPP := NewNavObjectFilterUPP(NavObjectFilterProcPtr(@FilterByExtCallback));
+
   try
     if FileDialog is TSaveDialog then
     begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
@@ -177,14 +229,15 @@ begin
       // Create Save dialog
       if OSError(
         NavCreatePutFileDialog(@CreationOptions, 0, 0, nil, nil, DialogRef),
-        Self, SShowModal, 'NavCreatePutFileDialog') then Exit;
+         Self, SShowModal, 'NavCreatePutFileDialog') then Exit;
     end
     else
       if FileDialog is TSelectDirectoryDialog then // Create Choose folder dialog
       begin
         if OSError(
-          NavCreateChooseFolderDialog(@CreationOptions, nil, nil, nil, DialogRef),
-          Self, SShowModal, 'NavCreateChooseFolderDialog') then Exit;
+          NavCreateChooseFolderDialog(@CreationOptions, nil, 
+           FilterUPP, UnivPtr(FileDialog), DialogRef),
+           Self, SShowModal, 'NavCreateChooseFolderDialog') then Exit;
       end
       else
         if FileDialog is TOpenDialog then
@@ -198,8 +251,9 @@ begin
 
           // Create Open dialog
           if OSError(
-            NavCreateGetFileDialog(@CreationOptions, nil, nil, nil, nil, nil, DialogRef),
-            Self, SShowModal, 'NavCreateGetFileDialog') then Exit;
+            NavCreateGetFileDialog(@CreationOptions, nil, nil, nil, 
+             FilterUPP, UnivPtr(FileDialog), DialogRef),
+             Self, SShowModal, 'NavCreateGetFileDialog') then Exit;
         end;
 
     try
@@ -260,6 +314,7 @@ begin
     end;
 
   finally
+    DisposeNavObjectFilterUPP(FilterUPP);
     FreeCFString(CreationOptions.windowTitle);
     FreeCFString(CreationOptions.saveFileName);
   end;

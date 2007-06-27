@@ -38,7 +38,7 @@ uses
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonBars, CarbonButtons, CarbonEdits,
-  CarbonWSControls;
+  CarbonLists, CarbonWSControls;
   
 type
 
@@ -113,7 +113,8 @@ type
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
-    // class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
@@ -538,7 +539,7 @@ begin
   Result := 0;
   if not CheckHandle(ACustomListBox, Self, 'GetSelCount') then Exit;
   
-  // TODO
+  Result:=TCarbonListBox(ACustomListBox.Handle).GetSelCount;
 end;
 
 {------------------------------------------------------------------------------
@@ -553,7 +554,7 @@ begin
   Result := False;
   if not CheckHandle(ACustomListBox, Self, 'GetSelected') then Exit;
 
-  // TODO
+  Result:=TCarbonListBox(ACustomListBox.Handle).GetSelected(AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -595,7 +596,7 @@ begin
   Result := 0;
   if not CheckHandle(ACustomListBox, Self, 'GetTopIndex') then Exit;
 
-  // TODO
+  Result:=TCarbonListBox(ACustomListBox.Handle).GetTopIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -612,7 +613,22 @@ class procedure TCarbonWSCustomListBox.SelectItem(
 begin
   if not CheckHandle(ACustomListBox, Self, 'SelectItem') then Exit;
 
-  // TODO
+  TCarbonListBox(ACustomListBox.Handle).SelectItem(AIndex,ASelected);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetBorderStyle
+  Params:  AWinControl  - LCL custom list box
+           ABorderStyle - Border style to set
+
+  Changes border style of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not CheckHandle(AWinControl, Self, 'SetBorderStyle') then Exit;
+
+  TCarbonListBox(AWinControl.Handle).SetBorderStyle(ABorderStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -638,23 +654,27 @@ end;
 
   Changes selection mode of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
+class procedure TCarbonWSCustomListBox.SetSelectionMode(
+  const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetSelectionMode') then Exit;
 
-  // TODO
+  TCarbonListBox(ACustomListBox.Handle).SetSelectionMode(AExtendedSelect,AMultiSelect);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomListBox.SetStyle
-  Params:  ACustomListBox - LCL custom list box
+  Params:  ACustomListBox  - LCL custom list box
 
-  Changes style of list box in Carbon interface
+  Changes style (standard,ownerdrawn...) of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+class procedure TCarbonWSCustomListBox.SetStyle(
+  const ACustomListBox: TCustomListBox);
 begin
-  // TODO
+  if not CheckHandle(ACustomListBox, Self, 'SetStyle') then Exit;
+
+  TCarbonListBox(ACustomListBox.Handle).SetStyle;
 end;
 
 {------------------------------------------------------------------------------
@@ -685,7 +705,7 @@ class procedure TCarbonWSCustomListBox.SetTopIndex(
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetTopIndex') then Exit;
 
-  // TODO
+  TCarbonListBox(ACustomListBox.Handle).SetTopIndex(NewTopIndex);
 end;
 
 { TCarbonWSCustomEdit }
@@ -1072,7 +1092,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TCarbonWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TCarbonWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TCarbonWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
 //  RegisterWSComponent(TListBox, TCarbonWSListBox);
   RegisterWSComponent(TCustomEdit, TCarbonWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TCarbonWSCustomMemo);

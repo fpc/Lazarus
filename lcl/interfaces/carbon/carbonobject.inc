@@ -243,6 +243,77 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:  CarbonApp_Open
+  Handles application open
+ ------------------------------------------------------------------------------}
+function CarbonApp_Open(var AEvent: AppleEvent; var Reply: AppleEvent;
+  Data: SInt32): OSErr; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  DocList: AEDescList;
+  FileCount: Integer;
+  FileIdx: Integer;
+  Keyword: AEKeyword;
+  FileDesc: AEDesc;
+  FileRef: FSRef;
+  FileURL: CFURLRef;
+  FileCFStr: CFStringRef;
+  Files: Array of String;
+const
+  SName = 'OpenDocEventHandler';
+begin
+  //{$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_Open');
+  //{$ENDIF}
+  
+  if OSError(AEGetParamDesc(AEvent, keyDirectObject, typeAEList, DocList),
+    SName, 'AEGetParamDesc') then Exit;
+
+  try
+    if OSError(AECountItems(DocList, FileCount), SName, 'AECountItems') then Exit;
+
+
+    SetLength(Files, 0);
+    
+    for FileIdx := 1 to FileCount do
+    begin
+      if OSError(AEGetNthDesc(DocList, FileIdx, typeFSRef, @Keyword, FileDesc),
+        SName, 'AEGetNthDesc') then Continue;
+
+      if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)),
+        SName, 'AEGetDescData') then Continue;
+
+      if OSError(AEDisposeDesc(FileDesc),
+        SName, 'AEDisposeDesc') then Continue;
+
+      FileURL := CFURLCreateFromFSRef(kCFAllocatorDefault, FileRef);
+      FileCFStr := CFURLCopyFileSystemPath(FileURL, kCFURLPOSIXPathStyle);
+      try
+        SetLength(Files, Length(Files) + 1);
+        Files[High(Files)] := CFStringToStr(FileCFStr);
+      finally
+        FreeCFString(FileURL);
+        FreeCFString(FileCFStr);
+      end;
+    end;
+    
+    if Length(Files) > 0 then
+    begin
+      if Application <> nil then
+      begin
+        if Application.MainForm <> nil then
+          Application.MainForm.IntfDropFiles(Files);
+          
+        Application.IntfDropFiles(Files);
+      end;
+    end;
+  finally
+    AEDisposeDesc(DocList);
+  end;
+  
+  Result := noErr;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppInit
   Params:  ScreenInfo
 
@@ -453,6 +524,7 @@ end;
 destructor TCarbonWidgetSet.Destroy;
 begin
   FreeAndNil(FTimerMap);
+  DisposeAEEventHandlerUPP(FOpenEventHandlerUPP);
   
   inherited Destroy;
   CarbonWidgetSet := nil;
@@ -542,6 +614,9 @@ end;
 procedure TCarbonWidgetSet.RegisterEvents;
 var
   TmpSpec: EventTypeSpec;
+  OpenSpec: array [0..1] of EventTypeSpec;
+const
+  SName = 'RegisterEvents';
 begin
   TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_CommandProcess),
@@ -554,6 +629,18 @@ begin
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppHidden);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Hidden),
     1, @TmpSpec, nil, nil);
+    
+  FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
+  //OpenSpec[0] := MakeEventSpec(kCoreEventClass, kAEOpenDocuments);
+  //OpenSpec[1] := MakeEventSpec(kCoreEventClass, kAEOpenContents);
+  //InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Open),
+  //  2, @OpenSpec[0], nil, nil);
+  OSError(
+    AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, FOpenEventHandlerUPP, 0, False),
+    Self, SName, 'AEInstallEventHandler');
+  OSError(
+    AEInstallEventHandler(kCoreEventClass, kAEOpenContents, FOpenEventHandlerUPP, 0, False),
+    Self, SName, 'AEInstallEventHandler');
 end;
 
 {------------------------------------------------------------------------------

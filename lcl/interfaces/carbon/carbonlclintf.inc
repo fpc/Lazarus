@@ -99,16 +99,115 @@ begin
   {$ENDIF}
 end;
 
+//It looks like there is no way to know the clientrect of a databrowser.
+//border width (when active) should be 3 pixels
+const DataBrowserBorderWidth = 3;
+
+{------------------------------------------------------------------------------
+  Method:  GetListBoxIndexAtY
+  Params:  ListBox - LCL List Box component
+           Y
+  Returns: Index of list item at the specified Y coordinate
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer
   ): integer;
+var rowheight : UInt16;
+    atop, aleft : UInt32;
+    aWidget : ControlRef;
+    aListBox : TCustomListBox;
+    delta : integer;
+const
+  SName = 'GetListBoxIndexAtY';
 begin
-  Result:=inherited GetListBoxIndexAtY(ListBox, y);
+  Result:=0;
+  
+  aListBox:=TCustomListBox(ListBox);
+  if aListBox=nil then exit;
+  if not CheckWidget(aListBox.Handle, SName) then Exit;
+  aWidget:=ControlRef(TCarbonListBox(aListBox.Handle).Widget);
+  if aWidget=nil then exit;
+
+  if OSError(
+    GetDataBrowserTableViewRowHeight(aWidget,rowheight),
+    Self,SName,'GetDataBrowserTableViewRowHeight')
+  then exit;
+
+  if OSError(
+    GetDataBrowserScrollPosition(aWidget,atop,aleft),
+    Self,SName,'GetDataBrowserScrollPosition')
+  then exit;
+  
+  if aListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
+  else delta:=0;
+  
+  Result:=(atop+y-delta) div rowheight;
+  if Result>=aListBox.Items.Count then Result:=-1;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetListBoxItemRect
+  Params:  ListBox - LCL List Box component
+           Index   - Index of list item
+           ARect   - Rectangle
+  Returns: If the function succeeds
+
+  Retrieves rectangle of list item with the specified index
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetListBoxItemRect(ListBox: TComponent;
   Index: integer; var ARect: TRect): boolean;
+var rowheight : UInt16;
+    atop, aleft : UInt32;
+    aWidget : ControlRef;
+    aListBox : TCustomListBox;
+    aHoriz, aVertical : boolean;
+    scrollwidth : Sint32;
+    delta : integer;
+const
+  SName = 'GetListBoxItemRect';
 begin
-  Result:=inherited GetListBoxItemRect(ListBox, Index, ARect);
+  Result:=false;
+  
+  aListBox:=TCustomListBox(ListBox);
+  if aListBox=nil then exit;
+  if not CheckWidget(aListBox.Handle, SName) then Exit;
+  aWidget:=ControlRef(TCarbonListBox(aListBox.Handle).Widget);
+  if aWidget=nil then exit;
+
+  if OSError(
+    GetDataBrowserTableViewRowHeight(aWidget,rowheight),
+    Self,SName,'GetDataBrowserTableViewRowHeight')
+  then exit;
+
+  if OSError(
+    GetDataBrowserScrollPosition(aWidget,atop,aleft),
+    Self,SName,'GetDataBrowserScrollPosition')
+  then exit;
+
+  if OSError(
+    GetDataBrowserHasScrollBars(aWidget,aHoriz,aVertical),
+    Self,SName,'GetDataBrowserHasScrollBars')
+  then exit;
+  
+  if aVertical then
+  begin
+    if OSError(
+       GetThemeMetric(kThemeMetricScrollBarWidth,scrollwidth),
+       Self,SName,'GetThemeMetric')
+    then exit;
+  end
+  else scrollwidth:=0;
+
+  if aListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
+  else delta:=0;
+
+  //note: itemrect.right and bottom are outside the "real" itemrect.
+
+  ARect.Top:=(Index*rowheight)-atop+delta;
+  ARect.Left:=delta;
+  ARect.Bottom:=Arect.Top+rowheight;
+  ARect.Right:=aListBox.Width-delta-scrollwidth;
+
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------

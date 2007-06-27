@@ -46,9 +46,6 @@ var
   LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
   WIDGETINFO_FOURCC: FourCharCode; // = 'WInf';
   MENU_FOURCC: FourCharCode;       // = 'Menu';
-  
-  HIViewClassID: CFStringRef; // class CFString for HIView
-  CustomControlClassID: CFStringRef; // class CFString for custom control
 
 type
 
@@ -70,7 +67,6 @@ type
     procedure SetProperty(AIndex: String; const AValue: Pointer);
   protected
     procedure RegisterEvents; virtual; abstract;
-    function CreateCustomHIView(const ARect: HIRect): HIViewRef;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
     procedure DestroyWidget; virtual; abstract;
     function GetContent: ControlRef; virtual; abstract;
@@ -88,6 +84,7 @@ type
     function GetMousePos: TPoint; virtual; abstract;
     function GetTopParentWindow: WindowRef; virtual; abstract;
     procedure Invalidate(Rect: PRect = nil); virtual; abstract;
+    procedure InvalidateRgn(AShape: HISHapeRef);
     function IsEnabled: Boolean; virtual; abstract;
     function IsVisible: Boolean; virtual; abstract;
     function Enable(AEnable: Boolean): Boolean; virtual; abstract;
@@ -373,28 +370,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidget.CreateCustomHIView
-  Params:  ARect - Bounds rect
-  Returns: New custom HIView
- ------------------------------------------------------------------------------}
-function TCarbonWidget.CreateCustomHIView(const ARect: HIRect): HIViewRef;
-const
-  SName = 'CreateCustomHIView';
-begin
-  Result := nil;
-  
-  if OSError(
-    HIObjectCreate(CustomControlClassID, nil, Result),
-    Self, SName, 'HIObjectCreate') then Exit;
-
-  OSError(
-    HIViewChangeFeatures(Result, kHIViewFeatureAllowsSubviews or
-      kHIViewFeatureGetsFocusOnClick, 0),
-    Self, SName, 'HIViewChangeFeatures');
-  OSError(HIViewSetFrame(Result, ARect), Self, SName, SViewFrame);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWidget.BoundsChanged
 
   Handles bounds change
@@ -529,6 +504,20 @@ function TCarbonWidget.GetPreferredSize: TPoint;
 begin
   Result.X := 0;
   Result.Y := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.InvalidateRgn
+  Params:  AShape - HIShapeRef
+
+  Invalidates the specified client region or entire area
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.InvalidateRgn(AShape: HISHapeRef);
+begin
+  if AShape = nil then Invalidate
+  else
+    OSError(HIViewSetNeedsDisplayInShape(Content, AShape, True),
+      Self, 'InvalidateRgn', 'HIViewSetNeedsDisplayInShape');
 end;
 
 {------------------------------------------------------------------------------

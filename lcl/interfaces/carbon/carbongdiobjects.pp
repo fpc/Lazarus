@@ -52,17 +52,38 @@ type
     property Global: Boolean read FGlobal;
     property SelCount: Integer read FSelCount;
   end;
+  
+  { TCarbonRegion }
+
+  TCarbonRegion = class(TCarbonGDIObject)
+  private
+    FShape: HIShapeRef;
+  public
+    constructor Create;
+    constructor Create(const X1, Y1, X2, Y2: Integer);
+    constructor Create(Points: PPoint; NumPts: Integer; FillMode: Integer);
+    destructor Destroy; override;
+    
+    procedure Apply(ADC: TCarbonContext);
+    function GetBounds: TRect;
+    function GetType: Integer;
+    function ContainsPoint(const P: TPoint): Boolean;
+  public
+    property Shape: HIShapeRef read FShape;
+  end;
 
   { TCarbonFont }
 
   TCarbonFont = class(TCarbonGDIObject)
   private
     FStyle: ATSUStyle;
+    FLineRotation: Fixed;
   public
     constructor Create(AGlobal: Boolean); // default system font
     constructor Create(ALogFont: TLogFont; AFaceName: String);
     destructor Destroy; override;
   public
+    property LineRotation: Fixed read FLineRotation;
     property Style: ATSUStyle read FStyle;
   end;
 
@@ -390,6 +411,227 @@ begin
   end;
 end;
 
+{ TCarbonRegion }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.Create
+
+  Creates a new empty Carbon region
+ ------------------------------------------------------------------------------}
+constructor TCarbonRegion.Create;
+begin
+  inherited Create(False);
+  
+  FShape := HIShapeCreateEmpty;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.Create
+  Params:  X1, Y1, X2, Y2 - Region bounding rectangle
+
+  Creates a new rectangular Carbon region
+ ------------------------------------------------------------------------------}
+constructor TCarbonRegion.Create(const X1, Y1, X2, Y2: Integer);
+begin
+  inherited Create(False);
+  
+  FShape := HIShapeCreateWithRect(GetCGRectSorted(X1, Y1, X2, Y2));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.Create
+  Params:  Points   - Pointer to array of polygon points
+           NumPts   - Number of points passed
+           FillMode - Filling mode
+
+  Creates a new polygonal Carbon region from the specified points
+ ------------------------------------------------------------------------------}
+constructor TCarbonRegion.Create(Points: PPoint; NumPts: Integer;
+  FillMode: Integer);
+var
+  Bounds: TRect;
+  Context: CGContextRef;
+  W, H: Integer;
+  Data: Pointer;
+  PData: PByte;
+  P: PPoint;
+  I: Integer;
+  X, Y, SX: Integer;
+  LC, C: Byte;
+  //Line: String;
+  
+  function GetPolygonBounds: TRect;
+  var
+    I: Integer;
+  begin
+    P := Points;
+    Result := Classes.Rect(P^.X, P^.Y, P^.X, P^.Y);
+    for I := 1 to NumPts - 1 do
+    begin
+      Inc(P);
+      if P^.X < Result.Left then Result.Left := P^.X;
+      if P^.X > Result.Right then Result.Right := P^.X;
+      if P^.Y < Result.Top then Result.Top := P^.Y;
+      if P^.Y > Result.Bottom then Result.Bottom := P^.Y;
+    end;
+  end;
+  
+  procedure AddPart(X1, X2, Y: Integer);
+  var
+    R: HIShapeRef;
+  begin
+    //DebugLn('AddPart:' + DbgS(X1) + ' - ' + DbgS(X2) + ', ' + DbgS(Y));
+        
+    R := HIShapeCreateWithRect(GetCGRect(X1, Y, X2, Y + 1));
+    OSError(HIShapeUnion(FShape, R, FShape),
+      Self, 'Create polygonal', 'HIShapeUnion');
+    CFRelease(R);
+  end;
+  
+begin
+  inherited Create(False);
+  
+(*
+  The passed polygon is drawed into grayscale context, the region is constructed
+  per rows from rectangles of drawed polygon parts.
+  *)
+  
+  FShape := HIShapeCreateMutable;
+  
+  if (NumPts <= 2) or (Points = nil) then Exit;
+  Bounds := GetPolygonBounds;
+  DebugLn('TCarbonRegion.Create Bounds:' + DbgS(Bounds));
+  W := Bounds.Right - Bounds.Left + 2;
+  H := Bounds.Bottom - Bounds.Top + 2;
+  
+  if (W <= 0) or (H <= 0) then Exit;
+  
+  System.GetMem(Data, W * H);
+  System.FillChar(Data^, W * H, 0); // clear bitmap context data to black
+  try
+    Context := CGBitmapContextCreate(Data, W, H, 8, W, GrayColorSpace,
+      kCGImageAlphaNone);
+    try
+      CGContextSetShouldAntialias(Context, 0); // disable anti-aliasing
+      CGContextSetGrayFillColor(Context, 1.0, 1.0); // draw white polygon
+      
+      P := Points;
+      CGContextBeginPath(Context);
+      CGContextMoveToPoint(Context, P^.X, P^.Y);
+
+      for I := 1 to NumPts - 1 do
+      begin
+        Inc(P);
+        CGContextAddLineToPoint(Context, P^.X, P^.Y);
+      end;
+      
+      CGContextClosePath(Context);
+      
+      if FillMode = ALTERNATE then
+        CGContextEOFillPath(Context)
+      else
+        CGContextFillPath(Context);
+
+      //SetLength(Line, W);
+
+      PData := Data;
+      for Y := 0 to Pred(H) do
+      begin
+        LC := 0; // edge is black
+        for X := 0 to Pred(W) do
+        begin
+          C := PData^;
+          //Line[X + 1] := Chr(Ord('0') + C div 255);
+          
+          if (C = $FF) and (LC = 0) then
+            SX := X; // start of painted row part
+          if (C = 0) and (LC = $FF) then
+            // end of painted row part (SX, X)
+            AddPart(SX, X,  Pred(H) - Y);
+          
+          LC := C;
+          Inc(PData);
+        end;
+        //DebugLn(DbgS(Pred(H) - Y) + ':' + Line);
+      end;
+
+    finally
+      CGContextRelease(Context);
+    end;
+  finally
+    System.FreeMem(Data);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.Destroy
+
+  Destroys Carbon region
+ ------------------------------------------------------------------------------}
+destructor TCarbonRegion.Destroy;
+begin
+  CFRelease(FShape);
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.Apply
+  Params:  ADC - Context to apply to
+
+  Applies region to the specified context
+  Note: Clipping region is only reducing
+ ------------------------------------------------------------------------------}
+procedure TCarbonRegion.Apply(ADC: TCarbonContext);
+begin
+  if ADC = nil then Exit;
+  
+  if OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
+    Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
+    
+  CGContextClip(ADC.CGContext);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.GetBounds
+  Returns: The bounding box of Carbon region
+ ------------------------------------------------------------------------------}
+function TCarbonRegion.GetBounds: TRect;
+var
+  R: HIRect;
+begin
+  if HIShapeGetBounds(FShape, R) = nil then
+  begin
+    DebugLn('TCarbonRegion.GetBounds Error!');
+    Exit;
+  end;
+  
+  Result := CGRectToRect(R);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.GetType
+  Returns: The type of Carbon region
+ ------------------------------------------------------------------------------}
+function TCarbonRegion.GetType: Integer;
+begin
+  Result := ERROR;
+  if HIShapeIsEmpty(FShape) then Result := NULLREGION
+  else
+    if HIShapeIsRectangular(FShape) then Result := SIMPLEREGION
+    else Result := COMPLEXREGION;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonRegion.ContainsPoint
+  Params:  P - Point
+  Returns: If the specified point lies in Carbon region
+ ------------------------------------------------------------------------------}
+function TCarbonRegion.ContainsPoint(const P: TPoint): Boolean;
+begin
+  Result := HIShapeContainsPoint(FShape, PointToHIPoint(P));
+end;
+
 { TCarbonFont }
 
 {------------------------------------------------------------------------------
@@ -403,6 +645,7 @@ begin
   inherited Create(AGlobal);
   
   FStyle := DefaultTextStyle;
+  FLineRotation := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -448,15 +691,8 @@ begin
       SSetAttrs, 'kATSUSizeTag');
   end;
 
-  if ALogFont.lfEscapement <> 0 then
-  begin
-    Attr := kATSULineRotationTag;
-    M := (ALogFont.lfEscapement shl 16) div 10;
-    A := @M;
-    S := SizeOf(M);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
-      SSetAttrs, 'kATSULineRotationTag');
-  end;
+  // applied when creating text layout
+  FLineRotation := (ALogFont.lfEscapement shl 16) div 10;
 
   if ALogFont.lfWeight > FW_NORMAL then
   begin
