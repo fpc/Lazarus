@@ -2947,6 +2947,7 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Str := UTF8Decode((LCLObject as TCustomEdit).Text);
+  if (Length(Str) = 0) then Str := #0;
   Result := QLineEdit_create(@Str, Parent);
 end;
 

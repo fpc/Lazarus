@@ -52,6 +52,9 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    
 (*
     class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
     class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
@@ -183,6 +186,16 @@ begin
     QSpinBox_setMaximum(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.MaxValue));
     QSpinBox_setSingleStep(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.Increment));
   end;
+end;
+
+class function  TQtWSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+begin
+
+end;
+
+class procedure TQtWSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl; const AText: string);
+begin
+  // perhaps QSpinBox_setSuffix() goes here one day (if we get LCL support)
 end;
 
 initialization
