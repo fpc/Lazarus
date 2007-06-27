@@ -289,6 +289,10 @@ msgstr "B³¹d odczytu %s%s%s: %s"
 msgid "Error while executing %s%s%s:%s%s"
 msgstr ""
 
+#: lclstrconsts:rserrorwhilesavingbitmap
+msgid "Error while saving bitmap."
+msgstr ""
+
 #: lclstrconsts:rswin32error
 msgid "Error:"
 msgstr "B³¹d:"

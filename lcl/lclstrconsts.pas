@@ -184,6 +184,7 @@ ResourceString
   rsIsAlreadyAssociatedWith = '%s is already associated with %s';
   rsCanvasDoesNotAllowDrawing = 'Canvas does not allow drawing';
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
+  rsErrorWhileSavingBitmap = 'Error while saving bitmap.';
   rsNoWidgetSet = 'No widgetset object. '
     +'Plz check if the unit "interfaces" was added to the programs uses clause.';
   rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s%sPress Ok to '

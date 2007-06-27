@@ -482,22 +482,22 @@ end;
 
 procedure NotifyUser(const DialogMessage : String; DialogType : longint);
 begin
-  PromptUser(DialogMessage, DialogType, [idButtonOK], -1, -1);
+  PromptUser(DialogMessage, DialogType, [idButtonOK], 0, -1);
 end;
 
 procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
 begin
-  PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK], -1, -1);
+  PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK], 0, -1);
 end;
 
 procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);
 begin
-  PromptUserAtXY(DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
+  PromptUserAtXY(DialogMessage, DialogType, [idButtonOK], 0, -1, X, Y);
 end;
 
 procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
 begin
-  PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
+  PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], 0, -1, X, Y);
 end;
 
 function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;

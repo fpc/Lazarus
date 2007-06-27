@@ -291,6 +291,10 @@ msgstr "读取 %s%s%s 错误: %s"
 msgid "Error while executing %s%s%s:%s%s"
 msgstr "当执行 %s%s%s 时错误:%s%s "
 
+#: lclstrconsts:rserrorwhilesavingbitmap
+msgid "Error while saving bitmap."
+msgstr ""
+
 #: lclstrconsts:rswin32error
 msgid "Error:"
 msgstr "错误:"

@@ -288,6 +288,10 @@ msgstr "Errore nella lettura di %s%s%s: %s"
 msgid "Error while executing %s%s%s:%s%s"
 msgstr "Errore eseguendo %s%s%s:%s%s"
 
+#: lclstrconsts:rserrorwhilesavingbitmap
+msgid "Error while saving bitmap."
+msgstr ""
+
 #: lclstrconsts:rswin32error
 msgid "Error:"
 msgstr "Errore:"

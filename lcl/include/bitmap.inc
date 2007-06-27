@@ -814,12 +814,16 @@ procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
   end;
 
   procedure DoWriteOriginal;
+  var
+    BytesWritten: Int64;
   begin
     DoWriteStreamSize(Stream, NtoLE(LongInt(FImage.SaveStream.Size)));
     FImage.SaveStream.Position:=0;
     if Stream is TMemoryStream then
       TMemoryStream(Stream).SetSize(Stream.Position+FImage.SaveStream.Size);
-    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+    BytesWritten:=Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+    if BytesWritten<>FImage.SaveStream.Size then
+      raise FPImageException.Create(rsErrorWhileSavingBitmap);
   end;
 
 var
