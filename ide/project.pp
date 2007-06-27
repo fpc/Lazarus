@@ -1580,7 +1580,7 @@ begin
   FVersionInfo.OnModified:=@VersionInfoModified;
   
   FXPManifest := TProjectXPManifest.Create;
-  FXPManifest.UseManifest := True;
+  FXPManifest.UseManifest := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1760,7 +1760,7 @@ begin
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
       xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
-      xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, True);
+      xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
@@ -2133,7 +2133,7 @@ begin
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
-      XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', True);
+      XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', False);
 
       // Lazdoc
       LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
