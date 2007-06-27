@@ -1942,23 +1942,25 @@ var
   Index: Integer;
   Instance: TPersistent;
 begin
-  if (ASelection=nil) or (Count=0) then begin
+  if (ASelection=nil) then begin
     Result:=Count=0;
     exit;
   end;
+  Result:=Count=ASelection.Count;
+  if not Result then
+    exit;
   Index:=0;
   for i:=0 to ASelection.Count-1 do
   begin
     Instance := ASelection[i];
     if Instance is TPersistent then begin
-      if (Index>=Count) or (Items[Index].Persistent<>Instance) then begin
+      if Items[Index].Persistent<>Instance then begin
         Result:=false;
         exit;
       end;
       inc(Index);
     end;
   end;
-  Result:=true;
 end;
 
 procedure TControlSelection.Assign(AControlSelection: TControlSelection);
