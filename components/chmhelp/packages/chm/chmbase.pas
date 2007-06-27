@@ -25,7 +25,7 @@ unit chmbase;
 interface
 
 uses
-  Classes, SysUtils, LCLProc;
+  Classes, SysUtils;
   
 type
   {$PACKRECORDS C}
@@ -88,6 +88,8 @@ type
                                  // (-1 if this is the first listing chunk)
     NextChunkIndex: LongInt; // chunk number of the next listing chunk (-1 if this is the last chunk)
   end;
+
+  PPMGListChunkEntry = ^TPMGListChunkEntry;
   TPMGListChunkEntry = record
     //NameLength: LongInt; we don't need this permanantly so I've moved it to a temp var
     Name: String;
@@ -95,15 +97,36 @@ type
     ContentOffset: QWord;
     DecompressedLength: QWord;
   end;
+  
+  TPMGIIndexChunk = record
+    PMGIsig: array [0..3] of char;
+    UnusedSpace: LongWord; // has a quickref area
+  end;
+  
+  TPMGIIndexChunkEntry = record
+    Name: String;
+    ListingChunk: DWord;
+  end;
+
+  
+const
+  ITSFHeaderGUID : TGuid = '{7C01FD10-7BAA-11D0-9E0C-00A0C922E6EC}';
+  ITSFFileSig: array [0..3] of char = 'ITSF';
+  
+  ITSPHeaderGUID : TGuid = '{5D02926A-212E-11D0-9DF9-00A0C922E6EC}';
+  ITSPHeaderSig: array [0..3] of char = 'ITSP';
 
   // this function will advance the stream to the end of the compressed integer
   // and return the value
-  function GetCompressedInteger(var Stream: TStream): QWord;
+  function GetCompressedInteger(const Stream: TStream): DWord;
+  // returns the number of bytes written to the stream
+  function WriteCompressedInteger(const Stream: TStream; ANumber: DWord): DWord;
+  function WriteCompressedInteger(Buffer: Pointer; ANumber: DWord): DWord;
 
 
 implementation
 
-function GetCompressedInteger(var Stream: TStream): QWord;
+function GetCompressedInteger(const Stream: TStream): DWord;
 var
   total: QWord = 0;
   temp: Byte;
@@ -121,6 +144,46 @@ begin
     end;
   end;
   Result := (total shl 7) + temp;
+end;
+
+function WriteCompressedInteger(const Stream: TStream; ANumber: DWord): DWord;
+var
+  Buffer: QWord; // Easily large enough
+begin
+  Result := WriteCompressedInteger(@Buffer, ANumber);
+  Result := Stream.Write(Buffer, Result);
+end;
+
+function WriteCompressedInteger(Buffer: Pointer; ANumber: DWord): DWord;
+var
+  bit: dword;
+  mask: QWord;
+  buf: PByte;
+  Value: DWord = 0;
+  TheEnd: DWord = 0;
+  I: Integer;
+begin
+  bit := (sizeof(DWord)*8)div 7*7;
+  buf := @Value;
+  while True do begin
+    mask := $7f shl bit;
+    if (bit = 0) or ((ANumber and mask)<>0) then break;
+    Dec(bit, 7);
+  end;
+
+  while True do begin
+    buf^ := Byte(((ANumber shr bit)and $7f));
+    if(bit = 0) then break;
+    buf^ := buf^ or $80;
+    Inc(buf);
+    Dec(bit, 7);
+    Inc(TheEnd);
+  end;
+
+  buf := @Value;
+  //Result := Stream.Write(Value, TheEnd+1);
+  Result := TheEnd+1;
+  Move(Value, Buffer^, Result);
 
 end;
 
