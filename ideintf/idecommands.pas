@@ -572,6 +572,14 @@ begin
   IDECmdScopeObjectInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
 end;
 
+type
+// in fpc 2.3.1 TShiftState is declared with {$packset 1}
+{$IF sizeof(TShiftState)=2}
+  TShiftStateInt = word;
+{$ELSE}
+  TShiftStateInt = integer;
+{$ENDIF}
+
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 var
   ShortCut1: PIDEShortCut;
@@ -583,17 +591,17 @@ begin
     Result:=1
   else if ShortCut1^.Key1<ShortCut2^.Key1 then
     Result:=-1
-  else if integer(ShortCut1^.Shift1)>integer(ShortCut2^.Shift1) then
+  else if TShiftStateInt(ShortCut1^.Shift1)>TShiftStateInt(ShortCut2^.Shift1) then
     Result:=1
-  else if integer(ShortCut1^.Shift1)<integer(ShortCut2^.Shift1) then
+  else if TShiftStateInt(ShortCut1^.Shift1)<TShiftStateInt(ShortCut2^.Shift1) then
     Result:=-1
   else if ShortCut1^.Key2>ShortCut2^.Key2 then
     Result:=1
   else if ShortCut1^.Key2<ShortCut2^.Key2 then
     Result:=-1
-  else if integer(ShortCut1^.Shift2)>integer(ShortCut2^.Shift2) then
+  else if TShiftStateInt(ShortCut1^.Shift2)>TShiftStateInt(ShortCut2^.Shift2) then
     Result:=1
-  else if integer(ShortCut1^.Shift2)<integer(ShortCut2^.Shift2) then
+  else if TShiftStateInt(ShortCut1^.Shift2)<TShiftStateInt(ShortCut2^.Shift2) then
     Result:=-1
   else
     Result:=0;
@@ -610,9 +618,9 @@ begin
     Result:=1
   else if ShortCut1^.Key1<ShortCut2^.Key1 then
     Result:=-1
-  else if integer(ShortCut1^.Shift1)>integer(ShortCut2^.Shift1) then
+  else if TShiftStateInt(ShortCut1^.Shift1)>TShiftStateInt(ShortCut2^.Shift1) then
     Result:=1
-  else if integer(ShortCut1^.Shift1)<integer(ShortCut2^.Shift1) then
+  else if TShiftStateInt(ShortCut1^.Shift1)<TShiftStateInt(ShortCut2^.Shift1) then
     Result:=-1
   else
     Result:=0;
