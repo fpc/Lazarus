@@ -33,9 +33,9 @@
     </RequiredPackages>
     <Units Count="4">
       <Unit0>
-        <Filename Value="filesdrop.lpr"/>
+        <Filename Value="dropfiles.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="filesdrop"/>
+        <UnitName Value="dropfiles"/>
         <CursorPos X="13" Y="17"/>
         <TopLine Value="1"/>
         <UsageCount Value="20"/>
