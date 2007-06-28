@@ -121,18 +121,32 @@ var
   AnAdjustment: PGtkAdjustment;
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
+  AMin, AMax: Single;
 begin
   //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
   wHandle := ACustomFloatSpinEdit.Handle;
   SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
-  AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);
-  if (AnAdjustment^.lower<>ACustomFloatSpinEdit.MinValue)
-  or (AnAdjustment^.upper<>ACustomFloatSpinEdit.MaxValue) then
+  
+  if ACustomFloatSpinEdit.MaxValue > ACustomFloatSpinEdit.MinValue then
   begin
-    AnAdjustment^.lower:=ACustomFloatSpinEdit.MinValue;
-    AnAdjustment^.upper:=ACustomFloatSpinEdit.MaxValue;
+    AMin := ACustomFloatSpinEdit.MinValue;
+    AMax := ACustomFloatSpinEdit.MaxValue;
+  end
+  else
+  begin
+    AMin := -3.4E38; // min single
+    AMax := 3.4E38;  // max single
+  end;
+  
+  AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);
+  if (AnAdjustment^.lower <> AMin)
+  or (AnAdjustment^.upper <> AMax) then
+  begin
+    AnAdjustment^.lower := AMin;
+    AnAdjustment^.upper := AMax;
     gtk_adjustment_changed(AnAdjustment);
   end;
+
   gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
   gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
   AnAdjustment^.step_increment := ACustomFloatSpinEdit.Increment;

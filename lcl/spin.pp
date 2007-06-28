@@ -64,6 +64,10 @@ type
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure EditingDone; override;
+    function GetLimitedValue(const AValue: Single): Single;
+    function ValueToStr(const AValue: Single): String;
+    function StrToValue(const S: String): Single;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
     property Increment: Single read FIncrement write SetIncrement default 1;
@@ -76,9 +80,13 @@ type
   { TFloatSpinEdit }
   
   TFloatSpinEdit = class(TCustomFloatSpinEdit)
+  public
+    property AutoSelected;
   published
     property Align;
     property Anchors;
+    property AutoSelect;
+    property AutoSize;
     property BorderSpacing;
     property Constraints;
     property DecimalPlaces;
@@ -101,6 +109,7 @@ type
     property OnResize;
     property ParentShowHint;
     property PopupMenu;
+    property ReadOnly;
     property ShowHint;
     property TabStop;
     property TabOrder;
@@ -134,9 +143,12 @@ type
   { TSpinEdit }
 
   TSpinEdit = class(TCustomSpinEdit)
+  public
+    property AutoSelected;
   published
     property Align;
     property Anchors;
+    property AutoSelect;
     property AutoSize;
     property BorderSpacing;
     property Constraints;
@@ -159,6 +171,7 @@ type
     property OnResize;
     property ParentShowHint;
     property PopupMenu;
+    property ReadOnly;
     property ShowHint;
     property TabStop;
     property TabOrder;

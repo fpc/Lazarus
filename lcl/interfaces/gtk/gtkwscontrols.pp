@@ -590,6 +590,13 @@ begin
                     gtk_entry_set_text(pGtkEntry(P), pLabel);
                     LockOnChange(PGtkObject(p),-1);
                   end;
+                  
+  csSpinEdit    : begin
+                    LockOnChange(PGtkObject(p),+1);
+                    gtk_entry_set_text(pGtkEntry(P), pLabel);
+                    gtk_spin_button_update(PGtkSpinButton(p));
+                    LockOnChange(PGtkObject(p),-1);
+                  end;
 
   csMemo        : begin
                     P:= GetWidgetInfo(P, True)^.CoreWidget;

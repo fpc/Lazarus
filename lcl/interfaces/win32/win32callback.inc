@@ -813,16 +813,8 @@ Var
   begin
     lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
     if lWindowInfo = @DefaultWindowInfo then exit;
-    
-    NewValue := StrToFloatDef(ASpinEdit.Text, lWindowInfo^.spinValue);
-    if (ASpinEdit.MaxValue > ASpinEdit.MinValue) then
-    begin
-      if NewValue > ASpinEdit.MaxValue then
-        NewValue := ASpinEdit.MaxValue;
-      if NewValue < ASpinEdit.MinValue then
-        NewValue := ASpinEdit.MinValue;
-    end;
-    lWindowInfo^.spinValue := NewValue;
+
+    lWindowInfo^.spinValue := ASpinEdit.StrToValue(ASpinEdit.Text);
     
     LMessage.Msg := CM_TEXTCHANGED;
   end;
@@ -834,20 +826,14 @@ Var
     newValue: single;
   begin
     SpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
-    if SpinEdit.ReadOnly then Exit;
     
-    newValue := WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment;
-    if (SpinEdit.MaxValue > SpinEdit.MinValue) then
-    begin
-      if newValue > SpinEdit.MaxValue then
-        newValue := SpinEdit.MaxValue;
-      if newValue < SpinEdit.MinValue then
-        newValue := SpinEdit.MinValue;
-    end;
+    NewValue := SpinEdit.GetLimitedValue(
+      WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment);
+
     spinHandle := AUpDownMsg^.hdr.hwndFrom;
-    UpdateFloatSpinEditText(spinHandle, NewValue, SpinEdit.DecimalPlaces);
+    UpdateFloatSpinEditText(SpinEdit, NewValue);
     Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
-    WindowInfo^.spinValue := newValue;
+    WindowInfo^.spinValue := NewValue;
   end;
 
   procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);

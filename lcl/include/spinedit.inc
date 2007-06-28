@@ -19,8 +19,7 @@
 procedure TCustomFloatSpinEdit.UpdateControl;
 begin
   if MaxValue < MinValue then FMaxValue := MinValue;
-  if (FMinValue <> 0) and (FValue < FMinValue) then FValue := FMinValue;
-  if (FMaxValue <> 0) and (FValue > FMaxValue) then FValue := FMaxValue;
+  FValue := GetLimitedValue(FValue);
   
   if (not HandleAllocated) then Exit;
 
@@ -44,7 +43,7 @@ begin
   if HandleAllocated then
     Result := inherited RealGetText
   else
-    Result := FloatToStrF(FValue, ffFixed, 20, DecimalPlaces);
+    Result := ValueToStr(FValue);
 end;
 
 procedure TCustomFloatSpinEdit.TextChanged;
@@ -154,6 +153,37 @@ begin
   SetInitialBounds(0, 0, 50, 23);
 end;
 
+procedure TCustomFloatSpinEdit.EditingDone;
+begin
+  Text := ValueToStr(FValue);
+
+  inherited EditingDone;
+end;
+
+function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Single): Single;
+begin
+  Result := AValue;
+  if FMaxValue > FMinValue then
+  begin
+    if Result < FMinValue then Result := FMinValue;
+    if Result > FMaxValue then Result := FMaxValue;
+  end;
+end;
+
+function TCustomFloatSpinEdit.ValueToStr(const AValue: Single): String;
+begin
+  Result := FloatToStrF(GetLimitedValue(AValue), ffFixed, 20, DecimalPlaces);
+end;
+
+function TCustomFloatSpinEdit.StrToValue(const S: String): Single;
+begin
+  try
+    Result := GetLimitedValue(StrToFloatDef(S, FValue));
+  except
+    Result := FValue;
+  end;
+end;
+
 procedure TCustomFloatSpinEdit.FinalizeWnd;
 begin
   GetValue;
@@ -209,7 +239,8 @@ end;
 constructor TCustomSpinEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  fDecimals:=0;
+  
+  FDecimals := 0;
 end;
 
 // included by spin.pp
