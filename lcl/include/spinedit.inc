@@ -33,11 +33,6 @@ begin
   end;
 end;
 
-function TCustomFloatSpinEdit.ValueIsStored: Boolean;
-begin
-  Result := True; // fpc bug, default value is always 0
-end;
-
 function TCustomFloatSpinEdit.RealGetText: TCaption;
 begin
   if HandleAllocated then
@@ -65,14 +60,10 @@ begin
   UpdateControl;
 end;
 
-function TCustomFloatSpinEdit.MaxValueIsStored: Boolean;
+function TCustomFloatSpinEdit.IsStored: boolean;
 begin
-  Result := True; // fpc bug, default value is always 0
-end;
-
-function TCustomFloatSpinEdit.MinValueIsStored: Boolean;
-begin
-  Result := True; // fpc bug, default value is always 0
+  // workaround for FPC bug
+  Result := True;
 end;
 
 procedure TCustomFloatSpinEdit.SetMinValue(const AValue: Single);
