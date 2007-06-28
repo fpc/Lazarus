@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets,
   // LCL
-  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms,
+  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms, StdCtrls,
   // Widgetset
   WSSpin, WSLCLClasses;
 
@@ -54,6 +54,7 @@ type
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     
 (*
     class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
@@ -197,6 +198,12 @@ class procedure TQtWSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl;
 begin
   // perhaps QSpinBox_setSuffix() goes here one day (if we get LCL support)
 end;
+
+class procedure TQtWSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(TQtAbstractSpinBox(ACustomEdit.Handle).Widget), NewReadOnly);
+end;
+
 
 initialization
 

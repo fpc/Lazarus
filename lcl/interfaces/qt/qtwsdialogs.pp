@@ -35,7 +35,7 @@ uses
 {$endif}
   qtobjects, qtwidgets,
   // RTL + LCL
-  SysUtils, Classes, LCLType, Dialogs, Controls, Forms,
+  SysUtils, Classes, LCLType, Dialogs, Controls, Forms, Graphics,
   // Widgetset
   WSDialogs, WSLCLClasses;
 
@@ -301,8 +301,35 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSColorDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  AColor: TQColor;
+  ARefColor: TColor;
+  Parent: QWidgetH;
+  ARgb: QRgb;
+  ReturnBool: Boolean;
+  AQtColor: QColorH;
 begin
 
+  if ACommonDialog.Owner is TWinControl then
+    Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
+  else if Assigned(Application.MainForm) then
+    Parent := TQtWidget(Application.MainForm.Handle).Widget
+  else Parent := nil;
+
+  ARefColor:= ColorToRgb(TColorDialog(ACommonDialog).Color);
+
+  ARgb := QColorDialog_getRgba(QRgb(ARefColor), @ReturnBool, Parent);
+
+  AQtColor := QColor_create(ARgb);
+  try
+    QColor_toRgb(AQtColor, @AColor);
+    TQColorToColorRef(AColor, TColorDialog(ACommonDialog).Color);
+  finally
+    QColor_destroy(AQtColor);
+  end;
+
+  if ReturnBool then ACommonDialog.UserChoice := mrOk
+  else ACommonDialog.UserChoice := mrCancel;
 end;
 
 { TQtWSFontDialog }
@@ -317,14 +344,15 @@ var
   Parent: QWidgetH;
   ReturnFont, CurrentFont: QFontH;
   ReturnBool: Boolean;
+  Str: WideString;
 begin
   {------------------------------------------------------------------------------
     Initialization of options
    ------------------------------------------------------------------------------}
   if ACommonDialog.Owner is TWinControl then
-   Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
+    Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
   else if Assigned(Application.MainForm) then
-   Parent := TQtWidget(Application.MainForm.Handle).Widget
+    Parent := TQtWidget(Application.MainForm.Handle).Widget
   else Parent := nil;
 
   {------------------------------------------------------------------------------
@@ -332,7 +360,36 @@ begin
    ------------------------------------------------------------------------------}
   CurrentFont := TQtFont(TFontDialog(ACommonDialog).Font.Handle).Widget;
 
-  QFontDialog_getFont(ReturnFont, @ReturnBool, CurrentFont, Parent);
+  ReturnFont := QFont_create;
+  try
+    QFontDialog_getFont(ReturnFont, @ReturnBool, CurrentFont, Parent);
+   
+    QFont_family(ReturnFont, @Str);
+    TFontDialog(ACommonDialog).Font.Name := UTF8Encode(Str);
+   
+    TFontDialog(ACommonDialog).Font.Height := QFont_pointSize(ReturnFont);
+    TFontDialog(ACommonDialog).Font.Style := [];
+   
+   if QFont_bold(ReturnFont) then
+     TFontDialog(ACommonDialog).Font.Style := TFontDialog(ACommonDialog).Font.Style + [fsBold];
+   
+   if QFont_italic(ReturnFont) then
+     TFontDialog(ACommonDialog).Font.Style := TFontDialog(ACommonDialog).Font.Style + [fsItalic];
+   
+   if QFont_strikeOut(ReturnFont) then
+     TFontDialog(ACommonDialog).Font.Style := TFontDialog(ACommonDialog).Font.Style + [fsStrikeOut];
+   
+   if QFont_underline(ReturnFont) then
+     TFontDialog(ACommonDialog).Font.Style := TFontDialog(ACommonDialog).Font.Style + [fsUnderline];
+   
+   if QFont_fixedPitch(ReturnFont) then
+     TFontDialog(ACommonDialog).Font.Pitch := fpFixed
+   else
+     TFontDialog(ACommonDialog).Font.Pitch := fpDefault;
+   
+  finally
+    QFont_destroy(ReturnFont);
+  end;
 
   if ReturnBool then ACommonDialog.UserChoice := mrOk
   else ACommonDialog.UserChoice := mrCancel;
