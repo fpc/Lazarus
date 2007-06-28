@@ -397,9 +397,34 @@ type
     procedure SignalValueChanged(p1: Integer); cdecl;
   end;
 
+  { TQtAbstractScrollArea }
+
+  TQtAbstractScrollArea = class(TQtFrame)
+  private
+    FCornerWidget: TQtWidget;
+    FViewPortWidget: TQtWidget;
+    FHScrollbar: TQtScrollBar;
+    FVScrollbar: TQtScrollbar;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    destructor Destroy; override;
+  public
+    function cornerWidget: TQtWidget;
+    function horizontalScrollBar: TQtScrollBar;
+    function verticalScrollBar: TQtScrollBar;
+    function viewport: TQtWidget;
+    procedure SetColor(const Value: PQColor); override;
+    procedure setCornerWidget(AWidget: TQtWidget);
+    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setScrollStyle(AScrollStyle: TScrollStyle);
+    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setViewPort(AWidget: TQtWidget);
+  end;
+
   { TQtAbstractItemView }
 
-  TQtAbstractItemView = class(TQtWidget)
+  TQtAbstractItemView = class(TQtAbstractScrollArea)
   public
   end;
 
@@ -540,30 +565,6 @@ type
     destructor Destroy; override;
   public
     function exec: Integer;
-  end;
-  
-  { TQtAbstractScrollArea }
-  
-  TQtAbstractScrollArea = class(TQtFrame)
-  private
-    FCornerWidget: TQtWidget;
-    FViewPortWidget: TQtWidget;
-    FHScrollbar: TQtScrollBar;
-    FVScrollbar: TQtScrollbar;
-  protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    destructor Destroy; override;
-  public
-    function cornerWidget: TQtWidget;
-    function horizontalScrollBar: TQtScrollBar;
-    function verticalScrollBar: TQtScrollBar;
-    function viewport: TQtWidget;
-    procedure setCornerWidget(AWidget: TQtWidget);
-    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
-    procedure setScrollStyle(AScrollStyle: TScrollStyle);
-    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
-    procedure setViewPort(AWidget: TQtWidget);
   end;
   
   { TQtCalendar }
@@ -4245,6 +4246,21 @@ begin
     WriteLn('TQAbstractScrollArea.cornerWidget');
   {$endif}
   Result := FCornerWidget;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setColor
+  Params:  TQtWidget
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette:=QPalette_create(QWidget_palette(Widget));
+  QPalette_setColor(Palette,QPaletteBase,Value);
+  QWidget_setPalette(Widget,Palette);
+  QPalette_destroy(Palette);
 end;
 
 {------------------------------------------------------------------------------
