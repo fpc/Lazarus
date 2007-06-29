@@ -333,6 +333,7 @@ begin
   GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_DROPFILES, AGTKObject, AComponent);
 end;
 
 class procedure TGtkWSWinControl.SetChildZPosition(

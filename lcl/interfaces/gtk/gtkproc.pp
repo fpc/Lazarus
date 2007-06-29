@@ -231,6 +231,9 @@ function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 function gtkYearChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+procedure GtkDragDataReceived(widget:PGtkWidget; context:PGdkDragContext;
+  x:gint; y:gint; selection_data:PGtkSelectionData; info:guint; time:guint; Data: gPointer);cdecl;
+
 
 // clipboard
 procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;

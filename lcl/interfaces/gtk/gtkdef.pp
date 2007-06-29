@@ -49,6 +49,10 @@ type
   PCallBacksArray = ^TCallBacksArray;
 {$endif}
 
+const
+  // drag target type for on drop files event invoking
+  FileDragTarget: TGtkTargetEntry = (target: 'text/uri-list'; flags: 0; info: 0;);
+
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
   TGDIBitmapType = (gbBitmap, gbPixmap{obsolete:, gbImage});

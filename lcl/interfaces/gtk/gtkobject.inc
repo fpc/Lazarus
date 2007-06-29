@@ -3733,6 +3733,9 @@ begin
                               'unselect_child', @gtkListSelectChild);
       end;
     end;
+    
+    LM_DROPFILES:
+      ConnectSenderSignal(gCore, 'drag_data_received', @GtkDragDataReceived);
 
 (*
     LM_WINDOWPOSCHANGED:

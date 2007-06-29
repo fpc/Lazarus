@@ -3208,6 +3208,76 @@ begin
   DeliverPostMessage(Data, MSG);
 end;
 
+procedure GtkDragDataReceived(widget:PGtkWidget; context:PGdkDragContext;
+  x:gint; y:gint; selection_data:PGtkSelectionData; info:guint; time:guint; Data: gPointer);cdecl;
+var
+  S: TStringList;
+  I: Integer;
+  FileName: String;
+  Files: Array of String;
+  Form: TControl;
+  Result: Boolean;
+begin
+  //DebugLn('GtkDragDataReceived ' + PChar(selection_data^.data));
+  Result := False;
+  
+  if selection_data^.data <> nil then // data is list of uri
+  begin
+    SetLength(Files, 0);
+    S := TStringList.Create;
+    try
+      S.Text := PChar(selection_data^.data);
+
+      for I := 0 to S.Count - 1 do
+      begin
+        FileName := S[I];
+
+        if FileName = '' then Continue;
+        // uri -> file name, maybe for GTK2: g_filename_from_uri
+        // uri = protocol://hostname/file name
+        // convert uri of local files to file name
+        if Copy(FileName, 1, 17) = 'file://localhost/' then Delete(FileName, 1, 17)
+        else
+          if SameText(Copy(FileName, 1, 8), 'file:///') then
+          begin
+            Delete(FileName, 1, 8);
+            // do not remove UNIX root path
+            if (Pos(':', FileName) <> 2) and (Pos('/', FileName) <> 1) then
+              FileName := '/' + FileName;
+          end;
+        // otherwise: protocol and hostname are preserved!
+
+        if FileName = '' then Continue;
+        SetLength(Files, Length(Files) + 1);
+        Files[High(Files)] := FileName;
+        //DebugLn('GtkDragDataReceived ' + DbgS(I) + ': ' + PChar(FileName));
+      end;
+    finally
+      S.Free;
+    end;
+    
+    if Length(Files) > 0 then
+    begin
+      Form := nil;
+      if (TObject(Data) is TWinControl) then
+        Form := (TObject(Data) as TWinControl).GetTopParent;
+        
+      if Form is TCustomForm then
+        (Form as TCustomForm).IntfDropFiles(Files)
+      else
+        if (Application <> nil) and (Application.MainForm <> nil) then
+          Application.MainForm.IntfDropFiles(Files);
+
+      if Application <> nil then
+        Application.IntfDropFiles(Files);
+        
+      Result := True;
+    end;
+  end;
+  
+  gtk_drag_finish(Context, Result, false, time);
+end;
+
 {------------------------------------------------------------------------------
   ClipboardSelectionReceivedHandler
 

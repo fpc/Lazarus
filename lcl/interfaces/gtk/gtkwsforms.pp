@@ -189,7 +189,6 @@ begin
 end;
 {$ENDIF}
 
-
 class procedure TGtkWSCustomForm.SetCallbacks(const AWinControl: TWinControl;
   const AWidgetInfo: PWidgetInfo);
 begin
@@ -210,6 +209,11 @@ begin
   AWidgetInfo := GetWidgetInfo(Pointer(Result));
   if not (csDesigning in AWinControl.ComponentState) then
     AWidgetInfo^.UserData := Pointer(1);
+    
+  // enable widget as file drag destination
+  gtk_drag_dest_set(AWidgetInfo^.CoreWidget, GTK_DEST_DEFAULT_ALL,
+    @FileDragTarget, 1, GDK_ACTION_COPY);
+    
   SetCallbacks(AWinControl, AWidgetInfo);
 end;
 
