@@ -162,7 +162,7 @@ begin
 
   case ACursor of
     crSqlWait..crDrag,
-    crHandPoint: begin
+    crHandPoint, crNone: begin
       // TODO: load custom cursors here not in the LCL
     end;
   else

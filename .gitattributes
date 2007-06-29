@@ -2318,6 +2318,7 @@ lcl/images/buttons/btn_retry.png -text svneol=unset#image/png
 lcl/images/buttons/btn_yes.png -text svneol=unset#image/png
 lcl/images/buttons/build.bat -text
 lcl/images/cursors/build.bat -text svneol=CRLF#application/x-bat
+lcl/images/cursors/cur_1.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_10.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_12.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_13.cur -text svneol=unset#image/x-cursor

@@ -194,7 +194,7 @@ const
      {crIBeam       } kThemeIBeamCursor,
      {crCross       } kThemeCrossCursor,
      {crArrow       } kThemeArrowCursor,
-     {crNone        } kThemeArrowCursor,
+     {crNone        } kThemeUndefCursor,
      {crDefault     } kThemeArrowCursor);
 
 type

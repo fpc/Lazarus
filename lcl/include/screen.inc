@@ -312,7 +312,7 @@ end;
 function TScreen.GetCursors(AIndex: Integer): HCURSOR;
 begin
   Result := 0;
-  if AIndex = crNone then Exit;
+  //if AIndex = crNone then Exit;
   if FCursorMap.GetData(AIndex, Result) then Exit;
   
   Result := FDefaultCursor;
@@ -320,10 +320,13 @@ begin
   if AIndex < crLow then Exit;
   
   // not yet loaded
+  if AIndex = crNone then
+    Result := Result;
   Result := WidgetSet.CreateStandardCursor(AIndex);
-  if Result = 0
-  then Result := LoadCursorFromLazarusResource('cur_' + IntToStr(-AIndex));
-  if Result = 0 then Exit;
+  if Result = 0 then
+    Result := LoadCursorFromLazarusResource('cur_' + IntToStr(-AIndex));
+  if Result = 0 then
+    Exit;
   
   FCursorMap.Add(AIndex, Result);
 end;
@@ -488,8 +491,8 @@ begin
       else
         FDefaultCursor := AValue
     end;
-    crNone: begin
-    end;
+{    crNone: begin
+    end;}
   else
     DeleteCursor(AIndex);
     if AValue <> 0 then

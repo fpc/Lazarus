@@ -4851,11 +4851,9 @@ begin
 
   case TCursor(ACursor) of
     crDefault:  CursorValue := GDK_LEFT_PTR;
-    crNone:     CursorValue := GDK_LEFT_PTR;
     crArrow:    CursorValue := GDK_Arrow;
     crCross:    CursorValue := GDK_Cross;
     crIBeam:    CursorValue := GDK_XTerm;
-//    crSize:     CursorValue := GDK_FLEUR;
     crSizeNESW: CursorValue := GDK_BOTTOM_LEFT_CORNER;
     crSizeNS:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
     crSizeNWSE: CursorValue := GDK_TOP_LEFT_CORNER;
