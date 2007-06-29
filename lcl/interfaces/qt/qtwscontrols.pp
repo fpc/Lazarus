@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets,
+  qtwidgets, qtobjects,
   // LCL
   SysUtils, Controls, LCLType, LCLProc, Forms, Graphics,
   // Widgetset
@@ -75,6 +75,7 @@ type
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -85,7 +86,6 @@ type
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
                                       const AChildren: TFPList); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
   end;
@@ -398,6 +398,27 @@ begin
   if not AWinControl.HandleAllocated then exit;
   
   TQtWidget(AWinControl.Handle).SetCursor(QCursorH(ACursor));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetFont
+  Params:  AWinControl - the calling object, AFont - object font
+  Returns: Nothing
+
+  Sets the font of the widget.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+var
+  QColor: TQColor;
+  Color: TColor;
+begin
+  QWidget_setFont(TQtWidget(AWinControl.Handle).Widget, TQtFont(AFont.Handle).Widget);
+  
+  if AFont.Color = CLR_INVALID then exit;
+
+  Color := ColorToRGB(AFont.Color);
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  TQtWidget(AWinControl.Handle).SetTextColor(@QColor);
 end;
 
 initialization

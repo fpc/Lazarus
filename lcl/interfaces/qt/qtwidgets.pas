@@ -83,6 +83,7 @@ type
     procedure SlotContextMenu; cdecl;
   public
     procedure SetColor(const Value: PQColor); virtual;
+    procedure SetTextColor(const Value: PQColor); virtual;
     procedure SetCursor(const ACursor: QCursorH); virtual;
     procedure Update;
     procedure Repaint;
@@ -103,6 +104,20 @@ type
     
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
+  end;
+
+  { TQtFrame }
+
+  TQtFrame = class(TQtWidget)
+  private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    destructor Destroy; override;
+    procedure setFrameStyle(p1: Integer);
+    procedure setFrameShape(p1: QFrameShape);
+    procedure setFrameShadow(p1: QFrameShadow);
+    procedure setTextColor(const Value: PQColor); override;
   end;
 
   { TQtAbstractButton }
@@ -160,7 +175,7 @@ type
 
   { TQtStaticText }
 
-  TQtStaticText = class(TQtWidget)
+  TQtStaticText = class(TQtFrame)
   private
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -219,20 +234,6 @@ type
   public
     ButtonGroup: TQtButtonGroup;
     BoxLayout: QGridLayoutH;
-  end;
-
-
-  { TQtFrame }
-
-  TQtFrame = class(TQtWidget)
-  private
-  protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    destructor Destroy; override;
-    procedure setFrameStyle(p1: Integer);
-    procedure setFrameShape(p1: QFrameShape);
-    procedure setFrameShadow(p1: QFrameShadow);
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -418,6 +419,7 @@ type
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
+    procedure setTextColor(const Value: PQColor); override;
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setViewPort(AWidget: TQtWidget);
   end;
@@ -1269,12 +1271,33 @@ procedure TQtWidget.SetColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette:=QPalette_create(QWidget_palette(Widget));
-  // Set the palette for all color groups (active, inactive, disabled)
-  QPalette_setColor(Palette,QPaletteWindow,Value);
-  // Set the Palette
-  QWidget_setPalette(Widget,Palette);
-  QPalette_destroy(Palette);
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteWindow, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SetTextColor
+  Params:  QColorH
+  Returns: Nothing
+
+  Changes the text color of a widget
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SetTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 procedure TQtWidget.SetCursor(const ACursor: QCursorH);
@@ -1767,12 +1790,13 @@ procedure TQtAbstractButton.SetColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette:=QPalette_create(QWidget_palette(Widget));
-  // Set the palette for all color groups (active, inactive, disabled)
-  QPalette_setColor(Palette,QPaletteButton,Value);
-  // Set the Palette
-  QWidget_setPalette(Widget,Palette);
-  QPalette_destroy(Palette);
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteButton, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2181,6 +2205,7 @@ begin
 
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QLabel_create(Parent);
+  QWidget_setAutoFillBackground(Result, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -2488,7 +2513,6 @@ begin
   inherited Destroy;
 end;
 
-
 { TQtFrame }
 
 function TQtFrame.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -2501,6 +2525,7 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QFrame_create(Parent);
+  QWidget_setAutoFillBackground(Result, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -2548,6 +2573,24 @@ end;
 procedure TQtFrame.setFrameShadow(p1: QFrameShadow);
 begin
   QFrame_setFrameShadow(QFrameH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtFrame.setTextColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtFrame.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteForeground, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams
@@ -2993,12 +3036,13 @@ procedure TQtLineEdit.SetColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette:=QPalette_create(QWidget_palette(Widget));
-  // Set the palette for all color groups (active, inactive, disabled)
-  QPalette_setColor(Palette,QPaletteBase,Value);
-  // Set the Palette
-  QWidget_setPalette(Widget,Palette);
-  QPalette_destroy(Palette);
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3071,12 +3115,13 @@ procedure TQtTextEdit.SetColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette:=QPalette_create(QWidget_palette(Widget));
-  // Set the palette for all color groups (active, inactive, disabled)
-  QPalette_setColor(Palette,QPaletteBase,Value);
-  // Set the Palette
-  QWidget_setPalette(Widget,Palette);
-  QPalette_destroy(Palette);
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 procedure TQtTextEdit.SetAlignment(const AAlignment: TAlignment);
@@ -4257,10 +4302,13 @@ procedure TQtAbstractScrollArea.setColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette:=QPalette_create(QWidget_palette(Widget));
-  QPalette_setColor(Palette,QPaletteBase,Value);
-  QWidget_setPalette(Widget,Palette);
-  QPalette_destroy(Palette);
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4278,6 +4326,24 @@ begin
   QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
   else
   QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.setTextColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractScrollArea.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 {------------------------------------------------------------------------------
