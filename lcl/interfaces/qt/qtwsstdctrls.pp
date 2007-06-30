@@ -355,7 +355,7 @@ begin
     begin
       QtScrollBar.SetOrientation(QtVertical);
       QtScrollBar.setInvertedAppereance(False);
-      QTScrollBar.setInvertedControls(False);
+      QTScrollBar.setInvertedControls(True);
       TScrollBar(AWinControl).Width := TScrollBar(AWinControl).Width;
     end;
   end;
@@ -437,7 +437,7 @@ begin
     begin
       QTScrollBar.SetOrientation(QtVertical);
       QTScrollBar.setInvertedAppereance(False);
-      QTScrollBar.setInvertedControls(False);
+      QTScrollBar.setInvertedControls(True);
     end;
   end;
 end;

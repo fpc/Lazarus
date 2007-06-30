@@ -3021,7 +3021,20 @@ end;
 function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
-  
+  case QEvent_type(Event) of
+    QEventFocusIn:
+    begin
+      if QFocusEvent_reason(QFocusEventH(Event)) in
+        [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
+         QtShortcutFocusReason, QtOtherFocusReason] then
+      begin
+        // it would be better if we have AutoSelect published from TCustomEdit
+        // then TMaskEdit also belongs here.
+        if ((LCLObject is TEdit) and (TEdit(LCLObject).AutoSelect)) then
+          QLineEdit_selectAll(QLineEditH(Widget));
+      end;
+    end;
+  end;
   inherited EventFilter(Sender, Event);
 end;
 
