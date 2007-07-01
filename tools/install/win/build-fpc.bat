@@ -12,7 +12,7 @@ SET SOURCE_DIR=%BUILDDIR%\fpc-patched
 cd %SOURCE_DIR%
 
 :: apply patch
-if [%PATCHFILE]==[] GOTO NO_PATCH
+if [%PATCHFILE%]==[] GOTO NO_PATCH
 %PATCHEXE% -p0 -i %PATCHDIR%\%PATCHFILE%
 
 :NO_PATCH 
