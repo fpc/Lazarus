@@ -1511,11 +1511,49 @@ end;
 function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
 var
   FScrollBar: TScrollBar;
+  QtScrollBar: TQtScrollBar;
 begin
   Result := False;
-  if Handle = 0 then exit;
 
-  FScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
+  if Handle = 0 then exit;
+  
+  ScrollInfo.nTrackPos := 0;
+  ScrollInfo.nPage := 0;
+  ScrollInfo.nMax := 0;
+  ScrollInfo.nMin := 0;
+  ScrollInfo.nPos := 0;
+  ScrollInfo.fMask := SIF_UPDATEPOLICY;
+  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  
+  if (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) or
+   (csFreeNotification in TQtWidget(Handle).LCLObject.ComponentState) then
+    exit;
+
+  FScrollBar := nil;
+  QtScrollBar := nil;
+
+  if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomScrollBar) then
+  begin
+  
+    case BarFlag of
+      SB_HORZ: QtScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
+      SB_VERT: QtScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
+    end;
+
+    if QtScrollBar = nil then exit;
+
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMax := QAbstractSlider_maximum(QScrollBarH(QtScrollBar.Widget));
+    ScrollInfo.nMin := QAbstractSlider_minimum(QScrollBarH(QtScrollBar.Widget));
+    ScrollInfo.nPage := QAbstractSlider_pageStep(QScrollBarH(QtScrollBar.Widget));
+    ScrollInfo.nPos := QAbstractSlider_value(QScrollBarH(QtScrollBar.Widget));
+    ScrollInfo.fMask := SIF_ALL;
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+
+    Result := True;
+  end
+  else
+	  FScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
 
   if Assigned(FScrollBar) then
   begin
@@ -1528,6 +1566,7 @@ begin
     ScrollInfo.nMin := FScrollBar.Min;
     ScrollInfo.nPos := FScrollBar.Position;
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
+
     Result := True;
   end;
 end;
