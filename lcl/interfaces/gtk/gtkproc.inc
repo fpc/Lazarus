@@ -8511,10 +8511,14 @@ begin
         Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
+        {$IFDEF Gtk1}
+        GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
+        {$ELSE}
         GC := Style^.text_gc[GTK_STATE_PRELIGHT];
+        {$ENDIF}
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.text[GTK_STATE_PRELIGHT];
+          Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
