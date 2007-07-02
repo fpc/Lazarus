@@ -108,6 +108,7 @@ procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
+procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1101,6 +1102,28 @@ begin
   for I := 0 to  ChangedMenus.Count - 1 do
     DrawMenuBar(HWND(ChangedMenus[I]));
   ChangedMenus.Clear;
+end;
+
+{------------------------------------------------------------------------------
+  Method: SetMenuFlags
+  Returns: Nothing
+
+  Change the menu flags for handle of TMenuItem or TMenu,
+  added for BidiMode Menus
+ ------------------------------------------------------------------------------}
+procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
+var
+  MenuInfo: MENUITEMINFO;
+begin
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
+  MenuInfo.cbSize := SizeOf(MENUITEMINFO);
+  MenuInfo.fMask := MIIM_FTYPE;
+  GetMenuItemInfo(Menu, 0, True, @MenuInfo);
+  if Value then
+    MenuInfo.fType := MenuInfo.fType or Flag
+  else
+    MenuInfo.fType := MenuInfo.fType and not Flag;
+  SetMenuItemInfo(Menu, 0, True, @MenuInfo);
 end;
 
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;

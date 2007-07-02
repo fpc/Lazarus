@@ -62,6 +62,7 @@ type
   protected
   public
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class procedure BiDiModeChanged(const AMenu: TMenu); override;
   end;
 
   { TWin32WSMainMenu }
@@ -501,7 +502,13 @@ begin
     end;
     dwTypeData := PChar(AMenuItem);
     if AMenuItem.RadioItem then fType := fType or MFT_RADIOCHECK;
-    if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
+    if (AMenuItem.GetIsRightToLeft) then
+    begin
+      fType := fType or MFT_RIGHTORDER;
+      //Reverse the RIGHTJUSTIFY to be left
+      if not AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
+    end
+    else if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
   end;
   if dword(InsertMenuItem(ParentMenuHandle,
        AMenuItem.Parent.VisibleIndexOf(AMenuItem), true, @MenuInfo)) = 0 then
@@ -557,6 +564,20 @@ begin
   Result := CreateMenu;
 end;
 
+class procedure TWin32WSMenu.BiDiModeChanged(const AMenu: TMenu);
+begin
+  if AMenu.HandleAllocated then
+  begin
+    SetMenuFlag(AMenu.Handle, MFT_RIGHTORDER or MFT_RIGHTJUSTIFY, AMenu.IsRightToLeft);
+    //TriggerFormUpdate not take TMenu, we repeate the code
+    if (AMenu<>nil) and (AMenu.Parent<>nil)
+    and (AMenu.Parent is TCustomForm)
+    and TCustomForm(AMenu.Parent).HandleAllocated
+    and not (csDestroying in AMenu.Parent.ComponentState) then
+    AddToChangedMenus(TCustomForm(AMenu.Parent).Handle);
+  end;
+end;
+
 { TWin32WSPopupMenu }
 
 class function TWin32WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
@@ -568,11 +589,13 @@ class procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y
 var
   MenuHandle: HMENU;
   AppHandle: HWND;
+const
+  lAlign: array[Boolean] of Word = (TPM_LEFTALIGN, TPM_RIGHTALIGN);
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWindowInfo(AppHandle)^.PopupMenu := APopupMenu;
-  TrackPopupMenuEx(MenuHandle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
+  TrackPopupMenuEx(MenuHandle, lAlign[APopupMenu.IsRightToLeft] or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
     X, Y, AppHandle, Nil);
 end;
 

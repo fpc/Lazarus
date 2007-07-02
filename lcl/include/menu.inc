@@ -32,6 +32,9 @@ begin
   FItems.FMenu := Self;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
+  FBidiMode := bdLeftToRight;
+  FParentBidiMode := True;
+  ParentBidiModeChanged(AOwner);
   Inherited Create(AOwner);
 end;
 
@@ -46,6 +49,55 @@ begin
   FImages:=AValue;
 end;
 
+procedure TMenu.SetBidiMode(const AValue: TBidiMode);
+begin
+  if FBidiMode=AValue then exit;
+  FBidiMode:=AValue;
+  FParentBiDiMode := False;
+  if not (csLoading in ComponentState) then
+    BidiModeChanged;
+end;
+
+procedure TMenu.SetParentBidiMode(const AValue: Boolean);
+begin
+  if FParentBiDiMode = AValue then exit;
+  FParentBiDiMode := AValue;
+  if not (csLoading in ComponentState) then
+    ParentBidiModeChanged;
+end;
+
+procedure TMenu.CMParentBiDiModeChanged(var Message: TLMessage);
+begin
+  ParentBidiModeChanged;
+end;
+
+procedure TMenu.BidiModeChanged;
+begin
+  if HandleAllocated then
+    TWSMenuClass(WidgetSetClass).BiDiModeChanged(Self);
+end;
+
+procedure TMenu.ParentBidiModeChanged(AOwner: TComponent);
+begin
+  if FParentBidiMode then
+  begin
+    //Take the value from the Owner
+    //i can not use parent because TPopupMenu.Parent = nil
+    if (AOwner<>nil)
+    and (AOwner is TCustomForm)
+    and not (csDestroying in AOwner.ComponentState) then
+    begin
+      BiDiMode := TCustomForm(AOwner).BiDiMode;
+      FParentBiDiMode := True;
+    end;
+  end;
+end;
+
+procedure TMenu.ParentBidiModeChanged;
+begin
+  ParentBidiModeChanged(Owner);
+end;
+
 {------------------------------------------------------------------------------
   procedure TMenu.SetParent(const AValue: TComponent);
 
@@ -57,7 +109,7 @@ begin
   if (FParent=nil) and (Items<>nil) and Items.HandleAllocated then begin
     // disconnect from form
     DestroyHandle;
-  end;
+  end
 end;
 
 procedure TMenu.ImageListChange(Sender: TObject);
@@ -270,6 +322,11 @@ begin
   end;
 end;
 
+function TMenu.IsBiDiModeStored: boolean;
+begin
+  Result := not FParentBidiMode;
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenu.IsRightToLeft
   Params:
@@ -279,8 +336,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenu.IsRightToLeft : Boolean;
 Begin
-  //TODO: Make sure it should return FALSE!!!!!!!!!!
-  Result := False;
+  Result := BidiMode <> bdLeftToRight;
 end;
 
 // included by menus.pp

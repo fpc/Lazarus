@@ -189,6 +189,7 @@ type
     function GetImageList: TCustomImageList; virtual;
     function GetParentComponent: TComponent; override;
     function GetParentMenu: TMenu; virtual;
+    function GetIsRightToLeft:Boolean; virtual;
     function HandleAllocated : Boolean;
     function HasIcon: boolean; virtual;
     function HasParent: Boolean; override;
@@ -268,25 +269,36 @@ type
 
   TMenu = class(TLCLComponent)
   private
+    FBiDiMode: TBiDiMode;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FItems: TMenuItem;
     FOnChange: TMenuChangeEvent;
     FParent: TComponent;
+    FParentBiDiMode: Boolean;
     FShortcutHandled: boolean;
+//See TCustomForm.CMBiDiModeChanged
+    procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
+    function IsBiDiModeStored: Boolean;
+    procedure ImageListChange(Sender: TObject);
+    procedure SetBiDiMode(const AValue: TBiDiMode);
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetParent(const AValue: TComponent);
-    procedure ImageListChange(Sender: TObject);
+    procedure SetParentBiDiMode(const AValue: Boolean);
   protected
+    procedure BidiModeChanged; virtual;
     procedure CreateHandle; virtual;
     procedure DoChange(Source: TMenuItem; Rebuild: Boolean); virtual;
     function GetHandle: HMENU; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure MenuChanged(Sender: TObject; Source: TMenuItem;
                           Rebuild: Boolean); virtual;
-    property OnChange: TMenuChangeEvent read FOnChange write FOnChange;
+    procedure ParentBidiModeChanged;
+    procedure ParentBidiModeChanged(AOwner:TComponent);//used in Create constructor
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure UpdateItems;
+
+    property OnChange: TMenuChangeEvent read FOnChange write FOnChange;
   public
     FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
@@ -295,7 +307,7 @@ type
     function FindItem(AValue: PtrInt; Kind: TFindItemKind) : TMenuItem;
     function IsShortcut(var Message: TLMKey): boolean;
     function HandleAllocated: Boolean;
-    Function IsRightToLeft: Boolean;
+    function IsRightToLeft: Boolean; virtual;
     procedure HandleNeeded;
     function DispatchCommand(ACommand: Word): Boolean;
   public
@@ -303,6 +315,8 @@ type
     property Parent: TComponent read FParent write SetParent;
     property ShortcutHandled: boolean read FShortcutHandled write FShortcutHandled;
   published
+    property BidiMode:TBidiMode read FBidiMode write SetBidiMode stored IsBiDiModeStored default bdLeftToRight;
+    property ParentBidiMode:Boolean read FParentBidiMode write SetParentBidiMode default True;
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;
   end;

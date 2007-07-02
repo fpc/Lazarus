@@ -493,6 +493,8 @@ begin
   begin
     AWinControl := TWinControl(AMenu.Owner);
     Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
+    //Set the right order menu after attach the menu
+    SetMenuFlag(AMenu.Handle, MFT_RIGHTORDER or MFT_RIGHTJUSTIFY, AMenu.IsRightToLeft);
     AddToChangedMenus(AWinControl.Handle);
   end;
 end;

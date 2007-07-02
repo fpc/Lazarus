@@ -809,7 +809,6 @@ Var
   procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
   var
     lWindowInfo: PWindowInfo;
-    NewValue: single;
   begin
     lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
     if lWindowInfo = @DefaultWindowInfo then exit;

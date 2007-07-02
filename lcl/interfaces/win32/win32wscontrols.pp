@@ -74,6 +74,7 @@ type
     class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -137,6 +138,10 @@ procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreate
   const AlternateCreateWindow: boolean);
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
   var Params: TCreateWindowExParams);
+  
+// Must be in win32proc but TCreateWindowExParams declared here
+procedure SetStdBiDiModeParams(const AWinControl: TWinControl; var Params:TCreateWindowExParams);
+procedure UpdateStdBiDiModeFlags(const AWinControl: TWinControl);
 
 implementation
 
@@ -182,6 +187,7 @@ begin
     if AWinControl is TCustomControl then
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    SetStdBiDiModeParams(AWinControl, Params);
     {$IFDEF VerboseSizeMsg}
     writeln('TWin32WidgetSet.CreateComponent A ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
@@ -280,6 +286,38 @@ begin
       BuddyWindowInfo := nil;
 end;
 
+procedure SetStdBiDiModeParams(const AWinControl: TWinControl; var Params:TCreateWindowExParams);
+begin
+  with Params do
+  begin
+    //remove old bidimode ExFlags
+    FlagsEx := FlagsEx and not(WS_EX_RTLREADING or WS_EX_RIGHT or WS_EX_LEFTSCROLLBAR);
+
+    if AWinControl.UseRightToLeftAlignment then
+      FlagsEx := FlagsEx or WS_EX_LEFTSCROLLBAR or WS_EX_RIGHT;
+    if AWinControl.UseRightToLeftReading then
+      FlagsEx := FlagsEx or WS_EX_RTLREADING;
+  end;
+end;
+
+procedure UpdateStdBiDiModeFlags(const AWinControl: TWinControl);
+var
+  FlagsEx: dword;
+begin
+  //UpdateStdBiDiModeFlags must called after form loaded when the BidiMode changed at run time
+  if not WSCheckHandleAllocated(AWinControl, 'UpdateStdBiDiModeFlags') then Exit;
+
+  FlagsEx := GetWindowLong(AWinControl.Handle, GWL_EXSTYLE);
+  FlagsEx := FlagsEx and not (WS_EX_RTLREADING or WS_EX_RIGHT or WS_EX_LEFTSCROLLBAR);
+  if AWinControl.UseRightToLeftAlignment then
+    FlagsEx := FlagsEx or WS_EX_RIGHT;
+  if AWinControl.UseRightToLeftReading then
+    FlagsEx := FlagsEx or WS_EX_RTLREADING ;
+  if AWinControl.UseRightToLeftScrollBar then
+    FlagsEx := FlagsEx or WS_EX_LEFTSCROLLBAR;
+  SetWindowLong(AWinControl.Handle, GWL_EXSTYLE, FlagsEx);
+end;
+
 { TWin32WSWinControl }
 
 class function TWin32WSWinControl.CreateHandle(const AWinControl: TWinControl;
@@ -330,6 +368,12 @@ class function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var A
 begin
   AText := '';
   Result := false;
+end;
+
+class procedure TWin32WSWinControl.SetBiDiMode(const AWinControl: TWinControl;
+  const ABiDiMode: TBiDiMode);
+begin
+  UpdateStdBiDiModeFlags(AWinControl);
 end;
 
 class procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);

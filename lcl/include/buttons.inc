@@ -289,6 +289,12 @@ begin
   Result:=BorderSpacing.InnerBorder<>2;
 end;
 
+function TCustomButton.UseRightToLeftAlignment: Boolean;
+begin
+  //Button always has center alignment
+  Result := False;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomButton.DoSendBtnDefault;
  ------------------------------------------------------------------------------}
@@ -305,5 +311,6 @@ procedure TButton.Click;
 begin
   inherited Click;
 end;
+
 
 

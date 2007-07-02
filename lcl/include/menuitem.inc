@@ -532,6 +532,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TMenuItem.GetIsRightToLeft
+  Returns:  Get IsRightToLeft value from Menu
+  
+ ------------------------------------------------------------------------------}
+
+function TMenuItem.GetIsRightToLeft: Boolean;
+var
+  LMenu:TMenu;
+begin
+  LMenu := GetParentMenu;
+  Result := (LMenu <> nil) and (LMenu.IsRightToLeft);
+end;
+
+{------------------------------------------------------------------------------
   Function: TMenuItem.HandleAllocated
   Params:   None
   Returns:  True is handle is allocated

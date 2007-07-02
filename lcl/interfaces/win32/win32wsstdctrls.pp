@@ -62,6 +62,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
   end;
 
   { TWin32WSGroupBox }
@@ -161,7 +162,6 @@ type
     class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
     class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
@@ -241,7 +241,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
   end;
@@ -260,6 +259,7 @@ type
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
@@ -456,6 +456,12 @@ begin
     Left := 0;
     Top := 0;
   end;
+end;
+
+class procedure TWin32WSCustomGroupBox.SetBiDiMode(
+  const AWinControl: TWinControl; const ABiDiMode: TBiDiMode);
+begin
+  RecreateWnd(AWinControl);
 end;
 
 { TWin32WSCustomListBox }
@@ -887,13 +893,6 @@ begin
     pClassName := 'EDIT';
     WindowTitle := StrCaption;
     Flags := Flags or ES_AUTOHSCROLL;
-    with Params do {BidiMode}
-    begin
-      if AWinControl.UseRightToLeftAlignment then
-        FlagsEx := FlagsEx or WS_EX_LEFTSCROLLBAR or WS_EX_RIGHT;
-      if AWinControl.UseRightToLeftReading then
-        FlagsEx := FlagsEx or WS_EX_RTLREADING ;
-    end;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -923,12 +922,6 @@ begin
   if not Result then
     exit;
   AText := GetControlText(AWinControl.Handle);
-end;
-
-class procedure TWin32WSCustomEdit.SetBiDiMode(const AWinControl: TWinControl;
-  const ABiDiMode: TBiDiMode);
-begin
-  RecreateWnd(AWinControl);
 end;
 
 class procedure TWin32WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
@@ -1121,23 +1114,12 @@ begin
       Flags := Flags or BS_DEFPUSHBUTTON
     else
       Flags := Flags or BS_PUSHBUTTON;
-    with Params do {BidiMode}
-    begin
-      if AWinControl.UseRightToLeftReading then
-        FlagsEx := FlagsEx or WS_EX_RTLREADING;
-    end;
     pClassName := 'BUTTON';
     WindowTitle := StrCaption;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
-end;
-
-class procedure TWin32WSButton.SetBiDiMode(const AWinControl: TWinControl;
-  const ABiDiMode: TBiDiMode);
-begin
-  RecreateWnd(AWinControl);
 end;
 
 class procedure TWin32WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
@@ -1217,6 +1199,13 @@ class procedure TWin32WSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCusto
   const OldShortCut, NewShortCut: TShortCut);
 begin
   // TODO: implement me!
+end;
+
+class procedure TWin32WSCustomCheckBox.SetBiDiMode(
+  const AWinControl: TWinControl; const ABiDiMode: TBiDiMode);
+begin
+//  UpdateStdBiDiModeFlags(AWinControl); not worked
+  RecreateWnd(AWinControl);
 end;
 
 class procedure TWin32WSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);

@@ -119,6 +119,7 @@ type
   published
     property Align;
     property Anchors;
+    property BidiMode;
     property BorderSpacing;
     property Constraints;
     property Ctl3D;
@@ -131,6 +132,7 @@ type
     property Max;
     property Min;
     property PageSize;
+    property ParentBidiMode;
     property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
@@ -170,6 +172,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Caption;
     property ChildSizing;
@@ -184,6 +187,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property ParentBidiMode;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -382,6 +386,7 @@ type
     property AutoCompleteText;
     property AutoDropDown;
     property AutoSelect;
+    property BidiMode;
     property BorderSpacing;
     property CharCase;
     property Color;
@@ -418,6 +423,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnSelect;
+    property ParentBidiMode;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -573,6 +579,7 @@ type
   published
     property Align;
     property Anchors;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property ClickOnSelChange;
@@ -612,6 +619,7 @@ type
     property OnSelectionChange;
     property OnShowHint;
     property OnStartDrag;
+    property ParentBidiMode;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
@@ -903,6 +911,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property Caption;
@@ -925,6 +934,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property ParentBidiMode;
     property ParentFont;
     property ShowAccelChar;
     property TabOrder;
@@ -999,6 +1009,7 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     function IsBorderSpacingInnerBorderStored: Boolean; override;
     property ParentColor default false;
+    function UseRightToLeftAlignment: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
@@ -1108,6 +1119,7 @@ type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Caption;
     property Checked;
@@ -1138,6 +1150,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property ParentBidiMode;
     property PopupMenu;
     property ShowHint;
     property State;
@@ -1281,6 +1294,7 @@ type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Caption;
     property Checked;
@@ -1306,6 +1320,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property ParentBidiMode;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1383,6 +1398,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Caption;
     property Color;
@@ -1393,6 +1409,7 @@ type
     property FocusControl;
     property Font;
     property Layout;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -1483,6 +1500,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

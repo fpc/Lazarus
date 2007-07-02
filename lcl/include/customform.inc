@@ -574,6 +574,30 @@ begin
   end;
 End;
 
+procedure TCustomForm.CMBiDiModeChanged(var Message: TLMessage);
+var
+  i:Integer;
+  lMessage:TLMessage;
+begin
+  inherited;
+  //send CM_PARENTBIDIMODECHANGED to All Component owned by Form
+{   prefer use IMenu and check it then call IMenu.ParentBidiMode
+  This way is usefull for other TMenu components that need BidiMode of form changed
+  Like as TToolbar }
+  lMessage.msg := CM_PARENTBIDIMODECHANGED;
+  lMessage.wParam := 0;
+  lMessage.lParam := 0;
+  lMessage.Result := 0;
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if not (Components[i] is TCustomControl) then//TCustomControl already has this notification
+      Components[i].Dispatch(lMessage);
+//the old way
+//    if Components[i] is TMenu then
+//      TMenu(Components[i]).ParentBiDiModeChanged;
+  end;
+end;
+
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
   const Handler: TMethod; AsLast: Boolean);
 begin
