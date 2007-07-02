@@ -421,7 +421,7 @@ type
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure setTextColor(const Value: PQColor); override;
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
-    procedure setViewPort(AWidget: TQtWidget);
+    procedure viewportNeeded;
   end;
 
   { TQtAbstractItemView }
@@ -1773,7 +1773,7 @@ end;
 
 procedure TQtWidget.SetGeometry;
 begin
-  with LCLOBject do
+  with LCLObject do
     QWidget_setGeometry(Widget, Left, Top, Width, Height);
 end;
 
@@ -4273,6 +4273,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
+  FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractScrollArea_create(Parent);
 end;
@@ -4287,6 +4288,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.Destroy');
   {$endif}
+  if Assigned(FViewPortWidget) then
+  FViewPortWidget.Free;
   QAbstractScrollArea_destroy(QAbstractScrollAreaH(Widget));
   Widget:=nil;
 
@@ -4422,31 +4425,34 @@ end;
  ------------------------------------------------------------------------------}
 function TQtAbstractScrollArea.viewport: TQtWidget;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.viewport');
-  {$endif}
-  {check viewport}
+  viewportNeeded;
   Result := FViewPortWidget;
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.setViewport
+  Function: TQtAbstractScrollArea.viewportNeeded
   Params:  None
   Returns: Nothing
-           Sets viewport widget of QAbstractScrollArea
+           Creates viewport widget for QAbstractScrollArea
  ------------------------------------------------------------------------------}
-procedure TQtAbstractScrollArea.setViewport(AWidget: TQtWidget);
+procedure TQtAbstractScrollArea.viewportNeeded;
+var
+  AParams: TCreateParams;
+  Hook: QWidget_hookH;
+  Method: TMethod;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.setViewport');
-  {$endif}
-  FViewPortWidget := AWidget;
-  if Assigned(FViewPortWidget) then
-  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), AWidget.Widget)
-  else
-  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), NiL);
-end;
+  if FViewPortWidget <> NiL
+  then
+    exit;
 
+  FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
+  
+  Hook := QWidget_hook_create(FViewPortWidget.Widget);
+  TEventFilterMethod(Method) := FViewPortWidget.EventFilter;
+  QObject_hook_hook_events(Hook, Method);
+
+  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), FViewPortWidget.Widget);
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtAbstractScrollArea.setScrollStyle

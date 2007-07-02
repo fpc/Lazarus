@@ -108,6 +108,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
   end;
 
   { TQtWSImageList }
@@ -130,7 +131,6 @@ class function  TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND;
 var
   QtAbstractScrollArea: TQtAbstractScrollArea;
-  QtWidget: TQtWidget;
   Method: TMethod;
   AHook : QAbstractScrollArea_hookH;
   Hook: QObject_hookH;
@@ -146,23 +146,7 @@ begin
   TEventFilterMethod(Method) := QtAbstractScrollArea.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
-
-
-  QtWidget := TQtWidget.Create(QtAbstractScrollArea.LCLObject, AParams);
-
-  // Various Events
-
-  Hook := QObject_hook_create(QtWidget.Widget);
-
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-
-  QtAbstractScrollArea.setViewport(QtWidget);
-
-  // Finalization
-
+  
   Result := THandle(QtAbstractScrollArea);
   
   {$ifdef VerboseQt}
@@ -177,9 +161,6 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomControl.DestroyHandle(const AWinControl: TWinControl);
 begin
-  if Assigned(TQtAbstractScrollArea(AWinControl.Handle).viewport) then
-  TQtAbstractScrollArea(AWinControl.Handle).viewport.Free;
-  
   TQtAbstractScrollArea(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
@@ -193,6 +174,47 @@ end;
 class procedure TQtWSCustomControl.Invalidate(const AWinControl: TWinControl);
 begin
   TQtAbstractScrollArea(AWinControl.Handle).Update;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomControl.ShowHide
+  Params:  AWinControl     - the calling object
+
+  Returns: Nothing
+
+  Shows or hides a widget.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomControl.ShowHide(const AWinControl: TWinControl);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Trace:> [TQtWSCustomControl.ShowHide]');
+  {$endif}
+
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+
+  { if the widget is a form, this is a place to set the Tab order }
+  if (AWinControl is TForm) and AWinControl.HandleObjectShouldBeVisible then
+   TQtMainWindow(AWinControl.Handle).SetTabOrders;
+
+  if AWinControl.HandleObjectShouldBeVisible then
+   QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, True)
+  else QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, False);
+
+  {$ifdef VerboseQt}
+    Write('Trace:< [TQtWSCustomControl.ShowHide] ');
+
+    if AWinControl is TForm then Write('Is TForm, ');
+
+    if AWinControl.HandleObjectShouldBeVisible then WriteLn('Visible: True')
+    else WriteLn('Visible: False');
+  {$endif}
+  
+   // showhide fires before invalidate, so we must create viewport right here
+   if not AWinControl.InheritsFrom(TCustomForm)
+   then
+     TQtAbstractScrollArea(AWinControl.Handle).viewportNeeded;
 end;
 
 {------------------------------------------------------------------------------
