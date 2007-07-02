@@ -209,6 +209,7 @@ const
   DT_EDITCONTROL = $2000;
   DT_END_ELLIPSIS = $8000;
   DT_MODIFYSTRING = $10000;
+  DT_RTLREADING =  $20000;
 
 //==============================================
 // Draw frame constants

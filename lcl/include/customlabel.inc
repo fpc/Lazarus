@@ -407,6 +407,7 @@ begin
       Clipping := True;
       ShowPrefix := ShowAccelChar;
       SystemFont:=false;
+      RightToLeft:=UseRightToLeftReading;
     end;
     TextLeft := R.Left;
     if Layout = tlTop then begin
@@ -439,4 +440,5 @@ begin
 end;
 
  // included by stdctrls.pp
+
 

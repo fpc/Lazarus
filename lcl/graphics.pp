@@ -105,6 +105,8 @@ type
                               //            foreground color
 
     SystemFont: Boolean;     // Use the system font instead of Canvas Font
+    
+    RightToLeft: Boolean;    //For RightToLeft text reading (Text Direction)
   end;
 
 type

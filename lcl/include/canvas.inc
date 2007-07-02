@@ -1032,6 +1032,9 @@ begin
   If not Style.ShowPrefix then
     Options := Options or DT_NOPREFIX;
 
+  If Style.RightToLeft then
+    Options := Options or DT_RTLREADING;
+
   ReqState:=[csHandleValid];
   if not Style.SystemFont then
     Include(ReqState,csFontValid);
