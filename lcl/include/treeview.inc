@@ -255,7 +255,9 @@ end;
 constructor TTreeNode.Create(AnOwner: TTreeNodes);
 begin
   inherited Create;
+  FImageIndex := -1;
   FOverlayIndex := -1;
+  FSelectedIndex := -1;
   FStateIndex := -1;
   FStates := [];
   FOwner := AnOwner;

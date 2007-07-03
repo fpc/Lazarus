@@ -199,7 +199,7 @@ procedure TListViewItemsEditorForm.edtIndexStateEditingDone(
 begin
   if Assigned(TreeView1.Selected) then
   begin
-    TreeView1.Selected.ImageIndex := StrToIntDef(edtIndexImg.Text, 0);
+    TreeView1.Selected.ImageIndex := StrToIntDef(edtIndexImg.Text, -1);
     TreeView1.Selected.StateIndex := StrToIntDef(edtIndexState.Text, -1);
 
     edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
