@@ -5075,7 +5075,9 @@ begin
   MousePos.Y := Message.Y;
   Shift := Message.State;
 
-  if not DoMouseWheel(Shift, Message.WheelDelta, MousePos) then
+  if DoMouseWheel(Shift, Message.WheelDelta, MousePos) then
+    Message.Result := 1
+  else
     inherited;
 end;
 
