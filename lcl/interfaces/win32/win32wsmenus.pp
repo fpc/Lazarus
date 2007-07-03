@@ -50,6 +50,7 @@ type
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
+    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
@@ -117,7 +118,8 @@ type
    AnUnderlinedChar - character which tells that tne following character should be underlined
    ACaption - menu item caption which is parsed *)
 function SearchMenuItemHotKeyIndex(const AnUnderlinedChar: char; ACaption: string): integer;
-var position: integer;
+var
+  position: integer;
 begin
   position := pos(AnUnderlinedChar, ACaption);
   Result := 0;
@@ -132,12 +134,13 @@ begin
 end;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-var MenuItemIndex: integer;
-    ItemInfo: MENUITEMINFO;
-    FirstMenuItem: TMenuItem;
-    SiblingMenuItem: TmenuItem;
-    HotKeyIndex: integer;
-    i: integer;
+var
+  MenuItemIndex: integer;
+  ItemInfo: MENUITEMINFO;
+  FirstMenuItem: TMenuItem;
+  SiblingMenuItem: TmenuItem;
+  HotKeyIndex: integer;
+  i: integer;
 begin
   Result := MakeLResult(0, 0);
   MenuItemIndex := -1;
@@ -159,7 +162,6 @@ begin
   if MenuItemIndex > -1 then Result := MakeLResult(MenuItemIndex, 2)
   else Result := MakeLResult(0, 0);
 end;
-
 
 function GetMenuItemFont(const aFlags: TCaptionFlagsSet): HFONT;
 var 
@@ -193,9 +195,10 @@ end;
 
 (* Get the maximum length of the given string in pixels *)
 function StringSize(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): TSize;
-var oldFont: HFONT;
-    newFont: HFONT;
-    tmpRect: Windows.RECT;
+var
+  oldFont: HFONT;
+  newFont: HFONT;
+  tmpRect: Windows.RECT;
 begin
   tmpRect.right := 0;
   tmpRect.left := 0;
@@ -208,9 +211,27 @@ begin
   Result.cy := TmpRect.Bottom - TmpRect.Top;
 end;
   
-function LeftIconPosition: integer;
+function CheckSpace(AMenuItem: TMenuItem): integer;
+var
+  i: integer;
 begin
-  Result := GetSystemMetrics(SM_CXMENUCHECK);
+  Result := 0;
+  if AMenuItem.IsInMenuBar then
+  begin
+    if AMenuItem.Checked then
+      Result := GetSystemMetrics(SM_CXMENUCHECK);
+  end
+  else
+  begin
+    for i := 0 to AMenuItem.Parent.Count - 1 do
+    begin
+      if AMenuItem.Parent.Items[i].Checked then
+      begin
+        Result := GetSystemMetrics(SM_CXMENUCHECK);
+        break;
+      end;
+    end;
+  end;
 end;
 
 function MenuIconWidth(const AMenuItem: TMenuItem): integer;
@@ -220,29 +241,43 @@ var
   RequiredWidth: integer;
 begin
   Result := 0;
-  for i:= 0 to AMenuItem.Parent.Count -1 do begin
-    SiblingMenuItem := AMenuItem.Parent.Items[i];
-    if SiblingMenuItem.HasIcon then begin
-      RequiredWidth := SiblingMenuItem.Bitmap.Width;
-      if RequiredWidth > Result then
-        Result := RequiredWidth;
+  if AMenuItem.IsInMenuBar then
+  begin
+    if AMenuItem.HasIcon then
+      Result := AMenuItem.Bitmap.Width;
+  end
+  else
+  begin
+    for i := 0 to AMenuItem.Parent.Count - 1 do
+    begin
+      SiblingMenuItem := AMenuItem.Parent.Items[i];
+      if SiblingMenuItem.HasIcon then
+      begin
+        RequiredWidth := SiblingMenuItem.Bitmap.Width;
+        if RequiredWidth > Result then
+          Result := RequiredWidth;
+      end;
     end;
   end;
-  Result := Result + LeftIconPosition;
 end;
 
 function MenuItemSize(aMenuItem: TMenuItem; aHDC: HDC): TSize;
 var
   decoration: TCaptionFlagsSet;
-  minimumHeight: Integer;
+  minimumHeight, IconWidth: Integer;
 begin
   if aMenuItem.Default then
     decoration := [cfBold]
   else
     decoration := [];
   Result := StringSize(CompleteMenuItemCaption(aMenuItem), aHDC, decoration);
-  if not aMenuItem.IsInMenuBar then
-    Inc(Result.cx, MenuIconWidth(aMenuItem) + (2 * spaceBetweenIcons));
+
+  IconWidth := MenuIconWidth(aMenuItem);
+  if IconWidth <> 0 then
+    Inc(Result.cx,  IconWidth + CheckSpace(aMenuItem) + (2 * spaceBetweenIcons))
+  else
+    Inc(Result.cx, CheckSpace(aMenuItem) + spaceBetweenIcons);
+    
   if aMenuItem.ShortCut <> scNone then
     Inc(Result.cx, spaceBetweenIcons);
 	
@@ -262,9 +297,14 @@ begin
 end;
 
 function LeftCaptionPosition(const aMenuItemLength: integer; const anElementLength: integer; const AMenuItem: TMenuItem): integer;
+var
+  IconWidth: Integer;
 begin
-  if AMenuItem.IsInMenuBar then Result := (aMenuItemLength - anElementLength) div 2
-  else Result := MenuIconWidth(AMenuItem) + SpaceBetweenIcons;
+  IconWidth := MenuIconWidth(AMenuItem);
+  if IconWidth = 0 then
+    Result := CheckSpace(aMenuItem) + spaceBetweenIcons
+  else
+    Result := IconWidth + CheckSpace(aMenuItem) + 2 * SpaceBetweenIcons;
 end;
 
 function TopPosition(const aMenuItemHeight: integer; const anElementHeight: integer): integer;
@@ -273,7 +313,8 @@ begin
 end;
 
 function BackgroundColorMenu(const aSelected: boolean; const aInMainMenu: boolean): COLORREF;
-var IsFlatMenu: Windows.BOOL;
+var
+  IsFlatMenu: Windows.BOOL;
 begin
   if aSelected then
     Result := GetSysColor(COLOR_HIGHLIGHT)
@@ -297,7 +338,8 @@ begin
 end;
 
 procedure DrawSeparator(const aHDC: HDC; const aRect: Windows.RECT);
-var separatorRect: Windows.RECT;
+var
+  separatorRect: Windows.RECT;
 begin
   separatorRect.left := aRect.left;
   separatorRect.right := aRect.right;
@@ -307,14 +349,15 @@ begin
 end;
 
 procedure DrawMenuItemCheckMark(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
-var checkMarkWidth: integer;
-    checkMarkHeight: integer;
-    hdcMem: HDC;
-    monoBitmap: HBITMAP;
-    oldBitmap: HBITMAP;
-    checkMarkShape: integer;
-    checkMarkRect: Windows.RECT;
-    x:Integer;
+var
+  checkMarkWidth: integer;
+  checkMarkHeight: integer;
+  hdcMem: HDC;
+  monoBitmap: HBITMAP;
+  oldBitmap: HBITMAP;
+  checkMarkShape: integer;
+  checkMarkRect: Windows.RECT;
+  x:Integer;
 begin
   hdcMem := CreateCompatibleDC(aHDC);
   checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
@@ -413,9 +456,9 @@ begin
   hdcMem := aMenuItem.Bitmap.Canvas.Handle;
   hbmpOld := SelectObject(hdcMem, aMenuItem.Bitmap.Handle);
   if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - LeftIconPosition - aMenuItem.Bitmap.Width
+    x := aRect.Right - CheckSpace(aMenuItem) - aMenuItem.Bitmap.Width - spaceBetweenIcons
   else
-    x := aRect.Left + LeftIconPosition;
+    x := aRect.Left + CheckSpace(aMenuItem) + spaceBetweenIcons;
   TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, x, aRect.top + TopPosition(aRect.bottom - aRect.top, aMenuItem.Bitmap.Height), aMenuItem.Bitmap.Width, aMenuItem.Bitmap.Height, hdcMem, 0, 0, aMenuItem.Bitmap.MaskHandle, 0, 0);
   SelectObject(hdcMem, hbmpOld);
 end;
@@ -424,7 +467,8 @@ procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect:
 begin
   if aMenuItem.IsLine then
     DrawSeparator(aHDC, aRect)
-  else begin
+  else
+  begin
     DrawMenuItemText(aMenuItem, aHDC, aRect, aSelected);
     if aMenuItem.Checked then
       DrawMenuItemCheckMark(aMenuItem, aHDC, aRect, aSelected);
@@ -575,6 +619,12 @@ begin
   UpdateCaption(AMenuItem, aCaption);
 end;
 
+class function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem;
+  const Checked: boolean): boolean;
+begin
+  UpdateCaption(AMenuItem, aMenuItem.Caption);
+end;
+
 class procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
@@ -641,10 +691,10 @@ begin
 end;
 
 initialization
-  if (Win32MajorVersion=4) and (Win32MinorVersion=0) then
-    menuiteminfosize:=W95_MENUITEMINFO_SIZE
+  if (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
+    menuiteminfosize := W95_MENUITEMINFO_SIZE
   else
-    menuiteminfosize:=sizeof(TMenuItemInfo);
+    menuiteminfosize := sizeof(TMenuItemInfo);
 
 ////////////////////////////////////////////////////
 // I M P O R T A N T
