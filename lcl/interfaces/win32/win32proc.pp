@@ -1117,7 +1117,7 @@ var
 begin
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   MenuInfo.cbSize := SizeOf(MENUITEMINFO);
-  MenuInfo.fMask := MIIM_FTYPE;
+  MenuInfo.fMask := MIIM_TYPE;
   GetMenuItemInfo(Menu, 0, True, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag

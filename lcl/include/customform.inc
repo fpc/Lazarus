@@ -581,8 +581,7 @@ var
 begin
   inherited;
   //send CM_PARENTBIDIMODECHANGED to All Component owned by Form
-{   prefer use IMenu and check it then call IMenu.ParentBidiMode
-  This way is usefull for other TMenu components that need BidiMode of form changed
+{ This way is usefull for other TMenu components that need BidiMode of form changed
   Like as TToolbar }
   lMessage.msg := CM_PARENTBIDIMODECHANGED;
   lMessage.wParam := 0;

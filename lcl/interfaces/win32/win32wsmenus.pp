@@ -314,6 +314,7 @@ var checkMarkWidth: integer;
     oldBitmap: HBITMAP;
     checkMarkShape: integer;
     checkMarkRect: Windows.RECT;
+    x:Integer;
 begin
   hdcMem := CreateCompatibleDC(aHDC);
   checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
@@ -327,55 +328,95 @@ begin
   if aMenuItem.RadioItem then checkMarkShape := DFCS_MENUBULLET
   else checkMarkShape := DFCS_MENUCHECK;
   DrawFrameControl(hdcMem, @checkMarkRect, DFC_MENU, checkMarkShape);
-  BitBlt(aHDC, aRect.left, aRect.top + topPosition(aRect.bottom - aRect.top, checkMarkRect.bottom - checkMarkRect.top), checkMarkWidth, checkMarkHeight, hdcMem, 0, 0, SRCCOPY);
+  if aMenuItem.GetIsRightToLeft then
+    x := aRect.Right - checkMarkWidth
+  else
+    x := aRect.left;
+  BitBlt(aHDC, x, aRect.top + topPosition(aRect.bottom - aRect.top, checkMarkRect.bottom - checkMarkRect.top), checkMarkWidth, checkMarkHeight, hdcMem, 0, 0, SRCCOPY);
   SelectObject(hdcMem, oldBitmap);
   DeleteObject(monoBitmap);
   DeleteDC(hdcMem);
 end;
 
 procedure DrawMenuItemText(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
-var crText: COLORREF;
-    crBkgnd: COLORREF;
-    TmpLength: integer;
-    TmpHeight: integer;
-    oldFont: HFONT;
-    newFont: HFONT;
-    decoration: TCaptionFlagsSet;
-	shortCutText: string;
-	WorkRect: Windows.RECT;
+var
+  crText: COLORREF;
+  crBkgnd: COLORREF;
+  TmpLength: integer;
+  TmpHeight: integer;
+  oldFont: HFONT;
+  newFont: HFONT;
+  decoration: TCaptionFlagsSet;
+  shortCutText: string;
+  WorkRect: Windows.RECT;
+  IsRightToLeft: Boolean;
+  etoFlags: Cardinal;
+  dtFlags: Word;
 begin
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
   SetTextColor(aHDC, crText);
   SetBkColor(aHDC, crBkgnd);
-  if aMenuItem.Default then decoration := [cfBold]
-  else decoration := [];
+
+  if aMenuItem.Default then
+    decoration := [cfBold]
+  else
+    decoration := [];
+    
   newFont := getMenuItemFont(decoration);
   oldFont := SelectObject(aHDC, newFont);
-  ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, @aRect, PChar(''), 0, nil);
+  IsRightToLeft := aMenuItem.GetIsRightToLeft;
+
+  etoFlags := ETO_OPAQUE;
+  dtFlags := 0;
+  if IsRightToLeft then
+  begin
+    etoFlags := etoFlags or ETO_RTLREADING;
+    dtFlags := dtFlags or DT_RIGHT or DT_RTLREADING;
+  end;
+  
+  ExtTextOut(aHDC, 0, 0, etoFlags, @aRect, PChar(''), 0, nil);
   TmpLength := aRect.right - aRect.left;
   TmpHeight := aRect.bottom - aRect.top;
   DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @WorkRect, DT_CALCRECT);
-  Inc(aRect.Left, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem));
+  if IsRightToLeft then
+    Dec(aRect.Right, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem))
+  else
+    Inc(aRect.Left, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem));
   Inc(aRect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
-  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, 0);
+  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, dtFlags);
   if aMenuItem.ShortCut <> scNone then
   begin
     shortCutText := ShortCutToText(aMenuItem.ShortCut);
-    Dec(aRect.Right, GetSystemMetrics(SM_CXMENUCHECK));	
-	DrawText(aHDC, pChar(shortCutText), Length(shortCutText), @aRect, DT_RIGHT);
+    if IsRightToLeft then
+    begin
+      Inc(aRect.Left, GetSystemMetrics(SM_CXMENUCHECK));
+      dtFlags := DT_LEFT;
+    end
+    else
+    begin
+      Dec(aRect.Right, GetSystemMetrics(SM_CXMENUCHECK));
+      dtFlags := DT_RIGHT;
+    end;
+    DrawText(aHDC, pChar(shortCutText), Length(shortCutText), @aRect, dtFlags);
   end;
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
 end;
 
 procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
-var hdcMem: HDC;
-    hbmpOld: HBITMAP;
+var
+  hdcMem: HDC;
+  hbmpOld: HBITMAP;
+  x: Integer;
 begin
   hdcMem := aMenuItem.Bitmap.Canvas.Handle;
   hbmpOld := SelectObject(hdcMem, aMenuItem.Bitmap.Handle);
-  TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, aRect.left + LeftIconPosition, aRect.top + TopPosition(aRect.bottom - aRect.top, aMenuItem.Bitmap.Height), aMenuItem.Bitmap.Width, aMenuItem.Bitmap.Height, hdcMem, 0, 0, aMenuItem.Bitmap.MaskHandle, 0, 0);
+  if aMenuItem.GetIsRightToLeft then
+    x := aRect.Right - LeftIconPosition - aMenuItem.Bitmap.Width
+  else
+    x := aRect.Left + LeftIconPosition;
+  TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, x, aRect.top + TopPosition(aRect.bottom - aRect.top, aMenuItem.Bitmap.Height), aMenuItem.Bitmap.Width, aMenuItem.Bitmap.Height, hdcMem, 0, 0, aMenuItem.Bitmap.MaskHandle, 0, 0);
   SelectObject(hdcMem, hbmpOld);
 end;
 
