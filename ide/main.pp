@@ -8075,18 +8075,19 @@ begin
     VersionInfo := Project1.VersionInfo;
     Result := VersionInfo.CompileRCFile(Project1.MainFilename,
       MainBuildBoss.GetTargetOS(true));
-    if Result <> mrOk then exit;
+
     for Count := 1 to VersionInfo.VersionInfoMessages.Count do
       MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[Count - 1],
                                   ['"', Project1.ShortDescription, '"']), '' ,-1);
+    if Result <> mrOk then exit;
 
     // handle manifest
     Result := Project1.XPManifest.CompileRCFile(Project1.MainFilename,
       MainBuildBoss.GetTargetOS(true));
-    if Result <> mrOk then exit;
     for Count := 1 to Project1.XPManifest.Messages.Count do
       MessagesView.AddMsg(Format(Project1.XPManifest.Messages[Count - 1],
                                   ['"', Project1.ShortDescription, '"']), '' ,-1);
+    if Result <> mrOk then exit;
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin
