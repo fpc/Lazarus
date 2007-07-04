@@ -626,6 +626,27 @@ var i, j, FilenameEndPos: integer;
     Result:=true;
     DoAddFilteredLine(copy(s,OldStart,length(s)));
   end;
+  
+  { example:
+    ...\windres.exe: warning: ...
+  }
+  function CheckForWindresErrors(p: integer): boolean;
+  var
+    wPos: integer;
+    tempStr: String;
+  begin
+    Result := false;
+    tempStr := LowerCase(s);
+    wPos := Pos('windres', tempStr);
+    Result := (wPos > p);
+    if Result then
+    begin
+      p := wPos + 7;
+      if CompStr('.exe', s, p) then
+        inc(p, 4);
+      DoAddFilteredLine('windres' + copy(s, p, length(s)));
+    end;
+  end;
 
 begin
   Result:=false;
@@ -663,6 +684,9 @@ begin
   // check for linking errors
   Result:=CheckForLinkingErrors(i);
   if Result then exit;
+  // cehck for windres errors
+  Result := CheckForWindresErrors(i);
+  if Result then Exit;
 
   // search for round bracket open
   i:=1;
