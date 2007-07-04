@@ -4953,7 +4953,11 @@ begin
 
   csArrow :
     begin
-      p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
+      P := gtk_event_box_new();
+      TempWidget := gtk_arrow_new(gtk_arrow_left, gtk_shadow_etched_in);
+      gtk_container_add(p, TempWidget);
+      gtk_widget_show(TempWidget);
+      gtk_object_set_data(P, 'arrow', TempWidget);
     end;
 
   csBitBtn,

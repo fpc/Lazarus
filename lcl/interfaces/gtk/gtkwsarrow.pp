@@ -56,6 +56,7 @@ class procedure TGtkWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArr
 var
   ArrowType : TGTKArrowType;
   ShadowType : TGTKShadowType;
+  ArrowWidget: PGtkArrow;
 begin
   case AArrowType of
     atUp:    ArrowType := GTK_ARROW_UP;
@@ -75,7 +76,8 @@ begin
     ShadowType := GTK_SHADOW_NONE;
   end;
 
-  gtk_arrow_set(PGtkArrow(AArrow.Handle), ArrowType, ShadowType);
+  ArrowWidget := gtk_object_get_data(PGtkObject(AArrow.Handle), 'arrow');
+  gtk_arrow_set(ArrowWidget, ArrowType, ShadowType);
 end;
 
 initialization
