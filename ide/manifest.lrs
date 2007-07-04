@@ -1,22 +1,14 @@
 LazarusResources.Add('manifest','RES',[
-  #0#0#0#0' '#0#0#0#255#255#0#0#255#255#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0'a'#4
-  +#0#0' '#0#0#0#255#255#24#0#255#255#1#0#0#0#0#0'0'#0#25#4#0#0#0#0#0#0#0#0'<?x'
-  +'ml version="1.0" encoding="UTF-8" standalone="yes"?> '#13#10'<assembly xmln'
-  +'s="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0"> '#13#10'    <as'
-  +'semblyIdentity '#13#10'        version="1.0.0.0" '#13#10'        processorA'
-  +'rchitecture="*"'#13#10'        name="CompanyName.ProductName.YourApp" '#13
-  +#10'        type="win32" '#13#10#13#10'    /> '#13#10'    <description>Your '
-  +'application description here.</description> '#13#10'    <dependency> '#13#10
-  +'        <dependentAssembly> '#13#10'            <assemblyIdentity '#13#10' '
-  +'               type="win32" '#13#10'                name="Microsoft.Windows'
-  +'.Common-Controls" '#13#10'                version="6.0.0.0" '#13#10'       '
-  +'         processorArchitecture="*"'#13#10'                publicKeyToken="6'
-  +'595b64144ccf1df" '#13#10'                language="*" '#13#10'             '
-  +'   /> '#13#10'        </dependentAssembly> '#13#10'    </dependency> '#13#10
-  +'    <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">'#13#10'        <se'
-  +'curity>'#13#10'            <requestedPrivileges>'#13#10'                <re'
-  +'questedExecutionLevel'#13#10'                    level="asInvoker"'#13#10' '
-  +'                   uiAccess="false"'#13#10'                /> '#13#10'     '
-  +'       </requestedPrivileges> '#13#10'        </security> '#13#10'    </tru'
-  +'stInfo>'#13#10'</assembly> '#13#10#0#0#0
+  #0#0#0#0' '#0#0#0#255#255#0#0#255#255#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#220
+  +#2#0#0' '#0#0#0#255#255#24#0#255#255#1#0#0#0#0#0'0'#0#25#4#0#0#0#0#0#0#0#0'<'
+  +'?xml version="1.0" encoding="UTF-8" standalone="yes"?><assembly xmlns="urn:'
+  +'schemas-microsoft-com:asm.v1" manifestVersion="1.0"><assemblyIdentity versi'
+  +'on="1.0.0.0" processorArchitecture="*" name="CompanyName.ProductName.YourAp'
+  +'p" type="win32"/><description>Your application description here.</descripti'
+  +'on><dependency><dependentAssembly><assemblyIdentity type="win32" name="Micr'
+  +'osoft.Windows.Common-Controls" version="6.0.0.0" processorArchitecture="*" '
+  +'publicKeyToken="6595b64144ccf1df" language="*"/></dependentAssembly></depen'
+  +'dency><trustInfo xmlns="urn:schemas-microsoft-com:asm.v3"><security><reques'
+  +'tedPrivileges><requestedExecutionLevel level="asInvoker" uiAccess="false"/>'
+  +'</requestedPrivileges></security></trustInfo></assembly>'
 ]);
