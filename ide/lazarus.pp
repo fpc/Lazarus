@@ -36,8 +36,8 @@ program Lazarus;
 
 {$I ide.inc}
 
-{$IFdef Win32}
-  {$R *.res}
+{$IFDEF WIN32}
+  {$R lazarus.res}
 {$ENDIF}
 
 {off $DEFINE IDE_MEM_CHECK}
