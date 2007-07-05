@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.37 }
+{ Version : 1.40 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -1952,6 +1952,21 @@ procedure QStringList_filter(handle: QStringListH; retval: QStringListH; rx: QRe
 function QStringList_replaceInStrings(handle: QStringListH; rx: QRegExpH; after: PWideString): QStringListH; overload; cdecl; external QtIntf name 'QStringList_replaceInStrings2';
 function QStringList_indexOf(handle: QStringListH; rx: QRegExpH; from: Integer = 0): Integer; cdecl; external QtIntf name 'QStringList_indexOf';
 function QStringList_lastIndexOf(handle: QStringListH; rx: QRegExpH; from: Integer = -1): Integer; cdecl; external QtIntf name 'QStringList_lastIndexOf';
+function QStringList_size(handle: QStringListH): Integer; cdecl; external QtIntf name 'QStringList_size';
+function QStringList_isEmpty(handle: QStringListH): Boolean; cdecl; external QtIntf name 'QStringList_isEmpty';
+procedure QStringList_clear(handle: QStringListH); cdecl; external QtIntf name 'QStringList_clear';
+procedure QStringList_at(handle: QStringListH; retval: PWideString; i: Integer); cdecl; external QtIntf name 'QStringList_at';
+procedure QStringList_append(handle: QStringListH; s: PWideString); cdecl; external QtIntf name 'QStringList_append';
+procedure QStringList_prepend(handle: QStringListH; s: PWideString); cdecl; external QtIntf name 'QStringList_prepend';
+procedure QStringList_insert(handle: QStringListH; i: Integer; s: PWideString); cdecl; external QtIntf name 'QStringList_insert';
+procedure QStringList_replace(handle: QStringListH; i: Integer; s: PWideString); cdecl; external QtIntf name 'QStringList_replace';
+procedure QStringList_removeAt(handle: QStringListH; i: Integer); cdecl; external QtIntf name 'QStringList_removeAt';
+function QStringList_removeAll(handle: QStringListH; s: PWideString): Integer; cdecl; external QtIntf name 'QStringList_removeAll';
+procedure QStringList_takeAt(handle: QStringListH; retval: PWideString; i: Integer); cdecl; external QtIntf name 'QStringList_takeAt';
+procedure QStringList_takeFirst(handle: QStringListH; retval: PWideString); cdecl; external QtIntf name 'QStringList_takeFirst';
+procedure QStringList_takeLast(handle: QStringListH; retval: PWideString); cdecl; external QtIntf name 'QStringList_takeLast';
+procedure QStringList_move(handle: QStringListH; from: Integer; _to: Integer); cdecl; external QtIntf name 'QStringList_move';
+procedure QStringList_swap(handle: QStringListH; i: Integer; j: Integer); cdecl; external QtIntf name 'QStringList_swap';
 
 function QRect_create(): QRectH; overload; cdecl; external QtIntf name 'QRect_create';
 procedure QRect_destroy(handle: QRectH); cdecl; external QtIntf name 'QRect_destroy'; 
@@ -2943,8 +2958,8 @@ function QInputEvent_modifiers(handle: QInputEventH): QtKeyboardModifiers; cdecl
 function QMouseEvent_create(_type: QEventType; pos: PPoint; button: QtMouseButton; buttons: QtMouseButtons; modifiers: QtKeyboardModifiers): QMouseEventH; overload; cdecl; external QtIntf name 'QMouseEvent_create';
 procedure QMouseEvent_destroy(handle: QMouseEventH); cdecl; external QtIntf name 'QMouseEvent_destroy'; 
 function QMouseEvent_create(_type: QEventType; pos: PPoint; globalPos: PPoint; button: QtMouseButton; buttons: QtMouseButtons; modifiers: QtKeyboardModifiers): QMouseEventH; overload; cdecl; external QtIntf name 'QMouseEvent_create2';
-function QMouseEvent_pos(handle: QMouseEventH): PPoint; cdecl; external QtIntf name 'QMouseEvent_pos';
-function QMouseEvent_globalPos(handle: QMouseEventH): PPoint; cdecl; external QtIntf name 'QMouseEvent_globalPos';
+procedure QMouseEvent_pos(handle: QMouseEventH; retval: PPoint); cdecl; external QtIntf name 'QMouseEvent_pos';
+procedure QMouseEvent_globalPos(handle: QMouseEventH; retval: PPoint); cdecl; external QtIntf name 'QMouseEvent_globalPos';
 function QMouseEvent_x(handle: QMouseEventH): Integer; cdecl; external QtIntf name 'QMouseEvent_x';
 function QMouseEvent_y(handle: QMouseEventH): Integer; cdecl; external QtIntf name 'QMouseEvent_y';
 function QMouseEvent_globalX(handle: QMouseEventH): Integer; cdecl; external QtIntf name 'QMouseEvent_globalX';
@@ -2954,15 +2969,15 @@ function QMouseEvent_buttons(handle: QMouseEventH): QtMouseButtons; cdecl; exter
 
 function QHoverEvent_create(_type: QEventType; pos: PPoint; oldPos: PPoint): QHoverEventH; cdecl; external QtIntf name 'QHoverEvent_create';
 procedure QHoverEvent_destroy(handle: QHoverEventH); cdecl; external QtIntf name 'QHoverEvent_destroy'; 
-function QHoverEvent_pos(handle: QHoverEventH): PPoint; cdecl; external QtIntf name 'QHoverEvent_pos';
-function QHoverEvent_oldPos(handle: QHoverEventH): PPoint; cdecl; external QtIntf name 'QHoverEvent_oldPos';
+procedure QHoverEvent_pos(handle: QHoverEventH; retval: PPoint); cdecl; external QtIntf name 'QHoverEvent_pos';
+procedure QHoverEvent_oldPos(handle: QHoverEventH; retval: PPoint); cdecl; external QtIntf name 'QHoverEvent_oldPos';
 
 function QWheelEvent_create(pos: PPoint; delta: Integer; buttons: QtMouseButtons; modifiers: QtKeyboardModifiers; orient: QtOrientation = QtVertical): QWheelEventH; overload; cdecl; external QtIntf name 'QWheelEvent_create';
 procedure QWheelEvent_destroy(handle: QWheelEventH); cdecl; external QtIntf name 'QWheelEvent_destroy'; 
 function QWheelEvent_create(pos: PPoint; globalPos: PPoint; delta: Integer; buttons: QtMouseButtons; modifiers: QtKeyboardModifiers; orient: QtOrientation = QtVertical): QWheelEventH; overload; cdecl; external QtIntf name 'QWheelEvent_create2';
 function QWheelEvent_delta(handle: QWheelEventH): Integer; cdecl; external QtIntf name 'QWheelEvent_delta';
-function QWheelEvent_pos(handle: QWheelEventH): PPoint; cdecl; external QtIntf name 'QWheelEvent_pos';
-function QWheelEvent_globalPos(handle: QWheelEventH): PPoint; cdecl; external QtIntf name 'QWheelEvent_globalPos';
+procedure QWheelEvent_pos(handle: QWheelEventH; retval: PPoint); cdecl; external QtIntf name 'QWheelEvent_pos';
+procedure QWheelEvent_globalPos(handle: QWheelEventH; retval: PPoint); cdecl; external QtIntf name 'QWheelEvent_globalPos';
 function QWheelEvent_x(handle: QWheelEventH): Integer; cdecl; external QtIntf name 'QWheelEvent_x';
 function QWheelEvent_y(handle: QWheelEventH): Integer; cdecl; external QtIntf name 'QWheelEvent_y';
 function QWheelEvent_globalX(handle: QWheelEventH): Integer; cdecl; external QtIntf name 'QWheelEvent_globalX';
@@ -2972,8 +2987,8 @@ function QWheelEvent_orientation(handle: QWheelEventH): QtOrientation; cdecl; ex
 
 function QTabletEvent_create(t: QEventType; pos: PPoint; globalPos: PPoint; hiResGlobalPos: QPointFH; device: Integer; pointerType: Integer; pressure: Double; xTilt: Integer; yTilt: Integer; tangentialPressure: Double; rotation: Double; z: Integer; keyState: QtKeyboardModifiers; uniqueID: int64): QTabletEventH; cdecl; external QtIntf name 'QTabletEvent_create';
 procedure QTabletEvent_destroy(handle: QTabletEventH); cdecl; external QtIntf name 'QTabletEvent_destroy'; 
-function QTabletEvent_pos(handle: QTabletEventH): PPoint; cdecl; external QtIntf name 'QTabletEvent_pos';
-function QTabletEvent_globalPos(handle: QTabletEventH): PPoint; cdecl; external QtIntf name 'QTabletEvent_globalPos';
+procedure QTabletEvent_pos(handle: QTabletEventH; retval: PPoint); cdecl; external QtIntf name 'QTabletEvent_pos';
+procedure QTabletEvent_globalPos(handle: QTabletEventH; retval: PPoint); cdecl; external QtIntf name 'QTabletEvent_globalPos';
 function QTabletEvent_hiResGlobalPos(handle: QTabletEventH): QPointFH; cdecl; external QtIntf name 'QTabletEvent_hiResGlobalPos';
 function QTabletEvent_x(handle: QTabletEventH): Integer; cdecl; external QtIntf name 'QTabletEvent_x';
 function QTabletEvent_y(handle: QTabletEventH): Integer; cdecl; external QtIntf name 'QTabletEvent_y';
@@ -3019,8 +3034,8 @@ function QPaintEvent_region(handle: QPaintEventH): QRegionH; cdecl; external QtI
 
 function QMoveEvent_create(pos: PPoint; oldPos: PPoint): QMoveEventH; cdecl; external QtIntf name 'QMoveEvent_create';
 procedure QMoveEvent_destroy(handle: QMoveEventH); cdecl; external QtIntf name 'QMoveEvent_destroy'; 
-function QMoveEvent_pos(handle: QMoveEventH): PPoint; cdecl; external QtIntf name 'QMoveEvent_pos';
-function QMoveEvent_oldPos(handle: QMoveEventH): PPoint; cdecl; external QtIntf name 'QMoveEvent_oldPos';
+procedure QMoveEvent_pos(handle: QMoveEventH; retval: PPoint); cdecl; external QtIntf name 'QMoveEvent_pos';
+procedure QMoveEvent_oldPos(handle: QMoveEventH; retval: PPoint); cdecl; external QtIntf name 'QMoveEvent_oldPos';
 
 function QResizeEvent_create(size: PSize; oldSize: PSize): QResizeEventH; cdecl; external QtIntf name 'QResizeEvent_create';
 procedure QResizeEvent_destroy(handle: QResizeEventH); cdecl; external QtIntf name 'QResizeEvent_destroy'; 
@@ -3046,8 +3061,8 @@ function QContextMenuEvent_x(handle: QContextMenuEventH): Integer; cdecl; extern
 function QContextMenuEvent_y(handle: QContextMenuEventH): Integer; cdecl; external QtIntf name 'QContextMenuEvent_y';
 function QContextMenuEvent_globalX(handle: QContextMenuEventH): Integer; cdecl; external QtIntf name 'QContextMenuEvent_globalX';
 function QContextMenuEvent_globalY(handle: QContextMenuEventH): Integer; cdecl; external QtIntf name 'QContextMenuEvent_globalY';
-function QContextMenuEvent_pos(handle: QContextMenuEventH): PPoint; cdecl; external QtIntf name 'QContextMenuEvent_pos';
-function QContextMenuEvent_globalPos(handle: QContextMenuEventH): PPoint; cdecl; external QtIntf name 'QContextMenuEvent_globalPos';
+procedure QContextMenuEvent_pos(handle: QContextMenuEventH; retval: PPoint); cdecl; external QtIntf name 'QContextMenuEvent_pos';
+procedure QContextMenuEvent_globalPos(handle: QContextMenuEventH; retval: PPoint); cdecl; external QtIntf name 'QContextMenuEvent_globalPos';
 function QContextMenuEvent_reason(handle: QContextMenuEventH): QContextMenuEventReason; cdecl; external QtIntf name 'QContextMenuEvent_reason';
 
 function QInputMethodEvent_create(): QInputMethodEventH; overload; cdecl; external QtIntf name 'QInputMethodEvent_create';
@@ -3061,7 +3076,7 @@ function QInputMethodEvent_create(other: QInputMethodEventH): QInputMethodEventH
 
 function QDropEvent_create(pos: PPoint; actions: QtDropActions; data: QMimeDataH; buttons: QtMouseButtons; modifiers: QtKeyboardModifiers; _type: QEventType): QDropEventH; cdecl; external QtIntf name 'QDropEvent_create';
 procedure QDropEvent_destroy(handle: QDropEventH); cdecl; external QtIntf name 'QDropEvent_destroy'; 
-function QDropEvent_pos(handle: QDropEventH): PPoint; cdecl; external QtIntf name 'QDropEvent_pos';
+procedure QDropEvent_pos(handle: QDropEventH; retval: PPoint); cdecl; external QtIntf name 'QDropEvent_pos';
 function QDropEvent_mouseButtons(handle: QDropEventH): QtMouseButtons; cdecl; external QtIntf name 'QDropEvent_mouseButtons';
 function QDropEvent_keyboardModifiers(handle: QDropEventH): QtKeyboardModifiers; cdecl; external QtIntf name 'QDropEvent_keyboardModifiers';
 function QDropEvent_possibleActions(handle: QDropEventH): QtDropActions; cdecl; external QtIntf name 'QDropEvent_possibleActions';
@@ -3095,8 +3110,8 @@ function QHelpEvent_x(handle: QHelpEventH): Integer; cdecl; external QtIntf name
 function QHelpEvent_y(handle: QHelpEventH): Integer; cdecl; external QtIntf name 'QHelpEvent_y';
 function QHelpEvent_globalX(handle: QHelpEventH): Integer; cdecl; external QtIntf name 'QHelpEvent_globalX';
 function QHelpEvent_globalY(handle: QHelpEventH): Integer; cdecl; external QtIntf name 'QHelpEvent_globalY';
-function QHelpEvent_pos(handle: QHelpEventH): PPoint; cdecl; external QtIntf name 'QHelpEvent_pos';
-function QHelpEvent_globalPos(handle: QHelpEventH): PPoint; cdecl; external QtIntf name 'QHelpEvent_globalPos';
+procedure QHelpEvent_pos(handle: QHelpEventH; retval: PPoint); cdecl; external QtIntf name 'QHelpEvent_pos';
+procedure QHelpEvent_globalPos(handle: QHelpEventH; retval: PPoint); cdecl; external QtIntf name 'QHelpEvent_globalPos';
 
 function QStatusTipEvent_create(tip: PWideString): QStatusTipEventH; cdecl; external QtIntf name 'QStatusTipEvent_create';
 procedure QStatusTipEvent_destroy(handle: QStatusTipEventH); cdecl; external QtIntf name 'QStatusTipEvent_destroy'; 
@@ -9264,28 +9279,10 @@ begin
 end;
 
 // WideString Helpers
-procedure CopyUnicodeToPWideString(Unicode: PWideChar; var S: WideString;
-  Len: Integer); cdecl; export;
-{$IFDEF LINUX}
-begin
-  try
-   SetLength(S, Len);
-  except
-    Exit;
-  end;
-  Move(Unicode[0],S[1],Len*2);
-end;
-{$ENDIF}
-{$IFDEF MSWINDOWS}
+procedure CopyUnicodeToPWideString(Unicode: PWideChar; var S: WideString; Len: Integer); cdecl; export;
 begin
   SetString(S, Unicode, Len);
 end;
-{$ENDIF}
-{$IFDEF DARWIN}
-begin
-  SetString(S, Unicode, Len);
-end;
-{$ENDIF}
 
 
 function UnicodeOfPWideString(var S: WideString): PWideChar; cdecl; export;

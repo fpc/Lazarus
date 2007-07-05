@@ -1049,7 +1049,7 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   
-  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  QMouseEvent_pos(QMouseEventH(Event), @MousePos);
   Msg.Keys := 0;
   
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
@@ -1134,7 +1134,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   
-  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  QMouseEvent_pos(QMouseEventH(Event), @MousePos);
 
   //QCursor_pos(@MousePos);
 
@@ -1163,7 +1163,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
-  MousePos := QWheelEvent_pos(QWheelEventH(Event))^;
+  QWheelEvent_pos(QWheelEventH(Event), @MousePos);
 
   Msg.Msg := LM_MOUSEWHEEL;
 
