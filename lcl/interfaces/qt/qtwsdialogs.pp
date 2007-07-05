@@ -323,7 +323,8 @@ begin
   AQtColor := QColor_create(ARgb);
   try
     QColor_toRgb(AQtColor, @AColor);
-    TQColorToColorRef(AColor, TColorDialog(ACommonDialog).Color);
+    TQColorToColorRef(AColor, ARefColor);
+    TColorDialog(ACommonDialog).Color := ARefColor;
   finally
     QColor_destroy(AQtColor);
   end;
