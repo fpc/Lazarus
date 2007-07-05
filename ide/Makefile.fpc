@@ -201,8 +201,8 @@ cleanide:
         -$(DEL) $(wildcard ../doceditor/*$(OEXT))
         -$(DEL) $(wildcard ../doceditor/*$(PPUEXT))
 ifeq ($(OS_TARGET), win32)
-        -$(DEL) $(wildcard *.res)
-        -$(DEL) lazarus.owr
+        -$(DEL) lazarus.res startlazarus.res)
+        -$(DEL) lazarus.or startlazarus.or
 endif
 
 cleanlaz: clean cleanide
