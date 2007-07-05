@@ -271,7 +271,6 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
-LCL_PLATFORM=win32
 LAZARUS_OPT+= -WG
 BIG_IDE_OPTIONS+= -WG
 endif
@@ -3834,7 +3833,7 @@ cleanide:
 	-$(DEL) $(wildcard ../doceditor/*$(OEXT))
 	-$(DEL) $(wildcard ../doceditor/*$(PPUEXT))
 ifeq ($(OS_TARGET), win32)
-	-$(DEL) lazarus.res startlazarus.res)
+	-$(DEL) lazarus.res startlazarus.res
 	-$(DEL) lazarus.or startlazarus.or
 endif
 cleanlaz: clean cleanide
