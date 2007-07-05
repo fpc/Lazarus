@@ -502,6 +502,7 @@ type
 
   TQtMenu = class(TQtWidget)
   private
+    FIcon: QIconH;
   public
     constructor Create(const AParent: QWidgetH); overload;
     constructor Create(const AHandle: QMenuH); overload;
@@ -511,6 +512,8 @@ type
     function addAction(text: PWideString): TQtAction;
     function addMenu(title: PWideString): TQtMenu;
     function addSeparator: TQtAction;
+    procedure setIcon(AIcon: QIconH);
+    procedure setImage(AImage: TQtImage);
   end;
 
   { TQtMenuBar }
@@ -4057,15 +4060,19 @@ end;
 constructor TQtMenu.Create(const AParent: QWidgetH);
 begin
   Widget := QMenu_Create(AParent);
+  FIcon := nil;
 end;
 
 constructor TQtMenu.Create(const AHandle: QMenuH);
 begin
   Widget := AHandle;
+  FIcon := nil;
 end;
 
 destructor TQtMenu.Destroy;
 begin
+  if FIcon <> nil then
+    QIcon_destroy(FIcon);
   inherited Destroy;
 end;
 
@@ -4087,6 +4094,27 @@ end;
 function TQtMenu.addSeparator: TQtAction;
 begin
   Result := TQtAction.Create(QMenu_addSeparator(QMenuH(Widget)));
+end;
+
+procedure TQtMenu.setIcon(AIcon: QIconH);
+begin
+  QMenu_setIcon(QMenuH(Widget), AIcon)
+end;
+
+procedure TQtMenu.setImage(AImage: TQtImage);
+begin
+  if FIcon <> nil then
+  begin
+    QIcon_destroy(FIcon);
+    FIcon := nil;
+  end;
+
+  if AImage <> nil then
+    FIcon := AImage.AsIcon()
+  else
+    FIcon := QIcon_create();
+    
+  setIcon(FIcon);
 end;
 
 { TQtMenuBar }

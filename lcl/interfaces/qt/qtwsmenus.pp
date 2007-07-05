@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets, qtobjects,
   // LCL
-  SysUtils, Classes, Menus, Forms, LCLType, LCLProc,
+  SysUtils, Classes, Menus, Forms, LCLType, LCLProc, Graphics,
   // Widgetset
   WSMenus, WSLCLClasses;
 
@@ -57,6 +57,7 @@ type
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
   end;
 
   { TQtWSMenu }
@@ -97,7 +98,7 @@ implementation
  ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
-
+  // set proper position
 end;
 
 {------------------------------------------------------------------------------
@@ -166,6 +167,9 @@ begin
 
       Menu := MenuBar.addMenu(@Text);
 
+      if AMenuItem.HasIcon then
+        Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+
       Result := HMENU(Menu);
     end
     else
@@ -209,6 +213,9 @@ begin
 
       Menu := ParentMenu.addMenu(@Text);
 
+      if AMenuItem.HasIcon then
+        Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+
       Result := HMENU(Menu);
     end
     else
@@ -224,6 +231,9 @@ begin
       Action.setEnabled(AMenuItem.Enabled);
 
       Action.setChecked(AMenuItem.Checked);
+      
+      if AMenuItem.HasIcon then
+        Action.setImage(TQtImage(AMenuItem.Bitmap.Handle));
 
       Result := HMENU(Action);
     end;
@@ -382,6 +392,30 @@ class function TQtWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const J
 begin
 
   Result := True;
+end;
+
+class procedure TQtWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
+  const HasIcon: Boolean; const AIcon: TBitmap);
+begin
+  if AMenuItem.HasParent then
+  begin
+    { Here the menu item has a QMenuH handle}
+    if AMenuItem.Count > 0 then
+    begin
+      if HasIcon then
+        TQtMenu(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
+      else
+        TQtMenu(AMenuItem.Handle).setImage(nil);
+    end
+    { Here the menu item has a QActionH handle }
+    else
+    begin
+      if HasIcon then
+        TQtAction(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
+      else
+        TQtAction(AMenuItem.Handle).setImage(nil);
+    end;
+  end;
 end;
 
 { TQtWSMenu }

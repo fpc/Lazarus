@@ -38,6 +38,8 @@ uses
   LCLType, Menus, LCLProc, Graphics;
 
 type
+  // forward declarations
+  TQtImage = class;
 
   { TQtResource }
 
@@ -50,6 +52,7 @@ type
 
   TQtAction = class(TObject)
   private
+    FIcon: QIconH;
   public
     Handle: QActionH;
     MenuItem: TMenuItem;
@@ -62,6 +65,8 @@ type
     procedure setChecked(p1: Boolean);
     procedure setCheckable(p1: Boolean);
     procedure setEnabled(p1: Boolean);
+    procedure setIcon(const AIcon: QIconH);
+    procedure setImage(const AImage: TQtImage);
     procedure setVisible(p1: Boolean);
   end;
 
@@ -74,6 +79,7 @@ type
     constructor Create(vHandle: QImageH); overload;
     constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat); overload;
     destructor Destroy; override;
+    function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
   public
     function height: Integer;
     function width: Integer;
@@ -248,6 +254,7 @@ type
     destructor Destroy; override;
   public
     procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
+
     procedure toImage(retval: QImageH);
     class procedure fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
   end;
@@ -305,6 +312,7 @@ uses qtwidgets;
 constructor TQtAction.Create(const AHandle: QActionH);
 begin
   Handle := AHandle;
+  FIcon := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -314,6 +322,12 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtAction.Destroy;
 begin
+  if FIcon <> nil then
+    QIcon_destroy(FIcon);
+
+  if Handle <> nil then
+    QAction_destroy(Handle);
+
   inherited Destroy;
 end;
 
@@ -362,6 +376,27 @@ begin
   QAction_setEnabled(Handle, p1);
 end;
 
+procedure TQtAction.setIcon(const AIcon: QIconH);
+begin
+  QAction_setIcon(Handle, AIcon);
+end;
+
+procedure TQtAction.setImage(const AImage: TQtImage);
+begin
+  if FIcon <> nil then
+  begin
+    QIcon_destroy(FIcon);
+    FIcon := nil;
+  end;
+  
+  if AImage <> nil then
+    FIcon := AImage.AsIcon()
+  else
+    FIcon := QIcon_create();
+
+  setIcon(FIcon);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtAction.setVisible
  ------------------------------------------------------------------------------}
@@ -391,7 +426,8 @@ constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer; forma
 begin
   if Adata = nil then
     Handle := QImage_create(width, height, format)
-  else Handle := QImage_create(AData, width, height, format);
+  else
+    Handle := QImage_create(AData, width, height, format);
 
   {$ifdef VerboseQt}
     WriteLn('TQtImage.Create Result:', dbghex(PtrInt(Handle)));
@@ -414,6 +450,18 @@ begin
   if Handle <> nil then QImage_destroy(Handle);
 
   inherited Destroy;
+end;
+
+function TQtImage.AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
+var
+  APixmap: QPixmapH;
+begin
+  APixmap := QPixmap_create();
+  QPixmap_fromImage(APixmap, Handle);
+  Result := QIcon_create();
+  if Result <> nil then
+    QIcon_addPixmap(Result, APixmap, AMode, AState);
+  QPixmap_destroy(APixmap);
 end;
 
 {------------------------------------------------------------------------------
@@ -1477,7 +1525,7 @@ end;
 
 function TQtButtonGroup.GetExclusive: Boolean;
 begin
-  QButtonGroup_exclusive(Handle);
+  Result := QButtonGroup_exclusive(Handle);
 end;
 
 procedure TQtButtonGroup.SignalButtonClicked(AButton: QAbstractButtonH); cdecl;

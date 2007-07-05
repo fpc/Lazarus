@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Menus,
+  Menus, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, LCLType;
 
@@ -62,6 +62,7 @@ type
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; virtual;
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; virtual;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; virtual;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); virtual;
   end;
   TWSMenuItemClass = class of TWSMenuItem;
 
@@ -136,6 +137,12 @@ end;
 class function TWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
   Result := false;
+end;
+
+class procedure TWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap);
+begin
+  // emulate old behaviour
+  AMenuItem.RecreateHandle;
 end;
 
 

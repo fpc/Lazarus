@@ -623,6 +623,7 @@ class function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
 begin
   UpdateCaption(AMenuItem, aMenuItem.Caption);
+  Result := Checked;
 end;
 
 class procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;

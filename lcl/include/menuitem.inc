@@ -576,7 +576,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.HasIcon: boolean;
 begin
-  Result:=(FBitmap<>nil) or ((ImageIndex>=0) and (GetImageList<>nil));
+  Result := (FBitmap <> nil) or ((ImageIndex >= 0) and (GetImageList <> nil));
 end;
 
 {------------------------------------------------------------------------------
@@ -989,14 +989,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetBitmap(const AValue: TBitmap);
 begin
-  if FBitmap=AValue then exit;
-  if AValue<>nil then begin
-    Bitmap.Assign(AValue);
-  end else begin
-    FBitmap.Free;
-    FBitmap:=nil;
-  end;
-  if HandleAllocated then RecreateHandle;
+  if FBitmap = AValue then
+    exit;
+
+  if AValue <> nil then
+    Bitmap.Assign(AValue)
+  else
+    FreeAndNil(FBitmap);
+
+  if HandleAllocated then
+    if HasIcon then // prevent creating bitmap
+      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, Bitmap)
+    else
+      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, nil);
+
   MenuChanged(False);
 end;
 
@@ -1114,10 +1120,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetImageIndex(Value: Integer);
 begin
-  if FImageIndex = Value then exit;
+  if FImageIndex = Value then
+    exit;
   //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
-  if HandleAllocated then RecreateHandle;
+
+  if FImageIndex = -1 then
+    FreeAndNil(FBitmap);
+    
+  if HandleAllocated then
+    if HasIcon then // prevent creating bitmap
+      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, Bitmap)
+    else
+      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, nil);
+
   MenuChanged(False);
   //TODO: TMenuItem.SetImageIndex
 end;
