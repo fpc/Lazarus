@@ -272,12 +272,11 @@ begin
     decoration := [];
   Result := StringSize(CompleteMenuItemCaption(aMenuItem), aHDC, decoration);
 
+  inc(Result.cx, CheckSpace(aMenuItem));
   IconWidth := MenuIconWidth(aMenuItem);
-  if IconWidth <> 0 then
-    Inc(Result.cx,  IconWidth + CheckSpace(aMenuItem) + (2 * spaceBetweenIcons))
-  else
-    Inc(Result.cx, CheckSpace(aMenuItem) + spaceBetweenIcons);
-    
+  if not aMenuItem.IsInMenuBar or (IconWidth <> 0) then
+    Inc(Result.cx,  IconWidth + (2 * spaceBetweenIcons));
+
   if aMenuItem.ShortCut <> scNone then
     Inc(Result.cx, spaceBetweenIcons);
 	
@@ -301,10 +300,10 @@ var
   IconWidth: Integer;
 begin
   IconWidth := MenuIconWidth(AMenuItem);
-  if IconWidth = 0 then
-    Result := CheckSpace(aMenuItem) + spaceBetweenIcons
-  else
-    Result := IconWidth + CheckSpace(aMenuItem) + 2 * SpaceBetweenIcons;
+  Result := CheckSpace(aMenuItem) + SpaceBetweenIcons;
+
+  if not aMenuItem.IsInMenuBar or (IconWidth <> 0) then
+    inc(Result, IconWidth + SpaceBetweenIcons);
 end;
 
 function TopPosition(const aMenuItemHeight: integer; const anElementHeight: integer): integer;
