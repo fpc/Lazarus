@@ -2510,7 +2510,9 @@ begin
   and not (csNoDesignVisible in ControlStyle)))
   then begin
     Rect := BoundsRect;
-    //DebugLn(['TControl.InvalidateControl Rect=',dbgs(Rect)]);
+    {$IFDEF VerboseBug1152}
+    DebugLn(['TControl.InvalidateControl ',DbgSName(Self),' Rect=',dbgs(Rect)]);
+    {$ENDIF}
     InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;

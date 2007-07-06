@@ -486,6 +486,9 @@ var
   SIndex : Longint;
   TMP : String;
 begin
+  {$IFDEF VerboseBug1152}
+  DebugLn(['TCustomSpeedButton.Paint ',DbgSName(Self)]);
+  {$ENDIF}
   UpdateState(false);
   if FGlyph=nil then exit;
 
