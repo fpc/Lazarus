@@ -2210,7 +2210,7 @@ begin
       For I := 0 to OpenDialog.Files.Count-1 do
         Begin
           AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
-          if i<OpenDialog.Files.Count then
+          if i<OpenDialog.Files.Count-1 then
             Include(OpenFlags,ofMultiOpen)
           else
             Exclude(OpenFlags,ofMultiOpen);

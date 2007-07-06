@@ -350,6 +350,10 @@ begin
       For I := 0 to OpenDialog.Files.Count-1 do
         Begin
           AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
+          if i<OpenDialog.Files.Count-1 then
+            Include(OpenFlags,pofMultiOpen)
+          else
+            Exclude(OpenFlags,pofMultiOpen);
           if DoOpenPackageFile(AFilename,OpenFlags)=mrAbort then begin
             break;
           end;
@@ -2250,6 +2254,16 @@ var
   APackage: TLazPackage;
   XMLConfig: TXMLConfig;
   AlternativePkgName: String;
+  
+  procedure DoQuestionDlg(const Caption, Message: string);
+  begin
+    if pofMultiOpen in Flags then
+      Result:=IDEQuestionDialog(Caption, Message,
+        mtError, [mrIgnore, lisPkgMangSkipThisPackage, mrAbort])
+    else
+      Result:=IDEQuestionDialog(Caption, Message,
+        mtError,[mrAbort])
+  end;
 begin
   // replace macros
   if pofConvertMacros in Flags then begin
@@ -2260,9 +2274,8 @@ begin
   
   // check file extension
   if CompareFileExt(AFilename,'.lpk',false)<>0 then begin
-    Result:=IDEMessageDialog(lisPkgMangInvalidFileExtension,
-      Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']),
-      mtError,[mbCancel,mbAbort]);
+    DoQuestionDlg(lisPkgMangInvalidFileExtension,
+      Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
     SetRecentPackagesMenu;
     exit;
@@ -2272,10 +2285,9 @@ begin
   AlternativePkgName:=ExtractFileNameOnly(AFilename);
   if (AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)) then
   begin
-    Result:=IDEMessageDialog(lisPkgMangInvalidPackageFilename,
+    DoQuestionDlg(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
-        AlternativePkgName, '"', #13, '"', AFilename, '"']),
-      mtError,[mbCancel,mbAbort]);
+        AlternativePkgName, '"', #13, '"', AFilename, '"']));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
     SetRecentPackagesMenu;
     exit;
@@ -2319,10 +2331,9 @@ begin
         end;
       except
         on E: Exception do begin
-          Result:=IDEMessageDialog(lisPkgMangErrorReadingPackage,
+          DoQuestionDlg(lisPkgMangErrorReadingPackage,
             Format(lisPkgUnableToReadPackageFileError, ['"', AFilename, '"',
-              #13, E.Message]),
-            mtError,[mbAbort,mbCancel]);
+              #13, E.Message]));
           exit;
         end;
       end;

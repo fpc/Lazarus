@@ -2613,6 +2613,7 @@ resourcestring
     +'sources.%s%sIt only means: It is a bad idea to open the forms for '
     +'designing, before installing the missing packages.%s%s';
   lisPackageNeedsInstallation = 'Package needs installation';
+  lisPkgMangSkipThisPackage = 'Skip this package';
   lisPkgMangInvalidFileExtension = 'Invalid file extension';
   lisPkgMangTheFileIsNotALazarusPackage = 'The file %s%s%s is not a lazarus '
     +'package.';

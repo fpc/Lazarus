@@ -147,7 +147,8 @@ const
   PkgOpenFlagNames: array[TPkgOpenFlag] of string = (
     'pofAddToRecent',
     'pofRevert',
-    'pofConvertMacros'
+    'pofConvertMacros',
+    'pofMultiOpen'
     );
 
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;

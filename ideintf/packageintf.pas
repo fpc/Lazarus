@@ -37,9 +37,10 @@ type
   TPkgSaveFlags = set of TPkgSaveFlag;
 
   TPkgOpenFlag = (
-    pofAddToRecent,  // add file to recent files
-    pofRevert,       // reload file if already open
-    pofConvertMacros // replace macros in filename
+    pofAddToRecent,   // add file to recent files
+    pofRevert,        // reload file if already open
+    pofConvertMacros, // replace macros in filename
+    pofMultiOpen      // set during loading multiple files
     );
   TPkgOpenFlags = set of TPkgOpenFlag;
 
