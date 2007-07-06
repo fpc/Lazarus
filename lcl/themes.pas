@@ -1944,6 +1944,7 @@ procedure TThemeServices.DrawText(ACanvas: TPersistent;
 var
   Canvas: TCanvas absolute ACanvas;
   TXTStyle: TTextStyle;
+  OldColor: TColor;
 begin
   TXTStyle := Canvas.TextStyle;
   TXTStyle.Opaque := False;
@@ -1968,6 +1969,7 @@ begin
     // set color here, otherwise SystemFont is wrong if the button was disabled before
   TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
 
+  OldColor := Canvas.Font.Color;
   if IsDisabled(Details) then
   begin
     Canvas.Font.Color := clBtnHighlight;
@@ -1986,6 +1988,7 @@ begin
     end;
   end;
   Canvas.TextRect(R, R.Left, R.Top, S, TXTStyle);
+  Canvas.Font.Color := OldColor;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
