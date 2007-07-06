@@ -5067,15 +5067,13 @@ end;
 procedure TWinControl.WMMouseWheel(var Message: TLMMouseEvent);
 Var
   MousePos : TPoint;
-  Shift : TShiftState;
 begin
   Assert(False, Format('Trace: [TWinControl.LMMouseWheel] %s', [ClassName]));
 
   MousePos.X := Message.X;
   MousePos.Y := Message.Y;
-  Shift := Message.State;
 
-  if DoMouseWheel(Shift, Message.WheelDelta, MousePos) then
+  if DoMouseWheel(Message.State, Message.WheelDelta, MousePos) then
     Message.Result := 1
   else
     inherited;
