@@ -535,7 +535,9 @@ begin
     //DebugLn(['TGtk2WidgetSet.UpdateWindow DRAWING']);
     gtk_widget_queue_draw(CurWidget);
     gdk_window_process_updates(CurWidget^.window,TRUE);
-  end;
+    Result:=true;
+  end else
+    Result:=false;
 end;
 
 //##apiwiz##eps##   // Do not remove

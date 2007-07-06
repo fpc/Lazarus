@@ -2500,6 +2500,7 @@ var
   end;
 
 begin
+  //DebugLn(['TControl.InvalidateControl ',DbgSName(Self)]);
   if (Parent=nil) or (not Parent.HandleAllocated)
   or ([csLoading,csDestroying]*Parent.ComponentState<>[])
   then exit;
@@ -2509,6 +2510,7 @@ begin
   and not (csNoDesignVisible in ControlStyle)))
   then begin
     Rect := BoundsRect;
+    //DebugLn(['TControl.InvalidateControl Rect=',dbgs(Rect)]);
     InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;
@@ -2521,6 +2523,7 @@ end;
 procedure TControl.InvalidateControl(CtrlIsVisible, CtrlIsOpaque,
   IgnoreWinControls: Boolean);
 begin
+  //DebugLn(['TControl.InvalidateControl ',DbgSName(Self)]);
   if IgnoreWinControls and (Self is TWinControl) then exit;
   InvalidateControl(CtrlIsVisible,CtrlIsOpaque);
 end;
