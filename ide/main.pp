@@ -1391,7 +1391,7 @@ procedure TMainIDE.SetupSpeedButtons;
       B.Free;
       NumGlyphs := ANumGlyphs;
       Flat := True;
-      //Transparent:=True;
+      //Transparent:=true;
       if mfTop in AMoveFlags then Inc(ATop, Height);
       if mfLeft in AMoveFlags then Inc(ALeft, Width);
       Hint := AHint;

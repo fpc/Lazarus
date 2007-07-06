@@ -45,6 +45,8 @@ function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
-   
+
+function UpdateWindow(Handle: HWND): Boolean; override;
+
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

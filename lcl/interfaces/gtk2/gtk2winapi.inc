@@ -525,6 +525,19 @@ begin
   end;
 end;
 
+function TGtk2WidgetSet.UpdateWindow(Handle: HWND): Boolean;
+var
+  CurWidget: PGtkWidget;
+begin
+  CurWidget:=PGTKWidget(Handle);
+  //DebugLn(['TGtk2WidgetSet.UpdateWindow ',GetWidgetDebugReport(CurWidget)]);
+  if GTK_WIDGET_DRAWABLE(CurWidget) then begin
+    //DebugLn(['TGtk2WidgetSet.UpdateWindow DRAWING']);
+    gtk_widget_queue_draw(CurWidget);
+    gdk_window_process_updates(CurWidget^.window,TRUE);
+  end;
+end;
+
 //##apiwiz##eps##   // Do not remove
 
 {$IfDef ASSERT_IS_ON}
