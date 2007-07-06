@@ -108,8 +108,7 @@ var
   Names: TStringList;
   Graphic: TGraphic;
   GraphicClass: TGraphicClass;
-  Res: TLResource;
-  Stream: TStream;
+  Stream: TLazarusResourceStream;
 begin
   Result := GetImageIndex(ImageSize, ImageName);
   if Result = -1 then
@@ -131,29 +130,26 @@ begin
     
     if List <> nil then
     begin
-      Res := LazarusResources.Find(ImageName);
-      if (Res <> nil) and (Res.Value <> '') then
-      begin
-        GraphicClass := GetGraphicClassForFileExtension(Res.ValueType);
-        if GraphicClass <> nil then
+      try
+        Stream := TLazarusResourceStream.Create(ImageName, nil);
+        if (Stream.Res <> nil) then
         begin
-          Graphic := GraphicClass.Create;
-          if Graphic is TBitmap then
-          try
-            Stream := TMemoryStream.Create;
+          GraphicClass := GetGraphicClassForFileExtension(Stream.Res.ValueType);
+          if GraphicClass <> nil then
+          begin
+            Graphic := GraphicClass.Create;
+            if Graphic is TBitmap then
             try
-              Stream.Write(Res.Value[1], length(Res.Value));
-              Stream.Position := 0;
               Graphic.LoadFromStream(Stream);
               Result := List.Add(TBitmap(Graphic), nil);
               Names.AddObject(ImageName, TObject(PtrInt(Result)));
             finally
-              Stream.Free;
+              Graphic.Free;
             end;
-          finally
-            Graphic.Free;
           end;
         end;
+        Stream.Free;
+      except
       end;
     end;
   end;

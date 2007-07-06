@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts,
-  LazConfigStorage;
+  LazConfigStorage, RtlConsts;
 
 type
   { TLResourceList }
@@ -64,11 +64,25 @@ type
     destructor Destroy;  override;
     procedure Add(const Name, ValueType, Value: AnsiString);
     procedure Add(const Name, ValueType: AnsiString; const Values: array of string);
-    function Find(const Name: AnsiString):TLResource;
+    function Find(const Name: AnsiString): TLResource; overload;
+    function Find(const Name, ValueType: AnsiString): TLResource; overload;
     function Count: integer;
     property Items[Index: integer]: TLResource read GetItems;
   end;
-  
+
+  { TLazarusResourceStream }
+
+  TLazarusResourceStream = class(TCustomMemoryStream)
+  private
+    FRes: TLResource;
+    procedure Initialize(Name, ResType: PChar);
+  public
+    constructor Create(const ResName: string; ResType: PChar);
+    constructor CreateFromID(ResID: Integer; ResType: PChar);
+    function Write(const Buffer; Count: Longint): Longint; override;
+    property Res: TLResource read FRes;
+  end;
+
 {$IFDEF TRANSLATESTRING}
   { TAbstractTranslator}
   TAbstractTranslator = class(TObject)//Should it be somewhat more than TObject?
@@ -1111,15 +1125,16 @@ end;
 
 constructor TLResourceList.Create;
 begin
-  FList:=TList.Create;
-  FMergeList:=TList.Create;
-  FSortedCount:=0;
+  FList := TList.Create;
+  FMergeList := TList.Create;
+  FSortedCount := 0;
 end;
 
 destructor TLResourceList.Destroy;
-var a:integer;
+var
+  a: integer;
 begin
-  for a:=0 to FList.Count-1 do
+  for a := 0 to FList.Count - 1 do
     TLResource(FList[a]).Free;
   FList.Free;
   FMergeList.Free;
@@ -1133,36 +1148,37 @@ begin
     Result:=0;
 end;
 
-procedure TLResourceList.Add(const Name,ValueType: AnsiString;
+procedure TLResourceList.Add(const Name, ValueType: AnsiString;
   const Values: array of string);
 var
   NewLResource: TLResource;
   i, TotalLen, ValueCount, p: integer;
 begin
-  NewLResource:=TLResource.Create;
-  NewLResource.Name:=Name;
-  NewLResource.ValueType:=uppercase(ValueType);
+  NewLResource := TLResource.Create;
+  NewLResource.Name := Name;
+  NewLResource.ValueType := uppercase(ValueType);
   
-  ValueCount:=High(Values)-Low(Values)+1;
+  ValueCount := High(Values) - Low(Values) + 1;
   case ValueCount of
     0:
       begin
         NewLResource.Free;
         exit;
       end;
-    
-    1: NewLResource.Value:=Values[0];
+    1:
+      NewLResource.Value:=Values[0];
   else
-    TotalLen:=0;
-    for i:=Low(Values) to High(Values) do begin
-      inc(TotalLen,length(Values[i]));
-    end;
-    SetLength(NewLResource.Value,TotalLen);
-    p:=1;
-    for i:=Low(Values) to High(Values) do begin
-      if length(Values[i])>0 then begin
-        Move(Values[i][1],NewLResource.Value[p],length(Values[i]));
-        inc(p,length(Values[i]));
+    TotalLen := 0;
+    for i := Low(Values) to High(Values) do
+      inc(TotalLen, length(Values[i]));
+    SetLength(NewLResource.Value, TotalLen);
+    p := 1;
+    for i := Low(Values) to High(Values) do
+    begin
+      if length(Values[i]) > 0 then
+      begin
+        Move(Values[i][1], NewLResource.Value[p], length(Values[i]));
+        inc(p, length(Values[i]));
       end;
     end;
   end;
@@ -1170,27 +1186,60 @@ begin
   FList.Add(NewLResource);
 end;
 
-function TLResourceList.Find(const Name:AnsiString):TLResource;
+function TLResourceList.Find(const Name: AnsiString):TLResource;
 var
   P: Integer;
 begin
   P := FindPosition(Name);
   if P >= 0 then
-    Result:=TLResource(FList[P])
+    Result := TLResource(FList[P])
   else
-    Result:=nil;
+    Result := nil;
+end;
+
+function TLResourceList.Find(const Name, ValueType: AnsiString): TLResource;
+var
+  P, I: Integer;
+begin
+  P := FindPosition(Name);
+  if P >= 0 then
+  begin
+    // Since we can have many resources that have the same name but different type
+    // we should look before and after found position (dont forget that we are searching
+    // them by dividing intervals)
+  
+    // look before position
+    for I := P - 1 downto 0 do
+    begin
+      Result := TLResource(FList[I]);
+      if (Result.Name = Name) and (Result.ValueType = ValueType) then
+        Exit;
+    end;
+    // look from position
+    for I := P to FList.Count - 1 do
+    begin
+      Result := TLResource(FList[I]);
+      if (Result.Name = Name) and (Result.ValueType = ValueType) then
+        Exit;
+    end;
+    Result := nil;
+  end
+  else
+    Result := nil;
 end;
 
 function TLResourceList.FindPosition(const Name: AnsiString): Integer;
-var L,R,C: Integer;
+var
+  L, R, C: Integer;
 begin
   if FSortedCount < FList.Count then
     Sort;
   L := 0;
   R := FList.Count-1;
-  while (L <= R) do begin
-    Result:=(L + R) shr 1;
-    C := AnsiCompareText(Name,TLResource(FList[Result]).Name);
+  while (L <= R) do
+  begin
+    Result := (L + R) shr 1;
+    C := AnsiCompareText(Name, TLResource(FList[Result]).Name);
     if C < 0 then
       R := Result - 1
     else
@@ -1204,75 +1253,87 @@ end;
 
 function TLResourceList.GetItems(Index: integer): TLResource;
 begin
-  Result:=TLResource(FList[Index]);
+  Result := TLResource(FList[Index]);
 end;
 
 procedure TLResourceList.Sort;
 begin
-  if FSortedCount=FList.Count then exit;
+  if FSortedCount = FList.Count then
+    exit;
   // sort the unsorted elements
-  FMergeList.Count:=FList.Count;
-  MergeSort(FList,FMergeList,FSortedCount,FList.Count-1);
+  FMergeList.Count := FList.Count;
+  MergeSort(FList, FMergeList, FSortedCount, FList.Count - 1);
   // merge both
-  Merge(FList,FMergeList,0,FSortedCount,FList.Count-1);
-  FSortedCount:=FList.Count;
+  Merge(FList, FMergeList, 0, FSortedCount, FList.Count - 1);
+  FSortedCount := FList.Count;
 end;
 
-procedure TLResourceList.MergeSort(List,MergeList:TList; Pos1,Pos2:integer);
-var cmp,mid:integer;
+procedure TLResourceList.MergeSort(List, MergeList: TList; Pos1, Pos2: integer);
+var
+  cmp, mid: integer;
 begin
-  if Pos1=Pos2 then begin
-  end else if Pos1+1=Pos2 then begin
-    cmp:=AnsiCompareText(
-           TLResource(List[Pos1]).Name,TLResource(List[Pos2]).Name);
-    if cmp>0 then begin
-      MergeList[Pos1]:=List[Pos1];
-      List[Pos1]:=List[Pos2];
-      List[Pos2]:=MergeList[Pos1];
+  if Pos1 = Pos2 then
+  begin
+  end else
+  if Pos1 + 1 = Pos2 then
+  begin
+    cmp := AnsiCompareText(TLResource(List[Pos1]).Name, TLResource(List[Pos2]).Name);
+    if cmp > 0 then
+    begin
+      MergeList[Pos1] := List[Pos1];
+      List[Pos1] := List[Pos2];
+      List[Pos2] := MergeList[Pos1];
     end;
-  end else begin
-    if Pos2>Pos1 then begin
-      mid:=(Pos1+Pos2) shr 1;
-      MergeSort(List,MergeList,Pos1,mid);
-      MergeSort(List,MergeList,mid+1,Pos2);
-      Merge(List,MergeList,Pos1,mid+1,Pos2);
+  end else
+  begin
+    if Pos2 > Pos1 then
+    begin
+      mid := (Pos1 + Pos2) shr 1;
+      MergeSort(List, MergeList, Pos1, mid);
+      MergeSort(List, MergeList, mid + 1, Pos2);
+      Merge(List, MergeList, Pos1, mid + 1, Pos2);
     end;
   end;
 end;
 
-procedure TLResourceList.Merge(List,MergeList:TList;Pos1,Pos2,Pos3:integer);
+procedure TLResourceList.Merge(List, MergeList: TList; Pos1, Pos2, Pos3: integer);
 // merge two sorted arrays
 // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
-var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
+var
+  Src1Pos, Src2Pos, DestPos, cmp, a: integer;
 begin
-  if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
-  Src1Pos:=Pos2-1;
-  Src2Pos:=Pos3;
-  DestPos:=Pos3;
-  while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
-    cmp:=AnsiCompareText(
-           TLResource(List[Src1Pos]).Name,TLResource(List[Src2Pos]).Name);
-    if cmp>0 then begin
-      MergeList[DestPos]:=List[Src1Pos];
+  if (Pos1 >= Pos2) or (Pos2 > Pos3) then
+    exit;
+  Src1Pos := Pos2 - 1;
+  Src2Pos := Pos3;
+  DestPos := Pos3;
+  while (Src2Pos >= Pos2) and (Src1Pos >= Pos1) do
+  begin
+    cmp:=AnsiCompareText(TLResource(List[Src1Pos]).Name, TLResource(List[Src2Pos]).Name);
+    if cmp > 0 then
+    begin
+      MergeList[DestPos] := List[Src1Pos];
       dec(Src1Pos);
-    end else begin
-      MergeList[DestPos]:=List[Src2Pos];
+    end else
+    begin
+      MergeList[DestPos] := List[Src2Pos];
       dec(Src2Pos);
     end;
     dec(DestPos);
   end;
-  while Src2Pos>=Pos2 do begin
-    MergeList[DestPos]:=List[Src2Pos];
+  while Src2Pos >= Pos2 do
+  begin
+    MergeList[DestPos] := List[Src2Pos];
     dec(Src2Pos);
     dec(DestPos);
   end;
-  for a:=DestPos+1 to Pos3 do
-    List[a]:=MergeList[a];
+  for a := DestPos + 1 to Pos3 do
+    List[a] := MergeList[a];
 end;
 
 procedure TLResourceList.Add(const Name, ValueType, Value: AnsiString);
 begin
-  Add(Name,ValueType,[Value]);
+  Add(Name, ValueType, [Value]);
 end;
 
 //------------------------------------------------------------------------------
@@ -4379,6 +4440,38 @@ begin
   finally
     AStream.Free;
   end;
+end;
+
+{ TLazarusResourceStream }
+
+procedure TLazarusResourceStream.Initialize(Name, ResType: PChar);
+begin
+  if ResType <> nil then
+    FRes := LazarusResources.Find(Name, ResType)
+  else
+    FRes := LazarusResources.Find(Name);
+    
+  if FRes = nil then
+    raise EResNotFound.CreateFmt(SResNotFound, [Name]);
+  SetPointer(PChar(FRes.Value), Length(FRes.Value));
+end;
+
+constructor TLazarusResourceStream.Create(const ResName: string; ResType: PChar);
+begin
+  inherited Create;
+  Initialize(PChar(ResName), ResType);
+end;
+
+constructor TLazarusResourceStream.CreateFromID(ResID: Integer; ResType: PChar);
+begin
+  inherited Create;
+  Initialize(PChar(PtrInt(ResID)), ResType);
+end;
+
+function TLazarusResourceStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  Result := 0;
+  raise EStreamError.Create(SCantWriteResourceStreamError);
 end;
 
 //------------------------------------------------------------------------------

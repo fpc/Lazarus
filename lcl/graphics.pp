@@ -1474,27 +1474,24 @@ end;
 
 function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;
 var
-  Res: TLResource;
-  Stream: TStream;
+  Stream: TLazarusResourceStream;
   GraphicClass: TGraphicClass;
 begin
   Result := nil;
-  Res := LazarusResources.Find(ResourceName);
-  if (Res <> nil) and (Res.Value <> '') then
-  begin
-    GraphicClass := GetGraphicClassForFileExtension(Res.ValueType);
-    if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
+  Stream := nil;
+  try
+    Stream := TLazarusResourceStream.Create(ResourceName, nil);
+    if (Stream.Res <> nil) then
     begin
-      Result := TBitmap(GraphicClass.Create);
-      Stream := TMemoryStream.Create;
-      try
-        Stream.Write(Res.Value[1], length(Res.Value));
-        Stream.Position := 0;
+      GraphicClass := GetGraphicClassForFileExtension(Stream.Res.ValueType);
+      if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
+      begin
+        Result := TBitmap(GraphicClass.Create);
         Result.LoadFromStream(Stream);
-      finally
-        Stream.Free;
       end;
     end;
+  finally
+    Stream.Free;
   end;
 end;
 
