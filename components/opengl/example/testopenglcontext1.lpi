@@ -38,9 +38,9 @@
         <Filename Value="testopenglcontext1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestOpenGLContext1"/>
-        <CursorPos X="8" Y="10"/>
+        <CursorPos X="33" Y="15"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="142"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -60,9 +60,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk2"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
