@@ -103,7 +103,7 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..37] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..38] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -119,6 +119,7 @@ const
     'i386-netbsd-qt',
     'i386-win32-win32',
     'i386-win32-gtk2',
+    'i386-win32-qt',
     'i386-win32-fpgui',
     'i386-wince-wince',
     'i386-wince-fpgui',
@@ -4711,4 +4712,5 @@ end;
 
 
 end.
+
 
