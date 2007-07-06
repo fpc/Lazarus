@@ -7487,23 +7487,24 @@ begin
     FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID));
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID), ' Sanity=', IntToStr(Sanity));
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
                              FormatID, TimeID)<>GdkFalse
-    then
+    then begin
+      try
+        if not WaitForClipboardAnswer(c) then exit;
+        Result:=c^.Data;
+      finally
+        ClipboardSelectionData.Remove(c);
+        Dispose(c);
+      end;
       break;
+    end;
     ClipboardSelectionData.Remove(c);
     Dispose(c);
     Inc(sanity);
   until false or (sanity > 1000000);
-  try
-    if not WaitForClipboardAnswer(c) then exit;
-    Result:=c^.Data;
-  finally
-    ClipboardSelectionData.Remove(c);
-    Dispose(c);
-  end;
 end;
 
 {------------------------------------------------------------------------------
