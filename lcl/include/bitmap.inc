@@ -414,20 +414,16 @@ end;
 
 procedure TBitmap.LoadFromLazarusResource(const ResName: String);
 var
-  ms:TMemoryStream;
-  res:TLResource;
+  Stream: TLazarusResourceStream;
 begin
-  res:=LazarusResources.Find(ResName);
-  if (res=nil) or (res.Value='') or not LazarusResourceTypeValid(res.ValueType)
-  then exit;
-  ms:=TMemoryStream.Create;
+  Stream := nil;
   try
-    ms.Write(res.Value[1],length(res.Value));
-    ms.Position:=0;
-    LoadFromStream(ms);
-  finally
-    ms.Free;
-  end;
+    Stream := TLazarusResourceStream.Create(ResName, nil);
+    if LazarusResourceTypeValid(Stream.Res.ValueType) then
+      LoadFromStream(Stream);
+   finally
+     Stream.Free;
+   end;
 end;
 
 procedure TBitMap.LoadFromStream(Stream: TStream);
@@ -436,12 +432,37 @@ begin
 end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
+{var
+  Stream: TResourceStream;
+}
 begin
+{
+  Code should look like:
+  
+  Stream := nil;
+  try
+    Stream := TResourceStream.Create(Instance, ResName, RT_BITMAP);
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
+}
   DebugLn('ToDo: TBitMap.LoadFromResourceName');
 end;
 
 procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
 begin
+{
+  Code should look like:
+
+  Stream := nil;
+  try
+    Stream := TResourceStream.CreateFromID(Instance, ResID, RT_BITMAP);
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
+}
   DebugLn('ToDo: TBitMap.LoadFromResourceID');
 end;
 
