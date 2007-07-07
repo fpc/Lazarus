@@ -21,7 +21,10 @@
 unit chmreader;
 
 {$mode objfpc}{$H+}
-{$DEFINE CHM_DEBUG}
+
+//{$DEFINE CHM_DEBUG}
+{$DEFINE CHM_DEBUG_CHUNKS}
+
 interface
 
 uses
@@ -43,9 +46,12 @@ type
     function GetURL(Context: THelpContext): String;
     procedure Clear; override;
   end;
-  { TChmReader }
+  { TITSFReader }
 
-  TChmReader = class(TObject)
+  TFileEntryForEach = procedure(Name: String; Offset, UncompressedSize, Section: Integer) of object;
+
+  TITSFReader = class(TObject)
+  protected
     fStream: TStream;
     fFreeStreamOnDestroy: Boolean;
     fChmHeader: TITSFHeader;
@@ -57,7 +63,35 @@ type
     fDirectoryEntries: array of TPMGListChunkEntry;
     fCachedEntry: TPMGListChunkEntry; //contains the last entry found by ObjectExists
     fDirectoryEntriesCount: LongWord;
-    
+  private
+    procedure ReadHeader;
+    function  GetChunkType(Stream: TMemoryStream; ChunkIndex: LongInt): TPMGchunktype;
+    function  GetDirectoryChunk(Index: Integer; OutStream: TStream): Integer;
+    function  ReadPMGLchunkEntryFromStream(Stream: TMemoryStream; var PMGLEntry: TPMGListChunkEntry): Boolean;
+    function  ReadPMGIchunkEntryFromStream(Stream: TMemoryStream; var PMGIEntry: TPMGIIndexChunkEntry): Boolean;
+    procedure LookupPMGLchunk(Stream: TMemoryStream; out PMGLChunk: TPMGListChunk);
+    procedure LookupPMGIchunk(Stream: TMemoryStream; out PMGIChunk: TPMGIIndexChunk);
+
+    procedure GetSections(out Sections: TStringList);
+    function  GetBlockFromSection(SectionPrefix: String; StartPos: QWord; BlockLength: QWord): TMemoryStream;
+    function  FindBlocksFromUnCompressedAddr(var ResetTableEntry: TPMGListChunkEntry;
+       out CompressedSize: Int64; out UnCompressedSize: Int64; out LZXResetTable: TLZXResetTableArr): QWord;  // Returns the blocksize
+  public
+    constructor Create(AStream: TStream; FreeStreamOnDestroy: Boolean); virtual;
+    destructor Destroy; override;
+  public
+    ChmLastError: LongInt;
+    function IsValidFile: Boolean;
+    procedure GetCompleteFileList(ForEach: TFileEntryForEach);
+    function ObjectExists(Name: String): QWord; // zero if no. otherwise it is the size of the object
+                                                // NOTE directories will return zero size even if they exist
+    function GetObject(Name: String): TMemoryStream; // YOU must Free the stream
+  end;
+  
+  { TChmReader }
+
+  TChmReader = class(TITSFReader)
+  protected
     fDefaultPage: String;
     fIndexFile: String;
     fTOCFile: String;
@@ -66,28 +100,11 @@ type
     fContextList: TContextList;
     fLocaleID: DWord;
   private
-    procedure ReadHeader;
     procedure ReadCommonData;
-    function  GetChunkType(Stream: TMemoryStream; ChunkIndex: LongInt): TPMGchunktype;
-    procedure LookupPMGLchunk(Stream: TMemoryStream; ChunkIndex: LongInt; out PMGLChunk: TPMGListChunk);
-    function  ReadPMGLchunkEntryFromStream(Stream: TMemoryStream; var PMGLEntry: TPMGListChunkEntry): Boolean;
-    procedure LookupPMGIchunk(Stream: TMemoryStream; ChunkIndex: LongInt; out PMGIChunk: TPMGIIndexChunk);
-    function  ReadPMGIchunkEntryFromStream(Stream: TMemoryStream; var PMGIEntry: TPMGIIndexChunkEntry): Boolean;
-    procedure FillDirectoryEntries(StartCount: Integer);
-    procedure GetSections(out Sections: TStringList);
-    function  GetBlockFromSection(SectionPrefix: String; StartPos: QWord; BlockLength: QWord): TMemoryStream;
-    function  FindBlocksFromUnCompressedAddr(var ResetTableEntry: TPMGListChunkEntry;
-       out CompressedSize: Int64; out UnCompressedSize: Int64; out LZXResetTable: TLZXResetTableArr): QWord;  // Returns the blocksize
   public
-    constructor Create(AStream: TStream; FreeStreamOnDestroy: Boolean);
+    constructor Create(AStream: TStream; FreeStreamOnDestroy: Boolean); override;
     destructor Destroy; override;
   public
-    ChmLastError: LongInt;
-    function IsValidFile: Boolean;
-    procedure GetCompleteFileList(var Strings: TStrings);
-    function ObjectExists(Name: String): QWord; // zero if no. otherwise it is the size of the object
-                                                // NOTE directories will return zero size even if they exist
-    function GetObject(Name: String): TMemoryStream; // YOU must Free the stream
     function GetContextUrl(Context: THelpContext): String;
     function HasContextList: Boolean;
     property DefaultPage: String read fDefaultPage;
@@ -116,7 +133,7 @@ type
     procedure SetOnOpenNewFile(AValue: TChmFileOpenEvent);
   public
     constructor Create(PrimaryFileName: String);
-    destructor Destroy;
+    destructor Destroy; override;
     function GetObject(Name: String): TMemoryStream;
     function IsAnOpenFile(AFileName: String): Boolean;
     function ObjectExists(Name: String; fChm: TChmReader = nil): QWord;
@@ -149,9 +166,20 @@ begin
   end;
 end;
 
-{ TChmReader }
+function ChunkType(Stream: TMemoryStream): TPMGchunktype;
+var
+  ChunkID: array[0..3] of char;
+begin
+  Result := ctUnknown;
+  if Stream.Size< 4 then exit;
+  Move(Stream.Memory^, ChunkId[0], 4);
+  if ChunkID = 'PMGL' then Result := ctPMGL
+  else if ChunkID = 'PMGI' then Result := ctPMGI;
+end;
 
-procedure TChmReader.ReadHeader;
+{ TITSFReader }
+
+procedure TITSFReader.ReadHeader;
 var
 fHeaderEntries: array [0..1] of TITSFHeaderEntry;
 begin
@@ -199,6 +227,10 @@ begin
     //GUID: TGuid;
     LengthAgain := LEtoN(LengthAgain);
   end;
+  {$ENDIF}
+  {$IFDEF CHM_DEBUG}
+  WriteLn('PMGI depth = ', fDirectoryHeader.IndexTreeDepth);
+  WriteLn('PMGI Root =  ', fDirectoryHeader.IndexOfRootChunk);
   {$ENDIF}
   fDirectoryEntriesStartPos := fStream.Position;
   fDirectoryHeaderLength := LEtoN(fHeaderEntries[1].Length);
@@ -397,7 +429,22 @@ begin
    {$ENDIF}
 end;
 
-function TChmReader.GetChunkType(Stream: TMemoryStream; ChunkIndex: LongInt): TPMGchunktype;
+constructor TChmReader.Create(AStream: TStream; FreeStreamOnDestroy: Boolean);
+begin
+  inherited Create(AStream, FreeStreamOnDestroy);
+  if not IsValidFile then exit;
+
+  fContextList := TContextList.Create;
+  ReadCommonData;
+end;
+
+destructor TChmReader.Destroy;
+begin
+  fContextList.Free;
+  inherited Destroy;
+end;
+
+function TITSFReader.GetChunkType(Stream: TMemoryStream; ChunkIndex: LongInt): TPMGchunktype;
 var
   Sig: array[0..3] of char;
 begin
@@ -409,9 +456,19 @@ begin
   else if Sig = 'PMGI' then Result := ctPMGI;
 end;
 
-procedure TChmReader.LookupPMGLchunk(Stream: TMemoryStream; ChunkIndex: LongInt; out PMGLChunk: TPMGListChunk);
+function TITSFReader.GetDirectoryChunk(Index: Integer; OutStream: TStream): Integer;
 begin
-  Stream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * ChunkIndex);
+  Result := Index;
+  fStream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * Index);
+  OutStream.Position := 0;
+  OutStream.Size := fDirectoryHeader.ChunkSize;
+  OutStream.CopyFrom(fStream, fDirectoryHeader.ChunkSize);
+  OutStream.Position := 0;
+end;
+
+procedure TITSFReader.LookupPMGLchunk(Stream: TMemoryStream; out PMGLChunk: TPMGListChunk);
+begin
+  //Stream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * ChunkIndex);
   Stream.Read(PMGLChunk, SizeOf(PMGLChunk));
   {$IFDEF ENDIAN_BIG}
   with PMGLChunk do begin
@@ -423,7 +480,7 @@ begin
   {$ENDIF}
 end;
 
-function TChmReader.ReadPMGLchunkEntryFromStream(Stream: TMemoryStream; var PMGLEntry: TPMGListChunkEntry): Boolean;
+function TITSFReader.ReadPMGLchunkEntryFromStream(Stream: TMemoryStream; var PMGLEntry: TPMGListChunkEntry): Boolean;
 var
 Buf: array [0..1023] of char;
 NameLength: LongInt;
@@ -431,9 +488,9 @@ begin
   Result := False;
   //Stream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * ChunkIndex);
   NameLength := LongInt(GetCompressedInteger(Stream));
-  if NameLength > 1023 then NameLength := 1023;
-  Stream.Read(buf, NameLength);
 
+  if NameLength > 1022 then NameLength := 1022;
+  Stream.Read(buf[0], NameLength);
   buf[NameLength] := #0;
   PMGLEntry.Name := buf;
   PMGLEntry.ContentSection := LongWord(GetCompressedInteger(Stream));
@@ -443,10 +500,9 @@ begin
   Result := True;
 end;
 
-procedure TChmReader.LookupPMGIchunk(Stream: TMemoryStream; ChunkIndex: LongInt; out
-  PMGIChunk: TPMGIIndexChunk);
+procedure TITSFReader.LookupPMGIchunk(Stream: TMemoryStream; out PMGIChunk: TPMGIIndexChunk);
 begin
-  Stream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * ChunkIndex);
+  //Stream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * ChunkIndex);
   Stream.Read(PMGIChunk, SizeOf(PMGIChunk));
   {$IFDEF ENDIAN_BIG}
   with PMGIChunk do begin
@@ -455,7 +511,7 @@ begin
   {$ENDIF}
 end;
 
-function TChmReader.ReadPMGIchunkEntryFromStream(Stream: TMemoryStream;
+function TITSFReader.ReadPMGIchunkEntryFromStream(Stream: TMemoryStream;
   var PMGIEntry: TPMGIIndexChunkEntry): Boolean;
 var
 Buf: array [0..1023] of char;
@@ -475,26 +531,23 @@ begin
   Result := True;
 end;
 
-constructor TChmReader.Create(AStream: TStream; FreeStreamOnDestroy: Boolean);
+constructor TITSFReader.Create(AStream: TStream; FreeStreamOnDestroy: Boolean);
 begin
   fStream := AStream;
   fFreeStreamOnDestroy := FreeStreamOnDestroy;
   ReadHeader;
   if not IsValidFile then Exit;
-  FillDirectoryEntries(4096); // the default size of the array
-  fContextList := TContextList.Create;
-  ReadCommonData;
 end;
 
-destructor TChmReader.Destroy;
+destructor TITSFReader.Destroy;
 begin
   SetLength(fDirectoryEntries, 0);
   if fFreeStreamOnDestroy then FreeAndNil(fStream);
-  fContextList.Free;
+
   inherited Destroy;
 end;
 
-function TChmReader.IsValidFile: Boolean;
+function TITSFReader.IsValidFile: Boolean;
 begin
   if (fStream = nil) then ChmLastError := ERR_STREAM_NOT_ASSIGNED
   else if (fChmHeader.ITSFsig <> 'ITSF') then ChmLastError := ERR_NOT_VALID_FILE
@@ -503,51 +556,198 @@ begin
   Result := ChmLastError = ERR_NO_ERR;
 end;
 
-procedure TChmReader.GetCompleteFileList(var Strings: TStrings);
+procedure TITSFReader.GetCompleteFileList(ForEach: TFileEntryForEach);
 var
-X : LongInt;
+  ChunkStream: TMemoryStream;
+  I : Integer;
+  Entry: TPMGListChunkEntry;
+  PMGLChunk: TPMGListChunk;
+  CutOffPoint: Integer;
+  NameLength: Integer;
+  {$IFDEF CHM_DEBUG_CHUNKS}
+  PMGIChunk: TPMGIIndexChunk;
+  PMGIndex: Integer;
+  {$ENDIF}
 begin
-  Strings.Clear;
-  for X := 0 to fDirectoryEntriesCount-1 do begin
-    Strings.AddObject(fDirectoryEntries[X].Name, TObject(@fDirectoryEntries[X]));
+  if ForEach = nil then Exit;
+  ChunkStream := TMemoryStream.Create;
+  for I := 0 to fDirectoryHeader.DirectoryChunkCount-1 do begin
+    GetDirectoryChunk(I, ChunkStream);
+    case ChunkType(ChunkStream) of
+    ctPMGL:
+     begin
+       LookupPMGLchunk(ChunkStream, PMGLChunk);
+       {$IFDEF CHM_DEBUG_CHUNKS}
+        WriteLn('PMGL: ', I, ' Prev PMGL: ', PMGLChunk.PreviousChunkIndex, ' Next PMGL: ', PMGLChunk.NextChunkIndex);
+       {$ENDIF}
+       CutOffPoint := ChunkStream.Size - PMGLChunk.UnusedSpace - 10;
+       while ChunkStream.Position <  CutOffPoint do begin
+         NameLength := GetCompressedInteger(ChunkStream);
+         SetLength(Entry.Name, NameLength);
+         ChunkStream.ReadBuffer(Entry.Name[1], NameLength);
+         if (Entry.Name = '') or (ChunkStream.Position > CutOffPoint) then
+           Continue; // we have entered the quickref section
+         Entry.ContentSection := GetCompressedInteger(ChunkStream);
+         Entry.ContentOffset := GetCompressedInteger(ChunkStream);
+         Entry.DecompressedLength := GetCompressedInteger(ChunkStream);
+         fCachedEntry := Entry; // if the caller trys to get this data we already know where it is :)
+         ForEach(Entry.Name, Entry.ContentOffset, Entry.DecompressedLength, Entry.ContentSection);
+       end;
+     end;
+    {$IFDEF CHM_DEBUG_CHUNKS}
+    ctPMGI:
+     begin
+       WriteLn('PMGI: ', I);
+       LookupPMGIchunk(ChunkStream, PMGIChunk);
+       CutOffPoint := ChunkStream.Size - PMGIChunk.UnusedSpace - 10;
+       while ChunkStream.Position <  CutOffPoint do begin
+         NameLength := GetCompressedInteger(ChunkStream);
+         SetLength(Entry.Name, NameLength);
+         ChunkStream.ReadBuffer(Entry.Name[1], NameLength);
+         PMGIndex := GetCompressedInteger(ChunkStream);
+         WriteLn(Entry.Name, '  ', PMGIndex);
+       end;
+     end;
+    ctUnknown: WriteLn('UNKNOWN CHUNKTYPE!' , I);
+    {$ENDIF}
+    end;
   end;
 end;
 
-function TChmReader.ObjectExists(Name: String): QWord;
+function TITSFReader.ObjectExists(Name: String): QWord;
 var
-X: Integer;
+  ChunkStream: TMemoryStream;
+  QuickRefCount: Word;
+  QuickRefIndex: array of Word;
+  ItemCount: Integer;
+  procedure ReadQuickRefSection;
+  var
+    OldPosn: Int64;
+    Posn: Integer;
+    I: Integer;
+  begin
+    OldPosn := ChunkStream.Position;
+    Posn := ChunkStream.Size-1-SizeOf(Word);
+    ChunkStream.Position := Posn;
+    
+    ItemCount := LEToN(ChunkStream.ReadWord);
+    //WriteLn('Max ITems for next block = ', ItemCount-1);
+    QuickRefCount := ItemCount  div (1 + (1 shl fDirectoryHeader.Density));
+    //WriteLn('QuickRefCount = ' , QuickRefCount);
+    SetLength(QuickRefIndex, QuickRefCount+1);
+    for I := 1 to QuickRefCount do begin
+      Dec(Posn, SizeOf(Word));
+      ChunkStream.Position := Posn;
+      QuickRefIndex[I] := LEToN(ChunkStream.ReadWord);
+    end;
+    Inc(QuickRefCount);
+    ChunkStream.Position := OldPosn;
+  end;
+  function ReadString(StreamPosition: Integer = -1): String;
+  var
+    NameLength: Integer;
+  begin
+    if StreamPosition > -1 then ChunkStream.Position := StreamPosition;
+
+    NameLength := GetCompressedInteger(ChunkStream);
+    SetLength(Result, NameLength);
+    ChunkStream.Read(Result[1], NameLength);
+  end;
+var
+  PMGLChunk: TPMGListChunk;
+  PMGIChunk: TPMGIIndexChunk;
+  //ChunkStream: TMemoryStream; declared above  
+  Entry: TPMGListChunkEntry;
+  NextIndex: Integer;
+  EntryName: String;  
+  CRes: Integer;
+  I: Integer;
 begin
   Result := 0;
-  X := Pos('#', Name);
-  if X > 2 then Name := Copy(Name, 1, X-1);
-  NAme := Lowercase(Name);
-  if Name = LowerCase(fCachedEntry.Name) then begin
-    Result := fCachedEntry.DecompressedLength;
-    Exit;
-  end;
-  if (Length(Name) > 0) and (Name[1] = ':') then begin
-    for X := fDirectoryEntriesCount-1 downto 0 do begin //Start at the end
-      //WriteLn('Comparing  ', Name ,' to ', LowerCase(fDirectoryEntries[X].Name));
-      if LowerCase(fDirectoryEntries[X].Name) = Name then begin
-        fCachedEntry := fDirectoryEntries[X];
-        Result := fCachedEntry.DecompressedLength;
-        Exit;
-      end;
+
+  if Name = '' then Exit;
+  if fDirectoryHeader.DirectoryChunkCount = 0 then exit;
+
+  //WriteLn('Looking for ', Name);
+  if Name = fCachedEntry.Name then
+    Exit(fCachedEntry.DecompressedLength); // we've already looked it up
+
+  ChunkStream := TMemoryStream.Create;
+
+  try
+  
+  NextIndex := fDirectoryHeader.IndexOfRootChunk;
+  if NextIndex < 0 then NextIndex := 0; // no PMGI chunks
+  
+  while NextIndex > -1  do begin
+    GetDirectoryChunk(NextIndex, ChunkStream);
+    NextIndex := -1;
+    ReadQuickRefSection;
+    //WriteLn('In Block ', ChunkIndex);
+    case ChunkType(ChunkStream) of
+      ctUnknown: // something is wrong
+        begin
+          {$IFDEF CHM_DEBUG}WriteLn(ChunkIndex, ' << Unknown BlockType!');{$ENDIF}
+          Break;
+        end;
+      ctPMGI: // we must follow the PMGI tree until we reach a PMGL block
+        begin
+          LookupPMGIchunk(ChunkStream, PMGIChunk);          
+
+          //QuickRefIndex[0] := ChunkStream.Position;
+
+          I := 0;
+          while ChunkStream.Position <= ChunkStream.Size - PMGIChunk.UnusedSpace do begin;
+            EntryName := ReadString;
+            if EntryName = '' then break;
+            if ChunkStream.Position >= ChunkStream.Size - PMGIChunk.UnusedSpace then break;
+            CRes := ChmCompareText(Name, EntryName);
+            if CRes = 0 then begin
+              // no more need of this block. onto the next!              
+              NextIndex := GetCompressedInteger(ChunkStream);
+              Continue;
+            end;
+            if  CRes < 0 then begin
+              if I = 0 then Break; // File doesn't exist
+              // file is in previous entry              
+              Break;
+            end;
+            NextIndex := GetCompressedInteger(ChunkStream);
+            Inc(I);
+          end;
+        end;
+      ctPMGL:
+        begin
+          LookupPMGLchunk(ChunkStream, PMGLChunk);
+          QuickRefIndex[0] := ChunkStream.Position;
+          I := 0;
+          while ChunkStream.Position <= ChunkStream.Size - PMGLChunk.UnusedSpace do begin
+            // we consume the entry by reading it            
+            Entry.Name := ReadString;
+            if Entry.Name = '' then break;
+            if ChunkStream.Position >= ChunkStream.Size - PMGLChunk.UnusedSpace then break;
+
+            Entry.ContentSection := GetCompressedInteger(ChunkStream);
+            Entry.ContentOffset := GetCompressedInteger(ChunkStream);
+            Entry.DecompressedLength := GetCompressedInteger(ChunkStream);
+
+            CRes := ChmCompareText(Name, Entry.Name);
+            if CRes = 0 then begin
+              fCachedEntry := Entry;
+              Result := Entry.DecompressedLength;              
+              Break;
+            end;
+            Inc(I);
+          end;
+        end; // case
     end;
-    //WriteLn('Didn''t find it');
-    exit;
   end;
-  //else
-  for X := 0 to fDirectoryEntriesCount-1 do begin //start at the beginning
-    if LowerCase(fDirectoryEntries[X].Name) = Name then begin
-      fCachedEntry := fDirectoryEntries[X];
-      Result := fCachedEntry.DecompressedLength;
-      Exit;
-    end;
+  finally
+  ChunkStream.Free;
   end;
 end;
 
-function TChmReader.GetObject(Name: String): TMemoryStream;
+function TITSFReader.GetObject(Name: String): TMemoryStream;
 var
   SectionNames: TStringList;
   Entry: TPMGListChunkEntry;
@@ -567,7 +767,6 @@ begin
   end
   else begin // we have to get it from ::DataSpace/Storage/[MSCompressed,Uncompressed]/ControlData
     GetSections(SectionNames);
-    //WriteLn('Section names: >>>',SectionNames.Text, '<<<');
     FmtStr(SectionName, '::DataSpace/Storage/%s/',[SectionNames[Entry.ContentSection-1]]);
     Result := GetBlockFromSection(SectionName, Entry.ContentOffset, Entry.DecompressedLength);
     SectionNames.Free;
@@ -586,68 +785,14 @@ begin
   Result := fContextList.Count > 0;
 end;
 
-procedure TChmReader.FillDirectoryEntries(StartCount: Integer);
-var
- ChunkStart: QWord;
- PMGLChunk: TPMGListChunk;
- PMGIChunk: TPMGIIndexChunk;
- PMGIChunkEntry: TPMGIIndexChunkEntry;
- X: Integer;
- DirEntrySize: LongWord;
- // for speed we load this section into a tmemorystream
- EntriesBuffer: TMemoryStream;
- CopySize: Int64;
-begin
-  EntriesBuffer := TMemoryStream.Create;
-  CopySize := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * fDirectoryHeader.DirectoryChunkCount);
-  fStream.Position := 0;
-  EntriesBuffer.CopyFrom(fStream, CopySize);
-  SetLength(fDirectoryEntries, StartCount);
-  DirEntrySize := StartCount;
-  {$IFDEF CHM_DEBUG}
-  WriteLn('Chunk count=', fDirectoryHeader.DirectoryChunkCount);
-  {$ENDIF}
-  for X := 0 to fDirectoryHeader.DirectoryChunkCount-1 do begin
-     if GetChunkType(EntriesBuffer, X) = ctPMGL then begin
-       //WriteLn('PGML');
-       ChunkStart := EntriesBuffer.Position-4;
-
-       LookupPMGLchunk(EntriesBuffer, X, PMGLChunk);
-       while EntriesBuffer.Position < ChunkStart + fDirectoryHeader.ChunkSize - PMGLChunk.UnusedSpace do begin
-          if fDirectoryEntriesCount >= DirEntrySize-1 then begin
-            Inc(DirEntrySize, 1024);
-            SetLength(fDirectoryEntries, DirEntrySize);
-          end;
-          if ReadPMGLchunkEntryFromStream(EntriesBuffer, fDirectoryEntries[fDirectoryEntriesCount])
-          then Inc(fDirectoryEntriesCount);
-       end;
-     end
-     else begin
-       //WriteLn('PGMI-------------------');
-       {$IFDEF CHM_DEBUG}
-       // we don't use the indexes
-       ChunkStart := EntriesBuffer.Position-4;
-       LookupPMGIchunk(EntriesBuffer, X, PMGIChunk);
-       while EntriesBuffer.Position < ChunkStart + fDirectoryHeader.ChunkSize - PMGIChunk.UnusedSpace do begin
-          if ReadPMGIchunkEntryFromStream(EntriesBuffer, PMGIChunkEntry)
-          then begin
-            WriteLn(PMGIChunkEntry.Name, ' ', PMGIChunkEntry.ListingChunk);
-          end;
-       end;
-       {$ENDIF}
-     end;
-  end;
-  EntriesBuffer.Free;
-  if fChmHeader.Version = 2 then
-    fHeaderSuffix.Offset := ChunkStart + fDirectoryHeader.ChunkSize;
-  SetLength(fDirectoryEntries,fDirectoryEntriesCount);
-end;
-
-procedure TChmReader.GetSections(out Sections: TStringList);
+procedure TITSFReader.GetSections(out Sections: TStringList);
 var
   Stream: TStream;
   EntryCount: Word;
-  X, I: Integer;
+  X: Integer;
+  {$IFDEF ENDIAN_BIG}
+  I: Integer;
+  {$ENDIF}
   WString: array [0..31] of WideChar;
   StrLength: Word;
 begin
@@ -677,7 +822,7 @@ begin
   Stream.Free;
 end;
 
-function TChmReader.GetBlockFromSection(SectionPrefix: String; StartPos: QWord;
+function TITSFReader.GetBlockFromSection(SectionPrefix: String; StartPos: QWord;
   BlockLength: QWord): TMemoryStream;
 var
   Compressed: Boolean;
@@ -736,6 +881,7 @@ begin
 
 
     BlockSize := FindBlocksFromUnCompressedAddr(ResetTableEntry, CompressedSize, UnCompressedSize, ResetTable);
+    if UncompressedSize > 0 then ; // to avoid a compiler note
     if StartPos > 0 then
       FirstBlock := StartPos div BlockSize
     else
@@ -813,11 +959,13 @@ begin
   end;
 end;
 
-function TChmReader.FindBlocksFromUnCompressedAddr(var ResetTableEntry: TPMGListChunkEntry;
+function TITSFReader.FindBlocksFromUnCompressedAddr(var ResetTableEntry: TPMGListChunkEntry;
   out CompressedSize: Int64; out UnCompressedSize: Int64; out LZXResetTable: TLZXResetTableArr): QWord;
 var
   BlockCount: LongWord;
+  {$IFDEF ENDIAN_BIG}
   I: Integer;
+  {$ENDIF}
 begin
   Result := 0;
   fStream.Position := fHeaderSuffix.Offset + ResetTableEntry.ContentOffset;

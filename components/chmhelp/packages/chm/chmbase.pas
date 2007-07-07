@@ -122,6 +122,9 @@ const
   // returns the number of bytes written to the stream
   function WriteCompressedInteger(const Stream: TStream; ANumber: DWord): DWord;
   function WriteCompressedInteger(Buffer: Pointer; ANumber: DWord): DWord;
+  
+  // stupid needed function
+  function ChmCompareText(S1, S2: String): Integer; inline;
 
 
 implementation
@@ -132,6 +135,7 @@ var
   temp: Byte;
   Sanity: Integer = 0;
 begin
+  try
   temp := Stream.ReadByte;
   while temp >= $80 do begin
     total := total shl 7;
@@ -144,8 +148,12 @@ begin
     end;
   end;
   Result := (total shl 7) + temp;
+  except
+    Result := 0;
+  end;
 end;
 
+// returns how many bytes were written
 function WriteCompressedInteger(const Stream: TStream; ANumber: DWord): DWord;
 var
   Buffer: QWord; // Easily large enough
@@ -154,14 +162,14 @@ begin
   Result := Stream.Write(Buffer, Result);
 end;
 
+// returns how many bytes were written
 function WriteCompressedInteger(Buffer: Pointer; ANumber: DWord): DWord;
 var
   bit: dword;
   mask: QWord;
   buf: PByte;
   Value: DWord = 0;
-  TheEnd: DWord = 0;
-  I: Integer;
+  TheEnd: DWord = 0;  
 begin
   bit := (sizeof(DWord)*8)div 7*7;
   buf := @Value;
@@ -181,10 +189,14 @@ begin
   end;
 
   buf := @Value;
-  //Result := Stream.Write(Value, TheEnd+1);
   Result := TheEnd+1;
   Move(Value, Buffer^, Result);
+end;
 
+function ChmCompareText(S1, S2: String): Integer; inline;
+begin
+  // for our purposes the CompareText function will not work.
+  Result := CompareStr(LowerCase(S1), Lowercase(S2));
 end;
 
 end.
