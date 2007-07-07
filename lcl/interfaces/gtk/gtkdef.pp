@@ -449,7 +449,8 @@ var
 procedure GtkDefDone;
 
 function dbgs(g: TGDIType): string; overload;
-function dbgs(r: TGDKRectangle): string; overload;
+function dbgs(const r: TGDKRectangle): string; overload;
+function dbgs(r: PGDKRectangle): string; overload;
 
 
 implementation
@@ -835,9 +836,17 @@ begin
   end;
 end;
 
-function dbgs(r: TGDKRectangle): string;
+function dbgs(const r: TGDKRectangle): string;
 begin
-  Result:=dbgs(Rect(r.x,r.y,r.width,r.height));
+  Result:=dbgs(Bounds(r.x,r.y,r.width,r.height));
+end;
+
+function dbgs(r: PGDKRectangle): string;
+begin
+  if r=nil then
+    Result:='nil'
+  else
+    Result:=dbgs(r^);
 end;
 
 initialization

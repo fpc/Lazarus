@@ -3404,7 +3404,8 @@ begin
     begin
       //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject)]);
       {$Ifdef GTK1}
-      ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
+      //ConnectSenderSignal(gFixed, 'draw', @gtkDrawCB);
+      ConnectSenderSignalAfter(gFixed, 'draw', @gtkDrawAfterCB);
       {$EndIf}
       {$Ifdef GTK2}
       ConnectSenderSignal(gFixed, 'expose-event', @GTKExposeEvent);

@@ -4095,8 +4095,9 @@ end;
 {------------------------------------------------------------------------------
   TWinControl Invalidate
 ------------------------------------------------------------------------------}
-Procedure TWinControl.Invalidate;
-Begin
+procedure TWinControl.Invalidate;
+begin
+  //DebugLn(['TWinControl.Invalidate ',DbgSName(Self),' HandleAllocated=',HandleAllocated]);
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
     TWSWinControlClass(WidgetSetClass).Invalidate(Self);
 end;

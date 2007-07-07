@@ -110,7 +110,9 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
 {$ENDIF}
 
 {$Ifdef GTK1}
-function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
+function gtkDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer): GBoolean; cdecl;
+function gtkDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;
 {$EndIf}
 function gtkExposeEvent(Widget: PGtkWidget; Event: PGDKEventExpose;
@@ -573,7 +575,7 @@ const
     @gtkMotionNotify,
     @gtkMouseBtnRelease,
 {$Ifdef GTK1}
-    @gtkDrawAfter,
+    @gtkDrawAfterCB,
 {$Endif GTK1}
     @gtkExposeEventAfter
     );

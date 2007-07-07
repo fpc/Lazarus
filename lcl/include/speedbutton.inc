@@ -299,6 +299,7 @@ begin
     if (Action is TCustomAction) then
       TCustomAction(Action).Checked := FState=bsDown;
 
+  //if InvalidateOnChange then DebugLn(['TCustomSpeedButton.UpdateState ',DbgSName(Self),' InvalidateOnChange=',InvalidateOnChange,' StateChange=',FState<>OldState]);
   if InvalidateOnChange and
      (
        (FState<>OldState) or
@@ -486,9 +487,6 @@ var
   SIndex : Longint;
   TMP : String;
 begin
-  {$IFDEF VerboseBug1152}
-  DebugLn(['TCustomSpeedButton.Paint ',DbgSName(Self)]);
-  {$ENDIF}
   UpdateState(false);
   if FGlyph=nil then exit;
 

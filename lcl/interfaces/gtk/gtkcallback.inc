@@ -77,10 +77,11 @@ var
   PaintMsg: TLMPaint;
   {$ENDIF}
 begin
+  //DebugLn(['DeliverGtkPaintMessage ',DbgSName(TObject(Target)),' Widget=',GetWidgetDebugReport(Widget),' RepaintAll=',RepaintAll,' AfterGtk=',IsAfterGtk,' Area=',dbgs(Area)]);
   {$IFDEF Gtk2}
   // default is, that a control receives the paint message after gtk (including the child paints)
   // In case of TCustomControl, there is no gtk painting only the
-  // child paintings. Let the TCudtomControl paint the background.
+  // child paintings. Let the TCustomControl paint the background.
   // ToDo: Eventually there must be a 'before paint message'.
   if IsAfterGtk then begin
     if TObject(Target) is TCustomControl then exit;
@@ -89,7 +90,7 @@ begin
   end;
   {$ENDIF}
   
-  if (not RepaintAll) and ((Area^.Width<1) or (Area^.Width<1)) then exit;
+  if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit;
 
   MSG.Msg := LM_GtkPAINT;
   MSG.Data:=TLMGtkPaintData.Create;
@@ -443,12 +444,36 @@ begin
 end;
 
 {$Ifdef GTK1}
-function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
+function gtkDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer): GBoolean; cdecl;
+begin
+  Result := CallBackDefaultReturn;
+  //DebugLn(['gtkDrawCB ',GetWidgetDebugReport(Widget),' area=',dbgs(area)]);
+  {$IFDEF EventTrace}
+  EventTrace('DrawAfter', data);
+  {$ENDIF}
+end;
+
+function gtkDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
+  
+  function WidgetHasDrawAllBug: boolean;
+  var
+    WidgetStyle: PGtkStyle;
+  begin
+    Result:=false;
+    WidgetStyle := gtk_widget_get_style(Widget);
+    if (WidgetStyle=nil) then exit;
+    if (WidgetStyle^.engine=nil) then exit;
+    Result:=true;
+    //DebugLn(['WidgetHasDrawAllBug ',dbgs(WidgetStyle^.engine)]);
+  end;
+  
 var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
+  //DebugLn(['gtkDrawAfterCB ',GetWidgetDebugReport(Widget),' area=',dbgs(area)]);
   {$IFDEF EventTrace}
   EventTrace('DrawAfter', data);
   {$ENDIF}
@@ -458,15 +483,17 @@ begin
     if DesignOnlySignal then exit;
   end else begin
     {$IFDEF VerboseDesignerDraw}
-    DebugLn('gtkDrawAfter',
+    DebugLn('gtkDrawAfterCB',
       ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',area^.x,',',area^.y,',',area^.width,',',area^.height,
       '');
     {$ENDIF}
   end;
-
-  DeliverGtkPaintMessage(Data,Widget,Area,false,true);
+  
+  // some gtk1 theme engines show a bug: they ignore the area and repaint all
+  // In this case the LCL must repaint all too.
+  DeliverGtkPaintMessage(Data,Widget,Area,WidgetHasDrawAllBug,true);
 end;
 {$ENDIF}
 
@@ -479,6 +506,7 @@ begin
   {$IFDEF EventTrace}
   EventTrace('ExposeAfter', data);
   {$ENDIF}
+  //DebugLn(['gtkExposeEvent ',GetWidgetDebugReport(Widget),' Event^.Count=',Event^.Count]);
   if (Event^.Count > 0) then exit;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
@@ -513,6 +541,7 @@ begin
   {$IFDEF EventTrace}
   EventTrace('ExposeAfter', data);
   {$ENDIF}
+  //DebugLn(['gtkExposeEventAfter ',GetWidgetDebugReport(Widget),' Event^.Count=',Event^.Count]);
   if (Event^.Count > 0) then exit;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin

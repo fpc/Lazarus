@@ -1565,7 +1565,8 @@ end;
        TControl Invalidate
 ------------------------------------------------------------------------------}
 procedure TControl.Invalidate;
-Begin
+begin
+  //DebugLn(['TControl.Invalidate ',DbgSName(Self)]);
   InvalidateControl(IsVisible, csOpaque in ControlStyle);
 end;
 
@@ -2510,9 +2511,6 @@ begin
   and not (csNoDesignVisible in ControlStyle)))
   then begin
     Rect := BoundsRect;
-    {$IFDEF VerboseBug1152}
-    DebugLn(['TControl.InvalidateControl ',DbgSName(Self),' Rect=',dbgs(Rect)]);
-    {$ENDIF}
     InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;
