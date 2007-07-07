@@ -23,7 +23,7 @@ unit chmreader;
 {$mode objfpc}{$H+}
 
 //{$DEFINE CHM_DEBUG}
-{$DEFINE CHM_DEBUG_CHUNKS}
+//{$DEFINE CHM_DEBUG_CHUNKS}
 
 interface
 
