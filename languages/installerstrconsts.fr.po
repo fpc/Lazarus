@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-06-27 18:13+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: installerstrconsts:wiseditform
+msgid "&Edit form"
+msgstr "&Éditer la fiche"
+
+#: installerstrconsts:wiseditsource
+msgid "&Edit source"
+msgstr "&Éditer la source "
+
+#: installerstrconsts:wisopenpackage
+msgid "&Open package"
+msgstr "&Ouvrir un paquet"
+
+#: installerstrconsts:wisopenproject
+msgid "&Open project"
+msgstr "&Ouvrir un projet"
+

@@ -2212,6 +2212,7 @@ images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 install/lazarus.desktop svneol=native#text/plain
 languages/README.txt svneol=native#text/plain
 languages/installerstrconsts.de.po svneol=native#text/plain
+languages/installerstrconsts.fr.po svneol=native#text/plain
 languages/installerstrconsts.nl.po svneol=native#text/plain
 languages/installerstrconsts.pb.po svneol=native#text/plain
 languages/installerstrconsts.pl.po svneol=native#text/plain
