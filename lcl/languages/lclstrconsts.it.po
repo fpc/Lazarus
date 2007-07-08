@@ -66,7 +66,7 @@ msgstr "&Chiudi"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Directory"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -358,7 +358,7 @@ msgstr "Il file griglia non esiste"
 
 #: lclstrconsts:rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr ""
+msgstr "Indice della griglia fuori dai limiti."
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"

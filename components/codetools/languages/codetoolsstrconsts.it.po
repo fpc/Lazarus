@@ -226,11 +226,11 @@ msgstr "Se TargetOS<>win32 allora"
 
 #: codetoolsstrconsts:ctsifdeflinux
 msgid "IfDef Linux"
-msgstr ""
+msgstr "IfDef Linux"
 
 #: codetoolsstrconsts:ctsifdefwindows
 msgid "IfDef Windows"
-msgstr ""
+msgstr "IfDef Windows"
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -358,7 +358,7 @@ msgstr "una directory componente in %s non è una directory"
 
 #: codetoolsstrconsts:ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr ""
+msgstr "aggiungi %s a IncPath"
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
