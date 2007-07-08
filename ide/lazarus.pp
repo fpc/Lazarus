@@ -40,6 +40,10 @@ program Lazarus;
   {$R lazarus.res}
 {$ENDIF}
 
+{$IFDEF WIN64}
+  {$R lazarus.rc}
+{$ENDIF}
+
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
