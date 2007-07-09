@@ -740,15 +740,16 @@ begin
       ofOverwritePrompt in TOpenDialog(theDialog).Options);
   end;
 *)
-
-  gtk_file_chooser_set_current_folder (SelWidget, pgChar( FileDialog.InitialDir) );
+  if FileDialog.InitialDir <> '' then
+    gtk_file_chooser_set_current_folder (SelWidget, pgChar( FileDialog.InitialDir) );
   gtk_file_chooser_set_current_name (SelWidget, pgChar( FileDialog.FileName) );
 
   if FileDialog is TOpenDialog then
     InitializeOpenDialog(TOpenDialog(FileDialog), SelWidget);
 
   if FileDialog.InheritsFrom(TSaveDialog) then begin
-    gtk_file_chooser_set_current_folder (SelWidget, PChar(FileDialog.InitialDir));
+    if FileDialog.InitialDir <> '' then
+      gtk_file_chooser_set_current_folder (SelWidget, PChar(FileDialog.InitialDir));
     gtk_file_chooser_set_current_name (SelWidget, PChar(FileDialog.FileName));
   end;
 
