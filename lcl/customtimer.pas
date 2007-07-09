@@ -161,7 +161,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTimer.SetOnTimer (value : TNotifyEvent);
 begin
-  if Value=FOnTimer then exit;
+  // Value=FOnTimer only compares code part
+  if CompareByte(Value,FOnTimer,SizeOf(Value))=0 then exit;
   FOnTimer := value;
   UpdateTimer;
 end;
