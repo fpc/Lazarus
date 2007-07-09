@@ -504,16 +504,24 @@ type
   private
     FIcon: QIconH;
   public
+    MenuItem: TMenuItem;
+  public
     constructor Create(const AParent: QWidgetH); overload;
     constructor Create(const AHandle: QMenuH); overload;
     destructor Destroy; override;
   public
-    procedure PopUp(pos: PPoint; at: QActionH = nil);
-    function addAction(text: PWideString): TQtAction;
+    procedure SlotTriggered(checked: Boolean = False); cdecl;
+  public
+    procedure PopUp(pos: PQtPoint; at: QActionH = nil);
+    function actionHandle: QActionH;
     function addMenu(title: PWideString): TQtMenu;
-    function addSeparator: TQtAction;
+    function addSeparator: TQtMenu;
+    procedure setChecked(p1: Boolean);
+    procedure setCheckable(p1: Boolean);
+    procedure setHasSubmenu(AValue: Boolean);
     procedure setIcon(AIcon: QIconH);
     procedure setImage(AImage: TQtImage);
+    procedure setSeparator(AValue: Boolean);
   end;
 
   { TQtMenuBar }
@@ -524,9 +532,8 @@ type
     constructor Create(const AParent: QWidgetH); overload;
     destructor Destroy; override;
   public
-    function addAction(text: PWideString): TQtAction;
     function addMenu(title: PWideString): TQtMenu;
-    function addSeparator: TQtAction;
+    function addSeparator: TQtMenu;
   end;
 
   { TQtProgressBar }
@@ -1039,7 +1046,7 @@ end;
 procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
 var
   Msg: TLMMouse;
-  MousePos: TPoint;
+  MousePos: PQtPoint;
   Mbutton: QTMouseButtons;
   Modifiers: QtKeyboardModifiers;
 begin
@@ -1049,7 +1056,7 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   
-  QMouseEvent_pos(QMouseEventH(Event), @MousePos);
+  MousePos := QMouseEvent_pos(QMouseEventH(Event));
   Msg.Keys := 0;
   
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
@@ -1057,8 +1064,8 @@ begin
   if Modifiers and qtControlModifier<>0 then Msg.Keys := Msg.Keys or MK_CONTROL;
   { TODO: add support for ALT, META and NUMKEYPAD }
 
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
+  Msg.XPos := SmallInt(MousePos^.X);
+  Msg.YPos := SmallInt(MousePos^.Y);
   
   MButton := QmouseEvent_Button(QMouseEventH(Event));
 
@@ -1130,16 +1137,16 @@ end;
 procedure TQtWidget.SlotMouseMove(Event: QEventH); cdecl;
 var
   Msg: TLMMouseMove;
-  MousePos: TPoint;
+  MousePos: PQtPoint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   
-  QMouseEvent_pos(QMouseEventH(Event), @MousePos);
+  MousePos := QMouseEvent_pos(QMouseEventH(Event));
 
   //QCursor_pos(@MousePos);
 
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
+  Msg.XPos := SmallInt(MousePos^.X);
+  Msg.YPos := SmallInt(MousePos^.Y);
 
   Msg.Msg := LM_MOUSEMOVE;
 
@@ -1159,16 +1166,16 @@ end;
 procedure TQtWidget.SlotMouseWheel(Event: QEventH); cdecl;
 var
   Msg: TLMMouseEvent;
-  MousePos: TPoint;
+  MousePos: PQtPoint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
-  QWheelEvent_pos(QWheelEventH(Event), @MousePos);
+  MousePos := QWheelEvent_pos(QWheelEventH(Event));
 
   Msg.Msg := LM_MOUSEWHEEL;
 
-  Msg.X := SmallInt(MousePos.X);
-  Msg.Y := SmallInt(MousePos.Y);
+  Msg.X := SmallInt(MousePos^.X);
+  Msg.Y := SmallInt(MousePos^.Y);
 
   Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event)) div 120;
   
@@ -1994,7 +2001,7 @@ begin
 
   w := QApplication_activeWindow;
   
-  if not Assigned(w) and not (Application.MainForm.Visible) then
+  if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible)) then
   begin
     Result := QMainWindow_create(nil, QtWindow);
     
@@ -2012,7 +2019,7 @@ begin
       window will receive and handle them
      ------------------------------------------------------------------------------}
 
-    if Assigned(Application.MainForm.Menu) then
+    if Assigned(Application.MainForm) and Assigned(Application.MainForm.Menu) then
      QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
      
     {$ifdef USE_QT_4_3}
@@ -4076,14 +4083,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TQtMenu.PopUp(pos: PPoint; at: QActionH);
+procedure TQtMenu.PopUp(pos: PQtPoint; at: QActionH);
 begin
   QMenu_Popup(QMenuH(Widget), pos, at);
 end;
 
-function TQtMenu.addAction(text: PWideString): TQtAction;
+function TQtMenu.actionHandle: QActionH;
 begin
-  Result := TQtAction.Create(QMenu_addAction(QMenuH(Widget), text));
+  Result := QMenu_menuAction(QMenuH(Widget));
 end;
 
 function TQtMenu.addMenu(title: PWideString): TQtMenu;
@@ -4091,9 +4098,31 @@ begin
   Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), title));
 end;
 
-function TQtMenu.addSeparator: TQtAction;
+function TQtMenu.addSeparator: TQtMenu;
 begin
-  Result := TQtAction.Create(QMenu_addSeparator(QMenuH(Widget)));
+  Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), nil));
+  Result.setSeparator(True);
+end;
+
+procedure TQtMenu.setChecked(p1: Boolean);
+begin
+  if p1 then setCheckable(True)
+  else setCheckable(False);
+
+  QAction_setChecked(ActionHandle, p1);
+end;
+
+procedure TQtMenu.setCheckable(p1: Boolean);
+begin
+  QAction_setCheckable(ActionHandle, p1);
+end;
+
+procedure TQtMenu.setHasSubmenu(AValue: Boolean);
+begin
+  if AValue then
+    QAction_setMenu(ActionHandle, QMenuH(Widget))
+  else
+    QAction_setMenu(ActionHandle, nil);
 end;
 
 procedure TQtMenu.setIcon(AIcon: QIconH);
@@ -4117,6 +4146,22 @@ begin
   setIcon(FIcon);
 end;
 
+procedure TQtMenu.setSeparator(AValue: Boolean);
+begin
+  QAction_setSeparator(ActionHandle, AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtMenu.SlotTriggered
+
+  Callback for menu item click
+ ------------------------------------------------------------------------------}
+procedure TQtMenu.SlotTriggered(checked: Boolean); cdecl;
+begin
+  if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then
+   MenuItem.OnClick(Self.MenuItem);
+end;
+
 { TQtMenuBar }
 
 constructor TQtMenuBar.Create(const AParent: QWidgetH);
@@ -4129,19 +4174,15 @@ begin
   inherited Destroy;
 end;
 
-function TQtMenuBar.addAction(text: PWideString): TQtAction;
-begin
-  Result := TQtAction.Create(QMenuBar_addAction(QMenuBarH(Widget), text));
-end;
-
 function TQtMenuBar.addMenu(title: PWideString): TQtMenu;
 begin
   Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), title));
 end;
 
-function TQtMenuBar.addSeparator: TQtAction;
+function TQtMenuBar.addSeparator: TQtMenu;
 begin
-  Result := TQtAction.Create(QMenuBar_addSeparator(QMenuBarH(Widget)));
+  Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), nil));
+  Result.setSeparator(True);
 end;
 
 { TQtProgressBar }

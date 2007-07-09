@@ -110,12 +110,10 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
-  Action: TQtAction;
   ParentMenu, Menu: TQtMenu;
   MenuBar: TQtMenuBar;
   Text: WideString;
   Method: TMethod;
-  ActionHandle: Boolean = False;
 begin
   {$ifdef VerboseQt}
     WriteLn('trace:> [TQtWSMenuItem.CreateHandle] Caption: ', AMenuItem.Caption,
@@ -154,35 +152,26 @@ begin
     { IsLine indicates that the menu item is a separator }
     if AMenuItem.IsLine then
     begin
-      ActionHandle := True;
-    
-      Action := MenuBar.addSeparator;
-      
-      Result := HMENU(Action);
-    end
-    { Count indicates the number of subitems this item has }
-    else if AMenuItem.Count > 0 then
-    begin
-      Text := UTF8Decode(AMenuItem.Caption);
+      Menu := MenuBar.addSeparator;
 
-      Menu := MenuBar.addMenu(@Text);
-
-      if AMenuItem.HasIcon then
-        Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+      Menu.setHasSubmenu(False);
 
       Result := HMENU(Menu);
     end
     else
     begin
-      ActionHandle := True;
-
       Text := UTF8Decode(AMenuItem.Caption);
 
-      Action := MenuBar.addAction(@Text);
-      
-      Action.MenuItem := AMenuItem;
+      Menu := MenuBar.addMenu(@Text);
 
-      Result := HMENU(Action);
+      Menu.MenuItem := AMenuItem;
+
+      if AMenuItem.HasIcon then
+        Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+
+      Menu.setHasSubmenu(AMenuItem.Count > 0);
+
+      Result := HMENU(Menu);
     end;
   end
   {------------------------------------------------------------------------------
@@ -191,6 +180,8 @@ begin
   else
   begin
     ParentMenu := TQtMenu(AMenuItem.Parent.Handle);
+    
+    ParentMenu.setHasSubmenu(True);
 
     {$ifdef VerboseQt}
       Write(' Parent: ', dbghex(PtrInt(ParentMenu)),
@@ -200,52 +191,41 @@ begin
     { IsLine indicates that the menu item is a separator }
     if AMenuItem.IsLine then
     begin
-      ActionHandle := True;
-      
-      Action := ParentMenu.addSeparator;
+      Menu := ParentMenu.addSeparator;
 
-      Result := HMENU(Action);
+      Menu.setHasSubmenu(False);
+
+      Result := HMENU(Menu);
     end
     { Count indicates the number of subitems this item has }
-    else if AMenuItem.Count > 0 then
+    else
     begin
       Text := UTF8Decode(AMenuItem.Caption);
 
       Menu := ParentMenu.addMenu(@Text);
 
+      Menu.MenuItem := AMenuItem;
+
+      Menu.setEnabled(AMenuItem.Enabled);
+
+      Menu.setChecked(AMenuItem.Checked);
+
       if AMenuItem.HasIcon then
         Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
 
-      Result := HMENU(Menu);
-    end
-    else
-    begin
-      ActionHandle := True;
-    
-      Text := UTF8Decode(AMenuItem.Caption);
-
-      Action := ParentMenu.addAction(@Text);
-
-      Action.MenuItem := AMenuItem;
-
-      Action.setEnabled(AMenuItem.Enabled);
-
-      Action.setChecked(AMenuItem.Checked);
+      Menu.setHasSubmenu(AMenuItem.Count > 0);
       
-      if AMenuItem.HasIcon then
-        Action.setImage(TQtImage(AMenuItem.Bitmap.Handle));
-
-      Result := HMENU(Action);
+      Result := HMENU(Menu);
     end;
   end;
   
-  if ActionHandle then
+  if Menu <> nil then
   begin
     // Trigger event
 
-    QAction_triggered_Event(Method) := Action.SlotTriggered;
+    QAction_triggered_Event(Method) := Menu.SlotTriggered;
 
-    QAction_hook_hook_triggered(QAction_hook_create(Action.Handle), Method);
+    QAction_hook_hook_triggered(QAction_hook_create(Menu.ActionHandle), Method);
   end;
 
   {$ifdef VerboseQt}
@@ -277,18 +257,10 @@ begin
   if AMenuItem.HasParent then
   begin
     { Here the menu item has a QMenuH handle
-
       Obs: Commented because they cause access violations inside Qt
-      library on the Virtual Magnifying Glass }
-    if AMenuItem.Count > 0 then
-    begin
-      TQtMenu(AMenuItem.Handle).Free;
-    end
-    { Here the menu item has a QActionH handle }
-    else
-    begin
-      TQtAction(AMenuItem.Handle).Free;
-    end;
+      library on the Virtual Magnifying Glass
+    }
+    TQtMenu(AMenuItem.Handle).Free;
   end;
 end;
 
@@ -320,15 +292,7 @@ end;
 class procedure TQtWSMenuItem.SetVisible(const AMenuItem: TMenuItem; const Visible: boolean);
 begin
   { Here the menu item has a QMenuH handle }
-  if AMenuItem.Count > 0 then
-  begin
-    TQtMenu(AMenuItem.Handle).setVisible(Visible);
-  end
-  { Here the menu item has a QActionH handle }
-  else
-  begin
-    TQtAction(AMenuItem.Handle).setVisible(Visible);
-  end;
+  TQtMenu(AMenuItem.Handle).setVisible(Visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -338,17 +302,7 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
 begin
-  { Here the menu item has a QMenuH handle }
-  if AMenuItem.Count > 0 then
-  begin
-
-  end
-  { Here the menu item has a QActionH handle }
-  else
-  begin
-    TQtAction(AMenuItem.Handle).setChecked(Checked);
-  end;
-
+  TQtMenu(AMenuItem.Handle).setChecked(Checked);
   Result := True;
 end;
 
@@ -359,17 +313,7 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 begin
-  { Here the menu item has a QMenuH handle }
-  if AMenuItem.Count > 0 then
-  begin
-    TQtMenu(AMenuItem.Handle).setEnabled(Enabled);
-  end
-  { Here the menu item has a QActionH handle }
-  else
-  begin
-    TQtAction(AMenuItem.Handle).setEnabled(Enabled);
-  end;
-
+  TQtMenu(AMenuItem.Handle).setEnabled(Enabled);
   Result := True;
 end;
 
@@ -399,22 +343,10 @@ class procedure TQtWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
 begin
   if AMenuItem.HasParent then
   begin
-    { Here the menu item has a QMenuH handle}
-    if AMenuItem.Count > 0 then
-    begin
-      if HasIcon then
-        TQtMenu(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
-      else
-        TQtMenu(AMenuItem.Handle).setImage(nil);
-    end
-    { Here the menu item has a QActionH handle }
+    if HasIcon then
+      TQtMenu(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
     else
-    begin
-      if HasIcon then
-        TQtAction(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
-      else
-        TQtAction(AMenuItem.Handle).setImage(nil);
-    end;
+      TQtMenu(AMenuItem.Handle).setImage(nil);
   end;
 end;
 
@@ -470,7 +402,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
-  Point: TPoint;
+  Point: TQtPoint;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSPopupMenu.Popup] APopupMenu.Handle ' + dbghex(APopupMenu.Handle)

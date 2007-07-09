@@ -1172,8 +1172,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.brushOrigin(retval: PPoint);
+var
+  QtPoint: TQtPoint;
 begin
-  QPainter_brushOrigin(Widget, retval);
+  QPainter_brushOrigin(Widget, @QtPoint);
+  retval^.x := QtPoint.x;
+  retval^.y := QtPoint.y;
 end;
 
 {------------------------------------------------------------------------------
