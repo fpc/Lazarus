@@ -1663,6 +1663,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+var
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
@@ -1837,11 +1839,13 @@ begin
       end;
     SM_CXSCREEN:
       begin
-        Result := QWidget_width(QApplication_desktop);
+        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
+        Result := R.Right - R.Left;
       end;
     SM_CYSCREEN:
       begin
-        Result := QWidget_height(QApplication_desktop);
+        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
+        Result := R.Bottom - R.Top;
       end;
     SM_CXSIZE:
       begin
@@ -1874,6 +1878,14 @@ begin
     SM_CYSMSIZE:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
+      end;
+    SM_CXVIRTUALSCREEN:
+      begin
+        Result := QWidget_width(QApplication_desktop);
+      end;
+    SM_CYVIRTUALSCREEN:
+      begin
+        Result := QWidget_height(QApplication_desktop);
       end;
     { Size of the array bitmap on the vertical scrollbar
       Currently hardcoded, but more research should be made to check if Qt gives this info }

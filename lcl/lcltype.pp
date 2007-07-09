@@ -1634,6 +1634,13 @@ const
   SM_MIDEASTENABLED = 74;
   SM_MOUSEWHEELPRESENT = 75;
   SM_CMETRICS = 76;
+  
+  SM_XVIRTUALSCREEN     = 76;
+  SM_YVIRTUALSCREEN     = 77;
+  SM_CXVIRTUALSCREEN    = 78;
+  SM_CYVIRTUALSCREEN    = 79;
+  SM_CMONITORS          = 80;
+  SM_SAMEDISPLAYFORMAT  = 81;
 
 //==============================================
 // SystemParametersInfo constants

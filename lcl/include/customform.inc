@@ -1859,7 +1859,12 @@ begin
       else begin
         case Position of
         //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly
-        poScreenCenter, poDesktopCenter :
+        poDesktopCenter :
+          begin
+            X:= (Screen.DesktopWidth - Width) div 2;
+            Y:= (Screen.DesktopHeight - Height) div 2;
+          end;
+        poScreenCenter :
           begin
             X:= (Screen.Width - Width) div 2;
             Y:= (Screen.Height - Height) div 2;

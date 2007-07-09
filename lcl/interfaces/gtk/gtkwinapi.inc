@@ -6108,7 +6108,8 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
-    SM_CXSCREEN:
+    SM_CXSCREEN,
+    SM_CXVIRTUALSCREEN:
       begin
         {$IFDEF GTK1} { Partial fix for multi monitor systems - force use of first one }
         {$IFDEF UseXinerama}
@@ -6119,7 +6120,8 @@ begin
         {$ENDIF}
           result := gdk_Screen_Width;
       end;
-    SM_CYSCREEN:
+    SM_CYSCREEN,
+    SM_CYVIRTUALSCREEN:
       begin
         {$IFDEF GTK1}
         {$IFDEF UseXinerama}

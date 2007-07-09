@@ -1699,8 +1699,10 @@ begin
     SM_CYHSCROLL, SM_CXVSCROLL:
       OSError(GetThemeMetric(kThemeMetricScrollBarWidth, Result),
         Self, 'GetSystemMetrics', SGetThemeMetric);
-    SM_CXSCREEN: Result := CGDisplayPixelsWide(CGMainDisplayID);
-    SM_CYSCREEN: Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CXSCREEN,
+    SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
+    SM_CYSCREEN,
+    SM_CYVIRTUALSCREEN : Result := CGDisplayPixelsHigh(CGMainDisplayID);
     SM_CXCURSOR,
     SM_CYCURSOR:
       begin

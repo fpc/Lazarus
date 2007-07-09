@@ -360,6 +360,16 @@ begin
   Result := TCustomForm(FCustomFormsZOrdered[Index]);
 end;
 
+function TScreen.GetDesktopHeight: Integer;
+begin
+  Result := GetSystemMetrics(SM_CYVIRTUALSCREEN);
+end;
+
+function TScreen.GetDesktopWidth: Integer;
+begin
+  Result := GetSystemMetrics(SM_CXVIRTUALSCREEN);
+end;
+
 {------------------------------------------------------------------------------
   Function: TScreen.AddForm
   Params:   FForm: The form to be added

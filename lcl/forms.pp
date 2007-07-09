@@ -746,6 +746,8 @@ type
     function GetCustomFormZOrderCount: Integer;
     function GetCustomForms(Index: Integer): TCustomForm;
     function GetCustomFormsZOrdered(Index: Integer): TCustomForm;
+    function GetDesktopHeight: Integer;
+    function GetDesktopWidth: Integer;
     function GetFonts : TStrings;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
@@ -804,6 +806,8 @@ type
     property CustomFormZOrderCount: Integer read GetCustomFormZOrderCount;
     property CustomFormsZOrdered[Index: Integer]: TCustomForm
                                                     read GetCustomFormsZOrdered;
+    property DesktopHeight: Integer read GetDesktopHeight;
+    property DesktopWidth: Integer read GetDesktopWidth;
     property FocusedForm: TCustomForm read FFocusedForm;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
