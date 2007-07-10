@@ -1267,17 +1267,17 @@ Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
 var
   OldFormStyle: TFormStyle;
 Begin
-  if FFormStyle = Value then exit;
-  if (Value in [fsMDIChild, fsMDIForm]) then
-    raise Exception.Create('TCustomForm.SetFormStyle MDI forms are not implemented yet');
-  OldFormStyle:=FFormStyle;
+  if FFormStyle = Value then
+    exit;
+  OldFormStyle := FFormStyle;
   FFormStyle := Value;
-  Include(FFormState,fsFormStyleChanged);
-  if FFormStyle=fsSplash then begin
-    BorderStyle:=bsNone;
-  end else if OldFormStyle=fsSplash then begin
-    BorderStyle:=bsSizeable;
-  end;
+  Include(FFormState, fsFormStyleChanged);
+
+  if FFormStyle = fsSplash then
+    BorderStyle := bsNone
+  else
+  if OldFormStyle = fsSplash then
+    BorderStyle := bsSizeable;
 end;
 
 {------------------------------------------------------------------------------

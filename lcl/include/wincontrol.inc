@@ -5490,7 +5490,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     FinalizeWnd;
     TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
     Handle := 0;

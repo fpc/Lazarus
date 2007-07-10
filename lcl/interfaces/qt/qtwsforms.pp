@@ -156,17 +156,22 @@ begin
 
   QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
   
-  // Set´s initial properties
+  if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and
+     (Application <> nil) and
+     (Application.MainForm <> nil) and
+     (Application.MainForm.HandleAllocated) and
+     (Application.MainForm <> AWinControl) then
+    QtMainWindow.setShowInTaskBar(False);
 
+  // Set´s initial properties
 
   Str := UTF8Decode(AWinControl.Caption);
 
   QtMainWindow.SetWindowTitle(@Str);
 
-  SetQtWindowBorderStyle(QtMainWindow,  TCustomForm(AWinControl).BorderStyle);
+  SetQtWindowBorderStyle(QtMainWindow, TCustomForm(AWinControl).BorderStyle);
 
   SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
-
 
   // Sets Various Events
 
@@ -268,8 +273,18 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar);
+var
+  Enable: Boolean;
 begin
-  inherited SetShowInTaskbar(AForm, AValue);
+  if (AForm.Parent<>nil) or not (AForm.HandleAllocated) then exit;
+
+  Enable := AValue <> stNever;
+  if (AValue = stDefault) and
+     (Application<>nil) and
+     (Application.MainForm <> nil) and
+     (Application.MainForm <> AForm) then
+    Enable := false;
+  TQtMainWindow(AForm.Handle).setShowInTaskBar(Enable);
 end;
 
 {------------------------------------------------------------------------------
@@ -340,7 +355,7 @@ begin
   case AFormBorderStyle of
    bsNone:
    begin
-     Flags := Flags or QtFramelessWindowHint;
+     Flags := (Flags or QtFramelessWindowHint) and not QtWindowTitleHint;
      Flags := Flags and not QtOnlyDialog;
    end;
    bsSingle:
@@ -388,6 +403,7 @@ class procedure TQtWSCustomForm.SetQtBorderIcons(const AHandle: TQtMainWindow;
   const ABorderIcons: TBorderIcons);
 var
   Flags: QtWindowFlags;
+  ShowAny: Boolean;
 begin
   Flags := AHandle.windowFlags;
 
@@ -395,17 +411,28 @@ begin
     WriteLn('Trace:> [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));
   {$endif}
 
-  if biSystemMenu in ABorderIcons then Flags := Flags or QtWindowSystemMenuHint
-  else Flags := Flags and not QtWindowSystemMenuHint;
+  ShowAny := ((Flags and QtFramelessWindowHint) = 0) or
+             ((Flags and QtWindowTitleHint) <> 0);
 
-  if biMinimize in ABorderIcons then Flags := Flags or QtWindowMinimizeButtonHint
-  else Flags := Flags and not QtWindowMinimizeButtonHint;
+  if (biSystemMenu in ABorderIcons) and ShowAny then
+    Flags := Flags or QtWindowSystemMenuHint
+  else
+    Flags := Flags and not QtWindowSystemMenuHint;
 
-  if biMaximize in ABorderIcons then Flags := Flags or QtWindowMaximizeButtonHint
-  else Flags := Flags and not QtWindowMaximizeButtonHint;
+  if (biMinimize in ABorderIcons) and ShowAny then
+    Flags := Flags or QtWindowMinimizeButtonHint
+  else
+    Flags := Flags and not QtWindowMinimizeButtonHint;
 
-  if biHelp in ABorderIcons then Flags := Flags or QtWindowContextHelpButtonHint
-  else Flags := Flags and not QtWindowContextHelpButtonHint;
+  if (biMaximize in ABorderIcons) and ShowAny then
+    Flags := Flags or QtWindowMaximizeButtonHint
+  else
+    Flags := Flags and not QtWindowMaximizeButtonHint;
+
+  if (biHelp in ABorderIcons) and ShowAny then
+    Flags := Flags or QtWindowContextHelpButtonHint
+  else
+    Flags := Flags and not QtWindowContextHelpButtonHint;
 
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));

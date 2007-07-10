@@ -114,6 +114,7 @@ var
   MenuBar: TQtMenuBar;
   Text: WideString;
   Method: TMethod;
+  Hook: QObject_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('trace:> [TQtWSMenuItem.CreateHandle] Caption: ', AMenuItem.Caption,
@@ -121,6 +122,8 @@ begin
 
     Write('trace:< [TQtWSMenuItem.CreateHandle]');
   {$endif}
+  
+  Menu := nil;
 
   {------------------------------------------------------------------------------
     This case should not happen. A menu item must have a parent, but it seams LCL
@@ -224,8 +227,14 @@ begin
     // Trigger event
 
     QAction_triggered_Event(Method) := Menu.SlotTriggered;
-
+    
     QAction_hook_hook_triggered(QAction_hook_create(Menu.ActionHandle), Method);
+    
+    Hook := QObject_hook_create(Menu.Widget);
+
+    TEventFilterMethod(Method) := Menu.EventFilter;
+    
+    QObject_hook_hook_events(Hook, Method);
   end;
 
   {$ifdef VerboseQt}

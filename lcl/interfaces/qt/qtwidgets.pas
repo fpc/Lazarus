@@ -91,6 +91,7 @@ type
     procedure WindowTitle(Str: PWideString);
     procedure Hide;
     procedure Show;
+    function getVisible: boolean;
     procedure setEnabled(p1: Boolean);
     procedure setVisible(visible: Boolean);
     function windowModality: QtWindowModality;
@@ -158,6 +159,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    LayoutWidget: QBoxLayoutH;
 {$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
 {$endif}
@@ -167,10 +169,11 @@ type
     ToolBar: TQtToolBar;
     Canvas: TQtDeviceContext;
     destructor Destroy; override;
-    function  GetContainerWidget: QWidgetH; override;
+    function GetContainerWidget: QWidgetH; override;
     procedure setTabOrders;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
+    procedure setShowInTaskBar(AValue: Boolean);
   end;
 
   { TQtStaticText }
@@ -510,7 +513,9 @@ type
     constructor Create(const AHandle: QMenuH); overload;
     destructor Destroy; override;
   public
+    procedure SlotDestroy; cdecl;
     procedure SlotTriggered(checked: Boolean = False); cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
     procedure PopUp(pos: PQtPoint; at: QActionH = nil);
     function actionHandle: QActionH;
@@ -528,6 +533,7 @@ type
 
   TQtMenuBar = class(TQtWidget)
   private
+    FVisible: Boolean;
   public
     constructor Create(const AParent: QWidgetH); overload;
     destructor Destroy; override;
@@ -1360,6 +1366,11 @@ begin
   QWidget_show(Widget);
 end;
 
+function TQtWidget.getVisible: boolean;
+begin
+  Result := QWidget_isVisible(Widget);
+end;
+
 procedure TQtWidget.setEnabled(p1: Boolean);
 begin
   QWidget_setEnabled(Widget, p1);
@@ -2000,7 +2011,7 @@ begin
   {$endif}
 
   w := QApplication_activeWindow;
-  
+
   if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible)) then
   begin
     Result := QMainWindow_create(nil, QtWindow);
@@ -2020,15 +2031,20 @@ begin
      ------------------------------------------------------------------------------}
 
     if Assigned(Application.MainForm) and Assigned(Application.MainForm.Menu) then
-     QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
+      QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
      
     {$ifdef USE_QT_4_3}
-      MDIAreaHandle := QMdiArea_create(Result);
-
-      CentralWidget := MDIAreaHandle;
-
-      QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
-
+      if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm) then
+      begin
+        MDIAreaHandle := QMdiArea_create(Result);
+        CentralWidget := MDIAreaHandle;
+      end
+      else
+      begin
+        CentralWidget := QWidget_create(Result);
+        MDIAreaHandle := nil
+      end;
+      QMainWindow_setCentralWidget(QMainWindowH(Result), CentralWidget);
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
     {$else}
       CentralWidget := QWidget_create(Result);
@@ -2039,13 +2055,13 @@ begin
   else
   begin
     {$ifdef USE_QT_4_3}
-      if LCLObject.Tag = 9999 then
+      if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) then
       begin
-        Result := QMdiSubWindow_create(NiL, QtWindow);
+        Result := QMdiSubWindow_create(niL, QtWindow);
       
         mdiHandle := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
         if Assigned(mdiHandle) then
-         QMdiArea_addSubWindow(mdiHandle, QMdiSubWindowH(Result), QtWindow);
+          QMdiArea_addSubWindow(mdiHandle, QMdiSubWindowH(Result), QtWindow);
       end
       else
         Result := QWidget_create(nil, QtWindow);
@@ -2055,6 +2071,14 @@ begin
     
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
+    CentralWidget := QWidget_create(Result);
+
+    LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
+    QBoxLayout_setSpacing(LayoutWidget, 0);
+    QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
+    QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
+    QLayout_addWidget(LayoutWidget, CentralWidget);
+    QWidget_setLayout(Result, QLayoutH(LayoutWidget));
   end;
 end;
 
@@ -2094,11 +2118,15 @@ end;
 function TQtMainWindow.GetContainerWidget: QWidgetH;
 begin
   {$ifdef USE_QT_4_3}
-    if (CentralWidget <> nil) and (MDIAreaHandle = NiL) then Result := CentralWidget
-    else Result := Widget;
+    if (CentralWidget <> nil) then
+      Result := CentralWidget
+    else
+      Result := Widget;
   {$else}
-    if CentralWidget <> nil then Result := CentralWidget
-    else Result := Widget;
+    if CentralWidget <> nil then
+      Result := CentralWidget
+    else
+      Result := Widget;
   {$endif}
 end;
 
@@ -2198,6 +2226,34 @@ begin
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
+  end;
+end;
+
+procedure TQtMainWindow.setShowInTaskBar(AValue: Boolean);
+var
+  w: QWidgetH;
+  Flags: QtWindowFlags;
+  Visible: Boolean;
+begin
+  if not AValue then
+  begin
+    w := TQtMainWindow(Application.MainForm.Handle).Widget;
+    if w <> Widget then
+    begin
+      Visible := getVisible;
+      Flags := windowFlags;
+      setParent(w);
+      setWindowFlags(Flags);
+      setVisible(Visible);
+    end;
+  end
+  else
+  begin
+    Visible := getVisible;
+    Flags := windowFlags;
+    setParent(nil);
+    setWindowFlags(Flags);
+    setVisible(Visible);
   end;
 end;
 
@@ -4083,6 +4139,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtMenu.SlotDestroy; cdecl;
+begin
+  Widget := nil;
+end;
+
 procedure TQtMenu.PopUp(pos: PQtPoint; at: QActionH);
 begin
   QMenu_Popup(QMenuH(Widget), pos, at);
@@ -4162,11 +4223,22 @@ begin
    MenuItem.OnClick(Self.MenuItem);
 end;
 
+function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+
+  case QEvent_type(Event) of
+    QEventDestroy: SlotDestroy;
+  end;
+end;
+
 { TQtMenuBar }
 
 constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
   Widget := QMenuBar_create(AParent);
+  FVisible := False;
+  setVisible(FVisible);
 end;
 
 destructor TQtMenuBar.Destroy;
@@ -4176,11 +4248,21 @@ end;
 
 function TQtMenuBar.addMenu(title: PWideString): TQtMenu;
 begin
+  if not FVisible then
+  begin
+    FVisible := True;
+    setVisible(FVisible);
+  end;
   Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), title));
 end;
 
 function TQtMenuBar.addSeparator: TQtMenu;
 begin
+  if not FVisible then
+  begin
+    FVisible := True;
+    setVisible(FVisible);
+  end;
   Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), nil));
   Result.setSeparator(True);
 end;
@@ -4699,5 +4781,6 @@ begin
 end;
 
 end.
+
 
 
