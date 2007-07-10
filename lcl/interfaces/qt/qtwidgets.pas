@@ -2077,8 +2077,12 @@ begin
     CentralWidget := QWidget_create(Result);
 
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
-    QBoxLayout_setSpacing(LayoutWidget, 0);
-    QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
+
+    {$ifdef USE_QT_4_3}
+      QBoxLayout_setSpacing(LayoutWidget, 0);
+      QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
+    {$endif}
+    
     QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
     QLayout_addWidget(LayoutWidget, CentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
