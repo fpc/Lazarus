@@ -163,6 +163,10 @@ msgstr "接受"
 msgid "All files (%s)|%s|%s"
 msgstr "所有文件 (%s)|%s|%s"
 
+#: lclstrconsts:ifsalt
+msgid "Alt"
+msgstr ""
+
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr "退格"
@@ -234,6 +238,10 @@ msgstr "转换"
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
 msgstr "创建 GDB 可以捕捉的错误"
+
+#: lclstrconsts:ifsctrl
+msgid "Ctrl"
+msgstr ""
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"

@@ -240,6 +240,8 @@ ResourceString
   ifsVK_INSERT     = 'Insert';
   ifsVK_DELETE     = 'Delete'; //= dlgeddelete
   ifsVK_HELP       = 'Help';
+  ifsCtrl          = 'Ctrl';
+  ifsAlt           = 'Alt';
   rsWholeWordsOnly = 'Whole words only';
   rsCaseSensitive = 'Case sensitive';
   rsText = 'Text';

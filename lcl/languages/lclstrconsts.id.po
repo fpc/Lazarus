@@ -163,6 +163,10 @@ msgstr "Terima"
 msgid "All files (%s)|%s|%s"
 msgstr "Semua file (%s)|%s|%s"
 
+#: lclstrconsts:ifsalt
+msgid "Alt"
+msgstr ""
+
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr "Backspace"
@@ -234,6 +238,10 @@ msgstr "Konversi"
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
 msgstr "Pembuatan cachable salah: "
+
+#: lclstrconsts:ifsctrl
+msgid "Ctrl"
+msgstr ""
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"

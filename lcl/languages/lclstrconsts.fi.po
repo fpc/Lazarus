@@ -150,6 +150,10 @@ msgstr "Hyväksy"
 msgid "All files (%s)|%s|%s"
 msgstr "Kaikki tiedostot (%s)|%s|%s"
 
+#: lclstrconsts:ifsalt
+msgid "Alt"
+msgstr ""
+
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -220,6 +224,10 @@ msgstr ""
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lclstrconsts:ifsctrl
+msgid "Ctrl"
 msgstr ""
 
 #: lclstrconsts:rsmtcustom

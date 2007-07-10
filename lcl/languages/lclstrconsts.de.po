@@ -164,6 +164,10 @@ msgstr "Übernehmen"
 msgid "All files (%s)|%s|%s"
 msgstr "Alle Dateien (%s)|%s|%s"
 
+#: lclstrconsts:ifsalt
+msgid "Alt"
+msgstr ""
+
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr "Rückschritt"
@@ -235,6 +239,10 @@ msgstr "Konvertiert"
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
 msgstr "Erzeuge GDB-fangbaren Fehler:"
+
+#: lclstrconsts:ifsctrl
+msgid "Ctrl"
+msgstr ""
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"

@@ -161,6 +161,10 @@ msgstr ""
 msgid "All files (%s)|%s|%s"
 msgstr ""
 
+#: lclstrconsts:ifsalt
+msgid "Alt"
+msgstr ""
+
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -231,6 +235,10 @@ msgstr ""
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lclstrconsts:ifsctrl
+msgid "Ctrl"
 msgstr ""
 
 #: lclstrconsts:rsmtcustom

@@ -150,6 +150,10 @@ msgstr "Прийняти"
 msgid "All files (%s)|%s|%s"
 msgstr "Всі файли (%s)|%s|%s"
 
+#: lclstrconsts:ifsalt
+msgid "Alt"
+msgstr ""
+
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr "Забій"
@@ -221,6 +225,10 @@ msgstr "Перетворити"
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
 msgstr "Створення помилки кешування gdb:"
+
+#: lclstrconsts:ifsctrl
+msgid "Ctrl"
+msgstr ""
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"

@@ -263,9 +263,9 @@ function TWidgetSet.GetAcceleratorString(const AVKey: Byte; const AShiftState: T
 
 begin
   Result := '';
-  if ssCtrl in AShiftState then AddPart('Ctrl');
-  if ssAlt in AShiftState then AddPart('Alt');
-  if ssShift in AShiftState then AddPart('Shift');
+  if ssCtrl in AShiftState then AddPart(ifsCtrl);
+  if ssAlt in AShiftState then AddPart(ifsAlt);
+  if ssShift in AShiftState then AddPart(ifsVK_SHIFT);
   AddKey;
 end;
 
