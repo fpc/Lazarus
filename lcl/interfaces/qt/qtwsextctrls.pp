@@ -344,10 +344,21 @@ begin
   AWinControl.Handle := 0;
 end;
 
-class procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl;
-  const AText: string);
+class procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  ANoteBook: TCustomNoteBook;
+  Index: Integer;
+  AWsText: WideString;
 begin
-  inherited SetText(AWinControl, AText);
+  if (AWinControl is TCustomPage) and
+     (AWinControl.Parent <> nil) and
+     (AWinControl.Parent is TCustomNotebook) then
+  begin
+    ANoteBook := TCustomNotebook(AWinControl.Parent);
+    Index := ANoteBook.IndexOf(TCustomPage(AWinControl));
+    AWsText := UTF8Decode(AText);
+    TQtTabWidget(ANoteBook.Handle).setTabText(Index, @AWsText);
+  end;
 end;
 
 { TQtWSCustomNotebook }

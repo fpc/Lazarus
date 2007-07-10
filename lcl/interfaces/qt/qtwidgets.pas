@@ -350,6 +350,7 @@ type
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure SignalCurrentChanged(Index: Integer); cdecl;
+    procedure setTabText(index: Integer; p2: PWideString);
   end;
 
   { TQtComboBox }
@@ -3331,6 +3332,11 @@ begin
   except
     Application.HandleException(nil);
   end;
+end;
+
+procedure TQtTabWidget.setTabText(index: Integer; p2: PWideString);
+begin
+  QTabWidget_setTabText(QTabWidgetH(Widget), index, p2);
 end;
 
 
