@@ -63,7 +63,7 @@ rmdir /s /q %BUILDDIR%
 call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
-%SVN% export %FPCSVNDIR%\install\binw32 %BUILDDIR%\fpcbins >> %LOGFILE%
+%SVN% export %FPCBINDIR% %BUILDDIR%\fpcbins >> %LOGFILE%
 mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
@@ -83,7 +83,7 @@ if not exist %BUILDDIR%\lazarus.exe goto END
 if not exist %BUILDDIR%\startlazarus.exe goto END
 
 :: copy gdb into build dir
-%CP% -pr %GDBDIR% %BUILDDIR%
+if exist %GDBDIR% %CP% -pr %GDBDIR% %BUILDDIR%
 
 :: create the installer
 %ISCC% lazarus.iss >> installer.log
