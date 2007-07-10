@@ -816,6 +816,7 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   WideStr: WideString;
+  QtDC: TQtDeviceContext absolute DC;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -823,11 +824,21 @@ begin
 
   Result := False;
 
+  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+    exit;
+
   if not IsValidDC(DC) then Exit;
 
-  WideStr := UTF8Decode(Str);
+   if ((Options and ETO_OPAQUE) <> 0) then
+     QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
 
-  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
+  if Str <> nil then
+  begin
+    WideStr := UTF8Decode(Str);
+
+    QtDC.drawText(X, Y, @WideStr);
+  end;
+  
   Result := True;
 end;
 
@@ -839,9 +850,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
-var
-  Painter: QPainterH;
-  ABrush: QBrushH;
 begin
   result:=false;
   
@@ -854,11 +862,8 @@ begin
   if not IsValidGdiObject(Brush) then
     exit;
 
-  Painter:= TQTDeviceContext(DC).Widget;
-  ABrush := TQTBrush(Brush).Widget;
-  
-  QPainter_FillRect(Painter, @Rect, ABrush);
-  
+  TQTDeviceContext(DC).fillRect(@Rect, TQTBrush(Brush).Widget);
+
   result := true;
 end;
 
