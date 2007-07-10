@@ -142,12 +142,20 @@ end;
 
 procedure TQtWidgetSet.AppMinimize;
 begin
+  if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
+    TQtMainWindow(Application.MainForm.Handle).ShowMinimized;
+end;
 
+procedure TQtWidgetSet.AppRestore;
+begin
+  if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
+    TQtMainWindow(Application.MainForm.Handle).ShowNormal;
 end;
 
 procedure TQtWidgetSet.AppBringToFront;
 begin
-
+  if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
+    TQtMainWindow(Application.MainForm.Handle).BringToFront;
 end;
 
 function TQtWidgetSet.CreateThemeServices: TThemeServices;

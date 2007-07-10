@@ -654,7 +654,6 @@ class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIn
 var
   QtStatusBar: TQtStatusBar;
   Str: Widestring;
-  R: TRect;
   i: Integer;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
@@ -946,7 +945,6 @@ class procedure TQtWSCustomListView.ColumnSetAlignment(const ALV: TCustomListVie
 var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
-  TWIChild: QTreeWidgetItemH;
   FAlign: QtAlignment;
 begin
 
@@ -1075,7 +1073,8 @@ var
   TWI: QTreeWidgetItemH;
 begin
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-  QTreeWidget_takeTopLevelItem(TW, AIndex);
+  TWI := QTreeWidget_takeTopLevelItem(TW, AIndex);
+  {$note implement}
 end;
 
 {------------------------------------------------------------------------------
@@ -1153,14 +1152,13 @@ class procedure TQtWSCustomListView.ItemSetChecked(const ALV: TCustomListView; c
 var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
-  AState: QtCheckState;
 begin
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   if AChecked then
-  QTreeWidgetItem_setCheckState(TWI, 0, QtChecked)
+    QTreeWidgetItem_setCheckState(TWI, 0, QtChecked)
   else
-  QTreeWidgetItem_setCheckState(TWI, 0, QtUnChecked);
+    QTreeWidgetItem_setCheckState(TWI, 0, QtUnChecked);
 end;
 
 {------------------------------------------------------------------------------
@@ -1354,6 +1352,7 @@ begin
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   if AType <> stNone then
   begin
+    {$note implement}
 //    QTreeWidget_setSortingEnabled(TW, True);
 //    QTreeView_sortByColumn(QTreeViewH(TW), AColumn);
   end;

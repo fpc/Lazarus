@@ -132,7 +132,6 @@ class function  TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
 var
   QtAbstractScrollArea: TQtAbstractScrollArea;
   Method: TMethod;
-  AHook : QAbstractScrollArea_hookH;
   Hook: QObject_hookH;
 begin
   {$ifdef VerboseQt}

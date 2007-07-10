@@ -116,7 +116,7 @@ var
   opt: QStyleOptionH;
   ARect: QRectH;
   Element: TQtDrawElement;
-  QVariant: QVariantH;
+  //QVariant: QVariantH;
   Features: QStyleOptionButtonButtonFeatures;
 begin
   if (Context <> nil) then

@@ -193,8 +193,6 @@ end;
   Contructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtListStrings.Create(ListWidgetH: QListWidgetH; TheOwner: TWinControl);
-var
-  i: Integer;
 begin
   inherited Create;
 
@@ -475,8 +473,8 @@ end;
   Clears all.
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Clear;
-var
-  Mess: TLMessage;
+{var
+  Mess: TLMessage;}
 begin
   FUpdating := True;
   FStringList.Clear;
@@ -607,8 +605,6 @@ begin
 end;
 
 constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl);
-var
-  i: Integer;
 begin
   inherited Create;
 

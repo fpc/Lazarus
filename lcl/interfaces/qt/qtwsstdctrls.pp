@@ -526,7 +526,10 @@ var
   ListWidgetH: QListWidgetH;
 begin
   if not Assigned(TQtListWidget(ACustomListBox.Handle).FList) then
-  TQtListWidget(ACustomListBox.Handle).FList := TQtListStrings.Create(ListWidgetH, ACustomListBox);
+  begin
+    ListWidgetH := QListWidgetH(TQtListWidget(ACustomListBox.Handle).Widget);
+    TQtListWidget(ACustomListBox.Handle).FList := TQtListStrings.Create(ListWidgetH, ACustomListBox);
+  end;
   Result := TQtListWidget(ACustomListBox.Handle).FList;
 end;
 
@@ -764,8 +767,6 @@ class function TQtWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtLineEdit: TQtLineEdit;
-  QColor: TQColor;
-  Color: TColor;
   Method: TMethod;
   Hook : QLineEdit_hookH;
 begin
@@ -1428,8 +1429,6 @@ var
   QtComboBox: TQtComboBox;
   Method: TMethod;
   Hook : QObject_hookH;
-  QColor: TQColor;
-  Color: TColor;
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
 
@@ -1453,7 +1452,7 @@ begin
   QComboBox_currentIndexChanged_Event(Method) := QtComboBox.SlotSelect;
 
   QComboBox_hook_hook_currentIndexChanged(
-   QComboBox_hook_create(QtComboBox.Widget), Method);
+    QComboBox_hook_create(QtComboBox.Widget), Method);
 
   Result := THandle(QtComboBox);
 end;

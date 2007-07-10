@@ -714,15 +714,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 constructor TQtPen.Create(CreateHandle: Boolean);
-var
-   MyColor: TQColor;
 begin
-
   {$ifdef VerboseQt}
     WriteLn('TQtPen.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
   
-  if CreateHandle then Widget := QPen_create;
+  if CreateHandle then
+    Widget := QPen_create;
 end;
 
 {------------------------------------------------------------------------------
@@ -938,7 +936,6 @@ end;
 procedure TQtDeviceContext.DebugClipRect(const msg: string);
 var
   Rgn: QRegionH;
-  R: TRect;
   ok: boolean;
 begin
   ok := QPainter_hasClipping(Widget);
@@ -987,8 +984,6 @@ end;
  (x: 0 y: 0 w: 50 h: 50)
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.CorrectCoordinates(var ARect: TRect);
-var
-  Buffer: Integer;
 begin
   if ARect.Left < 0 then ARect.Left := 0;
 
@@ -1487,9 +1482,6 @@ end;
 { TQtButtonGroup }
 
 constructor TQtButtonGroup.Create(AParent: QObjectH);
-var
-  Hook: QObject_hookH;
-  Method: TMethod;
 begin
   inherited Create;
 

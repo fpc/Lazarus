@@ -65,6 +65,7 @@ type
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;
     procedure AppMinimize; override;
+    procedure AppRestore; override;
     procedure AppBringToFront; override;
 //    procedure AppSetTitle(const ATitle: string); override;
   public

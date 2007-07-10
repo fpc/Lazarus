@@ -191,12 +191,13 @@ end;
 
 class function  TQtWSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
-
+  {$note implement}
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl; const AText: string);
 begin
   // perhaps QSpinBox_setSuffix() goes here one day (if we get LCL support)
+  {$note implement}
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);

@@ -174,6 +174,10 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
+  public
+    procedure BringToFront;
+    procedure ShowMinimized;
+    procedure ShowNormal;
   end;
 
   { TQtStaticText }
@@ -2000,10 +2004,8 @@ end;
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
-  r: TRect;
 {$ifdef USE_QT_4_3}
   mdihandle: QMdiAreaH;
-  toolbar: QToolBarH;
 {$endif}
 begin
   // Creates the widget
@@ -2258,11 +2260,26 @@ begin
   end;
 end;
 
+procedure TQtMainWindow.BringToFront;
+begin
+  QWidget_activateWindow(Widget);
+  QWidget_raise(Widget);
+end;
+
+procedure TQtMainWindow.ShowMinimized;
+begin
+  QWidget_showMinimized(Widget);
+end;
+
+procedure TQtMainWindow.ShowNormal;
+begin
+  QWidget_showNormal(Widget);
+end;
+
 { TQtStaticText }
 
 function TQtStaticText.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  Str: WideString;
   Parent: QWidgetH;
 begin
   // Creates the widget
@@ -2373,7 +2390,6 @@ end;
 
 function TQtCheckBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  Str: WideString;
   Parent: QWidgetH;
 begin
   // Creates the widget
@@ -2397,7 +2413,6 @@ begin
     Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
     Result := QCheckBox_create(Parent);
   end;
-
 end;
 
 procedure TQtCheckBox.SetGeometry;
@@ -2474,7 +2489,6 @@ end;
 
 function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  Str: WideString;
   Parent: QWidgetH;
 begin
   // Creates the widget
@@ -2551,8 +2565,6 @@ end;
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  R: TRect;
-  Method: TMethod;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -3495,8 +3507,7 @@ end;
 
 procedure TQtAbstractSpinBox.SignalEditingFinished; cdecl;
 var
-   Msg: TLMessage;
-   s: WideString;
+  Msg: TLMessage;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.SignalEditingFinished');
@@ -4047,7 +4058,6 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
   AParent: QTreeWidgetItemH;
-  AIndex: Integer;
   ASubIndex: Integer;
 begin
 
@@ -4278,7 +4288,6 @@ end;
 function TQtProgressBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  Text: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}

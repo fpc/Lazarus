@@ -155,7 +155,6 @@ var
   Parent: QWidgetH;
   ReturnList: QStringListH;
   ParserState, Position, i: Integer;
-  Strings: TStringList;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables

@@ -816,7 +816,6 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   WideStr: WideString;
-  Painter: QPainterH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -1211,7 +1210,7 @@ end;
 function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 var
   aObject: TObject;
-  NumColors, Width, Height: Longint;
+  Width, Height: Longint;
   BitmapSection : TDIBSECTION;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
@@ -2248,8 +2247,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
-var
-  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
@@ -2622,8 +2619,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
-var
-  Brush: TQtBrush;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI SetBkColor]',
@@ -2716,8 +2711,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
-var
-  Widget: QWidgetH;
 begin
   if hwnd<>0 then
   begin
