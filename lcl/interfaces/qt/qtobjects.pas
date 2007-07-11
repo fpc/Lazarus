@@ -80,6 +80,7 @@ type
     constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat); overload;
     destructor Destroy; override;
     function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
+    function AsPixmap: QPixmapH;
   public
     function height: Integer;
     function width: Integer;
@@ -460,12 +461,17 @@ function TQtImage.AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QI
 var
   APixmap: QPixmapH;
 begin
-  APixmap := QPixmap_create();
-  QPixmap_fromImage(APixmap, Handle);
+  APixmap := AsPixmap;
   Result := QIcon_create();
   if Result <> nil then
     QIcon_addPixmap(Result, APixmap, AMode, AState);
   QPixmap_destroy(APixmap);
+end;
+
+function TQtImage.AsPixmap: QPixmapH;
+begin
+  Result := QPixmap_create();
+  QPixmap_fromImage(Result, Handle);
 end;
 
 {------------------------------------------------------------------------------
