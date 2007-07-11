@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-07-09 08:48+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: frmtemplatevariables:svariable
+msgid "Variable"
+msgstr "Variable"
+
+#: frmtemplatevariables:svalue
+msgid "Value"
+msgstr "Valeur"
+
+#: frmtemplatevariables:sdescription
+msgid "Description"
+msgstr "Description"
+
