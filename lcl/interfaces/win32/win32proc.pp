@@ -1039,6 +1039,15 @@ begin
 
   PDisableWindowsInfo(Data)^.DisabledWindowList.Add(Pointer(Window));
   EnableWindow(Window,False);
+
+  if (Application <> nil) and (Application.MainForm <> nil) and
+    Application.MainForm.HandleAllocated and (Window = Application.MainForm.Handle)
+  then
+    // In our windowproc we ignore WM_NCACTIVATE for the main form,
+    // if it is not disabled.
+    // Now we disable the mainform, so send WM_NCACTIVATE message;
+    // when we showed the modal form, the mainform was not yet disabled
+    Windows.SendMessage(Window, WM_NCACTIVATE, 0, 0)
 end;
 
 var

@@ -1675,10 +1675,10 @@ begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCACTIVATE:
     begin
-      // do not allow main form to be deactivated
-      if (Application <> nil) and (Application.MainForm <> nil) and
+      // only allow main form to be deactivated, if it is disabled
+      if (WParam=0) and (Application <> nil) and (Application.MainForm <> nil) and
           Application.MainForm.HandleAllocated and (Window = Application.MainForm.Handle) and
-          (WParam = 0) then
+          Windows.IsWindowEnabled(Window) then
       begin
         WParam := 1;
       end;
