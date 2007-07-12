@@ -84,24 +84,9 @@ class function TQtWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtPushButton: TQtPushButton;
-  Method: TMethod;
-  Hook : QObject_hookH;
 begin
   QtPushButton := TQtPushButton.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QObject_hook_create(QtPushButton.Widget);
-
-  TEventFilterMethod(Method) := QtPushButton.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  // OnClick Event
-
-  QAbstractButton_clicked2_Event(Method) := QtPushButton.SlotClicked;
-
-  QAbstractButton_hook_hook_clicked2(QAbstractButton_hook_create(QtPushButton.Widget), Method);
+  QtPushButton.AttachEvents;
 
   // Focus
 

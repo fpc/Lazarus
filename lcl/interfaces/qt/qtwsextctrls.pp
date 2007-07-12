@@ -253,18 +253,9 @@ class function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtFrame: TQtFrame;
-  Method: TMethod;
-  Hook : QObject_hookH;
 begin
   QtFrame := TQtFrame.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QObject_hook_create(QtFrame.Widget);
-
-  TEventFilterMethod(Method) := QtFrame.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
+  QtFrame.AttachEvents;
 
   // Set´s initial properties
 
@@ -304,25 +295,15 @@ class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtWidget: TQtWidget;
-  Method: TMethod;
-  Hook : QTabBar_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomPage.CreateHandle]');
   {$endif}
 
   QtWidget := TQtWidget.CreatePage(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QTabBar_hook_create(QtWidget.Widget);
-
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
+  QtWidget.AttachEvents;
 
   // Returns the Handle
-
   Result := THandle(QtWidget);
 
   {$ifdef VerboseQt}
@@ -373,8 +354,6 @@ end;
 class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTabWidget: TQtTabWidget;
-  Method: TMethod;
-  Hook : QTabWidget_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomNotebook.CreateHandle');
@@ -382,18 +361,7 @@ begin
 
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
   QtTabWidget.SetTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
-
-  // Various Events
-
-  Hook := QTabWidget_hook_create(QtTabWidget.Widget);
-
-
-  TEventFilterMethod(Method) := QtTabWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  QTabWidget_currentChanged_Event(Method) := QtTabWidget.SignalCurrentChanged;
-  QTabWidget_hook_hook_currentChanged(QTabWidget_hook_create(QtTabWidget.Widget), Method);
+  QtTabWidget.AttachEvents;
 
   // Returns the Handle
 
@@ -454,8 +422,6 @@ class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
-  Method: TMethod;
-  Hook : QGroupBox_hookH;
   i: Integer;
 begin
 
@@ -483,9 +449,7 @@ begin
     QGridLayout_setRowStretch(QtGroupBox.BoxLayout, i, 0);
   end;
 
-  Hook := QGroupBox_hook_create(QtGroupBox.Widget);
-  TEventFilterMethod(Method) := QtGroupBox.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
+  QtGroupBox.AttachEvents;
 
   Result := THandle(QtGroupBox);
 end;
@@ -560,8 +524,6 @@ class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
-  Method: TMethod;
-  Hook : QGroupBox_hookH;
   i: Integer;
 begin
 
@@ -588,9 +550,7 @@ begin
     QGridLayout_setRowStretch(QtGroupBox.BoxLayout, i, 0);
   end;
   
-  Hook := QGroupBox_hook_create(QtGroupBox.Widget);
-  TEventFilterMethod(Method) := QtGroupBox.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
+  QtGroupBox.AttachEvents;
 
   Result := THandle(QtGroupBox);
 end;

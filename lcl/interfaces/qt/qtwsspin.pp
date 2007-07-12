@@ -95,8 +95,6 @@ class function TQtWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinCont
 var
   QtSpinBox: TQtSpinBox;
   QtFloatSpinBox: TQtFloatSpinBox;
-  Hook: QAbstractSpinBox_hookH;
-  Method: TMethod;
   FIsFloat: Boolean;
 begin
 
@@ -105,41 +103,17 @@ begin
   FIsFloat := TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0;
   
   if FIsFloat then
-    QtFloatSpinBox := TQtFloatSpinBox.Create(AWinControl, AParams)
+  begin
+    QtFloatSpinBox := TQtFloatSpinBox.Create(AWinControl, AParams);
+    QtFloatSpinBox.AttachEvents;
+    Result := THandle(QtFloatSpinBox);
+  end
   else
+  begin
     QtSpinBox := TQtSpinBox.Create(AWinControl, AParams);
-  
-  if FIsFloat then
-  begin
-    Hook := QAbstractSpinBox_hook_create(QtFloatSpinBox.Widget);
-    TEventFilterMethod(Method) := QtFloatSpinBox.EventFilter;
-    QObject_hook_hook_events(Hook, Method);
-
-    {TODO: find out which TLMessage should be sended }
-
-    QAbstractSpinBox_editingFinished_Event(Method) := QtFloatSpinBox.SignalEditingFinished;
-    QAbstractSpinBox_hook_hook_editingFinished(QAbstractSpinBox_hook_create(QtFloatSpinBox.Widget), Method);
-
-    QDoubleSpinBox_valueChanged_Event(Method) := QtFloatSpinBox.SignalValueChanged;
-    QDoubleSpinBox_hook_hook_valueChanged(QDoubleSpinBox_hook_create(QtFloatSpinBox.Widget), Method);
-
-  end else
-  begin
-    Hook := QAbstractSpinBox_hook_create(QtSpinBox.Widget);
-    TEventFilterMethod(Method) := QtSpinBox.EventFilter;
-    QObject_hook_hook_events(Hook, Method);
-
-    {TODO: find out which TLMessage should be sended }
-
-    QAbstractSpinBox_editingFinished_Event(Method) := QtSpinBox.SignalEditingFinished;
-    QAbstractSpinBox_hook_hook_editingFinished(QAbstractSpinBox_hook_create(QtSpinBox.Widget), Method);
-
-    QSpinBox_valueChanged_Event(Method) := QtSpinBox.SignalValueChanged;
-    QSpinBox_hook_hook_valueChanged(QSpinBox_hook_create(QtSpinBox.Widget), Method);
+    QtSpinBox.AttachEvents;
+    Result := THandle(QtSpinBox);
   end;
-  
-  if FIsFloat then Result := THandle(QtFloatSpinBox)
-  else Result := THandle(QtSpinBox);
 end;
 
 {------------------------------------------------------------------------------
@@ -150,9 +124,9 @@ end;
 class procedure TQtWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
   if TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0 then
-   TQtFloatSpinBox(AWinControl.Handle).Free
+    TQtFloatSpinBox(AWinControl.Handle).Free
   else
-   TQtSpinBox(AWinControl.Handle).Free;
+    TQtSpinBox(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
@@ -160,9 +134,9 @@ end;
 class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
   if ACustomFloatSpinEdit.DecimalPlaces > 0 then
-   Result := QDoubleSpinBox_value(QDoubleSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget))
+    Result := QDoubleSpinBox_value(QDoubleSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget))
   else
-   Result := QSpinBox_value(QSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget));
+    Result := QSpinBox_value(QSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget));
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);

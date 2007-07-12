@@ -131,21 +131,13 @@ class function  TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND;
 var
   QtAbstractScrollArea: TQtAbstractScrollArea;
-  Method: TMethod;
-  Hook: QObject_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('> TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl));
   {$endif}
 
   QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
-
-  Hook := QAbstractScrollArea_hook_create(QtAbstractScrollArea.Widget);
-
-  TEventFilterMethod(Method) := QtAbstractScrollArea.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-  
+  QtAbstractScrollArea.AttachEvents;
   Result := THandle(QtAbstractScrollArea);
   
   {$ifdef VerboseQt}
@@ -184,36 +176,41 @@ end;
   Shows or hides a widget.
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomControl.ShowHide(const AWinControl: TWinControl);
+var
+  Widget: TQtWidget;
 begin
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomControl.ShowHide]');
   {$endif}
 
-  if AWinControl = nil then exit;
+  if (AWinControl = nil) or not AWinControl.HandleAllocated then
+    exit;
 
-  if not AWinControl.HandleAllocated then exit;
-
+  Widget := TQtWidget(AWinControl.Handle);
   { if the widget is a form, this is a place to set the Tab order }
-  if (AWinControl is TForm) and AWinControl.HandleObjectShouldBeVisible then
-   TQtMainWindow(AWinControl.Handle).SetTabOrders;
+  if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
+    TQtMainWindow(Widget).SetTabOrders;
 
   if AWinControl.HandleObjectShouldBeVisible then
-   QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, True)
-  else QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, False);
+    QWidget_setVisible(Widget.Widget, True)
+  else
+    QWidget_setVisible(Widget.Widget, False);
 
   {$ifdef VerboseQt}
     Write('Trace:< [TQtWSCustomControl.ShowHide] ');
 
-    if AWinControl is TForm then Write('Is TForm, ');
+    if AWinControl is TForm then
+      Write('Is TForm, ');
 
-    if AWinControl.HandleObjectShouldBeVisible then WriteLn('Visible: True')
-    else WriteLn('Visible: False');
+    if AWinControl.HandleObjectShouldBeVisible then
+      WriteLn('Visible: True')
+    else
+      WriteLn('Visible: False');
   {$endif}
   
    // showhide fires before invalidate, so we must create viewport right here
-   if not AWinControl.InheritsFrom(TCustomForm)
-   then
-     TQtAbstractScrollArea(AWinControl.Handle).viewportNeeded;
+   if Widget is TQtAbstractScrollArea then
+     TQtAbstractScrollArea(Widget).viewportNeeded;
 end;
 
 {------------------------------------------------------------------------------
@@ -230,14 +227,14 @@ begin
   begin
     Widget := TQtWidget(AWinControl.Handle);
     if Assigned(Widget.LCLObject.Parent) then
-    FocusWidget := QWidget_focusWidget(TQtWidget(Widget.LCLObject.Parent.Handle).Widget)
+      FocusWidget := QWidget_focusWidget(TQtWidget(Widget.LCLObject.Parent.Handle).Widget)
     else
-    FocusWidget := QWidget_focusWidget(Widget.Widget);
+      FocusWidget := QWidget_focusWidget(Widget.Widget);
     
-    Result := (FocusWidget <> nil)
-                and QWidget_isEnabled(FocusWidget)
-                and QWidget_isVisible(FocusWidget)
-                and (QWidget_focusPolicy(FocusWidget) <> QtNoFocus);
+    Result := (FocusWidget <> nil) and
+              QWidget_isEnabled(FocusWidget) and
+              QWidget_isVisible(FocusWidget) and
+              (QWidget_focusPolicy(FocusWidget) <> QtNoFocus);
   end else
     Result := False;
 end;
@@ -251,22 +248,14 @@ class function TQtWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtWidget: TQtWidget;
-  Method: TMethod;
-  Hook : QObject_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('> TQtWSWinControl.CreateHandle for ',dbgsname(AWinControl));
   {$endif}
   QtWidget := TQtWidget.Create(AWinControl, AParams);
 
-  // Various Events
+  QtWidget.AttachEvents;
 
-  Hook := QObject_hook_create(QtWidget.Widget);
-
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-  
   // Finalization
 
   Result := THandle(QtWidget);
@@ -351,30 +340,36 @@ end;
   Shows or hides a widget.
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
+var
+  Widget: TQtWidget;
 begin
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSWinControl.ShowHide]');
   {$endif}
 
-  if AWinControl = nil then exit;
+  if (AWinControl = nil) or not AWinControl.HandleAllocated then
+    exit;
 
-  if not AWinControl.HandleAllocated then exit;
-
+  Widget := TQtWidget(AWinControl.Handle);
   { if the widget is a form, this is a place to set the Tab order }
-  if (AWinControl is TForm) and AWinControl.HandleObjectShouldBeVisible then
-   TQtMainWindow(AWinControl.Handle).SetTabOrders;
+  if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
+    TQtMainWindow(Widget).SetTabOrders;
 
   if AWinControl.HandleObjectShouldBeVisible then
-   QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, True)
-  else QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, False);
+    QWidget_setVisible(Widget.Widget, True)
+  else
+    QWidget_setVisible(Widget.Widget, False);
   
   {$ifdef VerboseQt}
     Write('Trace:< [TQtWSWinControl.ShowHide] ');
 
-    if AWinControl is TForm then Write('Is TForm, ');
+    if AWinControl is TForm then
+      Write('Is TForm, ');
 
-    if AWinControl.HandleObjectShouldBeVisible then WriteLn('Visible: True')
-    else WriteLn('Visible: False');
+    if AWinControl.HandleObjectShouldBeVisible then
+      WriteLn('Visible: True')
+    else
+      WriteLn('Visible: False');
   {$endif}
 end;
 

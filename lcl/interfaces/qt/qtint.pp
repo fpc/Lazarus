@@ -147,6 +147,7 @@ uses
  QtWSSpin,
  QtWSStdCtrls,
 // QtWSToolwin,
+ QtCaret,
  QtThemes,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,

@@ -253,16 +253,11 @@ implementation
 
 class function TQtWSToolButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
-   QtToolButton: TQtToolButton;
-   Hook: QToolButton_hookH;
-   Method: TMethod;
+  QtToolButton: TQtToolButton;
 begin
   QtToolButton := TQtToolButton.Create(AWinControl, AParams);
+  QtToolButton.AttachEvents;
 
-  Hook := QToolButton_hook_create(QtToolButton.Widget);
-  TEventFilterMethod(Method) := QtToolButton.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-  
   Result := THandle(QtToolButton);
 end;
 
@@ -337,16 +332,11 @@ end;
 
 class function TQtWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
-   QtToolBar: TQtToolBar;
-   Hook: QToolBar_hookH;
-   Method: TMethod;
+  QtToolBar: TQtToolBar;
 begin
   QtToolBar := TQtToolBar.Create(AWinControl, AParams);
+  QtToolBar.AttachEvents;
 
-  Hook := QToolBar_hook_create(QtToolBar.Widget);
-  TEventFilterMethod(Method) := QtToolBar.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-     
   Result := THandle(QtToolBar);
 end;
 
@@ -392,29 +382,9 @@ end;
 class function TQtWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTrackBar: TQtTrackBar;
-  Method: TMethod;
-  Hook : QSlider_hookH;
 begin
   QtTrackBar := TQtTrackBar.Create(AWinControl, AParams);
-
-  Hook := QSlider_hook_create(QtTrackBar.Widget);
-  TEventFilterMethod(Method) := QtTrackBar.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-
-  QAbstractSlider_rangeChanged_Event(Method) := QtTrackbar.SlotRangeChanged;
-  QAbstractSlider_hook_hook_rangeChanged(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
-
-  QAbstractSlider_sliderMoved_Event(Method) := QtTrackBar.SlotSliderMoved;
-  QAbstractSlider_hook_hook_sliderMoved(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
-
-  QAbstractSlider_sliderPressed_Event(Method) := QtTrackBar.SlotSliderPressed;
-  QAbstractSlider_hook_hook_sliderPressed(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
-
-  QAbstractSlider_sliderReleased_Event(Method) := QtTrackBar.SlotSliderReleased;
-  QAbstractSlider_hook_hook_sliderReleased(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
-
-  QAbstractSlider_valueChanged_Event(Method) := QtTrackBar.SlotValueChanged;
-  QAbstractSlider_hook_hook_valueChanged(QAbstractSlider_hook_create(QtTrackBar.Widget), Method);
+  QtTrackBar.AttachEvents;
 
   Result := THandle(QtTrackBar);
 end;
@@ -488,23 +458,9 @@ end;
 class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtProgressBar: TQtProgressBar;
-  Method: TMethod;
-  Hook : QProgressBar_hookH;
 begin
   QtProgressBar := TQtProgressBar.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QProgressBar_hook_create(QtProgressBar.Widget);
-
-  TEventFilterMethod(Method) := QtProgressBar.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-  
-  QProgressBar_valueChanged_Event(Method) := QtProgressBar.SignalValueChanged;
-  QProgressBar_hook_hook_valueChanged(QProgressBar_hook_create(QtProgressBar.Widget), Method);
-  
-
+  QtProgressBar.AttachEvents;
   Result := THandle(QtProgressBar);
 end;
 
@@ -573,21 +529,12 @@ end;
 class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtStatusBar: TQtStatusBar;
-  Method: TMethod;
-  Hook : QStatusBar_hookH;
   Str: WideString;
   i: Integer;
   R: TRect;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QStatusBar_hook_create(QtStatusBar.Widget);
-
-  TEventFilterMethod(Method) := QtStatusBar.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
+  QtStatusBar.AttachEvents;
 
   if TStatusBar(AWinControl).SimplePanel then
   begin
@@ -802,45 +749,9 @@ end;
 class function TQtWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTreeWidget: TQtTreeWidget;
-  Method: TMethod;
-  Hook : QTreeWidget_hookH;
 begin
   QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QTreeWidget_hook_create(QtTreeWidget.Widget);
-
-  TEventFilterMethod(Method) := QtTreeWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  QTreeWidget_currentItemChanged_Event(Method) := QtTreeWidget.SignalCurrentItemChanged;
-  QTreeWidget_hook_hook_currentItemChanged(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-  
-  QTreeWidget_itemDoubleClicked_Event(Method) := QtTreeWidget.SignalItemDoubleClicked;
-  QTreeWidget_hook_hook_ItemDoubleClicked(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-
-  QTreeWidget_itemClicked_Event(Method) := QtTreeWidget.SignalItemClicked;
-  QTreeWidget_hook_hook_ItemClicked(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-  
-  QTreeWidget_itemActivated_Event(Method) := QtTreeWidget.SignalItemActivated;
-  QTreeWidget_hook_hook_ItemActivated(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-  
-  QTreeWidget_itemChanged_Event(Method) := QtTreeWidget.SignalItemChanged;
-  QTreeWidget_hook_hook_ItemChanged(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-  
-  QTreeWidget_itemSelectionChanged_Event(Method) := QtTreeWidget.SignalItemSelectionChanged;
-  QTreeWidget_hook_hook_ItemSelectionChanged(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-  
-  QTreeWidget_itemPressed_Event(Method) := QtTreeWidget.SignalItemPressed;
-  QTreeWidget_hook_hook_ItemPressed(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-  
-  QTreeWidget_itemEntered_Event(Method) := QtTreeWidget.SignalItemEntered;
-  QTreeWidget_hook_hook_ItemEntered(QTreeWidget_hook_create(QtTreeWidget.Widget), Method);
-
-
-
+  QtTreeWidget.AttachEvents;
   Result := THandle(QtTreeWidget);
 end;
 

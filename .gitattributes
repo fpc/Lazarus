@@ -2697,6 +2697,7 @@ lcl/interfaces/qt/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/qt/qt4.pas svneol=native#text/plain
 lcl/interfaces/qt/qt43.pas -text
 lcl/interfaces/qt/qtcallback.inc svneol=native#text/pascal
+lcl/interfaces/qt/qtcaret.pas svneol=native#text/pascal
 lcl/interfaces/qt/qtint.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtlclintf.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtlclintfh.inc svneol=native#text/pascal

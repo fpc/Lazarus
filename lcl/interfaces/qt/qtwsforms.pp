@@ -144,8 +144,6 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
-  Method: TMethod;
-  Hook : QObject_hookH;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -174,15 +172,9 @@ begin
   SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
 
   // Sets Various Events
+  QtMainWindow.AttachEvents;
 
-  Hook := QObject_hook_create(QtMainWindow.Widget);
-
-  TEventFilterMethod(Method) := QtMainWindow.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-  
   // Return the handle
-
   Result := THandle(QtMainWindow);
 end;
 

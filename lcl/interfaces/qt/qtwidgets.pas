@@ -52,6 +52,7 @@ type
   private
     FProps: TStringList;
     FPaintData: TPaintData;
+    FEventHook: QObject_hookH;
     function GetProps(const AnIndex: String): pointer;
     function QtKeyToLCLKey(key: Integer): Word;
     procedure DeliverMessage(var Msg);
@@ -63,12 +64,17 @@ type
     AVariant: QVariantH;
     Widget: QWidgetH;
     LCLObject: TWinControl;
+    HasCaret: Boolean;
+    InPaint: Boolean;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     constructor CreatePage(const AWinControl: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
     function  GetContainerWidget: QWidgetH; virtual;
   public
+    procedure AttachEvents; virtual;
+    procedure DetachEvents; virtual;
+    
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
     procedure SlotShow(vShow: Boolean); cdecl;
     procedure SlotClose; cdecl;
@@ -91,7 +97,8 @@ type
     procedure WindowTitle(Str: PWideString);
     procedure Hide;
     procedure Show;
-    function getVisible: boolean;
+    function getVisible: Boolean;
+    function hasFocus: Boolean;
     procedure setEnabled(p1: Boolean);
     procedure setVisible(visible: Boolean);
     function windowModality: QtWindowModality;
@@ -142,10 +149,15 @@ type
 
   TQtPushButton = class(TQtAbstractButton)
   private
+    FClickedHook: QAbstractButton_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     destructor Destroy; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     procedure SlotClicked; cdecl;
   end;
 
@@ -208,25 +220,36 @@ type
   { TQtCheckBox }
 
   TQtCheckBox = class(TQtAbstractButton)
+  private
+    FStateChangedHook : QCheckBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure SetGeometry; override;
   public
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure signalStateChanged(p1: Integer); cdecl;
   end;
 
   { TQtRadioButton }
 
   TQtRadioButton = class(TQtAbstractButton)
+  private
+    FClickedHook: QAbstractButton_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure SetGeometry; override;
   public
     destructor Destroy; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
 
@@ -249,11 +272,25 @@ type
   private
     FSliderPressed: Boolean;
     FSliderReleased: Boolean;
+    FRangeChangedHook: QAbstractSlider_hookH;
+    FSliderMovedHook:  QAbstractSlider_hookH;
+    FSliderPressedHook: QAbstractSlider_hookH;
+    FSliderReleasedHook: QAbstractSlider_hookH;
+    FValueChangedHook: QAbstractSlider_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
-
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
+    procedure SlotSliderMoved(p1: Integer); cdecl; virtual;
+    procedure SlotValueChanged(p1: Integer); cdecl; virtual;
+    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
+    procedure SlotSliderPressed; cdecl;
+    procedure SlotSliderReleased; cdecl;
+ public
     procedure setInvertedAppereance(p1: Boolean); virtual;
     procedure setInvertedControls(p1: Boolean); virtual;
 
@@ -268,11 +305,6 @@ type
     procedure setSliderPosition(p1: Integer); virtual;
     procedure setTracking(p1: Boolean); virtual;
     procedure setValue(p1: Integer); virtual; 
-    procedure SlotSliderMoved(p1: Integer); cdecl; virtual;
-    procedure SlotValueChanged(p1: Integer); cdecl; virtual;
-    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
-    procedure SlotSliderPressed; cdecl;
-    procedure SlotSliderReleased; cdecl;
     property SliderPressed: Boolean read FSliderPressed;
     property SliderReleased: Boolean read FSliderReleased;
   end;
@@ -280,9 +312,10 @@ type
   { TQtScrollBar }
   
   TQtScrollBar = class(TQtAbstractSlider)
-  private
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    procedure AttachEvents; override;
   end;	
 
   { TQtToolBar }
@@ -310,6 +343,9 @@ type
   public
     procedure SetTickPosition(Value: QSliderTickPosition);
     procedure SetTickInterval(Value: Integer);
+  public
+    procedure AttachEvents; override;
+    
     procedure SlotSliderMoved(p1: Integer); cdecl; override;
     procedure SlotValueChanged(p1: Integer); cdecl; override;
     procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; override;
@@ -319,12 +355,17 @@ type
 
   TQtLineEdit = class(TQtWidget)
   private
+    FTextChanged: QLineEdit_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SetColor(const Value: PQColor); override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
   end;
 
@@ -332,12 +373,16 @@ type
 
   TQtTextEdit = class(TQtWidget)
   private
+    FTextChangedHook: QTextEdit_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     procedure SetAlignment(const AAlignment: TAlignment);
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
     procedure SignalTextChanged; cdecl;
   end;
 
@@ -345,15 +390,20 @@ type
 
   TQtTabWidget = class(TQtWidget)
   private
+    FCurrentChangedHook: QTabWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
-    procedure SignalCurrentChanged(Index: Integer); cdecl;
     procedure setTabText(index: Integer; p2: PWideString);
   end;
 
@@ -361,6 +411,8 @@ type
 
   TQtComboBox = class(TQtWidget)
   private
+    FChangeHook: QComboBox_hookH;
+    FSelectHook: QComboBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -369,6 +421,9 @@ type
     function currentIndex: Integer;
     procedure setCurrentIndex(index: Integer);
   public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     procedure SlotChange(p1: PWideString); cdecl;
     procedure SlotSelect(index: Integer); cdecl;
   end;
@@ -377,12 +432,17 @@ type
   
   TQtAbstractSpinBox = class(TQtWidget)
   private
+    FEditingFinishedHook: QAbstractSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
     function IsReadOnly: Boolean;
     procedure SetReadOnly(r: Boolean);
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     procedure SignalEditingFinished; cdecl;
   end;
 
@@ -390,9 +450,13 @@ type
 
   TQtFloatSpinBox = class(TQtAbstractSpinBox)
   private
+    FValueChangedHook: QDoubleSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+
     procedure SignalValueChanged(p1: Double); cdecl;
   end;
   
@@ -400,9 +464,13 @@ type
 
   TQtSpinBox = class(TQtAbstractSpinBox)
   private
+    FValueChangedHook: QSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+
     procedure SignalValueChanged(p1: Integer); cdecl;
   end;
 
@@ -448,14 +516,22 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+    FSelectionChangeHook: QListWidget_hookH;
+    FItemDoubleClickedHook: QListWidget_hookH;
+    FItemClickedHook: QListWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
     destructor Destroy; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
     procedure SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
     procedure SignalItemClicked(item: QListWidgetItemH); cdecl;
+  public
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
   end;
@@ -468,6 +544,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+  public
     procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
   end;
 
@@ -486,6 +563,14 @@ type
   TQtTreeWidget = class(TQtTreeView)
   private
     Header: TQtHeaderView;
+    FCurrentItemChangedHook: QTreeWidget_hookH;
+    FItemDoubleClickedHook: QTreeWidget_hookH;
+    FItemClickedHook: QTreeWidget_hookH;
+    FItemActivatedHook: QTreeWidget_hookH;
+    FItemChangedHook: QTreeWidget_hookH;
+    FItemSelectionChangedHook: QTreeWidget_hookH;
+    FItemPressedHook: QTreeWidget_hookH;
+    FItemEnteredHook: QTreeWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -493,6 +578,9 @@ type
     
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
     
     procedure SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
@@ -511,6 +599,7 @@ type
   TQtMenu = class(TQtWidget)
   private
     FIcon: QIconH;
+    FActionHook: QAction_hookH;
   public
     MenuItem: TMenuItem;
   public
@@ -518,6 +607,9 @@ type
     constructor Create(const AHandle: QMenuH); overload;
     destructor Destroy; override;
   public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     procedure SlotDestroy; cdecl;
     procedure SlotTriggered(checked: Boolean = False); cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -541,7 +633,6 @@ type
     FVisible: Boolean;
   public
     constructor Create(const AParent: QWidgetH); overload;
-    destructor Destroy; override;
   public
     function addMenu(title: PWideString): TQtMenu;
     function addSeparator: TQtMenu;
@@ -551,10 +642,15 @@ type
 
   TQtProgressBar = class(TQtWidget)
   private
+    FValueChangedHook: QProgressBar_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    procedure SignalValueChanged(Value: Integer); cdecl;
   public
     procedure setRange(minimum: Integer; maximum: Integer);
     procedure setTextVisible(visible: Boolean);
@@ -563,7 +659,6 @@ type
     procedure setValue(value: Integer);
     procedure setOrientation(p1: QtOrientation);
     procedure setInvertedAppearance(invert: Boolean);
-    procedure SignalValueChanged(Value: Integer); cdecl;
   end;
 
   { TQtStatusBar }
@@ -594,11 +689,19 @@ type
 
   TQtCalendar = class(TQtWidget)
   private
+    FClickedHook: QCalendarWidget_hookH;
+    FActivatedHook: QCalendarWidget_hookH;
+    FSelectionChangedHook: QCalendarWidget_hookH;
+    FCurrentPageChangedHook: QCalendarWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     AYear, AMonth, ADay: Word;
     destructor Destroy; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    
     procedure SignalActivated(ADate: QDateH); cdecl;
     procedure SignalClicked(ADate: QDateH); cdecl;
     procedure SignalSelectionChanged; cdecl;
@@ -606,6 +709,9 @@ type
   end;
   
 implementation
+uses
+  qtCaret;
+  
 const
   AlignmentMap: array[TAlignment] of QtAlignment =
   (
@@ -649,6 +755,8 @@ begin
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
+  
+  {HasCaret := False;}
 end;
 
 {------------------------------------------------------------------------------
@@ -678,17 +786,19 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtWidget.Destroy;
 begin
+  if Widget <> nil then
+    DetachEvents;
 
   QVariant_destroy(AVariant);
   
   {$ifdef VerboseQt}
-//    WriteLn('Calling QWidget_destroy');
+    WriteLn('Calling QWidget_destroy');
   {$endif}
 
-  if Widget<>nil then
+  if Widget <> nil then
   begin
     QWidget_destroy(QWidgetH(Widget));
-    Widget:=nil;
+    Widget := nil;
   end;
   
   if FProps<>nil then
@@ -715,6 +825,24 @@ end;
 function TQtWidget.GetContainerWidget: QWidgetH;
 begin
   Result := Widget;
+end;
+
+procedure TQtWidget.AttachEvents;
+var
+  Method: TMethod;
+begin
+  FEventHook := QObject_hook_create(Widget);
+  TEventFilterMethod(Method) := EventFilter;
+  QObject_hook_hook_events(FEventHook, Method);
+end;
+
+procedure TQtWidget.DetachEvents;
+begin
+  if FEventHook <> nil then
+  begin
+    QObject_hook_destroy(FEventHook);
+    FEventHook := nil;
+  end;
 end;
 
 {$IFDEF VerboseQt}
@@ -945,7 +1073,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotDestroy');
   {$endif}
-
+  Widget := nil;
+  
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_DESTROY;
@@ -968,8 +1097,10 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
 
-  if FocusIn then Msg.Msg := LM_SETFOCUS
-  else Msg.Msg := LM_KILLFOCUS;
+  if FocusIn then
+    Msg.Msg := LM_SETFOCUS
+  else
+    Msg.Msg := LM_KILLFOCUS;
 
   DeliverMessage(Msg);
 
@@ -1208,7 +1339,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint');
   {$endif}
-
+  InPaint := True;
   if (LCLObject is TWinControl) then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
@@ -1230,6 +1361,8 @@ begin
 
       try
         LCLObject.WindowProc(TLMessage(Msg));
+        if HasCaret then
+          QtCaret.DrawCaret;
       finally
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
@@ -1238,6 +1371,7 @@ begin
       Application.HandleException(nil);
     end;
   end;
+  InPaint := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1374,6 +1508,11 @@ end;
 function TQtWidget.getVisible: boolean;
 begin
   Result := QWidget_isVisible(Widget);
+end;
+
+function TQtWidget.hasFocus: Boolean;
+begin
+  Result := QWidget_hasFocus(Widget);
 end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);
@@ -1960,10 +2099,28 @@ begin
     WriteLn('TQtPushButton.Destroy');
   {$endif}
 
+  DetachEvents;
   QPushButton_destroy(QPushButtonH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtPushButton.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  
+  FClickedHook := QAbstractButton_hook_create(Widget);
+  QAbstractButton_clicked2_Event(Method) := SlotClicked;
+  QAbstractButton_hook_hook_clicked2(FClickedHook, Method);
+end;
+
+procedure TQtPushButton.DetachEvents;
+begin
+  QAbstractButton_hook_destroy(FClickedHook);
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -2102,8 +2259,8 @@ begin
 
   if Widget <> nil then
   begin
+    DetachEvents;
     QMainWindow_destroy(QMainWindowH(Widget));
-
     Widget := nil;
   end;
 
@@ -2192,7 +2349,7 @@ begin
   Result := False;
 
   case QEvent_type(Event) of
-   QEventWindowStateChange: SlotWindowStateChange;
+    QEventWindowStateChange: SlotWindowStateChange;
   else
    // Inherited Callbacks
    inherited EventFilter(Sender, Event);
@@ -2307,8 +2464,9 @@ begin
     WriteLn('TQtStaticText.Destroy');
   {$endif}
 
+  DetachEvents;
   QLabel_destroy(QLabelH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -2368,6 +2526,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtTimer.Destroy;
 begin
+  CallbackFunc := nil;
   QObject_killTimer(AppObject, id);
 
   inherited Destroy;
@@ -2437,8 +2596,9 @@ begin
     WriteLn('TQtCheckBox.Destroy');
   {$endif}
 
+  DetachEvents;
   QCheckBox_destroy(QCheckBoxH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -2473,6 +2633,22 @@ end;
 procedure TQtCheckBox.setCheckState(state: QtCheckState);
 begin
   QCheckBox_setCheckState(QCheckBoxH(Widget), state);
+end;
+
+procedure TQtCheckBox.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FStateChangedHook := QCheckBox_hook_create(Widget);
+  QCheckBox_stateChanged_Event(Method) := SignalStateChanged;
+  QCheckBox_hook_hook_stateChanged(FStateChangedHook, Method);
+end;
+
+procedure TQtCheckBox.DetachEvents;
+begin
+  QCheckBox_hook_destroy(FStateChangedHook);
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -2545,10 +2721,28 @@ begin
     WriteLn('TQtRadioButton.Destroy');
   {$endif}
 
+  DetachEvents;
   QRadioButton_destroy(QRadioButtonH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtRadioButton.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FClickedHook := QAbstractButton_hook_create(Widget);
+  
+  QAbstractButton_clicked_Event(Method) := SignalClicked;
+  QAbstractButton_hook_hook_clicked(FClickedHook, Method);
+end;
+
+procedure TQtRadioButton.DetachEvents;
+begin
+  QAbstractButton_hook_destroy(FClickedHook);
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -2590,8 +2784,9 @@ begin
     WriteLn('TQtGroupBox.Destroy');
   {$endif}
 
+  DetachEvents;
   QGroupBox_destroy(QGroupBoxH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -2622,8 +2817,9 @@ begin
     WriteLn('TQtFrame.Destroy');
   {$endif}
 
+  DetachEvents;
   QFrame_destroy(QFrameH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -2703,10 +2899,32 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSlider.Destroy');
   {$endif}
+
+  DetachEvents;
   QAbstractSlider_destroy(QAbstractSliderH(Widget));
-  Widget:=nil;
+  Widget := nil;
   
   inherited Destroy;
+end;
+
+procedure TQtAbstractSlider.AttachEvents;
+begin
+  inherited AttachEvents;
+  FRangeChangedHook := QAbstractSlider_hook_create(Widget);
+  FSliderMovedHook :=  QAbstractSlider_hook_create(Widget);
+  FSliderPressedHook := QAbstractSlider_hook_create(Widget);
+  FSliderReleasedHook := QAbstractSlider_hook_create(Widget);
+  FValueChangedHook := QAbstractSlider_hook_create(Widget);
+end;
+
+procedure TQtAbstractSlider.DetachEvents;
+begin
+  QAbstractSlider_hook_destroy(FRangeChangedHook);
+  QAbstractSlider_hook_destroy(FSliderMovedHook);
+  QAbstractSlider_hook_destroy(FSliderPressedHook);
+  QAbstractSlider_hook_destroy(FSliderReleasedHook);
+  QAbstractSlider_hook_destroy(FValueChangedHook);
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -2944,6 +3162,27 @@ begin
   Result := QScrollBar_create(Parent);
 end;
 
+procedure TQtScrollBar.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  QAbstractSlider_rangeChanged_Event(Method) := SlotRangeChanged;
+  QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, Method);
+
+  QAbstractSlider_sliderMoved_Event(Method) := SlotSliderMoved;
+  QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
+
+  QAbstractSlider_sliderPressed_Event(Method) := SlotSliderPressed;
+  QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, Method);
+
+  QAbstractSlider_sliderReleased_Event(Method) := SlotSliderReleased;
+  QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, Method);
+
+  QAbstractSlider_valueChanged_Event(Method) := SlotValueChanged;
+  QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, Method);
+end;
+
 { TQtToolBar }
 
 function TQtToolBar.CreateWidget(const AParams: TCreateParams):QWidgetH;
@@ -3004,6 +3243,28 @@ end;
 procedure TQtTrackBar.SetTickInterval(Value: Integer);
 begin
   QSlider_setTickInterval(QSliderH(Widget), Value);
+end;
+
+procedure TQtTrackBar.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  
+  QAbstractSlider_rangeChanged_Event(Method) := SlotRangeChanged;
+  QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, Method);
+
+  QAbstractSlider_sliderMoved_Event(Method) := SlotSliderMoved;
+  QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
+
+  QAbstractSlider_sliderPressed_Event(Method) := SlotSliderPressed;
+  QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, Method);
+
+  QAbstractSlider_sliderReleased_Event(Method) := SlotSliderReleased;
+  QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, Method);
+
+  QAbstractSlider_valueChanged_Event(Method) := SlotValueChanged;
+  QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, Method);
 end;
 
 procedure TQtTrackBar.SlotSliderMoved(p1: Integer); cdecl;
@@ -3088,10 +3349,31 @@ begin
     WriteLn('TQtLineEdit.Destroy');
   {$endif}
 
+  DetachEvents;
   QLineEdit_destroy(QLineEditH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtLineEdit.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FTextChanged := QLineEdit_hook_create(Widget);
+  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
+   workaround: add try..except around SetLength() }
+  QLineEdit_textChanged_Event(Method) := SignalTextChanged;
+  QLineEdit_hook_hook_textChanged(FTextChanged, Method);
+end;
+
+procedure TQtLineEdit.DetachEvents;
+begin
+  inherited DetachEvents;
+  
+  QLineEdit_hook_destroy(FTextChanged);
 end;
 
 {------------------------------------------------------------------------------
@@ -3194,8 +3476,9 @@ begin
     WriteLn('TQtTextEdit.Destroy');
   {$endif}
 
+  DetachEvents;
   QTextEdit_destroy(QTextEditH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -3242,6 +3525,25 @@ begin
   QTextCursor_destroy(TextCursor);
 end;
 
+procedure TQtTextEdit.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FTextChangedHook := QTextEdit_hook_create(Widget);
+  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
+   workaround: add try..except around SetLength() }
+  QTextEdit_textChanged_Event(Method) := SignalTextChanged;
+  QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
+end;
+
+procedure TQtTextEdit.DetachEvents;
+begin
+  inherited DetachEvents;
+  QTextEdit_hook_destroy(FTextChangedHook);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtTextEdit.SignalTextChanged
   Params:  none
@@ -3283,10 +3585,28 @@ begin
     WriteLn('TQtTabWidget.Destroy');
   {$endif}
 
+  DetachEvents;
   QTabWidget_destroy(QTabWidgetH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtTabWidget.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FCurrentChangedHook := QTabWidget_hook_create(Widget);
+  
+  QTabWidget_currentChanged_Event(Method) := SignalCurrentChanged;
+  QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, Method);
+end;
+
+procedure TQtTabWidget.DetachEvents;
+begin
+  QTabWidget_hook_destroy(FCurrentChangedHook);
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -3401,8 +3721,9 @@ begin
     WriteLn('TQtComboBox.Destroy');
   {$endif}
 
+  DetachEvents;
   QComboBox_destroy(QComboBoxH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -3430,6 +3751,30 @@ end;
 procedure TQtComboBox.setCurrentIndex(index: Integer);
 begin
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
+end;
+
+procedure TQtComboBox.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FChangeHook := QComboBox_hook_create(Widget);
+  FSelectHook := QComboBox_hook_create(Widget);
+  // OnChange event
+  QComboBox_editTextChanged_Event(Method) := SlotChange;
+  QComboBox_hook_hook_editTextChanged(FChangeHook, Method);
+  // OnSelect event
+  QComboBox_currentIndexChanged_Event(Method) := SlotSelect;
+  QComboBox_hook_hook_currentIndexChanged(FSelectHook, Method);
+end;
+
+procedure TQtComboBox.DetachEvents;
+begin
+  QComboBox_hook_destroy(FChangeHook);
+  QComboBox_hook_destroy(FSelectHook);
+  
+  inherited DetachEvents;
 end;
 
 procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
@@ -3487,8 +3832,9 @@ begin
     WriteLn('TQtAbstractSpinBox.Destroy');
   {$endif}
 
+  DetachEvents;
   QAbstractSpinBox_destroy(QAbstractSpinBoxH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -3507,6 +3853,25 @@ begin
     WriteLn('TQtAbstractSpinBox.SetReadOnly');
   {$endif}
   QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(Widget), r);
+end;
+
+procedure TQtAbstractSpinBox.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FEditingFinishedHook := QAbstractSpinBox_hook_create(Widget);
+  {TODO: find out which TLMessage should be sended }
+  QAbstractSpinBox_editingFinished_Event(Method) := SignalEditingFinished;
+  QAbstractSpinBox_hook_hook_editingFinished(FEditingFinishedHook, Method);
+end;
+
+procedure TQtAbstractSpinBox.DetachEvents;
+begin
+  QAbstractSpinBox_hook_destroy(FEditingFinishedHook);
+  
+  inherited DetachEvents;
 end;
 
 procedure TQtAbstractSpinBox.SignalEditingFinished; cdecl;
@@ -3541,6 +3906,22 @@ begin
   Result := QDoubleSpinBox_create(Parent);
 end;
 
+procedure TQtFloatSpinBox.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FValueChangedHook := QDoubleSpinBox_hook_create(Widget);
+  QDoubleSpinBox_valueChanged_Event(Method) := SignalValueChanged;
+  QDoubleSpinBox_hook_hook_valueChanged(FValueChangedHook, Method);
+end;
+
+procedure TQtFloatSpinBox.DetachEvents;
+begin
+  QDoubleSpinBox_hook_destroy(FValueChangedHook);
+  inherited DetachEvents;
+end;
+
 procedure TQtFloatSpinBox.SignalValueChanged(p1: Double); cdecl;
 var
    Msg: TLMessage;
@@ -3562,6 +3943,22 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QSpinBox_create(Parent);
+end;
+
+procedure TQtSpinBox.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FValueChangedHook := QSpinBox_hook_create(Widget);
+  QSpinBox_valueChanged_Event(Method) := SignalValueChanged;
+  QSpinBox_hook_hook_valueChanged(FValueChangedHook, Method);
+end;
+
+procedure TQtSpinBox.DetachEvents;
+begin
+  QSpinBox_hook_destroy(FValueChangedHook);
+  inherited DetachEvents;
 end;
 
 procedure TQtSpinBox.SignalValueChanged(p1: Integer); cdecl;
@@ -3605,10 +4002,41 @@ begin
     WriteLn('TQtListWidget.Destroy');
   {$endif}
 
+  DetachEvents;
   QListWidget_destroy(QListWidgetH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtListWidget.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  
+  FSelectionChangeHook := QListWidget_hook_create(Widget);
+  FItemDoubleClickedHook := QListWidget_hook_create(Widget);
+  FItemClickedHook := QListWidget_hook_create(Widget);
+
+  // OnSelectionChange event
+  QListWidget_currentItemChanged_Event(Method) := SlotSelectionChange;
+  QListWidget_hook_hook_currentItemChanged(FSelectionChangeHook, Method);
+
+  QListWidget_itemDoubleClicked_Event(Method) := SignalItemDoubleClicked;
+  QListWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
+
+  QListWidget_itemClicked_Event(Method) := SignalItemClicked;
+  QListWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
+end;
+
+procedure TQtListWidget.DetachEvents;
+begin
+  QListWidget_hook_destroy(FSelectionChangeHook);
+  QListWidget_hook_destroy(FItemDoubleClickedHook);
+  QListWidget_hook_destroy(FItemClickedHook);
+
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -3719,8 +4147,9 @@ begin
     WriteLn('TQtHeaderView.Destroy');
   {$endif}
 
+  DetachEvents;
   QHeaderView_destroy(QHeaderViewH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -3781,8 +4210,9 @@ begin
     WriteLn('TQtTreeView.Destroy');
   {$endif}
 
+  DetachEvents;
   QTreeView_destroy(QTreeViewH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -3835,10 +4265,11 @@ begin
   {$endif}
 
   if Assigned(Header) then
-  Header.Free;
+    Header.Free;
 
+  DetachEvents;
   QTreeWidget_destroy(QTreeWidgetH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -3867,6 +4298,60 @@ var
 begin
   TWI := QTreeWidget_topLevelItem(QTreeWidgetH(Widget), Row);
   QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), TWI);
+end;
+
+procedure TQtTreeWidget.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FCurrentItemChangedHook := QTreeWidget_hook_create(Widget);
+  FItemDoubleClickedHook := QTreeWidget_hook_create(Widget);
+  FItemClickedHook := QTreeWidget_hook_create(Widget);
+  FItemActivatedHook := QTreeWidget_hook_create(Widget);
+  FItemChangedHook := QTreeWidget_hook_create(Widget);
+  FItemSelectionChangedHook := QTreeWidget_hook_create(Widget);
+  FItemPressedHook := QTreeWidget_hook_create(Widget);
+  FItemEnteredHook := QTreeWidget_hook_create(Widget);
+  
+  QTreeWidget_currentItemChanged_Event(Method) := SignalCurrentItemChanged;
+  QTreeWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook, Method);
+
+  QTreeWidget_itemDoubleClicked_Event(Method) := SignalItemDoubleClicked;
+  QTreeWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
+
+  QTreeWidget_itemClicked_Event(Method) := SignalItemClicked;
+  QTreeWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
+
+  QTreeWidget_itemActivated_Event(Method) := SignalItemActivated;
+  QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, Method);
+
+  QTreeWidget_itemChanged_Event(Method) := SignalItemChanged;
+  QTreeWidget_hook_hook_ItemChanged(FItemChangedHook, Method);
+
+  QTreeWidget_itemSelectionChanged_Event(Method) := SignalItemSelectionChanged;
+  QTreeWidget_hook_hook_ItemSelectionChanged(FItemSelectionChangedHook, Method);
+
+  QTreeWidget_itemPressed_Event(Method) := SignalItemPressed;
+  QTreeWidget_hook_hook_ItemPressed(FItemPressedHook, Method);
+
+  QTreeWidget_itemEntered_Event(Method) := SignalItemEntered;
+  QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, Method);
+end;
+
+procedure TQtTreeWidget.DetachEvents;
+begin
+  QTreeWidget_hook_destroy(FCurrentItemChangedHook);
+  QTreeWidget_hook_destroy(FItemDoubleClickedHook);
+  QTreeWidget_hook_destroy(FItemClickedHook);
+  QTreeWidget_hook_destroy(FItemActivatedHook);
+  QTreeWidget_hook_destroy(FItemChangedHook);
+  QTreeWidget_hook_destroy(FItemSelectionChangedHook);
+  QTreeWidget_hook_destroy(FItemPressedHook);
+  QTreeWidget_hook_destroy(FItemEnteredHook);
+  
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -4159,6 +4644,30 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtMenu.AttachEvents;
+var
+  Method: TMethod;
+begin
+  FActionHook := QAction_hook_create(ActionHandle);
+  FEventHook := QObject_hook_create(Widget);
+
+  QAction_triggered_Event(Method) := SlotTriggered;
+  QAction_hook_hook_triggered(FActionHook, Method);
+  TEventFilterMethod(Method) := EventFilter;
+  QObject_hook_hook_events(FEventHook, Method);
+end;
+
+procedure TQtMenu.DetachEvents;
+begin
+  if FActionHook <> nil then
+  begin
+    QAction_hook_destroy(FActionHook);
+    FActionHook := nil;
+  end;
+
+  inherited DetachEvents;
+end;
+
 procedure TQtMenu.SlotDestroy; cdecl;
 begin
   Widget := nil;
@@ -4261,11 +4770,6 @@ begin
   setVisible(FVisible);
 end;
 
-destructor TQtMenuBar.Destroy;
-begin
-  inherited Destroy;
-end;
-
 function TQtMenuBar.addMenu(title: PWideString): TQtMenu;
 begin
   if not FVisible then
@@ -4312,10 +4816,28 @@ begin
     WriteLn('TQtProgressBar.Destroy');
   {$endif}
 
+  DetachEvents;
   QProgressBar_destroy(QProgressBarH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtProgressBar.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FValueChangedHook := QProgressBar_hook_create(Widget);
+  QProgressBar_valueChanged_Event(Method) := SignalValueChanged;
+  QProgressBar_hook_hook_valueChanged(FValueChangedHook, Method);
+end;
+
+procedure TQtProgressBar.DetachEvents;
+begin
+  QProgressBar_hook_destroy(FValueChangedHook);
+  inherited DetachEvents;
 end;
 
 procedure TQtProgressBar.setRange(minimum: Integer; maximum: Integer);
@@ -4397,8 +4919,9 @@ begin
     WriteLn('TQtStatusBar.Destroy');
   {$endif}
 
+  DetachEvents;
   QStatusBar_destroy(QStatusBarH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -4417,8 +4940,9 @@ end;
 
 destructor TQtDialog.Destroy;
 begin
+  DetachEvents;
   QDialog_destroy(QDialogH(Widget));
-  Widget:=nil;
+  Widget := nil;
   
   inherited Destroy;
 end;
@@ -4459,9 +4983,15 @@ begin
     WriteLn('TQAbstractScrollArea.Destroy');
   {$endif}
   if Assigned(FViewPortWidget) then
-  FViewPortWidget.Free;
-  QAbstractScrollArea_destroy(QAbstractScrollAreaH(Widget));
-  Widget:=nil;
+    FViewPortWidget.Free;
+
+  if Widget <> nil then
+  begin
+    DetachEvents;
+    QAbstractScrollArea_destroy(QAbstractScrollAreaH(Widget));
+  end;
+  
+  Widget := nil;
 
   inherited Destroy;
 end;
@@ -4608,19 +5138,13 @@ end;
 procedure TQtAbstractScrollArea.viewportNeeded;
 var
   AParams: TCreateParams;
-  Hook: QWidget_hookH;
-  Method: TMethod;
 begin
-  if FViewPortWidget <> NiL
-  then
+  if FViewPortWidget <> niL then
     exit;
 
   FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
+  FViewPortWidget.AttachEvents;
   
-  Hook := QWidget_hook_create(FViewPortWidget.Widget);
-  TEventFilterMethod(Method) := FViewPortWidget.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-
   QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), FViewPortWidget.Widget);
 end;
 
@@ -4699,10 +5223,44 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtCalendar.Destroy');
   {$endif}
+  DetachEvents;
   QCalendarWidget_destroy(QCalendarWidgetH(Widget));
-  Widget:=nil;
+  Widget := nil;
 
   inherited Destroy;
+end;
+
+procedure TQtCalendar.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FClickedHook := QCalendarWidget_hook_create(Widget);
+  FActivatedHook := QCalendarWidget_hook_create(Widget);
+  FSelectionChangedHook := QCalendarWidget_hook_create(Widget);
+  FCurrentPageChangedHook := QCalendarWidget_hook_create(Widget);
+  
+  QCalendarWidget_clicked_Event(Method) := SignalClicked;
+  QCalendarWidget_hook_hook_clicked(FClickedHook, Method);
+
+  QCalendarWidget_activated_Event(Method) := SignalActivated;
+  QCalendarWidget_hook_hook_activated(FActivatedHook, Method);
+
+  QCalendarWidget_selectionChanged_Event(Method) := SignalSelectionChanged;
+  QCalendarWidget_hook_hook_selectionChanged(FSelectionChangedHook, Method);
+
+  QCalendarWidget_currentPageChanged_Event(Method) := SignalCurrentPageChanged;
+  QCalendarWidget_hook_hook_currentPageChanged(FCurrentPageChangedHook, Method);
+end;
+
+procedure TQtCalendar.DetachEvents;
+begin
+  QCalendarWidget_hook_destroy(FClickedHook);
+  QCalendarWidget_hook_destroy(FActivatedHook);
+  QCalendarWidget_hook_destroy(FSelectionChangedHook);
+  QCalendarWidget_hook_destroy(FCurrentPageChangedHook);
+  inherited DetachEvents;
 end;
 
 {------------------------------------------------------------------------------

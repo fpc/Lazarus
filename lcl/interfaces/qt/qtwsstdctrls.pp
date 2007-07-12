@@ -337,10 +337,7 @@ uses LMessages;
 class function TQtWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtScrollBar: TQtScrollBar;
-  Method: TMethod;
-  Hook : QScrollBar_hookH;
 begin
-
   QtScrollBar := TQtScrollBar.Create(AWinControl, AParams);
 
   case TScrollBar(AWinControl).Kind of
@@ -364,26 +361,7 @@ begin
   QtScrollBar.setRange(TScrollBar(AWinControl).Min, TScrollBar(AWinControl).Max);
   QtScrollbar.setValue(TScrollBar(AWinControl).Position);
   QtScrollBar.setPageStep(TScrollBar(AWinControl).PageSize);
-
-  // Various Events
-  Hook := QScrollBar_hook_create(QtScrollBar.Widget);
-  TEventFilterMethod(Method) := QtScrollBar.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-
-  QAbstractSlider_rangeChanged_Event(Method) := QtScrollBar.SlotRangeChanged;
-  QAbstractSlider_hook_hook_rangeChanged(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
-
-  QAbstractSlider_sliderMoved_Event(Method) := QtScrollBar.SlotSliderMoved;
-  QAbstractSlider_hook_hook_sliderMoved(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
-  
-  QAbstractSlider_sliderPressed_Event(Method) := QtScrollBar.SlotSliderPressed;
-  QAbstractSlider_hook_hook_sliderPressed(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
-  
-  QAbstractSlider_sliderReleased_Event(Method) := QtScrollBar.SlotSliderReleased;
-  QAbstractSlider_hook_hook_sliderReleased(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
-  
-  QAbstractSlider_valueChanged_Event(Method) := QtScrollBar.SlotValueChanged;
-  QAbstractSlider_hook_hook_valueChanged(QAbstractSlider_hook_create(QtScrollBar.Widget), Method);
+  QtScrollBar.AttachEvents;
 
   Result := THandle(QtScrollbar);
 end;
@@ -453,28 +431,10 @@ end;
 class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtListWidget: TQtListWidget;
-  Method: TMethod;
-  Hook : QListWidget_hookH;
 begin
   QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
   
-  // Various Events
-
-  Hook := QListWidget_hook_create(QtListWidget.Widget);
-
-  TEventFilterMethod(Method) := QtListWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  // OnSelectionChange event
-  QListWidget_currentItemChanged_Event(Method) := QtListWidget.SlotSelectionChange;
-  QListWidget_hook_hook_currentItemChanged(QListWidget_hook_create(QtListWidget.Widget), Method);
-  
-  QListWidget_itemDoubleClicked_Event(Method) := QtListWidget.SignalItemDoubleClicked;
-  QListWidget_hook_hook_ItemDoubleClicked(QListWidget_hook_create(QtListWidget.Widget), Method);
-  
-  QListWidget_itemClicked_Event(Method) := QtListWidget.SignalItemClicked;
-  QListWidget_hook_hook_ItemClicked(QListWidget_hook_create(QtListWidget.Widget), Method);
+  QtListWidget.AttachEvents;
   
   // QListWidget_itemClicked_Event(Method;
   
@@ -628,22 +588,10 @@ class function TQtWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtTextEdit: TQtTextEdit;
-  Method: TMethod;
-  Hook : QTextEdit_hookH;
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
+  QtTextEdit.AttachEvents;
   
-  Hook := QTextEdit_hook_create(QtTextEdit.Widget);
-
-  TEventFilterMethod(Method) := QtTextEdit.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
-   workaround: add try..except around SetLength() }
-  QTextEdit_textChanged_Event(Method) := QtTextEdit.SignalTextChanged;
-  QTextEdit_hook_hook_textChanged(QTextEdit_hook_create(QtTextEdit.Widget), Method);
-
   Result := THandle(QtTextEdit);
 end;
 
@@ -767,21 +715,9 @@ class function TQtWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtLineEdit: TQtLineEdit;
-  Method: TMethod;
-  Hook : QLineEdit_hookH;
 begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
-
-  Hook := QLineEdit_hook_create(QtLineEdit.Widget);
-
-  TEventFilterMethod(Method) := QtLineEdit.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-  
-  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
-   workaround: add try..except around SetLength() }
-  QLineEdit_textChanged_Event(Method) := QtLineEdit.SignalTextChanged;
-  QLineEdit_hook_hook_textChanged(QLineEdit_hook_create(QtLineEdit.Widget), Method);
+  QtLineEdit.AttachEvents;
 
   Result := THandle(QtLineEdit);
 end;
@@ -972,31 +908,14 @@ class function TQtWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtPushButton: TQtPushButton;
-  Method: TMethod;
-  Hook : QObject_hookH;
 begin
   QtPushButton := TQtPushButton.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QObject_hook_create(QtPushButton.Widget);
-
-  TEventFilterMethod(Method) := QtPushButton.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  // OnClick Event
-
-  QAbstractButton_clicked2_Event(Method) := QtPushButton.SlotClicked;
-
-  QAbstractButton_hook_hook_clicked2(QAbstractButton_hook_create(QtPushButton.Widget), Method);
+  QtPushButton.AttachEvents;
 
   // Focus
-
   QWidget_setFocusPolicy(QtPushButton.Widget, QtStrongFocus);
 
   // Returns the Handle
-
   Result := THandle(QtPushButton);
 end;
 
@@ -1160,29 +1079,18 @@ end;
 class function TQtWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtCheckBox: TQtCheckBox;
-  Method: TMethod;
-  Hook : QAbstractButton_hookH;
   ATextWidth: Integer;
   FM: QFontMetricsH;
   Str: WideString;
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
+  QtCheckBox.AttachEvents;
 
   // Focus
   // QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
   {we have a bug in LCL when parent is TCustomCheckGroup, it doesn't set sizes for items ?!? Width = 0 , Height = 0}
   // writeln('WW=',QWidget_width(QtCheckBox.Widget),' WH=',QWidget_height(QtCheckBox.Widget),' WCW=',AWinControl.Width,' WCH=',AWinControl.Height,' CAPTION=',TCustomCheckBox(AWinControl).Caption);
 
-  Hook := QCheckBox_hook_create(QtCheckBox.Widget);
-
-  TEventFilterMethod(Method) := QtCheckBox.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-
-  QCheckBox_stateChanged_Event(Method) := QtCheckBox.SignalStateChanged;
-  QCheckBox_hook_hook_stateChanged(QCheckBox_hook_create(QtCheckBox.Widget), Method);
-    
   {we must cheat TCustomCheckGroup here with some reasonable CheckBox size...}
   if AWinControl.Height = 0 then
   begin
@@ -1301,23 +1209,13 @@ class function TQtWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtRadioButton: TQtRadioButton;
-  Method: TMethod;
-  Hook : QAbstractButton_hookH;
   ATextWidth: Integer;
   FM: QFontMetricsH;
   Str: WideString;
 begin
-
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
+  QtRadioButton.AttachEvents;
 
-  // Various Events
-
-  Hook := QAbstractButton_hook_create(QtRadioButton.Widget);
-
-  TEventFilterMethod(Method) := QtRadioButton.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-  
   {we must cheat TCustomRadioGroup here with some reasonable RadioButton size...}
   if AWinControl.Height = 0 then
   begin
@@ -1335,9 +1233,6 @@ begin
     ATextWidth := 100;
     AWinControl.SetInitialBounds(0, 0, ATextWidth + 22, 22);
   end;
-
-  QAbstractButton_clicked_Event(Method) := QtRadioButton.SignalClicked;
-  QAbstractButton_hook_hook_clicked(QAbstractButton_hook_create(QtRadioButton.Widget), Method);
 
   // Focus
   
@@ -1376,19 +1271,14 @@ class function TQtWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
-  Method: TMethod;
-  Hook : QGroupBox_hookH;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
+  QtGroupBox.AttachEvents;
 
 // If SetSlots is uncommented, then TRadioGroup stops working
 // This needs further investigation --> Problem is with child controls sizes (zeljko@holobit.net)
 // SetSlots(QtButtonGroup);
 
-  Hook := QGroupBox_hook_create(QtGroupBox.Widget);
-  TEventFilterMethod(Method) := QtGroupBox.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-  
   Str := UTF8Decode(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
   
@@ -1427,32 +1317,9 @@ class function TQtWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtComboBox: TQtComboBox;
-  Method: TMethod;
-  Hook : QObject_hookH;
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
-
-  // Various Events
-
-  Hook := QObject_hook_create(QtComboBox.Widget);
-
-  TEventFilterMethod(Method) := QtComboBox.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-
-  // OnChange event
-
-  QComboBox_editTextChanged_Event(Method) := QtComboBox.SlotChange;
-
-  QComboBox_hook_hook_editTextChanged(
-   QComboBox_hook_create(QtComboBox.Widget), Method);
-
-  // OnSelect event
-
-  QComboBox_currentIndexChanged_Event(Method) := QtComboBox.SlotSelect;
-
-  QComboBox_hook_hook_currentIndexChanged(
-    QComboBox_hook_create(QtComboBox.Widget), Method);
+  QtComboBox.AttachEvents;
 
   Result := THandle(QtComboBox);
 end;

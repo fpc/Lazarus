@@ -34,6 +34,7 @@ function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  o
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
+function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
@@ -43,6 +44,7 @@ function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
+function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyCursor(Handle: hCursor): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
@@ -57,6 +59,8 @@ function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const St
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; override;
+function GetCaretPos(var lpPoint: TPoint): Boolean; override;
+function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
@@ -81,6 +85,8 @@ function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
 
+function HideCaret(hWnd: HWND): Boolean; override;
+
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 
@@ -99,6 +105,9 @@ function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
+function SetCaretPos(X, Y: Integer): Boolean; override;
+function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
+function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
@@ -106,6 +115,7 @@ function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
+function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;

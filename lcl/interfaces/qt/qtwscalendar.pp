@@ -64,26 +64,11 @@ implementation
 class function TQtWSCustomCalendar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtCalendar: TQtCalendar;
-  Hook: QCalendarWidget_hookH;
-  Method: TMethod;
 begin
   QtCalendar := TQtCalendar.Create(AWinControl, AParams);
 
-  Hook := QCalendarWidget_hook_create(QtCalendar.Widget);
-  TEventFilterMethod(Method) := QtCalendar.EventFilter;
-  QObject_hook_hook_events(Hook, Method);
-  
-  QCalendarWidget_clicked_Event(Method) := QtCalendar.SignalClicked;
-  QCalendarWidget_hook_hook_clicked(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
-  
-  QCalendarWidget_activated_Event(Method) := QtCalendar.SignalActivated;
-  QCalendarWidget_hook_hook_activated(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
+  QtCalendar.AttachEvents;
 
-  QCalendarWidget_selectionChanged_Event(Method) := QtCalendar.SignalSelectionChanged;
-  QCalendarWidget_hook_hook_selectionChanged(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
-  
-  QCalendarWidget_currentPageChanged_Event(Method) := QtCalendar.SignalCurrentPageChanged;
-  QCalendarWidget_hook_hook_currentPageChanged(QCalendarWidget_hook_create(QtCalendar.Widget), Method);
 
   QWidget_setFocusPolicy(QtCalendar.Widget, QtTabFocus or QtClickFocus);
   

@@ -335,6 +335,12 @@ begin
   {$endif}
 end;
 
+function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
+begin
+  Result := (Handle <> 0) and
+    QtCaret.CreateCaret(TQtWidget(Handle), Bitmap, Width, Height);
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateCompatibleDC
   Params:  DC - handle to memory device context
@@ -647,6 +653,11 @@ begin
   {$endif}
 end;
 
+function TQtWidgetSet.DestroyCaret(Handle: HWND): Boolean;
+begin
+  Result := (Handle <> 0) and QtCaret.DestroyCaret;
+end;
+
 {------------------------------------------------------------------------------
   Method:  DestroyCursor
   Params:  Handle
@@ -949,6 +960,17 @@ begin
 //  Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
 //  Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
 //  Desc^.LineEnd := rileDWordBoundary;
+end;
+
+function TQtWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
+begin
+  Result := QtCaret.GetCaretPos(lpPoint);
+end;
+
+function TQtWidgetSet.GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean;
+begin
+  {$note implement}
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -2229,6 +2251,11 @@ begin
     AdjustForBuddySize;}
 end;
 
+function TQtWidgetSet.HideCaret(hWnd: HWND): Boolean;
+begin
+  Result := (hWnd <> 0) and QtCaret.HideCaret(TQtWidget(hWnd));
+end;
+
 {------------------------------------------------------------------------------
   Procedure: InitializeCriticalSection
   Params: var CritSection: TCriticalSection
@@ -2670,6 +2697,23 @@ begin
   result := TQtDeviceContext(DC).SetBkMode(bkMode);
 end;
 
+function TQtWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
+begin
+  Result := QtCaret.SetCaretPos(X, Y);
+end;
+
+function TQtWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+begin
+  Result := QtCaret.SetCaretPos(X, Y);
+end;
+
+function TQtWidgetSet.SetCaretRespondToFocus(handle: HWND;
+  ShowHideOnFocus: boolean): Boolean;
+begin
+  {$note implement}
+  Result := False;
+end;
+
 {------------------------------------------------------------------------------
   Function: SetCursor
   Params: ACursor - HCursor (QCursorH)
@@ -2757,6 +2801,11 @@ begin
   end;
 
   Result := True;
+end;
+
+function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;
+begin
+  Result := (hWnd <> 0) and (QtCaret.ShowCaret(TQtWidget(hWnd)));
 end;
 
 {------------------------------------------------------------------------------
