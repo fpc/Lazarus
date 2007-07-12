@@ -155,7 +155,9 @@ perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile
 
 # change debian files
 mkdir -p $DebianDocDir
+chmod 755 $DebianDocDir
 mkdir -p $DebianRulezDir
+chmod 755 $DebianRulezDir
 
 # create debian control file, which contains the package description
 echo "creating DEBIAN/control file"
@@ -179,7 +181,7 @@ if [ -f "$ResourceDir/postinst" ]; then
     cat $ResourceDir/postinst \
       | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/PPCBIN/$ppcbin/g" \
       > $DebianRulezDir/postinst
-    chmod a+x $DebianRulezDir/postinst
+    chmod a+rx $DebianRulezDir/postinst
 fi
 
 # create changelog.Debian file
