@@ -7414,6 +7414,10 @@ msgstr "Пропустити файл і продовжити завантаже
 msgid "Skip loading last project"
 msgstr "Пропустити завантаження останнього проекту"
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Менший код"

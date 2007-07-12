@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-20 17:16+0100\n"
+"PO-Revision-Date: 2007-07-10 14:12+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -70,7 +70,7 @@ msgstr "&Schließen"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Verzeichnis"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -166,7 +166,7 @@ msgstr "Alle Dateien (%s)|%s|%s"
 
 #: lclstrconsts:ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -242,7 +242,7 @@ msgstr "Erzeuge GDB-fangbaren Fehler:"
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Strg"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -302,7 +302,7 @@ msgstr "Fehler beim Ausführen von %s%s%s:%s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Fehler beim Speichern der Bitmap."
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -370,7 +370,7 @@ msgstr "Grid-Datei fehlt"
 
 #: lclstrconsts:rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr ""
+msgstr "Gitterindex außerhalb des Bereichs."
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"

@@ -7427,6 +7427,10 @@ msgstr "Datei übergehen und das Laden fortsetzen"
 msgid "Skip loading last project"
 msgstr "Das Laden des letzten Projekts übergehen"
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Kleinerer Code"

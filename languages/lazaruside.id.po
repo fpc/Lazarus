@@ -7425,6 +7425,10 @@ msgstr "Lewati file dan lanjutkan pengambilan"
 msgid "Skip loading last project"
 msgstr "Lewati pengambilan proyek terakhir"
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Kode Lebih Kecil"

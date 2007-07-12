@@ -7425,6 +7425,10 @@ msgstr "Sla bestand over en vervolg het laden"
 msgid "Skip loading last project"
 msgstr "Sla het laden van het laatste project over"
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Kleinere code"

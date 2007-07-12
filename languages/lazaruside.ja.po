@@ -7424,6 +7424,10 @@ msgstr "そのファイルをとばして読み込みを続行"
 msgid "Skip loading last project"
 msgstr "最後のプロジェクトの読み込みをスキップ"
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "より小さいコード"

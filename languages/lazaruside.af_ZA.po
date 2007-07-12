@@ -7428,6 +7428,10 @@ msgstr ""
 msgid "Skip loading last project"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr ""

@@ -8006,6 +8006,10 @@ msgstr ""
 msgid "Package needs installation"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangskipthispackage
+msgid "Skip this package"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmanginvalidfileextension
 msgid "Invalid file extension"
 msgstr ""
