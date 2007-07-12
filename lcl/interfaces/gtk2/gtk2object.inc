@@ -829,6 +829,15 @@ begin
   Result:= lpGtk2;
 end;
 
+function TGtk2WidgetSet.AppHandle: Thandle;
+begin
+  {$ifdef windows}
+  Result := GetAppHandle;
+  {$else}
+  Result := inherited AppHandle;
+  {$endif}
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}

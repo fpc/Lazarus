@@ -222,11 +222,11 @@ type
 
     // thread synchronize support
     procedure HandleWakeMainThread(Sender: TObject);
+    function AppHandle: THandle; override;
 
     {$I win32winapih.inc}
     {$I win32lclintfh.inc}
 
-    property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   end;

@@ -2,7 +2,7 @@
 {**************************************************************
 Implementation for winprinter
 ***************************************************************}
-Uses WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,WinVer;
+Uses WinUtilPrn, InterfaceBase, LCLIntf, WinVer;
 
 // todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
 
@@ -745,12 +745,12 @@ var
 begin
   PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
   DocumentProperties(
-    TWin32WidgetSet(WidgetSet).AppHandle,
+    Widgetset.AppHandle,
     FPrinterHandle,
     pchar(PDev.Name),
     Pdev.DevMode, Pdev.DevMode,
     DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT);
-  //PrinterProperties(TWin32WidgetSet(WidgetSet).AppHandle,fPrinterHandle)
+  //PrinterProperties(Widgetset.AppHandle,fPrinterHandle)
 end;
 
 initialization

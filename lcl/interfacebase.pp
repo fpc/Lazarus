@@ -98,6 +98,7 @@ type
     function CreateComponent(Sender : TObject): THandle; virtual; abstract;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; virtual; abstract;
     function DestroyTimer(TimerHandle: THandle): boolean; virtual; abstract;
+    function AppHandle: Thandle; virtual;
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}

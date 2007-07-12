@@ -23,7 +23,7 @@ begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
       Flags := PSD_MARGINS;
-      hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
+      hWndOwner:=Widgetset.AppHandle;
       rtMargin := fMargins;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
@@ -99,7 +99,7 @@ begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
       Flags:= PD_PRINTSETUP or PD_RETURNDC;
-      hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
+      hWndOwner:=Widgetset.AppHandle;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode:=GlobalAlloc(GHND, PDev.DevModeSize);
@@ -189,7 +189,7 @@ begin
       if (poHelp in Options) then Flags := Flags or PD_SHOWHELP;
       if not (poWarning in Options) then Flags := Flags or PD_NOWARNING;
       
-      hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
+      hWndOwner:=Widgetset.AppHandle;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode:=GlobalAlloc(GHND, PDEV.DevModeSize);

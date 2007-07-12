@@ -75,6 +75,7 @@ type
     function CreateThemeServices: TThemeServices; override;
   public
     function LCLPlatform: TLCLPlatform; override;
+    function AppHandle: Thandle; override;
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   end;
@@ -132,6 +133,9 @@ var
 implementation
   
 uses
+{$ifdef Windows}
+ Gtk2Windows,
+{$endif}
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////

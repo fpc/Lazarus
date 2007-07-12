@@ -79,7 +79,7 @@ uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 {$ENDIF}
 
 {$IFDEF MSWindows}
-uses Windows, WinUtilPrn, InterfaceBase, Win32Int, LCLIntf, LCLType, WinVer;
+uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
 {$I winprndialogs.inc}
 {$ENDIF}
 

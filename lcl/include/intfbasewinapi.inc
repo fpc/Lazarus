@@ -984,6 +984,12 @@ begin
   Result := false;
 end;
 
+function TWidgetSet.AppHandle: Thandle;
+begin
+  DebugLn('Warning: AppHandle is not implemented for this widgetset yet');
+  result := 0;
+end;
+
 procedure TWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
   DebugLn('TWidgetSet.InitializeCriticalSection Not implemented yet');

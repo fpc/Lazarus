@@ -147,6 +147,11 @@ begin
   AHandler := nil;
 end;
 
+function TWin32WidgetSet.AppHandle: THandle;
+begin
+  Result:= FAppHandle;
+end;
+
 {------------------------------------------------------------------------------
   Function:
   Params:
