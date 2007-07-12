@@ -1,0 +1,22 @@
+/* XPM */
+static char *btn_close[]={
+"16 16 3 1",
+". c None",
+"# c #800000",
+"a c #ff0000",
+"....#......#....",
+"...#a#....#a#...",
+"..#aaa#..#aaa#..",
+".#aaaaa##aaaaa#.",
+"#aaaaaaaaaaaaaa#",
+".#aaaaaaaaaaaa#.",
+"..#aaaaaaaaaa#..",
+"...#aaaaaaaa#...",
+"...#aaaaaaaa#...",
+"..#aaaaaaaaaa#..",
+".#aaaaaaaaaaaa#.",
+"#aaaaaaaaaaaaaa#",
+".#aaaaa##aaaaa#.",
+"..#aaa#..#aaa#..",
+"...#a#....#a#...",
+"....#......#...."};

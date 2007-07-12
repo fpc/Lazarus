@@ -1,0 +1,130 @@
+object SQLConnectionForm: TSQLConnectionForm
+  Left = 549
+  Height = 177
+  Top = 454
+  Width = 314
+  HorzScrollBar.Page = 313
+  VertScrollBar.Page = 176
+  ActiveControl = EHostName
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Connect to a database'
+  ClientHeight = 177
+  ClientWidth = 314
+  object LEHostName: TLabel
+    Left = 8
+    Height = 23
+    Top = 15
+    Width = 74
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Host'
+    FocusControl = EHostName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEDatabaseName: TLabel
+    Left = 8
+    Height = 23
+    Top = 43
+    Width = 74
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Database'
+    FocusControl = EDatabaseName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEUserName: TLabel
+    Left = 8
+    Height = 23
+    Top = 74
+    Width = 74
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Username'
+    FocusControl = EUserName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEPassword: TLabel
+    Left = 8
+    Height = 23
+    Top = 105
+    Width = 74
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Password'
+    FocusControl = EPassword
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EHostName: TEdit
+    Left = 89
+    Height = 23
+    Top = 15
+    Width = 216
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+  end
+  object EDatabaseName: TEdit
+    Left = 89
+    Height = 23
+    Top = 43
+    Width = 216
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+  end
+  object EUserName: TEdit
+    Left = 89
+    Height = 23
+    Top = 74
+    Width = 216
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+  object EPassword: TEdit
+    Left = 89
+    Height = 23
+    Top = 105
+    Width = 216
+    Anchors = [akTop, akLeft, akRight]
+    EchoMode = emPassword
+    PasswordChar = '*'
+    TabOrder = 3
+  end
+  object PButtons: TPanel
+    Height = 34
+    Top = 143
+    Width = 314
+    Align = alBottom
+    BevelOuter = bvLowered
+    ClientHeight = 34
+    ClientWidth = 314
+    TabOrder = 4
+    object BOK: TButton
+      Left = 229
+      Height = 25
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Caption = '&OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object BCancel: TButton
+      Left = 146
+      Height = 25
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = '&Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+end

@@ -1,0 +1,93 @@
+object ImportDDform: TImportDDform
+  Left = 368
+  Height = 300
+  Top = 279
+  Width = 369
+  HorzScrollBar.Page = 368
+  VertScrollBar.Page = 299
+  ActiveControl = LBItems
+  Caption = 'Import/Update datadictionary'
+  ClientHeight = 300
+  ClientWidth = 369
+  OnShow = FormShow
+  object LBItems: TCheckListBox
+    Left = 8
+    Height = 249
+    Top = 8
+    Width = 248
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object BOK: TButton
+    Left = 264
+    Height = 25
+    Top = 263
+    Width = 98
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object BCancel: TButton
+    Left = 264
+    Height = 25
+    Top = 232
+    Width = 101
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object BSelectNone: TButton
+    Left = 264
+    Height = 25
+    Top = 40
+    Width = 98
+    Action = ASelectNone
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 3
+  end
+  object BSelectAll: TButton
+    Left = 264
+    Height = 25
+    Top = 8
+    Width = 98
+    Action = ASelectAll
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 4
+  end
+  object CBUpdateExisting: TCheckBox
+    Left = 9
+    Height = 22
+    Top = 263
+    Width = 167
+    Caption = 'Update existing tables'
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
+  end
+  object ActionList1: TActionList
+    left = 106
+    top = 297
+    object ASelectNone: TAction
+      Caption = 'Select &none'
+      DisableIfNoHandler = True
+      OnExecute = DoSelection
+      OnUpdate = HaveItems
+    end
+    object ASelectAll: TAction
+      Caption = 'Select &all'
+      DisableIfNoHandler = True
+      OnExecute = DoSelection
+      OnUpdate = HaveItems
+      ShortCut = 16449
+    end
+  end
+end
