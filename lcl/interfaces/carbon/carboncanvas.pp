@@ -835,7 +835,18 @@ const
 begin
   Result := False;
   
-  if not BeginTextRender(Str, Count, TextLayout) then Exit;
+  if not BeginTextRender(Str, Count, TextLayout) then
+  begin
+    // It is possible that the background should be filled even without text;
+    if (Options and ETO_OPAQUE) > 0 then
+    begin
+      BkBrush.Apply(Self, False); // do not use ROP2
+      CGContextFillRect(CGContext, GetCGRectSorted(Rect^.Left, Rect^.Top,
+       Rect^.Right, Rect^.Bottom));
+    end;
+  
+    Exit;
+  end;
   try
     // get text ascent
     if OSError(
