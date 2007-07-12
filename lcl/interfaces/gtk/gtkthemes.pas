@@ -94,7 +94,7 @@ const
 { defaulted/checked } GTK_STATE_ACTIVE,
 { hot + checked     } GTK_STATE_INSENSITIVE // PRELIGHT IS TOO LIGHT
   );
-  GtkRadioMap: array[0..8] of TGtkStateType =
+  GtkRadioCheckBoxMap: array[0..12] of TGtkStateType =
   (
 { Filler            } GTK_STATE_NORMAL,
 { UNCHECKEDNORMAL   } GTK_STATE_NORMAL,
@@ -104,7 +104,11 @@ const
 { CHECKEDNORMAL     } GTK_STATE_NORMAL,
 { CHECKEDHOT        } GTK_STATE_PRELIGHT,
 { CHECKEDPRESSED    } GTK_STATE_ACTIVE,
-{ CHECKEDDISABLED   } GTK_STATE_INSENSITIVE
+{ CHECKEDDISABLED   } GTK_STATE_INSENSITIVE,
+{ MIXEDNORMAL       } GTK_STATE_NORMAL,
+{ MIXEDHOT          } GTK_STATE_PRELIGHT,
+{ MIXEDPRESSED      } GTK_STATE_ACTIVE,
+{ MIXEDDISABLED     } GTK_STATE_INSENSITIVE
   );
 
   
@@ -168,7 +172,7 @@ begin
                 end;
               BP_RADIOBUTTON:
                 begin
-                  Result.State := GtkRadioMap[Details.State];
+                  Result.State := GtkRadioCheckBoxMap[Details.State];
                   if Details.State >= RBS_CHECKEDNORMAL then
                     Result.Shadow := GTK_SHADOW_IN
                   else
@@ -178,8 +182,11 @@ begin
                 end;
               BP_CHECKBOX:
                 begin
-                  Result.State := GtkRadioMap[Details.State];
+                  Result.State := GtkRadioCheckBoxMap[Details.State];
                   Result.Detail := 'checkbutton';
+                  if Details.State >= CBS_MIXEDNORMAL then
+                    result.Shadow := GTK_SHADOW_ETCHED_IN
+                  else
                   if Details.State >= CBS_CHECKEDNORMAL then
                     Result.Shadow := GTK_SHADOW_IN
                   else
