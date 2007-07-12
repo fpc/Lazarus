@@ -1115,8 +1115,13 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
+var
+  vPoint: TQtPoint;
 begin
-  QCursor_pos(@lpPoint);
+  QCursor_pos(@vPoint);
+
+  lpPoint.x := vPoint.x;
+  lpPoint.y := vPoint.y;
 
   Result := True;
 end;
@@ -2644,7 +2649,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: SetCursorPos
+  Function: SetBKColor
   Params: X:
           Y:
   Returns:
