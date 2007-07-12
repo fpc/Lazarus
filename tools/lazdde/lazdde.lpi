@@ -46,7 +46,7 @@
         <UnitName Value="lazdde"/>
         <CursorPos X="60" Y="13"/>
         <TopLine Value="1"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="182"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
@@ -56,7 +56,7 @@
         <UnitName Value="frmmain"/>
         <CursorPos X="1" Y="19"/>
         <TopLine Value="1"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="182"/>
       </Unit1>
       <Unit2>
         <Filename Value="dicteditor.pp"/>
@@ -64,7 +64,7 @@
         <UnitName Value="dicteditor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="182"/>
       </Unit2>
       <Unit3>
         <Filename Value="fpdatadict.pp"/>
@@ -72,7 +72,7 @@
         <UnitName Value="fpdatadict"/>
         <CursorPos X="1" Y="9"/>
         <TopLine Value="1"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="182"/>
       </Unit3>
       <Unit4>
         <Filename Value="inicol.pp"/>
@@ -87,7 +87,7 @@
         <UnitName Value="fpddDbf"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="170"/>
+        <UsageCount Value="171"/>
       </Unit5>
       <Unit6>
         <Filename Value="frmimportdd.pp"/>
@@ -97,7 +97,7 @@
         <UnitName Value="frmimportdd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="166"/>
+        <UsageCount Value="167"/>
       </Unit6>
       <Unit7>
         <Filename Value="../../lcl/inipropstorage.pp"/>
@@ -135,7 +135,7 @@
         <UnitName Value="frmgeneratesql"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="141"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../fpcsrc/fcl/db/db.pp"/>
@@ -150,7 +150,7 @@
         <UnitName Value="fpddsqldb"/>
         <CursorPos X="1" Y="15"/>
         <TopLine Value="1"/>
-        <UsageCount Value="126"/>
+        <UsageCount Value="127"/>
       </Unit13>
       <Unit14>
         <Filename Value="../../fpcsrc/fcl/db/sqldb/sqldb.pp"/>
@@ -167,7 +167,7 @@
         <UnitName Value="frmSQLConnect"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="124"/>
+        <UsageCount Value="125"/>
       </Unit15>
       <Unit16>
         <Filename Value="../../fpcsrc/fcl/db/sqldb/interbase/ibconnection.pp"/>
@@ -229,10 +229,10 @@
         <Filename Value="ddfiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ddfiles"/>
-        <CursorPos X="52" Y="21"/>
+        <CursorPos X="13" Y="18"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="88"/>
+        <UsageCount Value="89"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -262,7 +262,9 @@
         <UnitName Value="conneditor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="83"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="84"/>
+        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="../../../../../../michael/projects/lazarus/components/sqldb/registersqldb.pp"/>
@@ -290,7 +292,7 @@
         <UnitName Value="datapanel"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="41"/>
       </Unit32>
       <Unit33>
         <Filename Value="../../../../../../michael/lazarus/lcl/dbctrls.pp"/>
@@ -305,7 +307,7 @@
         <UnitName Value="querypanel"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="37"/>
+        <UsageCount Value="38"/>
       </Unit34>
       <Unit35>
         <Filename Value="../../../../../../michael/lazarus/components/synedit/synedithighlighter.pp"/>
@@ -419,12 +421,7 @@
         <UsageCount Value="10"/>
       </Unit51>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="ddfiles.pp"/>
-        <Caret Line="18" Column="1" TopLine="1"/>
-      </Position1>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

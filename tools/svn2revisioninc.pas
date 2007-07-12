@@ -60,6 +60,7 @@ type
     RevisionStr: string;
     ConstName: string;
     Verbose: boolean;
+    UseStdOut: boolean;
 
     function FindRevision: boolean;
     function IsValidRevisionInc: boolean;
@@ -109,7 +110,7 @@ var
           Result:=true;
           Show('Retrieved revision with svnversion.');
           Show('');
-          Show('svnversion output:');
+          Show('svnversion error:');
           Show(Copy(Buffer, 1, n));
           Show('');
         except
@@ -246,6 +247,7 @@ begin
   writeln('Options:');
   writeln(' --o                  Output file');
   writeln(' --c=<name>           Name of constant (default RevisionStr)');
+  writeln(' --s                  write revision to stdout, do not create inc file');
   writeln(' --v                  Be more verbose');
   writeln(' --h                  This help screen');
   writeln;
@@ -292,6 +294,9 @@ begin
   if HasOption('v') then
     Verbose := True;
     
+  if HasOption('s') then
+    UseStdOut := True;
+    
   if HasOption('c') then
     ConstName := GetOptionValue('c');
 
@@ -312,7 +317,7 @@ begin
   end;
   
   RevisionIncDirName:=ExtractFilePath(ExpandFileName(RevisionIncFileName));
-  if not DirectoryExists(RevisionIncDirName) then begin
+  if (not UseStdOut) and (not DirectoryExists(RevisionIncDirName)) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
   end;
@@ -352,8 +357,14 @@ begin
 
   if not CanCreateRevisionInc then exit;
   
-  if FindRevision or not IsValidRevisionInc then
-    WriteRevisionInc;
+  if FindRevision then begin
+    if UseStdOut then begin
+      writeln(RevisionStr);
+    end else begin
+      if not IsValidRevisionInc then
+        WriteRevisionInc;
+    end;
+  end;
 end;
 
 begin

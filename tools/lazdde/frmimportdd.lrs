@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TImportDDform','FORMDATA',[
   'TPF0'#13'TImportDDform'#12'ImportDDform'#4'Left'#3'p'#1#6'Height'#3','#1#3'T'
   +'op'#3#23#1#5'Width'#3'q'#1#18'HorzScrollBar.Page'#3'p'#1#18'VertScrollBar.P'

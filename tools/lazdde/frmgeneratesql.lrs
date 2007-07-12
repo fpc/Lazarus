@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TGenerateSQLForm','FORMDATA',[
   'TPF0'#16'TGenerateSQLForm'#15'GenerateSQLForm'#4'Left'#3']'#1#6'Height'#3'e'
   +#1#3'Top'#3#17#1#5'Width'#3'$'#2#18'HorzScrollBar.Page'#3'#'#2#18'VertScroll'

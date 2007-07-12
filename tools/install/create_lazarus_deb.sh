@@ -1,20 +1,39 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Author: Mattias Gaertner
+#
+# Usage: ./create_lazarus_deb.sh [gtk2] [release=svn]
+#
+#   Options:
+#     gtk2           compile IDE and programs for gtk2. gtk1 ppu are built too.
+#     release=svn    use svn revision as .deb release tag
 
 set -x
 set -e
+
+LCLWidgetset=
+if [ "$1" = "gtk2" ]; then
+  LCLWidgetset=gtk2
+  shift
+fi
+
+LazRelease='0'
+if [ "$1" = "release=svn" ]; then
+  LazRelease=$(./get_lazarus_revision.sh)
+  shift
+fi
+
+if [ -n "$1" ]; then
+  echo "Usage: ./create_lazarus_deb.sh [gtk2] [release=svn]"
+  exit
+fi
 
 # get FPC version
 FPCVersion=$(fpc -v | grep 'Compiler version' | sed 's/.*\([0-9]\.[0-9]\.[0-9]\).*/\1/')
 Arch=$(fpc -v | grep 'Compiler version' | sed 's/.*for \([^ ]\+\)$/\1/')
 
-# get date of day
-Year=`date +%y`
-Month=`date +%m`
-Day=`date +%d`
-
-Date=20$Year$Month$Day
+Date=`date +%Y%m%d`
 LazVersion=$(./get_lazarus_version.sh)
-LazRelease='0'
 SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
 CurDir=`pwd`
 TmpDir=/tmp/lazarus$LazVersion
@@ -73,23 +92,32 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
+# build for default platform
+make lcl packager/registration ideintf bigidecomponents OPT="$MAKEOPTS"
+# build gtk2 .ppu
+export LCL_PLATFORM=gtk2
+make lcl packager/registration ideintf bigidecomponents OPT="$MAKEOPTS"
+export LCL_PLATFORM=
+# build IDE
+export LCL_PLATFORM=$LCLWidgetset
 make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 make lazbuilder OPT="$MAKEOPTS"
 make tools OPT="$MAKEOPTS"
-# build gtk2 .ppu
-export LCL_PLATFORM=gtk2
-make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"
 export LCL_PLATFORM=
+
 strip lazarus
 strip startlazarus
 strip lazbuild
+strip tools/apiwizz/apiwizz
+strip tools/lazres
+strip tools/updatepofiles
 cd -
 
 # create control file
 echo "========================================================================="
 echo "copying control file"
 mkdir -p $LazBuildDir/DEBIAN
-cat $DebianSrcDir/control | \
+cat $DebianSrcDir/control$LCLWidgetset | \
   sed -e "s/FPCVERSION/$FPCVersion/g" \
       -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/ARCH/$Arch/g" \
