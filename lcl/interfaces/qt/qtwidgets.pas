@@ -2238,6 +2238,9 @@ begin
     {$ifdef USE_QT_4_3}
       QBoxLayout_setSpacing(LayoutWidget, 0);
       QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
+    {$else}
+      QLayout_setSpacing(LayoutWidget, 0);
+      QLayout_setMargin(LayoutWidget, 0);
     {$endif}
     
     QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
