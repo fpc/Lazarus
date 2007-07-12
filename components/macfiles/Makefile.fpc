@@ -6,8 +6,7 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
-includedir=./
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
 options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 
 [target]
@@ -25,11 +24,7 @@ ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
 else
-ifeq ($(OS_TARGET),win64)
-LCL_PLATFORM=win32
-else
 LCL_PLATFORM=gtk
-endif
 endif
 endif
 export LCL_PLATFORM
