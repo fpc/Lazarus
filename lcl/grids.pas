@@ -475,6 +475,7 @@ type
     function IndexOf(Column: TGridColumn): Integer;
     function IsDefault: boolean;
     function HasIndex(Index: Integer): boolean;
+    function VisibleIndex(Index: Integer): Integer;
     property Grid: TCustomGrid read FGrid;
     property Items[Index: Integer]: TGridColumn read GetColumn write SetColumn; default;
     property VisibleCount: Integer read GetVisibleCount;
@@ -731,6 +732,7 @@ type
     procedure DoOPInsertColRow(IsColumn: boolean; index: integer);
     procedure DoOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure DoPasteFromClipboard; virtual;
+    procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DrawBorder;
     procedure DrawAllRows; virtual;
@@ -775,6 +777,7 @@ type
     function  GetEditText(ACol, ARow: Longint): string; dynamic;
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
+    function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
 
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); dynamic;
@@ -2269,9 +2272,6 @@ var
       FGCache.AccumWidth[i]:=Pointer(PtrInt(FGCache.GridWidth));
       FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(i);
       if i<FixedCols then FGCache.FixedWidth:=FGCache.GridWidth;
-      {$IfDef dbgVisualChange}
-      //DebugLn('FGCache.AccumWidth[',dbgs(i),']=',dbgs(Integer(FGCache.AccumWidth[i])));
-      {$Endif}
     end;
     FGCache.Gridheight:=0;
     FGCache.FixedHeight:=0;
@@ -2279,9 +2279,6 @@ var
       FGCache.AccumHeight[i]:=Pointer(PtrInt(FGCache.Gridheight));
       FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(i);
       if i<FixedRows then FGCache.FixedHeight:=FGCache.GridHeight;
-      {$IfDef dbgVisualChange}
-      //DebugLn('FGCache.AccumHeight[',dbgs(i),']=',dbgs(Integer(FGCache.AccumHeight[i])));
-      {$Endif}
     end;
   end;
   procedure CalcScrollbarsVisibility;
@@ -2721,8 +2718,8 @@ begin
     Canvas.Brush.Color := clWindow;
     Canvas.Font.Color := clWindowText;
   end;
-  if Assigned(OnPrepareCanvas) then
-    OnPrepareCanvas(Self, aCol, aRow, aState);
+  
+  DoPrepareCanvas(aCol, aRow, aState);
 end;
 
 procedure TCustomGrid.ResetHotCell;
@@ -4816,14 +4813,51 @@ begin
 end;
 
 procedure TCustomGrid.DoOnChangeBounds;
+var
+  PrevSpace: Integer;
+  NewTopLeft, AvailSpace: TPoint;
 begin
   inherited DoOnChangeBounds;
-  VisualChange;
+
+  AVailSpace.x := ClientWidth - FGCache.MaxClientXY.x;
+  AVailSpace.y := ClientHeight - FGCache.MaxClientXY.y;
+  NewTopLeft := FTopLeft;
+  
+  while (AvailSpace.x>0) and (NewTopLeft.x>FixedCols) do begin
+    PrevSpace := GetColWidths(NewTopLeft.x-1);
+    if AvailSpace.x>(PrevSpace-FGCache.TLColOff) then
+      Dec(NewTopLeft.x, 1);
+    Dec(AvailSpace.x, PrevSpace);
+  end;
+  
+  while (AvailSpace.y>0) and (NewTopLeft.y>FixedRows) do begin
+    PrevSpace := GetRowHeights(NewTopLeft.y-1);
+    if AvailSpace.y>PrevSpace then
+      Dec(NewTopLeft.y, 1);
+    Dec(AvailSpace.y, PrevSpace);
+  end;
+
+  if not PointIgual(FTopleft,NewTopLeft) then begin
+    FTopLeft := NewTopleft;
+    FGCache.TLColOff := 0;
+    FGCache.TLRowOff := 0;
+    if goSmoothScroll in options then begin
+      // TODO: adjust new TLColOff and TLRowOff
+    end;
+    DoTopLeftChange(True);
+  end else
+    VisualChange;
 end;
 
 procedure TCustomGrid.DoPasteFromClipboard;
 begin
   //
+end;
+
+procedure TCustomGrid.DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState);
+begin
+  if Assigned(OnPrepareCanvas) then
+    OnPrepareCanvas(Self, aCol, aRow, aState);
 end;
 
 procedure TCustomGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -5906,6 +5940,13 @@ end;
 function TCustomGrid.GetSelectedColor: TColor;
 begin
   Result:=FSelectedColor;
+end;
+
+function TCustomGrid.GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
+begin
+  result := Columns.VisibleIndex(ColumnIndex);
+  if result>=0 then
+    result := result + FixedCols;
 end;
 
 function TCustomGrid.GetEditMask(ACol, ARow: Longint): string;
@@ -8540,6 +8581,17 @@ end;
 function TGridColumns.HasIndex(Index: Integer): boolean;
 begin
   result := (index>-1)and(index<count);
+end;
+
+function TGridColumns.VisibleIndex(Index: Integer): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  if HasIndex(Index) and Items[Index].Visible then
+    for i:=0 to Index do
+      if Items[i].Visible then
+        inc(result);
 end;
 
 { TButtonCellEditor }

@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB,
-  LMessages, Grids, Dialogs, Controls;
+  LMessages, Grids, Dialogs, Controls, Themes;
 
 type
   TCustomDbGrid = class;
@@ -109,7 +109,10 @@ type
   TDbGridSelEditorEvent =
     procedure(Sender: TObject; Column: TColumn;
               var Editor: TWinControl) of object;
-
+              
+  TPrepareDbGridCanvasEvent =
+    procedure(sender: TObject; DataCol: Integer;
+              Column: TColumn; AState: TGridDrawState) of object;
 
 type
 
@@ -312,6 +315,7 @@ type
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FNeedUpdateWidths: boolean;
     FSelectedRows: TBookmarkList;
+    FOnPrepareCanvas: TPrepareDbGridCanvasEvent;
     procedure EmptyGrid;
     procedure CheckWidths;
     function GetCurrentColumn: TColumn;
@@ -380,11 +384,13 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
+    procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); override;
     procedure DrawAllRows; override;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCheckboxBitmaps(aCol: Integer; aRect: TRect; F: TField);
+    procedure DrawFixedText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
     procedure EditorDoGetValue; override;
@@ -442,6 +448,7 @@ type
     property OnColumnSized: TNotifyEvent read FOnColumnSized write FOnColumnSized;
     property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
     property OnFieldEditMask: TGetDbEditMaskEvent read FOnFieldEditMask write FOnFieldEditMask;
+    property OnPrepareCanvas: TPrepareDbGridCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnSelectEditor: TDbGridSelEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
@@ -1692,31 +1699,16 @@ end;
 
 procedure TCustomDBGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
-
-  function GetDatasetState: TDataSetState;
-  begin
-    if FDatalink.Active then
-      result := FDataLink.DataSet.State
-    else
-      result := dsInactive;
-  end;
-
+  
 var
   S: string;
   F: TField;
 begin
+
   if gdFixed in aState then begin
-    if (ACol=0) and FDrawingActiveRecord then begin
-      DrawIndicator(Canvas, aRect, GetDataSetState, FDrawingMultiSelRecord);
-      {$ifdef dbgGridPaint}
-      dbgOut('>');
-      {$endif}
-    end else
-    if (ACol=0) and FDrawingMultiSelRecord then
-      DrawIndicator(Canvas, aRect, dsCurValue{dummy}, True)
-    else
+
     if TitleStyle<>tsNative then
-      DrawColumnText(aCol, aRow, aRect, aState);
+      DrawFixedText(aCol, aRow, aRect, aState);
 
   end else
   if not FDrawingEmptyDataset then begin
@@ -1755,6 +1747,18 @@ begin
   if HandleAllocated then
     LayoutChanged;
   EndUpdate(False);
+end;
+
+procedure TCustomDBGrid.DoPrepareCanvas(aCol, aRow: Integer;
+  aState: TGridDrawState);
+var
+  DataCol: Integer;
+begin
+  if (ARow>=FixedRows) and Assigned(OnPrepareCanvas) then begin
+    DataCol := ColumnIndexFromGridColumn(aCol);
+    if DataCol>=0 then
+      OnPrepareCanvas(Self, DataCol, TColumn(Columns[DataCol]), aState);
+  end;
 end;
 
 procedure TCustomDBGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -2399,7 +2403,7 @@ procedure TCustomDBGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
   if Self.Focused and (dgAlwaysShowSelection in Options) and
-    FDatalink.Active then
+    FDatalink.Active and DefaultDrawing then
   begin
     CalcFocusRect(aRect);
     DrawRubberRect(Canvas, aRect, FocusColor);
@@ -2430,30 +2434,53 @@ end;
 
 procedure TCustomDBGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
+var
+  DataCol: Integer;
 begin
   PrepareCanvas(aCol, aRow, aState);
-  if DefaultDrawing then
+  
+  if (gdFixed in aState) or DefaultDrawing then
     Canvas.FillRect(aRect);
+
   {$ifdef dbgGridPaint}
   DbgOut(' ',IntToStr(aCol));
   if gdSelected in aState then DbgOut('S');
   if gdFocused in aState then DbgOut('*');
   if gdFixed in aState then DbgOut('F');
   {$endif dbgGridPaint}
-  if Assigned(OnDrawColumnCell) and not(CsDesigning in ComponentState) then
-    OnDrawColumnCell(Self, aRect, aCol, TColumn(ColumnFromGridColumn(aCol)), aState)
-  else
+
+  if (gdFixed in aState) or DefaultDrawing then
     DefaultDrawCell(aCol, aRow, aRect, aState);
+  
+  if (ARow>=FixedRows) and Assigned(OnDrawColumnCell) and
+     not (csDesigning in ComponentState) then begin
+     
+    DataCol := ColumnIndexFromGridColumn(aCol);
+    if DataCol>=0 then
+      OnDrawColumnCell(Self, aRect, DataCol, TColumn(Columns[DataCol]), aState);
+  end;
+
   DrawCellGrid(aCol, aRow, aRect, aState);
-  if TitleStyle=tsNative then
-    DrawColumnText(aCol,aRow,aRect,aState);
+
+  if TitleStyle=tsNative then begin
+    if gdFixed in aState then
+      DrawFixedText(aCol,aRow,aRect,aState)
+    else
+      DrawColumnText(aCol,aRow,aRect,aState);
+  end;
 end;
 
 procedure TCustomDBGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
   F: TField);
+const
+  arrtb:array[TDbGridCheckboxState] of TThemedButton =
+    (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal, tbCheckBoxMixedNormal);
 var
   ChkBitmap: TBitmap;
-  XPos,YPos: Integer;
+  XPos,YPos,CSize: Integer;
+  AState: TDbGridCheckboxState;
+  details: TThemedElementDetails;
+  PaintRect: TRect;
 begin
   if (aCol=Col) and FDrawingActiveRecord then begin
     // show checkbox only if overriden editor is hidden
@@ -2462,31 +2489,67 @@ begin
   end;
 
   // by SSY
-	if (F<>nil) then
-  	if F.DataType=ftBoolean then
+  if (F<>nil) then
+    if F.DataType=ftBoolean then
       if F.IsNull then
-    		ChkBitmap := GetImageForCheckBox(gcbpGrayed)
+    	  AState := gcbpGrayed
       else
-        if F.AsBoolean then
-          ChkBitmap := GetImageForCheckBox(gcbpChecked)
-        else
-        	ChkBitmap := GetImageForCheckBox(gcbpUnChecked)
+      if F.AsBoolean then
+        AState := gcbpChecked
+      else
+        AState := gcbpUnChecked
     else
       if ValueMatch(F.AsString, TColumn(ColumnFromGridColumn(aCol)).ValueChecked) then
-        ChkBitmap := GetImageForCheckBox(gcbpChecked)
+        AState := gcbpChecked
       else
-      	if ValueMatch(F.AsString, TColumn(ColumnFromGridColumn(aCol)).ValueUnChecked) then
-      		ChkBitmap := GetImageForCheckBox(gcbpUnChecked)
-        else
-          ChkBitmap := GetImageForCheckBox(gcbpGrayed)
+      if ValueMatch(F.AsString, TColumn(ColumnFromGridColumn(aCol)).ValueUnChecked) then
+        AState := gcbpUnChecked
+      else
+        AState := gcbpGrayed
   else
-    ChkBitmap := GetImageForCheckBox(gcbpGrayed);
-
-  if ChkBitmap<>nil then begin
-    XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
-    YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
-    Canvas.Draw(XPos, YPos, ChkBitmap);
+    AState := gcbpGrayed;
+    
+  if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
+    Details := ThemeServices.GetElementDetails(arrtb[AState]);
+    CSize:= ThemeServices.GetDetailSize(Details);
+    with PaintRect do begin
+      Left := Trunc((aRect.Left + aRect.Right - CSize)/2);
+      Top  := Trunc((aRect.Top + aRect.Bottom - CSize)/2);
+      PaintRect := Bounds(Left, Top, CSize, CSize);
+    end;
+    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
+  end else begin
+    ChkBitmap := GetImageForCheckBox(AState);
+    if ChkBitmap<>nil then begin
+      XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
+      YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
+      Canvas.Draw(XPos, YPos, ChkBitmap);
+    end;
   end;
+end;
+
+procedure TCustomDBGrid.DrawFixedText(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+
+  function GetDatasetState: TDataSetState;
+  begin
+    if FDatalink.Active then
+      result := FDataLink.DataSet.State
+    else
+      result := dsInactive;
+  end;
+
+begin
+  if (ACol=0) and FDrawingActiveRecord then begin
+    DrawIndicator(Canvas, aRect, GetDataSetState, FDrawingMultiSelRecord);
+    {$ifdef dbgGridPaint}
+    dbgOut('>');
+    {$endif}
+  end else
+  if (ACol=0) and FDrawingMultiSelRecord then
+    DrawIndicator(Canvas, aRect, dsCurValue{dummy}, True)
+  else
+    DrawColumnText(aCol, aRow, aRect, aState);
 end;
 
 function TCustomDBGrid.EditorCanAcceptKey(const ch: Char): boolean;
@@ -2689,33 +2752,21 @@ end;
 
 procedure TCustomDBGrid.DefaultDrawColumnCell(const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
-
-  function GetDatasetState: TDataSetState;
-  begin
-    if FDatalink.Active then
-      result := FDataLink.DataSet.State
-    else
-      result := dsInactive;
-  end;
-  
 var
   S: string;
   F: TField;
 begin
-  if gdFixed in State then begin
-    if (DataCol=0) and FDrawingActiveRecord then
-      DrawIndicator(Canvas, Rect, GetDataSetState, FDrawingMultiSelRecord)
-    else
-    if (DataCol=0) and FDrawingMultiSelRecord then
-      DrawIndicator(Canvas, Rect, dsCurValue{dummy}, True)
-    else
-    if (DataCol>=FixedCols) then
-      DrawCellText(0{dummy}, DataCol{dummy}, Rect, State,GetColumnTitle(DataCol));
-  end else begin
-    F := GetFieldFromGridColumn(DataCol);
+
+  F := Column.Field;
+  
+  DataCol := GridColumnFromColumnIndex(DataCol);
+
+  if DataCol>=FixedCols then
     case ColumnEditorStyle(DataCol, F) of
+
       cbsCheckBoxColumn:
         DrawCheckBoxBitmaps(DataCol, Rect, F);
+
       else begin
         if F<>nil then begin
           if F.dataType <> ftBlob then
@@ -2726,8 +2777,8 @@ begin
           S := '';
         DrawCellText(0, DataCol, Rect, State, S);
       end;
+
     end;
-  end;
 end;
 
 function TCustomDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
