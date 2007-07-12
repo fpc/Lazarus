@@ -18,7 +18,7 @@
   Abstract:
     Methods and classes for loading translations/localizations from po files.
 
-  Example:
+  Example 1: Load a specific .po file:
 
     procedure TForm1.FormCreate(Sender: TObject);
     var
@@ -30,6 +30,20 @@
       MessageDlg('Title','Text',mtInformation,[mbOk,mbCancel,mbYes],0);
     end;
 
+
+  Example 2: Load the current language file using the GetLanguageIDs function
+    of the gettext unit:
+  
+    procedure TForm1.FormCreate(Sender: TObject);
+    var
+      PODirectory, Lang, FallbackLang: String;
+    begin
+      PODirectory:='/path/to/lazarus/lcl/languages/';
+      GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+      TranslateUnitResourceStrings('LCLStrConsts',PODirectory+'lcl.%s.po',
+                                   Lang,FallbackLang);
+      MessageDlg('Title','Text',mtInformation,[mbOk,mbCancel,mbYes],0);
+    end;
 }
 unit Translations;
 

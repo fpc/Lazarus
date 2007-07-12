@@ -39,14 +39,14 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="52">
+    <Units Count="56">
       <Unit0>
         <Filename Value="lazdde.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazdde"/>
         <CursorPos X="60" Y="13"/>
         <TopLine Value="1"/>
-        <UsageCount Value="182"/>
+        <UsageCount Value="184"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
@@ -56,7 +56,7 @@
         <UnitName Value="frmmain"/>
         <CursorPos X="1" Y="19"/>
         <TopLine Value="1"/>
-        <UsageCount Value="182"/>
+        <UsageCount Value="184"/>
       </Unit1>
       <Unit2>
         <Filename Value="dicteditor.pp"/>
@@ -64,7 +64,7 @@
         <UnitName Value="dicteditor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="182"/>
+        <UsageCount Value="184"/>
       </Unit2>
       <Unit3>
         <Filename Value="fpdatadict.pp"/>
@@ -72,7 +72,7 @@
         <UnitName Value="fpdatadict"/>
         <CursorPos X="1" Y="9"/>
         <TopLine Value="1"/>
-        <UsageCount Value="182"/>
+        <UsageCount Value="184"/>
       </Unit3>
       <Unit4>
         <Filename Value="inicol.pp"/>
@@ -87,7 +87,7 @@
         <UnitName Value="fpddDbf"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="171"/>
+        <UsageCount Value="173"/>
       </Unit5>
       <Unit6>
         <Filename Value="frmimportdd.pp"/>
@@ -97,7 +97,7 @@
         <UnitName Value="frmimportdd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="167"/>
+        <UsageCount Value="169"/>
       </Unit6>
       <Unit7>
         <Filename Value="../../lcl/inipropstorage.pp"/>
@@ -116,8 +116,8 @@
       <Unit9>
         <Filename Value="../../lcl/forms.pp"/>
         <UnitName Value="Forms"/>
-        <CursorPos X="54" Y="1157"/>
-        <TopLine Value="1154"/>
+        <CursorPos X="14" Y="523"/>
+        <TopLine Value="504"/>
         <UsageCount Value="24"/>
       </Unit9>
       <Unit10>
@@ -135,7 +135,7 @@
         <UnitName Value="frmgeneratesql"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="141"/>
+        <UsageCount Value="143"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../fpcsrc/fcl/db/db.pp"/>
@@ -150,7 +150,7 @@
         <UnitName Value="fpddsqldb"/>
         <CursorPos X="1" Y="15"/>
         <TopLine Value="1"/>
-        <UsageCount Value="127"/>
+        <UsageCount Value="129"/>
       </Unit13>
       <Unit14>
         <Filename Value="../../fpcsrc/fcl/db/sqldb/sqldb.pp"/>
@@ -167,7 +167,7 @@
         <UnitName Value="frmSQLConnect"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="125"/>
+        <UsageCount Value="127"/>
       </Unit15>
       <Unit16>
         <Filename Value="../../fpcsrc/fcl/db/sqldb/interbase/ibconnection.pp"/>
@@ -229,10 +229,10 @@
         <Filename Value="ddfiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ddfiles"/>
-        <CursorPos X="13" Y="18"/>
+        <CursorPos X="26" Y="25"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="89"/>
+        <UsageCount Value="91"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -262,9 +262,7 @@
         <UnitName Value="conneditor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="84"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="86"/>
       </Unit28>
       <Unit29>
         <Filename Value="../../../../../../michael/projects/lazarus/components/sqldb/registersqldb.pp"/>
@@ -292,7 +290,7 @@
         <UnitName Value="datapanel"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="41"/>
+        <UsageCount Value="43"/>
       </Unit32>
       <Unit33>
         <Filename Value="../../../../../../michael/lazarus/lcl/dbctrls.pp"/>
@@ -307,7 +305,7 @@
         <UnitName Value="querypanel"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="40"/>
       </Unit34>
       <Unit35>
         <Filename Value="../../../../../../michael/lazarus/components/synedit/synedithighlighter.pp"/>
@@ -420,6 +418,33 @@
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit51>
+      <Unit52>
+        <Filename Value="../../ideintf/projectintf.pas"/>
+        <UnitName Value="ProjectIntf"/>
+        <CursorPos X="15" Y="566"/>
+        <TopLine Value="548"/>
+        <UsageCount Value="11"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="../../lcl/include/customform.inc"/>
+        <CursorPos X="43" Y="1955"/>
+        <TopLine Value="1937"/>
+        <UsageCount Value="10"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="../../lcl/widgetset/wsforms.pp"/>
+        <UnitName Value="WSForms"/>
+        <CursorPos X="34" Y="55"/>
+        <TopLine Value="35"/>
+        <UsageCount Value="10"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="../../lcl/widgetset/wscontrols.pp"/>
+        <UnitName Value="WSControls"/>
+        <CursorPos X="23" Y="100"/>
+        <TopLine Value="78"/>
+        <UsageCount Value="10"/>
+      </Unit55>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
