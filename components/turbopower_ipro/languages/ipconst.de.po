@@ -2273,7 +2273,7 @@ msgid "Unable to route"
 msgstr "Kann Route nicht folgen"
 
 #: ipconst:spngdefilterpass
-msgid "Unfilering Pass %d  Size: %dx%d  From: %dx%d"
+msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
 msgstr ""
 
 #: ipconst:ssslunknowncertificate
