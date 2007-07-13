@@ -7,6 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
+      <Title Value="Lazarus Data Desktop"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
@@ -41,10 +42,10 @@
     </RequiredPackages>
     <Units Count="57">
       <Unit0>
-        <Filename Value="lazdde.lpr"/>
+        <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazdde"/>
-        <CursorPos X="60" Y="13"/>
+        <UnitName Value="lazdatadesktop"/>
+        <CursorPos X="17" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="184"/>
       </Unit0>
@@ -229,7 +230,7 @@
         <Filename Value="ddfiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ddfiles"/>
-        <CursorPos X="33" Y="22"/>
+        <CursorPos X="28" Y="25"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="91"/>

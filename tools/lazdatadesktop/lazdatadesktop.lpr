@@ -1,4 +1,4 @@
-program lazdde;
+program LazDataDesktop;
 
 {$mode objfpc}{$H+}
 
@@ -13,6 +13,7 @@ uses
   frmSQLConnect, ddfiles, conneditor, datapanel, querypanel;
 
 begin
+  Application.Title:='Lazarus Data Desktop';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TImportDDform, ImportDDform);
