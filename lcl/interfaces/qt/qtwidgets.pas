@@ -216,15 +216,16 @@ type
 
   { TQtTimer }
 
-  TQtTimer = class(TQtWidget)
+  TQtTimer = class(TObject)
   private
     CallbackFunc: TFNTimerProc;
     Id: Integer;
     AppObject: QObjectH;
   public
+    ATimer: QTimerH;
     constructor CreateTimer(Interval: integer; const TimerFunc: TFNTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   end;
 
   { TQtCheckBox }
@@ -2524,21 +2525,25 @@ constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
 var
   Method: TMethod;
-  Hook : QObject_hookH;
+  Hook : QTimer_hookH;
 begin
   AppObject := App;
 
-  Id := QObject_startTimer(AppObject, Interval);
-
   CallbackFunc := TimerFunc;
+  
+  ATimer := QTimer_create(App);
+  
+  QTimer_setInterval(ATimer, Interval);
 
   // Callback Event
 
-  Hook := QObject_hook_create(AppObject);
-
+  Hook := QTimer_hook_create(ATimer);
   TEventFilterMethod(Method) := EventFilter;
-
   QObject_hook_hook_events(Hook, Method);
+
+  // start timer and get ID
+  QTimer_start(ATimer, Interval);
+  Id := QTimer_timerId(ATimer);
 end;
 
 {------------------------------------------------------------------------------
@@ -2549,7 +2554,8 @@ end;
 destructor TQtTimer.Destroy;
 begin
   CallbackFunc := nil;
-  QObject_killTimer(AppObject, id);
+  if ATimer <> NiL then
+    QTimer_destroy(ATimer);
 
   inherited Destroy;
 end;
@@ -2566,7 +2572,7 @@ begin
   if QEvent_type(Event) = QEventTimer then
   begin
     QEvent_accept(Event);
-    
+
     if Assigned(CallbackFunc) then CallbackFunc;
   end;
 end;
