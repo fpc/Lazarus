@@ -3055,6 +3055,7 @@ tools/convert_po_file_to_utf-8.sh svneol=native#text/plain
 tools/copy_po_files_to_lazarus_sources.sh -text svneol=native#application/x-sh
 tools/cvs2cl.pl -text svneol=native#application/x-perl
 tools/delete_non_cvs_files.pl -text svneol=native#application/x-perl
+tools/delete_non_svn_files.pl svneol=native#text/plain
 tools/find_non_cvs_files.pl -text svneol=native#application/x-perl
 tools/getallmofiles.sh -text svneol=native#application/x-sh
 tools/getallpofiles.sh -text svneol=native#application/x-sh
