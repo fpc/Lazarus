@@ -836,6 +836,7 @@ var
 begin
   QtStaticText := TQtStaticText.Create(AWinControl, AParams);
 
+  QtStaticText.AttachEvents;
 //  SetSlots(QtStaticText);
 
   // Returns the Handle
@@ -874,6 +875,12 @@ class function TQtWSCustomStaticText.GetText(const AWinControl: TWinControl; var
 var
   Str: WideString;
 begin
+
+  if (csDestroying in AWinControl.ComponentState)
+  or (csFreeNotification in AWinControl.ComponentState)
+  then
+    exit;
+
   TQtStaticText(AWinControl.Handle).Text(@Str);
 
   AText := UTF8Encode(Str);

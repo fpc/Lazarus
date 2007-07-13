@@ -127,6 +127,16 @@ type
     procedure setFrameShadow(p1: QFrameShadow);
     procedure setTextColor(const Value: PQColor); override;
   end;
+  
+  { TQtArrow }
+
+  TQtArrow = class(TQtFrame)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    ArrowType: Integer;
+    destructor Destroy; override;
+  end;
 
   { TQtAbstractButton }
 
@@ -2895,6 +2905,46 @@ begin
     QPalette_destroy(Palette);
   end;
 end;
+
+{------------------------------------------------------------------------------
+  Function: TQtArrow.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtArrow.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtArrow.Create');
+  {$endif}
+  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
+  Result := QFrame_create(Parent);
+  //QWidget_setAutoFillBackground(Result, True);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtArrow.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtArrow.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtArrow.Destroy');
+  {$endif}
+
+  if Widget <> nil then
+  begin
+    DetachEvents;
+    QFrame_destroy(QFrameH(Widget));
+    Widget := nil;
+  end;
+
+  inherited Destroy;
+end;
+
 
 function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams
   ): QWidgetH;

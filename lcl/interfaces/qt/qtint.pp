@@ -44,7 +44,8 @@ uses
   Classes, SysUtils, Math, Types,
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, Comctrls, Calendar, LCLIntf, GraphType, Themes;
+  Dialogs, StdCtrls, Comctrls, Calendar, LCLIntf, GraphType, Themes,
+  Arrow;
 
 type
 
@@ -123,7 +124,7 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // QtWSActnList,
-// QtWSArrow,
+ QtWSArrow,
  QtWSButtons,
  QtWSCalendar,
 // QtWSCheckLst,

@@ -31,6 +31,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 
 function PromptUser(const DialogCaption : string;

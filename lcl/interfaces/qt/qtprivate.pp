@@ -223,7 +223,12 @@ procedure TQtListStrings.Clear;
 begin
   FUpdating := True;
   FStringList.Clear;
-  QListWidget_clear(FQtListWidget);
+  
+  if not (csDestroying in FOwner.ComponentState)
+  and not (csFreeNotification in FOwner.ComponentState)
+  then
+    QListWidget_clear(FQtListWidget);
+    
   FListChanged := False;
   FUpdating := False;
   IsChanged;

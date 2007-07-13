@@ -138,6 +138,7 @@ begin
 
   QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
   QtAbstractScrollArea.AttachEvents;
+  QtAbstractScrollArea.viewportNeeded;
   Result := THandle(QtAbstractScrollArea);
   
   {$ifdef VerboseQt}
@@ -207,10 +208,6 @@ begin
     else
       WriteLn('Visible: False');
   {$endif}
-  
-   // showhide fires before invalidate, so we must create viewport right here
-   if Widget is TQtAbstractScrollArea then
-     TQtAbstractScrollArea(Widget).viewportNeeded;
 end;
 
 {------------------------------------------------------------------------------
