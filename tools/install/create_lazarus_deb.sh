@@ -5,8 +5,8 @@
 # Usage: ./create_lazarus_deb.sh [gtk2] [release=svn]
 #
 #   Options:
-#     gtk2           compile IDE and programs for gtk2. gtk1 ppu are built too.
-#     release=svn    use svn revision as .deb release tag
+#     gtk2              compile IDE and programs for gtk2. gtk1 ppu are built too.
+#     append-revision   append the svn revision to the .deb version
 
 set -x
 set -e
@@ -17,9 +17,9 @@ if [ "$1" = "gtk2" ]; then
   shift
 fi
 
-LazRelease='0'
-if [ "$1" = "release=svn" ]; then
-  LazRelease=$(./get_lazarus_revision.sh)
+LazVersionPostfix=
+if [ "$1" = "append-revision" ]; then
+  LazVersionPostfix=.$(./get_lazarus_revision.sh | sed -e 's/[^0-9]//')
   shift
 fi
 
@@ -33,7 +33,8 @@ FPCVersion=$(fpc -v | grep 'Compiler version' | sed 's/.*\([0-9]\.[0-9]\.[0-9]\)
 Arch=$(fpc -v | grep 'Compiler version' | sed 's/.*for \([^ ]\+\)$/\1/')
 
 Date=`date +%Y%m%d`
-LazVersion=$(./get_lazarus_version.sh)
+LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
+LazRelease='0'
 SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
 CurDir=`pwd`
 TmpDir=/tmp/lazarus$LazVersion
