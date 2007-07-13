@@ -19,7 +19,10 @@ fi
 
 LazVersionPostfix=
 if [ "$1" = "append-revision" ]; then
-  LazVersionPostfix=.$(./get_lazarus_revision.sh | sed -e 's/[^0-9]//')
+  LazVersionPostfix=$(./get_lazarus_revision.sh .)
+  if [ -n "$LazVersionPostfix" ]; then
+    LazVersionPostfix=.$LazVersionPostfix
+  fi
   shift
 fi
 

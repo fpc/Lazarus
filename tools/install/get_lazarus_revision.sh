@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
-if [ ! -f ../svn2revisioninc ]; then
-  make -C ../../lcl
-  make -C ..
-fi
-
-../svn2revisioninc -s
+echo $(svnversion $1 | sed -e 's/\([0-9]*\).*/\1/')
 
 # end.
 
