@@ -22,7 +22,7 @@
 }
 unit QtWSForms;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -286,27 +286,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  {$ifdef VerboseQt}
-    WriteLn('Trace:> [TQtWSCustomForm.ShowModal]');
-  {$endif}
-
-  {if we use QDialog as modal class then everything looks fine}
-  TQtWidget(ACustomForm.Handle).Hide;
-  TQtWidget(ACustomForm.Handle).setWindowModality(QtApplicationModal);
-  TQtWidget(ACustomForm.Handle).Show;
-  
-  Application.ProcessMessages;
-  sleep(10);
-  Application.ProcessMessages;
-
-  {BUG: if we assign OnCloseQuery(), Lazarus TCustomForm.Close() Fires ModalResult = mrCancel,
-    without counting on OnCloseQuery() result (CanClose), so if we set it up we'll jump over our
-   loop, and then comes into LCL loop with WidgetSet.AppProcessMessages
-   which burns CPU ...}
-   
-  {$ifdef VerboseQt}
-    WriteLn('Trace:< [TQtWSCustomForm.ShowModal]');
-  {$endif}
+ {TODO: fix cpu burning , we need an sleep(0) in LCL modal loop}
 end;
 
 {------------------------------------------------------------------------------

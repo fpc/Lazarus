@@ -190,7 +190,14 @@ begin
   Widget := TQtWidget(AWinControl.Handle);
   { if the widget is a form, this is a place to set the Tab order }
   if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
+  begin
+    if fsModal in TForm(AWinControl).FormState then
+    begin
+      QWidget_setWindowFlags(Widget.Widget, QtDialog);
+      Widget.setWindowModality(QtApplicationModal);
+    end;
     TQtMainWindow(Widget).SetTabOrders;
+  end;
 
   if AWinControl.HandleObjectShouldBeVisible then
     QWidget_setVisible(Widget.Widget, True)

@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets, qtprivate, qtobjects,
   // LCL
-  Classes, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf,
+  Classes, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf, Forms,
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses;
 
@@ -569,6 +569,15 @@ begin
     end;
   end;
   
+  {some systems doesn't show statusbar inside mainwindow
+   (linux tested on FC3,FC4,FC7 ).}
+  {$ifdef linux}
+  if Assigned(AWinControl.Parent)
+  and (AWinControl.Parent.Handle = Application.MainForm.Handle)
+  then
+    QMainWindow_setStatusBar(QMainWindowH(TQtMainWindow(AWinControl.Parent.Handle).Widget), QStatusBarH(QtStatusBar.Widget));
+  {$endif}
+    
   // Return handle
 
   Result := THandle(QtStatusBar);
