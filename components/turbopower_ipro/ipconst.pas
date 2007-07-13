@@ -621,7 +621,7 @@ resourcestring
   sPNGMissingIEND         = 'End of PNG found with no IEND chunk';
   sPNGEffectiveFilter     = 'Effective filter is %s';
   sPNGBadInterlaceMethod  = 'Unrecognized Interlace Method';
-  sPNGDefilterPass        = 'Unfilering Pass %d  Size: %dx%d  From: %dx%d';
+  sPNGDefilterPass        = 'Unfiltering Pass %d  Size: %dx%d  From: %dx%d';
   sPNGFilterChange        = 'Filter changed on Row %d to %x';
   sPNGBadColorType        = 'Unrecognized color type of %d';
   sPNGErrorConstant       = '**** ERROR ****';

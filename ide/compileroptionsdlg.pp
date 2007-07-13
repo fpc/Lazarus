@@ -313,9 +313,9 @@ type
 
 
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions Constructor                                             }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions Constructor
+------------------------------------------------------------------------------}
 constructor TfrmCompilerOptions.Create(TheOwner: TComponent);
 var 
   Page: integer;
@@ -684,25 +684,27 @@ begin
   edtCompiler.Text := Options.CompilerPath;
   if Options is TProjectCompilerOptions
   then with TProjectCompilerOptions(Options) do begin
+    lblRunIfCompiler.Visible := True;
+    chkCompilerCompile.AnchorToNeighbour(akLeft,6,lblRunIfCompiler);
     chkCompilerCompile.Checked := crCompile in CompileReasons;
     chkCompilerBuild.Checked := crBuild in CompileReasons;
     chkCompilerRun.Checked := crRun in CompileReasons;
-    lblRunIfCompiler.Visible := True;
-    chkCompilerCompile.Visible := True;
     chkCompilerCompile.Caption := lisCOCallOnCompile;
-    chkCompilerCompile.Width := WCOLABEL;
+    chkCompilerCompile.Visible := True;
     chkCompilerBuild.Visible := True;
     chkCompilerRun.Visible := True;
+    lblCompiler.AnchorParallel(akLeft,0,lblRunIfCompiler);
   end
   else if Options is TPkgCompilerOptions
   then begin
     lblRunIfCompiler.Visible := False;
+    chkCompilerCompile.AnchorParallel(akLeft,6,chkCompilerCompile.Parent);
     chkCompilerCompile.Visible := True;
     chkCompilerCompile.Caption := lisCOSkipCallingCompiler;
-    chkCompilerCompile.Width := 2 * WCOLABEL;
     chkCompilerCompile.Checked := TPkgCompilerOptions(Options).SkipCompiler;
     chkCompilerBuild.Visible := False;
     chkCompilerRun.Visible := False;
+    lblCompiler.AnchorParallel(akLeft,6,lblCompiler.Parent);
   end
   else begin
     lblRunIfCompiler.Visible := False;
@@ -2004,6 +2006,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
     with chkCompile do begin
       Caption := lisCOCallOnCompile;
       AnchorToNeighbour(akLeft,6,lblRunIf);
+      Constraints.MinWidth:=WCOLABEL;
       Parent:=AGroupBox;
     end;
     lblRunIf.AnchorVerticalCenterTo(chkCompile);
@@ -2012,6 +2015,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
     with chkBuild do begin
       Caption := lisCOCallOnBuild;
       AnchorToCompanion(akLeft,6,chkCompile);
+      Constraints.MinWidth:=WCOLABEL;
       Parent:=AGroupBox;
     end;
 
@@ -2019,6 +2023,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
     with chkRun do begin
       Caption := lisCOCallOnRun;
       AnchorToCompanion(akLeft,6,chkBuild);
+      Constraints.MinWidth:=WCOLABEL;
       Parent:=AGroupBox;
     end;
     
@@ -2030,7 +2035,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
     
     edtCommand := TEdit.Create(Self);
     with edtCommand do begin
-      AnchorToNeighbour(akTop,6,lblRunIf);
+      AnchorToNeighbour(akTop,6,chkCompile);
       AnchorToNeighbour(akLeft,6,lblCommand);
       AnchorParallel(akRight,6,AGroupBox);
       Text:='';
@@ -2043,6 +2048,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
       with chkScanFPC do begin
         Caption := lisCOScanForFPCMessages;
         AnchorToNeighbour(akTop,6,edtCommand);
+        Constraints.MinWidth:=WCOLABEL;
         Parent:=AGroupBox;
       end;
 
@@ -2050,6 +2056,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
       with chkScanMake do begin
         Caption := lisCOScanForMakeMessages;
         AnchorToNeighbour(akTop,6,chkScanFPC);
+        Constraints.MinWidth:=WCOLABEL;
         Parent:=AGroupBox;
       end;
 
@@ -2057,6 +2064,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
       with chkShowAll do begin
         Caption := lisCOShowAllMessages;
         AnchorToCompanion(akLeft,15,chkScanFPC);
+        Constraints.MinWidth:=WCOLABEL;
         Parent:=AGroupBox;
       end;
     end;
