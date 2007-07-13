@@ -1,3 +1,31 @@
+{ Copyright (C) 2007 Mattias Gaertner
+
+ *****************************************************************************
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
+  Abstract:
+    This example shows how to read the custom data of an .lpi file and
+    how to change it. The .lpi file is given as first command line parameter.
+  
+    For example:
+      ./lpicustomdata lpicustomdata.lpi
+
+      This will show the old custom data, change a value and save it.
+      If there was no custom data in the .lpi file, there will be no output.
+      
+    Important:
+      The IDE does not read the .lpi file if it changed on disk.
+      If you add custom data, make sure the IDE has not this project open.
+    
+}
 program LPICustomData;
 
 {$mode objfpc}{$H+}
