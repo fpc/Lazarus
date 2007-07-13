@@ -22,8 +22,8 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, NewItemIntf,
-  ObjInspStrConsts;
+  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, AvgLvlTree,
+  NewItemIntf, ObjInspStrConsts;
 
 const
   FileDescGroupName = 'File';
@@ -518,6 +518,8 @@ type
 
   TLazProject = class(TPersistent)
   private
+    FCustomData: TStringToStringTree;
+    FCustomSessionData: TStringToStringTree;
     FLazCompilerOptions: TLazCompilerOptions;
     fModified: boolean;
     FProjectSessionFile: string;
@@ -582,6 +584,8 @@ type
                        // units have their own SessionModified
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property RSTOutputDirectory: string read FRSTOutputDirectory write SetRSTOutputDirectory;
+    property CustomData: TStringToStringTree read FCustomData;
+    property CustomSessionData: TStringToStringTree read FCustomSessionData;
   end;
 
   TLazProjectClass = class of TLazProject;
@@ -1117,10 +1121,14 @@ constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create;
   FSessionStorage:=pssInProjectInfo;
+  FCustomData:=TStringToStringTree.Create(true);
+  FCustomSessionData:=TStringToStringTree.Create(true);
 end;
 
 destructor TLazProject.Destroy;
 begin
+  FreeAndNil(FCustomData);
+  FreeAndNil(FCustomSessionData);
   inherited Destroy;
 end;
 

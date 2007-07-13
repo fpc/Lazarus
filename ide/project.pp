@@ -1686,6 +1686,9 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
       FJumpHistory.DeleteInvalidPositions;
       FJumpHistory.SaveToXMLConfig(aConfig,Path);
     end;
+    
+    // save custom session data
+    SaveStringToStringTree(aConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
 
 var
@@ -1788,6 +1791,9 @@ begin
       xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString,'');
       xmlconfig.SetDeleteValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString,'');
       xmlconfig.SetDeleteValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString,'');
+
+      // save custom data
+      SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
 
       // Save the compiler options
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
@@ -2058,6 +2064,9 @@ var
     ActiveEditorIndexAtStart := xmlconfig.GetValue(
        Path+'General/ActiveEditorIndexAtStart/Value', -1);
     FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
+
+    // load custom session data
+    LoadStringToStringTree(xmlconfig,CustomSessionData,Path+'CustomSessionData/');
   end;
   
   procedure LoadDefaultSession;
@@ -2166,6 +2175,9 @@ begin
       VersionInfo.OriginalFilenameString := xmlconfig.GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
       VersionInfo.ProdNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/ProductName/Value', ''));
 
+      // load custom data
+      LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
+      
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
                                                                ProjectDirectory;
