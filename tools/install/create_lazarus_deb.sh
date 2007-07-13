@@ -19,7 +19,7 @@ fi
 
 LazVersionPostfix=
 if [ "$1" = "append-revision" ]; then
-  LazVersionPostfix=$(./get_lazarus_revision.sh .)
+  LazVersionPostfix=$(./get_svn_revision_number.sh .)
   if [ -n "$LazVersionPostfix" ]; then
     LazVersionPostfix=.$LazVersionPostfix
   fi
