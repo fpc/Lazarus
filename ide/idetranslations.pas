@@ -30,8 +30,9 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText, LCLProc, Translations, FileUtil, avl_tree,
-  LazarusIDEStrConsts;
+  Classes, SysUtils, GetText, LCLProc, Translations,
+  IDEProcs, FileUtil,
+  avl_tree, LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
 type
@@ -300,71 +301,6 @@ var
     NewContent.Write(e[1],length(e));
   end;
   
-  function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;
-  // compare text in s2, s2 ignoring line ends
-  var
-    p1: PChar;
-    p2: PChar;
-    Count1: Int64;
-    Count2: Int64;
-  begin
-    if s1.Memory=nil then begin
-      Result:=s2.Memory=nil;
-    end else begin
-      if s2.Memory=nil then begin
-        Result:=false;
-      end else begin
-        p1:=PChar(s1.Memory);
-        p2:=PChar(s2.Memory);
-        Count1:=s1.Size;
-        Count2:=s2.Size;
-        repeat
-          if not (p1^ in [#10,#13]) then begin
-            // p1 has normal char
-            if p1^=p2^ then begin
-              inc(p1);
-              dec(Count1);
-              inc(p2);
-              dec(Count2);
-            end else begin
-              exit(false);
-            end;
-          end else begin
-            // p1 has a newline
-            if (p2^ in [#10,#13]) then begin
-              // p2 has a newline
-              if (Count1>1) and (p1[1] in [#10,#13]) and (p1[0]<>p1[1]) then
-              begin
-                inc(p1,2);
-                dec(Count1,2);
-              end else begin
-                inc(p1);
-                dec(Count1);
-              end;
-              if (Count2>1) and (p2[1] in [#10,#13]) and (p2[0]<>p2[1]) then
-              begin
-                inc(p2,2);
-                dec(Count2,2);
-              end else begin
-                inc(p2);
-                dec(Count2);
-              end;
-            end else begin
-              // p1 has newline, p2 not
-              exit(false);
-            end;
-          end;
-          if Count1=0 then begin
-            Result:=Count2=0;
-            exit;
-          end else if Count2=0 then begin
-            exit(false);
-          end;
-        until false;
-      end;
-    end;
-  end;
-
 begin
   Result:=false;
   ContentChanged:=false;
@@ -427,7 +363,7 @@ begin
       if CheckContentChange and FileExists(OutFilename) then begin
         OldContent:=TMemoryStream.Create;
         OldContent.LoadFromFile(OutFilename);
-        ContentChanged:=CompareMemStreamText(NewContent,OldContent);
+        ContentChanged:=not CompareMemStreamText(NewContent,OldContent);
         FreeAndNil(OldContent);
       end else begin
         ContentChanged:=true;
