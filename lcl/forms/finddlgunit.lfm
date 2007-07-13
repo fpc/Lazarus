@@ -1,77 +1,80 @@
 object FindDialogForm: TFindDialogForm
+  Left = 451
+  Height = 103
+  Top = 434
+  Width = 444
+  HorzScrollBar.Page = 443
+  VertScrollBar.Page = 102
   ActiveControl = EditFind
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Find'
   ClientHeight = 103
   ClientWidth = 444
   OnCreate = FormCreate
-  PixelsPerInch = 112
   Position = poDesktopCenter
-  HorzScrollBar.Page = 443
-  VertScrollBar.Page = 102
-  Left = 451
-  Height = 103
-  Top = 434
-  Width = 444
   object FindLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 19
+    Width = 57
     Caption = 'Text to find'
-    Color = clNone
     FocusControl = EditFind
     ParentColor = False
-    Left = 6
-    Height = 13
-    Top = 19
-    Width = 62
   end
   object EditFind: TEdit
-    Anchors = [akTop, akLeft, akRight]
-    OnChange = EditFindChange
-    TabOrder = 0
-    Text = 'EditFind'
     Left = 72
     Height = 23
     Top = 10
     Width = 269
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = EditFindChange
+    TabOrder = 0
+    Text = 'EditFind'
   end
   object FindButton: TButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Find more'
-    ModalResult = 1
-    TabOrder = 1
     Left = 349
     Height = 25
     Top = 8
     Width = 91
-  end
-  object CancelButton: TButton
     Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 4
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 2
+    Caption = 'Find more'
+    Default = True
+    TabOrder = 1
+  end
+  object CancelButton: TButton
     Left = 349
     Height = 25
     Top = 40
     Width = 91
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
   end
   object WholeWordsOnlyCheckBox: TCheckBox
+    Left = 6
+    Height = 13
+    Top = 51
+    Width = 104
     Caption = 'Whole words only'
     TabOrder = 3
-    Left = 6
-    Height = 20
-    Top = 51
-    Width = 127
   end
   object CaseSensitiveCheckBox: TCheckBox
+    Left = 6
+    Height = 13
+    Top = 78
+    Width = 88
     Caption = 'Case sensitive'
     TabOrder = 4
-    Left = 6
-    Height = 20
-    Top = 78
-    Width = 109
   end
   object DirectionRadioGroup: TRadioGroup
+    Left = 144
+    Height = 45
+    Top = 46
+    Width = 197
     AutoFill = True
     Caption = 'Direction'
     ChildSizing.LeftRightSpacing = 6
@@ -82,25 +85,23 @@ object FindDialogForm: TFindDialogForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
+    ClientHeight = 27
+    ClientWidth = 193
     Columns = 2
     Items.Strings = (
       'Forward'
       'Backward'
     )
     TabOrder = 5
-    Left = 144
-    Height = 45
-    Top = 46
-    Width = 197
   end
   object HelpButton: TButton
-    Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Help'
-    TabOrder = 6
     Left = 349
     Height = 25
     Top = 72
     Width = 91
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Help'
+    TabOrder = 6
   end
 end

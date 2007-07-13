@@ -23,7 +23,8 @@
     This unit is itself is not compiled into the LCL.
     This form is used to design the .lfm and .lrs file.
     
-    The code is copied to ../lcl/include/finddialog.inc.
+    The source code is copied to ../lcl/include/finddialog.inc.
+    The lrs included in the initialization section of lcl/dialogs.pp
 }
 unit FindDlgUnit;
 

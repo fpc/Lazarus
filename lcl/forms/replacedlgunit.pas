@@ -24,6 +24,7 @@
     This form is used to design the .lfm and lrs file.
 
     The code is copied to ../lcl/include/replacedialog.inc.
+    The lrs included in the initialization section of lcl/dialogs.pp
 }
 unit ReplaceDlgUnit;
 
@@ -54,9 +55,7 @@ type
     TextLabel: TLabel;
     ReplaceLabel: TLabel;
     DirectionRadioGroup: TRadioGroup;
-    procedure btnReplaceAllClick(Sender: TObject);
   private
-    ReplOwner: TReplaceDialog;
   public
     { public declarations }
   end; 
@@ -65,33 +64,8 @@ implementation
 
 { TReplaceDialogForm }
 
-procedure TReplaceDialogForm.btnReplaceAllClick(Sender: TObject);
-begin
-  case (Sender as TComponent).Tag of
-    1:ReplOwner.FOptions:=ReplOwner.FOptions + [frFindNext];
-    2:ReplOwner.FOptions:=ReplOwner.FOptions + [frReplace];
-    3:ReplOwner.FOptions:=ReplOwner.FOptions + [frReplaceAll];
-  end;
-  if DirectionRadioGroup.ItemIndex = 0 then
-    ReplOwner.FOptions:=ReplOwner.FOptions + [frDown]
-  else
-    ReplOwner.FOptions:=ReplOwner.FOptions - [frDown];
-
-  if WholeWordsOnlyCheckBox.Checked then
-    ReplOwner.FOptions:=ReplOwner.FOptions + [frWholeWord]
-  else
-    ReplOwner.FOptions:=ReplOwner.FOptions - [frWholeWord];
-
-  if CaseSensitiveCheckBox.Checked then
-    ReplOwner.FOptions:=ReplOwner.FOptions + [frMatchCase]
-  else
-    ReplOwner.FOptions:=ReplOwner.FOptions - [frMatchCase];
-end;
-
-
-
 initialization
-  {$I replasedlgunit.lrs}
+  {$I replacedlgunit.lrs}
 
 end.
 

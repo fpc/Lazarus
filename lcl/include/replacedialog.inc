@@ -17,6 +17,10 @@
  *****************************************************************************
 }
 
+
+
+
+
 type
 
 { TReplaceDialogForm }
@@ -34,50 +38,27 @@ type
     TextLabel: TLabel;
     ReplaceLabel: TLabel;
     DirectionRadioGroup: TRadioGroup;
-    procedure btnReplaceAllClick(Sender: TObject);
   private
-    ReplOwner: TReplaceDialog;
   public
+    { public declarations }
   end;
-
-procedure TReplaceDialogForm.btnReplaceAllClick(Sender: TObject);
-begin
-  case (Sender as TComponent).Tag of
-    1:ReplOwner.FOptions:=ReplOwner.FOptions + [frFindNext];
-    2:ReplOwner.FOptions:=ReplOwner.FOptions + [frReplace];
-    3:ReplOwner.FOptions:=ReplOwner.FOptions + [frReplaceAll];
-  end;
-  if DirectionRadioGroup.ItemIndex = 0 then
-    ReplOwner.FOptions:=ReplOwner.FOptions + [frDown]
-  else
-    ReplOwner.FOptions:=ReplOwner.FOptions - [frDown];
-
-  if WholeWordsOnlyCheckBox.Checked then
-    ReplOwner.FOptions:=ReplOwner.FOptions + [frWholeWord]
-  else
-    ReplOwner.FOptions:=ReplOwner.FOptions - [frWholeWord];
-
-  if CaseSensitiveCheckBox.Checked then
-    ReplOwner.FOptions:=ReplOwner.FOptions + [frMatchCase]
-  else
-    ReplOwner.FOptions:=ReplOwner.FOptions - [frMatchCase];
-end;
-
 
 { TReplaceDialog }
 
-procedure TReplaceDialog.DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);
+procedure TReplaceDialog.ReplaceClick(Sender: TObject);
 begin
-  with TReplaceDialogForm(Sender) do
-  begin
-    if ModalResult <> mrCancel then
-    begin
-      FFindText:=EditFind.Text;
-      FReplaceText:=EditReplace.Text;
-    end
-    else
-      Options:=FOptions - [frFindNext];
-  end;
+  GetFormValues;
+  //Delphi does it this way
+  FOptions := FOptions + [frReplace] - [frReplaceAll, frFindNext];
+  Replace;
+end;
+
+procedure TReplaceDialog.ReplaceAllClick(Sender: TObject);
+begin
+  GetFormValues;
+  //Delphi does it this way
+  FOptions := FOptions + [frReplaceAll] - [frFindNext, frReplace];
+  Replace;
 end;
 
 function TReplaceDialog.CreateForm: TForm;
@@ -96,11 +77,21 @@ begin
     DirectionRadioGroup.Caption:=rsDirection;
     DirectionRadioGroup.Items[0]:=rsForward;
     DirectionRadioGroup.Items[1]:=rsBackward;
+
+    //Setting up button eventhandlers
+    FindMoreButton.OnClick := @FindClick;
+    ReplaceButton.OnClick := @ReplaceClick;
+    ReplaceAllButton.OnClick := @ReplaceAllClick;
+    CancelButton.OnClick := @CancelClick;
+    HelpButton.OnClick := @HelpClick;
+    //Once the issues concerning FormStyle = fsStayOnTop are resolved we can implement this
+    //so that the form should stay on top of the application (not on top of everything)
+    //See bug #8471 in Mantis
+    //FormStyle := fsStayOnTop;
   end;
-  TReplaceDialogForm(Result).ReplOwner:=Self;
 end;
 
-procedure TReplaceDialog.UpdateValues;
+procedure TReplaceDialog.SetFormValues;
 var
   dlg: TReplaceDialogForm;
 begin
@@ -110,7 +101,7 @@ begin
 
   dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
   dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
-  dlg.DirectionRadioGroup.ItemIndex:=ord(frDown in Options);
+  Dlg.DirectionRadioGroup.ItemIndex:=ord(not(frDown in Options));
 
   dlg.WholeWordsOnlyCheckBox.Enabled:=not (frDisableWholeWord in Options);
   dlg.CaseSensitiveCheckBox.Enabled:=not (frDisableMatchCase in Options);
@@ -120,6 +111,27 @@ begin
   dlg.CaseSensitiveCheckBox.Visible:=not (frHideMatchCase in Options);
   dlg.DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
   dlg.HelpButton.Visible:=(frShowHelp in Options);
+end;
+
+procedure TReplaceDialog.GetFormValues;
+var
+  Dlg: TReplaceDialogForm;
+begin
+  Dlg:=TReplaceDialogForm(FFindForm);
+  if Dlg.DirectionRadioGroup.ItemIndex = 0 then
+    FOptions:=FOptions + [frDown]
+  else
+    FOptions:=FOptions - [frDown];
+  if Dlg.WholeWordsOnlyCheckBox.Checked then
+    FOptions:=FOptions + [frWholeWord]
+  else
+    FOptions:=FOptions - [frWholeWord];
+  if Dlg.CaseSensitiveCheckBox.Checked then
+    FOptions:=FOptions + [frMatchCase]
+  else
+    FOptions:=FOptions - [frMatchCase];
+  FFindText := Dlg.EditFind.Text;
+  FReplaceText := Dlg.EditReplace.Text;
 end;
 
 constructor TReplaceDialog.Create(AOwner: TComponent);

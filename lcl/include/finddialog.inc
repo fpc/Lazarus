@@ -59,6 +59,23 @@ begin
   FReplaceText:=AValue;
 end;
 
+procedure TFindDialog.FindClick(Sender: TObject);
+begin
+  GetFormValues;
+  FOptions := FOptions - [frReplace, frReplaceAll] + [frFindNext];
+  Find;
+end;
+
+procedure TFindDialog.HelpClick(Sender: TObject);
+begin
+  Help;
+end;
+
+procedure TFindDialog.CancelClick(Sender: TObject);
+begin
+  CloseDialog;
+end;
+
 procedure TFindDialog.UpdatePosition;
 begin
   if Assigned(FFindForm) then
@@ -71,30 +88,7 @@ end;
 procedure TFindDialog.DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if csDesigning in ComponentState then exit;
-  with TFindDialogForm(Sender) do
-  begin
-    if ModalResult <> mrCancel then
-    begin
-      FOptions:=FOptions + [frFindNext];
-      FFindText:=EditFind.Text;
-      if DirectionRadioGroup.ItemIndex = 0 then
-        FOptions:=FOptions + [frDown]
-      else
-        FOptions:=FOptions - [frDown];
-
-      if WholeWordsOnlyCheckBox.Checked then
-        FOptions:=FOptions + [frWholeWord]
-      else
-        FOptions:=FOptions - [frWholeWord];
-
-      if CaseSensitiveCheckBox.Checked then
-        FOptions:=FOptions + [frMatchCase]
-      else
-        FOptions:=FOptions - [frMatchCase];
-    end
-    else
-      FOptions:=FOptions - [frFindNext];
-  end;
+  if Assigned(OnClose) then OnClose(Self);
 end;
 
 function TFindDialog.GetFindText: string;
@@ -157,6 +151,12 @@ begin
     FOnFind(Self);
 end;
 
+procedure TFindDialog.Help;
+begin
+  if Assigned(FOnHelpClicked) then
+    FOnHelpClicked(Self);
+end;
+
 procedure TFindDialog.Replace;
 begin
   if Assigned(FOnReplace) then
@@ -177,10 +177,18 @@ begin
     DirectionRadioGroup.Caption:=rsDirection;
     DirectionRadioGroup.Items[0]:=rsForward;
     DirectionRadioGroup.Items[1]:=rsBackward;
+    //Setting up button eventhandlers
+    FindButton.OnClick := @FindClick;
+    HelpButton.OnClick := @HelpClick;
+    CancelButton.OnClick := @CancelClick;
+    //Once the issues concerning FormStyle = fsStayOnTop are resolved we can implement this
+    //so that the form should stay on top of the application (not on top of everything)
+    //See bug #8471 in Mantis
+    //FormStyle := fsStayOnTop;
   end;
 end;
 
-procedure TFindDialog.UpdateValues;
+procedure TFindDialog.SetFormValues;
 var
   Dlg: TFindDialogForm;
 begin
@@ -189,7 +197,7 @@ begin
 
   Dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
   Dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
-  Dlg.DirectionRadioGroup.ItemIndex:=ord(frDown in Options);
+  Dlg.DirectionRadioGroup.ItemIndex:=ord(not(frDown in Options));
 
   Dlg.WholeWordsOnlyCheckBox.Enabled:=not (frDisableWholeWord in Options);
   Dlg.CaseSensitiveCheckBox.Enabled:=not (frDisableMatchCase in Options);
@@ -199,6 +207,26 @@ begin
   Dlg.CaseSensitiveCheckBox.Visible:=not (frHideMatchCase in Options);
   Dlg.DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
   Dlg.HelpButton.Visible:=(frShowHelp in Options);
+end;
+
+procedure TFindDialog.GetFormValues;
+var
+  Dlg: TFindDialogForm;
+begin
+  Dlg:=TFindDialogForm(FFindForm);
+  if Dlg.DirectionRadioGroup.ItemIndex = 0 then
+    FOptions:=FOptions + [frDown]
+  else
+    FOptions:=FOptions - [frDown];
+  if Dlg.WholeWordsOnlyCheckBox.Checked then
+    FOptions:=FOptions + [frWholeWord]
+  else
+    FOptions:=FOptions - [frWholeWord];
+  if Dlg.CaseSensitiveCheckBox.Checked then
+    FOptions:=FOptions + [frMatchCase]
+  else
+    FOptions:=FOptions - [frMatchCase];
+  FFindText := Dlg.EditFind.Text;
 end;
 
 constructor TFindDialog.Create(AOwner: TComponent);
@@ -221,16 +249,20 @@ end;
 
 function TFindDialog.Execute: Boolean;
 begin
-  FFindForm:=CreateForm;
-  if Assigned(FFindForm) then
-  try
-    UpdateValues;
+  Result := False;
+  if not Assigned(FFindForm) then
+    FFindForm:=CreateForm;
+    
+  if Assigned(FFindForm) then begin
+    SetFormValues;
     FFindForm.OnClose:=@DoCloseForm;
+    FFindForm.OnShow := Self.OnShow;
     FFindForm.HelpContext:=HelpContext;
     FFindForm.Caption:=Title;
-    Result:=FFindForm.ShowModal=mrOk;
-  finally
-    FreeAndNil(FFindForm);
+    //Once the issues concerning FormStyle = fsStayOnTop are resolved we can
+    //make this a non-Modal window using FFindForm.Show;
+    FFindForm.ShowModal;
+    Result := true;
   end;
 end;
 

@@ -357,14 +357,24 @@ type
     FOnReplace: TNotifyEvent;
     FOnFind: TNotifyEvent;
     FOptions: TFindOptions;
+    FOnHelpClicked: TNotifyEvent;
     FReplaceText: string;
     FFindText: string;
+
+    procedure FindClick(Sender: TObject);
+    procedure HelpClick(Sender: TObject);
+    procedure CancelClick(Sender: TObject);
+
     procedure UpdatePosition;
     procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);virtual;
     procedure Find; virtual;
+    procedure Help; virtual;
     procedure Replace; virtual;
     function CreateForm:TForm;virtual;
-    procedure UpdateValues;virtual;
+    procedure SetFormValues;virtual;
+
+    procedure GetFormValues; virtual;
+
     property ReplaceText: string read GetReplaceText write SetReplaceText;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
   public
@@ -379,6 +389,7 @@ type
     property FindText: string read GetFindText write SetFindText;
     property Options: TFindOptions read FOptions write FOptions default [frDown];
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
+    property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
   end;
 
 
@@ -386,15 +397,20 @@ type
 
   TReplaceDialog = class(TFindDialog)
   protected
-    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction); override;
+    //Bugfix start
+    procedure ReplaceClick(Sender: TObject);
+    procedure ReplaceAllClick(Sender: TObject);
+    //Bugfix end
     function CreateForm: TForm; override;
-    procedure UpdateValues; override;
+    procedure SetFormValues; override;
+    procedure GetFormValues; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ReplaceText;
     property OnReplace;
   end;
+
 
 
 { TPrinterSetupDialog }
