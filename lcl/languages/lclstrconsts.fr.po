@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-06-02 22:43+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2007-07-10 12:40+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,7 +16,7 @@ msgstr "  modifier"
 
 #: lclstrconsts:rssize
 msgid "  size "
-msgstr "taille"
+msgstr "  taille"
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -24,7 +24,7 @@ msgstr " ATTENTION: Il y a %d structures TimerInfo, elles seront supprimés."
 
 #: lclstrconsts:rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr "ATTENTION : il y a %d messages en file d'attente ! Ils seront supprimés."
+msgstr " ATTENTION : il y a %d messages en file d'attente ! Ils seront supprimés."
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -36,7 +36,7 @@ msgstr " ATTENTION : Il y a %d GDIObjects non libres, en voici le détail : "
 
 #: lclstrconsts:rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr ""
+msgstr " ATTENTION :  Il y a %s non enlevé LM_PAINT/LM_GtkPAINT liens de message."
 
 #: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
@@ -68,7 +68,7 @@ msgstr "&Fermer"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Répertoire"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -164,7 +164,7 @@ msgstr "Tous les fichiers (%s)|%s|%s"
 
 #: lclstrconsts:ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -176,7 +176,7 @@ msgstr "Arrière"
 
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
-msgstr ""
+msgstr "Images"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
@@ -240,7 +240,7 @@ msgstr ""
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -260,7 +260,7 @@ msgstr "Le répertoire doit exister"
 
 #: lclstrconsts:rsdocking
 msgid "Docking"
-msgstr ""
+msgstr "Amarrage"
 
 #: lclstrconsts:ifsvk_down
 msgid "Down"
@@ -300,7 +300,7 @@ msgstr "Erreur en exécutant %s%s%s:%s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Erreur en sauvegardent l'image."
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -376,7 +376,7 @@ msgstr "GroupIndex ne peut pas être inférieur au GroupIndex des éléments pr�
 
 #: lclstrconsts:ifsvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
@@ -444,7 +444,7 @@ msgstr "Historique"
 
 #: lclstrconsts:ifsvk_home
 msgid "Home"
-msgstr ""
+msgstr "Maison"
 
 #: lclstrconsts:rsicon
 msgid "Icon"
@@ -504,11 +504,11 @@ msgstr "Format de flux incorrecte"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lclstrconsts:ifsvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
@@ -616,11 +616,11 @@ msgstr "Touche Pause"
 
 #: lclstrconsts:rspixmap
 msgid "Pixmap"
-msgstr ""
+msgstr "Pixmap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr ""
+msgstr "Portable Network Graphic"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

@@ -1,8 +1,8 @@
 # translation of lazaruside.po to français translation of lazarusidenew.po to  translation of lazaruside.po to  , 2005. , 2005. beuz_ <lazarus@beuselinck.com>, 2006.
 msgid ""
 msgstr ""
-"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-06-19 22:54+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2007-07-13 16:59+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -7429,7 +7429,7 @@ msgstr "Passer le chargement du dernier projet"
 
 #: lazarusidestrconsts:lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr ""
+msgstr "Sauter ce paquet"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -9189,7 +9189,7 @@ msgstr "Utiliser une application de démarrage"
 
 #: lazarusidestrconsts:dlgpousemanifest
 msgid "Use manifest file to enable themes (windows only)"
-msgstr ""
+msgstr "Etiliser le fichier manifeste pouractiver les thèmes (Windows seulement)"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
