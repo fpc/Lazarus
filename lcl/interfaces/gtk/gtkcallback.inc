@@ -1896,7 +1896,7 @@ var
   CurFilename: string;
   //SelectedFont: PGdkFont;
 
-  function CheckOpenedFilename(const AFilename: string): boolean;
+  function CheckOpenedFilename(var AFilename: string): boolean;
   {$IFDEF GTK1}
   var
     MenuWidget: PGtkWidget;
@@ -1908,12 +1908,19 @@ var
     // check if entered file are a real directory
     if DirectoryExists(AFileName) then
     begin
+      // if only interested in directories, then it's done
+      if TheDialog is TSelectDirectoryDialog then
+      begin
+        result := True;
+        exit;
+      end;
       // if allowed then jump to that directory
       if not (ofNoChangeDir in TOpenDialog(TheDialog).Options) then
       begin
         // change dir
         gtk_file_selection_set_filename(PGtkFileSelection(FPointer),
                                         PChar(AppendPathDelim(AFileName)));
+
         // populate file list
         MenuWidget := gtk_object_get_data(PGtkObject(PGtkFileSelection(FPointer)), 'LCLFilterMenu');
         if (MenuWidget <> nil) then begin
@@ -1927,6 +1934,7 @@ var
       result:=False;
       Exit;
     end;
+
     // maybe user entered nonexistent dir
     if ((AFileName<>'') and (IsPathDelimiter(AFileName, Length(AFileName)))) then
     begin
@@ -1938,6 +1946,16 @@ var
       result:=False;
       Exit;
     end;
+    
+    // check if user selected a file while requesting a directory
+    if (AFileName<>'') and (TheDialog is TSelectDirectoryDialog) then begin
+      if DirectoryExists(ExtractFilePath(AFileName)) then begin
+        AFileName:=ExtractFilePath(AFileName);
+        result:=true;
+        exit;
+      end;
+    end;
+    
     {$ENDIF}
     // maybe file already exists
     if (ofOverwritePrompt in TOpenDialog(theDialog).Options)
