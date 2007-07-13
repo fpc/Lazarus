@@ -60,10 +60,6 @@ components/images/*.bak
 components/images/examples/*.bak
 components/images/examples/units
 components/images/units
-components/interbase/*.bak
-components/interbase/lib/*.bak
-components/interbase/lib/units
-components/interbase/units
 components/jpeg/*.bak
 components/jpeg/examples/*.bak
 components/jpeg/examples/units
