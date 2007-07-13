@@ -615,7 +615,7 @@ var
         crsScaleChilds:
           begin
             {$IFDEF CPU64}
-            {$NOTE remove this workaround, when comiler bug fixed}
+            {$NOTE remove this workaround, when compiler bug fixed}
             if Child.MinimumSize[Orientation]=0 then
               CurScale:=0
             else
@@ -636,7 +636,7 @@ var
         crsHomogenousChildResize:
           begin
             {$IFDEF CPU64}
-            {$NOTE remove this workaround, when comiler bug fixed}
+            {$NOTE remove this workaround, when compiler bug fixed}
             if Child.MinimumSize[Orientation]=0 then
               CurScale:=0
             else

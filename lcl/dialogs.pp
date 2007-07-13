@@ -397,10 +397,8 @@ type
 
   TReplaceDialog = class(TFindDialog)
   protected
-    //Bugfix start
     procedure ReplaceClick(Sender: TObject);
     procedure ReplaceAllClick(Sender: TObject);
-    //Bugfix end
     function CreateForm: TForm; override;
     procedure SetFormValues; override;
     procedure GetFormValues; override;
