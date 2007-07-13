@@ -39,7 +39,7 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="56">
+    <Units Count="57">
       <Unit0>
         <Filename Value="lazdde.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -229,7 +229,7 @@
         <Filename Value="ddfiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ddfiles"/>
-        <CursorPos X="26" Y="25"/>
+        <CursorPos X="33" Y="22"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="91"/>
@@ -445,6 +445,14 @@
         <TopLine Value="78"/>
         <UsageCount Value="10"/>
       </Unit55>
+      <Unit56>
+        <Filename Value="README.txt"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit56>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
