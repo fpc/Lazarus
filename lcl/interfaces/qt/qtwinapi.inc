@@ -533,6 +533,8 @@ end;
 function TQtWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   aObject: TObject;
+  APaintEngine: QPaintEngineH;
+  APainter: QPainterH;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
@@ -596,8 +598,18 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Image';
     {$endif}
-
-//    TQtImage(aObject).Free;
+    
+    // we must stop paintdevice before destroying
+    APaintEngine := QImage_paintEngine(TQtImage(AObject).Handle);
+    
+    if (APaintEngine <> NiL)
+    and QPaintEngine_isActive(APaintEngine) then
+    begin
+      APainter := QPaintEngine_painter(APaintEngine);
+      if APainter <> NiL
+      then
+        QPainter_end(APainter);
+    end ;
   end
   {------------------------------------------------------------------------------
     Region
@@ -631,9 +643,9 @@ begin
       AObject:=nil;
     end;
   
-  if (AObject <> nil) then
+  if (AObject <> nil)
+  then
     AObject.Free;
-  
   
   // Find out if we want to release internal GDI object
 {    case GDIType of
