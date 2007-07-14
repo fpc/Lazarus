@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-07-10 12:40+0100\n"
+"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
+"PO-Revision-Date: 2007-07-13 23:39+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -144,7 +144,7 @@ msgstr "--no-xshm             Désactive l'utilisation de la mémoire étendu pa
 
 #: lclstrconsts:rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
-msgstr ""
+msgstr "--sync                Appel XSynchronize (affichage, Vrai) après que le raccordement au serveur X ait été établi. Ceci rend le déboguage des erreurs du protocole X plus faciles, parce que les demandes de buffer par X sont désactivé et les erreurs de X seront reçu immédiatement après la demande de protocole qui a produit l'erreur traité par le serveur X."
 
 #: lclstrconsts:rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as parent"
@@ -236,7 +236,7 @@ msgstr "Convertir"
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr ""
+msgstr "Créer une erreur d'arret de gdb :"
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
