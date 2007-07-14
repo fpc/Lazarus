@@ -721,10 +721,16 @@ type
     procedure SignalSelectionChanged; cdecl;
     procedure SignalCurrentPageChanged(p1, p2: Integer); cdecl;
   end;
+
+
   
 implementation
+
 uses
+
+  LCLMessageGlue,
   qtCaret;
+
   
 const
   AlignmentMap: array[TAlignment] of QtAlignment =
@@ -996,7 +1002,12 @@ begin
   case QEvent_type(Event) of
    QEventShow: SlotShow(True);
    QEventHide: SlotShow(False);
-   QEventClose: SlotClose;
+   QEventClose:
+     begin
+     Result:=True;
+     QEvent_ignore(Event);
+     SlotClose;
+     end;
    QEventDestroy: SlotDestroy;
    QEventFocusIn: SlotFocus(True);
    QEventFocusOut: SlotFocus(False);
@@ -1055,8 +1066,8 @@ end;
   Params:  None
   Returns: Nothing
 
-  Note: LCL uses LM_CLOSEQUERY to set the form visibility and if we don´t send this
- message, you won´t be able to show a form twice.
+  Note: LCL uses LM_CLOSEQUERY to set the form visibility and if we donï¿½t send this
+ message, you wonï¿½t be able to show a form twice.
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotClose; cdecl;
 var
@@ -1066,11 +1077,7 @@ begin
     WriteLn('TQtWidget.SlotClose');
   {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
-
-  Msg.Msg := LM_CLOSEQUERY;
-
-  DeliverMessage(Msg);
+  LCLSendCloseQueryMsg(LCLObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -2370,6 +2377,12 @@ begin
 
   case QEvent_type(Event) of
     QEventWindowStateChange: SlotWindowStateChange;
+    QEventClose :
+      begin
+      Result:=True;
+      QEvent_ignore(Event);
+      SlotClose;
+      end;
   else
    // Inherited Callbacks
    inherited EventFilter(Sender, Event);
