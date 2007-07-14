@@ -2301,9 +2301,8 @@ begin
     WriteLn('[WinAPI Invalidate Rect]');
   {$endif}
 
-  //TODO: QWidget_update(TQtWidget(aHandle).Widget,Rect);
-  TQtWidget(aHandle).Update;
-  
+  QWidget_update(TQtWidget(aHandle).Widget,Rect); 
+
   Result := True;
 end;
 
