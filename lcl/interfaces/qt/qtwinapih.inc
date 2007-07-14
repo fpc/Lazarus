@@ -95,6 +95,10 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
+function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
+function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
+function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
+
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;

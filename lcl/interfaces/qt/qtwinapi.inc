@@ -90,10 +90,18 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
+var
+  APoint: TQtPoint;
 begin
   Result := True;
   if Handle <> 0 then
-    QWidget_mapToGlobal(TQtWidget(Handle).Widget, @P, @P);
+  begin
+    APoint.x := P.X;
+    APoint.y := P.Y;
+    QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
+    P.X := APoint.x;
+    P.Y := APoint.y;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2374,6 +2382,63 @@ begin
   TQtDeviceContext(DC).setBrushOrigin(X, Y);
   
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PolyBezier
+  Params:  DC: HDC; Points: PPoint; NumPts: Integer; Filled: Boolean;
+           Continuous: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+  Filled, Continuous: Boolean): Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
+  {$endif}
+  Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
+end;
+
+{------------------------------------------------------------------------------
+  Function: Polygon
+  Params:  DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+  Winding: Boolean): boolean;
+var
+  ARect: TRect;
+  ADC : TQtDeviceContext;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Polygon] DC: ', dbghex(DC));
+  {$endif}
+  Result := IsValidDC(DC);
+  if Result then
+  begin
+    {TODO: discuss with other developers about antialiasing by default}
+    // QPainter_setRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing, True);
+    if Winding
+    then
+      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts, QtWindingFill)
+    else
+      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts, QtOddEvenFill);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: Polyline
+  Params:  DC: HDC; Points: PPoint; NumPts: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Polyline] DC: ', dbghex(DC));
+  {$endif}
+  Result := IsValidDC(DC);
+  if Result then
+    QPainter_drawPolyline(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts);
 end;
 
 {------------------------------------------------------------------------------
