@@ -125,7 +125,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  QCoreApplication_processEvents();
+  if QCoreApplication_hasPendingEvents
+  then
+    QCoreApplication_processEvents();
 end;
 
 {------------------------------------------------------------------------------
@@ -198,29 +200,23 @@ end;
 
 procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 var
+  ASavedColor: TQColor;
   Color: TQColor;
-  Pen, APen: QPenH;
+  Pen: QPenH;
   Painter: QPainterH;
 begin
   if IsValidDC(CanvasHandle) then
   begin
     //WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor));
     
-    //TODO: First compare color if same, draw point with current pen
-    
     Painter :=TQtDeviceContext(CanvasHandle).Widget;
     Pen := QPainter_Pen(Painter);
-    APen := QPen_Create(Pen);
-
-    QPen_color(APen,@Color);
+    QPen_color(Pen, @ASavedColor);
+    QPen_color(Pen, @Color);
     ColorRefToTQColor(AColor, Color);
-    QPen_setColor(Apen, @Color);
-    
-    Qpainter_SetPen(Painter, APen);
+    QPen_setColor(Pen, @Color);
     QPainter_DrawPoint(Painter, X,Y);
-    QPainter_SetPen(Painter, Pen);
-    
-    QPen_Destroy(APen);
+    QPen_setColor(Pen, @ASavedColor);
   end;
 end;
 
