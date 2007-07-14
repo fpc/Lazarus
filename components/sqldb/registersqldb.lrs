@@ -412,6 +412,96 @@ LazarusResources.Add('tpqconnection','XPM',[
   +'.^.} } E <           ",'#10'"                        i.j.h   >             '
   +'",'#10'"                          k.>                 "};'#10
 ]);
+LazarusResources.Add('tsqlconnector','XPM',[
+  '/* XPM */'#10'static char *tsqlconnector[]={'#10'"24 24 6 1",'#10'". c None"'
+  +','#10'"b c #0000c0",'#10'"c c #808000",'#10'"a c #c0c000",'#10'"d c #ff0000'
+  +'",'#10'"# c #ffff00",'#10'"........................",'#10'"..#########.....'
+  +'........",'#10'".#aaaaaaaaa#.......bb...",'#10'".c#########c......bbb...",'
+  +#10'".accccccccca......b.....",'#10'".aaaaaaaaaaa......bbb...",'#10'".aaaaaa'
+  +'aaaaa.....bbbb...",'#10'".aaaaaaaaaaa.....bb.....",'#10'".caaaaaaaaac.....b'
+  +'b.....",'#10'".#ccccccccc#bbbbbbbbb...",'#10'".c#########cbbbbbbbbb...",'#10
+  +'".acccccccccc.....bb.....",'#10'".aaaaaaaaaaa.....bb.....",'#10'".aaaaaaaaa'
+  +'aa.....bbbb...",'#10'".aaaaaaaaaaa......bbb...",'#10'".adddaaadddd..dd..b..'
+  +'...",'#10'".dddddadddddd.dd..bbb...",'#10'".dcccccddccdd.dd...bb...",'#10'"'
+  +'.ddddd#dd##dd.dd...bb...",'#10'".ddddd.dd..dd.dd........",'#10'".....d.dd..'
+  +'dd.dd........",'#10'".d...d.dddddd.dd........",'#10'".ddddd..dddd..ddddd...'
+  +'..",'#10'"..ddd.....dd..ddddd....."};'#10
+]);
+LazarusResources.Add('tsqlite3connection','XPM',[
+  '/* XPM */'#10'static char *tsqlite3conn[]={'#10'"24 24 203 2",'#10'".d c Non'
+  +'e",'#10'"b. c None",'#10'"Qt c None",'#10'"#i c #737373",'#10'"#h c #7b7b7b'
+  +'",'#10'".y c #989898",'#10'".m c #9e9e9e",'#10'".# c #bebebe",'#10'"#y c #3'
+  +'83838",'#10'"aT c #3e3e3e",'#10'"#z c #505050",'#10'".c c #585858",'#10'".N'
+  +' c #656565",'#10'"aw c #6e6e6e",'#10'".l c #7e7e7e",'#10'".n c #3c3c3c",'#10
+  +'".b c #454545",'#10'".a c #545454",'#10'"#5 c #212121",'#10'".3 c #282828",'
+  +#10'"bi c #2c2c2c",'#10'"a3 c #323232",'#10'".e c #7a7d7c",'#10'"bd c #1e1e1'
+  +'e",'#10'"#P c #212121",'#10'"bh c #232323",'#10'".z c #303030",'#10'"aU c #'
+  +'676d6b",'#10'"aJ c #6b706e",'#10'".k c #171717",'#10'"aj c #101010",'#10'"a'
+  +'I c #2b2b2b",'#10'".A c #3d3e3e",'#10'"a9 c #181818",'#10'"#j c #6b716f",'
+  +#10'"#g c #0e0e0e",'#10'".2 c #0f0f0f",'#10'".o c #313131",'#10'"ai c #09090'
+  +'9",'#10'".x c #5f6664",'#10'"#x c #080808",'#10'"aS c #070707",'#10'"#A c #'
+  +'606765",'#10'"aH c #2c2e2d",'#10'"a2 c #101111",'#10'".f c #788883",'#10'".'
+  +'M c #303433",'#10'".O c #73827e",'#10'"#Q c #818e8a",'#10'"#f c #2f3332",'
+  +#10'"av c #333535",'#10'"#9 c #545f5b",'#10'".j c #5e6966",'#10'"ax c #5e6e6'
+  +'8",'#10'".J c #3b3e3d",'#10'"be c #5d6965",'#10'"#t c #505b57",'#10'"a4 c #'
+  +'869792",'#10'".p c #4f5654",'#10'"a0 c #353736",'#10'"#O c #171a19",'#10'"#'
+  +'6 c #626d6a",'#10'".B c #75827f",'#10'".G c #3b413e",'#10'"aG c #373e3b",'
+  +#10'"aK c #7f8f8a",'#10'"aq c #2e3331",'#10'".w c #68716e",'#10'".8 c #46504'
+  +'d",'#10'"a1 c #242626",'#10'".4 c #70837c",'#10'"#B c #7c8f89",'#10'".H c #'
+  +'545a58",'#10'"#k c #768b85",'#10'"aV c #859791",'#10'"bg c #202423",'#10'"b'
+  +'c c #0b0c0b",'#10'"#4 c #3d4342",'#10'"ac c #1c1d1d",'#10'"aZ c #1d2220",'
+  +#10'".v c #696c6c",'#10'".i c #748982",'#10'".g c #778f88",'#10'"ah c #15161'
+  +'6",'#10'".I c #5d605f",'#10'"#p c #5e6e69",'#10'"ad c #636e6b",'#10'"a8 c #'
+  +'282d2c",'#10'".K c #64726e",'#10'".h c #6f8a82",'#10'"b# c #808b88",'#10'"a'
+  +'R c #151717",'#10'"#w c #1f2120",'#10'".1 c #3c4542",'#10'"ak c #515c58",'
+  +#10'"ar c #7d8f89",'#10'"#b c #49514e",'#10'".P c #7e9890",'#10'"#L c #757c7'
+  +'a",'#10'".Q c #5d6966",'#10'"#0 c #3e4644",'#10'"#e c #3a413f",'#10'"#8 c #'
+  +'4a5450",'#10'"aC c #677772",'#10'"## c #2d3131",'#10'"#a c #3d4442",'#10'".'
+  +'Y c #5c6562",'#10'"aF c #3a413f",'#10'"#C c #7d928b",'#10'".7 c #38403d",'
+  +#10'".X c #585f5d",'#10'".Z c #606c68",'#10'"bf c #54635e",'#10'".W c #545d5'
+  +'a",'#10'"#u c #70827d",'#10'"aB c #2e3432",'#10'"#s c #373e3c",'#10'".R c #'
+  +'5e6865",'#10'"#l c #72807b",'#10'"ap c #414b47",'#10'"#F c #515a57",'#10'"#'
+  +'o c #3b4441",'#10'".C c #6e7e79",'#10'"#N c #454f4c",'#10'".F c #4b5753",'
+  +#10'"#T c #3a4340",'#10'"#V c #414a47",'#10'"ag c #3f4644",'#10'".q c #67767'
+  +'1",'#10'".u c #57615e",'#10'".L c #5c6764",'#10'"a. c #63736e",'#10'"au c #'
+  +'484e4c",'#10'"#c c #687974",'#10'"#W c #748b84",'#10'"#M c #6f7c78",'#10'"a'
+  +'b c #4e5a56",'#10'"#d c #4d5754",'#10'".V c #56615d",'#10'".0 c #5d6a66",'
+  +#10'"#q c #778b85",'#10'"#Z c #515a57",'#10'"aD c #7a928b",'#10'"#R c #748b8'
+  +'4",'#10'"#K c #4f5653",'#10'"aE c #4e5a56",'#10'"#S c #54605d",'#10'".t c #'
+  +'5b6562",'#10'"al c #6c7c77",'#10'"aQ c #5d6e68",'#10'"#E c #5d6f69",'#10'"#'
+  +'1 c #768681",'#10'"#v c #62736e",'#10'".s c #55625e",'#10'"#m c #5a6461",'
+  +#10'"ay c #90a59f",'#10'".5 c #89a79e",'#10'".9 c #61706c",'#10'"#H c #7d908'
+  +'a",'#10'"aW c #b9c9c4",'#10'".S c #5c6b66",'#10'"am c #879b95",'#10'"a5 c #'
+  +'bbcac6",'#10'"aY c #687a74",'#10'"aO c #74857f",'#10'"aP c #72857f",'#10'".'
+  +'r c #5b6b66",'#10'"#7 c #687b75",'#10'"ae c #7b918a",'#10'"aL c #a7bcb6",'
+  +#10'"as c #7c8c87",'#10'"bb c #71837d",'#10'"aN c #5d6c68",'#10'"a7 c #6d807'
+  +'a",'#10'"at c #55605c",'#10'".U c #576661",'#10'"#3 c #7a9089",'#10'".D c #'
+  +'859d96",'#10'"#D c #879e98",'#10'"#2 c #8da9a0",'#10'"#. c #616d69",'#10'"#'
+  +'r c #6a7b76",'#10'".6 c #6b837b",'#10'"ao c #7b8f88",'#10'"#U c #72867f",'
+  +#10'"aA c #71827d",'#10'"#J c #5e6c68",'#10'"af c #6c7e78",'#10'"#I c #9db3a'
+  +'c",'#10'"#G c #6c7d78",'#10'"#n c #6b817b",'#10'"#Y c #82948f",'#10'"a# c #'
+  +'8da59d",'#10'"an c #9db5ad",'#10'"aa c #93a9a1",'#10'".T c #677a74",'#10'".'
+  +'E c #7f9a91",'#10'"ba c #a5b9b3",'#10'"aM c #a8bdb7",'#10'"a6 c #ccdbd6",'
+  +#10'"#X c #9ab1aa",'#10'"az c #a6bfb8",'#10'"aX c #bacbc6",'#10'"QtQtQtQtQtQ'
+  +'tQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQt'
+  +'QtQtQtQtQtQtQtQtQt",'#10'"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt"'
+  +','#10'"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt.#.a.b.c.dQtQtQt",'#10'"QtQtQtQtQtQt'
+  +'QtQtQtQtQtQtQtQtQt.e.f.g.h.i.j.k.l.m",'#10'"QtQtQtQtQtQtQtQtQtQtQtQtQt.n.o.'
+  +'p.q.r.s.t.u.v.w.x",'#10'"QtQtQtQtQtQtQtQtQt.y.z.A.B.C.D.E.F.G.H.I.J.K.L.M",'
+  +#10'"QtQtQtQtQtQtQtQt.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.0.1.2",'#10'"QtQtQtQtQtQtQt.'
+  +'3.4.5.6.7.8.9#.###a#b#c#d#e#f#g#h",'#10'"QtQtQtQt#i#j#k#l#m#n#o#p#q#r#s#t#u'
+  +'#v#w#x#yQtQtQt",'#10'"QtQt#z#A#B#C#D#E#F#G#H#I#J#K#L#M#N#O#PQtQtQtQtQt",'#10
+  +'"QtQt#Q#R#S#T#U#V#W#X#Y#Z#0#1#2#3#4#5QtQtQtQtQtQt",'#10'"QtQt#6#7#8#9a.a#aa'
+  ,'abacadaeafagahai.mQtQtQtQtQtQt",'#10'"QtQtajakalamanaoapaqarasatauavawQtQtQ'
+  +'tQtQtQtQtQt",'#10'"QtQtQtaxayazaAaBaCaDaEaFaGaHaIQtQtQtQtQtQtQtQtQt",'#10'"'
+  +'QtaJaKaLaMaNaOaPaQaRaSaTQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"aUaVaWaXaYaZa0a1a2a'
+  +'3QtQtQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"a4a5a6a7a8a9.y.yb.QtQtQtQtQtQtQtQtQtQt'
+  +'QtQtQtQtQt",'#10'"b#babbbcbdQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"b'
+  +'ebfbg#PQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"bh#gbiQtQtQtQtQtQtQt'
+  +'QtQtQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQ'
+  +'tQtQtQtQt",'#10'"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt",'#10'"Qt'
+  +'QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt"};'#10
+]);
 LazarusResources.Add('tsqlquery','XPM',[
   '/* XPM */'#10'static char * sqlquery_0_1_23x23_xpm[] = {'#10'"23 23 4 1",'#10
   +'" '#9'c None",'#10'".'#9'c #000000",'#10'"+'#9'c #00D6FF",'#10'"@'#9'c #5ED'
@@ -425,6 +515,21 @@ LazarusResources.Add('tsqlquery','XPM',[
   +' ",'#10'"        .@@@.          ",'#10'"        .@@.           ",'#10'"    '
   +'     ..            ",'#10'"        .@@.           ",'#10'"        .@@.     '
   +'      ",'#10'"         ..            "};'#10
+]);
+LazarusResources.Add('tsqlscript','XPM',[
+  '/* XPM */'#10'static char *tsqlscript[]={'#10'"24 24 8 1",'#10'"# c None",'
+  +#10'". c #000000",'#10'"b c #000040",'#10'"d c #00c000",'#10'"e c #00c0c0",'
+  +#10'"c c #303030",'#10'"a c #c00000",'#10'"f c #ffff00",'#10'"..............'
+  +'..........",'#10'".######################.",'#10'".#aaaaaaaaaaaaaaaaaaa##."'
+  +','#10'".######################.",'#10'".#bbbbbbbbbbbbbbbb#####.",'#10'".###'
+  +'###################.",'#10'".#cccccccccccccccccc###.",'#10'".##############'
+  +'########.",'#10'".#dddddddddddddd#######.",'#10'".######################.",'
+  +#10'".#eeeeeeeeeeeeeeeeee###.",'#10'".###ff####ffff##ff#####.",'#10'".#affff'
+  +'faffffff#ff#####.",'#10'".#ff##ff#ff##ff#ff#####.",'#10'".#ffaaaaaffa#ffaff'
+  +'aaaa#.",'#10'".#ff#####ff##ff#ff#####.",'#10'".#affffaaffaaffaffaa###.",'#10
+  +'".#####ff#ff##ff#ff#####.",'#10'".#f...ff.ffffff.ff#####.",'#10'".#ffffff#f'
+  +'fffff#fffff##.",'#10'".#fffff.....ff..fffff##.",'#10'".###########ff#######'
+  +'##.",'#10'".######################.",'#10'"........................"};'#10
 ]);
 LazarusResources.Add('tsqltransaction','XPM',[
   '/* XPM */'#10'static char * sqltrans_0_1_23x23_xpm[] = {'#10'"23 23 6 1",'#10
