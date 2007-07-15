@@ -4103,6 +4103,9 @@ begin
     Text := UTF8Decode(TCustomListBox(LCLObject).Items.Strings[i]);
     QListWidget_addItem(QListWidgetH(Result), @Text);
   end;
+  // Initialize current row or we get double fired LM_CLICKED on first mouse click.
+  if TCustomListBox(LCLObject).Items.Count > 0 then
+    QListWidget_setCurrentRow(QListWidgetH(Result), 0);
 end;
 
 {------------------------------------------------------------------------------
