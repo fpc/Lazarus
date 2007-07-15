@@ -27,7 +27,18 @@ unit registersqldb;
 { SQLITE }
 {$IFNDEF VER2_2}
 {$IFNDEF VER2_0}
+{$IFNDEF VER2_1}
 {$DEFINE HASSQLITE3CONNECTION}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+
+{ SQLSCRIPT }
+{$IFNDEF VER2_2}
+{$IFNDEF VER2_0}
+{$IFNDEF VER2_1}
+{$DEFINE HASSQLSCRIPT}
+{$ENDIF}
 {$ENDIF}
 {$ENDIF}
 interface
@@ -57,8 +68,10 @@ procedure RegisterUnitSQLdb;
 begin
   RegisterComponents('SQLdb',[TSQLQuery,
                               TSQLTransaction,
+{$IFDEF HASSQLSCRIPT}
                               TSQLScript,
                               TSQLConnector,
+{$ENDIF}
 {$IFDEF HASPQCONNECTION}
                               TPQConnection,
 {$ENDIF}
