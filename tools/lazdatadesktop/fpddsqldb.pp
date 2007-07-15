@@ -20,7 +20,14 @@ unit fpddsqldb;
 {$DEFINE DDMYSQL}
 {$DEFINE DDPOSTGRESQL}
 {$DEFINE DDODBC}
+// SQLite3 only for 2.3
+{$IFNDEF VER2_0}
+{$IFNDEF VER2_1}
+{$IFNDEF VER2_2}
 {$DEFINE DDSQLITE}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
 
 interface
 

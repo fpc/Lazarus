@@ -25,7 +25,7 @@ unit conneditor;
 interface
 
 uses
-  Classes, SysUtils, fpdatadict, controls, comctrls, stdctrls, extctrls, RTTIGrids, querypanel;
+  Classes, SysUtils, db, fpdatadict, controls, comctrls, stdctrls, extctrls, RTTIGrids, querypanel;
 
 Type
 
@@ -477,7 +477,7 @@ begin
         LI:=ALV.Items.Add;
         FD:=L.Objects[I] as TDDFieldDef;
         LI.Caption:=FD.FieldName;
-        LI.SubItems.Add(GetEnumName(TypeInfo(FD.FieldType),Ord(FD.FieldType)));
+        LI.SubItems.Add(GetEnumName(TypeInfo(TFieldType),Ord(FD.FieldType)));
         LI.SubItems.Add(IntToStr(FD.Size));
         end;
     Finally
