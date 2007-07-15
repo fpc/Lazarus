@@ -45,7 +45,7 @@ uses
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, Controls, ExtCtrls, Forms,
   Dialogs, StdCtrls, Comctrls, Calendar, LCLIntf, GraphType, Themes,
-  Arrow;
+  Arrow, CheckLst;
 
 type
 
@@ -127,7 +127,7 @@ uses
  QtWSArrow,
  QtWSButtons,
  QtWSCalendar,
-// QtWSCheckLst,
+ QtWSCheckLst,
 // QtWSCListBox,
  QtWSComCtrls,
  QtWSControls,

@@ -35,7 +35,8 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, Menus;
+  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, Menus,
+  CheckLst;
 
 type
 
@@ -253,6 +254,7 @@ end;
 procedure TQtListStrings.Insert(Index: integer; const S: string);
 var
    AStr: WideString;
+   AItem: QListWidgetItemH;
 begin
   if FListChanged then InternalUpdate;
 
@@ -263,7 +265,13 @@ begin
     FUpdating := True;
     FStringList.Insert(Index,S);
     AStr := UTF8Decode(S);
-    QListWidget_insertItem(FQtListWidget, Index, QListWidgetItem_create(@AStr, FQtListWidget, Integer(QListWidgetItemType)));
+    
+    AItem := QListWidgetItem_create(@AStr, FQtListWidget, Integer(QListWidgetItemType));
+    
+    if FOwner is TCustomCheckListBox then
+      QListWidgetItem_setCheckState(AItem, QtUnchecked);
+      
+    QListWidget_insertItem(FQtListWidget, Index, AItem);
     FUpdating := False;
     IsChanged;
     FUpdating := False;
