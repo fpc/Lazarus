@@ -22,7 +22,7 @@
 }
 unit QtWSButtons;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets,
+  qtwidgets, qtobjects,
   // LCL
   SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics,
   // Widgetset
@@ -50,12 +50,13 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-//    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
 //                        var PreferredWidth, PreferredHeight: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
   end;
 
   { TQtWSSpeedButton }
@@ -169,10 +170,49 @@ begin
   Color:=ColorToRGB(AWinControl.Color);
 
   // Fill QColor
-  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWSBitBtn.SetDefault
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSBitBtn.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+var
+  APushButton: QPushButtonH;
+begin
+  APushButton := QPushButtonH(TQtAbstractButton(AButton.Handle).Widget);
+  QPushButton_setDefault(APushButton, ADefault);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWSBitBtn.SetGlyph
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap);
+var
+  AButton: QAbstractButtonH;
+  AIcon: QIconH;
+  APixmap: QPixmapH;
+begin
+  AButton := QAbstractButtonH(TQtAbstractButton(Abitbtn.Handle).Widget);
+
+  APixmap := QPixmap_create();
+  QPixmap_fromImage(APixmap, TQtImage(AValue.Handle).Handle);
+  try
+    if APixmap <> nil then
+    begin
+      AIcon := QIcon_create(APixmap);
+      QAbstractButton_setIcon(AButton, AIcon);
+    end;
+  finally
+    QPixmap_destroy(APixmap);
+  end;
 end;
 
 initialization
