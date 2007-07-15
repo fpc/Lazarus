@@ -1004,9 +1004,9 @@ begin
    QEventHide: SlotShow(False);
    QEventClose:
      begin
-     Result:=True;
-     QEvent_ignore(Event);
-     SlotClose;
+       Result := True;
+       QEvent_ignore(Event);
+       SlotClose;
      end;
    QEventDestroy: SlotDestroy;
    QEventFocusIn: SlotFocus(True);
@@ -2185,9 +2185,6 @@ end;
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
-{$ifdef USE_QT_4_3}
-  mdihandle: QMdiAreaH;
-{$endif}
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2241,11 +2238,18 @@ begin
     {$ifdef USE_QT_4_3}
       if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) then
       begin
-        Result := QMdiSubWindow_create(niL, QtWindow);
-      
-        mdiHandle := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
-        if Assigned(mdiHandle) then
-          QMdiArea_addSubWindow(mdiHandle, QMdiSubWindowH(Result), QtWindow);
+
+        if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil
+        then
+          raise Exception.Create('MDIChild can be added to MDIForm only !');
+
+        Result := QMdiSubWindow_create(nil, QtWindow);
+        
+        // QMdiSubWindow already have an layout
+        LayoutWidget := QBoxLayoutH(QWidget_layout(Result));
+        if LayoutWidget <> nil
+        then
+          QBoxLayout_destroy(LayoutWidget);
       end
       else
         Result := QWidget_create(nil, QtWindow);

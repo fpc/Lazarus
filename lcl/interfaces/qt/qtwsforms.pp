@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets,
   // LCL
-  SysUtils, Controls, LCLType, Forms,
+  SysUtils, Classes, Controls, LCLType, Forms,
   // Widgetset
   InterfaceBase, WSForms, WSLCLClasses;
 
@@ -144,6 +144,7 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
+  R: TRect;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -154,7 +155,8 @@ begin
 
   QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
   
-  if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and
+  if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
+     (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
      (Application <> nil) and
      (Application.MainForm <> nil) and
      (Application.MainForm.HandleAllocated) and
@@ -173,6 +175,20 @@ begin
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
+  
+  {$ifdef USE_QT_4_3}
+  if (TCustomForm(AWinControl).FormStyle in [fsMDIChild])
+  and (Application.MainForm.FormStyle = fsMdiForm)
+  then
+  begin
+    QWidget_geometry(QtMainWindow.MenuBar.Widget, @R);
+    QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
+    AWinControl.Height := AWinControl.Height + R.Bottom;
+    {TODO: Show MDIChild Left&Top +10 of last created mdi child}
+    AWinControl.Left := 0;
+    AWinControl.Top := 0;
+  end;
+  {$endif}
 
   // Return the handle
   Result := THandle(QtMainWindow);
@@ -286,7 +302,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
- {TODO: fix cpu burning , we need an sleep(0) in LCL modal loop}
+
 end;
 
 {------------------------------------------------------------------------------
