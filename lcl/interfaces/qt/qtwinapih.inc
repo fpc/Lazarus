@@ -27,6 +27,9 @@
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
+function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; override;
+function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
+
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
 function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;

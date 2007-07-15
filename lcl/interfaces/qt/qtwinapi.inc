@@ -31,6 +31,42 @@
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
 {------------------------------------------------------------------------------
+  Function: Arc
+  Params: DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
+var
+  ADC : TQtDeviceContext;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
+  {$endif}
+  Result := IsValidDC(DC);
+  if Result
+  then
+    QPainter_drawArc(TQtDeviceContext(DC).Widget, Left, Top, Right, Bottom, Angle1, Angle2);
+end;
+
+{------------------------------------------------------------------------------
+  Function: AngleChord
+  Params: DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
+var
+  ADC : TQtDeviceContext;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI AngleChord] DC: ', dbghex(DC));
+  {$endif}
+  Result := IsValidDC(DC);
+  if Result
+  then
+    QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
+end;
+
+{------------------------------------------------------------------------------
   Function: BeginPaint
   Params:
   Returns:
