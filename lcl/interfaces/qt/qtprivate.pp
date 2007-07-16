@@ -310,13 +310,19 @@ end;
   Updates Qt Widget from text - If DelphiOnChange, generates OnChange Event
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.ExternalUpdate(var Astr: WideString; Clear: Boolean = True);
-{var
-  Mess: TLMessage;}
+var
+  Str: WideString;
 begin
   FUpdating := True;
+  Str := UTF8Decode(AStr);
   if Clear then
+  begin
     QTextEdit_clear(FQtTextEdit);
-  QTextEdit_append(FQtTextEdit,@Astr);
+    QTextEdit_setPlainText(FQtTextEdit,@Str);
+  end
+  else
+    QTextEdit_append(FQtTextEdit,@Str);
+    
   FUpdating := False;
   {FillChar(Mess, SizeOf(Mess), #0);
   (FOwner as TCustomMemo).Modified := False;
@@ -406,6 +412,7 @@ begin
   FStringList := TStringList.Create;
   FQtTextEdit := TextEdit;
   QTextEdit_toPlainText(TextEdit,@Astr); // get the memo content
+  AStr := UTF8Encode(AStr);
   FStringList.Text := Astr;
   FOwner:=TheOwner;
 
@@ -425,6 +432,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtMemoStrings.Destroy;
 begin
+  Clear;
+  FStringList.Free;
   // don't destroy the widgets
   inherited Destroy;
 end;
@@ -486,19 +495,17 @@ end;
   Clears all.
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Clear;
-{var
-  Mess: TLMessage;}
 begin
   FUpdating := True;
   FStringList.Clear;
-  QTextEdit_clear(FQtTextEdit);
+  
+  if not (csDestroying in FOwner.ComponentState)
+  and not (csFreeNotification in FOwner.ComponentState)
+  then
+    QTextEdit_clear(FQtTextEdit);
+    
   FTextChanged := False;
   FUpdating := False;
-  {FillChar(Mess, SizeOf(Mess), #0);
-  FillChar(Mess, SizeOf(Mess), #0);
-  Mess.Msg := CM_TEXTCHANGED;
-  (FOwner as TCustomMemo).Modified := False;
-  FOwner.Dispatch(TLMessage(Mess));}
   IsChanged;
 end;
 
@@ -514,12 +521,13 @@ var
   Astr: WideString;
 begin
   if FTextChanged then InternalUpdate;
-  if Index < FStringList.Count then begin
+  if Index < FStringList.Count then
+  begin
     FStringList.Delete(Index);
     Astr := FStringList.Text;
     ExternalUpdate(AStr,True);
     FTextChanged := False;
-    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -535,12 +543,13 @@ var
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
-  if Index <= FStringList.Count then begin
+  if Index <= FStringList.Count then
+  begin
     FStringList.Insert(Index,S);
     Astr := FStringList.Text;
     ExternalUpdate(Astr,True);
     FTextChanged := False;
-    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------

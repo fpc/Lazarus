@@ -390,6 +390,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    FList: TStrings;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     procedure SetAlignment(const AAlignment: TAlignment);

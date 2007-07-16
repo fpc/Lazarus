@@ -592,6 +592,9 @@ begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
   QtTextEdit.AttachEvents;
   
+  // create our FList helper
+  QtTextEdit.FList := TQtMemoStrings.Create(QTextEditH(QtTextEdit.Widget), TCustomMemo(AWinControl));
+  
   Result := THandle(QtTextEdit);
 end;
 
@@ -619,9 +622,7 @@ begin
   if Length(AText) = 0 then
     exit;
   Astr := UTF8Decode(AText);
-  //QTextEdit_append(QTextEditH(ACustomMemo.Handle),@Astr);
   QTextEdit_append(QTextEditH(TQtWidget(ACustomMemo.Handle).Widget),@Astr);
-
 end;
 
 class procedure TQtWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
@@ -640,8 +641,13 @@ class function TQtWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStri
 var
   TextEditH: QTextEditH;
 begin
-  TextEditH := QTextEditH((TQtWidget(ACustomMemo.Handle).Widget));  // set to proper type
-  Result := TQtMemoStrings.Create(TextEditH,ACustomMemo);
+  if not Assigned(TQtTextEdit(ACustomMemo.Handle).FList) then
+  begin
+    TextEditH := QTextEditH((TQtTextEdit(ACustomMemo.Handle).Widget));  // set to proper type
+    TQtTextEdit(ACustomMemo.Handle).FList := TQtMemoStrings.Create(TextEditH,ACustomMemo);
+  end;
+  
+  Result := TQtTextEdit(ACustomMemo.Handle).FList;
 end;
 
 
@@ -687,8 +693,7 @@ var
   AString: WideString;
 begin
   AString := UTF8Decode(AText);
-
-  QTextEdit_append(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
+	QTextEdit_setPlainText(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
 end;
 
 {------------------------------------------------------------------------------
