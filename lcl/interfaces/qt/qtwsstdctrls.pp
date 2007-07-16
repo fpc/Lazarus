@@ -93,10 +93,10 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;}
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
 {    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;}
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;}
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 //    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
@@ -1327,6 +1327,13 @@ var
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
   QtComboBox.AttachEvents;
+  
+  // create our FList helper
+
+  QtComboBox.FList := TQtComboStrings.Create(QComboBoxH(QtComboBox.Widget), TCustomComboBox(AWinControl));
+  
+  // we must save itemindex, since GetItems() should delete it.
+  QtComboBox.FSavedItemIndex := TCustomComboBox(AWinControl).ItemIndex;
 
   Result := THandle(QtComboBox);
 end;
@@ -1364,20 +1371,39 @@ end;
 class procedure TQtWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
-  TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
+  TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(TQtComboBox(ACustomComboBox.Handle).FSavedItemIndex);
+  TQtComboBox(ACustomComboBox.Handle).FSavedItemIndex := NewIndex;
 end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomComboBox.GetItems
   Params:  None
-  Returns: The state of the control
+  Returns: ComboBox items
  ------------------------------------------------------------------------------}
 class function TQtWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 var
   ComboBoxH: QComboBoxH;
 begin
+  if not Assigned(TQtComboBox(ACustomComboBox.Handle).FList) then
+  begin
+    ComboBoxH := QComboBoxH((TQtComboBox(ACustomComboBox.Handle).Widget));
+    TQtComboBox(ACustomComboBox.Handle).FList := TQtComboStrings.Create(ComboBoxH, ACustomComboBox);
+  end;
+  {TODO: ask why GetItems() always clears the list, that's why FSavedItemIndex exists. }
+  Result := TQtComboBox(ACustomComboBox.Handle).FList;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomComboBox.SetReadOnly
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean);
+var
+  ComboBoxH: QComboBoxH;
+begin
   ComboBoxH := QComboBoxH((TQtWidget(ACustomComboBox.Handle).Widget));
-  Result := TQtComboStrings.Create(ComboBoxH, ACustomComboBox);
+  QComboBox_setEditable(ComboBoxH, not NewReadOnly);
 end;
 
 initialization

@@ -429,6 +429,8 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    FList: TStrings;
+    FSavedItemIndex: Integer;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
@@ -3838,32 +3840,13 @@ function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Str: WideString;
-  i: Integer;
-  data: QVariantH;
 begin
-  {------------------------------------------------------------------------------
-    Creates dummy data
-
-    This data is required, passing nil to QComboBox_addItem will cause a crash
-   ------------------------------------------------------------------------------}
-  data := QVariant_create(10);
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QComboBox_create(Parent);
-
-  // Add the items to the combo box
-  for i := 0 to (LCLObject as TCustomComboBox).Items.Count - 1 do
-  begin
-    Str := UTF8Decode((LCLObject as TCustomComboBox).Items.Strings[i]);
-    QComboBox_addItem(QComboBoxH(Result), @Str, data);
-  end;
-
-  // Clean up
-  QVariant_destroy(data);
 end;
 
 {------------------------------------------------------------------------------

@@ -618,6 +618,10 @@ begin
 end;
 
 constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl);
+var
+  AQList: QStringListH;
+  i: Integer;
+  Str: WideString;
 begin
   inherited Create;
 
@@ -629,11 +633,29 @@ begin
   FStringList := TStringList.Create;
   FQtComboBox := ComboBoxH;
   FStringList.Text := TCustomComboBox(TheOwner).Items.Text;
-  FOwner:=TheOwner;
+
+  AQList := QStringList_create;
+  
+  try
+    for i := 0 to FStringList.Count - 1 do
+    begin
+      Str := UTF8Encode(FStringList.Strings[i]);
+      QStringList_append(AQList, @Str);
+    end;
+    
+    QComboBox_addItems(FQtComboBox, AQList);
+    
+  finally
+    QStringList_destroy(AQList);
+  end;
+  
+  FOwner := TheOwner;
 end;
 
 destructor TQtComboStrings.Destroy;
 begin
+  Clear;
+  FStringList.Free;
   inherited Destroy;
 end;
 
@@ -646,7 +668,10 @@ procedure TQtComboStrings.Clear;
 begin
   FUpdating := True;
   FStringList.Clear;
-  QComboBox_clear(FQtComboBox);
+  if not (csDestroying in FOwner.ComponentState)
+  and not (csFreeNotification in FOwner.ComponentState)
+  then
+    QComboBox_clear(FQtComboBox);
   FComboChanged := False;
   FUpdating := False;
   IsChanged;
@@ -659,12 +684,18 @@ begin
   if Index < FStringList.Count then
   begin
     FStringList.Delete(Index);
-    ExternalUpdate(FStringList,True);
-    FComboChanged := False;
+    QComboBox_removeItem(FQtComboBox, Index);
+    FUpdating := False;
+    IsChanged;
+    FUpdating := False;
+    FComboChanged:=False;
   end;
 end;
 
 procedure TQtComboStrings.Insert(Index: integer; const S: string);
+var
+  Str: WideString;
+  data: QVariantH;
 begin
   if FComboChanged then InternalUpdate;
 
@@ -672,9 +703,18 @@ begin
 
   if Index <= FStringList.Count then
   begin
-    FStringList.Insert(Index,S);
-    ExternalUpdate(FStringList,True);
-    FComboChanged := False;
+    FStringList.Insert(Index, S);
+    Str := UTF8Encode(S);
+    data := QVariant_create(0); //Creates dummy data
+    try
+      QComboBox_insertItem(FQtComboBox, Index, @Str, Data);
+    finally
+      QVariant_destroy(data);
+    end;
+    FUpdating := False;
+    IsChanged;
+    FUpdating := False;
+    FComboChanged:=False;
   end;
 end;
 
