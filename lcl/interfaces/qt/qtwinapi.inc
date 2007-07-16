@@ -807,6 +807,7 @@ begin
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI DrawText] Rect=', dbgs(Rect));
     {$endif}
+    Rect := R;
     Exit;
   end;
 
