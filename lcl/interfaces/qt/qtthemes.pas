@@ -2,16 +2,6 @@ unit QtThemes;
 
 {$mode objfpc}{$H+}
 
-{
-  This theme services class is not ready. It waiting for some bindings. Without
-  them it is not useful.
-  
-  Waiting for:
-      QStyleOption_setState
-      QStyleOption_setRect
-      ... and other QStyleOption setters and getters
-}
-
 interface
 
 uses
@@ -55,7 +45,6 @@ type
     function ThemedControlsEnabled: Boolean; override;
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
     
-    function CreateQRect(R: TRect): QRectH;
     function GetControlState(Details: TThemedElementDetails): QStyleState;
     function GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
     property Style: QStyleH read GetStyle;
@@ -63,7 +52,7 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -100,6 +89,7 @@ function TQtThemeServices.ContentRect(DC: HDC;
   Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
   Result := BoundingRect;
+  InflateRect(Result, -1, -1);
 end;
 
 procedure TQtThemeServices.DrawEdge(DC: HDC;
@@ -114,52 +104,60 @@ procedure TQtThemeServices.DrawElement(DC: HDC;
 var
   Context: TQtDeviceContext absolute DC;
   opt: QStyleOptionH;
-  ARect: QRectH;
+  ARect: TRect;
   Element: TQtDrawElement;
-  //QVariant: QVariantH;
   Features: QStyleOptionButtonButtonFeatures;
 begin
+{$IFDEF USE_QT_4_3}
   if (Context <> nil) then
   begin
-    ARect := CreateQRect(R);
+    ARect := R;
     Element := GetDrawElement(Details);
-    if (Element.DrawVariant = qdvControl) and (Element.ControlElement = QStyleCE_PushButton) then
-    begin
-      opt := QStyleOptionButton_create();
-      Features := 0;
-      if Details.Element = teToolBar then
-        Features := Features or QStyleOptionButtonFlat
-      else
-        Features := Features or QStyleOptionButtonNone;
+    case Element.DrawVariant of
+      qdvControl:
+      begin
+        if (Element.ControlElement in [QStyleCE_PushButton, QStyleCE_RadioButton, QStyleCE_CheckBox]) then
+        begin
+          opt := QStyleOptionButton_create();
+          Features := QStyleOptionButtonNone;
+          if Details.Element = teToolBar then
+            Features := Features or QStyleOptionButtonFlat;
+          QStyleOptionButton_setFeatures(QStyleOptionButtonH(opt), Features);
+        end
+        else
+          opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
 
-{ // TODO: wait for bindings
+        QStyleOption_setState(opt, GetControlState(Details));
+        QStyleOption_setRect(opt, @ARect);
 
-      QStyleOptionButton_setButtonFeatures(opt, Features);
-      QStyleOption_setState(opt, GetControlState(Details));
-      QStyleOption_setRect(opt, ARect);
-      
-}
-      QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget);
-      QStyleOption_Destroy(opt);
-    end
-    else
-    if (Element.DrawVariant = qdvComplexControl) then
-    begin
-      if Element.ComplexElement = QStyleCC_ToolButton then
-        opt := QStyleOptionToolButton_create()
-      else
-        opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
-        
-{ // TODO: wait for bindings
+        QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget);
+        QStyleOption_Destroy(opt);
+      end;
+      qdvComplexControl:
+      begin
+        if Element.ComplexElement = QStyleCC_ToolButton then
+          opt := QStyleOptionToolButton_create()
+        else
+          opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
 
-      QStyleOption_setState(opt, GetControlState(Details));
-      QStyleOption_setRect(opt, ARect);
-}
-      QStyle_drawComplexControl(Style, Element.ComplexElement, QStyleOptionComplexH(opt), Context.Widget);
-      QStyleOption_Destroy(opt);
+        QStyleOption_setState(opt, GetControlState(Details));
+        QStyleOption_setRect(opt, @ARect);
+        QStyle_drawComplexControl(Style, Element.ComplexElement, QStyleOptionComplexH(opt), Context.Widget);
+        QStyleOption_Destroy(opt);
+      end;
+      qdvPrimitive:
+      begin
+        opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+        QStyleOption_setState(opt, GetControlState(Details));
+        QStyleOption_setRect(opt, @ARect);
+        QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
+        QStyleOption_Destroy(opt);
+      end;
     end;
-    QRect_destroy(ARect);
   end;
+{$ELSE}
+  inherited;
+{$ENDIF}
 end;
 
 procedure TQtThemeServices.DrawIcon(DC: HDC;
@@ -167,6 +165,19 @@ procedure TQtThemeServices.DrawIcon(DC: HDC;
   Index: Integer);
 begin
 
+end;
+
+procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
+  Details: TThemedElementDetails; const S: WideString; R: TRect; Flags,
+  Flags2: Cardinal);
+begin
+  with TCanvas(ACanvas) do
+  begin
+    WidgetSet.SetBkMode(Handle, TRANSPARENT);
+    WidgetSet.DrawText(Handle, PChar(String(S)), Length(S), R, Flags);
+    if Brush.Style = bsSolid then;
+      WidgetSet.SetBkMode(Handle, OPAQUE);
+  end;
 end;
 
 function TQtThemeServices.HasTransparentParts(Details: TThemedElementDetails): Boolean;
@@ -178,18 +189,6 @@ procedure TQtThemeServices.InternalDrawParentBackground(Window: HWND;
   Target: HDC; Bounds: PRect);
 begin
   // ?
-end;
-
-function TQtThemeServices.CreateQRect(R: TRect): QRectH;
-begin
-  Result := QRect_create();
-  with R do
-  begin
-    QRect_setLeft(Result, Left);
-    QRect_setRight(Result, Right);
-    QRect_setTop(Result, Top);
-    QRect_setBottom(Result, Bottom);
-  end;
 end;
 
 function TQtThemeServices.GetControlState(Details: TThemedElementDetails): QStyleState;
@@ -222,6 +221,18 @@ begin
   QStyleState_ReadOnly
 }
   Result := QStyleState_None;
+  
+  if not IsDisabled(Details) then
+    Result := Result or QStyleState_Enabled;
+
+  if IsHot(Details) then
+    Result := Result or QStyleState_MouseOver;
+    
+  if IsPushed(Details) then
+    Result := Result or QStyleState_Sunken;
+
+  if IsChecked(Details) then
+    Result := Result or QStyleState_On;
 end;
 
 function TQtThemeServices.GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
@@ -250,22 +261,42 @@ begin
           Result.ComplexElement := QStyleCC_GroupBox;
         end;
       end;
+    teHeader:
+      begin
+        case Details.Part of
+          HP_HEADERITEM:
+            begin
+              Result.DrawVariant := qdvControl;
+              Result.ControlElement := QStyleCE_HeaderSection;
+            end;
+          HP_HEADERITEMLEFT,
+          HP_HEADERITEMRIGHT:
+            begin
+              Result.DrawVariant := qdvControl;
+             {$IFDEF USE_QT_4_3}
+              Result.ControlElement := QStyleCE_HeaderEmptyArea;
+             {$ELSE}
+              Result.ControlElement := QStyleCE_HeaderSection;
+             {$ENDIF}
+            end;
+          HP_HEADERSORTARROW:
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_IndicatorHeaderArrow;
+            end;
+        end;
+      end;
     teToolBar:
       begin
         if Details.Part = TP_BUTTON then
         begin
-          Result.DrawVariant := qdvComplexControl;
-          Result.ComplexElement := QStyleCC_ToolButton;
+          Result.DrawVariant := qdvPrimitive;
+          Result.PrimitiveElement := QStylePE_PanelButtonTool;
         end;
       end;
   end;
 end;
 
-procedure TQtThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
-  const S: WideString; R: TRect; Flags, Flags2: Cardinal);
-begin
-  //
-end;
-
 end.
+
 

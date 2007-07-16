@@ -1336,13 +1336,18 @@ var
   Mode: QtBGMode;
 begin
   result := 0;
-  if Widget<>nil then
+  if Widget <> nil then
   begin
     Mode := QPainter_BackgroundMode(Widget);
-    if Mode=QtOpaqueMode then result := OPAQUE
-    else                      result := TRANSPARENT;
-    if BkMode=OPAQUE then Mode := QtOpaqueMode
-    else                  Mode := QtTransparentMode;
+    if Mode = QtOpaqueMode then
+      result := OPAQUE
+    else
+      result := TRANSPARENT;
+
+    if BkMode = OPAQUE then
+      Mode := QtOpaqueMode
+    else
+      Mode := QtTransparentMode;
     QPainter_SetBackgroundMode(Widget, Mode);
   end;
 end;

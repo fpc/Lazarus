@@ -163,8 +163,8 @@ end;
 function TQtWidgetSet.CreateThemeServices: TThemeServices;
 begin
   // TODO: uncomment if you want to test TQtThemeServices
-  // Result := TQtThemeServices.Create;
-  Result := inherited CreateThemeServices;
+  Result := TQtThemeServices.Create;
+  //Result := inherited CreateThemeServices;
 end;
 
 function TQtWidgetSet.LCLPlatform: TLCLPlatform;

@@ -419,6 +419,7 @@ type
     function IsDisabled(Details: TThemedElementDetails): Boolean;
     function IsPushed(Details: TThemedElementDetails): Boolean;
     function IsHot(Details: TThemedElementDetails): Boolean;
+    function IsChecked(Details: TThemedElementDetails): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1798,18 +1799,8 @@ begin
         if Details.Element = teButton then
         begin
           case Details.Part of
-            BP_RADIOBUTTON:
-              begin
-                ADrawFlags := DFCS_BUTTONRADIO;
-                if Details.State >= RBS_CHECKEDNORMAL then
-                  ADrawFlags := ADrawFlags or DFCS_CHECKED;
-              end;
-            BP_CHECKBOX:
-              begin
-                ADrawFlags := DFCS_BUTTONCHECK;
-                if Details.State >= CBS_CHECKEDNORMAL then
-                  ADrawFlags := ADrawFlags or DFCS_CHECKED;
-              end;
+            BP_RADIOBUTTON: ADrawFlags := DFCS_BUTTONRADIO;
+            BP_CHECKBOX: ADrawFlags := DFCS_BUTTONCHECK;
           end;
         end;
 
@@ -1819,6 +1810,9 @@ begin
           ADrawFlags := ADrawFlags or DFCS_PUSHED else
         if IsHot(Details) then
           ADrawFlags := ADrawFlags or DFCS_HOT;
+
+        if IsChecked(Details) then
+          ADrawFlags := ADrawFlags or DFCS_CHECKED;
 
         WidgetSet.DrawFrameControl(DC, ARect, DFC_BUTTON, ADrawFlags);
       end;
@@ -1905,6 +1899,13 @@ begin
   if (Details.Element in [teButton, teToolBar, teHeader]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
     Result := Details.State in [2, 6];
+end;
+
+function TThemeServices.IsChecked(Details: TThemedElementDetails): Boolean;
+begin
+  Result := False;
+  if (Details.Element in [teButton]) then
+    Result := Details.State > 4;
 end;
 
 function TThemeServices.InitThemes: Boolean;

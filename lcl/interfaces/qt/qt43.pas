@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.41 }
+{ Version : 1.43 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -469,6 +469,7 @@ QIODevice_hookH = class(QObject_hookH) end;
   TPictureIOHandler = procedure(Pic: QPictureIOH) cdecl;
   TEventFilterMethod = function (Sender: QObjectH; Event: QEventH): Boolean of object cdecl;
 
+function QtPoint(X,Y:integer): TQtPoint;
 function QObject_hook_create(handle : QObjectH) : QObject_hookH; cdecl; external QtIntf name 'QObject_hook_create';
 procedure QObject_hook_destroy(handle : QObject_hookH ); cdecl; external QtIntf name 'QObject_hook_destroy';
 procedure QObject_hook_hook_events(handle : QObject_hookH; hook : QHookH); cdecl; external QtIntf name 'QObject_hook_hook_events';
@@ -8504,88 +8505,260 @@ const
     QStyleHintReturnVariantType = 61442 { $f002 };
 
 
+function QStyleOption_version(handle : QStyleOptionH) : Integer; cdecl; external QtIntf name 'QStyleOption_version';
+procedure QStyleOption_setVersion(handle : QStyleOptionH; version : Integer); cdecl; external QtIntf name 'QStyleOption_setVersion';
+function QStyleOption__type(handle : QStyleOptionH) : Integer; cdecl; external QtIntf name 'QStyleOption__type';
+procedure QStyleOption_setType(handle : QStyleOptionH; _type : Integer); cdecl; external QtIntf name 'QStyleOption_setType';
+function QStyleOption_state(handle : QStyleOptionH) : QStyleState; cdecl; external QtIntf name 'QStyleOption_state';
+procedure QStyleOption_setState(handle : QStyleOptionH; state : QStyleState); cdecl; external QtIntf name 'QStyleOption_setState';
+function QStyleOption_direction(handle : QStyleOptionH) : QtLayoutDirection; cdecl; external QtIntf name 'QStyleOption_direction';
+procedure QStyleOption_setDirection(handle : QStyleOptionH; direction : QtLayoutDirection); cdecl; external QtIntf name 'QStyleOption_setDirection';
+procedure QStyleOption_rect(handle : QStyleOptionH; retval : PRect ); cdecl; external QtIntf name 'QStyleOption_rect';
+procedure QStyleOption_setRect(handle : QStyleOptionH; rect :  PRect); cdecl; external QtIntf name 'QStyleOption_setRect';
+procedure QStyleOption_fontMetrics(handle : QStyleOptionH; retval : QFontMetricsH ); cdecl; external QtIntf name 'QStyleOption_fontMetrics';
+procedure QStyleOption_setFontMetrics(handle : QStyleOptionH; fontMetrics :  QFontMetricsH); cdecl; external QtIntf name 'QStyleOption_setFontMetrics';
+procedure QStyleOption_palette(handle : QStyleOptionH; retval : QPaletteH ); cdecl; external QtIntf name 'QStyleOption_palette';
+procedure QStyleOption_setPalette(handle : QStyleOptionH; palette :  QPaletteH); cdecl; external QtIntf name 'QStyleOption_setPalette';
 function QStyleOption_create(version: Integer = QStyleOptionVersion; _type: Integer = QStyleOptionSO_Default): QStyleOptionH; overload; cdecl; external QtIntf name 'QStyleOption_create';
 procedure QStyleOption_destroy(handle: QStyleOptionH); cdecl; external QtIntf name 'QStyleOption_destroy'; 
 function QStyleOption_create(other: QStyleOptionH): QStyleOptionH; overload; cdecl; external QtIntf name 'QStyleOption_create2';
 procedure QStyleOption_init(handle: QStyleOptionH; w: QWidgetH); cdecl; external QtIntf name 'QStyleOption_init';
 procedure QStyleOption_initFrom(handle: QStyleOptionH; w: QWidgetH); cdecl; external QtIntf name 'QStyleOption_initFrom';
 
+procedure QStyleOptionFocusRect_backgroundColor(handle : QStyleOptionFocusRectH; retval : PQColor ); cdecl; external QtIntf name 'QStyleOptionFocusRect_backgroundColor';
+procedure QStyleOptionFocusRect_setBackgroundColor(handle : QStyleOptionFocusRectH; backgroundColor :  PQColor); cdecl; external QtIntf name 'QStyleOptionFocusRect_setBackgroundColor';
 function QStyleOptionFocusRect_create(): QStyleOptionFocusRectH; overload; cdecl; external QtIntf name 'QStyleOptionFocusRect_create';
 procedure QStyleOptionFocusRect_destroy(handle: QStyleOptionFocusRectH); cdecl; external QtIntf name 'QStyleOptionFocusRect_destroy'; 
 function QStyleOptionFocusRect_create(other: QStyleOptionFocusRectH): QStyleOptionFocusRectH; overload; cdecl; external QtIntf name 'QStyleOptionFocusRect_create2';
 
+function QStyleOptionFrame_lineWidth(handle : QStyleOptionFrameH) : Integer; cdecl; external QtIntf name 'QStyleOptionFrame_lineWidth';
+procedure QStyleOptionFrame_setLineWidth(handle : QStyleOptionFrameH; lineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionFrame_setLineWidth';
+function QStyleOptionFrame_midLineWidth(handle : QStyleOptionFrameH) : Integer; cdecl; external QtIntf name 'QStyleOptionFrame_midLineWidth';
+procedure QStyleOptionFrame_setMidLineWidth(handle : QStyleOptionFrameH; midLineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionFrame_setMidLineWidth';
 function QStyleOptionFrame_create(): QStyleOptionFrameH; overload; cdecl; external QtIntf name 'QStyleOptionFrame_create';
 procedure QStyleOptionFrame_destroy(handle: QStyleOptionFrameH); cdecl; external QtIntf name 'QStyleOptionFrame_destroy'; 
 function QStyleOptionFrame_create(other: QStyleOptionFrameH): QStyleOptionFrameH; overload; cdecl; external QtIntf name 'QStyleOptionFrame_create2';
 
+function QStyleOptionFrameV2_features(handle : QStyleOptionFrameV2H) : QStyleOptionFrameV2FrameFeatures; cdecl; external QtIntf name 'QStyleOptionFrameV2_features';
+procedure QStyleOptionFrameV2_setFeatures(handle : QStyleOptionFrameV2H; features : QStyleOptionFrameV2FrameFeatures); cdecl; external QtIntf name 'QStyleOptionFrameV2_setFeatures';
 function QStyleOptionFrameV2_create(): QStyleOptionFrameV2H; overload; cdecl; external QtIntf name 'QStyleOptionFrameV2_create';
 procedure QStyleOptionFrameV2_destroy(handle: QStyleOptionFrameV2H); cdecl; external QtIntf name 'QStyleOptionFrameV2_destroy'; 
 function QStyleOptionFrameV2_create(other: QStyleOptionFrameV2H): QStyleOptionFrameV2H; overload; cdecl; external QtIntf name 'QStyleOptionFrameV2_create2';
 function QStyleOptionFrameV2_create(other: QStyleOptionFrameH): QStyleOptionFrameV2H; overload; cdecl; external QtIntf name 'QStyleOptionFrameV2_create3';
 
+function QStyleOptionTabWidgetFrame_lineWidth(handle : QStyleOptionTabWidgetFrameH) : Integer; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_lineWidth';
+procedure QStyleOptionTabWidgetFrame_setLineWidth(handle : QStyleOptionTabWidgetFrameH; lineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_setLineWidth';
+function QStyleOptionTabWidgetFrame_midLineWidth(handle : QStyleOptionTabWidgetFrameH) : Integer; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_midLineWidth';
+procedure QStyleOptionTabWidgetFrame_setMidLineWidth(handle : QStyleOptionTabWidgetFrameH; midLineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_setMidLineWidth';
+function QStyleOptionTabWidgetFrame_shape(handle : QStyleOptionTabWidgetFrameH) : QTabBarShape; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_shape';
+procedure QStyleOptionTabWidgetFrame_setShape(handle : QStyleOptionTabWidgetFrameH; shape : QTabBarShape); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_setShape';
+procedure QStyleOptionTabWidgetFrame_tabBarSize(handle : QStyleOptionTabWidgetFrameH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_tabBarSize';
+procedure QStyleOptionTabWidgetFrame_setTabBarSize(handle : QStyleOptionTabWidgetFrameH; tabBarSize :  PSize); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_setTabBarSize';
+procedure QStyleOptionTabWidgetFrame_rightCornerWidgetSize(handle : QStyleOptionTabWidgetFrameH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_rightCornerWidgetSize';
+procedure QStyleOptionTabWidgetFrame_setRightCornerWidgetSize(handle : QStyleOptionTabWidgetFrameH; rightCornerWidgetSize :  PSize); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_setRightCornerWidgetSize';
+procedure QStyleOptionTabWidgetFrame_leftCornerWidgetSize(handle : QStyleOptionTabWidgetFrameH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_leftCornerWidgetSize';
+procedure QStyleOptionTabWidgetFrame_setLeftCornerWidgetSize(handle : QStyleOptionTabWidgetFrameH; leftCornerWidgetSize :  PSize); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_setLeftCornerWidgetSize';
 function QStyleOptionTabWidgetFrame_create(): QStyleOptionTabWidgetFrameH; overload; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_create';
 procedure QStyleOptionTabWidgetFrame_destroy(handle: QStyleOptionTabWidgetFrameH); cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_destroy'; 
 function QStyleOptionTabWidgetFrame_create(other: QStyleOptionTabWidgetFrameH): QStyleOptionTabWidgetFrameH; overload; cdecl; external QtIntf name 'QStyleOptionTabWidgetFrame_create2';
 
+function QStyleOptionTabBarBase_shape(handle : QStyleOptionTabBarBaseH) : QTabBarShape; cdecl; external QtIntf name 'QStyleOptionTabBarBase_shape';
+procedure QStyleOptionTabBarBase_setShape(handle : QStyleOptionTabBarBaseH; shape : QTabBarShape); cdecl; external QtIntf name 'QStyleOptionTabBarBase_setShape';
+procedure QStyleOptionTabBarBase_tabBarRect(handle : QStyleOptionTabBarBaseH; retval : PRect ); cdecl; external QtIntf name 'QStyleOptionTabBarBase_tabBarRect';
+procedure QStyleOptionTabBarBase_setTabBarRect(handle : QStyleOptionTabBarBaseH; tabBarRect :  PRect); cdecl; external QtIntf name 'QStyleOptionTabBarBase_setTabBarRect';
+procedure QStyleOptionTabBarBase_selectedTabRect(handle : QStyleOptionTabBarBaseH; retval : PRect ); cdecl; external QtIntf name 'QStyleOptionTabBarBase_selectedTabRect';
+procedure QStyleOptionTabBarBase_setSelectedTabRect(handle : QStyleOptionTabBarBaseH; selectedTabRect :  PRect); cdecl; external QtIntf name 'QStyleOptionTabBarBase_setSelectedTabRect';
 function QStyleOptionTabBarBase_create(): QStyleOptionTabBarBaseH; overload; cdecl; external QtIntf name 'QStyleOptionTabBarBase_create';
 procedure QStyleOptionTabBarBase_destroy(handle: QStyleOptionTabBarBaseH); cdecl; external QtIntf name 'QStyleOptionTabBarBase_destroy'; 
 function QStyleOptionTabBarBase_create(other: QStyleOptionTabBarBaseH): QStyleOptionTabBarBaseH; overload; cdecl; external QtIntf name 'QStyleOptionTabBarBase_create2';
 
+function QStyleOptionHeader_section(handle : QStyleOptionHeaderH) : Integer; cdecl; external QtIntf name 'QStyleOptionHeader_section';
+procedure QStyleOptionHeader_setSection(handle : QStyleOptionHeaderH; section : Integer); cdecl; external QtIntf name 'QStyleOptionHeader_setSection';
+procedure QStyleOptionHeader_text(handle : QStyleOptionHeaderH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionHeader_text';
+procedure QStyleOptionHeader_setText(handle : QStyleOptionHeaderH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionHeader_setText';
+function QStyleOptionHeader_textAlignment(handle : QStyleOptionHeaderH) : QtAlignment; cdecl; external QtIntf name 'QStyleOptionHeader_textAlignment';
+procedure QStyleOptionHeader_setTextAlignment(handle : QStyleOptionHeaderH; textAlignment : QtAlignment); cdecl; external QtIntf name 'QStyleOptionHeader_setTextAlignment';
+procedure QStyleOptionHeader_icon(handle : QStyleOptionHeaderH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionHeader_icon';
+procedure QStyleOptionHeader_setIcon(handle : QStyleOptionHeaderH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionHeader_setIcon';
+function QStyleOptionHeader_iconAlignment(handle : QStyleOptionHeaderH) : QtAlignment; cdecl; external QtIntf name 'QStyleOptionHeader_iconAlignment';
+procedure QStyleOptionHeader_setIconAlignment(handle : QStyleOptionHeaderH; iconAlignment : QtAlignment); cdecl; external QtIntf name 'QStyleOptionHeader_setIconAlignment';
+function QStyleOptionHeader_position(handle : QStyleOptionHeaderH) : QStyleOptionHeaderSectionPosition; cdecl; external QtIntf name 'QStyleOptionHeader_position';
+procedure QStyleOptionHeader_setPosition(handle : QStyleOptionHeaderH; position : QStyleOptionHeaderSectionPosition); cdecl; external QtIntf name 'QStyleOptionHeader_setPosition';
+function QStyleOptionHeader_selectedPosition(handle : QStyleOptionHeaderH) : QStyleOptionHeaderSelectedPosition; cdecl; external QtIntf name 'QStyleOptionHeader_selectedPosition';
+procedure QStyleOptionHeader_setSelectedPosition(handle : QStyleOptionHeaderH; selectedPosition : QStyleOptionHeaderSelectedPosition); cdecl; external QtIntf name 'QStyleOptionHeader_setSelectedPosition';
+function QStyleOptionHeader_sortIndicator(handle : QStyleOptionHeaderH) : QStyleOptionHeaderSortIndicator; cdecl; external QtIntf name 'QStyleOptionHeader_sortIndicator';
+procedure QStyleOptionHeader_setSortIndicator(handle : QStyleOptionHeaderH; sortIndicator : QStyleOptionHeaderSortIndicator); cdecl; external QtIntf name 'QStyleOptionHeader_setSortIndicator';
+function QStyleOptionHeader_orientation(handle : QStyleOptionHeaderH) : QtOrientation; cdecl; external QtIntf name 'QStyleOptionHeader_orientation';
+procedure QStyleOptionHeader_setOrientation(handle : QStyleOptionHeaderH; orientation : QtOrientation); cdecl; external QtIntf name 'QStyleOptionHeader_setOrientation';
 function QStyleOptionHeader_create(): QStyleOptionHeaderH; overload; cdecl; external QtIntf name 'QStyleOptionHeader_create';
 procedure QStyleOptionHeader_destroy(handle: QStyleOptionHeaderH); cdecl; external QtIntf name 'QStyleOptionHeader_destroy'; 
 function QStyleOptionHeader_create(other: QStyleOptionHeaderH): QStyleOptionHeaderH; overload; cdecl; external QtIntf name 'QStyleOptionHeader_create2';
 
+function QStyleOptionButton_features(handle : QStyleOptionButtonH) : QStyleOptionButtonButtonFeatures; cdecl; external QtIntf name 'QStyleOptionButton_features';
+procedure QStyleOptionButton_setFeatures(handle : QStyleOptionButtonH; features : QStyleOptionButtonButtonFeatures); cdecl; external QtIntf name 'QStyleOptionButton_setFeatures';
+procedure QStyleOptionButton_text(handle : QStyleOptionButtonH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionButton_text';
+procedure QStyleOptionButton_setText(handle : QStyleOptionButtonH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionButton_setText';
+procedure QStyleOptionButton_icon(handle : QStyleOptionButtonH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionButton_icon';
+procedure QStyleOptionButton_setIcon(handle : QStyleOptionButtonH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionButton_setIcon';
+procedure QStyleOptionButton_iconSize(handle : QStyleOptionButtonH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionButton_iconSize';
+procedure QStyleOptionButton_setIconSize(handle : QStyleOptionButtonH; iconSize :  PSize); cdecl; external QtIntf name 'QStyleOptionButton_setIconSize';
 function QStyleOptionButton_create(): QStyleOptionButtonH; overload; cdecl; external QtIntf name 'QStyleOptionButton_create';
 procedure QStyleOptionButton_destroy(handle: QStyleOptionButtonH); cdecl; external QtIntf name 'QStyleOptionButton_destroy'; 
 function QStyleOptionButton_create(other: QStyleOptionButtonH): QStyleOptionButtonH; overload; cdecl; external QtIntf name 'QStyleOptionButton_create2';
 
+function QStyleOptionTab_shape(handle : QStyleOptionTabH) : QTabBarShape; cdecl; external QtIntf name 'QStyleOptionTab_shape';
+procedure QStyleOptionTab_setShape(handle : QStyleOptionTabH; shape : QTabBarShape); cdecl; external QtIntf name 'QStyleOptionTab_setShape';
+procedure QStyleOptionTab_text(handle : QStyleOptionTabH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionTab_text';
+procedure QStyleOptionTab_setText(handle : QStyleOptionTabH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionTab_setText';
+procedure QStyleOptionTab_icon(handle : QStyleOptionTabH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionTab_icon';
+procedure QStyleOptionTab_setIcon(handle : QStyleOptionTabH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionTab_setIcon';
+function QStyleOptionTab_row(handle : QStyleOptionTabH) : Integer; cdecl; external QtIntf name 'QStyleOptionTab_row';
+procedure QStyleOptionTab_setRow(handle : QStyleOptionTabH; row : Integer); cdecl; external QtIntf name 'QStyleOptionTab_setRow';
+function QStyleOptionTab_position(handle : QStyleOptionTabH) : QStyleOptionTabTabPosition; cdecl; external QtIntf name 'QStyleOptionTab_position';
+procedure QStyleOptionTab_setPosition(handle : QStyleOptionTabH; position : QStyleOptionTabTabPosition); cdecl; external QtIntf name 'QStyleOptionTab_setPosition';
+function QStyleOptionTab_selectedPosition(handle : QStyleOptionTabH) : QStyleOptionTabSelectedPosition; cdecl; external QtIntf name 'QStyleOptionTab_selectedPosition';
+procedure QStyleOptionTab_setSelectedPosition(handle : QStyleOptionTabH; selectedPosition : QStyleOptionTabSelectedPosition); cdecl; external QtIntf name 'QStyleOptionTab_setSelectedPosition';
+function QStyleOptionTab_cornerWidgets(handle : QStyleOptionTabH) : QStyleOptionTabCornerWidgets; cdecl; external QtIntf name 'QStyleOptionTab_cornerWidgets';
+procedure QStyleOptionTab_setCornerWidgets(handle : QStyleOptionTabH; cornerWidgets : QStyleOptionTabCornerWidgets); cdecl; external QtIntf name 'QStyleOptionTab_setCornerWidgets';
 function QStyleOptionTab_create(): QStyleOptionTabH; overload; cdecl; external QtIntf name 'QStyleOptionTab_create';
 procedure QStyleOptionTab_destroy(handle: QStyleOptionTabH); cdecl; external QtIntf name 'QStyleOptionTab_destroy'; 
 function QStyleOptionTab_create(other: QStyleOptionTabH): QStyleOptionTabH; overload; cdecl; external QtIntf name 'QStyleOptionTab_create2';
 
+procedure QStyleOptionTabV2_iconSize(handle : QStyleOptionTabV2H; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionTabV2_iconSize';
+procedure QStyleOptionTabV2_setIconSize(handle : QStyleOptionTabV2H; iconSize :  PSize); cdecl; external QtIntf name 'QStyleOptionTabV2_setIconSize';
 function QStyleOptionTabV2_create(): QStyleOptionTabV2H; overload; cdecl; external QtIntf name 'QStyleOptionTabV2_create';
 procedure QStyleOptionTabV2_destroy(handle: QStyleOptionTabV2H); cdecl; external QtIntf name 'QStyleOptionTabV2_destroy'; 
 function QStyleOptionTabV2_create(other: QStyleOptionTabV2H): QStyleOptionTabV2H; overload; cdecl; external QtIntf name 'QStyleOptionTabV2_create2';
 function QStyleOptionTabV2_create(other: QStyleOptionTabH): QStyleOptionTabV2H; overload; cdecl; external QtIntf name 'QStyleOptionTabV2_create3';
 
+function QStyleOptionToolBar_positionOfLine(handle : QStyleOptionToolBarH) : QStyleOptionToolBarToolBarPosition; cdecl; external QtIntf name 'QStyleOptionToolBar_positionOfLine';
+procedure QStyleOptionToolBar_setPositionOfLine(handle : QStyleOptionToolBarH; positionOfLine : QStyleOptionToolBarToolBarPosition); cdecl; external QtIntf name 'QStyleOptionToolBar_setPositionOfLine';
+function QStyleOptionToolBar_positionWithinLine(handle : QStyleOptionToolBarH) : QStyleOptionToolBarToolBarPosition; cdecl; external QtIntf name 'QStyleOptionToolBar_positionWithinLine';
+procedure QStyleOptionToolBar_setPositionWithinLine(handle : QStyleOptionToolBarH; positionWithinLine : QStyleOptionToolBarToolBarPosition); cdecl; external QtIntf name 'QStyleOptionToolBar_setPositionWithinLine';
+function QStyleOptionToolBar_toolBarArea(handle : QStyleOptionToolBarH) : QtToolBarArea; cdecl; external QtIntf name 'QStyleOptionToolBar_toolBarArea';
+procedure QStyleOptionToolBar_setToolBarArea(handle : QStyleOptionToolBarH; toolBarArea : QtToolBarArea); cdecl; external QtIntf name 'QStyleOptionToolBar_setToolBarArea';
+function QStyleOptionToolBar_features(handle : QStyleOptionToolBarH) : QStyleOptionToolBarToolBarFeatures; cdecl; external QtIntf name 'QStyleOptionToolBar_features';
+procedure QStyleOptionToolBar_setFeatures(handle : QStyleOptionToolBarH; features : QStyleOptionToolBarToolBarFeatures); cdecl; external QtIntf name 'QStyleOptionToolBar_setFeatures';
+function QStyleOptionToolBar_lineWidth(handle : QStyleOptionToolBarH) : Integer; cdecl; external QtIntf name 'QStyleOptionToolBar_lineWidth';
+procedure QStyleOptionToolBar_setLineWidth(handle : QStyleOptionToolBarH; lineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionToolBar_setLineWidth';
+function QStyleOptionToolBar_midLineWidth(handle : QStyleOptionToolBarH) : Integer; cdecl; external QtIntf name 'QStyleOptionToolBar_midLineWidth';
+procedure QStyleOptionToolBar_setMidLineWidth(handle : QStyleOptionToolBarH; midLineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionToolBar_setMidLineWidth';
 function QStyleOptionToolBar_create(): QStyleOptionToolBarH; overload; cdecl; external QtIntf name 'QStyleOptionToolBar_create';
 procedure QStyleOptionToolBar_destroy(handle: QStyleOptionToolBarH); cdecl; external QtIntf name 'QStyleOptionToolBar_destroy'; 
 function QStyleOptionToolBar_create(other: QStyleOptionToolBarH): QStyleOptionToolBarH; overload; cdecl; external QtIntf name 'QStyleOptionToolBar_create2';
 
+function QStyleOptionProgressBar_minimum(handle : QStyleOptionProgressBarH) : Integer; cdecl; external QtIntf name 'QStyleOptionProgressBar_minimum';
+procedure QStyleOptionProgressBar_setMinimum(handle : QStyleOptionProgressBarH; minimum : Integer); cdecl; external QtIntf name 'QStyleOptionProgressBar_setMinimum';
+function QStyleOptionProgressBar_maximum(handle : QStyleOptionProgressBarH) : Integer; cdecl; external QtIntf name 'QStyleOptionProgressBar_maximum';
+procedure QStyleOptionProgressBar_setMaximum(handle : QStyleOptionProgressBarH; maximum : Integer); cdecl; external QtIntf name 'QStyleOptionProgressBar_setMaximum';
+function QStyleOptionProgressBar_progress(handle : QStyleOptionProgressBarH) : Integer; cdecl; external QtIntf name 'QStyleOptionProgressBar_progress';
+procedure QStyleOptionProgressBar_setProgress(handle : QStyleOptionProgressBarH; progress : Integer); cdecl; external QtIntf name 'QStyleOptionProgressBar_setProgress';
+procedure QStyleOptionProgressBar_text(handle : QStyleOptionProgressBarH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionProgressBar_text';
+procedure QStyleOptionProgressBar_setText(handle : QStyleOptionProgressBarH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionProgressBar_setText';
+function QStyleOptionProgressBar_textAlignment(handle : QStyleOptionProgressBarH) : QtAlignment; cdecl; external QtIntf name 'QStyleOptionProgressBar_textAlignment';
+procedure QStyleOptionProgressBar_setTextAlignment(handle : QStyleOptionProgressBarH; textAlignment : QtAlignment); cdecl; external QtIntf name 'QStyleOptionProgressBar_setTextAlignment';
+function QStyleOptionProgressBar_textVisible(handle : QStyleOptionProgressBarH) : Boolean; cdecl; external QtIntf name 'QStyleOptionProgressBar_textVisible';
+procedure QStyleOptionProgressBar_setTextVisible(handle : QStyleOptionProgressBarH; textVisible : Boolean); cdecl; external QtIntf name 'QStyleOptionProgressBar_setTextVisible';
 function QStyleOptionProgressBar_create(): QStyleOptionProgressBarH; overload; cdecl; external QtIntf name 'QStyleOptionProgressBar_create';
 procedure QStyleOptionProgressBar_destroy(handle: QStyleOptionProgressBarH); cdecl; external QtIntf name 'QStyleOptionProgressBar_destroy'; 
 function QStyleOptionProgressBar_create(other: QStyleOptionProgressBarH): QStyleOptionProgressBarH; overload; cdecl; external QtIntf name 'QStyleOptionProgressBar_create2';
 
+function QStyleOptionProgressBarV2_orientation(handle : QStyleOptionProgressBarV2H) : QtOrientation; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_orientation';
+procedure QStyleOptionProgressBarV2_setOrientation(handle : QStyleOptionProgressBarV2H; orientation : QtOrientation); cdecl; external QtIntf name 'QStyleOptionProgressBarV2_setOrientation';
+function QStyleOptionProgressBarV2_invertedAppearance(handle : QStyleOptionProgressBarV2H) : Boolean; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_invertedAppearance';
+procedure QStyleOptionProgressBarV2_setInvertedAppearance(handle : QStyleOptionProgressBarV2H; invertedAppearance : Boolean); cdecl; external QtIntf name 'QStyleOptionProgressBarV2_setInvertedAppearance';
+function QStyleOptionProgressBarV2_bottomToTop(handle : QStyleOptionProgressBarV2H) : Boolean; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_bottomToTop';
+procedure QStyleOptionProgressBarV2_setBottomToTop(handle : QStyleOptionProgressBarV2H; bottomToTop : Boolean); cdecl; external QtIntf name 'QStyleOptionProgressBarV2_setBottomToTop';
 function QStyleOptionProgressBarV2_create(): QStyleOptionProgressBarV2H; overload; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_create';
 procedure QStyleOptionProgressBarV2_destroy(handle: QStyleOptionProgressBarV2H); cdecl; external QtIntf name 'QStyleOptionProgressBarV2_destroy'; 
 function QStyleOptionProgressBarV2_create(other: QStyleOptionProgressBarH): QStyleOptionProgressBarV2H; overload; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_create2';
 function QStyleOptionProgressBarV2_create(other: QStyleOptionProgressBarV2H): QStyleOptionProgressBarV2H; overload; cdecl; external QtIntf name 'QStyleOptionProgressBarV2_create3';
 
+function QStyleOptionMenuItem_menuItemType(handle : QStyleOptionMenuItemH) : QStyleOptionMenuItemMenuItemType; cdecl; external QtIntf name 'QStyleOptionMenuItem_menuItemType';
+procedure QStyleOptionMenuItem_setMenuItemType(handle : QStyleOptionMenuItemH; menuItemType : QStyleOptionMenuItemMenuItemType); cdecl; external QtIntf name 'QStyleOptionMenuItem_setMenuItemType';
+function QStyleOptionMenuItem_checkType(handle : QStyleOptionMenuItemH) : QStyleOptionMenuItemCheckType; cdecl; external QtIntf name 'QStyleOptionMenuItem_checkType';
+procedure QStyleOptionMenuItem_setCheckType(handle : QStyleOptionMenuItemH; checkType : QStyleOptionMenuItemCheckType); cdecl; external QtIntf name 'QStyleOptionMenuItem_setCheckType';
+function QStyleOptionMenuItem_checked(handle : QStyleOptionMenuItemH) : Boolean; cdecl; external QtIntf name 'QStyleOptionMenuItem_checked';
+procedure QStyleOptionMenuItem_setChecked(handle : QStyleOptionMenuItemH; checked : Boolean); cdecl; external QtIntf name 'QStyleOptionMenuItem_setChecked';
+function QStyleOptionMenuItem_menuHasCheckableItems(handle : QStyleOptionMenuItemH) : Boolean; cdecl; external QtIntf name 'QStyleOptionMenuItem_menuHasCheckableItems';
+procedure QStyleOptionMenuItem_setMenuHasCheckableItems(handle : QStyleOptionMenuItemH; menuHasCheckableItems : Boolean); cdecl; external QtIntf name 'QStyleOptionMenuItem_setMenuHasCheckableItems';
+procedure QStyleOptionMenuItem_menuRect(handle : QStyleOptionMenuItemH; retval : PRect ); cdecl; external QtIntf name 'QStyleOptionMenuItem_menuRect';
+procedure QStyleOptionMenuItem_setMenuRect(handle : QStyleOptionMenuItemH; menuRect :  PRect); cdecl; external QtIntf name 'QStyleOptionMenuItem_setMenuRect';
+procedure QStyleOptionMenuItem_text(handle : QStyleOptionMenuItemH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionMenuItem_text';
+procedure QStyleOptionMenuItem_setText(handle : QStyleOptionMenuItemH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionMenuItem_setText';
+procedure QStyleOptionMenuItem_icon(handle : QStyleOptionMenuItemH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionMenuItem_icon';
+procedure QStyleOptionMenuItem_setIcon(handle : QStyleOptionMenuItemH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionMenuItem_setIcon';
+function QStyleOptionMenuItem_maxIconWidth(handle : QStyleOptionMenuItemH) : Integer; cdecl; external QtIntf name 'QStyleOptionMenuItem_maxIconWidth';
+procedure QStyleOptionMenuItem_setMaxIconWidth(handle : QStyleOptionMenuItemH; maxIconWidth : Integer); cdecl; external QtIntf name 'QStyleOptionMenuItem_setMaxIconWidth';
+function QStyleOptionMenuItem_tabWidth(handle : QStyleOptionMenuItemH) : Integer; cdecl; external QtIntf name 'QStyleOptionMenuItem_tabWidth';
+procedure QStyleOptionMenuItem_setTabWidth(handle : QStyleOptionMenuItemH; tabWidth : Integer); cdecl; external QtIntf name 'QStyleOptionMenuItem_setTabWidth';
+procedure QStyleOptionMenuItem_font(handle : QStyleOptionMenuItemH; retval : QFontH ); cdecl; external QtIntf name 'QStyleOptionMenuItem_font';
+procedure QStyleOptionMenuItem_setFont(handle : QStyleOptionMenuItemH; font :  QFontH); cdecl; external QtIntf name 'QStyleOptionMenuItem_setFont';
 function QStyleOptionMenuItem_create(): QStyleOptionMenuItemH; overload; cdecl; external QtIntf name 'QStyleOptionMenuItem_create';
 procedure QStyleOptionMenuItem_destroy(handle: QStyleOptionMenuItemH); cdecl; external QtIntf name 'QStyleOptionMenuItem_destroy'; 
 function QStyleOptionMenuItem_create(other: QStyleOptionMenuItemH): QStyleOptionMenuItemH; overload; cdecl; external QtIntf name 'QStyleOptionMenuItem_create2';
 
+function QStyleOptionQ3ListViewItem_features(handle : QStyleOptionQ3ListViewItemH) : QStyleOptionQ3ListViewItemQ3ListViewItemFeatures; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_features';
+procedure QStyleOptionQ3ListViewItem_setFeatures(handle : QStyleOptionQ3ListViewItemH; features : QStyleOptionQ3ListViewItemQ3ListViewItemFeatures); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_setFeatures';
+function QStyleOptionQ3ListViewItem_height(handle : QStyleOptionQ3ListViewItemH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_height';
+procedure QStyleOptionQ3ListViewItem_setHeight(handle : QStyleOptionQ3ListViewItemH; height : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_setHeight';
+function QStyleOptionQ3ListViewItem_totalHeight(handle : QStyleOptionQ3ListViewItemH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_totalHeight';
+procedure QStyleOptionQ3ListViewItem_setTotalHeight(handle : QStyleOptionQ3ListViewItemH; totalHeight : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_setTotalHeight';
+function QStyleOptionQ3ListViewItem_itemY(handle : QStyleOptionQ3ListViewItemH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_itemY';
+procedure QStyleOptionQ3ListViewItem_setItemY(handle : QStyleOptionQ3ListViewItemH; itemY : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_setItemY';
+function QStyleOptionQ3ListViewItem_childCount(handle : QStyleOptionQ3ListViewItemH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_childCount';
+procedure QStyleOptionQ3ListViewItem_setChildCount(handle : QStyleOptionQ3ListViewItemH; childCount : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_setChildCount';
 function QStyleOptionQ3ListViewItem_create(): QStyleOptionQ3ListViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_create';
 procedure QStyleOptionQ3ListViewItem_destroy(handle: QStyleOptionQ3ListViewItemH); cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_destroy'; 
 function QStyleOptionQ3ListViewItem_create(other: QStyleOptionQ3ListViewItemH): QStyleOptionQ3ListViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListViewItem_create2';
 
+function QStyleOptionQ3DockWindow_docked(handle : QStyleOptionQ3DockWindowH) : Boolean; cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_docked';
+procedure QStyleOptionQ3DockWindow_setDocked(handle : QStyleOptionQ3DockWindowH; docked : Boolean); cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_setDocked';
+function QStyleOptionQ3DockWindow_closeEnabled(handle : QStyleOptionQ3DockWindowH) : Boolean; cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_closeEnabled';
+procedure QStyleOptionQ3DockWindow_setCloseEnabled(handle : QStyleOptionQ3DockWindowH; closeEnabled : Boolean); cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_setCloseEnabled';
 function QStyleOptionQ3DockWindow_create(): QStyleOptionQ3DockWindowH; overload; cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_create';
 procedure QStyleOptionQ3DockWindow_destroy(handle: QStyleOptionQ3DockWindowH); cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_destroy'; 
 function QStyleOptionQ3DockWindow_create(other: QStyleOptionQ3DockWindowH): QStyleOptionQ3DockWindowH; overload; cdecl; external QtIntf name 'QStyleOptionQ3DockWindow_create2';
 
+procedure QStyleOptionDockWidget_title(handle : QStyleOptionDockWidgetH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionDockWidget_title';
+procedure QStyleOptionDockWidget_setTitle(handle : QStyleOptionDockWidgetH; title :  PWideString); cdecl; external QtIntf name 'QStyleOptionDockWidget_setTitle';
+function QStyleOptionDockWidget_closable(handle : QStyleOptionDockWidgetH) : Boolean; cdecl; external QtIntf name 'QStyleOptionDockWidget_closable';
+procedure QStyleOptionDockWidget_setClosable(handle : QStyleOptionDockWidgetH; closable : Boolean); cdecl; external QtIntf name 'QStyleOptionDockWidget_setClosable';
+function QStyleOptionDockWidget_movable(handle : QStyleOptionDockWidgetH) : Boolean; cdecl; external QtIntf name 'QStyleOptionDockWidget_movable';
+procedure QStyleOptionDockWidget_setMovable(handle : QStyleOptionDockWidgetH; movable : Boolean); cdecl; external QtIntf name 'QStyleOptionDockWidget_setMovable';
+function QStyleOptionDockWidget_floatable(handle : QStyleOptionDockWidgetH) : Boolean; cdecl; external QtIntf name 'QStyleOptionDockWidget_floatable';
+procedure QStyleOptionDockWidget_setFloatable(handle : QStyleOptionDockWidgetH; floatable : Boolean); cdecl; external QtIntf name 'QStyleOptionDockWidget_setFloatable';
 function QStyleOptionDockWidget_create(): QStyleOptionDockWidgetH; overload; cdecl; external QtIntf name 'QStyleOptionDockWidget_create';
 procedure QStyleOptionDockWidget_destroy(handle: QStyleOptionDockWidgetH); cdecl; external QtIntf name 'QStyleOptionDockWidget_destroy'; 
 function QStyleOptionDockWidget_create(other: QStyleOptionDockWidgetH): QStyleOptionDockWidgetH; overload; cdecl; external QtIntf name 'QStyleOptionDockWidget_create2';
 
+function QStyleOptionDockWidgetV2_verticalTitleBar(handle : QStyleOptionDockWidgetV2H) : Boolean; cdecl; external QtIntf name 'QStyleOptionDockWidgetV2_verticalTitleBar';
+procedure QStyleOptionDockWidgetV2_setVerticalTitleBar(handle : QStyleOptionDockWidgetV2H; verticalTitleBar : Boolean); cdecl; external QtIntf name 'QStyleOptionDockWidgetV2_setVerticalTitleBar';
 function QStyleOptionDockWidgetV2_create(): QStyleOptionDockWidgetV2H; overload; cdecl; external QtIntf name 'QStyleOptionDockWidgetV2_create';
 procedure QStyleOptionDockWidgetV2_destroy(handle: QStyleOptionDockWidgetV2H); cdecl; external QtIntf name 'QStyleOptionDockWidgetV2_destroy'; 
 function QStyleOptionDockWidgetV2_create(other: QStyleOptionDockWidgetV2H): QStyleOptionDockWidgetV2H; overload; cdecl; external QtIntf name 'QStyleOptionDockWidgetV2_create2';
 function QStyleOptionDockWidgetV2_create(other: QStyleOptionDockWidgetH): QStyleOptionDockWidgetV2H; overload; cdecl; external QtIntf name 'QStyleOptionDockWidgetV2_create3';
 
+function QStyleOptionViewItem_displayAlignment(handle : QStyleOptionViewItemH) : QtAlignment; cdecl; external QtIntf name 'QStyleOptionViewItem_displayAlignment';
+procedure QStyleOptionViewItem_setDisplayAlignment(handle : QStyleOptionViewItemH; displayAlignment : QtAlignment); cdecl; external QtIntf name 'QStyleOptionViewItem_setDisplayAlignment';
+function QStyleOptionViewItem_decorationAlignment(handle : QStyleOptionViewItemH) : QtAlignment; cdecl; external QtIntf name 'QStyleOptionViewItem_decorationAlignment';
+procedure QStyleOptionViewItem_setDecorationAlignment(handle : QStyleOptionViewItemH; decorationAlignment : QtAlignment); cdecl; external QtIntf name 'QStyleOptionViewItem_setDecorationAlignment';
+function QStyleOptionViewItem_textElideMode(handle : QStyleOptionViewItemH) : QtTextElideMode; cdecl; external QtIntf name 'QStyleOptionViewItem_textElideMode';
+procedure QStyleOptionViewItem_setTextElideMode(handle : QStyleOptionViewItemH; textElideMode : QtTextElideMode); cdecl; external QtIntf name 'QStyleOptionViewItem_setTextElideMode';
+function QStyleOptionViewItem_decorationPosition(handle : QStyleOptionViewItemH) : QStyleOptionViewItemPosition; cdecl; external QtIntf name 'QStyleOptionViewItem_decorationPosition';
+procedure QStyleOptionViewItem_setDecorationPosition(handle : QStyleOptionViewItemH; decorationPosition : QStyleOptionViewItemPosition); cdecl; external QtIntf name 'QStyleOptionViewItem_setDecorationPosition';
+procedure QStyleOptionViewItem_decorationSize(handle : QStyleOptionViewItemH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionViewItem_decorationSize';
+procedure QStyleOptionViewItem_setDecorationSize(handle : QStyleOptionViewItemH; decorationSize :  PSize); cdecl; external QtIntf name 'QStyleOptionViewItem_setDecorationSize';
+procedure QStyleOptionViewItem_font(handle : QStyleOptionViewItemH; retval : QFontH ); cdecl; external QtIntf name 'QStyleOptionViewItem_font';
+procedure QStyleOptionViewItem_setFont(handle : QStyleOptionViewItemH; font :  QFontH); cdecl; external QtIntf name 'QStyleOptionViewItem_setFont';
+function QStyleOptionViewItem_showDecorationSelected(handle : QStyleOptionViewItemH) : Boolean; cdecl; external QtIntf name 'QStyleOptionViewItem_showDecorationSelected';
+procedure QStyleOptionViewItem_setShowDecorationSelected(handle : QStyleOptionViewItemH; showDecorationSelected : Boolean); cdecl; external QtIntf name 'QStyleOptionViewItem_setShowDecorationSelected';
 function QStyleOptionViewItem_create(): QStyleOptionViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionViewItem_create';
 procedure QStyleOptionViewItem_destroy(handle: QStyleOptionViewItemH); cdecl; external QtIntf name 'QStyleOptionViewItem_destroy'; 
 function QStyleOptionViewItem_create(other: QStyleOptionViewItemH): QStyleOptionViewItemH; overload; cdecl; external QtIntf name 'QStyleOptionViewItem_create2';
 
+function QStyleOptionViewItemV2_features(handle : QStyleOptionViewItemV2H) : QStyleOptionViewItemV2ViewItemFeatures; cdecl; external QtIntf name 'QStyleOptionViewItemV2_features';
+procedure QStyleOptionViewItemV2_setFeatures(handle : QStyleOptionViewItemV2H; features : QStyleOptionViewItemV2ViewItemFeatures); cdecl; external QtIntf name 'QStyleOptionViewItemV2_setFeatures';
 function QStyleOptionViewItemV2_create(): QStyleOptionViewItemV2H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV2_create';
 procedure QStyleOptionViewItemV2_destroy(handle: QStyleOptionViewItemV2H); cdecl; external QtIntf name 'QStyleOptionViewItemV2_destroy'; 
 function QStyleOptionViewItemV2_create(other: QStyleOptionViewItemV2H): QStyleOptionViewItemV2H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV2_create2';
@@ -8596,10 +8769,18 @@ procedure QStyleOptionViewItemV3_destroy(handle: QStyleOptionViewItemV3H); cdecl
 function QStyleOptionViewItemV3_create(other: QStyleOptionViewItemV3H): QStyleOptionViewItemV3H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV3_create2';
 function QStyleOptionViewItemV3_create(other: QStyleOptionViewItemH): QStyleOptionViewItemV3H; overload; cdecl; external QtIntf name 'QStyleOptionViewItemV3_create3';
 
+procedure QStyleOptionToolBox_text(handle : QStyleOptionToolBoxH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionToolBox_text';
+procedure QStyleOptionToolBox_setText(handle : QStyleOptionToolBoxH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionToolBox_setText';
+procedure QStyleOptionToolBox_icon(handle : QStyleOptionToolBoxH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionToolBox_icon';
+procedure QStyleOptionToolBox_setIcon(handle : QStyleOptionToolBoxH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionToolBox_setIcon';
 function QStyleOptionToolBox_create(): QStyleOptionToolBoxH; overload; cdecl; external QtIntf name 'QStyleOptionToolBox_create';
 procedure QStyleOptionToolBox_destroy(handle: QStyleOptionToolBoxH); cdecl; external QtIntf name 'QStyleOptionToolBox_destroy'; 
 function QStyleOptionToolBox_create(other: QStyleOptionToolBoxH): QStyleOptionToolBoxH; overload; cdecl; external QtIntf name 'QStyleOptionToolBox_create2';
 
+function QStyleOptionToolBoxV2_position(handle : QStyleOptionToolBoxV2H) : QStyleOptionToolBoxV2TabPosition; cdecl; external QtIntf name 'QStyleOptionToolBoxV2_position';
+procedure QStyleOptionToolBoxV2_setPosition(handle : QStyleOptionToolBoxV2H; position : QStyleOptionToolBoxV2TabPosition); cdecl; external QtIntf name 'QStyleOptionToolBoxV2_setPosition';
+function QStyleOptionToolBoxV2_selectedPosition(handle : QStyleOptionToolBoxV2H) : QStyleOptionToolBoxV2SelectedPosition; cdecl; external QtIntf name 'QStyleOptionToolBoxV2_selectedPosition';
+procedure QStyleOptionToolBoxV2_setSelectedPosition(handle : QStyleOptionToolBoxV2H; selectedPosition : QStyleOptionToolBoxV2SelectedPosition); cdecl; external QtIntf name 'QStyleOptionToolBoxV2_setSelectedPosition';
 function QStyleOptionToolBoxV2_create(): QStyleOptionToolBoxV2H; overload; cdecl; external QtIntf name 'QStyleOptionToolBoxV2_create';
 procedure QStyleOptionToolBoxV2_destroy(handle: QStyleOptionToolBoxV2H); cdecl; external QtIntf name 'QStyleOptionToolBoxV2_destroy'; 
 function QStyleOptionToolBoxV2_create(other: QStyleOptionToolBoxV2H): QStyleOptionToolBoxV2H; overload; cdecl; external QtIntf name 'QStyleOptionToolBoxV2_create2';
@@ -8609,52 +8790,162 @@ function QStyleOptionRubberBand_create(): QStyleOptionRubberBandH; overload; cde
 procedure QStyleOptionRubberBand_destroy(handle: QStyleOptionRubberBandH); cdecl; external QtIntf name 'QStyleOptionRubberBand_destroy'; 
 function QStyleOptionRubberBand_create(other: QStyleOptionRubberBandH): QStyleOptionRubberBandH; overload; cdecl; external QtIntf name 'QStyleOptionRubberBand_create2';
 
+function QStyleOptionComplex_subControls(handle : QStyleOptionComplexH) : QStyleSubControls; cdecl; external QtIntf name 'QStyleOptionComplex_subControls';
+procedure QStyleOptionComplex_setSubControls(handle : QStyleOptionComplexH; subControls : QStyleSubControls); cdecl; external QtIntf name 'QStyleOptionComplex_setSubControls';
+function QStyleOptionComplex_activeSubControls(handle : QStyleOptionComplexH) : QStyleSubControls; cdecl; external QtIntf name 'QStyleOptionComplex_activeSubControls';
+procedure QStyleOptionComplex_setActiveSubControls(handle : QStyleOptionComplexH; activeSubControls : QStyleSubControls); cdecl; external QtIntf name 'QStyleOptionComplex_setActiveSubControls';
 function QStyleOptionComplex_create(version: Integer; _type: Integer): QStyleOptionComplexH; overload; cdecl; external QtIntf name 'QStyleOptionComplex_create';
 procedure QStyleOptionComplex_destroy(handle: QStyleOptionComplexH); cdecl; external QtIntf name 'QStyleOptionComplex_destroy'; 
 function QStyleOptionComplex_create(other: QStyleOptionComplexH): QStyleOptionComplexH; overload; cdecl; external QtIntf name 'QStyleOptionComplex_create2';
 
+function QStyleOptionSlider_orientation(handle : QStyleOptionSliderH) : QtOrientation; cdecl; external QtIntf name 'QStyleOptionSlider_orientation';
+procedure QStyleOptionSlider_setOrientation(handle : QStyleOptionSliderH; orientation : QtOrientation); cdecl; external QtIntf name 'QStyleOptionSlider_setOrientation';
+function QStyleOptionSlider_minimum(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_minimum';
+procedure QStyleOptionSlider_setMinimum(handle : QStyleOptionSliderH; minimum : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setMinimum';
+function QStyleOptionSlider_maximum(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_maximum';
+procedure QStyleOptionSlider_setMaximum(handle : QStyleOptionSliderH; maximum : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setMaximum';
+function QStyleOptionSlider_tickPosition(handle : QStyleOptionSliderH) : QSliderTickPosition; cdecl; external QtIntf name 'QStyleOptionSlider_tickPosition';
+procedure QStyleOptionSlider_setTickPosition(handle : QStyleOptionSliderH; tickPosition : QSliderTickPosition); cdecl; external QtIntf name 'QStyleOptionSlider_setTickPosition';
+function QStyleOptionSlider_tickInterval(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_tickInterval';
+procedure QStyleOptionSlider_setTickInterval(handle : QStyleOptionSliderH; tickInterval : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setTickInterval';
+function QStyleOptionSlider_upsideDown(handle : QStyleOptionSliderH) : Boolean; cdecl; external QtIntf name 'QStyleOptionSlider_upsideDown';
+procedure QStyleOptionSlider_setUpsideDown(handle : QStyleOptionSliderH; upsideDown : Boolean); cdecl; external QtIntf name 'QStyleOptionSlider_setUpsideDown';
+function QStyleOptionSlider_sliderPosition(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_sliderPosition';
+procedure QStyleOptionSlider_setSliderPosition(handle : QStyleOptionSliderH; sliderPosition : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setSliderPosition';
+function QStyleOptionSlider_sliderValue(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_sliderValue';
+procedure QStyleOptionSlider_setSliderValue(handle : QStyleOptionSliderH; sliderValue : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setSliderValue';
+function QStyleOptionSlider_singleStep(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_singleStep';
+procedure QStyleOptionSlider_setSingleStep(handle : QStyleOptionSliderH; singleStep : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setSingleStep';
+function QStyleOptionSlider_pageStep(handle : QStyleOptionSliderH) : Integer; cdecl; external QtIntf name 'QStyleOptionSlider_pageStep';
+procedure QStyleOptionSlider_setPageStep(handle : QStyleOptionSliderH; pageStep : Integer); cdecl; external QtIntf name 'QStyleOptionSlider_setPageStep';
+function QStyleOptionSlider_notchTarget(handle : QStyleOptionSliderH) : Double; cdecl; external QtIntf name 'QStyleOptionSlider_notchTarget';
+procedure QStyleOptionSlider_setNotchTarget(handle : QStyleOptionSliderH; notchTarget : Double); cdecl; external QtIntf name 'QStyleOptionSlider_setNotchTarget';
+function QStyleOptionSlider_dialWrapping(handle : QStyleOptionSliderH) : Boolean; cdecl; external QtIntf name 'QStyleOptionSlider_dialWrapping';
+procedure QStyleOptionSlider_setDialWrapping(handle : QStyleOptionSliderH; dialWrapping : Boolean); cdecl; external QtIntf name 'QStyleOptionSlider_setDialWrapping';
 function QStyleOptionSlider_create(): QStyleOptionSliderH; overload; cdecl; external QtIntf name 'QStyleOptionSlider_create';
 procedure QStyleOptionSlider_destroy(handle: QStyleOptionSliderH); cdecl; external QtIntf name 'QStyleOptionSlider_destroy'; 
 function QStyleOptionSlider_create(other: QStyleOptionSliderH): QStyleOptionSliderH; overload; cdecl; external QtIntf name 'QStyleOptionSlider_create2';
 
+function QStyleOptionSpinBox_buttonSymbols(handle : QStyleOptionSpinBoxH) : QAbstractSpinBoxButtonSymbols; cdecl; external QtIntf name 'QStyleOptionSpinBox_buttonSymbols';
+procedure QStyleOptionSpinBox_setButtonSymbols(handle : QStyleOptionSpinBoxH; buttonSymbols : QAbstractSpinBoxButtonSymbols); cdecl; external QtIntf name 'QStyleOptionSpinBox_setButtonSymbols';
+function QStyleOptionSpinBox_stepEnabled(handle : QStyleOptionSpinBoxH) : QAbstractSpinBoxStepEnabled; cdecl; external QtIntf name 'QStyleOptionSpinBox_stepEnabled';
+procedure QStyleOptionSpinBox_setStepEnabled(handle : QStyleOptionSpinBoxH; stepEnabled : QAbstractSpinBoxStepEnabled); cdecl; external QtIntf name 'QStyleOptionSpinBox_setStepEnabled';
+function QStyleOptionSpinBox_frame(handle : QStyleOptionSpinBoxH) : Boolean; cdecl; external QtIntf name 'QStyleOptionSpinBox_frame';
+procedure QStyleOptionSpinBox_setFrame(handle : QStyleOptionSpinBoxH; frame : Boolean); cdecl; external QtIntf name 'QStyleOptionSpinBox_setFrame';
 function QStyleOptionSpinBox_create(): QStyleOptionSpinBoxH; overload; cdecl; external QtIntf name 'QStyleOptionSpinBox_create';
 procedure QStyleOptionSpinBox_destroy(handle: QStyleOptionSpinBoxH); cdecl; external QtIntf name 'QStyleOptionSpinBox_destroy'; 
 function QStyleOptionSpinBox_create(other: QStyleOptionSpinBoxH): QStyleOptionSpinBoxH; overload; cdecl; external QtIntf name 'QStyleOptionSpinBox_create2';
 
+procedure QStyleOptionQ3ListView_viewportPalette(handle : QStyleOptionQ3ListViewH; retval : QPaletteH ); cdecl; external QtIntf name 'QStyleOptionQ3ListView_viewportPalette';
+procedure QStyleOptionQ3ListView_setViewportPalette(handle : QStyleOptionQ3ListViewH; viewportPalette :  QPaletteH); cdecl; external QtIntf name 'QStyleOptionQ3ListView_setViewportPalette';
+function QStyleOptionQ3ListView_viewportBGRole(handle : QStyleOptionQ3ListViewH) : QPaletteColorRole; cdecl; external QtIntf name 'QStyleOptionQ3ListView_viewportBGRole';
+procedure QStyleOptionQ3ListView_setViewportBGRole(handle : QStyleOptionQ3ListViewH; viewportBGRole : QPaletteColorRole); cdecl; external QtIntf name 'QStyleOptionQ3ListView_setViewportBGRole';
+function QStyleOptionQ3ListView_sortColumn(handle : QStyleOptionQ3ListViewH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListView_sortColumn';
+procedure QStyleOptionQ3ListView_setSortColumn(handle : QStyleOptionQ3ListViewH; sortColumn : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListView_setSortColumn';
+function QStyleOptionQ3ListView_itemMargin(handle : QStyleOptionQ3ListViewH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListView_itemMargin';
+procedure QStyleOptionQ3ListView_setItemMargin(handle : QStyleOptionQ3ListViewH; itemMargin : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListView_setItemMargin';
+function QStyleOptionQ3ListView_treeStepSize(handle : QStyleOptionQ3ListViewH) : Integer; cdecl; external QtIntf name 'QStyleOptionQ3ListView_treeStepSize';
+procedure QStyleOptionQ3ListView_setTreeStepSize(handle : QStyleOptionQ3ListViewH; treeStepSize : Integer); cdecl; external QtIntf name 'QStyleOptionQ3ListView_setTreeStepSize';
+function QStyleOptionQ3ListView_rootIsDecorated(handle : QStyleOptionQ3ListViewH) : Boolean; cdecl; external QtIntf name 'QStyleOptionQ3ListView_rootIsDecorated';
+procedure QStyleOptionQ3ListView_setRootIsDecorated(handle : QStyleOptionQ3ListViewH; rootIsDecorated : Boolean); cdecl; external QtIntf name 'QStyleOptionQ3ListView_setRootIsDecorated';
 function QStyleOptionQ3ListView_create(): QStyleOptionQ3ListViewH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListView_create';
 procedure QStyleOptionQ3ListView_destroy(handle: QStyleOptionQ3ListViewH); cdecl; external QtIntf name 'QStyleOptionQ3ListView_destroy'; 
 function QStyleOptionQ3ListView_create(other: QStyleOptionQ3ListViewH): QStyleOptionQ3ListViewH; overload; cdecl; external QtIntf name 'QStyleOptionQ3ListView_create2';
 
+function QStyleOptionToolButton_features(handle : QStyleOptionToolButtonH) : QStyleOptionToolButtonToolButtonFeatures; cdecl; external QtIntf name 'QStyleOptionToolButton_features';
+procedure QStyleOptionToolButton_setFeatures(handle : QStyleOptionToolButtonH; features : QStyleOptionToolButtonToolButtonFeatures); cdecl; external QtIntf name 'QStyleOptionToolButton_setFeatures';
+procedure QStyleOptionToolButton_icon(handle : QStyleOptionToolButtonH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionToolButton_icon';
+procedure QStyleOptionToolButton_setIcon(handle : QStyleOptionToolButtonH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionToolButton_setIcon';
+procedure QStyleOptionToolButton_iconSize(handle : QStyleOptionToolButtonH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionToolButton_iconSize';
+procedure QStyleOptionToolButton_setIconSize(handle : QStyleOptionToolButtonH; iconSize :  PSize); cdecl; external QtIntf name 'QStyleOptionToolButton_setIconSize';
+procedure QStyleOptionToolButton_text(handle : QStyleOptionToolButtonH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionToolButton_text';
+procedure QStyleOptionToolButton_setText(handle : QStyleOptionToolButtonH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionToolButton_setText';
+function QStyleOptionToolButton_arrowType(handle : QStyleOptionToolButtonH) : QtArrowType; cdecl; external QtIntf name 'QStyleOptionToolButton_arrowType';
+procedure QStyleOptionToolButton_setArrowType(handle : QStyleOptionToolButtonH; arrowType : QtArrowType); cdecl; external QtIntf name 'QStyleOptionToolButton_setArrowType';
+function QStyleOptionToolButton_toolButtonStyle(handle : QStyleOptionToolButtonH) : QtToolButtonStyle; cdecl; external QtIntf name 'QStyleOptionToolButton_toolButtonStyle';
+procedure QStyleOptionToolButton_setToolButtonStyle(handle : QStyleOptionToolButtonH; toolButtonStyle : QtToolButtonStyle); cdecl; external QtIntf name 'QStyleOptionToolButton_setToolButtonStyle';
+procedure QStyleOptionToolButton_pos(handle : QStyleOptionToolButtonH; retval : PQtPoint ); cdecl; external QtIntf name 'QStyleOptionToolButton_pos';
+procedure QStyleOptionToolButton_setPos(handle : QStyleOptionToolButtonH; pos :  PQtPoint); cdecl; external QtIntf name 'QStyleOptionToolButton_setPos';
+procedure QStyleOptionToolButton_font(handle : QStyleOptionToolButtonH; retval : QFontH ); cdecl; external QtIntf name 'QStyleOptionToolButton_font';
+procedure QStyleOptionToolButton_setFont(handle : QStyleOptionToolButtonH; font :  QFontH); cdecl; external QtIntf name 'QStyleOptionToolButton_setFont';
 function QStyleOptionToolButton_create(): QStyleOptionToolButtonH; overload; cdecl; external QtIntf name 'QStyleOptionToolButton_create';
 procedure QStyleOptionToolButton_destroy(handle: QStyleOptionToolButtonH); cdecl; external QtIntf name 'QStyleOptionToolButton_destroy'; 
 function QStyleOptionToolButton_create(other: QStyleOptionToolButtonH): QStyleOptionToolButtonH; overload; cdecl; external QtIntf name 'QStyleOptionToolButton_create2';
 
+function QStyleOptionComboBox_editable(handle : QStyleOptionComboBoxH) : Boolean; cdecl; external QtIntf name 'QStyleOptionComboBox_editable';
+procedure QStyleOptionComboBox_setEditable(handle : QStyleOptionComboBoxH; editable : Boolean); cdecl; external QtIntf name 'QStyleOptionComboBox_setEditable';
+procedure QStyleOptionComboBox_popupRect(handle : QStyleOptionComboBoxH; retval : PRect ); cdecl; external QtIntf name 'QStyleOptionComboBox_popupRect';
+procedure QStyleOptionComboBox_setPopupRect(handle : QStyleOptionComboBoxH; popupRect :  PRect); cdecl; external QtIntf name 'QStyleOptionComboBox_setPopupRect';
+function QStyleOptionComboBox_frame(handle : QStyleOptionComboBoxH) : Boolean; cdecl; external QtIntf name 'QStyleOptionComboBox_frame';
+procedure QStyleOptionComboBox_setFrame(handle : QStyleOptionComboBoxH; frame : Boolean); cdecl; external QtIntf name 'QStyleOptionComboBox_setFrame';
+procedure QStyleOptionComboBox_currentText(handle : QStyleOptionComboBoxH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionComboBox_currentText';
+procedure QStyleOptionComboBox_setCurrentText(handle : QStyleOptionComboBoxH; currentText :  PWideString); cdecl; external QtIntf name 'QStyleOptionComboBox_setCurrentText';
+procedure QStyleOptionComboBox_currentIcon(handle : QStyleOptionComboBoxH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionComboBox_currentIcon';
+procedure QStyleOptionComboBox_setCurrentIcon(handle : QStyleOptionComboBoxH; currentIcon :  QIconH); cdecl; external QtIntf name 'QStyleOptionComboBox_setCurrentIcon';
+procedure QStyleOptionComboBox_iconSize(handle : QStyleOptionComboBoxH; retval : PSize ); cdecl; external QtIntf name 'QStyleOptionComboBox_iconSize';
+procedure QStyleOptionComboBox_setIconSize(handle : QStyleOptionComboBoxH; iconSize :  PSize); cdecl; external QtIntf name 'QStyleOptionComboBox_setIconSize';
 function QStyleOptionComboBox_create(): QStyleOptionComboBoxH; overload; cdecl; external QtIntf name 'QStyleOptionComboBox_create';
 procedure QStyleOptionComboBox_destroy(handle: QStyleOptionComboBoxH); cdecl; external QtIntf name 'QStyleOptionComboBox_destroy'; 
 function QStyleOptionComboBox_create(other: QStyleOptionComboBoxH): QStyleOptionComboBoxH; overload; cdecl; external QtIntf name 'QStyleOptionComboBox_create2';
 
+procedure QStyleOptionTitleBar_text(handle : QStyleOptionTitleBarH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionTitleBar_text';
+procedure QStyleOptionTitleBar_setText(handle : QStyleOptionTitleBarH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionTitleBar_setText';
+procedure QStyleOptionTitleBar_icon(handle : QStyleOptionTitleBarH; retval : QIconH ); cdecl; external QtIntf name 'QStyleOptionTitleBar_icon';
+procedure QStyleOptionTitleBar_setIcon(handle : QStyleOptionTitleBarH; icon :  QIconH); cdecl; external QtIntf name 'QStyleOptionTitleBar_setIcon';
+function QStyleOptionTitleBar_titleBarState(handle : QStyleOptionTitleBarH) : Integer; cdecl; external QtIntf name 'QStyleOptionTitleBar_titleBarState';
+procedure QStyleOptionTitleBar_setTitleBarState(handle : QStyleOptionTitleBarH; titleBarState : Integer); cdecl; external QtIntf name 'QStyleOptionTitleBar_setTitleBarState';
+function QStyleOptionTitleBar_titleBarFlags(handle : QStyleOptionTitleBarH) : QtWindowFlags; cdecl; external QtIntf name 'QStyleOptionTitleBar_titleBarFlags';
+procedure QStyleOptionTitleBar_setTitleBarFlags(handle : QStyleOptionTitleBarH; titleBarFlags : QtWindowFlags); cdecl; external QtIntf name 'QStyleOptionTitleBar_setTitleBarFlags';
 function QStyleOptionTitleBar_create(): QStyleOptionTitleBarH; overload; cdecl; external QtIntf name 'QStyleOptionTitleBar_create';
 procedure QStyleOptionTitleBar_destroy(handle: QStyleOptionTitleBarH); cdecl; external QtIntf name 'QStyleOptionTitleBar_destroy'; 
 function QStyleOptionTitleBar_create(other: QStyleOptionTitleBarH): QStyleOptionTitleBarH; overload; cdecl; external QtIntf name 'QStyleOptionTitleBar_create2';
 
+function QStyleOptionGroupBox_features(handle : QStyleOptionGroupBoxH) : QStyleOptionFrameV2FrameFeatures; cdecl; external QtIntf name 'QStyleOptionGroupBox_features';
+procedure QStyleOptionGroupBox_setFeatures(handle : QStyleOptionGroupBoxH; features : QStyleOptionFrameV2FrameFeatures); cdecl; external QtIntf name 'QStyleOptionGroupBox_setFeatures';
+procedure QStyleOptionGroupBox_text(handle : QStyleOptionGroupBoxH; retval : PWideString ); cdecl; external QtIntf name 'QStyleOptionGroupBox_text';
+procedure QStyleOptionGroupBox_setText(handle : QStyleOptionGroupBoxH; text :  PWideString); cdecl; external QtIntf name 'QStyleOptionGroupBox_setText';
+function QStyleOptionGroupBox_textAlignment(handle : QStyleOptionGroupBoxH) : QtAlignment; cdecl; external QtIntf name 'QStyleOptionGroupBox_textAlignment';
+procedure QStyleOptionGroupBox_setTextAlignment(handle : QStyleOptionGroupBoxH; textAlignment : QtAlignment); cdecl; external QtIntf name 'QStyleOptionGroupBox_setTextAlignment';
+procedure QStyleOptionGroupBox_textColor(handle : QStyleOptionGroupBoxH; retval : PQColor ); cdecl; external QtIntf name 'QStyleOptionGroupBox_textColor';
+procedure QStyleOptionGroupBox_setTextColor(handle : QStyleOptionGroupBoxH; textColor :  PQColor); cdecl; external QtIntf name 'QStyleOptionGroupBox_setTextColor';
+function QStyleOptionGroupBox_lineWidth(handle : QStyleOptionGroupBoxH) : Integer; cdecl; external QtIntf name 'QStyleOptionGroupBox_lineWidth';
+procedure QStyleOptionGroupBox_setLineWidth(handle : QStyleOptionGroupBoxH; lineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionGroupBox_setLineWidth';
+function QStyleOptionGroupBox_midLineWidth(handle : QStyleOptionGroupBoxH) : Integer; cdecl; external QtIntf name 'QStyleOptionGroupBox_midLineWidth';
+procedure QStyleOptionGroupBox_setMidLineWidth(handle : QStyleOptionGroupBoxH; midLineWidth : Integer); cdecl; external QtIntf name 'QStyleOptionGroupBox_setMidLineWidth';
 function QStyleOptionGroupBox_create(): QStyleOptionGroupBoxH; overload; cdecl; external QtIntf name 'QStyleOptionGroupBox_create';
 procedure QStyleOptionGroupBox_destroy(handle: QStyleOptionGroupBoxH); cdecl; external QtIntf name 'QStyleOptionGroupBox_destroy'; 
 function QStyleOptionGroupBox_create(other: QStyleOptionGroupBoxH): QStyleOptionGroupBoxH; overload; cdecl; external QtIntf name 'QStyleOptionGroupBox_create2';
 
+function QStyleOptionSizeGrip_corner(handle : QStyleOptionSizeGripH) : QtCorner; cdecl; external QtIntf name 'QStyleOptionSizeGrip_corner';
+procedure QStyleOptionSizeGrip_setCorner(handle : QStyleOptionSizeGripH; corner : QtCorner); cdecl; external QtIntf name 'QStyleOptionSizeGrip_setCorner';
 function QStyleOptionSizeGrip_create(): QStyleOptionSizeGripH; overload; cdecl; external QtIntf name 'QStyleOptionSizeGrip_create';
 procedure QStyleOptionSizeGrip_destroy(handle: QStyleOptionSizeGripH); cdecl; external QtIntf name 'QStyleOptionSizeGrip_destroy'; 
 function QStyleOptionSizeGrip_create(other: QStyleOptionSizeGripH): QStyleOptionSizeGripH; overload; cdecl; external QtIntf name 'QStyleOptionSizeGrip_create2';
 
+procedure QStyleOptionGraphicsItem_exposedRect(handle : QStyleOptionGraphicsItemH; retval : QRectFH ); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_exposedRect';
+procedure QStyleOptionGraphicsItem_setExposedRect(handle : QStyleOptionGraphicsItemH; exposedRect :  QRectFH); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_setExposedRect';
+procedure QStyleOptionGraphicsItem_matrix(handle : QStyleOptionGraphicsItemH; retval : QMatrixH ); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_matrix';
+procedure QStyleOptionGraphicsItem_setMatrix(handle : QStyleOptionGraphicsItemH; matrix :  QMatrixH); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_setMatrix';
+function QStyleOptionGraphicsItem_levelOfDetail(handle : QStyleOptionGraphicsItemH) : Double; cdecl; external QtIntf name 'QStyleOptionGraphicsItem_levelOfDetail';
+procedure QStyleOptionGraphicsItem_setLevelOfDetail(handle : QStyleOptionGraphicsItemH; levelOfDetail : Double); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_setLevelOfDetail';
 function QStyleOptionGraphicsItem_create(): QStyleOptionGraphicsItemH; overload; cdecl; external QtIntf name 'QStyleOptionGraphicsItem_create';
 procedure QStyleOptionGraphicsItem_destroy(handle: QStyleOptionGraphicsItemH); cdecl; external QtIntf name 'QStyleOptionGraphicsItem_destroy'; 
 function QStyleOptionGraphicsItem_create(other: QStyleOptionGraphicsItemH): QStyleOptionGraphicsItemH; overload; cdecl; external QtIntf name 'QStyleOptionGraphicsItem_create2';
 
+function QStyleHintReturn_version(handle : QStyleHintReturnH) : Integer; cdecl; external QtIntf name 'QStyleHintReturn_version';
+procedure QStyleHintReturn_setVersion(handle : QStyleHintReturnH; version : Integer); cdecl; external QtIntf name 'QStyleHintReturn_setVersion';
+function QStyleHintReturn__type(handle : QStyleHintReturnH) : Integer; cdecl; external QtIntf name 'QStyleHintReturn__type';
+procedure QStyleHintReturn_setType(handle : QStyleHintReturnH; _type : Integer); cdecl; external QtIntf name 'QStyleHintReturn_setType';
 function QStyleHintReturn_create(version: Integer = QStyleOptionVersion; _type: Integer = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external QtIntf name 'QStyleHintReturn_create';
 procedure QStyleHintReturn_destroy(handle: QStyleHintReturnH); cdecl; external QtIntf name 'QStyleHintReturn_destroy'; 
 
+procedure QStyleHintReturnMask_region(handle : QStyleHintReturnMaskH; retval : QRegionH ); cdecl; external QtIntf name 'QStyleHintReturnMask_region';
+procedure QStyleHintReturnMask_setRegion(handle : QStyleHintReturnMaskH; region :  QRegionH); cdecl; external QtIntf name 'QStyleHintReturnMask_setRegion';
 function QStyleHintReturnMask_create(): QStyleHintReturnMaskH; cdecl; external QtIntf name 'QStyleHintReturnMask_create';
 procedure QStyleHintReturnMask_destroy(handle: QStyleHintReturnMaskH); cdecl; external QtIntf name 'QStyleHintReturnMask_destroy'; 
 
+procedure QStyleHintReturnVariant_variant(handle : QStyleHintReturnVariantH; retval : QVariantH ); cdecl; external QtIntf name 'QStyleHintReturnVariant_variant';
+procedure QStyleHintReturnVariant_setVariant(handle : QStyleHintReturnVariantH; variant :  QVariantH); cdecl; external QtIntf name 'QStyleHintReturnVariant_setVariant';
 function QStyleHintReturnVariant_create(): QStyleHintReturnVariantH; cdecl; external QtIntf name 'QStyleHintReturnVariant_create';
 procedure QStyleHintReturnVariant_destroy(handle: QStyleHintReturnVariantH); cdecl; external QtIntf name 'QStyleHintReturnVariant_destroy'; 
 
@@ -9266,6 +9557,12 @@ procedure InitializePIntArray(GPP, GPL, SPL: Pointer); cdecl; external QtIntf na
 
 implementation
 uses SysUtils,Math;
+
+function QtPoint(X,Y:integer): TQtPoint;
+begin
+  Result.X:=X;
+  Result.Y:=Y;
+end;
 
 
 // AnsiString Helpers
