@@ -1,16 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-07-16 17:58+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
 #: synmacrorecorder:scannotpause
 msgid "Can only pause when recording"
-msgstr ""
+msgstr "Faire pause seulement en enregistrant"
 
 #: synmacrorecorder:scannotresume
 msgid "Can only resume when paused"
-msgstr ""
+msgstr "Résumé seulement en pause"
 
 #: synmacrorecorder:scannotplay
 msgid "Cannot playback macro when recording"
-msgstr ""
+msgstr "Impossible de jouer la macro en enregistrant"
 
 #: synmacrorecorder:scannotrecord
 msgid "Cannot record macro when recording"
-msgstr ""
+msgstr "Impossible d'enregistrer la macro en enregistrant"
 

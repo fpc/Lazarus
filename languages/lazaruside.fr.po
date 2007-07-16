@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-07-13 16:59+0100\n"
+"PO-Revision-Date: 2007-07-16 17:22+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -653,19 +653,19 @@ msgstr "Editeur d'ancre - aucune commande choisie"
 
 #: lazarusidestrconsts:lisanchortobottomsidekeepborderspace
 msgid "Anchor to bottom side of sibling, keep border space"
-msgstr "Ancre du côté inférieur de l'enfant de mêmes parents, préserver l'espace de bordure"
+msgstr "Ancre du côté inférieur du contrôle, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchortoleftsidekeepborderspace
 msgid "Anchor to left side of sibling, keep border space"
-msgstr "Ancre du côté gauche de l'enfant de mêmes parents, préserver l'espace de bordure"
+msgstr "Ancre du côté gauche de l'enfant du contrôle, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchortorightsidekeepborderspace
 msgid "Anchor to right side of sibling, keep border space"
-msgstr "Ancre du côté droit de l'enfant de mêmes parents, préserver l'espace de bordure"
+msgstr "Ancre du côté droit du contrôle, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchortotopsidekeepborderspace
 msgid "Anchor to top side of sibling, keep border space"
-msgstr "Ancre du côté supérieur de l'enfant de mêmes parents, préserver l'espace de bordure"
+msgstr "Ancre du côté supérieur du contrôle, préserver l'espace de bordure"
 
 #: lazarusidestrconsts:lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -1073,11 +1073,11 @@ msgstr "Centrer sur la ligne du curseur"
 
 #: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
-msgstr "Commande centrale horizontale relative à l'enfant de mêmes parents donné"
+msgstr "Commande centrale horizontale relative au contrôle donné"
 
 #: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
-msgstr "Commande centrale verticale relative à l'enfant de mêmes parents donné"
+msgstr "Commande centrale verticale relative au contrôle donné"
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -7393,7 +7393,7 @@ msgstr "Afficher les fichiers utilisés"
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
-msgstr "Sibling"
+msgstr "Contrôle"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmsignals
 msgid "Signals"
@@ -8433,19 +8433,19 @@ msgstr "C'est le paquet par défaut. Utilisez-le seulement pour les composants s
 
 #: lazarusidestrconsts:lisbottomsiblingcomboboxhint
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgstr "C'est la commande d'enfant de mêmes parents à quelle côté inférieur il est ancré. Laisser vide pour le parent."
+msgstr "C'est la commande du contrôle à laquelle le côté inférieur est ancré. Laisser vide pour le parent."
 
 #: lazarusidestrconsts:lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgstr "C'est la commande d'enfant de mêmes parents à quelle côté gauche il est ancré. Laisser vide pour le parent."
+msgstr "C'est la commande du contrôle à laquelle le côté gauche est ancré. Laisser vide pour le parent."
 
 #: lazarusidestrconsts:lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgstr "C'est la commande d'enfant de mêmes parents à quelle côté droit il est ancré. Laisser vide pour le parent."
+msgstr "C'est la commande du contrôle à laquelle le côté droit est ancré. Laisser vide pour le parent."
 
 #: lazarusidestrconsts:listopsiblingcomboboxhint
 msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgstr "C'est la commande d'enfant de mêmes parents à quelle côté supérieur il est ancré. Laisser vide pour le parent."
+msgstr "C'est la commande du contrôle à laquelle le côté supérieur est ancré. Laisser vide pour le parent."
 
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"

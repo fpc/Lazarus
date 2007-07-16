@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-07-16 17:37+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=utf-8\n"
+
+#: pfidesource:sdescrformatting
+msgid "Formatting commands"
+msgstr "Commandes de formatage"
+
+#: pfidesource:sdescrpffile
+msgid "Pretty-Format File"
+msgstr "Formater le fichier"
+
+#: pfidesource:sdescrpfselection
+msgid "Pretty-Format Selection"
+msgstr "Formater la sélection"
+

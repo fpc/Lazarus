@@ -1,6 +1,6 @@
 #: syneditstrconst:syns_scrollinfofmt
 msgid "%d - %d"
-msgstr ""
+msgstr "%d - %d"
 
 #: syneditstrconst:syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
@@ -24,7 +24,7 @@ msgstr "Fichiers fiches Borland (*.dfm;*.xfm)|*.dfm;*.xfm"
 
 #: syneditstrconst:syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr ""
+msgstr "Fichiers C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
@@ -80,7 +80,7 @@ msgstr "Fichiers HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst:syns_exporterformathtml
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: syneditstrconst:syns_filterhtml
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
@@ -132,7 +132,7 @@ msgstr "Fichiers PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst:syns_previewscrollinfofmt
 msgid "Page: %d"
-msgstr ""
+msgstr "Page: %d"
 
 #: syneditstrconst:syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
@@ -152,7 +152,7 @@ msgstr "Fichiers Python (*.py)|*.py"
 
 #: syneditstrconst:syns_exporterformatrtf
 msgid "RTF"
-msgstr ""
+msgstr "RTF"
 
 #: syneditstrconst:syns_filterrtf
 msgid "Rich Text Format (*.rtf)|*.rtf"
