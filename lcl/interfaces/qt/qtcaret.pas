@@ -24,7 +24,7 @@
 }
 
 unit QtCaret;
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -41,9 +41,6 @@ uses
   QtObjects, QtWidgets,
   // LCL
   LCLType, LCLIntf, Graphics, ExtCtrls;
-
-// defines
-{.$DEFINE ShowQtCaret}
 
 type
   TEmulatedCaret = class(TComponent)
@@ -242,7 +239,7 @@ begin
   FTimer := TTimer.Create(self);
   FTimer.Enabled := False;
   FTimer.Interval := GetCaretBlinkTime;
-  FTimer.OnTimer := DoTimer;
+  FTimer.OnTimer := @DoTimer;
 end;
 
 destructor TEmulatedCaret.Destroy;
@@ -265,9 +262,7 @@ begin
     FPixmap := CreateColorPixmap(Integer(Pixmap));
 
   Result := IsValid;
-{$IFDEF ShowQtCaret}
   FTimer.Enabled := True;
-{$ENDIF}
 end;
 
 function TEmulatedCaret.DestroyCaret: Boolean;
@@ -291,13 +286,11 @@ var
 begin
   if IsValid and FVisible and FVisibleState then
   begin
-{$IFDEF ShowQtCaret}
     DestDev := QWidget_to_QPaintDevice(FWidget.Widget);
     Painter := QPainter_create(DestDev);
     R := Rect(0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
     QPainter_drawPixmap(Painter, PQtPoint(@FPos), FPixmap, PRect(@R));
     QPainter_destroy(Painter);
-{$ENDIF}
   end;
 end;
 
