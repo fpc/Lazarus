@@ -1123,9 +1123,16 @@ end;
 procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
 var
   MenuInfo: MENUITEMINFO;
+  MenuItemInfoSize: DWORD;
+const
+  W95_MENUITEMINFO_SIZE = 44;
 begin
+  if (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
+    MenuItemInfoSize := W95_MENUITEMINFO_SIZE
+  else
+    MenuItemInfoSize := sizeof(MENUITEMINFO);
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
-  MenuInfo.cbSize := SizeOf(MENUITEMINFO);
+  MenuInfo.cbSize := MenuItemInfoSize;
   MenuInfo.fMask := MIIM_TYPE;
   GetMenuItemInfo(Menu, 0, True, @MenuInfo);
   if Value then
