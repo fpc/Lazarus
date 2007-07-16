@@ -279,6 +279,19 @@ type
   private
   protected
   public
+  public
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+      const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
+  public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSRadioButton }
@@ -396,7 +409,7 @@ begin
   QtScrollBar.setValue(AScrollBar.Position);
   QtScrollBar.setPageStep(AScrollBar.PageSize);
   QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
-     
+  
   RA := QtScrollBar.LCLObject.ClientRect;
   RB := AScrollBar.ClientRect;
   
@@ -1439,6 +1452,123 @@ begin
   QComboBox_setEditText(QComboBoxH(QtComboBox.Widget), @Str);
 end;
 
+
+{ TQtWSToggleBox }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.RetrieveState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSToggleBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+begin
+  if QAbstractButton_isDown(QAbstractButtonH(TQtPushButton(ACustomCheckBox.Handle).Widget))
+  then
+   Result := cbChecked
+  else
+   Result := cbUnChecked;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.SetShortCut
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToggleBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+  const OldShortCut, NewShortCut: TShortCut);
+begin
+  inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.SetState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  AState: TCheckBoxState;
+begin
+  if QAbstractButton_isDown(QAbstractButtonH(TQtPushButton(ACustomCheckBox.Handle).Widget))
+  then
+   AState := cbChecked
+  else
+   AState := cbUnChecked;
+
+  if AState <> NewState then
+    QAbstractButton_toggle(QAbstractButtonH(TQtPushButton(ACustomCheckBox.Handle).Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSToggleBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  Str: WideString;
+begin
+  TQtAbstractButton(AWinControl.Handle).Text(@Str);
+
+  AText := UTF8Encode(Str);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToggleBox.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  Str: WideString;
+begin
+  Str := UTF8Decode(AText);
+
+  TQtAbstractButton(AWinControl.Handle).SetText(@Str);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+class function TQtWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtToggleBox: TQtPushButton;
+  ATextWidth: Integer;
+  FM: QFontMetricsH;
+  Str: WideString;
+begin
+
+  QtToggleBox := TQtPushButton.Create(AWinControl, AParams);
+  
+  QAbstractButton_setCheckable(QAbstractButtonH(QtToggleBox.Widget), True);
+  QtToggleBox.AttachEvents;
+  
+  QWidget_setFocusPolicy(QtToggleBox.Widget, QtTabFocus or QtClickFocus);
+
+  Result := THandle(QtToggleBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSToggleBox.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
+class procedure TQtWSToggleBox.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtPushButton(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -1465,7 +1595,7 @@ initialization
   RegisterWSComponent(TCustomCheckBox, TQtWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TQtWSCheckBox);
 //  RegisterWSComponent(TCheckBox, TQtWSCheckBox);
-//  RegisterWSComponent(TToggleBox, TQtWSToggleBox);
+  RegisterWSComponent(TToggleBox, TQtWSToggleBox);
   RegisterWSComponent(TRadioButton, TQtWSRadioButton);
   RegisterWSComponent(TCustomStaticText, TQtWSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TQtWSStaticText);
