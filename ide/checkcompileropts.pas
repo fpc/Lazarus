@@ -1,3 +1,23 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+}
 unit CheckCompilerOpts;
 
 {$mode objfpc}{$H+}
@@ -5,8 +25,9 @@ unit CheckCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil,
+  Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, FileUtil, Process,
+  KeywordFuncLists, CodeToolManager,
   IDEExternToolIntf,
   IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
   CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf;
@@ -15,17 +36,18 @@ type
   TCompilerOptionsTest = (
     cotNone,
     cotCheckCompilerExe,
-    cotCompileBogusFiles
+    cotCompileBogusFiles,
+    cotCheckCompilerConfig // e.g. fpc.cfg
     );
 
   { TCheckCompilerOptsDlg }
 
   TCheckCompilerOptsDlg = class(TForm)
     CloseButton1: TBitBtn;
-    TestMemo: TMEMO;
-    TestGroupbox: TGROUPBOX;
-    OutputListbox: TLISTBOX;
-    OutputGroupBox: TGROUPBOX;
+    TestMemo: TMemo;
+    TestGroupbox: TGroupBox;
+    OutputListbox: TListbox;
+    OutputGroupBox: TGroupBox;
     procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
     procedure CloseButtonCLICK(Sender: TObject);
   private
@@ -37,6 +59,11 @@ type
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetOptions(const AValue: TCompilerOptions);
     procedure SetMsgDirectory(Index: integer; const CurDir: string);
+    function CheckCompilerExecutable(const CompilerFilename: string): TModalResult;
+    function CheckAmbiguousFPCCfg(const CompilerFilename: string): TModalResult;
+    function CheckCompilerConfig(const CompilerFilename: string;
+                                 out FPCCfgUnitPath: string): TModalResult;
+    function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
   public
     function DoTest: TModalResult;
     constructor Create(TheOwner: TComponent); override;
@@ -46,6 +73,8 @@ type
                   OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: String; OriginalIndex: integer);
     procedure AddProgress(Line: TIDEScanMessageLine);
+    procedure AddHint(const Msg: string);
+    procedure AddWarning(const Msg: string);
   public
     property Options: TCompilerOptions read FOptions write SetOptions;
     property Test: TCompilerOptionsTest read FTest;
@@ -85,6 +114,273 @@ begin
   FDirectories[Index]:=CurDir;
 end;
 
+function TCheckCompilerOptsDlg.CheckCompilerExecutable(
+  const CompilerFilename: string): TModalResult;
+var
+  CompilerFiles: TStrings;
+begin
+  FTest:=cotCheckCompilerExe;
+  TestGroupbox.Caption:='Test: Checking compiler ...';
+  try
+    CheckIfFileIsExecutable(CompilerFilename);
+  except
+    on e: Exception do begin
+      Result:=QuestionDlg('Invalid compiler',
+        'The compiler "'+CompilerFilename+'" is not an executable file.'#13
+        +'Details: '+E.Message,
+        mtError,[mrCancel,'Skip',mrAbort],0);
+      exit;
+    end;
+  end;
+
+  // check if there are several compilers in path
+  CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
+       SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
+  if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
+    Result:=MessageDlg('Ambiguous Compiler',
+      'There are several FreePascal Compilers in your path.'#13#13
+      +CompilerFiles.Text+#13
+      +'Maybe you forgot to delete an old compiler?',
+      mtWarning,[mbCancel,mbIgnore],0);
+    if Result<>mrIgnore then exit;
+  end;
+  
+  Result:=mrOk;
+end;
+
+function TCheckCompilerOptsDlg.CheckAmbiguousFPCCfg(
+  const CompilerFilename: string): TModalResult;
+var
+  CfgFiles: TStringList;
+  Dir: String;
+  Filename: String;
+  i: Integer;
+begin
+  CfgFiles:=TStringList.Create;
+  
+  // check $HOME/.fpc.cfg
+  Dir:=SysUtils.GetEnvironmentVariable('HOME');
+  if Dir<>'' then begin
+    Filename:=CleanAndExpandDirectory(Dir)+'.fpc.cfg';
+    if FileExists(Filename) then
+      CfgFiles.Add(Filename);
+  end;
+
+  // check compiler path + fpc.cfg
+  Dir:=ExtractFilePath(CompilerFilename);
+  Dir:=SysUtils.GetEnvironmentVariable('HOME');
+  if Dir<>'' then begin
+    Filename:=CleanAndExpandDirectory(Dir)+'fpc.cfg';
+    if FileExists(Filename) then
+      CfgFiles.Add(Filename);
+  end;
+
+  // check /etc/fpc.cfg
+  {$IFDEF Unix}
+    Dir:=ExtractFilePath(CompilerFilename);
+    Dir:=SysUtils.GetEnvironmentVariable('HOME');
+    if Dir<>'' then begin
+      Filename:='/etc/fpc.cfg';
+      if FileExists(Filename) then
+        CfgFiles.Add(Filename);
+    end;
+  {$ENDIF}
+
+  // warn about missing or too many fpc.cfg
+  if CfgFiles.Count<1 then begin
+    AddWarning('no fpc.cfg found');
+  end else if CfgFiles.Count>1 then begin
+    for i:=0 to CfgFiles.Count-1 do
+      AddWarning('multiple compiler configs found: '+CfgFiles[i]);
+  end;
+
+  CfgFiles.Free;
+  Result:=mrOk;
+end;
+
+function TCheckCompilerOptsDlg.CheckCompileBogusFile(
+  const CompilerFilename: string): TModalResult;
+var
+  TestDir: String;
+  BogusFilename: String;
+  CmdLineParams: String;
+  CompileTool: TExternalToolOptions;
+begin
+  // compile bogus file
+  FTest:=cotCompileBogusFiles;
+  TestGroupbox.Caption:='Test: Compiling an empty file ...';
+  // get Test directory
+  TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
+  if not DirPathExists(TestDir) then begin
+    MessageDlg('Invalid Test Directory',
+      'Please check the Test directory under'#13
+      +'Environment -> Environment Options -> Files -> Directory for building test projects',
+      mtError,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  // create bogus file
+  BogusFilename:=CreateNonExistingFilename(TestDir+'testcompileroptions.pas');
+  if not CreateEmptyFile(BogusFilename) then begin
+    MessageDlg('Unable to create Test File',
+      'Unable to create Test pascal file "'+BogusFilename+'".',
+      mtError,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  try
+    // create compiler command line options
+    CmdLineParams:=Options.MakeOptionsString(BogusFilename,nil,
+                              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption])
+                   +' '+BogusFilename;
+
+    CompileTool:=TExternalToolOptions.Create;
+    CompileTool.Title:='Test: Compiling empty file';
+    CompileTool.ScanOutputForFPCMessages:=true;
+    CompileTool.ScanOutputForMakeMessages:=true;
+    CompileTool.WorkingDirectory:=TestDir;
+    CompileTool.Filename:=CompilerFilename;
+    CompileTool.CmdLineParams:=CmdLineParams;
+
+    Result:=RunTool(CompileTool);
+    FreeThenNil(CompileTool);
+  finally
+    DeleteFile(BogusFilename);
+  end;
+  
+  Result:=mrOk;
+end;
+
+function TCheckCompilerOptsDlg.CheckCompilerConfig(
+  const CompilerFilename: string; out FPCCfgUnitPath: string): TModalResult;
+  
+  procedure ProcessOutputLine(const Line: string);
+  const
+    USING_UNIT_PATH = 'USING UNIT PATH: ';
+    READING_OPTIONS_FROM_FILE = 'READING OPTIONS FROM FILE ';
+    HANDLING_OPTION = 'HANDLING OPTION ';
+  var
+    len, curpos: integer;
+    NewPath: String;
+    UpLine: String;
+  begin
+    len := length(Line);
+    if len <= 6 then Exit; // shortest match
+
+    CurPos := 1;
+    // strip timestamp e.g. [0.306]
+    if Line[CurPos] = '[' then begin
+      repeat
+        inc(CurPos);
+        if CurPos > len then Exit;
+      until line[CurPos] = ']';
+      Inc(CurPos, 2); //skip space also
+      if len - CurPos < 6 then Exit; // shortest match
+    end;
+
+    UpLine:=UpperCaseStr(Line);
+
+    case UpLine[CurPos] of
+    'C':
+      if (StrLComp(@UpLine[CurPos], READING_OPTIONS_FROM_FILE,
+          length(READING_OPTIONS_FROM_FILE)) = 0) then
+      begin
+        // show a hint what cfg file is read by FPC
+        AddHint(Line);
+      end;
+    'U':
+      if (StrLComp(@UpLine[CurPos], USING_UNIT_PATH, length(USING_UNIT_PATH)) = 0)
+      then begin
+        Inc(CurPos, length(USING_UNIT_PATH));
+        NewPath:=copy(Line,CurPos,len);
+        if not FilenameIsAbsolute(NewPath) then begin
+          AddWarning('relative unit path found in fpc cfg: '+NewPath);
+          NewPath:=ExpandFileName(NewPath);
+        end;
+        //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig: Using unit path: "',NewPath,'"']);
+        FPCCfgUnitPath:=FPCCfgUnitPath+NewPath+';';
+      end;
+    end;
+  end;
+  
+var
+  TestDir: String;
+  ATestPascalFile: String;
+  CurCompilerOptions: String;
+  TargetOS: String;
+  TargetCPU: String;
+  OutputLine: String;
+  TheProcess: TProcess;
+  OutLen: Integer;
+  LineStart: integer;
+  i: Integer;
+  CmdLine: string;
+  Buf: string;
+begin
+  FPCCfgUnitPath:='';
+
+  FTest:=cotCheckCompilerConfig;
+  TestGroupbox.Caption:='Test: Checking compiler configuration ...';
+
+  Result:=CheckAmbiguousFPCCfg(CompilerFilename);
+  if not (Result in [mrOk,mrIgnore]) then exit;
+
+  TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
+  ATestPascalFile:=CreateNonExistingFilename(TestDir+'testcompileroptions.pas');
+  
+  CurCompilerOptions:='';
+  TargetOS:=Options.TargetOS;
+  if TargetOS<>'' then
+    CurCompilerOptions:=AddCmdLineParameter(CurCompilerOptions,'-T'+TargetOS);
+  TargetCPU:=Options.TargetCPU;
+  if TargetCPU<>'' then
+    CurCompilerOptions:=AddCmdLineParameter(CurCompilerOptions,'-P'+TargetCPU);
+
+  CmdLine:=CompilerFilename+' -va ';
+  if FileExistsCached(CodeToolBoss.DefinePool.EnglishErrorMsgFilename) then
+    CmdLine:=CmdLine+'-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename+' ';
+  if CurCompilerOptions<>'' then
+    CmdLine:=CmdLine+CurCompilerOptions+' ';
+  CmdLine:=CmdLine+ATestPascalFile;
+
+  TheProcess := TProcess.Create(nil);
+  TheProcess.CommandLine := CmdLine;
+  TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+  TheProcess.ShowWindow := swoHide;
+  try
+    TheProcess.Execute;
+    OutputLine:='';
+    SetLength(Buf,1024);
+    repeat
+      if (TheProcess.Output<>nil) then begin
+        OutLen:=TheProcess.Output.Read(Buf[1],length(Buf));
+      end else
+        OutLen:=0;
+      LineStart:=1;
+      i:=1;
+      while i<=OutLen do begin
+        if Buf[i] in [#10,#13] then begin
+          OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
+          ProcessOutputLine(OutputLine);
+          OutputLine:='';
+          if (i<OutLen) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
+          then
+            inc(i);
+          LineStart:=i+1;
+        end;
+        inc(i);
+      end;
+      OutputLine:=copy(Buf,LineStart,OutLen-LineStart+1);
+    until OutLen=0;
+    TheProcess.WaitOnExit;
+  finally
+    //DebugLn('TDefinePool.CreateFPCTemplate Run with -va: OutputLine="',OutputLine,'"');
+    TheProcess.Free;
+  end;
+
+  Result:=mrOk;
+end;
+
 procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
 begin
   if FMacroList=AValue then exit;
@@ -93,12 +389,10 @@ end;
 
 function TCheckCompilerOptsDlg.DoTest: TModalResult;
 var
-  TestDir: String;
-  BogusFilename: String;
   CompilerFilename: String;
   CompileTool: TExternalToolOptions;
-  CmdLineParams: String;
   CompilerFiles: TStrings;
+  FPCCfgUnitPath: string;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
@@ -106,77 +400,24 @@ begin
   TestMemo.Lines.Clear;
   CompilerFiles:=nil;
   try
-    // check compiler filename
-    FTest:=cotCheckCompilerExe;
-    TestGroupbox.Caption:='Test: Checking compiler ...';
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
-    try
-      CheckIfFileIsExecutable(CompilerFilename);
-    except
-      on e: Exception do begin
-        Result:=MessageDlg('Invalid compiler',
-          'The compiler "'+CompilerFilename+'" is not an executable file.',
-          mtError,[mbCancel,mbAbort],0);
-        exit;
-      end;
-    end;
-    
-    // check if there are several compilers in path
-    CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
-         SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
-    if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
-      Result:=MessageDlg('Ambiguous Compiler',
-        'There are several FreePascal Compilers in your path.'#13#13
-        +CompilerFiles.Text+#13
-        +'Maybe you forgot to delete an old compiler?',
-        mtWarning,[mbCancel,mbIgnore],0);
-      if Result<>mrIgnore then exit;
-    end;
-    
+
+    // check compiler filename
+    Result:=CheckCompilerExecutable(CompilerFilename);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
     // TODO: compiler check: check if compiler paths includes base units
-    // TODO: compiler check: check if compiler is older than fpc units (ppu version)
+    Result:=CheckCompilerConfig(CompilerFilename,FPCCfgUnitPath);
+    if not (Result in [mrOk,mrIgnore]) then exit;
 
     // compile bogus file
-    FTest:=cotCompileBogusFiles;
-    TestGroupbox.Caption:='Test: Compiling an empty file ...';
-    // get Test directory
-    TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
-    if not DirPathExists(TestDir) then begin
-      MessageDlg('Invalid Test Directory',
-        'Please check the Test directory under'#13
-        +'Environment -> Environment Options -> Files -> Directory for building test projects',
-        mtError,[mbCancel],0);
-      Result:=mrCancel;
-      exit;
-    end;
-    // create bogus file
-    BogusFilename:=CreateNonExistingFilename(TestDir+'testcompileroptions.pas');
-    if not CreateEmptyFile(BogusFilename) then begin
-      MessageDlg('Unable to create Test File',
-        'Unable to create Test pascal file "'+BogusFilename+'".',
-        mtError,[mbCancel],0);
-      Result:=mrCancel;
-      exit;
-    end;
-    try
-      // create compiler command line options
-      CmdLineParams:=Options.MakeOptionsString(BogusFilename,nil,
-                                [ccloAddVerboseAll,ccloDoNotAppendOutFileOption])
-                     +' '+BogusFilename;
+    Result:=CheckCompileBogusFile(CompilerFilename);
+    if not (Result in [mrOk,mrIgnore]) then exit;
 
-      CompileTool:=TExternalToolOptions.Create;
-      CompileTool.Title:='Test: Compiling empty file';
-      CompileTool.ScanOutputForFPCMessages:=true;
-      CompileTool.ScanOutputForMakeMessages:=true;
-      CompileTool.WorkingDirectory:=TestDir;
-      CompileTool.Filename:=CompilerFilename;
-      CompileTool.CmdLineParams:=CmdLineParams;
-      
-      Result:=RunTool(CompileTool);
-      FreeThenNil(CompileTool);
-    finally
-      DeleteFile(BogusFilename);
-    end;
+    // TODO: compiler check: check if compiler is older than fpc units (ppu version)
+    
+    
+    // TODO: compiler check: check if there are ambiguous fpc ppu
 
   finally
     CompilerFiles.Free;
@@ -184,6 +425,7 @@ begin
     FTest:=cotNone;
     TestGroupbox.Caption:='Test';
   end;
+  Result:=mrOk;
 end;
 
 constructor TCheckCompilerOptsDlg.Create(TheOwner: TComponent);
@@ -210,7 +452,7 @@ procedure TCheckCompilerOptsDlg.Add(const Msg, CurDir: String;
   ProgressLine: boolean; OriginalIndex: integer);
 var
   i: Integer;
-Begin
+begin
   if FLastLineIsProgress then begin
     OutputListbox.Items[OutputListbox.Items.Count-1]:=Msg;
   end else begin
@@ -232,6 +474,16 @@ end;
 procedure TCheckCompilerOptsDlg.AddProgress(Line: TIDEScanMessageLine);
 begin
   Add(Line.Line,Line.WorkingDirectory,false,Line.LineNumber);
+end;
+
+procedure TCheckCompilerOptsDlg.AddHint(const Msg: string);
+begin
+  Add('HINT: '+Msg,'',false,-1);
+end;
+
+procedure TCheckCompilerOptsDlg.AddWarning(const Msg: string);
+begin
+  Add('WARNING: '+Msg,'',false,-1);
 end;
 
 initialization

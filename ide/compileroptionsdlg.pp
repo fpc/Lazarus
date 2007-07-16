@@ -45,6 +45,14 @@ uses
 
 type
   { Compiler options form }
+  
+  TCheckCompileOptionsMsgLvl = (
+    ccomlHints,
+    ccomlWarning,
+    ccomlErrors,
+    ccomlNone
+    );
+  
 
   { TfrmCompilerOptions }
 
@@ -281,8 +289,8 @@ type
 
     procedure GetCompilerOptions;
     procedure GetCompilerOptions(SrcCompilerOptions: TBaseCompilerOptions);
-    function PutCompilerOptions(CheckAndWarn: boolean): boolean;
-    function PutCompilerOptions(CheckAndWarn: boolean;
+    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
+    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl;
                             DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
@@ -405,7 +413,7 @@ begin
   Assert(False, 'Trace:Accept compiler options changes');
   
   { Save the options and hide the dialog }
-  if not PutCompilerOptions(true) then exit;
+  if not PutCompilerOptions(ccomlErrors) then exit;
   ModalResult:=mrOk;
 end;
 
@@ -415,7 +423,7 @@ end;
 procedure TfrmCompilerOptions.btnTestClicked(Sender: TObject);
 begin
   // Apply any changes and test
-  PutCompilerOptions(true);
+  if not PutCompilerOptions(ccomlHints) then exit;
   if Assigned(OnTest) then begin
     btnCheck.Enabled:=false;
     try
@@ -434,7 +442,7 @@ end;
 procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
 begin
   // Test MakeOptionsString function
-  PutCompilerOptions(true);
+  if not PutCompilerOptions(ccomlWarning) then exit;
   ShowCompilerOptionsDialog(CompilerOpts);
 end;
 
@@ -735,10 +743,11 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions PutCompilerOptions                                      }
-{------------------------------------------------------------------------------}
-function TfrmCompilerOptions.PutCompilerOptions(CheckAndWarn: boolean;
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions PutCompilerOptions
+------------------------------------------------------------------------------}
+function TfrmCompilerOptions.PutCompilerOptions(
+  CheckAndWarn: TCheckCompileOptionsMsgLvl;
   DestCompilerOptions: TBaseCompilerOptions): boolean;
 
   function MakeCompileReasons(const ACompile, ABuild, ARun: TCheckBox): TCompileReasons;
@@ -747,6 +756,34 @@ function TfrmCompilerOptions.PutCompilerOptions(CheckAndWarn: boolean;
     if ACompile.Checked then Include(Result, crCompile);
     if ABuild.Checked then Include(Result, crBuild);
     if ARun.Checked then Include(Result, crRun);
+  end;
+  
+  function CheckSearchPath(const Context, ExpandedPath: string): boolean;
+  var
+    CurPath: String;
+    p: Integer;
+  begin
+    Result:=false;
+    if ord(CheckAndWarn)<=ord(ccomlHints) then begin
+      if System.Pos('*',ExpandedPath)>0 then begin
+        if MessageDlg('Warning','The '+Context+' contains a star * character.'#13
+          +'Lazarus uses this as normal character and does not expand them as file mask.',
+          mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
+      end;
+      p:=0;
+      repeat
+        DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
+        CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
+        if CurPath<>'' then begin
+          if not DirPathExistsCached(CurPath) then begin
+            if MessageDlg('Warning','The '+Context+' contains a not existing directory:'#13
+              +CurPath,
+              mtWarning,[mbIgnore,mbCancel],0) <> mrIgnore then exit;
+          end;
+        end;
+      until p>length(ExpandedPath);
+    end;
+    Result:=true;
   end;
 
 var
@@ -775,7 +812,7 @@ begin
   NewCustomConfigFile:=chkCustomConfigFile.Checked;
   NewConfigFilePath:=edtConfigPath.Text;
 
-  if CheckAndWarn then begin
+  if ord(CheckAndWarn)<=ord(ccomlWarning) then begin
     if ((NewDontUseConfigFile<>Options.DontUseConfigFile)
         or (NewCustomConfigFile<>Options.CustomConfigFile)
         or (NewConfigFilePath<>Options.ConfigFilePath))
@@ -805,11 +842,23 @@ begin
 
   // paths
   Options.IncludePath := edtIncludeFiles.Text;
+  if not CheckSearchPath('include search path',Options.GetIncludePath(false)) then
+    exit(false);
   Options.Libraries := edtLibraries.Text;
+  if not CheckSearchPath('library search path',Options.GetLibraryPath(false)) then
+    exit(false);
   Options.OtherUnitFiles := edtOtherUnits.Text;
+  if not CheckSearchPath('unit search path',Options.GetUnitPath(false)) then
+    exit(false);
   Options.SrcPath := edtOtherSources.Text;
+  if not CheckSearchPath('source search path',Options.GetSrcPath(false)) then
+    exit(false);
   Options.UnitOutputDirectory := edtUnitOutputDir.Text;
   Options.DebugPath := edtDebugPath.Text;
+  if not CheckSearchPath('debugger search path',
+    Options.GetParsedPath(pcosDebugPath,icoNone,false))
+  then
+    exit(false);
 
   i:=LCLWidgetTypeComboBox.Itemindex;
   if i<=0 then
@@ -979,7 +1028,8 @@ begin
   OldCompOpts.Free;
 end;
 
-function TfrmCompilerOptions.PutCompilerOptions(CheckAndWarn: boolean): boolean;
+function TfrmCompilerOptions.PutCompilerOptions(
+  CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
 begin
   Result:=PutCompilerOptions(CheckAndWarn,nil);
 end;

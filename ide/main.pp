@@ -7582,11 +7582,11 @@ begin
                                           CompOptsDialog.CompilerOpts,Filename);
   if (ImExportResult=iecorCancel) or (Filename='') then exit;
   if ImExportResult=iecorImport then
-    Result:=DoImportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
-                                   Filename)
+    Result:=DoImportCompilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
+                                    Filename)
   else if ImExportResult=iecorExport then
-    Result:=DoExportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
-                                   Filename);
+    Result:=DoExportCompilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
+                                    Filename);
 end;
 
 function TMainIDE.DoShowProjectInspector: TModalResult;

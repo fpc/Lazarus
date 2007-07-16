@@ -63,6 +63,7 @@ type
 
 type
   TInheritedCompilerOption = (
+    icoNone,
     icoUnitPath,
     icoIncludePath,
     icoObjectPath,
@@ -83,6 +84,7 @@ type
   { TParsedCompilerOptions }
   
   TParsedCompilerOptString = (
+    pcosNone,
     pcosBaseDir,      // the base directory for the relative paths
     pcosUnitPath,     // search path for pascal units
     pcosIncludePath,  // search path for pascal include files
@@ -108,6 +110,7 @@ const
     ParsedCompilerSearchPaths+ParsedCompilerFilenames+ParsedCompilerDirectories;
     
   ParsedCompilerOptStringNames: array[TParsedCompilerOptString] of string = (
+    'pcosNone',
     'pcosBaseDir',
     'pcosUnitPath',
     'pcosIncludePath',
@@ -123,6 +126,7 @@ const
     
   InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
     TParsedCompilerOptString = (
+      pcosNone,
       pcosUnitPath,      // icoUnitPath,
       pcosIncludePath,   // icoIncludePath,
       pcosObjectPath,    // icoObjectPath,
@@ -608,6 +612,7 @@ begin
           
             CurOptions:=InheritedOptionStrings[o];
             case o of
+            icoNone: ;
             icoUnitPath,icoIncludePath,icoSrcPath,icoObjectPath,icoLibraryPath:
               begin
                 if CurOptions<>'' then
@@ -1551,17 +1556,19 @@ begin
   {$ENDIF}
 
   // inherited path
-  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,coptParsed);
-  {$IFDEF VerbosePkgUnitPath}
-  if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
-  {$ENDIF}
+  if InheritedOption<>icoNone then begin
+    InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,coptParsed);
+    {$IFDEF VerbosePkgUnitPath}
+    if Option=pcosUnitPath then
+      debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
+    {$ENDIF}
 
-  Result:=MergeSearchPaths(CurrentPath,InheritedPath);
-  {$IFDEF VerbosePkgUnitPath}
-  if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' Result="',Result,'"');
-  {$ENDIF}
+    Result:=MergeSearchPaths(CurrentPath,InheritedPath);
+    {$IFDEF VerbosePkgUnitPath}
+    if Option=pcosUnitPath then
+      debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' Result="',Result,'"');
+    {$ENDIF}
+  end;
 end;
 
 function TBaseCompilerOptions.GetParsedPIPath(Option: TParsedCompilerOptString;
@@ -2734,6 +2741,7 @@ function TAdditionalCompilerOptions.GetOption(AnOption: TInheritedCompilerOption
   ): string;
 begin
   case AnOption of
+  icoNone: Result:='';
   icoUnitPath: Result:=UnitPath;
   icoIncludePath: Result:=IncludePath;
   icoObjectPath: Result:=ObjectPath;

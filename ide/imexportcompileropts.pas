@@ -79,9 +79,9 @@ type
 function ShowImExportCompilerOptionsDialog(
   CompOpts: TBaseCompilerOptions; var Filename: string): TImExportCompOptsResult;
 
-function DoImportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
+function DoImportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
-function DoExportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
+function DoExportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
 function ReadIntFromXMLConfig(const Filename, Path: string;
@@ -104,7 +104,7 @@ begin
   ImExportCompOptsDlg.Free;
 end;
 
-function DoImportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
+function DoImportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
@@ -138,7 +138,7 @@ begin
   end;
 end;
 
-function DoExportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
+function DoExportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
@@ -149,7 +149,7 @@ begin
   if (CompOptsDialog<>nil) then begin
     CompilerOpts:=TBaseCompilerOptions.Create(nil);
     FreeCompilerOpts:=true;
-    CompOptsDialog.PutCompilerOptions(true,CompilerOpts);
+    CompOptsDialog.PutCompilerOptions(ccomlNone,CompilerOpts);
   end;
   try
     Result:=mrCancel;

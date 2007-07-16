@@ -29,6 +29,11 @@ general_t_objectpath=01007_T_Using object path: $1
 % looks for object files you link in (files used in \var{\{\$L xxx\}} statements).
 % You can set this path with the \var{-Fo} option.
 
+option_using_file=11026_T_Reading options from file $1
+% Options are also read from this file
+
+% Options are also read from this environment string
+option_handling_option=11028_D_Handling option "$1"
 
 # end.
 

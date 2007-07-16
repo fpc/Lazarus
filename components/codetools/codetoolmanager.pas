@@ -21,8 +21,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TCodeToolManager gathers all tools in one single Object and makes it easy
-    to use the code tools in a program.
+    TCodeToolManager gathers all tools in one single Object
+    to easily use the code tools in a program.
 
 }
 unit CodeToolManager;

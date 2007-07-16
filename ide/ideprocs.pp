@@ -581,16 +581,20 @@ var
   CurStartPos: Integer;
 begin
   PathLen:=length(SearchPath);
-  repeat
-    while (NextStartPos<=PathLen)
-    and (SearchPath[NextStartPos] in [';',#0..#32]) do
-      inc(NextStartPos);
-    CurStartPos:=NextStartPos;
-    while (NextStartPos<=PathLen) and (SearchPath[NextStartPos]<>';') do
-      inc(NextStartPos);
-    Result:=TrimFilename(copy(SearchPath,CurStartPos,NextStartPos-CurStartPos));
-    if Result<>'' then exit;
-  until (NextStartPos>PathLen);
+  if PathLen>0 then begin
+    repeat
+      while (NextStartPos<=PathLen)
+      and (SearchPath[NextStartPos] in [';',#0..#32]) do
+        inc(NextStartPos);
+      CurStartPos:=NextStartPos;
+      while (NextStartPos<=PathLen) and (SearchPath[NextStartPos]<>';') do
+        inc(NextStartPos);
+      Result:=TrimFilename(copy(SearchPath,CurStartPos,NextStartPos-CurStartPos));
+      if Result<>'' then exit;
+    until (NextStartPos>PathLen);
+  end else begin
+    NextStartPos:=1;
+  end;
   Result:='';
 end;
 
