@@ -80,8 +80,10 @@ type
     procedure SlotClose; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotFocus(FocusIn: Boolean); cdecl;
+    procedure SlotHover(Event: QEventH); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Event: QEventH); cdecl;
+    procedure SlotMouseEnter(Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotMouseWheel(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
@@ -1000,29 +1002,36 @@ begin
   {$endif}
 
   case QEvent_type(Event) of
-   QEventShow: SlotShow(True);
-   QEventHide: SlotShow(False);
-   QEventClose:
-     begin
-       Result := True;
-       QEvent_ignore(Event);
-       SlotClose;
+    QEventShow: SlotShow(True);
+    QEventHide: SlotShow(False);
+    QEventClose:
+      begin
+        Result := True;
+        QEvent_ignore(Event);
+        SlotClose;
      end;
-   QEventDestroy: SlotDestroy;
-   QEventFocusIn: SlotFocus(True);
-   QEventFocusOut: SlotFocus(False);
-   QEventKeyPress: SlotKey(Event);
-   QEventKeyRelease: SlotKey(Event);
-   QEventMouseButtonPress: SlotMouse(Event);
-   QEventMouseButtonRelease: SlotMouse(Event);
-   QEventMouseButtonDblClick: SlotMouse(Event);
-   QEventMouseMove: SlotMouseMove(Event);
-   QEventWheel: SlotMouseWheel(Event);
-   QEventResize: SlotResize;
-   QEventPaint: SlotPaint(Event);
-   QEventContextMenu: SlotContextMenu;
+    QEventDestroy: SlotDestroy;
+    QEventEnter: SlotMouseEnter(Event);
+    QEventFocusIn: SlotFocus(True);
+    QEventFocusOut: SlotFocus(False);
+
+    QEventHoverEnter : SlotHover(Event);
+    QEventHoverLeave : SlotHover(Event);
+    QEventHoverMove  : SlotHover(Event);
+
+    QEventKeyPress: SlotKey(Event);
+    QEventKeyRelease: SlotKey(Event);
+    QEventLeave: SlotMouseEnter(Event);
+    QEventMouseButtonPress: SlotMouse(Event);
+    QEventMouseButtonRelease: SlotMouse(Event);
+    QEventMouseButtonDblClick: SlotMouse(Event);
+    QEventMouseMove: SlotMouseMove(Event);
+    QEventWheel: SlotMouseWheel(Event);
+    QEventResize: SlotResize;
+    QEventPaint: SlotPaint(Event);
+    QEventContextMenu: SlotContextMenu;
   else
-   QEvent_ignore(Event);
+    QEvent_ignore(Event);
   end;
 
 {  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
@@ -1130,6 +1139,29 @@ begin
   {$endif}
 end;
 
+procedure TQtWidget.SlotHover(Event: QEventH); cdecl;
+var
+  Msg: TLMessage;
+  MouseMsg: TLMMouseMove absolute Msg;
+  MousePos: PQtPoint;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  MousePos := QHoverEvent_pos(QHoverEventH(Event));
+
+  case QEvent_type(Event) of
+    QEventHoverEnter : Msg.Msg := CM_MOUSEENTER;
+    QEventHoverLeave : Msg.Msg := CM_MOUSELEAVE;
+    QEventHoverMove  :
+      begin
+        MouseMsg.Msg := LM_MOUSEMOVE;
+        MouseMsg.XPos := SmallInt(MousePos^.X);
+        MouseMsg.YPos := SmallInt(MousePos^.Y);
+      end;
+  end;
+  DeliverMessage(Msg);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SlotKey
   Params:  None
@@ -1223,8 +1255,10 @@ begin
   Msg.Keys := 0;
   
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
-  if Modifiers and qtShiftModifier <> 0 then Msg.Keys := Msg.Keys or MK_SHIFT;
-  if Modifiers and qtControlModifier<>0 then Msg.Keys := Msg.Keys or MK_CONTROL;
+  if Modifiers and qtShiftModifier <> 0 then
+    Msg.Keys := Msg.Keys or MK_SHIFT;
+  if Modifiers and qtControlModifier <> 0 then
+    Msg.Keys := Msg.Keys or MK_CONTROL;
   { TODO: add support for ALT, META and NUMKEYPAD }
 
   Msg.XPos := SmallInt(MousePos^.X);
@@ -1290,6 +1324,21 @@ begin
    QEventMouseButtonDblClick: Msg.Msg := LM_CLICKED;
   end;
   DeliverMessage(Msg);
+end;
+
+procedure TQtWidget.SlotMouseEnter(Event: QEventH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if Self is TQtAbstractButton then
+  begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  case QEvent_type(Event) of
+    QEventEnter: Msg.Msg := CM_MOUSEENTER;
+    QEventLeave: Msg.Msg := CM_MOUSELEAVE;
+  end;
+  DeliverMessage(Msg);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2383,13 +2432,12 @@ begin
     QEventWindowStateChange: SlotWindowStateChange;
     QEventClose :
       begin
-      Result:=True;
-      QEvent_ignore(Event);
-      SlotClose;
+        Result:=True;
+        QEvent_ignore(Event);
+        SlotClose;
       end;
   else
-   // Inherited Callbacks
-   inherited EventFilter(Sender, Event);
+    inherited EventFilter(Sender, Event);
   end;
 end;
 
