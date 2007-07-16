@@ -3605,7 +3605,7 @@ begin
   {$endif}
 
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Str := (LCLObject as TCustomMemo).Text;
+  Str := UTF8Decode((LCLObject as TCustomMemo).Text);
   Result := QTextEdit_create(Parent);
   QTextEdit_setAlignment(QTextEditH(Result), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
   QTextEdit_setPlainText(QTextEditH(Result), @Str);

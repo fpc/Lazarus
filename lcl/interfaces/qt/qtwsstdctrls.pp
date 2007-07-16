@@ -96,7 +96,9 @@ type
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;}
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 //    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
@@ -1409,6 +1411,32 @@ var
 begin
   ComboBoxH := QComboBoxH((TQtWidget(ACustomComboBox.Handle).Widget));
   QComboBox_setEditable(ComboBoxH, not NewReadOnly);
+end;
+
+class function TQtWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  QtComboBox: TQtComboBox;
+  Str: WideString;
+begin
+  Result := False;
+  if AWinControl.Handle = 0 then exit;
+  
+  QtComboBox := TQtComboBox(AWinControl.Handle);
+  
+  QComboBox_currentText(QComboBoxH(QtComboBox.Widget), @Str);
+  
+  AText := UTF8Encode(Str);
+  Result := True;
+end;
+
+class procedure TQtWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  QtComboBox: TQtComboBox;
+  Str: WideString;
+begin
+  QtComboBox := TQtComboBox(AWinControl.Handle);
+  Str := UTF8Decode(AText);
+  QComboBox_setEditText(QComboBoxH(QtComboBox.Widget), @Str);
 end;
 
 initialization

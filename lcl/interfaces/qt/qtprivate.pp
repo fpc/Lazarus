@@ -298,7 +298,7 @@ var
   Astr: WideString;
 begin
   QTextEdit_toPlainText(FQtTextEdit,@Astr); // get the memo content
-  FStringList.Text := Astr;
+  FStringList.Text := UTF8Encode(Astr);
   FTextChanged := False;
 end;
 
@@ -412,8 +412,7 @@ begin
   FStringList := TStringList.Create;
   FQtTextEdit := TextEdit;
   QTextEdit_toPlainText(TextEdit,@Astr); // get the memo content
-  AStr := UTF8Encode(AStr);
-  FStringList.Text := Astr;
+  FStringList.Text := UTF8Encode(AStr);
   FOwner:=TheOwner;
 
   // Callback Event
@@ -546,8 +545,8 @@ begin
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index,S);
-    Astr := FStringList.Text;
-    ExternalUpdate(Astr,True);
+    Astr := S;
+    ExternalUpdate(AStr, False);
     FTextChanged := False;
   end;
 end;
@@ -648,7 +647,7 @@ begin
   try
     for i := 0 to FStringList.Count - 1 do
     begin
-      Str := UTF8Encode(FStringList.Strings[i]);
+      Str := UTF8Decode(FStringList.Strings[i]);
       QStringList_append(AQList, @Str);
     end;
     
@@ -713,7 +712,7 @@ begin
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index, S);
-    Str := UTF8Encode(S);
+    Str := UTF8Decode(S);
     data := QVariant_create(0); //Creates dummy data
     try
       QComboBox_insertItem(FQtComboBox, Index, @Str, Data);
