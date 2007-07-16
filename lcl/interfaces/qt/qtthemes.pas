@@ -108,7 +108,6 @@ var
   Element: TQtDrawElement;
   Features: QStyleOptionButtonButtonFeatures;
 begin
-{$IFDEF USE_QT_4_3}
   if (Context <> nil) then
   begin
     ARect := R;
@@ -155,9 +154,6 @@ begin
       end;
     end;
   end;
-{$ELSE}
-  inherited;
-{$ENDIF}
 end;
 
 procedure TQtThemeServices.DrawIcon(DC: HDC;
@@ -273,11 +269,11 @@ begin
           HP_HEADERITEMRIGHT:
             begin
               Result.DrawVariant := qdvControl;
-             {$IFDEF USE_QT_4_3}
+            {$ifdef USE_QT_4_3}
               Result.ControlElement := QStyleCE_HeaderEmptyArea;
-             {$ELSE}
+            {$else}
               Result.ControlElement := QStyleCE_HeaderSection;
-             {$ENDIF}
+            {$endif}
             end;
           HP_HEADERSORTARROW:
             begin

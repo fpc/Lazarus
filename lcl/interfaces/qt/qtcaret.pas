@@ -136,8 +136,14 @@ begin
 end;
 
 function GetCaretBlinkTime: Cardinal;
+var
+  FlashTime: Integer;
 begin
-  Result := QApplication_cursorFlashTime;
+  FlashTime := QApplication_cursorFlashTime;
+  if FlashTime > 0 then
+    Result := FlashTime div 2
+  else
+    Result := 600; // our default value
 end;
 
 function SetCaretBlinkTime(uMSeconds: Cardinal): LongBool;
@@ -332,7 +338,7 @@ procedure TEmulatedCaret.DoTimer(Sender: TObject);
 begin
   FVisibleState := not FVisibleState;
   if FVisible and (FWidget <> nil) and not FWidget.InPaint then
-    FWidget.Repaint;
+    FWidget.Update;
 end;
 
 procedure TEmulatedCaret.Lock;
