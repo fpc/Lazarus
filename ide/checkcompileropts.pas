@@ -26,11 +26,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, FileUtil, Process,
+  Clipbrd, StdCtrls, Buttons, FileUtil, Process,
   KeywordFuncLists, CodeToolManager,
   IDEExternToolIntf,
   IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
-  CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf;
+  CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf, Menus;
 
 type
   TCompilerOptionsTest = (
@@ -50,12 +50,15 @@ type
 
   TCheckCompilerOptsDlg = class(TForm)
     CloseButton1: TBitBtn;
+    CopyOutputMenuItem: TMenuItem;
+    OutputPopupMenu: TPopupMenu;
     TestMemo: TMemo;
     TestGroupbox: TGroupBox;
     OutputListbox: TListbox;
     OutputGroupBox: TGroupBox;
     procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
     procedure CloseButtonCLICK(Sender: TObject);
+    procedure CopyOutputMenuItemClick(Sender: TObject);
   private
     FMacroList: TTransferMacroList;
     FOptions: TCompilerOptions;
@@ -112,6 +115,11 @@ end;
 procedure TCheckCompilerOptsDlg.CloseButtonCLICK(Sender: TObject);
 begin
   ModalResult:=mrOk;
+end;
+
+procedure TCheckCompilerOptsDlg.CopyOutputMenuItemClick(Sender: TObject);
+begin
+  Clipboard.AsText:=OutputListbox.Items.Text;
 end;
 
 procedure TCheckCompilerOptsDlg.SetOptions(const AValue: TCompilerOptions);
@@ -709,6 +717,7 @@ begin
   CloseButton1.Caption:='Close';
   TestGroupbox.Caption:='Test';
   OutputGroupBox.Caption:='Results';
+  CopyOutputMenuItem.Caption:='Copy output to clipboard';
 end;
 
 destructor TCheckCompilerOptsDlg.Destroy;

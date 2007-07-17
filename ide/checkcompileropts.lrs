@@ -1,32 +1,35 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TCheckCompilerOptsDlg','FORMDATA',[
-  'TPF0'#21'TCheckCompilerOptsDlg'#20'CheckCompilerOptsDlg'#7'Caption'#6#20'Che'
-  +'ckCompilerOptsDlg'#12'ClientHeight'#3'3'#1#11'ClientWidth'#3'p'#2#13'Pixels'
-  +'PerInch'#2'N'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3'o'#2
-  +#18'VertScrollBar.Page'#3'2'#1#4'Left'#3#251#0#6'Height'#3'3'#1#3'Top'#3#182
-  +#0#5'Width'#3'p'#2#0#9'TGroupBox'#14'OutputGroupBox'#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#8'akBottom'#0#22'BorderSpacing.OnChange'#13#7'Caption'#6
-  +#6'Output'#12'ClientHeight'#2''#11'ClientWidth'#3'l'#2#11'ParentColor'#9#11
-  +'ParentCtl3D'#8#8'TabOrder'#2#0#6'Height'#3#144#0#3'Top'#2'p'#5'Width'#3'p'#2
-  +#0#8'TListBox'#13'OutputListbox'#5'Align'#7#8'alClient'#22'BorderSpacing.OnC'
-  +'hange'#13#8'TabOrder'#2#0#8'TopIndex'#2#255#6'Height'#2''#5'Width'#3'l'#2#0
-  +#0#0#9'TGroupBox'#12'TestGroupbox'#5'Align'#7#5'alTop'#22'BorderSpacing.OnCh'
-  +'ange'#13#7'Caption'#6#4'Test'#12'ClientHeight'#2'X'#11'ClientWidth'#3'l'#2
-  +#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#1#6'Height'#2'i'#5'Width'
-  +#3'p'#2#0#5'TMemo'#8'TestMemo'#5'Align'#7#8'alClient'#22'BorderSpacing.OnCha'
-  +'nge'#13#13'Lines.Strings'#1#0#8'TabOrder'#2#0#6'Height'#2'X'#5'Width'#3'l'#2
-  +#0#0#0#7'TBitBtn'#12'CloseButton1'#7'Anchors'#11#8'akBottom'#0#7'Caption'#6#5
-  +'Close'#10'Glyph.Data'#10#251#2#0#0#247#2#0#0'/* XPM */'#10'static char * bo'
-  +'taoFechar_xpm[] = {'#10'"24 24 2 1",'#10'" '#9'c None",'#10'".'#9'c #000000'
-  +'",'#10'"                        ",'#10'"                        ",'#10'"   '
-  +'                     ",'#10'"                        ",'#10'"              '
-  +'          ",'#10'"                        ",'#10'"       .      .         "'
-  +','#10'"        .    ...        ",'#10'"        ..  ....        ",'#10'"    '
-  +'     .. ...         ",'#10'"         .....          ",'#10'"          ...  '
-  +'         ",'#10'"         .....          ",'#10'"        .......         ",'
-  +#10'"       ...  ....        ",'#10'"      ...    ....       ",'#10'"     ..'
-  +'.      ..        ",'#10'"                        ",'#10'"                  '
-  +'      ",'#10'"                        ",'#10'"                        ",'#10
-  +'"                        ",'#10'"                        ",'#10'"          '
-  +'              "};'#10#7'OnClick'#7#16'CloseButtonCLICK'#8'TabOrder'#2#2#4'L'
-  +'eft'#3#13#1#6'Height'#2'!'#3'Top'#3#8#1#5'Width'#2'U'#0#0#0
+  'TPF0'#21'TCheckCompilerOptsDlg'#20'CheckCompilerOptsDlg'#4'Left'#3'/'#1#6'He'
+  +'ight'#3'3'#1#3'Top'#3#220#0#5'Width'#3'p'#2#18'HorzScrollBar.Page'#3'o'#2#18
+  +'VertScrollBar.Page'#3'2'#1#13'ActiveControl'#7#13'OutputListbox'#7'Caption'
+  +#6#20'CheckCompilerOptsDlg'#12'ClientHeight'#3'3'#1#11'ClientWidth'#3'p'#2#8
+  +'Position'#7#14'poScreenCenter'#0#9'TGroupBox'#14'OutputGroupBox'#6'Height'#3
+  +#144#0#3'Top'#2'p'#5'Width'#3'p'#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRigh'
+  +'t'#8'akBottom'#0#7'Caption'#6#6'Output'#12'ClientHeight'#2'}'#11'ClientWidt'
+  +'h'#3'l'#2#11'ParentCtl3D'#8#8'TabOrder'#2#0#0#8'TListBox'#13'OutputListbox'
+  +#6'Height'#2'}'#5'Width'#3'l'#2#5'Align'#7#8'alClient'#9'PopupMenu'#7#15'Out'
+  +'putPopupMenu'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#0#9'TGroupBox'#12'TestG'
+  +'roupbox'#6'Height'#2'i'#5'Width'#3'p'#2#5'Align'#7#5'alTop'#7'Caption'#6#4
+  +'Test'#12'ClientHeight'#2'V'#11'ClientWidth'#3'l'#2#11'ParentCtl3D'#8#8'TabO'
+  +'rder'#2#1#0#5'TMemo'#8'TestMemo'#6'Height'#2'V'#5'Width'#3'l'#2#5'Align'#7#8
+  +'alClient'#8'TabOrder'#2#0#0#0#0#7'TBitBtn'#12'CloseButton1'#4'Left'#3#13#1#6
+  +'Height'#2'!'#3'Top'#3#8#1#5'Width'#2'U'#7'Anchors'#11#8'akBottom'#0#7'Capti'
+  +'on'#6#5'Close'#10'Glyph.Data'#10#251#2#0#0#247#2#0#0'/* XPM */'#10'static c'
+  +'har * botaoFechar_xpm[] = {'#10'"24 24 2 1",'#10'" '#9'c None",'#10'".'#9'c'
+  +' #000000",'#10'"                        ",'#10'"                        ",'
+  +#10'"                        ",'#10'"                        ",'#10'"       '
+  +'                 ",'#10'"                        ",'#10'"       .      .   '
+  +'      ",'#10'"        .    ...        ",'#10'"        ..  ....        ",'#10
+  +'"         .. ...         ",'#10'"         .....          ",'#10'"          '
+  +'...           ",'#10'"         .....          ",'#10'"        .......      '
+  +'   ",'#10'"       ...  ....        ",'#10'"      ...    ....       ",'#10'"'
+  +'     ...      ..        ",'#10'"                        ",'#10'"           '
+  +'             ",'#10'"                        ",'#10'"                      '
+  +'  ",'#10'"                        ",'#10'"                        ",'#10'" '
+  +'                       "};'#10#9'NumGlyphs'#2#0#7'OnClick'#7#16'CloseButton'
+  +'CLICK'#8'TabOrder'#2#2#0#0#10'TPopupMenu'#15'OutputPopupMenu'#4'left'#2'n'#3
+  +'top'#3#4#1#0#9'TMenuItem'#18'CopyOutputMenuItem'#7'Caption'#6#18'CopyOutput'
+  +'MenuItem'#7'OnClick'#7#23'CopyOutputMenuItemClick'#0#0#0#0
 ]);

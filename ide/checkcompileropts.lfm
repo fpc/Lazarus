@@ -1,59 +1,55 @@
 object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
+  Left = 303
+  Height = 307
+  Top = 220
+  Width = 624
+  HorzScrollBar.Page = 623
+  VertScrollBar.Page = 306
+  ActiveControl = OutputListbox
   Caption = 'CheckCompilerOptsDlg'
   ClientHeight = 307
   ClientWidth = 624
-  PixelsPerInch = 78
   Position = poScreenCenter
-  HorzScrollBar.Page = 623
-  VertScrollBar.Page = 306
-  Left = 251
-  Height = 307
-  Top = 182
-  Width = 624
   object OutputGroupBox: TGroupBox
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = 'Output'
-    ClientHeight = 127
-    ClientWidth = 620
-    ParentColor = True
-    ParentCtl3D = False
-    TabOrder = 0
     Height = 144
     Top = 112
     Width = 624
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Output'
+    ClientHeight = 125
+    ClientWidth = 620
+    ParentCtl3D = False
+    TabOrder = 0
     object OutputListbox: TListBox
+      Height = 125
+      Width = 620
       Align = alClient
-      BorderSpacing.OnChange = nil
+      PopupMenu = OutputPopupMenu
       TabOrder = 0
       TopIndex = -1
-      Height = 127
-      Width = 620
     end
   end
   object TestGroupbox: TGroupBox
-    Align = alTop
-    BorderSpacing.OnChange = nil
-    Caption = 'Test'
-    ClientHeight = 88
-    ClientWidth = 620
-    ParentColor = True
-    ParentCtl3D = False
-    TabOrder = 1
     Height = 105
     Width = 624
+    Align = alTop
+    Caption = 'Test'
+    ClientHeight = 86
+    ClientWidth = 620
+    ParentCtl3D = False
+    TabOrder = 1
     object TestMemo: TMemo
-      Align = alClient
-      BorderSpacing.OnChange = nil
-      Lines.Strings = (
-        
-      )
-      TabOrder = 0
-      Height = 88
+      Height = 86
       Width = 620
+      Align = alClient
+      TabOrder = 0
     end
   end
   object CloseButton1: TBitBtn
+    Left = 269
+    Height = 33
+    Top = 264
+    Width = 85
     Anchors = [akBottom]
     Caption = 'Close'
     Glyph.Data = {
@@ -82,11 +78,16 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
       2C0A22202020202020202020202020202020202020202020202020222C0A2220
       2020202020202020202020202020202020202020202020227D3B0A
     }
+    NumGlyphs = 0
     OnClick = CloseButtonCLICK
     TabOrder = 2
-    Left = 269
-    Height = 33
-    Top = 264
-    Width = 85
+  end
+  object OutputPopupMenu: TPopupMenu
+    left = 110
+    top = 260
+    object CopyOutputMenuItem: TMenuItem
+      Caption = 'CopyOutputMenuItem'
+      OnClick = CopyOutputMenuItemClick
+    end
   end
 end
