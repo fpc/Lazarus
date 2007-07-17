@@ -420,6 +420,7 @@ type
     function IsPushed(Details: TThemedElementDetails): Boolean;
     function IsHot(Details: TThemedElementDetails): Boolean;
     function IsChecked(Details: TThemedElementDetails): Boolean;
+    function IsMixed(Details: TThemedElementDetails): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1890,7 +1891,7 @@ begin
   Result := False;
   if (Details.Element in [teButton, teToolBar, teHeader]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
-    Result := Details.State in [3, 5, 6];
+    Result := Details.State in [3, 7, 11];
 end;
 
 function TThemeServices.IsHot(Details: TThemedElementDetails): Boolean;
@@ -1898,14 +1899,21 @@ begin
   Result := False;
   if (Details.Element in [teButton, teToolBar, teHeader]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
-    Result := Details.State in [2, 6];
+    Result := Details.State in [2, 6, 10];
 end;
 
 function TThemeServices.IsChecked(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
   if (Details.Element in [teButton]) then
-    Result := Details.State > 4;
+    Result := (Details.State > 4) and (Details.State < 9);
+end;
+
+function TThemeServices.IsMixed(Details: TThemedElementDetails): Boolean;
+begin
+  Result := False;
+  if (Details.Element in [teButton]) then
+    Result := Details.State > 8;
 end;
 
 function TThemeServices.InitThemes: Boolean;

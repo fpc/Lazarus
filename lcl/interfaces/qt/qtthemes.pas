@@ -214,7 +214,10 @@ begin
     Result := Result or QStyleState_Sunken;
 
   if IsChecked(Details) then
-    Result := Result or QStyleState_On;
+    Result := Result or QStyleState_On
+  else
+  if IsMixed(Details) then
+    Result := Result or QStyleState_NoChange;
 end;
 
 function TQtThemeServices.GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
