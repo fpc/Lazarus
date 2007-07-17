@@ -270,8 +270,8 @@ begin
   Move(RawImage.Data^, NewData^, RawImage.DataSize);
 
   Bitmap := HBitmap(TQtImage.Create(NewData, RawImage.Description.Width,
-   RawImage.Description.Height, QImageFormat_ARGB32));
-
+   RawImage.Description.Height, QImageFormat_ARGB32, True));
+  
   Result := True;
 
   {$ifdef VerboseQtWinAPI}

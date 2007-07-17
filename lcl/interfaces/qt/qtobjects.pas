@@ -73,11 +73,14 @@ type
   { TQtImage }
 
   TQtImage = class(TObject)
+  private
+    ACreateData: PByte;
+    ADispose: Boolean;
   public
     Handle: QImageH;
   public
     constructor Create(vHandle: QImageH); overload;
-    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat); overload;
+    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; const DisposeAData: Boolean = False); overload;
     destructor Destroy; override;
     function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
     function AsPixmap: QPixmapH;
@@ -427,13 +430,17 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat);
+constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer;
+  format: QImageFormat; const DisposeAData: Boolean = False);
 begin
+
   if Adata = nil then
     Handle := QImage_create(width, height, format)
   else
     Handle := QImage_create(AData, width, height, format);
-
+    
+  ACreateData := AData;
+  ADispose := DisposeAData;
   {$ifdef VerboseQt}
     WriteLn('TQtImage.Create Result:', dbghex(PtrInt(Handle)));
   {$endif}
@@ -453,6 +460,7 @@ begin
   {$endif}
 
   if Handle <> nil then QImage_destroy(Handle);
+  if (ADispose) and (ACreateData <> nil) then Dispose(ACreateData);
 
   inherited Destroy;
 end;

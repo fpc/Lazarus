@@ -269,8 +269,8 @@ begin
       DefQBtn := CurQBtn;
     end;
 
-  CaptionStr := DialogCaption;
-  MessageStr := DialogMessage;
+  CaptionStr := UTF8Decode(DialogCaption);
+  MessageStr := UTF8Decode(DialogMessage);
 
   case DialogType of
     idDialogWarning : 
