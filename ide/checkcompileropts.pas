@@ -179,6 +179,13 @@ var
   Dir: String;
   Filename: String;
   i: Integer;
+  
+  procedure AddFile(const aFilename: string);
+  begin
+    if (CfgFiles.IndexOf(aFilename)<0) and FileExists(aFilename) then
+      CfgFiles.Add(aFilename);
+  end;
+  
 begin
   CfgFiles:=TStringList.Create;
   
@@ -186,17 +193,23 @@ begin
   Dir:=SysUtils.GetEnvironmentVariable('HOME');
   if Dir<>'' then begin
     Filename:=CleanAndExpandDirectory(Dir)+'.fpc.cfg';
-    if FileExists(Filename) then
-      CfgFiles.Add(Filename);
+    AddFile(Filename);
   end;
 
   // check compiler path + fpc.cfg
   Dir:=ExtractFilePath(CompilerFilename);
-  Dir:=SysUtils.GetEnvironmentVariable('HOME');
+  Dir:=ReadAllLinks(Dir,false);
   if Dir<>'' then begin
     Filename:=CleanAndExpandDirectory(Dir)+'fpc.cfg';
-    if FileExists(Filename) then
-      CfgFiles.Add(Filename);
+    AddFile(Filename);
+  end;
+
+  // check working directory + fpc.cfg
+  Dir:=ExtractFilePath(Options.BaseDirectory);
+  Dir:=ReadAllLinks(Dir,false);
+  if Dir<>'' then begin
+    Filename:=CleanAndExpandDirectory(Dir)+'fpc.cfg';
+    AddFile(Filename);
   end;
 
   // check /etc/fpc.cfg
@@ -205,8 +218,7 @@ begin
     Dir:=SysUtils.GetEnvironmentVariable('HOME');
     if Dir<>'' then begin
       Filename:='/etc/fpc.cfg';
-      if FileExists(Filename) then
-        CfgFiles.Add(Filename);
+      AddFile(Filename);
     end;
   {$ENDIF}
 
