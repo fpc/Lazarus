@@ -406,18 +406,23 @@ begin
     Result:=CheckCompilerExecutable(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // TODO: compiler check: check if compiler paths includes base units
+    // check compiler config
     Result:=CheckCompilerConfig(CompilerFilename,FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
+
+    // TODO: compiler check: check if compiler paths includes base units
 
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // TODO: compiler check: check if compiler is older than fpc units (ppu version)
-    
-    
+    // TODO: compiler check: check if compiler is older than fpc ppu
+
     // TODO: compiler check: check if there are ambiguous fpc ppu
+
+    // TODO: compiler check: check if all important units are there
+
+    // TODO: compiler check: check if unit paths does not contain sources
 
   finally
     CompilerFiles.Free;

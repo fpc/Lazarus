@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-28 13:53+0100\n"
+"PO-Revision-Date: 2007-07-16 15:33+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -1522,7 +1522,7 @@ msgstr "Keinen nonauthoritativen Host gefunden"
 
 #: ipconst:sstnotask
 msgid "None"
-msgstr ""
+msgstr "Keiner"
 
 #: ipconst:snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
@@ -1634,7 +1634,7 @@ msgstr "Packet zu groß"
 
 #: ipconst:ssslpaddingerror
 msgid "Padding error."
-msgstr ""
+msgstr "Auffüll-Fehler."
 
 #: ipconst:spngpaletteentry
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
@@ -1706,11 +1706,11 @@ msgstr "Bereite Versand des Artikels vor"
 
 #: ipconst:swsa_qos_bad_object
 msgid "Problem filterspec or providerspecific buffer"
-msgstr ""
+msgstr "Problematische Filterdefinition oder providerspezifischer Puffer"
 
 #: ipconst:swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
-msgstr ""
+msgstr "Problem mit Teilen der Übertragungsspezifikation"
 
 #: ipconst:httpprogress
 msgid "Progress Made: (%s), %s bytes received"
@@ -1838,7 +1838,7 @@ msgstr "Lese Body"
 
 #: ipconst:snslistdistribpats
 msgid "Retrieving distribution patterns"
-msgstr ""
+msgstr "Beziehe Distributionsmuster"
 
 #: ipconst:snshead
 msgid "Retrieving heading"
@@ -1858,7 +1858,7 @@ msgstr "Lese Liste der vorhandenen Newsgroups"
 
 #: ipconst:snslistdistributions
 msgid "Retrieving list of distributions"
-msgstr ""
+msgstr "Beziehe Liste der Distributionen"
 
 #: ipconst:snslistext
 msgid "Retrieving list of extended commands"
@@ -2014,7 +2014,7 @@ msgstr "Server gab kein Server-Hello zurück."
 
 #: ipconst:ssslbadrecordmac
 msgid "Server received a bad record MAC."
-msgstr ""
+msgstr "Server erhielt eine ungültige MAC-Adresse"
 
 #: ipconst:ssslunexpectedmessage
 msgid "Server received an unexpected message."
@@ -2098,7 +2098,7 @@ msgstr "Untereintrag nicht verbunden"
 
 #: ipconst:shtmldefsubmitcaption
 msgid "Submit"
-msgstr ""
+msgstr "Übertragen"
 
 #: ipconst:ssmtpresponse02
 msgid "Success, "
@@ -2242,7 +2242,7 @@ msgstr "Zeitüberschreitung bei Übertragung "
 
 #: ipconst:ssmtpresponse04
 msgid "Transient, "
-msgstr ""
+msgstr "Flüchtig,"
 
 #: ipconst:spngtransparentcolor
 msgid "Transparent Color: %x"
@@ -2274,7 +2274,7 @@ msgstr "Kann Route nicht folgen"
 
 #: ipconst:spngdefilterpass
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
-msgstr ""
+msgstr "Ausfilter-Lauf %d Größe: %dx%d von: %dx%d"
 
 #: ipconst:ssslunknowncertificate
 msgid "Unknown Certificate."

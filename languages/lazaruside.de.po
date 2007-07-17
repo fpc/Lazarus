@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-18 18:45+0100\n"
+"PO-Revision-Date: 2007-07-16 15:37+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -4441,7 +4441,7 @@ msgstr "Schlüsselwortrichtlinie"
 
 #: lazarusidestrconsts:lislcl
 msgid "LCL"
-msgstr "LVL"
+msgstr "LCL"
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -7429,7 +7429,7 @@ msgstr "Das Laden des letzten Projekts übergehen"
 
 #: lazarusidestrconsts:lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr ""
+msgstr "Dieses Package übergehen"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -9189,7 +9189,7 @@ msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts:dlgpousemanifest
 msgid "Use manifest file to enable themes (windows only)"
-msgstr ""
+msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
