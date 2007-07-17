@@ -9450,29 +9450,9 @@ begin
     RaiseGDBException('TGtkWidgetSet.ShowWindow  hWnd is not a gtkwindow');
 
   {$IFDEF Gtk2}
-  //debugln('TGtkWidgetSet.ShowWindow A ',GetWidgetDebugReport(PGtkWidget(GtkWindow)),' nCmdShow=',dbgs(nCmdShow),' SW_MINIMIZE=',dbgs(SW_MINIMIZE=nCmdShow));
-
-  case nCmdShow of
-
-  SW_SHOWNORMAL:
-    begin
-      gtk_window_deiconify(GtkWindow);
-      gtk_window_unmaximize(GtkWindow);
-    end;
-
-  SW_HIDE:
-    gdk_window_hide(PgtkWidget(GtkWindow)^.Window);
-
-  SW_MINIMIZE:
-    gtk_window_iconify(GtkWindow);
-
-  SW_SHOWMAXIMIZED:
-    gtk_window_maximize(GtkWindow);
-
-  end;
-
+    // Implemented on gtk2winapi.inc
+    // This ifdef is necessary otherwise the gtk2 interface wont compile
   {$ELSE}
-
   case nCmdShow of
 
   SW_SHOWNORMAL:
@@ -9497,9 +9477,9 @@ begin
     end;
 
   end;
-
-  Result:=true;
   {$ENDIF}
+  
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------

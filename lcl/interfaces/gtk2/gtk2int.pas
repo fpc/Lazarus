@@ -75,6 +75,7 @@ type
     function CreateThemeServices: TThemeServices; override;
   public
     function LCLPlatform: TLCLPlatform; override;
+
     function AppHandle: Thandle; override;
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}

@@ -4686,90 +4686,6 @@ begin
   end;
 end;
 
-function TGtkWidgetSet.CreateForm(ACustomForm: TCustomForm): PGtkWidget;
-var
-  Box: Pointer;
-  ABorderStyle: TFormBorderStyle;
-  PCaption: PChar;
-  WindowType: TGtkWindowType;
-begin
-  if ACustomForm.Parent=nil then begin
-    if csDesigning in ACustomForm.ComponentState then
-      ABorderStyle:=bsSizeable
-    else
-      ABorderStyle:=ACustomForm.BorderStyle;
-  end else
-    ABorderStyle:=bsNone;
-  WindowType:=FormStyleMap[ABorderStyle];
-  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop)
-  and (not (csDesigning in ACustomForm.ComponentState)) then begin
-    WindowType:=GTK_WINDOW_POPUP;
-  end;
-
-  if ACustomForm.Parent=nil then begin
-    // create a floating form
-    Result := gtk_window_new(WindowType);
-    {$IFDEF Gtk2}
-    g_signal_connect(GTK_OBJECT(Result), 'window-state-event',
-                     gtk_signal_func(@GTKWindowStateEventCB),
-                     ACustomForm);
-    {$ENDIF}
-
-    gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],
-      FormResizableMap[ABorderStyle], 0);
-    PCaption:=PChar(ACustomForm.Caption);
-    if PCaption=nil then PCaption:=#0;
-    gtk_window_set_title(pGtkWindow(Result), PCaption);
-
-    // Shows in taskbar only Main Form.
-    // MG: on some systems like the default under ubuntu, this also removes
-    // it from the window cycle list, so you can no longer switch to each window.
-    // So I disabled it until a better solution is found.
-    {$IFDEF HasGTK2_2}
-      {if Assigned(ACustomForm) then
-      if (ACustomForm=Application.MainForm) OR (Application.MainForm = Nil) then
-      begin
-        gtk_window_set_skip_taskbar_hint(pGtkWindow(Result),False); //SHOW
-      end
-      else
-      begin
-        gtk_window_set_skip_taskbar_hint(pGtkWindow(Result),True); //HIDE
-      end;}
-    {$ENDIF}
-
-    // the clipboard needs a widget
-    if ClipboardWidget=nil then
-      SetClipboardWidget(Result);
-
-    //drag icons
-    if Drag_Icon = nil then begin
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                           gtk_widget_get_colormap (Result), Drag_Mask,
-                           nil, @IMGDrag_Icon[0]);
-      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-    end;
-  end else begin
-    // create a form as child control
-    Result := gtk_hbox_new(false,0);
-  end;
-
-  Box := CreateFormContents(ACustomForm,Result);
-  gtk_container_add(PGtkContainer(Result), Box);
-
-  {$IfDef GTK2}
-  //so we can double buffer ourselves, eg, the Form Designer
-  gtk_widget_set_double_buffered(Box, False);
-  {$EndIf}
-  gtk_widget_show(Box);
-
-  // main menu
-  if (ACustomForm.Menu<>nil)
-  and (ACustomForm.Menu.HandleAllocated) then begin
-    gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle),False,False,0);
-  end;
-end;
-
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
     ): PGtkWidget;
@@ -5032,15 +4948,15 @@ begin
         'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
       InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
+
   {$IFDEF GTK1}
   csComboBox :
     p:=CreateComboBox(TComboBox(Sender));
   {$ENDIF}
 
-  {$IfDef GTK1}
   csEdit :
-    p :=  gtk_entry_new();
-  {$EndIF}
+    RaiseGDBException('obsolete call to CreateComponent');
+
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csPreviewFileDialog:
     InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
@@ -5052,7 +4968,8 @@ begin
     p:=CreateAPIWidget(TWinControl(Sender));
 
   csForm:
-    p:=CreateForm(TCustomForm(Sender));
+    RaiseGDBException('obsolete call to CreateComponent');
+
 (*
   csFrame :
     begin
@@ -5061,15 +4978,7 @@ begin
     end;
 *)
   csGroupBox:
-    begin
-      P := gtk_frame_new (StrTemp);
-      TempWidget := CreateFixedClientWidget;
-      gtk_container_add(GTK_CONTAINER(p), TempWidget);
-      gtk_widget_show(TempWidget);
-      SetFixedWidget(p, TempWidget);
-      SetMainWidget(p, TempWidget);
-      gtk_widget_show (P);
-    end;
+    RaiseGDBException('obsolete call to CreateComponent');
 
   csHintWindow :
     Begin
@@ -5099,13 +5008,6 @@ begin
   csImage :
     Begin
       p := gtk_image_new();
-    end;
-
-
-  csStaticText:
-    begin
-      P := gtk_label_new(StrTemp);
-      SetLabelAlignment(PGtkLabel(p),TCustomStaticText(Sender).Alignment);
     end;
 
   csListBox, csCheckListBox:
@@ -5148,7 +5050,6 @@ begin
     Begin
       DebugLn('[WARNING] Obsolete call to TGTKObject.CreateComponent for ', Sender.ClassName);
     end;
-
 
   csMainMenu:
     begin
@@ -5195,6 +5096,7 @@ begin
       gtk_widget_show_all(P);
     end;
   {$EndIF}
+
   csMenuBar :
     begin
        P := gtk_menu_bar_new();
@@ -5217,17 +5119,7 @@ begin
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
   csPanel:
-    begin
-      // create a fixed widget in a horizontal box
-      // a fixed on a fixed has no z-order
-      p := gtk_hbox_new(false,0);
-      TempWidget := CreateFixedClientWidget;
-      gtk_container_add(GTK_CONTAINER(P), TempWidget);
-      gtk_widget_show(TempWidget);
-      SetFixedWidget(p, TempWidget);
-      SetMainWidget(p, TempWidget);
-      gtk_widget_show(P);
-    end;
+    RaiseGDBException('obsolete call to CreateComponent');
 
   csPopupMenu :
     with (TPopupMenu(Sender)) do
@@ -5293,7 +5185,10 @@ begin
     end;
 
   csSpinEdit :
-    RaiseGDBException('this should never be called');
+    RaiseGDBException('obsolete call to CreateComponent');
+
+  csStaticText:
+    RaiseGDBException('obsolete call to CreateComponent');
 
   csStatusBar :
     begin

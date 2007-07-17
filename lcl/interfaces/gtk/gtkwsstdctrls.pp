@@ -56,6 +56,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -144,6 +146,10 @@ type
   private
   protected
   public
+    {$IFDEF GTK1}
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    {$ENDIF}
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -210,6 +216,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
                                  const NewAlignment: TAlignment); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -831,6 +839,22 @@ end;
 
 { TGtkWSCustomEdit }
 
+{$IFDEF GTK1}
+class function TGtkWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  p: pointer;          // ptr to the newly created GtkWidget
+begin
+  p := gtk_entry_new();
+
+  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
+end;
+{$ENDIF}
+
 class function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := WidgetGetSelStart(GetWidgetInfo(Pointer(ACustomEdit.Handle),
@@ -931,6 +955,24 @@ begin
 end;
 
 { TGtkWSCustomStaticText }
+
+class function TGtkWSCustomStaticText.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  p          : pointer;          // ptr to the newly created GtkWidget
+begin
+  p := nil;
+
+  P := gtk_label_new(AParams.Caption);
+  SetLabelAlignment(PGtkLabel(p), TCustomStaticText(AWinControl).Alignment);
+
+  GtkWidgetset.FinishComponentCreate(AWinControl, P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
+end;
 
 class procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
   const NewAlignment: TAlignment);
@@ -1313,6 +1355,27 @@ end;
 {$endif}
 
 { TGtkWSCustomGroupBox }
+
+class function TGtkWSCustomGroupBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p          : pointer;          // ptr to the newly created GtkWidget
+begin
+  P := gtk_frame_new (AParams.Caption);
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(p), TempWidget);
+  gtk_widget_show(TempWidget);
+  SetFixedWidget(p, TempWidget);
+  SetMainWidget(p, TempWidget);
+  gtk_widget_show (P);
+
+  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
+end;
 
 class procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);

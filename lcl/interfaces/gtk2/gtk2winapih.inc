@@ -44,6 +44,8 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: 
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 
+function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
+
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
 function UpdateWindow(Handle: HWND): Boolean; override;

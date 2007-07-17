@@ -482,6 +482,47 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+
+  nCmdShow:
+    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
+------------------------------------------------------------------------------}
+function TGtk2WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+var
+  GtkWindow: PGtkWindow;
+begin
+  Result:=false;
+  GtkWindow:=PGtkWindow(hWnd);
+  if GtkWindow=nil then
+    RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is nil');
+  if not GtkWidgetIsA(PGtkWidget(GtkWindow),GTK_TYPE_WINDOW) then
+    RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is not a gtkwindow');
+
+  //debugln('TGtk2WidgetSet.ShowWindow A ',GetWidgetDebugReport(PGtkWidget(GtkWindow)),' nCmdShow=',dbgs(nCmdShow),' SW_MINIMIZE=',dbgs(SW_MINIMIZE=nCmdShow));
+
+  case nCmdShow of
+
+  SW_SHOWNORMAL:
+    begin
+      gtk_window_deiconify(GtkWindow);
+      gtk_window_unmaximize(GtkWindow);
+    end;
+
+  SW_HIDE:
+    gdk_window_hide(PgtkWidget(GtkWindow)^.Window);
+
+  SW_MINIMIZE:
+    gtk_window_iconify(GtkWindow);
+
+  SW_SHOWMAXIMIZED:
+    gtk_window_maximize(GtkWindow);
+
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: TextOut
   Params: DC:
           X:

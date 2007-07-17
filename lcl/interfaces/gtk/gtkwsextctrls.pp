@@ -198,6 +198,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -571,11 +573,32 @@ begin
   {$ENDIF}
 end;
 
+class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p          : pointer;          // ptr to the newly created GtkWidget
+begin
+  // create a fixed widget in a horizontal box
+  // a fixed on a fixed has no z-order
+  p := gtk_hbox_new(false, 0);
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(P), TempWidget);
+  gtk_widget_show(TempWidget);
+  SetFixedWidget(p, TempWidget);
+  SetMainWidget(p, TempWidget);
+  gtk_widget_show(P);
+
+  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
+end;
 
 class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);
 var
   MainWidget: PGtkWidget;
-
 begin
   if not AWinControl.HandleAllocated then exit;
 {  if  ((csOpaque in AWinControl.ControlStyle)

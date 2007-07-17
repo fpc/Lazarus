@@ -35,7 +35,7 @@ uses
   SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Dialogs,Forms, Math,
   WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
-  gtkInt, gtkProc, gtkWSControls, gtkDef, gtkExtra, GtkWSPrivate;
+  gtkInt, gtkProc, gtkWSControls, gtkDef, gtkExtra, gtkGlobals, GtkWSPrivate;
 
 type
 
@@ -79,7 +79,7 @@ type
     class procedure  SetCallbacks(const AWinControl: TWinControl; const AWidgetInfo: PWidgetInfo); virtual;
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
@@ -199,14 +199,109 @@ begin
 end;
 
 class function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   AWidgetInfo: PWidgetInfo;
+  p          : pointer;          // ptr to the newly created GtkWidget
+  Box: Pointer;
+  ABorderStyle: TFormBorderStyle;
+  PCaption: PChar;
+  WindowType: TGtkWindowType;
+  ACustomForm: TCustomForm;
 begin
-  // TODO: Move GtkInt.CreateForm to here. Somewhat complicated though because
-  //       it depends on several other methods from gtkint that are private.
-  Result:=WidgetSet.CreateComponent(AWinControl);
-  AWidgetInfo := GetWidgetInfo(Pointer(Result));
+//  p := GtkWidgetSet.CreateForm(TCustomForm(AWinControl));
+
+  // Start of old CreateForm method
+
+  ACustomForm := TCustomForm(AWinControl);
+  
+  if ACustomForm.Parent = nil then
+  begin
+    if csDesigning in ACustomForm.ComponentState then
+      ABorderStyle:=bsSizeable
+    else
+      ABorderStyle:=ACustomForm.BorderStyle;
+  end
+  else
+    ABorderStyle:=bsNone;
+    
+  WindowType := FormStyleMap[ABorderStyle];
+  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop)
+  and (not (csDesigning in ACustomForm.ComponentState)) then begin
+    WindowType:=GTK_WINDOW_POPUP;
+  end;
+
+  if ACustomForm.Parent = nil then
+  begin
+    // create a floating form
+    P := gtk_window_new(WindowType);
+    {$IFDEF Gtk2}
+    g_signal_connect(GTK_OBJECT(P), 'window-state-event',
+                     gtk_signal_func(@GTKWindowStateEventCB),
+                     ACustomForm);
+    {$ENDIF}
+
+    gtk_window_set_policy(GTK_WINDOW(P), FormResizableMap[ABorderStyle],
+      FormResizableMap[ABorderStyle], 0);
+    PCaption:=PChar(ACustomForm.Caption);
+    if PCaption=nil then PCaption:=#0;
+    gtk_window_set_title(pGtkWindow(P), PCaption);
+
+    // Shows in taskbar only Main Form.
+    // MG: on some systems like the default under ubuntu, this also removes
+    // it from the window cycle list, so you can no longer switch to each window.
+    // So I disabled it until a better solution is found.
+    {$IFDEF HasGTK2_2}
+      {if Assigned(ACustomForm) then
+      if (ACustomForm=Application.MainForm) OR (Application.MainForm = Nil) then
+      begin
+        gtk_window_set_skip_taskbar_hint(pGtkWindow(P),False); //SHOW
+      end
+      else
+      begin
+        gtk_window_set_skip_taskbar_hint(pGtkWindow(P),True); //HIDE
+      end;}
+    {$ENDIF}
+
+    // the clipboard needs a widget
+    if ClipboardWidget=nil then
+      GtkWidgetSet.SetClipboardWidget(P);
+
+    //drag icons
+    if Drag_Icon = nil then begin
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+                           gtk_widget_get_colormap (P), Drag_Mask,
+                           nil, @IMGDrag_Icon[0]);
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+    end;
+  end
+  else
+  begin
+    // create a form as child control
+    P := gtk_hbox_new(false,0);
+  end;
+
+  Box := CreateFormContents(ACustomForm, P);
+  gtk_container_add(PGtkContainer(P), Box);
+
+  {$IfDef GTK2}
+  //so we can double buffer ourselves, eg, the Form Designer
+  gtk_widget_set_double_buffered(Box, False);
+  {$EndIf}
+  gtk_widget_show(Box);
+
+  // main menu
+  if (ACustomForm.Menu <> nil) and (ACustomForm.Menu.HandleAllocated) then
+  begin
+    gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle),False,False,0);
+  end;
+
+  // End of the old CreateForm method
+
+  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+
+  AWidgetInfo := GetWidgetInfo(P);
   if not (csDesigning in AWinControl.ComponentState) then
     AWidgetInfo^.UserData := Pointer(1);
     
@@ -215,6 +310,11 @@ begin
     @FileDragTarget, 1, GDK_ACTION_COPY);
     
   SetCallbacks(AWinControl, AWidgetInfo);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
 end;
 
 class procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
