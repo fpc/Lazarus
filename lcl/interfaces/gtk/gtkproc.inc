@@ -4036,10 +4036,12 @@ function GetWidgetInfo(const AWidget: Pointer;
 var
   MainWidget: PGtkObject;
 begin
-  if AWidget <> nil then begin
+  if AWidget <> nil then
+  begin
     MainWidget := GetMainWidget(AWidget);
     Result := gtk_object_get_data(MainWidget, 'widgetinfo');
-    if (Result = nil) and ACreate then begin
+    if (Result = nil) and ACreate then
+    begin
       Result := CreateWidgetInfo(MainWidget);
       // use the main widget as default
       Result^.CoreWidget := PGtkWidget(MainWidget);
@@ -7558,17 +7560,19 @@ begin
   // Create the VBox. We need that to place controls outside
   // the client area (like menu)
   Result := gtk_vbox_new(False, 0);
+
   If FormWidget = nil then
     FormWidget := Result;
 
   // Create the form client area (a scrolled window with a gtklayout
   // with the style of a window)
-  ScrolledWidget := gtk_scrolled_window_new(nil,nil);
+  ScrolledWidget := gtk_scrolled_window_new(nil, nil);
   gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
   gtk_widget_show(ScrolledWidget);
+
   ClientAreaWidget := gtk_layout_new(nil, nil);
-  WindowStyle:=GetStyle(lgsWindow);
-  gtk_widget_set_style(ClientAreaWidget,WindowStyle);
+  WindowStyle := GetStyle(lgsWindow);
+  gtk_widget_set_style(ClientAreaWidget, WindowStyle);
   //debugln('CreateFormContents Style=',GetStyleDebugReport(WindowStyle));
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 
@@ -7578,7 +7582,8 @@ begin
   SetFixedWidget(FormWidget, ClientAreaWidget);
   SetMainWidget(FormWidget, ClientAreaWidget);
 
-  if ScrolledWidget<>nil then begin
+  if ScrolledWidget <> nil then
+  begin
     GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.hscrollbar,
                            GTK_CAN_FOCUS);
     GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.vscrollbar,
@@ -7587,14 +7592,14 @@ begin
                                    GTK_POLICY_NEVER,GTK_POLICY_NEVER);
                                    
     Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(ScrolledWidget));
-    if Adjustment <> nil
-    then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
-                             PGTKScrolledWindow(ScrolledWidget)^.vscrollbar);
+    if Adjustment <> nil then
+      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+        PGTKScrolledWindow(ScrolledWidget)^.vscrollbar);
 
     Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(ScrolledWidget));
-    if Adjustment <> nil
-    then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
-                             PGTKScrolledWindow(ScrolledWidget)^.hscrollbar);
+    if Adjustment <> nil then
+      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+        PGTKScrolledWindow(ScrolledWidget)^.hscrollbar);
 
   end;
 end;

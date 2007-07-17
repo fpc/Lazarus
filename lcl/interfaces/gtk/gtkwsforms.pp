@@ -193,8 +193,13 @@ class procedure TGtkWSCustomForm.SetCallbacks(const AWinControl: TWinControl;
   const AWidgetInfo: PWidgetInfo);
 begin
   {$IFDEF GTK1}
-  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
-  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
+    gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
+    gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
+  {$ENDIF}
+  {$IFDEF Gtk2}
+    g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'window-state-event',
+                     gtk_signal_func(@GTKWindowStateEventCB),
+                     AWinControl);
   {$ENDIF}
 end;
 
@@ -235,16 +240,17 @@ begin
   begin
     // create a floating form
     P := gtk_window_new(WindowType);
+
+    // gtk_window_set_policy is deprecated in Gtk2
     {$IFDEF Gtk2}
-    g_signal_connect(GTK_OBJECT(P), 'window-state-event',
-                     gtk_signal_func(@GTKWindowStateEventCB),
-                     ACustomForm);
+      gtk_window_set_resizable(GTK_WINDOW(P), gboolean(FormResizableMap[ABorderStyle]));
+    {$ELSE}
+      gtk_window_set_policy(GTK_WINDOW(P), FormResizableMap[ABorderStyle],
+        FormResizableMap[ABorderStyle], 0);
     {$ENDIF}
 
-    gtk_window_set_policy(GTK_WINDOW(P), FormResizableMap[ABorderStyle],
-      FormResizableMap[ABorderStyle], 0);
-    PCaption:=PChar(ACustomForm.Caption);
-    if PCaption=nil then PCaption:=#0;
+    PCaption := PChar(ACustomForm.Caption);
+    if (PCaption = nil) then PCaption := #0;
     gtk_window_set_title(pGtkWindow(P), PCaption);
 
     // Shows in taskbar only Main Form.
@@ -264,7 +270,7 @@ begin
     {$ENDIF}
 
     // the clipboard needs a widget
-    if ClipboardWidget=nil then
+    if (ClipboardWidget = nil) then
       GtkWidgetSet.SetClipboardWidget(P);
 
     //drag icons
@@ -279,16 +285,17 @@ begin
   else
   begin
     // create a form as child control
-    P := gtk_hbox_new(false,0);
+    P := gtk_hbox_new(false, 0);
   end;
 
   Box := CreateFormContents(ACustomForm, P);
   gtk_container_add(PGtkContainer(P), Box);
 
   {$IfDef GTK2}
-  //so we can double buffer ourselves, eg, the Form Designer
-  gtk_widget_set_double_buffered(Box, False);
+    //so we can double buffer ourselves, eg, the Form Designer
+    gtk_widget_set_double_buffered(Box, False);
   {$EndIf}
+  
   gtk_widget_show(Box);
 
   // main menu
