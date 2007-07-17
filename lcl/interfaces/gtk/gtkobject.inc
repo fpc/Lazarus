@@ -4981,29 +4981,7 @@ begin
     RaiseGDBException('obsolete call to CreateComponent');
 
   csHintWindow :
-    Begin
-       p := gtk_window_new(gtk_window_popup);
-       gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
-
-       // Create the form client area
-       TempWidget := CreateFixedClientWidget;
-       gtk_container_add(p, TempWidget);
-       gtk_widget_show(TempWidget);
-       SetFixedWidget(p, TempWidget);
-       SetMainWidget(p, TempWidget);
-
-       TCustomForm(Sender).FormStyle := fsStayOnTop;
-       TCustomForm(Sender).BorderStyle := bsNone;
-       gtk_widget_realize(p);
-       AWindow:=GetControlWindow(P);
-        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-       gdk_window_set_decorations(AWindow,
-         GetWindowDecorations(TCustomForm(Sender)));
-       gdk_window_set_functions(AWindow,
-         GetWindowFunction(TCustomForm(Sender)));
-       {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-       gtk_widget_show_all(TempWidget);// Important: do not show the window yet, only make its content visible
-    end;
+    RaiseGDBException('obsolete call to CreateComponent');
 
   csImage :
     Begin

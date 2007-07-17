@@ -104,6 +104,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSScreen }
@@ -391,6 +392,45 @@ begin
   inherited SetBorderIcons(AForm, ABorderIcons);
 end;
 
+{ TGtkWSHintWindow }
+
+class function TGtkWSHintWindow.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p          : pointer;          // ptr to the newly created GtkWidget
+  ACustomForm: TCustomForm;
+  AWindow: PGdkWindow;
+begin
+  ACustomForm := TCustomForm(AWinControl);
+
+  p := gtk_window_new(gtk_window_popup);
+  gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
+
+  // Create the form client area
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(p, TempWidget);
+  gtk_widget_show(TempWidget);
+  SetFixedWidget(p, TempWidget);
+  SetMainWidget(p, TempWidget);
+
+  ACustomForm.FormStyle := fsStayOnTop;
+  ACustomForm.BorderStyle := bsNone;
+  gtk_widget_realize(p);
+  AWindow := GetControlWindow(P);
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  gdk_window_set_decorations(AWindow, GetWindowDecorations(ACustomForm));
+  gdk_window_set_functions(AWindow, GetWindowFunction(ACustomForm));
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  gtk_widget_show_all(TempWidget);// Important: do not show the window yet, only make its content visible
+
+  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -405,7 +445,7 @@ initialization
 //  RegisterWSComponent(TFrame, TGtkWSFrame);
   RegisterWSComponent(TCustomForm, TGtkWSCustomForm);
 //  RegisterWSComponent(TForm, TGtkWSForm);
-//  RegisterWSComponent(THintWindow, TGtkWSHintWindow);
+  RegisterWSComponent(THintWindow, TGtkWSHintWindow);
 //  RegisterWSComponent(TScreen, TGtkWSScreen);
 //  RegisterWSComponent(TApplicationProperties, TGtkWSApplicationProperties);
 ////////////////////////////////////////////////////
