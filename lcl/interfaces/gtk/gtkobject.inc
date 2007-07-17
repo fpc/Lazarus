@@ -5428,17 +5428,7 @@ begin
     // is selectable via the window manager
     if (Application<>nil) and (Application.MainForm<>nil)
     and (Application.MainForm.HandleAllocated) then begin
-      //DebugLn('TGtkWidgetSet.ShowHide Sender=',DbgSName(Sender),' Application.MainForm=',DbgSName(Application.MainForm));
-      {$IFDEF GTK1}
-      AWindowPrivate := PGdkWindowPrivate(PGtkWidget(Application.MainForm.Handle)^.window);
-      GDK_WINDOW_SHOW_IN_TASKBAR(AWindowPrivate,true);
-      {$ELSE}
-      {$IFDEF EnableHideFromTaskBar}
-      DebugLn(['TGtkWidgetSet.ShowHide ',DbgSName(Application.MainForm),' ',false]);
-      gtk_window_set_skip_taskbar_hint(
-                              PGtkWindow(Application.MainForm.Handle), false);
-      {$ENDIF}
-      {$ENDIF}
+      SetFormShowInTaskbar(Application.MainForm,stAlways);
     end;
   end;
 

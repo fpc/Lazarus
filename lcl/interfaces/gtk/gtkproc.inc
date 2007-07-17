@@ -751,10 +751,10 @@ begin
   end;
 
   Enable := AValue <> stNever;
-  if (AValue = stDefault)
+  {if (AValue = stDefault)
   and (Application<>nil) and (Application.MainForm <> nil)
   and (Application.MainForm <> AForm) then
-    Enable := false;
+    Enable := false;}
 
   //debugln('SetGtkWindowShowInTaskbar ',DbgSName(AForm),' ',dbgs(Enable));
   SetGtkWindowShowInTaskbar(PGtkWindow(Widget),Enable);
@@ -770,10 +770,8 @@ begin
   GDK_WINDOW_SHOW_IN_TASKBAR(PGdkWindowPrivate(PGtkWidget(AGtkWindow)^.Window),
                              Value);
   {$ELSE}
-  {$IFDEF EnableHideFromTaskBar}
-  DebugLn(['SetGtkWindowShowInTaskbar ',GetWidgetDebugReport(PGtkWidget(AGtkWindow)),' ',Value]);
+  //DebugLn(['SetGtkWindowShowInTaskbar ',GetWidgetDebugReport(PGtkWidget(AGtkWindow)),' ',Value]);
   gtk_window_set_skip_taskbar_hint(AGtkWindow, not Value);
-  {$ENDIF}
   {$ENDIF}
 end;
 

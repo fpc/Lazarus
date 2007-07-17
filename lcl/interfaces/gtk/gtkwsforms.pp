@@ -254,22 +254,6 @@ begin
     if (PCaption = nil) then PCaption := #0;
     gtk_window_set_title(pGtkWindow(P), PCaption);
 
-    // Shows in taskbar only Main Form.
-    // MG: on some systems like the default under ubuntu, this also removes
-    // it from the window cycle list, so you can no longer switch to each window.
-    // So I disabled it until a better solution is found.
-    {$IFDEF HasGTK2_2}
-      {if Assigned(ACustomForm) then
-      if (ACustomForm=Application.MainForm) OR (Application.MainForm = Nil) then
-      begin
-        gtk_window_set_skip_taskbar_hint(pGtkWindow(P),False); //SHOW
-      end
-      else
-      begin
-        gtk_window_set_skip_taskbar_hint(pGtkWindow(P),True); //HIDE
-      end;}
-    {$ENDIF}
-
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
       GtkWidgetSet.SetClipboardWidget(P);
