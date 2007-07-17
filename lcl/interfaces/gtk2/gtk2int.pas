@@ -258,8 +258,7 @@ var
   i: integer;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then exit;
-  DebugLn(['TGtkListStoreStringList.UpdateItemCache ']);
-  DumpStack;
+  //DebugLn(['TGtkListStoreStringList.UpdateItemCache ']); DumpStack;
   FCachedSize:=Count;
   FCachedCapacity:=Count;
   ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
