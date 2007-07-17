@@ -218,6 +218,12 @@ begin
   else
   if IsMixed(Details) then
     Result := Result or QStyleState_NoChange;
+    
+  // specific states
+
+  // define splitter orientation
+  if (Details.Element = teRebar) and (Details.Part = RP_GRIPPERVERT) then
+    Result := Result or QStyleState_Horizontal;
 end;
 
 function TQtThemeServices.GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
@@ -269,6 +275,16 @@ begin
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_PanelButtonTool;
+        end;
+      end;
+    teRebar:
+      begin
+        case Details.Part of
+          RP_GRIPPER, RP_GRIPPERVERT: // used in splitter
+            begin
+              Result.DrawVariant := qdvControl;
+              Result.ControlElement := QStyleCE_Splitter;
+            end;
         end;
       end;
   end;
