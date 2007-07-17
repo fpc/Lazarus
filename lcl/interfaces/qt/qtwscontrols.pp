@@ -70,6 +70,7 @@ type
     class procedure Invalidate(const AWinControl: TWinControl); override;
   public
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
@@ -81,7 +82,6 @@ type
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
 {    class procedure AddControl(const AControl: TControl); override;
-    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
@@ -439,6 +439,22 @@ begin
   Color := ColorToRGB(AFont.Color);
   QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
   TQtWidget(AWinControl.Handle).SetTextColor(@QColor);
+end;
+
+class procedure TQtWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
+  const ABorderStyle: TBorderStyle);
+const
+  TBorderStyleToQtFrameShapeMap: array[TBorderStyle] of QFrameShape =
+  (
+ {bsNone}   QFrameNoFrame,
+ {bsSingle} QFrameStyledPanel
+  );
+var
+  Widget: TQtWidget;
+begin
+  Widget := TQtWidget(AWinControl.Handle);
+  if Widget is TQtFrame then
+    TQtFrame(Widget).setFrameShape(TBorderStyleToQtFrameShapeMap[ABorderStyle]);
 end;
 
 initialization

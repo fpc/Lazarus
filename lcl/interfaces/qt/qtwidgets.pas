@@ -54,6 +54,7 @@ type
     FPaintData: TPaintData;
     FEventHook: QObject_hookH;
     function GetProps(const AnIndex: String): pointer;
+    function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
     function QtKeyToLCLKey(key: Integer): Word;
     procedure DeliverMessage(var Msg);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
@@ -1243,7 +1244,7 @@ procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
 var
   Msg: TLMMouse;
   MousePos: PQtPoint;
-  Mbutton: QTMouseButtons;
+  MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
 begin
   {$ifdef VerboseQt}
@@ -1270,22 +1271,11 @@ begin
   case QEvent_type(Event) of
    QEventMouseButtonPress:
     begin
+      Msg.Keys := QtButtonsToLCLButtons(MButton);
       case MButton of
-        QtLeftButton:
-          begin
-            Msg.Msg := LM_LBUTTONDOWN;
-            Msg.Keys := MK_LBUTTON;
-          end;
-        QtRightButton:
-          begin
-            Msg.Msg := LM_RBUTTONDOWN;
-            Msg.Keys := MK_RBUTTON;
-          end;
-        QtMidButton:
-          begin
-            Msg.Msg := LM_MBUTTONDOWN;
-            Msg.Msg := MK_MBUTTON;
-          end;
+        QtLeftButton: Msg.Msg := LM_LBUTTONDOWN;
+        QtRightButton: Msg.Msg := LM_RBUTTONDOWN;
+        QtMidButton: Msg.Msg := LM_MBUTTONDOWN;
       end;
       DeliverMessage(Msg);
       Msg.Msg := LM_PRESSED;
@@ -1293,22 +1283,11 @@ begin
     end;
    QEventMouseButtonRelease:
    begin
+      Msg.Keys := QtButtonsToLCLButtons(MButton);
       case MButton of
-        QtLeftButton:
-          begin
-            Msg.Msg := LM_LBUTTONUP;
-            Msg.Keys := MK_LBUTTON;
-          end;
-        QtRightButton:
-          begin
-            Msg.Msg := LM_RBUTTONUP;
-            Msg.Keys := MK_RBUTTON;
-          end;
-        QtMidButton:
-          begin
-            Msg.Msg := LM_MBUTTONUP;
-            Msg.Msg := MK_MBUTTON;
-          end;
+        QtLeftButton: Msg.Msg := LM_LBUTTONUP;
+        QtRightButton: Msg.Msg := LM_RBUTTONUP;
+        QtMidButton: Msg.Msg := LM_MBUTTONUP;
       end;
       DeliverMessage(Msg);
      { Clicking on buttons operates differently, because QEventMouseButtonRelease
@@ -1342,6 +1321,25 @@ begin
   end;
 end;
 
+function TQtWidget.QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
+begin
+  Result := 0;
+  if (QtLeftButton and AButtons) <> 0 then
+    Result := Result or MK_LBUTTON;
+
+  if (QtRightButton and AButtons) <> 0 then
+    Result := Result or MK_RBUTTON;
+
+  if (QtMidButton and AButtons) <> 0 then
+    Result := Result or MK_MBUTTON;
+
+  if (QtXButton1 and AButtons) <> 0 then
+    Result := Result or MK_XBUTTON1;
+    
+  if (QtXButton2 and AButtons) <> 0 then
+    Result := Result or MK_XBUTTON2;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SlotMouseMove
   Params:  None
@@ -1360,6 +1358,8 @@ begin
 
   Msg.XPos := SmallInt(MousePos^.X);
   Msg.YPos := SmallInt(MousePos^.Y);
+
+  Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)));
 
   Msg.Msg := LM_MOUSEMOVE;
 
@@ -5140,6 +5140,8 @@ begin
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractScrollArea_create(Parent);
+  // remove default shape
+  QFrame_setFrameShape(QFrameH(Result), QFrameNoFrame);
 end;
 
 {------------------------------------------------------------------------------

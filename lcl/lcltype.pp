@@ -2425,6 +2425,8 @@ const
   MK_SHIFT = 4;
   MK_CONTROL = 8;
   MK_MBUTTON = $10;
+  MK_XBUTTON1 = $20;
+  MK_XBUTTON2 = $40;
 
 
 Function CS_To_String(CompStyle: Integer): String;

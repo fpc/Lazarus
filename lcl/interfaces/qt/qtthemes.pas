@@ -249,20 +249,12 @@ begin
     teHeader:
       begin
         case Details.Part of
-          HP_HEADERITEM:
-            begin
-              Result.DrawVariant := qdvControl;
-              Result.ControlElement := QStyleCE_HeaderSection;
-            end;
+          HP_HEADERITEM,
           HP_HEADERITEMLEFT,
           HP_HEADERITEMRIGHT:
             begin
               Result.DrawVariant := qdvControl;
-            {$ifdef USE_QT_4_3}
-              Result.ControlElement := QStyleCE_HeaderEmptyArea;
-            {$else}
               Result.ControlElement := QStyleCE_HeaderSection;
-            {$endif}
             end;
           HP_HEADERSORTARROW:
             begin
