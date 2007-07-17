@@ -5433,8 +5433,11 @@ begin
       AWindowPrivate := PGdkWindowPrivate(PGtkWidget(Application.MainForm.Handle)^.window);
       GDK_WINDOW_SHOW_IN_TASKBAR(AWindowPrivate,true);
       {$ELSE}
+      {$IFDEF EnableHideFromTaskBar}
+      DebugLn(['TGtkWidgetSet.ShowHide ',DbgSName(Application.MainForm),' ',false]);
       gtk_window_set_skip_taskbar_hint(
                               PGtkWindow(Application.MainForm.Handle), false);
+      {$ENDIF}
       {$ENDIF}
     end;
   end;

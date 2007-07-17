@@ -1132,9 +1132,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetBorderIcons                                             }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetBorderIcons
+------------------------------------------------------------------------------}
 procedure TCustomForm.SetBorderIcons(NewIcons: TBorderIcons);
 begin
   if FBorderIcons = NewIcons then exit;
@@ -1143,9 +1143,9 @@ begin
     TWSCustomFormClass(WidgetSetClass).SetBorderIcons(Self, NewIcons);
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetFormBorderStyle                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetFormBorderStyle
+------------------------------------------------------------------------------}
 procedure TCustomForm.SetFormBorderStyle(NewStyle: TFormBorderStyle);
 var
   AdaptBorderIcons: boolean;
@@ -1163,7 +1163,7 @@ begin
   Include(FFormState,fsBorderStyleChanged);
   // ToDo: implement it.
   // We can not use inherited SetBorderStyle(NewStyle),
-  // because TBorderSTyle <> TFormBorderSTyle;
+  // because TBorderStyle <> TFormBorderStyle;
   if HandleAllocated then
     TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
 end;

@@ -770,7 +770,10 @@ begin
   GDK_WINDOW_SHOW_IN_TASKBAR(PGdkWindowPrivate(PGtkWidget(AGtkWindow)^.Window),
                              Value);
   {$ELSE}
+  {$IFDEF EnableHideFromTaskBar}
+  DebugLn(['SetGtkWindowShowInTaskbar ',GetWidgetDebugReport(PGtkWidget(AGtkWindow)),' ',Value]);
   gtk_window_set_skip_taskbar_hint(AGtkWindow, not Value);
+  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -9400,6 +9403,16 @@ begin
     Result :=  GDK_DECOR_BORDER or GDK_DECOR_TITLE or
                GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
   end;
+  {$IFDEF Gtk2}
+  if (not (csDesigning in AForm.ComponentState)) then begin
+    if not (biMinimize in AForm.BorderIcons) then
+      Result:=Result and not GDK_DECOR_MINIMIZE;
+    if not (biMaximize in AForm.BorderIcons) then
+      Result:=Result and not GDK_DECOR_MAXIMIZE;
+    if not (biSystemMenu in AForm.BorderIcons) then
+      Result:=Result and not GDK_DECOR_MENU;
+  end;
+  {$ENDIF}
   
   //DebugLn('GetWindowDecorations ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
@@ -9442,6 +9455,15 @@ begin
   or ((AForm.Constraints.MinHeight>0)
   and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
     Result:=Result-GDK_FUNC_RESIZE;
+
+  {$IFDEF Gtk2}
+  if (not (csDesigning in AForm.ComponentState)) then begin
+    if not (biMinimize in AForm.BorderIcons) then
+      Result:=Result and not GDK_FUNC_MINIMIZE;
+    if not (biMaximize in AForm.BorderIcons) then
+      Result:=Result and not GDK_FUNC_MAXIMIZE;
+  end;
+  {$ENDIF}
 
   //DebugLn('GetWindowFunction ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;

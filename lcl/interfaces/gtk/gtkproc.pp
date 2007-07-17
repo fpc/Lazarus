@@ -375,7 +375,7 @@ procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
   
 // forms
 procedure SetFormShowInTaskbar(AForm: TCustomForm;
-                                    const AValue: TShowInTaskbar);
+                               const AValue: TShowInTaskbar);
 procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
 procedure GrabKeyBoardToForm(AForm: TCustomForm);

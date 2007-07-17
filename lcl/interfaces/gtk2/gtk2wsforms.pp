@@ -80,6 +80,8 @@ type
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+                                   const ABorderIcons: TBorderIcons); override;
   end;
 
   { TGtk2WSForm }
@@ -133,6 +135,12 @@ begin
                  Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
     Result:=true;
   end;
+end;
+
+class procedure TGtk2WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+  const ABorderIcons: TBorderIcons);
+begin
+  gtk_window_get_modal();
 end;
 
 initialization
