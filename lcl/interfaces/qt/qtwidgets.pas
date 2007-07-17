@@ -3595,7 +3595,6 @@ end;
 function TQtTextEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  Str: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -3603,10 +3602,8 @@ begin
   {$endif}
 
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Str := UTF8Decode((LCLObject as TCustomMemo).Text);
   Result := QTextEdit_create(Parent);
   QTextEdit_setAlignment(QTextEditH(Result), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
-  QTextEdit_setPlainText(QTextEditH(Result), @Str);
 
   QTextEdit_setReadOnly(QTextEditH(Result), (LCLObject as TCustomMemo).ReadOnly);
 

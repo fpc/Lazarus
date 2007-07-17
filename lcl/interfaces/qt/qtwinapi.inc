@@ -36,8 +36,6 @@
   Returns: Boolean
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
-var
-  ADC : TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
@@ -54,8 +52,6 @@ end;
   Returns: Boolean
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
-var
-  ADC : TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI AngleChord] DC: ', dbghex(DC));
@@ -2444,9 +2440,6 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: Boolean): boolean;
-var
-  ARect: TRect;
-  ADC : TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Polygon] DC: ', dbghex(DC));
@@ -2977,7 +2970,7 @@ begin
   if GetScrollInfo(Handle, SBStyle, FScrollInfo) then
   begin
     {impossible cases}
-    if (ScrollInfo.nPage > ScrollInfo.nMax) then exit;
+    if (Integer(ScrollInfo.nPage) > ScrollInfo.nMax) then exit;
   
     if (ScrollInfo.FMask or SIF_RANGE) = ScrollInfo.FMask then
     begin

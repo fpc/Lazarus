@@ -400,7 +400,6 @@ constructor TQtMemoStrings.Create(TextEdit: QTextEditH; TheOwner: TWinControl);
 var
   Method: TMethod;
   Hook : QTextEdit_hookH;
-  Astr: WideString;
 begin
   inherited Create;
 
@@ -411,8 +410,7 @@ begin
 
   FStringList := TStringList.Create;
   FQtTextEdit := TextEdit;
-  QTextEdit_toPlainText(TextEdit,@Astr); // get the memo content
-  FStringList.Text := UTF8Encode(AStr);
+  QTextEdit_clear(FQtTextEdit);
   FOwner:=TheOwner;
 
   // Callback Event
@@ -447,19 +445,15 @@ end;
 function TQtMemoStrings.TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Mess: TLMessage;
-  // just for debugging
-  SenderView: QObjectH;
-  EventView: QEventH;
 begin
-  if not FUpdating then begin
-    SenderView := Sender;
-    EventView := Event;
+  if not FUpdating then
+  begin
     FTextChanged := True;
     FillChar(Mess, SizeOf(Mess), #0);
     Mess.Msg := CM_TEXTCHANGED;
     //(FOwner as TCustomMemo).Modified := True;
     FOwner.Dispatch(TLMessage(Mess));
-    end;
+  end;
   Result := True;
 end;
 
@@ -474,8 +468,11 @@ procedure TQtMemoStrings.Assign(Source: TPersistent);
 var
   Astr: WideString;
 begin
-  if (Source=Self) or (Source=nil) then exit;
-  if Source is TStrings then begin
+  if (Source=Self) or (Source=nil)
+  then
+    exit;
+  if Source is TStrings then
+  begin
     FStringList.Clear;
     FStringList.Text := TStrings(Source).Text;
     Astr := FStringList.Text;
