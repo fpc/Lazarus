@@ -209,7 +209,7 @@ begin
 
   if IsHot(Details) then
     Result := Result or QStyleState_MouseOver;
-    
+
   if IsPushed(Details) then
     Result := Result or QStyleState_Sunken;
 

@@ -1310,15 +1310,12 @@ procedure TQtWidget.SlotMouseEnter(Event: QEventH); cdecl;
 var
   Msg: TLMessage;
 begin
-  if Self is TQtAbstractButton then
-  begin
   FillChar(Msg, SizeOf(Msg), #0);
   case QEvent_type(Event) of
     QEventEnter: Msg.Msg := CM_MOUSEENTER;
     QEventLeave: Msg.Msg := CM_MOUSELEAVE;
   end;
   DeliverMessage(Msg);
-  end;
 end;
 
 function TQtWidget.QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
