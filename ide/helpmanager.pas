@@ -117,6 +117,7 @@ type
   end;
 
   { THelpSelectorDialog }
+  
   THelpSelectorDialog = class(TForm)
     OKButton: TBitBtn;
     CancelButton: TBitBtn;

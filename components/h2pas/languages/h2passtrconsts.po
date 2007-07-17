@@ -1,3 +1,9 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: h2passtrconsts:bla
 msgid ""
 msgstr ""
@@ -6,12 +12,12 @@ msgstr ""
 msgid "C header file converter"
 msgstr ""
 
-#: h2passtrconsts:h2ph2pas
-msgid "H2Pas"
-msgstr ""
-
 #: h2passtrconsts:h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
+msgstr ""
+
+#: h2passtrconsts:h2ph2pas
+msgid "H2Pas"
 msgstr ""
 
 #: h2passtrconsts:h2ph2pastool

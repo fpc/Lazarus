@@ -42,7 +42,7 @@ begin
   {$IFDEF WINDOWS}
   Result:=AnsiCompareText(Filename1, Filename2);
   {$ELSE}
-  Result:=AnsiCompareStr(Filename1, Filename2);
+  Result:=CompareStr(Filename1, Filename2);
   {$ENDIF}
 end;
 
@@ -673,10 +673,6 @@ begin
   repeat
     LinkFilename:=FpReadLink(Result);
     if LinkFilename='' then begin
-      if not ExceptionOnError then begin
-        Result:='';
-        exit;
-      end;
       AText:='"'+Filename+'"';
       case fpGetErrno() of
       ESysEAcces:
@@ -685,13 +681,17 @@ begin
         AText:='a directory component in '+AText
                             +' does not exist or is a dangling symlink';
       ESysENotDir:
-        AText:='a directory component in '+Atext+' is not a directory';
+        AText:='a directory component in '+AText+' is not a directory';
       ESysENoMem:
         AText:='insufficient memory';
       ESysELoop:
         AText:=AText+' has a circular symbolic link';
       else
         // not a symbolic link, just a regular file
+        exit;
+      end;
+      if (not ExceptionOnError) then begin
+        Result:='';
         exit;
       end;
       raise Exception.Create(AText);

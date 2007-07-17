@@ -772,7 +772,7 @@ function TfrmCompilerOptions.PutCompilerOptions(
       end;
       p:=0;
       repeat
-        DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
+        //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
         CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
         if CurPath<>'' then begin
           if not DirPathExistsCached(CurPath) then begin

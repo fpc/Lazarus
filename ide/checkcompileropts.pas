@@ -71,6 +71,11 @@ type
                                  out FPCCfgUnitPath: string): TModalResult;
     function FindAllPPUFiles(const FPCCfgUnitPath: string): TStrings;
     function CheckMissingFPCPPUs(PPUs: TStrings): TModalResult;
+    function CheckCompilerDate(const CompilerFilename: string;
+                               PPUs: TStrings): TModalResult;
+    function CheckForAmbiguousPPUs(PPUs: TStrings): TModalResult;
+    function CheckFPCUnitPathsContainSources(const FPCCfgUnitPath: string
+                                              ): TModalResult;
     function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
   public
     function DoTest: TModalResult;
@@ -417,7 +422,8 @@ begin
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
             continue;
           // check extension
-          if CompareFileExt(FileInfo.Name,'.ppu',true)=0 then
+          if CompareFileExt(FileInfo.Name,'.ppu',
+            {$IFDEF MSWINDOWS}false{$ELSE}true{$ENDIF})=0 then
             Result.Add(Directory+FileInfo.Name);
         until SysUtils.FindNext(FileInfo)<>0;
       end;
@@ -461,6 +467,174 @@ begin
   Result:=mrOk;
 end;
 
+function TCheckCompilerOptsDlg.CheckCompilerDate(
+  const CompilerFilename: string; PPUs: TStrings): TModalResult;
+var
+  MinPPUDate: LongInt;
+  MaxPPUDate: LongInt;
+  CompilerDate: LongInt;
+  MinPPU: String;
+  MaxPPU: String;
+  i: Integer;
+  
+  procedure CheckFileAge(const aFilename: string);
+  var
+    CurDate: LongInt;
+  begin
+    CurDate:=FileAge(aFilename);
+    //DebugLn(['CheckFileAge ',aFilename,' ',CurDate]);
+    if (CurDate=-1) then exit;
+    if (MinPPUDate=-1) or (MinPPUDate>CurDate) then begin
+      MinPPUDate:=CurDate;
+      MinPPU:=aFilename;
+    end;
+    if (MaxPPUDate=-1) or (MaxPPUDate<CurDate) then begin
+      MaxPPUDate:=CurDate;
+      MaxPPU:=aFilename;
+    end;
+  end;
+  
+  procedure CheckFileAgeOfUnit(const aUnitName: string);
+  var
+    i: Integer;
+  begin
+    for i:=0 to PPUs.Count-1 do
+      if ExtractFileNameOnly(PPUs[i])=aUnitName then begin
+        CheckFileAge(PPUs[i]);
+        exit;
+      end;
+    //DebugLn(['CheckFileAgeOfUnit Unit not found: ',aUnitName]);
+  end;
+  
+begin
+  Result:=mrCancel;
+  
+  CompilerDate:=FileAge(CompilerFilename);
+  if CompilerDate=-1 then begin
+    Result:=MessageDlg('Error','Unable to get file date of '+CompilerFilename+'.',
+      mtError,[mbIgnore,mbAbort],0);
+    exit;
+  end;
+
+  // first check some rtl and fcl units
+  // They are normally installed in one step, so there dates should be nearly
+  // the same. If not, then probably two different installations are mixed up.
+  MinPPUDate:=-1;
+  MinPPU:='';
+  MaxPPUDate:=-1;
+  MaxPPU:='';
+  CheckFileAgeOfUnit('system');
+  CheckFileAgeOfUnit('sysutils');
+  CheckFileAgeOfUnit('classes');
+  CheckFileAgeOfUnit('base64');
+  CheckFileAgeOfUnit('avl_tree');
+  CheckFileAgeOfUnit('fpimage');
+  
+  //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerDate MinPPUDate=',MinPPUDate,' MaxPPUDate=',MaxPPUDate,' compdate=',CompilerDate]);
+
+  if MinPPU<>'' then begin
+    if MaxPPUDate-MinPPUDate>3600 then begin
+      // the FPC .ppu files dates differ more than one hour
+      Result:=MessageDlg('Warning','The dates of the .ppu files of FPC'
+        +' differ more than one hour.'#13
+        +'This can mean, they are from two different installations.'#13
+        +'File1: '+MinPPU+#13
+        +'File2: '+MaxPPU,
+        mtError,[mbIgnore,mbAbort],0);
+      if Result<>mrIgnore then
+        exit;
+    end;
+  end;
+
+  // check file dates of all .ppu
+  // if a .ppu is much older than the compiler itself, then the ppu is probably
+  // a) a leftover from a installation
+  // b) not updated
+  for i:=0 to PPUs.Count-1 do
+    CheckFileAge(PPUs[i]);
+
+  if MinPPU<>'' then begin
+    if CompilerDate-MinPPUDate>300 then begin
+      // the compiler is more than 5 minutes newer than one of the ppu files
+      Result:=MessageDlg('Warning','There is a .ppu file older than the compiler itself.'#13
+        +MinPPU,
+        mtError,[mbIgnore,mbAbort],0);
+      if Result<>mrIgnore then
+        exit;
+    end;
+  end;
+
+  Result:=mrOk;
+end;
+
+function TCheckCompilerOptsDlg.CheckForAmbiguousPPUs(PPUs: TStrings
+  ): TModalResult;
+var
+  i: Integer;
+  j: Integer;
+  CurUnitName: String;
+  AnotherUnitName: String;
+begin
+  // resolve links and remove doubles
+  ResolveLinksInFileList(PPUs,true);
+  RemoveDoubles(PPUs);
+  for i:=1 to PPUs.Count-1 do begin
+    CurUnitName:=ExtractFileNameOnly(PPUs[i]);
+    j:=i-1;
+    while j>0 do begin
+      AnotherUnitName:=ExtractFileNameOnly(PPUs[j]);
+      if CompareText(AnotherUnitName,CurUnitName)=0 then begin
+        // unit exists twice
+        AddWarning('ppu exists twice: '+PPUs[i]+', '+PPUs[j]);
+        break;
+      end;
+      dec(j);
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources(
+  const FPCCfgUnitPath: string): TModalResult;
+// The FPC standard unit path does not include source directories.
+// If it contain source directories the user added these unit paths himself.
+// This is probably a hack and has two disadvantages:
+// 1. The IDE ignores these paths
+// 2. The user risks to create various .ppu for these sources which leads to
+//    strange further compilation errors.
+var
+  p: Integer;
+  Directory: String;
+  FileInfo: TSearchRec;
+  WarnedDirectories: TStringList;
+begin
+  Result:=mrCancel;
+  WarnedDirectories:=TStringList.Create;
+  p:=1;
+  while p<=length(FPCCfgUnitPath) do begin
+    Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+    if (Directory<>'') and (WarnedDirectories.IndexOf(Directory)<0) then begin
+      if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
+      then begin
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+            continue;
+          // check extension
+          if FilenameIsPascalUnit(FileInfo.Name) then begin
+            AddWarning('FPC unit path contains a source: '+Directory+FileInfo.Name);
+            WarnedDirectories.Add(Directory);
+            break;
+          end;
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;
+      SysUtils.FindClose(FileInfo);
+    end;
+  end;
+  WarnedDirectories.Free;
+  Result:=mrOk;
+end;
+
 procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
 begin
   if FMacroList=AValue then exit;
@@ -473,7 +647,7 @@ var
   CompileTool: TExternalToolOptions;
   CompilerFiles: TStrings;
   FPCCfgUnitPath: string;
-  PPUS: TStrings;
+  PPUs: TStrings;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
@@ -492,22 +666,28 @@ begin
     Result:=CheckCompilerConfig(CompilerFilename,FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    PPUS:=FindAllPPUFiles(FPCCfgUnitPath);
+    PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
 
-    // check if compiler paths includes base units
-    Result:=CheckMissingFPCPPUs(PPUS);
+    // check if compiler paths include base units
+    Result:=CheckMissingFPCPPUs(PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // TODO: compiler check: check if compiler is older than fpc ppu
+    // check if compiler is older than fpc ppu
+    Result:=CheckCompilerDate(CompilerFilename,PPUs);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
+    // check if there are ambiguous fpc ppu
+    Result:=CheckForAmbiguousPPUs(PPUs);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
+    // check if unit paths do not contain sources
+    Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
+    if not (Result in [mrOk,mrIgnore]) then exit;
 
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // TODO: compiler check: check if there are ambiguous fpc ppu
-
-    // TODO: compiler check: check if unit paths does not contain sources
-    
     if OutputListbox.Items.Count=0 then
       AddMsg('All tests succeeded.','',-1);
 
@@ -525,6 +705,10 @@ constructor TCheckCompilerOptsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Application.AddOnIdleHandler(@ApplicationOnIdle,true);
+  Caption:='Checking compiler options';
+  CloseButton1.Caption:='Close';
+  TestGroupbox.Caption:='Test';
+  OutputGroupBox.Caption:='Results';
 end;
 
 destructor TCheckCompilerOptsDlg.Destroy;

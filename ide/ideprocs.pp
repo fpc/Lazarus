@@ -384,6 +384,7 @@ begin
   for i:=List.Count-1 downto 0 do begin
     OldFilename:=List[i];
     NewFilename:=ReadAllLinks(OldFilename,false);
+    //DebugLn(['ResolveLinksInFileList OldFilename=',OldFilename,' NewFilename=',NewFilename]);
     if NewFilename='' then
       List.Delete(i)
     else if NewFilename<>OldFilename then
@@ -1330,6 +1331,7 @@ var
   i: Integer;
   List2: TStringList;
 begin
+  if List=nil then exit;
   List2:=TStringList.Create;
   List2.AddStrings(List);
   List2.Sort;
