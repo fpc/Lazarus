@@ -739,7 +739,7 @@ end;
   * The result will the height of the text.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
-  var Rect: TRect; Flags: Cardinal): Integer;
+  var ARect: TRect; Flags: Cardinal): Integer;
 var
   WideStr: WideString;
   QtFontMetrics: TQtFontMetrics;
@@ -792,7 +792,7 @@ begin
     if Flags and DT_NOPREFIX = 0 then
       F := F or $800;{QTTextShowMnemonic;}
     
-    QFontMetrics_BoundingRect(QtFontMetrics.Widget, @R, @Rect, F, @WideStr);
+    QFontMetrics_BoundingRect(QtFontMetrics.Widget, @R, @ARect, F, @WideStr);
     
     
     //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
@@ -807,11 +807,12 @@ begin
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI DrawText] Rect=', dbgs(Rect));
     {$endif}
-    Rect := R;
+    ARect.Right := ARect.Left + R.Right - R.Left;
+    ARect.Bottom := ARect.Top + R.Bottom - R.Top;
     Exit;
   end;
 
-  with Rect do
+  with ARect do
     QtDC.DrawText(left, Top, Right-Left, Bottom-Top, F, @WideStr);
   
 end;

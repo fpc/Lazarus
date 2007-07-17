@@ -49,7 +49,7 @@ procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyCursor(Handle: hCursor): Boolean; override;
-function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
+function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;

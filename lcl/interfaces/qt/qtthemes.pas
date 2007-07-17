@@ -52,7 +52,6 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -161,19 +160,6 @@ procedure TQtThemeServices.DrawIcon(DC: HDC;
   Index: Integer);
 begin
 
-end;
-
-procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
-  Details: TThemedElementDetails; const S: WideString; R: TRect; Flags,
-  Flags2: Cardinal);
-begin
-  with TCanvas(ACanvas) do
-  begin
-    WidgetSet.SetBkMode(Handle, TRANSPARENT);
-    WidgetSet.DrawText(Handle, PChar(String(S)), Length(S), R, Flags);
-    if Brush.Style = bsSolid then;
-      WidgetSet.SetBkMode(Handle, OPAQUE);
-  end;
 end;
 
 function TQtThemeServices.HasTransparentParts(Details: TThemedElementDetails): Boolean;
