@@ -271,7 +271,7 @@ end;
 
 procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
 // this is a try to hide windows from the taskbar.
-// Unpleasantly, some windowmangers like metacity also hides from the Alt-Tab
+// Unpleasantly, some windowmanagers like metacity also hides from the Alt-Tab
 // cycle.
 // This feature is therefore disabled on default.
 {$IFDEF EnableHideFromTaskBar}
