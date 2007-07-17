@@ -22,7 +22,7 @@
 }
 unit QtWSSpin;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -166,6 +166,7 @@ end;
 class function  TQtWSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   {$note implement}
+  Result := True;
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl; const AText: string);

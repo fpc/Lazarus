@@ -1539,9 +1539,6 @@ end;
 class function TQtWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtToggleBox: TQtPushButton;
-  ATextWidth: Integer;
-  FM: QFontMetricsH;
-  Str: WideString;
 begin
 
   QtToggleBox := TQtPushButton.Create(AWinControl, AParams);

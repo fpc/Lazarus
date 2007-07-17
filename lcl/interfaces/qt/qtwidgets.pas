@@ -1082,8 +1082,6 @@ end;
  message, you won�t be able to show a form twice.
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotClose; cdecl;
-var
-  Msg: TLMessage;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotClose');
@@ -3840,7 +3838,6 @@ end;
 function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  Str: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -4542,7 +4539,7 @@ begin
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
   NMLV.iSubItem := Column;
-  NMLV.uNewState := NM_KEYDOWN;
+  NMLV.uNewState := UINT(NM_KEYDOWN);
   NMLV.uChanged := LVIS_SELECTED;
 
   Msg.NMHdr := @NMLV.hdr;
@@ -4574,7 +4571,7 @@ begin
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
   NMLV.iSubItem := Column;
-  NMLV.uNewState := NM_CLICK;
+  NMLV.uNewState := UINT(NM_CLICK);
   NMLV.uChanged := LVIS_SELECTED;
   QTreeWidget_visualItemRect(QTreeWidgetH(Widget), @R, Item);
   
@@ -4610,7 +4607,7 @@ begin
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
   NMLV.iSubItem := Column;
-  NMLV.uNewState := NM_DBLCLK;
+  NMLV.uNewState := UINT(NM_DBLCLK);
   NMLV.uChanged := LVIS_SELECTED;
   // LVIF_STATE;
   
@@ -5317,6 +5314,7 @@ begin
   if FViewPortWidget <> niL then
     exit;
 
+  FillChar(AParams, SizeOf(AParams), #0);
   FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
   FViewPortWidget.AttachEvents;
   

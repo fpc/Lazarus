@@ -433,7 +433,7 @@ begin
   QtGroupBox.BoxLayout := QGridLayout_create(QtGroupBox.Widget);
   
   QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.BoxLayout);
-  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.BoxLayout));
+  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QtGroupBox.Widget);
   
   {QGridLayout don't know anything about TCustomRadioGroup Col count so initialize cols }
   for i := 0 to TCustomRadioGroup(AWinControl).Columns - 1 do
@@ -534,7 +534,7 @@ begin
 
   QtGroupBox.BoxLayout := QGridLayout_create(QtGroupBox.Widget);
   QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.BoxLayout);
-  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QObjectH(QtGroupBox.BoxLayout));
+  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QtGroupBox.Widget);
   
   {QGridLayout don't know anything about TCustomCheckGroup Col count so initialize cols }
   for i := 0 to TCustomCheckGroup(AWinControl).Columns - 1  do

@@ -269,9 +269,22 @@ begin
   begin
     if ofAllowMultiSelect in TOpenDialog(ACommonDialog).Options then
     begin
-      QFileDialog_getOpenFileNames(ReturnList, Parent, @Caption, @Dir, @Filter, @selectedFilter, options)
+      ReturnList := QStringList_create;
+      try
+      
+        QFileDialog_getOpenFileNames(ReturnList, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
 
-      // TODO: Convert ReturnList into a WideString and then into a utf-8 string and return that
+        for i := 0 to QStringList_size(ReturnList) - 1 do
+        begin
+          QStringList_at(ReturnList, @ReturnText, i);
+          FileDialog.Files.Add(UTF8Encode(ReturnText));
+        end;
+        
+        ReturnText := FileDialog.Files.Text;
+        
+      finally
+        QStringList_destroy(ReturnList);
+      end;
     end
     else
     begin
