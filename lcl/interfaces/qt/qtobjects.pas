@@ -74,13 +74,13 @@ type
 
   TQtImage = class(TObject)
   private
-    ACreateData: PByte;
-    ADispose: Boolean;
+    FData: PByte;
+    FDataOwner: Boolean;
   public
     Handle: QImageH;
   public
     constructor Create(vHandle: QImageH); overload;
-    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; const DisposeAData: Boolean = False); overload;
+    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; const ADataOwner: Boolean = False); overload;
     destructor Destroy; override;
     function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
     function AsPixmap: QPixmapH;
@@ -423,6 +423,8 @@ end;
 constructor TQtImage.Create(vHandle: QImageH);
 begin
   Handle := vHandle;
+  FData := nil;
+  FDataOwner := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -431,16 +433,17 @@ end;
   Contructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer;
-  format: QImageFormat; const DisposeAData: Boolean = False);
+  format: QImageFormat; const ADataOwner: Boolean = False);
 begin
 
-  if Adata = nil then
+  FData := AData;
+  FDataOwner := ADataOwner;
+
+  if FData = nil then
     Handle := QImage_create(width, height, format)
   else
-    Handle := QImage_create(AData, width, height, format);
+    Handle := QImage_create(FData, width, height, format);
     
-  ACreateData := AData;
-  ADispose := DisposeAData;
   {$ifdef VerboseQt}
     WriteLn('TQtImage.Create Result:', dbghex(PtrInt(Handle)));
   {$endif}
@@ -459,8 +462,10 @@ begin
     WriteLn('TQtImage.Destroy Handle:', dbgs(Handle));
   {$endif}
 
-  if Handle <> nil then QImage_destroy(Handle);
-  if (ADispose) and (ACreateData <> nil) then Dispose(ACreateData);
+  if Handle <> nil then 
+    QImage_destroy(Handle);
+  if (FDataOwner) and (FData <> nil) then 
+    FreeMem(FData);
 
   inherited Destroy;
 end;
