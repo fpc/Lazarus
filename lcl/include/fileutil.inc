@@ -673,6 +673,10 @@ begin
   repeat
     LinkFilename:=FpReadLink(Result);
     if LinkFilename='' then begin
+      if not ExceptionOnError then begin
+        Result:='';
+        exit;
+      end;
       AText:='"'+Filename+'"';
       case fpGetErrno() of
       ESysEAcces:
@@ -690,11 +694,7 @@ begin
         // not a symbolic link, just a regular file
         exit;
       end;
-      if not ExceptionOnError then begin
-        Result:='';
-        exit;
-      end else
-        raise Exception.Create(AText);
+      raise Exception.Create(AText);
     end else begin
       if not FilenameIsAbsolute(LinkFilename) then
         Result:=ExpandFilename(ExtractFilePath(Result)+LinkFilename)

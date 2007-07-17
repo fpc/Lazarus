@@ -39,6 +39,12 @@ type
     cotCompileBogusFiles,
     cotCheckCompilerConfig // e.g. fpc.cfg
     );
+    
+  TCompilerCheckMsgLvl = (
+    ccmlHint,
+    ccmlWarning,
+    ccmlError
+    );
 
   { TCheckCompilerOptsDlg }
 
@@ -63,6 +69,8 @@ type
     function CheckAmbiguousFPCCfg(const CompilerFilename: string): TModalResult;
     function CheckCompilerConfig(const CompilerFilename: string;
                                  out FPCCfgUnitPath: string): TModalResult;
+    function FindAllPPUFiles(const FPCCfgUnitPath: string): TStrings;
+    function CheckMissingFPCPPUs(PPUs: TStrings): TModalResult;
     function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
   public
     function DoTest: TModalResult;
@@ -75,6 +83,7 @@ type
     procedure AddProgress(Line: TIDEScanMessageLine);
     procedure AddHint(const Msg: string);
     procedure AddWarning(const Msg: string);
+    procedure AddMsg(const Level: TCompilerCheckMsgLvl; const Msg: string);
   public
     property Options: TCompilerOptions read FOptions write SetOptions;
     property Test: TCompilerOptionsTest read FTest;
@@ -136,6 +145,8 @@ begin
   // check if there are several compilers in path
   CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
        SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
+  ResolveLinksInFileList(CompilerFiles,false);
+  RemoveDoubles(CompilerFiles);
   if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
     Result:=MessageDlg('Ambiguous Compiler',
       'There are several FreePascal Compilers in your path.'#13#13
@@ -337,8 +348,13 @@ begin
     CurCompilerOptions:=AddCmdLineParameter(CurCompilerOptions,'-P'+TargetCPU);
 
   CmdLine:=CompilerFilename+' -va ';
+  
+  // set english message file to be able to parse the fpc output
   if FileExistsCached(CodeToolBoss.DefinePool.EnglishErrorMsgFilename) then
-    CmdLine:=CmdLine+'-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename+' ';
+    CmdLine:=CmdLine+'-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename+' '
+  else
+    AddWarning('Missing english message file for fpc: components/codetools/fpc.errore.msg');
+
   if CurCompilerOptions<>'' then
     CmdLine:=CmdLine+CurCompilerOptions+' ';
   CmdLine:=CmdLine+ATestPascalFile;
@@ -381,6 +397,70 @@ begin
   Result:=mrOk;
 end;
 
+function TCheckCompilerOptsDlg.FindAllPPUFiles(const FPCCfgUnitPath: string
+  ): TStrings;
+var
+  Directory: String;
+  p: Integer;
+  FileInfo: TSearchRec;
+begin
+  Result:=TStringList.Create;
+
+  p:=1;
+  while p<=length(FPCCfgUnitPath) do begin
+    Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+    if Directory<>'' then begin
+      if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
+      then begin
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+            continue;
+          // check extension
+          if CompareFileExt(FileInfo.Name,'.ppu',true)=0 then
+            Result.Add(Directory+FileInfo.Name);
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;
+      SysUtils.FindClose(FileInfo);
+    end;
+  end;
+end;
+
+function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
+  ): TModalResult;
+  
+  function Check(const Unitname: string; Severity: TCompilerCheckMsgLvl
+    ): Boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to PPUs.Count-1 do begin
+      if ExtractFileNameOnly(PPUs[i])=UnitName then exit(true);
+    end;
+    AddMsg(Severity,'compiled FPC unit not found: '+Unitname+'.ppu');
+    Result:=ord(Severity)>=ord(ccmlError);
+    if not Result then begin
+      if MessageDlg('Missing unit',
+        'The compiled FPC unit '+Unitname+'.ppu was not found.'#13
+        +'This typically means your fpc.cfg has a bug. Or your FPC installation is broken.',
+        mtError,[mbIgnore,mbAbort],0)=mrIgnore then
+          Result:=true;
+    end;
+  end;
+  
+begin
+  Result:=mrCancel;
+  // rtl
+  if not Check('system',ccmlError) then exit;
+  if not Check('sysutils',ccmlError) then exit;
+  if not Check('classes',ccmlError) then exit;
+  // fcl
+  if not Check('avl_tree',ccmlError) then exit;
+  if not Check('zstream',ccmlError) then exit;
+
+  Result:=mrOk;
+end;
+
 procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
 begin
   if FMacroList=AValue then exit;
@@ -393,12 +473,14 @@ var
   CompileTool: TExternalToolOptions;
   CompilerFiles: TStrings;
   FPCCfgUnitPath: string;
+  PPUS: TStrings;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
   CompileTool:=nil;
   TestMemo.Lines.Clear;
   CompilerFiles:=nil;
+  PPUS:=nil;
   try
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
 
@@ -410,25 +492,31 @@ begin
     Result:=CheckCompilerConfig(CompilerFilename,FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // TODO: compiler check: check if compiler paths includes base units
+    PPUS:=FindAllPPUFiles(FPCCfgUnitPath);
+
+    // check if compiler paths includes base units
+    Result:=CheckMissingFPCPPUs(PPUS);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
+    // TODO: compiler check: check if compiler is older than fpc ppu
 
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // TODO: compiler check: check if compiler is older than fpc ppu
-
     // TODO: compiler check: check if there are ambiguous fpc ppu
 
-    // TODO: compiler check: check if all important units are there
-
     // TODO: compiler check: check if unit paths does not contain sources
+    
+    if OutputListbox.Items.Count=0 then
+      AddMsg('All tests succeeded.','',-1);
 
   finally
     CompilerFiles.Free;
     CompileTool.Free;
     FTest:=cotNone;
     TestGroupbox.Caption:='Test';
+    PPUS.Free;
   end;
   Result:=mrOk;
 end;
@@ -483,12 +571,22 @@ end;
 
 procedure TCheckCompilerOptsDlg.AddHint(const Msg: string);
 begin
-  Add('HINT: '+Msg,'',false,-1);
+  AddMsg(ccmlHint,Msg);
 end;
 
 procedure TCheckCompilerOptsDlg.AddWarning(const Msg: string);
 begin
-  Add('WARNING: '+Msg,'',false,-1);
+  AddMsg(ccmlWarning,Msg);
+end;
+
+procedure TCheckCompilerOptsDlg.AddMsg(const Level: TCompilerCheckMsgLvl;
+  const Msg: string);
+begin
+  case Level of
+  ccmlWarning: Add('WARNING: '+Msg,'',false,-1);
+  ccmlHint:    Add('HINT: '+Msg,'',false,-1);
+  else         Add('ERROR: '+Msg,'',false,-1);
+  end;
 end;
 
 initialization

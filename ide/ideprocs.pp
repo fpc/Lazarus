@@ -115,6 +115,7 @@ function FindFirstFileWithExt(const Directory, Ext: string): string;
 function FindShortFileNameOnDisk(const Filename: string): string;
 function CreateNonExistingFilename(const BaseFilename: string): string;
 function FindFPCTool(const Executable, CompilerFilename: string): string;
+procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
 
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
@@ -222,6 +223,7 @@ function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckList(List: TFPList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
+procedure RemoveDoubles(List: TStrings);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 procedure ReverseList(List: TList);
 procedure ReverseList(List: TFPList);
@@ -370,6 +372,23 @@ begin
   DebugLn('FindFPCTool Try="',Result);
   if FileExists(Result) then exit;
   Result:='';
+end;
+
+procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
+var
+  i: Integer;
+  OldFilename: string;
+  NewFilename: String;
+begin
+  if List=nil then exit;
+  for i:=List.Count-1 downto 0 do begin
+    OldFilename:=List[i];
+    NewFilename:=ReadAllLinks(OldFilename,false);
+    if NewFilename='' then
+      List.Delete(i)
+    else if NewFilename<>OldFilename then
+      List[i]:=NewFilename;
+  end;
 end;
 
 function FilenameIsFormText(const Filename: string): boolean;
@@ -1303,6 +1322,21 @@ begin
         Inc(S2);
       until false;
     end;
+  end;
+end;
+
+procedure RemoveDoubles(List: TStrings);
+var
+  i: Integer;
+  List2: TStringList;
+begin
+  List2:=TStringList.Create;
+  List2.AddStrings(List);
+  List2.Sort;
+  List.Assign(List2);
+  List2.Free;
+  for i:=List.Count-2 downto 0 do begin
+    if List[i]=List[i+1] then List.Delete(i+1);
   end;
 end;
 
