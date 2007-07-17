@@ -174,6 +174,8 @@ type
   protected
   public
     {$ifdef GTK1}
+    class function  CreateHandle(const AWinControl: TWinControl;
+                        const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo;
                                const AText: string); override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
@@ -1207,6 +1209,45 @@ end;
 { TGtkWSCustomMemo }
 
 {$ifdef GTK1}
+
+class function TGtkWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  P: Pointer;
+  TempWidget: PGtkWidget;
+begin
+  P := gtk_scrolled_window_new(nil, nil);
+  TempWidget := gtk_text_new(nil, nil);
+  gtk_container_add(p, TempWidget);
+
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                 GTK_POLICY_AUTOMATIC,
+                                 GTK_POLICY_AUTOMATIC);
+  gtk_text_set_adjustments(PGtkText(TempWidget),
+    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)),
+    gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
+
+  SetMainWidget(p, TempWidget);
+  GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
+
+  gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(AWinControl).ReadOnly);
+  if TCustomMemo(AWinControl).WordWrap then
+    gtk_text_set_line_wrap(PGtkText(TempWidget), GdkTrue)
+  else
+    gtk_text_set_line_wrap(PGtkText(TempWidget), GdkFalse);
+  gtk_text_set_word_wrap(PGtkText(TempWidget), GdkTrue);
+
+  gtk_widget_show_all(P);
+  
+  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(P);
+  DebugLn(['TGtkWSCustomMemo.CreateHandle ']);
+end;
 
 class procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
   const AText: string);

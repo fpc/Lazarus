@@ -5072,6 +5072,7 @@ begin
       gtk_text_set_word_wrap(PGtkText(TempWidget), GdkTrue);
 
       gtk_widget_show_all(P);
+      DebugLn(['TGtkWidgetSet.CreateComponent ',DbgSName(Sender),' ',GetWidgetDebugReport(p)]);
     end;
   {$EndIF}
 
