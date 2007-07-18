@@ -1154,6 +1154,7 @@ begin
         MouseMsg.YPos := SmallInt(MousePos^.Y);
       end;
   end;
+  NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
 end;
 
@@ -1270,6 +1271,7 @@ begin
         QtRightButton: Msg.Msg := LM_RBUTTONDOWN;
         QtMidButton: Msg.Msg := LM_MBUTTONDOWN;
       end;
+      NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
       Msg.Msg := LM_PRESSED;
       DeliverMessage(Msg);
@@ -1282,6 +1284,7 @@ begin
         QtRightButton: Msg.Msg := LM_RBUTTONUP;
         QtMidButton: Msg.Msg := LM_MBUTTONUP;
       end;
+      NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
      { Clicking on buttons operates differently, because QEventMouseButtonRelease
        is sent if you click a control, drag the mouse out of it and release, but
@@ -1353,6 +1356,7 @@ begin
 
   Msg.Msg := LM_MOUSEMOVE;
 
+  NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
 end;
 
