@@ -121,6 +121,12 @@ type
 
 
 implementation
+const
+  TBorderStyleToQtFrameShapeMap: array[TBorderStyle] of QFrameShape =
+  (
+ {bsNone}   QFrameNoFrame,
+ {bsSingle} QFrameStyledPanel
+  );
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomControl.CreateHandle
@@ -137,10 +143,11 @@ begin
   {$endif}
 
   QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
+  QtAbstractScrollArea.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
   QtAbstractScrollArea.AttachEvents;
   QtAbstractScrollArea.viewportNeeded;
   Result := THandle(QtAbstractScrollArea);
-  
+
   {$ifdef VerboseQt}
     WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
   {$endif}
@@ -443,12 +450,6 @@ end;
 
 class procedure TQtWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
   const ABorderStyle: TBorderStyle);
-const
-  TBorderStyleToQtFrameShapeMap: array[TBorderStyle] of QFrameShape =
-  (
- {bsNone}   QFrameNoFrame,
- {bsSingle} QFrameStyledPanel
-  );
 var
   Widget: TQtWidget;
 begin

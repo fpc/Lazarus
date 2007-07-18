@@ -38,6 +38,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtWidgetSet.Destroy;
 begin
+  DestroyGlobalCaret;
 
   QtWidgetSet := nil;
   

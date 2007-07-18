@@ -46,6 +46,7 @@ type
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
     
     function GetControlState(Details: TThemedElementDetails): QStyleState;
+    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
     function GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
     property Style: QStyleH read GetStyle;
   public
@@ -224,6 +225,17 @@ begin
   // define splitter orientation
   if (Details.Element = teRebar) and (Details.Part = RP_GRIPPERVERT) then
     Result := Result or QStyleState_Horizontal;
+end;
+
+function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+begin
+  case Details.Element of
+    teRebar :
+      if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
+        Result := -1;
+    else
+      Result := inherited;
+  end;
 end;
 
 function TQtThemeServices.GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;

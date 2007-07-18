@@ -5137,8 +5137,6 @@ begin
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractScrollArea_create(Parent);
-  // remove default shape
-  QFrame_setFrameShape(QFrameH(Result), QFrameNoFrame);
 end;
 
 {------------------------------------------------------------------------------

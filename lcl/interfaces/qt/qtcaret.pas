@@ -87,6 +87,7 @@ function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var Pt: TPoint): Boolean;
 function DestroyCaret: Boolean;
 procedure DrawCaret;
+procedure DestroyGlobalCaret;
 
 implementation
 
@@ -117,6 +118,12 @@ begin
       GlobalCaret.Unlock;
     end;
   end;
+end;
+
+procedure DestroyGlobalCaret;
+begin
+  GlobalCaret.Free;
+  GlobalCaret := nil;
 end;
 
 function CreateCaret(Widget: TQtWidget; Pixmap: QPixmapH; Width, Height: Integer): Boolean;
