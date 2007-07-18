@@ -662,6 +662,7 @@ type
     procedure setIcon(AIcon: QIconH);
     procedure setImage(AImage: TQtImage);
     procedure setSeparator(AValue: Boolean);
+    procedure setText(AText: PWideString);
   end;
 
   { TQtMenuBar }
@@ -4868,6 +4869,11 @@ function TQtMenu.addSeparator: TQtMenu;
 begin
   Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), nil));
   Result.setSeparator(True);
+end;
+
+procedure TQtMenu.setText(AText: PWideString);
+begin
+  QAction_setText(ActionHandle, AText);
 end;
 
 procedure TQtMenu.setChecked(p1: Boolean);

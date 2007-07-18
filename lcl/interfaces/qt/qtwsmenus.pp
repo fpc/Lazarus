@@ -265,8 +265,14 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+var
+  Text: WideString;
+  Widget: TQtWidget;
 begin
-
+  Text := UTF8Decode(AMenuItem.Caption);
+  Widget := TQtWidget(AMenuItem.Handle);
+  if Widget is TQtMenu then
+    TQtMenu(Widget).setText(@Text);
 end;
 
 {------------------------------------------------------------------------------
