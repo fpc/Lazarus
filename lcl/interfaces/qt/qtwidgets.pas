@@ -2647,6 +2647,8 @@ begin
 
   if QEvent_type(Event) = QEventTimer then
   begin
+    Result := True;
+    
     QEvent_accept(Event);
 
     if Assigned(FCallbackFunc) then

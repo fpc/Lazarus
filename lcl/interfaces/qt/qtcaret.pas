@@ -122,10 +122,7 @@ end;
 
 procedure DestroyGlobalCaret;
 begin
-  if GlobalCaret <> nil
-  then
-    GlobalCaret.Free;
-  GlobalCaret := nil;
+  FreeAndNil(GlobalCaret);
 end;
 
 function CreateCaret(Widget: TQtWidget; Pixmap: QPixmapH; Width, Height: Integer): Boolean;

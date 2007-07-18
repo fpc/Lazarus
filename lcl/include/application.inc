@@ -17,6 +17,7 @@
  *****************************************************************************
 }
 
+{ $define DebugHintWindow}
 
 const
   DefHintColor = clInfoBk;  { default hint window color }
@@ -496,8 +497,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.SetShowHint(const AValue: Boolean);
 begin
-  if FShowHint=AValue then exit;
-  FShowHint:=AValue;
+  if FShowHint = AValue then
+    exit;
+  FShowHint := AValue;
   if FShowHint then
   begin
     //
@@ -521,9 +523,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.StopHintTimer;
 begin
-  if FHintTimer<>nil then
-    FHintTimer.Enabled:=false;
-  FHintTimerType:=ahtNone;
+  if FHintTimer <> nil then
+    FHintTimer.Enabled := false;
+  FHintTimerType := ahtNone;
 end;
 
 {------------------------------------------------------------------------------
@@ -589,24 +591,26 @@ procedure TApplication.DoOnMouseMove;
 var
   Info: THintInfoAtMouse;
 begin
-  Info:=GetHintInfoAtMouse;
-  //DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
-  if (FHintControl <> Info.Control) or (not (FHintTimerType in [ahtShowHint]))
-  then begin
+  Info := GetHintInfoAtMouse;
+
+  {$ifdef DebugHintWindow}
+    DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
+  {$endif}
+  if (FHintControl <> Info.Control) or (not (FHintTimerType in [ahtShowHint])) then
+  begin
     if Info.ControlHasHint then
     begin
       FHintControl := Info.Control;
       case FHintTimerType of
-      ahtNone,ahtShowHint:
-        StartHintTimer(HintPause,ahtShowHint);
-      ahtHideHint:
-        ShowHintWindow(Info);
-      else
-        HideHint;
+        ahtNone, ahtShowHint:
+          StartHintTimer(HintPause, ahtShowHint);
+        ahtHideHint:
+          ShowHintWindow(Info);
+        else
+          HideHint;
       end;
-    end else begin
+    end else
       HideHint;
-    end;
   end;
 end;
 
@@ -627,10 +631,13 @@ var
   HintWinRect: TRect;
   CurHeight: Integer;
 begin
-  if not FShowHint then exit;
-  if FHintControl=nil then exit;
+  if not FShowHint or (FHintControl=nil) then
+    Exit;
 
-  //debugln('TApplication.ShowHintWindow A OldHint="',Hint,'" NewHint="',GetShortHint(Info.Control.Hint),'"');
+  {$ifdef DebugHintWindow}
+    debugln('TApplication.ShowHintWindow A OldHint="',Hint,'" NewHint="',GetShortHint(Info.Control.Hint),'"');
+  {$endif}
+  
   Hint := GetShortHint(Info.Control.Hint);
 
   CurHeight:=GetCursorHeightMargin;
@@ -672,9 +679,11 @@ begin
     if (FHintWindow<>nil) and (FHintWindow.ClassType<>HintInfo.HintWindowClass)
     then
       FreeThenNil(FHintWindow);
-    if FHintWindow=nil then begin
+    if FHintWindow=nil then
+    begin
       FHintWindow:=THintWindowClass(HintInfo.HintWindowClass).Create(Self);
-      with FHintWindow do begin
+      with FHintWindow do
+      begin
         Visible := False;
         Caption := '';
         AutoHide := False;
@@ -713,7 +722,11 @@ begin
     StartHintTimer(HintHidePause,ahtHideHint);
   end else
     HideHint;
-  //DebugLn'TApplication.ShowHintWindow Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
+
+  {$ifdef DebugHintWindow}
+    DebugLn('TApplication.ShowHintWindow Info.ControlHasHint=',
+      BoolToStr(Info.ControlHasHint), ' Type=', IntToStr(ord(FHintTimerType)));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -723,18 +736,20 @@ end;
 procedure TApplication.StartHintTimer(Interval: integer;
   TimerType: TAppHintTimerType);
 begin
-  //debugln('TApplication.StartHintTimer ',dbgs(Interval));
+  {$ifdef DebugHintWindow}
+    debugln('TApplication.StartHintTimer ',dbgs(Interval));
+  {$endif}
   StopHintTimer;
-  FHintTimerType:=TimerType;
-  if Interval>0 then begin
-    if FHintTimer=nil then
-      FHintTimer:=TCustomTimer.Create(Self);
-    FHintTimer.Interval:=Interval;
-    FHintTimer.OnTimer:=@OnHintTimer;
-    FHintTimer.Enabled:=true;
-  end else begin
+  FHintTimerType := TimerType;
+  if Interval>0 then
+  begin
+    if FHintTimer = nil then
+      FHintTimer := TCustomTimer.Create(Self);
+    FHintTimer.Interval := Interval;
+    FHintTimer.OnTimer := @OnHintTimer;
+    FHintTimer.Enabled := true;
+  end else
     OnHintTimer(Self);
-  end
 end;
 
 {------------------------------------------------------------------------------
@@ -745,23 +760,22 @@ var
   Info: THintInfoAtMouse;
   OldHintTimerType: TAppHintTimerType;
 begin
-  //DebugLn'TApplication.OnHintTimer Type=',ord(FHintTimerType));
-  OldHintTimerType:=FHintTimerType;
+  {$ifdef DebugHintWindow}
+    DebugLn('TApplication.OnHintTimer Type=', IntToStr(ord(FHintTimerType)));
+  {$endif}
+  OldHintTimerType := FHintTimerType;
   StopHintTimer;
   case OldHintTimerType of
-
-  ahtShowHint:
-    begin
-      Info:=GetHintInfoAtMouse;
-      if Info.ControlHasHint then begin
-        ShowHintWindow(Info);
-      end else begin
-        HideHint;
+    ahtShowHint:
+      begin
+        Info := GetHintInfoAtMouse;
+        if Info.ControlHasHint then
+          ShowHintWindow(Info)
+        else
+          HideHint;
       end;
-    end;
-
-  else
-    CancelHint;
+    else
+      CancelHint;
   end;
 end;
 
@@ -1018,9 +1032,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.HideHint;
 begin
-  if FHintWindow<>nil then begin
-    FHintWindow.Visible:=false;
-  end;
+  if FHintWindow <> nil then
+    FHintWindow.Visible := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -1154,8 +1167,9 @@ end;
 
 procedure TApplication.SetHintColor(const AValue: TColor);
 begin
-  if FHintColor=AValue then exit;
-  FHintColor:=AValue;
+  if FHintColor = AValue then
+    exit;
+  FHintColor := AValue;
   if FHintWindow <> nil then
     FHintWindow.Color := FHintColor;
 end;
