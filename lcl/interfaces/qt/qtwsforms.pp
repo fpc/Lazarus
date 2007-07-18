@@ -437,9 +437,6 @@ var
   QtMainWindow: TQtMainWindow;
 begin
   QtMainWindow := TQtHintWindow.Create(AWinControl, AParams);
-  QtMainWindow.setShowInTaskBar(False);
-  TQtWSCustomForm.SetQtWindowBorderStyle(QtMainWindow, bsNone);
-  TQtWSCustomForm.SetQtBorderIcons(QtMainWindow, []);
   // Sets Various Events
   QtMainWindow.AttachEvents;
   Result := THandle(QtMainWindow);

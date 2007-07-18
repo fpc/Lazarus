@@ -5579,7 +5579,7 @@ end;
 function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
 
-  Result := QWidget_create(nil, QtWindow);
+  Result := QWidget_create(nil, QtToolTip);
   MenuBar := nil;
   CentralWidget := nil;
   LayoutWidget := nil;
