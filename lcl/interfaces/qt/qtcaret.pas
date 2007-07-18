@@ -122,7 +122,9 @@ end;
 
 procedure DestroyGlobalCaret;
 begin
-  GlobalCaret.Free;
+  if GlobalCaret <> nil
+  then
+    GlobalCaret.Free;
   GlobalCaret := nil;
 end;
 
