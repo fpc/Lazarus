@@ -128,6 +128,7 @@ type
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
@@ -446,12 +447,21 @@ end;
 class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtListWidget: TQtListWidget;
+  SelMode: QAbstractItemViewSelectionMode;
 begin
   QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
   
+  SelMode := QAbstractItemViewSingleSelection;
+  if TCustomListBox(AWinControl).MultiSelect
+  then
+    SelMode := QAbstractItemViewMultiSelection;
+  if TCustomListBox(AWinControl).ExtendedSelect
+  then
+    SelMode := QAbstractItemViewExtendedSelection;
+
+  QAbstractItemView_setSelectionMode(QAbstractItemViewH(QtListWidget.Widget), SelMode);
+
   QtListWidget.AttachEvents;
-  
-  // QListWidget_itemClicked_Event(Method;
   
   // create our FList helper
   QtListWidget.FList := TQtListStrings.Create(QListWidgetH(QtListWidget.Widget), TCustomListBox(AWinControl));
@@ -477,8 +487,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+var
+  QtListWidget: TQtListWidget;
+  SelectedItems: TIntArray;
 begin
-  Result := 0;
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  QListWidget_selectedItems(QListWidgetH(QtListWidget.Widget), @SelectedItems);
+  Result := Length(SelectedItems);
 end;
 
 {------------------------------------------------------------------------------
@@ -487,8 +502,16 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  QtListWidget: TQtListWidget;
+  ListItem: QListWidgetItemH;
 begin
-  Result := True;
+  Result := False;
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
+  if ListItem <> nil
+  then
+    Result := QListWidget_isItemSelected(QListWidgetH(QtListWidget.Widget), ListItem);
 end;
 
 {------------------------------------------------------------------------------
@@ -535,8 +558,15 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
   AIndex: integer; ASelected: boolean);
+var
+  QtListWidget: TQtListWidget;
+  ListItem: QListWidgetItemH;
 begin
-
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
+  if ListItem <> nil
+  then
+    QListWidget_setItemSelected(QListWidgetH(QtListWidget.Widget), ListItem, ASelected);
 end;
 
 {------------------------------------------------------------------------------
@@ -547,6 +577,22 @@ end;
 class procedure TQtWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 begin
 
+end;
+
+class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer);
+var
+  QtListWidget: TQtListWidget;
+  ItemModel: QAbstractItemModelH;
+begin
+  {$note implement}
+  (*
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  ItemModel := QAbstractItemView_model(QAbstractItemViewH(QtListWidget.Widget));
+  
+  if QAbstractItemModel_columnCount(ItemModel, nil) <> ACount
+  then
+    QAbstractItemModel_insertColumns(ItemModel, 0, ACount, NiL);
+    *)
 end;
 
 {------------------------------------------------------------------------------
@@ -566,8 +612,20 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListBox.SetSelectionMode(
   const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
+var
+  QtListWidget: TQtListWidget;
+  SelMode: QAbstractItemViewSelectionMode;
 begin
-
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  SelMode := QAbstractItemViewSingleSelection;
+  if AMultiSelect
+  then
+    SelMode := QAbstractItemViewMultiSelection;
+  if AExtendedSelect
+  then
+    SelMode := QAbstractItemViewExtendedSelection;
+    
+  QAbstractItemView_setSelectionMode(QAbstractItemViewH(QtListWidget.Widget), SelMode);
 end;
 
 {------------------------------------------------------------------------------
