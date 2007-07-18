@@ -2278,7 +2278,8 @@ begin
       QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
      
     {$ifdef USE_QT_4_3}
-      if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm) then
+      if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
+      and not (csDesigning in LCLObject.ComponentState) then
       begin
         MDIAreaHandle := QMdiArea_create(Result);
         CentralWidget := MDIAreaHandle;
@@ -2299,7 +2300,8 @@ begin
   else
   begin
     {$ifdef USE_QT_4_3}
-      if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) then
+      if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild)
+      and not (csDesigning in LCLObject.ComponentState) then
       begin
 
         if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil

@@ -180,6 +180,7 @@ begin
   {$ifdef USE_QT_4_3}
   if (TCustomForm(AWinControl).FormStyle in [fsMDIChild])
   and (Application.MainForm.FormStyle = fsMdiForm)
+  and not (csDesigning in AWinControl.ComponentState)
   then
   begin
     QWidget_geometry(QtMainWindow.MenuBar.Widget, @R);
