@@ -215,6 +215,13 @@ type
     procedure ShowMinimized;
     procedure ShowNormal;
   end;
+  
+  { TQtHintWindow }
+
+  TQtHintWindow = class(TQtMainWindow)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  end;
 
   { TQtStaticText }
 
@@ -977,6 +984,8 @@ begin
     QEventZeroTimerEvent: result:='QEventZeroTimerEvent';
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
+  else
+    Result := Format('Unknown event: %d', [QEvent_type(Event)]);
   end;
 end;
 {$ENDIF}
@@ -2345,14 +2354,17 @@ begin
   if Widget <> nil then
   begin
     DetachEvents;
-    QMainWindow_destroy(QMainWindowH(Widget));
+    QWidget_destroy(Widget);
     Widget := nil;
   end;
 
   { The main window takes care of the menubar handle}
   
-  MenuBar.Widget := nil;
-  MenuBar.Free;
+  if MenuBar <> nil then
+  begin
+    MenuBar.Widget := nil;
+    MenuBar.Free;
+  end;
 
   inherited Destroy;
 end;
@@ -2366,17 +2378,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtMainWindow.GetContainerWidget: QWidgetH;
 begin
-  {$ifdef USE_QT_4_3}
-    if (CentralWidget <> nil) then
-      Result := CentralWidget
-    else
-      Result := Widget;
-  {$else}
-    if CentralWidget <> nil then
-      Result := CentralWidget
-    else
-      Result := Widget;
-  {$endif}
+  if (CentralWidget <> nil) then
+    Result := CentralWidget
+  else
+    Result := Widget;
 end;
 
 {------------------------------------------------------------------------------
@@ -2392,35 +2397,35 @@ var
  Form: TForm;
  List: TFPList;
 begin
- Form := TForm(LCLObject);
+  Form := TForm(LCLObject);
 
- List := TFPList.Create;
- Form.GetTabOrderList(List);
+  List := TFPList.Create;
+  Form.GetTabOrderList(List);
 
- for i := 0 to List.Count - 2 do
- begin
-   setTabOrder(TQtWidget(TWinControl(List.Items[i]).Handle),
-    TQtWidget(TWinControl(List.Items[i + 1]).Handle));
+  for i := 0 to List.Count - 2 do
+  begin
+    setTabOrder(TQtWidget(TWinControl(List.Items[i]).Handle),
+     TQtWidget(TWinControl(List.Items[i + 1]).Handle));
 
    {$ifdef VerboseQt}
      WriteLn('Setting Tab Order first: ', TWinControl(List.Items[i]).Name, ' second: ',
       TWinControl(List.Items[i + 1]).Name);
    {$endif}
- end;
+  end;
 
  { The last element points to the first }
- if List.Count > 1 then
- begin
-   setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
-    TQtWidget(TWinControl(List.Items[0]).Handle));
+  if List.Count > 1 then
+  begin
+    setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
+     TQtWidget(TWinControl(List.Items[0]).Handle));
 
    {$ifdef VerboseQt}
      WriteLn('Setting Tab Order first: ', TWinControl(List.Items[List.Count - 1]).Name, ' second: ',
       TWinControl(List.Items[0]).Name);
    {$endif}
- end;
+  end;
 
- List.Free;
+  List.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -2435,7 +2440,7 @@ begin
 
   case QEvent_type(Event) of
     QEventWindowStateChange: SlotWindowStateChange;
-    QEventClose :
+    QEventClose:
       begin
         Result:=True;
         QEvent_ignore(Event);
@@ -2464,11 +2469,11 @@ begin
   Msg.Msg := LM_SIZE;
 
   case QWidget_windowState(Widget) of
-   QtWindowMinimized: Msg.SizeType := SIZEICONIC;
-   QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
-   QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
+    QtWindowMinimized: Msg.SizeType := SIZEICONIC;
+    QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
+    QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
   else
-   Msg.SizeType := SIZENORMAL;
+    Msg.SizeType := SIZENORMAL;
   end;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
@@ -5565,6 +5570,17 @@ begin
     QObject_hook_destroy(FEventHook);
     FEventHook := nil;
   end;
+end;
+
+{ TQtHintWindow }
+
+function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
+begin
+
+  Result := QWidget_create(nil, QtWindow);
+  MenuBar := nil;
+  CentralWidget := nil;
+  LayoutWidget := nil;
 end;
 
 end.

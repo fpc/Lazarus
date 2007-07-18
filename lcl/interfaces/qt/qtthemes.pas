@@ -223,7 +223,7 @@ begin
   // specific states
 
   // define splitter orientation
-  if (Details.Element = teRebar) and (Details.Part = RP_GRIPPERVERT) then
+  if (Details.Element = teRebar) and (Details.Part = RP_GRIPPER) then
     Result := Result or QStyleState_Horizontal;
 end;
 

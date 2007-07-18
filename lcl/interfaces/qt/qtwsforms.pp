@@ -109,6 +109,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
   { TQtWSScreen }
@@ -429,6 +430,21 @@ begin
   AHandle.setWindowFlags(Flags);
 end;
 
+{ TQtWSHintWindow }
+
+class function TQtWSHintWindow.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  QtMainWindow: TQtMainWindow;
+begin
+  QtMainWindow := TQtHintWindow.Create(AWinControl, AParams);
+  QtMainWindow.setShowInTaskBar(False);
+  TQtWSCustomForm.SetQtWindowBorderStyle(QtMainWindow, bsNone);
+  TQtWSCustomForm.SetQtBorderIcons(QtMainWindow, []);
+  // Sets Various Events
+  QtMainWindow.AttachEvents;
+  Result := THandle(QtMainWindow);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -443,7 +459,7 @@ initialization
 //  RegisterWSComponent(TFrame, TQtWSFrame);
   RegisterWSComponent(TCustomForm, TQtWSCustomForm);
 //  RegisterWSComponent(TForm, TQtWSForm);
-//  RegisterWSComponent(THintWindow, TQtWSHintWindow);
+  RegisterWSComponent(THintWindow, TQtWSHintWindow);
 //  RegisterWSComponent(TScreen, TQtWSScreen);
 //  RegisterWSComponent(TApplicationProperties, TQtWSApplicationProperties);
 ////////////////////////////////////////////////////
