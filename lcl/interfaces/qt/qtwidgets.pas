@@ -46,24 +46,37 @@ type
   end;
   
 type
+  { TQtObject }
+  TQtObject = class(TObject)
+  private
+    FEventHook: QObject_hookH;
+  public
+    TheObject: QObjectH;
+    destructor Destroy; override;
+  public
+    procedure AttachEvents; virtual;
+    procedure DetachEvents; virtual;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
+  end;
+  
   { TQtWidget }
 
-  TQtWidget = class(TObject)
+  TQtWidget = class(TQtObject)
   private
     FProps: TStringList;
     FPaintData: TPaintData;
-    FEventHook: QObject_hookH;
     function GetProps(const AnIndex: String): pointer;
+    function GetWidget: QWidgetH;
     function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
     function QtKeyToLCLKey(key: Integer): Word;
     procedure DeliverMessage(var Msg);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
+    procedure SetWidget(const AValue: QWidgetH);
   protected
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetGeometry; virtual;
   public
     AVariant: QVariantH;
-    Widget: QWidgetH;
     LCLObject: TWinControl;
     HasCaret: Boolean;
     InPaint: Boolean;
@@ -73,10 +86,7 @@ type
     destructor Destroy; override;
     function  GetContainerWidget: QWidgetH; virtual;
   public
-    procedure AttachEvents; virtual;
-    procedure DetachEvents; virtual;
-    
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotShow(vShow: Boolean); cdecl;
     procedure SlotClose; cdecl;
     procedure SlotDestroy; cdecl;
@@ -115,6 +125,7 @@ type
     
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
+    property Widget: QWidgetH read GetWidget write SetWidget;
   end;
 
   { TQtFrame }
@@ -219,16 +230,16 @@ type
 
   { TQtTimer }
 
-  TQtTimer = class(TObject)
+  TQtTimer = class(TQtObject)
   private
-    CallbackFunc: TFNTimerProc;
-    Id: Integer;
-    AppObject: QObjectH;
+    FCallbackFunc: TFNTimerProc;
+    FId: Integer;
+    FAppObject: QObjectH;
   public
-    ATimer: QTimerH;
     constructor CreateTimer(Interval: integer; const TimerFunc: TFNTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+  public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
 
   { TQtCheckBox }
@@ -851,24 +862,6 @@ end;
 function TQtWidget.GetContainerWidget: QWidgetH;
 begin
   Result := Widget;
-end;
-
-procedure TQtWidget.AttachEvents;
-var
-  Method: TMethod;
-begin
-  FEventHook := QObject_hook_create(Widget);
-  TEventFilterMethod(Method) := EventFilter;
-  QObject_hook_hook_events(FEventHook, Method);
-end;
-
-procedure TQtWidget.DetachEvents;
-begin
-  if FEventHook <> nil then
-  begin
-    QObject_hook_destroy(FEventHook);
-    FEventHook := nil;
-  end;
 end;
 
 {$IFDEF VerboseQt}
@@ -1970,6 +1963,11 @@ begin
   result := nil;
 end;
 
+function TQtWidget.GetWidget: QWidgetH;
+begin
+  Result := QWidgetH(TheObject);
+end;
+
 procedure TQtWidget.DeliverMessage(var Msg);
 begin
   try
@@ -1993,6 +1991,11 @@ begin
   if i < 0 then
     i := FProps.Add(AnIndex);
   Fprops.Objects[i] := TObject(AValue);
+end;
+
+procedure TQtWidget.SetWidget(const AValue: QWidgetH);
+begin
+  TheObject := AValue;
 end;
 
 function TQtWidget.CreateWidget(const Params: TCreateParams): QWidgetH;
@@ -2590,23 +2593,23 @@ var
   Method: TMethod;
   Hook : QTimer_hookH;
 begin
-  AppObject := App;
+  FAppObject := App;
 
-  CallbackFunc := TimerFunc;
+  FCallbackFunc := TimerFunc;
   
-  ATimer := QTimer_create(App);
+  TheObject := QTimer_create(App);
   
-  QTimer_setInterval(ATimer, Interval);
-
-  // Callback Event
-
-  Hook := QTimer_hook_create(ATimer);
-  TEventFilterMethod(Method) := EventFilter;
-  QObject_hook_hook_events(Hook, Method);
+  QTimer_setInterval(QTimerH(TheObject), Interval);
+  
+  AttachEvents;
 
   // start timer and get ID
-  QTimer_start(ATimer, Interval);
-  Id := QTimer_timerId(ATimer);
+  QTimer_start(QTimerH(TheObject), Interval);
+  FId := QTimer_timerId(QTimerH(TheObject));
+
+  {$ifdef VerboseQt}
+    WriteLn('TQtTimer.CreateTimer: Interval = ', Interval, ' ID = ', FId);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2616,10 +2619,11 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtTimer.Destroy;
 begin
-  CallbackFunc := nil;
-  if ATimer <> NiL then
-    QTimer_destroy(ATimer);
+  {$ifdef VerboseQt}
+    WriteLn('TQtTimer.CreateTimer: Destroy. ID = ', FId);
+  {$endif}
 
+  FCallbackFunc := nil;
   inherited Destroy;
 end;
 
@@ -2630,13 +2634,14 @@ end;
  ------------------------------------------------------------------------------}
 function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  Result:=False;
+  Result := False;
 
   if QEvent_type(Event) = QEventTimer then
   begin
     QEvent_accept(Event);
 
-    if Assigned(CallbackFunc) then CallbackFunc;
+    if Assigned(FCallbackFunc) then
+      FCallbackFunc;
   end;
 end;
 
@@ -5524,6 +5529,37 @@ begin
   begin
     Msg.Msg := LM_MONTHCHANGED;
     DeliverMessage(Msg);
+  end;
+end;
+
+{ TQtObject }
+
+destructor TQtObject.Destroy;
+begin
+  if TheObject <> nil then
+  begin
+    DetachEvents;
+    QObject_destroy(TheObject);
+    TheObject := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TQtObject.AttachEvents;
+var
+  Method: TMethod;
+begin
+  FEventHook := QObject_hook_create(TheObject);
+  TEventFilterMethod(Method) := EventFilter;
+  QObject_hook_hook_events(FEventHook, Method);
+end;
+
+procedure TQtObject.DetachEvents;
+begin
+  if FEventHook <> nil then
+  begin
+    QObject_hook_destroy(FEventHook);
+    FEventHook := nil;
   end;
 end;
 

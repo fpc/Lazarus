@@ -1075,7 +1075,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
 begin
-   QPainter_drawRect(Widget, x1, y1, w, h);
+  QPainter_drawRect(Widget, x1, y1, w, h);
 end;
 
 {------------------------------------------------------------------------------
@@ -1186,7 +1186,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawPoint(x1: Integer; y1: Integer);
 begin
-    QPainter_drawPoint(Widget, x1, y1);
+  QPainter_drawPoint(Widget, x1, y1);
 end;
 
 {------------------------------------------------------------------------------
