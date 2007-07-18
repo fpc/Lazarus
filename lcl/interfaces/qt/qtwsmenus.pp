@@ -269,7 +269,7 @@ var
   Text: WideString;
   Widget: TQtWidget;
 begin
-  Text := UTF8Decode(AMenuItem.Caption);
+  Text := UTF8Decode(ACaption);
   Widget := TQtWidget(AMenuItem.Handle);
   if Widget is TQtMenu then
     TQtMenu(Widget).setText(@Text);
