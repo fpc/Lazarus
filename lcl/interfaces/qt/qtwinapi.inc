@@ -83,7 +83,7 @@ begin
     Result :=GetDoubleBufferedDC(Handle)
   else}
   
-  DC := TQtDeviceContext.Create(Handle);
+  DC := TQtDeviceContext.Create(Handle, True);
   PS.hdc := HDC(DC);
   
   if Handle<>0 then

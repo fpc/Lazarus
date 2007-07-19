@@ -212,7 +212,7 @@ type
     vTextColor: TColor;
   public
     { Our own functions }
-    constructor Create(WidgetHandle: THandle); virtual;
+    constructor Create(WidgetHandle: THandle; Const APaintEvent: Boolean = False); virtual;
     destructor Destroy; override;
     function CreateDCData: PQtDCDATA;
     function RestoreDCData(DCData: PQtDCData): boolean;
@@ -886,12 +886,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtDeviceContext.Create(WidgetHandle: THandle);
+constructor TQtDeviceContext.Create(WidgetHandle: THandle; Const APaintEvent: Boolean = False);
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(WidgetHandle), ' )');
+    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(WidgetHandle), ' FromPaintEvent:',BoolToStr(FromPaintEvent),' )');
   {$endif}
 
+  {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside
+   of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
   if WidgetHandle = 0 then
   begin
     ParentPixmap := QPixmap_Create(10,10);
@@ -900,9 +902,15 @@ begin
   else
   begin
     Parent := TQtWidget(WidgetHandle).Widget;
-    Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
+    ParentPixmap := QPixmap_create(QWidget_width(Parent),QWidget_height(Parent));
+    if not APaintEvent then
+    begin
+      ParentPixmap := QPixmap_Create(QWidget_width(Parent),QWidget_height(Parent));
+      Widget := QPainter_create(QPaintDeviceH(ParentPixmap));
+    end
+    else
+      Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
-
   vBrush := TQtBrush.Create(False);
   vBrush.Owner := Self;
   vFont := TQtFont.Create(False);
@@ -941,9 +949,11 @@ begin
   vBackgroundBrush.Widget := nil;
   vBackgroundBrush.Free;
 
-  if vImage <> nil then QImage_destroy(vImage);
+  if vImage <> nil then
+    QImage_destroy(vImage);
 
-  QPainter_destroy(Widget);
+  if Widget <> nil then
+    QPainter_destroy(Widget);
 
   if ParentPixmap <> nil then
     QPixmap_destroy(ParentPixmap);
@@ -988,6 +998,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setImage(AImage: TQtImage);
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtDeviceContext.setImage() ');
+  {$endif}
   vImage := AImage.Handle;
   
   QPainter_destroy(Widget);
@@ -1024,6 +1037,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.CreateDCData: PQtDCDATA;
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtDeviceContext.CreateDCData() ');
+  {$endif}
   Qpainter_save(Widget);
   result := nil; // doesn't matter;
 end;
@@ -1035,6 +1051,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.RestoreDCData(DCData: PQtDCData):boolean;
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtDeviceContext.RestoreDCData() ');
+  {$endif}
   QPainter_restore(Widget);
   result:=true;
 end;
@@ -1046,6 +1065,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.RestorePenColor;
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtDeviceContext.RestorePenColor() ');
+  {$endif}
   Qpainter_setPen(Widget, @PenColor);
 end;
 
@@ -1059,6 +1081,9 @@ var
   CurPen: QPenH;
   TxtColor: TQColor;
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtDeviceContext.RestoreTextColor() ');
+  {$endif}
   CurPen := QPainter_Pen(Widget);
   QPen_color(CurPen, @PenColor);
   TxtColor := PenColor;
@@ -1075,6 +1100,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtDeviceContext.drawRect() x1: ',x1,' y1: ',y1,' w: ',w,' h: ',h);
+  {$endif}
   QPainter_drawRect(Widget, x1, y1, w, h);
 end;
 
@@ -1131,6 +1159,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.DrawText(x, y, w, h, flags: Integer; s: PWideString);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
+  {$endif}
   RestoreTextColor;
 
   QPainter_DrawText(Widget, x, y, w, h, Flags, s);
@@ -1147,6 +1178,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.drawLine x1: ', X1, ' Y1: ', Y1,' x2: ',x2,' y2: ',y2);
+  {$endif}
   QPainter_drawLine(Widget, x1, y1, x2, y2);
 end;
 
@@ -1164,11 +1198,17 @@ end;
 
 procedure TQtDeviceContext.fillRect(ARect: PRect; ABrush: QBrushH);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.fillRect() from PRect');
+  {$endif}
   QPainter_fillRect(Widget, ARect, ABrush);
 end;
 
 procedure TQtDeviceContext.fillRect(x, y, w, h: Integer; ABrush: QBrushH);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.fillRect() x: ',x,' y: ',y,' w: ',w,' h: ',h);
+  {$endif}
   QPainter_fillRect(Widget, x, y, w, h, ABrush);
 end;
 
@@ -1186,6 +1226,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawPoint(x1: Integer; y1: Integer);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.drawPoint() x1: ',x1,' y1: ',y1);
+  {$endif}
   QPainter_drawPoint(Widget, x1, y1);
 end;
 
@@ -1196,6 +1239,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setBrushOrigin(x, y: Integer);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setBrushOrigin() x: ',x,' y: ',y);
+  {$endif}
   QPainter_setBrushOrigin(Widget, x, y);
 end;
 
@@ -1208,6 +1254,10 @@ procedure TQtDeviceContext.brushOrigin(retval: PPoint);
 var
   QtPoint: TQtPoint;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.brushOrigin() ');
+  {$endif}
+
   QPainter_brushOrigin(Widget, @QtPoint);
   retval^.x := QtPoint.x;
   retval^.y := QtPoint.y;
@@ -1220,6 +1270,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.font: TQtFont;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.font()');
+  {$endif}
+
   vFont.Widget := QPainter_font(Widget);
   if SelFont=nil then
     Result := vFont
@@ -1234,6 +1288,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setFont(f: TQtFont);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setFont() ');
+  {$endif}
   SelFont := F;
   if (f.Widget <> nil) and (Widget <> nil) {and (Parent <> nil)} then
   begin
@@ -1249,6 +1306,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.brush: TQtBrush;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.brush() ');
+  {$endif}
   vBrush.Widget := QPainter_brush(Widget);
   if SelBrush=nil then
     Result := vBrush
@@ -1263,6 +1323,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setBrush(brush: TQtBrush);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setBrush() ');
+  {$endif}
   SelBrush := Brush;
   if (brush.Widget <> nil) and (Widget <> nil) then
     QPainter_setBrush(Widget, brush.Widget);
@@ -1270,6 +1333,9 @@ end;
 
 function TQtDeviceContext.BackgroundBrush: TQtBrush;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.backgroundBrush() ');
+  {$endif}
   vBackgroundBrush.Widget := QPainter_background(Widget);
   result := vBackGroundBrush;
 end;
@@ -1281,6 +1347,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.pen: TQtPen;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.pen() ');
+  {$endif}
   vPen.Widget := QPainter_pen(Widget);
   if SelPen=nil then
     Result := vPen
@@ -1295,6 +1364,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setPen(pen: TQtPen);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setPen() ');
+  {$endif}
   SelPen := Pen;
   if (pen.Widget <> nil) and (Widget <> nil) then
     QPainter_setPen(Widget, pen.Widget);
@@ -1333,6 +1405,9 @@ var
   ABrush: QBrushH;
   NColor: TQColor;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setBKColor() ');
+  {$endif}
   result := CLR_INVALID;
   ABrush := BackgroundBrush.Widget;
   if ABrush<>nil then
@@ -1348,6 +1423,9 @@ function TQtDeviceContext.SetBkMode(BkMode: Integer): Integer;
 var
   Mode: QtBGMode;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setBKMode() ');
+  {$endif}
   result := 0;
   if Widget <> nil then
   begin
@@ -1372,6 +1450,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.region: TQtRegion;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.region() ');
+  {$endif}
   if vRegion.Widget=nil then
     vRegion.Widget := QRegion_Create();
     
@@ -1386,6 +1467,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setRegion(region: TQtRegion);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.setRegion() ');
+  {$endif}
   if (region.Widget <> nil) and (Widget <> nil) then
     QPainter_setClipRegion(Widget, Region.Widget);
 end;
@@ -1400,6 +1484,9 @@ procedure TQtDeviceContext.drawImage(targetRect: PRect;
 var
   LocalRect: TRect;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.drawImage() ');
+  {$endif}
   LocalRect := targetRect^;
   QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
 end;
@@ -1413,6 +1500,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.rotate(a: Double);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.rotate() ');
+  {$endif}
   QPainter_rotate(Widget, a);
 end;
 
@@ -1425,6 +1515,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.save;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.save() ');
+  {$endif}
   QPainter_save(Widget);
 end;
 
@@ -1437,6 +1530,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.restore;
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.restore() ');
+  {$endif}
   QPainter_restore(Widget);
 end;
 
@@ -1449,6 +1545,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.translate(dx: Double; dy: Double);
 begin
+  {$ifdef VerboseQt}
+  Write('TQtDeviceContext.translate() ');
+  {$endif}
   QPainter_translate(Widget, dx, dy);
 end;
 
