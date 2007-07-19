@@ -167,6 +167,8 @@ begin
 
       Menu.MenuItem := AMenuItem;
 
+      Menu.setShortcut(AMenuItem.ShortCut);
+      
       if AMenuItem.HasIcon then
         Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
 
@@ -211,6 +213,8 @@ begin
 
       Menu.setChecked(AMenuItem.Checked);
 
+      Menu.setShortcut(AMenuItem.ShortCut);
+      
       if AMenuItem.HasIcon then
         Menu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
 
@@ -281,8 +285,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut);
+var
+  Widget: TQtWidget;
 begin
-
+  Widget := TQtWidget(AMenuItem.Handle);
+  if Widget is TQtMenu then
+    TQtMenu(Widget).setShortcut(NewShortCut);
 end;
 
 {------------------------------------------------------------------------------

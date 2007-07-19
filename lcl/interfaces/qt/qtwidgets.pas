@@ -67,11 +67,13 @@ type
     FPaintData: TPaintData;
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
+    function LCLKeyToQtKey(AKey: Word): Integer;
     function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
-    function QtKeyToLCLKey(key: Integer): Word;
+    function QtKeyToLCLKey(AKey: Integer): Word;
     procedure DeliverMessage(var Msg);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetWidget(const AValue: QWidgetH);
+    function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetGeometry; virtual;
@@ -662,6 +664,7 @@ type
     procedure setIcon(AIcon: QIconH);
     procedure setImage(AImage: TQtImage);
     procedure setSeparator(AValue: Boolean);
+    procedure setShortcut(AShortcut: TShortcut);
     procedure setText(AText: PWideString);
   end;
 
@@ -1653,21 +1656,21 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidget.QtKeyToLCLKey(key: Integer): Word;
+function TQtWidget.QtKeyToLCLKey(AKey: Integer): Word;
 begin
-  case key of
+  case AKey of
     QtKey_Escape: Result := VK_ESCAPE;
     QtKey_Tab: Result := VK_TAB;
-//    QtKey_Backtab = 16777218 { $1000002 }; ????
-//    QtKey_Backspace = 16777219 { $1000003 };
+    QtKey_Backtab: Result := VK_UNKNOWN; // ???
+    QtKey_Backspace: Result := VK_BACK;
     QtKey_Return: Result := VK_RETURN;
     QtKey_Enter: Result := VK_RETURN;
-    QtKey_Insert: Result := VK_RETURN;
-    QtKey_Delete: Result := VK_RETURN;
+    QtKey_Insert: Result := VK_INSERT;
+    QtKey_Delete: Result := VK_DELETE;
     QtKey_Pause: Result := VK_PAUSE;
     QtKey_Print: Result := VK_PRINT;
-//    QtKey_SysReq = 16777226 { $100000a };
-//    QtKey_Clear = 16777227 { $100000b };
+    QtKey_SysReq: Result := VK_UNKNOWN; // ???
+    QtKey_Clear: Result := VK_CLEAR;
     QtKey_Home: Result := VK_HOME;
     QtKey_End: Result := VK_END;
     QtKey_Left: Result := VK_LEFT;
@@ -1676,13 +1679,13 @@ begin
     QtKey_Down: Result := VK_DOWN;
     QtKey_PageUp: Result := VK_PRIOR;
     QtKey_PageDown: Result := VK_NEXT;
-    QtKey_Shift: Result := VK_LSHIFT;     // There is also RSHIFT
-    QtKey_Control: Result := VK_LCONTROL; // There is also RCONTROL
-{    QtKey_Meta: Result := VK_META;
-    QtKey_Alt: Result := VK_ALT;
-    QtKey_CapsLock: Result := VK_CAPSLOCK;
+    QtKey_Shift: Result := VK_SHIFT;     // There is also RSHIFT
+    QtKey_Control: Result := VK_CONTROL; // There is also RCONTROL
+    QtKey_Meta: Result := VK_UNKNOWN; // ???
+    QtKey_Alt: Result := VK_MENU;
+    QtKey_CapsLock: Result := VK_CAPITAL;
     QtKey_NumLock: Result := VK_NUMLOCK;
-    QtKey_ScrollLock = 16777254  $1000026 ;}
+    QtKey_ScrollLock: Result := VK_SCROLL;
     QtKey_F1: Result := VK_F1;
     QtKey_F2: Result := VK_F2;
     QtKey_F3: Result := VK_F3;
@@ -1707,258 +1710,311 @@ begin
     QtKey_F22: Result := VK_F22;
     QtKey_F23: Result := VK_F23;
     QtKey_F24: Result := VK_F24;
-{    QtKey_F25 = 16777288  $1000048 ;
-    QtKey_F26 = 16777289  $1000049 ;
-    QtKey_F27 = 16777290  $100004a ;
-    QtKey_F28 = 16777291  $100004b ;
-    QtKey_F29 = 16777292  $100004c ;
-    QtKey_F30 = 16777293  $100004d ;
-    QtKey_F31 = 16777294  $100004e ;
-    QtKey_F32 = 16777295  $100004f ;
-    QtKey_F33 = 16777296  $1000050 ;
-    QtKey_F34 = 16777297  $1000051 ;
-    QtKey_F35 = 16777298  $1000052 ;}
-(*    QtKey_Super_L = 16777299 { $1000053 };
-    QtKey_Super_R = 16777300 { $1000054 };
-    QtKey_Menu = 16777301 { $1000055 };
-    QtKey_Hyper_L = 16777302 { $1000056 };
-    QtKey_Hyper_R = 16777303 { $1000057 };
-    QtKey_Help = 16777304 { $1000058 };
-    QtKey_Direction_L = 16777305 { $1000059 };
-    QtKey_Direction_R = 16777312 { $1000060 };
-    QtKey_Space = 32 { $20 };
-    QtKey_Any = 32 { $20 };
-    QtKey_Exclam = 33 { $21 };
-    QtKey_QuoteDbl = 34 { $22 };
-    QtKey_NumberSign = 35 { $23 };
-    QtKey_Dollar = 36 { $24 };
-    QtKey_Percent = 37 { $25 };
-    QtKey_Ampersand = 38 { $26 };
-    QtKey_Apostrophe = 39 { $27 };
-    QtKey_ParenLeft = 40 { $28 };
-    QtKey_ParenRight = 41 { $29 };
-    QtKey_Asterisk = 42 { $2a };
-    QtKey_Plus = 43 { $2b };
-    QtKey_Comma = 44 { $2c };
-    QtKey_Minus = 45 { $2d };
-    QtKey_Period = 46 { $2e };
-    QtKey_Slash = 47 { $2f };*)
-    QtKey_0: Result := VK_0;
-    QtKey_1: Result := VK_1;
-    QtKey_2: Result := VK_2;
-    QtKey_3: Result := VK_3;
-    QtKey_4: Result := VK_4;
-    QtKey_5: Result := VK_5;
-    QtKey_6: Result := VK_6;
-    QtKey_7: Result := VK_7;
-    QtKey_8: Result := VK_8;
-    QtKey_9: Result := VK_9;
-//    QtKey_Colon = 58 { $3a };
-//    QtKey_Semicolon = 59 { $3b };
-//    QtKey_Less = 60 { $3c };
-//    QtKey_Equal = 61 { $3d };
-//    QtKey_Greater = 62 { $3e };
-//    QtKey_Question = 63 { $3f };
-//    QtKey_At = 64 { $40 };
-    QtKey_A: Result := VK_A;
-    QtKey_B: Result := VK_B;
-    QtKey_C: Result := VK_C;
-    QtKey_D: Result := VK_D;
-    QtKey_E: Result := VK_E;
-    QtKey_F: Result := VK_F;
-    QtKey_G: Result := VK_G;
-    QtKey_H: Result := VK_H;
-    QtKey_I: Result := VK_I;
-    QtKey_J: Result := VK_J;
-    QtKey_K: Result := VK_K;
-    QtKey_L: Result := VK_L;
-    QtKey_M: Result := VK_M;
-    QtKey_N: Result := VK_N;
-    QtKey_O: Result := VK_O;
-    QtKey_P: Result := VK_P;
-    QtKey_Q: Result := VK_Q;
-    QtKey_R: Result := VK_R;
-    QtKey_S: Result := VK_S;
-    QtKey_T: Result := VK_T;
-    QtKey_U: Result := VK_U;
-    QtKey_V: Result := VK_V;
-    QtKey_W: Result := VK_W;
-    QtKey_X: Result := VK_X;
-    QtKey_Y: Result := VK_Y;
-    QtKey_Z: Result := VK_Z;
-(*    QtKey_BracketLeft = 91 { $5b };
-    QtKey_Backslash = 92 { $5c };
-    QtKey_BracketRight = 93 { $5d };
-    QtKey_AsciiCircum = 94 { $5e };
-    QtKey_Underscore = 95 { $5f };
-    QtKey_QuoteLeft = 96 { $60 };
-    QtKey_BraceLeft = 123 { $7b };
-    QtKey_Bar = 124 { $7c };
-    QtKey_BraceRight = 125 { $7d };
-    QtKey_AsciiTilde = 126 { $7e };
-    QtKey_nobreakspace = 160 { $a0 };
-    QtKey_exclamdown = 161 { $a1 };
-    QtKey_cent = 162 { $a2 };
-    QtKey_sterling = 163 { $a3 };
-    QtKey_currency = 164 { $a4 };
-    QtKey_yen = 165 { $a5 };
-    QtKey_brokenbar = 166 { $a6 };
-    QtKey_section = 167 { $a7 };
-    QtKey_diaeresis = 168 { $a8 };
-    QtKey_copyright = 169 { $a9 };
-    QtKey_ordfeminine = 170 { $aa };
-    QtKey_guillemotleft = 171 { $ab };
-    QtKey_notsign = 172 { $ac };
-    QtKey_hyphen = 173 { $ad };
-    QtKey_registered = 174 { $ae };
-    QtKey_macron = 175 { $af };
-    QtKey_degree = 176 { $b0 };
-    QtKey_plusminus = 177 { $b1 };
-    QtKey_twosuperior = 178 { $b2 };
-    QtKey_threesuperior = 179 { $b3 };
-    QtKey_acute = 180 { $b4 };
-    QtKey_mu = 181 { $b5 };
-    QtKey_paragraph = 182 { $b6 };
-    QtKey_periodcentered = 183 { $b7 };
-    QtKey_cedilla = 184 { $b8 };
-    QtKey_onesuperior = 185 { $b9 };
-    QtKey_masculine = 186 { $ba };
-    QtKey_guillemotright = 187 { $bb };
-    QtKey_onequarter = 188 { $bc };
-    QtKey_onehalf = 189 { $bd };
-    QtKey_threequarters = 190 { $be };
-    QtKey_questiondown = 191 { $bf };
-    QtKey_Agrave = 192 { $c0 };
-    QtKey_Aacute = 193 { $c1 };
-    QtKey_Acircumflex = 194 { $c2 };
-    QtKey_Atilde = 195 { $c3 };
-    QtKey_Adiaeresis = 196 { $c4 };
-    QtKey_Aring = 197 { $c5 };
-    QtKey_AE = 198 { $c6 };
-    QtKey_Ccedilla = 199 { $c7 };
-    QtKey_Egrave = 200 { $c8 };
-    QtKey_Eacute = 201 { $c9 };
-    QtKey_Ecircumflex = 202 { $ca };
-    QtKey_Ediaeresis = 203 { $cb };
-    QtKey_Igrave = 204 { $cc };
-    QtKey_Iacute = 205 { $cd };
-    QtKey_Icircumflex = 206 { $ce };
-    QtKey_Idiaeresis = 207 { $cf };
-    QtKey_ETH = 208 { $d0 };
-    QtKey_Ntilde = 209 { $d1 };
-    QtKey_Ograve = 210 { $d2 };
-    QtKey_Oacute = 211 { $d3 };
-    QtKey_Ocircumflex = 212 { $d4 };
-    QtKey_Otilde = 213 { $d5 };
-    QtKey_Odiaeresis = 214 { $d6 };
-    QtKey_multiply = 215 { $d7 };
-    QtKey_Ooblique = 216 { $d8 };
-    QtKey_Ugrave = 217 { $d9 };
-    QtKey_Uacute = 218 { $da };
-    QtKey_Ucircumflex = 219 { $db };
-    QtKey_Udiaeresis = 220 { $dc };
-    QtKey_Yacute = 221 { $dd };
-    QtKey_THORN = 222 { $de };
-    QtKey_ssharp = 223 { $df };
-    QtKey_division = 247 { $f7 };
-    QtKey_ydiaeresis = 255 { $ff };
-    QtKey_Multi_key = 16781600 { $1001120 };
-    QtKey_Codeinput = 16781623 { $1001137 };
-    QtKey_SingleCandidate = 16781628 { $100113c };
-    QtKey_MultipleCandidate = 16781629 { $100113d };
-    QtKey_PreviousCandidate = 16781630 { $100113e };
-    QtKey_Mode_switch = 16781694 { $100117e };
-    QtKey_Kanji = 16781601 { $1001121 };
-    QtKey_Muhenkan = 16781602 { $1001122 };
-    QtKey_Henkan = 16781603 { $1001123 };
-    QtKey_Romaji = 16781604 { $1001124 };
-    QtKey_Hiragana = 16781605 { $1001125 };
-    QtKey_Katakana = 16781606 { $1001126 };
-    QtKey_Hiragana_Katakana = 16781607 { $1001127 };
-    QtKey_Zenkaku = 16781608 { $1001128 };
-    QtKey_Hankaku = 16781609 { $1001129 };
-    QtKey_Zenkaku_Hankaku = 16781610 { $100112a };
-    QtKey_Touroku = 16781611 { $100112b };
-    QtKey_Massyo = 16781612 { $100112c };
-    QtKey_Kana_Lock = 16781613 { $100112d };
-    QtKey_Kana_Shift = 16781614 { $100112e };
-    QtKey_Eisu_Shift = 16781615 { $100112f };
-    QtKey_Eisu_toggle = 16781616 { $1001130 };
-    QtKey_Hangul = 16781617 { $1001131 };
-    QtKey_Hangul_Start = 16781618 { $1001132 };
-    QtKey_Hangul_End = 16781619 { $1001133 };
-    QtKey_Hangul_Hanja = 16781620 { $1001134 };
-    QtKey_Hangul_Jamo = 16781621 { $1001135 };
-    QtKey_Hangul_Romaja = 16781622 { $1001136 };
-    QtKey_Hangul_Jeonja = 16781624 { $1001138 };
-    QtKey_Hangul_Banja = 16781625 { $1001139 };
-    QtKey_Hangul_PreHanja = 16781626 { $100113a };
-    QtKey_Hangul_PostHanja = 16781627 { $100113b };
-    QtKey_Hangul_Special = 16781631 { $100113f };
-    QtKey_Dead_Grave = 16781904 { $1001250 };
-    QtKey_Dead_Acute = 16781905 { $1001251 };
-    QtKey_Dead_Circumflex = 16781906 { $1001252 };
-    QtKey_Dead_Tilde = 16781907 { $1001253 };
-    QtKey_Dead_Macron = 16781908 { $1001254 };
-    QtKey_Dead_Breve = 16781909 { $1001255 };
-    QtKey_Dead_Abovedot = 16781910 { $1001256 };
-    QtKey_Dead_Diaeresis = 16781911 { $1001257 };
-    QtKey_Dead_Abovering = 16781912 { $1001258 };
-    QtKey_Dead_Doubleacute = 16781913 { $1001259 };
-    QtKey_Dead_Caron = 16781914 { $100125a };
-    QtKey_Dead_Cedilla = 16781915 { $100125b };
-    QtKey_Dead_Ogonek = 16781916 { $100125c };
-    QtKey_Dead_Iota = 16781917 { $100125d };
-    QtKey_Dead_Voiced_Sound = 16781918 { $100125e };
-    QtKey_Dead_Semivoiced_Sound = 16781919 { $100125f };
-    QtKey_Dead_Belowdot = 16781920 { $1001260 };
-    QtKey_Dead_Hook = 16781921 { $1001261 };
-    QtKey_Dead_Horn = 16781922 { $1001262 };
-    QtKey_Back = 16777313 { $1000061 };
-    QtKey_Forward = 16777314 { $1000062 };
-    QtKey_Stop = 16777315 { $1000063 };
-    QtKey_Refresh = 16777316 { $1000064 };
-    QtKey_VolumeDown = 16777328 { $1000070 };
-    QtKey_VolumeMute = 16777329 { $1000071 };
-    QtKey_VolumeUp = 16777330 { $1000072 };
-    QtKey_BassBoost = 16777331 { $1000073 };
-    QtKey_BassUp = 16777332 { $1000074 };
-    QtKey_BassDown = 16777333 { $1000075 };
-    QtKey_TrebleUp = 16777334 { $1000076 };
-    QtKey_TrebleDown = 16777335 { $1000077 };
-    QtKey_MediaPlay = 16777344 { $1000080 };
-    QtKey_MediaStop = 16777345 { $1000081 };
-    QtKey_MediaPrevious = 16777346 { $1000082 };
-    QtKey_MediaNext = 16777347 { $1000083 };
-    QtKey_MediaRecord = 16777348 { $1000084 };
-    QtKey_HomePage = 16777360 { $1000090 };
-    QtKey_Favorites = 16777361 { $1000091 };
-    QtKey_Search = 16777362 { $1000092 };
-    QtKey_Standby = 16777363 { $1000093 };
-    QtKey_OpenUrl = 16777364 { $1000094 };
-    QtKey_LaunchMail = 16777376 { $10000a0 };
-    QtKey_LaunchMedia = 16777377 { $10000a1 };
-    QtKey_Launch0 = 16777378 { $10000a2 };
-    QtKey_Launch1 = 16777379 { $10000a3 };
-    QtKey_Launch2 = 16777380 { $10000a4 };
-    QtKey_Launch3 = 16777381 { $10000a5 };
-    QtKey_Launch4 = 16777382 { $10000a6 };
-    QtKey_Launch5 = 16777383 { $10000a7 };
-    QtKey_Launch6 = 16777384 { $10000a8 };
-    QtKey_Launch7 = 16777385 { $10000a9 };
-    QtKey_Launch8 = 16777386 { $10000aa };
-    QtKey_Launch9 = 16777387 { $10000ab };
-    QtKey_LaunchA = 16777388 { $10000ac };
-    QtKey_LaunchB = 16777389 { $10000ad };
-    QtKey_LaunchC = 16777390 { $10000ae };
-    QtKey_LaunchD = 16777391 { $10000af };
-    QtKey_LaunchE = 16777392 { $10000b0 };
-    QtKey_LaunchF = 16777393 { $10000b1 };
-    QtKey_MediaLast = 16842751 { $100ffff };
-    QtKey_unknown = 33554431 { $1ffffff };*)
+    QtKey_F25..
+    QtKey_F35,
+    QtKey_Super_L,
+    QtKey_Super_R: Result := VK_UNKNOWN;
+    QtKey_Menu: Result := VK_MENU;
+    QtKey_Hyper_L,
+    QtKey_Hyper_R: Result := VK_UNKNOWN;
+    QtKey_Help: Result := VK_HELP;
+    QtKey_Direction_L,
+    QtKey_Direction_R,
+    QtKey_Exclam..
+    QtKey_Slash,
+    QtKey_BracketLeft..
+    QtKey_ydiaeresis,
+    QtKey_Multi_key..
+    QtKey_No: Result := VK_UNKNOWN;
+    QtKey_Cancel: Result := VK_CANCEL;
+    QtKey_Printer: Result := VK_PRINT;
+    QtKey_Execute: Result := VK_EXECUTE;
+    QtKey_Sleep: Result := VK_SLEEP;
+    QtKey_Play: Result := VK_PLAY;
+    QtKey_Zoom: Result := VK_ZOOM;
+    QtKey_Context1..
+    QtKey_Flip,
+    QtKey_unknown: Result := VK_UNKNOWN;
   else
-    Result := VK_UNKNOWN;
+    Result := AKey; // Qt:AKey = VK_KEY in many cases
   end;
+end;
+
+function TQtWidget.LCLKeyToQtKey(AKey: Word): Integer;
+const
+  VKKeyToQtKeyMap: array[0..255] of Integer = // Keyboard mapping table
+   (
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Cancel,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Backspace,
+    QtKey_Tab,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Clear,
+    QtKey_Return,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Shift,
+    QtKey_Control,
+    QtKey_Alt,
+    QtKey_Pause,
+    QtKey_CapsLock,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Escape,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Mode_switch,
+    QtKey_Space,
+    QtKey_PageUp,
+    QtKey_PageDown,
+    QtKey_End,
+    QtKey_Home,
+    QtKey_Left,
+    QtKey_Up,
+    QtKey_Right,
+    QtKey_Down,
+    QtKey_Select,
+    QtKey_Printer,
+    QtKey_Execute,
+    QtKey_Print,
+    QtKey_Insert,
+    QtKey_Delete,
+    QtKey_Help,
+    QtKey_0,
+    QtKey_1,
+    QtKey_2,
+    QtKey_3,
+    QtKey_4,
+    QtKey_5,
+    QtKey_6,
+    QtKey_7,
+    QtKey_8,
+    QtKey_9,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_A,
+    QtKey_B,
+    QtKey_C,
+    QtKey_D,
+    QtKey_E,
+    QtKey_F,
+    QtKey_G,
+    QtKey_H,
+    QtKey_I,
+    QtKey_J,
+    QtKey_K,
+    QtKey_L,
+    QtKey_M,
+    QtKey_N,
+    QtKey_O,
+    QtKey_P,
+    QtKey_Q,
+    QtKey_R,
+    QtKey_S,
+    QtKey_T,
+    QtKey_U,
+    QtKey_V,
+    QtKey_W,
+    QtKey_X,
+    QtKey_Y,
+    QtKey_Z,
+    QtKey_Meta,
+    QtKey_Meta,
+    QtKey_Menu,
+    QtKey_unknown,
+    QtKey_Sleep,
+    QtKey_0,
+    QtKey_1,
+    QtKey_2,
+    QtKey_3,
+    QtKey_4,
+    QtKey_5,
+    QtKey_6,
+    QtKey_7,
+    QtKey_8,
+    QtKey_9,
+    QtKey_Asterisk,
+    QtKey_Plus,
+    QtKey_Comma,
+    QtKey_Minus,
+    QtKey_Period,
+    QtKey_Slash,
+    QtKey_F1,
+    QtKey_F2,
+    QtKey_F3,
+    QtKey_F4,
+    QtKey_F5,
+    QtKey_F6,
+    QtKey_F7,
+    QtKey_F8,
+    QtKey_F9,
+    QtKey_F10,
+    QtKey_F11,
+    QtKey_F12,
+    QtKey_F13,
+    QtKey_F14,
+    QtKey_F15,
+    QtKey_F16,
+    QtKey_F17,
+    QtKey_F18,
+    QtKey_F19,
+    QtKey_F20,
+    QtKey_F21,
+    QtKey_F22,
+    QtKey_F23,
+    QtKey_F24,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_NumLock,
+    QtKey_ScrollLock,
+    QtKey_unknown,
+    QtKey_Massyo,
+    QtKey_Touroku,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Shift,
+    QtKey_Shift,
+    QtKey_Control,
+    QtKey_Control,
+    QtKey_Alt,
+    QtKey_Alt,
+    QtKey_Back,
+    QtKey_Forward,
+    QtKey_Refresh,
+    QtKey_Stop,
+    QtKey_Search,
+    QtKey_Favorites,
+    QtKey_HomePage,
+    QtKey_VolumeMute,
+    QtKey_VolumeDown,
+    QtKey_VolumeUp,
+    QtKey_MediaNext,
+    QtKey_MediaPrevious,
+    QtKey_MediaStop,
+    QtKey_MediaPlay,
+    QtKey_LaunchMail,
+    QtKey_LaunchMedia,
+    QtKey_Launch0,
+    QtKey_Launch1,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Plus,
+    QtKey_Comma,
+    QtKey_Minus,
+    QtKey_Period,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Play,
+    QtKey_Zoom,
+    QtKey_unknown,
+    QtKey_unknown,
+    QtKey_Clear,
+    QtKey_unknown
+   );
+begin
+  if AKey > 255 then
+    Result := QtKey_unknown
+  else
+    Result := VKKeyToQtKeyMap[AKey];
+end;
+
+function TQtWidget.ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
+begin
+  Result := 0;
+  if ssCtrl  in Shift then inc(Result, QtCTRL);
+  if ssShift in Shift then Inc(Result, QtSHIFT);
+  if ssMeta  in Shift then Inc(Result, QtMETA);
+  if ssAlt   in Shift then Inc(Result, QtALT);
 end;
 
 function TQtWidget.GetProps(const AnIndex: String): pointer;
@@ -4923,6 +4979,23 @@ begin
   QAction_setSeparator(ActionHandle, AValue);
 end;
 
+procedure TQtMenu.setShortcut(AShortcut: TShortcut);
+var
+  Key: Word;
+  Shift: TShiftState;
+  Modifiers: QtModifier;
+begin
+  if AShortCut <> 0 then
+  begin
+    ShortCutToKey(AShortCut, Key, Shift);
+    Modifiers := ShiftStateToQtModifiers(Shift);
+    // there is no need in destroying QKeySequnce
+    QAction_setShortcut(ActionHandle, QKeySequence_create(LCLKeyToQtKey(Key) + Modifiers));
+  end
+  else
+    QAction_setShortcut(ActionHandle, QKeySequence_create());
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtMenu.SlotTriggered
 
@@ -5594,6 +5667,7 @@ begin
 end;
 
 end.
+
 
 
 
