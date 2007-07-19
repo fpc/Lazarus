@@ -902,7 +902,6 @@ begin
   else
   begin
     Parent := TQtWidget(WidgetHandle).Widget;
-    ParentPixmap := QPixmap_create(QWidget_width(Parent),QWidget_height(Parent));
     if not APaintEvent then
     begin
       ParentPixmap := QPixmap_Create(QWidget_width(Parent),QWidget_height(Parent));
