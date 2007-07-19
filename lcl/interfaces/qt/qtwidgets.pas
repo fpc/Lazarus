@@ -5233,7 +5233,7 @@ begin
   {$endif}
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QAbstractScrollArea_create(Parent);
+  Result := QScrollArea_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -5252,7 +5252,7 @@ begin
   if Widget <> nil then
   begin
     DetachEvents;
-    QAbstractScrollArea_destroy(QAbstractScrollAreaH(Widget));
+    QScrollArea_destroy(QScrollAreaH(Widget));
     Widget := nil;
   end;
 
