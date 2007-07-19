@@ -871,7 +871,7 @@ begin
   end
   else
   begin
-    Result.CX:= 0;
+    Result.CY:= 0;
     Result.CX:= 0;
   end;
 end;
