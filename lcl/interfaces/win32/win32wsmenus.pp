@@ -199,12 +199,27 @@ var
   oldFont: HFONT;
   newFont: HFONT;
   tmpRect: Windows.RECT;
+  AnsiBuffer: ansistring;
+  WideBuffer: widestring;
 begin
   tmpRect.right := 0;
   tmpRect.left := 0;
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    WideBuffer := Utf8Decode(aCaption);
+    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @TmpRect, DT_CALCRECT);
+  end
+  else
+  begin
+    AnsiBuffer := Utf8ToAnsi(aCaption);
+    DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @TmpRect, DT_CALCRECT);
+  end;
+{$else}
   DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
+{$endif}
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
   Result.cx := TmpRect.right - TmpRect.left;
@@ -394,6 +409,8 @@ var
   IsRightToLeft: Boolean;
   etoFlags: Cardinal;
   dtFlags: Word;
+  AnsiBuffer: ansistring;
+  WideBuffer: widestring;
 begin
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
@@ -420,13 +437,43 @@ begin
   ExtTextOut(aHDC, 0, 0, etoFlags, @aRect, PChar(''), 0, nil);
   TmpLength := aRect.right - aRect.left;
   TmpHeight := aRect.bottom - aRect.top;
+
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    WideBuffer := Utf8Decode(aMenuItem.Caption);
+    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @WorkRect, DT_CALCRECT);
+  end
+  else
+  begin
+    AnsiBuffer := Utf8ToAnsi(aMenuItem.Caption);
+    DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @WorkRect, DT_CALCRECT);
+  end;
+{$else}
   DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @WorkRect, DT_CALCRECT);
+{$endif}
+
   if IsRightToLeft then
     Dec(aRect.Right, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem))
   else
     Inc(aRect.Left, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem));
   Inc(aRect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
+
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    WideBuffer := Utf8Decode(aMenuItem.Caption);
+    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags);
+  end
+  else
+  begin
+    AnsiBuffer := Utf8ToAnsi(aMenuItem.Caption);
+    DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @aRect, dtFlags);
+  end;
+{$else}
   DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, dtFlags);
+{$endif}
+
   if aMenuItem.ShortCut <> scNone then
   begin
     shortCutText := ShortCutToText(aMenuItem.ShortCut);
@@ -440,7 +487,21 @@ begin
       Dec(aRect.Right, GetSystemMetrics(SM_CXMENUCHECK));
       dtFlags := DT_RIGHT;
     end;
-    DrawText(aHDC, pChar(shortCutText), Length(shortCutText), @aRect, dtFlags);
+
+    {$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+      begin
+        WideBuffer := Utf8Decode(shortCutText);
+        DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags);
+      end
+      else
+      begin
+        AnsiBuffer := Utf8ToAnsi(shortCutText);
+        DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @aRect, dtFlags);
+      end;
+    {$else}
+      DrawText(aHDC, pChar(shortCutText), Length(shortCutText), @aRect, dtFlags);
+    {$endif}
   end;
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
