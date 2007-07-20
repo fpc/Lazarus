@@ -54,6 +54,7 @@ type
     class procedure Update(const AStatusBar: TStatusBar); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    class procedure AddControl(const AControl: TControl); override;
   end;
 
   { TQtWSTabSheet }
@@ -528,15 +529,6 @@ begin
     end;
   end;
   
-  {some systems doesn't show statusbar inside mainwindow
-   (linux tested on FC3,FC4,FC7 ).}
-  {$ifdef linux}
-  if Assigned(AWinControl.Parent)
-  and (AWinControl.Parent.Handle = Application.MainForm.Handle)
-  then
-    QMainWindow_setStatusBar(QMainWindowH(TQtMainWindow(AWinControl.Parent.Handle).Widget), QStatusBarH(QtStatusBar.Widget));
-  {$endif}
-    
   // Return handle
 
   Result := THandle(QtStatusBar);
@@ -705,6 +697,25 @@ class procedure TQtWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
 
+end;
+
+class procedure TQtWSStatusBar.AddControl(const AControl: TControl);
+var
+  QtStatusBar: TQtStatusBar;
+begin
+  inherited AddControl(AControl);
+  
+  {some systems doesn't show statusbar inside mainwindow
+   (linux tested on FC3,FC4,FC7,Ubuntu 7.04 ).}
+  {$ifdef linux}
+  if Assigned(AControl.Parent)
+  and (AControl.Parent.Handle = Application.MainForm.Handle)
+  then
+  begin
+    QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
+    QMainWindow_setStatusBar(QMainWindowH(TQtMainWindow(AControl.Parent.Handle).Widget), QStatusBarH(QtStatusBar.Widget));
+  end;
+  {$endif}
 end;
 
 { TQtWSCustomListView }
