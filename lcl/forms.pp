@@ -395,8 +395,6 @@ type
     function IsIconStored: Boolean;
     procedure ClientWndProc(var Message: TLMessage);
     procedure CloseModal;
-    procedure DoCreate;
-    procedure DoDestroy;
     procedure IconChanged(Sender: TObject);
     function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
@@ -439,6 +437,8 @@ type
     procedure Deactivate;dynamic;
     procedure DestroyWnd; override;
     procedure DoClose(var CloseAction: TCloseAction); dynamic;
+    procedure DoCreate; virtual;
+    procedure DoDestroy; virtual;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure EndFormUpdate;
