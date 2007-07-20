@@ -48,7 +48,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
@@ -73,12 +72,6 @@ begin
   QWidget_setFocusPolicy(QtCalendar.Widget, QtTabFocus or QtClickFocus);
   
   Result := THandle(QtCalendar);
-end;
-
-class procedure TQtWSCustomCalendar.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtCalendar(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
 end;
 
 class procedure TQtWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);

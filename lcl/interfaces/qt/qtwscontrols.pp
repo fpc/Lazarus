@@ -69,6 +69,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
   public
+    class procedure AddControl(const AControl: TControl); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -81,7 +82,7 @@ type
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
-{    class procedure AddControl(const AControl: TControl); override;
+{
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
@@ -106,8 +107,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
-    class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
   end;
 
@@ -151,28 +150,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
   {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomControl.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomControl.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtAbstractScrollArea(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomControl.Invalidate
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomControl.Invalidate(const AWinControl: TWinControl);
-begin
-  TQtAbstractScrollArea(AWinControl.Handle).Update;
 end;
 
 {------------------------------------------------------------------------------
@@ -298,6 +275,12 @@ begin
   TQtWidget(AWinControl.Handle).Update;
 end;
 
+class procedure TQtWSWinControl.AddControl(const AControl: TControl);
+begin
+  if (AControl is TWinControl) and (TWinControl(AControl).HandleAllocated) then
+    TQtWidget(TWinControl(AControl).Handle).setParent(TQtWidget(AControl.Parent.Handle).GetContainerWidget);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSWinControl.SetBounds
   Params:  AWinControl - the calling object
@@ -366,11 +349,8 @@ begin
   if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
     TQtMainWindow(Widget).SetTabOrders;
 
-  if AWinControl.HandleObjectShouldBeVisible then
-    QWidget_setVisible(Widget.Widget, True)
-  else
-    QWidget_setVisible(Widget.Widget, False);
-  
+  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+
   {$ifdef VerboseQt}
     Write('Trace:< [TQtWSWinControl.ShowHide] ');
 

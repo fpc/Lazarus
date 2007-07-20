@@ -49,7 +49,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -114,21 +113,6 @@ begin
     QtSpinBox.AttachEvents;
     Result := THandle(QtSpinBox);
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomFloatSpinEdit.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
-begin
-  if TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0 then
-    TQtFloatSpinBox(AWinControl.Handle).Free
-  else
-    TQtSpinBox(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;

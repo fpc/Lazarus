@@ -82,7 +82,6 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -194,22 +193,6 @@ begin
 
   // Return the handle
   Result := THandle(QtMainWindow);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomForm.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Destroys a Qt Form and releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
-begin
-  {$ifdef VerboseQt}
-    WriteLn('[TQtWSCustomForm.DestroyHandle]');
-  {$endif}
-
-  TQtMainWindow(AWinControl.Handle).Free;
 end;
 
 {------------------------------------------------------------------------------

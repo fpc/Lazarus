@@ -49,7 +49,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
@@ -61,7 +60,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSGroupBox }
@@ -80,7 +78,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
 {    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
@@ -118,7 +115,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
@@ -152,7 +148,6 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -180,7 +175,6 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
@@ -236,7 +230,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
@@ -263,7 +256,6 @@ type
 
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCheckBox }
@@ -292,7 +284,6 @@ type
 
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSRadioButton }
@@ -307,12 +298,10 @@ type
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   public
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCustomStaticText }
@@ -322,7 +311,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -381,18 +369,6 @@ begin
 
   Result := THandle(QtScrollbar);
 end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomScrollBar.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSScrollBar.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtScrollBar(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
-end;
-
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomScrollBar.SetParams
@@ -468,17 +444,6 @@ begin
 
 
   Result := THandle(QtListWidget);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomListBox.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomListBox.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtListWidget(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -672,18 +637,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomMemo.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomMemo.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtTextEdit(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
-end;
-
-
-{------------------------------------------------------------------------------
   Method: TQtWSCustomMemo.AppendText
   Params:  None
   Returns: Nothing
@@ -801,17 +754,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtLineEdit(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
-end;
-
-{------------------------------------------------------------------------------
   Method: TQtWSCustomEdit.GetText
   Params:  None
   Returns: Nothing
@@ -923,18 +865,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomStaticText.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomStaticText.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtStaticText(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
-{------------------------------------------------------------------------------
   Method: TQtWSCustomStaticText.SetAlignment
   Params:  None
   Returns: Nothing
@@ -1002,20 +932,6 @@ begin
 
   // Returns the Handle
   Result := THandle(QtPushButton);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtWSButton.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSButton.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtPushButton(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1198,20 +1114,6 @@ begin
   Result := THandle(QtCheckBox);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomCheckBox.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomCheckBox.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtCheckBox(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 { TQtWSRadioButton }
 
 {------------------------------------------------------------------------------
@@ -1221,8 +1123,10 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSRadioButton.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
-  if TQtAbstractButton(ACustomCheckBox.Handle).isChecked then Result := cbChecked
-  else Result := cbUnchecked;
+  if TQtAbstractButton(ACustomCheckBox.Handle).isChecked then
+    Result := cbChecked
+  else
+    Result := cbUnchecked;
 end;
 
 {------------------------------------------------------------------------------
@@ -1246,8 +1150,8 @@ end;
 class procedure TQtWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
   case NewState of
-   cbUnchecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(False);
-   cbChecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(true);
+    cbUnchecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(False);
+    cbChecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(true);
   end;
 end;
 
@@ -1307,15 +1211,15 @@ begin
     { we must calculate text size to get real radiobutton size in TCustomRadioGroup }
     FM := QFontMetrics_create(QWidget_font(QtRadioButton.Widget));
     try
-    Str := UTF8Encode(AWinControl.Caption);
-    ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
+      Str := UTF8Encode(AWinControl.Caption);
+      ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
     finally
-    QFontMetrics_destroy(FM);
+      QFontMetrics_destroy(FM);
     end;
     { now, textwidth + default width of radiobutton (including space), default height
       qt doesn't well align control with textsize < 100 }
     if ATextWidth < 100 then
-    ATextWidth := 100;
+      ATextWidth := 100;
     AWinControl.SetInitialBounds(0, 0, ATextWidth + 22, 22);
   end;
 
@@ -1326,20 +1230,6 @@ begin
   // Returns the Handle
 
   Result := THandle(QtRadioButton);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSRadioButton.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtRadioButton(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 { TQtWSCustomGroupBox }
@@ -1375,20 +1265,6 @@ begin
   Result := THandle(QtGroupBox);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomGroupBox.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomGroupBox.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtGroupBox(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 { TQtWSCustomComboBox }
 
 {------------------------------------------------------------------------------
@@ -1414,20 +1290,6 @@ begin
   QtComboBox.FSavedItemIndex := TCustomComboBox(AWinControl).ItemIndex;
 
   Result := THandle(QtComboBox);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomComboBox.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomComboBox.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtComboBox(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1608,21 +1470,6 @@ begin
 
   Result := THandle(QtToggleBox);
 end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSToggleBox.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSToggleBox.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtPushButton(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 
 initialization
 

@@ -49,7 +49,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 //    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
@@ -62,7 +61,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
 {    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);}
     class procedure AddPage(const ANotebook: TCustomNotebook;
@@ -160,7 +158,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -180,7 +177,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -216,7 +212,6 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSPanel }
@@ -268,20 +263,6 @@ begin
   Result := THandle(QtFrame);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomGroupBox.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtFrame(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 { TQtWSCustomPage }
 
 {------------------------------------------------------------------------------
@@ -309,20 +290,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomPage.CreateHandle] Result: ', IntToStr(Result));
   {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomPage.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtWidget(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 class procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
@@ -368,20 +335,6 @@ begin
   Result := THandle(QtTabWidget);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomNotebook.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomNotebook.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtTabWidget(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 class procedure TQtWSCustomNotebook.AddAllNBPages(const ANotebook: TCustomNotebook);
 begin
 
@@ -424,56 +377,15 @@ var
   Str: WideString;
   i: Integer;
 begin
-
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
 
   Str := UTF8Decode(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
-  QtGroupBox.BoxLayout := QGridLayout_create(QtGroupBox.Widget);
-  
-  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.BoxLayout);
-  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QtGroupBox.Widget);
-  
-  {QGridLayout don't know anything about TCustomRadioGroup Col count so initialize cols }
-  for i := 0 to TCustomRadioGroup(AWinControl).Columns - 1 do
-  begin
-    QGridLayout_setColumnMinimumWidth(QtGroupBox.BoxLayout, i, 32);
-    QGridLayout_setColumnStretch(QtGroupBox.BoxLayout, i, 0);
-  end;
-
-  {QGridLayout don't know anything about TCustomRadioGroup Row count so initialize rows }
-  for i := 0 to TCustomRadioGroup(AWinControl).Items.Count - 1 do
-  begin
-    QGridLayout_setRowMinimumHeight(QtGroupBox.BoxLayout, i, 22 {default height of radiobutton});
-    QGridLayout_setRowStretch(QtGroupBox.BoxLayout, i, 0);
-  end;
-
   QtGroupBox.AttachEvents;
 
   Result := THandle(QtGroupBox);
 end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomRadioGroup.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomRadioGroup.DestroyHandle(const AWinControl: TWinControl);
-begin
-  if Assigned(TQtGroupBox(AWinControl.Handle).ButtonGroup) then
-    TQtGroupBox(AWinControl.Handle).ButtonGroup.Free;
-
-  if TQtGroupBox(AWinControl.Handle).BoxLayout <> NiL then
-    QGridLayout_destroy(TQtGroupBox(AWinControl.Handle).BoxLayout);
-
-  TQtGroupBox(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 
 class procedure TQtWSCustomRadioGroup.ShowHide(const AWinControl: TWinControl);
 var
@@ -526,55 +438,15 @@ var
   Str: WideString;
   i: Integer;
 begin
-
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   
   Str := UTF8Decode(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
-  QtGroupBox.BoxLayout := QGridLayout_create(QtGroupBox.Widget);
-  QWidget_setLayout(QtGroupBox.Widget, QtGroupBox.BoxLayout);
-  QtGroupBox.ButtonGroup := TQtButtonGroup.Create(QtGroupBox.Widget);
-  
-  {QGridLayout don't know anything about TCustomCheckGroup Col count so initialize cols }
-  for i := 0 to TCustomCheckGroup(AWinControl).Columns - 1  do
-  begin
-    QGridLayout_setColumnMinimumWidth(QtGroupBox.BoxLayout, i, 32);
-    QGridLayout_setColumnStretch(QtGroupBox.BoxLayout, i, 0);
-  end;
-  
-  {QGridLayout don't know anything about TCustomCheckGroup Row count so initialize rows }
-  for i := 0 to TCustomCheckGroup(AWinControl).Items.Count - 1 do
-  begin
-    QGridLayout_setRowMinimumHeight(QtGroupBox.BoxLayout, i, 22 {default height of checkbox});
-    QGridLayout_setRowStretch(QtGroupBox.BoxLayout, i, 0);
-  end;
-  
   QtGroupBox.AttachEvents;
 
   Result := THandle(QtGroupBox);
 end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomCheckGroup.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomCheckGroup.DestroyHandle(const AWinControl: TWinControl);
-begin
-  if Assigned(TQtGroupBox(AWinControl.Handle).ButtonGroup) then
-    TQtGroupBox(AWinControl.Handle).ButtonGroup.Free;
-
-  if TQtGroupBox(AWinControl.Handle).BoxLayout <> NiL then
-    QGridLayout_destroy(TQtGroupBox(AWinControl.Handle).BoxLayout);
-
-  TQtGroupBox(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
 
 class procedure TQtWSCustomCheckGroup.ShowHide(const AWinControl: TWinControl);
 var

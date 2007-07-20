@@ -48,7 +48,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
@@ -96,20 +95,6 @@ begin
   // Returns the Handle
 
   Result := THandle(QtPushButton);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtWSBitBtn.DestroyHandle
-  Params:  None
-  Returns: Nothing
-
-  Releases allocated memory and resources
- ------------------------------------------------------------------------------}
-class procedure TQtWSBitBtn.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtPushButton(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------

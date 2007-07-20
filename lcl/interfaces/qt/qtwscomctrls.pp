@@ -80,7 +80,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
@@ -171,7 +170,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
@@ -199,7 +197,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -212,7 +209,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -223,7 +219,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -261,17 +256,6 @@ begin
   Result := THandle(QtToolButton);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSToolButton.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSToolButton.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtToolButton(AWinControl.Handle).Free;
-  
-  AWinControl.Handle := 0;
-end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSToolButton.GetText
@@ -341,18 +325,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSToolBar.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSToolBar.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtToolBar(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
-end;
-
-
-{------------------------------------------------------------------------------
   Method: TQtWSToolBar.SetColor
   Params:  None
   Returns: Nothing
@@ -387,12 +359,6 @@ begin
   QtTrackBar.AttachEvents;
 
   Result := THandle(QtTrackBar);
-end;
-
-class procedure TQtWSTrackBar.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtTrackBar(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
 end;
 
 class procedure TQtWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
@@ -462,13 +428,6 @@ begin
   QtProgressBar := TQtProgressBar.Create(AWinControl, AParams);
   QtProgressBar.AttachEvents;
   Result := THandle(QtProgressBar);
-end;
-
-class procedure TQtWSProgressBar.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtProgressBar(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 class procedure TQtWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
@@ -762,17 +721,6 @@ begin
   QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
   QtTreeWidget.AttachEvents;
   Result := THandle(QtTreeWidget);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomListView.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomListView.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtTreeWidget(AWinControl.Handle).Free;
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------

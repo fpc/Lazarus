@@ -65,6 +65,8 @@ type
   private
     FProps: TStringList;
     FPaintData: TPaintData;
+    FCentralWidget: QWidgetH;
+
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
@@ -113,6 +115,7 @@ type
     procedure Hide;
     procedure Show;
     function getVisible: Boolean;
+    function getClientOffset: TQtPoint;
     function hasFocus: Boolean;
     procedure setEnabled(p1: Boolean);
     procedure setVisible(visible: Boolean);
@@ -194,20 +197,17 @@ type
 
   TQtMainWindow = class(TQtWidget)
   private
+    LayoutWidget: QBoxLayoutH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    LayoutWidget: QBoxLayoutH;
 {$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
 {$endif}
-    CentralWidget: QWidgetH;
-    Splitter: QSplitterH;
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     Canvas: TQtDeviceContext;
     destructor Destroy; override;
-    function GetContainerWidget: QWidgetH; override;
     procedure setTabOrders;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
@@ -267,7 +267,6 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure signalStateChanged(p1: Integer); cdecl;
   end;
 
@@ -284,22 +283,19 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
 
   { TQtGroupBox }
 
   TQtGroupBox = class(TQtWidget)
+  private
+    LayoutWidget: QBoxLayoutH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  private
   public
     destructor Destroy; override;
-  public
-    ButtonGroup: TQtButtonGroup;
-    BoxLayout: QGridLayoutH;
   end;
-
+  
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
 
   TQtAbstractSlider = class(TQtWidget)
@@ -434,7 +430,6 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
@@ -872,7 +867,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.GetContainerWidget: QWidgetH;
 begin
-  Result := Widget;
+  if FCentralWidget <> nil then
+    Result := FCentralWidget
+  else
+    Result := Widget;
 end;
 
 {$IFDEF VerboseQt}
@@ -1586,6 +1584,12 @@ end;
 function TQtWidget.getVisible: boolean;
 begin
   Result := QWidget_isVisible(Widget);
+end;
+
+function TQtWidget.getClientOffset: TQtPoint;
+begin
+  Result.x := QWidget_width(Widget) - QWidget_width(GetContainerWidget);
+  Result.y := QWidget_height(Widget) - QWidget_height(GetContainerWidget);
 end;
 
 function TQtWidget.hasFocus: Boolean;
@@ -2339,19 +2343,19 @@ begin
       and not (csDesigning in LCLObject.ComponentState) then
       begin
         MDIAreaHandle := QMdiArea_create(Result);
-        CentralWidget := MDIAreaHandle;
+        FCentralWidget := MDIAreaHandle;
       end
       else
       begin
-        CentralWidget := QWidget_create(Result);
+        FCentralWidget := QWidget_create(Result);
         MDIAreaHandle := nil
       end;
-      QMainWindow_setCentralWidget(QMainWindowH(Result), CentralWidget);
+      QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
     {$else}
-      CentralWidget := QWidget_create(Result);
+      FCentralWidget := QWidget_create(Result);
 
-      QMainWindow_setCentralWidget(QMainWindowH(Result), CentralWidget);
+      QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
     {$endif}
   end
   else
@@ -2369,8 +2373,7 @@ begin
         
         // QMdiSubWindow already have an layout
         LayoutWidget := QBoxLayoutH(QWidget_layout(Result));
-        if LayoutWidget <> nil
-        then
+        if LayoutWidget <> nil then
           QBoxLayout_destroy(LayoutWidget);
       end
       else
@@ -2381,7 +2384,7 @@ begin
     
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
-    CentralWidget := QWidget_create(Result);
+    FCentralWidget := QWidget_create(Result);
 
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
@@ -2394,7 +2397,7 @@ begin
     {$endif}
     
     QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
-    QLayout_addWidget(LayoutWidget, CentralWidget);
+    QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
   end;
 end;
@@ -2426,21 +2429,6 @@ begin
   end;
 
   inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtMainWindow.GetContainerWidget
-  Params:  None
-  Returns: Nothing
-
-  The main window has a special container widget to handle the size of the menu
- ------------------------------------------------------------------------------}
-function TQtMainWindow.GetContainerWidget: QWidgetH;
-begin
-  if (CentralWidget <> nil) then
-    Result := CentralWidget
-  else
-    Result := Widget;
 end;
 
 {------------------------------------------------------------------------------
@@ -2726,22 +2714,8 @@ begin
     WriteLn('TQtCheckBox.Create');
   {$endif}
   
-  if (LCLObject.Parent is TCustomCheckGroup) then
-  begin
-    Result := QCheckBox_create;
-    
-    QGridLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).BoxLayout, Result);
-
-    if TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
-    TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(False);
-
-    TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QCheckBoxH(Result));
-  end
-  else
-  begin
-    Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-    Result := QCheckBox_create(Parent);
-  end;
+  Result := QCheckBox_create;
+  QWidget_setVisible(Result, False);
 end;
 
 procedure TQtCheckBox.SetGeometry;
@@ -2770,18 +2744,6 @@ begin
   end;
 
   inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtCheckBox.EventFilter
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtCheckBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  Result := False;
-  
-  inherited EventFilter(Sender, Event);
 end;
 
 {------------------------------------------------------------------------------
@@ -2837,39 +2799,15 @@ end;
 { TQtRadioButton }
 
 function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtRadioButton.Create');
   {$endif}
 
-  if (LCLObject.Parent is TCustomRadioGroup) then
-  begin
-    Result := QRadioButton_create;
-
-{$ifdef QT_HIDDEN_BUTTON_WORKAROUND}
-    if LCLObject.Name = 'HiddenRadioButton' then
-      QWidget_hide(Result)
-    else
-    begin
-{$endif}
-      QGridLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).BoxLayout, Result);
-
-      if not TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.GetExclusive then
-      TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.SetExclusive(True);
-
-      TQtGroupBox(LCLObject.Parent.Handle).ButtonGroup.AddButton(QRadioButtonH(Result));
-{$ifdef QT_HIDDEN_BUTTON_WORKAROUND}
-    end;
-{$endif}
-  end
-  else
-  begin
-    Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-    Result := QRadioButton_create(Parent);
-  end;
+  Result := QRadioButton_create();
+  // hide widget by default
+  QWidget_hide(Result);
 end;
 
 procedure TQtRadioButton.SetGeometry;
@@ -2917,19 +2855,6 @@ begin
   inherited DetachEvents;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtRadioButton.EventFilter
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  Result := False;
-
-  // Inherited Callbacks
-  inherited EventFilter(Sender, Event);
-end;
-
 { TQtGroupBox }
 
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -2942,8 +2867,21 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QGroupBox_create(Parent);
-end;
 
+  FCentralWidget := QWidget_create(Result);
+  LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
+
+  {$ifdef USE_QT_4_3}
+    QBoxLayout_setSpacing(LayoutWidget, 0);
+    QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
+  {$else}
+    QLayout_setSpacing(LayoutWidget, 0);
+    QLayout_setMargin(LayoutWidget, 0);
+  {$endif}
+
+  QLayout_addWidget(LayoutWidget, FCentralWidget);
+  QWidget_setLayout(Result, QLayoutH(LayoutWidget));
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtGroupBox.Destroy
@@ -3833,19 +3771,6 @@ procedure TQtTabWidget.DetachEvents;
 begin
   QTabWidget_hook_destroy(FCurrentChangedHook);
   inherited DetachEvents;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTabWidget.EventFilter
-  Params:  QObjectH, QEventH
-  Returns: boolean
-
-  Overrides TQtWidget EventFilter()
- ------------------------------------------------------------------------------}
-function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  Result := False;
-  inherited EventFilter(Sender, Event);
 end;
 
 {------------------------------------------------------------------------------
@@ -5659,14 +5584,13 @@ end;
 
 function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
-
   Result := QWidget_create(nil, QtToolTip);
   MenuBar := nil;
-  CentralWidget := nil;
-  LayoutWidget := nil;
 end;
 
 end.
+
+
 
 
 

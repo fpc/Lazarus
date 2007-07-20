@@ -49,7 +49,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
       const AShadowType: TShadowType); override;
   end;
@@ -106,18 +105,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('< TQtWSArrow.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
   {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSArrow.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSArrow.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TQtArrow(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
