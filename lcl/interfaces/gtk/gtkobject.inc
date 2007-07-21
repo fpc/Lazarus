@@ -3380,6 +3380,11 @@ begin
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else if ALCLObject is TCustomCheckbox then
          ConnectSenderSignal(gObject, 'toggled', @gtktoggledCB)
+     {$IFDEF GTK2}
+       // in gtk2 callback signal of SpinEdit is 'value-changed' (in gtk1- 'changed')
+       else if ALCLObject is TCustomFloatSpinEdit then
+         ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox)
+     {$ENDIF}
        else
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
     end;

@@ -30,7 +30,7 @@ unit Spin;
 interface
 
 uses
-  Classes, Controls, SysUtils, LCLType, LMessages, ClipBrd, StdCtrls;
+  Classes, Controls, SysUtils, LCLType, LCLProc, LMessages, ClipBrd, StdCtrls;
 
 type
   { TCustomFloatSpinEdit }
@@ -62,7 +62,6 @@ type
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure EditingDone; override;
     function GetLimitedValue(const AValue: Single): Single;
     function ValueToStr(const AValue: Single): String;
     function StrToValue(const S: String): Single;

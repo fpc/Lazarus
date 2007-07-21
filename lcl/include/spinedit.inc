@@ -47,10 +47,15 @@ var
 begin
   PrevValue := FValue;
   FValueChanged := True;
-  
-  if Value <> PrevValue then FValueEmpty := False;
-  
-  inherited;
+
+  DebugLn('TCustomFloatSpinEdit.TextChanged Text: ' + Text + ' Value: ' + DbgS(Value));
+
+  if Value <> PrevValue then
+  begin
+    FValueEmpty := False;
+
+    inherited;
+  end;
 end;
 
 procedure TCustomFloatSpinEdit.SetMaxValue(const AValue: Single);
@@ -142,13 +147,6 @@ begin
   FValueChanged := True;
 
   SetInitialBounds(0, 0, 50, 23);
-end;
-
-procedure TCustomFloatSpinEdit.EditingDone;
-begin
-  Text := ValueToStr(FValue);
-
-  inherited EditingDone;
 end;
 
 function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Single): Single;

@@ -98,8 +98,13 @@ end;
 class function TGtkWSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
-  Result:=gtk_spin_button_get_value_as_float(
-                                   PGtkSpinButton(ACustomFloatSpinEdit.Handle));
+{$IFDEF GTK2}
+  // developer.gnome.org/doc/API/2.2/gtk/GtkSpinButton.html:
+  // "function gtk_spin_button_get_value_as_float is deprecated, use gtk_spin_button_get_value() instead"
+  Result:=Single(gtk_spin_button_get_value(PGtkSpinButton(ACustomFloatSpinEdit.Handle)));
+{$ELSE}
+  Result:=gtk_spin_button_get_value_as_float(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
+{$ENDIF}
 end;
 
 class procedure TGtkWSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
