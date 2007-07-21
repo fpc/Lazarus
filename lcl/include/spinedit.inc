@@ -48,7 +48,7 @@ begin
   PrevValue := FValue;
   FValueChanged := True;
 
-  DebugLn('TCustomFloatSpinEdit.TextChanged Text: ' + Text + ' Value: ' + DbgS(Value));
+  //DebugLn('TCustomFloatSpinEdit.TextChanged Text: ' + Text + ' Value: ' + DbgS(Value));
 
   if Value <> PrevValue then
   begin
