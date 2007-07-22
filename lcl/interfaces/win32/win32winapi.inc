@@ -206,7 +206,9 @@ var
     Flags: Cardinal;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
-
+    AnsiBuffer: string;
+    WideBuffer: widestring;
+    
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
 
@@ -238,8 +240,23 @@ var
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
       OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHT));
     end;
+{$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      WideBuffer := Utf8Decode(CheckListBox.Items[Data^.ItemID]);
+      Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
+       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    end
+    else
+    begin
+      AnsiBuffer := Utf8ToAnsi(CheckListBox.Items[Data^.ItemID]);
+      Windows.DrawText(Data^._HDC, PChar(AnsiBuffer), -1,
+       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    end;
+{$else}
     Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+{$endif}
     if Selected then begin
       Windows.SetTextColor(Data^._HDC, OldColor);
       Windows.SetBkColor(Data^._HDC, OldBackColor);
@@ -3455,7 +3472,11 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 Begin
+{$ifdef WindowsUnicodeSupport}
+  Result := Boolean(Windows.TextOutW(DC, X, Y, PWideChar(Utf8Decode(Str)), Count));
+{$else}
   Result := Boolean(Windows.TextOut(DC, X, Y, Str, Count));
+{$endif}
 End;
 
 {------------------------------------------------------------------------------
