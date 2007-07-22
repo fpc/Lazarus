@@ -1051,6 +1051,7 @@ docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/maps.xml svneol=native#text/plain
 docs/xml/lcl/maskedit.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/masks.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/menus.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/pairsplitter.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/postscriptcanvas.xml svneol=LF#text/xml eol=lf
@@ -2845,6 +2846,7 @@ lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
 lcl/maps.pp svneol=native#text/pascal
 lcl/maskedit.pp svneol=native#text/pascal
+lcl/masks.pas svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
 lcl/nonwin32/README.txt svneol=native#text/plain
 lcl/nonwin32/messages.pp svneol=native#text/pascal
@@ -2890,6 +2892,8 @@ lcl/tests/test4_3listview.lpr svneol=native#text/plain
 lcl/tests/test5_1asyncprocess.lpi svneol=native#text/plain
 lcl/tests/test5_1asyncprocess.lpr svneol=native#text/plain
 lcl/tests/test5_1worker.pas svneol=native#text/plain
+lcl/tests/test6_1masks.lpi svneol=native#text/plain
+lcl/tests/test6_1masks.lpr svneol=native#text/plain
 lcl/textstrings.pas svneol=native#text/pascal
 lcl/themes.pas svneol=native#text/pascal
 lcl/tmschema.pas svneol=native#text/pascal

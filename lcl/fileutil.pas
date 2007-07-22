@@ -78,7 +78,6 @@ function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): stri
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;
-function FileInFilenameMasks(const Filename, Masks: string): boolean;
 
 // file search
 type

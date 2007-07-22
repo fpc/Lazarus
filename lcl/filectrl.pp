@@ -35,7 +35,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, StdCtrls, FileUtil;
+  Classes, SysUtils, StdCtrls, FileUtil, Masks;
 
 Type
 
@@ -162,7 +162,7 @@ begin
     faAnyFile, Info)=0
   then
     Repeat
-      if FileInFilenameMasks(Info.Name,Mask) then begin
+      if MatchesMaskList(Info.Name,Mask) then begin
         Added:=false;
         AddFile(ftReadOnly,faReadOnly);
         AddFile(ftHidden,faHidden);

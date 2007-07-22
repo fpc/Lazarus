@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LCLStrConsts, Dialogs,
-  LazConfigStorage, HelpIntfs;
+  LazConfigStorage, HelpIntfs, Masks;
 
 type
   { THelpQueryItem }
@@ -2279,7 +2279,7 @@ begin
   end;
   //debugln('THelpDBISourceDirectory.FileMatches FileMask="',FileMask,'"');
   if (FileMask<>'')
-  and (not FileInFilenameMasks(ExtractFilename(AFilename),FileMask)) then exit;
+  and (not MatchesMaskList(ExtractFilename(AFilename),FileMask)) then exit;
   //debugln('THelpDBISourceDirectory.FileMatches Success');
   Result:=true;
 end;
