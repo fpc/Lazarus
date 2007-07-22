@@ -43,7 +43,7 @@ uses
     glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   Math, // after gtk to get the correct Float type
-  LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps,
+  LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
   FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra;

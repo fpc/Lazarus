@@ -3532,8 +3532,8 @@ begin
   begin
     repeat
       if ((Info.Attr and faDirectory) <> faDirectory) then begin
-        //debugln('PopulateFileAndDirectoryLists CurFileMask="',CurFileMask,'" Info.Name="',Info.Name,'" ',dbgs(FileInFilenameMasks(Info.Name,CurFileMask)));
-        if (CurFileMask='') or (FileInFilenameMasks(Info.Name,CurFileMask)) then
+        //debugln('PopulateFileAndDirectoryLists CurFileMask="',CurFileMask,'" Info.Name="',Info.Name,'" ',dbgs(MatchesMaskList(Info.Name,CurFileMask)));
+        if (CurFileMask='') or (MatchesMaskList(Info.Name,CurFileMask)) then
         begin
           Strlist.Add(Info.Name);
         end;
