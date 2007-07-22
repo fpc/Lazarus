@@ -421,6 +421,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CreateEllipticRgn
+  Params:  p1, p2, p3, p4: Integer
+  Returns: HRGN
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+var
+  QtRegion: TQtRegion;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI CreateEllipticRgn] ');
+  {$endif}
+  QtRegion := TQtRegion.Create(True, p1, p2, p3, p4, QRegionEllipse);
+  Result := HRGN(QtRegion);
+end;
+
+{------------------------------------------------------------------------------
   Function: CreateFontIndirect
   Params:  const LogFont: TLogFont
   Returns: HFONT
@@ -530,6 +546,41 @@ begin
   Result := HPEN(QtPen);
 end;
 
+
+{------------------------------------------------------------------------------
+  Function: CreatePolygonRgn
+  Params:  none
+  Returns: HRGN
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
+var
+  QtRegion: TQtRegion;
+  pts: Array of TQtPoint;
+  i: Integer;
+  p: PPoint;
+  Poly: QPolygonH;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace: [WinAPI CreatePolygonRgn] ');
+  {$endif}
+  SetLength(pts, NumPts);
+  p := PPoint(@Points);
+  for i := 0 to NumPts - 1 do
+  begin
+    pts[i].X := p^.X;
+    pts[i].Y := p^.Y;
+    Inc(p);
+  end;
+  Poly := QPolygon_create(NumPts, @pts[0]);
+  try
+    QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
+    Result := HRGN(QtRegion);
+  finally
+    QPolygon_destroy(Poly);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateRectRgn
   Params:  none
@@ -539,7 +590,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 var
-    QtRegion: TQtRegion;
+  QtRegion: TQtRegion;
 begin
   QtRegion := TQtRegion.Create(True, X1,Y1,X2,Y2);
   Result := HRGN(QtRegion); 
@@ -721,6 +772,213 @@ begin
   Result := True;
 end;
 
+
+{------------------------------------------------------------------------------
+  Method:  DrawEdge
+  Params: DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
+var
+  Brush: HBRUSH;
+  ColorDark, ColorLight: TColor;
+  ClientRect: TRect;
+  QtDC: TQtDeviceContext;
+  Pen: QPenH;
+  
+procedure InternalDrawEdge(Outer: Boolean; const R: TRect);
+var
+  X1, Y1, X2, Y2: Integer;
+  ColorLeftTop, ColorRightBottom: TColor;
+  EdgeQtColor: TQColor;
+begin
+
+  X1 := R.Left;
+  Y1 := R.Top;
+  X2 := R.Right;
+  Y2 := R.Bottom;
+  
+  ColorLeftTop := clNone;
+  ColorRightBottom := clNone;
+
+  if Outer then
+  begin
+    if Edge and BDR_RAISEDOUTER <> 0 then
+    begin
+      ColorLeftTop := ColorLight;
+      ColorRightBottom := ColorDark;
+    end
+    else if Edge and BDR_SUNKENOUTER <> 0 then
+    begin
+      ColorLeftTop := ColorDark;
+      ColorRightBottom := ColorLight;
+    end;
+  end
+  else
+  begin
+    if Edge and BDR_RAISEDINNER <> 0 then
+    begin
+      ColorLeftTop := ColorLight;
+      ColorRightBottom := ColorDark;
+    end
+    else if Edge and BDR_SUNKENINNER <> 0 then
+    begin
+      ColorLeftTop := ColorDark;
+      ColorRightBottom := ColorLight;
+    end;
+  end;
+
+  if grfFlags and BF_DIAGONAL = 0 then
+  begin
+  
+		if grfFlags and BF_MONO = 0 then
+      ColorLeftTop := ColorToRgb(ColorLeftTop);
+    
+    QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorLeftTop),Green(ColorLeftTop),Blue(ColorLeftTop));
+    Pen := QPainter_pen(QtDC.Widget);
+    QPen_setColor(Pen, @EdgeQtColor);
+
+    if grfFlags and BF_LEFT <> 0 then
+      QtDC.DrawLine(X1, Y1, X1, Y2);
+    if grfFlags and BF_TOP <> 0 then
+      QtDC.DrawLine(X1, Y1, X2, Y1);
+
+		if grfFlags and BF_MONO = 0 then
+      ColorLeftTop := ColorToRgb(ColorRightBottom);
+    
+    QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorRightBottom),Green(ColorRightBottom),Blue(ColorRightBottom));
+    Pen := QPainter_pen(QtDC.Widget);
+    QPen_setColor(Pen, @EdgeQtColor);
+
+    if grfFlags and BF_RIGHT <> 0 then
+      QtDC.DrawLine(X2, Y1, X2, Y2);
+    if grfFlags and BF_BOTTOM <> 0 then
+      QtDC.DrawLine(X1, Y2, X2, Y2);
+  end
+  else
+  begin
+		if grfFlags and BF_MONO = 0 then
+      ColorLeftTop := ColorToRgb(ColorRightBottom);
+    QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorLeftTop),Green(ColorLeftTop),Blue(ColorLeftTop));
+    Pen := QPainter_pen(QtDC.Widget);
+    QPen_setColor(Pen, @EdgeQtColor);
+    if (grfFlags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
+       (grfFlags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
+      QtDC.DrawLine(X1, Y1, X2, Y2)
+    else
+      QtDC.DrawLine(X1, Y2, X2, Y1);
+  end;
+end;
+  
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI DrawEdge] ');
+  {$endif}
+
+  Result := False;
+  if not IsValidDC(DC) then exit;
+  
+  QtDC := TQtDeviceContext(DC);
+  
+
+  ClientRect := Rect;
+  QPainter_save(QtDC.Widget);
+  try
+    ColorDark := ColorToRGB(clDark);
+    ColorLight := ColorToRGB(clBtnHighlight);
+    if grfFlags and BF_FLAT <> 0 then
+      ColorLight := clSilver;
+    if grfFlags and BF_MONO <> 0 then
+    begin
+      ColorDark := clBlack;
+      ColorLight := clWhite;
+    end;
+    try
+      if Edge and (BDR_SUNKENOUTER or BDR_RAISEDOUTER) <> 0 then
+        InternalDrawEdge(True, Rect);
+      InflateRect(ClientRect, -1, -1);
+      if grfFlags and BF_MONO = 0 then
+        ColorDark := ColorToRGB(clMid);
+      if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
+      begin
+        InternalDrawEdge(False, ClientRect);
+        InflateRect(ClientRect, -1, -1);
+      end;
+    finally
+
+    end;
+
+    if grfFlags and BF_MIDDLE <> 0 then
+    begin
+      Brush := CreateSolidBrush(clButton);
+      try
+        FillRect(DC, ClientRect, Brush);
+      finally
+        DeleteObject(Brush);
+      end;
+    end;
+
+    if grfFlags and BF_ADJUST <> 0 then
+      Rect := ClientRect;
+
+    Result := True;
+  finally
+    QPainter_restore(QtDC.Widget);
+  end;
+
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DPtoLP
+  Params:  DC: HDC; var Points; Count: Integer
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  P: PPoint;
+  QtPoint: TQtPoint;
+  Matrix: QMatrixH;
+  MatrixInv: QMatrixH;
+  QtDC: TQtDeviceContext;
+  Inverted: Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI DPtoLP] ');
+  {$endif}
+
+  Result := False;
+  
+  if not IsValidDC(DC)
+  then
+    exit;
+    
+  QtDC := TQtDeviceContext(DC);
+
+  Matrix := QMatrix_create;
+  MatrixInv := QMatrix_create;
+  QPainter_combinedMatrix(QtDC.Widget, Matrix);
+  P := @Points;
+  try
+    while Count > 0 do
+    begin
+      Dec(Count);
+      Inverted := QMatrix_isInvertible(Matrix);
+      QMatrix_inverted(Matrix, MatrixInv, @Inverted);
+      QtPoint.X := P^.X;
+      QtPoint.Y := P^.Y;
+      QMatrix_map(MatrixInv, @QtPoint, @QtPoint);
+      P^.X := QtPoint.X;
+      P^.Y := QtPoint.Y;
+      Inc(P);
+    end;
+    
+    Result := True;
+  finally
+    QMatrix_destroy(MatrixInv);
+    QMatrix_destroy(Matrix);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  DrawText
   Params:  DC, Str, Count, Rect, Flags
@@ -870,6 +1128,69 @@ begin
   System.EnterCriticalsection(ACritSec^);
 end;
 
+
+{------------------------------------------------------------------------------
+  Function: ExcludeClipRect
+  Params:  none
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
+var
+  Region: QRegionH;
+  ExRegion: QRegionH;
+  QtDC: TQtDeviceContext;
+  R: TRect;
+  R1: PRect;
+  X1,Y1,X2,Y2: Integer;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI ExcludeClipRect]');
+  {$endif}
+  
+  Result := ERROR;
+  
+  if not IsValidDC(DC) then Exit;
+  
+  QtDC := TQtDeviceContext(DC);
+  
+  
+  X1 := Left;
+  Y1 := Top;
+  X2 := Right;
+  Y2 := Bottom;
+  
+  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X1, Y1, @X2, @Y2);
+
+  ExRegion := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1, QRegionRectangle);
+  Region := QRegion_create;
+  try
+    QPainter_clipRegion(QtDC.Widget, Region);
+    QRegion_subtract(Region, Region, ExRegion);
+    QPainter_setClipRegion(QtDC.Widget, Region);
+    QPainter_setClipping(QtDC.Widget, True);
+    
+    if QRegion_isEmpty(Region)
+    then
+      Result := NULLREGION
+    else
+    begin
+      QRegion_boundingRect(Region, @R);
+      New(R1);
+      R1^ := R;
+      if QRegion_contains(Region, R1)
+      then
+        Result := SIMPLEREGION
+      else
+        RESULT := COMPLEXREGION;
+      Dispose(R1);
+    end;
+  finally
+    QRegion_destroy(Region);
+    QRegion_destroy(ExRegion);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
@@ -933,6 +1254,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: FillRgn
+  Params:  DC: HDC; RegionHnd: HRGN; hbr: HBRUSH
+  Returns: Boolean
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
+begin
+  {$ifdef VerboseQtWinAPI}
+    DebugLn('[WinAPI FillRgn Rgn=', dbgs(RegionHnd),' Brush=', dbghex(hbr));
+  {$endif}
+  Result := False;
+  if not IsValidDC(DC) then exit;
+  {$note implement FillRgn()}
+end;
+
+{------------------------------------------------------------------------------
   Function: Frame
   Params:  none
   Returns: Nothing
@@ -961,7 +1298,8 @@ end;
 function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 begin
-  Result := True;
+  {$note implement}
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1038,14 +1376,15 @@ end;
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+var
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientBounds]');
   {$endif}
-
-  QWidget_rect(TQtWidget(handle).Widget, @ARect);
-
-  Result:=true;
+  QWidget_geometry(TQtWidget(handle).Widget, @ARect);
+  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1059,12 +1398,16 @@ end;
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+var
+  Size: TSize;
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientRect]');
   {$endif}
 
-  QWidget_rect(TQtWidget(handle).Widget, @ARect);
+  QWidget_contentsRect(TQtWidget(handle).Widget, @ARect);
+  OffsetRect(ARect, -ARect.Left, -ARect.Top);
 
   Result:=true;
 end;
@@ -1115,9 +1458,12 @@ begin
     if QPainter_HasClipping(Widget) then
     begin
       ARegion := QRegion_Create;
-      QPainter_ClipRegion(Widget, ARegion);
-      QRegion_boundingRect(ARegion, lpRect);
-      QRegion_destroy(ARegion);
+      try
+        QPainter_ClipRegion(Widget, ARegion);
+        QRegion_boundingRect(ARegion, lpRect);
+      finally
+        QRegion_destroy(ARegion);
+      end;
     end;
     {$ifdef VerboseQtWinAPI}
     WriteLn(' Rect=', dbgs(lprect^));
@@ -1205,6 +1551,61 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetDeviceCaps
+  Params: DC: HDC; Index: Integer
+  Returns: Integer
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  QtDC: TQtDeviceContext;
+  PaintDevice: QPaintDeviceH;
+  w: QWidgetH;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
+  {$endif}
+
+  Result := 0;
+  if not IsValidDC(DC) then exit;
+  
+  QtDC := TQtDeviceContext(DC);
+  
+  if QtDC.Parent <> nil
+  then
+    w := QtDC.Parent
+  else
+    w := QApplication_desktop;
+    
+  PaintDevice := QWidget_to_QPaintDevice(w);
+  
+  case Index of
+    HORZSIZE:
+      Result := QPaintDevice_widthMM(PaintDevice);
+    VERTSIZE:
+      Result := QPaintDevice_heightMM(PaintDevice);
+    HORZRES:
+      Result := QPaintDevice_width(PaintDevice);
+    BITSPIXEL:
+      Result := QPaintDevice_depth(PaintDevice);
+    PLANES:
+      Result := 1;
+    SIZEPALETTE:
+      Result := QPaintDevice_numColors(PaintDevice);
+    LOGPIXELSX:
+      Result := QPaintDevice_logicalDpiX(PaintDevice);
+    LOGPIXELSY:
+      Result := QPaintDevice_logicalDpiY(PaintDevice);
+    VERTRES:
+      Result := QPaintDevice_height(PaintDevice);
+    NUMRESERVED:
+      Result := 0;
+    else
+      Result := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetFocus
   Params:  None
   Returns: Nothing
@@ -1231,7 +1632,6 @@ begin
     {$endif}
   end;
 end;
-
 
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetDeviceRawImageDescription
@@ -1284,6 +1684,23 @@ begin
   end;
 
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TQtWidgetSet.GetMapMode
+  Params:  DC
+  Returns: Integer
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI GetMapMode] DC: ' + dbghex(DC));
+  {$endif}
+  Result := 0;
+  if not IsValidDC(DC) then exit;
+  
+  {$note implement - wait for LCL}
+  // Result := TQtDeviceContext(DC).MapMode;
 end;
 
 {------------------------------------------------------------------------------
@@ -2213,7 +2630,7 @@ begin
   {$endif}
 
   Result := 0;
-  
+
   ARect.Top := QWidget_y(TQtWidget(Handle).Widget);
   ARect.Left := QWidget_x(TQtWidget(Handle).Widget);
   ARect.Bottom := QWidget_height(TQtWidget(Handle).Widget) + QWidget_y(TQtWidget(Handle).Widget);
@@ -2231,17 +2648,20 @@ end;
   parent
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
-{var
+var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
-  WindowInfo: PWindowInfo;}
+  //WindowInfo: PWindowInfo;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRelativePosition]');
   {$endif}
 
-  Result := False;
+  QWidget_geometry(TQtMainWindow(Handle).Widget, @R);
+  Left := R.Left;
+  Top := R.Top;
+  Result := True;
   
 {  WindowInfo := GetWindowInfo(Handle);
   if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
@@ -2342,8 +2762,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
   {$endif}
-
-  QWidget_update(TQtWidget(aHandle).Widget,Rect); 
+  
+  QWidget_update(TQtWidget(aHandle).Widget,Rect);
 
   Result := True;
 end;
@@ -2495,6 +2915,39 @@ begin
   Result := True;
 end;
 
+function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+var
+  w: QWidgetH;
+  Region: QRegionH;
+  R: PRect;
+begin
+  {$ifdef VerboseQtWinAPI}
+  writeln('[WinAPI RectVisible] ');
+  {$endif}
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  w := TQtDeviceContext(DC).Parent;
+  if w <> nil then
+  begin
+	  if QWidget_isVisible(w) then
+    begin
+      Region := QRegion_create;
+      try
+  	    QWidget_visibleRegion(w, Region);
+        New(R);
+        try
+          R^ := ARect;
+          Result := QRegion_contains(Region, R);
+        finally
+          Dispose(R);
+        end;
+      finally
+        QRegion_destroy(Region);
+      end;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: ReleaseDC
   Params:     hWnd:       Handle to the window whose DC is to be released.
@@ -2623,6 +3076,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: ScreenToClient
+  Params:  Handle: HWND; var P: TPoint
+  Returns:
+-------------------------------------------------------------------------------}
+function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+var
+  APoint: TQtPoint;
+begin
+  {$ifdef VerboseQTWinAPI}
+  WriteLn('[WinAPI TQtWidgetSet.ScreenToClient] ');
+  {$Endif}
+  Result := 0;
+  if Handle <> 0 then
+  begin
+    APoint.x := P.X;
+    APoint.y := P.Y;
+    QWidget_mapFromGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
+    P.X := APoint.x;
+    P.Y := APoint.y;
+    Result := 1;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: SelectClipRGN
   Params:  DC, RGN
   Returns: longint
@@ -2641,6 +3118,8 @@ function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   ARegion: QRegionH;
   Painter: QPainterH;
+  R: TRect;
+  R1: PRect;
 begin
   result := ERROR;
   if IsValidDC(DC) then
@@ -2649,18 +3128,29 @@ begin
     QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget);
     if QPainter_hasClipping(Painter) then
     begin
-      // TODO: isNull is trated as isEmpty, is not right but isNull is not
-      //       in the bindings, it's not also in QT documentation :(
-      //       however in QT documentation for isEmpty, isNull is mentioned
       ARegion := QRegion_Create;
-      QPainter_ClipRegion(Painter, ARegion);
-      if QRegion_isEmpty(ARegion) then
-        result := NULLREGION
-      else begin
-        result := SIMPLEREGION;
-        // TODO: test for complex region
+      try
+        QPainter_ClipRegion(Painter, ARegion);
+        if QRegion_isEmpty(ARegion) then
+          result := NULLREGION
+        else
+        begin
+          QRegion_boundingRect(ARegion, @R);
+          New(R1);
+          try
+            R1^ := R;
+            if QRegion_contains(ARegion, R1)
+            then
+              result := SIMPLEREGION
+            else
+              Result := COMPLEXREGION;
+          finally
+            Dispose(R1);
+          end;
+        end;
+      finally
+        QRegion_Destroy(ARegion);
       end;
-      QRegion_Destroy(ARegion);
     end else begin
       result := NULLREGION;
     end;
@@ -2866,6 +3356,90 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtWidgetSet.SetMapMode
+  Params: DC: HDC; MapMode: Integer
+  Returns: Integer
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetMapMode(DC: HDC; MapMode: Integer): Integer;
+var
+  Matrix: QMatrixH;
+  MatrixNew: QMatrixH;
+  dpi: TSize;
+  m11, m22: Double;
+  dx, dy: Double;
+  QtDC: TQtDeviceContext;
+
+procedure SetM(const Am11, Am22: Double);
+begin
+  m11 := Am11;
+  m22 := Am22;
+end;
+
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetMapMode] DC: ',dbghex(DC),' MapMode: ',MapMode);
+  {$endif}
+
+  Result := 0;
+  if not IsValidDC(DC) then exit;
+  
+  {$note implement - wait for LCL}
+  
+  (*
+  QtDC := TQtDeviceContext(DC);
+  
+  dpi.cx := GetDeviceCaps(DC, LOGPIXELSX);
+  dpi.cy := GetDeviceCaps(DC, LOGPIXELSY);
+
+  Result := GetMapMode(DC);
+
+  case MapMode of
+    MM_TEXT:
+      SetM(1, 1);
+
+    MM_LOMETRIC:
+      SetM((dpi.cx / 2.54) / 100, -(dpi.cy / 2.54) / 100);
+    MM_HIMETRIC:
+      SetM((dpi.cx / 2.54) / 1000, -(dpi.cy / 2.54) / 1000);
+
+    MM_LOENGLISH:
+      SetM(dpi.cx / 10, -dpi.cy / 10);
+    MM_HIENGLISH:
+      SetM(dpi.cx / 100, -dpi.cy / 100);
+
+    MM_TWIPS:
+      SetM(dpi.cx / 1440, -dpi.cy / 1440);
+
+    MM_ISOTROPIC:
+
+  end;
+
+  Matrix := QPainter_matrix(QtDC.Widget);
+  
+  if QPainter_worldMatrixEnabled(QtDC.Widget) then
+  begin
+    Matrix := QPainter_worldMatrix(QtDC.Widget);
+    dx := QMatrix_dx(Matrix);
+    dy := QMatrix_dy(Matrix);
+  end else
+  begin
+    dx := 0;
+    dy := 0;
+  end;
+  
+  MatrixNew := QMatrix_create(m11, 0, 0, m22, dx, dy);
+  try
+    QPainter_setWorldMatrix(QtDC.Widget, MatrixNew, False);
+  finally
+    QMatrix_destroy(MatrixNew);
+  end;
+  
+  Result := MapMode;
+  *)
+  
+end;
+{------------------------------------------------------------------------------
   Function: SetFocus
   Params: hWnd   - Window handle to be focused
   Returns:
@@ -3063,8 +3637,9 @@ begin
     begin
       {HWND is always TScrollBar, but seem that Create ScrollBar should be called here }
       if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
-      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
-      exit;
+      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState)
+      then
+        exit;
 
       ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
 
@@ -3084,13 +3659,15 @@ begin
     SB_HORZ:
     begin
       if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
-      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
-      exit;
+      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState)
+      then
+        exit;
 
       {do not localize !}
       ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
 
-      if not Assigned(ScrollBar) then
+      if not Assigned(ScrollBar)
+      and not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
       begin
         ScrollBar := TScrollBar.Create(TQtWidget(Handle).LCLObject);
         ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'; {do not localize !}
@@ -3111,22 +3688,26 @@ begin
           TQtAbstractScrollArea(Handle).horizontalScrollBar.Show;
         end;
       end;
-                   
-      FRepaint := bRedraw and not ScrollBar.Visible;
-      ScrollBar.Visible := bRedraw;
+      if Assigned(ScrollBar) then
+      begin
+        FRepaint := bRedraw and not ScrollBar.Visible;
+        ScrollBar.Visible := bRedraw;
+      end;
       
     end; {SB_HORZ}
     
     SB_VERT:
     begin
       if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
-      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
-      exit;
+      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState)
+      then
+        exit;
 
       {do not localize !}
       ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
                    
-      if not Assigned(ScrollBar) then
+      if not Assigned(ScrollBar)
+      and not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
       begin
         ScrollBar := TScrollBar.Create(TQtWidget(Handle).LCLObject);
         ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR';  {do not localize !}
@@ -3149,18 +3730,24 @@ begin
         end;
 
       end;
-
-      FRepaint := bRedraw and not ScrollBar.Visible;
-      ScrollBar.Visible := bRedraw;
+      if Assigned(ScrollBar) then
+      begin
+        FRepaint := bRedraw and not ScrollBar.Visible;
+        ScrollBar.Visible := bRedraw;
+      end;
 
     end; {SB_VERT}
     
   end;
   
-  if FRepaint then ScrollBar.Invalidate;
+  if Assigned(ScrollBar) then
+  begin
+    if FRepaint then ScrollBar.Invalidate;
 
-  if bRedraw then
-  Result := PrepareScrollInfo;
+    if bRedraw
+    then
+      Result := PrepareScrollInfo;
+  end;
 
 end;
 
@@ -3350,6 +3937,20 @@ begin
   
   TQtDeviceContext(DC).drawText(X, Y, @WideStr);
   
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  UpdateWindow
+  Params:  Handle
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.UpdateWindow(Handle: HWND): Boolean;
+begin
+ {$ifdef VerboseQtWinAPI}
+   WriteLn('[WinAPI UpdateWindow]');
+ {$endif}
+  QWidget_update(TQtWidget(Handle).Widget);
   Result := True;
 end;
 

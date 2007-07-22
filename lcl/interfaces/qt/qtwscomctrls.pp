@@ -707,7 +707,6 @@ begin
   
   {some systems doesn't show statusbar inside mainwindow
    (linux tested on FC3,FC4,FC7,Ubuntu 7.04 ).}
-  {$ifdef linux}
   if Assigned(AControl.Parent)
   and (AControl.Parent.Handle = Application.MainForm.Handle)
   then
@@ -715,7 +714,6 @@ begin
     QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
     QMainWindow_setStatusBar(QMainWindowH(TQtMainWindow(AControl.Parent.Handle).Widget), QStatusBarH(QtStatusBar.Widget));
   end;
-  {$endif}
 end;
 
 { TQtWSCustomListView }

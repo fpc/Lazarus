@@ -177,10 +177,19 @@ begin
   begin
     if fsModal in TForm(AWinControl).FormState then
     begin
+      {$ifdef linux}
       QWidget_setWindowFlags(Widget.Widget, QtDialog);
+      {$endif}
       Widget.setWindowModality(QtApplicationModal);
     end;
     TQtMainWindow(Widget).SetTabOrders;
+    
+    if TForm(AWinControl).FormStyle = fsMDIChild then
+    begin
+	    TForm(AWinControl).Left := 0;
+	    TForm(AWinControl).Top := 0;
+      TForm(AWinControl).ReAlign;
+    end;
   end;
 
   if AWinControl.HandleObjectShouldBeVisible then

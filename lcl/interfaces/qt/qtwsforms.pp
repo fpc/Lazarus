@@ -181,14 +181,7 @@ begin
   and (Application.MainForm.FormStyle = fsMdiForm)
   and not (csDesigning in AWinControl.ComponentState)
   then
-  begin
-    QWidget_geometry(QtMainWindow.MenuBar.Widget, @R);
     QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
-    AWinControl.Height := AWinControl.Height + R.Bottom;
-    {TODO: Show MDIChild Left&Top +10 of last created mdi child}
-    AWinControl.Left := 0;
-    AWinControl.Top := 0;
-  end;
   {$endif}
 
   // Return the handle

@@ -173,7 +173,10 @@ type
   public
     Widget: QRegionH;
     constructor Create(CreateHandle: Boolean); virtual; overload;
-    constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
+    constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer;
+      Const RegionType: QRegionRegionType = QRegionRectangle); virtual; overload;
+    constructor Create(CreateHandle: Boolean; Poly: QPolygonH;
+      Const Fill: QtFillRule = QtWindingFill); virtual; overload;
     destructor Destroy; override;
   end;
 
@@ -853,15 +856,26 @@ end;
   Params:  CreateHandle: Boolean; X1,Y1,X2,Y2:Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtRegion.Create(CreateHandle: Boolean; X1,Y1,X2,Y2:Integer);
+constructor TQtRegion.Create(CreateHandle: Boolean; X1,Y1,X2,Y2:Integer;
+  Const RegionType: QRegionRegionType = QRegionRectangle);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
   // Creates the widget
-  if CreateHandle then Widget := QRegion_create(X1,Y1,X2,Y2);
+  if CreateHandle then Widget := QRegion_create(X1,Y1,X2,Y2, RegionType);
 end;
+
+constructor TQtRegion.Create(CreateHandle: Boolean; Poly: QPolygonH;
+  Const Fill: QtFillRule = QtWindingFill);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtRegion.Create polyrgn CreateHandle: ', dbgs(CreateHandle));
+  {$endif}
+  if CreateHandle then Widget := QRegion_create(Poly, Fill);
+end;
+
 
 {------------------------------------------------------------------------------
   Function: TQtRegion.Destroy

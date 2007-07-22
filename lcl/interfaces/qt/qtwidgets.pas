@@ -1636,7 +1636,9 @@ procedure TQtWidget.setWidth(p1: Integer);
 var
    R: TRect;
 begin
-  QWidget_geometry(Widget, @R);
+  R.Left := QWidget_x(Widget);
+  R.Top := QWidget_y(Widget);
+  R.Bottom := QWidget_height(Widget);
   R.Right := p1;
   QWidget_setGeometry(Widget,@R);
 end;
@@ -1645,7 +1647,9 @@ procedure TQtWidget.setHeight(p1: Integer);
 var
    R: TRect;
 begin
-  QWidget_geometry(Widget, @R);
+  R.Left := QWidget_x(Widget);
+  R.Top := QWidget_y(Widget);
+  R.Right := QWidget_width(Widget);
   R.Bottom := p1;
   QWidget_setGeometry(Widget, @R);
 end;
@@ -2384,6 +2388,7 @@ begin
     
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
+
     FCentralWidget := QWidget_create(Result);
 
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
@@ -2399,6 +2404,7 @@ begin
     QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
+
   end;
 end;
 
@@ -2860,6 +2866,7 @@ end;
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
+  R: TRect;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2868,8 +2875,9 @@ begin
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QGroupBox_create(Parent);
 
-  FCentralWidget := QWidget_create(Result);
-  LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
+  {$ifdef QT_USE_QLAYOUT_IN_TQTGROUPBOX}
+    FCentralWidget := QWidget_create(Result);
+    LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
   {$ifdef USE_QT_4_3}
     QBoxLayout_setSpacing(LayoutWidget, 0);
@@ -2879,8 +2887,9 @@ begin
     QLayout_setMargin(LayoutWidget, 0);
   {$endif}
 
-  QLayout_addWidget(LayoutWidget, FCentralWidget);
-  QWidget_setLayout(Result, QLayoutH(LayoutWidget));
+    QLayout_addWidget(LayoutWidget, FCentralWidget);
+    QWidget_setLayout(Result, QLayoutH(LayoutWidget));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -3878,7 +3887,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtGroupBox.Destroy
+  Function: TQtComboBox.Destroy
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
