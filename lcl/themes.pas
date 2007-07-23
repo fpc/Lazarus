@@ -1906,7 +1906,10 @@ function TThemeServices.IsChecked(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
   if (Details.Element in [teButton]) then
-    Result := (Details.State > 4) and (Details.State < 9);
+    Result := (Details.State > 4) and (Details.State < 9)
+  else
+  if (Details.Element in [teToolBar]) then
+    Result := (Details.State > 4);
 end;
 
 function TThemeServices.IsMixed(Details: TThemedElementDetails): Boolean;
