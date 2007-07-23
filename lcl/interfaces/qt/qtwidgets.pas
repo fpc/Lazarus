@@ -105,6 +105,7 @@ type
     procedure SlotResize; cdecl;
     procedure SlotContextMenu; cdecl;
   public
+    procedure Activate;
     procedure SetColor(const Value: PQColor); virtual;
     procedure SetTextColor(const Value: PQColor); virtual;
     procedure SetCursor(const ACursor: QCursorH); virtual;
@@ -114,6 +115,7 @@ type
     procedure WindowTitle(Str: PWideString);
     procedure Hide;
     procedure Show;
+    function getEnabled: Boolean;
     function getVisible: Boolean;
     function getClientOffset: TQtPoint;
     function hasFocus: Boolean;
@@ -1491,6 +1493,11 @@ begin
    LCLObject.PopupMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
+procedure TQtWidget.Activate;
+begin
+  QWidget_activateWindow(Widget);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SetColor
   Params:  QColorH
@@ -1559,7 +1566,7 @@ end;
 
   Repaints the control imediately
  ------------------------------------------------------------------------------}
-procedure TQtWidget.Repaint;
+procedure TQtWidget.Repaint(ARect: PRect = nil);
 begin
   if ARect <> nil then
     QWidget_repaint(Widget, ARect)
@@ -1585,6 +1592,11 @@ end;
 procedure TQtWidget.Show;
 begin
   QWidget_show(Widget);
+end;
+
+function TQtWidget.getEnabled: Boolean;
+begin
+  Result := QWidget_isEnabled(Widget);
 end;
 
 function TQtWidget.getVisible: boolean;
@@ -2577,7 +2589,7 @@ end;
 
 procedure TQtMainWindow.BringToFront;
 begin
-  QWidget_activateWindow(Widget);
+  Activate;
   QWidget_raise(Widget);
 end;
 

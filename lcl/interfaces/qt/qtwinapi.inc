@@ -1058,11 +1058,11 @@ begin
 
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('[WinAPI DrawText] Rect=', dbgs(Rect));
-    {$endif}
     ARect.Right := ARect.Left + R.Right - R.Left;
     ARect.Bottom := ARect.Top + R.Bottom - R.Top;
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('[WinAPI DrawText] Rect=', dbgs(ARect));
+    {$endif}
     Exit;
   end;
 
@@ -1220,7 +1220,7 @@ begin
 
   if Str <> nil then
   begin
-    WideStr := UTF8Decode(Str);
+    WideStr := Str;
 
     QtDC.drawText(X, Y, @WideStr);
   end;
@@ -1318,6 +1318,11 @@ begin
    ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
 
   Result := 1;
+end;
+
+function TQtWidgetSet.GetActiveWindow: HWND;
+begin
+  Result := HWND(QtObjectFromWidgetH(QApplication_activeWindow));
 end;
 
 {------------------------------------------------------------------------------
@@ -2749,6 +2754,16 @@ begin
   CritSection:=TCriticalSection(ACritSec);
 end;
 
+function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
+begin
+  Result := TQtWidget(Handle).getEnabled;
+end;
+
+function TQtWidgetSet.IsWindowVisible(Handle: HWND): boolean;
+begin
+  Result := TQtWidget(Handle).getVisible;
+end;
+
 {------------------------------------------------------------------------------
   Function: InvalidateRect
   Params: aHandle:
@@ -3458,6 +3473,13 @@ begin
     DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
     {$endif}
   end;
+end;
+
+function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
+begin
+  TQtWidget(HWnd).Activate;
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

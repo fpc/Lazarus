@@ -67,6 +67,7 @@ function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
+function GetActiveWindow : HWND; override;
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
@@ -100,6 +101,8 @@ function HideCaret(hWnd: HWND): Boolean; override;
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
+function IsWindowEnabled(Handle: HWND): boolean; override;
+function IsWindowVisible(Handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
@@ -128,6 +131,7 @@ function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
+function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetMapMode(DC: HDC; MapMode: Integer): Integer; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
