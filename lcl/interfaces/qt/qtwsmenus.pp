@@ -384,7 +384,10 @@ begin
   end
   else if (AMenu is TPopUpMenu) then
   begin
-    Parent := TQtMainWindow(TCustomForm(AMenu.Owner).Handle).Widget;
+    if AMenu.Owner <> nil then
+      Parent := TQtMainWindow(TCustomForm(AMenu.Owner).Handle).Widget
+    else
+      Parent := nil;
 
     Menu := TQtMenu.Create(Parent);
     Menu.MenuItem := AMenu.Items;
