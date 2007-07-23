@@ -43,6 +43,9 @@ uses
   LCLType, LCLIntf, Graphics, ExtCtrls;
 
 type
+
+  { TEmulatedCaret }
+
   TEmulatedCaret = class(TComponent)
   private
     FTimer: TTimer;
@@ -60,6 +63,7 @@ type
     procedure DrawCaret; virtual;
     function CreateColorPixmap(Color: Cardinal): QPixmapH;
     procedure SetWidget(AWidget: TQtWidget);
+    procedure UpdateCaret;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -322,7 +326,10 @@ function TEmulatedCaret.Hide: Boolean;
 begin
   Result := IsValid;
   if Result and FVisible then
+  begin
     FVisible := False;
+    UpdateCaret;
+  end;
 end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
@@ -343,8 +350,8 @@ end;
 procedure TEmulatedCaret.DoTimer(Sender: TObject);
 begin
   FVisibleState := not FVisibleState;
-  if FVisible and (FWidget <> nil) and not FWidget.InPaint then
-    FWidget.Update;
+  if FVisible then
+    UpdateCaret;
 end;
 
 procedure TEmulatedCaret.Lock;
@@ -401,6 +408,20 @@ begin
   end
   else
     FWndId := 0;
+end;
+
+procedure TEmulatedCaret.UpdateCaret;
+var
+  R: TRect;
+begin
+  if (FWidget <> nil) and not FWidget.InPaint then
+  begin
+    R.Left := FPos.x;
+    R.Top := FPos.y;
+    R.Right := R.Left + FWidth;
+    R.Bottom := R.Top + FHeight;
+    FWidget.Update(@R);
+  end;
 end;
 
 end.

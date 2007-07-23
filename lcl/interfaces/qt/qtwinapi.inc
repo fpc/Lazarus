@@ -2763,7 +2763,7 @@ begin
     WriteLn('[WinAPI Invalidate Rect]');
   {$endif}
   
-  QWidget_update(TQtWidget(aHandle).Widget,Rect);
+  TQtWidget(aHandle).Update(Rect);
 
   Result := True;
 end;
@@ -3950,7 +3950,7 @@ begin
  {$ifdef VerboseQtWinAPI}
    WriteLn('[WinAPI UpdateWindow]');
  {$endif}
-  QWidget_update(TQtWidget(Handle).Widget);
+  TQtWidget(Handle).Update;
   Result := True;
 end;
 

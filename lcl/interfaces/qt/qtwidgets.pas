@@ -108,8 +108,8 @@ type
     procedure SetColor(const Value: PQColor); virtual;
     procedure SetTextColor(const Value: PQColor); virtual;
     procedure SetCursor(const ACursor: QCursorH); virtual;
-    procedure Update;
-    procedure Repaint;
+    procedure Update(ARect: PRect = nil);
+    procedure Repaint(ARect: PRect = nil);
     procedure setWindowTitle(Str: PWideString);
     procedure WindowTitle(Str: PWideString);
     procedure Hide;
@@ -1544,9 +1544,12 @@ end;
 
   Schedules a paint event for processing when Qt returns to the main event loop
  ------------------------------------------------------------------------------}
-procedure TQtWidget.Update;
+procedure TQtWidget.Update(ARect: PRect = nil);
 begin
-  QWidget_update(Widget);
+  if ARect <> nil then
+    QWidget_update(Widget, ARect)
+  else
+    QWidget_update(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -1558,7 +1561,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidget.Repaint;
 begin
-  QWidget_repaint(Widget);
+  if ARect <> nil then
+    QWidget_repaint(Widget, ARect)
+  else
+    QWidget_repaint(Widget);
 end;
 
 procedure TQtWidget.setWindowTitle(Str: PWideString);
