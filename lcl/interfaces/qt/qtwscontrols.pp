@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets, qtobjects,
   // LCL
-  SysUtils, Controls, LCLType, LCLProc, Forms, Graphics,
+  SysUtils, Classes, Controls, LCLType, LCLProc, Forms, Graphics,
   // Widgetset
   InterfaceBase, WSControls, WSLCLClasses;
 
@@ -163,6 +163,7 @@ end;
 class procedure TQtWSCustomControl.ShowHide(const AWinControl: TWinControl);
 var
   Widget: TQtWidget;
+  R: TRect;
 begin
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomControl.ShowHide]');
@@ -186,8 +187,12 @@ begin
     
     if TForm(AWinControl).FormStyle = fsMDIChild then
     begin
-	    TForm(AWinControl).Left := 0;
-	    TForm(AWinControl).Top := 0;
+      {MDI windows have to be resized , since titlebar is included into widget geometry !}
+      QWidget_contentsRect(Widget.Widget, @R);
+      TForm(AWinControl).Left := 0;
+      TForm(AWinControl).Top := 0;
+      TForm(AWinControl).Width := TForm(AWinControl).Width + R.Left;
+      TForm(AWinControl).Height := TForm(AWinControl).Height + R.Top;
       TForm(AWinControl).ReAlign;
     end;
   end;
