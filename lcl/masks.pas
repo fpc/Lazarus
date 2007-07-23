@@ -63,6 +63,7 @@ type
   TMaskList = class
   private
     FMasks: TObjectList;
+    function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
     constructor Create(const AValue: String; ASeparator: Char = ';');
@@ -70,6 +71,7 @@ type
     
     function Matches(const AFileName: String): Boolean;
     
+    property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
   end;
 
@@ -325,6 +327,11 @@ end;
 function TMaskList.GetItem(Index: Integer): TMask;
 begin
   Result := TMask(FMasks.Items[Index]);
+end;
+
+function TMaskList.GetCount: Integer;
+begin
+  Result := FMasks.Count;
 end;
 
 constructor TMaskList.Create(const AValue: String; ASeparator: Char);

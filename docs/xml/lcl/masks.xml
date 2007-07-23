@@ -185,9 +185,9 @@
 <descr><p>Creates new mask for matching. Matching is case-insensitive. The mask consist of literal elements such as:</p>
 <ul>  
 <li>characters</li>  
-<li>character sets - each character set starts with "[" and ends with "]", contains list of single characters or range denoted with "-".</li> 
-<li>wild cards "?" for any character</li>  
-<li>wild cards "*" for any string</li>  
+<li>character sets - each character set starts with "[" and ends with "]", "!" as first character negates the set, then the set contains list of single characters or range denoted with "-".</li> 
+<li>wild cards "?" matches any character</li>  
+<li>wild cards "*" matches any string</li>  
 </ul>
 </descr>
 <errors>
@@ -252,6 +252,22 @@
 </descr>
 <seealso>
 </seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TMaskList.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMaskList.GetCount.Result">
+<short></short>
 </element>
 
 <!-- function Visibility: private -->
@@ -327,6 +343,15 @@
 <!-- argument Visibility: default -->
 <element name="TMaskList.Matches.AFileName">
 <short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TMaskList.Count">
+<short>The count of mask list items.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- property Visibility: public -->
