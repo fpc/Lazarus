@@ -205,19 +205,19 @@ var
   Color: TQColor;
   Pen: QPenH;
   Painter: QPainterH;
+  Brush: QBrushH;
+  R: TRect;
 begin
   if IsValidDC(CanvasHandle) then
   begin
     //WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor));
-    
     Painter :=TQtDeviceContext(CanvasHandle).Widget;
-    Pen := QPainter_Pen(Painter);
+    Pen := QPainter_pen(Painter);
     QPen_color(Pen, @ASavedColor);
-    QPen_color(Pen, @Color);
-    ColorRefToTQColor(AColor, Color);
-    QPen_setColor(Pen, @Color);
-    QPainter_DrawPoint(Painter, X,Y);
-    QPen_setColor(Pen, @ASavedColor);
+	  QColor_setRgb(QColorH(@Color),Red(AColor),Green(AColor),Blue(AColor));
+    QPainter_setPen(Painter, @Color);
+    QPainter_drawPoint(Painter, X,Y);
+    QPainter_setPen(Painter, @ASavedColor);
   end;
 end;
 
