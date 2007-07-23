@@ -1321,8 +1321,14 @@ begin
 end;
 
 function TQtWidgetSet.GetActiveWindow: HWND;
+var
+  Widget: QWidgetH;
 begin
-  Result := HWND(QtObjectFromWidgetH(QApplication_activeWindow));
+  Widget := QApplication_activeWindow;
+  if Widget <> nil then
+    Result := HWND(QtObjectFromWidgetH(Widget))
+  else
+    Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1381,8 +1387,6 @@ end;
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
-var
-  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientBounds]');
@@ -1403,9 +1407,6 @@ end;
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
-var
-  Size: TSize;
-  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientRect]');
@@ -2654,9 +2655,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
 var
-  LeftTop:TPoint;
+  //LeftTop:TPoint;
   R: TRect;
-  ParentHandle: THandle;
+  //ParentHandle: THandle;
   //WindowInfo: PWindowInfo;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -3258,6 +3259,16 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
+end;
+
+function TQtWidgetSet.SetActiveWindow(Handle: HWND): HWND;
+begin
+  Result := GetActiveWindow;
+  
+  if Handle <> 0 then
+    TQtWidget(Handle).Activate
+  else
+    Result := 0; // error
 end;
 
 {------------------------------------------------------------------------------
