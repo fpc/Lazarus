@@ -102,26 +102,15 @@ begin
   SrcRect := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
   DestRect:=Client;
   
-  if (Offset.X>=0) then begin
-    Inc(DestRect.Left, Offset.X);
-    Dec(DestRect.Right, Offset.X); // image couldn't overlap rigth window edge
-  end else begin
-    Dec(SrcRect.Left, Offset.X);
-    Inc(SrcRect.Right, Offset.X);
-  end;
+
+  Inc(DestRect.Left, Offset.X);
   src_wh:=SrcRect.Right-SrcRect.Left; dst_wh:=DestRect.Right-DestRect.Left;
   if (dst_wh>src_wh) then
     DestRect.Right:=DestRect.Left+src_wh // if window for image is wider
   else if (dst_wh<src_wh) then
       SrcRect.Right:=SrcRect.Left+dst_wh; // if image not fits in their window width
 
-  if (Offset.Y>=0) then begin
-    Inc(DestRect.Top, Offset.Y);
-    Dec(DestRect.Bottom, Offset.Y); // image couldn't overlap bottom window edge
-  end else begin
-    Dec(SrcRect.Top, Offset.Y);
-    Inc(SrcRect.Bottom, Offset.Y);
-  end;
+  Inc(DestRect.Top, Offset.Y);
   src_wh:=SrcRect.Bottom-SrcRect.Top; dst_wh:=DestRect.Bottom-DestRect.Top;
   if (dst_wh>src_wh) then
     DestRect.Bottom:=DestRect.Top+src_wh // if window for image is higher
