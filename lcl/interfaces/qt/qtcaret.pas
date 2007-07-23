@@ -367,20 +367,24 @@ end;
 function TEmulatedCaret.CreateColorPixmap(Color: Cardinal): QPixmapH;
 var
   QC: TQColor;
+  AColor: TColor;
 begin
   if (FWidth <= 0) or (FHeight <= 0) then
     Result := nil
   else
   begin
     case Color of
-      0: ColorRefToTQColor(clBlack, QC);
-      1: ColorRefToTQColor(clGray, QC);
+      0: AColor := clBlack;
+      1: AColor := clGray;
     else
+    begin
       Result := nil;
       Exit;
     end;
+    end;
     Result := QPixmap_create(FWidth, FHeight);
     try
+      QColor_setRgb(QColorH(@QC),Red(AColor),Green(AColor),Blue(AColor));
       QPixmap_fill(Result, @QC);
     except
       QPixmap_destroy(Result);
