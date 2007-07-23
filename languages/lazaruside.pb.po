@@ -11,7 +11,7 @@ msgstr "    comando2 \""
 
 #: lazarusidestrconsts:liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
-msgstr " Uma ocorrencia de %s%s%s já existe!"
+msgstr " Uma ocorrência de %s%s%s já existe!"
 
 #: lazarusidestrconsts:srkmalreadyconnected
 msgid " The key \"%s\" is already connected to \"%s\"."
@@ -71,7 +71,7 @@ msgstr "%s%s%s não é um nome de unidade válido."
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
-msgstr "%s%sClique OK se você está certo disso."
+msgstr "%s%sClique OK se você tem certeza disso."
 
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
@@ -279,15 +279,15 @@ msgstr "<escolha um arquivo existente>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou mofica-la sob os termos da licenca GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior com as seguintes modificacoes:%sComo uma excecao especial, os detentores do copyright desta biblioteca dao permissao para usa-la com modulos independentes para produzir um executavel, independentemente dos termos de licenca destes modulos independentes, e copiar e distribuir o executavel resultante sob os termos de sua escolha, desde que voce encontre, para cada modulo independente vinculado, os termos e condicoes da licenca daquele modulo. Um modulo independente e um modulo que nao e derivado ou baseado nesta biblioteca. Se voce modificar esta biblioteca voce deve estender esta excecao a sua versao da biblioteca, mas nao e obrigado a fazer isto. Se voce nao quiser fazer isto, elimine o estatuto desta excecao da sua versao.%sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; se n�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou mofica-la sob os termos da licenca GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior com as seguintes modificacoes:%sComo uma excecao especial, os detentores do copyright desta biblioteca dao permissao para usa-la com modulos independentes para produzir um executavel, independentemente dos termos de licenca destes modulos independentes, e copiar e distribuir o executavel resultante sob os termos de sua escolha, desde que voce encontre, para cada modulo independente vinculado, os termos e condicoes da licenca daquele modulo. Um modulo independente e um modulo que nao e derivado ou baseado nesta biblioteca. Se voce modificar esta biblioteca voce deve estender esta excecao a sua versao da biblioteca, mas nao e obrigado a fazer isto. Se voce nao quiser fazer isto, elimine o estatuto desta excecao da sua versao.%sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; se n�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fontes sao software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste codigo e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; se n�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fontes sao software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste codigo e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
@@ -295,7 +295,7 @@ msgstr "<nenhuma variável selecionada>"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgstr "Um %s não pode conter TControls.%sVocê somente podem-se colocar componentes não-visuais nele"
+msgstr "Um %s não pode conter TControls.%sVocê somente pode colocar componentes não-visuais nele"
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -311,7 +311,7 @@ msgstr "Um pacote requerido não foi encontrado. Veja o gráfico de pacotes."
 
 #: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
 msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "Um simples arquivo de Programa Pascal.%sEle pode ser usado para um teste rápido e sujo.%sÉ Melhor criar um novo projeto."
+msgstr "Um simples arquivo de programa Pascal.%sEle pode ser usado para um teste rápido e sujo.%sÉ Melhor criar um novo projeto."
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -687,7 +687,7 @@ msgstr "Aplicar Mudanças"
 
 #: lazarusidestrconsts:rslanguagearabic
 msgid "Arabic"
-msgstr "Arabe"
+msgstr "árabe"
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
@@ -815,7 +815,7 @@ msgstr "Atrás dos métodos"
 
 #: lazarusidestrconsts:lispkgfiletypebinary
 msgid "Binary"
-msgstr "Binario"
+msgstr "Binário"
 
 #: lazarusidestrconsts:liscodetoolsdefsblock
 msgid "Block"
@@ -911,7 +911,7 @@ msgstr "Construir Ferramentas de Código"
 
 #: lazarusidestrconsts:lisbfbuildcommand
 msgid "Build Command"
-msgstr ""
+msgstr "Construir Comando"
 
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
@@ -939,7 +939,7 @@ msgstr "Construir Lazarus"
 
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
-msgstr "Numero da Construção"
+msgstr "Número da Construção"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1291,7 +1291,7 @@ msgstr "Clear"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
-msgstr "Limpar nome de arquivo de dependencia"
+msgstr "Limpar nome de arquivo de dependência"
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
 msgid "Clear include cache"
@@ -2339,7 +2339,7 @@ msgstr "Exibição (não para win32, ex: 198.112.45.11:0, x.org:1, hydra:0.1)"
 
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
-msgstr "Mostrar Numero de Linhas nos erros em Tempo de Execução ao rastrea-los"
+msgstr "Mostrar Número de Linhas nos erros em Tempo de Execução ao rastrea-los"
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -3319,7 +3319,7 @@ msgstr "Ir para editor %d"
 
 #: lazarusidestrconsts:srkmecgotolinenumber
 msgid "Go to line number"
-msgstr "Ir para a linha numero"
+msgstr "Ir para a linha número"
 
 #: lazarusidestrconsts:liskmgotomarker0
 msgid "Go to marker 0"
@@ -3595,7 +3595,7 @@ msgstr "Dicas em paleta de componentes"
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
-msgstr "Dicas em botoes principais (abrir, salvar, ...)"
+msgstr "Dicas em botões principais (abrir, salvar, ...)"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -4827,7 +4827,7 @@ msgstr "Máximo de arquivos de projeto recente"
 
 #: lazarusidestrconsts:lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
-msgstr "Numero Máximo de Ferramentas"
+msgstr "Número Máximo de Ferramentas"
 
 #: lazarusidestrconsts:lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -5315,7 +5315,7 @@ msgstr "Notas: Arquivos de projetos são todos os arquivos no diretório de proj
 
 #: lazarusidestrconsts:liscodetoolsoptsnumber
 msgid "Number"
-msgstr "Numero"
+msgstr "Número"
 
 #: lazarusidestrconsts:srvk_numlock
 msgid "Numlock"
@@ -7243,7 +7243,7 @@ msgstr "Mostrar Dicas para unidades nao utilizadas no código principal"
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr "Mostrar Numero de Linhas"
+msgstr "Mostrar Número de Linhas"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7279,7 +7279,7 @@ msgstr "Mostrar espaçamento da borda"
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
-msgstr "Mostrar botoes de fechar no notebook"
+msgstr "Mostrar botões de fechar no notebook"
 
 #: lazarusidestrconsts:srkmecshowcodecontext
 msgid "Show code context"
@@ -7343,7 +7343,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
-msgstr "Mostar Numero de Linhas"
+msgstr "Mostar Número de Linhas"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
@@ -7579,7 +7579,7 @@ msgstr "Parar Debugging?"
 
 #: lazarusidestrconsts:dlgstopafternrerr
 msgid "Stop after number of errors:"
-msgstr "Parar depois de numeros de erros:"
+msgstr "Parar depois de números de erros:"
 
 #: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
@@ -7591,7 +7591,7 @@ msgstr "Para debugging?"
 
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
-msgstr ""
+msgstr "Parar programa"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -7623,7 +7623,7 @@ msgstr "Sequências com o mesmo valor:"
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
-msgstr "Remover os Simbolos do Executável (STRIP)"
+msgstr "Remover os Símbolos do Executável (STRIP)"
 
 #: lazarusidestrconsts:dlgcostyle
 msgid "Style:"
@@ -7647,7 +7647,7 @@ msgstr "Sub-propriedades"
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
-msgstr ""
+msgstr "Sucesso"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7659,15 +7659,15 @@ msgstr "Escolher entre formulários e unidades"
 
 #: lazarusidestrconsts:liscodetoolsoptssymbol
 msgid "Symbol"
-msgstr "Simbolo"
+msgstr "Símbolo"
 
 #: lazarusidestrconsts:dlgsmbbehind
 msgid "Symbol behind (.pp~)"
-msgstr "Simbolo atrás (.pp~)"
+msgstr "Símbolo atrás (.pp~)"
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
-msgstr "Simbolo à frente (.~pp)"
+msgstr "Símbolo à frente (.~pp)"
 
 #: lazarusidestrconsts:lissynedit
 msgid "SynEdit"
@@ -8319,35 +8319,35 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
-msgstr "Ha mais funções no Menu PopUp"
+msgstr "Há mais funções no Menu PopUp"
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
-msgstr "Ha outros arquivos no diretório com o mesmo nome,%sque somente diferencia em:%s%s%sElimina-lo?"
+msgstr "Há outros arquivos no diretório com o mesmo nome,%sque somente diferencia em:%s%s%sElimina-lo?"
 
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
-msgstr "Ha duas unidades com o mesmo nome:%s%s1. %s%s%s de %s%s2. %s%s%s de %s%s%s"
+msgstr "Há duas unidades com o mesmo nome:%s%s1. %s%s%s de %s%s2. %s%s%s de %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
-msgstr "Ha uma unidade FPC com o mesmo nome do pacote:%s%s%s%s%s%s "
+msgstr "Há uma unidade FPC com o mesmo nome do pacote:%s%s%s%s%s%s "
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
 msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
-msgstr "Ha uma unidade FPC com o mesmo nome como: %s%s%s%s%s de %s%s%s"
+msgstr "Há uma unidade FPC com o mesmo nome como: %s%s%s%s%s de %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
 msgid "There is a circle in the required packages. See package graph."
-msgstr "Ha um circulo no pacote requerido. Veja o gráfico de pacotes."
+msgstr "Há um circulo no pacote requerido. Veja o gráfico de pacotes."
 
 #: lazarusidestrconsts:listhereisafilewiththesamenameandasimilarextension
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
-msgstr "Ha um arquivo com o mesmo nome e extensão parecido no disco:%sArquivo: %s%sArquivo Ambiguo: %s%s%sEliminar arquivo ambiguo?"
+msgstr "Ha um arquivo com o mesmo nome e extensão parecido no disco:%sArquivo: %s%sArquivo Ambiguo: %s%s%sEliminar arquivo ambíguo?"
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
-msgstr "Ha um máximo de %s ferramentas."
+msgstr "Há um máximo de %s ferramentas."
 
 #: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
@@ -8491,55 +8491,55 @@ msgstr "Alternar Formulário/Unidade"
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
-msgstr ""
+msgstr "Alternar mostrar pontos de interrupção"
 
 #: lazarusidestrconsts:liskmtoggleviewcallstack
 msgid "Toggle view Call Stack"
-msgstr ""
+msgstr "Alternar mostrar chamada de pilha"
 
 #: lazarusidestrconsts:liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
-msgstr ""
+msgstr "Alternar mostrar explorador de codigo"
 
 #: lazarusidestrconsts:liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
-msgstr ""
+msgstr "Alternar mostrar saída do depurador"
 
 #: lazarusidestrconsts:liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
-msgstr ""
+msgstr "Alternar mostrar Editor de Documentação"
 
 #: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
-msgstr ""
+msgstr "Alternar mostrar botoes da IDE"
 
 #: lazarusidestrconsts:liskmtoggleviewlocalvariables
 msgid "Toggle view Local Variables"
-msgstr ""
+msgstr "Alternar mostrar Variáveis Locais"
 
 #: lazarusidestrconsts:liskmtoggleviewmessages
 msgid "Toggle view Messages"
-msgstr ""
+msgstr "Alternar mostrar Mensagens"
 
 #: lazarusidestrconsts:liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr ""
+msgstr "Alternar mostrar Inspetor de Objetos"
 
 #: lazarusidestrconsts:liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
-msgstr ""
+msgstr "Alterrnar mostrar Resultados de Pesquisa"
 
 #: lazarusidestrconsts:liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
-msgstr ""
+msgstr "Alternar mostrar Editor de Codigo"
 
 #: lazarusidestrconsts:liskmtoggleviewwatches
 msgid "Toggle view Watches"
-msgstr ""
+msgstr "Alternar mostrar Observadores"
 
 #: lazarusidestrconsts:liskmtoggleviewcomponentpalette
 msgid "Toggle view component palette"
-msgstr ""
+msgstr "Alternar mostrar Paleta de Componentes"
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
@@ -8559,7 +8559,7 @@ msgstr "Avaliar expressão de Informação de Ferramentas"
 
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
-msgstr "Ferramentas de Simbolos de Informação de Ferramentas"
+msgstr "Ferramentas de Símbolos de Informação de Ferramentas"
 
 #: lazarusidestrconsts:listopanchoring
 msgid "Top anchoring"
@@ -9291,7 +9291,7 @@ msgstr "Exibir Formulários"
 
 #: lazarusidestrconsts:lismenuviewidespeedbuttons
 msgid "View IDE speed buttons"
-msgstr "Mostrar Botoes da IDE"
+msgstr "Mostrar Botões da IDE"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
