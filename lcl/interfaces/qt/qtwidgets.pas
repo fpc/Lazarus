@@ -5186,6 +5186,7 @@ begin
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QScrollArea_create(Parent);
+  QWidget_setVisible(Result, False);
 end;
 
 {------------------------------------------------------------------------------

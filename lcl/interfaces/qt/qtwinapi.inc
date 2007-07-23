@@ -2935,7 +2935,6 @@ function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   w: QWidgetH;
   Region: QRegionH;
-  R: PRect;
 begin
   {$ifdef VerboseQtWinAPI}
   writeln('[WinAPI RectVisible] ');
@@ -2945,18 +2944,12 @@ begin
   w := TQtDeviceContext(DC).Parent;
   if w <> nil then
   begin
-	  if QWidget_isVisible(w) then
+    if QWidget_isVisible(w) then
     begin
       Region := QRegion_create;
       try
-  	    QWidget_visibleRegion(w, Region);
-        New(R);
-        try
-          R^ := ARect;
-          Result := QRegion_contains(Region, R);
-        finally
-          Dispose(R);
-        end;
+        QWidget_visibleRegion(w, Region);
+        Result := QRegion_contains(Region, PRect(@ARect));
       finally
         QRegion_destroy(Region);
       end;
