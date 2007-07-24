@@ -144,9 +144,8 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
-{$ifdef QT_LAZARUS_IDE_WORKAROUND}
   R: TRect;
-{$endif}
+  R1: TRect;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -186,12 +185,20 @@ begin
     QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
   {$endif}
 
-  {LAZARUS IDE WORKAROUND}
-  {$ifdef QT_LAZARUS_IDE_WORKAROUND}
-  if QtMainWindow.IsMainForm and (AWinControl.ClassName='TMainIDEBar')
+  {do not localize !!!}
+  if (QtMainWindow.IsMainForm and (AWinControl.ClassName='TMainIDEBar'))
+  or (QtMainWindow.IsMainForm and (TCustomForm(AWinControl).FormStyle in [fsMDIForm]))
   then
+  begin
     QMainWindow_setMenuBar(QMainWindowH(QtMainWindow.Widget), QMenuBarH(QtMainWindow.MenuBar.Widget));
-  {$endif}
+  end else
+  begin
+     {set initial menu geometry ...}
+     R := AWinControl.ClientRect;
+     QWidget_geometry(QtMainWindow.MenuBar.Widget, @R1);
+     R1.Right := R.Right;
+     QWidget_setGeometry(QtMainWindow.MenuBar.Widget, @R1);
+   end;
 
   // Return the handle
   Result := THandle(QtMainWindow);

@@ -213,9 +213,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-{$ifdef QT_LAZARUS_IDE_WORKAROUND}
     IsMainForm: Boolean;
-{$endif}
 {$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
 {$endif}
@@ -1023,6 +1021,11 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  w: QWidgetH;
+  m: QMenuBarH;
+  MenuRect: TRect;
+  FormRect: TRect;
 begin
   Result := False;
 
@@ -1060,7 +1063,30 @@ begin
     QEventMouseButtonDblClick: SlotMouse(Event);
     QEventMouseMove: SlotMouseMove(Event);
     QEventWheel: SlotMouseWheel(Event);
-    QEventResize: SlotResize;
+    QEventResize:
+    begin
+     SlotResize;
+     if (Self is TQtMainWindow)
+     and Assigned(TQtMainWindow(Self).MenuBar)
+     and Assigned(TCustomForm(LCLObject).Menu) then
+     begin
+       w := nil;
+       if TQtMainWindow(Self).IsMainForm
+       then
+         w := QMainWindow_menuWidget(QMainWindowH(Widget));
+
+       if w = nil then
+       begin
+         QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
+         QWidget_rect(Widget, @FormRect);
+         if MenuRect.Right <> FormRect.Right then
+         begin
+           MenuRect.Right := FormRect.Right;
+           QWidget_setGeometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
+         end;
+       end;
+     end;
+    end;
     QEventPaint: SlotPaint(Event);
     QEventContextMenu: SlotContextMenu;
   else
@@ -2386,51 +2412,43 @@ begin
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
   
-  {$ifdef QT_LAZARUS_IDE_WORKAROUND}
-    IsMainForm := False;
-  {$endif}
+
+  IsMainForm := False;
+
   
   w := QApplication_activeWindow;
 
   if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible)) then
   begin
   
-    {$ifdef QT_LAZARUS_IDE_WORKAROUND}
-      IsMainForm := True;
-    {$endif}
-    
+    IsMainForm := True;
+
     Result := QMainWindow_create(nil, QtWindow);
     
     MenuBar := TQtMenuBar.Create(Result);
     
-    {------------------------------------------------------------------------------
-      To make sure Qt will manage automatically the size of the menu,
-      we need to both use setMenuBar and also create a central widget
-      on the form, on top of which, the other components will be placed
-
-      If we are supporting MDI, then the MDIArea widget can be used as
-      central widget. If not, we create an empty widget.
-
-      In both cases the widget is transparent to events, so the main
-      window will receive and handle them
-     ------------------------------------------------------------------------------}
-
-    if Assigned(Application.MainForm) and Assigned(Application.MainForm.Menu) then
-      QMainWindow_setMenuBar(QMainWindowH(Result), QMenuBarH(MenuBar.Widget));
-     
     {$ifdef USE_QT_4_3}
       if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
       and not (csDesigning in LCLObject.ComponentState) then
       begin
         MDIAreaHandle := QMdiArea_create(Result);
-        FCentralWidget := MDIAreaHandle;
+        FCentralWidget := nil; // MDIAreaHandle;
+        QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
       end
       else
       begin
-        FCentralWidget := QWidget_create(Result);
+        {do not localize !!!}
+        if LCLObject.ClassName='TMainIDEBar' then
+        FCentralWidget := QWidget_create(Result)
+        else FCentralWidget := nil;
+        
         MDIAreaHandle := nil
       end;
+      
+      if FCentralWidget <> nil then
       QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
+      
+      if not (csDesigning in LCLObject.ComponentState) then
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
     {$else}
       FCentralWidget := QWidget_create(Result);
@@ -2450,8 +2468,9 @@ begin
           raise Exception.Create('MDIChild can be added to MDIForm only !');
 
         Result := QMdiSubWindow_create(nil, QtWindow);
-        
+
         // QMdiSubWindow already have an layout
+
         LayoutWidget := QBoxLayoutH(QWidget_layout(Result));
         if LayoutWidget <> nil then
           QBoxLayout_destroy(LayoutWidget);
@@ -2465,7 +2484,9 @@ begin
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
 
-    FCentralWidget := QWidget_create(Result);
+    if not (csDesigning in LCLObject.ComponentState)
+    then
+      FCentralWidget := QWidget_create(Result);
 
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
@@ -2478,7 +2499,11 @@ begin
     {$endif}
     
     QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
-    QLayout_addWidget(LayoutWidget, FCentralWidget);
+    
+    if not (csDesigning in LCLObject.ComponentState)
+    then
+      QLayout_addWidget(LayoutWidget, FCentralWidget);
+      
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
 
   end;
@@ -5082,6 +5107,7 @@ begin
     FVisible := True;
     setVisible(FVisible);
   end;
+  
   Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), title));
 end;
 
