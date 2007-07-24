@@ -689,7 +689,6 @@ end;
 class procedure TQtWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
   {qt QTextEdit doesn't have such property  !}
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -803,6 +802,7 @@ class procedure TQtWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; New
 var
   MaxLength: Integer;
 begin
+  if not (TQtWidget(ACustomEdit.Handle) is TQtLineEdit) then exit;
   {qt doesn't accept -1 !}
   MaxLength := QLineEdit_maxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget));
   if (NewLength <= 0) or (NewLength > QtMaxEditLength) then
