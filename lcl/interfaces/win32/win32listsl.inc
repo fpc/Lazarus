@@ -128,7 +128,17 @@ var
 begin
   For Counter := 0 To TheStrings.Count - 1 Do
   Begin
-    AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TheStrings[Counter]))); //Insert
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+     AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0,
+      LPARAM(PWideChar(Utf8Decode(TheStrings[Counter])))) //Insert
+    else
+     AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0,
+      LPARAM(PChar(Utf8ToAnsi(TheStrings[Counter])))); //Insert
+    {$else}
+    AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0,
+     LPARAM(PChar(TheStrings[Counter]))); //Insert
+    {$endif}
     PutObject(AnIndex, TheStrings.Objects[Counter]);
   end;
 end;
@@ -218,14 +228,32 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
-Begin
+procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
+begin
   FLastInsertedIndex := Index;
-  If FSorted Then
-    FLastInsertedIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S)))
-  Else
+  if FSorted then
+  begin
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      FLastInsertedIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PWideChar(Utf8Decode(S))))
+    else
+      FLastInsertedIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(Utf8ToAnsi(S))));
+    {$else}
+    FLastInsertedIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S)));
+    {$endif}
+  end
+  else
+  begin
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PWideChar(Utf8Decode(S))))
+    else
+      Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(Utf8ToAnsi(S))));
+    {$else}
     Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(S)));
-End;
+    {$endif}
+  end;
+end;
 
 procedure TWin32ListStringList.Put(Index: integer; const S: string);
 var
