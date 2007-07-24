@@ -179,6 +179,7 @@ type
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 //    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   public
@@ -189,7 +190,6 @@ type
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
 }    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
 {    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -681,6 +681,16 @@ begin
   Result := TQtTextEdit(ACustomMemo.Handle).FList;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.SetMaxLength
+  Params:  NewLength integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  {qt QTextEdit doesn't have such property  !}
+  
+end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomMemo.SetWordWrap
