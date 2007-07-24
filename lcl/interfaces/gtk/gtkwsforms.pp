@@ -299,7 +299,7 @@ begin
     
   // enable widget as file drag destination
   gtk_drag_dest_set(AWidgetInfo^.CoreWidget, GTK_DEST_DEFAULT_ALL,
-    @FileDragTarget, 1, GDK_ACTION_COPY);
+    @FileDragTarget, 1, GDK_ACTION_COPY or GDK_ACTION_MOVE);
     
   SetCallbacks(AWinControl, AWidgetInfo);
 
