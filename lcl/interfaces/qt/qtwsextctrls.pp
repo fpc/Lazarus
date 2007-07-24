@@ -157,6 +157,7 @@ type
   private
   protected
   public
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -176,6 +177,7 @@ type
   private
   protected
   public
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -384,6 +386,47 @@ end;
 { TQtWSCustomRadioGroup }
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomRadioGroup.ContstraintsChange
+  Params:  None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomRadioGroup.ConstraintsChange(const AWinControl: TWinControl);
+var
+  R: TRect;
+  QtWidget: TQtWidget;
+  i: Integer;
+  w: QWidgetH;
+begin
+
+  QtWidget := TQtWidget(AWinControl.Handle);
+  QWidget_contentsRect(QtWidget.Widget, @R);
+
+  if (R.Left<>0) or (R.Top<>0) then
+  begin
+    w := QtWidget.GetContainerWidget;
+    QWidget_contentsRect(QtWidget.Widget, @R);
+    {TODO: we should recalculate sizes if we have items.Count
+     each button have 23px height by default, don't forget to include
+     HiddenRadioButton size ! }
+    if (w <> QtWidget.Widget) and (R.Top > 0) then
+    begin
+      if TCustomRadioGroup(AWinControl).Items.Count > 0 then
+      begin
+        R.Top := R.Top + 1;
+        R.Top := (R.Top div 4) + TCustomRadioGroup(AWinControl).Columns;
+        R.Bottom := R.Bottom + R.Top;
+      end else
+      begin
+        R.Top := R.Top + 1;
+        R.Top := (R.Top div (TCustomRadioGroup(AWinControl).Columns));
+      end;
+      QWidget_setGeometry(w, @R);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomRadioGroup.CreateHandle
   Params:  None
   Returns: Nothing
@@ -444,13 +487,47 @@ end;
 { TQtWSCustomCheckGroup }
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckGroup.ContstraintsChange
+  Params:  None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomCheckGroup.ConstraintsChange(const AWinControl: TWinControl);
+var
+  R: TRect;
+  QtWidget: TQtWidget;
+  i: Integer;
+  w: QWidgetH;
+begin
+
+  QtWidget := TQtWidget(AWinControl.Handle);
+  QWidget_contentsRect(QtWidget.Widget, @R);
+
+  if (R.Left<>0) or (R.Top<>0) then
+  begin
+    w := QtWidget.GetContainerWidget;
+    QWidget_contentsRect(QtWidget.Widget, @R);
+
+    if (w <> QtWidget.Widget) and (R.Top > 0) then
+    begin
+			if TCustomCheckGroup(AWinControl).Items.Count > 0
+   		then
+		    R.Bottom := R.Bottom - R.Top
+      else
+        R.Top := (R.Top div 2) - 2;
+
+      QWidget_setGeometry(w, @R);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomCheckGroup.CreateHandle
   Params:  None
   Returns: Nothing
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-
 class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var

@@ -36,6 +36,7 @@ uses
   qtwidgets, qtobjects,
   // LCL
   SysUtils, Classes, Controls, LCLType, LCLProc, Forms, Graphics,
+  StdCtrls,
   // Widgetset
   InterfaceBase, WSControls, WSLCLClasses;
 
@@ -78,6 +79,9 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+		{$ifdef QT_LAZARUS_IDE_WORKAROUND}
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;
+		{$endif}
 
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -237,6 +241,59 @@ begin
   end else
     Result := False;
 end;
+
+{$ifdef QT_LAZARUS_IDE_WORKAROUND}
+class procedure TQtWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+var
+  R: TRect;
+  QtWidget: TQtWidget;
+  i: Integer;
+  w: QWidgetH;
+begin
+  QtWidget := TQtWidget(AWinControl.Handle);
+  QWidget_contentsRect(QtWidget.Widget, @R);
+  
+  if QtWidget is TQtMainWindow then
+  begin
+    if Assigned(TQtMainWindow(QtWidget).MenuBar) then
+    begin
+       QWidget_geometry(TQtMainWindow(QtWidget).MenuBar.Widget, @R);
+       if Assigned(TCustomForm(AWinControl).Menu)
+       then
+         R.Top := R.Bottom;
+         {must check if TToolBar assigned too }
+    end;
+  end;
+  
+  if (R.Left<>0) or (R.Top<>0) then
+  begin
+    if QtWidget is TQtGroupBox then
+    begin
+	    w := QtWidget.GetContainerWidget;
+      QWidget_contentsRect(QtWidget.Widget, @R);
+
+      if (w <> QtWidget.Widget) and (R.Top > 0) then
+      begin
+        R.Bottom := R.Bottom + R.Top;
+        QWidget_setGeometry(w, @R);
+      end;
+    end;
+    
+    if (QtWidget is TQtMainWindow)
+    or (QtWidget is TQtGroupBox) then
+    begin
+      for i := 0 to AWinControl.ControlCount - 1 do
+      begin
+        if AWinControl.Controls[i].InheritsFrom(TGraphicControl) then
+        begin
+          AWinControl.Controls[i].Left := AWinControl.Controls[i].Left + R.Left;
+          AWinControl.Controls[i].Top := AWinControl.Controls[i].Top + R.Top;
+        end;
+      end;
+    end;
+  end;
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Method: TQtWSWinControl.CreateHandle

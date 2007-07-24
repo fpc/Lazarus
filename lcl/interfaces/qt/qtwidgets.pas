@@ -213,6 +213,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+{$ifdef QT_LAZARUS_IDE_WORKAROUND}
+    IsMainForm: Boolean;
+{$endif}
 {$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
 {$endif}
@@ -2382,11 +2385,20 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
-
+  
+  {$ifdef QT_LAZARUS_IDE_WORKAROUND}
+    IsMainForm := False;
+  {$endif}
+  
   w := QApplication_activeWindow;
 
   if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible)) then
   begin
+  
+    {$ifdef QT_LAZARUS_IDE_WORKAROUND}
+      IsMainForm := True;
+    {$endif}
+    
     Result := QMainWindow_create(nil, QtWindow);
     
     MenuBar := TQtMenuBar.Create(Result);
@@ -2930,6 +2942,8 @@ begin
 
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
+  {$else}
+    FCentralWidget := QWidget_create(Result, QtWidget);
   {$endif}
 end;
 
