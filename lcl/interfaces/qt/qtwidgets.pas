@@ -292,7 +292,9 @@ type
 
   TQtGroupBox = class(TQtWidget)
   private
+  {$ifdef QT_USE_QLAYOUT_IN_TQTGROUPBOX}
     LayoutWidget: QBoxLayoutH;
+  {$endif}
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -804,8 +806,6 @@ begin
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
-  
-  setVisible(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -829,8 +829,6 @@ begin
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
-
-  setVisible(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -2688,9 +2686,6 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
-var
-  Method: TMethod;
-  Hook : QTimer_hookH;
 begin
   FAppObject := App;
 
@@ -2749,8 +2744,6 @@ end;
 { TQtCheckBox }
 
 function TQtCheckBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2902,7 +2895,6 @@ end;
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  R: TRect;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
