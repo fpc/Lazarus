@@ -827,6 +827,9 @@ begin
 
   SetGeometry;
 
+  // Set mouse move messages policy
+  QWidget_setMouseTracking(Widget, True);
+
   setVisible(False);
 end;
 
