@@ -106,6 +106,7 @@ type
     procedure SlotContextMenu; cdecl;
   public
     procedure Activate;
+    procedure BringToFront;
     procedure SetColor(const Value: PQColor); virtual;
     procedure SetTextColor(const Value: PQColor); virtual;
     procedure SetCursor(const ACursor: QCursorH); virtual;
@@ -115,12 +116,15 @@ type
     procedure WindowTitle(Str: PWideString);
     procedure Hide;
     procedure Show;
+    procedure ShowNormal;
+    procedure ShowMinimized;
+    procedure ShowMaximized;
     function getEnabled: Boolean;
     function getVisible: Boolean;
     function getClientOffset: TQtPoint;
     function hasFocus: Boolean;
     procedure setEnabled(p1: Boolean);
-    procedure setVisible(visible: Boolean);
+    procedure setVisible(visible: Boolean); virtual;
     function windowModality: QtWindowModality;
     procedure setWindowModality(windowModality: QtWindowModality);
     procedure setParent(parent: QWidgetH);
@@ -129,6 +133,7 @@ type
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
     procedure setTabOrder(p1, p2: TQtWidget);
+    procedure setWindowState(AState: QtWindowStates);
     
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
@@ -214,10 +219,6 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
-  public
-    procedure BringToFront;
-    procedure ShowMinimized;
-    procedure ShowNormal;
   end;
   
   { TQtHintWindow }
@@ -435,6 +436,8 @@ type
     procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
+    function getCurrentIndex: Integer;
+    procedure setCurrentIndex(AIndex: Integer);
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: PWideString);
   end;
@@ -531,6 +534,7 @@ type
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure setTextColor(const Value: PQColor); override;
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setVisible(visible: Boolean); override;
     procedure viewportNeeded;
   end;
 
@@ -801,7 +805,7 @@ begin
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
   
-  {HasCaret := False;}
+  setVisible(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -822,6 +826,8 @@ begin
   Widget := QWidget_create;
 
   SetGeometry;
+
+  setVisible(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -1498,6 +1504,12 @@ begin
   QWidget_activateWindow(Widget);
 end;
 
+procedure TQtWidget.BringToFront;
+begin
+  Activate;
+  QWidget_raise(Widget);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SetColor
   Params:  QColorH
@@ -1594,6 +1606,21 @@ begin
   QWidget_show(Widget);
 end;
 
+procedure TQtWidget.ShowNormal;
+begin
+  QWidget_showNormal(Widget);
+end;
+
+procedure TQtWidget.ShowMinimized;
+begin
+  QWidget_showMinimized(Widget);
+end;
+
+procedure TQtWidget.ShowMaximized;
+begin
+  QWidget_showMaximized(Widget);
+end;
+
 function TQtWidget.getEnabled: Boolean;
 begin
   Result := QWidget_isEnabled(Widget);
@@ -1675,6 +1702,11 @@ end;
 procedure TQtWidget.setTabOrder(p1, p2: TQtWidget);
 begin
   QWidget_setTabOrder(p1.Widget, p2.Widget);
+end;
+
+procedure TQtWidget.setWindowState(AState: QtWindowStates);
+begin
+  QWidget_setWindowState(Widget, AState);
 end;
 
 {------------------------------------------------------------------------------
@@ -2587,22 +2619,6 @@ begin
   end;
 end;
 
-procedure TQtMainWindow.BringToFront;
-begin
-  Activate;
-  QWidget_raise(Widget);
-end;
-
-procedure TQtMainWindow.ShowMinimized;
-begin
-  QWidget_showMinimized(Widget);
-end;
-
-procedure TQtMainWindow.ShowNormal;
-begin
-  QWidget_showNormal(Widget);
-end;
-
 { TQtStaticText }
 
 function TQtStaticText.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -2739,7 +2755,6 @@ begin
   {$endif}
   
   Result := QCheckBox_create;
-  QWidget_setVisible(Result, False);
 end;
 
 procedure TQtCheckBox.SetGeometry;
@@ -3808,6 +3823,16 @@ end;
 function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
 begin
   Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
+end;
+
+function TQtTabWidget.getCurrentIndex: Integer;
+begin
+  Result := QTabWidget_currentIndex(QTabWidgetH(Widget));
+end;
+
+procedure TQtTabWidget.setCurrentIndex(AIndex: Integer);
+begin
+  QTabWidget_setCurrentIndex(QTabWidgetH(Widget), AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -5186,7 +5211,6 @@ begin
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QScrollArea_create(Parent);
-  QWidget_setVisible(Result, False);
 end;
 
 {------------------------------------------------------------------------------
@@ -5306,6 +5330,13 @@ begin
   FVScrollBar := AScrollBar;
   if Assigned(FVScrollBar) then
   QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
+end;
+
+procedure TQtAbstractScrollArea.setVisible(visible: Boolean);
+begin
+  inherited setVisible(visible);
+  if FViewPortWidget <> nil then
+    FViewPortWidget.setVisible(visible);
 end;
 
 {------------------------------------------------------------------------------

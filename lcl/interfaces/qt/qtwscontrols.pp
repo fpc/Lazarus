@@ -197,10 +197,7 @@ begin
     end;
   end;
 
-  if AWinControl.HandleObjectShouldBeVisible then
-    QWidget_setVisible(Widget.Widget, True)
-  else
-    QWidget_setVisible(Widget.Widget, False);
+  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
 
   {$ifdef VerboseQt}
     Write('Trace:< [TQtWSCustomControl.ShowHide] ');

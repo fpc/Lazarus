@@ -3806,7 +3806,7 @@ end;
 ------------------------------------------------------------------------------}
 function TQtWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
-  Widget: QWidgetH;
+  Widget: TQtWidget;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ShowWindow]');
@@ -3814,27 +3814,20 @@ begin
 
   Result := False;
   
-  Widget := TQTWidget(hWnd).Widget; //QWidgetH(hWnd);
+  Widget := TQTWidget(hWnd);
 
-//  if Widget = nil then RaiseException('TQtWidgetSet.ShowWindow  hWnd is nil');
-
-  case nCmdShow of
-
-    SW_SHOW: QWidget_setVisible(Widget, True);
-
-    SW_SHOWNORMAL: QWidget_showNormal(Widget);
-
-    SW_MINIMIZE: QWidget_setWindowState(Widget, QtWindowMinimized);
-
-    SW_SHOWMINIMIZED: QWidget_showMinimized(Widget);
-
-    SW_SHOWMAXIMIZED: QWidget_showMaximized(Widget);
-
-    SW_HIDE: QWidget_setVisible(Widget, False);
-    
+  if Widget <> nil then
+  begin
+    case nCmdShow of
+      SW_SHOW: Widget.setVisible(True);
+      SW_SHOWNORMAL: Widget.ShowNormal;
+      SW_MINIMIZE: Widget.setWindowState(QtWindowMinimized);
+      SW_SHOWMINIMIZED: Widget.ShowMinimized;
+      SW_SHOWMAXIMIZED: Widget.ShowMaximized;
+      SW_HIDE: TQTWidget(hWnd).setVisible(False);
+    end;
+    Result := True;
   end;
-
-  Result := True;
 end;
 
 {------------------------------------------------------------------------------

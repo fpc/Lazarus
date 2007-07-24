@@ -35,6 +35,7 @@ uses
 {$endif}
   qtwidgets, qtobjects,
   // LCL
+  LMessages, LCLMessageGlue,
   SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, LCLType,
   // Widgetset
   WSExtCtrls, WSLCLClasses;
@@ -72,8 +73,8 @@ type
       const AIndex: integer); override;
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;}
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;}
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     {class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
   end;
@@ -234,7 +235,6 @@ const
 { tpRight  } QTabWidgetEast
   );
 
-
 { TQtWSCustomPanel }
 
 {------------------------------------------------------------------------------
@@ -354,6 +354,27 @@ begin
   TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
 end;
 
+class procedure TQtWSCustomNotebook.SetPageIndex(
+  const ANotebook: TCustomNotebook; const AIndex: integer);
+var
+  TabWidget: TQtTabWidget;
+  OldIndex: Integer;
+begin
+  TabWidget := TQtTabWidget(ANotebook.Handle);
+
+  // copy pasted from win32wsextctrls with corrections
+
+  OldIndex := TabWidget.getCurrentIndex;
+  TabWidget.setCurrentIndex(AIndex);
+  if not (csDestroying in ANotebook.ComponentState) then
+  begin
+    if (OldIndex >= 0) and (OldIndex <> AIndex) and
+       (OldIndex < ANotebook.PageCount) and
+       (ANotebook.CustomPage(OldIndex).HandleAllocated) then
+      TQtWidget(ANotebook.CustomPage(OldIndex).Handle).setVisible(False);
+  end;
+end;
+
 class procedure TQtWSCustomNotebook.SetTabPosition(
   const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
 begin
@@ -375,7 +396,6 @@ class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
-  i: Integer;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
 
@@ -436,7 +456,6 @@ class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
-  i: Integer;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   
