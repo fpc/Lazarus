@@ -79,24 +79,24 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   public
-{    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
+    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
-{    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); virtual;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;}
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
-{    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;}
+    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-//    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
+    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
   { TQtWSComboBox }
@@ -329,7 +329,12 @@ type
 
 implementation
 
-uses LMessages;
+uses
+  LMessages;
+  
+const
+  QtMaxEditLength = 32767;
+
 
 { TQtWSScrollBar }
 
@@ -785,9 +790,15 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+var
+  MaxLength: Integer;
 begin
-  if NewLength >= 0 then {qt doesn't accept -1 !}
-  QLineEdit_setMaxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget),NewLength);
+  {qt doesn't accept -1 !}
+  MaxLength := QLineEdit_maxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget));
+  if (NewLength <= 0) or (NewLength > QtMaxEditLength) then
+    NewLength := QtMaxEditLength;
+  if NewLength <> MaxLength then
+    QLineEdit_setMaxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget), NewLength);
 end;
 
 {------------------------------------------------------------------------------
@@ -1283,13 +1294,37 @@ begin
   QtComboBox.AttachEvents;
   
   // create our FList helper
-
-  QtComboBox.FList := TQtComboStrings.Create(QComboBoxH(QtComboBox.Widget), TCustomComboBox(AWinControl));
-  
-  // we must save itemindex, since GetItems() should delete it.
-  QtComboBox.FSavedItemIndex := TCustomComboBox(AWinControl).ItemIndex;
+  QtComboBox.FList := TQtComboStrings.Create(QtComboBox);
 
   Result := THandle(QtComboBox);
+end;
+
+class function TQtWSCustomComboBox.GetSelStart(
+  const ACustomComboBox: TCustomComboBox): integer;
+var
+  LineEdit: QLineEditH;
+begin
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+    Result := QLineEdit_selectionStart(LineEdit)
+  else
+    Result := 0;
+end;
+
+class function TQtWSCustomComboBox.GetSelLength(
+  const ACustomComboBox: TCustomComboBox): integer;
+var
+  LineEdit: QLineEditH;
+  W: WideString;
+begin
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+  begin
+    QLineEdit_selectedText(LineEdit, @W);
+    Result := Length(W);
+  end
+  else
+    Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1303,16 +1338,92 @@ begin
   Result := TQtComboBox(ACustomComboBox.Handle).currentIndex;
 end;
 
+class function TQtWSCustomComboBox.GetMaxLength(
+  const ACustomComboBox: TCustomComboBox): integer;
+var
+  LineEdit: QLineEditH;
+begin
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+  if LineEdit <> nil then
+  begin
+    Result := QLineEdit_MaxLength(LineEdit);
+    if Result = QtMaxEditLength then
+      Result := 0;
+  end
+  else
+    Result := 0;
+end;
+
+class procedure TQtWSCustomComboBox.SetArrowKeysTraverseList(
+  const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
+begin
+  // TODO: implement me ???
+end;
+
+class procedure TQtWSCustomComboBox.SetSelStart(
+  const ACustomComboBox: TCustomComboBox; NewStart: integer);
+var
+  LineEdit: QLineEditH;
+  ALength: Integer;
+begin
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+  if LineEdit <> nil then
+  begin
+    ALength := GetSelLength(ACustomComboBox);
+    QLineEdit_setSelection(LineEdit, NewStart, ALength);
+  end;
+end;
+
+class procedure TQtWSCustomComboBox.SetSelLength(
+  const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  LineEdit: QLineEditH;
+  AStart: Integer;
+begin
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+  if LineEdit <> nil then
+  begin
+    AStart := GetSelStart(ACustomComboBox);
+    QLineEdit_setSelection(LineEdit, AStart, NewLength);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomComboBox.SetItemIndex
   Params:  None
   Returns: The state of the control
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomComboBox.SetItemIndex(
-  const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+class procedure TQtWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
-  TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(TQtComboBox(ACustomComboBox.Handle).FSavedItemIndex);
-  TQtComboBox(ACustomComboBox.Handle).FSavedItemIndex := NewIndex;
+  TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
+end;
+
+class procedure TQtWSCustomComboBox.SetMaxLength(
+  const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  LineEdit: QLineEditH;
+  MaxLength: Integer;
+begin
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+
+  if LineEdit <> nil then
+  begin
+    if (NewLength <= 0) or (NewLength > QtMaxEditLength)  then
+      NewLength := QtMaxEditLength;
+
+    MaxLength := QLineEdit_maxLength(LineEdit);
+    
+    if MaxLength <> NewLength then
+      QLineEdit_setMaxLength(LineEdit, NewLength);
+  end;
+end;
+
+class procedure TQtWSCustomComboBox.SetStyle(
+  const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+begin
+  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle = csDropDown);
+  // TODO: implement styles: csSimple, csOwnerDrawFixed, csOwnerDrawVariable
+  inherited SetStyle(ACustomComboBox, NewStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1322,15 +1433,16 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 var
-  ComboBoxH: QComboBoxH;
+  ComboBox: TQtComboBox;
 begin
-  if not Assigned(TQtComboBox(ACustomComboBox.Handle).FList) then
+  ComboBox := TQtComboBox(ACustomComboBox.Handle);
+  if not Assigned(ComboBox.FList) then
   begin
-    ComboBoxH := QComboBoxH((TQtComboBox(ACustomComboBox.Handle).Widget));
-    TQtComboBox(ACustomComboBox.Handle).FList := TQtComboStrings.Create(ComboBoxH, ACustomComboBox);
+    ComboBox.BeginUpdate;
+    ComboBox.FList := TQtComboStrings.Create(ComboBox);
+    ComboBox.EndUpdate;
   end;
-  {TODO: ask why GetItems() always clears the list, that's why FSavedItemIndex exists. }
-  Result := TQtComboBox(ACustomComboBox.Handle).FList;
+  Result := ComboBox.FList;
 end;
 
 {------------------------------------------------------------------------------
@@ -1370,6 +1482,12 @@ begin
   QtComboBox := TQtComboBox(AWinControl.Handle);
   Str := UTF8Decode(AText);
   QComboBox_setEditText(QComboBoxH(QtComboBox.Widget), @Str);
+end;
+
+class procedure TQtWSCustomComboBox.Sort(
+  const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+begin
+  TQtComboStrings(AList).Sorted := IsSorted;
 end;
 
 

@@ -50,13 +50,18 @@ type
   TQtObject = class(TObject)
   private
     FEventHook: QObject_hookH;
+    FUpdateCount: Integer;
   public
     TheObject: QObjectH;
+    // TODO: base virtual constructor with initialization
     destructor Destroy; override;
   public
     procedure AttachEvents; virtual;
     procedure DetachEvents; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
+  public
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
   end;
   
   { TQtWidget }
@@ -450,15 +455,23 @@ type
   private
     FChangeHook: QComboBox_hookH;
     FSelectHook: QComboBox_hookH;
+    FLineEdit: QLineEditH;
+    function GetLineEdit: QLineEditH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
-    FSavedItemIndex: Integer;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
+    function getEditable: Boolean;
+    procedure insertItem(AIndex: Integer; AText: String); overload;
+    procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
+    procedure setEditable(AValue: Boolean);
+    procedure removeItem(AIndex: Integer);
+    
+    property LineEdit: QLineEditH read GetLineEdit;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -3876,6 +3889,20 @@ end;
 
 { TQtComboBox }
 
+function TQtComboBox.GetLineEdit: QLineEditH;
+begin
+  if not getEditable then
+  begin
+    FLineEdit := nil
+  end
+  else
+  begin
+    if FLineEdit = nil then
+      FLineEdit := QComboBox_lineEdit(QComboBoxH(Widget));
+  end;
+  Result := FLineEdit;
+end;
+
 function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
@@ -3886,6 +3913,7 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QComboBox_create(Parent);
+  FLineEdit := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -3924,6 +3952,24 @@ begin
   Result := QComboBox_currentIndex(QComboBoxH(Widget));
 end;
 
+function TQtComboBox.getEditable: Boolean;
+begin
+  Result := QComboBox_isEditable(QComboBoxH(Widget));
+end;
+
+procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
+var
+  Str: WideString;
+begin
+  Str := UTF8Decode(AText);
+  insertItem(AIndex, @Str);
+end;
+
+procedure TQtComboBox.insertItem(AIndex: Integer; AText: PWideString);
+begin
+  QComboBox_insertItem(QComboBoxH(WIdget), AIndex, AText, QVariant_create());
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtComboBox.Destroy
   Params:  None
@@ -3932,6 +3978,18 @@ end;
 procedure TQtComboBox.setCurrentIndex(index: Integer);
 begin
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
+end;
+
+procedure TQtComboBox.setEditable(AValue: Boolean);
+begin
+  QComboBox_setEditable(QComboBoxH(Widget), AValue);
+  if not AValue then
+    FLineEdit := nil;
+end;
+
+procedure TQtComboBox.removeItem(AIndex: Integer);
+begin
+  QComboBox_removeItem(QComboBoxH(Widget), AIndex);
 end;
 
 procedure TQtComboBox.AttachEvents;
@@ -3962,6 +4020,9 @@ procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
 var
   Msg: TLMessage;
 begin
+  if FUpdateCount > 0 then
+    Exit;
+    
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_CHANGED;
@@ -3977,6 +4038,9 @@ procedure TQtComboBox.SlotSelect(index: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
+  if FUpdateCount > 0 then
+    Exit;
+    
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SELCHANGE;
@@ -4962,7 +5026,7 @@ begin
     ShortCutToKey(AShortCut, Key, Shift);
     Modifiers := ShiftStateToQtModifiers(Shift);
     // there is no need in destroying QKeySequnce
-    QAction_setShortcut(ActionHandle, QKeySequence_create(LCLKeyToQtKey(Key) + Modifiers));
+    QAction_setShortcut(ActionHandle, QKeySequence_create(LCLKeyToQtKey(Key) or Modifiers));
   end
   else
     QAction_setShortcut(ActionHandle, QKeySequence_create());
@@ -5632,6 +5696,17 @@ begin
     QObject_hook_destroy(FEventHook);
     FEventHook := nil;
   end;
+end;
+
+procedure TQtObject.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TQtObject.EndUpdate;
+begin
+  if FUpdateCount > 0 then
+    dec(FUpdateCount);
 end;
 
 { TQtHintWindow }
