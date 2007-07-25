@@ -116,6 +116,30 @@ begin
   {$endif}
 end;
 
+function TQtWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.BitBlt] missing implementation ');
+  {$endif}
+  Result := False;
+end;
+
+function TQtWidgetSet.CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  	WriteLn('***** [WinAPI TQtWidgetSet.CallNextHookEx] missing implementation ');
+  {$endif}
+  Result := 0;
+end;
+
+function TQtWidgetSet.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  	WriteLn('***** [WinAPI TQtWidgetSet.CallWindowProc] missing implementation ');
+  {$endif}
+  Result := 0;
+end;
+
 {------------------------------------------------------------------------------
   Method:  ClientToScreen
   Params:  Handle    -
@@ -214,6 +238,49 @@ begin
     // TODO: Evaluate if region is complex
     Result := SIMPLEREGION;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TQtWidgetSet.ComboBoxDropDown
+  Params: Handle: HWND; DropDown: boolean
+  Returns:
+
+  Shows or hides combobox dropdown list via DropDown parameter.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+var
+  ComboList: QAbstractItemViewH;
+  ComboBox: QComboBoxH;
+begin
+  {$ifdef VerboseQtWinAPI}
+	WriteLn('[WinAPI TQtWidgetSet.ComboBoxDropDown] ');
+  {$endif}
+  Result := False;
+  if TQtWidget(Handle) is TQtComboBox then
+  begin
+    ComboBox := QComboBoxH(TQtComboBox(Handle).Widget);
+    ComboList := QComboBox_view(ComboBox);
+    if DropDown <> QWidget_isVisible(ComboList) then
+    begin
+      if DropDown then QComboBox_showPopup(ComboBox)
+      else QComboBox_hidePopup(ComboBox);
+    end;
+    Result := True;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TQtWidgetSet.CreateCompatibleBitmap
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  	WriteLn('***** [WinAPI TQtWidgetSet.CreateCompatibleBitmap] missing implementation ');
+  {$endif}
+  Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -554,6 +621,20 @@ end;
 
 
 {------------------------------------------------------------------------------
+  Function: CreatePixmapIndirect
+  Params:  const Data: Pointer; const TransColor: Longint
+  Returns: HBITMAP
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.CreatePixmapIndirect] missing implementation ');
+  {$endif}
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
   Function: CreatePolygonRgn
   Params:  none
   Returns: HRGN
@@ -619,6 +700,40 @@ begin
   System.DoneCriticalsection(ACritSec^);
   Dispose(ACritSec);
   CritSection:=0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: DeleteDC
+  Params:  none
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DeleteDC(hDC: HDC): Boolean;
+var
+  Painter: QPainterH;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI DeleteDC] Handle: ', dbghex(hDC));
+  {$endif}
+  
+  Result := False;
+  if not IsValidDC(hDC) then exit;
+  
+
+  Painter := TQtDeviceContext(hDC).Widget;
+  Result := not QPainter_isActive(Painter);
+  
+  if not Result then
+    QPainter_end(Painter);
+  
+  if Result then
+  begin
+    {we should never come here ... endPaint() do the job}
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('[WinAPI DeleteDC] freeing resources ');
+    {$endif}
+    TQtDeviceContext(hDC).Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -697,6 +812,7 @@ begin
     {$endif}
     
     // we must stop paintdevice before destroying
+
     APaintEngine := QImage_paintEngine(TQtImage(AObject).Handle);
     
     if (APaintEngine <> NiL)
@@ -707,6 +823,7 @@ begin
       then
         QPainter_end(APainter);
     end ;
+
   end
   {------------------------------------------------------------------------------
     Region
@@ -778,6 +895,31 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method: DrawFrameControl
+  Params: DC: HDC; const Rect : TRect; uType, uState : Cardinal
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
+begin
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.DrawFrameControl] missing implementation ');
+  {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Method: DrawFocusRect
+  Params: DC: HDC; const Rect: TRect
+  Returns: Boolean
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+begin
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.DrawFocusRect] missing implementation ');
+  {$endif}
+end;
 
 {------------------------------------------------------------------------------
   Method:  DrawEdge
@@ -1095,6 +1237,25 @@ begin
   Result := True;
 end;
 
+function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
+begin
+  {maybe we can put creating of scrollbar here instead of SetScrollInfo() }
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.EnableScrollbar] missing implementation ');
+  {$endif}
+end;
+
+function TQtWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+begin
+  Result := True;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.EnableWindow] possible wrong implementation');
+  {$endif}
+  if TQtWidget(hWnd).LCLObject.ClassName<>'TScrollBar' then
+  QWidget_setEnabled(TQtWidget(hWnd).Widget, bEnable);
+end;
+
 {------------------------------------------------------------------------------
   Function: EndPaint
   Params:
@@ -1116,7 +1277,6 @@ begin
     {$ifdef VerboseQtWinAPI}
        WriteLn('Freeing resources');
     {$endif}
-    
      TQtDeviceContext(PS.HDC).Free;
    end;
 end;
@@ -1197,6 +1357,69 @@ begin
   end;
 end;
 
+function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+var
+  Clip,
+  Tmp : hRGN;
+  X, Y : Longint;
+  DCOrigin: TPoint;
+  QtWidget: TQtWidget;
+  QtDC: TQtDeviceContext;
+begin
+  // copied from gtk winapi
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.ExtSelectClipRGN] possible wrong implementation ');
+  {$endif}
+  If not IsValidDC(DC) then
+  begin
+    Result := ERROR;
+    exit;
+  end else
+    Result := SIMPLEREGION;
+  
+  QtDC := TQtDeviceContext(DC);
+
+  
+  QtWidget := QtObjectFromWidgetH(TQtDeviceContext(DC).Parent);
+  
+  if Assigned(QtWidget) and (QtWidget.PaintData.ClipRegion = nil) then
+  begin
+    // there is no clipping region in the DC
+    Case Mode of
+      RGN_COPY:
+        begin
+         // Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
+         // If Result <> ERROR then
+          Result := SelectClipRGN(DC, RGN);
+        end;
+      RGN_OR,
+      RGN_XOR,
+      RGN_AND,
+      RGN_DIFF:
+        begin
+          // get existing clip
+          // GDK_Window_Get_Size(Drawable, @X, @Y);
+          // DCOrigin := GetDCOffset(TQtDeviceContext(DC));
+          GetDeviceSize(DC, DCOrigin);
+          
+          Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
+          // create target clip
+          Tmp := CreateEmptyRegion;
+          // combine
+          Result := CombineRGN(Tmp, Clip, RGN, Mode);
+          // commit
+          //DebugLn('TGtkWidgetSet.ExtSelectClipRGN B ClipRegValid=',dbgs(ClipRegion),' TmpRGN=',GDKRegionAsString(PGdiObject(Tmp)^.GDIRegionObject));
+          SelectClipRGN(DC, Tmp);
+          // clean up
+          DeleteObject(Clip);
+          DeleteObject(Tmp);
+        end;
+      end;
+  end
+  else
+    Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
+end;
+
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
@@ -1272,6 +1495,9 @@ begin
   {$endif}
   Result := False;
   if not IsValidDC(DC) then exit;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.FillRgn] missing implementation ');
+  {$endif}
   {$note implement FillRgn()}
 end;
 
@@ -1306,6 +1532,9 @@ function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
 begin
   {$note implement}
   Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.Frame3d] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1335,6 +1564,14 @@ begin
     Result := HWND(QtObjectFromWidgetH(Widget))
   else
     Result := 0;
+end;
+
+function TQtWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+begin
+  Result := 0;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetBitmapBits] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1371,6 +1608,39 @@ begin
 //  Desc^.LineEnd := rileDWordBoundary;
 end;
 
+function TQtWidgetSet.GetCapture: HWND;
+var
+  w: QWidgetH;
+  QtWidget: TQtWidget;
+  vPoint: TQtPoint;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetCapture]');
+  {$endif}
+  
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+ // WriteLn('*#*#*#*#* [WinAPI TQtWidgetSet.GetCapture] possible wrong implementation ');
+  {$endif}
+  
+  QCursor_pos(@vPoint);
+  w := QApplication_widgetAt(@vPoint);
+
+  if w <> nil then
+  begin
+    QtWidget := QtObjectFromWidgetH(w);
+    if Assigned(QtWidget) then
+    begin
+      if QWidget_isWindow(w)
+      and QWidget_isModal(w) then
+      Result := 0
+      else
+      Result := HWND(QtWidget)
+    end else
+      Result := 0;
+  end else
+    Result := 0;
+end;
+
 function TQtWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
   Result := QtCaret.GetCaretPos(lpPoint);
@@ -1379,6 +1649,9 @@ end;
 function TQtWidgetSet.GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean;
 begin
   {$note implement}
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetCaretRespondToFocus] missing implementation ');
+  {$endif}
   Result := False;
 end;
 
@@ -1563,6 +1836,21 @@ begin
   {$endif}
 end;
 
+function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+begin
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetDCOriginRelativeToWindow] missing implementation ');
+  {$endif}
+end;
+
+function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+begin
+  Result := HDC(TQtDeviceContext.Create(WindowHandle, False));
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetDesignerDC] missing implementation ');
+  {$endif}
+end;
 {------------------------------------------------------------------------------
   Function: GetDeviceCaps
   Params: DC: HDC; Index: Integer
@@ -1616,6 +1904,14 @@ begin
     else
       Result := 0;
   end;
+end;
+
+function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+begin
+  Result := 0;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetDIBits] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1747,6 +2043,9 @@ begin
   if not IsValidDC(DC) then exit;
   
   {$note implement - wait for LCL}
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetMapMode] missing implementation ');
+  {$endif}
   // Result := TQtDeviceContext(DC).MapMode;
 end;
 
@@ -1891,6 +2190,22 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
+end;
+
+function TQtWidgetSet.GetParent(Handle : HWND): HWND;
+var
+  QtWidget: TQtWidget;
+  Parent: TQtWidget;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetParent] possible wrong implementation ');
+  {$endif}
+  QtWidget := TQtWidget(Handle);
+  if Assigned(QtWidget.LCLObject.Parent) then
+  begin
+    Parent := TQtWidget(QtWidget.LCLObject.Parent.Handle);
+    Result := HWND(Parent);
+  end;
 end;
 
 function TQtWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
@@ -2045,6 +2360,59 @@ begin
   Result := True;
 end;
 
+function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
+var
+  R: TRect;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetRgnBox] possible wrong implementation ');
+  {$endif}
+  Result := SIMPLEREGION;
+  If lpRect <> nil then
+    lpRect^ := Rect(0,0,0,0);
+  If Not IsValidGDIObject(RGN) then
+    Result := ERROR
+  else
+  begin
+    Result := TQtRegion(RGN).GetRegionType;
+    If lpRect <> nil then begin
+      QRegion_boundingRect(TQtRegion(RGN).Widget, @R);
+      
+      With lpRect^ do
+      begin
+        Left   := R.Left;
+        Top    := R.Top;
+        Right  := R.Left + R.Right;
+        Bottom := R.Top + R.Bottom;
+      end;
+    end;
+  end;
+end;
+
+function TQtWidgetSet.GetROP2(DC: HDC): Integer;
+begin
+  Result := 0;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetROP2] missing implementation ');
+  {$endif}
+end;
+
+function TQtWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+begin
+  Result := 15;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetScrollBarSize] missing implementation ');
+  {$endif}
+end;
+
+function TQtWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
+begin
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetScrollBarVisible] missing implementation ');
+  {$endif}
+end;
+
 {------------------------------------------------------------------------------
   Function: GetScrollInfo
   Params: BarFlag
@@ -2118,6 +2486,14 @@ begin
 
     Result := True;
   end;
+end;
+
+function TQtWidgetSet.GetStockObject(Value: Integer): THandle;
+begin
+  Result := 0;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetStockObject] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2533,6 +2909,10 @@ begin
 
   Result := 0;
   
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetTextColor] missing implementation ');
+  {$endif}
+
 {  if IsValidDC(DC) then
     with TQtDeviceContext(DC) do
     begin
@@ -2625,6 +3005,14 @@ begin
       QtFontMetrics.Free;
     end;
   end;
+end;
+
+function TQtWidgetSet.GetWindowLong(Handle : hwnd; int: Integer): PtrInt;
+begin
+  Result := 0;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.GetWindowLong] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2800,6 +3188,50 @@ begin
   CritSection:=TCriticalSection(ACritSec);
 end;
 
+function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
+var
+  IntersectRgn, Rgn: QRegionH;
+  X1,Y1,X2,Y2: Integer;
+  QtDC: TQtDeviceContext;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('***** [WinAPI TQtWidgetSet.IntersectClipRect] ');
+  {$endif}
+  Result := ERROR;
+  if not IsValidDC(DC) then exit;
+  
+  QtDC := TQtDeviceContext(DC);
+  
+  X1 := Left;
+  Y1 := Top;
+  X2 := Right;
+  Y2 := Bottom;
+  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X1, Y1, @X2, @Y2);
+
+  IntersectRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1);
+  Rgn := QRegion_create;
+  try
+    if QPainter_hasClipping(QtDC.Widget) then
+    begin
+      QPainter_clipRegion(QtDC.Widget, Rgn);
+      if QRegion_isEmpty(Rgn) then
+        QRegion_unite(Rgn, Rgn, IntersectRgn)
+      else
+        QRegion_intersect(Rgn, Rgn, IntersectRgn);
+    end
+    else
+    begin
+      QPainter_setClipRegion(QtDC.Widget, InterSectRgn);
+      QPainter_clipRegion(QtDC.Widget, Rgn);
+    end;
+    QPainter_setClipping(QtDC.Widget, True);
+    Result := QtDC.GetRegionType(Rgn);
+  finally
+    QRegion_destroy(IntersectRgn);
+    QRegion_destroy(Rgn);
+  end;
+end;
+
 function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
   Result := TQtWidget(Handle).getEnabled;
@@ -2880,6 +3312,22 @@ begin
   Result := True;
 end;
 
+
+function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
+var
+  Str: WideString;
+  TitleStr: WideString;
+  OkStr: WideString;
+begin
+  Str := UTF8Decode('TQtWidgetSet.MessageBox - not implemented');
+  TitleStr := UTF8Decode(lpCaption);
+  OkStr := UTF8Decode('Ok');
+  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
+//  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+//    WriteLn('***** [WinAPI TQtWidgetSet.MessageBox] missing implementation ');
+//  {$endif}
+end;
+
 {------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
@@ -2919,6 +3367,14 @@ begin
     TQtDeviceContext(DC).translate(dX, dY);
 
   Result := True;
+end;
+
+function TQtWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+begin
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.PeekMessage] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2975,6 +3431,13 @@ begin
     QPainter_drawPolyline(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts);
 end;
 
+function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
+begin
+  Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.PostMessage] missing implementation ');
+  {$endif}
+end;
 {------------------------------------------------------------------------------
   Function: Rectangle
   Params:  DC: HDC; X1, Y1, X2, Y2: Integer
@@ -3404,6 +3867,9 @@ function TQtWidgetSet.SetCaretRespondToFocus(handle: HWND;
 begin
   {$note implement}
   Result := False;
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.SetCaretRespondToFocus] missing implementation ');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -3475,6 +3941,10 @@ begin
   if not IsValidDC(DC) then exit;
   
   {$note implement - wait for LCL}
+  
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+    WriteLn('***** [WinAPI TQtWidgetSet.SetMapMode] missing implementation ');
+  {$endif}
   
   (*
   QtDC := TQtDeviceContext(DC);

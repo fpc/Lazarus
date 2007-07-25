@@ -178,6 +178,7 @@ type
     constructor Create(CreateHandle: Boolean; Poly: QPolygonH;
       Const Fill: QtFillRule = QtWindingFill); virtual; overload;
     destructor Destroy; override;
+    function GetRegionType: integer;
   end;
 
   // NOTE: PQtDCData was a pointer to a structure with QPainter information
@@ -245,6 +246,7 @@ type
     procedure setPen(pen: TQtPen);
     function  SetBkColor(Color: TcolorRef): TColorRef;
     function  SetBkMode(BkMode: Integer): Integer;
+    function getRegionType(ARegion: QRegionH): integer;
     function region: TQtRegion;
     procedure setRegion(region: TQtRegion); 
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
@@ -465,7 +467,7 @@ begin
     WriteLn('TQtImage.Destroy Handle:', dbgs(Handle));
   {$endif}
 
-  if Handle <> nil then 
+  if Handle <> nil then
     QImage_destroy(Handle);
   if (FDataOwner) and (FData <> nil) then 
     FreeMem(FData);
@@ -891,6 +893,26 @@ begin
   QRegion_destroy(Widget);
 
   inherited Destroy;
+end;
+
+function TQtRegion.GetRegionType: integer;
+var
+  R: TRect;
+begin
+  try
+    if QRegion_isEmpty(Widget) then
+      Result := NULLREGION
+    else
+    begin
+      QRegion_boundingRect(Widget, @R);
+      if QRegion_contains(Widget, PRect(@R)) then
+        Result := SIMPLEREGION
+      else
+        Result := COMPLEXREGION;
+    end;
+  except
+    Result := ERROR;
+  end;
 end;
 
 { TQtDeviceContext }
@@ -1453,6 +1475,31 @@ begin
     else
       Mode := QtTransparentMode;
     QPainter_SetBackgroundMode(Widget, Mode);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.getRegionType
+  Params:  QRegionH
+  Returns: Region type
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.getRegionType(ARegion: QRegionH): integer;
+var
+  R: TRect;
+begin
+  try
+    if QRegion_isEmpty(ARegion) then
+      Result := NULLREGION
+    else
+    begin
+      QRegion_boundingRect(ARegion, @R);
+      if QRegion_contains(ARegion, PRect(@R)) then
+        Result := SIMPLEREGION
+      else
+        Result := COMPLEXREGION;
+    end;
+  except
+    Result := ERROR;
   end;
 end;
 
