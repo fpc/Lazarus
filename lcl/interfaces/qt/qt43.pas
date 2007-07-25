@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.43 }
+{ Version : 1.44 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -231,6 +231,7 @@ QObjectH = class(TObject) end;
   QCompleterH = class(QObjectH) end;
   QCoreApplicationH = class(QObjectH) end;
     QApplicationH = class(QCoreApplicationH) end;
+  QDragH = class(QObjectH) end;
   QEventLoopH = class(QObjectH) end;
   QGraphicsSceneH = class(QObjectH) end;
   QIODeviceH = class(QObjectH) end;
@@ -337,6 +338,7 @@ QSizeFH = class(TObject) end;
 QSizePolicyH = class(TObject) end;
 QStandardItemH = class(TObject) end;
 QStringH = class(TObject) end;
+QStyleFactoryH = class(TObject) end;
 QStyleHintReturnH = class(TObject) end;
   QStyleHintReturnMaskH = class(QStyleHintReturnH) end;
   QStyleHintReturnVariantH = class(QStyleHintReturnH) end;
@@ -415,6 +417,7 @@ QWidget_hookH = class(QObject_hookH) end;
 QAction_hookH = class(QObject_hookH) end;
 QClipboard_hookH = class(QObject_hookH) end;
 QDesktopWidget_hookH = class(QWidget_hookH) end;
+QDrag_hookH = class(QObject_hookH) end;
 QFrame_hookH = class(QWidget_hookH) end;
 QAbstractScrollArea_hookH = class(QFrame_hookH) end;
 QAbstractSlider_hookH = class(QWidget_hookH) end;
@@ -1951,6 +1954,27 @@ procedure QAbstractEventDispatcher_closingDown(handle: QAbstractEventDispatcherH
 function QAbstractEventDispatcher_setEventFilter(handle: QAbstractEventDispatcherH; filter: TAbstractEventFilter): TAbstractEventFilter; cdecl; external QtIntf name 'QAbstractEventDispatcher_setEventFilter';
 function QAbstractEventDispatcher_filterEvent(handle: QAbstractEventDispatcherH; message: Pointer): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_filterEvent';
 
+function QMimeData_create(): QMimeDataH; cdecl; external QtIntf name 'QMimeData_create';
+procedure QMimeData_destroy(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_destroy'; 
+function QMimeData_hasUrls(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasUrls';
+procedure QMimeData_text(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_text';
+procedure QMimeData_setText(handle: QMimeDataH; text: PWideString); cdecl; external QtIntf name 'QMimeData_setText';
+function QMimeData_hasText(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasText';
+procedure QMimeData_html(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_html';
+procedure QMimeData_setHtml(handle: QMimeDataH; html: PWideString); cdecl; external QtIntf name 'QMimeData_setHtml';
+function QMimeData_hasHtml(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasHtml';
+procedure QMimeData_imageData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_imageData';
+procedure QMimeData_setImageData(handle: QMimeDataH; image: QVariantH); cdecl; external QtIntf name 'QMimeData_setImageData';
+function QMimeData_hasImage(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasImage';
+procedure QMimeData_colorData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_colorData';
+procedure QMimeData_setColorData(handle: QMimeDataH; color: QVariantH); cdecl; external QtIntf name 'QMimeData_setColorData';
+function QMimeData_hasColor(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasColor';
+procedure QMimeData_data(handle: QMimeDataH; retval: QByteArrayH; mimetype: PWideString); cdecl; external QtIntf name 'QMimeData_data';
+procedure QMimeData_setData(handle: QMimeDataH; mimetype: PWideString; data: QByteArrayH); cdecl; external QtIntf name 'QMimeData_setData';
+function QMimeData_hasFormat(handle: QMimeDataH; mimetype: PWideString): Boolean; cdecl; external QtIntf name 'QMimeData_hasFormat';
+procedure QMimeData_formats(handle: QMimeDataH; retval: QStringListH); cdecl; external QtIntf name 'QMimeData_formats';
+procedure QMimeData_clear(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_clear';
+
 function QStringList_create(): QStringListH; overload; cdecl; external QtIntf name 'QStringList_create';
 procedure QStringList_destroy(handle: QStringListH); cdecl; external QtIntf name 'QStringList_destroy'; 
 function QStringList_create(i: PWideString): QStringListH; overload; cdecl; external QtIntf name 'QStringList_create2';
@@ -3322,26 +3346,26 @@ function QMimeSource_format(handle: QMimeSourceH; n: Integer = 0): PAnsiChar; cd
 function QMimeSource_provides(handle: QMimeSourceH; p1: PAnsiChar): Boolean; cdecl; external QtIntf name 'QMimeSource_provides';
 procedure QMimeSource_encodedData(handle: QMimeSourceH; retval: QByteArrayH; p1: PAnsiChar); cdecl; external QtIntf name 'QMimeSource_encodedData';
 
-function QMimeData_create(): QMimeDataH; cdecl; external QtIntf name 'QMimeData_create';
-procedure QMimeData_destroy(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_destroy'; 
-function QMimeData_hasUrls(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasUrls';
-procedure QMimeData_text(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_text';
-procedure QMimeData_setText(handle: QMimeDataH; text: PWideString); cdecl; external QtIntf name 'QMimeData_setText';
-function QMimeData_hasText(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasText';
-procedure QMimeData_html(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_html';
-procedure QMimeData_setHtml(handle: QMimeDataH; html: PWideString); cdecl; external QtIntf name 'QMimeData_setHtml';
-function QMimeData_hasHtml(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasHtml';
-procedure QMimeData_imageData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_imageData';
-procedure QMimeData_setImageData(handle: QMimeDataH; image: QVariantH); cdecl; external QtIntf name 'QMimeData_setImageData';
-function QMimeData_hasImage(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasImage';
-procedure QMimeData_colorData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_colorData';
-procedure QMimeData_setColorData(handle: QMimeDataH; color: QVariantH); cdecl; external QtIntf name 'QMimeData_setColorData';
-function QMimeData_hasColor(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasColor';
-procedure QMimeData_data(handle: QMimeDataH; retval: QByteArrayH; mimetype: PWideString); cdecl; external QtIntf name 'QMimeData_data';
-procedure QMimeData_setData(handle: QMimeDataH; mimetype: PWideString; data: QByteArrayH); cdecl; external QtIntf name 'QMimeData_setData';
-function QMimeData_hasFormat(handle: QMimeDataH; mimetype: PWideString): Boolean; cdecl; external QtIntf name 'QMimeData_hasFormat';
-procedure QMimeData_formats(handle: QMimeDataH; retval: QStringListH); cdecl; external QtIntf name 'QMimeData_formats';
-procedure QMimeData_clear(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_clear';
+function QDrag_create(dragSource: QWidgetH): QDragH; cdecl; external QtIntf name 'QDrag_create';
+procedure QDrag_destroy(handle: QDragH); cdecl; external QtIntf name 'QDrag_destroy'; 
+procedure QDrag_setMimeData(handle: QDragH; data: QMimeDataH); cdecl; external QtIntf name 'QDrag_setMimeData';
+function QDrag_mimeData(handle: QDragH): QMimeDataH; cdecl; external QtIntf name 'QDrag_mimeData';
+procedure QDrag_setPixmap(handle: QDragH; p1: QPixmapH); cdecl; external QtIntf name 'QDrag_setPixmap';
+procedure QDrag_pixmap(handle: QDragH; retval: QPixmapH); cdecl; external QtIntf name 'QDrag_pixmap';
+procedure QDrag_setHotSpot(handle: QDragH; hotspot: PQtPoint); cdecl; external QtIntf name 'QDrag_setHotSpot';
+procedure QDrag_hotSpot(handle: QDragH; retval: PQtPoint); cdecl; external QtIntf name 'QDrag_hotSpot';
+function QDrag_source(handle: QDragH): QWidgetH; cdecl; external QtIntf name 'QDrag_source';
+function QDrag_target(handle: QDragH): QWidgetH; cdecl; external QtIntf name 'QDrag_target';
+function QDrag_start(handle: QDragH; supportedActions: QtDropActions = QtCopyAction): QtDropAction; cdecl; external QtIntf name 'QDrag_start';
+function QDrag_exec(handle: QDragH; supportedActions: QtDropActions = QtMoveAction): QtDropAction; overload; cdecl; external QtIntf name 'QDrag_exec';
+function QDrag_exec(handle: QDragH; supportedActions: QtDropActions; defaultAction: QtDropAction): QtDropAction; overload; cdecl; external QtIntf name 'QDrag_exec2';
+procedure QDrag_setDragCursor(handle: QDragH; cursor: QPixmapH; action: QtDropAction); cdecl; external QtIntf name 'QDrag_setDragCursor';
+
+
+type
+  QDrag_actionChanged_Event = procedure (action: QtDropAction) of object cdecl;
+  QDrag_targetChanged_Event = procedure (newTarget: QWidgetH) of object cdecl;
+
 
 
 type
@@ -8949,6 +8973,9 @@ procedure QStyleHintReturnVariant_setVariant(handle : QStyleHintReturnVariantH; 
 function QStyleHintReturnVariant_create(): QStyleHintReturnVariantH; cdecl; external QtIntf name 'QStyleHintReturnVariant_create';
 procedure QStyleHintReturnVariant_destroy(handle: QStyleHintReturnVariantH); cdecl; external QtIntf name 'QStyleHintReturnVariant_destroy'; 
 
+procedure QStyleFactory_keys(retval: QStringListH); cdecl; external QtIntf name 'QStyleFactory_keys';
+function QStyleFactory_create(p1: PWideString): QStyleH; cdecl; external QtIntf name 'QStyleFactory_create';
+
 type
   QGraphicsSceneSceneLayer = cardinal; // QGraphicsScene::SceneLayer
   QGraphicsSceneSceneLayers = QGraphicsSceneSceneLayer; //QFlags<> (3)
@@ -9263,6 +9290,11 @@ function QDesktopWidget_hook_create(handle: QObjectH): QDesktopWidget_hookH; cde
 procedure QDesktopWidget_hook_destroy(handle: QDesktopWidget_hookH); cdecl; external QtIntf name 'QDesktopWidget_hook_destroy'; 
 procedure QDesktopWidget_hook_hook_resized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_resized';
 procedure QDesktopWidget_hook_hook_workAreaResized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_workAreaResized';
+
+function QDrag_hook_create(handle: QObjectH): QDrag_hookH; cdecl; external QtIntf name 'QDrag_hook_create';
+procedure QDrag_hook_destroy(handle: QDrag_hookH); cdecl; external QtIntf name 'QDrag_hook_destroy'; 
+procedure QDrag_hook_hook_actionChanged(handle: QDrag_hookH; hook: QHookH); cdecl; external QtIntf name 'QDrag_hook_hook_actionChanged';
+procedure QDrag_hook_hook_targetChanged(handle: QDrag_hookH; hook: QHookH); cdecl; external QtIntf name 'QDrag_hook_hook_targetChanged';
 
 function QFrame_hook_create(handle: QObjectH): QFrame_hookH; cdecl; external QtIntf name 'QFrame_hook_create';
 procedure QFrame_hook_destroy(handle: QFrame_hookH); cdecl; external QtIntf name 'QFrame_hook_destroy'; 
