@@ -166,6 +166,180 @@ begin
   end;
 end;
 
+
+function TQtWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
+var
+  QtClipBoard: QClipBoardH;
+  QtMimeData: QMimeDataH;
+  QtList: QStringListH;
+  i: Integer;
+  Str: WideString;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  // WriteLn('***** [WinAPI TQtWidgetSet.ClipboardFormatToMimeType] missing implementation ');
+  {$endif}
+  QtClipBoard := QApplication_clipBoard;
+  QtMimeData := QClipboard_mimeData(QtClipBoard);
+  QtList := QStringList_create;
+  try
+   QMimeData_formats(QtMimeData, QtList);
+  {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+   writeln('DEBUG TQtWidgetSet.ClipboardFormatToMimeType() FormatID=',FormatID);
+  {$endif}
+   for i := 0 to QStringList_size(QtList) - 1 do
+   begin
+     QStringList_at(QtList, @Str, i);
+     Str := UTF8Decode(Str);
+    {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+      writeln('DEBUG TQtWidgetSet.ClipboardFormatToMimeType() QTCLIPBOARD i=',i,' Data=',Str);
+    {$endif}
+     if i = FormatID then
+     begin
+      {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+        writeln('Debug TQtWidgetSet.ClipboardFormatToMimeType() Clipboard founded mime type ...');
+      {$endif}
+       Result := Str;
+       break;
+     end;
+   end;
+  finally
+    QStringList_destroy(QtList);
+  end;
+end;
+
+function TQtWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): boolean;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  	WriteLn('***** [WinAPI TQtWidgetSet.ClipboardGetData] missing implementation ');
+  {$endif}
+  
+ {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+   writeln('DEBUG TQtWidgetSet.ClipboardGetData() ');
+ {$endif}
+ 
+  Result := True;
+end;
+
+function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: integer; var List: PClipboardFormat): boolean;
+  
+var
+  QtClipBoard: QClipBoardH;
+  QtMimeData: QMimeDataH;
+  QtList: QStringListH;
+  i: Integer;
+  Str: WideString;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  // WriteLn('***** [WinAPI TQtWidgetSet.ClipboardGetFormats] missing implementation ');
+  {$endif}
+  
+  Result := False;
+  Count := 0;
+  List := nil;
+
+ {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+   writeln('DEBUG TQtWidgetSet.ClipboardGetFormats() ');
+ {$endif}
+
+  QtClipBoard := QApplication_clipBoard;
+  
+  case ClipBoardType of
+    ctPrimarySelection,
+    ctSecondarySelection: QtMimeData := QClipboard_mimeData(QtClipBoard, QClipboardSelection);
+    ctClipBoard: QtMimeData := QClipboard_mimeData(QtClipBoard, QClipboardClipboard);
+  end;
+  
+  QtList := QStringList_create;
+  QMimeData_formats(QtMimeData, QtList);
+  
+  try
+    Count := QStringList_size(QtList);
+    
+		GetMem(List,SizeOf(TClipboardFormat)*Count);
+  
+    for i := 0 to Count - 1 do
+    begin
+      QStringList_at(QtList, @Str, i);
+      Str := UTF8Encode(Str);
+      List[i] := i;
+      {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+        writeln('DEBUG TQtWidgetSet.ClipboardGetFormats() QTCLIPBOARD i=',i,' Data=',Str);
+      {$endif}
+    end;
+    
+    Result := Count > 0;
+    
+  finally
+    QStringList_destroy(QtList);
+  end;
+end;
+
+function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  Formats: PClipboardFormat): boolean;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  	WriteLn('***** [WinAPI TQtWidgetSet.ClipboardGetOwnerShips] missing implementation ');
+  {$endif}
+  
+ {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+   writeln('DEBUG TQtWidgetSet.ClipboardGetOwnerShip() ');
+ {$endif}
+ 
+  Result := True;
+end;
+
+function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
+var
+  QtClipBoard: QClipBoardH;
+  QtMimeData: QMimeDataH;
+  List: QStringListH;
+  i: Integer;
+  Str: WideString;
+begin
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  	WriteLn('***** [WinAPI TQtWidgetSet.ClipboardRegisterFormat] AMimeType: ',AMimeType);
+  {$endif}
+  QtClipBoard := QApplication_clipBoard;
+  QtMimeData := QClipboard_mimeData(QtClipBoard);
+  
+  List := QStringList_create;
+  try
+   QMimeData_formats(QtMimeData, List);
+   
+  {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+   writeln('DEBUG TQtWidgetSet.ClipboardRegisterFormat() MimeType=',AMimeType,' MIMEDATA LIST COUNT=',QStringList_size(List));
+  {$endif}
+  
+   for i := 0 to QStringList_size(List) - 1 do
+   begin
+     QStringList_at(List, @Str, i);
+     Str := UTF8Decode(Str);
+     
+    {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+      writeln('DEBUG TQtWidgetSet.ClipboardRegisterFormat() QTCLIPBOARD i=',i,' Data=',Str);
+    {$endif}
+    
+     if Str = AMimeType then
+     begin
+     
+      {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
+        writeln('Debug TQtWidgetSet.ClipboardRegisterFormat() Clipboard founded mime type ...');
+      {$endif}
+      
+       Result := i;
+       break;
+     end;
+   end;
+  finally
+    QStringList_destroy(List);
+  end;
+  
+end;
+
+
 {------------------------------------------------------------------------------
   Function: CombineRgn
   Params:  Dest, Src1, Src2, fnCombineMode
