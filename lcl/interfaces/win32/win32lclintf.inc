@@ -127,6 +127,31 @@ begin
   Result := lProcessEvent;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ExtUTF8Out
+
+  As ExtTextOut except that Str is treated as UTF8
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
+  Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+begin
+  Result := ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
+end;
+
+{------------------------------------------------------------------------------
+  function FontCanUTF8(Font: HFont): boolean;
+
+  True if font recognizes Unicode UTF8 encoding.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.FontCanUTF8(Font: HFont): boolean;
+begin
+  {$ifdef WindowsUnicodeSupport}
+    Result := True;
+  {$else}
+    Result := False;
+  {$endif}
+end;
+
 procedure TWin32WidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);
 var
   lProcessEvent: PProcessEvent absolute AData;

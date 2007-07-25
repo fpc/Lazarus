@@ -42,6 +42,11 @@ function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure DeallocateHWnd(Wnd: HWND); override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
+function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
+  Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+
+function FontCanUTF8(Font: HFont): boolean; override;
+
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
