@@ -36,7 +36,8 @@ begin
   // get the interface based item list
   NewStrings:= TWSCustomComboBoxClass(WidgetSetClass).GetItems(Self);
   // then delete internal list
-  if (FItems<>NewStrings) and (FItems<>nil) then begin
+  if (FItems<>NewStrings) and (FItems<>nil) then
+  begin
     NewStrings.Assign(FItems);
     FItems.Free;
   end;

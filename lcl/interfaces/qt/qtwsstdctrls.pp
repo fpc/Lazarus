@@ -34,6 +34,8 @@ uses
   qt4,
 {$endif}
   qtprivate, qtwidgets,
+  // RTL
+  math,
   // LCL
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf, LCLProc,
   // Widgetset
@@ -60,6 +62,9 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
   end;
 
   { TQtWSGroupBox }
@@ -1284,6 +1289,28 @@ begin
   // Returns the Handle
 
   Result := THandle(QtGroupBox);
+end;
+
+class function TQtWSCustomGroupBox.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+var
+  dx, dy: integer;
+begin
+  Result:=false;
+  if AWinControl.HandleAllocated then
+  begin
+  end else
+  begin
+    dx := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutLeftMargin) +
+          QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutRightMargin);
+    dy := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutTopMargin) +
+          QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutBottomMargin);
+    aClientRect:=Rect(0,0,
+                 Max(0, aWidth - dx),
+                 Max(0, aHeight - dy));
+    Result:=true;
+  end;
 end;
 
 { TQtWSCustomComboBox }

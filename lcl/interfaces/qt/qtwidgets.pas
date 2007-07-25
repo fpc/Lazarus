@@ -83,7 +83,7 @@ type
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
-    procedure SetGeometry; virtual;
+    procedure SetGeometry; virtual; overload;
   public
     AVariant: QVariantH;
     LCLObject: TWinControl;
@@ -112,6 +112,7 @@ type
   public
     procedure Activate;
     procedure BringToFront;
+    procedure OffsetMousePos(APoint: PQtPoint); virtual;
     procedure SetColor(const Value: PQColor); virtual;
     procedure SetTextColor(const Value: PQColor); virtual;
     procedure SetCursor(const ACursor: QCursorH); virtual;
@@ -125,10 +126,12 @@ type
     procedure ShowMinimized;
     procedure ShowMaximized;
     function getEnabled: Boolean;
+    function getGeometry: TRect; virtual;
     function getVisible: Boolean;
-    function getClientOffset: TQtPoint;
+    function getClientBounds: TRect; virtual;
     function hasFocus: Boolean;
     procedure setEnabled(p1: Boolean);
+    procedure setGeometry(ARect: TRect); overload;
     procedure setVisible(visible: Boolean); virtual;
     function windowModality: QtWindowModality;
     procedure setWindowModality(windowModality: QtWindowModality);
@@ -221,8 +224,11 @@ type
     ToolBar: TQtToolBar;
     Canvas: TQtDeviceContext;
     destructor Destroy; override;
+    function getClientBounds: TRect; override;
     procedure setTabOrders;
+    procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure SlotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
   end;
@@ -267,7 +273,6 @@ type
     FStateChangedHook : QCheckBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure SetGeometry; override;
   public
     destructor Destroy; override;
     function CheckState: QtCheckState;
@@ -286,7 +291,6 @@ type
     FClickedHook: QAbstractButton_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure SetGeometry; override;
   public
     destructor Destroy; override;
   public
@@ -297,10 +301,6 @@ type
   { TQtGroupBox }
 
   TQtGroupBox = class(TQtWidget)
-  private
-  {$ifdef QT_USE_QLAYOUT_IN_TQTGROUPBOX}
-    LayoutWidget: QBoxLayoutH;
-  {$endif}
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -544,6 +544,7 @@ type
     function horizontalScrollBar: TQtScrollBar;
     function verticalScrollBar: TQtScrollBar;
     function viewport: TQtWidget;
+    function getClientBounds: TRect; override;
     procedure SetColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
@@ -690,11 +691,13 @@ type
   TQtMenuBar = class(TQtWidget)
   private
     FVisible: Boolean;
+    FHeight: Integer;
   public
     constructor Create(const AParent: QWidgetH); overload;
   public
     function addMenu(title: PWideString): TQtMenu;
     function addSeparator: TQtMenu;
+    function getGeometry: TRect; override;
   end;
 
   { TQtProgressBar }
@@ -1023,7 +1026,6 @@ end;
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   w: QWidgetH;
-  m: QMenuBarH;
   MenuRect: TRect;
   FormRect: TRect;
 begin
@@ -1064,29 +1066,28 @@ begin
     QEventMouseMove: SlotMouseMove(Event);
     QEventWheel: SlotMouseWheel(Event);
     QEventResize:
-    begin
-     SlotResize;
-     if (Self is TQtMainWindow)
-     and Assigned(TQtMainWindow(Self).MenuBar)
-     and Assigned(TCustomForm(LCLObject).Menu) then
-     begin
-       w := nil;
-       if TQtMainWindow(Self).IsMainForm
-       then
-         w := QMainWindow_menuWidget(QMainWindowH(Widget));
+      begin
+        SlotResize;
+        if (Self is TQtMainWindow) and
+           Assigned(TQtMainWindow(Self).MenuBar) and
+           Assigned(TCustomForm(LCLObject).Menu) then
+        begin
+          w := nil;
+          if TQtMainWindow(Self).IsMainForm then
+            w := QMainWindow_menuWidget(QMainWindowH(Widget));
 
-       if w = nil then
-       begin
-         QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
-         QWidget_rect(Widget, @FormRect);
-         if MenuRect.Right <> FormRect.Right then
-         begin
-           MenuRect.Right := FormRect.Right;
-           QWidget_setGeometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
-         end;
-       end;
-     end;
-    end;
+          if w = nil then
+          begin
+            QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
+            QWidget_rect(Widget, @FormRect);
+            if MenuRect.Right <> FormRect.Right then
+            begin
+              MenuRect.Right := FormRect.Right;
+              QWidget_setGeometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
+            end;
+          end;
+        end;
+      end;
     QEventPaint: SlotPaint(Event);
     QEventContextMenu: SlotContextMenu;
   else
@@ -1205,6 +1206,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := QHoverEvent_pos(QHoverEventH(Event));
+  OffsetMousePos(MousePos);
 
   case QEvent_type(Event) of
     QEventHoverEnter : Msg.Msg := CM_MOUSEENTER;
@@ -1284,7 +1286,7 @@ begin
 
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
-    RepeatCount := 0;
+    RepeatCount := 1;
     UTF8Char := TUTF8Char(Text);
 
     LCLObject.IntfUTF8KeyPress(UTF8Char, RepeatCount, False);
@@ -1310,6 +1312,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event));
+  OffsetMousePos(MousePos);
   Msg.Keys := 0;
   
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
@@ -1408,12 +1411,11 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event));
-
-  //QCursor_pos(@MousePos);
+  OffsetMousePos(MousePos);
 
   Msg.XPos := SmallInt(MousePos^.X);
   Msg.YPos := SmallInt(MousePos^.Y);
-
+  
   Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)));
 
   Msg.Msg := LM_MOUSEMOVE;
@@ -1440,6 +1442,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := QWheelEvent_pos(QWheelEventH(Event));
+  OffsetMousePos(MousePos);
 
   Msg.Msg := LM_MOUSEWHEEL;
 
@@ -1551,6 +1554,15 @@ procedure TQtWidget.BringToFront;
 begin
   Activate;
   QWidget_raise(Widget);
+end;
+
+procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
+begin
+  with getClientBounds do
+  begin
+    dec(APoint.x, Left);
+    dec(APoint.y, Top);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1669,15 +1681,32 @@ begin
   Result := QWidget_isEnabled(Widget);
 end;
 
+function TQtWidget.getGeometry: TRect;
+begin
+  QWidget_geometry(Widget, @Result);
+end;
+
 function TQtWidget.getVisible: boolean;
 begin
   Result := QWidget_isVisible(Widget);
 end;
 
-function TQtWidget.getClientOffset: TQtPoint;
+function TQtWidget.getClientBounds: TRect;
+{var
+  Container: QWidgetH;
+  R: TRect;}
 begin
-  Result.x := QWidget_width(Widget) - QWidget_width(GetContainerWidget);
-  Result.y := QWidget_height(Widget) - QWidget_height(GetContainerWidget);
+  QWidget_contentsRect(Widget, @Result);
+{  Container := GetContainerWidget;
+  if Container <> Widget then
+  begin
+    QWidget_contentsRect(Container, @R);
+    inc(Result.Top, R.Top);
+    inc(Result.Left, R.Left);
+    dec(Result.Right, R.Right);
+    dec(Result.Bottom, R.Bottom);
+    OffsetRect(Result, R.Left, R.Top);
+  end;}
 end;
 
 function TQtWidget.hasFocus: Boolean;
@@ -1688,6 +1717,11 @@ end;
 procedure TQtWidget.setEnabled(p1: Boolean);
 begin
   QWidget_setEnabled(Widget, p1);
+end;
+
+procedure TQtWidget.setGeometry(ARect: TRect);
+begin
+  QWidget_setGeometry(Widget, @ARect);
 end;
 
 procedure TQtWidget.setVisible(visible: Boolean);
@@ -2181,7 +2215,7 @@ end;
 procedure TQtWidget.SetGeometry;
 begin
   with LCLObject do
-    QWidget_setGeometry(Widget, Left, Top, Width, Height);
+    setGeometry(Rect(Left, Top, Width, Height));
 end;
 
 { TQtAbstractButton }
@@ -2432,24 +2466,20 @@ begin
       and not (csDesigning in LCLObject.ComponentState) then
       begin
         MDIAreaHandle := QMdiArea_create(Result);
-        FCentralWidget := nil; // MDIAreaHandle;
+        FCentralWidget := MDIAreaHandle;
         QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
       end
       else
       begin
-        {do not localize !!!}
-        if LCLObject.ClassName='TMainIDEBar' then
-        FCentralWidget := QWidget_create(Result)
-        else FCentralWidget := nil;
-        
-        MDIAreaHandle := nil
+        FCentralWidget := QWidget_create(Result);
+        MDIAreaHandle := nil;
       end;
       
       if FCentralWidget <> nil then
       QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
       
       if not (csDesigning in LCLObject.ComponentState) then
-      QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
+        QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
     {$else}
       FCentralWidget := QWidget_create(Result);
 
@@ -2459,12 +2489,11 @@ begin
   else
   begin
     {$ifdef USE_QT_4_3}
-      if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild)
-      and not (csDesigning in LCLObject.ComponentState) then
+      if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) and
+          not (csDesigning in LCLObject.ComponentState) then
       begin
 
-        if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil
-        then
+        if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil then
           raise Exception.Create('MDIChild can be added to MDIForm only !');
 
         Result := QMdiSubWindow_create(nil, QtWindow);
@@ -2484,10 +2513,7 @@ begin
     // Main menu bar
     MenuBar := TQtMenuBar.Create(Result);
 
-    if not (csDesigning in LCLObject.ComponentState)
-    then
-      FCentralWidget := QWidget_create(Result);
-
+    FCentralWidget := QWidget_create(Result);
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
     {$ifdef USE_QT_4_3}
@@ -2498,14 +2524,8 @@ begin
       QLayout_setMargin(LayoutWidget, 0);
     {$endif}
     
-    QLayout_setMenuBar(LayoutWidget, MenuBar.Widget);
-    
-    if not (csDesigning in LCLObject.ComponentState)
-    then
-      QLayout_addWidget(LayoutWidget, FCentralWidget);
-      
+    QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
-
   end;
 end;
 
@@ -2536,6 +2556,19 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+function TQtMainWindow.getClientBounds: TRect;
+var
+  R: TRect;
+begin
+  Result := inherited getClientBounds;
+  if (MenuBar <> nil) and (MenuBar.getVisible) then
+  begin
+    R := MenuBar.getGeometry;
+    if TCustomForm(LCLObject).FormStyle <> fsMDIChild then
+      inc(Result.Top, R.Bottom - R.Top);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2582,6 +2615,14 @@ begin
   List.Free;
 end;
 
+procedure TQtMainWindow.setMenuBar(AMenuBar: QMenuBarH);
+begin
+  if IsMainForm then
+    QMainWindow_setMenuBar(QMainWindowH(Widget), AMenuBar)
+  else
+    QLayout_setMenuBar(LayoutWidget, AMenuBar);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtMainWindow.EventFilter
   Params:  None
@@ -2603,6 +2644,12 @@ begin
   else
     inherited EventFilter(Sender, Event);
   end;
+end;
+
+procedure TQtMainWindow.OffsetMousePos(APoint: PQtPoint);
+begin
+  if TCustomForm(LCLObject).FormStyle <> fsMdiChild then
+    inherited OffsetMousePos(APoint);
 end;
 
 {------------------------------------------------------------------------------
@@ -2803,13 +2850,6 @@ begin
   Result := QCheckBox_create;
 end;
 
-procedure TQtCheckBox.SetGeometry;
-begin
-  if LCLObject.Parent is TCustomCheckGroup then
-    exit;
-  inherited SetGeometry;
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtCheckBox.Destroy
   Params:  None
@@ -2895,13 +2935,6 @@ begin
   QWidget_hide(Result);
 end;
 
-procedure TQtRadioButton.SetGeometry;
-begin
-  if LCLObject.Parent is TCustomRadioGroup then
-    exit;
-  inherited SetGeometry;
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtRadioButton.Destroy
   Params:  None
@@ -2945,6 +2978,7 @@ end;
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
+  Layout: QBoxLayoutH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2952,24 +2986,12 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QGroupBox_create(Parent);
-
-  {$ifdef QT_USE_QLAYOUT_IN_TQTGROUPBOX}
-    FCentralWidget := QWidget_create(Result);
-    LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
-
-  {$ifdef USE_QT_4_3}
-    QBoxLayout_setSpacing(LayoutWidget, 0);
-    QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
-  {$else}
-    QLayout_setSpacing(LayoutWidget, 0);
-    QLayout_setMargin(LayoutWidget, 0);
-  {$endif}
-
-    QLayout_addWidget(LayoutWidget, FCentralWidget);
-    QWidget_setLayout(Result, QLayoutH(LayoutWidget));
-  {$else}
-    FCentralWidget := QWidget_create(Result, QtWidget);
-  {$endif}
+  FCentralWidget := QWidget_create(Result, 0);
+  Layout := QVBoxLayout_create(Result);
+  QLayout_addWidget(Layout, FCentralWidget);
+  QLayout_setSpacing(Layout, 0);
+  QLayout_setMargin(Layout, 0);
+  QWidget_setLayout(Result, QLayoutH(Layout));
 end;
 
 {------------------------------------------------------------------------------
@@ -5096,6 +5118,7 @@ end;
 constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
   Widget := QMenuBar_create(AParent);
+  FHeight := QWidget_height(Widget);
   FVisible := False;
   setVisible(FVisible);
 end;
@@ -5120,6 +5143,15 @@ begin
   end;
   Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), nil));
   Result.setSeparator(True);
+end;
+
+function TQtMenuBar.getGeometry: TRect;
+begin
+  Result := inherited getGeometry;
+  if Result.Bottom = 0 then
+  begin
+    Result.Bottom := FHeight; // workaround since after attaching menu it takes 0 height
+  end;
 end;
 
 { TQtProgressBar }
@@ -5473,6 +5505,23 @@ function TQtAbstractScrollArea.viewport: TQtWidget;
 begin
   viewportNeeded;
   Result := FViewPortWidget;
+end;
+
+function TQtAbstractScrollArea.getClientBounds: TRect;
+var
+  R: TRect;
+begin
+  Result := inherited getClientBounds;
+  if (FVScrollbar <> nil) and (FVScrollbar.getVisible) then
+  begin
+    R := FVScrollbar.getGeometry;
+    dec(Result.Right, R.Right - R.Left);
+  end;
+  if (FHScrollbar <> nil) and (FHScrollbar.getVisible) then
+  begin
+    R := FHScrollbar.getGeometry;
+    dec(Result.Bottom, R.Bottom - R.Top);
+  end;
 end;
 
 {------------------------------------------------------------------------------

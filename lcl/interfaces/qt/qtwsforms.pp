@@ -178,27 +178,17 @@ begin
   QtMainWindow.AttachEvents;
   
   {$ifdef USE_QT_4_3}
-  if (TCustomForm(AWinControl).FormStyle in [fsMDIChild])
-  and (Application.MainForm.FormStyle = fsMdiForm)
-  and not (csDesigning in AWinControl.ComponentState)
-  then
+  if (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
+     (Application.MainForm.FormStyle = fsMdiForm) and
+     not (csDesigning in AWinControl.ComponentState) then
     QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
   {$endif}
 
-  {do not localize !!!}
-  if (QtMainWindow.IsMainForm and (AWinControl.ClassName='TMainIDEBar'))
-  or (QtMainWindow.IsMainForm and (TCustomForm(AWinControl).FormStyle in [fsMDIForm]))
-  then
-  begin
-    QMainWindow_setMenuBar(QMainWindowH(QtMainWindow.Widget), QMenuBarH(QtMainWindow.MenuBar.Widget));
-  end else
-  begin
-     {set initial menu geometry ...}
-     R := AWinControl.ClientRect;
-     QWidget_geometry(QtMainWindow.MenuBar.Widget, @R1);
-     R1.Right := R.Right;
-     QWidget_setGeometry(QtMainWindow.MenuBar.Widget, @R1);
-   end;
+  R := AWinControl.ClientRect;
+  R1 := QtMainWindow.MenuBar.getGeometry;
+  R1.Right := R.Right;
+  QtMainWindow.MenuBar.setGeometry(R1);
+  QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
 
   // Return the handle
   Result := THandle(QtMainWindow);
@@ -245,7 +235,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
- inherited CloseModal(ACustomForm);
+  inherited CloseModal(ACustomForm);
 end;
 
 {------------------------------------------------------------------------------

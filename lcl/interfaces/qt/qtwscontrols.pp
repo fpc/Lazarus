@@ -71,6 +71,8 @@ type
     class procedure Invalidate(const AWinControl: TWinControl); override;
   public
     class procedure AddControl(const AControl: TControl); override;
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -87,9 +89,9 @@ type
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
-                                      const AChildren: TFPList); override;
+                                      const AChildren: TFPList); override;}
 
-    class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
+    //class procedure ConstraintsChange(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSGraphicControl }
@@ -292,6 +294,21 @@ class procedure TQtWSWinControl.AddControl(const AControl: TControl);
 begin
   if (AControl is TWinControl) and (TWinControl(AControl).HandleAllocated) then
     TQtWidget(TWinControl(AControl).Handle).setParent(TQtWidget(AControl.Parent.Handle).GetContainerWidget);
+end;
+
+class function TQtWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
+  var ARect: TRect): Boolean;
+begin
+  ARect := TQtWidget(AWinControl.Handle).getClientBounds;
+  Result := True;
+end;
+
+class function TQtWSWinControl.GetClientRect(const AWincontrol: TWinControl;
+  var ARect: TRect): Boolean;
+begin
+  ARect := TQtWidget(AWinControl.Handle).getClientBounds;
+  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

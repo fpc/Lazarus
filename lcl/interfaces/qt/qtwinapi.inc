@@ -124,15 +124,21 @@ end;
 function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 var
   APoint: TQtPoint;
+//  R: TRect;
 begin
   Result := True;
   if Handle <> 0 then
   begin
     APoint.x := P.X;
     APoint.y := P.Y;
+    
     QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
     P.X := APoint.x;
     P.Y := APoint.y;
+{    R := TQtWidget(Handle).getClientBounds;
+    inc(P.X, R.Left);
+    inc(P.Y, R.Top);
+}
   end;
 end;
 
@@ -1391,8 +1397,9 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientBounds]');
   {$endif}
-  QWidget_geometry(TQtWidget(handle).Widget, @ARect);
-  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+
+  ARect := TQtWidget(handle).getClientBounds;
+
   Result := True;
 end;
 
@@ -1412,7 +1419,7 @@ begin
     WriteLn('[WinAPI GetClientRect]');
   {$endif}
 
-  QWidget_contentsRect(TQtWidget(handle).Widget, @ARect);
+  ARect := TQtWidget(handle).getClientBounds;
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
 
   Result:=true;
@@ -2610,8 +2617,8 @@ begin
   Matrix := QPainter_Matrix(TQtDeviceContext(DC).Widget);
   if Matrix<>nil then
   begin
-    P^.X := Trunc(QMatrix_Dx(Matrix));
-    P^.Y := Trunc(QMatrix_Dy(Matrix));
+    P^.X := -Trunc(QMatrix_Dx(Matrix));
+    P^.Y := -Trunc(QMatrix_Dy(Matrix));
     result := 1;
   end;
   {$ifdef VerboseQtWinAPI}
@@ -2630,6 +2637,8 @@ end;
   Retrieves the dimensions of the bounding rectangle of the specified window.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowRect(Handle: HWND; Var ARect: TRect): Integer;
+var
+  APos: TQtPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRect]');
@@ -2637,10 +2646,12 @@ begin
 
   Result := 0;
 
-  ARect.Top := QWidget_y(TQtWidget(Handle).Widget);
-  ARect.Left := QWidget_x(TQtWidget(Handle).Widget);
-  ARect.Bottom := QWidget_height(TQtWidget(Handle).Widget) + QWidget_y(TQtWidget(Handle).Widget);
-  ARect.Right := QWidget_width(TQtWidget(Handle).Widget) + QWidget_x(TQtWidget(Handle).Widget);
+  QWidget_pos(TQtWidget(Handle).Widget, @APos);
+  QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
+  ARect.Top := APos.x;
+  ARect.Left := APos.y;
+  ARect.Bottom := ARect.Top + QWidget_height(TQtWidget(Handle).Widget);
+  ARect.Right := ARect.Left + QWidget_width(TQtWidget(Handle).Widget);
 
   Result := -1;
 end;
@@ -2774,10 +2785,18 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+var
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
   {$endif}
+  
+  if Rect <> nil then
+  begin
+    R := TQtWidget(aHandle).getClientBounds;
+    OffsetRect(Rect^, R.Left, R.Top);
+  end;
   
   TQtWidget(aHandle).Update(Rect);
 
@@ -2851,6 +2870,20 @@ begin
 
   TQtDeviceContext(DC).setBrushOrigin(X, Y);
   
+  Result := True;
+end;
+
+function TQtWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
+begin
+{ note:
+  this is not right implementation. MoveWindowOrgEx means shift, but
+  here we only set offset
+}
+  Result := False;
+
+  if IsValidDC(DC) then
+    TQtDeviceContext(DC).translate(dX, dY);
+
   Result := True;
 end;
 
@@ -3092,6 +3125,7 @@ end;
 function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   APoint: TQtPoint;
+//  R: TRect;
 begin
   {$ifdef VerboseQTWinAPI}
   WriteLn('[WinAPI TQtWidgetSet.ScreenToClient] ');
@@ -3104,6 +3138,9 @@ begin
     QWidget_mapFromGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
     P.X := APoint.x;
     P.Y := APoint.y;
+{    R := TQtWidget(Handle).getClientBounds;
+    dec(P.X, R.Left);
+    dec(P.Y, R.Top);}
     Result := 1;
   end;
 end;
@@ -3506,10 +3543,8 @@ begin
 
   if IsValidDC(DC) then
   begin
-
     GetWindowOrgEx(DC, OldPoint);
-    QPainter_translate(TQtDeviceContext(DC).Widget, -NewX, -NewY);
-
+    TQtDeviceContext(DC).translate(-NewX, -NewY);
   end;
 
   Result := True;
@@ -3981,8 +4016,11 @@ end;
 function TQtWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var
   Widget: QWidgetH;
+  APoint: TQtPoint;
 begin
-  Widget := QApplication_widgetAt(@Point);
+  APoint.x := Point.x;
+  APoint.y := Point.y;
+  Widget := QApplication_widgetAt(@APoint);
   if Widget <> nil then
   begin
     Widget := QWidget_window(Widget);
