@@ -302,8 +302,20 @@ begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
   	WriteLn('***** [WinAPI TQtWidgetSet.ClipboardRegisterFormat] AMimeType: ',AMimeType);
   {$endif}
+  
+  Result := 0;
+  
   QtClipBoard := QApplication_clipBoard;
+  
+  if QtClipBoard = nil then exit;
+  
+  try
   QtMimeData := QClipboard_mimeData(QtClipBoard);
+  except
+    exit;
+  end;
+  
+  if QtMimeData = nil then exit;
   
   List := QStringList_create;
   try
