@@ -81,6 +81,7 @@ function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): bool
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDC(hWnd: HWND): HDC; override;
 function GetFocus: HWND; override;
+function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetMapMode(DC: HDC): Integer; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;

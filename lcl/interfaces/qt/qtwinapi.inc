@@ -1646,6 +1646,40 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+begin
+  Result := 0;
+
+  case nVirtKey of
+    VK_LSHIFT:   nVirtKey := VK_SHIFT;
+    VK_LCONTROL: nVirtKey := VK_CONTROL;
+    VK_LMENU:    nVirtKey := VK_MENU;
+  end;
+  
+  case nVirtKey of
+    VK_MENU:
+      if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
+        Result:=-1;
+    VK_SHIFT:
+      if (QApplication_keyboardModifiers and QtShiftModifier) > 0 then
+        Result:=-1;
+    VK_CONTROL:
+      if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
+        Result:=-1;
+    VK_LBUTTON:
+      if (QApplication_mouseButtons and QtLeftButton) > 0 then
+        Result := -1;
+    VK_RBUTTON:
+      if (QApplication_mouseButtons and QtRightButton) > 0 then
+        Result := -1;
+    VK_MBUTTON:
+      if (QApplication_mouseButtons and QtMidButton) > 0 then
+        Result := -1;
+    else
+      DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetDeviceRawImageDescription
   Params:  none
