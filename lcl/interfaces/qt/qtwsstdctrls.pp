@@ -1307,6 +1307,10 @@ begin
           QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutRightMargin);
     dy := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutTopMargin) +
           QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutBottomMargin);
+    {$else}
+    { Needs a proper implementation }
+    dx := 0;
+    dy := 0;
     {$endif}
     aClientRect:=Rect(0,0,
                  Max(0, aWidth - dx),
