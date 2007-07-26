@@ -1616,16 +1616,41 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
+var
+  OldRgn: TQtRegion;
+  R: TRect;
+  hasClipping: Boolean;
+  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     DebugLn('[WinAPI FillRgn Rgn=', dbgs(RegionHnd),' Brush=', dbghex(hbr));
   {$endif}
+
   Result := False;
+  
   if not IsValidDC(DC) then exit;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.FillRgn] missing implementation ');
-  {$endif}
-  {$note implement FillRgn()}
+  
+  QtDC := TQtDeviceContext(DC);
+  
+  QtDC.save;
+  OldRgn := TQtRegion.Create(True);
+  try
+    hasClipping := QPainter_hasClipping(QtDC.Widget);
+    if hasClipping then
+      QPainter_clipRegion(QtDC.Widget, OldRgn.Widget);
+    if SelectClipRgn(DC, RegionHnd) <> ERROR then
+    begin
+      QRegion_boundingRect(TQtRegion(RegionHnd).Widget, @R);
+      QtDC.fillRect(@R, TQtBrush(hbr).Widget);
+      if hasClipping then
+        SelectClipRgn(DC, HRGN(OldRgn));
+      Result := True;
+    end;
+  finally
+    OldRgn.Free;
+    QtDC.restore;
+  end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1693,12 +1718,36 @@ begin
     Result := 0;
 end;
 
+
+{------------------------------------------------------------------------------
+  Method:  TQtWidgetSet.GetBitmapBits
+  Params:  none
+  Returns:
+  
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+var
+  Image: QImageH;
 begin
-  Result := 0;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetBitmapBits] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetBitmapBits]',' Bitmap=', dbghex(Bitmap),' Count=',Count);
   {$endif}
+  
+  Result := 0;
+  
+  if (Bitmap = 0) or (Count <= 0) then
+    Exit;
+
+  Image := QImage_create(TQtImage(Bitmap).Handle);
+  try
+    Result := (QImage_width(Image) * QImage_height(Image) * QImage_depth(Image) + 7) div 8;
+    if Count < Result then
+      Result := Count;
+    if Result > 0 then
+      Move(QImage_bits(Image)^, Bits^, Result);
+  finally
+    QImage_destroy(Image);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3602,7 +3651,7 @@ begin
   w := TQtWidget(GetCapture);
   Result := w <> nil;
   if Result then
-    w.releaseMouse()
+    w.releaseMouse();
 end;
 
 {------------------------------------------------------------------------------
