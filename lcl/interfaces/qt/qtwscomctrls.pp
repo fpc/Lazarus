@@ -22,7 +22,7 @@
 }
 unit QtWSComCtrls;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets, qtprivate, qtobjects,
   // LCL
-  Classes, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf, Forms,
+  SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf, Forms,
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses;
 
@@ -54,7 +54,6 @@ type
     class procedure Update(const AStatusBar: TStatusBar); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    class procedure AddControl(const AControl: TControl); override;
   end;
 
   { TQtWSTabSheet }
@@ -307,7 +306,7 @@ begin
   Color:=ColorToRGB(AWinControl.Color);
 
   // Fill QColor
-  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
@@ -344,7 +343,7 @@ begin
   Color:=ColorToRGB(AWinControl.Color);
 
   // Fill QColor
-  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtToolBar(AWinControl.Handle).SetColor(@QColor);
@@ -523,12 +522,12 @@ begin
       
     //  QWidget_setContentsMargins(QtStatusBar.APanels[i], 0, 0, 2, 0);
       
-      QWidget_frameGeometry(QtStatusBar.Widget, @R);
+      QWidget_geometry(QtStatusBar.Widget, @R);
       QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, TStatusBar(AWinControl).Panels[i].Width, R.Bottom);
       QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget),QtStatusBar. APanels[i], 100);
     end;
   end;
-  
+
   // Return handle
 
   Result := THandle(QtStatusBar);
@@ -695,24 +694,15 @@ end;
 
 class procedure TQtWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-
-end;
-
-class procedure TQtWSStatusBar.AddControl(const AControl: TControl);
 var
-  QtStatusBar: TQtStatusBar;
+  PrefSize: TSize;
 begin
-  inherited AddControl(AControl);
-  
-  {some systems doesn't show statusbar inside mainwindow
-   (linux tested on FC3,FC4,FC7,Ubuntu 7.04 ).}
-  if Assigned(AControl.Parent)
-  and (AControl.Parent.Handle = Application.MainForm.Handle)
-  then
+  QWidget_sizeHint(TQtStatusBar(AWinControl.Handle).Widget, @PrefSize);
+  if (PrefSize.cx >= 0)
+  and (PrefSize.cy >=0) then
   begin
-    QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
-    QMainWindow_setStatusBar(QMainWindowH(TQtMainWindow(AControl.Parent.Handle).Widget), QStatusBarH(QtStatusBar.Widget));
+    PreferredWidth := PrefSize.cx;
+    PreferredHeight := PrefSize.cy;
   end;
 end;
 

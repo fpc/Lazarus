@@ -1085,29 +1085,7 @@ begin
     QEventMouseButtonDblClick: SlotMouse(Event);
     QEventMouseMove: SlotMouseMove(Event);
     QEventWheel: SlotMouseWheel(Event);
-    QEventResize:
-      begin
-        SlotResize;
-        if (Self is TQtMainWindow) and
-           Assigned(TQtMainWindow(Self).MenuBar) and
-           Assigned(TCustomForm(LCLObject).Menu) then
-        begin
-          w := nil;
-          if TQtMainWindow(Self).IsMainForm then
-            w := QMainWindow_menuWidget(QMainWindowH(Widget));
-
-          if w = nil then
-          begin
-            MenuRect := TQtMainWindow(Self).MenuBar.getGeometry;
-            QWidget_rect(Widget, @FormRect);
-            if MenuRect.Right <> FormRect.Right then
-            begin
-              MenuRect.Right := FormRect.Right;
-              TQtMainWindow(Self).MenuBar.setGeometry(MenuRect);
-            end;
-          end;
-        end;
-      end;
+    QEventResize: SlotResize;
     QEventPaint: SlotPaint(Event);
     QEventContextMenu: SlotContextMenu;
   else
