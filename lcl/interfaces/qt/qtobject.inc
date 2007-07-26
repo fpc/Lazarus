@@ -27,6 +27,10 @@ begin
   inherited Create;
 
   QtWidgetSet := Self;
+  OnClipBoardRequest := nil;
+
+  FClipBoardFormats := TStringList.Create;
+  FClipBoardFormats.Add('foo'); // 0 is reserved
 end;
 
 {------------------------------------------------------------------------------
@@ -44,6 +48,8 @@ begin
   
   if SavedDCList<>nil then
     SavedDCList.Free;
+    
+  FClipBoardFormats.Free;
 
   inherited Destroy;
   

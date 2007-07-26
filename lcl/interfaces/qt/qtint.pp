@@ -55,6 +55,7 @@ type
   private
     App: QApplicationH;
     SavedDCList: TList;
+    FClipBoardFormats: TStringList;
   protected
     function CreateThemeServices: TThemeServices; override;
   public
@@ -113,6 +114,7 @@ const
 
 var
   QtWidgetSet: TQtWidgetSet;
+  OnClipBoardRequest: TClipboardRequestEvent;
 
 implementation
 
