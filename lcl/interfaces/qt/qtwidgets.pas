@@ -1090,12 +1090,12 @@ begin
 
           if w = nil then
           begin
-            QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
+            MenuRect := TQtMainWindow(Self).MenuBar.getGeometry;
             QWidget_rect(Widget, @FormRect);
             if MenuRect.Right <> FormRect.Right then
             begin
               MenuRect.Right := FormRect.Right;
-              QWidget_setGeometry(TQtMainWindow(Self).MenuBar.Widget, @MenuRect);
+              TQtMainWindow(Self).MenuBar.setGeometry(MenuRect);
             end;
           end;
         end;
@@ -1755,24 +1755,20 @@ end;
 
 procedure TQtWidget.setWidth(p1: Integer);
 var
-   R: TRect;
+  R: TRect;
 begin
-  R.Left := QWidget_x(Widget);
-  R.Top := QWidget_y(Widget);
-  R.Bottom := QWidget_height(Widget);
-  R.Right := p1;
-  QWidget_setGeometry(Widget,@R);
+  R := getGeometry;
+  R.Right := R.Left + p1;
+  setGeometry(R);
 end;
 
 procedure TQtWidget.setHeight(p1: Integer);
 var
-   R: TRect;
+  R: TRect;
 begin
-  R.Left := QWidget_x(Widget);
-  R.Top := QWidget_y(Widget);
-  R.Right := QWidget_width(Widget);
-  R.Bottom := p1;
-  QWidget_setGeometry(Widget, @R);
+  R := getGeometry;
+  R.Bottom := R.Top + p1;
+  setGeometry(R);
 end;
 
 procedure TQtWidget.setTabOrder(p1, p2: TQtWidget);
@@ -2213,8 +2209,7 @@ end;
 
 procedure TQtWidget.SetGeometry;
 begin
-  with LCLObject do
-    setGeometry(Rect(Left, Top, Width, Height));
+  setGeometry(LCLObject.BoundsRect);
 end;
 
 { TQtAbstractButton }
