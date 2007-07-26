@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.43 }
+{ Version : 1.45 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -228,6 +228,7 @@ QObjectH = class(TObject) end;
   QCompleterH = class(QObjectH) end;
   QCoreApplicationH = class(QObjectH) end;
     QApplicationH = class(QCoreApplicationH) end;
+  QDragH = class(QObjectH) end;
   QEventLoopH = class(QObjectH) end;
   QGraphicsSceneH = class(QObjectH) end;
   QIODeviceH = class(QObjectH) end;
@@ -332,6 +333,7 @@ QSizeFH = class(TObject) end;
 QSizePolicyH = class(TObject) end;
 QStandardItemH = class(TObject) end;
 QStringH = class(TObject) end;
+QStyleFactoryH = class(TObject) end;
 QStyleHintReturnH = class(TObject) end;
   QStyleHintReturnMaskH = class(QStyleHintReturnH) end;
 QStyleOptionH = class(TObject) end;
@@ -405,6 +407,7 @@ QWidget_hookH = class(QObject_hookH) end;
 QAction_hookH = class(QObject_hookH) end;
 QClipboard_hookH = class(QObject_hookH) end;
 QDesktopWidget_hookH = class(QWidget_hookH) end;
+QDrag_hookH = class(QObject_hookH) end;
 QFrame_hookH = class(QWidget_hookH) end;
 QAbstractScrollArea_hookH = class(QFrame_hookH) end;
 QAbstractSlider_hookH = class(QWidget_hookH) end;
@@ -1896,6 +1899,27 @@ procedure QAbstractEventDispatcher_closingDown(handle: QAbstractEventDispatcherH
 function QAbstractEventDispatcher_setEventFilter(handle: QAbstractEventDispatcherH; filter: TAbstractEventFilter): TAbstractEventFilter; cdecl; external QtIntf name 'QAbstractEventDispatcher_setEventFilter';
 function QAbstractEventDispatcher_filterEvent(handle: QAbstractEventDispatcherH; message: Pointer): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_filterEvent';
 
+function QMimeData_create(): QMimeDataH; cdecl; external QtIntf name 'QMimeData_create';
+procedure QMimeData_destroy(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_destroy'; 
+function QMimeData_hasUrls(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasUrls';
+procedure QMimeData_text(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_text';
+procedure QMimeData_setText(handle: QMimeDataH; text: PWideString); cdecl; external QtIntf name 'QMimeData_setText';
+function QMimeData_hasText(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasText';
+procedure QMimeData_html(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_html';
+procedure QMimeData_setHtml(handle: QMimeDataH; html: PWideString); cdecl; external QtIntf name 'QMimeData_setHtml';
+function QMimeData_hasHtml(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasHtml';
+procedure QMimeData_imageData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_imageData';
+procedure QMimeData_setImageData(handle: QMimeDataH; image: QVariantH); cdecl; external QtIntf name 'QMimeData_setImageData';
+function QMimeData_hasImage(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasImage';
+procedure QMimeData_colorData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_colorData';
+procedure QMimeData_setColorData(handle: QMimeDataH; color: QVariantH); cdecl; external QtIntf name 'QMimeData_setColorData';
+function QMimeData_hasColor(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasColor';
+procedure QMimeData_data(handle: QMimeDataH; retval: QByteArrayH; mimetype: PWideString); cdecl; external QtIntf name 'QMimeData_data';
+procedure QMimeData_setData(handle: QMimeDataH; mimetype: PWideString; data: QByteArrayH); cdecl; external QtIntf name 'QMimeData_setData';
+function QMimeData_hasFormat(handle: QMimeDataH; mimetype: PWideString): Boolean; cdecl; external QtIntf name 'QMimeData_hasFormat';
+procedure QMimeData_formats(handle: QMimeDataH; retval: QStringListH); cdecl; external QtIntf name 'QMimeData_formats';
+procedure QMimeData_clear(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_clear';
+
 function QStringList_create(): QStringListH; overload; cdecl; external QtIntf name 'QStringList_create';
 procedure QStringList_destroy(handle: QStringListH); cdecl; external QtIntf name 'QStringList_destroy'; 
 function QStringList_create(i: PWideString): QStringListH; overload; cdecl; external QtIntf name 'QStringList_create2';
@@ -2149,6 +2173,117 @@ procedure QDateTime_currentDateTime(retval: QDateTimeH); cdecl; external QtIntf 
 procedure QDateTime_fromString(retval: QDateTimeH; s: PWideString; f: QtDateFormat = QtTextDate); overload; cdecl; external QtIntf name 'QDateTime_fromString';
 procedure QDateTime_fromString(retval: QDateTimeH; s: PWideString; format: PWideString); overload; cdecl; external QtIntf name 'QDateTime_fromString2';
 procedure QDateTime_fromTime_t(retval: QDateTimeH; secsSince1Jan1970UTC: LongWord); cdecl; external QtIntf name 'QDateTime_fromTime_t';
+
+function QByteArray_create(): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_create';
+procedure QByteArray_destroy(handle: QByteArrayH); cdecl; external QtIntf name 'QByteArray_destroy'; 
+function QByteArray_create(p1: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_create2';
+function QByteArray_create(p1: PAnsiChar; size: Integer): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_create3';
+function QByteArray_create(size: Integer; c: char): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_create4';
+function QByteArray_create(p1: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_create5';
+function QByteArray_size(handle: QByteArrayH): Integer; cdecl; external QtIntf name 'QByteArray_size';
+function QByteArray_isEmpty(handle: QByteArrayH): Boolean; cdecl; external QtIntf name 'QByteArray_isEmpty';
+procedure QByteArray_resize(handle: QByteArrayH; size: Integer); cdecl; external QtIntf name 'QByteArray_resize';
+function QByteArray_fill(handle: QByteArrayH; c: char; size: Integer = -1): QByteArrayH; cdecl; external QtIntf name 'QByteArray_fill';
+function QByteArray_capacity(handle: QByteArrayH): Integer; cdecl; external QtIntf name 'QByteArray_capacity';
+procedure QByteArray_reserve(handle: QByteArrayH; size: Integer); cdecl; external QtIntf name 'QByteArray_reserve';
+procedure QByteArray_squeeze(handle: QByteArrayH); cdecl; external QtIntf name 'QByteArray_squeeze';
+function QByteArray_data(handle: QByteArrayH): PAnsiChar; overload; cdecl; external QtIntf name 'QByteArray_data';
+function QByteArray_constData(handle: QByteArrayH): PAnsiChar; cdecl; external QtIntf name 'QByteArray_constData';
+procedure QByteArray_detach(handle: QByteArrayH); cdecl; external QtIntf name 'QByteArray_detach';
+function QByteArray_isDetached(handle: QByteArrayH): Boolean; cdecl; external QtIntf name 'QByteArray_isDetached';
+procedure QByteArray_clear(handle: QByteArrayH); cdecl; external QtIntf name 'QByteArray_clear';
+function QByteArray_at(handle: QByteArrayH; i: Integer): char; cdecl; external QtIntf name 'QByteArray_at';
+function QByteArray_indexOf(handle: QByteArrayH; c: char; from: Integer = 0): Integer; overload; cdecl; external QtIntf name 'QByteArray_indexOf';
+function QByteArray_indexOf(handle: QByteArrayH; c: PAnsiChar; from: Integer = 0): Integer; overload; cdecl; external QtIntf name 'QByteArray_indexOf2';
+function QByteArray_indexOf(handle: QByteArrayH; a: QByteArrayH; from: Integer = 0): Integer; overload; cdecl; external QtIntf name 'QByteArray_indexOf3';
+function QByteArray_lastIndexOf(handle: QByteArrayH; c: char; from: Integer = -1): Integer; overload; cdecl; external QtIntf name 'QByteArray_lastIndexOf';
+function QByteArray_lastIndexOf(handle: QByteArrayH; c: PAnsiChar; from: Integer = -1): Integer; overload; cdecl; external QtIntf name 'QByteArray_lastIndexOf2';
+function QByteArray_lastIndexOf(handle: QByteArrayH; a: QByteArrayH; from: Integer = -1): Integer; overload; cdecl; external QtIntf name 'QByteArray_lastIndexOf3';
+function QByteArray_contains(handle: QByteArrayH; c: char): boolean; overload; cdecl; external QtIntf name 'QByteArray_contains';
+function QByteArray_contains(handle: QByteArrayH; a: PAnsiChar): boolean; overload; cdecl; external QtIntf name 'QByteArray_contains2';
+function QByteArray_contains(handle: QByteArrayH; a: QByteArrayH): boolean; overload; cdecl; external QtIntf name 'QByteArray_contains3';
+function QByteArray_count(handle: QByteArrayH; c: char): Integer; overload; cdecl; external QtIntf name 'QByteArray_count';
+function QByteArray_count(handle: QByteArrayH; a: PAnsiChar): Integer; overload; cdecl; external QtIntf name 'QByteArray_count2';
+function QByteArray_count(handle: QByteArrayH; a: QByteArrayH): Integer; overload; cdecl; external QtIntf name 'QByteArray_count3';
+procedure QByteArray_left(handle: QByteArrayH; retval: QByteArrayH; len: Integer); cdecl; external QtIntf name 'QByteArray_left';
+procedure QByteArray_right(handle: QByteArrayH; retval: QByteArrayH; len: Integer); cdecl; external QtIntf name 'QByteArray_right';
+procedure QByteArray_mid(handle: QByteArrayH; retval: QByteArrayH; index: Integer; len: Integer = -1); cdecl; external QtIntf name 'QByteArray_mid';
+function QByteArray_startsWith(handle: QByteArrayH; a: QByteArrayH): Boolean; overload; cdecl; external QtIntf name 'QByteArray_startsWith';
+function QByteArray_startsWith(handle: QByteArrayH; c: char): Boolean; overload; cdecl; external QtIntf name 'QByteArray_startsWith2';
+function QByteArray_startsWith(handle: QByteArrayH; c: PAnsiChar): Boolean; overload; cdecl; external QtIntf name 'QByteArray_startsWith3';
+function QByteArray_endsWith(handle: QByteArrayH; a: QByteArrayH): Boolean; overload; cdecl; external QtIntf name 'QByteArray_endsWith';
+function QByteArray_endsWith(handle: QByteArrayH; c: char): Boolean; overload; cdecl; external QtIntf name 'QByteArray_endsWith2';
+function QByteArray_endsWith(handle: QByteArrayH; c: PAnsiChar): Boolean; overload; cdecl; external QtIntf name 'QByteArray_endsWith3';
+procedure QByteArray_truncate(handle: QByteArrayH; pos: Integer); cdecl; external QtIntf name 'QByteArray_truncate';
+procedure QByteArray_chop(handle: QByteArrayH; n: Integer); cdecl; external QtIntf name 'QByteArray_chop';
+procedure QByteArray_toLower(handle: QByteArrayH; retval: QByteArrayH); cdecl; external QtIntf name 'QByteArray_toLower';
+procedure QByteArray_toUpper(handle: QByteArrayH; retval: QByteArrayH); cdecl; external QtIntf name 'QByteArray_toUpper';
+procedure QByteArray_trimmed(handle: QByteArrayH; retval: QByteArrayH); cdecl; external QtIntf name 'QByteArray_trimmed';
+procedure QByteArray_simplified(handle: QByteArrayH; retval: QByteArrayH); cdecl; external QtIntf name 'QByteArray_simplified';
+procedure QByteArray_leftJustified(handle: QByteArrayH; retval: QByteArrayH; width: Integer; fill: char; truncate: Boolean = False); cdecl; external QtIntf name 'QByteArray_leftJustified';
+procedure QByteArray_rightJustified(handle: QByteArrayH; retval: QByteArrayH; width: Integer; fill: char; truncate: Boolean = False); cdecl; external QtIntf name 'QByteArray_rightJustified';
+function QByteArray_prepend(handle: QByteArrayH; c: char): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_prepend';
+function QByteArray_prepend(handle: QByteArrayH; s: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_prepend2';
+function QByteArray_prepend(handle: QByteArrayH; a: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_prepend3';
+function QByteArray_append(handle: QByteArrayH; c: char): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_append';
+function QByteArray_append(handle: QByteArrayH; s: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_append2';
+function QByteArray_append(handle: QByteArrayH; a: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_append3';
+function QByteArray_insert(handle: QByteArrayH; i: Integer; c: char): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_insert';
+function QByteArray_insert(handle: QByteArrayH; i: Integer; s: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_insert2';
+function QByteArray_insert(handle: QByteArrayH; i: Integer; a: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_insert3';
+function QByteArray_remove(handle: QByteArrayH; index: Integer; len: Integer): QByteArrayH; cdecl; external QtIntf name 'QByteArray_remove';
+function QByteArray_replace(handle: QByteArrayH; index: Integer; len: Integer; s: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace';
+function QByteArray_replace(handle: QByteArrayH; index: Integer; len: Integer; s: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace2';
+function QByteArray_replace(handle: QByteArrayH; before: char; after: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace3';
+function QByteArray_replace(handle: QByteArrayH; before: char; after: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace4';
+function QByteArray_replace(handle: QByteArrayH; before: PAnsiChar; after: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace5';
+function QByteArray_replace(handle: QByteArrayH; before: QByteArrayH; after: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace6';
+function QByteArray_replace(handle: QByteArrayH; before: QByteArrayH; after: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace7';
+function QByteArray_replace(handle: QByteArrayH; before: PAnsiChar; after: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace8';
+function QByteArray_replace(handle: QByteArrayH; before: char; after: char): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace9';
+function QByteArray_append(handle: QByteArrayH; s: PWideString): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_append4';
+function QByteArray_insert(handle: QByteArrayH; i: Integer; s: PWideString): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_insert4';
+function QByteArray_replace(handle: QByteArrayH; before: PWideString; after: PAnsiChar): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace10';
+function QByteArray_replace(handle: QByteArrayH; c: char; after: PWideString): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace11';
+function QByteArray_replace(handle: QByteArrayH; before: PWideString; after: QByteArrayH): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_replace12';
+function QByteArray_indexOf(handle: QByteArrayH; s: PWideString; from: Integer = 0): Integer; overload; cdecl; external QtIntf name 'QByteArray_indexOf4';
+function QByteArray_lastIndexOf(handle: QByteArrayH; s: PWideString; from: Integer = -1): Integer; overload; cdecl; external QtIntf name 'QByteArray_lastIndexOf4';
+function QByteArray_toShort(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): ShortInt; cdecl; external QtIntf name 'QByteArray_toShort';
+function QByteArray_toUShort(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): Word; cdecl; external QtIntf name 'QByteArray_toUShort';
+function QByteArray_toInt(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): Integer; cdecl; external QtIntf name 'QByteArray_toInt';
+function QByteArray_toUInt(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): LongWord; cdecl; external QtIntf name 'QByteArray_toUInt';
+function QByteArray_toLong(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): Long; cdecl; external QtIntf name 'QByteArray_toLong';
+function QByteArray_toULong(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): Longword; cdecl; external QtIntf name 'QByteArray_toULong';
+function QByteArray_toLongLong(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): int64; cdecl; external QtIntf name 'QByteArray_toLongLong';
+function QByteArray_toULongLong(handle: QByteArrayH; ok: PBoolean = nil; base: Integer = 10): qword; cdecl; external QtIntf name 'QByteArray_toULongLong';
+function QByteArray_toFloat(handle: QByteArrayH; ok: PBoolean = nil): Single; cdecl; external QtIntf name 'QByteArray_toFloat';
+function QByteArray_toDouble(handle: QByteArrayH; ok: PBoolean = nil): Double; cdecl; external QtIntf name 'QByteArray_toDouble';
+procedure QByteArray_toBase64(handle: QByteArrayH; retval: QByteArrayH); cdecl; external QtIntf name 'QByteArray_toBase64';
+function QByteArray_setNum(handle: QByteArrayH; p1: ShortInt; base: Integer = 10): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum';
+function QByteArray_setNum(handle: QByteArrayH; p1: Word; base: Integer = 10): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum2';
+function QByteArray_setNum(handle: QByteArrayH; p1: Integer; base: Integer = 10): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum3';
+function QByteArray_setNum(handle: QByteArrayH; p1: LongWord; base: Integer = 10): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum4';
+function QByteArray_setNum(handle: QByteArrayH; p1: int64; base: Integer = 10): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum5';
+function QByteArray_setNum(handle: QByteArrayH; p1: qword; base: Integer = 10): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum6';
+function QByteArray_setNum(handle: QByteArrayH; p1: Single; f: char; prec: Integer = 6): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum7';
+function QByteArray_setNum(handle: QByteArrayH; p1: Double; f: char; prec: Integer = 6): QByteArrayH; overload; cdecl; external QtIntf name 'QByteArray_setNum8';
+procedure QByteArray_number(retval: QByteArrayH; p1: Integer; base: Integer = 10); overload; cdecl; external QtIntf name 'QByteArray_number';
+procedure QByteArray_number(retval: QByteArrayH; p1: LongWord; base: Integer = 10); overload; cdecl; external QtIntf name 'QByteArray_number2';
+procedure QByteArray_number(retval: QByteArrayH; p1: int64; base: Integer = 10); overload; cdecl; external QtIntf name 'QByteArray_number3';
+procedure QByteArray_number(retval: QByteArrayH; p1: qword; base: Integer = 10); overload; cdecl; external QtIntf name 'QByteArray_number4';
+procedure QByteArray_number(retval: QByteArrayH; p1: Double; f: char; prec: Integer = 6); overload; cdecl; external QtIntf name 'QByteArray_number5';
+procedure QByteArray_fromRawData(retval: QByteArrayH; p1: PAnsiChar; size: Integer); cdecl; external QtIntf name 'QByteArray_fromRawData';
+procedure QByteArray_fromBase64(retval: QByteArrayH; base64: QByteArrayH); cdecl; external QtIntf name 'QByteArray_fromBase64';
+procedure QByteArray_push_back(handle: QByteArrayH; c: char); overload; cdecl; external QtIntf name 'QByteArray_push_back';
+procedure QByteArray_push_back(handle: QByteArrayH; c: PAnsiChar); overload; cdecl; external QtIntf name 'QByteArray_push_back2';
+procedure QByteArray_push_back(handle: QByteArrayH; a: QByteArrayH); overload; cdecl; external QtIntf name 'QByteArray_push_back3';
+procedure QByteArray_push_front(handle: QByteArrayH; c: char); overload; cdecl; external QtIntf name 'QByteArray_push_front';
+procedure QByteArray_push_front(handle: QByteArrayH; c: PAnsiChar); overload; cdecl; external QtIntf name 'QByteArray_push_front2';
+procedure QByteArray_push_front(handle: QByteArrayH; a: QByteArrayH); overload; cdecl; external QtIntf name 'QByteArray_push_front3';
+function QByteArray_count(handle: QByteArrayH): Integer; overload; cdecl; external QtIntf name 'QByteArray_count4';
+function QByteArray_length(handle: QByteArrayH): Integer; cdecl; external QtIntf name 'QByteArray_length';
+function QByteArray_isNull(handle: QByteArrayH): Boolean; cdecl; external QtIntf name 'QByteArray_isNull';
+
 
 
 type
@@ -3215,26 +3350,24 @@ function QMimeSource_format(handle: QMimeSourceH; n: Integer = 0): PAnsiChar; cd
 function QMimeSource_provides(handle: QMimeSourceH; p1: PAnsiChar): Boolean; cdecl; external QtIntf name 'QMimeSource_provides';
 procedure QMimeSource_encodedData(handle: QMimeSourceH; retval: QByteArrayH; p1: PAnsiChar); cdecl; external QtIntf name 'QMimeSource_encodedData';
 
-function QMimeData_create(): QMimeDataH; cdecl; external QtIntf name 'QMimeData_create';
-procedure QMimeData_destroy(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_destroy'; 
-function QMimeData_hasUrls(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasUrls';
-procedure QMimeData_text(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_text';
-procedure QMimeData_setText(handle: QMimeDataH; text: PWideString); cdecl; external QtIntf name 'QMimeData_setText';
-function QMimeData_hasText(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasText';
-procedure QMimeData_html(handle: QMimeDataH; retval: PWideString); cdecl; external QtIntf name 'QMimeData_html';
-procedure QMimeData_setHtml(handle: QMimeDataH; html: PWideString); cdecl; external QtIntf name 'QMimeData_setHtml';
-function QMimeData_hasHtml(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasHtml';
-procedure QMimeData_imageData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_imageData';
-procedure QMimeData_setImageData(handle: QMimeDataH; image: QVariantH); cdecl; external QtIntf name 'QMimeData_setImageData';
-function QMimeData_hasImage(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasImage';
-procedure QMimeData_colorData(handle: QMimeDataH; retval: QVariantH); cdecl; external QtIntf name 'QMimeData_colorData';
-procedure QMimeData_setColorData(handle: QMimeDataH; color: QVariantH); cdecl; external QtIntf name 'QMimeData_setColorData';
-function QMimeData_hasColor(handle: QMimeDataH): Boolean; cdecl; external QtIntf name 'QMimeData_hasColor';
-procedure QMimeData_data(handle: QMimeDataH; retval: QByteArrayH; mimetype: PWideString); cdecl; external QtIntf name 'QMimeData_data';
-procedure QMimeData_setData(handle: QMimeDataH; mimetype: PWideString; data: QByteArrayH); cdecl; external QtIntf name 'QMimeData_setData';
-function QMimeData_hasFormat(handle: QMimeDataH; mimetype: PWideString): Boolean; cdecl; external QtIntf name 'QMimeData_hasFormat';
-procedure QMimeData_formats(handle: QMimeDataH; retval: QStringListH); cdecl; external QtIntf name 'QMimeData_formats';
-procedure QMimeData_clear(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_clear';
+function QDrag_create(dragSource: QWidgetH): QDragH; cdecl; external QtIntf name 'QDrag_create';
+procedure QDrag_destroy(handle: QDragH); cdecl; external QtIntf name 'QDrag_destroy'; 
+procedure QDrag_setMimeData(handle: QDragH; data: QMimeDataH); cdecl; external QtIntf name 'QDrag_setMimeData';
+function QDrag_mimeData(handle: QDragH): QMimeDataH; cdecl; external QtIntf name 'QDrag_mimeData';
+procedure QDrag_setPixmap(handle: QDragH; p1: QPixmapH); cdecl; external QtIntf name 'QDrag_setPixmap';
+procedure QDrag_pixmap(handle: QDragH; retval: QPixmapH); cdecl; external QtIntf name 'QDrag_pixmap';
+procedure QDrag_setHotSpot(handle: QDragH; hotspot: PQtPoint); cdecl; external QtIntf name 'QDrag_setHotSpot';
+procedure QDrag_hotSpot(handle: QDragH; retval: PQtPoint); cdecl; external QtIntf name 'QDrag_hotSpot';
+function QDrag_source(handle: QDragH): QWidgetH; cdecl; external QtIntf name 'QDrag_source';
+function QDrag_target(handle: QDragH): QWidgetH; cdecl; external QtIntf name 'QDrag_target';
+function QDrag_start(handle: QDragH; supportedActions: QtDropActions = QtCopyAction): QtDropAction; cdecl; external QtIntf name 'QDrag_start';
+procedure QDrag_setDragCursor(handle: QDragH; cursor: QPixmapH; action: QtDropAction); cdecl; external QtIntf name 'QDrag_setDragCursor';
+
+
+type
+  QDrag_actionChanged_Event = procedure (action: QtDropAction) of object cdecl;
+  QDrag_targetChanged_Event = procedure (newTarget: QWidgetH) of object cdecl;
+
 
 
 type
@@ -8493,6 +8626,9 @@ procedure QStyleHintReturnMask_setRegion(handle : QStyleHintReturnMaskH; region 
 function QStyleHintReturnMask_create(): QStyleHintReturnMaskH; cdecl; external QtIntf name 'QStyleHintReturnMask_create';
 procedure QStyleHintReturnMask_destroy(handle: QStyleHintReturnMaskH); cdecl; external QtIntf name 'QStyleHintReturnMask_destroy'; 
 
+procedure QStyleFactory_keys(retval: QStringListH); cdecl; external QtIntf name 'QStyleFactory_keys';
+function QStyleFactory_create(p1: PWideString): QStyleH; cdecl; external QtIntf name 'QStyleFactory_create';
+
 type
   QGraphicsSceneItemIndexMethod = cardinal; //  QGraphicsScene::ItemIndexMethod (4)
 
@@ -8763,6 +8899,11 @@ function QDesktopWidget_hook_create(handle: QObjectH): QDesktopWidget_hookH; cde
 procedure QDesktopWidget_hook_destroy(handle: QDesktopWidget_hookH); cdecl; external QtIntf name 'QDesktopWidget_hook_destroy'; 
 procedure QDesktopWidget_hook_hook_resized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_resized';
 procedure QDesktopWidget_hook_hook_workAreaResized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_workAreaResized';
+
+function QDrag_hook_create(handle: QObjectH): QDrag_hookH; cdecl; external QtIntf name 'QDrag_hook_create';
+procedure QDrag_hook_destroy(handle: QDrag_hookH); cdecl; external QtIntf name 'QDrag_hook_destroy'; 
+procedure QDrag_hook_hook_actionChanged(handle: QDrag_hookH; hook: QHookH); cdecl; external QtIntf name 'QDrag_hook_hook_actionChanged';
+procedure QDrag_hook_hook_targetChanged(handle: QDrag_hookH; hook: QHookH); cdecl; external QtIntf name 'QDrag_hook_hook_targetChanged';
 
 function QFrame_hook_create(handle: QObjectH): QFrame_hookH; cdecl; external QtIntf name 'QFrame_hook_create';
 procedure QFrame_hook_destroy(handle: QFrame_hookH); cdecl; external QtIntf name 'QFrame_hook_destroy'; 
