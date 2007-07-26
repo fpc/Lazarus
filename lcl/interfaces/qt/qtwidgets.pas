@@ -1524,11 +1524,11 @@ begin
   Msg.Msg := LM_SIZE;
 
   case QWidget_windowState(Widget) of
-   QtWindowMinimized: Msg.SizeType := SIZEICONIC;
-   QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
-   QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
+    QtWindowMinimized: Msg.SizeType := SIZEICONIC;
+    QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
+    QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
   else
-   Msg.SizeType := SIZENORMAL;
+    Msg.SizeType := SIZENORMAL;
   end;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;

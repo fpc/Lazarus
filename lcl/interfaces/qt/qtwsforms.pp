@@ -286,7 +286,13 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-
+  {
+    Setting modal flags is done in TQtWSCustomControl.ShowHide
+    Since that flags has effect only when Widget is not visible
+    
+    We can ofcource hide widget, set flags here and then show it, but we dont
+    want window flickering :)
+  }
 end;
 
 {------------------------------------------------------------------------------
