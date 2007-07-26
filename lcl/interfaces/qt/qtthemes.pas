@@ -107,6 +107,7 @@ var
   ARect: TRect;
   Element: TQtDrawElement;
   Features: QStyleOptionButtonButtonFeatures;
+  Position: QStyleOptionHeaderSectionPosition;
 begin
   if (Context <> nil) then
   begin
@@ -122,6 +123,18 @@ begin
           if Details.Element = teToolBar then
             Features := Features or QStyleOptionButtonFlat;
           QStyleOptionButton_setFeatures(QStyleOptionButtonH(opt), Features);
+        end
+        else
+        if (Element.ControlElement = QStyleCE_HeaderSection) then
+        begin
+          opt := QStyleOptionHeader_create();
+          case Details.Part of
+            HP_HEADERITEM: Position := QStyleOptionHeaderMiddle;
+            HP_HEADERITEMLEFT: Position := QStyleOptionHeaderBeginning;
+            HP_HEADERITEMRIGHT: Position := QStyleOptionHeaderEnd;
+          end;
+          QStyleOptionHeader_setPosition(QStyleOptionHeaderH(opt), Position);
+          QStyleOptionHeader_setOrientation(QStyleOptionHeaderH(opt), QtHorizontal);
         end
         else
           opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
