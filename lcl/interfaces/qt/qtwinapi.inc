@@ -4026,12 +4026,22 @@ begin
 end;
 
 function TQtWidgetSet.SetCapture(AHandle: HWND): HWND;
+var
+  Message: TLMessage;
 begin
   Result := GetCapture;
-  if Result <> 0 then
-    ReleaseCapture;
-  if AHandle <> 0 then
-    TQtWidget(AHandle).grabMouse();
+  if Result <> AHandle then
+  begin
+    if Result <> 0 then
+      ReleaseCapture;
+    if AHandle <> 0 then
+      TQtWidget(AHandle).grabMouse();
+    FillChar(Message, SizeOf(Message), 0);
+    Message.msg := LM_CAPTURECHANGED;
+    Message.wParam := 0;
+    Message.lParam := Result;
+    LCLMessageGlue.DeliverMessage(TQtWidget(AHandle).LCLObject, Message);
+  end;
 end;
 
 function TQtWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
