@@ -2499,7 +2499,10 @@ begin
           QBoxLayout_destroy(LayoutWidget);
       end
       else
+      begin
         Result := QWidget_create(nil, QtWindow);
+        QWidget_setAttribute(Result, QtWA_Hover);
+      end;
     {$else}
       Result := QWidget_create(nil, QtWindow);
     {$endif}

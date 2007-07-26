@@ -148,7 +148,7 @@ end;
 function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 var
   APoint: TQtPoint;
-//  R: TRect;
+  R: TRect;
 begin
   Result := True;
   if Handle <> 0 then
@@ -159,10 +159,9 @@ begin
     QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
     P.X := APoint.x;
     P.Y := APoint.y;
-{    R := TQtWidget(Handle).getClientBounds;
+    R := TQtWidget(Handle).getClientBounds;
     inc(P.X, R.Left);
     inc(P.Y, R.Top);
-}
   end;
 end;
 
@@ -3808,11 +3807,8 @@ end;
 function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   APoint: TQtPoint;
-//  R: TRect;
+  R: TRect;
 begin
-  {$ifdef VerboseQTWinAPI}
-  WriteLn('[WinAPI TQtWidgetSet.ScreenToClient] ');
-  {$Endif}
   Result := 0;
   if Handle <> 0 then
   begin
@@ -3821,9 +3817,9 @@ begin
     QWidget_mapFromGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
     P.X := APoint.x;
     P.Y := APoint.y;
-{    R := TQtWidget(Handle).getClientBounds;
+    R := TQtWidget(Handle).getClientBounds;
     dec(P.X, R.Left);
-    dec(P.Y, R.Top);}
+    dec(P.Y, R.Top);
     Result := 1;
   end;
 end;
