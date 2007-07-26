@@ -104,12 +104,6 @@ begin
     GlobalCaret := TEmulatedCaret.Create(nil);
 end;
 
-function QtPoint(X, Y: Integer): TQtPoint;
-begin
-  Result.X := X;
-  Result.Y := Y;
-end;
-
 procedure DrawCaret;
 begin
   GlobalCaretNeeded;
