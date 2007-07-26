@@ -1065,7 +1065,13 @@ begin
     QEventDestroy: SlotDestroy;
     QEventEnter: SlotMouseEnter(Event);
     QEventFocusIn: SlotFocus(True);
-    QEventFocusOut: SlotFocus(False);
+    QEventFocusOut:
+    begin
+      SlotFocus(False);
+      if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason
+      then
+        releaseMouse;
+    end;
 
     QEventHoverEnter : SlotHover(Event);
     QEventHoverLeave : SlotHover(Event);
