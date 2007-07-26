@@ -129,11 +129,12 @@ type
     function getGeometry: TRect; virtual;
     function getVisible: Boolean;
     function getClientBounds: TRect; virtual;
+    procedure grabMouse;
     function hasFocus: Boolean;
+    procedure releaseMouse;
     procedure setEnabled(p1: Boolean);
     procedure setGeometry(ARect: TRect); overload;
     procedure setVisible(visible: Boolean); virtual;
-    function windowModality: QtWindowModality;
     procedure setWindowModality(windowModality: QtWindowModality);
     procedure setParent(parent: QWidgetH);
     procedure setWindowFlags(_type: QtWindowFlags);
@@ -142,7 +143,8 @@ type
     procedure setHeight(p1: Integer);
     procedure setTabOrder(p1, p2: TQtWidget);
     procedure setWindowState(AState: QtWindowStates);
-    
+    function windowModality: QtWindowModality;
+
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
@@ -1708,9 +1710,19 @@ begin
   QWidget_contentsRect(Widget, @Result);
 end;
 
+procedure TQtWidget.grabMouse;
+begin
+  QWidget_grabMouse(Widget);
+end;
+
 function TQtWidget.hasFocus: Boolean;
 begin
   Result := QWidget_hasFocus(Widget);
+end;
+
+procedure TQtWidget.releaseMouse;
+begin
+  QWidget_releaseMouse(Widget);
 end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);

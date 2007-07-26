@@ -1796,33 +1796,14 @@ end;
 function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
-  QtWidget: TQtWidget;
-  vPoint: TQtPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetCapture]');
   {$endif}
-  
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
- // WriteLn('*#*#*#*#* [WinAPI TQtWidgetSet.GetCapture] possible wrong implementation ');
-  {$endif}
-  
-  QCursor_pos(@vPoint);
-  w := QApplication_widgetAt(@vPoint);
-
+  w := QWidget_mouseGrabber();
   if w <> nil then
-  begin
-    QtWidget := QtObjectFromWidgetH(w);
-    if Assigned(QtWidget) then
-    begin
-      if QWidget_isWindow(w)
-      and QWidget_isModal(w) then
-      Result := 0
-      else
-      Result := HWND(QtWidget)
-    end else
-      Result := 0;
-  end else
+    Result := HWND(QtObjectFromWidgetH(w))
+  else
     Result := 0;
 end;
 
@@ -3672,6 +3653,16 @@ begin
   end;
 end;
 
+function TQtWidgetSet.ReleaseCapture: Boolean;
+var
+  w: TQtWidget;
+begin
+  w := TQtWidget(GetCapture);
+  Result := w <> nil;
+  if Result then
+    w.releaseMouse()
+end;
+
 {------------------------------------------------------------------------------
   Function: ReleaseDC
   Params:     hWnd:       Handle to the window whose DC is to be released.
@@ -4032,6 +4023,15 @@ begin
   end;
 
   result := TQtDeviceContext(DC).SetBkMode(bkMode);
+end;
+
+function TQtWidgetSet.SetCapture(AHandle: HWND): HWND;
+begin
+  Result := GetCapture;
+  if Result <> 0 then
+    ReleaseCapture;
+  if AHandle <> 0 then
+    TQtWidget(AHandle).grabMouse();
 end;
 
 function TQtWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
