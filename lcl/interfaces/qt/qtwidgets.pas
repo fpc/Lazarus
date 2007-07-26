@@ -901,6 +901,11 @@ end;
 
 {$IFDEF VerboseQt}
 function EventTypeToStr(Event:QEventH):string;
+// Qt 3 events
+const
+  QEventChildInsertedRequest = 67;
+  QEventChildInserted = 70;
+  QEventLayoutHint = 72;
 begin
   case QEvent_type(Event) of
     QEventNone: result:='QEventNone';
@@ -949,8 +954,11 @@ begin
     QEventDragLeave: result:='QEventDragLeave';
     QEventDrop: result:='QEventDrop';
     QEventDragResponse: result:='QEventDragResponse';
+    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
     QEventChildAdded: result:='QEventChildAdded';
     QEventChildPolished: result:='QEventChildPolished';
+    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
+    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
     QEventChildRemoved: result:='QEventChildRemoved';
     QEventShowWindowRequest: result:='QEventShowWindowRequest';
     QEventPolishRequest: result:='QEventPolishRequest';
@@ -1010,6 +1018,10 @@ begin
     QEventAcceptDropsChange: result:='QEventAcceptDropsChange';
     QEventMenubarUpdated: result:='QEventMenubarUpdated';
     QEventZeroTimerEvent: result:='QEventZeroTimerEvent';
+    QEventNonClientAreaMouseMove: result:='QEventNonClientAreaMouseMove';
+    QEventNonClientAreaMouseButtonPress: result:='QEventNonClientAreaMouseButtonPress';
+    QEventNonClientAreaMouseButtonRelease: result:='QEventNonClientAreaMouseButtonRelease';
+    QEventNonClientAreaMouseButtonDblClick: result:='QEventNonClientAreaMouseButtonDblClick';
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
   else
@@ -1692,21 +1704,8 @@ begin
 end;
 
 function TQtWidget.getClientBounds: TRect;
-{var
-  Container: QWidgetH;
-  R: TRect;}
 begin
   QWidget_contentsRect(Widget, @Result);
-{  Container := GetContainerWidget;
-  if Container <> Widget then
-  begin
-    QWidget_contentsRect(Container, @R);
-    inc(Result.Top, R.Top);
-    inc(Result.Left, R.Left);
-    dec(Result.Right, R.Right);
-    dec(Result.Bottom, R.Bottom);
-    OffsetRect(Result, R.Left, R.Top);
-  end;}
 end;
 
 function TQtWidget.hasFocus: Boolean;
@@ -2476,7 +2475,7 @@ begin
       end;
       
       if FCentralWidget <> nil then
-      QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
+        QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
       
       if not (csDesigning in LCLObject.ComponentState) then
         QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
