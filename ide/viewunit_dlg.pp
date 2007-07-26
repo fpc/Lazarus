@@ -56,8 +56,8 @@ type
   TViewUnitDialog = class(TForm)
     Edit: TEdit;
     ListBox: TListBox;
-    btnOK: TButton;
-    btnCancel: TButton;
+    btnOK: TBitBtn;
+    btnCancel: TBitBtn;
     MultiSelectCheckBox: TCheckBox;
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);

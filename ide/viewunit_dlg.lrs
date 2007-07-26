@@ -1,20 +1,32 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TViewUnitDialog','FORMDATA',[
-  'TPF0'#15'TViewUnitDialog'#14'ViewUnitDialog'#13'ActiveControl'#7#7'Listbox'#7
-  +'Caption'#6#18'View Project Units'#12'ClientHeight'#3#213#0#11'ClientWidth'#3
-  +#160#1#13'PixelsPerInch'#2'_'#8'Position'#7#14'poScreenCenter'#18'HorzScroll'
-  +'Bar.Page'#3#159#1#18'VertScrollBar.Page'#3#212#0#4'Left'#3'Q'#1#6'Height'#3
-  +#213#0#3'Top'#3''''#1#5'Width'#3#160#1#0#7'TButton'#5'btnOK'#7'Anchors'#11#5
-  +'akTop'#7'akRight'#0#7'Caption'#6#2'OK'#7'OnClick'#7#10'BTNOKCLICK'#8'TabOrd'
-  +'er'#2#1#4'Left'#3'8'#1#6'Height'#2#25#3'Top'#2#10#5'Width'#2'`'#0#0#7'TButt'
-  +'on'#9'btnCancel'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#6'Cancel'
-  +#7'OnClick'#7#14'BTNCANCELCLICK'#8'TabOrder'#2#2#4'Left'#3'8'#1#6'Height'#2
-  +#25#3'Top'#2'-'#5'Width'#2'`'#0#0#5'TEdit'#4'Edit'#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#0#7'Enabled'#8#8'TabOrder'#2#3#4'Left'#2#10#6'Height'#2
-  +#25#3'Top'#2#10#5'Width'#3'&'#1#0#0#8'TListBox'#7'Listbox'#7'Anchors'#11#5'a'
-  +'kTop'#6'akLeft'#7'akRight'#8'akBottom'#0#16'ClickOnSelChange'#8#10'OnDblCli'
-  +'ck'#7#10'BTNOKCLICK'#9'OnKeyDown'#7#14'ListboxKeyDown'#8'TabOrder'#2#0#8'To'
-  +'pIndex'#2#255#4'Left'#2#10#6'Height'#3#156#0#3'Top'#2'-'#5'Width'#3'&'#1#0#0
-  +#9'TCheckBox'#19'MultiSelectCheckBox'#7'Anchors'#11#5'akTop'#7'akRight'#0#7
-  +'Caption'#6#12'Multi Select'#7'OnClick'#7#24'MultiselectCheckBoxClick'#8'Tab'
-  +'Order'#2#4#4'Left'#3'8'#1#6'Height'#2#24#3'Top'#2'd'#5'Width'#2']'#0#0#0
+  'TPF0'#15'TViewUnitDialog'#14'ViewUnitDialog'#4'Left'#3'Q'#1#6'Height'#3#9#1#3
+  +'Top'#3''''#1#5'Width'#3';'#1#18'HorzScrollBar.Page'#3':'#1#18'VertScrollBar'
+  +'.Page'#3#8#1#13'ActiveControl'#7#7'Listbox'#7'Caption'#6#18'View Project Un'
+  +'its'#12'ClientHeight'#3#9#1#11'ClientWidth'#3';'#1#8'Position'#7#14'poScree'
+  +'nCenter'#0#7'TBitBtn'#5'btnOK'#21'AnchorSideTop.Control'#7#9'btnCancel'#23
+  +'AnchorSideRight.Control'#7#9'btnCancel'#4'Left'#2'k'#6'Height'#2#25#3'Top'#3
+  +#231#0#5'Width'#2'`'#7'Anchors'#11#5'akTop'#7'akRight'#0#19'BorderSpacing.Ri'
+  +'ght'#2#5#7'Caption'#6#3'&OK'#7'Default'#9#4'Kind'#7#4'bkOK'#11'ModalResult'
+  +#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#10'BTNOKCLICK'#8'TabOrder'#2#1#0#0#7'TBit'
+  +'Btn'#9'btnCancel'#21'AnchorSideTop.Control'#7#19'MultiSelectCheckBox'#18'An'
+  +'chorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#7'Listbox'#20
+  +'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3#208#0#6'Height'#2#25#3'Top'#3
+  +#231#0#5'Width'#2'`'#7'Anchors'#11#5'akTop'#7'akRight'#0#17'BorderSpacing.To'
+  +'p'#2#5#6'Cancel'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalRes'
+  +'ult'#2#2#9'NumGlyphs'#2#0#7'OnClick'#7#14'BTNCANCELCLICK'#8'TabOrder'#2#2#0
+  +#0#5'TEdit'#4'Edit'#4'Left'#2#10#6'Height'#2#25#3'Top'#2#10#5'Width'#3'&'#1#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Enabled'#8#8'TabOrder'#2#3#0#0
+  +#8'TListBox'#7'Listbox'#22'AnchorSideLeft.Control'#7#4'Edit'#21'AnchorSideTo'
+  +'p.Control'#7#4'Edit'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRig'
+  +'ht.Control'#7#4'Edit'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#10#6
+  +'Height'#3#168#0#3'Top'#2'('#5'Width'#3'&'#1#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#8'akBottom'#0#17'BorderSpacing.Top'#2#5#16'ClickOnSelChange'#8#10
+  +'OnDblClick'#7#10'BTNOKCLICK'#9'OnKeyDown'#7#14'ListboxKeyDown'#8'TabOrder'#2
+  +#0#0#0#9'TCheckBox'#19'MultiSelectCheckBox'#22'AnchorSideLeft.Control'#7#4'E'
+  +'dit'#21'AnchorSideTop.Control'#7#7'Listbox'#18'AnchorSideTop.Side'#7#9'asrB'
+  +'ottom'#4'Left'#2#10#6'Height'#2#13#3'Top'#3#213#0#5'Width'#2'K'#17'BorderSp'
+  +'acing.Top'#2#5#7'Caption'#6#12'Multi Select'#7'OnClick'#7#24'MultiselectChe'
+  +'ckBoxClick'#8'TabOrder'#2#4#0#0#0
 ]);

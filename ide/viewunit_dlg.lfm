@@ -1,67 +1,88 @@
 object ViewUnitDialog: TViewUnitDialog
+  Left = 337
+  Height = 265
+  Top = 295
+  Width = 315
+  HorzScrollBar.Page = 314
+  VertScrollBar.Page = 264
   ActiveControl = Listbox
   Caption = 'View Project Units'
-  ClientHeight = 213
-  ClientWidth = 416
-  PixelsPerInch = 95
+  ClientHeight = 265
+  ClientWidth = 315
   Position = poScreenCenter
-  HorzScrollBar.Page = 415
-  VertScrollBar.Page = 212
-  Left = 337
-  Height = 213
-  Top = 295
-  Width = 416
-  object btnOK: TButton
+  object btnOK: TBitBtn
+    AnchorSideTop.Control = btnCancel
+    AnchorSideRight.Control = btnCancel
+    Left = 107
+    Height = 25
+    Top = 231
+    Width = 96
     Anchors = [akTop, akRight]
-    
-    Caption = 'OK'
+    BorderSpacing.Right = 5
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
     OnClick = BTNOKCLICK
     TabOrder = 1
-    Left = 312
-    Height = 25
-    Top = 10
-    Width = 96
   end
-  object btnCancel: TButton
+  object btnCancel: TBitBtn
+    AnchorSideTop.Control = MultiSelectCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Listbox
+    AnchorSideRight.Side = asrBottom
+    Left = 208
+    Height = 25
+    Top = 231
+    Width = 96
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.Top = 5
+    Cancel = True
     Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
     OnClick = BTNCANCELCLICK
     TabOrder = 2
-    Left = 312
-    Height = 25
-    Top = 45
-    Width = 96
   end
   object Edit: TEdit
-    Anchors = [akTop, akLeft, akRight]
-    Enabled = False
-    TabOrder = 3
     Left = 10
     Height = 25
     Top = 10
     Width = 294
+    Anchors = [akTop, akLeft, akRight]
+    Enabled = False
+    TabOrder = 3
   end
   object Listbox: TListBox
+    AnchorSideLeft.Control = Edit
+    AnchorSideTop.Control = Edit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Edit
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 168
+    Top = 40
+    Width = 294
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 5
     ClickOnSelChange = False
     OnDblClick = BTNOKCLICK
     OnKeyDown = ListboxKeyDown
     TabOrder = 0
-    TopIndex = -1
-    Left = 10
-    Height = 156
-    Top = 45
-    Width = 294
   end
   object MultiSelectCheckBox: TCheckBox
-    Anchors = [akTop, akRight]
+    AnchorSideLeft.Control = Edit
+    AnchorSideTop.Control = Listbox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 13
+    Top = 213
+    Width = 75
+    BorderSpacing.Top = 5
     Caption = 'Multi Select'
     OnClick = MultiselectCheckBoxClick
     TabOrder = 4
-    Left = 312
-    Height = 24
-    Top = 100
-    Width = 93
   end
 end
