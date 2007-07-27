@@ -4047,12 +4047,8 @@ begin
 end;
 
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: PWideString);
-var
-  maxCount, itemHeight: Integer;
-  R: TRect;
 begin
   QComboBox_insertItem(QComboBoxH(WIdget), AIndex, AText, QVariant_create());
-  maxCount := getMaxVisibleItems;
   if QWidget_isVisible(DropList) then
   begin
     BeginUpdate;
