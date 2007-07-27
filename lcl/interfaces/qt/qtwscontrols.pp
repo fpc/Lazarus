@@ -22,7 +22,7 @@
 }
 unit QtWSControls;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets, qtobjects,
   // LCL
-  SysUtils, Classes, Controls, LCLType, LCLProc, Forms, Graphics,
+  SysUtils, Classes, Types, Controls, LCLType, LCLProc, Forms, Graphics,
   StdCtrls,
   // Widgetset
   InterfaceBase, WSControls, WSLCLClasses;
@@ -81,6 +81,9 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
 
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -314,6 +317,23 @@ begin
   Result := True;
 end;
 
+class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  PrefSize: TSize;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('> TQtWSWinControl.GetPreferredSSize for ',dbgsname(AWinControl));
+  {$endif}
+  QWidget_sizeHint(TQtCheckBox(AWinControl.Handle).Widget, @PrefSize);
+  if (PrefSize.cx >= 0)
+  and (PrefSize.cy >=0) then
+  begin
+    PreferredWidth := PrefSize.cx;
+    PreferredHeight := PrefSize.cy;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSWinControl.SetBounds
   Params:  AWinControl - the calling object
@@ -419,7 +439,7 @@ begin
   Color := ColorToRGB(AWinControl.Color);
   
   // Fill QColor
-  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtWidget(AWinControl.Handle).SetColor(@QColor);
@@ -457,7 +477,7 @@ begin
   if AFont.Color = CLR_INVALID then exit;
 
   Color := ColorToRGB(AFont.Color);
-  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
   TQtWidget(AWinControl.Handle).SetTextColor(@QColor);
 end;
 

@@ -37,7 +37,7 @@ uses
   // RTL
   math,
   // LCL
-  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf, LCLProc,
+  Classes, Types, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf, LCLProc,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses;
 
@@ -1113,31 +1113,10 @@ var
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
   QtCheckBox.AttachEvents;
-
+  
   // Focus
   // QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
-  {we have a bug in LCL when parent is TCustomCheckGroup, it doesn't set sizes for items ?!? Width = 0 , Height = 0}
-  // writeln('WW=',QWidget_width(QtCheckBox.Widget),' WH=',QWidget_height(QtCheckBox.Widget),' WCW=',AWinControl.Width,' WCH=',AWinControl.Height,' CAPTION=',TCustomCheckBox(AWinControl).Caption);
-
-  {we must cheat TCustomCheckGroup here with some reasonable CheckBox size...}
-  if AWinControl.Height = 0 then
-  begin
-      { we must calculate text size to get real checkbox size in TCustomCheckGroup }
-      FM := QFontMetrics_create(QWidget_font(QtCheckBox.Widget));
-      try
-      Str := UTF8Encode(AWinControl.Caption);
-      ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
-      finally
-      QFontMetrics_destroy(FM);
-      end;
-      { now, textwidth + default width of checkbox, default height
-        qt doesn't align well control with text size < 100}
-      if ATextWidth < 100 then
-      ATextWidth := 100;
-      
-      AWinControl.SetInitialBounds(0, 0, ATextWidth + 22, 22);
-  end;
-
+  
   Result := THandle(QtCheckBox);
 end;
 
@@ -1231,24 +1210,6 @@ var
 begin
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
   QtRadioButton.AttachEvents;
-
-  {we must cheat TCustomRadioGroup here with some reasonable RadioButton size...}
-  if AWinControl.Height = 0 then
-  begin
-    { we must calculate text size to get real radiobutton size in TCustomRadioGroup }
-    FM := QFontMetrics_create(QWidget_font(QtRadioButton.Widget));
-    try
-      Str := UTF8Encode(AWinControl.Caption);
-      ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
-    finally
-      QFontMetrics_destroy(FM);
-    end;
-    { now, textwidth + default width of radiobutton (including space), default height
-      qt doesn't well align control with textsize < 100 }
-    if ATextWidth < 100 then
-      ATextWidth := 100;
-    AWinControl.SetInitialBounds(0, 0, ATextWidth + 22, 22);
-  end;
 
   // Focus
   

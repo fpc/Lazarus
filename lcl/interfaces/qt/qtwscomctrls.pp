@@ -52,8 +52,6 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-     var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TQtWSTabSheet }
@@ -689,20 +687,6 @@ begin
       end;
       
     end
-  end;
-end;
-
-class procedure TQtWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-var
-  PrefSize: TSize;
-begin
-  QWidget_sizeHint(TQtStatusBar(AWinControl.Handle).Widget, @PrefSize);
-  if (PrefSize.cx >= 0)
-  and (PrefSize.cy >=0) then
-  begin
-    PreferredWidth := PrefSize.cx;
-    PreferredHeight := PrefSize.cy;
   end;
 end;
 

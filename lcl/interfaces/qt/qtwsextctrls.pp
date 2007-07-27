@@ -22,7 +22,7 @@
 }
 unit QtWSExtCtrls;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -159,7 +159,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSRadioGroup }
@@ -178,7 +177,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCheckGroup }
@@ -407,40 +405,6 @@ begin
   Result := THandle(QtGroupBox);
 end;
 
-class procedure TQtWSCustomRadioGroup.ShowHide(const AWinControl: TWinControl);
-var
-  i: Integer;
-  ATextWidth: Integer;
-  ATextHeight: Integer;
-  FM: QFontMetricsH;
-  Str: WideString;
-begin
-  inherited ShowHide(AWinControl);
-  {without this we have invisible radio buttons}
-  {only this guarantee that our items are visible anytime ....}
-  for i := 0 to TRadioGroup(AWinControl).ComponentCount - 1 do
-  begin
-    if TRadioButton(AWinControl.Components[i]).Height = 0 then
-    begin
-      FM := QFontMetrics_create(QWidget_font(TQtRadioButton(TRadioButton(AWinControl.Components[i]).Handle).Widget));
-      try
-        Str := UTF8Encode(TRadioButton(AWinControl.Components[i]).Caption);
-        ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
-        ATextHeight := QFontMetrics_height(FM);
-      finally
-        QFontMetrics_destroy(FM);
-      end;
-      
-      { now, textwidth + default width of checkbox, default height
-        qt doesn't align well control with text size < 100}
-      if ATextWidth < 100 then
-        ATextWidth := 100;
-        
-      TRadioButton(AWinControl.Components[i]).SetBounds(0, 0, ATextWidth + ATextHeight + 1, ATextHeight);
-    end;
-  end;
-end;
- 
 { TQtWSCustomCheckGroup }
 
 {------------------------------------------------------------------------------
@@ -464,41 +428,6 @@ begin
   QtGroupBox.AttachEvents;
 
   Result := THandle(QtGroupBox);
-end;
-
-class procedure TQtWSCustomCheckGroup.ShowHide(const AWinControl: TWinControl);
-var
-  i: Integer;
-  ATextWidth: Integer;
-  ATextHeight: Integer;
-  FM: QFontMetricsH;
-  Str: WideString;
-begin
-  {without this checkboxes are invisible}
-  inherited ShowHide(AWinControl);
-  
-  {only this guarantee that our items are visible anytime ....}
-  for i := 0 to TCheckGroup(AWinControl).ComponentCount - 1 do
-  begin
-    if TCheckBox(AWinControl.Components[i]).Height = 0 then
-    begin
-      FM := QFontMetrics_create(QWidget_font(TQtCheckBox(TCheckBox(AWinControl.Components[i]).Handle).Widget));
-      try
-        Str := UTF8Encode(TCheckBox(AWinControl.Components[i]).Caption);
-        ATextWidth := QFontMetrics_width(FM, @Str, Length(Str));
-        ATextHeight := QFontMetrics_height(FM);
-      finally
-        QFontMetrics_destroy(FM);
-      end;
-      
-      { now, textwidth + default width of checkbox, default height
-        qt doesn't align well control with text size < 100}
-      if ATextWidth < 100 then
-        ATextWidth := 100;
-        
-      TCheckBox(AWinControl.Components[i]).SetBounds(0, 0, ATextWidth + ATextHeight + 1, ATextHeight);
-    end;
-  end;
 end;
 
 initialization
