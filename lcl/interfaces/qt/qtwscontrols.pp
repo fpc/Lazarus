@@ -325,7 +325,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('> TQtWSWinControl.GetPreferredSSize for ',dbgsname(AWinControl));
   {$endif}
-  QWidget_sizeHint(TQtCheckBox(AWinControl.Handle).Widget, @PrefSize);
+  QWidget_sizeHint(TQtWidget(AWinControl.Handle).Widget, @PrefSize);
   if (PrefSize.cx >= 0)
   and (PrefSize.cy >=0) then
   begin
