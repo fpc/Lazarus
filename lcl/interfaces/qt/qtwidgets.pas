@@ -438,9 +438,14 @@ type
 
   TQtComboBox = class(TQtWidget)
   private
+    // hooks
     FChangeHook: QComboBox_hookH;
     FSelectHook: QComboBox_hookH;
+    FDropListEventHook: QObject_hookH;
+    // parts
     FLineEdit: QLineEditH;
+    FDropList: QAbstractItemViewH;
+    function GetDropList: QAbstractItemViewH;
     function GetLineEdit: QLineEditH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -457,12 +462,15 @@ type
     procedure removeItem(AIndex: Integer);
     
     property LineEdit: QLineEditH read GetLineEdit;
+    property DropList: QAbstractItemViewH read GetDropList;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+
     procedure SlotChange(p1: PWideString); cdecl;
     procedure SlotSelect(index: Integer); cdecl;
+    procedure SlotDropListVisibility(AVisible: Boolean); cdecl;
   end;
 
   { TQtAbstractSpinBox}
@@ -1050,8 +1058,7 @@ begin
     QEventFocusOut:
     begin
       SlotFocus(False);
-      if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason
-      then
+      if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason then
         releaseMouse;
     end;
 
@@ -3939,6 +3946,13 @@ begin
   Result := FLineEdit;
 end;
 
+function TQtComboBox.GetDropList: QAbstractItemViewH;
+begin
+  if FDropList = nil then
+    FDropList := QComboBox_view(QComboBoxH(Widget));
+  Result := FDropList;
+end;
+
 function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
@@ -4042,14 +4056,43 @@ begin
   // OnSelect event
   QComboBox_currentIndexChanged_Event(Method) := SlotSelect;
   QComboBox_hook_hook_currentIndexChanged(FSelectHook, Method);
+  
+  // DropList events
+  FDropListEventHook := QObject_hook_create(DropList);
+  TEventFilterMethod(Method) := EventFilter;
+  QObject_hook_hook_events(FDropListEventHook, Method);
 end;
 
 procedure TQtComboBox.DetachEvents;
 begin
   QComboBox_hook_destroy(FChangeHook);
   QComboBox_hook_destroy(FSelectHook);
-  
+
+  if FDropListEventHook <> nil then
+  begin
+    QObject_hook_destroy(FDropListEventHook);
+    FDropListEventHook := nil;
+  end;
+
   inherited DetachEvents;
+end;
+
+function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  if Sender = FDropList then
+  begin
+    Result := False;
+
+    QEvent_accept(Event);
+    
+    case QEvent_type(Event) of
+      QEventShow: SlotDropListVisibility(True);
+      QEventHide: SlotDropListVisibility(False);
+    else
+      QEvent_ignore(Event);
+    end;
+  end else
+    Result := inherited EventFilter(Sender, Event);
 end;
 
 procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
@@ -4085,6 +4128,23 @@ begin
   except
     Application.HandleException(nil);
   end;
+end;
+
+procedure TQtComboBox.SlotDropListVisibility(AVisible: Boolean); cdecl;
+const
+  VisibilityToCodeMap: array[Boolean] of Word =
+  (
+    CBN_CLOSEUP,
+    CBN_DROPDOWN
+  );
+var
+  Message : TLMCommand;
+begin
+  FillChar(Message, SizeOf(Message), 0);
+  Message.Msg := CN_COMMAND;
+  Message.NotifyCode := VisibilityToCodeMap[AVisible];
+
+  DeliverMessage(Message);
 end;
 
 { TQtAbstractSpinBox }
