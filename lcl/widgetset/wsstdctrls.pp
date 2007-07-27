@@ -76,6 +76,7 @@ type
     
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
       NewTraverseList: boolean); virtual;
+    class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); virtual;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); virtual;
@@ -311,6 +312,11 @@ end;
 
 class procedure TWSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
+begin
+end;
+
+class procedure TWSCustomComboBox.SetDropDownCount(
+  const ACustomComboBox: TCustomComboBox; NewCount: Integer);
 begin
 end;
 

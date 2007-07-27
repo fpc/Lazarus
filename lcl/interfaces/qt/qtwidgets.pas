@@ -455,9 +455,11 @@ type
     procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
     function getEditable: Boolean;
+    function getMaxVisibleItems: Integer;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
+    procedure setMaxVisibleItems(ACount: Integer);
     procedure setEditable(AValue: Boolean);
     procedure removeItem(AIndex: Integer);
     
@@ -4007,6 +4009,11 @@ begin
   Result := QComboBox_isEditable(QComboBoxH(Widget));
 end;
 
+function TQtComboBox.getMaxVisibleItems: Integer;
+begin
+  Result := QComboBox_maxVisibleItems(QComboboxH(Widget));
+end;
+
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
@@ -4016,8 +4023,19 @@ begin
 end;
 
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: PWideString);
+var
+  maxCount, itemHeight: Integer;
+  R: TRect;
 begin
   QComboBox_insertItem(QComboBoxH(WIdget), AIndex, AText, QVariant_create());
+  maxCount := getMaxVisibleItems;
+  if QWidget_isVisible(DropList) then
+  begin
+    BeginUpdate;
+    QComboBox_hidePopup(QComboboxH(Widget));
+    QComboBox_showPopup(QComboboxH(Widget));
+    EndUpdate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4028,6 +4046,11 @@ end;
 procedure TQtComboBox.setCurrentIndex(index: Integer);
 begin
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
+end;
+
+procedure TQtComboBox.setMaxVisibleItems(ACount: Integer);
+begin
+  QComboBox_setMaxVisibleItems(QComboboxH(Widget), ACount);
 end;
 
 procedure TQtComboBox.setEditable(AValue: Boolean);
@@ -4141,6 +4164,9 @@ const
 var
   Message : TLMCommand;
 begin
+  if InUpdate then
+    Exit;
+    
   FillChar(Message, SizeOf(Message), 0);
   Message.Msg := CN_COMMAND;
   Message.NotifyCode := VisibilityToCodeMap[AVisible];

@@ -597,8 +597,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetDropDownCount(const AValue: Integer);
 begin
-  FDropDownCount:=AValue;
+  FDropDownCount := AValue;
   // ToDo
+  if (HandleAllocated) then
+    TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------
