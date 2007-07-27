@@ -46,24 +46,6 @@ type
   end;
   
 type
-  { TQtObject }
-  TQtObject = class(TObject)
-  private
-    FEventHook: QObject_hookH;
-    FUpdateCount: Integer;
-  public
-    TheObject: QObjectH;
-    // TODO: base virtual constructor with initialization
-    destructor Destroy; override;
-  public
-    procedure AttachEvents; virtual;
-    procedure DetachEvents; virtual;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
-  public
-    procedure BeginUpdate; virtual;
-    procedure EndUpdate; virtual;
-  end;
-  
   { TQtWidget }
 
   TQtWidget = class(TQtObject)
@@ -4074,7 +4056,7 @@ procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
 var
   Msg: TLMessage;
 begin
-  if FUpdateCount > 0 then
+  if InUpdate then
     Exit;
     
   FillChar(Msg, SizeOf(Msg), #0);
@@ -4092,9 +4074,8 @@ procedure TQtComboBox.SlotSelect(index: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
-  if FUpdateCount > 0 then
-    Exit;
-    
+  if InUpdate then
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SELCHANGE;
@@ -5747,48 +5728,6 @@ begin
     Msg.Msg := LM_MONTHCHANGED;
     DeliverMessage(Msg);
   end;
-end;
-
-{ TQtObject }
-
-destructor TQtObject.Destroy;
-begin
-  if TheObject <> nil then
-  begin
-    DetachEvents;
-    QObject_destroy(TheObject);
-    TheObject := nil;
-  end;
-  inherited Destroy;
-end;
-
-procedure TQtObject.AttachEvents;
-var
-  Method: TMethod;
-begin
-  FEventHook := QObject_hook_create(TheObject);
-  TEventFilterMethod(Method) := EventFilter;
-  QObject_hook_hook_events(FEventHook, Method);
-end;
-
-procedure TQtObject.DetachEvents;
-begin
-  if FEventHook <> nil then
-  begin
-    QObject_hook_destroy(FEventHook);
-    FEventHook := nil;
-  end;
-end;
-
-procedure TQtObject.BeginUpdate;
-begin
-  inc(FUpdateCount);
-end;
-
-procedure TQtObject.EndUpdate;
-begin
-  if FUpdateCount > 0 then
-    dec(FUpdateCount);
 end;
 
 { TQtHintWindow }

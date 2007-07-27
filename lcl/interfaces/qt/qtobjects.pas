@@ -21,7 +21,7 @@
 }
 unit qtobjects;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -40,6 +40,25 @@ uses
 type
   // forward declarations
   TQtImage = class;
+
+  { TQtObject }
+  TQtObject = class(TObject)
+  private
+    FUpdateCount: Integer;
+  public
+    FEventHook: QObject_hookH;
+    TheObject: QObjectH;
+    // TODO: base virtual constructor with initialization
+    destructor Destroy; override;
+  public
+    procedure AttachEvents; virtual;
+    procedure DetachEvents; virtual;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
+  public
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+    function InUpdate: Boolean;
+  end;
 
   { TQtResource }
 
@@ -159,7 +178,7 @@ type
   public
     function Width: Integer;
     function Style: QtPenStyle;
-    procedure setStyle(style: QtPenStyle);
+    procedure setStyle(AStyle: QtPenStyle);
     procedure setBrush(brush: QBrushH);
     procedure setWidth(p1: Integer);
     procedure setColor(p1: TQColor);
@@ -216,7 +235,7 @@ type
     vTextColor: TColor;
   public
     { Our own functions }
-    constructor Create(WidgetHandle: THandle; Const APaintEvent: Boolean = False); virtual;
+    constructor Create(AWidget: QWidgetH; Const APaintEvent: Boolean = False); virtual;
     destructor Destroy; override;
     function CreateDCData: PQtDCDATA;
     function RestoreDCData(DCData: PQtDCData): boolean;
@@ -240,15 +259,15 @@ type
     function font: TQtFont;
     procedure setFont(f: TQtFont);
     function brush: TQtBrush;
-    procedure setBrush(brush: TQtBrush);
+    procedure setBrush(ABrush: TQtBrush);
     function BackgroundBrush: TQtBrush;
     function  pen: TQtPen;
-    procedure setPen(pen: TQtPen);
+    procedure setPen(APen: TQtPen);
     function  SetBkColor(Color: TcolorRef): TColorRef;
     function  SetBkMode(BkMode: Integer): Integer;
     function getRegionType(ARegion: QRegionH): integer;
     function region: TQtRegion;
-    procedure setRegion(region: TQtRegion); 
+    procedure setRegion(ARegion: TQtRegion);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
     procedure rotate(a: Double);
     procedure save;
@@ -306,14 +325,95 @@ type
     procedure SetExclusive(AExclusive: Boolean);
     procedure SignalButtonClicked(AButton: QAbstractButtonH); cdecl;
   end;
+  
+  { TQtClipboard }
+  
+  TQtClipboard = class(TQtObject)
+  private
+    FClipBoardFormats: TStringList;
+    FOnClipBoardRequest: TClipboardRequestEvent;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Clipboard: QClipboardH; inline;
+    
+    function getMimeData(AMode: QClipboardMode): QMimeDataH;
+    procedure setMimeData(AMimeData: QMimeDataH; AMode: QClipboardMode);
+    procedure Clear(AMode: QClipboardMode);
+    
+    function FormatToMimeType(AFormat: TClipboardFormat): String;
+    function RegisterFormat(AMimeType: String): TClipboardFormat;
+    function GetData(ClipboardType: TClipboardType; FormatID: TClipboardFormat;
+      Stream: TStream): boolean;
+    function GetFormats(ClipboardType: TClipboardType; var Count: integer;
+      var List: PClipboardFormat): boolean;
+    function GetOwnerShip(ClipboardType: TClipboardType; OnRequestProc: TClipboardRequestEvent;
+      FormatCount: integer; Formats: PClipboardFormat): boolean;
+  end;
 
   procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
   procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
   procedure DebugRegion(const msg: string; Rgn: QRegionH);
+  function Clipboard: TQtClipboard;
 
 implementation
+const
+  ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
+  (
+{ctPrimarySelection  } QClipboardSelection,
+{ctSecondarySelection} QClipboardSelection,
+{ctClipboard         } QClipboardClipboard
+  );
 
-uses qtwidgets;
+var
+  FClipboard: TQtClipboard = nil;
+  
+{ TQtObject }
+
+destructor TQtObject.Destroy;
+begin
+  if TheObject <> nil then
+  begin
+    DetachEvents;
+    QObject_destroy(TheObject);
+    TheObject := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TQtObject.AttachEvents;
+var
+  Method: TMethod;
+begin
+  FEventHook := QObject_hook_create(TheObject);
+  TEventFilterMethod(Method) := @EventFilter;
+  QObject_hook_hook_events(FEventHook, Method);
+end;
+
+procedure TQtObject.DetachEvents;
+begin
+  if FEventHook <> nil then
+  begin
+    QObject_hook_destroy(FEventHook);
+    FEventHook := nil;
+  end;
+end;
+
+procedure TQtObject.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TQtObject.EndUpdate;
+begin
+  if FUpdateCount > 0 then
+    dec(FUpdateCount);
+end;
+
+function TQtObject.InUpdate: Boolean;
+begin
+  Result := FUpdateCount > 0;
+end;
 
 { TQtAction }
 
@@ -783,9 +883,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtPen.setStyle(style: QtPenStyle);
+procedure TQtPen.setStyle(AStyle: QtPenStyle);
 begin
-  QPen_setStyle(Widget, style);
+  QPen_setStyle(Widget, AStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -922,7 +1022,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtDeviceContext.Create(WidgetHandle: THandle; Const APaintEvent: Boolean = False);
+constructor TQtDeviceContext.Create(AWidget: QWidgetH; Const APaintEvent: Boolean = False);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(WidgetHandle), ' FromPaintEvent:',BoolToStr(FromPaintEvent),' )');
@@ -930,17 +1030,17 @@ begin
 
   {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside
    of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
-  if WidgetHandle = 0 then
+  if AWidget = nil then
   begin
     ParentPixmap := QPixmap_Create(10,10);
     Widget := QPainter_Create(QPaintDeviceH(ParentPixmap));
   end
   else
   begin
-    Parent := TQtWidget(WidgetHandle).Widget;
+    Parent := AWidget;
     if not APaintEvent then
     begin
-      ParentPixmap := QPixmap_Create(QWidget_width(Parent),QWidget_height(Parent));
+      ParentPixmap := QPixmap_Create(QWidget_width(Parent), QWidget_height(Parent));
       Widget := QPainter_create(QPaintDeviceH(ParentPixmap));
     end
     else
@@ -1356,14 +1456,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.setBrush(brush: TQtBrush);
+procedure TQtDeviceContext.setBrush(ABrush: TQtBrush);
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setBrush() ');
   {$endif}
-  SelBrush := Brush;
-  if (brush.Widget <> nil) and (Widget <> nil) then
-    QPainter_setBrush(Widget, brush.Widget);
+  SelBrush := ABrush;
+  if (ABrush.Widget <> nil) and (Widget <> nil) then
+    QPainter_setBrush(Widget, ABrush.Widget);
 end;
 
 function TQtDeviceContext.BackgroundBrush: TQtBrush;
@@ -1397,14 +1497,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.setPen(pen: TQtPen);
+procedure TQtDeviceContext.setPen(APen: TQtPen);
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setPen() ');
   {$endif}
-  SelPen := Pen;
-  if (pen.Widget <> nil) and (Widget <> nil) then
-    QPainter_setPen(Widget, pen.Widget);
+  SelPen := APen;
+  if (APen.Widget <> nil) and (Widget <> nil) then
+    QPainter_setPen(Widget, APen.Widget);
 end;
 
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
@@ -1433,6 +1533,13 @@ begin
   ok := QRegion_isEmpty(Rgn);
   QRegion_BoundingRect(Rgn, @R);
   WriteLn(' Empty=',Ok,' Rect=', dbgs(R));
+end;
+
+function Clipboard: TQtClipboard;
+begin
+  if FClipboard = nil then
+    FClipboard := TQtClipboard.Create;
+  Result := FClipboard;
 end;
 
 function TQtDeviceContext.SetBkColor(Color: TcolorRef): TColorRef;
@@ -1525,13 +1632,13 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.setRegion(region: TQtRegion);
+procedure TQtDeviceContext.setRegion(ARegion: TQtRegion);
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setRegion() ');
   {$endif}
-  if (region.Widget <> nil) and (Widget <> nil) then
-    QPainter_setClipRegion(Widget, Region.Widget);
+  if (ARegion.Widget <> nil) and (Widget <> nil) then
+    QPainter_setClipRegion(Widget, ARegion.Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -1729,6 +1836,170 @@ end;
 procedure TQtButtonGroup.SignalButtonClicked(AButton: QAbstractButtonH); cdecl;
 begin
   {todo}
+end;
+
+{ TQtClipboard }
+
+constructor TQtClipboard.Create;
+begin
+  FOnClipBoardRequest := nil;
+  FClipBoardFormats := TStringList.Create;
+  FClipBoardFormats.Add('foo'); // 0 is reserved
+  TheObject := QApplication_clipBoard;
+end;
+
+destructor TQtClipboard.Destroy;
+begin
+  FClipBoardFormats.Free;
+  inherited Destroy;
+end;
+
+function TQtClipboard.Clipboard: QClipboardH;
+begin
+  Result := QClipboardH(TheObject);
+end;
+
+function TQtClipboard.getMimeData(AMode: QClipboardMode): QMimeDataH;
+begin
+  Result := QClipboard_mimeData(Clipboard, AMode);
+end;
+
+procedure TQtClipboard.setMimeData(AMimeData: QMimeDataH; AMode: QClipboardMode);
+begin
+  QClipboard_setMimeData(Clipboard, AMimeData, AMode);
+end;
+
+procedure TQtClipboard.Clear(AMode: QClipboardMode);
+begin
+  QClipboard_clear(ClipBoard, AMode);
+end;
+
+function TQtClipboard.FormatToMimeType(AFormat: TClipboardFormat): String;
+begin
+  if FClipBoardFormats.Count > Integer(AFormat) then
+    Result := FClipBoardFormats[AFormat]
+  else
+    Result := '';
+end;
+
+function TQtClipboard.RegisterFormat(AMimeType: String): TClipboardFormat;
+var
+  Index: Integer;
+begin
+  Index := FClipBoardFormats.IndexOf(AMimeType);
+  if Index < 0 then
+    Index := FClipBoardFormats.Add(AMimeType);
+  Result := Index;
+end;
+
+function TQtClipboard.GetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): boolean;
+var
+  QtMimeData: QMimeDataH;
+  MimeType: WideString;
+  Data: QByteArrayH;
+  p: PAnsiChar;
+  s: Integer;
+begin
+  Result := False;
+  QtMimeData := getMimeData(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+  MimeType := FormatToMimeType(FormatID);
+  Data := QByteArray_create();
+  QMimeData_data(QtMimeData, Data, @MimeType);
+  s := QByteArray_size(Data);
+  p := QByteArray_data(Data);
+  Stream.Write(p^, s);
+  // what to do with p? FreeMem or nothing?
+  QByteArray_destroy(Data);
+  Result := True;
+end;
+
+function TQtClipboard.GetFormats(ClipboardType: TClipboardType;
+  var Count: integer; var List: PClipboardFormat): boolean;
+var
+  QtMimeData: QMimeDataH;
+  QtList: QStringListH;
+  i: Integer;
+  Str: WideString;
+begin
+  Result := False;
+  Count := 0;
+  List := nil;
+
+  QtMimeData := getMimeData(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+
+  QtList := QStringList_create;
+  QMimeData_formats(QtMimeData, QtList);
+
+  try
+    Count := QStringList_size(QtList);
+    GetMem(List, Count * SizeOf(TClipboardFormat));
+
+    for i := 0 to Count - 1 do
+    begin
+      QStringList_at(QtList, @Str, i);
+      Str := UTF8Encode(Str);
+      List[i] := RegisterFormat(Str);
+    end;
+
+    Result := Count > 0;
+
+  finally
+    QStringList_destroy(QtList);
+  end;
+end;
+
+function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
+  Formats: PClipboardFormat): boolean;
+
+  procedure PutOnClipBoard;
+  var
+    MimeType: WideString;
+    MimeData: QMimeDataH;
+    Data: QByteArrayH;
+    DataStream: TMemoryStream;
+    I: Integer;
+    P: PChar = 'test';
+  begin
+    MimeData := QMimeData_create();
+    DataStream := TMemoryStream.Create;
+    
+    for I := 0 to FormatCount - 1 do
+    begin
+      DataStream.Size := 0;
+      DataStream.Position := 0;
+
+      MimeType := FormatToMimeType(Formats[I]);
+      FOnClipBoardRequest(Formats[I], DataStream);
+
+      Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
+      QMimeData_setData(MimeData, @MimeType, Data);
+      QByteArray_destroy(Data);
+    end;
+
+    DataStream.Free;
+    setMimeData(MimeData, ClipbBoardTypeToQtClipboard[ClipBoardType]);
+    // do not destroy MimeData!!!
+  end;
+begin
+  Result := False;
+  if (FormatCount = 0) or (OnRequestProc = nil) then
+  begin
+  { The LCL indicates it doesn't have the clipboard data anymore
+    and the interface can't use the OnRequestProc anymore.}
+    FOnClipBoardRequest := nil;
+    Result := True;
+  end else
+  begin
+  { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
+    when emptying the clipboard}
+    FOnClipBoardRequest := nil;
+    Clear(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+    FOnClipBoardRequest := OnRequestProc;
+    PutOnClipBoard;
+    Result := True;
+  end;
 end;
 
 end.

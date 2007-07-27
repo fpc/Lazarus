@@ -55,7 +55,6 @@ type
   private
     App: QApplicationH;
     SavedDCList: TList;
-    FClipBoardFormats: TStringList;
   protected
     function CreateThemeServices: TThemeServices; override;
   public
@@ -114,7 +113,6 @@ const
 
 var
   QtWidgetSet: TQtWidgetSet;
-  OnClipBoardRequest: TClipboardRequestEvent;
 
 implementation
 
@@ -159,12 +157,10 @@ uses
 
 
 const
-
   KEYMAP_VKUNKNOWN = $10000;
   KEYMAP_TOGGLE    = $20000;
   KEYMAP_EXTENDED  = $40000;
-
-
+  
 function QtObjectFromWidgetH(const WidgetH: QWidgetH): TQtWidget;
 var
   V: QVariantH;

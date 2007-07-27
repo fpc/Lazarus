@@ -28,14 +28,6 @@
  *****************************************************************************
 }
 
-const
-  ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
-  (
-{ctPrimarySelection  } QClipboardSelection,
-{ctSecondarySelection} QClipboardSelection,
-{ctClipboard         } QClipboardClipboard
-  );
-
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
 {------------------------------------------------------------------------------
@@ -91,7 +83,12 @@ begin
     Result :=GetDoubleBufferedDC(Handle)
   else}
   
-  DC := TQtDeviceContext.Create(Handle, True);
+  Widget := TQtWidget(Handle);
+  if Widget <> nil then
+    DC := TQtDeviceContext.Create(Widget.Widget, True)
+  else
+    DC := TQtDeviceContext.Create(nil, True);
+    
   PS.hdc := HDC(DC);
   
   if Handle<>0 then
@@ -99,7 +96,6 @@ begin
     // if current handle has paintdata information,
     // setup hdc with it
     //DC.DebugClipRect('BeginPaint: Before');
-    Widget := TQtWidget(Handle);
     if Widget.PaintData.ClipRegion<>nil then
     begin
       //Write('>>> Setting Paint ClipRegion: ');
@@ -176,120 +172,31 @@ end;
 
 function TQtWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
 begin
-  if FClipBoardFormats.Count > FormatID then
-    Result := FClipBoardFormats[FormatID];
+  Result := Clipboard.FormatToMimeType(FormatID);
 end;
 
 function TQtWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-  	WriteLn('***** [WinAPI TQtWidgetSet.ClipboardGetData] missing implementation ');
-  {$endif}
-  
- {$ifdef VerboseQtWinAPI_DEBUG_CLIPBOARD}
-   writeln('DEBUG TQtWidgetSet.ClipboardGetData() ');
- {$endif}
- 
-  Result := True;
+  Result := Clipboard.Getdata(ClipboardType, FormatID, Stream);
 end;
 
 function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
-  
-var
-  QtClipBoard: QClipBoardH;
-  QtMimeData: QMimeDataH;
-  QtList: QStringListH;
-  i: Integer;
-  Str: WideString;
 begin
-  Result := False;
-  Count := 0;
-  List := nil;
-
-  QtClipBoard := QApplication_clipBoard;
-  QtMimeData := QClipboard_mimeData(QtClipBoard, ClipbBoardTypeToQtClipboard[ClipBoardType]);
-
-  QtList := QStringList_create;
-  QMimeData_formats(QtMimeData, QtList);
-  
-  try
-    Count := QStringList_size(QtList);
-    GetMem(List, Count * SizeOf(TClipboardFormat));
-  
-    for i := 0 to Count - 1 do
-    begin
-      QStringList_at(QtList, @Str, i);
-      Str := UTF8Encode(Str);
-      List[i] := ClipboardRegisterFormat(Str);
-    end;
-    
-    Result := Count > 0;
-    
-  finally
-    QStringList_destroy(QtList);
-  end;
+  Clipboard.GetFormats(ClipboardType, Count, List);
 end;
 
 function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
-var
-  ClipBoard: QClipboardH;
-  MimeData: QMimeDataH;
-  
-  procedure PutOnClipBoard;
-  var
-    MimeType: WideString;
-    MimeData: QMimeDataH;
-    Data: QByteArrayH;
-  begin
-    MimeData := QMimeData_create();
-    
-{    for I := 0 to FormatCount - 1 do
-    begin
-      MimeType := FClipBoardFormats[Format];
-      
-      Data := QByteArray_create();
-      
-      QMimeData_setData(MimeData, @MimeType, Data);
-    end;}
-
-    QClipboard_setMimeData(ClipBoard, MimeData, ClipbBoardTypeToQtClipboard[ClipBoardType]);
-    QMimeData_destroy(MimeData);
-  end;
-  
 begin
-  Result := false;
-  if (FormatCount=0) or (OnRequestProc=nil) then
-  begin
-  { The LCL indicates it doesn't have the clipboard data anymore
-    and the interface can't use the OnRequestProc anymore.}
-    OnClipBoardRequest := nil;
-    Result := true;
-  end else
-  begin
-  { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
-    when emptying the clipboard}
-    OnClipBoardRequest := nil;
-    ClipBoard := QApplication_clipboard();
-    if ClipBoard = nil then
-    begin
-      exit;
-    end;
-    QClipboard_clear(ClipBoard, ClipbBoardTypeToQtClipboard[ClipBoardType]);
-    Result := true;
-    OnClipBoardRequest := OnRequestProc;
-    PutOnClipBoard;
-  end;
+  Result := Clipboard.GetOwnerShip(ClipboardType, OnRequestProc, FormatCount, Formats);
 end;
 
 function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
-  Result := FClipBoardFormats.IndexOf(AMimeType);
-  if Result = -1 then
-    Result := FClipBoardFormats.Add(AMimeType);
+  Result := Clipboard.RegisterFormat(AMimeType);
 end;
 
 
@@ -1979,12 +1886,18 @@ end;
   - Twice for every TLabel on the TCustomLabel.CalcSize function
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
+var
+  Widget: TQtWidget;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
-  Result := HDC(TQtDeviceContext.Create(hWnd));
+  Widget := TQtWidget(hWnd);
+  if Widget <> nil then
+    Result := HDC(TQtDeviceContext.Create(Widget.Widget))
+  else
+    Result := HDC(TQtDeviceContext.Create(nil));
   
 //  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
 
@@ -2002,8 +1915,14 @@ begin
 end;
 
 function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+var
+  Widget: TQtWidget;
 begin
-  Result := HDC(TQtDeviceContext.Create(WindowHandle, False));
+  Widget := TQtWidget(WindowHandle);
+  if Widget <> nil then
+    Result := HDC(TQtDeviceContext.Create(Widget.Widget, False))
+  else
+    Result := HDC(TQtDeviceContext.Create(nil, False));
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.GetDesignerDC] missing implementation ');
   {$endif}
