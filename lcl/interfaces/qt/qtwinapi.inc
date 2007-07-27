@@ -1695,14 +1695,14 @@ function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetCapture]');
-  {$endif}
   w := QWidget_mouseGrabber();
   if w <> nil then
     Result := HWND(QtObjectFromWidgetH(w))
   else
     Result := 0;
+  {$ifdef VerboseQtWinAPI}
+  WriteLn('[WinAPI GetCapture] Capture = ', Result);
+  {$endif}
 end;
 
 function TQtWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
@@ -3571,6 +3571,9 @@ begin
   Result := w <> nil;
   if Result then
     w.releaseMouse();
+  {$ifdef VerboseQtWinAPI}
+  WriteLn('[WinAPI ReleaseCapture] Capture = ', THandle(w));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -3946,6 +3949,9 @@ begin
       ReleaseCapture;
     if AHandle <> 0 then
       TQtWidget(AHandle).grabMouse();
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
+    {$endif}
     FillChar(Message, SizeOf(Message), 0);
     Message.msg := LM_CAPTURECHANGED;
     Message.wParam := 0;

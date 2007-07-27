@@ -53,6 +53,7 @@ type
     FProps: TStringList;
     FPaintData: TPaintData;
     FCentralWidget: QWidgetH;
+    FStopMouseEventsProcessing: Boolean; // widget stop processing of mouse events
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -130,6 +131,7 @@ type
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
+    property StopMouseEventsProcessing: Boolean read FStopMouseEventsProcessing;
   end;
 
   { TQtFrame }
@@ -794,6 +796,7 @@ begin
   // Initializes the properties
   FProps := NiL;
   LCLObject := AWinControl;
+  FStopMouseEventsProcessing := False;
 
   // Creates the widget
   Widget := CreateWidget(AParams);
@@ -832,6 +835,7 @@ constructor TQtWidget.CreatePage(const AWinControl: TWinControl;
 begin
   // Initializes the properties
   LCLObject := AWinControl;
+  FStopMouseEventsProcessing := True;
 
   // Creates the widget
   Widget := QWidget_create;
@@ -1064,18 +1068,35 @@ begin
         releaseMouse;
     end;
 
-    QEventHoverEnter : SlotHover(Event);
-    QEventHoverLeave : SlotHover(Event);
-    QEventHoverMove  : SlotHover(Event);
+    QEventHoverEnter,
+    QEventHoverLeave,
+    QEventHoverMove:
+      begin
+        SlotHover(Event);
+        Result := StopMouseEventsProcessing;
+      end;
 
     QEventKeyPress: SlotKey(Event);
     QEventKeyRelease: SlotKey(Event);
     QEventLeave: SlotMouseEnter(Event);
-    QEventMouseButtonPress: SlotMouse(Event);
-    QEventMouseButtonRelease: SlotMouse(Event);
-    QEventMouseButtonDblClick: SlotMouse(Event);
-    QEventMouseMove: SlotMouseMove(Event);
-    QEventWheel: SlotMouseWheel(Event);
+
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick:
+      begin
+        SlotMouse(Event);
+        Result := StopMouseEventsProcessing;
+      end;
+    QEventMouseMove:
+      begin
+        SlotMouseMove(Event);
+        Result := StopMouseEventsProcessing;
+      end;
+    QEventWheel:
+      begin
+        SlotMouseWheel(Event);
+        Result := StopMouseEventsProcessing;
+      end;
     QEventResize: SlotResize;
     QEventPaint: SlotPaint(Event);
     QEventContextMenu: SlotContextMenu;
@@ -2511,6 +2532,7 @@ begin
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
   end;
+  FStopMouseEventsProcessing := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -3012,6 +3034,7 @@ begin
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QFrame_create(Parent);
   QWidget_setAutoFillBackground(Result, True);
+  FStopMouseEventsProcessing := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -3099,6 +3122,7 @@ begin
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QFrame_create(Parent);
   //QWidget_setAutoFillBackground(Result, True);
+  FStopMouseEventsProcessing := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -5403,6 +5427,7 @@ begin
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QScrollArea_create(Parent);
+  FStopMouseEventsProcessing := True;
 end;
 
 {------------------------------------------------------------------------------
