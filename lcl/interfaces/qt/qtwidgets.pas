@@ -4118,6 +4118,7 @@ var
   Msg: TLMessage;
 begin
   if InUpdate then
+    exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
 
