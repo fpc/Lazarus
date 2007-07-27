@@ -335,6 +335,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+
     function Clipboard: QClipboardH; inline;
     
     function getMimeData(AMode: QClipboardMode): QMimeDataH;
@@ -1846,12 +1848,29 @@ begin
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
   TheObject := QApplication_clipBoard;
+  AttachEvents;
 end;
 
 destructor TQtClipboard.Destroy;
 begin
+  DetachEvents;
   FClipBoardFormats.Free;
   inherited Destroy;
+end;
+
+function TQtClipboard.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+
+  if QEvent_type(Event) = QEventClipboard then
+  begin
+    Result := True;
+
+    QEvent_accept(Event);
+
+    // Clipboard is changed, but we have no ability at moment to pass that info
+    // to LCL since LCL has no support for that event
+  end;
 end;
 
 function TQtClipboard.Clipboard: QClipboardH;
