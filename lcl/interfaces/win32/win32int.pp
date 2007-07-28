@@ -41,9 +41,10 @@ interface
   successful compilation.
 }
 uses
-  Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
-  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, Themes;
+  Windows, Classes, Translations, ComCtrls, Controls, Buttons, Dialogs,
+  DynHashArray, ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf,
+  LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
+  Themes;
 
 const
 // standard windows cursors
@@ -331,6 +332,11 @@ initialization
   Assert(False, 'Trace:win32int.pp - Initialization');
   { initialize mousedownclick to far before double click time }
   MouseDownTime := GetTickCount - 5000;
+  {$IFDEF WindowsUnicodeSupport}
+  SystemCharSetIsUTF8:=true;
+  {$ELSE}
+  SystemCharSetIsUTF8:=false;
+  {$ENDIF}
 
 finalization
 

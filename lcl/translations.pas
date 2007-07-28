@@ -86,7 +86,9 @@ type
   EPOFileError = class(Exception);
 
 var
-  SystemCharSetIsUTF8: Boolean = false;
+  SystemCharSetIsUTF8: Boolean = true;// the LCL interfaces expect UTF-8 as default
+    // if you don't use UTF-8, install a proper widestring manager and set this
+    // to false.
 
 
 // translate resource strings for one unit
@@ -96,14 +98,9 @@ function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
 function UTF8ToSystemCharSet(const s: string): string;
   {$ifndef MultiLocale} inline;{$endif}
-procedure InitTranslation;
 
 
 implementation
-
-var
-  TranslationInitialized: Boolean = false;
-
 
 function UTF8ToSystemCharSet(const s: string): string; {$ifndef MultiLocale} inline;{$endif}
 begin
@@ -122,25 +119,6 @@ begin
     except Result:=s;end;
     {$ENDIF}
   {$ENDIF}
-end;
-
-procedure InitTranslation;
-var
-  Lang: String;
-begin
-  if TranslationInitialized then exit;
-  TranslationInitialized:=true;
-
-  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  if Lang = '' then begin
-    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Lang = '' then begin
-      Lang := SysUtils.GetEnvironmentVariable('LANG');
-    end;
-  end;
-  
-  SystemCharSetIsUTF8:=(System.Pos('UTF8',Lang)>0)
-                        or (System.Pos('UTF-8',Lang)>0)
 end;
 
 {$ifndef ver2_0}
@@ -168,7 +146,6 @@ var
   po: TPOFile;
 begin
   Result:=false;
-  InitTranslation;
   //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
   if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
     exit;
@@ -357,9 +334,6 @@ begin
   Original:=TheOriginal;
   Translation:=TheTranslated;
 end;
-
-initialization
-  InitTranslation;
 
 end.
 
