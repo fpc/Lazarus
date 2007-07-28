@@ -2,12 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-18 18:37+0100\n"
+"PO-Revision-Date: 2007-07-27 21:22+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -55,7 +58,7 @@ msgstr ". Start bei"
 
 #: codetoolsstrconsts:ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "; nach dem Eigeschaftenbeschreiber \"%s\" erwartet aber %s gefunden"
+msgstr "; nach dem Eigenschaftenbeschreiber \"%s\" erwartet aber %s gefunden"
 
 #: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
@@ -511,11 +514,11 @@ msgstr "Bezeichner"
 
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr "Bezeichner erwartet aber %s gefunden"
+msgstr "Bezeichner erwartet, statt dessen %s gefunden"
 
 #: codetoolsstrconsts:ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
-msgstr "Bezeichner erwartet aber Schlüsselwort %s gefunden"
+msgstr "Bezeichner erwartet, statt dessen Schlüsselwort %s gefunden"
 
 #: codetoolsstrconsts:ctsidentifiernotfound
 msgid "identifier not found: %s"
@@ -743,7 +746,7 @@ msgstr "unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefu
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
-msgstr "unerwartetes Schlüsselwort \"%s\" im Assemblerblock gefunden"
+msgstr "unerwartetes Schlüsselwort \"%s\" im ASM-Block gefunden"
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"

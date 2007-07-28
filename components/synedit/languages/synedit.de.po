@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-04-18 19:47+0100\n"
-"Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2007-07-27 21:15+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,7 @@ msgstr "<keine>"
 
 #: syneditstrconst:syns_filterawk
 msgid "AWK Script (*.awk)|*.awk"
-msgstr "AWK-Skripten (*.awk)|*.awk"
+msgstr "AWK-Skripte (*.awk)|*.awk"
 
 #: syneditstrconst:syns_filterbaan
 msgid "Baan 4GL Files (*.cln)|*.cln"
@@ -75,7 +75,7 @@ msgstr "GEMBASE-Dateien (*.dml,*.gem)|*.DML;*.GEM"
 
 #: syneditstrconst:syns_filtergws
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "GW-TEL-Skripten (*.gws)|*.gws"
+msgstr "GW-TEL-Skripte (*.gws)|*.gws"
 
 #: syneditstrconst:syns_filtergalaxy
 msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
@@ -103,7 +103,7 @@ msgstr "INI-Dateien (*.ini)|*.ini"
 
 #: syneditstrconst:syns_filterinno
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Inno Setup-Skripten (*.iss)|*.iss"
+msgstr "Inno-Setup-Skripte (*.iss)|*.iss"
 
 #: syneditstrconst:syns_filterjava
 msgid "Java Files (*.java)|*.java"
@@ -111,7 +111,7 @@ msgstr "Java-Quelltexte (*.java)|*.java"
 
 #: syneditstrconst:syns_filterjscript
 msgid "Javascript Files (*.js)|*.js"
-msgstr "Javascript-Dateien (*.js)|*.js"
+msgstr "JavaScript-Dateien (*.js)|*.js"
 
 #: syneditstrconst:syns_filterkix
 msgid "KiXtart scripts (*.kix)|*.kix"
@@ -203,7 +203,7 @@ msgstr "Oberste Zeile: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr "Unix-Shellskripten (*.sh)|*.sh"
+msgstr "Unix-Shellskripte (*.sh)|*.sh"
 
 #: syneditstrconst:syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"

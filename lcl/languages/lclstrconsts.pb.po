@@ -698,6 +698,10 @@ msgstr "Tab"
 msgid "Text"
 msgstr "Texto"
 
+#: lclstrconsts:sinvalidcharset
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr ""
+
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
 msgstr "O diretório \"%s\" não existe"

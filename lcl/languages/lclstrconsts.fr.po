@@ -710,6 +710,10 @@ msgstr "Étiquette"
 msgid "Text"
 msgstr "Texte"
 
+#: lclstrconsts:sinvalidcharset
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr ""
+
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
 msgstr "Le répertoire \"%s\" n'existe pas."

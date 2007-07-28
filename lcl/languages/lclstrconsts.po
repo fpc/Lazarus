@@ -306,6 +306,10 @@ msgstr ""
 msgid "Cannot focus a disabled or invisible window"
 msgstr ""
 
+#: lclstrconsts:sinvalidcharset
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr ""
+
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
 msgstr ""
