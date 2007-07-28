@@ -1573,7 +1573,7 @@ msgstr "Compilereinstellungen"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
-msgstr "Compilerverzeichnis (%s)"
+msgstr "Compilerdateiname (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"

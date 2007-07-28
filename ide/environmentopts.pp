@@ -152,7 +152,7 @@ type
     FComponentPaletteVisible: boolean;
     FDebuggerSearchPath: string;
 
-    // EnvironmentOptionsDialog editor
+    // designer
     FDesignerPaintLazy: boolean;
     FShowBorderSpacing: boolean;
     FShowGrid: boolean;
@@ -457,7 +457,7 @@ type
     LazDocPage: TPage;
     SelectDirectoryDialog: TSelectDirectoryDialog;
 
-    //lazdoc settings
+    // lazdoc settings
     LazDocBrowseButton: TButton;
     LazDocPathEdit: TEdit;
     LazDocDeletePathButton: TButton;
@@ -494,7 +494,7 @@ type
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
     HideIDEOnRunCheckBox: TCheckBox;
 
-    // EnvironmentOptionsDialog editor
+    // designer
     GridGroupBox: TGroupBox;
     ShowGridCheckBox: TCheckBox;
     ShowBorderSpaceCheckBox: TCheckBox;
