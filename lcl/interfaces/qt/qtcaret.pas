@@ -61,7 +61,7 @@ type
   protected
     procedure DoTimer(Sender: TObject);
     procedure DrawCaret; virtual;
-    function CreateColorPixmap(Color: Cardinal): QPixmapH;
+    function CreateColorPixmap(Color: PtrUInt): QPixmapH;
     procedure SetWidget(AWidget: TQtWidget);
     procedure UpdateCaret;
   public
@@ -84,7 +84,7 @@ type
   end;
 
 function CreateCaret(Widget: TQtWidget; Pixmap: QPixmapH; Width, Height: Integer): Boolean; overload;
-function CreateCaret(Widget: TQtWidget; ColorCaret: Cardinal; Width, Height: Integer): Boolean; overload;
+function CreateCaret(Widget: TQtWidget; ColorCaret: PtrUInt; Width, Height: Integer): Boolean; overload;
 function HideCaret(Widget: TQtWidget): Boolean;
 function ShowCaret(Widget: TQtWidget): Boolean;
 function SetCaretPos(X, Y: Integer): Boolean;
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-function CreateCaret(Widget: TQtWidget; ColorCaret: Cardinal; Width, Height: Integer): Boolean;
+function CreateCaret(Widget: TQtWidget; ColorCaret: PtrUInt; Width, Height: Integer): Boolean;
 begin
   Result := CreateCaret(Widget, QPixmapH(ColorCaret), Width, Height);
 end;
@@ -269,7 +269,7 @@ begin
   if Cardinal(Pixmap) > $FFFF then
     FPixmap := QPixmap_create(Pixmap)
   else
-    FPixmap := CreateColorPixmap(Integer(Pixmap));
+    FPixmap := CreateColorPixmap(PtrUInt(Pixmap));
 
   Result := IsValid;
   FTimer.Enabled := True;
@@ -358,7 +358,7 @@ begin
   LeaveCriticalSection(FCritSect);
 end;
 
-function TEmulatedCaret.CreateColorPixmap(Color: Cardinal): QPixmapH;
+function TEmulatedCaret.CreateColorPixmap(Color: PtrUInt): QPixmapH;
 var
   QC: TQColor;
   AColor: TColor;
