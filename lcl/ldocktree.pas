@@ -200,6 +200,9 @@ const
     doPages      //alCustom
     );
 
+type
+  TAnchorControlsRect = array[TAnchorKind] of TControl;
+
 function GetLazDockSplitter(Control: TControl; Side: TAnchorKind;
                             out Splitter: TLazDockSplitter): boolean;
 function GetLazDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
@@ -208,8 +211,17 @@ function CountAnchoredControls(Control: TControl; Side: TAnchorKind
                                ): Integer;
 function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
   Side: TAnchorKind): boolean;
+function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
+                                     DestControl: TControl): boolean;
+procedure GetAnchorControlsRect(Control: TControl;
+                                out ARect: TAnchorControlsRect);
+function GetEnclosingControlRect(ControlList: TFPlist;
+                                 out ARect: TAnchorControlsRect): boolean;
+function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
+
 
 implementation
+
 
 function GetLazDockSplitter(Control: TControl; Side: TAnchorKind; out
   Splitter: TLazDockSplitter): boolean;
@@ -281,6 +293,248 @@ begin
   akBottom: // check if bottom side of Neighbour can be moved
     Result:=Neighbour.Top+MinControlSize+Splitter.Height<EnlargeControl.Top;
   end;
+end;
+
+function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
+  DestControl: TControl): boolean;
+{ true if there is an Anchor way from StartControl to DestControl over Side.
+  For example:
+  
+    +-+|+-+
+    |A|||B|
+    +-+|+-+
+    
+  A is akLeft to B.
+  B is akRight to A.
+  The splitter is akLeft to B.
+  The splitter is akRight to A.
+  All other are false.
+}
+var
+  Checked: array of Boolean;
+  Parent: TWinControl;
+  
+  function Check(ControlIndex: integer): boolean;
+  var
+    AControl: TControl;
+    SideControl: TControl;
+    i: Integer;
+  begin
+    if Checked[ControlIndex] then
+      exit(false);
+    Checked[ControlIndex]:=true;
+    AControl:=Parent.Controls[ControlIndex];
+    if AControl=DestControl then exit(true);
+    
+    if (Side in AControl.Anchors) then begin
+      SideControl:=AControl.AnchorSide[Side].Control;
+      if (SideControl<>nil) and Check(Parent.GetControlIndex(SideControl)) then
+        exit(true);
+    end;
+    for i:=0 to Parent.ControlCount-1 do begin
+      if Checked[i] then continue;
+      SideControl:=Parent.Controls[i];
+      if OppositeAnchor[Side] in SideControl.Anchors then begin
+        if (SideControl.AnchorSide[OppositeAnchor[Side]].Control=AControl)
+        and Check(i) then
+          exit(true);
+      end;
+    end;
+    Result:=false;
+  end;
+  
+var
+  i: Integer;
+begin
+  if (StartControl=nil) or (DestControl=nil)
+  or (StartControl.Parent=nil)
+  or (StartControl.Parent<>DestControl.Parent)
+  or (StartControl=DestControl) then
+    exit(false);
+  Parent:=StartControl.Parent;
+  SetLength(Checked,Parent.ControlCount);
+  for i:=0 to length(Checked)-1 do Checked[i]:=false;
+  Result:=Check(Parent.GetControlIndex(StartControl));
+end;
+
+procedure GetAnchorControlsRect(Control: TControl;
+  out ARect: TAnchorControlsRect);
+var
+  a: TAnchorKind;
+begin
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    ARect[a]:=Control.AnchorSide[a].Control;
+end;
+
+function GetEnclosingControlRect(ControlList: TFPlist; out
+  ARect: TAnchorControlsRect): boolean;
+{ ARect will be the minimum TAnchorControlsRect around the controls in the list
+  returns true, if there is such a TAnchorControlsRect.
+  
+  The controls in ARect will either be the Parent or a TLazDockSplitter
+}
+var
+  Parent: TWinControl;
+  
+  function ControlIsValidAnchor(Control: TControl; Side: TAnchorKind): boolean;
+  var
+    i: Integer;
+  begin
+    Result:=false;
+    if (Control=ARect[Side]) then exit(true);// this allows Parent at the beginning
+    
+    if not (Control is TLazDockSplitter) then
+      exit;// not a splitter
+    if (TLazDockSplitter(Control).ResizeAnchor in [akLeft,akRight])
+      <>(Side in [akLeft,akRight]) then
+        exit;// wrong alignment
+    if ControlList.IndexOf(Control)>=0 then
+      exit;// is an inner control
+    if ControlIsAnchoredIndirectly(Control,Side,ARect[Side]) then
+      exit; // this anchor would be worse than the current maximum
+    for i:=0 to ControlList.Count-1 do begin
+      if not ControlIsAnchoredIndirectly(Control,Side,TControl(ControlList[i]))
+      then begin
+        // this anchor is not above (below, ...) the inner controls
+        exit;
+      end;
+    end;
+    Result:=true;
+  end;
+  
+var
+  TopIndex: Integer;
+  TopControl: TControl;
+  RightIndex: Integer;
+  RightControl: TControl;
+  BottomIndex: Integer;
+  BottomControl: TControl;
+  LeftIndex: Integer;
+  LeftControl: TControl;
+  Candidates: TFPList;
+  i: Integer;
+  a: TAnchorKind;
+begin
+  Result:=false;
+  if (ControlList=nil) or (ControlList.Count=0) then exit;
+
+  // get Parent
+  Parent:=TControl(ControlList[0]).Parent;
+  if Parent=nil then exit;
+  for i:=0 to ControlList.Count-1 do
+    if TControl(ControlList[i]).Parent<>Parent then exit;
+    
+  // set the default rect: the Parent
+  Result:=true;
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    ARect[a]:=Parent;
+
+  // find all possible Candidates
+  Candidates:=TFPList.Create;
+  Candidates.Add(Parent);
+  for i:=0 to Parent.ControlCount-1 do
+    if Parent.Controls[i] is TLazDockSplitter then
+      Candidates.Add(Parent.Controls[i]);
+
+  // now check every possible rectangle
+  // Note: four loops seems to be dog slow, but the checks
+  //       avoid most possibilities early
+  for TopIndex:=0 to Candidates.Count-1 do begin
+    TopControl:=TControl(Candidates[TopIndex]);
+    if not ControlIsValidAnchor(TopControl,akTop) then continue;
+    
+    for RightIndex:=0 to Candidates.Count-1 do begin
+      RightControl:=TControl(Candidates[RightIndex]);
+      if (TopControl.AnchorSide[akRight].Control<>RightControl)
+      and (RightControl.AnchorSide[akTop].Control<>TopControl) then
+        continue; // not touching / not a corner
+      if not ControlIsValidAnchor(RightControl,akRight) then continue;
+      
+      for BottomIndex:=0 to Candidates.Count-1 do begin
+        BottomControl:=TControl(Candidates[BottomIndex]);
+        if (RightControl.AnchorSide[akBottom].Control<>BottomControl)
+        and (BottomControl.AnchorSide[akRight].Control<>RightControl) then
+          continue; // not touching / not a corner
+        if not ControlIsValidAnchor(BottomControl,akBottom) then continue;
+        
+        for LeftIndex:=0 to Candidates.Count-1 do begin
+          LeftControl:=TControl(Candidates[LeftIndex]);
+          if (BottomControl.AnchorSide[akLeft].Control<>LeftControl)
+          and (LeftControl.AnchorSide[akBottom].Control<>BottomControl) then
+            continue; // not touching / not a corner
+          if (TopControl.AnchorSide[akLeft].Control<>LeftControl)
+          and (LeftControl.AnchorSide[akTop].Control<>LeftControl) then
+            continue; // not touching / not a corner
+          if not ControlIsValidAnchor(LeftControl,akLeft) then continue;
+
+          // found a better rectangle
+          ARect[akLeft]  :=LeftControl;
+          ARect[akRight] :=RightControl;
+          ARect[akTop]   :=TopControl;
+          ARect[akBottom]:=BottomControl;
+        end;
+      end;
+    end;
+  end;
+  
+  Candidates.Free;
+end;
+
+function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
+{ return a list of all controls bounded by the anchors in ARect }
+var
+  Parent: TWinControl;
+  
+  procedure Fill(AControl: TControl);
+  var
+    a: TAnchorKind;
+    SideControl: TControl;
+    i: Integer;
+  begin
+    if AControl=nil then exit;
+    if AControl=Parent then exit;// do not add Parent
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      if ARect[a]=AControl then exit;// do not add boundary
+      
+    if Result.IndexOf(AControl)>=0 then exit;// already added
+    Result.Add(AControl);
+    
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      Fill(AControl.AnchorSide[a].Control);
+    for i:=0 to Parent.ControlCount-1 do begin
+      SideControl:=Parent.Controls[i];
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        if SideControl.AnchorSide[a].Control=AControl then
+          Fill(SideControl);
+    end;
+  end;
+  
+var
+  i: Integer;
+  AControl: TControl;
+  LeftTopControl: TControl;
+begin
+  Result:=TFPList.Create;
+
+  // find the Parent
+  if (ARect[akLeft]=ARect[akRight]) and (ARect[akLeft] is TWinControl) then
+    Parent:=TWinControl(ARect[akLeft])
+  else
+    Parent:=ARect[akLeft].Parent;
+    
+  // find the left, top most control
+  for i:=0 to Parent.ControlCount-1 do begin
+    AControl:=Parent.Controls[i];
+    if (AControl.AnchorSide[akLeft].Control=ARect[akLeft])
+    and (AControl.AnchorSide[akTop].Control=ARect[akTop]) then begin
+      LeftTopControl:=AControl;
+      break;
+    end;
+  end;
+  if Result.Count=0 then exit;
+  
+  // use flood fill to find the rest
+  Fill(LeftTopControl);
 end;
 
 { TLazDockPages }

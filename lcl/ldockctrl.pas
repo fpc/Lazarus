@@ -76,7 +76,6 @@ const
     );
 
 type
-  TAnchorControls = array[TAnchorKind] of TControl;
 
   { TLazDockConfigNode }
 
@@ -237,8 +236,9 @@ type
     procedure ShrinkNeighbourhood(Layout: TLazDockConfigNode;
                                   AControl: TControl; Sides: TAnchors);
     function FindPageNeighbours(Layout: TLazDockConfigNode;
-                     StartControl: TControl; out AnchorControls: TAnchorControls
-                     ): TFPList; // list of TControls
+                                StartControl: TControl;
+                                out AnchorControls: TAnchorControlsRect
+                                ): TFPList; // list of TControls
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ShowDockingEditor; virtual;
@@ -269,18 +269,269 @@ type
 
 function LDConfigNodeTypeNameToType(const s: string): TLDConfigNodeType;
 
+function FindExclusiveSplitter(ControlList: TFPList; Side: TAnchorKind
+                               ): TLazDockSplitter;
+function FindNextControlAnchoredToBoundary(AControl: TControl;
+                          Boundary, SearchDirection: TAnchorKind): TControl;
+function FindSplitterRectangularNeighbourhood(Splitter: TLazDockSplitter;
+           SplitterSide: TAnchorKind; out Bounds: TAnchorControlsRect): TFPList;
+
 function dbgs(Node: TLazDockConfigNode): string; overload;
-  
+
 procedure Register;
 
 
 implementation
+
 
 function LDConfigNodeTypeNameToType(const s: string): TLDConfigNodeType;
 begin
   for Result:=Low(TLDConfigNodeType) to High(TLDConfigNodeType) do
     if CompareText(LDConfigNodeTypeNames[Result],s)=0 then exit;
   Result:=ldcntControl;
+end;
+
+function FindExclusiveSplitter(ControlList: TFPList;
+  Side: TAnchorKind): TLazDockSplitter;
+{ find a splitter, that is not part of ControlList and anchored on one side
+  only to the controls in ControlList
+
+  For example: A,B,C,S1,S2 (S1,S2 are the splitters between)
+
+    |+-----+
+    ||  A  |
+    |+-----+
+    |-------
+    |+-+|+-+
+    ||B|||C|
+    |+-+|+-+
+  will return the splitter to the left and Side=akLeft.
+}
+var
+  AControl: TControl;
+  i: Integer;
+  AParent: TWinControl;
+  j: Integer;
+  AnchoredToControlList: Boolean;
+  AnchoredToOther: Boolean;
+begin
+  Result:=nil;
+  if (ControlList=nil) or (ControlList.Count=0) then exit;
+  AControl:=TControl(ControlList[0]);
+  if AControl.Parent=nil then exit;
+  AParent:=AControl.Parent;
+  for i:=0 to AParent.ControlCount-1 do begin
+    Result:=TLazDockSplitter(AParent.Controls[i]);
+    if (Result is TLazDockSplitter)
+    and (ControlList.IndexOf(Result)<0)
+    then begin
+      // ASplitter is a splitter which is not in the ControlList
+      // => check if the splitter is exclusively anchored
+      AnchoredToControlList:=false;
+      AnchoredToOther:=false;
+      for j:=0 to AParent.ControlCount-1 do begin
+        AControl:=TControl(ControlList[j]);
+        if (AControl.AnchorSide[Side].Control=Result) then
+        begin
+          if ControlList.IndexOf(AControl)>=0 then
+            AnchoredToControlList:=true
+          else begin
+            AnchoredToOther:=true;
+            break;
+          end;
+        end;
+        if AnchoredToControlList and not AnchoredToOther then
+          exit;
+      end;
+    end;
+  end;
+  Result:=nil;
+end;
+
+function FindNextControlAnchoredToBoundary(
+  AControl: TControl; Boundary, SearchDirection: TAnchorKind): TControl;
+{ Finds the next control anchored to the same as AControl
+  For example:
+
+  ------------------------------------
+    +-+|+-+|+-+|
+    |A|||B|||C||
+
+  With Boundary=akTop and SearchDirection=akRight the next of A is the splitter
+  to the right, then the splitter right of B, then C, ...
+}
+var
+  AParent: TWinControl;
+  i: Integer;
+  BoundaryControl: TControl;
+begin
+  Result:=AControl.AnchorSide[SearchDirection].Control;
+  if (Result<>nil) then begin
+    if Result.Parent=AControl.Parent then
+      exit
+    else
+      exit(nil);
+  end else begin
+    AParent:=AControl.Parent;
+    if AParent=nil then exit;
+    BoundaryControl:=AControl.AnchorSide[Boundary].Control;
+    if BoundaryControl=nil then exit;
+    for i:=0 to AParent.ControlCount-1 do begin
+      Result:=AParent.Controls[i];
+      if (Result.AnchorSide[Boundary].Control=BoundaryControl)
+      and (Result.AnchorSide[OppositeAnchor[SearchDirection]].Control=AControl)
+      then
+        exit;
+    end;
+    Result:=nil;
+  end;
+end;
+
+function FindSplitterRectangularNeighbourhood(
+  Splitter: TLazDockSplitter; SplitterSide: TAnchorKind;
+  out Bounds: TAnchorControlsRect): TFPList;
+{ Find a list of controls, building a rectangular area (without holes) touching
+  the complete SplitterSide of Splitter.
+  RectBounds will be the four bounding controls (Parent or Siblings).
+
+  For example: akRight of
+
+    |+-----+
+    ||  A  |
+    |+-----+
+    |-------
+    |+-+|+-+
+    ||B|||C|
+    |+-+|+-+
+
+  will find A,B,C and the two splitter controls between A,B,C.
+}
+
+  function IsBoundary(AControl: TControl): boolean;
+  var
+    a: TAnchorKind;
+  begin
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do if Bounds[a]=AControl then
+      exit(true);
+    Result:=false;
+  end;
+
+var
+  BoundSide1: TAnchorKind;
+  BoundSide2: TAnchorKind;
+  AControl: TControl;
+  a: TAnchorKind;
+  Candidate: TControl;
+  j: Integer;
+  i: Integer;
+  OppSide: TAnchorKind;
+begin
+  Result:=nil;
+  BoundSide1:=ClockwiseAnchor[SplitterSide];
+  BoundSide2:=OppositeAnchor[BoundSide1];
+  OppSide:=OppositeAnchor[SplitterSide];
+  Bounds[OppSide]:=Splitter;
+  Bounds[BoundSide1]:=Splitter.AnchorSide[BoundSide1].Control;
+  Bounds[BoundSide2]:=Splitter.AnchorSide[BoundSide2].Control;
+  Bounds[SplitterSide]:=nil;
+  if (Bounds[BoundSide1]=nil) or (Bounds[BoundSide2]=nil) then exit;
+
+  { search for a splitter, bounded the same as Splitter
+    --------
+      |   |
+      |   |
+    --------
+  }
+  AControl:=Splitter;
+  repeat
+    AControl:=FindNextControlAnchoredToBoundary(AControl,BoundSide1,SplitterSide);
+    if AControl=nil then break;
+    if (AControl is TLazDockSplitter)
+    and (AControl.AnchorSide[BoundSide1].Control=Bounds[BoundSide1])
+    and (AControl.AnchorSide[BoundSide2].Control=Bounds[BoundSide2]) then begin
+      // found
+      Bounds[SplitterSide]:=AControl;
+      break;
+    end;
+  until false;
+
+  if (Bounds[SplitterSide]=nil)
+  and (Bounds[BoundSide1]<>Splitter.Parent) then begin
+    { check for example
+      ------|
+        |   |   "Splitter" is the left one
+        |   |
+      --------
+    }
+    AControl:=Bounds[BoundSide1].AnchorSide[SplitterSide].Control;
+    if (AControl is TLazDockSplitter)
+    and (AControl.AnchorSide[BoundSide2].Control=Bounds[BoundSide2]) then
+      Bounds[SplitterSide]:=AControl;
+  end;
+
+  if (Bounds[SplitterSide]=nil)
+  and (Bounds[BoundSide2]<>Splitter.Parent) then begin
+    { check for example
+      --------
+        |   |   "Splitter" is the left one
+        |   |
+      ------|
+    }
+    AControl:=Bounds[BoundSide2].AnchorSide[SplitterSide].Control;
+    if (AControl is TLazDockSplitter)
+    and (AControl.AnchorSide[BoundSide1].Control=Bounds[BoundSide1]) then
+      Bounds[SplitterSide]:=AControl;
+  end;
+
+  if (Bounds[SplitterSide]=nil)
+  and (Bounds[BoundSide1]<>Splitter.Parent) then begin
+    { check for example
+      ------|
+        |   |   "Splitter" is the left one
+        |   |
+      ------|
+    }
+    AControl:=Bounds[BoundSide1].AnchorSide[SplitterSide].Control;
+    if (Acontrol<>nil)
+    and (Bounds[BoundSide2]<>nil)
+    and (AControl=Bounds[BoundSide2].AnchorSide[SplitterSide].Control) then
+      Bounds[SplitterSide]:=AControl;
+  end;
+
+  if Bounds[SplitterSide]=nil then exit;
+
+  // find all controls between the Bounds
+
+  // find a first control in the area
+  AControl:=FindNextControlAnchoredToBoundary(Splitter,BoundSide1,SplitterSide);
+  if (AControl=nil) or (AControl=Bounds[SplitterSide]) then exit;
+  Result:=TFPlist.Create;
+  Result.Add(AControl);
+
+  // add the others with flood fill
+  i:=0;
+  while i<Result.Count-1 do begin
+    AControl:=TControl(Result[i]);
+    // test all anchored to
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      Candidate:=AControl.AnchorSide[a].Control;
+      if (not IsBoundary(Candidate)) and (Result.IndexOf(Candidate)<0) then
+        Result.Add(Candidate);
+    end;
+    // test all anchored by
+    for j:=0 to Splitter.Parent.ControlCount-1 do begin
+      Candidate:=Splitter.Parent.Controls[j];
+      if IsBoundary(Candidate) then continue;
+      if Result.IndexOf(Candidate)>=0 then continue;
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        if Candidate.AnchorSide[a].Control=AControl then begin
+          Result.Add(Candidate);
+          break;
+        end;
+      end;
+    end;
+    inc(i);
+  end;
 end;
 
 function dbgs(Node: TLazDockConfigNode): string;
@@ -740,8 +991,10 @@ var
   Page: TLazDockPage;
   PageIndex: LongInt;
   NeighbourList: TFPList;
-  AnchorControls: TAnchorControls;
+  AnchorControls: TAnchorControlsRect;
   TopFormBounds: TRect;
+  i: Integer;
+  a: TAnchorKind;
 begin
   Result:=false;
   DebugLn(['TCustomLazControlDocker.DockAsPage DockerName="',DockerName,'"']);
@@ -826,14 +1079,53 @@ begin
     // TODO enlarge parents
   end else begin
     // NeighbourControl is a child control, but the parent is not yet a page
-    // => collect all neighbour controls for a page
+    // => collect a rectangular area of neighbour controls to build a page
     NeighbourList:=FindPageNeighbours(Layout,NeighbourControl,AnchorControls);
     try
       NeighbourControl.Parent.DisableAlign;
-      // TODO: create a PageControl and two pages. And move the neigbbours onto
+      // TODO: create a PageControl and two pages. And move the neighbours onto
       // one page and Control to the other page.
-      if AnchorControls[akLeft]=nil then ;
       
+      // create a TLazDockPages
+      Pages:=TLazDockPages.Create(nil);
+      // add it to the place where the neighbours are
+      Pages.Parent:=NeighbourControl.Parent;
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        Pages.AnchorSide[a].Control:=AnchorControls[a];
+        if (AnchorControls[a]=Pages.Parent)=(a in [akLeft,akTop]) then
+          Pages.AnchorSide[a].Side:=asrLeft
+        else
+          Pages.AnchorSide[a].Side:=asrRight;
+      end;
+      Pages.Anchors:=[akLeft,akTop,akRight,akBottom];
+      
+      // create the two pages
+      Pages.Pages.Insert(0,NeighbourControl.Caption);
+      NeighbourPage:=Pages.Page[0];
+
+      // move the neighbours
+      for i:=0 to NeighbourList.Count-1 do begin
+        NeighbourControl:=TControl(NeighbourList[i]);
+        NeighbourControl.Parent:=NeighbourPage;
+        // fix anchors
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          if NeighbourControl.AnchorSide[a].Control=AnchorControls[a] then begin
+            NeighbourControl.AnchorSide[a].Control:=NeighbourPage;
+            if a in [akLeft,akTop] then
+              NeighbourControl.AnchorSide[a].Side:=asrLeft;
+          end;
+        end;
+      end;
+      
+      // add a second page
+      PageIndex:=1;
+      Pages.Pages.Insert(PageIndex,Control.Caption);
+      Page:=Pages.Page[PageIndex];
+      
+      // add the control into the second page
+      Control.Parent:=Page;
+      Control.AnchorClient(0);
+
     finally
       NeighbourList.Free;
       NeighbourControl.Parent.EnableAlign;
@@ -1169,100 +1461,135 @@ begin
 end;
 
 function TCustomLazControlDocker.FindPageNeighbours(Layout: TLazDockConfigNode;
-  StartControl: TControl; out AnchorControls: TAnchorControls): TFPList;
+  StartControl: TControl; out AnchorControls: TAnchorControlsRect): TFPList;
 { Creates a list of TControl, containing StartControl and neighbours,
   which are on the same page according to Layout and are a rectangular area.
   AnchorControls are the four boundaries of the rectangular area and the list
   contains all controls within these boundaries (and with the same Parent as
   StartControl).
 }
+type
+  TPageCompatibility = (pcUnknown, pcNotOnSamePage, pcSamePage);
 var
   ControlList: TFPList;
   PageNode: TLazDockConfigNode;
+  Parent: TWinControl;
+  Compatibility: array of TPageCompatibility;
 
-  function AddNeighbour(AControl: TControl): boolean;
+  procedure InitCompatibility;
   var
     i: Integer;
-    Sibling: TControl;
-    a: TAnchorKind;
+    AControl: TControl;
     NodeName: String;
     Node: TLazDockConfigNode;
-    OldAnchorControls: TAnchorControls;
   begin
-    Result:=false;
-    if (AControl=nil) or (AControl.Parent<>StartControl.Parent) then exit;
-    if ControlList.IndexOf(AControl)>=0 then begin
-      // already added
-      exit(true);
-    end;
-    NodeName:=Manager.GetControlConfigName(AControl);
-    Node:=Layout.FindByName(NodeName);
-    if (Node=nil) or (Node.Parent<>PageNode) then begin
-      // this control does not belong to this page
-      exit;
-    end;
-
-    // add AControl to the list of neighbours
-    ControlList.Add(AControl);
-    // fix AnchorControls, so
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-      OldAnchorControls[a]:=nil;
-      Sibling:=AControl.AnchorSide[a].Control;
-      if (Sibling<>nil)
-      and ((AnchorControls[a]=AControl)
-        or (AnchorControls[a]=AControl.AnchorSide[OppositeAnchor[a]].Control))
-      then begin
-        OldAnchorControls[a]:=AnchorControls[a];
-        AnchorControls[a]:=Sibling;
-      end;
-    end;
-    
-    try
-      // add all controls anchored to this control
-      for i:=0 to StartControl.Parent.ControlCount-1 do begin
-        Sibling:=StartControl.Parent.Controls[i];
-        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-          if Sibling.AnchorSide[a].Control=AControl then
-            if not AddNeighbour(Sibling) then exit;
-        end;
-      end;
-      Result:=true;
-    finally
-      if not Result then begin
-        // remove AControl from list and restore AnchorControls
-        ControlList.Remove(AControl);
-        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-          if OldAnchorControls[a]<>nil then
-            AnchorControls[a]:=OldAnchorControls[a];
-        end;
+    // check all siblings if the Layout knows them
+    SetLength(Compatibility,Parent.ControlCount);
+    for i:=0 to Parent.ControlCount-1 do begin
+      Compatibility[i]:=pcUnknown;
+      AControl:=Parent.Controls[i];
+      if AControl is TLazDockSplitter then continue;
+      NodeName:=Manager.GetControlConfigName(AControl);
+      if NodeName='' then continue;
+      Node:=Layout.FindByName(NodeName,true);
+      if Node<>nil then begin
+        if Node.Parent=PageNode then
+          Compatibility[i]:=pcSamePage
+        else
+          Compatibility[i]:=pcNotOnSamePage;
       end;
     end;
   end;
   
+  function CheckSolution(Candidates: TFPList): boolean;
+  var
+    ARect: TAnchorControlsRect;
+    AllList: TFPList;
+    i: Integer;
+    Index: LongInt;
+  begin
+    Result:=false;
+    // find the minimum rectangle around the current selection
+    if not GetEnclosingControlRect(Candidates,ARect) then exit;
+    // get the controls in the rectangle
+    AllList:=GetEnclosedControls(ARect);
+    try
+      for i:=0 to AllList.Count-1 do begin
+        Index:=Parent.GetControlIndex(TControl(AllList[i]));
+        if Index<0 then exit(false);
+        if Compatibility[Index]=pcNotOnSamePage then exit(false);
+      end;
+      // AllList fits => use it as solution
+      ControlList.Assign(AllList);
+      AnchorControls:=ARect;
+      Result:=true;
+    finally
+      AllList.Free;
+    end;
+  end;
+  
+  function TryLayoutSolution: boolean;
+  // check if a 1:1 of the layout is possible
+  var
+    i: Integer;
+  begin
+    ControlList.Clear;
+    for i:=0 to Parent.ControlCount-1 do begin
+      if Compatibility[i]=pcSamePage then
+        ControlList.Add(Parent.Controls[i]);
+    end;
+    Result:=CheckSolution(ControlList);
+  end;
+  
+  procedure TrySubsets;
+  // add controls to the selection
+  var
+    List: TFPList;
+    i: Integer;
+  begin
+    List:=TFPList.Create;
+    List.Add(StartControl);
+    CheckSolution(List);
+    i:=0;
+    repeat
+      // add on more control to the selection
+      if Compatibility[i]=pcSamePage then begin
+        List.Add(Parent.Controls[i]);
+        if not CheckSolution(List) then
+          List.Remove(Parent.Controls[i]);
+      end;
+      inc(i);
+    until false;
+    List.Free;
+  end;
+  
 var
-  a: TAnchorKind;
-  Added: Boolean;
-  NodeName: String;
+  StartNodeName: String;
   StartNode: TLazDockConfigNode;
+  a: TAnchorKind;
 begin
+  // set defaults
   ControlList:=TFPList.Create;
   ControlList.Add(StartControl);
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     AnchorControls[a]:=StartControl.AnchorSide[a].Control;
 
-  NodeName:=Manager.GetControlConfigName(StartControl);
-  if NodeName='' then exit;
-  StartNode:=Layout.FindByName(NodeName);
+  // check input
+  StartNodeName:=Manager.GetControlConfigName(StartControl);
+  if StartNodeName='' then exit;
+  StartNode:=Layout.FindByName(StartNodeName,true);
   if StartNode=nil then exit;
   PageNode:=StartNode.Parent;
   if PageNode=nil then exit;
-  repeat
-    Added:=false;
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-      if AddNeighbour(AnchorControls[a]) then
-        Added:=true;
-    end;
-  until not Added;
+  
+  // init
+  Parent:=StartControl.Parent;
+  InitCompatibility;
+  
+  // try some possibilities
+  if (not TryLayoutSolution) then
+    TrySubsets;
+
   Result:=ControlList;
 end;
 
