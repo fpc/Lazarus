@@ -289,7 +289,9 @@ end;
 
 function TCheckCompilerOptsDlg.CheckCompilerConfig(
   const CompilerFilename: string; out FPCCfgUnitPath: string): TModalResult;
-  
+var
+  TestDir: String;
+
   procedure ProcessOutputLine(const Line: string);
   const
     USING_UNIT_PATH = 'USING UNIT PATH: ';
@@ -329,18 +331,24 @@ function TCheckCompilerOptsDlg.CheckCompilerConfig(
       then begin
         Inc(CurPos, length(USING_UNIT_PATH));
         NewPath:=copy(Line,CurPos,len);
-        if not FilenameIsAbsolute(NewPath) then begin
-          AddWarning('relative unit path found in fpc cfg: '+NewPath);
-          NewPath:=ExpandFileName(NewPath);
+        if NewPath<>'' then begin
+          if not FilenameIsAbsolute(NewPath) then begin
+            AddWarning('relative unit path found in fpc cfg: '+NewPath);
+            NewPath:=ExpandFileName(NewPath);
+          end;
+          NewPath:=AppendPathDelim(TrimFilename(NewPath));
+          if (CompareFilenames(NewPath,Options.BaseDirectory)<>0)
+          and (CompareFilenames(NewPath,TestDir)<>0)
+          then begin
+            //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig: Using unit path: "',NewPath,'"']);
+            FPCCfgUnitPath:=FPCCfgUnitPath+NewPath+';';
+          end;
         end;
-        //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig: Using unit path: "',NewPath,'"']);
-        FPCCfgUnitPath:=FPCCfgUnitPath+NewPath+';';
       end;
     end;
   end;
   
 var
-  TestDir: String;
   ATestPascalFile: String;
   CurCompilerOptions: String;
   TargetOS: String;
@@ -378,7 +386,7 @@ begin
   if FileExistsCached(CodeToolBoss.DefinePool.EnglishErrorMsgFilename) then
     CmdLine:=CmdLine+'-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename+' '
   else
-    AddWarning('Missing english message file for fpc: components/codetools/fpc.errore.msg');
+    AddWarning('english message file for fpc is missing: components/codetools/fpc.errore.msg');
 
   if CurCompilerOptions<>'' then
     CmdLine:=CmdLine+CurCompilerOptions+' ';
@@ -388,6 +396,8 @@ begin
   TheProcess.CommandLine := CmdLine;
   TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
   TheProcess.ShowWindow := swoHide;
+  TheProcess.CurrentDirectory:=Options.BaseDirectory;
+  //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig Options.BaseDirectory=',Options.BaseDirectory]);
   try
     TheProcess.Execute;
     OutputLine:='';
@@ -415,9 +425,9 @@ begin
     until OutLen=0;
     TheProcess.WaitOnExit;
   finally
-    //DebugLn('TDefinePool.CreateFPCTemplate Run with -va: OutputLine="',OutputLine,'"');
     TheProcess.Free;
   end;
+  FPCCfgUnitPath:=TrimSearchPath(FPCCfgUnitPath,'');
 
   Result:=mrOk;
 end;
@@ -632,23 +642,28 @@ begin
   WarnedDirectories:=TStringList.Create;
   p:=1;
   while p<=length(FPCCfgUnitPath) do begin
-    Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
-    if (Directory<>'') and (WarnedDirectories.IndexOf(Directory)<0) then begin
-      if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
-      then begin
-        repeat
-          // check if special file
-          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-            continue;
-          // check extension
-          if FilenameIsPascalUnit(FileInfo.Name) then begin
-            AddWarning('FPC unit path contains a source: '+Directory+FileInfo.Name);
-            WarnedDirectories.Add(Directory);
-            break;
-          end;
-        until SysUtils.FindNext(FileInfo)<>0;
+    Directory:=TrimFilename(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+    if (Directory<>'') then begin
+      Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+      if (Directory<>'') and (FilenameIsAbsolute(Directory))
+      and (WarnedDirectories.IndexOf(Directory)<0) then begin
+        DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);
+        if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
+        then begin
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+              continue;
+            // check extension
+            if FilenameIsPascalUnit(FileInfo.Name) then begin
+              AddWarning('FPC unit path contains a source: '+Directory+FileInfo.Name);
+              WarnedDirectories.Add(Directory);
+              break;
+            end;
+          until SysUtils.FindNext(FileInfo)<>0;
+        end;
+        SysUtils.FindClose(FileInfo);
       end;
-      SysUtils.FindClose(FileInfo);
     end;
   end;
   WarnedDirectories.Free;
