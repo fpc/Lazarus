@@ -496,8 +496,8 @@ begin
                 ' "'+GdkAtomToStr(SelData.Selection)+'"',
       ' target: '+dbgs(SelData.Target),'=',dbgs(AllID),
                 ' "'+GdkAtomToStr(SelData.Target),'"',
-      ' theType: '+dbgs(SelData.TheType)+'='+dbgs(gdk_atom_intern('ATOM',GdkFalse))+
-                ' "'+GdkAtomToStr(SelData.theType)+'"',
+      ' theType: '+dbgs(SelData.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF})+'='+dbgs(gdk_atom_intern('ATOM',GdkFalse))+
+                ' "'+GdkAtomToStr(SelData.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF})+'"',
       ' Length='+dbgs(SelData.Length),
       ' Format='+dbgs(SelData.Format),
       ' Data='+Dbgs(SelData.Data),
@@ -6922,17 +6922,17 @@ function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; c
 begin
   //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
   if PInteger(data)^ = 0 then
-    PInteger(data)^:=PtrInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    PInteger(data)^:=PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result:=false;
 end;
 
 function MessageBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
   data: gPointer) : GBoolean; cdecl;
-var ModalResult : PtrInt;
+var ModalResult : PtrUInt;
 begin
   { We were requested by window manager to close }
   if PInteger(data)^ = 0 then begin
-    ModalResult:= PtrInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    ModalResult:= PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
     if not Result then PInteger(data)^:= ModalResult
@@ -7524,7 +7524,7 @@ const
     begin
       if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
       and gtk_is_radio_menu_item(Item^.Data)
-      and (GroupIndex = Integer(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
+      and (GroupIndex = Integer(PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME))))
       then begin
         Result := gtk_radio_menu_item_get_group (PGtkRadioMenuItem(Item^.Data));
         Exit;
@@ -7546,7 +7546,7 @@ begin
     Exit;
   end;
 
-  CurrentGroupIndex := PtrInt(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME));
+  CurrentGroupIndex := integer(PtrUInt(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME)));
 
   // Update needed ?
   if GroupIndex = CurrentGroupIndex
@@ -8453,7 +8453,7 @@ var
   FocusObject: PGTKObject;
 begin
   FocusObject := PGTKObject(GetFocus);
-  Result:=SetCaretPosEx(PtrInt(FocusObject),X,Y);
+  Result:=SetCaretPosEx(PtrUInt(FocusObject),X,Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -9672,7 +9672,7 @@ begin
     FillChar(ev,SizeOf(ev),0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
-    Result := PtrInt(widget);
+    Result := PtrUInt(widget);
   end;
 end;
 

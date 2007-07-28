@@ -64,7 +64,7 @@ type
 
   TTranslateString = type String;
 
-  TCriticalSection = PtrInt;
+  TCriticalSection = PtrUInt;
   PCriticalSection = ^TCriticalSection;
   TRTLCriticalSection = pointer;
 
@@ -72,7 +72,7 @@ type
 {$ifndef WINDOWS}
   {$IFDEF CPU64}
   // temp solution for 32bit system.Thandle
-  THandle = type PtrInt;
+  THandle = type PtrUInt;
   HANDLE = THandle;
   PHandle = ^THandle;
   {$ENDIF}

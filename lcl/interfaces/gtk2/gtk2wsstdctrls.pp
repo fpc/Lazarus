@@ -997,7 +997,7 @@ begin
     Result := gtk_entry_get_max_length(Entry);
   end
   else begin
-     Result := PtrInt(g_object_get_data(PGObject(WidgetInfo^.CoreWidget), 'max-length'));
+     Result := integer(PtrUInt(g_object_get_data(PGObject(WidgetInfo^.CoreWidget), 'max-length')));
   end;
 end;
 

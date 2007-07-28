@@ -111,7 +111,7 @@ begin
   lPipeEventInfo^.UserData := AData;
   lPipeEventInfo^.OnEvent := AEventHandler;
   lPipeEventInfo^.Handler := AddEventHandler(AHandle, G_IO_IN or G_IO_HUP or G_IO_OUT, 
-    @HandlePipeEvent, PtrInt(lPipeEventInfo));
+    @HandlePipeEvent, PtrUInt(lPipeEventInfo));
   Result := lPipeEventInfo;
 end;
 

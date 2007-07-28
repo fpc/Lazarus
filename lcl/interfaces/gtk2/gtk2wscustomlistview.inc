@@ -40,7 +40,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
 
@@ -62,7 +62,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_DELETEITEM;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
   msg.NMHdr := @NM.hdr;
@@ -86,7 +86,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_INSERTITEM;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
   msg.NMHdr := @NM.hdr;
@@ -122,7 +122,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn.Index;
@@ -149,7 +149,7 @@ begin
   for i := 0 to Widgets^.ItemCache.Count -1 do begin
 
     FillChar(NM, SizeOf(NM), 0);
-    NM.hdr.hwndfrom := PtrInt(Widgets^.MainView);
+    NM.hdr.hwndfrom := PtrUInt(Widgets^.MainView);
     NM.hdr.code := LVN_ITEMCHANGED;
     AIndex := Widgets^.ItemCache.Strings[i];
     NM.iItem := StrToInt(AIndex);
@@ -187,7 +187,7 @@ begin
   
   
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_ITEMCHANGING;
   NM.iItem := StrToInt(Str);
   NM.iSubItem := 0;//AColumn;
@@ -1217,7 +1217,7 @@ class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
     for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
       GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
       if not (Show)
-      or (Show and (PtrInt(g_object_get_data(G_OBJECT(GtkColumn),
+      or (Show and (PtrUInt(g_object_get_data(G_OBJECT(GtkColumn),
                                              PChar('Visible')))<>0))
       then
         gtk_tree_view_column_set_visible(GtkColumn, Show);

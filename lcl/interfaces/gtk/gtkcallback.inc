@@ -3352,7 +3352,7 @@ begin
   DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
     ' selection=',dbgs(SelectionData^.selection)+'='+GdkAtomToStr(SelectionData^.selection),
     ' target=',dbgs(SelectionData^.Target)+'='+GdkAtomToStr(SelectionData^.Target),
-    ' theType=',dbgs(SelectionData^.theType)+'='+GdkAtomToStr(SelectionData^.theType),
+    ' theType=',dbgs(SelectionData^.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF})+'='+GdkAtomToStr(SelectionData^.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF}),
     ' format=',dbgs(SelectionData^.format),
     ' len=',dbgs(SelectionData^.length)
     );
@@ -3417,7 +3417,7 @@ begin
   {$ENDIF}
   if (Data=nil) or (TimeID=0) or (Info=0) or (TargetWidget=nil) then ;
   if SelectionData^.Target=0 then exit;
-  for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
+  for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do begin
     if SelectionData^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
       if Assigned(ClipboardHandler[ClipboardType]) then begin
         // handler found for this of clipboard
@@ -3501,6 +3501,7 @@ begin
       end;
       break;
     end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
