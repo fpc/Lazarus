@@ -2616,7 +2616,7 @@ begin
     COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteBase);
     COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
-    COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
     COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
     COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
     COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteText);
@@ -2631,8 +2631,8 @@ begin
     COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
     COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteText);
     COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-    COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteMid);
-    COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
+    COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
+    COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMid);
     COLOR_INFOTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
     COLOR_INFOBK                  : Result:=GetColor(QPaletteActive,   QPaletteBase);
     // PBD: 25 is unassigned in all the docs I can find
