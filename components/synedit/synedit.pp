@@ -3439,17 +3439,17 @@ var
           SetDrawingColors(FALSE);
           rcToken.Right := ScreenColumnToXValue(nSelStart);
           with TokenAccu do
-            PaintToken(p,Len,CharsBefore,C1Phys,nC1,SelStartLogical);
+            PaintToken(p,Len,CharsBefore,C1Phys,nC1,SelStartLogical-1);
         end;
         // selected part of the token
         SetDrawingColors(TRUE);
         nC1Sel := Max(SelStartLogical, nC1);
-        nC2Sel := Min(SelEndLogical, nC2);
+        nC2Sel := Min(SelEndLogical, nC2+1);
         C2Phys := Min(LastCol, TokenAccu.PhysicalEndPos+1);
         C1SelPhys := Max(nSelStart, C1Phys);
         C2SelPhys := Min(nSelEnd, C2Phys);
         rcToken.Right := ScreenColumnToXValue(C2SelPhys);
-        with TokenAccu do PaintToken(p,Len,CharsBefore,C1SelPhys,nC1Sel,nC2Sel);
+        with TokenAccu do PaintToken(p,Len,CharsBefore,C1SelPhys,nC1Sel,nC2Sel-1);
         // second unselected part of the token
         if bU2 then begin
           SetDrawingColors(FALSE);
