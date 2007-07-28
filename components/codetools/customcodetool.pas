@@ -837,12 +837,14 @@ begin
             '}':
               begin
                 dec(CommentLvl);
-                if CommentLvl=0 then break;
+                if CommentLvl=0 then begin
+                  inc(CurPos.StartPos);
+                  break;
+                end;
               end;
             end;
             inc(CurPos.StartPos);
           end;
-          inc(CurPos.StartPos);
         end;
       '/':  // Delphi comment
         if (Src[CurPos.StartPos+1]<>'/') then begin
@@ -860,11 +862,27 @@ begin
         if (Src[CurPos.StartPos+1]<>'*') then begin
           break;
         end else begin
-          inc(CurPos.StartPos,3);
-          while (CurPos.StartPos<=SrcLen)
-          and ((Src[CurPos.StartPos-1]<>'*') or (Src[CurPos.StartPos]<>')')) do
+          inc(CurPos.StartPos,2);
+          CommentLvl:=1;
+          while true do begin
+            case Src[CurPos.StartPos] of
+            #0:  if CurPos.StartPos>SrcLen then break;
+            '(': if Scanner.NestedComments and (Src[CurPos.StartPos+1]='*') then
+              begin
+                //debugln('TCustomCodeTool.ReadNextAtom ',copy(Src,CurPos.StartPos,CurPos.StartPos-CurPos.EndPos));
+                inc(CommentLvl);
+              end;
+            '*':
+              if (Src[CurPos.StartPos+1]=')') then begin
+                dec(CommentLvl);
+                if CommentLvl=0 then begin
+                  inc(CurPos.StartPos,2);
+                  break;
+                end;
+              end;
+            end;
             inc(CurPos.StartPos);
-          inc(CurPos.StartPos);
+          end;
         end;
       else
         break;
