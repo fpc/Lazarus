@@ -429,8 +429,10 @@ type
     
     procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
-    function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
+    function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer; overload;
+    function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString): Integer; overload;
     function getCurrentIndex: Integer;
+    procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: PWideString);
@@ -3894,17 +3896,32 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TQtTabWidget.insertTab
-  Params:  None
+  Params:  index: Integer; page: QWidgetH; p2: PWideString
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer; overload;
 begin
   Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.insertTab
+  Params:  index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString): Integer; overload;
+begin
+  Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, icon, p2);
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
 begin
   Result := QTabWidget_currentIndex(QTabWidgetH(Widget));
+end;
+
+procedure TQtTabWidget.removeTab(AIndex: Integer);
+begin
+  QTabWidget_removeTab(QTabWidgetH(Widget), AIndex);
 end;
 
 procedure TQtTabWidget.setCurrentIndex(AIndex: Integer);

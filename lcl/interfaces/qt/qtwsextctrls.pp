@@ -69,11 +69,11 @@ type
 {    class procedure MovePage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const NewIndex: integer); override;
     class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
-    class procedure RemovePage(const ANotebook: TCustomNotebook;
-      const AIndex: integer); override;
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;}
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     {class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
@@ -342,14 +342,38 @@ class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
 var
   Str: WideString;
+  Bmp: TBitmap;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomNotebook.AddPage');
   {$endif}
-
   Str := UTF8Decode(AChild.Caption);
 
-  TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
+  if Assigned(ANoteBook.Images)
+  and (AChild.ImageIndex >= 0)
+  and (AChild.ImageIndex < ANoteBook.Images.Count) then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      ANoteBook.Images.GetBitmap(AChild.ImageIndex, Bmp);
+  		TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, TQtImage(Bmp.Handle).AsIcon, @Str);
+    finally
+      Bmp.Free;
+    end;
+  end else
+    TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
+end;
+
+class procedure TQtWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
+  const AIndex: integer);
+var
+  TabWidget: TQtTabWidget;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWSCustomNotebook.RemovePage');
+  {$endif}
+  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget.removeTab(AIndex);
 end;
 
 class procedure TQtWSCustomNotebook.SetPageIndex(
