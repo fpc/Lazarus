@@ -2,7 +2,7 @@
 #
 # Author: Mattias Gaertner
 #
-# Usage: ./create_lazarus_deb.sh [gtk2] [release=svn]
+# Usage: ./create_lazarus_deb.sh [gtk2] [append-revision]
 #
 #   Options:
 #     gtk2              compile IDE and programs for gtk2. gtk1 ppu are built too.
@@ -150,7 +150,7 @@ cat $LazDestDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuil
 
 # fixing permissions
 echo "fixing permissions ..."
-find $LazBuildDir -type d | xargs chmod 755  # this is needed on Debian Woody, don't ask me why
+find $LazBuildDir -type d | xargs chmod 755  # this is needed, don't ask me why
 
 # creating deb
 echo "creating deb ..."

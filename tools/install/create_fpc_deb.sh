@@ -212,6 +212,11 @@ if [ "$PackageName" = "fpc" ]; then
     cd -
 fi
 
+# fixing permissions
+echo "fixing permissions ..."
+find $FPCBuildDir -type d | xargs chmod 755  # this is needed, don't ask me why
+find $FPCBuildDir -type f | xargs chmod a+r  # this is needed, don't ask me why
+
 #------------------------------------------------------------------------------
 # creating deb
 
