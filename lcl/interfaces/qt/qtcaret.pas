@@ -266,7 +266,7 @@ begin
   SetWidget(AWidget);
   FWidth := Width;
   FHeight := Height;
-  if Cardinal(Pixmap) > $FFFF then
+  if PtrUInt(Pixmap) > $FFFF then
     FPixmap := QPixmap_create(Pixmap)
   else
     FPixmap := CreateColorPixmap(PtrUInt(Pixmap));
