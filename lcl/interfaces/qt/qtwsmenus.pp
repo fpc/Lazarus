@@ -35,7 +35,7 @@ uses
 {$endif}
   qtwidgets, qtobjects,
   // LCL
-  SysUtils, Classes, Menus, Forms, LCLType, LCLProc, Graphics,
+  SysUtils, Classes, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
   // Widgetset
   WSMenus, WSLCLClasses;
 
@@ -384,8 +384,8 @@ begin
   end
   else if (AMenu is TPopUpMenu) then
   begin
-    if AMenu.Owner <> nil then
-      Parent := TQtMainWindow(TCustomForm(AMenu.Owner).Handle).Widget
+    if (AMenu.Owner <> nil) and (AMenu.Owner is TWinControl) then
+      Parent := TQtWidget(TWinControl(AMenu.Owner).Handle).Widget
     else
       Parent := nil;
 
