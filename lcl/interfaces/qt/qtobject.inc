@@ -100,7 +100,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
-  QApplication_Exec;
+  if Assigned(ALoop) then ALoop;
+  //QApplication_Exec;
 end;
 
 {------------------------------------------------------------------------------

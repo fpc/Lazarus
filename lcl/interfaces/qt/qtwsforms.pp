@@ -170,9 +170,11 @@ begin
 
   QtMainWindow.SetWindowTitle(@Str);
 
-  SetQtWindowBorderStyle(QtMainWindow, TCustomForm(AWinControl).BorderStyle);
-
-  SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
+  if not (csDesigning in TCustomForm(AWinControl).ComponentState) then
+  begin
+    SetQtWindowBorderStyle(QtMainWindow, TCustomForm(AWinControl).BorderStyle);
+    SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
+  end;
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
