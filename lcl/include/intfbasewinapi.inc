@@ -1337,11 +1337,6 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.SetMapMode(DC: HDC; MapMode: Integer): Integer;
-begin
-  Result := 0;
-end;
-
 Function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
 Begin

@@ -176,7 +176,6 @@ function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
-function SetMapMode(DC: HDC; MapMode: Integer): Integer; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;

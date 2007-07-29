@@ -758,11 +758,6 @@ begin
   Result := WidgetSet.SetForegroundWindow(hWnd);
 end;
 
-function SetMapMode(DC: HDC; MapMode: Integer): Integer;
-begin
-  Result := WidgetSet.SetMapMode(DC,MapMode);
-end;
-
 function SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
