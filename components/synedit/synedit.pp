@@ -3338,7 +3338,6 @@ var
     pszText: PChar;
     nCharsToPaint: integer;
     nX: integer;
-    ypos: integer;
   const
     ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
   begin
@@ -3369,15 +3368,6 @@ var
       // draw edge
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      // codefold draw splitter line
-      if Gutter.ShowCodeFolding and (CurLine>=0)
-      and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd])
-      and (TSynEditStringList(Lines).FoldEndLevel[CurLine-1] < CFDividerDrawLevel) then
-      begin
-        ypos := rcToken.Bottom - 1;
-        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-        LCLIntf.LineTo(dc, fGutterWidth, ypos);
-      end;
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
         pszText, nCharsToPaint);
@@ -3400,7 +3390,6 @@ var
     C1SelPhys: integer;
     C2Phys: integer;
     C2SelPhys: LongInt;
-    ypos : integer;
   begin
     // Compute some helper variables.
     nC1 := Max(FirstColLogical, TokenAccu.CharsBefore + 1);
@@ -3499,16 +3488,6 @@ var
       and (nRightEdge>=rcToken.Left) then begin
         LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-
-        // codefold draw splitter line
-        if Gutter.ShowCodeFolding and (CurLine>=0)
-        and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd])
-        and (TSynEditStringList(Lines).FoldEndLevel[CurLine-1] < CFDividerDrawLevel) then
-        begin
-          ypos := rcToken.Bottom - 1;
-          LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-          LCLIntf.LineTo(dc, fGutterWidth, ypos);
-        end;
       end;
     end;
   end;
@@ -3740,6 +3719,7 @@ var
     attr: TSynHighlighterAttributes;
     LastTokenPosLogical: Integer;
     LastTokenPosPhyscial: Integer;
+    ypos: Integer;
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
@@ -3928,6 +3908,16 @@ var
         // of the invalid area with the correct colors.
         PaintHighlightToken(TRUE);
       end;
+
+      // codefold draw splitter line
+      if Gutter.ShowCodeFolding and (CurLine>=0)
+      and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd])
+      and (TSynEditStringList(Lines).FoldEndLevel[CurLine-1] < CFDividerDrawLevel) then
+      begin
+        ypos := rcToken.Bottom - 1;
+        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+        LCLIntf.LineTo(dc, fGutterWidth, ypos);
+      end;
     end;
     CurLine:=-1;
   end;
@@ -4077,9 +4067,9 @@ begin
     nRightEdge := fTextOffset + fRightEdge * fCharWidth; // pixel value
     if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then begin
       bDoRightEdge := TRUE;
-      Canvas.Pen.Color := fRightEdgeColor;
-      Canvas.Pen.Width := 1;
     end;
+    Canvas.Pen.Color := fRightEdgeColor;
+    Canvas.Pen.Width := 1;
   end;
   // Do everything else with API calls. This (maybe) realizes the new pen color.
   dc := Canvas.Handle;
@@ -4122,16 +4112,16 @@ begin
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+    end;
 
-      //codefold draw splitter line
-      if Gutter.ShowCodeFolding and (LastLine<Lines.Count)
-      and (TSynEditStringList(Lines).FoldType[LastLine-1] in [cfEnd])
-      and (TSynEditStringList(Lines).FoldEndLevel[LastLine-1] < CFDividerDrawLevel) then
-      begin
-        ypos := rcToken.Bottom - 1;
-        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-        LCLIntf.LineTo(dc, fGutterWidth, ypos);
-      end;
+    // codefold draw splitter line
+    if Gutter.ShowCodeFolding and (LastLine<Lines.Count)
+    and (TSynEditStringList(Lines).FoldType[LastLine-1] in [cfEnd])
+    and (TSynEditStringList(Lines).FoldEndLevel[LastLine-1] < CFDividerDrawLevel) then
+    begin
+      ypos := rcToken.Bottom - 1;
+      LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+      LCLIntf.LineTo(dc, fGutterWidth, ypos);
     end;
   end;
 
