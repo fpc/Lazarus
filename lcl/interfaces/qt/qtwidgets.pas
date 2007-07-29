@@ -238,20 +238,6 @@ type
     procedure Text(retval: PWideString);
   end;
 
-  { TQtTimer }
-
-  TQtTimer = class(TQtObject)
-  private
-    FCallbackFunc: TFNTimerProc;
-    FId: Integer;
-    FAppObject: QObjectH;
-  public
-    constructor CreateTimer(Interval: integer; const TimerFunc: TFNTimerProc; App: QObjectH); virtual;
-    destructor Destroy; override;
-  public
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-  end;
-
   { TQtCheckBox }
 
   TQtCheckBox = class(TQtAbstractButton)
@@ -2780,70 +2766,6 @@ end;
 procedure TQtStaticText.Text(retval: PWideString);
 begin
   QLabel_text(QLabelH(Widget), retval);
-end;
-
-{ TQtTimer }
-
-{------------------------------------------------------------------------------
-  Function: TQtTimer.CreateTimer
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtTimer.CreateTimer(Interval: integer;
-  const TimerFunc: TFNTimerProc; App: QObjectH);
-begin
-  FAppObject := App;
-
-  FCallbackFunc := TimerFunc;
-  
-  TheObject := QTimer_create(App);
-  
-  QTimer_setInterval(QTimerH(TheObject), Interval);
-  
-  AttachEvents;
-
-  // start timer and get ID
-  QTimer_start(QTimerH(TheObject), Interval);
-  FId := QTimer_timerId(QTimerH(TheObject));
-
-  {$ifdef VerboseQt}
-    WriteLn('TQtTimer.CreateTimer: Interval = ', Interval, ' ID = ', FId);
-  {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTimer.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtTimer.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtTimer.CreateTimer: Destroy. ID = ', FId);
-  {$endif}
-
-  FCallbackFunc := nil;
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTimer.EventFilter
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  Result := False;
-
-  if QEvent_type(Event) = QEventTimer then
-  begin
-    Result := True;
-    
-    QEvent_accept(Event);
-
-    if Assigned(FCallbackFunc) then
-      FCallbackFunc;
-  end;
 end;
 
 { TQtCheckBox }
