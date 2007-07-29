@@ -89,6 +89,7 @@ type
     procedure SlotMouseEnter(Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotMouseWheel(Event: QEventH); cdecl;
+    procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
     procedure SlotContextMenu; cdecl;
@@ -109,6 +110,7 @@ type
     procedure ShowMinimized;
     procedure ShowMaximized;
     function getEnabled: Boolean;
+    function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean;
     function getClientBounds: TRect; virtual;
@@ -1085,6 +1087,7 @@ begin
         SlotMouseWheel(Event);
         Result := StopMouseEventsProcessing;
       end;
+    QEventMove: SlotMove(Event);
     QEventResize: SlotResize;
     QEventPaint: SlotPaint(Event);
     QEventContextMenu: SlotContextMenu;
@@ -1453,6 +1456,32 @@ begin
   DeliverMessage(Msg);
 end;
 
+procedure TQtWidget.SlotMove(Event: QEventH); cdecl;
+var
+  Msg: TLMMove;
+  Pos: PQtPoint;
+  FrameRect, WindowRect: TRect;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotMove');
+  {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_MOVE;
+
+  Msg.MoveType := Msg.MoveType or Move_SourceIsInterface;
+
+  Pos := QMoveEvent_pos(QMoveEventH(Event));
+  FrameRect := getFrameGeometry;
+  WindowRect := getGeometry;
+
+  Msg.XPos := Pos^.x - (WindowRect.Left - FrameRect.Left);
+  Msg.YPos := Pos^.y - (WindowRect.Top - FrameRect.Top);
+
+  DeliverMessage(Msg);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SlotPaint
   Params:  None
@@ -1677,6 +1706,11 @@ end;
 function TQtWidget.getEnabled: Boolean;
 begin
   Result := QWidget_isEnabled(Widget);
+end;
+
+function TQtWidget.getFrameGeometry: TRect;
+begin
+  QWidget_frameGeometry(Widget, @Result);
 end;
 
 function TQtWidget.getGeometry: TRect;
