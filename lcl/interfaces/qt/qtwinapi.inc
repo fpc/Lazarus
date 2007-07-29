@@ -4420,6 +4420,7 @@ function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   XMask, YMask: Integer; Rop: DWORD): Boolean;
 var
   SrcRect, DstRect: TRect;
+  SrcWidthOrig, SrcHeightOrig: Integer;
   Image: QImageH;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -4433,16 +4434,26 @@ begin
      ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
   {$endif}
 
-  DstRect := Bounds(X, Y, Width, Height);
-
-  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
-  
   Image := TQtDeviceContext(SrcDC).vImage;
+  SrcWidthOrig := QImage_width(Image);
+  SrcHeightOrig := QImage_height(Image);
+
+  // if passed source Width/Height is more than original then
+  // qt skip that, so for that case we should transform size here
+  //
+  // stretch_factor := Width / SrcWidth;
+  // Width := stretch_factor * (SrcWidthOrig - XSrc);
+  if (SrcWidth - XSrc > SrcWidthOrig) then
+    Width := Width * (SrcWidthOrig - XSrc) div SrcWidth;
+
+  if (SrcHeight - YSrc > SrcHeightOrig) then
+    Height := Height * (SrcHeightOrig - YSrc) div SrcHeight;
+
+  DstRect := Bounds(X, Y, Width, Height);
+  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
 
   TQtDeviceContext(DestDC).CorrectCoordinates(DstRect);
-
   TQtDeviceContext(DestDC).CorrectCoordinates(SrcRect);
-
   TQtDeviceContext(DestDC).drawImage(@DstRect, Image, @SrcRect);
 
   Result := True;
