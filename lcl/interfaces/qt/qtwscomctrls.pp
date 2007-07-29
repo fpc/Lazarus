@@ -52,6 +52,7 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSTabSheet }
@@ -620,6 +621,27 @@ begin
       Str := UTF8Decode(AStatusBar.Panels[PanelIndex].Text);
       QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
     end;
+  end;
+end;
+
+class procedure TQtWSStatusBar.ShowHide(const AWinControl: TWinControl);
+var
+  QtStatusBar: TQtStatusBar;
+  Parent: TQtWidget;
+begin
+  {this routine should be removed as soon as we fix problem with invisible
+   TStatusBar while parent form isn't resized for the first time}
+
+  inherited ShowHide(AWinControl);
+  
+  QtStatusBar := TQtStatusBar(AWinControl.Handle);
+  
+  if Assigned(AWinControl.Parent) then
+  begin
+    Parent := TQtWidget(AWinControl.Parent.Handle);
+    if (Parent is TQtMainWindow)
+    and TQtMainWindow(Parent).IsMainForm then
+      QMainWindow_setStatusBar(QMainWindowH(Parent.Widget), QStatusBarH(QtStatusBar.Widget));
   end;
 end;
 
