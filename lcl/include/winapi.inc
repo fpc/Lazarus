@@ -774,11 +774,6 @@ begin
   Result := WidgetSet.SetSysColors(cElements, lpaElements, lpaRgbValues);
 end;
 
-function SetTextAlign(DC: HDC; Flags: UINT): UINT;
-begin
-  Result := WidgetSet.SetTextAlign(DC,Flags);
-end;
-
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
   Result := WidgetSet.SetTextCharacterExtra(_hdc, nCharExtra);

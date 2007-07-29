@@ -217,7 +217,6 @@ function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; 
 //function SetScrollRange --> independent
 function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetTextAlign(DC: HDC; Flags: UINT): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

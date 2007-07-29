@@ -1366,11 +1366,6 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.SetTextAlign(DC: HDC; Flags: UINT): UINT;
-begin
-  Result := 0;
-end;
-
 function TWidgetSet.SetTextCharacterExtra(_hdc : hdc;
   nCharExtra : Integer):Integer;
 begin
