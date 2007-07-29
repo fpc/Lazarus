@@ -37,7 +37,7 @@ type
     FInterval     : Cardinal;
     FOnStartTimer: TNotifyEvent;
     FOnStopTimer: TNotifyEvent;
-    FTimerHandle  : integer;
+    FTimerHandle  : THandle;
     FOnTimer      : TNotifyEvent;
     FEnabled      : Boolean;
     procedure Timer;
@@ -64,7 +64,7 @@ type
 implementation
 
 const
-  cIdNoTimer = -1;        { timer ID for an invalid timer }
+  cIdNoTimer = THandle(-1);        { timer ID for an invalid timer }
 
 {------------------------------------------------------------------------------
   Method: TCustomTimer.Create
