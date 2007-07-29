@@ -846,11 +846,6 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.GetMapMode(DC: HDC): Integer;
-begin
-  Result := 0;
-end;
-
 function TWidgetSet.GetObject(GDIObject: HGDIOBJ; BufSize: Integer;
   Buf: Pointer): Integer;
 begin

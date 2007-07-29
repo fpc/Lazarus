@@ -2106,26 +2106,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetMapMode
-  Params:  DC
-  Returns: Integer
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetMapMode] DC: ' + dbghex(DC));
-  {$endif}
-  Result := 0;
-  if not IsValidDC(DC) then exit;
-  
-  {$note implement - wait for LCL}
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetMapMode] missing implementation ');
-  {$endif}
-  // Result := TQtDeviceContext(DC).MapMode;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetObject
   Params:  none
   Returns: The size written to the buffer

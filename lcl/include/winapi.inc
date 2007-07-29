@@ -369,11 +369,6 @@ begin
   Result := WidgetSet.GetKeyState(nVirtKey);
 end;
 
-function GetMapMode(DC: HDC): Integer;
-begin
-  Result := WidgetSet.GetMapMode(DC);
-end;
-
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
   Result := WidgetSet.GetObject(GDIObject, BufSize, Buf);
