@@ -3909,9 +3909,9 @@ begin
     begin
       {TODO: freezing workaround, ttabsheet kills mouse at all (X & app),
        when we click onto empty tabsheet.
-       don't know for others , so it's ifdef-ed}
+       don't know for others , so it's ifdef-ed for linux}
       {$ifdef linux}
-      if not (TQtWidget(AHandle).LCLObject is TTabSheet) then
+      if not (TQtWidget(AHandle).LCLObject.InheritsFrom(TCustomPage)) then
       {$endif}
         TQtWidget(AHandle).grabMouse();
     end;
