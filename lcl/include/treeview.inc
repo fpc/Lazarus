@@ -3816,7 +3816,7 @@ procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
 begin
   inherited CMDrag(AMessage);
   {$IFDEF VerboseDrag}
-  DebugLn('TCustomTreeView.CMDrag ',Name,':',ClassName,' ',ord(AMessage.DragMessage));
+  DebugLn('TCustomTreeView.CMDrag ',Name,':',ClassName,' ',IntToStr(ord(AMessage.DragMessage)));
   {$ENDIF}
   with AMessage, DragRec^ do
     case DragMessage of
@@ -3844,7 +3844,7 @@ begin
   inherited DragOver(Source,X,Y,State,Accept);
   Node := GetNodeAt(X, Y);
   {$IFDEF VerboseDrag}
-  DebugLn('TCustomTreeView.DragOver ',Name,':',ClassName,' ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
+  DebugLn('TCustomTreeView.DragOver ',Name,':',ClassName,' ',BoolToStr(Node<>nil),' ',BoolToStr(Node <> DropTarget),' ',BoolToStr(Node = FLastDropTarget));
   {$ENDIF}
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
@@ -4348,7 +4348,7 @@ begin
         // mousedown occured in text or icon
         // -> select node and begin drag operation
         {$IFDEF VerboseDrag}
-        DebugLn('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture);
+        DebugLn('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',BoolToStr(MouseCapture));
         {$ENDIF}
         if MouseCapture then
           Include(FStates,tvsMouseCapture);

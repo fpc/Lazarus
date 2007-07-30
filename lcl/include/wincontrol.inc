@@ -2028,7 +2028,7 @@ end;
 Procedure TWinControl.CMDrag(var Message: TCMDrag);
 Begin
   {$IFDEF VerboseDrag}
-  DebugLn('TWinControl.CMDrag ',Name,':',ClassName,' ',ord(Message.DragMessage));
+  DebugLn('TWinControl.CMDrag ',Name,':',ClassName,' ',IntToStr(ord(Message.DragMessage)));
   {$ENDIF}
   DoDragMsg(Message);
 end;
@@ -2198,7 +2198,7 @@ begin
   dmFindTarget:
     begin
       {$IFDEF VerboseDrag}
-      DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',DragMsg.DragRec^.Pos.X,',',DragMsg.DragRec^.Pos.Y);
+      DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',IntToStr(DragMsg.DragRec^.Pos.X),',',IntToStr(DragMsg.DragRec^.Pos.Y));
       {$ENDIF}
       TargetControl := ControlatPos(ScreentoClient(DragMsg.DragRec^.Pos),
                                     [capfAllowWinControls,capfRecursive]);

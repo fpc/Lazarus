@@ -162,6 +162,11 @@ begin
     TQtMainWindow(Application.MainForm.Handle).BringToFront;
 end;
 
+procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
+begin
+  // TODO
+end;
+
 function TQtWidgetSet.CreateThemeServices: TThemeServices;
 begin
   // TODO: uncomment if you want to test TQtThemeServices

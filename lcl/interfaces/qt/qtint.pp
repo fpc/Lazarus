@@ -68,7 +68,7 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
-//    procedure AppSetTitle(const ATitle: string); override;
+    procedure AppSetTitle(const ATitle: string); override;
   public
     constructor Create;
     destructor Destroy; override;

@@ -70,7 +70,9 @@ begin
     // if the last mouse down was not followed by a mouse up, simulate a
     // mouse up. This way applications need only to react to mouse up to
     // clean up.
+    {$IFDEF VerboseDrag}
     DebugLn('TControl.BeginDrag ',DbgSName(Self),' Immediate=',dbgs(Immediate));
+    {$endif}
     if Immediate then
       SetCaptureControl(nil);
     if csLButtonDown in ControlState then begin
@@ -980,7 +982,7 @@ end;
 Procedure TControl.DoEndDrag(Target: TObject; X,Y: Integer);
 Begin
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DoEndDrag ',Name,':',ClassName,' XY=',X,',',Y);
+  DebugLn('TControl.DoEndDrag ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
   if Assigned(FOnEndDrag) then FOnEndDrag(Self,Target,X,Y);
 end;
@@ -1105,13 +1107,13 @@ var
   P: TPoint;
 Begin
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',ord(DragMsg.DragMessage));
+  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',IntToStr(ord(DragMsg.DragMessage)));
   {$ENDIF}
   Src := DragMsg.Dragrec^.Source;
   P:=ScreenToClient(DragMsg.Dragrec^.Pos);
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.Dragrec^.Pos=',DragMsg.Dragrec^.Pos.X,',',DragMsg.Dragrec^.Pos.Y,' -> P=',P.X,P.Y);
-  if P.X<0 then RaiseGDBException('');
+  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.Dragrec^.Pos=',IntToStr(DragMsg.Dragrec^.Pos.X),',',IntToStr(DragMsg.Dragrec^.Pos.Y),' -> P=',IntToStr(P.X),IntToStr(P.Y));
+  //if P.X<0 then RaiseGDBException('');
   {$ENDIF}
   case DragMsg.DragMessage of
 
@@ -1145,7 +1147,7 @@ Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State: TDragState;
   var Accept:Boolean);
 begin
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DragOver ',Name,':',ClassName,' XY=',X,',',Y);
+  DebugLn('TControl.DragOver ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
   Accept := False;
   if Assigned(FOnDragOver) then begin
@@ -1160,7 +1162,7 @@ end;
 Procedure TControl.DragDrop(Source: TObject; X,Y : Integer);
 begin
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DragDrop ',Name,':',ClassName,' XY=',X,',',Y);
+  DebugLn('TControl.DragDrop ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
   If Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;

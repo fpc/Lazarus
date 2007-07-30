@@ -3910,11 +3910,14 @@ begin
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
-    FillChar(Message, SizeOf(Message), 0);
-    Message.msg := LM_CAPTURECHANGED;
-    Message.wParam := 0;
-    Message.lParam := Result;
-    LCLMessageGlue.DeliverMessage(TQtWidget(AHandle).LCLObject, Message);
+    if Result <> 0 then
+    begin
+      FillChar(Message, SizeOf(Message), 0);
+      Message.msg := LM_CAPTURECHANGED;
+      Message.wParam := 0;
+      Message.lParam := Result;
+      LCLMessageGlue.DeliverMessage(TQtWidget(AHandle).LCLObject, Message);
+    end;
   end;
 end;
 

@@ -138,7 +138,7 @@ var
   ok: boolean;
 begin
   {$IFDEF VerboseDrag}
-  DebugLn('DragInitControl ',Control.Name,':',Control.ClassName,' Immediate=',Immediate);
+  DebugLn('DragInitControl ',Control.Name,':',Control.ClassName,' Immediate=', dbgs(Immediate));
   {$ENDIF}
   ClearDragObject;
   DragControl := Control;
@@ -243,7 +243,7 @@ var
   ADragCursor: TCursor;
 Begin
   {$IFDEF VerboseDrag}
-  DebugLn('DragTo P=',Position.X,',',Position.Y);
+  DebugLn('DragTo P=', IntToStr(Position.X), ',', IntToStr(Position.Y));
   {$ENDIF}
   if (DragControl = nil) or ((ActiveDrag = dopNone) and
      (Abs(DragStartPos.X - Position.X) < DragThreshold) and
@@ -322,7 +322,7 @@ var
   TargetPos: TPoint;
 Begin
   {$IFDEF VerboseDrag}
-  DebugLn('DragDone Drop=',Drop);
+  DebugLn('DragDone Drop=',dbgs(Drop));
   {$ENDIF}
   Accepted:=false;
   if (DragObject = nil) or DragObject.Cancelling then Exit;
