@@ -4960,13 +4960,16 @@ var
   c: TUTF8Char;
 begin
   //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
-  if not IntfSendsUTF8KeyPress then begin
+  if not IntfSendsUTF8KeyPress then
+  begin
     // current interface does not (yet) send UTF8 key press notifications
     // -> emulate
-    if (Message.CharCode < %11000000) then begin
+    if (Message.CharCode < %11000000) then
+    begin
       c:=chr(Message.CharCode);
       IntfUTF8KeyPress(c,1,false);
-      if (length(c)<>1) or (c[1]<>chr(Message.CharCode)) then begin
+      if (length(c)<>1) or (c[1]<>chr(Message.CharCode)) then
+      begin
         // character changed
         if length(c)=1 then
           Message.CharCode:=ord(c[1])
@@ -4981,8 +4984,11 @@ begin
     end;
   end;
 
-  //debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
-  if DoKeyPress(Message) then 
+  {$ifdef VerboseKeyboard}
+    debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
+  {$endif}
+
+  if DoKeyPress(Message) then
     Message.Result := 1
   else
     {inherited}; // there is nothing to inherit
