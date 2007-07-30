@@ -3906,7 +3906,15 @@ begin
     if Result <> 0 then
       ReleaseCapture;
     if AHandle <> 0 then
-      TQtWidget(AHandle).grabMouse();
+    begin
+      {TODO: freezing workaround, ttabsheet kills mouse at all (X & app),
+       when we click onto empty tabsheet.
+       don't know for others , so it's ifdef-ed}
+      {$ifdef linux}
+      if not (TQtWidget(AHandle).LCLObject is TTabSheet) then
+      {$endif}
+        TQtWidget(AHandle).grabMouse();
+    end;
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
