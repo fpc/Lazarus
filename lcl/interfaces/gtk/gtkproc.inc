@@ -2233,6 +2233,8 @@ begin
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget)]);
 
   gdk_event_key_get_string(AEvent, EventString);
+
+  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
   FillChar(Msg, SizeOf(Msg), 0);
 
   Flags := 0;

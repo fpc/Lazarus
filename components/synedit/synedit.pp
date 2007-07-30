@@ -9211,7 +9211,10 @@ begin
     ptEnd.Y := Lines.Count;
     ptEnd.X := Length(Lines[ptEnd.Y - 1]) + 1;
     if bFromCursor then
-      if bBackward then ptEnd := CaretXY else ptStart := CaretXY;
+      if bBackward then
+        ptEnd := {$IFDEF SYN_LAZARUS}LogicalCaretXY{$ELSE}CaretXY{$ENDIF}
+      else
+        ptStart := {$IFDEF SYN_LAZARUS}LogicalCaretXY{$ELSE}CaretXY{$ENDIF};
     if bBackward then ptCurrent := ptEnd else ptCurrent := ptStart;
   end;
   // initialize the search engine
@@ -9245,9 +9248,9 @@ begin
         // Select the text, so the user can see it in the OnReplaceText event
         // handler or as the search result.
         BlockBegin := ptFoundStart;
-        if bBackward then CaretXY := BlockBegin;
+        if bBackward then LogicalCaretXY := BlockBegin;
         BlockEnd := ptFoundEnd;
-        if not bBackward then CaretXY := ptFoundEnd;
+        if not bBackward then LogicalCaretXY := ptFoundEnd;
         // If it's a 'search' only we can leave the procedure now.
         if not (bReplace or bReplaceAll) then exit;
         // Prompt and replace or replace all.  If user chooses to replace

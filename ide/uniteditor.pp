@@ -1168,7 +1168,7 @@ var
   OldOptions: TSynSearchOptions;
 begin
   if LazFindReplaceDialog.FindText = '' then
-      StartFindAndReplace(False)
+    StartFindAndReplace(False)
   else if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.fIncrementalSearchStartPos:=FEditor.LogicalCaretXY;
   end else begin
@@ -1243,7 +1243,8 @@ begin
   //debugln('TSourceEditor.DoFindAndReplace A LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'" ssoEntireScope=',dbgs(ssoEntireScope in LazFindReplaceDialog.Options),' ssoBackwards=',dbgs(ssoBackwards in LazFindReplaceDialog.Options));
   try
     Result:=EditorComponent.SearchReplace(
-      LazFindReplaceDialog.FindText,LazFindReplaceDialog.ReplaceText,LazFindReplaceDialog.Options);
+      LazFindReplaceDialog.FindText,LazFindReplaceDialog.ReplaceText,
+      LazFindReplaceDialog.Options);
   except
     on E: ERegExpr do begin
       MessageDlg(lisUEErrorInRegularExpression,
