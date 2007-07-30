@@ -1,6 +1,60 @@
+Index: compiler/defutil.pas
+===================================================================
+--- compiler/defutil.pas	(revision 8199)
++++ compiler/defutil.pas	(working copy)
+@@ -955,9 +955,14 @@
+             begin
+               if tprocvardef(def).is_methodpointer and
+                  (not tprocvardef(def).is_addressonly) then
+-                result := OS_64
++                if (sizeof(aint) = 4) then
++                  result:=OS_64
++                else if (sizeof(aint) = 8) then
++                  result:=OS_128
++                else
++                  internalerror(200707141)
+               else
+-                result := OS_ADDR;
++                result:=OS_ADDR;
+             end;
+           stringdef :
+             begin
+Index: compiler/x86_64/cpupara.pas
+===================================================================
+--- compiler/x86_64/cpupara.pas	(revision 8199)
++++ compiler/x86_64/cpupara.pas	(working copy)
+@@ -240,7 +240,7 @@
+           stringdef :
+             result:=(tstringdef(def).stringtype in [st_shortstring,st_longstring]);
+           procvardef :
+-            result:=(po_methodpointer in tprocvardef(def).procoptions);
++            result:=(po_methodpointer in tprocvardef(def).procoptions) and (target_info.system=system_x86_64_win64);
+           setdef :
+             result:=(tsetdef(def).settype<>smallset);
+         end;
+@@ -516,7 +516,18 @@
+                         begin
+                           paraloc:=hp.paraloc[side].add_location;
+                           paraloc^.loc:=LOC_REFERENCE;
+-                          if paracgsize in [OS_F32,OS_F64,OS_F80,OS_F128] then
++                          {Hack alert!!! We should modify int_cgsize to handle OS_128,
++                           however, since int_cgsize is called in many places in the
++                           compiler where only a few can already handle OS_128, fixing it
++                           properly is out of the question to release 2.2.0 in time. (DM)}
++                          if paracgsize=OS_128 then
++                            if paralen=8 then
++                              paraloc^.size:=OS_64
++                            else if paralen=16 then
++                              paraloc^.size:=OS_128
++                            else
++                              internalerror(200707143)
++                          else if paracgsize in [OS_F32,OS_F64,OS_F80,OS_F128] then
+                             paraloc^.size:=int_float_cgsize(paralen)
+                           else
+                             paraloc^.size:=int_cgsize(paralen);
 Index: compiler/version.pas
 ===================================================================
---- compiler/version.pas	(revision 7769)
+--- compiler/version.pas	(revision 8199)
 +++ compiler/version.pas	(working copy)
 @@ -30,7 +30,7 @@
         version_nr = '2';

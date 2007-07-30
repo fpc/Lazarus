@@ -4,7 +4,9 @@ http://wiki.lazarus.freepascal.org/Useful_changes_not_in_the_fixes_branch
 
 
 The file fpc-fixes_2_2.patch is a patch for the fixes_2_2 branch
-(http://svn.freepascal.org/svn/fpc/branches/fixes_2_2). 
+(http://svn.freepascal.org/svn/fpc/branches/fixes_2_2). This patch is only
+needed if you want to compile lazarus for x86_64-linux.
+
 Details about this patch can be found at 
 http://wiki.lazarus.freepascal.org/Useful_changes_not_in_the_fixes_branch#Description_of_the_fixes_2_2_patch
 
