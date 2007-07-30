@@ -6,7 +6,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
   OnClose = SelectPropertiesFormClose
   OnCreate = SelectPropertiesFormCreate
   PixelsPerInch = 96
-  Position = poDesktopCenter
+  Position = poScreenCenter
   HorzScrollBar.Page = 484
   VertScrollBar.Page = 461
   Left = 411

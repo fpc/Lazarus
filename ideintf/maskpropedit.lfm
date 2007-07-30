@@ -5,7 +5,7 @@ object MaskEditorForm: TMaskEditorForm
   ClientWidth = 507
   OnCreate = MaskEditorFormCreate
   PixelsPerInch = 96
-  Position = poDesktopCenter
+  Position = poScreenCenter
   HorzScrollBar.Page = 506
   VertScrollBar.Page = 238
   Left = 458

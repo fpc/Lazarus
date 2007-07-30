@@ -6,7 +6,7 @@ object IDEProgressDialog: TIDEProgressDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 112
-  Position = poDesktopCenter
+  Position = poScreenCenter
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 131
   Left = 286

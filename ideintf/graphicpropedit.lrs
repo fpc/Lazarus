@@ -1,16 +1,14 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TGraphicPropertyEditorForm','FORMDATA',[
   'TPF0'#26'TGraphicPropertyEditorForm'#25'GraphicPropertyEditorForm'#4'Left'#3
   +'"'#1#6'Height'#3'J'#1#3'Top'#3#153#0#5'Width'#3'r'#1#18'HorzScrollBar.Page'
   +#3'q'#1#18'VertScrollBar.Page'#3'I'#1#13'ActiveControl'#7#10'LoadButton'#7'C'
   +'aption'#6#17'Load Image Dialog'#21'Constraints.MinHeight'#3#180#0#20'Constr'
-  +'aints.MinWidth'#3#200#0#8'OnCreate'#7#10'FormCreate'#8'Position'#7#15'poDes'
-  +'ktopCenter'#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#6#6'Height'#3'!'#1#3'Top'
-  +#2#6#5'Width'#3'f'#1#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7
-  +'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#7'Picture'
-  +#8'TabOrder'#2#0#0#7'TButton'#10'LoadButton'#4'Left'#3#19#1#6'Height'#2#25#5
-  +'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6
+  +'aints.MinWidth'#3#200#0#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'poScr'
+  +'eenCenter'#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#6#6'Height'#3'!'#1#3'Top'#2
+  +#6#5'Width'#3'f'#1#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'ak'
+  +'Right'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#7'Picture'#8
+  +'TabOrder'#2#0#0#7'TButton'#10'LoadButton'#4'Left'#3#19#1#6'Height'#2#25#5'W'
+  +'idth'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6
   +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Load'#7'OnClick'#7#15'Load'
   +'ButtonClick'#8'TabOrder'#2#0#0#0#7'TButton'#10'SaveButton'#4'Left'#3#19#1#6
   +'Height'#2#25#3'Top'#2#31#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0

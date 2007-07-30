@@ -252,7 +252,7 @@ end;
 procedure TProcedureListForm.SetupGUI;
 begin
   self.KeyPreview     := True;
-  self.Position       := poDesktopCenter;
+  self.Position       := poScreenCenter;
 
   // assign resource strings to Captions and Hints
   self.Caption          := srkmecProcedureList;

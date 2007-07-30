@@ -365,7 +365,7 @@ begin
   Name:='OIAddToFavouriteDlg';
   Width:=300;
   Height:=150;
-  Position:=poDesktopCenter;
+  Position:=poScreenCenter;
   
   NoteLabel:=TLabel.Create(Self);
   with NoteLabel do begin

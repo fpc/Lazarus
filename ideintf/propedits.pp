@@ -4814,7 +4814,7 @@ begin
   Caption:='Filter editor';
   Height:=295;
   Width:=417;
-  Position:=poDesktopCenter;
+  Position:=poScreenCenter;
   BorderStyle:=bsDialog;
   StringGrid1:=TStringGrid.Create(Self);
   StringGrid1.ColCount:=2;

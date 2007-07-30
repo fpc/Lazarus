@@ -1,12 +1,10 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TCondForm','FORMDATA',[
   'TPF0'#9'TCondForm'#8'CondForm'#4'Left'#3'H'#1#6'Height'#3#238#0#3'Top'#3#31#1
   +#5'Width'#3'J'#1#18'HorzScrollBar.Page'#3'I'#1#19'HorzScrollBar.Range'#3#186
   +#0#18'VertScrollBar.Page'#3#237#0#19'VertScrollBar.Range'#3#157#0#13'ActiveC'
   +'ontrol'#7#7'ListBox'#7'Caption'#6#19'Conditional Defines'#7'OnClose'#7#13'C'
   +'ondFormCLOSE'#8'OnCreate'#7#14'CondFormCREATE'#9'OnDestroy'#7#11'FormDestro'
-  +'y'#6'OnShow'#7#8'FormShow'#8'Position'#7#15'poDesktopCenter'#0#6'TLabel'#10
+  +'y'#6'OnShow'#7#8'FormShow'#8'Position'#7#14'poScreenCenter'#0#6'TLabel'#10
   +'FirstLabel'#4'Left'#2#6#6'Height'#2#17#3'Top'#2#2#5'Width'#2'K'#7'Caption'#6
   +#11'&First test'#5'Color'#7#6'clNone'#12'FocusControl'#7#9'FirstTest'#11'Par'
   +'entColor'#8#0#0#6'TLabel'#11'SecondLabel'#21'AnchorSideTop.Control'#7#9'Fir'

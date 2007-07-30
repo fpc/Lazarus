@@ -2010,7 +2010,7 @@ begin
   end;
   Width:=520;
   Height:=240;
-  Position:=poDesktopCenter;
+  Position:=poScreenCenter;
   
   subitem_level:=1;
   

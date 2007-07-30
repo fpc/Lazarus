@@ -189,7 +189,7 @@ begin
   Caption:=lisMenuEditorMenuEditor;
   width:=600;
   height:=220;
-  position:=poDesktopCenter;
+  position:=poScreenCenter;
   
   Cmp2:=TScrollBox.Create(self);
   with Cmp2 do

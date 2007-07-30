@@ -13,7 +13,7 @@ object CondForm: TCondForm
   OnCreate = CondFormCREATE
   OnDestroy = FormDestroy
   OnShow = FormShow
-  Position = poDesktopCenter
+  Position = poScreenCenter
   object FirstLabel: TLabel
     Left = 6
     Height = 17

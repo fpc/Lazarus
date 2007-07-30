@@ -10,7 +10,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Constraints.MinHeight = 180
   Constraints.MinWidth = 200
   OnCreate = FormCreate
-  Position = poDesktopCenter
+  Position = poScreenCenter
   object GroupBox1: TGroupBox
     Left = 6
     Height = 289

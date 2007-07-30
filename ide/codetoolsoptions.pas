@@ -815,7 +815,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=485;
     Height:=435;
-    Position:=poDesktopCenter;
+    Position:=poScreenCenter;
     IDEDialogLayoutList.ApplyLayout(Self,485,435);
     Caption:=dlgCodeToolsOpts;
     OnResize:=@CodeToolsOptsDlgResize;
