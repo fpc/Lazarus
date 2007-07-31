@@ -41,7 +41,7 @@ uses
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   InterfaceBase,
-  LMessages, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
+  LMessages, FileUtil, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
   DynHashArray, GraphType, GraphMath, Graphics, Menus,
   GTKWinApiWindow, StdCtrls, ComCtrls,
   Dialogs, ExtDlgs, Themes, LResources, Math, GTKGlobals,

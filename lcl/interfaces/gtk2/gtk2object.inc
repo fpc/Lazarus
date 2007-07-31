@@ -644,6 +644,7 @@ procedure TGtk2WidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
 var
   FileSelWidget: PGtkFileChooser;
   HelpButton: PGtkWidget;
+  InitialFilename: String;
   //FrameWidget: PGtkWidget;
   //HBox: PGtkWidget;
   //FileDetailLabel: PGtkWidget;
@@ -694,9 +695,16 @@ begin
   if (OpenDialog is TPreviewFileDialog) then
     CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog), SelWidget);
 
-  // set initial filename
-  if OpenDialog.Filename<>'' then
-    gtk_file_chooser_set_filename(FileSelWidget, PChar(OpenDialog.Filename));
+  // set initial filename (gtk expects an absolute filename)
+  InitialFilename:=TrimFilename(OpenDialog.Filename);
+  if InitialFilename<>'' then begin
+    if (not FilenameIsAbsolute(InitialFilename))
+    and (OpenDialog.InitialDir<>'') then
+      InitialFilename:=TrimFilename(OpenDialog.InitialDir+PathDelim+InitialFilename);
+    if not FilenameIsAbsolute(InitialFilename) then
+      InitialFilename:=CleanAndExpandFilename(InitialFilename);
+    gtk_file_chooser_set_filename(FileSelWidget,PChar(InitialFilename));
+  end;
 
   //if InitialFilter <> 'none' then
   //  PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
@@ -742,7 +750,6 @@ begin
 *)
   if FileDialog.InitialDir <> '' then
     gtk_file_chooser_set_current_folder (SelWidget, pgChar( FileDialog.InitialDir) );
-  gtk_file_chooser_set_current_name (SelWidget, pgChar( FileDialog.FileName) );
 
   if FileDialog is TOpenDialog then
     InitializeOpenDialog(TOpenDialog(FileDialog), SelWidget);
@@ -750,9 +757,12 @@ begin
   if FileDialog.InheritsFrom(TSaveDialog) then begin
     if FileDialog.InitialDir <> '' then
       gtk_file_chooser_set_current_folder (SelWidget, PChar(FileDialog.InitialDir));
-    gtk_file_chooser_set_current_name (SelWidget, PChar(FileDialog.FileName));
   end;
 
+  if gtk_file_chooser_get_action(SelWidget) in
+    [GTK_FILE_CHOOSER_ACTION_SAVE,GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER]
+  then
+    gtk_file_chooser_set_current_name (SelWidget, pgChar( FileDialog.FileName) );
 
   InitializeCommonDialog(TCommonDialog(FileDialog), SelWidget);
 end;
