@@ -510,7 +510,7 @@ begin
     DebugLn('TCarbonWidgetSet.DrawFocusRect DC: ' + DbgS(DC) + ' Rect: ' + DbgS(Rect);
   {$ENDIF}
 
-  if not CheckDC(DC, 'DrawFrameControl') then Exit;
+  if not CheckDC(DC, 'DrawFocusRect') then Exit;
 
   TCarbonDeviceContext(DC).DrawFocusRect(Rect);
 
