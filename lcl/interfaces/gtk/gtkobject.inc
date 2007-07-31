@@ -2889,6 +2889,7 @@ var
 
   procedure RaiseSrcDrawableNil;
   begin
+    DebugLn(['RaiseSrcDrawableNil ',GetWidgetDebugReport(SrcDevContext.DCWidget)]);
     RaiseGDBException(Format('TGtkWidgetSet.StretchCopyArea SrcDC=%p Drawable=nil', [Pointer(SrcDevContext)]));
   end;
 

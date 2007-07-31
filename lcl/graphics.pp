@@ -1516,7 +1516,6 @@ type
     procedure FreeDC; // called by TBitmap.FreeCanvasContext
   protected
     procedure CreateHandle; override;
-    procedure DeselectHandles; override;
   public
     constructor Create(ABitmap: TBitmap);
     destructor Destroy; override;

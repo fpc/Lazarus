@@ -70,24 +70,6 @@ begin
   //  ' Handle=',DbgS(GetUpdatedHandle([csHandleValid])));
 end;
 
-procedure TBitmapCanvas.DeselectHandles;
-begin
-  if HandleAllocated then begin
-    FBitmap.FImage.BitmapCanvas := nil;
-    if FOldBitmapValid then begin
-      SelectObject(FHandle, FOldBitmap);
-      FOldBitmap:=0;
-      FOldBitmapValid:=false;
-    end;
-    if FOldPaletteValid then begin
-      SelectPalette(FHandle, FOldPalette, True);
-      FOldPalette:=0;
-      FOldPaletteValid:=false;
-    end;
-  end;
-  inherited DeselectHandles;
-end;
-
 {------------------------------------------------------------------------------
   Method: TBitmapCanvas.Destroy
   Params:  None
@@ -117,6 +99,17 @@ begin
   if FBitmap<>nil then begin
     OldHandle := FHandle;
     Handle := 0;
+    FBitmap.FImage.BitmapCanvas := nil;
+    if FOldBitmapValid then begin
+      SelectObject(OldHandle, FOldBitmap);
+      FOldBitmap:=0;
+      FOldBitmapValid:=false;
+    end;
+    if FOldPaletteValid then begin
+      SelectPalette(OldHandle, FOldPalette, True);
+      FOldPalette:=0;
+      FOldPaletteValid:=false;
+    end;
     DeleteDC(OldHandle);
   end else begin
     Handle:=0;

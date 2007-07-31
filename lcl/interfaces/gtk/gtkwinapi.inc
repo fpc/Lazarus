@@ -7700,7 +7700,7 @@ var
   g: TGDIType;
   CurGDIObject: PGDIObject;
 begin
-  //DebugLn('[TGtkWidgetSet.ReleaseDC] ',DbgS(DC),'  ',FDeviceContexts.Count);
+  //DebugLn(['[TGtkWidgetSet.ReleaseDC] ',DC,'  ',FDeviceContexts.Count]);
   Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
@@ -8035,7 +8035,7 @@ begin
 
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
   then begin
-    //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIObj=',DbgS(Cardinal(GDIObj),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion));
+    //DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' GDIObj=',dbghex(GDIObj),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion)]);
     case PGdiObject(GDIObj)^.GDIType of
 
       gdiBitmap:
@@ -8050,6 +8050,7 @@ begin
                 gbPixmap: Drawable := GDIPixmapObject;
                 gbBitmap: Drawable := GDIBitmapObject;
               else
+                DebugLn(['TGtkWidgetSet.SelectObject WARNING: unknown GDIBitmapType']);
                 Drawable := nil;
               end;
             if Drawable<>nil then begin
