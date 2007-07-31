@@ -733,7 +733,7 @@ function GetScreenHeightMM(GdkValue: boolean = false): integer;
 // clipboard
 function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
-  ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
+  ClipboardType: TClipboardType;  FormatID: PtrUInt): TGtkSelectionData;
 procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 function GdkAtomToStr(const Atom: TGdkAtom): string;
 

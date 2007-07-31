@@ -305,7 +305,7 @@ var
       exit;
     If Breaks.IndexOf(Pointer(PtrInt(Index))) >= Breaks.Count - 1 then
       exit;
-    Result := Ptrint(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]);
+    Result := integer(PtrUInt(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]));
   end;
 
   Function GetBreakablePoints(const Source : String) : TList;

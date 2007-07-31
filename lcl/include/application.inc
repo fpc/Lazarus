@@ -666,7 +666,7 @@ begin
                           +FHintHidePausePerChar*length(HintInfo.HintStr);
   HintInfo.HintWindowClass := HintWindowClass;
   HintInfo.HintData := nil;
-  CanShow := FHintControl.Perform(CM_HINTSHOW, 0, LParam(@HintInfo)) = 0;
+  CanShow := FHintControl.Perform(CM_HINTSHOW, 0, LParam(PtrUInt(@HintInfo))) = 0;
   if (HintInfo.HintWindowClass=nil)
   or (not HintInfo.HintWindowClass.InheritsFrom(THintWindow)) then
     HintInfo.HintWindowClass := HintWindowClass;

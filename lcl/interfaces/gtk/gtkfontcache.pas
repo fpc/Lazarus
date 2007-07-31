@@ -278,7 +278,7 @@ var
   LongFontName: string;
 begin
   FillChar(LogFont,SizeOf(LogFont),0);
-  LongFontName:=dbghex(PtrInt(TheGtkFont));
+  LongFontName:=dbghex(PtrUInt(TheGtkFont));
   Result:=Add(TheGtkFont,LogFont,LongFontName);
 end;
 

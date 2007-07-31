@@ -1555,7 +1555,7 @@ procedure TCanvas.RestoreHandleState;
 var
   DCIndex: LongInt;
 begin
-  DCIndex:=integer(PtrInt(FSavedHandleStates[FSavedHandleStates.Count-1]));
+  DCIndex:=integer(PtrUInt(FSavedHandleStates[FSavedHandleStates.Count-1]));
   FSavedHandleStates.Delete(FSavedHandleStates.Count-1);
   DeselectHandles;
   RestoreDC(Handle,DCIndex);

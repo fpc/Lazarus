@@ -698,7 +698,7 @@ begin
       and (Height>0) 
       then begin
         // set draw function to xor
-        ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[PtrInt(Pixmap) <> 1]];
+        ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[PtrUInt(Pixmap) <> 1]];
         //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
         //OldGdkFunction:=ForeGroundGCValues.thefunction;
         {$IFDEF VerboseCaret}

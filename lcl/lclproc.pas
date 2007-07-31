@@ -1577,7 +1577,7 @@ end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=HexStr(PtrInt(p),2*sizeof(PtrInt));
+  Result:=HexStr(PtrUInt(p),2*sizeof(PtrInt));
 end;
 
 function DbgS(const e: extended; MaxDecimals: integer): string;

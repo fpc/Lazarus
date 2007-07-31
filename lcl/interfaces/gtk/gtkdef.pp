@@ -304,7 +304,7 @@ type
 // clipboard
 type
   TClipboardEventData = record
-    TimeID: Cardinal;
+    TimeID: guint32;
     Waiting: boolean;
     Stopping: boolean;
     Data: TGtkSelectionData;

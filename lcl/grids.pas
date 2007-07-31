@@ -1537,7 +1537,7 @@ end;
 function TCustomGrid.GetRowHeights(Arow: Integer): Integer;
 begin
   if (aRow<RowCount) and (aRow>=0) then
-    Result:=PtrInt(FRows[aRow])
+    Result:=integer(PtrUInt(FRows[aRow]))
   else
     Result:=-1;
   if Result<0 then Result:=fDefRowHeight;
@@ -1718,7 +1718,7 @@ end;
 procedure TCustomGrid.InternalSetColWidths(aCol, aValue: Integer);
 begin
   if AValue<0 then Avalue:=-1;
-  if Avalue<>PtrInt(FCols[ACol]) then begin
+  if Avalue<>integer(PtrUInt(FCols[ACol])) then begin
     SetRawColWidths(ACol, Avalue);
     if not (csLoading in ComponentState) then begin
       VisualChange;
@@ -1867,7 +1867,7 @@ var
 begin
   if not Columns.Enabled or (aCol<FixedCols) then begin
     if (aCol<ColCount) and (aCol>=0) then
-      Result:=PtrInt(FCols[aCol])
+      Result:=integer(PtrUInt(FCols[aCol]))
     else
       Result:=-1;
     if result<0 then
@@ -1979,7 +1979,7 @@ end;
 procedure TCustomGrid.Setrowheights(Arow: Integer; Avalue: Integer);
 begin
   if AValue<0 then AValue:=-1;
-  if AValue<>PtrInt(FRows[ARow]) then begin
+  if AValue<>integer(PtrUInt(FRows[ARow])) then begin
     FRows[ARow]:=Pointer(PtrInt(AValue));
     VisualChange;
     if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
@@ -2318,7 +2318,7 @@ var
       if HsbVisible then begin
         HsbRange:=GridWidth + 2 - GetBorderWidth;
         if not (goSmoothScroll in Options) then begin
-          TW:= PtrInt(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
+          TW:= integer(PtrUInt(AccumWidth[MaxTopLeft.X]))-(HsbRange-ClientWidth);
           HsbRange:=HsbRange + TW - FixedWidth + 1;
         end;
       end else
@@ -2328,7 +2328,7 @@ var
       if VsbVisible then begin
         VSbRange:= GridHeight + 2 - GetBorderWidth;
         if not (goSmoothScroll in Options) then begin
-          TH:= PtrInt(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
+          TH:= integer(PtrUInt(accumHeight[MaxTopLeft.Y]))-(VsbRange-ClientHeight);
           VsbRange:=VsbRange + TH -FixedHeight + 1;
         end;
       end else
@@ -3271,8 +3271,8 @@ begin
     EditorGetValue;
 
   with FGCache do begin
-    TL:=  PtrInt(AccumWidth[ MaxTopLeft.X ]) - FixedWidth;
-    CTL:= PtrInt(AccumWidth[ FTopLeft.X ]) - FixedWidth + TLColOff;
+    TL:=  integer(PtrUInt(AccumWidth[ MaxTopLeft.X ])) - FixedWidth;
+    CTL:= integer(PtrUInt(AccumWidth[ FTopLeft.X ])) - FixedWidth + TLColOff;
   end;
 
   case message.ScrollCode of
@@ -3355,8 +3355,8 @@ begin
     EditorGetValue;
 
   with FGCache do begin
-    TL:=  PtrInt(AccumHeight[ MaxTopLeft.Y ]) - FixedHeight;
-    CTL:= PtrInt(AccumHeight[ FTopLeft.Y ]) - FixedHeight + TLRowOff;
+    TL:=  integer(PtrUInt(AccumHeight[ MaxTopLeft.Y ])) - FixedHeight;
+    CTL:= integer(PtrUInt(AccumHeight[ FTopLeft.Y ])) - FixedHeight + TLRowOff;
   end;
 
   case message.ScrollCode of
@@ -3530,7 +3530,7 @@ begin
       if FScrollBars in [ssHorizontal,ssBoth,ssAutoHorizontal,ssAutoBoth] then begin
         with FGCache do
           ScrollBarPosition(SB_HORZ,
-            PtrInt(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth );
+            integer(PtrUInt(AccumWidth[FTopLeft.x]))-TLColOff-FixedWidth );
       end;
     end;
 
@@ -3538,7 +3538,7 @@ begin
       if FScrollBars in [ssVertical,ssBoth,ssAutoVertical,ssAutoBoth] then begin
         with FGCache do
           ScrollBarPosition(SB_VERT,
-            PtrInt(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight);
+            integer(PtrUInt(AccumHeight[FTopLeft.y]))-TLRowOff-FixedHeight);
       end;
     end;
   end; {if FUpd...}
@@ -3645,8 +3645,8 @@ begin
 
   with FTopleft do begin
     if CheckCols and (X>FixedCols) then begin
-      W := FGCache.ScrollWidth-ColWidths[aCol]-PtrInt(FGCache.AccumWidth[aCol]);
-      while (x>FixedCols)and(W+PtrInt(FGCache.AccumWidth[x])>=ColWidths[x-1]) do
+      W := FGCache.ScrollWidth-ColWidths[aCol]-integer(PtrUInt(FGCache.AccumWidth[aCol]));
+      while (x>FixedCols)and(W+integer(PtrUInt(FGCache.AccumWidth[x]))>=ColWidths[x-1]) do
       begin
         Dec(x);
       end;
@@ -3655,8 +3655,8 @@ begin
 
   with FTopleft do begin
     if CheckRows and (Y > FixedRows) then begin
-      W := FGCache.ScrollHeight-RowHeights[aRow]-PtrInt(FGCache.AccumHeight[aRow]);
-      while (y>FixedRows)and(W+PtrInt(FGCache.AccumHeight[y])>=RowHeights[y-1]) do
+      W := FGCache.ScrollHeight-RowHeights[aRow]-integer(PtrUInt(FGCache.AccumHeight[aRow]));
+      while (y>FixedRows)and(W+integer(PtrUInt(FGCache.AccumHeight[y]))>=RowHeights[y-1]) do
       begin
         Dec(y);
       end;
@@ -4126,18 +4126,18 @@ begin
       if Fisical and (Offset>FixedWidth-1) then begin
         Index := FTopLeft.X;  // In scrolled view, then begin from FTopLeft col
         if (Index>=0) and (Index<ColCount) then
-          Offset:=Offset-FixedWidth+PtrInt(AccumWidth[Index])+TLColOff;
+          Offset:=Offset-FixedWidth+integer(PtrUInt(AccumWidth[Index]))+TLColOff;
         if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
           Index := ColCount-1;
           exit;
         end;
       end;
 
-      while Offset>(PtrInt(AccumWidth[Index])+GetColWidths(Index)-1) do
+      while Offset>(integer(PtrUInt(AccumWidth[Index]))+GetColWidths(Index)-1) do
         Inc(Index);
 
       Rest:=Offset;
-      if Index<>0 then Rest:=Offset-PtrInt(AccumWidth[Index]);
+      if Index<>0 then Rest:=Offset-integer(PtrUInt(AccumWidth[Index]));
 
     end else begin
 
@@ -4145,18 +4145,18 @@ begin
       if Fisical and (Offset>FixedHeight-1) then begin
         Index:=FTopLeft.Y;
         if (Index>=0) and (Index<RowCount) then
-          Offset:=Offset-FixedHeight+PtrInt(AccumHeight[Index])+TLRowOff;
+          Offset:=Offset-FixedHeight+integer(PtrUInt(AccumHeight[Index]))+TLRowOff;
         if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
           Index:=RowCount-1;
           Exit; // Out of Range
         end;
       end;
 
-      while Offset>(PtrInt(AccumHeight[Index])+GetRowHeights(Index)-1) do
+      while Offset>(integer(PtrUInt(AccumHeight[Index]))+GetRowHeights(Index)-1) do
         Inc(Index);
 
       Rest:=Offset;
-      if Index<>0 then Rest:=Offset-PtrInt(AccumHeight[Index]);
+      if Index<>0 then Rest:=Offset-integer(PtrUInt(AccumHeight[Index]));
 
     end;
   end;
@@ -4175,10 +4175,10 @@ var
 begin
   with FGCache do begin
     if IsCol then begin
-      StartPos:=PtrInt(AccumWidth[index]);
+      StartPos:=integer(PtrUInt(AccumWidth[index]));
       Dim:=GetColWidths(index);
     end else begin
-      StartPos:=PtrInt(AccumHeight[index]);
+      StartPos:=integer(PtrUInt(AccumHeight[index]));
       Dim:= GetRowHeights(index);
     end;
     StartPos := StartPos + GetBorderWidth;
@@ -4188,10 +4188,10 @@ begin
     end;
     if IsCol then begin
       if index>=FFixedCols then
-        StartPos:=StartPos-PtrInt(AccumWidth[FTopLeft.X]) + FixedWidth -  TLColOff;
+        StartPos:=StartPos-integer(PtrUInt(AccumWidth[FTopLeft.X])) + FixedWidth -  TLColOff;
     end else begin
       if index>=FFixedRows then
-        StartPos:=StartPos-PtrInt(AccumHeight[FTopLeft.Y]) + FixedHeight - TLRowOff;
+        StartPos:=StartPos-integer(PtrUInt(AccumHeight[FTopLeft.Y])) + FixedHeight - TLRowOff;
     end;
     EndPos:=StartPos + Dim;
   end;
@@ -4725,7 +4725,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
     if IsColumn then DefValue := DefaultColWidth
     else             DefValue := DefaultRowHeight;
     for i:=0 to L1.Count-1 do begin
-      Value := PtrInt(L1[i]);
+      Value := integer(PtrUInt(L1[i]));
       Result := (Value = DefValue) or (Value<0);
       if not Result then
         break;
@@ -6290,7 +6290,7 @@ begin
 
     j:=0;
     For i:=0 to ColCount-1 do begin
-      k:=PtrInt(FCols[i]);
+      k:=integer(PtrUInt(FCols[i]));
       if (k>=0)and(k<>DefaultColWidth) then begin
         inc(j);
         cfg.SetValue('grid/design/columns/columncount',j);
@@ -6300,7 +6300,7 @@ begin
     end;
     j:=0;
     For i:=0 to RowCount-1 do begin
-      k:=PtrInt(FRows[i]);
+      k:=integer(PtrUInt(FRows[i]));
       if (k>=0)and(k<>DefaultRowHeight) then begin
         inc(j);
         cfg.SetValue('grid/design/rows/rowcount',j);

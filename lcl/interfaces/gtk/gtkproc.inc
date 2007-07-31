@@ -7467,9 +7467,9 @@ end;
   ! While waiting the messagequeue will be processed !
  ------------------------------------------------------------------------------}
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
-  ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
+  ClipboardType: TClipboardType; FormatID: PtrUInt): TGtkSelectionData;
   
-  function TimeIDExists(TimeID: cardinal): boolean;
+  function TimeIDExists(TimeID: guint32): boolean;
   var
     i: Integer;
   begin
@@ -7503,28 +7503,27 @@ begin
       if TimeID>1010 then exit;
     end;
     New(c);
+    FillChar(c^,SizeOf(c),0);
     c^.TimeID:=TimeID;
-    FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
-    {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID), ' Sanity=', IntToStr(Sanity));
-    {$ENDIF}
-    if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
-                             FormatID, TimeID)<>GdkFalse
-    then begin
-      try
+    try
+      {$IFDEF DEBUG_CLIPBOARD}
+      DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID), ' Sanity=', IntToStr(Sanity));
+      {$ENDIF}
+      if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
+                               FormatID, TimeID)<>GdkFalse
+      then begin
         if not WaitForClipboardAnswer(c) then exit;
         Result:=c^.Data;
-      finally
-        ClipboardSelectionData.Remove(c);
-        Dispose(c);
+        break;
       end;
-      break;
+    finally
+      ClipboardSelectionData.Remove(c);
+      Dispose(c);
     end;
-    ClipboardSelectionData.Remove(c);
-    Dispose(c);
     Inc(sanity);
-  until false or (sanity > 1000000);
+    sleep(100);
+  until false or (sanity > 10);
 end;
 
 {------------------------------------------------------------------------------
