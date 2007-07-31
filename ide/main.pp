@@ -1330,39 +1330,46 @@ var
   MsgResult: integer;
 begin
   CanClose:=false;
-  // stop debugging/compiling/...
-  if not DoResetToolStatus(true) then exit;
+  FCheckingFilesOnDisk:=true;
+  try
+    // stop debugging/compiling/...
+    if not DoResetToolStatus(true) then exit;
 
-  // check foreign windows
-  if not CloseQueryIDEWindows then exit;
+    // check foreign windows
+    if not CloseQueryIDEWindows then exit;
 
-  // check packages
-  if (PkgBoss.DoSaveAllPackages([psfAskBeforeSaving])<>mrOk)
-  or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then exit;
+    // check packages
+    if (PkgBoss.DoSaveAllPackages([psfAskBeforeSaving])<>mrOk)
+    or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then exit;
 
-  // check project
-  if SomethingOfProjectIsModified then begin
-    MsgResult:=QuestionDlg(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
-      [mrYes, lisMenuSave, mrNo, lisDiscardChanges,
-       mrAbort, lisDoNotCloseTheIDE],
-      0);
-    case MsgResult of
+    // check project
+    if SomethingOfProjectIsModified then begin
+      MsgResult:=QuestionDlg(lisProjectChanged,
+        Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
+        [mrYes, lisMenuSave, mrNo, lisDiscardChanges,
+         mrAbort, lisDoNotCloseTheIDE],
+        0);
+      case MsgResult of
 
-    mrYes:
-      begin
-        CanClose := DoSaveProject([]) <> mrAbort;
-        if not CanClose then exit;
-      end;
+      mrYes:
+        begin
+          CanClose := DoSaveProject([]) <> mrAbort;
+          if not CanClose then exit;
+        end;
 
-    mrCancel, mrAbort:
-      begin
-        Exit;
+      mrCancel, mrAbort:
+        begin
+          Exit;
+        end;
       end;
     end;
+
+    CanClose:=(DoCloseProject <> mrAbort);
+  finally
+    FCheckingFilesOnDisk:=false;
+    if not CanClose then
+      DoCheckFilesOnDisk(false);
   end;
-  
-  CanClose:=(DoCloseProject <> mrAbort);
 end;
 
 {------------------------------------------------------------------------------}
