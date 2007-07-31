@@ -1080,7 +1080,6 @@ begin
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick:
       begin
-        WriteLn('QEventMouseButtonDblClick');
         SlotMouse(Event);
         Result := StopMouseEventsProcessing;
       end;
