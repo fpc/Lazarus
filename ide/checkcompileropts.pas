@@ -81,7 +81,8 @@ type
     function CheckMissingFPCPPUs(PPUs: TStrings): TModalResult;
     function CheckCompilerDate(const CompilerFilename: string;
                                PPUs: TStrings): TModalResult;
-    function CheckForAmbiguousPPUs(PPUs: TStrings): TModalResult;
+    function CheckForAmbiguousPPUs(SearchForPPUs: TStrings;
+                                   SearchInPPUs: TStrings = nil): TModalResult;
     function CheckFPCUnitPathsContainSources(const FPCCfgUnitPath: string
                                               ): TModalResult;
     function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
@@ -612,25 +613,36 @@ begin
   Result:=mrOk;
 end;
 
-function TCheckCompilerOptsDlg.CheckForAmbiguousPPUs(PPUs: TStrings
-  ): TModalResult;
+function TCheckCompilerOptsDlg.CheckForAmbiguousPPUs(SearchForPPUs: TStrings;
+  SearchInPPUs: TStrings): TModalResult;
 var
   i: Integer;
   j: Integer;
   CurUnitName: String;
   AnotherUnitName: String;
 begin
+  if SearchInPPUs=nil then
+    SearchInPPUs:=SearchForPPUs;
+
   // resolve links and remove doubles
-  ResolveLinksInFileList(PPUs,true);
-  RemoveDoubles(PPUs);
-  for i:=1 to PPUs.Count-1 do begin
-    CurUnitName:=ExtractFileNameOnly(PPUs[i]);
-    j:=i-1;
-    while j>0 do begin
-      AnotherUnitName:=ExtractFileNameOnly(PPUs[j]);
+  ResolveLinksInFileList(SearchForPPUs,true);
+  RemoveDoubles(SearchForPPUs);
+  if SearchForPPUs<>SearchInPPUs then begin
+    ResolveLinksInFileList(SearchInPPUs,true);
+    RemoveDoubles(SearchInPPUs);
+  end;
+  
+  for i:=1 to SearchForPPUs.Count-1 do begin
+    CurUnitName:=ExtractFileNameOnly(SearchForPPUs[i]);
+    if SearchForPPUs=SearchInPPUs then
+      j:=i-1
+    else
+      j:=SearchInPPUs.Count-1;
+    while j>=0 do begin
+      AnotherUnitName:=ExtractFileNameOnly(SearchInPPUs[j]);
       if CompareText(AnotherUnitName,CurUnitName)=0 then begin
         // unit exists twice
-        AddWarning('ppu exists twice: '+PPUs[i]+', '+PPUs[j]);
+        AddWarning('ppu exists twice: '+SearchForPPUs[i]+', '+SearchInPPUs[j]);
         break;
       end;
       dec(j);
@@ -746,6 +758,10 @@ begin
 
     // check if there are ambiguous ppu in project/package unit path
     Result:=CheckForAmbiguousPPUs(Target_PPUs);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
+    // check if there are ambiguous ppu in fpc and project/package unit path
+    Result:=CheckForAmbiguousPPUs(FPC_PPUs,Target_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // compile bogus file
