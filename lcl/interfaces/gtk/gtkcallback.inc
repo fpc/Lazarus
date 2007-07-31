@@ -3347,7 +3347,7 @@ end;
   internal record and buffer (ClipboardSelectionData)
  ------------------------------------------------------------------------------}
 procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
-  SelectionData: PGtkSelectionData; TimeID: cardinal; Data: Pointer); cdecl;
+  SelectionData: PGtkSelectionData; TimeID: guint32; Data: Pointer); cdecl;
 var TempBuf: Pointer;
   c: PClipboardEventData;
   i: integer;

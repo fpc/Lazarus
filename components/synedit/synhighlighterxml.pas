@@ -868,7 +868,7 @@ end;
 
 procedure TSynXMLSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 procedure TSynXMLSyn.ReSetRange;

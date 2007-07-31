@@ -1300,7 +1300,7 @@ end;
 
 procedure TSynJavaSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 function TSynJavaSyn.GetToken: String;

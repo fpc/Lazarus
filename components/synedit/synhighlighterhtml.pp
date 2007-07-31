@@ -2271,7 +2271,7 @@ end;
 
 procedure TSynHTMLSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 procedure TSynHTMLSyn.ReSetRange;

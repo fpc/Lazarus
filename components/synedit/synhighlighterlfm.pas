@@ -540,7 +540,7 @@ end;
 
 procedure TSynLFMSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 function TSynLFMSyn.GetIdentChars: TSynIdentChars;

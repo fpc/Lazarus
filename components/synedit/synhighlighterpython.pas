@@ -1237,7 +1237,7 @@ end;
 
 procedure TSynPythonSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 function TSynPythonSyn.GetIdentChars: TSynIdentChars;

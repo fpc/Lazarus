@@ -1311,7 +1311,7 @@ begin
     begin
       SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
       {$IFDEF FPC}
-      Len := PtrInt(pRun) - PtrInt(pCrnt);
+      Len := PtrUInt(pRun) - PtrUInt(pCrnt);
       {$ELSE}
       Len := Integer(pRun) - Integer(pCrnt);
       {$ENDIF}
@@ -1335,7 +1335,7 @@ begin
     GetDBCharRange;
     SetTextCharacterExtra(StockDC, FCharExtra + FCrntDBDx);
     {$IFDEF FPC}
-    Len := PtrInt(pRun) - PtrInt(pCrnt);
+    Len := PtrUInt(pRun) - PtrUInt(pCrnt);
     {$ELSE}
     Len := Integer(pRun) - Integer(pCrnt);
     {$ENDIF}

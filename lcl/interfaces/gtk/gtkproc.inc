@@ -7503,7 +7503,7 @@ begin
       if TimeID>1010 then exit;
     end;
     New(c);
-    FillChar(c^,SizeOf(c),0);
+    FillChar(c^,SizeOf(TClipboardEventData),0);
     c^.TimeID:=TimeID;
     ClipboardSelectionData.Add(c);
     try

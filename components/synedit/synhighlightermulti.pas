@@ -351,7 +351,7 @@ begin
   iSchemeIndex := fCurrScheme +2;
   Assert( iSchemeIndex <= MaxSchemeCount );
   if iHL <> nil then begin
-    iSchemeRange := PtrInt( iHL.GetRange );
+    iSchemeRange := PtrUInt( iHL.GetRange );
     Assert( (iSchemeRange <= MaxSchemeRange) or (iHL is TSynMultiSyn) );
   end else
     iSchemeRange := 0;
@@ -656,7 +656,7 @@ var
 begin
   if Value = nil then
     Exit;
-  iSchemeRange := PtrInt(Value);
+  iSchemeRange := PtrUInt(Value);
   fCurrScheme := (iSchemeRange and MaxSchemeCount) -2;
   iSchemeRange := iSchemeRange shr SchemeIndexSize;
   if (CurrScheme < 0) then begin

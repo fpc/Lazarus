@@ -761,7 +761,7 @@ end;
 
 procedure TSynUNIXShellScriptSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 procedure TSynUNIXShellScriptSyn.SetSecondKeys(const Value: TStrings);

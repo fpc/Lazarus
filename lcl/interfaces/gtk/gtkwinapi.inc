@@ -272,19 +272,20 @@ function TGtkWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 type
   PGdkAtom = ^TGdkAtom;
-var FormatAtom, FormatTry: Cardinal;
+var
+  FormatAtom, FormatTry: TGdkAtom;
   SupportedCnt, i: integer;
   SupportedFormats: PGdkAtom;
   SelData: TGtkSelectionData;
   CompoundTextList: PPGChar;
   CompoundTextCount: integer;
 
-  function IsFormatSupported(Format: cardinal): boolean;
+  function IsFormatSupported(CurFormat: TGdkAtom): boolean;
   var a: integer;
-     AllID: cardinal;
+     AllID: TGdkAtom;
   begin
-    //DebugLn('IsFormatSupported Format=',dbgs(Format),' SupportedCnt=',dbgs(SupportedCnt));
-    if Format=0 then begin
+    //DebugLn('IsFormatSupported CurFormat=',dbgs(CurFormat),' SupportedCnt=',dbgs(SupportedCnt));
+    if CurFormat=0 then begin
       Result:=false;
       exit;
     end;
@@ -316,7 +317,7 @@ var FormatAtom, FormatTry: Cardinal;
       end;}
     end;
     a:=SupportedCnt-1;
-    while (a>=0) and (SupportedFormats[a]<>Format) do dec(a);
+    while (a>=0) and (SupportedFormats[a]<>CurFormat) do dec(a);
     Result:=(a>=0);
   end;
 
@@ -437,21 +438,22 @@ function TGtkWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
 type
   PGdkAtom = ^TGdkAtom;
-var AllID: cardinal;
+var
+  AllID: TGdkAtom;
   FormatAtoms: PGdkAtom;
   Cnt, i: integer;
   AddTextPlain: boolean;
   SelData: TGtkSelectionData;
 
-  function IsFormatSupported(Format: cardinal): boolean;
+  function IsFormatSupported(CurFormat: TGdkAtom): boolean;
   var a: integer;
   begin
-    if Format<>0 then begin
+    if CurFormat<>0 then begin
       for a:=0 to Cnt-1 do begin
         {$IfDef DEBUG_CLIPBOARD}
-        DebugLn('  IsFormatSupported ',dbgs(Format),'  ',dbgs(FormatAtoms[a]));
+        DebugLn('  IsFormatSupported ',dbgs(CurFormat),'  ',dbgs(FormatAtoms[a]));
         {$EndIf}
-        if FormatAtoms[a]=Format then begin
+        if FormatAtoms[a]=CurFormat then begin
           Result:=true;
           exit;
         end;
@@ -466,7 +468,7 @@ var AllID: cardinal;
     for Format:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       if (Format in Formats)
       and (IsFormatSupported(
-                gdk_atom_intern(PGChar(GtkClipboardFormatName[Format]),GdkTrue)))
+               gdk_atom_intern(PGChar(GtkClipboardFormatName[Format]),GdkTrue)))
       then begin
         Result:=true;
         exit;
@@ -577,7 +579,7 @@ function TGtkWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   Formats: PClipboardFormat): boolean;
 var TargetEntries: PGtkTargetEntry;
 
-  function IsFormatSupported(FormatID: cardinal): boolean;
+  function IsFormatSupported(FormatID: TGdkAtom): boolean;
   var i: integer;
   begin
     if FormatID=0 then begin
@@ -632,11 +634,9 @@ begin
     end;
 
     // registering targets
-
     FreeClipboardTargetEntries(ClipboardType);
 
-    // the gtk-interface adds automatically some gtk formats the lcl does not
-    // know
+    // the gtk-interface adds automatically some gtk formats unknown to the lcl
     ExpFormatCnt:=FormatCount;
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       ClipboardExtraGtkFormats[ClipboardType][gtkFormat]:=false;

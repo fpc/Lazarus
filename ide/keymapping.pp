@@ -235,7 +235,7 @@ begin
     exit;
   Data:=VirtualKeyStrings.Data[s];
   if Data<>nil then
-    Result:=word(PtrInt(Data));
+    Result:=word(PtrUInt(Data));
 end;
 
 procedure GetDefaultKeyForCommand(Command: word;

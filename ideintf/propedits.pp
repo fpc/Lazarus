@@ -1497,7 +1497,7 @@ begin
     PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
     // read property count
     CurCount:=PWord(PropInfo)^;
-    inc(PtrInt(PropInfo),SizeOf(Word));
+    inc(PtrUInt(PropInfo),SizeOf(Word));
     debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
 
     {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
@@ -2086,7 +2086,7 @@ begin
   case (PropInfo^.PropProcs) and 3 of
     ptfield:
       begin
-        Value:=PMethod(Pointer(Instance)+PtrInt(PropInfo^.GetProc));
+        Value:=PMethod(Pointer(Instance)+PtrUInt(PropInfo^.GetProc));
         if Value<>nil then
           Result:=Value^;
       end;
@@ -2097,7 +2097,7 @@ begin
           AMethod.Code:=PropInfo^.GetProc
         else
           AMethod.Code:=PPointer(Pointer(Instance.ClassType)
-                        +Ptrint(PropInfo^.GetProc))^;
+                        +PtrUInt(PropInfo^.GetProc))^;
         AMethod.Data:=Instance;
         if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
           Result:=TGetMethodProcIndex(AMethod)(PropInfo^.Index)
@@ -2351,10 +2351,10 @@ begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
-      Changed:=Changed or (GetOrdProp(Instance,PropInfo)<>PtrInt(NewValue));
+      Changed:=Changed or (GetOrdProp(Instance,PropInfo)<>PtrInt(PtrUInt(NewValue)));
   if Changed then begin
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetOrdProp(Instance,PropInfo,PtrInt(NewValue));
+      with FPropList^[I] do SetOrdProp(Instance,PropInfo,PtrInt(PtrUInt(NewValue)));
     Modified;
   end;
 end;

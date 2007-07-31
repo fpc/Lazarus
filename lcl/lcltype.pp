@@ -2265,7 +2265,7 @@ type
 //------------------------------------------------------------------------------
 // clipboard
 type
-  TClipboardFormat = cardinal;
+  TClipboardFormat = PtrUInt;
   PClipboardFormat = ^TClipboardFormat;
 
   TClipboardRequestEvent = procedure(const RequestedFormatID: TClipboardFormat;

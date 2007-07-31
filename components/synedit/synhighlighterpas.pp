@@ -550,7 +550,7 @@ begin
     end;
     if IsUnderScoreOrNumberChar[ToHash^] then
       inc(ToHash);
-    fStringLen := PtrInt(ToHash) - PtrInt(Start);
+    fStringLen := PtrUInt(ToHash) - PtrUInt(Start);
     //if CompareText(copy(fLineStr,fToIdent+1,fStringLen),'bitpacked')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent+1,fStringLen)+'='+dbgs(Result));
   end else begin
     fStringLen := 0;
@@ -1779,9 +1779,9 @@ procedure TSynPasSyn.SetRange(Value: Pointer);
 begin
   {$IFDEF SYN_LAZARUS}
   inherited SetRange(Value);
-  fRange := TRangeState(PtrInt(CodeFoldRange.RangeType));
+  fRange := TRangeState(PtrUInt(CodeFoldRange.RangeType));
   {$ELSE}
-  fRange := TRangeState(PtrInt(Value));
+  fRange := TRangeState(PtrUInt(Value));
   {$ENDIF}
 end;
 
@@ -1820,7 +1820,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 function TSynPasSyn.TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
 begin
-  Result:=TPascalCodeFoldBlockType(PtrInt(inherited TopCodeFoldBlockType));
+  Result:=TPascalCodeFoldBlockType(PtrUInt(inherited TopCodeFoldBlockType));
 end;
 
 function TSynPasSyn.StartPascalCodeFoldBlock(

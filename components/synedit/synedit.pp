@@ -2314,7 +2314,6 @@ begin
   if Button=mbMiddle then begin
     if ssDouble in Shift then Exit;
     PrimarySelText:=PrimarySelection.AsText;
-    //debugln('TCustomSynEdit.MouseDown PrimarySelText="',DbgStr(PrimarySelText),'"');
   end;
   {$ENDIF}
   inherited MouseDown(Button, Shift, X, Y);

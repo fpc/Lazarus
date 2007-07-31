@@ -239,7 +239,7 @@ procedure GtkDragDataReceived(widget:PGtkWidget; context:PGdkDragContext;
 
 // clipboard
 procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
-  SelectionData: PGtkSelectionData; TimeID: cardinal; Data: Pointer); cdecl;
+  SelectionData: PGtkSelectionData; TimeID: guint32; Data: Pointer); cdecl;
 procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
   SelectionData: PGtkSelectionData; Info: cardinal; TimeID: cardinal;
   Data: Pointer); cdecl;
