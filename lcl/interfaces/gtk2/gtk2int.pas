@@ -74,6 +74,9 @@ type
 
     function CreateThemeServices: TThemeServices; override;
   public
+    constructor Create;
+    destructor Destroy; override;
+    
     function LCLPlatform: TLCLPlatform; override;
 
     function AppHandle: Thandle; override;

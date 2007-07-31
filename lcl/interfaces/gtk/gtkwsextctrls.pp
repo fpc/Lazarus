@@ -255,7 +255,7 @@ begin
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
   GTKWidgetSet.FinishComponentCreate(AWinControl, AWidget);
-  Result := THandle(AWidget);
+  Result := TLCLIntfHandle(AWidget);
 end;
 
 class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;

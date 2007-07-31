@@ -91,6 +91,15 @@ var
   // Map a TCursor (<= 0 = HCursor) or a HCursor to a PGDKCursor
   MMouseCursorMap: TMap;
 
+{$IFDEF Gtk2}
+var
+  im_context: PGtkIMContext = nil;
+  im_context_widget: PGtkWidget = nil;
+  im_context_string: string = '';
+{$ENDIF}
+
+procedure ResetDefaultIMContext;
+
 var
   LastFileSelectRow : gint;
 
@@ -382,7 +391,7 @@ var
   // each widget that should be to the LCL bounds is stored here
   // (hasharray of PGtkWidget)
   FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
-
+  
 const
   aGtkJustification: array[TAlignment] of TGTKJustification =
     (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
@@ -491,6 +500,18 @@ begin
   CurrentSentPaintMessageTarget:=nil;
 end;
 
+procedure ResetDefaultIMContext;
+begin
+  {$IFDEF Gtk2}
+  if (im_context<>nil) and (im_context_widget<>nil) then begin
+    gtk_im_context_reset(im_context);
+    gtk_im_context_set_client_window(im_context,nil);
+  end;
+  im_context_widget:=nil;
+  im_context_string:='';
+  {$ENDIF}
+end;
+
 procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;
   ToEnum:boolean=true; CrPart:boolean=false; CcPart:boolean=false);
 var
@@ -574,7 +595,6 @@ begin
   AddCharsetEncoding(FCS_ISO_8859_9,      'iso8859',  '9');
   AddCharsetEncoding(FCS_ISO_8859_10,     'iso8859',  '10');
   AddCharsetEncoding(FCS_ISO_8859_15,     'iso8859',  '15');
-  
 end;
 
 initialization

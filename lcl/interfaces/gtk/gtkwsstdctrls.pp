@@ -411,7 +411,7 @@ begin
          if GList = nil then
            Result := -1
          else
-           Result := PtrInt(GList^.Data);
+           Result := PtrUInt(GList^.Data);
        end;
   end;
   {!$EndIf}
@@ -459,7 +459,7 @@ begin
         Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
         GList:= PGtkCList(Widget)^.selection;
         while Assigned(GList) do begin
-          if PtrInt(GList^.data) = AIndex then begin
+          if PtrUInt(GList^.data) = AIndex then begin
             Result:=true;
             exit;
           end else

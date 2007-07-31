@@ -252,6 +252,13 @@ begin
   end;
 end;
 
+procedure gtk_commit_cb (context: PGtkIMContext; const Str: Pgchar;
+  Data: Pointer); cdecl;
+begin
+  //DebugLn(['gtk_commit_cb ',dbgstr(Str),'="',Str,'"']);
+  im_context_string:=Str;
+end;
+
 {$IfNDef GTK2_2}
 Procedure gtkTreeSelectionCountSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
                                   iter : PGtkTreeIter; data : PGint); cdecl;
@@ -832,6 +839,22 @@ end;
 function TGtk2WidgetSet.CreateThemeServices: TThemeServices;
 begin
   Result := TGtk2ThemeServices.Create;
+end;
+
+constructor TGtk2WidgetSet.Create;
+begin
+  inherited Create;
+  im_context:=gtk_im_multicontext_new;
+  g_signal_connect (G_OBJECT (im_context), 'commit',
+    G_CALLBACK (@gtk_commit_cb), nil);
+end;
+
+destructor TGtk2WidgetSet.Destroy;
+begin
+  g_object_unref(im_context);
+  im_context:=nil;
+  im_context_widget:=nil;
+  inherited Destroy;
 end;
 
 function TGtk2WidgetSet.LCLPlatform: TLCLPlatform;

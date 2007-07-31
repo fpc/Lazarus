@@ -319,7 +319,9 @@ begin
   {$IFDEF EventTrace}
   EventTrace('activate', data);
   {$ENDIF}
-
+  
+  ResetDefaultIMContext;
+  
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
   FillChar(Mess,SizeOf(Mess),#0);
@@ -595,6 +597,10 @@ begin
   EventTrace('activate after', data);
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
+
+  ResetDefaultIMContext;
+  UpdateMouseCaptureControl;
+
   FillChar(Mess,SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
   write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
@@ -626,7 +632,6 @@ begin
   DebugLn('');
   {$ENDIF}
 
-  UpdateMouseCaptureControl;
   Mess.Msg := LM_ACTIVATE;
   Mess.Active:=true;
   Mess.Minimized:=false;
@@ -660,6 +665,7 @@ begin
   else
     DebugLn(' LCLObject=nil');
   {$ENDIF}
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
   Mess.Msg := LM_DEACTIVATE;
@@ -785,7 +791,9 @@ begin
   DebugLn('');
   {$ENDIF}
 
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
+
   //TODO: fill in old focus
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SETFOCUS;
@@ -884,6 +892,7 @@ begin
   DebugLn('');
   {$ENDIF}
 
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
   FillChar(Mess,SizeOf(Mess),0);
@@ -1516,6 +1525,7 @@ begin
   EventTrace('Mouse button Press', data);
   {$ENDIF}
 
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
@@ -1568,6 +1578,7 @@ begin
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)));
   {$ENDIF}
 
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -1738,6 +1749,7 @@ begin
   //' EventMask=',DbgS(gdk_window_get_events(Widget^.Window)),
   //' GDK_BUTTON_RELEASE_MASK=',DbgS(GDK_BUTTON_RELEASE_MASK));
 
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
@@ -1783,6 +1795,7 @@ begin
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
 
+  ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
@@ -2584,7 +2597,7 @@ begin
   Mess.Msg := LM_NOTIFY;
   FillChar(NMHdr,SizeOf(NMHdr),0);
   NMHdr.code := TCN_SELCHANGING;
-  NMHdr.hwndfrom := PtrInt(widget);
+  NMHdr.hwndfrom := PtrUInt(widget);
   NMHdr.idfrom := pagenum;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   Mess.Result := 0;
@@ -2599,7 +2612,7 @@ begin
   Mess.Msg := LM_NOTIFY;
   FillChar(NMHdr,SizeOf(NMHdr),0);
   NMHdr.code := TCN_SELCHANGE;
-  NMHdr.hwndfrom := ptrint(widget);
+  NMHdr.hwndfrom := PtrUInt(widget);
   NMHdr.idfrom := pagenum;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   DeliverMessage(Data, Mess);

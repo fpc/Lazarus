@@ -1974,6 +1974,7 @@ var
       AEvent^.length := 0;
     end;
     {MWE:.$EndIf}
+    ResetDefaultIMContext;
 
     AEvent^.KeyVal := 0;
   end;
@@ -2177,6 +2178,24 @@ var
     {$ENDIF}
   end;
   
+  procedure CheckDeadKey;
+  begin
+    if ABeforeEvent then begin
+      {$IFDEF Gtk2}
+      if im_context_widget<>TargetWidget then begin
+        //DebugLn(['CheckDeadKey init im_context ',GetWidgetDebugReport(TargetWidget)]);
+        ResetDefaultIMContext;
+        im_context_widget:=TargetWidget;
+        gtk_im_context_set_client_window(im_context,GetControlWindow(TargetWidget));
+        //DebugLn(['CheckDeadKey im_context initialized']);
+      end;
+      // Note: gtk_im_context_filter_keypress understands keypress and keyrelease
+      gtk_im_context_filter_keypress (im_context, AEvent);
+      //DebugLn(['CheckDeadKey DeadKey=',DeadKey,' str="',im_context_string,'"']);
+      {$ENDIF}
+    end;
+  end;
+  
 begin
   Result := CallBackDefaultReturn;
 
@@ -2184,9 +2203,9 @@ begin
   HandledByLCL := KeyEventWasHandledByLCL(AEvent, ABeforeEvent);
 
   {$IFDEF VerboseKeyboard}
-  DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TControl(AData)),
-    ' ',dbgs(AEvent^.{$IFDEF GTK1}theType{$ELSE}_Type{$ENDIF}),' Widget=',GetWidgetClassName(AWidget),
-    ' Before=',dbgs(ABeforeEvent),' HandledByLCL=',dbgs(AHandledByLCL));
+  DebugLn(['[HandleGTKKeyUpDown] ',DbgSName(TControl(AData)),
+    ' ',(AEvent^.{$IFDEF GTK1}theType{$ELSE}_Type{$ENDIF}),' Widget=',GetWidgetClassName(AWidget),
+    ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
   {$ENDIF}
   
   // handle every key event only once
@@ -2195,6 +2214,7 @@ begin
   TargetWidget := AWidget;
   TargetObj := AData;
   FocusedWinControl := nil;
+  FocusedWidget := nil;
 
   // The gtk sends keys first to the gtkwindow and then to the focused control.
   // The LCL expects only once to the focused control.
@@ -2232,16 +2252,14 @@ begin
   
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget)]);
 
-  gdk_event_key_get_string(AEvent, EventString);
-
-  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
   FillChar(Msg, SizeOf(Msg), 0);
 
+  gdk_event_key_get_string(AEvent, EventString);
+  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
+  CheckDeadKey;
   Flags := 0;
   SysKey := False;
-
   ShiftState := GTKEventStateToShiftState(AEvent^.state);
-
   {$ifdef gtk1}
     KeyCode := XKeysymToKeycode(gdk_display, AEvent^.keyval);
   {$else}
@@ -2342,14 +2360,16 @@ begin
     if ABeforeEvent then begin
       // try to get the UTF8 representation of the key
       {$IFDEF GTK1}
-      Character := '';
-      if (AEvent^.length > 0) and (AEvent^.length <= 8) //max composed UTF8 char has lenght 8
-      then begin
-        SetLength(Character, AEvent^.length);
-        System.Move(AEvent^.thestring^, Character[1], length(Character));
-      end;
+        Character := '';
+        if (AEvent^.length > 0) and (AEvent^.length <= 8) //max composed UTF8 char has lenght 8
+        then begin
+          SetLength(Character, AEvent^.length);
+          System.Move(AEvent^.thestring^, Character[1], length(Character));
+        end;
       {$ELSE GTK2}
-      Character := UnicodeToUTF8(gdk_keyval_to_unicode(AEvent^.KeyVal));
+        Character := UTF8Copy(im_context_string,1,1);
+        im_context_string:='';// clear, to avoid sending again
+        // Character := UnicodeToUTF8(gdk_keyval_to_unicode(AEvent^.KeyVal));
       {$ENDIF GTK2}
 
       {$IFDEF VerboseKeyboard}
@@ -2381,15 +2401,7 @@ begin
       then begin
         // ASCII key was pressed
         KeyPressesChar := EventString^;
-      end
-      else
-        if AEvent^.KeyVal < 128
-        then begin
-          // non ASCII key was pressed
-          // MWE: imo this is impossible since when eventlength > 1 it contains
-          //      a UTF char and that case keyval is never < 128
-          KeyPressesChar := chr(byte(AEvent^.KeyVal));
-        end;
+      end;
 
       if KeyPressesChar <> #0
       then begin
@@ -4026,7 +4038,7 @@ begin
   Result^.CoreWidget := AWidget;
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
-  Result^.WndProc := PtrInt(AParams.WindowClass.lpfnWndProc);
+  Result^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
 end;
 
 function GetWidgetInfo(const AWidget: Pointer {; const Create: Boolean = False}): PWidgetInfo;
@@ -4824,7 +4836,7 @@ end;
 
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
 begin
-  Result:=TDesignSignalMask(PtrInt(gtk_object_get_data(PGtkObject(Widget),
+  Result:=TDesignSignalMask(PtrUInt(gtk_object_get_data(PGtkObject(Widget),
                                                 'LCLDesignMask')));
 end;
 
@@ -4850,7 +4862,7 @@ var
 begin
   Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
   SignalID := g_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
-  if SignalID<0 then
+  if (SignalID<0) or (SignalID>$ffffff) then
     RaiseGDBException('SignalConnected');
 
   while (Handler <> nil) do begin

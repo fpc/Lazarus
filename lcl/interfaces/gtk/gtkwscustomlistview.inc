@@ -65,7 +65,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn;
@@ -86,7 +86,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_DELETEITEM;
   NM.iItem := AnOldIdx;
   msg.NMHdr := @NM.hdr;
@@ -108,7 +108,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := ARow;
   NM.iSubItem := AColumn;
@@ -126,7 +126,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := ARow;
   NM.iSubItem := AColumn;
@@ -146,7 +146,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := AList^.focus_row;
   NM.iSubItem := 0;
@@ -168,7 +168,7 @@ begin
   ListView := AInfo^.LCLObject as TListView;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   for n := 0 to Listview.Items.Count - 1 do
   begin
@@ -195,7 +195,7 @@ begin
   ListView := AInfo^.LCLObject as TListView;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrInt(AList);
+  NM.hdr.hwndfrom := PtrUInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   for n := 0 to Listview.Items.Count - 1 do
   begin
@@ -760,7 +760,7 @@ begin
           // check if the row is are already selected
           // since we are in singleselect, the first item is checked
           if (CListWidget^.selection <> nil)
-          and (PtrInt(CListWidget^.selection^.Data) = AIndex)
+          and (PtrUInt(CListWidget^.selection^.Data) = AIndex)
           then Exit;
           gtk_clist_unselect_all(CListWidget);
         end;
@@ -1057,7 +1057,7 @@ begin
   
   if CListWidget^.selection = nil
   then Result := -1
-  else Result := PtrInt(CListWidget^.selection^.data)
+  else Result := PtrUInt(CListWidget^.selection^.data)
 end;
 
 class function TGtkWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;

@@ -48,6 +48,11 @@ function gdk_window_xwindow(win : PGdkDrawable): TXID; cdecl; external gdklib na
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
 
+type
+  PPPangoAttrList = ^PPangoAttrList;
+procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
+
+
 // gdk 2.2
 procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;

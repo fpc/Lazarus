@@ -1517,8 +1517,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
-  // MG: TODO: call FillScreenFonts on demand, not for every application
-  //FillScreenFonts(Screen.Fonts);
   InitKeyboardTables;
   { Compute pixels per inch variable }
   ScreenInfo.PixelsPerInchX :=
@@ -4854,7 +4852,6 @@ var
 
   Box       : Pointer;           // currently only used for MainMenu
   ParentForm: TCustomForm;
-  AWindow: PGdkWindow;
   Adjustment: PGtkAdjustment;
   LabelWidget: PGtkLabel;
 begin
@@ -5311,9 +5308,6 @@ var
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
-  {$IFDEF Gtk1}
-  AWindowPrivate: PGdkWindowPrivate;
-  {$ENDIF}
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
@@ -6824,8 +6818,8 @@ begin
     // set the pointer to the start of the current line
     CurLineEntry[i shr 1]:=CurLineStart;
     // copy the line
-    LineStart:=PtrInt(LinesList[i]);
-    LineEnd:=PtrInt(LinesList[i+1]);
+    LineStart:=integer(PtrUInt(LinesList[i]));
+    LineEnd:=integer(PtrUInt(LinesList[i+1]));
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then
       Move(AText[LineStart],CurLineStart^,LineLen);
@@ -6836,7 +6830,7 @@ begin
     // next line
     inc(i,2);
   end;
-  if PtrInt(Lines)+TotalSize<>PtrInt(CurLineStart) then
+  if PtrUInt(Lines)+TotalSize<>PtrUInt(CurLineStart) then
     RaiseGDBException('TGtkWidgetSet.WordWrap Consistency Error:'
       +' Lines+TotalSize<>CurLineStart');
   CurLineEntry[i shr 1]:=nil;

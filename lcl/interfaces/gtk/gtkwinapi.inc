@@ -740,7 +740,7 @@ var
   GdiObject: PGdiObject;
   DefGdkWindow: PGdkWindow;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrInt(BitmapBits)]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrUInt(BitmapBits)]));
 
   if (BitCount < 1) or (Bitcount > 32)
   then begin
@@ -6346,9 +6346,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 Function TGtkWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
-var
-  //Data : Tobject;
-  P : Pointer;
+
+  function GetObjectData(Name: PChar): PtrInt;
+  begin
+    Result := PtrInt(PtrUInt(gtk_object_get_data(pgtkobject(Handle),Name)));
+  end;
+
 begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
@@ -6356,16 +6359,15 @@ begin
   case int of
     GWL_WNDPROC :
       begin
-        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'WNDPROC'));
+        Result := GetObjectData('WNDPROC');
       end;
     GWL_HINSTANCE :
       begin
-        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'HINSTANCE'));
+        Result := GetObjectData('HINSTANCE');
       end;
     GWL_HWNDPARENT :
       begin
-        P := gtk_object_get_data(pgtkobject(Handle),'HWNDPARENT');
-        if P = nil then Result := 0 else Result := PtrInt(p);
+        Result := GetObjectData('HWNDPARENT');
       end;
 
 {    GWL_WNDPROC :
@@ -6386,19 +6388,19 @@ begin
  }
     GWL_STYLE :
       begin
-        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'Style'));
+        Result := GetObjectData('Style');
       end;
     GWL_EXSTYLE :
       begin
-        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'ExStyle'));
+        Result := GetObjectData('ExStyle');
       end;
     GWL_USERDATA :
       begin
-        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'Userdata'));
+        Result := GetObjectData('Userdata');
       end;
     GWL_ID :
       begin
-        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'ID'));
+        Result := GetObjectData('ID');
       end;
     else Result := 0;
   end; //case
@@ -7503,7 +7505,7 @@ const
     begin
       if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
       and gtk_is_radio_menu_item(Item^.Data)
-      and (GroupIndex = PtrInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
+      and (GroupIndex = PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
       then begin
         Result := gtk_radio_menu_item_group(PGtkRadioMenuItem(Item^.Data));
         Exit;
