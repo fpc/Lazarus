@@ -83,6 +83,7 @@ type
   protected
   public
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -251,14 +252,19 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // TODO: proper icon, for now set default icon
   SetIcon(TCustomForm(AWinControl), 0);
-  // enable accepting drop files
-  DragAcceptFiles(Params.Window, True);
+
   Result := Params.Window;
 end;
 
 class procedure TWin32WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
   EnableApplicationWindows(ACustomForm.Handle);
+end;
+
+class procedure TWin32WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
+  AValue: Boolean);
+begin
+  DragAcceptFiles(AForm.Handle, AValue);
 end;
 
 class procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;

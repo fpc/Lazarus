@@ -353,6 +353,7 @@ type
     FActive: Boolean;
     FActiveControl: TWinControl;
     FActiveDefaultControl: TControl;
+    FAllowDropFiles: Boolean;
     FBorderIcons: TBorderIcons;
     FDefaultControl: TControl;
     FCancelControl: TControl;
@@ -400,6 +401,7 @@ type
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
+    procedure SetAllowDropFiles(const AValue: Boolean);
     procedure SetBorderIcons(NewIcons: TBorderIcons);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
@@ -511,6 +513,7 @@ type
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property ActiveDefaultControl: TControl read FActiveDefaultControl write SetActiveDefaultControl;
+    property AllowDropFiles: Boolean read FAllowDropFiles write SetAllowDropFiles default False;
     property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons
       default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle
@@ -577,6 +580,7 @@ type
     property Action;
     property ActiveControl;
     property Align;
+    property AllowDropFiles;
     property AutoSize;
     property BiDiMode;
     property BorderIcons;

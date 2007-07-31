@@ -2,9 +2,13 @@
 
 LazarusResources.Add('TForm2','FORMDATA',[
   'TPF0'#6'TForm2'#5'Form2'#4'Left'#3#166#1#6'Height'#2'8'#3'Top'#3'P'#2#5'Widt'
-  +'h'#3#217#1#18'HorzScrollBar.Page'#3#216#1#18'VertScrollBar.Page'#2'7'#7'Cap'
-  +'tion'#6#5'Form2'#12'ClientHeight'#2'8'#11'ClientWidth'#3#217#1#11'OnDropFil'
-  +'es'#7#13'FormDropFiles'#0#6'TLabel'#6'Label1'#4'Left'#2#13#6'Height'#2#14#3
-  +'Top'#2#18#5'Width'#3'('#1#7'Caption'#6'>Drag and drop files on this form an'
-  +'d see the results in memo. '#11'ParentColor'#8#0#0#0
+  +'h'#3#217#1#18'HorzScrollBar.Page'#3#216#1#18'VertScrollBar.Page'#2'7'#13'Ac'
+  +'tiveControl'#7#9'CheckBox1'#7'Caption'#6#5'Form2'#12'ClientHeight'#2'8'#11
+  +'ClientWidth'#3#217#1#11'OnDropFiles'#7#13'FormDropFiles'#0#6'TLabel'#6'Labe'
+  +'l1'#4'Left'#2#15#6'Height'#2#14#3'Top'#2#12#5'Width'#3'('#1#7'Caption'#6'>D'
+  +'rag and drop files on this form and see the results in memo. '#11'ParentCol'
+  +'or'#8#0#0#9'TCheckBox'#9'CheckBox1'#4'Left'#2#15#6'Height'#2#13#3'Top'#2''''
+  +#5'Width'#3#147#0#7'Caption'#6#29'Allow drop files on this form'#7'Checked'#9
+  +#8'OnChange'#7#15'CheckBox1Change'#5'State'#7#9'cbChecked'#8'TabOrder'#2#0#0
+  +#0#0
 ]);

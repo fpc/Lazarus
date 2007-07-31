@@ -12,8 +12,10 @@ type
   { TForm2 }
 
   TForm2 = class(TForm)
+    CheckBox1: TCheckBox;
     Label1: TLabel;
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
+    procedure CheckBox1Change(Sender: TObject);
   private
     { private declarations }
   public
@@ -37,6 +39,11 @@ begin
   Form1.Memo1.Lines.Add(IntToStr(Length(FileNames)) + ' file(s) dropped on ' + Name + ':');
   for I := 0 to High(FileNames) do
     Form1.Memo1.Lines.Add(FileNames[I]);
+end;
+
+procedure TForm2.CheckBox1Change(Sender: TObject);
+begin
+  AllowDropFiles := CheckBox1.Checked;
 end;
 
 initialization

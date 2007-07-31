@@ -6,6 +6,7 @@ object Form1: TForm1
   HorzScrollBar.Page = 700
   VertScrollBar.Page = 352
   ActiveControl = Memo1
+  AllowDropFiles = True
   Caption = 'On Files Drop event example'
   ClientHeight = 353
   ClientWidth = 701

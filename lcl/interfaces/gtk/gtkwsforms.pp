@@ -81,6 +81,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
@@ -297,16 +298,22 @@ begin
   if not (csDesigning in AWinControl.ComponentState) then
     AWidgetInfo^.UserData := Pointer(1);
     
-  // enable widget as file drag destination
-  gtk_drag_dest_set(AWidgetInfo^.CoreWidget, GTK_DEST_DEFAULT_ALL,
-    @FileDragTarget, 1, GDK_ACTION_COPY or GDK_ACTION_MOVE);
-    
   SetCallbacks(AWinControl, AWidgetInfo);
 
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(P);
+end;
+
+class procedure TGtkWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
+  AValue: Boolean);
+begin
+  if AValue then
+    gtk_drag_dest_set(PGtkWidget(AForm.Handle), GTK_DEST_DEFAULT_ALL,
+      @FileDragTarget, 1, GDK_ACTION_COPY or GDK_ACTION_MOVE)
+  else
+    gtk_drag_dest_unset(PGtkWidget(AForm.Handle));
 end;
 
 class procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;

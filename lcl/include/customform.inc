@@ -1260,6 +1260,15 @@ begin
     FDefaultControl.ActiveDefaultControlChanged(AControl);
 end;
 
+procedure TCustomForm.SetAllowDropFiles(const AValue: Boolean);
+begin
+  if AValue = FAllowDropFiles then Exit;
+  FAllowDropFiles := AValue;
+  
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    TWSCustomFormClass(WidgetSetClass).SetAllowDropFiles(Self, AValue);
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm SetFormStyle
 ------------------------------------------------------------------------------}
@@ -1306,6 +1315,7 @@ constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
   FShowInTaskbar := stDefault;
+  FAllowDropFiles := False;
 
   GlobalNameSpace.BeginWrite;
   try
@@ -1374,6 +1384,7 @@ begin
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   EndFormUpdate;
+  FAllowDropFiles := False;
 End;
 
 {------------------------------------------------------------------------------
@@ -1771,6 +1782,9 @@ begin
       LCLIntf.SetFocus(FActiveControl.Handle);
     end;
   end;
+  
+  // set allow drop files
+  TWSCustomFormClass(WidgetSetClass).SetAllowDropFiles(Self, FAllowDropFiles);
   //DebugLn('TCustomForm.CreateWnd END ',ClassName);
 end;
 
