@@ -32,8 +32,12 @@ general_t_objectpath=01007_T_Using object path: $1
 option_using_file=11026_T_Reading options from file $1
 % Options are also read from this file
 
-% Options are also read from this environment string
 option_handling_option=11028_D_Handling option "$1"
+% Options are also read from this environment string
+
+unit_u_recompile_crc_change=10028_U_Recompiling $1, checksum changed for $2
+% The unit is recompiled because the checksum of a unit it depends on has
+% changed.
 
 # end.
 

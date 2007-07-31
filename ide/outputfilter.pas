@@ -628,6 +628,23 @@ var i, j, FilenameEndPos: integer;
   end;
   
   { example:
+    Recompiling GtkInt, checksum changed for gdk2x
+  }
+  function CheckForRecompilingChecksumChangedMessages(p: integer): boolean;
+  var
+    OldStart: LongInt;
+  begin
+    Result:=false;
+    OldStart:=p;
+    if not CompStr('Recompiling ',s,p) then exit;
+    while (p<=length(s)) and (s[p]<>',') do
+      inc(p);
+    if not CompStr(', checksum changed for ',s,p) then exit;
+    Result:=true;
+    DoAddFilteredLine(copy(s,OldStart,length(s)));
+  end;
+  
+  { example:
     ...\windres.exe: warning: ...
   }
   function CheckForWindresErrors(p: integer): boolean;
@@ -684,7 +701,10 @@ begin
   // check for linking errors
   Result:=CheckForLinkingErrors(i);
   if Result then exit;
-  // cehck for windres errors
+  // check for Recompiling, checksum changed
+  Result:=CheckForRecompilingChecksumChangedMessages(i);
+  if Result then exit;
+  // check for windres errors
   Result := CheckForWindresErrors(i);
   if Result then Exit;
 
