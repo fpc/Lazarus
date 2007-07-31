@@ -306,6 +306,12 @@ type
     procedure SlotSliderPressed; cdecl;
     procedure SlotSliderReleased; cdecl;
  public
+    function getValue: Integer;
+    function getPageStep: Integer;
+    function getMin: Integer;
+    function getMax: Integer;
+    function getSingleStep: Integer;
+    
     procedure setInvertedAppereance(p1: Boolean); virtual;
     procedure setInvertedControls(p1: Boolean); virtual;
 
@@ -3161,6 +3167,31 @@ begin
   QAbstractSlider_hook_destroy(FSliderReleasedHook);
   QAbstractSlider_hook_destroy(FValueChangedHook);
   inherited DetachEvents;
+end;
+
+function TQtAbstractSlider.getValue: Integer;
+begin
+  Result := QAbstractSlider_value(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getPageStep: Integer;
+begin
+  Result := QAbstractSlider_pageStep(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getMin: Integer;
+begin
+  Result := QAbstractSlider_minimum(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getMax: Integer;
+begin
+  Result := QAbstractSlider_maximum(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getSingleStep: Integer;
+begin
+  Result := QAbstractSlider_singleStep(QAbstractSliderH(Widget));
 end;
 
 {------------------------------------------------------------------------------

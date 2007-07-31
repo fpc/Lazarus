@@ -184,7 +184,7 @@ end;
 function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
 begin
-  Clipboard.GetFormats(ClipboardType, Count, List);
+  Result := Clipboard.GetFormats(ClipboardType, Count, List);
 end;
 
 function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
@@ -1432,11 +1432,21 @@ begin
       RGN_DIFF:
         begin
           // get existing clip
+          X := -1;
+          Y := -1;
+          if QtDC.Parent <> nil then
+          begin
+            X := QWidget_width(QtDC.Parent);
+            Y := QWidget_height(QtDC.Parent);
+          end;
           // GDK_Window_Get_Size(Drawable, @X, @Y);
           // DCOrigin := GetDCOffset(TQtDeviceContext(DC));
           GetDeviceSize(DC, DCOrigin);
           
-          Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
+          if (X = -1) and (Y = -1) then
+            Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,DCOrigin.X,DCOrigin.Y)
+          else
+            Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
           // create target clip
           Tmp := CreateEmptyRegion;
           // combine
@@ -2516,10 +2526,11 @@ begin
     if QtScrollBar = nil then exit;
 
     ScrollInfo.nTrackPos := 0;
-    ScrollInfo.nMax := QAbstractSlider_maximum(QScrollBarH(QtScrollBar.Widget));
-    ScrollInfo.nMin := QAbstractSlider_minimum(QScrollBarH(QtScrollBar.Widget));
-    ScrollInfo.nPage := QAbstractSlider_pageStep(QScrollBarH(QtScrollBar.Widget));
-    ScrollInfo.nPos := QAbstractSlider_value(QScrollBarH(QtScrollBar.Widget));
+
+    ScrollInfo.nMax := QtScrollBar.getMax;
+    ScrollInfo.nMin := QtScrollBar.getMin;
+    ScrollInfo.nPage := QtScrollBar.getPageStep;
+    ScrollInfo.nPos := QtScrollBar.getValue;
     ScrollInfo.fMask := SIF_ALL;
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
 
@@ -4098,8 +4109,10 @@ begin
   if GetScrollInfo(Handle, SBStyle, FScrollInfo) then
   begin
     {impossible cases}
-    if (Integer(ScrollInfo.nPage) > ScrollInfo.nMax) then exit;
-  
+    if (ScrollInfo.nMax < 0)
+    or (Integer(ScrollInfo.nPage) > ScrollInfo.nMax) then
+      exit;
+
     if (ScrollInfo.FMask or SIF_RANGE) = ScrollInfo.FMask then
     begin
       FScrollInfo.nMin := ScrollInfo.nMin;
@@ -4120,14 +4133,27 @@ begin
       FScrollInfo.nPage := ScrollInfo.nPage;
       {segfaults if we don't check Enabled property !}
       if ScrollBar.Enabled  then
-        ScrollBar.PageSize := ScrollInfo.nPage;
+      begin
+        {default Qt minimum size}
+        if ScrollInfo.nPage < 10 then
+          ScrollBar.PageSize := ScrollBar.Max
+        else
+          ScrollBar.PageSize := ScrollInfo.nPage;
+      end;
     end;
     
     if (ScrollInfo.FMask or SIF_POS) = ScrollInfo.FMask then
     begin
       FScrollInfo.nPos := ScrollInfo.nPos;
-      if ScrollBar.Position <> ScrollInfo.nPos then
-        ScrollBar.Position := ScrollInfo.nPos;
+      
+      if (FScrollInfo.nPos < ScrollBar.Min) then
+        FScrollInfo.nPos := ScrollBar.Min
+      else
+      if (FScrollInfo.nPos > ScrollBar.Max) then
+        FScrollInfo.nPos := ScrollBar.Max;
+
+      if (ScrollBar.Position <> FScrollInfo.nPos) then
+        ScrollBar.Position := FScrollInfo.nPos;
     end;
 
     if (ScrollInfo.FMask or SIF_TRACKPOS) = ScrollInfo.FMask then
@@ -4138,17 +4164,31 @@ begin
 
     if (ScrollInfo.FMask or SIF_ALL) = ScrollInfo.FMask then
     begin
+    
       FScrollInfo.nPage := ScrollInfo.nPage;
       FScrollInfo.nPos := ScrollInfo.nPos;
+
+      if (FScrollInfo.nPos < ScrollBar.Min) then
+        FScrollInfo.nPos := ScrollBar.Min
+      else
+      if (FScrollInfo.nPos > ScrollBar.Max) then
+        FScrollInfo.nPos := ScrollBar.Max;
+
       FScrollInfo.nMin := ScrollInfo.nMin;
       FScrollInfo.nMax := ScrollInfo.nMax;
       ScrollBar.Min := ScrollInfo.nMin;
       ScrollBar.Max := ScrollInfo.nMax;
       {segfaults if we don't check Enabled property !}
       if ScrollBar.Enabled then
-        ScrollBar.PageSize := ScrollInfo.nPage;
-      if ScrollBar.Position<>ScrollInfo.nPos then
-        ScrollBar.Position := ScrollInfo.nPos;
+      begin
+        {default Qt minimum size}
+        if ScrollInfo.nPage < 10 then
+          ScrollBar.PageSize := ScrollBar.Max
+        else
+          ScrollBar.PageSize := ScrollInfo.nPage;
+      end;
+      if (ScrollBar.Position <> FScrollInfo.nPos) then
+        ScrollBar.Position := FScrollInfo.nPos;
     end;
     
     if (ScrollInfo.FMask or SIF_DISABLENOSCROLL) = ScrollInfo.FMask then
@@ -4156,7 +4196,6 @@ begin
       {This value is used only when setting a scroll bar''s parameters.
        If the scroll bar's new parameters make the scroll bar unnecessary,
        disable the scroll bar instead of removing it.}
-
        ScrollBar.Enabled := False;
     end else
     begin

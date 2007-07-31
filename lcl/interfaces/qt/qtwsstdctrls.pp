@@ -391,12 +391,22 @@ var
   QtScrollBar: TQtScrollBar;
   RA,RB: TRect;
   IsSameGeometry: Boolean;
+  PagePos: Integer;
+  PagePosW: Integer;
 begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
 
-  QtScrollBar.setValue(AScrollBar.Position);
-  QtScrollBar.setPageStep(AScrollBar.PageSize);
+  {feels much better with *2 pagesize}
+  QtScrollBar.setPageStep(AScrollBar.PageSize * 2);
   QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
+  
+  PagePos := QtScrollBar.getValue;
+  PagePosW := PagePos + QtScrollBar.getPageStep;
+
+  if (AScrollBar.Position < PagePos)
+  or (AScrollBar.Position > PagePosW)
+  or QtScrollBar.SliderPressed then
+    QtScrollBar.setValue(AScrollBar.Position);
   
   RA := QtScrollBar.LCLObject.ClientRect;
   RB := AScrollBar.ClientRect;
