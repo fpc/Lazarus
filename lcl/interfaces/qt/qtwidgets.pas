@@ -1745,8 +1745,13 @@ begin
 end;
 
 procedure TQtWidget.releaseMouse;
+var
+  AGrabWidget: QWidgetH;
 begin
-  QWidget_releaseMouse(Widget);
+  // capture widget can be one of childs of Widget if Widget is complex control
+  // so better to look for current Capture widget to release it instead of pass Widget as argument
+  AGrabWidget := QWidget_mouseGrabber();
+  QWidget_releaseMouse(AGrabWidget);
 end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);

@@ -1704,10 +1704,24 @@ end;
 function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
+  Widget: TQtWidget;
 begin
   w := QWidget_mouseGrabber();
   if w <> nil then
-    Result := HWND(QtObjectFromWidgetH(w))
+  begin
+    // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
+    // So we will look for parent while not found apropriate LCL handle.
+    repeat
+      Widget := QtObjectFromWidgetH(w);
+      if Widget = nil then
+      begin
+        w := QWidget_parentWidget(w);
+        if w = nil then
+          break;
+      end;
+    until Widget <> nil;
+    Result := HWND(Widget);
+  end
   else
     Result := 0;
   {$ifdef VerboseQtWinAPI}
@@ -3917,15 +3931,7 @@ begin
     if Result <> 0 then
       ReleaseCapture;
     if AHandle <> 0 then
-    begin
-      {TODO: freezing workaround, ttabsheet kills mouse at all (X & app),
-       when we click onto empty tabsheet.
-       don't know for others , so it's ifdef-ed for linux}
-      {$ifdef linux}
-      if not (TQtWidget(AHandle).LCLObject.InheritsFrom(TCustomPage)) then
-      {$endif}
-        TQtWidget(AHandle).grabMouse();
-    end;
+      TQtWidget(AHandle).grabMouse();
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
