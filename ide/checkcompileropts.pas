@@ -36,8 +36,13 @@ type
   TCompilerOptionsTest = (
     cotNone,
     cotCheckCompilerExe,
-    cotCompileBogusFiles,
-    cotCheckCompilerConfig // e.g. fpc.cfg
+    cotCheckAmbiguousFPCCfg,
+    cotCheckMissingFPCPPUs,
+    cotCheckCompilerDate,
+    cotCheckCompilerConfig, // e.g. fpc.cfg
+    cotCheckAmbiguousPPUsInUnitPath,
+    cotCheckFPCUnitPathsContainSources,
+    cotCompileBogusFiles
     );
     
   TCompilerCheckMsgLvl = (
@@ -187,6 +192,9 @@ var
   end;
   
 begin
+  FTest:=cotCheckAmbiguousFPCCfg;
+  TestGroupbox.Caption:='Test: Checking fpc configs ...';
+
   CfgFiles:=TStringList.Create;
   
   // check $HOME/.fpc.cfg
@@ -245,6 +253,7 @@ begin
   // compile bogus file
   FTest:=cotCompileBogusFiles;
   TestGroupbox.Caption:='Test: Compiling an empty file ...';
+  
   // get Test directory
   TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
   if not DirPathExists(TestDir) then begin
@@ -485,6 +494,9 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
   end;
   
 begin
+  FTest:=cotCheckMissingFPCPPUs;
+  TestGroupbox.Caption:='Test: Checking missing fpc ppu ...';
+
   Result:=mrCancel;
   // rtl
   if not Check('system',ccmlError) then exit;
@@ -537,6 +549,9 @@ var
   end;
   
 begin
+  FTest:=cotCheckCompilerDate;
+  TestGroupbox.Caption:='Test: Checking compiler date ...';
+
   Result:=mrCancel;
   
   CompilerDate:=FileAge(CompilerFilename);
@@ -638,6 +653,9 @@ var
   FileInfo: TSearchRec;
   WarnedDirectories: TStringList;
 begin
+  FTest:=cotCheckFPCUnitPathsContainSources;
+  TestGroupbox.Caption:='Test: Checking sources in fpc ppu search paths ...';
+
   Result:=mrCancel;
   WarnedDirectories:=TStringList.Create;
   p:=1;
@@ -647,7 +665,7 @@ begin
       Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
       if (Directory<>'') and (FilenameIsAbsolute(Directory))
       and (WarnedDirectories.IndexOf(Directory)<0) then begin
-        DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);
+        //DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);
         if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
         then begin
           repeat
@@ -682,14 +700,17 @@ var
   CompileTool: TExternalToolOptions;
   CompilerFiles: TStrings;
   FPCCfgUnitPath: string;
-  PPUs: TStrings;
+  FPC_PPUs: TStrings;
+  TargetUnitPath: String;
+  Target_PPUs: TStrings;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
   CompileTool:=nil;
   TestMemo.Lines.Clear;
   CompilerFiles:=nil;
-  PPUS:=nil;
+  FPC_PPUs:=nil;
+  Target_PPUs:=nil;
   try
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
 
@@ -701,28 +722,36 @@ begin
     Result:=CheckCompilerConfig(CompilerFilename,FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
+    FPC_PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
 
     // check if compiler paths include base units
-    Result:=CheckMissingFPCPPUs(PPUs);
+    Result:=CheckMissingFPCPPUs(FPC_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if compiler is older than fpc ppu
-    Result:=CheckCompilerDate(CompilerFilename,PPUs);
+    Result:=CheckCompilerDate(CompilerFilename,FPC_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if there are ambiguous fpc ppu
-    Result:=CheckForAmbiguousPPUs(PPUs);
+    Result:=CheckForAmbiguousPPUs(FPC_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if unit paths do not contain sources
     Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
+    // gather PPUs in project/package unit search paths
+    TargetUnitPath:=Options.GetUnitPath(false);
+    Target_PPUs:=FindAllPPUFiles(TargetUnitPath);
+
+    // check if there are ambiguous ppu in project/package unit path
+    Result:=CheckForAmbiguousPPUs(Target_PPUs);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
-
+    
     if OutputListbox.Items.Count=0 then
       AddMsg('All tests succeeded.','',-1);
 
@@ -731,7 +760,8 @@ begin
     CompileTool.Free;
     FTest:=cotNone;
     TestGroupbox.Caption:='Test';
-    PPUS.Free;
+    FPC_PPUs.Free;
+    Target_PPUs.Free;
   end;
   Result:=mrOk;
 end;

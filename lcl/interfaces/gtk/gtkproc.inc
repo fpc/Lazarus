@@ -210,24 +210,27 @@ begin
   GDK2.gdk_region_xor(result, source2);
 end;
 
-Procedure gdk_text_extents(FontDesc : PPangoFontDescription; Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+Procedure gdk_text_extents(FontDesc: PPangoFontDescription; Str: PChar;
+  LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 var
   Layout : PPangoLayout;
   AttrList : PPangoAttrList;
   Attr : PPangoAttribute;
   Extents : TPangoRectangle;
+  AttrListAllocated: Boolean;
 begin
   GetStyle(lgsDefault);
   Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsDefault), nil);
   pango_layout_set_font_description(Layout, FontDesc);
   AttrList := pango_layout_get_attributes(Layout);
 
-  If (AttrList = nil) then
+  AttrListAllocated:=false;
+  if (AttrList = nil) then begin
     AttrList := pango_attr_list_new();
+    AttrListAllocated:=true;
+  end;
 
   Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-
   pango_attr_list_change(AttrList,Attr);
 
   Attr := pango_attr_strikethrough_new(False);
@@ -240,31 +243,31 @@ begin
 
   pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
 
-  //fix me... and what about UTF-8 conversion?
-  //this could be a massive problem since we
-  //will need to know before hand what the current
-  //locale is, and if we stored UTF-8 string this would break
-  //cross-compatibility with GTK1.2 and win32 interfaces.....
-
-  pango_layout_set_text(Layout,  Str, Linelength);
+  pango_layout_set_text(Layout, Str, Linelength);
 
   if Assigned(width) then
     pango_layout_get_pixel_size(Layout, width, nil);
 
-  pango_layout_get_extents(Layout, nil, @Extents);
+  if Assigned(lbearing) or Assigned(rbearing)
+  or Assigned(ascent) or Assigned(descent) then begin
+    pango_layout_get_extents(Layout, nil, @Extents);
+
+    if Assigned(lbearing) then
+      lbearing^ := PANGO_LBEARING(extents) div PANGO_SCALE;
+
+    if Assigned(rbearing) then
+      rBearing^ := PANGO_RBEARING(extents) div PANGO_SCALE;
+
+    if Assigned(ascent) then
+      ascent^ := PANGO_ASCENT(extents) div PANGO_SCALE;
+
+    if Assigned(descent) then
+      descent^ := PANGO_DESCENT(extents) div PANGO_SCALE;
+  end;
+  
+  if AttrListAllocated then
+    pango_attr_list_unref(AttrList);
   g_object_unref(Layout);
-
-  if Assigned(lbearing) then
-    lbearing^ := PANGO_LBEARING(extents) div PANGO_SCALE;
-
-  if Assigned(rbearing) then
-    rBearing^ := PANGO_RBEARING(extents) div PANGO_SCALE;
-
-  if Assigned(ascent) then
-    ascent^ := PANGO_ASCENT(extents) div PANGO_SCALE;
-
-  if Assigned(descent) then
-    descent^ := PANGO_DESCENT(extents) div PANGO_SCALE;
 end;
 
 {$EndIf Gtk2}
