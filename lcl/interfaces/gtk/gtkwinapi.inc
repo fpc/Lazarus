@@ -1553,11 +1553,11 @@ var
         SinCos(lfOrientation/1800.*Pi, sn, cs);
         cs := cs*(Abs(lfHeight)+Offset);
         sn := sn*(Abs(lfHeight)+Offset);
-        PixelSize := Format('[%.3f %.3f %.3f %.3f]', [cs, sn, -sn, cs]);
+        Result := Format('[%.3f %.3f %.3f %.3f]', [cs, sn, -sn, cs]);
         repeat
-          n := Pos('-', PixelSize);
+          n := Pos('-', Result);
           if n > 0 then
-            PixelSize[n] := '~';
+            Result[n] := '~';
         until n <= 0;
       end;
     end;
