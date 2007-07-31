@@ -90,7 +90,7 @@ type
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
-      NewTraverseList: boolean); virtual;
+      NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
@@ -566,9 +566,9 @@ begin
 end;
 
 class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer);
-var
+{var
   QtListWidget: TQtListWidget;
-  ItemModel: QAbstractItemModelH;
+  ItemModel: QAbstractItemModelH;}
 begin
   {$note implement}
   (*
@@ -1117,9 +1117,6 @@ end;
 class function TQtWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtCheckBox: TQtCheckBox;
-  ATextWidth: Integer;
-  FM: QFontMetricsH;
-  Str: WideString;
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
   QtCheckBox.AttachEvents;
@@ -1214,9 +1211,6 @@ class function TQtWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtRadioButton: TQtRadioButton;
-  ATextWidth: Integer;
-  FM: QFontMetricsH;
-  Str: WideString;
 begin
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
   QtRadioButton.AttachEvents;

@@ -211,8 +211,6 @@ var
   Color: TQColor;
   Pen: QPenH;
   Painter: QPainterH;
-  Brush: QBrushH;
-  R: TRect;
 begin
   if IsValidDC(CanvasHandle) then
   begin
