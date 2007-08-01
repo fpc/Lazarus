@@ -279,7 +279,7 @@ begin
     WriteLn('Trace:> [TQtWSCustomPage.CreateHandle]');
   {$endif}
 
-  QtWidget := TQtWidget.CreatePage(AWinControl, AParams);
+  QtWidget := TQtPage.Create(AWinControl, AParams);
   QtWidget.AttachEvents;
 
   // Returns the Handle

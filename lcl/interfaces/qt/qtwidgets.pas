@@ -73,7 +73,6 @@ type
     InPaint: Boolean;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
-    constructor CreatePage(const AWinControl: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
     function  GetContainerWidget: QWidgetH; virtual;
   public
@@ -120,7 +119,7 @@ type
     procedure setGeometry(ARect: TRect); overload;
     procedure setVisible(visible: Boolean); virtual;
     procedure setWindowModality(windowModality: QtWindowModality);
-    procedure setParent(parent: QWidgetH);
+    procedure setParent(parent: QWidgetH); virtual;
     procedure setWindowFlags(_type: QtWindowFlags);
     function windowFlags: QtWindowFlags;
     procedure setWidth(p1: Integer);
@@ -760,6 +759,15 @@ type
     procedure SignalSelectionChanged; cdecl;
     procedure SignalCurrentPageChanged(p1, p2: Integer); cdecl;
   end;
+  
+  // for page control / notebook
+
+  { TQtPage }
+
+  TQtPage = class(TQtWidget)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  end;
 
 implementation
 
@@ -823,30 +831,6 @@ begin
   // set focus policy
   if AWinControl.TabStop then
     QWidget_setFocusPolicy(Widget, QtStrongFocus);
-
-  // Set mouse move messages policy
-  QWidget_setMouseTracking(Widget, True);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtWidget.CreatePage
-  Params:  None
-  Returns: Nothing
-  
-  Special constructor for notebook pages.
-  Pages should be created without a parent for Qt
- ------------------------------------------------------------------------------}
-constructor TQtWidget.CreatePage(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
-begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-  FStopMouseEventsProcessing := True;
-
-  // Creates the widget
-  Widget := QWidget_create;
-
-  SetGeometry;
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -5937,6 +5921,14 @@ function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   Result := QWidget_create(nil, QtToolTip);
   MenuBar := nil;
+end;
+
+{ TQtPage }
+
+function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
+begin
+  FStopMouseEventsProcessing := True;
+  Result := QWidget_create;
 end;
 
 end.
