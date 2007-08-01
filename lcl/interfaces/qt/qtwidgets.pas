@@ -111,6 +111,8 @@ type
     function getClientBounds: TRect; virtual;
     procedure grabMouse;
     function hasFocus: Boolean;
+    procedure move(ANewLeft, ANewTop: Integer);
+    procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
     procedure setColor(const Value: PQColor); virtual;
     procedure setCursor(const ACursor: QCursorH); virtual;
@@ -1543,6 +1545,9 @@ begin
     WriteLn('TQtWidget.SlotMove');
   {$endif}
 
+  if not QEvent_spontaneous(Event) then
+    Exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_MOVE;
@@ -1813,6 +1818,16 @@ end;
 function TQtWidget.hasFocus: Boolean;
 begin
   Result := QWidget_hasFocus(Widget);
+end;
+
+procedure TQtWidget.move(ANewLeft, ANewTop: Integer);
+begin
+  QWidget_move(Widget, ANewLeft, ANewTop);
+end;
+
+procedure TQtWidget.resize(ANewWidth, ANewHeight: Integer);
+begin
+  QWidget_resize(Widget, ANewWidth, ANewHeight);
 end;
 
 procedure TQtWidget.releaseMouse;

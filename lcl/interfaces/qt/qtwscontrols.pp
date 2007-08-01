@@ -376,8 +376,8 @@ end;
 class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  QWidget_move(TQtWidget(AWinControl.Handle).Widget, ALeft, ATop);
-  QWidget_resize(TQtWidget(AWinControl.Handle).Widget, AWidth, AHeight);
+  TQtWidget(AWinControl.Handle).move(ALeft, ATop);
+  TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -391,7 +391,7 @@ end;
 class procedure TQtWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
 begin
-  QWidget_move(TQtWidget(AWinControl.Handle).Widget, ALeft, ATop);
+  TQtWidget(AWinControl.Handle).move(ALeft, ATop);
 end;
 
 {------------------------------------------------------------------------------
@@ -405,7 +405,7 @@ end;
 class procedure TQtWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 begin
-  QWidget_resize(TQtWidget(AWinControl.Handle).Widget, AWidth, AHeight);
+  TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
 end;
 
 {------------------------------------------------------------------------------
