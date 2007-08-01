@@ -45,7 +45,6 @@ type
     ClipRegion: QRegionH;
   end;
   
-type
   { TQtWidget }
 
   TQtWidget = class(TQtObject)
@@ -85,10 +84,10 @@ type
     procedure SlotFocus(FocusIn: Boolean); cdecl;
     procedure SlotHover(Event: QEventH); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
-    procedure SlotMouse(Event: QEventH); cdecl;
+    procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseEnter(Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
-    procedure SlotMouseWheel(Event: QEventH); cdecl;
+    procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
@@ -762,8 +761,6 @@ type
     procedure SignalCurrentPageChanged(p1, p2: Integer); cdecl;
   end;
 
-
-  
 implementation
 
 uses
@@ -780,6 +777,19 @@ const
 {taCenter      } QtAlignHCenter
   );
 
+  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
+
+type
+  TLastMouseInfo = record
+    Widget: QObjectH;
+    MousePos: TQtPoint;
+    TheTime: TDateTime;
+    ClickCount: Integer;
+  end;
+
+var
+  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0);
+  
 { TQtWidget }
 
 {------------------------------------------------------------------------------
@@ -1030,10 +1040,6 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  w: QWidgetH;
-  MenuRect: TRect;
-  FormRect: TRect;
 begin
   Result := False;
 
@@ -1080,7 +1086,7 @@ begin
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick:
       begin
-        SlotMouse(Event);
+        SlotMouse(Sender, Event);
         Result := StopMouseEventsProcessing;
       end;
     QEventMouseMove:
@@ -1090,7 +1096,7 @@ begin
       end;
     QEventWheel:
       begin
-        SlotMouseWheel(Event);
+        SlotMouseWheel(Sender, Event);
         Result := StopMouseEventsProcessing;
       end;
     QEventMove: SlotMove(Event);
@@ -1305,16 +1311,90 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
+procedure TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
+const
+  // array of clickcount x buttontype
+  MSGKIND: array[0..2, 1..4] of Integer =
+  (
+    (LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
+    (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
+    (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK)
+  );
 var
   Msg: TLMMouse;
   MousePos: PQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
+
+  function CheckMouseButtonDown(AButton: Integer): Cardinal;
+
+    function LastClickInSameWidget: boolean;
+    begin
+      Result := (LastMouse.Widget <> nil) and
+                (LastMouse.Widget = Sender);
+    end;
+
+    function LastClickAtSamePosition: boolean;
+    begin
+      Result:= (Abs(MousePos.X-LastMouse.MousePos.X) <= DblClickThreshold) and
+               (Abs(MousePos.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
+    end;
+
+    function LastClickInTime: boolean;
+    begin
+      Result:=((now - LastMouse.TheTime) <= ((1/86400)*(QApplication_doubleClickInterval/1000)));
+    end;
+
+    function TestIfMultiClick: boolean;
+    begin
+      Result:= LastClickInSameWidget and
+               LastClickAtSamePosition and
+               LastClickInTime;
+    end;
+
+  var
+    IsMultiClick: boolean;
+  begin
+    Result := LM_NULL;
+
+    IsMultiClick := TestIfMultiClick;
+
+    if QEvent_type(Event) = QEventMouseButtonDblClick then
+    begin
+      // the qt itself has detected a double click
+      if (LastMouse.ClickCount >= 2) and IsMultiClick then
+        // the double click was already detected and sent to the LCL
+        // -> skip this message
+        exit
+      else
+        LastMouse.ClickCount := 2;
+    end
+    else
+    begin
+      inc(LastMouse.ClickCount);
+
+      if (LastMouse.ClickCount <= 4) and IsMultiClick then
+      begin
+        // multi click
+      end else
+      begin
+        // normal click
+        LastMouse.ClickCount:=1;
+      end;
+    end;
+
+    LastMouse.TheTime := Now;
+    LastMouse.MousePos := MousePos^;
+    LastMouse.Widget := Sender;
+
+    Result := MSGKIND[AButton][LastMouse.ClickCount];
+  end;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
   {$endif}
+
+  // idea of multi click implementation is taken from gtk
 
   FillChar(Msg, SizeOf(Msg), #0);
   
@@ -1335,13 +1415,13 @@ begin
   MButton := QmouseEvent_Button(QMouseEventH(Event));
 
   case QEvent_type(Event) of
-   QEventMouseButtonPress:
+   QEventMouseButtonPress, QEventMouseButtonDblClick:
     begin
       Msg.Keys := QtButtonsToLCLButtons(MButton);
       case MButton of
-        QtLeftButton: Msg.Msg := LM_LBUTTONDOWN;
-        QtRightButton: Msg.Msg := LM_RBUTTONDOWN;
-        QtMidButton: Msg.Msg := LM_MBUTTONDOWN;
+        QtLeftButton: Msg.Msg := CheckMouseButtonDown(0);
+        QtRightButton: Msg.Msg := CheckMouseButtonDown(1);
+        QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
@@ -1350,14 +1430,16 @@ begin
     end;
    QEventMouseButtonRelease:
    begin
-      Msg.Keys := QtButtonsToLCLButtons(MButton);
-      case MButton of
-        QtLeftButton: Msg.Msg := LM_LBUTTONUP;
-        QtRightButton: Msg.Msg := LM_RBUTTONUP;
-        QtMidButton: Msg.Msg := LM_MBUTTONUP;
-      end;
-      NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
+     LastMouse.Widget := Sender;
+     LastMouse.MousePos := MousePos^;
+     Msg.Keys := QtButtonsToLCLButtons(MButton);
+     case MButton of
+       QtLeftButton: Msg.Msg := LM_LBUTTONUP;
+       QtRightButton: Msg.Msg := LM_RBUTTONUP;
+       QtMidButton: Msg.Msg := LM_MBUTTONUP;
+     end;
+     NotifyApplicationUserInput(Msg.Msg);
+     DeliverMessage(Msg);
      { Clicking on buttons operates differently, because QEventMouseButtonRelease
        is sent if you click a control, drag the mouse out of it and release, but
        buttons should not be clicked on this case. }
@@ -1369,7 +1451,6 @@ begin
 
      Msg.Msg := LM_RELEASED;
    end;
-   QEventMouseButtonDblClick: Msg.Msg := LM_CLICKED;
   end;
   DeliverMessage(Msg);
 end;
@@ -1441,7 +1522,7 @@ end;
  
   Msg.WheelData: -1 for up, 1 for down
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotMouseWheel(Event: QEventH); cdecl;
+procedure TQtWidget.SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMMouseEvent;
   MousePos: PQtPoint;
@@ -1451,6 +1532,9 @@ begin
   MousePos := QWheelEvent_pos(QWheelEventH(Event));
   OffsetMousePos(MousePos);
 
+  LastMouse.Widget := Sender;
+  LastMouse.MousePos := MousePos^;
+  
   Msg.Msg := LM_MOUSEWHEEL;
 
   Msg.X := SmallInt(MousePos^.X);
@@ -5856,9 +5940,3 @@ begin
 end;
 
 end.
-
-
-
-
-
-

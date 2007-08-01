@@ -881,17 +881,18 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
-var
+{var
   TW: QTreeWidgetH;
-  TWI: QTreeWidgetItemH;
+  TWI: QTreeWidgetItemH;}
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+{$note review}
+{  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
   if Assigned(TListView(ALV).SmallImages) then
   begin
-  {what to implement here ?!? SmallImages, LargeImages, StateImages ?!?}
-  // QTreeWidgetItem_setIcon(TWI, AIndex, QIconH ?!? -> wait for TImageList implementation ?!? );
-  end;
+    // what to implement here ?!? SmallImages, LargeImages, StateImages ?!?
+    // QTreeWidgetItem_setIcon(TWI, AIndex, QIconH ?!? -> wait for TImageList implementation ?!? );
+  end;}
 end;
 
 {------------------------------------------------------------------------------
@@ -941,12 +942,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
-var
+{var
   TW: QTreeWidgetH;
-  TWI: QTreeWidgetItemH;
+  TWI: QTreeWidgetItemH;}
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-  TWI := QTreeWidget_takeTopLevelItem(TW, AIndex);
+{  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  TWI := QTreeWidget_takeTopLevelItem(TW, AIndex);}
   {$note implement}
 end;
 
@@ -1219,10 +1220,10 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
-var
-  TW: QTreeWidgetH;
+{var
+  TW: QTreeWidgetH;}
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  {TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);}
   if AType <> stNone then
   begin
     {$note implement}
