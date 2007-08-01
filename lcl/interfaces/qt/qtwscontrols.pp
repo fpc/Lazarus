@@ -94,7 +94,7 @@ type
                                       const AOldPos, ANewPos: Integer;
                                       const AChildren: TFPList); override;}
 
-    //class procedure ConstraintsChange(const AWinControl: TWinControl); override;
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSGraphicControl }
@@ -331,6 +331,18 @@ begin
   begin
     PreferredWidth := PrefSize.cx;
     PreferredHeight := PrefSize.cy;
+  end;
+end;
+
+class procedure TQtWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+var
+  Widget: TQtWidget;
+begin
+  Widget := TQtWidget(AWinControl.Handle);
+  with AWinControl do
+  begin
+    Widget.setMinimumSize(Constraints.MinWidth, Constraints.MinHeight);
+    Widget.setMaximumSize(Constraints.MaxWidth, Constraints.MaxHeight);
   end;
 end;
 

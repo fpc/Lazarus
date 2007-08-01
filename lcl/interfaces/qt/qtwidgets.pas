@@ -95,9 +95,6 @@ type
     procedure Activate;
     procedure BringToFront;
     procedure OffsetMousePos(APoint: PQtPoint); virtual;
-    procedure SetColor(const Value: PQColor); virtual;
-    procedure SetTextColor(const Value: PQColor); virtual;
-    procedure SetCursor(const ACursor: QCursorH); virtual;
     procedure Update(ARect: PRect = nil);
     procedure Repaint(ARect: PRect = nil);
     procedure setWindowTitle(Str: PWideString);
@@ -115,17 +112,23 @@ type
     procedure grabMouse;
     function hasFocus: Boolean;
     procedure releaseMouse;
+    procedure setColor(const Value: PQColor); virtual;
+    procedure setCursor(const ACursor: QCursorH); virtual;
     procedure setEnabled(p1: Boolean);
     procedure setGeometry(ARect: TRect); overload;
-    procedure setVisible(visible: Boolean); virtual;
-    procedure setWindowModality(windowModality: QtWindowModality);
+    procedure setMaximumSize(AWidth, AHeight: Integer);
+    procedure setMinimumSize(AWidth, AHeight: Integer);
     procedure setParent(parent: QWidgetH); virtual;
+    procedure setTextColor(const Value: PQColor); virtual;
+    procedure setVisible(visible: Boolean); virtual;
     procedure setWindowFlags(_type: QtWindowFlags);
-    function windowFlags: QtWindowFlags;
+    procedure setWindowIcon(AIcon: QIconH);
+    procedure setWindowModality(windowModality: QtWindowModality);
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
     procedure setTabOrder(p1, p2: TQtWidget);
     procedure setWindowState(AState: QtWindowStates);
+    function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
 
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
@@ -1832,6 +1835,16 @@ begin
   QWidget_setGeometry(Widget, @ARect);
 end;
 
+procedure TQtWidget.setMaximumSize(AWidth, AHeight: Integer);
+begin
+  QWidget_setMaximumSize(Widget, AWidth, AHeight);
+end;
+
+procedure TQtWidget.setMinimumSize(AWidth, AHeight: Integer);
+begin
+  QWidget_setMinimumSize(Widget, AWidth, AHeight);
+end;
+
 procedure TQtWidget.setVisible(visible: Boolean);
 begin
   QWidget_setVisible(Widget, visible);
@@ -1855,6 +1868,11 @@ end;
 procedure TQtWidget.setWindowFlags(_type: QtWindowFlags);
 begin
   QWidget_setWindowFlags(Widget, _type);
+end;
+
+procedure TQtWidget.setWindowIcon(AIcon: QIconH);
+begin
+  QWidget_setWindowIcon(Widget, AIcon);
 end;
 
 function TQtWidget.windowFlags: QtWindowFlags;

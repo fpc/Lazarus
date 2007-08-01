@@ -284,17 +284,29 @@ type
   { TQtPixmap }
 
   TQtPixmap = class(TObject)
-  private
-  public
-    Handle: QPixmapH;
+  protected
+    FHandle: QPixmapH;
   public
     constructor Create(p1: PSize); virtual;
     destructor Destroy; override;
   public
-    procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
+    property Handle: QPixmapH read FHandle;
 
+    procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
     procedure toImage(retval: QImageH);
     class procedure fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
+  end;
+  
+  { TQtIcon }
+
+  TQtIcon = class(TObject)
+  protected
+    FHandle: QIconH;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    property Handle: QIconH read FHandle;
   end;
   
   { TQtSystemTrayIcon }
@@ -1743,24 +1755,25 @@ end;
 
 constructor TQtPixmap.Create(p1: PSize);
 begin
-  Handle := QPixmap_create(p1);
+  FHandle := QPixmap_create(p1);
 end;
 
 destructor TQtPixmap.Destroy;
 begin
-  if handle <> nil then QPixmap_destroy(handle);
+  if FHandle <> nil then
+    QPixmap_destroy(FHandle);
 
   inherited Destroy;
 end;
 
 procedure TQtPixmap.grabWindow(p1: Cardinal; x: Integer; y: Integer; w: Integer; h: Integer);
 begin
-  QPixmap_grabWindow(Handle, p1, x, y, w, h);
+  QPixmap_grabWindow(FHandle, p1, x, y, w, h);
 end;
 
 procedure TQtPixmap.toImage(retval: QImageH);
 begin
-  QPixmap_toImage(Handle, retval);
+  QPixmap_toImage(FHandle, retval);
 end;
 
 class procedure TQtPixmap.fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
@@ -2102,6 +2115,21 @@ begin
     if Assigned(FCallbackFunc) then
       FCallbackFunc;
   end;
+end;
+
+{ TQtIcon }
+
+constructor TQtIcon.Create;
+begin
+  FHandle := QIcon_create();
+end;
+
+destructor TQtIcon.Destroy;
+begin
+  if FHandle <> nil then
+    QIcon_destroy(FHandle);
+    
+  inherited Destroy;
 end;
 
 end.
