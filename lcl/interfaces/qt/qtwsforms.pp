@@ -320,33 +320,37 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetQtWindowBorderStyle(const AHandle: TQtMainWindow;
   const AFormBorderStyle: TFormBorderStyle);
+const
+  QtOnlyDialog: Integer = QtDialog and not QtWindow;
+  QtOnlyTool: Integer = QtTool and not QtWindow;
+  QtOnlyToolOrDialog: Integer = (QtDialog or QtTool) and not QtWindow;
 var
   Flags: QtWindowFlags;
-  QtOnlyDialog: Integer;
+  AVisible: Boolean;
 begin
   Flags := AHandle.windowFlags;
+  // after setting flags showing can be changed
+  AVisible := AHandle.getVisible;
 
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomForm.SetFormBorderStyle] Flags: ', IntToHex(Flags, 8));
   {$endif}
 
-  QtOnlyDialog := QtDialog and not QtWindow;
-
   case AFormBorderStyle of
    bsNone:
    begin
      Flags := (Flags or QtFramelessWindowHint) and not QtWindowTitleHint;
-     Flags := Flags and not QtOnlyDialog;
+     Flags := Flags and not QtOnlyToolOrDialog;
    end;
    bsSingle:
    begin
      Flags := Flags or QtFramelessWindowHint;
-     Flags := Flags and not QtOnlyDialog;
+     Flags := Flags and not QtOnlyToolOrDialog;
    end;
    bsSizeable:
    begin
      Flags := Flags and not QtFramelessWindowHint;
-     Flags := Flags and not QtOnlyDialog;
+     Flags := Flags and not QtOnlyToolOrDialog;
    end;
    bsDialog:
    begin
@@ -356,12 +360,12 @@ begin
    bsToolWindow:
    begin
      Flags := Flags or QtFramelessWindowHint;
-     Flags := Flags or QtOnlyDialog;
+     Flags := Flags or QtOnlyTool;
    end;
    bsSizeToolWin:
    begin
      Flags := Flags and not QtFramelessWindowHint;
-     Flags := Flags or QtOnlyDialog;
+     Flags := Flags or QtOnlyTool;
    end;
   end;
 
@@ -370,6 +374,7 @@ begin
   {$endif}
 
   AHandle.setWindowFlags(Flags);
+  AHandle.setVisible(AVisible);
 end;
 
 {------------------------------------------------------------------------------
