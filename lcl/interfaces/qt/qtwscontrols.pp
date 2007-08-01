@@ -335,14 +335,25 @@ begin
 end;
 
 class procedure TQtWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+const
+  QtMaxContraint = $FFFFFF;
 var
   Widget: TQtWidget;
+  MaxW, MaxH: Integer;
 begin
   Widget := TQtWidget(AWinControl.Handle);
   with AWinControl do
   begin
     Widget.setMinimumSize(Constraints.MinWidth, Constraints.MinHeight);
-    Widget.setMaximumSize(Constraints.MaxWidth, Constraints.MaxHeight);
+    if Constraints.MaxWidth = 0 then
+      MaxW := QtMaxContraint
+    else
+      MaxW := Constraints.MaxWidth;
+    if Constraints.MaxHeight = 0 then
+      MaxH := QtMaxContraint
+    else
+      MaxH := Constraints.MaxHeight;
+    Widget.setMaximumSize(MaxW, MaxH);
   end;
 end;
 
