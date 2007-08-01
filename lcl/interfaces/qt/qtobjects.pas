@@ -207,6 +207,12 @@ type
   //       should point to a structure holding the additional information.
   //       see SaveDC and RestoreDC for more information.
   //       for example: what about textcolor, it's currently not saved....
+
+  {
+  TQtDCData = record
+  end;
+  PQtDCData = ^TQtDCData;
+  }
   PQtDCData = pointer;
 
   { TQtDeviceContext }
@@ -238,7 +244,7 @@ type
     constructor Create(AWidget: QWidgetH; Const APaintEvent: Boolean = False); virtual;
     destructor Destroy; override;
     function CreateDCData: PQtDCDATA;
-    function RestoreDCData(DCData: PQtDCData): boolean;
+    function RestoreDCData(var DCData: PQtDCData): boolean;
     procedure DebugClipRect(const msg: string);
     procedure setImage(AImage: TQtImage);
     procedure CorrectCoordinates(var ARect: TRect);
@@ -261,10 +267,10 @@ type
     function brush: TQtBrush;
     procedure setBrush(ABrush: TQtBrush);
     function BackgroundBrush: TQtBrush;
-    function  pen: TQtPen;
+    function pen: TQtPen;
     procedure setPen(APen: TQtPen);
-    function  SetBkColor(Color: TcolorRef): TColorRef;
-    function  SetBkMode(BkMode: Integer): Integer;
+    function SetBkColor(Color: TcolorRef): TColorRef;
+    function SetBkMode(BkMode: Integer): Integer;
     function getRegionType(ARegion: QRegionH): integer;
     function region: TQtRegion;
     procedure setRegion(ARegion: TQtRegion);
@@ -1192,7 +1198,7 @@ begin
   writeln('TQtDeviceContext.CreateDCData() ');
   {$endif}
   Qpainter_save(Widget);
-  result := nil; // doesn't matter;
+  Result := nil; // doesn't matter;
 end;
 
 {------------------------------------------------------------------------------
@@ -1200,13 +1206,13 @@ end;
   Params:  DCData, dummy in current implementation
   Returns: true if QPainter state was successfuly restored
  ------------------------------------------------------------------------------}
-function TQtDeviceContext.RestoreDCData(DCData: PQtDCData):boolean;
+function TQtDeviceContext.RestoreDCData(var DCData: PQtDCData):boolean;
 begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.RestoreDCData() ');
   {$endif}
   QPainter_restore(Widget);
-  result:=true;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1313,10 +1319,9 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
   {$endif}
+
   RestoreTextColor;
-
   QPainter_DrawText(Widget, x, y, w, h, Flags, s);
-
   RestorePenColor;
 end;
 
@@ -1729,7 +1734,7 @@ end;
 procedure TQtDeviceContext.translate(dx: Double; dy: Double);
 begin
   {$ifdef VerboseQt}
-  Write('TQtDeviceContext.translate() ');
+  WriteLn('TQtDeviceContext.translate() ');
   {$endif}
   QPainter_translate(Widget, dx, dy);
 end;

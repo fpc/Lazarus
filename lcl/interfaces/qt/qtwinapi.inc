@@ -41,8 +41,7 @@ begin
     WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
   {$endif}
   Result := IsValidDC(DC);
-  if Result
-  then
+  if Result then
     QPainter_drawArc(TQtDeviceContext(DC).Widget, Left, Top, Right, Bottom, Angle1, Angle2);
 end;
 
@@ -57,8 +56,7 @@ begin
     WriteLn('[WinAPI AngleChord] DC: ', dbghex(DC));
   {$endif}
   Result := IsValidDC(DC);
-  if Result
-  then
+  if Result then
     QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
 end;
 
@@ -1250,7 +1248,6 @@ begin
 
   with ARect do
     QtDC.DrawText(left, Top, Right-Left, Bottom-Top, F, @WideStr);
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -3118,7 +3115,7 @@ begin
   end;
     
   Matrix := QPainter_Matrix(TQtDeviceContext(DC).Widget);
-  if Matrix<>nil then
+  if Matrix <> nil then
   begin
     P^.X := -Trunc(QMatrix_Dx(Matrix));
     P^.Y := -Trunc(QMatrix_Dy(Matrix));
@@ -3610,22 +3607,17 @@ begin
     SavedDC := SavedDC+SavedDCList.Count;
 
   // check index
-  result := (SavedDC>0)and(SavedDC<SavedDCList.Count);
-  if result then
+  Result := (SavedDC > 0) and (SavedDC < SavedDCList.Count);
+  if Result then
   begin
-
-    if SavedDC<>SavedDCList.Count-1 then
-      DebugLn('WARNING: poping other than last saved DC from stack');
-
-    result := true;
-    while SavedDC>0 do
+    Result := true;
+    while SavedDC > 0 do
     begin
       DCData := PQtDcData(SavedDCList[SavedDC]);
-      SavedDCList.Delete(SAvedDC);
-      result := TQtDeviceContext(DC).RestoreDCData(DCData);
+      SavedDCList.Delete(SavedDC);
+      Result := TQtDeviceContext(DC).RestoreDCData(DCData);
       Dec(SavedDC);
     end;
-    
   end;
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI RestoreDC]');
@@ -3678,8 +3670,9 @@ begin
     SavedDCList.Add(nil); // start at index 1, 0 is an invalid saved state
   end;
   
-  DCData := TQtDeviceContext(Dc).CreateDCData;
-  result := SavedDCList.Add(DCData);
+  DCData := TQtDeviceContext(DC).CreateDCData;
+  Result := 1;
+  SavedDCList.Insert(Result, DCData)
   
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI SaveDC] result=', result);
