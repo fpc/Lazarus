@@ -88,11 +88,11 @@ type
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
-{
+
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
-                                      const AChildren: TFPList); override;}
+                                      const AChildren: TFPList); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
   end;
@@ -332,6 +332,13 @@ begin
     PreferredWidth := PrefSize.cx;
     PreferredHeight := PrefSize.cy;
   end;
+end;
+
+class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,
+                AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList);
+begin
+  {$note TODO: QWidget::stackUnder, QWidget::raise, QWidget::lower}
+  inherited SetChildZPosition(AWinControl, AChild, AOldPos, ANewPos, AChildren);
 end;
 
 class procedure TQtWSWinControl.ConstraintsChange(const AWinControl: TWinControl);

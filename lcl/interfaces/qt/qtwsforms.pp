@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets,
+  qtobjects, qtwidgets,
   // LCL
   SysUtils, Classes, Controls, LCLType, Forms,
   // Widgetset
@@ -257,8 +257,14 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+var
+  Icon: TQtIcon;
 begin
-  inherited SetIcon(AForm, AIcon);
+  Icon := TQtIcon(AIcon);
+  if Icon <> nil then
+    TQtWidget(AForm.Handle).setWindowIcon(Icon.Handle)
+  else
+    TQtWidget(AForm.Handle).setWindowIcon(nil);
 end;
 
 {------------------------------------------------------------------------------
