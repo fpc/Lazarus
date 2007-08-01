@@ -201,6 +201,7 @@ type
     procedure OnPasteMenuClick(Sender: TObject);
     procedure OnDeleteSelectionMenuClick(Sender: TObject);
     procedure OnChangeClassMenuClick(Sender: TObject);
+    procedure OnChangeParentMenuClick(Sender: TObject);
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
     procedure OnShowOptionsMenuItemClick(Sender: TObject);
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
@@ -422,6 +423,7 @@ begin
                                                  'Change class',lisChangeClass);
     DesignerMenuChangeParent:=RegisterIDEMenuSection(DesignerMenuSectionMisc,
                                                  'Change parent');
+    DesignerMenuChangeParent.ChildsAsSubMenu:=true;
     DesignerMenuChangeParent.Caption:=lisChangeParent;
     DesignerMenuViewLFM:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                 'View LFM',lisViewSourceLfm);
@@ -2206,6 +2208,37 @@ begin
   DoShowChangeClassDialog;
 end;
 
+procedure TDesigner.OnChangeParentMenuClick(Sender: TObject);
+var
+  Item: TIDEMenuCommand;
+  NewParentName: String;
+  i: Integer;
+  CurControl: TControl;
+  NewParent: TWinControl;
+begin
+  if not (Sender is TIDEMenuCommand) then exit;
+  Item:=TIDEMenuCommand(Sender);
+  NewParentName:=Item.Caption;
+  NewParent:=TWinControl(LookupRoot.FindComponent(NewParentName));
+  if (NewParent=nil) or (not (NewParent is TWinControl)) then exit;
+  Form.DisableAlign;
+  try
+    i:=ControlSelection.Count-1;
+    while (i>=0) do begin
+      if i<ControlSelection.Count then begin
+        if ControlSelection[i].IsTControl then begin
+          CurControl:=TControl(ControlSelection[i].Persistent);
+          CurControl.Parent:=NewParent;
+        end;
+      end;
+      dec(i);
+    end;
+  finally
+    if Form<>nil then
+      Form.EnableAlign;
+  end;
+end;
+
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
 begin
   EnvironmentOptions.SnapToGrid:=not EnvironmentOptions.SnapToGrid;
@@ -2720,7 +2753,6 @@ var
     if ControlSelIsNotEmpty
     and (not LookupRootIsSelected)
     and (LookupRoot is TWinControl) then begin
-      //DebugLn(['UpdateChangeParentMenu ',LookupRoot.ComponentCount]);
       for i:=0 to LookupRoot.ComponentCount-1 do begin
         if not (LookupRoot.Components[i] is TWinControl) then continue;
 
@@ -2729,7 +2761,6 @@ var
         j:=ControlSelection.Count-1;
         while j>=0 do begin
           CurSelected:=ControlSelection[j];
-          //DebugLn(['UpdateChangeParentMenu ',CurSelected.IsTControl,' ',DbgSName(CurSelected.Persistent),' ',CurSelected.IsTWinControl]);
           if CurSelected.IsTControl then begin
             if CurSelected.Persistent=Candidate then break;
             if CurSelected.IsTWinControl
@@ -2739,7 +2770,6 @@ var
           end;
           dec(j);
         end;
-        //DebugLn(['UpdateChangeParentMenu j=',j,' ',dbgsName(Candidate)]);
         if j<0 then
           Candidates.Add(Candidate);
       end;
@@ -2747,12 +2777,12 @@ var
     end;
     
     DesignerMenuChangeParent.Visible:=Candidates.Count>0;
-    //DebugLn(['UpdateChangeParentMenu ',DesignerMenuChangeParent.Visible]);
     DesignerMenuChangeParent.Clear;
-    for i:=0 to DesignerMenuChangeParent.Count-1 do begin
+    for i:=0 to Candidates.Count-1 do begin
       Item:=TIDEMenuCommand.Create(DesignerMenuChangeParent.Name+'_'+IntToStr(i));
       DesignerMenuChangeParent.AddLast(Item);
       Item.Caption:=TWinControl(Candidates[i]).Name;
+      Item.OnClick:=@OnChangeParentMenuClick;
     end;
     Candidates.Free;
   end;
