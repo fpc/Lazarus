@@ -6868,6 +6868,10 @@ var
   FromY: Integer;
   ToX: Integer;
   ToY: Integer;
+  OldCapStyle: TGdkCapStyle;
+  CurValues: TGdkGCValues;
+  OldLineWidth: LongInt;
+  Restore: Boolean;
 begin
   Assert(False, Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
@@ -6875,7 +6879,7 @@ begin
   then with TDeviceContext(DC) do
   begin
     SelectGDKPenProps(DC);
-    If (dcfPenSelected in DCFlags) then begin
+    if (dcfPenSelected in DCFlags) then begin
       Result := True;
       if IsNullPen(TDeviceContext(DC)) then exit;
 
@@ -6885,23 +6889,24 @@ begin
       FromY:=PenPos.Y+DCOrigin.Y;
       ToX:=X+DCOrigin.X;
       ToY:=Y+DCOrigin.Y;
-      {debugln('TGtkWidgetSet.LineTo A ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
-      if (FromX>ToX) or ((FromX=ToX) and (FromY>ToY)) then begin
-        // in these cases gdk starts and ends drawing a line one point later
-        debugln('TGtkWidgetSet.LineTo SWAPPED ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
-      end;}
-      //gdk_gc_set_line_attributes(gc,1,GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-      // if line width is 1, then we need
-      // "GDK_CAP_NOT_LAST - for zero width lines, the final point on the line
-      //                     will not be drawn"
-      if (GCValues.line_width=1) then
-      begin
-        {gc_values.line_width:=0; // fp not have "gdk_gc_set_values" implementation
-        gdk_gc_set_values(GC, @gc_values, GDK_GC_LINE_WIDTH);}
-        gdk_gc_set_line_attributes(GC, 0, GCValues.line_style, GDK_CAP_NOT_LAST,
-                                   GCValues.join_style);
+      //debugln(['TGtkWidgetSet.LineTo A ',FromX,' ',FromY,' ',ToX,' ',ToY]);
+      gdk_gc_get_values(GC,@CurValues);
+      OldCapStyle:=GCValues.cap_style;
+      OldLineWidth:=GCValues.line_width;
+      Restore:=false;
+      if (OldLineWidth=1) or (OldCapStyle<>GDK_CAP_NOT_LAST) then begin
+        // LineTo should not paint the last point
+        // this works under gtk only with line_width=0
+        // => set linewidth to 0 and GDK_CAP_NOT_LAST
+        Restore:=true;
+        gdk_gc_set_line_attributes(GC, 0, GCValues.line_style,
+                                   GDK_CAP_NOT_LAST, GCValues.join_style);
       end;
       gdk_draw_line(Drawable, GetGC, FromX, FromY, ToX, ToY);
+      if Restore then begin
+        gdk_gc_set_line_attributes(GC, OldLineWidth, GCValues.line_style,
+                                   OldCapStyle, GCValues.join_style);
+      end;
       {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       PenPos:= Point(X, Y);
     end else

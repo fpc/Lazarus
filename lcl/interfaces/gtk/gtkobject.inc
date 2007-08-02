@@ -5705,10 +5705,11 @@ begin
     //DebugLn('TGtkWidgetSet.SelectGDKBrushProps Setting Brush Color ...');
     EnsureGCColor(DC, dccGDIBrushColor, GetBrush^.GDIBrushFill = GDK_Solid, False);//Brush Color
 
-    If GetBrush^.GDIBrushFill <> GDK_Solid then
-      If GetBrush^.GDIBrushPixmap <> nil then begin
+    if GetBrush^.GDIBrushFill <> GDK_Solid then
+      if GetBrush^.GDIBrushPixmap <> nil then begin
         gdk_gc_set_fill(GetGC, GetBrush^.GDIBrushFill);
         gdk_gc_set_Stipple(GetGC, GetBrush^.GDIBrushPixmap);
+        gdk_gc_get_values(GC,@GCValues);
       end
   end;
   TDeviceContext(DC).SelectedColors:=dcscBrush;
@@ -5784,6 +5785,7 @@ begin
           end;
           {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
         end;
+        gdk_gc_get_values(GC,@GCValues);
       end;
       Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
     end;

@@ -1869,7 +1869,6 @@ begin
     exit;
   end;
 
-  AutoSizing := True;
   DisableAutoSizing;
   DisableAlign;
   try
@@ -1960,7 +1959,6 @@ begin
   finally
     EnableAlign;
     EnableAutoSizing;
-    AutoSizing := False;
   end;
   Exclude(FControlFlags,cfAutoSizeNeeded);
 end;

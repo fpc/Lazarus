@@ -329,7 +329,8 @@ begin
     Result:=0;
 end;
 
-procedure TCanvas.GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
+procedure TCanvas.GradientFill(ARect: TRect; AStart, AStop: TColor;
+  ADirection: TGradientDirection);
 var
   RStart, RStop: Byte;
   GStart, GStop: Byte;
@@ -358,10 +359,12 @@ begin
     RequiredState([csHandleValid, csPenValid]);
     if ADirection = gdHorizontal
     then begin
+      // draw top to bottom, because LineTo does not draw last pixel
       LCLIntf.MoveToEx(FHandle, ARect.Left+I, ARect.Top, nil);
       LCLIntf.LineTo(FHandle, ARect.Left+I, ARect.Bottom);
     end
     else begin
+      // draw left to right, because LineTo does not draw last pixel
       LCLIntf.MoveToEx(FHandle, ARect.Left, ARect.Top+I, nil);
       LCLIntf.LineTo(FHandle, ARect.Right, ARect.Top+I);
     end;

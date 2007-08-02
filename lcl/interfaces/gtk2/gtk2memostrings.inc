@@ -13,6 +13,8 @@ type
     function GetTextStr: string; override;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
+    //procedure PutObject(Index: Integer; AObject: TObject); override;
+    //function GetObject(Index: Integer): TObject; override;
     //procedure SetSorted(Val : boolean); virtual;
   public
     constructor Create(TextView : PGtkTextView; TheOwner: TWinControl);
@@ -123,8 +125,8 @@ end;
 
 procedure TGtk2MemoStrings.Insert(Index: integer; const S: string);
 var
-StartIter: TGtkTextIter;
-NewLine: String;
+  StartIter: TGtkTextIter;
+  NewLine: String;
 begin
   if Index < gtk_text_buffer_get_line_count(FGtkBuf) then begin
     //insert with LineEnding
@@ -147,6 +149,4 @@ procedure TGtk2MemoStrings.SetText(TheText: PChar);
 begin
   gtk_text_buffer_set_text(FGtkBuf, TheText, -1);
 end;
-
-
 {$ENDIF}
