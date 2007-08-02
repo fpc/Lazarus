@@ -28,6 +28,7 @@ begin
   FFiles := TStringList.Create;
   FHistoryList:=TStringList.Create;
   FFilterIndex := 1;
+  FInternalFilterIndex := 1;
 end;
 
 {------------------------------------------------------------------------------}
