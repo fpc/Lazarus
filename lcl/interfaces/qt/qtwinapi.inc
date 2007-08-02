@@ -4046,7 +4046,8 @@ begin
 
   if IsValidDC(DC) then
   begin
-    GetWindowOrgEx(DC, OldPoint);
+    if OldPoint <> nil then
+      GetWindowOrgEx(DC, OldPoint);
     TQtDeviceContext(DC).translate(-NewX, -NewY);
   end;
 
