@@ -156,14 +156,6 @@ begin
 
   QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
   
-  if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
-     (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
-     (Application <> nil) and
-     (Application.MainForm <> nil) and
-     (Application.MainForm.HandleAllocated) and
-     (Application.MainForm <> AWinControl) then
-    QtMainWindow.setShowInTaskBar(False);
-
   // Set´s initial properties
 
   Str := UTF8Decode(AWinControl.Caption);
@@ -175,6 +167,18 @@ begin
     SetQtWindowBorderStyle(QtMainWindow, TCustomForm(AWinControl).BorderStyle);
     SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
   end;
+
+  if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
+     (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and not
+     {QtTool have not minimize button !}
+     {$ifdef linux}
+     (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow]) and
+     {$endif}
+     (Application <> nil) and
+     (Application.MainForm <> nil) and
+     (Application.MainForm.HandleAllocated) and
+     (Application.MainForm <> AWinControl) then
+    QtMainWindow.setShowInTaskBar(False);
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
