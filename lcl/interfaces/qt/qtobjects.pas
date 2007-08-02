@@ -1057,6 +1057,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 constructor TQtDeviceContext.Create(AWidget: QWidgetH; Const APaintEvent: Boolean = False);
+var
+  W: Integer;
+  H: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(WidgetHandle), ' FromPaintEvent:',BoolToStr(FromPaintEvent),' )');
@@ -1066,7 +1069,8 @@ begin
    of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
   if AWidget = nil then
   begin
-    ParentPixmap := QPixmap_Create(10,10);
+    Parent := nil;
+    ParentPixmap := QPixmap_Create(10, 10);
     Widget := QPainter_Create(QPaintDeviceH(ParentPixmap));
   end
   else
@@ -1074,22 +1078,38 @@ begin
     Parent := AWidget;
     if not APaintEvent then
     begin
-      ParentPixmap := QPixmap_Create(QWidget_width(Parent), QWidget_height(Parent));
+      {avoid paints on null pixmaps !}
+      W := QWidget_width(Parent);
+      H := QWidget_height(Parent);
+      
+      if W <= 0 then W := 1;
+      if H <= 0 then H := 1;
+      
+      ParentPixmap := QPixmap_Create(W, H);
       Widget := QPainter_create(QPaintDeviceH(ParentPixmap));
     end
     else
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
-  vBrush := TQtBrush.Create(False);
-  vBrush.Owner := Self;
+  
   vFont := TQtFont.Create(False);
-  vFont.Owner := Self;;
-  vPen := TQtPen.Create(False);
-  vPen.Owner := Self;
-  vRegion := TQtRegion.Create(False);
-  vRegion.Owner := Self;
+  vFont.Owner := Self;
+
+  if Parent <> nil then
+  begin
+    vBrush := TQtBrush.Create(False);
+    vBrush.Owner := Self;
+
+    vPen := TQtPen.Create(False);
+    vPen.Owner := Self;
+
+    vRegion := TQtRegion.Create(False);
+    vRegion.Owner := Self;
+  end;
+  
   vBackgroundBrush := TQtBrush.Create(False);
   vBackgroundBrush.Owner := Self;
+  
   vTextColor := ColorToRGB(clWindowText);
 end;
 
@@ -1107,17 +1127,23 @@ begin
   if (vClipRect <> nil) then
     dispose(vClipRect);
 
-  vBrush.Widget := nil;
-  vBrush.Free;
+
   vFont.Widget := nil;
   vFont.Free;
-  vPen.Widget := nil;
-  vPen.Free;
-  vRegion.Widget := nil;
-  vRegion.Free;
+
+  if Parent <> nil then
+  begin
+    vBrush.Widget := nil;
+    vBrush.Free;
+    vPen.Widget := nil;
+    vPen.Free;
+    vRegion.Widget := nil;
+    vRegion.Free;
+  end;
+  
   vBackgroundBrush.Widget := nil;
   vBackgroundBrush.Free;
-
+  
   if vImage <> nil then
     QImage_destroy(vImage);
 
@@ -1441,8 +1467,12 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.font()');
   {$endif}
-
-  vFont.Widget := QPainter_font(Widget);
+  
+  {$ifdef linux}
+  if vFont <> nil then
+  {$endif}
+    vFont.Widget := QPainter_font(Widget);
+    
   if SelFont=nil then
     Result := vFont
   else
@@ -1477,7 +1507,12 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.brush() ');
   {$endif}
-  vBrush.Widget := QPainter_brush(Widget);
+  
+  {$ifdef linux}
+  if vBrush <> nil then
+  {$endif}
+    vBrush.Widget := QPainter_brush(Widget);
+    
   if SelBrush=nil then
     Result := vBrush
   else
@@ -1518,7 +1553,12 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.pen() ');
   {$endif}
-  vPen.Widget := QPainter_pen(Widget);
+  
+  {$ifdef linux}
+  if vPen <> nil then
+  {$endif}
+    vPen.Widget := QPainter_pen(Widget);
+    
   if SelPen=nil then
     Result := vPen
   else
