@@ -3724,41 +3724,35 @@ var
   ARegion: QRegionH;
   Painter: QPainterH;
   R: TRect;
-  R1: PRect;
 begin
-  result := ERROR;
+  Result := ERROR;
   if IsValidDC(DC) then
   begin
     Painter := TQtDeviceContext(DC).Widget;
-    QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget);
+    if RGN <> 0 then
+      QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
+    else
+      QPainter_setClipRegion(Painter, nil, QtNoClip);
     if QPainter_hasClipping(Painter) then
     begin
       ARegion := QRegion_Create;
       try
         QPainter_ClipRegion(Painter, ARegion);
         if QRegion_isEmpty(ARegion) then
-          result := NULLREGION
+          Result := NULLREGION
         else
         begin
           QRegion_boundingRect(ARegion, @R);
-          New(R1);
-          try
-            R1^ := R;
-            if QRegion_contains(ARegion, R1)
-            then
-              result := SIMPLEREGION
-            else
-              Result := COMPLEXREGION;
-          finally
-            Dispose(R1);
-          end;
+          if QRegion_contains(ARegion, PRect(@R)) then
+            Result := SIMPLEREGION
+          else
+           Result := COMPLEXREGION;
         end;
       finally
         QRegion_Destroy(ARegion);
       end;
-    end else begin
-      result := NULLREGION;
-    end;
+    end else
+      Result := NULLREGION;
   end;
 end;
 
