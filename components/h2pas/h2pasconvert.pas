@@ -150,6 +150,16 @@ type
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
+  
+  { Proposal:
+    - A tool to collect the content of several units into one
+    - A tool to remove redefinitions
+    - A tool to fix "constant A=B;" to type A=B; or functions
+    - A tool to reorder a unit to fix forward definitions
+       Difficulties:
+         - keep comments together
+         - keep IFDEFs
+         }
 
   TH2PasFile = class;
 
@@ -1626,6 +1636,15 @@ begin
 end;
 
 function TH2PasConverter.ConvertFile(AFile: TH2PasFile): TModalResult;
+
+  procedure CloseOrRevertEditorFile(const Filename: string);
+  begin
+    if FileExists(Filename) then
+      LazarusIDE.DoRevertEditorFile(Filename)
+    else
+      LazarusIDE.DoCloseEditorFile(Filename,[cfQuiet]);
+  end;
+
 var
   OutputFilename: String;
   TempCHeaderFilename: String;
@@ -1715,8 +1734,8 @@ begin
     TextConverter.Free;
     if (LazarusIDE<>nil) then begin
       // reload changed files, so that IDE does not report changed files
-      LazarusIDE.DoRevertEditorFile(TempCHeaderFilename);
-      LazarusIDE.DoRevertEditorFile(OutputFilename);
+      CloseOrRevertEditorFile(TempCHeaderFilename);
+      CloseOrRevertEditorFile(OutputFilename);
     end;
   end;
 
@@ -2693,7 +2712,7 @@ end;
 
 function TReplaceImplicitTypes.FindExplicitTypesAndConstants(
   var ModalResult: TModalResult): boolean;
-{ every implicit type can contian references to explicit types and constants
+{ every implicit type can contain references to explicit types and constants
   For example: array[0..3] of bogus
   If 'bogus' is defined in this source, then the new type must be defined
   after 'bogus'.

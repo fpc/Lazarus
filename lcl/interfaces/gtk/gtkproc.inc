@@ -8756,7 +8756,8 @@ begin
 end;
 {$ENDIF}
 
-procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
+procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC;
+  Color : TColorRef; x, y, width, height : gint);
 var
   style : PGTKStyle;
   widget : PGTKWidget;

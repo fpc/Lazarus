@@ -2823,7 +2823,7 @@ begin
     with FontDialog do
     begin
       Font.Name   := EditorFontComboBox.Text;
-      Font.Height := StrToIntDef(EditorFontHeightComboBox.Text, PreviewEdits[0].Font.Height);
+      Font.Height := StrToIntDef(EditorFontHeightComboBox.Text, PreviewEdits[1].Font.Height);
       Options := Options + [fdApplyButton];
       OnApplyClicked := @FontDialogApplyClicked;
       if Execute then

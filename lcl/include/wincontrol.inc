@@ -1957,10 +1957,10 @@ begin
       SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight,true);
     end;
   finally
+    Exclude(FControlFlags,cfAutoSizeNeeded);
     EnableAlign;
     EnableAutoSizing;
   end;
-  Exclude(FControlFlags,cfAutoSizeNeeded);
 end;
 
 {------------------------------------------------------------------------------}
