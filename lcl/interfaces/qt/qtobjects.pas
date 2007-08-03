@@ -35,7 +35,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, Menus, LCLProc, Graphics;
+  LCLType, LCLIntf, Menus, LCLProc, Graphics;
 
 type
   // forward declarations
@@ -65,6 +65,7 @@ type
   TQtResource = class(TObject)
   public
     Owner: TObject;
+    FShared: Boolean;
   end;
 
   { TQtAction }
@@ -118,7 +119,7 @@ type
     Widget: QFontH;
     Angle: Integer;
   public
-    constructor Create(CreateHandle: Boolean); virtual;
+    constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
     destructor Destroy; override;
   public
     function pointSize: Integer;
@@ -162,7 +163,7 @@ type
   private
   public
     Widget: QBrushH;
-    constructor Create(CreateHandle: Boolean); virtual;
+    constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
     destructor Destroy; override;
     procedure setStyle(style: QtBrushStyle);
   end;
@@ -173,7 +174,7 @@ type
   private
   public
     Widget: QPenH;
-    constructor Create(CreateHandle: Boolean); virtual;
+    constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
     destructor Destroy; override;
   public
     function Width: Integer;
@@ -673,13 +674,15 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtFont.Create(CreateHandle: Boolean);
+constructor TQtFont.Create(CreateHandle: Boolean; Const AShared: Boolean = False);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtFont.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
   if CreateHandle then Widget := QFont_create;
+  
+  FShared := AShared;
 end;
 
 {------------------------------------------------------------------------------
@@ -693,7 +696,8 @@ begin
     WriteLn('TQtFont.Destroy');
   {$endif}
 
-  if Widget <> nil then QFont_destroy(Widget);
+  if not FShared and (Widget <> nil) then
+    QFont_destroy(Widget);
 
   inherited Destroy;
 end;
@@ -832,7 +836,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtBrush.Create(CreateHandle: Boolean);
+constructor TQtBrush.Create(CreateHandle: Boolean; Const AShared: Boolean = False);
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -840,6 +844,8 @@ begin
   {$endif}
 
   if CreateHandle then Widget := QBrush_create;
+  
+  FShared := AShared;
 end;
 
 {------------------------------------------------------------------------------
@@ -853,7 +859,8 @@ begin
     WriteLn('TQtBrush.Destroy');
   {$endif}
 
-  QBrush_destroy(Widget);
+  if not FShared and (Widget <> nil) then
+    QBrush_destroy(Widget);
 
   inherited Destroy;
 end;
@@ -875,7 +882,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtPen.Create(CreateHandle: Boolean);
+constructor TQtPen.Create(CreateHandle: Boolean; Const AShared: Boolean = False);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtPen.Create CreateHandle: ', dbgs(CreateHandle));
@@ -883,6 +890,7 @@ begin
   
   if CreateHandle then
     Widget := QPen_create;
+  FShared := AShared;
 end;
 
 {------------------------------------------------------------------------------
@@ -896,7 +904,8 @@ begin
     WriteLn('TQtPen.Destroy');
   {$endif}
 
-  QPen_destroy(Widget);
+  if not FShared and (Widget <> nil) then
+    QPen_destroy(Widget);
 
   inherited Destroy;
 end;
@@ -1092,11 +1101,13 @@ begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
   
-  vFont := TQtFont.Create(False);
-  vFont.Owner := Self;
+
 
   if Parent <> nil then
   begin
+  	vFont := TQtFont.Create(False);
+	  vFont.Owner := Self;
+
     vBrush := TQtBrush.Create(False);
     vBrush.Owner := Self;
 
@@ -1105,10 +1116,17 @@ begin
 
     vRegion := TQtRegion.Create(False);
     vRegion.Owner := Self;
+
+	  vBackgroundBrush := TQtBrush.Create(False);
+	  vBackgroundBrush.Owner := Self;
+
+  end else
+  begin
+    vFont := TQtFont(GetStockObject(SYSTEM_FONT));
+    vBrush := TQtBrush(GetStockObject(WHITE_BRUSH));
+		vBackgroundBrush := vBrush;
+    vPen := TQtPen(GetStockObject(BLACK_PEN));
   end;
-  
-  vBackgroundBrush := TQtBrush.Create(False);
-  vBackgroundBrush.Owner := Self;
   
   vTextColor := ColorToRGB(clWindowText);
 end;
@@ -1119,6 +1137,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 destructor TQtDeviceContext.Destroy;
+var
+  StockFont: TQtFont;
+  StockBrush: TQtBrush;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtDeviceContext.Destroy');
@@ -1128,21 +1149,21 @@ begin
     dispose(vClipRect);
 
 
-  vFont.Widget := nil;
-  vFont.Free;
-
   if Parent <> nil then
   begin
+  
+	  vFont.Widget := nil;
+ 	  vFont.Free;
     vBrush.Widget := nil;
     vBrush.Free;
     vPen.Widget := nil;
     vPen.Free;
     vRegion.Widget := nil;
     vRegion.Free;
+	  vBackgroundBrush.Widget := nil;
+	  vBackgroundBrush.Free;
+   
   end;
-  
-  vBackgroundBrush.Widget := nil;
-  vBackgroundBrush.Free;
   
   if vImage <> nil then
     QImage_destroy(vImage);
@@ -1467,7 +1488,7 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.font()');
   {$endif}
-  
+
   if vFont <> nil then
     vFont.Widget := QPainter_font(Widget);
     

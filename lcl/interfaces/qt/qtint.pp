@@ -56,6 +56,19 @@ type
     App: QApplicationH;
     SavedDCList: TList;
   protected
+    FStockNullBrush: HBRUSH;
+    FStockBlackBrush: HBRUSH;
+    FStockLtGrayBrush: HBRUSH;
+    FStockGrayBrush: HBRUSH;
+    FStockDkGrayBrush: HBRUSH;
+    FStockWhiteBrush: HBRUSH;
+
+    FStockNullPen: HPEN;
+    FStockBlackPen: HPEN;
+    FStockWhitePen: HPEN;
+    FStockSystemFont: HFONT;
+    FStockDefaultDC: HDC;
+    
     function CreateThemeServices: TThemeServices; override;
   public
     function LCLPlatform: TLCLPlatform; override;
@@ -89,6 +102,13 @@ type
     function IsValidDC(const DC: HDC): Boolean; virtual;
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
   public
+    function CreateDefaultFont: HFONT; virtual;
+    function GetQtDefaultDC: HDC; virtual;
+    procedure DeleteDefaultDC; virtual;
+		procedure SetQtDefaultDC(Handle: HDC); virtual;
+    procedure InitStockItems; virtual;
+    procedure FreeStockItems; virtual;
+
     {$I qtwinapih.inc}
     {$I qtlclintfh.inc}
   end;

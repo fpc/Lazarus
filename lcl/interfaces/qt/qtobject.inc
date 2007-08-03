@@ -26,6 +26,8 @@ constructor TQtWidgetSet.Create;
 begin
   inherited Create;
 
+	InitStockItems;
+ 
   QtWidgetSet := Self;
 end;
 
@@ -41,6 +43,8 @@ begin
   DestroyGlobalCaret;
   Clipboard.Free;
 
+	FreeStockItems;
+ 
   QtWidgetSet := nil;
   
   if SavedDCList<>nil then
@@ -249,7 +253,7 @@ end;
 
 function TQtWidgetSet.InitHintFont(HintFont: TObject): Boolean;
 begin
-  Result:=false;
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -297,6 +301,112 @@ begin
     Result := (aObject is TQtFont) or (aObject is TQtBrush) or (aObject is TQtImage)
       or (aObject is TQtPen) or (aObject is TQTRegion);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateDefaultFont
+  Params:  none
+  Returns: a TQtFont object
+
+  Creates an default font, used for initial values
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateDefaultFont: HFONT;
+var
+  QtFont: TQtFont;
+begin
+  QtFont := TQtFont.Create(True, True);
+  QApplication_font(QtFont.Widget);
+  Result := HFONT(QtFont);
+end;
+
+procedure TQtWidgetSet.DeleteDefaultDC;
+begin
+  if FStockDefaultDC <> 0 then
+  TQtDeviceContext(FStockDefaultDC).Free;
+  FStockDefaultDC := 0;
+end;
+
+procedure TQtWidgetSet.FreeStockItems;
+
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
+  begin
+    DeleteObject(h);
+    h:=0;
+  end;
+
+begin
+  DeleteAndNilObject(FStockNullBrush);
+  DeleteAndNilObject(FStockBlackBrush);
+  DeleteAndNilObject(FStockLtGrayBrush);
+  DeleteAndNilObject(FStockGrayBrush);
+  DeleteAndNilObject(FStockDkGrayBrush);
+  DeleteAndNilObject(FStockWhiteBrush);
+
+  DeleteAndNilObject(FStockNullPen);
+  DeleteAndNilObject(FStockBlackPen);
+  DeleteAndNilObject(FStockWhitePen);
+
+  DeleteAndNilObject(FStockSystemFont);
+end;
+
+function TQtWidgetSet.GetQtDefaultDC: HDC;
+begin
+  Result := FStockDefaultDC;
+end;
+
+procedure TQtWidgetSet.SetQtDefaultDC(Handle: HDC);
+begin
+	FStockDefaultDC := Handle;
+end;
+
+procedure TQtWidgetSet.InitStockItems;
+var
+  LogBrush: TLogBrush;
+  logPen : TLogPen;
+begin
+  FillChar(LogBrush,SizeOf(TLogBrush),0);
+  LogBrush.lbStyle := BS_NULL;
+  FStockNullBrush := CreateBrushIndirect(LogBrush);
+  TQtBrush(FStockNullBrush).FShared := True;
+  
+  LogBrush.lbStyle := BS_SOLID;
+  LogBrush.lbColor := $000000;
+  FStockBlackBrush := CreateBrushIndirect(LogBrush);
+  TQtBrush(FStockBlackBrush).FShared := True;
+  
+  LogBrush.lbColor := $C0C0C0;
+  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
+  TQtBrush(FStockLtGrayBrush).FShared := True;
+  
+  LogBrush.lbColor := $808080;
+  FStockGrayBrush := CreateBrushIndirect(LogBrush);
+  TQtBrush(FStockGrayBrush).FShared := True;
+  
+  LogBrush.lbColor := $404040;
+  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
+  TQtBrush(FStockDkGrayBrush).FShared := True;
+  
+  LogBrush.lbColor := $FFFFFF;
+  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+	TQtBrush(FStockWhiteBrush).FShared := True;
+
+  LogPen.lopnStyle := PS_NULL;
+  LogPen.lopnWidth.X := 1;
+  LogPen.lopnColor := $FFFFFF;
+  FStockNullPen := CreatePenIndirect(LogPen);
+	TQtPen(FStockNullPen).FShared := True;
+ 
+  LogPen.lopnStyle := PS_SOLID;
+  FStockWhitePen := CreatePenIndirect(LogPen);
+	TQtPen(FStockWhitePen).FShared := True;
+ 
+  LogPen.lopnColor := $000000;
+  FStockBlackPen := CreatePenIndirect(LogPen);
+	TQtPen(FStockBlackPen).FShared := True;
+
+  FStockSystemFont := 0;//Styles aren't initialized yet
+  
+  FStockDefaultDC := 0; // app must be initialized
 end;
 
 //------------------------------------------------------------------------

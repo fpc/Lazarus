@@ -498,8 +498,12 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
-
-  Result := GetDC(0);
+  {TODO: TEST IT
+	if (GetQtDefaultDC <> 0)
+  and (DC = 0) then
+	 DeleteDefaultDC;
+  }
+  Result := GetDC(DC);
 end;
 
 {------------------------------------------------------------------------------
@@ -889,8 +893,7 @@ begin
       AObject:=nil;
     end;
   
-  if (AObject <> nil)
-  then
+  if AObject <> nil then
     AObject.Free;
   
   // Find out if we want to release internal GDI object
@@ -1489,7 +1492,7 @@ begin
 
   if Str <> nil then
   begin
-    WideStr := Str;
+    WideStr := UTF8Decode(Str);
 
     QtDC.drawText(X, Y, @WideStr);
   end;
@@ -1912,12 +1915,23 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
-
+  
   Widget := TQtWidget(hWnd);
+  
   if Widget <> nil then
     Result := HDC(TQtDeviceContext.Create(Widget.Widget))
   else
-    Result := HDC(TQtDeviceContext.Create(nil));
+  begin
+    { TODO: Test this !
+    if GetQtDefaultDC = 0 then
+    begin
+      Result := HDC(TQtDeviceContext.Create(nil));
+      SetQtDefaultDC(Result);
+    end else
+      Result := GetQtDefaultDC;
+      }
+	  Result := HDC(TQtDeviceContext.Create(nil));
+  end;
   
 //  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
 
@@ -2567,9 +2581,57 @@ end;
 
 function TQtWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI GetStockObject] Value: ', Value);
+  {$endif}
+
   Result := 0;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetStockObject] missing implementation ');
+  
+  case Value of
+    BLACK_BRUSH:         // Black brush.
+      Result := FStockBlackBrush;
+    DKGRAY_BRUSH:        // Dark gray brush.
+      Result := FStockDKGrayBrush;
+    GRAY_BRUSH:          // Gray brush.
+      Result := FStockGrayBrush;
+    LTGRAY_BRUSH:        // Light gray brush.
+      Result := FStockLtGrayBrush;
+    NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
+      Result := FStockNullBrush;
+    WHITE_BRUSH:         // White brush.
+      Result := FStockWhiteBrush;
+
+    BLACK_PEN:           // Black pen.
+      Result := FStockBlackPen;
+    NULL_PEN:            // Null pen.
+      Result := FStockNullPen;
+    WHITE_PEN:           // White pen.
+      Result := FStockWhitePen;
+
+    {System font. By default, Windows uses the system font to draw menus,
+     dialog box controls, and text. In Windows versions 3.0 and later,
+     the system font is a proportionally spaced font; earlier versions of
+     Windows used a monospace system font.}
+    DEFAULT_GUI_FONT, SYSTEM_FONT:
+      begin
+        If FStockSystemFont <> 0 then
+        begin
+          DeleteObject(FStockSystemFont);
+          FStockSystemFont := 0;
+        end;
+
+        If FStockSystemFont = 0 then
+          FStockSystemFont := CreateDefaultFont;
+        Result := FStockSystemFont;
+      end;
+      
+  {$ifdef VerboseQtWinAPI}
+    else
+    WriteLn('[WinAPI GetStockObject] UNHANDLED Value: ', Value);
+  {$endif}
+  end;
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI GetStockObject] Value: ', Value);
   {$endif}
 end;
 
