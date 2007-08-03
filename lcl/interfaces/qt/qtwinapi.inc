@@ -577,8 +577,7 @@ begin
 
   QtFont := TQtFont.Create(True);
   try
-    if LogFont.lfHeight > 0 then QtFont.setPointSize(LogFont.lfHeight)
-    else if LogFont.lfHeight < 0 then QtFont.setPointSize(-1 * LogFont.lfHeight);
+    QtFont.setPixelSize(Abs(LogFont.lfHeight));
 
     // Some values at available on Qt documentation at a table
     // Others are guesses. The best would be to test different values for those
@@ -4620,6 +4619,7 @@ begin
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 
 
 
