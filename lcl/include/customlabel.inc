@@ -216,8 +216,11 @@ end;
 
 procedure TCustomLabel.SetTransparent(NewTransparent: boolean);
 begin
+  if Transparent=NewTransparent then exit;
   if NewTransparent then
-    Color := clNone;
+    Color := clNone
+  else if Color = clNone then
+    Color:=clBackground;
 end;
 
 {------------------------------------------------------------------------------
