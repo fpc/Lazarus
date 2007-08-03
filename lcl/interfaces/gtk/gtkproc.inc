@@ -2387,7 +2387,14 @@ begin
           // send the key after navigation keys were handled
           Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
           if Result or (Character = '')
-          then StopKeyEvent('key_press_event');
+          then StopKeyEvent('key_press_event')
+          else if (Length(Character) = 1) then
+          begin
+            AEvent^.KeyVal:=ord(Character[1]);
+            AEvent^.length:=1;
+            EventString^:=Character[1];
+            EventString[1]:=#0;
+          end;
         end;
       end;
     end;
