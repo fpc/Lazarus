@@ -94,13 +94,13 @@ begin
     // if current handle has paintdata information,
     // setup hdc with it
     //DC.DebugClipRect('BeginPaint: Before');
-    if Widget.PaintData.ClipRegion<>nil then
+    if Widget.PaintData.ClipRegion <> nil then
     begin
       //Write('>>> Setting Paint ClipRegion: ');
       //DebugRegion('PaintData.ClipRegion: ', Widget.PaintData.ClipRegion);
       QPainter_SetClipRegion(DC.Widget, Widget.PaintData.ClipRegion);
     end;
-    if Widget.PaintData.ClipRect<>nil then
+    if Widget.PaintData.ClipRect <> nil then
     begin
       New(DC.vClipRect);
       DC.vClipRect^ := Widget.PaintData.ClipRect^;
@@ -1302,14 +1302,13 @@ begin
 
   Result := 1;
 
-  if IsValidDC(PS.HDC) then
-   if (TObject(PS.HDC) is TQtDeviceContext) then
-   begin
+  if IsValidDC(PS.HDC) and (TObject(PS.HDC) is TQtDeviceContext) then
+  begin
     {$ifdef VerboseQtWinAPI}
-       WriteLn('Freeing resources');
+      WriteLn('Freeing resources');
     {$endif}
-     TQtDeviceContext(PS.HDC).Free;
-   end;
+    TQtDeviceContext(PS.HDC).Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3411,20 +3410,6 @@ begin
   Result := True;
 end;
 
-function TQtWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
-begin
-{ note:
-  this is not right implementation. MoveWindowOrgEx means shift, but
-  here we only set offset
-}
-  Result := False;
-
-  if IsValidDC(DC) then
-    TQtDeviceContext(DC).translate(dX, dY);
-
-  Result := True;
-end;
-
 function TQtWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin
   Result := False;
@@ -4031,6 +4016,8 @@ end;
   Sets the window origin of the device context by using the specified coordinates.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
+var
+  P: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI SetWindowOrgEx] DC: ', dbghex(DC), ' NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
@@ -4040,8 +4027,12 @@ begin
 
   if IsValidDC(DC) then
   begin
+    GetWindowOrgEx(DC, @P);
+    // restore 0, 0
+    if (P.X <> 0) or (P.Y <> 0) then
+      TQtDeviceContext(DC).translate(P.X, P.Y);
     if OldPoint <> nil then
-      GetWindowOrgEx(DC, OldPoint);
+      OldPoint^ := P;
     TQtDeviceContext(DC).translate(-NewX, -NewY);
   end;
 

@@ -1574,6 +1574,7 @@ end;
 procedure TQtWidget.SlotPaint(Event: QEventH); cdecl;
 var
   Msg: TLMPaint;
+  AStruct: PPaintStruct;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint');
@@ -1584,20 +1585,25 @@ begin
     FillChar(Msg, SizeOf(Msg), #0);
 
     Msg.Msg := LM_PAINT;
-    Msg.DC := 0;
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    Msg.PaintStruct := AStruct;
+
+    with PaintData do
+    begin
+      ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
+      if ClipRect=nil then
+        New(ClipRect);
+      QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
+    end;
+
+    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+    with getClientBounds do
+      SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
 
     // send paint message
     try
-
       // Saving clip rect and clip region
-      with PaintData do
-      begin
-        ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
-        if ClipRect=nil then
-          New(ClipRect);
-        QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
-      end;
-
       try
         LCLObject.WindowProc(TLMessage(Msg));
         if HasCaret then
@@ -1605,6 +1611,8 @@ begin
       finally
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
+        EndPaint(THandle(Self), AStruct^);
+        Dispose(AStruct);
       end;
     except
       Application.HandleException(nil);
