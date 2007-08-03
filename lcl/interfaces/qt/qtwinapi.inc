@@ -116,10 +116,16 @@ end;
 
 function TQtWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.BitBlt] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [TQtWidgetSet.BitBlt]');
   {$endif}
-  Result := False;
+  
+  Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
+                       Height, ROP);
+                       
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [TQtWidgetSet.BitBlt]');
+  {$endif}
 end;
 
 function TQtWidgetSet.CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
@@ -1278,7 +1284,7 @@ begin
     WriteLn('***** [WinAPI TQtWidgetSet.EnableWindow] possible wrong implementation');
   {$endif}
   if TQtWidget(hWnd).LCLObject.ClassName<>'TScrollBar' then
-  QWidget_setEnabled(TQtWidget(hWnd).Widget, bEnable);
+    QWidget_setEnabled(TQtWidget(hWnd).Widget, bEnable);
 end;
 
 {------------------------------------------------------------------------------
