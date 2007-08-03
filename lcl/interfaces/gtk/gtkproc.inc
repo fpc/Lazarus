@@ -2388,8 +2388,12 @@ begin
           Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
           if Result or (Character = '')
           then StopKeyEvent('key_press_event')
-          else if (Length(Character) = 1) then
-          begin
+          else if (Length(Character) = 1)
+          {$IFDEF Gtk1}
+          // GTK1 only supports normal ASCII characters (Note: #127 is delete)
+          and (Character[1] in [#32..#126])
+          {$ENDIF}
+          then begin
             AEvent^.KeyVal:=ord(Character[1]);
             AEvent^.length:=1;
             EventString^:=Character[1];
