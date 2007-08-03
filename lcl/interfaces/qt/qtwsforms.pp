@@ -169,10 +169,10 @@ begin
   end;
 
   if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
-     (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and not
+     (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and 
      {QtTool have not minimize button !}
      {$ifdef linux}
-     (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow]) and
+     not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow]) and
      {$endif}
      (Application <> nil) and
      (Application.MainForm <> nil) and
