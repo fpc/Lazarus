@@ -1727,7 +1727,7 @@ begin
       EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
     exit;
   end;
-  
+
   Case TColor(GDIColor^.ColorRef) of
     //clScrollbar: see above
     clInfoBk,
@@ -8492,19 +8492,11 @@ begin
 
     COLOR_WINDOW :
       begin
-        ThemeWidget:=GetWidgetWithBackgroundWindow(ThemeWidget);
-        if ThemeWidget<>nil then begin
-          if GtkWidgetIsA(ThemeWidget,GTK_TYPE_LIST_ITEM) then
-            Style:=GetStyle(lgsList);
-          if Style=nil then
-            Style:=PGtkStyle(gtk_widget_get_style(ThemeWidget));
-        end;
-        if Style=nil then
-          Style := GetStyle(lgsDefault);
-        If Style = nil then
+        Style := GetStyle(lgsList);
+        if Style = nil then
           exit;
         GC := Style^.base_gc[GTK_STATE_NORMAL];
-        If (GC = nil) then begin
+        if (GC = nil) then begin
           Result.Fill := GDK_Solid;
           if Style^.base[GTK_STATE_NORMAL].Pixel<>0 then begin
             Result.foreground := Style^.base[GTK_STATE_NORMAL];
