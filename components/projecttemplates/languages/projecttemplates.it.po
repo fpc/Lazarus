@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-07-19 17:02+0100\n"
+"Last-Translator: tiz <xx@xx>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Modello inesistente."
+
+#: projecttemplates:serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr "Impossibile creare la directory \"%s\""
+
+#: projecttemplates:serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Errore copia del file \"%s\" to \"%s\""
+

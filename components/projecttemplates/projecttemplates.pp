@@ -83,6 +83,9 @@ Const
   KeyDescription = 'Description';
   KeyRecurse     = 'Recurse';
   KeyExclude     = 'Exclude';
+  varprefixstr   = '__';     	// subtitution pattern is "__varname__"
+  varpostfixstr  = '__';     
+
 
 Function SubstituteString(Const S : String; Variables : TStrings): String;
 Function SimpleFileCopy(Const Source,Dest : String) : Boolean;
@@ -107,7 +110,8 @@ begin
   T:=S;
   Result:='';
   Repeat
-    P:=Pos('$(',T);
+    P:=Pos(varprefixstr,T);     
+
     If (P=0) then
       begin
       Result:=Result+T;
@@ -117,16 +121,16 @@ begin
       begin
       Result:=Result+Copy(T,1,P-1);
       Delete(T,1,P+1);
-      P:=Pos(')',T);
+      P:=Pos(varpostfixstr,T);     
       If (P=0) then
         begin
-        Result:=Result+'$('+T;
+        Result:=Result+varprefixstr+T;   
         T:='';
         end
       else
         begin
         Result:=Result+Variables.Values[Copy(T,1,P-1)];
-        Delete(T,1,P);
+        Delete(T,1,P+1);
         end;
       end;
   until (T='');
@@ -205,7 +209,11 @@ begin
         If ((Info.Attr and faDirectory)<>0)
            and not ((Info.Name='.') or (Info.Name='..') or (Info.Name='')) then
           With Add as TProjectTemplate do
+            begin
             InitFromDir(D+Info.Name);
+            if (name='') or (directory='')    // skip invalid template folders 
+               then delete(count-1);          // this prevents IDE hanging 
+            end;
       Until FindNext(Info)<>0;
   finally
     FindClose(Info);
@@ -425,7 +433,7 @@ begin
       repeat
         if (info.name<>'description.txt')
          and (info.name<>'project.ini') then
-        CopyAndSubstituteFile(D1+Info.Name,D2+SubstituteString(Info.Name,Values),Values);
+           CopyAndSubstituteFile(D1+Info.Name,D2+SubstituteString(Info.Name,Values),Values);
        Until (FindNext(Info)<>0);
     finally
       FindClose(Info);
