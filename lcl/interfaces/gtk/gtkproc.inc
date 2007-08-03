@@ -9259,10 +9259,12 @@ end;
   That means, ampersands are not counted.
 -------------------------------------------------------------------------------}
 {$Ifdef GTK2}
-Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
+Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription;
+  Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$Else}
-Procedure GetTextExtentIgnoringAmpersands(FontDesc : PGDKFont; Str : PChar;
+Procedure GetTextExtentIgnoringAmpersands(FontDesc : PGDKFont;
+  Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$EndIf}
 var
@@ -9273,8 +9275,8 @@ begin
   // first check if Str contains an ampersand:
   if (Str<>nil) then begin
     i:=0;
-    while (not (Str[i] in [#0,'&'])) do inc(i);
-    if Str[i]='&' then begin
+    while (Str[i]<>'&') and (i<LineLength) do inc(i);
+    if i<LineLength then begin
       NewStr := RemoveAmpersands(Str, LineLength);
       LineLength:=StrLen(NewStr);
     end;
