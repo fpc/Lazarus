@@ -42,7 +42,8 @@ uses
 
 type
 
-  { !!! Both are used: TGtkComboBoxEntry and TGtkComboBox, but not the old TGtkCombo !!! }
+  { !!! Both are used: TGtkComboBoxEntry (with entry) and TGtkComboBox (without entry),
+           but not the old TGtkCombo !!! }
 
   PGtkComboBoxPrivate = ^TGtkComboBoxPrivate;
   TGtkComboBoxPrivate = record
@@ -95,7 +96,8 @@ type
   end;
 
   { TGtk2WSCustomComboBox }
-  { !!! Both are used: TGtkComboBoxEntry and TGtkComboBox, but not the old TGtkCombo !!! }
+  { !!! Both are used: TGtkComboBoxEntry (with entry) and TGtkComboBox (without entry),
+           but not the old TGtkCombo !!! }
 
   TGtk2WSCustomComboBox = class(TGtkWSCustomComboBox)
   private
@@ -900,7 +902,8 @@ begin
   Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONUP, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEWHEEL, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, InputObject, AWinControl);
-  
+  Gtk2WidgetSet.SetCallbackDirect(LM_FOCUS, InputObject, AWinControl);
+
   // And now the same for the Button in the combo
   if AButton<>nil then begin
     Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEENTER, AButton, AWinControl);
@@ -915,6 +918,7 @@ begin
     Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONUP, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEWHEEL, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_FOCUS, AButton, AWinControl);
   end;
   
   // if we are a GtkComboBoxEntry
@@ -924,7 +928,7 @@ begin
 
   if APrivate^.popup_widget<>nil then begin
     g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
-    g_signal_connect(APrivate^.popup_widget, 'hide', TGCallback(@GtkPopupHideCB), AWidgetInfo);
+    g_signal_connect_after(APrivate^.popup_widget, 'hide', TGCallback(@GtkPopupHideCB), AWidgetInfo);
   end;
   //g_signal_connect(ComboWidget, 'popup-shown', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);

@@ -1025,8 +1025,6 @@ var
   child: TDOMNode;
 begin
   Result := nil;
-  if index < 0 then
-    exit;
   child := node.FirstChild;
   while Assigned(child) do
   begin

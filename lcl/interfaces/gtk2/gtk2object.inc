@@ -418,6 +418,7 @@ procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
 
   procedure ConnectFocusEvents(const AnObject: PGTKObject);
   begin
+    //DebugLn(['ConnectFocusEvents ',GetWidgetDebugReport(PGtkWidget(AnObject))]);
     ConnectSenderSignal(AnObject, 'focus-in-event', @gtk2FocusCB);
     ConnectSenderSignalAfter(AnObject, 'focus-in-event', @gtk2FocusCBAfter);
     ConnectSenderSignal(AnObject, 'focus-out-event', @gtk2KillFocusCB);
@@ -460,12 +461,7 @@ begin
   case AMsg of
     LM_FOCUS :
     begin
-      if (ALCLObject is TCustomComboBox) then begin
-        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
-        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
-      end else begin
-        ConnectFocusEvents(gCore);
-      end;
+      ConnectFocusEvents(gCore);
     end;
 
     LM_CHAR,

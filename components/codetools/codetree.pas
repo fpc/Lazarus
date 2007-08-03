@@ -238,6 +238,9 @@ type
     procedure WriteDebugReport(WithChilds: boolean);
   end;
 
+
+  { TCodeTreeNodeExtension }
+
   TCodeTreeNodeExtension = class
   public
     Node: TCodeTreeNode;
@@ -249,12 +252,13 @@ type
     Next: TCodeTreeNodeExtension;
     procedure Clear;
     constructor Create;
-    destructor Destroy; override;
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
   end;
 
-  // memory system for TCodeTreeNode(s)
+
+  { TCodeTreeNodeMemManager - memory system for TCodeTreeNode(s) }
+
   TCodeTreeNodeMemManager = class(TCodeToolMemManager)
   protected
     procedure FreeFirstItem; override;
@@ -263,7 +267,9 @@ type
     function NewNode: TCodeTreeNode;
   end;
 
-  // memory system for TCodeTreeNodeExtension(s)
+
+  { TCodeTreeNodeExtMemManager - memory system for TCodeTreeNodeExtension(s) }
+
   TCodeTreeNodeExtMemManager = class(TCodeToolMemManager)
   protected
     procedure FreeFirstItem; override;
@@ -781,11 +787,6 @@ end;
 constructor TCodeTreeNodeExtension.Create;
 begin
   Position:=-1;
-end;
-
-destructor TCodeTreeNodeExtension.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TCodeTreeNodeExtension.ConsistencyCheck: integer;

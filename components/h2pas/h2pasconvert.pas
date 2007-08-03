@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
   Forms, Controls, Dialogs, FileUtil, FileProcs, AvgLvlTree,
   // CodeTools
-  KeywordFuncLists, BasicCodeTools,
+  KeywordFuncLists, BasicCodeTools, CodeCache, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -41,6 +41,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+
   { TRemoveEmptyCMacrosTool - Remove empty C macros}
 
   TRemoveEmptyCMacrosTool = class(TCustomTextConverterTool)
@@ -48,6 +49,7 @@ type
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
+  
   
   { TReplaceEdgedBracketPairWithStar - Replace [] with * }
 
@@ -57,6 +59,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
+
   { TReplace0PointerWithNULL -
     Replace macro values 0 pointer like (char *)0 with NULL }
 
@@ -65,6 +68,7 @@ type
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
+
   
   { TReplaceUnitFilenameWithUnitName -
     Replace "unit filename;" with "unit name;" }
@@ -75,6 +79,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
+
   { TRemoveSystemTypes -
     Remove type redefinitons like PLongint }
 
@@ -84,6 +89,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+
   { TRemoveRedefinedPointerTypes - Remove redefined pointer types }
 
   TRemoveRedefinedPointerTypes = class(TCustomTextConverterTool)
@@ -92,6 +98,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+
   { TRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections }
 
   TRemoveEmptyTypeVarConstSections = class(TCustomTextConverterTool)
@@ -99,6 +106,7 @@ type
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
+
 
   { TReplaceImplicitTypes -
     Search implicit types in parameters and add types for them
@@ -142,6 +150,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
     function CodeToIdentifier(const Code: string): string;
   end;
+  
 
   { TFixArrayOfParameterType - Replace "array of )" with "array of const)" }
 
@@ -151,8 +160,33 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
   
+  
+  { TRemoveRedefinitionsInUnit
+    Removes redefinitions of types, variables, constants and resourcestrings }
+
+  TRemoveRedefinitionsInUnit = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+  
+
+  { TFixAliasDefinitionsInUnit
+    NOT COMPLETE YET
+    
+    Checks all alias definitions of the form
+    const LeftSide = RightSide;
+    looks up RightSide in the unit and if RightSide is a type or var, changes
+    the section accordingly }
+    
+  TFixAliasDefinitionsInUnit = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
   { Proposal:
-    - A tool to collect the content of several units into one
     - A tool to remove redefinitions
     - A tool to fix "constant A=B;" to type A=B; or functions
     - A tool to reorder a unit to fix forward definitions
@@ -605,13 +639,14 @@ end;
 function TH2PasFile.IsEqual(AFile: TH2PasFile): boolean;
 begin
   Result:=(CompareFilenames(Filename,AFile.Filename)=0)
-          and (Enabled=AFile.Enabled);
+          and (Enabled=AFile.Enabled)
+          and (Merge=AFile.Merge);
 end;
 
 procedure TH2PasFile.Load(Config: TConfigStorage);
 begin
   FEnabled:=Config.GetValue('Enabled/Value',true);
-  FMerge:=Config.GetValue('Merge/Value',false);
+  FMerge:=Config.GetValue('Merge/Value',true);
   FFilename:=Config.GetValue('Filename/Value','');
   if Project<>nil then
     FFilename:=Project.NormalizeFilename(FFilename);
@@ -1353,6 +1388,9 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
   AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
   AddNewTextConverterTool(FPostH2PasTools,TFixArrayOfParameterType);
+  // the above tools fixed the syntax
+  // now improve the declarations
+  AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinitionsInUnit);
 end;
 
 function TH2PasProject.SearchIncludedCHeaderFile(aFile: TH2PasFile;
@@ -1787,7 +1825,7 @@ begin
       CheckedFiles:=TFPList.Create;
       AddIncludedByFiles(IncludedByFiles,CurFile);
       if IncludedByFiles.Count>1 then begin
-        // this merged file is included by more than unit
+        // this merged file is included by more than one unit
         Warning:=Warning
           +'Warning: the file "'+Project.ShortenFilename(CurFile.Filename)+'"'#13
           +'will be merged into multiple files:'#13;
@@ -3083,6 +3121,55 @@ destructor TH2PasFileCInclude.Destroy;
 begin
   H2PasFile:=nil;
   inherited Destroy;
+end;
+
+{ TRemoveRedefinitionsInUnit }
+
+class function TRemoveRedefinitionsInUnit.ClassDescription: string;
+begin
+  Result:='Remove redefinitions in pascal unit';
+end;
+
+function TRemoveRedefinitionsInUnit.Execute(aText: TIDETextConverter
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TRemoveRedefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  if not CodeToolBoss.RemoveAllRedefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
+    DebugLn(['TRemoveRedefinitionsInUnit.Execute RemoveAllRedefinitions failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
+  Result:=mrOk;
+end;
+
+{ TFixAliasDefinitionsInUnit }
+
+class function TFixAliasDefinitionsInUnit.ClassDescription: string;
+begin
+  Result:='Fixes section type of alias definitions in pascal unit'#13
+    +'Checks all alias definitions of the form'#13
+    +'const LeftSide = RightSide;'#13
+    +'looks up RightSide in the unit and if RightSide is a type or var, changes'
+    +' the section accordingly';
+end;
+
+function TFixAliasDefinitionsInUnit.Execute(aText: TIDETextConverter
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TRemoveRedefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  // ToDo: finish codetools FixAllAliasDefinitions
+  if not CodeToolBoss.FixAllAliasDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
+    DebugLn(['TRemoveRedefinitionsInUnit.Execute FixAllAliasDefinitions failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
+  Result:=mrOk;
 end;
 
 end.

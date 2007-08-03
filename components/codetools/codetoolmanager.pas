@@ -406,6 +406,18 @@ type
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    function FindRedefinitions(Code: TCodeBuffer;
+                               out TreeOfCodeTreeNodeExt: TAVLTree;
+                               WithEnums: boolean): boolean;
+    function RemoveRedefinitions(Code: TCodeBuffer;
+                                 TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+    function RemoveAllRedefinitions(Code: TCodeBuffer): boolean;
+    function FindAliasDefinitions(Code: TCodeBuffer;
+                                  out TreeOfCodeTreeNodeExt: TAVLTree;
+                                  OnlyWrongType: boolean): boolean;
+    function FixAliasDefinitions(Code: TCodeBuffer;
+                                 TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+    function FixAllAliasDefinitions(Code: TCodeBuffer): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -2696,6 +2708,127 @@ begin
     end;
   except
     on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindRedefinitions(Code: TCodeBuffer; out
+  TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindRedefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindRedefinitions(TreeOfCodeTreeNodeExt,WithEnums);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RemoveRedefinitions(Code: TCodeBuffer;
+  TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveRedefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RemoveRedefinitions(TreeOfCodeTreeNodeExt,
+                                             SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RemoveAllRedefinitions(Code: TCodeBuffer): boolean;
+var
+  TreeOfCodeTreeNodeExt: TAVLTree;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveAllRedefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  try
+    TreeOfCodeTreeNodeExt:=nil;
+    if not InitCurCodeTool(Code) then exit;
+    try
+      Result:=FCurCodeTool.FindRedefinitions(TreeOfCodeTreeNodeExt,false);
+      if not Result then exit;
+      Result:=FCurCodeTool.RemoveRedefinitions(TreeOfCodeTreeNodeExt,
+                                               SourceChangeCache);
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  finally
+    if TreeOfCodeTreeNodeExt<>nil then begin
+      TreeOfCodeTreeNodeExt.FreeAndClear;
+      TreeOfCodeTreeNodeExt.Free;
+    end;
+  end;
+end;
+
+function TCodeToolManager.FindAliasDefinitions(Code: TCodeBuffer; out
+  TreeOfCodeTreeNodeExt: TAVLTree; OnlyWrongType: boolean): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindAliasDefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindAliasDefinitions(TreeOfCodeTreeNodeExt,
+                                              OnlyWrongType);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FixAliasDefinitions(Code: TCodeBuffer;
+  TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FixAliasDefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FixAliasDefinitions(TreeOfCodeTreeNodeExt,
+                                             SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FixAllAliasDefinitions(Code: TCodeBuffer): boolean;
+var
+  TreeOfCodeTreeNodeExt: TAVLTree;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FixAllAliasDefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  try
+    TreeOfCodeTreeNodeExt:=nil;
+    if not InitCurCodeTool(Code) then exit;
+    try
+      Result:=FCurCodeTool.FindAliasDefinitions(TreeOfCodeTreeNodeExt,true);
+      if not Result then exit;
+      Result:=FCurCodeTool.FixAliasDefinitions(TreeOfCodeTreeNodeExt,
+                                               SourceChangeCache);
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  finally
+    if TreeOfCodeTreeNodeExt<>nil then begin
+      TreeOfCodeTreeNodeExt.FreeAndClear;
+      TreeOfCodeTreeNodeExt.Free;
+    end;
   end;
 end;
 

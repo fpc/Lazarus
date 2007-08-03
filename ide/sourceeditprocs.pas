@@ -48,8 +48,20 @@ type
   TLazTextConverterToolClasses = class(TTextConverterToolClasses)
   protected
     function GetTempFilename: string; override;
+    function SupportsType(aTextType: TTextConverterType): boolean; override;
     function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;
                           UpdateFromDisk, Revert: Boolean): Boolean; override;
+    function SaveCodeBufferToFile(Converter: TIDETextConverter;
+                           const AFilename: string): Boolean; override;
+    function GetCodeBufferSource(Converter: TIDETextConverter;
+                                 out Source: string): boolean; override;
+    function CreateCodeBuffer(Converter: TIDETextConverter;
+                              const Filename, NewSource: string;
+                              out CodeBuffer: Pointer): boolean; override;
+    function LoadCodeBufferFromFile(Converter: TIDETextConverter;
+                                   const Filename: string;
+                                   UpdateFromDisk, Revert: Boolean;
+                                   out CodeBuffer: Pointer): boolean; override;
   end;
   
 procedure SetupTextConverters;
@@ -599,6 +611,7 @@ function TLazTextConverterToolClasses.LoadFromFile(
 var
   TheFilename: String;
   CodeBuf: TCodeBuffer;
+  TargetCodeBuffer: TCodeBuffer;
 begin
   TheFilename:=CleanAndExpandFilename(AFilename);
   CodeBuf:=CodeToolBoss.FindFile(TheFilename);
@@ -622,8 +635,57 @@ begin
       Result:=SaveStringToFile(Converter.Filename,CodeBuf.Source,[])=mrOk;
     tctStrings:
       CodeBuf.AssignTo(Converter.Strings,true);
+    tctCodeBuffer:
+      begin
+        if Converter.CodeBuffer=nil then
+          Converter.CodeBuffer:=CodeBuf
+        else begin
+          TargetCodeBuffer:=(TObject(Converter.CodeBuffer) as TCodeBuffer);
+          if TargetCodeBuffer<>CodeBuf then
+            TargetCodeBuffer.Source:=CodeBuf.Source;
+        end;
+      end;
     end;
   end;
+end;
+
+function TLazTextConverterToolClasses.SaveCodeBufferToFile(
+  Converter: TIDETextConverter; const AFilename: string): Boolean;
+begin
+  Result:=(TObject(Converter.CodeBuffer) as TCodeBuffer).SaveToFile(AFilename);
+end;
+
+function TLazTextConverterToolClasses.GetCodeBufferSource(
+  Converter: TIDETextConverter; out Source: string): boolean;
+begin
+  Result:=true;
+  Source:=(TObject(Converter.CodeBuffer) as TCodeBuffer).Source;
+end;
+
+function TLazTextConverterToolClasses.CreateCodeBuffer(
+  Converter: TIDETextConverter; const Filename, NewSource: string; out
+  CodeBuffer: Pointer): boolean;
+begin
+  CodeBuffer:=CodeToolBoss.CreateFile(Filename);
+  if CodeBuffer<>nil then begin
+    TCodeBuffer(CodeBuffer).Source:=NewSource;
+    Result:=true;
+  end else
+    Result:=false;
+end;
+
+function TLazTextConverterToolClasses.LoadCodeBufferFromFile(
+  Converter: TIDETextConverter; const Filename: string;
+  UpdateFromDisk, Revert: Boolean; out CodeBuffer: Pointer): boolean;
+begin
+  CodeBuffer:=CodeToolBoss.LoadFile(Filename,UpdateFromDisk,Revert);
+  Result:=CodeBuffer<>nil;
+end;
+
+function TLazTextConverterToolClasses.SupportsType(aTextType: TTextConverterType
+  ): boolean;
+begin
+  Result:=true;
 end;
 
 initialization

@@ -204,7 +204,6 @@ type
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
         StopAtDirectives: boolean): integer;
-    function FindFirstLineEndAfterInCode(StartPos: integer): integer;
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
@@ -1805,7 +1804,7 @@ var NewPos: integer;
 begin
   if Src='' then
     RaiseSrcEmpty;
-  NewPos:=PtrInt(ACleanPos)-PtrInt(@Src[1])+1;
+  NewPos:=PtrInt(PtrUInt(ACleanPos))-PtrInt(PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>SrcLen) then
     RaiseNotInSrc;
   MoveCursorToCleanPos(NewPos);
@@ -1852,7 +1851,7 @@ var NewPos: integer;
 begin
   Result:=false;
   if Src='' then exit;
-  NewPos:=PtrInt(ACleanPos)-PtrInt(@Src[1])+1;
+  NewPos:=PtrInt(PtrUInt(ACleanPos))-PtrInt(PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>SrcLen) then exit;
   Result:=true;
 end;
@@ -2282,23 +2281,6 @@ begin
                     StartPos,LinkStart,Scanner.NestedComments,StopAtDirectives);
 end;
 
-function TCustomCodeTool.FindFirstLineEndAfterInCode(StartPos: integer
-  ): integer;
-{ Searches a line end or code break in the cleaned source after StartPos.
-  It will skip any line ends in comments.
-}
-var
-  LinkIndex, LinkEnd: integer;
-begin
-  LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
-  LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
-  if LinkEnd>StartPos then
-    Result:=BasicCodeTools.FindFirstLineEndAfterInCode(Src,
-                        StartPos,LinkEnd-1,Scanner.NestedComments)
-  else
-    Result:=StartPos;
-end;
-
 procedure TCustomCodeTool.ClearIgnoreErrorAfter;
 begin
   IgnoreErrorAfter:=CodePosition(0,nil);
@@ -2555,7 +2537,7 @@ var NewPos: integer;
 begin
   Result:=false;
   if Src='' then exit;
-  NewPos:=PtrInt(p)-PtrInt(@Src[1])+1;
+  NewPos:=PtrInt(PtrUInt(p))-PtrInt(PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>length(Src)) then exit;
   Result:=true;
 end;
@@ -2583,7 +2565,7 @@ var NewPos: integer;
 begin
   if Src='' then
     RaiseSrcEmpty;
-  NewPos:=PtrInt(APos)-PtrInt(@Src[1])+1;
+  NewPos:=PtrInt(PtrUInt(APos))-PtrInt(PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>length(Src)) then
     RaiseNotInSrc;
   MoveCursorToPos(NewPos);

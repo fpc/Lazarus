@@ -1463,7 +1463,7 @@ begin
   if OldPosition.StartPos>0 then begin
     OldPosition.StartPos:=FindLineEndOrCodeInFrontOfPosition(
          OldPosition.StartPos);
-    OldPosition.EndPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
+    OldPosition.EndPos:=FindLineEndOrCodeAfterPosition(OldPosition.EndPos);
     if not SourceChangeCache.Replace(gtNone,gtNone,
       OldPosition.StartPos,OldPosition.EndPos,'') then exit;
   end;
@@ -2172,7 +2172,7 @@ begin
   end else begin
     // it exists -> replace it
     FromPos:=FindLineEndOrCodeInFrontOfPosition(OldPosition.StartPos);
-    ToPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
+    ToPos:=FindLineEndOrCodeAfterPosition(OldPosition.EndPos);
     SourceChangeCache.MainScanner:=Scanner;
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -2191,7 +2191,7 @@ begin
   if FindCreateFormStatement(-1,'*',UpperVarName,Position)=-1 then
     exit;
   FromPos:=FindLineEndOrCodeInFrontOfPosition(Position.StartPos);
-  ToPos:=FindFirstLineEndAfterInCode(Position.EndPos);
+  ToPos:=FindLineEndOrCodeAfterPosition(Position.EndPos);
   SourceChangeCache.MainScanner:=Scanner;
   SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
   Result:=SourceChangeCache.Apply;
@@ -2226,7 +2226,7 @@ begin
   end else begin
     // replace
     FromPos:=FindLineEndOrCodeInFrontOfPosition(OldPosition.StartPos);
-    ToPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
+    ToPos:=FindLineEndOrCodeAfterPosition(OldPosition.EndPos);
     SourceChangeCache.MainScanner:=Scanner;
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -2296,7 +2296,7 @@ begin
     StatementPos.StartPos:= FindLineEndOrCodeInFrontOfPosition(StatementPos.StartPos);
     if InsertPos < 1 then InsertPos:= StatementPos.StartPos;
 
-    StatementPos.EndPos:= FindFirstLineEndAfterInCode(StatementPos.EndPos);
+    StatementPos.EndPos:= FindLineEndOrCodeAfterPosition(StatementPos.EndPos);
 
     SourceChangeCache.Replace(gtNone,gtNone, StatementPos.StartPos, StatementPos.EndPos, '');
   until false;
@@ -2454,7 +2454,7 @@ begin
   if StringConstStartPos=0 then ;
   // -> delete whole line
   FromPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);
-  ToPos:=FindFirstLineEndAfterInCode(EndPos);
+  ToPos:=FindLineEndOrCodeAfterPosition(EndPos);
   SourceChangeCache.MainScanner:=Scanner;
   if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then exit;
   if not SourceChangeCache.Apply then exit;
@@ -3825,7 +3825,7 @@ begin
     NearestNode:=CursorTool.FindNearestIdentifierNode(CursorPos,IdentTree);
     if NearestNode=nil then exit;
     // convert node to cleanpos
-    NearestCleanPos:=PtrInt(NearestNode.Data)-PtrInt(@SectionTool.Src[1])+1;
+    NearestCleanPos:=PtrUInt(NearestNode.Data)-PtrUInt(@SectionTool.Src[1])+1;
     // convert cleanpos to caret
     CleanPosToCaret(NearestCleanPos,NearestPos);
   finally
@@ -4046,7 +4046,7 @@ begin
       // variable definition has the form  'VarName: VarType;'
       // -> delete whole line
       FromPos:=FindLineEndOrCodeInFrontOfPosition(VarNode.StartPos);
-      ToPos:=FindFirstLineEndAfterInCode(VarNode.EndPos);
+      ToPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
     end else begin
       // variable definition has the form  'VarName, NextVarName: VarType;'
       // -> delete only 'VarName, '
@@ -4233,7 +4233,7 @@ var
       PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
       CurCount:=PWord(PropInfo)^;
-      inc(PtrInt(PropInfo),SizeOf(Word));
+      inc(PtrUInt(PropInfo),SizeOf(Word));
       //debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
       // read properties
       while CurCount>0 do begin

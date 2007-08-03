@@ -3067,7 +3067,7 @@ function TBaseCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
 var
   idx: PtrInt;
 begin
-  idx := PtrInt(FEntryIndex[AIndex]);
+  idx := PtrInt(PtrUInt(FEntryIndex[AIndex]));
   if idx = -1
   then begin
     // not created yet

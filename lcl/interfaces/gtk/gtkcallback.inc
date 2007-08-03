@@ -813,6 +813,7 @@ begin
   EventTrace('killfocusCB', data);
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
+  //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -862,6 +863,7 @@ begin
   {$IFDEF EventTrace}
   EventTrace('killfocusCBAfter', data);
   {$ENDIF}
+  //DebugLn('GTKKillFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);

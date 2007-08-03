@@ -39,8 +39,8 @@
   ToDo:
     -add code for index properties (TList, TFPList, array of, Pointer array)
       TList:
-        property Items[Index: integer]: AType accesstlist;
-        -> creates
+        property Items[Index: integer]: AType;
+        -> creates via dialog
           property Items[Index: integer]: Type2 read GetItems write SetItems;
           private FItems: TList;
           private function GetItems(Index: integer): Type2;
@@ -108,7 +108,7 @@ type
                            const VariableName: string; var VariableType: string;
                            IsMethod: boolean; NewLocation: TNewVarLocation
                            ): boolean;
-
+                           
   { TCodeCompletionCodeTool }
 
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
@@ -188,6 +188,15 @@ type
                           SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
+    function GetRedefinitionNodeText(Node: TCodeTreeNode): string;
+    function FindRedefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
+                        WithEnums: boolean): boolean;
+    function RemoveRedefinitions(TreeOfCodeTreeNodeExt: TAVLTree;
+                                SourceChangeCache: TSourceChangeCache): boolean;
+    function FindAliasDefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
+                                  OnlyWrongType: boolean): boolean;
+    function FixAliasDefinitions(TreeOfCodeTreeNodeExt: TAVLTree;
+                                SourceChangeCache: TSourceChangeCache): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -1102,6 +1111,307 @@ begin
   Result:=true;
 end;
 
+function TCodeCompletionCodeTool.GetRedefinitionNodeText(Node: TCodeTreeNode
+  ): string;
+begin
+  case Node.Desc of
+  ctnProcedure:
+    Result:=ExtractProcHead(Node,[phpInUpperCase,phpWithoutSemicolon]);
+  ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier:
+    Result:=ExtractDefinitionName(Node);
+  else
+    Result:='';
+  end;
+end;
+
+function TCodeCompletionCodeTool.FindRedefinitions(
+  out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
+var
+  AllNodes: TAVLTree;
+
+  procedure AddRedefinition(Redefinition, Definition: TCodeTreeNode;
+    const NodeText: string);
+  var
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    DebugLn(['AddRedefinition ',NodeText,' Redefined=',CleanPosToStr(Redefinition.StartPos),' Definition=',CleanPosToStr(Definition.StartPos)]);
+    if TreeOfCodeTreeNodeExt=nil then
+      TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt.Node:=Redefinition;
+    NodeExt.Data:=Definition;
+    NodeExt.Txt:=NodeText;
+    TreeOfCodeTreeNodeExt.Add(NodeExt);
+  end;
+  
+  procedure AddDefinition(Node: TCodeTreeNode; const NodeText: string);
+  var
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt.Node:=Node;
+    NodeExt.Txt:=NodeText;
+    AllNodes.Add(NodeExt);
+  end;
+  
+var
+  Node: TCodeTreeNode;
+  NodeText: String;
+  AVLNode: TAVLTreeNode;
+begin
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  BuildTree(true);
+
+  AllNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnImplementation, ctnInitialization, ctnFinalization,
+      ctnBeginBlock, ctnAsmBlock:
+        // skip implementation
+        break;
+      ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition, ctnProcedure,
+      ctnEnumIdentifier:
+        begin
+          NodeText:=GetRedefinitionNodeText(Node);
+          AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
+          if AVLNode<>nil then begin
+            AddRedefinition(Node,TCodeTreeNodeExtension(AVLNode.Data).Node,NodeText);
+          end else begin
+            AddDefinition(Node,NodeText);
+          end;
+          if WithEnums
+          and (Node.FirstChild<>nil)
+          and (Node.FirstChild.Desc=ctnEnumerationType) then
+            Node:=Node.FirstChild
+          else
+            Node:=Node.NextSkipChilds;
+        end;
+      else
+        Node:=Node.Next;
+      end;
+    end;
+  finally
+    AllNodes.FreeAndClear;
+    AllNodes.Free;
+  end;
+  Result:=true;
+end;
+
+function TCodeCompletionCodeTool.RemoveRedefinitions(
+  TreeOfCodeTreeNodeExt: TAVLTree;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  AVLNode: TAVLTreeNode;
+  NodesToDo: TAVLTree;
+  Node: TCodeTreeNode;
+  StartNode: TCodeTreeNode;
+  EndNode: TCodeTreeNode;
+  IsListStart: Boolean;
+  IsListEnd: Boolean;
+  StartPos: LongInt;
+  EndPos: LongInt;
+begin
+  Result:=false;
+  if SourceChangeCache=nil then exit;
+  if (TreeOfCodeTreeNodeExt=nil) or (TreeOfCodeTreeNodeExt.Count=0) then exit;
+  SourceChangeCache.MainScanner:=Scanner;
+
+  NodesToDo:=TAVLTree.Create;
+  try
+    // put the nodes to remove into the NodesToDo
+    AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
+    while AVLNode<>nil do begin
+      NodesToDo.Add(TCodeTreeNodeExtension(AVLNode.Data).Node);
+      AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+    end;
+    
+    // delete all redefinitions
+    while NodesToDo.Count>0 do begin
+      // find a block of redefinitions
+      StartNode:=TCodeTreeNode(NodesToDo.Root.Data);
+      EndNode:=StartNode;
+      while (StartNode.PriorBrother<>nil)
+      and (NodesToDo.Find(StartNode.PriorBrother)<>nil) do
+        StartNode:=StartNode.PriorBrother;
+      while (EndNode.NextBrother<>nil)
+      and (NodesToDo.Find(EndNode.NextBrother)<>nil) do
+        EndNode:=EndNode.NextBrother;
+        
+      // check if a whole section is deleted
+      if (StartNode.PriorBrother=nil) and (EndNode.PriorBrother=nil)
+      and (StartNode.Parent<>nil)
+      and (StartNode.Parent.Desc in AllDefinitionSections) then begin
+        StartNode:=StartNode.Parent;
+        EndNode:=StartNode;
+      end;
+      
+      // compute nice code positions to delete
+      StartPos:=FindLineEndOrCodeInFrontOfPosition(StartNode.StartPos);
+      EndPos:=FindLineEndOrCodeAfterPosition(EndNode.EndPos);
+      
+      // check list of definitions
+      if EndNode.Desc in AllIdentifierDefinitions then begin
+        // check list definition. For example:
+        //  delete, delete: char;    ->   delete whole
+        //  a,delete, delete: char;  ->   a: char;
+        //  delete,delete,c: char;   ->   c: char;
+        //  a,delete,delete,c: char; ->   a,c:char;
+        IsListStart:=(StartNode.PriorBrother<>nil)
+                 and (StartNode.PriorBrother.FirstChild<>nil);
+        IsListEnd:=(EndNode.FirstChild<>nil);
+        if IsListStart and IsListEnd then begin
+          // case 1: delete, delete: char;    ->   delete whole
+        end else begin
+          // case 2-4: keep type
+          // get start position of first deleting identifier
+          StartPos:=StartNode.StartPos;
+          // get end position of last deleting identifier
+          EndPos:=EndNode.StartPos+GetIdentLen(@Src[EndNode.StartPos]);
+          if IsListEnd then begin
+            // case 2: a,delete, delete: char;  ->   a: char;
+            // delete comma in front of start too
+            MoveCursorToCleanPos(StartNode.PriorBrother.StartPos);
+            ReadNextAtom; // read identifier
+            ReadNextAtom; // read comma
+            StartPos:=CurPos.StartPos;
+          end else begin
+            // case 3,4
+            // delete comma behind end too
+            MoveCursorToCleanPos(EndNode.StartPos);
+            ReadNextAtom; // read identifier
+            ReadNextAtom; // read comma
+            EndPos:=CurPos.StartPos;
+          end;
+        end;
+      end;
+      
+      // replace
+      DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions deleting:']);
+      debugln('"',copy(Src,StartPos,EndPos-StartPos),'"');
+      
+      if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,EndPos,'') then
+        exit;
+      
+      // remove nodes from NodesToDo
+      Node:=StartNode;
+      repeat
+        NodesToDo.Remove(Node);
+        if Node=EndNode then break;
+        Node:=Node.Next;
+      until false;
+    end;
+  finally
+    NodesToDo.Free;
+  end;
+  
+  Result:=SourceChangeCache.Apply;
+end;
+
+function TCodeCompletionCodeTool.FindAliasDefinitions(out
+  TreeOfCodeTreeNodeExt: TAVLTree; OnlyWrongType: boolean): boolean;
+var
+  NodeExt: TCodeTreeNodeExtension;
+  AllNodes: TAVLTree;
+  Node: TCodeTreeNode;
+  NodeText: String;
+  AVLNode: TAVLTreeNode;
+  ReferingNode: TCodeTreeNode;
+  ReferingNodeText: String;
+  WrongType: Boolean;
+begin
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  BuildTree(true);
+
+  AllNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnImplementation, ctnInitialization, ctnFinalization,
+      ctnBeginBlock, ctnAsmBlock:
+        // skip implementation
+        break;
+      ctnTypeDefinition, ctnConstDefinition:
+        begin
+          if OnlyWrongType then begin
+            // remember the definition
+            NodeText:=GetRedefinitionNodeText(Node);
+            AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
+            if AVLNode=nil then begin
+              // add new node
+              NodeExt:=NodeExtMemManager.NewNode;
+              NodeExt.Node:=Node;
+              NodeExt.Txt:=NodeText;
+              AllNodes.Add(NodeExt);
+            end else begin
+              // update node
+              NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+              NodeExt.Node:=Node;
+            end;
+          end;
+          
+          // check if definition is an alias
+          // Example: const A = B;
+          if (Node.Parent<>nil)
+          and (Node.Parent.Desc in [ctnConstSection,ctnTypeSection])
+          and (Node.FirstChild<>nil)
+          and (Node.FirstChild.Desc=ctnIdentifier) then begin
+            // this is a const or type alias
+            DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',ExtractNode(Node,[])]);
+            WrongType:=false;
+            ReferingNode:=nil;
+            if OnlyWrongType then begin
+              ReferingNodeText:=GetIdentifier(@Src[Node.FirstChild.StartPos]);
+              AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,ReferingNodeText);
+              if (AVLNode<>nil) then begin
+                NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+                ReferingNode:=NodeExt.Node;
+                if ReferingNode.Desc<>Node.Desc then begin
+                  // this alias has wrong type
+                  WrongType:=true;
+                  DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',ReferingNode.DescAsString,'<>',Node.DescAsString]);
+                end;
+              end;
+            end;
+            if (not WrongType) or OnlyWrongType then begin
+              // add alias
+              if TreeOfCodeTreeNodeExt=nil then
+                TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+              NodeExt:=NodeExtMemManager.NewNode;
+              NodeExt.Node:=Node;
+              NodeExt.Txt:=GetRedefinitionNodeText(Node);
+              NodeExt.Data:=ReferingNode;
+              TreeOfCodeTreeNodeExt.Add(NodeExt);
+            end;
+          end;
+          
+          Node:=Node.NextSkipChilds;
+        end;
+      ctnProcedure:
+        Node:=Node.NextSkipChilds;
+      else
+        Node:=Node.Next;
+      end;
+    end;
+  finally
+    AllNodes.FreeAndClear;
+    AllNodes.Free;
+  end;
+  Result:=true;
+end;
+
+function TCodeCompletionCodeTool.FixAliasDefinitions(
+  TreeOfCodeTreeNodeExt: TAVLTree; SourceChangeCache: TSourceChangeCache
+  ): boolean;
+begin
+  Result:=false;
+
+end;
+
 function TCodeCompletionCodeTool.InitClassCompletion(
   const UpperClassName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
@@ -1829,7 +2139,7 @@ begin
           Indent:=GetLineIndent(Src,InsertNode.StartPos);
           if InsertBehind then begin
             // insert behind InsertNode
-            InsertPos:=FindFirstLineEndAfterInCode(InsertNode.EndPos);
+            InsertPos:=FindLineEndOrCodeAfterPosition(InsertNode.EndPos);
           end else begin
             // insert in front of InsertNode
             InsertPos:=InsertNode.StartPos;
@@ -1838,7 +2148,7 @@ begin
           // insert as first variable/proc
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
-          InsertPos:=FindFirstLineEndAfterInCode(ClassSectionNode.StartPos);
+          InsertPos:=FindLineEndOrCodeAfterPosition(ClassSectionNode.StartPos);
         end;
       end;
       CurCode:=ANodeExt.ExtTxt1;

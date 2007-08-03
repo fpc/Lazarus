@@ -120,7 +120,7 @@ end;
 
 function TSynEditRegexSearch.GetLength(aIndex: integer): integer;
 begin
-  Result := PtrInt( fLengths[ aIndex ] );
+  Result := PtrInt(PtrUInt( fLengths[ aIndex ] ));
 end;
 
 function TSynEditRegexSearch.GetPattern: string;
@@ -130,7 +130,7 @@ end;
 
 function TSynEditRegexSearch.GetResult(aIndex: integer): integer;
 begin
-  Result := PtrInt( fPositions[ aIndex ] );
+  Result := PtrInt( PtrUint(fPositions[ aIndex ]) );
 end;
 
 function TSynEditRegexSearch.GetResultCount: integer;

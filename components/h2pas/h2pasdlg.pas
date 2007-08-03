@@ -218,6 +218,7 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
   TextConverterToolClasses.RegisterClass(TReplaceImplicitTypes);
   TextConverterToolClasses.RegisterClass(TFixArrayOfParameterType);
+  TextConverterToolClasses.RegisterClass(TRemoveRedefinitionsInUnit);
 end;
 
 { TH2PasDialog }

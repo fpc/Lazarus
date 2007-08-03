@@ -515,7 +515,7 @@ begin
   then begin
     p:=nil;
     gdk_window_get_user_data(AWindow,p);
-    if GtkWidgetIsA(PGTKWidget(p),GTKAPIWidget_GetType) then begin
+    if GtkWidgetIsA(PGTKWidget(p),gtk_widget_get_type) then begin
       Widget:=PGTKWidget(p);
       Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
     end else begin

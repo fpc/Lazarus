@@ -27,7 +27,7 @@ unit IDETextConverter;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Forms, FileUtil, SrcEditorIntf,
+  Classes, SysUtils, TypInfo, LCLProc, Controls, Forms, FileUtil, SrcEditorIntf,
   PropEdits;
   
 type
@@ -36,13 +36,14 @@ type
   TTextConverterType = (
     tctSource,
     tctFile,
-    tctStrings
+    tctStrings,
+    tctCodeBuffer  // TCodeBuffer
     );
 
   { TIDETextConverter
     A component to hold a Text and tools to change the Text.
     For example to do several find and replace operations on the text.
-    The Text can be a file, a string or TStrings.
+    The Text can be a file, a string, TStrings or a TCodeBuffer.
     The Text is converted on the fly, whenever someone reads/write one of the
     formats.
     The tools are decendants of TCustomTextConverterTool. }
@@ -51,16 +52,20 @@ type
   private
     FFilename: string;
     FSource: string;
+    FCodeBuffer: Pointer;
     FStrings: TStrings;
     FCurrentType: TTextConverterType;
     FFileIsTemporary: boolean;
     FStringsIsTemporary: Boolean;
     procedure CreateTempFilename;
+    function GetCodeBuffer: Pointer;
     function GetFilename: string;
     function GetSource: string;
     function GetStrings: TStrings;
-    procedure RemoveStrings;
-    procedure SaveToFile(const NewFilename: string);
+    procedure ResetStrings;
+    procedure ResetFile;
+    procedure ConvertToFile(const NewFilename: string);
+    procedure SetCodeBuffer(const AValue: Pointer);
     procedure SetFilename(const AValue: string);
     procedure SetSource(const AValue: string);
     procedure SetStrings(const AValue: TStrings);
@@ -73,6 +78,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    procedure CheckType(aTextType: TTextConverterType);
+    function SupportsType(aTextType: TTextConverterType): boolean; virtual;
     function Execute(ToolList: TComponent): TModalResult;// run the tools
     function LoadFromFile(const AFilename: string;
                           UseIDECache: Boolean = true;
@@ -82,8 +89,10 @@ type
     procedure InitWithFilename(const AFilename: string);
     procedure InitWithSource(const ASource: string);
     procedure InitWithStrings(const aStrings: TStrings);
+    procedure InitWithCodeBuffers(const aBuffer: Pointer);
     property CurrentType: TTextConverterType read FCurrentType write SetCurrentType;
     property Source: string read GetSource write SetSource;
+    property CodeBuffer: Pointer read GetCodeBuffer write SetCodeBuffer;
     property Filename: string read GetFilename write SetFilename;
     property Strings: TStrings read GetStrings write SetStrings;
     property FileIsTemporary: boolean read FFileIsTemporary write SetFileIsTemporary;
@@ -98,6 +107,7 @@ type
     FCaption: string;
     FDescription: string;
     FEnabled: boolean;
+    function IsCaptionStored: boolean;
     procedure SetCaption(const AValue: string);
     procedure SetDescription(const AValue: string);
   public
@@ -107,7 +117,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; virtual; abstract;
     procedure Assign(Source: TPersistent); override;
   published
-    property Caption: string read FCaption write SetCaption;
+    property Caption: string read FCaption write SetCaption stored IsCaptionStored;
     property Description: string read FDescription write SetDescription;
     property Enabled: boolean read FEnabled write FEnabled default True;
   end;
@@ -172,9 +182,22 @@ type
                         var ComponentClass: TComponentClass);
     property Items[Index: integer]: TCustomTextConverterToolClass read GetItems; default;
     property Count: integer read GetCount;
+    
+    function SupportsType(aTextType: TTextConverterType): boolean; virtual; abstract;
     function GetTempFilename: string; virtual; abstract;
     function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;
                           UpdateFromDisk, Revert: Boolean): Boolean; virtual; abstract;
+    function SaveCodeBufferToFile(Converter: TIDETextConverter;
+                           const AFilename: string): Boolean; virtual; abstract;
+    function GetCodeBufferSource(Converter: TIDETextConverter;
+                                out Source: string): boolean; virtual; abstract;
+    function CreateCodeBuffer(Converter: TIDETextConverter;
+                              const Filename, NewSource: string;
+                              out CodeBuffer: Pointer): boolean; virtual; abstract;
+    function LoadCodeBufferFromFile(Converter: TIDETextConverter;
+                                 const Filename: string;
+                                 UpdateFromDisk, Revert: Boolean;
+                                 out CodeBuffer: Pointer): boolean; virtual; abstract;
   end;
   
 var
@@ -309,7 +332,7 @@ end;
 
 procedure TIDETextConverter.SetFilename(const AValue: string);
 begin
-  SaveToFile(AValue);
+  ConvertToFile(AValue);
 end;
 
 function TIDETextConverter.GetFilename: string;
@@ -330,7 +353,7 @@ begin
   Result:=FStrings;
 end;
 
-procedure TIDETextConverter.RemoveStrings;
+procedure TIDETextConverter.ResetStrings;
 begin
   if StringsIsTemporary then
     FStrings.Free;
@@ -338,20 +361,29 @@ begin
   FStringsIsTemporary:=false;
 end;
 
+procedure TIDETextConverter.ResetFile;
+begin
+  if FileIsTemporary then begin
+    DeleteFile(FFilename);
+    // do not change FFileIsTemporary, so that File > Source > File sequences
+    // keep the file temporary.
+  end;
+end;
+
 procedure TIDETextConverter.SetSource(const AValue: string);
 begin
   FCurrentType:=tctSource;
-  RemoveStrings;
+  ResetStrings;
+  ResetFile;
   FSource:=AValue;
 end;
 
 procedure TIDETextConverter.SetStrings(const AValue: TStrings);
 begin
   FCurrentType:=tctStrings;
-  if (AValue<>FStrings) and StringsIsTemporary then
-    FreeAndNil(FStrings);
+  ResetFile;
+  ResetStrings;
   FStrings:=AValue;
-  FStringsIsTemporary:=false;
 end;
 
 procedure TIDETextConverter.SetCurrentType(const AValue: TTextConverterType);
@@ -359,6 +391,7 @@ var
   fs: TFileStream;
 begin
   if FCurrentType=AValue then exit;
+  CheckType(AValue);
   //DebugLn(['TIDETextConverter.SetCurrentType ',ord(FCurrentType),' ',ord(AValue)]);
   case AValue of
   tctSource:
@@ -369,7 +402,7 @@ begin
       tctStrings:
         if FStrings<>nil then begin
           FSource:=FStrings.Text;
-          RemoveStrings;
+          ResetStrings;
         end;
       tctFile:
         if FileExists(FFilename) then begin
@@ -380,12 +413,16 @@ begin
           finally
             fs.Free;
           end;
-          if FileIsTemporary then begin
-            DeleteFile(FFilename);
-          end;
+          ResetFile;
+        end;
+      tctCodeBuffer:
+        begin
+          TextConverterToolClasses.GetCodeBufferSource(Self,FSource);
+          FCodeBuffer:=nil;
         end;
       end;
     end;
+    
   tctStrings:
     // convert to TStrings
     begin
@@ -402,12 +439,18 @@ begin
       tctFile:
         if FileExists(FFilename) then begin
           FStrings.LoadFromFile(FFilename);
-          if FileIsTemporary then begin
-            DeleteFile(FFilename);
-          end;
+          ResetFile;
+        end;
+      tctCodeBuffer:
+        begin
+          TextConverterToolClasses.GetCodeBufferSource(Self,FSource);
+          FStrings.Text:=FSource;
+          FSource:='';
+          FCodeBuffer:=nil;
         end;
       end;
     end;
+    
   tctFile:
     // convert to File
     begin
@@ -431,7 +474,41 @@ begin
       tctStrings:
         if FStrings<>nil then begin
           FStrings.SaveToFile(FFilename);
-          RemoveStrings;
+          ResetStrings;
+        end;
+      tctCodeBuffer:
+        begin
+          TextConverterToolClasses.SaveCodeBufferToFile(Self,FFilename);
+          FCodeBuffer:=nil;
+        end;
+      end;
+    end;
+    
+  tctCodeBuffer:
+    // convert to CodeBuffer
+    begin
+      // keep old Filename, so that a Filename, Source, Filename combination
+      // uses the same Filename
+      if FFilename='' then
+        CreateTempFilename;
+      case FCurrentType of
+      tctSource:
+        begin
+          TextConverterToolClasses.CreateCodeBuffer(Self,FFilename,FSource,
+                                                    FCodeBuffer);
+          FSource:='';
+        end;
+      tctStrings:
+        begin
+          TextConverterToolClasses.CreateCodeBuffer(Self,FFilename,
+                                                    FStrings.Text,FCodeBuffer);
+          ResetStrings;
+        end;
+      tctFile:
+        begin
+          TextConverterToolClasses.LoadCodeBufferFromFile(Self,FFilename,
+                                                         true,true,FCodeBuffer);
+          ResetFile;
         end;
       end;
     end;
@@ -445,7 +522,7 @@ begin
   FFileIsTemporary:=AValue;
 end;
 
-procedure TIDETextConverter.SaveToFile(const NewFilename: string);
+procedure TIDETextConverter.ConvertToFile(const NewFilename: string);
 var
   fs: TFileStream;
   TrimmedFilename: String;
@@ -469,17 +546,36 @@ begin
   tctStrings:
     begin
       fStrings.SaveToFile(TrimmedFilename);
-      RemoveStrings;
+      ResetStrings;
+    end;
+  tctCodeBuffer:
+    begin
+      TextConverterToolClasses.SaveCodeBufferToFile(Self,NewFilename);
+      FCodeBuffer:=nil;
     end;
   end;
   FCurrentType:=tctFile;
   FFilename:=TrimmedFilename;
 end;
 
+procedure TIDETextConverter.SetCodeBuffer(const AValue: Pointer);
+begin
+  CheckType(tctCodeBuffer);
+  FCurrentType:=tctCodeBuffer;
+  ResetStrings;
+  FCodeBuffer:=AValue;
+end;
+
 procedure TIDETextConverter.CreateTempFilename;
 begin
   FFilename:=GetTempFilename;
   FFileIsTemporary:=true;
+end;
+
+function TIDETextConverter.GetCodeBuffer: Pointer;
+begin
+  CurrentType:=tctCodeBuffer;
+  Result:=FCodeBuffer;
 end;
 
 procedure TIDETextConverter.SetStringsIsTemporary(const AValue: Boolean);
@@ -504,7 +600,8 @@ end;
 
 destructor TIDETextConverter.Destroy;
 begin
-  RemoveStrings;
+  ResetFile;
+  ResetStrings;
   inherited Destroy;
 end;
 
@@ -512,8 +609,29 @@ procedure TIDETextConverter.Clear;
 begin
   FFilename:='';
   FSource:='';
-  RemoveStrings;
+  FCodeBuffer:=nil;
+  ResetStrings;
   FCurrentType:=tctSource;
+end;
+
+procedure TIDETextConverter.CheckType(aTextType: TTextConverterType);
+
+  procedure RaiseNotSupported;
+  begin
+    raise Exception.Create('TIDETextConverter.CheckType:'
+      +' type not supported '+GetEnumName(TypeInfo(TTextConverterType),ord(aTextType)));
+  end;
+
+begin
+  if not SupportsType(aTextType) then RaiseNotSupported;
+end;
+
+function TIDETextConverter.SupportsType(aTextType: TTextConverterType
+  ): boolean;
+begin
+  Result:=(aTextType in [tctSource,tctFile,tctStrings])
+      or ((TextConverterToolClasses<>nil)
+           and (TextConverterToolClasses.SupportsType(aTextType)));
 end;
 
 function TIDETextConverter.Execute(ToolList: TComponent): TModalResult;
@@ -594,12 +712,25 @@ begin
   FStrings:=aStrings;
 end;
 
+procedure TIDETextConverter.InitWithCodeBuffers(const aBuffer: Pointer);
+begin
+  CheckType(tctCodeBuffer);
+  Clear;
+  FCurrentType:=tctCodeBuffer;
+  FCodeBuffer:=aBuffer;
+end;
+
 { TCustomTextConverterTool }
 
 procedure TCustomTextConverterTool.SetCaption(const AValue: string);
 begin
   if FCaption=AValue then exit;
   FCaption:=AValue;
+end;
+
+function TCustomTextConverterTool.IsCaptionStored: boolean;
+begin
+  Result:=Caption<>FirstLineOfClassDescription;
 end;
 
 procedure TCustomTextConverterTool.SetDescription(const AValue: string);
