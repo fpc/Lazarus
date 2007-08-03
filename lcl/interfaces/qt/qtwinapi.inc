@@ -106,7 +106,7 @@ begin
       DC.vClipRect^ := Widget.PaintData.ClipRect^;
     end;
   end;
-
+  
   Result := PS.hdc;
 
   {$ifdef VerboseQtWinAPI}
@@ -924,11 +924,27 @@ end;
   Returns: Boolean
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+var
+  StyleOption: QStyleOptionFocusRectH;
+  QtDC: TQtDeviceContext;
 begin
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.DrawFocusRect] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(hDC));
   {$endif}
+  Result := False;
+
+  if not IsValidDC(DC) then exit;
+
+  QtDC := TQtDeviceContext(DC);
+  StyleOption := QStyleOptionFocusRect_create;
+  try
+    QStyleOption_setRect(StyleOption, @Rect);
+    QStyle_drawControl(QApplication_style, QStyleCE_FocusFrame,StyleOption, QtDC.Widget, QtDC.Parent);
+    Result := True;
+  finally
+    QStyleOptionFocusRect_destroy(StyleOption);
+  end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1574,12 +1590,29 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
+var
+  StyleOption: QStyleOptionFrameV2H;
+  QtDC: TQtDeviceContext;
 begin
-  {$note implement}
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.Frame3d] missing implementation ');
+
+  {$ifdef VerboseQtWinAPI}
+    DebugLn('[TQtWidgetSet.Frame3d Rect=', dbgs(ARect));
   {$endif}
+
+  Result := False;
+  
+  if not IsValidDC(DC) then exit;
+  
+  QtDC := TQtDeviceContext(DC);
+  StyleOption := QStyleOptionFrameV2_create;
+  try
+    QStyleOption_setRect(StyleOption, @ARect);
+    QStyle_drawPrimitive(QApplication_style, QStylePE_Frame,StyleOption, QtDC.Widget, QtDC.Parent);
+    InflateRect(ARect, -1, -1);
+    Result := True;
+  finally
+    QStyleOptionFrameV2_destroy(StyleOption);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2579,6 +2612,7 @@ begin
      Windows used a monospace system font.}
     DEFAULT_GUI_FONT, SYSTEM_FONT:
       begin
+
         If FStockSystemFont <> 0 then
         begin
           DeleteObject(FStockSystemFont);

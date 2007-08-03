@@ -252,9 +252,7 @@ begin
 
   // Set´s initial properties
 
-  QtFrame.setFrameShape(QFrameWinPanel);
-  
-  QtFrame.setFrameShadow(QFrameRaised);
+  QtFrame.setFrameShape(QFrameNoFrame);
   
   // Return the Handle
 
