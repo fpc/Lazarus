@@ -412,7 +412,7 @@ procedure TEmulatedCaret.UpdateCaret;
 var
   R: TRect;
 begin
-  if (FWidget <> nil) and not FWidget.InPaint then
+  if (FWidget <> nil) and not (FWidget.Context <> 0) then
   begin
     R.Left := FPos.x;
     R.Top := FPos.y;

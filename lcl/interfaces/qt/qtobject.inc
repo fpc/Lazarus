@@ -26,7 +26,7 @@ constructor TQtWidgetSet.Create;
 begin
   inherited Create;
 
-	InitStockItems;
+  InitStockItems;
  
   QtWidgetSet := Self;
 end;
@@ -42,14 +42,16 @@ destructor TQtWidgetSet.Destroy;
 begin
   DestroyGlobalCaret;
   Clipboard.Free;
-
-	FreeStockItems;
+  FreeStockItems;
  
   QtWidgetSet := nil;
   
   if SavedDCList<>nil then
     SavedDCList.Free;
     
+  QtDefaultContext.Free;
+  QtScreenContext.Free;
+
   inherited Destroy;
 end;
 
@@ -234,7 +236,7 @@ begin
     Painter :=TQtDeviceContext(CanvasHandle).Widget;
     Pen := QPainter_pen(Painter);
     QPen_color(Pen, @ASavedColor);
-	  QColor_setRgb(QColorH(@Color),Red(AColor),Green(AColor),Blue(AColor));
+    QColor_setRgb(QColorH(@Color),Red(AColor),Green(AColor),Blue(AColor));
     QPainter_setPen(Painter, @Color);
     QPainter_drawPoint(Painter, X,Y);
     QPainter_setPen(Painter, @ASavedColor);

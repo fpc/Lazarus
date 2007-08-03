@@ -391,6 +391,9 @@ type
   procedure DebugRegion(const msg: string; Rgn: QRegionH);
   function Clipboard: TQtClipboard;
 
+  function QtDefaultContext: TQtDeviceContext;
+  function QtScreenContext: TQtDeviceContext;
+
 implementation
 const
   ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
@@ -402,6 +405,22 @@ const
 
 var
   FClipboard: TQtClipboard = nil;
+  FDefaultContext: TQtDeviceContext = nil;
+  FScreenContext: TQtDeviceContext = nil;
+
+function QtDefaultContext: TQtDeviceContext;
+begin
+  if FDefaultContext = nil then
+    FDefaultContext := TQtDeviceContext.Create(nil);
+  Result := FDefaultContext;
+end;
+
+function QtScreenContext: TQtDeviceContext;
+begin
+  if FScreenContext = nil then
+    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), True);
+  Result := FScreenContext;
+end;
   
 { TQtObject }
 
@@ -709,7 +728,8 @@ end;
 
 procedure TQtFont.setPointSize(p1: Integer);
 begin
-  QFont_setPointSize(Widget, p1);
+  if p1 > 0 then
+    QFont_setPointSize(Widget, p1);
 end;
 
 function TQtFont.pixelSize: Integer;
@@ -719,7 +739,8 @@ end;
 
 procedure TQtFont.setPixelSize(p1: Integer);
 begin
-  QFont_setPixelSize(Widget, p1);
+  if p1 > 0 then
+    QFont_setPixelSize(Widget, p1);
 end;
 
 function TQtFont.weight: Integer;
@@ -1105,8 +1126,8 @@ begin
 
   if Parent <> nil then
   begin
-  	vFont := TQtFont.Create(False);
-	  vFont.Owner := Self;
+    vFont := TQtFont.Create(False);
+    vFont.Owner := Self;
 
     vBrush := TQtBrush.Create(False);
     vBrush.Owner := Self;
@@ -1117,8 +1138,8 @@ begin
     vRegion := TQtRegion.Create(False);
     vRegion.Owner := Self;
 
-	  vBackgroundBrush := TQtBrush.Create(False);
-	  vBackgroundBrush.Owner := Self;
+    vBackgroundBrush := TQtBrush.Create(False);
+    vBackgroundBrush.Owner := Self;
 
   end else
   begin
@@ -1150,26 +1171,23 @@ begin
 
 
   if Parent <> nil then
-  begin
-  
-	  vFont.Widget := nil;
- 	  vFont.Free;
+  begin  
+    vFont.Widget := nil;
+    vFont.Free;
     vBrush.Widget := nil;
     vBrush.Free;
     vPen.Widget := nil;
     vPen.Free;
     vRegion.Widget := nil;
     vRegion.Free;
-	  vBackgroundBrush.Widget := nil;
-	  vBackgroundBrush.Free;
-   
+    vBackgroundBrush.Widget := nil;
+    vBackgroundBrush.Free;
   end;
   
-  if vImage <> nil then
-    QImage_destroy(vImage);
-
   if Widget <> nil then
+  begin
     QPainter_destroy(Widget);
+  end;
 
   if ParentPixmap <> nil then
     QPixmap_destroy(ParentPixmap);
@@ -2188,4 +2206,5 @@ begin
 end;
 
 end.
+
 

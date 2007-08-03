@@ -105,10 +105,6 @@ begin
       New(DC.vClipRect);
       DC.vClipRect^ := Widget.PaintData.ClipRect^;
     end;
-    //DC.DebugClipRect('BeginPaint: After');
-    // TODO: ask what is this good for
-    if Widget is TQtMainWindow then
-      TQtMainWindow(Widget).Canvas := DC;
   end;
 
   Result := PS.hdc;
@@ -498,12 +494,7 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
-  {TODO: TEST IT
-	if (GetQtDefaultDC <> 0)
-  and (DC = 0) then
-	 DeleteDefaultDC;
-  }
-  Result := GetDC(DC);
+  Result := HDC(TQtDeviceContext.Create(nil, True));
 end;
 
 {------------------------------------------------------------------------------
@@ -754,21 +745,7 @@ begin
   Result := False;
   if not IsValidDC(hDC) then exit;
   
-
-  Painter := TQtDeviceContext(hDC).Widget;
-  Result := not QPainter_isActive(Painter);
-  
-  if not Result then
-    QPainter_end(Painter);
-  
-  if Result then
-  begin
-    {we should never come here ... endPaint() do the job}
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('[WinAPI DeleteDC] freeing resources ');
-    {$endif}
-    TQtDeviceContext(hDC).Free;
-  end;
+  TQtDeviceContext(hDC).Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -854,8 +831,7 @@ begin
     and QPaintEngine_isActive(APaintEngine) then
     begin
       APainter := QPaintEngine_painter(APaintEngine);
-      if APainter <> NiL
-      then
+      if APainter <> nil then
         QPainter_end(APainter);
     end ;
 
@@ -1492,6 +1468,8 @@ begin
   if Str <> nil then
   begin
     WideStr := UTF8Decode(Str);
+    if WideStr = '' then
+      WideStr := Str;
 
     QtDC.drawText(X, Y, @WideStr);
   end;
@@ -1918,22 +1896,16 @@ begin
   Widget := TQtWidget(hWnd);
   
   if Widget <> nil then
-    Result := HDC(TQtDeviceContext.Create(Widget.Widget))
+  begin
+    Result := Widget.Context;
+    if Result = 0 then
+      Result := HDC(QtDefaultContext);
+  end 
   else
   begin
-    { TODO: Test this !
-    if GetQtDefaultDC = 0 then
-    begin
-      Result := HDC(TQtDeviceContext.Create(nil));
-      SetQtDefaultDC(Result);
-    end else
-      Result := GetQtDefaultDC;
-      }
-	  Result := HDC(TQtDeviceContext.Create(nil));
+    Result := HDC(QtScreenContext);
   end;
   
-//  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
-
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
@@ -1948,14 +1920,8 @@ begin
 end;
 
 function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
-var
-  Widget: TQtWidget;
 begin
-  Widget := TQtWidget(WindowHandle);
-  if Widget <> nil then
-    Result := HDC(TQtDeviceContext.Create(Widget.Widget, False))
-  else
-    Result := HDC(TQtDeviceContext.Create(nil, False));
+  Result := GetDC(WindowHandle);
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.GetDesignerDC] missing implementation ');
   {$endif}
@@ -3618,7 +3584,7 @@ begin
 
   Result := 0;
 
-  if IsValidDC(DC) then TQtDeviceContext(DC).Free;
+  if IsValidDC(DC) then Exit;
   
   Result := 1;
 end;
@@ -3778,7 +3744,7 @@ begin
     if RGN <> 0 then
       QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
     else
-      QPainter_setClipping(Painter, False);
+      QPainter_setClipRegion(Painter, nil, QtNoClip);
     if QPainter_hasClipping(Painter) then
     begin
       ARegion := QRegion_Create;

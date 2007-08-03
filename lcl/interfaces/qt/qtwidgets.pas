@@ -53,6 +53,7 @@ type
     FPaintData: TPaintData;
     FCentralWidget: QWidgetH;
     FStopMouseEventsProcessing: Boolean; // widget stop processing of mouse events
+    FContext: HDC;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -70,7 +71,6 @@ type
     AVariant: QVariantH;
     LCLObject: TWinControl;
     HasCaret: Boolean;
-    InPaint: Boolean;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
@@ -133,6 +133,7 @@ type
     function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
 
+    property Context: HDC read FContext;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
@@ -213,7 +214,6 @@ type
 {$endif}
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
-    Canvas: TQtDeviceContext;
     destructor Destroy; override;
     function getClientBounds: TRect; override;
     procedure setTabOrders;
@@ -1579,7 +1579,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint');
   {$endif}
-  InPaint := True;
   if (LCLObject is TWinControl) then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
@@ -1598,6 +1597,7 @@ begin
     end;
 
     Msg.DC := BeginPaint(THandle(Self), AStruct^);
+    FContext := Msg.DC;
     with getClientBounds do
       SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
 
@@ -1611,6 +1611,7 @@ begin
       finally
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
+        FContext := 0;
         EndPaint(THandle(Self), AStruct^);
         Dispose(AStruct);
       end;
@@ -1618,7 +1619,6 @@ begin
       Application.HandleException(nil);
     end;
   end;
-  InPaint := False;
 end;
 
 {------------------------------------------------------------------------------

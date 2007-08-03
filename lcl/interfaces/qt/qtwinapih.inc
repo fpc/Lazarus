@@ -195,3 +195,4 @@ function WindowFromPoint(Point: TPoint): HWND; override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 
+
