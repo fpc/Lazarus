@@ -1468,9 +1468,7 @@ begin
   Write('TQtDeviceContext.font()');
   {$endif}
   
-  {$ifdef linux}
   if vFont <> nil then
-  {$endif}
     vFont.Widget := QPainter_font(Widget);
     
   if SelFont=nil then
@@ -1508,9 +1506,7 @@ begin
   Write('TQtDeviceContext.brush() ');
   {$endif}
   
-  {$ifdef linux}
   if vBrush <> nil then
-  {$endif}
     vBrush.Widget := QPainter_brush(Widget);
     
   if SelBrush=nil then
@@ -1554,9 +1550,7 @@ begin
   Write('TQtDeviceContext.pen() ');
   {$endif}
   
-  {$ifdef linux}
   if vPen <> nil then
-  {$endif}
     vPen.Widget := QPainter_pen(Widget);
     
   if SelPen=nil then
