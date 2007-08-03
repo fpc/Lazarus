@@ -32,6 +32,7 @@ Evgen A. Palamarchuck
 Felipe Monteiro de Carvalho
 Florian Koeberle
 Francisco Manuel
+Gerard Visent
 Giuliano Colla
 Giulio Bernardi
 GongYu
