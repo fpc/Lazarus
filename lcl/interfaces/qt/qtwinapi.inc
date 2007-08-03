@@ -3732,7 +3732,7 @@ begin
     if RGN <> 0 then
       QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
     else
-      QPainter_setClipRegion(Painter, nil, QtNoClip);
+      QPainter_setClipping(Painter, False);
     if QPainter_hasClipping(Painter) then
     begin
       ARegion := QRegion_Create;
