@@ -418,7 +418,7 @@ end;
 function QtScreenContext: TQtDeviceContext;
 begin
   if FScreenContext = nil then
-    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), True);
+    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), False);
   Result := FScreenContext;
 end;
   
@@ -1092,7 +1092,7 @@ var
   H: Integer;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(WidgetHandle), ' FromPaintEvent:',BoolToStr(FromPaintEvent),' )');
+    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(AWidget), ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
 
   {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside
