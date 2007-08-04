@@ -1860,6 +1860,7 @@ var
   ChildsFixedSides: TAnchors;
   ChildAnchors: TAnchors;
   NewChildBounds: TRect;
+  OldChildBounds: TRect;
 begin
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
@@ -1886,10 +1887,11 @@ begin
 
     // move childs tight to left and top (so no space left and above childs)
     if (ControlCount > 0) then begin
-      // get current bounds of all childs
+      // get current bounds of all childs including border space
       GetChildBounds(ChildBounds,true);
       CurClientRect:=ClientRect;
       AdjustClientRect(CurClientRect);
+      //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' ChildsBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect)]);
 
       if (akLeft in ChildsFixedSides) then
         dx:=0
@@ -1920,8 +1922,12 @@ begin
                 inc(NewChildBounds.Bottom,dy);
             end;
             // Important: change the BaseBounds too
-            AControl.BoundsRect:=NewChildBounds;
-            //DebugLn(['TWinControl.DoAutoSize AFTER ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
+            OldChildBounds:=AControl.BoundsRect;
+            if not CompareRect(@OldChildBounds,@NewChildBounds) then begin
+              DebugLn(['TWinControl.DoAutoSize moving child: ',DbgSName(AControl),' Old=',dbgs(OldChildBounds),' New=',dbgs(NewChildBounds)]);
+              AControl.BoundsRect:=NewChildBounds;
+              //DebugLn(['TWinControl.DoAutoSize AFTER ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
+            end;
           end;
         end;
       end;
@@ -5901,9 +5907,21 @@ var
   ChildWidth,ChildHeight: integer;
   a: TAnchorKind;
   FixatedAnchors: TAnchors;
+  CurClientRect: TRect;
 begin
+  CurClientRect:=ClientRect;
+  AdjustClientRect(CurClientRect);
+
   ChildBounds := Rect(High(Integer),High(Integer),0,0);
-  SpaceAround:=Rect(0,0,0,0);
+  if WithBorderSpace then begin
+    SpaceAround:=Rect(
+      CurClientRect.Left, // left space
+      CurClientRect.Top,  // top space
+      ClientWidth-CurClientRect.Right,// right space
+      ClientHeight-CurClientRect.Bottom// bottom space
+      );
+  end else
+    SpaceAround:=Rect(0,0,0,0);
   FixatedAnchors:=[];
   for I := 0 to ControlCount - 1 do begin
     AControl:=Controls[I];

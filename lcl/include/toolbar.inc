@@ -407,6 +407,8 @@ var
   AlignedControls: TList;
   StartX: Integer;
   OrderedControls: TList;
+  w: LongInt;
+  h: LongInt;
 
   procedure CalculatePosition;
   var
@@ -485,7 +487,10 @@ begin
     // position OrderedControls
     ARect:=ClientRect;
     AdjustClientRect(ARect);
-    StartX:=ARect.Left+Indent;
+    //DebugLn(['TToolBar.WrapButtons ',DbgSName(Self),' ARect=',dbgs(ARect)]);
+    // important: top, left button must start in the AdjustClientRect top, left
+    // other Toolbar.AutoSize=true will create an endless loop
+    StartX:=ARect.Left;
     x:=StartX;
     y:=ARect.Top;
     i:=0;
@@ -497,9 +502,17 @@ begin
         //DebugLn('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
         if CurControl.AutoSize then begin
           // TODO: center vertically
-          CurControl.SetBoundsKeepBase(x,y,CurControl.Width,CurControl.Height);
-        end else
-          CurControl.SetBoundsKeepBase(x,y,NewControlWidth,ButtonHeight);
+          w:=CurControl.Width;
+          h:=CurControl.Height;
+        end else begin
+          w:=NewControlWidth;
+          h:=ButtonHeight;
+        end;
+        if (CurControl.Left<>x) or (CurControl.Top<>y)
+        or (CurControl.Width<>w) or (CurControl.Height<>h) then begin
+          //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
+          CurControl.SetBoundsKeepBase(x,y,w,h);
+        end;
         inc(x,CurControl.Width);
         
         if (not Wrapable) and (CurControl is TToolButton)
@@ -518,6 +531,12 @@ begin
     EndUpdate;
     EnableAlign;
   end;
+end;
+
+procedure TToolBar.AdjustClientRect(var ARect: TRect);
+begin
+  inherited AdjustClientRect(ARect);
+  inc(ARect.Left,Indent);
 end;
 
 function TToolBar.FindButtonFromAccel(Accel: Word): TToolButton;

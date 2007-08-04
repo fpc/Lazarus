@@ -1478,6 +1478,7 @@ type
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
     function WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
+    procedure AdjustClientRect(var ARect: TRect); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -2466,9 +2467,13 @@ type
     procedure Apply(TreeView: TCustomTreeView);
   end;
 
+
+
   TCustomHeaderControl = class;
 
+
   { THeaderSection }
+  
   THeaderSectionState =
   (
     hsNormal,
@@ -2504,7 +2509,9 @@ type
   
   THeaderSectionClass = class of THeaderSection;
 
+
   { THeaderSections }
+  
   THeaderSections = class(TCollection)
   private
     FHeaderControl: TCustomHeaderControl;
@@ -2526,7 +2533,9 @@ type
   TCustomHCCreateSectionClassEvent = procedure(Sender: TCustomHeaderControl;
     var SectionClass: THeaderSectionClass) of object;
     
+    
   { TCustomHeaderControl }
+  
   TCustomHeaderControl = class(TCustomControl)
   private
     FSections: THeaderSections;
@@ -2573,6 +2582,9 @@ type
       write FOnCreateSectionClass;
   end;
   
+  
+  { THeaderControl }
+
   THeaderControl = class(TCustomHeaderControl)
   published
     property Align;
