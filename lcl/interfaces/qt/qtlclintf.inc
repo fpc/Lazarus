@@ -86,106 +86,27 @@ end;
 procedure TQtWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 var
   DC: TQtDeviceContext;
-  APoints: Array [0..2] of TPoint;
   ArrowType: Integer;
-  ARect: TRect;
-  Brush: QBrushH;
-  Pen: QPenH;
+  Rect: TRect;
+  StyleOption: QStyleOptionH;
 begin
 
   DC := TQtDeviceContext(TCanvas(Canvas).Handle);
-  
-  ARect := TControl(Arrow).ClientRect;
+  Rect := TControl(Arrow).ClientRect;
   ArrowType := Ord(TArrow(Arrow).ArrowType);
   
-  case ArrowType of
-    0:{up}
-    begin
-      {$ifdef QT_USE_BIG_TARROW}
-      APoints[0].X := ARect.Right div 2;
-      APoints[0].Y := ARect.Bottom div 3;
-      APoints[1].X := (ARect.Right div 8);
-      APoints[1].Y := ARect.Bottom - (ARect.Bottom div 3);
-      APoints[2].X := ARect.Right - (ARect.Right div 8);
-      APoints[2].Y := ARect.Bottom - (ARect.Bottom div 3);
-      {$else}
-      APoints[0].X := ARect.Right div 2;
-      APoints[0].Y := ARect.Bottom div 4;
-      APoints[1].X := (ARect.Right div 4);
-      APoints[1].Y := ARect.Bottom - (ARect.Bottom div 4);
-      APoints[2].X := ARect.Right - (ARect.Right div 4);
-      APoints[2].Y := ARect.Bottom - (ARect.Bottom div 4);
-      {$endif}
+  StyleOption := QStyleOption_create(1, 0); //QStyleOptionSO_Default
+  try
+    QStyleOption_initFrom(StyleOption, DC.Parent);
+		QStyleOption_setRect(StyleOption, @Rect);
+    case ArrowType of
+      0: QStyle_drawPrimitive(QApplication_style, QStylePE_IndicatorArrowUp, StyleOption, DC.Widget, DC.Parent);
+      1: QStyle_drawPrimitive(QApplication_style, QStylePE_IndicatorArrowDown, StyleOption, DC.Widget, DC.Parent);
+      2: QStyle_drawPrimitive(QApplication_style, QStylePE_IndicatorArrowLeft, StyleOption, DC.Widget, DC.Parent);
+      3: QStyle_drawPrimitive(QApplication_style, QStylePE_IndicatorArrowRight, StyleOption, DC.Widget, DC.Parent);
     end;
-    1:{down}
-    begin
-      {$ifdef QT_USE_BIG_TARROW}
-      APoints[0].X := ARect.Right div 8;
-      APoints[0].Y := ARect.Bottom div 3;
-      APoints[1].X := ARect.Right - (ARect.Right div 8);
-      APoints[1].Y := (ARect.Bottom div 3);
-      APoints[2].X := ARect.Right div 2;
-      APoints[2].Y := ARect.Bottom - (ARect.Bottom div 3);
-      {$else}
-      APoints[0].X := ARect.Right div 4;
-      APoints[0].Y := ARect.Bottom div 4;
-      APoints[1].X := ARect.Right - (ARect.Right div 4);
-      APoints[1].Y := (ARect.Bottom div 4);
-      APoints[2].X := ARect.Right div 2;
-      APoints[2].Y := ARect.Bottom - (ARect.Bottom div 4);
-      {$endif}
-    end;
-    2:{left}
-    begin
-      {$ifdef QT_USE_BIG_TARROW}
-      APoints[0].X := ARect.Right - (ARect.Right div 3);
-      APoints[0].Y := ARect.Bottom div 8;
-      APoints[1].X := ARect.Right - (ARect.Right div 3);
-      APoints[1].Y := ARect.Bottom - (ARect.Bottom div 8);
-      APoints[2].X := ARect.Right div 3;
-      APoints[2].Y := ARect.Bottom div 2;
-      {$else}
-      APoints[0].X := ARect.Right - (ARect.Right div 4);
-      APoints[0].Y := ARect.Bottom div 4;
-      APoints[1].X := ARect.Right - (ARect.Right div 4);
-      APoints[1].Y := ARect.Bottom - (ARect.Bottom div 4);
-      APoints[2].X := (ARect.Right div 4);
-      APoints[2].Y := ARect.Bottom div 2;
-      {$endif}
-    end;
-    3:{right}
-    begin
-      {$ifdef QT_USE_BIG_TARROW}
-      APoints[0].X := ARect.Right div 3;
-      APoints[0].Y := ARect.Bottom div 8;
-      APoints[1].X := ARect.Right div 3;
-      APoints[1].Y := ARect.Bottom - (ARect.Bottom div 8);
-      APoints[2].X := ARect.Right - (ARect.Right div 3);
-      APoints[2].Y := ARect.Bottom div 2;
-      {$else}
-      APoints[0].X := ARect.Right div 4;
-      APoints[0].Y := ARect.Bottom div 4;
-      APoints[1].X := ARect.Right div 4;
-      APoints[1].Y := ARect.Bottom - (ARect.Bottom div 4);
-      APoints[2].X := ARect.Right - (ARect.Right div 4);
-      APoints[2].Y := ARect.Bottom div 2;
-      {$endif}
-    end;
-  end;
-
-  if ArrowType in [0..3] then
-  begin
-    Brush := QBrush_create(QtBlack, QtSolidPattern);
-    Pen := QPen_create(Brush, 1);
-    try
-      QPainter_setBrush(DC.Widget, Brush);
-      QPainter_setPen(DC.Widget, Pen);
-      QPainter_setRenderHint(DC.Widget, QPainterAntialiasing, True);
-      QPainter_drawPolygon(DC.Widget, @APoints, 3, QtWindingFill);
-    finally
-      QPen_destroy(Pen);
-      QBrush_destroy(Brush);
-    end;
+  finally
+  	QStyleOption_destroy(StyleOption);
   end;
 end;
 

@@ -72,30 +72,6 @@ begin
 
   QtArrow := TQtArrow.Create(AWinControl, AParams);
   
-  case TArrow(AWinControl).ShadowType of
-    stNone:QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFrameNoFrame);
-    stIn:
-    begin
-      QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFramePanel);
-      QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameSunken);
-    end;
-    stOut:
-    begin
-      QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFramePanel);
-      QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameRaised);
-    end;
-    stEtchedIn:
-    begin
-      QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFrameBox);
-      QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameSunken);
-    end;
-    stEtchedOut:
-    begin
-      QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFrameBox);
-      QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameRaised);
-    end;
-  end;
-
   QtArrow.ArrowType := Ord(TArrow(AWinControl).ArrowType);
   
   QtArrow.AttachEvents;
@@ -119,35 +95,7 @@ var
 begin
   QtArrow := TQtArrow(AArrow.Handle);
   if Assigned(QtArrow) then
-  begin
-  
-    case AShadowType of
-      stNone: QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFrameNoFrame);
-      stIn:
-      begin
-        QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFramePanel);
-        QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameSunken);
-      end;
-      stOut:
-      begin
-        QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFramePanel);
-        QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameRaised);
-      end;
-      stEtchedIn:
-      begin
-        QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFrameBox);
-        QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameSunken);
-      end;
-      stEtchedOut:
-      begin
-        QFrame_setFrameShape(QFrameH(QtArrow.Widget), QFrameBox);
-        QFrame_setFrameShadow(QFrameH(QtArrow.Widget), QFrameRaised);
-      end;
-    end;
-
     QtArrow.ArrowType := Ord(AArrowType);
-   
-  end;
 end;
 
 initialization
