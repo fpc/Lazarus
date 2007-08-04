@@ -79,7 +79,7 @@ type
   );
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
-  TDbGridStatusItem = (gsVisibleMove, gsUpdatingData, gsAddingAutoColumns,
+  TDbGridStatusItem = (gsUpdatingData, gsAddingAutoColumns,
                        gsRemovingAutoColumns);
   TDbGridStatus = set of TDbGridStatusItem;
 
@@ -175,7 +175,6 @@ type
     procedure FocusControl(Field: TFieldRef); override;
     // Testing Events
     procedure CheckBrowseMode; override;
-    function  CheckFirstRecord: boolean;
     procedure EditingChanged; override;
     procedure UpdateData; override;
     function  MoveBy(Distance: Integer): Integer; override;
@@ -829,13 +828,8 @@ begin
   if aDataSet=nil then DebugLn('nil)')
   else DebugLn(aDataSet.Name,')');
   {$endif}
-  if not (gsVisibleMove in FGridStatus) or FDatalink.CheckFirstRecord then
-    LayoutChanged
-  else
-    UpdateScrollBarRange;
-
+  LayoutChanged;
   UpdateActive;
-  //RestoreEditor;
 end;
 
 procedure TCustomDBGrid.OnDataSetOpen(aDataSet: TDataSet);
@@ -923,10 +917,9 @@ begin
 
   if Distance<>0 then begin
     Row:= FixedRows + FDataLink.ActiveRecord;
-    Invalidate
+    Invalidate;
   end else
     UpdateActive;
-
 
   if OldEditorMode and (dgAlwaysShowEditor in Options) then
     EditorMode := True;
@@ -1798,15 +1791,6 @@ var
     FDatalink.MoveBy(Amount);
     {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy FIN');{$Endif}
   end;
-  procedure DoMoveBySmall(amount: Integer);
-  begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBySmall(',IntToStr(Amount),')');{$Endif}
-    Include(FGridStatus, gsVisibleMove);
-    FDatalink.CheckFirstRecord;
-    FDatalink.MoveBy(Amount);
-    Exclude(FGridStatus, gsVisibleMove);
-    {$IfDef dbgGrid}DebugLn('KeyDown.doMoveBySmall FIN');{$Endif}
-  end;
   procedure DoCancel;
   begin
     {$IfDef dbgGrid}DebugLn('KeyDown.doCancel INIT');{$Endif}
@@ -1846,7 +1830,7 @@ var
       end;
     end else begin
       result:=false;
-      doMoveBySmall(1);
+      doMoveBy(1);
       if GridCanModify and FDataLink.EOF then begin
         doAppend;
       end;
@@ -1859,7 +1843,7 @@ var
     if InsertCancelable then
       doCancel
     else
-      doMoveBySmall(-1);
+      doMoveBy(-1);
     result := FDatalink.DataSet.BOF;
     {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
   end;
@@ -2033,9 +2017,7 @@ var
   procedure doMoveBy;
   begin
     {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveBy INIT'); {$Endif}
-    Include(FGridStatus, gsVisibleMove);
     FDatalink.MoveBy(P.Y - Row);
-    Exclude(FGridStatus, gsVisibleMove);
     {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveBy END'); {$Endif}
   end;
   procedure doMoveToColumn;
@@ -2283,9 +2265,7 @@ begin
   if Assigned(OnMouseWheelDown) then
     OnMouseWheelDown(Self, Shift, MousePos, Result);
   if not Result and FDatalink.Active then begin
-    Include(FGridStatus, gsVisibleMove);
     FDatalink.MoveBy(1);
-    Exclude(FGridStatus, gsVisibleMove);
     Result := True;
   end;
 end;
@@ -2297,9 +2277,7 @@ begin
   if Assigned(OnMouseWheelUp) then
     OnMouseWheelUp(Self, Shift, MousePos, Result);
   if not Result and FDatalink.Active then begin
-    Include(FGridStatus, gsVisibleMove);
     FDatalink.MoveBy(-1);
-    Exclude(FGridStatus, gsVisibleMove);
     Result := True;
   end;
 end;
@@ -2916,12 +2894,6 @@ begin
   DebugLn(ClassName,'.CheckBrowseMode');
   {$endif}
   inherited CheckBrowseMode;
-end;
-
-function TComponentDataLink.CheckFirstRecord: boolean;
-begin
-  Result := FOldFirstRecord<>FirstRecord;
-  FOldFirstRecord := FirstRecord;
 end;
 
 procedure TComponentDataLink.EditingChanged;
