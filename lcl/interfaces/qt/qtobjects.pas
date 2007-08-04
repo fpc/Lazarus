@@ -1143,7 +1143,6 @@ begin
 
   end else
   begin
-    vFont := TQtFont(GetStockObject(SYSTEM_FONT));
     vBrush := TQtBrush(GetStockObject(WHITE_BRUSH));
 		vBackgroundBrush := vBrush;
     vPen := TQtPen(GetStockObject(BLACK_PEN));
@@ -1367,6 +1366,12 @@ begin
     Save;
     
     translate(x, y);
+    
+    {when Parent=nil we'll create vFont on demand, otherwise
+     we'll get 1 unfreed mem block}
+    if (Parent = nil) and (vFont = nil) then
+      vFont := TQtFont(GetStockObject(SYSTEM_FONT));
+      
     Rotate(-0.1 * vFont.Angle);
     
     RestoreTextColor;
@@ -1507,6 +1512,11 @@ begin
   Write('TQtDeviceContext.font()');
   {$endif}
 
+  {when Parent=nil we'll create vFont on demand, otherwise
+    we'll get 1 unfreed mem block}
+  if (Parent = nil) and (vFont = nil) then
+    vFont := TQtFont(GetStockObject(SYSTEM_FONT));
+
   if vFont <> nil then
     vFont.Widget := QPainter_font(Widget);
     
@@ -1530,6 +1540,12 @@ begin
   if (f.Widget <> nil) and (Widget <> nil) {and (Parent <> nil)} then
   begin
     QPainter_setFont(Widget, QFontH(f.Widget));
+    
+    {when Parent=nil we'll create vFont on demand, otherwise
+     we'll get 1 unfreed mem block}
+    if (Parent = nil) and (vFont = nil) then
+      vFont := TQtFont(GetStockObject(SYSTEM_FONT));
+      
     vFont.Angle := f.Angle;
   end;
 end;
