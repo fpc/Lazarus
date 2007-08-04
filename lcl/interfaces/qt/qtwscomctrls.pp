@@ -770,7 +770,7 @@ begin
     TWIChild := QTreeWidgetItem_create(0);
     QTreeWidgetItem_setFlags(TWIChild, QtItemIsEnabled);
     QTreeWidgetItem_addChild(TWI, TWIChild);
-    Str := UTF8Encode(ALV.Column[AIndex].Caption);
+    Str := UTF8Decode(ALV.Column[AIndex].Caption);
     QTreeWidgetItem_setText(TWI, AIndex, @Str);
   end;
 
@@ -870,7 +870,7 @@ begin
   TWI := QTreeWidget_headerItem(TW);
   if TWI <> NiL then
   begin
-    Str := UTF8Encode(ACaption);
+    Str := UTF8Decode(ACaption);
     QTreeWidgetItem_setText(TWI, AIndex, @Str);
   end;
 end;
