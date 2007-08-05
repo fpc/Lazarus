@@ -52,6 +52,8 @@ function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
+function IntfSendsUTF8KeyPress: boolean; override;
+
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;

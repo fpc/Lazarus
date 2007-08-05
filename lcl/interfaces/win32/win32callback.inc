@@ -997,6 +997,26 @@ Var
     Result := PointToSmallPoint(P);
   end;
 
+  // returns false if the UnicodeChar is not handled
+  function HandleUnicodeChar(AChar: Word): boolean;
+  var
+    UTF8Char: TUTF8Char;
+    Handled: Boolean;
+  begin
+    Result := false;
+  
+    UTF8Char := UTF8Encode(WideChar(AChar));
+    
+    lWinControl := WindowInfo^.WinControl;
+    if assigned(lWinControl) then
+    begin
+      Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
+
+      if UTF8Char='' then
+        Result:= true;
+    end;
+  end;
+  
 begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1121,15 +1141,19 @@ begin
     End;
     WM_CHAR:
     Begin
-      PLMsg:=@LMChar;
-      With LMChar Do
-      Begin
-        Msg := CN_CHAR;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-      End;
+      if not UnicodeEnabledOS or not HandleUnicodeChar(Word(WParam)) then
+      begin
+        PLMsg:=@LMChar;
+        With LMChar Do
+        Begin
+          Msg := CN_CHAR;
+          KeyData := LParam;
+          CharCode := Word(WParam);
+          Result := 0;
+          Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        End;
+      end;
+
       WinProcess := false;
     End;
     WM_MENUCHAR:

@@ -397,6 +397,15 @@ begin
                 LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR;
 end;
 
+{------------------------------------------------------------------------------
+  function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
+begin
+  Result := UnicodeEnabledOS;
+end;
+
 function TWin32WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap): HBitmap;
 {$ifdef NoMaskProblem}
 var
