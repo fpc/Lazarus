@@ -17,7 +17,11 @@ echo "{\$linklib gpm}" >> $TestPas
 echo "{\$linklib ncurses}" >> $TestPas
 echo "begin end." >> $TestPas
 
-fpc $TestPas
+if [ "x$PP" = "x" ]; then
+  fpc $TestPas
+else
+  $PP $TestPas
+fi
 
 # end.
 
