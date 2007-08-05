@@ -369,13 +369,16 @@ begin
    end;
    bsToolWindow:
    begin
-     Flags := Flags or QtFramelessWindowHint;
+     {QToolWin have only maximize & close btns,
+      if parent isn't assigned must have QtWindowStaysOnTopHint}
      Flags := Flags or QtOnlyTool;
+     Flags := Flags or QtWindowStaysOnTopHint;
    end;
    bsSizeToolWin:
    begin
      Flags := Flags and not QtFramelessWindowHint;
-     Flags := Flags or QtOnlyTool;
+     {sizeToolWin have minimize button}
+     Flags := Flags or QtOnlyTool or QtSubWindow;
    end;
   end;
 
