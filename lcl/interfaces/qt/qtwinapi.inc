@@ -2469,10 +2469,11 @@ begin
   else
   begin
     Result := TQtRegion(RGN).GetRegionType;
-    If lpRect <> nil then begin
+    If lpRect <> nil then
+    begin
       QRegion_boundingRect(TQtRegion(RGN).Widget, @R);
       
-      With lpRect^ do
+      with lpRect^ do
       begin
         Left   := R.Left;
         Top    := R.Top;
@@ -3046,6 +3047,9 @@ end;
   Gets the Font Color currently assigned to the Device Context
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextColor(DC: HDC) : TColorRef;
+var
+  Color: TQColor;
+  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextColor]');
@@ -3053,15 +3057,13 @@ begin
 
   Result := 0;
   
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetTextColor] missing implementation ');
-  {$endif}
-
-{  if IsValidDC(DC) then
-    with TQtDeviceContext(DC) do
-    begin
-      Result := CurrentTextColor.ColorRef;
-    end;}
+  if IsValidDC(DC) then
+  begin
+    QtDC := TQtDeviceContext(DC);
+    ColorRefToTQColor(QtDC.vTextColor, Color);
+    // QColor_setRgb(QColorH(@Color),Red(QtDC.vTextColor),Green(QtDC.vTextColor),Blue(QtDC.vTextColor));
+    TQColorToColorRef(Color, Result);
+  end;
 end;
 
 {------------------------------------------------------------------------------
