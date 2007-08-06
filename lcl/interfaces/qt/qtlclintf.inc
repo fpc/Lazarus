@@ -146,6 +146,11 @@ begin
   Desc.AlphaShift := 24;
 end;
 
+function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
+begin
+  Result:=true;
+end;
+
 {------------------------------------------------------------------------------
   Function: PromptUser
   Params:

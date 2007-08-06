@@ -34,6 +34,8 @@ function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 
+function IntfSendsUTF8KeyPress: boolean; override;
+
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;

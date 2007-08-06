@@ -1292,6 +1292,7 @@ begin
     UTF8Char := TUTF8Char(Text);
 
     LCLObject.IntfUTF8KeyPress(UTF8Char, RepeatCount, False);
+    {$NOTE TODO: send CN_CHAR if IntfUTF8KeyPress returns false}
   end;
 end;
 
