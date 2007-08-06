@@ -146,11 +146,11 @@ end;
 
 procedure TDSFieldsEditorFrm.DeleteFieldsActnExecute(Sender: TObject);
 var i: integer;
-    sActive: boolean;
+    PreActive: boolean;
     bModified: boolean;
     fld: TField;
 begin
-  sActive := LinkDataSet.Active;
+  PreActive := LinkDataSet.Active;
   LinkDataSet.Active := False;
   bModified := False;
   for i := FieldsListBox.Items.Count - 1 downto 0 do
@@ -161,8 +161,10 @@ begin
       fld.Free;
       bModified := True;
     end;
-  if bModified then fDesigner.Modified;
-  if LinkDataset.Fields.Count > 0 then LinkDataSet.Active := sActive;
+  if bModified then
+    fDesigner.Modified;
+  if PreActive then
+    LinkDataSet.Active := True;
   SelectionChanged;
 end;
 
@@ -181,7 +183,6 @@ begin
   end;
   if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  inherited Destroy;
 end;
 
 procedure TDSFieldsEditorFrm.FieldsListBoxKeyDown(Sender: TObject; var Key: Word;
@@ -221,8 +222,11 @@ end;
 procedure TDSFieldsEditorFrm.RefreshFieldsListBox(SelectAllNew: boolean);
 var i, j: integer;
     fld: TField;
+    PreActive: boolean;
 begin
-  if LinkDataset.Active And LinkDataset.DefaultFields then LinkDataset.Close;
+  PreActive := LinkDataSet.Active;
+  if PreActive And LinkDataset.DefaultFields then
+    LinkDataset.Close;
   //Deselect & refresh all existing
   DoSelected(False);
   //Add new fields
@@ -233,6 +237,8 @@ begin
       FieldsListBox.Selected[j] := SelectAllNew;
     end;
   end;
+  if PreActive and not LinkDataset.Active then
+    LinkDataset.Active:=true;
 end;
 
 procedure TDSFieldsEditorFrm.NewActnExecute(Sender: TObject);
@@ -437,6 +443,7 @@ end;
 procedure TFieldsComponentEditor.EditorWindowClose;
 begin
   fWindowClosed := True;
+  FFieldsEditorForm:=nil;
 end;
 
 

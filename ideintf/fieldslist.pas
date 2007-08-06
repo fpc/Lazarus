@@ -69,7 +69,9 @@ procedure TFieldsListFrm.BitBtnOkClick(Sender: TObject);
 var i: integer;
     NewField: TField;
     fModified: boolean;
+    PreActive: boolean;
 begin
+  PreActive := LinkDataset.Active;
   LinkDataSet.Active := False;
   fModified := False;
   for i := 0 to ListBox1.Items.Count - 1 do begin
@@ -81,6 +83,8 @@ begin
     end;
   end;
   if fModified then FDesigner.Modified;
+  if PreActive then
+    LinkDataset.Active:=True;
 end;
 
 procedure TFieldsListFrm.RefreshFieldsList;
@@ -107,18 +111,31 @@ procedure TFieldsListFrm.RefreshFieldsList;
     end;
   end;
   
-var i: integer;
+var
+  i: integer;
+  PreActive: boolean;
 begin
   i := 0;
   ListBox1.Clear;
   BitBtnOk.Enabled := False;
-  if Not Assigned(LinkDataset) then Exit;
-  with LinkDataset do begin
-    Active := False;
-    FieldDefs.Update;
-  end;
+  if not Assigned(LinkDataset) then Exit;
+  // refresh fielddefs
+  LinkDataset.FieldDefs.Update;
+  PreActive:=LinkDataset.Active;
+  LinkDataset.Active := False;
   i := FillList;
   BitBtnOk.Enabled := i > 0;
+  if PreActive then
+    LinkDataset.Active:=True;
+  {
+  PreActive:=LinkDataset.Active;
+  LinkDataset.Active := False;
+  LinkDataset.FieldDefs.Update;
+  i := FillList;
+  BitBtnOk.Enabled := i > 0;
+  if PreActive then
+    LinkDataset.Active:=True;
+  }
 end;
 
 constructor TFieldsListFrm.Create(AOwner: TComponent; ADataset: TDataset;
