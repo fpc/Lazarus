@@ -3774,6 +3774,7 @@ end;
 function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   ARegion: QRegionH;
+  EmptyRegion: QRegionH;
   Painter: QPainterH;
   R: TRect;
 begin
@@ -3784,7 +3785,14 @@ begin
     if RGN <> 0 then
       QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
     else
-      QPainter_setClipRegion(Painter, nil, QtNoClip);
+    begin
+      EmptyRegion := QRegion_create;
+      try
+        QPainter_setClipRegion(Painter, EmptyRegion, QtNoClip);
+      finally
+        QRegion_destroy(EmptyRegion);
+      end;
+    end;
     if QPainter_hasClipping(Painter) then
     begin
       ARegion := QRegion_Create;
