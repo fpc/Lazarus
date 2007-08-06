@@ -492,7 +492,6 @@ begin
   result := gdk.gdk_pixmap_colormap_create_from_xpm(window, colormap, @mask, transparent_color, filename)
 end;
 
-{$IfNDef NoGdkPixbufLib}
 procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
 begin
   {$IFDEF VerboseGdkPixbuf}
@@ -503,7 +502,6 @@ begin
   debugln('gdk_pixbuf_render_pixmap_and_mask A2');
   {$ENDIF}
 end;
-{$EndIf}
 
 function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
 begin

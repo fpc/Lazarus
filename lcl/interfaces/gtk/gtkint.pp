@@ -61,7 +61,7 @@ uses
       gdk2x,
     {$endif}
   {$ELSE}
-    glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+    glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   // Target OS specific
   {$ifdef HasX}
@@ -202,10 +202,8 @@ type
     function CreateEmptyRegion: hRGN; override;
 
     // images
-    {$IfNDef NoGdkPixbufLib}
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
-    {$EndIf}
     procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);virtual;
     procedure LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);virtual;
     procedure LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);virtual;

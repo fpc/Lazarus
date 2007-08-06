@@ -15,21 +15,6 @@
   {$ENDIF}
 {$ENDIF}
 
-{$IFDEF windows}
-  {off $DEFINE NoGdkPixbufLib}
-{$ELSE}
-  {off $DEFINE NoGdkPixbufLib}
-{$ENDIF}
-
-{$IFDEF gtk2}
-  {$IFDEF NoGdkPixbufLib}
-    {$UNDEF NoGdkPixbufLib}
-  {$EndIF}
-{$EndIF}
-// soin all cases pixbuflib is efectively used
-
-
-
 {off $DEFINE GDK_ERROR_TRAP_FLUSH}
 
 {$DEFINE REPORT_GDK_ERRORS}

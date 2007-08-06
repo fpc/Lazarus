@@ -1729,13 +1729,10 @@ begin
 end;
 
 procedure TGtkWidgetSet.LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
-{$Ifndef NoGdkPixbufLib}
 var
   TheBitmap: TBitmap;
-{$ENDIF}
 
   function LoadFile: Boolean;
-  {$Ifndef NoGdkPixbufLib}
   var
     Src : PGDKPixbuf;
     Tmp : hBitmap;
@@ -1790,11 +1787,6 @@ var
     TheBitmap.Handle := TMP;
     GDK_Pixbuf_Unref(Src);
     Result := True;
-  {$Else not NoGdkPixbufLib}
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.LoadFromPixbufFile] GDKPixbuf support has been disabled, unable to load files!');
-    Result := True;
-  {$EndIf}
   end;
 
 begin
@@ -1831,7 +1823,6 @@ Type
   end;
 
   function LoadData : Boolean;
-  {$Ifndef NoGdkPixbufLib}
   var
     Loader : PGdkPixbufLoader;
     Src : PGDKPixbuf;
@@ -1903,11 +1894,6 @@ Type
     end;
 
     Result := True;
-  {$Else not NoGdkPixbufLib}
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.LoadFromPixbufData] GDKPixbuf support has been disabled, unable to load data!');
-    Result := True;
-  {$EndIf}
   end;
 
 begin
@@ -1929,13 +1915,9 @@ const
   PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
   TempBuffer : array[0..2] of Byte = (0,0,0);
 var
-  {$IfNDef NoGDKPixbuflib}
   Source: PGDKPixbuf;
   rowstride, PixelPos: Longint;
   Pixels: PByte;
-  {$Else}
-  Source: PGDKImage;//The MONDO slow way...
-  {$EndIf}
   FDIB: TDIBSection;
   X, Y: Longint;
   PadSize, Pos, BytesPerPixel: Longint;
@@ -1948,26 +1930,19 @@ var
     case Bitmap^.GDIBitmapType of
       gbBitmap:
         If Bitmap^.GDIBitmapObject <> nil then begin
-          {$IfNDef NoGDKPixbuflib}
-            {$IFDEF VerboseGdkPixbuf}
-            debugln('DataSourceInitialize A1');
-            {$ENDIF}
-            Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
-               Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
-             rowstride := gdk_pixbuf_get_rowstride(Source);
-             Pixels := PByte(gdk_pixbuf_get_pixels(Source));
-            {$IFDEF VerboseGdkPixbuf}
-            debugln('DataSourceInitialize A2');
-            {$ENDIF}
-          {$else}
-            {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-            Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
-                                    StartScan + NumScans);
-          {$EndIf}
+          {$IFDEF VerboseGdkPixbuf}
+          debugln('DataSourceInitialize A1');
+          {$ENDIF}
+          Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
+             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+           rowstride := gdk_pixbuf_get_rowstride(Source);
+           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+          {$IFDEF VerboseGdkPixbuf}
+          debugln('DataSourceInitialize A2');
+          {$ENDIF}
         end;
       gbPixmap:
         If Bitmap^.GDIPixmapObject <> nil then begin
-         {$IfNDef NoGDKPixbuflib}
           {$IFDEF VerboseGdkPixbuf}
           debugln('DataSourceInitialize B1');
           {$ENDIF}
@@ -1978,11 +1953,6 @@ var
           {$ENDIF}
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
-         {$else}
-           {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-           Source := gdk_image_get(Bitmap^.GDIPixmapObject, StartScan, 0, Width,
-             StartScan + NumScans);
-         {$EndIf}
         end;
       {obsolete: gbImage :
         If Bitmap^.GDI_RGBImageObject <> nil then begin
@@ -1992,7 +1962,6 @@ var
   end;
 
   Function DataSourceGetGDIRGB(Bitmap : PGDIObject; X, Y : Longint) : TGDIRGB;
-  {$IfNDef NoGDKPixbuflib}
   begin
      If Bitmap <> nil then ; //Keep compiler happy..
 
@@ -2004,28 +1973,11 @@ var
        Blue := Pixels[PixelPos + 2];
      end;
 
-  {$else}
-  var
-    Pixel : Longint;
-  begin
-    Pixel := 0;
-
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-
-    Pixel := gdk_image_get_pixel(Source, X, Y);
-
-    Result := GDKPixel2GDIRGB(Pixel, Bitmap^.Visual, Bitmap^.Colormap);
-  {$EndIf}
   end;
 
   Procedure DataSourceFinalize;
   begin
-  {$IfNDef NoGDKPixbuflib}
     GDK_Pixbuf_Unref(Source);
-  {$else}
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_image_destroy(Source);
-  {$EndIf}
   end;
 
   Procedure WriteData(Value : PByte; Size : Longint);
@@ -5445,7 +5397,6 @@ end;
 
   Loads a pixbuf from a lazarus resource. The resource must be a XPM file.
 -------------------------------------------------------------------------------}
-{$IfNDef NoGdkPixbufLib}
 procedure TGtkWidgetSet.LoadPixbufFromLazResource(const ResourceName: string;
   var Pixbuf: PGdkPixbuf);
 var
@@ -5469,7 +5420,6 @@ begin
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;
-{$EndIF}
 
 {-------------------------------------------------------------------------------
   procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);

@@ -31,7 +31,7 @@ uses
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   GtkInt, gtkProc, gtkglobals, GTKExtra, Menus;
 

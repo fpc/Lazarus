@@ -1171,7 +1171,6 @@ function ScalePixmap(ScaleGC: PGDKGC;
   SrcColorMap: PGdkColormap;
   NewWidth, NewHeight: integer;
   var NewPixmap: PGdkPixmap) : Boolean;
-{$Ifndef NoGdkPixbufLib}
 var
   ScaleSrc, ScaleDest: PGDKPixbuf;
   ShrinkWidth,
@@ -1285,11 +1284,6 @@ begin
   EndGDKErrorTrap;
   GDK_Pixbuf_Unref(ScaleDest);
   Result := True;
-{$Else not NoGdkPixbufLib}
-begin
-  DebugLn('ScalePixmap GDKPixbuf support has been disabled, no stretching is available!');
-  Result := True;
-{$EndIf}
 end;
 
 {$ifdef IMGLIST_OLDSTYLE}
@@ -5533,7 +5527,6 @@ end;
 
   Loads a pixbuf from a lazarus resource. The resource must be a XPM file.
 -------------------------------------------------------------------------------}
-{$IfNDef NoGdkPixbufLib}
 procedure LoadPixbufFromLazResource(const ResourceName: string;
   var Pixbuf: PGdkPixbuf);
 var
@@ -5557,7 +5550,6 @@ begin
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;
-{$EndIF}
 
 {
   function GdkPixbufAddBitmapMask

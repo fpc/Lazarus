@@ -24,7 +24,7 @@ uses
   {$endif}
 
 
-  glib, gdk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk,
+  glib, gdk, gdkpixbuf, gtk,
   ctypes, classes, LCLProc;
 
 
@@ -88,12 +88,9 @@ function gdk_pixmap_colormap_create_from_xpm_d (window: PGdkWindow;
 function gdk_pixmap_colormap_create_from_xpm (window: PGdkWindow;
                   colormap: PGdkColormap; var mask: PGdkBitmap;
                   transparent_color: PGdkColor; filename: Pgchar): PGdkPixmap;
-
-{$IfNDef NoGdkPixbufLib}
 Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf;
   var pixmap_return: PGdkPixmap; var mask_return: PGdkBitmap;
   alpha_threshold: gint);
-{$EndIf}
 
 //Wrapper around window functions like gtk2 -->
 Function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;

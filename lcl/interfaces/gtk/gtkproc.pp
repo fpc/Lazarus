@@ -40,7 +40,7 @@ uses
     gdk2x,
     {$endif}
   {$ELSE}
-    glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+    glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Math, // Math after gtk to get the correct Float type
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
