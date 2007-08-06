@@ -1596,8 +1596,14 @@ begin
       QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
     end;
 
+
     Msg.DC := BeginPaint(THandle(Self), AStruct^);
     FContext := Msg.DC;
+    
+    Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+	  Msg.PaintStruct^.hdc := FContext;
+
+
     with getClientBounds do
       SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
 
