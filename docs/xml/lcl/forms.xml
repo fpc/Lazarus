@@ -5617,7 +5617,20 @@ It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather
       <!-- function result Visibility: default -->
       <element name="TApplication.MessageBox.Result">
         <short>Result</short>
-        <descr>Result: integer value returned by the function to signify which box was selected</descr>
+        <descr>Result: integer value returned by the function to signify which box was selected<br/>
+<br/>
+Can be one of the following values:<br/>
+<br/>
+ IDOK<br/>
+ IDCANCEL<br/>
+ IDABORT<br/>
+ IDRETRY<br/>
+ IDIGNORE<br/>
+ IDYES<br/>
+ IDNO<br/>
+ IDCLOSE<br/>
+ IDHELP	
+		</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Text">
@@ -5632,7 +5645,30 @@ It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Flags">
         <short>Flags</short>
-        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.</descr>
+        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.<br/>
+<br/>
+The following button constants are available:<br/>
+<br/>
+ MB_OK<br/>
+ MB_OKCANCEL<br/>
+ MB_ABORTRETRYIGNORE<br/>
+ MB_YESNOCANCEL<br/>
+ MB_YESNO<br/>
+ MB_RETRYCANCEL<br/>
+<br/>
+And the following icon constants:<br/>
+<br/>
+ MB_ICONHAND<br/>
+ MB_ICONQUESTION<br/>
+ MB_ICONEXCLAMATION<br/>
+ MB_ICONASTERICK<br/>
+ MB_ICONWARNING = MB_ICONEXCLAMATION<br/>
+ MB_ICONERROR = MB_ICONHAND<br/>
+ MB_ICONSTOP = MB_ICONHAND<br/>
+ MB_ICONINFORMATION = MB_ICONASTERICK<br/>
+<br/>
+These constants are declared on the LCLType unit.
+        </descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Minimize">
