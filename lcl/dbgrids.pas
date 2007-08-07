@@ -484,6 +484,7 @@ type
     property AlternateColor;
     property Anchors;
     property AutoAdvance default aaRightDown;
+    property AutoEdit;
     property AutoFillColumns;
     //property BiDiMode;
     property BorderSpacing;

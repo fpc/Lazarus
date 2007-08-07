@@ -522,6 +522,7 @@ type
   private
     FAlternateColor: TColor;
     FAutoAdvance: TAutoAdvance;
+    FAutoEdit: boolean;
     FAutoFillColumns: boolean;
     FBorderColor: TColor;
     FDefaultDrawing: Boolean;
@@ -847,6 +848,7 @@ type
     property AllowOutboundEvents: boolean read FAllowOutboundEvents write FAllowOutboundEvents default true;
     property AlternateColor: TColor read FAlternateColor write SetAlternateColor stored IsAltColorStored;
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
+    property AutoEdit: boolean read FAutoEdit write FAutoEdit default true;
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns;
     property BorderStyle default bsSingle;
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
@@ -1130,6 +1132,7 @@ type
     property AlternateColor;
     property Anchors;
     property AutoAdvance;
+    property AutoEdit;
     property AutoFillColumns;
     //property BiDiMode;
     property BorderSpacing;
@@ -1282,6 +1285,7 @@ type
     property AlternateColor;
     property Anchors;
     property AutoAdvance;
+    property AutoEdit;
     property AutoFillColumns;
     //property BiDiMode;
     property BorderSpacing;
@@ -4425,6 +4429,16 @@ var
       InvalidateCell(PushedCell.x, PushedCell.y);
     end;
   end;
+  
+  function DoAutoEdit: boolean;
+  begin
+    result := FAutoEdit and (goEditing in Options) and
+      (FSplitter.X=Col) and (FSplitter.Y=Row);
+    if result then begin
+      SelectEditor;
+      EditorShow(True);
+    end;
+  end;
 
 begin
   inherited MouseDown(Button, Shift, X, Y);
@@ -4499,26 +4513,29 @@ begin
 
           if not (goEditing in Options) or
             (ExtendedSelect and not EditorAlwaysShown) then begin
-            if ssShift in Shift then begin
-              SelectActive:=(goRangeSelect in Options);
-            end else begin
+            
+            if ssShift in Shift then
+              SelectActive:=(goRangeSelect in Options)
+            else begin
               // shift is not pressed any more cancel SelectActive if necessary
               if SelectActive then
                 CancelSelection;
 
               if not SelectActive then begin
+
+                if not DoAutoEdit then
+                  // delay select active until mouse reachs another cell
+                  // do that only if editor is not shown
+                  GridFlags := GridFlags + [gfNeedsSelectActive];
+
                 FPivot:=FSplitter;
-                GridFlags := GridFlags + [gfNeedsSelectActive];
-                // delay select active until mouse reachs another cell
+                
               end;
             end;
-          end else if (FSplitter.X=Col) and (FSplitter.Y=Row) then begin
-            //if WasFocused then begin
-              SelectEditor;
-              EditorShow(True);
-              {$ifDef dbgGrid} DebugLn('MouseDown (autoedit) END'); {$Endif}
-              exit;
-            //end;
+
+          end else if DoAutoEdit then begin
+            {$ifDef dbgGrid} DebugLn('MouseDown (autoedit) END'); {$Endif}
+            Exit;
           end;
 
           if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
@@ -6472,6 +6489,7 @@ begin
   FTitleFontIsDefault := True;
 
   FAutoAdvance := aaRight;
+  FAutoEdit := True;
   FFocusRectVisible := True;
   FDefaultDrawing := True;
   FOptions:=
