@@ -127,15 +127,6 @@ begin
   BitBtnOk.Enabled := i > 0;
   if PreActive then
     LinkDataset.Active:=True;
-  {
-  PreActive:=LinkDataset.Active;
-  LinkDataset.Active := False;
-  LinkDataset.FieldDefs.Update;
-  i := FillList;
-  BitBtnOk.Enabled := i > 0;
-  if PreActive then
-    LinkDataset.Active:=True;
-  }
 end;
 
 constructor TFieldsListFrm.Create(AOwner: TComponent; ADataset: TDataset;
