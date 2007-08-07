@@ -128,7 +128,10 @@ type
                                                  var Changed: boolean);
     procedure DisableAllUnusedDefines(var Changed: boolean);
     procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
+    procedure DisableIfNode(Node: TCodeTreeNode; var Changed: boolean);
+    procedure DisableNode(Node: TCodeTreeNode; var Changed: boolean);
     procedure RemoveNode(Node: TCodeTreeNode);
+    procedure RemoveEmptyNodes(var Changed: boolean);
   public
     Code: TCodeBuffer;
     Src: string;
@@ -146,6 +149,7 @@ type
     function Parse(aCode: TCodeBuffer; aNestedComments: boolean): boolean;
     procedure ReduceCompilerDirectives(var Changed: boolean);
     
+    function GetDirectiveName(Node: TCodeTreeNode): string;
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
                              out ExprStart, ExprEnd: integer): boolean;
@@ -555,6 +559,105 @@ begin
   RemoveNode(Node);
 end;
 
+procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
+  var Changed: boolean);
+  
+  procedure RaiseImpossible;
+  begin
+    raise CDirectiveParserException.Create('TCompilerDirectivesTree.DisableIfNode');
+  end;
+  
+  function GetExpr(ExprNode: TCodeTreeNode): string;
+  var
+    ExprStart: integer;
+    ExprEnd: integer;
+  begin
+    if not GetIfExpression(ExprNode,ExprStart,ExprEnd) then
+      RaiseImpossible;
+    Result:=copy(Src,ExprStart,ExprEnd-ExprStart);
+  end;
+  
+var
+  FromPos: LongInt;
+  ToPos: LongInt;
+  RemoveNextBrother: Boolean;
+  Expr: String;
+  ElseNode: TCodeTreeNode;
+  ElseName: String;
+  Expr2: String;
+  NewSrc: String;
+begin
+  if (Node.FirstChild<>nil) or (Node.NextBrother=nil) then
+    RaiseImpossible;
+  RemoveNextBrother:=Node.NextBrother.Desc=cdnEnd;
+
+  // fix all following elseif and else nodes
+  Expr:=GetExpr(Node);
+  ElseNode:=Node.NextBrother;
+  while ElseNode<>nil do begin
+    if (ElseNode.Desc=cdnElse) or (ElseNode.Desc=cdnElseIf) then begin
+      if (Node.SubDesc=cdnsElIfC) or (Node.SubDesc=cdnsElseC) then begin
+        if Node.Desc=cdnIf then
+          ElseName:='IfC'
+        else
+          ElseName:='ElIfC';
+      end else begin
+        if Node.Desc=cdnIf then
+          ElseName:='If'
+        else
+          ElseName:='ElseIf';
+      end;
+      // convert {$Else} to {$ElseIf not (Expr)}
+      // convert {$ElseIf Expr2} to {$ElseIf (Expr2) and not (Expr)}
+      if ElseNode.Desc=cdnElse then
+        NewSrc:='{$'+ElseName+' not ('+Expr+')}'
+      else begin
+        Expr2:=GetExpr(ElseNode);
+        NewSrc:='{$'+ElseName+' ('+Expr2+') and not ('+Expr+')}';
+      end;
+      Replace(ElseNode.StartPos,
+              FindCommentEnd(Src,ElseNode.StartPos,NestedComments),NewSrc);
+    end else begin
+      break;
+    end;
+  end;
+  
+  FromPos:=Node.StartPos;
+  if RemoveNextBrother then begin
+    ToPos:=Node.NextBrother.EndPos;
+    ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
+  end else
+    ToPos:=Node.NextBrother.StartPos;
+  if RemoveDisabledDirectives then begin
+    // remove node source completely
+    Replace(FromPos,ToPos,'');
+  end else begin
+    // disable directive -> {$off IfDef MacroName}
+    Replace(Node.StartPos+1,Node.StartPos+1,'off ');
+  end;
+  
+  RemoveNode(Node);
+end;
+
+procedure TCompilerDirectivesTree.DisableNode(Node: TCodeTreeNode;
+  var Changed: boolean);
+
+  procedure RaiseRemoveImpossible;
+  begin
+    raise CDirectiveParserException.Create('TCompilerDirectivesTree.RemoveNodeWithCode not implemented yet');
+  end;
+
+begin
+  case Node.SubDesc of
+  cdnsDefine, cdnsUndef, cdnsSetC, cdnsShortSwitch, cdnsLongSwitch, cdnsMode:
+    DisableDefineNode(Node,Changed);
+  cdnsIfdef:
+    DisableIfNode(Node,Changed);
+  else
+    RaiseRemoveImpossible;
+  end;
+end;
+
 procedure TCompilerDirectivesTree.RemoveNode(Node: TCodeTreeNode);
 var
   AVLNode: TAVLTreeNode;
@@ -573,6 +676,46 @@ begin
 
   // free node
   Tree.DeleteNode(Node);
+end;
+
+procedure TCompilerDirectivesTree.RemoveEmptyNodes(var Changed: boolean);
+var
+  Node: TCodeTreeNode;
+  NextNode: TCodeTreeNode;
+  
+  procedure CheckNode;
+  begin
+    case Node.Desc of
+    cdnsIf,cdnElse,cdnElseIf: ;
+    else exit;
+    end;
+    
+    if (Node.NextBrother=nil) or (Node.FirstChild<>nil) then exit;
+    case Node.NextBrother.Desc of
+    cdnEnd,cdnElse,cdnElseIf:
+      begin
+        MoveCursorToPos(Node.StartPos);
+        // skip directive
+        ReadNextAtom;
+        // read the following atom (token or directive)
+        ReadNextAtom;
+        if AtomStart=Node.NextBrother.StartPos then begin
+          // node is empty
+          NextNode:=Node.NextBrother;
+          Changed:=true;
+          RemoveNode(Node);
+        end;
+      end;
+    end;
+  end;
+  
+begin
+  Node:=Tree.Root;
+  while Node<>nil do begin
+    NextNode:=Node.Next;
+    CheckNode;
+    Node:=NextNode;
+  end;
 end;
 
 constructor TCompilerDirectivesTree.Create;
@@ -641,8 +784,8 @@ procedure TCompilerDirectivesTree.ReduceCompilerDirectives(var Changed: boolean)
       Result:=nil;
   end;
   
-  function CheckMacroInExpression(Node: TCodeTreeNode; NameStart: integer;
-    Complex: boolean): boolean;
+  procedure CheckMacroInExpression(Node: TCodeTreeNode; NameStart: integer;
+    Complex: boolean; var Changed: boolean);
   var
     MacroNode: TCompilerMacroStats;
   begin
@@ -653,7 +796,10 @@ procedure TCompilerDirectivesTree.ReduceCompilerDirectives(var Changed: boolean)
       Macros.Add(MacroNode);
     end;
     MacroNode.LastReadNode:=Node;
-    Result:=false;
+    
+    if not Complex then begin
+
+    end;
   end;
   
   procedure CheckDefine(Node: TCodeTreeNode; var Changed: boolean);
@@ -687,11 +833,16 @@ var
   ExprEnd: integer;
   Complex: Boolean;
   AtomCount: Integer;
+  NextNode: TCodeTreeNode;
 begin
   Macros:=TAVLTree.Create(@CompareCompilerMacroStats);
   try
+    RemoveEmptyNodes(Changed);
+  
     Node:=Tree.Root;
     while Node<>nil do begin
+      NextNode:=Node.Next;
+    
       case Node.Desc of
       cdnIf,cdnElseIf:
         if GetIfExpression(Node,ExprStart,ExprEnd) then begin
@@ -717,7 +868,7 @@ begin
           repeat
             ReadNextAtom;
             if AtomIsIdentifier then begin
-              CheckMacroInExpression(Node,AtomStart,Complex);
+              CheckMacroInExpression(Node,AtomStart,Complex,Changed);
             end;
           until AtomStart>=ExprEnd;
         end;
@@ -725,7 +876,8 @@ begin
       cdnDefine:
         CheckDefine(Node,Changed);
       end;
-      Node:=Node.Next;
+      
+      Node:=NextNode;
     end;
     
     DisableAllUnusedDefines(Changed);
@@ -734,6 +886,11 @@ begin
     Macros.FreeAndClear;
     FreeAndNil(Macros);
   end;
+end;
+
+function TCompilerDirectivesTree.GetDirectiveName(Node: TCodeTreeNode): string;
+begin
+  Result:=GetIdentifier(@Src[Node.StartPos+2]);
 end;
 
 function TCompilerDirectivesTree.GetDirective(Node: TCodeTreeNode): string;
