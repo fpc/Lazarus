@@ -40,6 +40,8 @@ uses
   LazConfigStorage, RtlConsts;
 
 type
+  TFilerSignature = array[1..4] of Char;
+
   { TLResourceList }
 
   TLResource = class
@@ -550,7 +552,7 @@ end;
 function GetClassNameFromLRSStream(s: TStream; out IsInherited: Boolean
   ): shortstring;
 var
-  Signature: shortstring;
+  Signature: TFilerSignature;
   NameLen: byte;
   OldPosition: Int64;
 begin
@@ -559,7 +561,7 @@ begin
   // read signature
   Signature:='1234';
   s.Read(Signature[1],length(Signature));
-  if Signature<>'TPF0' then exit;
+  if Signature<>FilerSignature then exit;
   // read classname length
   NameLen:=0;
   s.Read(NameLen,1);
@@ -580,7 +582,7 @@ end;
 procedure GetComponentInfoFromLRSStream(s: TStream; out ComponentName,
   ComponentClassName: string; out IsInherited: Boolean);
 var
-  Signature: shortstring;
+  Signature: TFilerSignature;
   NameLen: byte;
   OldPosition: Int64;
 begin
@@ -590,7 +592,7 @@ begin
   // read signature
   Signature:='1234';
   s.Read(Signature[1],length(Signature));
-  if Signature<>'TPF0' then exit;
+  if Signature<>FilerSignature then exit;
   // read classname length
   NameLen:=0;
   s.Read(NameLen,1);
@@ -1418,10 +1420,11 @@ end;
 
 procedure TDelphiReader.ReadSignature;
 var
-  Signature: Longint;
+  Signature: TFilerSignature;
 begin
-  Read(Signature, SizeOf(Signature));
-  if Signature <> Longint(FilerSignature) then
+  Signature:='1234';
+  Read(Signature[1], length(Signature));
+  if Signature<>FilerSignature then
     ReadError(rsInvalidStreamFormat);
 end;
 
@@ -2197,9 +2200,12 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
 var
   OldDecimalSeparator: Char;
   OldThousandSeparator: Char;
+  Signature: TFilerSignature;
 begin
   // Endian note: comparing 2 cardinals is endian independent
-  if Input.ReadDWord <> PCardinal(@FilerSignature[1])^ then
+  Signature:='1234';
+  Input.Read(Signature[1], length(Signature));
+  if Signature<>FilerSignature then
     raise EReadError.Create('Illegal stream image' {###SInvalidImage});
   OldDecimalSeparator:=DecimalSeparator;
   DecimalSeparator:='.';
@@ -2216,11 +2222,11 @@ end;
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
 var
   Pos: TStreamSeekType;
-  Signature: Array[1..4] of Char;
+  Signature: TFilerSignature;
 begin
   Pos := Stream.Position;
   Signature[1] := #0; // initialize, in case the stream is at its end
-  Stream.Read(Signature, SizeOf(Signature));
+  Stream.Read(Signature, length(Signature));
   Stream.Position := Pos;
   if (Signature[1] = #$FF) or (Signature = FilerSignature) then
     Result := sofBinary
@@ -2237,17 +2243,15 @@ type
 procedure InternalLRSBinaryToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat;
   ConvertProc: TObjectTextConvertProc;
-  BinarySignature: Integer; SignatureLength: Byte);
+  BinarySignature: TFilerSignature);
 var
   Pos: TStreamSeekType;
-  Signature: Integer;
-  SignatureChars: array[1..4] of Char absolute Signature;
+  Signature: TFilerSignature;
 begin
   Pos := Input.Position;
-  Signature := 0;
-  if SignatureLength > sizeof(Signature) then
-    SignatureLength := sizeof(Signature);
-  Input.Read(Signature, SignatureLength);
+  Signature := BinarySignature;
+  Signature[1]:=#0;
+  Input.Read(Signature[1], length(Signature));
   Input.Position := Pos;
   if Signature = BinarySignature then
   begin     // definitely binary format
@@ -2270,7 +2274,7 @@ begin
     begin
       if OriginalFormat = sofUnknown then
       begin   // text format may begin with "object", "inherited", or whitespace
-        if SignatureChars[1] in ['o','O','i','I',' ',#13,#11,#9] then
+        if Signature[1] in ['o','O','i','I',' ',#13,#11,#9] then
           OriginalFormat := sofText
         else    // not binary, not text... let it raise the exception
         begin
@@ -2624,7 +2628,7 @@ begin
   OldThousandSeparator:=ThousandSeparator;
   ThousandSeparator:=',';
   try
-    Output.Write(FilerSignature, SizeOf(FilerSignature));
+    Output.Write(FilerSignature[1], length(FilerSignature));
     ProcessObject;
   finally
     parser.Free;
@@ -2637,14 +2641,14 @@ procedure LRSObjectToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
 begin
   InternalLRSBinaryToText(Input, Output, OriginalFormat,
-    @LRSObjectBinaryToText, Integer(FilerSignature), sizeof(Integer));
+    @LRSObjectBinaryToText, FilerSignature);
 end;
 
 procedure LRSObjectResToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
 begin
   InternalLRSBinaryToText(Input, Output, OriginalFormat,
-    @LRSObjectResourceToText, $FF, 1);
+    @LRSObjectResourceToText, #255);
 end;
 
 procedure LRSObjectResourceToText(Input, Output: TStream);
@@ -3441,10 +3445,11 @@ end;
 
 procedure TLRSObjectReader.BeginRootComponent;
 var
-  Signature: Array[1..4] of Char;
+  Signature: TFilerSignature;
 begin
   { Read filer signature }
-  Read(Signature,4);
+  Signature:='1234';
+  Read(Signature[1],length(Signature));
   if Signature <> FilerSignature then
     raise EReadError.Create('Invalid Filer Signature');
 end;
@@ -3945,7 +3950,7 @@ var
 begin
   if not FSignatureWritten then
   begin
-    Write(FilerSignature, SizeOf(FilerSignature));
+    Write(FilerSignature[1], length(FilerSignature));
     FSignatureWritten := True;
   end;
 
@@ -4489,3 +4494,4 @@ finalization
   LazarusResources:=nil;
 
 end.
+

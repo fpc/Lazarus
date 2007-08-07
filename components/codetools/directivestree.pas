@@ -690,7 +690,9 @@ var
     else exit;
     end;
     
+    DebugLn(['CheckNode AAA1 ',GetDirective(Node)]);
     if (Node.NextBrother=nil) or (Node.FirstChild<>nil) then exit;
+    DebugLn(['CheckNode AAA2 ',GetDirective(Node)]);
     case Node.NextBrother.Desc of
     cdnEnd,cdnElse,cdnElseIf:
       begin
