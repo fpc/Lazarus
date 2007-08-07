@@ -26,6 +26,12 @@ uses
 
 {$undef MPI_File_f2c}
 
+{$IFDEF Bla}
+
+{$ELSE}
+var i: integer;
+{$ENDIF}
+
 implementation
 
 end.

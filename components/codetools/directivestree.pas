@@ -124,6 +124,8 @@ type
     procedure EndChildNode;
     procedure EndIFNode(const ErrorMsg: string);
 
+    procedure CheckAndImproveExpr_Brackets(Node: TCodeTreeNode;
+                                           var Changed: boolean);
     procedure CheckAndImproveExpr_IfDefinedMacro(Node: TCodeTreeNode;
                                                  var Changed: boolean);
     procedure DisableAllUnusedDefines(var Changed: boolean);
@@ -163,7 +165,8 @@ type
     function AtomIsIdentifier: boolean;
     function GetAtom: string;
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
-    
+    procedure WriteDebugReport;
+  public
     property SimplifyExpressions: boolean read FSimplifyExpressions
                                           write FSimplifyExpressions;
     property DisableUnusedDefines: boolean read FDisableUnusedDefines
@@ -191,6 +194,8 @@ type
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
 function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
 
+function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
+
 implementation
 
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
@@ -203,6 +208,23 @@ function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
 begin
   Result:=CompareIdentifierPtrs(Name,
                                 Pointer(TCompilerMacroStats(MacroStats).Name));
+end;
+
+function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
+begin
+  case Desc of
+  cdnNone     : Result:='None';
+
+  cdnRoot     : Result:='Root';
+
+  cdnDefine   : Result:='Define';
+
+  cdnIf       : Result:='If';
+  cdnElseIf   : Result:='ElseIf';
+  cdnElse     : Result:='Else';
+  cdnEnd      : Result:='End';
+  else          Result:='?';
+  end;
 end;
 
 
@@ -450,13 +472,53 @@ procedure TCompilerDirectivesTree.EndIFNode(const ErrorMsg: string);
 
   procedure RaiseMissingStartNode;
   begin
+    WriteDebugReport;
     raise CDirectiveParserException.Create(ErrorMsg);
   end;
 
 begin
-  if (CurNode.Desc<>cdnIf) and (CurNode.Desc<>cdnElseIf) then
+  if (CurNode.Desc<>cdnIf) and (CurNode.Desc<>cdnElse)
+  and (CurNode.Desc<>cdnElseIf) then
     RaiseMissingStartNode;
   EndChildNode;
+end;
+
+procedure TCompilerDirectivesTree.CheckAndImproveExpr_Brackets(
+  Node: TCodeTreeNode; var Changed: boolean);
+var
+  ExprStart: integer;
+  ExprEnd: integer;
+  NameStart: LongInt;
+  FromPos: LongInt;
+  ToPos: LongInt;
+begin
+  if not SimplifyExpressions then exit;
+  if (Node.SubDesc<>cdnsIf) and (Node.SubDesc<>cdnElseIf) then exit;
+  if not GetIfExpression(Node,ExprStart,ExprEnd) then exit;
+
+  // improve (MacroName) to MacroName
+  MoveCursorToPos(ExprStart);
+  repeat
+    ReadNextAtom;
+    if UpAtomIs('DEFINED') then begin
+      // the function defined(): skip keyword and bracket
+      ReadNextAtom;
+      ReadNextAtom;
+    end;
+    if AtomIs('(') then begin
+      FromPos:=AtomStart;
+      ReadNextAtom;
+      if AtomIsIdentifier then begin
+        NameStart:=AtomStart;
+        ReadNextAtom;
+        if AtomIs(')') then begin
+          ToPos:=SrcPos;
+          Replace(FromPos,ToPos,GetIdentifier(@Src[NameStart]));
+          MoveCursorToPos(FromPos);
+        end;
+      end;
+    end;
+  until SrcPos>=ExprEnd;
 end;
 
 procedure TCompilerDirectivesTree.CheckAndImproveExpr_IfDefinedMacro(
@@ -586,26 +648,42 @@ var
   ElseName: String;
   Expr2: String;
   NewSrc: String;
+  PrevNode: TCodeTreeNode;
+  NewDesc: TCompilerDirectiveNodeDesc;
+  NewSubDesc: TCompilerDirectiveNodeDesc;
 begin
   if (Node.FirstChild<>nil) or (Node.NextBrother=nil) then
     RaiseImpossible;
   RemoveNextBrother:=Node.NextBrother.Desc=cdnEnd;
 
+  Changed:=true;
+  
   // fix all following elseif and else nodes
   Expr:=GetExpr(Node);
   ElseNode:=Node.NextBrother;
   while ElseNode<>nil do begin
     if (ElseNode.Desc=cdnElse) or (ElseNode.Desc=cdnElseIf) then begin
-      if (Node.SubDesc=cdnsElIfC) or (Node.SubDesc=cdnsElseC) then begin
-        if Node.Desc=cdnIf then
-          ElseName:='IfC'
-        else
+      PrevNode:=ElseNode.PriorBrother;
+      if (PrevNode.SubDesc=cdnsElIfC) or (PrevNode.SubDesc=cdnsElseC) then begin
+        if PrevNode.Desc=cdnIf then begin
+          NewDesc:=cdnIf;
+          NewSubDesc:=cdnsIfC;
+          ElseName:='IfC';
+        end else begin
+          NewDesc:=cdnElseIf;
+          NewSubDesc:=cdnsElIfC;
           ElseName:='ElIfC';
+        end;
       end else begin
-        if Node.Desc=cdnIf then
-          ElseName:='If'
-        else
+        if PrevNode.Desc=cdnIf then begin
+          NewDesc:=cdnIf;
+          NewSubDesc:=cdnsIf;
+          ElseName:='If';
+        end else begin
+          NewDesc:=cdnElseIf;
+          NewSubDesc:=cdnsElseIf;
           ElseName:='ElseIf';
+        end;
       end;
       // convert {$Else} to {$ElseIf not (Expr)}
       // convert {$ElseIf Expr2} to {$ElseIf (Expr2) and not (Expr)}
@@ -617,14 +695,17 @@ begin
       end;
       Replace(ElseNode.StartPos,
               FindCommentEnd(Src,ElseNode.StartPos,NestedComments),NewSrc);
+      ElseNode.Desc:=NewDesc;
+      ElseNode.SubDesc:=NewSubDesc;
     end else begin
       break;
     end;
+    ElseNode:=ElseNode.NextBrother;
   end;
   
   FromPos:=Node.StartPos;
   if RemoveNextBrother then begin
-    ToPos:=Node.NextBrother.EndPos;
+    ToPos:=FindCommentEnd(Src,Node.NextBrother.StartPos,NestedComments);
     ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
   end else
     ToPos:=Node.NextBrother.StartPos;
@@ -636,6 +717,8 @@ begin
     Replace(Node.StartPos+1,Node.StartPos+1,'off ');
   end;
   
+  if RemoveNextBrother then
+    RemoveNode(Node.NextBrother);
   RemoveNode(Node);
 end;
 
@@ -686,13 +769,11 @@ var
   procedure CheckNode;
   begin
     case Node.Desc of
-    cdnsIf,cdnElse,cdnElseIf: ;
+    cdnIf,cdnElse,cdnElseIf: ;
     else exit;
     end;
     
-    DebugLn(['CheckNode AAA1 ',GetDirective(Node)]);
     if (Node.NextBrother=nil) or (Node.FirstChild<>nil) then exit;
-    DebugLn(['CheckNode AAA2 ',GetDirective(Node)]);
     case Node.NextBrother.Desc of
     cdnEnd,cdnElse,cdnElseIf:
       begin
@@ -704,14 +785,16 @@ var
         if AtomStart=Node.NextBrother.StartPos then begin
           // node is empty
           NextNode:=Node.NextBrother;
-          Changed:=true;
-          RemoveNode(Node);
+          if NextNode.Desc=cdnEnd then
+            NextNode:=NextNode.Next;
+          DisableIfNode(Node,Changed);
         end;
       end;
     end;
   end;
   
 begin
+  DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes ']);
   Node:=Tree.Root;
   while Node<>nil do begin
     NextNode:=Node.Next;
@@ -740,6 +823,7 @@ function TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
   
   procedure RaiseDanglingIFDEF;
   begin
+    WriteDebugReport;
     raise CDirectiveParserException.Create('missing EndIf');
   end;
   
@@ -837,10 +921,9 @@ var
   AtomCount: Integer;
   NextNode: TCodeTreeNode;
 begin
+  WriteDebugReport;
   Macros:=TAVLTree.Create(@CompareCompilerMacroStats);
   try
-    RemoveEmptyNodes(Changed);
-  
     Node:=Tree.Root;
     while Node<>nil do begin
       NextNode:=Node.Next;
@@ -849,6 +932,7 @@ begin
       cdnIf,cdnElseIf:
         if GetIfExpression(Node,ExprStart,ExprEnd) then begin
           // improve expression
+          CheckAndImproveExpr_Brackets(Node,Changed);
           CheckAndImproveExpr_IfDefinedMacro(Node,Changed);
         
           DebugLn(['TCompilerDirectivesTree.DisableUnusedDefines Expr=',copy(Src,ExprStart,ExprEnd-ExprStart)]);
@@ -884,6 +968,7 @@ begin
     
     DisableAllUnusedDefines(Changed);
     
+    RemoveEmptyNodes(Changed);
   finally
     Macros.FreeAndClear;
     FreeAndNil(Macros);
@@ -911,7 +996,7 @@ begin
   ExprEnd:=-1;
   p:=Node.StartPos+2;
   if p>SrcLen then exit;
-  inc(p,GetIdentLen(@Src[p]));
+  while (p<=SrcLen) and IsIdentChar[Src[p]] do inc(p);
   if (p>SrcLen) or (not IsSpaceChar[Src[p]]) then exit;
   inc(p);
   ExprStart:=p;
@@ -1030,6 +1115,20 @@ begin
     while Node<>nil do begin
       if Node.StartPos>FromPos then inc(Node.StartPos,DiffPos);
       if Node.EndPos>FromPos then inc(Node.EndPos,DiffPos);
+      Node:=Node.Next;
+    end;
+  end;
+end;
+
+procedure TCompilerDirectivesTree.WriteDebugReport;
+var
+  Node: TCodeTreeNode;
+begin
+  DebugLn(['TCompilerDirectivesTree.WriteDebugReport ']);
+  if Tree<>nil then begin
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      DebugLn([GetIndentStr(Node.GetLevel*2)+CDNodeDescAsString(Node.Desc),' ',GetDirective(Node)]);
       Node:=Node.Next;
     end;
   end;

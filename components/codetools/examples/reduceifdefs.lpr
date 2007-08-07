@@ -51,8 +51,11 @@ begin
     writeln('failed parsing compiler directives');
     exit;
   end;
-  Changed:=false;
-  Tree.ReduceCompilerDirectives(Changed);
+  //repeat
+    Changed:=false;
+    Tree.ReduceCompilerDirectives(Changed);
+    Tree.WriteDebugReport;
+  //until not Changed;
 
   // write the new source:
   writeln('-----------------------------------');
