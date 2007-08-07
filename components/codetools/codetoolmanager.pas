@@ -43,9 +43,10 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  DirectoryCacher, AVL_Tree, LFMTrees, PascalParserTool, CodeToolsConfig,
-  CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
-  ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
+  DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree, PascalParserTool,
+  CodeToolsConfig, CustomCodeTool, FindDeclarationTool, IdentCompletionTool,
+  StdCodeTools, ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool,
+  ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -407,17 +408,17 @@ type
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
-                               out TreeOfCodeTreeNodeExt: TAVLTree;
-                               WithEnums: boolean): boolean;
+          out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
-                                 TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+          TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function RemoveAllRedefinitions(Code: TCodeBuffer): boolean;
     function FindAliasDefinitions(Code: TCodeBuffer;
-                                  out TreeOfCodeTreeNodeExt: TAVLTree;
-                                  OnlyWrongType: boolean): boolean;
+          out TreeOfCodeTreeNodeExt: TAVLTree; OnlyWrongType: boolean): boolean;
     function FixAliasDefinitions(Code: TCodeBuffer;
-                                 TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+          TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function FixAllAliasDefinitions(Code: TCodeBuffer): boolean;
+    function FindConstFunctions(Code: TCodeBuffer;
+                                out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -2829,6 +2830,22 @@ begin
       TreeOfCodeTreeNodeExt.FreeAndClear;
       TreeOfCodeTreeNodeExt.Free;
     end;
+  end;
+end;
+
+function TCodeToolManager.FindConstFunctions(Code: TCodeBuffer; out
+  TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindConstFunctions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindConstFunctions(TreeOfCodeTreeNodeExt);
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 

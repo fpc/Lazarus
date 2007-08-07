@@ -269,13 +269,15 @@ function FindClassAncestorName(const Source, FormClassName: string): string;
 
 // code search
 function SearchCodeInSource(const Source, Find: string; StartPos:integer;
-   out EndFoundPosition: integer; CaseSensitive: boolean):integer;
+   out EndFoundPosition: integer; CaseSensitive: boolean;
+   NestedComments: boolean = false): integer;
 function ReadNextPascalAtom(const Source: string;
-   var Position, AtomStart: integer): string;
+   var Position, AtomStart: integer; NestedComments: boolean = false): string;
 procedure ReadRawNextPascalAtom(const Source: string;
-   var Position: integer; var AtomStart: integer);
+   var Position: integer; out AtomStart: integer;
+   NestedComments: boolean = false);
 function ReadTilPascalBracketClose(const Source: string;
-   var Position: integer): boolean;
+   var Position: integer; NestedComments: boolean = false): boolean;
 
 //-----------------------------------------------------------------------------
 
@@ -975,7 +977,8 @@ begin
 end;
 
 function SearchCodeInSource(const Source, Find: string; StartPos: integer;
-  out EndFoundPosition: integer; CaseSensitive: boolean):integer;
+  out EndFoundPosition: integer; CaseSensitive: boolean;
+  NestedComments: boolean):integer;
 // search pascal atoms of Find in Source
 // returns the start pos
 var
@@ -1004,13 +1007,13 @@ begin
   FirstFindAtomStart:=1;
 
   // search first atom in find
-  ReadRawNextPascalAtom(Find,FirstFindPos,FirstFindAtomStart);
+  ReadRawNextPascalAtom(Find,FirstFindPos,FirstFindAtomStart,NestedComments);
   FindAtomLen:=FirstFindPos-FirstFindAtomStart;
   if FirstFindAtomStart>FindLen then exit;
 
   repeat
     // read next atom
-    ReadRawNextPascalAtom(Source,Position,AtomStart);
+    ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments);
     if AtomStart>SrcLen then exit;
     AtomLen:=Position-AtomStart;
 
@@ -1025,7 +1028,7 @@ begin
       FindAtomStart:=FindPos;
       repeat
         // read the next atom from the find
-        ReadRawNextPascalAtom(Find,FindPos,FindAtomStart);
+        ReadRawNextPascalAtom(Find,FindPos,FindAtomStart,NestedComments);
         if FindAtomStart>FindLen then begin
           // found !
           EndFoundPosition:=SrcPos;
@@ -1033,7 +1036,7 @@ begin
           exit;
         end;
         // read the next atom from the source
-        ReadRawNextPascalAtom(Source,SrcPos,SrcAtomStart);
+        ReadRawNextPascalAtom(Source,SrcPos,SrcAtomStart,NestedComments);
         // compare
         if (CompareText(@Find[FindAtomStart],FindPos-FindAtomStart,
                         @Source[SrcAtomStart],SrcPos-SrcAtomStart,
@@ -1386,6 +1389,9 @@ begin
   while (IdentEnd<=length(Source))
   and (IsIdentChar[Source[IdentEnd]]) do
     inc(IdentEnd);
+  while (IdentStart<IdentEnd)
+  and (not IsIdentStartChar[Source[IdentStart]]) do
+    inc(IdentStart);
 end;
 
 function GetIdentStartPosition(const Source: string; Position: integer
@@ -1396,22 +1402,26 @@ begin
   while (Result>1)
   and (IsIdentChar[Source[Result-1]]) do
     dec(Result);
+  while (Result<Position)
+  and (not IsIdentStartChar[Source[Result]]) do
+    inc(Result);
 end;
 
 function GetIdentLen(Identifier: PChar): integer;
 begin
   Result:=0;
   if Identifier=nil then exit;
+  if not IsIdentStartChar[Identifier^] then exit;
   while (IsIdentChar[Identifier[Result]]) do inc(Result);
 end;
 
 function ReadNextPascalAtom(const Source:string;
-  var Position,AtomStart:integer):string;
+  var Position, AtomStart: integer; NestedComments: boolean):string;
 var DirectiveName:string;
   DirStart,DirEnd,EndPos:integer;
 begin
   repeat
-    ReadRawNextPascalAtom(Source,Position,AtomStart);
+    ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments);
     Result:=copy(Source,AtomStart,Position-AtomStart);
     if (length(Result)>=2)
     and (Result[1] in ['{','(']) and (Result[2]='*') then begin
@@ -1438,10 +1448,13 @@ begin
 end;
 
 procedure ReadRawNextPascalAtom(const Source: string;
-  var Position: integer; var AtomStart: integer);
+  var Position: integer; out AtomStart: integer; NestedComments: boolean);
 var Len:integer;
   c1,c2:char;
+  CommentLvl: Integer;
 begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   Len:=length(Source);
   // read til next atom
   while (Position<=Len) do begin
@@ -1457,8 +1470,25 @@ begin
           break
         else begin
           // read till comment end
-          while (Position<=Len) and (Source[Position]<>'}') do inc(Position);
-          inc(Position);
+          CommentLvl:=1;
+          while true do begin
+            inc(Position);
+            case Source[Position] of
+            #0:  if Position>Len then break;
+            '{': if NestedComments then
+              begin
+                inc(CommentLvl);
+              end;
+            '}':
+              begin
+                dec(CommentLvl);
+                if CommentLvl=0 then begin
+                  inc(Position);
+                  break;
+                end;
+              end;
+            end;
+          end;
         end;
       end;
      '/':  // comment or real division
@@ -1477,10 +1507,26 @@ begin
         else begin
           // comment start -> read til comment end
           inc(Position,2);
-          while (Position<Len)
-          and ((Source[Position]<>'*') or (Source[Position]<>')')) do
+          CommentLvl:=1;
+          while true do begin
+            case Source[Position] of
+            #0:  if Position>Len then break;
+            '(': if NestedComments and (Source[Position+1]='*') then
+              begin
+                inc(CommentLvl);
+              end;
+            '*':
+              if (Source[Position+1]=')') then begin
+                dec(CommentLvl);
+                if CommentLvl=0 then begin
+                  inc(Position,2);
+                  break;
+                end;
+                inc(Position);
+              end;
+            end;
             inc(Position);
-          inc(Position,2);
+          end;
         end;
       end else
         // round bracket open
@@ -1493,101 +1539,124 @@ begin
   AtomStart:=Position;
   if Position<=Len then begin
     c1:=Source[Position];
-    if IsIdentStartChar[c1] then begin
-      // identifier
-      inc(Position);
-      while (Position<=Len) and (IsIdentChar[Source[Position]]) do
+    case c1 of
+     'A'..'Z','a'..'z','_':
+      begin
+        // identifier
         inc(Position);
-    end else begin
-      case c1 of
-       '0'..'9': // number
-        begin
+        while (Position<=Len) and (IsIdentChar[Source[Position]]) do
           inc(Position);
-          // read numbers
+      end;
+     '0'..'9': // number
+      begin
+        inc(Position);
+        // read numbers
+        while (Position<=Len) and (Source[Position] in ['0'..'9']) do
+          inc(Position);
+        if (Position<Len) and (Source[Position]='.')
+        and (Source[Position+1]<>'.') then begin
+          // real type number
+          inc(Position);
           while (Position<=Len) and (Source[Position] in ['0'..'9']) do
             inc(Position);
-          if (Position<Len) and (Source[Position]='.')
-          and (Source[Position+1]<>'.') then begin
-            // real type number
+          if (Position<=Len) and (Source[Position] in ['e','E']) then begin
+            // read exponent
             inc(Position);
+            if (Position<=Len) and (Source[Position]='-') then inc(Position);
             while (Position<=Len) and (Source[Position] in ['0'..'9']) do
               inc(Position);
-            if (Position<=Len) and (Source[Position] in ['e','E']) then begin
-              // read exponent
+          end;
+        end;
+      end;
+     '''','#':  // string constant
+      begin
+        while (Position<=Len) do begin
+          case (Source[Position]) of
+          '#':
+            begin
               inc(Position);
-              if (Position<=Len) and (Source[Position]='-') then inc(Position);
-              while (Position<=Len) and (Source[Position] in ['0'..'9']) do
+              while (Position<=Len)
+              and (Source[Position] in ['0'..'9']) do
                 inc(Position);
             end;
-          end;
-        end;
-       '''','#':  // string constant
-        begin
-          while (Position<=Len) do begin
-            case (Source[Position]) of
-            '#':
-              begin
+          '''':
+            begin
+              inc(Position);
+              while (Position<=Len)
+              and (Source[Position]<>'''') do
                 inc(Position);
-                while (Position<=Len)
-                and (Source[Position] in ['0'..'9']) do
-                  inc(Position);
-              end;
-            '''':
-              begin
-                inc(Position);
-                while (Position<=Len)
-                and (Source[Position]<>'''') do
-                  inc(Position);
-                inc(Position);
-              end;
-            else
-              break;
+              inc(Position);
             end;
+          else
+            break;
           end;
         end;
-       '$':  // hex constant
-        begin
-          inc(Position);
-          while (Position<=Len)
-          and (Source[Position] in ['0'..'9','A'..'F','a'..'f']) do
-            inc(Position);
-        end;
-       '{':  // compiler directive
-        begin
-          inc(Position);
-          while (Position<=Len) and (Source[Position]<>'}') do
-            inc(Position);
-          inc(Position);
-        end;
-       '(':  // bracket or compiler directive
-        if (Position<Len) and (Source[Position]='*') then begin
-          // compiler directive -> read til comment end
-          inc(Position,2);
-          while (Position<Len)
-          and ((Source[Position]<>'*') or (Source[Position]<>')')) do
-            inc(Position);
-          inc(Position,2);
-        end else
-          // round bracket open
-          inc(Position);
-      else
+      end;
+     '$':  // hex constant
+      begin
         inc(Position);
-        if Position<=Len then begin
-          c2:=Source[Position];
-          // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **
-          if ((c2='=') and  (c1 in [':','+','-','/','*','<','>']))
-          or ((c1='<') and (c2='>'))
-          or ((c1='.') and (c2='.'))
-          or ((c1='*') and (c2='*'))
-          then inc(Position);
+        while (Position<=Len)
+        and (IsHexNumberChar[Source[Position]]) do
+          inc(Position);
+      end;
+     '{':  // compiler directive
+      begin
+        CommentLvl:=1;
+        while true do begin
+          inc(Position);
+          case Source[Position] of
+          #0:  if Position>Len then break;
+          '{': if NestedComments then
+            begin
+              inc(CommentLvl);
+            end;
+          '}':
+            begin
+              dec(CommentLvl);
+              if CommentLvl=0 then begin
+                inc(Position);
+                break;
+              end;
+            end;
+          end;
+        end;
+      end;
+     '(':  // bracket or compiler directive
+      if (Position<Len) and (Source[Position]='*') then begin
+        // compiler directive -> read til comment end
+        inc(Position,2);
+        while (Position<Len)
+        and ((Source[Position]<>'*') or (Source[Position]<>')')) do
+          inc(Position);
+        inc(Position,2);
+      end else
+        // round bracket open
+        inc(Position);
+    else
+      inc(Position);
+      if Position<=Len then begin
+        c2:=Source[Position];
+        // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **
+        if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+        or ((c1='<') and (c2='>'))
+        or ((c1='.') and (c2='.'))
+        or ((c1='*') and (c2='*'))
+        then
+          inc(Position)
+        else if ((c1='@') and (c2='@')) then begin
+          // @@ label
+          repeat
+            inc(Position);
+          until (Position>Len) or (not IsIdentChar[Source[Position]]);
         end;
       end;
     end;
   end;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
-function ReadTilPascalBracketClose(const Source: string; var Position: integer
-  ): boolean;
+function ReadTilPascalBracketClose(const Source: string; var Position: integer;
+  NestedComments: boolean): boolean;
 // Input: Position points right after the opening bracket
 // Output: Position points right after the closing bracket
 var
@@ -1608,7 +1677,7 @@ begin
   end;
   AtomStart:=Position;
   while Position<=Len do begin
-    ReadRawNextPascalAtom(Source,Position,AtomStart);
+    ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments);
     if Position>Len then
       exit; // CloseBracket not found
     case Source[Position] of
@@ -2710,7 +2779,7 @@ end;
 function GetIdentifier(Identifier: PChar): string;
 var len: integer;
 begin
-  if Identifier<>nil then begin
+  if (Identifier<>nil) and IsIdentStartChar[Identifier^] then begin
     len:=0;
     while (IsIdentChar[Identifier[len]]) do inc(len);
     SetLength(Result,len);

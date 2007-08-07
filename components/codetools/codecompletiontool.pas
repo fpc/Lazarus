@@ -197,6 +197,7 @@ type
                                   OnlyWrongType: boolean): boolean;
     function FixAliasDefinitions(TreeOfCodeTreeNodeExt: TAVLTree;
                                 SourceChangeCache: TSourceChangeCache): boolean;
+    function FindConstFunctions(out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -1410,6 +1411,106 @@ function TCodeCompletionCodeTool.FixAliasDefinitions(
 begin
   Result:=false;
 
+end;
+
+function TCodeCompletionCodeTool.FindConstFunctions(
+  out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+{ find dummy functions that can be replaced with a constant
+  For example:
+  
+      function MPI_CONVERSION_FN_NULL : PMPI_Datarep_conversion_function;
+      begin
+         MPI_CONVERSION_FN_NULL:=PMPI_Datarep_conversion_function(0);
+      end;
+      
+   Where the expression only contains unit wide defined types, constants,
+   variables, built-in functions and no members nor functions.
+}
+
+  procedure CheckProcNode(ProcNode: TCodeTreeNode);
+  var
+    Node: TCodeTreeNode;
+  begin
+    if not NodeIsFunction(ProcNode) then exit;
+    if ProcNodeHasParamList(ProcNode) then exit;
+    Node:=ProcNode.FirstChild;
+    if Node=nil then exit;
+    if Node.Desc=ctnProcedureHead then begin
+      Node:=Node.NextBrother;
+      if Node=nil then exit;
+    end;
+    if Node.Desc<>ctnBeginBlock then exit;
+    MoveCursorToNodeStart(Node);
+    repeat
+      ReadNextAtom;
+      // ToDo: check identifier
+      if CurPos.EndPos>Node.EndPos then break;
+    until false;
+  end;
+
+var
+  Node: TCodeTreeNode;
+  Definitions: TAVLTree;
+  NodeText: String;
+  NodeExt: TCodeTreeNodeExtension;
+begin
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  BuildTree(false);
+  if not EndOfSourceFound then exit;
+  
+  // first step: find all global identifiers
+  Definitions:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnProcedureHead, ctnProperty, ctnParameterList:
+        Node:=Node.NextSkipChilds;
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier:
+        begin
+          // add or update definition
+          NodeText:=ExtractDefinitionName(Node);
+          NodeExt:=FindCodeTreeNodeExt(Definitions,NodeText);
+          if NodeExt=nil then begin
+            NodeExt:=NodeExtMemManager.NewNode;
+            NodeExt.Txt:=NodeText;
+          end;
+          NodeExt.Node:=Node;
+        
+          if (Node.Desc=ctnTypeDefinition)
+          and (Node.FirstChild<>nil)
+          and (Node.FirstChild.Desc=ctnEnumerationType) then
+            Node:=Node.FirstChild
+          else
+            Node:=Node.Next;
+        end;
+      else
+        Node:=Node.Next;
+      end;
+    end;
+    
+    // now check all functions
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnInterface, ctnUsesSection, ctnBeginBlock, ctnAsmBlock, ctnProcedureHead,
+      ctnTypeSection, ctnConstSection, ctnVarSection, ctnResStrSection:
+        Node:=Node.NextSkipChilds;
+      ctnProcedure:
+        begin
+          CheckProcNode(Node);
+          Node:=Node.Next;
+        end;
+      else
+        Node:=Node.Next;
+      end;
+    end;
+    
+  finally
+    Definitions.FreeAndClear;
+    Definitions.Free;
+  end;
 end;
 
 function TCodeCompletionCodeTool.InitClassCompletion(

@@ -252,6 +252,7 @@ type
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     function SkipIfDirective: boolean;
     function InternalIfDirective: boolean;
+    
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -268,16 +269,17 @@ type
     function UndefDirective: boolean;
     function SetCDirective: boolean;
     function IncludeDirective: boolean;
-    function IncludeFile(const AFilename: string): boolean;
     function IncludePathDirective: boolean;
-    function SearchIncludeFile(AFilename: string; var NewCode: Pointer;
-      var MissingIncludeFile: TMissingIncludeFile): boolean;
     function ShortSwitchDirective: boolean;
     function ReadNextSwitchDirective: boolean;
     function LongSwitchDirective: boolean;
     function ModeDirective: boolean;
     function ThreadingDirective: boolean;
     procedure BuildDirectiveFuncList;
+    
+    function IncludeFile(const AFilename: string): boolean;
+    function SearchIncludeFile(AFilename: string; var NewCode: Pointer;
+      var MissingIncludeFile: TMissingIncludeFile): boolean;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
     function GetIncludeFileIsMissing: boolean;
@@ -1993,6 +1995,7 @@ begin
 end;
 
 function TLinkScanner.ShortSwitchDirective: boolean;
+// example: {$H+} or {$H+, R- comment}
 begin
   FDirectiveName:=CompilerSwitchesNames[FDirectiveName[1]];
   if FDirectiveName<>'' then begin
@@ -2061,6 +2064,7 @@ begin
 end;
 
 function TLinkScanner.LongSwitchDirective: boolean;
+// example: {$ASSERTIONS ON comment}
 var ValStart: integer;
 begin
   SkipSpace;
@@ -2125,6 +2129,7 @@ begin
 end;
 
 function TLinkScanner.ThreadingDirective: boolean;
+// example: {$threading on}
 var
   ValStart: integer;
 begin

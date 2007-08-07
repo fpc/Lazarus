@@ -6783,7 +6783,7 @@ begin
     // next line
     inc(i,2);
   end;
-  if PtrUInt(Lines)+TotalSize<>PtrUInt(CurLineStart) then
+  if PtrUInt(CurLineStart)-PtrUInt(Lines)<>TotalSize then
     RaiseGDBException('TGtkWidgetSet.WordWrap Consistency Error:'
       +' Lines+TotalSize<>CurLineStart');
   CurLineEntry[i shr 1]:=nil;

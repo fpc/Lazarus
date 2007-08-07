@@ -811,7 +811,6 @@ begin
     if CurPos.StartPos>SrcLen then
       exit;
     // Skip all spaces and comments
-    CommentLvl:=0;
     while true do begin
       case Src[CurPos.StartPos] of
       #0:
@@ -824,8 +823,8 @@ begin
       '{': // pascal comment
         begin
           CommentLvl:=1;
-          inc(CurPos.StartPos);
           while true do begin
+            inc(CurPos.StartPos);
             case Src[CurPos.StartPos] of
             #0:  if CurPos.StartPos>SrcLen then break;
             '{': if Scanner.NestedComments then
@@ -836,13 +835,11 @@ begin
             '}':
               begin
                 dec(CommentLvl);
-                if CommentLvl=0 then begin
-                  inc(CurPos.StartPos);
+                inc(CurPos.StartPos);
+                if CommentLvl=0 then
                   break;
-                end;
               end;
             end;
-            inc(CurPos.StartPos);
           end;
         end;
       '/':  // Delphi comment
@@ -878,6 +875,7 @@ begin
                   inc(CurPos.StartPos,2);
                   break;
                 end;
+                inc(CurPos.StartPos);
               end;
             end;
             inc(CurPos.StartPos);
@@ -1090,7 +1088,7 @@ begin
     NextPos.StartPos:=-1;
     exit;
   end;
-  {$IFDEF RangeChecking}{$R+}{$ENDIF}
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure TCustomCodeTool.ReadPriorAtom;
@@ -1613,7 +1611,7 @@ begin
       inc(CurPos.StartPos);
     end;
   end;
-  {$IFDEF RangeChecking}{$R+}{$ENDIF}
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure TCustomCodeTool.BeginParsing(DeleteNodes,

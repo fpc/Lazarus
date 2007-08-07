@@ -909,10 +909,8 @@ end;
 
 procedure InternalFinal;
 begin
-  NodeExtMemManager.Free;
-  NodeExtMemManager:=nil;
-  NodeMemManager.Free;
-  NodeMemManager:=nil;
+  FreeAndNil(NodeExtMemManager);
+  FreeAndNil(NodeMemManager);
 end;
 
 
