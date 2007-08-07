@@ -36,7 +36,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  ExprEval, KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
+  KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
   CodeToolMemManager, CodeTree;
 
 type
@@ -91,6 +91,9 @@ type
   TCompilerDirectivesTree = class
   private
     FDefaultDirectiveFuncList: TKeyWordFunctionList;
+    FDisableUnusedDefines: boolean;
+    FRemoveDisabledDirectives: boolean;
+    FSimplifyExpressions: boolean;
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -120,6 +123,12 @@ type
                               SubDesc: TCompilerDirectiveNodeDesc = cdnNone);
     procedure EndChildNode;
     procedure EndIFNode(const ErrorMsg: string);
+
+    procedure CheckAndImproveExpr_IfDefinedMacro(Node: TCodeTreeNode;
+                                                 var Changed: boolean);
+    procedure DisableAllUnusedDefines(var Changed: boolean);
+    procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
+    procedure RemoveNode(Node: TCodeTreeNode);
   public
     Code: TCodeBuffer;
     Src: string;
@@ -129,13 +138,20 @@ type
     CurNode: TCodeTreeNode;
     SrcPos: Integer;
     AtomStart: integer;
+    Macros: TAVLTree;// tree of TCompilerMacroStats
+
     constructor Create;
     destructor Destroy; override;
+    
     function Parse(aCode: TCodeBuffer; aNestedComments: boolean): boolean;
-    function SimplifyExpressions: boolean;// true if changed
-    function DisableUnusedDefines(Delete: boolean): boolean;
-    function GetExpression(Node: TCodeTreeNode;
-                           out ExprStart, ExprEnd: integer): boolean;
+    procedure ReduceCompilerDirectives(var Changed: boolean);
+    
+    function GetDirective(Node: TCodeTreeNode): string;
+    function GetIfExpression(Node: TCodeTreeNode;
+                             out ExprStart, ExprEnd: integer): boolean;
+    function GetDefineNameAndValue(DefineNode: TCodeTreeNode;
+          out NameStart: integer; out HasValue: boolean; out ValueStart: integer
+          ): boolean;
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
     function AtomIs(const s: shortstring): boolean;
@@ -143,10 +159,48 @@ type
     function AtomIsIdentifier: boolean;
     function GetAtom: string;
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+    
+    property SimplifyExpressions: boolean read FSimplifyExpressions
+                                          write FSimplifyExpressions;
+    property DisableUnusedDefines: boolean read FDisableUnusedDefines
+                                           write FDisableUnusedDefines;
+    property RemoveDisabledDirectives: boolean read FRemoveDisabledDirectives
+                                               write FRemoveDisabledDirectives;
   end;
 
+  TCompilerMacroStatus = (
+    cmsUnknown,   // never seen
+    cmsDefined,   // set to a specific value e.g. by $Define or by $IfDef
+    cmsUndefined, // undefined e.g. by $Undef
+    cmsComplex    // value depends on complex expressions. e.g. {$if A or B}.
+    );
+
+  TCompilerMacroStats = class
+  public
+    Name: string;
+    Value: string;
+    Status: TCompilerMacroStatus;
+    LastDefineNode: TCodeTreeNode;// define or undef node
+    LastReadNode: TCodeTreeNode;// if node
+  end;
+  
+function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
+function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
 
 implementation
+
+function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Pointer(TCompilerMacroStats(Data1).Name),
+                                Pointer(TCompilerMacroStats(Data2).Name));
+end;
+
+function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Name,
+                                Pointer(TCompilerMacroStats(MacroStats).Name));
+end;
+
 
 { TCompilerDirectivesTree }
 
@@ -401,9 +455,132 @@ begin
   EndChildNode;
 end;
 
+procedure TCompilerDirectivesTree.CheckAndImproveExpr_IfDefinedMacro(
+  Node: TCodeTreeNode; var Changed: boolean);
+// check if {$IF defined(MacroName)}
+//       or {$IF !defined(MacroName)}
+//       or {$IF not defined(MacroName)}
+var
+  ExprStart: integer;
+  ExprEnd: integer;
+  MacroNameStart: LongInt;
+  Negated: Boolean;
+  NewDirective: String;
+begin
+  if not SimplifyExpressions then exit;
+  if (Node.SubDesc<>cdnsIf) then exit;
+  if not GetIfExpression(Node,ExprStart,ExprEnd) then exit;
+  Negated:=false;
+  MoveCursorToPos(ExprStart);
+  ReadNextAtom;
+  if UpAtomIs('NOT') or AtomIs('!') then begin
+    Negated:=true;
+    ReadNextAtom;
+  end;
+  if not UpAtomIs('DEFINED') then exit;
+  ReadNextAtom;
+  if not AtomIs('(') then exit;
+  ReadNextAtom;
+  if not AtomIsIdentifier then exit;
+  MacroNameStart:=AtomStart;
+  ReadNextAtom;
+  if not AtomIs(')') then exit;
+  ReadNextAtom;
+  if SrcPos<=ExprEnd then exit;
+
+  if Negated then
+    NewDirective:='IFNDEF'
+  else
+    NewDirective:='IFDEF';
+  NewDirective:='{$'+NewDirective+' '+GetIdentifier(@Src[MacroNameStart])+'}';
+
+  Replace(Node.StartPos,FindCommentEnd(Src,Node.StartPos,NestedComments),NewDirective);
+  if Negated then
+    Node.SubDesc:=cdnsIfNdef
+  else
+    Node.SubDesc:=cdnsIfdef;
+
+  Changed:=true;
+end;
+
+procedure TCompilerDirectivesTree.DisableAllUnusedDefines(var Changed: boolean);
+var
+  AVLNode: TAVLTreeNode;
+  MacroNode: TCompilerMacroStats;
+  NextAVLNode: TAVLTreeNode;
+begin
+  if Macros=nil then exit;
+  if not DisableUnusedDefines then exit;
+  AVLNode:=Macros.FindLowest;
+  while AVLNode<>nil do begin
+    NextAVLNode:=Macros.FindSuccessor(AVLNode);
+    MacroNode:=TCompilerMacroStats(AVLNode.Data);
+    if (MacroNode.LastDefineNode<>nil)
+    and (MacroNode.LastReadNode=nil) then begin
+      // this Define/Undef is not used
+      DisableDefineNode(MacroNode.LastDefineNode,Changed);
+    end;
+    AVLNode:=NextAVLNode;
+  end;
+end;
+
+procedure TCompilerDirectivesTree.DisableDefineNode(Node: TCodeTreeNode;
+  var Changed: boolean);
+var
+  FromPos: LongInt;
+  ToPos: LongInt;
+  NewSrc: String;
+begin
+  if not DisableUnusedDefines then exit;
+  DebugLn(['TCompilerDirectivesTree.DisableDefineNode ',GetDirective(Node)]);
+  if RemoveDisabledDirectives then begin
+    // remove directive (including space+empty lines in front and spaces behind)
+    FromPos:=Node.StartPos;
+    while (FromPos>1) and (IsSpaceChar[Src[FromPos-1]]) do dec(FromPos);
+    ToPos:=FindCommentEnd(Src,Node.StartPos,NestedComments);
+    ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
+    NewSrc:='';
+    if (FromPos=1) and (ToPos<SrcLen) and (Src[ToPos] in [#10,#13]) then begin
+      inc(ToPos);
+      if (ToPos<=SrcLen) and (Src[ToPos] in [#10,#13])
+      and (Src[ToPos]<>Src[ToPos-1]) then
+        inc(ToPos);
+    end;
+    Replace(FromPos,ToPos,NewSrc);
+  end else begin
+    // disable directive -> {$off Define MacroName}
+    Replace(Node.StartPos+1,Node.StartPos+1,'off ');
+  end;
+  Changed:=true;
+  RemoveNode(Node);
+end;
+
+procedure TCompilerDirectivesTree.RemoveNode(Node: TCodeTreeNode);
+var
+  AVLNode: TAVLTreeNode;
+  MacroNode: TCompilerMacroStats;
+begin
+  // clear references
+  AVLNode:=Macros.FindLowest;
+  while AVLNode<>nil do begin
+    MacroNode:=TCompilerMacroStats(AVLNode.Data);
+    if MacroNode.LastDefineNode=Node then
+      MacroNode.LastDefineNode:=nil;
+    if MacroNode.LastReadNode=Node then
+      MacroNode.LastReadNode:=nil;
+    AVLNode:=Macros.FindSuccessor(AVLNode);
+  end;
+
+  // free node
+  Tree.DeleteNode(Node);
+end;
+
 constructor TCompilerDirectivesTree.Create;
 begin
   Tree:=TCodeTree.Create;
+  SimplifyExpressions:=true;
+  DisableUnusedDefines:=true;
+  RemoveDisabledDirectives:=true;
 end;
 
 destructor TCompilerDirectivesTree.Destroy;
@@ -451,95 +628,121 @@ begin
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
-function TCompilerDirectivesTree.SimplifyExpressions: boolean;
+procedure TCompilerDirectivesTree.ReduceCompilerDirectives(var Changed: boolean);
 
-  function DirectiveIsIfDefinedMacro(Node: TCodeTreeNode): boolean;
-  // check if {$IF defined(MacroName)}
-  //       or {$IF !defined(MacroName)}
-  //       or {$IF not defined(MacroName)}
+  function GetMacroNode(p: PChar): TCompilerMacroStats;
   var
-    ExprStart: integer;
-    ExprEnd: integer;
-    MacroNameStart: LongInt;
-    Negated: Boolean;
-    NewDirective: String;
+    AVLNode: TAVLTreeNode;
   begin
+    AVLNode:=Macros.FindKey(p,@ComparePCharWithCompilerMacroStats);
+    if AVLNode<>nil then
+      Result:=TCompilerMacroStats(AVLNode.Data)
+    else
+      Result:=nil;
+  end;
+  
+  function CheckMacroInExpression(Node: TCodeTreeNode; NameStart: integer;
+    Complex: boolean): boolean;
+  var
+    MacroNode: TCompilerMacroStats;
+  begin
+    MacroNode:=GetMacroNode(@Src[NameStart]);
+    if MacroNode=nil then begin
+      MacroNode:=TCompilerMacroStats.Create;
+      MacroNode.Name:=GetIdentifier(@Src[NameStart]);
+      Macros.Add(MacroNode);
+    end;
+    MacroNode.LastReadNode:=Node;
     Result:=false;
-    if (Node.Desc<>cdnIf) or (Node.SubDesc<>cdnsIf) then exit;
-    if not GetExpression(Node,ExprStart,ExprEnd) then exit;
-    Negated:=false;
-    MoveCursorToPos(ExprStart);
-    ReadNextAtom;
-    if UpAtomIs('NOT') or AtomIs('!') then begin
-      Negated:=true;
-      ReadNextAtom;
+  end;
+  
+  procedure CheckDefine(Node: TCodeTreeNode; var Changed: boolean);
+  var
+    MacroNode: TCompilerMacroStats;
+    NameStart: integer;
+    HasValue: boolean;
+    ValueStart: integer;
+  begin
+    if (Node.SubDesc<>cdnsDefine) and (Node.SubDesc<>cdnsUndef)
+    and (Node.SubDesc<>cdnsSetC) then exit;
+    if not GetDefineNameAndValue(Node,NameStart,HasValue,ValueStart) then exit;
+    MacroNode:=GetMacroNode(@Src[NameStart]);
+    if MacroNode=nil then begin
+      MacroNode:=TCompilerMacroStats.Create;
+      MacroNode.Name:=GetIdentifier(@Src[NameStart]);
+      Macros.Add(MacroNode);
     end;
-    if not UpAtomIs('DEFINED') then exit;
-    ReadNextAtom;
-    if not AtomIs('(') then exit;
-    ReadNextAtom;
-    if not AtomIsIdentifier then exit;
-    MacroNameStart:=AtomStart;
-    ReadNextAtom;
-    if not AtomIs(')') then exit;
-    ReadNextAtom;
-    if SrcPos<=ExprEnd then exit;
+    if (MacroNode.LastReadNode=nil) and (MacroNode.LastDefineNode<>nil)
+    and (MacroNode.LastDefineNode.Parent=Node.Parent) then begin
+      // last define was never used -> disable it
+      DisableDefineNode(MacroNode.LastDefineNode,Changed);
+    end;
     
-    if Negated then
-      NewDirective:='IFNDEF'
-    else
-      NewDirective:='IFDEF';
-    NewDirective:='{$'+NewDirective+' '+GetIdentifier(@Src[MacroNameStart])+'}';
-
-    Replace(Node.StartPos,FindCommentEnd(Src,Node.StartPos,NestedComments),NewDirective);
-    if Negated then
-      Node.SubDesc:=cdnsIfNdef
-    else
-      Node.SubDesc:=cdnsIfdef;
-
-    Result:=true;
+    MacroNode.LastDefineNode:=Node;
   end;
-
-var
-  Node: TCodeTreeNode;
-begin
-  Result:=false;
-  Node:=Tree.Root;
-  while Node<>nil do begin
-    //DebugLn(['TCompilerDirectivesTree.SimplifyExpressions ',copy(Src,Node.StartPos,20)]);
-    if (Node.Desc=cdnIf) or (Node.Desc=cdnElseIf) then begin
-      //DebugLn(['TCompilerDirectivesTree.SimplifyExpressions Expr="',copy(Src,ExprStart,ExprEnd-ExprStart),'"']);
-      if DirectiveIsIfDefinedMacro(Node) then begin
-        Result:=true;
-      end;
-    end;
-    Node:=Node.Next;
-  end;
-end;
-
-function TCompilerDirectivesTree.DisableUnusedDefines(Delete: boolean
-  ): boolean;
+  
 var
   Node: TCodeTreeNode;
   ExprStart: integer;
   ExprEnd: integer;
+  Complex: Boolean;
+  AtomCount: Integer;
 begin
-  Result:=false;
-  Node:=Tree.Root;
-  while Node<>nil do begin
-    if (Node.Desc=cdnIf) or (Node.Desc=cdnElseIf) then begin
-      if GetExpression(Node,ExprStart,ExprEnd) then begin
-        MoveCursorToPos(ExprStart);
-        ReadNextAtom;
+  Macros:=TAVLTree.Create(@CompareCompilerMacroStats);
+  try
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+      cdnIf,cdnElseIf:
+        if GetIfExpression(Node,ExprStart,ExprEnd) then begin
+          // improve expression
+          CheckAndImproveExpr_IfDefinedMacro(Node,Changed);
         
+          DebugLn(['TCompilerDirectivesTree.DisableUnusedDefines Expr=',copy(Src,ExprStart,ExprEnd-ExprStart)]);
+          // check if it is a complex expression or just one macro
+          AtomCount:=0;
+          if (Node.SubDesc=cdnsIf) or (Node.SubDesc=cdnsIfC)
+          or (Node.SubDesc=cdnsElseIf) then begin
+            MoveCursorToPos(ExprStart);
+            repeat
+              ReadNextAtom;
+              inc(AtomCount);
+            until AtomStart>=ExprEnd;
+          end;
+          Complex:=AtomCount>1;
+          DebugLn(['TCompilerDirectivesTree.DisableUnusedDefines Complex=',Complex]);
+          
+          // mark all macros as read
+          MoveCursorToPos(ExprStart);
+          repeat
+            ReadNextAtom;
+            if AtomIsIdentifier then begin
+              CheckMacroInExpression(Node,AtomStart,Complex);
+            end;
+          until AtomStart>=ExprEnd;
+        end;
+        
+      cdnDefine:
+        CheckDefine(Node,Changed);
       end;
-      // mark all used variables
+      Node:=Node.Next;
     end;
-    Node:=Node.Next;
+    
+    DisableAllUnusedDefines(Changed);
+    
+  finally
+    Macros.FreeAndClear;
+    FreeAndNil(Macros);
   end;
 end;
 
-function TCompilerDirectivesTree.GetExpression(Node: TCodeTreeNode;
+function TCompilerDirectivesTree.GetDirective(Node: TCodeTreeNode): string;
+begin
+  Result:=copy(Src,Node.StartPos,
+               FindCommentEnd(Src,Node.StartPos,NestedComments)-Node.StartPos);
+end;
+
+function TCompilerDirectivesTree.GetIfExpression(Node: TCodeTreeNode;
   out ExprStart, ExprEnd: integer): boolean;
 var
   p: LongInt;
@@ -556,6 +759,40 @@ begin
   while (p<=SrcLen) and (Src[p]<>'}') do inc(p);
   ExprEnd:=p;
   Result:=true;
+end;
+
+function TCompilerDirectivesTree.GetDefineNameAndValue(
+  DefineNode: TCodeTreeNode; out NameStart: integer; out HasValue: boolean; out
+  ValueStart: integer): boolean;
+var
+  p: LongInt;
+begin
+  Result:=false;
+  NameStart:=-1;
+  HasValue:=false;
+  ValueStart:=-1;
+  p:=DefineNode.StartPos+2;
+  if p>SrcLen then exit;
+  // skip keyword
+  while (p<=SrcLen) and (IsIdentChar[Src[p]]) do inc(p);
+  while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
+  // check name
+  if p>SrcLen then exit;
+  NameStart:=p;
+  if not IsIdentStartChar[Src[p]] then exit;
+  Result:=true;
+  
+  // skip name
+  while (p<=SrcLen) and (IsIdentChar[Src[p]]) do inc(p);
+  while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
+  if p>SrcLen then exit;
+  if (Src[p]=':') and (p<SrcLen) and (Src[p+1]='=') then begin
+    // has value
+    HasValue:=true;
+    inc(p,2);
+    while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
+    ValueStart:=p;
+  end;
 end;
 
 procedure TCompilerDirectivesTree.MoveCursorToPos(p: integer);
