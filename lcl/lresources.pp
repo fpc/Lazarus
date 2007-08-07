@@ -3441,11 +3441,11 @@ end;
 
 procedure TLRSObjectReader.BeginRootComponent;
 var
-  Signature: LongInt;
+  Signature: Array[1..4] of Char;
 begin
   { Read filer signature }
   Read(Signature,4);
-  if Signature <> LongInt(FilerSignature) then
+  if Signature <> FilerSignature then
     raise EReadError.Create('Invalid Filer Signature');
 end;
 
