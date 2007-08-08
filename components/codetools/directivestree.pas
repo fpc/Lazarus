@@ -910,6 +910,7 @@ procedure TCompilerDirectivesTree.ReduceCompilerDirectives(var Changed: boolean)
       DisableDefineNode(MacroNode.LastDefineNode,Changed);
     end;
     
+    MacroNode.LastReadNode:=nil;
     MacroNode.LastDefineNode:=Node;
   end;
   

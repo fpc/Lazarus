@@ -419,7 +419,10 @@ type
     function FixAllAliasDefinitions(Code: TCodeBuffer): boolean;
     function FindConstFunctions(Code: TCodeBuffer;
                                 out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
-
+    function ReplaceConstFunctions(Code: TCodeBuffer;
+                                   TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+    function ReplaceAllConstFunctions(Code: TCodeBuffer): boolean;
+                                   
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
                 const UpperClassName: string; out CodeTool: TCodeTool): boolean;
@@ -2844,6 +2847,53 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindConstFunctions(TreeOfCodeTreeNodeExt);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReplaceConstFunctions(Code: TCodeBuffer;
+  TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ReplaceConstFunctions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ReplaceConstFunctions(TreeOfCodeTreeNodeExt,
+                                               SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReplaceAllConstFunctions(Code: TCodeBuffer): boolean;
+var
+  TreeOfCodeTreeNodeExt: TAVLTree;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ReplaceAllConstFunctions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    repeat
+      TreeOfCodeTreeNodeExt:=nil;
+      try
+        Result:=FCurCodeTool.FindConstFunctions(TreeOfCodeTreeNodeExt);
+        if (not Result) or (TreeOfCodeTreeNodeExt=nil)
+        or (TreeOfCodeTreeNodeExt.Count=0) then
+          break;
+        Result:=FCurCodeTool.ReplaceConstFunctions(TreeOfCodeTreeNodeExt,
+                                                   SourceChangeCache);
+      finally
+        if TreeOfCodeTreeNodeExt<>nil then begin
+          TreeOfCodeTreeNodeExt.FreeAndClear;
+          TreeOfCodeTreeNodeExt.Free;
+        end;
+      end;
+    until not Result;
   except
     on e: Exception do Result:=HandleException(e);
   end;

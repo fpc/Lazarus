@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
   Forms, Controls, Dialogs, FileUtil, FileProcs, AvgLvlTree,
   // CodeTools
-  KeywordFuncLists, BasicCodeTools, CodeCache, CodeToolManager,
+  KeywordFuncLists, BasicCodeTools, CodeCache, DirectivesTree, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -185,9 +185,23 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  { TReduceCompilerDirectivesInUnit }
+
+  TReduceCompilerDirectivesInUnit = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+  { TReplaceConstFunctionsInUnit }
+
+  TReplaceConstFunctionsInUnit = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
 
   { Proposal:
-    - A tool to remove redefinitions
     - A tool to fix "constant A=B;" to type A=B; or functions
     - A tool to reorder a unit to fix forward definitions
        Difficulties:
@@ -1368,7 +1382,7 @@ var
   i: Integer;
 begin
   for i:=0 to CHeaderFileCount-1 do
-    if CHeaderFiles[i].Enabled then exit(true);
+    if CHeaderFiles[i].Enabled and (not CHeaderFiles[i].Merge) then exit(true);
   Result:=false;
 end;
 
@@ -1386,11 +1400,13 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
+  AddNewTextConverterTool(FPostH2PasTools,TReduceCompilerDirectivesInUnit);
   AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
   AddNewTextConverterTool(FPostH2PasTools,TFixArrayOfParameterType);
   // the above tools fixed the syntax
   // now improve the declarations
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinitionsInUnit);
+  AddNewTextConverterTool(FPostH2PasTools,TReplaceConstFunctionsInUnit);
 end;
 
 function TH2PasProject.SearchIncludedCHeaderFile(aFile: TH2PasFile;
@@ -2213,7 +2229,7 @@ function TRemoveRedefinedPointerTypes.Execute(aText: TIDETextConverter
   ): TModalResult;
 { search for
     Pname  = ^name;
-  if PName has a redefinition, delete the first one
+  if PName has a redefinition, delete the second one
 }
 var
   Lines: TStrings;
@@ -2234,12 +2250,11 @@ begin
       PointerName:=REVar(1);
       TypeName:=REVar(2);
       Pattern:='^\s*'+PointerName+'\s*=\s*\^\s*'+TypeName+'\s*;';
-      j:=i+1;
-      while (j<Lines.Count-1) and (not REMatches(Line,Pattern)) do
+      j:=Lines.Count-1;
+      while (j>i) do begin
+        if REMatches(Lines[j],Pattern) then
+          Lines.Delete(j);
         dec(j);
-      if j<Lines.Count then begin
-        Lines.Delete(i);
-        dec(i);
       end;
     end;
     inc(i);
@@ -3161,12 +3176,66 @@ function TFixAliasDefinitionsInUnit.Execute(aText: TIDETextConverter
 begin
   Result:=mrCancel;
   if (not FilenameIsPascalUnit(aText.Filename)) then begin
-    DebugLn(['TRemoveRedefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
+    DebugLn(['TFixAliasDefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
     exit(mrOk);// ignore
   end;
   // ToDo: finish codetools FixAllAliasDefinitions
   if not CodeToolBoss.FixAllAliasDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
-    DebugLn(['TRemoveRedefinitionsInUnit.Execute FixAllAliasDefinitions failed ',CodeToolBoss.ErrorMessage]);
+    DebugLn(['TFixAliasDefinitionsInUnit.Execute FixAllAliasDefinitions failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
+  Result:=mrOk;
+end;
+
+{ TReduceCompilerDirectivesInUnit }
+
+class function TReduceCompilerDirectivesInUnit.ClassDescription: string;
+begin
+  Result:='Reduce compiler directives in pascal file'#13
+    +'Shortens expressions in $IF directives'#13
+    +'and removes unneeded $IFDEF and $DEFINE directives.';
+end;
+
+function TReduceCompilerDirectivesInUnit.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Tree: TCompilerDirectivesTree;
+  Code: TCodeBuffer;
+  Changed: Boolean;
+begin
+  Result:=mrCancel;
+  Tree:=TCompilerDirectivesTree.Create;
+  Code:=TCodeBuffer(aText.CodeBuffer);
+  if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
+  then begin
+    DebugLn(['TReduceCompilerDirectivesInUnit.Execute failed parsing compiler directives']);
+    exit;
+  end;
+  repeat
+    Changed:=false;
+    Tree.ReduceCompilerDirectives(Changed);
+    //Tree.WriteDebugReport;
+  until not Changed;
+  Result:=mrOk;
+end;
+
+{ TReplaceConstFunctionsInUnit }
+
+class function TReplaceConstFunctionsInUnit.ClassDescription: string;
+begin
+  Result:='Replace simple functions with constants';
+end;
+
+function TReplaceConstFunctionsInUnit.Execute(aText: TIDETextConverter
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TReplaceConstFunctionsInUnit.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  if not CodeToolBoss.ReplaceAllConstFunctions(TCodeBuffer(aText.CodeBuffer)) then begin
+    DebugLn(['TReplaceConstFunctionsInUnit.Execute ReplaceAllConstFunctions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
   Result:=mrOk;

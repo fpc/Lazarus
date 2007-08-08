@@ -743,6 +743,7 @@ constructor TCustomTextConverterTool.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Enabled:=true;
+  Caption:=FirstLineOfClassDescription;
 end;
 
 procedure TCustomTextConverterTool.Assign(Source: TPersistent);

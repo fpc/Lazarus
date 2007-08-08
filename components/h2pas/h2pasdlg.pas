@@ -110,6 +110,7 @@ type
     procedure H2PasFilenameEditEditingDone(Sender: TObject);
     procedure LibnameEditEditingDone(Sender: TObject);
     procedure MergeAllCHeadersExceptCurrentButtonClick(Sender: TObject);
+    procedure MergeFileCheckBoxEditingDone(Sender: TObject);
     procedure MoveFileDownButtonClick(Sender: TObject);
     procedure MoveFileUpButtonClick(Sender: TObject);
     procedure NewSettingsButtonClick(Sender: TObject);
@@ -216,9 +217,11 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
+  TextConverterToolClasses.RegisterClass(TReduceCompilerDirectivesInUnit);
   TextConverterToolClasses.RegisterClass(TReplaceImplicitTypes);
   TextConverterToolClasses.RegisterClass(TFixArrayOfParameterType);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinitionsInUnit);
+  TextConverterToolClasses.RegisterClass(TReplaceConstFunctionsInUnit);
 end;
 
 { TH2PasDialog }
@@ -523,6 +526,17 @@ procedure TH2PasDialog.MergeAllCHeadersExceptCurrentButtonClick(Sender: TObject
   );
 begin
   MarkAllCHeadersExceptCurrentToMerge;
+end;
+
+procedure TH2PasDialog.MergeFileCheckBoxEditingDone(Sender: TObject);
+var
+  CurFile: TH2PasFile;
+begin
+  if Project=nil then exit;
+  CurFile:=GetCurrentCHeaderFile;
+  if CurFile=nil then exit;
+  CurFile.Merge:=MergeFileCheckBox.Checked;
+  UpdateFileInfo;
 end;
 
 procedure TH2PasDialog.MoveFileDownButtonClick(Sender: TObject);
@@ -1066,7 +1080,7 @@ begin
 
   if not Project.HasEnabledFiles then begin
     IDEMessageDialog('Nothing to do',
-      'No c header file is enabled, so nothing to do.',
+      'Please enable at least one c header file that is not merged.',
       mtInformation,[mbOk],'');
     Result:=mrOK;
     exit;

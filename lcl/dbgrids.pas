@@ -161,7 +161,6 @@ type
     fOnNewDataSet: TDataSetNotifyEvent;
     FOnRecordChanged: TFieldNotifyEvent;
     FOnUpdateData: TDataSetNotifyEvent;
-    fOldFirstRecord: Integer;
 
     function GetDataSetName: string;
     function GetFields(Index: Integer): TField;

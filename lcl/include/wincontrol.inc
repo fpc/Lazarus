@@ -1924,7 +1924,7 @@ begin
             // Important: change the BaseBounds too
             OldChildBounds:=AControl.BoundsRect;
             if not CompareRect(@OldChildBounds,@NewChildBounds) then begin
-              DebugLn(['TWinControl.DoAutoSize moving child: ',DbgSName(AControl),' Old=',dbgs(OldChildBounds),' New=',dbgs(NewChildBounds)]);
+              //DebugLn(['TWinControl.DoAutoSize moving child: ',DbgSName(AControl),' Old=',dbgs(OldChildBounds),' New=',dbgs(NewChildBounds)]);
               AControl.BoundsRect:=NewChildBounds;
               //DebugLn(['TWinControl.DoAutoSize AFTER ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
             end;

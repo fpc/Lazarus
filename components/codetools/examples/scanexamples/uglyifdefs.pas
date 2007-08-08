@@ -18,6 +18,7 @@ uses
 {$define HAVE_MPI_OFFSET}
 
 {$if !defined(MPI_BUILD_PROFILING)}
+var c: char;
 {$ENDIF}
 
 {$define HAVE_MPI_GREQUEST}
