@@ -1798,7 +1798,6 @@ end;
 
 procedure TCustomPropertyLink.SetAsText(const NewText: string);
 begin
-  if NewText='333' then DumpStack;
   try
     if (FTIElementName='') then
       FEditor.SetValue(AliasValues.AliasToValue(NewText))

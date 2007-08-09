@@ -32,22 +32,12 @@
         <PackageName Value="CodeTools"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="1">
       <Unit0>
         <Filename Value="fixh2pasdirectives.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FixH2PASDirectives"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="scanexamples/simpleunit1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleUnit1"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="scanexamples/addeventexample.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="AddEventExample"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
