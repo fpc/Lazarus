@@ -1420,6 +1420,7 @@ Type
 
 function GetPropertyLinkOfComponent(AComponent: TComponent
   ): TCustomPropertyLink;
+procedure SaveActivePropertyLink(AForm: TCustomForm);
 procedure CreateEnumAliasValues(EnumType: PTypeInfo; List: TStrings;
   AStringArray: PString);
 
@@ -1427,6 +1428,19 @@ procedure Register;
 
 
 implementation
+
+procedure SaveActivePropertyLink(AForm: TCustomForm);
+var
+  CurControl: TWinControl;
+  Link: TCustomPropertyLink;
+begin
+  CurControl:=AForm.ActiveControl;
+  if CurControl<>nil then begin
+    Link:=GetPropertyLinkOfComponent(CurControl);
+    if Link<>nil then
+      Link.SaveToProperty;
+  end;
+end;
 
 procedure CreateEnumAliasValues(EnumType: PTypeInfo; List: TStrings;
   AStringArray: PString);
@@ -1457,6 +1471,7 @@ begin
     Result:=TCustomPropertyLink(GetObjectProp(AComponent,'Link',
                                               TCustomPropertyLink));
   except
+    on E: EPropertyError do ;// ignore exception on not found
   end;
 end;
 
