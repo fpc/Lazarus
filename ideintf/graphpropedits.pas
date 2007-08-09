@@ -24,7 +24,8 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
   Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf,
-  ExtDlgs, ObjInspStrConsts, PropEdits;
+  ExtDlgs, ObjInspStrConsts, PropEdits,
+  GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
 { TGraphicPropertyEditor
@@ -164,9 +165,6 @@ type
 
 
 implementation
-
-uses
-  GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 var
   DummyClassForPropTypes: TDummyClassForGraphPropTypes;

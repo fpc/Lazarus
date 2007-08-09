@@ -20,7 +20,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ObjInspStrConsts, IDEWindowIntf, Buttons, ExtCtrls;
+  StdCtrls, ObjInspStrConsts, IDEWindowIntf, Buttons, ExtCtrls, TypInfo,
+  RTTIUtils;
 
 type
 
@@ -72,8 +73,6 @@ var
   SelectPropertiesForm: TSelectPropertiesForm;
 
 implementation
-
-uses TypInfo, RTTIUtils;
 
 { TSelectPropertiesForm }
 
