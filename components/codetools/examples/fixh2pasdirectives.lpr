@@ -23,7 +23,7 @@
   Abstract:
     Demonstration of how to reduce IFDEFs in a source file.
 }
-program ReduceIFDEFs;
+program FixH2PASDirectives;
 
 {$mode objfpc}{$H+}
 
@@ -38,7 +38,7 @@ var
   Changed: Boolean;
 begin
   // load the file
-  Filename:=ExpandFileName(SetDirSeparators('scanexamples/uglyifdefs.pas'));
+  Filename:=ExpandFileName(SetDirSeparators('scanexamples/missingh2pasdirectives.pas'));
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
@@ -51,11 +51,8 @@ begin
     exit;
   end;
   
-  //repeat
-    Changed:=false;
-    Tree.ReduceCompilerDirectives(Changed);
-    Tree.WriteDebugReport;
-  //until not Changed;
+  Changed:=false;
+  Tree.FixMissingH2PasDirectives(Changed);
 
   // write the new source:
   writeln('-----------------------------------');

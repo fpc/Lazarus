@@ -4604,7 +4604,7 @@ begin
   Result:=false;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   if not FindResourceDirective(false,CleanCursorPos,Filename) then begin
-    DebugLn('TStandardCodeTool.FindResourceDirective resource directive not found');
+    //DebugLn('TStandardCodeTool.FindResourceDirective resource directive not found');
     exit;
   end;
   Result:=CleanPosToCaretAndTopLine(CleanCursorPos,NewPos,NewTopLine);

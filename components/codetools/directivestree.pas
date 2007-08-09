@@ -150,6 +150,9 @@ type
     
     function Parse(aCode: TCodeBuffer; aNestedComments: boolean): boolean;
     procedure ReduceCompilerDirectives(var Changed: boolean);
+    procedure GatherH2PasFunctions(out ListOfH2PasFunctions: TFPList;
+                                   FindDefNodes: boolean);
+    procedure FixMissingH2PasDirectives(var Changed: boolean);
     
     function GetDirectiveName(Node: TCodeTreeNode): string;
     function GetDirective(Node: TCodeTreeNode): string;
@@ -160,6 +163,7 @@ type
           ): boolean;
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
+    function ReadTilBracketClose(CloseBracket: char): boolean;
     function AtomIs(const s: shortstring): boolean;
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
@@ -191,8 +195,26 @@ type
     LastReadNode: TCodeTreeNode;// if node
   end;
   
+  { TH2PasFunction }
+
+  TH2PasFunction = class
+  public
+    Name: string;
+    HeaderStart: integer;
+    HeaderEnd: integer;
+    BeginStart: integer;
+    BeginEnd: integer;
+    IsForward: boolean;
+    IsExternal: boolean;
+    InInterface: boolean;
+    DefNode: TH2PasFunction;// the corresponding node
+    function NeedsBody: boolean;
+  end;
+  
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
 function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
+function CompareH2PasFuncByNameAndPos(Data1, Data2: Pointer): integer;
+function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
 
@@ -208,6 +230,28 @@ function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
 begin
   Result:=CompareIdentifierPtrs(Name,
                                 Pointer(TCompilerMacroStats(MacroStats).Name));
+end;
+
+function CompareH2PasFuncByNameAndPos(Data1, Data2: Pointer): integer;
+var
+  F1: TH2PasFunction;
+  F2: TH2PasFunction;
+begin
+  F1:=TH2PasFunction(Data1);
+  F2:=TH2PasFunction(Data2);
+  Result:=CompareIdentifierPtrs(Pointer(F1.Name),Pointer(F2.Name));
+  if Result<>0 then exit;
+  if F1.HeaderStart>F2.HeaderStart then
+    exit(1)
+  else if F1.HeaderStart<F2.HeaderStart then
+    exit(-1)
+  else
+    exit(0);
+end;
+
+function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Name,Pointer(TH2PasFunction(H2PasFunc).Name));
 end;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
@@ -976,6 +1020,215 @@ begin
   end;
 end;
 
+procedure TCompilerDirectivesTree.GatherH2PasFunctions(out
+  ListOfH2PasFunctions: TFPList; FindDefNodes: boolean);
+var
+  InInterface: boolean;
+
+  procedure ReadFunction;
+  var
+    HeaderStart: LongInt;
+    HeaderEnd: LongInt;
+    FuncName: String;
+    IsForward: Boolean;
+    BlockLevel: Integer;
+    FuncEnd: LongInt;
+    CurH2PasFunc: TH2PasFunction;
+    BeginStart: Integer;
+    BeginEnd: Integer;
+    IsExternal: Boolean;
+  begin
+    HeaderStart:=AtomStart;
+    // read name
+    ReadNextAtom;
+    if not AtomIsIdentifier then exit;
+    FuncName:=GetAtom;
+    // read parameter list
+    ReadNextAtom;
+    if AtomIs('(') then begin
+      if not ReadTilBracketClose(')') then exit;
+      ReadNextAtom;
+    end;
+    // read colon
+    if not AtomIs(':') then exit;
+    // read result type
+    ReadNextAtom;
+    if not AtomIsIdentifier then exit;
+    // read semicolon
+    ReadNextAtom;
+    if not AtomIs(';') then exit;
+    HeaderEnd:=SrcPos;
+    // read function modifiers
+    IsForward:=false;
+    IsExternal:=false;
+    repeat
+      ReadNextAtom;
+      if (AtomStart<=SrcLen)
+      and IsKeyWordProcedureSpecifier.DoIt(@Src[AtomStart]) then begin
+        if UpAtomIs('EXTERNAL') then
+          IsExternal:=true;
+        if UpAtomIs('FORWARD') then
+          IsForward:=true;
+        repeat
+          ReadNextAtom;
+        until (AtomStart>SrcLen) or AtomIs(';');
+        HeaderEnd:=SrcPos;
+      end else
+        break;
+    until false;
+
+    // read begin..end block
+    BeginStart:=-1;
+    BeginEnd:=-1;
+    if (not IsForward) and (not InInterface) and (not IsExternal)
+    and UpAtomIs('BEGIN') then begin
+      BeginStart:=AtomStart;
+      BlockLevel:=1;
+      repeat
+        ReadNextAtom;
+        if (AtomStart>SrcLen) then break;
+        if UpAtomIs('END') then begin
+          dec(BlockLevel);
+          if BlockLevel=0 then begin
+            BeginEnd:=SrcPos;
+            break;
+          end;
+        end else if UpAtomIs('BEGIN') or UpAtomIs('ASM') then
+          inc(BlockLevel);
+      until false;
+    end else begin
+      // undo forward read to make sure that current atom is the last of the function
+      MoveCursorToPos(HeaderEnd);
+    end;
+    FuncEnd:=SrcPos;
+
+    // found a function
+    DebugLn(['ReadFunction ',copy(Src,HeaderStart,FuncEnd-HeaderStart)]);
+    CurH2PasFunc:=TH2PasFunction.Create;
+    CurH2PasFunc.Name:=FuncName;
+    CurH2PasFunc.HeaderStart:=HeaderStart;
+    CurH2PasFunc.HeaderEnd:=HeaderEnd;
+    CurH2PasFunc.BeginStart:=BeginStart;
+    CurH2PasFunc.BeginEnd:=BeginEnd;
+    CurH2PasFunc.IsForward:=IsForward;
+    CurH2PasFunc.InInterface:=InInterface;
+    CurH2PasFunc.IsExternal:=IsExternal;
+    if ListOfH2PasFunctions=nil then ListOfH2PasFunctions:=TFPList.Create;
+    ListOfH2PasFunctions.Add(CurH2PasFunc);
+  end;
+  
+  procedure DoFindDefNodes;
+  var
+    i: Integer;
+    CurH2PasFunc: TH2PasFunction;
+    TreeOfForwardFuncs: TAVLTree;
+    TreeOfBodyFuncs: TAVLTree;
+    AVLNode: TAVLTreeNode;
+    BodyAVLNode: TAVLTreeNode;
+    BodyFunc: TH2PasFunction;
+  begin
+    if ListOfH2PasFunctions=nil then exit;
+    
+    // create a tree of the function definitions
+    // and a tree of the function bodies
+    TreeOfForwardFuncs:=TAVLTree.Create(@CompareH2PasFuncByNameAndPos);
+    TreeOfBodyFuncs:=TAVLTree.Create(@CompareH2PasFuncByNameAndPos);
+    for i:=0 to ListOfH2PasFunctions.Count-1 do begin
+      CurH2PasFunc:=TH2PasFunction(ListOfH2PasFunctions[i]);
+      if CurH2PasFunc.NeedsBody then
+        TreeOfForwardFuncs.Add(CurH2PasFunc)
+      else if (CurH2PasFunc.BeginStart>0) then
+        TreeOfBodyFuncs.Add(CurH2PasFunc);
+    end;
+    
+    // search for every definition the corresponding body
+    AVLNode:=TreeOfForwardFuncs.FindLowest;
+    while AVLNode<>nil do begin
+      CurH2PasFunc:=TH2PasFunction(AVLNode.Data);
+      if CurH2PasFunc.DefNode=nil then begin
+        BodyAVLNode:=TreeOfBodyFuncs.FindLeftMostKey(Pointer(CurH2PasFunc.Name),
+                                                @ComparePCharWithH2PasFuncName);
+        if BodyAVLNode<>nil then begin
+          // there is at least one body with this name
+          repeat
+            BodyFunc:=TH2PasFunction(BodyAVLNode.Data);
+            if BodyFunc.DefNode=nil then begin
+              // this body node with the same name has not yet a definition node
+              // => found the corresponding node
+              BodyFunc.DefNode:=CurH2PasFunc;
+              CurH2PasFunc.DefNode:=BodyFunc;
+              break;
+            end else begin
+              // this body node has already a definition node
+              // search next body node with same name
+              BodyAVLNode:=TreeOfBodyFuncs.FindSuccessor(BodyAVLNode);
+              if (BodyAVLNode=nil)
+              or (ComparePCharWithH2PasFuncName(
+                                Pointer(CurH2PasFunc.Name),BodyAVLNode.Data)<>0)
+              then
+                break;
+            end;
+          until false;
+        end;
+      end;
+      AVLNode:=TreeOfBodyFuncs.FindSuccessor(AVLNode);
+    end;
+    
+    // clean up
+    TreeOfForwardFuncs.Free;
+    TreeOfBodyFuncs.Free;
+  end;
+
+begin
+  ListOfH2PasFunctions:=nil;
+
+  InInterface:=false;
+  MoveCursorToPos(1);
+  repeat
+    ReadNextAtom;
+    if SrcPos>SrcLen then break;
+    if UpAtomIs('FUNCTION') then begin
+      ReadFunction;
+    end else if UpAtomIs('INTERFACE') then begin
+      InInterface:=true;
+    end else if UpAtomIs('IMPLEMENTATION') then begin
+      InInterface:=false;
+    end;
+  until false;
+  
+  if FindDefNodes then
+    DoFindDefNodes;
+end;
+
+procedure TCompilerDirectivesTree.FixMissingH2PasDirectives(var Changed: boolean
+  );
+{ Adds the directives around the function bodies, that h2pas forgets to add.
+
+}
+var
+  ListOfH2PasFunctions: TFPList;
+  i: Integer;
+  BodyFunc: TH2PasFunction;
+begin
+  ListOfH2PasFunctions:=nil;
+  try
+    GatherH2PasFunctions(ListOfH2PasFunctions,true);
+    if ListOfH2PasFunctions=nil then exit;
+    for i:=0 to ListOfH2PasFunctions.Count-1 do begin
+      BodyFunc:=TH2PasFunction(ListOfH2PasFunctions[i]);
+      if BodyFunc.NeedsBody or (BodyFunc.BeginStart<1)
+      or (BodyFunc.DefNode=nil) then
+        continue;
+      // this function is a body and has a definition
+      
+    end;
+    
+  finally
+    ListOfH2PasFunctions.Free;
+  end;
+
+end;
+
 function TCompilerDirectivesTree.GetDirectiveName(Node: TCodeTreeNode): string;
 begin
   Result:=GetIdentifier(@Src[Node.StartPos+2]);
@@ -1051,6 +1304,24 @@ begin
   //DebugLn(['TCompilerDirectivesTree.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
   ReadRawNextPascalAtom(Src,SrcPos,AtomStart,NestedComments);
   //DebugLn(['TCompilerDirectivesTree.ReadNextAtom END ',AtomStart,'-',SrcPos,' ',copy(Src,AtomStart,SrcPos-AtomStart)]);
+end;
+
+function TCompilerDirectivesTree.ReadTilBracketClose(CloseBracket: char
+  ): boolean;
+begin
+  Result:=false;
+  repeat
+    ReadNextAtom;
+    if AtomStart>SrcLen then exit;
+    if SrcPos-AtomStart=1 then begin
+      if Src[AtomStart]=CloseBracket then
+        exit(true)
+      else if Src[AtomStart]='(' then
+        ReadTilBracketClose(')')
+      else if Src[AtomStart]='[' then
+        ReadTilBracketClose(']');
+    end;
+  until false;
 end;
 
 function TCompilerDirectivesTree.AtomIs(const s: shortstring): boolean;
@@ -1133,6 +1404,13 @@ begin
       Node:=Node.Next;
     end;
   end;
+end;
+
+{ TH2PasFunction }
+
+function TH2PasFunction.NeedsBody: boolean;
+begin
+  Result:=(IsForward or IsExternal or InInterface) and (BeginStart<0);
 end;
 
 end.
