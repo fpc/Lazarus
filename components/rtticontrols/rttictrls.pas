@@ -1645,10 +1645,9 @@ procedure TCustomPropertyLink.SetObjectAndProperty(NewPersistent: TPersistent;
 var
   AComponent: TComponent;
 begin
-  if (NewPropertyName<>'')
-  and ((length(NewPropertyName)>254) or (not IsValidIdent(NewPropertyName)))
-  then
-    raise Exception('TCustomPropertyLink.SetObjectAndProperty invalid identifier "'+NewPropertyName+'"');
+  // Note: checking for IsValidIdent is not needed, because
+  // an identifier is is only needed for streaming. So every string as Name is
+  // allowed.
   if (NewPersistent<>TIObject) or (NewPropertyName<>TIPropertyName) then begin
     FPropertyLoaded:=false;
     if (FTIObject is TComponent) then begin
