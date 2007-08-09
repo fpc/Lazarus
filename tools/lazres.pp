@@ -25,6 +25,7 @@
 
   Synopsis:
        lazres resourcefilename filename1 [filename2 ... filenameN]
+       lazres resourcefilename @filelist
 
   Description:
        lazres creates a lazarus resource file from files.
