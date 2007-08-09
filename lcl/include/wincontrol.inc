@@ -2800,7 +2800,12 @@ begin
     //end;
     If List.Count > 0 then begin
       J := List.IndexOf(CurrentControl);
-      if J<0 then exit;
+      if J<0 then begin
+        if GoForward then
+          J := List.Count - 1
+        else
+          J := 0;
+      end;
       //DebugLn('TWinControl.FindNextControl A ',DbgSName(CurrentControl),' ',dbgs(J),
       //  ' GoForward='+dbgs(GoForward)+' CheckTabStop='+dbgs(CheckTabStop)+' CheckParent='+dbgs(CheckParent));
       I := J;
