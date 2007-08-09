@@ -4,15 +4,13 @@
     <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -31,95 +29,13 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="1">
       <Unit0>
         <Filename Value="lrstolfm.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lrstolfm"/>
-        <CursorPos X="11" Y="138"/>
-        <TopLine Value="124"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="lazres.pp"/>
-        <UnitName Value="LazRes"/>
-        <CursorPos X="1" Y="31"/>
-        <TopLine Value="4"/>
-        <UsageCount Value="10"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="../ide/addtoprojectdlg.lrs"/>
-        <CursorPos X="3" Y="2"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../../fpc_sources/22/fpc/rtl/objpas/sysutils/syspchh.inc"/>
-        <CursorPos X="18" Y="31"/>
-        <TopLine Value="11"/>
-        <UsageCount Value="10"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="../../../fpc_sources/22/fpc/rtl/objpas/classes/classesh.inc"/>
-        <CursorPos X="29" Y="1774"/>
-        <TopLine Value="1748"/>
-        <UsageCount Value="10"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../../../fpc_sources/22/fpc/rtl/objpas/classes/classes.inc"/>
-        <CursorPos X="9" Y="1619"/>
-        <TopLine Value="1617"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="../../../fpc_sources/22/fpc/rtl/objpas/classes/streams.inc"/>
-        <CursorPos X="7" Y="267"/>
-        <TopLine Value="261"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../../../fpc_sources/22/fpc/rtl/objpas/sysutils/sysstrh.inc"/>
-        <CursorPos X="10" Y="203"/>
-        <TopLine Value="184"/>
-        <UsageCount Value="10"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="../../../fpc_sources/22/fpc/rtl/x86_64/strings.inc"/>
-        <CursorPos X="10" Y="161"/>
-        <TopLine Value="142"/>
-        <UsageCount Value="10"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="../lcl/lresources.pp"/>
-        <UnitName Value="LResources"/>
-        <CursorPos X="32" Y="332"/>
-        <TopLine Value="314"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="Makefile.fpc"/>
-        <CursorPos X="23" Y="34"/>
-        <TopLine Value="12"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="../../../../scripts/fpcmake_all.sh"/>
-        <CursorPos X="9" Y="8"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="Bash"/>
-      </Unit11>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
