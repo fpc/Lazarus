@@ -1876,6 +1876,24 @@ begin
         end;
       end;
 
+    VK_RETURN:
+      begin
+        doOnKeyDown;
+        if Key<>0 then begin
+          key:=0;
+          if (dgEditing in Options) and not EditorMode then
+            EditorMode:=true
+          else begin
+            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+            if DeltaRow > 0 then
+              doVKDown;
+            if DeltaCol <> 0 then
+              Col := Col + DeltaCol;
+            ResetEditor;
+          end;
+        end;
+      end;
+
     VK_DELETE:
       begin
         doOnKeyDown;

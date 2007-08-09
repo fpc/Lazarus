@@ -809,6 +809,7 @@ type
     procedure Paint; override;
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
+    procedure ResetEditor;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResizeColumn(aCol, aWidth: Integer);
     procedure ResizeRow(aRow, aHeight: Integer);
@@ -2724,6 +2725,13 @@ begin
   end;
   
   DoPrepareCanvas(aCol, aRow, aState);
+end;
+
+procedure TCustomGrid.ResetEditor;
+begin
+  EditorGetValue;
+  if EditorAlwaysShown then
+    EditorShow(True);
 end;
 
 procedure TCustomGrid.ResetHotCell;
@@ -5800,11 +5808,8 @@ begin
     VK_RETURN:
       begin
         Key := 0;
-        if not MoveNextAuto(ssShift in Shift) then begin
-          EditorGetValue;
-          if EditorAlwaysShown then
-            EditorShow(True);
-        end;
+        if not MoveNextAuto(ssShift in Shift) then
+          ResetEditor;
       end;
   end;
   FEditorKey:=False;
