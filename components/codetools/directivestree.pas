@@ -1216,14 +1216,16 @@ begin
     if ListOfH2PasFunctions=nil then exit;
     for i:=0 to ListOfH2PasFunctions.Count-1 do begin
       BodyFunc:=TH2PasFunction(ListOfH2PasFunctions[i]);
-      if BodyFunc.NeedsBody or (BodyFunc.BeginStart<1)
-      or (BodyFunc.DefNode=nil) then
+      if (BodyFunc.BeginStart<1) or (BodyFunc.DefNode=nil) then
         continue;
       // this function is a body and has a definition
       
     end;
     
   finally
+    if ListOfH2PasFunctions<>nil then;
+      for i:=0 to ListOfH2PasFunctions.Count-1 do
+        TObject(ListOfH2PasFunctions[i]).Free;
     ListOfH2PasFunctions.Free;
   end;
 
@@ -1410,7 +1412,7 @@ end;
 
 function TH2PasFunction.NeedsBody: boolean;
 begin
-  Result:=(IsForward or IsExternal or InInterface) and (BeginStart<0);
+  Result:=(IsForward or InInterface) and (not IsExternal) and (BeginStart<0);
 end;
 
 end.
