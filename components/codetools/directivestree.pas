@@ -1244,6 +1244,7 @@ var
   CurBodyBlock: TBodyBlock;
   MacroNames: TStrings; // the Objects are the TCodeTreeNode
   ListOfH2PasFunctions: TFPList;
+  LokalChange: boolean;
 
   function IsSameDirective(OldNode: TCodeTreeNode; Position: integer;
     out NewNode: TCodeTreeNode): boolean;
@@ -1286,7 +1287,7 @@ var
     i: Integer;
     Func: TH2PasFunction;
   begin
-    Changed:=true;
+    LokalChange:=true;
     Replace(FromPos,ToPos,NewSrc);
     // update positions
     DiffPos:=length(NewSrc)-(ToPos-FromPos);
@@ -1336,9 +1337,11 @@ var
   i: Integer;
   BodyFunc: TH2PasFunction;
   LastDefNode: TCodeTreeNode;
+  BodyNode: TCodeTreeNode;
 begin
   ListOfH2PasFunctions:=nil;
   MacroNames:=nil;
+  LokalChange:=false;
   try
     GatherH2PasFunctions(ListOfH2PasFunctions,true);
     if ListOfH2PasFunctions=nil then exit;
@@ -1349,6 +1352,11 @@ begin
       //DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives DefNode=',(BodyFunc.DefNode<>nil),' Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.HeaderEnd-BodyFunc.HeaderStart),'"']);
       if (BodyFunc.BeginStart<1) or (BodyFunc.DefNode=nil) then
         continue;
+      BodyNode:=FindNodeAtPos(BodyFunc.HeaderStart);
+      if BodyNode<>Tree.Root then begin
+        // this body has already a directive block
+        continue;
+      end;
       // this function is a body and has a definition
       
       if (CurBodyBlock.LastBodyFunc<>nil)
@@ -1383,6 +1391,11 @@ begin
         TObject(ListOfH2PasFunctions[i]).Free;
     ListOfH2PasFunctions.Free;
     MacroNames.Free;
+    
+    if LokalChange then begin
+      Changed:=true;
+      Parse(Code,NestedComments);
+    end;
   end;
 
 end;
