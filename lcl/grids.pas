@@ -1187,6 +1187,7 @@ type
     property OnDblClick;
     property OnDrawCell;
     property OnEditButtonClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnGetEditMask;
@@ -2664,7 +2665,8 @@ end;
 
 function TCustomGrid.CanEditShow: Boolean;
 begin
-  Result := (goEditing in Options) and not (csDesigning in ComponentState);
+  Result := (goEditing in Options) and not (csDesigning in ComponentState)
+            and CanFocus;
 end;
 
 procedure TCustomGrid.Paint;
