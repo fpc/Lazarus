@@ -1,41 +1,22 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
       <Title Value="exampleproject3"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <Filename Value="exampleproject3.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ExampleProject3"/>
-        <UsageCount Value="23"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="11" Y="111"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="example3.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="example3.lrs"/>
-        <TopLine Value="101"/>
-        <UnitName Value="Example3"/>
-        <UsageCount Value="23"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -43,7 +24,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -54,11 +35,26 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="exampleproject3.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ExampleProject3"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="example3.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="example3.lrs"/>
+        <UnitName Value="Example3"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

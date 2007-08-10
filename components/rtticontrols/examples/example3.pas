@@ -102,6 +102,11 @@ end;
 
 procedure TForm1.Form1Destroy(Sender: TObject);
 begin
+  // unlink properties
+  XTIEdit.Link.TIObject:=nil;
+  YTIEdit.Link.TIObject:=nil;
+  SizeTIEdit.Link.TIObject:=nil;
+
   Ball1.Free;
 end;
 
