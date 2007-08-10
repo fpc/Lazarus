@@ -54,7 +54,6 @@ type
     FModified: Boolean;
     fDoNotLoad: boolean;
     procedure Loaded; override;
-    function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
     function ExtendedToStr(const e: extended): string;
     function StrToExtended(const s: string; const ADefault: extended): extended;
   public
@@ -79,6 +78,7 @@ type
                                      const AValue, DefValue: extended);
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
+    function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
     property Modified: Boolean read FModified write FModified;
   published
     property Filename: String read FFilename write SetFilename;
