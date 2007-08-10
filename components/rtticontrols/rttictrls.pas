@@ -160,7 +160,8 @@ Type
                                  var MappedValues: TStrings;
                                  UseAllExistingAlias, AddValuesWithoutAlias,
                                  IfNoValuesAvailableAddAllAlias: boolean);
-    procedure AssignCollectedAliasValuesTo(DestList: TStrings);
+    procedure AssignCollectedAliasValuesTo(DestList: TStrings;
+                                           KeepIfNoneCollected: boolean = true);
     function HasAliasValues: boolean;
     procedure BuildEnumAliasValues(AStringArray: PString);
   public
@@ -1632,7 +1633,6 @@ end;
 
 procedure TCustomPropertyLink.InvalidateEditor;
 begin
-  FreeThenNil(FCollectedValues);
   FreeThenNil(FEditor);
 end;
 
@@ -1990,14 +1990,16 @@ begin
             AddValuesWithoutAlias,IfNoValuesAvailableAddAllAlias);
 end;
 
-procedure TCustomPropertyLink.AssignCollectedAliasValuesTo(DestList: TStrings);
+procedure TCustomPropertyLink.AssignCollectedAliasValuesTo(DestList: TStrings;
+  KeepIfNoneCollected: boolean);
 var
   MappedValues: TStrings;
 begin
   MappedValues:=nil;
   MapCollectedValues(AliasValues,MappedValues,true,true,true);
   try
-    DestList.Assign(MappedValues);
+    if (MappedValues.Count>0) or (not KeepIfNoneCollected) then
+      DestList.Assign(MappedValues);
   finally
     MappedValues.Free;
   end;
