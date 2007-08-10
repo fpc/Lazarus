@@ -14,26 +14,6 @@
       <Title Value="exampleprojectgrid1"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <Filename Value="exampleprojectgrid1.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ExampleProjectGrid1"/>
-        <UsageCount Value="23"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="24" Y="28"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="examplegrid1.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="examplegrid1.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="ExampleGrid1"/>
-        <UsageCount Value="23"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -55,6 +35,26 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="exampleprojectgrid1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ExampleProjectGrid1"/>
+        <UsageCount Value="26"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="examplegrid1.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="examplegrid1.lrs"/>
+        <UnitName Value="ExampleGrid1"/>
+        <CursorPos X="12" Y="65"/>
+        <TopLine Value="42"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

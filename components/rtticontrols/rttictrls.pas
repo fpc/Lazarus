@@ -193,6 +193,11 @@ Type
   { TPropertyLink }
   
   TPropertyLink = class(TCustomPropertyLink)
+  private
+    procedure ReadAliasValuesData(Reader: TReader);
+    procedure WriteAliasValuesData(Writer: TWriter);
+  protected
+    procedure DefineProperties(Filer: TFiler); override;
   published
     property AliasValues;
     property Options;
@@ -3991,6 +3996,50 @@ procedure TTICustomProgressBar.EditingDone;
 begin
   inherited EditingDone;
   FLink.EditingDone;
+end;
+
+{ TPropertyLink }
+
+procedure TPropertyLink.ReadAliasValuesData(Reader: TReader);
+begin
+  Reader.ReadListBegin;
+  AliasValues.BeginUpdate;
+  try
+    AliasValues.Clear;
+    while not Reader.EndOfList do
+      AliasValues.Add(Reader.ReadString);
+  finally
+    AliasValues.EndUpdate;
+  end;
+  Reader.ReadListEnd;
+end;
+
+procedure TPropertyLink.WriteAliasValuesData(Writer: TWriter);
+var
+  i: Integer;
+begin
+  Writer.WriteListBegin;
+  for i := 0 to AliasValues.Count - 1 do
+    Writer.WriteString(AliasValues[i]);
+  Writer.WriteListEnd;
+end;
+
+procedure TPropertyLink.DefineProperties(Filer: TFiler);
+var
+  HasAliasValuesData: Boolean;
+  AncestorPropList: TCustomPropertyLink;
+begin
+  inherited DefineProperties(Filer);
+  HasAliasValuesData := AliasValues.Count > 0;
+  if Assigned(Filer.Ancestor) then begin
+    // Only serialize if string list is different from ancestor
+    if Filer.Ancestor.InheritsFrom(TCustomPropertyLink) then begin
+      AncestorPropList:=TCustomPropertyLink(Filer.Ancestor);
+      HasAliasValuesData := not AliasValues.Equals(AncestorPropList.AliasValues);
+    end;
+  end;
+  Filer.DefineProperty('AliasValuesStrings',
+               @ReadAliasValuesData, @WriteAliasValuesData, HasAliasValuesData);
 end;
 
 initialization
