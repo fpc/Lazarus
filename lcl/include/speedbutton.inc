@@ -907,14 +907,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.MouseEnter;
 begin
-  inherited MouseEnter;
   if csDesigning in ComponentState then exit;
   if not FMouseInControl
   and Enabled and (GetCapture = 0)
   then begin
     FMouseInControl := True;
     UpdateState(true);
-    if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
+    inherited MouseEnter;
   end;
 end;
 
@@ -926,7 +925,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.MouseLeave;
 begin
-  inherited MouseLeave;
   if csDesigning in ComponentState then exit;
   ///DebugLn(['TCustomSpeedButton.MouseLeave ',DbgSName(Self),' FMouseInControl=',FMouseInControl,' FDragging=',FDragging]);
   if FMouseInControl
@@ -939,7 +937,7 @@ begin
         FDragging:=false;
       end;
       UpdateState(true);
-      if Assigned(FOnMouseExit) then FOnMouseExit(Self);
+      inherited MouseLeave;
     end;
   end;
 end;
