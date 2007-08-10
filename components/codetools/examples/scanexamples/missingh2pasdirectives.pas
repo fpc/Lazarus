@@ -25,9 +25,9 @@ implementation
       end;
 
   { was #define dname def_expr }
-  function MPI_UNSIGNED_CHAR : MPI_Datatype;
+  function MPI_SIGNED_CHAR : MPI_Datatype;
       begin
-         MPI_UNSIGNED_CHAR:=MPI_Datatype($4c000102);
+         MPI_SIGNED_CHAR:=MPI_Datatype($4c000118);
       end;
 
 end.

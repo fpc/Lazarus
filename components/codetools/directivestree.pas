@@ -324,6 +324,7 @@ begin
   Result:=true;
   EndIFNode('EndIf without IfDef');
   CreateChildNode(cdnEnd,cdnsEndif);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -333,6 +334,7 @@ begin
   Result:=true;
   EndIFNode('EndC without IfC');
   CreateChildNode(cdnEnd,cdnsEndC);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -342,6 +344,7 @@ begin
   Result:=true;
   EndIFNode('IfEnd without IfDef');
   CreateChildNode(cdnEnd,cdnsIfEnd);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -382,6 +385,7 @@ function TCompilerDirectivesTree.DefineDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsDefine);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -390,6 +394,7 @@ function TCompilerDirectivesTree.UndefDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsUndef);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -398,6 +403,7 @@ function TCompilerDirectivesTree.SetCDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsSetC);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -417,6 +423,7 @@ function TCompilerDirectivesTree.ShortSwitchDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsShortSwitch);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -430,6 +437,7 @@ function TCompilerDirectivesTree.LongSwitchDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsLongSwitch);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -438,6 +446,7 @@ function TCompilerDirectivesTree.ModeDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsMode);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -446,6 +455,7 @@ function TCompilerDirectivesTree.ThreadingDirective: boolean;
 begin
   Result:=true;
   CreateChildNode(cdnDefine,cdnsThreading);
+  AtomStart:=SrcPos;
   EndChildNode;
 end;
 
@@ -1108,6 +1118,9 @@ var
           dec(BlockLevel);
           if BlockLevel=0 then begin
             BeginEnd:=SrcPos;
+            ReadNextAtom;
+            if AtomIs(';') then
+              BeginEnd:=SrcPos;
             break;
           end;
         end else if UpAtomIs('BEGIN') or UpAtomIs('ASM') then
@@ -1238,6 +1251,8 @@ var
     out NewNode: TCodeTreeNode): boolean;
   begin
     NewNode:=FindNodeAtPos(Position);
+    //if OldNode<>nil then DebugLn(['IsSameDirective OldNode=',OldNode.StartPos,' "',copy(Src,OldNode.StartPos,OldNode.EndPos-OldNode.StartPos),'"']);
+    //if NewNode<>nil then DebugLn(['IsSameDirective NewNode=',NewNode.StartPos,' "',copy(Src,NewNode.StartPos,NewNode.EndPos-NewNode.StartPos),'"']);
     Result:=(NewNode<>nil) and (NewNode=OldNode);
   end;
   
@@ -1332,7 +1347,7 @@ begin
     LastDefNode:=nil;
     for i:=0 to ListOfH2PasFunctions.Count-1 do begin
       BodyFunc:=TH2PasFunction(ListOfH2PasFunctions[i]);
-      DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives DefNode=',(BodyFunc.DefNode<>nil),' Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.HeaderEnd-BodyFunc.HeaderStart),'"']);
+      //DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives DefNode=',(BodyFunc.DefNode<>nil),' Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.HeaderEnd-BodyFunc.HeaderStart),'"']);
       if (BodyFunc.BeginStart<1) or (BodyFunc.DefNode=nil) then
         continue;
       DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.BeginEnd-BodyFunc.HeaderStart),'"']);
@@ -1341,6 +1356,7 @@ begin
       if (CurBodyBlock.LastBodyFunc<>nil)
       and HasCodeBetween(CurBodyBlock.LastBodyFunc.BeginEnd,BodyFunc.HeaderStart)
       then begin
+        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives there is code between bodies']);
         // there is code between last function body and current function body
         // end last block
         EndBodyBlock;
@@ -1349,19 +1365,23 @@ begin
       if not IsSameDirective(LastDefNode,
         BodyFunc.DefNode.HeaderStart,LastDefNode)
       then begin
+        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives other directive block']);
         // another directive block => end last block
         EndBodyBlock;
       end;
       
       if (CurBodyBlock.Definition=nil) then begin
         // a new block
+        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives start new block']);
         StartBodyBlock(BodyFunc, LastDefNode);
       end else begin
         // continue current block
+        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives continue block']);
         CurBodyBlock.LastBodyFunc:=BodyFunc;
       end;
     end;
     // end last block
+    DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives end last block']);
     EndBodyBlock;
     
   finally
@@ -1443,7 +1463,7 @@ begin
   Result:=Tree.Root;
   while Result<>nil do begin
     if Result.StartPos>p then
-      exit(nil);
+      exit(Result.Parent);
     if (Result.EndPos>p)
     or  ((Result.EndPos=p) and (Result.NextBrother<>nil)
           and (Result.NextBrother.StartPos>p))
@@ -1455,7 +1475,10 @@ begin
       Result:=Result.FirstChild;
     end else begin
       // p is behind => next
-      Result:=Result.NextSkipChilds;
+      if Result.NextBrother<>nil then
+        Result:=Result.NextBrother
+      else
+        exit(Result.Parent);
     end;
   end;
 end;
