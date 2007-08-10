@@ -132,7 +132,7 @@ begin
       Log('.....  ',false);
     end;
     Log('');
-    inc(Counter);
+    Counter := Counter + 1;
     Log('B: Wake A');
     // wake A
     RtlEventSetEvent(Form1.ThreadA.WaitForB);
