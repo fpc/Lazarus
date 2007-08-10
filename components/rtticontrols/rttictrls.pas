@@ -82,6 +82,7 @@ Const
 Type
   
   TTestEditing = function(Sender: TObject): boolean of object;
+  TBeforeWriteProperty = procedure(Sender: TObject; var AllowWrite: boolean) of object;
 
   { TCustomPropertyLink }
 
@@ -95,6 +96,8 @@ Type
     FHook: TPropertyEditorHook;
     FIdleHandlerConnected: boolean;
     FLinkNotifier: TPropertyLinkNotifier;
+    FOnAfterWrite: TNotifyEvent;
+    FOnBeforeWrite: TBeforeWriteProperty;
     FOnEditorChanged: TNotifyEvent;
     FOnLoadFromProperty: TNotifyEvent;
     FOnSaveToProperty: TNotifyEvent;
@@ -144,6 +147,8 @@ Type
     function GetAsText: string;
     procedure SetAsInt(const NewInt: integer);
     function GetAsInt: integer;
+    function CheckBeforeWrite: boolean;
+    procedure CheckAfterWrite;
     procedure DoError(Writing: boolean; E: Exception); virtual;
   public
     // alias values
@@ -178,6 +183,8 @@ Type
     property OnEditorChanged: TNotifyEvent read FOnEditorChanged write FOnEditorChanged;
     property OnLoadFromProperty: TNotifyEvent read FOnLoadFromProperty write FOnLoadFromProperty;// do not publish, it is used by the TTI controls
     property OnSaveToProperty: TNotifyEvent read FOnSaveToProperty write FOnSaveToProperty;// do not publish, it is used by the TTI controls
+    property OnBeforeWrite: TBeforeWriteProperty read FOnBeforeWrite write FOnBeforeWrite;
+    property OnAfterWrite: TNotifyEvent read FOnAfterWrite write FOnAfterWrite;
     property OnTestEditing: TTestEditing read FOnTestEditing write FOnTestEditing;
     property OnTestEditor: TPropertyEditorFilterFunc read FOnTestEditor write FOnTestEditor;
     property Options: TPropertyLinkOptions read FOptions write SetOptions default DefaultLinkOptions;
@@ -200,6 +207,8 @@ Type
     procedure DefineProperties(Filer: TFiler); override;
   published
     property AliasValues;
+    property OnBeforeWrite;
+    property OnAfterWrite;
     property Options;
     property TIObject;
     property TIPropertyName;
@@ -1834,10 +1843,12 @@ end;
 procedure TCustomPropertyLink.SetAsText(const NewText: string);
 begin
   try
+    if not CheckBeforeWrite then exit;
     if (FTIElementName='') then
       FEditor.SetValue(AliasValues.AliasToValue(NewText))
     else
       SetSetElementValue(FTIElementName,CompareText(NewText,'True')=0);
+    CheckAfterWrite;
   except
     on E: Exception do DoError(true,E);
   end;
@@ -1863,7 +1874,9 @@ end;
 procedure TCustomPropertyLink.SetAsInt(const NewInt: integer);
 begin
   try
+    if not CheckBeforeWrite then exit;
     FEditor.SetValue(IntToStr(NewInt));
+    CheckAfterWrite;
   except
     on E: Exception do DoError(true,E);
   end;
@@ -1877,6 +1890,18 @@ begin
   except
     on E: Exception do DoError(false,E);
   end;
+end;
+
+function TCustomPropertyLink.CheckBeforeWrite: boolean;
+begin
+  Result:=true;
+  if Assigned(OnBeforeWrite) then
+    OnBeforeWrite(Self,Result);
+end;
+
+procedure TCustomPropertyLink.CheckAfterWrite;
+begin
+  if Assigned(OnAfterWrite) then OnAfterWrite(Self);
 end;
 
 procedure TCustomPropertyLink.DoError(Writing: boolean; E: Exception);
