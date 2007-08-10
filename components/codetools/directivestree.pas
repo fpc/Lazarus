@@ -1059,7 +1059,6 @@ var
     FuncName: String;
     IsForward: Boolean;
     BlockLevel: Integer;
-    FuncEnd: LongInt;
     CurH2PasFunc: TH2PasFunction;
     BeginStart: Integer;
     BeginEnd: Integer;
@@ -1130,10 +1129,9 @@ var
       // undo forward read to make sure that current atom is the last of the function
       MoveCursorToPos(HeaderEnd);
     end;
-    FuncEnd:=SrcPos;
 
     // found a function
-    DebugLn(['ReadFunction ',copy(Src,HeaderStart,FuncEnd-HeaderStart)]);
+    //DebugLn(['ReadFunction ',copy(Src,HeaderStart,FuncEnd-HeaderStart)]);
     CurH2PasFunc:=TH2PasFunction.Create;
     CurH2PasFunc.Name:=FuncName;
     CurH2PasFunc.HeaderStart:=HeaderStart;
@@ -1288,11 +1286,12 @@ var
     i: Integer;
     Func: TH2PasFunction;
   begin
+    Changed:=true;
     Replace(FromPos,ToPos,NewSrc);
     // update positions
     DiffPos:=length(NewSrc)-(ToPos-FromPos);
     if DiffPos<>0 then begin
-      for i:=0 to ListOfH2PasFunctions.Count do begin
+      for i:=0 to ListOfH2PasFunctions.Count-1 do begin
         Func:=TH2PasFunction(ListOfH2PasFunctions[i]);
         Func.AdjustPositionsAfterInsert(ToPos,DiffPos);
       end;
@@ -1319,12 +1318,12 @@ var
       if IsNewMacro then begin
         // insert $DEFINE
         InsertPos:=FindCommentEnd(Src,CurBodyBlock.Definition.StartPos,NestedComments);
-        LokalReplace(InsertPos,InsertPos,'{$DEFINE '+MacroName+'}');
+        LokalReplace(InsertPos,InsertPos,LineEnding+'{$DEFINE '+MacroName+'}');
       end;
       // insert $IFDEF
       InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
                   CurBodyBlock.FirstBodyFunc.HeaderStart,1,NestedComments,true);
-      LokalReplace(InsertPos,InsertPos,'{$IFDEF '+MacroName+'}');
+      LokalReplace(InsertPos,InsertPos,LineEnding+'{$IFDEF '+MacroName+'}');
       // insert $ENDIF
       InsertPos:=FindLineEndOrCodeAfterPosition(Src,
                       CurBodyBlock.LastBodyFunc.BeginEnd,1,NestedComments,true);
@@ -1350,13 +1349,11 @@ begin
       //DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives DefNode=',(BodyFunc.DefNode<>nil),' Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.HeaderEnd-BodyFunc.HeaderStart),'"']);
       if (BodyFunc.BeginStart<1) or (BodyFunc.DefNode=nil) then
         continue;
-      DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.BeginEnd-BodyFunc.HeaderStart),'"']);
       // this function is a body and has a definition
       
       if (CurBodyBlock.LastBodyFunc<>nil)
       and HasCodeBetween(CurBodyBlock.LastBodyFunc.BeginEnd,BodyFunc.HeaderStart)
       then begin
-        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives there is code between bodies']);
         // there is code between last function body and current function body
         // end last block
         EndBodyBlock;
@@ -1365,23 +1362,19 @@ begin
       if not IsSameDirective(LastDefNode,
         BodyFunc.DefNode.HeaderStart,LastDefNode)
       then begin
-        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives other directive block']);
         // another directive block => end last block
         EndBodyBlock;
       end;
       
       if (CurBodyBlock.Definition=nil) then begin
         // a new block
-        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives start new block']);
         StartBodyBlock(BodyFunc, LastDefNode);
       end else begin
         // continue current block
-        DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives continue block']);
         CurBodyBlock.LastBodyFunc:=BodyFunc;
       end;
     end;
     // end last block
-    DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives end last block']);
     EndBodyBlock;
     
   finally
@@ -1566,7 +1559,7 @@ var
   Node: TCodeTreeNode;
   DiffPos: Integer;
 begin
-  DebugLn(['TCompilerDirectivesTree.Replace Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
+  DebugLn(['TCompilerDirectivesTree.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
   Code.Replace(FromPos,ToPos-FromPos,NewSrc);
   Src:=Code.Source;
   SrcLen:=length(Src);
