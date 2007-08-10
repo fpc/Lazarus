@@ -91,9 +91,10 @@ function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean;
-    StopAtDirectives: boolean): integer;
+    StopAtDirectives: boolean = true): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
-    Position, MaxPosition: integer; NestedComments: boolean): integer;
+    Position, MaxPosition: integer; NestedComments: boolean;
+    StopAtDirectives: boolean = true): integer;
 function FindFirstLineEndInFrontOfInCode(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
@@ -1750,18 +1751,23 @@ begin
 end;
 
 function FindLineEndOrCodeAfterPosition(const Source: string;
-   Position, MaxPosition: integer; NestedComments: boolean): integer;
+   Position, MaxPosition: integer; NestedComments: boolean;
+   StopAtDirectives: boolean): integer;
 { search forward for a line end or code
   ignore line ends in comments
   Result is Position of Start of Line End
 }
 var SrcLen: integer;
 
-  procedure ReadComment(var P: integer);
+  function ReadComment(var P: integer): boolean;
+  // true if it is a comment
+  // false if it is a directive
   begin
     case Source[P] of
       '{':
         begin
+          if StopAtDirectives and (P<length(Source)) and (Source[P+1]='$') then
+            exit(false);
           inc(P);
           while (P<=SrcLen) and (Source[P]<>'}') do begin
             if NestedComments and (Source[P] in ['{','(','/']) then
@@ -1801,6 +1807,7 @@ var SrcLen: integer;
           end;
         end;
     end;
+    Result:=true;
   end;
 
 begin
@@ -1811,7 +1818,7 @@ begin
   while (Result<=SrcLen) do begin
     case Source[Result] of
       '{','(','/':
-        ReadComment(Result);
+        if not ReadComment(Result) then exit;
       #10,#13:
         exit;
       #9,' ',';':

@@ -161,6 +161,7 @@ type
     function GetDefineNameAndValue(DefineNode: TCodeTreeNode;
           out NameStart: integer; out HasValue: boolean; out ValueStart: integer
           ): boolean;
+    function FindNodeAtPos(p: integer): TCodeTreeNode;
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
     function ReadTilBracketClose(CloseBracket: char): boolean;
@@ -209,6 +210,7 @@ type
     InInterface: boolean;
     DefNode: TH2PasFunction;// the corresponding node
     function NeedsBody: boolean;
+    procedure AdjustPositionsAfterInsert(StartPos, DiffPos: integer);
   end;
   
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
@@ -217,6 +219,8 @@ function CompareH2PasFuncByNameAndPos(Data1, Data2: Pointer): integer;
 function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
+
+procedure AdjustPositionAfterInsert(var p: integer; StartPos, DiffPos: integer);
 
 implementation
 
@@ -269,6 +273,11 @@ begin
   cdnEnd      : Result:='End';
   else          Result:='?';
   end;
+end;
+
+procedure AdjustPositionAfterInsert(var p: integer; StartPos, DiffPos: integer);
+begin
+  if p>=StartPos then inc(p,DiffPos);
 end;
 
 
@@ -509,6 +518,7 @@ end;
 procedure TCompilerDirectivesTree.EndChildNode;
 begin
   //DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCompilerDirectivesTree.EndChildNode ']);
+  CurNode.EndPos:=AtomStart;
   CurNode:=CurNode.Parent;
 end;
 
@@ -873,6 +883,7 @@ function TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
   
 var
   DirectiveName: PChar;
+  Node: TCodeTreeNode;
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
@@ -894,6 +905,12 @@ begin
       break;
     end;
   until false;
+  // close nodes
+  Node:=CurNode;
+  while Node<>nil do begin
+    Node.EndPos:=AtomStart;
+    Node:=Node.Parent;
+  end;
   if CurNode<>Tree.Root then
     RaiseDanglingIFDEF;
   
@@ -1205,28 +1222,154 @@ procedure TCompilerDirectivesTree.FixMissingH2PasDirectives(var Changed: boolean
 { Adds the directives around the function bodies, that h2pas forgets to add.
 
 }
+type
+  TBodyBlock = record
+    Definition: TCodeTreeNode;
+    FirstBodyFunc: TH2PasFunction;
+    LastBodyFunc: TH2PasFunction;
+  end;
+
 var
+  CurBodyBlock: TBodyBlock;
+  MacroNames: TStrings; // the Objects are the TCodeTreeNode
   ListOfH2PasFunctions: TFPList;
+
+  function IsSameDirective(OldNode: TCodeTreeNode; Position: integer;
+    out NewNode: TCodeTreeNode): boolean;
+  begin
+    NewNode:=FindNodeAtPos(Position);
+    Result:=(NewNode<>nil) and (NewNode=OldNode);
+  end;
+  
+  function HasCodeBetween(FromPos, ToPos: integer): boolean;
+  begin
+    if FromPos<1 then FromPos:=1;
+    if FromPos>ToPos then exit;
+    MoveCursorToPos(FromPos);
+    ReadNextAtom;
+    Result:=AtomStart<ToPos;
+  end;
+  
+  function GetMacroNameForNode(Node: TCodeTreeNode; out IsNew: boolean): string;
+  var
+    i: Integer;
+  begin
+    if MacroNames=nil then
+      MacroNames:=TStringList.Create;
+    for i:=0 to MacroNames.Count-1 do
+      if MacroNames.Objects[i]=Node then begin
+        Result:=MacroNames[i];
+        IsNew:=false;
+        exit;
+      end;
+    IsNew:=true;
+    Result:='H2PAS_FUNCTIONS_'+IntToStr(MacroNames.Count+1);
+    MacroNames.AddObject(Result,Node);
+  end;
+  
+  procedure LokalReplace(FromPos, ToPos: integer; const NewSrc: string);
+  var
+    DiffPos: Integer;
+    i: Integer;
+    Func: TH2PasFunction;
+  begin
+    Replace(FromPos,ToPos,NewSrc);
+    // update positions
+    DiffPos:=length(NewSrc)-(ToPos-FromPos);
+    if DiffPos<>0 then begin
+      for i:=0 to ListOfH2PasFunctions.Count do begin
+        Func:=TH2PasFunction(ListOfH2PasFunctions[i]);
+        Func.AdjustPositionsAfterInsert(ToPos,DiffPos);
+      end;
+    end;
+  end;
+  
+  procedure StartBodyBlock(BodyFunc: TH2PasFunction; DefNode: TCodeTreeNode);
+  begin
+    CurBodyBlock.Definition:=DefNode;
+    CurBodyBlock.FirstBodyFunc:=BodyFunc;
+    CurBodyBlock.LastBodyFunc:=BodyFunc;
+  end;
+  
+  procedure EndBodyBlock;
+  var
+    MacroName: String;
+    InsertPos: LongInt;
+    IsNewMacro: boolean;
+  begin
+    if CurBodyBlock.Definition=nil then exit;
+    if CurBodyBlock.Definition<>Tree.Root then begin
+      // create unique macro name
+      MacroName:=GetMacroNameForNode(CurBodyBlock.Definition,IsNewMacro);
+      if IsNewMacro then begin
+        // insert $DEFINE
+        InsertPos:=FindCommentEnd(Src,CurBodyBlock.Definition.StartPos,NestedComments);
+        LokalReplace(InsertPos,InsertPos,'{$DEFINE '+MacroName+'}');
+      end;
+      // insert $IFDEF
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
+                  CurBodyBlock.FirstBodyFunc.HeaderStart,1,NestedComments,true);
+      LokalReplace(InsertPos,InsertPos,'{$IFDEF '+MacroName+'}');
+      // insert $ENDIF
+      InsertPos:=FindLineEndOrCodeAfterPosition(Src,
+                      CurBodyBlock.LastBodyFunc.BeginEnd,1,NestedComments,true);
+      LokalReplace(InsertPos,InsertPos,LineEnding+'{$ENDIF '+MacroName+'}');
+    end;
+    FillChar(CurBodyBlock,SizeOf(TBodyBlock),0);
+  end;
+  
+var
   i: Integer;
   BodyFunc: TH2PasFunction;
+  LastDefNode: TCodeTreeNode;
 begin
   ListOfH2PasFunctions:=nil;
+  MacroNames:=nil;
   try
     GatherH2PasFunctions(ListOfH2PasFunctions,true);
     if ListOfH2PasFunctions=nil then exit;
+    FillChar(CurBodyBlock,SizeOf(TBodyBlock),0);
+    LastDefNode:=nil;
     for i:=0 to ListOfH2PasFunctions.Count-1 do begin
       BodyFunc:=TH2PasFunction(ListOfH2PasFunctions[i]);
+      DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives DefNode=',(BodyFunc.DefNode<>nil),' Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.HeaderEnd-BodyFunc.HeaderStart),'"']);
       if (BodyFunc.BeginStart<1) or (BodyFunc.DefNode=nil) then
         continue;
+      DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives Body="',copy(Src,BodyFunc.HeaderStart,BodyFunc.BeginEnd-BodyFunc.HeaderStart),'"']);
       // this function is a body and has a definition
       
+      if (CurBodyBlock.LastBodyFunc<>nil)
+      and HasCodeBetween(CurBodyBlock.LastBodyFunc.BeginEnd,BodyFunc.HeaderStart)
+      then begin
+        // there is code between last function body and current function body
+        // end last block
+        EndBodyBlock;
+      end;
+      
+      if not IsSameDirective(LastDefNode,
+        BodyFunc.DefNode.HeaderStart,LastDefNode)
+      then begin
+        // another directive block => end last block
+        EndBodyBlock;
+      end;
+      
+      if (CurBodyBlock.Definition=nil) then begin
+        // a new block
+        StartBodyBlock(BodyFunc, LastDefNode);
+      end else begin
+        // continue current block
+        CurBodyBlock.LastBodyFunc:=BodyFunc;
+      end;
     end;
+    // end last block
+    EndBodyBlock;
     
   finally
     if ListOfH2PasFunctions<>nil then;
       for i:=0 to ListOfH2PasFunctions.Count-1 do
         TObject(ListOfH2PasFunctions[i]).Free;
     ListOfH2PasFunctions.Free;
+    MacroNames.Free;
   end;
 
 end;
@@ -1292,6 +1435,28 @@ begin
     inc(p,2);
     while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
     ValueStart:=p;
+  end;
+end;
+
+function TCompilerDirectivesTree.FindNodeAtPos(p: integer): TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while Result<>nil do begin
+    if Result.StartPos>p then
+      exit(nil);
+    if (Result.EndPos>p)
+    or  ((Result.EndPos=p) and (Result.NextBrother<>nil)
+          and (Result.NextBrother.StartPos>p))
+    then begin
+      // p is in range of Result => check childs
+      if (Result.FirstChild=nil)
+      or (Result.FirstChild.StartPos>p) then
+        exit;
+      Result:=Result.FirstChild;
+    end else begin
+      // p is behind => next
+      Result:=Result.NextSkipChilds;
+    end;
   end;
 end;
 
@@ -1413,6 +1578,14 @@ end;
 function TH2PasFunction.NeedsBody: boolean;
 begin
   Result:=(IsForward or InInterface) and (not IsExternal) and (BeginStart<0);
+end;
+
+procedure TH2PasFunction.AdjustPositionsAfterInsert(StartPos, DiffPos: integer);
+begin
+  AdjustPositionAfterInsert(HeaderStart,StartPos,DiffPos);
+  AdjustPositionAfterInsert(HeaderEnd,StartPos,DiffPos);
+  AdjustPositionAfterInsert(BeginStart,StartPos,DiffPos);
+  AdjustPositionAfterInsert(BeginEnd,StartPos,DiffPos);
 end;
 
 end.
