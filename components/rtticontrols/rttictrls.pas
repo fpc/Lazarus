@@ -176,8 +176,8 @@ Type
     property Hook: TPropertyEditorHook read FHook;
     property LinkNotifier: TPropertyLinkNotifier read FLinkNotifier;
     property OnEditorChanged: TNotifyEvent read FOnEditorChanged write FOnEditorChanged;
-    property OnLoadFromProperty: TNotifyEvent read FOnLoadFromProperty write FOnLoadFromProperty;
-    property OnSaveToProperty: TNotifyEvent read FOnSaveToProperty write FOnSaveToProperty;
+    property OnLoadFromProperty: TNotifyEvent read FOnLoadFromProperty write FOnLoadFromProperty;// do not publish, it is used by the TTI controls
+    property OnSaveToProperty: TNotifyEvent read FOnSaveToProperty write FOnSaveToProperty;// do not publish, it is used by the TTI controls
     property OnTestEditing: TTestEditing read FOnTestEditing write FOnTestEditing;
     property OnTestEditor: TPropertyEditorFilterFunc read FOnTestEditor write FOnTestEditor;
     property Options: TPropertyLinkOptions read FOptions write SetOptions default DefaultLinkOptions;

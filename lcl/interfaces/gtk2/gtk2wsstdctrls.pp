@@ -1282,7 +1282,11 @@ begin
   ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,nil);
 
-  inherited DestroyHandle(AWinControl);
+  //DebugLn(['TGtk2WSCustomComboBox.DestroyHandle ',dbgsName(AWinControl),' ClassParent=',ClassParent.ClassName]);
+
+  {$NOTE TGtk2WSCustomComboBox.DestroyHandle: fixme: calling inherited does not call TGtkWSWinControl.DestroyHandle}
+  //inherited DestroyHandle(AWinControl);
+  TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(AWinControl);
 end;
 
 { TGtk2WSCustomGroupBox }
