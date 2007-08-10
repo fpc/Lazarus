@@ -350,6 +350,7 @@ Type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     Property OnKeyDown;
@@ -424,6 +425,7 @@ Type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -491,6 +493,7 @@ Type
     property OnCloseUp;
     property OnDrawItem;
     property OnDropDown;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -551,6 +554,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -607,6 +611,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnItemClick;
@@ -662,6 +667,7 @@ Type
     property OnClick;
     property OnDblClick;
     property OnDrawItem;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyPress;
@@ -722,6 +728,7 @@ Type
     property OnClick;
     property OnDblClick;
     property OnDrawItem;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyPress;
@@ -800,6 +807,7 @@ Type
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -853,6 +861,7 @@ Type
     property Link;
     property ModalResult;
     property OnClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -953,6 +962,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -1007,6 +1017,7 @@ Type
     property Link;
     property MaxLength;
     property OnChange;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -1060,6 +1071,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnDayChanged;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -1164,6 +1176,7 @@ Type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     Property OnKeyDown;
@@ -1222,6 +1235,7 @@ Type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     Property OnKeyDown;
@@ -1287,6 +1301,7 @@ Type
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -1357,6 +1372,7 @@ Type
     property Min;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;

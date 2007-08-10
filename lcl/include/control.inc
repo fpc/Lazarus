@@ -3109,7 +3109,14 @@ Procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   P: TPoint;
+  Form: TCustomForm;
 begin
+  if (not (Self is TWinControl)) or (not TWinControl(Self).CanFocus) then begin
+    Form:=GetParentForm(Self);
+    if (Form<>nil) and (Form.ActiveControl<>nil) then
+      Form.ActiveControl.EditingDone;
+  end;
+
   if (Button in [mbLeft,mbRight]) and (DragObject<>nil) then begin
     P:=ClientToScreen(Point(X,Y));
     DragObject.MouseDown(Button,Shift,P.X,P.Y);
