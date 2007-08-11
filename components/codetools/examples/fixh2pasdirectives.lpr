@@ -1,4 +1,4 @@
-{
+(*
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -21,8 +21,25 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Demonstration of how to reduce IFDEFs in a source file.
-}
+    Demonstration of how to add the missing IFDEFs, that h2pas forgets to add
+    and to remove unneeded IFDEFs.
+    
+  Usage:
+    fixh2pasdirectives [-name1] [+name2] ... [filename]
+    
+  Parameters starting with - are macros that should be set to 'undefined',
+  that means {$IFNDEF NAME} will be true.
+  Parameters starting with + are macros that should be set to 'defined',
+  that means {$IFDEF NAME} will be true.
+  All other macros are treated as 'any'.
+  Names are case insensitive.
+  Otherwise the parameter is used a filename to load.
+  Example:
+  
+    ./fixh2pasdirectives -ENDIAN_BIG -Debug +FPC scanexamples/missingh2pasdirectives.pas
+    
+    This will set ENDIAN_BIG and Debug to undefined and FPC is set to '1'.
+*)
 program FixH2PASDirectives;
 
 {$mode objfpc}{$H+}
@@ -36,28 +53,64 @@ var
   Code: TCodeBuffer;
   Tree: TCompilerDirectivesTree;
   Changed: Boolean;
+  Pass: Integer;
+  i: Integer;
+  p: String;
+  Undefines: TStringList;
+  Defines: TStringList;
 begin
+  Undefines:=nil;
+  Defines:=nil;
+  Filename:=SetDirSeparators('scanexamples/missingh2pasdirectives.pas');
+  
+  // parse parameters
+  for i:=1 to ParamCount do begin
+    p:=ParamStr(i);
+    if p='' then continue;
+    if p[1]='-' then begin
+      if Undefines=nil then Undefines:=TStringList.Create;
+      Undefines.Add(copy(p,2,length(p)));
+    end
+    else if p[1]='+' then begin
+      if Defines=nil then Defines:=TStringList.Create;
+      Defines.Add(copy(p,2,length(p)));
+    end else
+      Filename:=p;
+  end;
+
   // load the file
-  Filename:=ExpandFileName(SetDirSeparators('scanexamples/missingh2pasdirectives.pas'));
+  Filename:=ExpandFileName(Filename);
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Example: run the ReduceIFDEFs tool
+  // parse the directives
   Tree:=TCompilerDirectivesTree.Create;
   if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
   then begin
     writeln('failed parsing compiler directives');
     exit;
   end;
-  
+  writeln('-----------------------------------');
+  writeln('h2pas created these directives:');
+  Tree.WriteDebugReport;
+
+  // add missing directives
   Changed:=false;
   Tree.FixMissingH2PasDirectives(Changed);
-
-  // write the new source:
   writeln('-----------------------------------');
-  writeln('Changed=',Changed,' Source:');
-  writeln(Code.Source);
-  writeln('-----------------------------------');
+  writeln('after adding the missing directives:');
+  Tree.WriteDebugReport;
+  
+  // reduce directives
+  Pass:=0;
+  repeat
+    inc(Pass);
+    Changed:=false;
+    Tree.ReduceCompilerDirectives(Undefines,Defines,Changed);
+    writeln('-----------------------------------');
+    writeln('after reduce number ',Pass,':');
+    Tree.WriteDebugReport;
+  until not Changed;
 end.
 

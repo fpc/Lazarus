@@ -229,6 +229,7 @@ type
     property NodeCount: integer read FNodeCount;
     procedure DeleteNode(ANode: TCodeTreeNode);
     procedure AddNodeAsLastChild(ParentNode, ANode: TCodeTreeNode);
+    procedure AddNodeInFrontOf(NextBrotherNode, ANode: TCodeTreeNode);
     function FindLastPosition: integer;
     function ContainsNode(ANode: TCodeTreeNode): boolean;
     procedure Clear;
@@ -709,6 +710,16 @@ begin
     ANode.PriorBrother.NextBrother:=ANode;
   end;
   inc(FNodeCount);
+end;
+
+procedure TCodeTree.AddNodeInFrontOf(NextBrotherNode, ANode: TCodeTreeNode);
+begin
+  ANode.Parent:=ANode.Parent;
+  ANode.NextBrother:=NextBrotherNode;
+  ANode.PriorBrother:=NextBrotherNode.PriorBrother;
+  NextBrotherNode.PriorBrother:=ANode;
+  if ANode.PriorBrother<>nil then
+    ANode.PriorBrother.NextBrother:=ANode;
 end;
 
 function TCodeTree.FindLastPosition: integer;

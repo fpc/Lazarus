@@ -38,28 +38,31 @@ var
   Changed: Boolean;
 begin
   // load the file
-  Filename:=ExpandFileName(SetDirSeparators('scanexamples/uglyifdefs.pas'));
+  if ParamCount>=1 then
+    Filename:=ExpandFileName(ParamStr(1))
+  else
+    Filename:=ExpandFileName(SetDirSeparators('scanexamples/uglyifdefs.pas'));
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Example: run the ReduceIFDEFs tool
+  // parse directives
   Tree:=TCompilerDirectivesTree.Create;
   if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
   then begin
     writeln('failed parsing compiler directives');
     exit;
   end;
-  
-  //repeat
+
+  // complete reduce
+  repeat
     Changed:=false;
-    Tree.ReduceCompilerDirectives(Changed);
+    Tree.ReduceCompilerDirectives(nil,nil,Changed);
     Tree.WriteDebugReport;
-  //until not Changed;
+  until not Changed;
 
   // write the new source:
   writeln('-----------------------------------');
-  writeln('Changed=',Changed,' Source:');
   writeln(Code.Source);
   writeln('-----------------------------------');
 end.

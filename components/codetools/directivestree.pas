@@ -129,11 +129,14 @@ type
     procedure CheckAndImproveExpr_IfDefinedMacro(Node: TCodeTreeNode;
                                                  var Changed: boolean);
     procedure DisableAllUnusedDefines(var Changed: boolean);
+    procedure MoveIfNotThenDefsUp(var Changed: boolean);
     procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
     procedure DisableIfNode(Node: TCodeTreeNode; var Changed: boolean);
     procedure DisableNode(Node: TCodeTreeNode; var Changed: boolean);
     procedure RemoveNode(Node: TCodeTreeNode);
     procedure RemoveEmptyNodes(var Changed: boolean);
+    function InsertDefine(Position: integer; const NewSrc: string;
+                          SubDesc: TCompilerDirectiveNodeDesc): TCodeTreeNode;
   public
     Code: TCodeBuffer;
     Src: string;
@@ -149,7 +152,8 @@ type
     destructor Destroy; override;
     
     function Parse(aCode: TCodeBuffer; aNestedComments: boolean): boolean;
-    procedure ReduceCompilerDirectives(var Changed: boolean);
+    procedure ReduceCompilerDirectives(Undefines, Defines: TStrings;
+                                       var Changed: boolean);
     procedure GatherH2PasFunctions(out ListOfH2PasFunctions: TFPList;
                                    FindDefNodes: boolean);
     procedure FixMissingH2PasDirectives(var Changed: boolean);
@@ -158,9 +162,13 @@ type
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
                              out ExprStart, ExprEnd: integer): boolean;
+    function IsIfExpressionSimple(Node: TCodeTreeNode; out MacroName: string
+                                  ): boolean;
     function GetDefineNameAndValue(DefineNode: TCodeTreeNode;
           out NameStart: integer; out HasValue: boolean; out ValueStart: integer
           ): boolean;
+    function DefineUsesName(DefineNode: TCodeTreeNode;
+                            const aName: string): boolean;
     function FindNodeAtPos(p: integer): TCodeTreeNode;
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
@@ -170,6 +178,8 @@ type
     function AtomIsIdentifier: boolean;
     function GetAtom: string;
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+    procedure ResetMacros;
+    procedure ClearMacros;
     procedure WriteDebugReport;
   public
     property SimplifyExpressions: boolean read FSimplifyExpressions
@@ -210,7 +220,7 @@ type
     InInterface: boolean;
     DefNode: TH2PasFunction;// the corresponding node
     function NeedsBody: boolean;
-    procedure AdjustPositionsAfterInsert(StartPos, DiffPos: integer);
+    procedure AdjustPositionsAfterInsert(FromPos, ToPos, DiffPos: integer);
   end;
   
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
@@ -220,7 +230,8 @@ function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
 
-procedure AdjustPositionAfterInsert(var p: integer; StartPos, DiffPos: integer);
+procedure AdjustPositionAfterInsert(var p: integer;
+                                    FromPos, ToPos, DiffPos: integer);
 
 implementation
 
@@ -275,9 +286,16 @@ begin
   end;
 end;
 
-procedure AdjustPositionAfterInsert(var p: integer; StartPos, DiffPos: integer);
+procedure AdjustPositionAfterInsert(var p: integer;
+  FromPos, ToPos, DiffPos: integer);
 begin
-  if p>=StartPos then inc(p,DiffPos);
+  if (ToPos>FromPos) then begin
+    // replace
+    if p>FromPos then inc(p,DiffPos);
+  end else begin
+    // insert
+    if p>=FromPos then inc(p,DiffPos);
+  end;
 end;
 
 
@@ -549,6 +567,7 @@ end;
 
 procedure TCompilerDirectivesTree.CheckAndImproveExpr_Brackets(
   Node: TCodeTreeNode; var Changed: boolean);
+// improve (MacroName) to MacroName
 var
   ExprStart: integer;
   ExprEnd: integer;
@@ -651,6 +670,32 @@ begin
       DisableDefineNode(MacroNode.LastDefineNode,Changed);
     end;
     AVLNode:=NextAVLNode;
+  end;
+end;
+
+procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
+  );
+(* Search for
+    {$IFNDEF Name}
+      {$DEFINE Name}
+      .. name is not used here ..
+    {$ENDIF}
+
+   And move the define behind the IF block
+*)
+var
+  Node: TCodeTreeNode;
+  NextNode: TCodeTreeNode;
+  MacroName: string;
+begin
+  Node:=Tree.Root;
+  while Node<>nil do begin
+    NextNode:=Node.Next;
+    if ((Node.Desc=cdnIf) or (Node.Desc=cdnElseIf))
+    and IsIfExpressionSimple(Node,MacroName) then begin
+
+    end;
+    Node:=NextNode;
   end;
 end;
 
@@ -867,6 +912,31 @@ begin
   end;
 end;
 
+function TCompilerDirectivesTree.InsertDefine(Position: integer;
+  const NewSrc: string; SubDesc: TCompilerDirectiveNodeDesc): TCodeTreeNode;
+var
+  ParentNode: TCodeTreeNode;
+  NextBrotherNode: TCodeTreeNode;
+begin
+  Replace(Position,Position,NewSrc);
+  ParentNode:=FindNodeAtPos(Position);
+  if ParentNode=nil then
+    ParentNode:=Tree.Root;
+  Result:=NodeMemManager.NewNode;
+  Result.Desc:=cdnDefine;
+  Result.SubDesc:=SubDesc;
+  Result.StartPos:=Position;
+  Result.EndPos:=Result.StartPos+length(NewSrc);
+  NextBrotherNode:=ParentNode.FirstChild;
+  while (NextBrotherNode<>nil) and (NextBrotherNode.StartPos<=Position) do
+    NextBrotherNode:=NextBrotherNode.NextBrother;
+  if NextBrotherNode<>nil then begin
+    Tree.AddNodeInFrontOf(NextBrotherNode,Result);
+  end else begin
+    Tree.AddNodeAsLastChild(ParentNode,Result);
+  end;
+end;
+
 constructor TCompilerDirectivesTree.Create;
 begin
   Tree:=TCodeTree.Create;
@@ -877,6 +947,7 @@ end;
 
 destructor TCompilerDirectivesTree.Destroy;
 begin
+  ClearMacros;
   Tree.Free;
   FDefaultDirectiveFuncList.Free;
   inherited Destroy;
@@ -928,7 +999,26 @@ begin
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
-procedure TCompilerDirectivesTree.ReduceCompilerDirectives(var Changed: boolean);
+procedure TCompilerDirectivesTree.ReduceCompilerDirectives(
+  Undefines, Defines: TStrings; var Changed: boolean);
+(*  Check and improve the following cases
+  1.  {$DEFINE Name} and Name is never used afterwards -> disable
+   
+  2.  {$DEFINE Name}
+      ... Name is not used here ...
+      {$DEFINE Name}
+      -> disable first
+
+  3.  {$IFDEF Name}... only comments and spaces ...{$ENDIF}
+      -> disable the whole block
+
+  4. {$IFNDEF Name}
+       ... only comments and spaces ...
+       {$DEFINE Name}
+       ... only comments and spaces ...
+     {$ENDIF}
+     -> disable the IFNDEF and the ENDIF and keep the DEFINE
+*)
 
   function GetMacroNode(p: PChar): TCompilerMacroStats;
   var
@@ -980,7 +1070,7 @@ procedure TCompilerDirectivesTree.ReduceCompilerDirectives(var Changed: boolean)
       // last define was never used -> disable it
       DisableDefineNode(MacroNode.LastDefineNode,Changed);
     end;
-    
+
     MacroNode.LastReadNode:=nil;
     MacroNode.LastDefineNode:=Node;
   end;
@@ -993,9 +1083,8 @@ var
   AtomCount: Integer;
   NextNode: TCodeTreeNode;
 begin
-  WriteDebugReport;
-  Macros:=TAVLTree.Create(@CompareCompilerMacroStats);
   try
+    ResetMacros;
     Node:=Tree.Root;
     while Node<>nil do begin
       NextNode:=Node.Next;
@@ -1007,7 +1096,7 @@ begin
           CheckAndImproveExpr_Brackets(Node,Changed);
           CheckAndImproveExpr_IfDefinedMacro(Node,Changed);
         
-          DebugLn(['TCompilerDirectivesTree.DisableUnusedDefines Expr=',copy(Src,ExprStart,ExprEnd-ExprStart)]);
+          //DebugLn(['TCompilerDirectivesTree.ReduceCompilerDirectives Expr=',copy(Src,ExprStart,ExprEnd-ExprStart)]);
           // check if it is a complex expression or just one macro
           AtomCount:=0;
           if (Node.SubDesc=cdnsIf) or (Node.SubDesc=cdnsIfC)
@@ -1019,8 +1108,7 @@ begin
             until AtomStart>=ExprEnd;
           end;
           Complex:=AtomCount>1;
-          DebugLn(['TCompilerDirectivesTree.DisableUnusedDefines Complex=',Complex]);
-          
+
           // mark all macros as read
           MoveCursorToPos(ExprStart);
           repeat
@@ -1033,6 +1121,7 @@ begin
         
       cdnDefine:
         CheckDefine(Node,Changed);
+        
       end;
       
       Node:=NextNode;
@@ -1040,10 +1129,11 @@ begin
     
     DisableAllUnusedDefines(Changed);
     
+    MoveIfNotThenDefsUp(Changed);
+    
     RemoveEmptyNodes(Changed);
   finally
-    Macros.FreeAndClear;
-    FreeAndNil(Macros);
+    ClearMacros;
   end;
 end;
 
@@ -1244,7 +1334,7 @@ var
   CurBodyBlock: TBodyBlock;
   MacroNames: TStrings; // the Objects are the TCodeTreeNode
   ListOfH2PasFunctions: TFPList;
-  LokalChange: boolean;
+  LocalChange: boolean;
 
   function IsSameDirective(OldNode: TCodeTreeNode; Position: integer;
     out NewNode: TCodeTreeNode): boolean;
@@ -1281,20 +1371,20 @@ var
     MacroNames.AddObject(Result,Node);
   end;
   
-  procedure LokalReplace(FromPos, ToPos: integer; const NewSrc: string);
+  procedure LocalReplace(FromPos, ToPos: integer; const NewSrc: string);
   var
     DiffPos: Integer;
     i: Integer;
     Func: TH2PasFunction;
   begin
-    LokalChange:=true;
+    LocalChange:=true;
     Replace(FromPos,ToPos,NewSrc);
     // update positions
     DiffPos:=length(NewSrc)-(ToPos-FromPos);
     if DiffPos<>0 then begin
       for i:=0 to ListOfH2PasFunctions.Count-1 do begin
         Func:=TH2PasFunction(ListOfH2PasFunctions[i]);
-        Func.AdjustPositionsAfterInsert(ToPos,DiffPos);
+        Func.AdjustPositionsAfterInsert(FromPos,ToPos,DiffPos);
       end;
     end;
   end;
@@ -1319,16 +1409,16 @@ var
       if IsNewMacro then begin
         // insert $DEFINE
         InsertPos:=FindCommentEnd(Src,CurBodyBlock.Definition.StartPos,NestedComments);
-        LokalReplace(InsertPos,InsertPos,LineEnding+'{$DEFINE '+MacroName+'}');
+        LocalReplace(InsertPos,InsertPos,LineEnding+'{$DEFINE '+MacroName+'}');
       end;
       // insert $IFDEF
       InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
                   CurBodyBlock.FirstBodyFunc.HeaderStart,1,NestedComments,true);
-      LokalReplace(InsertPos,InsertPos,LineEnding+'{$IFDEF '+MacroName+'}');
+      LocalReplace(InsertPos,InsertPos,LineEnding+'{$IFDEF '+MacroName+'}');
       // insert $ENDIF
       InsertPos:=FindLineEndOrCodeAfterPosition(Src,
                       CurBodyBlock.LastBodyFunc.BeginEnd,1,NestedComments,true);
-      LokalReplace(InsertPos,InsertPos,LineEnding+'{$ENDIF '+MacroName+'}');
+      LocalReplace(InsertPos,InsertPos,LineEnding+'{$ENDIF '+MacroName+'}');
     end;
     FillChar(CurBodyBlock,SizeOf(TBodyBlock),0);
   end;
@@ -1341,7 +1431,7 @@ var
 begin
   ListOfH2PasFunctions:=nil;
   MacroNames:=nil;
-  LokalChange:=false;
+  LocalChange:=false;
   try
     GatherH2PasFunctions(ListOfH2PasFunctions,true);
     if ListOfH2PasFunctions=nil then exit;
@@ -1392,12 +1482,11 @@ begin
     ListOfH2PasFunctions.Free;
     MacroNames.Free;
     
-    if LokalChange then begin
+    if LocalChange then begin
       Changed:=true;
       Parse(Code,NestedComments);
     end;
   end;
-
 end;
 
 function TCompilerDirectivesTree.GetDirectiveName(Node: TCodeTreeNode): string;
@@ -1428,6 +1517,39 @@ begin
   while (p<=SrcLen) and (Src[p]<>'}') do inc(p);
   ExprEnd:=p;
   Result:=true;
+end;
+
+function TCompilerDirectivesTree.IsIfExpressionSimple(Node: TCodeTreeNode; out
+  MacroName: string): boolean;
+var
+  p: LongInt;
+begin
+  Result:=false;
+  MacroName:='';
+  // skip {$
+  p:=Node.StartPos+2;
+  if p>SrcLen then exit;
+  // skip directive name
+  while (p<=SrcLen) and IsIdentChar[Src[p]] do inc(p);
+  // skip space
+  if (p>SrcLen) or (not IsSpaceChar[Src[p]]) then exit;
+  while (p<=SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+  if (p>SrcLen) or (not IsIdentStartChar[Src[p]]) then exit;
+  // the expression starts with word
+  MacroName:=GetIdentifier(@Src[p]);
+  if (Node.SubDesc=cdnsIfdef) or (Node.SubDesc=cdnsIfndef) then begin
+    // IFDEF and IFNDEF only test the first word
+    exit(true);
+  end;
+  // skip first word
+  while (p<=SrcLen) and (IsIdentChar[Src[p]]) do inc(p);
+  // skip space
+  while (p<=SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+  if (p>SrcLen) or (Src[p]='}') then begin
+    // the expression only contains one word
+    exit(true);
+  end;
+  Result:=false;
 end;
 
 function TCompilerDirectivesTree.GetDefineNameAndValue(
@@ -1462,6 +1584,22 @@ begin
     while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
     ValueStart:=p;
   end;
+end;
+
+function TCompilerDirectivesTree.DefineUsesName(DefineNode: TCodeTreeNode;
+  const aName: string): boolean;
+var
+  p: LongInt;
+begin
+  Result:=false;
+  p:=DefineNode.StartPos+2;
+  if p>SrcLen then exit;
+  // skip keyword
+  while (p<=SrcLen) and (IsIdentChar[Src[p]]) do inc(p);
+  while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
+  // check name
+  if p>SrcLen then exit;
+  Result:=CompareIdentifierPtrs(@Src[p],Pointer(aName))=0;
 end;
 
 function TCompilerDirectivesTree.FindNodeAtPos(p: integer): TCodeTreeNode;
@@ -1581,10 +1719,26 @@ begin
   if DiffPos<>0 then begin
     Node:=Tree.Root;
     while Node<>nil do begin
-      if Node.StartPos>FromPos then inc(Node.StartPos,DiffPos);
-      if Node.EndPos>FromPos then inc(Node.EndPos,DiffPos);
+      AdjustPositionAfterInsert(Node.StartPos,FromPos,ToPos,DiffPos);
+      AdjustPositionAfterInsert(Node.EndPos,FromPos,ToPos,DiffPos);
       Node:=Node.Next;
     end;
+  end;
+end;
+
+procedure TCompilerDirectivesTree.ResetMacros;
+begin
+  if Macros<>nil then
+    Macros.FreeAndClear
+  else
+    Macros:=TAVLTree.Create(@CompareCompilerMacroStats);
+end;
+
+procedure TCompilerDirectivesTree.ClearMacros;
+begin
+  if Macros<>nil then begin
+    Macros.FreeAndClear;
+    FreeAndNil(Macros);
   end;
 end;
 
@@ -1609,12 +1763,13 @@ begin
   Result:=(IsForward or InInterface) and (not IsExternal) and (BeginStart<0);
 end;
 
-procedure TH2PasFunction.AdjustPositionsAfterInsert(StartPos, DiffPos: integer);
+procedure TH2PasFunction.AdjustPositionsAfterInsert(FromPos, ToPos,
+  DiffPos: integer);
 begin
-  AdjustPositionAfterInsert(HeaderStart,StartPos,DiffPos);
-  AdjustPositionAfterInsert(HeaderEnd,StartPos,DiffPos);
-  AdjustPositionAfterInsert(BeginStart,StartPos,DiffPos);
-  AdjustPositionAfterInsert(BeginEnd,StartPos,DiffPos);
+  AdjustPositionAfterInsert(HeaderStart,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(HeaderEnd,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(BeginStart,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(BeginEnd,FromPos,ToPos,DiffPos);
 end;
 
 end.
