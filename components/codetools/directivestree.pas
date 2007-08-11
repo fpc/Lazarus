@@ -727,7 +727,7 @@ begin
                 { this is
                      IFNDEF then UNDEF
                  or  IFDEF then DEFINE
-                  remove define
+                  -> remove define
                 }
               end else begin
 

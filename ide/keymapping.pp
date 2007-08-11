@@ -2255,12 +2255,12 @@ begin
   AddDefault(C, 'Word completion', srkmecWordCompletion, ecWordCompletion);
   AddDefault(C, 'Complete code', srkmecCompletecode, ecCompleteCode);
   AddDefault(C, 'Identifier completion', dlgEdIdComlet, ecIdentCompletion);
-  AddDefault(C, 'Show code context', srkmecShowCodeContext, ecShowCodeContext);
-  AddDefault(C, 'Extract proc', srkmecExtractProc, ecExtractProc);
-  AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs,
-    ecFindIdentifierRefs);
   AddDefault(C, 'Rename identifier', srkmecRenameIdentifier, ecRenameIdentifier
     );
+  AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs,
+    ecFindIdentifierRefs);
+  AddDefault(C, 'Show code context', srkmecShowCodeContext, ecShowCodeContext);
+  AddDefault(C, 'Extract proc', srkmecExtractProc, ecExtractProc);
   AddDefault(C, 'Invert assignment', srkmecInvertAssignment, ecInvertAssignment
     );
   AddDefault(C, 'Syntax check', srkmecSyntaxCheck, ecSyntaxCheck);

@@ -217,6 +217,7 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
+  TextConverterToolClasses.RegisterClass(TFixH2PasMissingIFDEFsInUnit);
   TextConverterToolClasses.RegisterClass(TReduceCompilerDirectivesInUnit);
   TextConverterToolClasses.RegisterClass(TReplaceImplicitTypes);
   TextConverterToolClasses.RegisterClass(TFixArrayOfParameterType);

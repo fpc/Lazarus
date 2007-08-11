@@ -813,10 +813,10 @@ var
     // refactoring
     SrcEditMenuCompleteCode: TIDEMenuCommand;
     SrcEditMenuEncloseSelection: TIDEMenuCommand;
+    SrcEditMenuRenameIdentifier: TIDEMenuCommand;
+    SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
-    SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
-    SrcEditMenuRenameIdentifier: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
@@ -953,14 +953,14 @@ begin
                                                     uemCompleteCode);
     SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(AParent,
                                         'EncloseSelection',uemEncloseSelection);
+    SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(AParent,
+                                        'RenameIdentifier',uemRenameIdentifier);
+    SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(AParent,
+                        'FindIdentifierReferences',uemFindIdentifierReferences);
     SrcEditMenuExtractProc:=RegisterIDEMenuCommand(AParent,
                                                  'ExtractProc',uemExtractProc);
     SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
                                         'InvertAssignment',uemInvertAssignment);
-    SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(AParent,
-                        'FindIdentifierReferences',uemFindIdentifierReferences);
-    SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(AParent,
-                                        'RenameIdentifier',uemRenameIdentifier);
 
   // register the Flags section
   SrcEditMenuSectionFlags:=RegisterIDEMenuSection(SourceEditorMenuRoot,

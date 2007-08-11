@@ -184,6 +184,14 @@ type
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
+  
+  { TFixH2PasMissingIFDEFsInUnit }
+
+  TFixH2PasMissingIFDEFsInUnit = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
 
   { TReduceCompilerDirectivesInUnit }
 
@@ -1400,6 +1408,7 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
+  AddNewTextConverterTool(FPostH2PasTools,TFixH2PasMissingIFDEFsInUnit);
   AddNewTextConverterTool(FPostH2PasTools,TReduceCompilerDirectivesInUnit);
   AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
   AddNewTextConverterTool(FPostH2PasTools,TFixArrayOfParameterType);
@@ -3187,6 +3196,38 @@ begin
   Result:=mrOk;
 end;
 
+{ TFixH2PasMissingIFDEFsInUnit }
+
+class function TFixH2PasMissingIFDEFsInUnit.ClassDescription: string;
+begin
+  Result:='Adds missing h2pas IFDEFs for function bodies';
+end;
+
+function TFixH2PasMissingIFDEFsInUnit.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Tree: TCompilerDirectivesTree;
+  Code: TCodeBuffer;
+  Changed: Boolean;
+begin
+  Result:=mrCancel;
+  Tree:=nil;
+  try
+    Tree:=TCompilerDirectivesTree.Create;
+    Code:=TCodeBuffer(aText.CodeBuffer);
+    if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
+    then begin
+      DebugLn(['TFixH2PasMissingIFDEFsInUnit.Execute failed parsing compiler directives']);
+      exit;
+    end;
+    Changed:=false;
+    Tree.FixMissingH2PasDirectives(Changed);
+  finally
+    Tree.Free;
+  end;
+  Result:=mrOk;
+end;
+
 { TReduceCompilerDirectivesInUnit }
 
 class function TReduceCompilerDirectivesInUnit.ClassDescription: string;
@@ -3204,18 +3245,23 @@ var
   Changed: Boolean;
 begin
   Result:=mrCancel;
-  Tree:=TCompilerDirectivesTree.Create;
-  Code:=TCodeBuffer(aText.CodeBuffer);
-  if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
-  then begin
-    DebugLn(['TReduceCompilerDirectivesInUnit.Execute failed parsing compiler directives']);
-    exit;
+  Tree:=nil;
+  try
+    Tree:=TCompilerDirectivesTree.Create;
+    Code:=TCodeBuffer(aText.CodeBuffer);
+    if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
+    then begin
+      DebugLn(['TReduceCompilerDirectivesInUnit.Execute failed parsing compiler directives']);
+      exit;
+    end;
+    repeat
+      Changed:=false;
+      Tree.ReduceCompilerDirectives(nil,nil,Changed);
+      //Tree.WriteDebugReport;
+    until not Changed;
+  finally
+    Tree.Free;
   end;
-  repeat
-    Changed:=false;
-    Tree.ReduceCompilerDirectives(Changed);
-    //Tree.WriteDebugReport;
-  until not Changed;
   Result:=mrOk;
 end;
 

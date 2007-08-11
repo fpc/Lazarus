@@ -1241,7 +1241,7 @@ function TSynCustomCodeFoldBlock.Compare(Block: TSynCustomCodeFoldBlock
 begin
   if BlockType>Block.BlockType then
     Result:=1
-  else if BlockType>Block.BlockType then
+  else if BlockType<Block.BlockType then
     Result:=-1
   else if Level>BLock.Level then
     Result:=1
