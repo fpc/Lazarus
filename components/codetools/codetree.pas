@@ -714,7 +714,7 @@ end;
 
 procedure TCodeTree.AddNodeInFrontOf(NextBrotherNode, ANode: TCodeTreeNode);
 begin
-  ANode.Parent:=ANode.Parent;
+  ANode.Parent:=NextBrotherNode.Parent;
   ANode.NextBrother:=NextBrotherNode;
   ANode.PriorBrother:=NextBrotherNode.PriorBrother;
   NextBrotherNode.PriorBrother:=ANode;

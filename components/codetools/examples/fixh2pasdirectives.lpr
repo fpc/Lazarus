@@ -108,9 +108,10 @@ begin
     inc(Pass);
     Changed:=false;
     Tree.ReduceCompilerDirectives(Undefines,Defines,Changed);
+    if not Changed then break;
     writeln('-----------------------------------');
     writeln('after reduce number ',Pass,':');
     Tree.WriteDebugReport;
-  until not Changed;
+  until false;
 end.
 

@@ -232,7 +232,7 @@ function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
 
-procedure AdjustPositionAfterInsert(var p: integer;
+procedure AdjustPositionAfterInsert(var p: integer; IsStart: boolean;
                                     FromPos, ToPos, DiffPos: integer);
 
 implementation
@@ -289,14 +289,23 @@ begin
 end;
 
 procedure AdjustPositionAfterInsert(var p: integer;
-  FromPos, ToPos, DiffPos: integer);
+  IsStart: boolean; FromPos, ToPos, DiffPos: integer);
 begin
   if (ToPos>FromPos) then begin
     // replace
-    if p>FromPos then inc(p,DiffPos);
+    if p>FromPos then begin
+      if p>ToPos then
+        inc(p,DiffPos)
+      else
+        p:=FromPos;
+    end;
   end else begin
     // insert
-    if p>=FromPos then inc(p,DiffPos);
+    if IsStart then begin
+      if p>=FromPos then inc(p,DiffPos);
+    end else begin
+      if p>FromPos then inc(p,DiffPos);
+    end;
   end;
 end;
 
@@ -692,6 +701,11 @@ var
   NameStart: integer;
   LastDefineNode: TCodeTreeNode;
   LastIFNode: TCodeTreeNode;
+  NextSubNode: TCodeTreeNode;
+  EndNode: TCodeTreeNode;
+  InsertPos: LongInt;
+  NewSrc: String;
+  LastChildDefineNode: TCodeTreeNode;
 begin
   Node:=Tree.Root;
   while Node<>nil do begin
@@ -701,8 +715,10 @@ begin
       // an IF with a single test
       LastIFNode:=nil;
       LastDefineNode:=nil;
+      LastChildDefineNode:=nil;
       SubNode:=Node.FirstChild;
       while SubNode<>nil do begin
+        NextSubNode:=SubNode.Next;
         case SubNode.Desc of
         
         cdnIf, cdnElseIf:
@@ -729,14 +745,49 @@ begin
                  or  IFDEF then DEFINE
                   -> remove define
                 }
-              end else begin
-
+                NextSubNode:=SubNode.NextSkipChilds;
+                DisableDefineNode(SubNode,Changed);
+                SubNode:=nil;
               end;
             end;
-            LastDefineNode:=SubNode;
+            if SubNode<>nil then begin
+              LastDefineNode:=SubNode;
+              LastIFNode:=nil;
+              if SubNode.Parent=Node then begin
+                // this define is valid for end of the IF block
+                LastChildDefineNode:=SubNode;
+              end else if (LastChildDefineNode<>nil)
+              and (LastChildDefineNode.SubDesc<>SubNode.SubDesc) then begin
+                // this sub define can cancel the higher level define
+                LastChildDefineNode:=nil;
+              end;
+            end;
           end;
         end;
-        SubNode:=SubNode.Next;
+        SubNode:=NextSubNode;
+      end;
+      
+      if (LastDefineNode<>nil) and (LastIFNode=nil) then begin
+        (* this is
+           {$IFNDEF Name}
+             ...
+             {$DEFINE Name}
+             ... Name not used ...
+           {$ENDIF}
+           
+           or IFDEF and UNDEF
+           -> move define behind IF block
+        *)
+        EndNode:=Node;
+        while (EndNode<>nil) and (EndNode.Desc<>cdnEnd) do
+          EndNode:=EndNode.NextBrother;
+        if EndNode<>nil then begin
+          InsertPos:=FindLineEndOrCodeAfterPosition(Src,EndNode.EndPos,SrcLen,
+                                                    NestedComments);
+          NewSrc:=LineEnding+GetDirective(LastDefineNode);
+          InsertDefine(InsertPos,NewSrc,LastDefineNode.SubDesc);
+          DisableDefineNode(LastDefineNode,Changed);
+        end;
       end;
     end;
     Node:=NextNode;
@@ -966,11 +1017,13 @@ begin
   ParentNode:=FindNodeAtPos(Position);
   if ParentNode=nil then
     ParentNode:=Tree.Root;
+  while (ParentNode<>Tree.Root) and (ParentNode.EndPos=Position) do
+    ParentNode:=ParentNode.Parent;
   Result:=NodeMemManager.NewNode;
   Result.Desc:=cdnDefine;
   Result.SubDesc:=SubDesc;
-  Result.StartPos:=Position;
-  Result.EndPos:=Result.StartPos+length(NewSrc);
+  Result.StartPos:=FindNextCompilerDirective(Src,Position,NestedComments);
+  Result.EndPos:=FindCommentEnd(Src,Result.StartPos,NestedComments);
   NextBrotherNode:=ParentNode.FirstChild;
   while (NextBrotherNode<>nil) and (NextBrotherNode.StartPos<=Position) do
     NextBrotherNode:=NextBrotherNode.NextBrother;
@@ -978,6 +1031,8 @@ begin
     Tree.AddNodeInFrontOf(NextBrotherNode,Result);
   end else begin
     Tree.AddNodeAsLastChild(ParentNode,Result);
+    if ParentNode.EndPos<Result.EndPos then
+      ParentNode.EndPos:=Result.EndPos;
   end;
 end;
 
@@ -1791,8 +1846,8 @@ begin
   if DiffPos<>0 then begin
     Node:=Tree.Root;
     while Node<>nil do begin
-      AdjustPositionAfterInsert(Node.StartPos,FromPos,ToPos,DiffPos);
-      AdjustPositionAfterInsert(Node.EndPos,FromPos,ToPos,DiffPos);
+      AdjustPositionAfterInsert(Node.StartPos,true,FromPos,ToPos,DiffPos);
+      AdjustPositionAfterInsert(Node.EndPos,false,FromPos,ToPos,DiffPos);
       Node:=Node.Next;
     end;
   end;
@@ -1838,10 +1893,10 @@ end;
 procedure TH2PasFunction.AdjustPositionsAfterInsert(FromPos, ToPos,
   DiffPos: integer);
 begin
-  AdjustPositionAfterInsert(HeaderStart,FromPos,ToPos,DiffPos);
-  AdjustPositionAfterInsert(HeaderEnd,FromPos,ToPos,DiffPos);
-  AdjustPositionAfterInsert(BeginStart,FromPos,ToPos,DiffPos);
-  AdjustPositionAfterInsert(BeginEnd,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(HeaderStart,true,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(HeaderEnd,false,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(BeginStart,true,FromPos,ToPos,DiffPos);
+  AdjustPositionAfterInsert(BeginEnd,false,FromPos,ToPos,DiffPos);
 end;
 
 end.
