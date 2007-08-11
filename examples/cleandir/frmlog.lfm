@@ -1,0 +1,61 @@
+object LogForm: TLogForm
+  Left = 426
+  Height = 351
+  Top = 183
+  Width = 460
+  HorzScrollBar.Page = 459
+  VertScrollBar.Page = 350
+  ActiveControl = BClose
+  Caption = 'Output of execution'
+  ClientHeight = 351
+  ClientWidth = 460
+  OnShow = FormShow
+  object Label1: TLabel
+    Left = 8
+    Height = 16
+    Top = 8
+    Width = 312
+    AutoSize = False
+    Caption = 'Actions:'
+    ParentColor = False
+  end
+  object BClose: TButton
+    Left = 373
+    Height = 25
+    Top = 318
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Cancel'
+    OnClick = BCloseClick
+    TabOrder = 0
+  end
+  object LBLog: TListBox
+    Left = 8
+    Height = 280
+    Top = 32
+    Width = 440
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object BSave: TButton
+    Left = 8
+    Height = 25
+    Top = 318
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Save'
+    OnClick = BSaveClick
+    TabOrder = 2
+  end
+  object SDlog: TSaveDialog
+    Title = 'Save file as'
+    Filter = 'Log files|*.log|Text files|*.txt|All files|*.*'
+    FilterIndex = 0
+    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 96
+    top = 320
+  end
+end

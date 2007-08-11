@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <AutoCreateForms Value="False"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <Title Value="Configure directory cleaner"/>
+      <UseXPManifest Value="True"/>
+    </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <CurrentVersionNr Value="1"/>
+      <ProjectVersion Value=""/>
+      <LegalCopyright Value="GPL"/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="RunTimeTypeInfoControls"/>
+        <MinVersion Minor="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="confcleandirs.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="confcleandirs"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="diskclean.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="diskclean"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="frmmain.pp"/>
+        <ComponentName Value="MainForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmain.lrs"/>
+        <UnitName Value="frmmain"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmlog.pp"/>
+        <ComponentName Value="LogForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmlog.lrs"/>
+        <UnitName Value="frmlog"/>
+      </Unit3>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

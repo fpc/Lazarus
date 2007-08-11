@@ -1,0 +1,9 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TCleanDirsDaemon','FORMDATA',[
+  'TPF0'#16'TCleanDirsDaemon'#15'CleanDirsDaemon'#8'OnCreate'#7#21'CleanDirsDae'
+  +'monCreate'#7'OnStart'#7#20'CleanDirsDaemonStart'#6'OnStop'#7#19'CleanDirsDa'
+  +'emonStop'#9'OnExecute'#7#22'CleanDirsDaemonExecute'#4'left'#3'\'#2#3'top'#3
+  +#146#1#6'Height'#2#0#16'HorizontalOffset'#2#0#14'VerticalOffset'#2#0#5'Width'
+  +#2#0#0#0
+]);

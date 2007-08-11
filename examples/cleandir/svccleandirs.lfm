@@ -1,0 +1,12 @@
+object CleanDirsDaemon: TCleanDirsDaemon
+  OnCreate = CleanDirsDaemonCreate
+  OnStart = CleanDirsDaemonStart
+  OnStop = CleanDirsDaemonStop
+  OnExecute = CleanDirsDaemonExecute
+  left = 604
+  top = 402
+  Height = 0
+  HorizontalOffset = 0
+  VerticalOffset = 0
+  Width = 0
+end

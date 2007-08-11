@@ -1,0 +1,13 @@
+object CleanDirServiceMapper: TCleanDirServiceMapper
+  DaemonDefs = <  
+    item
+      DaemonClassName = 'TCleanDirsDaemon'
+      Name = 'CleanDirs'
+      DisplayName = 'Clean directories service'
+      Options = [doAllowPause]
+      WinBindings.Dependencies = <>
+      WinBindings.StartType = stAuto
+    end>
+  left = 426
+  top = 183
+end
