@@ -130,6 +130,8 @@ type
                                                  var Changed: boolean);
     procedure DisableAllUnusedDefines(var Changed: boolean);
     procedure MoveIfNotThenDefsUp(var Changed: boolean);
+    procedure DisableUnreachableBlocks(Undefines, Defines: TStrings;
+                                       var Changed: boolean);
     procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
     procedure DisableIfNode(Node: TCodeTreeNode; var Changed: boolean);
     procedure DisableNode(Node: TCodeTreeNode; var Changed: boolean);
@@ -236,6 +238,31 @@ procedure AdjustPositionAfterInsert(var p: integer; IsStart: boolean;
                                     FromPos, ToPos, DiffPos: integer);
 
 implementation
+
+type
+  TDefineStatus = (
+    dsUnknown,
+    dsDefined,
+    dsNotDefined
+    );
+
+  TDefineValue = class
+    Name: string;
+    Status: TDefineStatus;
+    Value: string;
+  end;
+  
+function CompareDefineValues(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Pointer(TDefineValue(Data1).Name),
+                                Pointer(TDefineValue(Data2).Name));
+end;
+
+function ComparePCharWithDefineValue(Name, DefValue: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Name,
+                                Pointer(TDefineValue(DefValue).Name));
+end;
 
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
 begin
@@ -694,6 +721,32 @@ procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
 
    And move the define behind the IF block
 *)
+
+  function IdentifierIsReadAfterNode(Identifier: PChar;
+    StartNode: TCodeTreeNode): boolean;
+  var
+    Node: TCodeTreeNode;
+    ParentNode: TCodeTreeNode;
+  begin
+    Node:=StartNode;
+    while Node<>nil do begin
+      case Node.Desc of
+      cdnIf,cdnElseIf:
+        if FindNameInIfExpression(Node,Identifier)>0 then exit(true);
+      cdnDefine:
+        if DefineUsesName(Node,Identifier) then begin
+          ParentNode:=StartNode;
+          while (ParentNode<>nil) do begin
+            if ParentNode=Node.Parent then exit(false);
+            ParentNode:=ParentNode.Parent;
+          end;
+        end;
+      end;
+      Node:=Node.Next;
+    end;
+    Result:=false;
+  end;
+
 var
   Node: TCodeTreeNode;
   NextNode: TCodeTreeNode;
@@ -724,7 +777,6 @@ begin
         cdnIf, cdnElseIf:
           if FindNameInIfExpression(SubNode,@Src[NameStart])>0 then begin
             // this sub IF block uses the macro
-            
             LastIFNode:=SubNode;
           end;
           
@@ -767,12 +819,12 @@ begin
         SubNode:=NextSubNode;
       end;
       
-      if (LastDefineNode<>nil) and (LastIFNode=nil) then begin
+      if (LastChildDefineNode<>nil) then begin
         (* this is
            {$IFNDEF Name}
              ...
              {$DEFINE Name}
-             ... Name not used ...
+             ... Name only read ...
            {$ENDIF}
            
            or IFDEF and UNDEF
@@ -781,16 +833,272 @@ begin
         EndNode:=Node;
         while (EndNode<>nil) and (EndNode.Desc<>cdnEnd) do
           EndNode:=EndNode.NextBrother;
-        if EndNode<>nil then begin
+        if (EndNode<>nil)
+        and IdentifierIsReadAfterNode(@Src[NameStart],EndNode) then begin
           InsertPos:=FindLineEndOrCodeAfterPosition(Src,EndNode.EndPos,SrcLen,
                                                     NestedComments);
           NewSrc:=LineEnding+GetDirective(LastDefineNode);
           InsertDefine(InsertPos,NewSrc,LastDefineNode.SubDesc);
-          DisableDefineNode(LastDefineNode,Changed);
+          if LastDefineNode=nil then begin
+            // the name was not read after it was set -> disable the define
+            // in the block
+            DisableDefineNode(LastDefineNode,Changed);
+          end;
         end;
       end;
     end;
     Node:=NextNode;
+  end;
+end;
+
+procedure TCompilerDirectivesTree.DisableUnreachableBlocks(Undefines,
+  Defines: TStrings; var Changed: boolean);
+type
+
+  PDefineChange = ^TDefineChange;
+  TDefineChange = record
+    Name: string;
+    OldStatus: TDefineStatus;
+    Next: PDefineChange;
+  end;
+
+var
+  CurDefines: TAVLTree;
+  Stack: array of PDefineChange;// stack of lists of PDefineChange
+  StackPointer: integer;
+  
+  procedure InitStack;
+  begin
+    SetLength(Stack,1);
+    StackPointer:=0;
+    Stack[0]:=nil;
+  end;
+
+  procedure FreeStack;
+  var
+    i: Integer;
+    Item: PDefineChange;
+    DeleteItem: PDefineChange;
+  begin
+    for i:=0 to StackPointer do begin
+      Item:=Stack[i];
+      while Item<>nil do begin
+        DeleteItem:=Item;
+        Item:=DeleteItem^.Next;
+        Dispose(DeleteItem);
+      end;
+    end;
+    Setlength(Stack,0);
+  end;
+
+  procedure AddStackChange(const MacroName: string; OldStatus: TDefineStatus);
+  var
+    Change: PDefineChange;
+  begin
+    New(Change);
+    FillChar(Change^,SizeOf(TDefineChange),0);
+    Change^.Name:=MacroName;
+    Change^.OldStatus:=OldStatus;
+    Change^.Next:=Stack[StackPointer];
+    Stack[StackPointer]:=Change;
+  end;
+  
+  function GetStatus(Identifier: PChar): TDefineStatus;
+  var
+    AVLNode: TAVLTreeNode;
+  begin
+    AVLNode:=CurDefines.FindKey(Identifier,@ComparePCharWithDefineValue);
+    if AVLNode<>nil then
+      Result:=TDefineValue(AVLNode.Data).Status
+    else
+      Result:=dsUnknown;
+  end;
+  
+  procedure SetStatus(Identifier: PChar; NewStatus: TDefineStatus;
+    SaveOnStack: boolean = true);
+  var
+    AVLNode: TAVLTreeNode;
+    DefValue: TDefineValue;
+  begin
+    AVLNode:=CurDefines.FindKey(Identifier,@ComparePCharWithDefineValue);
+    if AVLNode=nil then begin
+      if NewStatus<>dsUnknown then begin
+        DefValue:=TDefineValue.Create;
+        DefValue.Name:=GetIdentifier(Identifier);
+        DefValue.Status:=NewStatus;
+        AddStackChange(DefValue.Name,dsUnknown);
+      end else begin
+        // no change
+      end;
+    end else begin
+      DefValue:=TDefineValue(AVLNode.Data);
+      if NewStatus<>dsUnknown then begin
+        if NewStatus<>DefValue.Status then begin
+          AddStackChange(DefValue.Name,DefValue.Status);
+          DefValue.Status:=NewStatus;
+        end;
+      end else begin
+        AddStackChange(DefValue.Name,DefValue.Status);
+        CurDefines.Delete(AVLNode);
+        DefValue.Free;
+      end;
+    end;
+  end;
+
+  procedure InitDefines;
+  var
+    i: Integer;
+    CurName: string;
+  begin
+    CurDefines:=TAVLTree.Create(@CompareDefineValues);
+    if Undefines<>nil then begin
+      for i:=0 to Undefines.Count-1 do
+        if Undefines[i]<>'' then
+          SetStatus(PChar(Undefines[i]),dsNotDefined);
+    end;
+    if Defines<>nil then begin
+      for i:=0 to Defines.Count-1 do begin
+        CurName:=Defines.Names[i];
+        if CurName='' then continue;
+        SetStatus(PChar(CurName),dsDefined);
+      end;
+    end;
+  end;
+  
+  procedure FreeDefines;
+  begin
+    if CurDefines=nil then exit;
+    CurDefines.FreeAndClear;
+    FreeAndNil(CurDefines);
+  end;
+  
+  procedure Push;
+  begin
+    inc(StackPointer);
+    if StackPointer=length(Stack) then
+      SetLength(Stack,length(Stack)*2+10);
+    Stack[StackPointer]:=nil;
+  end;
+  
+  procedure Pop;
+  var
+    Change: PDefineChange;
+  begin
+    if StackPointer=0 then
+      raise Exception.Create('TCompilerDirectivesTree.DisableUnreachableBlocks.Pop');
+    // undo all changes
+    while Stack[StackPointer]<>nil do begin
+      Change:=Stack[StackPointer];
+      SetStatus(PChar(Change^.Name),Change^.OldStatus,false);
+      Stack[StackPointer]:=Change^.Next;
+      Dispose(Change);
+    end;
+    dec(StackPointer);
+  end;
+  
+var
+  Node: TCodeTreeNode;
+  NextNode: TCodeTreeNode;
+  NameStart: integer;
+  NewStatus: TDefineStatus;
+  Identifier: PChar;
+  OldStatus: TDefineStatus;
+  HasValue: boolean;
+  ValueStart: integer;
+  ExprNode: TCodeTreeNode;
+  IsIfBlock: Boolean;
+begin
+  InitDefines;
+  InitStack;
+  try
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      NextNode:=Node.Next;
+      case Node.Desc of
+      cdnIf, cdnElse:
+        begin
+          if Node.Desc=cdnIf then begin
+            IsIfBlock:=true;
+          end else begin
+            // close prior block
+            IsIfBlock:=false;// it is an Else-block
+            Pop;
+          end;
+          // start new block
+          Push;
+          
+          if IsIfBlock then begin
+            ExprNode:=Node;
+          end else begin
+            if Node.PriorBrother.Desc=cdnIf then begin
+              ExprNode:=Node.PriorBrother;
+            end else begin
+              ExprNode:=nil;
+            end;
+          end;
+          
+          if (ExprNode<>nil) and IsIfExpressionSimple(ExprNode,NameStart) then
+          begin
+            // a simple expression
+            Identifier:=@Src[NameStart];
+            if (Node.SubDesc=cdnsUndef)=IsIfBlock then
+              NewStatus:=dsNotDefined
+            else
+              NewStatus:=dsDefined;
+            OldStatus:=GetStatus(Identifier);
+            if (OldStatus=dsUnknown) or (OldStatus=NewStatus) then begin
+              // this block is reachable
+              SetStatus(Identifier,NewStatus);
+            end else begin
+              // this block is unreachable
+              NextNode:=Node.NextBrother;
+              if (NextNode<>nil) and (NextNode.Desc=cdnEnd) then begin
+                // the end node will be disabled too, so do the Pop here
+                NextNode:=Node.NextSkipChilds;
+                Pop;
+              end;
+              // ToDo: disable content
+              //DisableIfNode(Node,Changed);
+            end;
+          end else begin
+            // a complex expression (If, ElseIf, Else)
+            // assume: it is reachable
+          end;
+        end;
+        
+      cdnElseIf:
+        begin
+          // if there is an ElseIf block, then there must be an IF block in front
+          // And the IF block in front must be reachable,
+          // otherwise it would be disabled
+          Pop;
+          // If+ElseIf gives a complex expression
+          // assume: it is reachable
+          Push;
+        end;
+        
+      cdnEnd:
+        begin
+          Pop;
+        end;
+        
+      cdnDefine:
+        if ((Node.SubDesc=cdnsDefine) or (Node.SubDesc=cdnsUndef)
+        or (Node.SubDesc=cdnsSetC))
+        and GetDefineNameAndValue(Node,NameStart,HasValue,ValueStart) then begin
+          if Node.SubDesc=cdnsDefine then
+            NewStatus:=dsDefined
+          else
+            NewStatus:=dsNotDefined;
+          // TODO: set status not only for stack level, but all levels
+          SetStatus(@Src[NameStart],NewStatus);
+        end;
+      end;
+      Node:=NextNode;
+    end;
+  finally
+    FreeStack;
+    FreeDefines;
   end;
 end;
 
@@ -1229,6 +1537,8 @@ begin
     DisableAllUnusedDefines(Changed);
     
     MoveIfNotThenDefsUp(Changed);
+    
+    //DisableUnreachableBlocks(Undefines,Defines,Changed);
     
     RemoveEmptyNodes(Changed);
   finally
