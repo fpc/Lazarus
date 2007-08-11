@@ -162,13 +162,15 @@ type
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
                              out ExprStart, ExprEnd: integer): boolean;
-    function IsIfExpressionSimple(Node: TCodeTreeNode; out MacroName: string
+    function IsIfExpressionSimple(Node: TCodeTreeNode; out NameStart: integer
                                   ): boolean;
+    function FindNameInIfExpression(Node: TCodeTreeNode; Identifier: PChar
+                                    ): integer;
     function GetDefineNameAndValue(DefineNode: TCodeTreeNode;
           out NameStart: integer; out HasValue: boolean; out ValueStart: integer
           ): boolean;
     function DefineUsesName(DefineNode: TCodeTreeNode;
-                            const aName: string): boolean;
+                            Identifier: PChar): boolean;
     function FindNodeAtPos(p: integer): TCodeTreeNode;
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
@@ -677,8 +679,8 @@ procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
   );
 (* Search for
     {$IFNDEF Name}
-      {$DEFINE Name}
       .. name is not used here ..
+      {$DEFINE Name}
     {$ENDIF}
 
    And move the define behind the IF block
@@ -686,14 +688,56 @@ procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
 var
   Node: TCodeTreeNode;
   NextNode: TCodeTreeNode;
-  MacroName: string;
+  SubNode: TCodeTreeNode;
+  NameStart: integer;
+  LastDefineNode: TCodeTreeNode;
+  LastIFNode: TCodeTreeNode;
 begin
   Node:=Tree.Root;
   while Node<>nil do begin
     NextNode:=Node.Next;
     if ((Node.Desc=cdnIf) or (Node.Desc=cdnElseIf))
-    and IsIfExpressionSimple(Node,MacroName) then begin
+    and IsIfExpressionSimple(Node,NameStart) then begin
+      // an IF with a single test
+      LastIFNode:=nil;
+      LastDefineNode:=nil;
+      SubNode:=Node.FirstChild;
+      while SubNode<>nil do begin
+        case SubNode.Desc of
+        
+        cdnIf, cdnElseIf:
+          if FindNameInIfExpression(SubNode,@Src[NameStart])>0 then begin
+            // this sub IF block uses the macro
+            
+            LastIFNode:=SubNode;
+          end;
+          
+        cdnDefine:
+          if ((SubNode.SubDesc=cdnsDefine) or (SubNode.SubDesc=cdnsUndef))
+          and DefineUsesName(SubNode,@Src[NameStart]) then begin
+            // this sub Define/Undef sets the macro
+            if (LastIFNode=nil) and (LastDefineNode=nil) then begin
+              (* This is
+                {$IF(N)DEF Name}
+                  ... Name not used ...
+                  {$DEFINE|UNDEF Name}
+              *)
+              if (Node.SubDesc=cdnsIfndef) = (SubNode.SubDesc=cdnsUndef) then
+              begin
+                { this is
+                     IFNDEF then UNDEF
+                 or  IFDEF then DEFINE
+                  remove define
+                }
+              end else begin
 
+              end;
+            end;
+            LastDefineNode:=SubNode;
+          end;
+        end;
+        SubNode:=SubNode.Next;
+      end;
     end;
     Node:=NextNode;
   end;
@@ -1520,12 +1564,12 @@ begin
 end;
 
 function TCompilerDirectivesTree.IsIfExpressionSimple(Node: TCodeTreeNode; out
-  MacroName: string): boolean;
+  NameStart: integer): boolean;
 var
   p: LongInt;
 begin
   Result:=false;
-  MacroName:='';
+  NameStart:=-1;
   // skip {$
   p:=Node.StartPos+2;
   if p>SrcLen then exit;
@@ -1536,7 +1580,7 @@ begin
   while (p<=SrcLen) and IsSpaceChar[Src[p]] do inc(p);
   if (p>SrcLen) or (not IsIdentStartChar[Src[p]]) then exit;
   // the expression starts with word
-  MacroName:=GetIdentifier(@Src[p]);
+  NameStart:=p;
   if (Node.SubDesc=cdnsIfdef) or (Node.SubDesc=cdnsIfndef) then begin
     // IFDEF and IFNDEF only test the first word
     exit(true);
@@ -1550,6 +1594,34 @@ begin
     exit(true);
   end;
   Result:=false;
+end;
+
+function TCompilerDirectivesTree.FindNameInIfExpression(Node: TCodeTreeNode;
+  Identifier: PChar): integer;
+var
+  p: LongInt;
+begin
+  Result:=-1;
+  // skip {$
+  p:=Node.StartPos+2;
+  if p>SrcLen then exit;
+  // skip directive name
+  while (p<=SrcLen) and IsIdentChar[Src[p]] do inc(p);
+  // read expression
+  while (p<=SrcLen) do begin
+    if Src[p]<>'}' then exit;
+    if IsIdentStartChar[Src[p]] then begin
+      if CompareIdentifierPtrs(@Src[p],Identifier)=0 then
+        exit(p);
+      if (Node.SubDesc=cdnsIfdef) or (Node.SubDesc=cdnsIfndef) then begin
+        // IFDEF and IFNDEF have only one word
+        exit;
+      end;
+      while (p<=SrcLen) and (IsIdentChar[Src[p]]) do inc(p);
+    end else begin
+      inc(p);
+    end;
+  end;
 end;
 
 function TCompilerDirectivesTree.GetDefineNameAndValue(
@@ -1587,7 +1659,7 @@ begin
 end;
 
 function TCompilerDirectivesTree.DefineUsesName(DefineNode: TCodeTreeNode;
-  const aName: string): boolean;
+  Identifier: PChar): boolean;
 var
   p: LongInt;
 begin
@@ -1599,7 +1671,7 @@ begin
   while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
   // check name
   if p>SrcLen then exit;
-  Result:=CompareIdentifierPtrs(@Src[p],Pointer(aName))=0;
+  Result:=CompareIdentifierPtrs(@Src[p],Identifier)=0;
 end;
 
 function TCompilerDirectivesTree.FindNodeAtPos(p: integer): TCodeTreeNode;
