@@ -1,53 +1,55 @@
 object ImageListEditorDlg: TImageListEditorDlg
   Left = 313
-  Height = 345
+  Height = 379
   Top = 194
-  Width = 520
-  HorzScrollBar.Page = 519
-  VertScrollBar.Page = 344
+  Width = 616
+  HorzScrollBar.Page = 615
+  VertScrollBar.Page = 378
   ActiveControl = BtnOK
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
+  ClientHeight = 379
+  ClientWidth = 616
   Constraints.MinHeight = 345
   Constraints.MinWidth = 520
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
   object GroupBoxR: TGroupBox
-    Left = 296
-    Height = 299
+    Left = 375
+    Height = 313
     Top = 6
-    Width = 218
+    Width = 235
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
+    ClientHeight = 294
+    ClientWidth = 231
     TabOrder = 5
     object LabelTransparent: TLabel
       Left = 110
-      Height = 13
-      Top = 175
-      Width = 104
+      Height = 20
+      Top = 182
+      Width = 117
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Transparent Color:'
-      Color = clNone
       ParentColor = False
     end
     object LabelSize: TLabel
       Left = 6
-      Height = 28
+      Height = 30
       Top = 6
-      Width = 76
-      Color = clNone
+      Width = 78
       ParentColor = False
     end
     object Preview: TScrollBox
       Left = 6
-      Height = 132
+      Height = 146
       Top = 32
-      Width = 201
-      HorzScrollBar.Page = 196
-      VertScrollBar.Page = 127
+      Width = 218
+      HorzScrollBar.Page = 213
+      VertScrollBar.Page = 141
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Color = clGrayText
@@ -58,7 +60,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     object RadioGroup: TRadioGroup
       Left = 6
       Height = 105
-      Top = 170
+      Top = 184
       Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -72,6 +74,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
+      ClientHeight = 86
+      ClientWidth = 92
       Enabled = False
       ItemIndex = 0
       Items.Strings = (
@@ -86,10 +90,12 @@ object ImageListEditorDlg: TImageListEditorDlg
     object ColorBoxTransparent: TColorBox
       Left = 110
       Height = 24
-      Top = 195
+      Top = 209
       Width = 96
       Anchors = [akLeft, akBottom]
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       Enabled = False
+      ItemIndex = 13
       Items.Strings = (
         'clBlack'
         'clMaroon'
@@ -201,20 +207,23 @@ object ImageListEditorDlg: TImageListEditorDlg
         'clActiveShadow'
         'clActiveHighlight'
         'clActiveHighlightedText'
+        'clMoneyGreen'
+        'clSkyBlue'
+        'clMedGray'
       )
       MaxLength = 0
       Palette = cpFull
-      ParentColor = False
       TabOrder = 2
       Text = 'clFuchsia'
       OnChange = ColorBoxTransparentClick
     end
   end
   object BtnOK: TBitBtn
-    Left = 199
-    Height = 25
-    Top = 313
-    Width = 75
+    AnchorSideRight.Control = BtnCancel
+    Left = 230
+    Height = 35
+    Top = 334
+    Width = 90
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = '&OK'
@@ -224,10 +233,11 @@ object ImageListEditorDlg: TImageListEditorDlg
     TabOrder = 0
   end
   object BtnCancel: TBitBtn
-    Left = 279
-    Height = 25
-    Top = 313
-    Width = 75
+    AnchorSideRight.Control = BtnApply
+    Left = 326
+    Height = 35
+    Top = 334
+    Width = 90
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
@@ -237,10 +247,11 @@ object ImageListEditorDlg: TImageListEditorDlg
     TabOrder = 1
   end
   object BtnApply: TBitBtn
-    Left = 359
-    Height = 25
-    Top = 313
-    Width = 75
+    AnchorSideRight.Control = BtnHelp
+    Left = 422
+    Height = 35
+    Top = 334
+    Width = 90
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = '&Apply'
@@ -249,10 +260,10 @@ object ImageListEditorDlg: TImageListEditorDlg
     TabOrder = 2
   end
   object BtnHelp: TBitBtn
-    Left = 439
-    Height = 25
-    Top = 313
-    Width = 75
+    Left = 518
+    Height = 35
+    Top = 334
+    Width = 90
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = '&Help'
@@ -262,21 +273,23 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object GroupBoxL: TGroupBox
     Left = 6
-    Height = 299
+    Height = 313
     Top = 6
-    Width = 280
+    Width = 364
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
+    ClientHeight = 294
+    ClientWidth = 360
     TabOrder = 4
     object TreeView: TTreeView
       Left = 6
-      Height = 269
+      Height = 283
       Top = 6
-      Width = 185
+      Width = 186
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
-      DefaultItemHeight = 16
+      DefaultItemHeight = 19
       HideSelection = False
       Images = ImageList
       RowSelect = True
@@ -293,7 +306,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 196
       Height = 25
       Top = 6
-      Width = 75
+      Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
@@ -306,7 +319,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 196
       Height = 25
       Top = 68
-      Width = 75
+      Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
@@ -318,7 +331,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 196
       Height = 25
       Top = 37
-      Width = 75
+      Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
@@ -331,7 +344,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 196
       Height = 25
       Top = 99
-      Width = 75
+      Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
@@ -344,7 +357,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 196
       Height = 25
       Top = 130
-      Width = 75
+      Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
@@ -356,7 +369,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 196
       Height = 25
       Top = 161
-      Width = 75
+      Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.InnerBorder = 4
       Caption = 'Save...'
