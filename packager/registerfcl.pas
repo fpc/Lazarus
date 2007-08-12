@@ -39,7 +39,7 @@ interface
 
 uses
   LazarusPackageIntf,
-  Classes, SysUtils, Process, DB, SimpleIPC, XMLCfg;
+  Classes, SysUtils, Process, DB, SimpleIPC, XMLCfg, EventLog;
 
 procedure Register;
 
@@ -65,12 +65,18 @@ begin
   RegisterComponents('System',[TXMLConfig]);
 end;
 
+procedure RegisterEventLog;
+begin
+  RegisterComponents('System',[TEventLog]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('DB',@RegisterDB);
   RegisterUnit('Process',@RegisterProcess);
   RegisterUnit('SimpleIPC', @RegisterSimpleIPC);
   RegisterUnit('XMLCfg',@RegisterXMLCfg);
+  RegisterUnit('EventLog',@RegisterEventLog);
 end;
 
 end.

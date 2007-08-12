@@ -1113,7 +1113,8 @@ begin
     AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('inc/simpleipc.pp'),'SimpleIPC',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('fcl/xml/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('xml/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('inc/eventlog.pp'),'EventLog',pftUnit,[],cpBase);
 
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
