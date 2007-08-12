@@ -35,6 +35,7 @@ const
   ProjDescGroupName = 'Project';
   ProjDescNameApplication = 'Application';
   ProjDescNameProgram = 'Program';
+  ProjDescNameConsoleApplication = 'Console application';
   ProjDescNameLibrary = 'Library';
   ProjDescNameCustomProgram = 'Custom Program';
   ProjDescNameEmpty = 'Empty';
@@ -614,6 +615,7 @@ var
 
 function ProjectDescriptorApplication: TProjectDescriptor;
 function ProjectDescriptorProgram: TProjectDescriptor;
+function ProjectDescriptorConsoleApplication: TProjectDescriptor;
 function ProjectDescriptorLibrary: TProjectDescriptor;
 function ProjectDescriptorCustomProgram: TProjectDescriptor;
 function ProjectDescriptorEmptyProject: TProjectDescriptor;
@@ -734,6 +736,11 @@ end;
 function ProjectDescriptorProgram: TProjectDescriptor;
 begin
   Result:=ProjectDescriptors.FindByName(ProjDescNameProgram);
+end;
+
+function ProjectDescriptorConsoleApplication: TProjectDescriptor;
+begin
+  Result:=ProjectDescriptors.FindByName(ProjDescNameConsoleApplication);
 end;
 
 function ProjectDescriptorLibrary: TProjectDescriptor;

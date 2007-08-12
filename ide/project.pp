@@ -434,6 +434,17 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
+  { TProjectConsoleApplicationDescriptor }
+
+  TProjectConsoleApplicationDescriptor = class(TProjectDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
   { TProjectLibraryDescriptor }
 
   TProjectLibraryDescriptor = class(TProjectDescriptor)
@@ -4784,6 +4795,124 @@ begin
     PrevDependency[ListType].NextDependency[ListType]:=NextDependency[ListType];
   NextDependency[ListType]:=nil;
   PrevDependency[ListType]:=nil;
+end;
+
+{ TProjectConsoleApplicationDescriptor }
+
+constructor TProjectConsoleApplicationDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameConsoleApplication;
+end;
+
+function TProjectConsoleApplicationDescriptor.GetLocalizedName: string;
+begin
+  Result:=lisConsoleApplication;
+end;
+
+function TProjectConsoleApplicationDescriptor.GetLocalizedDescription: string;
+begin
+  Result:=GetLocalizedName+#13
+    +lisFreepascalProgramUsingTCustomApplicationToEasilyCh;
+end;
+
+function TProjectConsoleApplicationDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
+var
+  NewSource: TStringList;
+  MainFile: TLazProjectFile;
+begin
+  Result:=inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+
+  // create program source
+  NewSource:=TStringList.Create;
+  NewSource.Add('program Project1;');
+  NewSource.Add('');
+  NewSource.Add('{$mode objfpc}{$H+}');
+  NewSource.Add('');
+  NewSource.Add('uses');
+  NewSource.Add('  {$IFDEF UNIX}{$IFDEF UseCThreads}');
+  NewSource.Add('  cthreads,');
+  NewSource.Add('  {$ENDIF}{$ENDIF}');
+  NewSource.Add('  Classes, SysUtils, CustApp');
+  NewSource.Add('  { add your units here };');
+  NewSource.Add('');
+  NewSource.Add('type');
+  NewSource.Add('');
+  NewSource.Add('  { TMyApplication }');
+  NewSource.Add('');
+  NewSource.Add('  TMyApplication = class(TCustomApplication)');
+  NewSource.Add('  protected');
+  NewSource.Add('    procedure DoRun; override;');
+  NewSource.Add('  public');
+  NewSource.Add('    constructor Create(TheOwner: TComponent); override;');
+  NewSource.Add('    destructor Destroy; override;');
+  NewSource.Add('    procedure WriteHelp; virtual;');
+  NewSource.Add('  end;');
+  NewSource.Add('');
+  NewSource.Add('{ TMyApplication }');
+  NewSource.Add('');
+  NewSource.Add('procedure TMyApplication.DoRun;');
+  NewSource.Add('var');
+  NewSource.Add('  ErrorMsg: String;');
+  NewSource.Add('begin');
+  NewSource.Add('  // quick check parameters');
+  NewSource.Add('  ErrorMsg:=CheckOptions(''h'',''help'');');
+  NewSource.Add('  if ErrorMsg<>'''' then begin');
+  NewSource.Add('    ShowException(Exception.Create(ErrorMsg));');
+  NewSource.Add('    Halt;');
+  NewSource.Add('  end;');
+  NewSource.Add('');
+  NewSource.Add('  // parse parameters');
+  NewSource.Add('  if HasOption(''h'',''help'') then begin');
+  NewSource.Add('    WriteHelp;');
+  NewSource.Add('    Halt;');
+  NewSource.Add('  end;');
+  NewSource.Add('');
+  NewSource.Add('  { add your program here }');
+  NewSource.Add('');
+  NewSource.Add('  // stop program loop');
+  NewSource.Add('  Terminate;');
+  NewSource.Add('end;');
+  NewSource.Add('');
+  NewSource.Add('constructor TMyApplication.Create(TheOwner: TComponent);');
+  NewSource.Add('begin');
+  NewSource.Add('  inherited Create(TheOwner);');
+  NewSource.Add('end;');
+  NewSource.Add('');
+  NewSource.Add('destructor TMyApplication.Destroy;');
+  NewSource.Add('begin');
+  NewSource.Add('  inherited Destroy;');
+  NewSource.Add('end;');
+  NewSource.Add('');
+  NewSource.Add('procedure TMyApplication.WriteHelp;');
+  NewSource.Add('begin');
+  NewSource.Add('  { add your help code here }');
+  NewSource.Add('  writeln(''Usage: '',ExeName,'' -h'');');
+  NewSource.Add('end;');
+  NewSource.Add('');
+  NewSource.Add('var');
+  NewSource.Add('  Application: TMyApplication;');
+  NewSource.Add('begin');
+  NewSource.Add('  Application:=TMyApplication.Create(nil);');
+  NewSource.Add('  Application.Run;');
+  NewSource.Add('  Application.Free;');
+  NewSource.Add('end.');
+  NewSource.Add('');
+  AProject.MainFile.SetSourceText(NewSource.Text);
+  NewSource.Free;
+end;
+
+function TProjectConsoleApplicationDescriptor.CreateStartFiles(
+  AProject: TLazProject): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                                      [ofProjectLoading,ofRegularFile]);
 end;
 
 end.

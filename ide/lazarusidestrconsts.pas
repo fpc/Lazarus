@@ -3226,6 +3226,11 @@ resourcestring
   lisScalingFactor = 'Scaling factor:';
   lisCustomProgram = 'Custom Program';
   lisProgram = 'Program';
+  lisConsoleApplication = 'Console application';
+  lisFreepascalProgramUsingTCustomApplicationToEasilyCh =
+      'freepascal program '
+    +'using TCustomApplication to easily check command line options, handling '
+    +'exceptions, etc. The program file is automatically maintained by lazarus.';
   lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA '
     +'freepascal program. The program file is automatically maintained by '
     +'lazarus.';
