@@ -77,6 +77,14 @@ begin
     end else
       Filename:=p;
   end;
+  if Undefines<>nil then begin
+    writeln('Undefines: ');
+    writeln(Undefines.Text);
+  end;
+  if Defines<>nil then begin
+    writeln('Defines: ');
+    writeln(Defines.Text);
+  end;
 
   // load the file
   Filename:=ExpandFileName(Filename);
@@ -113,5 +121,9 @@ begin
     writeln('after reduce number ',Pass,':');
     Tree.WriteDebugReport;
   until false;
+  
+  writeln('-----------------------------------');
+  writeln('Source:');
+  writeln(Code.Source);
 end.
 

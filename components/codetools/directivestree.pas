@@ -27,6 +27,8 @@ unit DirectivesTree;
 
 {$ifdef FPC}{$mode objfpc}{$endif}{$H+}
 
+{ $DEFINE VerboseDisableUnreachableIFDEFs}
+
 interface
 
 {$I codetools.inc}
@@ -164,6 +166,7 @@ type
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
                              out ExprStart, ExprEnd: integer): boolean;
+    function GetIfExpressionString(Node: TCodeTreeNode): string;
     function IsIfExpressionSimple(Node: TCodeTreeNode; out NameStart: integer
                                   ): boolean;
     function FindNameInIfExpression(Node: TCodeTreeNode; Identifier: PChar
@@ -251,6 +254,13 @@ type
     Status: TDefineStatus;
     Value: string;
   end;
+  
+{$IFDEF VerboseDisableUnreachableIFDEFs}
+const
+  DefineStatusNames: array[TDefineStatus] of string = (
+    'dsUnknown','dsDefined','dsNotDefined'
+    );
+{$ENDIF}
   
 function CompareDefineValues(Data1, Data2: Pointer): integer;
 begin
@@ -894,16 +904,23 @@ var
   var
     Change: PDefineChange;
   begin
+    {$IFDEF VerboseDisableUnreachableIFDEFs}
+    DebugLn(['AddStackChange ',MacroName,' ',DefineStatusNames[OldStatus]]);
+    {$ENDIF}
     // check if MacroName was already changed
     Change:=Stack[StackPointer];
     while (Change<>nil) do begin
-      if (CompareIdentifierPtrs(Pointer(MacroName),Pointer(Change^.Name))=0) then begin
+      if (CompareIdentifierPtrs(Pointer(MacroName),Pointer(Change^.Name))=0)
+      then begin
         // old status is already saved
         exit;
       end;
       Change:=Change^.Next;
     end;
   
+    {$IFDEF VerboseDisableUnreachableIFDEFs}
+    DebugLn(['AddStackChange ADD ',MacroName,' ',DefineStatusNames[OldStatus]]);
+    {$ENDIF}
     New(Change);
     FillChar(Change^,SizeOf(TDefineChange),0);
     Change^.Name:=MacroName;
@@ -931,12 +948,16 @@ var
     i: Integer;
     Change: PDefineChange;
   begin
+    {$IFDEF VerboseDisableUnreachableIFDEFs}
+    DebugLn(['SetStatus ',GetIdentifier(Identifier),' Old=',DefineStatusNames[GetStatus(Identifier)],' New=',DefineStatusNames[NewStatus]]);
+    {$ENDIF}
     AVLNode:=CurDefines.FindKey(Identifier,@ComparePCharWithDefineValue);
     if AVLNode=nil then begin
       if NewStatus<>dsUnknown then begin
         DefValue:=TDefineValue.Create;
         DefValue.Name:=GetIdentifier(Identifier);
         DefValue.Status:=NewStatus;
+        CurDefines.Add(DefValue);
         if SaveOnStack then
           AddStackChange(DefValue.Name,dsUnknown);
       end else begin
@@ -973,6 +994,9 @@ var
         end;
       end;
     end;
+    {$IFDEF VerboseDisableUnreachableIFDEFs}
+    DebugLn(['SetStatus ',GetIdentifier(Identifier),' Cur=',DefineStatusNames[GetStatus(Identifier)],' Should=',DefineStatusNames[NewStatus]]);
+    {$ENDIF}
   end;
 
   procedure InitDefines;
@@ -981,6 +1005,9 @@ var
     CurName: string;
   begin
     CurDefines:=TAVLTree.Create(@CompareDefineValues);
+    {$IFDEF VerboseDisableUnreachableIFDEFs}
+    DebugLn(['InitDefines ',Defines<>nil,' ',Undefines<>nil]);
+    {$ENDIF}
     if Undefines<>nil then begin
       for i:=0 to Undefines.Count-1 do
         if Undefines[i]<>'' then
@@ -988,7 +1015,9 @@ var
     end;
     if Defines<>nil then begin
       for i:=0 to Defines.Count-1 do begin
-        CurName:=Defines.Names[i];
+        CurName:=Defines[i];
+        if System.Pos('=',CurName)>0 then
+          CurName:=Defines.Names[i];
         if CurName='' then continue;
         SetStatus(PChar(CurName),dsDefined,false,false);
       end;
@@ -1047,6 +1076,9 @@ begin
     Node:=Tree.Root;
     while Node<>nil do begin
       NextNode:=Node.Next;
+      {$IFDEF VerboseDisableUnreachableIFDEFs}
+      DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks Node=',CDNodeDescAsString(Node.Desc),'=',GetDirective(Node)]);
+      {$ENDIF}
       case Node.Desc of
       cdnIf, cdnElse:
         begin
@@ -1069,7 +1101,13 @@ begin
               ExprNode:=nil;
             end;
           end;
-          
+          {$IFDEF VerboseDisableUnreachableIFDEFs}
+          if (ExprNode<>nil) then
+            DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks Expr=',GetIfExpressionString(ExprNode),' Simple=',IsIfExpressionSimple(ExprNode,NameStart)])
+          else
+            DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks Expr=nil']);
+          {$ENDIF}
+
           if (ExprNode<>nil) and IsIfExpressionSimple(ExprNode,NameStart) then
           begin
             // a simple expression
@@ -1082,6 +1120,9 @@ begin
             BlockIsReachable:=(OldStatus=dsUnknown) or (OldStatus=NewStatus);
             BlockIsAlwaysReached:=OldStatus=NewStatus;
             BlockIsNeverReached:=(OldStatus<>dsUnknown) and (OldStatus<>NewStatus);
+            {$IFDEF VerboseDisableUnreachableIFDEFs}
+            DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks Identifier=',GetIdentifier(Identifier),' Reachable=',BlockIsReachable,' Always=',BlockIsAlwaysReached,' Never=',BlockIsNeverReached]);
+            {$ENDIF}
             if BlockIsReachable then
               SetStatus(Identifier,NewStatus,true,false);
             if BlockIsAlwaysReached or BlockIsNeverReached then begin
@@ -1089,7 +1130,7 @@ begin
               NextNode:=Node.NextBrother;
               if (NextNode<>nil) and (NextNode.Desc=cdnEnd) then begin
                 // the end node will be disabled too, so do the Pop here
-                NextNode:=Node.NextSkipChilds;
+                NextNode:=NextNode.NextSkipChilds;
                 Pop;
               end;
               DisableIfNode(Node,BlockIsNeverReached,Changed);
@@ -1125,7 +1166,7 @@ begin
           else
             NewStatus:=dsNotDefined;
           // set status on all levels
-          SetStatus(@Src[NameStart],NewStatus,false,true);
+          SetStatus(@Src[NameStart],NewStatus,true,true);
         end;
       end;
       Node:=NextNode;
@@ -1134,6 +1175,9 @@ begin
     FreeStack;
     FreeDefines;
   end;
+  {$IFDEF VerboseDisableUnreachableIFDEFs}
+  DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks END']);
+  {$ENDIF}
 end;
 
 procedure TCompilerDirectivesTree.DisableDefineNode(Node: TCodeTreeNode;
@@ -1144,7 +1188,7 @@ var
   NewSrc: String;
 begin
   if not DisableUnusedDefines then exit;
-  DebugLn(['TCompilerDirectivesTree.DisableDefineNode ',GetDirective(Node)]);
+  //DebugLn(['TCompilerDirectivesTree.DisableDefineNode ',GetDirective(Node)]);
   if RemoveDisabledDirectives then begin
     // remove directive (including space+empty lines in front and spaces behind)
     FromPos:=Node.StartPos;
@@ -1338,8 +1382,11 @@ begin
     end else begin
       // remove node source keeping content (child node source)
       Replace(FromPos,FindCommentEnd(Src,FromPos,NestedComments),'');
-      if Node.NextBrother.Desc=cdnEnd then
+      if Node.NextBrother.Desc=cdnEnd then begin
+        ToPos:=FindCommentEnd(Src,Node.NextBrother.StartPos,NestedComments);
+        ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
         Replace(Node.NextBrother.StartPos,ToPos,'');
+      end;
     end;
   end else begin
     // disable directive -> {$off IfDef MacroName}
@@ -1398,7 +1445,7 @@ var
           // node is empty
           NextNode:=Node.NextBrother;
           if NextNode.Desc=cdnEnd then
-            NextNode:=NextNode.Next;
+            NextNode:=NextNode.NextSkipChilds;
           DisableIfNode(Node,true,Changed);
         end;
       end;
@@ -1406,7 +1453,7 @@ var
   end;
   
 begin
-  DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes ']);
+  //DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes ']);
   Node:=Tree.Root;
   while Node<>nil do begin
     NextNode:=Node.Next;
@@ -1638,7 +1685,7 @@ begin
     
     MoveIfNotThenDefsUp(Changed);
     
-    //DisableUnreachableBlocks(Undefines,Defines,Changed);
+    DisableUnreachableBlocks(Undefines,Defines,Changed);
     
     RemoveEmptyNodes(Changed);
   finally
@@ -2026,6 +2073,18 @@ begin
   while (p<=SrcLen) and (Src[p]<>'}') do inc(p);
   ExprEnd:=p;
   Result:=true;
+end;
+
+function TCompilerDirectivesTree.GetIfExpressionString(Node: TCodeTreeNode
+  ): string;
+var
+  ExprStart: integer;
+  ExprEnd: integer;
+begin
+  if not GetIfExpression(Node,ExprStart,ExprEnd) then
+    Result:=''
+  else
+    Result:=copy(Src,ExprStart,ExprEnd-ExprStart);
 end;
 
 function TCompilerDirectivesTree.IsIfExpressionSimple(Node: TCodeTreeNode; out
