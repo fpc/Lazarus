@@ -133,8 +133,8 @@ type
     procedure DisableUnreachableBlocks(Undefines, Defines: TStrings;
                                        var Changed: boolean);
     procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
-    procedure DisableIfNode(Node: TCodeTreeNode; var Changed: boolean);
-    procedure DisableNode(Node: TCodeTreeNode; var Changed: boolean);
+    procedure DisableIfNode(Node: TCodeTreeNode; WithContent: boolean;
+                            var Changed: boolean);
     procedure RemoveNode(Node: TCodeTreeNode);
     procedure RemoveEmptyNodes(var Changed: boolean);
     function InsertDefine(Position: integer; const NewSrc: string;
@@ -1007,6 +1007,9 @@ var
   ValueStart: integer;
   ExprNode: TCodeTreeNode;
   IsIfBlock: Boolean;
+  BlockIsAlwaysReached: Boolean;
+  BlockIsNeverReached: Boolean;
+  BlockIsReachable: Boolean;
 begin
   InitDefines;
   InitStack;
@@ -1046,19 +1049,20 @@ begin
             else
               NewStatus:=dsDefined;
             OldStatus:=GetStatus(Identifier);
-            if (OldStatus=dsUnknown) or (OldStatus=NewStatus) then begin
-              // this block is reachable
+            BlockIsReachable:=(OldStatus=dsUnknown) or (OldStatus=NewStatus);
+            BlockIsAlwaysReached:=OldStatus=NewStatus;
+            BlockIsNeverReached:=(OldStatus<>dsUnknown) and (OldStatus<>NewStatus);
+            if BlockIsReachable then
               SetStatus(Identifier,NewStatus);
-            end else begin
-              // this block is unreachable
+            if BlockIsAlwaysReached or BlockIsNeverReached then begin
+              // this block can be removed
               NextNode:=Node.NextBrother;
               if (NextNode<>nil) and (NextNode.Desc=cdnEnd) then begin
                 // the end node will be disabled too, so do the Pop here
                 NextNode:=Node.NextSkipChilds;
                 Pop;
               end;
-              // ToDo: disable content
-              //DisableIfNode(Node,Changed);
+              DisableIfNode(Node,BlockIsNeverReached,Changed);
             end;
           end else begin
             // a complex expression (If, ElseIf, Else)
@@ -1134,7 +1138,7 @@ begin
 end;
 
 procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
-  var Changed: boolean);
+  WithContent: boolean; var Changed: boolean);
   
   procedure RaiseImpossible;
   begin
@@ -1151,10 +1155,83 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
     Result:=copy(Src,ExprStart,ExprEnd-ExprStart);
   end;
   
+  procedure CommentCode(FromPos, ToPos: integer);
+  var
+    p: LongInt;
+    NewSrc: String;
+  begin
+    p:=FromPos;
+    repeat
+      // find code
+      MoveCursorToPos(p);
+      ReadNextAtom;
+      if AtomStart>=ToPos then break;
+      // there is code to comment
+      // = > start comment
+      Replace(AtomStart,AtomStart,'(* ');
+      p:=AtomStart;
+      while (p<FromPos) do begin
+        if (Src[p]='(') and (Src[p+1]='*') then
+          break;
+        inc(p);
+      end;
+      // end comment
+      NewSrc:='*)'+LineEnding;
+      Replace(p,p,NewSrc);
+      inc(p,length(NewSrc));
+    until false;
+  end;
+  
+  procedure DisableContent;
+  var
+    FromPos: LongInt;
+    ToPos: LongInt;
+    ChildNode: TCodeTreeNode;
+    FirstChild: TCodeTreeNode;
+    LastChild: TCodeTreeNode;
+  begin
+    if not WithContent then begin
+      // the content (child nodes) will stay, but the Node will be freed
+      // -> move child nodes in front of Node (keep source positions)
+      FirstChild:=Node.FirstChild;
+      LastChild:=Node.LastChild;
+      if FirstChild<>nil then begin
+        ChildNode:=FirstChild;
+        while ChildNode<>nil do begin
+          ChildNode.Parent:=Node.Parent;
+          ChildNode:=ChildNode.NextBrother;
+        end;
+        FirstChild.PriorBrother:=Node.PriorBrother;
+        LastChild.NextBrother:=Node;
+        if FirstChild.PriorBrother=nil then begin
+          if Node.Parent<>nil then
+            Node.Parent.FirstChild:=FirstChild;
+        end else begin
+          FirstChild.PriorBrother.NextBrother:=FirstChild;
+        end;
+        Node.PriorBrother:=LastChild;
+        Node.FirstChild:=nil;
+        Node.LastChild:=nil;
+      end;
+    end else begin
+      // free nodes and delete code
+      while Node.FirstChild<>nil do
+        RemoveNode(Node.FirstChild);
+      FromPos:=FindCommentEnd(Src,Node.StartPos,NestedComments);
+      ToPos:=Node.NextBrother.StartPos;
+      if RemoveDisabledDirectives then begin
+        // delete content
+        Replace(FromPos,ToPos,'');
+      end else begin
+        // comment content
+        CommentCode(FromPos,ToPos);
+      end;
+    end;
+  end;
+  
 var
   FromPos: LongInt;
   ToPos: LongInt;
-  RemoveNextBrother: Boolean;
   Expr: String;
   ElseNode: TCodeTreeNode;
   ElseName: String;
@@ -1164,10 +1241,13 @@ var
   NewDesc: TCompilerDirectiveNodeDesc;
   NewSubDesc: TCompilerDirectiveNodeDesc;
 begin
-  if (Node.FirstChild<>nil) or (Node.NextBrother=nil) then
+  if (Node.NextBrother=nil) then
     RaiseImpossible;
-  RemoveNextBrother:=Node.NextBrother.Desc=cdnEnd;
-
+  if (Node.Desc<>cdnIf) and (Node.Desc<>cdnElseIf) and (Node.Desc<>cdnElse) then
+    RaiseImpossible;
+    
+  DisableContent;
+    
   Changed:=true;
   
   // fix all following elseif and else nodes
@@ -1216,41 +1296,31 @@ begin
   end;
   
   FromPos:=Node.StartPos;
-  if RemoveNextBrother then begin
-    ToPos:=FindCommentEnd(Src,Node.NextBrother.StartPos,NestedComments);
-    ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
-  end else
-    ToPos:=Node.NextBrother.StartPos;
   if RemoveDisabledDirectives then begin
-    // remove node source completely
-    Replace(FromPos,ToPos,'');
+    if Node.NextBrother.Desc=cdnEnd then begin
+      ToPos:=FindCommentEnd(Src,Node.NextBrother.StartPos,NestedComments);
+      ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
+    end else
+      ToPos:=Node.NextBrother.StartPos;
+    if WithContent then begin
+      // remove node source with content
+      Replace(FromPos,ToPos,'');
+    end else begin
+      // remove node source keeping content (child node source)
+      Replace(FromPos,FindCommentEnd(Src,FromPos,NestedComments),'');
+      if Node.NextBrother.Desc=cdnEnd then
+        Replace(Node.NextBrother.StartPos,ToPos,'');
+    end;
   end else begin
     // disable directive -> {$off IfDef MacroName}
-    Replace(Node.StartPos+1,Node.StartPos+1,'off ');
+    Replace(FromPos+1,FromPos+1,'off ');
+    if Node.NextBrother.Desc=cdnEnd then
+      Replace(Node.NextBrother.StartPos+1,Node.NextBrother.StartPos+1,'off ');
   end;
   
-  if RemoveNextBrother then
+  if Node.NextBrother.Desc=cdnEnd then
     RemoveNode(Node.NextBrother);
   RemoveNode(Node);
-end;
-
-procedure TCompilerDirectivesTree.DisableNode(Node: TCodeTreeNode;
-  var Changed: boolean);
-
-  procedure RaiseRemoveImpossible;
-  begin
-    raise CDirectiveParserException.Create('TCompilerDirectivesTree.RemoveNodeWithCode not implemented yet');
-  end;
-
-begin
-  case Node.SubDesc of
-  cdnsDefine, cdnsUndef, cdnsSetC, cdnsShortSwitch, cdnsLongSwitch, cdnsMode:
-    DisableDefineNode(Node,Changed);
-  cdnsIfdef:
-    DisableIfNode(Node,Changed);
-  else
-    RaiseRemoveImpossible;
-  end;
 end;
 
 procedure TCompilerDirectivesTree.RemoveNode(Node: TCodeTreeNode);
@@ -1288,7 +1358,7 @@ var
     if (Node.NextBrother=nil) or (Node.FirstChild<>nil) then exit;
     case Node.NextBrother.Desc of
     cdnEnd,cdnElse,cdnElseIf:
-      begin
+      if Node.FirstChild=nil then begin
         MoveCursorToPos(Node.StartPos);
         // skip directive
         ReadNextAtom;
@@ -1299,7 +1369,7 @@ var
           NextNode:=Node.NextBrother;
           if NextNode.Desc=cdnEnd then
             NextNode:=NextNode.Next;
-          DisableIfNode(Node,Changed);
+          DisableIfNode(Node,true,Changed);
         end;
       end;
     end;
