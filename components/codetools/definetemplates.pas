@@ -81,6 +81,18 @@ const
   UnitLinksMacroName       = ExternalMacroStart+'UnitLinks';
   FPCUnitPathMacroName     = ExternalMacroStart+'FPCUnitPath';
 
+  DefinePathMacro          = '$('+DefinePathMacroName+')';
+  UnitPathMacro            = '$('+UnitPathMacroName+')';
+  IncludePathMacro         = '$('+IncludePathMacroName+')';
+  SrcPathMacro             = '$('+SrcPathMacroName+')';
+  PPUSrcPathMacro          = '$('+PPUSrcPathMacroName+')';
+  PPWSrcPathMacro          = '$('+PPWSrcPathMacroName+')';
+  DCUSrcPathMacro          = '$('+DCUSrcPathMacroName+')';
+  CompiledSrcPathMacro     = '$('+CompiledSrcPathMacroName+')';
+  UnitLinksMacro           = '$('+UnitLinksMacroName+')';
+  FPCUnitPathMacro         = '$('+FPCUnitPathMacroName+')';
+
+
   // virtual directories
   VirtualDirectory='VIRTUALDIRECTORY';
   VirtualTempDir='TEMPORARYDIRECTORY';
@@ -941,6 +953,8 @@ procedure TDefineTemplate.AddChild(ADefineTemplate: TDefineTemplate);
 // add as last child
 begin
   if ADefineTemplate=nil then exit;
+  if ADefineTemplate.Parent<>nil then
+    raise Exception.Create('TDefineTemplate.AddChild');
   if LastChild=nil then begin
     while ADefineTemplate<>nil do begin
       ADefineTemplate.fParent:=Self;
@@ -3079,10 +3093,15 @@ function TDefinePool.CreateFPCSrcTemplate(
   Owner: TObject): TDefineTemplate;
 var
   Dir, TargetOS, SrcOS, SrcOS2, TargetProcessor, UnitLinks,
-  IncPathMacro, SrcPathMacro: string;
+  IncPathMacro: string;
   DS: char; // dir separator
   UnitTree: TAVLTree; // tree of TDefTemplUnitNameLink
   DefaultSrcOS, DefaultSrcOS2: string;
+  
+  function d(const Filenames: string): string;
+  begin
+    Result:=SetDirSeparators(Filenames);
+  end;
 
   procedure GatherUnits; forward;
 
@@ -3554,6 +3573,8 @@ var
   FCLDBInterbaseDir: TDefineTemplate;
   InstallerDir: TDefineTemplate;
   IFTempl: TDefineTemplate;
+  FCLBaseDir: TDefineTemplate;
+  FCLBaseSrcDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3573,7 +3594,6 @@ begin
   SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
   TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
   IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
-  SrcPathMacro:='$('+ExternalMacroStart+'SrcPath)';
   UnitLinks:=UnitLinksMacroName;
   UnitTree:=nil;
   DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
@@ -3690,11 +3710,11 @@ begin
   FCLDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
     ExternalMacroStart+'IncPath',
-    IncPathMacro
-    +';'+Dir+'fcl'+DS+'inc'+DS
-    +';'+Dir+'fcl'+DS+'classes'+DS
-    +';'+Dir+'fcl'+DS+TargetOS+DS // TargetOS before SrcOS !
-    +';'+Dir+'fcl'+DS+SrcOS+DS
+    d(   DefinePathMacro+'/inc/'
+    +';'+DefinePathMacro+'/classes/'
+    +';'+DefinePathMacro+'/'+TargetOS+DS // TargetOS before SrcOS !
+    +';'+DefinePathMacro+'/'+SrcOS+DS
+    +';'+IncPathMacro)
     ,da_DefineRecurse));
 
   // fcl/db
@@ -3706,14 +3726,33 @@ begin
   FCLDBInterbaseDir.AddChild(TDefineTemplate.Create('SrcPath',
     'SrcPath addition',
     ExternalMacroStart+'SrcPath',
-    SrcPathMacro
-    +';'+Dir+'packages'+DS+'base'+DS+'ibase'
+    d(Dir+'/packages/base/ibase;'+SrcPathMacro)
     ,da_Define));
 
   // packages
   PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
      'packages',da_Directory);
   MainDir.AddChild(PackagesDir);
+  
+  // packages/fcl-base
+  FCLBaseDir:=TDefineTemplate.Create('FCL-base',
+      ctsFreePascalComponentLibrary,'','fcl-base',
+      da_Directory);
+  PackagesDir.AddChild(FCLBaseDir);
+
+  // packages/fcl-base/src
+  FCLBaseSrcDir:=TDefineTemplate.Create('src',
+      ctsFreePascalComponentLibrary,'','src',
+      da_Directory);
+  FCLBaseDir.AddChild(FCLBaseSrcDir);
+  FCLBaseSrcDir.AddChild(TDefineTemplate.Create('Include Path',
+    Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
+    ExternalMacroStart+'IncPath',
+    d(   DefinePathMacro+'/inc/'
+    +';'+DefinePathMacro+'/'+TargetOS+DS // TargetOS before SrcOS !
+    +';'+DefinePathMacro+'/'+SrcOS+DS
+    +';'+IncPathMacro)
+    ,da_DefineRecurse));
 
   // utils
   UtilsDir:=TDefineTemplate.Create('Utils',ctsUtilsDirectories,'',
@@ -4484,8 +4523,8 @@ begin
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsSetsSrcPathTo,['RTL, VCL']),
       ExternalMacroStart+'SrcPath',
-      SetDirSeparators(CreateDelphiSrcPath(DelphiVersion,'$(#DefinePath)/')
-                       +'$(#SrcPath)'),
+      SetDirSeparators(
+          CreateDelphiSrcPath(DelphiVersion,DefinePathMacro+'/')+'$(#SrcPath)'),
       da_DefineRecurse));
 
   Result:=MainDirTempl;
@@ -4591,7 +4630,7 @@ begin
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsSetsSrcPathTo,['RTL, CLX']),
       ExternalMacroStart+'SrcPath',
-      SetDirSeparators(CreateKylixSrcPath(KylixVersion,'$(#DefinePath)/')
+      SetDirSeparators(CreateKylixSrcPath(KylixVersion,DefinePathMacro+'/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
 
