@@ -418,6 +418,7 @@ Type
     property Enabled;
     property EditMask;
     property Font;
+    property Link;
     property MaxLength;
     property ParentColor;
     property ParentCtl3D;
