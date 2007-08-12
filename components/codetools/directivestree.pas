@@ -657,12 +657,14 @@ procedure TCompilerDirectivesTree.CheckAndImproveExpr_IfDefinedMacro(
 // check if {$IF defined(MacroName)}
 //       or {$IF !defined(MacroName)}
 //       or {$IF not defined(MacroName)}
+//       or {$IF not (defined(MacroName))}
 var
   ExprStart: integer;
   ExprEnd: integer;
   MacroNameStart: LongInt;
   Negated: Boolean;
   NewDirective: String;
+  BracketLvl: Integer;
 begin
   if not SimplifyExpressions then exit;
   if (Node.SubDesc<>cdnsIf) then exit;
@@ -674,15 +676,24 @@ begin
     Negated:=true;
     ReadNextAtom;
   end;
+  BracketLvl:=0;
+  while AtomIs('(') do begin
+    inc(BracketLvl);
+    ReadNextAtom;
+  end;
   if not UpAtomIs('DEFINED') then exit;
   ReadNextAtom;
   if not AtomIs('(') then exit;
+  inc(BracketLvl);
   ReadNextAtom;
   if not AtomIsIdentifier then exit;
   MacroNameStart:=AtomStart;
   ReadNextAtom;
-  if not AtomIs(')') then exit;
-  ReadNextAtom;
+  while AtomIs(')') do begin
+    dec(BracketLvl);
+    ReadNextAtom;
+  end;
+  if BracketLvl>0 then exit;
   if SrcPos<=ExprEnd then exit;
 
   if Negated then
@@ -1227,6 +1238,8 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
     if not GetIfExpression(ExprNode,ExprStart,ExprEnd) then
       RaiseImpossible;
     Result:=copy(Src,ExprStart,ExprEnd-ExprStart);
+    if (ExprNode.SubDesc=cdnsIfdef) or (ExprNode.SubDesc=cdnsIfNdef) then
+      Result:='defined('+Result+')';
   end;
   
   procedure CommentCode(FromPos, ToPos: integer);
@@ -1314,6 +1327,7 @@ var
   PrevNode: TCodeTreeNode;
   NewDesc: TCompilerDirectiveNodeDesc;
   NewSubDesc: TCompilerDirectiveNodeDesc;
+  Simplified: Boolean;
 begin
   if (Node.NextBrother=nil) then
     RaiseImpossible;
@@ -1363,6 +1377,9 @@ begin
               FindCommentEnd(Src,ElseNode.StartPos,NestedComments),NewSrc);
       ElseNode.Desc:=NewDesc;
       ElseNode.SubDesc:=NewSubDesc;
+      Simplified:=false;
+      CheckAndImproveExpr_Brackets(ElseNode,Simplified);
+      CheckAndImproveExpr_IfDefinedMacro(ElseNode,Simplified);
     end else begin
       break;
     end;
