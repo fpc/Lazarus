@@ -4250,9 +4250,35 @@ end;
 procedure TDateTimePropertyEditor.SetValue(const Value: string);
 var
   DT: TDateTime;
+  ok: Boolean;
 begin
   if Value = '' then DT := 0.0
-  else DT := StrToDateTime(Value);
+  else begin
+    ok:=false;
+    // first try date+time
+    try
+      DT := StrToDateTime(Value);
+      ok:=true;
+    except
+    end;
+    // then try date without time
+    if not ok then
+      try
+        DT := StrToDate(Value);
+        ok:=true;
+      except
+      end;
+    // then try time without date
+    if not ok then
+      try
+        DT := StrToTime(Value);
+        ok:=true;
+      except
+      end;
+    // if all fails then raise exception
+    if not ok then
+      StrToDateTime(Value);
+  end;
   SetFloatValue(DT);
 end;
 
