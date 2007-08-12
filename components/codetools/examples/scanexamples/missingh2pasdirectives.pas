@@ -6,6 +6,17 @@ interface
 uses
   Classes, SysUtils;
 
+{$ifndef MPIO_INCLUDE}
+  {$ifndef HAVE_MPI_DARRAY_SUBARRAY}
+    {$define HAVE_MPI_DARRAY_SUBARRAY}
+  {$endif}
+  {$ifndef HAVE_PRAGMA_HP_SEC_DEF}
+    {$ifndef HAVE_MPI_DARRAY_SUBARRAY}
+    type c = char;
+    {$endif}
+  {$endif}
+{$endif}
+
 {$ifndef MPI_INCLUDED}
 {$define MPI_INCLUDED}
 
