@@ -6082,10 +6082,10 @@ begin
     nil,'ModalResult',TModalResultPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TShortCut'),
     nil,'',TShortCutPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
-    nil,'',TShortCutPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
-    nil,'',TShortCutPropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
+  //  nil,'',TDatePropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
+  //  nil,'',TTimePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
     nil,'',TDateTimePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TCursor'),

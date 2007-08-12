@@ -854,14 +854,13 @@ end;
 procedure TCompilerDirectivesTree.DisableUnreachableBlocks(Undefines,
   Defines: TStrings; var Changed: boolean);
 type
-
   PDefineChange = ^TDefineChange;
   TDefineChange = record
     Name: string;
     OldStatus: TDefineStatus;
     Next: PDefineChange;
   end;
-
+  
 var
   CurDefines: TAVLTree;
   Stack: array of PDefineChange;// stack of lists of PDefineChange
@@ -895,6 +894,16 @@ var
   var
     Change: PDefineChange;
   begin
+    // check if MacroName was already changed
+    Change:=Stack[StackPointer];
+    while (Change<>nil) do begin
+      if (CompareIdentifierPtrs(Pointer(MacroName),Pointer(Change^.Name))=0) then begin
+        // old status is already saved
+        exit;
+      end;
+      Change:=Change^.Next;
+    end;
+  
     New(Change);
     FillChar(Change^,SizeOf(TDefineChange),0);
     Change^.Name:=MacroName;
@@ -915,10 +924,12 @@ var
   end;
   
   procedure SetStatus(Identifier: PChar; NewStatus: TDefineStatus;
-    SaveOnStack: boolean = true);
+    SaveOnStack, SetGlobal: boolean);
   var
     AVLNode: TAVLTreeNode;
     DefValue: TDefineValue;
+    i: Integer;
+    Change: PDefineChange;
   begin
     AVLNode:=CurDefines.FindKey(Identifier,@ComparePCharWithDefineValue);
     if AVLNode=nil then begin
@@ -926,7 +937,8 @@ var
         DefValue:=TDefineValue.Create;
         DefValue.Name:=GetIdentifier(Identifier);
         DefValue.Status:=NewStatus;
-        AddStackChange(DefValue.Name,dsUnknown);
+        if SaveOnStack then
+          AddStackChange(DefValue.Name,dsUnknown);
       end else begin
         // no change
       end;
@@ -934,13 +946,31 @@ var
       DefValue:=TDefineValue(AVLNode.Data);
       if NewStatus<>dsUnknown then begin
         if NewStatus<>DefValue.Status then begin
-          AddStackChange(DefValue.Name,DefValue.Status);
+          if SaveOnStack then
+            AddStackChange(DefValue.Name,DefValue.Status);
           DefValue.Status:=NewStatus;
         end;
       end else begin
-        AddStackChange(DefValue.Name,DefValue.Status);
+        if SaveOnStack then
+          AddStackChange(DefValue.Name,DefValue.Status);
         CurDefines.Delete(AVLNode);
         DefValue.Free;
+      end;
+    end;
+    if SetGlobal then begin
+      for i:=StackPointer downto 0 do begin
+        Change:=Stack[i];
+        while Change<>nil do begin
+          if CompareIdentifiers(PChar(Change^.Name),Identifier)=0 then begin
+            if (Change^.OldStatus=dsUnknown)
+            or (Change^.OldStatus=NewStatus) then begin
+              // ok
+            end else begin
+              Change^.OldStatus:=dsUnknown;
+            end;
+          end;
+          Change:=Change^.Next;
+        end;
       end;
     end;
   end;
@@ -954,13 +984,13 @@ var
     if Undefines<>nil then begin
       for i:=0 to Undefines.Count-1 do
         if Undefines[i]<>'' then
-          SetStatus(PChar(Undefines[i]),dsNotDefined);
+          SetStatus(PChar(Undefines[i]),dsNotDefined,false,false);
     end;
     if Defines<>nil then begin
       for i:=0 to Defines.Count-1 do begin
         CurName:=Defines.Names[i];
         if CurName='' then continue;
-        SetStatus(PChar(CurName),dsDefined);
+        SetStatus(PChar(CurName),dsDefined,false,false);
       end;
     end;
   end;
@@ -989,7 +1019,7 @@ var
     // undo all changes
     while Stack[StackPointer]<>nil do begin
       Change:=Stack[StackPointer];
-      SetStatus(PChar(Change^.Name),Change^.OldStatus,false);
+      SetStatus(PChar(Change^.Name),Change^.OldStatus,false,false);
       Stack[StackPointer]:=Change^.Next;
       Dispose(Change);
     end;
@@ -1023,8 +1053,8 @@ begin
           if Node.Desc=cdnIf then begin
             IsIfBlock:=true;
           end else begin
+            IsIfBlock:=false;
             // close prior block
-            IsIfBlock:=false;// it is an Else-block
             Pop;
           end;
           // start new block
@@ -1053,7 +1083,7 @@ begin
             BlockIsAlwaysReached:=OldStatus=NewStatus;
             BlockIsNeverReached:=(OldStatus<>dsUnknown) and (OldStatus<>NewStatus);
             if BlockIsReachable then
-              SetStatus(Identifier,NewStatus);
+              SetStatus(Identifier,NewStatus,true,false);
             if BlockIsAlwaysReached or BlockIsNeverReached then begin
               // this block can be removed
               NextNode:=Node.NextBrother;
@@ -1094,8 +1124,8 @@ begin
             NewStatus:=dsDefined
           else
             NewStatus:=dsNotDefined;
-          // TODO: set status not only for stack level, but all levels
-          SetStatus(@Src[NameStart],NewStatus);
+          // set status on all levels
+          SetStatus(@Src[NameStart],NewStatus,false,true);
         end;
       end;
       Node:=NextNode;
