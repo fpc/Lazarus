@@ -83,6 +83,9 @@ const
   cdnsLongSwitch  = 52+cdnsBase;
   cdnsMode        = 53+cdnsBase;
   cdnsThreading   = 54+cdnsBase;
+  
+const
+  H2Pas_Function_Prefix = 'H2PAS_FUNCTION_';
 
 type
   CDirectiveParserException = class(Exception)
@@ -96,6 +99,7 @@ type
     FDisableUnusedDefines: boolean;
     FRemoveDisabledDirectives: boolean;
     FSimplifyExpressions: boolean;
+    FUndefH2PasFunctions: boolean;
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -195,6 +199,8 @@ type
                                            write FDisableUnusedDefines;
     property RemoveDisabledDirectives: boolean read FRemoveDisabledDirectives
                                                write FRemoveDisabledDirectives;
+    property UndefH2PasFunctions: boolean read FUndefH2PasFunctions
+                                          write FUndefH2PasFunctions;
   end;
 
   TCompilerMacroStatus = (
@@ -236,6 +242,7 @@ function CompareH2PasFuncByNameAndPos(Data1, Data2: Pointer): integer;
 function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
+function CDNodeSubDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
 
 procedure AdjustPositionAfterInsert(var p: integer; IsStart: boolean;
                                     FromPos, ToPos, DiffPos: integer);
@@ -322,6 +329,34 @@ begin
   cdnElse     : Result:='Else';
   cdnEnd      : Result:='End';
   else          Result:='?';
+  end;
+end;
+
+function CDNodeSubDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
+begin
+  case Desc of
+  cdnsIfdef       : Result:='IfDef';
+  cdnsIfC         : Result:='IfC';
+  cdnsIfndef      : Result:='IfNDef';
+  cdnsIf          : Result:='If';
+  cdnsIfOpt       : Result:='IfOpt';
+  cdnsEndif       : Result:='EndIf';
+  cdnsEndC        : Result:='EndC';
+  cdnsIfEnd       : Result:='IfEnd';
+  cdnsElse        : Result:='Else';
+  cdnsElseC       : Result:='ElseC';
+  cdnsElseIf      : Result:='ElseIf';
+  cdnsElIfC       : Result:='ElIfC';
+  cdnsDefine      : Result:='Define';
+  cdnsUndef       : Result:='UnDef';
+  cdnsSetC        : Result:='SetC';
+  cdnsInclude     : Result:='Include';
+  cdnsIncludePath : Result:='IncludePath';
+  cdnsShortSwitch : Result:='ShortSwitch';
+  cdnsLongSwitch  : Result:='LongSwitch';
+  cdnsMode        : Result:='Mode';
+  cdnsThreading   : Result:='Threading';
+  else              Result:='?';
   end;
 end;
 
@@ -644,6 +679,7 @@ begin
         ReadNextAtom;
         if AtomIs(')') then begin
           ToPos:=SrcPos;
+          DebugLn(['TCompilerDirectivesTree.CheckAndImproveExpr_Brackets removing unneeded brackets']);
           Replace(FromPos,ToPos,GetIdentifier(@Src[NameStart]));
           MoveCursorToPos(FromPos);
         end;
@@ -702,6 +738,7 @@ begin
     NewDirective:='IFDEF';
   NewDirective:='{$'+NewDirective+' '+GetIdentifier(@Src[MacroNameStart])+'}';
 
+  DebugLn(['TCompilerDirectivesTree.CheckAndImproveExpr_IfDefinedMacro simplifying expression']);
   Replace(Node.StartPos,FindCommentEnd(Src,Node.StartPos,NestedComments),NewDirective);
   if Negated then
     Node.SubDesc:=cdnsIfNdef
@@ -726,6 +763,7 @@ begin
     if (MacroNode.LastDefineNode<>nil)
     and (MacroNode.LastReadNode=nil) then begin
       // this Define/Undef is not used
+      DebugLn(['TCompilerDirectivesTree.DisableAllUnusedDefines']);
       DisableDefineNode(MacroNode.LastDefineNode,Changed);
     end;
     AVLNode:=NextAVLNode;
@@ -734,13 +772,21 @@ end;
 
 procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
   );
-(* Search for
+(* 1. Search for
     {$IFNDEF Name}
-      .. name is not used here ..
       {$DEFINE Name}
+      .. name is not used here ..
     {$ENDIF}
 
    And move the define behind the IF block
+
+  2. And check for
+    {$IFDEF Name}
+      .. name is not set here ..
+      {$DEFINE Name}
+    {$ENDIF}
+
+   And remove the define
 *)
 
   function IdentifierIsReadAfterNode(Identifier: PChar;
@@ -753,7 +799,9 @@ procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
     while Node<>nil do begin
       case Node.Desc of
       cdnIf,cdnElseIf:
-        if FindNameInIfExpression(Node,Identifier)>0 then exit(true);
+        if FindNameInIfExpression(Node,Identifier)>0 then begin
+          exit(true);
+        end;
       cdnDefine:
         if DefineUsesName(Node,Identifier) then begin
           ParentNode:=StartNode;
@@ -791,7 +839,7 @@ begin
       LastDefineNode:=nil;
       LastChildDefineNode:=nil;
       SubNode:=Node.FirstChild;
-      while SubNode<>nil do begin
+      while (SubNode<>nil) and (SubNode.HasAsParent(Node)) do begin
         NextSubNode:=SubNode.Next;
         case SubNode.Desc of
         
@@ -819,6 +867,7 @@ begin
                   -> remove define
                 }
                 NextSubNode:=SubNode.NextSkipChilds;
+                DebugLn(['TCompilerDirectivesTree.MoveIfNotThenDefsUp IFDEF + DEFINE => the define is not needed']);
                 DisableDefineNode(SubNode,Changed);
                 SubNode:=nil;
               end;
@@ -859,10 +908,13 @@ begin
           InsertPos:=FindLineEndOrCodeAfterPosition(Src,EndNode.EndPos,SrcLen,
                                                     NestedComments);
           NewSrc:=LineEnding+GetDirective(LastDefineNode);
+          DebugLn(['TCompilerDirectivesTree.MoveIfNotThenDefsUp IFNDEF + DEFINE => add define after block']);
           InsertDefine(InsertPos,NewSrc,LastDefineNode.SubDesc);
-          if LastDefineNode=nil then begin
+          if (LastDefineNode=LastChildDefineNode)
+          and (LastIFNode=nil) then begin
             // the name was not read after it was set -> disable the define
             // in the block
+            DebugLn(['TCompilerDirectivesTree.MoveIfNotThenDefsUp old DEFINE is not needed anymore']);
             DisableDefineNode(LastDefineNode,Changed);
           end;
         end;
@@ -960,7 +1012,7 @@ var
     Change: PDefineChange;
   begin
     {$IFDEF VerboseDisableUnreachableIFDEFs}
-    DebugLn(['SetStatus ',GetIdentifier(Identifier),' Old=',DefineStatusNames[GetStatus(Identifier)],' New=',DefineStatusNames[NewStatus]]);
+    DebugLn(['SetStatus ',GetIdentifier(Identifier),' Old=',DefineStatusNames[GetStatus(Identifier)],' New=',DefineStatusNames[NewStatus],' SaveOnStack=',SaveOnStack,' SetGlobal=',SetGlobal]);
     {$ENDIF}
     AVLNode:=CurDefines.FindKey(Identifier,@ComparePCharWithDefineValue);
     if AVLNode=nil then begin
@@ -1014,6 +1066,9 @@ var
   var
     i: Integer;
     CurName: string;
+    Node: TCodeTreeNode;
+    ExprStart: integer;
+    ExprEnd: integer;
   begin
     CurDefines:=TAVLTree.Create(@CompareDefineValues);
     {$IFDEF VerboseDisableUnreachableIFDEFs}
@@ -1031,6 +1086,23 @@ var
           CurName:=Defines.Names[i];
         if CurName='' then continue;
         SetStatus(PChar(CurName),dsDefined,false,false);
+      end;
+    end;
+    if UndefH2PasFunctions then begin
+      Node:=Tree.Root;
+      while Node<>nil do begin
+        if ((Node.Desc=cdnIf) or (Node.Desc=cdnElseIf)) then begin
+          if GetIfExpression(Node,ExprStart,ExprEnd) then begin
+            MoveCursorToPos(ExprStart);
+            repeat
+              ReadNextAtom;
+              if AtomStart>=ExprEnd then break;
+              if ComparePrefixIdent(H2Pas_Function_Prefix,@Src[AtomStart]) then
+                SetStatus(@Src[AtomStart],dsNotDefined,false,false);
+            until false;
+          end;
+        end;
+        Node:=Node.Next;
       end;
     end;
   end;
@@ -1123,7 +1195,7 @@ begin
           begin
             // a simple expression
             Identifier:=@Src[NameStart];
-            if (Node.SubDesc=cdnsUndef)=IsIfBlock then
+            if (Node.SubDesc=cdnsIfndef)=IsIfBlock then
               NewStatus:=dsNotDefined
             else
               NewStatus:=dsDefined;
@@ -1132,18 +1204,28 @@ begin
             BlockIsAlwaysReached:=OldStatus=NewStatus;
             BlockIsNeverReached:=(OldStatus<>dsUnknown) and (OldStatus<>NewStatus);
             {$IFDEF VerboseDisableUnreachableIFDEFs}
-            DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks Identifier=',GetIdentifier(Identifier),' Reachable=',BlockIsReachable,' Always=',BlockIsAlwaysReached,' Never=',BlockIsNeverReached]);
+            DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks Identifier=',GetIdentifier(Identifier),' Reachable=',BlockIsReachable,' Always=',BlockIsAlwaysReached,' Never=',BlockIsNeverReached,' NewStatus=',DefineStatusNames[NewStatus]]);
             {$ENDIF}
             if BlockIsReachable then
               SetStatus(Identifier,NewStatus,true,false);
             if BlockIsAlwaysReached or BlockIsNeverReached then begin
-              // this block can be removed
-              NextNode:=Node.NextBrother;
-              if (NextNode<>nil) and (NextNode.Desc=cdnEnd) then begin
-                // the end node will be disabled too, so do the Pop here
-                NextNode:=NextNode.NextSkipChilds;
-                Pop;
+              // this node can be removed
+              if BlockIsNeverReached or (Node.FirstChild=nil) then begin
+                NextNode:=Node.NextBrother;
+                if (NextNode<>nil) and (NextNode.Desc=cdnEnd) then begin
+                  // if the next node is an end node it will be disabled too
+                  NextNode:=NextNode.NextSkipChilds;
+                end;
               end;
+              // we can Pop here, because
+              //   this the last block
+              //   or this is the first block, then the next block will
+              //   become the new first block
+              Pop;
+              if BlockIsAlwaysReached then
+                DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks BlockIsAlwaysReached ',GetDirective(Node)]);
+              if BlockIsNeverReached then
+                DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks BlockIsNeverReached ',GetDirective(Node)]);
               DisableIfNode(Node,BlockIsNeverReached,Changed);
             end;
           end else begin
@@ -1176,8 +1258,15 @@ begin
             NewStatus:=dsDefined
           else
             NewStatus:=dsNotDefined;
-          // set status on all levels
-          SetStatus(@Src[NameStart],NewStatus,true,true);
+          if GetStatus(@Src[NameStart])=NewStatus then begin
+            // this define is not needed
+            NextNode:=NextNode.NextSkipChilds;
+            DebugLn(['TCompilerDirectivesTree.DisableUnreachableBlocks DEFINE is already, always set to this value']);
+            DisableDefineNode(Node,Changed);
+          end else begin
+            // set status on all levels
+            SetStatus(@Src[NameStart],NewStatus,true,true);
+          end;
         end;
       end;
       Node:=NextNode;
@@ -1230,7 +1319,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
     raise CDirectiveParserException.Create('TCompilerDirectivesTree.DisableIfNode');
   end;
   
-  function GetExpr(ExprNode: TCodeTreeNode): string;
+  function GetExpr(ExprNode: TCodeTreeNode; out Negated: boolean): string;
   var
     ExprStart: integer;
     ExprEnd: integer;
@@ -1238,6 +1327,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
     if not GetIfExpression(ExprNode,ExprStart,ExprEnd) then
       RaiseImpossible;
     Result:=copy(Src,ExprStart,ExprEnd-ExprStart);
+    Negated:=ExprNode.SubDesc=cdnsIfNdef;
     if (ExprNode.SubDesc=cdnsIfdef) or (ExprNode.SubDesc=cdnsIfNdef) then
       Result:='defined('+Result+')';
   end;
@@ -1328,6 +1418,8 @@ var
   NewDesc: TCompilerDirectiveNodeDesc;
   NewSubDesc: TCompilerDirectiveNodeDesc;
   Simplified: Boolean;
+  ExprNegated: boolean;
+  Expr2Negated: boolean;
 begin
   if (Node.NextBrother=nil) then
     RaiseImpossible;
@@ -1339,39 +1431,35 @@ begin
   Changed:=true;
   
   // fix all following elseif and else nodes
-  Expr:=GetExpr(Node);
+  Expr:=GetExpr(Node,ExprNegated);
   ElseNode:=Node.NextBrother;
   while ElseNode<>nil do begin
     if (ElseNode.Desc=cdnElse) or (ElseNode.Desc=cdnElseIf) then begin
       PrevNode:=ElseNode.PriorBrother;
-      if (PrevNode.SubDesc=cdnsElIfC) or (PrevNode.SubDesc=cdnsElseC) then begin
-        if PrevNode.Desc=cdnIf then begin
-          NewDesc:=cdnIf;
-          NewSubDesc:=cdnsIfC;
-          ElseName:='IfC';
-        end else begin
-          NewDesc:=cdnElseIf;
-          NewSubDesc:=cdnsElIfC;
-          ElseName:='ElIfC';
-        end;
+      if (PrevNode.Desc=cdnIf) then begin
+        NewDesc:=cdnIf;
+        if ElseNode.SubDesc=cdnsIfC then
+          NewSubDesc:=cdnsIfC
+        else
+          NewSubDesc:=cdnsIf; // IFDEF, IF -> IF
       end else begin
-        if PrevNode.Desc=cdnIf then begin
-          NewDesc:=cdnIf;
-          NewSubDesc:=cdnsIf;
-          ElseName:='If';
-        end else begin
-          NewDesc:=cdnElseIf;
-          NewSubDesc:=cdnsElseIf;
-          ElseName:='ElseIf';
-        end;
+        NewDesc:=cdnElseIf;
+        if (ElseNode.SubDesc=cdnsElseIf) or (ElseNode.SubDesc=cdnsElse) then
+          NewSubDesc:=cdnsElIfC
+        else
+          NewSubDesc:=cdnsElseIf; // Else, ElseIf -> ElseIF
       end;
+      ElseName:=CDNodeSubDescAsString(NewSubDesc);
       // convert {$Else} to {$ElseIf not (Expr)}
       // convert {$ElseIf Expr2} to {$ElseIf (Expr2) and not (Expr)}
+      NewSrc:='('+Expr+')';
+      if not ExprNegated then
+        NewSrc:='not '+NewSrc;
       if ElseNode.Desc=cdnElse then
-        NewSrc:='{$'+ElseName+' not ('+Expr+')}'
+        NewSrc:='{$'+ElseName+' '+NewSrc+'}'
       else begin
-        Expr2:=GetExpr(ElseNode);
-        NewSrc:='{$'+ElseName+' ('+Expr2+') and not ('+Expr+')}';
+        Expr2:=GetExpr(ElseNode,Expr2Negated);
+        NewSrc:='{$'+ElseName+' ('+Expr2+') and '+NewSrc+'}';
       end;
       Replace(ElseNode.StartPos,
               FindCommentEnd(Src,ElseNode.StartPos,NestedComments),NewSrc);
@@ -1463,6 +1551,7 @@ var
           NextNode:=Node.NextBrother;
           if NextNode.Desc=cdnEnd then
             NextNode:=NextNode.NextSkipChilds;
+          DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes node only contains spaces and comments ',GetDirective(Node)]);
           DisableIfNode(Node,true,Changed);
         end;
       end;
@@ -1514,6 +1603,7 @@ begin
   SimplifyExpressions:=true;
   DisableUnusedDefines:=true;
   RemoveDisabledDirectives:=true;
+  UndefH2PasFunctions:=true;
 end;
 
 destructor TCompilerDirectivesTree.Destroy;
@@ -1637,8 +1727,10 @@ procedure TCompilerDirectivesTree.ReduceCompilerDirectives(
       Macros.Add(MacroNode);
     end;
     if (MacroNode.LastReadNode=nil) and (MacroNode.LastDefineNode<>nil)
-    and (MacroNode.LastDefineNode.Parent=Node.Parent) then begin
+    and (MacroNode.LastDefineNode.Parent=Node.Parent)
+    and ((MacroNode.LastDefineNode.SubDesc=cdnsUndef)=(Node.SubDesc=cdnsUndef)) then begin
       // last define was never used -> disable it
+      DebugLn(['TCompilerDirectivesTree.ReduceCompilerDirectives this define was already set to this value']);
       DisableDefineNode(MacroNode.LastDefineNode,Changed);
     end;
 
@@ -1940,7 +2032,7 @@ var
         exit;
       end;
     IsNew:=true;
-    Result:='H2PAS_FUNCTIONS_'+IntToStr(MacroNames.Count+1);
+    Result:=H2Pas_Function_Prefix+IntToStr(MacroNames.Count+1);
     MacroNames.AddObject(Result,Node);
   end;
   
@@ -1977,6 +2069,7 @@ var
   begin
     if CurBodyBlock.Definition=nil then exit;
     if CurBodyBlock.Definition<>Tree.Root then begin
+      DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives add missing directives']);
       // create unique macro name
       MacroName:=GetMacroNameForNode(CurBodyBlock.Definition,IsNewMacro);
       if IsNewMacro then begin
@@ -2150,7 +2243,7 @@ begin
   while (p<=SrcLen) and IsIdentChar[Src[p]] do inc(p);
   // read expression
   while (p<=SrcLen) do begin
-    if Src[p]<>'}' then exit;
+    if Src[p]='}' then exit;
     if IsIdentStartChar[Src[p]] then begin
       if CompareIdentifierPtrs(@Src[p],Identifier)=0 then
         exit(p);
