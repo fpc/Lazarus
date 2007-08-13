@@ -596,7 +596,7 @@ begin
   LastTemplate:=-1;
 
   // init captions
-  Caption:=lisMenuEditCodeTemplates;
+  Caption:=dlgEdCodeTempl;
   AddButton.Caption:=lisCodeTemplAdd;
   EditButton.Caption:=lisCodeToolsDefsEdit;
   DeleteButton.Caption:=dlgEdDelete;
