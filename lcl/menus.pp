@@ -348,6 +348,7 @@ type
     FPopupPoint: TPoint;
   protected
     procedure DoPopup(Sender: TObject); virtual;
+    procedure DoClose; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -356,7 +357,6 @@ type
                                         write FPopupComponent;
     property PopupPoint: TPoint read FPopupPoint;
     procedure Close;
-    procedure DoClose;
   published
     property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
