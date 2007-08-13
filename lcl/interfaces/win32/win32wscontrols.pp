@@ -464,6 +464,8 @@ end;
 
 class procedure TWin32WSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont')
+  then Exit;
   Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Handle), 1);
 end;
 

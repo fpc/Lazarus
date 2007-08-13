@@ -628,6 +628,15 @@ begin
   // TODO ???
 end;
 
+class procedure TWin32WSCustomListView.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  // call inherited SetFont; need to do it this way,
+  // because the compile time ancestor class is TWSCustomListView
+  TWSWinControlClass(ClassParent).SetFont(AWinControl, AFont);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTCOLOR, 0, AFont.Color);
+end;
+
 class procedure TWin32WSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles);
 const
   MASK = LVS_EX_ONECLICKACTIVATE or LVS_EX_TWOCLICKACTIVATE or LVS_EX_UNDERLINEHOT or LVS_EX_UNDERLINECOLD;
