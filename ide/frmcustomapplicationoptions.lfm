@@ -1,0 +1,119 @@
+object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
+  Left = 409
+  Height = 290
+  Top = 254
+  Width = 460
+  HorzScrollBar.Page = 459
+  VertScrollBar.Page = 289
+  ActiveControl = EClassName
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'New console application'
+  ClientHeight = 290
+  ClientWidth = 460
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  object LEClassName: TLabel
+    Left = 8
+    Height = 23
+    Top = 8
+    Width = 227
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Application class name'
+    FocusControl = EClassName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LETitle: TLabel
+    Left = 8
+    Height = 23
+    Top = 38
+    Width = 227
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Title'
+    FocusControl = ETitle
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BCancel: TButton
+    Left = 288
+    Height = 25
+    Top = 261
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object BOK: TButton
+    Left = 376
+    Height = 25
+    Top = 261
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 3
+  end
+  object EClassName: TEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 241
+    Height = 23
+    Top = 8
+    Width = 213
+    Anchors = [akTop, akLeft, akRight]
+    AutoSelect = True
+    BorderSpacing.Around = 6
+    OnKeyPress = EClassNameKeyPress
+    TabOrder = 0
+    Text = 'TMyApplication'
+  end
+  object CGOptions: TCheckGroup
+    Left = 8
+    Height = 181
+    Top = 72
+    Width = 443
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    Caption = 'Code generation options'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    Items.Strings = (
+      'Usage message (-h option)'
+      'Stop on exception'
+      'Constructor code'
+      'Destructor code'
+      'Check options'
+    )
+    TabOrder = 2
+    Data = {
+      050000000202020202
+    }
+  end
+  object ETitle: TEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 240
+    Height = 23
+    Top = 38
+    Width = 214
+    Anchors = [akTop, akLeft, akRight]
+    AutoSelect = True
+    BorderSpacing.Around = 6
+    TabOrder = 1
+    Text = 'My Application'
+  end
+end

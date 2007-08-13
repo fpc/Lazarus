@@ -794,6 +794,7 @@ procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
 
 implementation
 
+uses frmcustomapplicationoptions;
 
 const
   ProjectInfoFileVersion = 5;
@@ -4821,9 +4822,28 @@ function TProjectConsoleApplicationDescriptor.InitProject(AProject: TLazProject
 var
   NewSource: TStringList;
   MainFile: TLazProjectFile;
+  C, T : String;
+  CC,CD,CU,CS, CO : Boolean;
+  
 begin
   Result:=inherited InitProject(AProject);
-
+  If Result<>mrOk then
+    Exit;
+  With TCustomApplicationOptionsForm.Create(Application) do
+    try
+      Result:=ShowModal;
+      If Result<>mrOk then
+        Exit;
+      C:=Trim(AppClassName);
+      T:=StringReplace(Title,'''','''''',[rfReplaceAll]);
+      CC:=CodeConstructor;
+      CD:=CodeDestructor;
+      CU:=CodeUsage;
+      CS:=CodeStopOnError;
+      CO:=CodeCheckOptions;
+    finally
+      Free;
+    end;
   MainFile:=AProject.CreateProjectFile('project1.lpr');
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
@@ -4844,35 +4864,44 @@ begin
   NewSource.Add('');
   NewSource.Add('type');
   NewSource.Add('');
-  NewSource.Add('  { TMyApplication }');
+  NewSource.Add('  { '+C+' }');
   NewSource.Add('');
-  NewSource.Add('  TMyApplication = class(TCustomApplication)');
+  NewSource.Add('  '+C+' = class(TCustomApplication)');
   NewSource.Add('  protected');
   NewSource.Add('    procedure DoRun; override;');
   NewSource.Add('  public');
-  NewSource.Add('    constructor Create(TheOwner: TComponent); override;');
-  NewSource.Add('    destructor Destroy; override;');
-  NewSource.Add('    procedure WriteHelp; virtual;');
+  If CC or CS then
+    NewSource.Add('    constructor Create(TheOwner: TComponent); override;');
+  if CD then
+    NewSource.Add('    destructor Destroy; override;');
+  if CU then
+    NewSource.Add('    procedure WriteHelp; virtual;');
   NewSource.Add('  end;');
   NewSource.Add('');
-  NewSource.Add('{ TMyApplication }');
+  NewSource.Add('{ '+C+' }');
   NewSource.Add('');
-  NewSource.Add('procedure TMyApplication.DoRun;');
+  NewSource.Add('procedure '+C+'.DoRun;');
   NewSource.Add('var');
   NewSource.Add('  ErrorMsg: String;');
   NewSource.Add('begin');
-  NewSource.Add('  // quick check parameters');
-  NewSource.Add('  ErrorMsg:=CheckOptions(''h'',''help'');');
-  NewSource.Add('  if ErrorMsg<>'''' then begin');
-  NewSource.Add('    ShowException(Exception.Create(ErrorMsg));');
-  NewSource.Add('    Halt;');
-  NewSource.Add('  end;');
-  NewSource.Add('');
-  NewSource.Add('  // parse parameters');
-  NewSource.Add('  if HasOption(''h'',''help'') then begin');
-  NewSource.Add('    WriteHelp;');
-  NewSource.Add('    Halt;');
-  NewSource.Add('  end;');
+  if CO then
+    begin
+    NewSource.Add('  // quick check parameters');
+    NewSource.Add('  ErrorMsg:=CheckOptions(''h'',''help'');');
+    NewSource.Add('  if ErrorMsg<>'''' then begin');
+    NewSource.Add('    ShowException(Exception.Create(ErrorMsg));');
+    NewSource.Add('    Halt;');
+    NewSource.Add('  end;');
+    NewSource.Add('');
+    end;
+  If CU then
+    begin
+    NewSource.Add('  // parse parameters');
+    NewSource.Add('  if HasOption(''h'',''help'') then begin');
+    NewSource.Add('    WriteHelp;');
+    NewSource.Add('    Halt;');
+    NewSource.Add('  end;');
+    end;
   NewSource.Add('');
   NewSource.Add('  { add your program here }');
   NewSource.Add('');
@@ -4880,26 +4909,39 @@ begin
   NewSource.Add('  Terminate;');
   NewSource.Add('end;');
   NewSource.Add('');
-  NewSource.Add('constructor TMyApplication.Create(TheOwner: TComponent);');
-  NewSource.Add('begin');
-  NewSource.Add('  inherited Create(TheOwner);');
-  NewSource.Add('end;');
-  NewSource.Add('');
-  NewSource.Add('destructor TMyApplication.Destroy;');
-  NewSource.Add('begin');
-  NewSource.Add('  inherited Destroy;');
-  NewSource.Add('end;');
-  NewSource.Add('');
-  NewSource.Add('procedure TMyApplication.WriteHelp;');
-  NewSource.Add('begin');
-  NewSource.Add('  { add your help code here }');
-  NewSource.Add('  writeln(''Usage: '',ExeName,'' -h'');');
-  NewSource.Add('end;');
-  NewSource.Add('');
+  If CC or CS then
+    begin
+    NewSource.Add('constructor '+C+'.Create(TheOwner: TComponent);');
+    NewSource.Add('begin');
+    NewSource.Add('  inherited Create(TheOwner);');
+    If CS then
+    NewSource.Add('  StopOnException:=True;');
+    NewSource.Add('end;');
+    NewSource.Add('');
+    end;
+  If CD then
+    begin
+    NewSource.Add('destructor '+C+'.Destroy;');
+    NewSource.Add('begin');
+    NewSource.Add('  inherited Destroy;');
+    NewSource.Add('end;');
+    NewSource.Add('');
+    end;
+  If CU then
+    begin
+    NewSource.Add('procedure '+C+'.WriteHelp;');
+    NewSource.Add('begin');
+    NewSource.Add('  { add your help code here }');
+    NewSource.Add('  writeln(''Usage: '',ExeName,'' -h'');');
+    NewSource.Add('end;');
+    NewSource.Add('');
+    end;
   NewSource.Add('var');
-  NewSource.Add('  Application: TMyApplication;');
+  NewSource.Add('  Application: '+C+';');
   NewSource.Add('begin');
-  NewSource.Add('  Application:=TMyApplication.Create(nil);');
+  NewSource.Add('  Application:='+C+'.Create(nil);');
+  If (T<>'') then
+    NewSource.Add('  Application.Title:='''+T+''';');
   NewSource.Add('  Application.Run;');
   NewSource.Add('  Application.Free;');
   NewSource.Add('end.');
