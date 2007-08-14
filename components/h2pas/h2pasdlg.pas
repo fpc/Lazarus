@@ -223,6 +223,7 @@ begin
   TextConverterToolClasses.RegisterClass(TFixArrayOfParameterType);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinitionsInUnit);
   TextConverterToolClasses.RegisterClass(TReplaceConstFunctionsInUnit);
+  TextConverterToolClasses.RegisterClass(TReplaceTypeCastFunctionsInUnit);
 end;
 
 { TH2PasDialog }

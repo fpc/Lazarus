@@ -219,6 +219,14 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  { TReplaceTypeCastFunctionsInUnit }
+
+  TReplaceTypeCastFunctionsInUnit = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
   { Proposal:
     - A tool to fix "constant A=B;" to type A=B; or functions
     - A tool to reorder a unit to fix forward definitions
@@ -1426,6 +1434,7 @@ begin
   // now improve the declarations
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinitionsInUnit);
   AddNewTextConverterTool(FPostH2PasTools,TReplaceConstFunctionsInUnit);
+  AddNewTextConverterTool(FPostH2PasTools,TReplaceTypeCastFunctionsInUnit);
 end;
 
 function TH2PasProject.SearchIncludedCHeaderFile(aFile: TH2PasFile;
@@ -3310,6 +3319,28 @@ begin
   end;
   if not CodeToolBoss.ReplaceAllConstFunctions(TCodeBuffer(aText.CodeBuffer)) then begin
     DebugLn(['TReplaceConstFunctionsInUnit.Execute ReplaceAllConstFunctions failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
+  Result:=mrOk;
+end;
+
+{ TReplaceTypeCastFunctionsInUnit }
+
+class function TReplaceTypeCastFunctionsInUnit.ClassDescription: string;
+begin
+  Result:='Replace simple functions with type casts';
+end;
+
+function TReplaceTypeCastFunctionsInUnit.Execute(aText: TIDETextConverter
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TReplaceTypeCastFunctionsInUnit.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  if not CodeToolBoss.ReplaceAllTypeCastFunctions(TCodeBuffer(aText.CodeBuffer)) then begin
+    DebugLn(['TReplaceTypeCastFunctionsInUnit.Execute ReplaceAllTypeCastFunctions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
   Result:=mrOk;

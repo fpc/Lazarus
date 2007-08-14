@@ -436,7 +436,12 @@ type
     function ReplaceConstFunctions(Code: TCodeBuffer;
                                    TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceAllConstFunctions(Code: TCodeBuffer): boolean;
-                                   
+    function FindTypeCastFunctions(Code: TCodeBuffer;
+                                  out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+    function ReplaceTypeCastFunctions(Code: TCodeBuffer;
+                                      TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+    function ReplaceAllTypeCastFunctions(Code: TCodeBuffer): boolean;
+
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
                 const UpperClassName: string; out CodeTool: TCodeTool): boolean;
@@ -2941,6 +2946,70 @@ begin
           break;
         Result:=FCurCodeTool.ReplaceConstFunctions(TreeOfCodeTreeNodeExt,
                                                    SourceChangeCache);
+      finally
+        if TreeOfCodeTreeNodeExt<>nil then begin
+          TreeOfCodeTreeNodeExt.FreeAndClear;
+          TreeOfCodeTreeNodeExt.Free;
+        end;
+      end;
+    until not Result;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindTypeCastFunctions(Code: TCodeBuffer; out
+  TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindTypeCastFunctions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindTypeCastFunctions(TreeOfCodeTreeNodeExt);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReplaceTypeCastFunctions(Code: TCodeBuffer;
+  TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ReplaceTypeCastFunctions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ReplaceTypeCastFunctions(TreeOfCodeTreeNodeExt,
+                                                  SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReplaceAllTypeCastFunctions(Code: TCodeBuffer
+  ): boolean;
+var
+  TreeOfCodeTreeNodeExt: TAVLTree;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ReplaceAllTypeCastFunctions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    repeat
+      TreeOfCodeTreeNodeExt:=nil;
+      try
+        Result:=FCurCodeTool.FindTypeCastFunctions(TreeOfCodeTreeNodeExt);
+        if (not Result) or (TreeOfCodeTreeNodeExt=nil)
+        or (TreeOfCodeTreeNodeExt.Count=0) then
+          break;
+        Result:=FCurCodeTool.ReplaceTypeCastFunctions(TreeOfCodeTreeNodeExt,
+                                                      SourceChangeCache);
       finally
         if TreeOfCodeTreeNodeExt<>nil then begin
           TreeOfCodeTreeNodeExt.FreeAndClear;
