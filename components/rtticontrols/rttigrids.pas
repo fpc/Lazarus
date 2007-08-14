@@ -397,7 +397,7 @@ begin
   if RegisteredTIGridControls=nil then exit;
   for i:=0 to RegisteredTIGridControls.Count-1 do
     TObject(RegisteredTIGridControls[i]).Free;
-  RegisteredTIGridControls.Free;
+  FreeAndNil(RegisteredTIGridControls);
 end;
 
 procedure Register;
