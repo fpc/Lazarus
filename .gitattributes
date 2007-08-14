@@ -564,6 +564,7 @@ components/synedit/design/tsyncppsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsyncsssyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynedit.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynexporterhtml.xpm -text svneol=native#image/x-xpixmap
+components/synedit/design/tsynfreepascalsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynhtmlsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynjavasyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynlfmsyn.xpm -text svneol=native#image/x-xpixmap
