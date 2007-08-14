@@ -44,6 +44,7 @@ type
 
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
+    ASynPasSyn: TSynFreePascalSyn;
     EditTemplateGroupBox: TGroupBox;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
@@ -53,7 +54,6 @@ type
     DeleteButton: TButton;
     TemplateListBox: TListBox;
     TemplateSynEdit: TSynEdit;
-    ASynPasSyn: TSynPasSyn;
     TemplatesGroupBox: TGroupBox;
     FilenameButton: TButton;
     FilenameEdit: TEdit;

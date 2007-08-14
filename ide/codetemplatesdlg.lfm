@@ -8,6 +8,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
   ActiveControl = FilenameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'CodeTemplateDialog'
+  ClientHeight = 612
+  ClientWidth = 497
   OnClose = FormClose
   OnCreate = FormCreate
   object FilenameGroupBox: TGroupBox
@@ -18,6 +20,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
+    ClientHeight = 33
+    ClientWidth = 481
     TabOrder = 0
     object FilenameEdit: TEdit
       AnchorSideRight.Control = FilenameButton
@@ -57,6 +61,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
     Caption = 'TemplatesGroupBox'
+    ClientHeight = 149
+    ClientWidth = 481
     TabOrder = 1
     object TemplateListBox: TListBox
       AnchorSideLeft.Control = TemplatesGroupBox
@@ -65,7 +71,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 136
+      Height = 137
       Top = 6
       Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -75,7 +81,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Bottom = 6
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
@@ -140,12 +145,14 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
+    ClientHeight = 321
+    ClientWidth = 481
     TabOrder = 4
     object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 13
       Top = 6
-      Width = 160
+      Width = 123
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
       TabOrder = 0
@@ -156,10 +163,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 166
-      Height = 28
-      Top = 3
-      Width = 130
+      Left = 129
+      Height = 25
+      Width = 115
       AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -176,8 +182,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 277
-      Top = 37
+      Height = 284
+      Top = 31
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -185,10 +191,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Font.Name = 'courier'
       ParentColor = False
       TabOrder = 1
-      BookMarkOptions.OnChange = nil
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
-      Highlighter = ASynPasSyn
       Keystrokes = <      
         item
           Command = 3
@@ -513,6 +516,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
+      SelectedColor.OnChange = nil
     end
   end
   object CancelButton: TBitBtn
@@ -520,10 +524,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 410
+    Left = 411
     Height = 25
     Top = 581
-    Width = 81
+    Width = 80
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -540,7 +544,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 329
+    Left = 330
     Height = 25
     Top = 581
     Width = 75
@@ -557,8 +561,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
     OnClick = OkButtonClick
     TabOrder = 3
   end
-  object ASynPasSyn: TSynPasSyn
+  object ASynPasSyn: TSynFreePascalSyn
     Enabled = False
+    NestedComments = True
     left = 272
     top = 24
   end

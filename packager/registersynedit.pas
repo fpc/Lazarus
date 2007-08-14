@@ -78,7 +78,7 @@ end;
 
 procedure RegisterSynHighlighterPas;
 begin
-  RegisterComponents('SynEdit',[TSynPasSyn]);
+  RegisterComponents('SynEdit',[TSynPasSyn, TSynFreePascalSyn]);
 end;
 
 procedure RegisterSynHighlighterJava;
