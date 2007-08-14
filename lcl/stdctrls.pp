@@ -257,7 +257,7 @@ type
     FItemIndex: integer;
     FItemWidth: integer;
     FItems: TStrings;
-    fMaxLength: integer;
+    FMaxLength: integer;
     FOnChange: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     FOnDrawItem: TDrawItemEvent;

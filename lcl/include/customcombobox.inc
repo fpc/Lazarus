@@ -49,6 +49,7 @@ begin
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+  TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
 
   if FSelStart <> FSelLength then begin
     ASelStart:= FSelStart;
@@ -162,8 +163,8 @@ end;
 function TCustomComboBox.GetMaxLength : integer;
 begin
   if HandleAllocated then
-    fMaxLength := TWSCustomComboBoxClass(WidgetSetClass).GetMaxLength(Self);
-  Result:=fMaxLength;
+    FMaxLength := TWSCustomComboBoxClass(WidgetSetClass).GetMaxLength(Self);
+  Result:=FMaxLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -711,6 +712,7 @@ begin
   SetInitialBounds(0,0,100,25);
   FItems := TStringlist.Create;
   FItemIndex:=-1;
+  FMaxLength := -1;
   FDropDownCount:=8;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
