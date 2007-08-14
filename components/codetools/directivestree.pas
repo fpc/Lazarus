@@ -155,11 +155,14 @@ type
     SrcPos: Integer;
     AtomStart: integer;
     Macros: TAVLTree;// tree of TCompilerMacroStats
+    ParseChangeStep: integer;
 
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
     
-    function Parse(aCode: TCodeBuffer; aNestedComments: boolean): boolean;
+    procedure Parse(aCode: TCodeBuffer; aNestedComments: boolean);
+    function UpdateNeeded: boolean;
     procedure ReduceCompilerDirectives(Undefines, Defines: TStrings;
                                        var Changed: boolean);
     procedure GatherH2PasFunctions(out ListOfH2PasFunctions: TFPList;
@@ -598,6 +601,7 @@ end;
 
 procedure TCompilerDirectivesTree.InitParser;
 begin
+  ParseChangeStep:=Code.ChangeStep;
   InitKeyWordList;
   Src:=Code.Source;
   SrcLen:=length(Src);
@@ -1127,7 +1131,7 @@ var
     Change: PDefineChange;
   begin
     if StackPointer=0 then
-      raise Exception.Create('TCompilerDirectivesTree.DisableUnreachableBlocks.Pop');
+      raise CDirectiveParserException.Create('TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
     // undo all changes
     while Stack[StackPointer]<>nil do begin
       Change:=Stack[StackPointer];
@@ -1614,8 +1618,17 @@ begin
   inherited Destroy;
 end;
 
-function TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
-  aNestedComments: boolean): boolean;
+procedure TCompilerDirectivesTree.Clear;
+begin
+  Tree.Clear;
+  if Macros<>nil then begin
+    Macros.FreeAndClear;
+    FreeAndNil(Macros);
+  end;
+end;
+
+procedure TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
+  aNestedComments: boolean);
   
   procedure RaiseDanglingIFDEF;
   begin
@@ -1629,10 +1642,14 @@ var
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
-  Result:=false;
+  if (Code=aCode) and (NestedComments=aNestedComments) and (not UpdateNeeded)
+  then
+    exit;
+
   Code:=aCode;
   NestedComments:=aNestedComments;
   InitParser;
+  
   repeat
     ReadRawNextPascalAtom(Src,SrcPos,AtomStart,NestedComments);
     //DebugLn(['TCompilerDirectivesTree.Parse ',copy(Src,AtomStart,SrcPos-AtomStart)]);
@@ -1656,8 +1673,15 @@ begin
   if CurNode<>Tree.Root then
     RaiseDanglingIFDEF;
   
-  Result:=true;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+end;
+
+function TCompilerDirectivesTree.UpdateNeeded: boolean;
+begin
+  Result:=true;
+  if (Code=nil) then exit;
+  if Code.ChangeStep<>ParseChangeStep then exit;
+  Result:=false;
 end;
 
 procedure TCompilerDirectivesTree.ReduceCompilerDirectives(

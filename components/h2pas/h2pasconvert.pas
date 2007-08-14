@@ -196,9 +196,19 @@ type
   { TReduceCompilerDirectivesInUnit }
 
   TReduceCompilerDirectivesInUnit = class(TCustomTextConverterTool)
+  private
+    FDefines: TStrings;
+    FUndefines: TStrings;
+    procedure SetDefines(const AValue: TStrings);
+    procedure SetUndefines(const AValue: TStrings);
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
+  published
+    property Undefines: TStrings read FUndefines write SetUndefines;
+    property Defines: TStrings read FDefines write SetDefines;
   end;
 
   { TReplaceConstFunctionsInUnit }
@@ -3215,11 +3225,7 @@ begin
   try
     Tree:=TCompilerDirectivesTree.Create;
     Code:=TCodeBuffer(aText.CodeBuffer);
-    if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
-    then begin
-      DebugLn(['TFixH2PasMissingIFDEFsInUnit.Execute failed parsing compiler directives']);
-      exit;
-    end;
+    Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename));
     Changed:=false;
     Tree.FixMissingH2PasDirectives(Changed);
   finally
@@ -3229,6 +3235,32 @@ begin
 end;
 
 { TReduceCompilerDirectivesInUnit }
+
+procedure TReduceCompilerDirectivesInUnit.SetDefines(const AValue: TStrings);
+begin
+  if FDefines=AValue then exit;
+  FDefines.Assign(AValue);
+end;
+
+procedure TReduceCompilerDirectivesInUnit.SetUndefines(const AValue: TStrings);
+begin
+  if FUndefines=AValue then exit;
+  FUndefines.Assign(AValue);
+end;
+
+constructor TReduceCompilerDirectivesInUnit.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FUndefines:=TStringList.Create;
+  FDefines:=TStringList.Create;
+end;
+
+destructor TReduceCompilerDirectivesInUnit.Destroy;
+begin
+  FreeAndNil(FUndefines);
+  FreeAndNil(FDefines);
+  inherited Destroy;
+end;
 
 class function TReduceCompilerDirectivesInUnit.ClassDescription: string;
 begin
@@ -3249,14 +3281,10 @@ begin
   try
     Tree:=TCompilerDirectivesTree.Create;
     Code:=TCodeBuffer(aText.CodeBuffer);
-    if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
-    then begin
-      DebugLn(['TReduceCompilerDirectivesInUnit.Execute failed parsing compiler directives']);
-      exit;
-    end;
+    Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename));
     repeat
       Changed:=false;
-      Tree.ReduceCompilerDirectives(nil,nil,Changed);
+      Tree.ReduceCompilerDirectives(Undefines,Defines,Changed);
       //Tree.WriteDebugReport;
     until not Changed;
   finally
