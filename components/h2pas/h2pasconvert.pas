@@ -3210,7 +3210,7 @@ end;
 
 class function TFixH2PasMissingIFDEFsInUnit.ClassDescription: string;
 begin
-  Result:='Adds missing h2pas IFDEFs for function bodies';
+  Result:='Add missing h2pas IFDEFs for function bodies';
 end;
 
 function TFixH2PasMissingIFDEFsInUnit.Execute(aText: TIDETextConverter

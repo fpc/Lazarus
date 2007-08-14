@@ -1,4 +1,10 @@
 object CodeExplorerDlg: TCodeExplorerDlg
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
   ActiveControl = UpdatePage
   BorderStyle = bsSizeToolWin
   Caption = 'CodeExplorerDlg'
@@ -6,79 +12,82 @@ object CodeExplorerDlg: TCodeExplorerDlg
   ClientWidth = 400
   OnCreate = CodeExplorerDlgCreate
   OnDestroy = CodeExplorerDlgDestroy
-  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
-  Left = 290
-  Height = 300
-  Top = 163
-  Width = 400
   object OkButton: TButton
+    AnchorSideRight.Control = CancelButton
+    Left = 200
+    Height = 37
+    Top = 256
+    Width = 80
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
-    AnchorSideRight.Control = CancelButton
-    Left = 229
-    Height = 29
-    Top = 264
-    Width = 69
   end
   object CancelButton: TButton
+    Left = 286
+    Height = 37
+    Top = 256
+    Width = 106
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 1
-    Left = 304
-    Height = 29
-    Top = 264
-    Width = 88
   end
   object MainNotebook: TNotebook
+    Height = 248
+    Width = 400
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     PageIndex = 0
-    Height = 256
-    Width = 400
+    TabOrder = 2
     object UpdatePage: TPage
       Caption = 'UpdatePage'
-      ClientWidth = 392
-      ClientHeight = 230
-      Height = 230
-      Width = 392
+      ClientWidth = 396
+      ClientHeight = 217
       object RefreshRadioGroup: TRadioGroup
+        Left = 6
+        Height = 141
+        Top = 6
+        Width = 384
         Align = alTop
+        AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'RefreshRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 122
+        ClientWidth = 380
         Items.Strings = (
           'Manual'
           'SwitchPage'
           'Idle'
         )
         TabOrder = 0
-        Left = 6
-        Height = 105
-        Top = 6
-        Width = 380
       end
       object FollowCursorCheckBox: TCheckBox
+        Left = 6
+        Height = 22
+        Top = 165
+        Width = 384
         Align = alTop
         BorderSpacing.Top = 12
         BorderSpacing.Around = 6
         Caption = 'FollowCursorCheckBox'
         TabOrder = 1
         Visible = False
-        Left = 6
-        Height = 13
-        Top = 129
-        Width = 380
       end
     end
   end

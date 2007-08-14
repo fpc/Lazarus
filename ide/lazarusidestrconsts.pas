@@ -3393,6 +3393,7 @@ resourcestring
   lisUIClearIncludedByReference = 'Clear include cache';
   lisChangeParent = 'Change parent ...';
   lisLazarusIDE = 'Lazarus IDE';
+  lisDirectives = 'Directives';
 
 implementation
 end.

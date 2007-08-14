@@ -1449,15 +1449,15 @@ var
     ExprEnd: LongInt;
     ResultNodeExt: TCodeTreeNodeExtension;
 
-    function CheckExprIdentifier(const Identifier: string): boolean;
+    function CheckExprIdentifier(Identifier: PChar): boolean;
     var
       NodeExt: TCodeTreeNodeExtension;
     begin
       Result:=true;
-      if CompareIdentifiers('Result',PChar(Identifier))=0 then exit;
-      if CompareIdentifiers('FuncName',PChar(Identifier))=0 then exit;
+      if CompareIdentifiers('Result',Identifier)=0 then exit;
+      if CompareIdentifiers(PChar(FuncName),Identifier)=0 then exit;
       // check for const and type definitions
-      NodeExt:=FindCodeTreeNodeExt(Definitions,Identifier);
+      NodeExt:=FindCodeTreeNodeExt(Definitions,GetIdentifier(Identifier));
       if (NodeExt<>nil) and (NodeExt.Node<>nil) then begin
         if NodeExt.Node.Desc in [ctnConstDefinition,ctnTypeDefinition] then
           exit;
@@ -1471,7 +1471,7 @@ var
 
   begin
     if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then exit;
-    DebugLn(['CheckProcNode START ',ExtractProcHead(ProcNode,[])]);
+    //DebugLn(['CheckProcNode START ',ExtractProcHead(ProcNode,[])]);
     MoveCursorToNodeStart(ProcNode);
     // read 'function'
     ReadNextAtom;
@@ -1518,7 +1518,7 @@ var
     end;
     if Node.Desc<>ctnBeginBlock then exit;
     
-    DebugLn(['CheckProcNode has begin block']);
+    //DebugLn(['CheckProcNode has begin block']);
     
     // check begin block is only a single assignment
     MoveCursorToNodeStart(Node);
@@ -1538,14 +1538,15 @@ var
       if (CurPos.Flag in [cafSemicolon,cafEnd]) then
         break;
       // check if all identifiers can be used in a constant expression
-      if AtomIsIdentifier(false) and not CheckExprIdentifier(GetAtom) then
+      if AtomIsIdentifier(false)
+      and not CheckExprIdentifier(@Src[CurPos.StartPos]) then
         exit;
       ExprEnd:=CurPos.EndPos;
       ReadNextAtom;
     end;
     if ExprStart=ExprEnd then exit;
     
-    DebugLn(['CheckProcNode FOUND']);
+    //DebugLn(['CheckProcNode FOUND']);
     
     // save values
     ResultNodeExt:=NodeExtMemManager.NewNode;

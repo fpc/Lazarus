@@ -51,6 +51,7 @@ uses
 type
   TCodeToolManager = class;
   TCodeTool = TEventsCodeTool;
+  TDirectivesTool = TCompilerDirectivesTree;
 
   TGetStringProc = procedure(const s: string) of object;
   TOnBeforeApplyChanges = procedure(Manager: TCodeToolManager;
@@ -79,7 +80,9 @@ type
     FCheckFilesOnDisk: boolean;
     FCompleteProperties: boolean;
     FCurCodeTool: TCodeTool; // current codetool
+    FCurDirectivesTool: TDirectivesTool;
     FCursorBeyondEOL: boolean;
+    FDirectivesTools: TAVLTree; // tree of TDirectivesTool sorted for Code (TCodeBuffer)
     FErrorCode: TCodeBuffer;
     FErrorColumn: integer;
     FErrorLine: integer;
@@ -98,7 +101,7 @@ type
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
-    FSourceTools: TAVLTree; // tree of TCustomCodeTool sorted for pointer
+    FSourceTools: TAVLTree; // tree of TCustomCodeTool sorted TCustomCodeTool(Data).Scanner.MainCode
     FTabWidth: integer;
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
@@ -183,19 +186,28 @@ type
 
     // initializing single codetools
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
-    property CurCodeTool: TEventsCodeTool read FCurCodeTool;
+    property CurCodeTool: TCodeTool read FCurCodeTool;
     procedure ClearCurCodeTool;
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
     procedure ClearPositions;
     function GetCodeToolForSource(Code: TCodeBuffer;
-      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
+                      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
+      
+    // initializing single compilerdirectivestrees
+    function FindDirectivesToolForSource(Code: TCodeBuffer
+                                        ): TDirectivesTool;
+    property CurDirectivesTool: TDirectivesTool read FCurDirectivesTool;
+    procedure ClearCurDirectivesTool;
+    function InitCurDirectivesTool(Code: TCodeBuffer): boolean;
+    function GetDirectivesToolForSource(Code: TCodeBuffer;
+                            ExceptionOnError: boolean): TCompilerDirectivesTree;
 
     // exception handling
     procedure ClearError;
     function HandleException(AnException: Exception): boolean;
     procedure SetError(Code: TCodeBuffer; Line, Column: integer;
-      const TheMessage: string);
+                       const TheMessage: string);
     property CatchExceptions: boolean
                                    read FCatchExceptions write FCatchExceptions;
     property WriteExceptions: boolean
@@ -286,6 +298,8 @@ type
           WithStatements: boolean; OnlyInterface: boolean = false): boolean;
     function CheckSyntax(Code: TCodeBuffer; out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer; out ErrorMsg: string): boolean;
+    function ExploreDirectives(Code: TCodeBuffer;
+          out ADirectivesTool: TDirectivesTool): boolean;
 
     // compiler directives
     function GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;
@@ -640,6 +654,20 @@ begin
     Result:=0;
 end;
 
+function CompareDirectivesTreeSources(Data1, Data2: Pointer): integer;
+var
+  Src1, Src2: Pointer;
+begin
+  Src1:=TCompilerDirectivesTree(Data1).Code;
+  Src2:=TCompilerDirectivesTree(Data2).Code;
+  if Src1<Src2 then
+    Result:=-1
+  else if Src1>Src2 then
+    Result:=+1
+  else
+    Result:=0;
+end;
+
 function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
 begin
   Result:=CodeToolBoss.GetOwnerForCodeTreeNode(ANode);
@@ -706,6 +734,7 @@ begin
   FVisibleEditorLines:=20;
   FWriteExceptions:=true;
   FSourceTools:=TAVLTree.Create(@CompareCodeToolMainSources);
+  FDirectivesTools:=TAVLTree.Create(@CompareDirectivesTreeSources);
   IdentifierList:=TIdentifierList.Create;
   IdentifierHistory:=TIdentifierHistoryList.Create;
   IdentifierList.History:=IdentifierHistory;
@@ -725,6 +754,8 @@ begin
   FreeAndNil(IdentifierList);
   FSourceTools.FreeAndClear;
   FreeAndNil(FSourceTools);
+  FDirectivesTools.FreeAndClear;
+  FreeAndNil(FDirectivesTools);
   FreeAndNil(FResourceTool);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] C');
@@ -1423,6 +1454,7 @@ end;
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
   DirtyPos: Integer;
+  ErrorDirTool: TCompilerDirectivesTree;
 begin
   fErrorMsg:=AnException.Message;
   fErrorTopLine:=0;
@@ -1446,6 +1478,12 @@ begin
     fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
     fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
     fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
+  end else if (AnException is ECDirectiveParserException) then begin
+    // Compiler directive parser error
+    ErrorDirTool:=ECDirectiveParserException(AnException).Sender;
+    fErrorCode:=ErrorDirTool.Code;
+    fErrorColumn:=-1;
+    fErrorLine:=-1;
   end else if (AnException is ESourceChangeCacheError) then begin
     // SourceChangeCache error
     fErrorCode:=nil;
@@ -1512,6 +1550,22 @@ begin
   NewY:=ErrorLine;
   NewTopLine:=ErrorTopLine;
   ErrorMsg:=ErrorMessage;
+end;
+
+function TCodeToolManager.ExploreDirectives(Code: TCodeBuffer; out
+  ADirectivesTool: TDirectivesTool): boolean;
+begin
+  Result:=false;
+  ADirectivesTool:=nil;
+  try
+    if InitCurDirectivesTool(Code) then begin
+      ADirectivesTool:=FCurDirectivesTool;
+      FCurDirectivesTool.Parse;
+      Result:=true;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;
@@ -4007,7 +4061,8 @@ end;
 
 function TCodeToolManager.FindCodeToolForSource(Code: TCodeBuffer
   ): TCustomCodeTool;
-var ANode: TAVLTreeNode;
+var
+  ANode: TAVLTreeNode;
   CurSrc, SearchedSrc: Pointer;
 begin
   ANode:=FSourceTools.Root;
@@ -4062,6 +4117,14 @@ begin
     Result:=TCodeTool.Create;
     Result.Scanner:=Code.Scanner;
     FSourceTools.Add(Result);
+    TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+    TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
+    TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
+    TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
+    TCodeTool(Result).OnGetMethodName:=@OnInternalGetMethodName;
+    Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
+    Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+    TCodeTool(Result).OnParserProgress:=@OnParserProgress;
   end;
   with TCodeTool(Result) do begin
     AdjustTopLineDueToComment:=Self.AdjustTopLineDueToComment;
@@ -4073,14 +4136,57 @@ begin
   Result.VisibleEditorLines:=FVisibleEditorLines;
   Result.JumpCentered:=FJumpCentered;
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
-  TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
-  TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
-  TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
-  TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
-  TCodeTool(Result).OnGetMethodName:=@OnInternalGetMethodName;
-  Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-  Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
-  TCodeTool(Result).OnParserProgress:=@OnParserProgress;
+end;
+
+function TCodeToolManager.FindDirectivesToolForSource(Code: TCodeBuffer
+  ): TDirectivesTool;
+var
+  ANode: TAVLTreeNode;
+  CurSrc, SearchedSrc: Pointer;
+begin
+  ANode:=FDirectivesTools.Root;
+  SearchedSrc:=Pointer(Code);
+  while (ANode<>nil) do begin
+    CurSrc:=Pointer(TDirectivesTool(ANode.Data).Code);
+    if CurSrc>SearchedSrc then
+      ANode:=ANode.Left
+    else if CurSrc<SearchedSrc then
+      ANode:=ANode.Right
+    else begin
+      Result:=TDirectivesTool(ANode.Data);
+      exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+procedure TCodeToolManager.ClearCurDirectivesTool;
+begin
+  ClearError;
+  FCurDirectivesTool:=nil;
+end;
+
+function TCodeToolManager.InitCurDirectivesTool(Code: TCodeBuffer): boolean;
+begin
+  Result:=false;
+  ClearCurDirectivesTool;
+  FCurDirectivesTool:=TDirectivesTool(GetDirectivesToolForSource(Code,true));
+  {$IFDEF CTDEBUG}
+  DebugLn('[TCodeToolManager.InitCurDirectivesTool] ',Code.Filename,' ',dbgs(Code.SourceLength));
+  {$ENDIF}
+  Result:=true;
+end;
+
+function TCodeToolManager.GetDirectivesToolForSource(Code: TCodeBuffer;
+  ExceptionOnError: boolean): TCompilerDirectivesTree;
+begin
+  Result:=FindDirectivesToolForSource(Code);
+  if Result=nil then begin
+    Result:=TDirectivesTool.Create;
+    Result.Code:=Code;
+    FDirectivesTools.Add(Result);
+  end;
+  Result.NestedComments:=GetNestedCommentsFlagForFile(Code.Filename);
 end;
 
 procedure TCodeToolManager.SetAbortable(const AValue: boolean);
@@ -4166,18 +4272,33 @@ var
   AToolNode: TAVLTreeNode;
   CurTool: TCustomCodeTool;
   RootCodeTreeNode: TCodeTreeNode;
+  CurDirTool: TCompilerDirectivesTree;
 begin
   Result:=nil;
   if ANode=nil then exit;
   RootCodeTreeNode:=ANode.GetRoot;
+  
+  // search in codetools
   AToolNode:=FSourceTools.FindLowest;
   while (AToolNode<>nil) do begin
     CurTool:=TCustomCodeTool(AToolNode.Data);
-    if CurTool.Tree.Root=RootCodeTreeNode then begin
+    if (CurTool.Tree<>nil) and (CurTool.Tree.Root=RootCodeTreeNode) then begin
       Result:=CurTool;
       exit;
     end;
     AToolNode:=FSourceTools.FindSuccessor(AToolNode);
+  end;
+  
+  // search in directivestools
+  AToolNode:=FDirectivesTools.FindLowest;
+  while (AToolNode<>nil) do begin
+    CurDirTool:=TCompilerDirectivesTree(AToolNode.Data);
+    if (CurDirTool.Tree<>nil) and (CurDirTool.Tree.Root=RootCodeTreeNode) then
+    begin
+      Result:=CurDirTool;
+      exit;
+    end;
+    AToolNode:=FDirectivesTools.FindSuccessor(AToolNode);
   end;
 end;
 
@@ -4247,6 +4368,10 @@ begin
     Result:=FSourceTools.ConsistencyCheck;
     if Result<>0 then begin
       dec(Result,70000);  exit;
+    end;
+    Result:=FDirectivesTools.ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,80000);  exit;
     end;
   finally
     if (Result<>0) and (FCatchExceptions=false) then

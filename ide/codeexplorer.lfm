@@ -1,68 +1,126 @@
 object CodeExplorerView: TCodeExplorerView
   Left = 378
-  Height = 505
+  Height = 517
   Top = 175
-  Width = 206
-  HorzScrollBar.Page = 205
-  VertScrollBar.Page = 504
+  Width = 215
+  HorzScrollBar.Page = 214
+  VertScrollBar.Page = 516
   ActiveControl = RefreshButton
   Caption = 'CodeExplorerView'
+  ClientHeight = 517
+  ClientWidth = 215
   KeyPreview = True
   OnClose = CodeExplorerViewCLOSE
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
   OnResize = CodeExplorerViewRESIZE
   object RefreshButton: TButton
-    Height = 25
-    Width = 96
+    Height = 37
+    Width = 80
+    AutoSize = True
     BorderSpacing.InnerBorder = 4
     Caption = 'Refresh'
-    OnClick = RefreshButtonCLICK
+    Constraints.MinWidth = 80
+    OnClick = RefreshButtonClick
     TabOrder = 0
   end
   object OptionsButton: TButton
-    Left = 110
-    Height = 25
-    Width = 96
+    AnchorSideLeft.Control = RefreshButton
+    AnchorSideLeft.Side = asrBottom
+    Left = 83
+    Height = 37
+    Width = 80
+    AutoSize = True
+    BorderSpacing.Left = 3
     BorderSpacing.InnerBorder = 4
     Caption = 'Options'
+    Constraints.MinWidth = 80
     OnClick = OptionsButtonClick
     TabOrder = 1
   end
-  object CodeTreeview: TTreeView
-    AnchorSideTop.Control = FilterEdit
+  object MainNotebook: TNotebook
+    AnchorSideTop.Control = OptionsButton
     AnchorSideTop.Side = asrBottom
-    Height = 456
-    Top = 49
-    Width = 206
+    Height = 478
+    Top = 39
+    Width = 215
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Top = 1
-    DefaultItemHeight = 16
-    HideSelection = False
-    Images = Imagelist1
-    ParentCtl3D = False
-    PopupMenu = TreePopupmenu
-    RightClickSelect = True
+    BorderSpacing.Top = 2
+    OnPageChanged = MainNotebookPageChanged
+    PageIndex = 0
     TabOrder = 2
-    OnDblClick = CodeTreeviewDBLCLICK
-    OnDeletion = CodeTreeviewDELETION
-    OnKeyUp = CodeTreeviewKeyUp
-    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
-  end
-  object FilterEdit: TEdit
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = RefreshButton
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Height = 23
-    Top = 25
-    Width = 206
-    Anchors = [akTop, akLeft, akRight]
-    OnChange = FilterEditChange
-    TabOrder = 3
-    Text = 'FilterEdit'
+    object CodePage: TPage
+      Caption = 'CodePage'
+      ClientWidth = 211
+      ClientHeight = 447
+      object CodeTreeview: TTreeView
+        AnchorSideTop.Control = CodeFilterEdit
+        AnchorSideTop.Side = asrBottom
+        Height = 423
+        Top = 24
+        Width = 211
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Top = 1
+        DefaultItemHeight = 19
+        HideSelection = False
+        Images = Imagelist1
+        ParentCtl3D = False
+        PopupMenu = TreePopupmenu
+        RightClickSelect = True
+        TabOrder = 0
+        OnDblClick = CodeTreeviewDblClick
+        OnDeletion = CodeTreeviewDeletion
+        OnKeyUp = CodeTreeviewKeyUp
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
+      end
+      object CodeFilterEdit: TEdit
+        AnchorSideLeft.Control = CodePage
+        AnchorSideTop.Control = CodePage
+        AnchorSideRight.Control = CodePage
+        AnchorSideRight.Side = asrBottom
+        Height = 23
+        Width = 211
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = CodeFilterEditChange
+        TabOrder = 1
+        Text = 'CodeFilterEdit'
+      end
+    end
+    object DirectivesPage: TPage
+      Caption = 'DirectivesPage'
+      ClientWidth = 211
+      ClientHeight = 447
+      object DirectivesFilterEdit: TEdit
+        AnchorSideLeft.Control = DirectivesPage
+        AnchorSideTop.Control = DirectivesPage
+        AnchorSideRight.Control = DirectivesPage
+        AnchorSideRight.Side = asrBottom
+        Height = 23
+        Width = 211
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = DirectivesFilterEditChange
+        TabOrder = 0
+        Text = 'DirectivesFilterEdit'
+      end
+      object DirectivesTreeView: TTreeView
+        AnchorSideTop.Control = DirectivesFilterEdit
+        AnchorSideTop.Side = asrBottom
+        Height = 423
+        Top = 24
+        Width = 211
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Top = 1
+        DefaultItemHeight = 19
+        PopupMenu = TreePopupmenu
+        TabOrder = 1
+        OnDblClick = DirectivesTreeViewDblClick
+        OnDeletion = DirectivesTreeViewDeletion
+        OnKeyUp = DirectivesTreeViewKeyUp
+      end
+    end
   end
   object Imagelist1: TImageList
     left = 64
@@ -71,5 +129,9 @@ object CodeExplorerView: TCodeExplorerView
   object TreePopupmenu: TPopupMenu
     left = 64
     top = 72
+    object MenuItem1: TMenuItem
+      Caption = 'New Item1'
+      Visible = False
+    end
   end
 end

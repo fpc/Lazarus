@@ -449,6 +449,8 @@ type
     // code explorer events
     procedure OnCodeExplorerGetCodeTree(Sender: TObject;
                                         var ACodeTool: TCodeTool);
+    procedure OnCodeExplorerGetDirectivesTree(Sender: TObject;
+                                          var ADirectivesTool: TDirectivesTool);
     procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
                                        const Caret: TPoint; TopLine: integer);
 
@@ -6844,12 +6846,13 @@ begin
   if CodeExplorerView=nil then begin
     CodeExplorerView:=TCodeExplorerView.Create(OwningComponent);
     CodeExplorerView.OnGetCodeTree:=@OnCodeExplorerGetCodeTree;
+    CodeExplorerView.OnGetDirectivesTree:=@OnCodeExplorerGetDirectivesTree;
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
   end;
 
   EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
   CodeExplorerView.ShowOnTop;
-  CodeExplorerView.Refresh;
+  CodeExplorerView.Refresh(true);
 end;
 
 procedure TMainIDE.DoShowCodeBrowser;
@@ -10328,6 +10331,17 @@ begin
   ACodeTool:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   CodeToolBoss.Explore(ActiveUnitInfo.Source,ACodeTool,false);
+end;
+
+procedure TMainIDE.OnCodeExplorerGetDirectivesTree(Sender: TObject;
+  var ADirectivesTool: TDirectivesTool);
+var
+  ActiveUnitInfo: TUnitInfo;
+  ActiveSrcEdit: TSourceEditor;
+begin
+  ADirectivesTool:=nil;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  CodeToolBoss.ExploreDirectives(ActiveUnitInfo.Source,ADirectivesTool);
 end;
 
 procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;

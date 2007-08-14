@@ -24,6 +24,11 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Abstract:
+    Window showing the current source as tree structure.
+    Normally it shows the codetools nodes of the current unit in the
+    source editor. If an include file is open, the corresponding unit is shown.
 }
 unit CodeExplorer;
 
@@ -36,37 +41,53 @@ uses
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
   Dialogs, Buttons, ComCtrls, Menus,
   // CodeTools
-  CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
-  KeywordFuncLists,
+  CodeToolManager, CodeAtom, CodeCache, CodeTree, KeywordFuncLists,
+  DirectivesTree, PascalParserTool,
   // IDE Intf
   IDECommands, MenuIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
-  CodeExplOpts, StdCtrls;
+  CodeExplOpts, StdCtrls, ExtCtrls;
 
 type
   TCodeExplorerView = class;
 
   TOnGetCodeTree =
-    procedure(Sender: TObject; var ACodeTool: TCodeTool) of object;
+                 procedure(Sender: TObject; var ACodeTool: TCodeTool) of object;
+  TOnGetDirectivesTree =
+     procedure(Sender: TObject; var ADirectivesTool: TDirectivesTool) of object;
   TOnJumpToCode = procedure(Sender: TObject; const Filename: string;
-    const Caret: TPoint; TopLine: integer) of object;
+                            const Caret: TPoint; TopLine: integer) of object;
 
   TCodeExplorerViewFlag = (
-    cevRefreshNeeded,
-    cevRefresing
+    cevCodeRefreshNeeded,
+    cevDirectivesRefreshNeeded,
+    cevRefreshing,
+    cevCheckOnIdle // check if a refresh is needed on next idle
     );
   TCodeExplorerViewFlags = set of TCodeExplorerViewFlag;
+  
+  TCodeExplorerPage = (
+    cepNone,
+    cepCode,
+    cepDirectives
+    );
 
   { TCodeExplorerView }
 
   TCodeExplorerView = class(TForm)
-    FilterEdit: TEdit;
-    Imagelist1: TImageList;
-    TreePopupmenu: TPopupMenu;
-    RefreshButton: TButton;
-    OptionsButton: TButton;
+    CodeFilterEdit: TEdit;
+    CodePage: TPage;
     CodeTreeview: TTreeView;
+    DirectivesFilterEdit: TEdit;
+    DirectivesPage: TPage;
+    DirectivesTreeView: TTreeView;
+    Imagelist1: TImageList;
+    MainNotebook: TNotebook;
+    MenuItem1: TMenuItem;
+    OptionsButton: TButton;
+    RefreshButton: TButton;
+    TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewClose(Sender: TObject;
                                     var CloseAction: TCloseAction);
     procedure CodeExplorerViewCreate(Sender: TObject);
@@ -76,59 +97,97 @@ type
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
                                 Shift: TShiftState);
-    procedure FilterEditChange(Sender: TObject);
+    procedure CodeFilterEditChange(Sender: TObject);
+    procedure DirectivesFilterEditChange(Sender: TObject);
+    procedure DirectivesTreeViewDblClick(Sender: TObject);
+    procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
+    procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure JumpToMenuitemClick(Sender: TObject);
+    procedure MainNotebookPageChanged(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure RefreshMenuitemClick(Sender: TObject);
+    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
   private
-    FMainFilename: string;
+    FCodeFilename: string;
+    FDirectivesFilename: string;
     FFlags: TCodeExplorerViewFlags;
+    FLastCodeFilter: string;
+    FLastCodeChangeStep: integer;
+    FLastDirectivesFilter: string;
+    FLastDirectivesChangeStep: integer;
     FOnGetCodeTree: TOnGetCodeTree;
+    FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
     FUpdateCount: integer;
+    ImgIDClass: Integer;
+    ImgIDConst: Integer;
+    ImgIDConstSection: Integer;
     ImgIDDefault: integer;
-    ImgIDProgram: Integer;
-    ImgIDUnit: Integer;
-    ImgIDInterfaceSection: Integer;
+    ImgIDFinalization: Integer;
     ImgIDImplementation: Integer;
     ImgIDInitialization: Integer;
-    ImgIDFinalization: Integer;
-    ImgIDTypeSection: Integer;
-    ImgIDType: Integer;
-    ImgIDVarSection: Integer;
-    ImgIDVariable: Integer;
-    ImgIDConstSection: Integer;
-    ImgIDConst: Integer;
-    ImgIDClass: Integer;
+    ImgIDInterfaceSection: Integer;
     ImgIDProc: Integer;
+    ImgIDProgram: Integer;
     ImgIDProperty: Integer;
-    FLastFilter: string;
-    function GetFilter: string;
-    function GetNodeDescription(ACodeTool: TCodeTool;
-                                CodeNode: TCodeTreeNode): string;
-    function GetNodeImage(CodeNode: TCodeTreeNode): integer;
+    ImgIDType: Integer;
+    ImgIDTypeSection: Integer;
+    ImgIDUnit: Integer;
+    ImgIDVariable: Integer;
+    ImgIDVarSection: Integer;
+    function GetCodeFilter: string;
+    function GetCurrentPage: TCodeExplorerPage;
+    function GetDirectivesFilter: string;
+    function GetCodeNodeDescription(ACodeTool: TCodeTool;
+                                   CodeNode: TCodeTreeNode): string;
+    function GetDirectiveNodeDescription(ADirectivesTool: TDirectivesTool;
+                                         Node: TCodeTreeNode): string;
+    function GetCodeNodeImage(CodeNode: TCodeTreeNode): integer;
+    function GetDirectiveNodeImage(CodeNode: TCodeTreeNode): integer;
     procedure CreateNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
-           ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
-    procedure SetFilter(const AValue: string);
+                          ParentViewNode, InFrontViewNode: TTreeNode;
+                          CreateSiblings: boolean);
+    procedure CreateNodes(ADirectivesTool: TDirectivesTool;
+                          CodeNode: TCodeTreeNode;
+                          ParentViewNode, InFrontViewNode: TTreeNode;
+                          CreateSiblings: boolean);
+    procedure SetCodeFilter(const AValue: string);
+    procedure SetCurrentPage(const AValue: TCodeExplorerPage);
+    procedure SetDirectivesFilter(const AValue: string);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure ApplyCodeFilter;
+    procedure ApplyDirectivesFilter;
   public
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    procedure Refresh;
+    procedure CheckOnIdle;
+    procedure Refresh(OnlyVisible: boolean);
+    procedure RefreshCode(OnlyVisible: boolean);
+    procedure RefreshDirectives(OnlyVisible: boolean);
     procedure JumpToSelection;
     procedure CurrentCodeBufferChanged;
-    procedure FilterChanged;
+    procedure CodeFilterChanged;
+    procedure DirectivesFilterChanged;
     function FilterNode(ANode: TTreeNode; const TheFilter: string): boolean;
     function FilterFits(const NodeText, TheFilter: string): boolean; virtual;
+    function GetCurrentTreeView: TCustomTreeView;
   public
     property OnGetCodeTree: TOnGetCodeTree read FOnGetCodeTree
                                            write FOnGetCodeTree;
+    property OnGetDirectivesTree: TOnGetDirectivesTree read FOnGetDirectivesTree
+                                                     write FOnGetDirectivesTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
-    property MainFilename: string read FMainFilename;
-    property Filter: string read GetFilter write SetFilter;
+    property CodeFilename: string read FCodeFilename;
+    property CodeFilter: string read GetCodeFilter write SetCodeFilter;
+    property DirectivesFilename: string read FDirectivesFilename;
+    property DirectivesFilter: string read GetDirectivesFilter
+                                      write SetDirectivesFilter;
+    property CurrentPage: TCodeExplorerPage read GetCurrentPage
+                                            write SetCurrentPage;
   end;
 
 const
@@ -161,7 +220,7 @@ type
 procedure InitCodeExplorerOptions;
 begin
   if CodeExplorerOptions=nil then
-   CodeExplorerOptions:=TCodeExplorerOptions.Create;
+    CodeExplorerOptions:=TCodeExplorerOptions.Create;
 end;
 
 procedure LoadCodeExplorerOptions;
@@ -223,8 +282,11 @@ begin
   
   RefreshButton.Caption:=dlgUnitDepRefresh;
   OptionsButton.Caption:=dlgFROpts;
-  FilterEdit.Text:=lisCEFilter;
-  
+  CodeFilterEdit.Text:=lisCEFilter;
+  CodePage.Caption:=dlgCodeGeneration;
+  DirectivesFilterEdit.Text:=lisCEFilter;
+  DirectivesPage.Caption:=lisDirectives;
+
   AddResImg(Imagelist1,'ce_default',ImgIDDefault);
   AddResImg(Imagelist1,'ce_program',ImgIDProgram);
   AddResImg(Imagelist1,'ce_unit',ImgIDUnit);
@@ -249,6 +311,8 @@ begin
 
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
+  
+  Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -258,18 +322,15 @@ end;
 
 procedure TCodeExplorerView.CodeExplorerViewRESIZE(Sender: TObject);
 begin
-  RefreshButton.Width:=ClientWidth div 2;
-  with OptionsButton do
-    SetBounds(RefreshButton.Width,Top,
-              Parent.ClientWidth-RefreshButton.Width,Height);
+
 end;
 
-procedure TCodeExplorerView.CodeTreeviewDBLCLICK(Sender: TObject);
+procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
 begin
   JumpToSelection;
 end;
 
-procedure TCodeExplorerView.CodeTreeviewDELETION(Sender: TObject;
+procedure TCodeExplorerView.CodeTreeviewDeletion(Sender: TObject;
   Node: TTreeNode);
 begin
   if Node.Data<>nil then
@@ -283,10 +344,35 @@ begin
     JumpToSelection;
 end;
 
-procedure TCodeExplorerView.FilterEditChange(Sender: TObject);
+procedure TCodeExplorerView.CodeFilterEditChange(Sender: TObject);
 begin
   if Sender=nil then ;
-  FilterChanged;
+  CodeFilterChanged;
+end;
+
+procedure TCodeExplorerView.DirectivesFilterEditChange(Sender: TObject);
+begin
+  if Sender=nil then ;
+  DirectivesFilterChanged;
+end;
+
+procedure TCodeExplorerView.DirectivesTreeViewDblClick(Sender: TObject);
+begin
+  JumpToSelection;
+end;
+
+procedure TCodeExplorerView.DirectivesTreeViewDeletion(Sender: TObject;
+  Node: TTreeNode);
+begin
+  if Node.Data<>nil then
+    TObject(Node.Data).Free;
+end;
+
+procedure TCodeExplorerView.DirectivesTreeViewKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key=VK_RETURN) and (Shift=[]) then
+    JumpToSelection;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;
@@ -300,23 +386,35 @@ begin
   JumpToSelection;
 end;
 
+procedure TCodeExplorerView.MainNotebookPageChanged(Sender: TObject);
+begin
+  Refresh(true);
+end;
+
 procedure TCodeExplorerView.OptionsButtonClick(Sender: TObject);
 begin
   if ShowCodeExplorerOptions=mrOk then
     SaveCodeExplorerOptions;
 end;
 
-procedure TCodeExplorerView.RefreshButtonCLICK(Sender: TObject);
+procedure TCodeExplorerView.RefreshButtonClick(Sender: TObject);
 begin
-  Refresh;
+  Refresh(true);
 end;
 
 procedure TCodeExplorerView.RefreshMenuitemCLICK(Sender: TObject);
 begin
-  Refresh;
+  Refresh(true);
 end;
 
-function TCodeExplorerView.GetNodeDescription(ACodeTool: TCodeTool;
+procedure TCodeExplorerView.OnApplicationIdle(Sender: TObject; var Done: Boolean
+  );
+begin
+  if (cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle) then
+    Refresh(true);
+end;
+
+function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode): string;
 begin
   case CodeNode.Desc of
@@ -347,47 +445,71 @@ begin
   end;
 end;
 
-function TCodeExplorerView.GetFilter: string;
+function TCodeExplorerView.GetDirectiveNodeDescription(
+  ADirectivesTool: TDirectivesTool; Node: TCodeTreeNode): string;
 begin
-  Result:=FilterEdit.Text;
+  Result:=ADirectivesTool.GetDirective(Node);
+end;
+
+function TCodeExplorerView.GetCodeFilter: string;
+begin
+  Result:=CodeFilterEdit.Text;
   if Result=lisCEFilter then Result:='';
 end;
 
-function TCodeExplorerView.GetNodeImage(CodeNode: TCodeTreeNode): integer;
+function TCodeExplorerView.GetCurrentPage: TCodeExplorerPage;
+begin
+  if MainNotebook.ActivePageComponent=CodePage then
+    Result:=cepCode
+  else if MainNotebook.ActivePageComponent=DirectivesPage then
+    Result:=cepDirectives
+  else
+    Result:=cepNone;
+end;
+
+function TCodeExplorerView.GetDirectivesFilter: string;
+begin
+  Result:=DirectivesFilterEdit.Text;
+  if Result=lisCEFilter then Result:='';
+end;
+
+function TCodeExplorerView.GetCodeNodeImage(CodeNode: TCodeTreeNode): integer;
 begin
   case CodeNode.Desc of
-  ctnProgram,ctnLibrary,ctnPackage:
-    Result:=ImgIDProgram;
-  ctnUnit:
-    Result:=ImgIDUnit;
-  ctnInterface:
-    Result:=ImgIDInterfaceSection;
-  ctnImplementation:
-    Result:=ImgIDImplementation;
-  ctnInitialization:
-    Result:=ImgIDInitialization;
-  ctnFinalization:
-    Result:=ImgIDFinalization;
-  ctnTypeSection:
-    Result:=ImgIDTypeSection;
-  ctnTypeDefinition:
-    Result:=ImgIDType;
-  ctnVarSection:
-    Result:=ImgIDVarSection;
-  ctnVarDefinition:
-    Result:=ImgIDVariable;
-  ctnConstSection,ctnResStrSection:
-    Result:=ImgIDConstSection;
-  ctnConstDefinition:
-    Result:=ImgIDConst;
-  ctnClass:
-    Result:=ImgIDClass;
-  ctnProcedure:
-    Result:=ImgIDProc;
-  ctnProperty:
-    Result:=ImgIDProperty;
+  ctnProgram,ctnLibrary,ctnPackage:   Result:=ImgIDProgram;
+  ctnUnit:                            Result:=ImgIDInterfaceSection;
+  ctnImplementation:                  Result:=ImgIDImplementation;
+  ctnInitialization:                  Result:=ImgIDInitialization;
+  ctnFinalization:                    Result:=ImgIDFinalization;
+  ctnTypeSection:                     Result:=ImgIDTypeSection;
+  ctnTypeDefinition:                  Result:=ImgIDType;
+  ctnVarSection:                      Result:=ImgIDVarSection;
+  ctnVarDefinition:                   Result:=ImgIDVariable;
+  ctnConstSection,ctnResStrSection:   Result:=ImgIDConstSection;
+  ctnConstDefinition:                 Result:=ImgIDConst;
+  ctnClass:                           Result:=ImgIDClass;
+  ctnProcedure:                       Result:=ImgIDProc;
+  ctnProperty:                        Result:=ImgIDProperty;
   else
     Result:=ImgIDDefault;
+  end;
+end;
+
+function TCodeExplorerView.GetDirectiveNodeImage(CodeNode: TCodeTreeNode
+  ): integer;
+begin
+  case CodeNode.SubDesc of
+  cdnsInclude:  Result:=ImgIDVarSection;
+  else
+    case CodeNode.Desc of
+    cdnIf:     Result:=ImgIDTypeSection;
+    cdnElseIf: Result:=ImgIDTypeSection;
+    cdnElse:   Result:=ImgIDTypeSection;
+    cdnEnd:    Result:=ImgIDTypeSection;
+    cdnDefine: Result:=ImgIDConst;
+    else
+      Result:=ImgIDDefault;
+    end;
   end;
 end;
 
@@ -443,8 +565,8 @@ begin
     ViewNode:=ParentViewNode;
     if ShowNode then begin
       NodeData:=TViewNodeData.Create(CodeNode);
-      NodeText:=GetNodeDescription(ACodeTool,CodeNode);
-      NodeImageIndex:=GetNodeImage(CodeNode);
+      NodeText:=GetCodeNodeDescription(ACodeTool,CodeNode);
+      NodeImageIndex:=GetCodeNodeImage(CodeNode);
       if InFrontViewNode<>nil then
         ViewNode:=CodeTreeview.Items.InsertObjectBehind(
                                               InFrontViewNode,NodeText,NodeData)
@@ -464,17 +586,110 @@ begin
   end;
 end;
 
-procedure TCodeExplorerView.SetFilter(const AValue: string);
+procedure TCodeExplorerView.CreateNodes(ADirectivesTool: TDirectivesTool;
+  CodeNode: TCodeTreeNode; ParentViewNode, InFrontViewNode: TTreeNode;
+  CreateSiblings: boolean);
+var
+  NodeData: TViewNodeData;
+  NodeText: String;
+  ViewNode: TTreeNode;
+  NodeImageIndex: Integer;
+  ShowNode: Boolean;
+  ShowChilds: Boolean;
 begin
-  if Filter=AValue then exit;
-  FilterEdit.Text:=AValue;
-  FilterChanged;
+  while CodeNode<>nil do begin
+    ShowNode:=true;
+    ShowChilds:=true;
+    
+    // do not show root node
+    if CodeNode.Desc=cdnRoot then begin
+      ShowNode:=false;
+    end;
+
+    ViewNode:=ParentViewNode;
+    if ShowNode then begin
+      NodeData:=TViewNodeData.Create(CodeNode);
+      NodeText:=GetDirectiveNodeDescription(ADirectivesTool,CodeNode);
+      NodeImageIndex:=GetDirectiveNodeImage(CodeNode);
+      if InFrontViewNode<>nil then
+        ViewNode:=DirectivesTreeView.Items.InsertObjectBehind(
+                                              InFrontViewNode,NodeText,NodeData)
+      else if ParentViewNode<>nil then
+        ViewNode:=DirectivesTreeView.Items.AddChildObject(
+                                               ParentViewNode,NodeText,NodeData)
+      else
+        ViewNode:=DirectivesTreeView.Items.AddObject(nil,NodeText,NodeData);
+      ViewNode.ImageIndex:=NodeImageIndex;
+      ViewNode.SelectedIndex:=NodeImageIndex;
+      InFrontViewNode:=ViewNode;
+    end;
+    if ShowChilds then
+      CreateNodes(ADirectivesTool,CodeNode.FirstChild,ViewNode,nil,true);
+    if not CreateSiblings then break;
+    CodeNode:=CodeNode.NextBrother;
+  end;
+end;
+
+procedure TCodeExplorerView.SetCodeFilter(const AValue: string);
+begin
+  if CodeFilter=AValue then exit;
+  CodeFilterEdit.Text:=AValue;
+  CodeFilterChanged;
+end;
+
+procedure TCodeExplorerView.SetCurrentPage(const AValue: TCodeExplorerPage);
+begin
+  case AValue of
+  cepCode:       MainNotebook.ActivePageComponent:=CodePage;
+  cepDirectives: MainNotebook.ActivePageComponent:=DirectivesPage;
+  end;
+end;
+
+procedure TCodeExplorerView.SetDirectivesFilter(const AValue: string);
+begin
+  if DirectivesFilter=AValue then exit;
+  DirectivesFilterEdit.Text:=AValue;
+  DirectivesFilterChanged;
 end;
 
 procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
+end;
+
+procedure TCodeExplorerView.ApplyCodeFilter;
+var
+  ANode: TTreeNode;
+  TheFilter: String;
+begin
+  TheFilter:=CodeFilterEdit.Text;
+  FLastCodeFilter:=TheFilter;
+  CodeTreeview.BeginUpdate;
+  CodeTreeview.Options:=CodeTreeview.Options+[tvoAllowMultiselect];
+  ANode:=CodeTreeview.Items.GetFirstNode;
+  while ANode<>nil do begin
+    FilterNode(ANode,TheFilter);
+    ANode:=ANode.GetNextSibling;
+  end;
+  CodeTreeview.EndUpdate;
+end;
+
+procedure TCodeExplorerView.ApplyDirectivesFilter;
+var
+  ANode: TTreeNode;
+  TheFilter: String;
+begin
+  TheFilter:=DirectivesFilterEdit.Text;
+  FLastDirectivesFilter:=TheFilter;
+  DirectivesTreeView.BeginUpdate;
+  DirectivesTreeView.Options:=DirectivesTreeView.Options+[tvoAllowMultiselect];
+  ANode:=DirectivesTreeView.Items.GetFirstNode;
+  while ANode<>nil do begin
+    FilterNode(ANode,TheFilter);
+    ANode:=ANode.GetNextSibling;
+  end;
+  DirectivesTreeView.EndUpdate;
 end;
 
 destructor TCodeExplorerView.Destroy;
@@ -490,55 +705,169 @@ begin
 end;
 
 procedure TCodeExplorerView.EndUpdate;
+var
+  CurPage: TCodeExplorerPage;
 begin
   if FUpdateCount<=0 then
     RaiseException('TCodeExplorerView.EndUpdate');
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
-    if cevRefreshNeeded in FFlags then Refresh;
+    CurPage:=CurrentPage;
+    if (CurPage=cepCode) and (cevCodeRefreshNeeded in FFlags) then
+      RefreshCode(true);
+    if (CurPage=cepDirectives) and (cevDirectivesRefreshNeeded in FFlags) then
+      RefreshDirectives(true);
   end;
 end;
 
-procedure TCodeExplorerView.Refresh;
+procedure TCodeExplorerView.CheckOnIdle;
+begin
+  Include(FFlags,cevCheckOnIdle);
+end;
+
+procedure TCodeExplorerView.Refresh(OnlyVisible: boolean);
+begin
+  Exclude(FFlags,cevCheckOnIdle);
+  RefreshCode(OnlyVisible);
+  RefreshDirectives(OnlyVisible);
+end;
+
+procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
 var
   OldExpanded: TTreeNodeExpandedState;
   ACodeTool: TCodeTool;
 begin
-  if FUpdateCount>0 then begin
-    Include(FFlags,cevRefreshNeeded);
+  if (FUpdateCount>0)
+  or (OnlyVisible and ((CurrentPage<>cepCode) or (not IsVisible))) then begin
+    Include(FFlags,cevCodeRefreshNeeded);
     exit;
   end;
-  Exclude(FFlags,cevRefreshNeeded);
+  Exclude(FFlags,cevCodeRefreshNeeded);
   
-  Include(FFlags,cevRefresing);
-  
-  FilterEdit.Text:=lisCEFilter;
+  try
+    Include(FFlags,cevRefreshing);
 
-  // get the codetool with the updated codetree
-  ACodeTool:=nil;
-  if Assigned(OnGetCodeTree) then
-    OnGetCodeTree(Self,ACodeTool);
+    CodeFilterEdit.Text:=lisCEFilter;
 
-  // start updating the CodeTreeView
-  CodeTreeview.BeginUpdate;
-  OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
+    // get the codetool with the updated codetree
+    ACodeTool:=nil;
+    if Assigned(OnGetCodeTree) then
+      OnGetCodeTree(Self,ACodeTool);
 
-  if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
-  begin
-    CodeTreeview.Items.Clear;
-    FMainFilename:='';
-  end else begin
-    FMainFilename:=ACodeTool.MainFilename;
-    CodeTreeview.Items.Clear;
-    CreateNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
+    // check for changes in the codetools
+    if (ACodeTool=nil) then begin
+      if (FCodeFilename='') then begin
+        // still no tool
+        exit;
+      end;
+    end else begin
+      if (ACodeTool.MainFilename=FCodeFilename)
+      and (ACodeTool.Scanner<>nil)
+      and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep) then begin
+        // still the same source
+        exit;
+      end;
+    end;
+
+    // remember the codetools ChangeStep
+    if ACodeTool<>nil then begin
+      FCodeFilename:=ACodeTool.MainFilename;
+      if ACodeTool.Scanner<>nil then
+        FLastCodeChangeStep:=ACodeTool.Scanner.ChangeStep;
+    end else
+      FCodeFilename:='';
+      
+    //DebugLn(['TCodeExplorerView.RefreshCode ',FCodeFilename]);
+
+    // start updating the CodeTreeView
+    CodeTreeview.BeginUpdate;
+    OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
+
+    if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
+    begin
+      CodeTreeview.Items.Clear;
+    end else begin
+      CodeTreeview.Items.Clear;
+      CreateNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
+    end;
+
+    // restore old expanded state
+    OldExpanded.Apply(CodeTreeView);
+    OldExpanded.Free;
+    CodeTreeview.EndUpdate;
+
+  finally
+    Exclude(FFlags,cevRefreshing);
   end;
+end;
 
-  // restore old expanded state
-  OldExpanded.Apply(CodeTreeView);
-  OldExpanded.Free;
-  CodeTreeview.EndUpdate;
-  
-  Exclude(FFlags,cevRefresing);
+procedure TCodeExplorerView.RefreshDirectives(OnlyVisible: boolean);
+var
+  ADirectivesTool: TDirectivesTool;
+  OldExpanded: TTreeNodeExpandedState;
+begin
+  if (FUpdateCount>0)
+  or (OnlyVisible and ((CurrentPage<>cepDirectives) or (not IsVisible))) then
+  begin
+    Include(FFlags,cevDirectivesRefreshNeeded);
+    exit;
+  end;
+  Exclude(FFlags,cevDirectivesRefreshNeeded);
+
+  try
+    Include(FFlags,cevRefreshing);
+
+    DirectivesFilterEdit.Text:=lisCEFilter;
+
+    // get the directivestool with the updated tree
+    ADirectivesTool:=nil;
+    if Assigned(OnGetDirectivesTree) then
+      OnGetDirectivesTree(Self,ADirectivesTool);
+
+    // check for changes in the codetools
+    if (ADirectivesTool=nil) then begin
+      if (FDirectivesFilename='') then begin
+        // still no tool
+        exit;
+      end;
+    end else begin
+      if (ADirectivesTool.Code.Filename=FDirectivesFilename)
+      and (ADirectivesTool.ChangeStep=FLastDirectivesChangeStep) then begin
+        // still the same source
+        exit;
+      end;
+    end;
+
+    // remember the codetools ChangeStep
+    if ADirectivesTool<>nil then begin
+      FDirectivesFilename:=ADirectivesTool.Code.Filename;
+      FLastDirectivesChangeStep:=ADirectivesTool.ChangeStep;
+    end else
+      FDirectivesFilename:='';
+      
+    //DebugLn(['TCodeExplorerView.RefreshDirectives ',FDirectivesFilename]);
+
+    // start updating the DirectivesTreeView
+    DirectivesTreeView.BeginUpdate;
+    OldExpanded:=TTreeNodeExpandedState.Create(DirectivesTreeView);
+
+    if (ADirectivesTool=nil) or (ADirectivesTool.Tree=nil)
+    or (ADirectivesTool.Tree.Root=nil) then
+    begin
+      DirectivesTreeView.Items.Clear;
+    end else begin
+      DirectivesTreeView.Items.Clear;
+      CreateNodes(ADirectivesTool,ADirectivesTool.Tree.Root,nil,nil,true);
+    end;
+
+    // restore old expanded state
+    OldExpanded.Apply(DirectivesTreeView);
+    OldExpanded.Free;
+    DirectivesTreeView.EndUpdate;
+
+  finally
+    Exclude(FFlags,cevRefreshing);
+  end;
 end;
 
 procedure TCodeExplorerView.JumpToSelection;
@@ -549,23 +878,42 @@ var
   NewTopLine: integer;
   CodeBuffer: TCodeBuffer;
   ACodeTool: TCodeTool;
+  CurTreeView: TCustomTreeView;
 begin
-  if tvoAllowMultiselect in CodeTreeview.Options then
-    CurItem:=CodeTreeView.GetFirstMultiSelected
+  CurTreeView:=GetCurrentTreeView;
+  if CurTreeView=nil then exit;
+  if tvoAllowMultiselect in CurTreeView.Options then
+    CurItem:=CurTreeView.GetFirstMultiSelected
   else
-    CurItem:=CodeTreeview.Selected;
+    CurItem:=CurTreeView.Selected;
   if CurItem=nil then exit;
   CurNode:=TViewNodeData(CurItem.Data);
   if CurNode.StartPos<1 then exit;
 
-  CodeBuffer:=CodeToolBoss.FindFile(MainFilename);
-  if CodeBuffer=nil then exit;
-  ACodeTool:=nil;
-  CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
-  if ACodeTool=nil then exit;
-  if not ACodeTool.CleanPosToCaretAndTopLine(CurNode.StartPos,Caret,NewTopLine)
-  then exit;
-
+  case CurrentPage of
+  cepCode:
+    begin
+      CodeBuffer:=CodeToolBoss.FindFile(CodeFilename);
+      if CodeBuffer=nil then exit;
+      ACodeTool:=nil;
+      CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
+      if ACodeTool=nil then exit;
+      if not ACodeTool.CleanPosToCaretAndTopLine(CurNode.StartPos,Caret,NewTopLine)
+      then exit;
+    end;
+  cepDirectives:
+    begin
+      CodeBuffer:=CodeToolBoss.FindFile(DirectivesFilename);
+      if CodeBuffer=nil then exit;
+      CodeBuffer.AbsoluteToLineCol(CurNode.StartPos,Caret.Y,Caret.X);
+      if Caret.Y<1 then exit;
+      Caret.Code:=CodeBuffer;
+      NewTopLine:=Caret.Y-(CodeToolBoss.VisibleEditorLines div 2);
+      if NewTopLine<1 then NewTopLine:=1;
+    end;
+  else
+    exit;
+  end;
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
 end;
@@ -573,33 +921,37 @@ end;
 procedure TCodeExplorerView.CurrentCodeBufferChanged;
 begin
   if CodeExplorerOptions.Refresh=cerSwitchEditorPage then
-    Refresh;
+    CheckOnIdle;
 end;
 
-procedure TCodeExplorerView.FilterChanged;
+procedure TCodeExplorerView.CodeFilterChanged;
 var
   TheFilter: String;
-  ANode: TTreeNode;
 begin
-  if FUpdateCount>0 then begin
-    Include(FFlags,cevRefreshNeeded);
+  TheFilter:=CodeFilterEdit.Text;
+  if FLastCodeFilter=TheFilter then exit;
+  if (FUpdateCount>0) or (CurrentPage<>cepCode) then begin
+    Include(FFlags,cevCodeRefreshNeeded);
     exit;
   end;
-  TheFilter:=FilterEdit.Text;
-  if FLastFilter=TheFilter then exit;
-  FLastFilter:=TheFilter;
-  CodeTreeview.BeginUpdate;
-  CodeTreeview.Options:=CodeTreeview.Options+[tvoAllowMultiselect];
-  ANode:=CodeTreeview.Items.GetFirstNode;
-  while ANode<>nil do begin
-    FilterNode(ANode,TheFilter);
-    ANode:=ANode.GetNextSibling;
-  end;
-  CodeTreeview.EndUpdate;
+  ApplyCodeFilter;
 end;
 
-function TCodeExplorerView.FilterNode(ANode: TTreeNode; const TheFilter: string
-  ): boolean;
+procedure TCodeExplorerView.DirectivesFilterChanged;
+var
+  TheFilter: String;
+begin
+  TheFilter:=DirectivesFilterEdit.Text;
+  if FLastDirectivesFilter=TheFilter then exit;
+  if (FUpdateCount>0) or (CurrentPage<>cepDirectives) then begin
+    Include(FFlags,cevDirectivesRefreshNeeded);
+    exit;
+  end;
+  ApplyDirectivesFilter;
+end;
+
+function TCodeExplorerView.FilterNode(ANode: TTreeNode;
+  const TheFilter: string): boolean;
 var
   ChildNode: TTreeNode;
   HasVisibleChilds: Boolean;
@@ -645,6 +997,15 @@ begin
         exit(false);
       inc(Src);
     until false;
+  end;
+end;
+
+function TCodeExplorerView.GetCurrentTreeView: TCustomTreeView;
+begin
+  case CurrentPage of
+  cepCode: Result:=CodeTreeview;
+  cepDirectives: Result:=DirectivesTreeView;
+  else  Result:=nil;
   end;
 end;
 

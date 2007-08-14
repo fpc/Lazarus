@@ -88,12 +88,20 @@ const
   H2Pas_Function_Prefix = 'H2PAS_FUNCTION_';
 
 type
-  CDirectiveParserException = class(Exception)
+  TCompilerDirectivesTree = class;
+
+  { ECDirectiveParserException }
+
+  ECDirectiveParserException = class(Exception)
+  public
+    Sender: TCompilerDirectivesTree;
+    constructor Create(ASender: TCompilerDirectivesTree; const AMessage: string);
   end;
 
   { TCompilerDirectivesTree }
 
   TCompilerDirectivesTree = class
+    FChangeStep: integer;
   private
     FDefaultDirectiveFuncList: TKeyWordFunctionList;
     FDisableUnusedDefines: boolean;
@@ -161,6 +169,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     
+    procedure Parse;
     procedure Parse(aCode: TCodeBuffer; aNestedComments: boolean);
     function UpdateNeeded: boolean;
     procedure ReduceCompilerDirectives(Undefines, Defines: TStrings;
@@ -192,6 +201,7 @@ type
     function AtomIsIdentifier: boolean;
     function GetAtom: string;
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+    procedure IncreaseChangeStep;
     procedure ResetMacros;
     procedure ClearMacros;
     procedure WriteDebugReport;
@@ -204,6 +214,7 @@ type
                                                write FRemoveDisabledDirectives;
     property UndefH2PasFunctions: boolean read FUndefH2PasFunctions
                                           write FUndefH2PasFunctions;
+    property ChangeStep: integer read FChangeStep;
   end;
 
   TCompilerMacroStatus = (
@@ -602,6 +613,7 @@ end;
 procedure TCompilerDirectivesTree.InitParser;
 begin
   ParseChangeStep:=Code.ChangeStep;
+  IncreaseChangeStep;
   InitKeyWordList;
   Src:=Code.Source;
   SrcLen:=length(Src);
@@ -642,7 +654,7 @@ procedure TCompilerDirectivesTree.EndIFNode(const ErrorMsg: string);
   procedure RaiseMissingStartNode;
   begin
     WriteDebugReport;
-    raise CDirectiveParserException.Create(ErrorMsg);
+    raise ECDirectiveParserException.Create(Self,ErrorMsg);
   end;
 
 begin
@@ -1131,7 +1143,7 @@ var
     Change: PDefineChange;
   begin
     if StackPointer=0 then
-      raise CDirectiveParserException.Create('TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
+      raise ECDirectiveParserException.Create(Self,'TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
     // undo all changes
     while Stack[StackPointer]<>nil do begin
       Change:=Stack[StackPointer];
@@ -1320,7 +1332,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
   
   procedure RaiseImpossible;
   begin
-    raise CDirectiveParserException.Create('TCompilerDirectivesTree.DisableIfNode');
+    raise ECDirectiveParserException.Create(Self,'TCompilerDirectivesTree.DisableIfNode');
   end;
   
   function GetExpr(ExprNode: TCodeTreeNode; out Negated: boolean): string;
@@ -1627,13 +1639,18 @@ begin
   end;
 end;
 
+procedure TCompilerDirectivesTree.Parse;
+begin
+  Parse(Code,NestedComments)
+end;
+
 procedure TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
   aNestedComments: boolean);
   
   procedure RaiseDanglingIFDEF;
   begin
     WriteDebugReport;
-    raise CDirectiveParserException.Create('missing EndIf');
+    raise ECDirectiveParserException.Create(Self,'missing EndIf');
   end;
   
 var
@@ -1679,7 +1696,7 @@ end;
 function TCompilerDirectivesTree.UpdateNeeded: boolean;
 begin
   Result:=true;
-  if (Code=nil) then exit;
+  if (Code=nil) or (Tree=nil) or (Tree.Root=nil) then exit;
   if Code.ChangeStep<>ParseChangeStep then exit;
   Result:=false;
 end;
@@ -2441,6 +2458,7 @@ var
   DiffPos: Integer;
 begin
   DebugLn(['TCompilerDirectivesTree.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
+  IncreaseChangeStep;
   Code.Replace(FromPos,ToPos-FromPos,NewSrc);
   Src:=Code.Source;
   SrcLen:=length(Src);
@@ -2454,6 +2472,14 @@ begin
       Node:=Node.Next;
     end;
   end;
+end;
+
+procedure TCompilerDirectivesTree.IncreaseChangeStep;
+begin
+  if FChangeStep<>$7fffffff then
+    inc(FChangeStep)
+  else
+    FChangeStep:=-$7fffffff;
 end;
 
 procedure TCompilerDirectivesTree.ResetMacros;
@@ -2500,6 +2526,15 @@ begin
   AdjustPositionAfterInsert(HeaderEnd,false,FromPos,ToPos,DiffPos);
   AdjustPositionAfterInsert(BeginStart,true,FromPos,ToPos,DiffPos);
   AdjustPositionAfterInsert(BeginEnd,false,FromPos,ToPos,DiffPos);
+end;
+
+{ ECDirectiveParserException }
+
+constructor ECDirectiveParserException.Create(ASender: TCompilerDirectivesTree;
+  const AMessage: string);
+begin
+  inherited Create(AMessage);
+  Sender:=ASender;
 end;
 
 end.
