@@ -476,30 +476,29 @@ End;
 Function GetShiftState: TShiftState;
 Begin
   Result := [];
-  If Hi(GetKeyState(VK_SHIFT)) = 1 Then
+  // NOTE: it may be better to use GetAsyncKeyState
+  // if GetKeyState AND $8000 <> 0 then down (e.g. shift)
+  // if GetKeyState AND 1 <> 0, then toggled on (e.g. num lock)
+  If (GetKeyState(VK_SHIFT) and $8000) <> 0 then
     Result := Result + [ssShift];
-  If Hi(GetKeyState(VK_CAPITAL)) = 1 Then
+  If (GetKeyState(VK_CAPITAL) and 1) <> 0 then
     Result := Result + [ssCaps];
-  If Hi(GetKeyState(VK_CONTROL)) = 1 Then
+  If (GetKeyState(VK_CONTROL) and $8000) <> 0 then
     Result := Result + [ssCtrl];
-  If Hi(GetKeyState(VK_MENU)) = 1 Then
+  If (GetKeyState(VK_MENU) and $8000) <> 0 then
     Result := Result + [ssAlt];
-  If Hi(GetKeyState(VK_SHIFT)) = 1 Then
-    Result := Result + [ssShift];
-  If Hi(GetKeyState(VK_CAPITAL)) = 1 Then
-    Result := Result + [ssCaps];
-  If Hi(GetKeyState(VK_CONTROL)) = 1 Then
-    Result := Result + [ssCtrl];
-  If Hi(GetKeyState(VK_NUMLOCK)) = 1 Then
+  If (GetKeyState(VK_NUMLOCK) and 1) <> 0 then
     Result := Result + [ssNum];
   //TODO: ssSuper
-  If Hi(GetKeyState(VK_SCROLL)) = 1 Then
+  If (GetKeyState(VK_SCROLL) and 1) <> 0 then
     Result := Result + [ssScroll];
-  If ((Hi(GetKeyState(VK_LBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) = 0)) Or ((Hi(GetKeyState(VK_RBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) <> 0)) Then
+  // GetKeyState takes mouse button swap into account (GetAsyncKeyState doesn't),
+  // so no need to test GetSystemMetrics(SM_SWAPBUTTON)
+  If (GetKeyState(VK_LBUTTON) and $8000) <> 0 then
     Result := Result + [ssLeft];
-  If Hi(GetKeyState(VK_MBUTTON)) = 1 Then
+  If (GetKeyState(VK_MBUTTON) and $8000) <> 0 then
     Result := Result + [ssMiddle];
-  If ((Hi(GetKeyState(VK_RBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) = 0)) Or ((Hi(GetKeyState(VK_LBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) <> 0)) Then
+  If (GetKeyState(VK_RBUTTON) and $8000) <> 0 then
     Result := Result + [ssRight];
   //TODO: ssAltGr
 End;
