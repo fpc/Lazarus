@@ -1321,14 +1321,67 @@ function TCodeCompletionCodeTool.FindAliasDefinitions(out
   TreeOfCodeTreeNodeExt: TAVLTree; OnlyWrongType: boolean): boolean;
 // finds all public definitions of the form 'const A = B;'
 var
-  NodeExt: TCodeTreeNodeExtension;
   AllNodes: TAVLTree;
+
+  procedure CheckAlias(Node: TCodeTreeNode);
+  var
+    WrongType: Boolean;
+    ReferingNode: TCodeTreeNode;
+    ReferingNodeText: String;
+    ReferingPos: LongInt;
+    NodeExt: TCodeTreeNodeExtension;
+    AVLNode: TAVLTreeNode;
+  begin
+    // check if definition is an alias
+    // Example: const A = B;
+    if (Node.Parent=nil) then exit;
+    if not (Node.Parent.Desc in [ctnConstSection,ctnTypeSection]) then exit;
+    // this is a const or type
+    MoveCursorToNodeStart(Node);
+    ReadNextAtom;
+    if CurPos.Flag<>cafWord then exit;
+    ReadNextAtom;
+    if CurPos.Flag<>cafEqual then exit;
+    ReadNextAtom;
+    if CurPos.Flag<>cafWord then exit;
+    ReferingPos:=CurPos.StartPos;
+    ReadNextAtom;
+    if CurPos.Flag<>cafSemicolon then exit;
+
+    // this is a const or type alias
+    //DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',Node.DescAsString,' ',ExtractNode(Node,[])]);
+    WrongType:=false;
+    ReferingNode:=nil;
+    if OnlyWrongType then begin
+      ReferingNodeText:=GetIdentifier(@Src[ReferingPos]);
+      AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,ReferingNodeText);
+      if (AVLNode<>nil) then begin
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        ReferingNode:=NodeExt.Node;
+        if ReferingNode.Desc<>Node.Desc then begin
+          // this alias has wrong type
+          WrongType:=true;
+          DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',ReferingNode.DescAsString]);
+        end;
+      end;
+    end;
+    if WrongType or (not OnlyWrongType) then begin
+      // add alias
+      if TreeOfCodeTreeNodeExt=nil then
+        TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt.Node:=Node;
+      NodeExt.Txt:=GetRedefinitionNodeText(Node);
+      NodeExt.Data:=ReferingNode;
+      TreeOfCodeTreeNodeExt.Add(NodeExt);
+    end;
+  end;
+
+var
+  NodeExt: TCodeTreeNodeExtension;
   Node: TCodeTreeNode;
   NodeText: String;
   AVLNode: TAVLTreeNode;
-  ReferingNode: TCodeTreeNode;
-  ReferingNodeText: String;
-  WrongType: Boolean;
 begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
@@ -1361,42 +1414,7 @@ begin
               NodeExt.Node:=Node;
             end;
           end;
-          
-          // check if definition is an alias
-          // Example: const A = B;
-          if (Node.Parent<>nil)
-          and (Node.Parent.Desc in [ctnConstSection,ctnTypeSection])
-          and (Node.FirstChild<>nil)
-          and (Node.FirstChild.Desc=ctnIdentifier) then begin
-            // this is a const or type alias
-            DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',ExtractNode(Node,[])]);
-            WrongType:=false;
-            ReferingNode:=nil;
-            if OnlyWrongType then begin
-              ReferingNodeText:=GetIdentifier(@Src[Node.FirstChild.StartPos]);
-              AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,ReferingNodeText);
-              if (AVLNode<>nil) then begin
-                NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-                ReferingNode:=NodeExt.Node;
-                if ReferingNode.Desc<>Node.Desc then begin
-                  // this alias has wrong type
-                  WrongType:=true;
-                  DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',ReferingNode.DescAsString,'<>',Node.DescAsString]);
-                end;
-              end;
-            end;
-            if (not WrongType) or OnlyWrongType then begin
-              // add alias
-              if TreeOfCodeTreeNodeExt=nil then
-                TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-              NodeExt:=NodeExtMemManager.NewNode;
-              NodeExt.Node:=Node;
-              NodeExt.Txt:=GetRedefinitionNodeText(Node);
-              NodeExt.Data:=ReferingNode;
-              TreeOfCodeTreeNodeExt.Add(NodeExt);
-            end;
-          end;
-          
+
           Node:=Node.NextSkipChilds;
         end;
       ctnProcedure:
@@ -1405,6 +1423,26 @@ begin
         Node:=Node.Next;
       end;
     end;
+
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnImplementation, ctnInitialization, ctnFinalization,
+      ctnBeginBlock, ctnAsmBlock:
+        // skip implementation
+        break;
+      ctnTypeDefinition, ctnConstDefinition:
+        begin
+          CheckAlias(Node);
+          Node:=Node.NextSkipChilds;
+        end;
+      ctnProcedure:
+        Node:=Node.NextSkipChilds;
+      else
+        Node:=Node.Next;
+      end;
+    end;
+
   finally
     AllNodes.FreeAndClear;
     AllNodes.Free;
@@ -1415,9 +1453,56 @@ end;
 function TCodeCompletionCodeTool.FixAliasDefinitions(
   TreeOfCodeTreeNodeExt: TAVLTree; SourceChangeCache: TSourceChangeCache
   ): boolean;
+{ replaces public dummy functions with a constant.
+  The function body will be removed.
+  See the function FindConstFunctions.
+}
+  {function IsConstSectionNeeded(Node: TCodeTreeNode): boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    if Node.PriorBrother.Desc=ctnConstSection then exit(false);
+    AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
+    while AVLNode<>nil do begin
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      if NodeExt.Node=Node.PriorBrother then begin
+        // the function in front will be replaced too
+        exit(false);
+      end;
+      AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+    end;
+    Result:=true;
+  end;}
+
+var
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  DefNode: TCodeTreeNode;
+  ReferingNode: TCodeTreeNode;
 begin
   Result:=false;
-  raise Exception.Create('TCodeCompletionCodeTool.FixAliasDefinitions not implemented yet');
+  if SourceChangeCache=nil then exit;
+  if (TreeOfCodeTreeNodeExt=nil) or (TreeOfCodeTreeNodeExt.Count=0) then
+    exit(true);
+  SourceChangeCache.MainScanner:=Scanner;
+
+  AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
+  while AVLNode<>nil do begin
+    NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+    DefNode:=NodeExt.Node;
+    ReferingNode:=TCodeTreeNode(NodeExt.Data);
+    DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',ReferingNode.DescAsString]);
+
+    // add 'const' keyword
+    {if IsConstSectionNeeded(DefNode) then begin
+      FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
+      SourceChangeCache.Replace(gtEmptyLine,gtNewLine,FromPos,FromPos,'const');
+    end;}
+
+    AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+  end;
+  Result:=SourceChangeCache.Apply;
 end;
 
 function TCodeCompletionCodeTool.FindConstFunctions(
