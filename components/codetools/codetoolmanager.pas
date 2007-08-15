@@ -77,6 +77,7 @@ type
     FAddInheritedCodeToOverrideMethod: boolean;
     FAdjustTopLineDueToComment: boolean;
     FCatchExceptions: boolean;
+    FChangeStep: integer;
     FCheckFilesOnDisk: boolean;
     FCompleteProperties: boolean;
     FCurCodeTool: TCodeTool; // current codetool
@@ -164,6 +165,8 @@ type
     
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
+    property ChangeStep: integer read FChangeStep;
+    procedure IncreaseChangeStep;
 
     // file handling
     property SourceExtensions: string
@@ -314,8 +317,12 @@ type
           const Filename: string = ''): boolean;
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string
           ): boolean;
-    function FixIncludeFilenames(Code: TCodeBuffer;
-          Recursive: boolean; out MissingIncludeFilesCodeXYPos: TFPList): boolean;
+    function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
+          out MissingIncludeFilesCodeXYPos: TFPList): boolean;
+    function FixMissingH2PasDirectives(Code: TCodeBuffer;
+          var Changed: boolean): boolean;
+    function ReduceCompilerDirectives(Code: TCodeBuffer;
+          Undefines, Defines: TStrings; var Changed: boolean): boolean;
 
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
@@ -2459,6 +2466,36 @@ begin
   end;
 end;
 
+function TCodeToolManager.FixMissingH2PasDirectives(Code: TCodeBuffer;
+  var Changed: boolean): boolean;
+begin
+  Result:=false;
+  try
+    if InitCurDirectivesTool(Code) then begin
+      FCurDirectivesTool.Parse;
+      FCurDirectivesTool.FixMissingH2PasDirectives(Changed);
+      Result:=true;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReduceCompilerDirectives(Code: TCodeBuffer;
+  Undefines, Defines: TStrings; var Changed: boolean): boolean;
+begin
+  Result:=false;
+  try
+    if InitCurDirectivesTool(Code) then begin
+      FCurDirectivesTool.Parse;
+      FCurDirectivesTool.ReduceCompilerDirectives(Undefines,Defines,Changed);
+      Result:=true;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.IsKeyword(Code: TCodeBuffer; const KeyWord: string
   ): boolean;
 begin
@@ -4113,6 +4150,7 @@ end;
 
 procedure TCodeToolManager.BeforeApplyingChanges(var Abort: boolean);
 begin
+  IncreaseChangeStep;
   if Assigned(FOnBeforeApplyChanges) then
     FOnBeforeApplyChanges(Self,Abort);
 end;
@@ -4319,6 +4357,14 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.DeactivateWriteLock] FWriteLockCount=',dbgs(FWriteLockCount),' FWriteLockStep=',dbgs(FWriteLockStep));
   {$ENDIF}
+end;
+
+procedure TCodeToolManager.IncreaseChangeStep;
+begin
+  if FChangeStep<>$7fffffff then
+    inc(FChangeStep)
+  else
+    FChangeStep:=-$7fffffff;
 end;
 
 procedure TCodeToolManager.OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;

@@ -870,7 +870,7 @@ function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
 procedure SortDependencyList(Dependencies: TFPList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
-  HoldPackages: boolean);
+  HoldPackages, SortList: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList);
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
@@ -957,7 +957,7 @@ end;
 
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
-  HoldPackages: boolean);
+  HoldPackages, SortList: boolean);
 var
   i: Integer;
   PkgDependency: TPkgDependency;
@@ -978,7 +978,8 @@ begin
     else
       PkgDependency.Free;
   end;
-  SortDependencyList(List);
+  if SortList then
+    SortDependencyList(List);
   for i:=0 to List.Count-1 do begin
     TPkgDependency(List[i]).AddToList(First,ListType);
     TPkgDependency(List[i]).Owner:=Owner;
@@ -2532,7 +2533,7 @@ begin
   UpdateSourceDirectories;
   LoadFlags(Path);
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pdlRequires,Self,false);
+                        FFirstRequiredDependency,pdlRequires,Self,false,false);
   if FileVersion<2 then
     FCompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
   else

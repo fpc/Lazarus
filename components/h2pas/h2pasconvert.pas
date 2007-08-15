@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
   Forms, Controls, Dialogs, FileUtil, FileProcs, AvgLvlTree,
   // CodeTools
-  KeywordFuncLists, BasicCodeTools, CodeCache, DirectivesTree, CodeToolManager,
+  KeywordFuncLists, BasicCodeTools, CodeCache, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -60,7 +60,7 @@ type
   end;
 
 
-  { TReplace0PointerWithNULL -
+  { TReplaceMacro0PointerWithNULL -
     Replace macro values 0 pointer like (char *)0 with NULL }
 
   TReplaceMacro0PointerWithNULL = class(TCustomTextConverterTool)
@@ -74,6 +74,15 @@ type
     Replace "unit filename;" with "unit name;" }
 
   TReplaceUnitFilenameWithUnitName = class(TCustomTextReplaceTool)
+  public
+    class function ClassDescription: string; override;
+    constructor Create(TheOwner: TComponent); override;
+  end;
+
+
+  { TRemoveIncludeDirectives - Remove all $i filename }
+
+  TRemoveIncludeDirectives = class(TCustomTextReplaceTool)
   public
     class function ClassDescription: string; override;
     constructor Create(TheOwner: TComponent); override;
@@ -171,7 +180,7 @@ type
   end;
   
 
-  { TFixAliasDefinitionsInUnit
+  { TFixAliasDefinitionsInUnit - fix section type of alias definitions
     NOT COMPLETE YET
     
     Checks all alias definitions of the form
@@ -185,7 +194,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
   
-  { TFixH2PasMissingIFDEFsInUnit }
+  { TFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies }
 
   TFixH2PasMissingIFDEFsInUnit = class(TCustomTextConverterTool)
   public
@@ -193,7 +202,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  { TReduceCompilerDirectivesInUnit }
+  { TReduceCompilerDirectivesInUnit - removes unneeded directives }
 
   TReduceCompilerDirectivesInUnit = class(TCustomTextConverterTool)
   private
@@ -211,7 +220,7 @@ type
     property Defines: TStrings read FDefines write SetDefines;
   end;
 
-  { TReplaceConstFunctionsInUnit }
+  { TReplaceConstFunctionsInUnit - replace simple assignment functions with constants }
 
   TReplaceConstFunctionsInUnit = class(TCustomTextConverterTool)
   public
@@ -219,12 +228,80 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  { TReplaceTypeCastFunctionsInUnit }
+  { TReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types }
 
   TReplaceTypeCastFunctionsInUnit = class(TCustomTextConverterTool)
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+type
+  { TPretH2PasTools - Combines the common tools. }
+
+  TPreH2PasToolsOption = (
+    phRemoveCPlusPlusExternCTool, // Remove C++ 'extern "C"' lines
+    phRemoveEmptyCMacrosTool, // Remove empty C macros
+    phReplaceEdgedBracketPairWithStar, // Replace [] with *
+    phReplaceMacro0PointerWithNULL // Replace macro values 0 pointer like (char *)0
+    );
+  TPreH2PasToolsOptions = set of TPreH2PasToolsOption;
+const
+  DefaultPreH2PasToolsOptions =
+                        [Low(TPreH2PasToolsOption)..High(TPreH2PasToolsOption)];
+
+type
+  { TPreH2PasTools }
+
+  TPreH2PasTools = class(TCustomTextConverterTool)
+  private
+    FOptions: TPreH2PasToolsOptions;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  published
+    property Options: TPreH2PasToolsOptions read FOptions write FOptions default DefaultPreH2PasToolsOptions;
+  end;
+
+type
+  { TPostH2PasTools - Combines the common tools. }
+  TPostH2PasToolsOption = (
+    phReplaceUnitFilenameWithUnitName, // Replace "unit filename;" with "unit name;"
+    phRemoveIncludeDirectives, // remove include directives
+    phRemoveSystemTypes, // Remove type redefinitons like PLongint
+    phFixH2PasMissingIFDEFsInUnit, // add missing IFDEFs for function bodies
+    phReduceCompilerDirectivesInUnit, // removes unneeded directives
+    phRemoveRedefinedPointerTypes, // Remove redefined pointer types
+    phRemoveEmptyTypeVarConstSections, // Remove empty type/var/const sections
+    phReplaceImplicitTypes, // Search implicit types in parameters and add types for them
+    phFixArrayOfParameterType, // Replace "array of )" with "array of const)"
+    phRemoveRedefinitionsInUnit, // Removes redefinitions of types, variables, constants and resourcestrings
+    phFixAliasDefinitionsInUnit, // fix section type of alias definitions
+    phReplaceConstFunctionsInUnit, // replace simple assignment functions with constants
+    phReplaceTypeCastFunctionsInUnit // replace simple type cast functions with types
+    );
+  TPostH2PasToolsOptions = set of TPostH2PasToolsOption;
+const
+  DefaultPostH2PasToolsOptions =
+                        [Low(TPostH2PasToolsOption)..High(TPostH2PasToolsOption)];
+type
+  TPostH2PasTools = class(TCustomTextConverterTool)
+  private
+    FDefines: TStrings;
+    FOptions: TPostH2PasToolsOptions;
+    FUndefines: TStrings;
+    procedure SetDefines(const AValue: TStrings);
+    procedure SetUndefines(const AValue: TStrings);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  published
+    property Undefines: TStrings read FUndefines write SetUndefines;
+    property Defines: TStrings read FDefines write SetDefines;
+    property Options: TPostH2PasToolsOptions read FOptions write FOptions default DefaultPostH2PasToolsOptions;
   end;
 
   { Proposal:
@@ -1414,27 +1491,12 @@ end;
 
 procedure TH2PasProject.AddDefaultPreH2PasTools;
 begin
-  AddNewTextConverterTool(FPreH2PasTools,TRemoveCPlusPlusExternCTool);
-  AddNewTextConverterTool(FPreH2PasTools,TRemoveEmptyCMacrosTool);
-  AddNewTextConverterTool(FPreH2PasTools,TReplaceEdgedBracketPairWithStar);
-  AddNewTextConverterTool(FPreH2PasTools,TReplaceMacro0PointerWithNULL);
+  AddNewTextConverterTool(FPreH2PasTools,TPreH2PasTools);
 end;
 
 procedure TH2PasProject.AddDefaultPostH2PasTools;
 begin
-  AddNewTextConverterTool(FPostH2PasTools,TReplaceUnitFilenameWithUnitName);
-  AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
-  AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
-  AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
-  AddNewTextConverterTool(FPostH2PasTools,TFixH2PasMissingIFDEFsInUnit);
-  AddNewTextConverterTool(FPostH2PasTools,TReduceCompilerDirectivesInUnit);
-  AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
-  AddNewTextConverterTool(FPostH2PasTools,TFixArrayOfParameterType);
-  // the above tools fixed the syntax
-  // now improve the declarations
-  AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinitionsInUnit);
-  AddNewTextConverterTool(FPostH2PasTools,TReplaceConstFunctionsInUnit);
-  AddNewTextConverterTool(FPostH2PasTools,TReplaceTypeCastFunctionsInUnit);
+  AddNewTextConverterTool(FPostH2PasTools,TPostH2PasTools);
 end;
 
 function TH2PasProject.SearchIncludedCHeaderFile(aFile: TH2PasFile;
@@ -3225,21 +3287,13 @@ end;
 function TFixH2PasMissingIFDEFsInUnit.Execute(aText: TIDETextConverter
   ): TModalResult;
 var
-  Tree: TCompilerDirectivesTree;
   Code: TCodeBuffer;
   Changed: Boolean;
 begin
   Result:=mrCancel;
-  Tree:=nil;
-  try
-    Tree:=TCompilerDirectivesTree.Create;
-    Code:=TCodeBuffer(aText.CodeBuffer);
-    Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename));
-    Changed:=false;
-    Tree.FixMissingH2PasDirectives(Changed);
-  finally
-    Tree.Free;
-  end;
+  Changed:=false;
+  Code:=TCodeBuffer(aText.CodeBuffer);
+  if not CodeToolBoss.FixMissingH2PasDirectives(Code,Changed) then exit;
   Result:=mrOk;
 end;
 
@@ -3281,24 +3335,15 @@ end;
 function TReduceCompilerDirectivesInUnit.Execute(aText: TIDETextConverter
   ): TModalResult;
 var
-  Tree: TCompilerDirectivesTree;
-  Code: TCodeBuffer;
   Changed: Boolean;
+  Code: TCodeBuffer;
 begin
   Result:=mrCancel;
-  Tree:=nil;
-  try
-    Tree:=TCompilerDirectivesTree.Create;
-    Code:=TCodeBuffer(aText.CodeBuffer);
-    Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename));
-    repeat
-      Changed:=false;
-      Tree.ReduceCompilerDirectives(Undefines,Defines,Changed);
-      //Tree.WriteDebugReport;
-    until not Changed;
-  finally
-    Tree.Free;
-  end;
+  Changed:=false;
+  Code:=TCodeBuffer(aText.CodeBuffer);
+  if not CodeToolBoss.ReduceCompilerDirectives(Code,Undefines,Defines,Changed)
+  then
+    exit;
   Result:=mrOk;
 end;
 
@@ -3344,6 +3389,269 @@ begin
     exit;
   end;
   Result:=mrOk;
+end;
+
+{ TPreH2PasTools }
+
+constructor TPreH2PasTools.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FOptions:=DefaultPreH2PasToolsOptions;
+end;
+
+class function TPreH2PasTools.ClassDescription: string;
+begin
+  Result:='Pre H2Pas - a set of common tools to run before h2pas'#13
+    +'phRemoveCPlusPlusExternCTool - Remove C++ ''extern "C"'' lines'#13
+    +'phRemoveEmptyCMacrosTool - Remove empty C macros'#13
+    +'phReplaceEdgedBracketPairWithStar - Replace [] with *'#13
+    +'phReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0'#13;
+end;
+
+function TPreH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
+var
+  Tool: TCustomTextConverterTool;
+begin
+  if phRemoveCPlusPlusExternCTool in Options then begin
+    Tool:=TRemoveCPlusPlusExternCTool.Create(nil);
+    try
+      Result:=Tool.Execute(aText);
+      if Result<>mrOk then exit;
+    finally
+      Tool.Free;
+    end;
+  end;
+  
+  if phRemoveEmptyCMacrosTool in Options then begin
+    Tool:=TRemoveEmptyCMacrosTool.Create(nil);
+    try
+      Result:=Tool.Execute(aText);
+      if Result<>mrOk then exit;
+    finally
+      Tool.Free;
+    end;
+  end;
+
+  if phReplaceEdgedBracketPairWithStar in Options then begin
+    Tool:=TReplaceEdgedBracketPairWithStar.Create(nil);
+    try
+      Result:=Tool.Execute(aText);
+      if Result<>mrOk then exit;
+    finally
+      Tool.Free;
+    end;
+  end;
+
+  if phReplaceMacro0PointerWithNULL in Options then begin
+    Tool:=TReplaceMacro0PointerWithNULL.Create(nil);
+    try
+      Result:=Tool.Execute(aText);
+      if Result<>mrOk then exit;
+    finally
+      Tool.Free;
+    end;
+  end;
+  
+  Result:=mrOk;
+end;
+
+{ TPostH2PasTools }
+
+procedure TPostH2PasTools.SetDefines(const AValue: TStrings);
+begin
+  if FDefines=AValue then exit;
+  FDefines.Assign(AValue);
+end;
+
+procedure TPostH2PasTools.SetUndefines(const AValue: TStrings);
+begin
+  if FUndefines=AValue then exit;
+  FUndefines.Assign(AValue);
+end;
+
+constructor TPostH2PasTools.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FDefines:=TStringList.Create;
+  FUndefines:=TStringList.Create;
+  FOptions:=DefaultPostH2PasToolsOptions;
+end;
+
+destructor TPostH2PasTools.Destroy;
+begin
+  FreeAndNil(FDefines);
+  FreeAndNil(FUndefines);
+  inherited Destroy;
+end;
+
+class function TPostH2PasTools.ClassDescription: string;
+begin
+  Result:='Post H2Pas - a set of common tools to run after h2pas'#13
+    +'phReplaceUnitFilenameWithUnitName - Replace "unit filename;" with "unit name;"'#13
+    +'phRemoveIncludeDirectives - Remove include directives'
+    +'phRemoveSystemTypes - Remove type redefinitons like PLongint'#13
+    +'phFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies'#13
+    +'phReduceCompilerDirectivesInUnit - removes unneeded directives'#13
+    +'phRemoveRedefinedPointerTypes - Remove redefined pointer types'#13
+    +'phRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections'#13
+    +'phReplaceImplicitTypes - Search implicit types in parameters and add types for them'#13
+    +'phFixArrayOfParameterType - Replace "array of )" with "array of const)"'#13
+    +'phRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings'#13
+    +'phFixAliasDefinitionsInUnit - fix section type of alias definitions'#13
+    +'phReplaceConstFunctionsInUnit - replace simple assignment functions with constants'#13
+    +'phReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types'#13;
+end;
+
+function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
+
+  function Run(Option: TPostH2PasToolsOption;
+    ToolClass: TCustomTextConverterToolClass;
+    var aResult: TModalResult): boolean;
+  var
+    Tool: TCustomTextConverterTool;
+  begin
+    Result:=true;
+    aResult:=mrOk;
+    if not (Option in Options) then exit;
+    DebugLn(['TPostH2PasTools.Execute.Run ',ToolClass.ClassName]);
+    Tool:=ToolClass.Create(nil);
+    try
+      aResult:=Tool.Execute(aText);
+      if aResult<>mrOk then begin
+        DebugLn(['TPostH2PasTools.Execute.Run failed: ',ToolClass.ClassName]);
+        exit(false);
+      end;
+    finally
+      Tool.Free;
+    end;
+  end;
+  
+  function ReduceCompilerDirectives(var Changed: boolean;
+    var aResult: TModalResult): boolean;
+  var
+    Code: TCodeBuffer;
+  begin
+    aResult:=mrOk;
+    if not (phReduceCompilerDirectivesInUnit in Options) then exit;
+    DebugLn(['TPostH2PasTools.Execute.ReduceCompilerDirectives ']);
+    Code:=TCodeBuffer(aText.CodeBuffer);
+    if not CodeToolBoss.ReduceCompilerDirectives(Code,Undefines,Defines,Changed)
+    then begin
+      DebugLn(['TPostH2PasTools.Execute.ReduceCompilerDirectives failed']);
+      aResult:=mrCancel;
+      exit(false);
+    end;
+    aResult:=mrOk;
+    Result:=true;
+  end;
+
+  function ConvertSimpleFunctions(var Changed: boolean;
+    var aResult: TModalResult): boolean;
+  var
+    Code: TCodeBuffer;
+    OldChangeStep: LongInt;
+  begin
+    aResult:=mrOk;
+    OldChangeStep:=CodeToolBoss.ChangeStep;
+    if (phReplaceConstFunctionsInUnit in Options) then begin
+      DebugLn(['TPostH2PasTools.Execute ReplaceAllConstFunctions ']);
+      Code:=TCodeBuffer(aText.CodeBuffer);
+      if not CodeToolBoss.ReplaceAllConstFunctions(Code) then begin
+        DebugLn(['ReplaceAllConstFunctions failed']);
+        aResult:=mrCancel;
+        exit(false);
+      end;
+    end;
+    if (phReplaceTypeCastFunctionsInUnit in Options) then begin
+      Code:=TCodeBuffer(aText.CodeBuffer);
+      DebugLn(['TPostH2PasTools.Execute ReplaceAllTypeCastFunctions ']);
+      if not CodeToolBoss.ReplaceAllTypeCastFunctions(Code) then begin
+        DebugLn(['ReplaceAllTypeCastFunctions failed']);
+        aResult:=mrCancel;
+        exit(false);
+      end;
+    end;
+    if OldChangeStep<>CodeToolBoss.ChangeStep then
+      Changed:=true;
+    aResult:=mrOk;
+    Result:=true;
+  end;
+
+  function FixAliasDefinitions(var Changed: boolean;
+    var aResult: TModalResult): boolean;
+  var
+    Code: TCodeBuffer;
+    OldChangeStep: LongInt;
+  begin
+    aResult:=mrOk;
+    OldChangeStep:=CodeToolBoss.ChangeStep;
+    if (phFixAliasDefinitionsInUnit in Options) then begin
+      DebugLn(['TPostH2PasTools.Execute FixAllAliasDefinitions ']);
+      Code:=TCodeBuffer(aText.CodeBuffer);
+      if not CodeToolBoss.FixAllAliasDefinitions(Code) then begin
+        DebugLn(['FixAliasDefinitions failed']);
+        aResult:=mrCancel;
+        exit(false);
+      end;
+    end;
+    if OldChangeStep<>CodeToolBoss.ChangeStep then
+      Changed:=true;
+    aResult:=mrOk;
+    Result:=true;
+  end;
+
+var
+  Changed: boolean;
+begin
+  Result:=mrOk;
+  Changed:=false;
+  // basic h2pas fixes (unit name, system types, missing IFDEFs)
+  if not Run(phReplaceUnitFilenameWithUnitName,
+             TReplaceUnitFilenameWithUnitName,Result) then exit;
+  if not Run(phRemoveIncludeDirectives,
+             TRemoveIncludeDirectives,Result) then exit;
+  if not Run(phRemoveSystemTypes,
+             TRemoveSystemTypes,Result) then exit;
+  if not Run(phFixH2PasMissingIFDEFsInUnit,
+             TFixH2PasMissingIFDEFsInUnit,Result) then exit;
+  // reduce compiler directives so that other tools can work with less double data
+  if not ReduceCompilerDirectives(Changed,Result) then exit;
+  // remove h2pas redefinitions, so data get unambiguous types
+  if not Run(phRemoveRedefinedPointerTypes,
+             TRemoveRedefinedPointerTypes,Result) then exit;
+  if not Run(phRemoveEmptyTypeVarConstSections,
+             TRemoveEmptyTypeVarConstSections,Result) then exit;
+  // replace implicit types, not converted by h2pas
+  if not Run(phReplaceImplicitTypes,
+             TReplaceImplicitTypes,Result) then exit;
+  if not Run(phFixArrayOfParameterType,
+             TFixArrayOfParameterType,Result) then exit;
+  // remove redefinitions, so data get unambiguous types
+  if not Run(phRemoveRedefinitionsInUnit,
+             TRemoveRedefinitionsInUnit,Result) then exit;
+
+  // optimization
+  repeat
+    Changed:=false;
+    if not ReduceCompilerDirectives(Changed,Result) then exit;
+    //if not FixAliasDefinitions(Changed,Result) then exit;
+    if not ConvertSimpleFunctions(Changed,Result) then exit;
+  until Changed=false;
+end;
+
+{ TRemoveIncludeDirectives }
+
+class function TRemoveIncludeDirectives.ClassDescription: string;
+begin
+  Result:='Remove all include directives';
+end;
+
+constructor TRemoveIncludeDirectives.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  SearchFor:='\{\$(include|i)\b.*\}';
+  ReplaceWith:='';
+  Options:=Options+[trtRegExpr];
 end;
 
 end.

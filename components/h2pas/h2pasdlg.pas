@@ -209,10 +209,12 @@ begin
                          CmdH2PasTool);
 
   // register text converter tools
+  TextConverterToolClasses.RegisterClass(TPreH2PasTools);
   TextConverterToolClasses.RegisterClass(TRemoveCPlusPlusExternCTool);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyCMacrosTool);
   TextConverterToolClasses.RegisterClass(TReplaceEdgedBracketPairWithStar);
   TextConverterToolClasses.RegisterClass(TReplaceMacro0PointerWithNULL);
+  TextConverterToolClasses.RegisterClass(TPostH2PasTools);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);

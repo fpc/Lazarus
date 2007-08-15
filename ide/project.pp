@@ -1819,7 +1819,7 @@ begin
       // save dependencies
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires);
-        
+
       // save units
       SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
 
@@ -2197,7 +2197,7 @@ begin
       
       // load the dependencies
       LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
-                            FFirstRequiredDependency,pdlRequires,Self,true);
+                          FFirstRequiredDependency,pdlRequires,Self,true,false);
 
       // load session info
       LoadSessionInfo(XMLConfig,Path,false);
