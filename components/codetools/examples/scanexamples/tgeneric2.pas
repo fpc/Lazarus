@@ -1,12 +1,12 @@
 program TGeneric2;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 type
-   TList =generic(T) class(TObject)
-     data : T;
-     procedure Add(item: T);
-   end;
+  generic TList<T> = class(TObject)
+    data : T;
+    procedure Add(item: T);
+  end;
 
 procedure TList.Add(item: T);
 var
@@ -18,7 +18,7 @@ begin
 end;
 
 type
-  TMyStringList = specialize TList(string);
+  TMyStringList = specialize TList<string>;
 
 var
   slist : TMyStringList;
