@@ -5902,10 +5902,16 @@ procedure TCustomGrid.FixPosition;
       topleftChanged;
     end;
   end;
+  procedure FixEditor;
+  begin
+    if FixedGrid and EditorMode then
+      EditorMode:=False;
+  end;
 begin
   FixTopleft;
   FixSelection;
   CheckPosition;
+  FixEditor;
   UpdateSelectionRange;
   VisualChange;
 end;
