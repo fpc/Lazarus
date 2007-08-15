@@ -37,7 +37,7 @@ begin
   Color := clWindow;  
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders];
+  FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips];
 end;
 
 {------------------------------------------------------------------------------}

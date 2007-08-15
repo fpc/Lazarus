@@ -831,7 +831,8 @@ type
     lvpRowSelect,
     lvpShowColumnHeaders,
     lvpShowWorkAreas,
-    lvpWrapText
+    lvpWrapText,
+    lvpToolTips
   );
   TListViewProperties = set of TListViewProperty;
 
@@ -967,6 +968,7 @@ type
     property SortType: TSortType read FSortType write SetSortType;
     property SortColumn: Integer read FSortColumn write SetSortColumn;
     property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
+    property ToolTips: Boolean index Ord(lvpToolTips) read GetProperty write SetProperty default True;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
@@ -1053,6 +1055,7 @@ type
     property StateImages;
     property TabStop;
     property TabOrder;
+    property ToolTips;
     property Visible;
     property ViewStyle;
     property OnAdvancedCustomDraw;
