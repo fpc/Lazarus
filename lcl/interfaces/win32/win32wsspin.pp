@@ -90,10 +90,19 @@ end;
 
 function SpinWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  BuddyWindow: HWND;
 begin
-  if Msg = WM_SETFOCUS then
-    Window := GetBuddyWindow(Window);
   Result := WindowProc(Window, Msg, WParam, LParam);
+  if Msg = WM_SETFOCUS then begin
+    BuddyWindow := GetBuddyWindow(Window);
+    Windows.SetFocus(BuddyWindow);
+    // don't select text in edit, if user clicked on the up down and the edit
+    // was already focused
+    if WPARAM<>BuddyWindow then ;
+      // for LCL controls this is done in win32callback.inc
+      Windows.SendMessage(BuddyWindow, EM_SETSEL, 0, -1);
+  end;
 end;
 
 procedure UpdateFloatSpinEditControl(const Handle: HWND;
