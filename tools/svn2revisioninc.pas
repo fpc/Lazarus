@@ -357,14 +357,12 @@ begin
 
   if not CanCreateRevisionInc then exit;
   
-  if FindRevision then begin
-    if UseStdOut then begin
+  if UseStdOut then begin
+    if FindRevision then
       writeln(RevisionStr);
-    end else begin
-      if not IsValidRevisionInc then
-        WriteRevisionInc;
-    end;
-  end;
+  end
+  else if FindRevision or not IsValidRevisionInc then
+    WriteRevisionInc;
 end;
 
 begin
