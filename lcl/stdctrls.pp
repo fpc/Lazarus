@@ -1346,6 +1346,8 @@ type
     procedure SetOptimalFill(const AValue: Boolean);
   protected
     function  CanTab: boolean; override;
+    procedure DoMeasureTextPosition(var TextTop: integer;
+      var TextLeft: integer); virtual;
     function  HasMultiLine : boolean;
     procedure CalcSize(var AWidth, AHeight: integer);
     procedure DoAutoSize; override;

@@ -174,6 +174,24 @@ begin
   Result:=false;
 end;
 
+procedure TCustomLabel.DoMeasureTextPosition(var TextTop: integer;
+  var TextLeft: integer);
+var
+  lTextHeight: integer;
+  lTextWidth: integer;
+begin
+  TextLeft := 0;
+  if Layout = tlTop then begin
+    TextTop := 0;
+  end else begin
+    CalcSize(lTextWidth, lTextHeight);
+    case Layout of
+      tlCenter: TextTop := (Height - lTextHeight) div 2;
+      tlBottom: TextTop := Height - lTextHeight;
+    end;
+  end;
+end;
+
 constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -364,7 +382,6 @@ var
   TR : TTextStyle;
   R : TRect;
   TextLeft, TextTop: integer;
-  lTextWidth, lTextHeight: integer;
   LabelText: string;
 begin
   R := Rect(0,0,Width,Height);
@@ -412,16 +429,7 @@ begin
       SystemFont:=false;
       RightToLeft:=UseRightToLeftReading;
     end;
-    TextLeft := R.Left;
-    if Layout = tlTop then begin
-      TextTop := R.Top;
-    end else begin
-      CalcSize(lTextWidth, lTextHeight);
-      case Layout of
-        tlCenter: TextTop := (R.Bottom - R.Top - lTextHeight) div 2;
-        tlBottom: TextTop := R.Bottom - R.Top - lTextHeight;
-      end;
-    end;
+    DoMeasureTextPosition(TextTop, TextLeft);
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     LabelText := GetLabelText;
     if not Enabled then begin
