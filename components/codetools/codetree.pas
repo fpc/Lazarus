@@ -115,8 +115,11 @@ const
   ctnSpecialize      = 78;
   ctnSpecializeType  = 79;
   ctnSpecializeParams= 80;
-  ctnGenericType     = 81;
-  ctnConstant        = 82;
+  ctnGenericType     = 81;// 1. child = ctnGenericName, 2. child = ctnGenericParams, 3. child = type
+  ctnGenericName     = 82;
+  ctnGenericParams   = 83;
+  ctnGenericParameter= 84;
+  ctnConstant        = 85;
 
   ctnBeginBlock      = 90;
   ctnAsmBlock        = 91;
@@ -124,7 +127,7 @@ const
   ctnWithVariable    =100;
   ctnWithStatement   =101;
   ctnOnBlock         =102;
-  ctnOnIdentifier    =103;
+  ctnOnIdentifier    =103;// e.g. on E: Exception
   ctnOnStatement     =104;
 
 
@@ -140,6 +143,8 @@ const
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
       ctnLabelSection];
   AllIdentifierDefinitions =
+     [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericType];
+  AllSimpleIdentifierDefinitions =
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
   AllPascalTypes =
      [ctnClass,ctnClassInterface,ctnGenericType,ctnSpecialize,
@@ -208,6 +213,7 @@ type
     function HasAsChild(Node: TCodeTreeNode): boolean;
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetNodeOfTypes(Descriptors: array of TCodeTreeNodeDesc): TCodeTreeNode;
     function GetFindContextParent: TCodeTreeNode;
     function GetLevel: integer;
     function DescAsString: string;
@@ -380,6 +386,9 @@ begin
   ctnSpecializeType: Result:='Specialize Typename';
   ctnSpecializeParams: Result:='Specialize Parameterlist';
   ctnGenericType: Result:='Generic Type';
+  ctnGenericName: Result:='Generic Type Name';
+  ctnGenericParams: Result:='Generic Type Params';
+  ctnGenericParameter: Result:='Generic Type Parameter';
   ctnConstant: Result:='Constant';
 
   ctnWithVariable: Result:='With Variable';
@@ -600,6 +609,19 @@ begin
   Result:=Self;
   while (Result<>nil) and (Result.Desc<>ADesc) do
     Result:=Result.Parent;
+end;
+
+function TCodeTreeNode.GetNodeOfTypes(Descriptors: array of TCodeTreeNodeDesc
+  ): TCodeTreeNode;
+var
+  i: Integer;
+begin
+  Result:=Self;
+  while (Result<>nil) do begin
+    for i:=Low(Descriptors) to High(Descriptors) do
+      if Result.Desc=Descriptors[i] then exit;
+    Result:=Result.Parent;
+  end;
 end;
 
 function TCodeTreeNode.GetFindContextParent: TCodeTreeNode;

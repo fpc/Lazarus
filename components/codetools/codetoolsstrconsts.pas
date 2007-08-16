@@ -113,6 +113,7 @@ ResourceString
   ctsForwardClassDefinitionNotResolved = 'Forward class definition not resolved: %s';
   ctsClassOfDefinitionNotResolved = '"class of" definition not resolved: %s';
   ctsTypeIdentifier = 'type identifier';
+  ctsGenericIdentifier = 'generic identifier';
   ctsAncestorIsNotProperty = 'ancestor of untyped property is not a property';
   ctsBaseTypeOfNotFound = 'base type of "%s" not found';
   ctsClassIdentifierExpected = 'class identifier expected';

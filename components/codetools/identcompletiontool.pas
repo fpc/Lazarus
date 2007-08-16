@@ -742,6 +742,7 @@ var
   
 var
   NewItem: TIdentifierListItem;
+  Node: TCodeTreeNode;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -789,15 +790,22 @@ begin
   Ident:=nil;
   case FoundContext.Node.Desc of
   
-  ctnTypeDefinition:
+  ctnTypeDefinition,ctnGenericType:
     begin
-      if (FoundContext.Node.FirstChild<>nil)
-      and (FoundContext.Node.FirstChild.Desc in [ctnClass,ctnClassInterface])
-      and ((ctnsForwardDeclaration and FoundContext.Node.FirstChild.SubDesc)>0)
+      Node:=FoundContext.Tool.FindTypeNodeOfDefinition(FoundContext.Node);
+      if (Node<>nil)
+      and (Node.Desc in [ctnClass,ctnClassInterface])
+      and ((ctnsForwardDeclaration and Node.SubDesc)>0)
       then
         // skip forward definition
         exit;
-      Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
+      if FoundContext.Node.Desc=ctnTypeDefinition then
+        Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos]
+      else begin
+        // generic
+        if FoundContext.Node.FirstChild=nil then exit;
+        Ident:=@FoundContext.Tool.Src[FoundContext.Node.FirstChild.StartPos];
+      end;
     end;
   
   ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier:

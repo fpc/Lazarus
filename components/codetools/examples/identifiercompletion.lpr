@@ -37,23 +37,39 @@ var
   Options: TCodeToolsOptions;
   Filename: string;
   Code: TCodeBuffer;
+  X: Integer;
+  Y: Integer;
+  //Tool: TCodeTool;
 begin
+  if (ParamCount>=1) and (Paramcount<3) then begin
+    writeln('Usage:');
+    writeln('  ',ParamStr(0));
+    writeln('  ',ParamStr(0),' <filename> <X> <Y>');
+  end;
+
   // setup the Options
   Options:=TCodeToolsOptions.Create;
 
   // To not parse the FPC sources every time, the options are saved to a file.
-  if FileExists(ConfigFilename) then
+  writeln('Config=',ConfigFilename);
+  if FileExists(ConfigFilename) then begin
     Options.LoadFromFile(ConfigFilename);
-
-  // setup your paths
-  Options.FPCPath:='/usr/bin/ppc386';
-  Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-  Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+  end else begin
+    Options.InitWithEnvironmentVariables;
+    if Options.FPCPath='' then
+      Options.FPCPath:='/usr/bin/ppc386';
+    if Options.FPCSrcDir='' then
+      Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+    if Options.LazarusSrcDir='' then
+      Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+  end;
 
   // optional: ProjectDir and TestPascalFile exists only to easily test some
   // things.
   Options.ProjectDir:=GetCurrentDir+'/scanexamples/';
   Options.TestPascalFile:=Options.ProjectDir+'identcomplexample.pas';
+  X:=20;
+  Y:=10;
 
   // init the codetools
   if not Options.UnitLinkListValid then
@@ -63,17 +79,28 @@ begin
   // save the options and the FPC unit links results.
   Options.SaveToFile(ConfigFilename);
 
+  writeln('FPCSrcDir=',Options.FPCSrcDir);
+  writeln('FPC=',Options.FPCPath);
+  if (ParamCount>=3) then begin
+    Options.TestPascalFile:=ExpandFileName(ParamStr(1));
+    X:=StrToInt(ParamStr(2));
+    Y:=StrToInt(ParamStr(3));
+  end;
+
   // load the file
   Filename:=Options.TestPascalFile;
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Example 1:
-  if CodeToolBoss.GatherIdentifiers(Code,20,11) then
+  //CodeToolBoss.Explore(Code,Tool,false,true);
+  //Tool.WriteDebugTreeReport;
+
+  // gather identifiers:
+  writeln('GatherIdentifiers ',Code.Filename,'(X=',X,',Y=',Y,')');
+  if CodeToolBoss.GatherIdentifiers(Code,X,Y) then
   begin
-    writeln('Identifiers found: ');
-    writeln(CodeToolBoss.IdentifierList.Count);
+    writeln('Identifiers found: Count=',CodeToolBoss.IdentifierList.Count);
   end else begin
     raise Exception.Create('GatherIdentifiers failed');
   end;

@@ -950,12 +950,17 @@ begin
     Result:=Result+'Node='+FindContext.Node.DescAsString;
     IdentNode:=FindContext.Node;
     while (IdentNode<>nil) do begin
-      if IdentNode.Desc in AllIdentifierDefinitions then begin
+      if IdentNode.Desc in AllSimpleIdentifierDefinitions then begin
         Result:=Result+' Ident="'+
           FindContext.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
         break;
-      end;
-      if IdentNode.Desc=ctnProperty then begin
+      end else if IdentNode.Desc=ctnGenericType then begin
+        if IdentNode.FirstChild<>nil then
+          Result:=Result+' Generic="'+
+            FindContext.Tool.ExtractIdentifier(IdentNode.FirstChild.StartPos)+'"'
+        else
+          Result:=Result+' Generic=?';
+      end else if IdentNode.Desc=ctnProperty then begin
         Result:=Result+' PropName="'+
           FindContext.Tool.ExtractPropName(IdentNode,false)+'"';
         break;
@@ -1086,12 +1091,15 @@ var CleanCursorPos: integer;
   DirectSearch, SkipChecks, SearchForward: boolean;
 
   procedure CheckIfCursorOnAForwardDefinedClass;
+  var
+    TypeNode: TCodeTreeNode;
   begin
     if SkipChecks then exit;
-    if CursorNode.Desc=ctnTypeDefinition then begin
-      if (CursorNode.FirstChild<>nil)
-      and (CursorNode.FirstChild.Desc in [ctnClass,ctnClassInterface])
-      and ((CursorNode.FirstChild.SubDesc and ctnsForwardDeclaration)>0) then
+    if CursorNode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+      TypeNode:=FindTypeNodeOfDefinition(CursorNode);
+      if (TypeNode<>nil)
+      and (TypeNode.Desc in [ctnClass,ctnClassInterface])
+      and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) then
       begin
         DirectSearch:=true;
         SearchForward:=true;
@@ -1315,13 +1323,22 @@ begin
         
           // adjust result for nicer position
           NewNode:=Params.NewNode;
-          if (NewNode<>nil) and (NewNode.Desc=ctnProcedure)
-          and (NewNode.FirstChild<>nil)
-          and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
-            // Instead of jumping to the procedure keyword,
-            // jump to the procedure name
-            Params.NewNode:=NewNode.FirstChild;
-            Params.NewCleanPos:=Params.NewNode.StartPos;
+          if (NewNode<>nil) then begin
+            if (NewNode.Desc=ctnProcedure)
+            and (NewNode.FirstChild<>nil)
+            and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
+              // Instead of jumping to the procedure keyword,
+              // jump to the procedure name
+              Params.NewNode:=NewNode.FirstChild;
+              Params.NewCleanPos:=Params.NewNode.StartPos;
+            end;
+            if (NewNode.Desc=ctnGenericType)
+            and (NewNode.FirstChild<>nil) then begin
+              // Instead of jumping to the generic keyword,
+              // jump to the name
+              Params.NewNode:=NewNode.FirstChild;
+              Params.NewCleanPos:=Params.NewNode.StartPos;
+            end;
           end;
             
           Params.ConvertResultCleanPosToCaretPos;
@@ -1488,6 +1505,7 @@ var
   BestNodeIsForwardDecaration: Boolean;
   CurNodeIsForwardDeclaration: Boolean;
   BestNode: TCodeTreeNode;
+  NameNode: TCodeTreeNode;
 begin
   Result:=nil;
   if Identifier='' then exit;
@@ -1507,7 +1525,11 @@ begin
       Node:=SectionNode.FirstChild;
       while Node<>nil do begin
         if Node.Desc in AllIdentifierDefinitions then begin
-          if CompareSrcIdentifiers(Node.StartPos,PChar(Pointer(Identifier)))
+          NameNode:=Node;
+          if Node.Desc=ctnGenericType then
+            NameNode:=NameNode.FirstChild;
+          if (NameNode<>nil)
+          and CompareSrcIdentifiers(NameNode.StartPos,PChar(Pointer(Identifier)))
           then begin
             CurNodeIsForwardDeclaration:=NodeIsForwardDeclaration(Node);
             if (BestNode=nil) or BestNodeIsForwardDecaration then begin
@@ -1743,22 +1765,21 @@ begin
     if NewNode<>nil then begin
       case NewNode.Desc of
       ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
-      ctnEnumIdentifier:
+      ctnEnumIdentifier, ctnGenericType:
         begin
           case NewNode.Desc of
           ctnVarDefinition: Result:=Result+'var ';
           ctnTypeDefinition: Result:=Result+'type ';
           ctnConstDefinition: Result:=Result+'const ';
           ctnEnumIdentifier: Result:=Result+'enum ';
+          ctnGenericType: Result:=Result+'generic type ';
           end;
           
           // add class name
           ClassStr := NewTool.ExtractClassName(NewNode, False);
           if ClassStr <> '' then Result := Result + ClassStr + '.';
           
-          NewTool.MoveCursorToNodeStart(NewNode);
-          NewTool.ReadNextAtom;
-          Result:=Result+NewTool.GetAtom;
+          Result:=Result+NewTool.ExtractDefinitionName(NewNode);
           IdentAdded:=true;
           TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
           if TypeNode<>nil then begin
@@ -2212,7 +2233,7 @@ var
   
   procedure MoveContextNodeToChilds;
   begin
-    if ContextNode.Desc=ctnClass then begin
+    if ContextNode.Desc in [ctnClass,ctnClassInterface] then begin
       // just-in-time parsing for class node
       BuildSubTreeForClass(ContextNode);
     end;
@@ -2225,14 +2246,48 @@ var
     end;
   end;
   
+  function SearchInGenericParams(GenericNode: TCodeTreeNode): boolean;
+  var
+    Node: TCodeTreeNode;
+  begin
+    Result:=false;
+    Node:=GenericNode.FirstChild;
+    if Node=nil then exit;
+    Node:=Node.NextBrother;
+    if (Node=nil) or (Node.Desc<>ctnGenericParams) then exit;
+    Node:=Node.FirstChild;
+    while Node<>nil do begin
+      if (fdfCollect in Params.Flags)
+      or CompareSrcIdentifiers(Node.StartPos,Params.Identifier)
+      then begin
+        {$IFDEF ShowTriedIdentifiers}
+        DebugLn('  SearchInGenericParams Identifier found="',GetIdentifier(Params.Identifier),'"');
+        {$ENDIF}
+        // identifier found
+        Params.SetResult(Self,Node);
+        Result:=CheckResult(true,true);
+        if not (fdfCollect in Params.Flags) then
+          exit;
+      end;
+      Node:=Node.NextBrother;
+    end;
+  end;
+
   function SearchInTypeVarConstPropDefinition: boolean;
   // returns: true if ok to exit
   //          false if search should continue
+  var
+    NameNode: TCodeTreeNode;
   begin
     Result:=false;
-    //DebugLn('  Definition Identifier "',GetIdentifier(Params.Identifier),'" ',GetIdentifier(@UpperSrc[ContextNode.StartPos]));
+    //DebugLn('  SearchInTypeVarConstPropDefinition Identifier "',GetIdentifier(Params.Identifier),'" ',ExtractDefinitionName(ContextNode));
+    NameNode:=ContextNode;
+    if ContextNode.Desc=ctnGenericType then begin
+      NameNode:=ContextNode.FirstChild;
+      if NameNode=nil then exit;
+    end;
     if (fdfCollect in Params.Flags)
-    or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
+    or CompareSrcIdentifiers(NameNode.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
       DebugLn('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
@@ -2357,6 +2412,16 @@ var
       //DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
       {$ENDIF}
       LastSearchedNode:=ContextNode;
+
+      if (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc=ctnGenericType)
+      then begin
+        // after search in the generic, search in the generic parameter names
+        if SearchInGenericParams(ContextNode.Parent) then begin
+          FindIdentifierInContext:=true;
+          Result:=false;
+          exit;
+        end;
+      end;
 
       if (ContextNode.Desc in [ctnClass,ctnClassInterface])
       and (fdfSearchInAncestors in Params.Flags) then begin
@@ -2555,9 +2620,9 @@ begin
           // they just define a range and not a context.
           // -> search in all childs
           MoveContextNodeToChilds;
-          
+
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
-        ctnGlobalProperty:
+        ctnGlobalProperty, ctnGenericType:
           if SearchInTypeVarConstPropDefinition then exit;
 
         ctnProcedure:
@@ -2777,6 +2842,9 @@ var
   NodeStack: TCodeTreeNodeStack;
   OldPos: integer;
   TypeFound: boolean;
+  SpecializeNode: TCodeTreeNode;
+  TypeNode: TCodeTreeNode;
+  NameNode: TCodeTreeNode;
   
   procedure RaiseForwardNotResolved;
   begin
@@ -2837,7 +2905,8 @@ begin
         // ToDo: check for circles in ancestor chain
         
         ClassIdentNode:=Result.Node.Parent;
-        if (ClassIdentNode=nil) or (not (ClassIdentNode.Desc=ctnTypeDefinition))
+        if (ClassIdentNode=nil)
+        or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType]))
         then begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseForwardClassNameLess;
@@ -2851,7 +2920,7 @@ begin
                       +(fdfGlobals*Params.Flags);
         Params.ContextNode:=ClassIdentNode;
         FindIdentifierInContext(Params);
-        if (Params.NewNode.Desc<>ctnTypeDefinition)
+        if (not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]))
         or (Params.NewCodeTool<>Self) then begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseForwardNotResolved;
@@ -2895,7 +2964,8 @@ begin
           Params.ContextNode:=Result.Node.Parent;
           FindIdentifierInContext(Params);
         end;
-        if (Params.NewNode.Desc<>ctnTypeDefinition) then begin
+        if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
+        begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseClassOfNotResolved;
         end;
@@ -2937,8 +3007,10 @@ begin
           // unitname.typename
           MoveCursorToNodeStart(Result.Node);
           ReadNextAtom; // read unitname
-          ReadNextAtomIsChar('.');
+          if not ReadNextAtomIsChar('.') then
+            RaiseCharExpectedButAtomFound('.');
           ReadNextAtom; // read type identifier
+          AtomIsIdentifier(true);
           Params.Load(OldInput);
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],
                                @CheckSrcIdentifier);
@@ -2948,6 +3020,7 @@ begin
           TypeFound:=Params.NewCodeTool.FindIdentifierInContext(Params);
         end;
         if TypeFound then begin
+          // only types allowed here, not generics
           if Params.NewNode.Desc in [ctnTypeDefinition] then begin
             if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
               // circle detected
@@ -2992,6 +3065,7 @@ begin
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=Result.Node.Parent;
           if FindIdentifierInContext(Params) then begin
+            // only types allowed, not generics
             if Params.NewNode.Desc in [ctnTypeDefinition] then begin
               if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
                 // circle detected
@@ -3060,6 +3134,59 @@ begin
         // an enum identifier, the base type is the enumeration
         Result.Node:=Result.Node.Parent;
       end else
+      if (Result.Node.Desc=ctnSpecialize) then begin
+        // go to the type name of the specialisation
+        SpecializeNode:=Result.Node;
+        TypeNode:=SpecializeNode.Parent;
+        NameNode:=SpecializeNode.FirstChild;
+        Result.Node:=NameNode;
+        if Result.Node=nil then break;
+        Params.Save(OldInput);
+        Params.SetIdentifier(Self,@Src[NameNode.StartPos],
+                             @CheckSrcIdentifier);
+        Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                       fdfIgnoreCurContextNode]
+                      +(fdfGlobals*Params.Flags);
+        Params.ContextNode:=TypeNode;
+        TypeFound:=FindIdentifierInContext(Params);
+        if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
+        then begin
+          // unitname.typename
+          MoveCursorToNodeStart(NameNode);
+          ReadNextAtom; // read unitname
+          if not ReadNextAtomIsChar('.') then
+            RaiseCharExpectedButAtomFound('.');
+          ReadNextAtom; // read type identifier
+          AtomIsIdentifier(true);
+          Params.Load(OldInput);
+          Params.SetIdentifier(Self,@Src[CurPos.StartPos],
+                               @CheckSrcIdentifier);
+          Params.Flags:=[fdfExceptionOnNotFound]
+                        +(fdfGlobals*OldInput.Flags);
+          Params.ContextNode:=Params.NewCodeTool.FindInterfaceNode;
+          TypeFound:=Params.NewCodeTool.FindIdentifierInContext(Params);
+        end;
+        if not TypeFound then begin
+          Result.Node:=nil;
+          break;
+        end;
+        if Params.NewNode.Desc<>ctnGenericType then begin
+          // not a generic
+          MoveCursorToNodeStart(NameNode);
+          ReadNextAtom;
+          RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                            [ctsGenericIdentifier,GetAtom]);
+        end;
+        if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
+          // circle detected
+          Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
+          RaiseCircleDefs;
+        end;
+        Result.Tool:=Params.NewCodeTool;
+        Result.Node:=Result.Tool.FindTypeNodeOfDefinition(Params.NewNode);
+        Params.Load(OldInput);
+        exit;
+      end else
         break;
     end;
     if (Result.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
@@ -3114,7 +3241,7 @@ var
     and (NewTool.PropNodeIsTypeLess(NewNode)) then
       exit;
     if (fdlfWithoutForwards in Flags) then begin
-      if (NewNode.Desc=ctnTypeDefinition)
+      if (NewNode.Desc in [ctnTypeDefinition,ctnGenericType])
       and NewTool.NodeIsForwardDeclaration(NewNode)
       then
         exit;
@@ -3184,7 +3311,8 @@ begin
   Result:=true;
   ListOfPFindContext:=nil;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (ClassNode.Parent=nil)
-  or (ClassNode.Parent.Desc<>ctnTypeDefinition) then exit;
+  or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
+    exit;
 
   AddFindContext(ListOfPFindContext,CreateFindContext(Self,ClassNode));
 
@@ -3238,7 +3366,8 @@ begin
     ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     ClassNode:=FindClassNode(ANode);
     if (ClassNode=nil) or (ClassNode.Parent=nil)
-    or (ClassNode.Parent.Desc<>ctnTypeDefinition) then exit;
+    or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
+      exit;
 
     //debugln('TFindDeclarationTool.FindContextClassAndAncestors A ClassName=',ExtractClassName(ClassNode,false));
     // add class and ancestors type definition to ListOfPCodeXYPosition
@@ -3642,6 +3771,12 @@ begin
       Result:=InNodeIdentifier(Node.StartPos);
     end;
     
+  ctnGenericType:
+    begin
+      if (Node.FirstChild=nil) or NodeIsForwardDeclaration(Node) then exit;
+      Result:=InNodeIdentifier(Node.FirstChild.StartPos);
+    end;
+    
   ctnProcedure:
     begin
       if (Node.SubDesc and ctnsForwardDeclaration)>0 then
@@ -3756,7 +3891,8 @@ var
   TypeNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (Node=nil) or (Node.Desc<>ctnTypeDefinition) then exit;
+  if (Node=nil) or (not (Node.Desc in [ctnTypeDefinition,ctnGenericType])) then
+    exit;
   TypeNode:=FindTypeNodeOfDefinition(Node);
   if TypeNode=nil then exit;
   if TypeNode.Desc=ctnClass then begin
@@ -3974,7 +4110,9 @@ begin
   ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
   if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
   ReadNextAtom;
-  ClassIdentNode:=ClassNode.GetNodeOfType(ctnTypeDefinition);
+  ClassIdentNode:=ClassNode.Parent;
+  if (ClassIdentNode<>nil) and (ClassIdentNode.Desc=ctnGenericType) then
+    ClassIdentNode:=ClassIdentNode.FirstChild;
   if AtomIsChar('(') then begin
     ReadNextAtom;
     if not AtomIsIdentifier(false) then exit;
@@ -3991,7 +4129,8 @@ begin
   end else begin
     // no ancestor class specified
     // check class name
-    if (ClassIdentNode=nil) or (ClassIdentNode.Desc<>ctnTypeDefinition) then
+    if (ClassIdentNode=nil)
+    or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
     begin
       MoveCursorToNodeStart(ClassNode);
       RaiseException('class without name');
@@ -4558,9 +4697,12 @@ begin
     ReadNextAtom;
     ReadNextAtom;
     Result:=CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier);
-  end else if (Node.Desc in AllIdentifierDefinitions)
-  or (Node.Desc=ctnIdentifier) then begin
+  end else if (Node.Desc in AllSimpleIdentifierDefinitions)
+  or (Node.Desc in [ctnIdentifier,ctnGenericName]) then begin
     Result:=CompareSrcIdentifiers(Node.StartPos,Params.Identifier);
+  end else if Node.Desc=ctnGenericType then begin
+    if Node.FirstChild<>nil then
+      Result:=CompareSrcIdentifiers(Node.FirstChild.StartPos,Params.Identifier);
   end;
 end;
 
@@ -4869,6 +5011,7 @@ function TFindDeclarationTool.FindStartOfVariable(EndPos: integer): integer;
   7. (A).
   8. (A as B)
   9. (@A)
+  10. nothing (e.g. cursor behind semicolon, keyword or closing bracket)
 }
   procedure RaiseIdentNotFound;
   begin
@@ -5387,6 +5530,7 @@ var
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=ExprType.Context.Node.Parent;
           if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
+            // only types allowed, not generics
             if Params.NewNode.Desc in [ctnTypeDefinition] then begin
               ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                                 Params.NewNode)
@@ -6547,6 +6691,8 @@ begin
 end;
 
 function TFindDeclarationTool.GetCurrentAtomType: TVariableAtomType;
+var
+  Node: TCodeTreeNode;
 begin
   if (CurPos.StartPos=CurPos.EndPos) then
     Result:=vatSpace
@@ -6563,7 +6709,13 @@ begin
     else if WordIsKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos) then
       Result:=vatKeyWord
-    else
+    else if UpAtomIs('PROPERTY') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnProperty) then
+        Result:=vatKeyword
+      else
+        Result:=vatIdentifier;
+    end else
       Result:=vatIdentifier;
   end
   else if (CurPos.StartPos>=1) and (CurPos.StartPos<=SrcLen)
@@ -7577,10 +7729,10 @@ begin
           begin
             FindContext.Node:=FindContext.Node.Parent;
           end else begin
-            Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                           fdfTopLvlResolving,fdfFunctionResult];
-            FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                                         ExprType.Context.Node);
+          Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                         fdfTopLvlResolving,fdfFunctionResult];
+          FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                                       ExprType.Context.Node);
           end;
         end;
         

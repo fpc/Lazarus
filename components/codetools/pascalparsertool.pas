@@ -140,7 +140,6 @@ type
     function KeyWordFuncClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
     function KeyWordFuncTypeBitPacked: boolean;
-    function KeyWordFuncGeneric: boolean;
     function KeyWordFuncSpecialize: boolean;
     function KeyWordFuncTypeArray: boolean;
     function KeyWordFuncTypeProc: boolean;
@@ -372,7 +371,6 @@ begin
     Add('DISPINTERFACE',@KeyWordFuncClassInterface);
     Add('PACKED',@KeyWordFuncTypePacked);
     Add('BITPACKED',@KeyWordFuncTypeBitPacked);
-    Add('GENERIC',@KeyWordFuncGeneric);
     Add('SPECIALIZE',@KeyWordFuncSpecialize);
     Add('ARRAY',@KeyWordFuncTypeArray);
     Add('PROCEDURE',@KeyWordFuncTypeProc);
@@ -2596,35 +2594,97 @@ function TPascalParserTool.KeyWordFuncType: boolean;
   examples:
 
     interface
-      type  a=b;
+      type
+        a=b;
+        generic c<> = d;
       
     implementation
     
     procedure c;
     type d=e;
 }
+
+  procedure ReadType;
+  // read   = type;
+  begin
+    // read =
+    ReadNextAtom;
+    if (CurPos.Flag<>cafEqual) then
+      RaiseCharExpectedButAtomFound('=');
+    // read type
+    ReadNextAtom;
+    TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos);
+    // read ;
+    if CurPos.Flag<>cafSemicolon then
+      RaiseCharExpectedButAtomFound(';');
+  end;
+
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnTypeSection;
-  // read all type definitions  Name = Type;
+  // read all type definitions  Name = Type; or generic Name<List> = Type;
   repeat
     ReadNextAtom;  // name
-    if AtomIsIdentifier(false) then begin
+    if UpAtomIs('GENERIC') then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnGenericType;
+      // read name
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      CreateChildNode;
+      CurNode.Desc:=ctnGenericName;
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+      // read <
+      ReadNextAtom;
+      if not AtomIsChar('<') then
+        RaiseCharExpectedButAtomFound('<');
+      CreateChildNode;
+      CurNode.Desc:=ctnGenericParams;
+      // read parameter list
+      ReadNextAtom;
+      if AtomIsIdentifier(false) then begin
+        repeat
+          CreateChildNode;
+          CurNode.Desc:=ctnGenericParameter;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+          // read name
+          ReadNextAtom;
+          if CurPos.Flag=cafComma then begin
+            ReadNextAtom;
+            AtomIsIdentifier(true);
+          end else if AtomIsChar('>') then begin
+            break;
+          end else if AtomIs('>=') then begin
+            // this is the rare case where >= are two separate atoms
+            dec(CurPos.EndPos);
+            break;
+          end else
+            RaiseCharExpectedButAtomFound('>');
+        until false;
+      end else begin
+        if AtomIs('>=') then
+          // this is the rare case where >= are two separate atoms
+          dec(CurPos.EndPos);
+        if not AtomIsChar('>') then
+          RaiseCharExpectedButAtomFound('>');
+      end;
+      // close ctnGenericParams
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+      ReadType;
+      // close ctnGenericType
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end else if AtomIsIdentifier(false) then begin
       CreateChildNode;
       CurNode.Desc:=ctnTypeDefinition;
-      ReadNextAtom;
-      if (CurPos.Flag<>cafEqual) then
-        RaiseCharExpectedButAtomFound('=');
-      // read type
-      ReadNextAtom;
-      TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos);
-      // read ;
-      if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+      ReadType;
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -2948,54 +3008,11 @@ begin
                                             CurPos.EndPos-CurPos.StartPos);
 end;
 
-function TPascalParserTool.KeyWordFuncGeneric: boolean;
-// generic type
-// examples:
-//   type TGenericList = generic(A,B) class end;
-begin
-  if (CurNode.Desc<>ctnTypeDefinition) then
-    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['generic']);
-  CreateChildNode;
-  CurNode.Desc:=ctnGenericType;
-  // read parameter list
-  ReadNextAtom;
-  if CurPos.Flag<>cafRoundBracketOpen then
-    RaiseCharExpectedButAtomFound('(');
-  repeat
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    ReadNextAtom;
-    if Curpos.Flag=cafPoint then begin
-      // first identifier was unitname, now read the type
-      ReadNextAtom;
-      AtomIsIdentifier(true);
-      CurNode.EndPos:=CurPos.EndPos;
-      ReadNextAtom;
-    end;
-    if CurPos.Flag=cafRoundBracketClose then
-      break
-    else if CurPos.Flag=cafComma then begin
-      // read next identifier
-    end else
-      RaiseCharExpectedButAtomFound(')');
-  until false;
-  ReadNextAtom;
-  // read class, record, object, interface
-  if not GenericTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-    CurPos.EndPos-CurPos.StartPos) then
-    RaiseStringExpectedButAtomFound('"class"');
-  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos);
-  // close generic type
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
-end;
-
 function TPascalParserTool.KeyWordFuncSpecialize: boolean;
 // specialize template
 // examples:
-//   type TListOfInteger = specialize TGenericList(integer,string);
-//   type TListOfChar = specialize Classes.TGenericList(integer,objpas.integer);
+//   type TListOfInteger = specialize TGenericList<integer,string>;
+//   type TListOfChar = specialize Classes.TGenericList<integer,objpas.integer>;
 begin
   if (CurNode.Desc<>ctnTypeDefinition) then
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['specialize']);
@@ -3017,8 +3034,8 @@ begin
   end;
   EndChildNode;
   // read type list
-  if CurPos.Flag<>cafRoundBracketOpen then
-    RaiseCharExpectedButAtomFound('(');
+  if not AtomIsChar('<') then
+    RaiseCharExpectedButAtomFound('<');
   CreateChildNode;
   CurNode.Desc:=ctnSpecializeParams;
   // read list of types
@@ -3033,12 +3050,12 @@ begin
       AtomIsIdentifier(true);
       ReadNextAtom;
     end;
-    if CurPos.Flag=cafRoundBracketClose then
+    if AtomIsChar('>') then
       break
     else if CurPos.Flag=cafComma then begin
       // read next parameter
     end else
-      RaiseCharExpectedButAtomFound(')');
+      RaiseCharExpectedButAtomFound('>');
   until false;
   // close list
   CurNode.EndPos:=CurPos.EndPos;

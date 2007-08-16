@@ -89,6 +89,8 @@ type
     procedure SetUnitLinkListValid(const AValue: boolean);
   public
     constructor Create;
+    procedure InitWithEnvironmentVariables;
+    function FindDefaultCompilerFilename: string;
     
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -132,16 +134,22 @@ begin
 end;
 
 procedure TCodeToolsOptions.SetFPCPath(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FFPCPath=AValue then exit;
-  FFPCPath:=AValue;
+  NewValue:=ExpandFileName(AValue);
+  if FFPCPath=NewValue then exit;
+  FFPCPath:=NewValue;
   Modified:=true;
 end;
 
 procedure TCodeToolsOptions.SetFPCSrcDir(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FFPCSrcDir=AValue then exit;
-  FFPCSrcDir:=AValue;
+  NewValue:=ExpandFileName(AValue);
+  if FFPCSrcDir=NewValue then exit;
+  FFPCSrcDir:=NewValue;
   Modified:=true;
 end;
 
@@ -153,9 +161,12 @@ begin
 end;
 
 procedure TCodeToolsOptions.SetLazarusSrcDir(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FLazarusSrcDir=AValue then exit;
-  FLazarusSrcDir:=AValue;
+  NewValue:=ExpandFileName(AValue);
+  if FLazarusSrcDir=NewValue then exit;
+  FLazarusSrcDir:=NewValue;
   Modified:=true;
 end;
 
@@ -232,6 +243,19 @@ constructor TCodeToolsOptions.Create;
 begin
   FPPUExt:='.ppu';
   FLCLWidgetType:='gtk';
+end;
+
+procedure TCodeToolsOptions.InitWithEnvironmentVariables;
+begin
+  FPCPath:=FindDefaultCompilerFilename;
+  FPCSrcDir:=GetEnvironmentVariable('FPCDIR');
+  LazarusSrcDir:=GetEnvironmentVariable('LAZARUSDIR');
+end;
+
+function TCodeToolsOptions.FindDefaultCompilerFilename: string;
+begin
+  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
+                           GetEnvironmentVariable('PATH'),':',ctsfcDefault);
 end;
 
 procedure TCodeToolsOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;

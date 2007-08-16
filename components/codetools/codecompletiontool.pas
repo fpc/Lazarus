@@ -281,20 +281,16 @@ end;
 function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
-var TrimmedIdentifier: string;
+var
+  TrimmedIdentifier: string;
 begin
   if not (fdfTopLvlResolving in Params.Flags) then exit;
   with Params do begin
     case NewNode.Desc of
-    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
-      TrimmedIdentifier:=NewCodeTool.ExtractIdentifier(NewNode.StartPos);
+    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericType:
+      TrimmedIdentifier:=NewCodeTool.ExtractDefinitionName(NewNode);
     ctnProperty:
-      begin
-        NewCodeTool.MoveCursorToNodeStart(NewNode);
-        NewCodeTool.ReadNextAtom; // 'property'
-        NewCodeTool.ReadNextAtom; // name
-        TrimmedIdentifier:=NewCodeTool.GetAtom;
-      end;
+      TrimmedIdentifier:=NewCodeTool.ExtractPropName(NewNode,false);
     else
       TrimmedIdentifier:=GetIdentifier(Params.Identifier);
     end;
@@ -1123,7 +1119,8 @@ begin
   case Node.Desc of
   ctnProcedure:
     Result:=ExtractProcHead(Node,[phpInUpperCase,phpWithoutSemicolon]);
-  ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier:
+  ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
+  ctnGenericType:
     Result:=ExtractDefinitionName(Node);
   else
     Result:='';
@@ -1179,7 +1176,7 @@ begin
         // skip implementation
         break;
       ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition, ctnProcedure,
-      ctnEnumIdentifier:
+      ctnEnumIdentifier, ctnGenericType:
         begin
           NodeText:=GetRedefinitionNodeText(Node);
           AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
@@ -1678,7 +1675,8 @@ begin
       case Node.Desc of
       ctnProcedureHead, ctnProperty, ctnParameterList, ctnImplementation:
         Node:=Node.NextSkipChilds;
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier:
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
+      ctnGenericType:
         begin
           // add or update definition
           AddDefinition(Node);
@@ -1970,7 +1968,8 @@ begin
       case Node.Desc of
       ctnProcedureHead, ctnProperty, ctnParameterList, ctnImplementation:
         Node:=Node.NextSkipChilds;
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier:
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
+      ctnGenericType:
         begin
           // add or update definition
           AddDefinition(Node);
@@ -3023,17 +3022,18 @@ begin
   // find the start of the class (the position in front of the class name)
   ClassNode:=CodeCompleteClassNode;
   if ClassNode=nil then exit;
-  ClassIdentifierNode:=ClassNode.GetNodeOfType(ctnTypeDefinition);
+  ClassIdentifierNode:=
+                   ClassNode.GetNodeOfTypes([ctnTypeDefinition,ctnGenericType]);
   if ClassIdentifierNode=nil then begin
     DebugLn('TCodeCompletionCodeTool.InsertClassHeaderComment WARNING: class without name');
     exit;
   end;
   if not CleanPosToCaret(ClassIdentifierNode.StartPos,StartPos) then exit;
-  Code:=ExtractIdentifier(ClassIdentifierNode.StartPos);
+  Code:=ExtractDefinitionName(ClassIdentifierNode);
   
   // check if there is already a comment in front
   if FindCommentInFront(StartPos,Code,false,true,false,false,true,true,
-          CommentStart,CommentEnd)
+                        CommentStart,CommentEnd)
   then
     // comment already exists
     exit;
@@ -3306,10 +3306,10 @@ var
     ClassProcs:=nil;
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                        ExtractClassName(FCodeCompleteClassNode,true));
+                         ExtractClassName(FCodeCompleteClassNode,true));
   end;
   
-  procedure FindTopMostAndBottomMostProcCodies;
+  procedure FindTopMostAndBottomMostProcBodies;
   begin
     ExistingNode:=ProcBodyNodes.FindLowest;
     if ExistingNode<>nil then
@@ -3393,7 +3393,8 @@ var
     end else begin
       // class is not in interface section
       // -> insert at the end of the type section
-      ANode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeDefinition);
+      ANode:=FCodeCompleteClassNode.GetNodeOfTypes(
+                                            [ctnTypeDefinition,ctnGenericType]);
       if ANode=nil then
         RaiseException(ctsClassNodeWithoutParentNode);
       if ANode.Parent.Desc=ctnTypeSection then
@@ -3442,7 +3443,7 @@ begin
   GatherExistingClassProcBodies;
   try
     // find topmost and bottommost proc body
-    FindTopMostAndBottomMostProcCodies;
+    FindTopMostAndBottomMostProcBodies;
 
     {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
@@ -3708,10 +3709,10 @@ var CleanCursorPos, Indent, insertPos: integer;
         BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-        // due to insertions in fron of the class, the cursor position could
+        // due to insertions in front of the class, the cursor position could
         // have changed
         while (CursorNode<>nil) do begin
-          if (CursorNode.Desc in [ctnTypeSection,ctnTypeDefinition])
+          if (CursorNode.Desc in [ctnTypeSection,ctnTypeDefinition,ctnGenericType])
           then break;
           CursorNode:=CursorNode.Parent;
         end;
@@ -3719,7 +3720,8 @@ var CleanCursorPos, Indent, insertPos: integer;
                               FindClassNode(CursorNode,CurClassName,true,false);
         if FCodeCompleteClassNode=nil then
           RaiseException('oops, I lost your class');
-        ANode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeDefinition);
+        ANode:=FCodeCompleteClassNode.GetNodeOfTypes(
+                                            [ctnTypeDefinition,ctnGenericType]);
         if ANode=nil then
           RaiseException(ctsClassNodeWithoutParentNode);
         if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then

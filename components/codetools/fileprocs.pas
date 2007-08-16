@@ -46,8 +46,10 @@ const
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
   {$IFDEF MSWindows}
   FileMask = '*.*';
+  ExeExt = '.exe';
   {$ELSE}
   FileMask = '*';
+  ExeExt = '';
   {$ENDIF}
   {$ifdef MSWindows}
   {$define CaseInsensitiveFilenames}
@@ -293,7 +295,7 @@ implementation
 // to get more detailed error messages consider the os
 {$IFNDEF MSWindows}
 uses
-  Unix,BaseUnix;
+  Unix, BaseUnix;
 {$ENDIF}
 
 var

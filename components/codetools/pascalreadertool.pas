@@ -349,15 +349,9 @@ begin
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin
     TheClassName:='';
-    TypeDefNode:=ProcNode.GetNodeOfType(ctnClass);
+    TypeDefNode:=ProcNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
     if TypeDefNode<>nil then begin
-      TypeDefNode:=TypeDefNode.GetNodeOfType(ctnTypeDefinition);
-      if TypeDefNode<>nil then begin
-        MoveCursorToCleanPos(TypeDefNode.StartPos);
-        ReadNextAtom;
-        if not AtomIsIdentifier(false) then exit;
-        TheClassName:=GetAtom;
-      end;
+      TheClassName:=ExtractClassName(TypeDefNode,phpInUpperCase in Attr);
     end;
   end;
   InitExtraction;
@@ -466,7 +460,8 @@ end;
 
 function TPascalReaderTool.ExtractClassName(ClassNode: TCodeTreeNode;
   InUpperCase: boolean): string;
-var Len: integer;
+var
+  DefNode: TCodeTreeNode;
 begin
   if ClassNode<>nil then begin
     if ClassNode.Desc <> ctnClass then
@@ -482,24 +477,18 @@ begin
       until ClassNode.Desc = ctnClass;
     end;
 
-    if ClassNode.Desc=ctnClass then begin
-      ClassNode:=ClassNode.Parent;
-      if (ClassNode<>nil) and (ClassNode.Desc=ctnGenericType) then
-        ClassNode:=ClassNode.Parent;
-      if ClassNode=nil then begin
-        Result:='';
-        exit;
-      end;
+    DefNode:=ClassNode.Parent;
+    if (DefNode<>nil) and (DefNode.Desc=ctnGenericType) then
+      DefNode:=DefNode.FirstChild;
+    if DefNode=nil then begin
+      Result:='';
+      exit;
     end;
-    
-    Len:=1;
-    while (ClassNode.StartPos+Len<=SrcLen)
-    and (IsIdentChar[Src[ClassNode.StartPos+Len]]) do
-      inc(Len);
+
     if InUpperCase then
-      Result:=copy(UpperSrc,ClassNode.StartPos,Len)
+      Result:=GetIdentifier(@UpperSrc[DefNode.StartPos])
     else
-      Result:=copy(Src,ClassNode.StartPos,Len);
+      Result:=GetIdentifier(@Src[DefNode.StartPos]);
   end else
     Result:='';
 end;
@@ -1070,7 +1059,14 @@ begin
   and (Result.Desc in AllIdentifierDefinitions) do begin
     if (Result.FirstChild<>nil) then begin
       Result:=Result.FirstChild;
-      if (Result<>nil) and (not (Result.Desc in AllPascalTypes)) then
+      if Result.Desc=ctnGenericName then begin
+        // skip generic name and params
+        Result:=Result.NextBrother;
+        if Result=nil then exit;
+        Result:=Result.NextBrother;
+        if Result=nil then exit;
+      end;
+      if (not (Result.Desc in AllPascalTypes)) then
         Result:=nil;
       exit;
     end;
@@ -1085,26 +1081,24 @@ function TPascalReaderTool.FindClassNode(StartNode: TCodeTreeNode;
 // with type class and classname = SearchedClassName
 var
   ANode, CurClassNode: TCodeTreeNode;
+  NameNode: TCodeTreeNode;
 begin
   ANode:=StartNode;
   Result:=nil;
   while (ANode<>nil) do begin
-    if ANode.Desc=ctnTypeSection then begin
-      Result:=FindClassNode(ANode.FirstChild,AClassName,IgnoreForwards,
-                     IgnoreNonForwards);
-      if Result<>nil then exit;
-    end else if ANode.Desc=ctnTypeDefinition then begin
-      CurClassNode:=ANode.FirstChild;
-      if (CurClassNode<>nil) and (CurClassNode.Desc=ctnGenericType) then
-        CurClassNode:=CurClassNode.FirstChild;
+    if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+      CurClassNode:=FindTypeNodeOfDefinition(ANode);
       if (CurClassNode<>nil) and (CurClassNode.Desc=ctnClass) then begin
         if (not (IgnoreForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
         and (not (IgnoreNonForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
         then begin
+          NameNode:=ANode;
+          if ANode.Desc=ctnGenericType then
+            NameNode:=ANode.FirstChild;
           if CompareIdentifiers(PChar(Pointer(AClassName)),
-                                @Src[ANode.StartPos])=0
+                                @Src[NameNode.StartPos])=0
           then begin
             Result:=CurClassNode;
             exit;
@@ -1113,12 +1107,18 @@ begin
       end;
     end;
     // next node
-    if (ANode.NextBrother=nil) and (ANode.Parent<>nil)
-    and (ANode.Parent.NextBrother<>nil)
-    and (ANode.Parent.Desc in (AllCodeSections+AllClassSections)) then
-      ANode:=ANode.Parent.NextBrother.FirstChild
-    else
-      ANode:=ANode.NextBrother;
+    if (ANode.Desc=ctnTypeSection) and (ANode.FirstChild<>nil) then
+      ANode:=ANode.FirstChild
+    else if ANode.NextBrother<>nil then
+      ANode:=ANode.NextBrother
+    else begin
+      ANode:=ANode.NextSkipChilds;
+      // skip procs, const and var sections
+      while (ANode<>nil) and (ANode.Desc<>ctnTypeSection) do
+        ANode:=ANode.NextBrother;
+      if ANode<>nil then
+        ANode:=ANode.FirstChild;
+    end;
   end;
 end;
 
@@ -1462,11 +1462,15 @@ end;
 
 function TPascalReaderTool.ExtractDefinitionName(DefinitionNode: TCodeTreeNode
   ): string;
-var
-  Len: LongInt;
 begin
-  Len:=GetIdentLen(@Src[DefinitionNode.StartPos]);
-  Result:=copy(Src,DefinitionNode.StartPos,Len);
+  if DefinitionNode.Desc=ctnGenericType then begin
+    if DefinitionNode.FirstChild<>nil then
+      Result:=GetIdentifier(@Src[DefinitionNode.FirstChild.StartPos])
+    else
+      Result:='';
+  end else begin
+    Result:=GetIdentifier(@Src[DefinitionNode.StartPos]);
+  end;
 end;
 
 function TPascalReaderTool.MoveCursorToParameterSpecifier(

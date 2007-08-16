@@ -495,6 +495,8 @@ function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
+function GetCompiledTargetOS: string;
+function GetDefaultCompilerFilename: string;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -744,6 +746,38 @@ begin
   while (EndPos<=length(Combination)) and (Combination[EndPos]<>'-') do
     inc(EndPos);
   WidgetSet:=copy(Combination,StartPos,EndPos-StartPos);
+end;
+
+function GetCompiledTargetOS: string;
+begin
+  Result:=lowerCase({$I %FPCTARGETCPU%});
+end;
+
+function GetDefaultCompilerFilename: string;
+begin
+  Result:='fpc';
+
+  {$IFDEF CPUi386}
+  Result:='ppc386'+ExeExt;
+  {$ENDIF}
+  {$IFDEF CPUPowerPC}
+  Result:='ppcppc';
+  {$ENDIF}
+  {$IFDEF CPUSparc}
+  Result:='ppcsparc';
+  {$ENDIF}
+  {$IFDEF CPUM68K}
+  Result:='ppc86k';
+  {$ENDIF}
+  {$IFDEF CPUALPHA}
+  Result:='ppcaxp'+ExeExt;
+  {$ENDIF}
+  {$IFDEF CPUX86_64}
+  Result:='ppcx64'+ExeExt;
+  {$ENDIF}
+  {$IFDEF CPUARM}
+  Result:='ppcarm'+ExeExt;
+  {$ENDIF}
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string

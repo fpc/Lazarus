@@ -46,7 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FileUtil, InterfaceBase;
+  SysUtils, Classes, DefineTemplates, FileUtil, InterfaceBase;
 
 type
   TLCLPlatforms = set of TLCLPlatform;
@@ -243,29 +243,7 @@ end;
 
 function GetDefaultCompilerFilename: string;
 begin
-  Result:='fpc';
-  
-  {$IFDEF CPUi386}
-  Result:='ppc386'+GetExeExt;
-  {$ENDIF}
-  {$IFDEF CPUPowerPC}
-  Result:='ppcppc';
-  {$ENDIF}
-  {$IFDEF CPUSparc}
-  Result:='ppcsparc';
-  {$ENDIF}
-  {$IFDEF CPUM68K}
-  Result:='ppc86k';
-  {$ENDIF}
-  {$IFDEF CPUALPHA}
-  Result:='ppcaxp';
-  {$ENDIF}
-  {$IFDEF CPUX86_64}
-  Result:='ppcx64'+GetExeExt;
-  {$ENDIF}
-  {$IFDEF CPUARM}
-  Result:='ppcarm';
-  {$ENDIF}
+  Result:=DefineTemplates.GetDefaultCompilerFilename;
 end;
 
 function CheckFPCSourceDir(const ADirectory: string): boolean;

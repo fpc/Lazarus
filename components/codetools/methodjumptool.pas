@@ -759,6 +759,7 @@ var CurProcName: string;
   ANode: TCodeTreeNode;
   NewNodeExt: TCodeTreeNodeExtension;
   cmp: boolean;
+  CurClassName: String;
 begin
   Result:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   ANode:=StartNode;
@@ -773,13 +774,10 @@ begin
         //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B');
         cmp:=true;
         if (phpOnlyWithClassname in Attr) then begin
-          CurProcName:=ExtractProcName(ANode,[phpInUpperCase]);
-          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B2 "',CurProcName,'" =? ',UpperClassName);
+          CurClassName:=ExtractClassNameOfProcNode(ANode);
+          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B2 "',CurClassName,'" =? ',UpperClassName);
 
-          if (UpperClassName<>copy(CurProcName,1,length(UpperClassName)))
-          or (length(CurProcName)<length(UpperClassName)+2)
-          or (CurProcName[length(UpperClassName)+1] in ['A'..'Z','_','0'..'9'])
-          then
+          if CompareIdentifiers(PChar(UpperClassName),PChar(CurClassName))<>0 then
             cmp:=false;
         end;
         if cmp and (phpIgnoreMethods in Attr) then begin
@@ -791,7 +789,7 @@ begin
         if cmp then begin
           //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] C');
           CurProcName:=ExtractProcHead(ANode,Attr);
-          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] D "',CurProcName,'" ',phpInUpperCase in Attr);
+          //DebugLn(['[TMethodJumpingCodeTool.GatherProcNodes] D "',CurProcName,'" ',phpInUpperCase in Attr]);
           if (CurProcName<>'') then begin
             NewNodeExt:=NodeExtMemManager.NewNode;
             with NewNodeExt do begin
@@ -804,15 +802,7 @@ begin
       end;
     end;
     // next node
-    if ANode.NextBrother<>nil then begin
-      ANode:=ANode.NextBrother;
-    end else begin
-      ANode:=ANode.Parent.NextBrother;
-      while (ANode<>nil) and (ANode.Desc in (AllCodeSections+AllClassSections))
-      and (ANode.FirstChild=nil) do
-        ANode:=ANode.NextBrother;
-      if ANode<>nil then ANode:=ANode.FirstChild;
-    end;
+    ANode:=FindNextNodeOnSameLvl(ANode);
   end;
 end;
 
