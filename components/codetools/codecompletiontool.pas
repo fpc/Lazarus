@@ -1454,29 +1454,33 @@ function TCodeCompletionCodeTool.FixAliasDefinitions(
   The function body will be removed.
   See the function FindConstFunctions.
 }
-  {function IsConstSectionNeeded(Node: TCodeTreeNode): boolean;
+  function FindReferingNode(DefNode: TCodeTreeNode): TCodeTreeNode;
   var
     AVLNode: TAVLTreeNode;
     NodeExt: TCodeTreeNodeExtension;
   begin
-    if Node.PriorBrother.Desc=ctnConstSection then exit(false);
     AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
     while AVLNode<>nil do begin
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-      if NodeExt.Node=Node.PriorBrother then begin
-        // the function in front will be replaced too
-        exit(false);
+      if NodeExt.Node=DefNode then begin
+        Result:=TCodeTreeNode(NodeExt.Data);
+        exit;
       end;
       AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
     end;
-    Result:=true;
-  end;}
+    Result:=nil;
+  end;
 
 var
   AVLNode: TAVLTreeNode;
   NodeExt: TCodeTreeNodeExtension;
   DefNode: TCodeTreeNode;
   ReferingNode: TCodeTreeNode;
+  NextAVLNode: TAVLTreeNode;
+  ReferingNodeInFront: TCodeTreeNode;
+  ReferingNodeBehind: TCodeTreeNode;
+  NewSrc: String;
+  FromPos: LongInt;
 begin
   Result:=false;
   if SourceChangeCache=nil then exit;
@@ -1484,18 +1488,75 @@ begin
     exit(true);
   SourceChangeCache.MainScanner:=Scanner;
 
+  // remove all nodes which can not be handled here
+  AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
+  while AVLNode<>nil do begin
+    NextAVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+    NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+    DefNode:=NodeExt.Node;
+    ReferingNode:=TCodeTreeNode(NodeExt.Data);
+    if (ReferingNode=nil)
+    or (not (ReferingNode.Desc in [ctnTypeDefinition,ctnConstDefinition]))
+    or (DefNode.Desc=ReferingNode.Desc) then begin
+      TreeOfCodeTreeNodeExt.Delete(AVLNode);
+    end;
+    AVLNode:=NextAVLNode;
+  end;
+
+  // insert additional sections
   AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
   while AVLNode<>nil do begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
     ReferingNode:=TCodeTreeNode(NodeExt.Data);
-    DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',ReferingNode.DescAsString]);
 
-    // add 'const' keyword
-    {if IsConstSectionNeeded(DefNode) then begin
-      FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
-      SourceChangeCache.Replace(gtEmptyLine,gtNewLine,FromPos,FromPos,'const');
-    end;}
+    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',ReferingNode.DescAsString]);
+
+    case ReferingNode.Desc of
+    ctnTypeDefinition: NewSrc:='type';
+    ctnConstDefinition: NewSrc:='const';
+    else NewSrc:='bug';
+    end;
+    
+    // check in front
+    if DefNode.PriorBrother=nil then begin
+      // this is the start of the section
+      MoveCursorToNodeStart(DefNode.Parent);
+      ReadNextAtom;
+      if not SourceChangeCache.Replace(gtNone,gtNone,
+        CurPos.StartPos,CurPos.EndPos,NewSrc) then exit;
+    end else begin
+      // this is not the start of the section
+      ReferingNodeInFront:=FindReferingNode(DefNode.PriorBrother);
+      if (ReferingNodeInFront=nil)
+      or (ReferingNodeInFront.Desc<>ReferingNode.Desc) then begin
+        // the node in front has a different section
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
+        if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+           FromPos,FromPos,NewSrc) then exit;
+      end;
+    end;
+    
+    // check behind
+    if DefNode.NextBrother=nil then begin
+      // this is the end of the section
+    end else begin
+      // this is not the end of the section
+      ReferingNodeBehind:=FindReferingNode(DefNode.NextBrother);
+      if ReferingNodeBehind<>nil then begin
+        // the next node will change the section
+      end else begin
+        // the next node should stay in the same type of section
+        case DefNode.NextBrother.Desc of
+        ctnTypeDefinition: NewSrc:='type';
+        ctnConstDefinition: NewSrc:='const';
+        else NewSrc:='';
+        end;
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.NextBrother.StartPos);
+        if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+           FromPos,FromPos,NewSrc) then exit;
+      end;
+    end;
 
     AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
   end;
