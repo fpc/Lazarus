@@ -319,6 +319,9 @@ function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithNodeStartPos(
   NodeData1, NodeData2: pointer): integer;
+function CompareCodeTreeNodeExtWithNode(NodeData1, NodeData2: pointer): integer;
+function ComparePointerWithCodeTreeNodeExtNode(p: Pointer;
+                                               NodeExt: pointer): integer;
 
 type
   TOnFindOwnerOfCodeTreeNode = function (ANode: TCodeTreeNode): TObject;
@@ -486,6 +489,35 @@ begin
   if NodeExt1Pos<NodeExt2Pos then
     Result:=1
   else if NodeExt1Pos>NodeExt2Pos then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareCodeTreeNodeExtWithNode(NodeData1, NodeData2: pointer): integer;
+var
+  Node1: TCodeTreeNode;
+  Node2: TCodeTreeNode;
+begin
+  Node1:=TCodeTreeNodeExtension(NodeData1).Node;
+  Node2:=TCodeTreeNodeExtension(NodeData2).Node;
+  if Pointer(Node1)>Pointer(Node2) then
+    Result:=1
+  else if Pointer(Node1)<Pointer(Node2) then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function ComparePointerWithCodeTreeNodeExtNode(p: Pointer; NodeExt: pointer
+  ): integer;
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=TCodeTreeNodeExtension(NodeExt).Node;
+  if p>Pointer(Node) then
+    Result:=1
+  else if p<Pointer(Node) then
     Result:=-1
   else
     Result:=0;

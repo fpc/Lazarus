@@ -1076,6 +1076,7 @@ begin
         Result:=nil;
       exit;
     end;
+    if Result.Desc=ctnConstDefinition then exit(nil);
     Result:=Result.NextBrother;
   end;
 end;

@@ -81,7 +81,7 @@ uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, MethodJumpTool, FindDeclarationTool, KeywordFuncLists,
   CodeToolsStructs, BasicCodeTools, LinkScanner, SourceChanger,
-  AVL_Tree;
+  CodeGraph, AVL_Tree;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -203,6 +203,13 @@ type
     function FindTypeCastFunctions(out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceTypeCastFunctions(TreeOfCodeTreeNodeExt: TAVLTree;
                                 SourceChangeCache: TSourceChangeCache): boolean;
+    function FixForwardDefinitions(SourceChangeCache: TSourceChangeCache
+                                   ): boolean;
+    function GatherUnitDefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
+                      OnlyInterface, ExceptionOnRedefinition: boolean): boolean;
+    function BuildUnitDefinitionGraph(
+                        out DefinitionesTreeOfCodeTreeNodeExt: TAVLTree;
+                        out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -1197,8 +1204,7 @@ begin
       end;
     end;
   finally
-    AllNodes.FreeAndClear;
-    AllNodes.Free;
+    NodeExtMemManager.DisposeAVLTree(AllNodes);
   end;
   Result:=true;
 end;
@@ -1441,8 +1447,7 @@ begin
     end;
 
   finally
-    AllNodes.FreeAndClear;
-    AllNodes.Free;
+    NodeExtMemManager.DisposeAVLTree(AllNodes);
   end;
   Result:=true;
 end;
@@ -1705,60 +1710,16 @@ var
     TreeOfCodeTreeNodeExt.Add(ResultNodeExt);
   end;
   
-  procedure AddDefinition(Node: TCodeTreeNode);
-  var
-    NodeExt: TCodeTreeNodeExtension;
-    NodeText: String;
-  begin
-    NodeText:=GetRedefinitionNodeText(Node);
-    NodeExt:=FindCodeTreeNodeExt(Definitions,NodeText);
-    if NodeExt=nil then begin
-      NodeExt:=NodeExtMemManager.NewNode;
-      NodeExt.Txt:=NodeText;
-      Definitions.Add(NodeExt);
-    end;
-    NodeExt.Node:=Node;
-  end;
-
 var
   Node: TCodeTreeNode;
 begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
-  BuildTree(false);
-  if not EndOfSourceFound then exit;
-  
-  // first step: find all unit identifiers (excluding implementation section)
-  Definitions:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-  try
-    Node:=Tree.Root;
-    while Node<>nil do begin
-      case Node.Desc of
-      ctnProcedureHead, ctnProperty, ctnParameterList, ctnImplementation:
-        Node:=Node.NextSkipChilds;
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
-      ctnGenericType:
-        begin
-          // add or update definition
-          AddDefinition(Node);
 
-          if (Node.Desc=ctnTypeDefinition)
-          and (Node.FirstChild<>nil)
-          and (Node.FirstChild.Desc=ctnEnumerationType) then
-            Node:=Node.FirstChild
-          else
-            Node:=Node.NextSkipChilds;
-        end;
-      ctnProcedure:
-        begin
-          AddDefinition(Node);
-          Node:=Node.NextSkipChilds;
-        end;
-      else
-        Node:=Node.Next;
-      end;
-    end;
-    
+  try
+    // first step: find all unit identifiers (excluding implementation section)
+    if not GatherUnitDefinitions(Definitions,true,true) then exit;
+
     // now check all functions
     Node:=Tree.Root;
     while Node<>nil do begin
@@ -1777,8 +1738,7 @@ begin
     end;
     
   finally
-    Definitions.FreeAndClear;
-    Definitions.Free;
+    NodeExtMemManager.DisposeAVLTree(Definitions);
   end;
   Result:=true;
 end;
@@ -1998,59 +1958,14 @@ var
     TreeOfCodeTreeNodeExt.Add(ResultNodeExt);
   end;
 
-  procedure AddDefinition(Node: TCodeTreeNode);
-  var
-    NodeExt: TCodeTreeNodeExtension;
-    NodeText: String;
-  begin
-    NodeText:=GetRedefinitionNodeText(Node);
-    NodeExt:=FindCodeTreeNodeExt(Definitions,NodeText);
-    if NodeExt=nil then begin
-      NodeExt:=NodeExtMemManager.NewNode;
-      NodeExt.Txt:=NodeText;
-      Definitions.Add(NodeExt);
-    end;
-    NodeExt.Node:=Node;
-  end;
-
 var
   Node: TCodeTreeNode;
 begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
-  BuildTree(false);
-  if not EndOfSourceFound then exit;
-
-  // first step: find all unit identifiers (excluding implementation section)
-  Definitions:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
-    Node:=Tree.Root;
-    while Node<>nil do begin
-      case Node.Desc of
-      ctnProcedureHead, ctnProperty, ctnParameterList, ctnImplementation:
-        Node:=Node.NextSkipChilds;
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
-      ctnGenericType:
-        begin
-          // add or update definition
-          AddDefinition(Node);
-
-          if (Node.Desc=ctnTypeDefinition)
-          and (Node.FirstChild<>nil)
-          and (Node.FirstChild.Desc=ctnEnumerationType) then
-            Node:=Node.FirstChild
-          else
-            Node:=Node.NextSkipChilds;
-        end;
-      ctnProcedure:
-        begin
-          AddDefinition(Node);
-          Node:=Node.NextSkipChilds;
-        end;
-      else
-        Node:=Node.Next;
-      end;
-    end;
+    // first step: find all unit identifiers (excluding implementation section)
+    if not GatherUnitDefinitions(Definitions,true,true) then exit;
 
     // now check all functions
     Node:=Tree.Root;
@@ -2070,8 +1985,7 @@ begin
     end;
 
   finally
-    Definitions.FreeAndClear;
-    Definitions.Free;
+    NodeExtMemManager.DisposeAVLTree(Definitions);
   end;
   Result:=true;
 end;
@@ -2154,6 +2068,210 @@ begin
     AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
   end;
   Result:=SourceChangeCache.Apply;
+end;
+
+function TCodeCompletionCodeTool.FixForwardDefinitions(
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  Definitions: TAVLTree;
+  Graph: TCodeGraph;
+begin
+  Result:=false;
+  if (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  try
+    if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
+    
+  finally
+    NodeExtMemManager.DisposeAVLTree(Definitions);
+    Graph.Free;
+  end;
+
+  Result:=true;
+end;
+
+function TCodeCompletionCodeTool.GatherUnitDefinitions(out
+  TreeOfCodeTreeNodeExt: TAVLTree;
+  OnlyInterface, ExceptionOnRedefinition: boolean): boolean;
+  
+  procedure RaiseRedefinition(Node1, Node2: TCodeTreeNode);
+  begin
+    raise Exception.Create('redefinition found: '+GetRedefinitionNodeText(Node1)
+      +' at '+CleanPosToStr(Node1.StartPos)
+      +' and at '+CleanPosToStr(Node2.StartPos));
+  end;
+
+  procedure AddDefinition(Node: TCodeTreeNode);
+  var
+    NodeExt: TCodeTreeNodeExtension;
+    NodeText: String;
+  begin
+    NodeText:=GetRedefinitionNodeText(Node);
+    NodeExt:=FindCodeTreeNodeExt(TreeOfCodeTreeNodeExt,NodeText);
+    if NodeExt=nil then begin
+      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt.Txt:=NodeText;
+      TreeOfCodeTreeNodeExt.Add(NodeExt);
+    end else if ExceptionOnRedefinition then begin
+      RaiseRedefinition(NodeExt.Node,Node);
+    end;
+    NodeExt.Node:=Node;
+  end;
+
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  BuildTree(OnlyInterface);
+
+  // find all unit identifiers (excluding sub types)
+  TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  Node:=Tree.Root;
+  while Node<>nil do begin
+    case Node.Desc of
+    ctnProcedureHead, ctnParameterList, ctnInitialization, ctnFinalization,
+    ctnBeginBlock, ctnAsmBlock:
+      Node:=Node.NextSkipChilds;
+    ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
+    ctnGenericType:
+      begin
+        // add or update definition
+        AddDefinition(Node);
+
+        if (Node.Desc=ctnTypeDefinition)
+        and (Node.FirstChild<>nil)
+        and (Node.FirstChild.Desc=ctnEnumerationType) then
+          Node:=Node.FirstChild
+        else
+          Node:=Node.NextSkipChilds;
+      end;
+    ctnProcedure:
+      begin
+        AddDefinition(Node);
+        Node:=Node.NextSkipChilds;
+      end;
+    else
+      if OnlyInterface and (Node.Desc=ctnImplementation) then
+        break;
+      Node:=Node.Next;
+    end;
+  end;
+  
+  Result:=true;
+end;
+
+function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
+  DefinitionesTreeOfCodeTreeNodeExt: TAVLTree; out Graph: TCodeGraph;
+  OnlyInterface: boolean): boolean;
+  
+  procedure CheckRange(Node: TCodeTreeNode; FromPos, ToPos: integer);
+  // search the range for defined identifiers
+  // and add edges to graph
+  var
+    Identifier: String;
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    if (FromPos>=ToPos) or (FromPos<1) then exit;
+    //DebugLn(['CheckRange Range="',dbgstr(Src[FromPos..ToPos-1]),'"']);
+    MoveCursorToCleanPos(FromPos);
+    repeat
+      ReadNextAtom;
+      if (CurPos.StartPos>=ToPos) or (CurPos.StartPos>SrcLen) then break;
+      if AtomIsIdentifier(false) then begin
+        Identifier:=GetAtom;
+        NodeExt:=FindCodeTreeNodeExt(DefinitionesTreeOfCodeTreeNodeExt,
+                                     Identifier);
+        if NodeExt<>nil then begin
+          if Graph=nil then
+            Graph:=TCodeGraph.Create;
+          if Graph.GetEdge(Node,NodeExt.Node,false)=nil then
+            DebugLn(['CheckRange AddEdge: ',GetRedefinitionNodeText(Node),' uses ',GetRedefinitionNodeText(NodeExt.Node)]);
+          Graph.AddEdge(Node,NodeExt.Node);
+        end;
+      end;
+    until false;
+  end;
+  
+  procedure CheckSubNode(Node, SubNode: TCodeTreeNode);
+  var
+    ProcHead: TCodeTreeNode;
+    ParamList: TCodeTreeNode;
+    ChildNode: TCodeTreeNode;
+    FunctionResult: TCodeTreeNode;
+  begin
+    //DebugLn(['CheckSubNode ',GetRedefinitionNodeText(Node),' ',GetRedefinitionNodeText(SubNode)]);
+    case SubNode.Desc of
+    
+    ctnTypeDefinition,ctnVarDefinition,ctnGenericType,ctnConstDefinition:
+      begin
+        ChildNode:=FindTypeNodeOfDefinition(SubNode);
+        if ChildNode<>nil then begin
+          CheckSubNode(Node,ChildNode);
+        end else if SubNode.Desc=ctnConstDefinition then begin
+          CheckRange(Node,ChildNode.StartPos,SubNode.EndPos);
+        end;
+      end;
+      
+    ctnProcedure:
+      begin
+        BuildSubTreeForProcHead(SubNode,FunctionResult);
+        ProcHead:=SubNode.FirstChild;
+        ParamList:=ProcHead.FirstChild;
+        if ParamList<>nil then begin
+          ChildNode:=ParamList.FirstChild;
+          while ChildNode<>nil do begin
+            if (ChildNode.Desc=ctnVarDefinition) and (ChildNode.FirstChild<>nil)
+            then begin
+              CheckSubNode(Node,ChildNode);
+            end;
+            ChildNode:=ChildNode.NextBrother;
+          end;
+        end;
+        if FunctionResult<>nil then begin
+          CheckRange(Node,FunctionResult.StartPos,
+                     FunctionResult.StartPos
+                     +GetIdentLen(@Src[FunctionResult.StartPos]));
+        end;
+      end;
+
+    ctnRecordType, ctnClassInterface, ctnClass:
+      begin
+        ChildNode:=SubNode.FirstChild;
+        while (ChildNode<>nil) and (ChildNode.HasAsParent(SubNode)) do begin
+          if ChildNode.Desc in AllIdentifierDefinitions then begin
+            CheckSubNode(Node,ChildNode);
+            ChildNode:=ChildNode.NextSkipChilds;
+          end else
+            ChildNode:=ChildNode.Next;
+        end;
+      end;
+      
+    else
+      CheckRange(Node,SubNode.StartPos,SubNode.Parent.EndPos);
+    end;
+  end;
+  
+var
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  DefinitionesTreeOfCodeTreeNodeExt:=nil;
+  Graph:=nil;
+  if not GatherUnitDefinitions(DefinitionesTreeOfCodeTreeNodeExt,false,true) then
+    exit;
+  if DefinitionesTreeOfCodeTreeNodeExt=nil then exit(true);
+  
+  AVLNode:=DefinitionesTreeOfCodeTreeNodeExt.FindLowest;
+  while AVLNode<>nil do begin
+    NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+    Node:=NodeExt.Node;
+    CheckSubNode(Node,Node);
+    AVLNode:=DefinitionesTreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+  end;
+
+  Result:=true;
 end;
 
 function TCodeCompletionCodeTool.InitClassCompletion(

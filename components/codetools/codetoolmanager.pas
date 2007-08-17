@@ -448,6 +448,7 @@ type
     function ReplaceTypeCastFunctions(Code: TCodeBuffer;
                                       TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceAllTypeCastFunctions(Code: TCodeBuffer): boolean;
+    function FixForwardDefinitions(Code: TCodeBuffer): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -3054,6 +3055,20 @@ begin
         end;
       end;
     until not Result;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FixForwardDefinitions(Code: TCodeBuffer): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FixForwardDefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FixForwardDefinitions(SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
