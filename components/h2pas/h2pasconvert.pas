@@ -181,8 +181,7 @@ type
   
 
   { TFixAliasDefinitionsInUnit - fix section type of alias definitions
-    NOT COMPLETE YET
-    
+
     Checks all alias definitions of the form
     const LeftSide = RightSide;
     looks up RightSide in the unit and if RightSide is a type or var, changes
@@ -3269,7 +3268,7 @@ begin
     DebugLn(['TFixAliasDefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
     exit(mrOk);// ignore
   end;
-  // ToDo: finish codetools FixAllAliasDefinitions
+  // finish codetools FixAllAliasDefinitions
   if not CodeToolBoss.FixAllAliasDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
     DebugLn(['TFixAliasDefinitionsInUnit.Execute FixAllAliasDefinitions failed ',CodeToolBoss.ErrorMessage]);
     exit;
@@ -3634,7 +3633,7 @@ begin
   repeat
     Changed:=false;
     if not ReduceCompilerDirectives(Changed,Result) then exit;
-    //if not FixAliasDefinitions(Changed,Result) then exit;
+    if not FixAliasDefinitions(Changed,Result) then exit;
     if not ConvertSimpleFunctions(Changed,Result) then exit;
   until Changed=false;
 end;

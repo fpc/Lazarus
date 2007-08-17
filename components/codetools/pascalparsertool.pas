@@ -136,6 +136,7 @@ type
     function KeyWordFuncLabel: boolean;
     function KeyWordFuncProperty: boolean;
     // types
+    procedure ReadEqualsType;
     function KeyWordFuncClass: boolean;
     function KeyWordFuncClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
@@ -156,9 +157,10 @@ type
     function KeyWordFuncBeginEnd: boolean;
     // class/object elements
     function KeyWordFuncClassSection: boolean;
+    function KeyWordFuncClassTypeSection: boolean;
+    function KeyWordFuncClassVarSection: boolean;
     function KeyWordFuncClassMethod: boolean;
     function KeyWordFuncClassProperty: boolean;
-    function KeyWordFuncClassReadTilEnd: boolean;
     function KeyWordFuncClassIdentifier: boolean;
     function KeyWordFuncClassVarTypeClass: boolean;
     function KeyWordFuncClassVarTypePacked: boolean;
@@ -390,6 +392,8 @@ procedure TPascalParserTool.BuildInnerClassKeyWordFunctions;
 // KeyWordFunctions for parsing in a class/object
 begin
   with InnerClassKeyWordFuncList do begin
+    Add('TYPE',@KeyWordFuncClassTypeSection);
+    Add('VAR',@KeyWordFuncClassVarSection);
     Add('PUBLIC',@KeyWordFuncClassSection);
     Add('PRIVATE',@KeyWordFuncClassSection);
     Add('PUBLISHED',@KeyWordFuncClassSection);
@@ -605,7 +609,7 @@ begin
     MoveCursorToNodeStart(ClassNode);
     // parse
     //   - inheritage
-    //   - class sections (public, published, private, protected)
+    //   - class sections (GUID, type, var, public, published, private, protected)
     //   - methods (procedures, functions, constructors, destructors)
 
     // first parse the inheritage
@@ -722,20 +726,10 @@ begin
   end;
 end;
 
-function TPascalParserTool.KeyWordFuncClassReadTilEnd: boolean;
-// read til atom after next 'end'
-begin
-  repeat
-    ReadNextAtom;
-  until (CurPos.StartPos>SrcLen) or (CurPos.Flag=cafEND);
-  ReadNextAtom;
-  Result:=(CurPos.StartPos<SrcLen);
-end;
-
 function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
-{ parse class variable
+{ parse class variable or type
 
-  examples:
+  examples for variables:
     Name: TypeName;
     Name: UnitName.TypeName;
     i, j: integer;
@@ -760,26 +754,35 @@ function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
     MyRange: 3..5;
 }
 begin
-  // create variable definition node
-  CreateChildNode;
-  CurNode.Desc:=ctnVarDefinition;
-  ReadNextAtom;
-  while CurPos.Flag=cafComma do begin
-    // end variable definition
-    CurNode.EndPos:=CurPos.StartPos;
+  if CurNode.Desc in AllClassTypeSections then begin
+    // create type definition node
+    CreateChildNode;
+    CurNode.Desc:=ctnTypeDefinition;
+    ReadEqualsType;
+    CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
-    // read next variable name
-    ReadNextAtom;
-    AtomIsIdentifier(true);
+  end else begin
     // create variable definition node
     CreateChildNode;
     CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
+    while CurPos.Flag=cafComma do begin
+      // end variable definition
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode;
+      // read next variable name
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      // create variable definition node
+      CreateChildNode;
+      CurNode.Desc:=ctnVarDefinition;
+      ReadNextAtom;
+    end;
+    if CurPos.Flag<>cafColon then
+      RaiseCharExpectedButAtomFound(':');
+    // read type
+    ReadVariableType;
   end;
-  if CurPos.Flag<>cafColon then
-    RaiseCharExpectedButAtomFound(':');
-  // read type
-  ReadVariableType;
   Result:=true;
 end;
 
@@ -944,6 +947,50 @@ begin
   Result:=true;
 end;
 
+function TPascalParserTool.KeyWordFuncClassTypeSection: boolean;
+begin
+  // end last section
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
+  // start new section
+  CreateChildNode;
+  CurNode.Desc:=ctnClassTypePublic;
+  ReadNextAtom;
+  if UpAtomIs('PUBLIC') then
+    CurNode.Desc:=ctnClassTypePublic
+  else if UpAtomIs('PRIVATE') then
+    CurNode.Desc:=ctnClassTypePrivate
+  else if UpAtomIs('PROTECTED') then
+    CurNode.Desc:=ctnClassTypeProtected
+  else if UpAtomIs('PUBLISHED') then
+    CurNode.Desc:=ctnClassTypePublished
+  else
+    RaiseStringExpectedButAtomFound('public');
+  Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncClassVarSection: boolean;
+begin
+  // end last section
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
+  // start new section
+  CreateChildNode;
+  CurNode.Desc:=ctnClassVarPublic;
+  ReadNextAtom;
+  if UpAtomIs('PUBLIC') then
+    CurNode.Desc:=ctnClassVarPublic
+  else if UpAtomIs('PRIVATE') then
+    CurNode.Desc:=ctnClassVarPrivate
+  else if UpAtomIs('PROTECTED') then
+    CurNode.Desc:=ctnClassVarProtected
+  else if UpAtomIs('PUBLISHED') then
+    CurNode.Desc:=ctnClassVarPublished
+  else
+    RaiseStringExpectedButAtomFound('public');
+  Result:=true;
+end;
+
 function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 { parse class method
 
@@ -967,6 +1014,9 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
+  if not (CurNode.Desc in (AllClassBaseSections+[ctnClassInterface])) then
+    RaiseIdentExpectedButAtomFound;
+
   HasForwardModifier:=false;
   // create class method node
   CreateChildNode;
@@ -1788,6 +1838,8 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
   end;
 
 begin
+  if not (CurNode.Desc in AllClassBaseSections) then
+    RaiseIdentExpectedButAtomFound;
   // create class method node
   CreateChildNode;
   CurNode.Desc:=ctnProperty;
@@ -2491,29 +2543,25 @@ begin
       RaiseCharExpectedButAtomFound(';');
     ReadNextAtom;
   end;
-  if UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL') then begin
-    if NodeHasParentOfType(CurNode,ctnClass) then
-      // class visibility keyword 'public'
-      UndoReadNextAtom
-    else begin
-      // for example 'var a: char; public;'
-      if UpAtomIs('EXTERNAL') then begin
-        // read external name
-        ReadNextAtom;
-        if (not UpAtomIs('NAME')) and AtomIsIdentifier(false) then
-          ReadConstant(true,false,[]);
-      end else
-        ReadNextAtom;
-      if UpAtomIs('NAME') then begin
-        // for example 'var a: char; public name 'b' ;'
-        ReadNextAtom;
-        if not AtomIsStringConstant then
-          RaiseStringExpectedButAtomFound(ctsStringConstant);
+  if (CurNode.Parent.Desc=ctnVarSection)
+  and (UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL')) then begin
+    // for example 'var a: char; public;'
+    if UpAtomIs('EXTERNAL') then begin
+      // read external name
+      ReadNextAtom;
+      if (not UpAtomIs('NAME')) and AtomIsIdentifier(false) then
         ReadConstant(true,false,[]);
-      end;
-      if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+    end else
+      ReadNextAtom;
+    if UpAtomIs('NAME') then begin
+      // for example 'var a: char; public name 'b' ;'
+      ReadNextAtom;
+      if not AtomIsStringConstant then
+        RaiseStringExpectedButAtomFound(ctsStringConstant);
+      ReadConstant(true,false,[]);
     end;
+    if CurPos.Flag<>cafSemicolon then
+      RaiseCharExpectedButAtomFound(';');
   end else
     UndoReadNextAtom;
   CurNode.EndPos:=CurPos.EndPos;
@@ -2603,23 +2651,6 @@ function TPascalParserTool.KeyWordFuncType: boolean;
     procedure c;
     type d=e;
 }
-
-  procedure ReadType;
-  // read   = type;
-  begin
-    // read =
-    ReadNextAtom;
-    if (CurPos.Flag<>cafEqual) then
-      RaiseCharExpectedButAtomFound('=');
-    // read type
-    ReadNextAtom;
-    TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos);
-    // read ;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseCharExpectedButAtomFound(';');
-  end;
-
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
@@ -2677,14 +2708,14 @@ begin
       // close ctnGenericParams
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
-      ReadType;
+      ReadEqualsType;
       // close ctnGenericType
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else if AtomIsIdentifier(false) then begin
       CreateChildNode;
       CurNode.Desc:=ctnTypeDefinition;
-      ReadType;
+      ReadEqualsType;
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -2986,6 +3017,22 @@ begin
   Result:=true;
 end;
 
+procedure TPascalParserTool.ReadEqualsType;
+// read   = type;
+begin
+  // read =
+  ReadNextAtom;
+  if (CurPos.Flag<>cafEqual) then
+    RaiseCharExpectedButAtomFound('=');
+  // read type
+  ReadNextAtom;
+  TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos);
+  // read ;
+  if CurPos.Flag<>cafSemicolon then
+    RaiseCharExpectedButAtomFound(';');
+end;
+
 function TPascalParserTool.KeyWordFuncTypePacked: boolean;
 begin
   ReadNextAtom;
@@ -3081,9 +3128,10 @@ begin
   ContextDesc:=CurNode.Desc;
   if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
     ctnVarDefinition,ctnConstDefinition])
-  then begin
+  then
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
-  end;
+  if CurNode.Parent.Desc<>ctnTypeSection then
+    SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,['class']);
   if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then begin
     ClassAtomPos:=LastAtoms.GetValueAt(0);
   end else begin
@@ -3160,6 +3208,8 @@ var
 begin
   if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['interface']);
+  if CurNode.Parent.Desc<>ctnTypeSection then
+    SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,['interface']);
   IntfAtomPos:=CurPos;
   // class interface start found
   ChildCreated:=true;

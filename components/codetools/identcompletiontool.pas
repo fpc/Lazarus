@@ -1282,7 +1282,8 @@ var
     //DebugLn(['CheckProcedureDeclarationContext ',CursorNode.DescAsString]);
     Node:=CursorNode;
     Can:=false;
-    if (Node.Parent<>nil) and (Node.Parent.Desc in AllClassSections)
+    if (Node.Parent<>nil)
+    and (Node.Parent.Desc in (AllClassBaseSections+AllClassVarSections))
     and (Node.Desc=ctnVarDefinition)
     and (CurrentIdentifierList.StartAtomBehind.Flag<>cafColon) then begin
       { cursor is at a class variable definition without type
@@ -1301,7 +1302,7 @@ var
       // for example: procedure DoSomething|
       Can:=true;
     end
-    else if Node.Desc in (AllClassSections+AllSourceTypes
+    else if Node.Desc in (AllClassBaseSections+AllSourceTypes
                      +[ctnInterface,ctnImplementation])
     then begin
       //DebugLn(['TIdentCompletionTool.CheckProcedureDeclarationContext ilcfCanProcDeclaration']);

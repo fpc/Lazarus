@@ -1747,7 +1747,7 @@ begin
           and (Node.FirstChild.Desc=ctnEnumerationType) then
             Node:=Node.FirstChild
           else
-            Node:=Node.Next;
+            Node:=Node.NextSkipChilds;
         end;
       ctnProcedure:
         begin
@@ -2040,7 +2040,7 @@ begin
           and (Node.FirstChild.Desc=ctnEnumerationType) then
             Node:=Node.FirstChild
           else
-            Node:=Node.Next;
+            Node:=Node.NextSkipChilds;
         end;
       ctnProcedure:
         begin
@@ -3773,7 +3773,8 @@ var CleanCursorPos, Indent, insertPos: integer;
         // due to insertions in front of the class, the cursor position could
         // have changed
         while (CursorNode<>nil) do begin
-          if (CursorNode.Desc in [ctnTypeSection,ctnTypeDefinition,ctnGenericType])
+          if (CursorNode.Desc=ctnTypeSection)
+          or ((CursorNode.Parent<>nil) and (CursorNode.Parent.Desc=ctnTypeSection))
           then break;
           CursorNode:=CursorNode.Parent;
         end;

@@ -2459,35 +2459,30 @@ var
         // it is not always allowed to search in every node on the same lvl:
 
         // -> test if class visibility valid
-        case ContextNode.Desc of
-        ctnClassPublished: break;
-        ctnClassPublic:    break;
-        ctnClassProtected: break;
-        ctnClassPrivate:   break;
-        ctnWithVariable:
-          begin
-            // check if StartContextNode is covered by the ContextNode
-            // a WithVariable ranges from the start of its expression
-            // to the end of the with statement
-            {$IFDEF ShowExprEval}
-            DebugLn('SearchNextNode WithVar StartContextNode.StartPos=',dbgs(StartContextNode.StartPos),
-              ' ContextNode=',dbgs(ContextNode.StartPos),'-',dbgs(ContextNode.EndPos),
-              ' WithStart="',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"');
-            {$ENDIF}
-            if (StartContextNode.StartPos>=ContextNode.StartPos)
-            and (StartContextNode.StartPos<ContextNode.EndPos) then break;
-            { ELSE: this with statement does not cover the startcontext
-             -> skip it
-             for example:
-               will be skipped:
-                 with ContextNode do ;
-                 with B do StartContextNode;
+        if ContextNode.Desc in AllClassSections then
+          break
+        else if ContextNode.Desc=ctnWithVariable then begin
+          // check if StartContextNode is covered by the ContextNode
+          // a WithVariable ranges from the start of its expression
+          // to the end of the with statement
+          {$IFDEF ShowExprEval}
+          DebugLn('SearchNextNode WithVar StartContextNode.StartPos=',dbgs(StartContextNode.StartPos),
+            ' ContextNode=',dbgs(ContextNode.StartPos),'-',dbgs(ContextNode.EndPos),
+            ' WithStart="',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"');
+          {$ENDIF}
+          if (StartContextNode.StartPos>=ContextNode.StartPos)
+          and (StartContextNode.StartPos<ContextNode.EndPos) then break;
+          { ELSE: this with statement does not cover the startcontext
+           -> skip it
+           for example:
+             will be skipped:
+               with ContextNode do ;
+               with B do StartContextNode;
 
-               will be searched:
-                 with ContextNode, StartContextNode do ;
-            }
-          end;
-        else
+             will be searched:
+               with ContextNode, StartContextNode do ;
+          }
+        end else begin
           break;
         end;
       end else if (ContextNode.Parent<>nil)
@@ -2509,6 +2504,8 @@ var
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
+        ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
+        ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
         ctnRecordVariant,
         ctnProcedureHead, ctnParameterList:
           // these codetreenodes build a parent-child-relationship, but
@@ -2613,6 +2610,8 @@ begin
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
+        ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
+        ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
         ctnClass, ctnClassInterface,
         ctnRecordType, ctnRecordVariant,
         ctnParameterList:
@@ -4025,6 +4024,7 @@ var
   ClassNameAtom: TAtomPosition;
   OldInput: TFindDeclarationInput;
   ClassContext: TFindContext;
+  CurClassNode: TCodeTreeNode;
 begin
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindClassOfMethod] A ');
@@ -4032,15 +4032,14 @@ begin
   Result:=false;
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
-  if ProcNode.Parent.Desc
-  in [ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate]
-  then begin
+  if ProcNode.Parent.Desc in AllClassSections then begin
+    CurClassNode:=ProcNode.Parent.Parent;
     if FindClassContext then begin
       // return the class node
-      Params.SetResult(Self,ProcNode.GetNodeOfType(ctnClass));
+      Params.SetResult(Self,CurClassNode);
     end else begin
       // return the type identifier node
-      Params.SetResult(Self,ProcNode.GetNodeOfType(ctnClass).Parent);
+      Params.SetResult(Self,CurClassNode.Parent);
     end;
     Result:=true;
     exit;

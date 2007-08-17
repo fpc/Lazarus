@@ -598,9 +598,15 @@ begin
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
                                    false,false,true);
     BuildSubTreeForClass(StartNode);
-    while (StartNode<>nil)
-    and (StartNode.Desc in [ctnClass,ctnClassInterface]+AllClassSections) do
+    if (StartNode<>nil) and (StartNode.Desc in [ctnClass,ctnClassInterface])
+    then begin
       StartNode:=StartNode.FirstChild;
+      while (StartNode<>nil) and (not (StartNode.Desc in AllClassBaseSections))
+      do
+        StartNode:=StartNode.NextBrother;
+      if StartNode<>nil then
+        StartNode:=StartNode.FirstChild;
+    end;
   end else begin
     //DebugLn('TPascalReaderTool.FindCorrespondingProcNode Normal');
     // else: search on same lvl

@@ -51,92 +51,108 @@ type
 
 const
   // CodeTreeNodeDescriptors
-  ctnNone            = 0;
+  ctnNone               = 0;
 
-  ctnProgram         = 1;
-  ctnPackage         = 2;
-  ctnLibrary         = 3;
-  ctnUnit            = 4;
-  ctnInterface       = 5;
-  ctnImplementation  = 6;
-  ctnInitialization  = 7;
-  ctnFinalization    = 8;
-  ctnEndPoint        = 9;
+  ctnProgram            = 1;
+  ctnPackage            = 2;
+  ctnLibrary            = 3;
+  ctnUnit               = 4;
+  ctnInterface          = 5;
+  ctnImplementation     = 6;
+  ctnInitialization     = 7;
+  ctnFinalization       = 8;
+  ctnEndPoint           = 9;
 
-  ctnTypeSection     = 10;
-  ctnVarSection      = 11;
-  ctnConstSection    = 12;
-  ctnResStrSection   = 13;
-  ctnLabelSection    = 14;
-  ctnPropertySection = 15;
-  ctnUsesSection     = 16;
-  ctnRequiresSection = 17;
-  ctnContainsSection = 18;
-  ctnExportsSection  = 19;
+  ctnTypeSection        = 10;
+  ctnVarSection         = 11;
+  ctnConstSection       = 12;
+  ctnResStrSection      = 13;
+  ctnLabelSection       = 14;
+  ctnPropertySection    = 15;
+  ctnUsesSection        = 16;
+  ctnRequiresSection    = 17;
+  ctnContainsSection    = 18;
+  ctnExportsSection     = 19;
 
-  ctnTypeDefinition  = 20;
-  ctnVarDefinition   = 21;
-  ctnConstDefinition = 22;
-  ctnGlobalProperty  = 23;
+  ctnTypeDefinition     = 20;
+  ctnVarDefinition      = 21;
+  ctnConstDefinition    = 22;
+  ctnGlobalProperty     = 23;
 
-  ctnClass           = 30;
-  ctnClassInterface  = 31;
-  ctnClassPublished  = 32;
-  ctnClassPrivate    = 33;
-  ctnClassProtected  = 34;
-  ctnClassPublic     = 35;
-  ctnClassGUID       = 36;
+  ctnClass              = 30;
+  ctnClassInterface     = 31;
+  ctnClassTypePublic    = 32;
+  ctnClassTypePrivate   = 33;
+  ctnClassTypeProtected = 34;
+  ctnClassTypePublished = 35;
+  ctnClassVarPublic     = 36;
+  ctnClassVarPrivate    = 37;
+  ctnClassVarProtected  = 38;
+  ctnClassVarPublished  = 39;
+  ctnClassPublished     = 40;
+  ctnClassPrivate       = 41;
+  ctnClassProtected     = 42;
+  ctnClassPublic        = 43;
+  ctnClassGUID          = 44;
 
-  ctnProperty        = 40;
-  ctnMethodMap       = 41;
+  ctnProperty           = 50;
+  ctnMethodMap          = 51;
   
-  ctnProcedure       = 50;
-  ctnProcedureHead   = 51;
-  ctnParameterList   = 52;
+  ctnProcedure          = 60;
+  ctnProcedureHead      = 61;
+  ctnParameterList      = 62;
 
-  ctnIdentifier      = 60;
-  ctnRangedArrayType = 61;
-  ctnOpenArrayType   = 62;
-  ctnOfConstType     = 63;
-  ctnRecordType      = 64;
-  ctnRecordCase      = 65;
-  ctnRecordVariant   = 66;
-  ctnProcedureType   = 67;
-  ctnSetType         = 68;
-  ctnRangeType       = 69;
-  ctnEnumerationType = 70;
-  ctnEnumIdentifier  = 71;
-  ctnLabelType       = 72;
-  ctnTypeType        = 73;
-  ctnFileType        = 74;
-  ctnPointerType     = 75;
-  ctnClassOfType     = 76;
-  ctnVariantType     = 77;
-  ctnSpecialize      = 78;
-  ctnSpecializeType  = 79;
-  ctnSpecializeParams= 80;
-  ctnGenericType     = 81;// 1. child = ctnGenericName, 2. child = ctnGenericParams, 3. child = type
-  ctnGenericName     = 82;
-  ctnGenericParams   = 83;
-  ctnGenericParameter= 84;
-  ctnConstant        = 85;
+  ctnIdentifier         = 70;
+  ctnRangedArrayType    = 71;
+  ctnOpenArrayType      = 72;
+  ctnOfConstType        = 73;
+  ctnRecordType         = 74;
+  ctnRecordCase         = 75;
+  ctnRecordVariant      = 76;
+  ctnProcedureType      = 77;
+  ctnSetType            = 78;
+  ctnRangeType          = 79;
+  ctnEnumerationType    = 80;
+  ctnEnumIdentifier     = 81;
+  ctnLabelType          = 82;
+  ctnTypeType           = 83;
+  ctnFileType           = 84;
+  ctnPointerType        = 85;
+  ctnClassOfType        = 86;
+  ctnVariantType        = 87;
+  ctnSpecialize         = 88;
+  ctnSpecializeType     = 89;
+  ctnSpecializeParams   = 90;
+  ctnGenericType        = 91;// 1. child = ctnGenericName, 2. child = ctnGenericParams, 3. child = type
+  ctnGenericName        = 92;
+  ctnGenericParams      = 93;
+  ctnGenericParameter   = 94;
+  ctnConstant           = 95;
 
-  ctnBeginBlock      = 90;
-  ctnAsmBlock        = 91;
+  ctnBeginBlock         =100;
+  ctnAsmBlock           =101;
 
-  ctnWithVariable    =100;
-  ctnWithStatement   =101;
-  ctnOnBlock         =102;
-  ctnOnIdentifier    =103;// e.g. on E: Exception
-  ctnOnStatement     =104;
+  ctnWithVariable       =110;
+  ctnWithStatement      =111;
+  ctnOnBlock            =112;
+  ctnOnIdentifier       =113;// e.g. on E: Exception
+  ctnOnStatement        =114;
 
 
   // combined values
   AllCodeSections =
      [ctnProgram, ctnPackage, ctnLibrary, ctnUnit, ctnInterface,
       ctnImplementation, ctnInitialization, ctnFinalization];
-  AllClassSections =
+  AllClassBaseSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
+  AllClassTypeSections =
+     [ctnClassTypePublic,ctnClassTypePublished,ctnClassTypePrivate,
+      ctnClassTypeProtected];
+  AllClassVarSections =
+     [ctnClassVarPublic,ctnClassVarPublished,ctnClassVarPrivate,
+      ctnClassVarProtected];
+  AllClassSections =
+    AllClassBaseSections+AllClassTypeSections+AllClassVarSections;
   AllClasses =
      [ctnClass,ctnClassInterface];
   AllDefinitionSections =
@@ -323,11 +339,19 @@ begin
 
   ctnClass: Result:='Class';
   ctnClassInterface: Result:='Class Interface';
+  ctnClassGUID: Result:='GUID';
   ctnClassPublished: Result:='Published';
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';
   ctnClassPublic: Result:='Public';
-  ctnClassGUID: Result:='GUID';
+  ctnClassTypePublished: Result:='Type Published';
+  ctnClassTypePrivate: Result:='Type Private';
+  ctnClassTypeProtected: Result:='Type Protected';
+  ctnClassTypePublic: Result:='Type Public';
+  ctnClassVarPublished: Result:='Var Published';
+  ctnClassVarPrivate: Result:='Var Private';
+  ctnClassVarProtected: Result:='Var Protected';
+  ctnClassVarPublic: Result:='Var Public';
 
   ctnProcedure: Result:='Procedure';
   ctnProcedureHead: Result:='ProcedureHead';

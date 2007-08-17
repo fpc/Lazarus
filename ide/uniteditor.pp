@@ -3766,6 +3766,7 @@ begin
   if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
 
   SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
+  //SourceEditorMenuRoot.WriteDebugReport('   ',true);
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;

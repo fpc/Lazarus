@@ -1905,7 +1905,6 @@ var
   PkgFile: TPkgFile;
 begin
   PkgFile:=GetPackageOfCurrentSourceEditor;
-  //debugln('TPkgManager.OnSourceEditorPopupMenu ',dbgsName(PkgFile));
   if PkgFile<>nil then
     AddMenuItemProc('Open package '+PkgFile.LazPackage.Name,true,
                     @OnOpenPackageForCurrentSrcEditFile);

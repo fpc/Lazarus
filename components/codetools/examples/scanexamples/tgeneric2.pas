@@ -7,7 +7,16 @@ type
   { TMyList }
 
   generic TMyList<T> = class(TObject)
-    data : T;
+  type public
+    TItem = record
+      Value: T;
+    end;
+  type private
+    PValue = ^T;
+  var public
+    Data : T;
+  public
+    Cache: T;
     procedure SetData(item: T);
   end;
 

@@ -801,7 +801,7 @@ var
 begin
   Result:=true;
   
-  { Put the compiler options into the TCompilerOptions class to be saved }
+  // Put the compiler options from the dialog into the TCompilerOptions class
   if DestCompilerOptions<>nil then
     Options:=DestCompilerOptions
   else
