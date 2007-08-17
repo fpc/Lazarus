@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.45 }
+{ Version : 1.46 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -191,6 +191,7 @@ QIconEngineH = class(TObject) end;
 QImageIOHandlerH = class(TObject) end;
 QImageReaderH = class(TObject) end;
 QImageWriterH = class(TObject) end;
+QItemEditorFactoryH = class(TObject) end;
 QKeySequenceH = class(TObject) end;
 QLatin1StringH = class(TObject) end;
 QLayoutItemH = class(TObject) end;
@@ -218,6 +219,8 @@ QModelIndexH = class(TObject) end;
 QObjectH = class(TObject) end;
   QAbstractEventDispatcherH = class(QObjectH) end;
   QAbstractItemDelegateH = class(QObjectH) end;
+    QItemDelegateH = class(QAbstractItemDelegateH) end;
+      QLCLItemDelegateH = class(QItemDelegateH) end;
   QAbstractItemModelH = class(QObjectH) end;
     QAbstractListModelH = class(QAbstractItemModelH) end;
     QAbstractProxyModelH = class(QAbstractItemModelH) end;
@@ -376,6 +379,7 @@ QStyleOptionH = class(TObject) end;
   QStyleOptionViewItemH = class(QStyleOptionH) end;
     QStyleOptionViewItemV2H = class(QStyleOptionViewItemH) end;
       QStyleOptionViewItemV3H = class(QStyleOptionViewItemV2H) end;
+QSystemLocaleH = class(TObject) end;
 QTextBlockH = class(TObject) end;
 QTextCursorH = class(TObject) end;
 QTextDocumentFragmentH = class(TObject) end;
@@ -396,7 +400,6 @@ QVectorH = class(TObject) end;
   QPolygonH = class(QVectorH) end;
   QPolygonFH = class(QVectorH) end;
 QX11InfoH = class(TObject) end;
-
 
 QPainterPathElementH = class(TObject) end;
 QObject_hookH = class(TObject) end;
@@ -463,6 +466,7 @@ QTreeWidget_hookH = class(QTreeView_hookH) end;
 QHeaderView_hookH = class(QAbstractItemView_hookH) end;
 QStandardItem_hookH = class(QObject_hookH) end;
 QStandardItemModel_hookH = class(QAbstractItemModel_hookH) end;
+QAbstractItemDelegate_hookH = class(QObject_hookH) end;
 QDialog_hookH = class(QWidget_hookH) end;
 QProgressDialog_hookH = class(QDialog_hookH) end;
 QSystemTrayIcon_hookH = class(QObject_hookH) end;
@@ -472,6 +476,8 @@ QIODevice_hookH = class(QObject_hookH) end;
   TPictureIOHandler = procedure(Pic: QPictureIOH) cdecl;
   TEventFilterMethod = function (Sender: QObjectH; Event: QEventH): Boolean of object cdecl;
 
+QLCLItemDelegate_sizeHint_Override = procedure (option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize) of object cdecl;
+QLCLItemDelegate_paint_Override = procedure (painter : QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
 function QtPoint(X,Y:integer): TQtPoint;
 function QObject_hook_create(handle : QObjectH) : QObject_hookH; cdecl; external QtIntf name 'QObject_hook_create';
 procedure QObject_hook_destroy(handle : QObject_hookH ); cdecl; external QtIntf name 'QObject_hook_destroy';
@@ -2343,6 +2349,497 @@ function QByteArray_count(handle: QByteArrayH): Integer; overload; cdecl; extern
 function QByteArray_length(handle: QByteArrayH): Integer; cdecl; external QtIntf name 'QByteArray_length';
 function QByteArray_isNull(handle: QByteArrayH): Boolean; cdecl; external QtIntf name 'QByteArray_isNull';
 
+
+
+type
+  QLocaleFormatType = ( // QLocale::FormatType (1)
+    QLocaleLongFormat, QLocaleShortFormat );
+
+type
+  QLocaleNumberOption = cardinal; // QLocale::NumberOption
+  QLocaleNumberOptions = QLocaleNumberOption; //QFlags<> (3)
+const
+  QLocaleOmitGroupSeparator =   $01;
+  QLocaleRejectGroupSeparator =   $02;
+
+
+type
+  QSystemLocaleQueryType = ( // QSystemLocale::QueryType (1)
+    QSystemLocaleLanguageId, QSystemLocaleCountryId, QSystemLocaleDecimalPoint, QSystemLocaleGroupSeparator, QSystemLocaleZeroDigit, QSystemLocaleNegativeSign, QSystemLocaleDateFormatLong, 
+    QSystemLocaleDateFormatShort, QSystemLocaleTimeFormatLong, QSystemLocaleTimeFormatShort, QSystemLocaleDayNameLong, QSystemLocaleDayNameShort, QSystemLocaleMonthNameLong, QSystemLocaleMonthNameShort, 
+    QSystemLocaleDateToStringLong, QSystemLocaleDateToStringShort, QSystemLocaleTimeToStringLong, QSystemLocaleTimeToStringShort );
+
+type
+  QLocaleLanguage = cardinal; //  QLocale::Language (4)
+
+const
+    QLocaleC = 1 { $1 };
+    QLocaleAbkhazian = 2 { $2 };
+    QLocaleAfan = 3 { $3 };
+    QLocaleAfar = 4 { $4 };
+    QLocaleAfrikaans = 5 { $5 };
+    QLocaleAlbanian = 6 { $6 };
+    QLocaleAmharic = 7 { $7 };
+    QLocaleArabic = 8 { $8 };
+    QLocaleArmenian = 9 { $9 };
+    QLocaleAssamese = 10 { $a };
+    QLocaleAymara = 11 { $b };
+    QLocaleAzerbaijani = 12 { $c };
+    QLocaleBashkir = 13 { $d };
+    QLocaleBasque = 14 { $e };
+    QLocaleBengali = 15 { $f };
+    QLocaleBhutani = 16 { $10 };
+    QLocaleBihari = 17 { $11 };
+    QLocaleBislama = 18 { $12 };
+    QLocaleBreton = 19 { $13 };
+    QLocaleBulgarian = 20 { $14 };
+    QLocaleBurmese = 21 { $15 };
+    QLocaleByelorussian = 22 { $16 };
+    QLocaleCambodian = 23 { $17 };
+    QLocaleCatalan = 24 { $18 };
+    QLocaleChinese = 25 { $19 };
+    QLocaleCorsican = 26 { $1a };
+    QLocaleCroatian = 27 { $1b };
+    QLocaleCzech = 28 { $1c };
+    QLocaleDanish = 29 { $1d };
+    QLocaleDutch = 30 { $1e };
+    QLocaleEnglish = 31 { $1f };
+    QLocaleEsperanto = 32 { $20 };
+    QLocaleEstonian = 33 { $21 };
+    QLocaleFaroese = 34 { $22 };
+    QLocaleFijiLanguage = 35 { $23 };
+    QLocaleFinnish = 36 { $24 };
+    QLocaleFrench = 37 { $25 };
+    QLocaleFrisian = 38 { $26 };
+    QLocaleGaelic = 39 { $27 };
+    QLocaleGalician = 40 { $28 };
+    QLocaleGeorgian = 41 { $29 };
+    QLocaleGerman = 42 { $2a };
+    QLocaleGreek = 43 { $2b };
+    QLocaleGreenlandic = 44 { $2c };
+    QLocaleGuarani = 45 { $2d };
+    QLocaleGujarati = 46 { $2e };
+    QLocaleHausa = 47 { $2f };
+    QLocaleHebrew = 48 { $30 };
+    QLocaleHindi = 49 { $31 };
+    QLocaleHungarian = 50 { $32 };
+    QLocaleIcelandic = 51 { $33 };
+    QLocaleIndonesian = 52 { $34 };
+    QLocaleInterlingua = 53 { $35 };
+    QLocaleInterlingue = 54 { $36 };
+    QLocaleInuktitut = 55 { $37 };
+    QLocaleInupiak = 56 { $38 };
+    QLocaleIrish = 57 { $39 };
+    QLocaleItalian = 58 { $3a };
+    QLocaleJapanese = 59 { $3b };
+    QLocaleJavanese = 60 { $3c };
+    QLocaleKannada = 61 { $3d };
+    QLocaleKashmiri = 62 { $3e };
+    QLocaleKazakh = 63 { $3f };
+    QLocaleKinyarwanda = 64 { $40 };
+    QLocaleKirghiz = 65 { $41 };
+    QLocaleKorean = 66 { $42 };
+    QLocaleKurdish = 67 { $43 };
+    QLocaleKurundi = 68 { $44 };
+    QLocaleLaothian = 69 { $45 };
+    QLocaleLatin = 70 { $46 };
+    QLocaleLatvian = 71 { $47 };
+    QLocaleLingala = 72 { $48 };
+    QLocaleLithuanian = 73 { $49 };
+    QLocaleMacedonian = 74 { $4a };
+    QLocaleMalagasy = 75 { $4b };
+    QLocaleMalay = 76 { $4c };
+    QLocaleMalayalam = 77 { $4d };
+    QLocaleMaltese = 78 { $4e };
+    QLocaleMaori = 79 { $4f };
+    QLocaleMarathi = 80 { $50 };
+    QLocaleMoldavian = 81 { $51 };
+    QLocaleMongolian = 82 { $52 };
+    QLocaleNauruLanguage = 83 { $53 };
+    QLocaleNepali = 84 { $54 };
+    QLocaleNorwegian = 85 { $55 };
+    QLocaleNorwegianBokmal = 85 { $55 };
+    QLocaleOccitan = 86 { $56 };
+    QLocaleOriya = 87 { $57 };
+    QLocalePashto = 88 { $58 };
+    QLocalePersian = 89 { $59 };
+    QLocalePolish = 90 { $5a };
+    QLocalePortuguese = 91 { $5b };
+    QLocalePunjabi = 92 { $5c };
+    QLocaleQuechua = 93 { $5d };
+    QLocaleRhaetoRomance = 94 { $5e };
+    QLocaleRomanian = 95 { $5f };
+    QLocaleRussian = 96 { $60 };
+    QLocaleSamoan = 97 { $61 };
+    QLocaleSangho = 98 { $62 };
+    QLocaleSanskrit = 99 { $63 };
+    QLocaleSerbian = 100 { $64 };
+    QLocaleSerboCroatian = 101 { $65 };
+    QLocaleSesotho = 102 { $66 };
+    QLocaleSetswana = 103 { $67 };
+    QLocaleShona = 104 { $68 };
+    QLocaleSindhi = 105 { $69 };
+    QLocaleSinghalese = 106 { $6a };
+    QLocaleSiswati = 107 { $6b };
+    QLocaleSlovak = 108 { $6c };
+    QLocaleSlovenian = 109 { $6d };
+    QLocaleSomali = 110 { $6e };
+    QLocaleSpanish = 111 { $6f };
+    QLocaleSundanese = 112 { $70 };
+    QLocaleSwahili = 113 { $71 };
+    QLocaleSwedish = 114 { $72 };
+    QLocaleTagalog = 115 { $73 };
+    QLocaleTajik = 116 { $74 };
+    QLocaleTamil = 117 { $75 };
+    QLocaleTatar = 118 { $76 };
+    QLocaleTelugu = 119 { $77 };
+    QLocaleThai = 120 { $78 };
+    QLocaleTibetan = 121 { $79 };
+    QLocaleTigrinya = 122 { $7a };
+    QLocaleTongaLanguage = 123 { $7b };
+    QLocaleTsonga = 124 { $7c };
+    QLocaleTurkish = 125 { $7d };
+    QLocaleTurkmen = 126 { $7e };
+    QLocaleTwi = 127 { $7f };
+    QLocaleUigur = 128 { $80 };
+    QLocaleUkrainian = 129 { $81 };
+    QLocaleUrdu = 130 { $82 };
+    QLocaleUzbek = 131 { $83 };
+    QLocaleVietnamese = 132 { $84 };
+    QLocaleVolapuk = 133 { $85 };
+    QLocaleWelsh = 134 { $86 };
+    QLocaleWolof = 135 { $87 };
+    QLocaleXhosa = 136 { $88 };
+    QLocaleYiddish = 137 { $89 };
+    QLocaleYoruba = 138 { $8a };
+    QLocaleZhuang = 139 { $8b };
+    QLocaleZulu = 140 { $8c };
+    QLocaleNorwegianNynorsk = 141 { $8d };
+    QLocaleNynorsk = 141 { $8d };
+    QLocaleBosnian = 142 { $8e };
+    QLocaleDivehi = 143 { $8f };
+    QLocaleManx = 144 { $90 };
+    QLocaleCornish = 145 { $91 };
+    QLocaleAkan = 146 { $92 };
+    QLocaleKonkani = 147 { $93 };
+    QLocaleGa = 148 { $94 };
+    QLocaleIgbo = 149 { $95 };
+    QLocaleKamba = 150 { $96 };
+    QLocaleSyriac = 151 { $97 };
+    QLocaleBlin = 152 { $98 };
+    QLocaleGeez = 153 { $99 };
+    QLocaleKoro = 154 { $9a };
+    QLocaleSidamo = 155 { $9b };
+    QLocaleAtsam = 156 { $9c };
+    QLocaleTigre = 157 { $9d };
+    QLocaleJju = 158 { $9e };
+    QLocaleFriulian = 159 { $9f };
+    QLocaleVenda = 160 { $a0 };
+    QLocaleEwe = 161 { $a1 };
+    QLocaleWalamo = 162 { $a2 };
+    QLocaleHawaiian = 163 { $a3 };
+    QLocaleTyap = 164 { $a4 };
+    QLocaleChewa = 165 { $a5 };
+    QLocaleLastLanguage = 165 { $a5 };
+
+type
+  QLocaleCountry = cardinal; //  QLocale::Country (4)
+
+const
+    QLocaleAnyCountry = 0 { $0 };
+    QLocaleAfghanistan = 1 { $1 };
+    QLocaleAlbania = 2 { $2 };
+    QLocaleAlgeria = 3 { $3 };
+    QLocaleAmericanSamoa = 4 { $4 };
+    QLocaleAndorra = 5 { $5 };
+    QLocaleAngola = 6 { $6 };
+    QLocaleAnguilla = 7 { $7 };
+    QLocaleAntarctica = 8 { $8 };
+    QLocaleAntiguaAndBarbuda = 9 { $9 };
+    QLocaleArgentina = 10 { $a };
+    QLocaleArmenia = 11 { $b };
+    QLocaleAruba = 12 { $c };
+    QLocaleAustralia = 13 { $d };
+    QLocaleAustria = 14 { $e };
+    QLocaleAzerbaijan = 15 { $f };
+    QLocaleBahamas = 16 { $10 };
+    QLocaleBahrain = 17 { $11 };
+    QLocaleBangladesh = 18 { $12 };
+    QLocaleBarbados = 19 { $13 };
+    QLocaleBelarus = 20 { $14 };
+    QLocaleBelgium = 21 { $15 };
+    QLocaleBelize = 22 { $16 };
+    QLocaleBenin = 23 { $17 };
+    QLocaleBermuda = 24 { $18 };
+    QLocaleBhutan = 25 { $19 };
+    QLocaleBolivia = 26 { $1a };
+    QLocaleBosniaAndHerzegowina = 27 { $1b };
+    QLocaleBotswana = 28 { $1c };
+    QLocaleBouvetIsland = 29 { $1d };
+    QLocaleBrazil = 30 { $1e };
+    QLocaleBritishIndianOceanTerritory = 31 { $1f };
+    QLocaleBruneiDarussalam = 32 { $20 };
+    QLocaleBulgaria = 33 { $21 };
+    QLocaleBurkinaFaso = 34 { $22 };
+    QLocaleBurundi = 35 { $23 };
+    QLocaleCambodia = 36 { $24 };
+    QLocaleCameroon = 37 { $25 };
+    QLocaleCanada = 38 { $26 };
+    QLocaleCapeVerde = 39 { $27 };
+    QLocaleCaymanIslands = 40 { $28 };
+    QLocaleCentralAfricanRepublic = 41 { $29 };
+    QLocaleChad = 42 { $2a };
+    QLocaleChile = 43 { $2b };
+    QLocaleChina = 44 { $2c };
+    QLocaleChristmasIsland = 45 { $2d };
+    QLocaleCocosIslands = 46 { $2e };
+    QLocaleColombia = 47 { $2f };
+    QLocaleComoros = 48 { $30 };
+    QLocaleDemocraticRepublicOfCongo = 49 { $31 };
+    QLocalePeoplesRepublicOfCongo = 50 { $32 };
+    QLocaleCookIslands = 51 { $33 };
+    QLocaleCostaRica = 52 { $34 };
+    QLocaleIvoryCoast = 53 { $35 };
+    QLocaleCroatia = 54 { $36 };
+    QLocaleCuba = 55 { $37 };
+    QLocaleCyprus = 56 { $38 };
+    QLocaleCzechRepublic = 57 { $39 };
+    QLocaleDenmark = 58 { $3a };
+    QLocaleDjibouti = 59 { $3b };
+    QLocaleDominica = 60 { $3c };
+    QLocaleDominicanRepublic = 61 { $3d };
+    QLocaleEastTimor = 62 { $3e };
+    QLocaleEcuador = 63 { $3f };
+    QLocaleEgypt = 64 { $40 };
+    QLocaleElSalvador = 65 { $41 };
+    QLocaleEquatorialGuinea = 66 { $42 };
+    QLocaleEritrea = 67 { $43 };
+    QLocaleEstonia = 68 { $44 };
+    QLocaleEthiopia = 69 { $45 };
+    QLocaleFalklandIslands = 70 { $46 };
+    QLocaleFaroeIslands = 71 { $47 };
+    QLocaleFijiCountry = 72 { $48 };
+    QLocaleFinland = 73 { $49 };
+    QLocaleFrance = 74 { $4a };
+    QLocaleMetropolitanFrance = 75 { $4b };
+    QLocaleFrenchGuiana = 76 { $4c };
+    QLocaleFrenchPolynesia = 77 { $4d };
+    QLocaleFrenchSouthernTerritories = 78 { $4e };
+    QLocaleGabon = 79 { $4f };
+    QLocaleGambia = 80 { $50 };
+    QLocaleGeorgia = 81 { $51 };
+    QLocaleGermany = 82 { $52 };
+    QLocaleGhana = 83 { $53 };
+    QLocaleGibraltar = 84 { $54 };
+    QLocaleGreece = 85 { $55 };
+    QLocaleGreenland = 86 { $56 };
+    QLocaleGrenada = 87 { $57 };
+    QLocaleGuadeloupe = 88 { $58 };
+    QLocaleGuam = 89 { $59 };
+    QLocaleGuatemala = 90 { $5a };
+    QLocaleGuinea = 91 { $5b };
+    QLocaleGuineaBissau = 92 { $5c };
+    QLocaleGuyana = 93 { $5d };
+    QLocaleHaiti = 94 { $5e };
+    QLocaleHeardAndMcDonaldIslands = 95 { $5f };
+    QLocaleHonduras = 96 { $60 };
+    QLocaleHongKong = 97 { $61 };
+    QLocaleHungary = 98 { $62 };
+    QLocaleIceland = 99 { $63 };
+    QLocaleIndia = 100 { $64 };
+    QLocaleIndonesia = 101 { $65 };
+    QLocaleIran = 102 { $66 };
+    QLocaleIraq = 103 { $67 };
+    QLocaleIreland = 104 { $68 };
+    QLocaleIsrael = 105 { $69 };
+    QLocaleItaly = 106 { $6a };
+    QLocaleJamaica = 107 { $6b };
+    QLocaleJapan = 108 { $6c };
+    QLocaleJordan = 109 { $6d };
+    QLocaleKazakhstan = 110 { $6e };
+    QLocaleKenya = 111 { $6f };
+    QLocaleKiribati = 112 { $70 };
+    QLocaleDemocraticRepublicOfKorea = 113 { $71 };
+    QLocaleRepublicOfKorea = 114 { $72 };
+    QLocaleKuwait = 115 { $73 };
+    QLocaleKyrgyzstan = 116 { $74 };
+    QLocaleLao = 117 { $75 };
+    QLocaleLatvia = 118 { $76 };
+    QLocaleLebanon = 119 { $77 };
+    QLocaleLesotho = 120 { $78 };
+    QLocaleLiberia = 121 { $79 };
+    QLocaleLibyanArabJamahiriya = 122 { $7a };
+    QLocaleLiechtenstein = 123 { $7b };
+    QLocaleLithuania = 124 { $7c };
+    QLocaleLuxembourg = 125 { $7d };
+    QLocaleMacau = 126 { $7e };
+    QLocaleMacedonia = 127 { $7f };
+    QLocaleMadagascar = 128 { $80 };
+    QLocaleMalawi = 129 { $81 };
+    QLocaleMalaysia = 130 { $82 };
+    QLocaleMaldives = 131 { $83 };
+    QLocaleMali = 132 { $84 };
+    QLocaleMalta = 133 { $85 };
+    QLocaleMarshallIslands = 134 { $86 };
+    QLocaleMartinique = 135 { $87 };
+    QLocaleMauritania = 136 { $88 };
+    QLocaleMauritius = 137 { $89 };
+    QLocaleMayotte = 138 { $8a };
+    QLocaleMexico = 139 { $8b };
+    QLocaleMicronesia = 140 { $8c };
+    QLocaleMoldova = 141 { $8d };
+    QLocaleMonaco = 142 { $8e };
+    QLocaleMongolia = 143 { $8f };
+    QLocaleMontserrat = 144 { $90 };
+    QLocaleMorocco = 145 { $91 };
+    QLocaleMozambique = 146 { $92 };
+    QLocaleMyanmar = 147 { $93 };
+    QLocaleNamibia = 148 { $94 };
+    QLocaleNauruCountry = 149 { $95 };
+    QLocaleNepal = 150 { $96 };
+    QLocaleNetherlands = 151 { $97 };
+    QLocaleNetherlandsAntilles = 152 { $98 };
+    QLocaleNewCaledonia = 153 { $99 };
+    QLocaleNewZealand = 154 { $9a };
+    QLocaleNicaragua = 155 { $9b };
+    QLocaleNiger = 156 { $9c };
+    QLocaleNigeria = 157 { $9d };
+    QLocaleNiue = 158 { $9e };
+    QLocaleNorfolkIsland = 159 { $9f };
+    QLocaleNorthernMarianaIslands = 160 { $a0 };
+    QLocaleNorway = 161 { $a1 };
+    QLocaleOman = 162 { $a2 };
+    QLocalePakistan = 163 { $a3 };
+    QLocalePalau = 164 { $a4 };
+    QLocalePalestinianTerritory = 165 { $a5 };
+    QLocalePanama = 166 { $a6 };
+    QLocalePapuaNewGuinea = 167 { $a7 };
+    QLocaleParaguay = 168 { $a8 };
+    QLocalePeru = 169 { $a9 };
+    QLocalePhilippines = 170 { $aa };
+    QLocalePitcairn = 171 { $ab };
+    QLocalePoland = 172 { $ac };
+    QLocalePortugal = 173 { $ad };
+    QLocalePuertoRico = 174 { $ae };
+    QLocaleQatar = 175 { $af };
+    QLocaleReunion = 176 { $b0 };
+    QLocaleRomania = 177 { $b1 };
+    QLocaleRussianFederation = 178 { $b2 };
+    QLocaleRwanda = 179 { $b3 };
+    QLocaleSaintKittsAndNevis = 180 { $b4 };
+    QLocaleStLucia = 181 { $b5 };
+    QLocaleStVincentAndTheGrenadines = 182 { $b6 };
+    QLocaleSamoa = 183 { $b7 };
+    QLocaleSanMarino = 184 { $b8 };
+    QLocaleSaoTomeAndPrincipe = 185 { $b9 };
+    QLocaleSaudiArabia = 186 { $ba };
+    QLocaleSenegal = 187 { $bb };
+    QLocaleSeychelles = 188 { $bc };
+    QLocaleSierraLeone = 189 { $bd };
+    QLocaleSingapore = 190 { $be };
+    QLocaleSlovakia = 191 { $bf };
+    QLocaleSlovenia = 192 { $c0 };
+    QLocaleSolomonIslands = 193 { $c1 };
+    QLocaleSomalia = 194 { $c2 };
+    QLocaleSouthAfrica = 195 { $c3 };
+    QLocaleSouthGeorgiaAndTheSouthSandwichIslands = 196 { $c4 };
+    QLocaleSpain = 197 { $c5 };
+    QLocaleSriLanka = 198 { $c6 };
+    QLocaleStHelena = 199 { $c7 };
+    QLocaleStPierreAndMiquelon = 200 { $c8 };
+    QLocaleSudan = 201 { $c9 };
+    QLocaleSuriname = 202 { $ca };
+    QLocaleSvalbardAndJanMayenIslands = 203 { $cb };
+    QLocaleSwaziland = 204 { $cc };
+    QLocaleSweden = 205 { $cd };
+    QLocaleSwitzerland = 206 { $ce };
+    QLocaleSyrianArabRepublic = 207 { $cf };
+    QLocaleTaiwan = 208 { $d0 };
+    QLocaleTajikistan = 209 { $d1 };
+    QLocaleTanzania = 210 { $d2 };
+    QLocaleThailand = 211 { $d3 };
+    QLocaleTogo = 212 { $d4 };
+    QLocaleTokelau = 213 { $d5 };
+    QLocaleTongaCountry = 214 { $d6 };
+    QLocaleTrinidadAndTobago = 215 { $d7 };
+    QLocaleTunisia = 216 { $d8 };
+    QLocaleTurkey = 217 { $d9 };
+    QLocaleTurkmenistan = 218 { $da };
+    QLocaleTurksAndCaicosIslands = 219 { $db };
+    QLocaleTuvalu = 220 { $dc };
+    QLocaleUganda = 221 { $dd };
+    QLocaleUkraine = 222 { $de };
+    QLocaleUnitedArabEmirates = 223 { $df };
+    QLocaleUnitedKingdom = 224 { $e0 };
+    QLocaleUnitedStates = 225 { $e1 };
+    QLocaleUnitedStatesMinorOutlyingIslands = 226 { $e2 };
+    QLocaleUruguay = 227 { $e3 };
+    QLocaleUzbekistan = 228 { $e4 };
+    QLocaleVanuatu = 229 { $e5 };
+    QLocaleVaticanCityState = 230 { $e6 };
+    QLocaleVenezuela = 231 { $e7 };
+    QLocaleVietNam = 232 { $e8 };
+    QLocaleBritishVirginIslands = 233 { $e9 };
+    QLocaleUSVirginIslands = 234 { $ea };
+    QLocaleWallisAndFutunaIslands = 235 { $eb };
+    QLocaleWesternSahara = 236 { $ec };
+    QLocaleYemen = 237 { $ed };
+    QLocaleYugoslavia = 238 { $ee };
+    QLocaleZambia = 239 { $ef };
+    QLocaleZimbabwe = 240 { $f0 };
+    QLocaleSerbiaAndMontenegro = 241 { $f1 };
+    QLocaleLastCountry = 241 { $f1 };
+
+
+function QLocale_create(): QLocaleH; overload; cdecl; external QtIntf name 'QLocale_create';
+procedure QLocale_destroy(handle: QLocaleH); cdecl; external QtIntf name 'QLocale_destroy'; 
+function QLocale_create(name: PWideString): QLocaleH; overload; cdecl; external QtIntf name 'QLocale_create2';
+function QLocale_create(language: QLocaleLanguage; country: QLocaleCountry = QLocaleAnyCountry): QLocaleH; overload; cdecl; external QtIntf name 'QLocale_create3';
+function QLocale_create(other: QLocaleH): QLocaleH; overload; cdecl; external QtIntf name 'QLocale_create4';
+function QLocale_language(handle: QLocaleH): QLocaleLanguage; cdecl; external QtIntf name 'QLocale_language';
+function QLocale_country(handle: QLocaleH): QLocaleCountry; cdecl; external QtIntf name 'QLocale_country';
+procedure QLocale_name(handle: QLocaleH; retval: PWideString); cdecl; external QtIntf name 'QLocale_name';
+function QLocale_toShort(handle: QLocaleH; s: PWideString; ok: PBoolean = nil; base: Integer = 0): ShortInt; cdecl; external QtIntf name 'QLocale_toShort';
+function QLocale_toUShort(handle: QLocaleH; s: PWideString; ok: PBoolean = nil; base: Integer = 0): Word; cdecl; external QtIntf name 'QLocale_toUShort';
+function QLocale_toInt(handle: QLocaleH; s: PWideString; ok: PBoolean = nil; base: Integer = 0): Integer; cdecl; external QtIntf name 'QLocale_toInt';
+function QLocale_toUInt(handle: QLocaleH; s: PWideString; ok: PBoolean = nil; base: Integer = 0): LongWord; cdecl; external QtIntf name 'QLocale_toUInt';
+function QLocale_toLongLong(handle: QLocaleH; s: PWideString; ok: PBoolean = nil; base: Integer = 0): int64; cdecl; external QtIntf name 'QLocale_toLongLong';
+function QLocale_toULongLong(handle: QLocaleH; s: PWideString; ok: PBoolean = nil; base: Integer = 0): int64; cdecl; external QtIntf name 'QLocale_toULongLong';
+function QLocale_toFloat(handle: QLocaleH; s: PWideString; ok: PBoolean = nil): Single; cdecl; external QtIntf name 'QLocale_toFloat';
+function QLocale_toDouble(handle: QLocaleH; s: PWideString; ok: PBoolean = nil): Double; cdecl; external QtIntf name 'QLocale_toDouble';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: int64); overload; cdecl; external QtIntf name 'QLocale_toString';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: qword); overload; cdecl; external QtIntf name 'QLocale_toString2';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: ShortInt); overload; cdecl; external QtIntf name 'QLocale_toString3';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: Word); overload; cdecl; external QtIntf name 'QLocale_toString4';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: Integer); overload; cdecl; external QtIntf name 'QLocale_toString5';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: LongWord); overload; cdecl; external QtIntf name 'QLocale_toString6';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: Double; f: char; prec: Integer = 6); overload; cdecl; external QtIntf name 'QLocale_toString7';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; i: Single; f: char; prec: Integer = 6); overload; cdecl; external QtIntf name 'QLocale_toString8';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; date: QDateH; formatStr: PWideString); overload; cdecl; external QtIntf name 'QLocale_toString9';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; date: QDateH; format: QLocaleFormatType = QLocaleLongFormat); overload; cdecl; external QtIntf name 'QLocale_toString10';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; time: QTimeH; formatStr: PWideString); overload; cdecl; external QtIntf name 'QLocale_toString11';
+procedure QLocale_toString(handle: QLocaleH; retval: PWideString; time: QTimeH; format: QLocaleFormatType = QLocaleLongFormat); overload; cdecl; external QtIntf name 'QLocale_toString12';
+procedure QLocale_dateFormat(handle: QLocaleH; retval: PWideString; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external QtIntf name 'QLocale_dateFormat';
+procedure QLocale_timeFormat(handle: QLocaleH; retval: PWideString; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external QtIntf name 'QLocale_timeFormat';
+procedure QLocale_decimalPoint(handle: QLocaleH; retval: PWideChar); cdecl; external QtIntf name 'QLocale_decimalPoint';
+procedure QLocale_groupSeparator(handle: QLocaleH; retval: PWideChar); cdecl; external QtIntf name 'QLocale_groupSeparator';
+procedure QLocale_percent(handle: QLocaleH; retval: PWideChar); cdecl; external QtIntf name 'QLocale_percent';
+procedure QLocale_zeroDigit(handle: QLocaleH; retval: PWideChar); cdecl; external QtIntf name 'QLocale_zeroDigit';
+procedure QLocale_negativeSign(handle: QLocaleH; retval: PWideChar); cdecl; external QtIntf name 'QLocale_negativeSign';
+procedure QLocale_exponential(handle: QLocaleH; retval: PWideChar); cdecl; external QtIntf name 'QLocale_exponential';
+procedure QLocale_monthName(handle: QLocaleH; retval: PWideString; p1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external QtIntf name 'QLocale_monthName';
+procedure QLocale_dayName(handle: QLocaleH; retval: PWideString; p1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external QtIntf name 'QLocale_dayName';
+procedure QLocale_languageToString(retval: PWideString; language: QLocaleLanguage); cdecl; external QtIntf name 'QLocale_languageToString';
+procedure QLocale_countryToString(retval: PWideString; country: QLocaleCountry); cdecl; external QtIntf name 'QLocale_countryToString';
+procedure QLocale_setDefault(locale: QLocaleH); cdecl; external QtIntf name 'QLocale_setDefault';
+procedure QLocale_c(retval: QLocaleH); cdecl; external QtIntf name 'QLocale_c';
+procedure QLocale_system(retval: QLocaleH); cdecl; external QtIntf name 'QLocale_system';
+procedure QLocale_setNumberOptions(handle: QLocaleH; options: QLocaleNumberOptions); cdecl; external QtIntf name 'QLocale_setNumberOptions';
+function QLocale_numberOptions(handle: QLocaleH): QLocaleNumberOptions; cdecl; external QtIntf name 'QLocale_numberOptions';
+
+function QSystemLocale_create(): QSystemLocaleH; cdecl; external QtIntf name 'QSystemLocale_create';
+procedure QSystemLocale_destroy(handle: QSystemLocaleH); cdecl; external QtIntf name 'QSystemLocale_destroy'; 
+procedure QSystemLocale_fallbackLocale(handle: QSystemLocaleH; retval: QLocaleH); cdecl; external QtIntf name 'QSystemLocale_fallbackLocale';
 
 
 type
@@ -4330,6 +4827,69 @@ procedure QPainterPathStroker_setDashPattern(handle: QPainterPathStrokerH; p1: Q
 procedure QPainterPathStroker_setDashOffset(handle: QPainterPathStrokerH; offset: Double); cdecl; external QtIntf name 'QPainterPathStroker_setDashOffset';
 function QPainterPathStroker_dashOffset(handle: QPainterPathStrokerH): Double; cdecl; external QtIntf name 'QPainterPathStroker_dashOffset';
 procedure QPainterPathStroker_createStroke(handle: QPainterPathStrokerH; retval: QPainterPathH; path: QPainterPathH); cdecl; external QtIntf name 'QPainterPathStroker_createStroke';
+
+
+type
+  QTransformTransformationType = (  //QTransform::TransformationType (2s)
+    QTransformTxNone = $00,
+    QTransformTxTranslate = $01,
+    QTransformTxScale = $02,
+    QTransformTxRotate = $04,
+    QTransformTxShear = $08,
+    QTransformTxProject = $10 );
+
+function QTransform_create(): QTransformH; overload; cdecl; external QtIntf name 'QTransform_create';
+procedure QTransform_destroy(handle: QTransformH); cdecl; external QtIntf name 'QTransform_destroy'; 
+function QTransform_create(h11: Double; h12: Double; h13: Double; h21: Double; h22: Double; h23: Double; h31: Double; h32: Double; h33: Double = 1.0): QTransformH; overload; cdecl; external QtIntf name 'QTransform_create2';
+function QTransform_create(h11: Double; h12: Double; h13: Double; h21: Double; h22: Double; h23: Double): QTransformH; overload; cdecl; external QtIntf name 'QTransform_create3';
+function QTransform_create(mtx: QMatrixH): QTransformH; overload; cdecl; external QtIntf name 'QTransform_create4';
+function QTransform_isAffine(handle: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_isAffine';
+function QTransform_isIdentity(handle: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_isIdentity';
+function QTransform_isInvertible(handle: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_isInvertible';
+function QTransform_isScaling(handle: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_isScaling';
+function QTransform_isRotating(handle: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_isRotating';
+function QTransform_isTranslating(handle: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_isTranslating';
+function QTransform_type(handle: QTransformH): QTransformTransformationType; cdecl; external QtIntf name 'QTransform_type';
+function QTransform_determinant(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_determinant';
+function QTransform_det(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_det';
+function QTransform_m11(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m11';
+function QTransform_m12(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m12';
+function QTransform_m13(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m13';
+function QTransform_m21(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m21';
+function QTransform_m22(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m22';
+function QTransform_m23(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m23';
+function QTransform_m31(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m31';
+function QTransform_m32(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m32';
+function QTransform_m33(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_m33';
+function QTransform_dx(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_dx';
+function QTransform_dy(handle: QTransformH): Double; cdecl; external QtIntf name 'QTransform_dy';
+procedure QTransform_setMatrix(handle: QTransformH; m11: Double; m12: Double; m13: Double; m21: Double; m22: Double; m23: Double; m31: Double; m32: Double; m33: Double); cdecl; external QtIntf name 'QTransform_setMatrix';
+procedure QTransform_inverted(handle: QTransformH; retval: QTransformH; invertible: PBoolean = nil); cdecl; external QtIntf name 'QTransform_inverted';
+procedure QTransform_adjoint(handle: QTransformH; retval: QTransformH); cdecl; external QtIntf name 'QTransform_adjoint';
+procedure QTransform_transposed(handle: QTransformH; retval: QTransformH); cdecl; external QtIntf name 'QTransform_transposed';
+function QTransform_translate(handle: QTransformH; dx: Double; dy: Double): QTransformH; cdecl; external QtIntf name 'QTransform_translate';
+function QTransform_scale(handle: QTransformH; sx: Double; sy: Double): QTransformH; cdecl; external QtIntf name 'QTransform_scale';
+function QTransform_shear(handle: QTransformH; sh: Double; sv: Double): QTransformH; cdecl; external QtIntf name 'QTransform_shear';
+function QTransform_rotate(handle: QTransformH; a: Double; axis: QtAxis = QtZAxis): QTransformH; cdecl; external QtIntf name 'QTransform_rotate';
+function QTransform_rotateRadians(handle: QTransformH; a: Double; axis: QtAxis = QtZAxis): QTransformH; cdecl; external QtIntf name 'QTransform_rotateRadians';
+function QTransform_squareToQuad(square: QPolygonFH; result: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_squareToQuad';
+function QTransform_quadToSquare(quad: QPolygonFH; result: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_quadToSquare';
+function QTransform_quadToQuad(one: QPolygonFH; two: QPolygonFH; result: QTransformH): Boolean; cdecl; external QtIntf name 'QTransform_quadToQuad';
+procedure QTransform_reset(handle: QTransformH); cdecl; external QtIntf name 'QTransform_reset';
+procedure QTransform_map(handle: QTransformH; retval: PQtPoint; p: PQtPoint); overload; cdecl; external QtIntf name 'QTransform_map';
+procedure QTransform_map(handle: QTransformH; retval: QPointFH; p: QPointFH); overload; cdecl; external QtIntf name 'QTransform_map2';
+procedure QTransform_map(handle: QTransformH; retval: QLineH; l: QLineH); overload; cdecl; external QtIntf name 'QTransform_map3';
+procedure QTransform_map(handle: QTransformH; retval: QLineFH; l: QLineFH); overload; cdecl; external QtIntf name 'QTransform_map4';
+procedure QTransform_map(handle: QTransformH; retval: QPolygonFH; a: QPolygonFH); overload; cdecl; external QtIntf name 'QTransform_map5';
+procedure QTransform_map(handle: QTransformH; retval: QPolygonH; a: QPolygonH); overload; cdecl; external QtIntf name 'QTransform_map6';
+procedure QTransform_map(handle: QTransformH; retval: QRegionH; r: QRegionH); overload; cdecl; external QtIntf name 'QTransform_map7';
+procedure QTransform_map(handle: QTransformH; retval: QPainterPathH; p: QPainterPathH); overload; cdecl; external QtIntf name 'QTransform_map8';
+procedure QTransform_mapToPolygon(handle: QTransformH; retval: QPolygonH; r: PRect); cdecl; external QtIntf name 'QTransform_mapToPolygon';
+procedure QTransform_mapRect(handle: QTransformH; retval: PRect; p1: PRect); overload; cdecl; external QtIntf name 'QTransform_mapRect';
+procedure QTransform_mapRect(handle: QTransformH; retval: QRectFH; p1: QRectFH); overload; cdecl; external QtIntf name 'QTransform_mapRect2';
+procedure QTransform_map(handle: QTransformH; x: Integer; y: Integer; tx: PInteger; ty: PInteger); overload; cdecl; external QtIntf name 'QTransform_map9';
+procedure QTransform_map(handle: QTransformH; x: Double; y: Double; tx: PDouble; ty: PDouble); overload; cdecl; external QtIntf name 'QTransform_map10';
+function QTransform_toAffine(handle: QTransformH): QMatrixH; cdecl; external QtIntf name 'QTransform_toAffine';
 
 
 type
@@ -7256,6 +7816,46 @@ type
 
 
 type
+  QAbstractItemDelegateEndEditHint = ( // QAbstractItemDelegate::EndEditHint (1)
+    QAbstractItemDelegateNoHint, QAbstractItemDelegateEditNextItem, QAbstractItemDelegateEditPreviousItem, QAbstractItemDelegateSubmitModelCache, QAbstractItemDelegateRevertModelCache );
+
+procedure QAbstractItemDelegate_paint(handle: QAbstractItemDelegateH; painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; external QtIntf name 'QAbstractItemDelegate_paint';
+procedure QAbstractItemDelegate_sizeHint(handle: QAbstractItemDelegateH; retval: PSize; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; external QtIntf name 'QAbstractItemDelegate_sizeHint';
+function QAbstractItemDelegate_createEditor(handle: QAbstractItemDelegateH; parent: QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH): QWidgetH; cdecl; external QtIntf name 'QAbstractItemDelegate_createEditor';
+procedure QAbstractItemDelegate_setEditorData(handle: QAbstractItemDelegateH; editor: QWidgetH; index: QModelIndexH); cdecl; external QtIntf name 'QAbstractItemDelegate_setEditorData';
+procedure QAbstractItemDelegate_setModelData(handle: QAbstractItemDelegateH; editor: QWidgetH; model: QAbstractItemModelH; index: QModelIndexH); cdecl; external QtIntf name 'QAbstractItemDelegate_setModelData';
+procedure QAbstractItemDelegate_updateEditorGeometry(handle: QAbstractItemDelegateH; editor: QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; external QtIntf name 'QAbstractItemDelegate_updateEditorGeometry';
+function QAbstractItemDelegate_editorEvent(handle: QAbstractItemDelegateH; event: QEventH; model: QAbstractItemModelH; option: QStyleOptionViewItemH; index: QModelIndexH): Boolean; cdecl; external QtIntf name 'QAbstractItemDelegate_editorEvent';
+procedure QAbstractItemDelegate_elidedText(retval: PWideString; fontMetrics: QFontMetricsH; width: Integer; mode: QtTextElideMode; text: PWideString); cdecl; external QtIntf name 'QAbstractItemDelegate_elidedText';
+function QAbstractItemDelegate_helpEvent(handle: QAbstractItemDelegateH; event: QHelpEventH; view: QAbstractItemViewH; option: QStyleOptionViewItemH; index: QModelIndexH): Boolean; cdecl; external QtIntf name 'QAbstractItemDelegate_helpEvent';
+
+
+type
+  QAbstractItemDelegate_commitData_Event = procedure (editor: QWidgetH) of object cdecl;
+  QAbstractItemDelegate_closeEditor_Event = procedure (editor: QWidgetH; hint: QAbstractItemDelegateEndEditHint = QAbstractItemDelegateNoHint) of object cdecl;
+  QAbstractItemDelegate_closeEditor2_Event = procedure (editor: QWidgetH) of object cdecl;
+
+
+function QItemDelegate_create(parent: QObjectH = nil): QItemDelegateH; cdecl; external QtIntf name 'QItemDelegate_create';
+procedure QItemDelegate_destroy(handle: QItemDelegateH); cdecl; external QtIntf name 'QItemDelegate_destroy'; 
+function QItemDelegate_hasClipping(handle: QItemDelegateH): Boolean; cdecl; external QtIntf name 'QItemDelegate_hasClipping';
+procedure QItemDelegate_setClipping(handle: QItemDelegateH; clip: Boolean); cdecl; external QtIntf name 'QItemDelegate_setClipping';
+procedure QItemDelegate_paint(handle: QItemDelegateH; painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; external QtIntf name 'QItemDelegate_paint';
+procedure QItemDelegate_sizeHint(handle: QItemDelegateH; retval: PSize; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; external QtIntf name 'QItemDelegate_sizeHint';
+function QItemDelegate_createEditor(handle: QItemDelegateH; parent: QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH): QWidgetH; cdecl; external QtIntf name 'QItemDelegate_createEditor';
+procedure QItemDelegate_setEditorData(handle: QItemDelegateH; editor: QWidgetH; index: QModelIndexH); cdecl; external QtIntf name 'QItemDelegate_setEditorData';
+procedure QItemDelegate_setModelData(handle: QItemDelegateH; editor: QWidgetH; model: QAbstractItemModelH; index: QModelIndexH); cdecl; external QtIntf name 'QItemDelegate_setModelData';
+procedure QItemDelegate_updateEditorGeometry(handle: QItemDelegateH; editor: QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; external QtIntf name 'QItemDelegate_updateEditorGeometry';
+function QItemDelegate_itemEditorFactory(handle: QItemDelegateH): QItemEditorFactoryH; cdecl; external QtIntf name 'QItemDelegate_itemEditorFactory';
+procedure QItemDelegate_setItemEditorFactory(handle: QItemDelegateH; factory: QItemEditorFactoryH); cdecl; external QtIntf name 'QItemDelegate_setItemEditorFactory';
+
+function QLCLItemDelegate_create(parent: QObjectH = nil): QLCLItemDelegateH; cdecl; external QtIntf name 'QLCLItemDelegate_create';
+procedure QLCLItemDelegate_destroy(handle: QLCLItemDelegateH); cdecl; external QtIntf name 'QLCLItemDelegate_destroy'; 
+procedure QLCLItemDelegate_override_sizeHint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_sizeHint';
+procedure QLCLItemDelegate_override_paint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_paint';
+
+
+type
   QDialogDialogCode = ( // QDialog::DialogCode (1)
     QDialogRejected, QDialogAccepted );
 
@@ -9667,6 +10267,12 @@ procedure QStandardItem_hook_destroy(handle: QStandardItem_hookH); cdecl; extern
 function QStandardItemModel_hook_create(handle: QObjectH): QStandardItemModel_hookH; cdecl; external QtIntf name 'QStandardItemModel_hook_create';
 procedure QStandardItemModel_hook_destroy(handle: QStandardItemModel_hookH); cdecl; external QtIntf name 'QStandardItemModel_hook_destroy'; 
 procedure QStandardItemModel_hook_hook_itemChanged(handle: QStandardItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QStandardItemModel_hook_hook_itemChanged';
+
+function QAbstractItemDelegate_hook_create(handle: QObjectH): QAbstractItemDelegate_hookH; cdecl; external QtIntf name 'QAbstractItemDelegate_hook_create';
+procedure QAbstractItemDelegate_hook_destroy(handle: QAbstractItemDelegate_hookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_destroy'; 
+procedure QAbstractItemDelegate_hook_hook_commitData(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_commitData';
+procedure QAbstractItemDelegate_hook_hook_closeEditor(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor';
+procedure QAbstractItemDelegate_hook_hook_closeEditor2(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor2';
 
 function QDialog_hook_create(handle: QObjectH): QDialog_hookH; cdecl; external QtIntf name 'QDialog_hook_create';
 procedure QDialog_hook_destroy(handle: QDialog_hookH); cdecl; external QtIntf name 'QDialog_hook_destroy'; 
