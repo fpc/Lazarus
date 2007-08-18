@@ -1838,7 +1838,7 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
   end;
 
 begin
-  if not (CurNode.Desc in AllClassBaseSections) then
+  if not (CurNode.Desc in (AllClassBaseSections+[ctnClassInterface])) then
     RaiseIdentExpectedButAtomFound;
   // create class method node
   CreateChildNode;
