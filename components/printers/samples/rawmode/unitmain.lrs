@@ -1,19 +1,25 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'!'#1#6'Height'#3#240#0#3'Top'#2'd'#5'Widt'
-  +'h'#3#242#0#18'HorzScrollBar.Page'#3#241#0#18'VertScrollBar.Page'#3#239#0#7
-  +'Caption'#6#18'RawMode Print Test'#12'ClientHeight'#3#240#0#11'ClientWidth'#3
-  +#242#0#21'Constraints.MaxHeight'#3#240#0#21'Constraints.MinHeight'#3#240#0#8
-  +'OnCreate'#7#10'FormCreate'#0#6'TLabel'#6'Label1'#4'Left'#2#15#6'Height'#2#14
-  +#3'Top'#2#5#5'Width'#2'='#7'Caption'#6#14'Printers List:'#5'Color'#7#6'clNon'
-  +'e'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#11#6'Height'#2#14#3
-  +'Top'#3#150#0#5'Width'#2'G'#7'Caption'#6#16'String to print:'#5'Color'#7#6'c'
-  +'lNone'#11'ParentColor'#8#0#0#8'TListBox'#8'ListBox1'#4'Left'#2#11#6'Height'
-  +#2's'#3'Top'#2#25#5'Width'#3#220#0#8'TabOrder'#2#0#0#0#7'TButton'#7'Button1'
-  +#4'Left'#2#11#6'Height'#2#25#3'Top'#3#205#0#5'Width'#2'K'#25'BorderSpacing.I'
-  +'nnerBorder'#2#4#7'Caption'#6#5'Print'#7'OnClick'#7#12'Button1Click'#8'TabOr'
-  +'der'#2#1#0#0#5'TEdit'#5'Edit1'#4'Left'#2#11#6'Height'#2#23#3'Top'#3#170#0#5
-  +'Width'#3#219#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#2
-  +#0#0#0
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#9#1#6'Height'#3#28#1#3'Top'#3#181#0#5'Wid'
+  +'th'#3'm'#1#18'HorzScrollBar.Page'#3'l'#1#18'VertScrollBar.Page'#3#27#1#13'A'
+  +'ctiveControl'#7#8'ListBox1'#7'Caption'#6#18'RawMode Print Test'#12'ClientHe'
+  +'ight'#3#28#1#11'ClientWidth'#3'm'#1#21'Constraints.MaxHeight'#3#144#1#21'Co'
+  +'nstraints.MinHeight'#3#240#0#8'OnCreate'#7#10'FormCreate'#0#6'TLabel'#6'Lab'
+  +'el1'#4'Left'#2#15#6'Height'#2#14#3'Top'#2#5#5'Width'#2'='#7'Caption'#6#14'P'
+  +'rinters List:'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#11#6'Hei'
+  +'ght'#2#14#3'Top'#3#150#0#5'Width'#2'G'#7'Caption'#6#16'String to print:'#11
+  +'ParentColor'#8#0#0#6'TLabel'#6'Label3'#4'Left'#2'h'#6'Height'#2'F'#3'Top'#3
+  +#202#0#5'Width'#3#247#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBott'
+  +'om'#0#8'AutoSize'#8#7'Caption'#6#233'NOTE: This sample is meant to sent an '
+  +'alphanumeric string to a Dot-Matrix class printer'#13#10'Which doesn''t nee'
+  +'d special codes to start printing. Label, LaserJet or DeskJet printers migh'
+  +'t need'#13#10'some special prefix codes to work correctly.'#11'ParentColor'
+  +#8#8'WordWrap'#9#0#0#8'TListBox'#8'ListBox1'#4'Left'#2#11#6'Height'#2's'#3'T'
+  +'op'#2#25#5'Width'#3'W'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'Ta'
+  +'bOrder'#2#0#0#0#7'TButton'#7'Button1'#4'Left'#2#11#6'Height'#2#25#3'Top'#3
+  +#205#0#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Print'
+  +#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#5'TEdit'#5'Edit1'#4'Left'
+  +#2#11#6'Height'#2#23#3'Top'#3#170#0#5'Width'#3'V'#1#7'Anchors'#11#5'akTop'#6
+  +'akLeft'#7'akRight'#0#8'TabOrder'#2#2#0#0#0
 ]);

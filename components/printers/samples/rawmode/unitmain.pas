@@ -17,6 +17,7 @@ type
     Edit1: TEdit;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
     ListBox1: TListBox;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
