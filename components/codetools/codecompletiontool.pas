@@ -2073,14 +2073,174 @@ end;
 function TCodeCompletionCodeTool.FixForwardDefinitions(
   SourceChangeCache: TSourceChangeCache): boolean;
 var
+  NodeMoves: TCodeGraph;// an edge means, move the FromNode in front of the ToNode
+  
+  procedure InitNodeMoves;
+  begin
+    NodeMoves:=TCodeGraph.Create;
+  end;
+  
+  procedure ClearNodeMoves;
+  begin
+    FreeAndNil(NodeMoves);
+  end;
+  
+  procedure AddMove(Node, InsertInFrontOf: TCodeTreeNode);
+  begin
+    if Node=InsertInFrontOf then exit;
+    if Node=nil then RaiseException('inconsistency');
+    if InsertInFrontOf=nil then RaiseException('inconsistency');
+    NodeMoves.AddEdge(Node,InsertInFrontOf);
+  end;
+  
+  function ApplyNodeMove(GraphEdge: TCodeGraphEdge): boolean;
+  var
+    MoveNode: TCodeTreeNode;
+    ToNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    MoveNode:=GraphEdge.FromNode.Node;
+    ToNode:=GraphEdge.ToNode.Node;
+    DebugLn(['ApplyNodeMove Node=',ExtractNode(MoveNode,[]),' To=',ExtractNode(ToNode,[])]);
+    
+  end;
+  
+  function ApplyNodeMoves(GraphNode: TCodeGraphNode): boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    GraphEdge: TCodeGraphEdge;
+  begin
+    Result:=false;
+    DebugLn(['ApplyNodeMoves ',ExtractNode(GraphNode.Node,[])]);
+    if GraphNode.InTree<>nil then begin
+      AVLNode:=GraphNode.InTree.FindLowest;
+      while AVLNode<>nil do begin
+        GraphEdge:=TCodeGraphEdge(AVLNode.Data);
+        if not ApplyNodeMove(GraphEdge) then exit;
+        AVLNode:=GraphNode.InTree.FindSuccessor(AVLNode);
+      end;
+    end;
+    Result:=true;
+  end;
+  
+  function ApplyNodeMoves: boolean;
+  var
+    GraphEdge: TCodeGraphEdge;
+    ListOfGraphNodes: TFPList;
+    i: Integer;
+    GraphNode: TCodeGraphNode;
+  begin
+    Result:=false;
+    if NodeMoves.Edges.Count=0 then exit(true);
+    
+    // sort topologically and break all circles
+    repeat
+      GraphEdge:=NodeMoves.GetTopologicalSortedList(ListOfGraphNodes);
+      if GraphEdge=nil then break;
+      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.ApplyNodeMoves break circle: From=',ExtractNode(GraphEdge.FromNode.Node,[]),' To=',ExtractNode(GraphEdge.ToNode.Node,[])]);
+      NodeMoves.DeleteEdge(GraphEdge);
+      ListOfGraphNodes.Free;
+    until false;
+    
+    // apply changes
+    // the ListOfGraphNodes is sorted topologically with nodes at end must be
+    // moved first
+    for i:=ListOfGraphNodes.Count-1 downto 0 do begin
+      GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+      if not ApplyNodeMoves(GraphNode) then exit;
+    end;
+    Result:=SourceChangeCache.Apply;
+  end;
+
+  function MovePointerTypesToTargetSections: boolean;
+  var
+    Definitions: TAVLTree;// tree of TCodeTreeNodeExtension
+    Graph: TCodeGraph;
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+    Node: TCodeTreeNode;
+    GraphNode: TCodeGraphNode;
+    RequiredAVLNode: TAVLTreeNode;
+    GraphEdge: TCodeGraphEdge;
+    RequiredNode: TCodeTreeNode;
+    RequiredTypeNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    try
+      // move the pointer types to the same type sections
+      if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
+      if Definitions=nil then exit(true);
+      InitNodeMoves;
+      
+      AVLNode:=Definitions.FindLowest;
+      while AVLNode<>nil do begin
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        Node:=NodeExt.Node;
+        if (Node.Desc=ctnTypeDefinition) and (Node.FirstChild<>nil)
+        and (Node.FirstChild.Desc=ctnPointerType) then begin
+          // this is a pointer type
+          // check if it only depends on the type nodes of a single section
+          //DebugLn(['MovePointerTypesToTargetSections Pointer=',ExtractNode(Node,[])]);
+          RequiredTypeNode:=nil;
+          GraphNode:=Graph.GetGraphNode(Node,false);
+          if GraphNode.OutTree<>nil then begin
+            RequiredAVLNode:=GraphNode.OutTree.FindLowest;
+            while RequiredAVLNode<>nil do begin
+              GraphEdge:=TCodeGraphEdge(RequiredAVLNode.Data);
+              RequiredNode:=GraphEdge.ToNode.Node;
+              if (RequiredNode.Desc=ctnTypeDefinition)
+              and (RequiredNode.Parent.Desc=ctnTypeSection) then begin
+                //DebugLn(['MovePointerTypesToTargetSections required=',ExtractNode(RequiredNode,[])]);
+                if RequiredTypeNode=nil then begin
+                  RequiredTypeNode:=RequiredNode;
+                end
+                else if RequiredTypeNode.Parent<>RequiredNode.Parent then begin
+                  DebugLn(['MovePointerTypesToTargetSections required nodes in different type sections']);
+                  RequiredTypeNode:=nil;
+                  break;
+                end;
+              end else begin
+                DebugLn(['MovePointerTypesToTargetSections required nodes are not only types']);
+                RequiredTypeNode:=nil;
+                break;
+              end;
+              RequiredAVLNode:=GraphNode.OutTree.FindSuccessor(RequiredAVLNode);
+            end;
+          end;
+          if (RequiredTypeNode<>nil) then begin
+            // this pointer type depends only on the type nodes of a single type
+            // section
+            if (Node.Parent<>RequiredNode.Parent) then begin
+              // pointer type is in other section => move
+              DebugLn(['MovePointerTypesToTargetSections move Pointer=',ExtractNode(Node,[]),' Required=',ExtractNode(RequiredNode,[])]);
+              AddMove(Node,RequiredNode);
+            end;
+          end;
+        end;
+        AVLNode:=Definitions.FindSuccessor(AVLNode);
+      end;
+      Result:=ApplyNodeMoves;
+    finally
+      NodeExtMemManager.DisposeAVLTree(Definitions);
+      Graph.Free;
+      ClearNodeMoves;
+    end;
+  end;
+  
+var
   Definitions: TAVLTree;
   Graph: TCodeGraph;
 begin
   Result:=false;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  NodeMoves:=nil;
+  Definitions:=nil;
+  Graph:=nil;
   try
+    // move the pointer types to the same type sections
+    if not MovePointerTypesToTargetSections then exit;
     if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
-    
+
   finally
     NodeExtMemManager.DisposeAVLTree(Definitions);
     Graph.Free;

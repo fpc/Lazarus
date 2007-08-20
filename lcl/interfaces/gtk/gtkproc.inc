@@ -6455,7 +6455,6 @@ var
   LCLControl: TControl;
   LevelCounts: PInteger;
 begin
-  //DebugLn(' KKK0');
   Result:=TFPList.Create;
   if HashArray.Count=0 then exit;
   
@@ -6464,10 +6463,10 @@ begin
   HashItem:=HashArray.FirstHashItem;
   i:=0;
   MaxLevel:=0;
-  //DebugLn(' KKK1 HashArray.Count=',HashArray.Count);
+  //DebugLn('CreateTopologicalSortedWidgets HashArray.Count=',HashArray.Count);
   while HashItem<>nil do begin
     TopologicalList[i].Widget:=HashItem^.Item;
-    //DebugLn(' KKK21 i=',i,' Widget=',DbgS(TopologicalList[i].Widget));
+    //DebugLn('CreateTopologicalSortedWidgets i=',i,' Widget=',DbgS(TopologicalList[i].Widget));
     LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
     if (LCLControl=nil) or (not (LCLControl is TControl)) then
       RaiseGDBException('CreateTopologicalSortedWidgets: '
@@ -6476,7 +6475,7 @@ begin
     TopologicalList[i].ParentLevel:=Lvl;
     if MaxLevel<Lvl then
       MaxLevel:=Lvl;
-    //DebugLn(' KKK2 i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
+    //DebugLn('CreateTopologicalSortedWidgets i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
     inc(i);
     HashItem:=HashItem^.Next;
   end;
@@ -6501,7 +6500,7 @@ begin
   for i:=0 to HashArray.Count-1 do begin
     Lvl:=TopologicalList[i].ParentLevel;
     dec(LevelCounts[Lvl]);
-    //DebugLn(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
+    //DebugLn('CreateTopologicalSortedWidgets bucket sort i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
     //  ' Widget=',DbgS(TopologicalList[i].Widget));
     Result[LevelCounts[Lvl]]:=TopologicalList[i].Widget;
   end;

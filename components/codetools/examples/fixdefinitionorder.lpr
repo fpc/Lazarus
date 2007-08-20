@@ -32,7 +32,7 @@ program FixDefinitionOrder;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeTree, DirectivesTree, SimpleFunctions;
+  CodeTree, DirectivesTree;
   
 var
   Filename: string;
