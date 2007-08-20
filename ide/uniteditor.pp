@@ -5680,7 +5680,7 @@ end;
 procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftstate; X, Y: Integer);
 begin
-  if GetKeyShiftState=[ssCtrl] then begin
+  if EditorOpts.CtrlMouseLinks and (GetKeyShiftState=[ssCtrl]) then begin
     // Control+MouseUp = Find Declaration
     if Assigned(FOnCtrlMouseUp) then begin
       FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
