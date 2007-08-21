@@ -2228,8 +2228,7 @@ function TPropertyEditor.GetHint(HintType: TPropEditHint; x, y: integer
 var
   TypeHint: String;
 begin
-  Result:=GetName
-         +#13+oisValue+GetVisualValue;
+  Result := GetName + #13 + oisValue + ' ' + GetVisualValue;
   case GetPropType^.Kind of
    tkInteger : TypeHint:=oisInteger;
    tkInt64 : TypeHint:=oisInt64;
