@@ -188,8 +188,10 @@ begin
   if (ANode = nil) or (ANode.Data = nil) or
     (not (TObject(ANode.Data) is TNewIDEItemTemplate)) then
   begin
-    MessageDlg(lisNewDlgNoItemSelected,
-      lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK], 0);
+    // don't show message, when double clicking in treeview
+    if not (Sender is TTreeView) then
+      MessageDlg(lisNewDlgNoItemSelected,
+        lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK], 0);
     FNewItem := nil;
     exit;
   end;

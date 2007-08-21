@@ -1,36 +1,29 @@
 object NewOtherDialog: TNewOtherDialog
+  Left = 481
+  Height = 296
+  Top = 362
+  Width = 397
+  HorzScrollBar.Page = 396
+  VertScrollBar.Page = 295
   ActiveControl = ItemsTreeView
   BorderStyle = bsSizeToolWin
   Caption = 'NewOtherDialog'
   ClientHeight = 296
   ClientWidth = 397
-  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 396
-  VertScrollBar.Page = 295
-  Left = 481
-  Height = 296
-  Top = 362
-  Width = 397
   object ItemsTreeView: TTreeView
-    Anchors = [akTop, akLeft, akBottom]
-    BorderSpacing.Around = 6
-    DefaultItemHeight = 14
-    TabOrder = 0
-    OnDblClick = OkButtonClick
-    OnSelectionChanged = ItemsTreeViewSelectionChanged
     Left = 6
     Height = 246
     Top = 6
     Width = 178
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 15
+    TabOrder = 0
+    OnDblClick = OkButtonClick
+    OnSelectionChanged = ItemsTreeViewSelectionChanged
   end
   object DescriptionGroupBox: TGroupBox
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'DescriptionGroupBox'
-    ClientHeight = 229
-    ClientWidth = 197
-    TabOrder = 1
     AnchorSideLeft.Control = ItemsTreeView
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
@@ -39,45 +32,50 @@ object NewOtherDialog: TNewOtherDialog
     Height = 246
     Top = 6
     Width = 201
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'DescriptionGroupBox'
+    ClientHeight = 228
+    ClientWidth = 197
+    TabOrder = 1
     object DescriptionLabel: TLabel
+      Left = 6
+      Height = 216
+      Top = 6
+      Width = 185
       Align = alClient
       BorderSpacing.Around = 6
       Caption = 'DescriptionLabel'
-      Color = clNone
       ParentColor = False
       WordWrap = True
-      Left = 6
-      Height = 217
-      Top = 6
-      Width = 185
     end
   end
   object CancelButton: TButton
+    Left = 299
+    Height = 25
+    Top = 265
+    Width = 92
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
-    Left = 306
-    Height = 26
-    Top = 264
-    Width = 85
   end
   object OkButton: TButton
+    AnchorSideRight.Control = CancelButton
+    Left = 220
+    Height = 25
+    Top = 265
+    Width = 73
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'OkButton'
     Enabled = False
     OnClick = OkButtonClick
     TabOrder = 3
-    AnchorSideRight.Control = CancelButton
-    Left = 239
-    Height = 26
-    Top = 264
-    Width = 61
   end
 end
