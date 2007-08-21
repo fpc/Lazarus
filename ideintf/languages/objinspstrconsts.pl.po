@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-01-19 23:17+0100\n"
+"PO-Revision-Date: 2007-08-17 00:16+0100\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr ""
+msgstr "&Wczytaj"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
@@ -71,7 +71,7 @@ msgstr ""
 
 #: objinspstrconsts:oisok
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
@@ -91,7 +91,7 @@ msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr ""
+msgstr "&Zapisz"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
@@ -199,11 +199,11 @@ msgstr ""
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
-msgstr ""
+msgstr "Boolean"
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "Wy&czyść"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
@@ -395,7 +395,7 @@ msgstr ""
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
-msgstr ""
+msgstr "Edytuj elementy ListView..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
@@ -403,7 +403,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
-msgstr ""
+msgstr "Edytuj elementy TreeView..."
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
@@ -475,7 +475,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "Edytor ImageList"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
@@ -519,15 +519,15 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
-msgstr ""
+msgstr "Element"
 
 #: objinspstrconsts:sccstredtgrprcaption
 msgid "Item Properties"
-msgstr ""
+msgstr "Właściwości elementu"
 
 #: objinspstrconsts:sccstredtgrplcaption
 msgid "Items"
-msgstr ""
+msgstr "Elementy"
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
@@ -543,7 +543,7 @@ msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr ""
+msgstr "Edytor elementów ListView"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -575,7 +575,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
-msgstr ""
+msgstr "Przenieś w dół"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
@@ -583,7 +583,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
-msgstr ""
+msgstr "Przenieś w górę"
 
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
@@ -615,7 +615,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Nowy element"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
@@ -623,7 +623,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
-msgstr ""
+msgstr "Nowy podelement"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -647,7 +647,7 @@ msgstr "Inspektor obiektów"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr "Ok"
+msgstr "OK"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
@@ -687,7 +687,7 @@ msgstr ""
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Obraz"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -815,7 +815,7 @@ msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"
-msgstr ""
+msgstr "Sortuj"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -859,7 +859,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
-msgstr ""
+msgstr "Tekst:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway? "
@@ -875,11 +875,11 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtransparentcolor
 msgid "Transparent Color:"
-msgstr ""
+msgstr "Kolor przezroczystości:"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr ""
+msgstr "Edytor elementów TreeView"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
