@@ -2072,6 +2072,8 @@ end;
 
 function TCodeCompletionCodeTool.FixForwardDefinitions(
   SourceChangeCache: TSourceChangeCache): boolean;
+const
+  NodeMovedFlag = 1;
 var
   NodeMoves: TCodeGraph;// an edge means, move the FromNode in front of the ToNode
   
@@ -2093,30 +2095,64 @@ var
     NodeMoves.AddEdge(Node,InsertInFrontOf);
   end;
   
-  function ApplyNodeMove(GraphEdge: TCodeGraphEdge): boolean;
+  function WholeSectionIsMoved(SectionNode: TCodeTreeNode): boolean;
   var
-    MoveNode: TCodeTreeNode;
-    ToNode: TCodeTreeNode;
+    Node: TCodeTreeNode;
+    GraphNode: TCodeGraphNode;
   begin
-    Result:=false;
-    MoveNode:=GraphEdge.FromNode.Node;
-    ToNode:=GraphEdge.ToNode.Node;
-    DebugLn(['ApplyNodeMove Node=',ExtractNode(MoveNode,[]),' To=',ExtractNode(ToNode,[])]);
-    
+    Node:=SectionNode.FirstChild;
+    while Node<>nil do begin
+      GraphNode:=NodeMoves.GetGraphNode(Node,false);
+      if (GraphNode=nil) or (GraphNode.OutTreeCount=0) then
+        exit(false);
+      Node:=Node.NextBrother;
+    end;
+    Result:=true;
   end;
   
-  function ApplyNodeMoves(GraphNode: TCodeGraphNode): boolean;
+  function ApplyNodeMove(GraphNode: TCodeGraphNode; MoveNode: boolean;
+    InsertPos, Indent: integer): boolean;
+  // if MoveNode=true then move code of GraphNode.Node to InsertPos
+  // Always: recursively all nodes that should be moved to GraphNode too
   var
     AVLNode: TAVLTreeNode;
     GraphEdge: TCodeGraphEdge;
+    Node: TCodeTreeNode;
+    FromPos: LongInt;
+    ToPos: LongInt;
+    NodeSrc: String;
   begin
     Result:=false;
-    DebugLn(['ApplyNodeMoves ',ExtractNode(GraphNode.Node,[])]);
+    Node:=GraphNode.Node;
+    // marked as moved
+    GraphNode.Flags:=NodeMovedFlag;
+    DebugLn(['ApplyNodeMoves ',ExtractNode(Node,[])]);
+    if MoveNode then begin
+      FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+      ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
+      NodeSrc:=GetIndentStr(Indent)+Trim(copy(Src,FromPos,ToPos-FromPos));
+      // remove
+      if (Node.PriorBrother=nil)
+      and (Node.Parent<>nil) and (Node.Parent.Desc in AllDefinitionSections)
+      and WholeSectionIsMoved(Node.Parent)
+      then begin
+        // the whole section is moved and this is the first node of the section
+        // remove the section header too
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.Parent.StartPos);
+      end;
+      DebugLn(['ApplyNodeMove Remove: "',copy(Src,FromPos,ToPos-FromPos),'"']);
+      if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then exit;
+      // insert
+      DebugLn(['ApplyNodeMove Insert: "',NodeSrc,'"']);
+      if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
+        InsertPos,InsertPos,NodeSrc) then exit;
+    end;
+    // move dependent nodes
     if GraphNode.InTree<>nil then begin
       AVLNode:=GraphNode.InTree.FindLowest;
       while AVLNode<>nil do begin
         GraphEdge:=TCodeGraphEdge(AVLNode.Data);
-        if not ApplyNodeMove(GraphEdge) then exit;
+        if not ApplyNodeMove(GraphEdge.FromNode,true,InsertPos,Indent) then exit;
         AVLNode:=GraphNode.InTree.FindSuccessor(AVLNode);
       end;
     end;
@@ -2129,9 +2165,18 @@ var
     ListOfGraphNodes: TFPList;
     i: Integer;
     GraphNode: TCodeGraphNode;
+    InsertPos: LongInt;
+    Indent: LongInt;
   begin
     Result:=false;
     if NodeMoves.Edges.Count=0 then exit(true);
+    
+    // check that every node has at most one destination
+    GraphNode:=NodeMoves.FindGraphNodeWithNumberOfOutEdges(2,-1);
+    if GraphNode<>nil then begin
+      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.ApplyNodeMoves inconsistency: node should be moved to several places: ',ExtractNode(GraphNode.Node,[])]);
+      raise Exception.Create('TCodeCompletionCodeTool.FixForwardDefinitions.ApplyNodeMoves node should be moved to several places');
+    end;
     
     // sort topologically and break all circles
     repeat
@@ -2145,9 +2190,14 @@ var
     // apply changes
     // the ListOfGraphNodes is sorted topologically with nodes at end must be
     // moved first
+    NodeMoves.ClearNodeFlags;
     for i:=ListOfGraphNodes.Count-1 downto 0 do begin
       GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
-      if not ApplyNodeMoves(GraphNode) then exit;
+      if GraphNode.Flags=0 then begin
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(GraphNode.Node.StartPos);
+        Indent:=GetLineIndent(Src,GraphNode.Node.StartPos);
+        if not ApplyNodeMove(GraphNode,false,InsertPos,Indent) then exit;
+      end;
     end;
     Result:=SourceChangeCache.Apply;
   end;
@@ -2169,6 +2219,7 @@ var
     try
       // move the pointer types to the same type sections
       if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
+      SourceChangeCache.MainScanner:=Scanner;
       if Definitions=nil then exit(true);
       InitNodeMoves;
       

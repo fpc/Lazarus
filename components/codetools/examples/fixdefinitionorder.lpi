@@ -26,10 +26,10 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
     <Units Count="3">
@@ -57,7 +57,6 @@
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
-      <TargetCPU Value="arm"/>
     </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

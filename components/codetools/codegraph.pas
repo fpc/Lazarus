@@ -43,7 +43,10 @@ type
     Node: TCodeTreeNode;
     InTree: TAVLTree;// tree of TCodeGraphEdge sorted for FromNode (ToNode = Self)
     OutTree: TAVLTree;// tree of TCodeGraphEdge sorted for ToNode (FromNode = Self)
-    Data: Pointer;
+    Data: Pointer;  // custom data
+    Flags: cardinal;// custom flags
+    function OutTreeCount: integer;
+    function InTreeCount: integer;
   end;
   
   PCodeGraphEdgeKey = ^TCodeGraphEdgeKey;
@@ -57,7 +60,8 @@ type
   TCodeGraphEdge = class
     FromNode: TCodeGraphNode;
     ToNode: TCodeGraphNode;
-    Data: Pointer;
+    Data: Pointer;  // custom data
+    Flags: cardinal;// custom flags
   end;
 
   { TCodeGraph }
@@ -69,12 +73,19 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearNodeFlags;
+    procedure ClearEdgeFlags;
     procedure Assign(Source: TCodeGraph);
     function CreateCopy: TCodeGraph;
     function AddGraphNode(Node: TCodeTreeNode): TCodeGraphNode;
     function GetGraphNode(Node: TCodeTreeNode; CreateIfNotExists: boolean
                           ): TCodeGraphNode;
     procedure DeleteGraphNode(Node: TCodeTreeNode);
+    function FindGraphNodeWithNumberOfOutEdges(MinNumber, MaxNumber: integer
+                                               ): TCodeGraphNode;
+    function FindGraphNodeWithNumberOfInEdges(MinNumber, MaxNumber: integer
+                                              ): TCodeGraphNode;
+
     function AddEdge(FromNode, ToNode: TCodeTreeNode): TCodeGraphEdge;
     function GetEdge(FromNode, ToNode: TCodeTreeNode;
                      CreateIfNotExists: boolean): TCodeGraphEdge;
@@ -269,6 +280,28 @@ begin
   Edges.Clear;
 end;
 
+procedure TCodeGraph.ClearNodeFlags;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    TCodeGraphNode(AVLNode.Data).Flags:=0;
+    AVLNode:=Nodes.FindSuccessor(AVLNode);
+  end;
+end;
+
+procedure TCodeGraph.ClearEdgeFlags;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=Edges.FindLowest;
+  while AVLNode<>nil do begin
+    TCodeGraphEdge(AVLNode.Data).Flags:=0;
+    AVLNode:=Edges.FindSuccessor(AVLNode);
+  end;
+end;
+
 procedure TCodeGraph.Assign(Source: TCodeGraph);
 var
   AVLNode: TAVLTreeNode;
@@ -365,6 +398,42 @@ begin
   end;
   Nodes.Delete(AVLNode);
   GraphNode.Free;
+end;
+
+function TCodeGraph.FindGraphNodeWithNumberOfOutEdges(MinNumber,
+  MaxNumber: integer): TCodeGraphNode;
+var
+  AVLNode: TAVLTreeNode;
+  Cnt: LongInt;
+begin
+  AVLNode:=Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    Result:=TCodeGraphNode(AVLNode.Data);
+    Cnt:=Result.OutTreeCount;
+    if ((MinNumber<0) or (MinNumber<=Cnt))
+    and ((MaxNumber<0) or (MaxNumber>=Cnt)) then
+      exit;
+    AVLNode:=Nodes.FindSuccessor(AVLNode);
+  end;
+  Result:=nil;
+end;
+
+function TCodeGraph.FindGraphNodeWithNumberOfInEdges(MinNumber,
+  MaxNumber: integer): TCodeGraphNode;
+var
+  AVLNode: TAVLTreeNode;
+  Cnt: LongInt;
+begin
+  AVLNode:=Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    Result:=TCodeGraphNode(AVLNode.Data);
+    Cnt:=Result.InTreeCount;
+    if ((MinNumber<0) or (MinNumber<=Cnt))
+    and ((MaxNumber<0) or (MaxNumber>=Cnt)) then
+      exit;
+    AVLNode:=Nodes.FindSuccessor(AVLNode);
+  end;
+  Result:=nil;
 end;
 
 function TCodeGraph.AddEdge(FromNode, ToNode: TCodeTreeNode): TCodeGraphEdge;
@@ -541,6 +610,24 @@ begin
   EdgeKey.FromNode:=FromNode;
   EdgeKey.ToNode:=ToNode;
   Result:=Edges.FindKey(@EdgeKey,@CompareEdgeKeyWithGraphEdge);
+end;
+
+{ TCodeGraphNode }
+
+function TCodeGraphNode.OutTreeCount: integer;
+begin
+  if OutTree<>nil then
+    Result:=OutTree.Count
+  else
+    Result:=0;
+end;
+
+function TCodeGraphNode.InTreeCount: integer;
+begin
+  if InTree<>nil then
+    Result:=InTree.Count
+  else
+    Result:=0;
 end;
 
 end.
