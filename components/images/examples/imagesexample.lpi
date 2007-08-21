@@ -1,325 +1,15 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="Images Example"/>
     </General>
-    <JumpHistory Count="7" HistoryIndex="6">
-      <Position1>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="63" Column="35" TopLine="47"/>
-      </Position1>
-      <Position2>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="62" Column="3" TopLine="16"/>
-      </Position2>
-      <Position3>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="47" Column="35" TopLine="34"/>
-      </Position3>
-      <Position4>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="96" Column="1" TopLine="86"/>
-      </Position4>
-      <Position5>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="151" Column="1" TopLine="139"/>
-      </Position5>
-      <Position6>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="61" Column="19" TopLine="51"/>
-      </Position6>
-      <Position7>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position7>
-    </JumpHistory>
-    <Units Count="40">
-      <Unit0>
-        <CursorPos X="39" Y="10"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="imagesexample.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="JPEGExample"/>
-        <UsageCount Value="40"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="12" Y="204"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="mainform.pas"/>
-        <ComponentName Value="ImagesExampleForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="mainform.lrs"/>
-        <TopLine Value="179"/>
-        <UnitName Value="MainForm"/>
-        <UsageCount Value="40"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="20" Y="156"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/dialogs.pp"/>
-        <TopLine Value="134"/>
-        <UnitName Value="Dialogs"/>
-        <UsageCount Value="10"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="7" Y="48"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/jpeg/lazjpeg.pas"/>
-        <TopLine Value="21"/>
-        <UnitName Value="LazJPEG"/>
-        <UsageCount Value="15"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="9" Y="167"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/fcl/image/fpreadjpeg.pas"/>
-        <TopLine Value="141"/>
-        <UnitName Value="FPReadJPEG"/>
-        <UsageCount Value="14"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="17" Y="171"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jdapimin.pas"/>
-        <TopLine Value="139"/>
-        <UnitName Value="JdAPImin"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="3" Y="2543"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jdmarker.pas"/>
-        <TopLine Value="2529"/>
-        <UnitName Value="JdMarker"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="1" Y="116"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jconfig.inc"/>
-        <TopLine Value="74"/>
-        <UsageCount Value="14"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="5" Y="1137"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jpeglib.pas"/>
-        <TopLine Value="1096"/>
-        <UnitName Value="JPEGLib"/>
-        <UsageCount Value="10"/>
-      </Unit8>
-      <Unit9>
-        <CursorPos X="1" Y="43"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/codetools/memcheck.pas"/>
-        <TopLine Value="20"/>
-        <UnitName Value="MemCheck"/>
-        <UsageCount Value="16"/>
-      </Unit9>
-      <Unit10>
-        <CursorPos X="25" Y="34"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jdatasrc.pas"/>
-        <TopLine Value="11"/>
-        <UnitName Value="JDataSrc"/>
-        <UsageCount Value="13"/>
-      </Unit10>
-      <Unit11>
-        <CursorPos X="1" Y="37"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jinclude.pas"/>
-        <TopLine Value="17"/>
-        <UnitName Value="jinclude"/>
-        <UsageCount Value="13"/>
-      </Unit11>
-      <Unit12>
-        <CursorPos X="6" Y="14"/>
-        <Filename Value="/home/mattias/pascal/sf_lazarus/jpeg/jerror.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="Jerror"/>
-        <UsageCount Value="10"/>
-      </Unit12>
-      <Unit13>
-        <CursorPos X="12" Y="113"/>
-        <Filename Value="/home/mattias/pascal/sf_lazarus/jpeg/jconfig.inc"/>
-        <TopLine Value="74"/>
-        <UsageCount Value="10"/>
-      </Unit13>
-      <Unit14>
-        <CursorPos X="13" Y="134"/>
-        <Filename Value="/home/mattias/pascal/sf_lazarus/jpeg/lazjpeg.pas"/>
-        <TopLine Value="109"/>
-        <UnitName Value="LazJPEG"/>
-        <UsageCount Value="10"/>
-      </Unit14>
-      <Unit15>
-        <CursorPos X="37" Y="728"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/graphics.pp"/>
-        <TopLine Value="707"/>
-        <UnitName Value="Graphics"/>
-        <UsageCount Value="11"/>
-      </Unit15>
-      <Unit16>
-        <CursorPos X="1" Y="217"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/graphic.inc"/>
-        <TopLine Value="191"/>
-        <UsageCount Value="11"/>
-      </Unit16>
-      <Unit17>
-        <CursorPos X="1" Y="1064"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/bitmap.inc"/>
-        <TopLine Value="1041"/>
-        <UsageCount Value="11"/>
-      </Unit17>
-      <Unit18>
-        <CursorPos X="16" Y="306"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/intfgraphics.pas"/>
-        <TopLine Value="287"/>
-        <UnitName Value="IntfGraphics"/>
-        <UsageCount Value="10"/>
-      </Unit18>
-      <Unit19>
-        <CursorPos X="1" Y="284"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/pixmap.inc"/>
-        <TopLine Value="262"/>
-        <UsageCount Value="11"/>
-      </Unit19>
-      <Unit20>
-        <CursorPos X="74" Y="34"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/png.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit20>
-      <Unit21>
-        <CursorPos X="13" Y="1932"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/lcltype.pp"/>
-        <TopLine Value="1909"/>
-        <UnitName Value="LCLType"/>
-        <UsageCount Value="11"/>
-      </Unit21>
-      <Unit22>
-        <CursorPos X="2" Y="4"/>
-        <Filename Value="README.txt"/>
-        <IsPartOfProject Value="True"/>
-        <SyntaxHighlighter Value="None"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="28"/>
-      </Unit22>
-      <Unit23>
-        <CursorPos X="1" Y="468"/>
-        <Filename Value="/home/neifer/FPC/Demo/src/lazarus/lcl/include/picture.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit23>
-      <Unit24>
-        <CursorPos X="31" Y="846"/>
-        <Filename Value="/home/neifer/FPC/Demo/src/lazarus/lcl/include/bitmap.inc"/>
-        <TopLine Value="833"/>
-        <UsageCount Value="12"/>
-      </Unit24>
-      <Unit25>
-        <CursorPos X="20" Y="52"/>
-        <Filename Value="/home/neifer/FPC/Demo/src/lazarus/components/images/laztga.pas"/>
-        <TopLine Value="54"/>
-        <UnitName Value="LazTGA"/>
-        <UsageCount Value="12"/>
-      </Unit25>
-      <Unit26>
-        <CursorPos X="1" Y="153"/>
-        <Filename Value="/home/neifer/FPC/Demo/src/fpc/fcl/image/fpreadtga.pp"/>
-        <TopLine Value="140"/>
-        <UnitName Value="FPReadTGA"/>
-        <UsageCount Value="12"/>
-      </Unit26>
-      <Unit27>
-        <CursorPos X="1" Y="1482"/>
-        <Filename Value="/home/neifer/FPC/Demo/src/lazarus/lcl/intfgraphics.pas"/>
-        <TopLine Value="1469"/>
-        <UnitName Value="IntfGraphics"/>
-        <UsageCount Value="12"/>
-      </Unit27>
-      <Unit28>
-        <CursorPos X="1" Y="1469"/>
-        <Filename Value="/home/neifer/FPC/Demo/src/lazarus/lcl/interfaces/gtk/gtkobject.inc"/>
-        <TopLine Value="1455"/>
-        <UsageCount Value="12"/>
-      </Unit28>
-      <Unit29>
-        <CursorPos X="16" Y="22"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/images/imagesforlazarus.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="ImagesForLazarus"/>
-        <UsageCount Value="10"/>
-      </Unit29>
-      <Unit30>
-        <CursorPos X="68" Y="69"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/packager/registration/lazaruspackageintf.pas"/>
-        <TopLine Value="53"/>
-        <UnitName Value="LazarusPackageIntf"/>
-        <UsageCount Value="10"/>
-      </Unit30>
-      <Unit31>
-        <CursorPos X="39" Y="699"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/packager/packagesystem.pas"/>
-        <TopLine Value="697"/>
-        <UnitName Value="PackageSystem"/>
-        <UsageCount Value="10"/>
-      </Unit31>
-      <Unit32>
-        <CursorPos X="14" Y="70"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/images/lazpnm.pas"/>
-        <TopLine Value="61"/>
-        <UnitName Value="LazPNM"/>
-        <UsageCount Value="10"/>
-      </Unit32>
-      <Unit33>
-        <CursorPos X="23" Y="463"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/lcl/include/picture.inc"/>
-        <TopLine Value="453"/>
-        <UsageCount Value="10"/>
-      </Unit33>
-      <Unit34>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/htmllite/lazhtmllite.lpk"/>
-        <SyntaxHighlighter Value="None"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit34>
-      <Unit35>
-        <CursorPos X="51" Y="23"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/htmllite/lazhtmllite.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="LazHTMLLite"/>
-        <UsageCount Value="10"/>
-      </Unit35>
-      <Unit36>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/htmllite/htmllite.pas"/>
-        <TopLine Value="2945"/>
-        <UnitName Value="HTMLLite"/>
-        <UsageCount Value="10"/>
-      </Unit36>
-      <Unit37>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/htmllite/htmllite.dcr"/>
-        <SyntaxHighlighter Value="None"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit37>
-      <Unit38>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/memds/memdslaz.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="MemDSLaz"/>
-        <UsageCount Value="10"/>
-      </Unit38>
-      <Unit39>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="/home/mazen/FPC/Demo/src/lazarus/components/memds/memdsicons.lrs"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit39>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -334,16 +24,34 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="ImagesForLazarus"/>
       </Item1>
       <Item2>
-        <PackageName Value="ImagesForLazarus"/>
+        <PackageName Value="LCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item2>
     </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="imagesexample.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JPEGExample"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mainform.pas"/>
+        <ComponentName Value="ImagesExampleForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="mainform.lrs"/>
+        <UnitName Value="MainForm"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="README.txt"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="5"/>
     <SearchPaths>
       <OtherUnitFiles Value="$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
@@ -360,28 +68,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <BreakPoints Count="5">
-      <Item1>
-        <Source Value="/home/satan/pascal/lazarus/lcl/interfaces/gtk2/gtk2int.pas"/>
-        <Line Value="34"/>
-      </Item1>
-      <Item2>
-        <Source Value="/home/neifer/FPC/Demo/src/fpc/fcl/image/fpreadtga.pp"/>
-        <Line Value="154"/>
-      </Item2>
-      <Item3>
-        <Source Value="/home/neifer/FPC/Demo/src/fpc/fcl/image/fpreadtga.pp"/>
-        <Line Value="153"/>
-      </Item3>
-      <Item4>
-        <Source Value="/home/mazen/FPC/Demo/src/lazarus/packager/packagesystem.pas"/>
-        <Line Value="702"/>
-      </Item4>
-      <Item5>
-        <Source Value="/home/mazen/FPC/Demo/src/lazarus/packager/registration/lazaruspackageintf.pas"/>
-        <Line Value="69"/>
-      </Item5>
-    </BreakPoints>
-  </Debugging>
 </CONFIG>

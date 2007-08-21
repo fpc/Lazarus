@@ -31,7 +31,7 @@ program FixDefinitionOrder;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
+  System, Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
   CodeTree, DirectivesTree;
   
 var

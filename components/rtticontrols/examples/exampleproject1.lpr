@@ -7,7 +7,6 @@ uses
   Forms, Example1;
 
 begin
-  Application.Title:='project1';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
