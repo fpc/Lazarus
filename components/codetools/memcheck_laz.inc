@@ -1,17 +1,20 @@
 {%MainUnit memcheck.pas}
 
 {$IFDEF MC_Interface}
+var
+  ExceptOnError: boolean = true;
+
 procedure CheckHeap;
 procedure CheckHeap(const txt: ansistring);
 procedure CheckHeapWrtMemCnt(const txt: ansistring);
 procedure WriteGetMemCount(const txt: ansistring);
 
-function MemCheck_getmem_cnt: longint;
-function MemCheck_freemem_cnt: longint;
-function MemCheck_getmem_size: longint;
-function MemCheck_freemem_size: longint;
-function MemCheck_getmem8_size: longint;
-function MemCheck_freemem8_size: longint;
+function MemCheck_getmem_cnt: ptruint;
+function MemCheck_freemem_cnt: ptruint;
+function MemCheck_getmem_size: ptruint;
+function MemCheck_freemem_size: ptruint;
+function MemCheck_getmem8_size: ptruint;
+function MemCheck_freemem8_size: ptruint;
 {$ENDIF}
 
 {$IFDEF MC_ImplementationStart}
@@ -112,34 +115,34 @@ begin
   inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
 end;
 
-function MemCheck_getmem_cnt: longint;
+function MemCheck_getmem_cnt: ptruint;
 begin
-  MemCheck_getmem_cnt:=getmem_cnt;
+  MemCheck_getmem_cnt:=heap_info.getmem_cnt;
 end;
 
-function MemCheck_freemem_cnt: longint;
+function MemCheck_freemem_cnt: ptruint;
 begin
-  MemCheck_freemem_cnt:=freemem_cnt;
+  MemCheck_freemem_cnt:=heap_info.freemem_cnt;
 end;
 
-function MemCheck_getmem_size: longint;
+function MemCheck_getmem_size: ptruint;
 begin
-  MemCheck_getmem_size:=getmem_size;
+  MemCheck_getmem_size:=heap_info.getmem_size;
 end;
 
-function MemCheck_freemem_size: longint;
+function MemCheck_freemem_size: ptruint;
 begin
-  MemCheck_freemem_size:=freemem_size;
+  MemCheck_freemem_size:=heap_info.freemem_size;
 end;
 
-function MemCheck_getmem8_size: longint;
+function MemCheck_getmem8_size: ptruint;
 begin
-  MemCheck_getmem8_size:=getmem8_size;
+  MemCheck_getmem8_size:=heap_info.getmem8_size;
 end;
 
-function MemCheck_freemem8_size: longint;
+function MemCheck_freemem8_size: ptruint;
 begin
-  MemCheck_freemem8_size:=freemem8_size;
+  MemCheck_freemem8_size:=heap_info.freemem8_size;
 end;
 // Addition for CodeTools
 

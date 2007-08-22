@@ -2633,6 +2633,7 @@ begin
   }
 
   New(Allocation);
+  FillChar(Allocation^,SizeOf(TGtkAllocation),0);
   try
     with Allocation^ do begin
       X:= Event^.X;

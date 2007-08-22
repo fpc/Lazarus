@@ -2569,7 +2569,10 @@ var
     i: LongInt;
   begin
     i:=EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-    if i<0 then exit;
+    if i<0 then begin
+      DebugLn(['TEditorOptionsForm.GeneralCheckBoxOnChange.SetOption i<0']);
+      exit;
+    end;
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> Nil then
         if EditorOptionsGroupBox.Checked[i] then
@@ -2619,7 +2622,7 @@ begin
   SetOption(dlgTabsToSpaces, eoTabsToSpaces);
   SetOption(dlgTabIndent, eoTabIndent);
   SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
-
+  
   SetOption2(dlgCaretSkipsSelection, eoCaretSkipsSelection);
   SetOption2(dlgAlwaysVisibleCaret, eoAlwaysVisibleCaret);
 
@@ -3639,7 +3642,8 @@ begin
     Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := EditorOpts.ShowTabCloseButtons;
     Checked[Items.IndexOf(dlgShowScrollHint)] :=
                                   eoShowScrollHint in EditorOpts.SynEditOptions;
-    Checked[Items.IndexOf(dlgSmartTabs)]    := eoSmartTabs in EditorOpts.SynEditOptions;
+    Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in EditorOpts.SynEditOptions;
+    DebugLn(['TEditorOptionsForm.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
     Checked[Items.IndexOf(dlgTabsToSpaces)] :=
                                     eoTabsToSpaces in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgTabIndent)]    := eoTabIndent in EditorOpts.SynEditOptions;

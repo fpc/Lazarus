@@ -6642,7 +6642,7 @@ var
     lbearing, rbearing, width, ascent, descent: LongInt;
   begin
     GetTextExtentIgnoringAmpersands(UseFont, @AText[LineStart], LineLen,
-                     @lbearing, @rBearing, @width, @ascent, @descent);
+                                    nil, nil, @width, nil, nil);
     Result:=Width;
   end;
 

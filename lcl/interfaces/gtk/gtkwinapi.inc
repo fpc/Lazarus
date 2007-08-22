@@ -3062,12 +3062,12 @@ var
   Procedure DoCalcRect;
   var
     AP : TSize;
-    J, MaxLength,
+    J, MaxWidth,
     LineWidth : Integer;
   begin
     theRect := Rect;
 
-    MaxLength := theRect.Right - theRect.Left;
+    MaxWidth := theRect.Right - theRect.Left;
 
     If (Flags and DT_SingleLine) > 0 then begin
       // ignore word and line breaks
@@ -3075,7 +3075,7 @@ var
       if (Flags and DT_CalcRect)<>0 then
         theRect.Right := theRect.Left +  AP.cX
       else
-        theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
+        theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
       theRect.Bottom := theRect.Top + TM.tmHeight;
     end
     else begin
@@ -3083,22 +3083,21 @@ var
       If (Flags and DT_WordBreak) = 0 then begin
         // do not break at word boundaries
         GetTextExtentPoint(DC, Str, Count, AP);
-        MaxLength := AP.cX;
+        MaxWidth := AP.cX;
       end;
-      Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
+      Self.WordWrap(DC, Str, MaxWidth, Lines, NumLines);
 
       if (Flags and DT_CalcRect)<>0 then begin
         LineWidth := 0;
         if (Lines <> nil) then begin
-          LineWidth := 0;
           For J := 0 to NumLines - 1 do begin
             GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
             LineWidth := Max(LineWidth, AP.cX);
           end;
         end;
-        LineWidth := Min(MaxLength, LineWidth);
+        LineWidth := Min(MaxWidth, LineWidth);
       end else begin
-        LineWidth:=MaxLength;
+        LineWidth:=MaxWidth;
       end;
 
       theRect.Right := theRect.Left + LineWidth;
@@ -3155,10 +3154,10 @@ var
 
     if (Flags and DT_NoPrefix) <> DT_NoPrefix then begin
       pIndex := DeleteAmpersands(aStr);
-      If Length(aStr) = 0 then
-        Exit; { String consists of '&' only }
-      If pIndex > Length(aStr) then
-        pIndex := -1; { String ended in '&', which was deleted }
+      if Length(aStr) = 0 then
+        Exit; // String consists of '&' only
+      if pIndex > Length(aStr) then
+        pIndex := -1; // String ended in '&', which was deleted
     end else
       pIndex := -1;
 

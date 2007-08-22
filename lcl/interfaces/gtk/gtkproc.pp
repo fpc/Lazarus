@@ -780,12 +780,14 @@ function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
 function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
 function FontIsMonoSpaceFont(TheFont: PPangoFontDescription): boolean;
 function LoadDefaultFontDesc: PPangoFontDescription;
-procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: PChar;
-  LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
+procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription;
+  Str: PChar; StrLength: integer;
+  lbearing, rbearing, width, ascent, descent: Pgint);
 {$ENDIF}
 {$IFDEF GTK1}
-procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;
-  LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
+procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont;
+  Str: PChar; StrLength: integer;
+  lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 function GetDefaultFontName: string;
 procedure FillScreenFonts(ScreenFonts: TStrings);
@@ -825,8 +827,9 @@ function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
   Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
 
   //mimic GDKFont Routines With Pango -->
-  Procedure gdk_text_extents(FontDesc: PPangoFontDescription; Str: PChar;
-        LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
+  Procedure gdk_text_extents(FontDesc: PPangoFontDescription;
+        Str: PChar; StrLength: integer;
+        lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 
 {$ifdef HasX}

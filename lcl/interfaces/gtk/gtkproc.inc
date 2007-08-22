@@ -210,8 +210,9 @@ begin
   GDK2.gdk_region_xor(result, source2);
 end;
 
-Procedure gdk_text_extents(FontDesc: PPangoFontDescription; Str: PChar;
-  LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
+Procedure gdk_text_extents(FontDesc: PPangoFontDescription;
+  Str: PChar; StrLength: integer;
+  lbearing, rbearing, width, ascent, descent: Pgint);
 var
   Layout : PPangoLayout;
   AttrList : PPangoAttrList;
@@ -219,6 +220,7 @@ var
   Extents : TPangoRectangle;
   AttrListAllocated: Boolean;
 begin
+  //DebugLn(['gdk_text_extents Str="',Str,'" StrLength=',StrLength,' lbearing=',lbearing<>nil,' rbearing=',rbearing<>Nil,' width=',width<>nil,' ascent=',ascent<>nil,' descent=',descent<>Nil,' ',FontDesc<>Nil]);
   GetStyle(lgsDefault);
   Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsDefault), nil);
   pango_layout_set_font_description(Layout, FontDesc);
@@ -243,11 +245,11 @@ begin
 
   pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
 
-  pango_layout_set_text(Layout, Str, Linelength);
+  pango_layout_set_text(Layout, Str, StrLength);
 
   if Assigned(width) then
     pango_layout_get_pixel_size(Layout, width, nil);
-
+    
   if Assigned(lbearing) or Assigned(rbearing)
   or Assigned(ascent) or Assigned(descent) then begin
     pango_layout_get_extents(Layout, nil, @Extents);
@@ -9256,20 +9258,22 @@ end;
 
 
 {-------------------------------------------------------------------------------
-  Function GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
-                    LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+  Function GetTextExtentIgnoringAmpersands(Font : PGDKFont;
+    Str : PChar; StrLength: integer;
+    MaxWidth: Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 
   Gets text extent of a string, ignoring escaped Ampersands.
   That means, ampersands are not counted.
+  Negative MaxWidth means no limit.
 -------------------------------------------------------------------------------}
 {$Ifdef GTK2}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription;
-  Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+  Str : PChar; StrLength: integer;
+  lbearing, rbearing, width, ascent, descent : Pgint);
 {$Else}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PGDKFont;
-  Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+  Str : PChar; StrLength: integer;
+  lbearing, rbearing, width, ascent, descent : Pgint);
 {$EndIf}
 var
   NewStr : PChar;
@@ -9279,13 +9283,13 @@ begin
   // first check if Str contains an ampersand:
   if (Str<>nil) then begin
     i:=0;
-    while (Str[i]<>'&') and (i<LineLength) do inc(i);
-    if i<LineLength then begin
-      NewStr := RemoveAmpersands(Str, LineLength);
-      LineLength:=StrLen(NewStr);
+    while (Str[i]<>'&') and (i<StrLength) do inc(i);
+    if i<StrLength then begin
+      NewStr := RemoveAmpersands(Str, StrLength);
+      StrLength:=StrLen(NewStr);
     end;
   end;
-  gdk_text_extents(FontDesc, NewStr, LineLength,
+  gdk_text_extents(FontDesc, NewStr, StrLength,
                    lbearing, rBearing, width, ascent, descent);
   if NewStr<>Str then
     StrDispose(NewStr);

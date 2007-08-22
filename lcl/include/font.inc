@@ -1036,7 +1036,6 @@ begin
     FFontHandleCached:=true;
     FCanUTF8Valid:=false;
     FIsMonoSpaceValid:=false;
-    if IsMonoSpace then ;
   end;
   
   Result := FHandle;
