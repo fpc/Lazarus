@@ -95,6 +95,7 @@ type
      fCachePaperRectResult: Integer;
      FBeginDocCount: Integer;
      fRawModeStream: TMemoryStream;
+     FOutputFilename: string;
 
      function GetCupsRequest : Pipp_t;
      procedure DoCupsConnect;
@@ -113,7 +114,7 @@ type
      function GetCanvasRef : TPrinterCanvasRef; override;
 
      procedure DoBeginDoc; override;
-     procedure DoEndDoc(aAborded : Boolean); override;
+     procedure DoEndDoc(aAborted : Boolean); override;
 
      
      procedure DoResetPrintersList; override;

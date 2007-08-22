@@ -498,8 +498,6 @@ var
     if Result then NewPath:=CurPath;
   end;
 
-var
-  Extension: String;
 begin
   if FBeginDocCount>0 then
     raise Exception.Create('TCUPSPrinter.DoBeginDoc already called. Maybe you forgot an EndDoc?');
@@ -511,49 +509,48 @@ begin
   and (not TryTemporaryPath('/var/tmp/')) then
     NewPath:='';
 
+  FOutputFileName := AppendPathDelim(NewPath)+
+    'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now);
+    
   if RawMode then
-    Extension:='.raw'
-  else
-    Extension:='.ps';
-
-  TPostscriptPrinterCanvas(Canvas).OutputFileName:=AppendPathDelim(NewPath)
-                   +'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now)+Extension;
+    FOutputFileName := FOutputFileName + '.raw'
+  else begin
+    FOutputFileName := FOutputFileName + '.ps';
+    TPostscriptPrinterCanvas(Canvas).OutputFileName := FOutputFileName;
+  end;
 end;
 
 //If not aborted, send PostScript file to printer.
 //After, delete this file.
-procedure TCUPSPrinter.DoEndDoc(aAborded: Boolean);
+procedure TCUPSPrinter.DoEndDoc(aAborted: Boolean);
 begin
-  inherited DoEndDoc(aAborded);
+  inherited DoEndDoc(aAborted);
   dec(FBeginDocCount);
   Exclude(FStates,cpsPaperRectValid);
 
-  {$IFDEF LogPrintOutFile}
-  with TPostScriptPrinterCanvas(Canvas) do
-    if FileExists(OutPutFileName) then
-      CopyFile(OutPutFileName, 'printout'+ExtractFileExt(OutPutFileName));
-  {$ENDIF}
-
   if RawMode then begin
 
-    if not aAborded and (fRawModeStream<>nil)
+    if not aAborted and (FRawModeStream<>nil)
       and (FRawModeStream.Size>0) then
-    with TPostScriptPrinterCanvas(Canvas) do begin
+    begin
       try
-        fRawModeStream.SaveToFile(OutputFileName);
-        PrintFile(OutputFileName);
-        DeleteFile(OutputFileName);
+        FRawModeStream.SaveToFile(FOutputFileName);
       finally
         FRawModeStream.Clear;
       end;
     end;
     
-  end else begin
-    if not aAborded then
-      PrintFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
-    DeleteFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
+  end else
+    TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
+  
+  if not aAborted and FileExists(FOutputFileName) then begin
+    {$IFDEF LogPrintoutFile}
+    CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
+    {$ENDIF}
+    PrintFile(FOutputFileName);
+    DeleteFile(FOutputFilename);
   end;
-  TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
+
 end;
 
 procedure TCUPSPrinter.DoResetPrintersList;
