@@ -299,6 +299,7 @@ type
     function IsReadOnly: boolean; virtual;
     function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility
     function GetUnitName(Index: Integer = 0): string;
+    function GetPropTypeUnitName(Index: Integer = 0): string;
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -312,8 +313,6 @@ type
     function GetMethodValueAt(Index: Integer): TMethod;
     function GetOrdValue: Longint;
     function GetOrdValueAt(Index: Integer): Longint;
-//    function GetPtrValue: Pointer;
-//    function GetPtrValueAt(Index: Integer): Pointer;
     function GetObjectValue: TObject;
     function GetObjectValue(MinClass: TClass): TObject;
     function GetObjectValueAt(Index: Integer): TObject;
@@ -359,12 +358,12 @@ type
     function SubPropertiesNeedsUpdate: boolean; virtual;
     function IsDefaultValue: boolean; virtual;
     function IsNotDefaultValue: boolean; virtual;
-    property PropertyHook:TPropertyEditorHook read FPropertyHook;
-    property PrivateDirectory:ansistring read GetPrivateDirectory;
+    property PropertyHook: TPropertyEditorHook read FPropertyHook;
+    property PrivateDirectory: ansistring read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
-    property FirstValue:ansistring read GetValue write SetValue;
+    property FirstValue: ansistring read GetValue write SetValue;
     property OnSubPropertiesChanged: TNotifyEvent
-      read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
+                     read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
@@ -1101,8 +1100,8 @@ type
   // lookup root
   TPropHookChangeLookupRoot = procedure of object;
   // methods
-  TPropHookCreateMethod = function(const Name:ShortString;
-    ATypeInfo:PTypeInfo; const ATypeUnitName: string): TMethod of object;
+  TPropHookCreateMethod = function(const Name: ShortString; ATypeInfo: PTypeInfo;
+    APropertyOwner: TPersistent; const APropertyName: shortstring): TMethod of object;
   TPropHookGetMethodName = function(const Method: TMethod;
                                     CheckOwner: TObject): ShortString of object;
   TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
@@ -1203,7 +1202,8 @@ type
     property LookupRoot: TPersistent read FLookupRoot write SetLookupRoot;
     // methods
     function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo;
-                          const ATypeUnitName: string): TMethod;
+                          APropertyOwner: TPersistent;
+                          const APropertyName: shortstring): TMethod;
     function GetMethodName(const Method: TMethod; CheckOwner: TObject): ShortString;
     procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function MethodExists(const Name:ShortString; TypeData: PTypeData;
@@ -1871,16 +1871,14 @@ begin
       PropEditor := EdClass.Create(AHook,1);
       PropEditor.SetPropEntry(0, Instance, PropInfo);
       PropEditor.Initialize;
-//      with PropInfo^ do begin
-        // check for multiselection, ValueAvailable and customfilter
-        if ((SelCount > 1)
-            and not (paMultiSelect in PropEditor.GetAttributes))
-        or not PropEditor.ValueAvailable
-        or (Assigned(AEditorFilterFunc) and not AEditorFilterFunc(PropEditor))
-        then begin
-          Candidates.Delete(I);
-        end;
-//      end;
+      // check for multiselection, ValueAvailable and customfilter
+      if ((SelCount > 1)
+          and not (paMultiSelect in PropEditor.GetAttributes))
+      or not PropEditor.ValueAvailable
+      or (Assigned(AEditorFilterFunc) and not AEditorFilterFunc(PropEditor))
+      then begin
+        Candidates.Delete(I);
+      end;
       PropEditor.Free;
     end;
 
@@ -2046,6 +2044,49 @@ begin
   Result:=GetClassUnitName(GetComponent(Index).ClassType);
 end;
 
+function TPropertyEditor.GetPropTypeUnitName(Index: Integer): string;
+type
+  PPropData = ^TPropData;
+var
+  AComponent: TPersistent;
+  CurPropInfo: PPropInfo;
+  hp: PTypeData;
+  pd: PPropData;
+  i: Integer;
+  UpperName: ShortString;
+  ATypeInfo: PTypeInfo;
+  NameFound: Boolean;
+  ThePropType: PTypeInfo;
+begin
+  Result:='';
+  AComponent:=GetComponent(Index);
+  UpperName:=UpCase(GetName);
+  ThePropType:=GetPropType;
+  ATypeInfo:=PTypeInfo(AComponent.ClassInfo);
+  while Assigned(ATypeInfo) do begin
+    // skip the name
+    hp:=GetTypeData(ATypeInfo);
+    // the class info rtti the property rtti follows immediatly
+    pd:=AlignToPtr(Pointer(Pointer(@hp^.UnitName)+Length(hp^.UnitName)+1));
+    CurPropInfo:=PPropInfo(@pd^.PropList);
+    NameFound:=false;
+    for i:=1 to pd^.PropCount do begin
+      // found a property of that name ?
+      if Upcase(CurPropInfo^.Name)=UpperName then begin
+        DebugLn(['TPropertyEditor.GetPropTypeUnitName ',hp^.UnitName,' IsSamePropInfo=',CurPropInfo^.PropType=ThePropType]);
+        NameFound:=true;
+        if CurPropInfo^.PropType=ThePropType then
+          Result:=hp^.UnitName;
+      end;
+      // skip to next property
+      CurPropInfo:=PPropInfo(AlignToPtr(Pointer(@CurPropInfo^.Name)+Byte(CurPropInfo^.Name[0])+1));
+    end;
+    if not NameFound then break;
+    // parent class
+    ATypeInfo:=hp^.ParentInfo;
+  end;
+end;
+
 function TPropertyEditor.GetFloatValue:Extended;
 begin
   Result:=GetFloatValueAt(0);
@@ -2131,18 +2172,6 @@ function TPropertyEditor.GetOrdValueAt(Index:Integer):Longint;
 begin
   with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
 end;
-
-(*
-function TPropertyEditor.GetPtrValue:Pointer;
-begin
-  Result:=GetPtrValueAt(0);
-end;
-
-function TPropertyEditor.GetPtrValueAt(Index:Integer):Pointer;
-begin
-  with FPropList^[Index] do Result:=Pointer(GetOrdProp(Instance,PropInfo));
-end;
-*)
 
 function TPropertyEditor.GetObjectValue: TObject;
 begin
@@ -3907,7 +3936,8 @@ begin
   begin
     //writeln('### TMethodPropertyEditor.SetValue E');
     CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
-    SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType,GetUnitName));
+    SetMethodValue(
+       PropertyHook.CreateMethod(NewValue,GetPropType,GetComponent(0),GetName));
     //writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
       {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
@@ -5068,7 +5098,8 @@ end;
 { TPropertyEditorHook }
 
 function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
-  ATypeInfo:PTypeInfo; const ATypeUnitName: string): TMethod;
+  ATypeInfo: PTypeInfo;
+  APropertyOwner: TPersistent; const APropertyName: shortstring): TMethod;
 var
   i: Integer;
   Handler: TPropHookCreateMethod;
@@ -5079,7 +5110,7 @@ begin
     i:=GetHandlerCount(htCreateMethod);
     while GetNextHandlerIndex(htCreateMethod,i) do begin
       Handler:=TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
-      Result:=Handler(Name,ATypeInfo,ATypeUnitName);
+      Result:=Handler(Name,ATypeInfo,APropertyOwner,APropertyName);
       if (Result.Data<>nil) or (Result.Code<>nil) then exit;
     end;
   end;

@@ -387,7 +387,8 @@ type
                                     IdentIsMethod: boolean): boolean;
     function OnPropHookCreateMethod(const AMethodName:ShortString;
                                     ATypeInfo:PTypeInfo;
-                                    const ATypeUnitName: string): TMethod;
+                                    APropertyOwner: TPersistent;
+                                    const APropertyName: shortstring): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
     function OnPropHookBeforeAddPersistent(Sender: TObject;
@@ -12552,7 +12553,8 @@ begin
 end;
 
 function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
-  ATypeInfo: PTypeInfo; const ATypeUnitName: string): TMethod;
+  ATypeInfo: PTypeInfo;
+  APropertyOwner: TPersistent; const APropertyName: shortstring): TMethod;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   r: boolean;
@@ -12571,8 +12573,9 @@ begin
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
-        ActiveUnitInfo.Component.ClassName,AMethodName,ATypeInfo,false,
-        ATypeUnitName);
+        ActiveUnitInfo.Component.ClassName,AMethodName,
+        ATypeInfo,false,GetClassUnitName(APropertyOwner.ClassType),
+        APropertyOwner,APropertyName);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);

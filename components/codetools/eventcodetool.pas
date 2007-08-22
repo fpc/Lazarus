@@ -86,13 +86,17 @@ type
         SourceChangeCache: TSourceChangeCache): boolean;
         
     function CreateMethod(const UpperClassName,
-        AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
+        AMethodName: string; ATypeInfo: PTypeInfo;
+        const ATypeUnitName: string;
+        APropertyOwner: TPersistent; const APropertyName: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished): boolean;
     function CreateMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string;
-        ATypeInfo: PTypeInfo; const ATypeUnitName: string;
+        ATypeInfo: PTypeInfo;
+        const ATypeUnitName: string;
+        APropertyOwner: TPersistent; const APropertyName: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished): boolean;
@@ -645,6 +649,7 @@ end;
 
 function TEventsCodeTool.CreateMethod(const UpperClassName,
   AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
+  APropertyOwner: TPersistent; const APropertyName: string;
   SourceChangeCache: TSourceChangeCache;
   UseTypeInfoForParameters: boolean;
   Section: TPascalClassSection): boolean;
@@ -654,11 +659,13 @@ begin
   BuildTree(false);
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,ATypeUnitName,
+                       APropertyOwner,APropertyName,
                        SourceChangeCache,UseTypeInfoForParameters,Section);
 end;
 
 function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
   const AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
+  APropertyOwner: TPersistent; const APropertyName: string;
   SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
   Section: TPascalClassSection): boolean;
 
@@ -698,7 +705,13 @@ begin
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end else begin
       // search typeinfo in source
-      FindContext:=FindMethodTypeInfo(ATypeInfo,ATypeUnitName);
+      {$IFDEF EnableNewFindMethodTypeInfo}
+      if (APropertyOwner<>nil)
+      and (APropertyName<>'') then
+        FindContext:=FindMethodTypeInfo(ATypeInfo,APropertyOwner,APropertyName)
+      else
+      {$ENDIF}
+        FindContext:=FindMethodTypeInfo(ATypeInfo,ATypeUnitName);
       AddNeededUnits(FindContext);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
              +FindContext.Tool.ExtractProcHead(FindContext.Node,
