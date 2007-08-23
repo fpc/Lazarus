@@ -26,7 +26,7 @@
 {$ENDIF}
 
 { $DEFINE CHECK_POSITION}
-{ $IFDEF CHECK_POSITION}
+{$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTHintWindow';
 const CheckPostionName = 'xxListBox1';
 
@@ -35,7 +35,7 @@ begin
   Result:=(CompareText(AControl.ClassName,CheckPostionClassName)=0)
            or (CompareText(AControl.Name,CheckPostionName)=0);
 end;
-{ $ENDIF}
+{$ENDIF}
 { $DEFINE VerboseMouseBugfix}
 
 
@@ -1805,6 +1805,7 @@ var
     a: TAnchorKind;
   begin
     Result:=[];
+    if AControl.Align<>alNone then exit;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if (a in AControl.Anchors) then begin
         if (AControl.AnchorSide[a].Control=nil)
@@ -1812,14 +1813,14 @@ var
           Include(Result,a);
       end;
     end;
-    if AutoSize then begin
+    if AControl.AutoSize then begin
       if [akLeft,akRight]*Result=[akLeft,akRight] then
         Result:=Result-[akLeft,akRight];
       if [akTop,akBottom]*Result=[akTop,akBottom] then
         Result:=Result-[akTop,akBottom];
     end;
   end;
-
+  
 var
   I: Integer;
   AControl: TControl;
@@ -5927,8 +5928,8 @@ begin
     if FixateParentAnchors then
       FixatedAnchors:=FixatedAnchors+AnchorsToParent;
 
-    if AControl.AutoSize then begin
-      AControl.GetPreferredSize(ChildWidth,ChildHeight,true,true);
+    if AControl.AutoSize and (AControl.Align=alNone) then begin
+      AControl.GetPreferredSize(ChildWidth,ChildHeight,true,false);
       if ChildWidth>0 then begin
         ChildWidth:=AControl.Constraints.MinMaxWidth(ChildWidth);
       end else begin
@@ -5987,7 +5988,7 @@ begin
       end;
     end;
 
-    //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
+    //DebugLn(['TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround),' AnchorsToParent=',dbgs(AnchorsToParent),' Preferred=w=',ChildWidth,',h=',ChildHeight]);
   end;
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     if a in FixatedAnchors then FixateSide(a);

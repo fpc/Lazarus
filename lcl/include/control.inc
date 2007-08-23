@@ -4081,7 +4081,7 @@ begin
   end;
 
   for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-    if (a in Anchors) then begin
+    if (a in (Anchors+AnchorAlign[Align])) then begin
       if WithNormalAnchors
       or (AnchorSide[a].Control=Parent)
       or ((AnchorSide[a].Control=nil) and (a in [akRight,akBottom])) then begin
