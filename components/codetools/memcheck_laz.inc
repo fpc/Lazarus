@@ -1,6 +1,10 @@
 {%MainUnit memcheck.pas}
 
 {$IFDEF MC_Interface}
+
+{$R-}
+{$S-}
+
 var
   ExceptOnError: boolean = true;
 

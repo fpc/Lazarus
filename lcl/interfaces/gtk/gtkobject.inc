@@ -6639,7 +6639,7 @@ var
 
   function GetLineWidthInPixel(LineStart, LineLen: integer): integer;
   var
-    lbearing, rbearing, width, ascent, descent: LongInt;
+    width: LongInt;
   begin
     GetTextExtentIgnoringAmpersands(UseFont, @AText[LineStart], LineLen,
                                     nil, nil, @width, nil, nil);

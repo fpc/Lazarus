@@ -83,7 +83,8 @@ const
   cdnsLongSwitch  = 52+cdnsBase;
   cdnsMode        = 53+cdnsBase;
   cdnsThreading   = 54+cdnsBase;
-  
+  cdnsOther       = 55+cdnsBase;
+
 const
   H2Pas_Function_Prefix = 'H2PAS_FUNCTION_';
 
@@ -130,6 +131,7 @@ type
     function LongSwitchDirective: boolean;
     function ModeDirective: boolean;
     function ThreadingDirective: boolean;
+    function OtherDirective: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
@@ -370,6 +372,7 @@ begin
   cdnsLongSwitch  : Result:='LongSwitch';
   cdnsMode        : Result:='Mode';
   cdnsThreading   : Result:='Threading';
+  cdnsOther       : Result:='?';
   else              Result:='?';
   end;
 end;
@@ -574,6 +577,14 @@ begin
   EndChildNode;
 end;
 
+function TCompilerDirectivesTree.OtherDirective: boolean;
+begin
+  Result:=true;
+  CreateChildNode(cdnDefine,cdnsOther);
+  AtomStart:=SrcPos;
+  EndChildNode;
+end;
+
 procedure TCompilerDirectivesTree.InitKeyWordList;
 var
   c: Char;
@@ -606,6 +617,7 @@ begin
       Add('INCLUDEPATH',{$ifdef FPC}@{$endif}IncludePathDirective);
       Add('MODE',{$ifdef FPC}@{$endif}ModeDirective);
       Add('THREADING',{$ifdef FPC}@{$endif}ThreadingDirective);
+      DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherDirective;
     end;
   end;
 end;
