@@ -33,20 +33,7 @@ fi
 
 # get FPC version
 FPCVersion=$(fpc -v | grep 'Compiler version' | sed 's/.*\([0-9]\.[0-9]\.[0-9]\).*/\1/')
-Arch=$(fpc -v | grep 'Compiler version' | sed 's/.*for \([^ ]\+\)$/\1/')
 
-Date=`date +%Y%m%d`
-LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
-LazRelease='0'
-SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
-CurDir=`pwd`
-TmpDir=/tmp/lazarus$LazVersion
-LazBuildDir=$TmpDir/lazarus_build
-LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
-DebianSrcDir=$CurDir/debian_lazarus
-LazDestDir=$LazBuildDir/usr/share/lazarus
-LazDestDirInstalled=/usr/share/lazarus
- 
 Arch=`dpkg --print-architecture` 
 if [  "$Arch" = i386 ]; then 
   ppcbin=ppc386 
@@ -66,6 +53,18 @@ else
     fi 
   fi 
 fi 
+
+Date=`date +%Y%m%d`
+LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
+LazRelease='0'
+SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
+CurDir=`pwd`
+TmpDir=/tmp/lazarus$LazVersion
+LazBuildDir=$TmpDir/lazarus_build
+LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
+DebianSrcDir=$CurDir/debian_lazarus
+LazDestDir=$LazBuildDir/usr/share/lazarus
+LazDestDirInstalled=/usr/share/lazarus
  
 FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/') 
 ChangeLogDate=`date --rfc-822`
