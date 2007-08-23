@@ -1193,9 +1193,9 @@ resourcestring
   dlgCOKeepVarsReg = 'Keep certain variables in registers';
   dlgUncertOpt = 'Uncertain Optimizations';
   dlgLevelNoneOpt = 'Level 0 (no extra Optimizations)';
-  dlgLevel1Opt = 'Level 1 (Quick Optimizations)';
-  dlgLevel2Opt = 'Level 2 (Level 1 + Slower Optimizations)';
-  dlgLevel3Opt = 'Level 3 (Level 2 + Uncertain)';
+  dlgLevel1Opt = 'Level 1 (quick and debugger friendly)';
+  dlgLevel2Opt = 'Level 2 (Level 1 + quick optimizations)';
+  dlgLevel3Opt = 'Level 3 (Level 2 + slow optimizations)';
   dlgTargetOS = 'Target OS';
   dlgTargetCPU = 'Target CPU';
   dlgCODebugging = 'Debugging:';
