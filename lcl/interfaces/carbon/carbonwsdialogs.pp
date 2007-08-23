@@ -268,6 +268,7 @@ begin
         if OSError(AECountItems(DialogReply.Selection, FileCount), Self,
           SShowModal, 'AECountItems') then Exit;
           
+        FileDialog.Files.Clear;
         for FileIdx := 1 to FileCount do
         begin
           if OSError(AEGetNthDesc(DialogReply.Selection, FileIdx, typeFSRef,
