@@ -2624,7 +2624,7 @@ end;
 function gtkconfigureevent( widget: PGtkWidget; event : PgdkEventConfigure;
   data: gPointer) : GBoolean; cdecl;
 var
-  Allocation : PGtkAllocation;
+  Allocation : TGtkAllocation;
 begin
 
   { This signal is emitted for top level controls only, i.e. only controls
@@ -2632,19 +2632,14 @@ begin
     This event is fired when the form is sized, moved or changes Z order.
   }
 
-  New(Allocation);
-  FillChar(Allocation^,SizeOf(TGtkAllocation),0);
-  try
-    with Allocation^ do begin
-      X:= Event^.X;
-      Y:= Event^.Y;
-      Width:= Event^.Width;
-      Height:= Event^.Height;
-    end;
-    Result:= gtksize_allocateCB( Widget, Allocation, Data);
-  finally
-    Dispose(Allocation);
+  FillChar(Allocation,SizeOf(TGtkAllocation),0);
+  with Allocation do begin
+    X:= Event^.X;
+    Y:= Event^.Y;
+    Width:= Event^.Width;
+    Height:= Event^.Height;
   end;
+  Result:= gtksize_allocateCB( Widget, @Allocation, Data);
 end;
 
 function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;

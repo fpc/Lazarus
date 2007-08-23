@@ -9,18 +9,19 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckGroupEditorDlg'
+  ClientHeight = 300
+  ClientWidth = 608
   object ColumnsLabel: TLabel
     Left = 369
-    Height = 14
+    Height = 20
     Top = 80
-    Width = 66
+    Width = 91
     Caption = 'ColumnsLabel'
-    Color = clNone
     ParentColor = False
   end
   object FCheck: TCheckGroup
-    Height = 229
-    Top = 35
+    Height = 195
+    Top = 50
     Width = 360
     Align = alLeft
     AutoFill = True
@@ -38,23 +39,24 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     TabOrder = 0
   end
   object FPanelButtons: TPanel
-    Height = 35
+    Height = 50
     Width = 608
     Align = alTop
     BevelInner = bvLowered
+    ClientHeight = 50
+    ClientWidth = 608
     TabOrder = 1
     object LabelDisable: TLabel
       AnchorSideLeft.Control = BtnModify
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnModify
       AnchorSideTop.Side = asrCenter
-      Left = 367
-      Height = 14
-      Top = 11
-      Width = 60
+      Left = 395
+      Height = 20
+      Top = 14
+      Width = 82
       BorderSpacing.Left = 6
       Caption = 'LabelDisable'
-      Color = clNone
       Font.Color = clHotLight
       ParentColor = False
     end
@@ -62,9 +64,9 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideLeft.Control = FPanelButtons
       AnchorSideTop.Control = FPanelButtons
       Left = 6
-      Height = 25
+      Height = 37
       Top = 6
-      Width = 63
+      Width = 67
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -77,10 +79,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideLeft.Control = BtnAdd
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnAdd
-      Left = 69
-      Height = 25
+      Left = 73
+      Height = 37
       Top = 6
-      Width = 75
+      Width = 84
       AutoSize = True
       BorderSpacing.InnerBorder = 4
       Caption = 'BtnDelete'
@@ -91,10 +93,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideLeft.Control = BtnDelete
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnDelete
-      Left = 150
-      Height = 25
+      Left = 163
+      Height = 37
       Top = 6
-      Width = 58
+      Width = 60
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.InnerBorder = 4
@@ -106,10 +108,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideLeft.Control = BtnUp
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnUp
-      Left = 208
-      Height = 25
+      Left = 223
+      Height = 37
       Top = 6
-      Width = 72
+      Width = 77
       AutoSize = True
       BorderSpacing.InnerBorder = 4
       Caption = 'BtnDown'
@@ -120,10 +122,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideLeft.Control = BtnDown
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnDown
-      Left = 286
-      Height = 25
+      Left = 306
+      Height = 37
       Top = 6
-      Width = 75
+      Width = 83
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.InnerBorder = 4
@@ -133,21 +135,23 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     end
   end
   object FPanelOKCancel: TPanel
-    Height = 36
-    Top = 264
+    Height = 55
+    Top = 245
     Width = 608
     Align = alBottom
     BevelInner = bvLowered
+    ClientHeight = 55
+    ClientWidth = 608
     TabOrder = 2
     object BtnHelp: TBitBtn
       AnchorSideRight.Control = FPanelOKCancel
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 527
-      Height = 25
-      Top = 5
-      Width = 75
+      Left = 512
+      Height = 39
+      Top = 10
+      Width = 90
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
       Caption = '&Help'
@@ -159,10 +163,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideRight.Control = BtnHelp
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 446
-      Height = 25
-      Top = 5
-      Width = 75
+      Left = 416
+      Height = 39
+      Top = 10
+      Width = 90
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
       Caption = '&Apply'
@@ -174,10 +178,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideRight.Control = BtnApply
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 365
-      Height = 25
-      Top = 5
-      Width = 75
+      Left = 320
+      Height = 39
+      Top = 10
+      Width = 90
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Cancel'
@@ -190,10 +194,10 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideRight.Control = BtnCancel
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 284
-      Height = 25
-      Top = 5
-      Width = 75
+      Left = 224
+      Height = 39
+      Top = 10
+      Width = 90
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
       Caption = '&OK'
@@ -205,10 +209,14 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     end
   end
   object DuplicateCheckBox: TCheckBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 368
-    Height = 13
+    Height = 22
     Top = 48
-    Width = 114
+    Width = 234
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 6
     Caption = 'DuplicateCheckBox'
     Checked = True
     State = cbChecked
@@ -237,7 +245,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
   end
   object FPopupMenu: TPopupMenu
     OnPopup = CreateItems
-    left = 184
-    top = 368
+    left = 480
+    top = 145
   end
 end

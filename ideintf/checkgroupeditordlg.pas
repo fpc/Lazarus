@@ -18,7 +18,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, Menus, ComCtrls;
+  StdCtrls, Buttons, Menus, ComCtrls,
+  ObjInspStrConsts;
 
 type
 
@@ -64,8 +65,6 @@ type
 procedure AssignCheckGroup(dstCheck, srcCheck: TCheckGroup);
 
 implementation
-
-uses ObjInspStrConsts;
 
 procedure AssignCheckGroup(dstCheck, srcCheck: TCheckGroup);
 var i: integer;

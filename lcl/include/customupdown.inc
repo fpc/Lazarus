@@ -204,7 +204,6 @@ end;
 constructor TCustomUpDown.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fCompStyle := csPanel;
   ControlStyle := ControlStyle  - [csDoubleClicks] +
                   [csClickEvents, csOpaque, csReplicatable, csNoFocus];
   FOrientation := udVertical;

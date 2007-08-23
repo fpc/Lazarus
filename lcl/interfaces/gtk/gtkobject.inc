@@ -5053,7 +5053,9 @@ begin
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
   csPanel:
-    RaiseGDBException('obsolete call to CreateComponent');
+    begin
+      RaiseGDBException('obsolete call to CreateComponent '+DbgSName(Sender));
+    end;
 
   csPopupMenu :
     with (TPopupMenu(Sender)) do

@@ -1171,19 +1171,19 @@ type
   end;
  
 
-  { TUpDown }
-  
   TUDAlignButton = (udLeft, udRight, udTop, udBottom);
   TUDOrientation = (udHorizontal, udVertical);
   TUDBtnType = (btNext, btPrev);
   TUDClickEvent = procedure (Sender: TObject; Button: TUDBtnType) of object;
   TUDChangingEvent = procedure (Sender: TObject; var AllowChange: Boolean) of object;
 
+  { TCustomUpDown }
+
   TCustomUpDown = class(TCustomControl)
   private
-    MinBtn,
-    MaxBtn : TControl;//TSpeedButton's
-    BTimerProc : Procedure of Object;
+    MinBtn: TControl;// TSpeedButton
+    MaxBtn: TControl;// TSpeedButton
+    BTimerProc: Procedure of Object;
     BTimerBounds : TRect;
     FArrowKeys: Boolean;
     FAssociate: TWinControl;
@@ -1236,6 +1236,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; Override;
   end;
+
+
+  { TUpDown }
 
   TUpDown = class(TCustomUpDown)
   published
