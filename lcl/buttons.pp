@@ -240,6 +240,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
+    procedure PaintBackground(var PaintRect: TRect); virtual;
     procedure SetDown(Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
     procedure SetFlat(const Value: Boolean);

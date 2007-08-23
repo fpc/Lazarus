@@ -491,15 +491,9 @@ begin
   if FGlyph=nil then exit;
 
   PaintRect:=ClientRect;
-
   FLastDrawDetails := GetDrawDetails;
-  if not Transparent and ThemeServices.HasTransparentParts(FLastDrawDetails) then
-  begin
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(PaintRect);
-  end;
-  ThemeServices.DrawElement(Canvas.Handle, FLastDrawDetails, PaintRect);
-  PaintRect := ThemeServices.ContentRect(Canvas.Handle, FLastDrawDetails, PaintRect);
+  
+  PaintBackground(PaintRect);
 
   GlyphSize := GetGlyphSize(PaintRect);
   GlyphWidth := GlyphSize.CX;
@@ -602,6 +596,17 @@ begin
   end;
 
   inherited Paint;
+end;
+
+procedure TCustomSpeedButton.PaintBackground(var PaintRect: TRect);
+begin
+  if not Transparent and ThemeServices.HasTransparentParts(FLastDrawDetails) then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(PaintRect);
+  end;
+  ThemeServices.DrawElement(Canvas.Handle, FLastDrawDetails, PaintRect);
+  PaintRect := ThemeServices.ContentRect(Canvas.Handle, FLastDrawDetails, PaintRect);
 end;
 
 {------------------------------------------------------------------------------
