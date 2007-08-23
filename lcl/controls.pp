@@ -40,7 +40,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, TypInfo, DynHashArray, LCLStrConsts, LCLType,
+  Classes, SysUtils, TypInfo, DynHashArray, LCLStrConsts, LCLType, AvgLvlTree,
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
   UTrace, PropertyStorage, Menus, ActnList, LCLClasses;
 
@@ -1592,7 +1592,8 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
-    procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace: boolean); virtual;
+    procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace,
+                             FixateParentAnchors: boolean); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);

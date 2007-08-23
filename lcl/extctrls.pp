@@ -551,8 +551,11 @@ type
   protected
     procedure PictureChanged(Sender : TObject); virtual;
     function DestRect: TRect; virtual;
-    procedure DoAutoSize; Override;
-    Procedure Paint; Override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+                                     PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
+    procedure DoAutoSize; override;
+    procedure Paint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

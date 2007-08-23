@@ -158,7 +158,7 @@ type
 
   { TCustomGroupBox }
 
-  TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
+  TCustomGroupBox = class (TWinControl)
   protected
   public
     constructor Create(AOwner: TComponent); Override;

@@ -51,7 +51,7 @@ type
     A TAutoSizeBox is a node in a tree.
     A TAutoSizeBox can be a cell. Then it is a leaf in the tree and can have a
     Control.
-    A TAutoSizeBoxc can be a row or column. Then it has only one Childs array.
+    A TAutoSizeBox can be a row or column. Then it has only one Childs array.
     A TAutoSizeBox can be a table. Then it has both Childs arrays.
   }
 
@@ -97,6 +97,8 @@ type
     function AlignControlsInTable(ListOfControls: TFPList;
                                   ChildSizing: TControlChildSizing;
                                   TargetWidth, TargetHeight: integer): boolean;
+
+    // debugging
     procedure WriteDebugReport;
   end;
   
@@ -118,7 +120,7 @@ begin
   Control.GetPreferredSize(PreferredSize[asboHorizontal],
                            PreferredSize[asboVertical],
                            false, // with constraints
-                           false  // without them space
+                           false  // without theme space
                            );
   Control.BorderSpacing.GetSpaceAround(Border);
   BorderLeftTop[asboHorizontal]:=Border.Left;
@@ -982,7 +984,6 @@ begin
     ReallocMem(Childs[o],0);
 end;
 
-
 {------------------------------------------------------------------------------
   function TWinControl.AutoSizeDelayed: boolean;
 ------------------------------------------------------------------------------}
@@ -1758,55 +1759,9 @@ end;
   Shrink or enlarge to fit childs.
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoAutoSize;
+var
+  HasVisibleChilds: boolean;
 
-  function FindChildFixatedSides(CurControl: TControl): TAnchors;
-  var
-    a: TAnchorKind;
-    Side: TAnchorSide;
-  begin
-    Result:=[];
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-      Side:=CurControl.AnchorSide[a];
-      if (a in CurControl.Anchors)
-      and ((Side.Control=Self)
-      or ((Side.Control=nil) and (a in [akRight,akBottom])))
-      then begin
-        // CurControl is anchored to its parent = this control
-        if a in [akLeft,akRight] then begin
-          case Side.Side of
-          asrLeft: Include(Result,akLeft);
-          asrCenter: Result:=Result+[akLeft,akRight];
-          asrRight: Include(Result,akRight);
-          end;
-        end else begin
-          case Side.Side of
-          asrTop: Include(Result,akTop);
-          asrCenter: Result:=Result+[akTop,akBottom];
-          asrBottom: Include(Result,akBottom);
-          end;
-        end;
-      end;
-    end;
-    if CurControl.Align in [alLeft,alRight,alTop,alBottom,alClient] then
-      // CurControl is aligned to its parent = this control
-      Result:=Result+AnchorAlign[CurControl.Align];
-  end;
-
-  function FindChildsFixatedSides: TAnchors;
-  // Returns all sides, that has a child control keeping distance to.
-  // These sides should not be moved.
-  var
-    i: Integer;
-    CurControl: TControl;
-  begin
-    Result:=[];
-    for i:=0 to ControlCount-1 do begin
-      CurControl:=Controls[i];
-      if not CurControl.IsControlVisible then continue;
-      Result:=Result+FindChildFixatedSides(CurControl);
-    end;
-  end;
-  
   function WidthAnchored(CurAnchors: TAnchors): boolean;
   begin
     Result:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
@@ -1814,8 +1769,9 @@ procedure TWinControl.DoAutoSize;
   
   function WidthDependsOnChilds: boolean;
   begin
-    Result:=(ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
-         or (ChildSizing.ShrinkHorizontal<>crsAnchorAligning);
+    Result:=HasVisibleChilds
+      and ((ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
+           or (ChildSizing.ShrinkHorizontal<>crsAnchorAligning));
   end;
   
   function WidthDependsOnParent: boolean;
@@ -1832,8 +1788,9 @@ procedure TWinControl.DoAutoSize;
 
   function HeightDependsOnChilds: boolean;
   begin
-    Result:=(ChildSizing.EnlargeVertical<>crsAnchorAligning)
-         or (ChildSizing.ShrinkVertical<>crsAnchorAligning);
+    Result:=HasVisibleChilds
+      and ((ChildSizing.EnlargeVertical<>crsAnchorAligning)
+           or (ChildSizing.ShrinkVertical<>crsAnchorAligning));
   end;
 
   function HeightDependsOnParent: boolean;
@@ -1841,6 +1798,26 @@ procedure TWinControl.DoAutoSize;
     Result:=(Parent<>nil)
             and ((Parent.ChildSizing.EnlargeVertical<>crsAnchorAligning)
                  or (Parent.ChildSizing.ShrinkVertical<>crsAnchorAligning));
+  end;
+  
+  function GetMovableChildAnchors(AControl: TControl): TAnchors;
+  var
+    a: TAnchorKind;
+  begin
+    Result:=[];
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      if (a in AControl.Anchors) then begin
+        if (AControl.AnchorSide[a].Control=nil)
+        and (not (a in AnchorAlign[AControl.Align])) then
+          Include(Result,a);
+      end;
+    end;
+    if AutoSize then begin
+      if [akLeft,akRight]*Result=[akLeft,akRight] then
+        Result:=Result-[akLeft,akRight];
+      if [akTop,akBottom]*Result=[akTop,akBottom] then
+        Result:=Result-[akTop,akBottom];
+    end;
   end;
 
 var
@@ -1858,7 +1835,7 @@ var
   dx: Integer;
   dy: Integer;
   ChildsFixedSides: TAnchors;
-  ChildAnchors: TAnchors;
+  MovableChildAnchors: TAnchors;
   NewChildBounds: TRect;
   OldChildBounds: TRect;
 begin
@@ -1874,9 +1851,16 @@ begin
   DisableAlign;
   try
     // test if resizing is possible
+    HasVisibleChilds:=false;
+    for i:=0 to ControlCount-1 do
+      if Controls[i].IsControlVisible then begin
+        HasVisibleChilds:=true;
+        break;
+      end;
+    
     CurAnchors:=Anchors;
     if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
-    ChildsFixedSides:=FindChildsFixatedSides;
+    ChildsFixedSides:=[];
     CurAnchors:=CurAnchors+ChildsFixedSides;
     WidthIsFixed:=WidthAnchored(CurAnchors)
                  or WidthDependsOnChilds
@@ -1888,7 +1872,7 @@ begin
     // move childs tight to left and top (so no space left and above childs)
     if (ControlCount > 0) then begin
       // get current bounds of all childs including border space
-      GetChildBounds(ChildBounds,true);
+      GetChildBounds(ChildBounds,true,false);
       CurClientRect:=ClientRect;
       AdjustClientRect(CurClientRect);
       //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' ChildsBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect)]);
@@ -1909,16 +1893,16 @@ begin
           AControl:=Controls[I];
           if AControl.IsControlVisible then begin
             //DebugLn(['TWinControl.DoAutoSize BEFORE ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
-            ChildAnchors:=FindChildFixatedSides(AControl);
+            MovableChildAnchors:=GetMovableChildAnchors(AControl);
             NewChildBounds:=AControl.BoundsRect;
-            if not (akLeft in ChildAnchors) then begin
+            if (akLeft in MovableChildAnchors) then begin
               inc(NewChildBounds.Left,dx);
-              if not (akRight in ChildAnchors) then
+              if (akRight in MovableChildAnchors) then
                 inc(NewChildBounds.Right,dx);
             end;
-            if not (akTop in ChildAnchors) then begin
+            if (akTop in MovableChildAnchors) then begin
               inc(NewChildBounds.Top,dy);
-              if not (akBottom in ChildAnchors) then
+              if (akBottom in MovableChildAnchors) then
                 inc(NewChildBounds.Bottom,dy);
             end;
             // Important: change the BaseBounds too
@@ -1969,9 +1953,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl BroadCast                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl BroadCast
+------------------------------------------------------------------------------}
 Procedure TWinControl.BroadCast(var ToAllMessage);
 var
   I: Integer;
@@ -4257,7 +4241,7 @@ end;
 
 procedure TWinControl.AlignNonAlignedControls(ListOfControls: TFPList;
   var BoundsModified: Boolean);
-{ All controls, not aligned by their own properties, can be auto aligned.
+{ All controls, not aligned/anchored by their own properties, can be auto aligned.
 
   Example:
     cclLeftToRightThenTopToBottom
@@ -5851,7 +5835,7 @@ begin
   if ControlCount>0 then begin
 
     // get the size requirements for the child controls
-    GetChildBounds(ChildBounds,true);
+    GetChildBounds(ChildBounds,true,false);
     NewClientWidth := ChildBounds.Right - ChildBounds.Left;
     NewClientHeight := ChildBounds.Bottom - ChildBounds.Top;
     
@@ -5888,12 +5872,12 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TWinControl.GetChildBounds(var ChildBounds: TRect;
-    WithBorderSpace: boolean);
+    WithBorderSpace, FixateParentAnchors: boolean);
     
   Calculates the bounds of all visible childs in client coordinates.
  ------------------------------------------------------------------------------}
 procedure TWinControl.GetChildBounds(var ChildBounds: TRect;
-  WithBorderSpace: boolean);
+  WithBorderSpace, FixateParentAnchors: boolean);
   
   procedure FixateSide(Side: TAnchorKind);
   begin
@@ -5912,31 +5896,54 @@ var
   ChildWidth,ChildHeight: integer;
   a: TAnchorKind;
   FixatedAnchors: TAnchors;
-  CurClientRect: TRect;
+  //CurClientRect: TRect;
+  AnchorsToParent: TAnchors;
+  AnchorsToSibling: TAnchors;
+  MinWidth: LongInt;
+  MinHeight: LongInt;
 begin
-  CurClientRect:=ClientRect;
-  AdjustClientRect(CurClientRect);
-
   ChildBounds := Rect(High(Integer),High(Integer),0,0);
+  MinWidth:=0;
+  MinHeight:=0;
+
+  {CurClientRect:=ClientRect;
+  AdjustClientRect(CurClientRect);
   if WithBorderSpace then begin
-    SpaceAround:=Rect(
+    AlignSpaceAround:=Rect(
       CurClientRect.Left, // left space
       CurClientRect.Top,  // top space
       ClientWidth-CurClientRect.Right,// right space
       ClientHeight-CurClientRect.Bottom// bottom space
       );
   end else
-    SpaceAround:=Rect(0,0,0,0);
+    AlignSpaceAround:=Rect(0,0,0,0);}
+  SpaceAround:=Rect(0,0,0,0);
   FixatedAnchors:=[];
   for I := 0 to ControlCount - 1 do begin
     AControl:=Controls[I];
     if not AControl.IsControlVisible then continue;
-    
-    FixatedAnchors:=FixatedAnchors+AControl.GetAnchorsDependingOnParent(false);
 
-    if AControl.AutoSize then
-      AControl.GetPreferredSize(ChildWidth,ChildHeight,false,false)
-    else begin
+    AnchorsToParent:=AControl.GetAnchorsDependingOnParent(false);
+    if FixateParentAnchors then
+      FixatedAnchors:=FixatedAnchors+AnchorsToParent;
+
+    if AControl.AutoSize then begin
+      AControl.GetPreferredSize(ChildWidth,ChildHeight,true,true);
+      if ChildWidth>0 then begin
+        ChildWidth:=AControl.Constraints.MinMaxWidth(ChildWidth);
+      end else begin
+        ChildWidth:=AControl.Constraints.EffectiveMinWidth;
+        if ChildWidth<=0 then
+          ChildWidth:=AControl.Width;
+      end;
+      if ChildHeight>0 then begin
+        ChildHeight:=AControl.Constraints.MinMaxHeight(ChildHeight);
+      end else begin
+        ChildHeight:=AControl.Constraints.EffectiveMinHeight;
+        if ChildHeight<=0 then
+          ChildHeight:=AControl.Height;
+      end;
+    end else begin
       ChildWidth:=AControl.Width;
       ChildHeight:=AControl.Height;
     end;
@@ -5948,11 +5955,36 @@ begin
       SpaceAround.Top:=Max(SpaceAround.Top,ChildSizing.TopBottomSpacing);
       SpaceAround.Bottom:=Max(SpaceAround.Bottom,ChildSizing.TopBottomSpacing);
     end;
+    MinWidth:=Max(MinWidth,SpaceAround.Left+ChildWidth+SpaceAround.Right);
+    MinHeight:=Max(MinHeight,SpaceAround.Top+ChildHeight+SpaceAround.Bottom);
+
     with ChildBounds do begin
-      Left := Min(AControl.Left-SpaceAround.Left, Left);
-      Top := Min(AControl.Top-SpaceAround.Top, Top);
-      Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
-      Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
+      if FixateParentAnchors then begin
+        Left := Min(AControl.Left-SpaceAround.Left, Left);
+        Top := Min(AControl.Top-SpaceAround.Top, Top);
+        Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
+        Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
+      end else begin
+        AnchorsToSibling:=[akLeft,akRight,akTop,akBottom]-AnchorsToParent;
+        
+        if (akLeft in AnchorsToSibling) then begin
+          Left := Min(AControl.Left-SpaceAround.Left, Left);
+          Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
+        end
+        else if (akRight in AnchorsToSibling) then begin
+          Left := Min(AControl.Left+AControl.Width-ChildWidth-SpaceAround.Left, Left);
+          Right := Max(AControl.Left+AControl.Width+SpaceAround.Right,Right);
+        end;
+
+        if (akTop in AnchorsToSibling) then begin
+          Top := Min(AControl.Top-SpaceAround.Top, Top);
+          Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
+        end
+        else if (akBottom in AnchorsToSibling) then begin
+          Top := Min(AControl.Top+AControl.Height-ChildHeight-SpaceAround.Top, Top);
+          Bottom := Max(AControl.Top+AControl.Height+SpaceAround.Bottom,Bottom);
+        end;
+      end;
     end;
 
     //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
@@ -5963,10 +5995,12 @@ begin
     ChildBounds.Left:=0;
     ChildBounds.Right:=0;
   end;
+  ChildBounds.Right:=Max(ChildBounds.Right,ChildBounds.Left+MinWidth);
   if ChildBounds.Top>ChildBounds.Bottom then begin
     ChildBounds.Top:=0;
     ChildBounds.Bottom:=0;
   end;
+  ChildBounds.Bottom:=Max(ChildBounds.Bottom,ChildBounds.Top+MinHeight);
 end;
 
 {------------------------------------------------------------------------------

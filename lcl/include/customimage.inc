@@ -91,17 +91,16 @@ var
   end;
   
 begin
-  If AutoSize and (not AutoSizing) then begin
+  if AutoSize and (not AutoSizing) then begin
     AutoSizing := True;
     try
-      ModifyWidth := Align in [alLeft,alRight,alNone];
-      ModifyHeight := Align in [alTop,alBottom,alNone];
+      GetPreferredSize(NewWidth,NewHeight);
+      ModifyWidth := [akLeft,akRight]*(Anchors+AnchorAlign[Align])<>[akLeft,akRight];
+      ModifyHeight := [akTop,akBottom]*(Anchors+AnchorAlign[Align])<>[akTop,akBottom];
       NewWidth:=Width;
       NewHeight:=Height;
-      If ModifyWidth and (Picture.Width > 0) then
-        NewWidth := Max(Picture.Width, Constraints.MinWidth);
-      If ModifyHeight and (Picture.Height > 0) then
-        NewHeight := Max(Picture.Height, Constraints.MinHeight);
+      if not ModifyWidth then NewWidth := Width;
+      if not ModifyHeight then NewHeight := Height;
       if (NewWidth>100000) or (NewHeight>100000) then
         OutOfBounds;
       if (NewWidth<>Width) or (NewHeight<>Height) then begin
@@ -186,6 +185,13 @@ begin
 
   if Center then
     OffsetRect(Result,(ImgWidth-PicWidth) div 2,(ImgHeight-PicHeight) div 2);
+end;
+
+procedure TCustomImage.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth:=Picture.Width;
+  PreferredHeight:=Picture.Height;
 end;
 
 Procedure TCustomImage.Paint;
