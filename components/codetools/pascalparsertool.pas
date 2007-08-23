@@ -3814,13 +3814,17 @@ function TPascalParserTool.FindFirstNodeOnSameLvl(
 begin
   Result:=StartNode;
   if Result=nil then exit;
-  Result:=Result.Parent;
-  if Result=nil then exit;
-  while (Result.Desc in AllCodeSections) and (Result.PriorBrother<>nil) do
-    Result:=Result.PriorBrother;
-  while (Result<>nil) and (Result.FirstChild=nil) do
-    Result:=Result.NextBrother;
-  Result:=Result.FirstChild;
+  if Result.Parent=nil then begin
+    while Result.PriorBrother<>nil do
+      Result:=Result.PriorBrother;
+  end else begin
+    Result:=Result.Parent;
+    while (Result.Desc in AllCodeSections) and (Result.PriorBrother<>nil) do
+      Result:=Result.PriorBrother;
+    while (Result<>nil) and (Result.FirstChild=nil) do
+      Result:=Result.NextBrother;
+    Result:=Result.FirstChild;
+  end;
 end;
 
 function TPascalParserTool.FindNextNodeOnSameLvl(

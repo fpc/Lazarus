@@ -1114,17 +1114,21 @@ begin
       end;
     end;
     // next node
-    if (ANode.Desc=ctnTypeSection) and (ANode.FirstChild<>nil) then
+    if (ANode.Desc in [ctnTypeSection]+AllCodeSections)
+    and (ANode.FirstChild<>nil) then
       ANode:=ANode.FirstChild
     else if ANode.NextBrother<>nil then
       ANode:=ANode.NextBrother
     else begin
-      ANode:=ANode.NextSkipChilds;
       // skip procs, const and var sections
-      while (ANode<>nil) and (ANode.Desc<>ctnTypeSection) do
-        ANode:=ANode.NextBrother;
-      if ANode<>nil then
-        ANode:=ANode.FirstChild;
+      repeat
+        ANode:=ANode.Parent;
+        if (ANode=nil) then exit;
+        if (not (ANode.Desc in [ctnTypeSection]+AllCodeSections)) then exit;
+        if ANode.NextBrother<>nil then
+          ANode:=ANode.NextBrother;
+          break;
+      until false;
     end;
   end;
 end;
