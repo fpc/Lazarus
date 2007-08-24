@@ -69,6 +69,7 @@ Michal Bukovjan
 Olivier Guilbaud
 Patrick Chevalley
 Paul Ishenin
+Pawel Trochimczuk
 Peter Dyson
 Philip J. Hess
 Pierre Gillmann
