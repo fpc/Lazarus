@@ -3649,8 +3649,12 @@
       </element>
       <!-- function Visibility: default -->
       <element name="IsRectEmpty">
-        <short/>
-        <descr/>
+        <short>Returns true, if the rectangle is empty</short>
+        <descr>IsEmptyRect returns true, if the area of the rectangle described by ARect is empty,
+  i.e. right coordinate is less than or equal to the left coordinate,
+ or the bottom coordinate is less than or equal to the top coordinate
+
+</descr>
         <errors/>
         <seealso/>
       </element>

@@ -1152,12 +1152,14 @@ end;
   Params: const lprc: TRect
   Returns: Boolean
 
-  Returns true if ARect is (0,0,0,0)
+  Returns true if ARect is the area of the rectangle is empty,
+  i.e. right coordinate is less than or equal to the left coordinate,
+  or the bottom coordinate is less than or equal to the top coordinate
  ------------------------------------------------------------------------------}
 function IsRectEmpty(const ARect: TRect): Boolean;
 begin
   with ARect do
-    Result := (Left = 0) and (Top = 0) and (Right = 0) and (Bottom = 0);
+    Result := (Right <= Left) or (Bottom <= Top);
 end;
 
 {------------------------------------------------------------------------------
