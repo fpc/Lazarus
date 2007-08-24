@@ -2484,7 +2484,7 @@ function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
 var
   Tool: TCompilerDiffTool;
 begin
-  Tool:=TCompilerDiffTool.Create(TStringList.Create);
+  Tool:=TCompilerDiffTool.Create(nil);
   CreateDiff(CompOpts,Tool);
   Result:= not Tool.Differ;
   Tool.Free;
