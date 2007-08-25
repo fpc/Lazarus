@@ -47,7 +47,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
-    property Selection: TColor read GetSelection write SetSelection;
     property Colors[Index : Integer] : TColor Read GetColor;
   published
     property Align;
@@ -76,6 +75,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property Selection: TColor read GetSelection write SetSelection;
     property ShowHint;
     property Sorted;
     property TabOrder;

@@ -39,7 +39,8 @@ const
     (StyleType: lsExStyle; Style: LVS_EX_FULLROWSELECT),   // lvpRowSelect
     (StyleType: lsInvert;  Style: LVS_NOCOLUMNHEADER),     // lvpShowColumnHeaders
     (StyleType: lsNone; Style: 0),  // lvpShowWorkAreas
-    (StyleType: lsInvert;  Style: LVS_NOLABELWRAP)         // lvpWrapText
+    (StyleType: lsInvert;  Style: LVS_NOLABELWRAP),        // lvpWrapText
+    (StyleType: lsExStyle; Style: LVS_EX_LABELTIP)         // lvpToolTips
   );
 
 

@@ -44,7 +44,7 @@ uses
   Windows, Classes, Translations, ComCtrls, Controls, Buttons, Dialogs,
   DynHashArray, ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf,
   LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
-  Themes;
+  Themes, Win32Debug, Maps;
 
 const
 // standard windows cursors
@@ -165,34 +165,25 @@ type
 
     FOnAsyncSocketMsg: TSocketEvent;
 
-    Procedure AssignSelf(Window: HWnd; Data: Pointer);
-
-    procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const BitmapHandle: HBITMAP;
-      const SrcRect: TRect; var Data: PByte; var Size: PtrUInt);
-    procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
-    procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
-        Desc: PRawImageDescription);
-    function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
+    procedure AssignSelf(Window: HWnd; Data: Pointer);
 
     { event handler helper functions }
     procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
     procedure CheckPipeEvents;
 
-    Function WinRegister: Boolean;
-    Procedure NormalizeIconName(Var IconName: String);
-    Procedure NormalizeIconName(Var IconName: PChar);
+    function WinRegister: Boolean;
 
     function CreateThemeServices: TThemeServices; override;
   public
     { Creates a callback of Lazarus message Msg for Sender }
-    Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
+    procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
-    Procedure RemoveCallbacks(Sender: TObject); virtual;
+    procedure RemoveCallbacks(Sender: TObject); virtual;
 
     { Constructor of the class }
-    Constructor Create;
+    constructor Create;
     { Destructor of the class }
-    Destructor Destroy; Override;
+    destructor Destroy; Override;
 
     function LCLPlatform: TLCLPlatform; override;
 
@@ -293,7 +284,7 @@ uses
 // Win32WSToolwin,
  Win32Themes,
 ////////////////////////////////////////////////////
- Arrow, Calendar, Spin, CheckLst, WinExt, LclProc;
+ Arrow, Calendar, Spin, CheckLst, Win32Extra, LclProc;
 
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);

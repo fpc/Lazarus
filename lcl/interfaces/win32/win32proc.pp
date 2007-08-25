@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Classes, SysUtils,
-  LMessages, LCLType, LCLProc, Controls, Forms, Menus;
+  LMessages, LCLType, LCLProc, Controls, Forms, Menus, GraphType;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -109,6 +109,13 @@ procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
+
+procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
+procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
+
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+
+
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1194,6 +1201,157 @@ begin
   GetWindowText(AHandle, PChar(Result), TextLen + 1);
 
  {$endif}
+end;
+
+procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
+begin
+  case ADesc.BitsPerPixel of
+    1,4,8:
+      begin
+        // palette mode, no offsets
+        ADesc.Format := ricfGray;
+        ADesc.RedPrec := ADesc.BitsPerPixel;
+        ADesc.GreenPrec := 0;
+        ADesc.BluePrec := 0;
+        ADesc.RedShift := 0;
+        ADesc.GreenShift := 0;
+        ADesc.BlueShift := 0;
+      end;
+    16:
+      begin
+        // 5-5-5 mode
+        ADesc.RedPrec := 5;
+        ADesc.GreenPrec := 5;
+        ADesc.BluePrec := 5;
+        ADesc.RedShift := 10;
+        ADesc.GreenShift := 5;
+        ADesc.BlueShift := 0;
+        ADesc.Depth := 15;
+      end;
+    24:
+      begin
+        // 8-8-8 mode
+        ADesc.RedPrec := 8;
+        ADesc.GreenPrec := 8;
+        ADesc.BluePrec := 8;
+        ADesc.RedShift := 16;
+        ADesc.GreenShift := 8;
+        ADesc.BlueShift := 0;
+      end;
+  else    //  32:
+    // 8-8-8-8 mode, high byte can be native alpha or custom 1bit maskalpha
+    ADesc.AlphaPrec := 8;
+    ADesc.RedPrec := 8;
+    ADesc.GreenPrec := 8;
+    ADesc.BluePrec := 8;
+    ADesc.AlphaShift := 24;
+    ADesc.RedShift := 16;
+    ADesc.GreenShift := 8;
+    ADesc.BlueShift := 0;
+    ADesc.Depth := 32;
+  end;
+end;
+
+procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
+begin
+  ADesc.Format := ricfRGBA;
+
+  ADesc.Depth := ABitmapInfo.bmBitsPixel;             // used bits per pixel
+  ADesc.Width := ABitmapInfo.bmWidth;
+  ADesc.Height := ABitmapInfo.bmHeight;
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.BitsPerPixel := ABitmapInfo.bmBitsPixel;      // bits per pixel. can be greater than Depth.
+  ADesc.LineEnd := rileDWordBoundary;
+
+  if ABitmapInfo.bmBitsPixel <= 8
+  then begin
+    // each pixel is an index in the palette
+    // TODO, ColorCount
+    ADesc.PaletteColorCount := 0;
+  end
+  else ADesc.PaletteColorCount := 0;
+
+
+  FillRawImageDescriptionColors(ADesc);
+
+  ADesc.MaskBitsPerPixel := 1;
+  ADesc.MaskShift := 0;
+  ADesc.MaskLineEnd := rileWordBoundary; // CreateBitmap requires word boundary
+  ADesc.MaskBitOrder := riboReversedBits;
+end;
+
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+var
+  DC: HDC;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[Byte] of TRGBQuad; // reserve extra colors for palette (256 max)
+  end;
+  H: Integer;
+  R: TRect;
+  SrcData: PByte;
+  SrcSize: PtrUInt;
+  SrcLineBytes: Cardinal;
+  StartScan: Integer;
+begin
+  if AWinBmp.bmBits <> nil
+  then begin
+    // this is bitmapsection data :) we can just copy the bits
+
+    with AWinBmp do
+      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+    Exit;
+  end;
+
+  // retrieve the data though GetDIBits
+  SrcLineBytes := (AWinBmp.bmWidthBytes + 3) and not 3;
+
+  // initialize bitmapinfo structure
+  Info.Header.biSize := sizeof(Info.Header);
+  Info.Header.biPlanes := 1;
+  Info.Header.biBitCount := AWinBmp.bmBitsPixel;
+  Info.Header.biCompression := BI_RGB;
+  Info.Header.biSizeImage := 0;
+
+  Info.Header.biWidth := AWinBmp.bmWidth;
+  H := ARect.Bottom - ARect.Top;
+  // request a top-down DIB
+  if AWinBmp.bmHeight > 0
+  then begin
+    Info.Header.biHeight := -AWinBmp.bmHeight;
+    StartScan := AWinBmp.bmHeight - ARect.Bottom;
+  end
+  else begin
+    Info.Header.biHeight := AWinBmp.bmHeight;
+    StartScan := ARect.Top;
+  end;
+  // adjust height
+  if StartScan < 0
+  then begin
+    Inc(H, StartScan);
+    StartScan := 0;
+  end;
+
+  // alloc buffer
+  SrcSize := SrcLineBytes * H;
+  GetMem(SrcData, SrcSize);
+
+  DC := Windows.GetDC(0);
+  Result := Windows.GetDIBits(DC, ABitmap, StartScan, H, SrcData, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) <> 0;
+  Windows.ReleaseDC(0, DC);
+  
+  // since we only got the needed scanlines, adjust top and bottom
+  R.Left := ARect.Left;
+  R.Top := 0;
+  R.Right := ARect.Right;
+  R.Bottom := H;
+
+  with Info.Header do
+    Result := Result and CopyImageData(biWidth, H, SrcLineBytes, biBitCount, SrcData, R, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+
+  FreeMem(SrcData);
 end;
 
 procedure DoInitialization;

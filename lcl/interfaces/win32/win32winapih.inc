@@ -87,12 +87,6 @@ function FloodFill(DC: HDC; X, Y: Integer; Color: TGraphicsColor; FillStyle: TGr
 function Frame3D(DC: HDC; var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH) : integer; override;
 
-function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; Override;
-function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; Override;
-
 function GetActiveWindow: HWND; Override;
 function GetCapture: HWND; Override;
 function GetCaretPos(Var LPPoint: TPoint): Boolean; Override;

@@ -47,19 +47,23 @@ end;
 
 procedure TBitMap.Assign(Source: TPersistent);
 var
-  SrcBitmap: TBitmap;
-  SrcFPImage: TFPCustomImage;
+  SrcBitmap: TBitmap absolute Source;
+  SrcFPImage: TFPCustomImage absolute Source;
   IntfImage: TLazIntfImage;
   ImgHandle,ImgMaskHandle: HBitmap;
 begin
-  if Source=Self then exit;
-  if Source is TBitmap then begin
-    SrcBitmap:=TBitmap(Source);
+  if Source = Self then exit;
+
+  if Source is TBitmap
+  then begin
     // TBitmap can share image data
     // -> check if already shared
     if SrcBitmap.FImage=FImage then exit;// already sharing
 
-    ChangingAll(Self);
+    // MWE: dont call ChangingAll, since it will create a new image,
+    // which we will replace anyway.
+    // ChangingAll(Self);
+    
     //DebugLn(['TBitMap.Assign Self=',ClassName,' Source=',Source.ClassName,' HandleAllocated=',HandleAllocated,' Canvas=',DbgSName(FCanvas)]);
     FTransparent := SrcBitmap.Transparent;
 
@@ -70,31 +74,45 @@ begin
     // release old FImage
     FImage.Release;
     // share FImage with assigned graphic
-    FImage:=SrcBitmap.FImage;
+    FImage := SrcBitmap.FImage;
     FImage.Reference;
     //DebugLn(['TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount]);
     Changed(Self);
-  end else if Source is TFPCustomImage then begin
-    ChangingAll(Self);
-    SrcFPImage:=TFPCustomImage(Source);
-    IntfImage:=TLazIntfImage.Create(0,0);
+    
+    Exit;
+  end;
+
+  if Source is TFPCustomImage
+  then begin
+    // MWE: no need for a changeall, the sethandles will handle this
+    // ChangingAll(Self);
+    
+    IntfImage := TLazIntfImage.Create(0,0);
     try
-      if HandleAllocated then
-        IntfImage.GetDescriptionFromBitmap(Handle)
-      else
-        IntfImage.GetDescriptionFromDevice(0);
+      if HandleAllocated
+      then IntfImage.DataDescription := GetDescriptionFromBitmap(Handle, 0, 0)
+      else IntfImage.DataDescription := GetDescriptionFromDevice(0, 0, 0);
       IntfImage.Assign(SrcFPImage);
-      IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-      SetHandles(ImgHandle,ImgMaskHandle);
+      IntfImage.CreateBitmaps(ImgHandle, ImgMaskHandle);
+      SetHandles(ImgHandle, ImgMaskHandle);
     finally
       IntfImage.Free;
     end;
     Changed(Self);
-  end else if Source = nil then begin
+    
+    Exit;
+  end;
+
+  if Source = nil
+  then begin
     FreeSaveStream;
-    SetWidthHeight(0,0);
-  end else
-    inherited Assign(Source);
+    SetWidthHeight(0, 0);
+    Exit;
+  end;
+  
+  
+  // fall back to default
+  inherited Assign(Source);
 end;
 
 procedure TBitmap.Draw(DestCanvas: TCanvas; const DestRect: TRect);
@@ -175,39 +193,38 @@ end;
 
 function TBitmap.HandleAllocated: boolean;
 begin
-  Result:=(FImage<>nil) and (FImage.FHandle<>0);
+  Result := (FImage <> nil) and (FImage.FHandle <> 0);
 end;
 
 function TBitmap.MaskHandleAllocated: boolean;
 begin
-  Result:=(FImage<>nil) and (FImage.FMaskHandle<>0);
+  Result := (FImage <> nil) and (FImage.FMaskHandle <> 0);
 end;
 
 function TBitmap.PaletteAllocated: boolean;
 begin
-  Result:=FPalette<>0;
+  Result := (FImage <> nil) and (FImage.FPalette <> 0);
 end;
 
-procedure TBitmap.CreateFromBitmapHandles(SrcBitmap, SrcMaskBitmap: HBitmap;
-  const SrcRect: TRect);
+procedure TBitmap.CreateFromBitmapHandles(ABitmap, AMask: HBitmap; const ARect: TRect);
 var
-  NewRawImage: TRawImage;
+  RawImage: TRawImage;
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
   //DebugLn('TBitmap.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
-  if not GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,SrcRect,NewRawImage) then
+  if not RawImage_FromBitmap(RawImage, ABitmap, AMask, ARect) then
     raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Get RawImage');
   ImgHandle:=0;
   ImgMaskHandle:=0;
   try
     //DebugLn('TBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
-    if not CreateBitmapFromRawImage(NewRawImage,ImgHandle,ImgMaskHandle,false) then
+    if not RawImage_CreateBitmaps(RawImage, ImgHandle, ImgMaskHandle) then
       raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Create bitmaps');
-    SetHandles(ImgHandle,ImgMaskHandle);
+    SetHandles(ImgHandle, ImgMaskHandle);
     ImgHandle:=0;
     ImgMaskHandle:=0;
   finally
-    FreeRawImageData(@NewRawImage);
+    RawImage.FreeData;
     if ImgHandle<>0 then DeleteObject(ImgHandle);
     if ImgMaskHandle<>0 then DeleteObject(ImgMaskHandle);
   end;
@@ -227,9 +244,9 @@ begin
     // get a snapshot
     IntfImg.LoadFromDevice(DC);
     // create HBitmap
-    IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
+    IntfImg.CreateBitmaps(ImgHandle, ImgMaskHandle);
     // feed HBitmap into a TBitmap
-    SetHandles(ImgHandle,ImgMaskHandle);
+    SetHandles(ImgHandle, ImgMaskHandle);
     ImgHandle:=0;
     ImgMaskHandle:=0;
   finally
@@ -326,8 +343,8 @@ begin
           IntfImage.Colors[x,y]:=CurColor;
         end;
       end;
-      IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-      SetHandles(ImgHandle,ImgMaskHandle);
+      IntfImage.CreateBitmaps(ImgHandle, ImgMaskHandle);
+      SetHandles(ImgHandle, ImgMaskHandle);
     finally
       IntfImage.Free;
     end;
@@ -478,6 +495,19 @@ begin
     inherited GetSupportedSourceMimeTypes(List);
 end;
 
+function TBitmap.GetTransparent: Boolean;
+begin
+  {$note add better check for transparency }
+  // MWE: now tharansparency is set when a maskhandle is assigned, the user can
+  // override this by setting it to false, so no mask is used,
+  // however this meganism ignores the possible alpha channel, so for now 32bit
+  // bitmaps are considered transparent
+  // todos:
+  //  check for device transparency
+  //  check for transparency through palette etc.
+  Result := FTransparent or (FPixelFormat = pf32bit);
+end;
+
 function TBitmap.GetDefaultMimeType: string;
 begin
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then begin
@@ -507,8 +537,8 @@ procedure TBitmap.LoadFromIntfImage(IntfImage: TLazIntfImage);
 var
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-  SetHandles(ImgHandle,ImgMaskHandle);
+  IntfImage.CreateBitmaps(ImgHandle, ImgMaskHandle);
+  SetHandles(ImgHandle, ImgMaskHandle);
 end;
 
 function TBitmap.GetMonochrome: Boolean;
@@ -540,7 +570,7 @@ begin
         IntfImage:=TLazIntfImage.Create(0,0);
         try
           IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle,Width,Height);
-          IntfImage.CreateBitmap(NewImage.FHandle,NewImage.FMaskHandle,false);
+          IntfImage.CreateBitmaps(NewImage.FHandle, NewImage.FMaskHandle, not IntfImage.HasMask);
           FillChar(NewImage.FDIB, SizeOf(NewImage.FDIB), 0);
           if NewImage.HandleAllocated then
             GetObject(NewImage.FHandle, SizeOf(NewImage.FDIB), @NewImage.FDIB);
@@ -712,25 +742,49 @@ begin
         and ((AClass=TFPWriterBMP) or (AClass=TLazWriterXPM)));
 end;
 
-procedure TBitmap.SetHandles(NewHandle, NewMaskHandle: HBITMAP);
+procedure TBitmap.SetHandles(ABitmap, AMask: HBITMAP);
+var
+  IsChanged: Boolean;
 begin
-  if (FImage.FHandle = NewHandle) and (FImage.FMaskHandle = NewMaskHandle) then exit;
-  // free old handles
-  FreeCanvasContext;
-  UnshareImage(false);
-  FreeSaveStream;
-  FImage.FreeHandle;
-  FImage.FreeMaskHandle;
-  // get the properties from new bitmap
-  FImage.FHandle:=NewHandle;
-  //DebugLn('TBitMap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
-  FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
-  if FImage.FHandle <> 0 then
-    GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
-  if FImage.FMaskHandle<>NewMaskHandle then
-    ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
-  FTransparent := FImage.FMaskHandle <> 0;
-  Changed(Self);
+  IsChanged := False;
+
+  if FImage.FHandle <> ABitmap
+  then begin
+    // free old handles
+    FreeCanvasContext;
+    UnshareImage(false);
+    FreeSaveStream;
+    FImage.FreeHandle;
+    // get the properties from new bitmap
+    FImage.FHandle := ABitmap;
+    //DebugLn('TBitMap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
+    FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
+    if FImage.FHandle <> 0 then
+      GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
+      
+    IsChanged := True;
+  end;
+  
+  
+
+  if FImage.FMaskHandle <> AMask
+  then begin
+    if not IsChanged
+    then begin
+      // unshare image and free canvas handle
+      UnshareImage(true);
+      FreeCanvasContext;
+      // free old mask handle
+      FImage.FreeMaskHandle;
+    end;
+    FImage.FMaskHandle := AMask;
+
+    IsChanged := True;
+  end;
+  
+  
+  
+  if IsChanged then Changed(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -780,40 +834,53 @@ begin
     // Use the given 'Size' parameter
     StoreOriginal(Stream,Size);
     SrcStream:=NewSaveStream;
-  end else begin
-  
+  end
+  else begin
     FreeSaveStream;
     SrcStream:=Stream;
   end;
   try
     // read image
-    IntfImg:=TLazIntfImage.Create(0,0);
-    IntfImg.GetDescriptionFromDevice(0);
-    ImgReader:=ReaderClass.Create;
-    InitFPImageReader(ImgReader);
+    IntfImg := TLazIntfImage.Create(0,0);
+    {$note set pixelformat based on image, not device}
+    // the next will cause that all images are loaded in pfDevice format.
+    // This is incompatible with delphi
+    IntfImg.DataDescription := GetDescriptionFromDevice(0, 0, 0);
+    ImgReader := ReaderClass.Create;
+    InitFPImageReader(IntfImg, ImgReader);
     OldStreamPosition:=SrcStream.Position;
-    IntfImg.LoadFromStream(SrcStream,ImgReader);
-    ImgSize:=SrcStream.Position-OldStreamPosition;
-    if not UseSize then begin
+    IntfImg.LoadFromStream(SrcStream, ImgReader);
+    if (ImgReader is TLazReaderBMP) and (TLazReaderBMP(ImgReader).MaskMode = lrmmAuto)
+    then FTransparentColor := FPColorToTColor(TLazReaderBMP(ImgReader).MaskColor);
+
+    ImgSize := SrcStream.Position - OldStreamPosition;
+    if UseSize
+    then begin
+      // set position
+      if Size<>ImgSize then
+        SrcStream.Position:=OldStreamPosition+Size;
+    end
+    else begin
       // now the size is known -> store stream
       //DebugLn('TBitmap.ReadStreamWithFPImage SrcStream=',SrcStream.ClassName,' ImgSize=',ImgSize);
       SrcStream.Position:=OldStreamPosition;
       StoreOriginal(SrcStream,integer(ImgSize));
-    end else begin
-      // set position
-      if Size<>ImgSize then
-        SrcStream.Position:=OldStreamPosition+Size;
     end;
+    
     FinalizeFPImageReader(ImgReader);
-    IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-    SetHandles(ImgHandle,ImgMaskHandle);
+    ImgMaskHandle := 0;
+    IntfImg.CreateBitmaps(ImgHandle, ImgMaskHandle, not IntfImg.HasMask);
+    SetHandles(ImgHandle, ImgMaskHandle);
   finally
     // set save stream
     FImage.SaveStream:=NewSaveStream;
-    if (ReaderClass=TFPReaderBMP) or (ReaderClass=TLazReaderBMP) then begin
+    if (ReaderClass=TFPReaderBMP) or (ReaderClass=TLazReaderBMP)
+    then begin
       FImage.SaveStreamType:=bnWinBitmap;
       FImage.SaveStreamClass:=TFPWriterBMP;
-    end else if ReaderClass=TLazReaderXPM then begin
+    end
+    else if ReaderClass=TLazReaderXPM
+    then begin
       FImage.SaveStreamType:=bnXPixmap;
       FImage.SaveStreamClass:=TLazWriterXPM;
     end;
@@ -871,9 +938,14 @@ begin
   ImgWriter:=nil;
   try
     IntfImg:=TLazIntfImage.Create(0,0);
-    IntfImg.LoadFromBitmap(Handle,FImage.FMaskHandle);
+    IntfImg.LoadFromBitmap(Handle, FImage.FMaskHandle);
     
-    if WriterClass=nil then begin
+    if WriterClass=nil
+    then begin
+      {$note todo choose the correct writer}
+      // Bitmaps support alpha. TBitmaps supports more than these 2 formats anyway.
+      // So setting the writer based on a mask is nonsense imo (MWE)
+
       // automatically use a TFPCustomImageWriterClass
       // .bmp does not support transparency
       // Delphi uses a trick and stores the transparent color in the bottom, left
@@ -882,19 +954,13 @@ begin
       // The LCL TBitmap is able to load .xpm and .bmp images. .xpm supports
       // transparency. So, if the images has transparency use .xpm.
       IntfImg.GetRawImage(RawImage);
-      if RawImageMaskIsEmpty(@RawImage,true) then
-        WriterClass:=TFPWriterBMP
-      else
-        WriterClass:=TLazWriterXPM;
-      {debugln('WriteStreamWithFPImage WriterClass=',WriterClass.ClassName,' ',RawImageDescriptionAsString(@RawImage),' MaskSize=',dbgs(RawImage.MaskSize));
-      debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
-                          GetBytesPerLine(RawImage.Description.Width,
-                                         RawImage.Description.AlphaBitsPerPixel,
-                                         RawImage.Description.AlphaLineEnd)));}
+      if RawImage.IsMasked(true)
+      then WriterClass:=TLazWriterXPM
+      else WriterClass:=TFPWriterBMP;
     end;
 
     ImgWriter:=WriterClass.Create;
-    InitFPImageWriter(ImgWriter);
+    InitFPImageWriter(IntfImg, ImgWriter);
     IntfImg.SaveToStream(MemStream,ImgWriter);
     FinalizeFPImageWriter(ImgWriter);
     FreeAndNil(ImgWriter);
@@ -924,27 +990,64 @@ begin
   end;
 end;
 
-procedure TBitmap.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TBitmap.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
+var
+  LazReader: TLazReaderBMP absolute ImgReader;
 begin
-  if ImgReader is TLazReaderBMP then begin
-    // TransparentColor:
-    //   clDefault: use left, bottom pixel color as transparent color
-    //   clNone: load image opaque
-    //   otherwise: use TransparentColor as transparent color
-    TLazReaderBMP(ImgReader).UseLeftBottomAsTransparent:=
-                                                   (TransparentColor=clDefault);
-    if (TransparentColor=clDefault) or (TransparentColor=clNone) then
-      TLazReaderBMP(ImgReader).TransparentColor:=colTransparent
-    else
-      TLazReaderBMP(ImgReader).TransparentColor:=
-                                              TColorToFPColor(TransparentColor);
-    //DebugLn('TBitmap.InitFPImageReader ',dbgs(TLazReaderBMP(ImgReader).TransparentColor));
+  if not (ImgReader is TLazReaderBMP) then Exit;
+
+  // TransparentMode
+  //   tmAuto: use left bottom pixel
+  //   tmFixed: use color
+  //
+  // TransparentColor:
+  //   clDefault: use left, bottom pixel color as transparent color (*)
+  //   clNone: load image opaque (*)
+  //   otherwise: use TransparentColor as transparent color
+  //
+  //   (*) these are Lazarus extentions
+  
+  if (TransparentMode = tmAuto) or (TransparentColor = clDefault)
+  then begin
+    LazReader.MaskMode := lrmmAuto;
+  end
+  else begin
+    if TransparentColor = clNone
+    then begin
+      LazReader.MaskMode := lrmmNone;
+    end
+    else begin
+      LazReader.MaskMode := lrmmColor;
+      LazReader.MaskColor := TColorToFPColor(TransparentColor);
+    end;
   end;
 end;
 
-procedure TBitmap.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TBitmap.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
+const
+  PixelFormatToBppMap: array[TPixelFormat] of integer =
+  (
+{ pfDevice } 32,
+{ pf1bit   } 1,
+{ pf4bit   } 4,
+{ pf8bit   } 8,
+{ pf15bit  } 15,
+{ pf16bit  } 16,
+{ pf24bit  } 24,
+{ pf32bit  } 32,
+{ pfCustom } 32
+  );
+var
+  BmpWriter: TFPWriterBMP absolute ImgWriter;
+//  bpp: integer;
 begin
-
+  if ImgWriter is TFPWriterBMP then
+  begin
+    // set BPP
+    //BmpWriter.BitsPerPixel := PixelFormatToBppMap[PixelFormat];
+    // we can also look at PixelFormat, but it can be inexact
+    BmpWriter.BitsPerPixel := IntfImg.DataDescription.Depth;
+  end;
 end;
 
 procedure TBitmap.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
@@ -964,47 +1067,12 @@ end;
 
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
-  if FImage.FHandle = Value then exit;
-  // free old handles
-  FreeCanvasContext;
-  UnshareImage(false);
-  FreeSaveStream;
-  FImage.FreeHandle;
-  // get the properties from new bitmap
-  FImage.FHandle:=Value;
-  //DebugLn('TBitMap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
-  FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
-  if FImage.FHandle <> 0 then
-    GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
-  Changed(Self);
+  SetHandles(Value, FImage.FMaskHandle);
 end;
 
 procedure TBitmap.SetMaskHandle(NewMaskHandle: HBITMAP);
-// WARNING: Contrary to Delphi, this can change Handle as well. It depends on
-// the widgetset.
 begin
-  if FImage.FMaskHandle = NewMaskHandle then exit;
-  // unshare image and free canvas handle
-  UnshareImage(true);
-  FreeCanvasContext;
-  // create handle
-  HandleNeeded;
-  // free old mask handle
-  FImage.FreeMaskHandle;
-  // combine (depending on the interface we will end with one or two handles)
-  {$IFDEF VerboseImgMasks}
-  DebugLn('TBitmap.SetMaskHandle Before Replace FImage.FHandle=',DbgS(FImage.FHandle),
-    ' FImage.FMaskHandle=',DbgS(FImage.FMaskHandle),
-    ' NewMaskHandle=',DbgS(NewMaskHandle));
-  {$ENDIF}
-  ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
-  FTransparent := FImage.FMaskHandle <> 0;
-  {$IFDEF VerboseImgMasks}
-  DebugLn('TBitmap.SetMaskHandle After Replace FImage.FHandle=',DbgS(FImage.FHandle),
-    ' FImage.FMaskHandle=',DbgS(FImage.FMaskHandle),
-    ' NewMaskHandle=',DbgS(NewMaskHandle));
-  {$ENDIF}
-  Changed(Self);
+  SetHandles(FImage.FHandle, NewMaskHandle);
 end;
 
 // release handles without freeing them

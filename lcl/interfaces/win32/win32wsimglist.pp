@@ -34,7 +34,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Windows, SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
-  WinExt,
+  Win32Extra, Win32Int, Win32Proc, InterfaceBase,
 ////////////////////////////////////////////////////
   WSImgList, WSLCLClasses, WSProc;
 
@@ -45,9 +45,9 @@ type
   TWin32WSCustomImageList = class(TWSCustomImageList)
   private
   protected
-    class procedure InternalCreateBitmap(AList: TCustomImageList; AWidth, AHeight: Integer; AData: PRGBAQuad;
-      var hbmImage, hbmMask: HBitmap);
-    class procedure InternalDestroyBitmap(hbmImage, hbmMask: HBitmap);
+    class procedure InternalCreateBitmapHandles(AList: TCustomImageList; AWidth, AHeight: Integer; AData: PRGBAQuad; var hbmImage, hbmMask: HBitmap);
+    class procedure InternalDestroyBitmapHandles(hbmImage, hbmMask: HBitmap);
+    class function GetColorDepth: Integer;
   public
     class procedure Clear(AList: TCustomImageList); override;
     class function CreateHandle(AList: TCustomImageList; ACount, AGrow, AWidth,
@@ -64,6 +64,9 @@ type
 
 implementation
 
+uses
+  intfgraphics;
+
 const
   DrawingStyleMap: array[TDrawingStyle] of DWord =
   (
@@ -73,24 +76,43 @@ const
 { dsTransparent } ILD_TRANSPARENT
   );
 
-{ TWin32WSCustomImageList }
-
-class procedure TWin32WSCustomImageList.InternalCreateBitmap(AList: TCustomImageList;
-  AWidth, AHeight: Integer; AData: PRGBAQuad; var hbmImage, hbmMask: HBitmap);
+class procedure TWin32WSCustomImageList.InternalCreateBitmapHandles(AList: TCustomImageList; AWidth, AHeight: Integer; AData: PRGBAQuad; var hbmImage, hbmMask: HBitmap);
+var
+  RawImg: TRawImage;
 begin
-  // this will work only with Comctl32.dll version 6 (XP manifest)
-  // in other case we need separate image and mask
-  hbmImage := CreateBitmap(AWidth, AHeight, 1, 32, AData);
-  hbmMask := 0;
+  if WidgetSet.ThemeServices.ThemesAvailable and (GetColorDepth = 32) then
+  begin
+    // this will work only with Comctl32.dll version 6 (XP manifest)
+    // in other case we need separate image and mask
+    hbmImage := CreateBitmap(AWidth, AHeight, 1, 32, AData);
+    hbmMask := 0;
+  end
+  else begin
+    // create separate image and mask
+    RawImg.Init;
+    AList.FillDescription(RawImg.Description);
+    RawImg.DataSize := AWidth * AHeight * SizeOF(AData[0]);
+    RawImg.Data := PByte(AData);
+    Widgetset.RawImage_CreateBitmaps(RawImg, hbmImage, hbmMask);
+  end;
 end;
 
-class procedure TWin32WSCustomImageList.InternalDestroyBitmap(hbmImage,
+class procedure TWin32WSCustomImageList.InternalDestroyBitmapHandles(hbmImage,
   hbmMask: HBitmap);
 begin
   if hbmImage <> 0 then
     DeleteObject(hbmImage);
   if hbmMask <> 0 then
     DeleteObject(hbmMask);
+end;
+
+class function TWin32WSCustomImageList.GetColorDepth: Integer;
+var
+  DC: HDC;
+begin
+  DC := GetDC(0);
+  Result := GetDeviceCaps(DC, BITSPIXEL) * GetDeviceCaps(DC, PLANES);
+  ReleaseDC(0, DC);
 end;
 
 class procedure TWin32WSCustomImageList.Clear(AList: TCustomImageList);
@@ -106,22 +128,31 @@ var
   FLags: DWord;
   hbmImage, hbmMask: HBITMAP;
   i: integer;
-begin
-  if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
-    Flags := ILC_COLOR32 or ILC_MASK
-  else
-    Flags := ILC_COLOR16 or ILC_MASK;
+begin                     
+  case GetColorDepth of
+    04: FLAGS := ILC_COLOR4 or ILC_MASK;
+    08: FLAGS := ILC_COLOR8 or ILC_MASK;
+    16: FLAGS := ILC_COLOR16 or ILC_MASK;
+    24: FLAGS := ILC_COLOR24 or ILC_MASK;
+    32:
+      if WidgetSet.ThemeServices.ThemesAvailable then
+        FLAGS := ILC_COLOR32 // 32 bpp bitmap with 8 bit alpha channel
+      else
+        FLAGS := ILC_COLOR32 or ILC_MASK;
+    else
+      FLAGS := ILC_COLOR or ILC_MASK;
+  end;
   Result := ImageList_Create(AWidth, AHeight, Flags, ACount, AGrow);
-  
+
   if AData <> nil then
   begin
     // this is very slow method :(
     for i := 0 to ACount - 1 do
     begin
-      InternalCreateBitmap(AList, AWidth, AHeight, @AData[AWidth * AHeight * i],
+      InternalCreateBitmapHandles(AList, AWidth, AHeight, @AData[AWidth * AHeight * i],
         hbmImage, hbmMask);
       ImageList_Add(Result, hbmImage, hbmMask);
-      InternalDestroyBitmap(hbmMask, hbmImage);
+      InternalDestroyBitmapHandles(hbmMask, hbmImage);
     end;
   end;
 end;
@@ -167,9 +198,9 @@ begin
   
   if (AIndex <= ACount) and (AIndex >= 0) then
   begin
-    InternalCreateBitmap(AList, AList.Width, AList.Height, AData, hbmImage, hbmMask);
+    InternalCreateBitmapHandles(AList, AList.Width, AList.Height, AData, hbmImage, hbmMask);
     ImageList_Add(AImageList, hbmImage, hbmMask);
-    InternalDestroyBitmap(hbmImage, hbmMask);
+    InternalDestroyBitmapHandles(hbmImage, hbmMask);
     if AIndex <> ACount 
     then Move(AList, ACount, AIndex);
   end;
@@ -207,9 +238,9 @@ begin
   if not WSCheckHandleAllocated(AList, 'Replace')
   then Exit;
 
-  InternalCreateBitmap(AList, AList.Width, AList.Height, AData, hbmImage, hbmMask);
+  InternalCreateBitmapHandles(AList, AList.Width, AList.Height, AData, hbmImage, hbmMask);
   ImageList_Replace(HImageList(AList.Handle), AIndex, hbmImage, hbmMask);
-  InternalDestroyBitmap(hbmImage, hbmMask);
+  InternalDestroyBitmapHandles(hbmImage, hbmMask);
 end;
 
 initialization

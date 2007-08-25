@@ -345,46 +345,6 @@ begin
   {$endif}
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.CreateBitmapFromRawImage
-  Params:
-  Returns:
-
-  This functions is for TBitmap support
-  
-  The memory allocation code was added because it is necessary for
- TBitmap.LoadFromDevice support. For other operations it isnt needed
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-var
-  NewData: PByte;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI CreateBitmapFromRawImage]',
-     ' Width:', dbgs(RawImage.Description.Width),
-     ' Height:', dbgs(RawImage.Description.Height),
-     ' DataSize: ', dbgs(RawImage.DataSize),
-     ' CreateMask: ', dbgs(AlwaysCreateMask));
-  {$endif}
-
-  Result := False;
-  Bitmap := 0;
-  MaskBitmap := 0;
-
-  NewData := GetMem(RawImage.DataSize);
-
-  Move(RawImage.Data^, NewData^, RawImage.DataSize);
-
-  Bitmap := HBitmap(TQtImage.Create(NewData, RawImage.Description.Width,
-   RawImage.Description.Height, QImageFormat_ARGB32, True));
-  
-  Result := True;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBitmapFromRawImage] Bitmap:', dbghex(Bitmap));
-  {$endif}
-end;
 
 {------------------------------------------------------------------------------
   Function:  CreateBrushIndirect
@@ -1682,40 +1642,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetBitmapRawImageDescription
-  Params:  none
-  Returns: The handle of the window with focus
-
-  Describes the inner format utilized by Qt + the specific information for this image
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): Boolean;
-var
-  BitmapInfo: TDIBSECTION;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetBitmapRawImageDescription]',
-     ' Bitmap=', dbghex(Bitmap));
-  {$endif}
-
-  Result := true;
-
-  FillStandardDescription(Desc^);
-
-  GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo);
-
-  Desc^.Width := BitmapInfo.dsBm.bmWidth;
-  Desc^.Height := BitmapInfo.dsBm.bmHeight;
-
-//  Desc^.BitOrder := riboReversedBits;
-//  Desc^.ByteOrder := riboLSBFirst;
-//  Desc^.LineOrder := riloTopToBottom;
-//  Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
-//  Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
-//  Desc^.LineEnd := rileDWordBoundary;
-end;
-
 function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
@@ -2091,23 +2017,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetDeviceRawImageDescription
-  Params:  none
-  Returns: True if successful
-
-  Describes the standard format utilized by Qt
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDeviceRawImageDescription] DC: ' + dbghex(DC));
-  {$endif}
-  Result := true;
-
-  FillStandardDescription(Desc^);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetDeviceSize
   Params:  none
   Returns: True if successful
@@ -2308,150 +2217,6 @@ begin
     result := TQtWidget(Handle).Props[str]
   else
     result := nil;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetRawImageFromDevice
-  Params:  none
-  Returns: True if successful
-
-  Important note: LCL requires that a Data and a Mask be allocated, even if not necessary,
- because it will try to free them without checking if they are nil.
-  Allocating dummy data wont leak memory, because LCL takes care to free it.
-  What is important here is to free all Qt handles utilized.
-  
-  This function is utilized when the function TBitmap.LoadFromDevice is called
-  
-  The main use for this function is to get a screenshot. It may have other uses,
- but this is the only one implemented here.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-var
-  IsDesktopDC: Boolean;
-  SrcWidth, SrcHeight: Integer;
-  WinID: Cardinal;
-  desktop: QDesktopWidgetH;
-  ScreenSize: TSize;
-  PScreenSize: PSize;
-  Pixmap: TQtPixmap;
-  Image: QImageH;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(SrcDC),
-     ' SrcWidth: ', dbgs(SrcRect.Right - SrcRect.Left),
-     ' SrcHeight: ', dbgs(SrcRect.Bottom - SrcRect.Top));
-  {$endif}
-
-  Result := True;
-
-  FillStandardDescription(NewRawImage.Description);
-
-  SrcWidth := SrcRect.Right - SrcRect.Left;
-  SrcHeight := SrcRect.Bottom - SrcRect.Top;
-  
-  IsDesktopDC := True; // Hard-coded, but a real check should be made
-
-  if IsDesktopDC then
-  begin
-    PScreenSize := @ScreenSize;
-
-    desktop := QApplication_desktop;
-
-    QWidget_size(QDesktopWidget_screen(desktop), PScreenSize);
-
-    WinID := QWidget_winId(QDesktopWidget_screen(desktop));
-
-    Pixmap := TQtPixmap.Create(PScreenSize);
-    try
-      NewRawImage.Mask := GetMem(1); // Creates a dummy mask
-
-      Pixmap.grabWindow(WinID);
-    
-      Image := QImage_Create;
-
-      Pixmap.toImage(Image);
-    
-      NewRawImage.DataSize := QImage_numBytes(Image);
-
-      NewRawImage.Data := GetMem(QImage_numBytes(Image));
-
-      Move(QImage_bits(Image)^, NewRawImage.Data^, QImage_numBytes(Image));
-    finally
-      Pixmap.Free;
-    end;
-
-    // In this case we use the size of the desktop
-    
-    NewRawImage.Description.Width := QWidget_width(QApplication_desktop);
-    NewRawImage.Description.Height := QWidget_height(QApplication_desktop);
-  end
-  else
-  begin
-    NewRawImage.Mask := GetMem(1); // Creates a dummy mask
-
-    NewRawImage.Data := GetMem(1); // Creates a dummy data
-
-    NewRawImage.Description.Width := SrcWidth;
-    NewRawImage.Description.Height := SrcHeight;
-  end;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
-  {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetRawImageFromBitmap
-  Params:  none
-  Returns: True if successful
-
-  Creates a raw image from a bitmap
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-var
-  Image: TQtImage;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetRawImageFromBitmap] SrcBitmap: ', dbghex(SrcBitmap));
-  {$endif}
-  Result := false;
-  
-  Image := TQtImage(SrcBitmap);
-  
-  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
-
-  FillStandardDescription(NewRawImage.Description);
-  
-  {
-    For now the image is simply entirely copyed and SrcRect is ignored.
-    
-    In the future this will need to change
-  }
-{  NewRawImage.Description.Width := SrcRect.Right - SrcRect.Left;
-  NewRawImage.Description.Height := SrcRect.Bottom - SrcRect.Top;
-
-  if (NewRawImage.Description.Width <= 0) or (NewRawImage.Description.Height <= 0)
-  then begin
-    DebugLn('WARNING: TQtWidgetSet.GetRawImageFromBitmap Intersection empty');
-    exit;
-  end;}
-
-  NewRawImage.Description.Width := Image.width;
-  NewRawImage.Description.Height := Image.height;
-
-  try
-    NewRawImage.DataSize := Image.numBytes;
-
-    // copy data
-    ReAllocMem(NewRawImage.Data, NewRawImage.DataSize);
-    if NewRawImage.DataSize > 0 then
-     Move(Image.bits()^, NewRawImage.Data^, NewRawImage.DataSize);
-  except
-    // Free partially copied data
-  end;
-  
-  Result := True;
 end;
 
 function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
@@ -4509,6 +4274,8 @@ function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean;
 var
+  SrcQDC: TQtDeviceContext absolute SrcDC;
+  DstQDC: TQtDeviceContext absolute DestDC;
   SrcRect, DstRect: TRect;
   SrcWidthOrig, SrcHeightOrig: Integer;
   Image: QImageH;
@@ -4524,7 +4291,7 @@ begin
      ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
   {$endif}
 
-  Image := TQtDeviceContext(SrcDC).vImage;
+  Image := SrcQDC.vImage;
   SrcWidthOrig := QImage_width(Image);
   SrcHeightOrig := QImage_height(Image);
 
@@ -4541,10 +4308,9 @@ begin
 
   DstRect := Bounds(X, Y, Width, Height);
   SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
-
-  TQtDeviceContext(DestDC).CorrectCoordinates(DstRect);
-  TQtDeviceContext(DestDC).CorrectCoordinates(SrcRect);
-  TQtDeviceContext(DestDC).drawImage(@DstRect, Image, @SrcRect);
+  DstQDC.CorrectCoordinates(DstRect);
+  DstQDC.CorrectCoordinates(SrcRect);
+  DstQDC.drawImage(@DstRect, Image, @SrcRect);
 
   Result := True;
 end;

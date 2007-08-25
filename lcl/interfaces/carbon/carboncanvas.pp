@@ -33,7 +33,11 @@ uses
  // LCL
   LCLProc, LCLType, Graphics, GraphType, Controls, Forms,
  // LCL Carbon
-  CarbonDef, CarbonGDIObjects;
+  CarbonDef, CarbonUtils,
+  {$ifdef DebugBitmaps}
+  CarbonDebug,
+  {$endif}
+  CarbonGDIObjects;
 
 type
   // device context data for SaveDC/RestoreDC
@@ -121,7 +125,8 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: Integer);
     procedure SetPixel(X, Y: Integer; AColor: TGraphicsColor);
     function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCarbonBitmapContext;
-      XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: DWORD): Boolean;
+      XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCarbonBitmap; XMsk,
+      YMsk: Integer; Rop: DWORD): Boolean;
   public
     property Size: TPoint read GetSize;
 
@@ -166,6 +171,8 @@ type
   TCarbonBitmapContext = class(TCarbonDeviceContext)
   private
     FBitmap: TCarbonBitmap;
+    function GetBitmap: TCarbonBitmap;
+    procedure SetBitmap(const AValue: TCarbonBitmap);
   protected
     function GetSize: TPoint; override;
   public
@@ -173,8 +180,7 @@ type
     destructor Destroy; override;
     procedure Reset; override;
   public
-    function GetBitmap: TCarbonBitmap;
-    procedure SetBitmap(const AValue: TCarbonBitmap);
+    property Bitmap: TCarbonBitmap read GetBitmap write SetBitmap;
   end;
   
   // TODO: TCarbonPrinterContext
@@ -1256,12 +1262,14 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  StretchMaskBlt
-  Params:  X, Y                - Left/top corner of the destination rectangle
-           Width, Height       - Size of the destination rectangle
-           SrcDC               - Carbon device context
-           XSrc, YSrc          - Left/top corner of the source rectangle
-           SrcWidth, SrcHeight - Size of the source rectangle
-           Rop                 - Raster operation to be performed (TODO)
+  Params:  X, Y                  - Left/top corner of the destination rectangle
+           Width, Height         - Size of the destination rectangle
+           SrcDC                 - Carbon device context
+           XSrc, YSrc            - Left/top corner of the source rectangle
+           SrcWidth, SrcHeight   - Size of the source rectangle
+           Mask                  - mask bitmap
+           XMask, YMask          - Left/top corner of the mask rectangle
+           Rop                   - Raster operation to be performed (TODO)
   Returns: If the function succeeds
 
   Copies a bitmap from a source rectangle into a destination rectangle using
@@ -1270,15 +1278,19 @@ end;
   the stretching mode currently set in the destination device context.
   TODO: copy from any canvas
         ROP
-        stretch mode
+        stretch mode (should be set by winapi call in DC (MWE))
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.StretchDraw(X, Y, Width, Height: Integer;
   SrcDC: TCarbonBitmapContext; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
-  Rop: DWORD): Boolean;
+  Msk: TCarbonBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
 var
-  Image: CGImageRef;
-  FreeImage: Boolean;
+  Image, MskImage: CGImageRef;
+  SubImage, SubMask: Boolean;
   Bitmap: TCarbonBitmap;
+  LayRect, DstRect: CGRect;
+  sts: OSStatus;
+  LayerContext: CGContextRef;
+  Layer: CGLayerRef;
 begin
   Result := False;
   
@@ -1293,29 +1305,56 @@ begin
 
     if Image = nil then Exit;
     
-    if (XSrc <> 0) or (YSrc <> 0) or (SrcWidth <> Bitmap.Width) or
-      (SrcHeight <> Bitmap.Height) then
-    begin
-      Image := Bitmap.GetSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
-      FreeImage := True;
+    DstRect := CGRectMake(X, Y, Abs(Width), Abs(Height));
+    
+    SubMask := (Msk <> nil)
+           and (Msk.CGImage <> nil)
+           and (  (XMsk <> 0)
+               or (YMsk <> 0)
+               or (Msk.Width <> SrcWidth)
+               or (Msk.Height <> SrcHeight));
+
+    SubImage := ((Msk <> nil) and (Msk.CGImage <> nil))
+             or (XSrc <> 0)
+             or (YSrc <> 0)
+             or (SrcWidth <> Bitmap.Width)
+             or (SrcHeight <> Bitmap.Height);
+             
+
+    if SubMask
+    then MskImage := Msk.CreateSubImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight))
+    else if Msk <> nil
+    then MskImage := Msk.CGImage
+    else MskImage := nil;
+    
+    if SubImage
+    then Image := Bitmap.CreateSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
+
+
+    if MskImage = nil
+    then begin
+      // Normal drawing
+      sts := HIViewDrawCGImage(CGContext, DstRect, Image);
+      Result := not OSError(sts, 'StretchMaskBlt', 'HIViewDrawCGImage');
     end
-    else
-      FreeImage := False;
-    
-    try
-      if OSError(
-        HIViewDrawCGImage(CGContext,
-          GetCGRectSorted(X, Y, X + Width, Y + Height), Image),
-        'StretchMaskBlt', 'HIViewDrawCGImage') then Exit;
-    finally
-      if FreeImage then CGImageRelease(Image);
+    else begin
+      // use temp layer to mask source image
+      // todo find a way to maks "hard" when stretching, now some soft remains are visible
+      LayRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
+      Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
+      LayerContext := CGLayerGetContext(Layer);
+      CGContextScaleCTM(LayerContext, 1, -1);
+      CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
+      CGContextClipToMask(LayerContext, LayRect, MskImage);
+      CGContextDrawImage(LayerContext, LayRect, Image);
+      CGContextDrawLayerInRect(CGContext, DstRect, Layer);
+      CGLayerRelease(Layer);
+      Result := True;
     end;
-    
-    Result := True;
-    //DebugLn('StretchMaskBlt succeeds: ', Format('Dest %d Src %d X %d Y %d',
-    //  [Integer(CGContext),
-    //  Integer(Image),
-    //  X, Y]));
+
+    if SubImage then CGImageRelease(Image);
+    if SubMask then CGImageRelease(MskImage);
+
   finally
     CGContextRestoreGState(CGContext);
   end;
@@ -1449,10 +1488,27 @@ begin
     CGContext := nil
   else
   begin
+    {$note TODO: convert data if image format is incomatible with context}
+    // MWE:
+    // A CGContext only supports a few formats of all the available image formats.
+    // When a format doesn't match we should convert the image data to the closest
+    // format supported. In order to do so, we should create the context and not
+    // the bitmap, since if a conversion is needed, we need to manage our own data.
+    // See QA1037 (for all)
+    //
+    // supported formats might use (there are more)
+    //  Gray 8 kCGImageAlphaNone               WWWWWWWW
+    //  RGB  5 kCGImageAlphaNoneSkipFirst      -RRRRRGGGGGBBBBB
+    //  RGB  8 kCGImageAlphaNoneSkipFirst      --------RRRRRRRRRGGGGGGGGBBBBBBBB
+    //  RGB  8 kCGImageAlphaNoneSkipLast       RRRRRRRRRGGGGGGGGBBBBBBBB--------
+    //  RGB  8 kCGImageAlphaPremultipliedFirst AAAAAAAARRRRRRRRRGGGGGGGGBBBBBBBB
+    //  RGB  8 kCGImageAlphaPremultipliedLast  RRRRRRRRRGGGGGGGGBBBBBBBBAAAAAAAA
+
     // create CGBitmapContext
-    CGContext := CGBitmapContextCreate(FBitmap.Data, FBitmap.Width,
-      FBitmap.Height, FBitmap.BitsPerComponent, FBitmap.BytesPerRow, RGBColorSpace,
-      kCGImageAlphaNoneSkipLast);
+    
+    CGContext := CGBitmapContextCreate(FBitmap.Data, FBitmap.Width, FBitmap.Height,
+                   FBitmap.BitsPerComponent, FBitmap.BytesPerRow, FBitmap.ColorSpace,
+                   FBitmap.Info);
 
     // flip and offset CTM to upper left corner
     CGContextTranslateCTM(CGContext, 0, FBitmap.Height);
@@ -1471,6 +1527,11 @@ begin
   if FBitmap = nil then Result := nil
   else
   begin
+    {$note TODO: convert data if image format is incomatible with context}
+    // See also comments in Reset.
+    // Before we update the bitmap, if needed, first the context data need to be
+    // converted
+    
     // update bitmap to reflect changes made via canvas
     FBitmap.Update;
     Result := FBitmap;

@@ -95,13 +95,13 @@ type
     platforms have a 8bit alpha channel).
 
     NOTE: due to its implementation, the TCustomImageList is not a TBitmap
-    collection. If a fast storage of bitmaps is needed, create your on list!
+    collection. If a fast storage of bitmaps is needed, create your own list!
   }
   
   // Some temp rework defines, for old functionality both need so be set
 
-  {$define IMGLIST_OLDSTYLE}     // Set to keep original functionality
-  {$define IMGLIST_KEEP_EXTRA}   // Not needed for Delphi compat.
+  {.$define IMGLIST_OLDSTYLE}     // Set to keep original functionality
+  {.$define IMGLIST_KEEP_EXTRA}   // Not needed for Delphi compat.
 
   {$ifdef IMGLIST_OLDSTYLE}
   // hack to set defines in dependent widgetsets.
@@ -119,8 +119,6 @@ type
     FHandle: THandle;
     FImageList: TList;
     FMaskList: TList;
-    {$endif}
-    {$ifdef IMGLIST_KEEP_EXTRA}
     FBitmap: TBitmap;
     FMaskBitmap: TBitmap;
     {$endif}
@@ -163,7 +161,6 @@ type
     {$endif}
   protected
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
-    procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
@@ -197,6 +194,7 @@ type
     procedure Delete(AIndex: Integer);
     destructor Destroy; override;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True);
+    procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetBitmap(Index: Integer; Image: TBitmap);
     {$ifdef IMGLIST_KEEP_EXTRA}
     procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;
@@ -227,7 +225,6 @@ type
     {$ifdef IMGLIST_OLDSTYLE}
     property Handle: THandle read FHandle;
     {$else}
-    property Handle;
     property HandleAllocated;
     {$endif}
     property Height: Integer read FHeight write SetHeight default 16;

@@ -67,7 +67,7 @@ begin
 
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if IsNullPen(TDeviceContext(DC)) then exit;
+      if TDeviceContext(DC).IsNullPen then exit;
 
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       inc(Left,DCOrigin.X);
@@ -75,7 +75,7 @@ begin
       inc(Right,DCOrigin.X);
       inc(Bottom,DCOrigin.Y);
       {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
-      gdk_draw_arc(Drawable, GetGC, 0, left, top, right - left, bottom - top,
+      gdk_draw_arc(Drawable, GC, 0, left, top, right - left, bottom - top,
                    Angle1*4, Angle2*4);
       {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     end else
@@ -734,11 +734,88 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateBitmap(Width, Height: Integer;
-  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+function TGtkWidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+
+type
+  TBitmapHeader = packed record
+    FileHeader : tagBitmapFileHeader;
+    InfoHeader : tagBitmapInfoHeader;
+  end;
+  
 var
   GdiObject: PGdiObject;
-  DefGdkWindow: PGdkWindow;
+
+  procedure FillBitmapInfo(out Header: TBitmapHeader);
+  begin
+    FillChar(Header, SizeOf(Header), 0);
+
+    Header.InfoHeader.biSize := SizeOf(Header.InfoHeader);
+    Header.InfoHeader.biWidth := Width;
+    Header.InfoHeader.biHeight := Height;
+    Header.InfoHeader.biPlanes := Planes;
+    Header.InfoHeader.biBitCount := Bitcount;
+    Header.InfoHeader.biCompression := BI_RGB;
+    Header.InfoHeader.biSizeImage := (((BitCount * Width + 31) shr 5) shl 2) * Height;
+    Header.InfoHeader.biXPelsPerMeter := GetDeviceCaps(0, LOGPIXELSX);
+    Header.InfoHeader.biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY);
+
+    Header.FileHeader.bfType      := LeToN($4D42);
+    Header.FileHeader.bfSize      := SizeOf(Header) + Header.InfoHeader.biSizeImage;
+    Header.FileHeader.bfOffBits   := SizeOf(Header);
+  end;
+
+  procedure LoadDataByPixbufLoader;
+  var
+    Header: TBitmapHeader;
+    Loader: PGdkPixbufLoader;
+    Src: PGDKPixbuf;
+  begin
+    Loader := gdk_pixbuf_loader_new;
+    if Loader = nil then Exit;
+
+    FillBitmapInfo(Header);
+
+    SRC := nil;
+
+    if gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@Header), SizeOf(Header) {$ifdef gtk2},nil{$endif})
+    then begin
+      if gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitmapBits), Header.InfoHeader.biSizeImage {$ifdef gtk2},nil{$endif})
+      then begin
+        Src := gdk_pixbuf_loader_get_pixbuf(loader);
+        if Src = nil
+        then DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Pixbuf!');
+      end
+      else DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Image!');
+    end
+    else DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Bitmap Header!');
+    gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
+
+    if Src = nil then Exit;
+
+    gdk_pixbuf_render_pixmap_and_mask(Src, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
+    gdk_pixbuf_unref(Src);
+
+    GdiObject^.Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject.Image);
+    if GdiObject^.Depth = 1
+    then begin
+      if GdiObject^.GDIPixmapObject.Mask <> nil
+      then gdk_pixmap_unref(GdiObject^.GDIPixmapObject.Mask);
+      GdiObject^.GDIPixmapObject.Mask := nil;
+      GdiObject^.GDIBitmapType := gbBitmap;
+    end
+    else begin
+      GdiObject^.GDIBitmapType := gbPixmap;
+    end;
+    
+
+    GdiObject^.Visual := gdk_window_get_visual(GDIObject^.GDIPixmapObject.Image);
+    if GdiObject^.Visual = nil
+    then GdiObject^.Visual := gdk_visual_get_best_with_depth(GdiObject^.Depth)
+    else gdk_visual_ref(GdiObject^.Visual);
+
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
+  end;
+
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrUInt(BitmapBits)]));
 
@@ -749,80 +826,36 @@ begin
     Exit;
   end;
 
-//write('TGtkWidgetSet.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
 
-  {$IFDEF DebugGDKTraps}
-  BeginGDKErrorTrap;
-  {$ENDIF}
-
-  // if the bitcount is 1 then create a gdkbitmap
-  // else create a gdkpixmap
-
-  {if BitCount > 1
+  if BitmapBits = nil
   then begin
-    Assert(False, Format('Trace:  [TGtkWidgetSet.CreateBitmap] gbPixmap', [])); }
-    DefGdkWindow := nil;
-    If BitCount = 1 then begin
+    if BitCount = 1
+    then begin
       GdiObject^.GDIBitmapType := gbBitmap;
-      GdiObject^.GDIBitmapObject := CreateGdkBitmap(DefGdkWindow,Width,Height);
+      GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, 1);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end
     else begin
       GdiObject^.GDIBitmapType := gbPixmap;
-      GdiObject^.GDIPixmapObject :=
-        gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+      GdiObject^.GDIPixmapObject.Image := gdk_pixmap_new(nil, Width, Height, BitCount);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject.Image);
     end;
     gdk_visual_ref(GdiObject^.Visual);
     GdiObject^.SystemVisual := False;
-
-    // the visual is created only when needed
-    {If GdiObject^.Visual <> nil then
-      gdk_visual_ref(GdiObject^.Visual)
-    else begin
-      GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
-      if GdiObject^.Visual=nil then begin
-        DebugLn('Warning: [TGtkWidgetSet.CreateBitmap] No visual for depth ',
-                BitCount,'. Using default.');
-        GdiObject^.Visual := gdk_visual_get_system;
-      end;
-    end;}
-
-    // the colormap is only created if needed
-    //GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
-
-    If BitmapBits <> nil then
-      LoadFromPixbufData(hBitmap(GdiObject), BitmapBits);
-
-  {end
-  else if Bitcount = 1
-  then begin
-    Assert(False, Format('Trace:  [TGtkWidgetSet.CreateBitmap] gbBitmap', []));
-    GdiObject^.GDIBitmapType := gbBitmap;
-    GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
-
-    GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
-    If GdiObject^.Visual = nil then
-      GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount)
-    else
-       gdk_visual_ref(GdiObject^.Visual);
-
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1)
-  end;
+  end
   else begin
-    Assert(False, Format('Trace:  [TGtkWidgetSet.CreateBitmap] gbImage', []));
-    GdiObject^.GDIBitmapType := gbImage;
-    GdiObject^.GDI_RGBImageObject := NewGDI_RGBImage(Width, Height, BitCount);
-    GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
-  end;}
+    // Load the data by faking it as a windows bitmap stream (this handles all conversion)
+    // Problem with his method is that it doesn't result in the bitmap requested.
+    // it is always a device compatible bitmap
+    // maybe we should add a gdPixBuf type the the GDIObject for formats not conmpatible
+    // with a native pixmap format
+
+    LoadDataByPixbufLoader;
+  end;
 
   Result := HBITMAP(GdiObject);
-//DebugLn('[TGtkWidgetSet.CreateBitmap] ',DbgS(Result,8));
+
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
@@ -832,136 +865,14 @@ end;
     var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): Boolean;
 
  ------------------------------------------------------------------------------}
+{$ifdef OldRawImageProcs}
 function TGtkWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-var
-  GdiObject: PGDIObject;
-  DefGDkWindow: PGdkWindow;
-  GDkWindow: PGdkWindow;
-  GC: PGdkGC;
-  ImgData: Pointer;
-  ImgWidth: Cardinal;
-  ImgHeight: Cardinal;
-  ImgDepth: Cardinal;
-  Visual: PGdkVisual;
-  GdkImage: PGdkImage;
-  ImgDataSize: Cardinal;
 begin
-  Result:=false;
-  Bitmap:=0;
-  MaskBitmap:=0;
-
-  if (RawImage.Description.Width=0) or (RawImage.Description.Height=0) then
-    exit;
-
-  try
-    {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage A ',
-      ' AlwaysCreateMask='+dbgs(AlwaysCreateMask),
-      ' Depth='+dbgs(RawImage.Description.Depth),
-      ' Width='+dbgs(RawImage.Description.Width),
-      ' Height='+dbgs(RawImage.Description.Height),
-      ' Data='+DbgS(RawImage.Data),
-      ' DataSize='+dbgs(RawImage.DataSize)+
-      ' Mask='+DbgS(RawImage.Mask)+
-      ' MaskSize='+dbgs(RawImage.MaskSize)+
-      ' Palette='+DbgS(RawImage.Palette)+
-      ' PaletteSize='+dbgs(RawImage.PaletteSize)+
-      ' BitsPerPixel='+dbgs(RawImage.Description.BitsPerPixel)+
-      '');
-    {$ENDIF}
-
-    // ToDo: check description
-
-    DefGdkWindow := nil;
-    GdiObject := NewGDIObject(gdiBitmap);
-    GdiObject^.GDIBitmapType := gbPixmap;
-
-    // create Pixmap from data
-    ImgWidth:=RawImage.Description.Width;
-    ImgHeight:=RawImage.Description.Height;
-    ImgDepth:=RawImage.Description.Depth;
-    ImgData:=RawImage.Data;
-    ImgDataSize:=RawImage.DataSize;
-
-    if ImgDepth=1 then begin
-      // create a GdkBitmap
-      if RawImage.Data<>nil then begin
-        GDkWindow:=gdk_bitmap_create_from_data(DefGdkWindow,ImgData,
-                                               ImgWidth,ImgHeight);
-      end else begin
-        GDkWindow := CreateGdkBitmap(DefGdkWindow,ImgWidth,ImgHeight);
-      end;
-      GdiObject^.GDIBitmapObject := GDkWindow;
-      GdiObject^.GDIBitmapType := gbBitmap;
-    end else begin
-      // create a GdkPixmap
-      if RawImage.Data<>nil then begin
-
-        { The gdk_pixmap_create_from_data seems to be buggy.
-          It only creates pixmaps of Depth 1
-            gdk_pixmap_create_from_data(DefGdkWindow,PGChar(RawImage.Data),
-                          RawImage.Description.Width, RawImage.Description.Height,
-                          RawImage.Description.Depth, @fg,@bg);}
-        GdkWindow:=gdk_pixmap_new(DefGdkWindow,ImgWidth,ImgHeight,ImgDepth);
-        // Create a GdkImage, copy our data into it and create a pixmap from it
-        Visual:=gdk_visual_get_best_with_depth(ImgDepth);
-        GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
-        {$IFDEF VerboseRawImage}
-        DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
-          ' BytesPerLine=',dbgs(GdkImage^.bpl),
-          ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
-          ' ByteOrder=',dbgs({$IFDEF Gtk1}GdkImage^.byte_order{$ELSE}ord(GdkImage^.byte_order){$ENDIF}),
-          '');
-        {$ENDIF}
-        if (RawImage.Description.BitsPerPixel<>GetPGdkImageBitsPerPixel(GdkImage))
-        then begin
-          RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
-        end;
-        if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then begin
-          RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible DataSize');
-        end;
-        System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
-        GC:=gdk_gc_new(GDkWindow);
-        gdk_draw_image(PGDKDrawable(GdkWindow),GC,
-                       GdkImage,0,0,0,0,ImgWidth,ImgHeight);
-        gdk_gc_unref(GC);
-        gdk_image_destroy(GdkImage);
-      end else begin
-        GDkWindow := gdk_pixmap_new(DefGdkWindow,
-                         RawImage.Description.Width,RawImage.Description.Height,
-                         RawImage.Description.Depth);
-      end;
-      GdiObject^.GDIPixmapObject := GDkWindow;
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
-      gdk_visual_ref(GdiObject^.Visual);
-      GdiObject^.SystemVisual := False;
-    end;
-
-    // if we are here the bitmap was created successfully
-    Bitmap:=HBITMAP(GdiObject);
-
-    // create mask
-    if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true)))
-    and (RawImage.Mask<>nil) then begin
-      {$IFDEF VerboseRawImage}
-      DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
-      {$ENDIF}
-      // gdk_bitmap_create_from_data expects rileByteBoundary
-      GdiObject^.GDIBitmapMaskObject :=
-          gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
-                       RawImage.Description.Width, RawImage.Description.Height);
-    end;
-
-  except
-    if Bitmap<>0 then DeleteObject(Bitmap);
-    Bitmap:=0;
-    if MaskBitmap<>0 then DeleteObject(MaskBitmap);
-    MaskBitmap:=0;
-    exit;
-  end;
-  Result:=true;
+  Result := RawImage_CreateBitmaps(RawImage, Bitmap, MaskBitmap);
 end;
+{$endif}
+  
 
 {------------------------------------------------------------------------------
   Function:  CreateBrushIndirect
@@ -1126,75 +1037,62 @@ end;
 
   Creates a bitmap compatible with the specified device context.
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateCompatibleBitmap(DC: HDC;
-  Width, Height: Integer): HBITMAP;
+function TGtkWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 var
-  Depth : Longint;
+  DevContext: TDeviceContext absolute DC;
   GDIObject: PGdiObject;
-  DefGdkWindow: PGDkWindow;
+  Depth : Longint;
+  Drawable, DefDrawable: PGDkDrawable;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
 
-  Depth := -1;
-
-  {$IFDEF DebugGDKTraps}
-  BeginGDKErrorTrap;
-  {$ENDIF}
-  if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil)) then begin
-    DefGdkWindow := TDeviceContext(DC).Drawable;
-    Depth := gdk_drawable_get_depth(TDeviceContext(DC).Drawable);
-  end else
-    DefGdkWindow:=nil;
-  If Depth = -1 then
+  if IsValidDC(DC) and (DevContext.Drawable <> nil)
+  then begin
+    DefDrawable := DevContext.Drawable;
+    Depth := gdk_drawable_get_depth(DevContext.Drawable);
+  end
+  else begin
+    DefDrawable := nil;
     Depth := gdk_visual_get_system^.Depth;
+  end;
+  
 
-  if Depth <> -1 then begin
-    if (Depth < 1) or (Depth > 32)
-    then begin
-      Result := 0;
-      DebugLn(Format('ERROR: [TGtkWidgetSet.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
-      {$IFDEF DebugGDKTraps}
-      EndGDKErrorTrap;
-      {$ENDIF}
-      Exit;
-    end;
-
-    GdiObject := NewGDIObject(gdiBitmap);
-
-    If Depth = 1 then begin
-      GdiObject^.GDIBitmapType := gbBitmap;
-      GdiObject^.GDIBitmapObject :=
-        gdk_pixmap_new(DefGdkWindow, Width, Height, Depth);
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
-    end
-    else begin
-      GdiObject^.GDIBitmapType := gbPixmap;
-      GdiObject^.GDIPixmapObject :=
-        gdk_pixmap_new(DefGdkWindow, Width, Height, Depth);
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
-    end;
-
-    If GdiObject^.Visual = nil then begin
-      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
-      If GdiObject^.Visual = nil then
-        GdiObject^.Visual := gdk_visual_get_system;
-      GdiObject^.SystemVisual := True;
-    end
-    else begin
-      gdk_visual_ref(GdiObject^.Visual);
-      GdiObject^.SystemVisual := False;
-    end;
-
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
-
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
-
-    Result := HBITMAP(GdiObject);
-
-  end else
+  if (Depth < 1) or (Depth > 32)
+  then begin
     Result := 0;
+    DebugLn(Format('ERROR: [TGtkWidgetSet.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
+    Exit;
+  end;
+
+  GdiObject := NewGDIObject(gdiBitmap);
+
+  Drawable := gdk_pixmap_new(DefDrawable, Width, Height, Depth);
+  GdiObject^.Visual := gdk_window_get_visual(Drawable);
+  if Depth = 1
+  then begin
+    GdiObject^.GDIBitmapType := gbBitmap;
+    GdiObject^.GDIBitmapObject := Drawable;
+  end
+  else begin
+    GdiObject^.GDIBitmapType := gbPixmap;
+    GdiObject^.GDIPixmapObject.Image := Drawable;
+  end;
+
+  if GdiObject^.Visual = nil
+  then begin
+    GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
+    if GdiObject^.Visual = nil
+    then GdiObject^.Visual := gdk_visual_get_system;
+    GdiObject^.SystemVisual := True;
+  end
+  else begin
+    gdk_visual_ref(GdiObject^.Visual);
+    GdiObject^.SystemVisual := False;
+  end;
+
+  GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
+
+  Result := HBITMAP(GdiObject);
 
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
@@ -1263,7 +1161,9 @@ function TGtkWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
     var
       c_bit, m_bit: byte;
     begin
-      c_bit := Ord(0.222 * c.red + 0.707 * c.green + 0.071 * c.blue >= $8000);
+      // c_bit := Ord(0.222 * c.red + 0.707 * c.green + 0.071 * c.blue >= $8000);
+      // do some int math
+      c_bit := Ord(222 * c.red + 707 * c.green + 071 * c.blue >= $8000 * 1000);
       m_bit := ord(MaskPixel = 1);
 
       AImgBits^ := AImgBits^ or (c_bit shl offset);
@@ -1324,8 +1224,9 @@ begin
   Result := 0;
   if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
   
+  {$note TODO: add support for mono cursors}
   Img := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
-  Msk := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapMaskObject;
+  Msk := CreateGdkMaskBitmap(ACursorInfo^.hbmColor, ACursorInfo^.hbmMask);
 
   gdk_drawable_get_size(Img, @W, @H);
 
@@ -1358,6 +1259,7 @@ begin
     
   gdk_pixmap_unref(srcbitmap);
   gdk_pixmap_unref(mskbitmap);
+  if Msk <> nil then gdk_pixmap_unref(msk);
 end;
 
 function TGtkWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
@@ -1998,40 +1900,40 @@ end;
 function TGtkWidgetSet.CreatePixmapIndirect(const Data: Pointer;
   const TransColor: Longint): HBITMAP;
 var
-  GdiObject: PGdiObject;
+  GdiObject: PGdiObject absolute Result;
   GDKColor: TGDKColor;
   ColorMap: PGdkColormap;
   P: Pointer;
   Depth : Longint;
 begin
   GdiObject := NewGDIObject(gdiBitmap);
-  if TransColor >= 0 then begin
+  if TransColor >= 0
+  then begin
     GDKColor := AllocGDKColor(TransColor);
     p := @GDKColor;
-  end else
-    p:=nil; // automatically create transparency mask
+  end
+  else p := nil; // automatically create transparency mask
 
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
 
-  ColorMap:=gdk_colormap_get_system;
+  ColorMap := gdk_colormap_get_system;
 
   try
-    GdiObject^.GDIPixmapObject :=
-      gdk_pixmap_colormap_create_from_xpm_d(nil,Colormap,
-             GdiObject^.GDIBitmapMaskObject, p, Data);
+    with GdiObject^.GDIPixmapObject do
+      Image := gdk_pixmap_colormap_create_from_xpm_d(nil, Colormap, Mask, p, Data);
 
-    Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
-    If GdiObject^.Visual <> nil then
-      GDK_Visual_UnRef(GdiObject^.Visual);
+    Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject.Image);
 
-    GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+    gdk_visual_unref(GdiObject^.Visual);
+    GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject.Image);
 
-    If GdiObject^.Visual = nil then begin
+    if GdiObject^.Visual = nil
+    then begin
       GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
-      If GdiObject^.Visual = nil then
-        GdiObject^.Visual := gdk_visual_get_system;
+      if GdiObject^.Visual = nil
+      then GdiObject^.Visual := gdk_visual_get_system;
       GdiObject^.SystemVisual := True;
     end
     else begin
@@ -2039,21 +1941,17 @@ begin
       GdiObject^.SystemVisual := False;
     end;
 
-    If GdiObject^.Colormap <> nil then
-      GDK_Colormap_UnRef(GdiObject^.Colormap);
-
+    gdk_colormap_unref(GdiObject^.Colormap);
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkFalse);
 
-    GdiObject^.GDIBitmapType:=gbPixmap;
+    GdiObject^.GDIBitmapType := gbPixmap;
   except
     DisposeGDIObject(GdiObject);
-    GdiObject:=nil;
+    GdiObject := nil;
   end;
   {$IFDEF DebugGDKTraps}
   EndGDKErrorTrap;
   {$ENDIF}
-
-  Result := HBITMAP(GdiObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -2827,7 +2725,7 @@ var
   begin
     inc(X1,Origin.X);
     inc(Y1,Origin.Y);
-    gdk_draw_point(TDeviceContext(DC).Drawable, TDeviceContext(DC).GetGC, X1, Y1);
+    gdk_draw_point(TDeviceContext(DC).Drawable, TDeviceContext(DC).GC, X1, Y1);
   end;
   
   procedure DrawVertLine(X1,Y1,Y2: integer);
@@ -2975,16 +2873,16 @@ begin
       BOuter := True;
     end;
 
-    gdk_gc_set_fill(GetGC, GDK_SOLID);
+    gdk_gc_set_fill(GC, GDK_SOLID);
     SelectedColors := dcscCustom;
 
     // Draw outer rect
     if BOuter then
-      DrawEdges(R,GetGC,Drawable,OuterTL,OuterBR);
+      DrawEdges(R, GC,Drawable,OuterTL,OuterBR);
 
     // Draw inner rect
     if BInner then
-      DrawEdges(R,GetGC,Drawable,InnerTL,InnerBR);
+      DrawEdges(R,GC,Drawable,InnerTL,InnerBR);
 
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterTL, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
@@ -2992,8 +2890,7 @@ begin
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
 
     //Draw interiour
-    if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and
-      not IsNullBrush(TDeviceContext(DC))
+    if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and not IsNullBrush
     then begin
       Width := R.Right - R.Left + 1;
       Height := R.Bottom - R.Top + 1;
@@ -3001,10 +2898,10 @@ begin
       if (GetBrush^.GDIBrushFill = GDK_SOLID)
       and (IsBackgroundColor(TColor(GetBrush^.GDIBrushColor.ColorRef)))
       then
-        StyleFillRectangle(Drawable, GetGC, GetBrush^.GDIBrushColor.ColorRef,
+        StyleFillRectangle(Drawable, GC, GetBrush^.GDIBrushColor.ColorRef,
                            R.Left, R.Top, Width, Height)
       else
-        gdk_draw_rectangle(Drawable, GetGC, 1, R.Left, R.Top, Width, Height);
+        gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
     end;
 
     // adjust rect if needed
@@ -3357,13 +3254,13 @@ begin
       {$IFDEF VerboseDoubleBuffer}
       DebugLn('TGtkWidgetSet.EndPaint Copying from buffer to window: ',Width,' ',Height);
       {$ENDIF}
-      gdk_gc_set_clip_region(DevContext.GetGC, nil);
-      gdk_gc_set_clip_rectangle(DevContext.GetGC, nil);
+      gdk_gc_set_clip_region(DevContext.GC, nil);
+      gdk_gc_set_clip_rectangle(DevContext.GC, nil);
 
       // hide caret
       HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
       // draw
-      gdk_window_copy_area(Widget^.Window, DevContext.GetGC, 0,0,
+      gdk_window_copy_area(Widget^.Window, DevContext.GC, 0,0,
         DCDrawable, 0, 0, Width, Height);
 
       {LCLObject:=GetParentLCLObject(Widget);
@@ -3862,19 +3759,21 @@ begin
     BeginGDKErrorTrap;
     {$ENDIF}
 
-    If not IsNullBrush(TDeviceContext(DC)) then begin
+    If not IsNullBrush
+    then begin
       SelectGDKBrushProps(DC);
-      gdk_draw_arc(Drawable, GetGC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+      gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                  0, 360 shl 6);
     end;
 
     // Draw outline
 
     SelectGDKPenProps(DC);
-    If (dcfPenSelected in DCFlags) then begin
+    if (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if not IsNullPen(TDeviceContext(DC)) then begin
-        gdk_draw_arc(Drawable, GetGC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+      if not IsNullPen
+      then begin
+        gdk_draw_arc(Drawable, GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                      0, 360 shl 6);
       end;
     end else
@@ -4029,7 +3928,7 @@ var
       if (Dx=nil) then begin
         // no dist array -> write as one block
         
-        gdk_draw_text(Buffer, UseFont, GetGC, TxtPt.X, TxtPt.Y,
+        gdk_draw_text(Buffer, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
       end else begin
         // dist array -> write each char separately
@@ -4046,7 +3945,7 @@ var
         i:=1;
         while (i<=LineLen) do begin
           //debugln('TGtkWidgetSet.ExtTextOut.DrawTextLine ',dbgs(CharLen),' ',dbgs(ord(LinePos^)));
-          gdk_draw_text(Buffer, UseFont, GetGC, CurX, TxtPt.Y, LinePos, CharLen);
+          gdk_draw_text(Buffer, UseFont, GC, CurX, TxtPt.Y, LinePos, CharLen);
           inc(LinePos,CharLen);
           inc(CurX,CurDistX^);
           inc(CurDistX);
@@ -4059,7 +3958,7 @@ var
         else
           UnderLineLen := gdk_text_width(UseFont,LineStart, LineLen);
         Y := TxtPt.Y + 1;
-        gdk_draw_line(Buffer, GetGC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
+        gdk_draw_line(Buffer, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
       end;
     end;
     {$IFDEF DebugGDKTraps}
@@ -4125,10 +4024,10 @@ begin
       BeginGDKErrorTrap;
       {$ENDIF}
       if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
-        StyleFillRectangle(buffer, GetGC, CurrentBackColor.ColorRef,
+        StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef,
                            Left, Top, Width, Height)
       else
-        gdk_draw_rectangle(buffer, GetGC, 1, Left, Top, Width, Height);
+        gdk_draw_rectangle(buffer, GC, 1, Left, Top, Width, Height);
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
@@ -4213,12 +4112,12 @@ begin
       if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
       and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
       then begin
-        StyleFillRectangle(drawable, GetGC,
+        StyleFillRectangle(drawable, GC,
                            CurrentBrush^.GDIBrushColor.ColorRef,
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height)
       end else begin
-        gdk_draw_rectangle(Drawable, GetGC, 1,
+        gdk_draw_rectangle(Drawable, GC, 1,
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height);
       end;
@@ -4243,24 +4142,22 @@ end;
 function TGtkWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
 var
   DCOrigin: TPoint;
+  DevCon: TDeviceContext absolute DC;
 begin
   Result:=0;
-  if IsValidDC(DC) then begin
-    with TDeviceContext(DC) do
-    begin
-      // Draw outline
-      SelectGDKPenProps(DC);
-      If (dcfPenSelected in DCFlags) then begin
-        Result := 1;
-        if not IsNullPen(TDeviceContext(DC)) then begin
-          DCOrigin:=GetDCOffset(TDeviceContext(DC));
-          gdk_draw_rectangle(Drawable, GetGC, 0,
-                             ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                             ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
-        end;
-      end;
-    end;
-  end;
+  if not IsValidDC(DC) then exit;
+  
+  // Draw outline
+  SelectGDKPenProps(DC);
+  if not (dcfPenSelected in DevCon.DCFlags) then Exit;
+
+  Result := 1;
+  if DevCon.IsNullPen then Exit;
+
+  DCOrigin := GetDCOffset(TDeviceContext(DC));
+  gdk_draw_rectangle(DevCon.Drawable, DevCon.GC, 0,
+                     ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                     ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
 end;
 
 {------------------------------------------------------------------------------
@@ -4352,7 +4249,7 @@ begin
         SelectedColors:=dcscCustom;
         EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        gdk_draw_rectangle(Drawable, GetGC, 0,
+        gdk_draw_rectangle(Drawable, GC, 0,
                            ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
                            ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
       end;
@@ -4453,35 +4350,12 @@ begin
     DebugLn('WARNING: [TGtkWidgetSet.GetBitmapBits] invalid Bitmap!');
 end;
 
-{------------------------------------------------------------------------------
-  Function: GetBitmapRawImageDescription
-  Params: Bitmap: HBITMAP;
-          Desc: PRawImageDescription
-  Returns: boolean;
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): boolean;
-var
-  GDIObject: PGDIObject;
-  GdkPixmap: PGdkPixmap;
+{$ifdef OldRawImageProcs}
+function TGtkWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean;
 begin
-  Result:=false;
-  if not IsValidGDIObject(Bitmap) then begin
-    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
-    exit;
-  end;
-  GDIObject:=PGDIObject(Bitmap);
-  case GDIObject^.GDIBitmapType of
-  gbBitmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIBitmapObject);
-  gbPixmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIPixmapObject);
-  else
-    GdkPixmap:=nil;
-    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
-    exit;
-  end;
-  Result:=GetWindowRawImageDescription(PGdkWindow(GdkPixmap),Desc);
+  Result := RawImage_DescriptionFromBitmap(Bitmap, Desc^);
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Function: GetCapture
@@ -4807,6 +4681,18 @@ begin
   end;
 end;
 
+{$ifdef OldRawImageProcs}
+function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result := RawImage_FromDevice(NewRawImage, SrcDC, SrcRect);
+end;
+
+function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result := RawImage_FromBitmap(NewRawImage, SrcBitmap, SrcMaskBitmap, SrcRect);
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   Function: GetRGNBox
   Params: rgn, lprect
@@ -5064,7 +4950,6 @@ begin
     If Drawable = nil then
       Result := GDK_Visual_Get_System^.Depth
     else
-      //gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @Result);
       Result := gdk_drawable_get_depth(Drawable);
 
   PLANES : { Number of planes }
@@ -5105,22 +4990,13 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function GetDeviceRawImageDescription(DC: HDC;
-                                        Desc: PRawImageDescription): boolean;
-
-  Retrieves the information about the structure of the supported image data.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetDeviceRawImageDescription(DC: HDC;
-  Desc: PRawImageDescription): boolean;
-var
-  GDKWindow: PGdkWindow;
+{$ifdef OldRawImageProcs}
+function TGtkWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
 begin
-  GdkWindow:=nil;
-  If IsValidDC(DC) then
-    GDKWindow:=PGdkWindow(TDeviceContext(DC).Drawable);
-  Result:=GetWindowRawImageDescription(GDKWindow,Desc);
+  Result := RawImage_DescriptionFromDevice(DC, Desc^);
 end;
+{$endif}
+
 
 {------------------------------------------------------------------------------
   function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
@@ -5342,166 +5218,182 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
-  Buf: Pointer): Integer;
+function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+  function GetObject_Bitmap: Integer;
+  var
+    NumColors, ImageDepth: Longint;
+    BitmapSection : TDIBSECTION;
+  begin
+    if Buf = nil
+    then begin
+      Result := SizeOf(TDIBSECTION);
+      Exit;
+    end;
+
+    Result := 0;
+
+    FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
+    with PGDIObject(GDIObj)^, BitmapSection,
+      BitmapSection.dsBm, BitmapSection.dsBmih
+    do begin
+      {dsBM - BITMAP}
+      bmType := LeToN($4D42);
+      bmWidth := 0 ;
+      bmHeight := 0;
+      {bmWidthBytes: Longint;}
+      bmPlanes := 1;//Does Bitmap Format support more?
+      bmBitsPixel := 1;
+      bmBits := nil;
+
+      {dsBmih - BITMAPINFOHEADER}
+      biSize := 40;
+      biWidth := 0;
+      biHeight := 0;
+      biPlanes := bmPlanes;
+      biBitCount := 1;
+
+      biCompression := 0;
+      biSizeImage := 0;
+
+      biXPelsPerMeter := 0;
+      biYPelsPerMeter := 0;
+
+      biClrUsed   := 0;
+      biClrImportant := 0;
+
+      {dsBitfields: array[0..2] of DWORD;
+      dshSection: THandle;
+      dsOffset: DWORD;}
+      
+      {$ifdef DebugGDKTraps}BeginGDKErrorTrap;{$endif}
+      case GDIBitmapType of
+        gbBitmap:
+          if GDIBitmapObject <> nil
+          then begin
+            gdk_window_get_size(GDIBitmapObject, @biWidth, @biHeight);
+            NumColors := 2;
+            biBitCount := 1;
+          end;
+        gbPixmap:
+          if GDIPixmapObject.Image <> nil
+          then begin
+            {$ifdef gtk1}
+            gdk_window_get_geometry(GDIPixmapObject.Image, nil, nil, @biWidth, @biHeight, @ImageDepth);
+            {$else}
+            gdk_drawable_get_size(GDIPixmapObject.Image, @biWidth, @biHeight);
+            ImageDepth := gdk_drawable_get_depth(GDIPixmapObject.Image);
+            {$endif}
+            biBitCount := ImageDepth;
+          end;
+      end;
+
+      if Visual = nil
+      then begin
+        Visual := gdk_visual_get_best_with_depth(biBitCount);
+        if Visual = nil
+        then  { Depth not supported }
+          Visual := gdk_visual_get_system;
+        SystemVisual := True; { This visual should not be referenced }
+
+        if Colormap <> nil then
+          gdk_colormap_unref(Colormap);
+        ColorMap := gdk_colormap_new(Visual, GdkTrue);
+      end
+      else
+        biBitCount := Visual^.Depth;
+
+      {$ifdef DebugGDKTraps}EndGDKErrorTrap;{$enDIF}
+      
+      if biBitCount < 16 then
+        NumColors := Colormap^.Size;
+
+      biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
+
+      if GetSystemMetrics(SM_CXSCREEN) >= biWidth then
+        biXPelsPerMeter := GetDeviceCaps(0, LOGPIXELSX)
+      else
+        biXPelsPerMeter :=
+          RoundToInt((single(biWidth) / GetSystemMetrics(SM_CXSCREEN)) *
+                GetDeviceCaps(0, LOGPIXELSX));
+
+      if GetSystemMetrics(SM_CYSCREEN) >= biHeight then
+        biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY)
+      else
+        biYPelsPerMeter :=
+          RoundToInt((Single(biHeight) / GetSystemMetrics(SM_CYSCREEN))*
+                GetDeviceCaps(0, LOGPIXELSY));
+
+      bmWidth := biWidth;
+      bmHeight := biHeight;
+      bmBitsPixel := biBitCount;
+
+      //Need to retrieve actual Number of Colors if Indexed Image
+      if bmBitsPixel < 16
+      then begin
+        biClrUsed   := NumColors;
+        biClrImportant := biClrUsed;
+      end;
+    end;
+    
+    if BufSize >= SizeOf(BitmapSection)
+    then begin
+      PDIBSECTION(Buf)^ := BitmapSection;
+      Result := SizeOf(TDIBSECTION);
+    end
+    else if BufSize>0
+    then begin
+      Move(BitmapSection,Buf^,BufSize);
+      Result := BufSize;
+    end;
+  end;
+  
 var
-  NumColors : Longint;
-  BitmapSection : TDIBSECTION;
+  GDIObject: PGDIObject absolute GDIObj;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
-  if IsValidGDIObject(GDIObj)
-  then begin
-    case PGDIObject(GDIObj)^.GDIType of
-      gdiBitmap:
-        begin
-          Assert(False, 'Trace:FINISH: [TGtkWidgetSet.GetObject] gdiBitmap');
-          if Buf = nil then
-            Result := SizeOf(TDIBSECTION)
-          else begin
-            FillChar(BitmapSection,SizeOf(TDIBSECTION),0);
-            With PGDIObject(GDIObj)^, BitmapSection,
-              BitmapSection.dsBm, BitmapSection.dsBmih
-            do begin
-              {dsBM - BITMAP}
-              bmType := $4D42;
-              bmWidth := 0 ;
-              bmHeight := 0;
-              {bmWidthBytes: Longint;}
-              bmPlanes := 1;//Does Bitmap Format support more?
-              bmBitsPixel := 1;
-              bmBits := nil;
+  if not IsValidGDIObject(GDIObj) then Exit;
+  
+  case GDIObject^.GDIType of
+    gdiBitmap: Result := GetObject_Bitmap;
 
-              {dsBmih - BITMAPINFOHEADER}
-              biSize := 40;
-              biWidth := 0;
-              biHeight := 0;
-              biPlanes := bmPlanes;
-              biBitCount := 1;
-
-              biCompression := 0;
-              biSizeImage := 0;
-
-              biXPelsPerMeter := 0;
-              biYPelsPerMeter := 0;
-
-              biClrUsed   := 0;
-              biClrImportant := 0;
-
-              {dsBitfields: array[0..2] of DWORD;
-              dshSection: THandle;
-              dsOffset: DWORD;}
-              {$IFDEF DebugGDKTraps}
-              BeginGDKErrorTrap;
-              {$ENDIF}
-              case GDIBitmapType of
-                gbBitmap:
-                  If GDIBitmapObject <> nil then begin
-                    GDK_WINDOW_GET_SIZE(GDIBitmapObject, @biWidth, @biHeight);
-                    NumColors := 2;
-                    biBitCount := 1;
-                  end;
-                gbPixmap:
-                  If GDIPixmapObject <> nil then begin
-                     biBitCount := word(gdk_drawable_get_depth(GDIPixmapObject));
-                     gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
-                  end;
-                {obsolete: gbImage :
-                  If GDI_RGBImageObject <> nil then
-                    With GDI_RGBImageObject^ do begin
-                      biHeight := Height;
-                      biWidth := Width;
-                      biBitCount := Depth;
-                    end;}
-              end;
-
-              If Visual = nil then begin
-                Visual := gdk_visual_get_best_with_depth(biBitCount);
-                If Visual = nil then  { Depth not supported }
-                  Visual := gdk_visual_get_system;
-                SystemVisual := True; { This visual should not be referenced }
-                If Colormap <> nil then
-                  gdk_colormap_unref(Colormap);
-                ColorMap := gdk_colormap_new(Visual, GdkTrue);
-              end else
-                biBitCount := Visual^.Depth;
-
-              {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-              If biBitCount < 16 then
-                NumColors := Colormap^.Size;
-
-              biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
-
-              If GetSystemMetrics(SM_CXSCREEN) >= biWidth then
-                biXPelsPerMeter := GetDeviceCaps(0, LOGPIXELSX)
-              else
-                biXPelsPerMeter :=
-                  RoundToInt((single(biWidth) / GetSystemMetrics(SM_CXSCREEN)) *
-                        GetDeviceCaps(0, LOGPIXELSX));
-
-              If GetSystemMetrics(SM_CYSCREEN) >= biHeight then
-                biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY)
-              else
-                biYPelsPerMeter :=
-                  RoundToInt((Single(biHeight) / GetSystemMetrics(SM_CYSCREEN))*
-                        GetDeviceCaps(0, LOGPIXELSY));
-
-              bmWidth := biWidth;
-              bmHeight := biHeight;
-              bmBitsPixel := biBitCount;
-
-              //Need to retrieve actual Number of Colors if Indexed Image
-              if (bmBitsPixel < 16) then begin
-                biClrUsed   := NumColors;
-                biClrImportant := biClrUsed;
-              end;
-            end;
-            if BufSize >= SizeOf(BitmapSection)
-            then begin
-              PDIBSECTION(Buf)^ := BitmapSection;
-              Result:= SizeOf(TDIBSECTION);
-            end else
-            if BufSize>0 then begin
-              Move(BitmapSection,Buf^,BufSize);
-              Result:=BufSize;
-            end;
-          end;
+    gdiBrush:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
+      end;
+    gdiFont:
+      begin
+        {$IfDef GTK2}
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiFont(PANGO)');
+        {$Else}
+        if Buf = nil
+        then begin
+          Result := SizeOf(GDIObject^.LogFont);
+          Exit;
+        End;
+        
+        if BufSize >= SizeOf(GDIObject^.LogFont)
+        then begin
+          PLogfont(Buf)^ := GDIObject^.LogFont;
+          Result:= SizeOf(TLogFont);
+        end
+        else if BufSize > 0
+        then begin
+          Move(GDIObject^.LogFont,Buf^,BufSize);
+          Result:=BufSize;
         end;
-
-      gdiBrush:
-        begin
-          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
-        end;
-      gdiFont:
-        begin
-          {$IfDef GTK2}
-          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiFont(PANGO)');
-          {$Else}
-          if Buf = nil then
-            Result := SizeOf(PGDIObject(GDIObj)^.LogFont)
-          else begin
-            if BufSize >= SizeOf(PGDIObject(GDIObj)^.LogFont)
-            then begin
-              PLogfont(Buf)^ := PGDIObject(GDIObj)^.LogFont;
-              Result:= SizeOf(TLogFont);
-            end else if BufSize>0 then begin
-              Move(PGDIObject(GDIObj)^.LogFont,Buf^,BufSize);
-              Result:=BufSize;
-            end;
-          end;
-          {$EndIf}
-        end;
-      gdiPen:
-        begin
-          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiPen');
-        end;
-      gdiRegion:
-        begin
-          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiRegion');
-        end;
-    else
-      DebugLn(Format('WARNING: [TGtkWidgetSet.GetObject] Unknown type %d', [Integer(PGDIObject(GDIObj)^.GDIType)]));
-    end;
+        {$EndIf}
+      end;
+    gdiPen:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiPen');
+      end;
+    gdiRegion:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiRegion');
+      end;
+  else
+    DebugLn('WARNING: [TGtkWidgetSet.GetObject] Unknown type %d', [Integer(GDIObject^.GDIType)]);
   end;
 end;
 
@@ -5529,121 +5421,6 @@ end;
 Function TGtkWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
   Result := gtk_object_get_data(pgtkobject(Handle),Str);
-end;
-
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
-    var NewRawImage: TRawImage): boolean;
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
-  var NewRawImage: TRawImage): boolean;
-var
-  DCOrigin: TPoint;
-  ARect: TRect;
-  GDKWindow: PGdkWindow;
-begin
-  Result:=false;
-  if not IsValidDC(SrcDC) then begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromDevice invalid SrcDC');
-    exit;
-  end;
-
-  DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
-  {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',dbgs(DCOrigin.X),',',dbgs(DCOrigin.Y),' SrcRect=',dbgs(SrcRect.Left),',',dbgs(SrcRect.Top),',',dbgs(SrcRect.Right),',',dbgs(SrcRect.Bottom));
-  {$ENDIF}
-  ARect:=SrcRect;
-  OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
-
-  if TDeviceContext(SrcDC).DCWidget<>nil then begin
-    GDKWindow:=PGdkWindow(TDeviceContext(SrcDC).Drawable);
-  end else begin
-    // get screen shot
-    {$IFDEF Gtk1}
-    exit;
-    {$ELSE}
-      {$IFDEF HasX}
-      GDKWindow:=gdk_screen_get_root_window(gdk_screen_get_default);
-      {$ELSE}
-      exit;
-      {$ENDIF}
-    {$ENDIF}
-  end;
-  Result:=GetRawImageFromGdkWindow(GDKWindow,nil,ARect,NewRawImage);
-end;
-
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
-    const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-var
-  GDIImg: PGDIObject;
-  GdkPixmap: PGdkPixmap;
-  GDIMaskImg: PGDIObject;
-  GdkMaskBitmap: PGdkBitmap;
-begin
-  Result:=false;
-  {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A');
-  {$ENDIF}
-  FillChar(NewRawImage,SizeOf(NewRawImage),0);
-
-  if (not IsValidGDIObject(SrcBitmap)) then begin
-    DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid SrcBitmap!');
-    exit;
-  end;
-  if ((SrcMaskBitmap<>0) and not IsValidGDIObject(SrcMaskBitmap)) then begin
-    DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap!');
-    exit;
-  end;
-
-  try
-    // get rawimage for Bitmap
-    GDIImg:=PGDIObject(SrcBitmap);
-    GdkPixmap:=nil;
-    case GDIImg^.GDIBitmapType of
-    gbBitmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIBitmapObject);
-    gbPixmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIPixmapObject);
-    else
-      DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] GDI_RGBImage not implemented');
-      exit;
-    end;
-    {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',DbgS(GdkPixmap),' SrcMaskBitmap=',DbgS(SrcMaskBitmap));
-    {$ENDIF}
-
-    GDIMaskImg:=nil;
-    GdkMaskBitmap:=nil;
-    if SrcMaskBitmap<>0 then begin
-      // use special mask SrcMaskBitmap
-      GDIMaskImg:=PGDIObject(SrcMaskBitmap);
-      case GDIMaskImg^.GDIBitmapType of
-      gbBitmap: GdkMaskBitmap:=GDIMaskImg^.GDIBitmapObject;
-      else
-        DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap');
-        exit;
-      end;
-    end else if GDIImg^.GDIBitmapMaskObject<>nil then begin
-      // use mask in SrcBitmap
-      GdkMaskBitmap:=GDIImg^.GDIBitmapMaskObject;
-    end else begin
-      // no mask available
-    end;
-
-    if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),GdkMaskBitmap,SrcRect,
-      NewRawImage)
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] unable to GetRawImageFromGdkWindow Image');
-      exit;
-    end;
-
-  except
-    FreeRawImageData(@NewRawImage);
-  end;
-  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -6878,9 +6655,10 @@ begin
   then with TDeviceContext(DC) do
   begin
     SelectGDKPenProps(DC);
-    if (dcfPenSelected in DCFlags) then begin
+    if dcfPenSelected in DCFlags
+    then begin
       Result := True;
-      if IsNullPen(TDeviceContext(DC)) then exit;
+      if IsNullPen then exit;
 
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
@@ -6901,7 +6679,7 @@ begin
         gdk_gc_set_line_attributes(GC, 0, GCValues.line_style,
                                    GDK_CAP_NOT_LAST, GCValues.join_style);
       end;
-      gdk_draw_line(Drawable, GetGC, FromX, FromY, ToX, ToY);
+      gdk_draw_line(Drawable, GC, FromX, FromY, ToX, ToY);
       if Restore then begin
         gdk_gc_set_line_attributes(GC, OldLineWidth, GCValues.line_style,
                                    OldCapStyle, GCValues.join_style);
@@ -7188,7 +6966,8 @@ begin
 
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
-    If not IsNullBrush(TDeviceContext(DC)) then begin
+    If not IsNullBrush
+    then begin
       SelectGDKBrushProps(DC);
       if Winding then begin
         // store old clipping
@@ -7205,15 +6984,16 @@ begin
         SelectClipRGN(DC, Tmp);
         DeleteObject(Tmp);
       end else
-        gdk_draw_polygon(Drawable, GetGC, 1, PointArray, NumPts);
+        gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
     end;
     
     // draw outline
 
     Result := True;
     SelectGDKPenProps(DC);
-    if not IsNullPen(TDeviceContext(DC)) then begin
-      gdk_draw_polygon(Drawable, GetGC, 0, PointArray, NumPts);
+    if not IsNullPen
+    then begin
+      gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
     end;
 
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
@@ -7246,9 +7026,10 @@ begin
 
     If (dcfPenSelected in DCFlags) then begin
       Result := True;
-      if not IsNullPen(TDeviceContext(DC)) then begin
+      if not IsNullPen
+      then begin
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_lines(Drawable, GetGC, PointArray, NumPts);
+        gdk_draw_lines(Drawable, GC, PointArray, NumPts);
         {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
       end;
     end else
@@ -7441,22 +7222,26 @@ begin
     SelectGDKBrushProps(DC);
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    If not IsNullBrush(TDeviceContext(DC)) then
+    
+    if not IsNullBrush
+    then begin
       if (GetBrush^.GDIBrushFill = GDK_SOLID)
       and (IsBackgroundColor(TColor(GetBrush^.GDIBrushColor.ColorRef))) then
-        StyleFillRectangle(Drawable, GetGC, GetBrush^.GDIBrushColor.ColorRef,
+        StyleFillRectangle(Drawable, GC, GetBrush^.GDIBrushColor.ColorRef,
                            Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
       else
-        gdk_draw_rectangle(Drawable, GetGC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
+        gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
+    end;
 
     // Draw outline
     SelectGDKPenProps(DC);
 
-    If (dcfPenSelected in DCFlags) then begin
+    if (dcfPenSelected in DCFlags)
+    then begin
       Result := True;
-      if not IsNullPen(TDeviceContext(DC)) then
-        gdk_draw_rectangle(Drawable, GetGC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
+      if not IsNullPen
+      then gdk_draw_rectangle(Drawable, GC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
                            Width, Height);
     end else
       Result:=false;
@@ -8006,133 +7791,141 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 
+var
+  DevCon: TDeviceContext absolute DC;
+  GDIObject: PGdiObject absolute GDIObj;
+  
+
   procedure RaiseInvalidGDIType;
   begin
     RaiseGDBException('TGtkWidgetSet.SelectObject Invalid GDIType '+IntToStr(ord(PGdiObject(GDIObj)^.GDIType)));
   end;
   
+  {$ifdef DebugLCLComponents}
+  procedure DebugInvalidDC;
+  begin
+    DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' IsValidDC(DC)=',IsValidDC(DC),' GDIObj=',dbghex(GDIObj)]);
+    DumpStack;
+    DebugLn(['DebugInvalidGDIObject DC:']);
+    Debugln(DebugDeviceContexts.GetInfo(Pointer(DC),true));
+  end;
+
   procedure DebugInvalidGDIObject;
   begin
-    DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' IsValidDC(DC)=',IsValidDC(DC),' GDIObj=',dbghex(GDIObj),' IsValidGDIObject(GDIObj)=',IsValidGDIObject(GDIObj)]);
+    DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' GDIObj=',dbghex(GDIObj),' IsValidGDIObject(GDIObj)=',IsValidGDIObject(GDIObj)]);
     DumpStack;
-    {$IFDEF DebugLCLComponents}
-    if not IsValidDC(DC) then begin
-      DebugLn(['DebugInvalidGDIObject DC:']);
-      debugln(DebugDeviceContexts.GetInfo(Pointer(DC),true));
-    end;
-    if not IsValidGDIObject(GDIObj) then begin
-      DebugLn(['DebugInvalidGDIObject GDIObj:']);
-      debugln(DebugGdiObjects.GetInfo(Pointer(GDIObj),true));
-    end;
-    {$ENDIF}
+    DebugLn(['DebugInvalidGDIObject GDIObj:']);
+    Debugln(DebugGdiObjects.GetInfo(Pointer(GDIObj),true));
   end;
+  {$endif}
   
+  function Select_Bitmap: HGDIOBJ;
+  var
+    NewDrawable: PGdkPixmap;
+  begin
+    Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
+    Result := HBITMAP(DevCon.GetBitmap); // always create, because a valid GDIObject is needed to restore
+    if DevCon.CurrentBitmap = GDIObject then Exit;
+    
+    DevCon.CurrentBitmap := GDIObject;
+    with DevCon.CurrentBitmap^ do
+      case GDIBitmapType of
+        gbPixmap: NewDrawable := GDIPixmapObject.Image;
+        gbBitmap: NewDrawable := GDIBitmapObject;
+      else
+        DebugLn('[TGtkWidgetSet.SelectObject] - Unknown bitmaptype, DC=0x%x', [DC]);
+        Exit;
+      end;
+
+    if NewDrawable = nil
+    then begin
+      DebugLn('[TGtkWidgetSet.SelectObject] - Empty bitmap, DC=0x%x', [DC]);
+      Exit;
+    end;
+
+    if DevCon.GC <> nil
+    then gdk_gc_unref(DevCon.GC);
+    DevCon.Drawable := NewDrawable;
+    DevCon.GC := gdk_gc_new(NewDrawable);
+    gdk_gc_set_function(DevCon.GC, GDK_COPY);
+    DevCon.SelectedColors := dcscCustom;
+  end;
+
 begin
   Result := 0;
 
-  {if not IsValidDC(DC) then begin
-    DebugLn('TGtkWidgetSet.SelectObject invalid DC ',DbgS(DC));
-  end;
-  if not IsValidGDIObject(GDIObj) then begin
-    DebugLn('TGtkWidgetSet.SelectObject invalid GDIObj ',DbgS(GDIObj));
-  end;}
-
-  if IsValidDC(DC) and IsValidGDIObject(GDIObj)
+  if not IsValidDC(DC)
   then begin
-    //DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' GDIObj=',dbghex(GDIObj),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion)]);
-    case PGdiObject(GDIObj)^.GDIType of
-
-      gdiBitmap:
-        with TDeviceContext(DC) do
-        begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
-          Result := HBITMAP(GetBitmap);// always create, because a valid GDIObject is needed to restore
-          if CurrentBitmap<>PGDIObject(GDIObj) then begin
-            CurrentBitmap := PGDIObject(GDIObj);
-            with CurrentBitmap^ do
-              case GDIBitmapType of
-                gbPixmap: Drawable := GDIPixmapObject;
-                gbBitmap: Drawable := GDIBitmapObject;
-              else
-                DebugLn(['TGtkWidgetSet.SelectObject WARNING: unknown GDIBitmapType']);
-                Drawable := nil;
-              end;
-            if Drawable<>nil then begin
-              //DebugLn(['TGtkWidgetSet.SelectObject DC=',DbgS(Pointer(DC)),' GDIBitmap=',DbgS(CurrentBitmap),
-              //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable)]);
-              if GC <> nil then begin
-                gdk_gc_unref(GC);
-                GC:=nil;
-              end;
-              GC := gdk_gc_new(Drawable);
-              gdk_gc_set_function(GC, GDK_COPY);
-              SelectedColors := dcscCustom;
-            end;
-          end;
-        end;
-
-      gdiBrush:
-        with TDeviceContext(DC), PGdiObject(GDIObj)^ do
-        begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
-          Result := HBRUSH(GetBrush);// always create, because a valid GDIObject is needed to restore
-          if CurrentBrush<>PGDIObject(GDIObj) then begin
-            CurrentBrush := PGDIObject(GDIObj);
-            gdk_gc_set_fill(GetGC, GDIBrushFill);
-            case GDIBrushFill of
-              GDK_STIPPLED: gdk_gc_set_stipple(GetGC, GDIBrushPixMap);
-              GDK_TILED:    gdk_gc_set_tile(GetGC, GDIBrushPixMap);
-            end;
-            SelectedColors := dcscCustom;
-          end;
-        end;
-
-      gdiFont:
-        with TDeviceContext(DC) do
-        begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
-          Result := HFONT(GetFont);// always create, because a valid GDIObject is needed to restore
-          if CurrentFont<> PGDIObject(GDIObj) then begin
-            //DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' Font Old=',dbghex(PtrInt(CurrentFont)),' New=',dbghex(GDIObj)]);
-            //dumpstack;
-            CurrentFont := PGDIObject(GDIObj);
-            {$IfDef GTK1}
-            gdk_gc_set_font(GetGC, PGdiObject(GDIObj)^.GDIFontObject);
-            {$ENDIF}
-            Exclude(DCFlags,dcfTextMetricsValid);
-            SelectedColors := dcscCustom;
-          end;
-        end;
-
-      gdiPen:
-        with TDeviceContext(DC) do
-        begin
-          Result := HPEN(GetPen);// always create, because a valid GDIObject is needed to restore
-          if CurrentPen<> PGDIObject(GDIObj) then begin
-            CurrentPen := PGDIObject(GDIObj);
-            DCFlags:=DCFlags-[dcfPenSelected];
-            SelectGDKPenProps(DC);
-            SelectedColors := dcscCustom;
-          end;
-        end;
-
-      gdiRegion:
-        with TDeviceContext(DC) do
-        begin
-          Result := HRGN(ClipRegion);
-          SelectClipRGN(DC, GDIObj)
-        end;
-
-    else
-      RaiseInvalidGDIType;
-    end;
-  end else begin
-    {$IFDEF DebugLCLComponents}
-    DebugInvalidGDIObject;
-    {$ENDIF}
+    {$ifdef DebugLCLComponents}
+    DebugInvalidDC;
+    {$endif}
+    Exit;
   end;
 
-  //DebugLn('[TGtkWidgetSet.SelectObject] GDI=',DbgS(GDIObj),'  Old=',DbgS(Result));
+  if not IsValidGDIObject(GDIObj)
+  then begin
+    {$ifdef DebugLCLComponents}
+    DebugInvalidGDIObject;
+    {$endif}
+    Exit;
+  end;
+  case PGdiObject(GDIObj)^.GDIType of
+    gdiBitmap:
+      Result := Select_Bitmap;
+
+    gdiBrush: begin
+      Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
+
+      Result := HBRUSH(DevCon.GetBrush);// always create, because a valid GDIObject is needed to restore
+      if DevCon.CurrentBrush = GDIObject then Exit;
+      
+      DevCon.CurrentBrush := GDIObject;
+      DevCon.SelectedColors := dcscCustom;
+      if DevCon.GC = nil then Exit;
+
+      gdk_gc_set_fill(DevCon.GC, GDIObject^.GDIBrushFill);
+      case GDIObject^.GDIBrushFill of
+        GDK_STIPPLED: gdk_gc_set_stipple(DevCon.GC, GDIObject^.GDIBrushPixMap);
+        GDK_TILED:    gdk_gc_set_tile(DevCon.GC, GDIObject^.GDIBrushPixMap);
+      end;
+    end;
+
+    gdiFont: begin
+      Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
+        
+      Result := HFONT(DevCon.GetFont);// always create, because a valid GDIObject is needed to restore
+      if DevCon.CurrentFont = GDIObject then Exit;
+      
+      DevCon.CurrentFont := GDIObject;
+      {$ifdef GTK1}
+      if DevCon.GC <> nil then
+        gdk_gc_set_font(DevCon.GC, GdiObject^.GDIFontObject);
+      {$endif}
+      Exclude(DevCon.DCFlags, dcfTextMetricsValid);
+      DevCon.SelectedColors := dcscCustom;
+    end;
+
+    gdiPen: begin
+      Result := HPEN(DevCon.GetPen);// always create, because a valid GDIObject is needed to restore
+      if DevCon.CurrentPen = GDIObject then Exit;
+
+      DevCon.CurrentPen := PGDIObject(GDIObj);
+      Exclude(DevCon.DCFlags, dcfPenSelected);
+      if DevCon.GC <> nil then
+        SelectGDKPenProps(DC);
+      DevCon.SelectedColors := dcscCustom;
+    end;
+
+    gdiRegion: begin
+      Result := HRGN(DevCon.ClipRegion);
+      if DevCon.GC <> nil
+      then SelectClipRGN(DC, GDIObj)
+      else DevCon.ClipRegion := nil;
+    end;
+
+  else
+    RaiseInvalidGDIType;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8876,7 +8669,7 @@ Begin
   if IsValidDC(DC)
   then with TDeviceContext(DC) do begin
     Result := GetROP2(DC);
-    gdk_gc_set_function(GetGC, ROP2ModeToGdkFunction(Mode));
+    gdk_gc_set_function(GC, ROP2ModeToGdkFunction(Mode));
   end else begin
     Assert(False, 'Trace:[TGtkWidgetSet.SetROP2] Invalid DC');
     Result := 0;
@@ -9620,8 +9413,7 @@ begin
     {$EndIf}
     SelectGDKTextProps(DC);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_draw_text(Drawable, UseFont,
-      GetGC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+    gdk_draw_text(Drawable, UseFont, GC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     If Underline or StrikeOut then begin
       {Create & select pen of font color}

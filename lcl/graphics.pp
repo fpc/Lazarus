@@ -1119,7 +1119,6 @@ type
   private
     FCanvas: TCanvas;
     FImage: TBitmapImage;
-    FPalette: HPALETTE;
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
@@ -1147,6 +1146,7 @@ type
     function GetWidth: Integer; override;
     function GetHandle: HBITMAP; virtual;
     function GetMaskHandle: HBITMAP; virtual;
+    function GetTransparent: Boolean; override;
     procedure HandleNeeded;
     procedure MaskHandleNeeded;
     procedure PaletteNeeded;
@@ -1162,8 +1162,8 @@ type
     procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
     procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
                                WriterClass: TFPCustomImageWriterClass); virtual;
-    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); virtual;
-    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); virtual;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); virtual;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); virtual;
     procedure FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
   public
@@ -1174,8 +1174,7 @@ type
     function HandleAllocated: boolean;
     function MaskHandleAllocated: boolean;
     function PaletteAllocated: boolean;
-    procedure CreateFromBitmapHandles(SrcBitmap, SrcMaskBitmap: HBitmap;
-                                      const SrcRect: TRect);
+    procedure CreateFromBitmapHandles(ABitmap, AMask: HBitmap; const ARect: TRect);
     function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
     procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromStream(Stream: TStream); override;
@@ -1190,6 +1189,7 @@ type
     procedure LoadFromXPMFile(const Filename: String);
     procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
     procedure Mask(ATransparentColor: TColor);
+    procedure SetHandles(ABitmap, AMask: HBITMAP);
     procedure SaveToStream(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
@@ -1209,7 +1209,6 @@ type
     procedure CreateIntfImage(var IntfImage: TLazIntfImage);
     function CreateIntfImage: TLazIntfImage;
     function CanReadGraphicStreams(AClass: TFPCustomImageWriterClass): boolean; virtual;
-    procedure SetHandles(NewHandle, NewMaskHandle: HBITMAP);
   public
     property Canvas: TCanvas read GetCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;
@@ -1265,7 +1264,7 @@ type
 
   TPortableNetworkGraphic = class(TFPImageBitmap)
   protected
-    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
   public
     class function GetFileExtensions: string; override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
@@ -1297,7 +1296,7 @@ type
     FBitmaps: TObjectList;
   protected
     procedure ReadData(Stream: TStream); override;
-    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
   public
     class function GetFileExtensions: string; override;
     property Bitmaps: TObjectList read FBitmaps;
@@ -1973,9 +1972,9 @@ begin
   end;
 end;
 
-procedure TIcon.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TIcon.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
 begin
-  inherited InitFPImageReader(ImgReader);
+  inherited InitFPImageReader(IntfImg, ImgReader);
   if ImgReader is TLazReaderIcon then
     TLazReaderIcon(ImgReader).Icon := self;
 end;

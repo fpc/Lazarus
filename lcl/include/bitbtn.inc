@@ -167,7 +167,7 @@ end;
 
 procedure TCustomBitBtn.RealizeKind;
 var
-  GlyphValid: Boolean;
+  GlyphValid, Handled: Boolean;
   CustomGlyph: TGraphic;
   BitmapHandle, MaskHandle: HBitmap;
 begin
@@ -178,8 +178,9 @@ begin
     // first let the user override
     if GetDefaultBitBtnGlyph <> nil then
     begin
-      CustomGlyph := GetDefaultBitBtnGlyph(Kind);
-      if CustomGlyph <> nil then
+      Handled := False;
+      CustomGlyph := GetDefaultBitBtnGlyph(Kind, Handled);
+      if Handled then
       begin
         Glyph.Assign(CustomGlyph);
         CustomGlyph.Free;
@@ -194,8 +195,7 @@ begin
       if BitmapHandle <> 0 then
       begin
         Glyph.Handle := BitmapHandle;
-        if MaskHandle <> 0 then
-          Glyph.MaskHandle := MaskHandle;
+        Glyph.MaskHandle := MaskHandle;
         GlyphValid := true;
       end;
     end;

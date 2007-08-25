@@ -89,10 +89,10 @@ end;}
   The BitBlt function copies a bitmap from a source context into a destination
   context using the specified raster operation.
  ------------------------------------------------------------------------------}
-Function TWinCEWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
-Begin
+function TWinCEWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+begin
   Result := Boolean(Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop));
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method:  BeginPaint
@@ -1259,243 +1259,6 @@ begin
 end;
 
 
-function TWinCEWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
-begin
-  Result := 0;
-end;
-
-{function TWinCEWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
-begin
-  Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
-end;}
-
-
-procedure TWinCEWidgetSet.FillRawImageDescriptionColors(Desc: PRawImageDescription);
-begin
-  case Desc^.BitsPerPixel of
-    1,4,8:
-      begin
-        // palette mode, no offsets
-        Desc^.Format := ricfGray;
-        Desc^.RedPrec := Desc^.BitsPerPixel;
-        Desc^.GreenPrec := 0;
-        Desc^.BluePrec := 0;
-        Desc^.RedShift := 0;
-        Desc^.GreenShift := 0;
-        Desc^.BlueShift := 0;
-      end;
-    16:
-      begin
-        // 5-6-5 mode
-        //roozbeh all changed from 5-5-5 to 5-6-5
-        Desc^.RedPrec := 5;
-        Desc^.GreenPrec := 6;
-        Desc^.BluePrec := 5;
-        Desc^.RedShift := 11;
-        Desc^.GreenShift := 5;
-        Desc^.BlueShift := 0;
-        Desc^.Depth := 16;
-      end;
-    24:
-      begin
-        // 8-8-8 mode
-        Desc^.RedPrec := 8;
-        Desc^.GreenPrec := 8;
-        Desc^.BluePrec := 8;
-        Desc^.RedShift := 16;
-        Desc^.GreenShift := 8;
-        Desc^.BlueShift := 0;
-      end;
-  else    //  32:
-    // 0-8-8-8 mode, high byte is not used
-    Desc^.RedPrec := 8;
-    Desc^.GreenPrec := 8;
-    Desc^.BluePrec := 8;
-    Desc^.RedShift := 16;
-    Desc^.GreenShift := 8;
-    Desc^.BlueShift := 0;
-    Desc^.Depth := 24;
-  end;
-end;
-
-
-procedure TWinCEWidgetSet.FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
-    Desc: PRawImageDescription);
-begin
-  Desc^.Format := ricfRGBA;
-  Desc^.HasPalette := BitmapInfo.bmBitsPixel <= 8;   // if true, each pixel is an index in the palette
-  Desc^.Depth := BitmapInfo.bmBitsPixel;          // used bits per pixel
-  Desc^.Width := BitmapInfo.bmWidth;
-  Desc^.Height := BitmapInfo.bmHeight;
-  Desc^.PaletteColorCount := 0;             // TODO, also `ColorCount'
-  Desc^.BitOrder := riboReversedBits;
-  Desc^.ByteOrder := riboLSBFirst;
-  Desc^.LineOrder := riloTopToBottom;
-  Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
-  Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
-  Desc^.LineEnd := rileDWordBoundary;
-  FillRawImageDescriptionColors(Desc);
-  Desc^.AlphaShift := 0;
-  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
-  // The next values are only valid, if there is a separate alpha mask
-  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
-  Desc^.AlphaPrec := 1;
-  Desc^.AlphaLineEnd := rileDWordBoundary;
-  Desc^.AlphaBitOrder := riboReversedBits;
-  Desc^.AlphaByteOrder := riboLSBFirst;
-end;
-
-
-function TWinCEWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): Boolean;
-var
-  BitmapInfo: Windows.TBitmap;
-begin
-  Result := Windows.GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
-  if Result then
-    FillRawImageDescription(BitmapInfo, Desc);
-end;
-
-
-
-function TWinCEWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
-begin
-  Result := true;
-
-  FillChar(Desc^, SizeOf(Desc^), 0);
-  Desc^.Format := ricfRGBA;
-  Desc^.HasPalette := (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0;
-  Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
-  // Width and Height not relevant
-  Desc^.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
-  Desc^.BitOrder := riboReversedBits;
-  Desc^.ByteOrder := riboLSBFirst;
-  Desc^.LineOrder := riloTopToBottom;
-  Desc^.ColorCount := Desc^.PaletteColorCount;
-  if Desc^.HasPalette then
-    Desc^.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES)
-  else
-    Desc^.BitsPerPixel := Desc^.Depth;
-  Desc^.LineEnd := rileDWordBoundary;
-  FillRawImageDescriptionColors(Desc);
-  Desc^.AlphaPrec := 1;
-  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
-  // The next values are only valid, if there is a separate alpha mask
-  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
-  Desc^.AlphaBitOrder := riboReversedBits;
-  Desc^.AlphaByteOrder := riboLSBFirst;
-  // CreateBitmap winapi call wants word-aligned data
-  Desc^.AlphaLineEnd := rileWordBoundary;
-  Desc^.AlphaShift := 0;
-end;
-
-
-
-function TWinCEWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-var
-  SrcWidth, SrcHeight: Integer;
-  hMemDC: HDC;
-  hMemBitmap: HBITMAP;
-  hOldObject: HGDIOBJ;
-begin
-  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
-
-  // make bitmap compatible to src device
-  SrcWidth := SrcRect.Right - SrcRect.Left;
-  SrcHeight := SrcRect.Bottom - SrcRect.Top;
-  hMemBitmap := Windows.CreateCompatibleBitmap(SrcDC, SrcWidth, SrcHeight);
-  Result := hMemBitmap <> 0;
-  if not Result then exit;
-
-  // make memory device context compatible to device, to select bitmap in for copying
-  hMemDC := Windows.CreateCompatibleDC(SrcDC);
-  Result := hMemDC <> 0;
-  hOldObject := Windows.SelectObject(hMemDC, hMemBitmap);
-
-  // copy srcdc -> membitmap
-  Result := Result and Windows.BitBlt(hMemDC, 0, 0, SrcWidth, SrcHeight,
-        SrcDC, SrcRect.Left, SrcRect.Top, SRCCOPY);
-
-  // done copying, deselect bitmap from dc
-  Windows.SelectObject(hMemDC, hOldObject);
-
-  // copy membitmap -> rawimage
-  Result := Result and GetRawImageFromBitmap(hMemBitmap, 0,
-    Rect(0, 0, SrcWidth, SrcHeight), NewRawImage);
-
-  // free temporary stuff
-  Windows.DeleteDC(hMemDC);
-  Windows.DeleteObject(hMemBitmap);
-end;
-
-procedure TWinCEWidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
-  const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte;
-  var Size: Cardinal);
-var
-  bmInfoBuffer: array[0..sizeof(TBitmapInfo)+256*sizeof(Windows.RGBQUAD)] of byte;
-  bmInfo: TBitmapInfo absolute bmInfoBuffer;
-  ScreenDC: HDC;
-begin
-  // initialize bitmapinfo structure
-  bmInfo.bmiHeader.biSize := sizeof(bmInfo.bmiHeader);
-  bmInfo.bmiHeader.biWidth := BitmapInfo.bmWidth;
-  bmInfo.bmiHeader.biHeight := BitmapInfo.bmHeight;
-  // request a top-down DIB
-  if bmInfo.bmiHeader.biHeight > 0 then
-    bmInfo.bmiHeader.biHeight := -bmInfo.bmiHeader.biHeight;
-  bmInfo.bmiHeader.biPlanes := 1;
-  bmInfo.bmiHeader.biBitCount := BitmapInfo.bmBitsPixel;
-  if BitmapInfo.bmBitsPixel=16 then
-  bmInfo.bmiHeader.biCompression := BI_RGB
-  else
-  bmInfo.bmiHeader.biCompression := BI_BITFIELDS;
-
-  bmInfo.bmiHeader.biSizeImage := 0;
-  Size := ((BitmapInfo.bmWidthBytes+3) and not 3) * (SrcRect.Bottom-SrcRect.Top);
-  ScreenDC := GetDC(0);
-  GetMem(Data, Size);
-  GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, Data, bmInfo, DIB_RGB_COLORS);
-  // release resources
-  ReleaseDC(0, ScreenDC);
-end;
-
-
-
-function TWinCEWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-var
-  BitmapInfo: Windows.TBitmap;
-  ARect: TRect;
-begin
-  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
-  Result := Windows.GetObject(SrcBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
-  if not Result then exit;
-
-  FillRawImageDescription(BitmapInfo, @NewRawImage.Description);
-  ARect := SrcRect;
-  if ARect.Top > BitmapInfo.bmHeight then
-    ARect.Top := BitmapInfo.bmHeight;
-  if ARect.Bottom > BitmapInfo.bmHeight then
-    ARect.Bottom := BitmapInfo.bmHeight;
-  if ARect.Left > BitmapInfo.bmWidth then
-    ARect.Left := BitmapInfo.bmWidth;
-  if ARect.Right > BitmapInfo.bmWidth then
-    ARect.Right := BitmapInfo.bmWidth;
-
-  // copy bitmap
-  AllocAndCopy(BitmapInfo, SrcBitmap, ARect, NewRawImage.Data, NewRawImage.DataSize);
-
-  // check mask
-  if SrcMaskBitmap <> 0 then
-  begin
-    Result := Windows.GetObject(SrcMaskBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
-    if not Result then exit;
-
-    AllocAndCopy(BitmapInfo, SrcMaskBitmap, ARect, NewRawImage.Mask, NewRawImage.MaskSize);
-    NewRawImage.Description.AlphaSeparate := true;
-  end;
-end;
-
-
 
 function BytesPerLine(nWidth,nBitsPerPixel:integer):integer;
 begin
@@ -1598,58 +1361,6 @@ exit;
     dwError := GetLastError();
     //writeln('Cannot create bitmap: %d');
     result := HBITMAP(GDI_ERROR);
-end;
-
-
-
-function TWinCEWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-var
-  BitmapInfo: ^TBitmapInfo;
-  hScreenDC,hVidDC: HDC;
-begin
-  BitmapInfo:=GetMem(sizeof(TBitmapInfo)+3*sizeof(TRGBQuad));
-  FillChar(BitmapInfo^, sizeof(TBitmapInfo)+3*sizeof(TRGBQuad), 0);
-  unaligned(BitmapInfo^.bmiHeader.biSize) := sizeof(TBITMAPINFOHEADER);
-  unaligned(BitmapInfo^.bmiHeader.biWidth) := RawImage.Description.Width;
-  unaligned(BitmapInfo^.bmiHeader.biHeight) := -RawImage.Description.Height;
-  unaligned(BitmapInfo^.bmiHeader.biPlanes) := 1;
-  unaligned(BitmapInfo^.bmiHeader.biBitCount) := RawImage.Description.BitsPerPixel;
-  if RawImage.Description.BitsPerPixel=16 then
-  unaligned(BitmapInfo^.bmiHeader.biCompression) := BI_BITFIELDS
-  else
-  unaligned(BitmapInfo^.bmiHeader.biCompression) := BI_RGB;
-
-  unaligned(BitmapInfo^.bmiHeader.biClrUsed) := 0;
-  unaligned(BitmapInfo^.bmiHeader.biClrImportant) := 0;
-  unaligned(BitmapInfo^.bmiHeader.biSizeImage) := BytesPerLine(BitmapInfo^.bmiHeader.biWidth,BitmapInfo^.bmiHeader.biBitCount)*RawImage.Description.Height;
-
-  unaligned(BitmapInfo^.bmiColors[0]) := TRGBQuad($1f);
-  unaligned(BitmapInfo^.bmiColors[1]) := TRGBQuad($3f shl 5);
-  unaligned(BitmapInfo^.bmiColors[2]) := TRGBQuad($1f shl 11);
-
-  hVidDC:= Windows.GetDC(0);
-
-  MaskBitmap := 0;
-
-  Bitmap := CreateDIBitmap(hVidDC, BitmapInfo^.bmiHeader, CBM_INIT, PChar(RawImage.Data),
-    BitmapInfo^, DIB_RGB_COLORS);
-
-  Result := Bitmap <> 0;
-  if Result then
-  begin
-    if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true))) then
-    begin
-      if RawImage.Description.AlphaSeparate then
-      begin
-        MaskBitmap := Windows.CreateBitmap(RawImage.Description.Width,
-                              RawImage.Description.Height, 1, 1, RawImage.Mask);
-        Result := Result and (MaskBitmap <> 0);
-      end;
-    end;
-  end;
-  FreeMem(BitmapInfo);
-  Windows.ReleaseDC(0, hVidDC);
 end;
 
 
@@ -2957,40 +2668,164 @@ End;
   rectangle.  Sizing is done according to the stretching mode currently set in
   the destination device context.
  ------------------------------------------------------------------------------}
-Function TWinCEWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
-Var
-  MaskDC: HDC;
-  SaveObj: HGDIOBJ;
+function TWinCEWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+  function CreatePremultipliedBitmap(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): HBITMAP;
+  var
+    SrcData: Pointer;
+    SrcPixel: PRGBAQuad absolute SrcData;
+    DstData: Pointer;
+    DstPixel: PRGBAQuad absolute DstData;
+    ByteCount: PtrUInt;
+    Info: record
+      Header: Windows.TBitmapInfoHeader;
+      Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+    end;
+  begin
+    Result := 0;
+    if not GetBitmapBytes(ABitmap, Rect(XSrc, YSrc, SrcWidth, SrcHeight), rileDWordBoundary, SrcData, ByteCount)
+    then begin
+      Exit;
+    end;
+
+    FillChar(Info.Header, SizeOf(Info.Header), 0);
+    Info.Header.biSize := SizeOf(Info.Header);
+    Info.Header.biWidth := SrcWidth;
+    Info.Header.biHeight := -SrcHeight;
+    Info.Header.biPlanes := 1;
+    Info.Header.biBitCount := 32;
+    Info.Header.biSizeImage := (SrcWidth * SrcHeight) shl 2;
+    // CE only supports bitfields
+    Info.Header.biCompression := BI_BITFIELDS;
+    Info.Colors[0] := $FF0000; {le-red}
+    Info.Colors[1] := $00FF00; {le-green}
+    Info.Colors[2] := $0000FF; {le-blue}
+
+    Result := Windows.CreateDIBSection(SrcDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstData, 0, 0);
+    if (Result = 0) or (DstData = nil)
+    then Exit;
+
+    ByteCount := ByteCount shr 2;
+    while ByteCount > 0 do
+    begin
+      DstPixel^.Red   := (SrcPixel^.Red   * SrcPixel^.Alpha) div 255;
+      DstPixel^.Green := (SrcPixel^.Green * SrcPixel^.Alpha) div 255;
+      DstPixel^.Blue  := (SrcPixel^.Blue  * SrcPixel^.Alpha) div 255;
+      DstPixel^.Alpha :=  SrcPixel^.Alpha;
+      Inc(SrcPixel);
+      Inc(DstPixel);
+      Dec(ByteCount);
+    end;
+  end;
+var
+  MaskDC, CopyDC, AlphaDC: HDC;
+  MaskObj, CopyObj, AlphaObj: HGDIOBJ;
   PrevTextColor, PrevBkColor: COLORREF;
-Begin
+  WinBmp: Windows.TBitmap;
+  Bmp, CopyBmp, AlphaBmp: HBITMAP;
+  HasAlpha: Boolean;
+  Blend: TBlendFunction;
+begin
+  //DbgDumpBitmap(Mask, 'StretchMaskBlt - Mask');
+
+  // check if the Src has an alpha channel
+  bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
+  // get info
+  HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
+          and (WinBmp.bmBitsPixel = 32);
+  if HasAlpha
+  then begin
+    // premultiply pixels
+    AlphaBmp := CreatePremultipliedBitmap(WinBmp, Bmp);
+    AlphaDC := Windows.CreateCompatibleDC(SrcDC);
+    AlphaObj := Windows.SelectObject(AlphaDC, AlphaBmp);
+
+    // init blendfunction
+    Blend.BlendOp := AC_SRC_OVER;
+    Blend.BlendFlags := 0;
+    Blend.SourceConstantAlpha := 255;
+    Blend.AlphaFormat := AC_SRC_ALPHA;
+  end;
+
+  //Windows.SetStretchBltMode(DestDC, STRETCH_HALFTONE);
+  Windows.SetBrushOrgEx(DestDC, 0, 0, nil);
   if Mask = 0 then
   begin
-    if (Width = SrcWidth) and (Height = SrcHeight) then
-    begin
-      Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
-    end else begin
-      Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
+    if HasAlpha
+    then begin
+      Result := WinCEExtra.AlphaBlend(DestDC, X, Y, Width, Height, AlphaDC, 0, 0, SrcWidth, SrcHeight, Blend);
+    end
+    else begin
+      if (Width = SrcWidth) and (Height = SrcHeight) then
+      begin
+        Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
+      end
+      else begin
+        Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
+      end;
     end;
-  end else begin
-    MaskDC := Windows.CreateCompatibleDC(0);
-    SaveObj := Windows.SelectObject(MaskDC, Mask);
-    PrevTextColor := Windows.SetTextColor(DestDC, RGB(255,255,255));
-    PrevBkColor := Windows.SetBkColor(DestDC, RGB(0,0,0));
-    if (Width = SrcWidth) and (Height = SrcHeight) then
-    begin
-      Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
-      Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
-      Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
-    end else begin
-      Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
-      Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCAND);
-      Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+  end
+  else begin
+    MaskDC := Windows.CreateCompatibleDC(DestDC);
+    MaskObj := Windows.SelectObject(MaskDC, Mask);
+
+    PrevTextColor := Windows.SetTextColor(DestDC, $00000000);
+    PrevBkColor := Windows.SetBkColor(DestDC, $00FFFFFF);
+
+    if HasAlpha
+    then begin
+      // create copy of masked destination
+      CopyDC := Windows.CreateCompatibleDC(DestDC);
+      CopyBmp := Windows.CreateCompatibleBitmap(DestDC, Width, Height);
+      CopyObj := Windows.SelectObject(CopyDC, CopyBmp);
+      Windows.BitBlt(CopyDC, 0, 0, Width, Height, DestDC, X, Y, SRCCOPY);
+      // wipe non masked area -> white
+      Windows.SetTextColor(CopyDC, $00FFFFFF);
+      Windows.SetBkColor(CopyDC, $00000000);
+      if (Width = SrcWidth) and (Height = SrcHeight)
+      then Windows.BitBlt(CopyDC, 0, 0, Width, Height, MaskDC, XSrc, YSrc, SRCPAINT)
+      else Windows.StretchBlt(CopyDC, 0, 0, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCPAINT);
+
+      // copy source
+      WinCEExtra.AlphaBlend(DestDC, X, Y, Width, Height, AlphaDC, 0, 0, SrcWidth, SrcHeight, Blend);
+      // wipe masked area -> white
+      if (Width = SrcWidth) and (Height = SrcHeight)
+      then Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCPAINT)
+      else Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCPAINT);
+
+      // paint copied destination
+      Windows.BitBlt(DestDC, X, Y, Width, Height, CopyDC, 0, 0, SRCAND);
+
+      // Restore stuff
+      Windows.SelectObject(CopyDC, CopyObj);
+      Windows.DeleteObject(CopyBmp);
+      Windows.DeleteDC(CopyDC);
+    end
+    else begin
+      if (Width = SrcWidth) and (Height = SrcHeight) then
+      begin
+        Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+        Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
+        Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+      end
+      else begin
+        Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+        Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCAND);
+        Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+      end;
     end;
     Windows.SetTextColor(DestDC, PrevTextColor);
     Windows.SetBkColor(DestDC, PrevBkColor);
-    Windows.SelectObject(MaskDC, SaveObj);
+    Windows.SelectObject(MaskDC, MaskObj);
     Windows.DeleteDC(MaskDC);
   end;
+
+  if HasAlpha
+  then begin
+    Windows.SelectObject(AlphaDC, AlphaObj);
+    Windows.DeleteObject(AlphaBmp);
+    Windows.DeleteDC(AlphaDC);
+  end;
+
   Result := true;
 end;
 

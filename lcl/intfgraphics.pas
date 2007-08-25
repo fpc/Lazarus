@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, fpImage, FPReadBMP, BMPComn, FPCAdds, AvgLvlTree, LCLType,
-  LCLProc, GraphType, LCLIntf;
+  LCLProc, GraphType, LCLIntf, FPReadPNG;
 
 type
   { TLazIntfImage }
@@ -96,10 +96,8 @@ type
       end;
     }
 
-  TOnGetLazIntfImagePixel = procedure(x, y: integer; var Color: TFPColor)
-                            of object;
-  TOnSetLazIntfImagePixel = procedure(x, y: integer; const Color: TFPColor)
-                            of object;
+  TLazIntfImageGetPixelProc = procedure(x, y: integer; out Color: TFPColor) of object;
+  TLazIntfImageSetPixelProc = procedure(x, y: integer; const Color: TFPColor) of object;
 
   TOnReadRawImageBits = procedure(TheData: PByte;
     const Position: TRawImagePosition;
@@ -114,64 +112,127 @@ type
 
   TLazIntfImage = class(TFPCustomImage)
   private
-    FAutoCreateMask: boolean;
-    FDataDescription: TRawImageDescription;
-    FPixelData: PByte;
-    FPixelDataSize: PtrUInt;
-    FMaskData: PByte;
-    FMaskDataSize: PtrUInt;
-    FLineStarts: PRawImagePosition;
-    FMaskLineStarts: PRawImagePosition;
+    FRawImage: TRawImage;
+    FLineStarts: PRawImageLineStarts;
+    FMaskLineStarts: PRawImageLineStarts;
+    FMaskSet: Boolean; // Set when atleast one maskpixel is set
     FUpdateCount: integer;
     fCreateAllDataNeeded: boolean;
     FGetSetColorFunctionsUpdateNeeded: boolean;
     FReadRawImageBits: TOnReadRawImageBits;
     FWriteRawImageBits: TOnWriteRawImageBits;
-    FAlphaReadRawImageBits: TOnReadRawImageBits;
-    FAlphaWriteRawImageBits: TOnWriteRawImageBits;
+    FMaskReadRawImageBits: TOnReadRawImageBits;
+    FMaskWriteRawImageBits: TOnWriteRawImageBits;
     FDataOwner: Boolean;
+    {$ifdef VER2_0}
+    // workaround for IE200310221 on 2.0.4
+    function GetDataDescription: TRawImageDescription;
+    function GetMaskData: PByte;
+    function GetPixelData: PByte;
+    {$endif}
+    function GetMasked(x, y: integer): Boolean;
     function GetTColors(x, y: integer): TGraphicsColor;
-    procedure SetAutoCreateMask(const AValue: boolean);
+    procedure SetMasked(x, y: integer; const AValue: Boolean);
     procedure SetTColors(x, y: integer; const AValue: TGraphicsColor);
   protected
-    OnGetInternalColor: TOnGetLazIntfImagePixel;
-    OnSetInternalColor: TOnSetLazIntfImagePixel;
+    FGetInternalColorProc: TLazIntfImageGetPixelProc;
+    FSetInternalColorProc: TLazIntfImageSetPixelProc;
     procedure SetUsePalette (Value: boolean); override;
     procedure SetInternalColor(x, y: integer; const Value: TFPColor); override;
-    function GetInternalColor(x, y: integer): TFPColor; override;
+    function  GetInternalColor(x, y: integer): TFPColor; override;
     procedure SetInternalPixel (x,y:integer; Value:integer); override;
-    function GetInternalPixel (x,y:integer) : integer; override;
-    procedure FreeAllData; virtual;
-    procedure FreePixelData; virtual;
-    procedure FreeMaskData; virtual;
-    procedure CreateDataAndLineStarts(var Data: Pointer; var DataSize: PtrUInt;
-                                      var TheLineStarts: PRawImagePosition;
-                                      TheBitsPerPixel: cardinal;
-                                      TheLineEnd: TRawImageLineEnd); virtual;
-    procedure SetDataDescription(const NewDescription: TRawImageDescription); virtual;
+    function  GetInternalPixel (x,y:integer) : integer; override;
+    procedure FreeData; virtual;
+    procedure SetDataDescription(const ADescription: TRawImageDescription); virtual;
     procedure ChooseGetSetColorFunctions; virtual;
     procedure ChooseRawBitsProc(BitsPerPixel: cardinal;
                                 ByteOrder: TRawImageByteOrder;
                                 BitOrder: TRawImageBitOrder;
-                                var ProcReadRawImageBits: TOnReadRawImageBits;
-                                var ProcWriteRawImageBits: TOnWriteRawImageBits);
+                                out ProcReadRawImageBits: TOnReadRawImageBits;
+                                out ProcWriteRawImageBits: TOnWriteRawImageBits);
     // get color functions
-    procedure GenericGetColor(x, y: integer; var Value: TFPColor);
-    procedure GetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; var Value: TFPColor);
-    procedure GetColor_NoPalette_RGBA_Alpha_Sep_NoMask(x, y: integer; var Value: TFPColor);
-    procedure GetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; var Value: TFPColor);
-    procedure GetColor_NoPalette_RGBA_NoAlpha(x, y: integer; var Value: TFPColor);
-    procedure GetColor_NoPalette_Gray(x, y: integer; var Value: TFPColor);
-    procedure GetColor_NULL(x, y: integer; var Value: TFPColor);
+    procedure GetColor_Generic(x, y: integer; out Value: TFPColor);
+    procedure GetColor_RGBA_NoPalette(x, y: integer; out Value: TFPColor);
+    procedure GetColor_RGB_NoPalette(x, y: integer; out Value: TFPColor);
+    procedure GetColor_Gray_NoPalette(x, y: integer; out Value: TFPColor);
+    procedure GetColor_NULL(x, y: integer; out Value: TFPColor);
+    // 32 bpp alpha
+    procedure GetColor_BPP32_A8R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_A8B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_A8G8R8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_A8G8B8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_A8R8B8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_A8B8R8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_B8G8R8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_R8G8B8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_G8B8R8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_G8R8B8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_B8R8G8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_R8B8G8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    // 32 bpp no alpha
+    procedure GetColor_BPP32_X8R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_X8B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_X8G8R8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_X8G8B8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_X8R8B8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_X8B8R8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_B8G8R8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_R8G8B8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_G8B8R8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_G8R8B8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_B8R8G8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP32_R8B8G8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    // 24 bpp
+    procedure GetColor_BPP24_B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP24_R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP24_G8B8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP24_G8R8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP24_B8R8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+    procedure GetColor_BPP24_R8B8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+
+    procedure GetMask_Generic(x, y: integer; out AValue: Boolean);
+
     // set color functions
-    procedure GenericSetColor(x, y: integer; const Value: TFPColor);
-    procedure SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; const Value: TFPColor);
-    procedure SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; const Value: TFPColor);
-    procedure SetColor_NoPalette_RGBA_NoAlpha(x, y: integer; const Value: TFPColor);
-    procedure SetColor_NoPalette_Gray(x, y: integer; const Value: TFPColor);
+    procedure SetColor_Generic(x, y: integer; const Value: TFPColor);
+    procedure SetColor_RGBA_NoPalette(x, y: integer; const Value: TFPColor);
+    procedure SetColor_RGB_NoPalette(x, y: integer; const Value: TFPColor);
+    procedure SetColor_Gray_NoPalette(x, y: integer; const Value: TFPColor);
     procedure SetColor_NULL(x, y: integer; const Value: TFPColor);
-    procedure SetColor_BPP32_R8G8B8_A1_BIO_TTB(x, y: integer; const Value: TFPColor);
-    procedure SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer; const Value: TFPColor);
+    // 32 bpp alpha
+    procedure SetColor_BPP32_A8R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_A8B8G8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_A8G8R8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_A8G8B8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_A8R8B8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_A8B8R8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_B8G8R8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8G8B8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_G8B8R8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_G8R8B8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_B8R8G8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8B8G8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    // 32 bpp no alpha
+    procedure SetColor_BPP32_X8R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_X8B8G8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_X8G8R8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_X8G8B8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_X8R8B8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_X8B8R8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_B8G8R8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8G8B8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_G8B8R8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_G8R8B8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_B8R8G8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8B8G8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    // 24 bpp
+    procedure SetColor_BPP24_B8G8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP24_R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP24_G8B8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP24_G8R8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP24_B8R8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP24_R8B8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+
+    procedure SetMask_Generic(x, y: integer; const AValue: Boolean);
   public
     constructor Create(AWidth, AHeight: integer); override;
     constructor Create(ARawImage: TRawImage; ADataOwner: Boolean);
@@ -181,35 +242,38 @@ type
     procedure SetSize(AWidth, AHeight: integer); override;
     function CheckDescription(const ADescription: TRawImageDescription;
                               ExceptionOnError: boolean): boolean; virtual;
-    procedure GetDescriptionFromDevice(DC: HDC); virtual;
-    procedure GetDescriptionFromBitmap(Bitmap: HBitmap); virtual;
-    procedure Set_BPP24_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer);
-    procedure Set_BPP32_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer);
     procedure LoadFromDevice(DC: HDC); virtual;
-    procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
-    procedure CreateBitmap(var Bitmap, MaskBitmap: HBitmap;
-                           AlwaysCreateMask: boolean); virtual;
-    procedure SetRawImage(const RawImage: TRawImage; ADataOwner: Boolean = True); virtual;
-    procedure GetRawImage(out RawImage: TRawImage); virtual;
+    procedure LoadFromBitmap(ABitmap, AMaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
+    procedure CreateBitmaps(var ABitmap, AMask: HBitmap; ASkipMask: boolean = False); virtual;
+    procedure SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean = True); virtual;
+    procedure GetRawImage(out ARawImage: TRawImage); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
-    procedure CopyPixels(Src: TFPCustomImage); virtual;
-    procedure GetXYDataPostion(x, y: integer; var Position: TRawImagePosition);
-    procedure GetXYMaskPostion(x, y: integer; var Position: TRawImagePosition);
-    function GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with byte aligned lines.
-    procedure CreateAllData; virtual;
-    procedure CreatePixelData; virtual;
-    procedure CreateMaskData; virtual;
-    function HasTransparency: boolean; virtual;
+    procedure CopyPixels(ASource: TFPCustomImage); virtual;
+    procedure AlphaFromMask(AKeepAlpha: Boolean = True);
+    procedure GetXYDataPostion(x, y: integer; out Position: TRawImagePosition);
+    procedure GetXYMaskPostion(x, y: integer; out Position: TRawImagePosition);
+    function  GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with byte aligned lines.
+    procedure CreateData; virtual;
+    function  HasTransparency: boolean; virtual;
+    function  HasMask: boolean; virtual;
   public
-    property PixelData: PByte read FPixelData;
-    property MaskData: PByte read FMaskData;
-    property DataDescription: TRawImageDescription read FDataDescription
+    {$ifdef VER2_0}
+    // workaround for IE200310221 on 2.0.4
+    property PixelData: PByte read GetPixelData;
+    property MaskData: PByte read GetMaskData;
+    property DataDescription: TRawImageDescription read GetDataDescription
                                                    write SetDataDescription;
-    property AutoCreateMask: boolean read FAutoCreateMask write SetAutoCreateMask;
+    {$else}
+    property PixelData: PByte read FRawImage.Data;
+    property MaskData: PByte read FRawImage.Mask;
+    property DataDescription: TRawImageDescription read FRawImage.Description
+                                                   write SetDataDescription;
+    {$endif}
     property TColors[x,y: integer]: TGraphicsColor read GetTColors write SetTColors;
+    property Masked[x,y:integer]: Boolean read GetMasked write SetMasked;
   end;
   
-  
+
   { TLazIntfImageMask }
   
   TLazIntfImageMask = class(TFPCustomImage)
@@ -334,36 +398,51 @@ type
   
   { TLazReaderBMP }
   { This is an imroved FPImage writer for bmp images. }
+  
+  TLazReaderMaskMode = (
+    lrmmNone,  // no mask is generated
+    lrmmAuto,  // a mask is generated based on the first pixel read (*)
+    lrmmColor  // a mask is generated based on the given color (*)
+  );
+  // (*) Note: when reading images with an alpha channel and the alpha channel
+  //           has no influence on the mask (unless the maskcolor is transparent)
+
+
   TLazReaderBMP = class (TFPCustomImageReader)
-  Private
-    FUseLeftBottomAsTransparent: Boolean;
-    Procedure FreeBufs;      // Free (and nil) buffers.
-  protected
-    ReadSize: Integer;       // Size (in bytes) of 1 scanline.
-    BFI: TBitMapInfoHeader;  // The header as read from the stream.
+  private
+    FImage: TLazIntfImage;
+  
+    FMaskMode: TLazReaderMaskMode;
+    FMaskColor: TFPColor; // color which should be interpreted as masked
+    FMaskIndex: Integer;  // for palette based images, index of the color which should be interpreted as masked
+
+    FReadSize: Integer;      // Size (in bytes) of 1 scanline.
+    FBFI: TBitMapInfoHeader; // The header as read from the stream.
     FPalette: PFPcolor;      // Buffer with Palette entries.
     FBitsPerPixel: Integer;  // bits per pixel (1, 4, 8, 15, 16, 24, 32)
-    FTransparentColor: TFPColor; // color which should be interpreted as transparent
-    LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
+    FLineBuf: PByte;         // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
+
+    procedure FreeBufs;      // Free (and nil) buffers.
+  protected
 
     // SetupRead will allocate the needed buffers, and read the colormap if needed.
-    procedure SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
-      ReadPalette: Boolean); virtual;
-    function  ColorToTrans(const InColor: TFPColor): TFPColor;
-    procedure ReadScanLine(Row: Integer; Stream: TStream); virtual;
-    procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); virtual;
-    function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor; virtual;
+    procedure SetupRead(nPalette, nRowBits: Integer; ReadPalette: Boolean); virtual;
+    procedure ReadScanLine(Row: Integer); virtual;
+    procedure WriteScanLine(Row: Cardinal); virtual;
     // required by TFPCustomImageReader
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
-    procedure InternalReadHead(Stream: TStream; Img: TFPCustomImage);
-    procedure InternalReadBody(Stream: TStream; Img: TFPCustomImage);
+    procedure InternalReadHead;
+    procedure InternalReadBody;
     function  InternalCheck(Stream: TStream) : boolean; override;
+    
+    property ReadSize: Integer read FReadSize;
+    property LineBuf: PByte read FLineBuf;
+    property BFI: TBitMapInfoHeader read FBFI;
   public
     constructor Create; override;
     destructor Destroy; override;
-    property TransparentColor: TFPColor read FTransparentColor write FTransparentColor;
-    property UseLeftBottomAsTransparent: Boolean read FUseLeftBottomAsTransparent
-                                              write FUseLeftBottomAsTransparent;
+    property MaskColor: TFPColor read FMaskColor write FMaskColor;
+    property MaskMode: TLazReaderMaskMode read FMaskMode write FMaskMode;
   end;
 
   { TLazReaderPartIcon }
@@ -373,7 +452,6 @@ type
     // required by TFPCustomImageReader
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
     function  InternalCheck(Stream: TStream) : boolean; override;
-    function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor; override;
   end;
 
   { TLazReaderIcon }
@@ -396,6 +474,26 @@ type
   protected
     function  InternalCheck(Stream: TStream) : boolean; override;
   end;
+  
+  { TLazReaderPNG }
+
+  TLazReaderPNG = class(TFPReaderPNG)
+  private
+    FImage: TLazIntfImage;
+    FReadingScanlines: Boolean;
+    procedure SetAlphaDescription;
+  protected
+    procedure HandleAlpha; override;
+    procedure HandleScanLine (const y : integer; const ScanLine : PByteArray); override;
+    function InternalCheck(Stream: TStream) : boolean; override;
+  public
+  end;
+
+
+// extra Rawimage utility functions
+function GetDescriptionFromDevice(ADC: HDC; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
+function GetDescriptionFromBitmap(ABitmap: HBitmap; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
+
 
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
 procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
@@ -407,6 +505,22 @@ implementation
 
 uses
   Graphics;
+  
+type
+  PFPColorBytes = ^TFPColorBytes;
+  TFPColorBytes = record
+    {$ifdef ENDIAN_LITTLE}
+    Rl, Rh, Gl, Gh, Bl, Bh, Al, Ah: Byte;
+    {$else}
+    Rh, Rl, Gh, Gl, Bh, Bl, Ah, Al: Byte;
+    {$endif}
+  end;
+  
+  PFourBytes = ^TFourBytes;
+  TFourBytes = record
+    B0, B1, B2, B3: Byte;
+  end;
+  
 
 var
   IsSpaceChar, IsNumberChar, IsHexNumberChar: array[char] of Boolean;
@@ -472,6 +586,22 @@ function dbgs(const FPColor: TFPColor): string;
 begin
   Result:='r='+hexStr(FPColor.Red,4)+',g='+hexStr(FPColor.green,4)
         +',b='+hexStr(FPColor.blue,4)+',a='+hexStr(FPColor.alpha,4);
+end;
+
+function GetDescriptionFromDevice(ADC: HDC; AWidth, AHeight: integer): TRawImageDescription;
+begin
+  Result.Init;
+  if not RawImage_DescriptionFromDevice(ADC, Result) then Exit;
+  if AWidth <> -1 then Result.Width := AWidth;
+  if AHeight <> -1 then Result.Height := AHeight;
+end;
+
+function GetDescriptionFromBitmap(ABitmap: HBitmap; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
+begin
+  Result.Init;
+  if not RawImage_DescriptionFromBitmap(ABitmap, Result) then Exit;
+  if AWidth <> -1 then Result.Width := AWidth;
+  if AHeight <> -1 then Result.Height := AHeight;
 end;
 
 procedure ReadRawImageBits_1_2_4_BIO(TheData: PByte;
@@ -801,7 +931,7 @@ begin
   Bits:=Bits shr (16-Prec);
 
 {$ifdef Endian_Little}
-  FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
+  FourBytes:=DWord(PWord(P)^) or (DWord(P[2]) shl 16);
 {$else}
   FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
 {$endif}
@@ -812,10 +942,10 @@ begin
 
 {$ifdef Endian_little}
   PWord(P)^ := Word(FourBytes);
-  (P+2)^ := Byte(FourBytes shr 16);
+  P[2] := Byte(FourBytes shr 16);
 {$else}  
   PWord(P)^ := Word(FourBytes shr 8);
-  P^ := Byte(FourBytes);
+  P[2] := Byte(FourBytes);
 {$endif}
 end;
 
@@ -919,20 +1049,19 @@ end;
 
 { TLazIntfImage }
 
-procedure TLazIntfImage.SetDataDescription(
-  const NewDescription: TRawImageDescription);
+procedure TLazIntfImage.SetDataDescription(const ADescription: TRawImageDescription);
 begin
-  if CompareMem(@FDataDescription,@NewDescription,SizeOf(TRawImageDescription))
-  then
-    exit;
-  CheckDescription(NewDescription,true);
+  if CompareMem(@FRawImage.Description, @ADescription, SizeOf(TRawImageDescription))
+  then Exit;
+  
+  CheckDescription(ADescription, True);
   BeginUpdate;
   try
-    FreeAllData;
-    fDataDescription:=NewDescription;
+    FreeData;
+    FRawImage.Description := ADescription;
     ChooseGetSetColorFunctions;
-    SetSize(0,0);
-    fCreateAllDataNeeded:=false;
+    SetSize(ADescription.Width, ADescription.Height);
+    FCreateAllDataNeeded := False;
   finally
     EndUpdate;
   end;
@@ -940,8 +1069,8 @@ end;
 
 procedure TLazIntfImage.ChooseRawBitsProc(BitsPerPixel: cardinal;
   ByteOrder: TRawImageByteOrder; BitOrder: TRawImageBitOrder;
-  var ProcReadRawImageBits: TOnReadRawImageBits;
-  var ProcWriteRawImageBits: TOnWriteRawImageBits);
+  out ProcReadRawImageBits: TOnReadRawImageBits;
+  out ProcWriteRawImageBits: TOnWriteRawImageBits);
 begin
   case BitsPerPixel of
 
@@ -1004,177 +1133,329 @@ begin
 end;
 
 procedure TLazIntfImage.ChooseGetSetColorFunctions;
+var
+  Desc: TRawImageDescription absolute FRawImage.Description;
 
+  function ChooseRGBA_32Bpp: Boolean;
+  var
+    Positions: Byte;
+  begin
+    Result := False;
+    if Desc.Depth <> 32 then Exit;
+    if Desc.BitsPerPixel <> 32 then Exit;
+    if Desc.LineOrder <> riloTopToBottom then Exit;
+    if Desc.AlphaPrec <> 8 then Exit;
+    if Desc.RedPrec <> 8 then Exit;
+    if Desc.GreenPrec <> 8 then Exit;
+    if Desc.BluePrec <> 8 then Exit;
+    if Desc.AlphaShift and 7 <> 0 then Exit;
+    if Desc.RedShift and 7 <> 0 then Exit;
+    if Desc.GreenShift and 7 <> 0 then Exit;
+    if Desc.BlueShift and 7 <> 0 then Exit;
+    
+    Positions := ((Desc.AlphaShift shr 3) and 3) shl 6
+              or ((Desc.RedShift shr 3) and 3) shl 4
+              or ((Desc.GreenShift shr 3) and 3) shl 2
+              or ((Desc.BlueShift shr 3) and 3);
+
+    if Desc.ByteOrder = riboMSBFirst
+    then Positions := not Positions; // reverse positions
+    
+    // the locations of A,R,G,B are now coded in 2 bits each: AARRBBGG
+    // the 2-bit value (0..3) represents the location of the channel,
+    // counting from left
+    case Positions of
+      {AARRGGBB}
+      %00011011: begin
+        FGetInternalColorProc := @GetColor_BPP32_A8R8G8B8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_A8R8G8B8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %00111001: begin
+        FGetInternalColorProc := @GetColor_BPP32_A8B8G8R8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_A8B8G8R8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %00100111: begin
+        FGetInternalColorProc := @GetColor_BPP32_A8G8R8B8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_A8G8R8B8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %00110110: begin
+        FGetInternalColorProc := @GetColor_BPP32_A8G8B8R8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_A8G8B8R8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %00011110: begin
+        FGetInternalColorProc := @GetColor_BPP32_A8R8B8G8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_A8R8B8G8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %00101101: begin
+        FGetInternalColorProc := @GetColor_BPP32_A8B8R8G8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_A8B8R8G8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %11100100: begin
+        FGetInternalColorProc := @GetColor_BPP32_B8G8R8A8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_B8G8R8A8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %11000110: begin
+        FGetInternalColorProc := @GetColor_BPP32_R8G8B8A8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_R8G8B8A8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %11100001: begin
+        FGetInternalColorProc := @GetColor_BPP32_G8B8R8A8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_G8B8R8A8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %11010010: begin
+        FGetInternalColorProc := @GetColor_BPP32_G8R8B8A8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_G8R8B8A8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %11011000: begin
+        FGetInternalColorProc := @GetColor_BPP32_B8R8G8A8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_B8R8G8A8_BIO_TTB;
+      end;
+      {AARRGGBB}
+      %11001001: begin
+        FGetInternalColorProc := @GetColor_BPP32_R8B8G8A8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_R8B8G8A8_BIO_TTB;
+      end;
+    else
+      Exit;
+    end;
+    Result := True;
+  end;
+
+  function ChooseRGB_32Bpp: Boolean;
+  var
+    Positions: Byte;
+  begin
+    Result := False;
+    if Desc.Depth <> 24 then Exit;
+    if Desc.BitsPerPixel <> 32 then Exit;
+    if Desc.LineOrder <> riloTopToBottom then Exit;
+    if Desc.RedPrec <> 8 then Exit;
+    if Desc.GreenPrec <> 8 then Exit;
+    if Desc.BluePrec <> 8 then Exit;
+    if Desc.RedShift and 7 <> 0 then Exit;
+    if Desc.GreenShift and 7 <> 0 then Exit;
+    if Desc.BlueShift and 7 <> 0 then Exit;
+
+    Positions := ((Desc.RedShift shr 3) and 3) shl 4
+              or ((Desc.GreenShift shr 3) and 3) shl 2
+              or ((Desc.BlueShift shr 3) and 3);
+
+    if Desc.ByteOrder = riboMSBFirst
+    then Positions := not Positions and $00FFFFFF; // reverse positions
+
+    // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG
+    // the 2-bit value (0..3) represents the location of the channel,
+    // counting from left
+    case Positions of
+      {xxRRGGBB}
+      %00011011: begin
+        FGetInternalColorProc := @GetColor_BPP32_X8R8G8B8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_X8R8G8B8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00111001: begin
+        FGetInternalColorProc := @GetColor_BPP32_X8B8G8R8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_X8B8G8R8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00100111: begin
+        FGetInternalColorProc := @GetColor_BPP32_X8G8R8B8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_X8G8R8B8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00110110: begin
+        FGetInternalColorProc := @GetColor_BPP32_X8G8B8R8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_X8G8B8R8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00011110: begin
+        FGetInternalColorProc := @GetColor_BPP32_X8R8B8G8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_X8R8B8G8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00101101: begin
+        FGetInternalColorProc := @GetColor_BPP32_X8B8R8G8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_X8B8R8G8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00100100: begin
+        FGetInternalColorProc := @GetColor_BPP32_B8G8R8X8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_B8G8R8X8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00000110: begin
+        FGetInternalColorProc := @GetColor_BPP32_R8G8B8X8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_R8G8B8X8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00100001: begin
+        FGetInternalColorProc := @GetColor_BPP32_G8B8R8X8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_G8B8R8X8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00010010: begin
+        FGetInternalColorProc := @GetColor_BPP32_G8R8B8X8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_G8R8B8X8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00011000: begin
+        FGetInternalColorProc := @GetColor_BPP32_B8R8G8X8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_B8R8G8X8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00001001: begin
+        FGetInternalColorProc := @GetColor_BPP32_R8B8G8X8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP32_R8B8G8X8_BIO_TTB;
+      end;
+    else
+      Exit;
+    end;
+    Result := True;
+  end;
+
+  function ChooseRGB_24Bpp: Boolean;
+  var
+    Positions: Byte;
+  begin
+    Result := False;
+    if Desc.Depth <> 24 then Exit;
+    if Desc.BitsPerPixel <> 24 then Exit;
+    if Desc.LineOrder <> riloTopToBottom then Exit;
+    if Desc.RedPrec <> 8 then Exit;
+    if Desc.GreenPrec <> 8 then Exit;
+    if Desc.BluePrec <> 8 then Exit;
+    if Desc.RedShift and 7 <> 0 then Exit;
+    if Desc.GreenShift and 7 <> 0 then Exit;
+    if Desc.BlueShift and 7 <> 0 then Exit;
+
+    Positions := ((Desc.RedShift shr 3) and 3) shl 4
+              or ((Desc.GreenShift shr 3) and 3) shl 2
+              or ((Desc.BlueShift shr 3) and 3);
+
+    if Desc.ByteOrder = riboMSBFirst
+    then Positions := not Positions and $00FFFFFF; // reverse positions
+
+    // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG
+    // the 2-bit value (0..3) represents the location of the channel,
+    // counting from left
+    case Positions of
+      {xxRRGGBB}
+      %00100100: begin
+        FGetInternalColorProc := @GetColor_BPP24_B8G8R8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP24_B8G8R8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00000110: begin
+        FGetInternalColorProc := @GetColor_BPP24_R8G8B8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP24_R8G8B8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00100001: begin
+        FGetInternalColorProc := @GetColor_BPP24_G8B8R8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP24_G8B8R8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00010010: begin
+        FGetInternalColorProc := @GetColor_BPP24_G8R8B8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP24_G8R8B8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00011000: begin
+        FGetInternalColorProc := @GetColor_BPP24_B8R8G8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP24_B8R8G8_BIO_TTB;
+      end;
+      {xxRRGGBB}
+      %00001001: begin
+        FGetInternalColorProc := @GetColor_BPP24_R8B8G8_BIO_TTB;
+        FSetInternalColorProc := @SetColor_BPP24_R8B8G8_BIO_TTB;
+      end;
+    else
+      Exit;
+    end;
+    Result := True;
+  end;
+  
   procedure ChooseRGBAFunctions;
   begin
-    //DebugLn('ChooseRGBAFunctions ',RawImageDescriptionAsString(@FDataDescription));
-    ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-                      FDataDescription.ByteOrder,
-                      FDataDescription.BitOrder,
+    ChooseRawBitsProc(Desc.BitsPerPixel, Desc.ByteOrder, Desc.BitOrder,
                       FReadRawImageBits, FWriteRawImageBits);
 
-    if FDataDescription.AlphaPrec>0 then
-    begin
-      if FDataDescription.AlphaSeparate then
-      begin
-        if (FMaskData<>nil) then
-        begin
-          OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_Mask;
-          OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_Sep_Mask;
-          with FDataDescription do begin
-            if (BitsPerPixel=32) and (Depth=24) and (BitOrder=riboBitsInOrder)
-            and (ByteOrder=DefaultByteOrder) and (LineOrder=riloTopToBottom)
-            and (LineEnd=rileDWordBoundary)
-            and (RedPrec=8)   and (RedShift=16)
-            and (GreenPrec=8) and (GreenShift=8)
-            and (BluePrec=8)  and (BlueShift=0)
-            then begin
-              if ByteOrder=DefaultByteOrder then
-                OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_TTB
-              else
-                OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO;
-            end;
-          end;
-        end
-        else begin
-          OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_NoMask;
-          OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
-        end;
-        ChooseRawBitsProc(FDataDescription.AlphaBitsPerPixel,
-                          FDataDescription.AlphaByteOrder,
-                          FDataDescription.AlphaBitOrder,
-                          FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
-      end
-      else begin
-        // alpha included
-        OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_NoSep;
-        OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_NoSep;
-        ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-                          FDataDescription.ByteOrder,
-                          FDataDescription.BitOrder,
-                          FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
-      end;
+    if Desc.AlphaPrec > 0
+    then begin
+      FGetInternalColorProc := @GetColor_RGBA_NoPalette;
+      FSetInternalColorProc := @SetColor_RGBA_NoPalette;
     end
     else begin
-      OnGetInternalColor:=@GetColor_NoPalette_RGBA_NoAlpha;
-      OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
+      FGetInternalColorProc := @GetColor_RGB_NoPalette;
+      FSetInternalColorProc := @SetColor_RGB_NoPalette;
     end;
   end;
 
 begin
   // Default: use the generic functions, that can handle all kinds of RawImages
-  OnGetInternalColor:=@GenericGetColor;
-  OnSetInternalColor:=@GenericSetColor;
+  FGetInternalColorProc := @GetColor_Generic;
+  FSetInternalColorProc := @SetColor_Generic;
   
-  if FUpdateCount>0 then begin
-    FGetSetColorFunctionsUpdateNeeded:=true;
-    exit;
+  if FUpdateCount > 0
+  then begin
+    FGetSetColorFunctionsUpdateNeeded := true;
+    Exit;
   end;
-  FGetSetColorFunctionsUpdateNeeded:=false;
+  FGetSetColorFunctionsUpdateNeeded := false;
 
-  if not FDataDescription.HasPalette then
-  begin
-    case FDataDescription.Format of
+  if Desc.MaskBitsPerPixel > 0
+  then begin
+    ChooseRawBitsProc(Desc.MaskBitsPerPixel,
+                      Desc.ByteOrder,
+                      Desc.MaskBitOrder,
+                      FMaskReadRawImageBits, FMaskWriteRawImageBits);
+  end;
 
-    ricfRGBA:
-      ChooseRGBAFunctions;
-
-    ricfGray:
-      begin
-        ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-                          FDataDescription.ByteOrder,
-                          FDataDescription.BitOrder,
-                          FReadRawImageBits, FWriteRawImageBits);
-        OnGetInternalColor:=@GetColor_NoPalette_Gray;
-        OnSetInternalColor:=@SetColor_NoPalette_Gray;
+  if Desc.PaletteColorCount = 0
+  then begin
+    case Desc.Format of
+      ricfRGBA: begin
+        if not (ChooseRGBA_32Bpp or ChooseRGB_32Bpp or ChooseRGB_24Bpp)
+        then ChooseRGBAFunctions;
       end;
-
+      ricfGray: begin
+        ChooseRawBitsProc(Desc.BitsPerPixel,
+                          Desc.ByteOrder,
+                          Desc.BitOrder,
+                          FReadRawImageBits, FWriteRawImageBits);
+        FGetInternalColorProc := @GetColor_Gray_NoPalette;
+        FSetInternalColorProc := @SetColor_Gray_NoPalette;
+      end;
     end;
-  end else begin
+  end
+  else begin
     // palette
     // ToDo
     DebugLn('WARNING: TLazIntfImage.ChooseGetSetColorFunctions Palette is unsupported');
   end;
 end;
 
-procedure TLazIntfImage.GenericGetColor(x, y: integer; var Value: TFPColor);
+procedure TLazIntfImage.GetColor_Generic(x, y: integer; out Value: TFPColor);
 var
   Position: TRawImagePosition;
-  MaskPosition: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  if not FDataDescription.HasPalette
+
+  if FRawImage.Description.PaletteColorCount = 0
   then begin
-    case FDataDescription.Format of
-    ricfRGBA:
-      begin
-        ReadRawImageBits(FPixelData,Position,
-                     FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,
-                     FDataDescription.RedShift,
-                     FDataDescription.BitOrder,Value.Red);
-        ReadRawImageBits(FPixelData,Position,
-                     FDataDescription.BitsPerPixel,
-                     FDataDescription.GreenPrec,
-                     FDataDescription.GreenShift,
-                     FDataDescription.BitOrder,Value.Green);
-        ReadRawImageBits(FPixelData,Position,
-                     FDataDescription.BitsPerPixel,
-                     FDataDescription.BluePrec,
-                     FDataDescription.BlueShift,
-                     FDataDescription.BitOrder,Value.Blue);
-
-        if FDataDescription.AlphaPrec>0
-        then begin
-          if FDataDescription.AlphaSeparate
-          then begin
-            if (FMaskData<>nil)
-            then begin
-              GetXYMaskPostion(x,y,MaskPosition);
-              ReadRawImageBits(FMaskData,MaskPosition,
-                           FDataDescription.AlphaBitsPerPixel,
-                           FDataDescription.AlphaPrec,
-                           FDataDescription.AlphaShift,
-                           FDataDescription.AlphaBitOrder,Value.Alpha);
-            end
-            else begin
-              // no alpha mask -> set opaque
-              Value.Alpha:=high(Value.Alpha);
-            end;
-          end
-          else begin
-            // alpha included
-            ReadRawImageBits(FPixelData,Position,
-                         FDataDescription.BitsPerPixel,
-                         FDataDescription.AlphaPrec,
-                         FDataDescription.AlphaShift,
-                         FDataDescription.BitOrder,Value.Alpha)
-          end
-        end
-        else begin
-          // no alpha -> set opaque
-          Value.Alpha:=high(Value.Alpha);
-        end;
-      end;
-
-    ricfGray:
-      begin
-        ReadRawImageBits(FPixelData,Position,
-                     FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,
-                     FDataDescription.RedShift,
-                     FDataDescription.BitOrder,Value.Red);
-        Value.Green:=Value.Red;
-        Value.Blue:=Value.Red;
-      end;
-
-    else
-      Value.Red:=0;
-      Value.Green:=0;
-      Value.Blue:=0;
-      Value.Alpha:=0;
-    end;
-  end else begin
+    FRawimage.ReadChannels(Position, Value.Red, Value.Green, Value.Blue, Value.Alpha);
+  end
+  else begin
     // ToDo: read index, then palette
     Value.Red:=0;
     Value.Green:=0;
@@ -1183,254 +1464,712 @@ begin
   end;
 end;
 
-procedure TLazIntfImage.GenericSetColor(x, y: integer; const Value: TFPColor);
+procedure TLazIntfImage.GetMask_Generic(x, y: integer; out AValue: Boolean);
 var
   Position: TRawImagePosition;
-  MaskPosition: TRawImagePosition;
+begin
+  if FRawImage.Description.MaskBitsPerPixel = 0
+  then begin
+    Avalue := False;
+  end
+  else begin
+    GetXYMaskPostion(x,y,Position);
+    FRawimage.ReadMask(Position, AValue);
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_Generic(x, y: integer; const Value: TFPColor);
+var
+  Position: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  if not FDataDescription.HasPalette then begin
-    case FDataDescription.Format of
-    ricfRGBA:
-      begin
-        WriteRawImageBits(FPixelData,Position,
-                      FDataDescription.BitsPerPixel,
-                      FDataDescription.RedPrec,
-                      FDataDescription.RedShift,
-                      FDataDescription.BitOrder,Value.Red);
-        WriteRawImageBits(FPixelData,Position,
-                      FDataDescription.BitsPerPixel,
-                      FDataDescription.GreenPrec,
-                      FDataDescription.GreenShift,
-                      FDataDescription.BitOrder,Value.Green);
-        WriteRawImageBits(FPixelData,Position,
-                      FDataDescription.BitsPerPixel,
-                      FDataDescription.BluePrec,
-                      FDataDescription.BlueShift,
-                      FDataDescription.BitOrder,Value.Blue);
-        if FDataDescription.AlphaPrec>0
-        then begin
-          if FDataDescription.AlphaSeparate
-          then begin
-            if (FMaskData<>nil)
-            then begin
-              GetXYMaskPostion(x,y,MaskPosition);
-              WriteRawImageBits(FMaskData,MaskPosition,
-                            FDataDescription.AlphaBitsPerPixel,
-                            FDataDescription.AlphaPrec,
-                            FDataDescription.AlphaShift,
-                            FDataDescription.AlphaBitOrder,Value.Alpha);
-            end
-            else begin
-              // no alpha mask
-            end;
-          end
-          else begin
-            // alpha included
-            WriteRawImageBits(FPixelData,Position,
-                          FDataDescription.BitsPerPixel,
-                          FDataDescription.AlphaPrec,
-                          FDataDescription.AlphaShift,
-                          FDataDescription.BitOrder, Value.Alpha)
-          end
-        end
-        else begin
-          // no alpha
-        end;
-      end;
 
-    ricfGray:
-      begin
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.RedPrec,FDataDescription.RedShift,
-                      FDataDescription.BitOrder,Value.Red);
-      end;
-
-    else
-    end;
-  end else begin
+  if FRawImage.Description.PaletteColorCount = 0
+  then begin
+    FRawImage.WriteChannels(Position, Value.Red, Value.Green, Value.Blue, Value.Alpha);
+  end
+  else begin
     // ToDo: Palette
   end;
 end;
 
-procedure TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer;
-  var Value: TFPColor);
+procedure TLazIntfImage.SetMask_Generic(x, y: integer; const AValue: Boolean);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
-  MaskPosition: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.RedPrec,FDataDescription.RedShift,
-               Value.Red);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.GreenPrec,FDataDescription.GreenShift,
-               Value.Green);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.BluePrec,FDataDescription.BlueShift,
-               Value.Blue);
-
-  GetXYMaskPostion(x,y,MaskPosition);
-  FAlphaReadRawImageBits(FMaskData,MaskPosition,
-               FDataDescription.AlphaPrec,
-               FDataDescription.AlphaShift,
-               Value.Alpha);
+  if Desc.MaskBitsPerPixel = 0 then Exit;
+  
+  GetXYMaskPostion(x,y,Position);
+  FRawImage.WriteMask(Position, AValue);
 end;
 
-procedure TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_NoMask(x, y: integer; var Value: TFPColor);
+
+procedure TLazIntfImage.GetColor_RGBA_NoPalette(x, y: integer; out Value: TFPColor);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.RedPrec,FDataDescription.RedShift,
-               Value.Red);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.GreenPrec,FDataDescription.GreenShift,
-               Value.Green);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.BluePrec,FDataDescription.BlueShift,
-               Value.Blue);
-
-  // no alpha mask -> set opaque
-  Value.Alpha:=high(Value.Alpha);
+  FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
+  FReadRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
+  FReadRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
+  FReadRawImageBits(FRawImage.Data, Position, Desc.AlphaPrec,Desc.AlphaShift, Value.Alpha);
 end;
 
-procedure TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; var Value: TFPColor);
+procedure TLazIntfImage.GetColor_RGB_NoPalette(x, y: integer; out Value: TFPColor);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.RedPrec,FDataDescription.RedShift,
-               Value.Red);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.GreenPrec,FDataDescription.GreenShift,
-               Value.Green);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.BluePrec,FDataDescription.BlueShift,
-               Value.Blue);
-
-  FAlphaReadRawImageBits(FPixelData,Position,
-               FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
-               Value.Alpha)
-end;
-
-procedure TLazIntfImage.GetColor_NoPalette_RGBA_NoAlpha(x, y: integer; var Value: TFPColor);
-var
-  Position: TRawImagePosition;
-begin
-  GetXYDataPostion(x,y,Position);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.RedPrec,FDataDescription.RedShift,
-               Value.Red);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.GreenPrec,FDataDescription.GreenShift,
-               Value.Green);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.BluePrec,FDataDescription.BlueShift,
-               Value.Blue);
-
+  FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
+  FReadRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
+  FReadRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
   // no alpha -> set opaque
   Value.Alpha:=high(Value.Alpha);
 end;
 
-procedure TLazIntfImage.GetColor_NoPalette_Gray(x, y: integer; var Value: TFPColor);
+procedure TLazIntfImage.GetColor_Gray_NoPalette(x, y: integer; out Value: TFPColor);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  FReadRawImageBits(FPixelData,Position,
-               FDataDescription.RedPrec,FDataDescription.RedShift,
-               Value.Red);
-  Value.Green:=Value.Red;
-  Value.Blue:=Value.Red;
+  FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
+  Value.Green := Value.Red;
+  Value.Blue := Value.Red;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
 end;
 
-procedure TLazIntfImage.GetColor_NULL(x, y: integer; var Value: TFPColor);
+procedure TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
 var
-  Position: TRawImagePosition;
+  VBytes: TFPColorBytes absolute Value;
 begin
-  GetXYDataPostion(x,y,Position);
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Ah := B0;
+    VBytes.Al := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Gh := B3;
+    VBytes.Gl := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Ah := B0;
+    VBytes.Al := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Gh := B3;
+    VBytes.Gl := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Ah := B0;
+    VBytes.Al := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+    VBytes.Rh := B3;
+    VBytes.Rl := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Ah := B0;
+    VBytes.Al := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Bh := B3;
+    VBytes.Bl := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Ah := B0;
+    VBytes.Al := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+    VBytes.Gh := B3;
+    VBytes.Gl := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Ah := B0;
+    VBytes.Al := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+    VBytes.Bh := B3;
+    VBytes.Bl := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Bh := B0;
+    VBytes.Bl := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Ah := B3;
+    VBytes.Al := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Bh := B0;
+    VBytes.Bl := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+    VBytes.Ah := B3;
+    VBytes.Al := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Gh := B0;
+    VBytes.Gl := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Ah := B3;
+    VBytes.Al := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Gh := B0;
+    VBytes.Gl := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+    VBytes.Ah := B3;
+    VBytes.Al := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Rh := B0;
+    VBytes.Rl := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+    VBytes.Ah := B3;
+    VBytes.Al := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Rh := B0;
+    VBytes.Rl := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+    VBytes.Ah := B3;
+    VBytes.Al := B3;
+  end;
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Gh := B3;
+    VBytes.Gl := B3;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Gh := B3;
+    VBytes.Gl := B3;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+    VBytes.Rh := B3;
+    VBytes.Rl := B3;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+    VBytes.Bh := B3;
+    VBytes.Bl := B3;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+    VBytes.Gh := B3;
+    VBytes.Gl := B3;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+    VBytes.Bh := B3;
+    VBytes.Bl := B3;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Bh := B0;
+    VBytes.Bl := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Bh := B0;
+    VBytes.Bl := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Gh := B0;
+    VBytes.Gl := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Gh := B0;
+    VBytes.Gl := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Rh := B0;
+    VBytes.Rl := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    VBytes.Rh := B0;
+    VBytes.Rl := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=24
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    VBytes.Bh := B0;
+    VBytes.Bl := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=24
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    VBytes.Bh := B0;
+    VBytes.Bl := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=24
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    VBytes.Gh := B0;
+    VBytes.Gl := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Rh := B2;
+    VBytes.Rl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=24
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    VBytes.Gh := B0;
+    VBytes.Gl := B0;
+    VBytes.Rh := B1;
+    VBytes.Rl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=24
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    VBytes.Rh := B0;
+    VBytes.Rl := B0;
+    VBytes.Bh := B1;
+    VBytes.Bl := B1;
+    VBytes.Gh := B2;
+    VBytes.Gl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=24
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    VBytes.Rh := B0;
+    VBytes.Rl := B0;
+    VBytes.Gh := B1;
+    VBytes.Gl := B1;
+    VBytes.Bh := B2;
+    VBytes.Bl := B2;
+  end;
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_NULL(x, y: integer; out Value: TFPColor);
+//var
+//  Position: TRawImagePosition;
+begin
+//  GetXYDataPostion(x,y,Position);
   Value.Red:=0;
   Value.Green:=0;
   Value.Blue:=0;
   Value.Alpha:=0;
 end;
 
-procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer;
-  const Value: TFPColor);
+procedure TLazIntfImage.SetColor_RGBA_NoPalette(x, y: integer; const Value: TFPColor);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
-  MaskPosition: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.RedPrec,FDataDescription.RedShift,
-                Value.Red);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                Value.Green);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.BluePrec,FDataDescription.BlueShift,
-                Value.Blue);
-
-  GetXYMaskPostion(x,y,MaskPosition);
-  FAlphaWriteRawImageBits(FMaskData,MaskPosition,
-                FDataDescription.AlphaPrec,
-                FDataDescription.AlphaShift,
-                Value.Alpha);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec,Desc.RedShift, Value.Red);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.AlphaPrec, Desc.AlphaShift, Value.Alpha)
 end;
 
-procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer;
-  const Value: TFPColor);
+procedure TLazIntfImage.SetColor_RGB_NoPalette(x, y: integer; const Value: TFPColor);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.RedPrec,FDataDescription.RedShift,
-                Value.Red);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                Value.Green);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.BluePrec,FDataDescription.BlueShift,
-                Value.Blue);
-
-  FAlphaWriteRawImageBits(FPixelData,Position,
-                FDataDescription.AlphaPrec,
-                FDataDescription.AlphaShift,
-                Value.Alpha)
-end;
-
-procedure TLazIntfImage.SetColor_NoPalette_RGBA_NoAlpha(x, y: integer; const Value: TFPColor);
-var
-  Position: TRawImagePosition;
-begin
-  GetXYDataPostion(x,y,Position);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.RedPrec,FDataDescription.RedShift,
-                Value.Red);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                Value.Green);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.BluePrec,FDataDescription.BlueShift,
-                Value.Blue);
-
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
   // no alpha -> ignore
 end;
 
-procedure TLazIntfImage.SetColor_NoPalette_Gray(x, y: integer;
-  const Value: TFPColor);
+procedure TLazIntfImage.SetColor_Gray_NoPalette(x, y: integer; const Value: TFPColor);
 var
+  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  FWriteRawImageBits(FPixelData,Position,
-                FDataDescription.RedPrec,FDataDescription.RedShift,
-                Value.Red);
+  FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
 end;
 
 procedure TLazIntfImage.SetColor_NULL(x, y: integer; const Value: TFPColor);
@@ -1438,76 +2177,466 @@ begin
   // NULL, not implemented
 end;
 
-procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB(x, y: integer;
-  const Value: TFPColor);
-// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
-// BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
-// LineOrder=riloTopToBottom
-// BitsPerPixel=32 LineEnd=rileDWordBoundary
-// RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
-// AlphaSeparate=true
+procedure TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
 var
-  Position: PCardinal;
-  Pixel: Cardinal;
-  AlphaPosition: Integer;
-  AlphaBitPosition: Integer;
-  AlphaByte: Byte;
+  VBytes: TFPColorBytes absolute Value;
 begin
-  Position:=PCardinal(FPixelData+FLineStarts[y].Byte+(x shl 2));
-  Pixel:=((Value.Red shr 8) shl 16)
-         +((Value.Green shr 8) shl 8)
-         +(Value.Blue shr 8);
-  Position^:=Pixel;
-
-  AlphaPosition:=FMaskLineStarts[y].Byte+(cardinal(x) shr 3);
-  AlphaBitPosition:=(x and 7);
-  AlphaByte:=FMaskData[AlphaPosition];
-  if Value.Alpha>=$8000 then
-    AlphaByte:=AlphaByte or (1 shl AlphaBitPosition)
-  else
-    AlphaByte:=AlphaByte and not (1 shl AlphaBitPosition);
-  FMaskData[AlphaPosition]:=AlphaByte;
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Ah;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Gh;
+    B3 := VBytes.Bh;
+  end;
 end;
 
-procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer;
-  const Value: TFPColor);
-// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
-// BitOrder=riboBitsInOrder ByteOrder=not DefaultByteOrder
-// LineOrder=riloTopToBottom
-// BitsPerPixel=32 LineEnd=rileDWordBoundary
-// RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
-// AlphaSeparate=true
+procedure TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
 var
-  Position: PCardinal;
-  Pixel: Cardinal;
-  AlphaPosition: Integer;
-  AlphaBitPosition: Integer;
-  AlphaByte: Byte;
+  VBytes: TFPColorBytes absolute Value;
 begin
-  Position:=PCardinal(FPixelData+FLineStarts[y].Byte+(x shl 2));
-  Pixel:=(Value.Red shr 8)
-         +((Value.Green shr 8) shl 8)
-         +((Value.Blue shr 8) shl 16);
-  Position^:=Pixel;
-
-  AlphaPosition:=FMaskLineStarts[y].Byte+(cardinal(x) shr 3);
-  AlphaBitPosition:=(x and 7);
-  AlphaByte:=FMaskData[AlphaPosition];
-  if Value.Alpha>=$8000 then
-    AlphaByte:=AlphaByte or (1 shl AlphaBitPosition)
-  else
-    AlphaByte:=AlphaByte and not (1 shl AlphaBitPosition);
-  FMaskData[AlphaPosition]:=AlphaByte;
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Ah;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Gh;
+    B3 := VBytes.Rh;
+  end;
 end;
 
-procedure TLazIntfImage.SetAutoCreateMask(const AValue: boolean);
+procedure TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
 begin
-  if FAutoCreateMask=AValue then exit;
-  FAutoCreateMask:=AValue;
-  if AutoCreateMask then
-    CreateMaskData
-  else
-    FreeMaskData;
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Ah;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Rh;
+    B3 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Ah;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Bh;
+    B3 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Ah;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Rh;
+    B3 := VBytes.Bh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Ah;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Bh;
+    B3 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Bh;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Rh;
+    B3 := VBytes.Ah;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Bh;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Gh;
+    B3 := VBytes.Ah;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Gh;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Rh;
+    B3 := VBytes.Ah;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Gh;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Bh;
+    B3 := VBytes.Ah;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Rh;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Gh;
+    B3 := VBytes.Ah;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Rh;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Bh;
+    B3 := VBytes.Ah;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B1 := VBytes.Rh;
+    B2 := VBytes.Gh;
+    B3 := VBytes.Bh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B1 := VBytes.Bh;
+    B2 := VBytes.Gh;
+    B3 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B1 := VBytes.Bh;
+    B2 := VBytes.Rh;
+    B3 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B1 := VBytes.Gh;
+    B2 := VBytes.Bh;
+    B3 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B1 := VBytes.Gh;
+    B2 := VBytes.Rh;
+    B3 := VBytes.Bh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B1 := VBytes.Rh;
+    B2 := VBytes.Bh;
+    B3 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Bh;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Bh;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Gh;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Gh;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Bh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Rh;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x shl 2))^ do
+  begin
+    B0 := VBytes.Rh;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Bh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    B0 := VBytes.Bh;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    B0 := VBytes.Bh;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    B0 := VBytes.Gh;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Rh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    B0 := VBytes.Gh;
+    B1 := VBytes.Rh;
+    B2 := VBytes.Bh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    B0 := VBytes.Rh;
+    B1 := VBytes.Bh;
+    B2 := VBytes.Gh;
+  end;
+end;
+
+procedure TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+// BitOrder=riboBitsInOrder LineOrder=riloTopToBottom
+// BitsPerPixel=32
+var
+  VBytes: TFPColorBytes absolute Value;
+begin
+  with PFourBytes(FRawImage.Data+FLineStarts^.Positions[y].Byte+(x * 3))^ do
+  begin
+    B0 := VBytes.Rh;
+    B1 := VBytes.Gh;
+    B2 := VBytes.Bh;
+  end;
 end;
 
 function TLazIntfImage.GetTColors(x, y: integer): TGraphicsColor;
@@ -1533,14 +2662,14 @@ begin
     if Value.Alpha<>alphaOpaque then
       RaiseGDBException('');
   end;}
-  OnSetInternalColor(x,y,Value);
+  FSetInternalColorProc(x,y,Value);
   {if y=Height-1 then
     DebugLn(['TLazIntfImage.SetInternalColor x=',x,' y=',y,' ',dbgs(Value),' ',dbgs(GetInternalColor(x,y))]);}
 end;
 
 function TLazIntfImage.GetInternalColor(x, y: integer): TFPColor;
 begin
-  OnGetInternalColor(x,y,Result);
+  FGetInternalColorProc(x,y,Result);
 end;
 
 procedure TLazIntfImage.SetInternalPixel(x, y: integer; Value: integer);
@@ -1548,150 +2677,182 @@ begin
 
 end;
 
+procedure TLazIntfImage.SetMasked(x, y: integer; const AValue: Boolean);
+begin
+//  CheckIndex(x,y);
+  SetMask_Generic(x, y, AValue);
+  FMaskSet := FMaskSet or AValue;
+end;
+
 function TLazIntfImage.GetInternalPixel(x, y: integer): integer;
 begin
   Result:=0;
 end;
 
-procedure TLazIntfImage.FreeAllData;
+function TLazIntfImage.GetMasked(x, y: integer): Boolean;
 begin
-  FreePixelData;
-  FreeMaskData;
+//  CheckIndex (x,y);
+  GetMask_Generic(x, y, Result);
 end;
 
-procedure TLazIntfImage.FreePixelData;
+{$ifdef VER2_0}
+function TLazIntfImage.GetDataDescription: TRawImageDescription;
+begin
+  Result := FRawImage.Description;
+end;
+
+function TLazIntfImage.GetMaskData: PByte;
+begin
+  Result := FRawImage.Mask;
+end;
+
+function TLazIntfImage.GetPixelData: PByte;
+begin
+  Result := FRawImage.Data;
+end;
+{$endif}
+
+procedure TLazIntfImage.FreeData;
 begin
   if FDataOwner then
-    ReallocMem(FPixelData, 0);
-  FPixelDataSize := 0;
-  ReallocMem(FLineStarts, 0);
-end;
-
-procedure TLazIntfImage.FreeMaskData;
-begin
+    ReallocMem(FRawImage.Data, 0);
+  FRawImage.DataSize := 0;
+  if FLineStarts <> nil then Dispose(FLineStarts);
+  FLineStarts := nil;
+  
   if FDataOwner then
-    ReallocMem(FMaskData, 0);
-  FMaskDataSize := 0;
-  ReallocMem(FMaskLineStarts, 0);
+    ReallocMem(FRawImage.Mask, 0);
+  FRawImage.MaskSize := 0;
+  if FMaskLineStarts <> nil then Dispose(FMaskLineStarts);
+  FMaskLineStarts := nil;
+  FMaskSet := False;
 end;
 
-procedure TLazIntfImage.CreateAllData;
-begin
-  if FUpdateCount>0 then begin
-    fCreateAllDataNeeded:=true;
-    exit;
-  end;
-  fCreateAllDataNeeded:=false;
-  CreatePixelData;
-  if AutoCreateMask then
-    CreateMaskData
-  else
-    FreeMaskData;
-end;
-
-procedure TLazIntfImage.CreatePixelData;
-begin
-  FreePixelData;
-  CreateDataAndLineStarts(FPixelData,FPixelDataSize,
-                          FLineStarts,FDataDescription.BitsPerPixel,
-                          FDataDescription.LineEnd);
-end;
-
-procedure TLazIntfImage.CreateMaskData;
+procedure TLazIntfImage.CreateData;
 var
-  MaskDataExisted: boolean;
+  Desc: TRawImageDescription absolute FRawImage.Description;
 begin
-  MaskDataExisted:=FMaskData<>nil;
-  FreeMaskData;
-  if (FDataDescription.AlphaBitsPerPixel>0)
-  and FDataDescription.AlphaSeparate then begin
-    CreateDataAndLineStarts(FMaskData,FMaskDataSize,FMaskLineStarts,
-                            FDataDescription.AlphaBitsPerPixel,
-                            FDataDescription.AlphaLineEnd);
+  if FUpdateCount > 0
+  then begin
+    FCreateAllDataNeeded := True;
+    Exit;
   end;
-  if MaskDataExisted xor (FMaskData<>nil) then
-    ChooseGetSetColorFunctions;
+  FCreateAllDataNeeded := False;
+
+  FreeData;
+
+  New(FLineStarts);
+  FLineStarts^.Init(Width, Height, Desc.BitsPerPixel, Desc.LineEnd, Desc.LineOrder);
+  New(FMaskLineStarts);
+  FMaskLineStarts^.Init(Width, Height, Desc.MaskBitsPerPixel, Desc.MaskLineEnd, Desc.LineOrder);
+
+  FRawImage.CreateData(False);
 end;
 
 function TLazIntfImage.HasTransparency: boolean;
-var
-  RawImage: TRawImage;
 begin
-  Result:=true;
-  GetRawImage(RawImage);
-  if not RawImageMaskIsEmpty(@RawImage,true) then exit;
-  Result:=false;
+  Result := FMaskSet or FRawImage.IsTransparent(True);
 end;
 
-procedure TLazIntfImage.CreateDataAndLineStarts(var Data: Pointer;
-  var DataSize: PtrUInt; var TheLineStarts: PRawImagePosition;
-  TheBitsPerPixel: cardinal; TheLineEnd: TRawImageLineEnd);
+function TLazIntfImage.HasMask: boolean;
 begin
-  CreateRawImageLineStarts(Width,Height,TheBitsPerPixel,TheLineEnd,
-                           TheLineStarts);
-  CreateRawImageData(Width,Height,TheBitsPerPixel,TheLineEnd,Data,DataSize);
+  Result := FMaskSet;
 end;
 
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
 begin
-  FDataOwner := true;
-  FAutoCreateMask:=true;
-  OnGetInternalColor:=@GetColor_NULL;
-  OnSetInternalColor:=@SetColor_NULL;
+  FDataOwner := True;
+  FGetInternalColorProc := @GetColor_NULL;
+  FSetInternalColorProc := @SetColor_NULL;
   inherited Create(AWidth, AHeight);
 end;
 
+
 constructor TLazIntfImage.Create(ARawImage: TRawImage; ADataOwner: Boolean);
+var
+  Desc: TRawImageDescription absolute FRawImage.Description;
 begin
-  FDataDescription := ARawImage.Description;
-  Create(FDataDescription.Width, FDataDescription.Height);
+  BeginUpdate;
+  FRawimage := ARawImage;
+  Create(Desc.Width, Desc.Height);
   FDataOwner := ADataOwner;
-
-  FPixelData := ARawImage.Data;
-  FPixelDataSize := ARawImage.DataSize;
-  FMaskData := ARawImage.Mask;
-  FMaskDataSize := ARawImage.MaskSize;
   FCreateAllDataNeeded := False;
-
-  CreateRawImageLineStarts(Width, Height, FDataDescription.BitsPerPixel,
-                           FDataDescription.LineEnd, FLineStarts);
-  if FMaskData <> nil
-  then CreateRawImageLineStarts(Width, Height, FDataDescription.AlphaBitsPerPixel,
-                                FDataDescription.AlphaLineEnd, FMaskLineStarts);
+  EndUpdate;
+  New(FLineStarts);
+  FLineStarts^.Init(Width, Height, Desc.BitsPerPixel, Desc.LineEnd, Desc.LineOrder);
+  New(FMaskLineStarts);
+  FMaskLineStarts^.Init(Width, Height, Desc.MaskBitsPerPixel, Desc.MaskLineEnd, Desc.LineOrder);
   ChooseGetSetColorFunctions;
 end;
 
 destructor TLazIntfImage.Destroy;
 begin
-  FreeAllData;
+  FreeData;
   inherited Destroy;
+end;
+
+procedure TLazIntfImage.AlphaFromMask(AKeepAlpha: Boolean);
+var
+  x, y, xStop, yStop: Integer;
+  Color: TFPColor;
+begin
+  xStop := Width - 1;
+  yStop := Height - 1;
+
+  if AKeepAlpha
+  then begin
+    for y:=0 to yStop do
+      for x:=0 to xStop do
+      begin
+        if not Masked[x,y] then Continue;
+        Color := Colors[x,y];
+        Color.alpha := Low(Color.alpha);
+        Colors[x,y] := Color;
+      end;
+  end
+  else begin
+    for y:=0 to yStop do
+      for x:=0 to xStop do
+      begin
+        Color := Colors[x,y];
+        if Masked[x,y]
+        then Color.alpha := Low(Color.alpha)
+        else Color.alpha := High(Color.alpha);
+        Colors[x,y] := Color;
+      end;
+  end;
 end;
 
 procedure TLazIntfImage.BeginUpdate;
 begin
-  inc(FUpdateCount);
+  Inc(FUpdateCount);
 end;
 
 procedure TLazIntfImage.EndUpdate;
 begin
-  dec(FUpdateCount);
-  if (FUpdateCount=0) then begin
-    if fCreateAllDataNeeded then
-      CreateAllData;
-    if FGetSetColorFunctionsUpdateNeeded then
-      ChooseGetSetColorFunctions;
-  end;
+  if FUpdateCount = 0 then Exit;
+  Dec(FUpdateCount);
+  if FUpdateCount > 0 then Exit;
+
+  if FCreateAllDataNeeded then
+     CreateData;
+  if FGetSetColorFunctionsUpdateNeeded then
+     ChooseGetSetColorFunctions;
 end;
 
 procedure TLazIntfImage.SetSize(AWidth, AHeight: integer);
+  procedure Error;
+  begin
+    raise FPImageException.Create('Invalid Size');
+  end;
 begin
-  if (AWidth=Width) and (AHeight=Height) then exit;
-  if (AWidth<0) or (AHeight<0) then
-    Raise FPImageException.Create('Invalid Size');
+  if (AWidth = Width) and (AHeight = Height) then exit;
+  if (AWidth<0) or (AHeight<0) then Error;
   inherited SetSize(AWidth, AHeight);
-  FDataDescription.Width:=Width;
-  FDataDescription.Height:=Height;
-  CreateAllData;
+  
+  FRawImage.Description.Width := Width;
+  FRawImage.Description.Height := Height;
+  CreateData;
 end;
 
 function TLazIntfImage.CheckDescription(
@@ -1716,224 +2877,87 @@ begin
   Result:=true;
 end;
 
-procedure TLazIntfImage.GetXYDataPostion(x, y: integer;
-  var Position: TRawImagePosition);
-var
-  BitOffset: cardinal;
+procedure TLazIntfImage.GetXYDataPostion(x, y: integer; out Position: TRawImagePosition);
 begin
-  if FDataDescription.LineOrder=riloBottomToTop then
-    y:=Height-y;
-  Position:=FLineStarts[y];
-  BitOffset:=FDataDescription.BitsPerPixel*cardinal(x)+Position.Bit;
-  Position.Bit:=(BitOffset and 7);
-  inc(Position.Byte,BitOffset shr 3);
+  Position := FLineStarts^.GetPosition(x, y);
 end;
 
-procedure TLazIntfImage.GetXYMaskPostion(x, y: integer;
-  var Position: TRawImagePosition);
-var
-  BitOffset: cardinal;
+procedure TLazIntfImage.GetXYMaskPostion(x, y: integer; out Position: TRawImagePosition);
 begin
-  if FDataDescription.LineOrder=riloBottomToTop then
-    y:=Height-y;
-  Position:=FMaskLineStarts[y];
-  BitOffset:=FDataDescription.AlphaBitsPerPixel*cardinal(x)+Position.Bit;
-  Position.Bit:=(BitOffset and 7);
-  inc(Position.Byte,BitOffset shr 3);
+  Position := FMaskLineStarts^.GetPosition(x, y);
 end;
 
 function TLazIntfImage.GetDataLineStart(y: integer): Pointer;
 begin
-  if FDataDescription.LineOrder=riloBottomToTop then
+  if FRawimage.Description.LineOrder = riloBottomToTop then
     y:=Height-y;
-  Result:=FPixelData+FLineStarts[y].Byte;
+  Result := FRawImage.Data+FLineStarts^.Positions[y].Byte;
 end;
 
 procedure TLazIntfImage.LoadFromDevice(DC: HDC);
 var
-  ARect: TRect;
-  ARawImage: TRawImage;
+  R: TRect;
+  RawImage: TRawImage;
   DeviceSize: TPoint;
 begin
-  GetDeviceSize(DC,DeviceSize);
-  ARect:=Rect(0,0,DeviceSize.X,DeviceSize.Y);
-  if not GetRawImageFromDevice(DC,ARect,ARawImage) then
+  GetDeviceSize(DC, DeviceSize);
+  R := Rect(0,0,DeviceSize.X,DeviceSize.Y);
+  if not RawImage_FromDevice(RawImage, DC, R) then
     raise FPImageException.Create('Failed to get raw image from device');
-  SetRawImage(ARawImage);
+  SetRawImage(RawImage);
 end;
 
-procedure TLazIntfImage.LoadFromBitmap(Bitmap, MaskBitmap: HBitmap;
+procedure TLazIntfImage.LoadFromBitmap(ABitmap, AMaskBitmap: HBitmap;
   AWidth: integer; AHeight: integer);
 var
-  ARect: TRect;
-  ARawImage: TRawImage;
-  NewDataDescription: TRawImageDescription;
+  R: TRect;
+  RawImage: TRawImage;
+  Desc: TRawImageDescription;
 begin
-  if not GetBitmapRawImageDescription(Bitmap,@NewDataDescription) then
+  if not RawImage_DescriptionFromBitmap(ABitmap, Desc) then
     raise FPImageException.Create('Failed to get raw image description from bitmap');
-  ARect:=Rect(0,0,NewDataDescription.Width,NewDataDescription.Height);
-  if (AWidth >= 0) and (dword(AWidth) < NewDataDescription.Width) then
-    ARect.Right := AWidth;
-  if (AHeight >= 0) and (dword(AHeight) > NewDataDescription.Height) then
-    ARect.Bottom := AHeight;
-  if not GetRawImageFromBitmap(Bitmap,MaskBitmap,ARect,ARawImage) then
+    
+  if AWidth < 0 then AWidth := Desc.Width;
+  if AHeight < 0 then AHeight := Desc.Height;
+  R := Rect(0, 0, AWidth, AHeight);
+  if not RawImage_FromBitmap(RawImage, ABitmap, AMaskBitmap, R) then
     raise FPImageException.Create('Failed to get raw image from bitmap');
-  SetRawImage(ARawImage);
+
+  SetRawImage(RawImage);
 end;
 
-procedure TLazIntfImage.CreateBitmap(var Bitmap, MaskBitmap: HBitmap;
-  AlwaysCreateMask: boolean);
-var
-  ARawImage: TRawImage;
+procedure TLazIntfImage.CreateBitmaps(var ABitmap, AMask: HBitmap; ASkipMask: boolean);
 begin
-  GetRawImage(ARawImage);
-  if not CreateBitmapFromRawImage(ARawImage,Bitmap,MaskBitmap,AlwaysCreateMask)
-  then
-    raise FPImageException.Create('Failed to create bitmaps');
+  if not RawImage_CreateBitmaps(FRawImage, ABitmap, AMask, ASkipMask)
+  then raise FPImageException.Create('Failed to create handles');
 end;
 
-procedure TLazIntfImage.SetRawImage(const RawImage: TRawImage; ADataOwner: Boolean);
+procedure TLazIntfImage.SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean);
 var
-  OldRawImage: TRawImage;
+  Desc: TRawImageDescription absolute FRawImage.Description;
 begin
-  GetRawImage(OldRawImage);
-  if CompareMem(@OldRawImage,@RawImage,SizeOf(TRawImage)) then exit;
+  if FRawImage.IsEqual(ARawImage) then Exit;
+
   BeginUpdate;
   try
-    FreeAllData;
-    fDataDescription:=RawImage.Description;
-    FPixelData:=RawImage.Data;
-    FPixelDataSize:=RawImage.DataSize;
-    FMaskData:=RawImage.Mask;
-    FMaskDataSize:=RawImage.MaskSize;
+    FreeData;
+    FRawImage := ARawImage;
     FDataOwner := ADataOwner;
-    SetSize(FDataDescription.Width,FDataDescription.Height);
-    fCreateAllDataNeeded:=false;
-    CreateRawImageLineStarts(Width,Height,FDataDescription.BitsPerPixel,
-                     FDataDescription.LineEnd,FLineStarts);
-    if (FMaskData<>nil) then
-      CreateRawImageLineStarts(Width,Height,FDataDescription.AlphaBitsPerPixel,
-                       FDataDescription.AlphaLineEnd,FMaskLineStarts);
+    SetSize(Desc.Width, Desc.Height);
+    FCreateAllDataNeeded := False;
+    New(FLineStarts);
+    FLineStarts^.Init(Width, Height, Desc.BitsPerPixel, Desc.LineEnd, Desc.LineOrder);
+    New(FMaskLineStarts);
+    FMaskLineStarts^.Init(Width, Height, Desc.MaskBitsPerPixel, Desc.MaskLineEnd, Desc.LineOrder);
     ChooseGetSetColorFunctions;
   finally
     EndUpdate;
   end;
 end;
 
-procedure TLazIntfImage.GetRawImage(out RawImage: TRawImage);
+procedure TLazIntfImage.GetRawImage(out ARawImage: TRawImage);
 begin
-  FillChar(RawImage,SizeOf(TRawImage),0);
-  RawImage.Description:=FDataDescription;
-  RawImage.Data:=FPixelData;
-  RawImage.DataSize:=FPixelDataSize;
-  RawImage.Mask:=FMaskData;
-  RawImage.MaskSize:=FMaskDataSize;
-end;
-
-procedure TLazIntfImage.GetDescriptionFromDevice(DC: HDC);
-var
-  NewDataDescription: TRawImageDescription;
-begin
-  if DC=0 then begin
-    DC:=GetDC(0);
-    try
-      if not GetDeviceRawImageDescription(DC,@NewDataDescription) then
-        raise FPImageException.Create('Failed to get raw image description from device');
-    finally
-      ReleaseDC(0,DC);
-    end;
-  end else begin
-    if not GetDeviceRawImageDescription(DC,@NewDataDescription) then
-      raise FPImageException.Create('Failed to get raw image description from device');
-  end;
-  DataDescription:=NewDataDescription;
-end;
-
-procedure TLazIntfImage.GetDescriptionFromBitmap(Bitmap: HBitmap);
-var
-  NewDataDescription: TRawImageDescription;
-begin
-  if not GetBitmapRawImageDescription(Bitmap,@NewDataDescription) then
-    raise FPImageException.Create('Failed to get raw image description from bitmap');
-  DataDescription:=NewDataDescription;
-end;
-
-procedure TLazIntfImage.Set_BPP24_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer
-  );
-{ pf24bit:
-
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=24 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- AlphaSeparate=false }
-var
-  ADesc: TRawImageDescription;
-begin
-  // setup an artificial ScanLineImage with format RGB 24 bit, 24bit depth format
-  FillChar(ADesc,SizeOf(ADesc),0);
-  with ADesc do begin
-    Format:=ricfRGBA;
-    Depth:=24; // used bits per pixel
-    Width:=0;
-    Height:=0;
-    BitOrder:=riboBitsInOrder;
-    ByteOrder:=DefaultByteOrder;
-    LineOrder:=riloTopToBottom;
-    BitsPerPixel:=24; // bits per pixel. can be greater than Depth.
-    LineEnd:=rileDWordBoundary;
-    RedPrec:=8; // red precision. bits for red
-    RedShift:=16;
-    GreenPrec:=8;
-    GreenShift:=8; // bitshift. Direction: from least to most signifikant
-    BluePrec:=8;
-    BlueShift:=0;
-    AlphaPrec:=0;
-    AlphaSeparate:=false;
-  end;
-
-  DataDescription:=ADesc;
-  SetSize(NewWidth,NewHeight);
-end;
-
-procedure TLazIntfImage.Set_BPP32_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer
-  );
-{ pf32bit:
-
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=32 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- AlphaSeparate=false }
-var
-  ADesc: TRawImageDescription;
-begin
-  // setup an artificial ScanLineImage with format RGB 24 bit, 32bit depth format
-  FillChar(ADesc,SizeOf(ADesc),0);
-  with ADesc do begin
-    Format:=ricfRGBA;
-    Depth:=24; // used bits per pixel
-    Width:=0;
-    Height:=0;
-    BitOrder:=riboBitsInOrder;
-    ByteOrder:=DefaultByteOrder;
-    LineOrder:=riloTopToBottom;
-    BitsPerPixel:=32; // bits per pixel. can be greater than Depth.
-    LineEnd:=rileDWordBoundary;
-    RedPrec:=8; // red precision. bits for red
-    RedShift:=16;
-    GreenPrec:=8;
-    GreenShift:=8; // bitshift. Direction: from least to most signifikant
-    BluePrec:=8;
-    BlueShift:=0;
-    AlphaPrec:=0;
-    AlphaSeparate:=false;
-  end;
-
-  DataDescription:=ADesc;
-  SetSize(NewWidth,NewHeight);
+  ARawImage := FRawImage;
 end;
 
 procedure TLazIntfImage.FillPixels(const Color: TFPColor);
@@ -1946,33 +2970,33 @@ var
   y: Integer;
   x: Integer;
 begin
-  if (Width=0) or (Height=0) or (FPixelData=nil) then exit;
+  if (Width=0) or (Height=0) or (FRawImage.Data=nil) then exit;
 
-  case FDataDescription.BitsPerPixel of
+  case FRawImage.Description.BitsPerPixel of
 
   8:
     begin
       SetInternalColor(0,0,Color);
-      ColorChar:=Char(FPixelData[0]);
-      FillChar(FPixelData^,FPixelDataSize,ColorChar);
+      ColorChar:=Char(FRawImage.Data[0]);
+      FillChar(FRawImage.Data^,FRawImage.DataSize,ColorChar);
     end;
 
   16:
     begin
       SetInternalColor(0,0,Color);
-      ColorWord:=PWord(FPixelData)[0];
-      Cnt:=FPixelDataSize div 2;
+      ColorWord:=PWord(FRawImage.Data)[0];
+      Cnt:=FRawImage.DataSize div 2;
       for i:=0 to Cnt-1 do
-        PWord(FPixelData)[i]:=ColorWord;
+        PWord(FRawImage.Data)[i]:=ColorWord;
     end;
 
   32:
     begin
       SetInternalColor(0,0,Color);
-      ColorDWord:=PDWord(FPixelData)[0];
-      Cnt:=FPixelDataSize div 4;
+      ColorDWord:=PDWord(FRawImage.Data)[0];
+      Cnt:=FRawImage.DataSize div 4;
       for i:=0 to Cnt-1 do
-        PDWord(FPixelData)[i]:=ColorDWord;
+        PDWord(FRawImage.Data)[i]:=ColorDWord;
     end;
 
   else
@@ -1984,41 +3008,44 @@ begin
   // ToDo: mask
 end;
 
-procedure TLazIntfImage.CopyPixels(Src: TFPCustomImage);
+procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage);
 var
+  SrcImg: TLazIntfImage absolute ASource;
   x, y, xStop, yStop: Integer;
-  SrcImg: TLazIntfImage;
 begin
 {
   if (Src.Width<>Width) or (Src.Height<>Height) then
     SetSize(Src.Width,Src.Height);
 }
-  if Src is TLazIntfImage then begin
-    SrcImg:=TLazIntfImage(Src);
-    if CompareMem(@FDataDescription,@SrcImg.FDataDescription,
-      SizeOf(FDataDescription))
-    then begin
-      // same description -> copy
-      if FPixelData<>nil then
-        System.Move(SrcImg.FPixelData^,FPixelData^,FPixelDataSize);
-      if FMaskData<>nil then
-        System.Move(SrcImg.FMaskData^,FMaskData^,FMaskDataSize);
-      exit;
-    end;
+  if (ASource is TLazIntfImage) and
+     FRawImage.Description.IsEqual(SrcImg.FRawImage.Description) then
+  begin
+    // same description -> copy
+    if FRawImage.Data <> nil then
+      System.Move(SrcImg.FRawImage.Data^,FRawImage.Data^,FRawImage.DataSize);
+    if FRawImage.Mask <> nil then
+      System.Move(SrcImg.FRawImage.Mask^,FRawImage.Mask^,FRawImage.MaskSize);
+    Exit;
   end;
-    
+
   // copy pixels
-  xStop := SrcImg.FDataDescription.Width;
+  xStop := ASource.Width;
   if Width < xStop
   then xStop := Width;
-  yStop := SrcImg.FDataDescription.Height;
+  yStop := ASource.Height;
   if Height < yStop
   then yStop := Height;
   Dec(xStop);
   Dec(yStop);
   for y:=0 to yStop do
     for x:=0 to xStop do
-      Colors[x,y]:=Src.Colors[x,y];
+      Colors[x,y] := ASource.Colors[x,y];
+
+  if ASource is TLazIntfImage then
+    for y:=0 to yStop do
+      for x:=0 to xStop do
+        Masked[x,y] := SrcImg.Masked[x,y];
+
 end;
 
 { TLazReaderXPM }
@@ -3189,16 +4216,23 @@ end;
 
 { TLazReaderBMP }
 
-function TLazReaderBMP.BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor;
+function BmpRGBAToFPColor(const RGBA: TColorRGBA): TFPcolor;
 begin
   Result.Red   := (RGBA.R shl 8) or RGBA.R;
   Result.Green := (RGBA.G shl 8) or RGBA.G;
   Result.Blue  := (RGBA.B shl 8) or RGBA.B;
-    // Specification for bitmap files has these bits always zero - unused
+  Result.Alpha := (RGBA.A shl 8) or RGBA.A;
+end;
+
+function BmpRGBToFPColor(const RGBA: TColorRGBA): TFPcolor;
+begin
+  Result.Red   := (RGBA.R shl 8) or RGBA.R;
+  Result.Green := (RGBA.G shl 8) or RGBA.G;
+  Result.Blue  := (RGBA.B shl 8) or RGBA.B;
   Result.Alpha := AlphaOpaque;
 end;
 
-Function BmpRGBToFPColor(Const RGB: TColorRGB) : TFPColor;
+function BmpRGBToFPColor(const RGB: TColorRGB) : TFPColor;
 begin
   Result.Red   := (RGB.R shl 8) + RGB.R;
   Result.Green := (RGB.G shl 8) + RGB.G;
@@ -3287,32 +4321,16 @@ end;
 
 procedure TLazReaderBMP.FreeBufs;
 begin
-  If (LineBuf<>Nil) then
-    begin
-    FreeMem(LineBuf);
-    LineBuf:=Nil;
-    end;
-  If (FPalette<>Nil) then
-    begin
-    FreeMem(FPalette);
-    FPalette:=Nil;
-    end;
+  FreeMem(FLineBuf);
+  FLineBuf := nil;
+  FreeMem(FPalette);
+  FPalette := nil;
 end;
 
-function TLazReaderBMP.ColorToTrans(const InColor: TFPColor): TFPColor;
-begin
-  //DebugLn('TLazReaderBMP.ColorToTrans InColor=',dbgs(InColor),' FTransparentColor=',dbgs(FTransparentColor));
-  Result := InColor;
-  if (InColor = FTransparentColor) then
-    Result.alpha := alphaTransparent;
-end;
-
-procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
-  ReadPalette: Boolean);
+procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; ReadPalette: Boolean);
 var
-  ColInfo: ARRAY OF TColorRGBA;
+  ColInfo: array of TColorRGBA;
   i: Integer;
-  FPcolor: TFPcolor;
 begin
   if nPalette > 0
   then begin
@@ -3321,41 +4339,39 @@ begin
     if ReadPalette then begin
       if  (BFI.biClrUsed > 0)
       and (BFI.biClrUsed <= Cardinal(nPalette)) // prevent buffer overflow
-      then Stream.Read(ColInfo[0], BFI.biClrUsed * SizeOf(ColInfo[0]))
-      else Stream.Read(ColInfo[0], nPalette * SizeOf(ColInfo[0]));
+      then TheStream.Read(ColInfo[0], BFI.biClrUsed * SizeOf(ColInfo[0]))
+      else TheStream.Read(ColInfo[0], nPalette * SizeOf(ColInfo[0]));
       for i := 0 to nPalette-1 do
-      begin
-        FPcolor := BmpRGBAToFPColor(ColInfo[i]);
-        FPcolor.alpha := alphaOpaque; { No transparency info in palette }
-        FPalette[i] := FPcolor;
-      end;
+        FPalette[i] := BmpRGBToFPColor(ColInfo[i]);
     end;
   end
   else begin
     { Skip palette }
     if BFI.biClrUsed > 0
-    then Stream.Position := Stream.Position
+    then TheStream.Position := TheStream.Position
                           + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorRGBA));
   end;
-  ReadSize:=((nRowBits + 31) div 32) shl 2;
-  GetMem(LineBuf,ReadSize);
+  FReadSize := ((nRowBits + 31) div 32) shl 2;
+  GetMem(FLineBuf, FReadSize);
 end;
 
-procedure TLazReaderBMP.ReadScanLine(Row: Integer; Stream: TStream);
-{$IFDEF FPC_BIG_ENDIAN}
-var
-  n: Integer;
-{$ENDIF}
+procedure TLazReaderBMP.ReadScanLine(Row: Integer);
+//{$IFDEF FPC_BIG_ENDIAN}
+//var
+//  n: Integer;
+//{$ENDIF}
 begin
-  {
-    Add here support for compressed lines. The 'readsize' is the same in the end.
-  }
-  Stream.Read(LineBuf[0],ReadSize);
-  {$IFDEF FPC_BIG_ENDIAN}
-  // MWE: don't know if linebuf is used externally
-  // if it is only used internally, then the conversion can better
-  // be done in writescanline for Bmp15ToFPColor and Bmp16ToFPColor
-  
+  // Add here support for compressed lines. The 'readsize' is the same in the end.
+
+  // MWE: Note: when doing so, keep in mind that the bufer is expected to be in Little Endian.
+  // for better performance, the conversion is done when writeing the buffer.
+
+  TheStream.Read(LineBuf[0], ReadSize);
+
+
+(*
+  {$ifdef FPC_BIG_ENDIAN}
+
   if (FBitsPerPixel = 15)
   or (FBitsPerPixel = 16)
   then begin
@@ -3364,110 +4380,170 @@ begin
   end;
 
   {$ENDIF}
-  
+*)
 end;
 
-procedure TLazReaderBMP.WriteScanLine(Row: Integer; Img: TFPCustomImage);
-Var
-  Column : Integer;
+procedure TLazReaderBMP.WriteScanLine(Row: Cardinal);
+// using cardinals generates compacter code
+var
+  Column: Cardinal;
+  Color: TFPColor;
+  Index: Byte;
 begin
-  case FBitsPerPixel of
-   1 :
-     for Column:=0 to Img.Width-1 do
-       if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
-         img.colors[Column,Row]:=ColorToTrans(FPalette[1])
-       else
-         img.colors[Column,Row]:=ColorToTrans(FPalette[0]);
-   4 :
-      for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=ColorToTrans(FPalette[(LineBuf[Column div 2] shr (((not Column) and 1)*4)) and $0f]);
-   8 :
-      for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=ColorToTrans(FPalette[LineBuf[Column]]);
-   15:
-      for Column := 0 to img.Width - 1 do
-        Img.colors[Column,Row]:=ColorToTrans(Bmp15BitToFPColor(PWord(LineBuf)[Column]));
-   16 :
-      for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=ColorToTrans(Bmp16BitToFPColor(PWord(LineBuf)[Column]));
-   24 :
-      for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=ColorToTrans(BmpRGBToFPColor(PColorRGB(LineBuf)[Column]));
-   32 :  // BmpRGBA already does transparency
-      for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+  if FMaskMode = lrmmNone
+  then begin
+    case FBitsPerPixel of
+     1 :
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := FPalette[Ord(LineBuf[Column div 8] and ($80 shr (Column and 7)) <> 0)];
+     4 :
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := FPalette[(LineBuf[Column div 2] shr (((not Column) and 1)*4)) and $0f];
+     8 :
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := FPalette[LineBuf[Column]];
+     15:
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := Bmp15BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
+     16:
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := Bmp16BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
+     24:
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := BmpRGBToFPColor(PColorRGB(LineBuf)[Column]);
+     32:
+       for Column := 0 to TheImage.Width - 1 do
+         TheImage.colors[Column,Row] := BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+    end;
+  end
+  else begin
+    case FBitsPerPixel of
+     1 :
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Index := Ord(LineBuf[Column div 8] and ($80 shr (Column and 7)) <> 0);
+         FImage.colors[Column,Row] := FPalette[Index];
+         FImage.Masked[Column,Row] := Index = FMaskIndex;
+       end;
+     4 :
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Index := (LineBuf[Column div 2] shr (((not Column) and 1)*4)) and $0f;
+         FImage.colors[Column,Row] := FPalette[Index];
+         FImage.Masked[Column,Row] := Index = FMaskIndex;
+       end;
+     8 :
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Index := LineBuf[Column];
+         FImage.colors[Column,Row] := FPalette[Index];
+         FImage.Masked[Column,Row] := Index = FMaskIndex;
+       end;
+     15:
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Color := Bmp15BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
+         FImage.colors[Column,Row] := Color;
+         FImage.Masked[Column,Row] := Color = FMaskColor;
+       end;
+     16:
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Color := Bmp16BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
+         FImage.colors[Column,Row] := Color;
+         FImage.Masked[Column,Row] := Color = FMaskColor;
+       end;
+     24:
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Color := BmpRGBToFPColor(PColorRGB(LineBuf)[Column]);
+         FImage.colors[Column,Row] := Color;
+         FImage.Masked[Column,Row] := Color = FMaskColor;
+       end;
+     32:
+       for Column := 0 to TheImage.Width - 1 do
+       begin
+         Color := BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+         FImage.colors[Column,Row] := Color;
+         FImage.Masked[Column,Row] := Color = FMaskColor;
+       end;
+    end;
   end;
 end;
 
 procedure TLazReaderBMP.InternalRead(Stream: TStream; Img: TFPCustomImage);
 begin
-  InternalReadHead(Stream, Img);
-  InternalReadBody(Stream, Img);
+  InternalReadHead;
+  InternalReadBody;
 end;
 
-procedure TLazReaderBMP.InternalReadHead(Stream: TStream; Img: TFPCustomImage);
+procedure TLazReaderBMP.InternalReadHead;
 begin
-  Stream.Read(BFI,SizeOf(BFI));
+  TheStream.Read(FBFI,SizeOf(FBFI));
   {$IFDEF FPC_BIG_ENDIAN}
-  BFI.biSize          := LEtoN(BFI.biSize         );
-  BFI.biWidth         := LEtoN(BFI.biWidth        );
-  BFI.biHeight        := LEtoN(BFI.biHeight       );
-  BFI.biPlanes        := LEtoN(BFI.biPlanes       );
-  BFI.biBitCount      := LEtoN(BFI.biBitCount     );
-  BFI.biCompression   := LEtoN(BFI.biCompression  );
-  BFI.biSizeImage     := LEtoN(BFI.biSizeImage    );
-  BFI.biXPelsPerMeter := LEtoN(BFI.biXPelsPerMeter);
-  BFI.biYPelsPerMeter := LEtoN(BFI.biYPelsPerMeter);
-  BFI.biClrUsed       := LEtoN(BFI.biClrUsed      );
-  BFI.biClrImportant  := LEtoN(BFI.biClrImportant );
+  FBFI.biSize          := LEtoN(FBFI.biSize         );
+  FBFI.biWidth         := LEtoN(FBFI.biWidth        );
+  FBFI.biHeight        := LEtoN(FBFI.biHeight       );
+  FBFI.biPlanes        := LEtoN(FBFI.biPlanes       );
+  FBFI.biBitCount      := LEtoN(FBFI.biBitCount     );
+  FBFI.biCompression   := LEtoN(FBFI.biCompression  );
+  FBFI.biSizeImage     := LEtoN(FBFI.biSizeImage    );
+  FBFI.biXPelsPerMeter := LEtoN(FBFI.biXPelsPerMeter);
+  FBFI.biYPelsPerMeter := LEtoN(FBFI.biYPelsPerMeter);
+  FBFI.biClrUsed       := LEtoN(FBFI.biClrUsed      );
+  FBFI.biClrImportant  := LEtoN(FBFI.biClrImportant );
   {$ENDIF}
 end;
 
-procedure TLazReaderBMP.InternalReadBody(Stream: TStream; Img: TFPCustomImage);
+procedure TLazReaderBMP.InternalReadBody;
 type
   TPixelMasks = packed record
     R, G, B: LongWord;
   end;
+
 const
   SWrongCombination = 'Bitmap with wrong combination of bit count (%d) and compression (%d)';
-Var
-  PixelMasks: TPixelMasks;
-  Row : Integer;
-  firstLine: boolean;
 
   procedure SaveTransparentColor;
   begin
     //DebugLn('SaveTransparentColor ',dbgs(UseLeftBottomAsTransparent),' ',dbgs(FBitsPerPixel));
-    if UseLeftBottomAsTransparent then begin
-      // define transparent color: 1-8 use palette, 15-24 use fixed color
-      case FBitsPerPixel of
-       1 : FPalette[(LineBuf[0] shr 7) and 1] := fpimage.colTransparent;
-       4 : FPalette[(LineBuf[0] shr 4) and $f] := fpimage.colTransparent;
-       8 : FPalette[LineBuf[0]] := fpimage.colTransparent;
-       15: FTransparentColor := Bmp15BitToFPColor(PWord(LineBuf)[0]);
-       16: FTransparentColor := Bmp16BitToFPColor(PWord(LineBuf)[0]);
-       24: FTransparentColor := BmpRGBToFPColor(PColorRGB(LineBuf)[0]);
-       32: ; // BmpRGBA already does transparency
-      end;
+    if FMaskMode <> lrmmAuto then Exit;
+
+    // define transparent color: 1-8 use palette, 15-24 use fixed color
+    FMaskIndex := -1;
+    case FBitsPerPixel of
+     1 : FMaskIndex := (LineBuf[0] shr 7) and 1;
+     4 : FMaskIndex := (LineBuf[0] shr 4) and $f;
+     8 : FMaskIndex := LineBuf[0];
+     15: FMaskColor := Bmp15BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[0]));
+     16: FMaskColor := Bmp16BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[0]));
+     24: FMaskColor := BmpRGBToFPColor(PColorRGB(LineBuf)[0]);
+     32: FMaskCOlor := BmpRGBAToFPColor(PColorRGBA(LineBuf)[0]);
     end;
+    if FMaskIndex <> -1
+    then FMaskColor := FPalette[FMaskIndex];
   end;
-  
+
+var
+  PixelMasks: TPixelMasks;
+  Row : Cardinal;
 begin
+  FImage := TheImage as TLazIntfImage;
+
   { This will move past any junk after the BFI header }
-  Stream.Position:=Stream.Position+TStreamSeekType(BFI.biSize-SizeOf(BFI));
-  Img.Width := BFI.biWidth;
-  Img.Height := BFI.biHeight;
+  TheStream.Position := TheStream.Position + TStreamSeekType(BFI.biSize-SizeOf(BFI));
+  TheImage.SetSize(BFI.biWidth, BFI.biHeight);
   FBitsPerPixel := BFI.biBitCount;
-  Case BFI.biBitCount of
+
+  case BFI.biBitCount of
     1: begin  { Monochrome }
       if BFI.biCompression <> BI_RGB then
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      SetupRead(2,Img.Width,Stream,true);
+      SetupRead(2, TheImage.Width, true);
     end;
     4: begin
       case BFI.biCompression of
-        BI_RGB:
-      SetupRead(16,Img.Width*4,Stream,true);
+        BI_RGB: SetupRead(16, TheImage.Width * 4, true);
         BI_RLE4:
           raise FPImageException.Create('4 bit RLE Bitmaps not supported');
       else
@@ -3476,8 +4552,7 @@ begin
     end;
     8: begin
       case BFI.biCompression of
-        BI_RGB:
-      SetupRead(256,Img.Width*8,Stream,true);
+        BI_RGB: SetupRead(256, TheImage.Width * 8, true);
         BI_RLE8:
           raise FPImageException.Create('8 bit RLE Bitmaps not supported');
       else
@@ -3489,7 +4564,7 @@ begin
         BI_RGB:                                          // 5-5-5
           FBitsPerPixel := 15;
         BI_BITFIELDS: begin                              // 5-5-5 or 5-6-5
-          Stream.Read(PixelMasks, SizeOf(PixelMasks));
+          THeStream.Read(PixelMasks, SizeOf(PixelMasks));
           {$IFDEF FPC_BIG_ENDIAN}
             PixelMasks.R := LEtoN(PixelMasks.R);
             PixelMasks.G := LEtoN(PixelMasks.G);
@@ -3510,13 +4585,13 @@ begin
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
-      SetupRead(0, Img.Width * 16, Stream, True);
+      SetupRead(0, TheImage.Width * 16, True);
     end;
     24: begin
       case BFI.biCompression of
         BI_RGB: ;
         BI_BITFIELDS: begin  // actually not a valid value
-          Stream.Read(PixelMasks, SizeOf(PixelMasks));
+          TheStream.Read(PixelMasks, SizeOf(PixelMasks));
           {$IFDEF FPC_BIG_ENDIAN}
             PixelMasks.R := LEtoN(PixelMasks.R);
             PixelMasks.G := LEtoN(PixelMasks.G);
@@ -3530,13 +4605,13 @@ begin
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
-      SetupRead(0, Img.Width * 24, Stream, True);
+      SetupRead(0, TheImage.Width * 24, True);
     end;
     32: begin
       case BFI.biCompression of
         BI_RGB: ;
         BI_BITFIELDS: begin
-          Stream.Read(PixelMasks, SizeOf(PixelMasks));
+          TheStream.Read(PixelMasks, SizeOf(PixelMasks));
           {$IFDEF FPC_BIG_ENDIAN}
             PixelMasks.R := LEtoN(PixelMasks.R);
             PixelMasks.G := LEtoN(PixelMasks.G);
@@ -3550,22 +4625,31 @@ begin
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
-      SetupRead(0, Img.Width * 32, Stream, True);
+      SetupRead(0, TheImage.Width * 32, True);
     end;
   else
     raise FPImageException.CreateFmt('Wrong bitmap bit count: %d', [BFI.biBitCount]);
   end;
-  Try
-    firstLine := true;
-    for Row := Img.Height - 1 downto 0 do begin
-      ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
-      if firstLine then
-      begin
-        SaveTransparentColor;
-        firstLine := false;
-      end;
-      WriteScanLine(Row,Img);
-      end;
+
+  if (TheImage.Height = 0)
+  or (TheImage.Width = 0)
+  then begin
+    FreeBufs;
+    Exit;
+  end;
+
+  try
+    Row := TheImage.Height - 1;
+    ReadScanLine(Row);
+    SaveTransparentColor;
+    WriteScanLine(Row);
+
+    while Row > 0 do
+    begin
+      Dec(Row);
+      ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
+      WriteScanLine(Row);
+    end;
   finally
     FreeBufs;
   end;
@@ -3583,7 +4667,7 @@ end;
 constructor TLazReaderBMP.Create;
 begin
   inherited Create;
-  FTransparentColor:=colTransparent;
+  FMaskColor := colTransparent;
 end;
 
 destructor TLazReaderBMP.Destroy;
@@ -3594,39 +4678,26 @@ end;
 
 { TLazIntfImageMask }
 
-procedure TLazIntfImageMask.SetInternalColor(x, y: integer;
-  const Value: TFPColor);
-var
-  MaskValue: TFPColor;
+procedure TLazIntfImageMask.SetInternalColor(x, y: integer; const Value: TFPColor);
 begin
-  MaskValue:=FImage.GetInternalColor(x,y);
-  MaskValue.Alpha:=$FFFF-Value.Red;
-  FImage.SetInternalColor(x, y, MaskValue);
+  FImage.Masked[x, y] := Value.red < $8000;
 end;
 
 function TLazIntfImageMask.GetInternalColor(x, y: integer): TFPColor;
-var
-  MaskValue: TFPColor;
 begin
-  MaskValue:=FImage.GetInternalColor(x,y);
-  Result:=FPImage.colBlack;
-  Result.Red:=MaskValue.Alpha;
-  Result.Green:=MaskValue.Alpha;
-  Result.Blue:=MaskValue.Alpha;
+  if FImage.Masked[x, y]
+  then Result := FPImage.colWhite
+  else Result := FPImage.colBlack;
 end;
 
 procedure TLazIntfImageMask.SetInternalPixel(x, y: integer; Value: integer);
 begin
-  if UsePalette then
-    SetInternalColor(x,y,Palette.Color[Value])
+  FImage.Masked[x, y] := Value <> 0;
 end;
 
 function TLazIntfImageMask.GetInternalPixel(x, y: integer): integer;
 begin
-  if UsePalette then
-    Result := Palette.IndexOf(GetInternalColor(x,y))
-  else
-    Result:=0;
+  Result := Ord(FImage.Masked[x, y]);
 end;
 
 constructor TLazIntfImageMask.CreateWithImage(TheImage: TLazIntfImage);
@@ -3642,33 +4713,33 @@ var
   Row, Column: Integer;
   NewColor: TFPColor;
 begin
-  InternalReadHead(Stream, Img);
+  InternalReadHead;
 
-  BFI.biHeight := BFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
-  InternalReadBody(Stream, Img); { Now read standard bitmap }
+  {$note check if height is also doubled wiohout mask}
+  FBFI.biHeight := FBFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
+  InternalReadBody; { Now read standard bitmap }
 
   { Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header }
   // MWE: is the height then stil devided by 2 ?
-  if BFI.biBitCount < 32 then
-  begin
-    ReadSize:=((Img.Width + 31) div 32) shl 2;
-    SetupRead(2,Img.Width,Stream,False);
-    try
-      for Row:=Img.Height-1 downto 0 do
+  if BFI.biBitCount >= 32 then Exit;
+
+  FReadSize := ((Img.Width + 31) div 32) shl 2;
+  SetupRead(2, Img.Width, False);
+  try
+    for Row := Img.Height - 1 downto 0 do
+    begin
+      ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
+      for Column:=0 to Img.Width-1 do
       begin
-        ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
-        for Column:=0 to Img.Width-1 do
-        begin
-          NewColor := img.colors[Column,Row];
-          if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
-            NewColor.alpha := alphaTransparent else
-            NewColor.alpha := alphaOpaque;
-          img.colors[Column,Row] := NewColor;
-        end;
+        NewColor := img.colors[Column,Row];
+        if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
+          NewColor.alpha := alphaTransparent else
+          NewColor.alpha := alphaOpaque;
+        img.colors[Column,Row] := NewColor;
       end;
-    finally
-      FreeBufs;
     end;
+  finally
+    FreeBufs;
   end;
 end;
 
@@ -3677,12 +4748,6 @@ function TLazReaderPartIcon.InternalCheck(Stream: TStream): boolean;
 begin
   //Stream.Read(bfh,22); // dummy read of ico file header
   Result:=True; { Assumes stream in the correct place }
-end;
-
-function TLazReaderPartIcon.BmpRGBAToFPColor(const RGBA: TColorRGBA): TFPcolor;
-begin
-  Result:=inherited BmpRGBAToFPColor(RGBA);
-  Result.alpha := (RGBA.A shl 8) or RGBA.A; { For icon files (only) upper byte is used for transparency }
 end;
 
 { TLazReaderIcon }
@@ -3707,7 +4772,7 @@ type
   end;
 
   PIconDirEntry = ^TIconDirEntry;
-  
+
 procedure TLazReaderIcon.SetIcon(const AValue: TObject);
 begin
   if AValue is TIcon then
@@ -3795,6 +4860,65 @@ begin
   With IconHeader do
     Result := (idReserved=0) and (LEtoN(idType)=2);
   FnIcons := LEtoN(IconHeader.idCount);
+end;
+
+{ TLazReaderPNG }
+
+procedure TLazReaderPNG.HandleAlpha;
+begin
+  inherited HandleAlpha;
+  if FReadingScanlines then Exit; // already read some data
+  if UseTransparent or (Header.ColorType = 3)
+  then SetAlphaDescription;
+end;
+
+procedure TLazReaderPNG.HandleScanLine(const y: integer; const ScanLine: PByteArray);
+begin
+  FReadingScanlines := True;
+  inherited HandleScanLine(y, ScanLine);
+end;
+
+function TLazReaderPNG.InternalCheck(Stream: TStream): boolean;
+begin
+  Result := inherited InternalCheck(Stream);
+
+  if TheImage is TLazIntfImage
+  then FImage := TLazIntfImage(TheImage)
+  else FImage := nil;
+
+  if Header.ColorType in [4, 6]
+  then SetAlphaDescription;
+end;
+
+procedure TLazReaderPNG.SetAlphaDescription;
+  function CreateBitMask(AShift, APrec: Byte): Cardinal; inline;
+  begin
+    Result := ($FFFFFFFF shr (32 - APrec)) shl AShift;
+  end;
+var
+  Desc: TRawImageDescription;
+  Mask: Cardinal;
+begin
+  if FImage = nil then Exit;
+  
+  Desc := FImage.DataDescription;
+  if Desc.AlphaPrec > 0 then Exit;
+  if Desc.BitsPerPixel <> 32 then Exit;
+  if Desc.Depth <> 24 then Exit;
+  
+  Mask := CreateBitMask(Desc.RedShift, Desc.RedPrec)
+       or CreateBitMask(Desc.GreenShift, Desc.GreenPrec)
+       or CreateBitMask(Desc.BlueShift, Desc.BluePrec);
+  
+  if (Mask and $FF = 0)
+  then Desc.AlphaShift := 0
+  else if (Mask and $FF000000 = 0)
+  then Desc.AlphaShift := 24
+  else Exit;
+
+  Desc.AlphaPrec := 8;
+  
+  FImage.DataDescription := Desc;
 end;
 
 //------------------------------------------------------------------------------

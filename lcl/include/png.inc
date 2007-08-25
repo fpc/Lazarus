@@ -20,16 +20,15 @@
 
 { TPortableNetworkGraphic }
 
-procedure TPortableNetworkGraphic.InitFPImageWriter(
-  ImgWriter: TFPCustomImageWriter);
+procedure TPortableNetworkGraphic.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
 begin
-  inherited InitFPImageWriter(ImgWriter);
+  inherited InitFPImageWriter(IntfImg, ImgWriter);
   if ImgWriter is TFPWriterPNG then
   begin
-    (ImgWriter as TFPWriterPNG).UseAlpha := True;
-    (ImgWriter as TFPWriterPNG).Indexed := PaletteAllocated or
+    TFPWriterPNG(ImgWriter).UseAlpha := True;
+    TFPWriterPNG(ImgWriter).Indexed := PaletteAllocated or
       (PixelFormat in [pf1bit, pf4bit, pf8bit]);
-    (ImgWriter as TFPWriterPNG).WordSized := False;
+    TFPWriterPNG(ImgWriter).WordSized := False;
   end;
 end;
 
@@ -40,7 +39,7 @@ end;
 
 class function TPortableNetworkGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
-  Result:=TFPReaderPNG;
+  Result:=TLazReaderPNG;
 end;
 
 class function TPortableNetworkGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;

@@ -10,7 +10,7 @@ uses
   // rtl
   Classes, SysUtils,
   // lcl
-  Controls, Graphics, Themes;
+  Controls, Graphics, ImgList, Themes;
   
 type
 
@@ -39,9 +39,13 @@ type
       AContentRect: PRect = nil); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect;
       himl: HIMAGELIST; Index: Integer); override;
-      
-    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
-    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawIcon(ACanvas: TPersistent; Details: TThemedElementDetails;
+      const P: TPoint; AImageList: TPersistent; Index: Integer); override;
+
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails;
+      const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails;
+      const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -172,6 +176,21 @@ begin
     with Details do
       DrawThemeIcon(Theme[Element], DC, Part, State, R, himl, Index)
   else
+    inherited;
+end;
+
+procedure TWin32ThemeServices.DrawIcon(ACanvas: TPersistent;
+  Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent;
+  Index: Integer);
+{var
+  ImageList: TCustomImageList absolute AImageList;
+}
+begin
+{  if ThemesEnabled then
+    DrawIcon(TCanvas(ACanvas).Handle, Details,
+      Rect(P.X, P.Y, P.X + ImageList.Width, P.Y + ImageList.Width),
+      ImageList.Handle, Index)
+  else}
     inherited;
 end;
 

@@ -20,6 +20,8 @@
   
 // Show debug info when tracing:
 
+{.$define DebugBitmaps}
+
 {off $DEFINE DebugEventLoop}
 
 {off $DEFINE VerboseObject}    // Carbon object

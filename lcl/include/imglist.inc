@@ -581,8 +581,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.FillDescription(out ADesc: TRawImageDescription);
 begin
+  ADesc.Init;
   ADesc.Format := ricfRGBA;
-  ADesc.HasPalette := False;
+  ADesc.PaletteColorCount := 0;
+  ADesc.MaskBitsPerPixel := 0;
   ADesc.Depth := 32;
   ADesc.Width := FWidth;
   ADesc.Height := FHeight;
@@ -599,7 +601,6 @@ begin
   ADesc.BlueShift := 24;
   ADesc.AlphaPrec := 8;
   ADesc.AlphaShift := 0;
-  ADesc.AlphaSeparate := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -614,7 +615,8 @@ procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
 {$ifndef IMGLIST_OLDSTYLE}
 var
   RawImg: TRawImage;
-  IntfImg: TLazIntfImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  ImgHandle, MskHandle: HBitmap;
 {$endif}
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
@@ -623,14 +625,25 @@ begin
   Image.Assign(TBitMap(FImageList.Items[Index]));
   {$else}
   CheckIndex(Index);
-  FillChar(RawImg, SizeOf(RawImg), 0);
+  RawImg.Init;
   FillDescription(RawImg.Description);
   RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
   RawImg.Data := @FData[Index * FWidth * FHeight];
 
-  IntfImg := TLazIntfImage.Create(RawImg, False);
-  Image.LoadFromIntfImage(IntfImg);
-  IntfImg.Free;
+  if not RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
+  then begin
+    // bummer, the widgetset doesn't support our 32bit format, try device
+    ListImg := TLazIntfImage.Create(RawImg, False);
+    DeviceImg := TLazIntfImage.Create(0, 0);
+    DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
+    DeviceImg.CopyPixels(ListImg);
+    DeviceImg.GetRawImage(RawImg);
+    RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+    DeviceImg.Free;
+    ListImg.Free;
+  end;
+  Image.SetHandles(ImgHandle, MskHandle);
+
   {$endif}
 end;
 
@@ -814,7 +827,7 @@ begin
   end
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
-  GetRawImageFromBitmap(AImage.Handle, msk, R, RawImg);
+  RawImage_FromBitmap(RawImg, AImage.Handle, msk, R);
   ImgData := InternalSetImage(AIndex, RawImg, True);
 
   if HandleAllocated
@@ -929,12 +942,14 @@ var
   SrcImg, DstImg: TLazIntfImage;
 begin
   SrcImg := TLazIntfImage.Create(AImage, AFreeImage);
+  SrcImg.AlphaFromMask;
 
-  FillChar(RawImg, SizeOf(RawImg), 0);
+  RawImg.Init;
   FillDescription(RawImg.Description);
   Result := @FData[AIndex * FWidth * FHeight];
   RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
   RawImg.Data := PByte(Result);
+
   DstImg := TLazIntfImage.Create(RawImg, False);
   DstImg.CopyPixels(SrcImg);
 
@@ -1115,12 +1130,13 @@ var
     Row: Integer;
     Col: Integer;
     ImgRect: TRect;
+    Res: Boolean;
   begin
     BeginUpdate;
-    IntfImage.GetRawImage(RawImage);
-    FillChar(SubRawImage,SizeOf(SubRawImage),0);
-    //NewCount:=2;
     try
+      IntfImage.GetRawImage(RawImage);
+      SubRawImage.Init;
+
       for Row := 0 to (IntfImage.Height div Height) - 1 do
       begin
         if NewCount <= 0 then Break;
@@ -1128,17 +1144,15 @@ var
         begin
           if NewCount <= 0 then Break;
 
-          ImgRect:=Bounds(Col*Width,Row*Height,Width,Height);
-          ExtractRawImageRect(@RawImage,ImgRect,@SubRawImage);
-          if not CreateBitmapFromRawImage(SubRawImage,ImgHandle,MaskHandle,
-            false)
-          then
-            raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
-          //DebugLn('CreateImagesFromRawImage A ',DbgS(SubRawImage.Data),' ',SubRawImage.DataSize);
-          FreeRawImageData(@SubRawImage);
+          ImgRect := Bounds(Col*Width,Row*Height,Width,Height);
+          RawImage.ExtractRect(ImgRect, SubRawImage);
+          Res := RawImage_CreateBitmaps(SubRawImage, ImgHandle, MaskHandle);
+          SubRawImage.FreeData;
+          if not Res
+          then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
+          
           Img := TBitmap.Create;
-          Img.Handle:=ImgHandle;
-          Img.MaskHandle:=MaskHandle;
+          Img.SetHandles(ImgHandle, MaskHandle);
 
           {$ifdef IMGLIST_OLDSTYLE}
           AddDirect(Img, nil);
@@ -1152,7 +1166,6 @@ var
         end;
       end;
     finally
-      FreeRawImageData(@SubRawImage);
       EndUpdate;
     end;
   end;
@@ -1168,7 +1181,7 @@ var
     ImgReader:=nil;
     try
       IntfImage:=TLazIntfImage.Create(0,0);
-      IntfImage.GetDescriptionFromDevice(0);
+      IntfImage.DataDescription := GetDescriptionFromDevice(0, 0, 0);
       // read the image bmp stream into the IntfImage
       ImgReader:=TFPReaderBMP.Create;
       IntfImage.LoadFromStream(AStream,ImgReader);
@@ -1331,7 +1344,7 @@ begin
   then msk := 0
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
-  GetRawImageFromBitmap(AImage.Handle, AMask.Handle, R, RawImage);
+  RawImage_FromBitmap(RawImage, AImage.Handle, AMask.Handle, R);
   ImgData := InternalSetImage(AIndex, RawImage, True);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);

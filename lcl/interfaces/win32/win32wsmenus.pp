@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Menus, Forms,
+  Graphics, Menus, Forms,
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, InterfaceBase, LCLProc;
@@ -99,7 +99,7 @@ const
   SpaceBetweenIcons = 5;
 
   // define the size of the MENUITEMINFO structure used by older Windows
-  // versions (95, NT4) to keep the kompatibility with them
+  // versions (95, NT4) to keep the compatibility with them
   // Since W98 the size is 48 (hbmpItem was added)
   W95_MENUITEMINFO_SIZE = 44;
 
@@ -512,14 +512,17 @@ var
   hdcMem: HDC;
   hbmpOld: HBITMAP;
   x: Integer;
+  bmp: Graphics.TBitmap;
 begin
-  hdcMem := aMenuItem.Bitmap.Canvas.Handle;
-  hbmpOld := SelectObject(hdcMem, aMenuItem.Bitmap.Handle);
+  // prevent multiple creation copies of menuitem bitmap form imagelist
+  bmp := aMenuItem.Bitmap;
+  hdcMem := bmp.Canvas.Handle;
+  hbmpOld := SelectObject(hdcMem, bmp.Handle);
   if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - CheckSpace(aMenuItem) - aMenuItem.Bitmap.Width - spaceBetweenIcons
+    x := aRect.Right - CheckSpace(aMenuItem) - bmp.Width - spaceBetweenIcons
   else
     x := aRect.Left + CheckSpace(aMenuItem) + spaceBetweenIcons;
-  TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, x, aRect.top + TopPosition(aRect.bottom - aRect.top, aMenuItem.Bitmap.Height), aMenuItem.Bitmap.Width, aMenuItem.Bitmap.Height, hdcMem, 0, 0, aMenuItem.Bitmap.MaskHandle, 0, 0);
+  TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, x, aRect.top + TopPosition(aRect.bottom - aRect.top, bmp.Height), bmp.Width, bmp.Height, hdcMem, 0, 0, bmp.MaskHandle, 0, 0);
   SelectObject(hdcMem, hbmpOld);
 end;
 

@@ -1,6 +1,7 @@
 {
   Extra Win32 code that's not in the RTL.
-  Copyright (C) 2001, 2002 Keith Bowes.
+  Copyright (C) 2001, 2002 Keith Bowes. 
+  Modified by Marc Weustink
 
  *****************************************************************************
  *                                                                           *
@@ -16,7 +17,7 @@
  *****************************************************************************
 }
 
-Unit WinExt;
+unit Win32Extra;
 
 {$mode objfpc}{$H+}
 
@@ -27,12 +28,13 @@ Unit WinExt;
 {$PACKRECORDS C}
 {$SMARTLINK ON}
 
-Interface
+interface
 
-Uses Classes, Windows;
+uses 
+  InterfaceBase, Classes, Windows, GraphType;
 
 { Win32 API records not included in windows.pp }
-Type
+type
   TNMCustomDraw = record
     hdr        : NMHDR;
     dwDrawStage: DWORD;
@@ -58,7 +60,7 @@ Type
   PNMLVCustomDraw=^TNMLVCustomDraw;
 
 { Win32 API constants not included in windows.pp }
-Const
+const
   { Recommended modal-dialog style }
   DSC_MODAL = WS_POPUP Or WS_SYSMENU Or WS_CAPTION Or DS_MODALFRAME;
   { Recommended modeless-dialog style }
@@ -221,7 +223,7 @@ function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST;
 
 { Win32 API functions not included in windows.pp }
 { Get the ancestor at level Flag of window HWnd }
-Function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; External 'user32';
+function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; External 'user32';
 { Get information about combo box hwndCombo and place in pcbi }
 function GetRandomRgn(aHDC: HDC; aHRGN: HRGN; iNum: longint): longint; stdcall; external 'gdi32';
 
@@ -230,16 +232,17 @@ function GetRandomRgn(aHDC: HDC; aHRGN: HRGN; iNum: longint): longint; stdcall; 
 function CoTaskMemAlloc(cb : ULONG) : PVOID; stdcall; external 'ole32.dll' name 'CoTaskMemAlloc';
 procedure CoTaskMemFree(pv : PVOID); stdcall; external 'ole32.dll' name 'CoTaskMemFree';
 
-{ Miscellaneous functions }
-{ Convert string Str to a PChar }
-Function StrToPChar(Const Str: String): PChar;
+const
+  // BlendOp flags
+  AC_SRC_OVER = $00;
+  // AlphaFormat flags
+  AC_SRC_ALPHA = $01;
 
-{ Replace OrigStr with ReplStr in Str }
-Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
+// AlphaBlend is only defined for win98&2k and up 
+// load dynamic and use ownfunction if not defined
+var
+  AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
 
-{ Creates a string list limited to Count (-1 for no limit) entries by splitting
-  Str into substrings around SplitStr }
-Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
 
 {$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
@@ -278,7 +281,7 @@ type
      
      OPENFILENAME_NT4 = Windows.OPENFILENAME;
 
-// these functions are declared, because they need to have WinExt.LPOPENFILENAME parameter
+// these functions are declared, because they need to have Win32Extra.LPOPENFILENAME parameter
 function GetOpenFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetOpenFileNameA';
 function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetSaveFileNameA';
 {$endif}
@@ -289,98 +292,6 @@ Implementation
 Uses SysUtils;
 
 {$PACKRECORDS NORMAL}
-
-{not used anymore
-function ListView_GetHeader(hwndLV: HWND): HWND;
-begin
-  Result := SendMessage(hwndLV, LVM_GETHEADER, 0, 0);
-end;
-
-function ListView_GetExtendedListViewStyle(hwndLV: HWND): DWORD;
-begin
-  Result := SendMessage(hwndLV, LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0);
-end;
-
-function ListView_SetExtendedListViewStyle(hwndLV: HWND; dw: DWORD): BOOL;
-begin
-  Result := BOOL(SendMessage(hwndLV, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, dw));
-end;
-
-function ListView_GetHoverTime(hwndLV: HWND): DWORD;
-begin
-  Result := SendMessage(hwndLV, LVM_GETHOVERTIME, 0, 0);
-end;
-
-function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
-begin
-  Result := SendMessage(hwndLV, LVM_SETHOVERTIME, 0, dwHoverTimeMs);
-end;
-
-procedure ListView_SetCheckState(hwndLV: HWND; iIndex: UINT;fCheck:BOOL);
-begin
-end;
-}
-
-Var
-  TmpStr: PChar;
-
-Function StrToPChar(Const Str: String): PChar;
-Begin
-  TmpStr := PChar(Str);
-  Result := TmpStr;
-End;
-
-Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
-Var
-  InsPt: Integer;
-Begin
-  Result := Str;
-  Repeat
-    InsPt := Pos(OrigStr, Result);
-    If InsPt <> 0 Then
-    Begin
-      Delete(Result, InsPt, Length(OrigStr));
-      Insert(ReplStr, Result, InsPt);
-    End;
-
-    If Not Global Then
-      Break;
-  Until InsPt = 0;
-End;
-
-Function Split(Const Str: String; SplitStr: String; Count: Integer;
-  Const CaseSensitive: Boolean): TStringList;
-Var
-  LastP, P: Integer;
-  OrigCt: Integer;
-  S: String;
-Begin
-  Result := TStringList.Create;
-  OrigCt := Count;
-  If Not CaseSensitive Then
-  Begin
-    S := LowerCase(Str);
-    SplitStr := LowerCase(SplitStr);
-  End
-  Else
-    S := Str;
-  P := Pos(SplitStr, Str);
-  LastP:=0;
-  Repeat
-    S := Copy(S, P + 1, Length(S));
-    Result.Capacity := Result.Count;
-    Result.Add(Copy(Str, LastP + 1, P - 1));
-    P := Pos(SplitStr, S);
-    LastP := P;
-    If Count > 0 Then
-      Dec(Count)
-  Until (P = 0) Or (Count = 0);
-  If OrigCt <> 0 Then
-  Begin
-    Result.Capacity := Result.Count;
-    Result.Add(Copy(Str, (Length(Str) - Length(S)) + 1, Pos(SplitStr, Str) - 1));
-  End;
-End;
 
 {$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
@@ -395,18 +306,97 @@ function GET_Y_LPARAM(lp : Windows.LParam) : longint;
   end;
 {$endif VER2_0}
 
-Initialization
+function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+var
+  R: TRect;
+  SrcImage, DstImage: TRawImage;
+  SrcDC: HDC;
+  bmp: HBITMAP;
+  X, Y: Integer;
+begin
+  if blendFunction.AlphaFormat = 0
+  then begin
+    Result := True;
+    case blendFunction.SourceConstantAlpha of
+      0: begin
+        Exit;
+      end;
+      255: begin
+        // simple strechblt
+        StretchBlt(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, SRCCOPY);
+      end;
+    end;
+  end;
 
-TmpStr := StrNew('');
+  // TODO: implement someday for win95 and NT
 
-Finalization
+(*
+  // get source by replacing it with a dummy
+  R := Rect(nXOriginSrc, nYOriginSrc, nXOriginSrc + nWidthSrc, nYOriginSrc + nHeightSrc);
+  bmp := CreateBitmap(1,1,1,1,nil);
+  bmp := SelectObject(hdcSrc, bmp);
+  Result := Widgetset.RawImage_FromBitmap(SrcImage, bmp, 0, R);
+  // Restore source
+  bmp := SelectObject(hdcSrc, bmp);
 
-Try
-  StrDispose(TmpStr);
-  TmpStr := Nil;
-Except
-  On E: Exception Do
-    Assert(False, Format('Trace:Could not deallocate string --> %S', [E.Message]));
-End;
+  // Get destination
+  bmp := SelectObject(hdcDest, bmp);
+  // check if destination is 32bit, copy to temp 32bit if not so
+  // ...
+  // create dstimage
+  Result := Widgetset.RawImage_FromBitmap(DstImage, bmp, 0, R);
+  // Restore destination
+  bmp := SelectObject(hdcDest, bmp);
+
+  // check if resized
+  if (nWidthDest <> nWidthSrc) or (nHeightDest <> nHeightSrc)
+  then begin
+    // separate image and alpha, scale the resulting image and recreate Src Rawimage
+
+  end;
+  
+  // loop through pixels
+  
+  // create and bitblt destination bitmap
+  
+  // cleanup
+  
+*)
+end;
+
+
+const 
+  msimg32lib = 'msimg32.dll';
+ 
+var
+  msimg32handle: THandle = 0;
+
+procedure Initialize;
+var
+  p: Pointer;
+begin                
+  AlphaBlend := @_AlphaBlend;
+  msimg32handle := LoadLibrary(msimg32lib);
+  if msimg32handle <> 0
+  then begin 
+    p := GetProcAddress(msimg32handle, 'AlphaBlend');
+    if p <> nil
+    then Pointer(AlphaBlend) := p;
+  end;
+end;
+
+procedure Finalize;
+begin
+  AlphaBlend := @_AlphaBlend;
+  if msimg32handle <> 0
+  then FreeLibrary(msimg32handle);
+  msimg32handle := 0;
+end;
+
+initialization
+  Initialize;
+
+finalization
+  Finalize;
 
 End.

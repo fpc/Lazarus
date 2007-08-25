@@ -34,7 +34,7 @@ uses
 ////////////////////////////////////////////////////
   SysUtils, Windows, ExtCtrls, Classes, Controls, LCLType, LCLIntf, Themes,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, WinExt, Win32Int, Win32Proc, InterfaceBase,
+  WSExtCtrls, WSLCLClasses, Win32Extra, Win32Int, Win32Proc, InterfaceBase,
   Win32WSControls;
 
 type

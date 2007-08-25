@@ -38,7 +38,8 @@ begin
   {$ifdef IMGLIST_OLDSTYLE}
   DrawImageListIconOnWidget(NoteBook.Images,Page.ImageIndex,Widget);
   {$else}
-  {$note implement}
+  {$note reimplement}
+  DrawImageListIconOnWidget(NoteBook.Images,Page.ImageIndex,Widget);
   {$endif}
 end;
 

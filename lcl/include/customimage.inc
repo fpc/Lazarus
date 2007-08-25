@@ -194,55 +194,60 @@ begin
   PreferredHeight:=Picture.Height;
 end;
 
-Procedure TCustomImage.Paint;
+procedure TCustomImage.Paint;
 
-  Procedure DrawFrame;
+  procedure DrawFrame;
   begin
-    if csDesigning in ComponentState then begin
-      With inherited Canvas do begin
-        Pen.Color := clBlack;
-        Pen.Style := psDash;
-        MoveTo(0, 0);
-        LineTo(Self.Width-1, 0);
-        LineTo(Self.Width-1, Self.Height-1);
-        LineTo(0, Self.Height-1);
-        LineTo(0, 0);
-      end;
+    with inherited Canvas do
+    begin
+      Pen.Color := clBlack;
+      Pen.Style := psDash;
+      MoveTo(0, 0);
+      LineTo(Self.Width-1, 0);
+      LineTo(Self.Width-1, Self.Height-1);
+      LineTo(0, Self.Height-1);
+      LineTo(0, 0);
     end;
   end;
 
 var
-  iRect : TRect;
+  R: TRect;
+  C: TCanvas;
   BackgroundColor: Integer;
 begin
   // detect loop
   if FUseParentCanvas then exit;
   
-  With inherited Canvas do begin
-    DrawFrame;
-    If Picture.Graphic = nil then
-      exit;
-    iRect:=DestRect;
-    If Picture.Graphic.Transparent and (not Transparent) then begin
-      If Picture.Graphic is TBitmap then
-        BackgroundColor := TBitmap(Picture.Graphic).TransparentColor
-      else
-        BackgroundColor := clWhite;
-    end else begin
-      BackgroundColor:=clNone;
-    end;
-    if (BackgroundColor<>clNone) then begin
-      Brush.Color:=BackgroundColor;
-      FillRect(iRect);
-    end;
-    StretchDraw(iRect, Picture.Graphic);
-  end;
+  if csDesigning in ComponentState
+  then DrawFrame;
   
+  if Picture.Graphic = nil
+  then Exit;
+
+  if Picture.Graphic.Transparent and not Transparent
+  then begin
+    if Picture.Graphic is TBitmap
+    then BackgroundColor := TBitmap(Picture.Graphic).TransparentColor
+    else BackgroundColor := clWhite;
+  end
+  else begin
+    BackgroundColor := clNone;
+  end;
+
+  C := inherited Canvas;
+  R := DestRect;
+  if BackgroundColor <> clNone
+  then begin
+    C.Brush.Color := BackgroundColor;
+    C.FillRect(R);
+  end;
+  C.StretchDraw(R, Picture.Graphic);
+
   try
-    FUseParentCanvas := true;
+    FUseParentCanvas := True;
     inherited Paint;
   finally
-    FUseParentCanvas := false;
+    FUseParentCanvas := False;
   end;
 end;
 

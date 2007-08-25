@@ -33,7 +33,7 @@ uses
   SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc ,
   InterfaceBase,
   // Widgetset
-  WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls,WinCEWinAPIEmu;
+  WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls, WinCEExtra;
 
 type
 

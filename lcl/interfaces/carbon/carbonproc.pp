@@ -68,7 +68,7 @@ function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 function FindCarbonFontID(const FontName: String): ATSUFontID;
 function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
-procedure FillStandardDescription(var Desc: TRawImageDescription);
+procedure FillStandardDescription(out Desc: TRawImageDescription);
 
 function CreateCustomHIView(const ARect: HIRect): HIViewRef;
 
@@ -398,36 +398,37 @@ end;
   Fills the raw image description with standard Carbon internal image storing
   description
  ------------------------------------------------------------------------------}
-procedure FillStandardDescription(var Desc: TRawImageDescription);
+procedure FillStandardDescription(out Desc: TRawImageDescription);
 begin
-  FillChar(Desc, SizeOf(Desc), 0);
+  Desc.Init;
 
   Desc.Format := ricfRGBA;
-  Desc.HasPalette := False;
 // Width and Height skipped
   Desc.PaletteColorCount := 0;
-  Desc.ColorCount := Desc.PaletteColorCount;
 
   Desc.BitOrder := riboReversedBits;
   Desc.ByteOrder := riboMSBFirst;
   Desc.LineEnd := rileDQWordBoundary; // 128bit aligned
   
-  Desc.AlphaSeparate := False;
-  
   Desc.LineOrder := riloTopToBottom;
   Desc.BitsPerPixel := 32;
   Desc.Depth := 32;
 
-  // 8-8-8-8 mode, $RRGGBBAA
+  // 8-8-8-8 mode, $AARRGGBB
   Desc.RedPrec := 8;
   Desc.GreenPrec := 8;
   Desc.BluePrec := 8;
   Desc.AlphaPrec := 8;
+  
+  Desc.AlphaShift := 24;
+  Desc.RedShift   := 16;
+  Desc.GreenShift := 08;
+  Desc.BlueShift  := 00;
 
-  Desc.RedShift   := 24;
-  Desc.GreenShift := 16;
-  Desc.BlueShift  := 08;
-  Desc.AlphaShift := 00;
+  Desc.MaskBitOrder := riboReversedBits;
+  Desc.MaskBitsPerPixel := 1;
+  Desc.MaskLineEnd := rileByteBoundary;
+  Desc.MaskShift := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -898,7 +899,7 @@ finalization
     ATSUDisposeStyle(DefaultTextStyle), 'CarbonProc.finalization', SDisposeStyle);
   CGColorSpaceRelease(RGBColorSpace);
   CGColorSpaceRelease(GrayColorSpace);
-  
-  
+
+
 
 end.

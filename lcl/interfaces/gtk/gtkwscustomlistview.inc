@@ -506,9 +506,17 @@ begin
     if (ImageRect.Left <> 0)
     or (ImageRect.Top <> 0)
     then DebugLn('WARNING: TGtkWSCustomListView.ItemChangeInternal does not support combined imagelists');
-    Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject;
-    Mask := PGdkBitmap(PGDIObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
+    Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
+    if MaskBitmap = nil
+    then begin
+      Mask := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Mask;
+      if Mask <> nil
+      then gdk_bitmap_ref(Mask);
+    end
+    else Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, MaskBitmap.Handle);
     gtk_clist_set_pixtext(ACListWidget, AIndex, 0, PChar(AItem.Caption), 3, Pixmap, Mask);
+    if Mask <> nil
+    then gdk_bitmap_unref(Mask);
     {$else}
     {$note implement}
     {$endif}
@@ -648,8 +656,14 @@ begin
     if (ImageRect.Left <> 0)
     or (ImageRect.Top <> 0)
     then DebugLn('WARNING: TGtkWSCustomListView.ItemSetImage does not support combined imagelists');
-    Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject;
-    Mask := PGdkBitmap(PGDIObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
+    Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
+    if MaskBitmap = nil
+    then begin
+      Mask := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Mask;
+      if Mask <> nil
+      then gdk_bitmap_ref(Mask);
+    end
+    else Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, MaskBitmap.Handle);
   end
   else begin
     Pixmap := nil;
@@ -711,6 +725,10 @@ begin
   else
     DebugLN('[TGtkWSCustomListView.ItemSetImage] Unknown celltype %d', [Ord(CellType)]);
   end;
+  {$ifdef IMGLIST_OLDSTYLE}
+  if Mask <> nil
+  then gdk_bitmap_unref(Mask);
+  {$endif}
 end;
 
 class procedure TGtkWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);

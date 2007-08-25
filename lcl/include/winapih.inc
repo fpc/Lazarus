@@ -265,6 +265,11 @@ function EqualRect(const lprc1, lprc2: TRect): Boolean;
 
 function GetScrollPos(Handle: HWND; nBar: Integer): Integer;
 function GetScrollRange(Handle: HWND; nBar: Integer; var lpMinPos, lpMaxPos: Integer): Boolean;
+function GetRValue(RGB : DWORD) : BYTE; inline;
+function GetGValue(RGB : DWORD) : BYTE; inline;
+function GetBValue(RGB : DWORD) : BYTE; inline;
+procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
+procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
 
 function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;
 function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean;
@@ -280,6 +285,8 @@ function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
 function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 
+function RGB(R, G, B : Byte) : TColorRef; inline;
+
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean; inline;
 function SetRect(Var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
 function SetRectEmpty(var ARect: TRect): Boolean;
@@ -289,13 +296,7 @@ Function SmallPointToPoint(const P : TSmallPoint) : Tpoint;
 
 function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; //pbd
 
-function GetRValue(RGB : DWORD) : BYTE; inline;
-function GetGValue(RGB : DWORD) : BYTE; inline;
-function GetBValue(RGB : DWORD) : BYTE; inline;
-procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
-procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
 
-function RGB(R, G, B : Byte) : TColorRef; inline;
 
 //##apiwiz##epi##    // Do not remove
 

@@ -68,10 +68,10 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
-function CreateCursor(ACursorInfo: PIconInfo): hCursor; Override;
+function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;  wUsage: UINT): HBITMAP; override;
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
-  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; Override;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 //function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 //function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
@@ -105,13 +105,8 @@ function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
-Function GetActiveWindow : HWND; override;
+function GetActiveWindow : HWND; override;
 //function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
-function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; override;
-function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; Override;
 
 {function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
@@ -128,7 +123,7 @@ function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var Origi
 {function GetDesignerDC(WindowHandle: HWND): HDC; override;}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
+//function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 //function GetFontLanguageInfo(DC: HDC): DWord; override;

@@ -1,3 +1,13 @@
+{ $Id$
+                  ----------------------------------
+                  gtkproc.pp  -  gtk interface procs
+                  ----------------------------------
+
+ @lastmod($Date$)
+ @author(Marc Weustink <marc@@lazarus.dommelstein.net>)
+
+ This unit contains procedures/functions needed for the gtk <-> LCL interface
+}
 {
  *****************************************************************************
  *                                                                           *
@@ -46,7 +56,7 @@ uses
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra;
+  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra, GtkDebug;
 
 
 const
@@ -654,19 +664,18 @@ function GdkPixbufAddBitmapMask(pixbuf: PGdkPixbuf; mask:
   PGdkBitmap; mask_value: byte): PGdkPixbuf;
 
 // pixmaps
-procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
-  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
+  out AMask: PGdkBitmap; out AWidth, AHeight: Integer);
 Procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 Procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
-  X,Y,Width,Height: integer; ClipMergeMask: PGdkPixmap;
+  X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
-  var NewClipMask: PGdkPixmap);
-Procedure ResetGCClipping(DC: HDC; GC: PGDKGC);
-function ScalePixmap(ScaleGC: PGDKGC;
-  SrcPixmap: PGdkPixmap; SrcX, SrcY, SrcWidth, SrcHeight: integer;
-  SrcColorMap: PGdkColormap;
-  NewWidth, NewHeight: integer;
-  var NewPixmap: PGdkPixmap): Boolean;
+  var NewClipMask: PGdkBitmap);
+procedure ResetGCClipping(DC: HDC; GC: PGDKGC);
+function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
+  ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
+  ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
+  ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
 {$ifdef IMGLIST_OLDSTYLE}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
@@ -677,8 +686,9 @@ procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
 {$else}
 {$note TODO: Remove me}
 {$endif}
-function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
-function CreateGdkBitmap(Window: PGdkWindow; Width, Height: integer): PGdkBitmap;
+function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
+function CreateGdkMaskBitmap(AImage, AMask: HBITMAP): PGdkBitmap;
+function CreateGdkMaskBitmap(AImageMask, AMask: PGdkBitmap): PGdkBitmap;
 function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
 
 // menus

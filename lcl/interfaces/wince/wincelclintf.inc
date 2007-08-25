@@ -59,6 +59,215 @@ begin
   Result := lListIndex;
 end;
 
+{------------------------------------------------------------------------------
+  Function: RawImage_CreateBitmaps
+  Params: ARawImage:
+          ABitmap:
+          AMask:
+          ASkipMask: Wehn set, no mask is created
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+
+  function GetMask(APrec, AShift: Byte): Cardinal;
+  begin
+    Result := ($FFFFFFFF shr (32-APrec)) shl AShift;
+  end;
+
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  DC: HDC;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+  end;
+  BitsPtr: Pointer;
+  DataSize: Integer;
+  Align: Byte;
+begin
+
+  FillChar(Info, sizeof(Info), 0);
+  Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
+  Info.Header.biWidth := ADesc.Width;
+  Info.Header.biHeight := -ADesc.Height;
+  Info.Header.biPlanes := 1;
+  Info.Header.biBitCount := ADesc.BitsPerPixel;
+  // TODO: palette support
+  Info.Header.biClrUsed := 0;
+  Info.Header.biClrImportant := 0;
+  Info.Header.biSizeImage := BytesPerLine(Info.Header.biWidth, Info.Header.biBitCount) * ADesc.Height;
+  // CE only supports bitfields
+  Info.Header.biCompression := BI_BITFIELDS;
+
+  // when 24bpp, CE only supports B8G8R8 encoding
+  // TODO: check the description
+  Info.Colors[0] := GetMask(ADesc.RedPrec, ADesc.RedShift);
+  Info.Colors[1] := GetMask(ADesc.GreenPrec, ADesc.GreenShift);
+  Info.Colors[2] := GetMask(ADesc.BluePrec, ADesc.BlueShift);
+
+  DC := Windows.GetDC(0);
+  AMask := 0;
+  // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
+  // when they are created with createDIBitmap
+  //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
+  ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
+  Windows.ReleaseDC(0, DC);
+
+  Result := ABitmap <> 0;
+  if not Result then Exit;
+  if BitsPtr = nil then Exit;
+
+  // copy the image data
+  DataSize := (((ADesc.BitsPerPixel * ADesc.Width) shr 3) + 3) and not 3;
+  Align := DataSize and 3;
+  if Align <> 0
+  then Inc(DataSize, 4 - Align);
+  DataSize := DataSize * ADesc.Height;
+  if DataSize > ARawImage.DataSize
+  then DataSize := ARawImage.DataSize;
+  Move(ARawImage.Data^, BitsPtr^, DataSize);
+
+  if ASkipMask then Exit;
+  if ARawImage.Mask = nil then Exit;
+  if ARawImage.MaskSize = 0 then Exit;
+
+  AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  Result := AMask <> 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_DescriptionFromBitmap
+  Params: ABitmap:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+var
+  BitmapInfo: Windows.TBitmap;
+begin
+  Result := Windows.GetObject(ABitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  if Result then
+    FillRawImageDescription(BitmapInfo, ADesc);
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_DescriptionFromDevice
+  Params: ADC:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+var
+  DC: HDC;
+begin
+  Result := True;
+
+  ADesc.Init;
+
+  if ADC = 0
+  then DC := Windows.GetDC(0)
+  else DC := ADC;
+
+  ADesc.Format := ricfRGBA;
+  ADesc.Width := Windows.GetDeviceCaps(DC, HORZRES);
+  ADesc.Height := Windows.GetDeviceCaps(DC, VERTRES);
+  ADesc.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.LineEnd := rileDWordBoundary;
+
+  if (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0
+  then begin
+    // has palette
+    ADesc.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
+    ADesc.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES);
+  end
+  else begin
+    ADesc.BitsPerPixel := ADesc.Depth;
+  end;
+
+  if ADC = 0
+  then Windows.ReleaseDC(0, DC);
+
+  FillRawImageDescriptionColors(ADesc);
+
+  ADesc.MaskBitsPerPixel := 1;
+  ADesc.MaskShift := 0;
+  ADesc.MaskLineEnd := rileWordBoundary;
+  ADesc.MaskBitOrder := riboReversedBits;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_FromBitmap
+  Params: ABitmap:
+          AMask:
+          ARect:
+          ARawImage:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+var
+  WinBmp: Windows.TBitmap;
+  R: TRect;
+begin
+  ARawImage.Init;
+  Result := Windows.GetObject(ABitmap, SizeOf(WinBmp), @WinBmp) > 0;
+  if not Result then Exit;
+
+  FillRawImageDescription(WinBmp, ARawImage.Description);
+  R := ARect;
+  if R.Top > WinBmp.bmHeight then
+    R.Top := WinBmp.bmHeight;
+  if R.Bottom > WinBmp.bmHeight then
+    R.Bottom := WinBmp.bmHeight;
+  if R.Left > WinBmp.bmWidth then
+    R.Left := WinBmp.bmWidth;
+  if R.Right > WinBmp.bmWidth then
+    R.Right := WinBmp.bmWidth;
+
+  ARawImage.Description.Width := R.Right - R.Left;
+  ARawImage.Description.Height := R.Bottom - R.Top;
+
+  // copy bitmap
+  Result := GetBitmapBytes(ABitmap, R, ARawImage.Description.LineEnd, ARawImage.Data, ARawImage.DataSize);
+
+  // check mask
+  if AMask <> 0 then
+  begin
+    Result := Windows.GetObject(AMask, SizeOf(WinBmp), @WinBmp) > 0;
+    if not Result then exit;
+
+    Result := GetBitmapBytes(AMask, R, ARawImage.Description.MaskLineEnd, ARawImage.Mask, ARawImage.MaskSize);
+  end
+  else begin
+    ARawImage.Description.MaskBitsPerPixel := 0;;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_FromDevice
+  Params: ADC:
+          ARect:
+          ARawImage:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+var
+  bmp: HBITMAP;
+begin
+  bmp := Windows.GetCurrentObject(ADC, OBJ_BITMAP);
+  if bmp = 0
+  then Result := False
+  else Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+end;
+
 procedure TWinCEWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 var
   lListIndex: pdword absolute AHandler;

@@ -524,24 +524,29 @@ begin
   else
     IconSet := gtk_style_lookup_icon_set(GetStyle(lgsWindow), StockName);
 
-  If (IconSet = nil) then begin
+  if (IconSet = nil) then
+  begin
     Result := inherited LoadStockPixmap(StockID,Mask);
     exit;
   end;
 
   if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
-    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget(lgsbutton), nil)
+    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton),
+      GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget(lgsbutton), nil)
   else
-    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget(lgswindow), nil);
+    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow),
+      GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget(lgswindow), nil);
 
   Pixmap := NewGDIObject(gdiBitmap);
-  With Pixmap^ do begin
+  with Pixmap^ do
+  begin
     GDIBitmapType := gbPixmap;
     visual := gdk_visual_get_system();
     gdk_visual_ref(visual);
     colormap := gdk_colormap_get_system();
     gdk_colormap_ref(colormap);
-    gdk_pixbuf_render_pixmap_and_mask(pixbuf, GDIPixmapObject, GDIBitmapMaskObject, 128);
+    gdk_pixbuf_render_pixmap_and_mask(pixbuf, GDIPixmapObject.Image,
+      GDIPixmapObject.Mask, 128);
   end;
 
   gdk_pixbuf_unref(pixbuf);

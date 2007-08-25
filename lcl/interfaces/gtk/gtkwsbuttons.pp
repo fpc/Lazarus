@@ -29,9 +29,9 @@ interface
 uses
   // libs
   {$IFDEF GTK2}
-  GLib2, Gtk2, Gtk2WSPrivate,
+  GLib2, Gtk2, gdk2, Gtk2WSPrivate,
   {$ELSE}
-  GLib, Gtk, Gtk1WSPrivate,
+  GLib, Gtk, gdk, Gtk1WSPrivate,
   {$ENDIF}
   // LCL
   Classes, LCLProc, LCLType, LMessages, Controls, Graphics, Buttons,
@@ -157,6 +157,7 @@ var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   GDIObject: PGDIObject;
+  Mask: PGdkBitmap;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph')
   then Exit;
@@ -178,18 +179,21 @@ begin
   end;
   
   GDIObject := PgdiObject(AValue.Handle);
+  Mask := CreateGdkMaskBitmap(AValue.Handle, AValue.MaskHandle);
+  
   // check for image
   if BitBtnInfo^.ImageWidget = nil
   then begin
     BitBtnInfo^.ImageWidget :=
-     gtk_pixmap_new(GDIObject^.GDIPixmapObject, GDIObject^.GDIBitmapMaskObject);
+     gtk_pixmap_new(GDIObject^.GDIPixmapObject.Image, Mask);
     gtk_widget_show(BitBtnInfo^.ImageWidget);
     UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
   end
   else begin
-    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject,
-                   GDIObject^.GDIBitmapMaskObject);
+    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
   end;
+  
+  gdk_pixmap_unref(Mask);
 end;
 
 class procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;

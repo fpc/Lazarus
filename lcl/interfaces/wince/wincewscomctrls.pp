@@ -34,7 +34,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
   // wince widgetset
-   WinCEInt, WinCEProc, WinCEWSControls,WinCEWinAPIEmu;
+   WinCEInt, WinCEProc, WinCEWSControls, WinCEExtra;
 
 type
 

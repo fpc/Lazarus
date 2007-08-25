@@ -44,8 +44,10 @@ uses
   Classes, SysUtils, Math, Types,
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, Comctrls, Calendar, LCLIntf, GraphType, Themes,
-  Arrow, CheckLst;
+  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes,
+  Arrow, CheckLst,
+  // WS
+  qtproc;
 
 type
 

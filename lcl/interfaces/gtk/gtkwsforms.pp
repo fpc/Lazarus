@@ -86,7 +86,7 @@ type
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
-    class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    class procedure ShowModal(const AForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
   end;
@@ -319,51 +319,56 @@ end;
 class procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
+  if not WSCheckHandleAllocated(AForm, 'SetFormBorderStyle')
+  then Exit;
+
   inherited SetFormBorderStyle(AForm, AFormBorderStyle);
   // the form border style can only be set at creation time.
   // This is Delphi compatible, so no Recreatewnd needed.
+  {$note check if this implies that the lcl recreates the handle here}
+  // otherwise the lcl recreatewnd call should be removed and placed here.
 end;
 
 class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 var
-  FormIconGdiObject: PGdiObject;
-  AWindow     : PGdkWindow;
+  GdiObject: PGdiObject;
+  Window: PGdkWindow;
 begin
-  if AForm.Parent = nil then
-  begin
-    if AForm.HandleAllocated and (AIcon <> 0) then begin
-      FormIconGdiObject:=PGdiObject(AIcon);
-      //DebugLn('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
-      if (FormIconGdiObject <> nil) then begin
-        AWindow:=GetControlWindow(PGtkWidget(AForm.Handle));
-        if AWindow<>nil then begin
-          gdk_window_set_icon(AWindow, nil,
-            FormIconGdiObject^.GDIBitmapObject,
-            FormIconGdiObject^.GDIBitmapMaskObject);
-        end;
-      end;
-    end;
-  end;
+  if not WSCheckHandleAllocated(AForm, 'SetIcon')
+  then Exit;
+
+  if AForm.Parent <> nil then Exit;
+  if AIcon = 0 then Exit;
+
+  Window := GetControlWindow(PGtkWidget(AForm.Handle));
+  if Window = nil then Exit;
+
+  GdiObject := PGdiObject(AIcon);
+  gdk_window_set_icon(Window, nil, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask);
 end;
 
 class procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
+  if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar')
+  then Exit;
+
   SetFormShowInTaskbar(AForm,AValue);
 end;
 
-class procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+class procedure TGtkWSCustomForm.ShowModal(const AForm: TCustomForm);
 var
   GtkWindow: PGtkWindow;
 begin
+  if not WSCheckHandleAllocated(AForm, 'ShowModal')
+  then Exit;
+
+  if AForm.Parent <> nil then Exit;
   ReleaseMouseCapture;
-  if ACustomForm.Parent=nil then begin
-    GtkWindow:=PGtkWindow(ACustomForm.Handle);
-    gtk_window_set_default_size(GtkWindow,
-                          Max(1,ACustomForm.Width),Max(1,ACustomForm.Height));
-    gtk_widget_set_uposition(PGtkWidget(GtkWindow),
-                             ACustomForm.Left, ACustomForm.Top);
-  end;
+
+  GtkWindow := PGtkWindow(AForm.Handle);
+  gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
+  gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
   GtkWindowShowModal(GtkWindow);
 end;
 
@@ -376,6 +381,10 @@ class procedure TGtkWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   end;
   
 begin
+  if not WSCheckHandleAllocated(AForm, 'SetBorderIcons')
+  then Exit;
+  
+  {$note remove check here, it belongs in the lcl}
   if (AForm.ComponentState*[csDesigning,csLoading]=[csDesigning]) then begin
     if (AForm.BorderIcons<>DefaultBorderIcons[AForm.BorderStyle]) then
       RaiseNotImplemented;

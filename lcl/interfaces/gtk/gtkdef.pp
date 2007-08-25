@@ -106,15 +106,17 @@ type
     Next: PGDIObject; // 'Next' is used by the internal mem manager
     case GDIType: TGDIType of
       gdiBitmap: (
-        GDIBitmapMaskObject: PGdkPixmap;
         Depth: integer;
         SystemVisual : Boolean;
         Visual : PGDKVisual;
         Colormap : PGDKColormap;
         case GDIBitmapType: TGDIBitmapType of
           gbBitmap: (GDIBitmapObject: PGdkBitmap); // pixmap with depth 1
-          gbPixmap: (GDIPixmapObject: PGdkPixmap); // normal pixmap
-          {obsolete: gbImage : (GDI_RGBImageObject: PGDI_RGBImage);}
+          gbPixmap: (GDIPixmapObject: record // normal pixmap
+                      Image: PGdkPixmap;     // imagedata
+                      Mask: PGdkBitmap;      // the mask for images with 1 bit alpha and pixmap not supporting alpha
+                      {$note check the need for mask} //MWE: at theismoment I cant oversee is we will set it from the LCL
+                    end);
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask
@@ -206,6 +208,8 @@ type
     FCurrentFont: PGdiObject;
     FCurrentPalette: PGdiObject;
     FCurrentPen: PGdiObject;
+    FGC: pgdkGC;
+
     fOwnedGDIObjects: array[TGDIType] of PGdiObject;
     function GetGDIObjects(ID: TGDIType): PGdiObject;
     function GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
@@ -219,6 +223,7 @@ type
                               const NewValue: PGdiObject);
     procedure SetGDIObjects(ID: TGDIType; const AValue: PGdiObject);
     procedure SetOwnedGDIObjects(ID: TGDIType; const AValue: PGdiObject);
+    function GetGC: pgdkGC;
   public
     WithChildWindows: boolean;// this DC covers sub gdkwindows
   
@@ -226,8 +231,11 @@ type
     DCWidget: PGtkWidget; // the owner
     Drawable: PGDKDrawable;
     OriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
-    GC: pgdkGC;
     GCValues: TGdkGCValues;
+    
+    property GC: pgdkGC read GetGC write FGC;
+    function HasGC: Boolean;
+
 
     // origins
     Origin: TPoint;
@@ -257,11 +265,14 @@ type
     property OwnedGDIObjects[ID: TGDIType]: PGdiObject read GetOwnedGDIObjects write SetOwnedGDIObjects;
 
     procedure Clear;
-    function GetGC: pgdkGC;
     function GetFont: PGdiObject;
     function GetBrush: PGdiObject;
     function GetPen: PGdiObject;
     function GetBitmap: PGdiObject;
+    
+    function IsNullBrush: boolean;
+    function IsNullPen: boolean;
+
   end;
   
   
@@ -768,9 +779,9 @@ end;
 
 function TDeviceContext.GetGC: pgdkGC;
 begin
-  if GC=nil then
+  if FGC = nil then
     CreateGCForDC(Self);
-  Result:=GC;
+  Result := FGC;
 end;
 
 function TDeviceContext.GetFont: PGdiObject;
@@ -789,9 +800,25 @@ end;
 
 function TDeviceContext.GetPen: PGdiObject;
 begin
-  if CurrentPen=nil then
-    CreateGDIObjectForDC(Self,gdiPen);
-  Result:=CurrentPen;
+  if CurrentPen = nil then
+    CreateGDIObjectForDC(Self, gdiPen);
+  Result := CurrentPen;
+end;
+
+function TDeviceContext.HasGC: Boolean;
+begin
+  Result := FGC <> nil;
+end;
+
+function TDeviceContext.IsNullBrush: boolean;
+begin
+  Result := (FCurrentBrush <> nil) and (FCurrentBrush^.IsNullBrush);
+end;
+
+
+function TDeviceContext.IsNullPen: boolean;
+begin
+  Result := (FCurrentPen <> nil) and (FCurrentPen^.IsNullPen);
 end;
 
 function TDeviceContext.GetBitmap: PGdiObject;

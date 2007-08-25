@@ -43,7 +43,8 @@ Interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Graphics, Menus,Winceproc,WinCEWinAPIEmu,WinExt,WinCEDef;
+  LMessages, StdCtrls, SysUtils, Graphics, Menus, WinCEProc, WinCEExtra,
+  WinExt, WinCEDef;
 
 const
   IDC_NODROP    = IDC_NO;
@@ -118,13 +119,6 @@ type
     
     FOnAsyncSocketMsg: TSocketEvent;
     
-    procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const BitmapHandle: HBITMAP;
-      const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
-    procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
-    procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
-        Desc: PRawImageDescription);
-
-
     FThemesActive: boolean;
 
     { event handler helper functions }

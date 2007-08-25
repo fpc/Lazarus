@@ -308,6 +308,7 @@ begin
 
   GdkTrapIsSet:=false;
 
+  {$note TODO: enable standard error_log handling}
   {$IfDef REPORT_GDK_ERRORS}
   If (Xerror<>0) then
     RaiseGDBException('A GDK/X Error occured, this is normally fatal. The error code was : ' + IntToStr(Xerror));
@@ -1113,8 +1114,7 @@ begin
   // clear mask
   temp_color.pixel := 0;
   gdk_gc_set_foreground(temp_gc, @temp_color);
-  gdk_draw_rectangle(NewClipMask, temp_gc, 1, 0, 0, width, height);
-  gdk_draw_rectangle(NewClipMask, temp_gc, 0, 0, 0, width, height);
+  gdk_draw_rectangle(NewClipMask, temp_gc, 1, 0, 0, width+1, height+1);
 
   // copy the destination clipping mask into the temporary mask
   with DestinationDC do begin
@@ -1139,13 +1139,12 @@ begin
       end;
     end;
   end;
-
+  
   // merge the source clipping mask into the temporary mask
   //gdk_window_get_size(ClipMergeMask,@ClipMergeMaskWidth,@ClipMergeMaskHeight);
   //DebugLn('MergeClipping A MergeMask Size=',ClipMergeMaskWidth,',',ClipMergeMaskHeight);
   gdk_draw_pixmap(NewClipMask, temp_gc,
-                  ClipMergeMask, ClipMergeMaskX, ClipMergeMaskY,
-                  0, 0, Width, Height);
+                  ClipMergeMask, ClipMergeMaskX, ClipMergeMaskY, 0, 0, -1, -1);
 
   // free the temporary GC
   gdk_gc_destroy(temp_gc);
@@ -1168,135 +1167,112 @@ begin
   EndGDKErrorTrap;
 end;
 
-function ScalePixmap(ScaleGC: PGDKGC;
-  SrcPixmap: PGdkPixmap; SrcX, SrcY, SrcWidth, SrcHeight: integer;
-  SrcColorMap: PGdkColormap;
-  NewWidth, NewHeight: integer;
-  var NewPixmap: PGdkPixmap) : Boolean;
+function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
+  ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
+  ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
+  ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
+
+  procedure Warn(const AText: String);
+  begin
+    DebugLn('[WARNING] ScalePixmapAndMask: ' + AText);
+  end;
+  
+  procedure ApplyMask(APixels, AMask: pguchar);
+  type
+    TPixbufPixel = record
+      R,G,B,A: Byte;
+    end;
+  var
+    RGBA: ^TPixbufPixel absolute APixels;
+    Mask: ^TPixbufPixel absolute AMask;
+    n: Integer;
+  begin
+    for n := 0 to (ASrcHeight * ASrcWidth) - 1 do
+    begin
+      if (Mask^.B = 0) and (Mask^.G = 0) and (Mask^.R = 0)
+      then RGBA^.A := 0;
+      inc(RGBA);
+      inc(Mask);
+    end;
+  end;
+  
 var
-  ScaleSrc, ScaleDest: PGDKPixbuf;
-  ShrinkWidth,
-  ShrinkHeight : Boolean;
-  ScaleMethod : TGDKINTERPTYPE;
-  DummyMask: PGdkPixmap;
-  SrcWholeWidth, SrcWholeHeight: integer;
-  {$IFDEF VerboseStretchCopyArea}
-  NewWholeWidth, NewWholeHeight: integer;
-  {$ENDIF}
+  ScaleSrc, ScaleDst, ScaleMsk: PGdkPixbuf;
+  FullSrcWidth, FullSrcHeight: integer;
 begin
-  {$IFDEF VerboseStretchCopyArea}
-  DebugLn('ScalePixmap ScaleGC=',DbgS(ScaleGC),
-    ' SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
-    ' SrcX='+dbgs(SrcX),' SrcY='+dbgs(SrcY),' SrcWidth='+dbgs(SrcWidth),' SrcHeight='+dbgs(SrcHeight),
-    ' NewPixmap=[',GetWindowDebugReport(NewPixmap),']',
-    ' NewWidth='+dbgs(NewWidth),' NewHeight='+dbgs(NewHeight));
-  {$ENDIF}
   Result := False;
-  if SrcPixmap=nil then begin
-    DebugLn('WARNING: ScalePixmap SrcPixmap=nil');
-    exit;
-  end;
-  if NewPixmap<>nil then begin
-    DebugLn('WARNING: ScalePixmap NewPixmap<>nil');
-    exit;
-  end;
+  if ASrc = nil then Exit;
 
-  ScaleSRC := nil;
-  ScaleDest := nil;
-
-  gdk_window_get_size(PGDKWindow(SrcPixmap),@SrcWholeWidth,@SrcWholeHeight);
-  if SrcX+SrcWidth>SrcWholeWidth then begin
-    DebugLn('WARNING: ScalePixmap SrcX+SrcWidth>SrcWholeWidth');
+  gdk_window_get_size(PGDKWindow(ASrc), @FullSrcWidth, @FullSrcHeight);
+  if ASrcX + ASrcWidth > FullSrcWidth
+  then begin
+    Warn('ASrcX+ASrcWidth>FullSrcWidth');
   end;
-  if SrcY+SrcHeight>SrcWholeHeight then begin
-    DebugLn('WARNING: ScalePixmap SrcY+SrcHeight>SrcWholeHeight');
+  if ASrcY + ASrcHeight > FullSrcHeight
+  then begin
+    Warn('ASrcY+ASrcHeight>FullSrcHeight');
   end;
-
-  // calculate ScaleMethod
-  ShrinkWidth := NewWidth < SrcWidth;
-  ShrinkHeight := NewHeight < SrcHeight;
-  //GDKPixbuf Scaling is not done in the same way as Windows
-  //but by rights ScaleMethod should really be chosen based
-  //on the destination device's internal flag
-  {GDK_INTERP_NEAREST,GDK_INTERP_TILES,
-  GDK_INTERP_BILINEAR,GDK_INTERP_HYPER);}
-  If ShrinkWidth and ShrinkHeight then
-    ScaleMethod := GDK_INTERP_TILES
-  else
-    If ShrinkWidth or ShrinkHeight then
-      ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
-    else
-      ScaleMethod := GDK_INTERP_BILINEAR;
 
   // Creating PixBuf from pixmap
-  {$IFDEF VerboseStretchCopyArea}
-  DebugLn('ScalePixmap Creating PixBuf from pixmap SrcWhole='+dbgs(SrcWholeWidth),','+dbgs(SrcWholeHeight));
-  {$ENDIF}
-  ScaleSRC := gdk_pixbuf_get_from_drawable(nil,SrcPixmap,
-    SrcColorMap,SrcX,SrcY,0,0,SrcWidth,SrcHeight);
-  If ScaleSRC = nil then begin
-    DebugLn('WARNING: ScalePixmap ScaleSRC=nil');
-    exit;
+  // force format when a mask is present
+  if ASrcMask <> nil
+  then begin
+    ScaleSrc := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, ASrcWidth, ASrcHeight);
+    if ScaleSrc = nil
+    then begin
+      Warn('ScaleSrc=nil');
+      Exit;
+    end;
+  end
+  else begin
+    ScaleSrc := nil;
+  end;
+  
+  ScaleSrc := gdk_pixbuf_get_from_drawable(ScaleSrc, ASrc, ASrcColorMap, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+  if ScaleSrc = nil
+  then begin
+    Warn('ScaleSrc=nil');
+    Exit;
+  end;
+
+  // Apply mask if present
+  if ASrcMask <> nil
+  then begin
+    if gdk_pixbuf_get_rowstride(ScaleSrc) <> ASrcWidth shl 2
+    then begin
+      Warn('rowstride <> 4*width');
+      gdk_pixbuf_unref(ScaleSrc);
+      Exit;
+    end;
+    // force mask having alpha, so one pixel is 32 bit and we don't have to worry about rowstride
+    ScaleMsk := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, ASrcWidth, ASrcHeight);
+    if ScaleMsk = nil
+    then begin
+      Warn('ScaleMsk=nil');
+      Exit;
+    end;
+    gdk_pixbuf_get_from_drawable(ScaleMsk, ASrcMask, ASrcColorMap, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+    ApplyMask(gdk_pixbuf_get_pixels(ScaleSrc), gdk_pixbuf_get_pixels(ScaleMsk));
+    gdk_pixbuf_unref(ScaleMsk);
   end;
 
   // Scaling PixBuf
-  {$IFDEF VerboseStretchCopyArea}
-  DebugLn('ScalePixmap Scaling PixBuf ',
-    ' Width='+dbgs(gdk_pixbuf_get_width(ScaleSrc)),
-    ' Height='+dbgs(gdk_pixbuf_get_height(ScaleSrc)),
-    ' HasAlpha='+dbgs(gdk_pixbuf_get_has_alpha(ScaleSrc)),
-    ' RowStride='+dbgs(gdk_pixbuf_get_rowstride(ScaleSrc)),
-    '');
-  {$ENDIF}
-  ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,NewWidth,NewHeight,ScaleMethod);
-  GDK_Pixbuf_Unref(ScaleSRC);
-  If ScaleDest = nil then begin
-    DebugLn('WARNING: ScalePixmap ScaleDest=nil');
+  ScaleDst := gdk_pixbuf_scale_simple(ScaleSrc, ADstWidth, ADstHeight, AScaleMethod);
+  gdk_pixbuf_unref(ScaleSrc);
+  if ScaleDst = nil
+  then begin
+    Warn('ScaleDst=nil');
     exit;
   end;
-  BeginGDKErrorTrap;
+//  BeginGDKErrorTrap;
 
   // Creating pixmap from scaled pixbuf
-  {$IFDEF VerboseStretchCopyArea}
-  DebugLn('ScalePixmap Creating pixmap from scaled pixbuf',
-    ' Width='+dbgs(gdk_pixbuf_get_width(ScaleDest)),
-    ' Height='+dbgs(gdk_pixbuf_get_height(ScaleDest)),
-    ' HasAlpha='+dbgs(gdk_pixbuf_get_has_alpha(ScaleDest)),
-    ' RowStride='+dbgs(gdk_pixbuf_get_rowstride(ScaleDest)),
-    '');
-  {$ENDIF}
-  DummyMask:=nil;
-  {$IFDEF VerboseGdkPixbuf}
-  debugln('ScalePixmap A1');
-  {$ENDIF}
-  {$IFDEF gtk}gtkextra.{$ENDIF}gdk_pixbuf_render_pixmap_and_mask(ScaleDest,NewPixmap,DummyMask,0);
-  {$IFDEF VerboseGdkPixbuf}
-  debugln('ScalePixmap A2');
-  {$ENDIF}
+  gdk_pixbuf_render_pixmap_and_mask(ScaleDst, ADst, ADstMask, $80);
 
-  // clean up
-  {$IFDEF VerboseStretchCopyArea}
-  gdk_window_get_size(PGDKWindow(NewPixmap),@NewWholeWidth,@NewWholeHeight);
-  DebugLn('ScalePixmap RESULT NewPixmap=',DbgS(NewPixmap),
-    ' DummyMask=',DbgS(DummyMask),
-    ' NewWidth='+dbgs(NewWholeWidth),' NewHeight='+dbgs(NewWholeHeight),
-    '');
-  {$ENDIF}
-  if DummyMask<>nil then gdk_pixmap_unref(DummyMask);
-  EndGDKErrorTrap;
-  GDK_Pixbuf_Unref(ScaleDest);
+//  EndGDKErrorTrap;
+  gdk_pixbuf_unref(ScaleDst);
   Result := True;
 end;
-
-{$ifdef IMGLIST_OLDSTYLE}
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
-  Index: integer; DestWidget: PGTKWidget);
-begin
-  DrawImageListIconOnWidget(ImgList,Index,DestWidget,true,true,0,0);
-end;
-{$else}
-{$note TODO: Remove me}
-{$endif}
 
 {$ifdef IMGLIST_OLDSTYLE}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
@@ -1322,7 +1298,7 @@ begin
   ImageWidth:=ImageRect.Right-ImageRect.Left;
   ImageHeight:=ImageRect.Bottom-ImageRect.Top;
   if (ImageWidth<1) or (ImageHeight<1) then exit;
-  
+
   WindowWidth:=DestWidget^.allocation.width;
   WindowHeight:=DestWidget^.allocation.height;
   if CenterHorizontally then
@@ -1340,26 +1316,168 @@ begin
   ReleaseDC(HDC(DestWidget),DestDC);
 end;
 {$else}
-{$note TODO: Remove me}
+{$note remove when gtk native imagelist will be ready}
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+  Index: integer; DestWidget: PGTKWidget;
+  CenterHorizontally, CenterVertically: boolean;
+  DestLeft, DestTop: integer);
+// draw icon of imagelist centered on gdkwindow
+var
+  Bitmap: TBitmap;
+  ImageWidth: Integer;
+  ImageHeight: Integer;
+  WindowWidth, WindowHeight: integer;
+  DestDC: HDC;
+begin
+  if ImgList=nil then exit;
+  if (Index<0) or (Index>=ImgList.Count) then exit;
+  if (DestWidget=nil) then exit;
+  ImageWidth:=ImgList.Width;
+  ImageHeight:=ImgList.Height;
+  Bitmap := TBitmap.Create;
+  ImgList.GetBitmap(Index, Bitmap);
+  if (ImageWidth<1) or (ImageHeight<1) then exit;
+
+  WindowWidth:=DestWidget^.allocation.width;
+  WindowHeight:=DestWidget^.allocation.height;
+  if CenterHorizontally then
+    DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
+  if CenterVertically then
+    DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
+  DestDC:=GetDC(HDC(DestWidget));
+
+  //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
+  //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
+  //  ' SrcRect=',ImageRect.Left,',',ImageRect.Top,',',ImageWidth,'x',ImageHeight);
+  StretchBlt(DestDC, DestLeft, DestTop, ImageWidth, ImageHeight,
+    Bitmap.Canvas.Handle, 0, 0, ImageWidth, ImageHeight,
+    SRCCOPY);
+  ReleaseDC(HDC(DestWidget),DestDC);
+  Bitmap.Free;
+end;
 {$endif}
 
-function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+  Index: integer; DestWidget: PGTKWidget);
+begin
+  DrawImageListIconOnWidget(ImgList,Index,DestWidget,true,true,0,0);
+end;
+
+function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 begin
   Result:=Image^.bpp;
   if Result<Image^.Depth then
     Result:=Result*8;
 end;
 
-function CreateGdkBitmap(Window: PGdkWindow;
-  Width, Height: integer): PGdkBitmap;
+{------------------------------------------------------------------------------
+  Function: CreateGtkBitmapMask
+  Params:  AImageMask: Then internal gtkBitmap for imagemask
+           AMask: External gtkbitmap
+  Returns: A GdkBitmap
+
+  This function returns a bitmap based on the internal alpha bitmap and the
+  maskhandle passed.
+  If both internal mask and the given mask is valid, then a new bitmap is created
+  else either internal mask or given mask (with increased reference)
+ ------------------------------------------------------------------------------}
+function CreateGdkMaskBitmap(AImageMask, AMask: PGdkBitmap): PGdkBitmap;
 var
-  DummyData: Pointer;
+  W, H: Integer;
+  GC: PGdkGc;
 begin
-  // I didn't found a simple gdk_bitmap_new function. So, I create some
-  // dummy data and use gdk_bitmap_create_from_data
-  GetMem(DummyData,(((Width*Height)+7) shr 3)+1);
-  Result:=gdk_bitmap_create_from_data(Window,DummyData,Width,Height);
-  FreeMem(DummyData);
+  Result := nil;
+  if (AImageMask = nil) and (AMask = nil) then Exit;
+
+  if AMask = nil
+  then begin
+    Result := AImageMask;
+    gdk_pixmap_ref(Result);
+    Exit;
+  end;
+
+  if AImageMask = nil
+  then begin
+    Result := AMask;
+    gdk_pixmap_ref(Result);
+    Exit;
+  end;
+
+  // if we are here we need a combination (=AND) of both masks
+  gdk_window_get_size(AImageMask, @W, @H);
+  Result := gdk_pixmap_new(nil, W, H, 1);
+  GC := gdk_gc_new(Result);
+  // copy image mask
+  gdk_draw_pixmap(Result, GC, AImageMask, 0, 0, 0, 0, -1, -1);
+  // and with mask
+  gdk_gc_set_function(GC, GDK_AND);
+  gdk_draw_pixmap(Result, GC, AMask, 0, 0, 0, 0, -1, -1);
+  gdk_gc_unref(GC);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateGdkMaskBitmap
+  Params:  AImage: Handle to the (LCL) bitmap image
+           AMask: Handle to the (LCL) bitmap mask
+  Returns: A GdkBitmap
+
+  This function returns a bitmap based on the internal alpha bitmap of the
+  image handle and the maskhandle passed.
+  If only internal mask is valid, then that one is returned (with increased reference)
+  Otherwise a new bitmap is created.
+ ------------------------------------------------------------------------------}
+function CreateGdkMaskBitmap(AImage, AMask: HBITMAP): PGdkBitmap;
+var
+  GdiImage: PGdiObject absolute AImage;
+  GdiMask: PGdiObject absolute AMask;
+  W, H: Integer;
+  GC: PGdkGc;
+begin
+  Result := nil;
+  if (AImage = 0) and (AMask = 0) then Exit;
+
+  if GdiMask = nil
+  then begin
+    if GdiImage^.GDIBitmapType = gbPixmap
+    then Result := GdiImage^.GDIPixmapObject.Mask;
+    if Result <> nil
+    then gdk_pixmap_ref(Result);
+//    DbgDumpBitmap(Result, 'CreateGdkMaskBitmap - Internal mask');
+    Exit;
+  end;
+  
+  if GdiMask^.GDIBitmapType <> gbBitmap
+  then begin
+    DebugLN('[WARNING] CreateGtkBitmapMask: GDIBitmapType <> dbBitmap');
+    Exit;
+  end;
+
+  if (GdiImage = nil)
+  or (GdiImage^.GDIPixmapObject.Mask = nil)
+  then begin
+    gdk_window_get_size(GdiMask^.GDIBitmapObject, @W, @H);
+    Result := gdk_pixmap_new(nil, W, H, 1);
+    GC := gdk_gc_new(Result);
+    gdk_gc_set_function(GC, {$ifdef gtk1}11{$else}GDK_COPY_INVERT{$endif});
+    gdk_draw_pixmap(Result, GC, GdiMask^.GDIBitmapObject, 0, 0, 0, 0, -1, -1);
+    gdk_gc_unref(GC);
+
+//    DbgDumpBitmap(Result, 'CreateGdkMaskBitmap - Mask');
+    Exit;
+  end;
+  
+  // if we are here we need a combination (=AND) of both masks
+  gdk_window_get_size(GdiImage^.GDIPixmapObject.Mask, @W, @H);
+  Result := gdk_pixmap_new(nil, W, H, 1);
+  GC := gdk_gc_new(Result);
+  // copy image mask
+  gdk_draw_pixmap(Result, GC, GdiImage^.GDIPixmapObject.Mask, 0, 0, 0, 0, -1, -1);
+  // and with mask
+  gdk_gc_set_function(GC, {$ifdef gtk1}6{$else}GDK_AND_INVERT{$endif});
+  gdk_draw_pixmap(Result, GC, GdiMask^.GDIBitmapObject, 0, 0, 0, 0, -1, -1);
+  gdk_gc_unref(GC);
+
+//  DbgDumpBitmap(Result, 'CreateGdkMaskBitmap - Combi');
 end;
 
 function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
@@ -1379,7 +1497,7 @@ begin
   SrcHeight:=SourceRect.Bottom-SourceRect.Top;
   DebugLn('ExtractGdkBitmap SourceRect=',dbgs(SourceRect));
   if (SrcWidth<1) or (SrcHeight<1) then exit;
-  Result:=CreateGdkBitmap(nil,SrcWidth,SrcHeight);
+  Result:= gdk_pixmap_new(nil, SrcWidth, SrcHeight, 1);
   GC := GDK_GC_New(Result);
   gdk_window_copy_area(Result,GC,0,0,Bitmap,
                        SourceRect.Left,SourceRect.Top,SrcWidth,SrcHeight);
@@ -1531,12 +1649,12 @@ begin
     {$IFDEF DebugGDK}
     BeginGDKErrorTrap;
     {$ENDIF}
-    gdk_gc_set_clip_region(GetGC,  nil);
-    gdk_gc_set_clip_rectangle (GetGC,  nil);
+    gdk_gc_set_clip_region(GC,  nil);
+    gdk_gc_set_clip_rectangle (GC,  nil);
     If (ClipRegion <> nil) then begin
       RGNType := RegionType(ClipRegion^.GDIRegionObject);
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-        gdk_gc_set_clip_region(GetGC,  ClipRegion^.GDIRegionObject);
+        gdk_gc_set_clip_region(GC,  ClipRegion^.GDIRegionObject);
       end;
     end;
     {$IFDEF DebugGDK}
@@ -1700,7 +1818,7 @@ var
   end;
 
 begin
-  GC:=TDeviceContext(DC).GetGC;
+  GC:=TDeviceContext(DC).GC;
   GDIColor:=nil;
   with TDeviceContext(DC) do
   begin
@@ -5663,26 +5781,34 @@ end;
     var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 
  ------------------------------------------------------------------------------}
-procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
-  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
+  out AMask: PGdkBitmap; out AWidth, AHeight: Integer);
 var
-  GDIObject: PGdiObject;
+  Image, Mask: HBITMAP;
+  GdiImage: PGdiObject absolute Image;
+  GdiMask: PGdiObject absolute Mask;
 begin
-  IconImg:=nil;
-  IconMask:=nil;
-  Width:=0;
-  Height:=0;
-  if (LCLGraphic=nil) then exit;
-  if LCLGraphic is TBitmap then
-    GDIObject:=PgdiObject(TBitmap(LCLGraphic).Handle)
+  AImage := nil;
+  AMask := nil;
+  AWidth := 0;
+  AHeight := 0;
+
+  if AGraphic = nil then Exit;
+
+  case ClassCase(AGraphic.ClassType, [TBitmap]) of
+    0: begin
+      Image := TBitmap(AGraphic).Handle;
+      Mask := TBitmap(AGraphic).MaskHandle;
+    end;
   else
-    GDIObject:=nil;
-  if GDIObject<>nil then begin
-    IconImg:=GDIObject^.GDIBitmapObject;
-    IconMask:=GDIObject^.GDIBitmapMaskObject;
-    if IconImg<>nil then
-      gdk_window_get_size(IconImg, @Width, @Height);
+    Exit;
   end;
+
+  AImage := GdiImage^.GDIPixmapObject.Image;
+  AMask := CreateGdkMaskBitmap(Image, Mask);
+
+  if AImage <> nil
+  then gdk_window_get_size(AImage, @AWidth, @AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -5849,12 +5975,9 @@ begin
     gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
   end else
   begin
-    {$ifdef IMGLIST_OLDSTYLE}
+    {$note reimplement}
     DrawImageListIconOnWidget(LCLMenuItem.GetImageList, LCLMenuItem.ImageIndex,
       Widget, false, false, ALeft, ATop);
-    {$else}
-    {$note Implement}
-    {$endif}
   end;
 end;
 

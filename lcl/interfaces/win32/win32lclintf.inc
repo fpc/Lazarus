@@ -55,31 +55,7 @@ begin
   Result := lListIndex;
 end;
 
-procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
-var
-  lListIndex: pdword absolute AHandler;
-  I: dword;
-begin
-  if AHandler = nil then exit;
-{$ifdef DEBUG_ASYNCEVENTS}
-  DebugLn('Removing handle: ', IntToHex(FWaitHandles[lListIndex^], 8));
-  if Length(FWaitHandles) > 0 then
-    DebugLn(' WaitHandleCount=', IntToStr(FWaitHandleCount), ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
-{$endif}    
-  // swap with last one
-  if FWaitHandleCount >= 2 then
-  begin
-    I := lListIndex^;
-    FWaitHandles[I] := FWaitHandles[FWaitHandleCount-1];
-    FWaitHandlers[I] := FWaitHandlers[FWaitHandleCount-1];
-    FWaitHandlers[I].ListIndex^ := I;
-  end;
-  Dec(FWaitHandleCount);
-  Dispose(lListIndex);
-  AHandler := nil;
-end;
-
-function TWin32WidgetSet.AddPipeEventHandler(AHandle: THandle; 
+function TWin32WidgetSet.AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
 var
   lHandler: PPipeEventInfo;
@@ -95,21 +71,6 @@ begin
     FWaitPipeHandlers^.Prev := lHandler;
   FWaitPipeHandlers := lHandler;
   Result := lHandler;
-end;
-
-procedure TWin32WidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
-var
-  lHandler: PPipeEventInfo absolute AHandler;
-begin
-  if AHandler = nil then exit;
-  if lHandler^.Prev <> nil then
-    lHandler^.Prev^.Next := lHandler^.Next
-  else
-    FWaitPipeHandlers := lHandler^.Next;
-  if lHandler^.Next <> nil then
-    lHandler^.Next^.Prev := lHandler^.Prev;
-  Dispose(lHandler);
-  AHandler := nil;
 end;
 
 function TWin32WidgetSet.AddProcessEventHandler(AHandle: THandle;
@@ -262,6 +223,14 @@ begin
   Self.SetWindowLong(Result, GWL_WNDPROC, PtrInt(@CallbackAllocateHWnd))
 end;
 
+{$ifdef OldRawImageProcs}
+function TWin32WidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
+  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
+begin
+  Result := RawImage_CreateBitmaps(RawImage, Bitmap, MaskBitmap);
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DeallocateHWnd
   Params:   Wnd   - A Window handle, that was created with AllocateHWnd
@@ -324,6 +293,14 @@ begin
   Result := '';
 end;
 
+{$ifdef OldRawImageProcs}
+function TWin32WidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+  Desc: PRawImageDescription): Boolean;
+begin
+  Result := Rawimage_DescriptionFromBitmap(Bitmap, Desc^);
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   Function: GetControlConstraints
   Params: Constraints: TObject
@@ -370,6 +347,13 @@ begin
   end;
 end;
 
+{$ifdef OldRawImageProcs}
+function TWin32WidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
+begin
+  Result := RawImage_DescriptionFromDevice(DC, Desc^);
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   Function: GetListBoxIndexAtY
   Params: ListBox:
@@ -397,6 +381,18 @@ begin
                 LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR;
 end;
 
+{$ifdef OldRawImageProcs}
+function TWin32WidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result := RawImage_FromBitmap(NewRawImage, SrcBitmap, SrcMaskBitmap, SrcRect)
+end;
+
+function TWin32WidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result := RawImage_FromDevice(NewRawImage, SrcDC, SrcRect)
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
 
@@ -407,13 +403,10 @@ begin
 end;
 
 function TWin32WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap): HBitmap;
-{$ifdef NoMaskProblem}
 var
   AIconHandle: HIcon;
   AIconInfo: TIconInfo;
-{$endif}
 begin
-{$ifdef NoMaskProblem}
   Result := 0;
   case StockID of
     idDialogWarning: AIconHandle := LoadIcon(0, IDI_EXCLAMATION);
@@ -431,9 +424,241 @@ begin
       Mask := AIconInfo.hbmMask;
     end
   end;
-  if Result = 0 then
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_CreateBitmaps
+  Params: ARawImage:
+          ABitmap:
+          AMask:
+          ASkipMask: When set there is no mask created
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  DC: HDC;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
+  end;
+  BitsPtr: Pointer;
+  DataSize: Integer;
+  Align: Byte;
+begin
+  Result := False;
+  AMask := 0;
+
+  FillChar(Info, SizeOf(Info), 0);
+  Info.Header.biSize := SizeOf(Info.Header);
+  Info.Header.biWidth := ADesc.Width;
+  Info.Header.biHeight := -ADesc.Height; // create top to bottom
+  Info.Header.biPlanes := 1;
+  Info.Header.biBitCount := ADesc.BitsPerPixel;
+  Info.Header.biCompression := BI_RGB;
+  {BitmapInfo.bmiHeader.biSizeImage := 0;}
+  { first color is black, second color is white, for monochrome bitmap }
+  Info.Colors[1] := $FFFFFFFF;
+
+  DC := Windows.GetDC(0);
+  // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
+  // when they are created with createDIBitmap
+  //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
+  ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+  Windows.ReleaseDC(0, DC);
+
+  if ABitmap = 0 then Exit;
+  if BitsPtr = nil then Exit;
+
+  // copy the image data
+  DataSize := (Windows.MulDiv(ADesc.BitsPerPixel, ADesc.Width, 8) + 3) and not 3;
+  Align := DataSize and 3;
+  if Align <> 0
+  then Inc(DataSize, 4 - Align);
+  DataSize := DataSize * ADesc.Height;
+  if DataSize > ARawImage.DataSize
+  then DataSize := ARawImage.DataSize;
+  Move(ARawImage.Data^, BitsPtr^, DataSize);
+  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
+  if ASkipMask then Exit(True);
+
+  AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  Result := AMask <> 0;
+  //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_DescriptionFromBitmap
+  Params: ABitmap:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+var
+  BitmapInfo: Windows.TBitmap;
+begin
+  Result := Windows.GetObject(ABitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  if Result then
+    FillRawImageDescription(BitmapInfo, ADesc);
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_DescriptionFromDevice
+  Params: ADC:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+var
+  DC: HDC;
+begin
+  Result := True;
+  
+  ADesc.Init;
+
+  if ADC = 0
+  then DC := Windows.GetDC(0)
+  else DC := ADC;
+
+  ADesc.Format := ricfRGBA;
+  ADesc.Width := Windows.GetDeviceCaps(DC, HORZRES);
+  ADesc.Height := Windows.GetDeviceCaps(DC, VERTRES);
+  ADesc.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.LineEnd := rileDWordBoundary;
+
+  if (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0
+  then begin
+    // has palette
+    ADesc.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
+    ADesc.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES);
+  end
+  else begin
+    ADesc.BitsPerPixel := ADesc.Depth;
+  end;
+  
+  if ADC = 0
+  then Windows.ReleaseDC(0, DC);
+
+  FillRawImageDescriptionColors(ADesc);
+
+  ADesc.MaskBitsPerPixel := 1;
+  ADesc.MaskShift := 0;
+  ADesc.MaskLineEnd := rileWordBoundary;
+  ADesc.MaskBitOrder := riboReversedBits;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_FromBitmap
+  Params: ABitmap:
+          AMask:
+          ARect:
+          ARawImage:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+var
+  WinBmp: Windows.TBitmap;
+  R: TRect;
+begin
+  ARawImage.Init;
+  if Windows.GetObject(ABitmap, SizeOf(WinBmp), @WinBmp) = 0
+  then Exit(False);
+
+  //DbgDumpBitmap(ABitmap, 'FromBitmap - Image');
+  //DbgDumpBitmap(AMask, 'FromBitmap - Mask');
+
+  FillRawImageDescription(WinBmp, ARawImage.Description);
+  R := ARect;
+  if R.Top > WinBmp.bmHeight then
+    R.Top := WinBmp.bmHeight;
+  if R.Bottom > WinBmp.bmHeight then
+    R.Bottom := WinBmp.bmHeight;
+  if R.Left > WinBmp.bmWidth then
+    R.Left := WinBmp.bmWidth;
+  if R.Right > WinBmp.bmWidth then
+    R.Right := WinBmp.bmWidth;
+
+  ARawImage.Description.Width := R.Right - R.Left;
+  ARawImage.Description.Height := R.Bottom - R.Top;
+
+  // copy bitmap
+  Result := GetBitmapBytes(WinBmp, ABitmap, R, ARawImage.Description.LineEnd, ARawImage.Data, ARawImage.DataSize);
+
+  // check mask
+  if AMask <> 0 then
+  begin
+    if Windows.GetObject(AMask, SizeOf(WinBmp), @WinBmp) = 0
+    then Exit(False);
+
+    Result := GetBitmapBytes(WinBmp, AMask, R, ARawImage.Description.MaskLineEnd, ARawImage.Mask, ARawImage.MaskSize);
+  end
+  else begin
+    ARawImage.Description.MaskBitsPerPixel := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_FromDevice
+  Params: ADC:
+          ARect:
+          ARawImage:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+var
+  bmp: HBITMAP;
+begin
+  bmp := Windows.GetCurrentObject(ADC, OBJ_BITMAP);
+  if bmp = 0
+  then Result := False
+  else Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+end;
+
+procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
+var
+  lListIndex: pdword absolute AHandler;
+  I: dword;
+begin
+  if AHandler = nil then exit;
+{$ifdef DEBUG_ASYNCEVENTS}
+  DebugLn('Removing handle: ', IntToHex(FWaitHandles[lListIndex^], 8));
+  if Length(FWaitHandles) > 0 then
+    DebugLn(' WaitHandleCount=', IntToStr(FWaitHandleCount), ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
 {$endif}
-    Result := inherited LoadStockPixmap(StockID, Mask);
+  // swap with last one
+  if FWaitHandleCount >= 2 then
+  begin
+    I := lListIndex^;
+    FWaitHandles[I] := FWaitHandles[FWaitHandleCount-1];
+    FWaitHandlers[I] := FWaitHandlers[FWaitHandleCount-1];
+    FWaitHandlers[I].ListIndex^ := I;
+  end;
+  Dec(FWaitHandleCount);
+  Dispose(lListIndex);
+  AHandler := nil;
+end;
+
+procedure TWin32WidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
+var
+  lHandler: PPipeEventInfo absolute AHandler;
+begin
+  if AHandler = nil then exit;
+  if lHandler^.Prev <> nil then
+    lHandler^.Prev^.Next := lHandler^.Next
+  else
+    FWaitPipeHandlers := lHandler^.Next;
+  if lHandler^.Next <> nil then
+    lHandler^.Next^.Prev := lHandler^.Prev;
+  Dispose(lHandler);
+  AHandler := nil;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

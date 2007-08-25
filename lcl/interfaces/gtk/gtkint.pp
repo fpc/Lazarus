@@ -73,6 +73,7 @@ uses
   LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Maps, Themes,
   // widgetset
+  GtkDebug,
   GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
 
 
@@ -175,11 +176,9 @@ type
     procedure OnCreatePenForDC(DC: TDeviceContext);
     procedure OnCreateGDIBitmapForDC(DC: TDeviceContext);
     function GetDoubleBufferedDC(Handle: HWND): HDC;
-    function IsNullBrush(DC: TDeviceContext): boolean;
-    function IsNullPen(DC: TDeviceContext): boolean;
 
     // GDIObjects
-    function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;virtual;
+    function IsValidGDIObject(const AGDIObj: HGDIOBJ): Boolean; virtual;
     function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
                                   const GDIType: TGDIType): Boolean;virtual;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;virtual;
@@ -204,18 +203,18 @@ type
     // images
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
+    {$note TODO: remove}
+    (*
     procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);virtual;
     procedure LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);virtual;
     procedure LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);virtual;
+    *)
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
-    function GetWindowRawImageDescription(GDKWindow: PGdkWindow;
-      Desc: PRawImageDescription): boolean;
-    function GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
-      MaskBitmap: PGdkBitmap; const SrcRect: TRect;
-      out NewRawImage: TRawImage): boolean;
-    function GetRawImageMaskFromGdkBitmap(MaskBitmap: PGdkBitmap;
-      const SrcRect: TRect; var RawImage: TRawImage): boolean;
+    function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;
+    function RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; const ARect: TRect): boolean;
+    function RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; const ARect: TRect): boolean;
+    function RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; const ARect: TRect): boolean;
     function StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
       SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
       Mask: HBITMAP; XMask, YMask: Integer;

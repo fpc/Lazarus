@@ -531,6 +531,148 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.RawImage_DescriptionFromCarbonBitmap
+
+  Creates a rawimage description for a carbonbitmap
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
+var
+  Prec, Shift, BPR: Byte;
+  AlphaInfo: CGImageAlphaInfo;
+begin
+  ADesc.Init;
+
+  ADesc.Format := ricfRGBA;
+  ADesc.Width := ABitmap.Width;
+  ADesc.Height := ABitmap.Height;
+
+  //ADesc.PaletteColorCount := 0;
+
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboMSBFirst;
+
+  BPR := CGImageGetBytesPerRow(ABitmap.CGImage);
+  if BPR and $F = 0 then ADesc.LineEnd := rileDQWordBoundary     // 128bit aligned
+  else if BPR and $7 = 0 then ADesc.LineEnd := rileQWordBoundary //  64bit aligned
+  else if BPR and $3 = 0 then ADesc.LineEnd := rileWordBoundary  //  32bit aligned
+  else if BPR and $1 = 0 then ADesc.LineEnd := rileByteBoundary  //   8bit aligned
+  else ADesc.LineEnd := rileTight;
+
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.BitsPerPixel := CGImageGetBitsPerPixel(ABitmap.CGImage);
+
+  ADesc.MaskBitOrder := riboReversedBits;
+  ADesc.MaskBitsPerPixel := 1;
+  ADesc.MaskLineEnd := rileByteBoundary;
+  // ADesc.MaskShift := 0;
+
+  Prec := CGImageGetBitsPerComponent(ABitmap.CGImage);
+  AlphaInfo := CGImageGetAlphaInfo(ABitmap.CGImage);
+
+  if AlphaInfo <> kCGImageAlphaOnly
+  then begin
+    ADesc.RedPrec := Prec;
+    ADesc.GreenPrec := Prec;
+    ADesc.BluePrec := Prec;
+  end;
+
+  // alpha
+  case AlphaInfo of
+    kCGImageAlphaNone,
+    kCGImageAlphaNoneSkipLast,
+    kCGImageAlphaNoneSkipFirst: begin
+      ADesc.Depth := Prec * 3;
+      // ADesc.AlphaPrec := 0;
+    end;
+  else
+    ADesc.Depth := Prec * 4;
+    ADesc.AlphaPrec := Prec;
+  end;
+
+  case AlphaInfo of
+    kCGImageAlphaNone,
+    kCGImageAlphaNoneSkipLast: begin
+      // RGBx
+      Shift := 32 - Prec;
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.BlueShift := Shift;
+    end;
+    kCGImageAlphaNoneSkipFirst: begin
+      // xRGB
+      Shift := 0;
+      ADesc.BlueShift := Shift;
+      Inc(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Inc(Shift, Prec);
+      ADesc.RedShift := Shift;
+    end;
+    kCGImageAlphaPremultipliedFirst,
+    kCGImageAlphaFirst: begin
+      // ARGB
+      Shift := 32 - Prec;
+      ADesc.AlphaShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.BlueShift := Shift;
+    end;
+    kCGImageAlphaPremultipliedLast,
+    kCGImageAlphaLast: begin
+      // RGBA
+      Shift := 32 - Prec;
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.BlueShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.AlphaShift := Shift;
+    end;
+    kCGImageAlphaOnly: begin
+      // A
+      //ADesc.AlphaShift := 0;
+    end;
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.RawImage_FromCarbonBitmap
+
+  Creates a rawimage description for a carbonbitmap
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; const ARect: TRect): Boolean;
+begin
+  FillChar(ARawImage, SizeOf(ARawImage), 0);
+  RawImage_DescriptionFromCarbonBitmap(ARawImage.Description, ABitmap);
+
+  ARawImage.DataSize := ABitmap.DataSize;
+  ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+  if ARawImage.DataSize > 0 then
+    System.Move(ABitmap.Data^, ARawImage.Data^, ARawImage.DataSize);
+
+  Result := True;
+  
+  if AMask = nil then Exit;
+  if AMask.Depth > 1
+  then begin
+    DebugLn('[WARNING] RawImage_FromCarbonBitmap: AMask.Depth > 1');
+    Exit;
+  end;
+
+  ARawImage.MaskSize := AMask.DataSize;
+  ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
+  if ARawImage.MaskSize > 0 then
+    System.Move(AMask.Data^, ARawImage.Mask^, ARawImage.MaskSize);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.CreateThemeServices
   Returns: Theme Services object for Carbon interface
  ------------------------------------------------------------------------------}

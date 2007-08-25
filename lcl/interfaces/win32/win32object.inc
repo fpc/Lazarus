@@ -552,36 +552,7 @@ Begin
     Result := Windows.RegisterClass(@WindowClass) <> 0;
   end;
   Assert(False, 'Trace:WinRegister - Exit');
-End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.NormalizeIconName
-  Params: IconName - The name of the icon to normalize
-  Returns: Nothing
-
-  Adjusts an icon name to the proper format
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.NormalizeIconName(Var IconName: String);
-Var
-  IcoLen: Integer;
-Begin
-  DoDirSeparators(IconName);
-  IcoLen := Pos('.xmp', LowerCase(IconName));
-  If IcoLen <> 0 Then
-  Begin
-    Delete(IconName, IcoLen, Length('.xpm'));
-    Insert('.ico', IconName, Length(IconName));
-  End
-End;
-
-Procedure TWin32WidgetSet.NormalizeIconName(Var IconName: PChar);
-Var
-  Str: String;
-Begin
-  Str := String(IconName);
-  NormalizeIconName(Str);
-  IconName := StrToPChar(Str);
-End;
+end;
 
 function TWin32WidgetSet.CreateThemeServices: TThemeServices;
 begin

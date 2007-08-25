@@ -60,7 +60,7 @@ begin
   FOldPalette:=0;
   FOldPaletteValid:=false;
   if FBitmap.PaletteAllocated then begin
-    FOldPalette := SelectPalette(DC, FBitmap.FPalette, True);
+    FOldPalette := SelectPalette(DC, FBitmap.FImage.FPalette, True);
     FOldPaletteValid:=true;
     RealizePalette(DC);
   end;

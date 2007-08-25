@@ -97,6 +97,7 @@ begin
   Result := false;
 end;
 
+{$ifdef OldRawImageProcs}
 function TWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
@@ -104,6 +105,7 @@ begin
   MaskBitmap:=0;
   Result := false;
 end;
+{$endif}
 
 //todo: remove ?
 function TWidgetSet.CreateEmptyRegion: hRGN;
@@ -152,6 +154,31 @@ function TWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
+end;
+
+function TWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+begin
+  Result := False;
 end;
 
 function TWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
@@ -269,11 +296,13 @@ begin
   AddKey;
 end;
 
+{$ifdef OldRawImageProcs}
 function TWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): boolean;
 begin
   Result:=false;
 end;
+{$endif}
 
 function TWidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
@@ -297,11 +326,13 @@ begin
   Result:=true;
 end;
 
+{$ifdef OldRawImageProcs}
 function TWidgetSet.GetDeviceRawImageDescription(DC: HDC;
   Desc: PRawImageDescription): boolean;
 begin
   Result := false;
 end;
+{$endif}
 
 function TWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 begin
@@ -342,17 +373,21 @@ begin
   Result:=false;
 end;
 
+{$ifdef OldRawImageProcs}
 function TWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result:=false;
 end;
+{$endif}
 
+{$ifdef OldRawImageProcs}
 function TWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result:=false;
 end;
+{$endif}
 
 // TODO: remove
 function TWidgetSet.GetScrollBarSize(Handle: HWND;
@@ -535,17 +570,6 @@ end;
 function TWidgetSet.ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := ReleaseDC(hWnd, DC);
-end;
-
-function TWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
-  NewMask: HBitmap): boolean;
-// the default behaviour is to free 'Mask' and replace it with 'NewMask'.
-// Some interfaces like the gtk will free 'Mask' and replace the internal mask
-// of 'Handle' with 'NewMask'.
-begin
-  Result:=true;
-  if Mask<>0 then DeleteObject(Mask);
-  Mask:=NewMask;
 end;
 
 function TWidgetSet.RequestInput(const InputCaption, InputPrompt : String;

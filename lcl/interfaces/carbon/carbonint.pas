@@ -42,6 +42,11 @@ uses
   FPCMacOSAll,
  // interfacebase
   InterfaceBase,
+ // widgetset
+ CarbonGDIObjects,
+ {$ifdef DebugBitmaps}
+ CarbonDebug,
+ {$endif}
  // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;
@@ -60,6 +65,10 @@ type
     FMainMenu: TMainMenu; // Main menu attached to menu bar
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
     FOpenEventHandlerUPP: AEEventHandlerUPP;
+
+    function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
+    function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; const ARect: TRect): Boolean;
+
   protected
     function CreateThemeServices: TThemeServices; override;
     procedure PassCmdLineOptions; override;
@@ -148,9 +157,10 @@ uses
   CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
+  { these can/should go up }
   CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
   CarbonLists, CarbonTabs,
-  CarbonThemes, CarbonCanvas, CarbonGDIObjects, CarbonStrings,
+  CarbonThemes, CarbonCanvas, CarbonStrings,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,

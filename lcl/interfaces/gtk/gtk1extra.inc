@@ -494,13 +494,7 @@ end;
 
 procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
 begin
-  {$IFDEF VerboseGdkPixbuf}
-  debugln('gdk_pixbuf_render_pixmap_and_mask A1');
-  {$ENDIF}
   gdkpixbuf.gdk_pixbuf_render_pixmap_and_mask(pixbuf, @pixmap_return, @mask_return, alpha_threshold);
-  {$IFDEF VerboseGdkPixbuf}
-  debugln('gdk_pixbuf_render_pixmap_and_mask A2');
-  {$ENDIF}
 end;
 
 function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;

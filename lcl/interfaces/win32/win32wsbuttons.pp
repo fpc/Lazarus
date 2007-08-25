@@ -93,11 +93,12 @@ const
   { - you do need to destroy the imagelist yourself.
     - you'll need 5 images to support all themed xp button states...
 
-    Image 0 = normal
-    Image 1 = mouse hover
-    Image 2 = button down
-    Image 3 = button disabled
-    Image 4 = button focus
+    Image 0 = NORMAL
+    Image 1 = HOT
+    Image 2 = PRESSED
+    Image 3 = DISABLED
+    Image 4 = DEFAULTED
+    Image 5 = STYLUSHOT - for tablet computers
   }
 
   XPBitBtn_ImageIndexToState: array[1..6] of TButtonState =
@@ -122,23 +123,18 @@ type
  ------------------------------------------------------------------------------}
 procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
 var
-  BitmapHandle: HBITMAP; // Handle of the button glyph
   BitBtnLayout: TButtonLayout; // Layout of button and glyph
   BitBtnHandle: HWND; // Handle to bitbtn window
   BitBtnDC: HDC; // Handle to DC of bitbtn window
   OldFontHandle: HFONT; // Handle of previous font in hdcNewBitmap
   hdcNewBitmap: HDC; // Device context of the new Bitmap
-  SrcDC, MaskDC: HDC;
-  BitmapInfo: BITMAP; // Buffer for bitmap
   TextSize: Windows.SIZE; // For computing the length of button caption in pixels
   OldBitmap: HBITMAP; // Handle to the old selected bitmap
   NewBitmap: HBITMAP; // Handle of the new bitmap
-  MaskBmp, OldSrcBmp, OldMaskBmp: HBITMAP;
-  OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
   XDestBitmap, YDestBitmap: integer; // X,Y coordinate of destination rectangle for bitmap
   XDestText, YDestText: integer; // X,Y coordinates of destination rectangle for caption
   newWidth, newHeight: integer; // dimensions of new combined bitmap
-  srcWidth: integer; // width of glyph to use, bitmap may have multiple glyphs
+  srcWidth, srcHeight: integer; // width of glyph to use, bitmap may have multiple glyphs
   BitmapRect: Windows.RECT;
   ButtonImageList: BUTTON_IMAGELIST;
   I: integer;
@@ -147,16 +143,16 @@ var
   var
     MonoDC: HDC;
     MonoBmp, OldMonoBmp: HBITMAP;
-    BkColor: TColorRef;
 
     TextFlags: integer; // flags for caption (enabled or disabled)
     numGlyphs, glyphLeft, glyphWidth, glyphHeight: integer;
     themesActive, emulateDisabled: boolean;
+    OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
   begin
     emulateDisabled := false;
     glyphLeft := 0;
     glyphWidth := srcWidth;
-    glyphHeight := BitmapInfo.bmHeight;
+    glyphHeight := srcHeight;
     TextFlags := DST_PREFIXTEXT;
     numGlyphs := BitBtn.NumGlyphs;
     case AState of
@@ -177,30 +173,37 @@ var
     Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
     if not emulateDisabled then
     begin
-      if MaskBmp <> 0 then
-        BitBlt(hdcNewBitmap, XDestBitmap, YDestBitmap, glyphWidth,
-          glyphHeight, MaskDC, glyphLeft, 0, SRCCOPY);
+      if (srcWidth <> 0) and (srcHeight <> 0) then
+      begin
+        WidgetSet.MaskBlt(hdcNewBitmap, XDestBitmap, YDestBitmap, glyphWidth,
+            glyphHeight, BitBtn.Glyph.Canvas.Handle, glyphLeft, 0, BitBtn.Glyph.MaskHandle, glyphLeft, 0);
+      end;
     end else
     begin
       // when not themed, windows wants a white background picture for disabled button image
       themesActive := ThemeServices.ThemesEnabled;
       if not themesActive then
         FillRect(hdcNewBitmap, BitmapRect, GetStockObject(WHITE_BRUSH));
-      if BitmapHandle <> 0 then
+
+      if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
         // Create a Mono DC
         MonoBmp := CreateBitmap(glyphWidth, glyphHeight, 1, 1, nil);
         MonoDC := CreateCompatibleDC(hdcNewBitmap);
         OldMonoBmp := SelectObject(MonoDC, MonoBmp);
         // Create the black and white image
-        BkColor := SetBkColor(MaskDC, ColorToRGB(BitBtn.Brush.Color));
-        BitBlt(MonoDC, 0, 0, glyphWidth, glyphHeight, MaskDC, glyphLeft, 0, SRCCOPY);
-        SetBkColor(MaskDC, BkColor);
+        with BitBtn.Glyph do
+        begin
+          FillRect(MonoDC, Rect(0, 0, glyphWidth, glyphHeight), BitBtn.Brush.Handle);
+          WidgetSet.MaskBlt(MonoDC, 0, 0, glyphWidth, glyphHeight,
+            Canvas.Handle, glyphLeft, 0, MaskHandle, glyphLeft, 0);
+        end;
+        
         if themesActive then
         begin
           // non-themed winapi wants white/other as background/picture-disabled colors
           // themed winapi draws bitmap-as, with transparency defined by bitbtn.brush color
-          BkColor := SetBkColor(hdcNewBitmap, ColorToRGB(BitBtn.Brush.Color));
+          SetBkColor(hdcNewBitmap, ColorToRGB(BitBtn.Brush.Color));
           SetTextColor(hdcNewBitmap, GetSysColor(COLOR_BTNSHADOW));
         end;
         // Draw the black and white image
@@ -212,7 +215,6 @@ var
         DeleteObject(MonoBmp);
       end;
     end;
-
     SetBkMode(hdcNewBitmap, TRANSPARENT);
     SetTextColor(hdcNewBitmap, 0);
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
@@ -224,14 +226,12 @@ begin
   BitBtnHandle := BitBtn.Handle;
   if BitBtn.Glyph.Empty then
   begin
-    BitmapHandle := 0;
-    BitmapInfo.bmWidth := 0;
-    BitmapInfo.bmHeight := 0;
     srcWidth := 0;
-  end else begin
-    BitmapHandle := BitBtn.Glyph.Handle;
-    Windows.GetObject(BitmapHandle, sizeof(BitmapInfo), @BitmapInfo);
-    srcWidth := BitmapInfo.bmWidth;
+    srcHeight := 0;
+  end else
+  begin
+    srcWidth := BitBtn.Glyph.Width;
+    srcHeight := BitBtn.Glyph.Height;
     if BitBtn.NumGlyphs > 1 then
       srcWidth := srcWidth div BitBtn.NumGlyphs;
   end;
@@ -248,12 +248,12 @@ begin
         newWidth := BitBtn.Width - 10
       else
         newWidth := TextSize.cx + srcWidth + BitBtn.Spacing;
-      if BitmapHandle <> 0 then
+      if srcWidth <> 0 then
         inc(newWidth, 2);
       newHeight := TextSize.cy;
-      if newHeight < BitmapInfo.bmHeight then
-        newHeight := BitmapInfo.bmHeight;
-      YDestBitmap := (newHeight - BitmapInfo.bmHeight) div 2;
+      if newHeight < srcHeight then
+        newHeight := srcHeight;
+      YDestBitmap := (newHeight - srcHeight) div 2;
       YDestText := (newHeight - TextSize.cy) div 2;
       case BitBtnLayout of
         blGlyphLeft:
@@ -284,8 +284,8 @@ begin
       if BitBtn.Spacing = -1 then
         newHeight := BitBtn.Height - 10
       else
-        newHeight := TextSize.cy + BitmapInfo.bmHeight + BitBtn.Spacing;
-      if BitmapHandle <> 0 then
+        newHeight := TextSize.cy + srcHeight + BitBtn.Spacing;
+      if srcHeight <> 0 then
         inc(newHeight, 2);
       XDestBitmap := (newWidth - srcWidth) shr 1;
       XDestText := (newWidth - TextSize.cx) shr 1;
@@ -293,18 +293,18 @@ begin
         blGlyphTop:
         begin
           YDestBitmap := 0;
-          YDestText := BitmapInfo.bmHeight;
+          YDestText := srcHeight;
           if BitBtn.Spacing = -1 then
-            inc(YDestText, (newHeight - BitmapInfo.bmHeight - TextSize.cy) div 2)
+            inc(YDestText, (newHeight - srcHeight - TextSize.cy) div 2)
           else
             inc(YDestText, BitBtn.Spacing);
         end;
         blGlyphBottom:
         begin
-          YDestBitmap := newHeight - BitmapInfo.bmHeight;
+          YDestBitmap := newHeight - srcHeight;
           YDestText := YDestBitmap - TextSize.cy;
           if BitBtn.Spacing = -1 then
-            dec(YDestText, (newHeight - BitmapInfo.bmHeight - TextSize.cy) div 2)
+            dec(YDestText, (newHeight - srcHeight - TextSize.cy) div 2)
           else
             dec(YDestText, BitBtn.Spacing);
         end;
@@ -318,31 +318,9 @@ begin
   BitmapRect.right := newWidth;
   BitmapRect.bottom := newHeight;
   if (newWidth = 0) or (newHeight = 0) then
-  begin
-    NewBitmap := 0;
-    MaskDC := 0;
-    MaskBmp := 0;
-  end else begin
+    NewBitmap := 0
+  else
     NewBitmap := CreateCompatibleBitmap(BitBtnDC, newWidth, newHeight);
-    // prepare masked bitmap
-    OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
-    MaskDC := CreateCompatibleDC(hdcNewBitmap);
-    if BitBtn.Glyph.MaskHandleAllocated then
-    begin
-      // Create a mask DC
-      MaskBmp := CreateCompatibleBitmap(hdcNewBitmap, BitmapInfo.bmWidth, BitmapInfo.bmHeight);
-      OldMaskBmp := SelectObject(MaskDC, MaskBmp);
-      SrcDC := CreateCompatibleDC(hdcNewBitmap);
-      OldSrcBmp := SelectObject(SrcDC, BitmapHandle);
-      FillRect(MaskDC, BitmapRect, BitBtn.Brush.Handle);
-      TWin32WidgetSet(WidgetSet).MaskBlt(MaskDC, 0, 0, BitmapInfo.bmWidth, BitmapInfo.bmHeight, SrcDC,
-        0, 0, BitBtn.Glyph.MaskHandle, 0, 0);
-    end else begin
-      MaskBmp := BitmapHandle;
-      OldMaskBmp := SelectObject(MaskDC, MaskBmp);
-    end;
-    SelectObject(hdcNewBitmap, OldBitmapHandle);
-  end;
 
   // destroy previous bitmap, set new bitmap
   if ThemeServices.ThemesEnabled then
@@ -383,18 +361,6 @@ begin
   SelectObject(hdcNewBitmap, OldFontHandle);
   DeleteDC(hdcNewBitmap);
   ReleaseDC(BitBtnHandle, BitBtnDC);
-  if BitBtn.Glyph.MaskHandleAllocated then
-  begin
-    SelectObject(SrcDC, OldSrcBmp);
-    DeleteDC(SrcDC);
-    DeleteObject(MaskBmp);
-  end;
-  if MaskDC <> 0 then
-  begin
-    SelectObject(MaskDC, OldMaskBmp);
-    DeleteDC(MaskDC);
-  end;
-
   BitBtn.Invalidate;
 end;
 

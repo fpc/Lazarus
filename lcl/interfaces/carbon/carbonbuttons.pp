@@ -423,7 +423,7 @@ begin
       begin
         // TODO: consider button style (down, disabled)
         R := Classes.Rect(0, 0, AGlyph.Width div BitBtn.NumGlyphs, AGlyph.Height);
-        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).GetSubImage(R);
+        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).CreateSubImage(R);
         FreeImage := True;
       end;
     end;

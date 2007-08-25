@@ -33,6 +33,9 @@ uses
  // LCL
   LCLProc, LCLType, Graphics, Controls, Forms,
  // LCL Carbon
+ {$ifdef DebugBitmaps}
+  CarbonDebug,
+ {$endif}
   CarbonDef;
 
 type
@@ -131,32 +134,56 @@ type
   end;
 
   { TCarbonBitmap }
+  
+  TCarbonBitmapAlignment = (
+    cbaByte,  // each line starts at byte boundary.
+    cbaWord,  // each line starts at word (16bit) boundary
+    cbaDWord, // each line starts at double word (32bit) boundary
+    cbaQWord, // each line starts at quad word (64bit) boundary
+    cbaDQWord // each line starts at double quad word (128bit) boundary
+  );
+  
+  TCarbonBitmapType = (
+    cbtMono,  // mask or mono bitmap
+    cbtGray,  // grayscale bitmap
+    cbtRGB,   // color bitmap 8-8-8 R-G-B
+    cbtARGB,  // color bitmap with alpha channel 8-8-8-8 A-R-G-B
+    cbtBGR,   // color bitmap 8-8-8 B-G-R (windows compatible)
+    cbtBGRA   // color bitmap with alpha channel 8-8-8-8 B-G-R-A (windows compatible)
+  );
+const
+  cbtMask = cbtMono;
+    
 
+type
   TCarbonBitmap = class(TCarbonGDIObject)
   private
     FData: Pointer;
-    FARGBData: Pointer;
     FDataSize: Integer;
     FBytesPerRow: Integer;
-    FBitsPerPixel: Integer;
+    FDepth: Byte;
+    FBitsPerPixel: Byte;
     FWidth: Integer;
     FHeight: Integer;
+    FType: TCarbonBitmapType;
     FCGImage: CGImageRef;
-    function GetARGBData: Pointer;
     function GetBitsPerComponent: Integer;
+    function GetColorSpace: CGColorSpaceRef;
+    function GetInfo: CGBitmapInfo;
   public
-    constructor Create(AWidth, AHeight, ABitsPerPixel: Integer; AData: Pointer);
+    constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer; AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType; AData: Pointer);
     destructor Destroy; override;
     procedure Update;
-    function GetSubImage(const ARect: TRect): CGImageRef;
+    function CreateSubImage(const ARect: TRect): CGImageRef;
   public
     property BitsPerComponent: Integer read GetBitsPerComponent;
     property BytesPerRow: Integer read FBytesPerRow;
     property CGImage: CGImageRef read FCGImage;
+    property ColorSpace: CGColorSpaceRef read GetColorSpace;
     property Data: Pointer read FData;
     property DataSize: Integer read FDataSize;
-    property RGBAData: Pointer read FData;
-    property ARGBData: Pointer read GetARGBData;
+    property Depth: Byte read FDepth;
+    property Info: CGBitmapInfo read GetInfo;
     property Width: Integer read FWidth;
     property Height: Integer read FHeight;
   end;
@@ -256,6 +283,17 @@ implementation
 
 uses
   CarbonProc, CarbonCanvas, CarbonDbgConsts;
+  
+const
+  BITMAPINFOMAP: array[TCarbonBitmapType] of CGBitmapInfo = (
+    {cbtMask} kCGImageAlphaNone,
+    {cbtGray} kCGImageAlphaNone,
+    {cbtRGB}  kCGImageAlphaNone,
+    {cbtARGB} kCGImageAlphaFirst,
+    {cbtBGR}  kCGImageAlphaNone  or kCGBitmapByteOrder32Little,
+    {cbtBGRA} kCGImageAlphaFirst or kCGBitmapByteOrder32Little
+  );
+
   
 {------------------------------------------------------------------------------
   Name:    CheckGDIObject
@@ -982,55 +1020,51 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonBitmap.GetBitsPerComponent: Integer;
 begin
-  Result := CGImageGetBitsPerComponent(FCGImage);
+  case FType of
+    cbtMask,
+    cbtGray: Result := FDepth;
+    cbtRGB,
+    cbtBGR:  Result := FDepth div 3;
+    cbtARGB,
+    cbtBGRA: Result := FDepth shr 2;
+  else
+    Result := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonBitmap.GetARGBData
-  Returns: Pointer to bitmap bits with swapped alpha component
+  Method:  TCarbonBitmap.GetColorSpace
+  Returns: The colorspace for this type of bitmap
  ------------------------------------------------------------------------------}
-function TCarbonBitmap.GetARGBData: Pointer;
-var
-  i, j: integer;
-  RowPtr, BytePtr: PByte;
+function TCarbonBitmap.GetColorSpace: CGColorSpaceRef;
 begin
-  if (FData = nil) or (FARGBData <> nil)
-  then begin
-    Result := FARGBData;
-    Exit;
-  end;
+  if FType in [cbtMask, cbtGray]
+  then Result := GrayColorSpace
+  else Result := RGBColorSpace
+end;
 
-  // Since we need to shift from $RRGGBBAA to $AARRGGBB we move the data with
-  // one byte offset so that the RRGGBB part is in place
-  System.GetMem(FARGBData, FDataSize + 1);
-  System.Move(FData^, PByte(FARGBData)[1], FDataSize);
-
-  // now only the Alpha part needs to get inplace
-  RowPtr := FARGBData;
-  for i := 0 to FHeight - 1 do
-  begin
-    BytePtr := RowPtr;
-    for j := 0 to FWidth - 1 do
-    begin
-      BytePtr[0] := BytePtr[4];
-      Inc(BytePtr, 4);
-    end;
-    Inc(RowPtr, FBytesPerRow);
-  end;
-
-  Result := FARGBData;
+function TCarbonBitmap.GetInfo: CGBitmapInfo;
+begin
+  Result := BITMAPINFOMAP[FType];
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonBitmap.Create
   Params:  AWidth        - Bitmap width
            AHeight       - Bitmap height
-           ABitsPerPixel - Bits per pixel (IGNORED)
+           ADepth        - Significant bits per pixel
+           ABitsPerPixel - The number of allocated bits per pixel (can be larget that depth)
+           AAlignment    - Alignment of the data for each row
+           ABytesPerRow  - The number of bytes between rows
   
   Creates Carbon bitmap with the specified characteristics
  ------------------------------------------------------------------------------}
-constructor TCarbonBitmap.Create(AWidth, AHeight, ABitsPerPixel: Integer;
-  AData: Pointer);
+constructor TCarbonBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer; AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType; AData: Pointer);
+const
+  ALIGNBITS: array[TCarbonBitmapAlignment] of Integer = (0, 1, 3, 7, $F);
+var
+  m: Integer;
+
 begin
   inherited Create(False);
   
@@ -1040,11 +1074,14 @@ begin
   if AHeight < 1 then AHeight := 1;
   FWidth := AWidth;
   FHeight := AHeight;
+  FDepth := ADepth;
+  FBitsPerPixel := ABitsPerPixel;
+  FType := AType;
 
-  // TODO: enable more pixel formats
-  FBitsPerPixel := 32; // RGBA-32 format
-  // 128bit align for best performance
-  FBytesPerRow := ((FWidth * FBitsPerPixel + 127) and not Cardinal(127)) shr 3;
+  FBytesPerRow := MulDiv(AWidth, ABitsPerPixel, 8);
+  m := FBytesPerRow and ALIGNBITS[AAlignment];
+  if m <> 0
+  then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - m);
 
   FDataSize := FBytesPerRow * FHeight;
   System.GetMem(FData, FDataSize);
@@ -1057,6 +1094,8 @@ begin
 //  [AWidth, AHeight, Integer(AData), DataRowSize, FDataSize]));
 
   Update;
+  
+  //DbgDumpImage(FCGImage, 'TCarbonBitmap.Create');
 end;
 
 {------------------------------------------------------------------------------
@@ -1068,7 +1107,6 @@ destructor TCarbonBitmap.Destroy;
 begin
   CGImageRelease(FCGImage);
   System.FreeMem(FData);
-  System.FreeMem(FARGBData);
 
   inherited Destroy;
 end;
@@ -1084,12 +1122,15 @@ var
 begin
   if FData = nil then Exit;
   if FCGImage <> nil then CGImageRelease(FCGImage);
-  
+
   CGDataProvider := CGDataProviderCreateWithData(nil, FData, FDataSize, nil);
   try
-    FCGImage := CGImageCreate(FWidth, FHeight, FBitsPerPixel shr 2, FBitsPerPixel,
-      FBytesPerRow, RGBColorSpace, kCGImageAlphaLast,
-      CGDataProvider, nil, 0, kCGRenderingIntentDefault);
+    if FType = cbtMask
+    then FCGImage := CGImageMaskCreate(FWidth, FHeight, GetBitsPerComponent,
+           FBitsPerPixel, FBytesPerRow, CGDataProvider, nil, 0)
+    else FCGImage := CGImageCreate(FWidth, FHeight, GetBitsPerComponent,
+           FBitsPerPixel, FBytesPerRow, GetColorSpace, BITMAPINFOMAP[FType],
+           CGDataProvider, nil, 0, kCGRenderingIntentDefault);
   finally
     CGDataProviderRelease(CGDataProvider);
   end;
@@ -1099,12 +1140,13 @@ end;
   Method:  TCarbonBitmap.GetSubImage
   Returns: New image ref to portion of image data according to the rect
  ------------------------------------------------------------------------------}
-function TCarbonBitmap.GetSubImage(const ARect: TRect): CGImageRef;
+function TCarbonBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
 begin
-  if CGImage = nil then Result := nil
-  else
-    Result := CGImageCreateWithImageInRect(CGImage, RectToCGRect(ARect));
+  if CGImage = nil
+  then Result := nil
+  else Result := CGImageCreateWithImageInRect(CGImage, RectToCGRect(ARect));
 end;
+
 
 { TCarbonCursor }
 
@@ -1175,11 +1217,11 @@ begin
   FPixmapHandle^^.hRes := $00480000; // 72 dpi
   FPixmapHandle^^.vRes := $00480000; // 72 dpi
   FPixmapHandle^^.pixelType := RGBDirect;
-  FPixmapHandle^^.cmpCount := 4;  // $AARRGGBB
   FPixmapHandle^^.cmpSize := ABitmap.BitsPerComponent;
-  FPixmapHandle^^.pixelSize := FPixmapHandle^^.cmpCount * FPixmapHandle^^.cmpSize; // depth
+  FPixmapHandle^^.cmpCount := ABitmap.Depth div FPixmapHandle^^.cmpSize;  // $AARRGGBB
+  FPixmapHandle^^.pixelSize := ABitmap.Depth; // depth
   FPixmapHandle^^.pmTable := nil;
-  FPixmapHandle^^.baseAddr := Ptr(ABitmap.ARGBData);
+  FPixmapHandle^^.baseAddr := Ptr(ABitmap.Data);
 
   FQDHardwareCursorName := Application.Title + LazarusCursorInfix + IntToStr(Integer(Self));
   OSError(
@@ -1217,9 +1259,9 @@ begin
   FPixmapHandle^^.hRes := $00480000; // 72 dpi
   FPixmapHandle^^.vRes := $00480000; // 72 dpi
   FPixmapHandle^^.pixelType := RGBDirect;
-  FPixmapHandle^^.cmpCount := 4;  // RGBA
   FPixmapHandle^^.cmpSize := ABitmap.BitsPerComponent;
-  FPixmapHandle^^.pixelSize := FPixmapHandle^^.cmpCount * FPixmapHandle^^.cmpSize; // depth
+  FPixmapHandle^^.cmpCount := ABitmap.Depth div FPixmapHandle^^.cmpSize;  // $AARRGGBB
+  FPixmapHandle^^.pixelSize := ABitmap.Depth; // depth
   rowBytes := FPixmapHandle^^.Bounds.right * (FPixmapHandle^^.pixelSize shr 3);
   FPixmapHandle^^.rowBytes := rowBytes or $8000;
   FPixmapHandle^^.pmTable := nil;
@@ -1240,7 +1282,7 @@ begin
   FQDColorCursorHandle^^.crsrData := NewHandleClear(rowBytes * FPixmapHandle^^.bounds.bottom);
 
   // fill cursor bitmap and mask
-  SrcRowPtr := ABitmap.ARGBData;
+  SrcRowPtr := ABitmap.Data;
   DstRowPtr := PByte(FQDColorCursorHandle^^.crsrData^);
   for i := 0 to 15 do
   begin
@@ -1475,8 +1517,8 @@ initialization
   BlackPen := TCarbonPen.Create(True);
   
   DefaultContext := TCarbonBitmapContext.Create;
-  DefaultBitmap := TCarbonBitmap.Create(1, 1, 32, nil);
-  DefaultContext.SetBitmap(DefaultBitmap);
+  DefaultBitmap := TCarbonBitmap.Create(1, 1, 1, 1, cbaDQWord, cbtMono, nil);
+  DefaultContext.Bitmap := DefaultBitmap;
   
   ScreenContext := TCarbonScreenContext.Create;
   ScreenContext.CGContext := DefaultContext.CGContext; // workaround

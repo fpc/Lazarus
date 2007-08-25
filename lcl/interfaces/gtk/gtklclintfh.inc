@@ -40,7 +40,6 @@ function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
                     Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
-function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
@@ -53,11 +52,18 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
+function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: boolean = False): boolean; override;
+function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): boolean; override;
+function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean; override;
+function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean; override;
+function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
+
+
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
-function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
 
+function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

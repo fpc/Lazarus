@@ -458,7 +458,8 @@ type
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
       AContentRect: PRect = nil); virtual;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil); virtual;
-    procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); virtual;
+    procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); virtual; overload;
+    procedure DrawIcon(ACanvas: TPersistent; Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent; Index: Integer); virtual; overload;
     procedure DrawParentBackground(Window: HWND; Target: HDC; Details: PThemedElementDetails; OnlyIfTransparent: Boolean;
       Bounds: PRect = nil);
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
@@ -486,7 +487,7 @@ const
 implementation
 
 uses
-  SysUtils, ComCtrls, InterfaceBase, LCLIntf, GraphType, Graphics;
+  SysUtils, ComCtrls, InterfaceBase, LCLIntf, GraphType, Graphics, ImgList;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1849,7 +1850,17 @@ end;
 procedure TThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST;
   Index: Integer);
 begin
-  // default painting
+  // overrided in TWin32ThemeServices (for compatability with Delphi)
+end;
+
+procedure TThemeServices.DrawIcon(ACanvas: TPersistent;
+  Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent;
+  Index: Integer);
+var
+  Canvas: TCanvas absolute ACanvas;
+  ImageList: TCustomImageList absolute AImageList;
+begin
+  ImageList.Draw(Canvas, P.X, P.Y, Index, not IsDisabled(Details));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1873,7 +1884,7 @@ end;
 procedure TThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags,
   Flags2: Cardinal);
 begin
-  // exception: use Canvas instead ???
+  // overrided in TWin32ThemeServices (for compatability with Delphi)
 end;
 
 function TThemeServices.IsDisabled(Details: TThemedElementDetails): Boolean;

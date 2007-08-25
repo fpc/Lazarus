@@ -37,8 +37,8 @@ function WSCheckHandleAllocated(const AComponent: TLCLHandleComponent;
 
 function WSCheckHandleAllocated(const AWincontrol: TWinControl;
                                 const AProcName: String): Boolean;
-  
-implementation                                                  
+                                
+implementation
 
 function WSCheckHandleAllocated(const AComponent: TLCLHandleComponent;
   const AProcName: String): Boolean;
@@ -65,5 +65,6 @@ begin
   if Result then Exit;
   Warn;
 end;
+
 
 end.

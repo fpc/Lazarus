@@ -242,8 +242,9 @@ begin
   if (Images <> nil) and (Section.ImageIndex <> -1) then
   begin
     inc(ARect.Left);
-    Images.Draw(Canvas, ARect.Left, (ARect.Top + ARect.Bottom - Images.Height) div 2,
-      Section.ImageIndex);
+    ThemeServices.DrawIcon(Canvas, Details,
+      Point(ARect.Left, (ARect.Top + ARect.Bottom - Images.Height) div 2),
+      Images, Section.ImageIndex);
     inc(ARect.Left, Images.Width + 2);
   end;
   

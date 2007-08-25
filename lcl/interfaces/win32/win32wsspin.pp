@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Spin, Controls, StdCtrls, LCLType,
 ////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses, Windows, Win32Int, WinExt, Win32Proc,
+  WSSpin, WSLCLClasses, Windows, Win32Int, Win32Extra, Win32Proc,
   Win32WSStdCtrls, Win32WSControls;
   
 type

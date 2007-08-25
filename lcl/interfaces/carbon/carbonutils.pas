@@ -58,6 +58,7 @@ function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
   inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
   outRef: EventHandlerRefPtr): Boolean;
 
+function CGRectMake(x, y, width, height: Float32): CGRect;
 
 implementation
 
@@ -174,5 +175,12 @@ begin
 end;
 
 
+function CGRectMake(x, y, width, height: Float32): CGRect;
+begin
+  Result.origin.x := x;
+  Result.origin.y := y;
+  Result.size.width := width;
+  Result.size.height := height;
+end;
 
 end.

@@ -75,8 +75,8 @@ begin
   Result := 0;
   if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
 
-  pixmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
-  bitmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapMaskObject;
+  pixmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Image;
+  bitmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask;
 
   gdk_drawable_get_size(pixmap, @Width, @Height);
   gdk_display_get_maximal_cursor_size(gdk_display_get_default,
@@ -368,7 +368,7 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    GetGC; // create GC
+    if GC <> nil then; // create GC
     if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
       DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
@@ -559,7 +559,7 @@ begin
     EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
     //DebugLn(['TGtk2WidgetSet.TextOut Str="',copy(Str,1,Count),'" X=',X+DCOrigin.X,',',Y+DCOrigin.Y+yOffset]);
-    gdk_draw_layout_with_colors(drawable, GetGC,
+    gdk_draw_layout_with_colors(drawable, GC,
                         X+DCOrigin.X, Y+DCOrigin.Y+yOffset, UseFont, nil, nil);
 
     Result := True;

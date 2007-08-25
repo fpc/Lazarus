@@ -78,6 +78,11 @@ begin
   Result:=inherited GetControlConstraints(Constraints);
 end;
 
+function TCarbonWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+begin
+  Result:=inherited GetDesignerDC(WindowHandle);
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetLCLOwnerObject
   Params:  Handle - Handle of window
@@ -414,10 +419,156 @@ begin
   {$ENDIF}
 end;  {TCarbonWidgetSet.PromptUser}
 
-function TCarbonWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
-  NewMask: HBitmap): boolean;
+{------------------------------------------------------------------------------
+  Function: RawImage_CreateBitmaps
+  Params: ARawImage: Source raw image
+          ABitmap:   Destination bitmap object
+          AMask:     Destination mask object
+          ASkipMask: When set, no mask is created
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+const
+  ALIGNMAP: array[TRawImageLineEnd] of TCarbonBitmapAlignment = (cbaByte, cbaByte, cbaWord, cbaDWord, cbaQWord, cbaDQWord);
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  bmpType: TCarbonBitmapType;
 begin
-  Result:=inherited ReplaceBitmapMask(Image, Mask, NewMask);
+  Result := False;
+
+  if ADesc.Format = ricfGray
+  then bmpType := cbtGray
+  else if ADesc.Depth = 1
+  then bmpType := cbtMono
+  else if ADesc.AlphaPrec <> 0
+  then begin
+    if ADesc.ByteOrder = riboMSBFirst
+    then begin
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 16)
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 0 )
+      then bmpType := cbtARGB
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 8 )
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 24)
+      then bmpType := cbtBGRA
+      else Exit;
+    end
+    else begin
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 16)
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 0 )
+      then bmpType := cbtBGRA
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 8 )
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 24)
+      then bmpType := cbtARGB
+      else Exit;
+    end;
+  end
+  else begin
+    bmpType := cbtRGB;
+  end;
+
+  ABitmap := HBITMAP(TCarbonBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, ALIGNMAP[ADesc.LineEnd], bmpType, ARawImage.Data));
+
+  if ASkipMask or (ADesc.MaskBitsPerPixel = 0)
+  then AMask := 0
+  else AMask := HBITMAP(TCarbonBitmap.Create(ADesc.Width, ADesc.Height, 1, ADesc.MaskBitsPerPixel, ALIGNMAP[ADesc.MaskLineEnd], cbtMask, ARawImage.Mask));
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_DescriptionFromBitmap
+  Params: ABitmap:
+          ADesc:
+  Returns:
+
+  Describes the inner format utilized by Carbon and specific information
+  for the specified bitmap
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+begin
+  if CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
+  then Result := RawImage_DescriptionFromCarbonBitmap(ADesc, TCarbonBitmap(ABitmap))
+  else Result := False;
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: RawImage_DescriptionFromDevice
+  Params: ADC:   - Handle to device context
+          ADesc: - Pointer to raw image description
+  Returns: True if success
+
+  Retrieves the standard image format utilized by Carbon
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+var
+  P: TPoint;
+begin
+  Result := False;
+
+  FillStandardDescription(ADesc);
+  if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice')
+  then begin
+    P := TCarbonDeviceContext(ADC).Size;
+    ADesc.Width := P.X;
+    ADesc.Height := P.Y
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_FromBitmap
+  Params: ARawImage: Image to create
+          ABitmap:   Source bitmap
+          AMask:     Source mask
+          ARect:     Source rect (TODO)
+  Returns: True if the function succeeds
+
+  Creates a raw image from the specified bitmap
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+begin
+  if CheckBitmap(ABitmap, 'RawImage_FromBitmap')
+  and ((AMask = 0) or CheckBitmap(AMask, 'RawImage_FromBitmap (mask)'))
+  then Result := RawImage_FromCarbonBitmap(ARawImage, TCarbonBitmap(ABitmap), TCarbonBitmap(AMask), ARect)
+  else Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_FromDevice
+  Params: ARawImage: Image to create
+          ADC:       Source dc
+          ARect:     Source rect (TODO)
+
+  Returns: True if the function succeeds
+
+  Creates a raw image from the specified devicecontext
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+var
+  CBC: TCarbonBitmapContext absolute ADC;
+begin
+  Result := False;
+  if not CheckDC(ADC, 'RawImage_FromDevice') then Exit;
+  if not (CBC is TCarbonBitmapContext)
+  then begin
+    DebugLn('[WARNING] RawImage_FromDevice: DC is not a CarbonBitmapContext');
+    Exit;
+  end;
+
+  Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, ARect)
 end;
 
 {------------------------------------------------------------------------------

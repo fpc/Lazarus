@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   LCLProc, LCLType, Dialogs, Controls, Graphics, SysUtils, Classes,
 ////////////////////////////////////////////////////
-  WSDialogs, WSLCLClasses, Windows, WinExt, Win32Int, InterfaceBase;
+  WSDialogs, WSLCLClasses, Windows, Win32Extra, Win32Int, InterfaceBase;
 
 type
 

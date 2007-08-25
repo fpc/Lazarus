@@ -1671,6 +1671,8 @@ begin
   Result:=true;
 end;
 
+{$note TODO: remove}
+(*
 procedure TGtkWidgetSet.LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
 var
   GdiObject: PGdiObject;
@@ -1799,13 +1801,13 @@ begin
 end;
 
 procedure TGtkWidgetSet.LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);
-Type
-  TBITMAPHEADER = packed record
+type
+  TBitmapHeader = packed record
     FileHeader : tagBitmapFileHeader;
     InfoHeader : tagBitmapInfoHeader;
   end;
 
-  Procedure FillBitmapInfo(Bitmap : hBitmap; Var Header : TBitmapHeader);
+  procedure FillBitmapInfo(Bitmap : hBitmap; var Header : TBitmapHeader);
   var
     DIB : TDIBSection;
     BitmapHeader : TagBITMAPINFO;
@@ -1813,7 +1815,8 @@ Type
     FillChar(DIB, SizeOf(DIB), 0);
     GetObject(Bitmap, SizeOf(DIB), @DIB);
     BitmapHeader.bmiHeader := DIB.dsbmih;
-    With Header, Header.FileHeader, Header.InfoHeader do begin
+    with Header, Header.FileHeader, Header.InfoHeader do
+    begin
       InfoHeader := BitmapHeader.bmiHeader;
       FillChar(FileHeader, sizeof(FileHeader), 0);
       bfType      := $4D42;
@@ -1900,6 +1903,7 @@ begin
   if not LoadData then
     DebugLn('WARNING: [TGtkWidgetSet.LoadFromPixbufData] loading data FAILED!');
 end;
+*)
 
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
@@ -1908,13 +1912,15 @@ end;
     var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
-  StartScan, NumScans: UINT;
-  BitSize : Longint; Bits: Pointer;
+  StartScan, NumScans: UINT; BitSize : Longint; Bits: Pointer;
   var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
 const
   PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
   TempBuffer : array[0..2] of Byte = (0,0,0);
+  
 var
+  GdiObject: PGDIObject absolute Bitmap;
+
   Source: PGDKPixbuf;
   rowstride, PixelPos: Longint;
   Pixels: PByte;
@@ -1923,73 +1929,66 @@ var
   PadSize, Pos, BytesPerPixel: Longint;
   Buf16Bit: word;
 
-  Procedure DataSourceInitialize(Bitmap : PGDIObject; Width : Longint);
+  procedure DataSourceInitialize(Bitmap : PGDIObject; Width : Longint);
   begin
     Source := nil;
 
     case Bitmap^.GDIBitmapType of
       gbBitmap:
-        If Bitmap^.GDIBitmapObject <> nil then begin
-          {$IFDEF VerboseGdkPixbuf}
-          debugln('DataSourceInitialize A1');
-          {$ENDIF}
+        if Bitmap^.GDIBitmapObject <> nil
+        then begin
+          {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize A1');{$endif}
+          
           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
              Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
-           rowstride := gdk_pixbuf_get_rowstride(Source);
-           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
-          {$IFDEF VerboseGdkPixbuf}
-          debugln('DataSourceInitialize A2');
-          {$ENDIF}
+          rowstride := gdk_pixbuf_get_rowstride(Source);
+          Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+          
+          {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize A2');{$endif}
         end;
       gbPixmap:
-        If Bitmap^.GDIPixmapObject <> nil then begin
-          {$IFDEF VerboseGdkPixbuf}
-          debugln('DataSourceInitialize B1');
-          {$ENDIF}
-           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIPixmapObject,
-             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
-          {$IFDEF VerboseGdkPixbuf}
-          debugln('DataSourceInitialize B2');
-          {$ENDIF}
-           rowstride := gdk_pixbuf_get_rowstride(Source);
-           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+        if Bitmap^.GDIPixmapObject.Image <> nil
+        then begin
+          {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize B1');{$endif}
+          
+          Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIPixmapObject.Image,
+            Bitmap^.Colormap, 0, StartScan, 0, 0, Width, StartScan + NumScans);
+          {$note TODO: Apply alpha based on mask when 32bit mode is added}
+            
+          rowstride := gdk_pixbuf_get_rowstride(Source);
+          Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+          
+          {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize B2');{$endif}
         end;
-      {obsolete: gbImage :
-        If Bitmap^.GDI_RGBImageObject <> nil then begin
-          DebugLn('WARNING : [TGtkWidgetSet.GetDIBits] support for gdiImage unimplimented!.');
-        end;}
     end;
   end;
-
-  Function DataSourceGetGDIRGB(Bitmap : PGDIObject; X, Y : Longint) : TGDIRGB;
+  
+  function DataSourceGetGDIRGB(Bitmap : PGDIObject; X, Y : Longint) : TGDIRGB;
   begin
-     If Bitmap <> nil then ; //Keep compiler happy..
+    if Bitmap <> nil then ; //Keep compiler happy..
 
-     PixelPos := rowstride*Y + X*3;
+    PixelPos := rowstride*Y + X*3;
 
-     With Result do begin
-       Red := Pixels[PixelPos + 0];
-       Green := Pixels[PixelPos + 1];
-       Blue := Pixels[PixelPos + 2];
-     end;
-
+    with Result do
+    begin
+      Red   := Pixels[PixelPos + 0];
+      Green := Pixels[PixelPos + 1];
+      Blue  := Pixels[PixelPos + 2];
+    end;
+  end;
+  
+  procedure DataSourceFinalize;
+  begin
+    gdk_pixbuf_unref(Source);
   end;
 
-  Procedure DataSourceFinalize;
+  procedure WriteData(Value : PByte; Size : Longint);
   begin
-    GDK_Pixbuf_Unref(Source);
-  end;
-
-  Procedure WriteData(Value : PByte; Size : Longint);
-  var
-    I : Longint;
-  begin
-    For I := 0 to Size - 1 do
-      PByte(Bits)[Pos + I] := Value[I];
+    System.Move(Value^, PByte(Bits)[Pos], Size);
     Inc(Pos, Size);
   end;
 
-  Procedure WriteData(Value : Word);
+  procedure WriteData(Value : Word);
   begin
     PByte(Bits)[Pos] := Lo(Value);
     inc(Pos);
@@ -1999,474 +1998,663 @@ var
 
 begin
   Assert(False, 'trace:[TGtkWidgetSet.InternalGetDIBits]');
+
+
   Result := 0;
   if (DC=0) or (Usage=0) then ;
-  if IsValidGDIObject(Bitmap)
+
+  if not IsValidGDIObject(Bitmap)
   then begin
-    case PGDIObject(Bitmap)^.GDIType of
-    gdiBitmap:
-      begin
-        FillChar(FDIB, SizeOf(FDIB), 0);
-        GetObject(Bitmap, SizeOf(FDIB), @FDIB);
-        BitInfo.bmiHeader := FDIB.dsBmih;
-
-        With PGDIObject(Bitmap)^, BitInfo.bmiHeader do begin
-          If not DIB then begin
-            NumScans := biHeight;
-            StartScan := 0;
-          end;
-          BytesPerPixel:=biBitCount div 8;
-
-          {DebugLn('TGtkWidgetSet.InternalGetDIBits A BitSize=',BitSize,
-          ' biSizeImage=',biSizeImage,' biHeight=',biHeight,' biWidth=',biWidth,
-          ' NumScans=',NumScans,' StartScan=',StartScan,
-          ' Bits=',DbgS(Bits),' MemSize(Bits)=',MemSize(Bits),
-          ' biBitCount=',biBitCount);}
-          If BitSize <= 0 then
-            BitSize := longint(SizeOf(Byte))
-                       *(longint(biSizeImage) div biHeight)
-                       *longint(NumScans + StartScan);
-          If MemSize(Bits) < BitSize then begin
-            DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] not enough memory allocated for Bits!');
-            exit;
-          end;
-          // ToDo: other bitcounts
-          if (biBitCount<>24) and (biBitCount<>16) then begin
-            DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] unsupported biBitCount=',dbgs(biBitCount));
-            exit;
-          end;
-          Pos := 0;
-          PadSize := (Longint(biSizeImage) div biHeight)
-                     - biWidth*BytesPerPixel;
-          DataSourceInitialize(PGDIObject(Bitmap), biWidth);
-          if NumScans - 1<>0 then begin
-            If DIB then begin
-              Y:=NumScans - 1;
-            end else begin
-              Y:=0;
-            end;
-            repeat
-              if biBitCount=24 then begin
-                for X := 0 to biwidth - 1 do begin
-                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
-                    TempBuffer[0]  := Blue;
-                    TempBuffer[1] := Green;
-                    TempBuffer[2]   := Red;
-                  end;
-                  WriteData(TempBuffer, BytesPerPixel);
-                end;
-              end else if biBitCount=16 then begin
-                for X := 0 to biwidth - 1 do begin
-                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
-                    Buf16Bit:=(Blue shr 3) shl 11
-                             +(Green shr 2) shl 5
-                             +(Red shr 3);
-                  end;
-                  WriteData(Buf16Bit);
-                end;
-              end;
-              WriteData(PadLine, PadSize);
-              If DIB then begin
-                dec(y);
-                if Y<=0 then break;
-              end else begin
-                inc(y);
-                if Y>=longint(NumScans) - 1 then break;
-              end;
-            until false;
-          end
-        end;
-        DataSourceFinalize;
-      end;
-    else
-      DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] not a Bitmap!');
-    end;
-  end
-  else
     DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] invalid Bitmap!');
-  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+    Exit;
+  end;
+
+  if GdiObject^.GDIType <> gdiBitmap
+  then begin
+    DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] not a Bitmap!');
+    Exit;
+  end;
+  
+
+  FillChar(FDIB, SizeOf(FDIB), 0);
+  GetObject(Bitmap, SizeOf(FDIB), @FDIB);
+  BitInfo.bmiHeader := FDIB.dsBmih;
+
+  with GdiObject^, BitInfo.bmiHeader do
+  begin
+    if not DIB
+    then begin
+      NumScans := biHeight;
+      StartScan := 0;
+    end;
+    BytesPerPixel := biBitCount div 8;
+
+    if BitSize <= 0 then
+      BitSize := longint(SizeOf(Byte))
+                 *(longint(biSizeImage) div biHeight)
+                 *longint(NumScans + StartScan);
+    if MemSize(Bits) < BitSize
+    then begin
+      DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] not enough memory allocated for Bits!');
+      exit;
+    end;
+
+    // ToDo: other bitcounts
+    if (biBitCount<>24) and (biBitCount<>16)
+    then begin
+      DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] unsupported biBitCount=',dbgs(biBitCount));
+      exit;
+    end;
+
+    if NumScans = 0 then Exit;
+
+    Pos := 0;
+    PadSize := (Longint(biSizeImage) div biHeight) - biWidth * BytesPerPixel;
+
+    {$ifdef DebugGDK} BeginGDKErrorTrap; try{$ENDIF}
+    DataSourceInitialize(GdiObject, biWidth);
+
+    if DIB
+    then Y := NumScans - 1
+    else Y := 0;
+
+    case biBitCount of
+      24: repeat
+        for X := 0 to biwidth - 1 do
+        begin
+          with DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do
+          begin
+            TempBuffer[0] := Blue;
+            TempBuffer[1] := Green;
+            TempBuffer[2] := Red;
+          end;
+          WriteData(TempBuffer, BytesPerPixel);
+        end;
+        WriteData(PadLine, PadSize);
+
+        if DIB
+        then dec(y)
+        else inc(y);
+      until (Y < 0) or (y >= NumScans);
+
+      16: repeat
+        for X := 0 to biwidth - 1 do
+        begin
+          with DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do
+          begin
+            Buf16Bit := (Blue  shr 3) shl 11
+                      + (Green shr 2) shl 5
+                      + (Red   shr 3);
+          end;
+          WriteData(Buf16Bit);
+        end;
+        WriteData(PadLine, PadSize);
+
+        if DIB
+        then dec(y)
+        else inc(y);
+      until (Y < 0) or (y >= NumScans);
+    end;
+  end;
+
+  DataSourceFinalize;
+
+
+  {$ifdef DebugGDK}finally EndGDKErrorTrap; end;{$endif}
 end;
 
-function TGtkWidgetSet.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
-  Desc: PRawImageDescription): boolean;
+function TGtkWidgetSet.RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): Boolean;
 var
   Visual: PGdkVisual;
   Image: PGdkImage;
-  Width, Height: integer;
-//  WindowType: TGdkWindowType;
-  IsGdkBitmap: Boolean;
+  Width, Height, Depth: integer;
+  IsBitmap: Boolean;
 begin
-  Result := false;
-  if Desc=nil then begin
-    RaiseGDBException('TGtkWidgetSet.GetWindowRawImageDescription');
-    exit;
+  Result := False;
+
+  Visual := nil;
+  Width := 0;
+  Height := 0;
+
+  if ADrawable = nil
+  then begin
+    Visual := gdk_visual_get_system;
+    IsBitmap := False;
+  end
+  else begin
+    {$ifdef gtk1}
+    gdk_window_get_geometry(ADrawable, nil, nil, @Width, @Height, @Depth);
+    {$else}
+    gdk_drawable_get_size(ADrawable, @Width, @Height);
+    Depth := gdk_drawable_get_depth(ADrawable);
+    {$endif}
+    Visual := gdk_window_get_visual(ADrawable);
+    // pixmaps and bitmaps dont have a visual, but for pixmaps we need one
+    if Visual = nil
+    then Visual := gdk_visual_get_best_with_depth(Depth);
+    IsBitmap := Depth = 1;
   end;
 
-  Visual:=nil;
-  Width:=0;
-  Height:=0;
-  IsGdkBitmap:=false;
-
-  If (GDKWindow <> nil) then begin
-    {$IFDEF Gtk1}
-    if GDKWindow<>PGdkWindow(@gdk_root_window) then begin
-      GDK_Window_Get_Size(GDKWindow,@Width,@Height);
-      Visual:=gdk_window_get_visual(GDKWindow);
-    end else begin
-      Width:=gdk_screen_width;
-      Height:=gdk_screen_height;
-    end;
-    {$ELSE}
-    GDK_Window_Get_Size(GDKWindow,@Width,@Height);
-    Visual:=gdk_window_get_visual(GDKWindow);
-    {$ENDIF}
-//    if Visual=nil then begin
-//      WindowType:=gdk_window_get_type(GDKWindow);
-//      if WindowType=GDK_WINDOW_PIXMAP then begin
-        // a pixmap without visual
-        //DebugLn('TGtkWidgetSet.GetWindowRawImageDescription GdkBitmap Type=',WindowType,' ',Width,',',Height,' ',GDK_WINDOW_PIXMAP);
-        // ToDo: find a test: gdkpixmap or gdkbitmap
-        //if IsBitmap then IsGdkBitmap:=true;
-//      end;
-//    end;
-  end;
-  if Visual=nil then begin
-    Visual := GDK_Visual_Get_System;
-    if Visual=nil then exit;
+  if (Visual = nil) and not IsBitmap // bitmaps don't have a visual
+  then begin
+    DebugLn('TGtkWidgetSet.RawImage_DescriptionFromDrawable: visual failed');
+    Exit;
   end;
 
-  FillChar(Desc^,SizeOf(TRawImageDescription),0);
+  ADesc.Init;
 
   // Format
-  if IsGdkBitmap then begin
-    Desc^.Format:=ricfGray;
-  end else begin
+  if IsBitmap
+  then begin
+    ADesc.Format := ricfGray;
+  end
+  else begin
     case Visual^.thetype of
-    GDK_VISUAL_STATIC_GRAY:  Desc^.Format:=ricfGray;
-    GDK_VISUAL_GRAYSCALE:    Desc^.Format:=ricfGray;
-    GDK_VISUAL_STATIC_COLOR: Desc^.Format:=ricfGray;
-    GDK_VISUAL_PSEUDO_COLOR: Desc^.Format:=ricfGray;
-    GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
-    GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
+      GDK_VISUAL_STATIC_GRAY:  ADesc.Format:=ricfGray;
+      GDK_VISUAL_GRAYSCALE:    ADesc.Format:=ricfGray;
+      GDK_VISUAL_STATIC_COLOR: ADesc.Format:=ricfGray; {$note shouldn't this be ricfRGBA ?}
+      GDK_VISUAL_PSEUDO_COLOR: ADesc.Format:=ricfGray;
+      GDK_VISUAL_TRUE_COLOR:   ADesc.Format:=ricfRGBA;
+      GDK_VISUAL_DIRECT_COLOR: ADesc.Format:=ricfRGBA;
     else
       DebugLn('TGtkWidgetSet.GetWindowRawImageDescription unknown Visual type ',
               dbgs(Integer(Visual^.thetype)));
-      exit;
+      Exit;
     end;
   end;
 
   // Palette
-  Desc^.HasPalette:=(not IsGdkBitmap)
-    and (Visual^.thetype in [GDK_VISUAL_GRAYSCALE,
-                             GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR]);
-  // Depth
-  if IsGdkBitmap then
-    Desc^.Depth:=1
-  else
-    Desc^.Depth:=Visual^.Depth;
-  // Width + Height
-  Desc^.Width:=cardinal(Width);
-  Desc^.Height:=cardinal(Height);
-  // PaletteEntries
-  if Desc^.HasPalette then begin
+  if not IsBitmap
+  and (Visual^.thetype in [GDK_VISUAL_GRAYSCALE,
+                           GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR])
+  then begin
+    // has palette
     // ToDo
-    Desc^.PaletteColorCount:=0;
-  end else
-    Desc^.PaletteColorCount:=0;
-  // BitOrder
-  Desc^.BitOrder:=riboBitsInOrder;
-  // ByteOrder
-  if Visual^.byte_order=GDK_MSB_FIRST then
-    Desc^.ByteOrder:=riboMSBFirst
+    ADesc.PaletteColorCount:=0;
+  end;
+                           
+  // Depth
+  if IsBitmap
+  then ADesc.Depth := 1
+  else ADesc.Depth := Visual^.Depth;
+
+  ADesc.Width := cardinal(Width);
+  ADesc.Height := cardinal(Height);
+  ADesc.BitOrder := riboBitsInOrder;
+  
+  if IsBitmap or (Visual^.byte_order = GDK_MSB_FIRST)
+  then ADesc.ByteOrder := riboMSBFirst
+  else ADesc.ByteOrder := riboLSBFirst;
+  
+  ADesc.LineOrder := riloTopToBottom;
+
+  case ADesc.Depth of
+    0..8:   ADesc.BitsPerPixel := ADesc.Depth;
+    9..16:  ADesc.BitsPerPixel := 16;
+    17..32: ADesc.BitsPerPixel := 32;
   else
-    Desc^.ByteOrder:=riboLSBFirst;
-  // LineOrder
-  Desc^.LineOrder:=riloTopToBottom;
-  // ColorCount
-  Desc^.ColorCount:=0;
-  // BitsPerPixel
-  case Desc^.Depth of                       //TODO MWE: Isn't this Visual^.bits_per_rgb
-  0..8:   Desc^.BitsPerPixel:=Desc^.Depth;
-  9..16:  Desc^.BitsPerPixel:=16;
-  17..32: Desc^.BitsPerPixel:=32;
-  else    Desc^.BitsPerPixel:=64;
+    ADesc.BitsPerPixel := 64;
   end;
 
-  // LineEnd
-  Image := gdk_image_new(GDK_IMAGE_NORMAL, Visual, 1, 1);
-  if Image = nil
+  if IsBitmap
   then begin
-    DebugLn('TGtkWidgetSet.GetWindowRawImageDescription testimage creation failed ');
-    Exit;
-  end;
-  try
-    // the minimum alignment we can detect is bpp
-    // that is no problem since a line consists of n x bytesperpixel bytes
-    case Image^.bpl of
-      1: Desc^.LineEnd:=rileByteBoundary;
-      2: Desc^.LineEnd:=rileWordBoundary;
-      4: Desc^.LineEnd:=rileDWordBoundary;
-      8: Desc^.LineEnd:=rileQWordBoundary;
-    else
-      DebugLn('TGtkWidgetSet.GetWindowRawImageDescription Unknown line end: %d', [Image^.bpl]);
+    ADesc.LineEnd  := rileByteBoundary;
+    ADesc.RedPrec  := 1;
+    ADesc.RedShift := 0;
+  end
+  else begin
+    // Try retrieving the lineend
+    Image := gdk_image_new(GDK_IMAGE_NORMAL, Visual, 1, 1);
+    if Image = nil
+    then begin
+      DebugLn('TGtkWidgetSet.GetWindowRawImageDescription testimage creation failed ');
       Exit;
     end;
-  finally
-    gdk_image_destroy(Image);
-    Image := nil;
-  end;
+    try
+      // the minimum alignment we can detect is bpp
+      // that is no problem since a line consists of n x bytesperpixel bytes
+      case Image^.bpl of
+        1: ADesc.LineEnd := rileByteBoundary;
+        2: ADesc.LineEnd := rileWordBoundary;
+        4: ADesc.LineEnd := rileDWordBoundary;
+        8: ADesc.LineEnd := rileQWordBoundary;
+      else
+        DebugLn('TGtkWidgetSet.GetWindowRawImageDescription Unknown line end: %d', [Image^.bpl]);
+        Exit;
+      end;
+    finally
+      gdk_image_destroy(Image);
+      Image := nil;
+    end;
 
-  // Precisions and Shifts
-  if IsGdkBitmap then begin
-    Desc^.RedPrec:=1;
-    Desc^.RedShift:=0;
-  end else begin
-    Desc^.RedPrec:=Visual^.red_prec;
-    Desc^.RedShift:=Visual^.red_shift;
-    Desc^.GreenPrec:=Visual^.green_prec;
-    Desc^.GreenShift:=Visual^.green_shift;
-    Desc^.BluePrec:=Visual^.blue_prec;
-    Desc^.BlueShift:=Visual^.blue_shift;
-    Desc^.AlphaSeparate:=true;
-    Desc^.AlphaPrec:=1;
-    Desc^.AlphaShift:=0;
+    ADesc.RedPrec := Visual^.red_prec;
+    ADesc.RedShift := Visual^.red_shift;
+    ADesc.GreenPrec := Visual^.green_prec;
+    ADesc.GreenShift := Visual^.green_shift;
+    ADesc.BluePrec := Visual^.blue_prec;
+    ADesc.BlueShift := Visual^.blue_shift;
+
+    ADesc.MaskBitsPerPixel := 1;
+    ADesc.MaskShift := 0;
+    ADesc.MaskLineEnd := rileByteBoundary;
+    ADesc.MaskBitOrder := riboBitsInOrder;
+    
+    if ACustomAlpha and (ADesc.Format = ricfRGBA) and (ADesc.Depth = 24)
+    then begin
+      // return the desciption for a pixbuf
+
+      ADesc.Depth := 32;
+
+      // try to find out where we kan place the alpha channel
+      if  (Visual^.red_shift >= 8)
+      and (Visual^.green_shift >= 8)
+      and (Visual^.blue_shift >= 8)
+      then begin
+        // there is room at the lsb side
+        ADesc.AlphaPrec := 8;
+        ADesc.AlphaShift := 0;
+      end
+      else if (Visual^.red_shift < 24)
+          and (Visual^.green_shift < 24)
+          and (Visual^.blue_shift < 24)
+      then begin
+        // there is room at the msb side
+        ADesc.AlphaPrec := 8;
+        ADesc.AlphaShift := 24;
+      end;
+    end;
   end;
-  // AlphaBitsPerPixel and AlphaLineEnd
-  Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
-  Desc^.AlphaLineEnd:=rileByteBoundary;// gdk_bitmap_create_from_data in CreateBitmapFromRawImage expects rileByteBoundary
-  Desc^.AlphaBitOrder:=riboBitsInOrder;
-  Desc^.AlphaByteOrder:=riboLSBFirst;
 
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
+  //DebugLn('TGtkWidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
   {$ENDIF}
 
-  Result:=true;
+  Result := True;
 end;
 
-function TGtkWidgetSet.GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
-  MaskBitmap: PGdkBitmap; const SrcRect: TRect;
-  out NewRawImage: TRawImage): boolean;
+function TGtkWidgetSet.RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; const ARect: TRect): boolean;
 var
-  ARect: TRect;
-  MaxRect: TRect;
-  SourceRect: TRect;
-  AnImage: PGdkImage;
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  R: TRect;
+  Image: PGdkImage;
 begin
-  Result:=false;
-  FillChar(NewRawImage,SizeOf(NewRawImage),0);
-  if GdkWindow=nil then
-    RaiseGDBException('TGtkWidgetSet.GetRawImageFromGdkWindow');
+  Result := False;
+  if ADrawable = nil then
+    RaiseGDBException('TGtkWidgetSet.RawImage_FromDrawable');
+    
+  ARawImage.Init;
 
   // get raw image description
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow Get Desc GdkWindow=',DbgS(GdkWindow));
+  //DebugLn('TGtkWidgetSet.RawImage_FromDrawable: Get Desc GdkWindow=',DbgS(GdkWindow));
   {$ENDIF}
-  if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
-  begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow GetWindowRawImageDescription failed ');
-    exit;
+  if not RawImage_DescriptionFromDrawable(ADesc, ADrawable, AAlpha <> nil)
+  then begin
+    DebugLn('WARNING: TGtkWidgetSet.RawImage_FromDrawable: RawImage_DescriptionFromDrawable failed ');
+    Exit;
   end;
-  //DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow GdkWindow is ... ',RawImageDescriptionAsString(@NewRawImage.Description));
 
   // get intersection
-  ARect:=SrcRect;
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow Intersect ARect=',
+  DebugLn('TGtkWidgetSet.RawImage_FromDrawable: Intersect ARect=',
     dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
-    ' DevW=',dbgs(NewRawImage.Description.Width),' DevH=',dbgs(NewRawImage.Description.Height));
+    ' DevW=',dbgs(ADesc.Width),' DevH=',dbgs(ADesc.Height));
   {$ENDIF}
-  MaxRect:=Rect(0,0,NewRawImage.Description.Width,
-                    NewRawImage.Description.Height);
-  SourceRect:=ARect;
-  IntersectRect(SourceRect,ARect,MaxRect);
-  NewRawImage.Description.Width:=SourceRect.Right-SourceRect.Left;
-  NewRawImage.Description.Height:=SourceRect.Bottom-SourceRect.Top;
+
+  R := ARect;
+  IntersectRect(R, ARect, Rect(0, 0, ADesc.Width, ADesc.Height));
+  ADesc.Width := R.Right - R.Left;
+  ADesc.Height := R.Bottom - R.Top;
+  
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get image ',
-    dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),
-    ' GDKWindow=',DbgS(GDkWindow));
+  DebugLn('TGtkWidgetSet.RawImage_FromDrawable get image ',
+    dbgs(R.Left),',',dbgs(R.Top),',',dbgs(R.Right),',',dbgs(R.Bottom),
+    ' GDKWindow=',DbgS(ADrawable));
   {$ENDIF}
-  if (NewRawImage.Description.Width<=0) or (NewRawImage.Description.Height<=0)
+  if (ADesc.Width <= 0) or (ADesc.Height <= 0)
   then begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow Intersection empty');
+    //DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow Intersection empty');
     exit;
   end;
 
-  if NewRawImage.Description.Depth=1 then begin
-    RaiseGDBException('TGtkWidgetSet.GetRawImageFromGdkWindow Depth=1 invalid');
+  Image := gdk_image_get(ADrawable, R.Left, R.Top, ADesc.Width, ADesc.Height);
+  if Image = nil
+  then begin
+    DebugLn('WARNING: TGtkWidgetSet.RawImage_FromDrawable: gdk_image_get failed');
     exit;
   end;
 
-  // get gdk_image
-  AnImage:=gdk_image_get(GDKWindow,SourceRect.Left,SourceRect.Top,
-                         NewRawImage.Description.Width,
-                         NewRawImage.Description.Height);
-  if AnImage=nil then begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow gdk_image_get failed');
-    exit;
-  end;
   try
+    {$ifdef RawimageConsistencyCheks}
     // consistency checks
-    if NewRawImage.Description.Depth<>AnImage^.Depth then
-      RaiseGDBException('NewRawImage.Description.Depth<>AnImage^.Depth '+IntToStr(NewRawImage.Description.Depth)+'<>'+IntToStr(AnImage^.Depth));
-    //debugln('TGtkWidgetSet.GetRawImageFromGdkWindow  NewRawImage.Description.BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' AnImage^.bpp=',dbgs(AnImage^.bpp),' GetPGdkImageBitsPerPixel(AnImage)=',dbgs(GetPGdkImageBitsPerPixel(AnImage)));
-    if NewRawImage.Description.BitsPerPixel<>GetPGdkImageBitsPerPixel(AnImage) then
+    if Description.Depth <> Image^.Depth then
+      RaiseGDBException('ARawImage.Description.Depth<>Image^.Depth '+IntToStr(ADesc.Depth)+'<>'+IntToStr(Image^.Depth));
+    if Description.BitsPerPixel <> GetPGdkImageBitsPerPixel(Image) then
       RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
+    {$endif}
 
-    NewRawImage.DataSize:=AnImage^.bpl * AnImage^.Height;
+    ARawImage.DataSize := PtrUInt(Image^.bpl) * Image^.Height;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),
-      ' BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
+    DebugLn('TGtkWidgetSet.RawImage_FromDrawable: G Width=',dbgs(Image^.Width),' Height=',dbgs(Image^.Height),
+      ' BitsPerPixel=',dbgs(ADesc.BitsPerPixel),' bpl=',dbgs(Image^.bpl));
     {$ENDIF}
-    if NewRawImage.DataSize<>PtrUInt(AnImage^.bpl) * PtrUInt(AnImage^.Height)
-    then
-      RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
     // copy data
-    NewRawImage.Description.Width:=AnImage^.Width;
-    NewRawImage.Description.Height:=AnImage^.Height;
-
-    { i:=0;
-    for y:=0 to AnImage^.Height-1 do begin
-      for x:=0 to AnImage^.Width-1 do begin
-        AColor:=gdk_image_get_pixel(AnImage,x,y);
-        pGuint(NewRawImage.Data)[i]:=AColor;
-        if (y=5) then DbgOut(' ',DbgS(AColor),8),'@',DbgS(Cardinal(@pGuint(NewRawImage.Data)[i]));
-        inc(i);
-      end;
-    end;
-    DebugLn('');}
-    ReAllocMem(NewRawImage.Data,NewRawImage.DataSize);
-    if NewRawImage.DataSize>0 then
-      System.Move(AnImage^.Mem^,NewRawImage.Data^,NewRawImage.DataSize);
+    ADesc.Width := Image^.Width;
+    ADesc.Height := Image^.Height;
+    ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+    if ARawImage.DataSize > 0 then
+      System.Move(Image^.Mem^, ARawImage.Data^, ARawImage.DataSize);
 
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow H ',
-      ' Width=',dbgs(NewRawImage.Description.Width),
-      ' Height=',dbgs(NewRawImage.Description.Height),
-      ' Depth=',dbgs(NewRawImage.Description.Depth),
-      ' DataSize=',dbgs(NewRawImage.DataSize));
+    DebugLn('TGtkWidgetSet.RawImage_FromDrawable: H ',
+      ' Width=',dbgs(ADesc.Width),
+      ' Height=',dbgs(ADesc.Height),
+      ' Depth=',dbgs(ADesc.Depth),
+      ' DataSize=',dbgs(ARawImage.DataSize));
     {$ENDIF}
   finally
-    gdk_image_destroy(AnImage);
+    gdk_image_destroy(Image);
+  end;
+  Result := true;
+
+  if AAlpha <> nil
+  then Result := RawImage_SetAlpha(ARawImage, AAlpha, R);
+end;
+
+function TGTKWidgetSet.RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; const ARect: TRect): boolean;
+// ARect must have the same dimension as the rawimage
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+
+  procedure SetAlpha_32_1(AImage: PGdkImage; AWidth, AHeight: Cardinal);
+  var
+    SrcPtr, DstPtr, SrcLinePtr, DstLinePtr: PByte;
+    DstPtr32: PDWord absolute DstPtr;
+    SrcBytesPerLine: Integer;
+    DstBytesPerLine: Integer;
+    SrcMask: Byte;
+    DstMask: DWord;
+    DstSet: DWord;
+    X, Y: Cardinal;
+  begin
+    SrcLinePtr := AImage^.mem;
+    SrcBytesPerLine := AImage^.bpl;
+    DstLinePtr := ARawImage.Data;
+    DstBytesPerLine := GetBytesPerLine(AWidth, ADesc.BitsPerPixel, ADesc.LineEnd);
+
+    DstMask := not (((1 shl ADesc.AlphaPrec) - 1) shl ADesc.AlphaShift);
+    DstSet  := not DstMask;
+
+    for Y := 0 to AHeight - 1 do
+    begin
+      SrcMask := 1;
+      SrcPtr := SrcLinePtr;
+      DstPtr := DstLinePtr;
+      for x := 0 to AWidth - 1 do
+      begin
+        if SrcPtr^ and SrcMask = 0
+        then DstPtr32^ := DstPtr32^ and DstMask
+        else DstPtr32^ := (DstPtr32^ and DstMask) or DstSet;
+        Inc(DstPtr32);
+        SrcMask := SrcMask shl 1;
+        if SrcMask = 0
+        then begin
+          SrcMask := 1;
+          Inc(SrcPtr);
+        end;
+      end;
+      Inc(SrcLinePtr, SrcBytesPerLine);
+      Inc(DstLinePtr, DstBytesPerLine);
+    end;
   end;
 
-  if MaskBitmap<>nil then begin
-    // get mask
-    {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get mask ',dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),' MaskBitmap=',DbgS(MaskBitmap));
-    {$ENDIF}
-    if not GetRawImageMaskFromGdkBitmap(MaskBitmap,SourceRect,NewRawImage) then
-      exit;
+  procedure SetAlpha_32_8(AImage: PGdkImage; AWidth, AHeight: Cardinal);
+  var
+    SrcPtr, DstPtr, SrcLinePtr, DstLinePtr: PByte;
+    DstPtr32: PDWord absolute DstPtr;
+    SrcBytesPerLine: Integer;
+    DstBytesPerLine: Integer;
+    DstMask: DWord;
+    DstShift: Byte;
+    X, Y: Cardinal;
+  begin
+    SrcLinePtr := AImage^.mem;
+    SrcBytesPerLine := AImage^.bpl;
+    DstLinePtr := ARawImage.Data;
+    DstBytesPerLine := GetBytesPerLine(AWidth, ADesc.BitsPerPixel, ADesc.LineEnd);
+
+    DstMask := not (((1 shl ADesc.AlphaPrec) - 1) shl ADesc.AlphaShift);
+    DstShift := ADesc.AlphaShift;
+
+    for Y := 0 to AHeight - 1 do
+    begin
+      SrcPtr := SrcLinePtr;
+      DstPtr := DstLinePtr;
+      for x := 0 to AWidth - 1 do
+      begin
+        DstPtr32^ := (DstPtr32^ and DstMask) or (Cardinal(SrcPtr^) shl DstShift);
+        Inc(DstPtr32);
+        Inc(SrcPtr);
+      end;
+      Inc(SrcLinePtr, SrcBytesPerLine);
+      Inc(DstLinePtr, DstBytesPerLine);
+    end;
+  end;
+  
+var
+  Width, Height, H, W, D: cardinal;
+  Image: PGdkImage;
+  BytesPerLine: Integer;
+  SrcPtr, DstPtr: PByte;
+  Mask: QWord;
+begin
+  Result := False;
+
+  if ARawImage.Data = nil
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_SetAlpha RawImage.Data = nil');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha RawImage.Data = nil');
+    {$endif}
+    Exit;
+  end;
+
+  if ADesc.AlphaPrec = 0
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_SetAlpha RawImage.Description.AlphaPrec = 0');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha No alpha channel defined');
+    {$endif}
+    Exit;
+  end;
+
+  if AAlpha = nil
+  then begin
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha Alpha = nil');
+    Exit;
+  end;
+  
+  {$ifdef gtk1}
+  gdk_window_get_geometry(AAlpha, nil, nil, @W, @H, @D);
+  {$else}
+  gdk_drawable_get_size(AAlpha, @W, @H);
+  D := gdk_drawable_get_depth(AAlpha);
+  {$endif}
+  if (D <> 1) and (D <> 8)
+  then begin
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha: Only a Depth of 1 or 8 is supported. (depth=%d)', [D]);
+    Exit;
+  end;
+  
+  if (W < ARect.Right) or (H < ARect.Bottom)
+  then begin
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha: Rect(%d,%d %d,%d) outside alpha pixmap(0,0 %d,%d)', [ARect.Left, ARect.Top, ARect.Right, ARect.Bottom, W, H]);
+    Exit;
+  end;
+
+  Width := ARect.Right - ARect.Left;
+  Height := ARect.Bottom - ARect.Top;
+
+  if Width <> ADesc.Width
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_SetAlpha: Width <> RawImage.Description.Width');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha: Width(=%d) <> RawImage.Description.Width(=%d)', [Width, ADesc.Width]);
+    {$endif}
+    Exit;
+  end;
+
+  if Height <> ADesc.Height
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_SetAlpha: Height <> RawImage.Description.Height');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha: Height(=%d) <> RawImage.Description.Height(=%d)', [Height, ADesc.Height]);
+    {$endif}
+    Exit;
+  end;
+
+  // get gdk_image from gdkbitmap
+  Image := gdk_image_get(AAlpha, ARect.Left, ARect.Top, Width, Height);
+  if Image = nil
+  then begin
+    DebugLn('WARNING: TGtkWidgetSet.RawImage_SetAlpha: gdk_image_get failed');
+    Exit;
+  end;
+  
+  try
+    case ADesc.BitsPerPixel of
+      32: begin
+        if D = 1
+        then SetAlpha_32_1(Image, Width, Height)
+        else SetAlpha_32_8(Image, Width, Height);
+      end;
+    else
+      DebugLn('WARNING: TGtkWidgetSet.RawImage_SetAlpha: RawImage.Description.BitsPerPixel=%d not supported', [ADesc.BitsPerPixel]);
+      Exit;
+    end;
+    
+  finally
+    gdk_image_destroy(Image);
   end;
 
   Result:=true;
 end;
 
-function TGTKWidgetSet.GetRawImageMaskFromGdkBitmap(MaskBitmap: PGdkBitmap;
-  const SrcRect: TRect; var RawImage: TRawImage): boolean;
-// SrcRect must ly completely in the MaskBitmap
+function TGTKWidgetSet.RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; const ARect: TRect): boolean;
+// ARect must have the same dimension as the rawimage
 var
-  Width, Height: cardinal;
-  AnImage: PGdkImage;
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  Width, Height, H: cardinal;
+  Image: PGdkImage;
   BytesPerLine: Integer;
+  SrcPtr, DstPtr: PByte;
+  R: TRect;
 begin
-  Result:=false;
+  Result := False;
+  
+  if ARawImage.Mask <> nil
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_AddMask RawImage.Mask <> nil');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_AddMask RawImage.Mask <> nil');
+    {$endif}
+    Exit;
+  end;
+  
+  if AMask = nil
+  then begin
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_AddMask AMask = nil');
+    Exit;
+  end;
 
-  Width:=SrcRect.Right-SrcRect.Left;
-  Height:=SrcRect.Bottom-SrcRect.Top;
+  R := ARect;
+  Width := Min(ADesc.Width,  ARect.Right - ARect.Left);
+  Height := Min(ADesc.Height, ARect.Bottom - ARect.Top);
+  R.Right := R.Left + Width;
+  R.Bottom := R.Top + Height;
 
-  // check consistency
-  if not RawImage.Description.AlphaSeparate then
-    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Description.AlphaSeparate=false');
-  if (Width<>RawImage.Description.Width) then
-    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Width<>RawImage.Description.Width');
-  if (Height<>RawImage.Description.Height) then
-    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Height<>RawImage.Description.Height');
-  if RawImage.Mask<>nil then
-    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Mask<>nil');
+  if Width <> ADesc.Width
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_AddMask: Width <> RawImage.Description.Width');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_AddMask: Width(=%d) <> RawImage.Description.Width(=%d)', [Width, ADesc.Width]);
+    {$endif}
+    Exit;
+  end;
+
+  if Height <> ADesc.Height
+  then begin
+    {$ifdef RawimageConsistencyChecks}
+    RaiseGDBException('TGTKWidgetSet.RawImage_AddMask: Height <> RawImage.Description.Height');
+    {$else}
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_AddMask: Height(=%d) <> RawImage.Description.Height(=%d)', [Height, ADesc.Height]);
+    {$endif}
+    Exit;
+  end;
 
   // get gdk_image from gdkbitmap
-  AnImage:=gdk_image_get(MaskBitmap,SrcRect.Left,SrcRect.Top,Width,Height);
-  if AnImage=nil then begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow gdk_image_get failed');
-    exit;
+  Image := gdk_image_get(AMask, ARect.Left, ARect.Top, Width, Height);
+  if Image = nil
+  then begin
+    DebugLn('WARNING: TGtkWidgetSet.RawImage_AddMask: gdk_image_get failed');
+    Exit;
   end;
+  
   try
     {$IFDEF VerboseRawImage}
-    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),
-      ' theType=',dbgs({$IFDEF Gtk1}AnImage^.thetype{$ELSE}ord(AnImage^._type){$ENDIF}),
-      ' depth=',dbgs(AnImage^.depth),' AnImage^.bpp=',dbgs(AnImage^.bpp));
-    DebugLn('RawImage=',RawImageDescriptionAsString(@RawImage));
+    DebugLn('TGtkWidgetSet.RawImage_AddMask: A BytesPerLine=',dbgs(Image^.bpl),
+      ' theType=',dbgs({$IFDEF Gtk1}Image^.thetype{$ELSE}ord(Image^._type){$ENDIF}),
+      ' depth=',dbgs(Image^.depth),' AnImage^.bpp=',dbgs(Image^.bpp));
+    DebugLn('RawImage=', RawImageDescription_AsString(ARawImage.Description));
     {$ENDIF}
 
     // See also GetWindowRawImageDescription
-    RawImage.Description.AlphaBitsPerPixel:=GetPGdkImageBitsPerPixel(AnImage);
-    RawImage.Description.AlphaLineEnd:=rileByteBoundary;// gdk_bitmap_create_from_data expects rileByteBoundary
-    BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
-                   RawImage.Description.AlphaBitsPerPixel,
-                   RawImage.Description.AlphaLineEnd);
-    if BytesPerLine<>AnImage^.bpl then begin
-      //DebugLn(['TGTKWidgetSet.GetRawImageMaskFromGdkBitmap WRONG: Width=',RawImage.Description.Width,' AlphaBitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' BytesPerLine=',BytesPerLine,' AnImage^.bpl=',AnImage^.bpl,' AlphaLineEnd=',RawImageLineEndNames[RawImage.Description.AlphaLineEnd]]);
-      RawImage.Description.AlphaLineEnd:=rileDWordBoundary;
-      BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
-                     RawImage.Description.AlphaBitsPerPixel,
-                     RawImage.Description.AlphaLineEnd);
-    end;
-    //DebugLn(['TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Width=',RawImage.Description.Width,' AlphaBitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' BytesPerLine=',BytesPerLine,' AnImage^.bpl=',AnImage^.bpl,' AlphaLineEnd=',RawImageLineEndNames[RawImage.Description.AlphaLineEnd]]);
+    ADesc.MaskBitsPerPixel := GetGdkImageBitsPerPixel(Image);
+    ADesc.MaskLineEnd := rileByteBoundary;// gdk_bitmap_create_from_data expects rileByteBoundary
+    BytesPerLine := GetBytesPerLine(ADesc.Width, ADesc.MaskBitsPerPixel, ADesc.MaskLineEnd);
+    ARawImage.MaskSize := PtrUInt(BytesPerLine) * Height;
 
-    // consistency checks
-    if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then
-      RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth '+IntToStr(RawImage.Description.AlphaBitsPerPixel)+'<>'+IntToStr(AnImage^.Depth));
-    if BytesPerLine<>AnImage^.bpl then
-      RaiseGDBException('AnImage^.bpl<>BytesPerLine '+IntToStr(AnImage^.bpl)+'<>'+IntToStr(BytesPerLine));
-    if cardinal(AnImage^.Height)<>RawImage.Description.Height then
-      RaiseGDBException('AnImage^.Height<>RawImage.Description.Height '+IntToStr(AnImage^.Height)+'<>'+IntToStr(RawImage.Description.Height));
-    if cardinal(AnImage^.Width)<>RawImage.Description.Width then
-      RaiseGDBException('AnImage^.Width<>RawImage.Description.Width '+IntToStr(AnImage^.Width)+'<>'+IntToStr(RawImage.Description.Width));
-
-    RawImage.MaskSize:=AnImage^.bpl * AnImage^.Height;
-    {$IFDEF VerboseRawImage}
-    DebugLn(['TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' bpl=',AnImage^.bpl,' MaskSize=',RawImage.MaskSize]);
-    {$ENDIF}
-    if RawImage.MaskSize<>PtrUInt(AnImage^.bpl) * PtrUInt(AnImage^.Height)
-    then
-      RaiseGDBException('RawImage.MaskSize<>AnImage^.bpl*AnImage^.Height');
-
-    // copy data
-    ReAllocMem(RawImage.Mask,RawImage.MaskSize);
-    if RawImage.MaskSize>0 then
-      System.Move(AnImage^.Mem^,RawImage.Mask^,RawImage.MaskSize);
-      
-    // gdk_bitmap_create_from_data expects rileByteBoundary
-    if RawImage.Description.AlphaLineEnd<>rileByteBoundary then begin
-      {DebugLn(['TGTKWidgetSet.GetRawImageMaskFromGdkBitmap BEFORE ReAlignRawImageLines']);
-      debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
-                          GetBytesPerLine(RawImage.Description.Width,
-                                         RawImage.Description.AlphaBitsPerPixel,
-                                         RawImage.Description.AlphaLineEnd)));}
-      // re align data
-      ReAlignRawImageLines(RawImage.Mask,RawImage.MaskSize,
-        RawImage.Description.Width,RawImage.Description.Height,
-        RawImage.Description.AlphaBitsPerPixel,
-        RawImage.Description.AlphaLineEnd,rileByteBoundary);
+    ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
+    if ARawImage.MaskSize > 0
+    then begin
+      // copy data
+      if BytesPerLine = Image^.bpl
+      then begin
+        // we can copy all in one go
+        System.Move(Image^.Mem^, ARawImage.Mask^, ARawImage.MaskSize);
+      end
+      else begin
+        // copy line by line
+        SrcPtr := Image^.Mem;
+        DstPtr := ARawImage.Mask;
+        H := Height;
+        while H > 0 do
+        begin
+          System.Move(SrcPtr^, DstPtr^, BytesPerLine);
+          Inc(SrcPtr, Image^.bpl);
+          Inc(DstPtr, BytesPerLine);
+          Dec(H);
+        end;
+      end;
     end;
 
-    {debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
-                        GetBytesPerLine(RawImage.Description.Width,
-                                         RawImage.Description.AlphaBitsPerPixel,
-                                         RawImage.Description.AlphaLineEnd)));}
 
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageMaskFromGdkBitmap H ',
-      ' Width=',dbgs(RawImage.Description.Width),
-      ' Height=',dbgs(RawImage.Description.Height),
-      ' AlphaBitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),
-      ' MaskSize=',dbgs(RawImage.MaskSize));
+    {DebugLn('TGtkWidgetSet.GetRawImageMaskFromGdkBitmap H ',
+      ' Width=',dbgs(ARawImage.Description.Width),
+      ' Height=',dbgs(ARawImage.Description.Height),
+      ' AlphaBitsPerPixel=',dbgs(ARawImage.Description.AlphaBitsPerPixel),
+      ' MaskSize=',dbgs(ARawImage.MaskSize));}
     {$ENDIF}
   finally
-    gdk_image_destroy(AnImage);
+    gdk_image_destroy(Image);
   end;
 
   Result:=true;
@@ -2502,29 +2690,19 @@ function TGtkWidgetSet.StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer
   Mask: HBITMAP; XMask, YMask: Integer;
   Rop: Cardinal): Boolean;
 var
-  fGC: PGDKGC;
-  SrcDevContext, DestDevContext: TDeviceContext;
-  SrcGDIBitmap: PGdiObject;
-  TempPixmap, TempMaskPixmap: PGdkPixmap;
-  NewClipMask: PGdkPixmap;
+  SrcDevContext: TDeviceContext absolute SrcDC;
+  DstDevContext: TDeviceContext absolute DestDC;
+  TempPixmap: PGdkPixmap;
+  TempMaskBitmap: PGdkBitmap;
   SizeChange, ROpIsSpecial: Boolean;
-  CopyingWholeSrc: Boolean;
-  SrcWholeWidth, SrcWholeHeight: integer;
-  DestWholeWidth, DestWholeHeight: integer;
 
-  Procedure ResetClipping(DestGC : PGDKGC);
-  begin
-    ResetGCClipping(DestDC,DestGC);
-    if (NewClipMask <> nil) then begin
-      gdk_bitmap_unref(NewClipMask);
-      NewClipMask:=nil;
-    end;
-  end;
-
-  Function ScaleAndROP(DestGC: PGDKGC;
-    Src: PGDKDrawable; SrcPixmap, SrcMaskPixmap: PGdkPixmap): Boolean;
+  function ScaleAndROP(DestGC: PGDKGC;
+    Src: PGDKDrawable; SrcPixmap: PGdkPixmap; SrcMaskBitmap: PGdkBitmap): Boolean;
   var
     Depth: Integer;
+    ScaleMethod: TGdkInterpType;
+    ShrinkWidth, ShrinkHeight: Boolean;
+    GC: PGDKGC;
   begin
     {$IFDEF VerboseStretchCopyArea}
 
@@ -2540,166 +2718,175 @@ var
       exit;
     end;
 
-    // copy the destination GC values into the temporary GC (fGC)
-    GDK_GC_COPY(fGC, DestGC);
+    // create a temporary graphic context for the scale and raster operations
+    // copy the destination GC values into the temporary GC
+    GC := gdk_gc_new(DstDevContext.Drawable);
+    gdk_gc_copy(GC, DestGC);
 
-    // clear any previous clipping in the temporary GC (fGC)
-    gdk_gc_set_clip_region(fGC,nil);
-    gdk_gc_set_clip_rectangle(fGC,nil);
+    // clear any previous clipping in the temporary GC
+    gdk_gc_set_clip_region(GC, nil);
+    gdk_gc_set_clip_rectangle(GC, nil);
 
-    if CopyingWholeSrc then ;
-
-    if SizeChange then begin
+    if SizeChange
+    then begin
       {$IFDEF VerboseStretchCopyArea}
       Depth:=gdk_visual_get_system^.Depth;
-      DebugLn('ScaleAndROP Scaling buffer: '+dbgs(Width),' x '+dbgs(Height),' x '+dbgs(Depth),' CopyingWholeSrc='+dbgs(CopyingWholeSrc));
+      DebugLn('ScaleAndROP Scaling buffer: '+dbgs(Width),' x '+dbgs(Height),' x '+dbgs(Depth));
       {$ENDIF}
+
+      // calculate ScaleMethod
+      {$note use SetStretchBltMode(dc, mode) here}
+      //GDKPixbuf Scaling is not done in the same way as Windows
+      //but by rights ScaleMethod should really be chosen based
+      //on the destination device's internal flag
+      {GDK_INTERP_NEAREST,GDK_INTERP_TILES,
+      GDK_INTERP_BILINEAR,GDK_INTERP_HYPER);}
+
+      ShrinkWidth := Width < SrcWidth;
+      ShrinkHeight := Height < SrcHeight;
+      if ShrinkWidth and ShrinkHeight
+      then ScaleMethod := GDK_INTERP_TILES
+      else
+        if ShrinkWidth or ShrinkHeight
+        then ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
+        else ScaleMethod := GDK_INTERP_BILINEAR;
+
       // Scale the src part to a temporary pixmap with the size of the
       // destination rectangle
-      Result := ScalePixmap(fGC,
-                            SrcPixmap,XSrc,YSrc,SrcWidth,SrcHeight,
-                            GDK_ColorMap_Get_System,
-                            Width,Height,TempPixmap);
-      if not Result then begin
-        DebugLn('WARNING: ScaleAndROP ScalePixmap for pixmap failed');
-        exit;
-      end;
-      // same for mask
-      if SrcMaskPixmap<>nil then begin
-        DebugLn('WARNING: ScaleAndROP  Scaling mask not yet implemented');
-        {ColorMap:=gdk_colormap_new(gdk_visual_get_best_with_depth(1),2);
-        Result := ScalePixmap(DestGC,
-                              SrcMaskPixmap,XSrc,YSrc,SrcWidth,SrcHeight,
-                              ColorMap,
-                              Width,Height,TempMaskPixmap);
-        gdk_colormap_unref(ColorMap);
-        if not Result then begin
-          DebugLn('WARNING: ScaleAndROP ScalePixmap for mask failed');
-          exit;
-        end;}
-      end;
 
-    end else if ROpIsSpecial then begin
-      // no scaling, but special ROp
+      Result := ScalePixmapAndMask(GC, ScaleMethod,
+                            SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight,
+                            gdk_colormap_get_system, SrcMaskBitmap,
+                            Width, Height, TempPixmap, TempMaskBitmap);
+      if not Result
+      then DebugLn('WARNING: ScaleAndROP ScalePixmap for pixmap failed');
+    end
+    else begin
+      if ROpIsSpecial
+      then begin
+        // no scaling, but special ROp
 
-      Depth:=gdk_visual_get_system^.Depth;
-      {$IFDEF VerboseStretchCopyArea}
-      DebugLn('ScaleAndROP Creating rop buffer: '+dbgs(Width),' x '+dbgs(Height),' x '+dbgs(Depth));
-      {$ENDIF}
-      TempPixmap := gdk_pixmap_new(nil,SrcWidth,SrcHeight,Depth);
-      gdk_window_copy_area(TempPixmap, fGC, 0, 0,
-         Src, XSrc, YSrc, SrcWidth, SrcHeight);
+        Depth:=gdk_visual_get_system^.Depth;
+        {$IFDEF VerboseStretchCopyArea}
+        DebugLn('ScaleAndROP Creating rop buffer: '+dbgs(Width),' x '+dbgs(Height),' x '+dbgs(Depth));
+        {$ENDIF}
+        TempPixmap := gdk_pixmap_new(nil,SrcWidth,SrcHeight,Depth);
+        gdk_window_copy_area(TempPixmap, GC, 0, 0,
+           Src, XSrc, YSrc, SrcWidth, SrcHeight);
+      end;
+      Result := True;
     end;
 
     // set raster operation in the destination GC
-    SetGCRasterOperation(DestGC,ROP);
+    if Result
+    then SetGCRasterOperation(DestGC, ROP);
 
-    Result:=true;
+    gdk_gc_unref(GC);
   end;
 
-  Procedure ROPFillBuffer(DC : hDC);
+  procedure ROPFillBuffer(DC : hDC);
   var
     OldCurrentBrush: PGdiObject;
     Brush : hBrush;
   begin
-    if TempPixmap=nil then exit;
-    if (ROp=WHITENESS) or (ROp=BLACKNESS) or (ROp=DSTINVERT) then begin
-      {$IFDEF VerboseStretchCopyArea}
-      DebugLn('ROPFillBuffer ROp='+dbgs(ROp));
-      {$ENDIF}
-      with TDeviceContext(DC) do
-      begin
-        // Temporarily hold the old brush to
-        // replace it with the given brush
-        OldCurrentBrush := CurrentBrush;
-        If ROP = WHITENESS then
-          Brush := GetStockObject(WHITE_BRUSH)
-        else
-          Brush := GetStockObject(BLACK_BRUSH);
-        CurrentBrush := PGdiObject(Brush);
-        SelectedColors := dcscCustom;
-        SelectGDKBrushProps(DC);
-        If not IsNullBrush(TDeviceContext(DC)) then
-          gdk_draw_rectangle(TempPixmap, GetGC, 1, 0, 0, Width, Height);
-          
-        // Restore current brush
-        SelectedColors := dcscCustom;
-        CurrentBrush := OldCurrentBrush;
+    if TempPixmap = nil then exit;
+
+    if not ((ROp=WHITENESS) or (ROp=BLACKNESS) or (ROp=DSTINVERT)) then Exit;
+
+    {$IFDEF VerboseStretchCopyArea}
+    DebugLn('ROPFillBuffer ROp='+dbgs(ROp));
+    {$ENDIF}
+    with TDeviceContext(DC) do
+    begin
+      // Temporarily hold the old brush to
+      // replace it with the given brush
+      OldCurrentBrush := CurrentBrush;
+      if ROP = WHITENESS
+      then
+        Brush := GetStockObject(WHITE_BRUSH)
+      else
+        Brush := GetStockObject(BLACK_BRUSH);
+      CurrentBrush := PGdiObject(Brush);
+      SelectedColors := dcscCustom;
+      SelectGDKBrushProps(DC);
+
+      if not IsNullBrush
+      then begin
+        gdk_draw_rectangle(TempPixmap, GC, 1, 0, 0, Width, Height);
       end;
+      // Restore current brush
+      SelectedColors := dcscCustom;
+      CurrentBrush := OldCurrentBrush;
     end;
   end;
 
   function SrcDevBitmapToDrawable: Boolean;
   var
-    SrcPixmap, MaskPixmap: PGdkPixmap;
+    SrcPixmap: PGdkPixmap;
+    MskBitmap: PGdkBitmap;
+    ClipMask: PGdkBitmap;
+    SrcGDIBitmap: PGdiObject;
   begin
     Result:=true;
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable Start');
     {$ENDIF}
-    SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
-    if (SrcGDIBitmap=nil)then begin
+
+    SrcGDIBitmap := SrcDevContext.CurrentBitmap;
+    if SrcGDIBitmap = nil
+    then begin
       DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil');
       exit;
     end;
-    SrcPixmap:=SrcGDIBitmap^.GDIPixmapObject;
-    if (SrcPixmap=nil)then begin
-      DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap^.GDIPixmapObject=nil');
-      exit;
-    end;
-    MaskPixmap:=nil;
-    if (Mask<>0) then
-      MaskPixmap:=PGdiObject(Mask)^.GDIBitmapMaskObject;
-    if MaskPixmap=nil then
-      MaskPixmap:=SrcGDIBitmap^.GDIBitmapMaskObject;
+
+    SrcPixmap := SrcGDIBitmap^.GDIPixmapObject.Image;
+    MskBitmap := CreateGdkMaskBitmap(HBITMAP(SrcGDIBitmap), Mask);
+    
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
       ' MaskPixmap=[',GetWindowDebugReport(MaskPixmap),']');
     {$ENDIF}
 
-    if (MaskPixmap=nil) and (not SizeChange) and (ROP=SRCCOPY)
+    if (MskBitmap = nil) and (not SizeChange) and (ROP=SRCCOPY)
     then begin
       // simply copy the area
       {$IFDEF VerboseStretchCopyArea}
       DebugLn('SrcDevBitmapToDrawable Simple copy');
       {$ENDIF}
-      gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GetGC, X, Y,
+      gdk_window_copy_area(DstDevContext.Drawable, DstDevContext.GC, X, Y,
         SrcPixmap, XSrc, YSrc, Width, Height);
 
-      exit;
+      Exit;
     end;
 
-
-    // create a temporary graphic context for the scale and raster operations
-    fGC := GDK_GC_New(DestDevContext.Drawable);
 
     // perform raster operation and scaling into Scale and fGC
-    DestDevContext.SelectedColors := dcscCustom;
-    If not ScaleAndROP(DestDevContext.GetGC, SrcDevContext.Drawable, SrcPixmap,
-      MaskPixmap)
+    DstDevContext.SelectedColors := dcscCustom;
+    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcPixmap, MskBitmap)
     then begin
       DebugLn('WARNING: SrcDevBitmapToDrawable: ScaleAndROP failed');
-      exit;
+      Exit;
     end;
+    
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('SrcDevBitmapToDrawable TempPixmap=',DbgS(TempPixmap),' TempMaskPixmap=',DbgS(TempMaskPixmap));
+    DebugLn('SrcDevBitmapToDrawable TempPixmap=',DbgS(TempPixmap),' TempMaskPixmap=',DbgS(TempMaskBitmap));
     {$ENDIF}
-    if TempPixmap<>nil then begin
-      SrcPixmap:=TempPixmap;
-      XSrc:=0;
-      YSrc:=0;
-      SrcWidth:=Width;
-      SrcHeight:=Height;
+    if TempPixmap <> nil
+    then begin
+      SrcPixmap := TempPixmap;
+      XSrc := 0;
+      YSrc := 0;
+      SrcWidth := Width;
+      SrcHeight := Height;
     end;
-    if TempMaskPixmap<>nil then begin
-      MaskPixmap:=TempMaskPixmap;
-      XMask:=0;
-      YMask:=0;
+    if TempMaskBitmap <> nil
+    then begin
+      MskBitmap := TempMaskBitmap;
+      XMask := 0;
+      YMask := 0;
     end;
 
-    GDK_GC_Unref(fGC);
-
-    Case ROP of
+    case ROP of
       WHITENESS, BLACKNESS :
         ROPFillBuffer(DestDC);
     end;
@@ -2714,20 +2901,21 @@ var
     {$ENDIF}
 
     // set clipping mask for transparency
-    MergeClipping(DestDevContext, DestDevContext.GetGC, X,Y,Width,Height,
-                  MaskPixmap,XMask,YMask,
-                  NewClipMask);
+    MergeClipping(DstDevContext, DstDevContext.GC, X, Y, Width, Height,
+                  MskBitmap, XMask, YMask, ClipMask);
 
     // draw image
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GetGC, X, Y,
+    gdk_window_copy_area(DstDevContext.Drawable, DstDevContext.GC, X, Y,
       SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight);
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+
     // unset clipping mask for transparency
-    ResetClipping(DestDevContext.GetGC);
+    ResetGCClipping(DestDC, DstDevContext.GC);
+    gdk_bitmap_unref(ClipMask);
 
     // restore raster operation to SRCCOPY
-    GDK_GC_Set_Function(DestDevContext.GetGC, GDK_Copy);
+    gdk_gc_set_function(DstDevContext.GC, GDK_Copy);
 
     Result:=True;
   end;
@@ -2792,51 +2980,51 @@ var
 
   function Unsupported: Boolean;
   begin
-    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] Destination and/or Source '
-      + 'unsupported!!');
+    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] Destination and/or Source unsupported!!');
     Result:=false;
   end;
 
   //----------
   function NoDrawableToNoDrawable: Boolean;
   begin
-    If (SrcDevContext.CurrentBitmap <> nil) and
-      (DestDevContext.CurrentBitmap <> nil)
-    then
-      case SrcDevContext.CurrentBitmap^.GDIBitmapType of
-      gbBitmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
-                gbBitmap: Result:=DrawableToDrawable;
-                gbPixmap: Result:=BitmapToPixmap;
-                end;
-      gbPixmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
-                gbBitmap: Result:=PixmapToBitmap;
-                gbPixmap: Result:=DrawableToDrawable;
-                end;
-      end
-    else
-      Result := Unsupported;
+    Result := Unsupported;
+    if SrcDevContext.CurrentBitmap = nil then Exit;
+    if DstDevContext.CurrentBitmap = nil then Exit;
+
+    case SrcDevContext.CurrentBitmap^.GDIBitmapType of
+      gbBitmap:
+        case DstDevContext.CurrentBitmap^.GDIBitmapType of
+          gbBitmap: Result:=DrawableToDrawable;
+          gbPixmap: Result:=BitmapToPixmap;
+        end;
+      gbPixmap:
+        case DstDevContext.CurrentBitmap^.GDIBitmapType of
+          gbBitmap: Result:=PixmapToBitmap;
+          gbPixmap: Result:=DrawableToDrawable;
+        end;
+    end;
   end;
 
   function NoDrawableToDrawable: Boolean;
   begin
-    If SrcDevContext.CurrentBitmap <> nil then
-      case TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType of
+    Result := Unsupported;
+    if SrcDevContext.CurrentBitmap = nil then Exit;
+    
+    case SrcDevContext.CurrentBitmap^.GDIBitmapType of
       gbBitmap: Result:=PixmapToDrawable;
       gbPixmap: Result:=PixmapToDrawable;
-      end
-    else
-      Result := Unsupported;
+    end;
   end;
 
   function DrawableToNoDrawable: Boolean;
   begin
-    If DestDevContext.CurrentBitmap <> nil then
-      case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+    Result := Unsupported;
+    if DstDevContext.CurrentBitmap = nil then Exit;
+    
+    case DstDevContext.CurrentBitmap^.GDIBitmapType of
       gbBitmap: Result:=Unsupported;
       gbPixmap: Result:=Unsupported;
-      end
-    else
-      Result := Unsupported;
+    end;
   end;
 
   procedure RaiseSrcDrawableNil;
@@ -2847,7 +3035,7 @@ var
 
   procedure RaiseDestDrawableNil;
   begin
-    RaiseGDBException(Format('TGtkWidgetSet.StretchCopyArea DestDC=%p Drawable=nil', [Pointer(DestDevContext)]));
+    RaiseGDBException(Format('TGtkWidgetSet.StretchCopyArea DestDC=%p Drawable=nil', [Pointer(DstDevContext)]));
   end;
 
 var
@@ -2856,33 +3044,37 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
   SrcDCOrigin: TPoint;
-  DestDCOrigin: TPoint;
+  DstDCOrigin: TPoint;
+  SrcWholeWidth, SrcWholeHeight: integer;
+  DstWholeWidth, DstWholeHeight: integer;
 begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('StretchCopyArea Start '+dbgs(Result));
   {$ENDIF}
-  if not Result then exit;
-  if (Width=0) or (Height=0) then exit;
-  if (SrcWidth=0) or (SrcHeight=0) then exit;
-  SizeChange:=(Width<>SrcWidth) or (Height<>SrcHeight);
-  ROpIsSpecial:=(ROp<>SRCCOPY);
-  SrcDevContext:=TDeviceContext(SrcDC);
-  DestDevContext:=TDeviceContext(DestDC);
+  if not Result then Exit;
+  if (Width = 0) or ( Height = 0) then exit;
+  if (SrcWidth = 0) or (SrcHeight = 0) then exit;
 
-  with SrcDevContext do begin
-    SrcDCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
-    Inc(XSrc,SrcDCOrigin.X);
-    Inc(YSrc,SrcDCOrigin.Y);
-    if Drawable=nil then RaiseSrcDrawableNil;
-    gdk_window_get_size(PGdkWindow(Drawable),@SrcWholeWidth,@SrcWholeHeight);
+  SizeChange := (Width <> SrcWidth) or (Height <> SrcHeight);
+  ROpIsSpecial := (ROp <> SRCCOPY);
+
+  SrcDCOrigin := GetDCOffset(SrcDevContext);
+  with SrcDevContext do
+  begin
+    Inc(XSrc, SrcDCOrigin.X);
+    Inc(YSrc, SrcDCOrigin.Y);
+    if Drawable = nil then RaiseSrcDrawableNil;
+    gdk_window_get_size(PGdkWindow(Drawable), @SrcWholeWidth, @SrcWholeHeight);
   end;
-  with DestDevContext do begin
-    DestDCOrigin:=GetDCOffset(TDeviceContext(DestDC));
-    Inc(X,DestDCOrigin.X);
-    Inc(Y,DestDCOrigin.Y);
-    if Drawable=nil then RaiseDestDrawableNil;
-    gdk_window_get_size(PGdkWindow(Drawable),@DestWholeWidth,@DestWholeHeight);
+
+  DstDCOrigin := GetDCOffset(DstDevContext);
+  with DstDevContext do
+  begin
+    Inc(X, DstDCOrigin.X);
+    Inc(Y, DstDCOrigin.Y);
+    if Drawable = nil then RaiseDestDrawableNil;
+    gdk_window_get_size(PGdkWindow(Drawable), @DstWholeWidth, @DstWholeHeight);
   end;
 
   {$IFDEF VerboseStretchCopyArea}
@@ -2898,13 +3090,15 @@ begin
     ' SrcWhole='+dbgs(SrcWholeWidth)+','+dbgs(SrcWholeHeight),
     '');
   {$ENDIF}
-
-  if (X>=DestWholeWidth) or (Y>=DestWholeHeight) then exit;
-  if (X+Width<=0) then exit;
-  if (Y+Height<=0) then exit;
-  if (XSrc>=SrcWholeWidth) or (YSrc>=SrcWholeHeight) then exit;
-  if (XSrc+SrcWidth<=0) then exit;
-  if (YSrc+SrcHeight<=0) then exit;
+  {$note use intersectrect here}
+  if X >= DstWholeWidth then Exit;
+  if Y >= DstWholeHeight then exit;
+  if X + Width <= 0 then exit;
+  if Y + Height <=0 then exit;
+  if XSrc >= SrcWholeWidth then Exit;
+  if YSrc >= SrcWholeHeight then exit;
+  if XSrc + SrcWidth <= 0 then exit;
+  if YSrc + SrcHeight <=0 then exit;
 
   // gdk does not allow copying areas, party laying out of bounds
   // -> clip
@@ -2916,11 +3110,11 @@ begin
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('StretchCopyArea Cliping Src to left NewSrcWidth='+dbgs(NewSrcWidth),' NewWidth='+dbgs(NewWidth));
     {$ENDIF}
-    if NewWidth=0 then exit;
-    inc(X,Width-NewWidth);
-    if (X>=DestWholeWidth) then exit;
+    if NewWidth = 0 then exit;
+    inc(X, Width-NewWidth);
+    if X >= DstWholeWidth then exit;
     XSrc:=0;
-    SrcWidth:=NewSrcWidth;
+    SrcWidth := NewSrcWidth;
   end;
 
   // clip src to the top
@@ -2930,11 +3124,11 @@ begin
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('StretchCopyArea Cliping Src to top NewSrcHeight='+dbgs(NewSrcHeight),' NewHeight='+dbgs(NewHeight));
     {$ENDIF}
-    if NewHeight=0 then exit;
-    inc(Y,Height-NewHeight);
-    if (Y>=DestWholeHeight) then exit;
+    if NewHeight = 0 then exit;
+    inc(Y, Height - NewHeight);
+    if Y >= DstWholeHeight then exit;
     YSrc:=0;
-    SrcHeight:=NewSrcHeight;
+    SrcHeight := NewSrcHeight;
   end;
 
   // clip src to the right
@@ -2961,66 +3155,65 @@ begin
     SrcHeight:=NewSrcHeight;
   end;
 
-  CopyingWholeSrc:=(XSrc=0) and (YSrc=0)
-                   and (SrcWholeWidth=SrcWidth) and (SrcWholeHeight=SrcHeight);
-
-
-  if Mask=0 then begin
-    XMask:=XSrc;
-    YMask:=YSrc;
+  if Mask = 0
+  then begin
+    XMask := XSrc;
+    YMask := YSrc;
   end;
 
   // mark temporary scaling/rop buffers as uninitialized
-  TempPixmap:=nil;
-  TempMaskPixmap:=nil;
+  TempPixmap := nil;
+  TempMaskBitmap := nil;
 
   {$IFDEF VerboseStretchCopyArea}
   write('TGtkWidgetSet.StretchCopyArea AFTER CLIPPING X='+dbgs(X)+' Y='+dbgs(Y)+' Width='+dbgs(Width)+' Height='+dbgs(Height),
     ' XSrc='+dbgs(XSrc),' YSrc='+dbgs(YSrc)+' SrcWidth='+dbgs(SrcWidth)+' SrcHeight='+dbgs(SrcHeight),
-    ' SrcDrawable='+DbgS(TDeviceContext(SrcDC).Drawable),
-    ' DestDrawable='+DbgS(TDeviceContext(DestDC).Drawable),
+    ' SrcDrawable='+DbgS(SrcDevContext.Drawable),
+    ' DestDrawable='+DbgS(DstDevContext.Drawable),
     ' Mask='+DbgS(Mask)+' XMask='+dbgs(XMask)+' YMask='+dbgs(YMask),
-    ' SizeChange='+dbgs(SizeChange)+' ROpIsSpecial='+dbgs(ROpIsSpecial),
-    ' CopyingWholeSrc='+dbgs(CopyingWholeSrc));
+    ' SizeChange='+dbgs(SizeChange)+' ROpIsSpecial='+dbgs(ROpIsSpecial));
   write(' ROp=');
   case ROp of
-  SRCCOPY     : DebugLn('SRCCOPY');
-  SRCPAINT    : DebugLn('SRCPAINT');
-  SRCAND      : DebugLn('SRCAND');
-  SRCINVERT   : DebugLn('SRCINVERT');
-  SRCERASE    : DebugLn('SRCERASE');
-  NOTSRCCOPY  : DebugLn('NOTSRCCOPY');
-  NOTSRCERASE : DebugLn('NOTSRCERASE');
-  MERGECOPY   : DebugLn('MERGECOPY');
-  MERGEPAINT  : DebugLn('MERGEPAINT');
-  PATCOPY     : DebugLn('PATCOPY');
-  PATPAINT    : DebugLn('PATPAINT');
-  PATINVERT   : DebugLn('PATINVERT');
-  DSTINVERT   : DebugLn('DSTINVERT');
-  BLACKNESS   : DebugLn('BLACKNESS');
-  WHITENESS   : DebugLn('WHITENESS');
+    SRCCOPY     : DebugLn('SRCCOPY');
+    SRCPAINT    : DebugLn('SRCPAINT');
+    SRCAND      : DebugLn('SRCAND');
+    SRCINVERT   : DebugLn('SRCINVERT');
+    SRCERASE    : DebugLn('SRCERASE');
+    NOTSRCCOPY  : DebugLn('NOTSRCCOPY');
+    NOTSRCERASE : DebugLn('NOTSRCERASE');
+    MERGECOPY   : DebugLn('MERGECOPY');
+    MERGEPAINT  : DebugLn('MERGEPAINT');
+    PATCOPY     : DebugLn('PATCOPY');
+    PATPAINT    : DebugLn('PATPAINT');
+    PATINVERT   : DebugLn('PATINVERT');
+    DSTINVERT   : DebugLn('DSTINVERT');
+    BLACKNESS   : DebugLn('BLACKNESS');
+    WHITENESS   : DebugLn('WHITENESS');
   else
     DebugLn('???');
   end;
   {$ENDIF}
 
-  If TDeviceContext(SrcDC).Drawable = nil then begin
-    If TDeviceContext(DestDC).Drawable = nil then
+  if SrcDevContext.Drawable = nil
+  then begin
+    if DstDevContext.Drawable = nil
+    then
       Result := NoDrawableToNoDrawable
     else
       Result := NoDrawableToDrawable;
   end
   else begin
-    If TDeviceContext(DestDC).Drawable = nil then
+    if DstDevContext.Drawable = nil
+    then
       Result := DrawableToNoDrawable
     else
       Result := DrawableToDrawable;
   end;
 
-  if TempPixmap<>nil then
-    gdk_pixmap_unref(TempPixmap);
-  if TempMaskPixmap<>nil then
-    gdk_pixmap_unref(TempMaskPixmap);
+  if TempPixmap <> nil
+  then gdk_pixmap_unref(TempPixmap);
+  if TempMaskBitmap <> nil
+  then gdk_pixmap_unref(TempMaskBitmap);
 end;
 
 {------------------------------------------------------------------------------
@@ -5249,6 +5442,7 @@ end;
        TGtkWidgetSet ShowHide
        *Note: Show or hide a widget
 ------------------------------------------------------------------------------}
+{$note TODO: move to wsclass }
 procedure TGtkWidgetSet.ShowHide(Sender : TObject);
 
   procedure RaiseWrongClass;
@@ -5345,17 +5539,19 @@ begin
         wsMinimized: gtk_window_iconify(PGtkWindow(SenderWidget));
       end;
     end;
-
     {$ENDIF}
 
-    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
+    if (ACustomForm<>nil) and (ACustomForm.Parent=nil)
+    then begin
       AWindow:=GetControlWindow(SenderWidget);
-      if (AWindow<>nil) and (ACustomForm.Icon<>nil) then begin
-        FormIconGdiObject:=PGDIObject(ACustomForm.GetIconHandle);
-        if (FormIconGdiObject<>nil) then begin
+      if (AWindow<>nil) and (ACustomForm.Icon<>nil)
+      then begin
+        FormIconGdiObject := PGDIObject(ACustomForm.GetIconHandle);
+        if FormIconGdiObject <> nil
+        then begin
           gdk_window_set_icon(AWindow, nil,
-                  FormIconGdiObject^.GDIBitmapObject,
-                  FormIconGdiObject^.GDIBitmapMaskObject);
+                  FormIconGdiObject^.GDIPixmapObject.Image,
+                  FormIconGdiObject^.GDIPixmapObject.Mask);
         end;
       end;
     end;
@@ -5485,9 +5681,9 @@ begin
 
   aDC.SelectedColors := dcscCustom;
   GDKColor:=AllocGDKColor(AColor);
-  gdk_gc_set_foreground(aDC.GetGC, @GDKColor);
+  gdk_gc_set_foreground(aDC.GC, @GDKColor);
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  gdk_draw_point(aDC.Drawable, aDC.GetGC, X, Y);
+  gdk_draw_point(aDC.Drawable, aDC.GC, X, Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 end;
 
@@ -5605,20 +5801,30 @@ end;
 
   Checks if the given GDIObject is valid
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
+function TGtkWidgetSet.IsValidGDIObject(const AGDIObj: HGDIOBJ): Boolean;
+var
+  GdiObject: PGdiObject absolute AGDIObj;
 begin
-  Result := (GDIObject<>0) and (FGDIObjects.Contains(Pointer(GDIObject)));
-  if Result then
-    with PGdiObject(GDIObject)^ do
-      case GDIType of
-        gdiBitmap : Result:=true;
-        gdiBrush  : Result := True;
-        gdiFont   : Result := GDIFontObject <> nil;// ToDo: create font on demand
-        gdiPen    : Result := True;
-        gdiRegion : Result := True;
+  Result := (AGDIObj <> 0) and FGDIObjects.Contains(GDIObject);
+  if not Result then Exit;
+  
+  {$note TODO: create objects if required}
+  case GDIObject^.GDIType of
+    gdiBitmap : begin
+      case GDIObject^.GDIBitmapType of
+        gbBitmap: Result := GDIObject^.GDIBitmapObject <> nil;
+        gbPixmap: Result := GDIObject^.GDIPixmapObject.Image <> nil;
       else
         Result := False;
       end;
+    end;
+    gdiBrush  : Result := True;
+    gdiFont   : Result := GDIObject^.GDIFontObject <> nil;// ToDo: create font on demand
+    gdiPen    : Result := True;
+    gdiRegion : Result := True;
+  else
+    Result := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5644,13 +5850,14 @@ end;
   Sets the forecolor and fill according to the brush
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SelectGDKBrushProps(DC: HDC);
+var
+  DevCon: TDeviceContext absolute DC;
 begin
-  if (TDeviceContext(DC).SelectedColors=dcscBrush)
-    or IsNullBrush(TDeviceContext(DC))
+  if (DevCon.SelectedColors=dcscBrush) or DevCon.IsNullBrush
   then
     exit;
 
-  with TDeviceContext(DC) do
+  with DevCon do
   begin
     //DebugLn('TGtkWidgetSet.SelectGDKBrushProps Setting BKColor ...');
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
@@ -5659,12 +5866,12 @@ begin
 
     if GetBrush^.GDIBrushFill <> GDK_Solid then
       if GetBrush^.GDIBrushPixmap <> nil then begin
-        gdk_gc_set_fill(GetGC, GetBrush^.GDIBrushFill);
-        gdk_gc_set_Stipple(GetGC, GetBrush^.GDIBrushPixmap);
+        gdk_gc_set_fill(GC, GetBrush^.GDIBrushFill);
+        gdk_gc_set_Stipple(GC, GetBrush^.GDIBrushPixmap);
         gdk_gc_get_values(GC,@GCValues);
       end
   end;
-  TDeviceContext(DC).SelectedColors:=dcscBrush;
+  DevCon.SelectedColors := dcscBrush;
 end;
 
 {------------------------------------------------------------------------------
@@ -5694,54 +5901,54 @@ end;
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SelectGDKPenProps(DC: HDC);
+var
+  DevCon: TDeviceContext absolute DC;
 
   procedure SetDashes(const Dashes: array of gint8);
   begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    laz_gdk_gc_set_dashes(TDeviceContext(DC).GetGC,0,Pgint8(@Dashes[Low(Dashes)]),
+    laz_gdk_gc_set_dashes(DevCon.GC,0,Pgint8(@Dashes[Low(Dashes)]),
       High(Dashes)-Low(Dashes)+1);
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 
 begin
-  if TDeviceContext(DC).SelectedColors<>dcscPen then begin
-    with TDeviceContext(DC), GetPen^ do begin
-      EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
-      EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
-    end;
-    TDeviceContext(DC).SelectedColors:=dcscPen;
+  if DevCon.SelectedColors<>dcscPen
+  then begin
+    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
+    DevCon.SelectedColors:=dcscPen;
   end;
 
-  if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
-    Exclude(TDeviceContext(DC).DCFlags,dcfPenInvalid);
-    if TDeviceContext(DC).GetGC<>nil then begin
-      with TDeviceContext(DC), GetPen^ do
-      begin
-        IsNullPen := GDIPenStyle = PS_NULL;
-        if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
-        then begin
-          {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-          gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-          {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-        end
-        else begin
-          {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-          gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,GDK_CAP_NOT_LAST,GDK_JOIN_MITER);
-          case GDIPenStyle of
-            PS_DASH:       SetDashes([4,4]);
-            PS_DOT:        SetDashes([2,2]);
-            PS_DASHDOT:    SetDashes([4,2,2,2]);
-            PS_DASHDOTDOT: SetDashes([4,2,2,2,2,2]);
-            //This is DEADLY!!!
-            //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
-          end;
-          {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-        end;
-        gdk_gc_get_values(GC,@GCValues);
+  if dcfPenSelected in Devcon.DCFlags then Exit;
+  Exclude(DevCon.DCFlags,dcfPenInvalid);
+  if DevCon.GC = nil then Exit;
+  
+  with DevCon, GetPen^ do
+  begin
+    IsNullPen := GDIPenStyle = PS_NULL;
+    if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
+    then begin
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+    end
+    else begin
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,GDK_CAP_NOT_LAST,GDK_JOIN_MITER);
+      case GDIPenStyle of
+        PS_DASH:       SetDashes([4,4]);
+        PS_DOT:        SetDashes([2,2]);
+        PS_DASHDOT:    SetDashes([4,2,2,2]);
+        PS_DASHDOTDOT: SetDashes([4,2,2,2,2,2]);
+        //This is DEADLY!!!
+        //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
       end;
-      Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     end;
+    gdk_gc_get_values(GC,@GCValues);
   end;
+  Include(DevCon.DCFlags,dcfPenSelected);
 end;
 
 {------------------------------------------------------------------------------
@@ -5862,7 +6069,8 @@ begin
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     aDC.Drawable := TheWindow;
     {$IFDEF Gtk1}
-    aDC.GetGC;
+    {$note todo: check if this is still needed} // now gc is a property
+    aDC.GC;
     {$ELSE}
     // GC is created on demand
     {$ENDIF}
@@ -5895,7 +6103,11 @@ var
   CurWindow: PGdkWindow;
 {$ENDIF}
 begin
-  if DC.GC<>nil then exit;
+  if DC.HasGC
+  then begin
+    WriteLN('[WARNING] OnCreateGCForDC called while GC exists');
+    Exit;
+  end;
 
   // create GC
   if DC.Drawable<>nil then begin
@@ -5917,7 +6129,8 @@ begin
     DC.GC:=gdk_gc_new(gdk_screen_get_root_window(gdk_screen_get_default));
     {$ENDIF}
   end;
-  if DC.GC<>nil then begin
+  if DC.HasGC
+  then begin
     gdk_gc_set_function(DC.GC, GDK_COPY);
     gdk_gc_get_values(DC.GC, @DC.GCValues);
   end;
@@ -6000,7 +6213,7 @@ var
   BufferWidth, BufferHeight: integer;
   DoubleBuffer: PGdkPixmap;
   BufferCreated: Boolean;
-  DevContext: TDeviceContext;
+  DevContext: TDeviceContext absolute Result;
   CaretWasVisible: Boolean;
   MainWidget: PGtkWidget;
   GC: PGdkGC;
@@ -6052,13 +6265,13 @@ begin
 
   // create DC for double buffer
   Result:=CreateDCForWidget(Widget,PGDKWindow(DoubleBuffer),false);
-  DevContext:=TDeviceContext(Result);
+
   DevContext.OriginalDrawable:=Widget^.Window;
   Include(DevContext.DCFlags,dcfDoubleBuffer);
 
   if BufferCreated then begin
     // create GC
-    GC:=DevContext.GetGC;
+    GC:=DevContext.GC;
     // copy old context to buffer
     gdk_gc_set_clip_region(GC, nil);
     gdk_gc_set_clip_rectangle(GC, nil);
@@ -6089,15 +6302,6 @@ begin
   {$ENDIF}
 end;
 
-function TGTKWidgetSet.IsNullBrush(DC: TDeviceContext): boolean;
-begin
-  Result:=(DC.CurrentBrush<>nil) and (DC.CurrentBrush^.IsNullBrush);
-end;
-
-function TGTKWidgetSet.IsNullPen(DC: TDeviceContext): boolean;
-begin
-  Result:=(DC.CurrentPen<>nil) and (DC.CurrentPen^.IsNullBrush);
-end;
 
 {------------------------------------------------------------------------------
   Function: NewGDIObject
