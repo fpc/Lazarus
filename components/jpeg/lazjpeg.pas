@@ -34,9 +34,9 @@ type
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
   protected
-    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
   public
     constructor Create; override;
     class function GetFileExtensions: string; override;
@@ -57,7 +57,7 @@ implementation
 
 { TJPEGImage }
 
-procedure TJPEGImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TJPEGImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
 var
   JPEGReader: TFPReaderJPEG;
 begin
@@ -66,7 +66,7 @@ begin
     JPEGReader.Performance:=Performance;
     JPEGReader.OnProgress:=@Progress;
   end;
-  inherited InitFPImageReader(ImgReader);
+  inherited InitFPImageReader(IntfImg, ImgReader);
 end;
 
 procedure TJPEGImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
@@ -80,7 +80,7 @@ begin
   inherited FinalizeFPImageReader(ImgReader);
 end;
 
-procedure TJPEGImage.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TJPEGImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
 var
   JPEGWriter: TFPWriterJPEG;
 begin
@@ -91,7 +91,7 @@ begin
     JPEGWriter.CompressionQuality:=CompressionQuality;
     JPEGWriter.OnProgress:=@Progress;
   end;
-  inherited InitFPImageWriter(ImgWriter);
+  inherited InitFPImageWriter(IntfImg, ImgWriter);
 end;
 
 class function TJPEGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
