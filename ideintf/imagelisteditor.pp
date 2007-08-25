@@ -311,7 +311,7 @@ begin
     begin
       P := PGlyphInfo(TreeView.Selected.Data);
       P^.Adjustment := TGlyphAdjustment(RadioGroup.ItemIndex);
-      P^.TransparentColor := ColorBoxTransparent.Selection;
+      P^.TransparentColor := ColorBoxTransparent.Selected;
       
       T := CreateGlyph(P^.Bitmap, ImageList.Width, ImageList.Height, P^.Adjustment,
         P^.TransparentColor);
@@ -378,7 +378,7 @@ begin
       
       ColorBoxTransparent.Enabled := True;
       ColorBoxTransparent.OnChange := nil;
-      ColorBoxTransparent.Selection := P^.TransparentColor;
+      ColorBoxTransparent.Selected := P^.TransparentColor;
       ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
     end
     else
@@ -390,7 +390,7 @@ begin
 
       ColorBoxTransparent.Enabled := False;
       ColorBoxTransparent.OnChange := nil;
-      ColorBoxTransparent.Selection := clFuchsia;
+      ColorBoxTransparent.Selected := clFuchsia;
       ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
     end;
     
@@ -412,7 +412,7 @@ begin
 
     ColorBoxTransparent.Enabled := False;
     ColorBoxTransparent.OnChange := nil;
-    ColorBoxTransparent.Selection := clFuchsia;
+    ColorBoxTransparent.Selected := clFuchsia;
     ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
       
     Preview.HorzScrollBar.Range := ImageList.Width;

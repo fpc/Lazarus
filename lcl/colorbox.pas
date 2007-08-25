@@ -38,8 +38,8 @@ type
   private
     FPalette: TColorPalette;
     function GetColor(Index : Integer): TColor;
-    function GetSelection: TColor;
-    procedure SetSelection(Value: TColor);
+    function GetSelected: TColor;
+    procedure SetSelected(Value: TColor);
     procedure SetPalette(Value: TColorPalette);
   protected
     procedure SetStyle(Value: TComboBoxStyle); override;
@@ -75,7 +75,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property Selection: TColor read GetSelection write SetSelection;
+    property Selected: TColor read GetSelected write SetSelected;
     property ShowHint;
     property Sorted;
     property TabOrder;
@@ -112,8 +112,8 @@ type
   private
     FPalette: TColorPalette;
     function GetColor(Index : Integer): TColor;
-    function GetSelection: TColor;
-    procedure SetSelection(Value: TColor);
+    function GetSelected: TColor;
+    procedure SetSelected(Value: TColor);
     procedure SetPalette(Value: TColorPalette);
   protected
     procedure SetStyle(Value: TListBoxStyle); override;
@@ -121,8 +121,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
-    property Selection: TColor read GetSelection write SetSelection;
     property Colors[Index : Integer] : TColor Read GetColor;
+    property Selected: TColor read GetSelected write SetSelected;
   published
     property Align;
     property Anchors;
@@ -214,14 +214,14 @@ begin
   Style := csOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorBox.GetSelection
+  Method:   TColorBox.GetSelected
   Params:   None
   Returns:  TColor
 
-  Use GetSelection to convert the item selected into a system color.
+  Use GetSelected to convert the item selected into a system color.
 
  ------------------------------------------------------------------------------}
-function TColorBox.GetSelection: TColor;
+function TColorBox.GetSelected: TColor;
 begin
   Result := 0;
   if ItemIndex >= 0 then
@@ -245,15 +245,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorBox.SetSelection
+  Method:   TColorBox.SetSelected
   Params:   Value
   Returns:  Nothing
 
-  Use SetSelection to set the item in the ColorBox when appointed a color
+  Use SetSelected to set the item in the ColorBox when appointed a color
   from code.
 
  ------------------------------------------------------------------------------}
-procedure TColorBox.SetSelection(Value: TColor);
+procedure TColorBox.SetSelected(Value: TColor);
 var
   c: integer;
   i: Longint;
@@ -400,14 +400,14 @@ begin
   Style := lbOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.GetSelection
+  Method:   TColorListBox.GetSelected
   Params:   None
   Returns:  TColor
 
-  Use GetSelection to convert the item selected into a system color.
+  Use GetSelected to convert the item selected into a system color.
 
  ------------------------------------------------------------------------------}
-function TColorListBox.GetSelection: TColor;
+function TColorListBox.GetSelected: TColor;
 begin
   Result := 0;
   if ItemIndex >= 0 then
@@ -430,15 +430,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.SetSelection
+  Method:   TColorListBox.SetSelected
   Params:   Value
   Returns:  Nothing
 
-  Use SetSelection to set the item in the ColorListBox when appointed a color
+  Use SetSelected to set the item in the ColorListBox when appointed a color
   from code.
 
  ------------------------------------------------------------------------------}
-procedure TColorListBox.SetSelection(Value: TColor);
+procedure TColorListBox.SetSelected(Value: TColor);
 var
   c: integer;
   i: Longint;
