@@ -2691,10 +2691,15 @@ procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState)
 var
   AColor: TColor;
   CurrentTextStyle: TTextStyle;
+  IsSelected: boolean;
 begin
   if DefaultDrawing then begin
     Canvas.Pen.Mode := pmCopy;
-    if gdSelected in aState then begin
+    IsSelected := (gdSelected in aState);
+    if IsSelected and (gdFocused in aState) then
+      IsSelected := (goDrawFocusSelected in Options) or
+            ((goRowSelect in Options) and not (goRelaxedRowSelect in Options));
+    if IsSelected then begin
       Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
       Canvas.Font.Color := clWindow;
@@ -3010,12 +3015,9 @@ begin
       if ARow<FFixedRows then
         include(gds, gdFixed)
       else begin
-        if (aCol=FCol)and(aRow=FRow) then begin
-          Include(gds, gdFocused);
-          if (goDrawFocusSelected in Options) or
-            (Rs and not(goRelaxedRowSelect in Options)) then
-            include(gds, gdSelected);
-        end else
+        if (aCol=FCol)and(aRow=FRow) then
+          gds := gds + [gdFocused, gdSelected]
+        else
         if IsCellSelected[aCol, aRow] then
           include(gds, gdSelected);
       end;
