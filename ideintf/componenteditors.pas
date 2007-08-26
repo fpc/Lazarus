@@ -892,7 +892,7 @@ end;
 
 function TCheckListBoxComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:=clbCheckListBoxEditor+' ...';
+  Result:=clbCheckListBoxEditor+'...';
 end;
 
 function TCheckListBoxComponentEditor.GetVerbCount: Integer;
@@ -948,7 +948,7 @@ end;
 
 function TCheckGroupComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:=clbCheckGroupEditor+' ...';
+  Result:=clbCheckGroupEditor+'...';
 end;
 
 function TCheckGroupComponentEditor.GetVerbCount: Integer;

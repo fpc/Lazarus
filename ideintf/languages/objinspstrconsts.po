@@ -511,7 +511,7 @@ msgid "On Add, Check for Duplicate in Items"
 msgstr ""
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 
 #: objinspstrconsts:oicoleditadd

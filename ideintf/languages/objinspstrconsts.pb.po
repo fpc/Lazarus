@@ -1,4 +1,4 @@
-#: objinspstrconsts:oisdlinesdchars
+﻿#: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d linhas, %d caracteres"
 
@@ -847,7 +847,7 @@ msgid "Text:"
 msgstr "Texto:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "O item \"%s\" já está listado. Adicionar assim mesmo?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar

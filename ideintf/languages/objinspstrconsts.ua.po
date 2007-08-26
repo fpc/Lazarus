@@ -1,4 +1,4 @@
-#: objinspstrconsts:oisdlinesdchars
+﻿#: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d рядків, %d символів"
 
@@ -847,7 +847,7 @@ msgid "Text:"
 msgstr ""
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar

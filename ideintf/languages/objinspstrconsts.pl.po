@@ -1,7 +1,7 @@
-msgid ""
+﻿msgid ""
 msgstr ""
-"Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-08-17 00:16+0100\n"
+"Last-Translator: Paweł Trochimczuk\n"
+"PO-Revision-Date: 2007-08-26 00:21+0100\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -103,7 +103,7 @@ msgstr ""
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "W &górę"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -147,15 +147,15 @@ msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
-msgstr ""
+msgstr "Dodaj nowy element"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr ""
+msgstr "Dodaj stronę"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Dodaj zakładkę"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -235,11 +235,11 @@ msgstr ""
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr ""
+msgstr "Edytor CheckGroup"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr ""
+msgstr "Edytor CheckListBox"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -247,7 +247,7 @@ msgstr ""
 
 #: objinspstrconsts:sccssgedtclean
 msgid "Clean"
-msgstr ""
+msgstr "Wyczyść"
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -271,7 +271,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
-msgstr ""
+msgstr "Komponenty"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -287,7 +287,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr ""
+msgstr "Utwórz nowy moduł (plik źródłowy pascala)."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
@@ -359,11 +359,11 @@ msgstr ""
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr ""
+msgstr "Usuń stronę"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Usuń zakładkę"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -379,7 +379,7 @@ msgstr ""
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "&W dół"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
@@ -399,7 +399,7 @@ msgstr "Edytuj elementy ListView..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
-msgstr ""
+msgstr "Edytuj StringGrid..."
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
@@ -839,7 +839,7 @@ msgstr ""
 
 #: objinspstrconsts:sccssgedtgrp
 msgid "String Grid"
-msgstr ""
+msgstr "StringGrid"
 
 #: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
@@ -862,7 +862,7 @@ msgid "Text:"
 msgstr "Tekst:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar

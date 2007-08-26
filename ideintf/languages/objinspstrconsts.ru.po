@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "PO-Revision-Date: 2007-06-07 04:30+0300\n"
@@ -858,7 +858,7 @@ msgid "Text:"
 msgstr "Текст:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "Элемент \"%s\" уже имеется. Всё равно добавить?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar

@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.16\n"
 "POT-Creation-Date: \n"
@@ -861,7 +861,7 @@ msgid "Text:"
 msgstr "文本:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar

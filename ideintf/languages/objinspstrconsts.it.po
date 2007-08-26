@@ -859,7 +859,7 @@ msgid "Text:"
 msgstr "Testo:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "L'elemento \"%s\" è già in lista. Aggiungerlo comunque?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
