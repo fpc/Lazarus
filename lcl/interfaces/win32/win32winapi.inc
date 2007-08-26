@@ -671,33 +671,10 @@ end;
   and color format (color planes and bits per pixel).
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP;
-var
-  AInfo: Windows.TBitmapInfo;
-  Data: PByte;
-  DC: HDC;
-  dataSize: Integer;
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrInt(BitmapBits)]));
 
-  FillChar(AInfo, SizeOf(AInfo), 0);
-  with AInfo do
-  begin
-    bmiHeader.biSize := SizeOf(bmiHeader);
-    bmiHeader.biWidth := Width;
-    bmiHeader.biHeight := -Height;
-    bmiHeader.biPlanes := Planes;
-    bmiHeader.biBitCount := Min(24, BitCount); // we dont want 32bpp bitmaps
-    bmiHeader.biCompression := BI_RGB;
-  end;
-
-  DC := CreateCompatibleDC(0);
-  Result := Windows.CreateDIBSection(0, AInfo, DIB_RGB_COLORS, Data, 0, 0);
-  if BitmapBits <> nil then
-  begin
-    dataSize := ((Width * AInfo.bmiHeader.biBitCount + 3) and not 3) * Height;
-    Move(BitmapBits^, Data^, dataSize);
-  end;
-  DeleteDC(DC);
+  Result := Windows.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
 
   Assert(False, Format('Trace:< [TWin32WidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
