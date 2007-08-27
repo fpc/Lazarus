@@ -1,0 +1,773 @@
+# translation of codetoolsstrconsts.po to Lithuanian
+# Header entry was created by KBabel!
+#
+#: codetoolsstrconsts:ctsothercompilerdefines
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Mime-Version: 1.0"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-08-27 21:19+0300\n"
+"Project-Id-Version: codetoolsstrconsts\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: codetoolsstrconsts:ctsothercompilerdefines
+msgid "%s Compiler Defines"
+msgstr "%s kompiliatoriaus apibrėžtys"
+
+#: codetoolsstrconsts:ctsnameddirectory
+msgid "%s Directory"
+msgstr "%s katalogas"
+
+#: codetoolsstrconsts:ctsnamedproject
+msgid "%s Project"
+msgstr "%s projektas"
+
+#: codetoolsstrconsts:ctsstrexpectedbutatomfound
+msgid "%s expected, but %s found"
+msgstr "%s tikėtasi, tačiau rasta %s"
+
+#: codetoolsstrconsts:ctsfilehascircularsymlink
+msgid "%s has a circular symbolic link"
+msgstr "%s turi uždarą simbolinį saitą"
+
+#: codetoolsstrconsts:ctsfileisnotexecutable
+msgid "%s is not executable"
+msgstr "%s nėra vykdomasis failas"
+
+#: codetoolsstrconsts:ctsawithoutb
+msgid "%s without %s"
+msgstr "%s be %s"
+
+#: codetoolsstrconsts:ctsunknownmainfilename
+msgid "(unknown mainfilename)"
+msgstr "(nežinomas pagrindinio failo vardas)"
+
+#: codetoolsstrconsts:ctsunknownsubdescriptor
+msgid "(unknown subdescriptor %s)"
+msgstr "(nežinomas vidinis deskriptorius %s)"
+
+#: codetoolsstrconsts:ctspointhintprocstartat
+msgid ".  Hint: proc start at "
+msgstr ".  Užuomina: procedūros pradžia ties "
+
+#: codetoolsstrconsts:ctspointstartat
+msgid ". start at "
+msgstr ". pradžia ties "
+
+#: codetoolsstrconsts:ctssemicolonafterpropspecmissing
+msgid "; expected after \"%s\" property specifier, but %s found"
+msgstr "; tikėtasi po \"%s\" savybės specifikatoriaus, tačiau rasta %s"
+
+#: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
+msgid "Anonymous %s definitions are not allowed"
+msgstr "Anoniminės %s apibrėžtys nėra leidžiamos"
+
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr "CPU katalogas"
+
+#: codetoolsstrconsts:ctsclasssnotfound
+msgid "Class %s not found"
+msgstr "Klasė %s nerasta"
+
+#: codetoolsstrconsts:ctscommandlineparameters
+msgid "Command line parameters"
+msgstr "Komandinės eilutės parametrai"
+
+#: codetoolsstrconsts:ctscommentendnotfound
+msgid "Comment end not found"
+msgstr "Nerastas komentaro galas"
+
+#: codetoolsstrconsts:ctscompiledsrcpath
+msgid "Compiled SrcPath"
+msgstr "Kompiliuotas \"SrcPath\""
+
+#: codetoolsstrconsts:ctscompiler
+msgid "Compiler"
+msgstr "Kompiliatorius"
+
+#: codetoolsstrconsts:ctscomponentsdirectory
+msgid "Components Directory"
+msgstr "Komponenčių katalogas"
+
+#: codetoolsstrconsts:ctsconverterdirectory
+msgid "Converter Directory"
+msgstr "Konverterio katalogas"
+
+#: codetoolsstrconsts:ctscustomcomponentsdirectory
+msgid "Custom Components Directory"
+msgstr "Naudotojo komponenčių katalogas"
+
+#: codetoolsstrconsts:ctsdebuggerdirectory
+msgid "Debugger Directory"
+msgstr "Derintuvės katalogas"
+
+#: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
+msgid "Default ppc386 source Operating System"
+msgstr "Numatyta ppc386 pirminė operacinė sistema"
+
+#: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
+msgid "Default ppc386 source Operating System 2"
+msgstr "Numatyta ppc386 pirminė operacinė sistema 2"
+
+#: codetoolsstrconsts:ctsdefaultppc386symbol
+msgid "Default ppc386 symbol"
+msgstr "Numatytas ppc386 simbolis"
+
+#: codetoolsstrconsts:ctsdefaultppc386targetoperatingsystem
+msgid "Default ppc386 target Operating System"
+msgstr "Numatyta ppc386 paskirties operacinė sistema"
+
+#: codetoolsstrconsts:ctsdefaultppc386targetprocessor
+msgid "Default ppc386 target processor"
+msgstr "Numatytas ppc386 paskirties procesorius"
+
+#: codetoolsstrconsts:ctsdefine
+msgid "Define "
+msgstr "Apibrėžti "
+
+#: codetoolsstrconsts:ctsdefinemacroname
+msgid "Define Macro %s"
+msgstr "Apibrėžti makrokomandą %s"
+
+#: codetoolsstrconsts:ctsdefinemacrocarbon1
+msgid "Define macro carbon1"
+msgstr "Apibrėžti makrokomandą carbon1"
+
+#: codetoolsstrconsts:ctsdefinemacrogtk1
+msgid "Define macro gtk1"
+msgstr "Apibrėžti makrokomandą gtk1"
+
+#: codetoolsstrconsts:ctsdefinemacrogtk2
+msgid "Define macro gtk2"
+msgstr "Apibrėžti makrokomandą gtk2"
+
+#: codetoolsstrconsts:ctsdefinemacroqt1
+msgid "Define macro qt1"
+msgstr "Apibrėžti makrokomandą qt1"
+
+#: codetoolsstrconsts:ctsdefinemacrowince1
+msgid "Define macro wince1"
+msgstr "Apibrėžti makrokomandą wince1"
+
+#: codetoolsstrconsts:ctsdefineprocessortype
+msgid "Define processor type"
+msgstr "Apibrėžti procesoriaus tipą"
+
+#: codetoolsstrconsts:ctsdefsforlazarussources
+msgid "Definitions for the Lazarus Sources"
+msgstr "Lazarus pirminio kodo apibrėžtys"
+
+#: codetoolsstrconsts:ctsdesignerdirectory
+msgid "Designer Directory"
+msgstr "Konstruktoriaus katalogas"
+
+#: codetoolsstrconsts:ctsdesignerunitsdirectory
+msgid "Designer Units"
+msgstr "Konstruktoriaus moduliai"
+
+#: codetoolsstrconsts:ctsdoceditordirectory
+msgid "Doc Editor Directory"
+msgstr "Dokumentacijos redaktoriaus katalogas"
+
+#: codetoolsstrconsts:ctsendofsourcenotfound
+msgid "End of source not found"
+msgstr "Nerasta pirminio kodo pabaiga"
+
+#: codetoolsstrconsts:ctsforward
+msgid "Forward"
+msgstr "Priešakis"
+
+#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
+msgid "Forward class definition not resolved: %s"
+msgstr "Nenustatyta priešakinė klasės apibrėžtis: %s"
+
+#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial macros"
+msgstr "FreePascal kompiliatoriaus pradinės makrokomandos"
+
+#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr "FreePascal komponentų biblioteka"
+
+#: codetoolsstrconsts:ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr "FreePascal pirminio kodo biblioteka"
+
+#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
+msgid "Free Pascal Sources, %s"
+msgstr "FreePascal pirminis kodas, %s"
+
+#: codetoolsstrconsts:ctsidedirectory
+msgid "IDE Directory"
+msgstr "IKA katalogas"
+
+#: codetoolsstrconsts:ctsideintfdirectory
+msgid "IDEIntf Directory"
+msgstr "IDEIntf katalogas"
+
+#: codetoolsstrconsts:ctsidentifieralreadydefined
+msgid "Identifier %s already defined"
+msgstr "Apibrėžtis %s jau yra apibrėžta"
+
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr "Jei LCLWidgetType=gtk2, tada"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr "Jei paskirties OS <> pirminė OS"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr "Jei paskirties OS <> pirminė OS2"
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr "Jei paskirties OS <> win32, tada"
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr "IfDef Linux"
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
+msgstr "IfDef Windows"
+
+#: codetoolsstrconsts:ctsincludecircledetected
+msgid "Include circle detected"
+msgstr "Aptiktas įdėjimų žiedas"
+
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr "Diegimo katalogas"
+
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr "Diegimo programos katalogai"
+
+#: codetoolsstrconsts:ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr "JITForm katalogas"
+
+#: codetoolsstrconsts:ctslazarussources
+msgid "Lazarus Sources"
+msgstr "Lazarus pirminis kodas"
+
+#: codetoolsstrconsts:ctsnestedcommentson
+msgid "Nested Comments On"
+msgstr "Įdėtiniai komentarai įgalinti"
+
+#: codetoolsstrconsts:ctsnoscanneravailable
+msgid "No scanner available"
+msgstr "Nėra žvalgytuvo"
+
+#: codetoolsstrconsts:ctsnoscannerfound
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "\"%s\" skirtas žvalgytuvas nerastas. Jei tai įdedamasis failas, pirma atverkite pagrindinį pirminį kodą."
+
+#: codetoolsstrconsts:ctspackagedirectories
+msgid "Package directories"
+msgstr "Paketų katalogai"
+
+#: codetoolsstrconsts:ctspackagerdirectory
+msgid "Packager Directory"
+msgstr "Paketų kūrėjo katalogas"
+
+#: codetoolsstrconsts:ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr "Paketų kūrėjo registravimo katalogas"
+
+#: codetoolsstrconsts:ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr "Paketų kūrėjo modulių katalogas"
+
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr "Pozicija ne pirminiame kode"
+
+#: codetoolsstrconsts:ctsresetalldefines
+msgid "Reset all defines"
+msgstr "Atstatyti visas apibrėžtis"
+
+#: codetoolsstrconsts:ctsruntimelibrary
+msgid "Runtime library"
+msgstr "Veikos meto biblioteka"
+
+#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr "Pirminiai failų vardai standartiniams FPC moduliams"
+
+#: codetoolsstrconsts:ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr "Pirminio kodo kelio inicializacija"
+
+#: codetoolsstrconsts:ctssyntaxerrorinexpr
+msgid "Syntax Error in expression \"%s\""
+msgstr "Išraiškoje \"%s\" yra sintaksės klaida"
+
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
+
+#: codetoolsstrconsts:ctstermnotsimple
+msgid "Term has no simple type"
+msgstr "Termas neturi paprasto tipo"
+
+#: codetoolsstrconsts:ctstoolsdirectory
+msgid "Tools Directory"
+msgstr "Įrankių katalogas"
+
+#: codetoolsstrconsts:ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr "Modulių kelio inicializacija"
+
+#: codetoolsstrconsts:ctsunknownfunction
+msgid "Unknown function %s"
+msgstr "Nežinoma funkcija %s"
+
+#: codetoolsstrconsts:ctsunparsed
+msgid "Unparsed"
+msgstr "Neanalizuotas"
+
+#: codetoolsstrconsts:ctsutilsdirectories
+msgid "Utils directories"
+msgstr "Paslaugų programų katalogai"
+
+#: codetoolsstrconsts:ctswidgetdirectory
+msgid "Widget Directory"
+msgstr "Valdiklių katalogas"
+
+#: codetoolsstrconsts:ctswordnotfound
+msgid "\"%s\" not found"
+msgstr "\"%s\" nerastas"
+
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr "\"class of\" apibrėžtis nenustatyta: %s"
+
+#: codetoolsstrconsts:ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr "Nerastas klasės/objekto \"end\""
+
+#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "%s esantis katalogo komponentas neegzistuoja arba jis yra betikslis simbolinis saitas"
+
+#: codetoolsstrconsts:ctsdircomponentisnotdir
+msgid "a directory component in %s is not a directory"
+msgstr "%s esantis katalogo komponentas nėra katalogas"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr "%s pridės prie įdedamųjų kelio"
+
+#: codetoolsstrconsts:ctsaddsdirtosourcepath
+msgid "adds %s to SrcPath"
+msgstr "%s pridės prie pirminio kodo kelio"
+
+#: codetoolsstrconsts:ctsanlclproject
+msgid "an LCL project"
+msgstr "LCL projektas"
+
+#: codetoolsstrconsts:ctsancestorisnotproperty
+msgid "ancestor of untyped property is not a property"
+msgstr "savybės be tipo protėvis nėra savybė"
+
+#: codetoolsstrconsts:ctsbasetypeofnotfound
+msgid "base type of \"%s\" not found"
+msgstr "nerastas \"%s\" bazinis tipas"
+
+#: codetoolsstrconsts:ctsbinaryoperator
+msgid "binary operator"
+msgstr "dvejetainis operatorius"
+
+#: codetoolsstrconsts:ctsbracketnotfound
+msgid "bracket %s not found"
+msgstr "%s skliaustas nerastas"
+
+#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
+msgid "bracket close expected, but %s found"
+msgstr "tikėtasi uždarančiojo skliausto, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
+msgid "bracket open expected, but %s found"
+msgstr "tikėtasi atidarančiojo skliausto, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctscircleindefinitions
+msgid "circle in definitions"
+msgstr "žiedinė apibrėžtis"
+
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr "klasė %s%s%s nerasta"
+
+#: codetoolsstrconsts:ctsclassidentifierexpected
+msgid "class identifier expected"
+msgstr "tikėtasi klasės identifikatoriaus"
+
+#: codetoolsstrconsts:ctsclassnodewithoutparentnode
+msgid "class node without parent node"
+msgstr "klasės mazgas neturi tėvinio mazgo"
+
+#: codetoolsstrconsts:ctsclasswithoutname
+msgid "class without name"
+msgstr "klasė be vardo"
+
+#: codetoolsstrconsts:ctsconstant
+msgid "constant"
+msgstr "konstanta"
+
+#: codetoolsstrconsts:ctscursorposoutsideofcode
+msgid "cursor pos outside of code"
+msgstr "žymeklis už kodo ribų"
+
+#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
+msgid "default class ancestor TObject not found"
+msgstr "nerastas klasės protėvis TObject"
+
+#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
+msgid "default interface ancestor IInterface not found"
+msgstr "nerastas interfeiso protėvis IInterface"
+
+#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
+msgid "default parameter expected, but %s found"
+msgstr "tikėtasi numatyto parametro, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr "numatyta savybė nerasta"
+
+#: codetoolsstrconsts:ctsdefaultspecifierredefined
+msgid "default specifier redefined"
+msgstr "numatytas specifikatorius apibrėžtas pakartotinai"
+
+#: codetoolsstrconsts:ctsduplicateidentifier
+msgid "duplicate identifier: %s"
+msgstr "identifikatorius dubliuojasi: %s"
+
+#: codetoolsstrconsts:ctselse
+msgid "else"
+msgstr "kitaip"
+
+#: codetoolsstrconsts:ctsfpdocsystemon
+msgid "enable FPDocSystem"
+msgstr "įgalinti FPDocSystem"
+
+#: codetoolsstrconsts:ctsendforrecordnotfound
+msgid "end for record not found"
+msgstr "nerasta įrašo pabaiga"
+
+#: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
+msgid "error during creation of new proc bodies"
+msgstr "kuriant procedūrų pagrindines dalis įvyko klaida"
+
+#: codetoolsstrconsts:ctserrorduringinsertingnewclassparts
+msgid "error during inserting new class parts"
+msgstr "įterpiant naujas klasės dalis įvyko klaida"
+
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr "naujus modulius įterpiant į pagrindinio modulio naudojamų modulių sąrašą įvyko klaida"
+
+#: codetoolsstrconsts:ctserrorindirectiveexpression
+msgid "error in directive expression"
+msgstr "klaida direktyvos išraiškoje"
+
+#: codetoolsstrconsts:ctserrorinparamlist
+msgid "error in paramlist"
+msgstr "klaida parametrų sąraše"
+
+#: codetoolsstrconsts:ctsexecuteaccessdeniedforfile
+msgid "execute access denied for %s"
+msgstr "%s apibrėžtas leidimas startuoti"
+
+#: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
+msgid "expected end., but %s found"
+msgstr "tikėtasi \"end.\", tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr "eksporto sakinys galimas tik bibliotekose"
+
+#: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
+msgid "expression type must be class or record type"
+msgstr "išraiškos tipas turi būti klasė arba įrašas"
+
+#: codetoolsstrconsts:ctsfiledoesnotexists
+msgid "file \"%s\" does not exist"
+msgstr "failas \"%s\" neegzistuoja"
+
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr "failas tik skaitymui"
+
+#: codetoolsstrconsts:ctsgtk2intfdirectory
+msgid "gtk2 interface directory"
+msgstr "gtk2 interfeiso katalogas"
+
+#: codetoolsstrconsts:ctsidentifier
+msgid "identifier"
+msgstr "identifikatorius"
+
+#: codetoolsstrconsts:ctsidentexpectedbutatomfound
+msgid "identifier expected, but %s found"
+msgstr "tikėtasi identifikatoriaus, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctsidentexpectedbutkeywordfound
+msgid "identifier expected, but keyword %s found"
+msgstr "tikėtasi identifikatoriaus, tačiau aptiktas raktažodis %s"
+
+#: codetoolsstrconsts:ctsidentifiernotfound
+msgid "identifier not found: %s"
+msgstr "identifikatorius nerastas: %s"
+
+#: codetoolsstrconsts:ctsillegalcircleinusedunits
+msgid "illegal circle using unit: %s"
+msgstr "neleistinas naudojamų modulių žiedas"
+
+#: codetoolsstrconsts:ctsillegalqualifier
+msgid "illegal qualifier %s found"
+msgstr "rastas klaidinga patiksla %s"
+
+#: codetoolsstrconsts:ctsimplementationnodenotfound
+msgid "implementation node not found"
+msgstr "nerastas realizacijos mazgas"
+
+#: codetoolsstrconsts:įdėjimo 
+msgid "include directories: %s"
+msgstr "įdėjimo katalogai: %s"
+
+#: codetoolsstrconsts:ctsincludefilenotfound
+msgid "include file not found \"%s\""
+msgstr "įdedamasis failas \"%s\" nerastas"
+
+#: codetoolsstrconsts:ctsincompatibletypesgotexpected
+msgid "incompatibles types: expected \"%s\" but got \"%s\""
+msgstr "nesuderinami tipai: tikėtasi \"%s\", tačiau gauta \"%s\""
+
+#: codetoolsstrconsts:ctsindexparameterexpectedbutatomfound
+msgid "index parameter expected, but %s found"
+msgstr "tikėtasi indekso parametro, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctsindexspecifierredefined
+msgid "index specifier redefined"
+msgstr "indekso specifikatorius apibrėžtas pakartotinai"
+
+#: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
+msgid "inherited keyword only allowed in methods"
+msgstr "paveldėti raktažodžiai galimi tik metoduose"
+
+#: codetoolsstrconsts:ctsinsufficientmemory
+msgid "insufficient memory"
+msgstr "trūksta atminties"
+
+#: codetoolsstrconsts:ctsintfdirectory
+msgid "interface directory"
+msgstr "interfeiso katalogas"
+
+#: codetoolsstrconsts:ctsinterfacesectionnotfound
+msgid "interface section not found"
+msgstr "nerasta interfeiso sekcija"
+
+#: codetoolsstrconsts:ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr "klaidingas klasės vardas %s%s%s"
+
+#: codetoolsstrconsts:ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr "klaidingas klasės vardas=%s%s%s"
+
+#: codetoolsstrconsts:ctsinvalidflagvaluefordirective
+msgid "invalid flag value \"%s\" for directive %s"
+msgstr "klaidinga vėliavėlės reikšmė \"%s\" direktyvai %s"
+
+#: codetoolsstrconsts:ctsinvalidmode
+msgid "invalid mode \"%s\""
+msgstr "klaidinga veiksena \"%s\""
+
+#: codetoolsstrconsts:ctsinvalidsubrange
+msgid "invalid subrange"
+msgstr "klaidingas porėžis"
+
+#: codetoolsstrconsts:ctsinvalidtype
+msgid "invalid type"
+msgstr "klaidingas tipas"
+
+#: codetoolsstrconsts:ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr "klaidingas kintamojo vardas %s%s%s"
+
+#: codetoolsstrconsts:ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr "klaidingas kintamojo tipas %s%s%s"
+
+#: codetoolsstrconsts:ctskeyword
+msgid "keyword"
+msgstr "raktažodis"
+
+#: codetoolsstrconsts:ctskeywordexampleexpectedbutatomfound
+msgid "keyword (e.g. %s) expected, but %s found"
+msgstr "tikėtasi raktažodžio (pvz.: %s), tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctskeywordin
+msgid "keyword \"in\""
+msgstr "raktažodis \"in\""
+
+#: codetoolsstrconsts:ctslazarusmaindirectory
+msgid "lazarus main directory"
+msgstr "Lazarus pagrindinis katalogas"
+
+#: codetoolsstrconsts:ctsmethodname
+msgid "method name"
+msgstr "metodo vardas"
+
+#: codetoolsstrconsts:ctsmethodtypedefinitionnotfound
+msgid "method type definition not found"
+msgstr "nerasta metodo tipo apibrėžtis"
+
+#: codetoolsstrconsts:ctsmissingpointafterend
+msgid "missing . after end"
+msgstr "po \"end\" trūksta \".\""
+
+#: codetoolsstrconsts:ctsmissingenumlist
+msgid "missing enum list"
+msgstr "trūksta enumeracijos sąrašo"
+
+#: codetoolsstrconsts:ctsmissingtypeidentifier
+msgid "missing type identifier"
+msgstr "trūksta tipo identifikatoriaus"
+
+#: codetoolsstrconsts:ctsnewprocbodynotfound
+msgid "new proc body not found"
+msgstr "nerasta naujos procedūros pagrindinė dalis"
+
+#: codetoolsstrconsts:ctsnocontextnodefoundatcursor
+msgid "no context node found at cursor"
+msgstr "ties žymekliu nerastas kontekstinis mazgas"
+
+#: codetoolsstrconsts:ctsnopascalcodefound
+msgid "no pascal code found (first token is %s)"
+msgstr "paskalio kodas nerastas (pirmoji leksema - %s)"
+
+#: codetoolsstrconsts:ctsnonodefoundatcursor
+msgid "no pascal node found at cursor (i.e. in unparsed code)"
+msgstr "ties žymekliu (t.y. neišanalizuotame kode) nerastas paskalio mazgas"
+
+#: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
+msgid "nodefault specifier defined twice"
+msgstr "nenumatytas specifikatorius apibrėžtas dukart"
+
+#: codetoolsstrconsts:ctsoldmethodnotfound
+msgid "old method not found: %s"
+msgstr "nerastas senasis metodas: %s"
+
+#: codetoolsstrconsts:ctsprocedureorfunction
+msgid "procedure or function"
+msgstr "procedūra arba funkcija"
+
+#: codetoolsstrconsts:ctsprocessorspecific
+msgid "processor specific"
+msgstr "priklauso nuo procesorio"
+
+#: codetoolsstrconsts:ctspropertyspecifieralreadydefined
+msgid "property specifier already defined: %s"
+msgstr "savybės specifikatorius jau yra abibrėžtas: %s"
+
+#: codetoolsstrconsts:ctsproperttypeexpectedbutatomfound
+msgid "property type expected, but %s found"
+msgstr "tikėtasi savybės tipo, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctsqualifierexpectedbutatomfound
+msgid "qualifier expected but %s found"
+msgstr "tikėtasi patikslos, tačiau aptikta %s"
+
+#: codetoolsstrconsts:ctssemicolonnotfound
+msgid "semicolon not found"
+msgstr "neratas kablataškis"
+
+#: codetoolsstrconsts:ctssetsincpathto
+msgid "sets IncPath to %s"
+msgstr "įdedamųjų kelia nustato į %s"
+
+#: codetoolsstrconsts:ctssetssrcpathto
+msgid "sets SrcPath to %s"
+msgstr "pirminio kodo kelią nustato į %s"
+
+#: codetoolsstrconsts:ctssourceisnotunit
+msgid "source is not unit"
+msgstr "šaltinis nėra modulis"
+
+#: codetoolsstrconsts:ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr "pirminis kodas nerastas: modulis %s"
+
+#: codetoolsstrconsts:ctssrcpathforcompiledunits
+msgid "src path for compiled units"
+msgstr "pirminio kodo kelias kompiliuotiems moduliams"
+
+#: codetoolsstrconsts:ctsstringconstant
+msgid "string constant"
+msgstr "eilutės konstanta"
+
+#: codetoolsstrconsts:ctstypeidentifier
+msgid "type identifier"
+msgstr "tipo identifikatorius"
+
+#: codetoolsstrconsts:ctstypesectionofclassnotfound
+msgid "type section of class not found"
+msgstr "klasėje nerasta tipo sekcija"
+
+#: codetoolsstrconsts:ctsunabletoapplychanges
+msgid "unable to apply changes"
+msgstr "neina pritaikyti pakeitimus"
+
+#: codetoolsstrconsts:ctsunabletocompleteproperty
+msgid "unable to complete property"
+msgstr "neina užbaigti savybės"
+
+#: codetoolsstrconsts:ctsidentexpectedbuteoffound
+msgid "unexpected end of file (identifier expected)"
+msgstr "netikėta failo pabaiga (tikėtasi identifikatoriaus)"
+
+#: codetoolsstrconsts:ctsunexpectedendofsource
+msgid "unexpected end of source"
+msgstr "netikėta pirminio kodo pabaiga"
+
+#: codetoolsstrconsts:ctsunexpectedkeyword
+msgid "unexpected keyword \"%s\""
+msgstr "netikėtas raktažodis \"%s\""
+
+#: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
+msgid "unexpected keyword \"%s\" found while reading blocks backwards"
+msgstr "skaitant blokus atygaline tvarka aptiktas netikėtas raktažodis \"%s\""
+
+#: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
+msgid "unexpected keyword \"%s\" in asm block found"
+msgstr "asemblerio bloke aptiktas netikėtas raktažodis \"%s\""
+
+#: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
+msgid "unexpected keyword \"%s\" in begin..end found"
+msgstr "tarp \"begin\" ir \"end\" aptiktas netikėtas raktažodis \"%s\""
+
+#: codetoolsstrconsts:ctsunexpectedsubrangeoperatorfound
+msgid "unexpected subrange operator '..' found"
+msgstr "aptiktas netikėtas poaibio operatorius \"..\""
+
+#: codetoolsstrconsts:ctsunitnotfound
+msgid "unit not found: %s"
+msgstr "modulis nerastas: %s"
+
+#: codetoolsstrconsts:ctsunknownsectionkeyword
+msgid "unknown section keyword %s found"
+msgstr "aptiktas nežinomas sekcijos raktažodis %s"
+
+#: codetoolsstrconsts:ctsusedunitisnotapascalunit
+msgid "used unit is not a pascal unit"
+msgstr "naudojamas modulis n4ra paskalio modulis"
+

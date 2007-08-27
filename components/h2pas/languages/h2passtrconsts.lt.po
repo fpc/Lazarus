@@ -1,0 +1,30 @@
+# translation of h2passtrconsts.po to Lithuanian
+#: h2passtrconsts:bla
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-08-27 19:01+0300\n"
+"Project-Id-Version: h2passtrconsts\n"
+"Language-Team: Lithuanian\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: h2passtrconsts:h2pcheaderfileconverter
+msgid "C header file converter"
+msgstr "C antraštės failo konverteris"
+
+#: h2passtrconsts:h2pcreateunitsfromcheaderfiles
+msgid "Create units from C header files"
+msgstr "Kurti modulius pagal C antraštės failus"
+
+#: h2passtrconsts:h2ph2pas
+msgid "H2Pas"
+msgstr "H2Pas"
+
+#: h2passtrconsts:h2ph2pastool
+msgid "H2PasTool"
+msgstr "H2PasTool"
+

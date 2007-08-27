@@ -1,0 +1,33 @@
+# translation of frmselectdataset.po to Lithuanian
+# Header entry was created by KBabel!
+#
+#: frmselectdataset:serrcomponentnotfound
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Mime-Version: 1.0"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-08-27 18:57+0300\n"
+"Project-Id-Version: frmselectdataset\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: frmselectdataset:serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Klaida: nerastas komponentas \"%s\""
+
+#: frmselectdataset:smenucreatedataset
+msgid "Create dataset"
+msgstr "Kurti duomenų aibę (DataSet)"
+
+#: frmselectdataset:smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Kopijuoti duomenis iš duomenų aibės (DataSet)"
+
+#: frmselectdataset:serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Pirma išrinkite duomenų aibę (DataSet)"
+

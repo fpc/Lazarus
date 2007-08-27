@@ -1,0 +1,21 @@
+# translation of synunireg.po to Lithuanian
+# Header entry was created by KBabel!
+#
+#: synunireg:sedituni
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Mime-Version: 1.0"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-08-27 18:07+0300\n"
+"Project-Id-Version: synunireg\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: synunireg:sedituni
+msgid "Edit..."
+msgstr "Keisti..."
+

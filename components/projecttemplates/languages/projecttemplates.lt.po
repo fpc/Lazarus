@@ -1,0 +1,29 @@
+# translation of projecttemplates.po to Lithuanian
+# Header entry was created by KBabel!
+#
+#: projecttemplates:serrnosuchtemplate
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Mime-Version: 1.0"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-08-27 18:38+0300\n"
+"Project-Id-Version: projecttemplates\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr "\"%s\": nėra tokio šablono."
+
+#: projecttemplates:serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr "Nepavyko sukurti katalogą \"%s\""
+
+#: projecttemplates:serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Nepavyko failą \"%s\" kopijuoti į  \"%s\""
+
