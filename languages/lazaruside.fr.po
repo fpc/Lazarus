@@ -1687,6 +1687,10 @@ msgstr "Conflit"
 msgid "Conflict found"
 msgstr "	Conflit trouvé "
 
+#: lazarusidestrconsts:lisconsoleapplication
+msgid "Console application"
+msgstr ""
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Le nom du constructeur doit être 'init' (le destructeur doit être 'done')"
@@ -2314,6 +2318,10 @@ msgstr "Editeur de différences "
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr "Sens"
+
+#: lazarusidestrconsts:lisdirectives
+msgid "Directives"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -4644,16 +4652,16 @@ msgid "Level 0 (no extra Optimizations)"
 msgstr "Niveau 0 (pas d'optimisations additionnelles)"
 
 #: lazarusidestrconsts:dlglevel1opt
-msgid "Level 1 (Quick Optimizations)"
-msgstr "Niveau 1 (optimisations rapides)"
+msgid "Level 1 (quick and debugger friendly)"
+msgstr ""
 
 #: lazarusidestrconsts:dlglevel2opt
-msgid "Level 2 (Level 1 + Slower Optimizations)"
-msgstr "Niveau 2 (niveau 1 + optimisations plus lentes)"
+msgid "Level 2 (Level 1 + quick optimizations)"
+msgstr ""
 
 #: lazarusidestrconsts:dlglevel3opt
-msgid "Level 3 (Level 2 + Uncertain)"
-msgstr "Niveau 3 (niveau 2 + incertitudes)"
+msgid "Level 3 (Level 2 + slow optimizations)"
+msgstr ""
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -4718,6 +4726,10 @@ msgstr "Editeur de liens"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Edition des liens"
+
+#: lazarusidestrconsts:rslanguagelithuanian
+msgid "Lithuanian"
+msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -9674,6 +9686,10 @@ msgstr "Evaluer/Modifier"
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr "Où est écrit le fichier de déboguage. Si on ne l'indique pas, la sortie de déboguage est écrit sur la console. "
+
+#: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
+msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

@@ -1,14 +1,9 @@
-# translation of codetoolsstrconsts.po to Lithuanian
-# Header entry was created by KBabel!
-#
-#: codetoolsstrconsts:ctsothercompilerdefines
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of codetoolsstrconsts.po to Lithuanian Header entry was created by KBabel!: codetoolsstrconsts:ctsothercompilerdefines Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Mime-Version: 1.0"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "PO-Revision-Date: 2007-08-27 21:19+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian\n"
@@ -259,6 +254,10 @@ msgstr "JITForm katalogas"
 msgid "Lazarus Sources"
 msgstr "Lazarus pirminis kodas"
 
+#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr "Įdėtiniai komentarai įgalinti"
@@ -507,6 +506,10 @@ msgstr "failas \"%s\" neegzistuoja"
 msgid "file is read only"
 msgstr "failas tik skaitymui"
 
+#: codetoolsstrconsts:ctsgenericidentifier
+msgid "generic identifier"
+msgstr ""
+
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr "gtk2 interfeiso katalogas"
@@ -539,7 +542,7 @@ msgstr "rastas klaidinga patiksla %s"
 msgid "implementation node not found"
 msgstr "nerastas realizacijos mazgas"
 
-#: codetoolsstrconsts:įdėjimo 
+#: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
 msgstr "įdėjimo katalogai: %s"
 

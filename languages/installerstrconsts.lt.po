@@ -1,33 +1,28 @@
-# translation of installerstrconsts.po to Lithuanian
-# Header entry was created by KBabel!
-#
-#: installerstrconsts:wiseditsource
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of installerstrconsts.po to Lithuanian Header entry was created by KBabel!: installerstrconsts:wiseditsource Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Mime-Version: 1.0"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "PO-Revision-Date: 2007-08-18 13:09+0300\n"
 "Project-Id-Version: installerstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
 
-#: installerstrconsts:wiseditsource
-msgid "&Edit source"
-msgstr "&Keisti išeities kodą"
-
 #: installerstrconsts:wiseditform
 msgid "&Edit form"
 msgstr "&Keisti formą"
 
-#: installerstrconsts:wisopenproject
-msgid "&Open project"
-msgstr "&Atverti projektą"
+#: installerstrconsts:wiseditsource
+msgid "&Edit source"
+msgstr "&Keisti išeities kodą"
 
 #: installerstrconsts:wisopenpackage
 msgid "&Open package"
 msgstr "&Atverti paketą"
+
+#: installerstrconsts:wisopenproject
+msgid "&Open project"
+msgstr "&Atverti projektą"
 

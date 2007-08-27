@@ -1685,6 +1685,10 @@ msgstr "Konflikt "
 msgid "Conflict found"
 msgstr ""
 
+#: lazarusidestrconsts:lisconsoleapplication
+msgid "Console application"
+msgstr ""
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Konstruktor musi nazywaæ siê 'init' (destruktor - 'done')"
@@ -2312,6 +2316,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr "Kierunek"
+
+#: lazarusidestrconsts:lisdirectives
+msgid "Directives"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -4642,16 +4650,16 @@ msgid "Level 0 (no extra Optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel1opt
-msgid "Level 1 (Quick Optimizations)"
-msgstr "Poziom 1 (szybkie optymalizacje)"
+msgid "Level 1 (quick and debugger friendly)"
+msgstr ""
 
 #: lazarusidestrconsts:dlglevel2opt
-msgid "Level 2 (Level 1 + Slower Optimizations)"
-msgstr "Poziom 2 (Poziom 1 + wolniejsze optymalizacje)"
+msgid "Level 2 (Level 1 + quick optimizations)"
+msgstr ""
 
 #: lazarusidestrconsts:dlglevel3opt
-msgid "Level 3 (Level 2 + Uncertain)"
-msgstr "Poziom 3 (Poziom 2 + mniej istotne)"
+msgid "Level 3 (Level 2 + slow optimizations)"
+msgstr ""
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -4716,6 +4724,10 @@ msgstr "Linker"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "£¹czenie"
+
+#: lazarusidestrconsts:rslanguagelithuanian
+msgid "Lithuanian"
+msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -9671,6 +9683,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
+msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

@@ -242,6 +242,10 @@ msgstr ""
 msgid "Lazarus Sources"
 msgstr ""
 
+#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr ""
@@ -489,6 +493,10 @@ msgstr ""
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "Tiedosto on vain luettavissa"
+
+#: codetoolsstrconsts:ctsgenericidentifier
+msgid "generic identifier"
+msgstr ""
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

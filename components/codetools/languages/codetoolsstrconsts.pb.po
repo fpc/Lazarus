@@ -242,6 +242,10 @@ msgstr "Diretorio JITForm"
 msgid "Lazarus Sources"
 msgstr "Fontes do Lazarus"
 
+#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr "Comentarios Aninhados"
@@ -489,6 +493,10 @@ msgstr "arquivo \"%s\" nao existe"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "arquivo e somente-leitura"
+
+#: codetoolsstrconsts:ctsgenericidentifier
+msgid "generic identifier"
+msgstr ""
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

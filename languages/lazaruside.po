@@ -3567,15 +3567,15 @@ msgid "Level 0 (no extra Optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel1opt
-msgid "Level 1 (Quick Optimizations)"
+msgid "Level 1 (quick and debugger friendly)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel2opt
-msgid "Level 2 (Level 1 + Slower Optimizations)"
+msgid "Level 2 (Level 1 + quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel3opt
-msgid "Level 3 (Level 2 + Uncertain)"
+msgid "Level 3 (Level 2 + slow optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtargetos
@@ -5960,6 +5960,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagelithuanian
+msgid "Lithuanian"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
@@ -9698,6 +9702,14 @@ msgstr ""
 msgid "Program"
 msgstr ""
 
+#: lazarusidestrconsts:lisconsoleapplication
+msgid "Console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
+msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgstr ""
@@ -10268,5 +10280,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazaruside
 msgid "Lazarus IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lisdirectives
+msgid "Directives"
 msgstr ""
 

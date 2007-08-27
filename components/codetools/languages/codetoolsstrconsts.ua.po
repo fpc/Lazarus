@@ -242,6 +242,10 @@ msgstr "Тека JITForm"
 msgid "Lazarus Sources"
 msgstr "Коди lazarus"
 
+#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr "Ввімкн. вкладені коментарі"
@@ -489,6 +493,10 @@ msgstr "файл \"%s\" не існує"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "файл тільки для читання"
+
+#: codetoolsstrconsts:ctsgenericidentifier
+msgid "generic identifier"
+msgstr ""
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

@@ -1685,6 +1685,10 @@ msgstr ""
 msgid "Conflict found"
 msgstr ""
 
+#: lazarusidestrconsts:lisconsoleapplication
+msgid "Console application"
+msgstr ""
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr ""
@@ -2311,6 +2315,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
+msgstr ""
+
+#: lazarusidestrconsts:lisdirectives
+msgid "Directives"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
@@ -4642,15 +4650,15 @@ msgid "Level 0 (no extra Optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel1opt
-msgid "Level 1 (Quick Optimizations)"
+msgid "Level 1 (quick and debugger friendly)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel2opt
-msgid "Level 2 (Level 1 + Slower Optimizations)"
+msgid "Level 2 (Level 1 + quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel3opt
-msgid "Level 3 (Level 2 + Uncertain)"
+msgid "Level 3 (Level 2 + slow optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:lislevels
@@ -4715,6 +4723,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagelithuanian
+msgid "Lithuanian"
 msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
@@ -9671,6 +9683,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
+msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

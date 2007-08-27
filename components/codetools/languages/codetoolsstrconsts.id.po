@@ -255,6 +255,10 @@ msgstr "Direktori JITForm"
 msgid "Lazarus Sources"
 msgstr "Sumber Lazarus"
 
+#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr "Komentar Berulang On"
@@ -502,6 +506,10 @@ msgstr "file \"%s\" tidak ada"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "file hanya baca"
+
+#: codetoolsstrconsts:ctsgenericidentifier
+msgid "generic identifier"
+msgstr ""
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

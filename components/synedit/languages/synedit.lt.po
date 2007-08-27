@@ -1,59 +1,42 @@
-# translation of synedit.po to Lithuanian
-# Header entry was created by KBabel!
-#
-#: syneditstrconst:syns_exporterformathtml
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of synedit.po to Lithuanian Header entry was created by KBabel!: syneditstrconst:syns_exporterformathtml Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Mime-Version: 1.0"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "PO-Revision-Date: 2007-08-27 18:34+0300\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
 
-#: syneditstrconst:syns_exporterformathtml
-msgid "HTML"
-msgstr "HTML"
-
-#: syneditstrconst:syns_exporterformatrtf
-msgid "RTF"
-msgstr "RTF"
-
 #: syneditstrconst:syns_scrollinfofmt
 msgid "%d - %d"
 msgstr "%d - %d"
 
-#: syneditstrconst:syns_scrollinfofmttop
-msgid "Top Line: %d"
-msgstr "Viršutinė eilutė: %d"
-
-#: syneditstrconst:syns_previewscrollinfofmt
-msgid "Page: %d"
-msgstr "Lapas: %d"
-
-#: syneditstrconst:syns_eduplicateshortcut
-msgid "Shortcut already exists"
-msgstr "Toks šaukinys jau yra"
+#: syneditstrconst:syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "68HC11 asemblerio failai (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst:syns_shortcutnone
 msgid "<none>"
 msgstr "<nieks>"
 
-#: syneditstrconst:syns_duplicateshortcutmsg
-msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "Klavišo paspaudimas \"%s\" jau yra priskirtas kitai redaktoriaus komandai. (%s)"
+#: syneditstrconst:syns_filterawk
+msgid "AWK Script (*.awk)|*.awk"
+msgstr "AWK scenarijus (*.awk)|*.awk"
 
-#: syneditstrconst:syns_filterpascal
-msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
-msgstr "Paskalio failai (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+#: syneditstrconst:syns_filterbaan
+msgid "Baan 4GL Files (*.cln)|*.cln"
+msgstr "Baan 4GL failai (*.cln)|*.cln"
 
-#: syneditstrconst:syns_filterhp48
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "HP48 failai (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+#: syneditstrconst:syns_filterdfm
+msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr "Borland formos failai (*.dfm;*.xfm)|*.dfm;*.xfm"
+
+#: syneditstrconst:syns_filtercpp
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr "C++ failai (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
@@ -67,94 +50,6 @@ msgstr "CORBA IDL failai (*.idl)|*.idl"
 msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 msgstr "CPM ataskaitos (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 
-#: syneditstrconst:syns_filtercpp
-msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr "C++ failai (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-
-#: syneditstrconst:syns_filterjava
-msgid "Java Files (*.java)|*.java"
-msgstr "Java failai (*.java)|*.java"
-
-#: syneditstrconst:syns_filterperl
-msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
-msgstr "Perl failai (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
-
-#: syneditstrconst:syns_filterawk
-msgid "AWK Script (*.awk)|*.awk"
-msgstr "AWK scenarijus (*.awk)|*.awk"
-
-#: syneditstrconst:syns_filterhtml
-msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
-msgstr "HTML dokumentas (*.htm,*.html)|*.htm;*.html"
-
-#: syneditstrconst:syns_filtervbscript
-msgid "VBScript Files (*.vbs)|*.vbs"
-msgstr "VBScript failai (*.vbs)|*.vbs"
-
-#: syneditstrconst:syns_filtergalaxy
-msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "Galaxy failai (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-
-#: syneditstrconst:syns_filterpython
-msgid "Python Files (*.py)|*.py"
-msgstr "Python failai (*.py)|*.py"
-
-#: syneditstrconst:syns_filtersql
-msgid "SQL Files (*.sql)|*.sql"
-msgstr "SQL failai (*.sql)|*.sql"
-
-#: syneditstrconst:syns_filterhp
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr "HP48 failai (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-
-#: syneditstrconst:syns_filtertcltk
-msgid "Tcl/Tk Files (*.tcl)|*.tcl"
-msgstr "Tcl/Tk failai (*.tcl)|*.tcl"
-
-#: syneditstrconst:syns_filterrtf
-msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "Raiškiojo teksto formatas (*.rtf)|*.rtf"
-
-#: syneditstrconst:syns_filterbatch
-msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "MS-DOS komandų failai (*.bat;*.cmd)|*.bat;*.cmd"
-
-#: syneditstrconst:syns_filterdfm
-msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
-msgstr "Borland formos failai (*.dfm;*.xfm)|*.dfm;*.xfm"
-
-#: syneditstrconst:syns_filterlfm
-msgid "Lazarus Form Files (*.lfm)|*.lfm"
-msgstr "Lazarus formos failai (*.lfm)|*.lfm"
-
-#: syneditstrconst:syns_filterx86asm
-msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "x86 asemblerio failai (*.asm)|*.ASM"
-
-#: syneditstrconst:syns_filtergembase
-msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
-msgstr "GEMBASE failai (*.dml,*.gem)|*.DML;*.GEM"
-
-#: syneditstrconst:syns_filterini
-msgid "INI Files (*.ini)|*.ini"
-msgstr "INI failai (*.ini)|*.ini"
-
-#: syneditstrconst:syns_filtersml
-msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "Standard ML failai (*.sml)|*.sml"
-
-#: syneditstrconst:syns_filtervisualbasic
-msgid "Visual Basic Files (*.bas)|*.bas"
-msgstr "Visual Basic failai (*.bas)|*.bas"
-
-#: syneditstrconst:syns_filteradsp21xx
-msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr "DSP failai (*.dsp,*.inc)|*.DSP;*.INC"
-
-#: syneditstrconst:syns_filterphp
-msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-msgstr "PHP failai (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-
 #: syneditstrconst:syns_filtercache
 msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 msgstr "Cache failai (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
@@ -162,6 +57,58 @@ msgstr "Cache failai (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 #: syneditstrconst:syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
 msgstr "Pakopiniai stiliai (*.css)|*.css"
+
+#: syneditstrconst:syns_filteradsp21xx
+msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr "DSP failai (*.dsp,*.inc)|*.DSP;*.INC"
+
+#: syneditstrconst:syns_filterfortran
+msgid "Fortran Files (*.for)|*.for"
+msgstr "Fortran failai (*.for)|*.for"
+
+#: syneditstrconst:syns_filterfoxpro
+msgid "Foxpro Files (*.prg)|*.prg"
+msgstr "Foxpro failai (*.prg)|*.prg"
+
+#: syneditstrconst:syns_filtergembase
+msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
+msgstr "GEMBASE failai (*.dml,*.gem)|*.DML;*.GEM"
+
+#: syneditstrconst:syns_filtergws
+msgid "GW-TEL Script Files (*.gws)|*.gws"
+msgstr "GW-TEL scenarijaus failai (*.gws)|*.gws"
+
+#: syneditstrconst:syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "Galaxy failai (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+
+#: syneditstrconst:syns_filterhp
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
+msgstr "HP48 failai (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
+
+#: syneditstrconst:syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "HP48 failai (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+
+#: syneditstrconst:syns_exporterformathtml
+msgid "HTML"
+msgstr "HTML"
+
+#: syneditstrconst:syns_filterhtml
+msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
+msgstr "HTML dokumentas (*.htm,*.html)|*.htm;*.html"
+
+#: syneditstrconst:syns_filterini
+msgid "INI Files (*.ini)|*.ini"
+msgstr "INI failai (*.ini)|*.ini"
+
+#: syneditstrconst:syns_filterinno
+msgid "Inno Setup Script Files (*.iss)|*.iss"
+msgstr "Inno Setup scenarijaus failai (*.iss)|*.iss"
+
+#: syneditstrconst:syns_filterjava
+msgid "Java Files (*.java)|*.java"
+msgstr "Java failai (*.java)|*.java"
 
 #: syneditstrconst:syns_filterjscript
 msgid "Javascript Files (*.js)|*.js"
@@ -171,29 +118,13 @@ msgstr "Javascript failai (*.js)|*.js"
 msgid "KiXtart scripts (*.kix)|*.kix"
 msgstr "KiXtart scenarijai (*.kix)|*.kix"
 
-#: syneditstrconst:syns_filterbaan
-msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr "Baan 4GL failai (*.cln)|*.cln"
+#: syneditstrconst:syns_filterlfm
+msgid "Lazarus Form Files (*.lfm)|*.lfm"
+msgstr "Lazarus formos failai (*.lfm)|*.lfm"
 
-#: syneditstrconst:syns_filterfoxpro
-msgid "Foxpro Files (*.prg)|*.prg"
-msgstr "Foxpro failai (*.prg)|*.prg"
-
-#: syneditstrconst:syns_filterfortran
-msgid "Fortran Files (*.for)|*.for"
-msgstr "Fortran failai (*.for)|*.for"
-
-#: syneditstrconst:syns_filterasm68hc11
-msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "68HC11 asemblerio failai (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-
-#: syneditstrconst:syns_filterprogress
-msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "Progress failai (*.w,*.p,*.i)|*.w;*.p;*.i"
-
-#: syneditstrconst:syns_filterinno
-msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Inno Setup scenarijaus failai (*.iss)|*.iss"
+#: syneditstrconst:syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "MS-DOS komandų failai (*.bat;*.cmd)|*.bat;*.cmd"
 
 #: syneditstrconst:syns_filtermodelica
 msgid "Modelica Files (*.mo)|*.mo"
@@ -203,27 +134,91 @@ msgstr "Modelica failai (*.mo)|*.mo"
 msgid "Modula-3 Files (*.m3)|*.m3"
 msgstr "Modula-3 failai (*.m3)|*.m3"
 
+#: syneditstrconst:syns_filtersyngenmsgfiles
+msgid "Msg files (*.msg)|*.msg"
+msgstr "Msg failai (*.msg)|*.msg"
+
+#: syneditstrconst:syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "PHP failai (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+
+#: syneditstrconst:syns_previewscrollinfofmt
+msgid "Page: %d"
+msgstr "Lapas: %d"
+
+#: syneditstrconst:syns_filterpascal
+msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr "Paskalio failai (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+
+#: syneditstrconst:syns_filterperl
+msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr "Perl failai (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+
+#: syneditstrconst:syns_filterprogress
+msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr "Progress failai (*.w,*.p,*.i)|*.w;*.p;*.i"
+
+#: syneditstrconst:syns_filterpython
+msgid "Python Files (*.py)|*.py"
+msgstr "Python failai (*.py)|*.py"
+
+#: syneditstrconst:syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
+
+#: syneditstrconst:syns_filterrtf
+msgid "Rich Text Format (*.rtf)|*.rtf"
+msgstr "Raiškiojo teksto formatas (*.rtf)|*.rtf"
+
+#: syneditstrconst:syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "SQL failai (*.sql)|*.sql"
+
 #: syneditstrconst:syns_filtersdd
 msgid "Semanta DD files (*.sdd)|*.sdd"
 msgstr "Semanta DD failai (*.sdd)|*.sdd"
 
-#: syneditstrconst:syns_filterxml
-msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "XML dokumentas (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+#: syneditstrconst:syns_eduplicateshortcut
+msgid "Shortcut already exists"
+msgstr "Toks šaukinys jau yra"
 
-#: syneditstrconst:syns_filtergws
-msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "GW-TEL scenarijaus failai (*.gws)|*.gws"
+#: syneditstrconst:syns_filtersml
+msgid "Standard ML Files (*.sml)|*.sml"
+msgstr "Standard ML failai (*.sml)|*.sml"
 
-#: syneditstrconst:syns_filtersyngenmsgfiles
-msgid "Msg files (*.msg)|*.msg"
-msgstr "Msg failai (*.msg)|*.msg"
+#: syneditstrconst:syns_filtertcltk
+msgid "Tcl/Tk Files (*.tcl)|*.tcl"
+msgstr "Tcl/Tk failai (*.tcl)|*.tcl"
+
+#: syneditstrconst:syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr "TeX failai (*.tex)|*.tex"
+
+#: syneditstrconst:syns_duplicateshortcutmsg
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "Klavišo paspaudimas \"%s\" jau yra priskirtas kitai redaktoriaus komandai. (%s)"
+
+#: syneditstrconst:syns_scrollinfofmttop
+msgid "Top Line: %d"
+msgstr "Viršutinė eilutė: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
 msgstr "UNIX apvalkalo scenarijus (*.sh)|*.sh"
 
-#: syneditstrconst:syns_filtertex
-msgid "TeX Files (*.tex)|*.tex"
-msgstr "TeX failai (*.tex)|*.tex"
+#: syneditstrconst:syns_filtervbscript
+msgid "VBScript Files (*.vbs)|*.vbs"
+msgstr "VBScript failai (*.vbs)|*.vbs"
+
+#: syneditstrconst:syns_filtervisualbasic
+msgid "Visual Basic Files (*.bas)|*.bas"
+msgstr "Visual Basic failai (*.bas)|*.bas"
+
+#: syneditstrconst:syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "XML dokumentas (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+
+#: syneditstrconst:syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr "x86 asemblerio failai (*.asm)|*.ASM"
 

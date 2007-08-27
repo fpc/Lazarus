@@ -253,6 +253,10 @@ msgstr "Katalog JITForm"
 msgid "Lazarus Sources"
 msgstr "¼ród³a lazarusa"
 
+#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr "W³±czone zagnie¿d¿anie komentarzy"
@@ -500,6 +504,10 @@ msgstr "plik \"%s\" nie istnieje"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "plik jest tylko do odczytu"
+
+#: codetoolsstrconsts:ctsgenericidentifier
+msgid "generic identifier"
+msgstr ""
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
