@@ -45,7 +45,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Graphics, LCLType, 
+  LCLType, Controls, Forms, Graphics,
   winceproc, WinCEInt, Sysutils,WSProc,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSImgList, WSControls,
@@ -426,8 +426,9 @@ begin
   {$ENDIF}
   suppressMove := false;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
-//  if not suppressMove then
-//    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+  // Don't move forms, it doesn't work (yet), I don't know why
+  if not suppressMove and not (AWinControl is TCustomForm) then
+    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
   LCLControlSizeNeedsUpdate(AWinControl, false);
 end;
 
