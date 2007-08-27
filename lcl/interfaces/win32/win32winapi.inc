@@ -3268,6 +3268,7 @@ function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Intege
     Header.biCompression := BI_RGB;
 
     Result := Windows.CreateDIBitmap(SrcDC, Header, CBM_INIT, Data, Windows.TBitmapInfo((@Header)^), DIB_RGB_COLORS);
+    Freemem(Data);
   end;
 var
   MaskDC, CopyDC, AlphaDC: HDC;
