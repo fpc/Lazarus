@@ -553,7 +553,17 @@ type
   { TQtAbstractItemView }
 
   TQtAbstractItemView = class(TQtAbstractScrollArea)
+  private
+    FOldDelegate: QAbstractItemDelegateH;
+    FNewDelegate: QLCLItemDelegateH;
+    function GetOwnerDrawn: Boolean;
+    procedure SetOwnerDrawn(const AValue: Boolean);
   public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
+  public
+    procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl;
+    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; virtual;
   end;
 
   { TQtListView }
@@ -581,6 +591,7 @@ type
     procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
     procedure SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
     procedure SignalItemClicked(item: QListWidgetItemH); cdecl;
+    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
@@ -4588,15 +4599,35 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtListWidget.SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
 var
-  Msg: TLMessage;
+  Msg: TLMMouse;
+  MousePos: TQtPoint;
+  Modifiers: QtKeyboardModifiers;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  QCursor_pos(@MousePos);
+  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
+  OffsetMousePos(@MousePos);
+  Msg.Keys := 0;
+
+  Modifiers := QApplication_keyboardModifiers();
+  if Modifiers and qtShiftModifier <> 0 then
+    Msg.Keys := Msg.Keys or MK_SHIFT;
+  if Modifiers and qtControlModifier <> 0 then
+    Msg.Keys := Msg.Keys or MK_CONTROL;
+
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
+
   Msg.Msg := LM_LBUTTONDBLCLK;
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  Msg.Keys := MK_LBUTTON;
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
+  Msg.Msg := LM_PRESSED;
+  DeliverMessage(Msg);
+  Msg.Msg := LM_LBUTTONUP;
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
+  Msg.Msg := LM_RELEASED;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -4606,15 +4637,79 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtListWidget.SignalItemClicked(item: QListWidgetItemH); cdecl;
 var
-  Msg: TLMessage;
+  Msg: TLMMouse;
+  MousePos: TQtPoint;
+  Modifiers: QtKeyboardModifiers;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := LM_CLICKED;
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  QCursor_pos(@MousePos);
+  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
+  OffsetMousePos(@MousePos);
+  Msg.Keys := 0;
+
+  Modifiers := QApplication_keyboardModifiers();
+  if Modifiers and qtShiftModifier <> 0 then
+    Msg.Keys := Msg.Keys or MK_SHIFT;
+  if Modifiers and qtControlModifier <> 0 then
+    Msg.Keys := Msg.Keys or MK_CONTROL;
+
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
+
+  Msg.Msg := LM_LBUTTONDOWN;
+  Msg.Keys := MK_LBUTTON;
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
+  Msg.Msg := LM_PRESSED;
+  DeliverMessage(Msg);
+  Msg.Msg := LM_LBUTTONUP;
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
+  Msg.Msg := LM_RELEASED;
+  DeliverMessage(Msg);
+end;
+
+procedure TQtListWidget.ItemDelegatePaint(painter: QPainterH;
+  option: QStyleOptionViewItemH; index: QModelIndexH); cdecl;
+var
+  Msg: TLMDrawListItem;
+  DrawStruct: TDrawListItemStruct;
+  State: QStyleState;
+begin
+  QPainter_save(painter);
+  State := QStyleOption_state(option);
+  DrawStruct.ItemID := QModelIndex_row(index);
+
+  QAbstractItemView_visualRect(QAbstractItemViewH(Widget), @DrawStruct.Area, index);
+  DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
+
+  DrawStruct.ItemState := [];
+  // selected
+  if (State and QStyleState_Selected) <> 0 then
+    Include(DrawStruct.ItemState, odSelected);
+  // disabled
+  if (State and QStyleState_Enabled) = 0 then
+    Include(DrawStruct.ItemState, odDisabled);
+  // focused (QStyleState_FocusAtBorder?)
+  if (State and QStyleState_HasFocus) <> 0 then
+    Include(DrawStruct.ItemState, odFocused);
+  // hotlight
+  if (State and QStyleState_MouseOver) <> 0 then
+    Include(DrawStruct.ItemState, odHotLight);
+
+  { todo: over states:
+  
+    odGrayed, odChecked,
+    odDefault, odInactive, odNoAccel,
+    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
+    odPainted
+  }
+  Msg.Msg := LM_DRAWLISTITEM;
+  Msg.DrawListItemStruct := @DrawStruct;
+  DeliverMessage(Msg);
+
+  QPainter_restore(painter);
+  
+  TQtDeviceContext(DrawStruct.DC).Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -5977,6 +6072,68 @@ function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FStopMouseEventsProcessing := True;
   Result := QWidget_create;
+end;
+
+{ TQtAbstractItemView }
+
+function TQtAbstractItemView.GetOwnerDrawn: Boolean;
+begin
+  Result := FNewDelegate <> nil;
+end;
+
+procedure TQtAbstractItemView.SetOwnerDrawn(const AValue: Boolean);
+var
+  Method: TMethod;
+begin
+  if FNewDelegate = nil then
+  begin
+    FNewDelegate := QLCLItemDelegate_create(Widget);
+
+    QLCLItemDelegate_sizeHint_Override(Method) := ItemDelegateSizeHint;
+    QLCLItemDelegate_override_sizeHint(FNewDelegate, Method);
+
+    QLCLItemDelegate_paint_Override(Method) := ItemDelegatePaint;
+    QLCLItemDelegate_override_Paint(FNewDelegate, Method);
+
+    FOldDelegate := QAbstractItemView_itemDelegate(QAbstractItemViewH(Widget));
+    QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FNewDelegate);
+  end
+  else
+  begin
+    QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FOldDelegate);
+    QLCLItemDelegate_destroy(FNewDelegate);
+    FNewDelegate := nil;
+  end;
+end;
+
+constructor TQtAbstractItemView.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(AWinControl, AParams);
+  FOldDelegate := nil;
+  FNewDelegate := nil;
+end;
+
+procedure TQtAbstractItemView.ItemDelegateSizeHint(
+  option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl;
+var
+  Msg: TLMMeasureItem;
+  MeasureItemStruct: TMeasureItemStruct;
+begin
+  MeasureItemStruct.itemID := QModelIndex_row(index);
+  MeasureItemStruct.itemWidth := Size^.cx;
+  MeasureItemStruct.itemHeight := Size^.cy;
+  Msg.Msg := LM_MEASUREITEM;
+  Msg.MeasureItemStruct := @MeasureItemStruct;
+  DeliverMessage(Msg);
+  Size^.cx := MeasureItemStruct.itemWidth;
+  Size^.cy := MeasureItemStruct.itemHeight;
+end;
+
+procedure TQtAbstractItemView.ItemDelegatePaint(painter: QPainterH;
+  option: QStyleOptionViewItemH; index: QModelIndexH); cdecl;
+begin
+  // should be overrided
 end;
 
 end.

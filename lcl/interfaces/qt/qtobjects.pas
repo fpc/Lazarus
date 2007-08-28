@@ -220,6 +220,7 @@ type
 
   TQtDeviceContext = class(TObject)
   private
+    FOwnPainter: Boolean;
     SelFont: TQTFont;
     SelBrush: TQTBrush;
     SelPen: TQtPen;
@@ -242,8 +243,10 @@ type
     vTextColor: TColor;
   public
     { Our own functions }
-    constructor Create(AWidget: QWidgetH; Const APaintEvent: Boolean = False); virtual;
+    constructor Create(AWidget: QWidgetH; const APaintEvent: Boolean = False); virtual;
+    constructor CreateFromPainter(APainter: QPainterH);
     destructor Destroy; override;
+    procedure CreateObjects;
     function CreateDCData: PQtDCDATA;
     function RestoreDCData(var DCData: PQtDCData): boolean;
     procedure DebugClipRect(const msg: string);
@@ -399,9 +402,6 @@ function QtDefaultContext: TQtDeviceContext;
 function QtScreenContext: TQtDeviceContext;
 
 implementation
-
-uses
-  qtwidgets;
 
 const
   ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
@@ -1168,7 +1168,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtDeviceContext.Create(AWidget: QWidgetH; Const APaintEvent: Boolean = False);
+constructor TQtDeviceContext.Create(AWidget: QWidgetH; const APaintEvent: Boolean = False);
 var
   W: Integer;
   H: Integer;
@@ -1203,9 +1203,57 @@ begin
     else
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
+  FOwnPainter := True;
+  CreateObjects;
+end;
+
+constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
+begin
+  Widget := APainter;
+  Parent := nil;
+  FOwnPainter := False;
+  CreateObjects;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtDeviceContext.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtDeviceContext.Destroy');
+  {$endif}
+
+  if (vClipRect <> nil) then
+    dispose(vClipRect);
+
+  if Parent <> nil then
+  begin  
+    vFont.Widget := nil;
+    vFont.Free;
+    vBrush.Widget := nil;
+    vBrush.Free;
+    vPen.Widget := nil;
+    vPen.Free;
+    vRegion.Widget := nil;
+    vRegion.Free;
+    vBackgroundBrush.Widget := nil;
+    vBackgroundBrush.Free;
+  end;
   
+  if (Widget <> nil) and FOwnPainter then
+    QPainter_destroy(Widget);
 
+  if ParentPixmap <> nil then
+    QPixmap_destroy(ParentPixmap);
 
+  inherited Destroy;
+end;
+
+procedure TQtDeviceContext.CreateObjects;
+begin
   if Parent <> nil then
   begin
     vFont := TQtFont.Create(False);
@@ -1222,58 +1270,14 @@ begin
 
     vBackgroundBrush := TQtBrush.Create(False);
     vBackgroundBrush.Owner := Self;
-
   end else
   begin
     vBrush := TQtBrush(GetStockObject(WHITE_BRUSH));
 		vBackgroundBrush := vBrush;
     vPen := TQtPen(GetStockObject(BLACK_PEN));
   end;
-  
+
   vTextColor := ColorToRGB(clWindowText);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtDeviceContext.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtDeviceContext.Destroy;
-var
-  StockFont: TQtFont;
-  StockBrush: TQtBrush;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.Destroy');
-  {$endif}
-
-  if (vClipRect <> nil) then
-    dispose(vClipRect);
-
-
-  if Parent <> nil then
-  begin  
-    vFont.Widget := nil;
-    vFont.Free;
-    vBrush.Widget := nil;
-    vBrush.Free;
-    vPen.Widget := nil;
-    vPen.Free;
-    vRegion.Widget := nil;
-    vRegion.Free;
-    vBackgroundBrush.Widget := nil;
-    vBackgroundBrush.Free;
-  end;
-  
-  if Widget <> nil then
-  begin
-    QPainter_destroy(Widget);
-  end;
-
-  if ParentPixmap <> nil then
-    QPixmap_destroy(ParentPixmap);
-
-  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -2182,7 +2186,6 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
     Data: QByteArrayH;
     DataStream: TMemoryStream;
     I: Integer;
-    P: PChar = 'test';
   begin
     MimeData := QMimeData_create();
     DataStream := TMemoryStream.Create;

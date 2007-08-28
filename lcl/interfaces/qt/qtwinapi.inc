@@ -701,8 +701,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DeleteDC(hDC: HDC): Boolean;
-var
-  Painter: QPainterH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DeleteDC] Handle: ', dbghex(hDC));

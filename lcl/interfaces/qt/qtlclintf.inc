@@ -243,7 +243,7 @@ begin
   else
     ImageFormat := QImageFormat_ARGB32;
   end;
-  ABitmap := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, ImageFormat));
+  ABitmap := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, ImageFormat, True));
   Result := ABitmap <> 0;
   
   if ASkipMask then Exit;
@@ -253,7 +253,7 @@ begin
   NewData := GetMem(ARawImage.MaskSize);
   Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
 
-  AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono));
+  AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono, True));
 end;
 
 {------------------------------------------------------------------------------

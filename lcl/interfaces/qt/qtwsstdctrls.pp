@@ -134,6 +134,7 @@ type
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
 //    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
@@ -446,7 +447,7 @@ var
   QtListWidget: TQtListWidget;
   SelMode: QAbstractItemViewSelectionMode;
 begin
-  QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
+  QtListWidget := TQtListWidget.Create(AWinControl, AParams);
   
   SelMode := QAbstractItemViewSingleSelection;
   if TCustomListBox(AWinControl).MultiSelect
@@ -463,6 +464,7 @@ begin
   // create our FList helper
   QtListWidget.FList := TQtListStrings.Create(QListWidgetH(QtListWidget.Widget), TCustomListBox(AWinControl));
 
+  QtListWidget.OwnerDrawn := TCustomListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
   Result := THandle(QtListWidget);
 end;
@@ -623,6 +625,12 @@ class procedure TQtWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBo
   AList: TStrings; ASorted: boolean);
 begin
 
+end;
+
+class procedure TQtWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+begin
+  TQtListWidget(ACustomListBox.Handle).OwnerDrawn :=
+    ACustomListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 end;
 
 {------------------------------------------------------------------------------

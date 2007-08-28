@@ -231,13 +231,14 @@ procedure TCustomListBox.LMMeasureItem(var TheMessage: TLMMeasureItem);
 var
   AHeight: Integer;
 begin
-  with TheMessage.MeasureItemStruct^ do begin
+  with TheMessage.MeasureItemStruct^ do 
+  begin
     if Self.ItemHeight <> 0 then
       AHeight := Self.ItemHeight
     else
-      Aheight := ItemHeight;
+      AHeight := ItemHeight;
     MeasureItem(ItemId, AHeight);
-    if AHeight>0 then
+    if AHeight > 0 then
       ItemHeight := AHeight;
   end;
 end;
@@ -561,7 +562,7 @@ end;
 procedure TCustomListBox.MeasureItem(Index: Integer; var TheHeight: Integer);
 begin
   if Assigned(OnMeasureItem) then
-    OnMeasureItem(Self,Index,TheHeight);
+    OnMeasureItem(Self, Index, TheHeight);
 end;
 
 {------------------------------------------------------------------------------
