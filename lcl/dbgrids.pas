@@ -1747,7 +1747,7 @@ procedure TCustomDBGrid.DoPrepareCanvas(aCol, aRow: Integer;
 var
   DataCol: Integer;
 begin
-  if (ARow>=FixedRows) and Assigned(OnPrepareCanvas) then begin
+  if Assigned(OnPrepareCanvas) and (ARow>=FixedRows) then begin
     DataCol := ColumnIndexFromGridColumn(aCol);
     if DataCol>=0 then
       OnPrepareCanvas(Self, DataCol, TColumn(Columns[DataCol]), aState);
@@ -1770,7 +1770,7 @@ end;
 
 procedure TCustomDBGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
-  if IsColumn and Assigned(OnTitleClick) then
+  if Assigned(OnTitleClick) and IsColumn then
     OnTitleClick(TColumn(ColumnFromGridColumn(Index)));
 end;
 
