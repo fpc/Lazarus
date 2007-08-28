@@ -28,9 +28,9 @@ uses
 type
   TXPMImage = class(TFPImageBitmap)
   protected
-    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
   public
     constructor Create; override;
     class function GetFileExtensions: string; override;
@@ -48,13 +48,13 @@ implementation
 
 { TXPMImage }
 
-procedure TXPMImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TXPMImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
 var
   XPMReader: TFPReaderXPM;
 begin
   if ImgReader is TFPReaderXPM then begin
   end;
-  inherited InitFPImageReader(ImgReader);
+  inherited InitFPImageReader(IntfImg, ImgReader);
 end;
 
 procedure TXPMImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
@@ -67,7 +67,7 @@ begin
   inherited FinalizeFPImageReader(ImgReader);
 end;
 
-procedure TXPMImage.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TXPMImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
 var
   XPMWriter: TFPWriterXPM;
 begin
@@ -75,7 +75,7 @@ begin
     XPMWriter:=TFPWriterXPM(ImgWriter);
     if XPMWriter<>nil then ;
   end;
-  inherited InitFPImageWriter(ImgWriter);
+  inherited InitFPImageWriter(IntfImg, ImgWriter);
 end;
 
 class function TXPMImage.GetDefaultFPReader: TFPCustomImageReaderClass;

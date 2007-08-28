@@ -28,9 +28,9 @@ uses
 type
   TTGAImage = class(TFPImageBitmap)
   protected
-    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
   public
     constructor Create; override;
     class function GetFileExtensions: string; override;
@@ -48,11 +48,11 @@ implementation
 
 { TTGAImage }
 
-procedure TTGAImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TTGAImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
 begin
   if ImgReader is TFPReaderTarga then begin
   end;
-  inherited InitFPImageReader(ImgReader);
+  inherited InitFPImageReader(IntfImg, ImgReader);
 end;
 
 procedure TTGAImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
@@ -62,7 +62,7 @@ begin
   inherited FinalizeFPImageReader(ImgReader);
 end;
 
-procedure TTGAImage.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TTGAImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
 var
   TGAWriter: TFPWriterTarga;
 begin
@@ -70,7 +70,7 @@ begin
     TGAWriter:=TFPWriterTarga(ImgWriter);
     if TGAWriter<>nil then ;
   end;
-  inherited InitFPImageWriter(ImgWriter);
+  inherited InitFPImageWriter(IntfImg, ImgWriter);
 end;
 
 class function TTGAImage.GetDefaultFPReader: TFPCustomImageReaderClass;

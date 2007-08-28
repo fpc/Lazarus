@@ -29,9 +29,9 @@ type
 
   TBMPImage = class(TFPImageBitmap)
   protected
-    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
   public
     constructor Create; override;
     class function GetFileExtensions: string; override;
@@ -49,11 +49,11 @@ implementation
 
 { TBMPImage }
 
-procedure TBMPImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TBMPImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
 begin
   if ImgReader is TFPReaderBMP then begin
   end;
-  inherited InitFPImageReader(ImgReader);
+  inherited InitFPImageReader(IntfImg, ImgReader);
 end;
 
 procedure TBMPImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
@@ -63,7 +63,7 @@ begin
   inherited FinalizeFPImageReader(ImgReader);
 end;
 
-procedure TBMPImage.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TBMPImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
 var
   BMPWriter: TFPWriterBMP;
 begin
@@ -71,7 +71,7 @@ begin
     BMPWriter:=TFPWriterBMP(ImgWriter);
     if BMPWriter<>nil then ;
   end;
-  inherited InitFPImageWriter(ImgWriter);
+  inherited InitFPImageWriter(IntfImg, ImgWriter);
 end;
 
 class function TBMPImage.GetDefaultFPReader: TFPCustomImageReaderClass;
