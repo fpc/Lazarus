@@ -1219,6 +1219,29 @@ type
     property OnStartDrag;
   end;
 
+  TCustomStringGrid = class;
+  
+  TStringGridStrings = class(TStrings)
+  private
+    FGrid: TCustomStringGrid;
+    FIsCol: Boolean;
+    FIndex: Integer;
+    function ConvertIndexLineCol(Index: Integer; var Line, Col: Integer): boolean;
+  protected
+    procedure Clear; override;
+    function Add(const S: string): Integer; override;
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; aObject: TObject); override;
+  public
+    constructor Create(aGrid: TCustomStringGrid; aIsCol: Boolean; aIndex: Longint);
+    procedure Assign(Source: TPersistent); override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+
 
   { TCustomStringGrid }
 
@@ -7054,6 +7077,170 @@ begin
   SelectAll;
 end;
 
+{ TStringGridStrings }
+
+function TStringGridStrings.ConvertIndexLineCol(Index: Integer; var Line, Col: Integer): boolean;
+begin
+  if FIsCol then
+    if (Index < 0) or (Index > FGrid.RowCount) then
+      Result := False
+    else begin
+      Line := FIndex;
+      Col := Index;
+      Result := True;
+    end
+  else
+    if (Index < 0) or (Index > FGrid.ColCount) then
+      Result := False
+    else begin
+      Line := Index;
+      Col := FIndex;
+      Result := True;
+    end;
+end;
+
+procedure TStringGridStrings.Clear;
+var
+  I: Integer;
+begin
+  if FIsCol then begin
+    for I := 0 to FGrid.RowCount - 1 do begin
+      FGrid.Cells[FIndex, I] := '';
+      FGrid.Objects[FIndex, I] := nil;
+    end;
+  end else begin
+    for I := 0 to FGrid.ColCount - 1 do begin
+      FGrid.Cells[I, FIndex] := '';
+      FGrid.Objects[I, FIndex] := nil;
+    end;
+  end;
+end;
+
+function TStringGridStrings.Add(const S: string): Integer;
+var
+  I: Integer;
+begin
+  if FIsCol then begin
+    for I := 0 to FGrid.RowCount - 1 do begin
+      if FGrid.Cells[FIndex, I] = '' then begin
+        FGrid.Cells[FIndex, I] := S;
+        Result := I;
+        Exit;
+      end;
+    end;
+  end else begin
+    for I := 0 to FGrid.ColCount - 1 do begin
+      if FGrid.Cells[I, FIndex] = '' then begin
+        FGrid.Cells[I, FIndex] := S;
+        Result := I;
+        Exit;
+      end;
+    end;
+  end;
+  Result := -1;
+end;
+
+function TStringGridStrings.Get(Index: Integer): string;
+var
+  Line, Col: Integer;
+begin
+  if ConvertIndexLineCol(Index, Line, Col) then
+    Result := FGrid.Cells[Line, Col]
+  else
+    Result := ''
+end;
+
+function TStringGridStrings.GetCount: Integer;
+begin
+  if FIsCol then
+    Result := FGrid.RowCount
+  else
+    Result := FGrid.ColCount;
+end;
+
+function TStringGridStrings.GetObject(Index: Integer): TObject;
+var
+  Line, Col: Integer;
+begin
+  if ConvertIndexLineCol(Index, Line, Col) then
+    Result := FGrid.Objects[Line, Col]
+  else
+    Result := nil;
+end;
+
+procedure TStringGridStrings.Put(Index: Integer; const S: string);
+var
+  Line, Col: Integer;
+  
+  procedure RaiseError;
+  begin
+    raise EGridException.Create('Can not add String');
+  end;
+  
+begin
+  if ConvertIndexLineCol(Index, Line, Col) then
+    FGrid.Cells[Line, Col] := S
+  else
+    RaiseError;
+end;
+
+procedure TStringGridStrings.PutObject(Index: Integer; aObject: TObject);
+var
+  Line, Col: Integer;
+
+  procedure RaiseError;
+  begin
+    raise EGridException.Create('Can not add Object');
+  end;
+  
+begin
+  if ConvertIndexLineCol(Index, Line, Col) then
+    FGrid.Objects[Line, Col] := aObject
+  else
+    RaiseError;
+end;
+
+constructor TStringGridStrings.Create(aGrid: TCustomStringGrid; aIscol: boolean;
+  aIndex: Longint);
+begin
+  inherited Create;
+  FGrid := aGrid;
+  FIsCol := aIsCol;
+  FIndex := aIndex;
+end;
+
+procedure TStringGridStrings.Assign(Source: TPersistent);
+var
+  I, StrNum: Integer;
+begin
+  if Source is TStrings then begin
+    try
+      BeginUpdate;
+      StrNum := TStrings(Source).Count;
+      if StrNum > GetCount then StrNum := GetCount;
+      for I := 0 to StrNum - 1 do begin
+        Put(I, TStrings(Source).Strings[I]);
+        PutObject(I, TStrings(Source).Objects[I]);
+      end;
+    finally
+      EndUpdate;
+    end;
+  end else
+    inherited Assign(Source);
+end;
+
+procedure TStringGridStrings.Delete(Index: Integer);
+begin
+  raise EGridException.Create('Can not delete value.');
+end;
+
+procedure TStringGridStrings.Insert(Index: Integer; const S: string);
+begin
+  raise EGridException.Create('Can not insert value.');
+end;
+
+
+
 { TCustomDrawGrid }
 
 
@@ -7312,15 +7499,8 @@ begin
 end;
 
 function TCustomStringGrid.GetCols(index: Integer): TStrings;
-var
-  i: Integer;
 begin
-  Result:=nil;
-  if (ColCount>0)and(index>=0)and(index<ColCount) then begin
-    Result:=TStringList.Create;
-    for i:=0 to RowCount-1 do
-      Result.AddObject(Cells[Index, i], Objects[Index, i]);
-  end;
+  Result := TStringGridStrings.Create(Self, True, index);
 end;
 
 function TCustomStringGrid.GetObjects(ACol, ARow: Integer): TObject;
@@ -7333,15 +7513,8 @@ begin
 end;
 
 function TCustomStringGrid.GetRows(index: Integer): TStrings;
-var
-  i: Integer;
 begin
-  Result:=nil;
-  if (RowCount>0)and(index>=0)and(index<RowCount) then begin
-    Result:=TStringList.Create;
-    for i:=0 to ColCount-1 do
-      Result.AddObject(Cells[i, Index], Objects[i, Index]);
-  end;
+  Result:=TStringGridStrings.Create(Self, False, index);
 end;
 
 procedure TCustomStringGrid.ReadCells(Reader: TReader);
@@ -7402,13 +7575,11 @@ end;
 
 procedure TCustomStringGrid.SetCols(index: Integer; const AValue: TStrings);
 var
-  i: Integer;
+  SGL: TStringGridStrings;
 begin
-  if Avalue=nil then exit;
-  for i:=0 to AValue.Count-1 do begin
-    Cells[index, i]:= AValue[i];
-    Objects[Index, i]:= AValue.Objects[i];
-  end;
+  SGL := TStringGridStrings.Create(Self, True, index);
+  SGL.Assign(AValue);
+  SGL.Free;
 end;
 
 procedure TCustomStringGrid.SetObjects(ACol, ARow: Integer; AValue: TObject);
@@ -7426,13 +7597,11 @@ end;
 
 procedure TCustomStringGrid.SetRows(index: Integer; const AValue: TStrings);
 var
-  i: Integer;
+  SGL: TStringGridStrings;
 begin
-  if Avalue=nil then exit;
-  for i:=0 to AValue.Count-1 do begin
-    Cells[i, index]:= AValue[i];
-    Objects[i, Index]:= AValue.Objects[i];
-  end;
+  SGL := TStringGridStrings.Create(Self, False, index);
+  SGL.Assign(AValue);
+  SGL.Free;
 end;
 
 procedure TCustomStringGrid.WriteCells(Writer: TWriter);
