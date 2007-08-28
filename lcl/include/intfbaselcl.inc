@@ -361,18 +361,6 @@ begin
   else Result := nil;
 end;
 
-function TWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
-begin
-  Result := -1;
-end;
-
-function TWidgetSet.GetListBoxItemRect(ListBox: TComponent; Index: integer;
-  var ARect: TRect): boolean;
-begin
-  FillChar(ARect,SizeOf(ARect),0);
-  Result:=false;
-end;
-
 {$ifdef OldRawImageProcs}
 function TWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;

@@ -354,33 +354,6 @@ begin
 end;
 {$endif}
 
-{------------------------------------------------------------------------------
-  Function: GetListBoxIndexAtY
-  Params: ListBox:
-          y:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
-begin
-  Result := -1;
-  if ListBox is TCustomListBox then begin
-    Result := Windows.SendMessage(TCustomListBox(ListBox).Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
-    if hi(Result)=0 then
-      Result := lo(Result)
-    else Result := -1;
-  end;
-end;
-
-function TWin32WidgetSet.GetListBoxItemRect(ListBox: TComponent;
-  Index: integer; var ARect: TRect): boolean;
-begin
-  Result := false;
-  if ListBox is TCustomListBox then
-    Result := Windows.SendMessage(TCustomListBox(ListBox).Handle,
-                LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR;
-end;
-
 {$ifdef OldRawImageProcs}
 function TWin32WidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin

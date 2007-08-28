@@ -114,11 +114,13 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -454,6 +456,16 @@ begin
   // listbox is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
+end;
+
+class function TWinCEWSCustomListBox.GetIndexAtY(
+  const ACustomListBox: TCustomListBox; y: integer): integer;
+begin
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
+  if hi(Result)=0 then
+    Result := lo(Result)
+  else
+    Result := -1;
 end;
 
 //this should not be called in multiple selection things

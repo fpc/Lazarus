@@ -115,11 +115,13 @@ type
   protected
   public
   {$IFDEF GTK1}
-    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
@@ -374,6 +376,42 @@ end;
 
 { TGtkWSCustomListBox }
 {$IFDEF GTK1}
+
+class function TGtkWSCustomListBox.GetIndexAtY(
+  const ACustomListBox: TCustomListBox; y: integer): integer;
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+begin
+  Result:=-1;
+
+  if ACustomListBox.FCompStyle in [csListBox, csCheckListBox] then
+  begin
+    AWidget:=PGtkWidget(ACustomListBox.Handle);
+    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
+    ScrolledWindow:=PGtkScrolledWindow(AWidget);
+    VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+    if VertAdj=nil then
+      AdjValue:=y
+    else
+      AdjValue:=RoundToInt(VertAdj^.value)+y;
+    GListItem:=ListWidget^.children;
+    while GListItem<>nil do begin
+      inc(Result);
+      ListItemWidget:=PGtkWidget(GListItem^.data);
+      dec(AdjValue,ListItemWidget^.Allocation.Height);
+      if AdjValue<0 then exit;
+      GListItem:=GListItem^.next;
+    end;
+    Result:=-1;
+  end;
+end;
+
 class function TGtkWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
   ): integer;
 var
@@ -415,6 +453,49 @@ begin
        end;
   end;
   {!$EndIf}
+end;
+
+class function TGtkWSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+begin
+  Result:=false;
+  FillChar(ARect,SizeOf(ARect),0);
+
+  if ACustomListBox.FCompStyle in [csListBox, csCheckListBox] then
+  begin
+    AWidget:=PGtkWidget(ACustomListBox.Handle);
+    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
+    ScrolledWindow:=PGtkScrolledWindow(AWidget);
+    VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+    if VertAdj=nil then
+      AdjValue:=0
+    else
+      AdjValue:= (-RoundToInt(VertAdj^.value));
+    GListItem:=ListWidget^.children;
+    while GListItem<>nil do begin
+      ListItemWidget:=PGtkWidget(GListItem^.data);
+      if Index=0 then begin
+        ARect.Left:=0;
+        ARect.Top:=AdjValue;
+        ARect.Right:=ListItemWidget^.Allocation.Width;
+        ARect.Bottom:=ARect.Top+ListItemWidget^.Allocation.Height;
+        Result:=true;
+        exit;
+      end;
+      inc(AdjValue,ListItemWidget^.Allocation.Height);
+      dec(Index);
+      GListItem:=GListItem^.next;
+    end;
+  end;
 end;
 
 class function  TGtkWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
@@ -505,7 +586,7 @@ end;
 class function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
   ): integer;
 begin
-  Result:=TGtkWidgetSet(WidgetSet).GetListBoxIndexAtY(ACustomListBox, 0);
+  Result := GetIndexAtY(ACustomListBox, 0);
 end;
 
 class procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;

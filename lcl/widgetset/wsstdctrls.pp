@@ -100,11 +100,14 @@ type
   { TWSCustomListBox }
 
   TWSCustomListBox = class(TWSWinControl)
-    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
-    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; virtual;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
-    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; virtual;
+    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; virtual;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; virtual;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; virtual;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; virtual;
+
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); virtual;
 
     class procedure SetBorder(const ACustomListBox: TCustomListBox); virtual;
@@ -223,9 +226,23 @@ end;
 
 { TWSCustomListBox }
 
+class function TWSCustomListBox.GetIndexAtY(
+  const ACustomListBox: TCustomListBox; y: integer): integer;
+begin
+  Result := -1;
+end;
+
 class function  TWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
+end;
+
+class function TWSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+begin
+  FillChar(ARect,SizeOf(ARect),0);
+  Result:=false;
 end;
 
 class function  TWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;

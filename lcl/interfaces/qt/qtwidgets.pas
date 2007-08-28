@@ -560,6 +560,8 @@ type
     procedure SetOwnerDrawn(const AValue: Boolean);
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    function modelIndex(row, column: Integer; parent: QModelIndexH = nil): QModelIndexH;
+    function visualRect(Index: QModelIndexH): TRect;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl;
@@ -594,6 +596,7 @@ type
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     function currentRow: Integer;
+    function IndexAt(APoint: PQtPoint): Integer;
     procedure setCurrentRow(row: Integer);
   end;
   
@@ -4679,7 +4682,7 @@ begin
   State := QStyleOption_state(option);
   DrawStruct.ItemID := QModelIndex_row(index);
 
-  QAbstractItemView_visualRect(QAbstractItemViewH(Widget), @DrawStruct.Area, index);
+  DrawStruct.Area := visualRect(index);
   DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
 
   DrawStruct.ItemState := [];
@@ -4720,6 +4723,15 @@ end;
 function TQtListWidget.currentRow: Integer;
 begin
   Result := QListWidget_currentRow(QListWidgetH(Widget));
+end;
+
+function TQtListWidget.IndexAt(APoint: PQtPoint): Integer;
+var
+  AModelIndex: QModelIndexH;
+begin
+  AModelIndex := QModelIndex_create();
+  QListView_indexAt(QListWidgetH(Widget), AModelIndex, APoint);
+  Result := QModelIndex_row(AModelIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -6112,6 +6124,20 @@ begin
   inherited Create(AWinControl, AParams);
   FOldDelegate := nil;
   FNewDelegate := nil;
+end;
+
+function TQtAbstractItemView.modelIndex(row, column: Integer; parent: QModelIndexH = nil): QModelIndexH;
+var
+  AModel: QAbstractItemModelH;
+begin
+  AModel := QAbstractItemView_model(QAbstractItemViewH(Widget));
+  Result := QModelIndex_create();
+  QAbstractItemModel_index(AModel, Result, row, column, parent);
+end;
+
+function TQtAbstractItemView.visualRect(Index: QModelIndexH): TRect;
+begin
+  QAbstractItemView_visualRect(QAbstractItemViewH(Widget), @Result, Index);
 end;
 
 procedure TQtAbstractItemView.ItemDelegateSizeHint(

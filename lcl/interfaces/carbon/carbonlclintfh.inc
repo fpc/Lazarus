@@ -38,8 +38,6 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
-function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
-function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
 

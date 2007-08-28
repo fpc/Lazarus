@@ -218,7 +218,7 @@ begin
 //get the client rect (the carbon provided one usually is smaller than it
 //should be)
   idx:=idx-1;
-  if not WidgetSet.GetListBoxItemRect(aListBox,idx,arect) then exit;
+  arect := aListBox.ItemRect(idx);
   if checklist then
   begin
     //shrink the rect so that it doesn't include the area used by checkbox

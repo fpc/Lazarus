@@ -124,11 +124,13 @@ type
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
@@ -518,6 +520,16 @@ begin
   Result := Params.Window;
 end;
 
+class function TWin32WSCustomListBox.GetIndexAtY(
+  const ACustomListBox: TCustomListBox; y: integer): integer;
+begin
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
+  if hi(Result)=0 then
+    Result := lo(Result)
+  else
+    Result := -1;
+end;
+
 class function TWin32WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   if ACustomListBox.MultiSelect then
@@ -531,6 +543,14 @@ begin
     Assert(false, 'Trace:[TWin32WSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
     Result := -1;
   end;
+end;
+
+class function TWin32WSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+begin
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETITEMRECT, Index,
+    LPARAM(@ARect)) <> LB_ERR;
 end;
 
 class function TWin32WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;

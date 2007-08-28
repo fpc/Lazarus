@@ -49,8 +49,6 @@ function FontCanUTF8(Font: HFont): boolean; override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
-function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
-function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
 {$note todo: remove ---}
 {$ifdef OldRawImageProcs}

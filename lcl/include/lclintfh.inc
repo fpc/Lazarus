@@ -89,8 +89,6 @@ function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): bool
 {$endif}
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetLCLOwnerObject(Handle: HWnd): TObject; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 {$ifdef OldRawImageProcs}
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

@@ -574,7 +574,7 @@ function TCustomListBox.GetIndexAtY(Y: integer): integer;
 begin
   Result:=-1;
   if (not HandleAllocated) then exit;
-  Result:=GetListBoxIndexAtY(Self, Y);
+  Result := TWSCustomListBoxClass(WidgetSetClass).GetIndexAtY(Self, Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -618,12 +618,16 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomListBox.ItemRect(Index: Integer): TRect;
 begin
-  if (Index>=0) and (Index<Items.Count) then begin
-    GetListBoxItemRect(Self,Index,Result);
-  end else if (Index=Items.Count) and (Index>0) then begin
-    GetListBoxItemRect(Self,Index-1,Result);
+  if (Index>=0) and (Index<Items.Count) then
+  begin
+    TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index, Result);
+  end else
+  if (Index=Items.Count) and (Index>0) then
+  begin
+    TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index - 1, Result);
     OffsetRect(Result,0,Result.Bottom-Result.Top);
-  end else begin
+  end else
+  begin
     FillChar(Result,SizeOf(Result),0);
   end;
 end;
@@ -639,8 +643,10 @@ var
 begin
   Result:=false;
   if (Index<0) or (Index>=Items.Count) then exit;
-  if not GetListBoxItemRect(Self,Index,ARect) then exit;
-  if (ARect.Bottom<0) or (ARect.Top>ClientHeight) then exit;
+  if not TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index, ARect) then
+    exit;
+  if (ARect.Bottom<0) or (ARect.Top>ClientHeight) then
+    exit;
   Result:=true;
 end;
 
@@ -655,8 +661,10 @@ var
 begin
   Result:=false;
   if (Index<0) or (Index>=Items.Count) then exit;
-  if not GetListBoxItemRect(Self,Index,ARect) then exit;
-  if (ARect.Top<0) or (ARect.Bottom>ClientHeight) then exit;
+  if not TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index, ARect) then
+    exit;
+  if (ARect.Top<0) or (ARect.Bottom>ClientHeight) then
+    exit;
   Result:=true;
 end;
 

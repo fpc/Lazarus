@@ -294,17 +294,6 @@ begin
   Result := WidgetSet.GetLCLOwnerObject(Handle);
 end;
 
-function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
-begin
-  Result := WidgetSet.GetListBoxIndexAtY(ListBox, y);
-end;
-
-function GetListBoxItemRect(ListBox: TComponent; Index: integer;
-  var ARect: TRect): boolean;
-begin
-  Result := WidgetSet.GetListBoxItemRect(ListBox,Index,ARect);
-end;
-
 {$ifdef OldRawImageProcs}
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
   var NewRawImage: TRawImage): boolean;

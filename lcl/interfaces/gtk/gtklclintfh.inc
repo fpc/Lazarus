@@ -47,8 +47,6 @@ function FontIsMonoSpace(Font: HFont): boolean; override;
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
-function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
-function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
 

@@ -463,22 +463,4 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: GetListBoxIndexAtY
-  Params: ListBox:
-          y:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
-begin
-  Result := -1;
-  if ListBox is TCustomListBox then begin
-    Result := Windows.SendMessage(TCustomListBox(ListBox).Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
-    if hi(Result)=0 then
-      Result := lo(Result)
-    else Result := -1;
-  end;
-end;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

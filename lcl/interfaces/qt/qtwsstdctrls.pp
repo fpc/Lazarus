@@ -122,11 +122,13 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
   public
-    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
@@ -469,6 +471,15 @@ begin
   Result := THandle(QtListWidget);
 end;
 
+class function TQtWSCustomListBox.GetIndexAtY(
+  const ACustomListBox: TCustomListBox; y: integer): integer;
+var
+  APoint: TQtPoint;
+begin
+  APoint := QtPoint(1, y);
+  Result := TQtListWidget(ACustomListBox.Handle).indexAt(@APoint);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListBox.GetSelCount
   Params:  None
@@ -527,6 +538,17 @@ end;
 class function TQtWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := TQtListWidget(ACustomListBox.Handle).currentRow;
+end;
+
+class function TQtWSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+var
+  ModelIndex: QModelIndexH;
+begin
+  ModelIndex := TQtListWidget(ACustomListBox.Handle).ModelIndex(Index, 0);
+  ARect := TQtListWidget(ACustomListBox.Handle).visualRect(ModelIndex);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

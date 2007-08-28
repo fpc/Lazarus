@@ -146,11 +146,14 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AnIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -372,10 +375,24 @@ begin
   end;
 end;
 
+class function TGtk2WSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+begin
+  Result:=false;
+  FillChar(ARect,SizeOf(ARect),0);
+  case ACustomListBox.fCompStyle of
+  csListBox, csCheckListBox:
+    begin
+      // ToDo
+    end;
+  end;
+end;
+
 class function TGtk2WSCustomListBox.GetTopIndex(
   const ACustomListBox: TCustomListBox): integer;
 begin
-  Result:=TGtk2WidgetSet(WidgetSet).GetListBoxIndexAtY(ACustomListBox, 0);
+  Result := GetIndexAtY(ACustomListBox, 0);
 end;
 
 class procedure TGtk2WSCustomListBox.SelectItem(
@@ -568,6 +585,32 @@ begin
 
   Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
   SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
+end;
+
+class function TGtk2WSCustomListBox.GetIndexAtY(
+  const ACustomListBox: TCustomListBox; y: integer): integer;
+var
+  aTreeView: PGtkTreeView;
+  aTreeColumn: PGtkTreeViewColumn;
+  aTreePath: PGtkTreePath;
+begin
+  Result:=-1;
+  case ACustomListBox.fCompStyle of
+  csListBox, csCheckListBox:
+    begin
+      aTreeView :=
+        GTK_TREE_VIEW(GetWidgetInfo(Pointer(ACustomListBox.Handle), True)
+          ^.CoreWidget);
+
+      if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn,
+        nil, nil)
+      then begin
+        Result := gtk_tree_path_get_indices(aTreePath)[0];
+        gtk_tree_path_free(aTreePath);
+        exit;
+      end;
+    end;
+  end;
 end;
 
 class function TGtk2WSCustomListBox.GetSelCount(
