@@ -1509,6 +1509,11 @@ begin
     ARect.Bottom - ARect.Top, bmp.Handle, 0, 0, FWidth, FHeight, msk.Handle, 0, 0, SRCCOPY);
   {$else}
   {$note implement}
+  // temp workaround
+  bmp := TBitmap.Create;
+  GetBitmap(Index, bmp);
+  Canvas.StretchDraw(ARect,  bmp);
+  bmp.Free;
   {$endif}
 end;
 
