@@ -52,7 +52,6 @@ type
     FProps: TStringList;
     FPaintData: TPaintData;
     FCentralWidget: QWidgetH;
-    FStopMouseEventsProcessing: Boolean; // widget stop processing of mouse events
     FContext: HDC;
 
     function GetProps(const AnIndex: String): pointer;
@@ -137,7 +136,6 @@ type
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
-    property StopMouseEventsProcessing: Boolean read FStopMouseEventsProcessing;
   end;
 
   { TQtFrame }
@@ -560,7 +558,7 @@ type
     procedure SetOwnerDrawn(const AValue: Boolean);
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
-    function modelIndex(row, column: Integer; parent: QModelIndexH = nil): QModelIndexH;
+    procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
@@ -829,7 +827,6 @@ begin
   // Initializes the properties
   FProps := NiL;
   LCLObject := AWinControl;
-  FStopMouseEventsProcessing := False;
 
   // Creates the widget
   Widget := CreateWidget(AParams);
@@ -1078,11 +1075,14 @@ begin
     QEventHoverMove:
       begin
         SlotHover(Event);
-        Result := StopMouseEventsProcessing;
       end;
 
-    QEventKeyPress: SlotKey(Event);
-    QEventKeyRelease: SlotKey(Event);
+    QEventKeyPress,
+    QEventKeyRelease:
+      begin
+        SlotKey(Event);
+        Result := Self is TQtAbstractScrollArea;
+      end;
     QEventLeave: SlotMouseEnter(Event);
 
     QEventMouseButtonPress,
@@ -1090,17 +1090,14 @@ begin
     QEventMouseButtonDblClick:
       begin
         SlotMouse(Sender, Event);
-        Result := StopMouseEventsProcessing;
       end;
     QEventMouseMove:
       begin
         SlotMouseMove(Event);
-        Result := StopMouseEventsProcessing;
       end;
     QEventWheel:
       begin
         SlotMouseWheel(Sender, Event);
-        Result := StopMouseEventsProcessing;
       end;
     QEventMove: SlotMove(Event);
     QEventResize: SlotResize;
@@ -2695,7 +2692,7 @@ begin
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
   end;
-  FStopMouseEventsProcessing := True;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 {------------------------------------------------------------------------------
@@ -3133,7 +3130,7 @@ begin
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QFrame_create(Parent);
   QWidget_setAutoFillBackground(Result, True);
-  FStopMouseEventsProcessing := True;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 {------------------------------------------------------------------------------
@@ -3220,8 +3217,7 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QFrame_create(Parent);
-  //QWidget_setAutoFillBackground(Result, True);
-  FStopMouseEventsProcessing := True;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 {------------------------------------------------------------------------------
@@ -4732,6 +4728,7 @@ begin
   AModelIndex := QModelIndex_create();
   QListView_indexAt(QListWidgetH(Widget), AModelIndex, APoint);
   Result := QModelIndex_row(AModelIndex);
+  QModelIndex_destroy(AModelIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -5655,7 +5652,7 @@ begin
   FViewPortWidget := NiL;
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QScrollArea_create(Parent);
-  FStopMouseEventsProcessing := True;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 {------------------------------------------------------------------------------
@@ -6082,8 +6079,8 @@ end;
 
 function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
-  FStopMouseEventsProcessing := True;
   Result := QWidget_create;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 { TQtAbstractItemView }
@@ -6126,13 +6123,12 @@ begin
   FNewDelegate := nil;
 end;
 
-function TQtAbstractItemView.modelIndex(row, column: Integer; parent: QModelIndexH = nil): QModelIndexH;
+procedure TQtAbstractItemView.modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
 var
   AModel: QAbstractItemModelH;
 begin
   AModel := QAbstractItemView_model(QAbstractItemViewH(Widget));
-  Result := QModelIndex_create();
-  QAbstractItemModel_index(AModel, Result, row, column, parent);
+  QAbstractItemModel_index(AModel, retval, row, column, parent);
 end;
 
 function TQtAbstractItemView.visualRect(Index: QModelIndexH): TRect;

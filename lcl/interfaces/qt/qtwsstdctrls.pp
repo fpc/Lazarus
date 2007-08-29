@@ -546,8 +546,10 @@ class function TQtWSCustomListBox.GetItemRect(
 var
   ModelIndex: QModelIndexH;
 begin
-  ModelIndex := TQtListWidget(ACustomListBox.Handle).ModelIndex(Index, 0);
+  ModelIndex := QModelIndex_create();
+  TQtListWidget(ACustomListBox.Handle).ModelIndex(ModelIndex, Index, 0);
   ARect := TQtListWidget(ACustomListBox.Handle).visualRect(ModelIndex);
+  QModelIndex_destroy(ModelIndex);
   Result := True;
 end;
 
