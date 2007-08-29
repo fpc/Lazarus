@@ -562,11 +562,11 @@ begin
     Self,SName,'GetDataBrowserScrollPosition')
   then exit;
 
-  if aListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
+  if ACustomListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
   else delta:=0;
 
   Result:=(atop+y-delta) div rowheight;
-  if Result>=aListBox.Items.Count then Result:=-1;
+  if Result>=ACustomListBox.Items.Count then Result:=-1;
 end;
 
 {------------------------------------------------------------------------------
@@ -668,7 +668,7 @@ begin
   end
   else scrollwidth:=0;
 
-  if aListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
+  if ACustomListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
   else delta:=0;
 
   //note: itemrect.right and bottom are outside the "real" itemrect.
@@ -676,7 +676,7 @@ begin
   ARect.Top:=(Index*rowheight)-atop+delta;
   ARect.Left:=delta;
   ARect.Bottom:=Arect.Top+rowheight;
-  ARect.Right:=aListBox.Width-delta-scrollwidth;
+  ARect.Right:=ACustomListBox.Width-delta-scrollwidth;
 
   Result:=true;
 end;
