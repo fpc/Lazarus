@@ -14,8 +14,8 @@ unit AllCodeToolUnits;
 interface
 
 uses
-  {$IF defined(VER2_2) or defined(VER2_3)}
-  //MemCheck,
+  {$IFDEF VER2_3}
+  MemCheck,
   {$ENDIF}
   CodeToolManager, CustomCodeTool, PascalParserTool, PascalReaderTool,
   FindDeclarationTool, StdCodeTools, MethodJumpTool, EventCodeTool,
