@@ -633,6 +633,7 @@ type
     function  GetBorderWidth: Integer;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
+    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);
     function  GetSelection: TGridRect;
     function  GetTopRow: Longint;
     function  GetVisibleColCount: Integer;
@@ -682,6 +683,7 @@ type
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
     procedure UpdateCachedSizes;
+    procedure UpdateSBVisibility;
     procedure WriteColumns(Writer: TWriter);
     procedure WriteColWidths(Writer: TWriter);
     procedure WriteRowHeights(Writer: TWriter);
@@ -852,7 +854,7 @@ type
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
     property AutoEdit: boolean read FAutoEdit write FAutoEdit default true;
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns;
-    property BorderStyle default bsSingle;
+    property BorderStyle:TBorderStyle read FGridBorderStyle write SetBorderStyle default bsSingle;
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount;
@@ -2267,26 +2269,24 @@ begin
 end;
 
 procedure TCustomGrid.VisualChange;
-var
-  HsbVisible: boolean;
-  VsbVisible: Boolean;
 begin
+  {$ifdef DbgVisualChange}
+  DebugLn('TCustomGrid.VisualChange INIT ',DbgSName(Self));
+  {$endif}
   Include(FGridFlags, gfVisualChange);
   UpdateCachedSizes;
-
-  HsbVisible := (FScrollBars in [ssHorizontal, ssBoth]) or
-    (ScrollBarAutomatic(ssHorizontal) and (FGCache.GridWidth > ClientWidth));
-
-  VsbVisible := (FScrollBars in [ssVertical, ssBoth]) or
-    (ScrollBarAutomatic(ssVertical) and (FGCache.GridHeight > ClientHeight));
-
-  if ScrollBarAutomatic(ssHorizontal) then
-    HsbVisible := HsbVisible and not AutoFillColumns;
-
-  ScrollBarShow(SB_VERT, VSbVisible);
-  ScrollBarShow(SB_HORZ, HSbVisible);
+  
+  UpdateSBVisibility;
 
   Invalidate;
+  {$ifdef DbgVisualChange}
+  with FGCache do begin
+    DebugLn('GWidth=',dbgs(GridWidth),' GHeight=',dbgs(GridHeight));
+    DebugLn('CWidth=',dbgs(ClientWidth),' CHeight=',dbgs(ClientHeight));
+    //DebugLn('HsbVis=',dbgs(HsbVisible),' VSbVis=', dbgs(VSbVisible));
+  end;
+  DebugLn('TCustomGrid.VisualChange END ',DbgSName(Self));
+  {$endif}
 end;
 
 procedure TCustomGrid.ResetSizes;
@@ -2318,8 +2318,7 @@ procedure TCustomGrid.ResetSizes;
   begin
     with FGCache do begin
       // Horizontal scrollbar
-      HsbVisible := ScrollBarIsVisible(SB_HORZ);
-      VsbVisible := ScrollBarIsVisible(SB_VERT);
+      GetSBVisibility(HsbVisible, VsbVisible);
       
       if HsbVisible then begin
         HsbRange:=GridWidth + 2 - GetBorderWidth;
@@ -2342,6 +2341,10 @@ procedure TCustomGrid.ResetSizes;
         
       UpdateVertScrollBar(VsbVisible, VsbRange, ClientHeight);
       UpdateHorzScrollBar(HsbVisible, HsbRange, ClientWidth);
+      {$ifdef DbgVisualChange}
+      DebugLn('VRange=',dbgs(VsbRange),' Visible=',dbgs(VSbVisible));
+      DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
+      {$endif}
     end;
   end;
 begin
@@ -2359,21 +2362,17 @@ begin
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
   end;
+  CacheVisibleGrid;
   {$Ifdef DbgVisualChange}
-  DebugLn('TCustomGrid.VisualChange ',DbgSName(Self));
-  DbgOut('Width=',dbgs(Width));
-  DbgOut(' Height=',dbgs(height));
-  DbgOut(' GWidth=',dbgs(TW));
-  DbgOut(' GHeight=',dbgs(TH));
-  DbgOut(' HsbRange=',dbgs(HsbRange));
-  DbgOut(' VsbRange=',dbgs(VSbRange));
-  DbgOut(' Vbar=',dbgs(VSbVisible));
-  DebugLn(' Hbar=',dbgs(HsbVisible));
-  DbgOut('ClientWidth=',dbgs(FGCAche.ClientWidth));
+  DebugLn('TCustomGrid.ResetSizes ',DbgSName(Self));
+   DbgOut('Width=',dbgs(Width));
+   DbgOut(' Height=',dbgs(height));
+   DbgOut(' GWidth=',dbgs(FGCache.GridWidth));
+  DebugLn(' GHeight=',dbgs(FGCache.GridWidth));
+   DbgOut('ClientWidth=',dbgs(FGCAche.ClientWidth));
   DebugLn(' ClientHeight=',dbgs(FGCache.ClientHeight));
   DebugLn('MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
-  CacheVisibleGrid;
   CalcScrollBarsRange;
 end;
 
@@ -3571,6 +3570,27 @@ begin
 
   FGCache.ClientWidth := ClientWidth;
   FGCache.ClientHeight:= ClientHeight;
+end;
+
+procedure TCustomGrid.GetSBVisibility(out HsbVisible,VsbVisible:boolean);
+begin
+  HsbVisible := (FScrollBars in [ssHorizontal, ssBoth]) or
+    (ScrollBarAutomatic(ssHorizontal) and (FGCache.GridWidth > ClientWidth));
+
+  VsbVisible := (FScrollBars in [ssVertical, ssBoth]) or
+    (ScrollBarAutomatic(ssVertical) and (FGCache.GridHeight > ClientHeight));
+
+  if ScrollBarAutomatic(ssHorizontal) then
+    HsbVisible := HsbVisible and not AutoFillColumns;
+end;
+
+procedure TCustomGrid.UpdateSBVisibility;
+var
+  HSbVisible, VSbVisible: boolean;
+begin
+  GetSBVisibility(HSbVisible, VSbVisible);
+  ScrollBarShow(SB_VERT, VSbVisible);
+  ScrollBarShow(SB_HORZ, HSbVisible);
 end;
 
 procedure TCustomGrid.UpdateSelectionRange;
@@ -6539,7 +6559,8 @@ begin
   FixedRows:=1;
   Editor:=nil;
   FBorderColor := cl3DDKShadow;
-  BorderStyle := bsSingle;
+  FGridBorderStyle := bsNone;
+  UpdateBorderStyle;
   FIgnoreClick := False;
 
   ParentColor := False;
