@@ -2868,11 +2868,7 @@ var
   R: TRect;
 begin
   if InternalNeedBorder then begin
-    {$ifdef sbars}
-    R := Rect(0,0,Width-1,Height-1);
-    {$else}
-    R := Rect(0,0,FGCache.ClientWidth, FGCache.Clientheight);
-    {$endif}
+    R := Rect(0,0,ClientWidth-1, Clientheight-1);
     with R, Canvas do begin
       Pen.Color := fBorderColor;
       Pen.Width := 1;
@@ -2881,7 +2877,6 @@ begin
       LineTo(Right, Bottom);
       LineTo(Right, 0);
       LineTo(0,0);
-      Pixels[Right, Bottom] := fBorderColor; // workaround
     end;
   end;
 end;
