@@ -35,6 +35,10 @@ lazdemsg.sinsertlink='Insert link'
 lazdemsg.sinserttable='Insert table'
 
 
+# hash value = 15217323
+lazdemsg.sinsertprintshortlink='Insert short description link'
+
+
 # hash value = 7136624
 lazdemsg.sforfile=' in file '
 
@@ -363,6 +367,10 @@ lazdemsg.shintinsertlink='Insert link'
 lazdemsg.shintinserttable='Insert table'
 
 
+# hash value = 27238923
+lazdemsg.shintinsertprintshortlink='Insert a short description link'
+
+
 # hash value = 223191475
 lazdemsg.smarkselection='Mark selection %s'
 
@@ -373,6 +381,18 @@ lazdemsg.shmenuextraoptions='Show options dialog'
 
 # hash value = 74285421
 lazdemsg.shmenuhelpabout='About this program'
+
+
+# hash value = 18340
+lazdemsg.shinttoolbaradd='Add'
+
+
+# hash value = 310020
+lazdemsg.shinttoolbaredit='Edit'
+
+
+# hash value = 78392485
+lazdemsg.shinttoolbardelete='Delete'
 
 
 # hash value = 203481714

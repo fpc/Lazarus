@@ -4,44 +4,26 @@
     <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
-      <Flags>
-        <SaveOnlyProjectUnits Value="True"/>
-      </Flags>
-      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <AutoCreateForms Value="False"/>
       <IconPath Value="./"/>
-      <TargetFileExt Value=".exe"/>
-      <Title Value="Lazarus Documentation Editor"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <UseVersionInfo Value="False"/>
-      <AutoIncrementBuild Value="False"/>
-      <CurrentVersionNr Value="0"/>
-      <CurrentMajorRevNr Value="0"/>
-      <CurrentMinorRevNr Value="0"/>
-      <CurrentBuildNr Value="0"/>
-      <ProjectVersion Value="1.0.0.0"/>
-      <Language Value="0409"/>
-      <CharSet Value="04E4"/>
-      <Comments Value=""/>
-      <CompanyName Value=""/>
-      <FileDescription Value=""/>
-      <InternalName Value=""/>
-      <LegalCopyright Value=""/>
-      <LegalTrademarks Value=""/>
-      <OriginalFilename Value=""/>
-      <ProductName Value=""/>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -49,97 +31,24 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="1">
       <Unit0>
         <Filename Value="lazde.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazde"/>
+        <CursorPos X="27" Y="4"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="frmmain.pp"/>
-        <ComponentName Value="MainForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmmain.lrs"/>
-        <UnitName Value="FrmMain"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="frmoptions.pp"/>
-        <ComponentName Value="OptionsForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmoptions.lrs"/>
-        <UnitName Value="frmOptions"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="frmnewnode.pp"/>
-        <ComponentName Value="NewNodeForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmnewnode.lrs"/>
-        <UnitName Value="frmNewNode"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="frmmakeskel.pp"/>
-        <ComponentName Value="MakeSkelForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmmakeskel.lrs"/>
-        <UnitName Value="FrmMakeSkel"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="frmlink.pp"/>
-        <ComponentName Value="LinkForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmlink.lrs"/>
-        <UnitName Value="FrmLink"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="frmtable.pp"/>
-        <ComponentName Value="TableForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmtable.lrs"/>
-        <UnitName Value="frmTable"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="frmabout.pp"/>
-        <ComponentName Value="AboutForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmabout.lrs"/>
-        <UnitName Value="FrmAbout"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="pkeditor.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PkEditor"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="eleditor.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ElEditor"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="fpdeutil.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="FPDEUtil"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="frmexample.pp"/>
-        <ComponentName Value="ExampleForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmexample.lrs"/>
-        <UnitName Value="FrmExample"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="frmbuild.pp"/>
-        <ComponentName Value="BuildForm"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmbuild.lrs"/>
-        <UnitName Value="frmBuild"/>
-      </Unit12>
     </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <SearchPaths>
-      <UnitOutputDirectory Value="units"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)/;$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/custom/;$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)/"/>
+      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/;$(LazarusDir)/components/synedit/;$(LazarusDir)/components/codetools/"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
@@ -155,4 +64,14 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
 </CONFIG>
