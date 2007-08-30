@@ -48,6 +48,8 @@ Jesus Reyes
 Joerg Braun - german translation
 Joost van der Sluis
 Jouke Rensma
+Juan Salvador Perez García
+Junior Goncalves
 Karl Brandt
 Keith Bowes
 Ladislav Michl
@@ -59,6 +61,7 @@ Marc Geldon
 Marc Weustink
 Martin Patik
 Martin Smat
+Marton Papp
 Martyn Ranyard
 Matthijs Willemstein
 Mattias Gaertner
@@ -91,7 +94,7 @@ Taras Boychuk
 Tomas Gregorovic
 Tom Lisjac
 Tony Maro
-Valdas Janknas
+Valdas Jankunas
 Vasily I. Volchenko
 Vincent Beuselinck
 Vincent Snijders
