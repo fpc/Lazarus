@@ -240,6 +240,8 @@ end;
   Dealocates a Menu Item
  ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+var
+  Obj: TObject;
 begin
   {$ifdef VerboseQt}
     Write('[TQtWSMenuItem.DestroyHandle] Caption: ' + AMenuItem.Caption);
@@ -249,18 +251,9 @@ begin
     WriteLn('');
   {$endif}
   
-  { Apparently LCL tries to dealocate the handle of the menu item internal to TMenu,
-   but it doesn´t create a handle for it. Instead it just put´s the handle of the TMenu
-   on that item.
-    We can detect this menu item checking if HasParent is false }
-  if AMenuItem.HasParent then
-  begin
-    { Here the menu item has a QMenuH handle
-      Obs: Commented because they cause access violations inside Qt
-      library on the Virtual Magnifying Glass
-    }
-    TQtMenu(AMenuItem.Handle).Free;
-  end;
+  Obj := TObject(AMenuItem.Handle);
+  if Obj is TQtMenu then
+    Obj.Free;
 end;
 
 {------------------------------------------------------------------------------
