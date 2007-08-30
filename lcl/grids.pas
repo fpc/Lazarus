@@ -6554,7 +6554,7 @@ begin
   FixedRows:=1;
   Editor:=nil;
   FBorderColor := cl3DDKShadow;
-  FGridBorderStyle := bsNone;
+  FGridBorderStyle := bsSingle;
   UpdateBorderStyle;
   FIgnoreClick := False;
 
