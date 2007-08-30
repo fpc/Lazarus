@@ -3093,7 +3093,8 @@ begin
   Y1 := Top;
   X2 := Right;
   Y2 := Bottom;
-  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X1, Y1, @X2, @Y2);
+  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X1, Y1, @X1, @Y1);
+  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X2, Y2, @X2, @Y2);
 
   IntersectRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1);
   Rgn := QRegion_create;
