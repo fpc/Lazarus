@@ -63,8 +63,9 @@ type
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
     function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
+    function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
     function QtKeyToLCLKey(AKey: Integer): Word;
-    procedure DeliverMessage(var Msg);
+    function DeliverMessage(var Msg): LRESULT;
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
@@ -1270,69 +1271,99 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotKey(Event: QEventH); cdecl;
+const
+  CN_KeyDownMsgs: array[Boolean] of UINT = (CN_KEYDOWN, CN_SYSKEYDOWN);
+  CN_KeyUpMsgs: array[Boolean] of UINT = (CN_KEYUP, CN_SYSKEYUP);
+  LM_KeyDownMsgs: array[Boolean] of UINT = (LM_KEYDOWN, LM_SYSKEYDOWN);
+  LM_KeyUpMsgs: array[Boolean] of UINT = (LM_KEYUP, LM_SYSKEYUP);
+  CN_CharMsg: array[Boolean] of UINT = (CN_CHAR, CN_SYSCHAR);
+  LM_CharMsg: array[Boolean] of UINT = (LM_CHAR, LM_SYSCHAR);
 var
-  Msg: TLMKey;
-  KeyboardModifiers: QtKeyboardModifiers;
-  AltModifier: Boolean;
+  KeyMsg: TLMKey;
+  CharMsg: TLMChar;
+  Modifiers: QtKeyboardModifiers;
+  IsSysKey: Boolean;
   Text: WideString;
   UTF8Char: TUTF8Char;
-  RepeatCount: Integer;
 begin
   {$ifdef VerboseQt}
     Write('TQtWidget.SlotKey');
   {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(KeyMsg, SizeOf(KeyMsg), #0);
 
-  {------------------------------------------------------------------------------
-   Translates a Qt4 Key to a LCL VK_* key
-   ------------------------------------------------------------------------------}
-  Msg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)));
+  // Detects special keys (shift, alt, control, etc)
+  Modifiers := QKeyEvent_modifiers(QKeyEventH(Event));
+  IsSysKey := (QtAltModifier and Modifiers) <> $0;
+  KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
+
+  // Translates a Qt4 Key to a LCL VK_* key
+  KeyMsg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)));
   
-  {------------------------------------------------------------------------------
-   Detects special keys (shift, alt, control, etc)
-   ------------------------------------------------------------------------------}
-  KeyboardModifiers := QKeyEvent_modifiers(QKeyEventH(Event));
-
-  AltModifier := (QtAltModifier and KeyboardModifiers) <> $0;
-
-  {------------------------------------------------------------------------------
-   Loads the UTF-8 character associated with the keypress, if any
-   ------------------------------------------------------------------------------}
+  // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
 
   {------------------------------------------------------------------------------
    Sends the adequate key messages
    ------------------------------------------------------------------------------}
-  if AltModifier then
-  begin
-    if QEvent_type(Event) = QEventKeyRelease then Msg.Msg := CN_SYSKEYUP
-    else if QEvent_type(Event) = QEventKeyPress then Msg.Msg := CN_SYSKEYDOWN;
-  end
-  else
-  begin
-    if QEvent_type(Event) = QEventKeyRelease then Msg.Msg := CN_KEYUP
-    else if QEvent_type(Event) = QEventKeyPress then Msg.Msg := CN_KEYDOWN;
+  case QEvent_type(Event) of
+    QEventKeyPress: KeyMsg.Msg := CN_KeyDownMsgs[IsSysKey];
+    QEventKeyRelease: KeyMsg.Msg := CN_KeyUpMsgs[IsSysKey];
   end;
 
   {$ifdef VerboseQt}
     WriteLn(' message: ', Msg.Msg);
   {$endif}
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
+  if KeyMsg.CharCode <> VK_UNKNOWN then
+  begin
+    NotifyApplicationUserInput(KeyMsg.Msg);
+    if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      Exit;
+
+    // here we should let widgetset to handle key
+    //...
+
+    case QEvent_type(Event) of
+      QEventKeyPress: KeyMsg.Msg := LM_KeyDownMsgs[IsSysKey];
+      QEventKeyRelease: KeyMsg.Msg := LM_KeyUpMsgs[IsSysKey];
+    end;
+    NotifyApplicationUserInput(KeyMsg.Msg);
+    if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      // the LCL handled the key
+      Exit;
   end;
-  
   { Also sends a utf-8 key event for key down }
 
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
-    RepeatCount := 1;
     UTF8Char := TUTF8Char(Text);
+    if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
+    begin
+      // the LCL has handled the key
+      Exit;
+    end;
 
-    LCLObject.IntfUTF8KeyPress(UTF8Char, RepeatCount, False);
-    {$NOTE TODO: send CN_CHAR if IntfUTF8KeyPress returns false}
+    // create the CN_CHAR / CN_SYSCHAR message
+    FillChar(CharMsg, SizeOf(CharMsg), 0);
+    CharMsg.Msg := CN_CharMsg[IsSysKey];
+    CharMsg.KeyData := KeyMsg.KeyData;
+    CharMsg.CharCode := ord(Text[1]);
+
+    //Send message to LCL
+    NotifyApplicationUserInput(CharMsg.Msg);
+    if (DeliverMessage(CharMsg) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
+      // the LCL handled the key
+      Exit;
+
+    //Here is where we (interface) can do something with the key
+    //...
+
+    //Send a LM_(SYS)CHAR
+    CharMsg.Msg := LM_CharMsg[IsSysKey];
+
+    NotifyApplicationUserInput(CharMsg.Msg);
+    if DeliverMessage(CharMsg) <> 0 then
+      Exit;
   end;
 end;
 
@@ -1430,14 +1461,9 @@ begin
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event));
   OffsetMousePos(MousePos);
-  Msg.Keys := 0;
-  
+
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
-  if Modifiers and qtShiftModifier <> 0 then
-    Msg.Keys := Msg.Keys or MK_SHIFT;
-  if Modifiers and qtControlModifier <> 0 then
-    Msg.Keys := Msg.Keys or MK_CONTROL;
-  { TODO: add support for ALT, META and NUMKEYPAD }
+  Msg.Keys := QtKeyModifiersToKeyState(Modifiers);
 
   Msg.XPos := SmallInt(MousePos^.X);
   Msg.YPos := SmallInt(MousePos^.Y);
@@ -1447,7 +1473,7 @@ begin
   case QEvent_type(Event) of
    QEventMouseButtonPress, QEventMouseButtonDblClick:
     begin
-      Msg.Keys := QtButtonsToLCLButtons(MButton);
+      Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
       case MButton of
         QtLeftButton: Msg.Msg := CheckMouseButtonDown(0);
         QtRightButton: Msg.Msg := CheckMouseButtonDown(1);
@@ -1462,7 +1488,7 @@ begin
    begin
      LastMouse.Widget := Sender;
      LastMouse.MousePos := MousePos^;
-     Msg.Keys := QtButtonsToLCLButtons(MButton);
+     Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
      case MButton of
        QtLeftButton: Msg.Msg := LM_LBUTTONUP;
        QtRightButton: Msg.Msg := LM_RBUTTONUP;
@@ -1514,6 +1540,16 @@ begin
     
   if (QtXButton2 and AButtons) <> 0 then
     Result := Result or MK_XBUTTON2;
+end;
+
+function TQtWidget.QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
+begin
+  Result := 0;
+  if AModifiers and qtShiftModifier <> 0 then
+    Result := Result or MK_SHIFT;
+  if AModifiers and qtControlModifier <> 0 then
+    Result := Result or MK_CONTROL;
+  { TODO: add support for ALT, META and NUMKEYPAD }
 end;
 
 {------------------------------------------------------------------------------
@@ -2048,7 +2084,13 @@ begin
     QtKey_Direction_L,
     QtKey_Direction_R,
     QtKey_Exclam..
-    QtKey_Slash,
+    QtKey_ParenRight: Result := VK_UNKNOWN;
+    QtKey_Asterisk: Result := VK_MULTIPLY;
+    QtKey_Plus: Result := VK_ADD;
+    QtKey_Comma: Result := VK_SEPARATOR;
+    QtKey_Minus: Result := VK_SUBTRACT;
+    QtKey_Period: Result := VK_DECIMAL;
+    QtKey_Slash: Result := VK_DIVIDE;
     QtKey_BracketLeft..
     QtKey_ydiaeresis,
     QtKey_Multi_key..
@@ -2365,10 +2407,11 @@ begin
   Result := QWidgetH(TheObject);
 end;
 
-procedure TQtWidget.DeliverMessage(var Msg);
+function TQtWidget.DeliverMessage(var Msg): LRESULT;
 begin
   try
     LCLObject.WindowProc(TLMessage(Msg));
+    Result := TLMessage(Msg).Result;
   except
     Application.HandleException(nil);
   end;
@@ -4632,16 +4675,12 @@ begin
   Msg.Keys := 0;
 
   Modifiers := QApplication_keyboardModifiers();
-  if Modifiers and qtShiftModifier <> 0 then
-    Msg.Keys := Msg.Keys or MK_SHIFT;
-  if Modifiers and qtControlModifier <> 0 then
-    Msg.Keys := Msg.Keys or MK_CONTROL;
+  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
 
   Msg.Msg := LM_LBUTTONDBLCLK;
-  Msg.Keys := MK_LBUTTON;
   NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
   Msg.Msg := LM_PRESSED;
@@ -4670,16 +4709,12 @@ begin
   Msg.Keys := 0;
 
   Modifiers := QApplication_keyboardModifiers();
-  if Modifiers and qtShiftModifier <> 0 then
-    Msg.Keys := Msg.Keys or MK_SHIFT;
-  if Modifiers and qtControlModifier <> 0 then
-    Msg.Keys := Msg.Keys or MK_CONTROL;
+  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
 
   Msg.Msg := LM_LBUTTONDOWN;
-  Msg.Keys := MK_LBUTTON;
   NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
   Msg.Msg := LM_PRESSED;
