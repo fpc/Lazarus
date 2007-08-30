@@ -1017,29 +1017,23 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDragState.dsDragLeave"><short/></element>
       <!-- enumeration value Visibility: default -->
       <element name="TDragState.dsDragMove">
-        <short>
           <short>crSize - a cursor constant: arbitrary size (-22)</short>
-        </short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragMode">
-        <short/>
-        <descr>
-          <short>crIbeam - a cursor constant: I-beam cursor (-4)</short>
-        </descr>
+          <short/>
+        <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TDragMode.dmManual">
-        <short>
-          <short>crCross - a cursor constant: Cross cursor (-3)</short>
-        </short>
+          <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TDragMode.dmAutomatic"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragKind">
-        <short>crArrow - a cursor constant: Arrow cursor (-2)</short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -1869,7 +1863,6 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDockManager.BeginUpdate">
         <short/>
         <descr>
-          <short>TAlign - the available options for aligning a Control</short>
         </descr>
         <errors/>
         <seealso/>
