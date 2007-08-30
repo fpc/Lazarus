@@ -1333,7 +1333,8 @@ var
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
   QtComboBox.AttachEvents;
-  
+  QtComboBox.OwnerDrawn := TCustomComboBox(AWinControl).Style in [csOwnerDrawFixed, csOwnerDrawVariable];
+
   // create our FList helper
   QtComboBox.FList := TQtComboStrings.Create(QtComboBox);
 
@@ -1469,7 +1470,8 @@ class procedure TQtWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
   TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle = csDropDown);
-  // TODO: implement styles: csSimple, csOwnerDrawFixed, csOwnerDrawVariable
+  TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in [csOwnerDrawFixed, csOwnerDrawVariable];
+  // TODO: implement styles: csSimple
   inherited SetStyle(ACustomComboBox, NewStyle);
 end;
 

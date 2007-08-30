@@ -40,6 +40,10 @@ uses
   ExtCtrls, StdCtrls, Menus;
 
 type
+  // forward declarations
+  TQtListWidget = class;
+
+  //
   TPaintData = record
     ClipRect: Prect;
     ClipRegion: QRegionH;
@@ -49,6 +53,7 @@ type
 
   TQtWidget = class(TQtObject)
   private
+    FOwnWidget: Boolean;
     FProps: TStringList;
     FPaintData: TPaintData;
     FCentralWidget: QWidgetH;
@@ -72,6 +77,8 @@ type
     HasCaret: Boolean;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
+    
     destructor Destroy; override;
     function  GetContainerWidget: QWidgetH; virtual;
   public
@@ -439,13 +446,15 @@ type
   private
     // hooks
     FChangeHook: QComboBox_hookH;
+    FOwnerDrawn: Boolean;
     FSelectHook: QComboBox_hookH;
     FDropListEventHook: QObject_hookH;
     // parts
     FLineEdit: QLineEditH;
-    FDropList: QAbstractItemViewH;
-    function GetDropList: QAbstractItemViewH;
+    FDropList: TQtListWidget;
+    function GetDropList: TQtListWidget;
     function GetLineEdit: QLineEditH;
+    procedure SetOwnerDrawn(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -462,8 +471,9 @@ type
     procedure setEditable(AValue: Boolean);
     procedure removeItem(AIndex: Integer);
     
+    property DropList: TQtListWidget read GetDropList;
     property LineEdit: QLineEditH read GetLineEdit;
-    property DropList: QAbstractItemViewH read GetDropList;
+    property OwnerDrawn: Boolean read FOwnerDrawn write SetOwnerDrawn;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -824,6 +834,8 @@ var
  ------------------------------------------------------------------------------}
 constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 begin
+  FOwnWidget := True;
+
   // Initializes the properties
   FProps := NiL;
   LCLObject := AWinControl;
@@ -839,7 +851,7 @@ begin
   AVariant := QVariant_Create(Int64(ptruint(Self)));
   QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
   
-  fillchar(FpaintData, sizeOf(FPaintData), 0);
+  fillchar(FPaintData, sizeOf(FPaintData), 0);
 
   // Sets it's initial properties
   SetGeometry;
@@ -850,6 +862,25 @@ begin
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
+end;
+
+constructor TQtWidget.CreateFrom(const AWinControl: TWinControl;
+  AWidget: QWidgetH);
+begin
+  FOwnWidget := False;
+  
+  // Initializes the properties
+  FProps := niL;
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  Widget := AWidget;
+
+  // set Handle->QWidget map
+  AVariant := QVariant_Create(Int64(ptruint(Self)));
+  QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
+
+  fillchar(FPaintData, sizeOf(FPaintData), 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -868,12 +899,10 @@ begin
     WriteLn('Calling QWidget_destroy');
   {$endif}
 
-  if Widget <> nil then
-  begin
+  if (Widget <> nil) and FOwnWidget then
     QWidget_destroy(QWidgetH(Widget));
-    Widget := nil;
-  end;
-  
+  Widget := nil;
+
   if FProps<>nil then
   begin
     FProps.Free;
@@ -4107,10 +4136,20 @@ begin
   Result := FLineEdit;
 end;
 
-function TQtComboBox.GetDropList: QAbstractItemViewH;
+procedure TQtComboBox.SetOwnerDrawn(const AValue: Boolean);
+begin
+  FOwnerDrawn := AValue;
+  if FDropList <> nil then
+    FDropList.OwnerDrawn := FOwnerDrawn;
+end;
+
+function TQtComboBox.GetDropList: TQtListWidget;
 begin
   if FDropList = nil then
-    FDropList := QComboBox_view(QComboBoxH(Widget));
+  begin
+    FDropList := TQtListWidget.CreateFrom(LCLObject, QComboBox_view(QComboBoxH(Widget)));
+    FDropList.OwnerDrawn := OwnerDrawn;
+  end;
   Result := FDropList;
 end;
 
@@ -4125,6 +4164,7 @@ begin
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QComboBox_create(Parent);
   FLineEdit := nil;
+  FOwnerDrawn := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -4134,17 +4174,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtComboBox.Destroy;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtComboBox.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QComboBox_destroy(QComboBoxH(Widget));
-    Widget := nil;
-  end;
-
+  FDropList.Free;
   inherited Destroy;
 end;
 
@@ -4184,7 +4214,7 @@ end;
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: PWideString);
 begin
   QComboBox_insertItem(QComboBoxH(WIdget), AIndex, AText, QVariant_create());
-  if QWidget_isVisible(DropList) then
+  if DropList.getVisible then
   begin
     BeginUpdate;
     QComboBox_hidePopup(QComboboxH(Widget));
@@ -4236,7 +4266,7 @@ begin
   QComboBox_hook_hook_currentIndexChanged(FSelectHook, Method);
   
   // DropList events
-  FDropListEventHook := QObject_hook_create(DropList);
+  FDropListEventHook := QObject_hook_create(DropList.Widget);
   TEventFilterMethod(Method) := EventFilter;
   QObject_hook_hook_events(FDropListEventHook, Method);
 end;
@@ -4246,18 +4276,12 @@ begin
   QComboBox_hook_destroy(FChangeHook);
   QComboBox_hook_destroy(FSelectHook);
 
-  if FDropListEventHook <> nil then
-  begin
-    QObject_hook_destroy(FDropListEventHook);
-    FDropListEventHook := nil;
-  end;
-
   inherited DetachEvents;
 end;
 
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  if Sender = FDropList then
+  if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
     Result := False;
 
@@ -6094,7 +6118,7 @@ procedure TQtAbstractItemView.SetOwnerDrawn(const AValue: Boolean);
 var
   Method: TMethod;
 begin
-  if FNewDelegate = nil then
+  if AValue and (FNewDelegate = nil) then
   begin
     FNewDelegate := QLCLItemDelegate_create(Widget);
 
@@ -6108,6 +6132,7 @@ begin
     QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FNewDelegate);
   end
   else
+  if ((not AValue) and (FNewDelegate <> nil)) then
   begin
     QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FOldDelegate);
     QLCLItemDelegate_destroy(FNewDelegate);
