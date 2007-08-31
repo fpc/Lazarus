@@ -1174,7 +1174,9 @@ var
   H: Integer;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(AWidget), ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
+    WriteLn('TQtDeviceContext.Create (',
+     ' WidgetHandle: ', dbghex(PtrInt(AWidget)),
+     ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
 
   {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside

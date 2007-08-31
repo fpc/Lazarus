@@ -824,8 +824,12 @@ type
   end;
 
 var
+{$IFDEF DARWIN}
+  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (y:0; x:0); TheTime:0; ClickCount: 0);
+{$ELSE}
   LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0);
-  
+{$ENDIF}
+
 { TQtWidget }
 
 {------------------------------------------------------------------------------
@@ -988,11 +992,11 @@ begin
     QEventDragLeave: result:='QEventDragLeave';
     QEventDrop: result:='QEventDrop';
     QEventDragResponse: result:='QEventDragResponse';
-    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
+//    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
     QEventChildAdded: result:='QEventChildAdded';
     QEventChildPolished: result:='QEventChildPolished';
-    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
-    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
+//    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
+//    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
     QEventChildRemoved: result:='QEventChildRemoved';
     QEventShowWindowRequest: result:='QEventShowWindowRequest';
     QEventPolishRequest: result:='QEventPolishRequest';
