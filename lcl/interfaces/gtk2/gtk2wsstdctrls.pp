@@ -37,8 +37,8 @@ uses
   StdCtrls, LMessages,
 ////////////////////////////////////////////////////
   glib2,  gdk2, gtk2, Pango,
-  WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef, LCLProc,
-  Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
+  WSControls, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef,
+  LCLProc, Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 type
 
@@ -1327,9 +1327,9 @@ begin
 
   //DebugLn(['TGtk2WSCustomComboBox.DestroyHandle ',dbgsName(AWinControl),' ClassParent=',ClassParent.ClassName]);
 
-  {$NOTE TGtk2WSCustomComboBox.DestroyHandle: fixme: calling inherited does not call TGtkWSWinControl.DestroyHandle}
-  //inherited DestroyHandle(AWinControl);
-  TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(AWinControl);
+  // inherited DestroyHandle doesn't work, because that is determined at
+  // compile time, while the WS class hierarchy is created at runtime
+  TWSWinControlClass(TGtk2WSCustomComboBox.Classparent).DestroyHandle(AWinControl);
 end;
 
 { TGtk2WSCustomGroupBox }
