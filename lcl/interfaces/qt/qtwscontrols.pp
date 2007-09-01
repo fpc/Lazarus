@@ -88,8 +88,6 @@ type
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
-
-
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
                                       const AChildren: TFPList); override;

@@ -320,10 +320,8 @@ begin
   if AIndex < crLow then Exit;
   
   // not yet loaded
-  if AIndex = crNone then
-    Result := Result;
   Result := WidgetSet.CreateStandardCursor(AIndex);
-  if Result = 0 then
+  if (Result = 0) and (AIndex <> crDefault) then
     Result := LoadCursorFromLazarusResource('cur_' + IntToStr(-AIndex));
   if Result = 0 then
     Exit;

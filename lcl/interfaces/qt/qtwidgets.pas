@@ -1812,7 +1812,9 @@ end;
 procedure TQtWidget.SetCursor(const ACursor: QCursorH);
 begin
   if ACursor <> nil then
-    QWidget_setCursor(Widget, ACursor);
+    QWidget_setCursor(Widget, ACursor)
+  else
+    QWidget_unsetCursor(Widget);
 end;
 
 {------------------------------------------------------------------------------

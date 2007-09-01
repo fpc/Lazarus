@@ -3031,29 +3031,7 @@ begin
 
   // Here we should convert top level lcl window coordinaties to qt coord
   // Due to borders and etc
-{  Style := Windows.GetWindowLong(Handle, GWL_STYLE);
-  ExStyle := Windows.GetWindowLong(Handle, GWL_EXSTYLE);
-  if (Style and WS_THICKFRAME) <> 0 then
-  begin
-    // thick, sizing border
-    // add twice, top+bottom border
-    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
-    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
-  end else
-  if (Style and WS_BORDER) <> 0 then
-  begin
-    // thin, non-sizing border
-    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
-    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
-  end;
-  if (Style and WS_CAPTION) <> 0 then
-    if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
-      Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
-    else
-      Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
-
-  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
-    AdjustForBuddySize;}
+  // ?
 end;
 
 function TQtWidgetSet.HideCaret(hWnd: HWND): Boolean;
@@ -3211,9 +3189,6 @@ begin
   TitleStr := UTF8Decode(lpCaption);
   OkStr := UTF8Decode('Ok');
   Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
-//  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-//    WriteLn('***** [WinAPI TQtWidgetSet.MessageBox] missing implementation ');
-//  {$endif}
 end;
 
 {------------------------------------------------------------------------------

@@ -45,7 +45,6 @@ begin
 
   // TODO: map is better
   case TCursor(ACursor) of
-    crDefault   : CursorShape := QtArrowCursor;
     crNone      : CursorShape := QtBlankCursor;
     crArrow     : CursorShape := QtArrowCursor;
     crCross     : CursorShape := QtCrossCursor;
