@@ -55,7 +55,7 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
     class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle); override;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType); override;
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
     class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
@@ -68,13 +68,28 @@ uses
   intfgraphics;
 
 const
-  DrawingStyleMap: array[TDrawingStyle] of DWord =
-  (
+  DRAWINGSTYLEMAP: array[TDrawingStyle] of DWord = (
 { dsFocus       } ILD_FOCUS,
 { dsSelected    } ILD_SELECTED,
 { dsNormal      } ILD_NORMAL,
 { dsTransparent } ILD_TRANSPARENT
   );
+  
+  IMAGETPYEMAP: array[TImageType] of DWord = (
+{ itImage } 0,
+{ itMask }  ILD_MASK
+  );
+  
+function ColorToImagelistColor(AColor: TColor): DWord;
+begin
+  case AColor of
+    clNone: Result := CLR_NONE;
+    clDefault: Result := CLR_DEFAULT;
+  else
+    Result := ColorToRGB(AColor);
+  end;
+end;
+
 
 class procedure TWin32WSCustomImageList.InternalCreateBitmapHandles(AList: TCustomImageList; AWidth, AHeight: Integer; AData: PRGBAQuad; var hbmImage, hbmMask: HBitmap);
 var
@@ -152,7 +167,7 @@ begin
       InternalCreateBitmapHandles(AList, AWidth, AHeight, @AData[AWidth * AHeight * i],
         hbmImage, hbmMask);
       ImageList_Add(Result, hbmImage, hbmMask);
-      InternalDestroyBitmapHandles(hbmMask, hbmImage);
+      InternalDestroyBitmapHandles(hbmImage, hbmMask);
     end;
   end;
 end;
@@ -173,14 +188,14 @@ begin
 end;
 
 class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckHandleAllocated(AList, 'Draw')
   then Exit;
 
   ImageList_DrawEx(HImageList(AList.Handle), AIndex, ACanvas.Handle, ABounds.Left,
-    ABounds.Top, ABounds.Right, ABounds.Bottom, CLR_NONE, CLR_NONE,
-    DrawingStyleMap[AStyle]);
+    ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
+    ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
 end;
 
 class procedure TWin32WSCustomImageList.Insert(AList: TCustomImageList;

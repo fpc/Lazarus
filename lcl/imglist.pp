@@ -145,7 +145,7 @@ type
     
     {$ifndef IMGLIST_OLDSTYLE}
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
-    function InternalSetImage(AIndex: Integer; AImage: TRawImage; AFreeImage: Boolean): PRGBAQuad;
+    function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
     {$endif}
 
     procedure NotifyChangeLink;
@@ -177,7 +177,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    function Add(Image, Mask: TBitmap): Integer; // using AddCopy for Delphi compatibility
+    function Add(Image, Mask: TBitmap): Integer;
     {$ifdef IMGLIST_OLDSTYLE}
     function AddDirect(Image, Mask: TBitmap): Integer;
     function AddCopy(SrcImage, SrcMask: TBitmap): Integer;

@@ -127,7 +127,7 @@ type
     procedure Init_BPP24_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
     procedure Init_BPP32_B8G8R8_BIO_TTB(AWidth, AHeight: integer);
     procedure Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
-    procedure Init_BPP32_A8B8G8R8_BIO_TTB(AWidth, AHeight: integer);
+    procedure Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight: integer);
 
     function GetDescriptionFromMask: TRawImageDescription;
     function GetDescriptionFromAlpha: TRawImageDescription;
@@ -623,7 +623,7 @@ begin
   Width := AWidth;
   Height := AHeight;
   BitOrder := riboBitsInOrder;
-  ByteOrder := DefaultByteOrder;
+  ByteOrder := riboLSBFirst;
   LineOrder := riloTopToBottom;
   BitsPerPixel := 24; // bits per pixel. can be greater than Depth.
   LineEnd := rileDWordBoundary;
@@ -656,7 +656,7 @@ begin
   Width := AWidth;
   Height := AHeight;
   BitOrder := riboBitsInOrder;
-  ByteOrder := DefaultByteOrder;
+  ByteOrder := riboLSBFirst;
   LineOrder := riloTopToBottom;
   BitsPerPixel := 24; // bits per pixel. can be greater than Depth.
   LineEnd := rileDWordBoundary;
@@ -693,7 +693,7 @@ begin
   Width := AWidth;
   Height := AHeight;
   BitOrder := riboBitsInOrder;
-  ByteOrder := DefaultByteOrder;
+  ByteOrder := riboLSBFirst;
   LineOrder := riloTopToBottom;
   BitsPerPixel := 32; // bits per pixel. can be greater than Depth.
   LineEnd := rileDWordBoundary;
@@ -727,7 +727,7 @@ begin
   Width := AWidth;
   Height := AHeight;
   BitOrder := riboBitsInOrder;
-  ByteOrder := DefaultByteOrder;
+  ByteOrder := riboLSBFirst;
   LineOrder := riloTopToBottom;
   BitsPerPixel := 32; // bits per pixel. can be greater than Depth.
   LineEnd := rileDWordBoundary;
@@ -754,10 +754,10 @@ begin
   Result := (GetBitsPerLine(Width, MaskBitsPerPixel, MaskLineEnd) + 7) shr 3;
 end;
 
-procedure TRawImageDescription.Init_BPP32_A8B8G8R8_BIO_TTB(AWidth, AHeight: integer);
+procedure TRawImageDescription.Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight: integer);
 { pf32bit:
 
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
  LineOrder=riloTopToBottom
  BitsPerPixel=32 LineEnd=rileDWordBoundary
@@ -774,7 +774,7 @@ begin
   Width := AWidth;
   Height := AHeight;
   BitOrder := riboBitsInOrder;
-  ByteOrder := DefaultByteOrder;
+  ByteOrder := riboLSBFirst;
   LineOrder := riloTopToBottom;
   BitsPerPixel := 32; // bits per pixel. can be greater than Depth.
   LineEnd := rileDWordBoundary;

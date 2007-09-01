@@ -262,6 +262,7 @@ begin
           end;
 
           Pixbuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
+          // DbgDumpPixbuf(Pixbuf, 'CreateBitmaps (32)');
           gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Drawable, Bitmap, $80);
           gdk_pixbuf_unref(Pixbuf);
           if Data <> ImgData
@@ -404,13 +405,29 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): boolean;
 var
+  DevCon: TDeviceContext absolute ADC;
+
   Drawable: PGdkDrawable;
+  UseAlpha: Boolean;
 begin
+  UseAlpha := False;
   if IsValidDC(ADC)
-  then Drawable := TDeviceContext(ADC).Drawable
+  then begin
+    Drawable := DevCon.Drawable;
+    if DevCon.CurrentBitmap <> nil
+    then begin
+      case DevCon.CurrentBitmap^.GDIBitmapType of
+        gbBitmap: Drawable := DevCon.CurrentBitmap^.GDIBitmapObject;
+        gbPixmap: begin
+          Drawable := DevCon.CurrentBitmap^.GDIPixmapObject.Image;
+          UseAlpha := DevCon.CurrentBitmap^.GDIPixmapObject.Mask <> nil;
+        end;
+      end;
+    end;
+  end
   else Drawable := nil;
   
-  Result := RawImage_DescriptionFromDrawable(ADesc, Drawable, True);
+  Result := RawImage_DescriptionFromDrawable(ADesc, Drawable, UseAlpha);
 end;
 
 {------------------------------------------------------------------------------

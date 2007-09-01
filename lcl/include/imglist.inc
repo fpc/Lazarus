@@ -552,8 +552,8 @@ begin
   ACanvas.Draw(AX,AY,aBitmap);
   {$else}
   HandleNeeded;
-  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas,
-    Rect(AX, AY, FWidth, FHeight), AEnabled, DrawingStyle);
+  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+                          BkColor, BlendColor, AEnabled, DrawingStyle, ImageType);
   {$endif}
 end;
 
@@ -828,7 +828,7 @@ begin
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
   RawImage_FromBitmap(RawImg, AImage.Handle, msk, R);
-  ImgData := InternalSetImage(AIndex, RawImg, True);
+  ImgData := InternalSetImage(AIndex, RawImg);
 
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex, ImgData);
@@ -930,28 +930,76 @@ end;
   Method:  TCustomImageList.InternalSetImage
   Params:  AIndex: the index of the location where the image should be set
            AImage: the new image
-           AFreeImage: if set, the rawimagedata is freed
   Returns: Pointer to the updated image data
 
-  Copies the imagedata into the FData array
+  Copies the imagedata into the FData array and then frees the image.
  ------------------------------------------------------------------------------}
 {$ifndef IMGLIST_OLDSTYLE}
-function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage; AFreeImage: Boolean): PRGBAQuad;
+function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
 var
+  Desc: TRawImageDescription absolute AImage.Description;
+  
   RawImg: TRawImage;
   SrcImg, DstImg: TLazIntfImage;
+  SrcHasAlpha, KeepAlpha: Boolean;
+  
 begin
-  SrcImg := TLazIntfImage.Create(AImage, AFreeImage);
-  SrcImg.AlphaFromMask;
+  SrcHasAlpha := AImage.Description.AlphaPrec > 0;
+  KeepAlpha := SrcHasAlpha;
+  if not SrcHasAlpha and (Desc.BitsPerPixel = 32) and (Desc.Depth = 24)
+  then begin
+    // Try to squeeze Aplha channel in some unused bits
+    if  (Desc.RedShift >= 8)
+    and (Desc.GreenShift >= 8)
+    and (Desc.BlueShift >= 8)
+    then begin
+      // there is room at the lsb side
+      Desc.AlphaPrec := 8;
+      Desc.AlphaShift := 0;
+      Desc.Depth := 32;
+      SrcHasAlpha := True;
+    end
+    else if (Desc.RedShift < 24)
+        and (Desc.GreenShift < 24)
+        and (Desc.BlueShift < 24)
+    then begin
+      // there is room at the msb side
+      Desc.AlphaPrec := 8;
+      Desc.AlphaShift := 24;
+      Desc.Depth := 32;
+      SrcHasAlpha := True;
+    end;
+  end;
+
+  SrcImg := TLazIntfImage.Create(AImage, True);
+  if SrcHasAlpha
+  then SrcImg.AlphaFromMask(KeepAlpha);
 
   RawImg.Init;
   FillDescription(RawImg.Description);
   Result := @FData[AIndex * FWidth * FHeight];
   RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
   RawImg.Data := PByte(Result);
+  if not SrcHasAlpha
+  then begin
+    // Add maskdata to store copied mask, so an alpha can be created
+    RawImg.Description.MaskBitsPerPixel := 1;
+    RawImg.Description.MaskBitOrder := riboReversedBits;
+    RawImg.Description.MaskLineEnd := rileByteBoundary;
+    RawImg.Description.MaskShift := 0;
+    RawImg.MaskSize := RawImg.Description.MaskBytesPerLine * FHeight;
+    RawImg.Mask := GetMem(RawImg.MaskSize);
+  end;
 
   DstImg := TLazIntfImage.Create(RawImg, False);
   DstImg.CopyPixels(SrcImg);
+  if not SrcHasAlpha
+  then begin
+    DstImg.AlphaFromMask;
+    FreeMem(RawImg.Mask);
+    RawImg.Mask := nil;
+    RawImg.MaskSize := 0;
+  end;
 
   DstImg.Free;
   SrcImg.Free;
@@ -1345,7 +1393,7 @@ begin
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
   RawImage_FromBitmap(RawImage, AImage.Handle, AMask.Handle, R);
-  ImgData := InternalSetImage(AIndex, RawImage, True);
+  ImgData := InternalSetImage(AIndex, RawImage);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
   {$endif}

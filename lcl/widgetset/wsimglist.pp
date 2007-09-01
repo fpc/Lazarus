@@ -54,7 +54,7 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); virtual;
     class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle); virtual;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType); virtual;
 
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
 
@@ -158,7 +158,7 @@ begin
 end;
 
 class procedure TWSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckHandleAllocated(AList, 'Draw')
   then Exit;

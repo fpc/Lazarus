@@ -493,6 +493,8 @@ type
 // extra Rawimage utility functions
 function GetDescriptionFromDevice(ADC: HDC; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 function GetDescriptionFromBitmap(ABitmap: HBitmap; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
+function AddAlphaToDescription(var ADesc: TRawImageDescription; APrec: Byte): Boolean;
+
 
 
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
@@ -603,6 +605,41 @@ begin
   if AWidth <> -1 then Result.Width := AWidth;
   if AHeight <> -1 then Result.Height := AHeight;
 end;
+
+function AddAlphaToDescription(var ADesc: TRawImageDescription; APrec: Byte): Boolean;
+  function CreateBitMask(AShift, APrec: Byte): Cardinal; inline;
+  begin
+    Result := ($FFFFFFFF shr (32 - APrec)) shl AShift;
+  end;
+var
+  Mask: Cardinal;
+begin
+  if ADesc.AlphaPrec >= APrec then Exit(False);
+  if ADesc.BitsPerPixel <> 32 then Exit(False);
+  if ADesc.Depth <> 24 then Exit(False);
+
+  Mask := CreateBitMask(ADesc.RedShift, ADesc.RedPrec)
+       or CreateBitMask(ADesc.GreenShift, ADesc.GreenPrec)
+       or CreateBitMask(ADesc.BlueShift, ADesc.BluePrec);
+
+  if (Mask and $FF = 0)
+  then begin
+    ADesc.AlphaShift := 0;
+    Result := True;
+  end
+  else
+    if (Mask and $FF000000 = 0)
+    then begin
+      ADesc.AlphaShift := 24;
+      Result := True;
+    end;
+  if Result
+  then begin
+    ADesc.AlphaPrec := APrec;
+    ADesc.Depth := 32;
+  end;
+end;
+
 
 procedure ReadRawImageBits_1_2_4_BIO(TheData: PByte;
   const Position: TRawImagePosition;
@@ -3088,6 +3125,7 @@ var
   Src: String;
   SrcLen: Integer;
   CurLineNumber, LastLineStart: integer;
+  HasAlpha: Boolean;
 
   procedure RaiseXPMReadError(const Msg: string; ReadPos: integer);
   var
@@ -3366,7 +3404,8 @@ var
         until not (IsHexNumberChar[Src[ReadPos]]);
         ColorEnd:=ReadPos;
         NewColor:=HexToColor(ColorStart,ColorEnd);
-      end else begin
+      end
+      else begin
         // read as text
         repeat
           inc(ReadPos);
@@ -3375,6 +3414,8 @@ var
         NewColor:=TextToColor(ColorStart,ColorEnd);
       end;
       AddColor(PixelStart,NewColor,IntArray);
+
+      HasAlpha := HasAlpha or (NewColor.alpha <> alphaOpaque);
     end;
   end;
 
@@ -3448,6 +3489,21 @@ var
       end;
     end;
   end;
+  
+  procedure CheckAlphaDescription;
+  var
+    Desc: TRawImageDescription;
+  begin
+    if not (TheImage is TLazIntfImage) then Exit;
+  
+    Desc := TLazIntfImage(TheImage).DataDescription;
+    if Desc.AlphaPrec >= 8 then Exit;
+
+    if not AddAlphaToDescription(Desc, 8)
+    then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
+
+    TLazIntfImage(TheImage).DataDescription := Desc;
+  end;
 
 var
   IntArray: PInteger;
@@ -3461,7 +3517,10 @@ begin
   ReadHeader;
   GetMem(IntArray,SizeOf(Integer)*(FCharsPerPixel+1));
   try
+    HasAlpha := False;
     ReadPalette(IntArray);
+    if HasAlpha
+    then CheckAlphaDescription;
     //FPixelToColorTree.ConsistencyCheck;
     ReadPixels(IntArray);
   finally
@@ -4715,7 +4774,7 @@ var
 begin
   InternalReadHead;
 
-  {$note check if height is also doubled wiohout mask}
+  {$note check if height is also doubled without mask}
   FBFI.biHeight := FBFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
   InternalReadBody; { Now read standard bitmap }
 
@@ -4891,32 +4950,16 @@ begin
 end;
 
 procedure TLazReaderPNG.SetAlphaDescription;
-  function CreateBitMask(AShift, APrec: Byte): Cardinal; inline;
-  begin
-    Result := ($FFFFFFFF shr (32 - APrec)) shl AShift;
-  end;
 var
   Desc: TRawImageDescription;
-  Mask: Cardinal;
 begin
   if FImage = nil then Exit;
   
   Desc := FImage.DataDescription;
-  if Desc.AlphaPrec > 0 then Exit;
-  if Desc.BitsPerPixel <> 32 then Exit;
-  if Desc.Depth <> 24 then Exit;
-  
-  Mask := CreateBitMask(Desc.RedShift, Desc.RedPrec)
-       or CreateBitMask(Desc.GreenShift, Desc.GreenPrec)
-       or CreateBitMask(Desc.BlueShift, Desc.BluePrec);
-  
-  if (Mask and $FF = 0)
-  then Desc.AlphaShift := 0
-  else if (Mask and $FF000000 = 0)
-  then Desc.AlphaShift := 24
-  else Exit;
+  if Desc.AlphaPrec >= 8 then Exit;
 
-  Desc.AlphaPrec := 8;
+  if not AddAlphaToDescription(Desc, 8)
+  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
   
   FImage.DataDescription := Desc;
 end;

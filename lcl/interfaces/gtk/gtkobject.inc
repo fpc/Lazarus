@@ -2110,8 +2110,6 @@ var
   Width, Height, Depth: integer;
   IsBitmap: Boolean;
 begin
-  Result := False;
-
   Visual := nil;
   Width := 0;
   Height := 0;
@@ -2138,10 +2136,38 @@ begin
   if (Visual = nil) and not IsBitmap // bitmaps don't have a visual
   then begin
     DebugLn('TGtkWidgetSet.RawImage_DescriptionFromDrawable: visual failed');
-    Exit;
+    Exit(False);
   end;
 
   ADesc.Init;
+  ADesc.Width := cardinal(Width);
+  ADesc.Height := cardinal(Height);
+  ADesc.BitOrder := riboBitsInOrder;
+
+  if ACustomAlpha
+  then begin
+    // always give pixbuf description for alpha images
+    ADesc.Depth := 32;
+    ADesc.BitsPerPixel := 32;
+    ADesc.LineEnd := rileDWordBoundary;
+    ADesc.ByteOrder := riboLSBFirst;
+
+    ADesc.RedPrec := 8;
+    ADesc.RedShift := 0;
+    ADesc.GreenPrec := 8;
+    ADesc.GreenShift := 8;
+    ADesc.BluePrec := 8;
+    ADesc.BlueShift := 16;
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 24;
+
+    ADesc.MaskBitsPerPixel := 1;
+    ADesc.MaskShift := 0;
+    ADesc.MaskLineEnd := rileByteBoundary;
+    ADesc.MaskBitOrder := riboBitsInOrder;
+
+    Exit(True);
+  end;
 
   // Format
   if IsBitmap
@@ -2159,7 +2185,7 @@ begin
     else
       DebugLn('TGtkWidgetSet.GetWindowRawImageDescription unknown Visual type ',
               dbgs(Integer(Visual^.thetype)));
-      Exit;
+      Exit(False);
     end;
   end;
 
@@ -2178,10 +2204,6 @@ begin
   then ADesc.Depth := 1
   else ADesc.Depth := Visual^.Depth;
 
-  ADesc.Width := cardinal(Width);
-  ADesc.Height := cardinal(Height);
-  ADesc.BitOrder := riboBitsInOrder;
-  
   if IsBitmap or (Visual^.byte_order = GDK_MSB_FIRST)
   then ADesc.ByteOrder := riboMSBFirst
   else ADesc.ByteOrder := riboLSBFirst;
@@ -2208,7 +2230,7 @@ begin
     if Image = nil
     then begin
       DebugLn('TGtkWidgetSet.GetWindowRawImageDescription testimage creation failed ');
-      Exit;
+      Exit(False);
     end;
     try
       // the minimum alignment we can detect is bpp
@@ -2220,7 +2242,7 @@ begin
         8: ADesc.LineEnd := rileQWordBoundary;
       else
         DebugLn('TGtkWidgetSet.GetWindowRawImageDescription Unknown line end: %d', [Image^.bpl]);
-        Exit;
+        Exit(False);
       end;
     finally
       gdk_image_destroy(Image);
@@ -2238,10 +2260,11 @@ begin
     ADesc.MaskShift := 0;
     ADesc.MaskLineEnd := rileByteBoundary;
     ADesc.MaskBitOrder := riboBitsInOrder;
-    
+
+(*
     if ACustomAlpha and (ADesc.Format = ricfRGBA) and (ADesc.Depth = 24)
     then begin
-      // return the desciption for a pixbuf
+      // add alpha channel
 
       ADesc.Depth := 32;
 
@@ -2263,6 +2286,7 @@ begin
         ADesc.AlphaShift := 24;
       end;
     end;
+*)
   end;
 
   {$IFDEF VerboseRawImage}
@@ -2275,8 +2299,83 @@ end;
 function TGtkWidgetSet.RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; const ARect: TRect): boolean;
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
+  
+  function GetFromPixbuf(const ARect: TRect): Boolean;
+  var
+    Pixbuf: PGdkPixbuf;
+    pixels: pguchar;
+  begin
+    // create pixbuf with alpha channel first
+    Pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, ADesc.Width, ADesc.Height);
+    try
+      Pixbuf := gdk_pixbuf_get_from_drawable(Pixbuf, ADrawable, gdk_colormap_get_system, ARect.Left, ARect.Top, 0, 0, ADesc.Width, ADesc.Height);
+      pixels := gdk_pixbuf_get_pixels(Pixbuf);
+      
+      ARawImage.DataSize := gdk_pixbuf_get_rowstride(Pixbuf) * ADesc.Height;
+      ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+      if ARawImage.DataSize > 0 then
+        System.Move(pixels^, ARawImage.Data^, ARawImage.DataSize);
+
+      //DbgDumpPixmap(ADrawable, 'RawImage_FromDrawable - image');
+      //DbgDumpBitmap(AAlpha, 'RawImage_FromDrawable - alpha');
+      //DbgDumpPixbuf(Pixbuf, 'RawImage_FromDrawable - pixbuf');
+    finally
+      gdk_pixbuf_unref(Pixbuf);
+    end;
+    
+    Result := RawImage_SetAlpha(ARawImage, AAlpha, ARect);;
+  end;
+
+  function GetFromImage(const ARect: TRect): Boolean;
+  var
+    Image: PGdkImage;
+  begin
+    Image := gdk_image_get(ADrawable, ARect.Left, ARect.Top, ADesc.Width, ADesc.Height);
+    if Image = nil
+    then begin
+      DebugLn('WARNING: TGtkWidgetSet.RawImage_FromDrawable: gdk_image_get failed');
+      exit(False);
+    end;
+
+    try
+      {$ifdef RawimageConsistencyCheks}
+      // consistency checks
+      if Description.Depth <> Image^.Depth then
+        RaiseGDBException('ARawImage.Description.Depth<>Image^.Depth '+IntToStr(ADesc.Depth)+'<>'+IntToStr(Image^.Depth));
+      if Description.BitsPerPixel <> GetPGdkImageBitsPerPixel(Image) then
+        RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
+      {$endif}
+
+      ARawImage.DataSize := PtrUInt(Image^.bpl) * Image^.Height;
+      {$IFDEF VerboseRawImage}
+      DebugLn('TGtkWidgetSet.RawImage_FromDrawable: G Width=',dbgs(Image^.Width),' Height=',dbgs(Image^.Height),
+        ' BitsPerPixel=',dbgs(ADesc.BitsPerPixel),' bpl=',dbgs(Image^.bpl));
+      {$ENDIF}
+
+      // copy data
+      ADesc.Width := Image^.Width;
+      ADesc.Height := Image^.Height;
+      ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+      if ARawImage.DataSize > 0 then
+        System.Move(Image^.Mem^, ARawImage.Data^, ARawImage.DataSize);
+
+      {$IFDEF VerboseRawImage}
+      DebugLn('TGtkWidgetSet.RawImage_FromDrawable: H ',
+        ' Width=',dbgs(ADesc.Width),
+        ' Height=',dbgs(ADesc.Height),
+        ' Depth=',dbgs(ADesc.Depth),
+        ' DataSize=',dbgs(ARawImage.DataSize));
+      {$ENDIF}
+    finally
+      gdk_image_destroy(Image);
+    end;
+    
+    Result := True;
+  end;
+  
+var
   R: TRect;
-  Image: PGdkImage;
+  UseAlpha: Boolean;
 begin
   Result := False;
   if ADrawable = nil then
@@ -2284,11 +2383,10 @@ begin
     
   ARawImage.Init;
 
+  UseAlpha := AAlpha <> nil;
+
   // get raw image description
-  {$IFDEF VerboseRawImage}
-  //DebugLn('TGtkWidgetSet.RawImage_FromDrawable: Get Desc GdkWindow=',DbgS(GdkWindow));
-  {$ENDIF}
-  if not RawImage_DescriptionFromDrawable(ADesc, ADrawable, AAlpha <> nil)
+  if not RawImage_DescriptionFromDrawable(ADesc, ADrawable, UseAlpha)
   then begin
     DebugLn('WARNING: TGtkWidgetSet.RawImage_FromDrawable: RawImage_DescriptionFromDrawable failed ');
     Exit;
@@ -2316,50 +2414,11 @@ begin
     //DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow Intersection empty');
     exit;
   end;
+  
 
-  Image := gdk_image_get(ADrawable, R.Left, R.Top, ADesc.Width, ADesc.Height);
-  if Image = nil
-  then begin
-    DebugLn('WARNING: TGtkWidgetSet.RawImage_FromDrawable: gdk_image_get failed');
-    exit;
-  end;
-
-  try
-    {$ifdef RawimageConsistencyCheks}
-    // consistency checks
-    if Description.Depth <> Image^.Depth then
-      RaiseGDBException('ARawImage.Description.Depth<>Image^.Depth '+IntToStr(ADesc.Depth)+'<>'+IntToStr(Image^.Depth));
-    if Description.BitsPerPixel <> GetPGdkImageBitsPerPixel(Image) then
-      RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
-    {$endif}
-
-    ARawImage.DataSize := PtrUInt(Image^.bpl) * Image^.Height;
-    {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.RawImage_FromDrawable: G Width=',dbgs(Image^.Width),' Height=',dbgs(Image^.Height),
-      ' BitsPerPixel=',dbgs(ADesc.BitsPerPixel),' bpl=',dbgs(Image^.bpl));
-    {$ENDIF}
-
-    // copy data
-    ADesc.Width := Image^.Width;
-    ADesc.Height := Image^.Height;
-    ReAllocMem(ARawImage.Data, ARawImage.DataSize);
-    if ARawImage.DataSize > 0 then
-      System.Move(Image^.Mem^, ARawImage.Data^, ARawImage.DataSize);
-
-    {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.RawImage_FromDrawable: H ',
-      ' Width=',dbgs(ADesc.Width),
-      ' Height=',dbgs(ADesc.Height),
-      ' Depth=',dbgs(ADesc.Depth),
-      ' DataSize=',dbgs(ARawImage.DataSize));
-    {$ENDIF}
-  finally
-    gdk_image_destroy(Image);
-  end;
-  Result := true;
-
-  if AAlpha <> nil
-  then Result := RawImage_SetAlpha(ARawImage, AAlpha, R);
+  if UseAlpha
+  then Result := GetFromPixbuf(R)
+  else Result := GetFromImage(R);
 end;
 
 function TGTKWidgetSet.RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; const ARect: TRect): boolean;
@@ -2381,7 +2440,7 @@ var
     SrcLinePtr := AImage^.mem;
     SrcBytesPerLine := AImage^.bpl;
     DstLinePtr := ARawImage.Data;
-    DstBytesPerLine := GetBytesPerLine(AWidth, ADesc.BitsPerPixel, ADesc.LineEnd);
+    DstBytesPerLine := ARawImage.Description.BytesPerLine;
 
     DstMask := not (((1 shl ADesc.AlphaPrec) - 1) shl ADesc.AlphaShift);
     DstSet  := not DstMask;
@@ -2422,7 +2481,7 @@ var
     SrcLinePtr := AImage^.mem;
     SrcBytesPerLine := AImage^.bpl;
     DstLinePtr := ARawImage.Data;
-    DstBytesPerLine := GetBytesPerLine(AWidth, ADesc.BitsPerPixel, ADesc.LineEnd);
+    DstBytesPerLine := ARawImage.Description.BytesPerLine;
 
     DstMask := not (((1 shl ADesc.AlphaPrec) - 1) shl ADesc.AlphaShift);
     DstShift := ADesc.AlphaShift;

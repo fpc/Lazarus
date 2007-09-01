@@ -843,6 +843,7 @@ begin
     // read image
     IntfImg := TLazIntfImage.Create(0,0);
     {$note set pixelformat based on image, not device}
+    // add an extention to the reader, so that we h get called after the header is read
     // the next will cause that all images are loaded in pfDevice format.
     // This is incompatible with delphi
     IntfImg.DataDescription := GetDescriptionFromDevice(0, 0, 0);

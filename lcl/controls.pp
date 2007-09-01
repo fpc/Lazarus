@@ -1854,10 +1854,14 @@ type
 
   TImageList = class(TDragImageList)
   published
+    property AllocBy;
+    property BlendColor;
     property BkColor;
-    Property Height;
+    property DrawingStyle;
+    property Height;
+    property ImageType;
     property Masked;
-    property Width;
+    property ShareImages;
     property OnChange;
   end;
 
