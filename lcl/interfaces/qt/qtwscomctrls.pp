@@ -738,6 +738,9 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
   QTreeWidgetItem_takeChild(TWI, AIndex);
@@ -756,6 +759,8 @@ var
   HV: QHeaderViewH;
   Str: WideString;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
 
@@ -804,6 +809,9 @@ var
   TW: QTreeWidgetH;
   HV: QHeaderViewH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   HV := QTreeView_header(TW);
   QHeaderView_moveSection(HV, AOldIndex, ANewIndex);
@@ -820,6 +828,8 @@ var
   TWI: QTreeWidgetItemH;
   FAlign: QtAlignment;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
@@ -846,12 +856,15 @@ var
   TW: QTreeWidgetH;
   HV: QHeaderViewH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   HV := QTreeView_header(TW);
   if AAutoSize then
-  QHeaderView_setResizeMode(HV, AIndex, QHeaderViewResizeToContents)
+    QHeaderView_setResizeMode(HV, AIndex, QHeaderViewResizeToContents)
   else
-  QHeaderView_setResizeMode(HV, AIndex, QHeaderViewInteractive);
+    QHeaderView_setResizeMode(HV, AIndex, QHeaderViewInteractive);
   
 end;
 
@@ -866,6 +879,8 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
   if TWI <> NiL then
@@ -905,6 +920,8 @@ var
   TW: QTreeWidgetH;
   HV: QHeaderViewH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   HV := QTreeView_header(TW);
   QHeaderView_setMinimumSectionSize(HV, AMinWidth);
@@ -919,6 +936,8 @@ class procedure TQtWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; c
 var
   TW: QTreeWidgetH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeView_setColumnWidth(QTreeViewH(TW), AIndex, AWidth);
 end;
@@ -932,6 +951,8 @@ class procedure TQtWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
 var
   TW: QTreeWidgetH;
 begin
+  if not ALV.HandleAllocated then
+    Exit;
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeView_setColumnHidden(QTreeViewH(TW), AIndex, not AVisible);
 end;
