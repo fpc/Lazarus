@@ -29,8 +29,8 @@ unit WSGtk2TrayIcon;
 interface
 
 uses
-  Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs,
-  Menus, WSCommonTrayIcon, x, xlib, xutil, gtk2, gdk2, gdk2x, glib2, gtkdef;
+  Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs, Menus,
+  WSCommonTrayIcon, x, xlib, xutil, gtk2, gdk2, gdk2x, glib2, gtkdef, gtkproc;
 
 type
 
@@ -322,6 +322,7 @@ end;
 procedure TWidgetTrayIcon.CreateForm(id: Integer);
 var
   AImage: PGtkWidget;
+  AMask: PGdkBitmap;
   GDIObject: PgdiObject;
 begin
   {*******************************************************************
@@ -362,8 +363,15 @@ begin
 
   GDIObject := PgdiObject(Icon.Handle);
 
-  AImage := gtk_image_new_from_pixmap(GDIObject^.GDIPixmapObject,
-   GDIObject^.GDIBitmapMaskObject);
+  GDIObject := PgdiObject(Icon.Handle);
+
+  AMask := CreateGdkMaskBitmap(
+   GDIObject^.GDIPixmapObject.Mask,
+   GDIObject^.GDIBitmapObject);
+
+  AImage := gtk_image_new_from_pixmap(GDIObject^.GDIPixmapObject.Image, AMask);
+
+  g_object_unref(AMask);
 
   gtk_widget_show(AImage);
 
