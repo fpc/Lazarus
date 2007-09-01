@@ -481,7 +481,6 @@ type
   private
     FImage: TLazIntfImage;
     FReadingScanlines: Boolean;
-    procedure SetAlphaDescription;
   protected
     procedure HandleAlpha; override;
     procedure HandleScanLine (const y : integer; const ScanLine : PByteArray); override;
@@ -639,6 +638,23 @@ begin
     ADesc.Depth := 32;
   end;
 end;
+
+procedure CheckAlphaDescription(AImage: TFPCustomImage);
+var
+  Desc: TRawImageDescription;
+begin
+  if not (AImage is TLazIntfImage) then Exit;
+
+  Desc := TLazIntfImage(AImage).DataDescription;
+  if Desc.AlphaPrec >= 8 then Exit;
+
+  if not AddAlphaToDescription(Desc, 8)
+  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
+
+  TLazIntfImage(AImage).DataDescription := Desc;
+end;
+
+
 
 
 procedure ReadRawImageBits_1_2_4_BIO(TheData: PByte;
@@ -3490,21 +3506,6 @@ var
     end;
   end;
   
-  procedure CheckAlphaDescription;
-  var
-    Desc: TRawImageDescription;
-  begin
-    if not (TheImage is TLazIntfImage) then Exit;
-  
-    Desc := TLazIntfImage(TheImage).DataDescription;
-    if Desc.AlphaPrec >= 8 then Exit;
-
-    if not AddAlphaToDescription(Desc, 8)
-    then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
-
-    TLazIntfImage(TheImage).DataDescription := Desc;
-  end;
-
 var
   IntArray: PInteger;
 begin
@@ -3520,7 +3521,7 @@ begin
     HasAlpha := False;
     ReadPalette(IntArray);
     if HasAlpha
-    then CheckAlphaDescription;
+    then CheckAlphaDescription(TheImage);
     //FPixelToColorTree.ConsistencyCheck;
     ReadPixels(IntArray);
   finally
@@ -4582,7 +4583,7 @@ const
     if FMaskIndex <> -1
     then FMaskColor := FPalette[FMaskIndex];
   end;
-
+  
 var
   PixelMasks: TPixelMasks;
   Row : Cardinal;
@@ -4684,6 +4685,9 @@ begin
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
+      // force alpha description
+      
+      // CheckAlphaDescription(TheImage);
       SetupRead(0, TheImage.Width * 32, True);
     end;
   else
@@ -4773,6 +4777,9 @@ var
   NewColor: TFPColor;
 begin
   InternalReadHead;
+  
+  // force alpha description
+  CheckAlphaDescription(TheImage);
 
   {$note check if height is also doubled without mask}
   FBFI.biHeight := FBFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
@@ -4844,6 +4851,9 @@ var
   i: Integer;
   Bitmap: TBitmap;
 begin
+  // force alpha description
+  CheckAlphaDescription(TheImage);
+
   GetMem(IconDir, FnIcons*Sizeof(TIconDirEntry));
   try
     Stream.Read(IconDir^, FnIcons*Sizeof(TIconDirEntry));
@@ -4871,10 +4881,11 @@ begin
       for i := 1 to FnIcons do
       begin
         Stream.Position := FnStartPos + CurrentDirEntry^.dwImageOffset;
-        if CurrentDirEntry = BestDirEntry then
-         inherited InternalRead(Stream, Img)
-        else
-        begin
+        if CurrentDirEntry = BestDirEntry
+        then begin
+          inherited InternalRead(Stream, Img)
+        end
+        else begin
           Bitmap := TBitmap.Create;
           try
             Bitmap.ReadStreamWithFPImage(Stream, False, 0, TLazReaderPartIcon);
@@ -4886,8 +4897,8 @@ begin
         end;
         Inc(CurrentDirEntry);
       end;
-    end else
-    begin
+    end
+    else begin
       Stream.Position := FnStartPos + BestDirEntry^.dwImageOffset;
       inherited InternalRead(Stream, Img);
       { Finally skip remaining icons }
@@ -4928,7 +4939,7 @@ begin
   inherited HandleAlpha;
   if FReadingScanlines then Exit; // already read some data
   if UseTransparent or (Header.ColorType = 3)
-  then SetAlphaDescription;
+  then CheckAlphaDescription(TheImage);
 end;
 
 procedure TLazReaderPNG.HandleScanLine(const y: integer; const ScanLine: PByteArray);
@@ -4946,22 +4957,7 @@ begin
   else FImage := nil;
 
   if Header.ColorType in [4, 6]
-  then SetAlphaDescription;
-end;
-
-procedure TLazReaderPNG.SetAlphaDescription;
-var
-  Desc: TRawImageDescription;
-begin
-  if FImage = nil then Exit;
-  
-  Desc := FImage.DataDescription;
-  if Desc.AlphaPrec >= 8 then Exit;
-
-  if not AddAlphaToDescription(Desc, 8)
-  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
-  
-  FImage.DataDescription := Desc;
+  then CheckAlphaDescription(TheImage)
 end;
 
 //------------------------------------------------------------------------------
