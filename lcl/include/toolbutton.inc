@@ -537,7 +537,7 @@ begin
   if (Style<>tbsCheck) or (not Grouped) then exit;
   while (StartIndex>0) do begin
     CurButton:=FToolBar.Buttons[StartIndex-1];
-    if (CurButton<>nil) and (CurButton.Style=tbsCheck) and (CurButton.Grouped)
+    if (CurButton<>nil) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider])
     then
       dec(StartIndex)
     else
@@ -545,7 +545,7 @@ begin
   end;
   while (EndIndex<FToolBar.FButtons.Count-1) do begin
     CurButton:=FToolBar.Buttons[EndIndex+1];
-    if (CurButton<>nil) and (CurButton.Style=tbsCheck) and (CurButton.Grouped)
+    if (CurButton<>nil) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider])
     then
       inc(EndIndex)
     else
