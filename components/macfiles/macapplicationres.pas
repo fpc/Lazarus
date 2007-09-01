@@ -75,6 +75,22 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('  <string>1.0</string>');
       sl.Add('  <key>CSResourcesFileMapped</key>');
       sl.Add('  <true/>');
+      // for accepting files dropped on the dock icon:
+      sl.Add('  <key>CFBundleDocumentTypes</key>');
+      sl.Add('  <array>');
+      sl.Add('    <dict>');
+      sl.Add('      <key>CFBundleTypeRole</key>');
+      sl.Add('      <string>Viewer</string>');
+      sl.Add('      <key>CFBundleTypeExtension</key>');
+      sl.Add('      <string>*</string>');
+      sl.Add('      <key>CFBundleTypeOSTypes</key>');
+      sl.Add('      <array>');
+      sl.Add('        <string>fold</string>');
+      sl.Add('        <string>disk</string>');
+      sl.Add('        <string>****</string>');
+      sl.Add('      </array>');
+      sl.Add('    </dict>');
+      sl.Add('  </array>');
       sl.Add('</dict>');
       sl.Add('</plist>);');
       sl.SaveToFile(PLInfoListFilename);
