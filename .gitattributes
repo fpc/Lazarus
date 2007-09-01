@@ -1991,15 +1991,21 @@ images/formatitalic.bmp -text
 images/formatunderline.bmp -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
+images/includefile.ico -text svneol=unset#image/x-icon
 images/insertcodetag.xpm svneol=native#text/plain
 images/insertremark.xpm svneol=native#text/plain
 images/insertvartag.xpm svneol=native#text/plain
 images/keymapcategory.xpm -text svneol=native#image/x-xpixmap
 images/keymaprelation.xpm -text svneol=native#image/x-xpixmap
 images/laz_images.lrs svneol=native#text/pascal
+images/lazarus.ico -text svneol=unset#image/x-icon
 images/lazarus.xpm -text svneol=native#image/x-xpixmap
+images/lazarus64.ico -text svneol=unset#image/x-icon
 images/lazarus64.xpm -text svneol=native#image/x-xpixmap
 images/lazarus_about_logo.xpm -text svneol=native#image/x-xpixmap
+images/lazaruspackage.ico -text svneol=unset#image/x-icon
+images/lprfile.ico -text svneol=unset#image/x-icon
+images/mainicon.ico -text svneol=unset#image/x-icon
 images/mainicon.lrs svneol=native#text/pascal
 images/mainicon.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_build.png -text svneol=unset#image/png
