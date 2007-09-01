@@ -341,8 +341,6 @@ ideintf/languages/*.bak
 ideintf/languages/units
 ideintf/units
 images/*.bak
-images/22x22/*.bak
-images/22x22/units
 images/codeexplorer/*.bak
 images/codeexplorer/units
 images/codetoolsdefines/*.bak
