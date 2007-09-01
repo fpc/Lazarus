@@ -1862,6 +1862,7 @@ type
     property ImageType;
     property Masked;
     property ShareImages;
+    property Width;
     property OnChange;
   end;
 
