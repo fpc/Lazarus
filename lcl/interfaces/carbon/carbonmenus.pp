@@ -62,7 +62,7 @@ type
     procedure Remove(AMenu: TCarbonMenu);
     procedure Attach(AParentMenu: TCarbonMenu);
     procedure AttachToMenuBar;
-    
+
     procedure SetCaption(const ACaption: String);
     procedure SetVisible(AVisible: Boolean);
     procedure SetEnable(AEnabled: Boolean);
@@ -73,6 +73,9 @@ type
   end;
   
 function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
+
+var
+  EmptyMenu: MenuRef; // menu for clearing menu bar workaround
 
 implementation
 
@@ -279,7 +282,7 @@ begin
   {$ENDIF}
   
   Index := GetIndex;
-  if FParentMenu.FRoot then MenuNeeded; // menu tiem is in toplevel of root menu
+  if FParentMenu.FRoot then MenuNeeded; // menu item is in toplevel of root menu
   
   if LCLMenuItem.Caption = cLineCaption then // menu item is separator
     OSError(
@@ -531,7 +534,8 @@ begin
         
         if Item.LCLMenuItem.RadioItem and Item.LCLMenuItem.AutoCheck and
           (Item.LCLMenuItem.GroupIndex = LCLMenuItem.GroupIndex) then
-            Item.SetCheck(False);
+            SetItemMark(FParentMenu.Menu, Item.GetIndex + 1, #0);
+
       end;
     end
     else
@@ -610,6 +614,14 @@ begin
   SetItemStyle(FParentMenu.Menu, GetIndex + 1, Style);
 end;
 
+initialization
+
+  OSError(CreateNewMenu(0, kMenuAttrAutoDisable, EmptyMenu),
+    'CarbonMenus.initialization', 'CreateNewMenu');
+
+finalization
+
+  DisposeMenu(EmptyMenu);
 
 end.
 

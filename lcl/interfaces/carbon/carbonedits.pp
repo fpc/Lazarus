@@ -932,17 +932,9 @@ end;
   Text changed event handler
  ------------------------------------------------------------------------------}
 procedure TCarbonSpinEdit.TextDidChange;
-var
-  NewValue: Single;
 begin
-  NewValue := StrToFloatDef((LCLObject as TCustomFloatSpinEdit).Text, FValue);
-
-  if FMax > FMin then
-  begin
-    if NewValue > FMax then NewValue := FMax;
-    if NewValue < FMin then NewValue := FMin;
-  end;
-  FValue := NewValue;
+  FValue := (LCLObject as TCustomFloatSpinEdit).StrToValue(
+    (LCLObject as TCustomFloatSpinEdit).Text);
 
   inherited TextDidChange;
 end;
@@ -959,14 +951,8 @@ begin
     kControlUpButtonPart:   FValue := FValue + FIncrement;
     kControlDownButtonPart: FValue := FValue - FIncrement;
   end;
-  if FMax > FMin then
-  begin
-    if FValue < FMin then FValue := FMin;
-    if FValue > FMax then FValue := FMax;
-  end;
   
-  (LCLObject as TCustomFloatSpinEdit).Text :=
-    FloatToStrF(FValue, ffFixed, 20, FDecimalPlaces);
+  inherited SetText((LCLObject as TCustomFloatSpinEdit).ValueToStr(FValue));
 end;
 
 {------------------------------------------------------------------------------
@@ -1010,17 +996,8 @@ end;
   Sets the text of edit control
  ------------------------------------------------------------------------------}
 function TCarbonSpinEdit.SetText(const S: String): Boolean;
-var
-  NewValue: Single;
 begin
-  NewValue := StrToFloatDef(S, FValue);
-
-  if FMax > FMin then
-  begin
-    if NewValue > FMax then NewValue := FMax;
-    if NewValue < FMin then NewValue := FMin;
-  end;
-  FValue := NewValue;
+  FValue := (LCLObject as TCustomFloatSpinEdit).StrToValue(S);
   
   Result := inherited SetText(S);
 end;
@@ -1042,7 +1019,7 @@ begin
   FDecimalPlaces :=  SpinEdit.DecimalPlaces;
     
   // update edit text
-  SpinEdit.Text := FloatToStrF(FValue, ffFixed, 20, FDecimalPlaces);
+  inherited SetText((LCLObject as TCustomFloatSpinEdit).ValueToStr(FValue));
 end;
 
 { TCarbonEdit }

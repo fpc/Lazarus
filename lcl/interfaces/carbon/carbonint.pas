@@ -92,7 +92,7 @@ type
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
 
-    procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
     
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
@@ -111,6 +111,7 @@ type
 
   public
     procedure SetMainMenuEnabled(AEnabled: Boolean);
+    procedure SetRootMenu(const AMenu: TMainMenu);
   public
     procedure SetCaptureWidget(const AWidget: HWND);
   end;

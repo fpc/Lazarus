@@ -308,8 +308,10 @@ var
 const
   SName = 'CarbonCommon_SetFocusPart';
 begin
-  //if not (AWidget.LCLObject is TCustomControl) then
-    Result := CallNextEventHandler(ANextHandler, AEvent);
+  if not (AWidget.LCLObject is TCustomControl) then
+    Result := CallNextEventHandler(ANextHandler, AEvent)
+  else
+    Result := noErr;
 
   if OSError(
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,

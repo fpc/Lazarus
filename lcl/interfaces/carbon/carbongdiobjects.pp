@@ -100,6 +100,7 @@ type
     constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean);
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
     procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
+    function CreateCGColor: CGColorRef;
   end;
 
   { TCarbonBrush }
@@ -159,6 +160,7 @@ type
   TCarbonBitmap = class(TCarbonGDIObject)
   private
     FData: Pointer;
+    FFreeData: Boolean;
     FDataSize: Integer;
     FBytesPerRow: Integer;
     FDepth: Byte;
@@ -171,7 +173,9 @@ type
     function GetColorSpace: CGColorSpaceRef;
     function GetInfo: CGBitmapInfo;
   public
-    constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer; AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType; AData: Pointer);
+    constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+      AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType;
+      AData: Pointer; ACopyData: Boolean = True);
     destructor Destroy; override;
     procedure Update;
     function CreateSubImage(const ARect: TRect): CGImageRef;
@@ -871,6 +875,22 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonColorObject.CreateCGColor
+  Returns: CGColor
+ ------------------------------------------------------------------------------}
+function TCarbonColorObject.CreateCGColor: CGColorRef;
+var
+  F: Array [0..3] of Single;
+begin
+  F[0] := FR / 255;
+  F[1] := FG / 255;
+  F[2] := FB / 255;
+  F[3] := Byte(FA);
+  
+  Result := CGColorCreate(RGBColorSpace, @F[0]);
+end;
+
 { TCarbonBrush }
 
 {------------------------------------------------------------------------------
@@ -1043,6 +1063,10 @@ begin
   else Result := RGBColorSpace
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.GetInfo
+  Returns: The CGBitmapInfo for this type of bitmap
+ ------------------------------------------------------------------------------}
 function TCarbonBitmap.GetInfo: CGBitmapInfo;
 begin
   Result := BITMAPINFOMAP[FType];
@@ -1056,10 +1080,13 @@ end;
            ABitsPerPixel - The number of allocated bits per pixel (can be larget that depth)
            AAlignment    - Alignment of the data for each row
            ABytesPerRow  - The number of bytes between rows
+           ACopyData     - Copy supplied bitmap data (OPTIONAL)
   
   Creates Carbon bitmap with the specified characteristics
  ------------------------------------------------------------------------------}
-constructor TCarbonBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer; AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType; AData: Pointer);
+constructor TCarbonBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+  AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType; AData: Pointer;
+  ACopyData: Boolean);
 const
   ALIGNBITS: array[TCarbonBitmapAlignment] of Integer = (0, 1, 3, 7, $F);
 var
@@ -1084,12 +1111,21 @@ begin
   then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - m);
 
   FDataSize := FBytesPerRow * FHeight;
-  System.GetMem(FData, FDataSize);
-  if AData <> nil then
-    System.Move(AData^, FData^, FDataSize) // copy data
+  
+  if (AData = nil) or ACopyData then
+  begin
+    System.GetMem(FData, FDataSize);
+    FFreeData := True;
+    if AData <> nil then
+      System.Move(AData^, FData^, FDataSize) // copy data
+    else
+      FillDWord(FData^, FDataSize shr 2, 0); // clear bitmap
+  end
   else
-    FillDWord(FData^, FDataSize shr 2, 0); // clear bitmap
-
+  begin
+    FData := AData;
+    FFreeData := False;
+  end;
 //DebugLn(Format('TCarbonBitmap.Create %d x %d Data: %d RowSize: %d Size: %d',
 //  [AWidth, AHeight, Integer(AData), DataRowSize, FDataSize]));
 
@@ -1106,7 +1142,7 @@ end;
 destructor TCarbonBitmap.Destroy;
 begin
   CGImageRelease(FCGImage);
-  System.FreeMem(FData);
+  if FFreeData then System.FreeMem(FData);
 
   inherited Destroy;
 end;
@@ -1137,7 +1173,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonBitmap.GetSubImage
+  Method:  TCarbonBitmap.CreateSubImage
   Returns: New image ref to portion of image data according to the rect
  ------------------------------------------------------------------------------}
 function TCarbonBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
@@ -1517,7 +1553,7 @@ initialization
   BlackPen := TCarbonPen.Create(True);
   
   DefaultContext := TCarbonBitmapContext.Create;
-  DefaultBitmap := TCarbonBitmap.Create(1, 1, 1, 1, cbaDQWord, cbtMono, nil);
+  DefaultBitmap := TCarbonBitmap.Create(1, 1, 32, 32, cbaDQWord, cbtARGB, nil);
   DefaultContext.Bitmap := DefaultBitmap;
   
   ScreenContext := TCarbonScreenContext.Create;

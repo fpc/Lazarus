@@ -482,6 +482,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.SetRootMenu
+  Params:  AMenu - Main menu
+
+  Sets the menu to menu bar
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.SetRootMenu(const AMenu: TMainMenu);
+begin
+  if (AMenu <> nil) and AMenu.HandleAllocated then
+  begin
+    if not CheckMenu(AMenu.Handle, 'SetRootMenu') then Exit;
+
+    TCarbonMenu(AMenu.Handle).AttachToMenuBar;
+  end
+  else
+    OSError(FPCMacOSAll.SetRootMenu(EmptyMenu), Self, 'SetRootMenu', 'SetRootMenu');
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetCaptureWidget
   Params:  AWidget - Carbon widget to capture
 

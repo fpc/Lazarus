@@ -106,6 +106,7 @@ type
     procedure EndTextRender(var ALayout: ATSUTextLayout);
     
     procedure SetAntialiasing(AValue: Boolean);
+    function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
   public
     procedure DrawFocusRect(const ARect: TRect);
     procedure DrawFrameControl(var ARect: TRect; AType, AState: Cardinal);
@@ -652,7 +653,7 @@ begin
   PValue := @CGContext;
   if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
     Self, SName, 'ATSUSetLayoutControls', 'CGContext') then Exit;
-    
+
   Result := True;
 end;
 
@@ -681,6 +682,36 @@ end;
 procedure TCarbonDeviceContext.SetAntialiasing(AValue: Boolean);
 begin
   CGContextSetShouldAntialias(CGContext, CBool(AValue));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.DrawCGImage
+  Params:  X, Y - Left, Top
+           Width, Height
+           CGImage
+  Returns: If the function succeeds
+
+  Draws CGImage into CGContext
+ ------------------------------------------------------------------------------}
+function TCarbonDeviceContext.DrawCGImage(X, Y, Width, Height: Integer;
+  CGImage: CGImageRef): Boolean;
+begin
+  Result := False;
+  
+  // save dest context
+  CGContextSaveGState(CGContext);
+
+  CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
+  try
+    if OSError(
+      HIViewDrawCGImage(CGContext,
+      GetCGRectSorted(X, Y, X + Width, Y + Height), CGImage),
+      'DrawCGImage', 'HIViewDrawCGImage') then Exit;
+  finally
+    CGContextRestoreGState(CGContext);
+  end;
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -836,6 +867,8 @@ function TCarbonDeviceContext.ExtTextOut(X, Y: Integer; Options: Longint;
 var
   TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
+  MX, MY: ATSUTextMeasurement;
+  A: Single;
 const
   SName = 'ExtTextOut';
 begin
@@ -853,6 +886,7 @@ begin
   
     Exit;
   end;
+  
   try
     // get text ascent
     if OSError(
@@ -860,23 +894,33 @@ begin
         TextBefore, TextAfter, Ascent, Descent),
       Self, SName, SGetUnjustifiedBounds) then Exit;
 
-    // fill drawed text background
-    if (Options and ETO_OPAQUE) > 0 then
+    if CurrentFont.LineRotation <> 0 then // TODO: fill rotated text background
     begin
-      BkBrush.Apply(Self, False); // do not use ROP2
-      CGContextFillRect(CGContext, GetCGRectSorted(X - TextBefore shr 16,
-        -Y, X + TextAfter shr 16, -Y - (Ascent + Descent) shr 16));
+      A := CurrentFont.LineRotation * (PI / ($10000 * 180));
+      MX := Round(Ascent * Sin(A));
+      MY := Round(Ascent - Ascent * Cos(A));
+    end
+    else
+    begin
+      MX := 0;
+      MY := 0;
+
+      // fill drawed text background
+      if (Options and ETO_OPAQUE) > 0 then
+      begin
+        BkBrush.Apply(Self, False); // do not use ROP2
+        CGContextFillRect(CGContext, GetCGRectSorted(X - TextBefore shr 16,
+          -Y, X + TextAfter shr 16, -Y - (Ascent + Descent) shr 16));
+      end;
     end;
 
     // apply text color
     TextBrush.Apply(Self, False); // do not use ROP2
 
-
     // finally draw the text
     if OSError(ATSUDrawText(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
-        X shl 16 - TextBefore, -(Y shl 16) - Ascent),
+        X shl 16 - TextBefore + MX, -(Y shl 16) - Ascent + MY),
        Self, SName, 'ATSUDrawText') then Exit;
-
     Result := True;
   finally
     EndTextRender(TextLayout);
@@ -1288,76 +1332,77 @@ var
   SubImage, SubMask: Boolean;
   Bitmap: TCarbonBitmap;
   LayRect, DstRect: CGRect;
-  sts: OSStatus;
   LayerContext: CGContextRef;
   Layer: CGLayerRef;
 begin
   Result := False;
   
-  // save dest context
-  CGContextSaveGState(CGContext);
+  Image := nil;
+  Bitmap := SrcDC.GetBitmap;
+  if Bitmap <> nil then Image := Bitmap.CGImage;
 
-  CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
-  try
-    Image := nil;
-    Bitmap := SrcDC.GetBitmap;
-    if Bitmap <> nil then Image := Bitmap.CGImage;
+  if Image = nil then Exit;
 
-    if Image = nil then Exit;
-    
-    DstRect := CGRectMake(X, Y, Abs(Width), Abs(Height));
-    
-    SubMask := (Msk <> nil)
-           and (Msk.CGImage <> nil)
-           and (  (XMsk <> 0)
-               or (YMsk <> 0)
-               or (Msk.Width <> SrcWidth)
-               or (Msk.Height <> SrcHeight));
+  DstRect := CGRectMake(X, Y, Abs(Width), Abs(Height));
 
-    SubImage := ((Msk <> nil) and (Msk.CGImage <> nil))
-             or (XSrc <> 0)
-             or (YSrc <> 0)
-             or (SrcWidth <> Bitmap.Width)
-             or (SrcHeight <> Bitmap.Height);
-             
+  SubMask := (Msk <> nil)
+         and (Msk.CGImage <> nil)
+         and (  (XMsk <> 0)
+             or (YMsk <> 0)
+             or (Msk.Width <> SrcWidth)
+             or (Msk.Height <> SrcHeight));
 
-    if SubMask
-    then MskImage := Msk.CreateSubImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight))
-    else if Msk <> nil
-    then MskImage := Msk.CGImage
+  SubImage := ((Msk <> nil) and (Msk.CGImage <> nil))
+           or (XSrc <> 0)
+           or (YSrc <> 0)
+           or (SrcWidth <> Bitmap.Width)
+           or (SrcHeight <> Bitmap.Height);
+
+
+  if SubMask then
+    MskImage := Msk.CreateSubImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight))
+  else
+    if Msk <> nil then MskImage := Msk.CGImage
     else MskImage := nil;
-    
-    if SubImage
-    then Image := Bitmap.CreateSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
 
+  if SubImage then
+    Image := Bitmap.CreateSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
 
-    if MskImage = nil
-    then begin
+  try
+    if MskImage = nil then
+    begin
       // Normal drawing
-      sts := HIViewDrawCGImage(CGContext, DstRect, Image);
-      Result := not OSError(sts, 'StretchMaskBlt', 'HIViewDrawCGImage');
+      Result := DrawCGImage(X, Y, Width, Height, Image);
     end
-    else begin
+    else
+    begin
       // use temp layer to mask source image
       // todo find a way to maks "hard" when stretching, now some soft remains are visible
       LayRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
       Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
-      LayerContext := CGLayerGetContext(Layer);
-      CGContextScaleCTM(LayerContext, 1, -1);
-      CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
-      CGContextClipToMask(LayerContext, LayRect, MskImage);
-      CGContextDrawImage(LayerContext, LayRect, Image);
-      CGContextDrawLayerInRect(CGContext, DstRect, Layer);
-      CGLayerRelease(Layer);
-      Result := True;
+      try
+        LayerContext := CGLayerGetContext(Layer);
+        CGContextScaleCTM(LayerContext, 1, -1);
+        CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
+        CGContextClipToMask(LayerContext, LayRect, MskImage);
+        CGContextDrawImage(LayerContext, LayRect, Image);
+        CGContextDrawLayerInRect(CGContext, DstRect, Layer);
+        
+        Result := True;
+      finally
+        CGLayerRelease(Layer);
+      end;
     end;
 
+  finally
     if SubImage then CGImageRelease(Image);
     if SubMask then CGImageRelease(MskImage);
-
-  finally
-    CGContextRestoreGState(CGContext);
   end;
+  
+  //DebugLn('StretchMaskBlt succeeds: ', Format('Dest %d Src %d X %d Y %d',
+  //  [Integer(CGContext),
+  //  Integer(Image),
+  //  X, Y]));
 end;
 
 { TCarbonScreenContext }
@@ -1481,6 +1526,8 @@ end;
   Resets the bitmap context properties to defaults (pen, brush, ...)
  ------------------------------------------------------------------------------}
 procedure TCarbonBitmapContext.Reset;
+var
+  Info: CGBitmapInfo;
 begin
   if CGContext <> nil then CGContextRelease(CGContext);
 
@@ -1506,9 +1553,14 @@ begin
 
     // create CGBitmapContext
     
+    Info := FBitmap.Info;
+    // convert kCGImageAlphaFirst -> kCGImageAlphaNoneSkipFirst
+    if (Info and kCGImageAlphaFirst > 0) then
+      Info := (Info and (not kCGImageAlphaFirst)) or kCGImageAlphaNoneSkipFirst;
+    
     CGContext := CGBitmapContextCreate(FBitmap.Data, FBitmap.Width, FBitmap.Height,
                    FBitmap.BitsPerComponent, FBitmap.BytesPerRow, FBitmap.ColorSpace,
-                   FBitmap.Info);
+                   Info);
 
     // flip and offset CTM to upper left corner
     CGContextTranslateCTM(CGContext, 0, FBitmap.Height);

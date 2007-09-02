@@ -896,19 +896,7 @@ begin
     DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
   {$ENDIF}
   
-  if (AMenuObject is TMainMenu) and (TMainMenu(AMenuObject).Handle <> 0) then
-  begin
-    if not CheckMenu(TMainMenu(AMenuObject).Handle, SName) then Exit;
-      
-    if FMainMenu <> nil then
-    begin
-      DebugLn(SName + ' Unable to change main menu - menu bar is set yet!');
-      Exit;
-    end;
-      
-    TCarbonMenu(TMainMenu(AMenuObject).Handle).AttachToMenuBar;
-    FMainMenu := TMainMenu(AMenuObject);
-  end;
+  // menus are attached on each form activation
 end;
 
 {------------------------------------------------------------------------------

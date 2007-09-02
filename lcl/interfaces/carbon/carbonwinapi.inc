@@ -233,10 +233,25 @@ begin
   Result:=inherited CreateCaret(Handle, Bitmap, width, Height);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreateCompatibleBitmap
+  Params:  DC     - Handle to memory device context
+           Width  - Bitmap width
+           Height - Bitmap height
+
+  Returns: Handle to a bitamp
+
+  Creates a bitamp compatible with the specified device
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer
   ): HBITMAP;
 begin
-  Result:=inherited CreateCompatibleBitmap(DC, Width, Height);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateCompatibleBitmap');
+  {$ENDIF}
+  
+  // TODO: consider DC depth
+  Result := HBITMAP(TCarbonBitmap.Create(Width, Height, 32, 32, cbaDQWord, cbtARGB, nil));
 end;
 
 {------------------------------------------------------------------------------
@@ -252,6 +267,7 @@ begin
     DebugLn('TCarbonWidgetSet.CreateCompatibleDC');
   {$ENDIF}
   
+  // TODO: consider DC depth
   Result := HDC(TCarbonBitmapContext.Create);
 end;
 
@@ -490,7 +506,7 @@ begin
   Result := False;
 
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.DrawFocusRect DC: ' + DbgS(DC) + ' Rect: ' + DbgS(Rect);
+    DebugLn('TCarbonWidgetSet.DrawFocusRect DC: ' + DbgS(DC) + ' Rect: ' + DbgS(Rect));
   {$ENDIF}
 
   if not CheckDC(DC, 'DrawFocusRect') then Exit;
@@ -519,7 +535,7 @@ begin
 
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.DrawFrameControl DC: ' + DbgS(DC) + ' R: ' +
-      DbgS(Rect) + ' Type: ' + DbgS(UType) + ' Style: ' + DbgS(Style);
+      DbgS(Rect) + ' Type: ' + DbgS(UType) + ' Style: ' + DbgS(UState));
   {$ENDIF}
 
   if not CheckDC(DC, 'DrawFrameControl') then Exit;
@@ -1659,9 +1675,37 @@ begin
   Result:=inherited GetWindowLong(Handle, int);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetWindowOrgEx
+  Params:  DC - Handle of device context
+           P   - Record for context origin
+  Returns: if the function succeeds, the return value is nonzero; if the
+           function fails, the return value is zero
+
+  Retrieves the origin of the specified context
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
+var
+  Transform: CGAffineTransform;
+  SizeP: TPoint;
 begin
-  Result:=inherited GetWindowOrgEx(dc, P);
+  Result := 0;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowOrgEx DC: ' + DbgS(DC));
+  {$ENDIF}
+  
+  if not CheckDC(DC, 'GetWindowOrgEx') then Exit;
+  
+  Transform := CGContextGetCTM(TCarbonContext(DC).CGContext);
+  GetDeviceSize(DC, SizeP);
+  P^.X := Round(Transform.tx);
+  P^.Y := SizeP.Y - Round(Transform.ty);
+  Result := 1;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowOrgEx ' + DbgS(P^.X) + ', ' + DbgS(P^.Y));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1864,7 +1908,10 @@ begin
     Exit;
   end;
 
-  TCarbonWidget(Handle).InvalidateRgn(TCarbonRegion(Rgn).Shape);
+  if Rgn = 0 then
+    TCarbonWidget(Handle).Invalidate(nil)
+  else
+    TCarbonWidget(Handle).InvalidateRgn(TCarbonRegion(Rgn).Shape);
   Result := True;
 end;
 
@@ -2759,10 +2806,31 @@ begin
   Result:=inherited SetWindowLong(Handle, Idx, NewLong);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetWindowOrgEx
+  Params:  DC    - Handle to device context.
+           NewX, NewY - New context origin
+  Returns: If the function succeeds
+
+  Sets the origin of the specified device context
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
+var
+  OldP: TPoint;
 begin
-  Result:=inherited SetWindowOrgEx(DC, NewX, NewY, OldPoint);
+  Result  := False;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetWindowOrgEx DC: ' + DbgS(DC) + ' X: ' + DbgS(NewX) +
+	  ' Y: ' + DbgS(NewY));
+  {$ENDIF}
+  
+  GetWindowOrgEx(DC, @OldP);
+  
+  Result := MoveWindowOrgEx(DC, NewX - OldP.X, NewY - OldP.Y);
+  if OldPoint <> nil then
+    OldPoint := @OldP;
 end;
 
 function TCarbonWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y,

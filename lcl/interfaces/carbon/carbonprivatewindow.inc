@@ -386,7 +386,7 @@ const
     VKKeyCode:=VK_UNKNOWN;
 
     KeyData:=GetCarbonMsgKeyState;
-    IsSysKey:=(GetCurrentEventKeyModifiers and optionKey)>0;
+    IsSysKey:=(GetCurrentEventKeyModifiers and cmdKey)>0;
 
     if OSError(GetEventParameter(AEvent, kEventParamKeyCode, typeUInt32, nil,
         Sizeof(KeyCode), nil, @KeyCode), SName, AGetEvent,
@@ -742,12 +742,24 @@ begin
   
   EventKind := GetEventKind(AEvent);
   case EventKind of
-    kEventWindowActivated:   Msg.msg := LM_ACTIVATE;
-    kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
+    kEventWindowActivated:
+      begin
+        Msg.msg := LM_ACTIVATE;
+        if (AWidget.LCLObject is TCustomForm) then
+          CarbonWidgetSet.SetRootMenu((AWidget.LCLObject as TCustomForm).Menu);
+      end;
+    kEventWindowDeactivated:
+      begin
+        Msg.msg := LM_DEACTIVATE;
+        if (AWidget.LCLObject is TCustomForm) then
+          CarbonWidgetSet.SetRootMenu(nil);
+      end;
   else
     DebugLn('CarbonWindow_ActivateProc invalid event kind: ' + DbgS(EventKind));
     Exit;
   end;
+  
+
   
   DeliverMessage(AWidget.LCLObject, Msg);
 end;

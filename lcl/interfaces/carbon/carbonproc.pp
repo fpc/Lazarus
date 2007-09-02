@@ -370,7 +370,7 @@ begin
   if (FontName <> '') and not SameText(FontName, 'default') then
   begin
     OSError(ATSUFindFontFromName(@FontName[1], Length(FontName),
-        kFontFamilyName, kFontMacintoshPlatform, kFontRomanScript,
+        kFontFullName, kFontMacintoshPlatform, kFontRomanScript,
         kFontEnglishLanguage, Result),
       'FindCarbonFontID', 'ATSUFindFontFromName');
   end;
@@ -489,6 +489,7 @@ function CFStringToStr(AString: CFStringRef): String;
 var
   Str: Pointer;
   StrSize: CFIndex;
+  StrRange: CFRange;
 begin
   if AString = nil then
   begin
@@ -503,14 +504,16 @@ begin
   else
   begin
     // if that doesn't work this will
-    StrSize := CFStringGetLength(AString) + 1; // + 1 for null terminator
-    GetMem(Str, StrSize);
-    try
-      CFStringGetCString(AString, Str, StrSize, DEFAULT_CFSTRING_ENCODING);
-      Result := PChar(Str);
-    finally
-      System.FreeMem(Str);
-    end;
+    StrRange.location := 0;
+    StrRange.length := CFStringGetLength(AString);
+    
+    CFStringGetBytes(AString, StrRange, DEFAULT_CFSTRING_ENCODING,
+      0, False, nil, 0, StrSize);
+    SetLength(Result, StrSize);
+
+    if StrSize > 0 then
+      CFStringGetBytes(AString, StrRange, DEFAULT_CFSTRING_ENCODING,
+        0, False, @Result[1], StrSize, StrSize);
   end;
 end;
 
@@ -885,7 +888,7 @@ initialization
                   // test 'com.apple.HITextView'
   OSError(
     HIObjectRegisterSubclass(CustomControlClassID, HIViewClassID, 0,
-      CustomControlHandlerUPP, 5, @EventSpec[0], nil, nil),
+      CustomControlHandlerUPP, Length(EventSpec), @EventSpec[0], nil, nil),
     'CarbonProc.initialization', 'HIObjectRegisterSubclass');
 
 finalization
