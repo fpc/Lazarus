@@ -389,13 +389,13 @@ end;
 
 function TPicture.GetPNG: TPortableNetworkGraphic;
 begin
-  ForceType(TPixmap);
+  ForceType(TPortableNetworkGraphic);
   Result := TPortableNetworkGraphic(Graphic);
 end;
 
 function TPicture.GetPNM: TPortableAnyMapGraphic;
 begin
-  ForceType(TPixmap);
+  ForceType(TPortableAnyMapGraphic);
   Result := TPortableAnyMapGraphic(Graphic);
 end;
 
