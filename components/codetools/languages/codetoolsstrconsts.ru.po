@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-07 04:19+0300\n"
+"PO-Revision-Date: 2007-09-02 16:28+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -255,7 +255,7 @@ msgstr "Исходники lazarus"
 
 #: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "Вложенные определения %s не разрешаются"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
@@ -507,7 +507,7 @@ msgstr "файл только для чтения"
 
 #: codetoolsstrconsts:ctsgenericidentifier
 msgid "generic identifier"
-msgstr ""
+msgstr "generic-идентификатор"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

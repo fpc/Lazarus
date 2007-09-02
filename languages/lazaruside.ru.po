@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-08 00:28+0300\n"
+"PO-Revision-Date: 2007-09-02 18:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -159,7 +159,7 @@ msgstr "&Добавить"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
-msgstr "&Добав. точку останова"
+msgstr "&Добавить точку останова"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
@@ -507,7 +507,7 @@ msgstr "Добавить наблюдение..."
 
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
-msgstr "Добав."
+msgstr "Добавить..."
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
@@ -683,7 +683,7 @@ msgstr "Параметры приложения"
 
 #: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Приложение%sГрафическая программа на lcl/freepascal. Программный файл автоматически поддерживается lazarus."
+msgstr "Приложение%sГрафическая программа на LCLl/FreePascal. Программный файл автоматически поддерживается lazarus."
 
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
@@ -1687,7 +1687,7 @@ msgstr "Найден конфликт"
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
-msgstr ""
+msgstr "Консольное приложение"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2319,7 +2319,7 @@ msgstr "Направление"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Директивы"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -2871,7 +2871,7 @@ msgstr "Путь к  HTML-документации FPC"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
-msgstr "Каталог исходного кода  Free Pascal из SVN"
+msgstr "Каталог исходного кода  FreePascal из SVN"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
@@ -3935,7 +3935,7 @@ msgstr "Вставить шаблон проекта FreePascal"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
-msgstr "Вставить шаблон SVN-кода Free Pascal "
+msgstr "Вставить шаблон SVN-кода FreePascal "
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -4143,7 +4143,7 @@ msgstr "Неправильный фильтр исключений"
 
 #: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
-msgstr "Неправильный каталог исходников FPC"
+msgstr "Неправильный каталог исходого кода FreePascal"
 
 #: lazarusidestrconsts:lisfriinvalididentifier
 msgid "Invalid Identifier"
@@ -4651,15 +4651,15 @@ msgstr "Уровень 0 (без особой оптимизации)"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (quick and debugger friendly)"
-msgstr ""
+msgstr "Уровень 1 (быстро и дружественно к отладчику)"
 
 #: lazarusidestrconsts:dlglevel2opt
 msgid "Level 2 (Level 1 + quick optimizations)"
-msgstr ""
+msgstr "Уровень 2 (Уровень 1 + быстрые оптимизации)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr ""
+msgstr "Уровень 3 (Уровень 3 + медленные оптимизации)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -4683,7 +4683,7 @@ msgstr "Лицензия:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Лицензия: GPL/LGPL%sLazarus - это IDE для создания (графических и консольных) приложений при помощи компилятора Free Pascal. Free Pascal - это компилятор языков Pascal и Object Pascal, распространяемый под лицензией (L)GPL, и работающий под Windows, Linux, Mac OS X, FreeBSD, и не только.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя дизайнер форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
+msgstr "Лицензия: GPL/LGPL%sLazarus - это IDE для создания (графических и консольных) приложений при помощи компилятора FreePascal. FreePascal - это компилятор языков Pascal и Object Pascal, распространяемый под лицензией (L)GPL, и работающий под Windows, Linux, Mac OS X, FreeBSD, и не только.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя дизайнер форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -4727,7 +4727,7 @@ msgstr "Связывание"
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "Литовский"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -5107,7 +5107,7 @@ msgstr "Множественный выбор компонентов долже�
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "ЗАМЕТКА: Не могу создать шаблон определений из исходников FPC"
+msgstr "ЗАМЕТКА: Не могу создать шаблон определений из исходного кода FreePascal"
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
@@ -6011,7 +6011,7 @@ msgstr "Исходник программы должен иметь расшир
 
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Программа%sПрограмма freepascal. Файл программы автоматически поддерживается lazarus."
+msgstr "Программа%sПрограмма FreePascal. Файл программы автоматически поддерживается lazarus."
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
@@ -7439,7 +7439,7 @@ msgstr "Пропустить загрузку предыдущего проек�
 
 #: lazarusidestrconsts:lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr ""
+msgstr "Пропустить это сообщение"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -7875,11 +7875,11 @@ msgstr "Каталог с исходным кодом FPC \"%s\" имеет не
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
-msgstr "Каталог исходного кода  Free Pascal из SVN."
+msgstr "Каталог исходного кода  FreePascal из SVN."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
-msgstr "Каталог исходного кода  Free Pascal из SVN. Не обязателен. Улучшит поиск объявлений и отладку."
+msgstr "Каталог исходного кода  FreePascal из SVN. Не обязателен. Улучшит поиск объявлений и отладку."
 
 #: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
@@ -7891,7 +7891,7 @@ msgstr "Каталог проекта FreePascal."
 
 #: lazarusidestrconsts:listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
-msgstr "Каталог исходников FPC не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sEnvironment -> Environment Options -> Files"
+msgstr "Каталог исходного кода FreePascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sОкружение -> Настройки окружения -> Файлы"
 
 #: lazarusidestrconsts:lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
@@ -7923,7 +7923,7 @@ msgstr "Минимальная версия %s%s%s некорректна.%sИс
 
 #: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
-msgstr "RTL - Библиотека Времени Выполнения (Run-Time Library) является основой всех программ Free Pascal."
+msgstr "RTL - Библиотека Времени Выполнения (Run-Time Library) является основой всех программ FreePascal."
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -7983,19 +7983,19 @@ msgstr "Редактор компонента для класса %s%s%sвызв
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
-msgstr "Текущий каталог исходников FPC %s%s%s%sвыглядит неправильно.%sПроверьте Environment -> Environment Options -> Files"
+msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sвыглядит неправильно.%sПроверьте Окружение -> Настройки окружения -> Файлы"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Текущий каталог исходников FPC %s%s%s%sвыглядит неправильно.%sВыберите ОК чтобы вернуть используемый по умолчанию %s%s%s,%s или же проверьте Environment -> Environment Options -> Files"
+msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sвыглядит неправильно.%sВыберите ОК чтобы вернуть используемый по умолчанию %s%s%s,%s или же проверьте Окружение -> Настройки окружения -> Файлы"
 
 #: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
-msgstr "Текущий каталог Lazarus %s%s%s%sвыглядит неправильно.%sБез него Вы не сможете создавать приложения LCL.%sПроверьте Environment -> Environment Options -> Files"
+msgstr "Текущий каталог Lazarus %s%s%s%sвыглядит неправильно.%sБез него Вы не сможете создавать приложения LCL.%sПроверьте Окружение -> Настройки окружения -> Файлы"
 
 #: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Текущий каталог Lazarus %s%s%s%sвыглядит неправильно.%sБез него Вы не сможете создавать приложения LCL.%sВыберите ОК для использования каталога по умолчанию %s%s%s,%s или же проверьте Environment -> Environment Options -> Files"
+msgstr "Текущий каталог Lazarus %s%s%s%sвыглядит неправильно.%sБез него Вы не сможете создавать приложения LCL.%sВыберите ОК для использования каталога по умолчанию %s%s%s,%s или же проверьте Окружение -> Настройки окружения -> Файлы"
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -8003,7 +8003,7 @@ msgstr "%s%s%s.%sИначе проверьте Окружение->Настро�
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
-msgstr "Текущее имя компилятора %s%s%s%s - не исполняемый файл.%sПроверьте Environment -> Environment Options -> Files"
+msgstr "Текущее имя компилятора %s%s%s%s - не исполняемый файл.%sПроверьте Окружение -> Настройки окружения -> Файлы"
 
 #: lazarusidestrconsts:lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
@@ -8243,7 +8243,7 @@ msgstr "Имя пакета %s%s%s слишком длинное (надо до 
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr "Путь к компилятору FreePascal для данного проекта. Требуется только при заполненном поле \"Исходный код FPC из SVN\" ниже. Используется для автоматического создания макросов."
+msgstr "Путь к компилятору FreePascal для данного проекта. Требуется только при заполненном поле \"Каталог исходного кода FreePascal из SVN\" ниже. Используется для автоматического создания макросов."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
@@ -9199,7 +9199,7 @@ msgstr "Использовать приложение для запуска"
 
 #: lazarusidestrconsts:dlgpousemanifest
 msgid "Use manifest file to enable themes (windows only)"
-msgstr ""
+msgstr "Использовать manifest-файл для включения тем (только Windows)"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -9471,7 +9471,7 @@ msgstr "Предупр. при компиляции"
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr "Внимание: дополнительный файл настроек компилятора имеет такое же имя, как может называться один из стандартных файлов настроек компилятора FreePascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
+msgstr "Внимание: дополнительный файл настроек компилятора имеет то же имя, что один из стандартных файлов настроек компилятора FreePascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
@@ -9687,7 +9687,7 @@ msgstr "файл, куда записывается вывод отладки. �
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки опций компндной строки, обработки исключений и т. д. Программный файл автоматически поддерживается lazarus."
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

@@ -1,5 +1,3 @@
-# translation of ipconst.po to Lithuanian
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -171,13 +169,13 @@ msgstr " (psPass)"
 msgid " (psQuit)"
 msgstr " (psQuit)"
 
-#: ipconst:slogpsretr
-msgid " (psRetr)"
-msgstr " (psRetr)"
-
 #: ipconst:slogpsrset
 msgid " (psRSet)"
 msgstr " (psRSet)"
+
+#: ipconst:slogpsretr
+msgid " (psRetr)"
+msgstr " (psRetr)"
 
 #: ipconst:slogpsspecial
 msgid " (psSpecial)"
@@ -263,6 +261,10 @@ msgstr " (ssNoOp)"
 msgid " (ssQuit)"
 msgstr " (ssQuit)"
 
+#: ipconst:slogrset
+msgid " (ssRSet)"
+msgstr " (ssRSet)"
+
 #: ipconst:slogrcptbcc
 msgid " (ssRcptBcc)"
 msgstr " (ssRcptBcc)"
@@ -274,10 +276,6 @@ msgstr " (ssRcptCc)"
 #: ipconst:slogrcptto
 msgid " (ssRcptTo)"
 msgstr " (ssRcptTo)"
-
-#: ipconst:slogrset
-msgid " (ssRSet)"
-msgstr " (ssRSet)"
 
 #: ipconst:slogsaml
 msgid " (ssSaml)"
@@ -323,6 +321,14 @@ msgstr " (stNoTask)"
 msgid " (stSendMail)"
 msgstr " (stSendMail)"
 
+#: ipconst:sfilename
+msgid " Filename: "
+msgstr " Failo vardas: "
+
+#: ipconst:sftpbytestransferred
+msgid " bytes Transferred"
+msgstr "baitų persiųsta"
+
 #: ipconst:sbytesfromstream
 msgid " bytes from stream"
 msgstr " baitų iš srauto"
@@ -334,10 +340,6 @@ msgstr " baitų skaityta iš srauto"
 #: ipconst:sbytestostream
 msgid " bytes to stream"
 msgstr " baitų į srautą"
-
-#: ipconst:sftpbytestransferred
-msgid " bytes Transferred"
-msgstr "baitų persiųsta"
 
 #: ipconst:sbyteswrittentostream
 msgid " bytes written to stream"
@@ -351,10 +353,6 @@ msgstr " koduotė nepalaikoma"
 msgid " expected"
 msgstr " tikėtasi"
 
-#: ipconst:sfilename
-msgid " Filename: "
-msgstr " Failo vardas: "
-
 #: ipconst:sftplogin
 msgid " logged in"
 msgstr " prisiregistravęs"
@@ -366,10 +364,6 @@ msgstr " išsiregistravęs"
 #: ipconst:slogpsnoop
 msgid " {psNoOp)"
 msgstr " {psNoOp)"
-
-#: ipconst:sbinhexcolonexpected
-msgid "\":\" expected"
-msgstr "\":\" tikėtasi"
 
 #: ipconst:spop3nottransacting
 msgid "%s can not be called in authentication state"
@@ -435,6 +429,22 @@ msgstr "-ERR"
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr "PNG faile rasta %s dalis. Esamos versijos PNG dekoderis nepalaiko šios savybės"
 
+#: ipconst:spop3cmdapop
+msgid "APOP"
+msgstr "APOP"
+
+#: ipconst:snntpcmdarticle
+msgid "ARTICLE"
+msgstr "ARTICLE"
+
+#: ipconst:snntpcmdauthpass
+msgid "AUTHINFO PASS"
+msgstr "AUTHINFO PASS"
+
+#: ipconst:snntpcmdauthuser
+msgid "AUTHINFO USER"
+msgstr "AUTHINFO USER"
+
 #: ipconst:swsaeaddrinuse
 msgid "Address already in use"
 msgstr "Adresas jau naudojamas"
@@ -454,14 +464,6 @@ msgstr "Vykdant šią užduotį įvyko klaida."
 #: ipconst:spterror
 msgid "An error occured with the last task."
 msgstr "Vykdant paskutinę užduotį įvyko klaida."
-
-#: ipconst:spop3cmdapop
-msgid "APOP"
-msgstr "APOP"
-
-#: ipconst:snntpcmdarticle
-msgid "ARTICLE"
-msgstr "ARTICLE"
 
 #: ipconst:swsa_qos_senders
 msgid "At least one Path has arrived"
@@ -531,14 +533,6 @@ msgstr "Nustatoma slaptažodžio tapatybė"
 msgid "Authenticating username"
 msgstr "Nustatoma naudotojo vardo tapatybė"
 
-#: ipconst:snntpcmdauthpass
-msgid "AUTHINFO PASS"
-msgstr "AUTHINFO PASS"
-
-#: ipconst:snntpcmdauthuser
-msgid "AUTHINFO USER"
-msgstr "AUTHINFO USER"
-
 #: ipconst:snsauthpass
 msgid "Authorizing password"
 msgstr "Suteikiamas įgaliojimas slaptažodžiui"
@@ -546,6 +540,10 @@ msgstr "Suteikiamas įgaliojimas slaptažodžiui"
 #: ipconst:snsauthuser
 msgid "Authorizing user"
 msgstr "Suteikiamas įgaliojimas naudotojo vardui"
+
+#: ipconst:snntpcmdbody
+msgid "BODY"
+msgstr "BODY"
 
 #: ipconst:swsaefault
 msgid "Bad address"
@@ -619,10 +617,6 @@ msgstr "Gylis bitais: %d"
 msgid "Block size error"
 msgstr "Klaidingas bloko dydis"
 
-#: ipconst:snntpcmdbody
-msgid "BODY"
-msgstr "BODY"
-
 #: ipconst:shtmldefbrowsecaption
 msgid "Browse..."
 msgstr "Naršyti..."
@@ -642,6 +636,10 @@ msgstr "Buferio dydis nesiderina."
 #: ipconst:sipicmp_buf_too_small
 msgid "Buffer too small"
 msgstr "Buferis permažas"
+
+#: ipconst:spngtruncatedcrc
+msgid "CRC Code is truncated"
+msgstr "CRC kodas nukirstas"
 
 #: ipconst:cachedirnotexist
 msgid "Cache directory %s does not exist."
@@ -723,13 +721,13 @@ msgstr "Užverti:   Loc: %s Rem: %s"
 msgid "Color Type: %d"
 msgstr "Spalvos tipas: %d"
 
-#: ipconst:ssslcompressionfailure
-msgid "Compression failure."
-msgstr "Suglaudinti nepavyko."
-
 #: ipconst:spngcompressionmethod
 msgid "Compression Method: %d"
 msgstr "Glaudinimo metodas: %d"
+
+#: ipconst:ssslcompressionfailure
+msgid "Compression failure."
+msgstr "Suglaudinti nepavyko."
 
 #: ipconst:ssslbadcompressionvalue
 msgid "Compression value is wrong."
@@ -794,10 +792,6 @@ msgstr "Atlikta koversija su praradimais"
 #: ipconst:suuencodecounterr
 msgid "Count <> Len or Count > 63"
 msgstr "Kiekis <> Ilgis arba Kiekis > 63"
-
-#: ipconst:spngtruncatedcrc
-msgid "CRC Code is truncated"
-msgstr "CRC kodas nukirstas"
 
 #: ipconst:ssmtpresponse76
 msgid "Cryptographic algorithm not supported"
@@ -920,8 +914,20 @@ msgid "Download?"
 msgstr "Atsiųsti?"
 
 #: ipconst:sicmpecho
-msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
-msgstr "Atsakymo aidas (Hop numeris: %d)\015\n             Būsena = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
+msgid ""
+"Echo reply (Hop number: %d)\015\n"
+"             Status = %d\015\n"
+"             RTTime = %d\015\n"
+"             Ttl = %d\015\n"
+"             Tos = %d\015\n"
+"             IpFlags = %d"
+msgstr ""
+"Atsakymo aidas (Hop numeris: %d)\015\n"
+"             Būsena = %d\015\n"
+"             RTTime = %d\015\n"
+"             Ttl = %d\015\n"
+"             Tos = %d\015\n"
+"             IpFlags = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
@@ -967,21 +973,25 @@ msgstr "Sertifikatas nebegalioja."
 msgid "File name too long"
 msgstr "Failo vardas perilgas"
 
-#: ipconst:spngfilterchange
-msgid "Filter changed on Row %d to %x"
-msgstr "%d eilutėje esantis filtras pakeistas į %x"
-
 #: ipconst:spngfiltermethod
 msgid "Filter Method: %d"
 msgstr "Filtro metodas: %d"
 
-#: ipconst:spnggamatoolong
-msgid "gAMA chunk is long"
-msgstr "Perilga gAMA dalis"
+#: ipconst:spngfilterchange
+msgid "Filter changed on Row %d to %x"
+msgstr "%d eilutėje esantis filtras pakeistas į %x"
 
-#: ipconst:spnggamatooshort
-msgid "gAMA chunk is short"
-msgstr "Pertrumpa gAMA dalis"
+#: ipconst:httpget
+msgid "GET: (%s)"
+msgstr "GET: (%s)"
+
+#: ipconst:httpgeterror
+msgid "GET: (%s) FAILED"
+msgstr "GET: (%s) NEPAVYKO"
+
+#: ipconst:snntpcmdgroup
+msgid "GROUP"
+msgstr "GROUP"
 
 #: ipconst:spnggammacorrection
 msgid "Gamma Correction: %f"
@@ -1027,14 +1037,6 @@ msgstr "Generuojamas OnTaskComplete įvykis"
 msgid "Generating OnTop event"
 msgstr "Generuojamas OnTop įvykis"
 
-#: ipconst:httpget
-msgid "GET: (%s)"
-msgstr "GET: (%s)"
-
-#: ipconst:httpgeterror
-msgid "GET: (%s) FAILED"
-msgstr "GET: (%s) NEPAVYKO"
-
 #: ipconst:snsnewnews
 msgid "Getting new articles"
 msgstr "Gaunami nauji straipsniai"
@@ -1046,18 +1048,6 @@ msgstr "Gaunamos naujos naujienų grupės"
 #: ipconst:swsaediscon
 msgid "Graceful shutdown in progress"
 msgstr "Vyksta grakštus išjungimas"
-
-#: ipconst:snntpcmdgroup
-msgid "GROUP"
-msgstr "GROUP"
-
-#: ipconst:ssslhandshakefailure
-msgid "Handshake failure."
-msgstr "Nepavyko patrvirtinti ryšio užmezgimo."
-
-#: ipconst:sipicmp_hw_error
-msgid "Hardware error"
-msgstr "Aparatūros klaida"
 
 #: ipconst:snntpcmdhead
 msgid "HEAD"
@@ -1071,6 +1061,14 @@ msgstr "HEAD: (%s)"
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) NEPAVYKO"
 
+#: ipconst:ssslhandshakefailure
+msgid "Handshake failure."
+msgstr "Nepavyko patrvirtinti ryšio užmezgimo."
+
+#: ipconst:sipicmp_hw_error
+msgid "Hardware error"
+msgstr "Aparatūros klaida"
+
 #: ipconst:ssshelp
 msgid "Help"
 msgstr "Žinynas"
@@ -1083,13 +1081,13 @@ msgstr "Mazgas nusprogo"
 msgid "Host not found"
 msgstr "Mazgas nerastas"
 
-#: ipconst:spngihdrtoolong
-msgid "IHDR chunk is long."
-msgstr "Perilga IHDR dalis."
-
 #: ipconst:spngmissingihdr
 msgid "IHDR Chunk is missing"
 msgstr "Nėra IHDR dalies"
+
+#: ipconst:spngihdrtoolong
+msgid "IHDR chunk is long."
+msgstr "Perilga IHDR dalis."
 
 #: ipconst:spngihdrtooshort
 msgid "IHDR chunk is short."
@@ -1127,14 +1125,6 @@ msgstr "Vidinė klaida"
 msgid "Interrupted function call"
 msgstr "Pertrauktas kreipimasis į funkciją"
 
-#: ipconst:shtmlinvalign
-msgid "Invalid alignment specified"
-msgstr "Nurodyta klaidinga lygiuotė"
-
-#: ipconst:swsaeinval
-msgid "Invalid argument"
-msgstr "Klaidingas argumentas"
-
 #: ipconst:sbinhexbadchar
 msgid "Invalid BinHex character"
 msgstr "Klaidingas BinHex simbolis"
@@ -1142,6 +1132,26 @@ msgstr "Klaidingas BinHex simbolis"
 #: ipconst:sbinhexbadformat
 msgid "Invalid BinHex format"
 msgstr "Klaidingas BinHex formatas"
+
+#: ipconst:spngbadmodificationtime
+msgid "Invalid Modification Time"
+msgstr "Klaidingas modifikavimo laikas"
+
+#: ipconst:spngbadsignature
+msgid "Invalid PNG Signature"
+msgstr "Klaidingas PNG parašas"
+
+#: ipconst:spngbadpalettelength
+msgid "Invalid Palette Length"
+msgstr "Klaidingas paletės ilgis"
+
+#: ipconst:shtmlinvalign
+msgid "Invalid alignment specified"
+msgstr "Nurodyta klaidinga lygiuotė"
+
+#: ipconst:swsaeinval
+msgid "Invalid argument"
+msgstr "Klaidingas argumentas"
 
 #: ipconst:ssslinvalidcipher
 msgid "Invalid cipher."
@@ -1195,14 +1205,6 @@ msgstr "Klaidingas eilutės terminatorius"
 msgid "Invalid method specified"
 msgstr "Nurodytas klaidingas metodas"
 
-#: ipconst:spngbadmodificationtime
-msgid "Invalid Modification Time"
-msgstr "Klaidingas modifikavimo laikas"
-
-#: ipconst:spngbadpalettelength
-msgid "Invalid Palette Length"
-msgstr "Klaidingas paletės ilgis"
-
 #: ipconst:providerunknownpicture
 msgid "Invalid picture format"
 msgstr "Klaidingas paveikslo formatas"
@@ -1210,10 +1212,6 @@ msgstr "Klaidingas paveikslo formatas"
 #: ipconst:shtmlinvpicture
 msgid "Invalid picture returned"
 msgstr "Grąžintas klaidingas paveikslas"
-
-#: ipconst:spngbadsignature
-msgid "Invalid PNG Signature"
-msgstr "Klaidingas PNG parašas"
 
 #: ipconst:swsaeinvalidproctable
 msgid "Invalid procedure table from service provider"
@@ -1291,10 +1289,6 @@ msgstr "LIST EXTENSIONS"
 msgid "LIST NEWSGROUPS"
 msgstr "LIST NEWSGROUPS"
 
-#: ipconst:slistnotassigned
-msgid "List not assigned"
-msgstr "Sąrašas nepriskirtas"
-
 #: ipconst:snntpcmdlistoverfmt
 msgid "LIST OVERVIEW.FMT"
 msgstr "LIST OVERVIEW.FMT"
@@ -1302,6 +1296,10 @@ msgstr "LIST OVERVIEW.FMT"
 #: ipconst:snntpcmdlistgroup
 msgid "LISTGROUP"
 msgstr "LISTGROUP"
+
+#: ipconst:slistnotassigned
+msgid "List not assigned"
+msgstr "Sąrašas nepriskirtas"
 
 #: ipconst:cacheretrieving
 msgid "Loading from Cache (%s = %s)"
@@ -1343,6 +1341,10 @@ msgstr "Paieška nutraukta"
 msgid "MAC did not match."
 msgstr "Neatitinka MAC"
 
+#: ipconst:ssslbadmd5hash
+msgid "MD5 hash did not match."
+msgstr "Neatitinka MD5 maišos reikšmė."
+
 #: ipconst:ssmtpresponse31
 msgid "Mail system full"
 msgstr "Pašto sistema pilna"
@@ -1370,10 +1372,6 @@ msgstr "Uždrausta plėsti adresatų sąrašą"
 #: ipconst:spsdele
 msgid "Marking message for deletion"
 msgstr "Pranešimai žymimi trynimui"
-
-#: ipconst:ssslbadmd5hash
-msgid "MD5 hash did not match."
-msgstr "Neatitinka MD5 maišos reikšmė."
 
 #: ipconst:ssmtpresponse61
 msgid "Media not supported"
@@ -1403,6 +1401,22 @@ msgstr "Pranešimas perilgas"
 msgid "Modification Date: %s"
 msgstr "Modifikavimo data: %s"
 
+#: ipconst:snntpcmdnewgroups
+msgid "NEWGROUPS"
+msgstr "NEWGROUPS"
+
+#: ipconst:snntpcmdnewnews
+msgid "NEWNEWS"
+msgstr "NEWNEWS"
+
+#: ipconst:snntpcmdnext
+msgid "NEXT"
+msgstr "NEXT"
+
+#: ipconst:spop3cmdnoop
+msgid "NOOP"
+msgstr "NOOP"
+
 #: ipconst:ssmtpresponse45
 msgid "Network congestion"
 msgstr "Tinklas užkimštas"
@@ -1423,18 +1437,6 @@ msgstr "Tinklas nepasiekiamas"
 msgid "Network subsystem is unavailable"
 msgstr "Nėra tinklo posistemės"
 
-#: ipconst:snntpcmdnewgroups
-msgid "NEWGROUPS"
-msgstr "NEWGROUPS"
-
-#: ipconst:snntpcmdnewnews
-msgid "NEWNEWS"
-msgstr "NEWNEWS"
-
-#: ipconst:snntpcmdnext
-msgid "NEXT"
-msgstr "NEXT"
-
 #: ipconst:slognextmessagenotready
 msgid "Next message not ready"
 msgstr "Tolesnis pranešimas neparengtas"
@@ -1442,6 +1444,22 @@ msgstr "Tolesnis pranešimas neparengtas"
 #: ipconst:slognextmessageready
 msgid "Next message ready"
 msgstr "Tolesnis pranešimas neparengtas"
+
+#: ipconst:httpnoheaderdata
+msgid "No Header Data for Entity"
+msgstr "Esybėje nėra antraštės duomenų"
+
+#: ipconst:snomemorystreamerr
+msgid "No Memory Stream assigned"
+msgstr "Nepriskirtas atminties srautas"
+
+#: ipconst:snoboundary
+msgid "No Mime boundary"
+msgstr "Nėra MIME rėžio"
+
+#: ipconst:shtmlnogetimage
+msgid "No OnGetImage event handler assigned"
+msgstr "Nepriskirta OnGetImage įvykio tvarkyklė"
 
 #: ipconst:ssmtpresponse41
 msgid "No answer from host"
@@ -1459,29 +1477,13 @@ msgstr "Nepriskirtas duomenų teikėjas"
 msgid "No hash type selected."
 msgstr "Nenurodytas maišos tipas"
 
-#: ipconst:httpnoheaderdata
-msgid "No Header Data for Entity"
-msgstr "Esybėje nėra antraštės duomenų"
-
-#: ipconst:snomemorystreamerr
-msgid "No Memory Stream assigned"
-msgstr "Nepriskirtas atminties srautas"
-
 #: ipconst:ssslnomessageencslected
 msgid "No message encoding type selected."
 msgstr "Nenurodytas pranešimo koduotės tipas"
 
-#: ipconst:snoboundary
-msgid "No Mime boundary"
-msgstr "Nėra MIME rėžio"
-
 #: ipconst:swsaenomore
 msgid "No more data available"
 msgstr "Duomenys baigėsi"
-
-#: ipconst:shtmlnogetimage
-msgid "No OnGetImage event handler assigned"
-msgstr "Nepriskirta OnGetImage įvykio tvarkyklė"
 
 #: ipconst:sssnoop
 msgid "No operation"
@@ -1518,10 +1520,6 @@ msgstr "Nepatikimų mazgų nerasta"
 #: ipconst:sstnotask
 msgid "None"
 msgstr "Joks"
-
-#: ipconst:spop3cmdnoop
-msgid "NOOP"
-msgstr "NOOP"
 
 #: ipconst:snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
@@ -1591,6 +1589,42 @@ msgstr "Kita arba neapibrėžta protokolo būsena"
 msgid "Other or undefined security status"
 msgstr "Kita arba neapibrėžta saugumo būsena"
 
+#: ipconst:spop3cmdpass
+msgid "PASS"
+msgstr "PASS"
+
+#: ipconst:snntpcmdpat
+msgid "PAT"
+msgstr "PAT"
+
+#: ipconst:spngbuffertoosmall
+msgid "PNG Buffer too small."
+msgstr "PNG buferis permažas."
+
+#: ipconst:spngchunkidandlength
+msgid "PNG Chunk: %s  Length: %d"
+msgstr "PNG dalis: %s  ilgis: %d"
+
+#: ipconst:spngnoclipboard
+msgid "PNG Clipboard support is not supported."
+msgstr "Iškarpinė nepalaiko PNG."
+
+#: ipconst:spngcannotsave
+msgid "PNG Saving is not supported"
+msgstr "PNG išsaugojimas nepalaikomas"
+
+#: ipconst:snntpcmdpost
+msgid "POST"
+msgstr "POST"
+
+#: ipconst:httppost
+msgid "POST: (%s)"
+msgstr "POST: (%s)"
+
+#: ipconst:httpposterror
+msgid "POST: (%s) FAILED"
+msgstr "POST: (%s) NEPAVYKO"
+
 #: ipconst:sipicmp_packet_too_big
 msgid "Packet too large"
 msgstr "Paketas perdidelis"
@@ -1619,17 +1653,9 @@ msgstr "Tėvas nėra sudėtinis rodinys"
 msgid "Parsing error."
 msgstr "Analizės klaida."
 
-#: ipconst:spop3cmdpass
-msgid "PASS"
-msgstr "PASS"
-
 #: ipconst:sraspasswordexpired
 msgid "Password expired"
 msgstr "Slaptažodis nebegalioja"
-
-#: ipconst:snntpcmdpat
-msgid "PAT"
-msgstr "PAT"
 
 #: ipconst:sbadpath
 msgid "Path does not exist"
@@ -1655,22 +1681,6 @@ msgstr "Paveikslo objekte nėra grafinio objektio"
 msgid "Pinging %s with %d bytes data"
 msgstr "Skimbetelėjamas %s su %d baitų duomenų"
 
-#: ipconst:spngbuffertoosmall
-msgid "PNG Buffer too small."
-msgstr "PNG buferis permažas."
-
-#: ipconst:spngchunkidandlength
-msgid "PNG Chunk: %s  Length: %d"
-msgstr "PNG dalis: %s  ilgis: %d"
-
-#: ipconst:spngnoclipboard
-msgid "PNG Clipboard support is not supported."
-msgstr "Iškarpinė nepalaiko PNG."
-
-#: ipconst:spngcannotsave
-msgid "PNG Saving is not supported"
-msgstr "PNG išsaugojimas nepalaikomas"
-
 #: ipconst:ssslpointernotassigned
 msgid "Pointer not assigned."
 msgstr "Rodyklė nepriskirta."
@@ -1678,18 +1688,6 @@ msgstr "Rodyklė nepriskirta."
 #: ipconst:srasportopened
 msgid "Port opened"
 msgstr "Prievadas atvertas"
-
-#: ipconst:snntpcmdpost
-msgid "POST"
-msgstr "POST"
-
-#: ipconst:httppost
-msgid "POST: (%s)"
-msgstr "POST: (%s)"
-
-#: ipconst:httpposterror
-msgid "POST: (%s) FAILED"
-msgstr "POST: (%s) NEPAVYKO"
 
 #: ipconst:snspost
 msgid "Posting article"
@@ -1734,6 +1732,14 @@ msgstr "Protokolo tipas netinka jungčiai"
 #: ipconst:sssquit
 msgid "Quit"
 msgstr "Baigti"
+
+#: ipconst:spop3cmdretr
+msgid "RETR"
+msgstr "RETR"
+
+#: ipconst:spop3cmdrset
+msgid "RSET"
+msgstr "RSET"
 
 #: ipconst:sraserr
 msgid "Ras Error (%d): on API '%s'"
@@ -1807,10 +1813,6 @@ msgstr "Resursas laikinai neprieinamas"
 msgid "Resource unavailable:"
 msgstr "Resurso nėra:"
 
-#: ipconst:spop3cmdretr
-msgid "RETR"
-msgstr "RETR"
-
 #: ipconst:sftpretrieve
 msgid "Retrieving "
 msgstr "Gaunama "
@@ -1859,6 +1861,10 @@ msgstr "Ganamas platinamųjų sąrašas"
 msgid "Retrieving list of extended commands"
 msgstr "Gaunamas indeksuotų komandų sąrašas"
 
+#: ipconst:spsuidl
+msgid "Retrieving mailbox UID list"
+msgstr "Gaunamas pašto dėžutės UID sąrašas"
+
 #: ipconst:spslist
 msgid "Retrieving mailbox list"
 msgstr "Gaunamas pašto dėžutės sąrašas"
@@ -1866,10 +1872,6 @@ msgstr "Gaunamas pašto dėžutės sąrašas"
 #: ipconst:spsstat
 msgid "Retrieving mailbox status"
 msgstr "Gaunama pašto dėžutės būsena"
-
-#: ipconst:spsuidl
-msgid "Retrieving mailbox UID list"
-msgstr "Gaunamas pašto dėžutės UID sąrašas"
 
 #: ipconst:spsretr
 msgid "Retrieving message"
@@ -1919,9 +1921,25 @@ msgstr "Aptiktas uždaras maršrutas"
 msgid "Routing server failure"
 msgstr "Maršruto parinkimo serverio gedimas"
 
-#: ipconst:spop3cmdrset
-msgid "RSET"
-msgstr "RSET"
+#: ipconst:ssslshabuf2small
+msgid "SHA1 buffer to small."
+msgstr "Permažas SHA1 buferis."
+
+#: ipconst:ssslbadsha1hash
+msgid "SHA1 hash did not match."
+msgstr "Neatitinka SHA1 maišos reikšmė."
+
+#: ipconst:ssockserr
+msgid "SOCKS request refused - %d"
+msgstr "Atsisakyta SOCKS užklausos - %d"
+
+#: ipconst:ssslunprocesseddata
+msgid "SSL data processing error."
+msgstr "SSL duomenų apdorojimo klaida"
+
+#: ipconst:spop3cmdstat
+msgid "STAT"
+msgstr "STAT"
 
 #: ipconst:ssmtpresponse73
 msgid "Security conversion required but not possible"
@@ -1963,10 +1981,6 @@ msgstr "Siunčiami duomenys"
 msgid "Sending Envelope"
 msgstr "Siunčiamas vokas"
 
-#: ipconst:sstsendmail
-msgid "Sending mail"
-msgstr "Siunčiamas laiškas"
-
 #: ipconst:sssrcptto
 msgid "Sending MailTo info"
 msgstr "Siunčiama MailTo informacija"
@@ -1974,6 +1988,10 @@ msgstr "Siunčiama MailTo informacija"
 #: ipconst:ssssendmessage
 msgid "Sending Message"
 msgstr "Siunčiamas pranešimas"
+
+#: ipconst:sstsendmail
+msgid "Sending mail"
+msgstr "Siunčiamas laiškas"
 
 #: ipconst:sssmailfrom
 msgid "Sending sender's info"
@@ -2011,14 +2029,6 @@ msgstr "Paslauga nerasta"
 msgid "Session ID is longer than 32 bytes."
 msgstr "Seanso ID ilgesnis nei 32 baitai."
 
-#: ipconst:ssslshabuf2small
-msgid "SHA1 buffer to small."
-msgstr "Permažas SHA1 buferis."
-
-#: ipconst:ssslbadsha1hash
-msgid "SHA1 hash did not match."
-msgstr "Neatitinka SHA1 maišos reikšmė."
-
 #: ipconst:swsaeisconn
 msgid "Socket is already connected"
 msgstr "Jungtis jau yra prijungta"
@@ -2039,10 +2049,6 @@ msgstr "Jungties operacija pritaikyta ne jungčiai"
 msgid "Socket type not supported"
 msgstr "Jungties tipas nepalaikomas"
 
-#: ipconst:ssockserr
-msgid "SOCKS request refused - %d"
-msgstr "Atsisakyta SOCKS užklausos - %d"
-
 #: ipconst:swsaeconnaborted
 msgid "Software caused connection abort"
 msgstr "Programa nutraukė ryšį"
@@ -2050,26 +2056,6 @@ msgstr "Programa nutraukė ryšį"
 #: ipconst:spsspecial
 msgid "Special command"
 msgstr "Speciali komanda"
-
-#: ipconst:ssslunprocesseddata
-msgid "SSL data processing error."
-msgstr "SSL duomenų apdorojimo klaida"
-
-#: ipconst:ssssaml
-msgid "ssSaml"
-msgstr "ssSaml"
-
-#: ipconst:ssssend
-msgid "ssSend"
-msgstr "ssSend"
-
-#: ipconst:ssssoml
-msgid "ssSoml"
-msgstr "ssSoml"
-
-#: ipconst:sssturn
-msgid "ssTurn"
-msgstr "ssTurn"
 
 #: ipconst:swsaestale
 msgid "Stale NFS file handle"
@@ -2082,10 +2068,6 @@ msgstr "Pradėti tapatybės nustatymą"
 #: ipconst:slogtaskstart
 msgid "Starting task: "
 msgstr "Startuojama užduotis: "
-
-#: ipconst:spop3cmdstat
-msgid "STAT"
-msgstr "STAT"
 
 #: ipconst:slogstate
 msgid "State change: "
@@ -2147,6 +2129,22 @@ msgstr "Sistema nepriima tinklo pranešimų"
 msgid "System not capable of selected features"
 msgstr "Sistema nesugeba pažymėtųjų funkcijų"
 
+#: ipconst:sinvitemsize
+msgid "TIpTerminalArray.GetItemPtr: invalid item size"
+msgstr "TIpTerminalArray.GetItemPtr: klaidingas elemento dydis"
+
+#: ipconst:srowrowoor
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr "TIpTerminalArray.ScrollRows: pradžios eilutė %d arba galo eilutė %d peržengia ribas"
+
+#: ipconst:sinvscrollrow
+msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+msgstr "TIpTerminalBuffer.SetScrollRegion: klaidingas eilutės numerias(-iai)"
+
+#: ipconst:spop3cmdtop
+msgid "TOP"
+msgstr "TOP"
+
 #: ipconst:smemmapmustbeclosed
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr "%s metodas reikalauja kad TIpMemMapStream objektas būtų užvertas"
@@ -2175,14 +2173,6 @@ msgstr "Gija %d vykdoma (Hop numeris = %d)"
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Gija %d baigia darbą (Hop numeris = %d)"
 
-#: ipconst:spngtimetoolong
-msgid "tIME chunk is long."
-msgstr "tIME dalis ilga."
-
-#: ipconst:spngtimetooshort
-msgid "tIME chunk is short."
-msgstr "tIME dalis trumpa."
-
 #: ipconst:sipicmp_ttl_expired_reassem
 msgid "Time to live expired during reassembly"
 msgstr "Surenkant pakartotinai, gyvavimo laikas baigėsi"
@@ -2190,18 +2180,6 @@ msgstr "Surenkant pakartotinai, gyvavimo laikas baigėsi"
 #: ipconst:sipicmp_ttl_expired_transit
 msgid "Time to live expired during transmit"
 msgstr "Siunčiant, gyvavimo laikas baigėsi"
-
-#: ipconst:sinvitemsize
-msgid "TIpTerminalArray.GetItemPtr: invalid item size"
-msgstr "TIpTerminalArray.GetItemPtr: klaidingas elemento dydis"
-
-#: ipconst:srowrowoor
-msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
-msgstr "TIpTerminalArray.ScrollRows: pradžios eilutė %d arba galo eilutė %d peržengia ribas"
-
-#: ipconst:sinvscrollrow
-msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
-msgstr "TIpTerminalBuffer.SetScrollRegion: klaidingas eilutės numerias(-iai)"
 
 #: ipconst:shtmltokenstackoverfl
 msgid "Token stack overflow"
@@ -2239,10 +2217,6 @@ msgstr "Perdaug atskaitų; neina sujungti"
 msgid "Too many users"
 msgstr "Perdaug naudotojų"
 
-#: ipconst:spop3cmdtop
-msgid "TOP"
-msgstr "TOP"
-
 #: ipconst:sicmptracecomplete
 msgid "Trace complete (%s), %d hops"
 msgstr "Sekimas baigtas (%s), %s Hop'sų"
@@ -2278,6 +2252,10 @@ msgstr "Tipas nerastas"
 #: ipconst:spop3cmduidl
 msgid "UIDL"
 msgstr "UIDL"
+
+#: ipconst:spop3cmduser
+msgid "USER"
+msgstr "USER"
 
 #: ipconst:swsaeproviderfailedinit
 msgid "Unable to initialize a service provider"
@@ -2335,6 +2313,10 @@ msgstr "Nežinoma leksema"
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Neatpažintas dalies tipas: %s"
 
+#: ipconst:spngbadinterlacemethod
+msgid "Unrecognized Interlace Method"
+msgstr "Neatpažintas progresinis metodas"
+
 #: ipconst:spngbadcolortype
 msgid "Unrecognized color type of %d"
 msgstr "Neatpažintas %d spalvos tipas"
@@ -2342,10 +2324,6 @@ msgstr "Neatpažintas %d spalvos tipas"
 #: ipconst:sbadimagelibfileformat
 msgid "Unrecognized file format"
 msgstr "Neatpažintas failo formatas"
-
-#: ipconst:spngbadinterlacemethod
-msgid "Unrecognized Interlace Method"
-msgstr "Neatpažintas progresinis metodas"
 
 #: ipconst:sbadframelistobject
 msgid "Unrecognized object of class %s in GIF Frame List"
@@ -2374,10 +2352,6 @@ msgstr "URL nurodytas nepalaikomas protokolas:%s"
 #: ipconst:ssslunsupportedencoding
 msgid "Unsupported public encoding."
 msgstr "Nepalaikoma vieša koduotė."
-
-#: ipconst:spop3cmduser
-msgid "USER"
-msgstr "USER"
 
 #: ipconst:swsano_data
 msgid "Valid name, no data record of requested type"
@@ -2442,4 +2416,40 @@ msgstr "[POP3] "
 #: ipconst:slogsmtpclass
 msgid "[SMTP] "
 msgstr "[SMTP] "
+
+#: ipconst:sbinhexcolonexpected
+msgid "\":\" expected"
+msgstr "\":\" tikėtasi"
+
+#: ipconst:spnggamatoolong
+msgid "gAMA chunk is long"
+msgstr "Perilga gAMA dalis"
+
+#: ipconst:spnggamatooshort
+msgid "gAMA chunk is short"
+msgstr "Pertrumpa gAMA dalis"
+
+#: ipconst:ssssaml
+msgid "ssSaml"
+msgstr "ssSaml"
+
+#: ipconst:ssssend
+msgid "ssSend"
+msgstr "ssSend"
+
+#: ipconst:ssssoml
+msgid "ssSoml"
+msgstr "ssSoml"
+
+#: ipconst:sssturn
+msgid "ssTurn"
+msgstr "ssTurn"
+
+#: ipconst:spngtimetoolong
+msgid "tIME chunk is long."
+msgstr "tIME dalis ilga."
+
+#: ipconst:spngtimetooshort
+msgid "tIME chunk is short."
+msgstr "tIME dalis trumpa."
 

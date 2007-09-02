@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-07 04:32+0300\n"
+"PO-Revision-Date: 2007-09-02 17:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -67,7 +67,7 @@ msgstr "&Закрыть"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Каталог"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -163,7 +163,7 @@ msgstr "Все файлы (%s)|%s|%s"
 
 #: lclstrconsts:ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -239,7 +239,7 @@ msgstr "Создание кешируемой ошибки gdb:"
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -299,7 +299,7 @@ msgstr "Ошибка при выполнении %s%s%s:%s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Ошибка при сохранении точечного рисунка (bitmap)."
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -711,7 +711,7 @@ msgstr "Текст"
 
 #: lclstrconsts:sinvalidcharset
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
+msgstr "Набор символов в маске \"%s\" неверен!"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."

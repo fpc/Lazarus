@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-21 20:42+0300\n"
+"PO-Revision-Date: 2007-09-02 17:17+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -447,15 +447,15 @@ msgstr "AUTHINFO USER"
 
 #: ipconst:swsaeaddrinuse
 msgid "Address already in use"
-msgstr ""
+msgstr "Адрес уже используется"
 
 #: ipconst:swsaeafnosupport
 msgid "Address family not supported by protocol family"
-msgstr ""
+msgstr "Семейство адресов не поддерживается семейством протоколов"
 
 #: ipconst:srasalldevicesconnected
 msgid "All devices connected"
-msgstr ""
+msgstr "Все устройства подсоединены"
 
 #: ipconst:ssterror
 msgid "An error has occured during this task."
@@ -547,11 +547,11 @@ msgstr "BODY"
 
 #: ipconst:swsaefault
 msgid "Bad address"
-msgstr ""
+msgstr "Неверный адрес"
 
 #: ipconst:ssslbadcertificate
 msgid "Bad certificate."
-msgstr ""
+msgstr "Неверный сертификат"
 
 #: ipconst:ssmtpresponse42
 msgid "Bad connection"
@@ -2177,7 +2177,7 @@ msgstr ""
 
 #: ipconst:shtmltokenstackoverfl
 msgid "Token stack overflow"
-msgstr ""
+msgstr "Переполнение стека элементов"
 
 #: ipconst:swsaeremote
 msgid "Too many levels of remote in path"
@@ -2189,7 +2189,7 @@ msgstr ""
 
 #: ipconst:swsaemfile
 msgid "Too many open files"
-msgstr ""
+msgstr "Слишком много открытых файлов"
 
 #: ipconst:spngpalettetoolong
 msgid "Too many palette entries"
@@ -2197,7 +2197,7 @@ msgstr ""
 
 #: ipconst:swsaeproclim
 msgid "Too many processes"
-msgstr ""
+msgstr "Слишком много процессов"
 
 #: ipconst:ssmtpresponse53
 msgid "Too many recipients"
@@ -2209,7 +2209,7 @@ msgstr ""
 
 #: ipconst:swsaeusers
 msgid "Too many users"
-msgstr ""
+msgstr "Слишком много пользователей"
 
 #: ipconst:sicmptracecomplete
 msgid "Trace complete (%s), %d hops"
@@ -2221,11 +2221,11 @@ msgstr ""
 
 #: ipconst:sftpuserabort
 msgid "Transfer aborted by user"
-msgstr ""
+msgstr "Передача прервана пользователем"
 
 #: ipconst:sftpcomplete
 msgid "Transfer complete. "
-msgstr ""
+msgstr "Передача завершена."
 
 #: ipconst:sftptimeout
 msgid "Transfer timed out"
@@ -2241,7 +2241,7 @@ msgstr ""
 
 #: ipconst:swsatype_not_found
 msgid "Type not found"
-msgstr ""
+msgstr "Тип не найден"
 
 #: ipconst:spop3cmduidl
 msgid "UIDL"
@@ -2269,39 +2269,39 @@ msgstr ""
 
 #: ipconst:ssslunknowncertificate
 msgid "Unknown Certificate."
-msgstr ""
+msgstr "Неизвестный сертификат"
 
 #: ipconst:swsa_qos_bad_style
 msgid "Unknown or conflicting style"
-msgstr ""
+msgstr "Неизвестный или конфликтующий стиль"
 
 #: ipconst:providerunknownrequest
 msgid "Unknown request type \"%s\""
-msgstr ""
+msgstr "Неизвестный тип запроса  \"%s\""
 
 #: ipconst:ssmtpresponseunknown
 msgid "Unknown response code"
-msgstr ""
+msgstr "Неизвестный ответный код"
 
 #: ipconst:spsunknown
 msgid "Unknown state"
-msgstr ""
+msgstr "Неизвестное состояние"
 
 #: ipconst:sipicmp_unknown
 msgid "Unknown status"
-msgstr ""
+msgstr "Неизвестный статус"
 
 #: ipconst:ssmtpresponsesubunknown
 msgid "Unknown subcode"
-msgstr ""
+msgstr "Неизвестный субкод"
 
 #: ipconst:sptunknown
 msgid "Unknown task"
-msgstr ""
+msgstr "Неизвестная задача"
 
 #: ipconst:shtmlunknowntok
 msgid "Unknown token"
-msgstr ""
+msgstr "Неизвестный элемент"
 
 #: ipconst:spngbadchunktype
 msgid "Unrecognized Chunk Type: %s"
@@ -2425,19 +2425,19 @@ msgstr ""
 
 #: ipconst:ssssaml
 msgid "ssSaml"
-msgstr ""
+msgstr "ssSaml"
 
 #: ipconst:ssssend
 msgid "ssSend"
-msgstr ""
+msgstr "ssSend"
 
 #: ipconst:ssssoml
 msgid "ssSoml"
-msgstr ""
+msgstr "ssSoml"
 
 #: ipconst:sssturn
 msgid "ssTurn"
-msgstr ""
+msgstr "ssTurn"
 
 #: ipconst:spngtimetoolong
 msgid "tIME chunk is long."
