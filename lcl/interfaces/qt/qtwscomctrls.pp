@@ -738,7 +738,7 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnDelete') then
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
@@ -759,7 +759,7 @@ var
   HV: QHeaderViewH;
   Str: WideString;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnInsert') then
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
@@ -795,6 +795,9 @@ class function  TQtWSCustomListView.ColumnGetWidth(const ALV: TCustomListView; c
 var
   TW: QTreeWidgetH;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ColumnGetWidth') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   Result := QTreeView_columnWidth(QTreeViewH(TW), AIndex);
 end;
@@ -809,7 +812,7 @@ var
   TW: QTreeWidgetH;
   HV: QHeaderViewH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnMove') then
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
@@ -828,7 +831,7 @@ var
   TWI: QTreeWidgetItemH;
   FAlign: QtAlignment;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetAlignment') then
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
@@ -856,7 +859,7 @@ var
   TW: QTreeWidgetH;
   HV: QHeaderViewH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize') then
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
@@ -865,7 +868,6 @@ begin
     QHeaderView_setResizeMode(HV, AIndex, QHeaderViewResizeToContents)
   else
     QHeaderView_setResizeMode(HV, AIndex, QHeaderViewInteractive);
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -879,8 +881,9 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize') then
     Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
   if TWI <> NiL then
@@ -900,6 +903,8 @@ class procedure TQtWSCustomListView.ColumnSetImage(const ALV: TCustomListView; c
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;}
 begin
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetImage') then
+    Exit;
 {$note review}
 {  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
@@ -920,8 +925,9 @@ var
   TW: QTreeWidgetH;
   HV: QHeaderViewH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetMinWidth') then
     Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   HV := QTreeView_header(TW);
   QHeaderView_setMinimumSectionSize(HV, AMinWidth);
@@ -936,8 +942,9 @@ class procedure TQtWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; c
 var
   TW: QTreeWidgetH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetWidth') then
     Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeView_setColumnWidth(QTreeViewH(TW), AIndex, AWidth);
 end;
@@ -951,8 +958,9 @@ class procedure TQtWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
 var
   TW: QTreeWidgetH;
 begin
-  if not ALV.HandleAllocated then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetVisible') then
     Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeView_setColumnHidden(QTreeViewH(TW), AIndex, not AVisible);
 end;
@@ -967,6 +975,9 @@ class procedure TQtWSCustomListView.ItemDelete(const ALV: TCustomListView; const
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;}
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemDelete') then
+    Exit;
+
 {  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_takeTopLevelItem(TW, AIndex);}
   {$note implement}
@@ -983,6 +994,9 @@ var
   TWI: QTreeWidgetItemH;
   AState: QtCheckState;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemGetChecked') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   AState := QTreeWidgetItem_checkState(TWI, 0);
@@ -1003,6 +1017,9 @@ var
   TWI: QTreeWidgetItemH;
   R: TRect;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemGetPosition') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   QTreeWidget_visualItemRect(TW, @R, TWI);
@@ -1022,9 +1039,10 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemGetState') then
+    Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
 
   case AState of
@@ -1048,6 +1066,9 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetChecked') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   if AChecked then
@@ -1066,8 +1087,10 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  if not WSCheckHandleAllocated(ALV, 'ItemSetState') then
+    Exit;
 
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
 
   case AState of
@@ -1089,8 +1112,10 @@ var
   Str: WideString;
   i: Integer;
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
+    Exit;
 
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidgetItem_create(TW, 0);
   Str := UTF8Decode(AItem.Caption);
   
@@ -1124,8 +1149,10 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
 begin
-  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
+    Exit;
 
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   Str := UTF8Decode(AText);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   if TWI <> NiL then
@@ -1142,6 +1169,9 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemShow') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   QTreeWidget_setItemHidden(TW, TWI, False);
@@ -1158,12 +1188,15 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   if QTreeWidgetItem_childCount(TWI) > 0 then
-  QTreeWidget_visualItemRect(TW, @Result, QTreeWidgetItem_child(TWI, ASubItem))
+    QTreeWidget_visualItemRect(TW, @Result, QTreeWidgetItem_child(TWI, ASubItem))
   else
-  QTreeWidget_visualItemRect(TW, @Result, TWI);
+    QTreeWidget_visualItemRect(TW, @Result, TWI);
 end;
 
 {------------------------------------------------------------------------------
@@ -1177,13 +1210,16 @@ var
   TWI: QTreeWidgetItemH;
   i: Integer;
 begin
+  if not WSCheckHandleAllocated(ALV, 'GetFocused') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_currentItem(TW);
   i := QTreeWidget_indexOfTopLevelItem(TW, TWI);
   if QTreeWidgetItem_isSelected(TWI) then
-  Result := i
+    Result := i
   else
-  Result := -1;
+    Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -1196,6 +1232,9 @@ var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ALV, 'GetItemAt') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_itemAt(TW, x, y);
   Result := QTreeWidget_indexOfTopLevelItem(TW, TWI);
@@ -1211,6 +1250,9 @@ var
   TW: QTreeWidgetH;
   FPInts: TIntArray;
 begin
+  if not WSCheckHandleAllocated(ALV, 'GetSelCount') then
+    Exit;
+
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeWidget_selectedItems(TW, @FPInts);
   Result := length(FPInts);
@@ -1226,13 +1268,16 @@ var
   TW: QTreeWidgetH;
   FPInts: TIntArray;
 begin
+  if not WSCheckHandleAllocated(ALV, 'GetSelection') then
+    Exit;
+    
 {implement selection event so we can return Alv.Selected.Index}
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeWidget_selectedItems(TW, @FPInts);
   if Length(FPInts)>0 then
-  Result := FPInts[0]
+    Result := FPInts[0]
   else
-  Result := -1;
+    Result := -1;
 end;
     
 {------------------------------------------------------------------------------
@@ -1244,6 +1289,9 @@ class procedure TQtWSCustomListView.SetSort(const ALV: TCustomListView; const AT
 {var
   TW: QTreeWidgetH;}
 begin
+  if not WSCheckHandleAllocated(ALV, 'SetSort') then
+    Exit;
+    
   {TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);}
   if AType <> stNone then
   begin
@@ -1260,7 +1308,10 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
-  QWidget_frameGeometry(TQtWidget(ALV.Handle).Widget, @Result);
+  if not WSCheckHandleAllocated(ALV, 'GetBoundingRect') then
+    Exit;
+
+  Result := TQtWidget(ALV.Handle).getFrameGeometry;
 end;
 
 initialization
