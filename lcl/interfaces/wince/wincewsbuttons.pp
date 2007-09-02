@@ -1,7 +1,7 @@
 { $Id: WinCEwsbuttons.pp 8815 2006-02-24 13:31:16Z mattias $}
 {
  *****************************************************************************
- *                              WinCEWSButtons.pp                               *
+ *                              WinCEWSButtons.pp                            *
  *                              --------------                               * 
  *                                                                           *
  *                                                                           *
@@ -42,7 +42,7 @@ type
     protected
     public
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND;
+          const AParams: TCreateParams): HWND; //override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
