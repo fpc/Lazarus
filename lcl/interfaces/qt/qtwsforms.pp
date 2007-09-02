@@ -77,8 +77,10 @@ type
 
   TQtWSCustomForm = class(TWSCustomForm)
   private
-    class procedure SetQtWindowBorderStyle(const AHandle: TQtMainWindow; const AFormBorderStyle: TFormBorderStyle);
-    class procedure SetQtBorderIcons(const AHandle: TQtMainWindow; const ABorderIcons: TBorderIcons);
+    class function GetQtWindowBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
+    class function GetQtBorderIcons(const ABorderIcons: TBorderIcons): QtWindowFlags;
+    class procedure UpdateWindowFlags(const AWidget: TQtMainWindow;
+      ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
@@ -164,8 +166,8 @@ begin
 
   if not (csDesigning in TCustomForm(AWinControl).ComponentState) then
   begin
-    SetQtWindowBorderStyle(QtMainWindow, TCustomForm(AWinControl).BorderStyle);
-    SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
+    UpdateWindowFlags(QtMainWindow, TCustomForm(AWinControl).BorderStyle,
+      TCustomForm(AWinControl).BorderIcons);
   end;
 
   if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
@@ -252,7 +254,7 @@ end;
 class procedure TQtWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
-  SetQtWindowBorderStyle(TQtMainWindow(AForm.Handle), AFormBorderStyle);
+  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons);
 end;
 
 {------------------------------------------------------------------------------
@@ -315,79 +317,33 @@ end;
 class procedure TQtWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 begin
-  SetQtBorderIcons(TQtMainWindow(AForm.Handle), ABorderIcons);
+  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomForm.SetQtWindowBorderStyle
+  Method: TQtWSCustomForm.GetQtWindowBorderStyle
   Params:  None
   Returns: Nothing
 
-  We need this method because LCL doesn't automatically calls SetWindowBorder
- after the window is created, so we need to do it on CreateHandle procedure,
- but CreateHandle cannot call other methods from TQtWSCustomForm because the
- Handle isn't created yet before it is finished.
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.SetQtWindowBorderStyle(const AHandle: TQtMainWindow;
-  const AFormBorderStyle: TFormBorderStyle);
-const
-  QtOnlyDialog: Integer = QtDialog and not QtWindow;
-  QtOnlyTool: Integer = QtTool and not QtWindow;
-  QtOnlyToolOrDialog: Integer = (QtDialog or QtTool) and not QtWindow;
-var
-  Flags: QtWindowFlags;
-  AVisible: Boolean;
+class function TQtWSCustomForm.GetQtWindowBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
 begin
-  Flags := AHandle.windowFlags;
-  // after setting flags showing can be changed
-  AVisible := AHandle.getVisible;
-
-  {$ifdef VerboseQt}
-    WriteLn('Trace:> [TQtWSCustomForm.SetFormBorderStyle] Flags: ', IntToHex(Flags, 8));
-  {$endif}
-
   case AFormBorderStyle of
-   bsNone:
-   begin
-     Flags := (Flags or QtFramelessWindowHint) and not QtWindowTitleHint;
-     Flags := Flags and not QtOnlyToolOrDialog;
-   end;
-   bsSingle:
-   begin
-     Flags := Flags or QtFramelessWindowHint;
-     Flags := Flags and not QtOnlyToolOrDialog;
-   end;
-   bsSizeable:
-   begin
-     Flags := Flags and not QtFramelessWindowHint;
-     Flags := Flags and not QtOnlyToolOrDialog;
-   end;
-   bsDialog:
-   begin
-     Flags := Flags and not QtFramelessWindowHint;
-     Flags := Flags or QtOnlyDialog;
-   end;
-   bsToolWindow:
-   begin
-     {QToolWin have only maximize & close btns,
-      if parent isn't assigned must have QtWindowStaysOnTopHint}
-     Flags := Flags or QtOnlyTool;
-     Flags := Flags or QtWindowStaysOnTopHint;
-   end;
-   bsSizeToolWin:
-   begin
-     Flags := Flags and not QtFramelessWindowHint;
-     {sizeToolWin have minimize button}
-     Flags := Flags or QtOnlyTool or QtSubWindow;
-   end;
+    bsNone:
+      Result := QtWindow or QtFramelessWindowHint;
+    bsSingle:
+      Result := QtWindow or QtMSWindowsFixedSizeDialogHint;
+    bsSizeable:
+      Result := QtWindow;
+    bsDialog:
+      Result := QtDialog;
+    bsToolWindow:
+      Result := QtTool or QtMSWindowsFixedSizeDialogHint;
+    bsSizeToolWin:
+      Result := QtTool;
+    else
+      Result := QtWidget;
   end;
-
-  {$ifdef VerboseQt}
-    WriteLn('Trace:< [TQtWSCustomForm.SetFormBorderStyle] Flags: ', IntToHex(Flags, 8));
-  {$endif}
-
-  AHandle.setWindowFlags(Flags);
-  AHandle.setVisible(AVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -397,46 +353,35 @@ end;
 
   Same comment as SetQtWindowBorderStyle above
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.SetQtBorderIcons(const AHandle: TQtMainWindow;
-  const ABorderIcons: TBorderIcons);
+class function TQtWSCustomForm.GetQtBorderIcons(const ABorderIcons: TBorderIcons): QtWindowFlags;
+begin
+  Result := 0;
+  
+  if (biSystemMenu in ABorderIcons) then
+    Result := Result or QtWindowSystemMenuHint;
+
+  if (biMinimize in ABorderIcons) then
+    Result := Result or QtWindowMinimizeButtonHint;
+
+  if (biMaximize in ABorderIcons) then
+    Result := Result or QtWindowMaximizeButtonHint;
+
+  if (biHelp in ABorderIcons) then
+    Result := Result or QtWindowContextHelpButtonHint;
+end;
+
+class procedure TQtWSCustomForm.UpdateWindowFlags(const AWidget: TQtMainWindow;
+  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
 var
   Flags: QtWindowFlags;
-  ShowAny: Boolean;
+  AVisible: Boolean;
 begin
-  Flags := AHandle.windowFlags;
-
-  {$ifdef VerboseQt}
-    WriteLn('Trace:> [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));
-  {$endif}
-
-  ShowAny := ((Flags and QtFramelessWindowHint) = 0) or
-             ((Flags and QtWindowTitleHint) <> 0);
-
-  if (biSystemMenu in ABorderIcons) and ShowAny then
-    Flags := Flags or QtWindowSystemMenuHint
-  else
-    Flags := Flags and not QtWindowSystemMenuHint;
-
-  if (biMinimize in ABorderIcons) and ShowAny then
-    Flags := Flags or QtWindowMinimizeButtonHint
-  else
-    Flags := Flags and not QtWindowMinimizeButtonHint;
-
-  if (biMaximize in ABorderIcons) and ShowAny then
-    Flags := Flags or QtWindowMaximizeButtonHint
-  else
-    Flags := Flags and not QtWindowMaximizeButtonHint;
-
-  if (biHelp in ABorderIcons) and ShowAny then
-    Flags := Flags or QtWindowContextHelpButtonHint
-  else
-    Flags := Flags and not QtWindowContextHelpButtonHint;
-
-  {$ifdef VerboseQt}
-    WriteLn('Trace:< [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));
-  {$endif}
-
-  AHandle.setWindowFlags(Flags);
+  AVisible := AWidget.getVisible;
+  Flags := GetQtWindowBorderStyle(ABorderStyle);
+  if (Flags and QtFramelessWindowHint) = 0 then
+    Flags := Flags or GetQtBorderIcons(ABorderIcons);
+  AWidget.setWindowFlags(Flags);
+  AWidget.setVisible(AVisible);
 end;
 
 { TQtWSHintWindow }
