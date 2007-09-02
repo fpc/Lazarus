@@ -6,7 +6,7 @@ interface
 
 uses
   // os
-  Windows, Win32UxTheme, Win32Proc,
+  Windows, Win32UxTheme, Win32Proc, Win32Extra,
   // rtl
   Classes, SysUtils,
   // lcl
@@ -55,8 +55,7 @@ type
 implementation
 
 const
-  ComCtlVersionIE6 = $00060000;
-  
+
   ThemeDataNames: array[TThemedElement] of PWideChar = (
     'button',      // teButton
     'clock',       // teClock

@@ -40,7 +40,8 @@ Begin
     FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
   end;
   OnClipBoardRequest := nil;
-  Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle('comctl32.dll'), 'InitCommonControlsEx');
+  Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle(comctl32), 'InitCommonControlsEx');
+  FCommonControlsVersion := GetFileVersion(comctl32);
 End;
 
 {------------------------------------------------------------------------------

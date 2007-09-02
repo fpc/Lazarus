@@ -97,7 +97,6 @@ function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 
-function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
@@ -966,26 +965,6 @@ begin
     Result := bsSizeable
   else
     Result := AForm.BorderStyle;
-end;
-
-function GetFileVersion(FileName: string): dword;
-var
-  buf: pointer;
-  lenBuf: dword;
-  fixedInfo: ^VS_FIXEDFILEINFO;
-begin
-  Result := $FFFFFFFF;
-  lenBuf := GetFileVersionInfoSize(PChar(FileName), lenBuf);
-  if lenBuf > 0 then
-  begin
-    GetMem(buf, lenBuf);
-    if GetFileVersionInfo(PChar(FileName), 0, lenBuf, buf) then
-    begin
-      VerQueryValue(buf, '\', pointer(fixedInfo), lenBuf);
-      Result := fixedInfo^.dwFileVersionMS;
-    end;
-    FreeMem(buf);
-  end;
 end;
 
 function AllocWindowInfo(Window: HWND): PWindowInfo;

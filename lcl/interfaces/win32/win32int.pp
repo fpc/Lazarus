@@ -142,6 +142,7 @@ type
     // This window is also the owner of the clipboard.
     // Assoc. windowproc also acts as handler for popup menus
     FAppHandle: HWND;
+    FCommonControlsVersion: DWord;
 
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
@@ -197,8 +198,8 @@ type
     Procedure AppTerminate; Override;
     procedure AppSetTitle(const ATitle: string); override;
 
-    Function  InitHintFont(HintFont: TObject): Boolean; Override;
-    Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+    function  InitHintFont(HintFont: TObject): Boolean; Override;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -220,10 +221,15 @@ type
     {$I win32lclintfh.inc}
 
     property MessageFont: HFONT read FMessageFont;
+    property CommonControlsVersion: DWord read FCommonControlsVersion;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   end;
 
   {$I win32listslh.inc}
+  
+var
+  Win32WidgetSet: TWin32WidgetSet absolute WidgetSet;
+
 
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');

@@ -243,6 +243,15 @@ const
 var
   AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
 
+const
+  // ComCtlVersions
+  ComCtlVersionIE3   = $00040046;
+  ComCtlVersionIE4   = $00040047;
+  ComCtlVersionIE401 = $00040048;
+  ComCtlVersionIE5   = $00050050;
+  ComCtlVersionIE501 = $00050051;
+  ComCtlVersionIE6   = $00060000;
+
 
 {$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
@@ -284,6 +293,9 @@ type
 // these functions are declared, because they need to have Win32Extra.LPOPENFILENAME parameter
 function GetOpenFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetOpenFileNameA';
 function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetSaveFileNameA';
+
+function GetFileVersion(FileName: string): dword;
+
 {$endif}
 
 
@@ -295,15 +307,36 @@ Uses SysUtils;
 
 {$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
-  begin
-    result:=smallint(LOWORD(lp));
-  end;
+begin
+  result:=smallint(LOWORD(lp));
+end;
 
 
 function GET_Y_LPARAM(lp : Windows.LParam) : longint;
+begin
+  result:=smallint(HIWORD(lp));
+end;
+
+function GetFileVersion(FileName: string): dword;
+var
+  buf: pointer;
+  lenBuf: dword;
+  fixedInfo: ^VS_FIXEDFILEINFO;
+begin
+  Result := $FFFFFFFF;
+  lenBuf := GetFileVersionInfoSize(PChar(FileName), lenBuf);
+  if lenBuf > 0 then
   begin
-    result:=smallint(HIWORD(lp));
+    GetMem(buf, lenBuf);
+    if GetFileVersionInfo(PChar(FileName), 0, lenBuf, buf) then
+    begin
+      VerQueryValue(buf, '\', pointer(fixedInfo), lenBuf);
+      Result := fixedInfo^.dwFileVersionMS;
+    end;
+    FreeMem(buf);
   end;
+end;
+
 {$endif VER2_0}
 
 function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
