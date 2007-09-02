@@ -380,16 +380,24 @@ begin
 end;
 
 procedure TBitMap.HandleNeeded;
+const
+  BITCOUNT_MAP: array[TPixelFormat] of Byte = (
+//  pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit, pf32bit, pfCustom
+    0, 1, 4, 8, 15, 16, 24, 32, 0
+  );
 var
-  n : integer;
+  BitCount: Byte;
   UseWidth,
   UseHeight : Longint;
   OldChangeEvent: TNotifyEvent;
+  DC: HDC;
+  BI: PBitmapInfo;
 begin
   if (FImage.FHandle <> 0) then exit;
 
   // if the bitmap was loaded, create a handle from stream
-  if (FImage.FDIBHandle = 0) and (FImage.FSaveStream <> nil) then begin
+  if (FImage.FDIBHandle = 0) and (FImage.FSaveStream <> nil)
+  then begin
     FImage.FSaveStream.Position := 0;
     OldChangeEvent := OnChange;
     try
@@ -400,28 +408,50 @@ begin
     end;
   end;
 
+  if (FImage.FHandle <> 0) then exit;
   // otherwise create a default handle
-  if (FImage.FHandle = 0) then begin
-    case PixelFormat of
-      pfDevice : n:= ScreenInfo.ColorDepth;
-      pf1bit : n:= 1;
-      pf4bit : n:= 4;
-      pf8bit : n:= 8;
-      pf15bit : n:= 15;
-      pf16bit : n:= 16;
-      pf24bit : n:= 24;
-      pf32bit : n:= 32;
-      else raise EInvalidOperation.Create(rsUnsupportedBitmapFormat);
-    end;
-    UseWidth := Width;
-    UseHeight := Height;
-    if UseWidth<1 then UseWidth:=1;
-    if UseHeight<1 then UseHeight:=1;
-    FImage.FHandle:= CreateBitmap(UseWidth, UseHeight, 1, n, nil);
-    //DebugLn('TBitMap.HandleNeeded Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle),' n=',n);
-    FImage.FDIB.dsbm.bmWidth := Width;
-    FImage.FDIB.dsbm.bmHeight := Height;
+
+  BitCount := BITCOUNT_MAP[PixelFormat];
+  if BitCount = 0
+  then begin
+    if PixelFormat = pfDevice
+    then BitCount := Min(ScreenInfo.ColorDepth, 24) // prevent creation of default alpha channel
+    else raise EInvalidOperation.Create(rsUnsupportedBitmapFormat);
   end;
+
+  UseWidth := Width;
+  UseHeight := Height;
+  if UseWidth < 1 then UseWidth := 1;
+  if UseHeight < 1 then UseHeight := 1;
+
+  FImage.FDIB.dsBm.bmBits := nil;
+  if BitCount = 1
+  then begin
+    FImage.FHandle := CreateBitmap(UseWidth, UseHeight, 1, BitCount, nil);
+  end
+  else begin
+    // on windows we need a DIB section
+    BI := @FImage.FDIB.dsBmih;
+    FillChar(BI^.bmiHeader, SizeOf(BI^.bmiHeader), 0);
+    BI^.bmiHeader.biSize := SizeOf(BI^.bmiHeader);
+    BI^.bmiHeader.biWidth := UseWidth;
+    BI^.bmiHeader.biHeight := -UseHeight; // request top down
+    BI^.bmiHeader.biPlanes := 1;
+    BI^.bmiHeader.biBitCount := BitCount;
+    BI^.bmiHeader.biCompression := BI_RGB;
+    DC := GetDC(0);
+    FImage.FHandle := CreateDIBSection(DC, BI^, DIB_RGB_COLORS, FImage.FDIB.dsBm.bmBits, 0, 0);
+    ReleaseDC(0, DC);
+    
+    // fallback for other widgetsets not implementing CreateDIBSection
+    // we need the DIB section anyway someday if we want a scanline
+    if FImage.FHandle = 0
+    then FImage.FHandle := CreateBitmap(UseWidth, UseHeight, 1, BitCount, nil);
+  end;
+
+  //DebugLn('TBitMap.HandleNeeded Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle),' n=',n);
+  FImage.FDIB.dsbm.bmWidth := Width;
+  FImage.FDIB.dsbm.bmHeight := Height;
 end;
 
 procedure TBitMap.MaskHandleNeeded;
@@ -1078,8 +1108,8 @@ end;
 
 // release handles without freeing them
 // useful for creating a HBitmap
-Function TBitmap.ReleaseHandle: HBITMAP;
-Begin
+function TBitmap.ReleaseHandle: HBITMAP;
+begin
   //HandleNeeded; Delphi creates a handle. Why?
   FreeCanvasContext;
   Result := FImage.ReleaseHandle;
