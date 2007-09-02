@@ -7476,7 +7476,7 @@ Returns boolean true if manual docked performed</descr>
       <!-- object Visibility: default -->
       <element name="TControlChildSizing">
         <short/>
-        <descr>  { TControlChildSizing }
+        <descr>{ TControlChildSizing }
 
   { LeftRightSpacing, TopBottomSpacing: integer;
         minimum space between left client border and left most children.

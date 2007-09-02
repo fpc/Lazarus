@@ -127,6 +127,8 @@ begin
     Result:=rsLanguageIndonesian
   else if CompareText(ID,'af_ZA')=0 then
     Result:=rsLanguageAfrikaans
+  else if CompareText(ID,'lt')=0 then
+    Result:=rsLanguageLithuanian
   else
     Result:=ID;
 end;

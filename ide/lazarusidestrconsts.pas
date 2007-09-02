@@ -1871,6 +1871,7 @@ resourcestring
   rsLanguageChinese     = 'Chinese';
   rsLanguageIndonesian  = 'Indonesian';
   rsLanguageAfrikaans   = 'Afrikaans';
+  rsLanguageLithuanian  = 'Lithuanian';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
