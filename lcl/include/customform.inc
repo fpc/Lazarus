@@ -1272,7 +1272,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetFormStyle
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
+procedure TCustomForm.SetFormStyle(Value : TFormStyle);
 var
   OldFormStyle: TFormStyle;
 Begin
@@ -1287,6 +1287,8 @@ Begin
   else
   if OldFormStyle = fsSplash then
     BorderStyle := bsSizeable;
+  if HandleAllocated then
+    TWSCustomFormClass(WidgetSetClass).SetFormStyle(Self, Value);
 end;
 
 {------------------------------------------------------------------------------

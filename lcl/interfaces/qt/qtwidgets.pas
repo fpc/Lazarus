@@ -2638,21 +2638,6 @@ begin
   except
     Application.HandleException(nil);
   end;
-
-{  if (TLMessage(AMessage).Msg=LM_PAINT)
-  or (TLMessage(AMessage).Msg=LM_INTERNALPAINT)
-  or (TLMessage(AMessage).Msg=LM_GtkPaint) then
-    CurrentSentPaintMessageTarget:=TObject(Target);
-
-  try
-    if TObject(Target) is TControl
-    then TControl(Target).WindowProc(TLMessage(Msg))
-    else TObject(Target).Dispatch(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
-
-  CurrentSentPaintMessageTarget:=nil;}
 end;
 
 { TQtMainWindow }

@@ -81,6 +81,7 @@ type
         const ABorderIcons: TBorderIcons); virtual;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); virtual;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); virtual;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
@@ -138,6 +139,11 @@ class procedure TWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
   // will be done in interface override
+end;
+
+class procedure TWSCustomForm.SetFormStyle(const AForm: TCustomform;
+  const AFormStyle: TFormStyle);
+begin
 end;
     
 class procedure TWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);

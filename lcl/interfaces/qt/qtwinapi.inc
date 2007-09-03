@@ -1885,9 +1885,6 @@ end;
 function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
   Result := GetDC(WindowHandle);
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetDesignerDC] missing implementation ');
-  {$endif}
 end;
 {------------------------------------------------------------------------------
   Function: GetDeviceCaps
