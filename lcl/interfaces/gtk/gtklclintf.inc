@@ -290,7 +290,6 @@ begin
         then Exit; // this depth is not supported
         
         GdkImage := gdk_image_new(GDK_IMAGE_FASTEST, Visual, ImgWidth, ImgHeight);
-        gdk_visual_unref(Visual);
 
         {$ifdef VerboseRawImage}
         {DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
