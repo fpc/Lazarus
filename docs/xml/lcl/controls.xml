@@ -2799,7 +2799,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControlBorderSpacing">
         <short>TControlBorderSpacing - the spacing around a Control</short>
-        <descr>{ TControlBorderSpacing defines the spacing around a control.
+        <descr><code>{ TControlBorderSpacing defines the spacing around a control.
     The spacing around its children and between its children is defined in
     TWinControl.ChildSizing.
 
@@ -2824,7 +2824,7 @@ mrLast=mrYesToAll=10</descr>
     CellAlignHorizontal, CellAlignVertical: TControlCellAlign;
         Used for example when the Parents.ChildSizing.Layout defines a table
         layout.
-  }</descr>
+  }</code></descr>
         <errors/>
         <seealso/>
       </element>
@@ -3076,7 +3076,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TAnchorSide">
         <short>TAnchorSide</short>
-        <descr>TAnchorSide
+        <descr><pre>TAnchorSide
     Class holding the reference sides of the anchors of a TControl.
     Every TControl has four AnchorSides:
     AnchorSide[akLeft], AnchorSide[akRight], AnchorSide[akTop] and
@@ -3118,7 +3118,7 @@ mrLast=mrYesToAll=10</descr>
         A.AnchorSide[akBottom].Side:=arsCenter;
         A.AnchorSide[akBottom].Control:=B;
 
-</descr>
+</pre></descr>
         <errors/>
         <seealso/>
       </element>
@@ -7131,7 +7131,7 @@ Returns boolean true if manual docked performed</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>Caption - the text appearing on the Control, usually used to identify its function</short>
-        <descr>{* Note on TControl.Caption
+        <descr><code>{* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
  * (unnecesary) text copies.
@@ -7145,7 +7145,7 @@ Returns boolean true if manual docked performed</descr>
  * override RealGet/SetText. Get/SetTextBuf is only kept for
  * compatibility.
  }
-</descr>
+</code></descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -7475,8 +7475,8 @@ Returns boolean true if manual docked performed</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlChildSizing">
-        <short/>
-        <descr>{ TControlChildSizing }
+        <short>How Child controls are to be sized relative to parent</short>
+        <descr><code>{ TControlChildSizing }
 
   { LeftRightSpacing, TopBottomSpacing: integer;
         minimum space between left client border and left most children.
@@ -7551,7 +7551,7 @@ Returns boolean true if manual docked performed</descr>
         120, then there will be 60/2=30 space between A and B and between
         B and C.
   }
-</descr>
+</code></descr>
         <errors/>
         <seealso/>
       </element>
@@ -11327,7 +11327,7 @@ TGraphicControl, you must query the ClientRect.</p>
       <!-- object Visibility: default -->
       <element name="TDockTree">
         <short>TDockTree</short>
-        <descr>{ TDockTree - a tree of TDockZones - Every docked window has one tree
+        <descr><code>{ TDockTree - a tree of TDockZones - Every docked window has one tree
   
     This is an abstract class. The real implementation is in ldocktree.pas.
 
@@ -11340,7 +11340,7 @@ TGraphicControl, you must query the ClientRect.</p>
     Example1: Docking "A" (source window) left to "B" (target window)
     
        +---+    +----+
-       | A | -&gt; | B  |
+       | A | -> | B  |
        +---+    |    |
                 +----+
       Result: A new docktree will be created. Height of "A" will be resized to
@@ -11374,7 +11374,7 @@ TGraphicControl, you must query the ClientRect.</p>
     Example2: Docking A into B
                 +-----+
        +---+    |     |
-       | A | ---+-&gt; B |
+       | A | ---+-> B |
        +---+    |     |
                 +-----+
 
@@ -11409,7 +11409,7 @@ TGraphicControl, you must query the ClientRect.</p>
     ResetBounds - TODO for Delphi compatibility
     SetReplacingControl - TODO for Delphi compatibility
     PaintSite - TODO for Delphi compatibility
-</descr>
+</code></descr>
         <errors/>
         <seealso/>
       </element>
