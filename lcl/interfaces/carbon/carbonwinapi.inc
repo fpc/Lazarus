@@ -197,6 +197,9 @@ begin
     DebugLn('TCarbonWidgetSet.CreateBitmap');
   {$ENDIF}
   
+  // force 32-bit depth
+  if (BitmapBits = nil) and (BitCount = 24) then BitCount := 32;
+  
   case BitCount of
     1: bmpType := cbtMono;
     32: bmpType := cbtARGB;

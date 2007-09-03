@@ -756,7 +756,6 @@ end;
 procedure TCarbonWidgetSet.RegisterEvents;
 var
   TmpSpec: EventTypeSpec;
-  OpenSpec: array [0..1] of EventTypeSpec;
 const
   SName = 'RegisterEvents';
 begin
@@ -773,10 +772,6 @@ begin
     1, @TmpSpec, nil, nil);
     
   FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
-  //OpenSpec[0] := MakeEventSpec(kCoreEventClass, kAEOpenDocuments);
-  //OpenSpec[1] := MakeEventSpec(kCoreEventClass, kAEOpenContents);
-  //InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Open),
-  //  2, @OpenSpec[0], nil, nil);
   OSError(
     AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, FOpenEventHandlerUPP, 0, False),
     Self, SName, 'AEInstallEventHandler');

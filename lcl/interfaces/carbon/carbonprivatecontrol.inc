@@ -445,13 +445,13 @@ begin
   // set scroll view bounds
   OSError(HIViewGetFrame(Widget, Bounds), Self, SName, 'HIViewGetFrame');
   OSError(HIViewSetFrame(Result, Bounds), Self, SName, SViewFrame);
-  
+
   OSError(HIScrollViewSetScrollBarAutoHide(Result,
       AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
     Self, SName, SViewSetScrollBarAutoHide);
     
-  OSError(HIViewSetVisible(Widget, True), Self, SName, SViewVisible);
   OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView);
+  OSError(HIViewSetVisible(Widget, True), Self, SName, SViewVisible);
 end;
 
 {------------------------------------------------------------------------------

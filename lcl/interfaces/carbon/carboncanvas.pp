@@ -909,8 +909,8 @@ begin
       if (Options and ETO_OPAQUE) > 0 then
       begin
         BkBrush.Apply(Self, False); // do not use ROP2
-        CGContextFillRect(CGContext, GetCGRectSorted(X - TextBefore shr 16,
-          -Y, X + TextAfter shr 16, -Y - (Ascent + Descent) shr 16));
+        CGContextFillRect(CGContext, GetCGRectSorted(X - RoundFixed(TextBefore),
+          -Y, X + RoundFixed(TextAfter), -Y - RoundFixed(Ascent + Descent)));
       end;
     end;
 
@@ -1008,7 +1008,9 @@ const
   SName = 'GetTextExtentPoint';
 begin
   Result := False;
-  
+  Size.cx := 0;
+  Size.cy := 0;
+
   if not BeginTextRender(Str, Count, TextLayout) then Exit;
   try
     // finally compute the text dimensions
@@ -1016,8 +1018,8 @@ begin
         kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
       Self, SName, SGetUnjustifiedBounds) then Exit;
 
-    Size.cx := (TextAfter - TextBefore) shr 16;
-    Size.cy := (Descent + Ascent) shr 16;
+    Size.cx := RoundFixed(TextAfter - TextBefore);
+    Size.cy := RoundFixed(Descent + Ascent);
 
     Result := True;
   finally
@@ -1061,16 +1063,16 @@ begin
     EndTextRender(TextLayout);
   end;
 
-  TM.tmAscent := Ascent shr 16;
-  TM.tmDescent := Descent shr 16;
-  TM.tmHeight := (Ascent + Descent) shr 16;
+  TM.tmAscent := RoundFixed(Ascent);
+  TM.tmDescent := RoundFixed(Descent);
+  TM.tmHeight := RoundFixed(Ascent + Descent);
 
   if OSError(ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil),
     Self, SName, SGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
-  TM.tmInternalLeading := M shr 16;
+  TM.tmInternalLeading := RoundFixed(M);
   TM.tmExternalLeading := 0;
 
-  TM.tmAveCharWidth := (TextAfter - TextBefore) shr 16;
+  TM.tmAveCharWidth := RoundFixed(TextAfter - TextBefore);
 
   TM.tmMaxCharWidth := TM.tmAscent; // TODO: don't know how to determine this right
   TM.tmOverhang := 0;

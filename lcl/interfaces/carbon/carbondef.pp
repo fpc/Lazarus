@@ -95,6 +95,7 @@ type
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
     procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); virtual; abstract;
     
+    procedure ScrollBy(DX, DY: Integer); virtual;
     procedure SetFocus; virtual; abstract;
     procedure SetColor(const AColor: TColor); virtual; abstract;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; virtual;
@@ -532,6 +533,24 @@ procedure TCarbonWidget.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
 begin
   DebugLn(ClassName + '.GetScrollInfo unsupported or not implemented!');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.ScrollBy
+  Params:  DX, DY
+
+  Scrolls the content
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.ScrollBy(DX, DY: Integer);
+var
+  R: CGRect;
+const
+  SName = 'ScrollBy';
+begin
+  OSError(HIViewGetBounds(Content, R),
+    Self, SName, 'HIViewGetBounds');
+  OSError(HIViewSetBoundsOrigin(Content, R.origin.x + DX, R.origin.y + DY),
+    Self, SName, 'HIViewSetBoundsOrigin');
 end;
 
 {------------------------------------------------------------------------------

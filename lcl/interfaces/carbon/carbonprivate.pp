@@ -386,7 +386,7 @@ begin
     SizeOf(HISize), @ViewHISize), SName, SSetEvent, 'kEventParamViewSize');
   OSError(SetEventParameter(AEvent, kEventParamLineSize, typeHISize,
     SizeOf(HISize), @LineHISize), SName, SSetEvent, 'kEventParamLineSize');
-  OSError(SetEventParameter(AEvent, kEventParamOrigin, typeHISize,
+  OSError(SetEventParameter(AEvent, kEventParamOrigin, typeHIPoint,
     SizeOf(HIPoint), @HIOrigin), SName, SSetEvent, 'kEventParamOrigin');
   
   Result := noErr;
@@ -499,7 +499,7 @@ begin
   AOrigin := FScrollOrigin;
   AImageSize := FScrollSize;
   AViewSize := FScrollPageSize;
-  ALineSize := Classes.Point(20, 20);
+  ALineSize := Classes.Point(10, 10);
   
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +

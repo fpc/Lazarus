@@ -79,6 +79,8 @@ procedure CreateCFString(const S: String; out AString: CFStringRef);
 procedure FreeCFString(var AString: CFStringRef);
 function CFStringToStr(AString: CFStringRef): String;
 
+function RoundFixed(const F: Fixed): Integer;
+
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
@@ -367,6 +369,7 @@ function FindCarbonFontID(const FontName: String): ATSUFontID;
 begin
   Result := 0;
 
+  //DebugLn('FindCarbonFontID ' + FontName);
   if (FontName <> '') and not SameText(FontName, 'default') then
   begin
     OSError(ATSUFindFontFromName(@FontName[1], Length(FontName),
@@ -518,8 +521,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:    RoundFixed
+  Params:  F - Fixed value
+  Returns: Rounded passed fixed value
+ ------------------------------------------------------------------------------}
+function RoundFixed(const F: Fixed): Integer;
+begin
+  Result := Round(Fix2X(F));
+end;
+
+{------------------------------------------------------------------------------
   Name:    GetCarbonRect
-  Params:  Left, Top, Width, Height - coordinates
+  Params:  Left, Top, Width, Height - Coordinates
   Returns: Carbon Rect
  ------------------------------------------------------------------------------}
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
@@ -852,11 +865,12 @@ begin
           end;
       end;
     kEventClassTextInput: Result := noErr;
+    kEventClassScrollable: Result := noErr;
   end;
 end;
 
 var
-  EventSpec: Array [0..6] of EventTypeSpec;
+  EventSpec: Array [0..8] of EventTypeSpec;
   CustomControlHandlerUPP: EventHandlerUPP;
   
 initialization
@@ -880,12 +894,16 @@ initialization
   EventSpec[5].eventKind := kEventControlGetFocusPart;
   EventSpec[6].eventClass := kEventClassControl;
   EventSpec[6].eventKind := kEventControlSetFocusPart;
+  EventSpec[7].eventClass := kEventClassScrollable;
+  EventSpec[7].eventKind := kEventScrollableGetInfo;
+  EventSpec[8].eventClass := kEventClassScrollable;
+  EventSpec[8].eventKind := kEventScrollableScrollTo;
 
   CustomControlHandlerUPP := NewEventHandlerUPP(EventHandlerProcPtr(@CustomControlHandler));
 
   CreateCFString('com.lazarus.customcontrol', CustomControlClassID);
   CreateCFString('com.apple.hiview', HIViewClassID);
-                  // test 'com.apple.HITextView'
+
   OSError(
     HIObjectRegisterSubclass(CustomControlClassID, HIViewClassID, 0,
       CustomControlHandlerUPP, Length(EventSpec), @EventSpec[0], nil, nil),
