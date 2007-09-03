@@ -2084,13 +2084,9 @@ begin
     Result := Error;
   end
   else begin
-    If DObj^.GDIRegionObject <> nil then begin
-      gdk_region_destroy(DObj^.GDIRegionObject);
-      DObj^.GDIRegionObject:=nil;
-    end;
     S1 := S1Obj^.GDIRegionObject;
     S2 := S2Obj^.GDIRegionObject;
-    //DebugLn('TGtkWidgetSet.CombineRgn A fnCombineMode=',fnCombineMode);
+    //DebugLn('TGtkWidgetSet.CombineRgn A fnCombineMode=',Dbgs(fnCombineMode));
     Case fnCombineMode of
       RGN_AND :
         D := PGDKRegion(gdk_region_intersect(S1, S2));
@@ -2107,9 +2103,11 @@ begin
         D := nil;
       end;
     end;
+    if DObj^.GDIRegionObject <> nil then
+      gdk_region_destroy(DObj^.GDIRegionObject);
     DObj^.GDIRegionObject := D;
     Result := RegionType(D);
-    //DebugLn('TGtkWidgetSet.CombineRgn B Mode=',fnCombineMode,
+    //DebugLn('TGtkWidgetSet.CombineRgn B Mode=',dbgs(fnCombineMode),
     //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
   end;
 end;
