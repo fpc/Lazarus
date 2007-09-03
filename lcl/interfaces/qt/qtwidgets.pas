@@ -114,7 +114,7 @@ type
     function getEnabled: Boolean;
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
-    function getVisible: Boolean;
+    function getVisible: Boolean; virtual;
     function getClientBounds: TRect; virtual;
     procedure grabMouse;
     function hasFocus: Boolean;
@@ -694,6 +694,7 @@ type
     function actionHandle: QActionH;
     function addMenu(title: PWideString): TQtMenu;
     function addSeparator: TQtMenu;
+    function getVisible: Boolean; override;
     procedure setChecked(p1: Boolean);
     procedure setCheckable(p1: Boolean);
     procedure setHasSubmenu(AValue: Boolean);
@@ -702,6 +703,7 @@ type
     procedure setSeparator(AValue: Boolean);
     procedure setShortcut(AShortcut: TShortcut);
     procedure setText(AText: PWideString);
+    procedure setVisible(visible: Boolean); override;
   end;
 
   { TQtMenuBar }
@@ -5399,9 +5401,19 @@ begin
   Result.setSeparator(True);
 end;
 
+function TQtMenu.getVisible: Boolean;
+begin
+  Result := QAction_isVisible(ActionHandle);
+end;
+
 procedure TQtMenu.setText(AText: PWideString);
 begin
   QAction_setText(ActionHandle, AText);
+end;
+
+procedure TQtMenu.setVisible(visible: Boolean);
+begin
+  QAction_setVisible(ActionHandle, visible);
 end;
 
 procedure TQtMenu.setChecked(p1: Boolean);
