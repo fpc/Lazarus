@@ -1926,7 +1926,7 @@ begin
 
     Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject.Image);
 
-    if not GdiObject^.SystemVisual
+    if (GdiObject^.Visual <> nil) and not GdiObject^.SystemVisual
     then gdk_visual_unref(GdiObject^.Visual);
     GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject.Image);
 
