@@ -153,7 +153,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
     procedure setFrameShadow(p1: QFrameShadow);
@@ -167,7 +166,6 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     ArrowType: Integer;
-    destructor Destroy; override;
   end;
 
   { TQtAbstractButton }
@@ -304,8 +302,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
-  public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
@@ -389,7 +385,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
   public
     procedure AttachEvents; override;
@@ -408,7 +403,6 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
-    destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     procedure SetAlignment(const AAlignment: TAlignment);
   public
@@ -424,8 +418,6 @@ type
     FCurrentChangedHook: QTabWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    destructor Destroy; override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -493,7 +485,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
     function IsReadOnly: Boolean;
     procedure SetReadOnly(r: Boolean);
   public
@@ -594,7 +585,6 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
-    destructor Destroy; override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -617,8 +607,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
-  public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
@@ -630,8 +618,6 @@ type
   private
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    destructor Destroy; override;
   end;
   
   { TQtTreeWidget }
@@ -728,8 +714,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
-  public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure SignalValueChanged(Value: Integer); cdecl;
@@ -750,8 +734,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
-  public
     APanels: Array of QLabelH;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
   end;
@@ -762,8 +744,6 @@ type
   private
   public
     constructor Create(parent: QWidgetH = nil; f: QtWindowFlags = 0); overload;
-    destructor Destroy; override;
-  public
     function exec: Integer;
   end;
   
@@ -779,8 +759,6 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     AYear, AMonth, ADay: Word;
-    destructor Destroy; override;
-  public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
@@ -3214,27 +3192,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtFrame.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtFrame.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtFrame.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QFrame_destroy(QFrameH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtFrame.setFrameStyle
   Params:  None
   Returns: Nothing
@@ -3300,28 +3257,6 @@ begin
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtArrow.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtArrow.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtArrow.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QFrame_destroy(QFrameH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
-
 function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams
   ): QWidgetH;
 var
@@ -3337,27 +3272,6 @@ begin
 
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QAbstractSlider_create(Parent);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractSlider.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtAbstractSlider.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtAbstractSlider.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QAbstractSlider_destroy(QAbstractSliderH(Widget));
-    Widget := nil;
-  end;
-  
-  inherited Destroy;
 end;
 
 procedure TQtAbstractSlider.AttachEvents;
@@ -3816,27 +3730,6 @@ begin
   Result := QLineEdit_create(@Str, Parent);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtLineEdit.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtLineEdit.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtLineEdit.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QLineEdit_destroy(QLineEditH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
 procedure TQtLineEdit.AttachEvents;
 var
   Method: TMethod;
@@ -3943,27 +3836,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtTextEdit.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtTextEdit.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtTextEdit.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QTextEdit_destroy(QTextEditH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtTextEdit.SetColor
   Params:  QColorH
   Returns: Nothing
@@ -4052,27 +3924,6 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QTabWidget_create(Parent);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTabWidget.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtTabWidget.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtTabWidget.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QTabWidget_destroy(QTabWidgetH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
 end;
 
 procedure TQtTabWidget.AttachEvents;
@@ -4418,27 +4269,6 @@ begin
   Result := QAbstractSpinBox_create(Parent);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtAbstractSpinBox.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtAbstractSpinBox.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtAbstractSpinBox.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QAbstractSpinBox_destroy(QAbstractSpinBoxH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
 function TQtAbstractSpinBox.IsReadOnly: Boolean;
 begin
   {$ifdef VerboseQt}
@@ -4592,27 +4422,6 @@ begin
   // Initialize current row or we get double fired LM_CLICKED on first mouse click.
   if TCustomListBox(LCLObject).Items.Count > 0 then
     QListWidget_setCurrentRow(QListWidgetH(Result), 0);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtListWidget.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtListWidget.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtListWidget.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QListWidget_destroy(QListWidgetH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
 end;
 
 procedure TQtListWidget.AttachEvents;
@@ -4828,27 +4637,6 @@ begin
   Result := QHeaderView_create(QtHorizontal, Parent);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtHeaderView.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtHeaderView.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtHeaderView.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QHeaderView_destroy(QHeaderViewH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
 procedure TQtHeaderView.AttachEvents;
 var
   Method: TMethod;
@@ -4911,28 +4699,6 @@ begin
   Result := QTreeView_create(Parent);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtTreeView.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtTreeView.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtTreeView.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QTreeView_destroy(QTreeViewH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
-
   { TQtTreeWidget }
 
 {------------------------------------------------------------------------------
@@ -4970,13 +4736,6 @@ begin
 
   if Assigned(Header) then
     Header.Free;
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QTreeWidget_destroy(QTreeWidgetH(Widget));
-    Widget := nil;
-  end;
 
   inherited Destroy;
 end;
@@ -5555,27 +5314,6 @@ begin
   Result := QProgressBar_create(Parent);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtProgressBar.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtProgressBar.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtProgressBar.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QProgressBar_destroy(QProgressBarH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
 procedure TQtProgressBar.AttachEvents;
 var
   Method: TMethod;
@@ -5661,27 +5399,6 @@ begin
   }
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtStatusBar.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtStatusBar.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtStatusBar.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QStatusBar_destroy(QStatusBarH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
 procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
 begin
   QStatusBar_showMessage(QStatusBarH(Widget), text, timeout);
@@ -5692,18 +5409,6 @@ end;
 constructor TQtDialog.Create(parent: QWidgetH; f: QtWindowFlags);
 begin
   Widget := QDialog_create(parent, f);
-end;
-
-destructor TQtDialog.Destroy;
-begin
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QDialog_destroy(QDialogH(Widget));
-    Widget := nil;
-  end;
-  
-  inherited Destroy;
 end;
 
 function TQtDialog.exec: Integer;
@@ -5744,13 +5449,6 @@ begin
   {$endif}
   if Assigned(FViewPortWidget) then
     FViewPortWidget.Free;
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QScrollArea_destroy(QScrollAreaH(Widget));
-    Widget := nil;
-  end;
 
   inherited Destroy;
 end;
@@ -5995,26 +5693,6 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QCalendarWidget_create(Parent);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtCalendar.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtCalendar.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtCalendar.Destroy');
-  {$endif}
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QCalendarWidget_destroy(QCalendarWidgetH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
 end;
 
 procedure TQtCalendar.AttachEvents;

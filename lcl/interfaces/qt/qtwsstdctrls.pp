@@ -375,7 +375,7 @@ begin
     end;
   end;
   
-  QWidget_setGeometry(QtScrollbar.Widget,TScrollBar(AWinControl).Left,TScrollBar(AWinControl).Top,TScrollBar(AWinControl).Width,TScrollBar(AWinControl).Height);
+  QtScrollbar.setGeometry(TScrollBar(AWinControl).BoundsRect);
   QtScrollBar.setRange(TScrollBar(AWinControl).Min, TScrollBar(AWinControl).Max);
   QtScrollbar.setValue(TScrollBar(AWinControl).Position);
   QtScrollBar.setPageStep(TScrollBar(AWinControl).PageSize);

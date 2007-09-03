@@ -77,10 +77,11 @@ type
 
   TQtWSCustomForm = class(TWSCustomForm)
   private
-    class function GetQtWindowBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
+    class function GetQtBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
     class function GetQtBorderIcons(const ABorderIcons: TBorderIcons): QtWindowFlags;
+    class function GetQtFormStyle(const AFormStyle: TFormStyle): QtWindowFlags;
     class procedure UpdateWindowFlags(const AWidget: TQtMainWindow;
-      ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
+      ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
@@ -90,6 +91,7 @@ type
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -167,7 +169,7 @@ begin
   if not (csDesigning in TCustomForm(AWinControl).ComponentState) then
   begin
     UpdateWindowFlags(QtMainWindow, TCustomForm(AWinControl).BorderStyle,
-      TCustomForm(AWinControl).BorderIcons);
+      TCustomForm(AWinControl).BorderIcons, TCustomForm(AWinControl).FormStyle);
   end;
 
   if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
@@ -254,7 +256,13 @@ end;
 class procedure TQtWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
-  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons);
+  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons, AForm.FormStyle);
+end;
+
+class procedure TQtWSCustomForm.SetFormStyle(const AForm: TCustomform;
+  const AFormStyle: TFormStyle);
+begin
+  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AForm.BorderStyle, AForm.BorderIcons, AFormStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -317,7 +325,7 @@ end;
 class procedure TQtWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 begin
-  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons);
+  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons, AForm.FormStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -326,7 +334,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-class function TQtWSCustomForm.GetQtWindowBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
+class function TQtWSCustomForm.GetQtBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
 begin
   case AFormBorderStyle of
     bsNone:
@@ -370,14 +378,23 @@ begin
     Result := Result or QtWindowContextHelpButtonHint;
 end;
 
+class function TQtWSCustomForm.GetQtFormStyle(const AFormStyle: TFormStyle
+  ): QtWindowFlags;
+begin
+  if AFormStyle = fsStayOnTop then
+    Result := QtWindowStaysOnTopHint
+  else
+    Result := 0;
+end;
+
 class procedure TQtWSCustomForm.UpdateWindowFlags(const AWidget: TQtMainWindow;
-  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
+  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
 var
   Flags: QtWindowFlags;
   AVisible: Boolean;
 begin
   AVisible := AWidget.getVisible;
-  Flags := GetQtWindowBorderStyle(ABorderStyle);
+  Flags := GetQtBorderStyle(ABorderStyle) or GetQtFormStyle(AFormStyle);
   if (Flags and QtFramelessWindowHint) = 0 then
     Flags := Flags or GetQtBorderIcons(ABorderIcons);
   AWidget.setWindowFlags(Flags);
