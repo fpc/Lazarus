@@ -2037,15 +2037,7 @@ begin
   if not IsValidDC(DC) then Exit;
   
   if (TObject(DC) is TQtDeviceContext) then
-  begin
-    if TQtDeviceContext(DC).Parent <> nil then
-    begin
-      QWidget_size(TQtDeviceContext(DC).Parent, @Size);
-    
-      P.X := Size.cx;
-      P.Y := Size.cy;
-    end;
-  end;
+    P := TQtDeviceContext(DC).getDeviceSize;
 
   Result := True;
 end;

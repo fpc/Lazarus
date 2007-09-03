@@ -275,6 +275,7 @@ type
     procedure setPen(APen: TQtPen);
     function SetBkColor(Color: TcolorRef): TColorRef;
     function SetBkMode(BkMode: Integer): Integer;
+    function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
     function region: TQtRegion;
     procedure setRegion(ARegion: TQtRegion);
@@ -1793,6 +1794,15 @@ begin
       Mode := QtTransparentMode;
     QPainter_SetBackgroundMode(Widget, Mode);
   end;
+end;
+
+function TQtDeviceContext.getDeviceSize: TPoint;
+var
+  device: QPaintDeviceH;
+begin
+  device := QPainter_device(Widget);
+  Result.x := QPaintDevice_width(device);
+  Result.y := QPaintDevice_height(device);
 end;
 
 {------------------------------------------------------------------------------
