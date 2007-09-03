@@ -1964,6 +1964,11 @@ begin
 	Result := Windows.GetROP2(DC);
 end;
 
+function TWin32WidgetSet.GetRGNBox(Rgn: HRGN; lpRect: PRect): Longint;
+begin
+  Result:= Windows.GetRgnBox(Rgn, Windows.LPRECT(lpRect));
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetScrollInfo
   Params:  Handle     - handle of window with scroll bar

@@ -110,6 +110,7 @@ function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; Ov
 function GetParent(Handle: HWND): HWND; Override;
 function GetProp(Handle: HWND; Str: PChar): Pointer; Override;
 function GetROP2(DC: HDC): Integer; override;
+function GetRGNBox(Rgn: HRGN; lpRect : PRect) : Longint; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; Override;
 function GetStockObject(Value: Integer): THandle; Override;
 function GetSysColor(NIndex: Integer): DWORD; Override;
