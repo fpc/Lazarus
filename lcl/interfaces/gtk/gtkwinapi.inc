@@ -1942,7 +1942,8 @@ begin
       GdiObject^.SystemVisual := False;
     end;
 
-    gdk_colormap_unref(GdiObject^.Colormap);
+    if GdiObject^.Colormap <> nil
+    then gdk_colormap_unref(GdiObject^.Colormap);
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkFalse);
 
     GdiObject^.GDIBitmapType := gbPixmap;
