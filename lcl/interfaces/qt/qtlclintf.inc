@@ -374,13 +374,21 @@ function TQtWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; co
 var
   Desc: TRawImageDescription absolute ARawImage.Description;
 
-  IsDesktopDC: Boolean;
   //SrcWidth, SrcHeight: Integer;
   WinID: Cardinal;
-  desktop: QDesktopWidgetH;
-  ScreenSize: TSize;
+  DCSize: TSize;
   Pixmap: TQtPixmap;
   Image: QImageH;
+  Context: TQtDeviceContext;
+  
+  procedure RawImage_FromImage(AImage: QImageH);
+  begin
+    ARawImage.DataSize := QImage_numBytes(AImage);
+    ARawImage.Data := GetMem(ARawImage.DataSize);
+    Move(QImage_bits(AImage)^, ARawImage.Data^, ARawImage.DataSize);
+    ARawImage.Mask := nil;
+  end;
+  
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(ADC),
@@ -388,43 +396,44 @@ begin
      ' SrcHeight: ', dbgs(ARect.Bottom - ARect.Top));
   {$endif}
 
+  // todo: copy only passed rectangle
+
   Result := True;
 
   FillStandardDescription(ARawImage.Description);
+  Context := TQtDeviceContext(ADC);
 
-  //SrcWidth := ARect.Right - ARect.Left;
-  //SrcHeight := ARect.Bottom - ARect.Top;
-
-  IsDesktopDC := True; // Hard-coded, but a real check should be made
-
-  if IsDesktopDC then
+  with DCSize, Context.getDeviceSize do
   begin
-    desktop := QApplication_desktop;
-    QWidget_size(QDesktopWidget_screen(desktop), @ScreenSize);
-    WinID := QWidget_winId(QDesktopWidget_screen(desktop));
-
-    Pixmap := TQtPixmap.Create(@ScreenSize);
+    cx := x;
+    cy := y;
+  end;
+  
+  Pixmap := TQtPixmap.Create(@DCSize);
+  
+  if Context.Parent <> nil then
+  begin
+    WinID := QWidget_winId(Context.Parent);
     try
       Pixmap.grabWindow(WinID);
       Image := QImage_Create;
       Pixmap.toImage(Image);
-      ARawImage.DataSize := QImage_numBytes(Image);
-      ARawImage.Data := GetMem(ARawImage.DataSize);
-      Move(QImage_bits(Image)^, ARawImage.Data^, ARawImage.DataSize);
+      RawImage_FromImage(Image);
+      QImage_destroy(Image);
     finally
       Pixmap.Free;
     end;
-
-    // In this case we use the size of the desktop
-
-    Desc.Width := QWidget_width(QApplication_desktop);
-    Desc.Height := QWidget_height(QApplication_desktop);
-  end
-  else
+  end else
   begin
-    {$note TODO: get DC bitmap}
-    Result := False;
+    if Context.vImage <> nil then
+      RawImage_FromImage(Context.vImage)
+    else
+      Result := False;
   end;
+
+  // In this case we use the size of the context
+  Desc.Width := DCSize.cx;
+  Desc.Height := DCSize.cy;
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
