@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  PairSplitter,
+  Controls, LCLType, PairSplitter,
 ////////////////////////////////////////////////////
   WSPairSplitter, WSLCLClasses;
 
@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSCustomPairSplitter }
@@ -53,6 +54,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSPairSplitter }
@@ -66,7 +68,45 @@ type
 
 implementation
 
+uses
+  CarbonPrivate;
+  
+{ TCarbonWSPairSplitterSide }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSPairSplitterSide.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new pair splitter side in Carbon interface with the specified
+  parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSPairSplitterSide.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
+end;
+
+{ TCarbonWSCustomPairSplitter }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomPairSplitter.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new pair splitter in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomPairSplitter.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
+end;
+
 initialization
+
+
 
 ////////////////////////////////////////////////////
 // I M P O R T A N T
@@ -74,8 +114,8 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TPairSplitterSide, TCarbonWSPairSplitterSide);
-//  RegisterWSComponent(TCustomPairSplitter, TCarbonWSCustomPairSplitter);
+  RegisterWSComponent(TPairSplitterSide, TCarbonWSPairSplitterSide);
+  RegisterWSComponent(TCustomPairSplitter, TCarbonWSCustomPairSplitter);
 //  RegisterWSComponent(TPairSplitter, TCarbonWSPairSplitter);
 ////////////////////////////////////////////////////
 end.

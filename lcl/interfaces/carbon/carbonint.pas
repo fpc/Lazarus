@@ -133,7 +133,7 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // CarbonWSActnList,
-// CarbonWSArrow,
+  CarbonWSArrow,
   CarbonWSButtons,
 // CarbonWSCalendar,
  CarbonWSCheckLst,
@@ -153,7 +153,7 @@ uses
 // CarbonWSImgList,
 // CarbonWSMaskEdit,
   CarbonWSMenus,
-// CarbonWSPairSplitter,
+  CarbonWSPairSplitter,
   CarbonWSSpin,
   CarbonWSStdCtrls,
 // CarbonWSToolwin,

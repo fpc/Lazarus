@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Arrow,
+  Arrow,
 ////////////////////////////////////////////////////
   WSArrow, WSLCLClasses;
 
@@ -45,10 +45,20 @@ type
   private
   protected
   public
+    class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
+      const AShadowType: TShadowType); override;
   end;
 
 
 implementation
+
+{ TCarbonWSArrow }
+
+class procedure TCarbonWSArrow.SetType(const AArrow: TArrow;
+  const AArrowType: TArrowType; const AShadowType: TShadowType);
+begin
+  // TODO
+end;
 
 initialization
 
@@ -58,6 +68,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TArrow, TCarbonWSArrow);
+  RegisterWSComponent(TArrow, TCarbonWSArrow);
 ////////////////////////////////////////////////////
 end.

@@ -748,18 +748,11 @@ begin
         if (AWidget.LCLObject is TCustomForm) then
           CarbonWidgetSet.SetRootMenu((AWidget.LCLObject as TCustomForm).Menu);
       end;
-    kEventWindowDeactivated:
-      begin
-        Msg.msg := LM_DEACTIVATE;
-        if (AWidget.LCLObject is TCustomForm) then
-          CarbonWidgetSet.SetRootMenu(nil);
-      end;
+    kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
   else
     DebugLn('CarbonWindow_ActivateProc invalid event kind: ' + DbgS(EventKind));
     Exit;
   end;
-  
-
   
   DeliverMessage(AWidget.LCLObject, Msg);
 end;

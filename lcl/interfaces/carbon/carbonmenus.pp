@@ -74,8 +74,6 @@ type
   
 function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
 
-var
-  EmptyMenu: MenuRef; // menu for clearing menu bar workaround
 
 implementation
 
@@ -614,14 +612,6 @@ begin
   SetItemStyle(FParentMenu.Menu, GetIndex + 1, Style);
 end;
 
-initialization
-
-  OSError(CreateNewMenu(0, kMenuAttrAutoDisable, EmptyMenu),
-    'CarbonMenus.initialization', 'CreateNewMenu');
-
-finalization
-
-  DisposeMenu(EmptyMenu);
 
 end.
 

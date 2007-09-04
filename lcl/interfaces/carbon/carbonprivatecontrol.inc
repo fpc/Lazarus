@@ -970,15 +970,18 @@ end;
   Returns the control client rectangle relative to the control origin
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetClientRect(var ARect: TRect): Boolean;
+var
+  R: HIRect;
 begin
   Result := False;
 
   // controls without content area have clientrect = boundsrect
-  if GetFrameBounds(ARect) then
-  begin
-    OffsetRect(ARect, -ARect.Left, -ARect.Top);
-    Result := True;
-  end;
+  if OSError(HIViewGetFrame(Content, R),
+    Self, 'GetClientRect', 'HIViewGetFrame') then Exit;
+
+  ARect := CGrectToRect(R);
+  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  Result := True;
 
   {$IFDEF VerboseBounds}
     DebugLn('TCarbonControl.GetClientRect ' + LCLObject.Name + ' ' + DbgS(ARect) +

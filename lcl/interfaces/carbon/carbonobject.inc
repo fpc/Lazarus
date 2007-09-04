@@ -891,7 +891,8 @@ begin
     DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
   {$ENDIF}
   
-  // menus are attached on each form activation
+  if AMenuObject is TMainMenu then
+    SetRootMenu(AMenuObject as TMainMenu);
 end;
 
 {------------------------------------------------------------------------------

@@ -623,7 +623,6 @@ begin
 
   // change coordination system
   CGContextScaleCTM(CGContext, 1, -1);
-  CGContextTranslateCTM(CGContext, 0, 0);
 
   // convert UTF-8 string to UTF-16 string
   if ACount < 0 then S := AStr

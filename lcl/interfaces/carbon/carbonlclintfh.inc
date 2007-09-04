@@ -28,6 +28,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
