@@ -9,6 +9,7 @@ uses
   frmbuild;
 
 begin
+  Application.Title:='Lazarus Documentation Editor';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
