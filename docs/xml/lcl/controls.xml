@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Controls">
-      <short>This unit contains basis classes for visual controls.</short>
+      <short>This unit contains basic classes for visual controls.</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -224,7 +224,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- record type Visibility: default -->
       <element name="TCMMouseWheel">
         <short>TCMMouseWheel - record holding data about the Mouse Wheel</short>
-        <descr>Details held include: the Message associated with the wheel; the shift state (ie whether Shift, Alt, Control etc keys have been pressed); wheel data which can either be a position (X, Y coordinates) or a position plus an integer result.
+        <descr><p>Details held include:</p> <p>the Message associated with the wheel;</p> <p>the shift state (ie whether Shift, Alt, Control etc keys have been pressed);</p> <p>wheel data which can either be a position (X, Y coordinates) or a position plus an integer result.</p>
 </descr>
         <seealso/>
       </element>
@@ -342,9 +342,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TAnchorKind">
-        <short>AnchorHorizontalCenterTo - instructions for anchoring</short>
-        <descr>Sibling - another control to which the current control is to be anchored, centred horizontally
-</descr>
+        <short/>
+        <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -746,7 +745,9 @@ mrLast=mrYesToAll=10</descr>
       <!-- enumeration type Visibility: default -->
       <element name="TControlStyleType">
         <short>TControlStyleType - describes features of the Control</short>
-        <descr>Enumerated type comprising:
+        <descr>
+          <p>
+            <code>Enumerated type comprising:
     csAcceptsControls, // can have children in the designer
     csCaptureMouse,
     csDesignInteractive, // wants mouse events in design mode
@@ -774,8 +775,9 @@ mrLast=mrYesToAll=10</descr>
     csHasDefaultAction, // control implements useful ExecuteDefaultAction
     csHasCancelAction,   // control implements useful ExecuteCancelAction
     csNoDesignSelectable, // control can not be selected at design time
-    csOwnedChildsSelectable // child controls owned by this control are selectable in the designer
-</descr>
+    csOwnedChildsSelectable // child controls owned by this control are selectable in the designer</code>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -897,7 +899,9 @@ mrLast=mrYesToAll=10</descr>
       <!-- enumeration type Visibility: default -->
       <element name="TControlStateType">
         <short>TControlStateType - describes possible states (status) of Control</short>
-        <descr>Enumerated type comprising: 
+        <descr>
+          <p>
+            <code>Enumerated type comprising: 
     csLButtonDown,
     csClicked,
     csPalette,
@@ -909,9 +913,9 @@ mrLast=mrYesToAll=10</descr>
     csCustomPaint,
     csDestroyingHandle,
     csDocking,
-    csVisibleSetInLoading
- 
-</descr>
+    csVisibleSetInLoading</code>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -2799,7 +2803,9 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControlBorderSpacing">
         <short>TControlBorderSpacing - the spacing around a Control</short>
-        <descr><code>{ TControlBorderSpacing defines the spacing around a control.
+        <descr>
+          <code>{ TControlBorderSpacing defines the spacing around a control.
+
     The spacing around its children and between its children is defined in
     TWinControl.ChildSizing.
 
@@ -2824,7 +2830,9 @@ mrLast=mrYesToAll=10</descr>
     CellAlignHorizontal, CellAlignVertical: TControlCellAlign;
         Used for example when the Parents.ChildSizing.Layout defines a table
         layout.
-  }</code></descr>
+
+  }</code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -3076,7 +3084,9 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TAnchorSide">
         <short>TAnchorSide</short>
-        <descr><pre>TAnchorSide
+        <descr>
+          <pre>TAnchorSide
+
     Class holding the reference sides of the anchors of a TControl.
     Every TControl has four AnchorSides:
     AnchorSide[akLeft], AnchorSide[akRight], AnchorSide[akTop] and
@@ -3118,7 +3128,9 @@ mrLast=mrYesToAll=10</descr>
         A.AnchorSide[akBottom].Side:=arsCenter;
         A.AnchorSide[akBottom].Control:=B;
 
-</pre></descr>
+
+</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -3538,7 +3550,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>The main ancestor class for visual controls.</short>
-        <descr>TControl is the main ancestor class for all visual controls. The definition includes a large number of constants, types and methods that are inherited by derived classes and types. These include devices for defining and controlling the state and position (including alignment and anchoring) of the object, the state of the mouse, whether dragging or docked, the size and type of border, the way child components should behave, the way actions should occur in response to various events, and the way the Control should be drawn.
+        <descr><p>TControl is the main ancestor class for all visual controls.</p> <p>The definition includes a large number of constants, types and methods that are inherited by derived classes and types.</p> <p>These include devices for defining and controlling the state and position (including alignment and anchoring) of the object, the state of the mouse, whether dragging or docked, the size and type of border, the way child components should behave, the way actions should occur in response to various events, and the way the Control should be drawn.</p>
 </descr>
         <errors/>
         <seealso/>
@@ -6324,8 +6336,12 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- variable Visibility: public -->
       <element name="TControl.FCompStyle">
-        <short/>
-        <descr/>
+        <short>FCompStyle - deprecated</short>
+        <descr><p><code>// DEPRECATED. Enables (valid) use of 'IN' operator (this
+      // is a hack for speed. It will be replaced by the use of the widgetset
+      // classes.
+      // So, don't use it anymore.        
+</code></p></descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
@@ -6365,8 +6381,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>ManualDock - permits operator-defined docking</short>
-        <descr>Enter function with no defined position, ie DropControl=nil, ControlSide=alNone
-Returns boolean true if manual docked performed</descr>
+        <descr><p>Enter function with no defined position, ie DropControl=nil, ControlSide=alNone</p><p>Returns boolean true if manual docked performed</p></descr>
         <errors/>
         <seealso/>
       </element>
@@ -6479,7 +6494,7 @@ Returns boolean true if manual docked performed</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorParallel">
         <short>AnchorParallel - instructions for anchoring beside another control</short>
-        <descr>Sibling - another control to which the current control is to be anchored</descr>
+        <descr>Sibling - another control beside which the current control is to be anchored</descr>
         <errors/>
         <seealso/>
       </element>
@@ -6632,28 +6647,28 @@ Returns boolean true if manual docked performed</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TControl.Destroy">
-        <short/>
+        <short>Destroy the Control when you have finished with it</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
-        <short/>
+        <short>What to do when you have finished editing</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ExecuteDefaultAction">
-        <short/>
+        <short>What to do when the RETURN button is pressed, signifying default action</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ExecuteCancelAction">
-        <short>ExecuteCancelAction - what to do when ESCAPE is hit</short>
+        <short>What to do when ESCAPE is hit (or the CANCEL button is selected) - signifying CANCEL</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7131,7 +7146,9 @@ Returns boolean true if manual docked performed</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>Caption - the text appearing on the Control, usually used to identify its function</short>
-        <descr><code>{* Note on TControl.Caption
+        <descr>
+          <code>{* Note on TControl.Caption
+
  * The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
  * (unnecesary) text copies.
@@ -7145,7 +7162,9 @@ Returns boolean true if manual docked performed</descr>
  * override RealGet/SetText. Get/SetTextBuf is only kept for
  * compatibility.
  }
-</code></descr>
+
+</code>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -7162,7 +7181,7 @@ Returns boolean true if manual docked performed</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientRect">
-        <short>Destroy the Control when you have finished with it</short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -7236,9 +7255,7 @@ Returns boolean true if manual docked performed</descr>
       <element name="TControl.OnClick">
         <short/>
         <descr/>
-        <seealso>
-          <short>EditingDone - what to do when you have finished editing</short>
-        </seealso>
+	<seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnResize">
@@ -7272,12 +7289,12 @@ Returns boolean true if manual docked performed</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
-        <short>The Visible property represents visibility of an visual control.</short>
+        <short>The Visible property represents the ability to see a visual control.</short>
         <descr>
-          <p>The Visible property represents visibility of an visual control. If the Visible is True the control is shown, otherwise is hidden.</p>
+          <p>The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden.</p>
           <p>Setting Visible to True is equivalent to calling Show method.</p>
           <p>Setting Visible to False is equivalent to calling Hide method.</p>
-          <remark>The Visible poperty does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
         </descr>
         <seealso>
           <link id="TControl.IsVisible"/>
@@ -7476,7 +7493,9 @@ Returns boolean true if manual docked performed</descr>
       <!-- object Visibility: default -->
       <element name="TControlChildSizing">
         <short>How Child controls are to be sized relative to parent</short>
-        <descr><code>{ TControlChildSizing }
+        <descr>
+          <code>{ TControlChildSizing }
+
 
   { LeftRightSpacing, TopBottomSpacing: integer;
         minimum space between left client border and left most children.
@@ -7516,7 +7535,7 @@ Returns boolean true if manual docked performed</descr>
 
       cesScaleChilds, cssScaleChilds
         Scale children, keep space between them fixed.
-        Children are resized to their normal/adviced size. If there is some space
+        Children are resized to their normal/advised size. If there is some space
         left in the client area of the parent, then the children are scaled to
         fill the space. You can set maximum Constraints. Then the other children
         are scaled more.
@@ -7530,7 +7549,7 @@ Returns boolean true if manual docked performed</descr>
 
       cesHomogenousChildGrowth, cssHomogenousChildDecrease
         Enlarge children equally.
-        Children are resized to their normal/adviced size. If there is some space
+        Children are resized to their normal/advised size. If there is some space
         left in the client area of the parent, then the remaining space is
         distributed equally to each child.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
@@ -7543,7 +7562,7 @@ Returns boolean true if manual docked performed</descr>
 
       cesHomogenousSpaceGrowth
         Enlarge space between children equally.
-        Children are resized to their normal/adviced size. If there is some space
+        Children are resized to their normal/advised size. If there is some space
         left in the client area of the parent, then the space between the children
         is expanded.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
@@ -7551,7 +7570,9 @@ Returns boolean true if manual docked performed</descr>
         120, then there will be 60/2=30 space between A and B and between
         B and C.
   }
-</code></descr>
+
+</code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -10726,7 +10747,7 @@ Returns boolean true if manual docked performed</descr>
         <descr>
           <p>TGraphicControl supports simple lightweight controls that do not 
 need the ability to accept keyboard input or contain other controls.  Since 
-lightweight controls do not wrap GUI screen objects, they are faster and uses 
+lightweight controls do not wrap GUI screen objects, they are faster and use 
 fewer resources than controls based on TWinControl.</p>
           <p>TGraphicControl provides a Canvas property for access to the 
 control's drawing surface and a virtual Paint method called in response to 
@@ -11327,7 +11348,9 @@ TGraphicControl, you must query the ClientRect.</p>
       <!-- object Visibility: default -->
       <element name="TDockTree">
         <short>TDockTree</short>
-        <descr><code>{ TDockTree - a tree of TDockZones - Every docked window has one tree
+        <descr>
+          <code>{ TDockTree - a tree of TDockZones - Every docked window has one tree
+
   
     This is an abstract class. The real implementation is in ldocktree.pas.
 
@@ -11409,7 +11432,9 @@ TGraphicControl, you must query the ClientRect.</p>
     ResetBounds - TODO for Delphi compatibility
     SetReplacingControl - TODO for Delphi compatibility
     PaintSite - TODO for Delphi compatibility
-</code></descr>
+
+</code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
