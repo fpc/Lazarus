@@ -253,7 +253,7 @@ begin
   
   Obj := TObject(AMenuItem.Handle);
   if Obj is TQtMenu then
-    Obj.Free;
+    TQtMenu(Obj).Release;
 end;
 
 {------------------------------------------------------------------------------

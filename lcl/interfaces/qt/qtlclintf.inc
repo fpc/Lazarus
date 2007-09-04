@@ -375,7 +375,7 @@ var
   Desc: TRawImageDescription absolute ARawImage.Description;
 
   IsDesktopDC: Boolean;
-  SrcWidth, SrcHeight: Integer;
+  //SrcWidth, SrcHeight: Integer;
   WinID: Cardinal;
   desktop: QDesktopWidgetH;
   ScreenSize: TSize;
@@ -392,8 +392,8 @@ begin
 
   FillStandardDescription(ARawImage.Description);
 
-  SrcWidth := ARect.Right - ARect.Left;
-  SrcHeight := ARect.Bottom - ARect.Top;
+  //SrcWidth := ARect.Right - ARect.Left;
+  //SrcHeight := ARect.Bottom - ARect.Top;
 
   IsDesktopDC := True; // Hard-coded, but a real check should be made
 

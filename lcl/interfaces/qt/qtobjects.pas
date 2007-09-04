@@ -45,15 +45,20 @@ type
   TQtObject = class(TObject)
   private
     FUpdateCount: Integer;
+    FInEventCount: Integer;
+    FReleaseInEvent: Boolean;
   public
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
-    // TODO: base virtual constructor with initialization
+    constructor Create; virtual;
     destructor Destroy; override;
+    procedure Release;
   public
     procedure AttachEvents; virtual;
     procedure DetachEvents; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
+    procedure BeginEventProcessing;
+    procedure EndEventProcessing;
   public
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
@@ -356,7 +361,7 @@ type
     FClipBoardFormats: TStringList;
     FOnClipBoardRequest: TClipboardRequestEvent;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
@@ -507,6 +512,13 @@ end;
   
 { TQtObject }
 
+constructor TQtObject.Create;
+begin
+  FUpdateCount := 0;
+  FInEventCount := 0;
+  FReleaseInEvent := False;
+end;
+
 destructor TQtObject.Destroy;
 begin
   if TheObject <> nil then
@@ -516,6 +528,19 @@ begin
     TheObject := nil;
   end;
   inherited Destroy;
+end;
+
+procedure TQtObject.Release;
+begin
+  if Self <> nil then
+  begin
+    if FInEventCount > 0 then
+    begin
+      FReleaseInEvent := True;
+    end
+    else
+      Free;
+  end;
 end;
 
 procedure TQtObject.AttachEvents;
@@ -534,6 +559,19 @@ begin
     QObject_hook_destroy(FEventHook);
     FEventHook := nil;
   end;
+end;
+
+procedure TQtObject.BeginEventProcessing;
+begin
+  inc(FInEventCount);
+end;
+
+procedure TQtObject.EndEventProcessing;
+begin
+  if FInEventCount > 0 then
+    dec(FInEventCount);
+  if (FInEventCount = 0) and FReleaseInEvent then
+    Free;
 end;
 
 procedure TQtObject.BeginUpdate;
@@ -2063,6 +2101,7 @@ end;
 
 constructor TQtClipboard.Create;
 begin
+  inherited Create;
   FOnClipBoardRequest := nil;
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
@@ -2079,6 +2118,7 @@ end;
 
 function TQtClipboard.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
 
   if QEvent_type(Event) = QEventClipboard then
@@ -2090,6 +2130,7 @@ begin
     // Clipboard is changed, but we have no ability at moment to pass that info
     // to LCL since LCL has no support for that event
   end;
+  EndEventProcessing;
 end;
 
 function TQtClipboard.Clipboard: QClipboardH;
@@ -2249,6 +2290,7 @@ end;
 constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
 begin
+  inherited Create;
   FAppObject := App;
 
   FCallbackFunc := TimerFunc;
@@ -2290,6 +2332,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
 
   if QEvent_type(Event) = QEventTimer then
@@ -2301,6 +2344,7 @@ begin
     if Assigned(FCallbackFunc) then
       FCallbackFunc;
   end;
+  EndEventProcessing;
 end;
 
 { TQtIcon }

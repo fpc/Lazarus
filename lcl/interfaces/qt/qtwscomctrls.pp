@@ -550,7 +550,7 @@ begin
     SetLength(QtStatusBar.APanels, 0);
   end;
   
-  TQtStatusBar(AWinControl.Handle).Free;
+  TQtStatusBar(AWinControl.Handle).Release;
 
   AWinControl.Handle := 0;
 end;

@@ -819,10 +819,11 @@ var
  ------------------------------------------------------------------------------}
 constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 begin
-  FOwnWidget := True;
+  inherited Create;
 
+  FOwnWidget := True;
   // Initializes the properties
-  FProps := NiL;
+  FProps := nil;
   LCLObject := AWinControl;
 
   // Creates the widget
@@ -852,8 +853,9 @@ end;
 constructor TQtWidget.CreateFrom(const AWinControl: TWinControl;
   AWidget: QWidgetH);
 begin
+  inherited Create;
+
   FOwnWidget := False;
-  
   // Initializes the properties
   FProps := niL;
   LCLObject := AWinControl;
@@ -1055,6 +1057,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
 
   QEvent_accept(Event);
@@ -1120,20 +1123,7 @@ begin
   else
     QEvent_ignore(Event);
   end;
-
-{  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_EXPOSEEVENT, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_CHAR, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MOUSEMOVE, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_LBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_LBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_RBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_RBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);}
+  EndEventProcessing;
 end;
 
 {------------------------------------------------------------------------------
@@ -2396,8 +2386,12 @@ end;
 function TQtWidget.DeliverMessage(var Msg): LRESULT;
 begin
   try
-    LCLObject.WindowProc(TLMessage(Msg));
-    Result := TLMessage(Msg).Result;
+    if LCLObject.HandleAllocated then
+    begin
+      LCLObject.WindowProc(TLMessage(Msg));
+      Result := TLMessage(Msg).Result;
+    end else
+      Result := 0;
   except
     Application.HandleException(nil);
   end;
@@ -2840,19 +2834,15 @@ end;
 function TQtMainWindow.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
 
   case QEvent_type(Event) of
     QEventWindowStateChange: SlotWindowStateChange;
-    QEventClose:
-      begin
-        Result:=True;
-        QEvent_ignore(Event);
-        SlotClose;
-      end;
   else
     inherited EventFilter(Sender, Event);
   end;
+  EndEventProcessing;
 end;
 
 procedure TQtMainWindow.OffsetMousePos(APoint: PQtPoint);
@@ -3743,7 +3733,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  Result := False;
+  BeginEventProcessing;
   case QEvent_type(Event) of
     QEventFocusIn:
     begin
@@ -3758,7 +3748,8 @@ begin
       end;
     end;
   end;
-  inherited EventFilter(Sender, Event);
+  Result := inherited EventFilter(Sender, Event);
+  EndEventProcessing;
 end;
 
 {------------------------------------------------------------------------------
@@ -4168,6 +4159,7 @@ end;
 
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
     Result := False;
@@ -4182,6 +4174,7 @@ begin
     end;
   end else
     Result := inherited EventFilter(Sender, Event);
+  EndEventProcessing;
 end;
 
 procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
@@ -5078,12 +5071,14 @@ end;
 
 constructor TQtMenu.Create(const AParent: QWidgetH);
 begin
+  Create;
   Widget := QMenu_Create(AParent);
   FIcon := nil;
 end;
 
 constructor TQtMenu.Create(const AHandle: QMenuH);
 begin
+  Create;
   Widget := AHandle;
   FIcon := nil;
 end;
@@ -5237,17 +5232,20 @@ end;
 
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
 
   case QEvent_type(Event) of
     QEventDestroy: SlotDestroy;
   end;
+  EndEventProcessing;
 end;
 
 { TQtMenuBar }
 
 constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
+  Create;
   Widget := QMenuBar_create(AParent);
   FHeight := QWidget_height(Widget);
   FVisible := False;

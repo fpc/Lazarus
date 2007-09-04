@@ -2019,8 +2019,6 @@ end;
   Return the size of a device
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
-var
-  Size: TSize;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetDeviceSize]');
