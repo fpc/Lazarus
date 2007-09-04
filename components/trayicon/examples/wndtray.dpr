@@ -29,7 +29,9 @@ uses
 
 { add your units here }
 
-{$R magnifier.res}
+{$ifdef Windows}
+  {$R magnifier.res}
+{$endif}
 
 begin
   Application.Initialize;

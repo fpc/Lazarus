@@ -707,6 +707,7 @@ components/tdbf/registerdbf.lrs svneol=native#text/pascal
 components/tdbf/registerdbf.pas svneol=native#text/pascal
 components/tdbf/tdbf.xpm -text svneol=native#image/x-xpixmap
 components/trayicon/clean.bat svneol=native#text/plain
+components/trayicon/examples/createbundle.sh -text
 components/trayicon/examples/frmtest.dfm svneol=native#text/plain
 components/trayicon/examples/frmtest.lfm svneol=native#text/plain
 components/trayicon/examples/frmtest.lrs svneol=native#text/plain

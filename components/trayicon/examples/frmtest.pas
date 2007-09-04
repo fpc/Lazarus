@@ -65,6 +65,9 @@ implementation
 {$ifdef Windows}
 uses Windows;
 {$endif}
+{$IFDEF Darwin}
+uses FPCMacOSAll;
+{$ENDIF}
 
 { TForm1 }
 
@@ -99,14 +102,35 @@ procedure TForm1.FormCreate(Sender: TObject);
 const
   IDI_ICON1         = 101;
   IDI_ICON2         = 115;
+  BundleResourceFolder = '/Contents/Resources/';
+var
+{$IFDEF Darwin}
+  pathRef: CFURLRef;
+  pathCFStr: CFStringRef;
+  pathStr: shortstring;
+{$ENDIF}
+  pathMedia: string;
 begin
+  pathMedia := '';
+
+  // Under Mac OS X we need to get the location of the bundle
+{$IFDEF Darwin}
+  pathRef := CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  pathCFStr := CFURLCopyFileSystemPath(pathRef, kCFURLPOSIXPathStyle);
+  CFStringGetPascalString(pathCFStr, @pathStr, 255, CFStringGetSystemEncoding());
+  CFRelease(pathRef);
+  CFRelease(pathCFStr);
+  
+  pathMedia := pathStr + BundleResourceFolder;
+{$ENDIF}
+
 {$ifdef Windows}
   SystrayIcon.Icon.Handle := LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
 //  Loading from a file should also work
 //  SystrayIcon.Icon.LoadFromFile('icon.ico');
 {$else}
-  SystrayIcon.Icon.LoadFromFile('icon.ico');
+  SystrayIcon.Icon.LoadFromFile(pathMedia + 'icon.ico');
 {$endif}
 
   SystrayIcon.ShowHint := True;

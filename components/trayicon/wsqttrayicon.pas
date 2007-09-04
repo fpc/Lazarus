@@ -27,8 +27,13 @@ unit wsqttrayicon;
 interface
 
 uses
+  {$ifdef USE_QT_4_3}
+    qt43,
+  {$else}
+    qt4,
+  {$endif}
   Classes, SysUtils, Graphics, ExtCtrls, Menus, Controls, Lclintf,
-  wscommontrayicon, qt4, qtobjects, qtwidgets;
+  wscommontrayicon, qtobjects, qtwidgets;
 
 type
 
@@ -148,9 +153,9 @@ begin
   Text := UTF8Decode(Hint);
   SystemTrayIcon.setToolTip(Text);
 
-  if Assigned(PopUpMenu) then
+{  if Assigned(PopUpMenu) then
    if TQtMenu(PopUpMenu.Handle).Widget <> nil then
-    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));}
 
   SystemTrayIcon.show;
   
@@ -173,9 +178,9 @@ end;
 procedure TWidgetTrayIcon.InternalUpdate;
 begin
   { PopUpMenu }
-  if Assigned(PopUpMenu) then
+{  if Assigned(PopUpMenu) then
    if TQtMenu(PopUpMenu.Handle).Widget <> nil then
-    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));  }
 end;
 
 {*******************************************************************
