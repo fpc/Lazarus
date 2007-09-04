@@ -376,7 +376,7 @@ var
     Repeat
       If Breakable(Breaks,I) then begin
         If NextBreakable(Breaks,I) <> -1 then begin
-          TmpString := Copy(Source, FromPos, NextBreakable(Breaks,I));
+          TmpString := Copy(Source, FromPos, NextBreakable(Breaks,I) - FromPos + 1);
           If not NoPrefix then
             DeleteAmpersands(tmpString);
           If TextExtent(DC, TmpString).cX > MaxLength
