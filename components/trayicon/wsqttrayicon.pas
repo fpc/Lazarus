@@ -180,9 +180,9 @@ end;
 procedure TWidgetTrayIcon.InternalUpdate;
 begin
   { PopUpMenu }
-{  if Assigned(PopUpMenu) then
+  if Assigned(PopUpMenu) then
    if TQtMenu(PopUpMenu.Handle).Widget <> nil then
-    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));  }
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));  
 end;
 
 {*******************************************************************
