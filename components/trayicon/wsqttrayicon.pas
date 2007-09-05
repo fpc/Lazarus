@@ -76,13 +76,15 @@ function TWidgetTrayIcon.CreateIcon: QIconH;
 var
   Pixmap: QPixmapH;
 begin
-{  if Self.Icon.Handle <> 0 then
+  if Icon.Handle <> 0 then
   begin
-    QPixmap_fromImage(Pixmap, TQtImage(Self.Icon.Handle).Handle);
+    Pixmap := QPixmap_create();
+    QPixmap_fromImage(Pixmap, TQtImage(Icon.Handle).Handle);
     
     Result := QIcon_create(Pixmap);
+    QPixmap_destroy(Pixmap);
   end
-  else }
+  else
     Result := QIcon_create();
 end;
 
@@ -153,9 +155,9 @@ begin
   Text := UTF8Decode(Hint);
   SystemTrayIcon.setToolTip(Text);
 
-{  if Assigned(PopUpMenu) then
+  if Assigned(PopUpMenu) then
    if TQtMenu(PopUpMenu.Handle).Widget <> nil then
-    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));}
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));
 
   SystemTrayIcon.show;
   
