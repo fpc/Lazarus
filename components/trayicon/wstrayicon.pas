@@ -38,12 +38,16 @@ uses
 {$ifdef Windows}
 
   {$ifdef WinCE}
-
+  
     wswincetrayicon,
 
   {$else}
 
-    wswin32trayicon,
+    {$ifdef LCLQt}
+      wsqttrayicon,
+    {$else}
+      wswin32trayicon,
+    {$endif}
 
   {$endif}
 
