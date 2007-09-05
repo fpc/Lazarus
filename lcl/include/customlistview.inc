@@ -867,7 +867,8 @@ end;
 procedure TCustomListView.Loaded;
 begin
   // create interface columns if needed
-  FColumns.WSCreateColumns;
+  if HandleAllocated then
+    FColumns.WSCreateColumns;
   inherited Loaded;
 end;
 
