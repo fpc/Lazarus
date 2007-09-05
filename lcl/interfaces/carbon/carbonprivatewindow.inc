@@ -978,7 +978,7 @@ begin
 
   SetBounds(Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
   SetText(AParams.Caption);
-  DebugLn('TCarbonWindow.CreateWidget succeeds');
+  //DebugLn('TCarbonWindow.CreateWidget succeeds');
   SetColor(LCLObject.Color);
 
   MinSize.width := LCLObject.Constraints.EffectiveMinWidth;
@@ -1303,7 +1303,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.ShowHide(AVisible: Boolean);
 begin
-  if AVisible then
+  //DebugLn('TCarbonWindow.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
+
+  if AVisible or (csDesigning in LCLobject.ComponentState) then
     FPCMacOSAll.ShowWindow(WindowRef(Widget))
   else
     FPCMacOSAll.HideWindow(WindowRef(Widget));

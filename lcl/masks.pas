@@ -58,6 +58,13 @@ type
     function Matches(const AFileName: String): Boolean;
   end;
   
+  { TParseStringList }
+
+  TParseStringList = class(TStringList)
+  public
+    constructor Create(const AText, ASeparators: String);
+  end;
+  
   { TMaskList }
 
   TMaskList = class
@@ -322,6 +329,27 @@ begin
   Result := MatchToEnd(0, 1);
 end;
 
+{ TParseStringList }
+
+constructor TParseStringList.Create(const AText, ASeparators: String);
+var
+  I, S: Integer;
+begin
+  inherited Create;
+
+  S := 1;
+  for I := 1 to Length(AText) do
+  begin
+    if Pos(AText[I], ASeparators) > 0 then
+    begin
+      if I > S then Add(Copy(AText, S, I - S));
+      S := I + 1;
+    end;
+  end;
+  
+  if Length(AText) > S then Add(Copy(AText, S, Length(AText) - S + 1));
+end;
+
 { TMaskList }
 
 function TMaskList.GetItem(Index: Integer): TMask;
@@ -336,16 +364,13 @@ end;
 
 constructor TMaskList.Create(const AValue: String; ASeparator: Char);
 var
-  S: TStringList;
+  S: TParseStringList;
   I: Integer;
 begin
   FMasks := TObjectList.Create(True);
   
-  S := TStringList.Create;
+  S := TParseStringList.Create(AValue, ASeparator + ' ');
   try
-    S.Delimiter := ASeparator;
-    S.DelimitedText := AValue;
-    
     for I := 0 to S.Count - 1 do
       FMasks.Add(TMask.Create(S[I]));
   finally

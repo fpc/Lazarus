@@ -468,7 +468,7 @@ begin
   {$ENDIF}
   
   RegisterEvents;
-  
+    
   LCLObject.InvalidateClientRectCache(True);
   BoundsChanged;
   

@@ -853,7 +853,8 @@ var
 begin
   //DebugLn('TCarbonControl.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
   for I := 0 to GetFrameCount - 1 do
-    OSError(HIViewSetVisible(Frames[I], AVisible), Self, 'ShowHide', SViewVisible);
+    OSError(HIViewSetVisible(Frames[I], AVisible or (csDesigning in LCLobject.ComponentState)),
+      Self, 'ShowHide', SViewVisible);
 end;
 
 {------------------------------------------------------------------------------

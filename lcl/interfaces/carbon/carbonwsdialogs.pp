@@ -33,7 +33,7 @@ uses
   // libs
   FPCMacOSAll,
   // LCL
-  SysUtils, Controls, Dialogs, LCLType, LCLProc,
+  Classes, SysUtils, Controls, Dialogs, LCLType, LCLProc, Masks,
   // widgetset
   WSLCLClasses, WSProc, WSDialogs,
   // LCL Carbon
@@ -115,15 +115,17 @@ uses
 
 { TCarbonWSFileDialog }
 
-function FilterByExtCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
+var
+  FilterMask: TMaskList;
+
+function FilterCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
  callbackUD: UnivPtr; filterMode: NavFilterModes): Boolean; stdcall;
  {Custom filter callback function. Pointer to this function is passed as
    inFilterProc to NavCreateGetFileDialog and NavCreateChooseFolderDialog.
   If theItem file should be highlighted in file dialog, return True;
    if it should be dimmed in file dialog, return False.
   The callbackUD param contains file dialog object passed as inClientData
-   to NavCreateGetFileDialog and NavCreateChooseFolderDialog.
-  Note: This function filters only by file extension, not by wildcard file spec.}
+   to NavCreateGetFileDialog and NavCreateChooseFolderDialog.}
 var
   FileRef: FSRef;
   FileURL: CFURLRef;
@@ -161,11 +163,9 @@ begin
   FreeCFString(FileURL);
   FreeCFString(FileCFStr);
 
-  // TODO: use mask for filtering
-  Result := Pos(LowerCase(ExtractFileExt(FilePath)), 
-                LowerCase(TFileDialog(callbackUD).Filter)) > 0;
-
-end;  {FilterByExtCallback}
+  Result := (FilterMask = nil) or FilterMask.Matches(ExtractFilename(FilePath));
+  //DebugLn('FilterCallback ' + DbgS(FilterMask) + ' ' + ExtractFilename(FilePath) + ' ' + DbgS(Result));
+end;  {FilterCallback}
 
 
 {------------------------------------------------------------------------------
@@ -195,6 +195,8 @@ var
   FileRef: FSRef;
   FileURL: CFURLRef;
   FileCFStr: CFStringRef;
+  Filters: TParseStringList;
+  I: Integer;
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
@@ -211,8 +213,20 @@ begin
 
   FileDialog.UserChoice := mrCancel; // Return this if user cancels or we need to exit
 
-  FilterUPP := NewNavObjectFilterUPP(NavObjectFilterProcPtr(@FilterByExtCallback));
+  FilterUPP := NewNavObjectFilterUPP(NavObjectFilterProcPtr(@FilterCallback));
 
+  Filters := TParseStringList.Create(FileDialog.Filter, '|');
+  try
+    if (FileDialog.FilterIndex >= 0) and
+      (FileDialog.FilterIndex * 2 + 1 < Filters.Count) then
+    begin
+      //DebugLn('Filter ' + Filters[FileDialog.FilterIndex * 2 + 1]);
+      FilterMask := TMaskList.Create(Filters[FileDialog.FilterIndex * 2 + 1]);
+    end;
+  finally
+    Filters.Free;
+  end;
+  
   try
     if FileDialog is TSaveDialog then
     begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
@@ -315,6 +329,7 @@ begin
     end;
 
   finally
+    FreeAndNil(FilterMask);
     DisposeNavObjectFilterUPP(FilterUPP);
     FreeCFString(CreationOptions.windowTitle);
     FreeCFString(CreationOptions.saveFileName);

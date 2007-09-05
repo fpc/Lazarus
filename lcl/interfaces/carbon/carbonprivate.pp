@@ -173,7 +173,6 @@ type
     FScrollOrigin: TPoint;
     FScrollSize: TPoint;
     FScrollPageSize: TPoint;
-    FFocusPart: ControlPartCode;
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
@@ -451,8 +450,6 @@ procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := CreateCustomHIView(ParamsToHIRect(AParams));
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
-  
-  FFocusPart := kControlNoPart;
   
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);

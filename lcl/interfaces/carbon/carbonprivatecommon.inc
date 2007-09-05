@@ -40,6 +40,7 @@ function CarbonCommon_Draw(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   AStruct: PPaintStruct;
+  EraseMsg: TLMEraseBkgnd;
 begin
   {$IFDEF VerbosePaint}
     Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
@@ -54,9 +55,13 @@ begin
         SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
       'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
 
+    // erase background
+    EraseMsg.Msg := LM_ERASEBKGND;
+    EraseMsg.DC := HDC(AWidget.Context);
+    DeliverMessage(AWidget.LCLObject, EraseMsg);
+
     // let carbon draw/update
     Result := CallNextEventHandler(ANextHandler, AEvent);
-  
 
     if (AWidget is TCarbonControl) and
       (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then
@@ -304,14 +309,13 @@ function CarbonCommon_SetFocusPart(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
+  CurrentFocus,
   FocusPart: ControlPartCode;
 const
   SName = 'CarbonCommon_SetFocusPart';
 begin
-  if not (AWidget.LCLObject is TCustomControl) then
-    Result := CallNextEventHandler(ANextHandler, AEvent)
-  else
-    Result := noErr;
+  if not (AWidget is TCarbonCustomControl) then
+    Result := CallNextEventHandler(ANextHandler, AEvent);
 
   if OSError(
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
@@ -322,6 +326,28 @@ begin
     DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
       IntToStr(Integer(FocusPart)));
   {$ENDIF}
+  
+  if AWidget is TCarbonCustomControl then
+  begin
+    OSError(HIViewGetFocusPart(AWidget.Content, CurrentFocus),
+      SName, 'HIViewGetFocusPart');
+      
+    case FocusPart of
+      kControlFocusPrevPart,
+      kControlFocusNextPart:
+        if CurrentFocus = kControlNoPart then FocusPart := kControlEditTextPart
+        else FocusPart := kControlEditTextPart;
+      kControlEditTextPart:;
+      else
+        FocusPart := kControlNoPart;
+    end;
+    
+    OSError(
+      SetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode,
+        SizeOf(ControlPartCode), @FocusPart), SName, SSetEvent, SControlPart);
+        
+    Result := noErr;
+  end;
 
   if FocusPart <> kControlFocusNoPart then
     LCLSendSetFocusMsg(AWidget.LCLObject)
