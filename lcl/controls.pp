@@ -795,6 +795,7 @@ type
     FAnchors: TAnchors;
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
     fAnchoredControls: TFPList; // list of TControl anchored to this control
+    FAutoSizing: Boolean;
     FAutoSizingLockCount: Integer;
     FAutoSize: Boolean;
     FBaseBounds: TRect;
@@ -937,8 +938,9 @@ type
     procedure SetCursor(Value: TCursor); virtual;
   protected
     // sizing/aligning
-    AutoSizing: Boolean;
     procedure DoAutoSize; virtual;
+    procedure BeginAutoSizing;
+    procedure EndAutoSizing;
     function AutoSizeCanStart: boolean; virtual;
     procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     procedure ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
@@ -975,6 +977,8 @@ type
     function GetControlOrigin: TPoint; virtual;
     function IsClientHeightStored: boolean; virtual;
     function IsClientWidthStored: boolean; virtual;
+    
+    property AutoSizing: Boolean Read FAutoSizing;
   protected
     // protected messages
     procedure WMContextMenu(Var Message: TLMMouse); message LM_CONTEXTMENU;

@@ -91,25 +91,28 @@ var
   end;
   
 begin
-  if AutoSize and (not AutoSizing) then begin
-    AutoSizing := True;
-    try
-      GetPreferredSize(NewWidth,NewHeight);
-      ModifyWidth := [akLeft,akRight]*(Anchors+AnchorAlign[Align])<>[akLeft,akRight];
-      ModifyHeight := [akTop,akBottom]*(Anchors+AnchorAlign[Align])<>[akTop,akBottom];
-      NewWidth:=Width;
-      NewHeight:=Height;
-      if not ModifyWidth then NewWidth := Width;
-      if not ModifyHeight then NewHeight := Height;
-      if (NewWidth>100000) or (NewHeight>100000) then
-        OutOfBounds;
-      if (NewWidth<>Width) or (NewHeight<>Height) then begin
-        SetBounds(Left,Top,NewWidth,NewHeight);
-        PictureChanged(Self);
-      end;
-    finally
-      AutoSizing := False;
+  if not AutoSize then Exit;  // needless to check
+  if AutoSizing then Exit;    // we shouldn't come here in the first place
+  
+  BeginAutoSizing;
+  try
+    GetPreferredSize(NewWidth, NewHeight);
+    ModifyWidth := [akLeft,akRight]*(Anchors+AnchorAlign[Align])<>[akLeft,akRight];
+    ModifyHeight := [akTop,akBottom]*(Anchors+AnchorAlign[Align])<>[akTop,akBottom];
+
+    if not ModifyWidth then NewWidth := Width;
+    if not ModifyHeight then NewHeight := Height;
+    
+    if (NewWidth>100000) or (NewHeight>100000) then
+      OutOfBounds;
+
+    if (NewWidth<>Width) or (NewHeight<>Height)
+    then begin
+      SetBounds(Left, Top, NewWidth, NewHeight);
+//      PictureChanged(Self);
     end;
+  finally
+    EndAutoSizing;
   end;
 end;
 
@@ -141,11 +144,12 @@ begin
   PictureChanged(Self);
 end;
 
-Procedure TCustomImage.PictureChanged(Sender : TObject);
+procedure TCustomImage.PictureChanged(Sender : TObject);
 begin
-  If AutoSize then begin
-    SetAutoSize(False);
-    SetAutoSize(True);
+  if AutoSize and (Picture.Graphic <> nil)
+  then begin
+    InvalidatePreferredSize;
+    AdjustSize;
   end;
   Invalidate;
 end;
@@ -190,8 +194,8 @@ end;
 procedure TCustomImage.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  PreferredWidth:=Picture.Width;
-  PreferredHeight:=Picture.Height;
+  PreferredWidth := Picture.Width;
+  PreferredHeight := Picture.Height;
 end;
 
 procedure TCustomImage.Paint;

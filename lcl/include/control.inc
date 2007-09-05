@@ -90,9 +90,22 @@ end;
 {------------------------------------------------------------------------------
        TControl.BeginAutoDrag
 ------------------------------------------------------------------------------}
-Procedure TControl.BeginAutoDrag;
+procedure TControl.BeginAutoDrag;
 begin
   BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
+end;
+
+{------------------------------------------------------------------------------
+       TControl.BeginAutoSizing
+------------------------------------------------------------------------------}
+procedure TControl.BeginAutoSizing;
+  procedure Error;
+  begin
+    RaiseGDBException('TControl.BeginAutoSizing');
+  end;
+begin
+  if FAutoSizing then Error;
+  FAutoSizing := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2068,8 +2081,8 @@ end;
   which are needed to calculate things like text size.
   That's why you should always call AdjustSize instead of DoAutoSize.
 ------------------------------------------------------------------------------}
-Procedure TControl.DoAutoSize;
-Begin
+procedure TControl.DoAutoSize;
+begin
   //Handled by TWinControl, or other descendants
 end;
 
@@ -4105,6 +4118,16 @@ begin
     if cfAutoSizeNeeded in FControlFlags then
       AdjustSize;
   end;
+end;
+
+procedure TControl.EndAutoSizing;
+  procedure Error;
+  begin
+    RaiseGDBException('TControl.EndAutoSizing');
+  end;
+begin
+  if not FAutoSizing then Error;
+  FAutoSizing := False;
 end;
 
 {------------------------------------------------------------------------------

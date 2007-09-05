@@ -83,7 +83,7 @@ begin
   
   if AutoSizeDelayed then
     exit;
-  AutoSizing := True;
+  BeginAutoSizing;
   try
     CalcSize(NewWidth, NewHeight);
     //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
@@ -99,7 +99,7 @@ begin
     //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
     SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
   finally
-    AutoSizing := False;
+    EndAutoSizing;
   end;
 end;
 
