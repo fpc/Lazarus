@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.46 }
+{ Version : 1.48 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -303,6 +303,7 @@ QObjectH = class(TObject) end;
     QMenuH = class(QWidgetH) end;
     QMenuBarH = class(QWidgetH) end;
     QProgressBarH = class(QWidgetH) end;
+    QRubberBandH = class(QWidgetH) end;
     QSizeGripH = class(QWidgetH) end;
     QSplitterHandleH = class(QWidgetH) end;
     QStatusBarH = class(QWidgetH) end;
@@ -6721,6 +6722,21 @@ type
 
 
 type
+  QRubberBandShape = ( // QRubberBand::Shape (1)
+    QRubberBandLine, QRubberBandRectangle );
+
+function QRubberBand_create(p1: QRubberBandShape; p2: QWidgetH = nil): QRubberBandH; cdecl; external QtIntf name 'QRubberBand_create';
+procedure QRubberBand_destroy(handle: QRubberBandH); cdecl; external QtIntf name 'QRubberBand_destroy'; 
+function QRubberBand_shape(handle: QRubberBandH): QRubberBandShape; cdecl; external QtIntf name 'QRubberBand_shape';
+procedure QRubberBand_setGeometry(handle: QRubberBandH; r: PRect); overload; cdecl; external QtIntf name 'QRubberBand_setGeometry';
+procedure QRubberBand_setGeometry(handle: QRubberBandH; x: Integer; y: Integer; w: Integer; h: Integer); overload; cdecl; external QtIntf name 'QRubberBand_setGeometry2';
+procedure QRubberBand_move(handle: QRubberBandH; x: Integer; y: Integer); overload; cdecl; external QtIntf name 'QRubberBand_move';
+procedure QRubberBand_move(handle: QRubberBandH; p: PQtPoint); overload; cdecl; external QtIntf name 'QRubberBand_move2';
+procedure QRubberBand_resize(handle: QRubberBandH; w: Integer; h: Integer); overload; cdecl; external QtIntf name 'QRubberBand_resize';
+procedure QRubberBand_resize(handle: QRubberBandH; s: PSize); overload; cdecl; external QtIntf name 'QRubberBand_resize2';
+
+
+type
   QAbstractItemViewSelectionMode = ( // QAbstractItemView::SelectionMode (1)
     QAbstractItemViewNoSelection, QAbstractItemViewSingleSelection, QAbstractItemViewMultiSelection, QAbstractItemViewExtendedSelection, QAbstractItemViewContiguousSelection );
 
@@ -8982,6 +8998,10 @@ function QStyleOptionToolBox_create(): QStyleOptionToolBoxH; overload; cdecl; ex
 procedure QStyleOptionToolBox_destroy(handle: QStyleOptionToolBoxH); cdecl; external QtIntf name 'QStyleOptionToolBox_destroy'; 
 function QStyleOptionToolBox_create(other: QStyleOptionToolBoxH): QStyleOptionToolBoxH; overload; cdecl; external QtIntf name 'QStyleOptionToolBox_create2';
 
+function QStyleOptionRubberBand_shape(handle : QStyleOptionRubberBandH) : QRubberBandShape; cdecl; external QtIntf name 'QStyleOptionRubberBand_shape';
+procedure QStyleOptionRubberBand_setShape(handle : QStyleOptionRubberBandH; shape : QRubberBandShape); cdecl; external QtIntf name 'QStyleOptionRubberBand_setShape';
+function QStyleOptionRubberBand_opaque(handle : QStyleOptionRubberBandH) : Boolean; cdecl; external QtIntf name 'QStyleOptionRubberBand_opaque';
+procedure QStyleOptionRubberBand_setOpaque(handle : QStyleOptionRubberBandH; opaque : Boolean); cdecl; external QtIntf name 'QStyleOptionRubberBand_setOpaque';
 function QStyleOptionRubberBand_create(): QStyleOptionRubberBandH; overload; cdecl; external QtIntf name 'QStyleOptionRubberBand_create';
 procedure QStyleOptionRubberBand_destroy(handle: QStyleOptionRubberBandH); cdecl; external QtIntf name 'QStyleOptionRubberBand_destroy'; 
 function QStyleOptionRubberBand_create(other: QStyleOptionRubberBandH): QStyleOptionRubberBandH; overload; cdecl; external QtIntf name 'QStyleOptionRubberBand_create2';
