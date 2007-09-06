@@ -1,4 +1,4 @@
-﻿The following people contributed to Lazarus:
+The following people contributed to Lazarus:
 
 A. J. Venter
 Aleksey Lagunov
@@ -48,6 +48,7 @@ Jesus Reyes
 Joerg Braun - german translation
 Jonas Maebe
 Joost van der Sluis
+Jose Alonso Cardenas M.
 Jouke Rensma
 Juan Salvador Perez García
 Junior Goncalves

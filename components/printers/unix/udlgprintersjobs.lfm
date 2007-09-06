@@ -1,30 +1,34 @@
 object dlgPrintersJobs: TdlgPrintersJobs
+  Left = 188
+  Height = 257
+  Top = 214
+  Width = 604
+  HorzScrollBar.Page = 603
+  VertScrollBar.Page = 256
+  ActiveControl = cbPrinters
   Caption = 'Printers jobs'
   ClientHeight = 257
   ClientWidth = 604
   OnShow = btnRefeshClick
-  PixelsPerInch = 75
   ShowHint = True
-  HorzScrollBar.Page = 603
-  VertScrollBar.Page = 256
-  Left = 240
-  Height = 257
-  Top = 214
-  Width = 604
   object Panel1: TPanel
+    Height = 35
+    Width = 604
     Align = alTop
-    BorderSpacing.OnChange = nil
     BevelOuter = bvLowered
     ClientHeight = 35
     ClientWidth = 604
     FullRepaint = False
     TabOrder = 0
     TabStop = True
-    Height = 35
-    Width = 604
     object btnMyJobOnly: TSpeedButton
+      Left = 277
+      Height = 29
+      Hint = 'All user'
+      Top = 3
+      Width = 35
       AllowAllUp = True
-      BorderSpacing.OnChange = nil
+      Color = clBtnFace
       Glyph.Data = {
         5D0C00002F2A2058504D202A2F0A7374617469632063686172202A757365725B
         5D3D7B0A223136203136203135392032222C0A2251742063204E6F6E65222C0A
@@ -130,15 +134,15 @@ object dlgPrintersJobs: TdlgPrintersJobs
       GroupIndex = 5
       NumGlyphs = 0
       OnClick = btnRefeshClick
-      Left = 277
-      Height = 29
-      Hint = 'All user'
-      Top = 3
-      Width = 35
     end
     object btnJobCompleted: TSpeedButton
+      Left = 311
+      Height = 29
+      Hint = 'History'
+      Top = 3
+      Width = 35
       AllowAllUp = True
-      BorderSpacing.OnChange = nil
+      Color = clBtnFace
       Glyph.Data = {
         BD0A00002F2A2058504D202A2F0A7374617469632063686172202A686973746F
         72795B5D3D7B0A223136203136203133332032222C0A2251742063204E6F6E65
@@ -231,14 +235,14 @@ object dlgPrintersJobs: TdlgPrintersJobs
       GroupIndex = 6
       NumGlyphs = 0
       OnClick = btnRefeshClick
-      Left = 311
-      Height = 29
-      Hint = 'History'
-      Top = 3
-      Width = 35
     end
     object btnRefesh: TSpeedButton
-      BorderSpacing.OnChange = nil
+      Left = 3
+      Height = 29
+      Hint = 'Refresh'
+      Top = 3
+      Width = 35
+      Color = clBtnFace
       Glyph.Data = {
         B90200002F2A2058504D202A2F0A7374617469632063686172202A7265667265
         73685B5D3D7B0A2231362031362032322031222C0A222E2063204E6F6E65222C
@@ -265,14 +269,14 @@ object dlgPrintersJobs: TdlgPrintersJobs
       }
       NumGlyphs = 0
       OnClick = btnRefeshClick
-      Left = 3
-      Height = 29
-      Hint = 'Refresh'
-      Top = 3
-      Width = 35
     end
     object btnStopJob: TSpeedButton
-      BorderSpacing.OnChange = nil
+      Left = 363
+      Height = 29
+      Hint = 'Stop job'
+      Top = 3
+      Width = 35
+      Color = clBtnFace
       Glyph.Data = {
         6C0B00002F2A2058504D202A2F0A7374617469632063686172202A73746F705B
         5D3D7B0A223136203136203134362032222C0A2251742063204E6F6E65222C0A
@@ -369,14 +373,13 @@ object dlgPrintersJobs: TdlgPrintersJobs
       }
       NumGlyphs = 0
       OnClick = btnStopJobClick
-      Left = 363
-      Height = 29
-      Hint = 'Stop job'
-      Top = 3
-      Width = 35
     end
     object btnRestartJob: TSpeedButton
-      BorderSpacing.OnChange = nil
+      Left = 397
+      Height = 29
+      Top = 3
+      Width = 35
+      Color = clBtnFace
       Glyph.Data = {
         300400002F2A2058504D202A2F0A7374617469632063686172202A636F6E7469
         6E755B5D3D7B0A2231362031362034372031222C0A222E2063204E6F6E65222C
@@ -415,13 +418,14 @@ object dlgPrintersJobs: TdlgPrintersJobs
       }
       NumGlyphs = 0
       OnClick = btnRestartJobClick
-      Left = 397
-      Height = 29
-      Top = 3
-      Width = 35
     end
     object btnDeleteJob: TSpeedButton
-      BorderSpacing.OnChange = nil
+      Left = 432
+      Height = 29
+      Hint = 'Delete job'
+      Top = 3
+      Width = 35
+      Color = clBtnFace
       Glyph.Data = {
         4F0C00002F2A2058504D202A2F0A7374617469632063686172202A64656C6574
         655B5D3D7B0A223136203136203135382032222C0A2251742063204E6F6E6522
@@ -525,29 +529,26 @@ object dlgPrintersJobs: TdlgPrintersJobs
       }
       NumGlyphs = 0
       OnClick = btnDeleteJobClick
-      Left = 432
-      Height = 29
-      Hint = 'Delete job'
-      Top = 3
-      Width = 35
     end
     object cbPrinters: TComboBox
-      BorderSpacing.OnChange = nil
+      Left = 40
+      Height = 25
+      Hint = 'Printers'
+      Top = 5
+      Width = 232
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       Style = csDropDownList
       TabOrder = 0
       Text = 'cbPrinters'
-      Left = 42
-      Height = 25
-      Hint = 'Printers'
-      Top = 5
-      Width = 232
     end
   end
   object lvJobs: TListView
+    Height = 222
+    Top = 35
+    Width = 604
     Align = alClient
-    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'Id'
@@ -589,10 +590,8 @@ object dlgPrintersJobs: TdlgPrintersJobs
       end>
     SmallImages = lstImg
     SortType = stText
+    TabOrder = 1
     ViewStyle = vsReport
-    Height = 222
-    Top = 35
-    Width = 604
   end
   object lstImg: TImageList
     Height = 19

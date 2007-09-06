@@ -53,6 +53,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     Width = 457
     Align = alClient
     PageIndex = 0
+    TabOrder = 1
     object pgGeneral: TPage
       Caption = 'General'
       ClientWidth = 453
@@ -63,7 +64,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 19
         Width = 60
         Caption = 'Paper size'
-        Color = clNone
         ParentColor = False
       end
       object labPaperType: TLabel
@@ -72,7 +72,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 55
         Width = 62
         Caption = 'Paper type'
-        Color = clNone
         ParentColor = False
       end
       object labPaperSrc: TLabel
@@ -81,7 +80,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 92
         Width = 76
         Caption = 'Paper source'
-        Color = clNone
         ParentColor = False
       end
       object cbPaperSize: TComboBox
@@ -127,8 +125,8 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 123
         Width = 233
         Caption = ' Orientation '
-        ClientHeight = 102
-        ClientWidth = 229
+        ClientHeight = 119
+        ClientWidth = 233
         ParentCtl3D = False
         TabOrder = 6
         object imgOrientation: TImage
@@ -141,7 +139,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 7
           Height = 20
           Top = 5
-          Width = 66
+          Width = 63
           AllowGrayed = True
           Caption = 'Portrait'
           Checked = True
@@ -154,7 +152,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 7
           Height = 20
           Top = 29
-          Width = 89
+          Width = 86
           AllowGrayed = True
           Caption = 'Landscape'
           DragCursor = crDefault
@@ -165,7 +163,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 7
           Height = 20
           Top = 53
-          Width = 135
+          Width = 132
           AllowGrayed = True
           Caption = 'Reverse landscape'
           DragCursor = crDefault
@@ -176,7 +174,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 7
           Height = 20
           Top = 77
-          Width = 115
+          Width = 112
           AllowGrayed = True
           Caption = 'Reverse portrait'
           DragCursor = crDefault
@@ -190,8 +188,8 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 123
         Width = 185
         Caption = ' Duplex printing '
-        ClientHeight = 102
-        ClientWidth = 181
+        ClientHeight = 119
+        ClientWidth = 185
         ParentCtl3D = False
         TabOrder = 2
         object imgDuplex: TImage
@@ -204,7 +202,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 14
           Height = 20
           Top = 5
-          Width = 57
+          Width = 54
           AllowGrayed = True
           Caption = 'None'
           Checked = True
@@ -217,7 +215,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 14
           Height = 20
           Top = 29
-          Width = 87
+          Width = 84
           AllowGrayed = True
           Caption = 'Long edge'
           DragCursor = crDefault
@@ -228,7 +226,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 14
           Height = 20
           Top = 53
-          Width = 88
+          Width = 85
           AllowGrayed = True
           Caption = 'Short edge'
           DragCursor = crDefault
@@ -252,7 +250,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Top = 9
           Width = 26
           Caption = 'Start'
-          Color = clNone
           ParentColor = False
         end
         object labBanEnd: TLabel
@@ -261,7 +258,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Top = 49
           Width = 23
           Caption = 'End'
-          Color = clNone
           ParentColor = False
         end
         object cbBanStart: TComboBox
@@ -295,8 +291,8 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 247
         Width = 185
         Caption = ' Pages per sheet '
-        ClientHeight = 79
-        ClientWidth = 181
+        ClientHeight = 96
+        ClientWidth = 185
         ParentCtl3D = False
         TabOrder = 5
         object imgPageSheet: TImage
@@ -309,7 +305,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 6
           Height = 20
           Top = 5
-          Width = 34
+          Width = 31
           AllowGrayed = True
           Caption = '1'
           Checked = True
@@ -322,7 +318,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 6
           Height = 20
           Top = 25
-          Width = 34
+          Width = 31
           AllowGrayed = True
           Caption = '2'
           DragCursor = crDefault
@@ -333,7 +329,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 6
           Height = 20
           Top = 46
-          Width = 34
+          Width = 31
           AllowGrayed = True
           Caption = '4'
           DragCursor = crDefault
@@ -344,8 +340,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     end
     object pgMarge: TPage
       Caption = 'Borders'
-      ClientWidth = 453
-      ClientHeight = 346
     end
   end
 end

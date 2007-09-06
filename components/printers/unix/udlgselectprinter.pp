@@ -80,7 +80,7 @@ type
     labPage: TLABEL;
     labLocation: TLABEL;
     labState: TLABEL;
-    edTimeTask: TMASKEDIT;
+    edTimeTask: TEDIT;
     NbOpts: TNOTEBOOK;
     pgAdvance: TPAGE;
     pgCopies: TPAGE;
@@ -129,7 +129,7 @@ function LapseLocalToGMT : integer;
 implementation
 
 uses
-  {$IFDEF darwin}
+  {$IF DEFINED(darwin) OR DEFINED(freebsd)}
   miniCupsLibc,
   {$ELSE}
   Libc,

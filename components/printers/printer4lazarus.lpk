@@ -25,7 +25,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="27">
+    <Files Count="25">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -108,47 +108,39 @@
         <UnitName Value="uDlgPropertiesPrinter"/>
       </Item19>
       <Item20>
-        <Filename Value="unix/udlgselectprinter.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="win32/winprinters.inc"/>
+        <Type Value="Include"/>
       </Item20>
       <Item21>
-        <Filename Value="unix/udlgselectprinter.lrs"/>
-        <Type Value="LRS"/>
+        <Filename Value="win32/winutilprnconst.inc"/>
+        <Type Value="Include"/>
       </Item21>
       <Item22>
-        <Filename Value="win32/winprinters.inc"/>
+        <Filename Value="win32/winprinters_h.inc"/>
         <Type Value="Include"/>
       </Item22>
       <Item23>
-        <Filename Value="win32/winutilprnconst.inc"/>
+        <Filename Value="win32/winprndialogs.inc"/>
         <Type Value="Include"/>
       </Item23>
       <Item24>
-        <Filename Value="win32/winprinters_h.inc"/>
+        <Filename Value="unix/cupsprndialogs.inc"/>
         <Type Value="Include"/>
       </Item24>
       <Item25>
-        <Filename Value="win32/winprndialogs.inc"/>
-        <Type Value="Include"/>
-      </Item25>
-      <Item26>
-        <Filename Value="unix/cupsprndialogs.inc"/>
-        <Type Value="Include"/>
-      </Item26>
-      <Item27>
         <Filename Value="unix/minicupslibc.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MiniCUPSLibc"/>
-      </Item27>
+      </Item25>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
