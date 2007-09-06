@@ -58,6 +58,7 @@ type
     FPaintData: TPaintData;
     FCentralWidget: QWidgetH;
     FContext: HDC;
+    FParams: TCreateParams;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -79,6 +80,9 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
+    procedure InitializeWidget;
+    procedure DeInitializeWidget;
+    procedure RecreateWidget;
     
     destructor Destroy; override;
     function  GetContainerWidget: QWidgetH; virtual;
@@ -88,7 +92,7 @@ type
     procedure SlotClose; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotFocus(FocusIn: Boolean); cdecl;
-    procedure SlotHover(Event: QEventH); cdecl;
+    procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseEnter(Event: QEventH); cdecl;
@@ -776,6 +780,19 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   end;
+  
+  { TQtRubberBand }
+  
+  TQtRubberBand = class(TQtWidget)
+  private
+    FShape: QRubberBandShape;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    function getShape: QRubberBandShape;
+    procedure setShape(AShape: QRubberBandShape);
+  end;
 
 implementation
 
@@ -826,28 +843,8 @@ begin
   FProps := nil;
   LCLObject := AWinControl;
 
-  // Creates the widget
-  Widget := CreateWidget(AParams);
-  {$ifdef VerboseQt}
-  DebugLn('TQtWidget.Create: Self:%x Widget:%x was created for control %s',
-    [ptrint(Self), ptrint(Widget), LCLObject.Name]);
-  {$endif}
-  
-  // set Handle->QWidget map
-  AVariant := QVariant_Create(Int64(ptruint(Self)));
-  QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
-  
-  fillchar(FPaintData, sizeOf(FPaintData), 0);
-
-  // Sets it's initial properties
-  SetGeometry;
-  
-  // set focus policy
-  if AWinControl.TabStop then
-    QWidget_setFocusPolicy(Widget, QtStrongFocus);
-
-  // Set mouse move messages policy
-  QWidget_setMouseTracking(Widget, True);
+  FParams := AParams;
+  InitializeWidget;
 end;
 
 constructor TQtWidget.CreateFrom(const AWinControl: TWinControl;
@@ -870,6 +867,62 @@ begin
   fillchar(FPaintData, sizeOf(FPaintData), 0);
 end;
 
+procedure TQtWidget.InitializeWidget;
+begin
+  // Creates the widget
+  Widget := CreateWidget(FParams);
+  {$ifdef VerboseQt}
+  DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
+    [ptrint(Self), ptrint(Widget), LCLObject.Name]);
+  {$endif}
+
+  // set Handle->QWidget map
+  AVariant := QVariant_Create(Int64(ptruint(Self)));
+  QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
+
+  fillchar(FPaintData, sizeOf(FPaintData), 0);
+
+  // Sets it's initial properties
+  SetGeometry;
+
+  // set focus policy
+  if LCLObject.TabStop then
+    QWidget_setFocusPolicy(Widget, QtStrongFocus);
+
+  // Set mouse move messages policy
+  QWidget_setMouseTracking(Widget, True);
+end;
+
+procedure TQtWidget.DeInitializeWidget;
+begin
+  if Widget <> nil then
+    DetachEvents;
+
+  QVariant_destroy(AVariant);
+
+  {$ifdef VerboseQt}
+    WriteLn('Calling QWidget_destroy');
+  {$endif}
+  
+  if (Widget <> nil) and FOwnWidget then
+    QWidget_destroy(QWidgetH(Widget));
+  Widget := nil;
+end;
+
+procedure TQtWidget.RecreateWidget;
+var
+  Parent: QWidgetH;
+begin
+  if Widget <> nil then
+    Parent := QWidget_parentWidget(Widget)
+  else
+    Parent := nil;
+  DeinitializeWidget;
+  InitializeWidget;
+  if Parent <> nil then
+    setParent(Parent);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.Destroy
   Params:  None
@@ -877,18 +930,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtWidget.Destroy;
 begin
-  if Widget <> nil then
-    DetachEvents;
-
-  QVariant_destroy(AVariant);
-  
-  {$ifdef VerboseQt}
-    WriteLn('Calling QWidget_destroy');
-  {$endif}
-
-  if (Widget <> nil) and FOwnWidget then
-    QWidget_destroy(QWidgetH(Widget));
-  Widget := nil;
+  DeinitializeWidget;
 
   if FProps<>nil then
   begin
@@ -1091,7 +1133,7 @@ begin
     QEventHoverLeave,
     QEventHoverMove:
       begin
-        SlotHover(Event);
+        SlotHover(Sender, Event);
       end;
 
     QEventKeyPress,
@@ -1214,29 +1256,32 @@ begin
   {$endif}
 end;
 
-procedure TQtWidget.SlotHover(Event: QEventH); cdecl;
+procedure TQtWidget.SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMessage;
   MouseMsg: TLMMouseMove absolute Msg;
   MousePos: PQtPoint;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  if QApplication_mouseButtons() = 0 then // in other case MouseMove will be hooked
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
 
-  MousePos := QHoverEvent_pos(QHoverEventH(Event));
-  OffsetMousePos(MousePos);
+    MousePos := QHoverEvent_pos(QHoverEventH(Event));
+    OffsetMousePos(MousePos);
 
-  case QEvent_type(Event) of
-    QEventHoverEnter : Msg.Msg := CM_MOUSEENTER;
-    QEventHoverLeave : Msg.Msg := CM_MOUSELEAVE;
-    QEventHoverMove  :
-      begin
-        MouseMsg.Msg := LM_MOUSEMOVE;
-        MouseMsg.XPos := SmallInt(MousePos^.X);
-        MouseMsg.YPos := SmallInt(MousePos^.Y);
-      end;
+    case QEvent_type(Event) of
+      QEventHoverEnter : Msg.Msg := CM_MOUSEENTER;
+      QEventHoverLeave : Msg.Msg := CM_MOUSELEAVE;
+      QEventHoverMove  :
+        begin
+          MouseMsg.Msg := LM_MOUSEMOVE;
+          MouseMsg.XPos := SmallInt(MousePos^.X);
+          MouseMsg.YPos := SmallInt(MousePos^.Y);
+        end;
+    end;
+    NotifyApplicationUserInput(Msg.Msg);
+    DeliverMessage(Msg);
   end;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -1998,6 +2043,8 @@ end;
 function TQtWidget.QtKeyToLCLKey(AKey: Integer): Word;
 begin
   case AKey of
+    QtKey_0..QtKey_9: Result := VK_0 + (AKey - QtKey_0);
+    QtKey_At: Result := VK_2; // some bug, but Ctrl + Shit + 2 produce QtKey_At
     QtKey_Escape: Result := VK_ESCAPE;
     QtKey_Tab: Result := VK_TAB;
     QtKey_Backtab: Result := VK_UNKNOWN; // ???
@@ -2025,30 +2072,7 @@ begin
     QtKey_CapsLock: Result := VK_CAPITAL;
     QtKey_NumLock: Result := VK_NUMLOCK;
     QtKey_ScrollLock: Result := VK_SCROLL;
-    QtKey_F1: Result := VK_F1;
-    QtKey_F2: Result := VK_F2;
-    QtKey_F3: Result := VK_F3;
-    QtKey_F4: Result := VK_F4;
-    QtKey_F5: Result := VK_F5;
-    QtKey_F6: Result := VK_F6;
-    QtKey_F7: Result := VK_F7;
-    QtKey_F8: Result := VK_F8;
-    QtKey_F9: Result := VK_F9;
-    QtKey_F10: Result := VK_F10;
-    QtKey_F11: Result := VK_F11;
-    QtKey_F12: Result := VK_F12;
-    QtKey_F13: Result := VK_F13;
-    QtKey_F14: Result := VK_F14;
-    QtKey_F15: Result := VK_F15;
-    QtKey_F16: Result := VK_F16;
-    QtKey_F17: Result := VK_F17;
-    QtKey_F18: Result := VK_F18;
-    QtKey_F19: Result := VK_F19;
-    QtKey_F20: Result := VK_F20;
-    QtKey_F21: Result := VK_F21;
-    QtKey_F22: Result := VK_F22;
-    QtKey_F23: Result := VK_F23;
-    QtKey_F24: Result := VK_F24;
+    QtKey_F1..QtKey_F24: Result := VK_F1 + (AKey - QtKey_F1);
     QtKey_F25..
     QtKey_F35,
     QtKey_Super_L,
@@ -5895,6 +5919,36 @@ procedure TQtAbstractItemView.ItemDelegatePaint(painter: QPainterH;
   option: QStyleOptionViewItemH; index: QModelIndexH); cdecl;
 begin
   // should be overrided
+end;
+
+{ TQtRubberBand }
+
+function TQtRubberBand.CreateWidget(const AParams: TCreateParams): QWidgetH;
+begin
+  Result := QRubberBand_create(FShape);
+end;
+
+constructor TQtRubberBand.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+begin
+  FShape := QRubberBandLine;
+  inherited Create(AWinControl, AParams);
+end;
+
+function TQtRubberBand.getShape: QRubberBandShape;
+begin
+  Result := QRubberBand_shape(QRubberBandH(Widget));
+end;
+
+procedure TQtRubberBand.setShape(AShape: QRubberBandShape);
+begin
+  if getShape <> AShape then
+  begin
+    // recreate widget
+    FShape := AShape;
+    RecreateWidget;
+    AttachEvents;
+  end;
 end;
 
 end.
