@@ -1,0 +1,28 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrShapeForm','FORMDATA',[
+  'TPF0'#12'TfrShapeForm'#11'frShapeForm'#11'BorderStyle'#7#8'bsDialog'#7'Capti'
+  +'on'#6#5'Shape'#12'ClientHeight'#2'^'#11'ClientWidth'#3#21#1#8'OnCreate'#7#10
+  +'FormCreate'#13'PixelsPerInch'#2'K'#18'HorzScrollBar.Page'#3#20#1#18'VertScr'
+  +'ollBar.Page'#2']'#4'Left'#3#200#0#6'Height'#2'^'#3'Top'#2'l'#5'Width'#3#21#1
+  +#0#6'TImage'#6'Image1'#22'BorderSpacing.OnChange'#13#12'Picture.Data'#10#2#1
+  +#0#0#7'TBitmap'#246#0#0#0'BM'#246#0#0#0#0#0#0#0'v'#0#0#0'('#0#0#0#16#0#0#0#16
+  +#0#0#0#1#0#4#0#0#0#0#0#128#0#0#0#0#0#0#0#0#0#0#0#16#0#0#0#0#0#0#0#0#0#0#0#0#0
+  +#128#0#0#128#0#0#0#128#128#0#128#0#0#0#128#0#128#0#128#128#0#0#192#192#192#0
+  +#128#128#128#0#0#0#255#0#0#255#0#0#0#255#255#0#255#0#0#0#255#0#255#0#255#255
+  +#0#0#255#255#255#0'wwww'#0#0#0#7'wwww'#15#255#255#7'wwww'#15#255#255#7'w'#0#0
+  +'w'#15#255#255#7'p""'#7#15#255#255#7#2'"" '#15#255#255#7#2'"" '#0#0#0#7#2'""'
+  +' wwww'#2'"'#0#0#0#0#7'wp" '#204#204#192'www'#0#0#204#204#192'wwwww'#12#204#7
+  +'wwwww'#12#204#7'wwwwwp'#192'wwwwwwp'#192'wwwwwww'#7'www'#11'Transparent'#9#7
+  +'Visible'#8#4'Left'#2' '#6'Height'#2#16#3'Top'#2'@'#5'Width'#2#16#0#0#9'TGro'
+  +'upBox'#9'GroupBox1'#22'BorderSpacing.OnChange'#13#7'Caption'#6#12' Shape ki'
+  +'nd '#12'ClientHeight'#2'$'#11'ClientWidth'#3#0#1#11'ParentColor'#9#8'TabOrd'
+  +'er'#2#0#4'Left'#2#8#6'Height'#2'5'#3'Top'#2#8#5'Width'#3#4#1#0#9'TComboBox'
+  +#3'CB1'#22'BorderSpacing.OnChange'#13#9'MaxLength'#2#0#5'Style'#7#14'csDropD'
+  +'ownList'#8'TabOrder'#2#0#4'Left'#2'2'#6'Height'#2#21#3'Top'#2#1#5'Width'#3
+  +#197#0#0#0#0#7'TButton'#7'Button1'#22'BorderSpacing.OnChange'#13#7'Caption'#6
+  +#2'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#4'Left'#2'@'#6'Heigh'
+  +'t'#2#25#3'Top'#2'?'#5'Width'#2'K'#0#0#7'TButton'#7'Button2'#22'BorderSpacin'
+  +'g.OnChange'#13#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'Tab'
+  +'Order'#2#2#4'Left'#3#144#0#6'Height'#2#25#3'Top'#2'@'#5'Width'#2'K'#0#0#0
+]);

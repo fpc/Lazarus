@@ -1,0 +1,87 @@
+object frTemplForm: TfrTemplForm
+  BorderStyle = bsDialog
+  Caption = 'New report'
+  ClientHeight = 265
+  ClientWidth = 460
+  Font.Height = 18446744073709551605
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  PixelsPerInch = 86
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 461
+  VertScrollBar.Page = 266
+  Left = 200
+  Height = 265
+  Top = 108
+  Width = 460
+  object GroupBox1: TGroupBox
+    Caption = 'Description'
+    ClientHeight = 204
+    ClientWidth = 205
+    DragCursor = 65524
+    ParentColor = True
+    TabOrder = 0
+    Left = 246
+    Height = 221
+    Top = 4
+    Width = 209
+    object Image1: TImage
+      Center = True
+      Transparent = True
+      Left = 54
+      Height = 100
+      Top = 104
+      Width = 100
+    end
+    object Memo1: TMemo
+      Color = clBtnFace
+      ReadOnly = True
+      TabStop = False
+      TabStop = False
+      TabOrder = 0
+      Left = 8
+      Height = 69
+      Top = 20
+      Width = 193
+      HelpContext = 74
+    end
+  end
+  object Button1: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+    Left = 300
+    Height = 25
+    Top = 236
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 380
+    Height = 25
+    Top = 236
+    Width = 75
+    HelpContext = 50
+  end
+  object LB1: TListBox
+    ClickOnSelChange = False
+    ItemHeight = 13
+    OnClick = ListBox1Click
+    OnDblClick = LB1DblClick
+    TabOrder = 3
+    TopIndex = 18446744073709551615
+    Left = 4
+    Height = 217
+    Top = 8
+    Width = 233
+    HelpContext = 65
+  end
+end

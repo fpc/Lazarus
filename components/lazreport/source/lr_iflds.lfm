@@ -1,0 +1,145 @@
+object frInsertFieldsForm: TfrInsertFieldsForm
+  BorderStyle = bsDialog
+  Caption = 'Insert fields'
+  ClientHeight = 222
+  ClientWidth = 334
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 86
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 335
+  VertScrollBar.Page = 223
+  Left = 194
+  Height = 222
+  Top = 108
+  Width = 334
+  object Label1: TLabel
+    Caption = '&Available datasets'
+    FocusControl = DatasetCB
+    Left = 4
+    Height = 13
+    Top = 4
+    Width = 145
+  end
+  object FieldsL: TListBox
+    ClickOnSelChange = False
+    ItemHeight = 13
+    MultiSelect = True
+    TabOrder = 0
+    TopIndex = -1
+    Left = 4
+    Height = 173
+    Top = 44
+    Width = 145
+    HelpContext = 106
+  end
+  object DatasetCB: TComboBox
+    ItemHeight = 13
+    MaxLength = 0
+    OnChange = DatasetCBChange
+    Sorted = True
+    Style = csDropDownList
+    TabOrder = 1
+    Left = 4
+    Height = 21
+    Top = 20
+    Width = 145
+    HelpContext = 97
+  end
+  object GroupBox1: TGroupBox
+    Caption = 'Placement'
+    ClientHeight = 48
+    ClientWidth = 169
+    DragCursor = 65524
+    ParentColor = True
+    TabOrder = 2
+    Left = 156
+    Height = 65
+    Top = 15
+    Width = 173
+    object HorzRB: TRadioButton
+      AllowGrayed = True
+      AutoSize = True
+      Caption = '&Horizontal'
+      Checked = True
+      DragCursor = 65524
+      State = cbChecked
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Top = 5
+      Width = 90
+      HelpContext = 115
+    end
+    object VertRB: TRadioButton
+      AllowGrayed = True
+      AutoSize = True
+      Caption = '&Vertical'
+      DragCursor = 65524
+      TabOrder = 1
+      Left = 8
+      Height = 17
+      Top = 25
+      Width = 77
+      HelpContext = 122
+    end
+  end
+  object Button1: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 3
+    Left = 172
+    Height = 25
+    Top = 192
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+    Left = 252
+    Height = 25
+    Top = 192
+    Width = 75
+    HelpContext = 50
+  end
+  object GroupBox2: TGroupBox
+    ClientHeight = 43
+    ClientWidth = 169
+    DragCursor = 65524
+    ParentColor = True
+    TabOrder = 5
+    Left = 156
+    Height = 60
+    Top = 85
+    Width = 173
+    object HeaderCB: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = '&Include headers'
+      DragCursor = 65524
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Width = 157
+      HelpContext = 132
+    end
+    object BandCB: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Include &bands'
+      DragCursor = 65524
+      TabOrder = 1
+      Left = 8
+      Height = 17
+      Top = 22
+      Width = 157
+    end
+  end
+end

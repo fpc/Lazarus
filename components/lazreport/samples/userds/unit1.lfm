@@ -1,0 +1,77 @@
+object Form1: TForm1
+  Left = 238
+  Height = 88
+  Top = 116
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 87
+  ActiveControl = btnShowReport
+  Caption = 'Form1'
+  ClientHeight = 88
+  ClientWidth = 400
+  OnCreate = FormCreate
+  object btnShowReport: TButton
+    Left = 64
+    Height = 25
+    Top = 20
+    Width = 126
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Show Report'
+    OnClick = btnShowReportClick
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 200
+    Height = 25
+    Top = 20
+    Width = 136
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Design Report'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 108
+    Height = 25
+    Top = 56
+    Width = 184
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Show Notes of this Sample'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object MasterDS: TfrUserDataset
+    OnCheckEOF = MasterDSCheckEOF
+    OnFirst = MasterDSFirst
+    OnNext = MasterDSNext
+    left = 8
+    top = 56
+  end
+  object frReport1: TfrReport
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    OnBeginDoc = frReport1BeginDoc
+    OnEndDoc = frReport1EndDoc
+    OnBeginPage = frReport1BeginPage
+    OnEndPage = frReport1EndPage
+    OnBeginBand = frReport1BeginBand
+    OnEndBand = frReport1EndBand
+    OnGetValue = frReport1GetValue
+    OnEnterRect = frReport1EnterRect
+    OnUserFunction = frReport1UserFunction
+    OnProgress = frReport1Progress
+    OnBeginColumn = frReport1BeginColumn
+    OnPrintColumn = frReport1PrintColumn
+    left = 80
+    top = 56
+    ReportForm = {
+      18000000
+    }
+  end
+  object ColumnsDS: TfrUserDataset
+    OnCheckEOF = ColumnsDSCheckEOF
+    OnFirst = ColumnsDSFirst
+    OnNext = ColumnsDSNext
+    left = 40
+    top = 56
+  end
+end

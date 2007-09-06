@@ -1,0 +1,423 @@
+object frPgoptForm: TfrPgoptForm
+  Left = 407
+  Height = 201
+  Top = 116
+  Width = 381
+  HorzScrollBar.Page = 380
+  VertScrollBar.Page = 200
+  ActiveControl = Button1
+  BorderStyle = bsDialog
+  Caption = 'Page options'
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  object Button1: TButton
+    Left = 220
+    Height = 25
+    Top = 168
+    Width = 75
+    HelpContext = 40
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 302
+    Height = 25
+    Top = 168
+    Width = 75
+    HelpContext = 50
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object PageControl1: TPageControl
+    Height = 164
+    Width = 381
+    ActivePage = TabSheet1
+    Align = alTop
+    TabIndex = 0
+    TabOrder = 2
+    object TabSheet1: TTabSheet
+      Caption = 'Paper'
+      object GroupBox2: TGroupBox
+        Left = 198
+        Height = 126
+        Top = 8
+        Width = 163
+        Caption = 'Orientation'
+        TabOrder = 0
+        object imgLandScape: TImage
+          Left = 121
+          Height = 26
+          Top = 25
+          Width = 32
+          AutoSize = True
+          Picture.Data = {
+            07544269746D6170130400002F2A2058504D202A2F0A73746174696320636861
+            72202A677261706869635B5D203D207B0A22333220323620342031222C0A222E
+            20632023383438343834222C0A222C2063204E6F6E65222C0A222D2063202343
+            3643364336222C0A222A20632023464646464646222C0A222E2E2E2E2E2E2E2E
+            2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2C2D2D2D2D2D2D222C0A222E2A2A2A
+            2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2C2E2D2D2D2D2D222C0A22
+            2E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2C2A2E2D2D2D2D
+            222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2C2D2A
+            2E2D2D2D222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2C2D2A2A2E2D2D222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2A2A2C2D2A2A2A2E2D222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2A2A2A2A2A2A2C2C2C2C2C2C2E222C0A222E2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2E2D2A2A2A2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A
+            2A2A2A2A2A2A2D2E2E2A2A2A2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A
+            2A2A2A2A2A2A2A2A2A2A2E2E2E2D2A2A2A2A2A2A2A2A2A2A2A2A2D2C222C0A22
+            2E2A2A2A2A2A2A2A2A2A2A2A2A2D2E2E2E2E2A2A2A2A2A2A2A2A2A2A2A2A2D2C
+            222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2E2D2A2E2E2D2A2A2A2A2A2A2A2A2A
+            2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A2D2E2A2A2E2E2E2A2A2A2A2A
+            2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A2E2D2A2A2D2E2E2D
+            2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A2E2E2E2E
+            2E2E2E2E2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2D
+            2E2D2A2A2A2D2E2E2D2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A
+            2A2A2A2E2D2A2A2A2A2A2E2E2E2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A
+            2A2A2A2A2A2A2D2E2A2A2A2A2A2A2D2E2E2D2A2A2A2A2A2A2A2A2D2C222C0A22
+            2E2A2A2A2A2A2A2A2A2E2E2E2E2A2A2A2A2E2E2E2E2E2E2A2A2A2A2A2A2A2D2C
+            222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2A2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2A2A2A2A2A2A2A
+            2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2D2C222C0A222E2A2A2A2A2D2D2D
+            2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C222C0A222C2C2C2C
+            2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C227D0A
+          }
+        end
+        object imgPortrait: TImage
+          Left = 124
+          Height = 32
+          Top = 21
+          Width = 26
+          AutoSize = True
+          Picture.Data = {
+            07544269746D61702B0400002F2A2058504D202A2F0A73746174696320636861
+            72202A677261706869635B5D203D207B0A22323620333220342031222C0A222E
+            20632023383438343834222C0A222C20632023433643364336222C0A222D2063
+            2023464646464646222C0A222A2063204E6F6E65222C0A222E2E2E2E2E2E2E2E
+            2E2E2E2E2E2E2E2E2E2E2E2E2C2C2C2C2C2C222C0A222E2D2D2D2D2D2D2D2D2D
+            2D2D2D2D2D2D2D2D2D2E2A2C2C2C2C2C222C0A222E2D2D2D2D2D2D2D2D2D2D2D
+            2D2D2D2D2D2D2D2E2E2A2C2C2C2C222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2D2D2D2D2D2E2C2E2A2C2C2C222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2D2D2D2E2D2C2E2A2C2C222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2D2E2D2D2C2E2A2C222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2E
+            2A2A2A2A2A2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2D2D2C2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2C2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C2A
+            222C0A222E2D2D2D2D2D2D2D2D2D2D2D2E2C2D2D2D2D2D2D2D2D2D2D2C2A222C
+            0A222E2D2D2D2D2D2D2D2D2D2D2C2E2E2D2D2D2D2D2D2D2D2D2D2C2A222C0A22
+            2E2D2D2D2D2D2D2D2D2D2D2E2E2E2C2D2D2D2D2D2D2D2D2D2C2A222C0A222E2D
+            2D2D2D2D2D2D2D2D2C2E2E2E2E2D2D2D2D2D2D2D2D2D2C2A222C0A222E2D2D2D
+            2D2D2D2D2D2D2E2C2D2E2E2C2D2D2D2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D
+            2D2D2D2C2E2D2D2E2E2E2D2D2D2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2D
+            2D2E2C2D2D2C2E2E2C2D2D2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2D2D2E
+            2E2E2E2E2E2E2E2D2D2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2D2C2E2C2D
+            2D2D2C2E2E2C2D2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2D2E2C2D2D2D2D
+            2D2E2E2E2D2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2C2E2D2D2D2D2D2D2C
+            2E2E2C2D2D2D2D2D2C2A222C0A222E2D2D2D2D2D2E2E2E2E2D2D2D2D2E2E2E2E
+            2E2E2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2D2D2D2D2C2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2D2D2C2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D
+            2C2A222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C2A
+            222C0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C2A222C
+            0A222E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C2A222C0A22
+            2E2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C2A222C0A222E2D
+            2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2C2A222C0A222E2C2C2C
+            2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2C2A222C0A222A2A2A2A2A2A
+            2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A2A227D0A
+          }
+        end
+        object RB1: TRadioButton
+          Left = 8
+          Height = 22
+          Top = 20
+          Width = 63
+          HelpContext = 111
+          AllowGrayed = True
+          Caption = '&Portrait'
+          Checked = True
+          OnClick = RB1Click
+          State = cbChecked
+          TabOrder = 0
+        end
+        object RB2: TRadioButton
+          Left = 8
+          Height = 22
+          Top = 40
+          Width = 86
+          HelpContext = 120
+          AllowGrayed = True
+          Caption = '&Landscape'
+          OnClick = RB2Click
+          TabOrder = 1
+        end
+      end
+      object GroupBox3: TGroupBox
+        Left = 4
+        Height = 126
+        Top = 8
+        Width = 185
+        Caption = 'Size'
+        TabOrder = 1
+        object Label1: TLabel
+          Left = 8
+          Height = 13
+          Top = 56
+          Width = 67
+          Caption = '&Width, mm'
+          Color = clNone
+          FocusControl = E1
+          ParentColor = False
+        end
+        object Label2: TLabel
+          Left = 8
+          Height = 13
+          Top = 80
+          Width = 72
+          Caption = '&Height, mm'
+          Color = clNone
+          FocusControl = E2
+          ParentColor = False
+        end
+        object ComB1: TComboBox
+          Left = 8
+          Height = 21
+          Top = 15
+          Width = 169
+          HelpContext = 130
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemWidth = 200
+          MaxLength = 0
+          OnClick = ComB1Click
+          OnDrawItem = ComB1DrawItem
+          Style = csOwnerDrawFixed
+          TabOrder = 0
+        end
+        object E1: TEdit
+          Left = 80
+          Height = 21
+          Top = 52
+          Width = 40
+          HelpContext = 140
+          TabOrder = 1
+        end
+        object E2: TEdit
+          Left = 80
+          Height = 21
+          Top = 76
+          Width = 40
+          HelpContext = 150
+          TabOrder = 2
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Margins'
+      object GroupBox4: TGroupBox
+        Left = 4
+        Height = 125
+        Top = 8
+        Width = 256
+        Caption = 'Page margins'
+        TabOrder = 0
+        object Label3: TLabel
+          Left = 8
+          Height = 13
+          Top = 56
+          Width = 56
+          Caption = '&Left, mm'
+          Color = clNone
+          FocusControl = E3
+          ParentColor = False
+        end
+        object Label4: TLabel
+          Left = 8
+          Height = 13
+          Top = 80
+          Width = 57
+          Caption = '&Top, mm'
+          Color = clNone
+          FocusControl = E4
+          ParentColor = False
+        end
+        object Label5: TLabel
+          Left = 132
+          Height = 13
+          Top = 56
+          Width = 64
+          Caption = '&Right, mm'
+          Color = clNone
+          FocusControl = E5
+          ParentColor = False
+        end
+        object Label6: TLabel
+          Left = 132
+          Height = 13
+          Top = 80
+          Width = 73
+          Caption = '&Bottom, mm'
+          Color = clNone
+          FocusControl = E6
+          ParentColor = False
+        end
+        object CB5: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 20
+          Width = 77
+          HelpContext = 62
+          AllowGrayed = True
+          Caption = '&Don''t use'
+          OnClick = CB5Click
+          TabOrder = 0
+        end
+        object E3: TEdit
+          Left = 80
+          Height = 21
+          Top = 52
+          Width = 40
+          HelpContext = 72
+          TabOrder = 1
+        end
+        object E4: TEdit
+          Left = 80
+          Height = 21
+          Top = 76
+          Width = 40
+          HelpContext = 81
+          TabOrder = 2
+        end
+        object E5: TEdit
+          Left = 204
+          Height = 21
+          Top = 52
+          Width = 40
+          HelpContext = 91
+          TabOrder = 3
+        end
+        object E6: TEdit
+          Left = 204
+          Height = 21
+          Top = 76
+          Width = 40
+          HelpContext = 101
+          TabOrder = 4
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Options'
+      object GroupBox1: TGroupBox
+        Left = 4
+        Height = 126
+        Top = 8
+        Width = 209
+        Caption = 'Options'
+        TabOrder = 0
+        object CB1: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 20
+          Width = 147
+          HelpContext = 160
+          AllowGrayed = True
+          Caption = '&Print to previous page'
+          TabOrder = 0
+        end
+      end
+      object GroupBox5: TGroupBox
+        Left = 220
+        Height = 126
+        Top = 8
+        Width = 141
+        Caption = 'Columns'
+        TabOrder = 1
+        object Label7: TLabel
+          Left = 8
+          Height = 13
+          Top = 24
+          Width = 53
+          Caption = '&Number'
+          Color = clNone
+          ParentColor = False
+        end
+        object Label8: TLabel
+          Left = 8
+          Height = 13
+          Top = 52
+          Width = 103
+          Caption = '&Column gap, mm'
+          Color = clNone
+          FocusControl = E7
+          ParentColor = False
+        end
+        object E7: TEdit
+          Left = 8
+          Height = 21
+          Top = 68
+          Width = 53
+          HelpContext = 180
+          TabOrder = 0
+        end
+        object Edit1: TEdit
+          Tag = 6
+          Left = 84
+          Height = 21
+          Top = 21
+          Width = 43
+          HelpContext = 170
+          TabOrder = 1
+          Text = '1'
+        end
+        object Panel8: TPanel
+          Left = 108
+          Height = 17
+          Top = 23
+          Width = 17
+          BevelOuter = bvNone
+          FullRepaint = False
+          TabOrder = 2
+          object SB1: TSpeedButton
+            Height = 8
+            Width = 17
+            Color = clBtnFace
+            Glyph.Data = {
+              770000002F2A2058504D202A2F0A7374617469632063686172202A6772617068
+              69635B5D203D207B0A2237203420322031222C0A222E2063204E6F6E65222C0A
+              222C20632023303030303030222C0A222E2E2E2C2E2E2E222C0A222E2E2C2C2C
+              2E2E222C0A222E2C2C2C2C2C2E222C0A222E2E2E2E2E2E2E227D0A
+            }
+            NumGlyphs = 0
+            Spacing = 0
+            OnClick = SB1Click
+          end
+          object SB2: TSpeedButton
+            Height = 8
+            Top = 9
+            Width = 17
+            Color = clBtnFace
+            Glyph.Data = {
+              770000002F2A2058504D202A2F0A7374617469632063686172202A6772617068
+              69635B5D203D207B0A2237203420322031222C0A222E2063204E6F6E65222C0A
+              222C20632023303030303030222C0A222E2E2E2E2E2E2E222C0A222E2C2C2C2C
+              2C2E222C0A222E2E2C2C2C2E2E222C0A222E2E2E2C2E2E2E227D0A
+            }
+            NumGlyphs = 0
+            OnClick = SB2Click
+          end
+        end
+      end
+    end
+  end
+end

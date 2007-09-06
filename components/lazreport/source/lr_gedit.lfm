@@ -1,0 +1,111 @@
+object frGEditorForm: TfrGEditorForm
+  BorderStyle = bsDialog
+  Caption = 'Picture'
+  ClientHeight = 267
+  ClientWidth = 346
+  Font.Color = clBlack
+  Font.Height = 18446744073709551605
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  PixelsPerInch = 86
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 347
+  VertScrollBar.Page = 268
+  Left = 555
+  Height = 267
+  Top = 129
+  Width = 346
+  object Bevel1: TBevel
+    Height = 241
+    Left = 4
+    Name = 'Bevel1'
+    Shape = bsFrame
+    Top = 8
+    Width = 246
+    Left = 4
+    Height = 241
+    Top = 8
+    Width = 246
+  end
+  object Image1: TImage
+    Stretch = True
+    Transparent = True
+    Left = 8
+    Height = 233
+    Top = 12
+    Width = 237
+  end
+  object CB1: TCheckBox
+    AllowGrayed = True
+    AutoSize = True
+    Caption = '&Stretch'
+    DragCursor = 65524
+    OnClick = CB1Click
+    TabOrder = 3
+    Left = 256
+    Height = 17
+    Top = 232
+    Width = 73
+    HelpContext = 82
+  end
+  object Button1: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+    Left = 256
+    Height = 25
+    Top = 96
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 256
+    Height = 25
+    Top = 124
+    Width = 75
+    HelpContext = 50
+  end
+  object Button3: TButton
+    Caption = '&Load...'
+    OnClick = BitBtn1Click
+    TabOrder = 0
+    Left = 256
+    Height = 25
+    Top = 8
+    Width = 75
+    HelpContext = 63
+  end
+  object Button4: TButton
+    Caption = '&Clear'
+    OnClick = Button4Click
+    TabOrder = 4
+    Left = 256
+    Height = 25
+    Top = 36
+    Width = 75
+    HelpContext = 71
+  end
+  object Button5: TButton
+    Caption = 'Memo'
+    OnClick = Button5Click
+    TabOrder = 5
+    Left = 256
+    Height = 25
+    Top = 64
+    Width = 75
+  end
+  object OpenDlg: TOpenDialog
+    Options = [ofHideReadOnly]
+    Title = 'Ouvrir un fichier existant'
+    DefaultExt = '.bmp'
+    FilterIndex = 0
+    left = 52
+    top = 40
+  end
+end

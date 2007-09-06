@@ -1,0 +1,29 @@
+{ Este es un archivo de recurso de Lazarus generado automaticamente }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'.'#1#6'Height'#3#151#0#3'Top'#3#154#0#5'W'
+  +'idth'#3#173#2#18'HorzScrollBar.Page'#3#172#2#18'VertScrollBar.Page'#3#150#0
+  +#13'ActiveControl'#7#7'DBGrid1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3#151
+  +#0#11'ClientWidth'#3#173#2#8'OnCreate'#7#10'FormCreate'#0#7'TDBGrid'#7'DBGri'
+  +'d1'#4'Left'#2#8#6'Height'#2'd'#3'Top'#2'('#5'Width'#3'x'#2#10'DataSource'#7
+  +#11'Datasource1'#10'FixedColor'#7#9'clBtnFace'#13'FixedHotColor'#7#9'cl3DLig'
+  +'ht'#7'Options'#11#9'dgEditing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResiz'
+  +'e'#12'dgColumnMove'#10'dgColLines'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShow'
+  +'Selection'#15'dgConfirmDelete'#14'dgCancelOnExit'#0#12'OptionsExtra'#11#14
+  +'dgeAutoColumns'#17'dgeCheckboxColumn'#0#11'ParentColor'#8#8'TabOrder'#2#0#7
+  +'TabStop'#9#0#0#7'TButton'#7'Button1'#4'Left'#3#200#1#6'Height'#2#25#3'Top'#2
+  +#8#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#12'DesignRep'
+  +'ort'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#7'TButton'#7'Button2'
+  +#4'Left'#3' '#2#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'#25'BorderSpacing.Inn'
+  +'erBorder'#2#4#7'Caption'#6#10'ShowReport'#7'OnClick'#7#12'Button2Click'#8'T'
+  +'abOrder'#2#2#0#0#4'TDbf'#4'Dbf1'#8'FilePath'#6'FC:\Documents and Settings\j'
+  +'aviVF\Escritorio\lazarus\Proyectos\cb\db\/\'#9'IndexDefs'#14#0#9'TableName'
+  +#6#9'disco.dbf'#10'TableLevel'#2#3#0#0#11'TDatasource'#11'Datasource1'#7'Dat'
+  +'aSet'#7#4'Dbf1'#3'top'#2' '#0#0#12'TfrDBDataSet'#12'frDBDataSet1'#7'DataSet'
+  +#7#4'Dbf1'#3'top'#2'`'#0#0#9'TfrReport'#9'frReport1'#7'Dataset'#7#12'frDBDat'
+  +'aSet1'#14'PreviewButtons'#11#6'pbZoom'#6'pbLoad'#6'pbSave'#7'pbPrint'#6'pbF'
+  +'ind'#6'pbHelp'#6'pbExit'#0#3'top'#2'|'#10'ReportForm'#10#4#0#0#0#24#0#0#0#0
+  +#0#16'TfrBarCodeObject'#16'frBarCodeObject1'#3'top'#2'|'#0#0#11'TOpenDialog'
+  +#11'OpenDialog1'#5'Title'#6#26'Abrir un archivo existente'#11'FilterIndex'#2
+  +#0#3'top'#2'@'#0#0#0
+]);

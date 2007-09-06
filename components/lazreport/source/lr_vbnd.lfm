@@ -1,0 +1,113 @@
+object frVBandEditorForm: TfrVBandEditorForm
+  BorderStyle = bsDialog
+  Caption = 'Band data sources'
+  ClientHeight = 126
+  ClientWidth = 399
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  PixelsPerInch = 75
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 398
+  VertScrollBar.Page = 125
+  Left = 200
+  Height = 126
+  Top = 108
+  Width = 399
+  object Button1: TButton
+    BorderSpacing.OnChange = nil
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
+    Left = 236
+    Height = 25
+    Top = 96
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 316
+    Height = 25
+    Top = 96
+    Width = 75
+    HelpContext = 50
+  end
+  object GroupBox1: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = 'Bands'
+    ClientHeight = 100
+    ClientWidth = 181
+    ParentColor = True
+    TabOrder = 2
+    Left = 4
+    Height = 117
+    Top = 4
+    Width = 185
+    object LB1: TListBox
+      BorderSpacing.OnChange = nil
+      ClickOnSelChange = False
+      ItemHeight = 13
+      OnClick = LB1Click
+      TabOrder = 0
+      TopIndex = -1
+      Left = 5
+      Height = 93
+      Width = 169
+      HelpContext = 105
+    end
+  end
+  object GroupBox2: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = 'Data source'
+    ClientHeight = 64
+    ClientWidth = 193
+    ParentColor = True
+    TabOrder = 3
+    Left = 196
+    Height = 81
+    Top = 4
+    Width = 197
+    object Label1: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = '&Record count'
+      Color = clNone
+      FocusControl = Edit1
+      Left = 4
+      Height = 13
+      Top = 41
+      Width = 80
+    end
+    object CB1: TComboBox
+      BorderSpacing.OnChange = nil
+      ItemHeight = 13
+      MaxLength = 0
+      OnChange = CB1Click
+      OnExit = CB1Exit
+      Style = csDropDownList
+      TabOrder = 0
+      Left = 4
+      Height = 21
+      Top = 5
+      Width = 181
+      HelpContext = 88
+    end
+    object Edit1: TEdit
+      BorderSpacing.OnChange = nil
+      OnExit = CB1Exit
+      TabOrder = 1
+      Text = '1'
+      Left = 128
+      Height = 21
+      Top = 37
+      Width = 57
+      HelpContext = 95
+    end
+  end
+end

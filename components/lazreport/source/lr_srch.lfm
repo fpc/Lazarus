@@ -1,0 +1,117 @@
+object frPreviewSearchForm: TfrPreviewSearchForm
+  BorderStyle = bsDialog
+  Caption = 'Find text'
+  ClientHeight = 167
+  ClientWidth = 291
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 292
+  VertScrollBar.Page = 168
+  Left = 305
+  Height = 167
+  Top = 96
+  Width = 291
+  object Label1: TLabel
+    Caption = 'Text to &find'
+    FocusControl = Edit1
+    Left = 4
+    Height = 13
+    Top = 8
+    Width = 68
+  end
+  object Edit1: TEdit
+    TabOrder = 0
+    TabOrder = 0
+    Left = 4
+    Height = 21
+    Top = 24
+    Width = 285
+    HelpContext = 98
+  end
+  object Button1: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+    Left = 128
+    Height = 25
+    Top = 136
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 208
+    Height = 25
+    Top = 136
+    Width = 75
+    HelpContext = 50
+  end
+  object GroupBox1: TGroupBox
+    Caption = 'Options'
+    ClientHeight = 64
+    ClientWidth = 137
+    ParentColor = True
+    TabOrder = 3
+    Left = 4
+    Height = 81
+    Top = 52
+    Width = 141
+    object CB1: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = '&Case sensitive'
+      DragCursor = 65524
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Top = 20
+      Width = 121
+      HelpContext = 107
+    end
+  end
+  object GroupBox2: TGroupBox
+    Caption = 'Origin'
+    ClientHeight = 64
+    ClientWidth = 133
+    ParentColor = True
+    TabOrder = 4
+    Left = 152
+    Height = 81
+    Top = 52
+    Width = 137
+    object RB1: TRadioButton
+      AllowGrayed = True
+      AutoSize = True
+      Caption = '&1st page'
+      Checked = True
+      DragCursor = 65524
+      State = cbChecked
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Top = 20
+      Width = 82
+      HelpContext = 116
+    end
+    object RB2: TRadioButton
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Current &page'
+      DragCursor = 65524
+      TabOrder = 1
+      Left = 8
+      Height = 17
+      Top = 40
+      Width = 107
+      HelpContext = 123
+    end
+  end
+end

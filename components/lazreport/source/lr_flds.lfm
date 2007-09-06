@@ -1,0 +1,56 @@
+object frFieldsForm: TfrFieldsForm
+  Left = 193
+  Height = 317
+  Top = 109
+  Width = 217
+  HorzScrollBar.Page = 216
+  VertScrollBar.Page = 316
+  ActiveControl = ValCombo
+  BorderStyle = bsDialog
+  Caption = 'Insert DB field'
+  ClientHeight = 317
+  ClientWidth = 217
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  KeyPreview = True
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnKeyDown = FormKeyDown
+  Position = poScreenCenter
+  object Label1: TLabel
+    Left = 4
+    Height = 14
+    Top = 4
+    Width = 67
+    Caption = '&Available DB''s'
+    Color = clNone
+    FocusControl = ValCombo
+    ParentColor = False
+  end
+  object ValCombo: TComboBox
+    Left = 4
+    Height = 21
+    Top = 20
+    Width = 209
+    HelpContext = 10
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
+    MaxLength = 0
+    OnChange = ValComboClick
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object ValList: TListBox
+    Left = 4
+    Height = 264
+    Top = 48
+    Width = 209
+    HelpContext = 23
+    ClickOnSelChange = False
+    ItemHeight = 13
+    OnKeyDown = ValListKeyDown
+    OnMouseDown = ValListMouseDown
+    TabOrder = 1
+  end
+end

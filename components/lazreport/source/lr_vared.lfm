@@ -1,0 +1,57 @@
+object frVaredForm: TfrVaredForm
+  ActiveControl = Memo1
+  BorderStyle = bsDialog
+  Caption = 'Variables list'
+  ClientHeight = 269
+  ClientWidth = 249
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 250
+  VertScrollBar.Page = 270
+  Left = 200
+  Height = 269
+  Top = 108
+  Width = 249
+  object Label1: TLabel
+    Caption = '&Categories and variables'
+    FocusControl = Memo1
+    Left = 4
+    Height = 13
+    Top = 8
+    Width = 228
+  end
+  object Button4: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
+    Left = 88
+    Height = 25
+    Top = 240
+    Width = 75
+    HelpContext = 40
+  end
+  object Button5: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 168
+    Height = 25
+    Top = 240
+    Width = 75
+    HelpContext = 50
+  end
+  object Memo1: TMemo
+    TabOrder = 2
+    Left = 4
+    Height = 209
+    Top = 24
+    Width = 241
+    HelpContext = 79
+  end
+end

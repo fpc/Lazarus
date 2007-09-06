@@ -1,0 +1,73 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrAboutForm','FORMDATA',[
+  'TPF0'#12'TfrAboutForm'#11'frAboutForm'#11'BorderStyle'#7#8'bsDialog'#7'Capti'
+  +'on'#6#5'About'#12'ClientHeight'#3#150#0#11'ClientWidth'#3#23#1#10'Font.Colo'
+  +'r'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#5'Arial'#8'OnCreate'#7
+  +#10'FormCreate'#13'PixelsPerInch'#2'V'#8'Position'#7#14'poScreenCenter'#10'T'
+  +'extHeight'#2#14#18'HorzScrollBar.Page'#3#24#1#18'VertScrollBar.Page'#3#151#0
+  +#4'Left'#3#200#0#6'Height'#3#150#0#3'Top'#2'l'#5'Width'#3#23#1#0#6'TBevel'#6
+  +'Bevel2'#6'Height'#2'q'#4'Left'#2#4#4'Name'#6#6'Bevel2'#5'Shape'#7#7'bsFrame'
+  +#3'Top'#2#4#5'Width'#3#13#1#4'Left'#2#4#6'Height'#2'q'#3'Top'#2#4#5'Width'#3
+  +#13#1#0#0#6'TBevel'#6'Bevel1'#6'Height'#2'9'#4'Left'#2#16#4'Name'#6#6'Bevel1'
+  +#5'Shape'#7#7'bsFrame'#3'Top'#2#16#5'Width'#2'9'#4'Left'#2#16#6'Height'#2'9'
+  +#3'Top'#2#16#5'Width'#2'9'#0#0#6'TImage'#6'Image1'#8'AutoSize'#9#12'Picture.'
+  +'Data'#10#250#5#0#0#7'TBitmap'#238#5#0#0'BM'#238#5#0#0#0#0#0#0'v'#0#0#0'('#0
+  +#0#0'2'#0#0#0'2'#0#0#0#1#0#4#0#0#0#0#0'x'#5#0#0#0#0#0#0#0#0#0#0#16#0#0#0#0#0
+  +#0#0#0#0#0#0#0#0#128#0#0#128#0#0#0#128#128#0#128#0#0#0#128#0#128#0#128#128#0
+  +#0#192#192#192#0#128#128#128#0#0#0#255#0#0#255#0#0#0#255#255#0#255#0#0#0#255
+  +#0#255#0#255#255#0#0#255#255#255#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwww'
+  +'wwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwww'
+  +'wwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'
+  +#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwww'#231'wwwwwwwwww'#238'wwww'
+  +#0#0#0'wwwwwwwww'#238#231'wwwwwwww'#238#238'wwww'#0#0#0'wwwwwwwww~'#231'wwww'
+  +'ww~'#238#238#238'wwww'#0#0#0'wwwwwwwww~'#238'wwwww~'#238#238#238#238'wwww'#0
+  +#0#0'wwwwwwwwww'#238'wwww~'#238#238#238#238#238'wwww'#0#0#0'w'#255'wwwwwwww'
+  +#238#231'ww~'#238#238#238#238#238'wwwww'#0#0#0'w'#255#247'wwwwwww~'#238'w~'
+  +#238#238#238#238#238'wwwwww'#0#0#0'w'#255#255#247'wwwwww~'#238'~'#238#238#238
+  +#238#238'wwwwwww'#0#0#0'w'#255#255'wwwwwww'#238#238#238#238#238#231'wwwwwww'
+  +'w'#0#0#0'ww'#255#255#247'wwwww'#238#238#238#238#238#231'wwwwwwwww'#0#0#0'ww'
+  +''#255#255'wwwww'#238#238#238#238'wwwwwwwwwww'#0#0#0'www'#255#255#247'wwww~'
+  +#238#238#238#231'wwwwwwwwww'#0#0#0'wwww'#255'wwwww'#238#238#238#238#238#238
+  +'wwwwwwww'#0#0#0'wwwww'#255#247'wwwww~'#238#238#238#238#238#238'wwwwww'#0#0#0
+  +'wwwww'#255'wwwwww'#238'w'#238#238#238#238#238#231'wwww'#0#0#0'wwwww'#255
+  +#247'wwwww~'#231'ww~'#238#238#238#238'www'#0#0#0'wwwwww'#255#247'wwwwww'#238
+  +'wwww'#238#238#238#231'ww'#0#0#0'ww'#255#255#255#255#255'wwwwww'#238#231'ww'
+  +'ww~'#238#238'ww'#0#0#0'ww'#255#255#255#255#255#255#255#247'www~'#231'wwwww'
+  +'~'#238#231'w'#0#0#0'ww'#255#255#255#255#255#255#255#255'wwww'#238'wwwwww'
+  +#238#231'w'#0#0#0'www'#255#255#255#255#255#255#255#247'www'#238#231'wwwww'
+  +#238#231'w'#0#0#0'wwwww'#255#255#255#255#255#238#238#238'w~'#238'wwww~'#238
+  +#231'w'#0#0#0'wwwwwwww'#255'~'#238#238#238#231'~'#238#238#238#238#238#238
+  +#238#231'w'#0#0#0'wwwwwwwww'#255'~'#238#238#238#238#238#238#238#238#238#238
+  +#238#238#231'w'#0#0#0'wwwwwwwww'#255#247#238#238#238#238#238#238#238#238#238
+  +#238#238#238'ww'#0#0#0'wwwwwwwww'#255'w'#238#238#238#238#238#238#238#238#238
+  +#238'www'#0#0#0'wwwwwwwwww'#255'ww~'#238#238#238#238#238#238#231'wwww'#0#0#0
+  +'wwwwwwwwww'#247'wwwwwwwwwwwww'#0#0#0'www'#255#255#255#255'www'#255'wwwwww'
+  +'wwwwwww'#0#0#0'www'#255#255#255'wwwww'#255#247'wwwwwwwwwwww'#0#0#0'www'#255
+  +#255#255#247'www'#247'wwwwwwwwwwww'#0#0#0'www'#255#255#255#255#255#255'w'
+  +#255'wwwwwwwwwwww'#0#0#0'wwww'#255#255#255#255#255#255#255#255#255#255#255
+  +#255#247'wwwwwwww'#0#0#0'wwww'#255#255#255#255#255#255#255#255#255#255#255
+  +#255#247'wwwwwww'#0#0#0'wwwww'#255#255#255#255#255#255#255#255#255#255#255
+  +#247'wwwwwww'#0#0#0'wwwwwww'#255#255#255#255#255#255#255#255#255#255#255'www'
+  +'wwww'#0#0#0'wwwwwwwww'#255#255#255#255#255#255#255#255#255'wwwwwww'#0#0#0'w'
+  +'wwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwww'
+  +'wwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwww'
+  +'wwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0#11'Transparent'#9#4'Left'#2
+  +#20#6'Height'#2'2'#3'Top'#2#20#5'Width'#2'2'#0#0#6'TLabel'#6'Label1'#9'Align'
+  +'ment'#7#8'taCenter'#7'Caption'#6#10'FreeReport'#10'Font.Color'#7#7'clBlack'
+  +#11'Font.Height'#2#237#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6
+  +'fsBold'#0#4'Left'#2'h'#6'Height'#2#17#3'Top'#2#16#5'Width'#3#145#0#0#0#6'TL'
+  +'abel'#6'Label2'#9'Alignment'#7#8'taCenter'#7'Caption'#6#12'Version 2.32'#10
+  +'Font.Color'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Se'
+  +'rif'#4'Left'#2'h'#6'Height'#2#17#3'Top'#2' '#5'Width'#3#145#0#0#0#6'TLabel'
+  +#6'Label3'#9'Alignment'#7#8'taCenter'#7'Caption'#6#23'Copyright ('#169') 199'
+  +'8-2002'#10'Font.Color'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13
+  +'MS Sans Serif'#4'Left'#2'X'#6'Height'#2#17#3'Top'#2'@'#5'Width'#3#176#0#0#0
+  +#6'TLabel'#6'Label4'#9'Alignment'#7#8'taCenter'#7'Caption'#6#16'by Tzyganenk'
+  +'o A.'#10'Font.Color'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'M'
+  ,'S Sans Serif'#4'Left'#2'X'#6'Height'#2#17#3'Top'#2'0'#5'Width'#3#168#0#0#0#7
+  +'TButton'#7'Button1'#7'Caption'#6#2'Ok'#7'Default'#9#10'Font.Color'#7#7'clBl'
+  +'ack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11'ModalResult'
+  +#2#1#8'TabOrder'#2#0#4'Left'#3#198#0#6'Height'#2#25#3'Top'#2'x'#5'Width'#2'K'
+  +#0#0#0
+]);

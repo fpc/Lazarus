@@ -1,0 +1,221 @@
+object frPrintForm: TfrPrintForm
+  BorderStyle = bsDialog
+  Caption = 'Print'
+  ClientHeight = 270
+  ClientWidth = 368
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 367
+  VertScrollBar.Page = 269
+  Left = 208
+  Height = 270
+  Top = 147
+  Width = 368
+  object Image1: TImage
+    AutoSize = True
+    Picture.Data = {
+      07544269746D617036010000424D360100000000000076000000280000001200
+      0000100000000100040000000000C00000000000000000000000100000000000
+      000000000000000080000080000000808000800000008000800080800000C0C0
+      C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+      FF00333333333333333333000000333333300033333333000000333330088800
+      33333300000033300887888800333300000030088777888888003300000038F7
+      777F888888880300000038F77FF7778888880300000038FFF779977788880300
+      000038F77AA777770788030000003388F77777FF070033000000333388F8FFFF
+      F0333300000033333388FFFFFF0333000000333333338FFFFFF0030000003333
+      333338FFF8833300000033333333338883333300000033333333333333333300
+      0000
+    }
+    Transparent = True
+    Visible = False
+    Left = 192
+    Height = 16
+    Top = 64
+    Width = 18
+  end
+  object Label1: TLabel
+    Caption = 'Copies'
+    Color = clNone
+    FocusControl = E1
+    Left = 16
+    Height = 13
+    Top = 76
+    Width = 34
+  end
+  object E1: TEdit
+    TabOrder = 0
+    Text = '1'
+    Left = 64
+    Height = 21
+    Top = 72
+    Width = 61
+    HelpContext = 99
+  end
+  object GroupBox2: TGroupBox
+    Caption = 'Page range'
+    ClientHeight = 142
+    ClientWidth = 249
+    ParentColor = True
+    TabOrder = 1
+    Left = 8
+    Height = 160
+    Top = 104
+    Width = 253
+    object Label2: TLabel
+      Caption = 'Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12'
+      Color = clNone
+      WordWrap = True
+      Left = 14
+      Height = 56
+      Top = 81
+      Width = 237
+    end
+    object RB1: TRadioButton
+      AllowGrayed = True
+      Caption = 'All'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Top = 20
+      Width = 158
+      HelpContext = 108
+    end
+    object RB2: TRadioButton
+      AllowGrayed = True
+      Caption = 'Current &page'
+      TabOrder = 1
+      Left = 8
+      Height = 17
+      Top = 40
+      Width = 107
+      HelpContext = 118
+    end
+    object RB3: TRadioButton
+      AllowGrayed = True
+      Caption = '&Numbers:'
+      OnClick = RB3Click
+      TabOrder = 2
+      Left = 8
+      Height = 17
+      Top = 60
+      Width = 86
+      HelpContext = 124
+    end
+    object E2: TEdit
+      OnClick = E2Click
+      TabOrder = 3
+      Left = 88
+      Height = 21
+      Top = 58
+      Width = 155
+      HelpContext = 133
+    end
+  end
+  object Panel1: TPanel
+    BevelOuter = bvNone
+    ClientHeight = 17
+    ClientWidth = 17
+    FullRepaint = False
+    TabOrder = 2
+    Left = 106
+    Height = 17
+    Top = 74
+    Width = 17
+    object frSpeedButton1: TSpeedButton
+      Glyph.Data = {
+        86000000424D8600000000000000760000002800000007000000040000000100
+        0400000000001000000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFF0F000
+        00F0FF000FF0FFF0FFF0
+      }
+      NumGlyphs = 0
+      Spacing = 0
+      OnClick = frSpeedButton1Click
+      Height = 8
+      Width = 17
+    end
+    object frSpeedButton2: TSpeedButton
+      Glyph.Data = {
+        86000000424D8600000000000000760000002800000007000000040000000100
+        0400000000001000000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFF0FFF0FF00
+        0FF0F00000F0FFFFFFF0
+      }
+      NumGlyphs = 0
+      OnClick = frSpeedButton2Click
+      Height = 8
+      Top = 9
+      Width = 17
+    end
+  end
+  object Button1: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 3
+    Left = 282
+    Height = 25
+    Top = 108
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+    Left = 282
+    Height = 25
+    Top = 136
+    Width = 75
+    HelpContext = 50
+  end
+  object GroupBox1: TGroupBox
+    Caption = 'Printer'
+    ClientHeight = 31
+    ClientWidth = 345
+    ParentColor = True
+    TabOrder = 5
+    Left = 8
+    Height = 49
+    Top = 8
+    Width = 349
+    object PropButton: TButton
+      Caption = 'Properties'
+      OnClick = PropButtonClick
+      TabOrder = 0
+      Left = 264
+      Height = 25
+      Top = 1
+      Width = 75
+      HelpContext = 152
+    end
+    object CB1: TComboBox
+      ItemHeight = 16
+      MaxLength = 0
+      OnChange = CB1Click
+      OnClick = CB1Click
+      OnDrawItem = CB1DrawItem
+      Style = csDropDownList
+      TabOrder = 1
+      Left = 8
+      Height = 21
+      Top = 1
+      Width = 245
+      HelpContext = 142
+    end
+  end
+  object PrinterSetupDialog1: TPrinterSetupDialog
+    left = 64
+    top = 240
+  end
+end

@@ -1,0 +1,24 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrBandEditorForm','FORMDATA',[
+  'TPF0'#17'TfrBandEditorForm'#16'frBandEditorForm'#11'BorderStyle'#7#8'bsDialo'
+  +'g'#7'Caption'#6#16'Band data source'#12'ClientHeight'#2'~'#11'ClientWidth'#3
+  +#225#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7
+  +#10'FormCreate'#13'PixelsPerInch'#2'K'#8'Position'#7#14'poScreenCenter'#10'T'
+  +'extHeight'#2#13#18'HorzScrollBar.Page'#3#224#0#18'VertScrollBar.Page'#2'}'#4
+  +'Left'#3#200#0#6'Height'#2'~'#3'Top'#2'l'#5'Width'#3#225#0#0#7'TButton'#7'Bu'
+  +'tton1'#7'Caption'#6#2'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#0#4
+  +'Left'#2'B'#6'Height'#2#25#3'Top'#2'`'#5'Width'#2'K'#11'HelpContext'#2'('#0#0
+  +#7'TButton'#7'Button2'#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2
+  +#8'TabOrder'#2#1#4'Left'#3#146#0#6'Height'#2#25#3'Top'#2'`'#5'Width'#2'K'#11
+  +'HelpContext'#2'2'#0#0#9'TGroupBox'#3'GB1'#7'Caption'#6#11'Data source'#12'C'
+  +'lientHeight'#2'@'#11'ClientWidth'#3#213#0#11'ParentColor'#9#8'TabOrder'#2#2
+  +#4'Left'#2#4#6'Height'#2'Q'#3'Top'#2#4#5'Width'#3#217#0#0#6'TLabel'#6'Label2'
+  +#7'Caption'#6#13'&Record count'#5'Color'#7#6'clNone'#12'FocusControl'#7#5'Ed'
+  +'it1'#4'Left'#2#8#6'Height'#2#13#3'Top'#2''''#5'Width'#2'P'#0#0#9'TComboBox'
+  +#3'CB1'#10'ItemHeight'#2#13#9'MaxLength'#2#0#8'OnChange'#7#8'CB1Click'#5'Sty'
+  +'le'#7#14'csDropDownList'#8'TabOrder'#2#0#4'Left'#2#7#6'Height'#2#21#3'Top'#2
+  +#3#5'Width'#3#201#0#11'HelpContext'#2'X'#0#0#5'TEdit'#5'Edit1'#8'TabOrder'#2
+  +#1#4'Text'#6#1'1'#4'Left'#3#136#0#6'Height'#2#21#3'Top'#2'#'#5'Width'#2'H'#11
+  +'HelpContext'#2'_'#0#0#0#0
+]);

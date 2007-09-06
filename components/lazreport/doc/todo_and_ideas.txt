@@ -1,0 +1,10 @@
+Todo & Ideas :
+--------------
+
+- Save into text file (xml). -------> Ok
+- Use object inspector of Lazarus for Lazreport objects. -------> Ok
+- Inherited reports
+- Multi language support
+- Form and embeded Datasource like FastReport 2.4 and more
+- GUI: convert to use standard toolbars and Actions
+ 

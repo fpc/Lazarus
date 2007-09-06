@@ -1,0 +1,222 @@
+object frBarCodeForm: TfrBarCodeForm
+  BorderStyle = bsDialog
+  Caption = 'Barcode editor'
+  ClientHeight = 286
+  ClientWidth = 293
+  Font.Color = clBlack
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  PixelsPerInch = 75
+  Position = poScreenCenter
+  ShowHint = True
+  TextHeight = 13
+  HorzScrollBar.Page = 292
+  VertScrollBar.Page = 285
+  Left = 196
+  Height = 286
+  Top = 110
+  Width = 293
+  object Label1: TLabel
+    Caption = 'Code'
+    Color = clNone
+    Left = 8
+    Height = 13
+    Top = 8
+    Width = 49
+  end
+  object Label2: TLabel
+    Caption = 'Type of bar'
+    Color = clNone
+    Left = 8
+    Height = 13
+    Top = 52
+    Width = 80
+  end
+  object Image1: TImage
+    AutoSize = True
+    Picture.Data = {
+      07544269746D6170F6000000424DF60000000000000076000000280000001000
+      0000100000000100040000000000800000000000000000000000100000000000
+      000000000000000080000080000000808000800000008000800080800000C0C0
+      C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+      FF0077788888888888777700000000000877770FFFFFFFFF0877770F0F80F80F
+      0877770F0F80F80F0877770F0F80F80F0877770F0F80F80F0877770F0F80F80F
+      0877770FFFFFFFFF0877770BBBBBBBBB07777770BBBBBBB0777777770BB0BB07
+      7777777770000077777777777707707777777777770007777777777777777777
+      7777
+    }
+    Transparent = True
+    Visible = False
+    Left = 240
+    Height = 16
+    Top = 88
+    Width = 16
+  end
+  object bCancel: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 3
+    Left = 188
+    Height = 25
+    Top = 256
+    Width = 75
+    HelpContext = 50
+  end
+  object bOk: TButton
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    OnClick = bOkClick
+    TabOrder = 2
+    Left = 96
+    Height = 25
+    Top = 256
+    Width = 75
+    HelpContext = 40
+  end
+  object M1: TEdit
+    TabOrder = 0
+    Left = 8
+    Height = 21
+    Top = 24
+    Width = 280
+    HelpContext = 260
+  end
+  object cbType: TComboBox
+    ItemHeight = 13
+    MaxLength = 0
+    Style = csDropDownList
+    TabOrder = 1
+    Left = 8
+    Height = 21
+    Top = 68
+    Width = 280
+    HelpContext = 261
+  end
+  object Panel1: TPanel
+    BevelOuter = bvNone
+    ClientHeight = 17
+    ClientWidth = 34
+    FullRepaint = False
+    TabOrder = 4
+    Left = 251
+    Height = 17
+    Top = 26
+    Width = 34
+    object DBBtn: TSpeedButton
+      Caption = 'D'
+      Margin = 4
+      NumGlyphs = 0
+      OnClick = DBBtnClick
+      Left = -2
+      Height = 17
+      Width = 17
+    end
+    object VarBtn: TSpeedButton
+      Caption = 'V'
+      NumGlyphs = 0
+      OnClick = VarBtnClick
+      Left = 16
+      Height = 17
+      Width = 17
+    end
+  end
+  object GroupBox1: TGroupBox
+    Caption = 'Options'
+    ClientHeight = 60
+    ClientWidth = 278
+    ParentColor = True
+    TabOrder = 5
+    Left = 8
+    Height = 77
+    Top = 100
+    Width = 282
+    object labZoom: TLabel
+      Caption = 'Zoom'
+      Color = clNone
+      Left = 166
+      Height = 17
+      Top = 16
+      Width = 41
+    end
+    object ckCheckSum: TCheckBox
+      Caption = 'Checksum '
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Top = 16
+      Width = 142
+      HelpContext = 262
+    end
+    object ckViewText: TCheckBox
+      Caption = 'Human readable'
+      TabOrder = 1
+      Left = 8
+      Height = 17
+      Top = 36
+      Width = 142
+      HelpContext = 263
+    end
+    object edZoom: TEdit
+      OnKeyPress = edZoomKeyPress
+      TabOrder = 2
+      Text = '1'
+      Left = 206
+      Height = 23
+      Top = 10
+      Width = 45
+    end
+  end
+  object GroupBox2: TGroupBox
+    Caption = 'Orientation'
+    ClientHeight = 48
+    ClientWidth = 278
+    ParentColor = True
+    TabOrder = 6
+    Left = 8
+    Height = 65
+    Top = 184
+    Width = 282
+    object RB1: TRadioButton
+      Caption = '0 '
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      Left = 8
+      Height = 17
+      Top = 16
+      Width = 37
+      HelpContext = 264
+    end
+    object RB2: TRadioButton
+      Caption = '90 '
+      TabOrder = 1
+      Left = 72
+      Height = 17
+      Top = 16
+      Width = 37
+      HelpContext = 264
+    end
+    object RB3: TRadioButton
+      Caption = '180 '
+      TabOrder = 2
+      Left = 136
+      Height = 17
+      Top = 16
+      Width = 45
+      HelpContext = 264
+    end
+    object RB4: TRadioButton
+      Caption = '270 '
+      TabOrder = 3
+      Left = 200
+      Height = 17
+      Top = 16
+      Width = 45
+      HelpContext = 264
+    end
+  end
+end

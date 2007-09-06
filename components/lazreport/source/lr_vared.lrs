@@ -1,0 +1,19 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrVaredForm','FORMDATA',[
+  'TPF0'#12'TfrVaredForm'#11'frVaredForm'#13'ActiveControl'#7#5'Memo1'#11'Borde'
+  +'rStyle'#7#8'bsDialog'#7'Caption'#6#14'Variables list'#12'ClientHeight'#3#13
+  +#1#11'ClientWidth'#3#249#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans S'
+  +'erif'#10'OnActivate'#7#12'FormActivate'#8'OnCreate'#7#10'FormCreate'#8'Posi'
+  +'tion'#7#14'poScreenCenter'#10'TextHeight'#2#13#18'HorzScrollBar.Page'#3#250
+  +#0#18'VertScrollBar.Page'#3#14#1#4'Left'#3#200#0#6'Height'#3#13#1#3'Top'#2'l'
+  +#5'Width'#3#249#0#0#6'TLabel'#6'Label1'#7'Caption'#6#25'&Categories and vari'
+  +'ables'#12'FocusControl'#7#5'Memo1'#4'Left'#2#4#6'Height'#2#13#3'Top'#2#8#5
+  +'Width'#3#228#0#0#0#7'TButton'#7'Button4'#7'Caption'#6#2'Ok'#7'Default'#9#11
+  +'ModalResult'#2#1#8'TabOrder'#2#0#4'Left'#2'X'#6'Height'#2#25#3'Top'#3#240#0
+  +#5'Width'#2'K'#11'HelpContext'#2'('#0#0#7'TButton'#7'Button5'#6'Cancel'#9#7
+  +'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#168#0#6
+  +'Height'#2#25#3'Top'#3#240#0#5'Width'#2'K'#11'HelpContext'#2'2'#0#0#5'TMemo'
+  +#5'Memo1'#8'TabOrder'#2#2#4'Left'#2#4#6'Height'#3#209#0#3'Top'#2#24#5'Width'
+  +#3#241#0#11'HelpContext'#2'O'#0#0#0
+]);

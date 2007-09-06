@@ -1,0 +1,11 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrFloatWindow','FORMDATA',[
+  'TPF0'#14'TfrFloatWindow'#13'frFloatWindow'#11'BorderStyle'#7#12'bsToolWindow'
+  +#7'Caption'#6#13'frFloatWindow'#12'ClientHeight'#2'='#11'ClientWidth'#3#213#0
+  +#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#9'FormStyle'#7#11'fs'
+  +'StayOnTop'#9'OnDestroy'#7#11'FormDestroy'#6'OnShow'#7#8'FormShow'#13'Pixels'
+  +'PerInch'#2'K'#8'ShowHint'#9#10'TextHeight'#2#13#18'HorzScrollBar.Page'#3#212
+  +#0#18'VertScrollBar.Page'#2'<'#4'Left'#3'@'#1#6'Height'#2'='#3'Top'#3#195#0#5
+  +'Width'#3#213#0#0#0
+]);

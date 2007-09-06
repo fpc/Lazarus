@@ -1,0 +1,21 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrFieldsForm','FORMDATA',[
+  'TPF0'#13'TfrFieldsForm'#12'frFieldsForm'#4'Left'#3#193#0#6'Height'#3'='#1#3
+  +'Top'#2'm'#5'Width'#3#217#0#18'HorzScrollBar.Page'#3#216#0#18'VertScrollBar.'
+  +'Page'#3'<'#1#13'ActiveControl'#7#8'ValCombo'#11'BorderStyle'#7#8'bsDialog'#7
+  +'Caption'#6#15'Insert DB field'#12'ClientHeight'#3'='#1#11'ClientWidth'#3#217
+  +#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#10'KeyPreview'#9#10
+  +'OnActivate'#7#12'FormActivate'#8'OnCreate'#7#10'FormCreate'#12'OnDeactivate'
+  +#7#14'FormDeactivate'#9'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#14'poScre'
+  +'enCenter'#0#6'TLabel'#6'Label1'#4'Left'#2#4#6'Height'#2#14#3'Top'#2#4#5'Wid'
+  +'th'#2'C'#7'Caption'#6#15'&Available DB''s'#5'Color'#7#6'clNone'#12'FocusCon'
+  +'trol'#7#8'ValCombo'#11'ParentColor'#8#0#0#9'TComboBox'#8'ValCombo'#4'Left'#2
+  +#4#6'Height'#2#21#3'Top'#2#20#5'Width'#3#209#0#11'HelpContext'#2#10#16'AutoC'
+  +'ompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#10'It'
+  +'emHeight'#2#13#9'MaxLength'#2#0#8'OnChange'#7#13'ValComboClick'#5'Style'#7
+  +#14'csDropDownList'#8'TabOrder'#2#0#0#0#8'TListBox'#7'ValList'#4'Left'#2#4#6
+  +'Height'#3#8#1#3'Top'#2'0'#5'Width'#3#209#0#11'HelpContext'#2#23#16'ClickOnS'
+  +'elChange'#8#10'ItemHeight'#2#13#9'OnKeyDown'#7#14'ValListKeyDown'#11'OnMous'
+  +'eDown'#7#16'ValListMouseDown'#8'TabOrder'#2#1#0#0#0
+]);

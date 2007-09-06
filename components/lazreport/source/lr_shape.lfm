@@ -1,0 +1,78 @@
+object frShapeForm: TfrShapeForm
+  BorderStyle = bsDialog
+  Caption = 'Shape'
+  ClientHeight = 94
+  ClientWidth = 277
+  OnCreate = FormCreate
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 276
+  VertScrollBar.Page = 93
+  Left = 200
+  Height = 94
+  Top = 108
+  Width = 277
+  object Image1: TImage
+    BorderSpacing.OnChange = nil
+    Picture.Data = {
+      07544269746D6170F6000000424DF60000000000000076000000280000001000
+      0000100000000100040000000000800000000000000000000000100000000000
+      000000000000000080000080000000808000800000008000800080800000C0C0
+      C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+      FF007777777700000007777777770FFFFF07777777770FFFFF07770000770FFF
+      FF07702222070FFFFF07022222200FFFFF070222222000000007022222207777
+      77770222000000000777702220CCCCC07777770000CCCCC077777777770CCC07
+      77777777770CCC07777777777770C077777777777770C0777777777777770777
+      7777
+    }
+    Transparent = True
+    Visible = False
+    Left = 32
+    Height = 16
+    Top = 64
+    Width = 16
+  end
+  object GroupBox1: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = ' Shape kind '
+    ClientHeight = 36
+    ClientWidth = 256
+    ParentColor = True
+    TabOrder = 0
+    Left = 8
+    Height = 53
+    Top = 8
+    Width = 260
+    object CB1: TComboBox
+      BorderSpacing.OnChange = nil
+      MaxLength = 0
+      Style = csDropDownList
+      TabOrder = 0
+      Left = 50
+      Height = 21
+      Top = 1
+      Width = 197
+    end
+  end
+  object Button1: TButton
+    BorderSpacing.OnChange = nil
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+    Left = 64
+    Height = 25
+    Top = 63
+    Width = 75
+  end
+  object Button2: TButton
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 144
+    Height = 25
+    Top = 64
+    Width = 75
+  end
+end

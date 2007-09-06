@@ -1,0 +1,102 @@
+object frTemplNewForm: TfrTemplNewForm
+  BorderStyle = bsDialog
+  Caption = 'Новый шаблон'
+  ClientHeight = 292
+  ClientWidth = 219
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 220
+  VertScrollBar.Page = 293
+  Left = 550
+  Height = 292
+  Top = 171
+  Width = 219
+  object Label1: TLabel
+    Caption = 'Комментарий'
+    FocusControl = Memo1
+    Height = 17
+    Width = 65
+  end
+  object GroupBox2: TGroupBox
+    Caption = 'Картинка'
+    ClientHeight = 100
+    ClientWidth = 207
+    ParentColor = True
+    TabOrder = 0
+    Left = 4
+    Height = 117
+    Top = 136
+    Width = 211
+    object Panel1: TPanel
+      BevelOuter = bvLowered
+      ClientHeight = 89
+      ClientWidth = 88
+      FullRepaint = False
+      TabOrder = 0
+      Left = 8
+      Height = 89
+      Top = 6
+      Width = 88
+      HelpContext = 83
+      object Image1: TImage
+        Align = alClient
+        Center = True
+        Transparent = True
+        Left = 1
+        Height = 87
+        Top = 1
+        Width = 86
+      end
+    end
+    object Button1: TButton
+      Caption = 'Обзор...'
+      OnClick = Button1Click
+      TabOrder = 1
+      Left = 124
+      Height = 25
+      Top = 20
+      Width = 75
+      HelpContext = 64
+    end
+  end
+  object Button2: TButton
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+    Left = 60
+    Height = 25
+    Top = 264
+    Width = 75
+    HelpContext = 40
+  end
+  object Button3: TButton
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 140
+    Height = 25
+    Top = 264
+    Width = 75
+    HelpContext = 50
+  end
+  object Memo1: TMemo
+    TabOrder = 3
+    Left = 4
+    Height = 109
+    Top = 20
+    Width = 210
+    HelpContext = 73
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Ouvrir un fichier existant'
+    FilterIndex = 0
+    left = 152
+    top = 196
+  end
+end

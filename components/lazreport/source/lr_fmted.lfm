@@ -1,0 +1,151 @@
+object frFmtForm: TfrFmtForm
+  Left = 348
+  Height = 131
+  Top = 173
+  Width = 316
+  HorzScrollBar.Page = 315
+  VertScrollBar.Page = 130
+  ActiveControl = ComboBox1
+  BorderStyle = bsDialog
+  Caption = 'Variable formatting'
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnShow = frFmtFormShow
+  Position = poScreenCenter
+  object GroupBox2: TGroupBox
+    Left = 8
+    Height = 83
+    Top = 8
+    Width = 304
+    Caption = 'Variable format'
+    TabOrder = 0
+    object ComboBox1: TComboBox
+      Left = 8
+      Height = 21
+      Top = 4
+      Width = 109
+      HelpContext = 21
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 13
+      MaxLength = 0
+      OnChange = ComboBox1Change
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object ComboBox2: TComboBox
+      Left = 134
+      Height = 21
+      Top = 4
+      Width = 145
+      HelpContext = 31
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 13
+      MaxLength = 0
+      OnChange = ComboBox2Click
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object Panel1: TPanel
+      Left = 8
+      Height = 33
+      Top = 33
+      Width = 278
+      BevelOuter = bvNone
+      FullRepaint = False
+      TabOrder = 2
+      Visible = False
+      object Label5: TLabel
+        Height = 15
+        Top = 8
+        Width = 79
+        Caption = '&Decimal digits'
+        Color = clNone
+        FocusControl = Edit3
+        ParentColor = False
+      end
+      object Label6: TLabel
+        Left = 134
+        Height = 16
+        Top = 5
+        Width = 99
+        Caption = 'Fraction &symbol'
+        Color = clNone
+        FocusControl = SplEdit
+        ParentColor = False
+      end
+      object SplEdit: TEdit
+        Left = 238
+        Height = 21
+        Top = 4
+        Width = 25
+        HelpContext = 41
+        MaxLength = 1
+        OnChange = SplEditChange
+        OnEnter = SplEditEnter
+        TabOrder = 0
+        Text = 'S'
+      end
+      object Edit3: TEdit
+        Left = 94
+        Height = 21
+        Top = 4
+        Width = 25
+        HelpContext = 51
+        TabOrder = 1
+        Text = '0'
+      end
+    end
+    object Panel2: TPanel
+      Left = 8
+      Height = 33
+      Top = 33
+      Width = 281
+      BevelOuter = bvNone
+      FullRepaint = False
+      TabOrder = 3
+      object Label1: TLabel
+        Left = 58
+        Height = 13
+        Top = 8
+        Width = 45
+        Caption = '&Format'
+        Color = clNone
+        FocusControl = Edit1
+        ParentColor = False
+      end
+      object Edit1: TEdit
+        Left = 126
+        Height = 21
+        Width = 142
+        HelpContext = 61
+        TabOrder = 0
+      end
+    end
+  end
+  object Button1: TButton
+    Left = 152
+    Height = 25
+    Top = 96
+    Width = 75
+    HelpContext = 40
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 232
+    Height = 25
+    Top = 96
+    Width = 75
+    HelpContext = 50
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end

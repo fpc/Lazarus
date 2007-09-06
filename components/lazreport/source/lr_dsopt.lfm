@@ -1,0 +1,240 @@
+object frDesOptionsForm: TfrDesOptionsForm
+  Left = 536
+  Height = 323
+  Top = 165
+  Width = 349
+  HorzScrollBar.Page = 348
+  VertScrollBar.Page = 322
+  ActiveControl = CB1
+  BorderStyle = bsDialog
+  Caption = 'Options'
+  ClientHeight = 323
+  ClientWidth = 349
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  object PageControl1: TPageControl
+    Left = 4
+    Height = 284
+    Top = 4
+    Width = 349
+    ActivePage = Tab1
+    TabIndex = 0
+    TabOrder = 0
+    object Tab1: TTabSheet
+      Caption = 'Designer'
+      ClientHeight = 258
+      ClientWidth = 341
+      object GroupBox1: TGroupBox
+        Left = 4
+        Height = 65
+        Top = 4
+        Width = 177
+        Caption = 'Grid'
+        ClientHeight = 47
+        ClientWidth = 173
+        TabOrder = 0
+        object CB1: TCheckBox
+          Left = 8
+          Height = 13
+          Top = 4
+          Width = 67
+          HelpContext = 66
+          AllowGrayed = True
+          Caption = '&Show grid'
+          TabOrder = 0
+        end
+        object CB2: TCheckBox
+          Left = 8
+          Height = 13
+          Top = 24
+          Width = 75
+          HelpContext = 75
+          AllowGrayed = True
+          Caption = 'Align to &grid'
+          TabOrder = 1
+        end
+      end
+      object GroupBox2: TGroupBox
+        Left = 188
+        Height = 65
+        Top = 4
+        Width = 149
+        Caption = 'Object moving'
+        ClientHeight = 47
+        ClientWidth = 145
+        TabOrder = 1
+        object RB4: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 4
+          Width = 51
+          HelpContext = 84
+          AllowGrayed = True
+          Caption = 'S&hape'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+        end
+        object RB5: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 24
+          Width = 62
+          HelpContext = 94
+          AllowGrayed = True
+          Caption = '&Contents'
+          TabOrder = 1
+        end
+      end
+      object GroupBox3: TGroupBox
+        Left = 188
+        Height = 85
+        Top = 74
+        Width = 149
+        Caption = 'Report units'
+        ClientHeight = 67
+        ClientWidth = 145
+        TabOrder = 2
+        object RB6: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 3
+          Width = 47
+          HelpContext = 102
+          AllowGrayed = True
+          Caption = '&Pixels'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+        end
+        object RB7: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 23
+          Width = 38
+          HelpContext = 112
+          AllowGrayed = True
+          Caption = '&MM'
+          TabOrder = 1
+        end
+        object RB8: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 43
+          Width = 52
+          HelpContext = 121
+          AllowGrayed = True
+          Caption = '&Inches'
+          TabOrder = 2
+        end
+      end
+      object GroupBox4: TGroupBox
+        Left = 4
+        Height = 85
+        Top = 74
+        Width = 177
+        Caption = 'Grid size'
+        ClientHeight = 67
+        ClientWidth = 173
+        TabOrder = 3
+        object RB1: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 3
+          Width = 55
+          HelpContext = 131
+          AllowGrayed = True
+          Caption = '&4 pixels'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+        end
+        object RB2: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 23
+          Width = 55
+          HelpContext = 141
+          AllowGrayed = True
+          Caption = '&8 pixels'
+          TabOrder = 1
+        end
+        object RB3: TRadioButton
+          Left = 8
+          Height = 13
+          Top = 43
+          Width = 92
+          HelpContext = 151
+          AllowGrayed = True
+          Caption = '&18 pixels (5mm)'
+          TabOrder = 2
+        end
+      end
+      object GroupBox5: TGroupBox
+        Left = 4
+        Height = 85
+        Top = 166
+        Width = 333
+        Caption = 'Other'
+        ClientHeight = 67
+        ClientWidth = 329
+        TabOrder = 4
+        object CB3: TCheckBox
+          Left = 8
+          Height = 13
+          Top = 2
+          Width = 94
+          HelpContext = 161
+          AllowGrayed = True
+          Caption = 'Colored &buttons'
+          TabOrder = 0
+        end
+        object CB4: TCheckBox
+          Left = 8
+          Height = 13
+          Top = 22
+          Width = 104
+          HelpContext = 171
+          AllowGrayed = True
+          Caption = '&Editing after insert'
+          TabOrder = 1
+        end
+        object CB5: TCheckBox
+          Left = 8
+          Height = 13
+          Top = 44
+          Width = 98
+          AllowGrayed = True
+          Caption = 'Show band &titles'
+          TabOrder = 2
+        end
+      end
+    end
+  end
+  object Button1: TButton
+    Left = 176
+    Height = 25
+    Top = 292
+    Width = 75
+    HelpContext = 40
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 264
+    Height = 25
+    Top = 292
+    Width = 75
+    HelpContext = 50
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end

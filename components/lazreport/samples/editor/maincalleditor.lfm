@@ -1,0 +1,253 @@
+object frmMain: TfrmMain
+  Left = 200
+  Height = 405
+  Top = 144
+  Width = 573
+  HorzScrollBar.Page = 572
+  VertScrollBar.Page = 380
+  ActiveControl = btnCallEditor
+  Caption = 'Testing LazReport Editor'
+  Menu = MainMenu1
+  OnCreate = frmMainCreate
+  ShowHint = True
+  object btnCallEditor: TButton
+    Left = 112
+    Height = 25
+    Hint = 'Create and edit a empty report'
+    Top = 8
+    Width = 80
+    Action = accNewReport
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 0
+  end
+  object dbGrid1: TDBGrid
+    Height = 321
+    Top = 40
+    Width = 573
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWhite
+    DataSource = Datasource1
+    FixedColor = clBtnFace
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    TabOrder = 5
+    TabStop = True
+  end
+  object Button1: TButton
+    Left = 488
+    Height = 25
+    Hint = 'Print preview current DbGrid content'
+    Top = 8
+    Width = 75
+    Action = accPrintGrid
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 280
+    Height = 25
+    Hint = 'Preview an existing report'
+    Top = 8
+    Width = 96
+    Action = accPreviewReport
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 2
+  end
+  object StatusBar1: TStatusBar
+    Height = 20
+    Top = 361
+    Width = 573
+    Panels = <>
+  end
+  object Button3: TButton
+    Left = 200
+    Height = 25
+    Hint = 'Edit an existing report'
+    Top = 8
+    Width = 75
+    Action = accEditReport
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 3
+  end
+  object Button4: TButton
+    Left = 384
+    Height = 25
+    Hint = 'Print directly an existing report (i.e. without preview)'
+    Top = 8
+    Width = 83
+    Action = accPrintReport
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 4
+  end
+  object btnOpenReport: TButton
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 96
+    Action = accOpenReport
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 6
+  end
+  object TheReport: TfrReport
+    Dataset = frDBDataSet1
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    left = 96
+    top = 112
+    ReportForm = {
+      18000000
+    }
+  end
+  object Dbf1: TDbf
+    IndexDefs = <>
+    TableLevel = 3
+    left = 96
+    top = 40
+  end
+  object Datasource1: TDatasource
+    DataSet = Dbf1
+    left = 96
+    top = 72
+  end
+  object frDBDataSet1: TfrDBDataSet
+    DataSet = Dbf1
+    left = 96
+    top = 144
+  end
+  object PG: TfrPrintGrid
+    DBGrid = dbGrid1
+    Orientation = poLandscape
+    Caption = 'Grid'
+    ShowCaption = True
+    left = 96
+    top = 176
+  end
+  object MainMenu1: TMainMenu
+    left = 96
+    top = 208
+    object MenuItem1: TMenuItem
+      Caption = 'Files'
+      object MenuItem2: TMenuItem
+        Action = accClose
+        OnClick = accCloseExecute
+      end
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Tests'
+      object MenuItem4: TMenuItem
+        Action = accNewReport
+        OnClick = accNewReportExecute
+      end
+      object MenuItem5: TMenuItem
+        Action = accEditReport
+        OnClick = accEditReportExecute
+      end
+      object MenuItem6: TMenuItem
+        Action = accPreviewReport
+        OnClick = accPreviewReportExecute
+      end
+      object MenuItem7: TMenuItem
+        Action = accPrintReport
+        OnClick = accPrintReportExecute
+      end
+      object MenuItem8: TMenuItem
+        Action = accPrintGrid
+        OnClick = accPrintGridExecute
+      end
+    end
+    object MenuItem9: TMenuItem
+      Caption = 'Export'
+      object MenuItem10: TMenuItem
+        Action = accExportToText
+        OnClick = accExportToTextExecute
+      end
+      object MenuItem11: TMenuItem
+        Action = accExportToHtml
+        OnClick = accExportToHtmlExecute
+      end
+    end
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 10
+    HintShortCuts = True
+    ShowHint = True
+    OnShowHint = ApplicationProperties1ShowHint
+    left = 96
+    top = 240
+  end
+  object ActionList1: TActionList
+    left = 8
+    top = 416
+    object accNewReport: TAction
+      Category = 'Tests'
+      Caption = 'New Report'
+      DisableIfNoHandler = True
+      Hint = 'Create and edit a empty report'
+      OnExecute = accNewReportExecute
+    end
+    object accEditReport: TAction
+      Category = 'Tests'
+      Caption = 'Edit Report'
+      DisableIfNoHandler = True
+      Hint = 'Edit an existing report'
+      OnExecute = accEditReportExecute
+    end
+    object accPreviewReport: TAction
+      Category = 'Tests'
+      Caption = 'Preview Report'
+      DisableIfNoHandler = True
+      Hint = 'Preview an existing report'
+      OnExecute = accPreviewReportExecute
+    end
+    object accPrintGrid: TAction
+      Category = 'Tests'
+      Caption = 'Print Grid'
+      DisableIfNoHandler = True
+      Hint = 'Print preview current DbGrid content'
+      OnExecute = accPrintGridExecute
+    end
+    object accPrintReport: TAction
+      Category = 'Tests'
+      Caption = 'Print Report'
+      DisableIfNoHandler = True
+      Hint = 'Print directly an existing report (i.e. without preview)'
+      OnExecute = accPrintReportExecute
+    end
+    object accClose: TAction
+      Category = 'Files'
+      Caption = 'Close'
+      DisableIfNoHandler = True
+      Hint = 'Close application'
+      OnExecute = accCloseExecute
+    end
+    object accExportToText: TAction
+      Category = 'Export'
+      Caption = 'Export to text'
+      DisableIfNoHandler = True
+      OnExecute = accExportToTextExecute
+    end
+    object accExportToHtml: TAction
+      Category = 'Export'
+      Caption = 'Export to html'
+      DisableIfNoHandler = True
+      OnExecute = accExportToHtmlExecute
+    end
+    object accOpenReport: TAction
+      Category = 'Files'
+      Caption = 'Open Report'
+      DisableIfNoHandler = True
+      OnExecute = accOpenReportExecute
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open existing file'
+    Filter = 'LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
+    FilterIndex = 0
+    left = 96
+    top = 272
+  end
+end

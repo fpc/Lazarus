@@ -1,0 +1,40 @@
+object frProgressForm: TfrProgressForm
+  BorderStyle = bsDialog
+  Caption = 'frProgressForm'
+  ClientHeight = 106
+  ClientWidth = 278
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 277
+  VertScrollBar.Page = 105
+  Left = 200
+  Height = 106
+  Top = 108
+  Width = 278
+  object Label1: TLabel
+    Alignment = taCenter
+    Caption = '1'
+    Color = clNone
+    ParentColor = False
+    Left = 20
+    Height = 14
+    Top = 32
+    Width = 7
+  end
+  object Button1: TButton
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    OnClick = Button1Click
+    TabOrder = 0
+    Left = 100
+    Height = 25
+    Top = 68
+    Width = 75
+  end
+end

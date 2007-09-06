@@ -1,0 +1,11 @@
+The following people contributed to LazReport : 
+
+Jesus Reyes		(mx)
+Aleksey Lagunov 	(ru)
+Mattias Gaertner	(de)
+Olivier Guilbaud	(fr)
+Vincent Snijders	(nl)
+Christian Ulrich	(de)
+
+
+

@@ -1,0 +1,228 @@
+object LR_FunctEditor1Form: TLR_FunctEditor1Form
+  Left = 175
+  Height = 300
+  Top = 161
+  Width = 412
+  HorzScrollBar.Page = 411
+  VertScrollBar.Page = 299
+  ActiveControl = BitBtn1
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'LR_FunctEditor1Form'
+  ClientHeight = 300
+  ClientWidth = 412
+  PixelsPerInch = 96
+  Position = poDesktopCenter
+  object Panel1: TPanel
+    Height = 64
+    Width = 412
+    Align = alTop
+    BevelOuter = bvLowered
+    ClientHeight = 64
+    ClientWidth = 412
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 1
+      Height = 14
+      Top = 1
+      Width = 410
+      Align = alTop
+      Caption = 'Label1'
+      Color = clWhite
+      ParentColor = False
+      Transparent = False
+    end
+    object Label2: TLabel
+      Left = 1
+      Height = 48
+      Top = 15
+      Width = 410
+      Align = alClient
+      Caption = 'Label2'
+      Color = clInfoBk
+      ParentColor = False
+      Transparent = False
+    end
+  end
+  object Panel2: TPanel
+    Height = 40
+    Top = 260
+    Width = 412
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 412
+    TabOrder = 1
+    object BitBtn1: TBitBtn
+      Left = 252
+      Height = 30
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
+      Caption = '&Ok'
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object BitBtn2: TBitBtn
+      Left = 332
+      Height = 30
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
+    end
+  end
+  object GroupBox1: TGroupBox
+    Height = 196
+    Top = 64
+    Width = 412
+    Align = alClient
+    Caption = 'Arguments'
+    ClientHeight = 178
+    ClientWidth = 408
+    TabOrder = 2
+    object Label3: TLabel
+      Left = 6
+      Height = 14
+      Top = 14
+      Width = 55
+      Caption = 'Argument 1'
+      Color = clNone
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 6
+      Height = 14
+      Top = 49
+      Width = 55
+      Caption = 'Argument 2'
+      Color = clNone
+      ParentColor = False
+    end
+    object Label5: TLabel
+      Left = 6
+      Height = 14
+      Top = 81
+      Width = 55
+      Caption = 'Argument 3'
+      Color = clNone
+      ParentColor = False
+    end
+    object BitBtn3: TBitBtn
+      Tag = 1
+      Left = 374
+      Height = 23
+      Top = 5
+      Width = 27
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
+      Glyph.Data = {
+        9C0100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
+        69635B5D203D207B0A22313620313620332031222C0A222E2063204E6F6E6522
+        2C0A222C20632023303030303030222C0A222D20632023413141314131222C0A
+        222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E
+        2E2E2E2E2E222C0A222E2E2E2E2E2E2E2C2C2C2E2E2E2E2E2E222C0A222E2E2E
+        2E2E2E2C2C2E2D2C2E2E2E2E2E222C0A222E2E2E2E2E2E2C2D2E2E2E2E2E2E2E
+        2E222C0A222E2E2E2E2C2C2C2C2C2E2E2E2E2E2E2E222C0A222E2E2E2E2E2D2C
+        2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2C2D2E2C2C2E2D2C2E2E2E222C0A
+        222E2E2E2E2D2C2D2E2E2C2C2C2E2E2E2E222C0A222E2E2E2E2D2C2E2E2D2C2C
+        2E2E2E2E2E222C0A222E2E2E2E2C2D2E2C2C2E2C2C2E2E2E2E222C0A222E2E2E
+        2E2C2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2C2E2E2E2E2E2E2E2E2E2E2E
+        2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
+        2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E227D0A
+      }
+      Layout = blGlyphBottom
+      NumGlyphs = 0
+      OnClick = BitBtn5Click
+      TabOrder = 0
+    end
+    object Edit1: TEdit
+      Left = 78
+      Height = 23
+      Top = 5
+      Width = 296
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 1
+    end
+    object Edit2: TEdit
+      Left = 78
+      Height = 23
+      Top = 40
+      Width = 296
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 2
+    end
+    object BitBtn4: TBitBtn
+      Tag = 2
+      Left = 374
+      Height = 23
+      Top = 40
+      Width = 27
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
+      Glyph.Data = {
+        9C0100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
+        69635B5D203D207B0A22313620313620332031222C0A222E2063204E6F6E6522
+        2C0A222C20632023303030303030222C0A222D20632023413141314131222C0A
+        222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E
+        2E2E2E2E2E222C0A222E2E2E2E2E2E2E2C2C2C2E2E2E2E2E2E222C0A222E2E2E
+        2E2E2E2C2C2E2D2C2E2E2E2E2E222C0A222E2E2E2E2E2E2C2D2E2E2E2E2E2E2E
+        2E222C0A222E2E2E2E2C2C2C2C2C2E2E2E2E2E2E2E222C0A222E2E2E2E2E2D2C
+        2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2C2D2E2C2C2E2D2C2E2E2E222C0A
+        222E2E2E2E2D2C2D2E2E2C2C2C2E2E2E2E222C0A222E2E2E2E2D2C2E2E2D2C2C
+        2E2E2E2E2E222C0A222E2E2E2E2C2D2E2C2C2E2C2C2E2E2E2E222C0A222E2E2E
+        2E2C2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2C2E2E2E2E2E2E2E2E2E2E2E
+        2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
+        2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E227D0A
+      }
+      Layout = blGlyphBottom
+      NumGlyphs = 0
+      OnClick = BitBtn5Click
+      TabOrder = 3
+    end
+    object Edit3: TEdit
+      Left = 78
+      Height = 23
+      Top = 72
+      Width = 296
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 4
+    end
+    object BitBtn5: TBitBtn
+      Tag = 3
+      Left = 374
+      Height = 23
+      Top = 72
+      Width = 27
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
+      Glyph.Data = {
+        9C0100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
+        69635B5D203D207B0A22313620313620332031222C0A222E2063204E6F6E6522
+        2C0A222C20632023303030303030222C0A222D20632023413141314131222C0A
+        222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E
+        2E2E2E2E2E222C0A222E2E2E2E2E2E2E2C2C2C2E2E2E2E2E2E222C0A222E2E2E
+        2E2E2E2C2C2E2D2C2E2E2E2E2E222C0A222E2E2E2E2E2E2C2D2E2E2E2E2E2E2E
+        2E222C0A222E2E2E2E2C2C2C2C2C2E2E2E2E2E2E2E222C0A222E2E2E2E2E2D2C
+        2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2C2D2E2C2C2E2D2C2E2E2E222C0A
+        222E2E2E2E2D2C2D2E2E2C2C2C2E2E2E2E222C0A222E2E2E2E2D2C2E2E2D2C2C
+        2E2E2E2E2E222C0A222E2E2E2E2C2D2E2C2C2E2C2C2E2E2E2E222C0A222E2E2E
+        2E2C2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2C2E2E2E2E2E2E2E2E2E2E2E
+        2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
+        2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E227D0A
+      }
+      Layout = blGlyphBottom
+      NumGlyphs = 0
+      OnClick = BitBtn5Click
+      TabOrder = 5
+    end
+  end
+end

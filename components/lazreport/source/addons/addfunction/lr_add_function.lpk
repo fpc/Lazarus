@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <PathDelim Value="\"/>
+    <Name Value="lr_add_function"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Version Major="1"/>
+    <Files Count="6">
+      <Item1>
+        <Filename Value="lraddfunctionlibrary.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lrAddFunctionLibrary"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lr_add_function_const.pas"/>
+        <UnitName Value="lr_add_function_const"/>
+      </Item2>
+      <Item3>
+        <Filename Value="frFuncDate.pas"/>
+        <UnitName Value="frFuncDate"/>
+      </Item3>
+      <Item4>
+        <Filename Value="frFuncNum.pas"/>
+        <UnitName Value="frFuncNum"/>
+      </Item4>
+      <Item5>
+        <Filename Value="frFuncSQL.pas"/>
+        <UnitName Value="frFuncSQL"/>
+      </Item5>
+      <Item6>
+        <Filename Value="frFuncStr.pas"/>
+        <UnitName Value="frFuncStr"/>
+      </Item6>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="lazreport"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

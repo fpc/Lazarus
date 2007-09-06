@@ -1,0 +1,29 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#238#0#6'Height'#2'X'#3'Top'#2't'#5'Width'
+  +#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#2'W'#13'Activ'
+  +'eControl'#7#13'btnShowReport'#7'Caption'#6#5'Form1'#12'ClientHeight'#2'X'#11
+  +'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#0#7'TButton'#13'btnShowRe'
+  +'port'#4'Left'#2'@'#6'Height'#2#25#3'Top'#2#20#5'Width'#2'~'#25'BorderSpacin'
+  +'g.InnerBorder'#2#4#7'Caption'#6#11'Show Report'#7'OnClick'#7#18'btnShowRepo'
+  +'rtClick'#8'TabOrder'#2#0#0#0#7'TButton'#7'Button1'#4'Left'#3#200#0#6'Height'
+  +#2#25#3'Top'#2#20#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'#2#4#7'Capti'
+  +'on'#6#13'Design Report'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#7
+  +'TButton'#7'Button2'#4'Left'#2'l'#6'Height'#2#25#3'Top'#2'8'#5'Width'#3#184#0
+  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#25'Show Notes of this Sample'
+  +#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#2#0#0#14'TfrUserDataset'#8'Mast'
+  +'erDS'#10'OnCheckEOF'#7#16'MasterDSCheckEOF'#7'OnFirst'#7#13'MasterDSFirst'#6
+  +'OnNext'#7#12'MasterDSNext'#4'left'#2#8#3'top'#2'8'#0#0#9'TfrReport'#9'frRep'
+  +'ort1'#14'PreviewButtons'#11#6'pbZoom'#6'pbLoad'#6'pbSave'#7'pbPrint'#6'pbFi'
+  +'nd'#6'pbHelp'#6'pbExit'#0#10'OnBeginDoc'#7#17'frReport1BeginDoc'#8'OnEndDoc'
+  +#7#15'frReport1EndDoc'#11'OnBeginPage'#7#18'frReport1BeginPage'#9'OnEndPage'
+  +#7#16'frReport1EndPage'#11'OnBeginBand'#7#18'frReport1BeginBand'#9'OnEndBand'
+  +#7#16'frReport1EndBand'#10'OnGetValue'#7#17'frReport1GetValue'#11'OnEnterRec'
+  +'t'#7#18'frReport1EnterRect'#14'OnUserFunction'#7#21'frReport1UserFunction'
+  +#10'OnProgress'#7#17'frReport1Progress'#13'OnBeginColumn'#7#20'frReport1Begi'
+  +'nColumn'#13'OnPrintColumn'#7#20'frReport1PrintColumn'#4'left'#2'P'#3'top'#2
+  +'8'#10'ReportForm'#10#4#0#0#0#24#0#0#0#0#0#14'TfrUserDataset'#9'ColumnsDS'#10
+  +'OnCheckEOF'#7#17'ColumnsDSCheckEOF'#7'OnFirst'#7#14'ColumnsDSFirst'#6'OnNex'
+  +'t'#7#13'ColumnsDSNext'#4'left'#2'('#3'top'#2'8'#0#0#0
+]);

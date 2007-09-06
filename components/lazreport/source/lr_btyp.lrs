@@ -1,0 +1,19 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrBandTypesForm','FORMDATA',[
+  'TPF0'#16'TfrBandTypesForm'#15'frBandTypesForm'#11'BorderStyle'#7#8'bsDialog'
+  +#7'Caption'#6#15'Insert new band'#12'ClientHeight'#3'f'#1#11'ClientWidth'#3
+  +'P'#1#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7#10
+  +'FormCreate'#13'PixelsPerInch'#2'V'#8'Position'#7#14'poScreenCenter'#10'Text'
+  +'Height'#2#13#18'HorzScrollBar.Page'#3'Q'#1#18'VertScrollBar.Page'#3'g'#1#4
+  +'Left'#3#192#0#6'Height'#3'f'#1#3'Top'#2'k'#5'Width'#3'P'#1#0#7'TButton'#7'B'
+  +'utton1'#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6#2'Ok'#7'Default'
+  +#9#11'ModalResult'#2#1#8'TabOrder'#2#0#4'Left'#3#174#0#6'Height'#2#25#3'Top'
+  +#3'I'#1#5'Width'#2'K'#11'HelpContext'#2'('#0#0#9'TGroupBox'#3'GB1'#7'Caption'
+  +#6#9'Band type'#12'ClientHeight'#3'3'#1#11'ClientWidth'#3'@'#1#10'DragCursor'
+  +#4#244#255#0#0#11'ParentColor'#9#8'TabOrder'#2#1#4'Left'#2#4#6'Height'#3'D'#1
+  +#3'Top'#2#4#5'Width'#3'D'#1#11'HelpContext'#2'Y'#0#0#7'TButton'#7'Button2'#7
+  +'Anchors'#11#7'akRight'#8'akBottom'#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#11
+  +'ModalResult'#2#2#8'TabOrder'#2#2#4'Left'#3#254#0#6'Height'#2#25#3'Top'#3'I'
+  +#1#5'Width'#2'K'#11'HelpContext'#2'2'#0#0#0
+]);

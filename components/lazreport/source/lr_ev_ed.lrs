@@ -1,0 +1,62 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrEvForm','FORMDATA',[
+  'TPF0'#9'TfrEvForm'#8'frEvForm'#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#16
+  +'Variables editor'#12'ClientHeight'#3'K'#1#11'ClientWidth'#3'F'#1#11'Font.He'
+  +'ight'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7#10'FormCreate'#13
+  +'PixelsPerInch'#2'V'#8'ShowHint'#9#10'TextHeight'#2#13#18'HorzScrollBar.Page'
+  +#3'G'#1#18'VertScrollBar.Page'#3'L'#1#4'Left'#3#194#1#6'Height'#3'K'#1#3'Top'
+  +#2'U'#5'Width'#3'F'#1#0#12'TSpeedButton'#3'SB1'#10'Glyph.Data'#10#250#0#0#0
+  +#246#0#0#0'BM'#246#0#0#0#0#0#0#0'v'#0#0#0'('#0#0#0#16#0#0#0#16#0#0#0#1#0#4#0
+  +#0#0#0#0#128#0#0#0#195#14#0#0#195#14#0#0#16#0#0#0#16#0#0#0#0#0#0#0#0#0#128#0
+  +#0#128#0#0#0#128#128#0#128#0#0#0#128#0#128#0#128#128#0#0#192#192#192#0#128
+  +#128#128#0#0#0#255#0#0#255#0#0#0#255#255#0#255#0#0#0#255#0#255#0#255#255#0#0
+  +#255#255#255#0'www'#0#0#0#0#7'www'#139#187#187#187#7'www'#139#0#0#11#7'p'#0#0
+  +#139#187#187#187#7'x'#255#255#139#0#0#11#7'x'#240#0#139#187#187#187#7'x'#255
+  +#255#139#0#0#11#7'x'#240#0#139#187#187#187#7'x'#255#255#139#0#176#0#7'x'#240
+  +#0#139#187#176#240'wx'#255#255#139#187#176#7'wx'#240#15#136#136#128'wwx'#255
+  +#255#15#7'wwwx'#255#255#0'wwwwx'#136#136#7'wwwwwwwwwwww'#7'OnClick'#7#8'SB1C'
+  +'lick'#4'Left'#2'\'#6'Height'#2#25#4'Hint'#6#14'Copy variables'#3'Top'#3','#1
+  +#5'Width'#2#25#0#0#12'TSpeedButton'#3'SB2'#10'Glyph.Data'#10#250#0#0#0#246#0
+  +#0#0'BM'#246#0#0#0#0#0#0#0'v'#0#0#0'('#0#0#0#16#0#0#0#16#0#0#0#1#0#4#0#0#0#0
+  +#0#128#0#0#0#195#14#0#0#195#14#0#0#16#0#0#0#16#0#0#0#0#0#0#0#0#0#128#0#0#128
+  +#0#0#0#128#128#0#128#0#0#0#128#0#128#0#128#128#0#0#192#192#192#0#128#128#128
+  +#0#0#0#255#0#0#255#0#0#0#255#255#0#255#0#0#0#255#0#255#0#255#255#0#0#255#255
+  +#255#0'www'#0#0#0#0#7'w'#0#0#139#187#187#187#7'x'#255#255#139#0#0#11#7'x'#255
+  +#255#139#187#187#187#7'x'#255#255#139#0#0#11#7'x'#255#255#139#187#187#187#7
+  +'x'#255#255#139#0#0#11#7'x'#255#255#139#187#187#187#7'x'#255#255#139#0#176#0
+  +#7'x'#255#255#139#187#176#240'wx'#240#0#139#187#176#7'wx'#240#255#136#136#128
+  +#7'wx'#255#15#0#240#255#7'ww'#136#128#255#8#136'wwwwp'#0#7'wwwwwwwwwww'#7'On'
+  +'Click'#7#8'SB2Click'#4'Left'#2'u'#6'Height'#2#25#4'Hint'#6#15'Paste variabl'
+  +'es'#3'Top'#3','#1#5'Width'#2#25#0#0#6'TBevel'#6'Bevel1'#6'Height'#2#2#4'Lef'
+  +'t'#2#4#4'Name'#6#6'Bevel1'#5'Shape'#7#9'bsTopLine'#3'Top'#3' '#1#5'Width'#3
+  +'='#1#4'Left'#2#4#6'Height'#2#2#3'Top'#3' '#1#5'Width'#3'='#1#0#0#6'TLabel'#6
+  +'Label1'#7'Caption'#6#9'&Variable'#12'FocusControl'#7#8'VarCombo'#4'Left'#2#4
+  +#6'Height'#2#13#3'Top'#2#8#5'Width'#2'@'#0#0#6'TLabel'#6'Label2'#7'Caption'#6
+  +#6'Va&lue'#12'FocusControl'#7#8'ValCombo'#4'Left'#3#166#0#6'Height'#2#13#3'T'
+  +'op'#2#8#5'Width'#2'0'#0#0#6'TLabel'#6'Label3'#7'Caption'#6#11'&Expression'
+  +#12'FocusControl'#7#5'Edit1'#4'Left'#2#4#6'Height'#2#13#3'Top'#3#244#0#5'Wid'
+  +'th'#3#163#0#0#0#9'TComboBox'#8'VarCombo'#7'Enabled'#8#10'ItemHeight'#2#13#9
+  +'MaxLength'#2#0#8'OnChange'#7#13'VarComboClick'#7'OnClick'#7#13'VarComboClic'
+  +'k'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#4'Left'#2#4#6'Height'#2#21
+  +#3'Top'#2#24#5'Width'#3#155#0#11'HelpContext'#2'E'#0#0#8'TListBox'#7'VarList'
+  +#16'ClickOnSelChange'#8#10'ItemHeight'#2#13#7'OnClick'#7#12'VarListClick'#8
+  +'TabOrder'#2#1#8'TopIndex'#2#255#4'Left'#2#4#6'Height'#3#189#0#3'Top'#2'0'#5
+  +'Width'#3#155#0#11'HelpContext'#2'N'#0#0#9'TComboBox'#8'ValCombo'#7'Enabled'
+  +#8#10'ItemHeight'#2#13#9'MaxLength'#2#0#8'OnChange'#7#13'ValComboClick'#7'On'
+  +'Click'#7#13'ValComboClick'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#2#4
+  +'Left'#3#166#0#6'Height'#2#21#3'Top'#2#24#5'Width'#3#155#0#11'HelpContext'#2
+  +'W'#0#0#8'TListBox'#7'ValList'#16'ClickOnSelChange'#8#10'ItemHeight'#2#13#7
+  +'OnClick'#7#12'ValListClick'#6'OnExit'#7#9'Edit1Exit'#8'TabOrder'#2#3#8'TopI'
+  +'ndex'#2#255#4'Left'#3#166#0#6'Height'#3#189#0#3'Top'#2'0'#5'Width'#3#155#0
+  +#11'HelpContext'#2']'#0#0#7'TButton'#7'Button1'#7'Caption'#6#2'OK'#7'Default'
+  +#9#11'ModalResult'#2#1#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#4#4'Left'
+  +#3#166#0#6'Height'#2#25#3'Top'#3','#1#5'Width'#2'K'#11'HelpContext'#2'('#0#0
+  +#5'TEdit'#5'Edit1'#6'OnExit'#7#9'Edit1Exit'#8'TabOrder'#2#5#4'Left'#2#4#6'He'
+  +'ight'#2#21#3'Top'#3#4#1#5'Width'#3'='#1#11'HelpContext'#2'h'#0#0#7'TButton'
+  +#7'Button2'#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrde'
+  +'r'#2#6#4'Left'#3#246#0#6'Height'#2#25#3'Top'#3','#1#5'Width'#2'K'#11'HelpCo'
+  +'ntext'#2'2'#0#0#7'TButton'#7'Button3'#7'Caption'#6#13'Va&riables...'#7'OnCl'
+  +'ick'#7#12'Button3Click'#8'TabOrder'#2#7#4'Left'#2#4#6'Height'#2#25#3'Top'#3
+  +','#1#5'Width'#2'U'#11'HelpContext'#2'r'#0#0#0
+]);

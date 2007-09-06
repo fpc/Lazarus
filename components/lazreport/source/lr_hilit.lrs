@@ -1,0 +1,45 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfrHilightForm','FORMDATA',[
+  'TPF0'#14'TfrHilightForm'#13'frHilightForm'#11'BorderStyle'#7#8'bsDialog'#7'C'
+  +'aption'#6#20'Highlight attributes'#12'ClientHeight'#3#253#0#11'ClientWidth'
+  +#3#229#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#10'OnActivat'
+  +'e'#7#12'FormActivate'#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'poScree'
+  +'nCenter'#10'TextHeight'#2#13#18'HorzScrollBar.Page'#3#230#0#18'VertScrollBa'
+  +'r.Page'#3#254#0#4'Left'#3#200#0#6'Height'#3#253#0#3'Top'#2'l'#5'Width'#3#229
+  +#0#0#9'TGroupBox'#9'GroupBox1'#7'Caption'#6#4'Font'#12'ClientHeight'#2'D'#11
+  +'ClientWidth'#3#217#0#11'ParentColor'#9#8'TabOrder'#2#0#4'Left'#2#4#6'Height'
+  +#2'U'#3'Top'#2'8'#5'Width'#3#221#0#0#12'TSpeedButton'#12'SpeedButton1'#7'Cap'
+  +'tion'#6#9'C&olor...'#9'NumGlyphs'#2#2#7'OnClick'#7#17'SpeedButton1Click'#9
+  +'NumGlyphs'#2#2#4'Left'#3#140#0#6'Height'#2#25#3'Top'#2'&'#5'Width'#2'F'#0#0
+  +#9'TCheckBox'#3'CB1'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6#5'&Bold'#10
+  +'DragCursor'#4#244#255#0#0#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2#17#3'Top'
+  +#2#3#5'Width'#2'a'#11'HelpContext'#2'C'#0#0#9'TCheckBox'#3'CB2'#11'AllowGray'
+  +'ed'#9#8'AutoSize'#9#7'Caption'#6#7'&Italic'#10'DragCursor'#4#244#255#0#0#8
+  +'TabOrder'#2#1#4'Left'#2#8#6'Height'#2#17#3'Top'#2#23#5'Width'#2'a'#11'HelpC'
+  +'ontext'#2'L'#0#0#9'TCheckBox'#3'CB3'#11'AllowGrayed'#9#8'AutoSize'#9#7'Capt'
+  +'ion'#6#10'&Underline'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2#2#4'Left'#2
+  +#8#6'Height'#2#17#3'Top'#2'+'#5'Width'#2'i'#11'HelpContext'#2'U'#0#0#0#9'TGr'
+  +'oupBox'#9'GroupBox2'#7'Caption'#6#10'Background'#12'ClientHeight'#2'0'#11'C'
+  +'lientWidth'#3#217#0#11'ParentColor'#9#8'TabOrder'#2#1#4'Left'#2#4#6'Height'
+  +#2'A'#3'Top'#3#148#0#5'Width'#3#221#0#0#12'TSpeedButton'#12'SpeedButton2'#7
+  +'Caption'#6#9'Co&lor...'#9'NumGlyphs'#2#0#7'OnClick'#7#17'SpeedButton2Click'
+  +#9'NumGlyphs'#2#0#4'Left'#3#140#0#6'Height'#2#25#3'Top'#2#21#5'Width'#2'F'#0
+  +#0#12'TRadioButton'#3'RB1'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6#12'&'
+  +'Transparent'#7'Checked'#9#10'DragCursor'#4#244#255#0#0#7'OnClick'#7#8'RB1Cl'
+  +'ick'#5'State'#7#9'cbChecked'#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2#17#3'T'
+  +'op'#2#5#5'Width'#2'd'#11'HelpContext'#2'\'#0#0#12'TRadioButton'#3'RB2'#11'A'
+  +'llowGrayed'#9#8'AutoSize'#9#7'Caption'#6#6'Ot&her'#10'DragCursor'#4#244#255
+  +#0#0#7'OnClick'#7#8'RB1Click'#8'TabOrder'#2#1#4'Left'#2#8#6'Height'#2#17#3'T'
+  +'op'#2#25#5'Width'#2'A'#11'HelpContext'#2'g'#0#0#0#7'TButton'#7'Button3'#7'C'
+  +'aption'#6#2'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#2#4'Left'#2
+  +'F'#6'Height'#2#25#3'Top'#3#224#0#5'Width'#2'K'#11'HelpContext'#2'('#0#0#7'T'
+  +'Button'#7'Button4'#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8
+  +'TabOrder'#2#3#4'Left'#3#150#0#6'Height'#2#25#3'Top'#3#224#0#5'Width'#2'K'#11
+  +'HelpContext'#2'2'#0#0#9'TGroupBox'#9'GroupBox3'#7'Caption'#6#9'Condition'#12
+  +'ClientHeight'#2#28#11'ClientWidth'#3#217#0#11'ParentColor'#9#8'TabOrder'#2#4
+  +#4'Left'#2#4#6'Height'#2'-'#3'Top'#2#4#5'Width'#3#221#0#0#5'TEdit'#5'Edit1'#8
+  +'TabOrder'#2#0#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#21#3'Top'#2#1#5'Width'
+  +#3#205#0#11'HelpContext'#2'q'#0#0#0#12'TColorDialog'#12'ColorDialog1'#5'Titl'
+  +'e'#6#19'Choisir une couleur'#4'left'#3#152#0#3'top'#3#144#0#0#0#0
+]);

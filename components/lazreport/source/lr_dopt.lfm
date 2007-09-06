@@ -1,0 +1,176 @@
+object frDocOptForm: TfrDocOptForm
+  BorderStyle = bsDialog
+  Caption = 'Report options'
+  ClientHeight = 389
+  ClientWidth = 380
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  PixelsPerInch = 75
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 379
+  VertScrollBar.Page = 388
+  Left = 215
+  Height = 389
+  Top = 162
+  Width = 380
+  object GroupBox1: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = 'Printer'
+    ClientHeight = 56
+    ClientWidth = 367
+    ParentColor = True
+    TabOrder = 0
+    Left = 4
+    Height = 73
+    Top = 4
+    Width = 371
+    object ComB1: TComboBox
+      BorderSpacing.OnChange = nil
+      ItemHeight = 13
+      MaxLength = 0
+      Style = csDropDownList
+      TabOrder = 0
+      Left = 10
+      Height = 21
+      Top = 5
+      Width = 344
+      HelpContext = 68
+    end
+    object CB1: TCheckBox
+      AllowGrayed = True
+      BorderSpacing.OnChange = nil
+      Caption = '&Select when report loaded'
+      TabOrder = 1
+      Left = 8
+      Height = 17
+      Top = 37
+      Width = 308
+      HelpContext = 77
+    end
+  end
+  object GroupBox2: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = 'Other'
+    ClientHeight = 251
+    ClientWidth = 367
+    ParentColor = True
+    TabOrder = 1
+    Left = 4
+    Height = 268
+    Top = 84
+    Width = 371
+    object labTitle: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Title'
+      Color = clNone
+      Left = 11
+      Height = 17
+      Top = 34
+      Width = 32
+    end
+    object labSubject: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Subject'
+      Color = clNone
+      Left = 10
+      Height = 17
+      Top = 62
+      Width = 65
+    end
+    object labKeyWords: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Keys works'
+      Color = clNone
+      Left = 11
+      Height = 17
+      Top = 90
+      Width = 65
+    end
+    object labComments: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Comments'
+      Color = clNone
+      Left = 11
+      Height = 17
+      Top = 109
+      Width = 65
+    end
+    object CB2: TCheckBox
+      AllowGrayed = True
+      BorderSpacing.OnChange = nil
+      Caption = '&Two-pass report'
+      TabOrder = 0
+      Left = 10
+      Height = 17
+      Top = 5
+      Width = 304
+      HelpContext = 86
+    end
+    object edTitle: TEdit
+      BorderSpacing.OnChange = nil
+      TabOrder = 1
+      Text = 'edTitle'
+      Left = 82
+      Height = 23
+      Top = 28
+      Width = 272
+    end
+    object edSubject: TEdit
+      TabOrder = 2
+      Text = 'Edit1'
+      Left = 82
+      Height = 23
+      Top = 56
+      Width = 272
+    end
+    object edKeyWords: TEdit
+      TabOrder = 3
+      Text = 'Edit1'
+      Left = 82
+      Height = 23
+      Top = 84
+      Width = 272
+    end
+    object edComments: TMemo
+      BorderSpacing.OnChange = nil
+      Lines.Strings = (
+        'Memo1'
+      )
+      ScrollBars = ssAutoBoth
+      TabOrder = 4
+      Left = 10
+      Height = 117
+      Top = 127
+      Width = 349
+    end
+  end
+  object Button1: TButton
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 2
+    Left = 216
+    Height = 25
+    Top = 360
+    Width = 75
+    HelpContext = 40
+  end
+  object Button2: TButton
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 3
+    Left = 296
+    Height = 25
+    Top = 360
+    Width = 75
+    HelpContext = 50
+  end
+end
