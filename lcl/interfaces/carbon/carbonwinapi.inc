@@ -663,7 +663,7 @@ end;
 function TCarbonWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; LParam: Lparam; flags: dword): Longint;
 var
-  FamilyCount, NameLength: LongWord;
+  FamilyCount: LongWord;
   FamilyListPtr, PFamily: ^ATSUFontID;
   FontName: UTF8String;
   EnumLogFont: TEnumLogFontEx;
@@ -698,18 +698,7 @@ begin
       PFamily := FamilyListPtr;
       for I := 0 to Pred(FamilyCount) do
       begin
-        // retrieve font name length
-        if OSError(ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
-          kFontRomanScript, kFontEnglishLanguage, NameLength, nil,
-          @NameLength, nil), SName, 'ATSUFindFontName', 'Length') then Continue;
-        
-        SetLength(FontName, NameLength);
-
-        // retrieve font name, UTF-16 encoded
-        if OSError(ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
-          kFontRomanScript, kFontEnglishLanguage, NameLength,
-          @FontName[1], @NameLength, nil), SName, 'ATSUFindFontName', 'Name') then Continue;
-          
+        FontName := CarbonFontIDToFontName(PFamily^);
         if FontName <> '' then // execute callback
         begin
           FillChar(EnumLogFont, SizeOf(EnumLogFont), #0);

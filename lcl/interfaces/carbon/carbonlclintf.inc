@@ -136,9 +136,15 @@ begin
   Result:=inherited GetControlConstraints(Constraints);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetDesignerDC
+  Params:  WindowHandle - Handle of window
+  Returns: Device context for window designer
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
-  Result:=inherited GetDesignerDC(WindowHandle);
+  // TODO: create frontmost control for designer context
+  Result := GetDC(WindowHandle);
 end;
 
 {------------------------------------------------------------------------------

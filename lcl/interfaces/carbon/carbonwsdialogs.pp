@@ -33,7 +33,7 @@ uses
   // libs
   FPCMacOSAll,
   // LCL
-  Classes, SysUtils, Controls, Dialogs, LCLType, LCLProc, Masks,
+  Classes, SysUtils, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
   // widgetset
   WSLCLClasses, WSProc, WSDialogs,
   // LCL Carbon
@@ -105,13 +105,14 @@ type
   private
   protected
   public
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
 
 implementation
 
 uses
-  CarbonProc, CarbonDbgConsts;
+  CarbonProc, CarbonDbgConsts, CarbonInt, CarbonUtils, CarbonGDIObjects;
 
 { TCarbonWSFileDialog }
 
@@ -196,7 +197,6 @@ var
   FileURL: CFURLRef;
   FileCFStr: CFStringRef;
   Filters: TParseStringList;
-  I: Integer;
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
@@ -378,6 +378,187 @@ begin
   end;
 end;
 
+var
+  FontDialog: TFontDialog;
+
+{ TCarbonWSFontDialog }
+
+function CarbonFontDialog_Selection(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  AFontDialog: TFontDialog;
+  ID: ATSUFontID;
+  Size: Fixed;
+  Color: RGBColor;
+  Style: FMFontStyle;
+const
+  SName = 'CarbonFontDialog_Selection';
+begin
+  {$IFDEF VerboseWSClass}
+    DebugLn('CarbonFontDialog_Selection: ', DbgSName(FontDialog));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  // get font panel settings
+    
+  if GetEventParameter(AEvent, kEventParamATSUFontID, typeATSUFontID,
+    nil, SizeOf(ID), nil, @ID) = noErr then
+  begin
+    DebugLn('ID: ' + DbgS(ID));
+    FontDialog.Font.Name := CarbonFontIDToFontName(ID);
+  end;
+  
+  if GetEventParameter(AEvent, kEventParamATSUFontSize, typeATSUSize,
+    nil, SizeOf(Size), nil, @Size) = noErr then
+  begin
+    DebugLn('Size: ' + DbgS(RoundFixed(Size)));
+    FontDialog.Font.Size := RoundFixed(Size);
+  end;
+  
+  if GetEventParameter(AEvent, kEventParamFontColor, typeFontColor,
+    nil, SizeOf(Color), nil, @Color) = noErr then
+  begin
+    DebugLn('Color: ' + DbgS(RGBColorToColor(Color)));
+    FontDialog.Font.Color := RGBColorToColor(Color);
+  end;
+  
+  if GetEventParameter(AEvent, kEventParamFMFontStyle, typeFMFontStyle,
+    nil, SizeOf(Style), nil, @Style) = noErr then
+  begin
+    DebugLn('Style: ' + DbgS(Style));
+    FontDialog.Font.Style := [];
+    if (Style and FPCMacOSAll.bold) > 0 then
+      FontDialog.Font.Style := FontDialog.Font.Style + [fsBold];
+    if (Style and FPCMacOSAll.italic) > 0 then
+      FontDialog.Font.Style := FontDialog.Font.Style + [fsItalic];
+    if (Style and FPCMacOSAll.underline) > 0 then
+      FontDialog.Font.Style := FontDialog.Font.Style + [fsUnderline];
+  end;
+  
+  // TODO: fsStrikeOut
+    
+  FontDialog.UserChoice := mrOK;
+end;
+
+function CarbonFontDialog_Close(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  AFontDialog: TFontDialog;
+begin
+  {$IFDEF VerboseWSClass}
+    DebugLn('CarbonFontDialog_Close: ', DbgSName(FontDialog));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+  
+  CarbonWidgetSet.SetMainMenuEnabled(True);
+  
+  // hide font panel
+  if FPIsFontPanelVisible then
+    OSError(FPShowHideFontPanel, 'CarbonFontDialog_Close', 'FPShowHideFontPanel');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSFontDialog.ShowModal
+  Params:  ACommonDialog - LCL font dialog
+
+  Shows Carbon interface font panel
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSFontDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  AFontDialog: TFontDialog;
+  TmpSpec: EventTypeSpec;
+  Dialog: WindowRef;
+  Style: ATSUStyle;
+  ID: ATSUFontID;
+  M: ATSUTextMeasurement;
+  C: RGBColor;
+  Attr: ATSUAttributeTag;
+  S: ByteCount;
+  A: ATSUAttributeValuePtr;
+begin
+  {$IFDEF VerboseWSClass}
+    DebugLn('TCarbonWSFontDialog.ShowModal for ' + ACommonDialog.Name);
+  {$ENDIF}
+  
+  AFontDialog := ACommonDialog as TFontDialog;
+  AFontDialog.UserChoice := mrCancel;
+
+  if OSError(
+    CreateNewWindow(kModalWindowClass,
+      kWindowCompositingAttribute or kWindowStandardHandlerAttribute, GetCarbonRect(0, 0, 0, 0), Dialog),
+    Self, SShowModal, 'CreateNewWindow') then Exit;
+    
+  try
+    TmpSpec := MakeEventSpec(kEventClassFont, kEventFontPanelClosed);
+    InstallWindowEventHandler(Dialog,
+      RegisterEventHandler(@CarbonFontDialog_Close),
+      1, @TmpSpec, nil, nil);
+
+    TmpSpec := MakeEventSpec(kEventClassFont, kEventFontSelection);
+    InstallWindowEventHandler(Dialog,
+      RegisterEventHandler(@CarbonFontDialog_Selection),
+      1, @TmpSpec, nil, nil);
+
+
+    OSError(ATSUCreateAndCopyStyle(TCarbonFont(AFontDialog.Font.Handle).Style, Style),
+      Self, SShowModal, 'ATSUCreateAndCopyStyle');
+      
+    // force set font ID
+    if ATSUGetAttribute(Style, kATSUFontTag, SizeOf(ID), @ID, nil) = kATSUNotSetErr then
+    begin
+      Attr := kATSUFontTag;
+      A := @ID;
+      S := SizeOf(ID);
+      OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SShowModal,
+        'ATSUSetAttributes', 'kATSUFontTag');
+    end;
+    
+    // force set font size
+    if ATSUGetAttribute(Style, kATSUSizeTag, SizeOf(M), @M, nil) = kATSUNotSetErr then
+    begin
+      Attr := kATSUSizeTag;
+      A := @M;
+      S := SizeOf(M);
+      OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SShowModal,
+        'ATSUSetAttributes', 'kATSUSizeTag');
+    end;
+    
+    // force set font color
+    if ATSUGetAttribute(Style, kATSUColorTag, SizeOf(C), @C, nil) = kATSUNotSetErr then
+    begin
+      Attr := kATSUColorTag;
+      A := @C;
+      S := SizeOf(C);
+      OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SShowModal,
+        'ATSUSetAttributes', 'kATSUSizeTag');
+    end;
+
+    if OSError(SetFontInfoForSelection(kFontSelectionATSUIType, 1,
+      @Style, GetWindowEventTarget(Dialog)),
+      Self, SShowModal, 'SetFontInfoForSelection') then Exit;
+
+    CarbonWidgetSet.SetMainMenuEnabled(False);
+
+    FontDialog := AFontDialog;
+    FPCMacOSAll.ShowWindow(Dialog);
+
+    // show font panel
+    if not FPIsFontPanelVisible then
+      OSError(FPShowHideFontPanel, Self, SShowModal, 'FPShowHideFontPanel');
+      
+    while FPIsFontPanelVisible do
+      CarbonWidgetSet.AppProcessMessages;
+
+  finally
+    DisposeWindow(Dialog);
+    CarbonWidgetSet.SetMainMenuEnabled(True);
+  end;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -393,6 +574,6 @@ initialization
 //  RegisterWSComponent(TSelectDirectoryDialog, TCarbonWSSelectDirectoryDialog);
   RegisterWSComponent(TColorDialog, TCarbonWSColorDialog);
 //  RegisterWSComponent(TColorButton, TCarbonWSColorButton);
-//  RegisterWSComponent(TFontDialog, TCarbonWSFontDialog);
+  RegisterWSComponent(TFontDialog, TCarbonWSFontDialog);
 ////////////////////////////////////////////////////
 end.

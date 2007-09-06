@@ -66,6 +66,8 @@ function GetCarbonShiftState: TShiftState;
 function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 
 function FindCarbonFontID(const FontName: String): ATSUFontID;
+function CarbonFontIDToFontName(ID: ATSUFontID): String;
+
 function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
@@ -377,6 +379,35 @@ begin
         kFontEnglishLanguage, Result),
       'FindCarbonFontID', 'ATSUFindFontFromName');
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CarbonFontIDToFontName
+  Params:  IS - Carbon font ID
+  Returns: The font name, UTF-8 encoded
+ ------------------------------------------------------------------------------}
+function CarbonFontIDToFontName(ID: ATSUFontID): String;
+var
+  NameLength: LongWord;
+  FontName: UTF8String;
+const
+  SName = 'CarbonFontIDToFontName';
+begin
+  Result := '';
+  
+  // retrieve font name length
+  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontMacintoshPlatform,
+    kFontRomanScript, kFontEnglishLanguage, NameLength, nil,
+    @NameLength, nil), SName, 'ATSUFindFontName', 'Length') then Exit;
+
+  SetLength(FontName, NameLength);
+
+  // retrieve font name
+  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontMacintoshPlatform,
+    kFontRomanScript, kFontEnglishLanguage, NameLength,
+    @FontName[1], @NameLength, nil), SName, 'ATSUFindFontName', 'Name') then Exit;
+    
+  Result := FontName;
 end;
 
 {------------------------------------------------------------------------------

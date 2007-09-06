@@ -83,7 +83,8 @@ type
     FLineRotation: Fixed;
   public
     constructor Create(AGlobal: Boolean); // default system font
-    constructor Create(ALogFont: TLogFont; AFaceName: String);
+    constructor Create(ALogFont: TLogFont; const AFaceName: String);
+    function CreateStyle(ALogFont: TLogFont; const AFaceName: String): ATSUStyle;
     destructor Destroy; override;
   public
     property LineRotation: Fixed read FLineRotation;
@@ -697,7 +698,23 @@ end;
 
   Creates Carbon font with the specified name and characteristics
  ------------------------------------------------------------------------------}
-constructor TCarbonFont.Create(ALogFont: TLogFont; AFaceName: String);
+constructor TCarbonFont.Create(ALogFont: TLogFont; const AFaceName: String);
+begin
+  inherited Create(False);
+  
+  FStyle := CreateStyle(ALogFont, AFaceName);
+  
+  // applied when creating text layout
+  FLineRotation := (ALogFont.lfEscapement shl 16) div 10;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonFont.CreateStyle
+  Params:  ALogFont  - Font characteristics
+           AFaceName - Name of the font
+  Returns: ATSUStyle for the specified font name and characteristics
+ ------------------------------------------------------------------------------}
+function TCarbonFont.CreateStyle(ALogFont: TLogFont; const AFaceName: String): ATSUStyle;
 var
   Attr: ATSUAttributeTag;
   M: ATSUTextMeasurement;
@@ -707,10 +724,11 @@ var
   ID: ATSUFontID;
 const
   SSetAttrs = 'ATSUSetAttributes';
+  SName = 'CreateStyle';
 begin
   inherited Create(False);
-  
-  OSError(ATSUCreateStyle(FStyle), Self, SCreate, SCreateStyle);
+
+  OSError(ATSUCreateStyle(Result), Self, SName, SCreateStyle);
 
   ID := FindCarbonFontID(AFaceName);
 
@@ -719,7 +737,7 @@ begin
     Attr := kATSUFontTag;
     A := @ID;
     S := SizeOf(ID);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUFontTag');
   end;
 
@@ -729,12 +747,9 @@ begin
     M := Abs(ALogFont.lfHeight) shl 16;
     A := @M;
     S := SizeOf(M);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUSizeTag');
   end;
-
-  // applied when creating text layout
-  FLineRotation := (ALogFont.lfEscapement shl 16) div 10;
 
   if ALogFont.lfWeight > FW_NORMAL then
   begin
@@ -742,7 +757,7 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUQDBoldfaceTag');
   end;
 
@@ -752,7 +767,7 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate, SSetAttrs,
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName, SSetAttrs,
       'kATSUQDItalicTag');
   end;
 
@@ -762,7 +777,7 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUQDUnderlineTag');
   end;
 
@@ -772,7 +787,7 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUStyleStrikeThroughTag');
   end;
 end;
