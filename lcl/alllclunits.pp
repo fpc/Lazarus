@@ -50,6 +50,7 @@ uses
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
   CalendarPopup, Themes,
   LCLMessageGlue,
+  RubberBand,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,
@@ -58,7 +59,8 @@ uses
   WSForms, WSGrids, WSImgList, WSMaskEdit,
   WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,
   WSToolwin,
-  WSProc
+  WSProc,
+  WSDesigner
   {$ifdef TRANSLATESTRING}
   ,DefaultTranslator
   {$ENDIF};
@@ -66,6 +68,7 @@ uses
 implementation
 
 end.
+
 
 
 

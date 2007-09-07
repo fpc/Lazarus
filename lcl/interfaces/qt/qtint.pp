@@ -172,6 +172,7 @@ uses
 // QtWSToolwin,
  QtCaret,
  QtThemes,
+ QtWsDesigner,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,
   // Bindings
