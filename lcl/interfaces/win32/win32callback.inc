@@ -1001,7 +1001,6 @@ Var
   function HandleUnicodeChar(AChar: Word): boolean;
   var
     UTF8Char: TUTF8Char;
-    Handled: Boolean;
   begin
     Result := false;
   
@@ -2148,6 +2147,15 @@ begin
         if CancelEndSession
           then LMessage.Result := 0
           else LMessage.Result := 1;
+      end;
+    end;
+    WM_NCPAINT:
+    begin
+      if (lWinControl <> nil) and TWin32ThemeServices(ThemeServices).ThemesEnabled and
+         (lWinControl is TCustomControl) then
+      begin
+        TWin32ThemeServices(ThemeServices).PaintBorder(lWinControl, True);
+        LMessage.Result := 0;
       end;
     end;
   end;
