@@ -147,7 +147,9 @@ mrCancel=2</descr>
       <element name="mrAbort">
         <short>mrAbort</short>
         <descr>Series of constants to be used as respones in message boxes etc.
-mrAbort=3</descr>
+mrAbort=3
+        
+</descr>
       </element>
       <!-- constant Visibility: default -->
       <element name="mrRetry">
@@ -224,8 +226,14 @@ mrLast=mrYesToAll=10</descr>
       <!-- record type Visibility: default -->
       <element name="TCMMouseWheel">
         <short>TCMMouseWheel - record holding data about the Mouse Wheel</short>
-        <descr><p>Details held include:</p> <p>the Message associated with the wheel;</p> <p>the shift state (ie whether Shift, Alt, Control etc keys have been pressed);</p> <p>wheel data which can either be a position (X, Y coordinates) or a position plus an integer result.</p>
-</descr>
+        <descr>
+          <pre>Details held include:
+          the Message associated with the wheel;
+          the shift state (ie whether Shift, Alt, Control etc keys have been pressed);
+          wheel data which can either be 
+	  a position (X, Y coordinates) or 
+	  a position plus an integer result.</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -566,9 +574,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- constant Visibility: default -->
       <element name="crIBeam">
-        <short>
           <short>crIbeam - cursor constant: shows I-beam cursor often used in text editors (-4) </short>
-        </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="crSize">
@@ -746,8 +752,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlStyleType">
         <short>TControlStyleType - describes features of the Control</short>
         <descr>
-          <p>
-            <code>Enumerated type comprising:
+          <pre>Enumerated type comprising:
     csAcceptsControls, // can have children in the designer
     csCaptureMouse,
     csDesignInteractive, // wants mouse events in design mode
@@ -775,8 +780,7 @@ mrLast=mrYesToAll=10</descr>
     csHasDefaultAction, // control implements useful ExecuteDefaultAction
     csHasCancelAction,   // control implements useful ExecuteCancelAction
     csNoDesignSelectable, // control can not be selected at design time
-    csOwnedChildsSelectable // child controls owned by this control are selectable in the designer</code>
-          </p>
+    csOwnedChildsSelectable // child controls owned by this control are selectable in the designer</pre>
         </descr>
         <seealso/>
       </element>
@@ -899,23 +903,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- enumeration type Visibility: default -->
       <element name="TControlStateType">
         <short>TControlStateType - describes possible states (status) of Control</short>
-        <descr>
-          <p>
-            <code>Enumerated type comprising: 
-    csLButtonDown,
-    csClicked,
-    csPalette,
-    csReadingState,
-    csAlignmentNeeded,
-    csFocusing,
-    csCreating,
-    csPaintCopy,
-    csCustomPaint,
-    csDestroyingHandle,
-    csDocking,
-    csVisibleSetInLoading</code>
-          </p>
-        </descr>
+        <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -3550,8 +3538,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>The main ancestor class for visual controls.</short>
-        <descr><p>TControl is the main ancestor class for all visual controls.</p> <p>The definition includes a large number of constants, types and methods that are inherited by derived classes and types.</p> <p>These include devices for defining and controlling the state and position (including alignment and anchoring) of the object, the state of the mouse, whether dragging or docked, the size and type of border, the way child components should behave, the way actions should occur in response to various events, and the way the Control should be drawn.</p>
-</descr>
+        <descr>
+          <pre>TControl is the main ancestor class for all visual controls.
+          The definition includes a large number of constants, types and methods that are inherited by derived classes and types.
+          These include devices for defining and controlling the state and position (including alignment and anchoring) of the object, the state of the mouse, whether dragging or docked, the size and type of border, the way child components should behave, the way actions should occur in response to various events, and the way the Control should be drawn.</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -4674,17 +4665,36 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoAutoSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  TControl DoAutoSize
+
+  IMPORTANT: Many Delphi controls override this method and many call this method
+  directly after setting some properties.
+  During handle creation not all interfaces can create complete Device Contexts
+  which are needed to calculate things like text size.
+  That's why you should always call AdjustSize instead of DoAutoSize.
+------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.AutoSizeCanStart">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  function TControl.AutoSizeCanStart: boolean;
+  
+  Returns true if DoAutoSize can start. That means, it tests the minimum
+  requirements to start. Some controls need even more.
+
+  It returns false if
+  - AutoSize=false
+  - or the control is currently autosizing
+  - or the control is not visible
+  - or the control is destroying
+------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.AutoSizeCanStart.Result">
@@ -4803,10 +4813,23 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>procedure TControl.CalculatePreferredSize(var PreferredWidth,
+    PreferredHeight: integer; WithThemeSpace: Boolean);
+
+  Calculates the default/preferred width and height for a control, which is used
+  by the LCL autosizing algorithms as default size. Only positive values are
+  valid. Negative or 0 are treated as undefined and the LCL uses other sizes
+  instead.
+  TWinControl overrides this and asks the interface for theme dependent values.
+  See TWinControl.GetPreferredSize for more information.
+
+  WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
+  has a minimum size. But for stacking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so it passed parameter to
+  the widgetset.
+</pre>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.CalculatePreferredSize.PreferredWidth">
@@ -4966,10 +4989,14 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetAlignedBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{ try to set the automatic changed bounds
+  If the interface does not like our bounds, it sends a message with the real
+  bounds, which invokes the automatic realigning of the control, .. a circle.
+  To break the circle, only bounds that are different from the last try will
+  be sent.
+}</pre>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetAlignedBounds.aLeft">
@@ -5992,10 +6019,16 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ParentFormHandleInitialized">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>ParentFormHandleInitialized - called by ChildHandlesCreated of parent form</short>
+        <descr>
+          <pre>// The form is a real connection to the target screen. For example, the gtk
+  // under X gathers some screen information, but not before form creation.
+  // But this information is needed to create DeviceContexts, which
+  // are needed to calculate Text Size and such stuff needed for AutoSizing.
+  // That's why AdjustSize delays AutoSizing till this moment. Now do the
+  // AutoSize.
+</pre>
+        </descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CaptureChanged">
@@ -6167,11 +6200,7 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TControl.AutoSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TControl.AutoSize"/>
       <!-- property Visibility: protected -->
       <element name="TControl.Ctl3D">
         <short/>
@@ -6337,11 +6366,13 @@ mrLast=mrYesToAll=10</descr>
       <!-- variable Visibility: public -->
       <element name="TControl.FCompStyle">
         <short>FCompStyle - deprecated</short>
-        <descr><p><code>// DEPRECATED. Enables (valid) use of 'IN' operator (this
+        <descr>
+          <pre>// DEPRECATED. Enables (valid) use of 'IN' operator (this
       // is a hack for speed. It will be replaced by the use of the widgetset
       // classes.
       // So, don't use it anymore.        
-</code></p></descr>
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
@@ -6381,9 +6412,20 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>ManualDock - permits operator-defined docking</short>
-        <descr><p>Enter function with no defined position, ie DropControl=nil, ControlSide=alNone</p><p>Returns boolean true if manual docked performed</p></descr>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
+    ControlSide: TAlign): Boolean;
+
+  Docks this control to DropControl or on NewDockSite.
+  If DropControl is not nil, ControlSide defines on which side of DropControl
+  this control is docked. (alNone,alClient for stacked in pages). DropControl
+  will become part of a TDockManager.
+  If DropControl is nil, then DropControl becomes a normal child of NewDockSite
+  and ControlSide is ignored.
+------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ManualDock.Result">
@@ -6403,10 +6445,18 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
-        <short>ManualFloat - the opposite of ManualDock, allows operator to Float or Un-dock control</short>
-        <descr>TheScreenRect defines the area within which floating is allowed. Returns true if Floating was performed.</descr>
-        <errors/>
-        <seealso/>
+        <short>ManualFloat - the opposite of ManualDock, allows operator to Float a control</short>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  function TControl.ManualFloat(TheScreenRect: TRect;
+    KeepDockSiteSize: Boolean = true): Boolean;
+
+  Undock and float.
+  Float means here: create the floating dock site and dock this control into it.
+  Exception: Forms do not need float dock sites and float on their own.
+------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ManualFloat.Result">
@@ -6456,10 +6506,20 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  TControl.AdjustSize
+
+  Calls DoAutoSize smart.
+  During loading and handle creation the calls are delayed.
+
+  This method does the same as TWinControl.DoAutoSize at the beginning.
+  But since DoAutoSize is commonly overriden by existing Delphi components,
+  they do not all tests, which can result in too much overhead. To reduce this
+  the LCL calls AdjustSize instead.
+------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizeDelayed">
@@ -6475,9 +6535,15 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToNeighbour">
         <short>AnchorToNeighbour - anchoring instructions</short>
-        <descr>Sibling - another control to which the current control is to be anchored</descr>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: integer;
+    Sibling: TControl);
+
+  Setup AnchorSide to anchor one side to the side of a neighbour sibling.
+  For example Right side to Left side, or Top side to Bottom.
+ ------------------------------------------------------------------------------}</pre>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorToNeighbour.Side">
@@ -6519,17 +6585,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorHorizontalCenterTo.Sibling">
-        <short>
-          <short>AnchorVerticalCenterTo - instructions for anchoring control</short>
-          <descr>Sibling - another control to which the current control is to be anchored, centred vertically</descr>
-        </short>
+        <short/>
+        <descr/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorVerticalCenterTo">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>AnchorVertical - instructions for anchoring</short>
+        <descr>Sibling - another control to which the current control is to be anchored, centred vertically</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorVerticalCenterTo.Sibling">
@@ -6610,10 +6672,30 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.GetPreferredSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  procedure TControl.GetPreferredSize(
+    var PreferredWidth, PreferredHeight: integer; Raw: boolean;
+    WithThemeSpace: Boolean);
+    
+  Returns the default/preferred width and height for a control, which is used
+  by the LCL autosizing algorithms as default size. Only positive values are
+  valid. Negative or 0 are treated as undefined and the LCL uses other sizes
+  instead.
+
+  Raw: If not Raw then the values will be adjusted by the constraints and
+  undefined values will be replaced by the current width and height.
+
+  WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
+  has a minimum size. But for stacking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so it passed parameter to
+  the widgetset.
+
+  TWinControl overrides this and asks the interface for theme dependent values.
+  See TWinControl.GetPreferredSize for more information.
+ ------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.GetPreferredSize.PreferredWidth">
@@ -6655,9 +6737,17 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
         <short>What to do when you have finished editing</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>TControl.EditingDone
+  
+  Called when user has finished editing. This procedure can be used by data
+  links to commit the changes.
+  For example:
+  - When focus switches to another control (default)
+  - When user selected another item
+  It's totally up to the control, what events will commit.
+</pre>
+        </descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ExecuteDefaultAction">
@@ -6675,10 +6765,19 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <pre>{------------------------------------------------------------------------------
+  Method: TControl.BeginDrag
+  Params: Immediate: Drag behaviour
+          Threshold: distance to move before dragging starts
+                     -1 uses the default value of Mouse.DragThreshold
+  Returns: Nothing
+
+  Starts the dragging of a control. If the Immediate flag is set, dragging
+  starts immediately.
+ ------------------------------------------------------------------------------}
+</pre>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.BeginDrag.Immediate">
@@ -7255,7 +7354,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.OnClick">
         <short/>
         <descr/>
-	<seealso/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnResize">
@@ -7291,9 +7390,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.Visible">
         <short>The Visible property represents the ability to see a visual control.</short>
         <descr>
-          <p>The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden.</p>
-          <p>Setting Visible to True is equivalent to calling Show method.</p>
-          <p>Setting Visible to False is equivalent to calling Hide method.</p>
+          <pre>The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden.
+          Setting Visible to True is equivalent to calling Show method.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
           <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
         </descr>
         <seealso>
@@ -10745,13 +10844,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TGraphicControl">
         <short>TGraphicControl is the base class for all lightweight controls.</short>
         <descr>
-          <p>TGraphicControl supports simple lightweight controls that do not 
+          <pre>TGraphicControl supports simple lightweight controls that do not 
 need the ability to accept keyboard input or contain other controls.  Since 
 lightweight controls do not wrap GUI screen objects, they are faster and use 
-fewer resources than controls based on TWinControl.</p>
-          <p>TGraphicControl provides a Canvas property for access to the 
+fewer resources than controls based on TWinControl.
+          TGraphicControl provides a Canvas property for access to the 
 control's drawing surface and a virtual Paint method called in response to 
-paint requests received by the parent control.</p>
+paint requests received by the parent control.</pre>
         </descr>
         <seealso>
           <link id="TWinControl"/>
@@ -10810,11 +10909,11 @@ paint requests received by the parent control.</p>
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
         <descr>
-          <p>The TGraphicsControl.Canvas is a clipping window to the parent 
-canvas.</p>
-          <p>If you ask for the Canvas.Width or Canvas.Height, you are actually 
+          <pre>The TGraphicsControl.Canvas is a clipping window to the parent 
+canvas.
+          If you ask for the Canvas.Width or Canvas.Height, you are actually 
 getting the parent control's Canvas dimensions. To get the dimensions of the 
-TGraphicControl, you must query the ClientRect.</p>
+TGraphicControl, you must query the ClientRect.</pre>
         </descr>
         <seealso>
           <link id="TGraphicControl.FCanvas"/>
@@ -10828,8 +10927,8 @@ TGraphicControl, you must query the ClientRect.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomControl">
-        <short/>
-        <descr/>
+        <short>TCustomControl - the base class for window controls</short>
+        <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border</descr>
         <errors/>
         <seealso/>
       </element>
@@ -11369,7 +11468,7 @@ TGraphicControl, you must query the ClientRect.</p>
       Result: A new docktree will be created. Height of "A" will be resized to
               the height of "B".
               A splitter will be inserted between "A" and "B".
-              And all three are childs of the newly created TLazDockForm of the
+              And all three are children of the newly created TLazDockForm of the
               newly created TDockTree.
       
        +------------+
@@ -11414,7 +11513,7 @@ TGraphicControl, you must query the ClientRect.</p>
        |+-----+|
        +-------+
 
-    Every DockZone has siblings and childs. Siblings can either be
+    Every DockZone has siblings and children. Siblings can either be
     - horizontally (left to right, splitter),
     - vertically (top to bottom, splitter)
     - or upon each other (as pages, left to right).
