@@ -1,8 +1,8 @@
 # translation of lazaruside.po to français translation of lazarusidenew.po to  translation of lazaruside.po to  , 2005. , 2005. beuz_ <lazarus@beuselinck.com>, 2006.
 msgid ""
 msgstr ""
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-07-16 17:22+0100\n"
+"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
+"PO-Revision-Date: 2007-09-06 21:41+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1685,11 +1685,11 @@ msgstr "Conflit"
 
 #: lazarusidestrconsts:lispeconflictfound
 msgid "Conflict found"
-msgstr "	Conflit trouvé "
+msgstr "Conflit trouvé "
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
-msgstr ""
+msgstr "Application console"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2321,7 +2321,7 @@ msgstr "Sens"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Directives"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -4653,15 +4653,15 @@ msgstr "Niveau 0 (pas d'optimisations additionnelles)"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (quick and debugger friendly)"
-msgstr ""
+msgstr "Niveau 1 (rapide et débogueur amical)"
 
 #: lazarusidestrconsts:dlglevel2opt
 msgid "Level 2 (Level 1 + quick optimizations)"
-msgstr ""
+msgstr "Niveau 2 (niveau 1 + optimisations rapide)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr ""
+msgstr "Niveau 3 (niveau 2 + optimisations lentes)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -4729,7 +4729,7 @@ msgstr "Edition des liens"
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lithuanian"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -9689,7 +9689,7 @@ msgstr "Où est écrit le fichier de déboguage. Si on ne l'indique pas, la sort
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "Programme freepascal employant TCustomApplication pour vérifier facilement les options en ligne de commande, manipulation des exceptions, etc. Le fichier de programme est automatiquement maintenu par Lazarus."
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
