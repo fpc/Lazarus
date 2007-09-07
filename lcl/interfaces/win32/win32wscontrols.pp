@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Windows, Classes, Controls, Graphics,
 ////////////////////////////////////////////////////
-  WSControls, WSLCLClasses, SysUtils, Win32Proc, WSProc,
+  WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
   { TODO: needs to move }
   Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType,
   InterfaceBase, LCLIntf, LCLType;
@@ -157,14 +157,13 @@ begin
     Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
     FlagsEx := 0;
     Assert(False, 'Trace:Setting flags');
-    Window := HWND(Nil);
-    Buddy := HWND(Nil);
+    Window := HWND(nil);
+    Buddy := HWND(nil);
     Assert(False, 'Trace:Setting window');
 
     if AWinControl.Parent <> nil then
-    begin
-      Parent := AWinControl.Parent.Handle;
-    end else
+      Parent := AWinControl.Parent.Handle
+    else
       Parent := TWin32WidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
@@ -423,7 +422,7 @@ begin
 
   Windows.SetWindowPos(AChild.Handle, AfterWnd, 0, 0, 0, 0,
     SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
-    SWP_NOSIZE or SWP_NOSENDCHANGING);
+    SWP_NOSIZE or SWP_NOSENDCHANGING or SWP_DEFERERASE);
 end;
 
 {------------------------------------------------------------------------------

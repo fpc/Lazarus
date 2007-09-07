@@ -27,7 +27,7 @@ unit win32proc;
 interface
 
 uses
-  Windows, Classes, SysUtils,
+  Windows, Win32Extra, Classes, SysUtils,
   LMessages, LCLType, LCLProc, Controls, Forms, Menus, GraphType;
 
 Type
@@ -114,7 +114,7 @@ procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc:
 
 function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
 
-
+procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1331,6 +1331,40 @@ begin
     Result := Result and CopyImageData(biWidth, H, SrcLineBytes, biBitCount, SrcData, R, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
 
   FreeMem(SrcData);
+end;
+
+procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
+var
+  bmp, oldBmp: HBitmap;
+  MemDC: HDC;
+  Blend: TBlendFunction;
+  Pixel: TRGBAQuad;
+  Brush: HBrush;
+begin
+  if IsRectEmpty(ARect) then Exit;
+
+  Pixel.Blue := Color shr 16;
+  Pixel.Green := Color shr 8;
+  Pixel.Red := Color;
+
+  bmp := CreateBitmap(1, 1, 1, 32, @Pixel);
+  MemDC := CreateCompatibleDC(ADC);
+  OldBmp := SelectObject(MemDC, Bmp);
+
+  Blend.BlendOp := AC_SRC_OVER;
+  Blend.BlendFlags := 0;
+  Blend.SourceConstantAlpha := 128;
+  Blend.AlphaFormat := 0;
+
+  AlphaBlend(ADC, ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, MemDC, 0, 0, 1, 1, Blend);
+
+  SelectObject(MemDC, OldBmp);
+  DeleteDC(MemDC);
+  DeleteObject(Bmp);
+
+  Brush := CreateSolidBrush(Color);
+  FrameRect(ADC, ARect, Brush);
+  DeleteObject(Brush);
 end;
 
 procedure DoInitialization;

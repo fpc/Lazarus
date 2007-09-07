@@ -31,7 +31,7 @@ unit Win32Extra;
 interface
 
 uses 
-  InterfaceBase, Classes, Windows, GraphType;
+  InterfaceBase, Classes, Windows, GraphType, LCLType;
 
 { Win32 API records not included in windows.pp }
 type
@@ -203,6 +203,12 @@ const
 // for GetRandomRgn
   SYSRGN                  = 4;
 
+// for SetWindowPos
+
+SWP_DEFERERASE      = $2000;
+SWP_ASYNCWINDOWPOS  = $4000;
+
+
 {not used anymore
 // missing listview macros
 function ListView_GetHeader(hwndLV: HWND): HWND;
@@ -298,8 +304,7 @@ function GetFileVersion(FileName: string): dword;
 
 {$endif}
 
-
-Implementation
+implementation
 
 Uses SysUtils;
 

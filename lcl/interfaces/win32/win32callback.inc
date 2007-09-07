@@ -83,7 +83,7 @@ begin
     MessageStackDepth[depthLen] := '#';
 {$endif}
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
-  if PrevWndProc = nil
+  if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
   then begin
     if UnicodeEnabledOS
     then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
