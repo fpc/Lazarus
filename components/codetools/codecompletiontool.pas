@@ -1632,7 +1632,7 @@ var
     FuncName:=GetAtom;
     ReadNextAtom;
     if CurPos.Flag=cafRoundBracketOpen then begin
-      // skip empty parameter list ()
+      // skip optional empty parameter list ()
       ReadNextAtom;
       if CurPos.Flag<>cafRoundBracketClose then exit;
       ReadNextAtom;
@@ -1668,7 +1668,7 @@ var
       if Node=nil then exit;
     end;
     if Node.Desc<>ctnBeginBlock then exit;
-    
+
     //DebugLn(['CheckProcNode has begin block']);
     
     // check begin block is only a single assignment
@@ -1717,9 +1717,11 @@ begin
   TreeOfCodeTreeNodeExt:=nil;
 
   try
+    BuildTree(false);
+
     // first step: find all unit identifiers (excluding implementation section)
     if not GatherUnitDefinitions(Definitions,true,true) then exit;
-
+    
     // now check all functions
     Node:=Tree.Root;
     while Node<>nil do begin
@@ -1964,6 +1966,8 @@ begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
   try
+    BuildTree(false);
+  
     // first step: find all unit identifiers (excluding implementation section)
     if not GatherUnitDefinitions(Definitions,true,true) then exit;
 
@@ -2290,7 +2294,7 @@ begin
   try
     // move the pointer types to the same type sections
     if not MovePointerTypesToTargetSections then exit;
-    if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
+    if not BuildUnitDefinitionGraph(Definitions,Graph,true) then exit;
 
   finally
     NodeExtMemManager.DisposeAVLTree(Definitions);
@@ -2318,13 +2322,18 @@ function TCodeCompletionCodeTool.GatherUnitDefinitions(out
   begin
     NodeText:=GetRedefinitionNodeText(Node);
     NodeExt:=FindCodeTreeNodeExt(TreeOfCodeTreeNodeExt,NodeText);
-    if NodeExt=nil then begin
-      NodeExt:=NodeExtMemManager.NewNode;
-      NodeExt.Txt:=NodeText;
-      TreeOfCodeTreeNodeExt.Add(NodeExt);
-    end else if ExceptionOnRedefinition then begin
-      RaiseRedefinition(NodeExt.Node,Node);
+    if NodeExt<>nil then begin
+      if NodeIsForwardProc(NodeExt.Node)
+      and (not NodeIsForwardProc(Node)) then begin
+        // this is the procedure body of the forward definition -> skip
+        exit;
+      end;
+      if ExceptionOnRedefinition then
+        RaiseRedefinition(NodeExt.Node,Node);
     end;
+    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt.Txt:=NodeText;
+    TreeOfCodeTreeNodeExt.Add(NodeExt);
     NodeExt.Node:=Node;
   end;
 
@@ -2395,8 +2404,8 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
         if NodeExt<>nil then begin
           if Graph=nil then
             Graph:=TCodeGraph.Create;
-          if Graph.GetEdge(Node,NodeExt.Node,false)=nil then
-            DebugLn(['CheckRange AddEdge: ',GetRedefinitionNodeText(Node),' uses ',GetRedefinitionNodeText(NodeExt.Node)]);
+          //if Graph.GetEdge(Node,NodeExt.Node,false)=nil then
+          //  DebugLn(['CheckRange AddEdge: ',GetRedefinitionNodeText(Node),' uses ',GetRedefinitionNodeText(NodeExt.Node)]);
           Graph.AddEdge(Node,NodeExt.Node);
         end;
       end;

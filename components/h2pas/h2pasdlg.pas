@@ -214,6 +214,7 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveEmptyCMacrosTool);
   TextConverterToolClasses.RegisterClass(TReplaceEdgedBracketPairWithStar);
   TextConverterToolClasses.RegisterClass(TReplaceMacro0PointerWithNULL);
+  TextConverterToolClasses.RegisterClass(TConvertFunctionTypesToPointers);
   TextConverterToolClasses.RegisterClass(TPostH2PasTools);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
@@ -224,8 +225,10 @@ begin
   TextConverterToolClasses.RegisterClass(TReplaceImplicitTypes);
   TextConverterToolClasses.RegisterClass(TFixArrayOfParameterType);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinitionsInUnit);
+  TextConverterToolClasses.RegisterClass(TFixAliasDefinitionsInUnit);
   TextConverterToolClasses.RegisterClass(TReplaceConstFunctionsInUnit);
   TextConverterToolClasses.RegisterClass(TReplaceTypeCastFunctionsInUnit);
+  TextConverterToolClasses.RegisterClass(TFixForwardDefinitions);
 end;
 
 { TH2PasDialog }

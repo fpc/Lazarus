@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, Spin, MaskEdit, ComCtrls, LCLType,
+  Buttons, ExtCtrls, Spin, ComCtrls, LCLType,
   Printers, OsPrinters, CUPSDyn;
 
 type

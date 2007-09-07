@@ -34,9 +34,23 @@ type
 
   TLazyTextConverterToolClasses = class(TTextConverterToolClasses)
   protected
+    function SupportsType(aTextType: TTextConverterType): boolean; override;
+    
     function GetTempFilename: string; override;
     function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;
                           UpdateFromDisk, Revert: Boolean): Boolean; override;
+
+    function SaveCodeBufferToFile(Converter: TIDETextConverter;
+                           const AFilename: string): Boolean; override;
+    function GetCodeBufferSource(Converter: TIDETextConverter;
+                                out Source: string): boolean; override;
+    function CreateCodeBuffer(Converter: TIDETextConverter;
+                              const Filename, NewSource: string;
+                              out CodeBuffer: Pointer): boolean; override;
+    function LoadCodeBufferFromFile(Converter: TIDETextConverter;
+                                 const Filename: string;
+                                 UpdateFromDisk, Revert: Boolean;
+                                 out CodeBuffer: Pointer): boolean; override;
   end;
 
 procedure SetupTextConverters;
@@ -123,6 +137,12 @@ end;
 
 { TLazyTextConverterToolClasses }
 
+function TLazyTextConverterToolClasses.SupportsType(
+  aTextType: TTextConverterType): boolean;
+begin
+  Result:=aTextType in [tctSource,tctFile,tctStrings];
+end;
+
 function TLazyTextConverterToolClasses.GetTempFilename: string;
 var
   BaseDir: String;
@@ -136,6 +156,43 @@ function TLazyTextConverterToolClasses.LoadFromFile(
   Revert: Boolean): Boolean;
 begin
   Result:=Converter.LoadFromFile(AFilename,false,UpdateFromDisk,Revert);
+end;
+
+function TLazyTextConverterToolClasses.SaveCodeBufferToFile(
+  Converter: TIDETextConverter; const AFilename: string): Boolean;
+begin
+  raise Exception.Create('SaveCodeBufferToFile not supported');
+  if (Converter=nil) and (aFilename='') then;
+  Result:=false;
+end;
+
+function TLazyTextConverterToolClasses.GetCodeBufferSource(
+  Converter: TIDETextConverter; out Source: string): boolean;
+begin
+  raise Exception.Create('GetCodeBufferSource not supported');
+  Source:='';
+  if Converter=nil then;
+  Result:=false;
+end;
+
+function TLazyTextConverterToolClasses.CreateCodeBuffer(
+  Converter: TIDETextConverter; const Filename, NewSource: string; out
+  CodeBuffer: Pointer): boolean;
+begin
+  raise Exception.Create('CreateCodeBuffer not supported');
+  CodeBuffer:=nil;
+  if (Converter=nil) and (Filename='') and (NewSource='') then;
+  Result:=false;
+end;
+
+function TLazyTextConverterToolClasses.LoadCodeBufferFromFile(
+  Converter: TIDETextConverter; const Filename: string; UpdateFromDisk,
+  Revert: Boolean; out CodeBuffer: Pointer): boolean;
+begin
+  raise Exception.Create('LoadCodeBufferFromFile not supported');
+  CodeBuffer:=nil;
+  if (Converter=nil) and (Filename='') and UpdateFromDisk and Revert then;
+  Result:=false;
 end;
 
 initialization

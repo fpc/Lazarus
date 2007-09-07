@@ -53,6 +53,19 @@ begin
   end;
 end;
 
+procedure TestTConvertFunctionTypesToPointers(Converter: TIDETextConverter);
+var
+  Tool: TConvertFunctionTypesToPointers;
+begin
+  Tool:=nil;
+  try
+    Tool:=TConvertFunctionTypesToPointers.Create(nil);
+    Tool.Execute(Converter);
+  finally
+    Tool.Free;
+  end;
+end;
+
 var
   Filename: String;
   Converter: TIDETextConverter;
@@ -75,7 +88,8 @@ begin
     // test
     TestTReplaceImplicitTypes(Converter);
     TestTFixArrayOfParameterType(Converter);
-    
+    TestTConvertFunctionTypesToPointers(Converter);
+
     // write result
     writeln(Converter.Source);
   finally

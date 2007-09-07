@@ -2504,9 +2504,6 @@ var
 var
   Width, Height, H, W, D: cardinal;
   Image: PGdkImage;
-  BytesPerLine: Integer;
-  SrcPtr, DstPtr: PByte;
-  Mask: QWord;
 begin
   Result := False;
 

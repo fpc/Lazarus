@@ -1223,7 +1223,7 @@ begin
     Size := GetBitsPerLine(Width, BitsPerPixel, LineEnd);
   Size := (Size * Description.Height) shr 3;
   
-  if Size <= High(DataSize)
+  if Size < High(DataSize)
   then DataSize := Size
   else DataSize := High(DataSize);
 
@@ -1240,7 +1240,7 @@ begin
     Size := GetBitsPerLine(Width, MaskBitsPerPixel, MaskLineEnd);
   Size := (Size * Description.Height) shr 3;
 
-  if Size <= High(MaskSize)
+  if Size < High(MaskSize)
   then MaskSize := Size
   else MaskSize := High(MaskSize);
 

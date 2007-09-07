@@ -468,8 +468,10 @@ end;
   Deletes the image identified by Index. An index of -1 deletes all
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Delete(AIndex: Integer);
+{$ifdef IMGLIST_OLDSTYLE}
 var
   Obj : TObject;
+{$ENDIF}
 begin
   if AIndex = -1
   then begin
@@ -510,8 +512,10 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TCustomImageList.Destroy;
+{$ifdef IMGLIST_OLDSTYLE}
 var
   i: integer;
+{$ENDIF}
 begin
   {$ifdef IMGLIST_OLDSTYLE}
   FBitmap.Free;
@@ -542,8 +546,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   AEnabled: Boolean);
+{$ifdef IMGLIST_OLDSTYLE}
 var
   aBitmap: TBitmap;
+{$ENDIF}
 begin
   if (FCount = 0) or (AIndex >= FCount) then Exit;
 
@@ -1062,8 +1068,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.WriteData(AStream: TStream);
 var
+  {$ifdef IMGLIST_OLDSTYLE}
   CurImage: TBitMap;
   i: Integer;
+  {$ENDIF}
   Signature: TImageListSignature;
 begin
   //Write signature
@@ -1546,7 +1554,10 @@ end;
 
 procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean);
 var
-  bmp, msk: TBitmap;
+  bmp: TBitmap;
+  {$ifdef IMGLIST_OLDSTYLE}
+  msk: TBitmap;
+  {$ENDIF}
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
 

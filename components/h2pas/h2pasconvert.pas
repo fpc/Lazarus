@@ -33,7 +33,8 @@ uses
   
 type
 
-  { TRemoveCPlusPlusExternCTool - Remove C++ 'extern "C"' lines }
+  { TRemoveCPlusPlusExternCTool  (for C header files)
+    Remove C++ 'extern "C"' lines }
 
   TRemoveCPlusPlusExternCTool = class(TCustomTextConverterTool)
   public
@@ -42,7 +43,8 @@ type
   end;
 
 
-  { TRemoveEmptyCMacrosTool - Remove empty C macros}
+  { TRemoveEmptyCMacrosTool   (for C header files)
+    Remove empty C macros}
 
   TRemoveEmptyCMacrosTool = class(TCustomTextConverterTool)
   public
@@ -51,7 +53,8 @@ type
   end;
   
   
-  { TReplaceEdgedBracketPairWithStar - Replace [] with * }
+  { TReplaceEdgedBracketPairWithStar  (for C header files)
+    Replace [] with * }
 
   TReplaceEdgedBracketPairWithStar = class(TCustomTextReplaceTool)
   public
@@ -60,7 +63,7 @@ type
   end;
 
 
-  { TReplaceMacro0PointerWithNULL -
+  { TReplaceMacro0PointerWithNULL  (for C header files)
     Replace macro values 0 pointer like (char *)0 with NULL }
 
   TReplaceMacro0PointerWithNULL = class(TCustomTextConverterTool)
@@ -69,7 +72,17 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  
+
+  { TConvertFunctionTypesToPointers  (for C header files)
+    Replace function types with pointer to function type }
+
+  TConvertFunctionTypesToPointers = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
   { TReplaceUnitFilenameWithUnitName -
     Replace "unit filename;" with "unit name;" }
 
@@ -235,6 +248,14 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  { TFixForwardDefinitions - reorder definitions }
+
+  TFixForwardDefinitions = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
 type
   { TPretH2PasTools - Combines the common tools. }
 
@@ -242,7 +263,8 @@ type
     phRemoveCPlusPlusExternCTool, // Remove C++ 'extern "C"' lines
     phRemoveEmptyCMacrosTool, // Remove empty C macros
     phReplaceEdgedBracketPairWithStar, // Replace [] with *
-    phReplaceMacro0PointerWithNULL // Replace macro values 0 pointer like (char *)0
+    phReplaceMacro0PointerWithNULL, // Replace macro values 0 pointer like (char *)0
+    phConvertFunctionTypesToPointers // Convert function types to pointers
     );
   TPreH2PasToolsOptions = set of TPreH2PasToolsOption;
 const
@@ -278,7 +300,8 @@ type
     phRemoveRedefinitionsInUnit, // Removes redefinitions of types, variables, constants and resourcestrings
     phFixAliasDefinitionsInUnit, // fix section type of alias definitions
     phReplaceConstFunctionsInUnit, // replace simple assignment functions with constants
-    phReplaceTypeCastFunctionsInUnit // replace simple type cast functions with types
+    phReplaceTypeCastFunctionsInUnit, // replace simple type cast functions with types
+    phFixForwardDefinitions // fix forward definitions by reordering
     );
   TPostH2PasToolsOptions = set of TPostH2PasToolsOption;
 const
@@ -2431,10 +2454,10 @@ begin
                              PChar(TImplicitType(Type2).Name));
 end;
 
-function CompareImplicitTypeStringAndName(ASCIIZ,
+function CompareImplicitTypeStringAndName(Identifier,
   ImplicitType: Pointer): integer;
 begin
-  Result:=CompareIdentifiers(PChar(ASCIIZ),
+  Result:=CompareIdentifiers(PChar(Identifier),
                              PChar(TImplicitType(ImplicitType).Name));
 end;
 
@@ -3404,7 +3427,8 @@ begin
     +'phRemoveCPlusPlusExternCTool - Remove C++ ''extern "C"'' lines'#13
     +'phRemoveEmptyCMacrosTool - Remove empty C macros'#13
     +'phReplaceEdgedBracketPairWithStar - Replace [] with *'#13
-    +'phReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0'#13;
+    +'phReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0'#13
+    +'phConvertFunctionTypesToPointers - Convert function types to pointers'#13;
 end;
 
 function TPreH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
@@ -3451,6 +3475,16 @@ begin
     end;
   end;
   
+  if phConvertFunctionTypesToPointers in Options then begin
+    Tool:=TConvertFunctionTypesToPointers.Create(nil);
+    try
+      Result:=Tool.Execute(aText);
+      if Result<>mrOk then exit;
+    finally
+      Tool.Free;
+    end;
+  end;
+
   Result:=mrOk;
 end;
 
@@ -3498,7 +3532,8 @@ begin
     +'phRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings'#13
     +'phFixAliasDefinitionsInUnit - fix section type of alias definitions'#13
     +'phReplaceConstFunctionsInUnit - replace simple assignment functions with constants'#13
-    +'phReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types'#13;
+    +'phReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types'#13
+    +'phFixForwardDefinitions - fix forward definitions by reordering'#13;
 end;
 
 function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
@@ -3636,6 +3671,10 @@ begin
     if not FixAliasDefinitions(Changed,Result) then exit;
     if not ConvertSimpleFunctions(Changed,Result) then exit;
   until Changed=false;
+  
+  // fix forward definitions
+  if not Run(phFixForwardDefinitions,
+             TFixForwardDefinitions,Result) then exit;
 end;
 
 { TRemoveIncludeDirectives }
@@ -3651,6 +3690,157 @@ begin
   SearchFor:='\{\$(include|i)\b.*\}';
   ReplaceWith:='';
   Options:=Options+[trtRegExpr];
+end;
+
+{ TConvertFunctionTypesToPointers }
+
+class function TConvertFunctionTypesToPointers.ClassDescription: string;
+begin
+  Result:='Convert function types to pointers';
+end;
+
+function TConvertFunctionTypesToPointers.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Src: String;
+  SrcLen: Integer;
+  FuncTypes: TAvgLvlTree; // tree of TImplicitType
+
+  procedure CheckTypeDef(var p: integer);
+  // Check if it is:  typedef identifier ( funcname ) (
+  var
+    StartPos: LongInt;
+    EndPos: LongInt;
+    NewType: TImplicitType;
+  begin
+    // typedef found
+    inc(p,length('typedef'));
+    // skip space
+    while (p<SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+    // skip identifier
+    if not IsIdentStartChar[Src[p]] then exit;
+    while (p<SrcLen) and IsIdentChar[Src[p]] do inc(p);
+    // skip space
+    while (p<SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+    // skip (
+    if Src[p]<>'(' then exit;
+    inc(p);
+    // skip space
+    while (p<SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+    if p>=SrcLen then exit;
+    // read name of function type
+    StartPos:=p;
+    if not IsIdentStartChar[Src[p]] then exit;
+    while (p<SrcLen) and IsIdentChar[Src[p]] do inc(p);
+    EndPos:=p;
+    // skip space
+    while (p<SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+    if p>=SrcLen then exit;
+    // skip )
+    if Src[p]<>')' then exit;
+    inc(p);
+    // skip space
+    while (p<SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+    if p>=SrcLen then exit;
+    // skip (
+    if Src[p]<>'(' then exit;
+    // function type found
+    NewType:=TImplicitType.Create;
+    NewType.Name:=copy(Src,StartPos,EndPos-StartPos);
+    writeln('TConvertFunctionTypesToPointers.Execute.CheckType function type found  Name=',NewType.Name);
+    if FuncTypes=nil then
+      FuncTypes:=TAvgLvlTree.Create(@CompareImplicitTypeNames);
+    FuncTypes.Add(NewType);
+    // add * in front of name
+    System.Insert('*',Src,StartPos);
+    SrcLen:=length(Src);
+  end;
+  
+  procedure CheckIdentifier(var p: integer);
+  var
+    IdentPos: LongInt;
+    IdentEnd: LongInt;
+  begin
+    IdentPos:=p;
+    // skip identifier
+    while (p<=SrcLen) and IsIdentChar[Src[p]] do inc(p);
+    if FuncTypes.FindKey(@Src[IdentPos],@CompareImplicitTypeStringAndName)=nil
+    then
+      exit;
+    // this identifier is a function type
+    IdentEnd:=p;
+    // skip space
+    while (p<SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+    if p>=SrcLen then exit;
+    // remove * behind identifier
+    if Src[p]<>'*' then exit;
+    writeln('TConvertFunctionTypesToPointers.Execute.CheckIdentifier removing * behind reference to ',GetIdentifier(@Src[IdentPos]));
+    System.Delete(Src,IdentEnd,p-IdentEnd+1);
+    SrcLen:=length(Src);
+    p:=IdentEnd;
+  end;
+
+var
+  p: Integer;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  FuncTypes:=nil;
+  try
+    Src:=aText.Source;
+    SrcLen:=length(Src);
+    // Search all  typedef identifier ( funcname ) (
+    // and insert a * in front of the funcname
+    p:=1;
+    while (p<SrcLen) do begin
+      if (Src[p]='t') and ((p=1) or (not IsIdentChar[Src[p-1]]))
+      and (CompareIdentifiers('typedef',@Src[p])=0) then begin
+        CheckTypeDef(p);
+      end else
+        inc(p);
+    end;
+    if FuncTypes<>nil then begin
+      // remove the * behind all references
+      p:=1;
+      while (p<SrcLen) do begin
+        if (IsIdentStartChar[Src[p]]) and ((p=1) or (not IsIdentChar[Src[p-1]]))
+        then begin
+          CheckIdentifier(p);
+        end else
+          inc(p);
+      end;
+    end;
+  finally
+    if FuncTypes<>nil then begin
+      FuncTypes.FreeAndClear;
+      FuncTypes.Free;
+      aText.Source:=Src;
+    end;
+  end;
+  
+  Result:=mrOk;
+end;
+
+{ TFixForwardDefinitions }
+
+class function TFixForwardDefinitions.ClassDescription: string;
+begin
+  Result:='Fix forward definitions by reordering';
+end;
+
+function TFixForwardDefinitions.Execute(aText: TIDETextConverter
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TFixForwardDefinitions.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  if not CodeToolBoss.FixForwardDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
+    DebugLn(['TFixForwardDefinitions.Execute failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
+  Result:=mrOk;
 end;
 
 end.

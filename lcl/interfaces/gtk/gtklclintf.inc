@@ -146,7 +146,7 @@ var
   ImgDepth: Byte absolute ARawImage.Description.Depth;
   ImgDataSize: PtrUInt absolute ARawImage.DataSize;
   Drawable: PGdkDrawable;
-  Bitmap, Inverse: PGdkBitmap;
+  Bitmap: PGdkBitmap;
   Pixbuf: PGdkPixbuf;
   GC: PGdkGC;
   Visual: PGdkVisual;
@@ -292,11 +292,11 @@ begin
         GdkImage := gdk_image_new(GDK_IMAGE_FASTEST, Visual, ImgWidth, ImgHeight);
 
         {$ifdef VerboseRawImage}
-        {DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
-          ' BytesPerLine=',dbgs(GdkImage^.bpl),
-          ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
-          ' ByteOrder=',dbgs({$ifdef Gtk1}GdkImage^.byte_order{$else}ord(GdkImage^.byte_order){$endif}),
-          '');}
+        //DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
+        //  ' BytesPerLine=',dbgs(GdkImage^.bpl),
+        //  ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
+        //  ' ByteOrder=',dbgs({$ifdef Gtk1}GdkImage^.byte_order{$else}ord(GdkImage^.byte_order){$endif}),
+        //  '');
         {$endif}
 
         if ARawImage.Description.BitsPerPixel <> GetGdkImageBitsPerPixel(GdkImage)

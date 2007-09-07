@@ -25,19 +25,19 @@
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="SimpleIDEIntf"/>
-        <MinVersion Valid="True"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item2>
-      <Item3>
         <PackageName Value="H2PasWizard"/>
         <MinVersion Valid="True"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="SimpleIDEIntf"/>
+        <MinVersion Valid="True"/>
       </Item4>
     </RequiredPackages>
     <Units Count="1">
