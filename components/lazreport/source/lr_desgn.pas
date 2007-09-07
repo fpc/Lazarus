@@ -2077,8 +2077,6 @@ begin
 
     Inc(LastX, kx);
     Inc(LastY, ky);
-    Invalidate;
-    FDesigner.PBox1.Invalidate;
   end;
   {$IFDEF DebugLR}
   DebugLn('TfrDesignerPage.MMove END');

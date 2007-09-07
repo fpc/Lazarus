@@ -2258,7 +2258,7 @@ var
       ParaEnd: Boolean;
       Ts: TTextStyle;
     begin
-      if not Streaming or (cury + th <= DR.Bottom) then
+      if not Streaming and (cury < DR.Bottom) then
       begin
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
@@ -2277,9 +2277,8 @@ var
           AssignFont(Canvas);
           Ts := Canvas.TextStyle;
           Ts.Layout    :=Layout;
-          Ts.SystemFont:=True;
           Ts.Alignment :=self.Alignment;
-          Ts.Wordbreak :=self.WordWrap;
+          Ts.Wordbreak :=false;
           Ts.SingleLine:=True;
           Ts.Clipping  :=True;
           Canvas.TextStyle := Ts;
@@ -2314,7 +2313,7 @@ var
           end;
 
          if not Exporting then
-            Canvas.TextOut(CurX,CurY,St);
+           Canvas.TextRect(DR, CurX, CurY, St);
             {ExtTextOut(Canvas.Handle, CurX, CurY, 0, nil,
              PChar(St), Length(St), nil);}
             {ExtTextOut(Canvas.Handle,DR.Left+CurX,DR.Top+CurY,ETO_CLIPPED,@DR,
@@ -2356,7 +2355,7 @@ var
 
     th := Canvas.TextHeight('H')+Round(LineSpacing * ScaleY);
     {$IFDEF DebugLR}
-    DebugLn('Th=',IntToStr(Th),' Canvas.TextHeight(H)=',InttoStr(Canvas.TextHeight('H')));
+    DebugLn('Th=',IntToStr(Th),' Canvas.TextHeight(H)=',InttoStr(Canvas.TextHeight('H')), 'DR=',dbgs(DR));
     {$ENDIF}
 
     CurStrNo := 0;
