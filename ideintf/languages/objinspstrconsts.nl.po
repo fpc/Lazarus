@@ -1,4 +1,4 @@
-﻿#: objinspstrconsts:oisdlinesdchars
+#: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d regels, %d letters"
 

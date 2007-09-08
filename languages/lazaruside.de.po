@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-16 15:37+0100\n"
+"PO-Revision-Date: 2007-08-31 15:35+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -69,15 +69,15 @@ msgstr "%s Projektverzeichnis"
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr "%s%s%s ist kein gültiger Projektname.%sBitte wählen Sie einen anderen (z.B. project1.lpi)"
+msgstr "%s%s%s ist als Projektname ungültig.%sBitte wählen Sie einen anderen (z.B. project1.lpi)"
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
-msgstr "%s%s%s ist kein gültiger Bezeichner."
+msgstr "%s%s%s ist als Bezeichner ungültig."
 
 #: lazarusidestrconsts:lisa2pisnotavalidunitname
 msgid "%s%s%s is not a valid unit name."
-msgstr "%s%s%s ist kein gültiger Unitname"
+msgstr "%s%s%s ist als Unit-Name ungültig."
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -1601,7 +1601,7 @@ msgstr "Der Komponentenname %s%s%s ist ein Schlüsselwort"
 
 #: lazarusidestrconsts:liscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr "Der Komponentenname %s%s%s ist kein gültiger Bezeichner"
+msgstr "Der Komponentenname %s%s%s ist als Bezeichner ungültig"
 
 #: lazarusidestrconsts:lisfpcomponents
 msgid "Components"
@@ -1689,7 +1689,7 @@ msgstr "Konflikt aufgetreten"
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
-msgstr ""
+msgstr "Konsolenanwendung"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2321,7 +2321,7 @@ msgstr "Richtung"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Anweisungen"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -2953,7 +2953,7 @@ msgstr "Datei bereits im Package"
 
 #: lazarusidestrconsts:lispkgmangfileisinproject
 msgid "File is in Project"
-msgstr "Datei ist im Projekt"
+msgstr "Datei ist im Projekt enthalten"
 
 #: lazarusidestrconsts:lisfileisnotwritable
 msgid "File is not writable"
@@ -4125,7 +4125,7 @@ msgstr "Intervall in Sekunden"
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
-msgstr "Ungültiger Basisklasse"
+msgstr "Ungültige Basisklasse"
 
 #: lazarusidestrconsts:lisa2pinvalidcircle
 msgid "Invalid Circle"
@@ -4653,15 +4653,15 @@ msgstr "Stufe 0 (keine zusätzlichen Optimierungen)"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (quick and debugger friendly)"
-msgstr ""
+msgstr "Stufe 1 (schnell und debuggerfreundlich)"
 
 #: lazarusidestrconsts:dlglevel2opt
 msgid "Level 2 (Level 1 + quick optimizations)"
-msgstr ""
+msgstr "Stufe 2 (Stufe 1 + schnelle Optimierungen)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr ""
+msgstr "Stufe 2 (Stufe 2 + langsame Optimierungen)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -4729,7 +4729,7 @@ msgstr "Linken"
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "Litauisch"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -4813,7 +4813,7 @@ msgstr "Make nicht gefunden"
 
 #: lazarusidestrconsts:dlgmakepath
 msgid "Make path"
-msgstr "Make-Verzeichnis"
+msgstr "Pfad zum Make-Programm"
 
 #: lazarusidestrconsts:srkmecmakeresourcestring
 msgid "Make resource string"
@@ -5109,7 +5109,7 @@ msgstr "Mehrfachselektion nur auf einem Formular möglich."
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "Hinweis: Konnte definiertes Template für Free Pascal Quellenverzeichnis nicht finden"
+msgstr "Hinweis: Kann definiertes Template für Free Pascal Quellenverzeichnis nicht finden"
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
@@ -8133,7 +8133,7 @@ msgstr "Das folgende Package konnte nicht geladen werden:"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
 msgid "The following packages failed to load:"
-msgstr "Die folgenden Packages konnte nicht geladen werden:"
+msgstr "Die folgenden Packages konnten nicht geladen werden:"
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
@@ -8753,11 +8753,11 @@ msgstr "Kann die Datei nicht löschen"
 
 #: lazarusidestrconsts:lispkgmangunabletodeletefile
 msgid "Unable to delete file %s%s%s."
-msgstr "Die Datei %s%s%s konnte nicht gelöscht werden."
+msgstr "Die Datei %s%s%s kann nicht gelöscht werden."
 
 #: lazarusidestrconsts:lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file %s%s%s%sfor package %s."
-msgstr "Die alte Statusdatei %s%s%s%sdes Packages %s konnte nicht gelöscht werden."
+msgstr "Die alte Statusdatei %s%s%s%sdes Packages %s kann nicht gelöscht werden."
 
 #: lazarusidestrconsts:lisunabletofindinlfmstream
 msgid "Unable to find %s in LFM Stream."
@@ -8765,23 +8765,23 @@ msgstr "Kann %s nicht im lfm-Stream finden."
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
-msgstr "Kann keinen ResourceString-Abschnitt in dieser oder einer anderen eingebundenen Unit finden."
+msgstr "In dieser oder einer anderen eingebundenen Unit befindet sich kein ResourceString-Abschnitt."
 
 #: lazarusidestrconsts:lisunabletofindavalidclassnamein
 msgid "Unable to find a valid classname in %s%s%s"
-msgstr "Es konnte kein gültiger Klassenname in %s%s%s gefunden werden."
+msgstr "In %s%s%s ist kein gültiger Klassenname zu finden."
 
 #: lazarusidestrconsts:lisunabletofindfile
 msgid "Unable to find file %s%s%s."
-msgstr "Datei %s%s%s konnte nicht gefunden werden."
+msgstr "Datei %s%s%s kann nicht gefunden werden."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
-msgstr "Die Datei %s%s%s konnte nicht gefunden werden.%sÜberprüfen Sie den Suchpfad in %sProjekt->Compilereinstellungen...->Suchpfade->Andere Unitdateien"
+msgstr "Die Datei %s%s%s kann nicht gefunden werden.%sÜberprüfen Sie den Suchpfad in %sProjekt->Compilereinstellungen...->Suchpfade->Andere Unitdateien"
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
-msgstr "Die Methode konnte nicht gefunden werden. Bitte beheben Sie dem Meldungsfenster gezeigten Fehler."
+msgstr "Die Methode kann nicht gefunden werden. Bitte beheben Sie dem Meldungsfenster gezeigten Fehler."
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
@@ -8797,19 +8797,19 @@ msgstr "Quelltexte des Designers können nicht geholt werden."
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile
 msgid "Unable to load file"
-msgstr "Die Datei konnte nicht geladen werden"
+msgstr "Die Datei kann nicht geladen werden"
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile2
 msgid "Unable to load file %s%s%s."
-msgstr "Die Datei %s%s%s konnte nicht geladen werden."
+msgstr "Die Datei %s%s%s kann nicht geladen werden."
 
 #: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
-msgstr "Die alte Ressourcendatei konnte nicht geladen werden.%sDie Ressourcendatei ist die erste Include-Datei im%sInitialisierungsabschnitt.%sZum Beispiel {$I %s.lrs}.%sMögliche Ursache ist ein Syntaxfehler."
+msgstr "Die alte Ressourcendatei kann nicht geladen werden.%sDie Ressourcendatei ist die erste Include-Datei im%sInitialisierungsabschnitt.%sZum Beispiel {$I %s.lrs}.%sMögliche Ursache ist ein Syntaxfehler."
 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
-msgstr "Das Package konnte nicht geladen werden"
+msgstr "Das Package kann nicht geladen werden"
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
@@ -8817,7 +8817,7 @@ msgstr "Kann die Komponentenklasse %s%s%s nicht laden, da sie von sich selbst ab
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
-msgstr "Designer kann nicht geöffnet werden.%sDie Klasse %s stammt nicht von einer design-fähigen Klasse wie TForm oder TDataModule ab."
+msgstr "Designer kann nicht geöffnet werden.%sDie Klasse %s stammt nicht von einer designfähigen Klasse wie TForm oder TDataModule ab."
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
@@ -8825,19 +8825,19 @@ msgstr "Das Package %s%s%s.%s kann nicht geöffnet werden. Es war zur Installati
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
-msgstr "Die Datei konnte nicht gelesen werden"
+msgstr "Die Datei kann nicht gelesen werden"
 
 #: lazarusidestrconsts:lisunabletoreadfile2
 msgid "Unable to read file %s%s%s!"
-msgstr "Die Datei %s%s%s konnte nicht gelesen werden."
+msgstr "Die Datei %s%s%s kann nicht gelesen werden."
 
 #: lazarusidestrconsts:lisunabletoreadfileerror
 msgid "Unable to read file %s%s%s%sError: %s"
-msgstr "Die Datei %s%s%s konnte nicht gelesen werden.%sFehler: %s"
+msgstr "Die Datei %s%s%s kann nicht gelesen werden.%sFehler: %s"
 
 #: lazarusidestrconsts:lisunabletoreadfilename
 msgid "Unable to read file %s%s%s."
-msgstr "Die Datei %s%s%s konnte nicht gelesen werden."
+msgstr "Die Datei %s%s%s kann nicht gelesen werden."
 
 #: lazarusidestrconsts:lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"
@@ -8845,15 +8845,15 @@ msgstr "Kann Package-Datei %s%s%s nicht lesen.%sFehler: %s"
 
 #: lazarusidestrconsts:lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "Kann Statusdatei %s des Projekts %s nicht lesen%sFehler: %s"
+msgstr "Die Statusdatei %s des Projekts %s kann nicht gelesen werden%sFehler: %s"
 
 #: lazarusidestrconsts:lispkgmangunabletoreadstatefileofpackageerror
 msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
-msgstr "Die Statusdatei %s%s%s%sdes Packages %s konnte nicht gelesen werden.%sFehler: %s"
+msgstr "Die Statusdatei %s%s%s%sdes Packages %s kann nicht gelesen werden.%sFehler: %s"
 
 #: lazarusidestrconsts:lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
-msgstr "Die alte Sicherungsdatei %s%s%s konnte nicht gelöscht werden."
+msgstr "Die alte Sicherungsdatei %s%s%s kann nicht gelöscht werden."
 
 #: lazarusidestrconsts:lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -8861,15 +8861,15 @@ msgstr "Kann die unklare Datei %s%s%s%snicht nach %s%s%s umbenennen."
 
 #: lazarusidestrconsts:lisunabletorenamefile
 msgid "Unable to rename file"
-msgstr "Konnte die Datei nicht umbennen"
+msgstr "Kann die Datei nicht umbennen"
 
 #: lazarusidestrconsts:lisunabletorenamefileto
 msgid "Unable to rename file %s%s%s to %s%s%s!"
-msgstr "Die Datei %s%s%s konnte nicht nach %s%s%s umbenannt werden."
+msgstr "Die Datei %s%s%s kann nicht in %s%s%s umbenannt werden."
 
 #: lazarusidestrconsts:lisunabletorenamefileto2
 msgid "Unable to rename file %s%s%s%sto %s%s%s."
-msgstr "Die Datei %s%s%s%s konnte nicht nach %s%s%s umbenannt werden."
+msgstr "Die Datei %s%s%s%s kann nicht in %s%s%s umbenannt werden."
 
 #: lazarusidestrconsts:lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -8877,19 +8877,19 @@ msgstr "Kann Formular im Quelltext nicht umbenennen."
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
-msgstr "Konnte die Methode nicht umbennen. Bitte korrigieren Sie den im Ausgabefenster gezeigten Fehler."
+msgstr "Kann die Methode nicht umbennen. Bitte korrigieren Sie den im Ausgabefenster gezeigten Fehler."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
-msgstr "Die Variable im Quelltext konnte nicht umbenannt werden."
+msgstr "Die Variable im Quelltext kann nicht umbenannt werden."
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "Das Werkzeug %s%s%s:%s%s kann nicht ausgeführt werden"
+msgstr "Das Hilfsprogramm %s%s%s:%s%s kann nicht ausgeführt werden"
 
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
-msgstr "Konnte die Datei %s%s%s nicht speichern"
+msgstr "Kann die Datei %s%s%s nicht speichern"
 
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
@@ -8897,55 +8897,55 @@ msgstr "Kann Ankerseiten-Kontrollelement nicht setzen"
 
 #: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
 msgid "Unable to show method. Plz fix the error shown in the message window."
-msgstr "Konnte die Methode nicht anzeigen. Bitte korrigieren Sie den im Meldungsfenster gezeigten Fehler."
+msgstr "Kann die Methode nicht anzeigen. Bitte korrigieren Sie den im Meldungsfenster gezeigten Fehler."
 
 #: lazarusidestrconsts:lisunabletostreamt
 msgid "Unable to stream %s:T%s."
-msgstr "Konnte %s nicht streamen: T%s"
+msgstr "Kann %s nicht streamen: T%s"
 
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
-msgstr "Konnte die gewählten Komponenten nicht streamen"
+msgstr "Kann die gewählten Komponenten nicht streamen"
 
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents2
 msgid "Unable to stream selected components."
-msgstr "Die ausgewählten Komponenten können nicht gestreamt werder."
+msgstr "Die ausgewählten Komponenten können nicht gestreamt werden."
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."
-msgstr "Konnte binären Komponentenstream von %s für T%s nicht in Text umwandeln."
+msgstr "Kann binären Komponentenstream von %s für T%s nicht in Text umwandeln."
 
 #: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
 msgid "Unable to update CreateForm statement in project source"
-msgstr "Konnte die CreateForm-Anweisung im Projektquelltext nicht aktualisieren"
+msgstr "Kann die CreateForm-Anweisung im Projektquelltext nicht aktualisieren"
 
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
-msgstr "Konnte Datei %s%s%s%s nicht schreiben%s."
+msgstr "Kann Datei %s%s%s%s nicht schreiben%s."
 
 #: lazarusidestrconsts:lisunabletowritefile
 msgid "Unable to write file"
-msgstr "Konnte die Datei nicht schreiben"
+msgstr "Kann die Datei nicht schreiben"
 
 #: lazarusidestrconsts:lisunabletowritefile2
 msgid "Unable to write file %s%s%s"
-msgstr "Konnte die Datei %s%s%s nicht schreiben"
+msgstr "Kann die Datei %s%s%s nicht schreiben"
 
 #: lazarusidestrconsts:lisunabletowritefileerror
 msgid "Unable to write file %s%s%s%sError: %s"
-msgstr "Konnte die Datei %s%s%snicht schreiben%sFehler: %s"
+msgstr "Kann die Datei %s%s%snicht schreiben%sFehler: %s"
 
 #: lazarusidestrconsts:lisunabletowritefilename
 msgid "Unable to write file %s%s%s."
-msgstr "Konnte die Datei %s%s%s nicht schreiben."
+msgstr "Kann die Datei %s%s%s nicht schreiben."
 
 #: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
 msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
-msgstr "Konnte Package %s%s%s%snicht in die Datei %s%s%s schreiben.%sFehler: %s"
+msgstr "Kann Package %s%s%s%snicht in die Datei %s%s%s schreiben.%sFehler: %s"
 
 #: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
 msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
-msgstr "Konnte Statusdatei %s%s%s%sdes Packages %s nicht schreiben.%sFehler: %s"
+msgstr "Kann Statusdatei %s%s%s%sdes Packages %s nicht schreiben.%sFehler: %s"
 
 #: lazarusidestrconsts:lisprojmangunabletowritestatefileforprojecterror
 msgid "Unable to write state file for project %s%sError: %s"
@@ -8953,15 +8953,15 @@ msgstr "Kann Statusdatei für das Projekt %s nicht schreiben%sFehler: %s"
 
 #: lazarusidestrconsts:lisunabletowritetofile2
 msgid "Unable to write to file %s%s%s"
-msgstr "Konnte die Datei %s%s%s nicht schreiben"
+msgstr "Kann die Datei %s%s%s nicht schreiben"
 
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
-msgstr "Konnte die Datei %s%s%s nicht schreiben!"
+msgstr "Kann die Datei %s%s%s nicht schreiben!"
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
-msgstr "Unsichere Optimierungen"
+msgstr "Unklare Optimierungen"
 
 #: lazarusidestrconsts:lismenuuncommentselection
 msgid "Uncomment selection"
@@ -9037,11 +9037,11 @@ msgstr "Unit %s%s%s wurde aus dem Package entfernt"
 
 #: lazarusidestrconsts:lisa2punitfilename2
 msgid "Unit File Name:"
-msgstr "Unitdateiname:"
+msgstr "Unit-Dateiname:"
 
 #: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
-msgstr "Unitinformation"
+msgstr "Unit-Information"
 
 #: lazarusidestrconsts:lisa2punitnameinvalid
 msgid "Unit Name Invalid"
@@ -9049,15 +9049,15 @@ msgstr "Unitname ungültig"
 
 #: lazarusidestrconsts:lisa2punitname
 msgid "Unit Name:"
-msgstr "Unitname:"
+msgstr "Unit-Name:"
 
 #: lazarusidestrconsts:lisaf2punitname
 msgid "Unit Name: "
-msgstr "Unitname:"
+msgstr "Unit-Name:"
 
 #: lazarusidestrconsts:lisunitoutputdirectory
 msgid "Unit Output directory"
-msgstr "Unitausgabeverzeichnis"
+msgstr "Unit-Ausgabeverzeichnis"
 
 #: lazarusidestrconsts:lispkgdefsunitpath
 msgid "Unit Path"
@@ -9081,7 +9081,7 @@ msgstr "Unitbezeichner ist vorhanden"
 
 #: lazarusidestrconsts:lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
-msgstr "Unitname ist bereits vorhanden"
+msgstr "Unit-Name ist bereits vorhanden"
 
 #: lazarusidestrconsts:lisunitnamebeginswith
 msgid "Unit name begins with ..."
@@ -9113,19 +9113,19 @@ msgstr "Unit: %s%s.LFM-Datei: %s"
 
 #: lazarusidestrconsts:lisa2punitnamealreadyexists
 msgid "Unitname already exists"
-msgstr "Unitname ist bereits vorhanden"
+msgstr "Unit-Name ist bereits vorhanden"
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr "Unitname ist bereits im Projekt vorhanden"
+msgstr "Unit-Name ist bereits im Projekt vorhanden"
 
 #: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
-msgstr "Unitname und Dateiname passen nicht zusammen.%sBeispiel: unit1.pas und Unit1"
+msgstr "Unit-Name und Dateiname passen nicht zusammen.%sBeispiel: unit1.pas und Unit1"
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
-msgstr "Unitname:"
+msgstr "Unit-Name:"
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
@@ -9417,7 +9417,7 @@ msgstr "ToDo-Liste des Projekts anzeigen"
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
-msgstr "Projektformulare"
+msgstr "Projektformulare anzeigen"
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"
@@ -9429,7 +9429,7 @@ msgstr "Projektquelltext anzeigen"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
-msgstr "Projektunits"
+msgstr "Projektunits anzeigen"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
@@ -9485,7 +9485,7 @@ msgstr "Warnung: Unklarer Dateiname gefunden: %s%s%s. Quelldatei ist: %s%s%s"
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"
-msgstr "Überwachte Ausdrücke"
+msgstr "Liste der überwachten Ausdrücke"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
@@ -9493,7 +9493,7 @@ msgstr "Überwachte Ausdrücke"
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
-msgstr "Beim Erzeugen neuer Formulare diese zu den Autogenerierten hinzufügen"
+msgstr "Neue Formulare werden beim Erzeugen zu den automatisch generierten zugefügt"
 
 #: lazarusidestrconsts:lisceowhenswitchingfile
 msgid "When switching file in source editor"
@@ -9609,7 +9609,7 @@ msgstr "\" ist schreibgeschuetzt."
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
-msgstr "Erstellen abbrechen"
+msgstr "Buildvorgang abbrechen"
 
 #: lazarusidestrconsts:srkmecaddbreakpoint
 msgid "add break point"
@@ -9665,7 +9665,7 @@ msgstr "Compilerpfad"
 
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
-msgstr "Konfiguriere Erstellungsdatei"
+msgstr "Konfiguriere Build-Datei"
 
 #: lazarusidestrconsts:liscontains
 msgid "contains"
@@ -9689,7 +9689,7 @@ msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Falls nichts angegeben 
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfache Prüfen von Kommandozeilenoptionen, Bearbeiten von Exceptions und so weiter. Die Programmdatei wird automatisch von Lazarus betreut."
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
@@ -9869,31 +9869,31 @@ msgstr "s"
 
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Konfigurationsschalblonen sucht. Voreinstellung ist"
+msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Konfigurationsschablonen sucht. Voreinstellung ist"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
-msgstr "Delphi-Kompatibilitätsmodus"
+msgstr "Delphi-Kompatibilitätsmodus setzen"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
-msgstr "GPC-Kompatibilitätsmodus"
+msgstr "GPC-Kompatibilitätsmodus setzen"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
-msgstr "Turbo Pascal-Kompatibilitätsmodus"
+msgstr "Turbo-Pascal-Kompatibilitätsmodus setzen"
 
 #: lazarusidestrconsts:lisedtdefsetiocheckson
 msgid "set IOCHECKS on"
-msgstr "Ein-/Ausgabeüberprüfungen aktivieren"
+msgstr "Ein-/Ausgabeüberprüfungen (IOCHECK) aktivieren"
 
 #: lazarusidestrconsts:lisedtdefsetoverflowcheckson
 msgid "set OVERFLOWCHECKS on"
-msgstr "Überlaufprüfungen aktivieren"
+msgstr "Überlaufprüfungen (OVERFLOWCHECK) aktivieren"
 
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
-msgstr "Bereichsprüfungen aktivieren"
+msgstr "Bereichsprüfungen (RANGECHECK) aktivieren"
 
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
@@ -9905,7 +9905,7 @@ msgstr "Programm anhalten"
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
-msgstr "Diese Hilfenachricht"
+msgstr "Diese Hilfeanzeige"
 
 #: lazarusidestrconsts:lisunitpath
 msgid "unit path"
