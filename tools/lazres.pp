@@ -100,7 +100,8 @@ begin
     if ParamStr(2)[1] = '@' then
     begin
       S := ParamStr(2);
-      Delete(S, 1, 1); 
+      Delete(S, 1, 1);
+      S := ExpandFileName(S);
       if not FileExists(S) then 
       begin
         writeln('ERROR: file list not found: ', S);

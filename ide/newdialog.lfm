@@ -1,56 +1,21 @@
 object NewOtherDialog: TNewOtherDialog
-  Left = 481
+  Left = 236
   Height = 296
-  Top = 362
+  Top = 264
   Width = 397
   HorzScrollBar.Page = 396
   VertScrollBar.Page = 295
-  ActiveControl = ItemsTreeView
-  BorderStyle = bsSizeToolWin
+  ActiveControl = CancelButton
+  BorderIcons = [biSystemMenu]
   Caption = 'NewOtherDialog'
   ClientHeight = 296
   ClientWidth = 397
   Position = poScreenCenter
-  object ItemsTreeView: TTreeView
-    Left = 6
-    Height = 246
-    Top = 6
-    Width = 178
-    Anchors = [akTop, akLeft, akBottom]
-    BorderSpacing.Around = 6
-    DefaultItemHeight = 15
-    TabOrder = 0
-    OnDblClick = OkButtonClick
-    OnSelectionChanged = ItemsTreeViewSelectionChanged
-  end
-  object DescriptionGroupBox: TGroupBox
-    AnchorSideLeft.Control = ItemsTreeView
-    AnchorSideLeft.Side = asrBottom
+  object CancelButton: TButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 190
-    Height = 246
-    Top = 6
-    Width = 201
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'DescriptionGroupBox'
-    ClientHeight = 228
-    ClientWidth = 197
-    TabOrder = 1
-    object DescriptionLabel: TLabel
-      Left = 6
-      Height = 216
-      Top = 6
-      Width = 185
-      Align = alClient
-      BorderSpacing.Around = 6
-      Caption = 'DescriptionLabel'
-      ParentColor = False
-      WordWrap = True
-    end
-  end
-  object CancelButton: TButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 299
     Height = 25
     Top = 265
@@ -60,22 +25,108 @@ object NewOtherDialog: TNewOtherDialog
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     ModalResult = 2
-    TabOrder = 2
+    TabOrder = 0
   end
   object OkButton: TButton
     AnchorSideRight.Control = CancelButton
-    Left = 220
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 218
     Height = 25
     Top = 265
-    Width = 73
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'OkButton'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     Enabled = False
     OnClick = OkButtonClick
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    AnchorSideBottom.Control = OkButton
+    Left = 6
+    Height = 253
+    Top = 6
+    Width = 385
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    Caption = 'Panel'
+    ClientHeight = 253
+    ClientWidth = 385
+    TabOrder = 2
+    object ItemsTreeView: TTreeView
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Control = Owner
+      AnchorSideBottom.Control = CancelButton
+      Height = 253
+      Width = 182
+      Align = alClient
+      DefaultItemHeight = 15
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      OnDblClick = OkButtonClick
+      OnSelectionChanged = ItemsTreeViewSelectionChanged
+    end
+    object DescriptionGroupBox: TGroupBox
+      AnchorSideLeft.Control = ItemsTreeView
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Owner
+      AnchorSideRight.Control = Owner
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = CancelButton
+      Left = 187
+      Height = 253
+      Width = 198
+      Align = alRight
+      Caption = 'DescriptionGroupBox'
+      ClientHeight = 235
+      ClientWidth = 194
+      TabOrder = 1
+      object DescriptionLabel: TLabel
+        Left = 6
+        Height = 223
+        Top = 6
+        Width = 182
+        Align = alClient
+        BorderSpacing.Around = 6
+        Caption = 'DescriptionLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object Splitter1: TSplitter
+      Left = 182
+      Height = 253
+      Width = 5
+      Align = alRight
+      ResizeAnchor = akRight
+    end
+  end
+  object HelpButton: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 25
+    Top = 265
+    Width = 81
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'HelpButton'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    OnClick = HelpButtonClick
     TabOrder = 3
   end
 end

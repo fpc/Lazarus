@@ -77,6 +77,7 @@ type
   public
     Tree: TAVLTree;
     Header: TStringList;
+    UTF8Header: string;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -249,6 +250,11 @@ begin
   SrcFile:=TStringList.Create;
   SrcFile.LoadFromFile(Filename);
   
+  if (SrcFile.Count>0) and (copy(SrcFile[0],1,3)=UTF8FileHeader) then begin
+    Result.UTF8Header:=copy(SrcFile[0],1,3);
+    SrcFile[0]:=copy(SrcFile[0],4,length(SrcFile[0]));
+  end;
+  
   Line:=0;
   while Line<SrcFile.Count do begin
     if (SrcFile[Line]='') then begin
@@ -293,6 +299,8 @@ begin
     WriteMessageItem(MsgItem,DestFile);
     Node:=PoFile.Tree.FindSuccessor(Node);
   end;
+  if (PoFile.UTF8Header<>'') and (DestFile.Count>0) then
+    DestFile[0]:=PoFile.UTF8Header+DestFile[0];
   Save:=true;
   if FileExists(Filename) then begin
     OldDestFile:=TStringList.Create;

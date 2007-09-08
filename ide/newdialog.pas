@@ -40,21 +40,9 @@ unit NewDialog;
 interface
 
 uses
-  Buttons,
-  Classes,
-  ComCtrls,
-  Controls,
-  Dialogs,
-  Forms,
-  IDEWindowIntf,
-  LazarusIDEStrConsts,
-  LCLProc,
-  LResources,
-  NewItemIntf,
-  PackageIntf,
-  ProjectIntf,
-  StdCtrls,
-  SysUtils;
+  Buttons, Classes, ComCtrls, Controls, Dialogs, Forms, IDEWindowIntf,
+  LazarusIDEStrConsts, LCLProc, LResources, NewItemIntf, PackageIntf,
+  ProjectIntf, StdCtrls, SysUtils, ExtCtrls, IDEContextHelpEdit, IDEImagesIntf;
 
 type
   { TNewLazIDEItemCategory }
@@ -140,14 +128,20 @@ type
   { TNewOtherDialog }
 
   TNewOtherDialog = class(TForm)
+    HelpButton: TButton;
     DescriptionGroupBox: TGroupBox;
     DescriptionLabel: TLabel;
+    ItemsTreeView: TTreeView;
     OkButton: TButton;
     CancelButton: TButton;
-    ItemsTreeView: TTreeView;
+    Panel1: TPanel;
+    Splitter1: TSplitter;
+    procedure HelpButtonClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
+    ImageIndexFolder: integer;
+    ImageIndexTemplate: integer;
     FNewItem: TNewIDEItemTemplate;
     procedure FillItemsTree;
     procedure SetupComponents;
@@ -214,13 +208,20 @@ begin
     Category      := NewIDEItems[CategoryID];
     if not Category.VisibleInNewDialog then continue;
     NewParentNode := ItemsTreeView.Items.AddObject(nil, Category.Name, Category);
+    
+    NewParentNode.ImageIndex := ImageIndexFolder;
+    NewParentNode.SelectedIndex := ImageIndexFolder;
+    
     for TemplateID := 0 to Category.Count - 1 do
     begin
       Template := Category[TemplateID];
       //DebugLn('TNewOtherDialog.FillItemsTree ',Template.Name,' ',dbgs(Template.VisibleInNewDialog));
       if Template.VisibleInNewDialog then
-        ItemsTreeView.Items.AddChildObject(NewParentNode, Template.Name,
-          Template);
+        with ItemsTreeView.Items.AddChildObject(NewParentNode, Template.Name, Template) do
+        begin
+          ImageIndex := ImageIndexTemplate;
+          SelectedIndex := ImageIndexTemplate;
+        end;
     end;
     NewParentNode.Expand(True);
   end;
@@ -234,12 +235,22 @@ begin
   UpdateDescription;
 end;
 
+procedure TNewOtherDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TNewOtherDialog.SetupComponents;
 begin
+  ItemsTreeView.Images := IDEImages.Images_16;
+  ImageIndexTemplate := IDEImages.LoadImage(16, 'template');
+  ImageIndexFolder := IDEImages.LoadImage(16, 'folder');
+
   DescriptionGroupBox.Caption := lisToDoLDescription;
   DescriptionLabel.Caption := '';
   OkButton.Caption := lisLazBuildOk;
   CancelButton.Caption := dlgCancel;
+  HelpButton.Caption := srVK_HELP;
   DefaultControl := OkButton;
   CancelControl  := CancelButton;
 end;

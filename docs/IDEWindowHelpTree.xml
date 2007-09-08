@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="48">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="50">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
@@ -91,4 +91,6 @@
   <Node46 Name="TCodeToolsDefinesEditor" Path="Codetools_Defines_Editor" HasHelp="True"/>
   <Node47 Name="THelpOptionsDialog" Path="Help_Options" HasHelp="True"/>
   <Node48 Name="TWatchPropertyDlg" Path="Watch_Properties" HasHelp="True"/>
+  <Node49 Name="TNewOtherDialog" Path="TNewOtherDialog" HasHelp="True"/>
+  <Node50 Name="TObjectInspectorDlg" Path="TObjectInspectorDlg" HasHelp="True"/>
 </CONFIG>

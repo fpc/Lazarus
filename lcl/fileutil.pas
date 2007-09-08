@@ -28,6 +28,9 @@ interface
 uses
   // For Smart Linking: Do not use the LCL!
   Classes, SysUtils, LCLStrConsts;
+  
+const
+  UTF8FileHeader = #$ef#$bb#$bf;
 
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer;
