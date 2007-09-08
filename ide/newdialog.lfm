@@ -16,10 +16,10 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 299
-    Height = 25
-    Top = 265
-    Width = 92
+    Left = 285
+    Height = 37
+    Top = 253
+    Width = 106
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -34,10 +34,10 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 218
-    Height = 25
-    Top = 265
-    Width = 75
+    Left = 199
+    Height = 37
+    Top = 253
+    Width = 80
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -52,25 +52,24 @@ object NewOtherDialog: TNewOtherDialog
   object Panel1: TPanel
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 253
+    Height = 241
     Top = 6
     Width = 385
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    Caption = 'Panel'
-    ClientHeight = 253
+    ClientHeight = 241
     ClientWidth = 385
     TabOrder = 2
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
       AnchorSideBottom.Control = CancelButton
-      Height = 253
+      Height = 241
       Width = 182
       Align = alClient
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       ScrollBars = ssAutoBoth
       TabOrder = 0
       OnDblClick = OkButtonClick
@@ -84,16 +83,16 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = CancelButton
       Left = 187
-      Height = 253
+      Height = 241
       Width = 198
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 235
+      ClientHeight = 222
       ClientWidth = 194
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
-        Height = 223
+        Height = 210
         Top = 6
         Width = 182
         Align = alClient
@@ -105,7 +104,7 @@ object NewOtherDialog: TNewOtherDialog
     end
     object Splitter1: TSplitter
       Left = 182
-      Height = 253
+      Height = 241
       Width = 5
       Align = alRight
       ResizeAnchor = akRight
@@ -116,9 +115,9 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 25
-    Top = 265
-    Width = 81
+    Height = 37
+    Top = 253
+    Width = 92
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
