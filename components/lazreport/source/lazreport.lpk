@@ -14,7 +14,6 @@
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
-        <CustomOptions Value=""/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -26,7 +25,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="5"/>
-    <Files Count="30">
+    <Files Count="33">
       <Item1>
         <Filename Value="lr_class.pas"/>
         <UnitName Value="LR_Class"/>
@@ -148,24 +147,36 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="lr_pars.pas"/>
         <UnitName Value="LR_Pars"/>
       </Item30>
+      <Item31>
+        <Filename Value="lr_fmted.lfm"/>
+        <Type Value="LFM"/>
+      </Item31>
+      <Item32>
+        <Filename Value="lr_fmted.lrs"/>
+        <Type Value="LRS"/>
+      </Item32>
+      <Item33>
+        <Filename Value="lr_fmted.pas"/>
+        <UnitName Value="LR_fmted"/>
+      </Item33>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="5">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="printer4lazarus"/>
       </Item2>
       <Item3>
         <PackageName Value="LCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="printer4lazarus"/>
+        <PackageName Value="IDEIntf"/>
       </Item4>
       <Item5>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item5>
     </RequiredPkgs>
     <UsageOptions>

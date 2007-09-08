@@ -37,9 +37,8 @@ type
     Edit1: TEdit;
     Label1: TLabel;
     Edit3: TEdit;
+    procedure ComboBox2Select(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure SplEditChange(Sender: TObject);
-    procedure ComboBox2Click(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure SplEditEnter(Sender: TObject);
     procedure ShowPanel1;
@@ -72,14 +71,20 @@ procedure TfrFmtForm.FormActivate(Sender: TObject);
 begin
 end;
 
+procedure TfrFmtForm.ComboBox2Select(Sender: TObject);
+begin
+  ShowPanel2;
+  ShowPanel1;
+end;
+
 procedure TfrFmtForm.ShowPanel1;
 begin
   Panel1.Visible := (ComboBox1.ItemIndex = 1) and (not Panel2.Visible);
-{  if Panel1.Visible then
+  if Panel1.Visible then
   begin
-    Edit3.Text := IntToStr((Format and $0000FF00) div $00000100);
-    SplEdit.Text := Chr(Format and $000000FF);
-  end;}
+    Edit3.Text := IntToStr((FFormat and $0000FF00) div $00000100);
+    SplEdit.Text := Chr(FFormat and $000000FF);
+  end;
 end;
 
 procedure TfrFmtForm.ShowPanel2;
@@ -131,25 +136,10 @@ begin
   ComboBox2.ItemIndex := 0;
   if Sender <> nil then
   begin
-    ComboBox2Click(nil);
+    ComboBox2Select(nil);
     ShowPanel1;
     Edit1.Text := '';
   end;
-end;
-
-procedure TfrFmtForm.ComboBox2Click(Sender: TObject);
-begin
-  ShowPanel2;
-  ShowPanel1;
-end;
-
-procedure TfrFmtForm.SplEditChange(Sender: TObject);
-var
-  c: Char;
-begin
-  c := ',';
-  if SplEdit.Text <> '' then
-    c := SplEdit.Text[1];
 end;
 
 procedure TfrFmtForm.SplEditEnter(Sender: TObject);
@@ -168,6 +158,7 @@ begin
   Label1.Caption := sFmtFormFrmt;
   Button1.Caption := sOk;
   Button2.Caption := sCancel;
+  SplEdit.Text := DecimalSeparator;
 end;
 
 procedure TfrFmtForm.frFmtFormShow(Sender: TObject);
@@ -213,7 +204,7 @@ var
 begin
   Result := ComboBox1.ItemIndex * $01000000 + ComboBox2.ItemIndex * $00010000 +
     StrToIntDef(Edit3.Text, 0) * $00000100;
-  c := ',';
+  c := DecimalSeparator;
   if SplEdit.Text <> '' then
     c := SplEdit.Text[1];
   Result := Result + Ord(c);

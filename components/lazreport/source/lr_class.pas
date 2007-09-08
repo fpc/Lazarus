@@ -6752,7 +6752,7 @@ begin
          end;
     end;
   except
-    on exception do
+    on e:exception do
       Result := v;
   end;
   DecimalSeparator := c;
