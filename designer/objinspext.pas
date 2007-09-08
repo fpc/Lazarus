@@ -41,17 +41,17 @@ type
     procedure OkButtonClick(Sender: TObject);
   private
     FAddMode: Boolean;
-    FObjectInspector: TObjectInspector;
+    FObjectInspector: TObjectInspectorDlg;
     FPropertyName: string;
     procedure SetAddMode(const AValue: Boolean);
-    procedure SetObjectInspector(const AValue: TObjectInspector);
+    procedure SetObjectInspector(const AValue: TObjectInspectorDlg);
     procedure UpdateLabel;
     procedure UpdateComboBox;
     procedure UpdateMode;
   public
     constructor Create(TheOwner: TComponent); override;
   public
-    property ObjectInspector: TObjectInspector read FObjectInspector
+    property ObjectInspector: TObjectInspectorDlg read FObjectInspector
                                                write SetObjectInspector;
     property PropertyName: string read FPropertyName;
     property AddMode: Boolean read FAddMode write SetAddMode;
@@ -63,14 +63,14 @@ const
 var
   DefaultOIFavouriteProperties: TOIFavouriteProperties;
 
-function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspector;
+function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspectorDlg;
   Add: Boolean): TModalResult;
 function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
 function LoadOIFavouriteProperties: TOIFavouriteProperties;
 procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
 function GetOIFavouriteConfigFilename: string;
 
-function FindDeclarationOfOIProperty(AnInspector: TObjectInspector;
+function FindDeclarationOfOIProperty(AnInspector: TObjectInspectorDlg;
   Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint;
   out NewTopLine: integer): Boolean;
 
@@ -107,7 +107,7 @@ begin
   Result.DeleteDoubles;
 end;
 
-function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspector;
+function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspectorDlg;
   Add: Boolean): TModalResult;
 var
   OIAddRemoveFavouriteDlg: TOIAddRemoveFavouriteDlg;
@@ -191,7 +191,7 @@ begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultOIFavouriteConfigFilename;
 end;
 
-function FindDeclarationOfOIProperty(AnInspector: TObjectInspector;
+function FindDeclarationOfOIProperty(AnInspector: TObjectInspectorDlg;
   Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint;
   out NewTopLine: integer): Boolean;
 var
@@ -297,7 +297,7 @@ begin
              [mbOk],0);
 end;
 
-procedure TOIAddRemoveFavouriteDlg.SetObjectInspector(const AValue: TObjectInspector
+procedure TOIAddRemoveFavouriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg
   );
 var
   CurRow: TOIPropertyGridRow;

@@ -1,0 +1,41 @@
+object ObjectInspectorDlg: TObjectInspectorDlg
+  Left = 292
+  Height = 669
+  Top = 175
+  Width = 275
+  HorzScrollBar.Page = 274
+  VertScrollBar.Page = 668
+  Caption = 'ObjectInspectorDlg'
+  ClientHeight = 669
+  ClientWidth = 275
+  KeyPreview = True
+  OnResize = ObjectInspectorResize
+  PopupMenu = MainPopupMenu
+  object StatusBar: TStatusBar
+    Height = 23
+    Top = 646
+    Width = 275
+    Panels = <    
+      item
+        Width = 100
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object AvailPersistentComboBox: TComboBox
+    Height = 21
+    Width = 275
+    Align = alTop
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
+    OnCloseUp = AvailComboBoxCloseUp
+    TabOrder = 0
+  end
+  object MainPopupMenu: TPopupMenu
+    OnPopup = OnMainPopupMenuPopup
+    left = 9
+    top = 11
+  end
+end

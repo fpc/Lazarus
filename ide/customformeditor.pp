@@ -114,7 +114,7 @@ each control that's dropped onto the form
     FComponentInterfaces: TAVLTree; // tree of TComponentInterface sorted for
                                     // component
     FSelection: TPersistentSelectionList;
-    FObj_Inspector: TObjectInspector;
+    FObj_Inspector: TObjectInspectorDlg;
     FDefineProperties: TAVLTree;// tree of TDefinePropertiesCacheItem
     FStandardDefinePropertiesRegistered: Boolean;
     FDesignerBaseClasses: TFPList; // list of TComponentClass
@@ -125,7 +125,7 @@ each control that's dropped onto the form
     FNonControlForms: TAVLTree; // tree of TNonControlDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
-    procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
+    procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
     procedure JITListReaderError(Sender: TObject; ErrorType: TJITFormError;
           var Action: TModalResult); virtual;
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
@@ -250,7 +250,7 @@ each control that's dropped onto the form
   public
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
-    property Obj_Inspector: TObjectInspector
+    property Obj_Inspector: TObjectInspectorDlg
                                      read FObj_Inspector write SetObj_Inspector;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
   end;
@@ -2215,7 +2215,7 @@ begin
 end;
 
 procedure TCustomFormEditor.SetObj_Inspector(
-  AnObjectInspector: TObjectInspector);
+  AnObjectInspector: TObjectInspectorDlg);
 begin
   if AnObjectInspector=FObj_Inspector then exit;
   if FObj_Inspector<>nil then begin

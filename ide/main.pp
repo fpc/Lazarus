@@ -1261,15 +1261,15 @@ end;
 
 procedure TMainIDE.OIOnFindDeclarationOfProperty(Sender: TObject);
 var
-  AnInspector: TObjectInspector;
+  AnInspector: TObjectInspectorDlg;
   Code: TCodeBuffer;
   Caret: TPoint;
   NewTopLine: integer;
 begin
   if not BeginCodeTools then exit;
   if Sender=nil then Sender:=ObjectInspector1;
-  if Sender is TObjectInspector then begin
-    AnInspector:=TObjectInspector(Sender);
+  if Sender is TObjectInspectorDlg then begin
+    AnInspector:=TObjectInspectorDlg(Sender);
     if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
       DoOpenFileAndJumpToPos(Code.Filename,Caret,NewTopLine,-1,[]);
   end;
@@ -1519,8 +1519,8 @@ end;
 
 procedure TMainIDE.SetupObjectInspector;
 begin
-  ObjectInspector1 := TObjectInspector.Create(OwningComponent);
-  ObjectInspector1.BorderStyle:=bsSizeToolWin;
+  ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
+  ObjectInspector1.BorderStyle:=bsSizeable;
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
@@ -1531,7 +1531,7 @@ begin
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.ShowFavouritePage:=true;
-  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspector);
+  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
@@ -2431,7 +2431,7 @@ begin
   ecContextHelp:
     if Sender=MessagesView then
       HelpBoss.ShowHelpForMessage(-1)
-    else if Sender is TObjectInspector then
+    else if Sender is TObjectInspectorDlg then
       HelpBoss.ShowHelpForObjectInspector(Sender);
 
   ecSave:
@@ -2439,7 +2439,7 @@ begin
       GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
         DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
-    end else if (Sender is TObjectInspector) then begin
+    end else if (Sender is TObjectInspectorDlg) then begin
       GetObjectInspectorUnit(ASrcEdit,AnUnitInfo);
       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
         DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);

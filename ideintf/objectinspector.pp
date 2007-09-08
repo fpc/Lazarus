@@ -14,7 +14,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-   This unit defines the TObjectInspector.
+   This unit defines the TObjectInspectorDlg.
    It uses TOIPropertyGrid and TOIPropertyGridRow which are also defined in this
    unit. The object inspector uses property editors (see TPropertyEditor) to
    display and control properties, thus the object inspector is merely an
@@ -47,7 +47,7 @@ const
 type
   EObjectInspectorException = class(Exception);
 
-  TObjectInspector = class;
+  TObjectInspectorDlg = class;
 
   // standard ObjectInspector pages
   TObjectInspectorPage = (
@@ -154,8 +154,8 @@ type
     constructor Create;
     function Load: boolean;
     function Save: boolean;
-    procedure Assign(AnObjInspector: TObjectInspector);
-    procedure AssignTo(AnObjInspector: TObjectInspector);
+    procedure Assign(AnObjInspector: TObjectInspectorDlg);
+    procedure AssignTo(AnObjInspector: TObjectInspectorDlg);
   public
     property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
 
@@ -520,7 +520,7 @@ type
   //============================================================================
 
 
-  { TObjectInspector }
+  { TObjectInspectorDlg }
 
   TOnAddAvailablePersistent = procedure(APersistent: TPersistent;
     var Allowed: boolean) of object;
@@ -530,31 +530,33 @@ type
     );
   TOIFlags = set of TOIFlag;
 
-  { TObjectInspector }
+  { TObjectInspectorDlg }
 
-  TObjectInspector = class(TForm)
+  TObjectInspectorDlg = class(TForm)
+  
+  
+    AddToFavoritesPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;
-    Splitter1: TSplitter;
     ComponentTree: TComponentTreeView;
-    NoteBook: TNoteBook;
-    PropertyGrid: TOICustomPropertyGrid;
+    CopyPopupmenuItem: TMenuItem;
+    CutPopupmenuItem: TMenuItem;
+    DeletePopupmenuItem: TMenuItem;
     EventGrid: TOICustomPropertyGrid;
     FavouriteGrid: TOICustomPropertyGrid;
-    StatusBar: TStatusBar;
-    MainPopupMenu: TPopupMenu;
-    SetDefaultPopupMenuItem: TMenuItem;
-    AddToFavoritesPopupMenuItem: TMenuItem;
-    RemoveFromFavoritesPopupMenuItem: TMenuItem;
-    UndoPropertyPopupMenuItem: TMenuItem;
     FindDeclarationPopupmenuItem: TMenuItem;
-    CutPopupmenuItem: TMenuItem;
-    CopyPopupmenuItem: TMenuItem;
-    PastePopupmenuItem: TMenuItem;
-    DeletePopupmenuItem: TMenuItem;
+    MainPopupMenu: TPopupMenu;
+    NoteBook: TNoteBook;
     OptionsSeparatorMenuItem2: TMenuItem;
-    ShowHintsPopupMenuItem: TMenuItem;
+    PastePopupmenuItem: TMenuItem;
+    PropertyGrid: TOICustomPropertyGrid;
+    RemoveFromFavoritesPopupMenuItem: TMenuItem;
+    SetDefaultPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
+    ShowHintsPopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
+    Splitter1: TSplitter;
+    StatusBar: TStatusBar;
+    UndoPropertyPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure ObjectInspectorResize(Sender: TObject);
@@ -667,7 +669,7 @@ type
   end;
 
 const
-  DefaultObjectInspectorName: string = 'ObjectInspector';
+  DefaultObjectInspectorName: string = 'ObjectInspectorDlg';
 
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
@@ -2996,7 +2998,7 @@ begin
   Result:=true;
 end;
 
-procedure TOIOptions.Assign(AnObjInspector: TObjectInspector);
+procedure TOIOptions.Assign(AnObjInspector: TObjectInspectorDlg);
 var
   Page: TObjectInspectorPage;
 begin
@@ -3021,7 +3023,7 @@ begin
   FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
 end;
 
-procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
+procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
 var
   Page: TObjectInspectorPage;
   Grid: TOICustomPropertyGrid;
@@ -3051,9 +3053,9 @@ end;
 //==============================================================================
 
 
-{ TObjectInspector }
+{ TObjectInspectorDlg }
 
-constructor TObjectInspector.Create(AnOwner: TComponent);
+constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
 
   procedure AddPopupMenuItem(var NewMenuItem: TMenuItem;
     ParentMenuItem: TMenuItem; const AName, ACaption, AHint: string;
@@ -3103,25 +3105,8 @@ begin
   FShowFavouritePage:=false;
 
   Caption := oisObjectInspector;
-  Name := DefaultObjectInspectorName;
-  KeyPreview:=true;
+  StatusBar.SimpleText:=oisAll;
 
-  // StatusBar
-  StatusBar:=TStatusBar.Create(Self);
-  with StatusBar do begin
-    Name:='StatusBar';
-    Parent:=Self;
-    SimpleText:=oisAll;
-    Align:= alBottom;
-  end;
-
-  // PopupMenu
-  MainPopupMenu:=TPopupMenu.Create(Self);
-  with MainPopupMenu do begin
-    Name:='MainPopupMenu';
-    OnPopup:=@OnMainPopupMenuPopup;
-    AutoPopup:=true;
-  end;
   AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
      'Set to Default value','Set property value to Default',
      @OnSetDefaultPopupmenuItemClick,false,true,true);
@@ -3165,18 +3150,8 @@ begin
      ,'ShowOptionsPopupMenuItem',oisOptions,''
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
-  PopupMenu:=MainPopupMenu;
-
   // combobox at top (filled with available persistents)
-  AvailPersistentComboBox := TComboBox.Create (Self);
   with AvailPersistentComboBox do begin
-    Name:='AvailPersistentComboBox';
-    Parent:=Self;
-    Style:=csDropDown;
-    Text:='';
-    OnCloseUp:=@AvailComboBoxCloseUp;
-    //Sorted:=true;
-    Align:= alTop;
     Visible:=not FShowComponentTree;
   end;
 
@@ -3196,18 +3171,16 @@ begin
     CreateSplitter;
 
   CreateNoteBook;
-
-  OnResize:=@ObjectInspectorResize;
 end;
 
-destructor TObjectInspector.Destroy;
+destructor TObjectInspectorDlg.Destroy;
 begin
   FreeAndNil(FSelection);
   inherited Destroy;
   FreeAndNil(FFavourites);
 end;
 
-procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
+procedure TObjectInspectorDlg.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 var
   Page: TObjectInspectorPage;
 begin
@@ -3236,7 +3209,7 @@ begin
   end;
 end;
 
-function TObjectInspector.PersistentToString(APersistent: TPersistent): string;
+function TObjectInspectorDlg.PersistentToString(APersistent: TPersistent): string;
 begin
   if APersistent is TComponent then
     Result:=TComponent(APersistent).GetNamePath+': '+APersistent.ClassName
@@ -3244,13 +3217,13 @@ begin
     Result:=APersistent.ClassName;
 end;
 
-procedure TObjectInspector.SetComponentTreeHeight(const AValue: integer);
+procedure TObjectInspectorDlg.SetComponentTreeHeight(const AValue: integer);
 begin
   if FComponentTreeHeight=AValue then exit;
   FComponentTreeHeight:=AValue;
 end;
 
-procedure TObjectInspector.SetDefaultItemHeight(const AValue: integer);
+procedure TObjectInspectorDlg.SetDefaultItemHeight(const AValue: integer);
 var
   NewValue: Integer;
   Page: TObjectInspectorPage;
@@ -3271,14 +3244,14 @@ begin
   RebuildPropertyLists;
 end;
 
-procedure TObjectInspector.SetOnShowOptions(const AValue: TNotifyEvent);
+procedure TObjectInspectorDlg.SetOnShowOptions(const AValue: TNotifyEvent);
 begin
   if FOnShowOptions=AValue then exit;
   FOnShowOptions:=AValue;
   ShowOptionsPopupMenuItem.Visible:=FOnShowOptions<>nil;
 end;
 
-procedure TObjectInspector.AddPersistentToList(APersistent: TPersistent;
+procedure TObjectInspectorDlg.AddPersistentToList(APersistent: TPersistent;
   List: TStrings);
 var
   Allowed: boolean;
@@ -3292,7 +3265,7 @@ begin
     List.AddObject(PersistentToString(APersistent),APersistent);
 end;
 
-procedure TObjectInspector.HookLookupRootChange;
+procedure TObjectInspectorDlg.HookLookupRootChange;
 var
   Page: TObjectInspectorPage;
 begin
@@ -3302,13 +3275,13 @@ begin
   FillPersistentComboBox;
 end;
 
-procedure TObjectInspector.FillPersistentComboBox;
+procedure TObjectInspectorDlg.FillPersistentComboBox;
 var a:integer;
   Root:TComponent;
   OldText:AnsiString;
   NewList: TStringList;
 begin
-//writeln('[TObjectInspector.FillComponentComboBox] A ',FUpdatingAvailComboBox
+//writeln('[TObjectInspectorDlg.FillComponentComboBox] A ',FUpdatingAvailComboBox
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
@@ -3321,7 +3294,7 @@ begin
       AddPersistentToList(FPropertyEditorHook.LookupRoot,NewList);
       if FPropertyEditorHook.LookupRoot is TComponent then begin
         Root:=TComponent(FPropertyEditorHook.LookupRoot);
-  //writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
+  //writeln('[TObjectInspectorDlg.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
         for a:=0 to Root.ComponentCount-1 do
           AddPersistentToList(Root.Components[a],NewList);
       end;
@@ -3348,16 +3321,16 @@ begin
   end;
 end;
 
-procedure TObjectInspector.BeginUpdate;
+procedure TObjectInspectorDlg.BeginUpdate;
 begin
   inc(FUpdateLock);
 end;
 
-procedure TObjectInspector.EndUpdate;
+procedure TObjectInspectorDlg.EndUpdate;
 begin
   dec(FUpdateLock);
   if FUpdateLock<0 then begin
-    DebugLn('ERROR TObjectInspector.EndUpdate');
+    DebugLn('ERROR TObjectInspectorDlg.EndUpdate');
   end;
   if FUpdateLock=0 then begin
     if oifRebuildPropListsNeeded in FFLags then
@@ -3365,7 +3338,7 @@ begin
   end;
 end;
 
-function TObjectInspector.GetActivePropertyGrid: TOICustomPropertyGrid;
+function TObjectInspectorDlg.GetActivePropertyGrid: TOICustomPropertyGrid;
 begin
   Result:=nil;
   if NoteBook=nil then exit;
@@ -3376,7 +3349,7 @@ begin
   end;
 end;
 
-function TObjectInspector.GetActivePropertyRow: TOIPropertyGridRow;
+function TObjectInspectorDlg.GetActivePropertyRow: TOIPropertyGridRow;
 var
   CurGrid: TOICustomPropertyGrid;
 begin
@@ -3386,7 +3359,7 @@ begin
   Result:=CurGrid.GetActiveRow;
 end;
 
-function TObjectInspector.GetCurRowDefaultValue(var DefaultStr: string): boolean;
+function TObjectInspectorDlg.GetCurRowDefaultValue(var DefaultStr: string): boolean;
 var
   CurRow: TOIPropertyGridRow;
 begin
@@ -3403,7 +3376,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.SetSelection(
+procedure TObjectInspectorDlg.SetSelection(
   const ASelection:TPersistentSelectionList);
 begin
   if FSelection.IsEqual(ASelection) then exit;
@@ -3416,7 +3389,7 @@ begin
     FOnSelectPersistentsInOI(Self);
 end;
 
-procedure TObjectInspector.RefreshSelection;
+procedure TObjectInspectorDlg.RefreshSelection;
 var
   Page: TObjectInspectorPage;
 begin
@@ -3429,7 +3402,7 @@ begin
     Visible:=true;
 end;
 
-procedure TObjectInspector.RefreshPropertyValues;
+procedure TObjectInspectorDlg.RefreshPropertyValues;
 var
   Page: TObjectInspectorPage;
 begin
@@ -3438,7 +3411,7 @@ begin
       GridControl[Page].RefreshPropertyValues;
 end;
 
-procedure TObjectInspector.RebuildPropertyLists;
+procedure TObjectInspectorDlg.RebuildPropertyLists;
 var
   Page: TObjectInspectorPage;
 begin
@@ -3452,7 +3425,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.AvailComboBoxCloseUp(Sender:TObject);
+procedure TObjectInspectorDlg.AvailComboBoxCloseUp(Sender:TObject);
 var NewComponent,Root:TComponent;
   a:integer;
 
@@ -3491,7 +3464,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.ComponentTreeSelectionChanged(Sender: TObject);
+procedure TObjectInspectorDlg.ComponentTreeSelectionChanged(Sender: TObject);
 begin
   if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then exit;
   if FSelection.IsEqual(ComponentTree.Selection) then exit;
@@ -3501,14 +3474,14 @@ begin
     FOnSelectPersistentsInOI(Self);
 end;
 
-procedure TObjectInspector.ObjectInspectorResize(Sender: TObject);
+procedure TObjectInspectorDlg.ObjectInspectorResize(Sender: TObject);
 begin
   if (ComponentTree<>nil) and (ComponentTree.Visible)
   and (ComponentTree.Parent=Self) then
     ComponentTree.Height:=ClientHeight div 4;
 end;
 
-procedure TObjectInspector.OnGridKeyDown(Sender: TObject; var Key: Word;
+procedure TObjectInspectorDlg.OnGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(OnOIKeyDown) then OnOIKeyDown(Self,Key,Shift);
@@ -3516,13 +3489,13 @@ begin
     OnRemainingKeyDown(Self,Key,Shift);
 end;
 
-procedure TObjectInspector.OnGridKeyUp(Sender: TObject; var Key: Word;
+procedure TObjectInspectorDlg.OnGridKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(OnRemainingKeyUp) then OnRemainingKeyUp(Self,Key,Shift);
 end;
 
-procedure TObjectInspector.OnSetDefaultPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnSetDefaultPopupmenuItemClick(Sender: TObject);
 var
   CurGrid: TOICustomPropertyGrid;
   DefaultStr: string;
@@ -3534,19 +3507,19 @@ begin
   RefreshPropertyValues;
 end;
 
-procedure TObjectInspector.OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
 begin
-  //debugln('TObjectInspector.OnAddToFavouritePopupmenuItemClick');
+  //debugln('TObjectInspectorDlg.OnAddToFavouritePopupmenuItemClick');
   if Assigned(OnAddToFavourites) then OnAddToFavourites(Self);
 end;
 
-procedure TObjectInspector.OnRemoveFromFavoritesPopupmenuItemClick(
+procedure TObjectInspectorDlg.OnRemoveFromFavoritesPopupmenuItemClick(
   Sender: TObject);
 begin
   if Assigned(OnRemoveFromFavourites) then OnRemoveFromFavourites(Self);
 end;
 
-procedure TObjectInspector.OnUndoPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnUndoPopupmenuItemClick(Sender: TObject);
 var
   CurGrid: TOICustomPropertyGrid;
   CurRow: TOIPropertyGridRow;
@@ -3557,14 +3530,14 @@ begin
   CurGrid.CurrentEditValue:=CurRow.Editor.GetVisualValue;
 end;
 
-procedure TObjectInspector.OnFindDeclarationPopupmenuItemClick(Sender: TObject
+procedure TObjectInspectorDlg.OnFindDeclarationPopupmenuItemClick(Sender: TObject
   );
 begin
   if Assigned(OnFindDeclarationOfProperty) then
     OnFindDeclarationOfProperty(Self);
 end;
 
-procedure TObjectInspector.OnCutPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnCutPopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
@@ -3576,7 +3549,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.OnCopyPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnCopyPopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
@@ -3589,7 +3562,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.OnPastePopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnPastePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
@@ -3601,7 +3574,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.OnDeletePopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnDeletePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
@@ -3614,12 +3587,12 @@ begin
   end;
 end;
 
-procedure TObjectInspector.OnGridModified(Sender: TObject);
+procedure TObjectInspectorDlg.OnGridModified(Sender: TObject);
 begin
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
-procedure TObjectInspector.SetAvailComboBoxText;
+procedure TObjectInspectorDlg.SetAvailComboBoxText;
 begin
   case FSelection.Count of
     0: // none selected
@@ -3632,14 +3605,14 @@ begin
   end;
 end;
 
-procedure TObjectInspector.HookGetSelection(
+procedure TObjectInspectorDlg.HookGetSelection(
   const ASelection: TPersistentSelectionList);
 begin
   if ASelection=nil then exit;
   ASelection.Assign(FSelection);
 end;
 
-procedure TObjectInspector.HookSetSelection(
+procedure TObjectInspectorDlg.HookSetSelection(
   const ASelection: TPersistentSelectionList);
 begin
   if ASelection=nil then exit;
@@ -3649,7 +3622,7 @@ begin
     FOnSelectPersistentsInOI(Self);
 end;
 
-procedure TObjectInspector.SetShowComponentTree(const AValue: boolean);
+procedure TObjectInspectorDlg.SetShowComponentTree(const AValue: boolean);
 begin
   if FShowComponentTree=AValue then exit;
   FShowComponentTree:=AValue;
@@ -3679,7 +3652,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.CreateSplitter;
+procedure TObjectInspectorDlg.CreateSplitter;
 begin
   // vertical splitter between component tree and notebook
   Splitter1:=TSplitter.Create(Self);
@@ -3692,7 +3665,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.DestroyNoteBook;
+procedure TObjectInspectorDlg.DestroyNoteBook;
 begin
   if NoteBook<>nil then
     NoteBook.Visible:=false;
@@ -3702,7 +3675,7 @@ begin
   FreeAndNil(NoteBook);
 end;
 
-procedure TObjectInspector.CreateNoteBook;
+procedure TObjectInspectorDlg.CreateNoteBook;
 begin
   DestroyNoteBook;
 
@@ -3758,7 +3731,7 @@ begin
   CreateFavouritePage;
 end;
 
-procedure TObjectInspector.CreateFavouritePage;
+procedure TObjectInspectorDlg.CreateFavouritePage;
 var
   NewPage: TPage;
   i: LongInt;
@@ -3799,7 +3772,7 @@ begin
   end;
 end;
 
-procedure TObjectInspector.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TObjectInspectorDlg.KeyDown(var Key: Word; Shift: TShiftState);
 var
   CurGrid: TOICustomPropertyGrid;
 begin
@@ -3813,14 +3786,14 @@ begin
     OnRemainingKeyDown(Self,Key,Shift);
 end;
 
-procedure TObjectInspector.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TObjectInspectorDlg.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyUp) then
     OnRemainingKeyUp(Self,Key,Shift);
 end;
 
-procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
+procedure TObjectInspectorDlg.OnShowHintPopupMenuItemClick(Sender : TObject);
 var
   Page: TObjectInspectorPage;
 begin
@@ -3829,18 +3802,18 @@ begin
       GridControl[Page].ShowHint:=not GridControl[Page].ShowHint;
 end;
 
-procedure TObjectInspector.OnShowOptionsPopupMenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnShowOptionsPopupMenuItemClick(Sender: TObject);
 begin
   if Assigned(FOnShowOptions) then FOnShowOptions(Sender);
 end;
 
-procedure TObjectInspector.OnShowComponentTreePopupMenuItemClick(Sender: TObject
+procedure TObjectInspectorDlg.OnShowComponentTreePopupMenuItemClick(Sender: TObject
   );
 begin
   ShowComponentTree:=not ShowComponentTree;
 end;
 
-procedure TObjectInspector.OnMainPopupMenuPopup(Sender: TObject);
+procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
 var
   DefaultStr: String;
   CurGrid: TOICustomPropertyGrid;
@@ -3884,19 +3857,19 @@ begin
   end;
 end;
 
-procedure TObjectInspector.HookRefreshPropertyValues;
+procedure TObjectInspectorDlg.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
 end;
 
-procedure TObjectInspector.SetShowFavouritePage(const AValue: boolean);
+procedure TObjectInspectorDlg.SetShowFavouritePage(const AValue: boolean);
 begin
   if FShowFavouritePage=AValue then exit;
   FShowFavouritePage:=AValue;
   CreateFavouritePage;
 end;
 
-function TObjectInspector.GetGridControl(Page: TObjectInspectorPage
+function TObjectInspectorDlg.GetGridControl(Page: TObjectInspectorPage
   ): TOICustomPropertyGrid;
 begin
   case Page of
@@ -3906,9 +3879,9 @@ begin
   end;
 end;
 
-procedure TObjectInspector.SetFavourites(const AValue: TOIFavouriteProperties);
+procedure TObjectInspectorDlg.SetFavourites(const AValue: TOIFavouriteProperties);
 begin
-  //debugln('TObjectInspector.SetFavourites ',dbgsName(Self));
+  //debugln('TObjectInspectorDlg.SetFavourites ',dbgsName(Self));
   if FFavourites=AValue then exit;
   FFavourites:=AValue;
   if FavouriteGrid<>nil then
@@ -4431,6 +4404,9 @@ begin
       +' BaseClassName="'+BaseClassName+'"'
       +' BaseClass='+dbgsName(BaseClass);
 end;
+
+initialization
+  {$I objectinspector.lrs}
 
 end.
 

@@ -839,7 +839,7 @@ end;
 
 procedure THelpManager.ShowHelpForObjectInspector(Sender: TObject);
 var
-  AnInspector: TObjectInspector;
+  AnInspector: TObjectInspectorDlg;
   Code: TCodeBuffer;
   Caret: TPoint;
   ErrMsg: string;
@@ -847,8 +847,8 @@ var
 begin
   //DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
   if Sender=nil then Sender:=ObjectInspector1;
-  if Sender is TObjectInspector then begin
-    AnInspector:=TObjectInspector(Sender);
+  if Sender is TObjectInspectorDlg then begin
+    AnInspector:=TObjectInspectorDlg(Sender);
     if AnInspector.GetActivePropertyRow<>nil then begin
       if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
       begin

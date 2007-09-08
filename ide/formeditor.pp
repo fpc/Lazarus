@@ -40,7 +40,7 @@ type
 
   TFormEditor = class(TCustomFormEditor)
   protected
-    procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); override;
+    procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); override;
   public
     procedure PaintAllDesignerItems;
     procedure CheckDesignerPositions;
@@ -72,7 +72,7 @@ begin
   FormEditor1:=nil;
 end;
 
-procedure TFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspector);
+procedure TFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg);
 begin
   if AnObjectInspector=Obj_Inspector then exit;
   inherited SetObj_Inspector(AnObjectInspector);

@@ -33,7 +33,7 @@ type
   private
     procedure SetObjectInspectorRoot(AComponent: TComponent);
   public
-    TheObjectInspector: TObjectInspector;
+    TheObjectInspector: TObjectInspectorDlg;
     ThePropertyEditorHook: TPropertyEditorHook;
     ARootComponent: TMyComponent;
   end;
@@ -51,7 +51,7 @@ begin
   ThePropertyEditorHook:=TPropertyEditorHook.Create;
   
   // create the ObjectInspector
-  TheObjectInspector:=TObjectInspector.Create(Application);
+  TheObjectInspector:=TObjectInspectorDlg.Create(Application);
   TheObjectInspector.PropertyEditorHook:=ThePropertyEditorHook;
   TheObjectInspector.SetBounds(10,10,240,500);
 

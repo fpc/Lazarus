@@ -1,0 +1,16 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TObjectInspectorDlg','FORMDATA',[
+  'TPF0'#19'TObjectInspectorDlg'#18'ObjectInspectorDlg'#4'Left'#3'$'#1#6'Height'
+  +#3#157#2#3'Top'#3#175#0#5'Width'#3#19#1#18'HorzScrollBar.Page'#3#18#1#18'Ver'
+  +'tScrollBar.Page'#3#156#2#7'Caption'#6#18'ObjectInspectorDlg'#12'ClientHeigh'
+  +'t'#3#157#2#11'ClientWidth'#3#19#1#10'KeyPreview'#9#8'OnResize'#7#21'ObjectI'
+  +'nspectorResize'#9'PopupMenu'#7#13'MainPopupMenu'#0#10'TStatusBar'#9'StatusB'
+  +'ar'#6'Height'#2#23#3'Top'#3#134#2#5'Width'#3#19#1#6'Panels'#14#1#5'Width'#2
+  +'d'#0#1#5'Width'#2'2'#0#0#11'SimplePanel'#8#0#0#9'TComboBox'#23'AvailPersist'
+  +'entComboBox'#6'Height'#2#21#5'Width'#3#19#1#5'Align'#7#5'alTop'#16'AutoComp'
+  +'leteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#10'ItemH'
+  +'eight'#2#13#9'OnCloseUp'#7#20'AvailComboBoxCloseUp'#8'TabOrder'#2#0#0#0#10
+  +'TPopupMenu'#13'MainPopupMenu'#7'OnPopup'#7#20'OnMainPopupMenuPopup'#4'left'
+  +#2#9#3'top'#2#11#0#0#0
+]);
