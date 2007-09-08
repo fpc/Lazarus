@@ -54,31 +54,34 @@ interface
 
 uses
   Messages, Graphics, Controls, Forms, LCLProc, Dialogs, StdCtrls, Buttons,
-  IDEProcs, Laz_XMLCfg, SysUtils, Classes;
+  IDEProcs, Laz_XMLCfg, SysUtils, Classes, LazarusIDEStrConsts, IDEContextHelpEdit;
 
 type
 
   { TCondForm }
 
   TCondForm = class(TForm)
+    AddBtn: TBitBtn;
     AddInverse: TButton;
-    FirstTest: TComboBox;
-    ListBox: TListBox;
+    CancelButton: TBitBtn;
     FirstLabel: TLabel;
+    FirstTest: TComboBox;
+    HelpButton: TBitBtn;
+    ListBox: TListBox;
+    NewTestGroupBox: TGroupBox;
+    OkBtn: TBitBtn;
+    RemoveBtn: TBitBtn;
     SecondLabel: TLabel;
     SecondTest: TComboBox;
-    AddBtn: TBitBtn;
-    RemoveBtn: TBitBtn;
-    OkBtn: TBitBtn;
-    BitBtn1: TBitBtn;
     procedure AddBtnClick(Sender: TObject);
     procedure AddInverseCLICK(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure CondFormCLOSE(Sender: TObject; var CloseAction: TCloseAction);
     procedure CondFormCREATE(Sender: TObject);
+    procedure ListBoxDblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
     procedure ListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
   public
     Choice, First, Second, FS: string;
@@ -125,6 +128,11 @@ begin
   ListBox.Items.Add('!'+FirstTest.Text+','+SecondTest.Text);
 end;
 
+procedure TCondForm.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TCondForm.CondFormCLOSE(Sender: TObject; var CloseAction: TCloseAction);
 var
   SChanged: Boolean;
@@ -158,6 +166,14 @@ var
   i: Integer;
   XMLConfig: TXMLConfig;
 begin
+  NewTestGroupBox.Caption := rsCreateNewDefine;
+  Caption := rsConditionalDefines;
+  AddBtn.Caption := liswlAdd;
+  AddInverse.Caption := rsAddInverse;
+  RemoveBtn.Caption := rsRemove;
+  OkBtn.Caption := srVK_INSERT;
+  CancelButton.Caption := dlgCancel;
+  
   try
     XMLConfig:=CreateXMLConfig;
     try
@@ -183,6 +199,11 @@ begin
   end;
 end;
 
+procedure TCondForm.ListBoxDblClick(Sender: TObject);
+begin
+  ModalResult := mrOK;
+end;
+
 procedure TCondForm.RemoveBtnClick(Sender: TObject);
 begin
   DeleteSelected;
@@ -195,10 +216,6 @@ begin
     DeleteSelected;
     Key := 0;
   end;
-end;
-
-procedure TCondForm.FormDestroy(Sender: TObject);
-begin
 end;
 
 procedure TCondForm.FormShow(Sender: TObject);

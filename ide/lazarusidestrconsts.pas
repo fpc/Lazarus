@@ -3396,5 +3396,11 @@ resourcestring
   lisLazarusIDE = 'Lazarus IDE';
   lisDirectives = 'Directives';
 
+  //conditional defines dialog
+  rsCreateNewDefine = 'Create new define';
+  rsConditionalDefines = 'Conditional defines';
+  rsAddInverse = 'Add Inverse';
+  rsRemove = '&Remove';
+
 implementation
 end.
