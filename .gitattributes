@@ -2204,6 +2204,7 @@ images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
 images/down.xpm svneol=native#text/plain
+images/folder.xpm svneol=native#text/plain
 images/fonts.xpm -text svneol=native#image/x-xpixmap
 images/formatbold.bmp -text
 images/formatitalic.bmp -text
@@ -2217,6 +2218,7 @@ images/insertvartag.xpm svneol=native#text/plain
 images/keymapcategory.xpm -text svneol=native#image/x-xpixmap
 images/keymaprelation.xpm -text svneol=native#image/x-xpixmap
 images/laz_images.lrs svneol=native#text/pascal
+images/laz_images_list.txt svneol=native#text/plain
 images/lazarus.ico -text svneol=unset#image/x-icon
 images/lazarus.xpm -text svneol=native#image/x-xpixmap
 images/lazarus64.ico -text svneol=unset#image/x-icon
@@ -2318,6 +2320,7 @@ images/sourceeditor/bookmark7.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark8.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark9.xpm -text svneol=native#image/x-xpixmap
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
+images/template.png -text svneol=unset#image/png
 images/todo_goto.bmp -text
 images/todo_options.bmp -text
 images/todo_print.bmp -text

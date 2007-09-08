@@ -52,7 +52,7 @@ cd <lazarusdir>/images/
 6. laz_images.lrs
 
 cd <lazarusdir>/images/
-../tools/lazres laz_images.lrs @laz_images.lst
+../tools/lazres laz_images.lrs @laz_images_list.txt
 rm ../main.ppu
 
 
