@@ -321,6 +321,7 @@ components/lazreport/images/designer/fr_italic.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_topleftcoord.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_tretypefont.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_underline.xpm svneol=native#text/x-pixmap
+components/lazreport/languages/lazreport.de.po svneol=native#text/plain
 components/lazreport/languages/lazreport.fr.po svneol=native#text/plain
 components/lazreport/languages/lazreport.po svneol=native#text/plain
 components/lazreport/license-lazreport.txt svneol=native#text/plain
