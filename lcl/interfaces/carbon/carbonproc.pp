@@ -712,10 +712,20 @@ end;
  ------------------------------------------------------------------------------}
 function CGRectToRect(const ARect: CGRect): TRect;
 begin
-  Result.Left := Floor(ARect.origin.x);
-  Result.Top := Floor(ARect.origin.y);
-  Result.Right := Ceil(ARect.origin.x + ARect.size.width);
-  Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
+  if CGRectIsNull(ARect) <> 0 then
+  begin // CGRect passed is invalid!
+    Result.Left := 0;
+    Result.Top := 0;
+    Result.Right := 0;
+    Result.Bottom := 0;
+  end
+  else
+  begin
+    Result.Left := Floor(ARect.origin.x);
+    Result.Top := Floor(ARect.origin.y);
+    Result.Right := Ceil(ARect.origin.x + ARect.size.width);
+    Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -751,10 +761,20 @@ end;
  ------------------------------------------------------------------------------}
 function HIRectToCarbonRect(const ARect: HIRect): FPCMacOSAll.Rect;
 begin
-  Result.Left := Floor(ARect.origin.x);
-  Result.Top := Floor(ARect.origin.y);
-  Result.Right := Ceil(ARect.origin.x + ARect.size.width);
-  Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
+  if CGRectIsNull(ARect) <> 0 then
+  begin // CGRect passed is invalid!
+    Result.Left := 0;
+    Result.Top := 0;
+    Result.Right := 0;
+    Result.Bottom := 0;
+  end
+  else
+  begin
+    Result.Left := Floor(ARect.origin.x);
+    Result.Top := Floor(ARect.origin.y);
+    Result.Right := Ceil(ARect.origin.x + ARect.size.width);
+    Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
+  end;
 end;
 
 {------------------------------------------------------------------------------
