@@ -347,7 +347,7 @@ begin
     end;
   end;
   
-  if Length(AText) > S then Add(Copy(AText, S, Length(AText) - S + 1));
+  if Length(AText) >= S then Add(Copy(AText, S, Length(AText) - S + 1));
 end;
 
 { TMaskList }
