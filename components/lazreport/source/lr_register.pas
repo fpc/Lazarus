@@ -17,6 +17,7 @@ uses
   
   LR_E_TXT,
   LR_E_HTM,
+  LR_E_CSV,
   
   LR_PGrid,
   
@@ -45,7 +46,7 @@ begin
   RegisterComponents('LazReport', [TfrReport,TfrDBDataSet,
      TfrBarCodeObject,TfrRoundRectObject,TfrShapeObject,
      TfrCheckBoxObject,TfrCompositeReport,TfrUserDataset,
-     TfrTextExport,TfrHTMExport,
+     TfrTextExport,TfrHTMExport,TfrCSVExport,
      TfrPrintGrid]);
   RegisterComponentEditor(TfrReport, TfrRepEditor);
 end;
