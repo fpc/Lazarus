@@ -166,6 +166,7 @@ type
     procedure MMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
     procedure DClick(Sender: TObject);
+    procedure MoveResize(Kx,Ky:Integer; UseFrames,AResize: boolean);
   protected
     procedure Paint; override;
   public
@@ -599,6 +600,16 @@ var
   GridBitmap         : TBitmap;     // for drawing grid in design time
   ColorLocked        : Boolean;     // true to avoid unwished color change
 
+
+{----------------------------------------------------------------------------}
+procedure AddRgn(var HR: HRGN; T: TfrView);
+var
+  tr: HRGN;
+begin
+  tr := t.GetClipRgn(rtExtended);
+  CombineRgn(HR, HR, TR, RGN_OR);
+  DeleteObject(TR);
+end;
 
 {----------------------------------------------------------------------------}
 procedure TfrDesigner.Loaded;
@@ -1667,16 +1678,6 @@ var
       end;
     end;
   end;
-
-  procedure AddRgn(var HR: HRGN; T: TfrView);
-  var
-    tr: HRGN;
-  begin
-    tr := t.GetClipRgn(rtExtended);
-    CombineRgn(HR, HR, TR, RGN_OR);
-    DeleteObject(TR);
-  end;
-
 begin
   {$IFDEF DebugLR}
   DebugLn('TfrDesignerPage.MMove(X=',dbgs(x),',Y=',dbgs(y),'  INIT');
@@ -1939,34 +1940,9 @@ begin
     end;
     
     FirstBandMove := False;
-    if FDesigner.ShapeMode = smFrame then
-      DrawPage(dmShape)
-    else
-    begin
-      hr := CreateRectRgn(0, 0, 0, 0);
-      hr1 := CreateRectRgn(0, 0, 0, 0);
-    end;
 
-    for i := 0 to Objects.Count - 1 do
-    begin
-      t := TfrView(Objects[i]);
-      if not t.Selected then continue;
-      if FDesigner.ShapeMode = smAll then
-        AddRgn(hr, t);
-      t.x := t.x + kx;
-      t.y := t.y + ky;
-      if FDesigner.ShapeMode = smAll then
-        AddRgn(hr1, t);
-    end;
+    MoveResize(kx,ky,FDesigner.ShapeMode=smFrame, false);
 
-    if FDesigner.ShapeMode = smFrame then
-      DrawPage(dmShape)
-    else
-    begin
-      CombineRgn(hr, hr, hr1, RGN_OR);
-      DeleteObject(hr1);
-      Draw(10000, hr);
-    end;
     Inc(LastX, kx);
     Inc(LastY, ky);
     FDesigner.PBox1Paint(nil);
@@ -2097,6 +2073,50 @@ begin
     FDesigner.ShowEditor;
   end
   else Exit;
+end;
+
+procedure TfrDesignerPage.MoveResize(Kx, Ky: Integer; UseFrames,AResize: boolean);
+var
+  hr,hr1: HRGN;
+  i: Integer;
+  t: TFrView;
+begin
+  If UseFrames then
+    DrawPage(dmShape)
+  else
+  begin
+    hr := CreateRectRgn(0, 0, 0, 0);
+    hr1 := CreateRectRgn(0, 0, 0, 0);
+  end;
+
+  for i := 0 to Objects.Count - 1 do
+  begin
+    t := TfrView(Objects[i]);
+    if not t.Selected then continue;
+    if FDesigner.ShapeMode = smAll then
+      AddRgn(hr, t);
+    if aResize then
+    begin
+      t.dx := t.dx + kx;
+      t.dy := t.dy + ky;
+    end
+    else
+    begin
+      t.x := t.x + kx;
+      t.y := t.y + ky;
+    end;
+    if FDesigner.ShapeMode = smAll then
+      AddRgn(hr1, t);
+  end;
+
+  if UseFrames then
+    DrawPage(dmShape)
+  else
+  begin
+    CombineRgn(hr, hr, hr1, RGN_OR);
+    DeleteObject(hr1);
+    Draw(10000, hr);
+  end;
 end;
 
 procedure TfrDesignerPage.CMMouseLeave(var Message: TLMessage);
@@ -3039,31 +3059,12 @@ begin
 end;
 
 procedure TfrDesignerForm.MoveObjects(dx, dy: Integer; aResize: Boolean);
-var
-  i: Integer;
-  t: TfrView;
 begin
   AddUndoAction(acEdit);
-  GetRegion; //JRA 2
   PageView.DrawPage(dmSelection);
-  for i := 0 to Objects.Count - 1 do
-  begin
-    t := TfrView(Objects[i]);
-    if t.Selected then
-    begin
-      if aResize then
-      begin
-        Inc(t.dx, dx); Inc(t.dy, dy);
-      end
-      else
-      begin
-        Inc(t.x, dx); Inc(t.y, dy);
-      end;
-    end;
-  end;
+  PageView.MoveResize(Dx,Dy, false, aResize);
   ShowPosition;
   PageView.GetMultipleSelected;
-  PageView.Draw(TopSelected, ClipRgn);
 end;
 
 procedure TfrDesignerForm.DeleteObjects;
