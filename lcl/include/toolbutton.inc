@@ -246,8 +246,9 @@ begin
     end;
 
     // draw icon
-    if (ImgList<>nil) then begin
-      ImgList.Draw(Canvas,IconPos.X,IconPos.Y,ImgIndex,true);
+    if (ImgList<>nil) then
+    begin
+      ImgList.Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, Enabled);
     end;
 
     // draw text
@@ -509,6 +510,12 @@ begin
     Down:=false;
   //DebugLn('TToolButton.SetMouseInControl B ',Name,' Now=',FMouseInControl,' Down=',Down);
   Invalidate;
+end;
+
+procedure TToolButton.CMEnabledChanged(var Message: TLMEssage);
+begin
+  inherited;
+  invalidate;
 end;
 
 procedure TToolButton.BeginUpdate;

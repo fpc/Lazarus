@@ -681,7 +681,10 @@ begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
 
-  SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], AValue.Handle);
+  if AValue <> nil then
+    SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], AValue.Handle)
+  else
+    SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], 0);
 end;
 
 class procedure TWin32WSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);

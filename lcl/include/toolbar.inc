@@ -195,6 +195,14 @@ begin
   FButtons.Remove(Button);
 end;
 
+procedure TToolBar.ApplyFontForButtons;
+var
+  i: integer;
+begin
+  for i := 0 to ButtonCount - 1 do
+    Buttons[i].Font := Font;
+end;
+
 function TToolBar.GetButton(Index: Integer): TToolButton;
 begin
   Result := TToolButton(FButtons[Index]);
@@ -552,6 +560,18 @@ begin
         Exit;
     end;
   Result := nil;
+end;
+
+procedure TToolBar.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+  ApplyFontForButtons;
+end;
+
+procedure TToolBar.ParentFontChanged;
+begin
+  inherited ParentFontChanged;
+  ApplyFontForButtons;
 end;
 
 function TToolBar.CheckMenuDropdown(Button: TToolButton): Boolean;

@@ -206,9 +206,10 @@ var
     Flags: Cardinal;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
+{$ifdef WindowsUnicodeSupport}
     AnsiBuffer: string;
     WideBuffer: widestring;
-    
+{$endif}
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
 

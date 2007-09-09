@@ -345,12 +345,12 @@ end;
 {$endif VER2_0}
 
 function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
-var
+{var
   R: TRect;
   SrcImage, DstImage: TRawImage;
   SrcDC: HDC;
   bmp: HBITMAP;
-  X, Y: Integer;
+  X, Y: Integer;}
 begin
   if blendFunction.AlphaFormat = 0
   then begin

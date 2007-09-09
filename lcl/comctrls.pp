@@ -1339,6 +1339,7 @@ type
     procedure SetStyle(Value: TToolButtonStyle);
     procedure SetWrap(Value: Boolean);
     procedure SetMouseInControl(NewMouseInControl: Boolean);
+    procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
   protected
     FToolBar: TToolBar;
@@ -1449,6 +1450,7 @@ type
     FTransparent: Boolean;
     FUpdateCount: Integer;
     FWrapable: Boolean;
+    procedure ApplyFontForButtons;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
     procedure SetButtonHeight(const AValue: Integer);
@@ -1472,6 +1474,7 @@ type
     procedure AddButton(Button: TToolButton);
     procedure RemoveButton(Button: TToolButton);
   protected
+    procedure AdjustClientRect(var ARect: TRect); override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
     procedure ClickButton(Button: TToolButton); dynamic;
@@ -1479,12 +1482,13 @@ type
     procedure CreateWnd; override;
     procedure ControlsAligned; override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
+    procedure FontChanged(Sender: TObject); override;
+    procedure ParentFontChanged; override;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
     function WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
-    procedure AdjustClientRect(var ARect: TRect); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
