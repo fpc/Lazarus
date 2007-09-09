@@ -1,10 +1,10 @@
-# translation of lazaruside.po to Lithuanian Header entry was created by KBabel!: lazarusidestrconsts:liserrinvalidoption Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of lazaruside.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-26 14:56+0300\n"
+"PO-Revision-Date: 2007-09-09 14:29+0300\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -2373,7 +2373,7 @@ msgstr "Skirtuko rodymo lygis"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
-msgstr "Neužveti IKA"
+msgstr "Neužverti IKA"
 
 #: lazarusidestrconsts:lisdonotclosetheproject
 msgid "Do not close the project"
