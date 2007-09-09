@@ -1321,13 +1321,13 @@ begin
     {$ENDIF}
   end else begin
     Result:=SearchFileInPath(Executable,'',
-                             SysUtils.GetEnvironmentVariable('PATH'),':',
+                             SysUtils.GetEnvironmentVariable('PATH'), PathSeparator,
                              [sffDontSearchInBasePath]);
     if Result<>'' then exit;
     {$IFDEF Windows}
     if ExtractFileExt(Executable)='' then begin
       Result:=SearchFileInPath(Executable+'.exe','',
-                               SysUtils.GetEnvironmentVariable('PATH'),':',
+                               SysUtils.GetEnvironmentVariable('PATH'), PathSeparator,
                                [sffDontSearchInBasePath]);
       if Result<>'' then exit;
     end;
