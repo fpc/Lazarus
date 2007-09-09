@@ -5947,7 +5947,7 @@ begin
   with Label1 do
   Begin
     Parent := Self;
-    Left := 5;
+    Left := 6;
     Top := 6;
     AnchorParallel(akRight,5,Parent);
     Caption := lisUEGotoLine;
@@ -5957,9 +5957,9 @@ begin
   with Edit1 do
   Begin
     Parent := self;
-    Left := 5;
+    Left := 6;
     AnchorToNeighbour(akTop,6,Label1);
-    AnchorParallel(akRight,5,Parent);
+    AnchorParallel(akRight,6,Parent);
     Constraints.MinWidth:=200;
     Caption := '';
     OnKeyDown:=@Edit1KeyDown;
