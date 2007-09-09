@@ -4,9 +4,11 @@ object frmMain: TfrmMain
   Top = 144
   Width = 573
   HorzScrollBar.Page = 572
-  VertScrollBar.Page = 380
+  VertScrollBar.Page = 384
   ActiveControl = btnCallEditor
   Caption = 'Testing LazReport Editor'
+  ClientHeight = 385
+  ClientWidth = 573
   Menu = MainMenu1
   OnCreate = frmMainCreate
   ShowHint = True
@@ -21,7 +23,7 @@ object frmMain: TfrmMain
     TabOrder = 0
   end
   object dbGrid1: TDBGrid
-    Height = 321
+    Height = 322
     Top = 40
     Width = 573
     Align = alBottom
@@ -29,6 +31,7 @@ object frmMain: TfrmMain
     Color = clWhite
     DataSource = Datasource1
     FixedColor = clBtnFace
+    FixedHotColor = cl3DLight
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
     ParentColor = False
@@ -56,8 +59,8 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object StatusBar1: TStatusBar
-    Height = 20
-    Top = 361
+    Height = 23
+    Top = 362
     Width = 573
     Panels = <>
   end
@@ -115,7 +118,7 @@ object frmMain: TfrmMain
     left = 96
     top = 144
   end
-  object PG: TfrPrintGrid
+  object PG: TFrPrintGrid
     DBGrid = dbGrid1
     Orientation = poLandscape
     Caption = 'Grid'
@@ -124,8 +127,8 @@ object frmMain: TfrmMain
     top = 176
   end
   object MainMenu1: TMainMenu
-    left = 96
-    top = 208
+    left = 8
+    top = 96
     object MenuItem1: TMenuItem
       Caption = 'Files'
       object MenuItem2: TMenuItem
@@ -166,6 +169,10 @@ object frmMain: TfrmMain
         Action = accExportToHtml
         OnClick = accExportToHtmlExecute
       end
+      object MenuItem12: TMenuItem
+        Action = accExportToCSV
+        OnClick = accExportToCSVExecute
+      end
     end
   end
   object ApplicationProperties1: TApplicationProperties
@@ -180,8 +187,8 @@ object frmMain: TfrmMain
     top = 240
   end
   object ActionList1: TActionList
-    left = 8
-    top = 416
+    left = 48
+    top = 96
     object accNewReport: TAction
       Category = 'Tests'
       Caption = 'New Report'
@@ -242,6 +249,12 @@ object frmMain: TfrmMain
       DisableIfNoHandler = True
       OnExecute = accOpenReportExecute
     end
+    object accExportToCSV: TAction
+      Category = 'Export'
+      Caption = 'Export to CSV'
+      DisableIfNoHandler = True
+      OnExecute = accExportToCSVExecute
+    end
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open existing file'
@@ -249,5 +262,9 @@ object frmMain: TfrmMain
     FilterIndex = 0
     left = 96
     top = 272
+  end
+  object frCSVExport1: TfrCSVExport
+    left = 140
+    top = 40
   end
 end

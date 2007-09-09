@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, LR_PGrid, Menus,
-  ComCtrls, ActnList, Lr_e_txt, Lr_e_htm;
+  ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV;
 
 type
 
@@ -44,6 +44,7 @@ type
     accExportToText: TAction;
     accExportToHtml: TAction;
     accOpenReport: TAction;
+    accExportToCSV: TAction;
     ActionList1: TActionList;
     ApplicationProperties1: TApplicationProperties;
     btnCallEditor: TButton;
@@ -55,11 +56,13 @@ type
     Datasource1: TDatasource;
     Dbf1: TDbf;
     dbGrid1: TdbGrid;
+    frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -72,6 +75,7 @@ type
     PG: TfrPrintGrid;
     StatusBar1: TStatusBar;
     TheReport: TfrReport;
+    procedure accExportToCSVExecute(Sender: TObject);
     procedure accExportToHtmlExecute(Sender: TObject);
     procedure accExportToTextExecute(Sender: TObject);
     procedure ApplicationProperties1ShowHint(var HintStr: string;
@@ -120,6 +124,15 @@ begin
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrHTMExportFilter, 'salida.html');
     ShowMessage('This fature is not yet completly implemented!');
+  end else
+    ShowMessage('PrepareReport Failed!');
+end;
+
+procedure TfrmMain.accExportToCSVExecute(Sender: TObject);
+begin
+  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
+  if TheReport.PrepareReport then begin
+    TheReport.ExportTo(TfrCSVExportFilter, 'salida.csv');
   end else
     ShowMessage('PrepareReport Failed!');
 end;

@@ -2,46 +2,47 @@
 
 LazarusResources.Add('TfrmMain','FORMDATA',[
   'TPF0'#8'TfrmMain'#7'frmMain'#4'Left'#3#200#0#6'Height'#3#149#1#3'Top'#3#144#0
-  +#5'Width'#3'='#2#18'HorzScrollBar.Page'#3'<'#2#18'VertScrollBar.Page'#3'|'#1
+  +#5'Width'#3'='#2#18'HorzScrollBar.Page'#3'<'#2#18'VertScrollBar.Page'#3#128#1
   +#13'ActiveControl'#7#13'btnCallEditor'#7'Caption'#6#24'Testing LazReport Edi'
-  +'tor'#4'Menu'#7#9'MainMenu1'#8'OnCreate'#7#13'frmMainCreate'#8'ShowHint'#9#0
-  +#7'TButton'#13'btnCallEditor'#4'Left'#2'p'#6'Height'#2#25#4'Hint'#6#30'Creat'
-  +'e and edit a empty report'#3'Top'#2#8#5'Width'#2'P'#6'Action'#7#12'accNewRe'
-  +'port'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2#0#0#0#7'TDBGrid'#7'db'
-  +'Grid1'#6'Height'#3'A'#1#3'Top'#2'('#5'Width'#3'='#2#5'Align'#7#8'alBottom'#7
-  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#5'Color'#7#7'clWhit'
-  +'e'#10'DataSource'#7#11'Datasource1'#10'FixedColor'#7#9'clBtnFace'#7'Options'
-  +#11#9'dgEditing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#10'dgColLine'
-  +'s'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShowSelection'#15'dgConfirmDelete'#14
-  +'dgCancelOnExit'#0#12'OptionsExtra'#11#14'dgeAutoColumns'#17'dgeCheckboxColu'
-  +'mn'#0#11'ParentColor'#8#8'TabOrder'#2#5#7'TabStop'#9#0#0#7'TButton'#7'Butto'
-  +'n1'#4'Left'#3#232#1#6'Height'#2#25#4'Hint'#6'$Print preview current DbGrid '
-  +'content'#3'Top'#2#8#5'Width'#2'K'#6'Action'#7#12'accPrintGrid'#25'BorderSpa'
-  +'cing.InnerBorder'#2#4#8'TabOrder'#2#1#0#0#7'TButton'#7'Button2'#4'Left'#3#24
-  +#1#6'Height'#2#25#4'Hint'#6#26'Preview an existing report'#3'Top'#2#8#5'Widt'
-  +'h'#2'`'#6'Action'#7#16'accPreviewReport'#25'BorderSpacing.InnerBorder'#2#4#8
-  +'TabOrder'#2#2#0#0#10'TStatusBar'#10'StatusBar1'#6'Height'#2#20#3'Top'#3'i'#1
-  +#5'Width'#3'='#2#6'Panels'#14#0#0#0#7'TButton'#7'Button3'#4'Left'#3#200#0#6
-  +'Height'#2#25#4'Hint'#6#23'Edit an existing report'#3'Top'#2#8#5'Width'#2'K'
-  +#6'Action'#7#13'accEditReport'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'
-  +#2#3#0#0#7'TButton'#7'Button4'#4'Left'#3#128#1#6'Height'#2#25#4'Hint'#6'8Pri'
-  +'nt directly an existing report (i.e. without preview)'#3'Top'#2#8#5'Width'#2
-  +'S'#6'Action'#7#14'accPrintReport'#25'BorderSpacing.InnerBorder'#2#4#8'TabOr'
-  +'der'#2#4#0#0#7'TButton'#13'btnOpenReport'#4'Left'#2#8#6'Height'#2#25#3'Top'
-  +#2#8#5'Width'#2'`'#6'Action'#7#13'accOpenReport'#25'BorderSpacing.InnerBorde'
-  +'r'#2#4#8'TabOrder'#2#6#0#0#9'TfrReport'#9'TheReport'#7'Dataset'#7#12'frDBDa'
-  +'taSet1'#14'PreviewButtons'#11#6'pbZoom'#6'pbLoad'#6'pbSave'#7'pbPrint'#6'pb'
-  +'Find'#6'pbHelp'#6'pbExit'#0#4'left'#2'`'#3'top'#2'p'#10'ReportForm'#10#4#0#0
-  +#0#24#0#0#0#0#0#4'TDbf'#4'Dbf1'#9'IndexDefs'#14#0#10'TableLevel'#2#3#4'left'
-  +#2'`'#3'top'#2'('#0#0#11'TDatasource'#11'Datasource1'#7'DataSet'#7#4'Dbf1'#4
-  +'left'#2'`'#3'top'#2'H'#0#0#12'TfrDBDataSet'#12'frDBDataSet1'#7'DataSet'#7#4
-  +'Dbf1'#4'left'#2'`'#3'top'#3#144#0#0#0#12'TfrPrintGrid'#2'PG'#6'DBGrid'#7#7
-  +'dbGrid1'#11'Orientation'#7#11'poLandscape'#7'Caption'#6#4'Grid'#11'ShowCapt'
-  +'ion'#9#4'left'#2'`'#3'top'#3#176#0#0#0#9'TMainMenu'#9'MainMenu1'#4'left'#2
-  +'`'#3'top'#3#208#0#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#5'Files'#0#9'TMe'
-  +'nuItem'#9'MenuItem2'#6'Action'#7#8'accClose'#7'OnClick'#7#15'accCloseExecut'
-  +'e'#0#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#5'Tests'#0#9'TMenuItem'#9'M'
-  +'enuItem4'#6'Action'#7#12'accNewReport'#7'OnClick'#7#19'accNewReportExecute'
+  +'tor'#12'ClientHeight'#3#129#1#11'ClientWidth'#3'='#2#4'Menu'#7#9'MainMenu1'
+  +#8'OnCreate'#7#13'frmMainCreate'#8'ShowHint'#9#0#7'TButton'#13'btnCallEditor'
+  +#4'Left'#2'p'#6'Height'#2#25#4'Hint'#6#30'Create and edit a empty report'#3
+  +'Top'#2#8#5'Width'#2'P'#6'Action'#7#12'accNewReport'#25'BorderSpacing.InnerB'
+  +'order'#2#4#8'TabOrder'#2#0#0#0#7'TDBGrid'#7'dbGrid1'#6'Height'#3'B'#1#3'Top'
+  +#2'('#5'Width'#3'='#2#5'Align'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#8'akBottom'#0#5'Color'#7#7'clWhite'#10'DataSource'#7#11'Datasour'
+  +'ce1'#10'FixedColor'#7#9'clBtnFace'#13'FixedHotColor'#7#9'cl3DLight'#7'Optio'
+  +'ns'#11#9'dgEditing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#10'dgCol'
+  +'Lines'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShowSelection'#15'dgConfirmDelet'
+  +'e'#14'dgCancelOnExit'#0#12'OptionsExtra'#11#14'dgeAutoColumns'#17'dgeCheckb'
+  +'oxColumn'#0#11'ParentColor'#8#8'TabOrder'#2#5#7'TabStop'#9#0#0#7'TButton'#7
+  +'Button1'#4'Left'#3#232#1#6'Height'#2#25#4'Hint'#6'$Print preview current Db'
+  +'Grid content'#3'Top'#2#8#5'Width'#2'K'#6'Action'#7#12'accPrintGrid'#25'Bord'
+  +'erSpacing.InnerBorder'#2#4#8'TabOrder'#2#1#0#0#7'TButton'#7'Button2'#4'Left'
+  +#3#24#1#6'Height'#2#25#4'Hint'#6#26'Preview an existing report'#3'Top'#2#8#5
+  +'Width'#2'`'#6'Action'#7#16'accPreviewReport'#25'BorderSpacing.InnerBorder'#2
+  +#4#8'TabOrder'#2#2#0#0#10'TStatusBar'#10'StatusBar1'#6'Height'#2#23#3'Top'#3
+  +'j'#1#5'Width'#3'='#2#6'Panels'#14#0#0#0#7'TButton'#7'Button3'#4'Left'#3#200
+  +#0#6'Height'#2#25#4'Hint'#6#23'Edit an existing report'#3'Top'#2#8#5'Width'#2
+  +'K'#6'Action'#7#13'accEditReport'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrd'
+  +'er'#2#3#0#0#7'TButton'#7'Button4'#4'Left'#3#128#1#6'Height'#2#25#4'Hint'#6
+  +'8Print directly an existing report (i.e. without preview)'#3'Top'#2#8#5'Wid'
+  +'th'#2'S'#6'Action'#7#14'accPrintReport'#25'BorderSpacing.InnerBorder'#2#4#8
+  +'TabOrder'#2#4#0#0#7'TButton'#13'btnOpenReport'#4'Left'#2#8#6'Height'#2#25#3
+  +'Top'#2#8#5'Width'#2'`'#6'Action'#7#13'accOpenReport'#25'BorderSpacing.Inner'
+  +'Border'#2#4#8'TabOrder'#2#6#0#0#9'TfrReport'#9'TheReport'#7'Dataset'#7#12'f'
+  +'rDBDataSet1'#14'PreviewButtons'#11#6'pbZoom'#6'pbLoad'#6'pbSave'#7'pbPrint'
+  +#6'pbFind'#6'pbHelp'#6'pbExit'#0#4'left'#2'`'#3'top'#2'p'#10'ReportForm'#10#4
+  +#0#0#0#24#0#0#0#0#0#4'TDbf'#4'Dbf1'#9'IndexDefs'#14#0#10'TableLevel'#2#3#4'l'
+  +'eft'#2'`'#3'top'#2'('#0#0#11'TDatasource'#11'Datasource1'#7'DataSet'#7#4'Db'
+  +'f1'#4'left'#2'`'#3'top'#2'H'#0#0#12'TfrDBDataSet'#12'frDBDataSet1'#7'DataSe'
+  +'t'#7#4'Dbf1'#4'left'#2'`'#3'top'#3#144#0#0#0#12'TFrPrintGrid'#2'PG'#6'DBGri'
+  +'d'#7#7'dbGrid1'#11'Orientation'#7#11'poLandscape'#7'Caption'#6#4'Grid'#11'S'
+  +'howCaption'#9#4'left'#2'`'#3'top'#3#176#0#0#0#9'TMainMenu'#9'MainMenu1'#4'l'
+  +'eft'#2#8#3'top'#2'`'#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#5'Files'#0#9
+  +'TMenuItem'#9'MenuItem2'#6'Action'#7#8'accClose'#7'OnClick'#7#15'accCloseExe'
+  +'cute'#0#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#5'Tests'#0#9'TMenuItem'#9
+  +'MenuItem4'#6'Action'#7#12'accNewReport'#7'OnClick'#7#19'accNewReportExecute'
   +#0#0#9'TMenuItem'#9'MenuItem5'#6'Action'#7#13'accEditReport'#7'OnClick'#7#20
   +'accEditReportExecute'#0#0#9'TMenuItem'#9'MenuItem6'#6'Action'#7#16'accPrevi'
   +'ewReport'#7'OnClick'#7#23'accPreviewReportExecute'#0#0#9'TMenuItem'#9'MenuI'
@@ -50,34 +51,38 @@ LazarusResources.Add('TfrmMain','FORMDATA',[
   +'accPrintGridExecute'#0#0#0#9'TMenuItem'#9'MenuItem9'#7'Caption'#6#6'Export'
   +#0#9'TMenuItem'#10'MenuItem10'#6'Action'#7#15'accExportToText'#7'OnClick'#7
   +#22'accExportToTextExecute'#0#0#9'TMenuItem'#10'MenuItem11'#6'Action'#7#15'a'
-  +'ccExportToHtml'#7'OnClick'#7#22'accExportToHtmlExecute'#0#0#0#0#22'TApplica'
-  +'tionProperties'#22'ApplicationProperties1'#17'CaptureExceptions'#9#9'HintCo'
-  +'lor'#7#8'clInfoBk'#13'HintHidePause'#3#196#9#9'HintPause'#2#10#13'HintShort'
-  +'Cuts'#9#8'ShowHint'#9#10'OnShowHint'#7#30'ApplicationProperties1ShowHint'#4
-  +'left'#2'`'#3'top'#3#240#0#0#0#11'TActionList'#11'ActionList1'#4'left'#2#8#3
-  +'top'#3#160#1#0#7'TAction'#12'accNewReport'#8'Category'#6#5'Tests'#7'Caption'
-  +#6#10'New Report'#18'DisableIfNoHandler'#9#4'Hint'#6#30'Create and edit a em'
-  +'pty report'#9'OnExecute'#7#19'accNewReportExecute'#0#0#7'TAction'#13'accEdi'
-  +'tReport'#8'Category'#6#5'Tests'#7'Caption'#6#11'Edit Report'#18'DisableIfNo'
-  +'Handler'#9#4'Hint'#6#23'Edit an existing report'#9'OnExecute'#7#20'accEditR'
-  +'eportExecute'#0#0#7'TAction'#16'accPreviewReport'#8'Category'#6#5'Tests'#7
-  +'Caption'#6#14'Preview Report'#18'DisableIfNoHandler'#9#4'Hint'#6#26'Preview'
-  +' an existing report'#9'OnExecute'#7#23'accPreviewReportExecute'#0#0#7'TActi'
-  +'on'#12'accPrintGrid'#8'Category'#6#5'Tests'#7'Caption'#6#10'Print Grid'#18
-  +'DisableIfNoHandler'#9#4'Hint'#6'$Print preview current DbGrid content'#9'On'
-  ,'Execute'#7#19'accPrintGridExecute'#0#0#7'TAction'#14'accPrintReport'#8'Cate'
-  +'gory'#6#5'Tests'#7'Caption'#6#12'Print Report'#18'DisableIfNoHandler'#9#4'H'
-  +'int'#6'8Print directly an existing report (i.e. without preview)'#9'OnExecu'
-  +'te'#7#21'accPrintReportExecute'#0#0#7'TAction'#8'accClose'#8'Category'#6#5
-  +'Files'#7'Caption'#6#5'Close'#18'DisableIfNoHandler'#9#4'Hint'#6#17'Close ap'
-  +'plication'#9'OnExecute'#7#15'accCloseExecute'#0#0#7'TAction'#15'accExportTo'
-  +'Text'#8'Category'#6#6'Export'#7'Caption'#6#14'Export to text'#18'DisableIfN'
-  +'oHandler'#9#9'OnExecute'#7#22'accExportToTextExecute'#0#0#7'TAction'#15'acc'
-  +'ExportToHtml'#8'Category'#6#6'Export'#7'Caption'#6#14'Export to html'#18'Di'
-  +'sableIfNoHandler'#9#9'OnExecute'#7#22'accExportToHtmlExecute'#0#0#7'TAction'
-  +#13'accOpenReport'#8'Category'#6#5'Files'#7'Caption'#6#11'Open Report'#18'Di'
-  +'sableIfNoHandler'#9#9'OnExecute'#7#20'accOpenReportExecute'#0#0#0#11'TOpenD'
-  +'ialog'#11'OpenDialog1'#5'Title'#6#18'Open existing file'#6'Filter'#6':LazRe'
-  +'port Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'#11'FilterIndex'#2#0#4
-  +'left'#2'`'#3'top'#3#16#1#0#0#0
+  +'ccExportToHtml'#7'OnClick'#7#22'accExportToHtmlExecute'#0#0#9'TMenuItem'#10
+  +'MenuItem12'#6'Action'#7#14'accExportToCSV'#7'OnClick'#7#21'accExportToCSVEx'
+  +'ecute'#0#0#0#0#22'TApplicationProperties'#22'ApplicationProperties1'#17'Cap'
+  +'tureExceptions'#9#9'HintColor'#7#8'clInfoBk'#13'HintHidePause'#3#196#9#9'Hi'
+  +'ntPause'#2#10#13'HintShortCuts'#9#8'ShowHint'#9#10'OnShowHint'#7#30'Applica'
+  +'tionProperties1ShowHint'#4'left'#2'`'#3'top'#3#240#0#0#0#11'TActionList'#11
+  +'ActionList1'#4'left'#2'0'#3'top'#2'`'#0#7'TAction'#12'accNewReport'#8'Categ'
+  +'ory'#6#5'Tests'#7'Caption'#6#10'New Report'#18'DisableIfNoHandler'#9#4'Hint'
+  +#6#30'Create and edit a empty report'#9'OnExecute'#7#19'accNewReportExecute'
+  +#0#0#7'TAction'#13'accEditReport'#8'Category'#6#5'Tests'#7'Caption'#6#11'Edi'
+  +'t Report'#18'DisableIfNoHandler'#9#4'Hint'#6#23'Edit an existing report'#9
+  +'OnExecute'#7#20'accEditReportExecute'#0#0#7'TAction'#16'accPreviewReport'#8
+  +'Category'#6#5'Tests'#7'Caption'#6#14'Preview Report'#18'DisableIfNoHandler'
+  +#9#4'Hint'#6#26'Preview an existing report'#9'OnExecute'#7#23'accPreviewRepo'
+  ,'rtExecute'#0#0#7'TAction'#12'accPrintGrid'#8'Category'#6#5'Tests'#7'Caption'
+  +#6#10'Print Grid'#18'DisableIfNoHandler'#9#4'Hint'#6'$Print preview current '
+  +'DbGrid content'#9'OnExecute'#7#19'accPrintGridExecute'#0#0#7'TAction'#14'ac'
+  +'cPrintReport'#8'Category'#6#5'Tests'#7'Caption'#6#12'Print Report'#18'Disab'
+  +'leIfNoHandler'#9#4'Hint'#6'8Print directly an existing report (i.e. without'
+  +' preview)'#9'OnExecute'#7#21'accPrintReportExecute'#0#0#7'TAction'#8'accClo'
+  +'se'#8'Category'#6#5'Files'#7'Caption'#6#5'Close'#18'DisableIfNoHandler'#9#4
+  +'Hint'#6#17'Close application'#9'OnExecute'#7#15'accCloseExecute'#0#0#7'TAct'
+  +'ion'#15'accExportToText'#8'Category'#6#6'Export'#7'Caption'#6#14'Export to '
+  +'text'#18'DisableIfNoHandler'#9#9'OnExecute'#7#22'accExportToTextExecute'#0#0
+  +#7'TAction'#15'accExportToHtml'#8'Category'#6#6'Export'#7'Caption'#6#14'Expo'
+  +'rt to html'#18'DisableIfNoHandler'#9#9'OnExecute'#7#22'accExportToHtmlExecu'
+  +'te'#0#0#7'TAction'#13'accOpenReport'#8'Category'#6#5'Files'#7'Caption'#6#11
+  +'Open Report'#18'DisableIfNoHandler'#9#9'OnExecute'#7#20'accOpenReportExecut'
+  +'e'#0#0#7'TAction'#14'accExportToCSV'#8'Category'#6#6'Export'#7'Caption'#6#13
+  +'Export to CSV'#18'DisableIfNoHandler'#9#9'OnExecute'#7#21'accExportToCSVExe'
+  +'cute'#0#0#0#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#18'Open existing fil'
+  +'e'#6'Filter'#6':LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
+  +#11'FilterIndex'#2#0#4'left'#2'`'#3'top'#3#16#1#0#0#12'TfrCSVExport'#12'frCS'
+  +'VExport1'#4'left'#3#140#0#3'top'#2'('#0#0#0
 ]);
