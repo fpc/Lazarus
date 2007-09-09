@@ -17,6 +17,8 @@
    TCustomListView Constructor
 ------------------------------------------------------------------------------}
 constructor TCustomListView.Create(AOwner: TComponent);
+var
+  lvil: TListViewImageList;
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csCaptureMouse];
@@ -28,8 +30,11 @@ begin
   FViewStyle := vsList;
   FSortType := stNone;
 
-  FImageChangeLink := TChangeLink.Create;
-  FImageChangeLink.OnChange := @ImageChanged;
+  for lvil := Low(TListViewImageList) to High(TListViewImageList) do
+  begin
+    FImageChangeLinks[lvil] := TChangeLink.Create;
+    FImageChangeLinks[lvil].OnChange := @ImageChanged;
+  end;
   FHoverTime := -1;
   TabStop := true;
   SetInitialBounds(0,0,100,90);
@@ -530,13 +535,16 @@ end;
 {   TCustomListView Destructor                                                 }
 {------------------------------------------------------------------------------}
 destructor TCustomListView.Destroy;
+var
+  lvil: TListViewImageList;
 begin
   // Better destroy the wincontrol (=widget) first. So wo don't have to delete
   // all items/columns and we won't get notifications for each.
   FreeAndNil(FCanvas);
   inherited Destroy;
   FreeAndNil(FColumns);
-  FreeAndNil(FImageChangeLink);
+  for lvil := Low(TListViewImageList) to High(TListViewImageList) do
+    FreeAndNil(FImageChangeLinks[lvil]);
   FreeAndNil(FListItems);
 end;
 
@@ -780,13 +788,13 @@ begin
   if FImages[lvil] = AValue then Exit;
 
   if FImages[lvil] <> nil
-  then FImages[lvil].UnregisterChanges(FImageChangeLink);
+  then FImages[lvil].UnregisterChanges(FImageChangeLinks[lvil]);
 
   FImages[lvil] := AValue;
 
   if FImages[lvil] <> nil
   then begin
-    FImages[lvil].RegisterChanges(FImageChangeLink);
+    FImages[lvil].RegisterChanges(FImageChangeLinks[lvil]);
     FImages[lvil].FreeNotification(self);
   end;
 

@@ -858,12 +858,12 @@ type
     FListItems: TListItems;
     FColumns: TListColumns;
     FImages: array[TListViewImageList] of TCustomImageList;
+    FImageChangeLinks: array[TListViewImageList] of TChangeLink;
     FFlags: TListViewFlags;
 
     FViewStyle: TViewStyle;
     FSortType: TSortType;
     FSortColumn: Integer;
-    FImageChangeLink : TChangeLink;
     FScrollBars: TScrollStyle;
     FViewOriginCache: TPoint; // scrolled originwhile handle is not created
     FSelected: TListItem;     // temp copy of the selected item
