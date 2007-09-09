@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtprivate, qtwidgets,
+  qtprivate, qtwidgets, qtproc,
   // RTL
   math,
   // LCL
@@ -240,11 +240,11 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-//    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-//    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-//    class procedure GetPreferredSize(const AWinControl: TWinControl;
-//                        var PreferredWidth, PreferredHeight: integer); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -1023,6 +1023,23 @@ begin
   Result := True;
 end;
 
+class procedure TQtWSButton.SetDefault(const AButton: TCustomButton;
+  ADefault: Boolean);
+var
+  APushButton: QPushButtonH;
+begin
+  APushButton := QPushButtonH(TQtAbstractButton(AButton.Handle).Widget);
+  QPushButton_setDefault(APushButton, ADefault);
+end;
+
+class procedure TQtWSButton.SetShortcut(const AButton: TCustomButton;
+  const OldShortcut, NewShortcut: TShortcut);
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
+  
+  TQtAbstractButton(AButton.Handle).setShortcut(NewShortcut);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWSButton.SetText
   Params:  None
@@ -1034,9 +1051,16 @@ var
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
 
-  Str := UTF8Decode(AText);
+  Str := GetUtf8String(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
+end;
+
+class procedure TQtWSButton.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth := QStyle_pixelMetric(QApplication_style(), QStylePM_DialogButtonsButtonWidth);
+  PreferredHeight := QStyle_pixelMetric(QApplication_style(), QStylePM_DialogButtonsButtonHeight);
 end;
 
 {------------------------------------------------------------------------------

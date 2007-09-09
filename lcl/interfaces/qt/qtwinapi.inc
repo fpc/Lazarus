@@ -1447,9 +1447,7 @@ begin
 
   if Str <> nil then
   begin
-    WideStr := UTF8Decode(Str);
-    if WideStr = '' then
-      WideStr := Str;
+    WideStr := GetUtf8String(Str);
 
     QtDC.drawText(X, Y, @WideStr);
   end;

@@ -177,8 +177,10 @@ type
   TQtAbstractButton = class(TQtWidget)
   private
   public
-    procedure SetColor(const Value: PQColor); override;
-    procedure SetText(text: PWideString);
+    procedure setColor(const Value: PQColor); override;
+    procedure setIcon(AIcon: QIconH);
+    procedure setShortcut(AShortcut: TShortcut);
+    procedure setText(text: PWideString);
     procedure Text(retval: PWideString);
     function  isChecked: Boolean;
     procedure setChecked(p1: Boolean);
@@ -2476,6 +2478,30 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
+end;
+
+procedure TQtAbstractButton.setIcon(AIcon: QIconH);
+begin
+  QAbstractButton_setIcon(QAbstractButtonH(Widget), AIcon);
+end;
+
+procedure TQtAbstractButton.setShortcut(AShortcut: TShortcut);
+var
+  Key: Word;
+  Shift: TShiftState;
+  Modifiers: QtModifier;
+  KeySequence: QKeySequenceH;
+begin
+  if AShortCut <> 0 then
+  begin
+    ShortCutToKey(AShortCut, Key, Shift);
+    Modifiers := ShiftStateToQtModifiers(Shift);
+    KeySequence := QKeySequence_create(LCLKeyToQtKey(Key) or Modifiers);
+  end
+  else
+    KeySequence := QKeySequence_create();
+  QAbstractButton_setShortcut(QAbstractButtonH(Widget), KeySequence);
+  QKeySequence_destroy(KeySequence);
 end;
 
 {------------------------------------------------------------------------------
@@ -5229,6 +5255,7 @@ end;
 procedure TQtMenu.setShortcut(AShortcut: TShortcut);
 var
   Key: Word;
+  KeySequence: QKeySequenceH;
   Shift: TShiftState;
   Modifiers: QtModifier;
 begin
@@ -5237,10 +5264,12 @@ begin
     ShortCutToKey(AShortCut, Key, Shift);
     Modifiers := ShiftStateToQtModifiers(Shift);
     // there is no need in destroying QKeySequnce
-    QAction_setShortcut(ActionHandle, QKeySequence_create(LCLKeyToQtKey(Key) or Modifiers));
+    KeySequence := QKeySequence_create(LCLKeyToQtKey(Key) or Modifiers);
   end
   else
-    QAction_setShortcut(ActionHandle, QKeySequence_create());
+    KeySequence := QKeySequence_create();
+  QAction_setShortcut(ActionHandle, KeySequence);
+  QKeySequence_destroy(KeySequence);
 end;
 
 {------------------------------------------------------------------------------

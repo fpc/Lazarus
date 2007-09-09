@@ -33,6 +33,7 @@ uses
   GraphType;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
+function GetUtf8String(S: String): WideString;
 
 implementation
 
@@ -75,6 +76,13 @@ begin
   Desc.MaskBitOrder := riboReversedBits;
   Desc.MaskBitsPerPixel := 1;
 //  Desc.MaskShift := 0;
+end;
+
+function GetUtf8String(S: String): WideString;
+begin
+  Result := Utf8Decode(S);
+  if (Result = '') and (S <> '') then
+    Result := S;
 end;
 
 end.
