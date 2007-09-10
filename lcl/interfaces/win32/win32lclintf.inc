@@ -586,13 +586,83 @@ end;
 
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+const
+  FILL_PIXEL: array[0..3] of Byte = ($00, $00, $00, $FF);
 var
-  bmp: HBITMAP;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
+  end;
+
+  BitsPtr: Pointer;
+
+  copyDC, fillDC: HDC;
+  bmp, copyOld, fillOld, copyBmp, fillBmp: HBITMAP;
+  w, h: Integer;
+
 begin
-  bmp := Windows.GetCurrentObject(ADC, OBJ_BITMAP);
-  if bmp = 0
-  then Result := False
-  else Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+  if Windows.GetObjectType(ADC) = OBJ_MEMDC
+  then begin
+    // we can use bitmap directly
+    bmp := Windows.GetCurrentObject(ADC, OBJ_BITMAP);
+    copyBmp := 0;
+  end
+  else begin
+    // we need to copy the image
+    // use a dibsection, so we can easily retrieve the bytes
+    copyDC := Windows.CreateCompatibleDC(ADC);
+
+    w := Windows.GetDeviceCaps(ADC, DESKTOPHORZRES);
+    if w = 0
+    then w := Windows.GetDeviceCaps(ADC, HORZRES);
+    h := Windows.GetDeviceCaps(ADC, DESKTOPVERTRES);
+    if h = 0
+    then h := Windows.GetDeviceCaps(ADC, VERTRES);
+
+    FillChar(Info, SizeOf(Info), 0);
+    Info.Header.biSize := SizeOf(Info.Header);
+    Info.Header.biWidth := w;
+    Info.Header.biHeight := -h;
+    Info.Header.biPlanes := 1;
+    Info.Header.biBitCount := Windows.GetDeviceCaps(ADC, BITSPIXEL);
+    Info.Header.biCompression := BI_RGB;
+
+    copyBmp := Windows.CreateDIBSection(copyDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+    copyOld := Windows.SelectObject(copyDC, copyBmp);
+
+    // prefill bitmap, to create an alpha channel in case of 32bpp bitmap
+    if Info.Header.biBitCount > 24
+    then begin
+      // using a stretchblt is faster than filling the memory ourselves,
+      // which is in its turn faster than using a 24bpp bitmap
+      fillBmp := Windows.CreateBitmap(1, 1, 1, 32, @FILL_PIXEL);
+      fillDC := Windows.CreateCompatibleDC(ADC);
+      fillOld := Windows.SelectObject(fillDC, fillBmp);
+
+      Windows.StretchBlt(copyDC, 0, 0, w, h, fillDC, 0, 0, 1, 1, SRCCOPY);
+
+      Windows.SelectObject(fillDC, fillOld);
+      Windows.DeleteDC(fillDC);
+      Windows.DeleteObject(fillBmp);
+
+      Windows.BitBlt(copyDC, 0, 0, w, h, ADC, 0, 0, SRCPAINT);
+    end
+    else begin
+      // copy image
+      Windows.BitBlt(copyDC, 0, 0, w, h, ADC, 0, 0, SRCCOPY);
+    end;
+
+    Windows.SelectObject(copyDC, copyOld);
+    Windows.DeleteDC(copyDC);
+
+    bmp := copyBmp;
+  end;
+  
+  if bmp = 0 then Exit(False);
+
+  Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+  if copyBmp <> 0
+  then Windows.DeleteObject(copyBmp);
 end;
 
 procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
