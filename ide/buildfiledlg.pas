@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
   Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs, InputHistory,
-  LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
+  LazarusIDEStrConsts, EnvironmentOpts, TransferMacros, IDEContextHelpEdit;
 
 type
   TIDEDirective = (
@@ -64,6 +64,9 @@ type
 
   TBuildFileDialog = class(TForm)
     AlwaysCompileFirstCheckbox: TCHECKBOX;
+    HelpButton: TBitBtn;
+    CancelButton: TBitBtn;
+    OKButton: TBitBtn;
     BuildBrowseWorkDirButton: TBUTTON;
     BuildCommandGroupbox: TGROUPBOX;
     BuildCommandMemo: TMEMO;
@@ -71,11 +74,9 @@ type
     BuildScanForMakeMsgCheckbox: TCHECKBOX;
     BuildWorkDirCombobox: TCOMBOBOX;
     BuildWorkingDirGroupbox: TGROUPBOX;
-    CancelButton: TBUTTON;
     BuildPage: TPAGE;
     GeneralPage: TPAGE;
     Notebook1: TNOTEBOOK;
-    OkButton: TBUTTON;
     OverrideBuildProjectCheckbox: TCHECKBOX;
     OverrideRunProjectCheckbox: TCHECKBOX;
     RunBrowseWorkDirButton: TBUTTON;
@@ -92,6 +93,7 @@ type
     procedure BuildFileDialogKEYDOWN(Sender: TObject; var Key: Word;
                                      Shift: TShiftState);
     procedure BuildMacroSelectionBoxAddMacro(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure RunMacroSelectionBoxAddMacro(Sender: TObject);
   private
@@ -487,6 +489,11 @@ begin
   BuildCommandMemo.SelText:=MacroCode;
 end;
 
+procedure TBuildFileDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TBuildFileDialog.OkButtonCLICK(Sender: TObject);
 begin
   WriteDirectiveList;
@@ -514,7 +521,7 @@ begin
     OnAddMacro:=@BuildMacroSelectionBoxAddMacro;
     AnchorToNeighbour(akTop,5,BuildScanForMakeMsgCheckbox);
     BorderSpacing.Around:=3;
-    Align:=alBottom;
+    Align:=alClient;
     Parent:=BuildPage;
   end;
 
@@ -525,7 +532,7 @@ begin
     OnAddMacro:=@RunMacroSelectionBoxAddMacro;
     AnchorToNeighbour(akTop,5,RunCommandGroupbox);
     BorderSpacing.Around:=3;
-    Align:=alBottom;
+    Align:=alClient;
     Parent:=RunPage;
   end;
 
@@ -768,8 +775,8 @@ begin
     Enabled:=false;
     AutoSize:=true;
     Anchors:=[akTop,akRight];
-    Top:=3;
-    AnchorParallel(akRight,3,Self);
+    Top:=0;
+    AnchorParallel(akRight,6,Self);
     Parent:=Self;
   end;
   
@@ -778,7 +785,7 @@ begin
     Name:='ListBox';
     OnClick:=@ListBoxClick;
     Align:=alLeft;
-    AnchorToNeighbour(akRight,3,AddButton);
+    AnchorToNeighbour(akRight,6,AddButton);
     Parent:=Self;
   end;
 end;
