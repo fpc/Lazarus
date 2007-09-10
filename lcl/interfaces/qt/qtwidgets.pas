@@ -267,8 +267,11 @@ type
     procedure setShortcut(AShortcut: TShortcut);
     procedure setText(text: PWideString);
     procedure Text(retval: PWideString);
-    function  isChecked: Boolean;
+    procedure Toggle;
+    function isChecked: Boolean;
+    function isDown: Boolean;
     procedure setChecked(p1: Boolean);
+    procedure setDown(p1: Boolean);
     procedure SignalPressed; cdecl;
     procedure SignalReleased; cdecl;
     procedure SignalClicked(Checked: Boolean = False); cdecl;
@@ -2551,6 +2554,11 @@ begin
   QAbstractButton_text(QAbstractButtonH(Widget), retval);
 end;
 
+procedure TQtAbstractButton.Toggle;
+begin
+  QAbstractButton_toggle(QAbstractButtonH(Widget));
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtAbstractButton.isChecked
   Params:  None
@@ -2561,6 +2569,11 @@ begin
   Result := QAbstractButton_isChecked(QAbstractButtonH(Widget));
 end;
 
+function TQtAbstractButton.isDown: Boolean;
+begin
+  Result := QAbstractButton_isDown(QAbstractButtonH(Widget));
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtAbstractButton.setChecked
   Params:  None
@@ -2569,6 +2582,11 @@ end;
 procedure TQtAbstractButton.setChecked(p1: Boolean);
 begin
   QAbstractButton_setChecked(QAbstractButtonH(Widget), p1);
+end;
+
+procedure TQtAbstractButton.setDown(p1: Boolean);
+begin
+  QAbstractButton_setDown(QAbstractButtonH(Widget), p1);
 end;
 
 {------------------------------------------------------------------------------
@@ -3891,7 +3909,8 @@ end;
 
 procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
 begin
-  QLineEdit_setSelection(QLineEditH(Widget), AStart, ALength);
+  if AStart >= 0 then
+    QLineEdit_setSelection(QLineEditH(Widget), AStart, ALength);
 end;
 
 procedure TQtLineEdit.setText(const AText: WideString);
@@ -4007,13 +4026,16 @@ procedure TQtTextEdit.setSelection(const AStart, ALength: Integer);
 var
   TextCursor: QTextCursorH;
 begin
-  TextCursor := QTextCursor_create();
-  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
-  QTextCursor_clearSelection(TextCursor);
-  QTextCursor_setPosition(TextCursor, AStart);
-  QTextCursor_setPosition(TextCursor, AStart + ALength, QTextCursorKeepAnchor);
-  QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
-  QTextCursor_destroy(TextCursor);
+  if AStart >= 0 then
+  begin
+    TextCursor := QTextCursor_create();
+    QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+    QTextCursor_clearSelection(TextCursor);
+    QTextCursor_setPosition(TextCursor, AStart);
+    QTextCursor_setPosition(TextCursor, AStart + ALength, QTextCursorKeepAnchor);
+    QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
+    QTextCursor_destroy(TextCursor);
+  end;
 end;
 
 procedure TQtTextEdit.setTabChangesFocus(const AValue: Boolean);

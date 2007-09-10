@@ -51,15 +51,15 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
 
-    class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
-    class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-    class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); virtual;
-    class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); virtual;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
   (*TODO: seperation into properties instead of bulk update
@@ -154,14 +154,14 @@ begin
 end;
 
 class function TQtWSCustomFloatSpinEdit.GetSelStart(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
+  const ACustomEdit: TCustomEdit): integer;
 begin
   {$note implement}
   Result := 0;
 end;
 
 class function TQtWSCustomFloatSpinEdit.GetSelLength(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
+  const ACustomEdit: TCustomEdit): integer;
 begin
   {$note implement}
   Result := 0;
@@ -185,13 +185,13 @@ begin
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetSelLength(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
+  const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
   {$note implement}
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetSelStart(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
+  const ACustomEdit: TCustomEdit; NewStart: integer);
 begin
   {$note implement}
 end;

@@ -234,8 +234,8 @@ type
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    {class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;}
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -245,17 +245,17 @@ type
   private
   protected
   public
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-  public
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
-    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
   { TQtWSCheckBox }
@@ -272,18 +272,17 @@ type
   private
   protected
   public
-  public
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-  public
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
-    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
   { TQtWSRadioButton }
@@ -292,16 +291,17 @@ type
   private
   protected
   public
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-  public
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
-    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
   { TQtWSCustomStaticText }
@@ -1080,12 +1080,12 @@ begin
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
 
-class procedure TQtWSButton.GetPreferredSize(const AWinControl: TWinControl;
+{class procedure TQtWSButton.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   PreferredWidth := QStyle_pixelMetric(QApplication_style(), QStylePM_DialogButtonsButtonWidth);
   PreferredHeight := QStyle_pixelMetric(QApplication_style(), QStylePM_DialogButtonsButtonHeight);
-end;
+end;}
 
 {------------------------------------------------------------------------------
   Method: TQtWSButton.SetColor
@@ -1124,8 +1124,8 @@ end;
 class function TQtWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   case TQtCheckBox(ACustomCheckBox.Handle).CheckState of
-   QtPartiallyChecked: Result := cbGrayed;
-   QtChecked: Result := cbChecked;
+    QtPartiallyChecked: Result := cbGrayed;
+    QtChecked: Result := cbChecked;
   else
     Result := cbUnchecked;
   end;
@@ -1139,7 +1139,9 @@ end;
 class procedure TQtWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortcut') then Exit;
+
+  TQtCheckBox(ACustomCheckBox.Handle).setShortcut(NewShortcut);
 end;
 
 {------------------------------------------------------------------------------
@@ -1150,8 +1152,8 @@ end;
 class procedure TQtWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
   case NewState of
-   cbGrayed: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtPartiallyChecked);
-   cbChecked: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtChecked);
+    cbGrayed: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtPartiallyChecked);
+    cbChecked: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtChecked);
   else
     TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtUnchecked);
   end;
@@ -1182,7 +1184,7 @@ class procedure TQtWSCustomCheckBox.SetText(const AWinControl: TWinControl; cons
 var
   Str: WideString;
 begin
-  Str := UTF8Decode(AText);
+  Str := GetUtf8String(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
@@ -1216,7 +1218,7 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSRadioButton.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
-  if TQtAbstractButton(ACustomCheckBox.Handle).isChecked then
+  if TQtRadioButton(ACustomCheckBox.Handle).isChecked then
     Result := cbChecked
   else
     Result := cbUnchecked;
@@ -1230,7 +1232,7 @@ end;
 class procedure TQtWSRadioButton.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
+  TQtRadioButton(ACustomCheckBox.Handle).setShortcut(NewShortCut);
 end;
 
 {------------------------------------------------------------------------------
@@ -1242,10 +1244,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
-  case NewState of
-    cbUnchecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(False);
-    cbChecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(true);
-  end;
+  TQtRadioButton(ACustomCheckBox.Handle).setChecked(NewState = cbChecked);
 end;
 
 {------------------------------------------------------------------------------
@@ -1275,7 +1274,7 @@ class procedure TQtWSRadioButton.SetText(const AWinControl: TWinControl; const A
 var
   Str: WideString;
 begin
-  Str := UTF8Decode(AText);
+  Str := GetUtf8String(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
@@ -1597,11 +1596,10 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSToggleBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
-  if QAbstractButton_isDown(QAbstractButtonH(TQtPushButton(ACustomCheckBox.Handle).Widget))
-  then
-   Result := cbChecked
+  if TQtPushButton(ACustomCheckBox.Handle).isDown then
+    Result := cbChecked
   else
-   Result := cbUnChecked;
+    Result := cbUnChecked;
 end;
 
 {------------------------------------------------------------------------------
@@ -1612,7 +1610,7 @@ end;
 class procedure TQtWSToggleBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
+  TQtPushButton(ACustomCheckBox.Handle).setShortcut(NewShortCut);
 end;
 
 {------------------------------------------------------------------------------
@@ -1621,17 +1619,8 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
-var
-  AState: TCheckBoxState;
 begin
-  if QAbstractButton_isDown(QAbstractButtonH(TQtPushButton(ACustomCheckBox.Handle).Widget))
-  then
-   AState := cbChecked
-  else
-   AState := cbUnChecked;
-
-  if AState <> NewState then
-    QAbstractButton_toggle(QAbstractButtonH(TQtPushButton(ACustomCheckBox.Handle).Widget));
+  TQtPushButton(ACustomCheckBox.Handle).setDown(NewState = cbChecked)
 end;
 
 {------------------------------------------------------------------------------
@@ -1675,7 +1664,6 @@ class function TQtWSToggleBox.CreateHandle(const AWinControl: TWinControl; const
 var
   QtToggleBox: TQtPushButton;
 begin
-
   QtToggleBox := TQtPushButton.Create(AWinControl, AParams);
   
   QAbstractButton_setCheckable(QAbstractButtonH(QtToggleBox.Widget), True);
