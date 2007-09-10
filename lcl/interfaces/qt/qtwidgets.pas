@@ -59,6 +59,7 @@ type
     FCentralWidget: QWidgetH;
     FContext: HDC;
     FParams: TCreateParams;
+    FDefaultCursor: QCursorH;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -126,7 +127,7 @@ type
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
     procedure setColor(const Value: PQColor); virtual;
-    procedure setCursor(const ACursor: QCursorH); virtual;
+    procedure setCursor(const ACursor: QCursorH);
     procedure setEnabled(p1: Boolean);
     procedure setGeometry(ARect: TRect); overload;
     procedure setMaximumSize(AWidth, AHeight: Integer);
@@ -391,7 +392,17 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    procedure SetColor(const Value: PQColor); override;
+    function getMaxLength: Integer;
+    function getSelectedText: WideString;
+    function getSelectionStart: Integer;
+    function getText: WideString;
+    procedure setColor(const Value: PQColor); override;
+    procedure setEchoMode(const AMode: QLineEditEchoMode);
+    procedure setInputMask(const AMask: WideString);
+    procedure setMaxLength(const ALength: Integer);
+    procedure setReadOnly(const AReadOnly: Boolean);
+    procedure setSelection(const AStart, ALength: Integer);
+    procedure setText(const AText: WideString);
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -873,6 +884,11 @@ procedure TQtWidget.InitializeWidget;
 begin
   // Creates the widget
   Widget := CreateWidget(FParams);
+
+  // retrieve default cursor on create
+  FDefaultCursor := QCursor_create();
+  QWidget_cursor(Widget, FDefaultCursor);
+  
   {$ifdef VerboseQt}
   DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
     [ptrint(Self), ptrint(Widget), LCLObject.Name]);
@@ -905,6 +921,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('Calling QWidget_destroy');
   {$endif}
+  
+  QCursor_destroy(FDefaultCursor);
   
   if (Widget <> nil) and FOwnWidget then
     QWidget_destroy(QWidgetH(Widget));
@@ -1831,7 +1849,7 @@ begin
   if ACursor <> nil then
     QWidget_setCursor(Widget, ACursor)
   else
-    QWidget_unsetCursor(Widget);
+    QWidget_setCursor(Widget, FDefaultCursor);
 end;
 
 {------------------------------------------------------------------------------
@@ -3755,6 +3773,26 @@ begin
   Result := QLineEdit_create(@Str, Parent);
 end;
 
+function TQtLineEdit.getMaxLength: Integer;
+begin
+  Result := QLineEdit_maxLength(QLineEditH(Widget));
+end;
+
+function TQtLineEdit.getSelectedText: WideString;
+begin
+  QLineEdit_selectedText(QLineEditH(Widget), @Result);
+end;
+
+function TQtLineEdit.getSelectionStart: Integer;
+begin
+  Result := QLineEdit_selectionStart(QLineEditH(Widget));
+end;
+
+function TQtLineEdit.getText: WideString;
+begin
+  QLineEdit_text(QLineEditH(Widget), @Result);
+end;
+
 procedure TQtLineEdit.AttachEvents;
 var
   Method: TMethod;
@@ -3820,6 +3858,36 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
+end;
+
+procedure TQtLineEdit.setEchoMode(const AMode: QLineEditEchoMode);
+begin
+  QLineEdit_setEchoMode(QLineEditH(Widget), AMode);
+end;
+
+procedure TQtLineEdit.setInputMask(const AMask: WideString);
+begin
+  QLineEdit_setInputMask(QLineEditH(Widget), @AMask);
+end;
+
+procedure TQtLineEdit.setMaxLength(const ALength: Integer);
+begin
+  QLineEdit_setMaxLength(QLineEditH(Widget), ALength);
+end;
+
+procedure TQtLineEdit.setReadOnly(const AReadOnly: Boolean);
+begin
+  QLineEdit_setReadOnly(QLineEditH(Widget), AReadOnly);
+end;
+
+procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
+begin
+  QLineEdit_setSelection(QLineEditH(Widget), AStart, ALength);
+end;
+
+procedure TQtLineEdit.setText(const AText: WideString);
+begin
+  QLineEdit_setText(QLineEditH(Widget), @AText);
 end;
 
 {------------------------------------------------------------------------------

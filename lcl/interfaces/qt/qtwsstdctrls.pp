@@ -138,7 +138,6 @@ type
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
-//    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSListBox }
@@ -163,17 +162,13 @@ type
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-{    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
-    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;}
-    class procedure SetColor(const AWinControl: TWinControl); override;
+    //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TQtWSCustomMemo }
@@ -824,7 +819,7 @@ class function TQtWSCustomEdit.GetText(const AWinControl: TWinControl; var AText
 var
   Str: WideString;
 begin
-  QLineEdit_text(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @Str);
+  Str := TQtLineEdit(AWinControl.Handle).getText;
 
   AText := UTF8Encode(Str);
 
@@ -838,7 +833,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
-  QLineEdit_setEchoMode(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget),QLineEditEchoMode(Ord(NewMode)));
+  TQtLineEdit(ACustomEdit.Handle).setEchoMode(QLineEditEchoMode(Ord(NewMode)));
 end;
 
 {------------------------------------------------------------------------------
@@ -850,13 +845,12 @@ class procedure TQtWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; New
 var
   MaxLength: Integer;
 begin
-  if not (TQtWidget(ACustomEdit.Handle) is TQtLineEdit) then exit;
   {qt doesn't accept -1 !}
-  MaxLength := QLineEdit_maxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget));
+  MaxLength := TQtLineEdit(ACustomEdit.Handle).getMaxLength;
   if (NewLength <= 0) or (NewLength > QtMaxEditLength) then
     NewLength := QtMaxEditLength;
   if NewLength <> MaxLength then
-    QLineEdit_setMaxLength(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget), NewLength);
+    TQtLineEdit(ACustomEdit.Handle).setMaxLength(NewLength);
 end;
 
 {------------------------------------------------------------------------------
@@ -866,7 +860,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
-  QLineEdit_setReadOnly(QLineEditH(TQtLineEdit(ACustomEdit.Handle).Widget), NewReadOnly);
+  TQtLineEdit(ACustomEdit.Handle).setReadOnly(NewReadOnly);
 end;
 
 {------------------------------------------------------------------------------
@@ -875,40 +869,39 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  AString: WideString;
 begin
-  AString := UTF8Decode(AText);
-  QLineEdit_setText(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
+  TQtLineEdit(AWinControl.Handle).setText(GetUtf8String(AText));
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.SetColor
-  Params:  AWinControl     - the calling object
-
-  Returns: Nothing
-
-  Sets the color of the widget.
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomEdit.SetColor(const AWinControl: TWinControl);
-var
-  QColor: TQColor;
-  Color: TColor;
+class function TQtWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
-  if AWinControl = nil then exit;
+  Result := TQtLineEdit(ACustomEdit.Handle).getSelectionStart;
+end;
 
-  if not AWinControl.HandleAllocated then exit;
+class function TQtWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+var
+  W: WideString;
+begin
+  W := TQtLineEdit(ACustomEdit.Handle).getSelectedText;
+  Result := Length(W);
+end;
 
-  if AWinControl.Color = CLR_INVALID then exit;
+class procedure TQtWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
+var
+  ALength: Integer;
+begin
+  ALength := GetSelLength(ACustomEdit);
+  TQtLineEdit(ACustomEdit.Handle).setSelection(NewStart, ALength);
+end;
 
-  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  Color:=ColorToRGB(AWinControl.Color);
-
-  // Fill QColor
-  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
-
-  // Set color of the widget to QColor
-  TQtLineEdit(AWinControl.Handle).SetColor(@QColor);
+class procedure TQtWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  AStart: Integer;
+begin
+  AStart := GetSelStart(ACustomEdit);
+  TQtLineEdit(ACustomEdit.Handle).setSelection(AStart, NewLength);
 end;
 
 { TQtWSStaticText }

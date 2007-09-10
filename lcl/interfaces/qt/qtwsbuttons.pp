@@ -74,7 +74,6 @@ class procedure TQtWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue:
 var
   AIcon: QIconH;
   APixmap: QPixmapH;
-  Str: WideString;
 begin
   APixmap := QPixmap_create();
   QPixmap_fromImage(APixmap, TQtImage(AValue.Handle).Handle);
