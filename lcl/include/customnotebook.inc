@@ -18,7 +18,7 @@
  *****************************************************************************
 }
 
-{ $DEFINE NOTEBOOK_DEBUG}
+{off $DEFINE NOTEBOOK_DEBUG}
 
 {------------------------------------------------------------------------------
   TNBPages Constructor
@@ -544,12 +544,18 @@ procedure TCustomNoteBook.AddRemovePageHandle(APage: TCustomPage);
 begin
   if (not (csDestroying in APage.ComponentState))
   and (APage.TabVisible or (csDesigning in ComponentState)) then begin
+    {$IFDEF NOTEBOOK_DEBUG}
+    DebugLn(['TCustomNoteBook.AddRemovePageHandle ADD ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
+    {$ENDIF}
     if (pfAdded in APage.FFlags) then exit;
     Include(APage.FFlags,pfAdding);
     TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
     APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
     APage.ResizeDelayedAutoSizeChildren
   end else begin
+    {$IFDEF NOTEBOOK_DEBUG}
+    DebugLn(['TCustomNoteBook.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
+    {$ENDIF}
     if not (pfAdded in APage.FFlags) then exit;
     Exclude(APage.FFlags,pfAdded);
     TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);

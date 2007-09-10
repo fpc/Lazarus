@@ -3402,8 +3402,8 @@ begin
   Include(FControlState, csDestroyingHandle);
   if FWinControls <> nil then begin
     for i:= 0 to FWinControls.Count - 1 do begin
-      //DebugLn('  i=',i);
-      //DebugLn('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
+      //DebugLn(['  i=',i]);
+      //DebugLn(['  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName]);
       AWinControl:=TWinControl(FWinControls[i]);
       if AWinControl.HandleAllocated then
         AWinControl.DestroyHandle;

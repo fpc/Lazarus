@@ -243,7 +243,8 @@ var
 begin
   if OldNoteBookButtonPress = nil then
     HookNoteBookClass;
-  P := PGtkNoteBook(inherited CreateHandle(AWinControl, AParams));
+  //DebugLn(['TGtk2WSCustomNotebook.CreateHandle ',DbgSName(AWinControl)]);
+  P := PGtkNoteBook(TGtkWSCustomNotebook.CreateHandle(AWinControl, AParams));
   Result := HWND(P);
 end;
 

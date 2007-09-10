@@ -200,6 +200,12 @@ begin
     FOnShow(Self);
 end;
 
+procedure TCustomPage.DestroyHandle;
+begin
+  inherited DestroyHandle;
+  Exclude(FFlags,pfAdded);
+end;
+
 function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then
