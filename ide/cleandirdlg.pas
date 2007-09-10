@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr,
+  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, IDEContextHelpEdit,
   LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory;
 
 type
@@ -39,6 +39,7 @@ type
   { TCleanDirectoryDialog }
 
   TCleanDirectoryDialog = class(TForm)
+    HelpButton: TBitBtn;
     DirBrowseButton: TButton;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
@@ -52,6 +53,7 @@ type
     DirCombobox: TCOMBOBOX;
     DirGroupbox: TGROUPBOX;
     RemoveGroupbox: TGROUPBOX;
+    procedure HelpButtonClick(Sender: TObject);
     procedure CleanDirectoryDialogCreate(Sender: TObject);
     procedure DirBrowseButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -83,7 +85,6 @@ function ShowCleanDirectoryDialog(const DefaultDirectory: string;
 
 
 implementation
-
 
 const
   CleanDirXMLFilename = 'cleandirectorydialog.xml';
@@ -136,6 +137,11 @@ begin
   KeepTextFilesCheckbox.Caption:=lisClDirKeepAllTextFiles;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+end;
+
+procedure TCleanDirectoryDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TCleanDirectoryDialog.DirBrowseButtonClick(Sender: TObject);
