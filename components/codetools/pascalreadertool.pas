@@ -1126,9 +1126,10 @@ begin
         ANode:=ANode.Parent;
         if (ANode=nil) then exit;
         if (not (ANode.Desc in [ctnTypeSection]+AllCodeSections)) then exit;
-        if ANode.NextBrother<>nil then
+        if ANode.NextBrother<>nil then begin
           ANode:=ANode.NextBrother;
           break;
+        end;
       until false;
     end;
   end;
