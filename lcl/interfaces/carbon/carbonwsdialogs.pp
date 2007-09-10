@@ -32,6 +32,9 @@ interface
 uses
   // libs
   FPCMacOSAll,
+  {$IFDEF VER2_0}
+  FontPanel, // will be removed
+  {$ENDIF}
   // LCL
   Classes, SysUtils, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
   // widgetset
@@ -217,11 +220,11 @@ begin
 
   Filters := TParseStringList.Create(FileDialog.Filter, '|');
   try
-    if (FileDialog.FilterIndex >= 0) and
-      (FileDialog.FilterIndex * 2 + 1 < Filters.Count) then
+    if (FileDialog.FilterIndex > 0) and
+      (FileDialog.FilterIndex * 2 - 1 <= Filters.Count) then
     begin
-      //DebugLn('Filter ' + Filters[FileDialog.FilterIndex * 2 + 1]);
-      FilterMask := TMaskList.Create(Filters[FileDialog.FilterIndex * 2 + 1]);
+      //DebugLn('Filter ' + Filters[FileDialog.FilterIndex * 2 - 1]);
+      FilterMask := TMaskList.Create(Filters[FileDialog.FilterIndex * 2 - 1]);
     end;
   finally
     Filters.Free;
