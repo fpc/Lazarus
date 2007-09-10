@@ -151,6 +151,62 @@ type
     property Widget: QWidgetH read GetWidget write SetWidget;
   end;
 
+  { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
+
+  TQtAbstractSlider = class(TQtWidget)
+  private
+    FSliderPressed: Boolean;
+    FSliderReleased: Boolean;
+    FRangeChangedHook: QAbstractSlider_hookH;
+    FSliderMovedHook:  QAbstractSlider_hookH;
+    FSliderPressedHook: QAbstractSlider_hookH;
+    FSliderReleasedHook: QAbstractSlider_hookH;
+    FValueChangedHook: QAbstractSlider_hookH;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+
+    procedure SlotSliderMoved(p1: Integer); cdecl; virtual;
+    procedure SlotValueChanged(p1: Integer); cdecl; virtual;
+    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
+    procedure SlotSliderPressed; cdecl;
+    procedure SlotSliderReleased; cdecl;
+ public
+    function getValue: Integer;
+    function getPageStep: Integer;
+    function getMin: Integer;
+    function getMax: Integer;
+    function getSingleStep: Integer;
+
+    procedure setInvertedAppereance(p1: Boolean); virtual;
+    procedure setInvertedControls(p1: Boolean); virtual;
+
+    procedure setMaximum(p1: Integer); virtual;
+    procedure setMinimum(p1: Integer); virtual;
+
+    procedure setOrientation(p1: QtOrientation); virtual;
+    procedure setPageStep(p1: Integer); virtual;
+    procedure setRange(minimum: Integer; maximum: Integer); virtual;
+    procedure setSingleStep(p1: Integer); virtual;
+    procedure setSliderDown(p1: Boolean); virtual;
+    procedure setSliderPosition(p1: Integer); virtual;
+    procedure setTracking(p1: Boolean); virtual;
+    procedure setValue(p1: Integer); virtual;
+    property SliderPressed: Boolean read FSliderPressed;
+    property SliderReleased: Boolean read FSliderReleased;
+  end;
+
+  { TQtScrollBar }
+
+  TQtScrollBar = class(TQtAbstractSlider)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    procedure AttachEvents; override;
+  end;
+
   { TQtFrame }
 
   TQtFrame = class(TQtWidget)
@@ -164,6 +220,34 @@ type
     procedure setTextColor(const Value: PQColor); override;
   end;
   
+  { TQtAbstractScrollArea }
+
+  TQtAbstractScrollArea = class(TQtFrame)
+  private
+    FCornerWidget: TQtWidget;
+    FViewPortWidget: TQtWidget;
+    FHScrollbar: TQtScrollBar;
+    FVScrollbar: TQtScrollbar;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    destructor Destroy; override;
+  public
+    function cornerWidget: TQtWidget;
+    function horizontalScrollBar: TQtScrollBar;
+    function verticalScrollBar: TQtScrollBar;
+    function viewport: TQtWidget;
+    function getClientBounds: TRect; override;
+    procedure SetColor(const Value: PQColor); override;
+    procedure setCornerWidget(AWidget: TQtWidget);
+    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setScrollStyle(AScrollStyle: TScrollStyle);
+    procedure setTextColor(const Value: PQColor); override;
+    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setVisible(visible: Boolean); override;
+    procedure viewportNeeded;
+  end;
+
   { TQtArrow }
 
   TQtArrow = class(TQtFrame)
@@ -295,62 +379,6 @@ type
     destructor Destroy; override;
   end;
   
-  { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
-
-  TQtAbstractSlider = class(TQtWidget)
-  private
-    FSliderPressed: Boolean;
-    FSliderReleased: Boolean;
-    FRangeChangedHook: QAbstractSlider_hookH;
-    FSliderMovedHook:  QAbstractSlider_hookH;
-    FSliderPressedHook: QAbstractSlider_hookH;
-    FSliderReleasedHook: QAbstractSlider_hookH;
-    FValueChangedHook: QAbstractSlider_hookH;
-  protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    procedure AttachEvents; override;
-    procedure DetachEvents; override;
-    
-    procedure SlotSliderMoved(p1: Integer); cdecl; virtual;
-    procedure SlotValueChanged(p1: Integer); cdecl; virtual;
-    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
-    procedure SlotSliderPressed; cdecl;
-    procedure SlotSliderReleased; cdecl;
- public
-    function getValue: Integer;
-    function getPageStep: Integer;
-    function getMin: Integer;
-    function getMax: Integer;
-    function getSingleStep: Integer;
-    
-    procedure setInvertedAppereance(p1: Boolean); virtual;
-    procedure setInvertedControls(p1: Boolean); virtual;
-
-    procedure setMaximum(p1: Integer); virtual;
-    procedure setMinimum(p1: Integer); virtual;
-
-    procedure setOrientation(p1: QtOrientation); virtual;
-    procedure setPageStep(p1: Integer); virtual;
-    procedure setRange(minimum: Integer; maximum: Integer); virtual;
-    procedure setSingleStep(p1: Integer); virtual;
-    procedure setSliderDown(p1: Boolean); virtual;
-    procedure setSliderPosition(p1: Integer); virtual;
-    procedure setTracking(p1: Boolean); virtual;
-    procedure setValue(p1: Integer); virtual; 
-    property SliderPressed: Boolean read FSliderPressed;
-    property SliderReleased: Boolean read FSliderReleased;
-  end;
-
-  { TQtScrollBar }
-  
-  TQtScrollBar = class(TQtAbstractSlider)
-  protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    procedure AttachEvents; override;
-  end;	
-
   { TQtToolBar }
   
   TQtToolBar = class(TQtWidget)
@@ -413,15 +441,24 @@ type
 
   { TQtTextEdit }
 
-  TQtTextEdit = class(TQtWidget)
+  TQtTextEdit = class(TQtAbstractScrollArea)
   private
     FTextChangedHook: QTextEdit_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
-    procedure SetColor(const Value: PQColor); override;
-    procedure SetAlignment(const AAlignment: TAlignment);
+    procedure append(AStr: WideString);
+    function getPlainText: WideString;
+    function getSelectionStart: Integer;
+    function getSelectionEnd: Integer;
+    procedure setAlignment(const AAlignment: TAlignment);
+    procedure setColor(const Value: PQColor); override;
+    procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
+    procedure setPlainText(const AText: WideString);
+    procedure setReadOnly(const AReadOnly: Boolean);
+    procedure setSelection(const AStart, ALength: Integer);
+    procedure setTabChangesFocus(const AValue: Boolean);
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -537,34 +574,6 @@ type
     procedure DetachEvents; override;
 
     procedure SignalValueChanged(p1: Integer); cdecl;
-  end;
-
-  { TQtAbstractScrollArea }
-
-  TQtAbstractScrollArea = class(TQtFrame)
-  private
-    FCornerWidget: TQtWidget;
-    FViewPortWidget: TQtWidget;
-    FHScrollbar: TQtScrollBar;
-    FVScrollbar: TQtScrollbar;
-  protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-  public
-    destructor Destroy; override;
-  public
-    function cornerWidget: TQtWidget;
-    function horizontalScrollBar: TQtScrollBar;
-    function verticalScrollBar: TQtScrollBar;
-    function viewport: TQtWidget;
-    function getClientBounds: TRect; override;
-    procedure SetColor(const Value: PQColor); override;
-    procedure setCornerWidget(AWidget: TQtWidget);
-    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
-    procedure setScrollStyle(AScrollStyle: TScrollStyle);
-    procedure setTextColor(const Value: PQColor); override;
-    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
-    procedure setVisible(visible: Boolean); override;
-    procedure viewportNeeded;
   end;
 
   { TQtAbstractItemView }
@@ -1160,7 +1169,7 @@ begin
     QEventKeyRelease:
       begin
         SlotKey(Event);
-        Result := Self is TQtAbstractScrollArea;
+        Result := LCLObject is TCustomControl;
       end;
     QEventLeave: SlotMouseEnter(Event);
 
@@ -3929,6 +3938,36 @@ begin
      QTextEdit_setLineWrapMode(QTextEditH(Result),QTextEditNoWrap);
 end;
 
+procedure TQtTextEdit.append(AStr: WideString);
+begin
+  QTextEdit_append(QTextEditH(Widget), @AStr);
+end;
+
+function TQtTextEdit.getPlainText: WideString;
+begin
+  QTextEdit_toPlainText(QTextEditH(Widget), @Result);
+end;
+
+function TQtTextEdit.getSelectionStart: Integer;
+var
+  TextCursor: QTextCursorH;
+begin
+  TextCursor := QTextCursor_create();
+  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+  Result := QTextCursor_selectionStart(TextCursor);
+  QTextCursor_destroy(TextCursor);
+end;
+
+function TQtTextEdit.getSelectionEnd: Integer;
+var
+  TextCursor: QTextCursorH;
+begin
+  TextCursor := QTextCursor_create();
+  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+  Result := QTextCursor_selectionEnd(TextCursor);
+  QTextCursor_destroy(TextCursor);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtTextEdit.SetColor
   Params:  QColorH
@@ -3947,6 +3986,39 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
+end;
+
+procedure TQtTextEdit.setLineWrapMode(const AMode: QTextEditLineWrapMode);
+begin
+  QTextEdit_setLineWrapMode(QTextEditH(Widget), AMode);
+end;
+
+procedure TQtTextEdit.setPlainText(const AText: WideString);
+begin
+  QTextEdit_setPlainText(QTextEditH(Widget), @AText);
+end;
+
+procedure TQtTextEdit.setReadOnly(const AReadOnly: Boolean);
+begin
+  QTextEdit_setReadOnly(QTextEditH(Widget), AReadOnly);
+end;
+
+procedure TQtTextEdit.setSelection(const AStart, ALength: Integer);
+var
+  TextCursor: QTextCursorH;
+begin
+  TextCursor := QTextCursor_create();
+  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+  QTextCursor_clearSelection(TextCursor);
+  QTextCursor_setPosition(TextCursor, AStart);
+  QTextCursor_setPosition(TextCursor, AStart + ALength, QTextCursorKeepAnchor);
+  QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
+  QTextCursor_destroy(TextCursor);
+end;
+
+procedure TQtTextEdit.setTabChangesFocus(const AValue: Boolean);
+begin
+  QTextEdit_setTabChangesFocus(QTextEditH(Widget), AValue);
 end;
 
 procedure TQtTextEdit.SetAlignment(const AAlignment: TAlignment);

@@ -84,10 +84,10 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   public
-    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
@@ -99,7 +99,7 @@ type
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -184,23 +184,19 @@ type
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-//    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
+    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   public
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-{    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
-}    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-{    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;}
+    //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TQtWSEdit }
@@ -660,7 +656,7 @@ end;
 class procedure TQtWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 begin
-
+  {$note implement}
 end;
 
 { TQtWSCustomMemo }
@@ -680,7 +676,9 @@ begin
   
   // create our FList helper
   QtTextEdit.FList := TQtMemoStrings.Create(QTextEditH(QtTextEdit.Widget), TCustomMemo(AWinControl));
-  
+  QtTextEdit.setScrollStyle(TCustomMemo(AWinControl).ScrollBars);
+  QtTextEdit.setTabChangesFocus(not TCustomMemo(AWinControl).WantTabs);
+
   Result := THandle(QtTextEdit);
 end;
 
@@ -691,18 +689,18 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
-  Astr: WideString;
+  AStr: WideString;
 begin
   if Length(AText) = 0 then
     exit;
-  Astr := UTF8Decode(AText);
-  QTextEdit_append(QTextEditH(TQtWidget(ACustomMemo.Handle).Widget),@Astr);
+  AStr := GetUtf8String(AText);
+  TQtTextEdit(ACustomMemo.Handle).append(AStr);
 end;
 
 class procedure TQtWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
   const AAlignment: TAlignment);
 begin
-  TQtTextEdit(ACustomMemo.Handle).SetAlignment(ACustomMemo.Alignment);
+  TQtTextEdit(ACustomMemo.Handle).setAlignment(ACustomMemo.Alignment);
 end;
 
 
@@ -718,7 +716,7 @@ begin
   if not Assigned(TQtTextEdit(ACustomMemo.Handle).FList) then
   begin
     TextEditH := QTextEditH((TQtTextEdit(ACustomMemo.Handle).Widget));  // set to proper type
-    TQtTextEdit(ACustomMemo.Handle).FList := TQtMemoStrings.Create(TextEditH,ACustomMemo);
+    TQtTextEdit(ACustomMemo.Handle).FList := TQtMemoStrings.Create(TextEditH, ACustomMemo);
   end;
   
   Result := TQtTextEdit(ACustomMemo.Handle).FList;
@@ -734,20 +732,35 @@ begin
   {qt QTextEdit doesn't have such property  !}
 end;
 
+class procedure TQtWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
+  const NewScrollbars: TScrollStyle);
+begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollBars') then
+    Exit;
+
+  TQtTextEdit(ACustomMemo.Handle).setScrollStyle(NewScrollBars);
+end;
+
+class procedure TQtWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
+  const NewWantTabs: boolean);
+begin
+  TQtTextEdit(ACustomMemo.Handle).setTabChangesFocus(not NewWantTabs);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomMemo.SetWordWrap
   Params:  NewWordWrap boolean
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
-var
-  TextEditH: QTextEditH;
+const
+  WordWrapMap: array[Boolean] of QTextEditLineWrapMode =
+  (
+    QTextEditNoWrap,
+    QTextEditWidgetWidth
+  );
 begin
-  TextEditH := QTextEditH((TQtWidget(ACustomMemo.Handle).Widget));  // set to proper type
-  if NewWordWrap then
-     QTextEdit_setLineWrapMode(TextEditH,QTextEditWidgetWidth)
-  else
-     QTextEdit_setLineWrapMode(TextEditH,QTextEditNoWrap);
+  TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
 end;
 
 {------------------------------------------------------------------------------
@@ -759,7 +772,7 @@ class function TQtWSCustomMemo.GetText(const AWinControl: TWinControl; var AText
 var
   Str: WideString;
 begin
-  QTextEdit_toPlainText(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @Str);
+  Str := TQtTextEdit(AWinControl.Handle).getPlainText;
 
   AText := UTF8Encode(Str);
 
@@ -772,11 +785,20 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  AString: WideString;
 begin
-  AString := UTF8Decode(AText);
-	QTextEdit_setPlainText(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
+  TQtTextEdit(AWinControl.Handle).setPlainText(GetUtf8String(AText));
+end;
+
+class function TQtWSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result := TQtTextEdit(ACustomEdit.Handle).getSelectionStart;
+end;
+
+class function TQtWSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result :=
+    TQtTextEdit(ACustomEdit.Handle).getSelectionEnd -
+    TQtTextEdit(ACustomEdit.Handle).getSelectionStart;
 end;
 
 {------------------------------------------------------------------------------
@@ -785,11 +807,20 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
-var
-  TextEditH: QTextEditH;
 begin
-  TextEditH := QTextEditH((TQtWidget(ACustomEdit.Handle).Widget));  // set to proper type
-  QTextEdit_setReadOnly(TextEditH,NewReadOnly);
+  TQtTextEdit(ACustomEdit.Handle).setReadOnly(NewReadOnly);
+end;
+
+class procedure TQtWSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
+begin
+  TQtTextEdit(ACustomEdit.Handle).setSelection(NewStart, GetSelLength(ACustomEdit));
+end;
+
+class procedure TQtWSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+begin
+  TQtTextEdit(ACustomEdit.Handle).setSelection(GetSelStart(ACustomEdit), NewLength);
 end;
 
 { TQtWSCustomEdit }
@@ -1416,7 +1447,7 @@ end;
 class procedure TQtWSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
 begin
-  // TODO: implement me ???
+  {$note implement}
 end;
 
 class procedure TQtWSCustomComboBox.SetDropDownCount(
