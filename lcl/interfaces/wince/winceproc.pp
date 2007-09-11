@@ -58,6 +58,8 @@ procedure CallEvent(const Target: TObject; Event: TNotifyEvent;
 function ObjectToHWND(Const AObject: TObject): HWND;
 function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 
+function BytesPerLine(nWidth, nBitsPerPixel: Integer): Integer;
+function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
 
@@ -645,6 +647,11 @@ Begin
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 end;
 
+function BytesPerLine(nWidth, nBitsPerPixel: Integer): Integer;
+begin
+  Result := ((nWidth * nBitsPerPixel + 31) and (not 31) ) div 8;
+end;
+
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 begin
   case ADesc.BitsPerPixel of
@@ -725,6 +732,44 @@ begin
   ADesc.MaskShift := 0;
   ADesc.MaskLineEnd := rileWordBoundary; // CreateBitmap requires word boundary
   ADesc.MaskBitOrder := riboReversedBits;
+end;
+
+function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
+  function GetMask(APrec, AShift: Byte): Cardinal;
+  begin
+    Result := ($FFFFFFFF shr (32-APrec)) shl AShift;
+  end;
+
+var
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+  end;
+begin
+  FillChar(Info, sizeof(Info), 0);
+  Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
+  Info.Header.biWidth := ADesc.Width;
+  Info.Header.biHeight := -ADesc.Height;
+  Info.Header.biPlanes := 1;
+  Info.Header.biBitCount := ADesc.BitsPerPixel;
+  // TODO: palette support
+  Info.Header.biClrUsed := 0;
+  Info.Header.biClrImportant := 0;
+  Info.Header.biSizeImage := BytesPerLine(Info.Header.biWidth, Info.Header.biBitCount) * ADesc.Height;
+  // CE only supports bitfields
+  Info.Header.biCompression := BI_BITFIELDS;
+
+  // when 24bpp, CE only supports B8G8R8 encoding
+  // TODO: check the description
+  Info.Colors[0] := GetMask(ADesc.RedPrec, ADesc.RedShift);
+  Info.Colors[1] := GetMask(ADesc.GreenPrec, ADesc.GreenShift);
+  Info.Colors[2] := GetMask(ADesc.BluePrec, ADesc.BlueShift);
+
+  // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
+  // when they are created with createDIBitmap
+  Result := Windows.CreateDIBSection(ADC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, ABitsPtr, 0, 0);
+
+  //DbgDumpBitmap(Result, 'CreateDIBSectionFromDescription - Image');
 end;
 
 function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;

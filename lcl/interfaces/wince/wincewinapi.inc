@@ -1216,57 +1216,6 @@ begin
   dec(OriginDiff.Y, winOrg.Y);
 end;
 
-
-function TWinCEWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
-var
-  hBitmap: HGDIOBJ;
-  hWindow: HWND;
-  BitmapInfo: BITMAP;
-  ClientRect: TRect;
-begin
-  // check if memory dc with bitmap
-  Result := false;
-  case GetObjectType(DC) of
-    OBJ_MEMDC:
-      begin
-        hBitmap := GetCurrentObject(DC, OBJ_BITMAP);
-        if hBitmap <> HGDIOBJ(nil) then
-        begin
-          GetObject(hBitmap, SizeOf(BITMAP), @BitmapInfo);
-          P.x := BitmapInfo.bmWidth;
-          P.y := BitmapInfo.bmHeight;
-          Result := true;
-        end;
-      end;
- {   OBJ_DC:
-      begin
-        hWindow := WindowFromDC(DC);
-        if hWindow <> HWND(nil) then
-        begin
-          Result := GetClientRect(hWindow, ClientRect);
-          P.x := ClientRect.Right;
-          P.y := ClientRect.Bottom;
-        end;
-      end;}
-  else
-  end;
-
-  if not Result then
-  begin
-    // do default
-    Result := inherited GetDeviceSize(DC, P);
-  end;
-end;
-
-
-
-function BytesPerLine(nWidth,nBitsPerPixel:integer):integer;
-begin
-     result := ( (nWidth * nBitsPerPixel + 31) and (not 31) ) div 8;
-end;
-
-
-
 function TWinCEWidgetSet.CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;

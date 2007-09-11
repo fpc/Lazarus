@@ -64,7 +64,7 @@ end;
   Params: ARawImage:
           ABitmap:
           AMask:
-          ASkipMask: Wehn set, no mask is created
+          ASkipMask: When set, no mask is created
   Returns:
 
  ------------------------------------------------------------------------------}
@@ -84,34 +84,10 @@ var
   end;
   BitsPtr: Pointer;
   DataSize: Integer;
-  Align: Byte;
 begin
-
-  FillChar(Info, sizeof(Info), 0);
-  Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
-  Info.Header.biWidth := ADesc.Width;
-  Info.Header.biHeight := -ADesc.Height;
-  Info.Header.biPlanes := 1;
-  Info.Header.biBitCount := ADesc.BitsPerPixel;
-  // TODO: palette support
-  Info.Header.biClrUsed := 0;
-  Info.Header.biClrImportant := 0;
-  Info.Header.biSizeImage := BytesPerLine(Info.Header.biWidth, Info.Header.biBitCount) * ADesc.Height;
-  // CE only supports bitfields
-  Info.Header.biCompression := BI_BITFIELDS;
-
-  // when 24bpp, CE only supports B8G8R8 encoding
-  // TODO: check the description
-  Info.Colors[0] := GetMask(ADesc.RedPrec, ADesc.RedShift);
-  Info.Colors[1] := GetMask(ADesc.GreenPrec, ADesc.GreenShift);
-  Info.Colors[2] := GetMask(ADesc.BluePrec, ADesc.BlueShift);
-
   DC := Windows.GetDC(0);
   AMask := 0;
-  // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
-  // when they are created with createDIBitmap
-  //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
-  ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+  ABitmap := CreateDIBSectionFromDescription(DC, ADesc, BitsPtr);
   //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
   Windows.ReleaseDC(0, DC);
 
@@ -120,11 +96,7 @@ begin
   if BitsPtr = nil then Exit;
 
   // copy the image data
-  DataSize := (((ADesc.BitsPerPixel * ADesc.Width) shr 3) + 3) and not 3;
-  Align := DataSize and 3;
-  if Align <> 0
-  then Inc(DataSize, 4 - Align);
-  DataSize := DataSize * ADesc.Height;
+  DataSize := BytesPerLine(ADesc.Width, ADesc.BitsPerPixel) * ADesc.Height;
   if DataSize > ARawImage.DataSize
   then DataSize := ARawImage.DataSize;
   Move(ARawImage.Data^, BitsPtr^, DataSize);
@@ -259,13 +231,69 @@ end;
 
  ------------------------------------------------------------------------------}
 function TWinceWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+const
+  FILL_PIXEL: array[0..3] of Byte = ($00, $00, $00, $FF);
 var
-  bmp: HBITMAP;
+  BitsPtr: Pointer;
+  Desc: TRawImageDescription;
+  copyDC, fillDC: HDC;
+  bmp, copyOld, fillOld, copyBmp, fillBmp: HBITMAP;
+  DeviceSize: TPoint;
 begin
-  bmp := Windows.GetCurrentObject(ADC, OBJ_BITMAP);
-  if bmp = 0
-  then Result := False
-  else Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+  if Windows.GetObjectType(ADC) = OBJ_MEMDC
+  then begin
+    // we can use bitmap directly
+    bmp := Windows.GetCurrentObject(ADC, OBJ_BITMAP);
+    copyBmp := 0;
+  end
+  else begin
+    // we need to copy the image
+    // use a dibsection, so we can easily retrieve the bytes
+    copyDC := Windows.CreateCompatibleDC(ADC);
+
+    Desc.Init;
+    GetDeviceSize(ADC, DeviceSize);
+    Desc.Width := DeviceSize.X;
+    Desc.Height := DeviceSize.Y;
+    Desc.BitsPerPixel := Windows.GetDeviceCaps(ADC, BITSPIXEL);
+
+    FillRawImageDescriptionColors(Desc);
+    copyBmp := CreateDIBSectionFromDescription(copyDC, Desc, BitsPtr);
+    copyOld := Windows.SelectObject(copyDC, copyBmp);
+
+    // prefill bitmap, to create an alpha channel in case of 32bpp bitmap
+    if Desc.BitsPerPixel > 24
+    then begin
+      // using a stretchblt is faster than filling the memory ourselves,
+      // which is in its turn faster than using a 24bpp bitmap
+      fillBmp := Windows.CreateBitmap(1, 1, 1, 32, @FILL_PIXEL);
+      fillDC := Windows.CreateCompatibleDC(ADC);
+      fillOld := Windows.SelectObject(fillDC, fillBmp);
+
+      Windows.StretchBlt(copyDC, 0, 0, Desc.Width, Desc.Height, fillDC, 0, 0, 1, 1, SRCCOPY);
+
+      Windows.SelectObject(fillDC, fillOld);
+      Windows.DeleteDC(fillDC);
+      Windows.DeleteObject(fillBmp);
+
+      Windows.BitBlt(copyDC, 0, 0, Desc.Width, Desc.Height, ADC, 0, 0, SRCPAINT);
+    end
+    else begin
+      // copy image
+      Windows.BitBlt(copyDC, 0, 0, Desc.Width, Desc.Height, ADC, 0, 0, SRCCOPY);
+    end;
+
+    Windows.SelectObject(copyDC, copyOld);
+    Windows.DeleteDC(copyDC);
+
+    bmp := copyBmp;
+  end;
+
+  if bmp = 0 then Exit(False);
+
+  Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+  if copyBmp <> 0
+  then Windows.DeleteObject(copyBmp);
 end;
 
 procedure TWinCEWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
@@ -461,6 +489,25 @@ begin
       SizeConstraints.SetInterfaceConstraints(Width, Height, Width, Height);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetDeviceSize
+  Params: DC
+          P
+  Returns: true on success
+
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+begin
+  p.x := Windows.GetDeviceCaps(DC, DESKTOPHORZRES);
+  if p.x = 0
+  then p.x := Windows.GetDeviceCaps(DC, HORZRES);
+  p.y := Windows.GetDeviceCaps(DC, DESKTOPVERTRES);
+  if p.y = 0
+  then p.y := Windows.GetDeviceCaps(DC, VERTRES);
+
+  Result := True;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
