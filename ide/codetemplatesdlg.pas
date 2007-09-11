@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil,
   SynEdit, SynHighlighterPas, SynEditAutoComplete, CodeToolManager, CodeCache,
-  PascalParserTool,
+  KeywordFuncLists, BasicCodeTools, PascalParserTool,
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect;
 
@@ -161,6 +161,11 @@ function CodeMacroDateTime(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
+function CodeMacroAddMissingEnd(const Parameter: string;
+                        InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
+
 
 const
   CodeTemplatesMenuRootName = 'CodeTemplates';
@@ -278,45 +283,45 @@ begin
       Attributes:=[];
       for i:=0 to Params.Count-1 do begin
         Param:=Params[i];
-        if CompareText(Param,'WithStart')=0 then
+        if SysUtils.CompareText(Param,'WithStart')=0 then
           Include(Attributes,phpWithStart)
-        else if CompareText(Param,'WithStart')=0 then
+        else if SysUtils.CompareText(Param,'WithStart')=0 then
           Include(Attributes,phpWithStart)
-        else if CompareText(Param,'WithoutClassKeyword')=0 then
+        else if SysUtils.CompareText(Param,'WithoutClassKeyword')=0 then
           Include(Attributes,phpWithoutClassKeyword)
-        else if CompareText(Param,'AddClassName')=0 then
+        else if SysUtils.CompareText(Param,'AddClassName')=0 then
           Include(Attributes,phpAddClassName)
-        else if CompareText(Param,'WithoutClassName')=0 then
+        else if SysUtils.CompareText(Param,'WithoutClassName')=0 then
           Include(Attributes,phpWithoutClassName)
-        else if CompareText(Param,'WithoutName')=0 then
+        else if SysUtils.CompareText(Param,'WithoutName')=0 then
           Include(Attributes,phpWithoutName)
-        else if CompareText(Param,'WithoutParamList')=0 then
+        else if SysUtils.CompareText(Param,'WithoutParamList')=0 then
           Include(Attributes,phpWithoutParamList)
-        else if CompareText(Param,'WithVarModifiers')=0 then
+        else if SysUtils.CompareText(Param,'WithVarModifiers')=0 then
           Include(Attributes,phpWithVarModifiers)
-        else if CompareText(Param,'WithParameterNames')=0 then
+        else if SysUtils.CompareText(Param,'WithParameterNames')=0 then
           Include(Attributes,phpWithParameterNames)
-        else if CompareText(Param,'WithoutParamTypes')=0 then
+        else if SysUtils.CompareText(Param,'WithoutParamTypes')=0 then
           Include(Attributes,phpWithoutParamTypes)
-        else if CompareText(Param,'WithDefaultValues')=0 then
+        else if SysUtils.CompareText(Param,'WithDefaultValues')=0 then
           Include(Attributes,phpWithDefaultValues)
-        else if CompareText(Param,'WithResultType')=0 then
+        else if SysUtils.CompareText(Param,'WithResultType')=0 then
           Include(Attributes,phpWithResultType)
-        else if CompareText(Param,'WithOfObject')=0 then
+        else if SysUtils.CompareText(Param,'WithOfObject')=0 then
           Include(Attributes,phpWithOfObject)
-        else if CompareText(Param,'WithCallingSpecs')=0 then
+        else if SysUtils.CompareText(Param,'WithCallingSpecs')=0 then
           Include(Attributes,phpWithCallingSpecs)
-        else if CompareText(Param,'WithProcModifiers')=0 then
+        else if SysUtils.CompareText(Param,'WithProcModifiers')=0 then
           Include(Attributes,phpWithProcModifiers)
-        else if CompareText(Param,'WithComments')=0 then
+        else if SysUtils.CompareText(Param,'WithComments')=0 then
           Include(Attributes,phpWithComments)
-        else if CompareText(Param,'InUpperCase')=0 then
+        else if SysUtils.CompareText(Param,'InUpperCase')=0 then
           Include(Attributes,phpInUpperCase)
-        else if CompareText(Param,'CommentsToSpace')=0 then
+        else if SysUtils.CompareText(Param,'CommentsToSpace')=0 then
           Include(Attributes,phpCommentsToSpace)
-        else if CompareText(Param,'WithoutBrackets')=0 then
+        else if SysUtils.CompareText(Param,'WithoutBrackets')=0 then
           Include(Attributes,phpWithoutBrackets)
-        else if CompareText(Param,'WithoutSemicolon')=0 then
+        else if SysUtils.CompareText(Param,'WithoutSemicolon')=0 then
           Include(Attributes,phpWithoutSemicolon)
         else begin
           Result:=false;
@@ -385,6 +390,38 @@ begin
   Result:=true;
 end;
 
+function CodeMacroAddMissingEnd(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+var
+  Line: String;
+  p: TPoint;
+begin
+  Result:=true;
+  Value:='';
+  Line:=SrcEdit.CurrentLineText;
+  p:=SrcEdit.CursorTextXY;
+  if p.y<1 then exit;
+  while (p.y<=SrcEdit.LineCount) do begin
+    Line:=SrcEdit.Lines[p.y-1];
+    while (p.x<=length(Line)) do begin
+      if IsSpaceChar[Line[p.x]] then
+        inc(p.x)
+      else begin
+        if CompareIdentifiers(@Line[p.x],'end')=0 then begin
+          // has already an end
+          exit;
+        end else begin
+          // missing end
+          Value:=LineEnding+'end;'+LineEnding;
+        end;
+      end;
+    end;
+    inc(p.y);
+    p.x:=1;
+  end;
+end;
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -449,6 +486,10 @@ begin
   RegisterCodeMacro('DateTime','insert date and time',
                     'Insert date and time. Optional: format string',
                     @CodeMacroDateTime,nil);
+  RegisterCodeMacro('AddMissingEnd','insert end if needed',
+                     'check if the next token in source'
+                    +' is an end and if not returns lineend + end; + lineend',
+                    @CodeMacroAddMissingEnd,nil);
 end;
 
 { TCodeTemplateEditForm }
@@ -1009,7 +1050,7 @@ begin
   i:=Count-1;
   while (i>=0) do begin
     Result:=Items[i];
-    if (CompareText(Result.Name,AName)=0) then exit;
+    if (SysUtils.CompareText(Result.Name,AName)=0) then exit;
     dec(i);
   end;
   Result:=nil;
