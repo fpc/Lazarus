@@ -109,7 +109,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
   end;
@@ -136,7 +136,7 @@ const
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class function  TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
+class function TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND;
 var
   QtAbstractScrollArea: TQtAbstractScrollArea;

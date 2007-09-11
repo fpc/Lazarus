@@ -337,8 +337,9 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
-    procedure SetText(text: PWideString);
-    procedure Text(retval: PWideString);
+    procedure getText(retval: PWideString);
+    procedure setText(text: PWideString);
+    procedure setAlignment(const AAlignment: QtAlignment);
   end;
 
   { TQtCheckBox }
@@ -455,7 +456,7 @@ type
     function getPlainText: WideString;
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
-    procedure setAlignment(const AAlignment: TAlignment);
+    procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
     procedure setPlainText(const AText: WideString);
@@ -749,7 +750,7 @@ type
   public
     procedure setRange(minimum: Integer; maximum: Integer);
     procedure setTextVisible(visible: Boolean);
-    procedure setAlignment(alignment: QtAlignment);
+    procedure setAlignment(const AAlignment: QtAlignment);
     procedure setTextDirection(textDirection: QProgressBarDirection);
     procedure setValue(value: Integer);
     procedure setOrientation(p1: QtOrientation);
@@ -819,14 +820,6 @@ type
     procedure setShape(AShape: QRubberBandShape);
   end;
 
-implementation
-
-uses
-
-  LCLMessageGlue,
-  qtCaret;
-
-  
 const
   AlignmentMap: array[TAlignment] of QtAlignment =
   (
@@ -835,6 +828,13 @@ const
 {taCenter      } QtAlignHCenter
   );
 
+implementation
+
+uses
+  LCLMessageGlue,
+  qtCaret;
+
+const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
 type
@@ -3022,8 +3022,7 @@ begin
     WriteLn('TQtStaticText.Create');
   {$endif}
 
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QLabel_create(Parent);
+  Result := QLabel_create();
   QWidget_setAutoFillBackground(Result, True);
 end;
 
@@ -3058,12 +3057,17 @@ begin
   QLabel_setText(QLabelH(Widget), text);
 end;
 
+procedure TQtStaticText.setAlignment(const AAlignment: QtAlignment);
+begin
+  QLabel_setAlignment(QLabelH(Widget), AAlignment);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtStaticText.Text
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtStaticText.Text(retval: PWideString);
+procedure TQtStaticText.getText(retval: PWideString);
 begin
   QLabel_text(QLabelH(Widget), retval);
 end;
@@ -3945,16 +3949,7 @@ begin
     WriteLn('TQtTextEdit.Create');
   {$endif}
 
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QTextEdit_create(Parent);
-  QTextEdit_setAlignment(QTextEditH(Result), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
-
-  QTextEdit_setReadOnly(QTextEditH(Result), (LCLObject as TCustomMemo).ReadOnly);
-
-  if (LCLObject as TCustomMemo).WordWrap then
-     QTextEdit_setLineWrapMode(QTextEditH(Result),QTextEditWidgetWidth)
-  else
-     QTextEdit_setLineWrapMode(QTextEditH(Result),QTextEditNoWrap);
+  Result := QTextEdit_create();
 end;
 
 procedure TQtTextEdit.append(AStr: WideString);
@@ -4043,7 +4038,7 @@ begin
   QTextEdit_setTabChangesFocus(QTextEditH(Widget), AValue);
 end;
 
-procedure TQtTextEdit.SetAlignment(const AAlignment: TAlignment);
+procedure TQtTextEdit.SetAlignment(const AAlignment: QtAlignment);
 var
   TextCursor: QTextCursorH;
 begin
@@ -4054,7 +4049,7 @@ begin
   QTextEdit_selectAll(QTextEditH(Widget));
   
   // 2. Set format
-  QTextEdit_setAlignment(QTextEditH(Widget), AlignmentMap[(LCLObject as TCustomMemo).Alignment]);
+  QTextEdit_setAlignment(QTextEditH(Widget), AAlignment);
   
   // 3. Clear selection. To unselect all document we must create new text cursor,
   // get format from Text Edit, clear selection in cursor and set it back to Text Edit
@@ -5539,9 +5534,9 @@ begin
   QProgressBar_setTextVisible(QProgressBarH(Widget), visible);
 end;
 
-procedure TQtProgressBar.setAlignment(alignment: QtAlignment);
+procedure TQtProgressBar.setAlignment(const AAlignment: QtAlignment);
 begin
-  QProgressBar_setAlignment(QProgressBarH(Widget), alignment);
+  QProgressBar_setAlignment(QProgressBarH(Widget), AAlignment);
 end;
 
 procedure TQtProgressBar.setTextDirection(textDirection: QProgressBarDirection);

@@ -234,9 +234,10 @@ type
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+
     {class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;}
-    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCustomCheckBox }
@@ -310,11 +311,10 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
-
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -334,6 +334,11 @@ uses
   
 const
   QtMaxEditLength = 32767;
+  WordWrapMap: array[Boolean] of QTextEditLineWrapMode =
+  (
+    QTextEditNoWrap,
+    QTextEditWidgetWidth
+  );
 
 
 { TQtWSScrollBar }
@@ -674,6 +679,11 @@ begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
   QtTextEdit.AttachEvents;
   
+  QtTextEdit.setAlignment(AlignmentMap[TCustomMemo(AWinControl).Alignment]);
+  QtTextEdit.setReadOnly(TCustomMemo(AWinControl).ReadOnly);
+
+  QtTextEdit.setLineWrapMode(WordWrapMap[TCustomMemo(AWinControl).WordWrap]);
+
   // create our FList helper
   QtTextEdit.FList := TQtMemoStrings.Create(QTextEditH(QtTextEdit.Widget), TCustomMemo(AWinControl));
   QtTextEdit.setScrollStyle(TCustomMemo(AWinControl).ScrollBars);
@@ -700,7 +710,7 @@ end;
 class procedure TQtWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
   const AAlignment: TAlignment);
 begin
-  TQtTextEdit(ACustomMemo.Handle).setAlignment(ACustomMemo.Alignment);
+  TQtTextEdit(ACustomMemo.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;
 
 
@@ -753,12 +763,6 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
-const
-  WordWrapMap: array[Boolean] of QTextEditLineWrapMode =
-  (
-    QTextEditNoWrap,
-    QTextEditWidgetWidth
-  );
 begin
   TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
 end;
@@ -948,12 +952,11 @@ var
   QtStaticText: TQtStaticText;
 begin
   QtStaticText := TQtStaticText.Create(AWinControl, AParams);
-
   QtStaticText.AttachEvents;
-//  SetSlots(QtStaticText);
+  
+  QtStaticText.setAlignment(AlignmentMap[TCustomStaticText(AWinControl).Alignment]);
 
   // Returns the Handle
-
   Result := THandle(QtStaticText);
 end;
 
@@ -965,6 +968,7 @@ end;
 class procedure TQtWSCustomStaticText.SetAlignment(
   const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
+  TQtStaticText(ACustomStaticText.Handle).setAlignment(AlignmentMap[NewAlignment]);
 end;
 
 {------------------------------------------------------------------------------
@@ -976,13 +980,10 @@ class function TQtWSCustomStaticText.GetText(const AWinControl: TWinControl; var
 var
   Str: WideString;
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'GetText') then
+    Exit;
 
-  if (csDestroying in AWinControl.ComponentState)
-  or (csFreeNotification in AWinControl.ComponentState)
-  then
-    exit;
-
-  TQtStaticText(AWinControl.Handle).Text(@Str);
+  TQtStaticText(AWinControl.Handle).getText(@Str);
 
   AText := UTF8Encode(Str);
 
@@ -998,7 +999,7 @@ class procedure TQtWSCustomStaticText.SetText(const AWinControl: TWinControl; co
 var
   Str: WideString;
 begin
-  Str := UTF8Decode(AText);
+  Str := GetUtf8String(AText);
 
   TQtStaticText(AWinControl.Handle).SetText(@Str);
 end;
