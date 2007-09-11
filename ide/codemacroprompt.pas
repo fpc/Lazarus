@@ -88,10 +88,12 @@ begin
     TokenStartX:=p.x;
     s:=AEditor.Lines[p.y-1];
     if TokenStartX>length(s) then
-      TokenStartX:=length(s);
-    while (TokenStartX > 1) and (s[TokenStartX-1] > ' ')
-    and (Pos(s[TokenStartX-1], EndOfTokenChr) = 0) do
-      Dec(TokenStartX);
+      TokenStartX:=length(s)+1;
+    j:=length(TemplateName);
+    while (j>0)
+    and (AnsiCompareText(copy(TemplateName,1,j),copy(s,TokenStartX-j,j))<>0) do
+      dec(j);
+    dec(TokenStartX,j);
     AEditor.BlockBegin := Point(TokenStartX, p.y);
     AEditor.BlockEnd := p;
     

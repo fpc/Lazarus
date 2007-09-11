@@ -1389,8 +1389,9 @@ begin
   ecChar:
     begin
       if aChar=' ' then begin
-        if AutoCompleteSpace then
-          Command:=ecNone;
+        if AutoCompleteSpace then begin
+          // do not set Command to ecNone, because the space should be inserted
+        end;
       end;
       //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(SourceCompletionTimer.Interval), Dbgs(FEditor.CaretXY));
       if (Command=ecChar) and EditorOpts.AutoIdentifierCompletion then begin
@@ -2073,14 +2074,15 @@ var
   AToken: String;
   i: Integer;
   p: TPoint;
+  Line: String;
 begin
   Result:=false;
-  p:=FEditor.CaretXY;
-  dec(p.x);
-  AToken:=GetWordFromCaret(p);
-  if AToken='' then exit;
+  Line:=GetLineText;
+  p:=GetCursorTextXY;
+  if (p.x>length(Line)+1) or (Line='') then exit;
   for i:=0 to FCodeTemplates.Completions.Count-1 do begin
-    if (AnsiCompareText(FCodeTemplates.Completions[i],AToken)=0)
+    AToken:=FCodeTemplates.Completions[i];
+    if (AnsiCompareText(AToken,copy(Line,length(Line)-length(AToken)+1,length(AToken)))=0)
     and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CodeTemplateAutoOnLineBreak)>=0)
     then begin
       Result:=true;
@@ -2090,8 +2092,25 @@ begin
 end;
 
 function TSourceEditor.AutoCompleteSpace: boolean;
+var
+  AToken: String;
+  i: Integer;
+  p: TPoint;
+  Line: String;
 begin
   Result:=false;
+  Line:=GetLineText;
+  p:=GetCursorTextXY;
+  if (p.x>length(Line)+1) or (Line='') then exit;
+  for i:=0 to FCodeTemplates.Completions.Count-1 do begin
+    AToken:=FCodeTemplates.Completions[i];
+    if (AnsiCompareText(AToken,copy(Line,length(Line)-length(AToken)+1,length(AToken)))=0)
+    and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CodeTemplateAutoOnSpace)>=0)
+    then begin
+      Result:=true;
+      FCodeTemplates.ExecuteCompletion(AToken,FEditor);
+    end;
+  end;
 end;
 
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
