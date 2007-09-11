@@ -37,7 +37,7 @@ program StartLazarus;
 uses
   Interfaces, SysUtils,
   Forms,
-  LazarusManager, LRemoteControl;
+  LazarusManager;
   
 var
   ALazarusManager: TLazarusManager;
