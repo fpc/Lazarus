@@ -661,6 +661,7 @@ var
   sl: TStringList;
   i, sp, ep: Integer;
   Token, Comment, Value: String;
+  Attributes: TStrings;
 begin
   Result := False;
   sl     := TStringList.Create;
@@ -671,6 +672,12 @@ begin
       Comment := ACustomSynAutoComplete.CompletionComments[i];
       Value := ACustomSynAutoComplete.CompletionValues[i];
       sl.Add('[' + Token + ' | ' + Comment + ']');
+      Attributes:=ACustomSynAutoComplete.CompletionAttributes[i];
+      if (Attributes<>nil) and (Attributes.Count>0) then begin
+        sl.Add(CodeTemplateAttributesStartMagic);
+        sl.AddStrings(Attributes);
+        sl.Add(CodeTemplateAttributesEndMagic);
+      end;
       sp    := 1;
       ep    := 1;
       while ep <= length(Value) do

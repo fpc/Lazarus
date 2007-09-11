@@ -1,12 +1,17 @@
 [Desktop Entry]
+Encoding=UTF-8
 Name=Lazarus
 Comment=Lazarus IDE
 Exec=startlazarus %f
 Terminal=false
 Type=Application
 Icon=lazarus.png
-Encoding=UTF-8
 Categories=Application;IDE;Development;Programming;
 StartupWMClass=Lazarus
-MimeType=text/x-pascal;
+MimeType=text/x-pascal;text/lazarus-project-source;text/lazarus-project-information;text/lazarus-form;text/lazarus-resource;text/lazarus-package;text/lazarus-package-link;text/lazarus-code-inlay;
+Patterns=*.pas;*.pp;*.p;*.inc;*.lpi;*.lpk;*.lpr;*.lfm;*.lrs;*.lpl;*.dci
+[Property::X-KDE-NativeExtension]
+Type=QString
+Value=.pas
+X-Ubuntu-Gettext-Domain=desktop_kdelibs
 

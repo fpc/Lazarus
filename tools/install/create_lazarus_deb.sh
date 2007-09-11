@@ -134,11 +134,13 @@ gzip --best $LazBuildDir/usr/share/doc/lazarus/changelog
 gzip --best $LazBuildDir/usr/share/doc/lazarus/changelog.Debian
 
 # icons, links
-mkdir -p $LazBuildDir/usr/share/pixmaps/
+mkdir -p $LazBuildDir/usr/share/pixmaps
 mkdir -p $LazBuildDir/usr/share/applications
+mkdir -p $LazBuildDir/usr/share/mime/packages
 mkdir -p $LazBuildDir/usr/bin/
 install -m 644 $LazDestDir/images/ide_icon48x48.png $LazBuildDir/usr/share/pixmaps/lazarus.png
 install -m 644 $LazDestDir/install/lazarus.desktop $LazBuildDir/usr/share/applications/lazarus.desktop
+install -m 644 $LazDestDir/install/lazarus-mime.xml $LazBuildDir/usr/share/mime/packages/lazarus.xml
 ln -s $LazDestDirInstalled/lazarus $LazBuildDir/usr/bin/lazarus
 ln -s $LazDestDirInstalled/startlazarus $LazBuildDir/usr/bin/startlazarus
 ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
@@ -150,6 +152,10 @@ cat $LazDestDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuil
 # fixing permissions
 echo "fixing permissions ..."
 find $LazBuildDir -type d | xargs chmod 755  # this is needed, don't ask me why
+
+# postinst + postrm:
+# ToDo: update-mime-database /usr/share/mime
+# ToDo: update-desktop-database
 
 # creating deb
 echo "creating deb ..."

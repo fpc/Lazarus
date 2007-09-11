@@ -224,10 +224,6 @@ type
 var
   IDECodeMacros: TIDECodeMacros = nil; // set by the IDE
 
-const
-  CodeTemplateMacroMagic = '$(EnableMakros)';
-
-
 function RegisterCodeMacro(const Name: string;
   const ShortDescription, LongDescription: string;
   OnGetValueProc: TIDECodeMacroGetValueProc;

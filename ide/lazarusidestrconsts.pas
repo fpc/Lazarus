@@ -49,6 +49,7 @@ const
   NoSplashScreenOptShort='--nsc';
   StartedByStartLazarusOpt='--started-by-startlazarus';
   SkipLastProjectOpt='--skip-last-project';
+  EnableRemoteControlOpt='--remote-control';
   DebugLogOpt='--debug-log=';
   LanguageOpt='--language=';
 
@@ -3401,6 +3402,8 @@ resourcestring
   rsConditionalDefines = 'Conditional defines';
   rsAddInverse = 'Add Inverse';
   rsRemove = '&Remove';
+  lisAutomaticallyOnLineBreak = 'automatically on line break';
+  lisAutomaticallyOnSpace = 'automatically on space';
 
 implementation
 end.

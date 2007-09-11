@@ -20,7 +20,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
-    ClientHeight = 33
+    ClientHeight = 32
     ClientWidth = 481
     TabOrder = 0
     object FilenameEdit: TEdit
@@ -61,7 +61,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 149
+    ClientHeight = 148
     ClientWidth = 481
     TabOrder = 1
     object TemplateListBox: TListBox
@@ -71,7 +71,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 137
+      Height = 136
       Top = 6
       Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -81,6 +81,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Bottom = 6
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
@@ -145,14 +146,14 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 321
+    ClientHeight = 320
     ClientWidth = 481
     TabOrder = 4
     object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 13
+      Height = 22
       Top = 6
-      Width = 123
+      Width = 157
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
       TabOrder = 0
@@ -163,9 +164,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 129
-      Height = 25
-      Width = 115
+      Left = 163
+      Height = 37
+      Top = -1
+      Width = 138
       AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -175,19 +177,19 @@ object CodeTemplateDialog: TCodeTemplateDialog
       TabOrder = 2
     end
     object TemplateSynEdit: TSynEdit
-      AnchorSideTop.Control = InsertMacroButton
+      AnchorSideTop.Control = AutoOnLineBreakCheckBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = EditTemplateGroupBox
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 284
-      Top = 31
+      Height = 244
+      Top = 70
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
-      Font.Height = -18
+      Font.Height = -14
       Font.Name = 'courier'
       ParentColor = False
       TabOrder = 1
@@ -518,16 +520,40 @@ object CodeTemplateDialog: TCodeTemplateDialog
       )
       SelectedColor.OnChange = nil
     end
+    object AutoOnLineBreakCheckBox: TCheckBox
+      AnchorSideLeft.Control = UseMacrosCheckBox
+      AnchorSideTop.Control = InsertMacroButton
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 42
+      Width = 197
+      BorderSpacing.Top = 6
+      Caption = 'AutoOnLineBreakCheckBox'
+      TabOrder = 3
+    end
+    object AutoOnSpaceCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutoOnLineBreakCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = AutoOnLineBreakCheckBox
+      Left = 215
+      Height = 22
+      Top = 42
+      Width = 175
+      BorderSpacing.Left = 12
+      Caption = 'AutoOnSpaceCheckBox'
+      TabOrder = 4
+    end
   end
   object CancelButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 411
+    Left = 405
     Height = 25
     Top = 581
-    Width = 80
+    Width = 86
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -544,7 +570,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 330
+    Left = 324
     Height = 25
     Top = 581
     Width = 75

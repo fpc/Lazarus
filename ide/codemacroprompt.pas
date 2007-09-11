@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  SynEdit, MacroIntf, LazIDEIntf, SrcEditorIntf;
+  SynEditAutoComplete, SynEdit, MacroIntf, LazIDEIntf, SrcEditorIntf;
 
 type
   TCodeMacroPromptDlg = class(TForm)
@@ -44,7 +44,7 @@ type
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
-  EndOfTokenChr: string;
+  EndOfTokenChr: string; Attributes: TStrings;
   IndentToTokenStart: boolean): boolean;
 function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface;
   var Pattern: string): boolean;
@@ -53,7 +53,7 @@ implementation
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
-  EndOfTokenChr: string;
+  EndOfTokenChr: string; Attributes: TStrings;
   IndentToTokenStart: boolean): boolean;
 var
   AEditor: TCustomSynEdit;
@@ -73,19 +73,9 @@ begin
   AEditor:=SrcEdit.EditorControl as TCustomSynEdit;
   
   Pattern:=TemplateValue;
-  if copy(Pattern,1,length(CodeTemplateMacroMagic))=CodeTemplateMacroMagic
-  then begin
+  if Attributes.IndexOfName(CodeTemplateEnableMacros)>=0 then begin
     // macros enabled
     LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
-    
-    // remove first line (i.e. macro enabled flag)
-    i:=length(CodeTemplateMacroMagic);
-    while (i<=length(Pattern)) and (not (Pattern[i] in [#10,#13])) do inc(i);
-    if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
-    and (Pattern[i+1]<>Pattern[i]) then
-      inc(i);
-    Pattern:=copy(Pattern,i+1,length(Pattern));
-    
     if not SubstituteCodeMacros(SrcEdit,Pattern) then exit;
   end;
 

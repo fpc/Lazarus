@@ -42,7 +42,6 @@
    special exit code (ExitCodeRestartLazarus), it goes to step 1.
    Any other exit code, also stops startlazarus.
 
-    
   Why that?
    - To install a package into the IDE statically, it must be relinked.
      This creates a new lazarus[.exe] executable. With the help of startlazarus
@@ -112,6 +111,7 @@ type
     FLazarusPID: Integer;
     FLazarusDebug: Boolean;
     FCmdLineParams: TStrings;
+    FShowSplashOption: boolean;
     procedure ParseCommandLine;
     function GetCommandLineParameters: string;
     function GetLazarusPath(const FileName: string): string;
@@ -123,6 +123,7 @@ type
     procedure Initialize;
     procedure Run;
     procedure ShowSplash;
+    property ShowSplashOption: boolean read FShowSplashOption write FShowSplashOption;
   end;
 
 implementation
@@ -270,9 +271,11 @@ end;
 
 procedure TLazarusManager.Initialize;
 begin
+  FShowSplashOption:=true;
   SplashForm := nil;
-  ShowSplash;
   ParseCommandLine;
+  if FShowSplashOption then
+    ShowSplash;
 end;
 
 procedure TLazarusManager.Run;

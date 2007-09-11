@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
@@ -25,7 +25,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="4">
       <Unit0>
         <Filename Value="startlazarus.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -35,17 +35,25 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazarusManager"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="LRemoteControl"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="lremotecontrol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LRemoteControl"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <PathDelim Value="\"/>
     <Target>
-      <Filename Value="D:\lazarus\source\lazarus\startlazarus.exe"/>
+      <Filename Value="D:/lazarus/source/lazarus/startlazarus.exe"/>
     </Target>
     <SearchPaths>
-      <UnitOutputDirectory Value="D:\lazarus\source\lazarus\units\i386-win32"/>
-      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+      <UnitOutputDirectory Value="D:/lazarus/source/lazarus/units/i386-win32"/>
+      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

@@ -45,12 +45,20 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  LCLIntf, LCLType, LCLProc,
   {$ELSE}
   Windows,
   {$ENDIF}
   Classes, SynEdit, SynEditKeyCmds,
   Controls;
+
+{$IFDEF SYN_LAZARUS}
+const
+  CodeTemplateMacroMagic = '$(EnableMakros)';
+  CodeTemplateEnableMacros = 'EnableMakros';
+  CodeTemplateAttributesStartMagic = '$(AttributesStart)';
+  CodeTemplateAttributesEndMagic = '$(AttributesEnd)';
+{$ENDIF}
 
 type
   {$IFDEF SYN_LAZARUS}
@@ -70,6 +78,9 @@ type
     fOnTokenNotFound: TOnTokenNotFound;
     fIndentToTokenStart: boolean;
     FOnExecuteCompletion: TOnExecuteCompletion;
+    fAttributes: TFPList;// list of TStrings
+    function GetCompletionAttributes(Index: integer): TStrings;
+    procedure ClearAttributes;
     {$ENDIF}
   protected
     fAutoCompleteList: TStrings;
@@ -98,7 +109,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure AddCompletion(AToken, AValue, AComment: string);
+    procedure AddCompletion(AToken, AValue, AComment: string
+      {$IFDEF SYN_LAZARUS}; TheAttributes: TStrings = nil{$ENDIF}
+      );
     {$IFDEF SYN_LAZARUS}
     procedure DeleteCompletion(Index: integer);
     {$ENDIF}
@@ -122,6 +135,8 @@ type
     property Editors[Index: integer]: TCustomSynEdit read GetNthEditor;
     property EndOfTokenChr: string read fEOTokenChars write fEOTokenChars;
     {$IFDEF SYN_LAZARUS}
+    property CompletionAttributes[Index: integer]: TStrings
+                                                   read GetCompletionAttributes;
     property OnTokenNotFound: TOnTokenNotFound
       read fOnTokenNotFound write fOnTokenNotFound;
     property IndentToTokenStart: boolean
@@ -153,12 +168,18 @@ uses
 
 { TCustomSynAutoComplete }
 
-procedure TCustomSynAutoComplete.AddCompletion(AToken, AValue, AComment: string);
+procedure TCustomSynAutoComplete.AddCompletion(AToken, AValue, AComment: string
+  {$IFDEF SYN_LAZARUS}; TheAttributes: TStrings {$ENDIF});
 begin
   if AToken <> '' then begin
     fCompletions.Add(AToken);
     fCompletionComments.Add(AComment);
     fCompletionValues.Add(AValue);
+    {$IFDEF SYN_LAZARUS}
+    if TheAttributes=nil then
+      TheAttributes:=TStringList.Create;
+    fAttributes.Add(TheAttributes);
+    {$ENDIF}
   end;
 end;
 
@@ -195,14 +216,34 @@ begin
   fCompletionValues := TStringList.Create;
   fEditors := TList.Create;
   fEOTokenChars := '()[]{}.';
+  {$IFDEF SYN_LAZARUS}
+  fAttributes:=TFPList.Create;
+  {$ENDIF}
 end;
 
 {$IFDEF SYN_LAZARUS}
+function TCustomSynAutoComplete.GetCompletionAttributes(Index: integer
+  ): TStrings;
+begin
+  Result:=TStrings(fAttributes[Index]);
+end;
+
+procedure TCustomSynAutoComplete.ClearAttributes;
+var
+  i: Integer;
+begin
+  for i:=0 to fAttributes.Count-1 do
+    TObject(fAttributes[i]).Free;
+  fAttributes.Clear;
+end;
+
 procedure TCustomSynAutoComplete.DeleteCompletion(Index: integer);
 begin
   fCompletions.Delete(Index);
   fCompletionComments.Delete(Index);
   fCompletionValues.Delete(Index);
+  TObject(fAttributes[Index]).Free;
+  fAttributes.Delete(Index);
 end;
 {$ENDIF}
 
@@ -213,6 +254,10 @@ begin
   fCompletionComments.Free;
   fCompletionValues.Free;
   fAutoCompleteList.Free;
+  {$IFDEF SYN_LAZARUS}
+  ClearAttributes;
+  fAttributes.Free;
+  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -470,6 +515,22 @@ begin
 end;
 
 procedure TCustomSynAutoComplete.ParseCompletionList;
+
+  {$IFDEF SYN_LAZARUS}
+  procedure RemoveFirstLine(var Pattern: string);
+  var
+    i: Integer;
+  begin
+    // remove first line (i.e. macro enabled flag)
+    i:=1;
+    while (i<=length(Pattern)) and (not (Pattern[i] in [#10,#13])) do inc(i);
+    if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
+    and (Pattern[i+1]<>Pattern[i]) then
+      inc(i);
+    Pattern:=copy(Pattern,i+1,length(Pattern));
+  end;
+  {$ENDIF}
+
 var
   BorlandDCI: boolean;
   i, j, Len: integer;
@@ -479,19 +540,63 @@ var
   {$ENDIF}
 
   procedure SaveEntry;
+  {$IFDEF SYN_LAZARUS}
+  var
+    CurAttributes: TStrings;
+    Lines: TStringList;
+    LastLineHasEnding: boolean;
+    l: Integer;
+  {$ENDIF}
   begin
     fCompletions.Add(sCompl);
     sCompl := '';
     fCompletionComments.Add(sComment);
     sComment := '';
+    {$IFDEF SYN_LAZARUS}
+    CurAttributes:=TStringList.Create;
+    if copy(sComplValue,1,length(CodeTemplateMacroMagic))=CodeTemplateMacroMagic
+    then begin
+      RemoveFirstLine(sComplValue);
+      CurAttributes.Values[CodeTemplateEnableMacros]:='true';
+    end else if copy(sComplValue,1,length(CodeTemplateAttributesStartMagic))
+      =CodeTemplateAttributesStartMagic
+    then begin
+      Lines:=TStringList.Create;
+      Lines.Text:=sComplValue;
+      LastLineHasEnding:=(sComplValue<>'') and (sComplValue[length(sComplValue)] in [#10,#13]);
+      Lines.Delete(0);
+      while (Lines.Count>0) and (Lines[0]<>CodeTemplateAttributesEndMagic) do
+      begin
+        CurAttributes.Add(Lines[0]);
+        Lines.Delete(0);
+      end;
+      if Lines.Count>0 then
+        Lines.Delete(0);
+      sComplValue:=Lines.Text;
+      if not LastLineHasEnding then begin
+        l:=length(sComplValue);
+        if (l>0) and (sComplValue[l] in [#10,#13]) then begin
+          dec(l);
+          if (l>0) and (sComplValue[l] in [#10,#13])
+          and (sComplValue[l]<>sComplValue[l+1]) then
+            dec(l);
+          sComplValue:=copy(sComplValue,1,l);
+        end;
+      end;
+      Lines.Free;
+    end;
+    {$ENDIF}
     fCompletionValues.Add(sComplValue);
     sComplValue := '';
+    fAttributes.Add(CurAttributes);
+    CurAttributes:=TStringList.Create;
   end;
 
 begin
   fCompletions.Clear;
   fCompletionComments.Clear;
   fCompletionValues.Clear;
+  ClearAttributes;
 
   if fAutoCompleteList.Count > 0 then begin
     s := fAutoCompleteList[0];

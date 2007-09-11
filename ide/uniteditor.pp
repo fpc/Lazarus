@@ -57,6 +57,7 @@ uses
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
+  CodeTemplatesDlg,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
   BaseDebugManager, Debugger, MainIntf;
@@ -178,6 +179,8 @@ type
     procedure UserCommandProcessed(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure ccAddMessage(Texts: String);
+    function AutoCompleteLineBreak: boolean;
+    function AutoCompleteSpace: boolean;
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
@@ -712,7 +715,7 @@ type
                                        Index: integer);
     procedure OnWordCompletionGetSource(
                                     var Source: TStrings; SourceIndex: integer);
-    procedure OnIdentCompletionTimer(Sender: TObject);
+    procedure OnSourceCompletionTimer(Sender: TObject);
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                        Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
@@ -839,8 +842,8 @@ var
   // active
   CurCompletionControl: TSynCompletion = nil;
   CurrentCompletionType: TCompletionType;
-  IdentCompletionTimer: TIdleTimer = nil;
-  IdentCompletionCaretXY: TPoint;
+  SourceCompletionTimer: TIdleTimer = nil;
+  SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
 
   GotoDialog: TfrmGoto = nil;
@@ -1319,40 +1322,10 @@ Procedure TSourceEditor.ProcessCommand(Sender: TObject;
 // these are normal commands for synedit (lower than ecUserFirst),
 // define extra actions here
 // for non synedit keys (bigger than ecUserFirst) use ProcessUserCommand
-
-  function CheckStartIdentCompletion: boolean;
-  var
-    Line: String;
-    LogCaret: TPoint;
-    p: Integer;
-    InStringConstant: Boolean;
-  begin
-    Result:=false;
-    Line:=FEditor.LineText;
-    LogCaret:=FEditor.LogicalCaretXY;
-    //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
-
-    // check if range operator '..'
-    if (Line<>'') and (LogCaret.X-1<=length(Line)) and (LogCaret.X>1)
-    and (Line[LogCaret.X-1]='.') then
-      exit; // this is a double point ..
-
-    // check if in a string constant
-    p:=1;
-    InStringConstant:=false;
-    while (p<=LogCaret.X) and (p<=length(Line)) do begin
-      if Line[p]='''' then
-        InStringConstant:=not InStringConstant;
-      inc(p);
-    end;
-    if InStringConstant then exit;
-    Result:=true;
-  end;
-  
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
 
-  IdentCompletionTimer.AutoEnabled:=false;
+  SourceCompletionTimer.AutoEnabled:=false;
 
   if (Command=ecChar) and (AChar=#27) then begin
     // close hint windows
@@ -1415,18 +1388,26 @@ begin
     
   ecChar:
     begin
-      //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(IdentCompletionTimer.Interval), Dbgs(FEditor.CaretXY));
-      if (AChar='.') and EditorOpts.AutoIdentifierCompletion then begin
+      if aChar=' ' then begin
+        if AutoCompleteSpace then
+          Command:=ecNone;
+      end;
+      //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(SourceCompletionTimer.Interval), Dbgs(FEditor.CaretXY));
+      if (Command=ecChar) and EditorOpts.AutoIdentifierCompletion then begin
         // store caret position to detect caret changes
-        IdentCompletionCaretXY:=FEditor.CaretXY;
-        // add one for the .
-        inc(IdentCompletionCaretXY.x);
-        IdentCompletionTimer.AutoEnabled:=CheckStartIdentCompletion;
+        SourceCompletionCaretXY:=FEditor.CaretXY;
+        // add the char
+        inc(SourceCompletionCaretXY.x,length(AChar));
+        SourceCompletionTimer.AutoEnabled:=true;
       end;
     end;
+    
+  ecLineBreak:
+    if AutoCompleteLineBreak then
+      Command:=ecNone;
 
   end;
-  //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(IdentCompletionTimer.AutoEnabled));
+  //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
 end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
@@ -2087,6 +2068,32 @@ Begin
   ErrorMsgs.Add(Texts);
 End;
 
+function TSourceEditor.AutoCompleteLineBreak: boolean;
+var
+  AToken: String;
+  i: Integer;
+  p: TPoint;
+begin
+  Result:=false;
+  p:=FEditor.CaretXY;
+  dec(p.x);
+  AToken:=GetWordFromCaret(p);
+  if AToken='' then exit;
+  for i:=0 to FCodeTemplates.Completions.Count-1 do begin
+    if (AnsiCompareText(FCodeTemplates.Completions[i],AToken)=0)
+    and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CodeTemplateAutoOnLineBreak)>=0)
+    then begin
+      Result:=true;
+      FCodeTemplates.ExecuteCompletion(AToken,FEditor);
+    end;
+  end;
+end;
+
+function TSourceEditor.AutoCompleteSpace: boolean;
+begin
+  Result:=false;
+end;
+
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
@@ -2461,8 +2468,9 @@ begin
   if NewCodeTemplates<>FCodeTemplates then begin
     if FCodeTemplates<>nil then
       FCodeTemplates.RemoveEditor(FEditor);
-    if NewCodeTemplates<>nil then
-      NewCodeTemplates.AddEditor(FEditor);
+    FCodeTemplates:=NewCodeTemplates;
+    if FCodeTemplates<>nil then
+      FCodeTemplates.AddEditor(FEditor);
   end;
 end;
 
@@ -2786,10 +2794,12 @@ end;
 
 function TSourceEditor.GetWordFromCaret(const ACaretPos: TPoint): String;
 begin
-  Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9','_'], ['A'..'Z', 'a'..'z', '0'..'9', '_']);
+  Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9','_'],
+                                          ['A'..'Z', 'a'..'z', '0'..'9', '_']);
 end;
 
-function TSourceEditor.GetWordFromCaretEx(const ACaretPos: TPoint; const ALeftLimit, ARightLimit: TCharSet): String;
+function TSourceEditor.GetWordFromCaretEx(const ACaretPos: TPoint;
+  const ALeftLimit, ARightLimit: TCharSet): String;
 var
   XLine,YLine: Integer;
   EditorLine: String;
@@ -2800,7 +2810,7 @@ begin
   XLine := ACaretPos.X;
   EditorLine := FEditor.Lines[YLine-1];
 
-  if Length(trim(EditorLine)) = 0 then Exit;
+  if Length(Trim(EditorLine)) = 0 then Exit;
   if XLine > Length(EditorLine) then Exit;
   if not (EditorLine[XLine] in ALeftLimit) then Exit;
 
@@ -2891,12 +2901,12 @@ begin
   end;
 
   // identifier completion
-  IdentCompletionTimer := TIdleTimer.Create(Self);
-  with IdentCompletionTimer do begin
+  SourceCompletionTimer := TIdleTimer.Create(Self);
+  with SourceCompletionTimer do begin
     AutoEnabled := False;
     Enabled := false;
     Interval := EditorOpts.AutoDelayInMSec;
-    OnTimer := @OnIdentCompletionTimer;
+    OnTimer := @OnSourceCompletionTimer;
   end;
   
 
@@ -3092,18 +3102,67 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.OnIdentCompletionTimer(Sender: TObject);
+procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
+
+  function CheckStartIdentCompletion: boolean;
+  var
+    Line: String;
+    LogCaret: TPoint;
+    p: Integer;
+    InStringConstant: Boolean;
+    SrcEdit: TSourceEditor;
+  begin
+    Result:=false;
+    SrcEdit:=GetActiveSE;
+    if SrcEdit=nil then exit;
+    Line:=SrcEdit.FEditor.LineText;
+    LogCaret:=SrcEdit.FEditor.LogicalCaretXY;
+    //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
+    
+    // check if last character is a point
+    if (Line='') or (LogCaret.X<1) or (LogCaret.X-1>length(Line))
+    or (Line[LogCaret.X-1]<>'.') then
+      exit;
+
+    // check if range operator '..'
+    if (LogCaret.X>1) and (Line[LogCaret.X-2]='.') then
+      exit; // this is a double point ..
+
+    // check if in a string constant
+    p:=1;
+    InStringConstant:=false;
+    while (p<=LogCaret.X) and (p<=length(Line)) do begin
+      if Line[p]='''' then
+        InStringConstant:=not InStringConstant;
+      inc(p);
+    end;
+    if InStringConstant then exit;
+
+    // invoke identifier completion
+    SrcEdit.StartIdentCompletion(false);
+    Result:=true;
+  end;
+  
+  function CheckTemplateCompletion: boolean;
+  begin
+    Result:=false;
+    // execute context sensitive templates
+    //FCodeTemplateModul.ExecuteCompletion(Value,GetActiveSE.EditorComponent);
+  end;
+
 var
   TempEditor: TSourceEditor;
 begin
   //debugln('TSourceNotebook.OnIdentCompletionTimer');
-  IdentCompletionTimer.Enabled:=false;
-  IdentCompletionTimer.AutoEnabled:=false;
+  SourceCompletionTimer.Enabled:=false;
+  SourceCompletionTimer.AutoEnabled:=false;
   TempEditor:=GetActiveSE;
   if (TempEditor<>nil) and
-     (ComparePoints(TempEditor.EditorComponent.CaretXY,IdentCompletionCaretXY)=0)
+     (ComparePoints(TempEditor.EditorComponent.CaretXY,SourceCompletionCaretXY)=0)
   then begin
-    TempEditor.StartIdentCompletion(false);
+    if CheckStartIdentCompletion then begin
+    end else if CheckTemplateCompletion then begin
+    end;
   end;
 end;
 
@@ -3132,6 +3191,7 @@ var
   TemplateName: string;
   TemplateValue: string;
   TemplateComment: string;
+  TemplateAttr: TStrings;
 begin
   SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
   if SrcEdit=nil then
@@ -3141,8 +3201,9 @@ begin
   TemplateName:=ASynAutoComplete.Completions[Index];
   TemplateValue:=ASynAutoComplete.CompletionValues[Index];
   TemplateComment:=ASynAutoComplete.CompletionComments[Index];
+  TemplateAttr:=ASynAutoComplete.CompletionAttributes[Index];
   ExecuteCodeTemplate(SrcEdit,TemplateName,TemplateValue,TemplateComment,
-                      ASynAutoComplete.EndOfTokenChr,
+                      ASynAutoComplete.EndOfTokenChr,TemplateAttr,
                       ASynAutoComplete.IndentToTokenStart);
 end;
 
@@ -4599,8 +4660,8 @@ procedure TSourceNotebook.HideHint;
 begin
   if FHintTimer<>nil then
     FHintTimer.Enabled:=false;
-  if IdentCompletionTimer<>nil then
-    IdentCompletionTimer.Enabled:=false;
+  if SourceCompletionTimer<>nil then
+    SourceCompletionTimer.Enabled:=false;
   if FHintWindow<>nil then
     FHintWindow.Visible:=false;
 end;
@@ -5549,7 +5610,7 @@ Begin
       NoteBook.Options:=NoteBook.Options-[nboShowCloseButtons];
   end;
   
-  IdentCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
   
   Exclude(States,snWarnedFont);
   CheckFont;

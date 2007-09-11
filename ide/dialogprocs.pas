@@ -64,7 +64,7 @@ function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
                                     ExtraButtons: TMsgDlgButtons): TModalResult;
 function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
                                   ExtraButtons: TMsgDlgButtons): TModalResult;
-function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
+function LoadCodeBuffer(out ACodeBuffer: TCodeBuffer; const AFilename: string;
                         Flags: TLoadBufferFlags): TModalResult;
 function SaveCodeBuffer(ACodeBuffer: TCodeBuffer): TModalResult;
 function SaveCodeBufferToFile(ACodeBuffer: TCodeBuffer;
@@ -155,12 +155,13 @@ begin
   Result:=mrOk;
 end;
 
-function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
+function LoadCodeBuffer(out ACodeBuffer: TCodeBuffer; const AFilename: string;
   Flags: TLoadBufferFlags): TModalResult;
 var
   ACaption, AText: string;
   FileReadable: boolean;
 begin
+  ACodeBuffer:=nil;
   if [lbfUpdateFromDisk,lbfRevert]*Flags=[] then begin
     // can use cache
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,false,false);

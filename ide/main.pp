@@ -145,6 +145,7 @@ type
     procedure OnApplicationKeyDown(Sender: TObject;
                                    var Key: Word; Shift: TShiftState);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
+    procedure OnRemoteControlTimer(Sender: TObject);
 
     // file menu
     procedure mnuFileClicked(Sender: TObject);
@@ -497,6 +498,8 @@ type
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
+    FRemoteControlTimer: TTimer;
+    FRemoteControlFileValid: boolean;
 
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
     
@@ -546,6 +549,7 @@ type
     procedure SetupIDECommands;
     procedure SetupIDEMsgQuickFixItems;
     procedure SetupStartProject;
+    procedure SetupRemoteControl;
     procedure ReOpenIDEWindows;
     procedure CloseIDEWindows;
     procedure FreeIDEWindows;
@@ -661,6 +665,7 @@ type
     function DoRevertEditorFile(const Filename: string): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
+    procedure DoExecuteRemoteControl;
     function DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -707,7 +712,7 @@ type
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
     function QuitIDE: boolean;
-
+    
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer);
@@ -888,6 +893,7 @@ const
 var
   SkipAutoLoadingLastProject: boolean = false;
   StartedByStartLazarus: boolean = false;
+  EnableRemoteControl: boolean = false;
 
 //==============================================================================
 
@@ -928,6 +934,7 @@ var
 begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
+  EnableRemoteControl:=false;
   if (ParamCount>0)
   and ((CompareText(ParamStr(1),'--help')=0)
     or (CompareText(ParamStr(1),'-help')=0)
@@ -993,6 +1000,8 @@ begin
       SkipAutoLoadingLastProject:=true;
     if ParamIsOption(i,StartedByStartLazarusOpt) then
       StartedByStartLazarus:=true;
+    if ParamIsOption(i,EnableRemoteControlOpt) then
+      EnableRemoteControl:=true;
   end;
 end;
 
@@ -1704,7 +1713,7 @@ begin
     // try command line project
     if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
       AProjectFilename:=CmdLineFiles[0];
-      if (CompareFileExt(AProjectFilename,'.lpr',false)<>0) then
+      if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
       AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
       if FileExists(AProjectFilename) then begin
@@ -1767,6 +1776,21 @@ begin
   finally
     CmdLineFiles.Free;
   end;
+end;
+
+procedure TMainIDE.SetupRemoteControl;
+var
+  Filename: String;
+begin
+  // delete old remote control file
+  Filename:=GetRemoteControlFilename;
+  if FileExists(Filename) then
+    DeleteFile(Filename);
+  // start timer
+  FRemoteControlTimer:=TTimer.Create(Self);
+  FRemoteControlTimer.Interval:=500;
+  FRemoteControlTimer.OnTimer:=@OnRemoteControlTimer;
+  FRemoteControlTimer.Enabled:=true;
 end;
 
 procedure TMainIDE.ReOpenIDEWindows;
@@ -5599,8 +5623,9 @@ begin
     MainUnitInfo:=Project1.MainUnitInfo;
     if MainUnitInfo.Loaded then begin
       MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-        MainUnitInfo.EditorIndex);
-      if UpdateModified and MainUnitSrcEdit.Modified then begin
+                                                      MainUnitInfo.EditorIndex);
+      if (MainUnitSrcEdit<>nil) and UpdateModified and MainUnitSrcEdit.Modified
+      then begin
         MainUnitSrcEdit.UpdateCodeBuffer;
         MainUnitInfo.Modified:=true;
       end;
@@ -7294,7 +7319,7 @@ begin
           SkipSavingMainSource:=true;
       end else
         DestFilename:=MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
-      if not SkipSavingMainSource then begin
+      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then begin
         Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
         if Result=mrAbort then exit;
       end;
@@ -7368,7 +7393,8 @@ end;
 
 function TMainIDE.DoOpenProjectFile(AFileName: string;
   Flags: TOpenFlags): TModalResult;
-var Ext,AText,ACaption: string;
+var
+  Ext,AText,ACaption: string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
   LastDesigner: TDesigner;
@@ -7442,62 +7468,108 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=CreateProjectObject(ProjectDescriptorProgram,
                                 ProjectDescriptorProgram);
-  Project1.BeginUpdate(true);
-  try
-    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-
-    // read project info file
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
-    Project1.ReadProject(AFilename);
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B4');{$ENDIF}
-    Result:=DoCompleteLoadingProjectInfo;
-  finally
-    Project1.EndUpdate;
-  end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B5');{$ENDIF}
-  if Result<>mrOk then exit;
-
-  if Project1.MainUnitID>=0 then begin
-    // read MainUnit Source
-    Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
-                           [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
-    if Result=mrIgnore then Result:=mrAbort;
-    if Result=mrAbort then exit;
-    Project1.MainUnitInfo.Source:=NewBuf;
-  end;
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.DoOpenProjectFile C');
-  {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile C');{$ENDIF}
-  IncreaseCompilerParseStamp;
-
-  // restore files
   LastEditorIndex:=-1;
-  repeat
-    // find the unit which was loaded last time and has the lowest editor index
-    // of all not opened units
-    LowestUnitIndex:=-1;
-    LowestEditorIndex:=-1;
-    for i:=0 to Project1.UnitCount-1 do begin
-      AnUnitInfo:=Project1.Units[i];
-      if (AnUnitInfo.Loaded)
-      and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)=nil)
-      then begin
-        if (AnUnitInfo.EditorIndex>LastEditorIndex)
-        and ((AnUnitInfo.EditorIndex<LowestEditorIndex)
-             or (LowestEditorIndex<0)) then
-        begin
-          LowestEditorIndex:=AnUnitInfo.EditorIndex;
-          LowestUnitIndex:=i;
+  try
+    Project1.BeginUpdate(true);
+    try
+      if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+
+      // read project info file
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
+      Project1.ReadProject(AFilename);
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B4');{$ENDIF}
+      Result:=DoCompleteLoadingProjectInfo;
+    finally
+      Project1.EndUpdate;
+    end;
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B5');{$ENDIF}
+    if Result<>mrOk then exit;
+
+    if Project1.MainUnitID>=0 then begin
+      // read MainUnit Source
+      Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
+                             [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
+      if (Result<>mrOk) then exit;
+      Project1.MainUnitInfo.Source:=NewBuf;
+    end;
+    {$IFDEF IDE_DEBUG}
+    writeln('TMainIDE.DoOpenProjectFile C');
+    {$ENDIF}
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile C');{$ENDIF}
+    IncreaseCompilerParseStamp;
+
+    // restore files
+    repeat
+      // find the unit which was loaded last time and has the lowest editor index
+      // of all not opened units
+      LowestUnitIndex:=-1;
+      LowestEditorIndex:=-1;
+      for i:=0 to Project1.UnitCount-1 do begin
+        AnUnitInfo:=Project1.Units[i];
+        if (AnUnitInfo.Loaded)
+        and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)=nil)
+        then begin
+          if (AnUnitInfo.EditorIndex>LastEditorIndex)
+          and ((AnUnitInfo.EditorIndex<LowestEditorIndex)
+               or (LowestEditorIndex<0)) then
+          begin
+            LowestEditorIndex:=AnUnitInfo.EditorIndex;
+            LowestUnitIndex:=i;
+          end;
         end;
       end;
-    end;
-    if LowestEditorIndex<0 then break;
+      if LowestEditorIndex<0 then break;
 
-    // reopen file
-    Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
-                  [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
-    if Result=mrAbort then begin
+      // reopen file
+      Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
+                    [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
+      if Result=mrAbort then begin
+        exit;
+      end;
+      AnUnitInfo:=Project1.Units[LowestUnitIndex];
+      if ((AnUnitInfo.Filename<>'')
+      and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)<>nil))
+      then begin
+        // open source was successful (at least the source)
+        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+          Project1.ActiveEditorIndexAtStart:=SourceNoteBook.Notebook.PageIndex;
+        LastEditorIndex:=LowestEditorIndex;
+      end else begin
+        // failed to open entirely -> mark as unloaded, so that next time
+        // it will not be tried again
+        AnUnitInfo.EditorIndex:=-1;
+        AnUnitInfo.Loaded:=false;
+        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+          Project1.ActiveEditorIndexAtStart:=-1;
+      end;
+    until LowestEditorIndex<0;
+    Result:=mrCancel;
+    {$IFDEF IDE_DEBUG}
+    writeln('TMainIDE.DoOpenProjectFile D');
+    {$ENDIF}
+
+    // set active editor source editor
+    if (SourceNoteBook.Notebook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
+    and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.Notebook.PageCount)
+    then
+      SourceNoteBook.Notebook.PageIndex:=Project1.ActiveEditorIndexAtStart;
+
+    // select a form (object inspector, formeditor, control selection)
+    if FLastFormActivated<>nil then begin
+      LastDesigner:=TDesigner(FLastFormActivated.Designer);
+      LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
+    end;
+
+    // set all modified to false
+    for i:=0 to Project1.UnitCount-1 do
+      Project1.Units[i].ClearModifieds;
+    Project1.ClearModifieds;
+
+    IncreaseCompilerParseStamp;
+    IDEProtocolOpts.LastProjectLoadingCrashed := False;
+    Result:=mrOk;
+  finally
+    if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
       for i:=0 to Project1.UnitCount-1 do begin
         AnUnitInfo:=Project1.Units[i];
@@ -7508,50 +7580,8 @@ begin
           Project1.ActiveEditorIndexAtStart:=-1;
         end;
       end;
-      exit;
     end;
-    AnUnitInfo:=Project1.Units[LowestUnitIndex];
-    if ((AnUnitInfo.Filename<>'')
-    and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)<>nil))
-    then begin
-      // open source was successful (at least the source)
-      if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
-        Project1.ActiveEditorIndexAtStart:=SourceNoteBook.Notebook.PageIndex;
-      LastEditorIndex:=LowestEditorIndex;
-    end else begin
-      // failed to open entirely -> mark as unloaded, so that next time
-      // it will not be tried again
-      AnUnitInfo.EditorIndex:=-1;
-      AnUnitInfo.Loaded:=false;
-      if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
-        Project1.ActiveEditorIndexAtStart:=-1;
-    end;
-  until LowestEditorIndex<0;
-  Result:=mrCancel;
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.DoOpenProjectFile D');
-  {$ENDIF}
-
-  // set active editor source editor
-  if (SourceNoteBook.Notebook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
-  and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.Notebook.PageCount)
-  then
-    SourceNoteBook.Notebook.PageIndex:=Project1.ActiveEditorIndexAtStart;
-
-  // select a form (object inspector, formeditor, control selection)
-  if FLastFormActivated<>nil then begin
-    LastDesigner:=TDesigner(FLastFormActivated.Designer);
-    LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
   end;
-
-  // set all modified to false
-  for i:=0 to Project1.UnitCount-1 do
-    Project1.Units[i].ClearModifieds;
-  Project1.ClearModifieds;
-
-  IncreaseCompilerParseStamp;
-  IDEProtocolOpts.LastProjectLoadingCrashed := False;
-  Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
   debugln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
   {$ENDIF}
@@ -8371,6 +8401,106 @@ begin
       ExitCode := ExitCodeRestartLazarus
     else
       StartStarter;
+  end;
+end;
+
+procedure TMainIDE.DoExecuteRemoteControl;
+
+  procedure OpenFiles(Files: TStrings);
+  var
+    AProjectFilename: string;
+    ProjectLoaded: Boolean;
+    AFilename: String;
+    i: Integer;
+    OpenFlags: TOpenFlags;
+  begin
+    if (Files=nil) or (Files.Count=0) then exit;
+    ProjectLoaded:=Project1<>nil;
+    DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles ProjectLoaded=',ProjectLoaded]);
+    
+    // open project
+    if (Files<>nil) and (Files.Count>0) then begin
+      AProjectFilename:=Files[0];
+      if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
+        AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
+      if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
+        AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
+        if FileExists(AProjectFilename) then begin
+          DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AProjectFilename="',AProjectFilename,'"']);
+          Files.Delete(0);
+          ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
+        end;
+      end;
+    end;
+
+    if not ProjectLoaded then begin
+      // create new project
+      DoNewProject(ProjectDescriptorApplication);
+    end;
+
+    // load the files
+    if Files<>nil then begin
+      for i:=0 to Files.Count-1 do begin
+        AFilename:=CleanAndExpandFilename(Files.Strings[i]);
+        DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AFilename="',AFilename,'"']);
+        if CompareFileExt(AFilename,'.lpk',false)=0 then begin
+          if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent])=mrAbort
+          then
+            break;
+        end else begin
+          OpenFlags:=[ofAddToRecent,ofRegularFile];
+          if i<Files.Count then
+            Include(OpenFlags,ofMultiOpen);
+          if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
+            break;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+var
+  Filename: String;
+  List: TStringList;
+  Files: TStrings;
+  i: Integer;
+begin
+  Filename:=GetRemoteControlFilename;
+  if FileExists(Filename) then begin
+    // the control file exists
+    if FRemoteControlFileValid then begin
+      List:=TStringList.Create;
+      Files:=nil;
+      try
+        // load and delete the file
+        try
+          List.LoadFromFile(Filename);
+        except
+          DebugLn(['TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
+        end;
+        DeleteFile(Filename);
+        FRemoteControlFileValid:=not FileExists(Filename);
+        // execute
+        Files:=TStringList.Create;
+        for i:=0 to List.Count-1 do begin
+          if CompareText(copy(List[i],1,5),'open ')=0 then
+            Files.Add(copy(List[i],6,length(List[i])));
+        end;
+        if Files.Count>0 then begin
+          OpenFiles(Files);
+        end;
+      finally
+        List.Free;
+        Files.Free;
+      end;
+    end else begin
+      // the last time there was an error (e.g. read/delete failed)
+      // do not waste time again
+    end;
+  end else begin
+    // the control file does not exist
+    // => remember the good state
+    FRemoteControlFileValid:=true;
   end;
 end;
 
@@ -12254,6 +12384,9 @@ begin
 
   if FCheckFilesOnDiskNeeded then
     DoCheckFilesOnDisk(true);
+    
+  if (FRemoteControlTimer=nil) and EnableRemoteControl then
+    SetupRemoteControl;
 end;
 
 procedure TMainIDE.OnApplicationActivate(Sender: TObject);
@@ -12281,6 +12414,13 @@ procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
   EnvironmentOptions.IDEWindowLayoutList.CloseForm(AForm);
+end;
+
+procedure TMainIDE.OnRemoteControlTimer(Sender: TObject);
+begin
+  FRemoteControlTimer.Enabled:=false;
+  DoExecuteRemoteControl;
+  FRemoteControlTimer.Enabled:=true;
 end;
 
 procedure TMainIDE.mnuFileClicked(Sender: TObject);

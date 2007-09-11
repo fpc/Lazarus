@@ -179,6 +179,7 @@ type
     function GetPrimaryConfigPath: String; override;
     function GetSecondaryConfigPath: String; override;
     procedure CopySecondaryConfigFile(const AFilename: String); override;
+    function GetRemoteControlFilename: string;
 
     function ShowProgress(const SomeText: string;
                           Step, MaxStep: integer): boolean; override;
@@ -338,6 +339,11 @@ end;
 procedure TMainIDEInterface.CopySecondaryConfigFile(const AFilename: String);
 begin
   LazConf.CopySecondaryConfigFile(AFilename);
+end;
+
+function TMainIDEInterface.GetRemoteControlFilename: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'ideremotecontrol.txt';
 end;
 
 function TMainIDEInterface.ShowProgress(const SomeText: string; Step,
