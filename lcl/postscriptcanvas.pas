@@ -1,6 +1,6 @@
 {
  /***************************************************************************
-                                PostscriptCanvas.pas
+                                PostScriptCanvas.pas
                                 ------------
                          PostScript Printer Canvas object
 
@@ -34,7 +34,7 @@
      - Implemente few methods
 }
 
-unit PostscriptCanvas;
+unit PostScriptCanvas;
 
 {$mode objfpc}{$H+}
 
@@ -46,9 +46,9 @@ uses
   
 Type
 
-  { TPostscriptPrinterCanvas }
+  { TPostScriptPrinterCanvas }
 
-  TPostscriptPrinterCanvas = Class(TPrinterCanvas)
+  TPostScriptPrinterCanvas = Class(TPrinterCanvas)
   private
     fHeader        : TStringList; //Header document
     fDocument      : TstringList; //Current document
@@ -74,7 +74,7 @@ Type
     procedure Write(Lst : TStringList); overload;
     procedure WriteComment(const St : string);
     
-    Procedure TranslateCoord(Var X,Y : Integer);
+    procedure TranslateCoord(Var X,Y : Integer);
     procedure SetPosition(X,Y : Integer);
     
     procedure UpdateLineWidth;
@@ -93,6 +93,16 @@ Type
     function  PPCFormat (const Fmt : string; const Args : array of const) : string;
   protected
     procedure CreateHandle; override;
+    procedure CreateBrush; override;
+    procedure CreateFont; override;
+    Procedure CreatePen; override;
+    Procedure CreateRegion; override;
+    procedure DeselectHandles; override;
+    procedure PenChanging(APen: TObject); override;
+    procedure FontChanging(APen: TObject); override;
+    procedure BrushChanging(APen: TObject); override;
+    procedure RegionChanging(APen: TObject); override;
+    procedure RequiredState(ReqState: TCanvasState); override;
     
     procedure BeginDoc; override;
     procedure EndDoc;   override;
@@ -104,18 +114,18 @@ Type
     procedure SaveToFile(aFileName : string);
     
 
-    Procedure MoveTo(X1,Y1: Integer); override;
+    procedure MoveTo(X1,Y1: Integer); override;
     Procedure LineTo(X1,Y1: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean = False;
                          Continuous: boolean = False); override;
 
-    Procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
+    procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
     procedure Frame(const ARect: TRect); override; // border using pen
     procedure FrameRect(const ARect: TRect); override; // border using brush
 
-    Procedure FillRect(const ARect: TRect); override;
+    procedure FillRect(const ARect: TRect); override;
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); override;
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean = False); override;
@@ -128,13 +138,13 @@ Type
     procedure TextOut(X,Y: Integer; const Text: String); override;
     function TextExtent(const Text: string): TSize; override;
     
-    Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); override;
+    procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); override;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
 
 
     //** Methods not definined on PostScript
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); override;
-    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); override;
+    procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); override;
 
     //** Methods not implemented
     procedure Arc(x,y,Right,Bottom,SX,SY,EX,EY: Integer); override;
@@ -150,9 +160,9 @@ Type
     property OutPutFileName : string read fFileName write fFileName;
   end;
 
-  TPostscriptCanvas = Class(TPostscriptPrinterCanvas)
+  TPostScriptCanvas = Class(TPostScriptPrinterCanvas)
   public
-    Constructor Create; overload;
+    constructor Create; overload;
     
     procedure BeginDoc; override;
     procedure EndDoc;   override;
@@ -502,16 +512,16 @@ Const
    )
    );
 
-{ TPostscriptPrinterCanvas }
+{ TPostScriptPrinterCanvas }
 
 //Write an instruction in the header of document
-procedure TPostscriptPrinterCanvas.WriteHeader(St: String);
+procedure TPostScriptPrinterCanvas.WriteHeader(St: String);
 begin
   fHeader.Add(St);
 end;
 
 //Write an instruction in the document
-procedure TPostscriptPrinterCanvas.Write(const St: String; Lst : TStringList = Nil);
+procedure TPostScriptPrinterCanvas.Write(const St: String; Lst : TStringList = Nil);
 begin
   If not Assigned(Lst) then
     Lst:=fDocument;
@@ -520,47 +530,47 @@ begin
 end;
 
 //Write data in fBuffer
-procedure TPostscriptPrinterCanvas.WriteB(const St: string);
+procedure TPostScriptPrinterCanvas.WriteB(const St: string);
 begin
   Write(St,fBuffer);
 end;
 
 //Clear all data of Buffer
-procedure TPostscriptPrinterCanvas.ClearBuffer;
+procedure TPostScriptPrinterCanvas.ClearBuffer;
 begin
   fBuffer.Clear;
 end;
 
 //Write all Lst.Strings in document
-procedure TPostscriptPrinterCanvas.Write(Lst: TStringList);
+procedure TPostScriptPrinterCanvas.Write(Lst: TStringList);
 begin
   fDocument.AddStrings(Lst);
 end;
 
 //Write an comment in the document
-procedure TPostscriptPrinterCanvas.WriteComment(const St: string);
+procedure TPostScriptPrinterCanvas.WriteComment(const St: string);
 begin
   fDocument.Add('%'+St);
 end;
 
 //Convert an TCanvas Y point to PostScript Y point
-//The TCanvas origine is corner Left,Top and Postscript is Left,Bottom
+//The TCanvas origine is corner Left,Top and PostScript is Left,Bottom
 //Modify X and Y for use Left and Top margin
-procedure TPostscriptPrinterCanvas.TranslateCoord(var X,Y : Integer);
+procedure TPostScriptPrinterCanvas.TranslateCoord(var X,Y : Integer);
 begin
   Y:=PageHeight-TopMarging-Y;
   X:=X+LeftMarging;
 end;
 
 //Save the last position
-procedure TPostscriptPrinterCanvas.SetPosition(X, Y: Integer);
+procedure TPostScriptPrinterCanvas.SetPosition(X, Y: Integer);
 begin
   fPenPos:= Point(X,Y);
   SetInternalPenPos(Point(X,Y));
 end;
 
 //Init the width of line
-procedure TPostscriptPrinterCanvas.UpdateLineWidth;
+procedure TPostScriptPrinterCanvas.UpdateLineWidth;
 begin
   if Pen.Width<>fcPenWidth then
   begin
@@ -570,7 +580,7 @@ begin
 end;
 
 //Init the color of line (pen)
-procedure TPostscriptPrinterCanvas.UpdateLineColor(aColor : TColor = clNone);
+procedure TPostScriptPrinterCanvas.UpdateLineColor(aColor : TColor = clNone);
 Var R,G,B    : Real;
     RGBColor : TColor;
 begin
@@ -590,7 +600,7 @@ begin
 end;
 
 //Init the style of line
-procedure TPostscriptPrinterCanvas.UpdateLineStyle;
+procedure TPostScriptPrinterCanvas.UpdateLineStyle;
 Var st : string;
 begin
   if (Pen.Style<>fcPenStyle) and (Pen.Style<>psClear) then
@@ -609,7 +619,7 @@ begin
 end;
 
 //Init the color for fill
-procedure TPostscriptPrinterCanvas.UpdateFillColor;
+procedure TPostScriptPrinterCanvas.UpdateFillColor;
 Var R,G,B    : Real;
     RGBColor : TColor;
 begin
@@ -626,7 +636,7 @@ begin
 end;
 
 //Update current font
-procedure TPostscriptPrinterCanvas.UpdateFont;
+procedure TPostScriptPrinterCanvas.UpdateFont;
 Var R,G,B    : Real;
     RGBColor : TColor;
 begin
@@ -659,8 +669,8 @@ begin
   end;
 end;
 
-//Return an Postscript font Name
-function TPostscriptPrinterCanvas.MappedFontName: string;
+//Return an PostScript font Name
+function TPostScriptPrinterCanvas.MappedFontName: string;
 Var Atr : string;
 begin
   Atr:='';
@@ -691,7 +701,7 @@ begin
 end;
 
 //Replace the controls chars by PostScript string
-function TPostscriptPrinterCanvas.MapedString(const St: string): string;
+function TPostScriptPrinterCanvas.MapedString(const St: string): string;
 begin
   Result:=St;
   Result:=StringReplace(Result,'\','\\',[rfReplaceAll]);
@@ -704,14 +714,14 @@ begin
 end;
 
 //Move pen at last pos
-procedure TPostscriptPrinterCanvas.MoveToLastPos;
+procedure TPostScriptPrinterCanvas.MoveToLastPos;
 begin
   write(Format('%d %d moveto',[fPenPos.X,fPenPos.Y])+' %last pos');
 end;
 
 //Add at the PstScript sequence, the Fill Pattern/Color and Broder
 //Use SetBorder and SetFill for initialize 1 or 2 sequence
-procedure TPostscriptPrinterCanvas.SetBrushFillPattern(Lst: TStringList;
+procedure TPostScriptPrinterCanvas.SetBrushFillPattern(Lst: TStringList;
   SetBorder, SetFill: Boolean);
 begin
   If not Assigned(Lst) then Exit;
@@ -749,13 +759,13 @@ begin
   end;
 end;
 
-procedure TPostscriptPrinterCanvas.SetBrushFillPattern(SetBorder, SetFill: Boolean);
+procedure TPostScriptPrinterCanvas.SetBrushFillPattern(SetBorder, SetFill: Boolean);
 begin
   SetBrushFillPattern(fBuffer,SetBorder,SetFill);
 end;
 
 //Add in Lst, all RGB pixels of SrcGraph picture
-procedure TPostscriptPrinterCanvas.GetRGBImage(SrcGraph: TGraphic;
+procedure TPostScriptPrinterCanvas.GetRGBImage(SrcGraph: TGraphic;
   Lst: TStringList);
 var
   SrcIntfImg : TLazIntfImage;
@@ -795,7 +805,7 @@ begin
   end;
 end;
 
-function TPostscriptPrinterCanvas.PPCFormat(const Fmt: string;
+function TPostScriptPrinterCanvas.PPCFormat(const Fmt: string;
   const Args: array of const): string;
 var
   OldDecimalSeparator: char;
@@ -806,13 +816,65 @@ begin
   DecimalSeparator := OldDecimalSeparator;
 end;
 
-procedure TPostscriptPrinterCanvas.CreateHandle;
+procedure TPostScriptPrinterCanvas.CreateHandle;
 begin
-  SetHandle(1);
+  SetHandle(1); // set dummy handle
+end;
+
+procedure TPostScriptPrinterCanvas.CreateBrush;
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.CreateFont;
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.CreatePen;
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.CreateRegion;
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.DeselectHandles;
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.PenChanging(APen: TObject);
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.FontChanging(APen: TObject);
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.BrushChanging(APen: TObject);
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.RegionChanging(APen: TObject);
+begin
+  // handle is dummy, so do nothing here
+end;
+
+procedure TPostScriptPrinterCanvas.RequiredState(ReqState: TCanvasState);
+begin
+  if csHandleValid in ReqState then
+    inherited RequiredState([csHandleValid]);
+  // other states are anyway impossible, because handle is dummy
 end;
 
 
-constructor TPostscriptPrinterCanvas.Create(APrinter: TPrinter);
+constructor TPostScriptPrinterCanvas.Create(APrinter: TPrinter);
 begin
   inherited Create(APrinter);
   
@@ -827,7 +889,7 @@ begin
   fDocument:=TStringList.Create;
 end;
 
-destructor TPostscriptPrinterCanvas.Destroy;
+destructor TPostScriptPrinterCanvas.Destroy;
 begin
   fBuffer.Free;
   fHeader.Free;
@@ -837,7 +899,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TPostscriptPrinterCanvas.SaveToFile(aFileName: string);
+procedure TPostScriptPrinterCanvas.SaveToFile(aFileName: string);
 Var Lst : TStringList;
 begin
   Lst:=TStringList.Create;
@@ -851,7 +913,7 @@ begin
   end;
 end;
 
-procedure TPostscriptPrinterCanvas.BeginDoc;
+procedure TPostScriptPrinterCanvas.BeginDoc;
 begin
   Inherited BeginDoc;
   
@@ -1225,7 +1287,9 @@ begin
   WriteHeader('');
 end;
 
-procedure TPostscriptPrinterCanvas.EndDoc;
+procedure TPostScriptPrinterCanvas.EndDoc;
+var
+  I: Integer;
 begin
   Inherited EndDoc;
   
@@ -1233,11 +1297,16 @@ begin
   Write('showpage');
   Write('%%EOF');
   
+  // update number of pages in header
+  I := FHeader.IndexOf('%%Pages: (atend)');
+  if I <> -1 then
+    FHeader[I] := '%%' + Format('Pages: %d', [PageNumber]);
+  
   if Trim(fFileName)<>'' then
     SaveToFile(ExpandFileName(fFileName));
 end;
 
-procedure TPostscriptPrinterCanvas.NewPage;
+procedure TPostScriptPrinterCanvas.NewPage;
 begin
   inherited NewPage;
 
@@ -1253,7 +1322,7 @@ begin
 end;
 
 //Move the current position
-procedure TPostscriptPrinterCanvas.MoveTo(X1, Y1: Integer);
+procedure TPostScriptPrinterCanvas.MoveTo(X1, Y1: Integer);
 begin
   RequiredState([csHandleValid]);
   WriteComment(Format('MoveTo(%d,%d)',[x1,y1]));
@@ -1265,7 +1334,7 @@ begin
 end;
 
 //Drawe line
-procedure TPostscriptPrinterCanvas.LineTo(X1, Y1: Integer);
+procedure TPostScriptPrinterCanvas.LineTo(X1, Y1: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
@@ -1280,7 +1349,7 @@ begin
   changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Polyline(Points: PPoint; NumPts: Integer);
+procedure TPostScriptPrinterCanvas.Polyline(Points: PPoint; NumPts: Integer);
 Var i  : LongInt;
     Lst: TStringList;
     Pt : TPoint;
@@ -1319,7 +1388,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
+procedure TPostScriptPrinterCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
   Filled: boolean; Continuous: boolean);
 Var i  : Integer;
     St : String;
@@ -1356,7 +1425,7 @@ begin
 end;
 
 //Draw an Rectangle
-procedure TPostscriptPrinterCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
+procedure TPostScriptPrinterCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -1381,7 +1450,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Frame(const ARect: TRect);
+procedure TPostScriptPrinterCanvas.Frame(const ARect: TRect);
 Var X1,Y1,X2,Y2 : Integer;
 begin
   Changing;
@@ -1411,7 +1480,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.FrameRect(const ARect: TRect);
+procedure TPostScriptPrinterCanvas.FrameRect(const ARect: TRect);
 Var CL : TColor;
 begin
   Changing;
@@ -1429,7 +1498,7 @@ begin
 end;
 
 //Fill an Rectangular region
-procedure TPostscriptPrinterCanvas.FillRect(const ARect: TRect);
+procedure TPostScriptPrinterCanvas.FillRect(const ARect: TRect);
 Var X1,Y1,X2,Y2 : Integer;
 begin
   Changing;
@@ -1460,7 +1529,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,
+procedure TPostScriptPrinterCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,
   RY: Integer);
 Var ellipsePath : string;
 begin
@@ -1500,7 +1569,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Polygon(Points: PPoint; NumPts: Integer;
+procedure TPostScriptPrinterCanvas.Polygon(Points: PPoint; NumPts: Integer;
   Winding: boolean);
 Var i  : LongInt;
     Pt : TPoint;
@@ -1530,7 +1599,7 @@ begin
 end;
 
 //Draw an Ellipse
-procedure TPostscriptPrinterCanvas.Ellipse(x1, y1, x2, y2: Integer);
+procedure TPostScriptPrinterCanvas.Ellipse(x1, y1, x2, y2: Integer);
 var xScale : Real;
     yScale : Real;
     cX, cY : Real;
@@ -1580,7 +1649,7 @@ begin
 end;
 
 //Draw an Arc
-procedure TPostscriptPrinterCanvas.Arc(Left,Top,Right,Bottom, angle1,
+procedure TPostScriptPrinterCanvas.Arc(Left,Top,Right,Bottom, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1630,7 +1699,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.RadialPie(Left, Top, Right, Bottom, angle1,
+procedure TPostScriptPrinterCanvas.RadialPie(Left, Top, Right, Bottom, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1686,7 +1755,7 @@ begin
 end;
 
 //Out the text at the X,Y coord. Set the font
-procedure TPostscriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
+procedure TPostScriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
 Var PenUnder : Real;
     PosUnder : Integer;
 begin
@@ -1716,7 +1785,7 @@ begin
   MoveToLastPos;
 end;
 
-function TPostscriptPrinterCanvas.TextExtent(const Text: string): TSize;
+function TPostScriptPrinterCanvas.TextExtent(const Text: string): TSize;
 Var IndexFont,i : Integer;
     FontName    : string;
     c: Char;
@@ -1748,14 +1817,14 @@ begin
 end;
 
 //Draw an Picture
-procedure TPostscriptPrinterCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
+procedure TPostScriptPrinterCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
 begin
   if not Assigned(SrcGraphic) then exit;
   StretchDraw(Rect(X,Y,X+SrcGraphic.Width,Y+SrcGraphic.Height),SrcGraphic);
 end;
 
 //Draw an picture with scale size
-procedure TPostscriptPrinterCanvas.StretchDraw(const DestRect: TRect;  SrcGraphic: TGraphic);
+procedure TPostScriptPrinterCanvas.StretchDraw(const DestRect: TRect;  SrcGraphic: TGraphic);
 var X1,Y1,X2,Y2 : Integer;
     DrawWidth : Integer;
     DrawHeight: Integer;
@@ -1802,13 +1871,13 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Arc(x, y, Right, Bottom, SX, SY, EX,
+procedure TPostScriptPrinterCanvas.Arc(x, y, Right, Bottom, SX, SY, EX,
   EY: Integer);
 begin
   //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.Chord(x1, y1, x2, y2, angle1,angle2: Integer);
+procedure TPostScriptPrinterCanvas.Chord(x1, y1, x2, y2, angle1,angle2: Integer);
 var xScale : Real;
     yScale : Real;
     cX, cY : Real;
@@ -1853,59 +1922,59 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer);
+procedure TPostScriptPrinterCanvas.Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer);
 begin
   //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.Frame3d(var ARect: TRect;
+procedure TPostScriptPrinterCanvas.Frame3d(var ARect: TRect;
   const FrameWidth: integer; const Style: TGraphicsBevelCut);
 begin
   //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.Pie(EllipseX1, EllipseY1, EllipseX2,
+procedure TPostScriptPrinterCanvas.Pie(EllipseX1, EllipseY1, EllipseX2,
   EllipseY2, StartX, StartY, EndX, EndY: Integer);
 begin
 //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
+procedure TPostScriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
   const Text: string; const Style: TTextStyle);
 begin
   //Not implemented
 end;
 
 
-procedure TPostscriptPrinterCanvas.FloodFill(X, Y: Integer; FillColor: TColor;  FillStyle: TFillStyle);
+procedure TPostScriptPrinterCanvas.FloodFill(X, Y: Integer; FillColor: TColor;  FillStyle: TFillStyle);
 begin
   //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.CopyRect(const Dest: TRect;
+procedure TPostScriptPrinterCanvas.CopyRect(const Dest: TRect;
   SrcCanvas: TCanvas; const Source: TRect);
 begin
   //Not implemented
 end;
 
-{ TPostscriptCanvas }
+{ TPostScriptCanvas }
 
-constructor TPostscriptCanvas.Create;
+constructor TPostScriptCanvas.Create;
 begin
   Inherited Create(nil);
 end;
 
-procedure TPostscriptCanvas.BeginDoc;
+procedure TPostScriptCanvas.BeginDoc;
 begin
   inherited BeginDoc;
 end;
 
-procedure TPostscriptCanvas.EndDoc;
+procedure TPostScriptCanvas.EndDoc;
 begin
   inherited EndDoc;
 end;
 
-procedure TPostscriptCanvas.NewPage;
+procedure TPostScriptCanvas.NewPage;
 begin
   inherited NewPage;
 end;
