@@ -44,7 +44,7 @@ menu/menu_build_lazarus.png
 menu/menu_clean.png
 menu/menu_close.png
 menu/menu_codetoolsdefineseditor.xpm
-menu/menu_codetoolsoptions.xpm
+menu/menu_codetoolsoptions.png
 menu/menu_comment_16.xpm
 menu/menu_compiler_options.png
 menu/menu_editor_options.png
@@ -81,8 +81,8 @@ menu/menu_search_files.png
 menu/menu_search_find.png
 menu/menu_search_replace.png
 menu/menu_select_all.png
-menu/menu_stepinto.xpm
-menu/menu_stepover.xpm
+menu/menu_stepinto.png
+menu/menu_stepover.png
 menu/menu_uncomment_16.xpm
 menu/menu_undo.png
 menu/menu_unindent.png
