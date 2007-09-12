@@ -530,7 +530,7 @@ begin
         Item := TCarbonMenu(FParentMenu.FItems[I]);
         if Item = Self then Continue;
         
-        if Item.LCLMenuItem.RadioItem and Item.LCLMenuItem.AutoCheck and
+        if Item.LCLMenuItem.RadioItem and
           (Item.LCLMenuItem.GroupIndex = LCLMenuItem.GroupIndex) then
             SetItemMark(FParentMenu.Menu, Item.GetIndex + 1, #0);
 
