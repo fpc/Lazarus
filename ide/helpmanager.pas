@@ -285,8 +285,7 @@ end;
 
 procedure THelpManager.mnuHelpReportBugClicked(Sender: TObject);
 begin
-  ShowHelpOrError('http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report',
-    'Reporting a bug...', 'text/html');
+  ShowHelpOrError(lisReportingBugURL, lisMenuReportingBug, 'text/html');
 end;
 
 procedure THelpManager.RegisterIDEHelpDatabases;
