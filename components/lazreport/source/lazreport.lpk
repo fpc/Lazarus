@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
+    <PathDelim Value="\"/>
     <Name Value="lazreport"/>
     <Author Value="Olivier Guilbaud, Jesus Reyes A. "/>
     <CompilerOptions>
       <Version Value="5"/>
+      <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -23,7 +25,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="5"/>
-    <Files Count="33">
+    <Files Count="34">
       <Item1>
         <Filename Value="lr_class.pas"/>
         <UnitName Value="LR_Class"/>
@@ -157,32 +159,37 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="lr_fmted.pas"/>
         <UnitName Value="LR_fmted"/>
       </Item33>
+      <Item34>
+        <Filename Value="lr_const.pas"/>
+        <UnitName Value="LR_Const"/>
+      </Item34>
     </Files>
-    <RST OutDir="languages"/>
+    <RST OutDir="..\languages"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="5">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="printer4lazarus"/>
       </Item2>
       <Item3>
         <PackageName Value="LCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="printer4lazarus"/>
+        <PackageName Value="IDEIntf"/>
       </Item4>
       <Item5>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
