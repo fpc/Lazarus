@@ -542,6 +542,7 @@ begin
   ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecCreateLazDoc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
@@ -861,6 +862,7 @@ begin
   ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssCtrl,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCreateLazDoc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
@@ -1439,6 +1441,7 @@ begin
     ecContextHelp             : Result:= lisMenuContextHelp;
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
     ecCreateLazDoc            : Result:= lisMenuCreateLazDocFiles;
+    ecReportingBug            : Result:= lisMenuReportingBug;
 
     // desginer
     ecDesignerCopy            : Result:= lisDsgCopyComponents;
@@ -2459,8 +2462,8 @@ begin
     ecContextHelp);
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp,
     ecEditContextHelp);
-  AddDefault(C, 'Create LazDoc files', lisMenuCreateLazDocFiles, ecCreateLazDoc
-    );
+  AddDefault(C, 'Create LazDoc files', lisMenuCreateLazDocFiles, ecCreateLazDoc);
+  AddDefault(C, 'Reporting a bug', lisMenuReportingBug, ecReportingBug);
 
   // designer  - without menu items in the IDE bar (at least no direct)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];

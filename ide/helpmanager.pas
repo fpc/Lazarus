@@ -69,6 +69,7 @@ type
     procedure mnuHelpConfigureHelpClicked(Sender: TObject);
     procedure mnuHelpCreateLazDocClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
+    procedure mnuHelpReportBugClicked(Sender: TObject);
   private
     FFCLHelpDBPath: THelpBaseURLObject;
     FLCLHelpDBPath: THelpBaseURLObject;
@@ -280,6 +281,12 @@ end;
 procedure THelpManager.mnuHelpOnlineHelpClicked(Sender: TObject);
 begin
   ShowLazarusHelpStartPage;
+end;
+
+procedure THelpManager.mnuHelpReportBugClicked(Sender: TObject);
+begin
+  ShowHelpOrError('http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report',
+    'Reporting a bug...', 'text/html');
 end;
 
 procedure THelpManager.RegisterIDEHelpDatabases;
@@ -547,6 +554,7 @@ begin
   with MainIDEBar do begin
   itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
   itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
+  itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
   itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
   itmHelpCreateLazDoc.OnClick :=@mnuHelpCreateLazDocClicked;
   itmHelpCreateLazDoc.Visible:=false;

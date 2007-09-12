@@ -310,6 +310,7 @@ type
     //mnuHelp: TIDEMenuSection;
       //itmOnlineHelps: TIDEMenuSection;
         itmHelpOnlineHelp: TIDEMenuCommand;
+        itmHelpReportingBug: TIDEMenuCommand;
         itmHelpConfigureHelp: TIDEMenuCommand;
       //itmInfoHelps: TIDEMenuSection;
         itmHelpAboutLazarus: TIDEMenuCommand;

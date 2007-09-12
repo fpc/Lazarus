@@ -365,6 +365,7 @@ resourcestring
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
   
   lisMenuOnlineHelp = 'Online Help';
+  lisMenuReportingBug = 'Reporting a bug...';
   lisKMConfigureHelp = 'Configure Help';
   lisKMContextSensitiveHelp = 'Context sensitive help';
   lisKMEditContextSensitiveHelp = 'Edit context sensitive help';

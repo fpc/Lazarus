@@ -269,6 +269,7 @@ const
   ecContextHelp             = ecFirstLazarus + 903;
   ecEditContextHelp         = ecFirstLazarus + 904;
   ecCreateLazDoc            = ecFirstLazarus + 905;
+  ecReportingBug            = ecFirstLazarus + 906;
 
   // designer
   ecDesignerCopy            = ecFirstLazarus + 1000;

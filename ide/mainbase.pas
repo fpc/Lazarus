@@ -744,6 +744,8 @@ begin
 
     CreateMenuItem(ParentMI,itmHelpOnlineHelp,'itmHelpOnlineHelp',
                    lisMenuOnlineHelp, 'menu_help');
+    CreateMenuItem(ParentMI,itmHelpReportingBug,'itmHelpReportingBug',
+                   lisMenuReportingBug, 'menu_reportingbug');
     CreateMenuItem(ParentMI,itmHelpConfigureHelp,'itmHelpConfigureHelp',
                    lisMenuConfigureHelp);
 
@@ -938,6 +940,7 @@ begin
     // help menu
     itmHelpAboutLazarus.Command:=GetCommand(ecAboutLazarus);
     itmHelpOnlineHelp.Command:=GetCommand(ecOnlineHelp);
+    itmHelpReportingBug.Command:=GetCommand(ecReportingBug);
     itmHelpConfigureHelp.Command:=GetCommand(ecConfigureHelp);
   end;
 end;
