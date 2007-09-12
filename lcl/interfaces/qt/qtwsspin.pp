@@ -92,35 +92,22 @@ implementation
 class function TQtWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  QtSpinBox: TQtSpinBox;
-  QtFloatSpinBox: TQtFloatSpinBox;
-  FIsFloat: Boolean;
+  QtSpinBox: TQtAbstractSpinBox;
 begin
+  // qt4 has two different QSpinBoxes, one is QSpinBox (integer), another is QDoubleSpinBox (double)
 
-  { qt4 has two different QSpinBoxes, one is QSpinBox (integer), another is QDoubleSpinBox (double) }
-
-  FIsFloat := TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0;
-  
-  if FIsFloat then
-  begin
-    QtFloatSpinBox := TQtFloatSpinBox.Create(AWinControl, AParams);
-    QtFloatSpinBox.AttachEvents;
-    Result := THandle(QtFloatSpinBox);
-  end
+  if TCustomFloatSpinEdit(AWinControl).DecimalPlaces > 0 then
+    QtSpinBox := TQtFloatSpinBox.Create(AWinControl, AParams)
   else
-  begin
     QtSpinBox := TQtSpinBox.Create(AWinControl, AParams);
-    QtSpinBox.AttachEvents;
-    Result := THandle(QtSpinBox);
-  end;
+  
+  QtSpinBox.AttachEvents;
+  Result := THandle(QtSpinBox);
 end;
 
 class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
-  if ACustomFloatSpinEdit.DecimalPlaces > 0 then
-    Result := QDoubleSpinBox_value(QDoubleSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget))
-  else
-    Result := QSpinBox_value(QSpinBoxH(TQtFloatSpinBox(ACustomFloatSpinEdit.Handle).Widget));
+  Result := TQtAbstractSpinBox(ACustomFloatSpinEdit.Handle).getValue;
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetCharCase(
@@ -138,7 +125,7 @@ begin
   begin
     QtFloatSpinEdit := TQtFloatSpinBox(ACustomFloatSpinEdit.Handle);
     QDoubleSpinBox_setDecimals(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.DecimalPlaces);
-    QDoubleSpinBox_setValue(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.Value);
+    QtFloatSpinEdit.setValue(ACustomFloatSpinEdit.Value);
     QDoubleSpinBox_setMinimum(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.MinValue);
     QDoubleSpinBox_setMaximum(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.MaxValue);
     QDoubleSpinBox_setSingleStep(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.Increment);
@@ -146,7 +133,7 @@ begin
   else
   begin
     QtSpinEdit := TQtSpinBox(ACustomFloatSpinEdit.Handle);
-    QSpinBox_setValue(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.Value));
+    QtSpinEdit.setValue(Round(ACustomFloatSpinEdit.Value));
     QSpinBox_setMinimum(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.MinValue));
     QSpinBox_setMaximum(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.MaxValue));
     QSpinBox_setSingleStep(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.Increment));
@@ -181,7 +168,7 @@ end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
-  QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(TQtAbstractSpinBox(ACustomEdit.Handle).Widget), NewReadOnly);
+  TQtAbstractSpinBox(ACustomEdit.Handle).setReadOnly(NewReadOnly);
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetSelLength(

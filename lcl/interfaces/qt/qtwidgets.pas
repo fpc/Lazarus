@@ -545,8 +545,10 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    function IsReadOnly: Boolean;
-    procedure SetReadOnly(r: Boolean);
+    function getValue: single; virtual; abstract;
+    function getReadOnly: Boolean;
+    procedure setReadOnly(const r: Boolean);
+    procedure setValue(const v: single); virtual; abstract;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -562,6 +564,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function getValue: single; override;
+    procedure setValue(const v: single); override;
+  public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
 
@@ -575,6 +580,9 @@ type
     FValueChangedHook: QSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    function getValue: single; override;
+    procedure setValue(const v: single); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -4466,7 +4474,7 @@ begin
   Result := QAbstractSpinBox_create(Parent);
 end;
 
-function TQtAbstractSpinBox.IsReadOnly: Boolean;
+function TQtAbstractSpinBox.getReadOnly: Boolean;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.IsReadOnly');
@@ -4474,7 +4482,7 @@ begin
   Result := QAbstractSpinBox_isReadOnly(QAbstractSpinBoxH(Widget));
 end;
 
-procedure TQtAbstractSpinBox.SetReadOnly(r: Boolean);
+procedure TQtAbstractSpinBox.setReadOnly(const r: Boolean);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.SetReadOnly');
@@ -4533,6 +4541,16 @@ begin
   Result := QDoubleSpinBox_create(Parent);
 end;
 
+function TQtFloatSpinBox.getValue: single;
+begin
+  Result := QDoubleSpinBox_value(QDoubleSpinBoxH(Widget));
+end;
+
+procedure TQtFloatSpinBox.setValue(const v: single);
+begin
+  QDoubleSpinBox_setValue(QDoubleSpinBoxH(Widget), v);
+end;
+
 procedure TQtFloatSpinBox.AttachEvents;
 var
   Method: TMethod;
@@ -4570,6 +4588,16 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Result := QSpinBox_create(Parent);
+end;
+
+function TQtSpinBox.getValue: single;
+begin
+  Result := QSpinBox_value(QSpinBoxH(Widget));
+end;
+
+procedure TQtSpinBox.setValue(const v: single);
+begin
+  QSpinBox_setValue(QSpinBoxH(Widget), round(v));
 end;
 
 procedure TQtSpinBox.AttachEvents;
