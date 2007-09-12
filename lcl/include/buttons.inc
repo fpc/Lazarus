@@ -266,7 +266,7 @@ var
   AccelIndex : Longint;
   OldShortCut: TShortCut;
 begin
-  Inherited RealSetText(Value);
+  inherited RealSetText(Value);
   If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
   ParseStr := Value;
   AccelIndex := DeleteAmpersands(ParseStr);

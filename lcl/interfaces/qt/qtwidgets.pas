@@ -542,13 +542,21 @@ type
   TQtAbstractSpinBox = class(TQtWidget)
   private
     FEditingFinishedHook: QAbstractSpinBox_hookH;
+    // parts
+    FLineEdit: QLineEditH;
+    function GetLineEdit: QLineEditH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
+    procedure setMinimum(const v: single); virtual; abstract;
+    procedure setMaximum(const v: single); virtual; abstract;
+    procedure setSingleStep(const v: single); virtual; abstract;
     procedure setReadOnly(const r: Boolean);
     procedure setValue(const v: single); virtual; abstract;
+
+    property LineEdit: QLineEditH read GetLineEdit;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -565,6 +573,10 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getValue: single; override;
+    procedure setDecimals(const v: integer);
+    procedure setMinimum(const v: single); override;
+    procedure setMaximum(const v: single); override;
+    procedure setSingleStep(const v: single); override;
     procedure setValue(const v: single); override;
   public
     procedure AttachEvents; override;
@@ -582,6 +594,9 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getValue: single; override;
+    procedure setMinimum(const v: single); override;
+    procedure setMaximum(const v: single); override;
+    procedure setSingleStep(const v: single); override;
     procedure setValue(const v: single); override;
   public
     procedure AttachEvents; override;
@@ -4462,6 +4477,12 @@ end;
 
 { TQtAbstractSpinBox }
 
+function TQtAbstractSpinBox.GetLineEdit: QLineEditH;
+begin
+  // :( bindings has no QAbstractSpinBox_lineEdit(...)
+  Result := nil;
+end;
+
 function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
@@ -4546,6 +4567,26 @@ begin
   Result := QDoubleSpinBox_value(QDoubleSpinBoxH(Widget));
 end;
 
+procedure TQtFloatSpinBox.setDecimals(const v: integer);
+begin
+  QDoubleSpinBox_setDecimals(QDoubleSpinBoxH(Widget), v);
+end;
+
+procedure TQtFloatSpinBox.setMinimum(const v: single);
+begin
+  QDoubleSpinBox_setMinimum(QDoubleSpinBoxH(Widget), v);
+end;
+
+procedure TQtFloatSpinBox.setMaximum(const v: single);
+begin
+  QDoubleSpinBox_setMaximum(QDoubleSpinBoxH(Widget), v);
+end;
+
+procedure TQtFloatSpinBox.setSingleStep(const v: single);
+begin
+  QDoubleSpinBox_setSingleStep(QDoubleSpinBoxH(Widget), v);
+end;
+
 procedure TQtFloatSpinBox.setValue(const v: single);
 begin
   QDoubleSpinBox_setValue(QDoubleSpinBoxH(Widget), v);
@@ -4593,6 +4634,21 @@ end;
 function TQtSpinBox.getValue: single;
 begin
   Result := QSpinBox_value(QSpinBoxH(Widget));
+end;
+
+procedure TQtSpinBox.setMinimum(const v: single);
+begin
+  QSpinBox_setMinimum(QSpinBoxH(Widget), round(v));
+end;
+
+procedure TQtSpinBox.setMaximum(const v: single);
+begin
+  QSpinBox_setMaximum(QSpinBoxH(Widget), round(v));
+end;
+
+procedure TQtSpinBox.setSingleStep(const v: single);
+begin
+  QSpinBox_setSingleStep(QSpinBoxH(Widget), round(v));
 end;
 
 procedure TQtSpinBox.setValue(const v: single);

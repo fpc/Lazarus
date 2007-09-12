@@ -37,7 +37,7 @@ uses
   // LCL
   Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms, StdCtrls,
   // Widgetset
-  WSSpin, WSLCLClasses;
+  WsProc, WSSpin, WSLCLClasses;
 
 type
 
@@ -46,15 +46,17 @@ type
   TQtWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
+    class procedure InternalUpdateControl(const ASpinWidget: TQtAbstractSpinBox;
+      const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
 
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -84,6 +86,19 @@ implementation
 
 { TQtWSCustomFloatSpinEdit }
 
+class procedure TQtWSCustomFloatSpinEdit.InternalUpdateControl(
+  const ASpinWidget: TQtAbstractSpinBox;
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
+begin
+  if ASpinWidget is TQtFloatSpinBox then
+    TQtFloatSpinBox(ASpinWidget).setDecimals(ACustomFloatSpinEdit.DecimalPlaces);
+
+  ASpinWidget.setValue(ACustomFloatSpinEdit.Value);
+  ASpinWidget.setMinimum(ACustomFloatSpinEdit.MinValue);
+  ASpinWidget.setMaximum(ACustomFloatSpinEdit.MaxValue);
+  ASpinWidget.setSingleStep(ACustomFloatSpinEdit.Increment);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomFloatSpinEdit.CreateHandle
   Params:  None
@@ -102,6 +117,9 @@ begin
     QtSpinBox := TQtSpinBox.Create(AWinControl, AParams);
   
   QtSpinBox.AttachEvents;
+  
+  InternalUpdateControl(QtSpinBox, TCustomFloatSpinEdit(AWinControl));
+  
   Result := THandle(QtSpinBox);
 end;
 
@@ -118,26 +136,17 @@ end;
 
 class procedure TQtWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
-  QtSpinEdit: TQtSpinBox;
-  QtFloatSpinEdit: TQtFloatSpinBox;
+  CurrentSpinWidget: TQtAbstractSpinBox;
 begin
-  if ACustomFloatSpinEdit.DecimalPlaces > 0 then
-  begin
-    QtFloatSpinEdit := TQtFloatSpinBox(ACustomFloatSpinEdit.Handle);
-    QDoubleSpinBox_setDecimals(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.DecimalPlaces);
-    QtFloatSpinEdit.setValue(ACustomFloatSpinEdit.Value);
-    QDoubleSpinBox_setMinimum(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.MinValue);
-    QDoubleSpinBox_setMaximum(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.MaxValue);
-    QDoubleSpinBox_setSingleStep(QDoubleSpinBoxH(QtFloatSpinEdit.Widget), ACustomFloatSpinEdit.Increment);
-  end
+  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
+    Exit;
+    
+  CurrentSpinWidget := TQtAbstractSpinBox(ACustomFloatSpinEdit.Handle);
+  if ((ACustomFloatSpinEdit.DecimalPlaces > 0) and (CurrentSpinWidget is TQtSpinBox)) or
+     ((ACustomFloatSpinEdit.DecimalPlaces = 0) and (CurrentSpinWidget is TQtFloatSpinBox)) then
+       RecreateWnd(ACustomFloatSpinEdit)
   else
-  begin
-    QtSpinEdit := TQtSpinBox(ACustomFloatSpinEdit.Handle);
-    QtSpinEdit.setValue(Round(ACustomFloatSpinEdit.Value));
-    QSpinBox_setMinimum(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.MinValue));
-    QSpinBox_setMaximum(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.MaxValue));
-    QSpinBox_setSingleStep(QSpinBoxH(QtSpinEdit.Widget), Round(ACustomFloatSpinEdit.Increment));
-  end;
+    InternalUpdateControl(CurrentSpinWidget, ACustomFloatSpinEdit);
 end;
 
 class function TQtWSCustomFloatSpinEdit.GetSelStart(
