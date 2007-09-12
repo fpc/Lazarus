@@ -26,7 +26,8 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, main, SourcePrinter, Printer4Lazarus;
+  { add your units here }, main, SourcePrinter, Printer4Lazarus,
+  printers4lazide;
 
 begin
   Application.Initialize;

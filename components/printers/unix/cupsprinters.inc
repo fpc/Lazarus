@@ -38,7 +38,8 @@ begin
   fcupsOptions :=nil;
   fcupsNumOpts :=0;
   
-  FRawModeStream:=nil;
+  FRawModeStream   := nil;
+  FCupsPapersCount := -1;
 end;
 
 destructor TCUPSPrinter.destroy;
@@ -191,6 +192,23 @@ begin
     PaperRect.WorkRect.Right  := WorkRect.Bottom;
     PaperRect.WorkRect.Bottom := PhysicalRect.Right-Workrect.Left;
   end;
+end;
+
+function TCUPSPrinter.CupsPapersListValid: boolean;
+var
+  Lst: TStringlist;
+begin
+  if fCupsPapersCount<=0 then begin
+    // paper list no exists or
+    // paper list is not enumerated yet, try it now.
+    Lst := TStringlist.Create;
+    try
+      DoEnumPapers(Lst);
+    finally
+      Lst.Free;
+    end;
+  end;
+  result := fCupsPapersCount>0;
 end;
 
 //Print the file aFileName with a selected printer an options
@@ -769,28 +787,34 @@ function TCUPSPrinter.DoGetDefaultPaperName: string;
 begin
   if not (cpsDefaultPaperNameValid in FStates) then begin
     fCachedGetDefaultPaperName:=inherited DoGetDefaultPaperName;
-    if FCupsPapersCount=0 then
+    if not CupsPapersListValid then
       FCachedGetDefaultPaperName:=InternalGetDefPaperName
-    else
+    else begin
       fCachedGetDefaultPaperName:=
                  GetAttributeString('media-default',fCachedGetDefaultPaperName);
-    {$IFDEF UseCache}
-    Include(FStates,cpsDefaultPaperNameValid);
-    {$ENDIF}
+      {$IFDEF UseCache}
+      Include(FStates,cpsDefaultPaperNameValid);
+      {$ENDIF}
+    end;
   end;
   Result:=fCachedGetDefaultPaperName;
 end;
 
 function TCUPSPrinter.DoGetPaperName: string;
+var
+  s: string;
 begin
   if not (cpsPaperNameValid in FStates) then begin
-    if FCupsPapersCount=0 then
-      fcachedPaperName:=InternalGetCurPaperName
-    else
-      fCachedPaperName:=cupsGetOption('PageSize');
-    {$IFDEF UseCache}
-    Include(FStates,cpsPaperNameValid);
-    {$ENDIF}
+    // paper is not yet retrieved for first time
+    // first try to see if there is a list of papers available
+    if not CupsPapersListValid then
+      fCachedPaperName := InternalGetCurPaperName
+    else begin
+      fCachedPaperName := cupsGetOption('PageSize');
+      {$IFDEF UseCache}
+      Include(FStates,cpsPaperNameValid);
+      {$ENDIF}
+    end;
   end;
   Result:=fCachedPaperName;
 end;
@@ -805,7 +829,7 @@ begin
   {$ENDIF}
   inherited DoSetPaperName(aName);
   
-  if FCupsPapersCount=0 then begin
+  if FCupsPapersCount<=0 then begin
     i := IndexOfPaper(aName);
     if i>=0 then
       fCurrentPaper := i;

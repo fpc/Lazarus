@@ -109,6 +109,7 @@ type
      function  InternalGetDefPaperName: string;
      function  InternalGetCurPaperName: string;
      procedure InternalGetPaperRect(aPaperName:string; var PaperRect:TPaperRect);
+     function  CupsPapersListValid: boolean;
 
   protected
      function GetCanvasRef : TPrinterCanvasRef; override;

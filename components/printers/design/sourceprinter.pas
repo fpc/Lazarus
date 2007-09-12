@@ -104,6 +104,7 @@ var
 begin
   if PrintDialog.Execute then
   begin
+    Printer.Title := 'Printers4LazIDE: Source Code Printer Package';
     Printer.BeginDoc;
     Printer.Canvas.Font := FFont;
 
