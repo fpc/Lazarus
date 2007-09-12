@@ -2344,6 +2344,7 @@ images/unitdependencies/srctype_unit_22x22.xpm -text svneol=native#image/x-xpixm
 images/unitdependencies/srctype_unknown_22x22.xpm -text svneol=native#image/x-xpixmap
 images/up.xpm svneol=native#text/plain
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
+install/lazarus-mime.xml svneol=native#text/plain
 install/lazarus.desktop svneol=native#text/plain
 languages/README.txt svneol=native#text/plain
 languages/installerstrconsts.de.po svneol=native#text/plain
