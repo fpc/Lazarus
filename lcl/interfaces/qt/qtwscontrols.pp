@@ -38,7 +38,7 @@ uses
   SysUtils, Classes, Types, Controls, LCLType, LCLProc, Forms, Graphics,
   StdCtrls,
   // Widgetset
-  InterfaceBase, WSControls, WSLCLClasses;
+  InterfaceBase, WSProc, WSControls, WSLCLClasses;
 
 type
 
@@ -334,9 +334,32 @@ end;
 
 class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,
                 AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList);
+var
+  n: Integer;
+  child: TWinControl;
 begin
-  {$note TODO: QWidget::stackUnder, QWidget::raise, QWidget::lower}
-  inherited SetChildZPosition(AWinControl, AChild, AOldPos, ANewPos, AChildren);
+  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
+    Exit;
+
+  if ANewPos < AChildren.Count div 2
+  then begin
+    // move down (and others below us)
+    for n := ANewPos downto 0 do
+    begin
+      child := TWinControl(AChildren[n]);
+      if child.HandleAllocated then
+        TQtWidget(child.Handle).lowerWidget;
+    end;
+  end
+  else begin
+    // move up (and others above us)
+    for n := ANewPos to AChildren.Count - 1 do
+    begin
+      child := TWinControl(AChildren[n]);
+      if child.HandleAllocated then
+        TQtWidget(child.Handle).raiseWidget;
+    end;
+  end;
 end;
 
 class procedure TQtWSWinControl.ConstraintsChange(const AWinControl: TWinControl);

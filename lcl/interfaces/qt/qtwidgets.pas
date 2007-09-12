@@ -123,7 +123,9 @@ type
     function getClientBounds: TRect; virtual;
     procedure grabMouse;
     function hasFocus: Boolean;
+    procedure lowerWidget;
     procedure move(ANewLeft, ANewTop: Integer);
+    procedure raiseWidget;
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
     procedure setColor(const Value: PQColor); virtual;
@@ -1804,7 +1806,7 @@ end;
 procedure TQtWidget.BringToFront;
 begin
   Activate;
-  QWidget_raise(Widget);
+  raiseWidget;
 end;
 
 procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
@@ -1964,9 +1966,19 @@ begin
   Result := QWidget_hasFocus(Widget);
 end;
 
+procedure TQtWidget.lowerWidget;
+begin
+  QWidget_lower(Widget);
+end;
+
 procedure TQtWidget.move(ANewLeft, ANewTop: Integer);
 begin
   QWidget_move(Widget, ANewLeft, ANewTop);
+end;
+
+procedure TQtWidget.raiseWidget;
+begin
+  QWidget_raise(Widget);
 end;
 
 procedure TQtWidget.resize(ANewWidth, ANewHeight: Integer);
