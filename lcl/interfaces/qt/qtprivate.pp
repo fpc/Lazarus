@@ -64,33 +64,21 @@ type
 
   { TQtListStrings }
 
-  TQtListStrings = class(TStrings)
+  TQtListStrings = class(TStringList)
   private
-    FListChanged: Boolean; // StringList and QtListWidget out of sync
-    FStringList: TStringList; // Holds the items to show
-    FQtListWidget: QListWidgetH;  // Qt Widget
-    FOwner: TWinControl;      // Lazarus Control Owning ListStrings
-    FUpdating: Boolean;       // We're changing Qt Widget
-    procedure InternalUpdate;
-    procedure ExternalUpdate(var Astr: TStringList; AClear: Boolean = True);
-    procedure IsChanged; // OnChange triggered by program action
+    FOwner: TQtListWidget;
   protected
-    function GetTextStr: string; override;
-    function GetCount: integer; override;
-    function Get(Index : Integer) : string; override;
-    //procedure SetSorted(Val : boolean); virtual;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure InsertItem(Index: Integer; const S: string); override;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
-    constructor Create(ListWidgetH : QListWidgetH; TheOwner: TWinControl);
-    destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
+    constructor Create(AOwner: TQtListWidget);
+    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-    //procedure Sort; virtual;
+    procedure Delete(Index: Integer); override;
+    procedure Sort; override;
   public
-    //property Sorted: boolean read FSorted write SetSorted;
-    property Owner: TWinControl read FOwner;
+    property Owner: TQtListWidget read FOwner;
   end;
 
   { TQtMemoStrings }
@@ -126,153 +114,6 @@ type
   end;
 
 implementation
-
-{ TQtListStrings }
-
-procedure TQtListStrings.InternalUpdate;
-begin
-
-end;
-
-procedure TQtListStrings.ExternalUpdate(var Astr: TStringList; AClear: Boolean);
-var
-  i: Integer;
-  TmpStr: WideString;
-begin
-  FUpdating := True;
-  if AClear then
-    QListWidget_clear(FQtListWidget);
-  for i := 0 to AStr.Count -1 do
-  begin
-    TmpStr := UTF8Decode(Astr[i]);
-    QListWidget_additem(FQtListWidget, @TmpStr);
-  end;
-  FUpdating := False;
-  IsChanged;
-  FUpdating := False;
-end;
-
-procedure TQtListStrings.IsChanged;
-begin
-
-end;
-
-function TQtListStrings.GetTextStr: string;
-begin
-  Result := inherited GetTextStr;
-end;
-
-function TQtListStrings.GetCount: integer;
-begin
-  if FListChanged then InternalUpdate;
-  Result := FStringList.Count;
-end;
-
-function TQtListStrings.Get(Index: Integer): string;
-begin
-  if FListChanged then InternalUpdate;
-  if Index < FStringList.Count then
-     Result := FStringList.Strings[Index]
-  else Result := '';
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtListStrings.Create
-  Params:  Qt Widget Handle and Lazarus WinControl Parent Object
-  Returns: Nothing
-
-  Contructor for the class.
- ------------------------------------------------------------------------------}
-constructor TQtListStrings.Create(ListWidgetH: QListWidgetH; TheOwner: TWinControl);
-begin
-  inherited Create;
-
-  {$ifdef VerboseQt}
-    if (ListWidgetH = nil) then WriteLn('TQtMemoStrings.Create Unspecified ListWidgetH widget');
-    if (TheOwner = nil) then WriteLn('TQtMemoStrings.Create Unspecified owner');
-  {$endif}
-
-  FStringList := TStringList.Create;
-  FQtListWidget := ListWidgetH;
-  FStringList.Text := TCustomListBox(TheOwner).Items.Text;
-  FOwner:=TheOwner;
-end;
-
-destructor TQtListStrings.Destroy;
-begin
-  Clear;
-  FStringList.Free;
-  inherited Destroy;
-end;
-
-procedure TQtListStrings.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-end;
-
-procedure TQtListStrings.Clear;
-begin
-  FUpdating := True;
-  FStringList.Clear;
-  
-  if not (csDestroying in FOwner.ComponentState)
-  and not (csFreeNotification in FOwner.ComponentState)
-  then
-    QListWidget_clear(FQtListWidget);
-    
-  FListChanged := False;
-  FUpdating := False;
-  IsChanged;
-end;
-
-procedure TQtListStrings.Delete(Index: integer);
-begin
-  if FListChanged then InternalUpdate;
-
-  if Index < FStringList.Count then
-  begin
-    FStringList.Delete(Index);
-    FUpdating := True;
-    QListWidget_takeItem(FQtListWidget, Index);
-    FUpdating := False;
-    IsChanged;
-    FUpdating := False;
-    FListChanged := False;
-  end;
-end;
-
-procedure TQtListStrings.Insert(Index: integer; const S: string);
-var
-   AStr: WideString;
-   AItem: QListWidgetItemH;
-begin
-  if FListChanged then InternalUpdate;
-
-  if Index < 0 then Index := 0;
-
-  if Index <= FStringList.Count then
-  begin
-    FUpdating := True;
-    FStringList.Insert(Index,S);
-    AStr := UTF8Decode(S);
-    
-    AItem := QListWidgetItem_create(@AStr, FQtListWidget, Integer(QListWidgetItemType));
-    
-    if FOwner is TCustomCheckListBox then
-      QListWidgetItem_setCheckState(AItem, QtUnchecked);
-      
-    QListWidget_insertItem(FQtListWidget, Index, AItem);
-    FUpdating := False;
-    IsChanged;
-    FUpdating := False;
-    FListChanged := False;
-  end;
-end;
-
-procedure TQtListStrings.SetText(TheText: PChar);
-begin
-  inherited SetText(TheText);
-end;
 
 { TQtMemoStrings }
 
@@ -612,6 +453,73 @@ begin
 end;
 
 procedure TQtComboStrings.Sort;
+var
+  I: Integer;
+begin
+  inherited Sort;
+
+  for I := 0 to Count - 1 do
+  begin
+    FOwner.removeItem(I);
+    FOwner.insertItem(I, Strings[I]);
+  end;
+end;
+
+{ TQtListStrings }
+
+procedure TQtListStrings.Put(Index: Integer; const S: string);
+begin
+  inherited Put(Index, S);
+
+  FOwner.removeItem(Index);
+  FOwner.insertItem(Index, S);
+end;
+
+procedure TQtListStrings.InsertItem(Index: Integer; const S: string);
+begin
+  inherited InsertItem(Index, S);
+  FOwner.insertItem(Index, S);
+end;
+
+procedure TQtListStrings.InsertItem(Index: Integer; const S: string; O: TObject);
+begin
+  inherited InsertItem(Index, S, O);
+
+  FOwner.insertItem(Index, S);
+end;
+
+constructor TQtListStrings.Create(AOwner: TQtListWidget);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
+
+procedure TQtListStrings.Assign(Source: TPersistent);
+begin
+  FOwner.BeginUpdate;
+  inherited Assign(Source);
+  FOwner.EndUpdate;
+end;
+
+procedure TQtListStrings.Clear;
+var
+  I: Integer;
+  C: Integer;
+begin
+  C := Count;
+  inherited Clear;
+  for I := C - 1 downto 0 do
+    FOwner.removeItem(I);
+end;
+
+procedure TQtListStrings.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+
+  FOwner.removeItem(Index);
+end;
+
+procedure TQtListStrings.Sort;
 var
   I: Integer;
 begin

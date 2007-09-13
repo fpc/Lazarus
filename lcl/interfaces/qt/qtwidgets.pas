@@ -32,7 +32,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtobjects,
+  qtobjects, qtproc,
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
@@ -635,6 +635,7 @@ type
     procedure SetOwnerDrawn(const AValue: Boolean);
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    function getModel: QAbstractItemModelH;
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
@@ -671,7 +672,11 @@ type
   public
     function currentRow: Integer;
     function IndexAt(APoint: PQtPoint): Integer;
+    procedure insertItem(AIndex: Integer; AText: String); overload;
+    procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentRow(row: Integer);
+    procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
+    procedure removeItem(AIndex: Integer);
   end;
   
   { TQtHeaderView }
@@ -4354,7 +4359,7 @@ procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
 begin
-  Str := UTF8Decode(AText);
+  Str := GetUtf8String(AText);
   insertItem(AIndex, @Str);
 end;
 
@@ -4720,25 +4725,8 @@ begin
 end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Text: WideString;
-  i: Integer;
 begin
-  // Creates the widget
-  {$ifdef VerboseQt}
-    WriteLn('TQListWidget.Create');
-  {$endif}
   Result := QListWidget_create();
-
-  // Sets the initial items
-  for I := 0 to TCustomListBox(LCLObject).Items.Count - 1 do
-  begin
-    Text := UTF8Decode(TCustomListBox(LCLObject).Items.Strings[i]);
-    QListWidget_addItem(QListWidgetH(Result), @Text);
-  end;
-  // Initialize current row or we get double fired LM_CLICKED on first mouse click.
-  if TCustomListBox(LCLObject).Items.Count > 0 then
-    QListWidget_setCurrentRow(QListWidgetH(Result), 0);
 end;
 
 procedure TQtListWidget.AttachEvents;
@@ -4924,6 +4912,22 @@ begin
   QModelIndex_destroy(AModelIndex);
 end;
 
+procedure TQtListWidget.insertItem(AIndex: Integer; AText: String);
+var
+  Str: WideString;
+begin
+  Str := GetUtf8String(AText);
+  insertItem(AIndex, @Str);
+end;
+
+procedure TQtListWidget.insertItem(AIndex: Integer; AText: PWideString);
+begin
+  QListWidget_insertItem(QListWidgetH(Widget), AIndex, AText);
+
+  if QListWidget_count(QListWidgetH(Widget)) = 1 then
+    QListWidget_setCurrentRow(QListWidgetH(Widget), 0);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtListWidget.setCurrentRow
   Params:  None
@@ -4932,6 +4936,23 @@ end;
 procedure TQtListWidget.setCurrentRow(row: Integer);
 begin
   QListWidget_setCurrentRow(QListWidgetH(Widget), row);
+end;
+
+procedure TQtListWidget.scrollToItem(row: integer;
+  hint: QAbstractItemViewScrollHint);
+var
+  Item: QListWidgetItemH;
+begin
+  Item := QListWidget_item(QListWidgetH(Widget), row);
+  QListWidget_scrollToItem(QListWidgetH(Widget), Item, hint);
+end;
+
+procedure TQtListWidget.removeItem(AIndex: Integer);
+var
+  Item: QListWidgetItemH;
+begin
+  Item := QListWidget_takeitem(QListWidgetH(Widget), AIndex);
+  QListWidgetItem_destroy(Item);
 end;
 
 
@@ -6233,12 +6254,14 @@ begin
   FNewDelegate := nil;
 end;
 
-procedure TQtAbstractItemView.modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
-var
-  AModel: QAbstractItemModelH;
+function TQtAbstractItemView.getModel: QAbstractItemModelH;
 begin
-  AModel := QAbstractItemView_model(QAbstractItemViewH(Widget));
-  QAbstractItemModel_index(AModel, retval, row, column, parent);
+  Result := QAbstractItemView_model(QAbstractItemViewH(Widget));
+end;
+
+procedure TQtAbstractItemView.modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
+begin
+  QAbstractItemModel_index(getModel, retval, row, column, parent);
 end;
 
 function TQtAbstractItemView.visualRect(Index: QModelIndexH): TRect;

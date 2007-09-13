@@ -442,7 +442,7 @@ begin
   QtListWidget.AttachEvents;
   
   // create our FList helper
-  QtListWidget.FList := TQtListStrings.Create(QListWidgetH(QtListWidget.Widget), TCustomListBox(AWinControl));
+  QtListWidget.FList := TQtListStrings.Create(QtListWidget);
 
   QtListWidget.OwnerDrawn := TCustomListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
@@ -483,12 +483,12 @@ var
   QtListWidget: TQtListWidget;
   ListItem: QListWidgetItemH;
 begin
-  Result := False;
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
-  if ListItem <> nil
-  then
-    Result := QListWidget_isItemSelected(QListWidgetH(QtListWidget.Widget), ListItem);
+  if ListItem <> nil then
+    Result := QListWidget_isItemSelected(QListWidgetH(QtListWidget.Widget), ListItem)
+  else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -498,14 +498,13 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
-  ListWidgetH: QListWidgetH;
+  ListWidget: TQtListWidget;
 begin
-  if not Assigned(TQtListWidget(ACustomListBox.Handle).FList) then
-  begin
-    ListWidgetH := QListWidgetH(TQtListWidget(ACustomListBox.Handle).Widget);
-    TQtListWidget(ACustomListBox.Handle).FList := TQtListStrings.Create(ListWidgetH, ACustomListBox);
-  end;
-  Result := TQtListWidget(ACustomListBox.Handle).FList;
+  ListWidget := TQtListWidget(ACustomListBox.Handle);
+  if not Assigned(ListWidget.FList) then
+    ListWidget.FList := TQtListStrings.Create(ListWidget);
+
+  Result := ListWidget.FList;
 end;
 
 {------------------------------------------------------------------------------
@@ -554,8 +553,7 @@ var
 begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
-  if ListItem <> nil
-  then
+  if ListItem <> nil then
     QListWidget_setItemSelected(QListWidgetH(QtListWidget.Widget), ListItem, ASelected);
 end;
 
@@ -572,17 +570,15 @@ end;
 class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer);
 {var
   QtListWidget: TQtListWidget;
-  ItemModel: QAbstractItemModelH;}
+  AModel: QAbstractItemModelH;}
 begin
   {$note implement}
-  (*
-  QtListWidget := TQtListWidget(ACustomListBox.Handle);
-  ItemModel := QAbstractItemView_model(QAbstractItemViewH(QtListWidget.Widget));
-  
-  if QAbstractItemModel_columnCount(ItemModel, nil) <> ACount
-  then
-    QAbstractItemModel_insertColumns(ItemModel, 0, ACount, NiL);
-    *)
+{  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  AModel := QtListWidget.getModel;
+
+  if QAbstractItemModel_columnCount(AModel) <> ACount then
+    QAbstractItemModel_insertColumns(AModel, 0, ACount);
+}
 end;
 
 {------------------------------------------------------------------------------
@@ -608,11 +604,9 @@ var
 begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   SelMode := QAbstractItemViewSingleSelection;
-  if AMultiSelect
-  then
+  if AMultiSelect then
     SelMode := QAbstractItemViewMultiSelection;
-  if AExtendedSelect
-  then
+  if AExtendedSelect then
     SelMode := QAbstractItemViewExtendedSelection;
     
   QAbstractItemView_setSelectionMode(QAbstractItemViewH(QtListWidget.Widget), SelMode);
@@ -626,7 +620,7 @@ end;
 class procedure TQtWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
-
+  TQtListStrings(AList).Sorted := ASorted;
 end;
 
 class procedure TQtWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
@@ -643,7 +637,7 @@ end;
 class procedure TQtWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 begin
-  {$note implement}
+  TQtListWidget(ACustomListBox.Handle).scrollToItem(NewTopIndex, QAbstractItemViewPositionAtTop);
 end;
 
 { TQtWSCustomMemo }
