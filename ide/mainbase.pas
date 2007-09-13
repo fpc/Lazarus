@@ -516,7 +516,7 @@ begin
     CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms);
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
     CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo);
-    CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit);
+    CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
 
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;
@@ -607,8 +607,8 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuStepInto,'itmRunMenuStepInto',lisMenuStepInto,'menu_stepinto');
     CreateMenuItem(ParentMI,itmRunMenuStepOver,'itmRunMenuStepOver',lisMenuStepOver,'menu_stepover');
     CreateMenuItem(ParentMI,itmRunMenuRunToCursor,'itmRunMenuRunToCursor',lisMenuRunToCursor,'menu_run_cursor');
-    CreateMenuItem(ParentMI,itmRunMenuStop,'itmRunMenuStop',lisMenuStop,'');
-    CreateMenuItem(ParentMI,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters);
+    CreateMenuItem(ParentMI,itmRunMenuStop,'itmRunMenuStop',lisMenuStop,'menu_stop');
+    CreateMenuItem(ParentMI,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters, 'menu_run_parameters');
     CreateMenuItem(ParentMI,itmRunMenuResetDebugger,'itmRunMenuResetDebugger',lisMenuResetDebugger);
 
     CreateMenuSeparatorSection(mnuRun,itmRunBuildingFile,'itmRunBuildingFile');
@@ -680,7 +680,7 @@ begin
     ParentMI:=itmSecondaryTools;
 
     CreateMenuItem(ParentMI,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString);
-    CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff);
+    CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
 
     CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
     ParentMI:=itmDelphiConversion;

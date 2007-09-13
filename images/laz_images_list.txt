@@ -73,6 +73,7 @@ menu/menu_restart_16.xpm
 menu/menu_run.png
 menu/menu_run_cursor.png
 menu/menu_run_file.png
+menu/menu_run_parameters.png
 menu/menu_save.png
 menu/menu_saveas_16.xpm
 menu/menu_save_16_dual.xpm
@@ -83,9 +84,12 @@ menu/menu_search_replace.png
 menu/menu_select_all.png
 menu/menu_stepinto.png
 menu/menu_stepover.png
+menu/menu_stop.png
+menu/menu_tool_diff.png
 menu/menu_uncomment_16.xpm
 menu/menu_undo.png
 menu/menu_unindent.png
+menu/menu_view_toggle_form_unit.png
 codeexplorer/ce_class.xpm
 codeexplorer/ce_const.xpm
 codeexplorer/ce_default.xpm
