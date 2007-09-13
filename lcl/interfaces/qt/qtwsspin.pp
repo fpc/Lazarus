@@ -55,14 +55,12 @@ type
 
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
   (*TODO: seperation into properties instead of bulk update
     class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: single); virtual;
@@ -182,33 +180,6 @@ begin
   end
   else
     Result := TQtAbstractSpinBox(ACustomEdit.Handle).FSelLength;
-end;
-
-class function  TQtWSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-var
-  LineEdit: QLineEditH;
-  W: WideString;
-begin
-  LineEdit := TQtAbstractSpinBox(AWinControl.Handle).LineEdit;
-  Result := LineEdit <> nil;
-  if Result then
-  begin
-    QLineEdit_text(LineEdit, @W);
-    AText := W;
-  end
-  else
-    AText := '';
-end;
-
-class procedure TQtWSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  LineEdit: QLineEditH;
-  W: WideString;
-begin
-  LineEdit := TQtAbstractSpinBox(AWinControl.Handle).LineEdit;
-  W := AText;
-  if (LineEdit <> nil) then
-    QLineEdit_setText(LineEdit, @W)
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);

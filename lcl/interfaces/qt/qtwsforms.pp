@@ -86,9 +86,6 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
 
-    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
@@ -202,40 +199,6 @@ begin
 
   // Return the handle
   Result := THandle(QtMainWindow);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomForm.GetText
-  Params:  AWinControl     - the calling object
-           AText           - The Text
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-class function TQtWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-var
-  Str: WideString;
-begin
-  TQtWidget(AWinControl.Handle).WindowTitle(@Str);
-
-  AText := UTF8Encode(Str);
-
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomForm.SetText
-  Params:  AWinControl     - the calling object
-           AText           - The Text
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  Str: WideString;
-begin
-  Str := UTF8Decode(AText);
-
-  TQtWidget(AWinControl.Handle).SetWindowTitle(@Str);
 end;
 
 {------------------------------------------------------------------------------

@@ -196,8 +196,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -255,36 +253,6 @@ begin
   Result := THandle(QtToolButton);
 end;
 
-
-{------------------------------------------------------------------------------
-  Method: TQtWSToolButton.GetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TQtWSToolButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-var
-  Str: WideString;
-begin
-  TQtToolButton(AWinControl.Handle).Text(@Str);
-
-  AText := UTF8Encode(Str);
-
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSToolButton.SetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSToolButton.SetText(const AWinControl: TWinControl; const AText: String);
-var
-  Str: WideString;
-begin
-  Str := UTF8Decode(AText);
-
-  TQtToolButton(AWinControl.Handle).SetText(@Str);
-end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSToolButton.SetColor

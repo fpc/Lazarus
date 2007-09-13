@@ -51,7 +51,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
 //    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
   { TQtWSCustomNotebook }
@@ -286,23 +285,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomPage.CreateHandle] Result: ', IntToStr(Result));
   {$endif}
-end;
-
-class procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  ANoteBook: TCustomNoteBook;
-  Index: Integer;
-  AWsText: WideString;
-begin
-  if (AWinControl is TCustomPage) and
-     (AWinControl.Parent <> nil) and
-     (AWinControl.Parent is TCustomNotebook) then
-  begin
-    ANoteBook := TCustomNotebook(AWinControl.Parent);
-    Index := ANoteBook.IndexOf(TCustomPage(AWinControl));
-    AWsText := UTF8Decode(AText);
-    TQtTabWidget(ANoteBook.Handle).setTabText(Index, @AWsText);
-  end;
 end;
 
 { TQtWSCustomNotebook }

@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets, qtobjects,
+  qtwidgets, qtobjects, qtproc,
   // LCL
   SysUtils, Classes, Types, Controls, LCLType, LCLProc, Forms, Graphics,
   StdCtrls,
@@ -85,8 +85,8 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
 
-//    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-//    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
@@ -330,6 +330,24 @@ begin
     PreferredWidth := PrefSize.cx;
     PreferredHeight := PrefSize.cy;
   end;
+end;
+
+class function TQtWSWinControl.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
+    Exit;
+
+  AText := UTF8Encode(TQtWidget(AWinControl.Handle).getText);
+end;
+
+class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;
+  const AText: string);
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
+    Exit;
+
+  TQtWidget(AWinControl.Handle).setText(GetUtf8String(AText));
 end;
 
 class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,

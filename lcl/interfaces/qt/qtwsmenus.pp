@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets, qtobjects,
+  qtwidgets, qtobjects, qtproc,
   // LCL
   SysUtils, Classes, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
   // Widgetset
@@ -244,11 +244,7 @@ var
   Obj: TObject;
 begin
   {$ifdef VerboseQt}
-    Write('[TQtWSMenuItem.DestroyHandle] Caption: ' + AMenuItem.Caption);
-    
-    if AMenuItem.HasParent then Write(' HasParent ');
-     
-    WriteLn('');
+    WriteLn('[TQtWSMenuItem.DestroyHandle] Caption: ' + AMenuItem.Caption);
   {$endif}
   
   Obj := TObject(AMenuItem.Handle);
@@ -263,13 +259,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 var
-  Text: WideString;
   Widget: TQtWidget;
 begin
-  Text := UTF8Decode(ACaption);
   Widget := TQtWidget(AMenuItem.Handle);
   if Widget is TQtMenu then
-    TQtMenu(Widget).setText(@Text);
+    TQtMenu(Widget).setText(GetUtf8String(ACaption));
 end;
 
 {------------------------------------------------------------------------------

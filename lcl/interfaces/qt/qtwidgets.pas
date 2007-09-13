@@ -116,11 +116,12 @@ type
     procedure ShowNormal;
     procedure ShowMinimized;
     procedure ShowMaximized;
+    function getClientBounds: TRect; virtual;
     function getEnabled: Boolean;
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
-    function getClientBounds: TRect; virtual;
+    function getText: WideString; virtual;
     procedure grabMouse;
     function hasFocus: Boolean;
     procedure lowerWidget;
@@ -135,6 +136,7 @@ type
     procedure setMaximumSize(AWidth, AHeight: Integer);
     procedure setMinimumSize(AWidth, AHeight: Integer);
     procedure setParent(parent: QWidgetH); virtual;
+    procedure setText(const W: WideString); virtual;
     procedure setTextColor(const Value: PQColor); virtual;
     procedure setVisible(visible: Boolean); virtual;
     procedure setWindowFlags(_type: QtWindowFlags);
@@ -264,11 +266,11 @@ type
   TQtAbstractButton = class(TQtWidget)
   private
   public
+    function getText: WideString; override;
     procedure setColor(const Value: PQColor); override;
     procedure setIcon(AIcon: QIconH);
     procedure setShortcut(AShortcut: TShortcut);
-    procedure setText(text: PWideString);
-    procedure Text(retval: PWideString);
+    procedure setText(const W: WideString); override;
     procedure Toggle;
     function isChecked: Boolean;
     function isDown: Boolean;
@@ -317,6 +319,8 @@ type
     destructor Destroy; override;
     function getClientBounds: TRect; override;
     procedure setTabOrders;
+    function getText: WideString; override;
+    procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure OffsetMousePos(APoint: PQtPoint); override;
@@ -339,8 +343,8 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
-    procedure getText(retval: PWideString);
-    procedure setText(text: PWideString);
+    function getText: WideString; override;
+    procedure setText(const W: WideString); override;
     procedure setAlignment(const AAlignment: QtAlignment);
   end;
 
@@ -383,6 +387,8 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    function getText: WideString; override;
+    procedure setText(const W: WideString); override;
   end;
   
   { TQtToolBar }
@@ -431,7 +437,7 @@ type
     function getMaxLength: Integer;
     function getSelectedText: WideString;
     function getSelectionStart: Integer;
-    function getText: WideString;
+    function getText: WideString; override;
     function hasSelectedText: Boolean;
     procedure setColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
@@ -439,7 +445,7 @@ type
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
-    procedure setText(const AText: WideString);
+    procedure setText(const AText: WideString); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -458,13 +464,13 @@ type
   public
     FList: TStrings;
     procedure append(AStr: WideString);
-    function getPlainText: WideString;
+    function getText: WideString; override;
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
-    procedure setPlainText(const AText: WideString);
+    procedure setText(const AText: WideString); override;
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setTabChangesFocus(const AValue: Boolean);
@@ -523,11 +529,13 @@ type
     function currentIndex: Integer;
     function getEditable: Boolean;
     function getMaxVisibleItems: Integer;
+    function getText: WideString; override;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
     procedure setMaxVisibleItems(ACount: Integer);
     procedure setEditable(AValue: Boolean);
+    procedure setText(const W: WideString); override;
     procedure removeItem(AIndex: Integer);
     
     property DropList: TQtListWidget read GetDropList;
@@ -560,11 +568,13 @@ type
   
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
+    function getText: WideString; override;
     procedure setMinimum(const v: single); virtual; abstract;
     procedure setMaximum(const v: single); virtual; abstract;
     procedure setSingleStep(const v: single); virtual; abstract;
     procedure setReadOnly(const r: Boolean);
     procedure setValue(const v: single); virtual; abstract;
+    procedure setText(const W: WideString); override;
 
     property LineEdit: QLineEditH read GetLineEdit;
   public
@@ -746,6 +756,7 @@ type
     function addMenu(title: PWideString): TQtMenu;
     function addSeparator: TQtMenu;
     function getVisible: Boolean; override;
+    function getText: WideString; override;
     procedure setChecked(p1: Boolean);
     procedure setCheckable(p1: Boolean);
     procedure setHasSubmenu(AValue: Boolean);
@@ -753,7 +764,7 @@ type
     procedure setImage(AImage: TQtImage);
     procedure setSeparator(AValue: Boolean);
     procedure setShortcut(AShortcut: TShortcut);
-    procedure setText(AText: PWideString);
+    procedure setText(const W: WideString); override;
     procedure setVisible(visible: Boolean); override;
   end;
 
@@ -840,6 +851,11 @@ type
   TQtPage = class(TQtWidget)
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    function getIndex: Integer;
+    function getTabWidget: QTabWidgetH;
+    function getText: WideString; override;
+    procedure setText(const W: WideString); override;
   end;
   
   { TQtRubberBand }
@@ -1984,6 +2000,11 @@ begin
   Result := QWidget_isVisible(Widget);
 end;
 
+function TQtWidget.getText: WideString;
+begin
+  Result := '';
+end;
+
 function TQtWidget.getClientBounds: TRect;
 begin
   QWidget_contentsRect(Widget, @Result);
@@ -2067,6 +2088,11 @@ end;
 procedure TQtWidget.setParent(parent: QWidgetH);
 begin
   QWidget_setParent(Widget, parent);
+end;
+
+procedure TQtWidget.setText(const W: WideString);
+begin
+  // nothing
 end;
 
 procedure TQtWidget.setWindowFlags(_type: QtWindowFlags);
@@ -2581,9 +2607,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtAbstractButton.SetText(text: PWideString);
+procedure TQtAbstractButton.SetText(const W: WideString);
 begin
-  QAbstractButton_setText(QAbstractButtonH(Widget), text);
+  QAbstractButton_setText(QAbstractButtonH(Widget), @W);
 end;
 
 {------------------------------------------------------------------------------
@@ -2591,9 +2617,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtAbstractButton.Text(retval: PWideString);
+function TQtAbstractButton.getText: WideString;
 begin
-  QAbstractButton_text(QAbstractButtonH(Widget), retval);
+  QAbstractButton_text(QAbstractButtonH(Widget), @Result);
 end;
 
 procedure TQtAbstractButton.Toggle;
@@ -2953,6 +2979,16 @@ begin
   List.Free;
 end;
 
+function TQtMainWindow.getText: WideString;
+begin
+  WindowTitle(@Result);
+end;
+
+procedure TQtMainWindow.setText(const W: WideString);
+begin
+  setWindowTitle(@W);
+end;
+
 procedure TQtMainWindow.setMenuBar(AMenuBar: QMenuBarH);
 begin
   if IsMainForm then
@@ -3090,9 +3126,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtStaticText.SetText(text: PWideString);
+procedure TQtStaticText.SetText(const W: WideString);
 begin
-  QLabel_setText(QLabelH(Widget), text);
+  QLabel_setText(QLabelH(Widget), @W);
 end;
 
 procedure TQtStaticText.setAlignment(const AAlignment: QtAlignment);
@@ -3105,9 +3141,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtStaticText.getText(retval: PWideString);
+function TQtStaticText.getText: WideString;
 begin
-  QLabel_text(QLabelH(Widget), retval);
+  QLabel_text(QLabelH(Widget), @Result);
 end;
 
 { TQtCheckBox }
@@ -3283,6 +3319,16 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+function TQtGroupBox.getText: WideString;
+begin
+  QGroupBox_title(QGroupBoxH(Widget), @Result);
+end;
+
+procedure TQtGroupBox.setText(const W: WideString);
+begin
+  QGroupBox_setTitle(QGroupBoxH(Widget), @W);
 end;
 
 { TQtFrame }
@@ -3974,7 +4020,7 @@ begin
   QTextEdit_append(QTextEditH(Widget), @AStr);
 end;
 
-function TQtTextEdit.getPlainText: WideString;
+function TQtTextEdit.getText: WideString;
 begin
   QTextEdit_toPlainText(QTextEditH(Widget), @Result);
 end;
@@ -4024,7 +4070,7 @@ begin
   QTextEdit_setLineWrapMode(QTextEditH(Widget), AMode);
 end;
 
-procedure TQtTextEdit.setPlainText(const AText: WideString);
+procedure TQtTextEdit.setText(const AText: WideString);
 begin
   QTextEdit_setPlainText(QTextEditH(Widget), @AText);
 end;
@@ -4299,6 +4345,11 @@ begin
   Result := QComboBox_maxVisibleItems(QComboboxH(Widget));
 end;
 
+function TQtComboBox.getText: WideString;
+begin
+  QComboBox_currentText(QComboBoxH(Widget), @Result);
+end;
+
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
@@ -4339,6 +4390,11 @@ begin
   QComboBox_setEditable(QComboBoxH(Widget), AValue);
   if not AValue then
     FLineEdit := nil;
+end;
+
+procedure TQtComboBox.setText(const W: WideString);
+begin
+  QComboBox_setEditText(QComboBoxH(Widget), @W);
 end;
 
 procedure TQtComboBox.removeItem(AIndex: Integer);
@@ -4477,12 +4533,26 @@ begin
   Result := QAbstractSpinBox_isReadOnly(QAbstractSpinBoxH(Widget));
 end;
 
+function TQtAbstractSpinBox.getText: WideString;
+begin
+  if LineEdit <> nil then
+    QLineEdit_text(LineEdit, @Result)
+  else
+    Result := '';
+end;
+
 procedure TQtAbstractSpinBox.setReadOnly(const r: Boolean);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.SetReadOnly');
   {$endif}
   QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(Widget), r);
+end;
+
+procedure TQtAbstractSpinBox.setText(const W: WideString);
+begin
+  if (LineEdit <> nil) then
+    QLineEdit_setText(LineEdit, @W)
 end;
 
 procedure TQtAbstractSpinBox.AttachEvents;
@@ -5405,9 +5475,14 @@ begin
   Result := QAction_isVisible(ActionHandle);
 end;
 
-procedure TQtMenu.setText(AText: PWideString);
+function TQtMenu.getText: WideString;
 begin
-  QAction_setText(ActionHandle, AText);
+  QAction_text(ActionHandle, @Result);
+end;
+
+procedure TQtMenu.setText(const W: WideString);
+begin
+  QAction_setText(ActionHandle, @W);
 end;
 
 procedure TQtMenu.setVisible(visible: Boolean);
@@ -6070,6 +6145,51 @@ function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   Result := QWidget_create;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+function TQtPage.getIndex: Integer;
+var
+  AParent: QTabWidgetH;
+begin
+  AParent := getTabWidget;
+  if AParent <> nil then
+    Result := QTabWidget_indexOf(AParent, Widget)
+  else
+    Result := -1;
+end;
+
+function TQtPage.getTabWidget: QTabWidgetH;
+var
+  AParent: TQtWidget;
+begin
+  //AParent := QWidget_parentWidget(Widget);
+  if LCLObject.Parent is TCustomNotebook then
+  begin
+    AParent := TQtWidget(LCLObject.Parent.Handle);
+    Result := QTabWidgetH(AParent.Widget);
+  end
+  else
+    Result := nil;
+end;
+
+function TQtPage.getText: WideString;
+var
+  AParent: QTabWidgetH;
+begin
+  AParent := getTabWidget;
+  if AParent <> nil then
+    QTabWidget_TabText(AParent, @Result, getIndex)
+  else
+    Result := '';
+end;
+
+procedure TQtPage.setText(const W: WideString);
+var
+  AParent: QTabWidgetH;
+begin
+  AParent := getTabWidget;
+  if AParent <> nil then
+    QTabWidget_setTabText(AParent, getIndex, @W);
 end;
 
 { TQtAbstractItemView }
