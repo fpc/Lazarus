@@ -314,6 +314,9 @@ var
   // set to true, if we are redirecting a WM_MOUSEWHEEL message, to prevent recursion
   InMouseWheelRedirection: boolean = false;
   OnClipBoardRequest: TClipboardRequestEvent;
+
+  MMenuItemInfoSize: DWORD; // size depends on windows version;
+
 {$ifdef MSG_DEBUG}
   MessageStackDepth: string = '';
 {$endif}
@@ -324,6 +327,9 @@ var
 {$I win32winapi.inc}
 {$I win32lclintf.inc}
 
+const
+  W95_MENUITEMINFO_SIZE = 44;
+  
 initialization
 
   Assert(False, 'Trace:win32int.pp - Initialization');
@@ -334,6 +340,10 @@ initialization
   {$ELSE}
   SystemCharSetIsUTF8:=false;
   {$ENDIF}
+
+  if (Win32MajorVersion = 4) and (Win32MinorVersion = 0)
+  then MMenuItemInfoSize := W95_MENUITEMINFO_SIZE
+  else MMenuItemInfoSize := sizeof(MENUITEMINFO);
 
 finalization
 

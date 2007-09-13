@@ -364,11 +364,17 @@ begin
 end;
 
 function TMenuItem.GetBitmap: TBitmap;
+var
+  iml: TCustomImageList;
 begin
   if FBitmap = nil then
     FBitmap := TBitmap.Create;
-  if (ImageIndex >= 0) and Assigned(GetImageList) then
-    GetImageList.GetBitmap(ImageIndex, FBitmap);
+  if ImageIndex >= 0
+  then begin
+    iml := GetImageList;
+    if iml <> nil
+    then iml.GetBitmap(ImageIndex, FBitmap);
+  end;
   FBitmap.Transparent := True;
   Result := FBitmap;
 end;

@@ -182,6 +182,8 @@ type
   TCustomListViewAccess = class(TCustomListView)
   end;
 
+
+
 {------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
@@ -193,7 +195,7 @@ type
   Handles the messages sent to the specified window, in parameter Window, by
   Windows or other applications
  ------------------------------------------------------------------------------}
-Function
+function
 {$ifdef MSG_DEBUG}
   RealWindowProc
 {$else}
@@ -201,7 +203,7 @@ Function
 {$endif}
   (Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
-Var
+var
   LMessage: TLMessage;
   menuItem: TObject;
   menuHDC: HDC;
@@ -259,36 +261,65 @@ Var
     Result := PageIndex;
   end;
 
+  function GetMenuParent(ASearch, AParent: HMENU): HMENU;
+  var
+    c, i: integer;
+    sub: HMENU;
+  begin
+    c := GetMenuItemCount(AParent);
+    for i:= 0 to c - 1 do
+    begin
+      sub := GetSubMenu(AParent, i);
+      if sub = ASearch
+      then begin
+        Result := AParent;
+        Exit;
+      end;
+
+      Result := GetMenuParent(ASearch, sub);
+      if Result <> 0 then Exit;
+    end;
+    Result := 0;
+  end;
+
+  function GetPopMenuItemObject: TObject;
+  var
+    MainMenuHandle: HMENU;
+    MenuInfo: MENUITEMINFO;
+  begin
+    MenuInfo.cbSize := MMenuItemInfoSize;
+    MenuInfo.fMask := MIIM_DATA;
+
+    MainMenuHandle := GetMenuParent(WParam, GetMenu(Window));
+    if GetMenuItemInfo(MainMenuHandle, LOWORD(LParam), true, @MenuInfo)
+    then Result := TObject(MenuInfo.dwItemData)
+    else Result := nil;
+  end;
+
   function GetMenuItemObject: TObject;
   var
     MenuInfo: MENUITEMINFO;
-    MainMenuHandle: HMENU;
     PopupMenu: TPopupMenu;
-    MenuItemInfoSize: DWORD;
-  const
-    W95_MENUITEMINFO_SIZE = 44;
   begin
-    if (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
-      MenuItemInfoSize := W95_MENUITEMINFO_SIZE
-    else
-      MenuItemInfoSize := sizeof(MENUITEMINFO);
-    Result := nil;
-    MenuInfo.cbSize := MenuItemInfoSize;
-    MenuInfo.fMask := MIIM_DATA;
-    {first we have to decide if the command is from a popup menu or from the window main menu}
-    //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
+    // first we have to decide if the command is from a popup menu
+    // or from the window main menu
+    // if the 'PopupMenu' property exists, there is a big probability
+    // that the command is from a popup menu
     PopupMenu := WindowInfo^.PopupMenu;
-    if PopupMenu<>nil then //processing popup menu
-    begin
+    if PopupMenu <> nil
+    then begin
       WindowInfo^.PopupMenu := nil;
       Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
+      if Result <> nil then Exit;
     end;
-    if Result=nil then //if Result is still nil, process main menu
-    begin
-      MainMenuHandle := GetMenu(Window);
-      if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
-        Result := TObject(MenuInfo.dwItemData);
-    end;
+
+    // nothing found, process main menu
+    MenuInfo.cbSize := MMenuItemInfoSize;
+    MenuInfo.fMask := MIIM_DATA;
+
+    if GetMenuItemInfo(GetMenu(Window), LOWORD(WParam), false, @MenuInfo)
+    then Result := TObject(MenuInfo.dwItemData)
+    else Result := nil;
   end;
 
   procedure SendPaintMessage(ControlDC: HDC);
@@ -1143,37 +1174,55 @@ begin
       if not UnicodeEnabledOS or not HandleUnicodeChar(Word(WParam)) then
       begin
         PLMsg:=@LMChar;
-        With LMChar Do
-        Begin
+        with LMChar do
+        begin
           Msg := CN_CHAR;
           KeyData := LParam;
           CharCode := Word(WParam);
           Result := 0;
           Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        End;
+        end;
       end;
 
       WinProcess := false;
-    End;
+    end;
+
     WM_MENUCHAR:
-    Begin
+    begin
       PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), LParam);
       WinProcess := false;
-    End;
+    end;
+
     WM_CLOSE:
-    Begin
+    begin
       if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
         (Application.MainForm <> nil) then
       begin
         Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
-      end else begin
+      end
+      else begin
         LMessage.Msg := LM_CLOSEQUERY;
       end;
       // default is to destroy window, inhibit
       WinProcess := false;
-    End;
+    end;
+    
+    WM_INITMENUPOPUP:
+    begin
+      if HIWORD(lParam) = 0 then //if not system menu
+      begin
+        TargetObject := GetPopMenuItemObject;
+        if TargetObject is TMenuItem then
+        begin
+          LMessage.Msg := LM_ACTIVATE;
+          TargetObject.Dispatch(LMessage);
+          lWinControl := nil;
+        end;
+      end;
+    end;
+    
     WM_COMMAND:
-    Begin
+    begin
       if LParam=0 then
       begin
         {menuitem or shortcut}
@@ -1187,7 +1236,8 @@ begin
           end;
           lWinControl := nil;
         end;
-      end else begin
+      end
+      else begin
         lWinControl := GetWindowInfo(HWND(LParam))^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
@@ -1238,18 +1288,8 @@ begin
       // no specific message found? try send a general msg
       if (LMessage.Msg = LM_NULL) and (lWinControl <> nil) then
         lWinControl.Perform(CN_COMMAND, WParam, LParam);
-    End;
-{
-  * Besides the fact that LCL does not respond to LM_CREATE, this code is
-    probably never reached anyway, as the callback is not set until after
-    window creation
+    end;
 
-    WM_CREATE:
-    Begin
-      Assert(False, 'Trace:WindowProc - Got WM_CREATE');
-      LMessage.Msg := LM_CREATE;
-    End;
-}
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     begin
       // it's needed for winxp themes where controls send the WM_ERASEBKGND
@@ -2432,7 +2472,7 @@ end;
 
  Calls the timerfunction in the Timer Object in the LCL
  ------------------------------------------------------------------------------}
-Procedure TimerCallBackProc(window_hwnd : hwnd; msg : DWORD; idEvent: UINT; dwTime: DWORD); stdcall;
+procedure TimerCallBackProc(window_hwnd : hwnd; msg : DWORD; idEvent: UINT; dwTime: DWORD); stdcall;
 Var
   TimerInfo: PWin32TimerInfo;
   n: Integer;
