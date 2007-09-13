@@ -4,10 +4,10 @@ object frmMain: TfrmMain
   Top = 144
   Width = 573
   HorzScrollBar.Page = 572
-  VertScrollBar.Page = 384
+  VertScrollBar.Page = 380
   ActiveControl = btnCallEditor
   Caption = 'Testing LazReport Editor'
-  ClientHeight = 385
+  ClientHeight = 381
   ClientWidth = 573
   Menu = MainMenu1
   OnCreate = frmMainCreate
@@ -23,7 +23,7 @@ object frmMain: TfrmMain
     TabOrder = 0
   end
   object dbGrid1: TDBGrid
-    Height = 322
+    Height = 321
     Top = 40
     Width = 573
     Align = alBottom
@@ -59,8 +59,8 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object StatusBar1: TStatusBar
-    Height = 23
-    Top = 362
+    Height = 20
+    Top = 361
     Width = 573
     Panels = <>
   end

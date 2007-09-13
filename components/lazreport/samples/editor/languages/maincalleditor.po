@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: maincalleditor:cereditreport
+msgid "Edit Report"
+msgstr ""
+
+#: maincalleditor:cernewreport
+msgid "New report"
+msgstr ""
+
+#: maincalleditor:ceropenreport
+msgid "Open report"
+msgstr ""
+
+#: maincalleditor:cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr ""
+
+#: maincalleditor:cerpreviewreport
+msgid "Preview report"
+msgstr ""
+
+#: maincalleditor:cerprintgrid
+msgid "Print grid"
+msgstr ""
+
+#: maincalleditor:cerprintreport
+msgid "Print report"
+msgstr ""
+
+#: maincalleditor:cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr ""
+

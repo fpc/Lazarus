@@ -338,6 +338,8 @@ components/lazreport/samples/barcode/reports/codigobarras.lrf svneol=native#text
 components/lazreport/samples/editor/calleditorwithpkg.lpi svneol=native#text/plain
 components/lazreport/samples/editor/calleditorwithpkg.lpr svneol=native#text/pascal
 components/lazreport/samples/editor/db/disco.dbf -text
+components/lazreport/samples/editor/languages/maincalleditor.es.po svneol=native#text/plain
+components/lazreport/samples/editor/languages/maincalleditor.po svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lfm svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lrs svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal

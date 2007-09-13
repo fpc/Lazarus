@@ -90,6 +90,7 @@ type
     procedure frmMainCreate(Sender: TObject);
   private
     { private declarations }
+    procedure TranslateGUI;
   public
     { public declarations }
   end; 
@@ -98,6 +99,18 @@ var
   frmMain: TfrmMain;
 
 implementation
+
+uses gettext,translations;
+
+resourcestring
+  cerOpenReport     = 'Open report';
+  cerNewReport      = 'New report';
+  cerEditReport     = 'Edit Report';
+  cerPreviewReport  = 'Preview report';
+  cerPrintReport    = 'Print report';
+  cerPrintGrid      = 'Print grid';
+  cerNotImplemented = 'This feature is not yet implemented!';
+  cerPrepareFailed  = 'PrepareReport Failed!';
 
 { TfrmMain }
 
@@ -112,10 +125,10 @@ procedure TfrmMain.accExportToTextExecute(Sender: TObject);
 begin
   TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
   if TheReport.PrepareReport then
-    ShowMessage('This feature is not yet implemented!')
+    ShowMessage(cerNotImplemented)
     //TheReport.ExportTo(TfrTextExportFilter, 'salida.txt')
   else
-    ShowMessage('PrepareReport Failed!');
+    ShowMessage(cerPrepareFailed);
 end;
 
 procedure TfrmMain.accExportToHtmlExecute(Sender: TObject);
@@ -123,9 +136,9 @@ begin
   TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrHTMExportFilter, 'salida.html');
-    ShowMessage('This fature is not yet completly implemented!');
+    ShowMessage(cerNotImplemented);
   end else
-    ShowMessage('PrepareReport Failed!');
+    ShowMessage(cerPrepareFailed);
 end;
 
 procedure TfrmMain.accExportToCSVExecute(Sender: TObject);
@@ -134,7 +147,7 @@ begin
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrCSVExportFilter, 'salida.csv');
   end else
-    ShowMessage('PrepareReport Failed!');
+    ShowMessage(cerPrepareFailed);
 end;
 
 procedure TfrmMain.accCloseExecute(Sender: TObject);
@@ -179,15 +192,34 @@ begin
   if TheReport.PrepareReport then
     TheReport.PrintPreparedReport('1',1)
   else
-    ShowMessage('PrepareReport Failed!');
+    ShowMessage(cerPrepareFailed);
 end;
 
 procedure TfrmMain.frmMainCreate(Sender: TObject);
+var
+  Lang, FallbackLang: String;
 begin
+  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+  TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('MaincallEditor','languages/maincalleditor.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('Lr_const','../../languages/lr_const.%s.po', Lang,FallbackLang);
+  
+  TranslateGUI;
+  
   dbf1.close;
   dbf1.FilePath := 'db/';
   dbf1.TableName := 'disco.dbf';
   dbf1.open;
+end;
+
+procedure TfrmMain.TranslateGUI;
+begin
+  accOpenReport.Caption := cerOpenReport;
+  accNewReport.Caption := cerNewReport;
+  accEditReport.Caption := cerEditReport;
+  accPreviewReport.Caption := cerPreviewReport;
+  accPrintReport.Caption := cerPrintReport;
+  accPrintGrid.Caption := cerPrintGrid;
 end;
 
 initialization
