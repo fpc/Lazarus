@@ -43,15 +43,31 @@ type
   // forward declarations
   TQtListWidget = class;
 
-  //
+  // records
   TPaintData = record
     ClipRect: Prect;
     ClipRegion: QRegionH;
   end;
   
+  // interfaces
+
+  { IQtTextEdit }
+
+  IQtEdit = interface
+    function getMaxLength: Integer;
+    function getSelectionStart: Integer;
+    function getSelectionLength: Integer;
+    procedure setEchoMode(const AMode: QLineEditEchoMode);
+    procedure setMaxLength(const ALength: Integer);
+    procedure setReadOnly(const AReadOnly: Boolean);
+    procedure setSelection(const AStart, ALength: Integer);
+  end;
+
+  // classes
+  
   { TQtWidget }
 
-  TQtWidget = class(TQtObject)
+  TQtWidget = class(TQtObject, IUnknown)
   private
     FOwnWidget: Boolean;
     FProps: TStringList;
@@ -72,6 +88,11 @@ type
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
+    // IUnknown implementation
+    function QueryInterface(const iid : tguid;out obj) : longint;stdcall;
+    function _AddRef : longint;stdcall;
+    function _Release : longint;stdcall;
+
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetGeometry; virtual; overload;
   public
@@ -426,7 +447,7 @@ type
 
   { TQtLineEdit }
 
-  TQtLineEdit = class(TQtWidget)
+  TQtLineEdit = class(TQtWidget, IQtEdit)
   private
     FTextChanged: QLineEdit_hookH;
   protected
@@ -437,6 +458,7 @@ type
     function getMaxLength: Integer;
     function getSelectedText: WideString;
     function getSelectionStart: Integer;
+    function getSelectionLength: Integer;
     function getText: WideString; override;
     function hasSelectedText: Boolean;
     procedure setColor(const Value: PQColor); override;
@@ -456,7 +478,7 @@ type
 
   { TQtTextEdit }
 
-  TQtTextEdit = class(TQtAbstractScrollArea)
+  TQtTextEdit = class(TQtAbstractScrollArea, IQtEdit)
   private
     FTextChangedHook: QTextEdit_hookH;
   protected
@@ -464,12 +486,16 @@ type
   public
     FList: TStrings;
     procedure append(AStr: WideString);
+    function getMaxLength: Integer;
     function getText: WideString; override;
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
+    function getSelectionLength: Integer;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
+    procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
+    procedure setMaxLength(const ALength: Integer);
     procedure setText(const AText: WideString); override;
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
@@ -504,7 +530,7 @@ type
 
   { TQtComboBox }
 
-  TQtComboBox = class(TQtWidget)
+  TQtComboBox = class(TQtWidget, IQtEdit)
   private
     // hooks
     FChangeHook: QComboBox_hookH;
@@ -514,16 +540,24 @@ type
     // parts
     FLineEdit: QLineEditH;
     FDropList: TQtListWidget;
+    // used to store values if no selection
+    FSelStart: Integer;
+    FSelLength: Integer;
     function GetDropList: TQtListWidget;
     function GetLineEdit: QLineEditH;
     procedure SetOwnerDrawn(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    // IQtEdit implementation
+    function getMaxLength: Integer;
+    function getSelectionStart: Integer;
+    function getSelectionLength: Integer;
+    procedure setEchoMode(const AMode: QLineEditEchoMode);
+    procedure setMaxLength(const ALength: Integer);
+    procedure setReadOnly(const AReadOnly: Boolean);
+    procedure setSelection(const AStart, ALength: Integer);
   public
     FList: TStrings;
-    // used by WS class to store values if no selection
-    FSelStart: Integer;
-    FSelLength: Integer;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
@@ -534,7 +568,7 @@ type
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
     procedure setMaxVisibleItems(ACount: Integer);
-    procedure setEditable(AValue: Boolean);
+    procedure setEditable(const AValue: Boolean);
     procedure setText(const W: WideString); override;
     procedure removeItem(AIndex: Integer);
     
@@ -553,19 +587,25 @@ type
 
   { TQtAbstractSpinBox}
   
-  TQtAbstractSpinBox = class(TQtWidget)
+  TQtAbstractSpinBox = class(TQtWidget, IQtEdit)
   private
     FEditingFinishedHook: QAbstractSpinBox_hookH;
     // parts
     FLineEdit: QLineEditH;
+    // used to store values if no selection
+    FSelStart: Integer;
+    FSelLength: Integer;
     function GetLineEdit: QLineEditH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    // IQtEdit implementation
+    function getMaxLength: Integer;
+    function getSelectionStart: Integer;
+    function getSelectionLength: Integer;
+    procedure setEchoMode(const AMode: QLineEditEchoMode);
+    procedure setMaxLength(const ALength: Integer);
+    procedure setSelection(const AStart, ALength: Integer);
   public
-    // used by WS class to store values if no selection
-    FSelStart: Integer;
-    FSelLength: Integer;
-  
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
     function getText: WideString; override;
@@ -2494,6 +2534,24 @@ begin
   if ssAlt   in Shift then Inc(Result, QtALT);
 end;
 
+function TQtWidget.QueryInterface(const iid: tguid; out obj): longint;
+begin
+  if GetInterface(iid, obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TQtWidget._AddRef: longint;
+begin
+  Result := -1; // no ref counting
+end;
+
+function TQtWidget._Release: longint;
+begin
+  Result := -1;
+end;
+
 function TQtWidget.GetProps(const AnIndex: String): pointer;
 var
   i: Integer;
@@ -3879,7 +3937,23 @@ end;
 
 function TQtLineEdit.getSelectionStart: Integer;
 begin
-  Result := QLineEdit_selectionStart(QLineEditH(Widget));
+  if hasSelectedText then
+    Result := QLineEdit_selectionStart(QLineEditH(Widget))
+  else
+    Result := FSelStart;
+end;
+
+function TQtLineEdit.getSelectionLength: Integer;
+var
+  W: WideString;
+begin
+  if hasSelectedText then
+  begin
+    W := getSelectedText;
+    Result := Length(W);
+  end
+  else
+    Result := FSelLength;
 end;
 
 function TQtLineEdit.getText: WideString;
@@ -4025,6 +4099,11 @@ begin
   QTextEdit_append(QTextEditH(Widget), @AStr);
 end;
 
+function TQtTextEdit.getMaxLength: Integer;
+begin
+  {$note implement}
+end;
+
 function TQtTextEdit.getText: WideString;
 begin
   QTextEdit_toPlainText(QTextEditH(Widget), @Result);
@@ -4050,6 +4129,11 @@ begin
   QTextCursor_destroy(TextCursor);
 end;
 
+function TQtTextEdit.getSelectionLength: Integer;
+begin
+  Result := getSelectionEnd - getSelectionStart;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtTextEdit.SetColor
   Params:  QColorH
@@ -4070,9 +4154,19 @@ begin
   end;
 end;
 
+procedure TQtTextEdit.setEchoMode(const AMode: QLineEditEchoMode);
+begin
+  {$note implement}
+end;
+
 procedure TQtTextEdit.setLineWrapMode(const AMode: QTextEditLineWrapMode);
 begin
   QTextEdit_setLineWrapMode(QTextEditH(Widget), AMode);
+end;
+
+procedure TQtTextEdit.setMaxLength(const ALength: Integer);
+begin
+  {$note implement}
 end;
 
 procedure TQtTextEdit.setText(const AText: WideString);
@@ -4314,6 +4408,60 @@ begin
   FOwnerDrawn := False;
 end;
 
+function TQtComboBox.getMaxLength: Integer;
+begin
+  if LineEdit <> nil then
+    Result := QLineEdit_maxLength(LineEdit)
+  else
+    Result := 0;
+end;
+
+function TQtComboBox.getSelectionStart: Integer;
+begin
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+    Result := QLineEdit_selectionStart(LineEdit)
+  else
+    Result := FSelStart;
+end;
+
+function TQtComboBox.getSelectionLength: Integer;
+var
+  W: WideString;
+begin
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+  begin
+    QLineEdit_selectedText(LineEdit, @W);
+    Result := Length(W);
+  end
+  else
+    Result := FSelLength;
+end;
+
+procedure TQtComboBox.setEchoMode(const AMode: QLineEditEchoMode);
+begin
+  if LineEdit <> nil then
+    QLineEdit_setEchoMode(LineEdit, AMode);
+end;
+
+procedure TQtComboBox.setMaxLength(const ALength: Integer);
+begin
+  if LineEdit <> nil then
+    QLineEdit_setMaxLength(LineEdit, ALength);
+end;
+
+procedure TQtComboBox.setReadOnly(const AReadOnly: Boolean);
+begin
+  setEditable(not AReadOnly);
+end;
+
+procedure TQtComboBox.setSelection(const AStart, ALength: Integer);
+begin
+  FSelStart := AStart;
+  FSelLength := ALength;
+  if LineEdit <> nil then
+    QLineEdit_setSelection(LineEdit, AStart, ALength);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtComboBox.Destroy
   Params:  None
@@ -4390,7 +4538,7 @@ begin
   QComboBox_setMaxVisibleItems(QComboboxH(Widget), ACount);
 end;
 
-procedure TQtComboBox.setEditable(AValue: Boolean);
+procedure TQtComboBox.setEditable(const AValue: Boolean);
 begin
   QComboBox_setEditable(QComboBoxH(Widget), AValue);
   if not AValue then
@@ -4530,6 +4678,53 @@ begin
   Result := QAbstractSpinBox_create();
 end;
 
+function TQtAbstractSpinBox.getMaxLength: Integer;
+begin
+  if LineEdit <> nil then
+    Result := QLineEdit_maxLength(LineEdit);
+end;
+
+function TQtAbstractSpinBox.getSelectionStart: Integer;
+begin
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+    Result := QLineEdit_selectionStart(LineEdit)
+  else
+    Result := FSelStart;
+end;
+
+function TQtAbstractSpinBox.getSelectionLength: Integer;
+var
+  W: WideString;
+begin
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+  begin
+    QLineEdit_selectedText(LineEdit, @W);
+    Result := Length(W);
+  end
+  else
+    Result := FSelLength;
+end;
+
+procedure TQtAbstractSpinBox.setEchoMode(const AMode: QLineEditEchoMode);
+begin
+  if LineEdit <> nil then
+    QLineEdit_setEchoMode(LineEdit, AMode);
+end;
+
+procedure TQtAbstractSpinBox.setMaxLength(const ALength: Integer);
+begin
+  if LineEdit <> nil then
+    QLineEdit_setMaxLength(LineEdit, ALength);
+end;
+
+procedure TQtAbstractSpinBox.setSelection(const AStart, ALength: Integer);
+begin
+  FSelStart := AStart;
+  FSelLength := ALength;
+  if LineEdit <> nil then
+    QLineEdit_setSelection(LineEdit, AStart, ALength);
+end;
+
 function TQtAbstractSpinBox.getReadOnly: Boolean;
 begin
   {$ifdef VerboseQt}
@@ -4548,9 +4743,6 @@ end;
 
 procedure TQtAbstractSpinBox.setReadOnly(const r: Boolean);
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtAbstractSpinBox.SetReadOnly');
-  {$endif}
   QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(Widget), r);
 end;
 

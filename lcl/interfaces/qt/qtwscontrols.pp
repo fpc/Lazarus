@@ -339,6 +339,7 @@ begin
     Exit;
 
   AText := UTF8Encode(TQtWidget(AWinControl.Handle).getText);
+  Result := True;
 end;
 
 class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;

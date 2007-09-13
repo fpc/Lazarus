@@ -84,22 +84,16 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   public
-    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
-    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
-    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
@@ -158,8 +152,8 @@ type
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
@@ -179,18 +173,9 @@ type
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
-  public
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-
     //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); override;
   end;
 
@@ -708,16 +693,6 @@ begin
   Result := TQtTextEdit(ACustomMemo.Handle).FList;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomMemo.SetMaxLength
-  Params:  NewLength integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
-begin
-  {qt QTextEdit doesn't have such property  !}
-end;
-
 class procedure TQtWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
   const NewScrollbars: TScrollStyle);
 begin
@@ -741,46 +716,6 @@ end;
 class procedure TQtWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 begin
   TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
-end;
-
-class procedure TQtWSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit;
-  NewMode: TEchoMode);
-begin
-  {$note implement}
-end;
-
-class function TQtWSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit): integer;
-begin
-  Result := TQtTextEdit(ACustomEdit.Handle).getSelectionStart;
-end;
-
-class function TQtWSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit): integer;
-begin
-  Result :=
-    TQtTextEdit(ACustomEdit.Handle).getSelectionEnd -
-    TQtTextEdit(ACustomEdit.Handle).getSelectionStart;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomMemo.SetReadOnly
-  Params:  NewReadOnly boolean
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
-begin
-  TQtTextEdit(ACustomEdit.Handle).setReadOnly(NewReadOnly);
-end;
-
-class procedure TQtWSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;
-  NewStart: integer);
-begin
-  TQtTextEdit(ACustomEdit.Handle).setSelection(NewStart, GetSelLength(ACustomEdit));
-end;
-
-class procedure TQtWSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
-  NewLength: integer);
-begin
-  TQtTextEdit(ACustomEdit.Handle).setSelection(GetSelStart(ACustomEdit), NewLength);
 end;
 
 { TQtWSCustomEdit }
@@ -807,11 +742,16 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetEchoMode') then
     Exit;
 
-  TQtLineEdit(ACustomEdit.Handle).setEchoMode(QLineEditEchoMode(Ord(NewMode)));
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setEchoMode(QLineEditEchoMode(Ord(NewMode)));
 end;
 
 {------------------------------------------------------------------------------
@@ -821,14 +761,23 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
   MaxLength: Integer;
 begin
-  {qt doesn't accept -1 !}
-  MaxLength := TQtLineEdit(ACustomEdit.Handle).getMaxLength;
-  if (NewLength <= 0) or (NewLength > QtMaxEditLength) then
-    NewLength := QtMaxEditLength;
-  if NewLength <> MaxLength then
-    TQtLineEdit(ACustomEdit.Handle).setMaxLength(NewLength);
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetMaxLength') then
+    Exit;
+
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+  begin
+    // qt doesn't accept -1
+    MaxLength := QtEdit.getMaxLength;
+    if (NewLength <= 0) or (NewLength > QtMaxEditLength) then
+      NewLength := QtMaxEditLength;
+    if NewLength <> MaxLength then
+      QtEdit.setMaxLength(NewLength);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -837,52 +786,76 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
-  TQtLineEdit(ACustomEdit.Handle).setReadOnly(NewReadOnly);
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
+    Exit;
+
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setReadOnly(NewReadOnly);
 end;
 
 class function TQtWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var
-  LineEdit: TQtLineEdit;
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
-  LineEdit := TQtLineEdit(ACustomEdit.Handle);
-  if LineEdit.hasSelectedText then
-    Result := LineEdit.getSelectionStart
-  else
-    Result := LineEdit.FSelStart;
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
+    Exit;
+
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    Result := QtEdit.getSelectionStart;
 end;
 
 class function TQtWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
-  LineEdit: TQtLineEdit;
-  W: WideString;
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
-  LineEdit := TQtLineEdit(ACustomEdit.Handle);
-  if LineEdit.hasSelectedText then
-  begin
-    W := TQtLineEdit(ACustomEdit.Handle).getSelectedText;
-    Result := Length(W);
-  end
-  else
-    Result := LineEdit.FSelLength;
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
+    Exit;
+
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    Result := QtEdit.getSelectionLength;
 end;
 
 class procedure TQtWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
   ALength: Integer;
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
+    Exit;
+
+  Widget := TQtWidget(ACustomEdit.Handle);
   ALength := GetSelLength(ACustomEdit);
-  TQtLineEdit(ACustomEdit.Handle).setSelection(NewStart, ALength);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setSelection(NewStart, ALength);
 end;
 
 class procedure TQtWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
   AStart: Integer;
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
+    Exit;
+
+  Widget := TQtWidget(ACustomEdit.Handle);
   AStart := GetSelStart(ACustomEdit);
-  TQtLineEdit(ACustomEdit.Handle).setSelection(AStart, NewLength);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setSelection(AStart, NewLength);
 end;
 
 { TQtWSStaticText }
@@ -1182,34 +1155,6 @@ begin
   Result := THandle(QtComboBox);
 end;
 
-class function TQtWSCustomComboBox.GetSelStart(
-  const ACustomComboBox: TCustomComboBox): integer;
-var
-  LineEdit: QLineEditH;
-begin
-  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
-  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
-    Result := QLineEdit_selectionStart(LineEdit)
-  else
-    Result := TQtComboBox(ACustomComboBox.Handle).FSelStart;
-end;
-
-class function TQtWSCustomComboBox.GetSelLength(
-  const ACustomComboBox: TCustomComboBox): integer;
-var
-  LineEdit: QLineEditH;
-  W: WideString;
-begin
-  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
-  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
-  begin
-    QLineEdit_selectedText(LineEdit, @W);
-    Result := Length(W);
-  end
-  else
-    Result := TQtComboBox(ACustomComboBox.Handle).FSelLength;
-end;
-
 {------------------------------------------------------------------------------
   Method: TQtWSCustomComboBox.GetItemIndex
   Params:  None
@@ -1249,36 +1194,6 @@ begin
   TQtComboBox(ACustomComboBox.Handle).setMaxVisibleItems(NewCount);
 end;
 
-class procedure TQtWSCustomComboBox.SetSelStart(
-  const ACustomComboBox: TCustomComboBox; NewStart: integer);
-var
-  LineEdit: QLineEditH;
-  ALength: Integer;
-begin
-  TQtComboBox(ACustomComboBox.Handle).FSelStart := NewStart;
-  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
-  if LineEdit <> nil then
-  begin
-    ALength := GetSelLength(ACustomComboBox);
-    QLineEdit_setSelection(LineEdit, NewStart, ALength);
-  end;
-end;
-
-class procedure TQtWSCustomComboBox.SetSelLength(
-  const ACustomComboBox: TCustomComboBox; NewLength: integer);
-var
-  LineEdit: QLineEditH;
-  AStart: Integer;
-begin
-  TQtComboBox(ACustomComboBox.Handle).FSelLength := NewLength;
-  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
-  if LineEdit <> nil then
-  begin
-    AStart := GetSelStart(ACustomComboBox);
-    QLineEdit_setSelection(LineEdit, AStart, NewLength);
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Method: TQtWSCustomComboBox.SetItemIndex
   Params:  None
@@ -1287,26 +1202,6 @@ end;
 class procedure TQtWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
   TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
-end;
-
-class procedure TQtWSCustomComboBox.SetMaxLength(
-  const ACustomComboBox: TCustomComboBox; NewLength: integer);
-var
-  LineEdit: QLineEditH;
-  MaxLength: Integer;
-begin
-  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
-
-  if LineEdit <> nil then
-  begin
-    if (NewLength <= 0) or (NewLength > QtMaxEditLength)  then
-      NewLength := QtMaxEditLength;
-
-    MaxLength := QLineEdit_maxLength(LineEdit);
-    
-    if MaxLength <> NewLength then
-      QLineEdit_setMaxLength(LineEdit, NewLength);
-  end;
 end;
 
 class procedure TQtWSCustomComboBox.SetStyle(
@@ -1335,19 +1230,6 @@ begin
     ComboBox.EndUpdate;
   end;
   Result := ComboBox.FList;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomComboBox.SetReadOnly
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean);
-var
-  ComboBoxH: QComboBoxH;
-begin
-  ComboBoxH := QComboBoxH((TQtWidget(ACustomComboBox.Handle).Widget));
-  QComboBox_setEditable(ComboBoxH, not NewReadOnly);
 end;
 
 class procedure TQtWSCustomComboBox.Sort(
