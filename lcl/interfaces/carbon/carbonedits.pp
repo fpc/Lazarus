@@ -953,6 +953,7 @@ begin
   end;
   
   inherited SetText((LCLObject as TCustomFloatSpinEdit).ValueToStr(FValue));
+  inherited TextDidChange;
 end;
 
 {------------------------------------------------------------------------------
