@@ -188,6 +188,7 @@ type
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   public
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
@@ -767,6 +768,12 @@ begin
   TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
 end;
 
+class procedure TQtWSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit;
+  NewMode: TEchoMode);
+begin
+  {$note implement}
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomMemo.GetText
   Params:
@@ -868,6 +875,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetEchoMode') then
+    Exit;
+
   TQtLineEdit(ACustomEdit.Handle).setEchoMode(QLineEditEchoMode(Ord(NewMode)));
 end;
 
@@ -909,16 +919,29 @@ begin
 end;
 
 class function TQtWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+var
+  LineEdit: TQtLineEdit;
 begin
-  Result := TQtLineEdit(ACustomEdit.Handle).getSelectionStart;
+  LineEdit := TQtLineEdit(ACustomEdit.Handle);
+  if LineEdit.hasSelectedText then
+    Result := LineEdit.getSelectionStart
+  else
+    Result := LineEdit.FSelStart;
 end;
 
 class function TQtWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
+  LineEdit: TQtLineEdit;
   W: WideString;
 begin
-  W := TQtLineEdit(ACustomEdit.Handle).getSelectedText;
-  Result := Length(W);
+  LineEdit := TQtLineEdit(ACustomEdit.Handle);
+  if LineEdit.hasSelectedText then
+  begin
+    W := TQtLineEdit(ACustomEdit.Handle).getSelectedText;
+    Result := Length(W);
+  end
+  else
+    Result := LineEdit.FSelLength;
 end;
 
 class procedure TQtWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
@@ -1398,7 +1421,7 @@ begin
   if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
     Result := QLineEdit_selectionStart(LineEdit)
   else
-    Result := 0;
+    Result := TQtComboBox(ACustomComboBox.Handle).FSelStart;
 end;
 
 class function TQtWSCustomComboBox.GetSelLength(
@@ -1414,7 +1437,7 @@ begin
     Result := Length(W);
   end
   else
-    Result := 0;
+    Result := TQtComboBox(ACustomComboBox.Handle).FSelLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -1462,6 +1485,7 @@ var
   LineEdit: QLineEditH;
   ALength: Integer;
 begin
+  TQtComboBox(ACustomComboBox.Handle).FSelStart := NewStart;
   LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
   if LineEdit <> nil then
   begin
@@ -1476,6 +1500,7 @@ var
   LineEdit: QLineEditH;
   AStart: Integer;
 begin
+  TQtComboBox(ACustomComboBox.Handle).FSelLength := NewLength;
   LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
   if LineEdit <> nil then
   begin

@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.48 }
+{ Version : 1.49 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -266,6 +266,7 @@ QObjectH = class(TObject) end;
       QScrollBarH = class(QAbstractSliderH) end;
       QSliderH = class(QAbstractSliderH) end;
     QAbstractSpinBoxH = class(QWidgetH) end;
+      QLCLAbstractSpinBoxH = class(QAbstractSpinBoxH) end;
       QDoubleSpinBoxH = class(QAbstractSpinBoxH) end;
       QSpinBoxH = class(QAbstractSpinBoxH) end;
     QCalendarWidgetH = class(QWidgetH) end;
@@ -869,6 +870,7 @@ const
     QtWA_Moved = 43 { $2b };
     QtWA_PendingUpdate = 44 { $2c };
     QtWA_InvalidSize = 45 { $2d };
+    QtWA_MacBrushedMetal = 46 { $2e };
     QtWA_MacMetalStyle = 46 { $2e };
     QtWA_CustomWhatsThis = 47 { $2f };
     QtWA_LayoutOnEntireRect = 48 { $30 };
@@ -910,7 +912,18 @@ const
     QtWA_AlwaysShowToolTips = 84 { $54 };
     QtWA_MacOpaqueSizeGrip = 85 { $55 };
     QtWA_SetStyle = 86 { $56 };
-    QtWA_AttributeCount = 87 { $57 };
+    QtWA_SetLocale = 87 { $57 };
+    QtWA_MacShowFocusRect = 88 { $58 };
+    QtWA_MacNormalSize = 89 { $59 };
+    QtWA_MacSmallSize = 90 { $5a };
+    QtWA_MacMiniSize = 91 { $5b };
+    QtWA_LayoutUsesWidgetRect = 92 { $5c };
+    QtWA_StyledBackground = 93 { $5d };
+    QtWA_MSWindowsUseDirect3D = 94 { $5e };
+    QtWA_CanHostQMdiSubWindowTitleBar = 95 { $5f };
+    QtWA_MacAlwaysShowToolWindow = 96 { $60 };
+    QtWA_StyleSheet = 97 { $61 };
+    QtWA_AttributeCount = 98 { $62 };
 
 type
   QtKey = cardinal; //  Qt::Key (4)
@@ -1311,6 +1324,14 @@ const
     QtTextEditorInteraction = 19 { $13 };
     QtTextBrowserInteraction = 13 { $d };
 
+type
+  QtEventPriority = cardinal; //  Qt::EventPriority (4)
+
+const
+    QtHighEventPriority = 1 { $1 };
+    QtNormalEventPriority = 0 { $0 };
+    QtLowEventPriority = 4294967295 { $ffffffff };
+
 
 
 function QObject_create(parent: QObjectH = nil): QObjectH; cdecl; external QtIntf name 'QObject_create';
@@ -1475,6 +1496,147 @@ type
     QEventTabletLeaveProximity = 172,
     QEventUser = 1000,
     QEventMaxUser = 65535 );
+
+type
+  QEventType = cardinal; //  QEvent::Type (4)
+
+const
+    QEventNone = 0 { $0 };
+    QEventTimer = 1 { $1 };
+    QEventMouseButtonPress = 2 { $2 };
+    QEventMouseButtonRelease = 3 { $3 };
+    QEventMouseButtonDblClick = 4 { $4 };
+    QEventMouseMove = 5 { $5 };
+    QEventKeyPress = 6 { $6 };
+    QEventKeyRelease = 7 { $7 };
+    QEventFocusIn = 8 { $8 };
+    QEventFocusOut = 9 { $9 };
+    QEventEnter = 10 { $a };
+    QEventLeave = 11 { $b };
+    QEventPaint = 12 { $c };
+    QEventMove = 13 { $d };
+    QEventResize = 14 { $e };
+    QEventCreate = 15 { $f };
+    QEventDestroy = 16 { $10 };
+    QEventShow = 17 { $11 };
+    QEventHide = 18 { $12 };
+    QEventClose = 19 { $13 };
+    QEventQuit = 20 { $14 };
+    QEventParentChange = 21 { $15 };
+    QEventParentAboutToChange = 131 { $83 };
+    QEventThreadChange = 22 { $16 };
+    QEventWindowActivate = 24 { $18 };
+    QEventWindowDeactivate = 25 { $19 };
+    QEventShowToParent = 26 { $1a };
+    QEventHideToParent = 27 { $1b };
+    QEventWheel = 31 { $1f };
+    QEventWindowTitleChange = 33 { $21 };
+    QEventWindowIconChange = 34 { $22 };
+    QEventApplicationWindowIconChange = 35 { $23 };
+    QEventApplicationFontChange = 36 { $24 };
+    QEventApplicationLayoutDirectionChange = 37 { $25 };
+    QEventApplicationPaletteChange = 38 { $26 };
+    QEventPaletteChange = 39 { $27 };
+    QEventClipboard = 40 { $28 };
+    QEventSpeech = 42 { $2a };
+    QEventMetaCall = 43 { $2b };
+    QEventSockAct = 50 { $32 };
+    QEventWinEventAct = 132 { $84 };
+    QEventDeferredDelete = 52 { $34 };
+    QEventDragEnter = 60 { $3c };
+    QEventDragMove = 61 { $3d };
+    QEventDragLeave = 62 { $3e };
+    QEventDrop = 63 { $3f };
+    QEventDragResponse = 64 { $40 };
+    QEventChildAdded = 68 { $44 };
+    QEventChildPolished = 69 { $45 };
+    QEventChildRemoved = 71 { $47 };
+    QEventShowWindowRequest = 73 { $49 };
+    QEventPolishRequest = 74 { $4a };
+    QEventPolish = 75 { $4b };
+    QEventLayoutRequest = 76 { $4c };
+    QEventUpdateRequest = 77 { $4d };
+    QEventUpdateLater = 78 { $4e };
+    QEventEmbeddingControl = 79 { $4f };
+    QEventActivateControl = 80 { $50 };
+    QEventDeactivateControl = 81 { $51 };
+    QEventContextMenu = 82 { $52 };
+    QEventInputMethod = 83 { $53 };
+    QEventAccessibilityPrepare = 86 { $56 };
+    QEventTabletMove = 87 { $57 };
+    QEventLocaleChange = 88 { $58 };
+    QEventLanguageChange = 89 { $59 };
+    QEventLayoutDirectionChange = 90 { $5a };
+    QEventStyle = 91 { $5b };
+    QEventTabletPress = 92 { $5c };
+    QEventTabletRelease = 93 { $5d };
+    QEventOkRequest = 94 { $5e };
+    QEventHelpRequest = 95 { $5f };
+    QEventIconDrag = 96 { $60 };
+    QEventFontChange = 97 { $61 };
+    QEventEnabledChange = 98 { $62 };
+    QEventActivationChange = 99 { $63 };
+    QEventStyleChange = 100 { $64 };
+    QEventIconTextChange = 101 { $65 };
+    QEventModifiedChange = 102 { $66 };
+    QEventMouseTrackingChange = 109 { $6d };
+    QEventWindowBlocked = 103 { $67 };
+    QEventWindowUnblocked = 104 { $68 };
+    QEventWindowStateChange = 105 { $69 };
+    QEventToolTip = 110 { $6e };
+    QEventWhatsThis = 111 { $6f };
+    QEventStatusTip = 112 { $70 };
+    QEventActionChanged = 113 { $71 };
+    QEventActionAdded = 114 { $72 };
+    QEventActionRemoved = 115 { $73 };
+    QEventFileOpen = 116 { $74 };
+    QEventShortcut = 117 { $75 };
+    QEventShortcutOverride = 51 { $33 };
+    QEventWhatsThisClicked = 118 { $76 };
+    QEventToolBarChange = 120 { $78 };
+    QEventApplicationActivate = 121 { $79 };
+    QEventApplicationActivated = 121 { $79 };
+    QEventApplicationDeactivate = 122 { $7a };
+    QEventApplicationDeactivated = 122 { $7a };
+    QEventQueryWhatsThis = 123 { $7b };
+    QEventEnterWhatsThisMode = 124 { $7c };
+    QEventLeaveWhatsThisMode = 125 { $7d };
+    QEventZOrderChange = 126 { $7e };
+    QEventHoverEnter = 127 { $7f };
+    QEventHoverLeave = 128 { $80 };
+    QEventHoverMove = 129 { $81 };
+    QEventAccessibilityHelp = 119 { $77 };
+    QEventAccessibilityDescription = 130 { $82 };
+    QEventAcceptDropsChange = 152 { $98 };
+    QEventMenubarUpdated = 153 { $99 };
+    QEventZeroTimerEvent = 154 { $9a };
+    QEventGraphicsSceneMouseMove = 155 { $9b };
+    QEventGraphicsSceneMousePress = 156 { $9c };
+    QEventGraphicsSceneMouseRelease = 157 { $9d };
+    QEventGraphicsSceneMouseDoubleClick = 158 { $9e };
+    QEventGraphicsSceneContextMenu = 159 { $9f };
+    QEventGraphicsSceneHoverEnter = 160 { $a0 };
+    QEventGraphicsSceneHoverMove = 161 { $a1 };
+    QEventGraphicsSceneHoverLeave = 162 { $a2 };
+    QEventGraphicsSceneHelp = 163 { $a3 };
+    QEventGraphicsSceneDragEnter = 164 { $a4 };
+    QEventGraphicsSceneDragMove = 165 { $a5 };
+    QEventGraphicsSceneDragLeave = 166 { $a6 };
+    QEventGraphicsSceneDrop = 167 { $a7 };
+    QEventGraphicsSceneWheel = 168 { $a8 };
+    QEventKeyboardLayoutChange = 169 { $a9 };
+    QEventDynamicPropertyChange = 170 { $aa };
+    QEventTabletEnterProximity = 171 { $ab };
+    QEventTabletLeaveProximity = 172 { $ac };
+    QEventNonClientAreaMouseMove = 173 { $ad };
+    QEventNonClientAreaMouseButtonPress = 174 { $ae };
+    QEventNonClientAreaMouseButtonRelease = 175 { $af };
+    QEventNonClientAreaMouseButtonDblClick = 176 { $b0 };
+    QEventMacSizeChange = 177 { $b1 };
+    QEventContentsRectChange = 178 { $b2 };
+    QEventUser = 1000 { $3e8 };
+    QEventMaxUser = 65535 { $ffff };
+
 
 function QEvent_create(_type: QEventType): QEventH; cdecl; external QtIntf name 'QEvent_create';
 procedure QEvent_destroy(handle: QEventH); cdecl; external QtIntf name 'QEvent_destroy'; 
@@ -1658,7 +1820,8 @@ const
     QVariantTextLength = 78 { $4e };
     QVariantTextFormat = 79 { $4f };
     QVariantMatrix = 80 { $50 };
-    QVariantLastGuiType = 80 { $50 };
+    QVariantTransform = 81 { $51 };
+    QVariantLastGuiType = 81 { $51 };
     QVariantUserType = 127 { $7f };
     QVariantLastType = 4294967295 { $ffffffff };
 
@@ -2400,6 +2563,7 @@ const
     QLocaleNauruLanguage = 83 { $53 };
     QLocaleNepali = 84 { $54 };
     QLocaleNorwegian = 85 { $55 };
+    QLocaleNorwegianBokmal = 85 { $55 };
     QLocaleOccitan = 86 { $56 };
     QLocaleOriya = 87 { $57 };
     QLocalePashto = 88 { $58 };
@@ -2455,12 +2619,33 @@ const
     QLocaleYoruba = 138 { $8a };
     QLocaleZhuang = 139 { $8b };
     QLocaleZulu = 140 { $8c };
+    QLocaleNorwegianNynorsk = 141 { $8d };
     QLocaleNynorsk = 141 { $8d };
     QLocaleBosnian = 142 { $8e };
     QLocaleDivehi = 143 { $8f };
     QLocaleManx = 144 { $90 };
     QLocaleCornish = 145 { $91 };
-    QLocaleLastLanguage = 145 { $91 };
+    QLocaleAkan = 146 { $92 };
+    QLocaleKonkani = 147 { $93 };
+    QLocaleGa = 148 { $94 };
+    QLocaleIgbo = 149 { $95 };
+    QLocaleKamba = 150 { $96 };
+    QLocaleSyriac = 151 { $97 };
+    QLocaleBlin = 152 { $98 };
+    QLocaleGeez = 153 { $99 };
+    QLocaleKoro = 154 { $9a };
+    QLocaleSidamo = 155 { $9b };
+    QLocaleAtsam = 156 { $9c };
+    QLocaleTigre = 157 { $9d };
+    QLocaleJju = 158 { $9e };
+    QLocaleFriulian = 159 { $9f };
+    QLocaleVenda = 160 { $a0 };
+    QLocaleEwe = 161 { $a1 };
+    QLocaleWalamo = 162 { $a2 };
+    QLocaleHawaiian = 163 { $a3 };
+    QLocaleTyap = 164 { $a4 };
+    QLocaleChewa = 165 { $a5 };
+    QLocaleLastLanguage = 165 { $a5 };
 
 type
   QLocaleCountry = cardinal; //  QLocale::Country (4)
@@ -6100,6 +6285,8 @@ type
   QAbstractSpinBox_editingFinished_Event = procedure () of object cdecl;
 
 
+function QLCLAbstractSpinBox_lineEditHandle(protectedhandle: QAbstractSpinBoxH): QLineEditH; cdecl; external QtIntf name 'QLCLAbstractSpinBox_lineEditHandle';
+
 function QSpinBox_create(parent: QWidgetH = nil): QSpinBoxH; cdecl; external QtIntf name 'QSpinBox_create';
 procedure QSpinBox_destroy(handle: QSpinBoxH); cdecl; external QtIntf name 'QSpinBox_destroy'; 
 function QSpinBox_value(handle: QSpinBoxH): Integer; cdecl; external QtIntf name 'QSpinBox_value';
@@ -8157,6 +8344,100 @@ type
     QStyleSP_CustomBase = $f0000000 );
 
 type
+  QStylePixelMetric = cardinal; //  QStyle::PixelMetric (4)
+
+const
+    QStylePM_ButtonMargin = 0 { $0 };
+    QStylePM_ButtonDefaultIndicator = 1 { $1 };
+    QStylePM_MenuButtonIndicator = 2 { $2 };
+    QStylePM_ButtonShiftHorizontal = 3 { $3 };
+    QStylePM_ButtonShiftVertical = 4 { $4 };
+    QStylePM_DefaultFrameWidth = 5 { $5 };
+    QStylePM_SpinBoxFrameWidth = 6 { $6 };
+    QStylePM_ComboBoxFrameWidth = 7 { $7 };
+    QStylePM_MaximumDragDistance = 8 { $8 };
+    QStylePM_ScrollBarExtent = 9 { $9 };
+    QStylePM_ScrollBarSliderMin = 10 { $a };
+    QStylePM_SliderThickness = 11 { $b };
+    QStylePM_SliderControlThickness = 12 { $c };
+    QStylePM_SliderLength = 13 { $d };
+    QStylePM_SliderTickmarkOffset = 14 { $e };
+    QStylePM_SliderSpaceAvailable = 15 { $f };
+    QStylePM_DockWidgetSeparatorExtent = 16 { $10 };
+    QStylePM_DockWidgetHandleExtent = 17 { $11 };
+    QStylePM_DockWidgetFrameWidth = 18 { $12 };
+    QStylePM_TabBarTabOverlap = 19 { $13 };
+    QStylePM_TabBarTabHSpace = 20 { $14 };
+    QStylePM_TabBarTabVSpace = 21 { $15 };
+    QStylePM_TabBarBaseHeight = 22 { $16 };
+    QStylePM_TabBarBaseOverlap = 23 { $17 };
+    QStylePM_ProgressBarChunkWidth = 24 { $18 };
+    QStylePM_SplitterWidth = 25 { $19 };
+    QStylePM_TitleBarHeight = 26 { $1a };
+    QStylePM_MenuScrollerHeight = 27 { $1b };
+    QStylePM_MenuHMargin = 28 { $1c };
+    QStylePM_MenuVMargin = 29 { $1d };
+    QStylePM_MenuPanelWidth = 30 { $1e };
+    QStylePM_MenuTearoffHeight = 31 { $1f };
+    QStylePM_MenuDesktopFrameWidth = 32 { $20 };
+    QStylePM_MenuBarPanelWidth = 33 { $21 };
+    QStylePM_MenuBarItemSpacing = 34 { $22 };
+    QStylePM_MenuBarVMargin = 35 { $23 };
+    QStylePM_MenuBarHMargin = 36 { $24 };
+    QStylePM_IndicatorWidth = 37 { $25 };
+    QStylePM_IndicatorHeight = 38 { $26 };
+    QStylePM_ExclusiveIndicatorWidth = 39 { $27 };
+    QStylePM_ExclusiveIndicatorHeight = 40 { $28 };
+    QStylePM_CheckListButtonSize = 41 { $29 };
+    QStylePM_CheckListControllerSize = 42 { $2a };
+    QStylePM_DialogButtonsSeparator = 43 { $2b };
+    QStylePM_DialogButtonsButtonWidth = 44 { $2c };
+    QStylePM_DialogButtonsButtonHeight = 45 { $2d };
+    QStylePM_MdiSubWindowFrameWidth = 46 { $2e };
+    QStylePM_MDIFrameWidth = 46 { $2e };
+    QStylePM_MdiSubWindowMinimizedWidth = 47 { $2f };
+    QStylePM_MDIMinimizedWidth = 47 { $2f };
+    QStylePM_HeaderMargin = 48 { $30 };
+    QStylePM_HeaderMarkSize = 49 { $31 };
+    QStylePM_HeaderGripMargin = 50 { $32 };
+    QStylePM_TabBarTabShiftHorizontal = 51 { $33 };
+    QStylePM_TabBarTabShiftVertical = 52 { $34 };
+    QStylePM_TabBarScrollButtonWidth = 53 { $35 };
+    QStylePM_ToolBarFrameWidth = 54 { $36 };
+    QStylePM_ToolBarHandleExtent = 55 { $37 };
+    QStylePM_ToolBarItemSpacing = 56 { $38 };
+    QStylePM_ToolBarItemMargin = 57 { $39 };
+    QStylePM_ToolBarSeparatorExtent = 58 { $3a };
+    QStylePM_ToolBarExtensionExtent = 59 { $3b };
+    QStylePM_SpinBoxSliderHeight = 60 { $3c };
+    QStylePM_DefaultTopLevelMargin = 61 { $3d };
+    QStylePM_DefaultChildMargin = 62 { $3e };
+    QStylePM_DefaultLayoutSpacing = 63 { $3f };
+    QStylePM_ToolBarIconSize = 64 { $40 };
+    QStylePM_ListViewIconSize = 65 { $41 };
+    QStylePM_IconViewIconSize = 66 { $42 };
+    QStylePM_SmallIconSize = 67 { $43 };
+    QStylePM_LargeIconSize = 68 { $44 };
+    QStylePM_FocusFrameVMargin = 69 { $45 };
+    QStylePM_FocusFrameHMargin = 70 { $46 };
+    QStylePM_ToolTipLabelFrameWidth = 71 { $47 };
+    QStylePM_CheckBoxLabelSpacing = 72 { $48 };
+    QStylePM_TabBarIconSize = 73 { $49 };
+    QStylePM_SizeGripSize = 74 { $4a };
+    QStylePM_DockWidgetTitleMargin = 75 { $4b };
+    QStylePM_MessageBoxIconSize = 76 { $4c };
+    QStylePM_ButtonIconSize = 77 { $4d };
+    QStylePM_DockWidgetTitleBarButtonMargin = 78 { $4e };
+    QStylePM_RadioButtonLabelSpacing = 79 { $4f };
+    QStylePM_LayoutLeftMargin = 80 { $50 };
+    QStylePM_LayoutTopMargin = 81 { $51 };
+    QStylePM_LayoutRightMargin = 82 { $52 };
+    QStylePM_LayoutBottomMargin = 83 { $53 };
+    QStylePM_LayoutHorizontalSpacing = 84 { $54 };
+    QStylePM_LayoutVerticalSpacing = 85 { $55 };
+    QStylePM_CustomBase = 4026531840 { $f0000000 };
+
+type
   QStyleStyleHint = cardinal; //  QStyle::StyleHint (4)
 
 const
@@ -8238,6 +8519,11 @@ const
     QStyleSH_MessageBox_CenterButtons = 74 { $4a };
     QStyleSH_Menu_SelectionWrap = 75 { $4b };
     QStyleSH_ItemView_MovementWithoutUpdatingSelection = 76 { $4c };
+    QStyleSH_ToolTip_Mask = 77 { $4d };
+    QStyleSH_FocusFrame_AboveWidget = 78 { $4e };
+    QStyleSH_TextControl_FocusIndicatorTextCharFormat = 79 { $4f };
+    QStyleSH_WizardStyle = 80 { $50 };
+    QStyleSH_ItemView_ArrowKeysNavigateIntoChildren = 81 { $51 };
     QStyleSH_CustomBase = 4026531840 { $f0000000 };
 
 
@@ -8696,6 +8982,18 @@ const
     QStyleOptionToolButtonType = 983043 { $f0003 };
 
 type
+  QStyleOptionToolButtonToolButtonFeature = cardinal; //  QStyleOptionToolButton::ToolButtonFeature (4)
+  QStyleOptionToolButtonToolButtonFeatures = QStyleOptionToolButtonToolButtonFeature; // QFlags<>
+
+const
+    QStyleOptionToolButtonNone = 0 { $0 };
+    QStyleOptionToolButtonArrow = 1 { $1 };
+    QStyleOptionToolButtonMenu = 4 { $4 };
+    QStyleOptionToolButtonMenuButtonPopup = 4 { $4 };
+    QStyleOptionToolButtonPopupDelay = 8 { $8 };
+    QStyleOptionToolButtonHasMenu = 16 { $10 };
+
+type
   QStyleOptionComboBoxStyleOptionType = cardinal; //  QStyleOptionComboBox::StyleOptionType (4)
 
 const
@@ -8736,6 +9034,12 @@ type
 
 const
     QStyleHintReturnMaskType = 61441 { $f001 };
+
+type
+  QStyleHintReturnVariantStyleOptionType = cardinal; //  QStyleHintReturnVariant::StyleOptionType (4)
+
+const
+    QStyleHintReturnVariantType = 61442 { $f002 };
 
 
 function QStyleOption_version(handle : QStyleOptionH) : Integer; cdecl; external QtIntf name 'QStyleOption_version';

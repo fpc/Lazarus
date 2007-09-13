@@ -58,7 +58,7 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -128,10 +128,17 @@ begin
   Result := TQtAbstractSpinBox(ACustomFloatSpinEdit.Handle).getValue;
 end;
 
-class procedure TQtWSCustomFloatSpinEdit.SetCharCase(
-  const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+class procedure TQtWSCustomFloatSpinEdit.SetEchoMode(
+  const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+var
+  LineEdit: QLineEditH;
 begin
-  {$note implement}
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetEchoMode') then
+    Exit;
+
+  LineEdit := TQtAbstractSpinBox(ACustomEdit.Handle).LineEdit;
+  if (LineEdit <> nil) then
+    QLineEdit_setEchoMode(LineEdit, QLineEditEchoMode(Ord(NewMode)));
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
@@ -151,28 +158,57 @@ end;
 
 class function TQtWSCustomFloatSpinEdit.GetSelStart(
   const ACustomEdit: TCustomEdit): integer;
+var
+  LineEdit: QLineEditH;
 begin
-  {$note implement}
-  Result := 0;
+  LineEdit := TQtAbstractSpinBox(ACustomEdit.Handle).LineEdit;
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+    Result := QLineEdit_selectionStart(LineEdit)
+  else
+    Result := TQtAbstractSpinBox(ACustomEdit.Handle).FSelStart;
 end;
 
 class function TQtWSCustomFloatSpinEdit.GetSelLength(
   const ACustomEdit: TCustomEdit): integer;
+var
+  LineEdit: QLineEditH;
+  W: WideString;
 begin
-  {$note implement}
-  Result := 0;
+  LineEdit := TQtAbstractSpinBox(ACustomEdit.Handle).LineEdit;
+  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
+  begin
+    QLineEdit_selectedText(LineEdit, @W);
+    Result := Length(W);
+  end
+  else
+    Result := TQtAbstractSpinBox(ACustomEdit.Handle).FSelLength;
 end;
 
 class function  TQtWSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  LineEdit: QLineEditH;
+  W: WideString;
 begin
-  {$note implement}
-  Result := True;
+  LineEdit := TQtAbstractSpinBox(AWinControl.Handle).LineEdit;
+  Result := LineEdit <> nil;
+  if Result then
+  begin
+    QLineEdit_text(LineEdit, @W);
+    AText := W;
+  end
+  else
+    AText := '';
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  LineEdit: QLineEditH;
+  W: WideString;
 begin
-  // perhaps QSpinBox_setSuffix() goes here one day (if we get LCL support)
-  {$note implement}
+  LineEdit := TQtAbstractSpinBox(AWinControl.Handle).LineEdit;
+  W := AText;
+  if (LineEdit <> nil) then
+    QLineEdit_setText(LineEdit, @W)
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
@@ -182,14 +218,32 @@ end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetSelLength(
   const ACustomEdit: TCustomEdit; NewLength: integer);
+var
+  LineEdit: QLineEditH;
+  AStart: Integer;
 begin
-  {$note implement}
+  TQtAbstractSpinBox(ACustomEdit.Handle).FSelLength := NewLength;
+  LineEdit := TQtAbstractSpinBox(ACustomEdit.Handle).LineEdit;
+  if LineEdit <> nil then
+  begin
+    AStart := GetSelStart(ACustomEdit);
+    QLineEdit_setSelection(LineEdit, AStart, NewLength);
+  end;
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.SetSelStart(
   const ACustomEdit: TCustomEdit; NewStart: integer);
+var
+  LineEdit: QLineEditH;
+  ALength: Integer;
 begin
-  {$note implement}
+  TQtAbstractSpinBox(ACustomEdit.Handle).FSelStart := NewStart;
+  LineEdit := TQtAbstractSpinBox(ACustomEdit.Handle).LineEdit;
+  if LineEdit <> nil then
+  begin
+    ALength := GetSelLength(ACustomEdit);
+    QLineEdit_setSelection(LineEdit, NewStart, ALength);
+  end;
 end;
 
 

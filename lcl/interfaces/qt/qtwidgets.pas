@@ -426,10 +426,13 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    FSelStart: Integer;
+    FSelLength: Integer;
     function getMaxLength: Integer;
     function getSelectedText: WideString;
     function getSelectionStart: Integer;
     function getText: WideString;
+    function hasSelectedText: Boolean;
     procedure setColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
@@ -512,6 +515,9 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
+    // used by WS class to store values if no selection
+    FSelStart: Integer;
+    FSelLength: Integer;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
@@ -548,6 +554,10 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    // used by WS class to store values if no selection
+    FSelStart: Integer;
+    FSelLength: Integer;
+  
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
     procedure setMinimum(const v: single); virtual; abstract;
@@ -2510,11 +2520,8 @@ begin
 end;
 
 function TQtWidget.CreateWidget(const Params: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
-  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
-  Widget := QWidget_create(Parent);
+  Widget := QWidget_create();
   Result := Widget;
 end;
 
@@ -2696,7 +2703,6 @@ end;
 function TQtPushButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Str: WideString;
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2704,8 +2710,7 @@ begin
   {$endif}
 
   Str := UTF8Decode(LCLObject.Caption);
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QPushButton_create(@Str, Parent);
+  Result := QPushButton_create(@Str);
 end;
 
 {------------------------------------------------------------------------------
@@ -3049,8 +3054,6 @@ end;
 { TQtStaticText }
 
 function TQtStaticText.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -3246,15 +3249,13 @@ end;
 
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  Parent: QWidgetH;
   Layout: QBoxLayoutH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtGroupBox.Create ');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QGroupBox_create(Parent);
+  Result := QGroupBox_create();
   FCentralWidget := QWidget_create(Result, 0);
   Layout := QVBoxLayout_create(Result);
   QLayout_addWidget(Layout, FCentralWidget);
@@ -3287,15 +3288,12 @@ end;
 { TQtFrame }
 
 function TQtFrame.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtFrame.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QFrame_create(Parent);
+  Result := QFrame_create();
   QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -3354,22 +3352,16 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtArrow.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtArrow.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QFrame_create(Parent);
+  Result := QFrame_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
-function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams
-  ): QWidgetH;
-var
-  Parent: QWidgetH;
+function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -3379,8 +3371,7 @@ begin
   FSliderPressed := False;
   FSliderReleased:= False;
 
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QAbstractSlider_create(Parent);
+  Result := QAbstractSlider_create();
 end;
 
 procedure TQtAbstractSlider.AttachEvents;
@@ -3652,15 +3643,12 @@ end;
 { TQtScrollBar }
 
 function TQtScrollBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QScrollBar_create(Parent);
+  Result := QScrollBar_create();
 end;
 
 procedure TQtScrollBar.AttachEvents;
@@ -3687,43 +3675,34 @@ end;
 { TQtToolBar }
 
 function TQtToolBar.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtToolBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QToolBar_create(Parent);
+  Result := QToolBar_create();
 end;
 
 { TQtToolButton }
 
 function TQtToolButton.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtToolButton.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QToolButton_create(Parent);
+  Result := QToolButton_create();
 end;
 
 { TQtTrackBar }
 
 function TQtTrackBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QSlider_create(Parent);
+  Result := QSlider_create();
 end;
 
 {------------------------------------------------------------------------------
@@ -3827,16 +3806,14 @@ end;
 
 function TQtLineEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  Parent: QWidgetH;
   Str: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtLineEdit.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
   Str := UTF8Decode((LCLObject as TCustomEdit).Text);
-  Result := QLineEdit_create(@Str, Parent);
+  Result := QLineEdit_create(@Str);
 end;
 
 function TQtLineEdit.getMaxLength: Integer;
@@ -3857,6 +3834,11 @@ end;
 function TQtLineEdit.getText: WideString;
 begin
   QLineEdit_text(QLineEditH(Widget), @Result);
+end;
+
+function TQtLineEdit.hasSelectedText: Boolean;
+begin
+  Result := QLineEdit_hasSelectedText(QLineEditH(Widget));
 end;
 
 procedure TQtLineEdit.AttachEvents;
@@ -3948,6 +3930,8 @@ end;
 
 procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
 begin
+  FSelStart := AStart;
+  FSelLength := ALength;
   if AStart >= 0 then
     QLineEdit_setSelection(QLineEditH(Widget), AStart, ALength);
 end;
@@ -3976,8 +3960,6 @@ end;
 { TQtTextEdit }
 
 function TQtTextEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -4133,15 +4115,12 @@ end;
 { TQtTabWidget }
 
 function TQtTabWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QTabWidget_create(Parent);
+  Result := QTabWidget_create();
 end;
 
 procedure TQtTabWidget.AttachEvents;
@@ -4274,15 +4253,12 @@ begin
 end;
 
 function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QComboBox_create(Parent);
+  Result := QComboBox_create();
   FLineEdit := nil;
   FOwnerDrawn := False;
 end;
@@ -4479,20 +4455,18 @@ end;
 
 function TQtAbstractSpinBox.GetLineEdit: QLineEditH;
 begin
-  // :( bindings has no QAbstractSpinBox_lineEdit(...)
-  Result := nil;
+  if FLineEdit = nil then
+    FLineEdit := QLCLAbstractSpinBox_lineEditHandle(QAbstractSpinBoxH(Widget));
+  Result := FLineEdit;
 end;
 
 function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QAbstractSpinBox_create(Parent);
+  Result := QAbstractSpinBox_create();
 end;
 
 function TQtAbstractSpinBox.getReadOnly: Boolean;
@@ -4551,15 +4525,12 @@ end;
 { TQtFloatSpinBox }
 
 function TQtFloatSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtFloatSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QDoubleSpinBox_create(Parent);
+  Result := QDoubleSpinBox_create();
 end;
 
 function TQtFloatSpinBox.getValue: single;
@@ -4620,15 +4591,12 @@ end;
 { TQtSpinBox }
 
 function TQtSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QSpinBox_create(Parent);
+  Result := QSpinBox_create();
 end;
 
 function TQtSpinBox.getValue: single;
@@ -4683,7 +4651,6 @@ end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  Parent: QWidgetH;
   Text: WideString;
   i: Integer;
 begin
@@ -4691,8 +4658,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQListWidget.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QListWidget_create(Parent);
+  Result := QListWidget_create();
 
   // Sets the initial items
   for I := 0 to TCustomListBox(LCLObject).Items.Count - 1 do
@@ -4907,15 +4873,12 @@ end;
   Returns: Widget (QHeaderViewH)
  ------------------------------------------------------------------------------}
 function TQtHeaderView.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtHeaderView.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QHeaderView_create(QtHorizontal, Parent);
+  Result := QHeaderView_create(QtHorizontal);
 end;
 
 procedure TQtHeaderView.AttachEvents;
@@ -4969,15 +4932,12 @@ end;
   Returns: Widget (QTreeViewH)
  ------------------------------------------------------------------------------}
 function TQtTreeView.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTreeView.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QTreeView_create(Parent);
+  Result := QTreeView_create();
 end;
 
   { TQtTreeWidget }
@@ -4988,15 +4948,12 @@ end;
   Returns: Widget (QTreeWidgetH)
  ------------------------------------------------------------------------------}
 function TQtTreeWidget.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QTreeWidget_create(Parent);
+  Result := QTreeWidget_create();
   
   Header := TQtHeaderView.Create(LCLObject, AParams);
   Header.AttachEvents;
@@ -5592,15 +5549,12 @@ end;
 { TQtProgressBar }
 
 function TQtProgressBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQProgressBar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QProgressBar_create(Parent);
+  Result := QProgressBar_create();
 end;
 
 procedure TQtProgressBar.AttachEvents;
@@ -5667,8 +5621,6 @@ end;
 { TQtStatusBar }
 
 function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -5676,8 +5628,7 @@ begin
   {$endif}
   
   SetLength(APanels, 0);
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QStatusBar_create(Parent);
+  Result := QStatusBar_create();
   
   {TODO: this should be made in initializeWND?
   if (LCLObject as TStatusBar).SimplePanel then
@@ -5713,16 +5664,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtAbstractScrollArea.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
   FViewPortWidget := NiL;
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QScrollArea_create(Parent);
+  Result := QScrollArea_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -5973,15 +5921,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtCalendar.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtCalendar.Create');
   {$endif}
-  Parent := TQtWidget(LCLObject.Parent.Handle).GetContainerWidget;
-  Result := QCalendarWidget_create(Parent);
+  Result := QCalendarWidget_create();
 end;
 
 procedure TQtCalendar.AttachEvents;

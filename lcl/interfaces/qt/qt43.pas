@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.48 }
+{ Version : 1.49 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -269,6 +269,7 @@ QObjectH = class(TObject) end;
       QScrollBarH = class(QAbstractSliderH) end;
       QSliderH = class(QAbstractSliderH) end;
     QAbstractSpinBoxH = class(QWidgetH) end;
+      QLCLAbstractSpinBoxH = class(QAbstractSpinBoxH) end;
       QDoubleSpinBoxH = class(QAbstractSpinBoxH) end;
       QSpinBoxH = class(QAbstractSpinBoxH) end;
     QCalendarWidgetH = class(QWidgetH) end;
@@ -6404,6 +6405,8 @@ procedure QAbstractSpinBox_clear(handle: QAbstractSpinBoxH); cdecl; external QtI
 type
   QAbstractSpinBox_editingFinished_Event = procedure () of object cdecl;
 
+
+function QLCLAbstractSpinBox_lineEditHandle(protectedhandle: QAbstractSpinBoxH): QLineEditH; cdecl; external QtIntf name 'QLCLAbstractSpinBox_lineEditHandle';
 
 function QSpinBox_create(parent: QWidgetH = nil): QSpinBoxH; cdecl; external QtIntf name 'QSpinBox_create';
 procedure QSpinBox_destroy(handle: QSpinBoxH); cdecl; external QtIntf name 'QSpinBox_destroy'; 
