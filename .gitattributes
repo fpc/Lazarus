@@ -322,6 +322,7 @@ components/lazreport/images/designer/fr_topleftcoord.xpm svneol=native#text/x-pi
 components/lazreport/images/designer/fr_tretypefont.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_underline.xpm svneol=native#text/x-pixmap
 components/lazreport/languages/lr_const.de.po svneol=native#text/plain
+components/lazreport/languages/lr_const.es.po svneol=native#text/plain
 components/lazreport/languages/lr_const.fr.po svneol=native#text/plain
 components/lazreport/languages/lr_const.lt.po svneol=native#text/plain
 components/lazreport/languages/lr_const.po svneol=native#text/plain
