@@ -57,7 +57,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   OpenDialog1.InitialDir := ExtractFilePath(Application.ExeName)+'reports';
-  Dbf1.TableName := SetDirSeparators('..\editor2\db\disco.dbf');
+  Dbf1.TableName := SetDirSeparators('..\editor\db\disco.dbf');
   Dbf1.Open;
 end;
 
