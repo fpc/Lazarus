@@ -94,8 +94,7 @@ var
   QtArrow: TQtArrow;
 begin
   QtArrow := TQtArrow(AArrow.Handle);
-  if Assigned(QtArrow) then
-    QtArrow.ArrowType := Ord(AArrowType);
+  QtArrow.ArrowType := Ord(AArrowType);
 end;
 
 initialization

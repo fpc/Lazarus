@@ -1182,10 +1182,10 @@ begin
     QEventHide: SlotShow(False);
     QEventClose:
       begin
-        Result := True;
         QEvent_ignore(Event);
         SlotClose;
-     end;
+        Result := True;
+      end;
     QEventDestroy: SlotDestroy;
     QEventEnter: SlotMouseEnter(Event);
     QEventFocusIn: SlotFocus(True);
