@@ -270,17 +270,17 @@ end;
 class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  QtWidget: TQtWidget;
+  QtPage: TQtPage;
 begin
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomPage.CreateHandle]');
   {$endif}
 
-  QtWidget := TQtPage.Create(AWinControl, AParams);
-  QtWidget.AttachEvents;
+  QtPage := TQtPage.Create(AWinControl, AParams);
+  QtPage.AttachEvents;
 
   // Returns the Handle
-  Result := THandle(QtWidget);
+  Result := THandle(QtPage);
 
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomPage.CreateHandle] Result: ', IntToStr(Result));
@@ -336,12 +336,12 @@ begin
     Bmp := TBitmap.Create;
     try
       ANoteBook.Images.GetBitmap(AChild.ImageIndex, Bmp);
-  		TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, TQtImage(Bmp.Handle).AsIcon, @Str);
+  		TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtPage(AChild.Handle).Widget, TQtImage(Bmp.Handle).AsIcon, @Str);
     finally
       Bmp.Free;
     end;
   end else
-    TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
+    TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtPage(AChild.Handle).Widget, @Str);
 end;
 
 class procedure TQtWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
