@@ -6,8 +6,8 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <IncludeFiles Value="unix/;win32/"/>
-        <OtherUnitFiles Value="unix/;win32/"/>
+        <IncludeFiles Value="unix/;win32/;carbon/"/>
+        <OtherUnitFiles Value="unix/;win32/;carbon/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
@@ -25,7 +25,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="25">
+    <Files Count="27">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -132,6 +132,14 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MiniCUPSLibc"/>
       </Item25>
+      <Item26>
+        <Filename Value="carbon/carbonprinters.inc"/>
+        <Type Value="Include"/>
+      </Item26>
+      <Item27>
+        <Filename Value="carbon/carbonprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item27>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

@@ -74,8 +74,12 @@ procedure Register;
 implementation
 
 {$IFDEF UNIX}
+{$IFDEF LCLCarbon}
+// add units as needed for carbon
+{$ELSE}
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 {$I cupsprndialogs.inc}
+{$ENDIF}
 {$ENDIF}
 
 {$IFDEF MSWindows}

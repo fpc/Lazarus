@@ -34,8 +34,13 @@ unit OSPrinters;
 
 interface
 
+
 {$IFDEF UNIX}
-{$I cupsprinters_h.inc}
+  {$IFDEF LCLCarbon}
+    {$I carbonprinters_h.inc}
+  {$ELSE}
+    {$I cupsprinters_h.inc}
+  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF MSWindows}
@@ -45,7 +50,11 @@ interface
 implementation
 
 {$IFDEF UNIX}
-{$I cupsprinters.inc}
+  {$IFDEF LCLCarbon}
+    {$I carbonprinters.inc}
+  {$ELSE}
+    {$I cupsprinters.inc}
+  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF MSWindows}
