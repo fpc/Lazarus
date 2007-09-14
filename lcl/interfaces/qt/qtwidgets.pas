@@ -3074,7 +3074,7 @@ begin
   case QEvent_type(Event) of
     QEventWindowStateChange: SlotWindowStateChange;
   else
-    inherited EventFilter(Sender, Event);
+    Result := inherited EventFilter(Sender, Event);
   end;
   EndEventProcessing;
 end;
@@ -4102,6 +4102,7 @@ end;
 function TQtTextEdit.getMaxLength: Integer;
 begin
   {$note implement}
+  Result := 0;
 end;
 
 function TQtTextEdit.getText: WideString;
