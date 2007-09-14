@@ -501,8 +501,16 @@ msgstr ""
 msgid "A5 Transverse 148 x 210 mm"
 msgstr ""
 
+#: lr_const:spaper70
+msgid "A6 105x148 mm"
+msgstr ""
+
 #: lr_const:stextfile
 msgid "ASCII Text file"
+msgstr ""
+
+#: lr_const:sdescriptionavg
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
 msgstr ""
 
 #: lr_const:saboutformcapt
@@ -511,6 +519,10 @@ msgstr ""
 
 #: lr_const:sfrdesignerformaddpg
 msgid "Add page"
+msgstr ""
+
+#: lr_const:saggregatecategory
+msgid "Aggregate"
 msgstr ""
 
 #: lr_const:sfrdesignerformalignbottoms
@@ -697,6 +709,10 @@ msgstr ""
 msgid "C65 Envelope, 114 x 229 mm"
 msgstr ""
 
+#: lr_const:sdescriptioncount
+msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgstr ""
+
 #: lr_const:scsvfile
 msgid "CSV File"
 msgstr ""
@@ -829,8 +845,204 @@ msgstr ""
 msgid "D Sheet, 22 x 34\""
 msgstr ""
 
+#: lr_const:sdescriptiondayof
+msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+msgstr ""
+
 #: lr_const:spaper27
 msgid "DL Envelope, 110 x 220 mm"
+msgstr ""
+
+#: lr_const:spaper90
+msgid "DMPAPER_12X11 304.8X279.4"
+msgstr ""
+
+#: lr_const:spaper76
+msgid "DMPAPER_A3_ROTATED 420x297"
+msgstr ""
+
+#: lr_const:spaper77
+msgid "DMPAPER_A4_ROTATED 297X210"
+msgstr ""
+
+#: lr_const:spaper78
+msgid "DMPAPER_A5_ROTATED 210X148"
+msgstr ""
+
+#: lr_const:spaper83
+msgid "DMPAPER_A6_ROTATED 148X105"
+msgstr ""
+
+#: lr_const:spaper79
+msgid "DMPAPER_B4_JIS_ROTATED 364X257"
+msgstr ""
+
+#: lr_const:spaper80
+msgid "DMPAPER_B5_JIS_ROTATED 257X182"
+msgstr ""
+
+#: lr_const:spaper88
+msgid "DMPAPER_B6_JIS 128X122"
+msgstr ""
+
+#: lr_const:spaper89
+msgid "DMPAPER_B6_JIS_ROTATED 182X128"
+msgstr ""
+
+#: lr_const:spaper82
+msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+msgstr ""
+
+#: lr_const:spaper81
+msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+msgstr ""
+
+#: lr_const:spaper73
+msgid "DMPAPER_JENV_CHOU3 120X235"
+msgstr ""
+
+#: lr_const:spaper86
+msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+msgstr ""
+
+#: lr_const:spaper74
+msgid "DMPAPER_JENV_CHOU4 90X205"
+msgstr ""
+
+#: lr_const:spaper87
+msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+msgstr ""
+
+#: lr_const:spaper71
+msgid "DMPAPER_JENV_KAKU2 240X132"
+msgstr ""
+
+#: lr_const:spaper84
+msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+msgstr ""
+
+#: lr_const:spaper72
+msgid "DMPAPER_JENV_KAKU3 216X277"
+msgstr ""
+
+#: lr_const:spaper85
+msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+msgstr ""
+
+#: lr_const:spaper91
+msgid "DMPAPER_JENV_YOU4 105X235"
+msgstr ""
+
+#: lr_const:spaper92
+msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
+msgstr ""
+
+#: lr_const:spaper75
+msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
+msgstr ""
+
+#: lr_const:spaper93
+msgid "DMPAPER_P16K 146X215"
+msgstr ""
+
+#: lr_const:spaper106
+msgid "DMPAPER_P16K_ROTATED 215X146"
+msgstr ""
+
+#: lr_const:spaper94
+msgid "DMPAPER_P32K 97X151"
+msgstr ""
+
+#: lr_const:spaper95
+msgid "DMPAPER_P32KBIG 97X151"
+msgstr ""
+
+#: lr_const:spaper108
+msgid "DMPAPER_P32KBIG_ROTATED 151X97"
+msgstr ""
+
+#: lr_const:spaper107
+msgid "DMPAPER_P32K_ROTATED 151X97"
+msgstr ""
+
+#: lr_const:spaper96
+msgid "DMPAPER_PENV_1 102X165"
+msgstr ""
+
+#: lr_const:spaper105
+msgid "DMPAPER_PENV_10 324X458"
+msgstr ""
+
+#: lr_const:spaper118
+msgid "DMPAPER_PENV_10_ROTATED 458X324"
+msgstr ""
+
+#: lr_const:spaper109
+msgid "DMPAPER_PENV_1_ROTATED 165X102"
+msgstr ""
+
+#: lr_const:spaper97
+msgid "DMPAPER_PENV_2 102X176"
+msgstr ""
+
+#: lr_const:spaper110
+msgid "DMPAPER_PENV_2_ROTATED 176X102"
+msgstr ""
+
+#: lr_const:spaper98
+msgid "DMPAPER_PENV_3 125X176"
+msgstr ""
+
+#: lr_const:spaper111
+msgid "DMPAPER_PENV_3_ROTATED 176X125"
+msgstr ""
+
+#: lr_const:spaper99
+msgid "DMPAPER_PENV_4 110X208"
+msgstr ""
+
+#: lr_const:spaper112
+msgid "DMPAPER_PENV_4_ROTATED 208X110"
+msgstr ""
+
+#: lr_const:spaper100
+msgid "DMPAPER_PENV_5 110X220"
+msgstr ""
+
+#: lr_const:spaper113
+msgid "DMPAPER_PENV_5_ROTATED 220X110"
+msgstr ""
+
+#: lr_const:spaper101
+msgid "DMPAPER_PENV_6 120X230"
+msgstr ""
+
+#: lr_const:spaper114
+msgid "DMPAPER_PENV_6_ROTATED 230X120"
+msgstr ""
+
+#: lr_const:spaper102
+msgid "DMPAPER_PENV_7 160X230"
+msgstr ""
+
+#: lr_const:spaper115
+msgid "DMPAPER_PENV_7_ROTATED 230X160"
+msgstr ""
+
+#: lr_const:spaper103
+msgid "DMPAPER_PENV_8 120X309"
+msgstr ""
+
+#: lr_const:spaper116
+msgid "DMPAPER_PENV_8_ROTATED 309X120"
+msgstr ""
+
+#: lr_const:spaper104
+msgid "DMPAPER_PENV_9 229X324"
+msgstr ""
+
+#: lr_const:spaper117
+msgid "DMPAPER_PENV_9_ROTATED 324X229"
 msgstr ""
 
 #: lr_const:sroundrectformdata
@@ -843,6 +1055,10 @@ msgstr ""
 
 #: lr_const:svar3
 msgid "Date"
+msgstr ""
+
+#: lr_const:sdatetimecategory
+msgid "Date and time"
 msgstr ""
 
 #: lr_const:sdefaultprinter
@@ -875,6 +1091,18 @@ msgstr ""
 
 #: lr_const:sband8
 msgid "Detail header"
+msgstr ""
+
+#: lr_const:sshape5
+msgid "Diagonal1"
+msgstr ""
+
+#: lr_const:sshape6
+msgid "Diagonal2"
+msgstr ""
+
+#: lr_const:spaper69
+msgid "Double Japanese Postcard 200 x 148 mm"
 msgstr ""
 
 #: lr_const:sfrdesignerformdrawline
@@ -923,6 +1151,18 @@ msgstr ""
 
 #: lr_const:svar2
 msgid "Expression"
+msgstr ""
+
+#: lr_const:sdescriptionformatdatetime
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr ""
+
+#: lr_const:sdescriptionformatfloat
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr ""
+
+#: lr_const:sdescriptionformattext
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
 msgstr ""
 
 #: lr_const:sfrvariables
@@ -1045,6 +1285,10 @@ msgstr ""
 msgid "Highlight attributes"
 msgstr ""
 
+#: lr_const:sdescriptioninput
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr ""
+
 #: lr_const:sinches
 msgid "Inches"
 msgstr ""
@@ -1129,6 +1373,14 @@ msgstr ""
 msgid "Keys words"
 msgstr ""
 
+#: lr_const:sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr ""
+
+#: lr_const:sdescriptionlowercase
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr ""
+
 #: lr_const:slazformfile
 msgid "LazReport form"
 msgstr ""
@@ -1189,8 +1441,32 @@ msgstr ""
 msgid "Line#"
 msgstr ""
 
+#: lr_const:sdescriptionmax
+msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr ""
+
+#: lr_const:sdescriptionmaxnum
+msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+msgstr ""
+
+#: lr_const:sdescriptionmessagebox
+msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr ""
+
+#: lr_const:sdescriptionmin
+msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr ""
+
+#: lr_const:sdescriptionminnum
+msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr ""
+
 #: lr_const:smm
 msgid "MM"
+msgstr ""
+
+#: lr_const:sdescriptionmonthof
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
 msgstr ""
 
 #: lr_const:spgoptformmargins
@@ -1209,8 +1485,16 @@ msgstr ""
 msgid "Master header"
 msgstr ""
 
+#: lr_const:smathcategory
+msgid "Math"
+msgstr ""
+
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
+msgstr ""
+
+#: lr_const:sdescriptionnamecase
+msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 msgstr ""
 
 #: lr_const:stemplformnewrp
@@ -1303,6 +1587,10 @@ msgstr ""
 
 #: lr_const:sband14
 msgid "Overlay"
+msgstr ""
+
+#: lr_const:sdescriptionpos
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr ""
 
 #: lr_const:spg
@@ -1489,6 +1777,18 @@ msgstr "S&cript"
 msgid "S&hape"
 msgstr "&Forme"
 
+#: lr_const:sdescriptionstrtodate
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr ""
+
+#: lr_const:sdescriptionstrtotime
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr ""
+
+#: lr_const:sdescriptionsum
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr ""
+
 #: lr_const:sroundrectformsample
 msgid "Sample :"
 msgstr "Exemple"
@@ -1577,6 +1877,10 @@ msgstr ""
 msgid "Stretched"
 msgstr ""
 
+#: lr_const:sstringcategory
+msgid "String"
+msgstr ""
+
 #: lr_const:sroundrectformstyle
 msgid "Style"
 msgstr "Style"
@@ -1607,6 +1911,10 @@ msgstr ""
 
 #: lr_const:spaper58
 msgid "SuperBSuperBA3 305 x 487 mm"
+msgstr ""
+
+#: lr_const:sdescriptiontrim
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
 msgstr ""
 
 #: lr_const:spaper52
@@ -1663,6 +1971,10 @@ msgstr ""
 
 #: lr_const:sshape4
 msgid "Triangle"
+msgstr ""
+
+#: lr_const:sdescriptionuppercase
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
 msgstr ""
 
 #: lr_const:spaper39
@@ -1741,8 +2053,16 @@ msgstr ""
 msgid "Width align"
 msgstr ""
 
+#: lr_const:swordbreak
+msgid "Word break"
+msgstr ""
+
 #: lr_const:swordwrap
 msgid "Word wrap"
+msgstr ""
+
+#: lr_const:sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
 msgstr ""
 
 #: lr_const:syes

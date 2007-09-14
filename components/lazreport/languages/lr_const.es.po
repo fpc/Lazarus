@@ -57,13 +57,13 @@ msgstr "Barra de &Alineación"
 msgid "&All"
 msgstr "&Todo"
 
-#: lr_const:sinsertfieldsformaviabledset
-msgid "&Available datasets"
-msgstr "Bases de datos &Disponibles"
-
 #: lr_const:sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr "BDs &Disponibles"
+
+#: lr_const:sinsertfieldsformaviabledset
+msgid "&Available datasets"
+msgstr "Bases de datos &Disponibles"
 
 #: lr_const:seditorformbig
 msgid "&Big font"
@@ -193,13 +193,13 @@ msgstr "&Izquierda, mm"
 msgid "&Load..."
 msgstr "&Cargar..."
 
-#: lr_const:seditorformmemo
-msgid "&Memo"
-msgstr "&Texto"
-
 #: lr_const:sdesoptionsformmm
 msgid "&MM"
 msgstr ""
+
+#: lr_const:seditorformmemo
+msgid "&Memo"
+msgstr "&Texto"
 
 #: lr_const:sfrdesignerform_new
 msgid "&New..."
@@ -473,13 +473,13 @@ msgstr ""
 msgid "A4 Plus 210 x 330 mm"
 msgstr ""
 
-#: lr_const:spaper10
-msgid "A4 small sheet, 210 x 297 mm"
-msgstr "A4 Hoja pequeña, 210 x 297 mm"
-
 #: lr_const:spaper55
 msgid "A4 Transverse 210 x 297 mm"
 msgstr "A4 Transversal 210 x 297 mm"
+
+#: lr_const:spaper10
+msgid "A4 small sheet, 210 x 297 mm"
+msgstr "A4 Hoja pequeña, 210 x 297 mm"
 
 #: lr_const:spaper11
 msgid "A5 148 x 210 mm"
@@ -496,6 +496,14 @@ msgstr "A5 Transversal 148 x 210 mm"
 #: lr_const:spaper70
 msgid "A6 105x148 mm"
 msgstr ""
+
+#: lr_const:stextfile
+msgid "ASCII Text file"
+msgstr "Archivo de texto ASCII"
+
+#: lr_const:sdescriptionavg
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expresión> [,NombreDeBanda [,1]])/Calcula el promedio de <Expresión> para cada línea en [NombreDeBanda]. Si se usa el parámetro [1], se calcula también el promedio de las líneas no visibles."
 
 #: lr_const:saboutformcapt
 msgid "About FastReport"
@@ -553,10 +561,6 @@ msgstr "Todas las lineas del marco"
 msgid "An error occured during calculating"
 msgstr "Ocurrió un error durante el cálculo"
 
-#: lr_const:stextfile
-msgid "ASCII Text file"
-msgstr "Archivo de texto ASCII"
-
 #: lr_const:sautosize
 msgid "Auto size"
 msgstr "Auto dimensionar"
@@ -564,10 +568,6 @@ msgstr "Auto dimensionar"
 #: lr_const:sfilterparam
 msgid "Average font height:"
 msgstr "Altura promedio de fuente:"
-
-#: lr_const:sdescriptionavg
-msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
-msgstr "AVG(<Expresión> [,NombreDeBanda [,1]])/Calcula el promedio de <Expresión> para cada línea en [NombreDeBanda]. Si se usa el parámetro [1], se calcula también el promedio de las líneas no visibles."
 
 #: lr_const:spaper42
 msgid "B4 (ISO) 250 x 353 mm"
@@ -701,6 +701,14 @@ msgstr "Sobre C6,  114 x 162 mm"
 msgid "C65 Envelope, 114 x 229 mm"
 msgstr "Sobre C65, 114 x 229 mm"
 
+#: lr_const:sdescriptioncount
+msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgstr "COUNT(<NombreDeBanda>)/Regresa la cuenta de registros en <NombreDeBanda>. "
+
+#: lr_const:scsvfile
+msgid "CSV File"
+msgstr "Archivo CSV"
+
 #: lr_const:scancel
 msgid "Cancel"
 msgstr "Cancelar"
@@ -793,10 +801,6 @@ msgstr "Copiar"
 msgid "Copy variables"
 msgstr "Copiar variables"
 
-#: lr_const:sdescriptioncount
-msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
-msgstr "COUNT(<NombreDeBanda>)/Regresa la cuenta de registros en <NombreDeBanda>. "
-
 #: lr_const:sband20
 msgid "Cross data"
 msgstr "Datos cruzados"
@@ -808,10 +812,6 @@ msgstr "Pie de datos cruzados"
 #: lr_const:sband19
 msgid "Cross header"
 msgstr "Encabezado de datos cruzados"
-
-#: lr_const:scsvfile
-msgid "CSV File"
-msgstr "Archivo CSV"
 
 #: lr_const:sprintformcurpg
 msgid "Current &page"
@@ -833,77 +833,13 @@ msgstr "Personalizado"
 msgid "Cut"
 msgstr "Cortar"
 
-#: lr_const:sdateformat3
-msgid "d mmm yyyy"
-msgstr "d-mmm-yyyy"
-
-#: lr_const:sdateformat4
-msgid "d mmmm yyyy"
-msgstr ""
-
 #: lr_const:spaper25
 msgid "D Sheet, 22 x 34\""
 msgstr "Hoja D, 22 x 34\""
 
-#: lr_const:sroundrectformdata
-msgid "Data .."
-msgstr "Datos .."
-
-#: lr_const:sbandeditorformdatasrc
-msgid "Data source"
-msgstr "Fuente de datos"
-
-#: lr_const:svar3
-msgid "Date"
-msgstr "Fecha"
-
-#: lr_const:sdatetimecategory
-msgid "Date and time"
-msgstr "Fecha y hora"
-
 #: lr_const:sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Fecha>)/Regresa el día (1..31) de una <Fecha> dada."
-
-#: lr_const:sdefaultprinter
-msgid "Default printer"
-msgstr "Impresora por defecto"
-
-#: lr_const:spreviewformdel
-msgid "Delete page"
-msgstr "Eliminar página"
-
-#: lr_const:stemplformdesc
-msgid "Description"
-msgstr "Descripción"
-
-#: lr_const:sdesignreport
-msgid "Design report"
-msgstr "Diseñar report"
-
-#: lr_const:sdesoptionsformdes
-msgid "Designer"
-msgstr "Diseñador"
-
-#: lr_const:sband9
-msgid "Detail data"
-msgstr "Detalle de datos"
-
-#: lr_const:sband10
-msgid "Detail footer"
-msgstr "Pie de detalle"
-
-#: lr_const:sband8
-msgid "Detail header"
-msgstr "Encabezado de detalle"
-
-#: lr_const:sshape5
-msgid "Diagonal1"
-msgstr ""
-
-#: lr_const:sshape6
-msgid "Diagonal2"
-msgstr ""
 
 #: lr_const:spaper27
 msgid "DL Envelope, 110 x 220 mm"
@@ -1101,6 +1037,62 @@ msgstr ""
 msgid "DMPAPER_PENV_9_ROTATED 324X229"
 msgstr ""
 
+#: lr_const:sroundrectformdata
+msgid "Data .."
+msgstr "Datos .."
+
+#: lr_const:sbandeditorformdatasrc
+msgid "Data source"
+msgstr "Fuente de datos"
+
+#: lr_const:svar3
+msgid "Date"
+msgstr "Fecha"
+
+#: lr_const:sdatetimecategory
+msgid "Date and time"
+msgstr "Fecha y hora"
+
+#: lr_const:sdefaultprinter
+msgid "Default printer"
+msgstr "Impresora por defecto"
+
+#: lr_const:spreviewformdel
+msgid "Delete page"
+msgstr "Eliminar página"
+
+#: lr_const:stemplformdesc
+msgid "Description"
+msgstr "Descripción"
+
+#: lr_const:sdesignreport
+msgid "Design report"
+msgstr "Diseñar report"
+
+#: lr_const:sdesoptionsformdes
+msgid "Designer"
+msgstr "Diseñador"
+
+#: lr_const:sband9
+msgid "Detail data"
+msgstr "Detalle de datos"
+
+#: lr_const:sband10
+msgid "Detail footer"
+msgstr "Pie de detalle"
+
+#: lr_const:sband8
+msgid "Detail header"
+msgstr "Encabezado de detalle"
+
+#: lr_const:sshape5
+msgid "Diagonal1"
+msgstr ""
+
+#: lr_const:sshape6
+msgid "Diagonal2"
+msgstr ""
+
 #: lr_const:spaper69
 msgid "Double Japanese Postcard 200 x 148 mm"
 msgstr "Tarjeta postal doble japonesa 200 x 148 mm"
@@ -1152,6 +1144,22 @@ msgstr "Ejecutivo, 7 1/4 x 10 1/2\""
 #: lr_const:svar2
 msgid "Expression"
 msgstr "Expresión"
+
+#: lr_const:sdescriptionformatdatetime
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <FechaHora>)/Convierte una valor de <FechaHora> a cadena usando la mascara en <Fmt>."
+
+#: lr_const:sdescriptionformatfloat
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numérico>)/Convierte un valor <Numérico> en cadena usando la mascada en <Fmt>."
+
+#: lr_const:sdescriptionformattext
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Máscara>, <Cadena>)/Aplica la <Máscara> a la <Cadena> dada y regresa la cadena formateada."
+
+#: lr_const:sfrvariables
+msgid "FR variables"
+msgstr "Variables FR"
 
 #: lr_const:sformat54
 msgid "False;True"
@@ -1205,22 +1213,6 @@ msgstr "Fuente..."
 msgid "Force new page"
 msgstr "Forzar página nueva"
 
-#: lr_const:sdescriptionformatdatetime
-msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
-msgstr "FORMATDATETIME(<Fmt>, <FechaHora>)/Convierte una valor de <FechaHora> a cadena usando la mascara en <Fmt>."
-
-#: lr_const:sdescriptionformatfloat
-msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
-msgstr "FORMATFLOAT(<Fmt>, <Numérico>)/Convierte un valor <Numérico> en cadena usando la mascada en <Fmt>."
-
-#: lr_const:sdescriptionformattext
-msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
-msgstr "FORMATTEXT(<Máscara>, <Cadena>)/Aplica la <Máscara> a la <Cadena> dada y regresa la cadena formateada."
-
-#: lr_const:sfrvariables
-msgid "FR variables"
-msgstr "Variables FR"
-
 #: lr_const:sfmtformfrac
 msgid "Fraction &symbol"
 msgstr "&Símbolo de la fracción"
@@ -1236,10 +1228,6 @@ msgstr "Ancho del marco"
 #: lr_const:sroundrectformframed
 msgid "Framed zone"
 msgstr "Zona enmarcada"
-
-#: lr_const:sfrom
-msgid "from"
-msgstr "desde"
 
 #: lr_const:spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
@@ -1277,33 +1265,21 @@ msgstr "Pîe de grupo"
 msgid "Group header"
 msgstr "Encabezado de grupo"
 
-#: lr_const:stimeformat4
-msgid "h:nn"
-msgstr ""
-
-#: lr_const:stimeformat2
-msgid "h:nn:ss"
-msgstr ""
+#: lr_const:shtmfile
+msgid "HTML file"
+msgstr "Archivo HTML"
 
 #: lr_const:sfrdesignerform_help2
 msgid "Help &tool"
 msgstr "&Herramienta de ayuda"
 
-#: lr_const:stimeformat3
-msgid "hh:nn"
-msgstr ""
-
-#: lr_const:stimeformat1
-msgid "hh:nn:ss"
-msgstr ""
-
 #: lr_const:shilightformhilitattr
 msgid "Highlight attributes"
 msgstr "Atrubutos de resaltado"
 
-#: lr_const:shtmfile
-msgid "HTML file"
-msgstr "Archivo HTML"
+#: lr_const:sdescriptioninput
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Encabezado> [,Default])/Muestra una ventana de diálogo con encabezado <Encabezado> y un control de edición. Si el parámetro [Default] se usa, ésta cadena se pone el en control de edición. Despúes que se hace click en ACEPTAR, se regresa la cadena introducida."
 
 #: lr_const:sinches
 msgid "Inches"
@@ -1312,18 +1288,6 @@ msgstr "Pulgadas"
 #: lr_const:sinsertfieldsformband
 msgid "Include &bands"
 msgstr "&Bandas incluidas"
-
-#: lr_const:sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr "INPUT(<Encabezado> [,Default])/Muestra una ventana de diálogo con encabezado <Encabezado> y un control de edición. Si el parámetro [Default] se usa, ésta cadena se pone el en control de edición. Despúes que se hace click en ACEPTAR, se regresa la cadena introducida."
-
-#: lr_const:sinsroundrect
-msgid "Insert an RoundRect with shadow area"
-msgstr "Insertar un área rectangular con sombra"
-
-#: lr_const:sfrdesignerforminsband
-msgid "Insert band"
-msgstr "Insertar banda"
 
 #: lr_const:sinsbarcode
 msgid "Insert Barcode object"
@@ -1345,6 +1309,18 @@ msgstr "Insertar campo DB"
 msgid "Insert DB fields"
 msgstr "Insertar campos DB"
 
+#: lr_const:sinsshape
+msgid "Insert Shape object"
+msgstr "Insertar objeto de Forma"
+
+#: lr_const:sinsroundrect
+msgid "Insert an RoundRect with shadow area"
+msgstr "Insertar un área rectangular con sombra"
+
+#: lr_const:sfrdesignerforminsband
+msgid "Insert band"
+msgstr "Insertar banda"
+
 #: lr_const:sinsertfieldsformcapt
 msgid "Insert fields"
 msgstr "Insertar campos"
@@ -1360,10 +1336,6 @@ msgstr "Insertar imagen"
 #: lr_const:sfrdesignerforminsrect
 msgid "Insert rectangle object"
 msgstr "Insertar objeto rectangular"
-
-#: lr_const:sinsshape
-msgid "Insert Shape object"
-msgstr "Insertar objeto de Forma"
 
 #: lr_const:sfrdesignerforminssub
 msgid "Insert subreport"
@@ -1393,6 +1365,14 @@ msgstr "Mantener proporciones"
 msgid "Keys words"
 msgstr "Palabras clave"
 
+#: lr_const:sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<Cadena>)/Regresa la longitud de la <Cadena>."
+
+#: lr_const:sdescriptionlowercase
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<Cadena>)/Convierte <Cadena> a minúsculas."
+
 #: lr_const:slazformfile
 msgid "LazReport form"
 msgstr "Formulario de LazReport"
@@ -1417,10 +1397,6 @@ msgstr ""
 msgid "Legal, 8 1/2 x 14\""
 msgstr ""
 
-#: lr_const:sdescriptionlength
-msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr "LENGTH(<Cadena>)/Regresa la longitud de la <Cadena>."
-
 #: lr_const:spaper50
 msgid "Letter Extra 9/275 x 12\""
 msgstr ""
@@ -1433,12 +1409,12 @@ msgstr ""
 msgid "Letter Plus 8.5 x 12.69\""
 msgstr ""
 
-#: lr_const:spaper2
-msgid "Letter small, 8 1/2 x 11\""
-msgstr ""
-
 #: lr_const:spaper54
 msgid "Letter Transverse 8/275 x 11\""
+msgstr ""
+
+#: lr_const:spaper2
+msgid "Letter small, 8 1/2 x 11\""
 msgstr ""
 
 #: lr_const:spaper1
@@ -1456,30 +1432,6 @@ msgstr "# Línea atravéz"
 #: lr_const:svar5
 msgid "Line#"
 msgstr "#Linea"
-
-#: lr_const:sdescriptionlowercase
-msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr "LOWERCASE(<Cadena>)/Convierte <Cadena> a minúsculas."
-
-#: lr_const:spgoptformmargins
-msgid "Margins"
-msgstr "Margenes"
-
-#: lr_const:sband6
-msgid "Master data"
-msgstr "Master data"
-
-#: lr_const:sband7
-msgid "Master footer"
-msgstr "Pie maestro"
-
-#: lr_const:sband5
-msgid "Master header"
-msgstr "Encabezado maestro"
-
-#: lr_const:smathcategory
-msgid "Math"
-msgstr "Matemáticas"
 
 #: lr_const:sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
@@ -1505,21 +1457,33 @@ msgstr "MINNUM(<Valor1>, <Valor2>)/Regresa el menor de los valores dados."
 msgid "MM"
 msgstr ""
 
-#: lr_const:sdateformat1
-msgid "mm.dd.yy"
-msgstr ""
+#: lr_const:sdescriptionmonthof
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Fecha>)/Regresa el número del mes (1..12) de la <Fecha> dada."
 
-#: lr_const:sdateformat2
-msgid "mm.dd.yyyy"
-msgstr ""
+#: lr_const:spgoptformmargins
+msgid "Margins"
+msgstr "Margenes"
+
+#: lr_const:sband6
+msgid "Master data"
+msgstr "Master data"
+
+#: lr_const:sband7
+msgid "Master footer"
+msgstr "Pie maestro"
+
+#: lr_const:sband5
+msgid "Master header"
+msgstr "Encabezado maestro"
+
+#: lr_const:smathcategory
+msgid "Math"
+msgstr "Matemáticas"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
 msgstr "Sobre monarch, 3 7/8 x 7 1/2\""
-
-#: lr_const:sdescriptionmonthof
-msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
-msgstr "MONTHOF(<Fecha>)/Regresa el número del mes (1..12) de la <Fecha> dada."
 
 #: lr_const:sdescriptionnamecase
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
@@ -1617,6 +1581,10 @@ msgstr "Otro..."
 msgid "Overlay"
 msgstr "Sobreposición"
 
+#: lr_const:sdescriptionpos
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de la subcadena en la cadena dada."
+
 #: lr_const:spg
 msgid "Page"
 msgstr "Página"
@@ -1676,10 +1644,6 @@ msgstr "Pixeles"
 #: lr_const:sinsertfieldsformplace
 msgid "Placement"
 msgstr "Colocación"
-
-#: lr_const:sdescriptionpos
-msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de la subcadena en la cadena dada."
 
 #: lr_const:sfrdesignerform_preview
 msgid "Pre&view"
@@ -1805,6 +1769,18 @@ msgstr "&Código"
 msgid "S&hape"
 msgstr "&Forma"
 
+#: lr_const:sdescriptionstrtodate
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<Cadena>)/Convertir <Cadena> en fecha."
+
+#: lr_const:sdescriptionstrtotime
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<Cadena>)/Convertir <Cadena> en hora."
+
+#: lr_const:sdescriptionsum
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expresión> [,NombreDeBanda [,1]])/Calcula la suma de la <Expresión> para las líneas de la [NombreDeBanda] dada. Si el parámetro [1] es usado, también calcula la suma para las líneas no visibles."
+
 #: lr_const:sroundrectformsample
 msgid "Sample :"
 msgstr "Muestra :"
@@ -1897,17 +1873,13 @@ msgstr "Ajustado"
 msgid "String"
 msgstr "Cadena"
 
-#: lr_const:sdescriptionstrtodate
-msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr "STRTODATE(<Cadena>)/Convertir <Cadena> en fecha."
-
-#: lr_const:sdescriptionstrtotime
-msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr "STRTOTIME(<Cadena>)/Convertir <Cadena> en hora."
-
 #: lr_const:sroundrectformstyle
 msgid "Style"
 msgstr "Estilo"
+
+#: lr_const:ssubreportonpage
+msgid "SubReport on page"
+msgstr "SubReporte en página"
 
 #: lr_const:sband12
 msgid "Subdetail data"
@@ -1925,14 +1897,6 @@ msgstr "Encabezado de Subdetalle"
 msgid "Subject"
 msgstr "Asunto"
 
-#: lr_const:ssubreportonpage
-msgid "SubReport on page"
-msgstr "SubReporte en página"
-
-#: lr_const:sdescriptionsum
-msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr "SUM(<Expresión> [,NombreDeBanda [,1]])/Calcula la suma de la <Expresión> para las líneas de la [NombreDeBanda] dada. Si el parámetro [1] es usado, también calcula la suma para las líneas no visibles."
-
 #: lr_const:spaper57
 msgid "SuperASuperAA4 227 x 356 mm"
 msgstr ""
@@ -1940,6 +1904,10 @@ msgstr ""
 #: lr_const:spaper58
 msgid "SuperBSuperBA3 305 x 487 mm"
 msgstr ""
+
+#: lr_const:sdescriptiontrim
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<Cadena>)/Elimina todos los espacios antes y despues en la <Cadena> y regresa la cadena resultante."
 
 #: lr_const:spaper52
 msgid "Tabloid Extra 11.69 x 18\""
@@ -1969,10 +1937,6 @@ msgstr "Hora"
 msgid "Title"
 msgstr "Título"
 
-#: lr_const:sto
-msgid "to"
-msgstr "hacia"
-
 #: lr_const:sfrdesignerform_tools2
 msgid "Too&ls"
 msgstr "Herramien&tas"
@@ -2001,9 +1965,13 @@ msgstr "Transparente"
 msgid "Triangle"
 msgstr "Triángulo"
 
-#: lr_const:sdescriptiontrim
-msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
-msgstr "TRIM(<Cadena>)/Elimina todos los espacios antes y despues en la <Cadena> y regresa la cadena resultante."
+#: lr_const:sdescriptionuppercase
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<Cadena>)/Convierte <Cadena> a mayúsculas."
+
+#: lr_const:spaper39
+msgid "US Std Fanfold, 14 7/8 x 11\""
+msgstr ""
 
 #: lr_const:sfrdesignerformunderline
 msgid "Underline"
@@ -2020,14 +1988,6 @@ msgstr "Formato FRF no soportado"
 #: lr_const:suntitled
 msgid "Untitled"
 msgstr "SinTítulo"
-
-#: lr_const:sdescriptionuppercase
-msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr "UPPERCASE(<Cadena>)/Convierte <Cadena> a mayúsculas."
-
-#: lr_const:spaper39
-msgid "US Std Fanfold, 14 7/8 x 11\""
-msgstr ""
 
 #: lr_const:sevformvalue
 msgid "Va&lue"
@@ -2116,4 +2076,44 @@ msgstr "[Imagen]"
 #: lr_const:sformat53
 msgid "_;x"
 msgstr ""
+
+#: lr_const:sdateformat3
+msgid "d mmm yyyy"
+msgstr "d-mmm-yyyy"
+
+#: lr_const:sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
+#: lr_const:sfrom
+msgid "from"
+msgstr "desde"
+
+#: lr_const:stimeformat4
+msgid "h:nn"
+msgstr ""
+
+#: lr_const:stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const:stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const:stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const:sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const:sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const:sto
+msgid "to"
+msgstr "hacia"
 
