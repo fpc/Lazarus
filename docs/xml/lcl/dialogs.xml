@@ -110,80 +110,46 @@
         <short>Constants to define the types of message dialogs.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtWarning">
-        <short/>
-      </element>
+      <element name="TMsgDlgType.mtWarning"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtError">
-        <short/>
-      </element>
+      <element name="TMsgDlgType.mtError"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtInformation">
-        <short/>
-      </element>
+      <element name="TMsgDlgType.mtInformation"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtConfirmation">
-        <short/>
-      </element>
+      <element name="TMsgDlgType.mtConfirmation"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtCustom">
-        <short/>
-      </element>
+      <element name="TMsgDlgType.mtCustom"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TMsgDlgBtn">
         <short>Constants to define possible buttons on a dialog.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbYes">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbYes"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbNo">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbNo"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbOK">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbOK"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbCancel">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbCancel"><short/></element>
       <!-- enumeration value Visibility: default -->
       <element name="TMsgDlgBtn.mbAbort"/>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbRetry">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbRetry"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbIgnore">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbIgnore"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbAll">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbAll"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbNoToAll">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbNoToAll"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbYesToAll">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbYesToAll"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbHelp">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbHelp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbClose">
-        <short/>
-      </element>
+      <element name="TMsgDlgBtn.mbClose"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TMsgDlgButtons">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set of button messages for dialogs</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="mbYesNoCancel">
@@ -208,7 +174,7 @@
       <!-- constant Visibility: default -->
       <element name="MsgDlgBtnToBitBtnKind">
         <short>A constant array used to convert the kind of message buttons to the kind of BitButton.</short>
-        <descr>This array gives you for each possible button type in a messagebox the corresponding kind of BitButton. For instance MsgDlgBtnToBitBtnKind[mbYes] has the value of bkYes. It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
+        <descr>This array gives you for each possible button type in a messagebox the corresponding kind of BitButton. <br/>For instance MsgDlgBtnToBitBtnKind[mbYes] has the value of bkYes. <br/>It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
       </element>
       <!-- constant Visibility: default -->
       <element name="BitBtnKindToMsgDlgBtn">
@@ -218,7 +184,7 @@
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
         <short>Common Dialog</short>
-        <descr>Common Dialog: the base type fromwhich all other dialogs are derived. Use the "Create" method to make an instance of the dialog, the "Execute" method to show it to the user and the "Free" method to release it and free the used resources.</descr>
+        <descr>Common Dialog: the base type from which all other dialogs are derived. Use the "Create" method to make an instance of the dialog, the "Execute" method to show it to the user and the "Close" method to release it and free the used resources.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCommonDialog.FHandle">
@@ -282,9 +248,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.SetHandle.AValue">
-        <short/>
-      </element>
+      <element name="TCommonDialog.SetHandle.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCommonDialog.SetHeight">
         <short/>
@@ -293,9 +257,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.SetHeight.AValue">
-        <short/>
-      </element>
+      <element name="TCommonDialog.SetHeight.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCommonDialog.SetWidth">
         <short/>
@@ -304,9 +266,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.SetWidth.AValue">
-        <short/>
-      </element>
+      <element name="TCommonDialog.SetWidth.AValue"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCommonDialog.DoExecute">
         <short/>
@@ -315,9 +275,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCommonDialog.DoExecute.Result">
-        <short/>
-      </element>
+      <element name="TCommonDialog.DoExecute.Result"><short/></element>
       <!-- variable Visibility: public -->
       <element name="TCommonDialog.FCompStyle">
         <short/>
@@ -332,9 +290,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCommonDialog.Create.TheOwner"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCommonDialog.Execute">
         <short>A public method of a dialog showing the appropriate dialog.</short>
@@ -385,9 +341,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCommonDialog.HandleAllocated.Result">
-        <short/>
-      </element>
+      <element name="TCommonDialog.HandleAllocated.Result"><short/></element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.OnClose">
         <short/>
@@ -497,17 +451,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetDefaultExt.AValue">
-        <short/>
-      </element>
+      <element name="TFileDialog.SetDefaultExt.AValue"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TFileDialog.DoExecute">
         <short>Internal procedure called to execute the dialog.</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFileDialog.DoExecute.Result">
-        <short/>
-      </element>
+      <element name="TFileDialog.DoExecute.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TFileDialog.SetFileName">
         <short/>
@@ -516,9 +466,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetFileName.Value">
-        <short/>
-      </element>
+      <element name="TFileDialog.SetFileName.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TFileDialog.SetFilter">
         <short/>
@@ -527,9 +475,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetFilter.Value">
-        <short/>
-      </element>
+      <element name="TFileDialog.SetFilter.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TFileDialog.SetHistoryList">
         <short/>
@@ -538,17 +484,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetHistoryList.AValue">
-        <short/>
-      </element>
+      <element name="TFileDialog.SetHistoryList.AValue"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TFileDialog.Create">
         <short>Public method to create a FileDialog.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TFileDialog.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TFileDialog.Destroy">
         <short/>
@@ -561,9 +503,7 @@
         <short>Public method which causes the dialog to be shown.</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFileDialog.Execute.Result">
-        <short/>
-      </element>
+      <element name="TFileDialog.Execute.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TFileDialog.Files">
         <short>Stringlist which stored the selected files.</short>
@@ -611,101 +551,53 @@
         <short>A set of possible options which can be used in OpenDialog</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofReadOnly">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofReadOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofOverwritePrompt">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofOverwritePrompt"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofHideReadOnly">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofHideReadOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoChangeDir">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoChangeDir"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofShowHelp">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofShowHelp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoValidate">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoValidate"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofAllowMultiSelect">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofAllowMultiSelect"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofExtensionDifferent">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofExtensionDifferent"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofPathMustExist">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofPathMustExist"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofFileMustExist">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofFileMustExist"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofCreatePrompt">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofCreatePrompt"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofShareAware">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofShareAware"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoReadOnlyReturn">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoReadOnlyReturn"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoTestFileCreate">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoTestFileCreate"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoNetworkButton">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoNetworkButton"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoLongNames">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoLongNames"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofOldStyleDialog">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofOldStyleDialog"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoDereferenceLinks">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofNoDereferenceLinks"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofEnableIncludeNotify">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofEnableIncludeNotify"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofEnableSizing">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofEnableSizing"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofDontAddToRecent">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofDontAddToRecent"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofForceShowHidden">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofForceShowHidden"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofViewDetail">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofViewDetail"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofAutoPreview">
-        <short/>
-      </element>
+      <element name="TOpenOption.ofAutoPreview"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TOpenOptions">
         <short/>
@@ -721,7 +613,7 @@
       <!-- object Visibility: default -->
       <element name="TOpenDialog">
         <short>Open Dialog</short>
-        <descr>Open Dialog: open a file in the current directory, selected by File Dialog. If the required file is not in the current directory, another directory can be selected with Select Directory</descr>
+        <descr>Open Dialog: open a file in the current directory, selected by File Dialog. <br/>If the required file is not in the current directory, another directory can be selected with Select Directory</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TOpenDialog.FOnFolderChange">
@@ -759,37 +651,27 @@
         <short>A protected function which checkes if the choosen file meets all requirements.</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.CheckFile.Result">
-        <short/>
-      </element>
+      <element name="TOpenDialog.CheckFile.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TOpenDialog.CheckFile.AFilename">
-        <short/>
-      </element>
+      <element name="TOpenDialog.CheckFile.AFilename"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.CheckAllFiles">
         <short>A protected method which call CheckFile for each selected file.</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.CheckAllFiles.Result">
-        <short/>
-      </element>
+      <element name="TOpenDialog.CheckAllFiles.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.DoExecute">
         <short>Internal procedure called to execute the dialog.</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.DoExecute.Result">
-        <short/>
-      </element>
+      <element name="TOpenDialog.DoExecute.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TOpenDialog.Create">
         <short>Public method to create a OpenDialog</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TOpenDialog.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TOpenDialog.Create.TheOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TOpenDialog.DoFolderChange">
         <short/>
@@ -823,7 +705,7 @@
       <!-- object Visibility: default -->
       <element name="TSaveDialog">
         <short>Save Dialog</short>
-        <descr>Save Dialog:  invoked when the application requires to save a file. If the file is already open or a filename has been specified, then the current buffer is written to that file; if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.</descr>
+        <descr>Save Dialog:  invoked when the application requires to save a file. <br/>If the file is already open or a filename has been specified, then the current buffer is written to that file; if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TSaveDialog.Create">
@@ -833,13 +715,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSaveDialog.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TSaveDialog.Create.AOwner"><short/></element>
       <!-- object Visibility: default -->
       <element name="TSelectDirectoryDialog">
         <short>Select Directory Dialog</short>
-        <descr>Select Directory Dialog: allows the user to select a directory when the diredtory structure is displayed as a tree.</descr>
+        <descr>Select Directory Dialog: allows the user to select a directory when the directory structure is displayed as a tree.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TSelectDirectoryDialog.CheckFile">
@@ -849,13 +729,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TSelectDirectoryDialog.CheckFile.Result">
-        <short/>
-      </element>
+      <element name="TSelectDirectoryDialog.CheckFile.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TSelectDirectoryDialog.CheckFile.AFilename">
-        <short/>
-      </element>
+      <element name="TSelectDirectoryDialog.CheckFile.AFilename"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TSelectDirectoryDialog.Create">
         <short/>
@@ -864,14 +740,12 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSelectDirectoryDialog.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TSelectDirectoryDialog.Create.AOwner"><short/></element>
       <!-- object Visibility: default -->
       <element name="TColorDialog">
         <short>Colour Dialog</short>
         <descr>Colour Dialog:  presents a palette of colours to allow the user to select the required colour for text or graphics. 
-
+<br/>
 Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- variable Visibility: private -->
@@ -883,9 +757,7 @@ Call the Execute function to show the color dialog.</descr>
         <short>The method whoch create an instance of the TColorDialog.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorDialog.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TColorDialog.Create.TheOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TColorDialog.Title">
         <short>The caption for the color dialog.</short>
@@ -933,9 +805,7 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.SetBorderWidth.AValue">
-        <short/>
-      </element>
+      <element name="TColorButton.SetBorderWidth.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TColorButton.Click">
         <short/>
@@ -958,9 +828,7 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.SetButtonColor.Value">
-        <short/>
-      </element>
+      <element name="TColorButton.SetButtonColor.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TColorButton.ShowColorDialog">
         <short/>
@@ -976,9 +844,7 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.Create.AnOwner">
-        <short/>
-      </element>
+      <element name="TColorButton.Create.AnOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TColorButton.Destroy">
         <short/>
@@ -1093,69 +959,37 @@ Call the Execute function to show the color dialog.</descr>
         <short>A set of constants to set the options of a Font dialog.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdAnsiOnly">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdAnsiOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdTrueTypeOnly">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdTrueTypeOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdEffects">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdEffects"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdFixedPitchOnly">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdFixedPitchOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdForceFontExist">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdForceFontExist"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoFaceSel">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdNoFaceSel"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoOEMFonts">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdNoOEMFonts"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoSimulations">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdNoSimulations"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoSizeSel">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdNoSizeSel"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoStyleSel">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdNoStyleSel"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoVectorFonts">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdNoVectorFonts"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdShowHelp">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdShowHelp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdWysiwyg">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdWysiwyg"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdLimitSize">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdLimitSize"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdScalableOnly">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdScalableOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdApplyButton">
-        <short/>
-      </element>
+      <element name="TFontDialogOption.fdApplyButton"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TFontDialogOptions">
         <short/>
@@ -1208,9 +1042,7 @@ Call the Execute function to show the color dialog.</descr>
         <short>A private method which sets the font of the dialog.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFontDialog.SetFont.AValue">
-        <short/>
-      </element>
+      <element name="TFontDialog.SetFont.AValue"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TFontDialog.ApplyClicked">
         <short/>
@@ -1223,9 +1055,7 @@ Call the Execute function to show the color dialog.</descr>
         <short>Public method to create a FontDialog.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFontDialog.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TFontDialog.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TFontDialog.Destroy">
         <short/>
@@ -1266,8 +1096,8 @@ Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFindOption">
-        <short>A set of possible options which can be used in Find-dialogs.</short>
-        <descr>A set of possible options which can be used in Find-dialogs.</descr>
+        <short>A list of possible options which can be used in Find-dialogs.</short>
+        <descr>A list of possible options which can be used in Find-dialogs.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frDown">
@@ -1328,20 +1158,22 @@ Call the Execute function to show the color dialog.</descr>
       <!-- function Visibility: default -->
       <element name="MessageDlg">
         <short>Message Dialog</short>
-        <descr>Message Dialog:  show a message to the user and receive his response. 
+        <descr>Show a message to the user and receive his response. 
 
-There are two versions of this function. The first version displays a dialog with the standard caption, the second version enables you to set the caption.
+There are four versions of this function. The first version displays a dialog with the standard caption, the second, third and fourth versions enable you to set the caption.<br/>
+The third version allows for a Default button; the fourth version contains a help keyword instead of using context-based help.
+<br/>
 
-function MessageDlg(const aMsg: string; DlgType: TMsgDlgType; 
-                    Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType; 
-                    Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-
-    Two versions of this function, ie first 'Caption' argument is optional; if omitted, caption is missing from box
+If the first 'Caption' argument is missing, no caption is shown on the box.<br/>
 
     This is the most complete and elaborate of the message dialogs, and allows the programmer considerable control over the appearance of the dialog box.<br/>
+
+
     The arguments defining the kind of box and its icon are types rather than integer constants, and the buttons can be specified as a set in square brackets eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/>
-    The HelpCtx argument is not currently implemented and should be set to zero.
+
+
+    The HelpCtx argument allows the use of Context Help<br/>
+
     The return value from the Function is the identity of the button pressed, expressed as an integer (see the definitions below, [mrNone..mrAll]).</descr>
       </element>
       <!-- function result Visibility: default -->
@@ -1464,13 +1296,13 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
         <short>Show a question to the user and get a response</short>
-        <descr>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.&lt;br/&gt;
+        <descr>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.<br/>
 Buttons is a list of TModalResult and strings. For each TModalResult a button is
  created. To set a custom caption, add a string after a button.
 
 The default TModalResults defined in controls.pp (mrNone..mrLast) don't need
  
- caption. The default captions will be used.  </descr>
+ caption. The default captions will be used.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="QuestionDlg.Result">
@@ -1505,20 +1337,21 @@ The strength of this functions is however that you can fill the array like: [400
       <!-- procedure Visibility: default -->
       <element name="ShowMessage">
         <short>Show Message</short>
-        <descr>Procedure ShowMessage (const Msg: string);
+        <descr>Procedure ShowMessage (const Msg: string);<br/>
 
-{ Defined in Dialogs.pp }
+{ Defined in Dialogs.pp }<br/>
 
     The simplest message dialog: takes a simple string as argument, displays it in a stereotyped box, and waits for a mouse-click or enter-key event before returning to the calling routine or program.<br/>
-    This is a modal procedure call, that is the box is displayed, receives focus, and does not relinquish focus until the OK box is clicked or otherwise selected.
 
-Example
+    This is a modal procedure call, that is the box is displayed, receives focus, and does not relinquish focus until the OK box is clicked or otherwise selected.<br/><br/>
+Example<br/>
 
-Program LazMessage;
+<code>Program LazMessage;
 Uses Dialogs;
 begin
   ShowMessage ('This is a message from Lazarus')
-end.</descr>
+end.
+</code></descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessage.aMsg">
@@ -1529,7 +1362,9 @@ end.</descr>
       <element name="ShowMessageFmt">
         <short>Shows a message assembled from a format string and an array of arguments.</short>
         <descr>This procedure is an extension to the <link id="ShowMessage">ShowMessage</link>
+
  procedure. The parameters it takes are the same as the Format function.</descr>
+        <seealso><link id="ShowMessage"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessageFmt.aMsg">
@@ -1543,6 +1378,7 @@ end.</descr>
       <element name="ShowMessagePos">
         <short>Shows a message box at a given screen position.</short>
         <descr>Shows a message box at a given screen position.</descr>
+        <seealso><link id="ShowMessage"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessagePos.aMsg">
@@ -1557,19 +1393,16 @@ end.</descr>
         <short>The vertical position of the messagebox.</short>
       </element>
       <!-- function Visibility: default -->
-      <element name="InputQuery">        <short>Use InputQuery to show a dialog box to get some input from the user</short>
-        <descr><p>Two versions of this function which displays a prompt and expects user input of textual data;</p>
-
-
-<p>The first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password),
+      <element name="InputQuery">
+        <short>Use InputQuery to show a dialog box to get some input from the user</short>
+        <descr>
+          <p>Two versions of this function which displays a prompt and expects user input of textual data;</p>
+          <p>The first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password),
  the second omits this property. </p>
-
-
-<p>The text entered by the user is returned in the variable argument 'Value'. 
+          <p>The text entered by the user is returned in the variable argument 'Value'. 
 The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). </p>
-
-
-<p>Omitting the MaskInput argument is equivalent to setting it FALSE.</p></descr>
+          <p>Omitting the MaskInput argument is equivalent to setting it FALSE.</p>
+        </descr>
         <seealso><link id="InputBox"/></seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -1596,24 +1429,30 @@ The function result is a boolean which returns TRUE if the OK button was pressed
         <descr>When the DialogBox is shown the text in the Editbox will be Value. When ENTER is pressed or OK clicked, Value will be the text from the Editbox.</descr>
       </element>
       <!-- function Visibility: default -->
-      <element name="InputBox">        <short>Displays a box with defined title and prompt, and expects user input in a text box</short>
-        <descr><p><printshort id="InputBox"/>. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
+      <element name="InputBox">
+        <short>Displays a box with defined title and prompt, and expects user input in a text box</short>
+        <descr>
+          <p><printshort id="InputBox"/>. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
 </p>
-<p>If the user selects the OK button, the text in the text box is returned. If the user selects the Cancel button, the default string is returned.
-</p></descr>
+          <p>If the user selects the OK button, the text in the text box is returned. If the user selects the Cancel button, the default string is returned.
+</p>
+        </descr>
         <seealso><link id="ShowMessage"/></seealso>
         <example file="dialogs/inputbox.pas"/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="InputBox.Result">        <short>The result of this function is the string the user entered in the editbox or the default string</short>
+      <element name="InputBox.Result">
+        <short>The result of this function is the string the user entered in the editbox or the default string</short>
         <descr><printshort id="InputBox.Result"/>.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="InputBox.ACaption">        <short>The caption for the dialogbox</short>
+      <element name="InputBox.ACaption">
+        <short>The caption for the dialogbox</short>
         <descr><printshort id="InputBox.ACaption"/>.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="InputBox.APrompt">        <short>The text asking the user for his input</short>
+      <element name="InputBox.APrompt">
+        <short>The text asking the user for his input</short>
         <descr><printshort id="InputBox.APrompt"/>.</descr>
       </element>
       <!-- argument Visibility: default -->
@@ -1624,11 +1463,13 @@ The function result is a boolean which returns TRUE if the OK button was pressed
       <!-- function Visibility: default -->
       <element name="PasswordBox">
         <short>Password Box</short>
-        <descr>PasswordBox:  a specialised form of the InputQuery. The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.
-
-Function PasswordBox(const ACaption, APrompt : String) : String;
-
+        <descr>PasswordBox:  a specialised form of the InputQuery. <br/>The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.<br/><code>Function PasswordBox(const ACaption, APrompt : String) : String;
+</code><br/>
     Behaves very similarly to the InputQuery function with MaskInput = TRUE; the difference is that the password that was typed in is returned as the result of the function (like InputBox).</descr>
+        <seealso>
+          <link id="InputQuery"/>
+          <link id="InputBox"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="PasswordBox.Result">
@@ -1645,7 +1486,9 @@ Function PasswordBox(const ACaption, APrompt : String) : String;
       <!-- function Visibility: default -->
       <element name="SelectDirectory">
         <short>A function that allows to user to select a directory.</short>
-        <descr>This function wil show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
+        <descr>This function will show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>
+Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
+
 There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.</descr>
       </element>
       <!-- function result Visibility: default -->
@@ -1679,6 +1522,16 @@ There are two version of this function, the second one having the ability to ind
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <element name="TFindDialog">
+        <short>A dialog used for finding text within the current editor or text buffer</short>
+        <descr>Opens a dialog box allowing the user to enter text for searching.<br/>As this is the parent class for the TReplaceDialog, it contains definitions for the Replace method, but the Replace option does not actually appear when the dialog is displayed: you need to use TReplaceDialog to do that</descr>
+        <seealso><link id="TReplaceDialog"/></seealso>
+      </element>
+      <element name="TReplaceDialog">
+        <short>A dialog allowing the user to replace text</short>
+        <descr>The dialog appears and offers boxes for the user to enter text for searching and text to replace it. <br/>A number of buttons appear, offering the choice to replace this instance, find next, replace all</descr>
+        <seealso><link id="TFindDialog"/></seealso>
       </element>
     </module>
     <!-- Dialogs -->
