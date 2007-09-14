@@ -153,6 +153,7 @@ type
     procedure setColor(const Value: PQColor); virtual;
     procedure setCursor(const ACursor: QCursorH);
     procedure setEnabled(p1: Boolean);
+    procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); overload;
     procedure setMaximumSize(AWidth, AHeight: Integer);
     procedure setMinimumSize(AWidth, AHeight: Integer);
@@ -167,6 +168,7 @@ type
     procedure setHeight(p1: Integer);
     procedure setTabOrder(p1, p2: TQtWidget);
     procedure setWindowState(AState: QtWindowStates);
+    procedure sizeHint(size: PSize);
     function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
 
@@ -2100,6 +2102,11 @@ begin
   QWidget_setEnabled(Widget, p1);
 end;
 
+procedure TQtWidget.setFont(AFont: QFontH);
+begin
+  QWidget_setFont(Widget, AFont);
+end;
+
 procedure TQtWidget.setGeometry(ARect: TRect);
 begin
   QWidget_setGeometry(Widget, @ARect);
@@ -2181,6 +2188,11 @@ end;
 procedure TQtWidget.setWindowState(AState: QtWindowStates);
 begin
   QWidget_setWindowState(Widget, AState);
+end;
+
+procedure TQtWidget.sizeHint(size: PSize);
+begin
+  QWidget_sizeHint(Widget, size);
 end;
 
 {------------------------------------------------------------------------------

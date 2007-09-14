@@ -1400,7 +1400,7 @@ begin
   then msk := 0
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
-  RawImage_FromBitmap(RawImage, AImage.Handle, AMask.Handle, R);
+  RawImage_FromBitmap(RawImage, AImage.Handle, msk, R);
   ImgData := InternalSetImage(AIndex, RawImage);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);

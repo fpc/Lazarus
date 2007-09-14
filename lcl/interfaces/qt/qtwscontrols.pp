@@ -169,15 +169,12 @@ var
   Widget: TQtWidget;
   R: TRect;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('Trace:> [TQtWSCustomControl.ShowHide]');
-  {$endif}
-
-  if (AWinControl = nil) or not AWinControl.HandleAllocated then
-    exit;
+  if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
+    Exit;
 
   Widget := TQtWidget(AWinControl.Handle);
-  { if the widget is a form, this is a place to set the Tab order }
+
+  // if the widget is a form, this is a place to set the Tab order
   if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
   begin
     if fsModal in TForm(AWinControl).FormState then
@@ -205,19 +202,6 @@ begin
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
-  
-
-  {$ifdef VerboseQt}
-    Write('Trace:< [TQtWSCustomControl.ShowHide] ');
-
-    if AWinControl is TForm then
-      Write('Is TForm, ');
-
-    if AWinControl.HandleObjectShouldBeVisible then
-      WriteLn('Visible: True')
-    else
-      WriteLn('Visible: False');
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -230,20 +214,20 @@ var
   Widget: TQtWidget;
   FocusWidget: QWidgetH;
 begin
-  if AWinControl.HandleAllocated then
-  begin
-    Widget := TQtWidget(AWinControl.Handle);
-    if Assigned(Widget.LCLObject.Parent) then
-      FocusWidget := QWidget_focusWidget(TQtWidget(Widget.LCLObject.Parent.Handle).Widget)
-    else
-      FocusWidget := QWidget_focusWidget(Widget.Widget);
-    
-    Result := (FocusWidget <> nil) and
-              QWidget_isEnabled(FocusWidget) and
-              QWidget_isVisible(FocusWidget) and
-              (QWidget_focusPolicy(FocusWidget) <> QtNoFocus);
-  end else
-    Result := False;
+  Result := False;
+  if not WSCheckHandleAllocated(AWinControl, 'CanFocus') then
+    Exit;
+
+  Widget := TQtWidget(AWinControl.Handle);
+  if Assigned(Widget.LCLObject.Parent) then
+    FocusWidget := QWidget_focusWidget(TQtWidget(Widget.LCLObject.Parent.Handle).Widget)
+  else
+    FocusWidget := QWidget_focusWidget(Widget.Widget);
+  
+  Result := (FocusWidget <> nil) and
+            QWidget_isEnabled(FocusWidget) and
+            QWidget_isVisible(FocusWidget) and
+            (QWidget_focusPolicy(FocusWidget) <> QtNoFocus);
 end;
 
 {------------------------------------------------------------------------------
@@ -291,6 +275,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'Invalidate') then
+    Exit;
+
   TQtWidget(AWinControl.Handle).Update;
 end;
 
@@ -303,6 +290,10 @@ end;
 class function TQtWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
   var ARect: TRect): Boolean;
 begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWinControl, 'GetClientBounds') then
+    Exit;
+
   ARect := TQtWidget(AWinControl.Handle).getClientBounds;
   Result := True;
 end;
@@ -310,6 +301,10 @@ end;
 class function TQtWSWinControl.GetClientRect(const AWincontrol: TWinControl;
   var ARect: TRect): Boolean;
 begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWinControl, 'GetClientRect') then
+    Exit;
+    
   ARect := TQtWidget(AWinControl.Handle).getClientBounds;
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
   Result := True;
@@ -320,21 +315,21 @@ class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
 var
   PrefSize: TSize;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('> TQtWSWinControl.GetPreferredSSize for ',dbgsname(AWinControl));
-  {$endif}
-  QWidget_sizeHint(TQtWidget(AWinControl.Handle).Widget, @PrefSize);
-  if (PrefSize.cx >= 0)
-  and (PrefSize.cy >=0) then
+  if AWinControl.HandleAllocated then
   begin
-    PreferredWidth := PrefSize.cx;
-    PreferredHeight := PrefSize.cy;
+    TQtWidget(AWinControl.Handle).sizeHint(@PrefSize);
+    if (PrefSize.cx >= 0) and (PrefSize.cy >=0) then
+    begin
+      PreferredWidth := PrefSize.cx;
+      PreferredHeight := PrefSize.cy;
+    end;
   end;
 end;
 
 class function TQtWSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 begin
+  Result := False;
   if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
     Exit;
 
@@ -388,6 +383,9 @@ var
   Widget: TQtWidget;
   MaxW, MaxH: Integer;
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'ConstraintsChange') then
+    Exit;
+    
   Widget := TQtWidget(AWinControl.Handle);
   with AWinControl do
   begin
@@ -416,6 +414,9 @@ end;
 class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetBounds') then
+    Exit;
+
   TQtWidget(AWinControl.Handle).move(ALeft, ATop);
   TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
 end;
@@ -431,6 +432,9 @@ end;
 class procedure TQtWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetPos') then
+    Exit;
+    
   TQtWidget(AWinControl.Handle).move(ALeft, ATop);
 end;
 
@@ -445,6 +449,9 @@ end;
 class procedure TQtWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetSize') then
+    Exit;
+
   TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
 end;
 
@@ -460,31 +467,16 @@ class procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
   Widget: TQtWidget;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('Trace:> [TQtWSWinControl.ShowHide]');
-  {$endif}
-
-  if (AWinControl = nil) or not AWinControl.HandleAllocated then
-    exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'ShowHide') then
+    Exit;
 
   Widget := TQtWidget(AWinControl.Handle);
-  { if the widget is a form, this is a place to set the Tab order }
+
+  // if the widget is a form, this is a place to set the Tab order
   if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
     TQtMainWindow(Widget).SetTabOrders;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
-
-  {$ifdef VerboseQt}
-    Write('Trace:< [TQtWSWinControl.ShowHide] ');
-
-    if AWinControl is TForm then
-      Write('Is TForm, ');
-
-    if AWinControl.HandleObjectShouldBeVisible then
-      WriteLn('Visible: True')
-    else
-      WriteLn('Visible: False');
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -499,9 +491,8 @@ var
   QColor: TQColor;
   Color: TColor;
 begin
-  if AWinControl = nil then exit;
-
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
 
   if AWinControl.Color = CLR_INVALID then exit;
 
@@ -524,9 +515,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
 begin
-  if AWinControl = nil then exit;
-  if not AWinControl.HandleAllocated then exit;
-  
+  if not WSCheckHandleAllocated(AWinControl, 'SetCursor') then
+    Exit;
+
   TQtWidget(AWinControl.Handle).SetCursor(QCursorH(ACursor));
 end;
 
@@ -542,8 +533,11 @@ var
   QColor: TQColor;
   Color: TColor;
 begin
-  QWidget_setFont(TQtWidget(AWinControl.Handle).Widget, TQtFont(AFont.Handle).Widget);
-  
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
+    Exit;
+
+  TQtWidget(AWinControl.Handle).setFont(TQtFont(AFont.Handle).Widget);
+
   if AFont.Color = CLR_INVALID then exit;
 
   Color := ColorToRGB(AFont.Color);
@@ -556,6 +550,9 @@ class procedure TQtWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
 var
   Widget: TQtWidget;
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle') then
+    Exit;
+    
   Widget := TQtWidget(AWinControl.Handle);
   if Widget is TQtFrame then
     TQtFrame(Widget).setFrameShape(TBorderStyleToQtFrameShapeMap[ABorderStyle]);

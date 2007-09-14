@@ -61,7 +61,7 @@ function WSCheckHandleAllocated(const AWincontrol: TWinControl;
     DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AWincontrol.Name, AWincontrol.ClassName]);
   end;
 begin
-  Result := AWinControl.HandleAllocated; 
+  Result := AWinControl.HandleAllocated;
   if Result then Exit;
   Warn;
 end;
