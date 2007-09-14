@@ -3740,26 +3740,34 @@ end;
 
 procedure TfrPictureView.GetBlob(b: TfrTField);
 var
-  M: TMemoryStream;
+  s: TStream;
+  GraphExt: string;
+  gc: TGraphicClass;
+  AGraphic: TGraphic;
 begin
   if b.IsNull then
     Picture.Assign(nil)
   else begin
     // todo: TBlobField.AssignTo is not implemented yet
-    //Picture.Assign(b);
-    M :=TMemoryStream.Create;
-    try
-      TBlobField(B).SaveToStream(M);
-      M.Position:=0;
+    s := TDataset(FDataset).CreateBlobStream(TField(b),bmRead);
+    if s.Size = 0 then
+      Picture.Clear
+    else
+    begin
       try
-        Picture.Bitmap.LoadFromStream(M);
-      except
-        // eat possible exception if M is not in BMP, XPM or ICON
-        // format which are what Picture.bitmap.LoadFromStream() knows
-        // about
-      end;
-    finally
-      M.Free;
+        GraphExt :=  s.ReadAnsiString;
+        gc := GetGraphicClassForFileExtension(GraphExt);
+        if assigned(gc) then
+        begin
+          AGraphic := gc.Create;
+          AGraphic.LoadFromStream(s);
+          Picture.Assign(AGraphic);
+        end;
+      finally
+        if assigned(AGraphic) then
+          AGraphic.Free;
+        s.Free;
+      end
     end;
   end;
 end;
