@@ -64,10 +64,7 @@ CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
-LazVersion="$CompilerVersion.$CompilerRelease"
-if [ "$CompilerPatch" != "0" ]; then
-  LazVersion="$LazVersion.$CompilerPatch"
-fi
+LazVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 
 # set version numbers in all Makefiles
 perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*

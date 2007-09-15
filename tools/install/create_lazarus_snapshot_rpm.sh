@@ -30,7 +30,7 @@ Date=`date +%Y%m%d`
 RPMDIR=$(rpm/get_rpm_source_dir.sh)
 ARCH=`rpm --eval "%{_arch}"`
 LIB=`rpm --eval "%{_lib}"`
-FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.0.4-$Date.$ARCH.rpm
+FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.2.0-$Date.$ARCH.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
