@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets, qtprivate, qtobjects,
+  qtwidgets, qtprivate, qtobjects, qtproc, qtwscontrols,
   // LCL
   SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf, Forms,
   // Widgetset
@@ -47,12 +47,12 @@ type
   private
   protected
   public
+    class procedure AddControl(const AControl: TControl); override;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSTabSheet }
@@ -239,7 +239,13 @@ type
 
 
 implementation
-
+const
+  PanelBevelToQtFrameShapeMap: array[TStatusPanelBevel] of Integer =
+  (
+{pbNone   } Integer(QFrameNoFrame),
+{pbLowered} Integer(QFramePanel) or Integer(QFrameSunken),
+{pbRaised } Integer(QFramePanel) or Integer(QFrameRaised)
+  );
 
 { TQtWSToolButton }
 
@@ -452,8 +458,26 @@ end;
 
 { TQtWSStatusBar }
 
+class procedure TQtWSStatusBar.AddControl(const AControl: TControl);
+var
+  QtStatusBar: TQtStatusBar;
+  Parent: TQtWidget;
+begin
+  if (AControl is TStatusBar) and WSCheckHandleAllocated(TStatusBar(AControl), 'AddControl') then
+  begin
+    TQtWSWinControl.AddControl(AControl);
+    
+    QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
+
+    Parent := TQtWidget(AControl.Parent.Handle);
+    if (Parent is TQtMainWindow) then
+      TQtMainWindow(Parent).setStatusBar(QStatusBarH(QtStatusBar.Widget));
+  end;
+end;
+
 class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
+  AStatusBar: TStatusBar absolute AWinControl;
   QtStatusBar: TQtStatusBar;
   Str: WideString;
   i: Integer;
@@ -462,36 +486,30 @@ begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
   QtStatusBar.AttachEvents;
 
-  if TStatusBar(AWinControl).SimplePanel then
+  if AStatusBar.SimplePanel then
   begin
-    Str := UTF8Decode(TStatusBar(AWinControl).SimpleText);
+    Str := UTF8Decode(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
   end else
-  if TStatusBar(AWinControl).Panels.Count > 0 then
+  if AStatusBar.Panels.Count > 0 then
   begin
-    SetLength(QtStatusBar.APanels, TStatusBar(AWinControl).Panels.Count);
-    for i := 0 to TStatusBar(AWinControl).Panels.Count - 1 do
+    SetLength(QtStatusBar.APanels, AStatusBar.Panels.Count);
+    for i := 0 to AStatusBar.Panels.Count - 1 do
     begin
-      Str := UTF8Decode(TStatusBar(AWinControl).Panels[i].Text);
+      Str := GetUtf8String(AStatusBar.Panels[i].Text);
       QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
 
       QFrame_setLineWidth(QFrameH(QtStatusBar.APanels[i]), 1);
       QFrame_setMidLineWidth(QFrameH(QtStatusBar.APanels[i]), 0);
       
-      if TStatusBar(AWinControl).Panels[i].Bevel = pbNone then
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFrameNoFrame))
-      else
-      if TStatusBar(AWinControl).Panels[i].Bevel = pbLowered then
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]),Ord(QFramePanel) or Ord(QFrameSunken))
-      else
-      if TStatusBar(AWinControl).Panels[i].Bevel = pbRaised then
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFramePanel) or Ord(QFrameRaised));
-      
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]),
+        PanelBevelToQtFrameShapeMap[AStatusBar.Panels[i].Bevel]);
+
     //  QWidget_setContentsMargins(QtStatusBar.APanels[i], 0, 0, 2, 0);
       
       QWidget_geometry(QtStatusBar.Widget, @R);
-      QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, TStatusBar(AWinControl).Panels[i].Width, R.Bottom);
-      QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget),QtStatusBar. APanels[i], 100);
+      QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
+      QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i], 100);
     end;
   end;
 
@@ -532,7 +550,6 @@ begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
   begin
-  
     if Length(QtStatusBar.APanels) > 0 then
     begin
       for i := High(QtStatusBar.APanels) downto 0 do
@@ -549,25 +566,16 @@ begin
   end else
   if AStatusBar.Panels.Count > 0 then
   begin
-  
     QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
     
     if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
     begin
-    
-      Str := UTF8Decode(AStatusBar.Panels[PanelIndex].Text);
+      Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
       
       QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
       
-      if AStatusBar.Panels[PanelIndex].Bevel = pbNone then
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]), Ord(QFrameNoFrame))
-      else
-      if AStatusBar.Panels[PanelIndex].Bevel = pbLowered then
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]),Ord(QFrameWinPanel) or Ord(QFrameSunken))
-      else
-      if AStatusBar.Panels[PanelIndex].Bevel = pbRaised then
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]), Ord(QFrameWinPanel) or Ord(QFrameRaised));
-      
+      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]),
+        PanelBevelToQtFrameShapeMap[AStatusBar.Panels[PanelIndex].Bevel]);
     end;
   end;
 end;
@@ -580,36 +588,15 @@ begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
   begin
-    Str := UTF8Decode(AStatusBar.SimpleText);
+    Str := GetUtf8String(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
   end else
   begin
     if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
     begin
-      Str := UTF8Decode(AStatusBar.Panels[PanelIndex].Text);
+      Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
       QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
     end;
-  end;
-end;
-
-class procedure TQtWSStatusBar.ShowHide(const AWinControl: TWinControl);
-var
-  QtStatusBar: TQtStatusBar;
-  Parent: TQtWidget;
-begin
-  {this routine should be removed as soon as we fix problem with invisible
-   TStatusBar while parent form isn't resized for the first time}
-
-  inherited ShowHide(AWinControl);
-  
-  QtStatusBar := TQtStatusBar(AWinControl.Handle);
-  
-  if Assigned(AWinControl.Parent) then
-  begin
-    Parent := TQtWidget(AWinControl.Parent.Handle);
-    if (Parent is TQtMainWindow)
-    and TQtMainWindow(Parent).IsMainForm then
-      QMainWindow_setStatusBar(QMainWindowH(Parent.Widget), QStatusBarH(QtStatusBar.Widget));
   end;
 end;
 

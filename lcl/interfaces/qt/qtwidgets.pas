@@ -345,6 +345,7 @@ type
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
+    procedure setStatusBar(AStatusBar: QStatusBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure SlotWindowStateChange; cdecl;
@@ -3071,6 +3072,12 @@ begin
     QMainWindow_setMenuBar(QMainWindowH(Widget), AMenuBar)
   else
     QLayout_setMenuBar(LayoutWidget, AMenuBar);
+end;
+
+procedure TQtMainWindow.setStatusBar(AStatusBar: QStatusBarH);
+begin
+  if IsMainForm then
+    QMainWindow_setStatusBar(QMainWindowH(Widget), AStatusBar);
 end;
 
 {------------------------------------------------------------------------------
