@@ -897,6 +897,7 @@ type
 
   TQtPage = class(TQtWidget)
   protected
+    FText: WideString;
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getIndex: Integer;
@@ -6374,14 +6375,20 @@ begin
 end;
 
 function TQtPage.getIndex: Integer;
-var
-  AParent: QTabWidgetH;
+{var
+  AParent: QTabWidgetH;}
 begin
+  if LCLObject.Parent is TCustomNotebook then
+    Result := TCustomNotebook(LCLObject.Parent).IndexOf(TCustomPage(LCLObject))
+  else
+    Result := -1;
+{
   AParent := getTabWidget;
   if AParent <> nil then
     Result := QTabWidget_indexOf(AParent, Widget)
   else
     Result := -1;
+}
 end;
 
 function TQtPage.getTabWidget: QTabWidgetH;
@@ -6401,18 +6408,26 @@ end;
 function TQtPage.getText: WideString;
 var
   AParent: QTabWidgetH;
+  AIndex: Integer;
 begin
   AParent := getTabWidget;
   if AParent <> nil then
-    QTabWidget_TabText(AParent, @Result, getIndex)
+  begin
+    AIndex := getIndex;
+    if AIndex = -1 then
+      QTabWidget_TabText(AParent, @Result, AIndex)
+    else
+      Result := FText
+  end
   else
-    Result := '';
+    Result := FText;
 end;
 
 procedure TQtPage.setText(const W: WideString);
 var
   AParent: QTabWidgetH;
 begin
+  FText := W;
   AParent := getTabWidget;
   if AParent <> nil then
     QTabWidget_setTabText(AParent, getIndex, @W);
