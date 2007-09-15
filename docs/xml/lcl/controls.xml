@@ -924,11 +924,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TKeyPressEvent.Key"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TUTF8KeyPressEvent">
-        <short/>
-        <descr/>
-        <seealso>
-          <short>cursor constant</short>
-        </seealso>
+        <short>cursor constant</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TUTF8KeyPressEvent.Sender"><short/></element>
@@ -5150,15 +5146,12 @@ mrLast=mrYesToAll=10</descr>
       <!-- argument Visibility: default -->
       <element name="TControl.ActionChange.CheckDefaults"><short/></element>
       <!-- property Visibility: protected -->
-      <element name="TControl.ActionLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TControl.ActionLink"/>
       <!-- property Visibility: protected -->
       <element name="TControl.AutoSize">
         <short>Whether auto-size is to be used</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.Ctl3D">
@@ -5555,6 +5548,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetBoundsKeepBase.Lock"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TControl.GetPreferredSize">
+        <short>Returns default/preferred height and width, to be used in autosizing algorithms</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
   procedure TControl.GetPreferredSize(
@@ -5596,18 +5590,14 @@ mrLast=mrYesToAll=10</descr>
       <!-- constructor Visibility: public -->
       <element name="TControl.Create">
         <short>Create a new Control</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <seealso><link id="rtl.Classes.TComponent.Create"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TControl.Destroy">
         <short>Destroy the Control when you have finished with it</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <seealso><link id="rtl.Classes.TComponent.Destroy"/></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
@@ -5991,24 +5981,30 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Action">
         <short>The action to be associated with this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Can either read the action already associated with the control (GetAction), or write an action to be associated (SetAction)</descr>
+        <seealso><link id="rtl.Classes.TBasicAction"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Align">
         <short>Used to align the control in one of four directions.</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Either reads a flag containing alignment instructions (FAlign) or writes alignment instructions (SetAlign)<br/>
+May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</descr>
         <seealso><link id="TAlign"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Anchors">
         <short>The set of anchor definitions for this control</short>
-	<descr>// standard properties, which should be supported by all descendants</descr>
-        <seealso/>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in IsAnchorsStored</descr>
+        <seealso><link id="TAnchors"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.AnchorSide">
         <short>Finds which side to use for anchor</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Finds which side is to be used to anchor this control, and what relationships it has to other controls nearby. For complex relationships, use the Side property of the parent class TAnchorSide, and make a reference eg using asrCenter</descr>
         <seealso><link id="TAnchorSide"/></seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6016,13 +6012,18 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: public -->
       <element name="TControl.BorderSpacing">
         <short>Determines the border spacing for this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing. <br/>
+The properties are defined in the parent class TControlBorderSpacing</descr>
         <seealso><link id="TControlBorderSpacing"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRect">
         <short>Determines the rectangle bounding this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Finds the values for the bounding rectangle, or sets the values.<br/>
+Bounding rectangle (top-left, bottom-right) is defined in TRect</descr>
+        <seealso><link id="rtl.Classes.TRect"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRectForNewParent">
@@ -6032,9 +6033,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>Caption - the text appearing on the Control, usually used to identify its function</short>
-        <descr>
-          <p>By default, the Caption appears the same as the control Name in the Object Inspector, and the developer needs to set it explicitly to some new text.</p>
-          <code>{* Note on TControl.Caption
+        <descr><p>By default, the Caption appears the same as the control Name in the Object Inspector, and the developer needs to set it explicitly to some new text.</p>
+Gets caption from string buffer, or stores the new caption there. Shows flag if caption is stored.<br/><code>{* Note on TControl.Caption
 
  * The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
@@ -6050,113 +6050,137 @@ mrLast=mrYesToAll=10</descr>
  * compatibility.
  }
 
-</code>
-        </descr>
+</code></descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientHeight">
         <short>Determines the height of the client within which the control exists</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Finds or sets the client height, and sets a flag if it has been stored</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientOrigin">
         <short>Top left pixel of the client within which the control exists</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Finds origin of client (read-only)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientRect">
         <short>Finds the position of the rectangle for the client within which the control exists</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads the coordinates of the client rectangle (read-only)</descr>
+        <seealso><link id="rtl.Classes.TRect"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientWidth">
         <short>Determines the width of the client within which the control exists</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads the width of the client control or sets the value. Sets flag if value is stored</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Color">
         <short>Determine the colour for the current control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads the value for colour, or stores the value, and sets a flag if the colour is stored. <br/>
+The default colour is the same as the window in which the control is located.</descr>
+        <seealso><link id="Graphics.TColor"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Constraints">
         <short>Determine constraints (max and min height and width) for this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads the size constraints or stores new ones.</descr>
         <seealso><link id="TSizeConstraints"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlOrigin">
         <short>Top left pixel of this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads value for the Origin (top left pixel) of this control. (read-only)</descr>
+        <seealso><link id="rtl.Classes.TPoint"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlState">
         <short>Whether mouse has been clicked, data being read, control being re-drawn, etc</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads or stores the state of the control.<br/></descr>
         <seealso><link id="TControlState"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlStyle">
         <short>Whether the control responds to mouse clicks, can be re-sized, has particular actions, etc</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads the stored style, or saves the new style</descr>
         <seealso><link id="TControlStyle"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Enabled">
         <short>Whether the control is enabled. If not, it usually appears 'greyed-out'</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Font">
         <short>The Font to be used for text in this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so.<br/>
+The properties of Font are defined in the parent class TFont</descr>
+        <seealso><link id="Graphics.TFont"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.IsControl">
         <short>Reads or writes a flag to deterine whether this object is actually a control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads a logical (boolean) flag or sets it to determine whether this object is a control.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.MouseEntered">
         <short>Reads a flag to determine whether the mouse entered the control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads logical (boolean) flag to see whether mouse has entered the control</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnChangeBounds">
         <short>Event handler for a change in bounds of the control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or Writes flag if bounds are changed</descr>
+        <seealso><link id="rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnClick">
         <short>Event Handler for mouse click</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads or writes a flag if  amouse click is detected, and sets a flag if a value is stored.</descr>
+        <seealso><link id="rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnResize">
         <short>Event Handler for resize of control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes flag if control is re-sized.</descr>
+        <seealso><link id="rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnShowHint">
         <short>Event Handler when a hint needs to be shown</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
-        <seealso><link id="THintInfo"/></seealso>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse hovers over an object) is to be shown</descr>
+        <seealso>
+          <link id="THintInfo"/>
+          <link id="TControShowHintEvent"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Parent">
         <short>Determine what is the parent for this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or writes a flag to find or store the identity of the parent for this control. The parent is of type TWincontrol</descr>
+        <seealso><link id="TWinControl"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.PopupMenu">
         <short>Gets or writes the pop-up menu associated with this control</short>
-        <descr>// standard properties, which should be supported by all descendants</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/> Reads the details of the pop-up menu, or stores them.<br/>Properties are defined in the parent class TPopupMenu</descr>
+        <seealso><link id="Menus.TPopupMenu"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Flag to determine: Is hint to be displayed for this control?</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint</descr>
+        <seealso><link id="OnShowHint"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
@@ -6175,9 +6199,12 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.WindowProc">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Reads or writes a message associated with this window</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>Reads message from flag area, or stores a message</descr>
+        <seealso>
+          <link id="TWndMethod"/>
+          <link id="Messages.TLMessage"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.DockOrientation">
