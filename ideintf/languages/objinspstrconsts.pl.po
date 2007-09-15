@@ -1,3 +1,17 @@
+msgid ""
+msgstr ""
+"Last-Translator: Paweł Trochimczuk\n"
+"PO-Revision-Date: 2007-09-15 14:05+0100\n"
+"Project-Id-Version: objinspstrconsts\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Language-Team: \n"
+
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr ""
@@ -60,7 +74,7 @@ msgstr "&OK"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
-msgstr ""
+msgstr "&Otwórz..."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
@@ -72,7 +86,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr ""
+msgstr "&Odśwież"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -84,7 +98,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr ""
+msgstr "&Cofnij"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
@@ -92,11 +106,11 @@ msgstr "W &górę"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr ""
+msgstr "(wszystkie)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr "(Nieznany)"
+msgstr "(nieznana)"
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
@@ -104,7 +118,7 @@ msgstr "(brak)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr ""
+msgstr "0 linii, 0 znaków"
 
 #: objinspstrconsts:ois1linedchars
 msgid "1 line, %d chars"
@@ -116,7 +130,7 @@ msgstr "Akcja"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr ""
+msgstr "Edytor ActionList"
 
 #: objinspstrconsts:oicoleditadd
 msgid "Add"
@@ -144,7 +158,7 @@ msgstr "Dodaj zakładkę"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
-msgstr ""
+msgstr "Dodaj do ulubionych"
 
 #: objinspstrconsts:sccsiledtadd
 msgid "Add..."
@@ -152,7 +166,7 @@ msgstr "Dodaj..."
 
 #: objinspstrconsts:sccsiledtadjustment
 msgid "Adjustment"
-msgstr ""
+msgstr "Dopasowanie"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
@@ -172,7 +186,7 @@ msgstr "Zastosuj"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr ""
+msgstr "Array"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
@@ -200,11 +214,11 @@ msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
-msgstr ""
+msgstr "Nagłówek:"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
-msgstr ""
+msgstr "Kategoria"
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
@@ -212,7 +226,7 @@ msgstr ""
 
 #: objinspstrconsts:oischar
 msgid "Char"
-msgstr ""
+msgstr "Char"
 
 #: objinspstrconsts:oischaractersforblanks
 msgid "Characters for Blanks"
@@ -228,7 +242,7 @@ msgstr "Edytor CheckListBox"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
-msgstr ""
+msgstr "Klasa"
 
 #: objinspstrconsts:sccssgedtclean
 msgid "Clean"
@@ -264,7 +278,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
-msgstr ""
+msgstr "Kopiuj"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
@@ -276,7 +290,7 @@ msgstr "Utwórz nowy moduł (plik źródłowy pascala)."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr ""
+msgstr "Utwórz domyślne zdarzenie"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
@@ -308,11 +322,11 @@ msgstr "Ctrl+Z"
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr ""
+msgstr "Wy&tnij"
 
 #: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
-msgstr ""
+msgstr "Wytnij"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
@@ -320,11 +334,11 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
-msgstr ""
+msgstr "Baza danych"
 
 #: objinspstrconsts:oistdacteditdeleteshortcut
 msgid "Del"
-msgstr ""
+msgstr "Del"
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
@@ -332,7 +346,7 @@ msgstr "Usuń"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr ""
+msgstr "Usuń akcję"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
@@ -356,7 +370,7 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr ""
+msgstr "Okno dialogowe"
 
 #: objinspstrconsts:s_suggestsplitimage
 msgid "Do you want to split the image?"
@@ -368,15 +382,15 @@ msgstr "&W dół"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
-msgstr ""
+msgstr "W dół"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
-msgstr ""
+msgstr "Za&kończ"
 
 #: objinspstrconsts:cactionlisteditoreditcategory
 msgid "Edit"
-msgstr ""
+msgstr "Edycja"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
@@ -392,7 +406,7 @@ msgstr "Edytuj elementy TreeView..."
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr ""
+msgstr "Edytuj ActionList..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -420,7 +434,7 @@ msgstr "Zdarzenia"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
-msgstr ""
+msgstr "Zakończ"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
@@ -436,7 +450,7 @@ msgstr ""
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
-msgstr ""
+msgstr "Float"
 
 #: objinspstrconsts:oistdactfontedithint
 msgid "Font Select"
@@ -448,7 +462,7 @@ msgstr "Pomoc"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr ""
+msgstr "Spis treści pomocy"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
@@ -472,15 +486,15 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
-msgstr ""
+msgstr "Wstaw"
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr ""
+msgstr "Wstaw stronę"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Wstaw zakładkę"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -500,7 +514,7 @@ msgstr ""
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr ""
+msgstr "Nieprawidłowa wartość właściwości"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
@@ -532,7 +546,7 @@ msgstr "Edytor elementów ListView"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
-msgstr ""
+msgstr "Wczytaj"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -564,7 +578,7 @@ msgstr "Przenieś w dół"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "Przesuń wiersz/kolumnę"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
@@ -576,19 +590,19 @@ msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Przesuń stronę w lewo"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Przesuń stronę w prawo"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Przesuń zakładkę w lewo"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Przesuń zakładkę w prawo"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
@@ -596,7 +610,7 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
-msgstr ""
+msgstr "Nowa akcja"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
@@ -604,7 +618,7 @@ msgstr "Nowy element"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr ""
+msgstr "Nowa standardowa akcja"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
@@ -624,7 +638,7 @@ msgstr "OK"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
-msgstr ""
+msgstr "Obiekt"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -652,7 +666,7 @@ msgstr ""
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr ""
+msgstr "Opcje"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -696,11 +710,11 @@ msgstr ""
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
-msgstr ""
+msgstr "Record"
 
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
-msgstr ""
+msgstr "Odśwież"
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
@@ -748,7 +762,7 @@ msgstr "Zapisz..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
-msgstr ""
+msgstr "Z&aznacz wszystko"
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
@@ -760,11 +774,11 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
-msgstr ""
+msgstr "Zaznacz wszystko"
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr ""
+msgstr "Wybierz plik"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -776,7 +790,7 @@ msgstr ""
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr ""
+msgstr "Set"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
@@ -792,11 +806,11 @@ msgstr ""
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
-msgstr ""
+msgstr "Pokaż podpowiedzi"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr ""
+msgstr "Pokaż stronę..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -820,7 +834,7 @@ msgstr "Rozciągnij"
 
 #: objinspstrconsts:oisstring
 msgid "String"
-msgstr ""
+msgstr "String"
 
 #: objinspstrconsts:sccssgedtgrp
 msgid "String Grid"
@@ -832,7 +846,7 @@ msgstr "Edytor StringGrid"
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr ""
+msgstr "Edytor StringList"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -840,7 +854,7 @@ msgstr ""
 
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
-msgstr ""
+msgstr "Testuj okno dialogowe..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -852,7 +866,7 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
-msgstr ""
+msgstr "Pasek narzędzi"
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
@@ -876,7 +890,7 @@ msgstr "Nieznany"
 
 #: objinspstrconsts:oicoleditup
 msgid "Up"
-msgstr ""
+msgstr "W górę"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
@@ -884,7 +898,7 @@ msgstr "Wartość:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
-msgstr ""
+msgstr "Variant"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
@@ -896,7 +910,7 @@ msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr ""
+msgstr "Word"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
