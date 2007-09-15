@@ -201,6 +201,7 @@ type
     procedure SlotSliderPressed; cdecl;
     procedure SlotSliderReleased; cdecl;
  public
+    function getOrientation: QtOrientation;
     function getValue: Integer;
     function getPageStep: Integer;
     function getMin: Integer;
@@ -438,8 +439,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    procedure SetTickPosition(Value: QSliderTickPosition);
-    procedure SetTickInterval(Value: Integer);
+    function getTickInterval: Integer;
+    procedure setTickPosition(Value: QSliderTickPosition);
+    procedure setTickInterval(Value: Integer);
   public
     procedure AttachEvents; override;
     
@@ -3734,6 +3736,11 @@ begin
  FSliderReleased := True;
 end;
 
+function TQtAbstractSlider.getOrientation: QtOrientation;
+begin
+  Result := QAbstractSlider_orientation(QAbstractSliderH(Widget));
+end;
+
 procedure TQtAbstractSlider.SlotValueChanged(p1: Integer); cdecl;
 var
   Msg: PLMessage;
@@ -3832,6 +3839,11 @@ begin
     WriteLn('TQtTrackBar.Create');
   {$endif}
   Result := QSlider_create();
+end;
+
+function TQtTrackBar.getTickInterval: Integer;
+begin
+  Result := QSlider_tickInterval(QSliderH(Widget));
 end;
 
 {------------------------------------------------------------------------------

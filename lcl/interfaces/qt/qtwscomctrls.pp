@@ -247,6 +247,20 @@ const
 {pbRaised } Integer(QFramePanel) or Integer(QFrameRaised)
   );
 
+  TickMarkToQtSliderTickPositionMap: array[TTickMark] of QSliderTickPosition =
+  (
+{tmBoth       } QSliderTicksBothSides,
+{tmTopLeft    } QSliderTicksAbove,
+{tmBottomRight} QSliderTicksBelow
+  );
+
+  TrackBarOrientationToQtOrientationMap: array[TTrackBarOrientation] of QtOrientation =
+  (
+{trHorizontal} QtHorizontal,
+{trVertical  } QtVertical
+  );
+  
+
 { TQtWSToolButton }
 
 class function TQtWSToolButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
@@ -338,41 +352,26 @@ class procedure TQtWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   QtTrackBar: TQtTrackBar;
 begin
-
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
 
   QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
 
-  case ATrackBar.TickMarks of
-    tmBoth:QtTrackBar.SetTickPosition(QSliderTicksBothSides);
-    tmTopLeft:QtTrackBar.SetTickPosition(QSliderTicksAbove);
-    tmBottomRight:QtTrackBar.SetTickPosition(QSliderTicksBelow);
-  end;
+  QtTrackBar.SetTickPosition(TickMarkToQtSliderTickPositionMap[ATrackBar.TickMarks]);
 
-  if QAbstractSlider_pageStep(QAbstractSliderH(QtTrackBar.Widget)) <> ATrackBar.PageSize then
+  if QtTrackBar.getPageStep <> ATrackBar.PageSize then
     QtTrackBar.setPageStep(ATrackBar.PageSize);
-  if QSlider_tickInterval(QSliderH(QtTrackBar.Widget)) <> ATrackBar.Frequency then
+  if QtTrackBar.getTickInterval <> ATrackBar.Frequency then
     QtTrackBar.setTickInterval(ATrackBar.Frequency);
-  if QAbstractSlider_value(QAbstractSliderH(QtTrackBar.Widget)) <> ATrackBar.Position then
+  if QtTrackBar.getValue <> ATrackBar.Position then
     QtTrackBar.setSliderPosition(ATrackBar.Position);
 
-  case ATrackBar.Orientation of
-    trVertical:
-    begin
-      QtTrackBar.Hide;
-      QtTrackBar.setOrientation(QtVertical);
-      QtTrackBar.setInvertedAppereance(False);
-      QtTrackBar.setInvertedControls(False);
-      QtTrackBar.Show;
-    end;
-    else {trHorizontal}
-    begin
-      QtTrackBar.Hide;
-      QtTrackBar.setOrientation(QtHorizontal);
-      QtTrackBar.setInvertedAppereance(False);
-      QtTrackBar.setInvertedControls(False);
-      QtTrackBar.Show;
-    end;
+  if QtTrackBar.getOrientation <> TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation] then
+  begin
+    QtTrackBar.Hide;
+    QtTrackBar.setOrientation(TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation]);
+    QtTrackBar.setInvertedAppereance(False);
+    QtTrackBar.setInvertedControls(False);
+    QtTrackBar.Show;
   end;
 end;
 
@@ -381,7 +380,7 @@ var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  Result := QAbstractSlider_value(QAbstractSliderH(QtTrackBar.Widget));
+  Result := QtTrackBar.getValue;
 end;
 
 class procedure TQtWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
@@ -409,11 +408,7 @@ var
 begin
   QtProgressBar := TQtProgressBar(AProgressBar.Handle);
 
-//  if AProgressBar.Smooth then
-//    gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
-//                                         GTK_PROGRESS_CONTINUOUS)
-//   else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
-//                                         GTK_PROGRESS_DISCRETE);
+  //  AProgressBar.Smooth is not supported by qt
 
   case AProgressBar.Orientation of
     pbVertical:
@@ -436,14 +431,7 @@ begin
     QtProgressBar.setInvertedAppearance(False);
   end;
 
-  if AProgressBar.BarShowText then
-  begin
-//       gtk_progress_set_format_string (GTK_PROGRESS(Pointer(Pointer(wHandle))),
-//                                       '%v from [%l-%u] (=%p%%)');
-
-    QtProgressBar.setTextVisible(True);
-  end
-  else QtProgressBar.setTextVisible(False);
+  QtProgressBar.setTextVisible(AProgressBar.BarShowText);
 
   // The position, minumum and maximum values
   QtProgressBar.setValue(AProgressBar.Position);
