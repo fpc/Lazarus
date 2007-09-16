@@ -930,7 +930,6 @@ var
   ColorLeftTop, ColorRightBottom: TColor;
   EdgeQtColor: TQColor;
 begin
-
   X1 := R.Left;
   Y1 := R.Top;
   X2 := R.Right;
@@ -968,21 +967,19 @@ begin
 
   if grfFlags and BF_DIAGONAL = 0 then
   begin
-  
-		if grfFlags and BF_MONO = 0 then
+    if grfFlags and BF_MONO = 0 then
       ColorLeftTop := ColorToRgb(ColorLeftTop);
     
     QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorLeftTop),Green(ColorLeftTop),Blue(ColorLeftTop));
     Pen := QPainter_pen(QtDC.Widget);
     QPen_setColor(Pen, @EdgeQtColor);
-
     if grfFlags and BF_LEFT <> 0 then
       QtDC.DrawLine(X1, Y1, X1, Y2);
     if grfFlags and BF_TOP <> 0 then
       QtDC.DrawLine(X1, Y1, X2, Y1);
 
-		if grfFlags and BF_MONO = 0 then
-      ColorLeftTop := ColorToRgb(ColorRightBottom);
+    if grfFlags and BF_MONO = 0 then
+      ColorRightBottom := ColorToRgb(ColorRightBottom);
     
     QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorRightBottom),Green(ColorRightBottom),Blue(ColorRightBottom));
     Pen := QPainter_pen(QtDC.Widget);
@@ -995,7 +992,7 @@ begin
   end
   else
   begin
-		if grfFlags and BF_MONO = 0 then
+    if grfFlags and BF_MONO = 0 then
       ColorLeftTop := ColorToRgb(ColorRightBottom);
     QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorLeftTop),Green(ColorLeftTop),Blue(ColorLeftTop));
     Pen := QPainter_pen(QtDC.Widget);
@@ -2397,6 +2394,24 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
 
+  function GetPaletteColor(Palette: QPaletteH; Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
+  var
+    QColor : PQColor;
+  begin
+    QColor:=QPalette_color(Palette, Group, Role);
+    Result:=(QColor^.r and $00FF) or ((QColor^.g and $00FF) shl 8) or ((QColor^.b and $00FF) shl 16);
+  end;
+  
+  function GetClInfoBk: TColor;
+  var
+    APalette: QPaletteH;
+  begin
+    APalette := QPalette_create();
+    QToolTip_palette(APalette);
+    Result := GetPaletteColor(APalette, QPaletteActive, QPaletteWindow);
+    QPalette_destroy(APalette);
+  end;
+
   {------------------------------------------------------------------------------
     Function: GetColor
     Params:   A Qt color group and a Qt color role
@@ -2411,8 +2426,7 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
     Handle := QPalette_create;
     QApplication_palette(Handle);
 
-    QColor:=QPalette_color(Handle, Group,Role);
-    Result:=(QColor^.r and $00FF) or ((QColor^.g and $00FF) shl 8) or ((QColor^.b and $00FF) shl 16);
+    Result := GetPaletteColor(Handle, Group, Role);
 
     QPalette_destroy(Handle);
   end;
@@ -2451,7 +2465,7 @@ begin
     COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
     COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMid);
     COLOR_INFOTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
-    COLOR_INFOBK                  : Result:=GetColor(QPaletteActive,   QPaletteBase);
+    COLOR_INFOBK                  : Result:=GetClInfoBk;
     // PBD: 25 is unassigned in all the docs I can find
     //      if someone finds what this is supposed to be then fill it in
     //      note defaults below, and cl[ColorConst] in graphics
