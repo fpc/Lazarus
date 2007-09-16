@@ -2818,16 +2818,8 @@ end;
 { TQtPushButton }
 
 function TQtPushButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Str: WideString;
 begin
-  // Creates the widget
-  {$ifdef VerboseQt}
-    WriteLn('TQtPushButton.Create Left:', dbgs(LCLObject.Left), ' Top:', dbgs(LCLObject.Top));
-  {$endif}
-
-  Str := UTF8Decode(LCLObject.Caption);
-  Result := QPushButton_create(@Str);
+  Result := QPushButton_create();
 end;
 
 {------------------------------------------------------------------------------
@@ -3958,15 +3950,8 @@ end;
 { TQtLineEdit }
 
 function TQtLineEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
-var
-  Str: WideString;
 begin
-  // Creates the widget
-  {$ifdef VerboseQt}
-    WriteLn('TQtLineEdit.Create');
-  {$endif}
-  Str := UTF8Decode((LCLObject as TCustomEdit).Text);
-  Result := QLineEdit_create(@Str);
+  Result := QLineEdit_create();
 end;
 
 function TQtLineEdit.getMaxLength: Integer;
@@ -5967,21 +5952,8 @@ end;
 
 function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
-  // Creates the widget
-  {$ifdef VerboseQt}
-    WriteLn('TQtStatusBar.Create');
-  {$endif}
-  
   SetLength(APanels, 0);
   Result := QStatusBar_create();
-  
-  {TODO: this should be made in initializeWND?
-  if (LCLObject as TStatusBar).SimplePanel then
-  begin;
-    Text := UTF8Decode((LCLObject as TStatusBar).SimpleText);
-    showMessage(@Text);
-  end;
-  }
 end;
 
 procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
