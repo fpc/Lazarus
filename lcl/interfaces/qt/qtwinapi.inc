@@ -2866,7 +2866,7 @@ begin
 
   QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
   try
-    WideStr := Utf8Decode(Str);
+    WideStr := GetUtf8String(Str);
     Size.cx := QtFontMetrics.width(@WideStr);
     Size.cy := QtFontMetrics.height;
   finally
@@ -3202,9 +3202,9 @@ var
   TitleStr: WideString;
   OkStr: WideString;
 begin
-  Str := UTF8Decode('TQtWidgetSet.MessageBox - not implemented');
-  TitleStr := UTF8Decode(lpCaption);
-  OkStr := UTF8Decode('Ok');
+  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
+  TitleStr := GetUtf8String(lpCaption);
+  OkStr := GetUtf8String('Ok');
   Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
 end;
 
@@ -4346,7 +4346,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  WideStr := UTF8Decode(Str);
+  WideStr := GetUtf8String(Str);
 
 //  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
 //  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);

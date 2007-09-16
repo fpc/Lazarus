@@ -161,7 +161,7 @@ begin
     end
     else
     begin
-      Text := UTF8Decode(AMenuItem.Caption);
+      Text := GetUtf8String(AMenuItem.Caption);
 
       Menu := MenuBar.addMenu(@Text);
 
@@ -203,7 +203,7 @@ begin
     { Count indicates the number of subitems this item has }
     else
     begin
-      Text := UTF8Decode(AMenuItem.Caption);
+      Text := GetUtf8String(AMenuItem.Caption);
 
       Menu := ParentMenu.addMenu(@Text);
 

@@ -449,7 +449,7 @@ var
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
 
-  Str := UTF8Decode(AWinControl.Caption);
+  Str := GetUtf8String(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   QtGroupBox.AttachEvents;
@@ -474,7 +474,7 @@ var
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   
-  Str := UTF8Decode(AWinControl.Caption);
+  Str := GetUtf8String(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   QtGroupBox.AttachEvents;

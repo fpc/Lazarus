@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtobjects, qtwidgets,
+  qtobjects, qtwidgets, qtproc,
   // RTL + LCL
   SysUtils, Classes, LCLType, Dialogs, Controls, Forms, Graphics,
   // Widgetset
@@ -172,11 +172,11 @@ begin
    Parent := TQtWidget(Application.MainForm.Handle).Widget
   else Parent := nil;
 
-  Caption := UTF8Decode(ACommonDialog.Title);
+  Caption := GetUtf8String(ACommonDialog.Title);
 
   FileDialog := TFileDialog(ACommonDialog);
 
-  Dir := UTF8Decode(FileDialog.InitialDir);
+  Dir := GetUtf8String(FileDialog.InitialDir);
 
   {------------------------------------------------------------------------------
     This is a parser that converts LCL filter strings to Qt filter strings
@@ -240,7 +240,7 @@ begin
     WriteLn('[TQtWSCommonDialog.ShowModal] Parsed Filter: ', TmpFilter);
   {$endif}
 
-  Filter := UTF8Decode(TmpFilter);
+  Filter := GetUtf8String(TmpFilter);
 
   {------------------------------------------------------------------------------
     Qt doesn´t have most of the dialog options available on LCL

@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtobjects, qtwidgets,
+  qtobjects, qtwidgets, qtproc,
   // LCL
   SysUtils, Classes, Controls, LCLType, Forms,
   // Widgetset
@@ -159,7 +159,7 @@ begin
   
   // Set´s initial properties
 
-  Str := UTF8Decode(AWinControl.Caption);
+  Str := GetUtf8String(AWinControl.Caption);
 
   QtMainWindow.SetWindowTitle(@Str);
 

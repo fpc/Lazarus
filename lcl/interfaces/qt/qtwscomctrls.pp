@@ -476,7 +476,7 @@ begin
 
   if AStatusBar.SimplePanel then
   begin
-    Str := UTF8Decode(AStatusBar.SimpleText);
+    Str := GetUtf8String(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
   end else
   if AStatusBar.Panels.Count > 0 then
@@ -548,7 +548,7 @@ begin
       SetLength(QtStatusBar.APanels, 0);
     end;
       
-    Str := UTF8Decode(AStatusBar.SimpleText);
+    Str := GetUtf8String(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
     
   end else
@@ -628,7 +628,7 @@ begin
       
       for i := 0 to AStatusBar.Panels.Count - 1 do
       begin
-        Str := UTF8Decode(AStatusBar.Panels[i].Text);
+        Str := GetUtf8String(AStatusBar.Panels[i].Text);
         
         QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
 
@@ -718,7 +718,7 @@ begin
     TWIChild := QTreeWidgetItem_create(0);
     QTreeWidgetItem_setFlags(TWIChild, QtItemIsEnabled);
     QTreeWidgetItem_addChild(TWI, TWIChild);
-    Str := UTF8Decode(ALV.Column[AIndex].Caption);
+    Str := GetUtf8String(ALV.Column[AIndex].Caption);
     QTreeWidgetItem_setText(TWI, AIndex, @Str);
   end;
 
@@ -831,7 +831,7 @@ begin
   TWI := QTreeWidget_headerItem(TW);
   if TWI <> NiL then
   begin
-    Str := UTF8Decode(ACaption);
+    Str := GetUtf8String(ACaption);
     QTreeWidgetItem_setText(TWI, AIndex, @Str);
   end;
 end;
@@ -1060,7 +1060,7 @@ begin
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidgetItem_create(TW, 0);
-  Str := UTF8Decode(AItem.Caption);
+  Str := GetUtf8String(AItem.Caption);
   
   if ALV.CheckBoxes then
   begin
@@ -1073,7 +1073,7 @@ begin
   QTreeWidgetItem_setText(TWI, 0, @Str);
   for i := 0 to AItem.SubItems.Count - 1 do
   begin
-    Str := UTF8Decode(AItem.Subitems.Strings[i]);
+    Str := GetUtf8String(AItem.Subitems.Strings[i]);
     QTreeWidgetItem_setText(TWI, i+1, @Str);
   end;
   
@@ -1096,7 +1096,7 @@ begin
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-  Str := UTF8Decode(AText);
+  Str := GetUtf8String(AText);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   if TWI <> NiL then
     QTreeWidgetItem_setText(TWI, ASubIndex, @Str);

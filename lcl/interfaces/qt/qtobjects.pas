@@ -32,6 +32,7 @@ uses
 {$else}
   qt4,
 {$endif}
+  qtproc,
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
@@ -898,7 +899,7 @@ procedure TQtFont.setRawName(p1: string);
 var
   Str: WideString;
 begin
-  Str := UTF8Decode(p1);
+  Str := GetUtf8String(p1);
 
   QFont_setRawName(Widget, @Str);
 end;
@@ -907,7 +908,7 @@ procedure TQtFont.setFamily(p1: string);
 var
   Str: WideString;
 begin
-  Str := UTF8Decode(p1);
+  Str := GetUtf8String(p1);
 
   QFont_setFamily(Widget, @Str);
 end;

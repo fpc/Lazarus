@@ -38,7 +38,7 @@ uses
   LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, Menus,
   CheckLst,
   //Widgetset
-  QtWidgets;
+  QtWidgets, qtproc;
 
 type
 
@@ -145,7 +145,7 @@ var
   Str: WideString;
 begin
   FUpdating := True;
-  Str := UTF8Decode(AStr);
+  Str := GetUtf8String(AStr);
   if AClear then
   begin
     QTextEdit_clear(FQtTextEdit);
