@@ -36,7 +36,7 @@ uses
   {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, WSProc,
-  Graphics, ComCtrls, LCLType,
+  Graphics, ComCtrls, Forms, LCLType,
   GTKWSPrivate,
   {$ifdef gtk1}
   GTK1WSPrivate,
@@ -376,8 +376,16 @@ begin
   then Exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
-  if WidgetInfo^.ControlCursor = ACursor then Exit;
-  WidgetInfo^.ControlCursor := ACursor;
+  if (WidgetInfo^.ControlCursor = ACursor) and
+     (WidgetInfo^.DefaultCursor <> HCursor(-1)) then Exit;
+  if ACursor <> Screen.Cursors[crDefault] then
+    WidgetInfo^.ControlCursor := ACursor
+  else
+  begin
+    if WidgetInfo^.DefaultCursor = HCursor(-1) then
+      TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).SetDefaultCursor(WidgetInfo);
+    WidgetInfo^.ControlCursor := WidgetInfo^.DefaultCursor;
+  end;
   TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WidgetInfo);
 end;
 

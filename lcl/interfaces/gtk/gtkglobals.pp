@@ -86,11 +86,6 @@ const
 var
   LastLeft, LastMiddle, LastRight: TLastMouseClick;
   
-  // mouse cursors
-var
-  // Map a TCursor (<= 0 = HCursor) or a HCursor to a PGDKCursor
-  MMouseCursorMap: TMap;
-
 {$IFDEF Gtk2}
 var
   im_context: PGtkIMContext = nil;

@@ -299,7 +299,8 @@ type
     ExStyle: Integer;
     EventMask: TGdkEventMask;
     DoubleBuffer: PGdkPixmap;
-    ControlCursor: HCursor;           // cursor, that control contain
+    ControlCursor: HCursor;           // current widget cursor
+    DefaultCursor: HCursor;           // default widget cursor
     Flags: TWidgetInfoFlags;
     ChangeLock: Integer;              // lock events
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed

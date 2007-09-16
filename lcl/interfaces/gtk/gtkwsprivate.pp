@@ -66,10 +66,19 @@ type
   public
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
     class procedure UpdateCursor(AInfo: PWidgetInfo); virtual;
+    class procedure SetDefaultCursor(AInfo: PWidgetInfo); virtual;
   end;
   TGtkPrivateWidgetClass = class of TGtkPrivateWidget;
   
+  { TGtkPrivateEntry }
+  { Private class for gtkentries (text fields) }
   
+  TGtkPrivateEntry = class(TGtkPrivateWidget)
+  private
+  protected
+  public
+    class procedure SetDefaultCursor(AInfo: PWidgetInfo); override;
+  end;
 
   { TGtkPrivateContainer }
   { Private class for gtkcontainers }

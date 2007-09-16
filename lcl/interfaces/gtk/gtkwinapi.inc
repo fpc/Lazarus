@@ -8356,7 +8356,8 @@ var
       end;
       
       // no lcl cursor, so reset to default
-      gdk_window_set_cursor(AWindow, PGdkCursor(DefaultCursor));
+      //gdk_window_set_cursor(AWindow, PGdkCursor(DefaultCursor));
+      SetWindowCursor(AWindow, DefaultCursor, True);
     end;
 
     procedure Traverse(AWindow: PGDKWindow);

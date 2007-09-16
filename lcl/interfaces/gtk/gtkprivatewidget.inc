@@ -31,6 +31,11 @@ begin
   SetWindowCursor(Window, AInfo^.ControlCursor, not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle));
 end;
 
+class procedure TGtkPrivateWidget.SetDefaultCursor(AInfo: PWidgetInfo);
+begin
+  AInfo^.DefaultCursor := Screen.Cursors[crDefault];
+end;
+
 class procedure TGtkPrivateWidget.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 var
   Widget: PGtkWidget;
@@ -63,5 +68,13 @@ begin
   Window := PGTkPaned(Widget)^.handle;
   if Window = nil then Exit;
   SetWindowCursor(Window, AInfo^.ControlCursor, False);
+end;
+
+
+{ TGtkPrivateEntry }
+
+class procedure TGtkPrivateEntry.SetDefaultCursor(AInfo: PWidgetInfo);
+begin
+  AInfo^.DefaultCursor := Screen.Cursors[crIBeam];
 end;
 

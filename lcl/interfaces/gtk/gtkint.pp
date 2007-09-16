@@ -404,9 +404,6 @@ begin
     ClipboardTargetEntryCnt[c]:=0;
   end;
 
-  // mouse cursors
-  MMouseCursorMap := TMap.Create(its2, SizeOf(PGDKCursor));
-
   // charset encodings
   {$IFDEF Gtk1}
   Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
@@ -449,8 +446,6 @@ begin
     CharSetEncodingList.Free;
     CharSetEncodingList:=nil;
   end;
-  
-  FreeAndNil(MMouseCursorMap);
 end;
 
 

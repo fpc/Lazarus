@@ -1545,7 +1545,7 @@ initialization
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
   RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtkPrivateScrolling);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
-  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
+  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit, TGtkPrivateEntry);
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
 {$ifdef gtk1}
