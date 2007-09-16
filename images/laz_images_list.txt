@@ -69,6 +69,7 @@ menu/menu_project_inspector.png
 menu/menu_project_options.png
 menu/menu_quick_compile.png
 menu/menu_redo.png
+menu/menu_reportingbug.png
 menu/menu_restart_16.xpm
 menu/menu_run.png
 menu/menu_run_cursor.png

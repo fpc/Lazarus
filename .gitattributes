@@ -2273,6 +2273,7 @@ images/menu/menu_project_inspector.png -text svneol=unset#image/png
 images/menu/menu_project_options.png -text svneol=unset#image/png
 images/menu/menu_quick_compile.png -text svneol=unset#image/png
 images/menu/menu_redo.png -text svneol=unset#image/png
+images/menu/menu_reportingbug.png -text svneol=unset#image/png
 images/menu/menu_restart_16.xpm svneol=native#text/plain
 images/menu/menu_run.png -text svneol=unset#image/png
 images/menu/menu_run_cursor.png -text svneol=unset#image/png
