@@ -33,6 +33,7 @@ const
     );
 
 var
+  DefaultDrive: String;
   PrimaryConfigPath,
   SecondaryConfigPath: string;
 
@@ -69,7 +70,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetPrimaryConfigPath(const NewValue: String);
 begin
-  PrimaryConfigPath:=NewValue;
+  PrimaryConfigPath := NewValue;
 end;
 
 {---------------------------------------------------------------------------
@@ -77,36 +78,37 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetSecondaryConfigPath(const NewValue: String);
 begin
-  SecondaryConfigPath:=NewValue;
+  SecondaryConfigPath := NewValue;
 end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath(GetDefaultCompilerFilename,
-            format('%sfpc\%s\bin\%s',
-              [AppendPathDelim(ProgramDirectory), {$I %FPCVERSION%}, {$I %FPCTARGET%}]),
-            SysUtils.GetEnvironmentVariable('PATH'),';',
-            []);
-  if Result<>'' then exit;
-  Result:='c:\pp\bin\i386-win32\ppc386.exe';
+  Result := SearchFileInPath(GetDefaultCompilerFilename,
+             format('%sfpc\%s\bin\%s',
+               [AppendPathDelim(ProgramDirectory), {$I %FPCVERSION%}, {$I %FPCTARGET%}]),
+             SysUtils.GetEnvironmentVariable('PATH'),';',
+             []);
+  if Result <> '' then exit;
+  Result := DefaultDrive + '\pp\bin\i386-win32\ppc386.exe';
   if not FileExists(Result) then Result:='';
 end;
 
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make.exe',
-                           AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32',
-                           SysUtils.GetEnvironmentVariable('PATH'),';',
-                           []);
+  Result := SearchFileInPath('make.exe',
+                            AppendPathDelim(ProgramDirectory) + 'pp\bin\i386-win32',
+                            SysUtils.GetEnvironmentVariable('PATH'),';',
+                            []);
 end;
 
 function CreateCompilerTestPascalFilename: string;
 var
   fs: TFileStream;
 begin
-  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
-  if not FileExists(Result) then begin
-    fs:=TFileStream.Create(Result,fmCreate);
+  Result := AppendPathDelim(GetPrimaryConfigPath) + 'compilertest.pas';
+  if not FileExists(Result) then 
+  begin
+    fs := TFileStream.Create(Result, fmCreate);
     fs.Free;
   end;
 end;
@@ -126,29 +128,29 @@ end;
 
 function GetDefaultTestBuildDirectory: string;
 begin
-  Result:=SysUtils.GetEnvironmentVariable('TEMP');
-  if Result<>'' then exit;
-  Result:='c:\temp\';
+  Result := SysUtils.GetEnvironmentVariable('TEMP');
+  if Result <> '' then exit;
+  Result := DefaultDrive + '\temp\';
   if DirPathExists(Result) then exit;
-  Result:='c:\windows\temp\';
+  Result := DefaultDrive + '\windows\temp\';
 end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
 begin
-  List.Add(AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32\ppc386.exe');
-  List.Add('c:\pp\bin\i386-win32\ppc386.exe');
+  List.Add(AppendPathDelim(ProgramDirectory) + 'pp\bin\i386-win32\ppc386.exe');
+  List.Add(DefaultDrive + '\pp\bin\i386-win32\ppc386.exe');
 end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);
 begin
-  List.Add(AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32\make.exe');
-  List.Add('c:\pp\bin\i386-win32\make.exe');
+  List.Add(AppendPathDelim(ProgramDirectory) + 'pp\bin\i386-win32\make.exe');
+  List.Add(DefaultDrive + '\pp\bin\i386-win32\make.exe');
 end;
 
 procedure GetDefaultTestBuildDirs(List: TStrings);
 begin
-  List.Add('c:\tmp\');
-  List.Add('c:\windows\temp\');
+  List.Add(DefaultDrive + '\tmp\');
+  List.Add(DefaultDrive + '\windows\temp\');
 end;
 
 procedure GetDefaultBrowser(var Browser, Params: string);
@@ -164,11 +166,12 @@ end;
  ---------------------------------------------------------------------------}
 procedure InternalInit;
 begin
-  PrimaryConfigPath:=ChompPathDelim(ExtractFilePath(Paramstr(0)));
-  SecondaryConfigPath:=SysUtils.GetEnvironmentVariable('WINDIR');
+  DefaultDrive := ExtractFileDrive(ProgramDirectory);
+  PrimaryConfigPath := ChompPathDelim(ExtractFilePath(Paramstr(0)));
+  SecondaryConfigPath := SysUtils.GetEnvironmentVariable('WINDIR');
   If SecondaryConfigPath = '' Then
-    SecondaryConfigPath:='c:\windows';
-  DefaultFPCSrcDirs[1]:=AppendPathDelim(ProgramDirectory)+'fpcsrc';
+    SecondaryConfigPath := DefaultDrive + '\windows';
+  DefaultFPCSrcDirs[1] := AppendPathDelim(ProgramDirectory) + 'fpcsrc';
+  DefaultLazarusSrcDirs[1] := DefaultDrive + '\lazarus';
 end;
-
 
