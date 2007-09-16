@@ -167,6 +167,7 @@ type
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
     procedure setTabOrder(p1, p2: TQtWidget);
+    procedure setUpdatesEnabled(const AEnabled: Boolean);
     procedure setWindowState(AState: QtWindowStates);
     procedure sizeHint(size: PSize);
     function windowFlags: QtWindowFlags;
@@ -516,6 +517,8 @@ type
   TQtTabWidget = class(TQtWidget)
   private
     FCurrentChangedHook: QTabWidget_hookH;
+    FTabBar: QTabBarH;
+    function getTabBar: QTabBarH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -524,13 +527,14 @@ type
     
     procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
-    function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer; overload;
-    function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString): Integer; overload;
+    function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
+    function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
     function getCurrentIndex: Integer;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
     procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
-    procedure setTabText(index: Integer; p2: PWideString);
+    procedure setTabText(index: Integer; p2: WideString);
+    property TabBar: QTabBarH read getTabBar;
   end;
 
   { TQtComboBox }
@@ -900,12 +904,15 @@ type
 
   TQtPage = class(TQtWidget)
   protected
+    FIcon: QIconH;
     FText: WideString;
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function getIcon: QIconH;
     function getIndex: Integer;
     function getTabWidget: QTabWidgetH;
     function getText: WideString; override;
+    procedure setIcon(const AIcon: QIconH);
     procedure setText(const W: WideString); override;
   end;
   
@@ -2187,6 +2194,11 @@ end;
 procedure TQtWidget.setTabOrder(p1, p2: TQtWidget);
 begin
   QWidget_setTabOrder(p1.Widget, p2.Widget);
+end;
+
+procedure TQtWidget.setUpdatesEnabled(const AEnabled: Boolean);
+begin
+  QWidget_setUpdatesEnabled(Widget, AEnabled);
 end;
 
 procedure TQtWidget.setWindowState(AState: QtWindowStates);
@@ -4292,6 +4304,15 @@ end;
 
 { TQtTabWidget }
 
+function TQtTabWidget.getTabBar: QTabBarH;
+begin
+  if FTabBar = nil then
+  begin
+    // FTabBar := QTabWidget_tabBar(QTabWidgetH(Widget));
+  end;
+  Result := FTabBar;
+end;
+
 function TQtTabWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   // Creates the widget
@@ -4323,9 +4344,9 @@ end;
   Params:  index: Integer; page: QWidgetH; p2: PWideString
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer; overload;
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
 begin
-  Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
+  Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
 end;
 
 {------------------------------------------------------------------------------
@@ -4333,9 +4354,12 @@ end;
   Params:  index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString): Integer; overload;
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
 begin
-  Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, icon, p2);
+  if icon <> nil then
+    Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, icon, @p2)
+  else
+    Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
@@ -4391,9 +4415,9 @@ begin
   end;
 end;
 
-procedure TQtTabWidget.setTabText(index: Integer; p2: PWideString);
+procedure TQtTabWidget.setTabText(index: Integer; p2: WideString);
 begin
-  QTabWidget_setTabText(QTabWidgetH(Widget), index, p2);
+  QTabWidget_setTabText(QTabWidgetH(Widget), index, @p2);
 end;
 
 
@@ -6393,6 +6417,11 @@ begin
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
+function TQtPage.getIcon: QIconH;
+begin
+  Result := FIcon;
+end;
+
 function TQtPage.getIndex: Integer;
 {var
   AParent: QTabWidgetH;}
@@ -6425,21 +6454,18 @@ begin
 end;
 
 function TQtPage.getText: WideString;
+begin
+  Result := FText;
+end;
+
+procedure TQtPage.setIcon(const AIcon: QIconH);
 var
   AParent: QTabWidgetH;
-  AIndex: Integer;
 begin
+  FIcon := AIcon;
   AParent := getTabWidget;
   if AParent <> nil then
-  begin
-    AIndex := getIndex;
-    if AIndex = -1 then
-      QTabWidget_TabText(AParent, @Result, AIndex)
-    else
-      Result := FText
-  end
-  else
-    Result := FText;
+    QTabWidget_setTabIcon(AParent, getIndex, AIcon);
 end;
 
 procedure TQtPage.setText(const W: WideString);

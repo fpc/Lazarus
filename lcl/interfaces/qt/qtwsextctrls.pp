@@ -33,10 +33,11 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets, qtobjects,
+  qtwidgets, qtobjects, qtproc,
   // LCL
   LMessages, LCLMessageGlue,
   SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, LCLType,
+  ImgList,
   // Widgetset
   WSExtCtrls, WSLCLClasses;
 
@@ -50,7 +51,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-//    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
   { TQtWSCustomNotebook }
@@ -61,21 +62,19 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
-{    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);}
+
     class procedure AddPage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const AIndex: integer); override;
-{    class procedure MovePage(const ANotebook: TCustomNotebook;
+    class procedure MovePage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const NewIndex: integer); override;
-    class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
-
-    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;}
     class procedure RemovePage(const ANotebook: TCustomNotebook;
       const AIndex: integer); override;
+
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    {class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
   { TQtWSPage }
@@ -287,6 +286,26 @@ begin
   {$endif}
 end;
 
+class procedure TQtWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+var
+  ImageList: TCustomImageList;
+  Bmp: TBitmap;
+begin
+  ImageList := TCustomNoteBook(ACustomPage.Parent).Images;
+
+  if Assigned(ImageList) and (ACustomPage.ImageIndex >= 0) and
+     (ACustomPage.ImageIndex < ImageList.Count) then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      ImageList.GetBitmap(ACustomPage.ImageIndex, Bmp);
+      TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
+    finally
+      Bmp.Free;
+    end;
+  end;
+end;
+
 { TQtWSCustomNotebook }
 
 {------------------------------------------------------------------------------
@@ -313,35 +332,31 @@ begin
   Result := THandle(QtTabWidget);
 end;
 
-class procedure TQtWSCustomNotebook.AddAllNBPages(const ANotebook: TCustomNotebook);
-begin
-
-end;
-
 class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
-var
-  Str: WideString;
-  Bmp: TBitmap;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomNotebook.AddPage');
   {$endif}
-  Str := UTF8Decode(AChild.Caption);
+  TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtPage(AChild.Handle).Widget,
+    GetUtf8String(AChild.Caption));
+  TQtWsCustomPage.UpdateProperties(AChild);
+end;
 
-  if Assigned(ANoteBook.Images)
-  and (AChild.ImageIndex >= 0)
-  and (AChild.ImageIndex < ANoteBook.Images.Count) then
-  begin
-    Bmp := TBitmap.Create;
-    try
-      ANoteBook.Images.GetBitmap(AChild.ImageIndex, Bmp);
-  		TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtPage(AChild.Handle).Widget, TQtImage(Bmp.Handle).AsIcon, @Str);
-    finally
-      Bmp.Free;
-    end;
-  end else
-    TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtPage(AChild.Handle).Widget, @Str);
+class procedure TQtWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+  const AChild: TCustomPage; const NewIndex: integer);
+var
+  TabWidget: TQtTabWidget;
+  AIndex: Integer;
+  Page: TQtPage;
+begin
+  Page := TQtPage(AChild.Handle);
+  TabWidget := TQtTabWidget(ANotebook.Handle);
+  AIndex := ANoteBook.IndexOf(AChild);
+  TabWidget.setUpdatesEnabled(false);
+  TabWidget.removeTab(AIndex);
+  TabWidget.insertTab(NewIndex, Page.Widget, Page.getIcon, Page.getText);
+  TabWidget.setUpdatesEnabled(true);
 end;
 
 class procedure TQtWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
@@ -354,6 +369,22 @@ begin
   {$endif}
   TabWidget := TQtTabWidget(ANotebook.Handle);
   TabWidget.removeTab(AIndex);
+end;
+
+class function TQtWSCustomNotebook.GetTabIndexAtPos(
+  const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
+var
+  TabWidget: TQtTabWidget;
+  APoint: TQtPoint;
+begin
+  TabWidget := TQtTabWidget(ANotebook.Handle);
+  if TabWidget.TabBar <> nil then
+  begin
+    APoint := QtPoint(AClientPos.x, AClientPos.y);
+    QTabBar_tabAt(TabWidget.TabBar, @APoint);
+  end
+  else
+    Result := -1;
 end;
 
 class procedure TQtWSCustomNotebook.SetPageIndex(
@@ -377,10 +408,27 @@ begin
   end;
 end;
 
+class procedure TQtWSCustomNotebook.SetTabCaption(
+  const ANotebook: TCustomNotebook; const AChild: TCustomPage;
+  const AText: string);
+begin
+  TQtTabWidget(ANotebook.Handle).setTabText(ANoteBook.IndexOf(AChild), GetUtf8String(AText));
+end;
+
 class procedure TQtWSCustomNotebook.SetTabPosition(
   const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
 begin
   TQtTabWidget(ANotebook.Handle).SetTabPosition(QTabWidgetTabPositionMap[ATabPosition]);
+end;
+
+class procedure TQtWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+  AShowTabs: boolean);
+var
+  TabWidget: TQtTabWidget;
+begin
+  TabWidget := TQtTabWidget(ANotebook.Handle);
+  if TabWidget.TabBar <> nil then
+    QWidget_setVisible(TabWidget.TabBar, AShowTabs);
 end;
 
 { TQtWSCustomRadioGroup }
