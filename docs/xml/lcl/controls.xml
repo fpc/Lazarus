@@ -5590,14 +5590,14 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <!-- constructor Visibility: public -->
       <element name="TControl.Create">
         <short>Create a new Control</short>
-        <seealso><link id="rtl.Classes.TComponent.Create"/></seealso>
+        <seealso><link id="#rtl.Classes.TComponent.Create"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TControl.Destroy">
         <short>Destroy the Control when you have finished with it</short>
-        <seealso><link id="rtl.Classes.TComponent.Destroy"/></seealso>
+        <seealso><link id="#rtl.Classes.TComponent.Destroy"/></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
@@ -5983,7 +5983,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         <short>The action to be associated with this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
 Can either read the action already associated with the control (GetAction), or write an action to be associated (SetAction)</descr>
-        <seealso><link id="rtl.Classes.TBasicAction"/></seealso>
+        <seealso><link id="#rtl.Classes.TBasicAction"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Align">
@@ -6023,7 +6023,7 @@ The properties are defined in the parent class TControlBorderSpacing</descr>
         <descr>// standard properties, which should be supported by all descendants<br/>
 Finds the values for the bounding rectangle, or sets the values.<br/>
 Bounding rectangle (top-left, bottom-right) is defined in TRect</descr>
-        <seealso><link id="rtl.Classes.TRect"/></seealso>
+        <seealso><link id="#rtl.Classes.TRect"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRectForNewParent">
@@ -6069,7 +6069,7 @@ Finds origin of client (read-only)</descr>
         <short>Finds the position of the rectangle for the client within which the control exists</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads the coordinates of the client rectangle (read-only)</descr>
-        <seealso><link id="rtl.Classes.TRect"/></seealso>
+        <seealso><link id="#rtl.Classes.TRect"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientWidth">
@@ -6097,7 +6097,7 @@ Reads the size constraints or stores new ones.</descr>
         <short>Top left pixel of this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads value for the Origin (top left pixel) of this control. (read-only)</descr>
-        <seealso><link id="rtl.Classes.TPoint"/></seealso>
+        <seealso><link id="#rtl.Classes.TPoint"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlState">
@@ -6140,19 +6140,19 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
         <short>Event handler for a change in bounds of the control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if bounds are changed</descr>
-        <seealso><link id="rtl.Classes.TNotifyEvent"/></seealso>
+        <seealso><link id="#rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnClick">
         <short>Event Handler for mouse click</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads or writes a flag if  amouse click is detected, and sets a flag if a value is stored.</descr>
-        <seealso><link id="rtl.Classes.TNotifyEvent"/></seealso>
+        <seealso><link id="#rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnResize">
         <short>Event Handler for resize of control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes flag if control is re-sized.</descr>
-        <seealso><link id="rtl.Classes.TNotifyEvent"/></seealso>
+        <seealso><link id="#rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.OnShowHint">
