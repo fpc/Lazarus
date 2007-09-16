@@ -924,86 +924,103 @@ var
   QtDC: TQtDeviceContext;
   Pen: QPenH;
   
-procedure InternalDrawEdge(Outer: Boolean; const R: TRect);
-var
-  X1, Y1, X2, Y2: Integer;
-  ColorLeftTop, ColorRightBottom: TColor;
-  EdgeQtColor: TQColor;
-begin
-  X1 := R.Left;
-  Y1 := R.Top;
-  X2 := R.Right;
-  Y2 := R.Bottom;
-  
-  ColorLeftTop := clNone;
-  ColorRightBottom := clNone;
-
-  if Outer then
+  procedure InternalDrawEdge(Outer: Boolean; const R: TRect);
+  var
+    X1, Y1, X2, Y2: Integer;
+    ColorLeftTop, ColorRightBottom: TColor;
+    EdgeQtColor: TQColor;
+    APen, OldPen: TQtPen;
   begin
-    if Edge and BDR_RAISEDOUTER <> 0 then
+    X1 := R.Left;
+    Y1 := R.Top;
+    X2 := R.Right;
+    Y2 := R.Bottom;
+
+    ColorLeftTop := clNone;
+    ColorRightBottom := clNone;
+    EdgeQtColor.ColorSpec := 1; // rgb
+    EdgeQtColor.Alpha := $FFFF;
+    EdgeQtColor.Pad := 0;
+
+    if Outer then
     begin
-      ColorLeftTop := ColorLight;
-      ColorRightBottom := ColorDark;
+      if Edge and BDR_RAISEDOUTER <> 0 then
+      begin
+        ColorLeftTop := ColorLight;
+        ColorRightBottom := ColorDark;
+      end
+      else if Edge and BDR_SUNKENOUTER <> 0 then
+      begin
+        ColorLeftTop := ColorDark;
+        ColorRightBottom := ColorLight;
+      end;
     end
-    else if Edge and BDR_SUNKENOUTER <> 0 then
-    begin
-      ColorLeftTop := ColorDark;
-      ColorRightBottom := ColorLight;
-    end;
-  end
-  else
-  begin
-    if Edge and BDR_RAISEDINNER <> 0 then
-    begin
-      ColorLeftTop := ColorLight;
-      ColorRightBottom := ColorDark;
-    end
-    else if Edge and BDR_SUNKENINNER <> 0 then
-    begin
-      ColorLeftTop := ColorDark;
-      ColorRightBottom := ColorLight;
-    end;
-  end;
-
-  if grfFlags and BF_DIAGONAL = 0 then
-  begin
-    if grfFlags and BF_MONO = 0 then
-      ColorLeftTop := ColorToRgb(ColorLeftTop);
-    
-    QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorLeftTop),Green(ColorLeftTop),Blue(ColorLeftTop));
-    Pen := QPainter_pen(QtDC.Widget);
-    QPen_setColor(Pen, @EdgeQtColor);
-    if grfFlags and BF_LEFT <> 0 then
-      QtDC.DrawLine(X1, Y1, X1, Y2);
-    if grfFlags and BF_TOP <> 0 then
-      QtDC.DrawLine(X1, Y1, X2, Y1);
-
-    if grfFlags and BF_MONO = 0 then
-      ColorRightBottom := ColorToRgb(ColorRightBottom);
-    
-    QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorRightBottom),Green(ColorRightBottom),Blue(ColorRightBottom));
-    Pen := QPainter_pen(QtDC.Widget);
-    QPen_setColor(Pen, @EdgeQtColor);
-
-    if grfFlags and BF_RIGHT <> 0 then
-      QtDC.DrawLine(X2, Y1, X2, Y2);
-    if grfFlags and BF_BOTTOM <> 0 then
-      QtDC.DrawLine(X1, Y2, X2, Y2);
-  end
-  else
-  begin
-    if grfFlags and BF_MONO = 0 then
-      ColorLeftTop := ColorToRgb(ColorRightBottom);
-    QColor_setRgb(QColorH(@EdgeQtColor),Red(ColorLeftTop),Green(ColorLeftTop),Blue(ColorLeftTop));
-    Pen := QPainter_pen(QtDC.Widget);
-    QPen_setColor(Pen, @EdgeQtColor);
-    if (grfFlags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
-       (grfFlags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
-      QtDC.DrawLine(X1, Y1, X2, Y2)
     else
-      QtDC.DrawLine(X1, Y2, X2, Y1);
+    begin
+      if Edge and BDR_RAISEDINNER <> 0 then
+      begin
+        ColorLeftTop := ColorLight;
+        ColorRightBottom := ColorDark;
+      end
+      else if Edge and BDR_SUNKENINNER <> 0 then
+      begin
+        ColorLeftTop := ColorDark;
+        ColorRightBottom := ColorLight;
+      end;
+    end;
+
+    if grfFlags and BF_DIAGONAL = 0 then
+    begin
+      if grfFlags and BF_MONO = 0 then
+        ColorLeftTop := ColorToRgb(ColorLeftTop);
+
+      APen := TQtPen.Create(True);
+      ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
+      APen.setColor(EdgeQtColor);
+      OldPen := QtDC.setPen(APen);
+
+      if grfFlags and BF_LEFT <> 0 then
+        QtDC.DrawLine(X1, Y1, X1, Y2);
+      if grfFlags and BF_TOP <> 0 then
+        QtDC.DrawLine(X1, Y1, X2, Y1);
+
+      QtDC.setPen(OldPen);
+      APen.Free;
+      APen := TQtPen.Create(True);
+
+      if grfFlags and BF_MONO = 0 then
+        ColorRightBottom := ColorToRgb(ColorRightBottom);
+
+      ColorRefToTQColor(ColorRightBottom, EdgeQtColor);
+      APen.setColor(EdgeQtColor);
+      OldPen := QtDC.SetPen(APen);
+
+      if grfFlags and BF_RIGHT <> 0 then
+        QtDC.DrawLine(X2, Y1, X2, Y2);
+      if grfFlags and BF_BOTTOM <> 0 then
+        QtDC.DrawLine(X1, Y2, X2, Y2);
+      QtDC.SetPen(OldPen);
+      APen.Free;
+    end
+    else
+    begin
+      if grfFlags and BF_MONO = 0 then
+        ColorRightBottom := ColorToRgb(ColorRightBottom);
+
+      APen := TQtPen.Create(True);
+      ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
+      APen.setColor(EdgeQtColor);
+      OldPen := QtDC.setPen(APen);
+
+      if (grfFlags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
+         (grfFlags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
+        QtDC.DrawLine(X1, Y1, X2, Y2)
+      else
+        QtDC.DrawLine(X1, Y2, X2, Y1);
+      QtDC.setPen(OldPen);
+      APen.Free;
+    end;
   end;
-end;
   
 begin
   {$ifdef VerboseQtWinAPI}
@@ -1015,7 +1032,9 @@ begin
   
   QtDC := TQtDeviceContext(DC);
   
-
+  Dec(Rect.Right, 1);
+  Dec(Rect.Bottom, 1);
+  
   ClientRect := Rect;
   QPainter_save(QtDC.Widget);
   try
@@ -1040,7 +1059,6 @@ begin
         InflateRect(ClientRect, -1, -1);
       end;
     finally
-
     end;
 
     if grfFlags and BF_MIDDLE <> 0 then
@@ -1148,7 +1166,7 @@ begin
     
   QtDC :=TQtDeviceContext(DC);
 
-  WideStr := UTF8Decode(Str);
+  WideStr := GetUtf8String(Str);
 
   QtFontMetrics := TQtFontMetrics.Create(QtDC.font.Widget);
   try

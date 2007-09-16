@@ -277,7 +277,7 @@ type
     procedure setBrush(ABrush: TQtBrush);
     function BackgroundBrush: TQtBrush;
     function pen: TQtPen;
-    procedure setPen(APen: TQtPen);
+    function setPen(APen: TQtPen): TQtPen;
     function SetBkColor(Color: TcolorRef): TColorRef;
     function SetBkMode(BkMode: Integer): Integer;
     function getDeviceSize: TPoint;
@@ -1113,11 +1113,8 @@ end;
   Setting pen color. 
  ------------------------------------------------------------------------------}
 procedure TQtPen.setColor(p1: TQColor);
-var
-  p2: TQColor;
 begin
-  QColor_fromRGB(@p2,p1.r,p1.g,p1.b,p1.Alpha);
-  QPen_setColor(Widget, @p2);
+  QPen_setColor(Widget, @p1);
 end;
 
 
@@ -1746,13 +1743,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.setPen(APen: TQtPen);
+function TQtDeviceContext.setPen(APen: TQtPen): TQtPen;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setPen() ');
   {$endif}
+  Result := pen;
   SelPen := APen;
-  if (APen.Widget <> nil) and (Widget <> nil) then
+  if (APen <> nil) and (APen.Widget <> nil) and (Widget <> nil) then
     QPainter_setPen(Widget, APen.Widget);
 end;
 
