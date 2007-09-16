@@ -1313,6 +1313,7 @@ docs/xml/lcl/postscriptcanvas.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/postscriptprinter.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/printers.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/propertystorage.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/rubberband.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/spin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls.xml svneol=LF#text/xml eol=lf

@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="LCL">
+    <!--
+  ====================================================================
+    RubberBand
+  ====================================================================
+-->
+    <module name="RubberBand">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TRubberBandShape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRubberBandShape.rbsLine"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRubberBandShape.rbsRectangle"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TCustomRubberBand">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomRubberBand.FShape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomRubberBand.GetShape">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomRubberBand.GetShape.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRubberBand.SetShape">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomRubberBand.SetShape.AValue"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomRubberBand.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomRubberBand.Create.AOwner"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TCustomRubberBand.Shape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TRubberBand">
+        <short>TRubberBand is control that can be used to draw selection.</short>
+      </element>
+    </module>
+    <!-- RubberBand -->
+  </package>
+</fpdoc-descriptions>
