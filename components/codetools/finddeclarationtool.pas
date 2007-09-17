@@ -2686,7 +2686,7 @@ begin
       end else begin
         Exclude(Params.Flags,fdfIgnoreCurContextNode);
         {$IFDEF ShowTriedContexts}
-        DebugLn('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext');
+        DebugLn('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext ');
         {$ENDIF}
       end;
       if LastContextNode=ContextNode then begin
@@ -5109,7 +5109,7 @@ var
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
   end;
 
-  procedure InitAtomQueue;
+  function InitAtomQueue: boolean;
   
     procedure RaiseInternalError;
     begin
@@ -5118,18 +5118,25 @@ var
     end;
   
   begin
+    Result:=false;
     if StartPos<1 then
       StartPos:=FindStartOfVariable(EndPos)
     else if EndPos<1 then
       EndPos:=FindEndOfVariable(StartPos,true);
     if (StartPos<1) then
       RaiseInternalError;
+    if StartPos>SrcLen then exit;
+    if StartPos=EndPos then begin
+      // e.g. cursor behind semicolon, keyword or closing bracket
+      exit;
+    end;
     {$IFDEF ShowExprEval}
-    DebugLn('  InitAtomQueue Expr="',copy(Src,StartPos,EndPos-StartPos),'"');
+    DebugLn(['  InitAtomQueue StartPos=',StartPos,' EndPos=',EndPos,' Expr="',copy(Src,StartPos,EndPos-StartPos),'"']);
     {$ENDIF}
     LastAtomType:=vatNone;
     MoveCursorToCleanPos(StartPos);
     ReadNextAtom;
+    if CurPos.StartPos>SrcLen then exit;
     CurAtom:=CurPos;
     CurAtomType:=GetCurrentAtomType;
     if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
@@ -5143,6 +5150,7 @@ var
       NextAtomType:=vatSpace;
     MoveCursorToCleanPos(CurAtom.StartPos);
     IsIdentEndOfVar:=iieovUnknown;
+    Result:=true;
   end;
   
   procedure ReadNextExpressionAtom;
@@ -5658,9 +5666,6 @@ begin
   StartFlags:=Params.Flags;
   StartContext.Node:=Params.ContextNode;
   StartContext.Tool:=Self;
-  ExprType.Desc:=xtContext;
-  ExprType.SubDesc:=xtNone;
-  ExprType.Context:=StartContext;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
     ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
@@ -5668,7 +5673,10 @@ begin
   );
   {$ENDIF}
   
-  InitAtomQueue;
+  if not InitAtomQueue then exit;
+  ExprType.Desc:=xtContext;
+  ExprType.SubDesc:=xtNone;
+  ExprType.Context:=StartContext;
   repeat
     {$IFDEF ShowExprEval}
     DebugLn('  FindExpressionTypeOfVariable CurAtomType=',

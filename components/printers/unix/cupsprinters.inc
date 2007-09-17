@@ -801,8 +801,6 @@ begin
 end;
 
 function TCUPSPrinter.DoGetPaperName: string;
-var
-  s: string;
 begin
   if not (cpsPaperNameValid in FStates) then begin
     // paper is not yet retrieved for first time

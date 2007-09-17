@@ -27,6 +27,6 @@ Linux :
   Yous must install CUPS and libcups v1.1.19 or more.
 
 FAQ : 
-  Q:If I use Printers unit, the call of printer object générate an exception "Access Violation"
+  Q:If I use Printers unit, the call of printer object generate an exception "Access Violation"
   R:Add in uses clause of your project, osPrinters
 

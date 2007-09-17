@@ -12,7 +12,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="LazReport Designer"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <RST OutDir="languages"/>
     <PublishOptions>
@@ -61,8 +61,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="maincalleditor.lrs"/>
         <UnitName Value="maincalleditor"/>
-        <CursorPos X="41" Y="222"/>
-        <TopLine Value="188"/>
+        <CursorPos X="31" Y="209"/>
+        <TopLine Value="8"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
