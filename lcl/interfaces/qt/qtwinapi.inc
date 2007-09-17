@@ -1688,11 +1688,8 @@ end;
 
 function TQtWidgetSet.GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean;
 begin
-  {$note implement}
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetCaretRespondToFocus] missing implementation ');
-  {$endif}
-  Result := False;
+  ShowHideOnFocus := QtCaret.GetQtCaretRespondToFocus;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -3764,11 +3761,8 @@ end;
 function TQtWidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
-  {$note implement}
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.SetCaretRespondToFocus] missing implementation ');
-  {$endif}
+  Result := True;
+  QtCaret.SetQtCaretRespondToFocus(ShowHideOnFocus);
 end;
 
 {------------------------------------------------------------------------------

@@ -56,6 +56,7 @@ type
     FPos: TQtPoint;
     FVisible: Boolean;
     FVisibleState: Boolean;
+    FRespondToFocus: Boolean;
     FCritSect: TCriticalSection;
     procedure SetPos(const Value: TQtPoint);
   protected
@@ -81,6 +82,7 @@ type
 
     property Timer: TTimer read FTimer;
     property Pos: TQtPoint read FPos write SetPos;
+    property RespondToFocus: Boolean read FRespondToFocus write FRespondToFocus;
   end;
 
 function CreateCaret(Widget: TQtWidget; Pixmap: QPixmapH; Width, Height: Integer): Boolean; overload;
@@ -89,6 +91,8 @@ function HideCaret(Widget: TQtWidget): Boolean;
 function ShowCaret(Widget: TQtWidget): Boolean;
 function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var Pt: TPoint): Boolean;
+function GetQtCaretRespondToFocus: Boolean;
+procedure SetQtCaretRespondToFocus(Value: Boolean);
 function DestroyCaret: Boolean;
 procedure DrawCaret;
 procedure DestroyGlobalCaret;
@@ -224,6 +228,16 @@ begin
   end;
 end;
 
+function GetQtCaretRespondToFocus: Boolean;
+begin
+  Result := GlobalCaret.RespondToFocus;
+end;
+
+procedure SetQtCaretRespondToFocus(Value: Boolean);
+begin
+  GlobalCaret.RespondToFocus := Value;
+end;
+
 function DestroyCaret: Boolean;
 begin
   if Assigned(GlobalCaret) then
@@ -250,6 +264,8 @@ begin
   FTimer.Enabled := False;
   FTimer.Interval := GetCaretBlinkTime;
   FTimer.OnTimer := @DoTimer;
+  
+  FRespondToFocus := False;
 end;
 
 destructor TEmulatedCaret.Destroy;
@@ -328,17 +344,33 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
-  if FVisible and ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
+  if RespondToFocus and
+  ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
+    Timer.Enabled := False;
     Hide;
     try
       FPos := Value;
+      FVisible := True;
+      FVisibleState := False;
+      DoTimer(Timer);
     finally
-      Show(FWidget);
+      Timer.Enabled := True;
     end;
-  end
-  else
-    FPos := Value;
+  end else
+  begin
+    if FVisible and ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
+    begin
+      Hide;
+      try
+        FPos := Value;
+      finally
+        Show(FWidget);
+      end;
+    end
+    else
+      FPos := Value;
+  end;
 end;
 
 procedure TEmulatedCaret.DoTimer(Sender: TObject);
