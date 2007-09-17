@@ -114,6 +114,46 @@ begin
   end;
 end;
 
+
+{------------------------------------------------------------------------------
+  Function: FontCanUTF8
+  Params:
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.FontCanUTF8(Font: HFont): Boolean;
+begin
+  {$ifdef windows}
+  {$ifdef WindowsUnicodeSupport}
+    Result := True;
+  {$else}
+    Result := False;
+  {$endif}
+  {$else}
+	  Result := IsValidGDIObject(Font);
+  {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Function: FontIsMonoSpace
+  Params:
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.FontIsMonoSpace(Font: HFont): Boolean;
+var
+  QtFontInfo: QFontInfoH;
+begin
+  Result := IsValidGDIObject(Font);
+  if Result then
+  begin
+    QtFontInfo := QFontInfo_create(TQtFont(Font).Widget);
+    try
+  	  Result := QFontInfo_fixedPitch(QtFontInfo);
+    finally
+	    QFontInfo_destroy(QtFontInfo);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: IntfSendsUTF8KeyPress
   Params:
@@ -122,7 +162,7 @@ end;
 
 function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
-  Result:=true;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
