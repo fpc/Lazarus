@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+fpdoc --package=lcl --show-private --output=/home/kirkpatc/FreePascal/doc.tmp/ --format=html --content --descr=/home/kirkpatc/FreePascal/lazarus/docs/xml/lcl/controls.xml --input=/home/kirkpatc/FreePascal/lazarus/lcl/controls.pp<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -2924,13 +2924,19 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>The main ancestor class for visual controls.</short>
-        <descr>
-          <pre>TControl is the main ancestor class for all visual controls.
-          The definition includes a large number of constants, types and methods that are inherited by derived classes and types.
-          These include devices for defining and controlling the state and position (including alignment and anchoring) of the object, the state of the mouse, whether dragging or docked, the size and type of border, the way child components should behave, the way actions should occur in response to various events, and the way the Control should be drawn.</pre>
-        </descr>
-        <errors/>
-        <seealso/>
+        <descr>TControl is the main ancestor class for all visual controls.<br/>
+<br/>
+          The definition includes a large number of constants, types and methods that are inherited by derived classes and types.<br/>
+<br/>
+          These include devices for defining and controlling <br/>the state and position of the object <br/>(including alignment and anchoring), <br/>
+the state of the mouse, <br/>
+whether dragging or docked, <br/>
+the size and type of border, <br/>the way child components should behave, <br/>the way actions should occur in response to various events, <br/>
+and the way the Control should be drawn.<br/></descr>
+        <seealso>
+          <link id="lclClasses.TLCLComponent"/>
+          <link id="lclClasses.TComponent"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControl.FActionLink">
@@ -3505,13 +3511,17 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetTBDockHeight.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TControl.GetText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function to get text-string associated with control</short>
+        <descr>Uses RealGetText rather than GetTextBuf to avoid unnecessary read-writes to PChar buffers</descr>
+        <seealso>
+          <link id="GetTextBuf"/>
+          <link id="RealGetText"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.GetText.Result"><short/></element>
+      <element name="TControl.GetText.Result">
+        <short>The function returns the required text as a string</short>
+      </element>
       <!-- function Visibility: private -->
       <element name="TControl.GetUndockHeight">
         <short/>
@@ -3879,13 +3889,17 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetShowHint.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TControl.SetText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Stores text in buffer</short>
+        <descr>Uses RealSetText rather than SetTextBuf to avoid unnecessary read-writes to PChar buffer</descr>
+        <seealso>
+          <link id="RealSetText"/>
+          <link id="SetTextBuf"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetText.Value"><short/></element>
+      <element name="TControl.SetText.Value">
+        <short>The text string to be stored in the buffer</short>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TControl.SetTop">
         <short/>
@@ -4235,15 +4249,16 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetScrolledClientRect.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetChildsRect">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Gets the rectangular coordinates for a child control</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.GetChildsRect.Result"><short/></element>
+      <element name="TControl.GetChildsRect.Result">
+        <short>The function returns the coordinates of the child rectangle</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.GetChildsRect.Scrolled"><short/></element>
+      <element name="TControl.GetChildsRect.Scrolled">
+        <short>True if the rectangle is scrolled</short>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientScrollOffset">
         <short/>
@@ -4917,22 +4932,32 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetAction.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.RealGetText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function to get a text-string associated with the control</short>
+        <descr>This is the function that is actually used by GetTextBuf, and loads a string rather than performing read-write to a PChar buffer</descr>
+        <seealso>
+          <link id="GetTextBuf"/>
+          <link id="RealSetText"/>
+          <link id="SetTextBuf"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.RealGetText.Result"><short/></element>
+      <element name="TControl.RealGetText.Result">
+        <short>The Function returns the required text as a string</short>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.RealSetText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to store text associated with the control in a string</short>
+        <descr>This is the procedure that is actually used by SetTextBuf, and stores text as a string rather than performing read-write to a PChar buffer</descr>
+        <seealso>
+          <link id="SetTextBuf"/>
+          <link id="RealGetText"/>
+          <link id="GetTextBuf"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.RealSetText.Value"><short/></element>
+      <element name="TControl.RealSetText.Value">
+        <short>The text-string that is to be stored</short>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetAction">
         <short/>
@@ -5645,9 +5670,13 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         </descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.BeginDrag.Immediate"><short/></element>
+      <element name="TControl.BeginDrag.Immediate">
+        <short>If True, start drag as soon as cursor starts to move</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.BeginDrag.Threshold"><short/></element>
+      <element name="TControl.BeginDrag.Threshold">
+        <short>Least value for movement of cursor before drag starts</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
         <short/>
@@ -5656,79 +5685,64 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.BeginDrag.Immediate"><short/></element>
+      <element name="TControl.BeginDrag.Immediate">
+        <short>If True, start drag as soon as cursor starts to move</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BringToFront">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Bring the control to the front of the viewed screen</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ColorIsStored">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Colour is stored</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.ColorIsStored.Result"><short/></element>
+      <element name="TControl.ColorIsStored.Result">
+        <short>Function returns True if colour has been stored</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.HasParent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>This control has a parent</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.HasParent.Result"><short/></element>
+      <element name="TControl.HasParent.Result">
+        <short>Function returns True if there is a parent</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsParentOf">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>This control is the parent of another control</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.IsParentOf.Result"><short/></element>
+      <element name="TControl.IsParentOf.Result">
+        <short>Function returns True if this control is a parent, ie there is a child control</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.IsParentOf.AControl"><short/></element>
+      <element name="TControl.IsParentOf.AControl">
+        <short>The control of which this control is a parent (ie the Child control)</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The control is visible on the current desktop</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.IsVisible.Result"><short/></element>
+      <element name="TControl.IsVisible.Result">
+        <short>Function returns True is control is visible</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Hide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Hide this control</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Refresh">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Refresh the data on this control</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Repaint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Repaint the control, ie refill its canvas</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Invalidate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Render this control non-valid</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AddControl">
@@ -5739,62 +5753,79 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.CheckChildClassAllowed">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function checks whether a particular child class is allowed</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.CheckChildClassAllowed.Result"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TControl.CheckChildClassAllowed.ChildClass"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TControl.CheckChildClassAllowed.ExceptionOnInvalid"><short/></element>
-      <!-- procedure Visibility: public -->
-      <element name="TControl.CheckNewParent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TControl.CheckChildClassAllowed.Result">
+        <short>Function returns True if child class has been checked and is allowed</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.CheckNewParent.AParent"><short/></element>
+      <element name="TControl.CheckChildClassAllowed.ChildClass">
+        <short>The child class which is being checked to see whether it is allowed</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.CheckChildClassAllowed.ExceptionOnInvalid">
+        <short>Boolean set to True if a non-valid class is found and an exception has been raised</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.CheckNewParent">
+        <short>Checks a new parent for this control</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.CheckNewParent.AParent">
+        <short>The new parent associated with this control</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SendToBack">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Send to back, ie place this control behind all other controls in the current screen; it will not be visible unless the controls in front are transparent</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetTempCursor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets a temporary cursor</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetTempCursor.Value"><short/></element>
+      <element name="TControl.SetTempCursor.Value">
+        <short>The temporary cursor which has been set</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.UpdateRolesForForm">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Update the roles for this form; see whether there have been any changes in its role</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetTextBuf">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Gets text associated with the control from a buffer</short>
+        <descr>
+          <pre>* The VCL implementation relies on the virtual Get/SetTextBuf to 
+ * exchange text between widgets and VCL. This means a lot of 
+ * (unnecesary) text copies.
+ * The LCL uses strings for exchanging text (more efficient).
+ * To maintain VCL compatibility, the virtual RealGet/SetText is
+ * introduced. These functions interface with the LCLInterface. The
+ * default Get/SetTextbuf implementation calls the RealGet/SetText.
+ * As long as the Get/SetTextBuf isn't overridden Get/SetText 
+ * calls RealGet/SetText to avoid PChar copying.
+ * To keep things optimal, LCL implementations should always 
+ * override RealGet/SetText. Get/SetTextBuf is only kept for
+ * compatibility.
+</pre>
+        </descr>
+        <seealso>
+          <link id="RealGetText"/>
+          <link id="GetText"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.GetTextBuf.Result"><short/></element>
+      <element name="TControl.GetTextBuf.Result">
+        <short>Pointer to the buffer containing the text</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.GetTextBuf.Buffer"><short/></element>
+      <element name="TControl.GetTextBuf.Buffer">
+        <short>Pointer to the buffer containing the string</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.GetTextBuf.BufSize"><short/></element>
+      <element name="TControl.GetTextBuf.BufSize">
+        <short>Length of the buffer</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetTextLen">
         <short/>
@@ -5806,13 +5837,31 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <element name="TControl.GetTextLen.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetTextBuf">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Stores text associated with the control in a buffer</short>
+        <descr>
+          <pre>* The VCL implementation relies on the virtual Get/SetTextBuf to 
+ * exchange text between widgets and VCL. This means a lot of 
+ * (unnecesary) text copies.
+ * The LCL uses strings for exchanging text (more efficient).
+ * To maintain VCL compatibility, the virtual RealGet/SetText is
+ * introduced. These functions interface with the LCLInterface. The
+ * default Get/SetTextbuf implementation calls the RealGet/SetText.
+ * As long as the Get/SetTextBuf isn't overridden Get/SetText 
+ * calls RealGet/SetText to avoid PChar copying.
+ * To keep things optimal, LCL implementations should always 
+ * override RealGet/SetText. Get/SetTextBuf is only kept for
+ * compatibility.
+</pre>
+        </descr>
+        <seealso>
+          <link id="RealSetText"/>
+          <link id="SetText"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetTextBuf.Buffer"><short/></element>
+      <element name="TControl.SetTextBuf.Buffer">
+        <short>Pointer to the buffer where the text is to be stored</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.Perform">
         <short/>
@@ -6032,9 +6081,10 @@ Bounding rectangle (top-left, bottom-right) is defined in TRect</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
-        <short>Caption - the text appearing on the Control, usually used to identify its function</short>
-        <descr><p>By default, the Caption appears the same as the control Name in the Object Inspector, and the developer needs to set it explicitly to some new text.</p>
-Gets caption from string buffer, or stores the new caption there. Shows flag if caption is stored.<br/><code>{* Note on TControl.Caption
+        <short>Caption - the text-string appearing on the Control, usually used to identify its function</short>
+        <descr>By default, the Caption appears the same as the control Name in the Object Inspector, <br/>and the developer needs to set it explicitly to some new text.<br/> <br/>
+
+Gets caption as a text-string (GetText), or stores the new caption (SetText). Shows flag if caption is stored (IsCaptionStored).<br/> <br/> <pre>
 
  * The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
@@ -6048,9 +6098,13 @@ Gets caption from string buffer, or stores the new caption there. Shows flag if 
  * To keep things optimal, LCL implementations should always 
  * override RealGet/SetText. Get/SetTextBuf is only kept for
  * compatibility.
- }
+ 
 
-</code></descr>
+</pre></descr>
+        <seealso>
+          <link id="GetText"/>
+          <link id="SetText"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientHeight">
@@ -10334,6 +10388,7 @@ TGraphicControl, you must query the ClientRect.</pre>
         <errors/>
         <seealso/>
       </element>
+      <element name="TControlEGetTopParent"/>
     </module>
     <!-- Controls -->
   </package>
