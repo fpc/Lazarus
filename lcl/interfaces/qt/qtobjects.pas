@@ -284,6 +284,7 @@ type
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
     function region: TQtRegion;
+    procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
     procedure setRegion(ARegion: TQtRegion);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
     procedure rotate(a: Double);
@@ -1884,6 +1885,12 @@ begin
   Result := vRegion;
 end;
 
+procedure TQtDeviceContext.setClipRegion(ARegion: QRegionH;
+  AOperation: QtClipOperation = QtReplaceClip);
+begin
+  QPainter_SetClipRegion(Widget, ARegion, AOperation);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.setRegion
   Params:  None
@@ -1895,7 +1902,7 @@ begin
   Write('TQtDeviceContext.setRegion() ');
   {$endif}
   if (ARegion.Widget <> nil) and (Widget <> nil) then
-    QPainter_setClipRegion(Widget, ARegion.Widget);
+    setClipRegion(ARegion.Widget);
 end;
 
 {------------------------------------------------------------------------------

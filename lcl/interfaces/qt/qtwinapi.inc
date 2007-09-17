@@ -98,7 +98,7 @@ begin
     begin
       //Write('>>> Setting Paint ClipRegion: ');
       //DebugRegion('PaintData.ClipRegion: ', Widget.PaintData.ClipRegion);
-      QPainter_SetClipRegion(DC.Widget, Widget.PaintData.ClipRegion);
+      DC.setClipRegion(Widget.PaintData.ClipRegion);
     end;
     if Widget.PaintData.ClipRect <> nil then
     begin
@@ -1336,7 +1336,7 @@ begin
   try
     QPainter_clipRegion(QtDC.Widget, Region);
     QRegion_subtract(Region, Region, ExRegion);
-    QPainter_setClipRegion(QtDC.Widget, Region);
+    QtDC.setClipRegion(Region);
     QPainter_setClipping(QtDC.Widget, True);
     
     if QRegion_isEmpty(Region)
@@ -3104,7 +3104,7 @@ begin
     end
     else
     begin
-      QPainter_setClipRegion(QtDC.Widget, InterSectRgn);
+      QtDC.setClipRegion(InterSectRgn);
       QPainter_clipRegion(QtDC.Widget, Rgn);
     end;
     QPainter_setClipping(QtDC.Widget, True);

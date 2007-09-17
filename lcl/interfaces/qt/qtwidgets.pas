@@ -82,7 +82,7 @@ type
     function LCLKeyToQtKey(AKey: Word): Integer;
     function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
-    function QtKeyToLCLKey(AKey: Integer): Word;
+    function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
     function DeliverMessage(var Msg): LRESULT;
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetWidget(const AValue: QWidgetH);
@@ -1457,12 +1457,19 @@ begin
   IsSysKey := (QtAltModifier and Modifiers) <> $0;
   KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
 
-  // Translates a Qt4 Key to a LCL VK_* key
-  KeyMsg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)));
-  
+  {
+    on windows we can use:
+
+    KeyMsg.CharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+
+  }
+
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
 
+  // Translates a Qt4 Key to a LCL VK_* key
+  KeyMsg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text);
+  
   {------------------------------------------------------------------------------
    Sends the adequate key messages
    ------------------------------------------------------------------------------}
@@ -1828,18 +1835,16 @@ begin
     with PaintData do
     begin
       ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
-      if ClipRect=nil then
+      if ClipRect = nil then
         New(ClipRect);
       QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
     end;
-
 
     Msg.DC := BeginPaint(THandle(Self), AStruct^);
     FContext := Msg.DC;
     
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
-	  Msg.PaintStruct^.hdc := FContext;
-
+    Msg.PaintStruct^.hdc := FContext;
 
     with getClientBounds do
       SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
@@ -2216,8 +2221,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidget.QtKeyToLCLKey(AKey: Integer): Word;
+function TQtWidget.QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
 begin
+  // The big problem here with unicode keys
+  // Example: for Russian letter A qt returns AKey = $0410 and this is
+  // absolutely correct: 0400 - 04FF - is russian unicode space and
+  // 0410 is defined as "CYRILLIC CAPITAL LETTER A"
+
+  Result := VK_UNKNOWN;
   case AKey of
     QtKey_0..QtKey_9: Result := VK_0 + (AKey - QtKey_0);
     QtKey_At: Result := VK_2; // some bug, but Ctrl + Shit + 2 produce QtKey_At
@@ -2281,7 +2292,14 @@ begin
     QtKey_Flip,
     QtKey_unknown: Result := VK_UNKNOWN;
   else
-    Result := AKey; // Qt:AKey = VK_KEY in many cases
+    if AKey <= $FF then // Qt:AKey = VK_KEY in many cases
+      Result := AKey
+    else
+    if AText <> '' then
+    begin
+      // use QChar to understand whether we have unicode letter or number here or no
+      // then try to map that char to VK_ code
+    end;
   end;
 end;
 
