@@ -321,14 +321,7 @@ begin
     begin
       s3 := Copy(s2, Pos('.', s2) + 1, 255);
       s2 := Copy(s2, 1, Pos('.', s2) - 1);
-      f := nil;
-      if Assigned(Application.FindComponent(S1)) then
-        begin
-          if Application.FindComponent(S1) is TDataSet then
-            f := Application.FindComponent(S1) //FindGlobalComponent(s1);
-          else if Application.FindComponent(S1) is TDataSource then
-            f := TDataSource(Application.FindComponent(S1)).DataSet;
-        end;
+      f:=FindGlobalComponent(S1);
       if f <> nil then
       begin
         DataSet := TfrTDataSet(f.FindComponent(s2));

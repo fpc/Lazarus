@@ -51,10 +51,14 @@ type
     procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
     procedure SaveToXML(XML: TXMLConfig; Path: String); override;
   published
-    property Frames;
-    property FillColor;
     property Checked : Boolean read fChecked write fChecked;
-    
+    property FillColor;
+    property FrameColor;
+    property Frames;
+    property FrameStyle;
+    property FrameWidth;
+    property Script;
+
   end;
 
 
