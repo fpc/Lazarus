@@ -91,6 +91,7 @@ type
     constructor Create;
     procedure InitWithEnvironmentVariables;
     function FindDefaultCompilerFilename: string;
+    procedure UpdateUnitLinkListValid;
     
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -140,6 +141,7 @@ begin
   NewValue:=ExpandFileName(AValue);
   if FFPCPath=NewValue then exit;
   FFPCPath:=NewValue;
+  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -150,6 +152,7 @@ begin
   NewValue:=ExpandFileName(AValue);
   if FFPCSrcDir=NewValue then exit;
   FFPCSrcDir:=NewValue;
+  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -157,6 +160,7 @@ procedure TCodeToolsOptions.SetFPCUnitPath(const AValue: string);
 begin
   if FFPCUnitPath=AValue then exit;
   FFPCUnitPath:=AValue;
+  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -208,6 +212,7 @@ procedure TCodeToolsOptions.SetTargetOS(const AValue: string);
 begin
   if FTargetOS=AValue then exit;
   FTargetOS:=AValue;
+  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -215,6 +220,7 @@ procedure TCodeToolsOptions.SetTargetProcessor(const AValue: string);
 begin
   if FTargetProcessor=AValue then exit;
   FTargetProcessor:=AValue;
+  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -258,6 +264,12 @@ begin
                            GetEnvironmentVariable('PATH'),':',ctsfcDefault);
 end;
 
+procedure TCodeToolsOptions.UpdateUnitLinkListValid;
+begin
+  if not UnitLinkListValid then exit;
+  
+end;
+
 procedure TCodeToolsOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
@@ -297,7 +309,9 @@ begin
   PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','');
   TestPascalFile:=XMLConfig.GetValue(Path+'FPC/TestPascalFile/Value','');
   UnitLinkList:=XMLConfig.GetValue(Path+'FPC/UnitLinkList/Value','');
+  // UnitLinkListValid must be set as last
   UnitLinkListValid:=XMLConfig.GetValue(Path+'FPC/UnitLinkList/Valid',false);
+
   LazarusSrcDir:=XMLConfig.GetValue(Path+'Lazarus/SrcDir/Value','');
   LazarusSrcOptions:=XMLConfig.GetValue(Path+'Lazarus/SrcDirOptions/Value','');
   LCLWidgetType:=XMLConfig.GetValue(Path+'Lazarus/LCLWidgetType/Value','');

@@ -829,6 +829,9 @@ begin
                           ATestPascalFile,
                           FPCUnitPath, TargetOS, TargetProcessor,
                           nil);
+    if FPCDefines=nil then begin
+      raise Exception.Create('TCodeToolManager.Init: Unable to execute '+Config.FPCPath+' to get compiler values');
+    end;
     Add(FPCDefines);
     Config.FPCUnitPath:=FPCUnitPath;
     Config.TargetOS:=TargetOS;
@@ -840,7 +843,7 @@ begin
                           Config.UnitLinkListValid,UnitLinkList,
                           nil);
     Add(FPCSrcDefines);
-    Config.UnitLinkListValid:=true;
+    Config.UnitLinkListValid:=UnitLinkList<>'';
     Config.UnitLinkList:=UnitLinkList;
     LazarusSrcDefines:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)',
                                  '$(#LCLWidgetType)',

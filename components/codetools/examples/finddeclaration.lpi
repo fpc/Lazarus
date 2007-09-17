@@ -25,7 +25,7 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="finddeclaration.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -36,6 +36,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="SimpleUnit1"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="scanexamples/overloadedfunction.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="OverloadedFunction"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

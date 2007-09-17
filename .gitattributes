@@ -112,6 +112,7 @@ components/codetools/examples/scanexamples/getcontextexample.pas svneol=native#t
 components/codetools/examples/scanexamples/identcomplexample.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/missingh2pasdirectives.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/modemacpas.pas svneol=native#text/plain
+components/codetools/examples/scanexamples/overloadedfunction.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/simpleunit1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/tgeneric2.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/uglyifdefs.pas svneol=native#text/plain

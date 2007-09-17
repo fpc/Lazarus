@@ -30,7 +30,7 @@ program FindDeclaration;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
-  CodeToolsConfig, SimpleUnit1;
+  CodeToolsConfig, SimpleUnit1, OverloadedFunction;
 
 const
   ConfigFilename = 'codetools.config';
@@ -47,7 +47,7 @@ begin
     writeln('  ',ParamStr(0));
     writeln('  ',ParamStr(0),' <filename> <X> <Y>');
   end;
-
+  
   // setup the Options
   Options:=TCodeToolsOptions.Create;
 
