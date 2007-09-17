@@ -4660,7 +4660,23 @@ begin
       QEvent_ignore(Event);
     end;
   end else
+  begin
+    case QEvent_type(Event) of
+      QEventFocusIn:
+      begin
+        if QFocusEvent_reason(QFocusEventH(Event)) in
+          [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
+           QtShortcutFocusReason, QtOtherFocusReason] then
+        begin
+          if Assigned(LineEdit) and
+          TComboBox(LCLObject).AutoSelect then
+            QLineEdit_selectAll(QLineEditH(LineEdit));
+        end;
+      end;
+    end;
     Result := inherited EventFilter(Sender, Event);
+  end;
+  
   EndEventProcessing;
 end;
 
