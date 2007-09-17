@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.49 }
+{ Version : 1.50 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -315,6 +315,7 @@ QObjectH = class(TObject) end;
     QStatusBarH = class(QWidgetH) end;
     QTabBarH = class(QWidgetH) end;
     QTabWidgetH = class(QWidgetH) end;
+      QLCLTabWidgetH = class(QTabWidgetH) end;
     QToolBarH = class(QWidgetH) end;
     QWorkspaceH = class(QWidgetH) end;
 QPaintDeviceH = class(TObject) end;
@@ -470,6 +471,7 @@ QStandardItem_hookH = class(QObject_hookH) end;
 QStandardItemModel_hookH = class(QAbstractItemModel_hookH) end;
 QAbstractItemDelegate_hookH = class(QObject_hookH) end;
 QDialog_hookH = class(QWidget_hookH) end;
+QFileDialog_hookH = class(QDialog_hookH) end;
 QProgressDialog_hookH = class(QDialog_hookH) end;
 QSystemTrayIcon_hookH = class(QObject_hookH) end;
 QGraphicsScene_hookH = class(QObject_hookH) end;
@@ -6801,6 +6803,8 @@ type
   QTabWidget_currentChanged_Event = procedure (index: Integer) of object cdecl;
 
 
+function QLCLTabWidget_tabBarHandle(protectedhandle: QTabWidgetH): QTabBarH; cdecl; external QtIntf name 'QLCLTabWidget_tabBarHandle';
+
 
 type
   QTabBarShape = ( // QTabBar::Shape (1)
@@ -8095,6 +8099,14 @@ procedure QFileDialog_getOpenFileName(retval: PWideString; parent: QWidgetH = ni
 procedure QFileDialog_getSaveFileName(retval: PWideString; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; filter: PWideString = nil; selectedFilter: PWideString = nil; options: QFileDialogOptions = 0); cdecl; external QtIntf name 'QFileDialog_getSaveFileName';
 procedure QFileDialog_getExistingDirectory(retval: PWideString; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; options: QFileDialogOptions = QFileDialogShowDirsOnly); cdecl; external QtIntf name 'QFileDialog_getExistingDirectory';
 procedure QFileDialog_getOpenFileNames(retval: QStringListH; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; filter: PWideString = nil; selectedFilter: PWideString = nil; options: QFileDialogOptions = 0); cdecl; external QtIntf name 'QFileDialog_getOpenFileNames';
+
+
+type
+  QFileDialog_filesSelected_Event = procedure (files: QStringListH) of object cdecl;
+  QFileDialog_currentChanged_Event = procedure (path: PWideString) of object cdecl;
+  QFileDialog_directoryEntered_Event = procedure (directory: PWideString) of object cdecl;
+  QFileDialog_filterSelected_Event = procedure (filter: PWideString) of object cdecl;
+
 
 function QProgressDialog_create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QProgressDialogH; overload; cdecl; external QtIntf name 'QProgressDialog_create';
 procedure QProgressDialog_destroy(handle: QProgressDialogH); cdecl; external QtIntf name 'QProgressDialog_destroy'; 
@@ -10302,6 +10314,13 @@ procedure QDialog_hook_destroy(handle: QDialog_hookH); cdecl; external QtIntf na
 procedure QDialog_hook_hook_finished(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_finished';
 procedure QDialog_hook_hook_accepted(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_accepted';
 procedure QDialog_hook_hook_rejected(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_rejected';
+
+function QFileDialog_hook_create(handle: QObjectH): QFileDialog_hookH; cdecl; external QtIntf name 'QFileDialog_hook_create';
+procedure QFileDialog_hook_destroy(handle: QFileDialog_hookH); cdecl; external QtIntf name 'QFileDialog_hook_destroy'; 
+procedure QFileDialog_hook_hook_filesSelected(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_filesSelected';
+procedure QFileDialog_hook_hook_currentChanged(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_currentChanged';
+procedure QFileDialog_hook_hook_directoryEntered(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_directoryEntered';
+procedure QFileDialog_hook_hook_filterSelected(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_filterSelected';
 
 function QProgressDialog_hook_create(handle: QObjectH): QProgressDialog_hookH; cdecl; external QtIntf name 'QProgressDialog_hook_create';
 procedure QProgressDialog_hook_destroy(handle: QProgressDialog_hookH); cdecl; external QtIntf name 'QProgressDialog_hook_destroy'; 
