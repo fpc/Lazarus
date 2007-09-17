@@ -628,6 +628,7 @@ type
 
   TLMTimeChange = TLMNoParams;
 
+// todo: remove TLMSetText
   TLMSetText = record
     Msg: Cardinal;
 {$ifdef cpu64}
