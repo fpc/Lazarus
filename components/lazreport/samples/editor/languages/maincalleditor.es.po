@@ -16,6 +16,10 @@ msgstr "Nuevo Reporte"
 msgid "Open report"
 msgstr "Abrir reporte"
 
+#: maincalleditor:cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr ""
+
 #: maincalleditor:cerpreviewreport
 msgid "Preview report"
 msgstr "Vista previa"
@@ -27,4 +31,8 @@ msgstr "Imprimir rejilla"
 #: maincalleditor:cerprintreport
 msgid "Print report"
 msgstr "Imprimir reporte"
+
+#: maincalleditor:cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr ""
 
