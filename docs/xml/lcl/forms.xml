@@ -137,8 +137,20 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPosition">
-        <short/>
-        <descr/>
+        <short>Represents the Position and Size on Screen of an Form</short>
+        <descr>poDesigned - The Form appears like it is positioned and sized in the designer.
+poDefault - The window manager decides how the form appear
+oDefaultPosOnly - Designed size and position form windowmanager
+
+DefaultSizeOnly - Designed position and size from windowmanager
+p
+creencenter - Centers the form on screen
+po
+sctopcenter - Centers the form on desktop
+poM
+nFormCenter - Centers the Form on mainform
+poOw
+rFormcenter - Centers the Form on owner form</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -175,8 +187,10 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TWindowState">
-        <short/>
-        <descr/>
+        <short>Represents the actual State of the Form</short>
+        <descr>wsNormal - The form appears normal
+wsMinimized - The form appears minimized
+sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -195,7 +209,7 @@
       <element name="TCloseAction">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>&lt;link id="TCustomForm.OnClose"&gt;TCustomForm.OnClose&lt;/link&gt;</seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caNone">
@@ -259,7 +273,8 @@
       <!-- object Visibility: default -->
       <element name="TControlScrollBar">
         <short>Control Scroll Bar</short>
-        <descr>Control Scroll Bar: Scroll Bar control for adding to windows. Can be horizontal or vertical.</descr>
+        <descr>Control Scroll Bar: Scroll Bar control for adding to windows. Can be horizontal or vertical.
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControlScrollBar.FAutoRange">
@@ -1588,8 +1603,12 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBorderIcon">
-        <short/>
-        <descr/>
+        <short>Specifies wich icon appears on the top of the Form</short>
+        <descr>biSystemMenu - The form has a System menu (Maybe not all windowmanager supports this)
+biMinimize - The form has an minimize button
+iMaximize - The form has a maximize button
+
+Help - When you klick this button an Question Cursor appears and the help routines are called if you klick on an control</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -2863,26 +2882,26 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Active">
-        <short/>
-        <descr/>
+        <short>Is true when the form has the focus</short>
+        <descr>Use active to check if the form has the focus</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ActiveControl">
-        <short/>
-        <descr/>
+        <short>Specifies the active control on the form</short>
+        <descr>Use this to get or set the active control on this form</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderIcons">
-        <short/>
-        <descr/>
+        <short>Specifies wich icons appear on th top of the form</short>
+        <descr>Use bordericons to get or set the icons that appear on the top of the form</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderStyle">
-        <short/>
-        <descr/>
+        <short>Specifies the appearence of the form</short>
+        <descr>Use borderstyle to get or set the appearance of the form</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -2923,13 +2942,13 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormStyle">
-        <short/>
+        <short>Determinates the forms style</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.HelpFile">
-        <short/>
+        <short>Specifies the help file that is used by the form</short>
         <descr/>
         <seealso/>
       </element>
@@ -2947,14 +2966,14 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Menu">
-        <short/>
-        <descr/>
+        <short>Specifies an mainmenu for this form</short>
+        <descr>Drop an tmainmenu on the form and select it here to show it on the form</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ModalResult">
-        <short/>
-        <descr/>
+        <short>Specifies the return value of an modal form</short>
+        <descr>If the form is modal, then this is the return value</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -3025,7 +3044,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.PixelsPerInch">
-        <short/>
+        <short>Represents the scaling of the form in proportion to the screen resolution</short>
         <descr/>
         <seealso/>
       </element>
@@ -3043,13 +3062,13 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Visible">
-        <short/>
-        <descr/>
+        <short>Indicates if the form is visible</short>
+        <descr>Set or get this to set the form visible/hidden or get the status of the form</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.WindowState">
-        <short/>
+        <short>Represents how the form appears on the screen</short>
         <descr/>
         <seealso/>
       </element>
@@ -3150,7 +3169,10 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TForm.DockSite">
-        <short/>
+        <short>
+          <short>Specifies the control that has the focus on the form</short>
+          <descr>Use activecontrol to set or get the control that has the focus on this form</descr>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3798,7 +3820,9 @@
       <!-- variable Visibility: private -->
       <element name="TScreen.FCustomFormsZOrdered">
         <short/>
-        <descr/>
+        <descr>
+          <short>Specifies wich style the form border has</short>
+        </descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
@@ -5617,10 +5641,8 @@ It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather
       <!-- function result Visibility: default -->
       <element name="TApplication.MessageBox.Result">
         <short>Result</short>
-        <descr>Result: integer value returned by the function to signify which box was selected<br/>
-<br/>
-Can be one of the following values:<br/>
-<br/>
+        <descr>Result: integer value returned by the function to signify which box was selected<br/><br/>
+Can be one of the following values:<br/><br/>
  IDOK<br/>
  IDCANCEL<br/>
  IDABORT<br/>
@@ -5645,19 +5667,15 @@ Can be one of the following values:<br/>
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Flags">
         <short>Flags</short>
-        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.<br/>
-<br/>
-The following button constants are available:<br/>
-<br/>
+        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.<br/><br/>
+The following button constants are available:<br/><br/>
  MB_OK<br/>
  MB_OKCANCEL<br/>
  MB_ABORTRETRYIGNORE<br/>
  MB_YESNOCANCEL<br/>
  MB_YESNO<br/>
- MB_RETRYCANCEL<br/>
-<br/>
-And the following icon constants:<br/>
-<br/>
+ MB_RETRYCANCEL<br/><br/>
+And the following icon constants:<br/><br/>
  MB_ICONHAND<br/>
  MB_ICONQUESTION<br/>
  MB_ICONEXCLAMATION<br/>
@@ -5665,8 +5683,7 @@ And the following icon constants:<br/>
  MB_ICONWARNING = MB_ICONEXCLAMATION<br/>
  MB_ICONERROR = MB_ICONHAND<br/>
  MB_ICONSTOP = MB_ICONHAND<br/>
- MB_ICONINFORMATION = MB_ICONASTERICK<br/>
-<br/>
+ MB_ICONINFORMATION = MB_ICONASTERICK<br/><br/>
 These constants are declared on the LCLType unit.
         </descr>
       </element>
