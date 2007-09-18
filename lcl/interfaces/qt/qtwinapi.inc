@@ -1299,6 +1299,107 @@ end;
 
 
 {------------------------------------------------------------------------------
+  Function: EnumFontFamiliesEx
+  Params:
+    hdc
+        [in] Handle to the device context.
+    lpLogfont
+        [in] Pointer to a LOGFONT structure that contains information about the
+        fonts to enumerate. The function examines the following members.
+
+        Member 	Description
+        lfCharset 	If set to DEFAULT_CHARSET, the function enumerates all fonts
+                    in all character sets. If set to a valid character set value,
+                    the function enumerates only fonts in the specified character
+                    set.
+        lfFaceName 	If set to an empty string, the function enumerates one font
+                    in each available typeface name. If set to a valid typeface
+                    name, the function enumerates all fonts with the
+                    specified name.
+                    
+        lfPitchAndFamily 	Must be set to zero for all language versions of
+                          the operating system.
+
+    lpEnumFontFamExProc
+        [in] Pointer to the application definedcallback function. For more
+             information, see the EnumFontFamExProc function.
+    lParam
+        [in] Specifies an applicationdefined value. The function passes this value
+             to the callback function along with font information.
+    dwFlags
+        This parameter is not used and must be zero.
+
+  Returns:
+
+  The return value is the last value returned by the callback function.
+  This value depends on which font families are available for the
+  specified device.
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+var
+	EnumLogFont: TEnumLogFontEx;
+	Metric: TNewTextMetricEx;
+	FontList: TStringList;
+	FontType: Integer;
+	i: Integer;
+
+  function QtGetFontFamilies(var List:TStringList):integer;
+  var
+    FontDB: QFontDatabaseH;
+    StrLst: QStringlistH;
+    Str: WideString;
+    j: integer;
+  begin
+    Result := -1;
+    FontDB := QFontDatabase_create();
+    StrLst := QStringList_create;
+    try
+      QFontDatabase_families(FontDB,StrLst);
+      Result := QStringList_size(StrLst);
+      for j := 0 to Result - 1 do
+      begin
+        QStringList_at(StrLst, @Str, j);
+        List.Add(GetUtf8String(Str));
+      end;
+    finally
+      QFontDatabase_destroy(FontDB);
+      QStringList_destroy(StrLst);
+    end;
+	end;
+  
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI EnumFontFamiliesEx]');
+  {$endif}
+  Result := 0;
+  
+  if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
+  (lpLogFont^.lfFaceName= '') and
+  (lpLogFont^.lfPitchAndFamily = 0) then
+  begin
+    FontList := TStringList.create;
+    try
+      if QtGetFontFamilies(FontList)>0 then
+      begin
+        for i := 0 to FontList.Count-1 do
+        begin
+  	      EnumLogFont.elfLogFont.lfFaceName := FontList[i];
+  	      Result := Callback(EnumLogFont, Metric, FontType, LParam);
+        end;
+      end;
+    finally
+    	FontList.free;
+    end;
+  end else
+  begin
+		{$note implement}
+    Result := 0;
+  end;
+end;
+
+
+{------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  none
   Returns: Nothing
