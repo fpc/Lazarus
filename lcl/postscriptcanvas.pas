@@ -260,7 +260,7 @@ Const
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600)
      ),
-    (Name  : 'CourierISO-Oblique-Bold';
+    (Name  : 'CourierISO-BoldOblique';
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -360,7 +360,7 @@ Const
               556, 556, 556, 556, 556, 556, 556, 584, 611, 556,
               556, 556, 556, 500, 556, 500)
     ),
-   (Name  : 'HelveticaISO-Oblique-Bold';
+   (Name  : 'HelveticaISO-BoldOblique';
     Widths: (278, 333, 474, 556, 556, 889, 722, 238,
              333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
              556, 556, 556, 556, 556, 556, 556, 556, 333, 333,
@@ -385,7 +385,7 @@ Const
              611, 611, 611, 611, 611, 611, 611, 584, 611, 611,
              611, 611, 611, 556, 611, 556)
     ),
-   (Name  : 'RomanISO';
+   (Name  : 'Times-RomanISO';
     Widths: (250, 333, 408, 500, 500, 833, 778, 180,
              333, 333, 500, 564, 250, 333, 250, 278, 500, 500,
              500, 500, 500, 500, 500, 500, 500, 500, 278, 278,
@@ -460,7 +460,7 @@ Const
             500, 500, 500, 500, 500, 500, 500, 675, 500, 500,
             500, 500, 500, 444, 500, 444)
    ),
-  (Name  : 'TimesISO-Italic-Bold';
+  (Name  : 'TimesISO-BoldItalic';
    Widths: (250, 389, 555, 500, 500, 833, 778, 278,
             333, 333, 500, 570, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -675,9 +675,9 @@ Var Atr : string;
 begin
   Atr:='';
   Result:='HelveticaISO';
-  if LowerCase(Font.Name)='times' then
+  if Copy(LowerCase(Font.Name),1,5)='times' then
     Result:='TimesISO';
-  if LowerCase(Font.Name)='monospaced' then
+  if (LowerCase(Font.Name)='monospaced') or (Copy(LowerCase(Font.Name),1,7)='courier') then
     Result:='CourierISO';
   if LowerCase(Font.Name)='serif' then
     Result:='TimesISO';
@@ -686,18 +686,19 @@ begin
   if LowerCase(Font.Name)='symbol' then
     Result:='Symbol';
 
-  if (fsItalic in Font.Style) and ((Pos('Courier',Result)=1) or (Pos('Helvetica',Result)=1)) then
-    Atr:=Atr+'-Oblique';
-  if (fsItalic in Font.Style) and (Pos('Times',Result)=1)  then
-    Atr:=Atr+'-Italic';
   if (fsBold in Font.Style)  and ((Pos('Courier',Result)=1) or (Pos('Helvetica',Result)=1) or (Pos('Times',Result)=1)) then
-    Atr:=Atr+'-Bold';
+    Atr:=Atr+'Bold';
+  if (fsItalic in Font.Style) and ((Pos('Courier',Result)=1) or (Pos('Helvetica',Result)=1)) then
+    Atr:=Atr+'Oblique';
+  if (fsItalic in Font.Style) and (Pos('Times',Result)=1)  then
+    Atr:=Atr+'Italic';
   if (Result+Atr='Times') or (Result+Atr='TimesISO') then
-    Result:='RomanISO';
+    Result:='Times-RomanISO';
 
   WriteComment(Format('MapedFontName "%s" -> "%s"',[Font.Name,Result]));
   
-  Result:=Result+Atr;
+  if Atr <> '' then
+    Result:=Result+'-'+Atr;
 end;
 
 //Replace the controls chars by PostScript string
@@ -964,13 +965,13 @@ begin
   WriteHeader('end');
   WriteHeader('/HelveticaISO-Oblique exch definefont pop');
   WriteHeader('');
-  WriteHeader('/Helvetica-Oblique-Bold findfont');
+  WriteHeader('/Helvetica-BoldOblique findfont');
   WriteHeader('  dup length dict begin');
   WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
   WriteHeader('  /Encoding ISOLatin1Encoding def');
   WriteHeader('  currentdict');
   WriteHeader('end');
-  WriteHeader('/HelveticaISO-Oblique-Bold exch definefont pop');
+  WriteHeader('/HelveticaISO-BoldOblique exch definefont pop');
   WriteHeader('');
 
   WriteHeader('/Courier findfont');
@@ -997,13 +998,13 @@ begin
   WriteHeader('end');
   WriteHeader('/CourierISO-Oblique exch definefont pop');
   WriteHeader('');
-  WriteHeader('/Courier-Oblique-Bold findfont');
+  WriteHeader('/Courier-BoldOblique findfont');
   WriteHeader('  dup length dict begin');
   WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
   WriteHeader('  /Encoding ISOLatin1Encoding def');
   WriteHeader('  currentdict');
   WriteHeader('end');
-  WriteHeader('/CourierISO-Oblique-Bold exch definefont pop');
+  WriteHeader('/CourierISO-BoldOblique exch definefont pop');
   WriteHeader('');
 
   WriteHeader('/Times findfont');
@@ -1030,22 +1031,22 @@ begin
   WriteHeader('end');
   WriteHeader('/TimesISO-Italic exch definefont pop');
   WriteHeader('');
-  WriteHeader('/Times-Italic-Bold findfont');
+  WriteHeader('/Times-BoldItalic findfont');
   WriteHeader('  dup length dict begin');
   WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
   WriteHeader('  /Encoding ISOLatin1Encoding def');
   WriteHeader('  currentdict');
   WriteHeader('end');
-  WriteHeader('/TimesISO-Italic-Bold exch definefont pop');
+  WriteHeader('/TimesISO-BoldItalic exch definefont pop');
   WriteHeader('');
 
-  WriteHeader('/Roman findfont');
+  WriteHeader('/Times-Roman findfont');
   WriteHeader('  dup length dict begin');
   WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
   WriteHeader('  /Encoding ISOLatin1Encoding def');
   WriteHeader('  currentdict');
   WriteHeader('end');
-  WriteHeader('/RomanISO exch definefont pop');
+  WriteHeader('/Times-RomanISO exch definefont pop');
   WriteHeader('');
 
 
