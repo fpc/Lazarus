@@ -327,6 +327,7 @@ components/lazreport/languages/lr_const.es.po svneol=native#text/plain
 components/lazreport/languages/lr_const.fr.po svneol=native#text/plain
 components/lazreport/languages/lr_const.lt.po svneol=native#text/plain
 components/lazreport/languages/lr_const.po svneol=native#text/plain
+components/lazreport/languages/lr_const.ru.po svneol=native#text/plain
 components/lazreport/license-lazreport.txt svneol=native#text/plain
 components/lazreport/license-rus.txt svneol=native#text/plain
 components/lazreport/license.txt svneol=native#text/plain
@@ -341,6 +342,7 @@ components/lazreport/samples/editor/calleditorwithpkg.lpr svneol=native#text/pas
 components/lazreport/samples/editor/db/disco.dbf -text
 components/lazreport/samples/editor/languages/maincalleditor.es.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/maincalleditor.po svneol=native#text/plain
+components/lazreport/samples/editor/languages/maincalleditor.ru.po svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lfm svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lrs svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal

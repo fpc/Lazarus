@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-02 17:17+0300\n"
+"PO-Revision-Date: 2007-09-19 03:18+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -667,7 +667,7 @@ msgstr ""
 
 #: ipconst:swsaecancelled
 msgid "Cancelled"
-msgstr ""
+msgstr "Отменено"
 
 #: ipconst:swsaeaddrnotavail
 msgid "Cannot assign requested address"
@@ -743,39 +743,39 @@ msgstr ""
 
 #: ipconst:srasconnected
 msgid "Connected"
-msgstr ""
+msgstr "Соединено"
 
 #: ipconst:sftpopen
 msgid "Connected to "
-msgstr ""
+msgstr "Соединено с"
 
 #: ipconst:httpconnect
 msgid "Connected: (%s)"
-msgstr ""
+msgstr "Соединено: (%s)"
 
 #: ipconst:sssconnect
 msgid "Connecting"
-msgstr ""
+msgstr "Подсоединение"
 
 #: ipconst:spsconnect
 msgid "Connecting to server"
-msgstr ""
+msgstr "Подсоединение к серверу"
 
 #: ipconst:swsaeconnrefused
 msgid "Connection refused"
-msgstr ""
+msgstr "В подсоединении отказано"
 
 #: ipconst:swsaeconnreset
 msgid "Connection reset by peer"
-msgstr ""
+msgstr "Соединение разорвано другой стороной"
 
 #: ipconst:swsaetimedout
 msgid "Connection timed out"
-msgstr ""
+msgstr "Соединение превысило таймаут"
 
 #: ipconst:ssmtpresponse65
 msgid "Conversion failed"
-msgstr ""
+msgstr "Ошибка преобразования"
 
 #: ipconst:ssmtpresponse62
 msgid "Conversion required and prohibited"

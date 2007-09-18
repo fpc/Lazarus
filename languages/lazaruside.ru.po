@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-02 18:45+0300\n"
+"PO-Revision-Date: 2007-09-17 01:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -191,7 +191,7 @@ msgstr "&Файл"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
-msgstr "&Найти описание"
+msgstr "&Найти объявление"
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -1395,11 +1395,11 @@ msgstr "CodeTools - инструменты и функции для разбор
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
-msgstr "Редактор Определений CodeTools"
+msgstr "Редактор определений CodeTools"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefinespreview
 msgid "CodeTools Defines Preview"
-msgstr "Просмотр настроек CodeTools"
+msgstr "Просмотр определений CodeTools"
 
 #: lazarusidestrconsts:lisctdefcodetoolsdirectoryvalues
 msgid "CodeTools Directory Values"
@@ -1859,7 +1859,7 @@ msgstr "Создать настройки для компилятора FreePasc
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "Создать определения для SVN-да FreePascal"
+msgstr "Создать определения для исходного кода  FreePascal из SVN"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -3051,11 +3051,11 @@ msgstr "Найти"
 
 #: lazarusidestrconsts:lismenufindnext
 msgid "Find &Next"
-msgstr "Найти впереди"
+msgstr "Найти следующее"
 
 #: lazarusidestrconsts:lismenufindprevious
 msgid "Find &Previous"
-msgstr "Найти сзади"
+msgstr "Найти предыдущее"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files ..."
@@ -3067,7 +3067,7 @@ msgstr "Найти ..."
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
-msgstr "Найти описание под курсора"
+msgstr "Найти объявление под курсором"
 
 #: lazarusidestrconsts:uemfindidentifierreferences
 msgid "Find Identifier References"
@@ -3103,7 +3103,7 @@ msgstr "Найти компонент"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
-msgstr "Найти описание"
+msgstr "Найти объявление"
 
 #: lazarusidestrconsts:srkmecfindidentifierrefs
 msgid "Find identifier references"
@@ -7243,15 +7243,15 @@ msgstr "Показать значения CodeTools"
 
 #: lazarusidestrconsts:dlgcoshowerr
 msgid "Show Errors"
-msgstr "Показать ошибки"
+msgstr "Показывать ошибки"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr "Показать линии позиционирования"
+msgstr "Показывать линии позиционирования"
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
-msgstr "Показать подсказки"
+msgstr "Показывать подсказки"
 
 #: lazarusidestrconsts:dlghintsparametersendernotused
 msgid "Show Hints for parameter \"Sender\" not used"
@@ -7259,11 +7259,11 @@ msgstr "Подсказки 'Parameter \"Sender\" not used'"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr "Подсказки для ненужных модулей в главном исходнике"
+msgstr "Подсказки для неиспользуемых модулей в главном исходнике"
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr "Показать номера строк"
+msgstr "Показывать номера строк"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7279,7 +7279,7 @@ msgstr "Показать настройки для редактирования 
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
-msgstr "Показать предупреждения"
+msgstr "Показывать предупреждения"
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -7299,7 +7299,7 @@ msgstr "Показывать зазор у границ"
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
-msgstr "Показать кнопки закрытия закладок"
+msgstr "Показывать кнопки закрытия закладок"
 
 #: lazarusidestrconsts:srkmecshowcodecontext
 msgid "Show code context"
@@ -7331,7 +7331,7 @@ msgstr "Показать определённые макросы"
 
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
-msgstr "Показвать подсказки редактора"
+msgstr "Показывать подсказки редактора"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -7363,7 +7363,7 @@ msgstr "Показывать идентификаторы"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
-msgstr "Показать номера строк"
+msgstr "Показывать номера строк"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
@@ -7387,7 +7387,7 @@ msgstr "Показывать подсказку при прокрутке"
 
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
-msgstr "Показать обзор"
+msgstr "Показать сводку"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
@@ -8531,7 +8531,7 @@ msgstr "Показать редактор документации"
 
 #: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
-msgstr "Показать кнопки быстрого запуска IDE"
+msgstr "Показывать кнопки быстрого запуска IDE"
 
 #: lazarusidestrconsts:liskmtoggleviewlocalvariables
 msgid "Toggle view Local Variables"
@@ -8539,11 +8539,11 @@ msgstr "Показать локальные переменные"
 
 #: lazarusidestrconsts:liskmtoggleviewmessages
 msgid "Toggle view Messages"
-msgstr "Показать сообщения"
+msgstr "Показывать окно сообщений"
 
 #: lazarusidestrconsts:liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr "Показать инспектор объектов"
+msgstr "Показывать инспектор объектов"
 
 #: lazarusidestrconsts:liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
@@ -8555,11 +8555,11 @@ msgstr "Показать редактор исходного кода"
 
 #: lazarusidestrconsts:liskmtoggleviewwatches
 msgid "Toggle view Watches"
-msgstr "Показать наблюдения"
+msgstr "Показать окно наблюдений"
 
 #: lazarusidestrconsts:liskmtoggleviewcomponentpalette
 msgid "Toggle view component palette"
-msgstr "Показать палитру компонентов"
+msgstr "Показывать палитру компонентов"
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"

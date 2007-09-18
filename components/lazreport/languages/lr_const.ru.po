@@ -1,0 +1,2119 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-19 03:08+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+
+#: lr_const:spaper20
+msgid "#10 Envelope, 4 1/8  x 9 1/2\""
+msgstr "#10 Envelope, 4 1/8  x 9 1/2\""
+
+#: lr_const:spaper21
+msgid "#11 Envelope, 4 1/2 x 10 3/8\""
+msgstr "#11 Envelope, 4 1/2 x 10 3/8\""
+
+#: lr_const:spaper22
+msgid "#12 Envelope, 4 3/4 x 11\""
+msgstr "#12 Envelope, 4 3/4 x 11\""
+
+#: lr_const:spaper23
+msgid "#14 Envelope, 5 x 11 1/2\""
+msgstr "#14 Envelope, 5 x 11 1/2\""
+
+#: lr_const:sdesoptionsform18pix
+msgid "&18 pixels (5mm)"
+msgstr "&18 пикселов (5 мм)"
+
+#: lr_const:sfindtextfirstpg
+msgid "&1st page"
+msgstr "&1я страница"
+
+#: lr_const:sdesoptionsform4pix
+msgid "&4 pixels"
+msgstr "&4 пиксела"
+
+#: lr_const:sdesoptionsform8pix
+msgid "&8 pixels"
+msgstr "&8 пикселов"
+
+#: lr_const:sfrdesignerform_about
+msgid "&About..."
+msgstr "&О программе..."
+
+#: lr_const:sfrdesignerform_addpg
+msgid "&Add page"
+msgstr "&Добавить страницу"
+
+#: lr_const:sfrdesignerform_alignpalette
+msgid "&Alignment palette"
+msgstr "Панель &выравнивания"
+
+#: lr_const:sprintformall
+msgid "&All"
+msgstr "&Все"
+
+#: lr_const:sfieldsformaviabledb
+msgid "&Available DB's"
+msgstr "&Доступные БД"
+
+#: lr_const:sinsertfieldsformaviabledset
+msgid "&Available datasets"
+msgstr "&Доступные наборы данных"
+
+#: lr_const:seditorformbig
+msgid "&Big font"
+msgstr "&Большой шрифт"
+
+#: lr_const:shilightformbold
+msgid "&Bold"
+msgstr "&Жирный"
+
+#: lr_const:spgoptformbottom
+msgid "&Bottom, mm"
+msgstr "&Нижнее, мм"
+
+#: lr_const:sfindtextcase
+msgid "&Case sensitive"
+msgstr "&Чувствителен к регистру"
+
+#: lr_const:svaredformcat
+msgid "&Categories and variables"
+msgstr "Категории и переменные"
+
+#: lr_const:svarformcat
+msgid "&Category:"
+msgstr "&Категория"
+
+#: lr_const:sgeditorformclear
+msgid "&Clear"
+msgstr "&Очистить"
+
+#: lr_const:sbarcodeformcode
+msgid "&Code"
+msgstr "&Код"
+
+#: lr_const:spgoptformcolgap
+msgid "&Column gap, mm"
+msgstr "&Зазор столбцов, мм"
+
+#: lr_const:sdesoptionsformcontents
+msgid "&Contents"
+msgstr "&Содержимое"
+
+#: lr_const:sprintformcopy
+msgid "&Copies:"
+msgstr "&Копии:"
+
+#: lr_const:sfrdesignerform_copy
+msgid "&Copy"
+msgstr "&Копировать"
+
+#: lr_const:seditorformfield
+msgid "&DB field"
+msgstr "&Поле БД"
+
+#: lr_const:sfmtformdecid
+msgid "&Decimal digits"
+msgstr "&Разряды др. ч."
+
+#: lr_const:sfrdesignerform_delete
+msgid "&Delete"
+msgstr "&Удалить"
+
+#: lr_const:spgoptformdontuse
+msgid "&Don't use"
+msgstr "&Не использовать"
+
+#: lr_const:sfrdesignerform_edit2
+msgid "&Edit"
+msgstr "&Правка"
+
+#: lr_const:sfrdesignerform_edit
+msgid "&Edit..."
+msgstr "П&равка..."
+
+#: lr_const:sdesoptionsformediting
+msgid "&Editing after insert"
+msgstr "&Правка после вставки"
+
+#: lr_const:sevformexp
+msgid "&Expression"
+msgstr "&Выражение"
+
+#: lr_const:sfrdesignerform_file
+msgid "&File"
+msgstr "&Файл"
+
+#: lr_const:seditorformformat
+msgid "&Format"
+msgstr "&Формат"
+
+#: lr_const:spgoptformheight
+msgid "&Height, mm"
+msgstr "&Высота, мм"
+
+#: lr_const:sfrdesignerform_help1
+msgid "&Help contents"
+msgstr "&Содержимое"
+
+#: lr_const:sinsertfieldsformhorz
+msgid "&Horizontal"
+msgstr "&Горизонтальное"
+
+#: lr_const:sbarcodeformreadable
+msgid "&Human readable"
+msgstr "&Удобочитаемый"
+
+#: lr_const:sdesoptionsforminch
+msgid "&Inches"
+msgstr "&Дюймы"
+
+#: lr_const:sinsertfieldsformheader
+msgid "&Include headers"
+msgstr "&Включить заголовки"
+
+#: lr_const:shilightformitalic
+msgid "&Italic"
+msgstr "&Курсив"
+
+#: lr_const:spgoptformland
+msgid "&Landscape"
+msgstr "&Альбомная"
+
+#: lr_const:spgoptformleft
+msgid "&Left, mm"
+msgstr "&Левое, мм"
+
+#: lr_const:sgeditorformload
+msgid "&Load..."
+msgstr "&Загрузить"
+
+#: lr_const:sdesoptionsformmm
+msgid "&MM"
+msgstr "&MM"
+
+#: lr_const:seditorformmemo
+msgid "&Memo"
+msgstr "&Редактор"
+
+#: lr_const:sfrdesignerform_new
+msgid "&New..."
+msgstr "&Новый"
+
+#: lr_const:spgoptformnumber
+msgid "&Number"
+msgstr "&Количество"
+
+#: lr_const:sprintformnumber
+msgid "&Numbers:"
+msgstr "&Числа"
+
+#: lr_const:sfrdesignerform_obj
+msgid "&Objects"
+msgstr "&Объекты"
+
+#: lr_const:sfrdesignerform_open
+msgid "&Open..."
+msgstr "&Открыть..."
+
+#: lr_const:sfrdesignerform_opts
+msgid "&Options..."
+msgstr "&Настройки..."
+
+#: lr_const:sfrdesignerform_pgopt
+msgid "&Page options..."
+msgstr "Свойства страни&цы..."
+
+#: lr_const:spreviewformpw
+msgid "&Page width"
+msgstr "&Ширина страницы"
+
+#: lr_const:sfrdesignerform_paste
+msgid "&Paste"
+msgstr "В&ставить"
+
+#: lr_const:sdesoptionsformpix
+msgid "&Pixels"
+msgstr "&Пиксели"
+
+#: lr_const:spgoptformport
+msgid "&Portrait"
+msgstr "&Портретная"
+
+#: lr_const:spgoptformprint
+msgid "&Print to previous page"
+msgstr "&Печать на предыдущей странице"
+
+#: lr_const:sbandeditorformreccount
+msgid "&Record count"
+msgstr "&Количество записей"
+
+#: lr_const:sfrdesignerform_rect
+msgid "&Rectangle"
+msgstr "&Прямоугольник"
+
+#: lr_const:sfrdesignerform_redo
+msgid "&Redo"
+msgstr "&Повторить"
+
+#: lr_const:sfrdesignerform_removepg
+msgid "&Remove page"
+msgstr "Уда&лить страницу"
+
+#: lr_const:sfrdesignerform_rptopt
+msgid "&Report options..."
+msgstr "Свойс&тва отчёта..."
+
+#: lr_const:spgoptformright
+msgid "&Right, mm"
+msgstr "&Правое, мм"
+
+#: lr_const:sfrdesignerform_save
+msgid "&Save"
+msgstr "&Сохранить"
+
+#: lr_const:seditorformscript
+msgid "&Script"
+msgstr "&Скрипт"
+
+#: lr_const:sdocoptformselect
+msgid "&Select when report loaded"
+msgstr "&Выбирать при загрузке отчёта"
+
+#: lr_const:sdesoptionsformshowgrd
+msgid "&Show grid"
+msgstr "&Показывать сетку"
+
+#: lr_const:sfrdesignerform_std
+msgid "&Standard"
+msgstr "&Стандартная"
+
+#: lr_const:sgeditorformstretch
+msgid "&Stretch"
+msgstr "&Растянуть"
+
+#: lr_const:sfrdesignerform_text
+msgid "&Text"
+msgstr "&Текст"
+
+#: lr_const:sfrdesignerform_toolbars
+msgid "&Toolbars"
+msgstr "&Панели инструментов"
+
+#: lr_const:sfrdesignerform_tools
+msgid "&Tools"
+msgstr "&Инструменты"
+
+#: lr_const:spgoptformtop
+msgid "&Top, mm"
+msgstr "&Верхнее, мм"
+
+#: lr_const:shilightformtransp
+msgid "&Transparent"
+msgstr "&Прозрачный"
+
+#: lr_const:spreviewform2pg
+msgid "&Two pages"
+msgstr "&Две страницы"
+
+#: lr_const:sdocoptform2pass
+msgid "&Two-pass report"
+msgstr "&Двухпроходный отчёт"
+
+#: lr_const:sbarcodeformtype
+msgid "&Type of barcode"
+msgstr "&Тип штрих-кода"
+
+#: lr_const:shilightformunder
+msgid "&Underline"
+msgstr "&Подчёркнутый"
+
+#: lr_const:sfrdesignerform_undo
+msgid "&Undo"
+msgstr "&Отменить"
+
+#: lr_const:seditorformvar
+msgid "&Variable"
+msgstr "&Переменная"
+
+#: lr_const:sinsertfieldsformvert
+msgid "&Vertical"
+msgstr "&Вертикальное"
+
+#: lr_const:spreviewformwhole
+msgid "&Whole page"
+msgstr "&Вся страница"
+
+#: lr_const:spgoptformwidth
+msgid "&Width, mm"
+msgstr "&Ширина, мм"
+
+#: lr_const:seditorformword
+msgid "&Word wrap"
+msgstr "&Перенос слов"
+
+#: lr_const:scharset
+msgid "0"
+msgstr "0"
+
+#: lr_const:sformat43
+msgid "02:43"
+msgstr "02:43"
+
+#: lr_const:sformat41
+msgid "02:43:35"
+msgstr "02:43:35"
+
+#: lr_const:sformat51
+msgid "0;1"
+msgstr "0;1"
+
+#: lr_const:sformat23
+msgid "1 234,5"
+msgstr "1 234,5"
+
+#: lr_const:sformat24
+msgid "1 234,50"
+msgstr "1 234,50"
+
+#: lr_const:spaper45
+msgid "10 x 11\""
+msgstr "10 x 11\""
+
+#: lr_const:spaper16
+msgid "10 x 14\""
+msgstr "10 x 14\""
+
+#: lr_const:spaper17
+msgid "11 x 17\""
+msgstr "11 x 17\""
+
+#: lr_const:sformat32
+msgid "11.15.1998"
+msgstr "11.15.1998"
+
+#: lr_const:sformat31
+msgid "11.15.98"
+msgstr "11.15.98"
+
+#: lr_const:sformat21
+msgid "1234,5"
+msgstr "1234,5"
+
+#: lr_const:sformat22
+msgid "1234,50"
+msgstr "1234,50"
+
+#: lr_const:sformat33
+msgid "15 nov 1998"
+msgstr "15 ноя 1998"
+
+#: lr_const:sformat34
+msgid "15 november 1998"
+msgstr "15 ноября 1998"
+
+#: lr_const:spaper46
+msgid "15 x 11\""
+msgstr "15 x 11\""
+
+#: lr_const:sformat44
+msgid "2:43"
+msgstr "2:43"
+
+#: lr_const:sformat42
+msgid "2:43:35"
+msgstr "2:43:35"
+
+#: lr_const:spaper38
+msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
+msgstr "6 3/4 Envelope, 3 5/8 x 6 1/2\""
+
+#: lr_const:spaper19
+msgid "9 Envelope, 3 7/8 x 8 7/8\""
+msgstr "9 Envelope, 3 7/8 x 8 7/8\""
+
+#: lr_const:spaper44
+msgid "9 x 11\""
+msgstr "9 x 11\""
+
+#: lr_const:spaper66
+msgid "A2 420 x 594 mm"
+msgstr "A2 420 x 594 mm"
+
+#: lr_const:spaper8
+msgid "A3 297 x 420 mm"
+msgstr "A3 297 x 420 mm"
+
+#: lr_const:spaper63
+msgid "A3 Extra 322 x 445 mm"
+msgstr "A3 Extra 322 x 445 mm"
+
+#: lr_const:spaper68
+msgid "A3 Extra Transverse 322 x 445 mm"
+msgstr "A3 Extra Transverse 322 x 445 mm"
+
+#: lr_const:spaper67
+msgid "A3 Transverse 297 x 420 mm"
+msgstr "A3 Transverse 297 x 420 mm"
+
+#: lr_const:spaper9
+msgid "A4 210 x 297 mm"
+msgstr "A4 210 x 297 mm"
+
+#: lr_const:spaper53
+msgid "A4 Extra 9.27 x 12.69\""
+msgstr "A4 Extra 9.27 x 12.69\""
+
+#: lr_const:spaper60
+msgid "A4 Plus 210 x 330 mm"
+msgstr "A4 Plus 210 x 330 mm"
+
+#: lr_const:spaper55
+msgid "A4 Transverse 210 x 297 mm"
+msgstr "A4 Transverse 210 x 297 mm"
+
+#: lr_const:spaper10
+msgid "A4 small sheet, 210 x 297 mm"
+msgstr "A4 small sheet, 210 x 297 mm"
+
+#: lr_const:spaper11
+msgid "A5 148 x 210 mm"
+msgstr "A5 148 x 210 mm"
+
+#: lr_const:spaper64
+msgid "A5 Extra 174 x 235 mm"
+msgstr "A5 Extra 174 x 235 mm"
+
+#: lr_const:spaper61
+msgid "A5 Transverse 148 x 210 mm"
+msgstr "A5 Transverse 148 x 210 mm"
+
+#: lr_const:spaper70
+msgid "A6 105x148 mm"
+msgstr "A6 105x148 mm"
+
+#: lr_const:stextfile
+msgid "ASCII Text file"
+msgstr "Текстовый файл ASCII"
+
+#: lr_const:sdescriptionavg
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expression> [,BandName [,1]])/Вычисляет среднее арифметическое выражения <Expression> для заданной строки [BandName]. Если используется параметр [1], в вычисления также включаются невидимые строки."
+
+#: lr_const:saboutformcapt
+msgid "About FastReport"
+msgstr "О FastReport"
+
+#: lr_const:sfrdesignerformaddpg
+msgid "Add page"
+msgstr "Добавить страницу"
+
+#: lr_const:saggregatecategory
+msgid "Aggregate"
+msgstr "Агрегатные"
+
+#: lr_const:sfrdesignerformalignbottoms
+msgid "Align bottoms"
+msgstr "Выровнять по нижним краям"
+
+#: lr_const:sfrdesignerformalignhorzcenter
+msgid "Align horizontal centers"
+msgstr "Выровнять по центрам горизонталей"
+
+#: lr_const:sfrdesignerformalignleftedge
+msgid "Align left edges"
+msgstr "Выровнять по левым краям"
+
+#: lr_const:sfrdesignerformalignrightedge
+msgid "Align right edges"
+msgstr "Выровнять по правым краям"
+
+#: lr_const:sdesoptionsformaligngrd
+msgid "Align to &grid"
+msgstr "Выравнивать по &сетке"
+
+#: lr_const:sfrdesignerformalignetop
+msgid "Align tops"
+msgstr "Выровнять по верхним краям"
+
+#: lr_const:sfrdesignerformalignvertcenter
+msgid "Align vertical centers"
+msgstr "Выровнять по центрам вертикалей"
+
+#: lr_const:sfrdesignerformalign
+msgid "Alignment"
+msgstr "Выравнивание"
+
+#: lr_const:sallfiles
+msgid "All files"
+msgstr "Все файлы"
+
+#: lr_const:sfrdesignerformallframe
+msgid "All frame lines"
+msgstr "Все линии фрейма"
+
+#: lr_const:serroroccured
+msgid "An error occured during calculating"
+msgstr "Во время подсчёта произошла ошибка"
+
+#: lr_const:sautosize
+msgid "Auto size"
+msgstr "Автоматический размер"
+
+#: lr_const:sfilterparam
+msgid "Average font height:"
+msgstr "Средняя высота шрифта:"
+
+#: lr_const:spaper42
+msgid "B4 (ISO) 250 x 353 mm"
+msgstr "B4 (ISO) 250 x 353 mm"
+
+#: lr_const:spaper12
+msgid "B4 250 x 354 mm"
+msgstr "B4 250 x 354 mm"
+
+#: lr_const:spaper33
+msgid "B4 Envelope,  250 x 353 mm"
+msgstr "B4 Envelope,  250 x 353 mm"
+
+#: lr_const:spaper65
+msgid "B5 (ISO) Extra 201 x 276 mm"
+msgstr "B5 (ISO) Extra 201 x 276 mm"
+
+#: lr_const:spaper62
+msgid "B5 (JIS) Transverse 182 x 257 mm"
+msgstr "B5 (JIS) Transverse 182 x 257 mm"
+
+#: lr_const:spaper13
+msgid "B5 182 x 257 mm"
+msgstr "B5 182 x 257 mm"
+
+#: lr_const:spaper34
+msgid "B5 Envelope,  176 x 250 mm"
+msgstr "B5 Envelope,  176 x 250 mm"
+
+#: lr_const:spaper35
+msgid "B6 Envelope,  176 x 125 mm"
+msgstr "B6 Envelope,  176 x 125 mm"
+
+#: lr_const:shilightformback
+msgid "Background"
+msgstr "Фон"
+
+#: lr_const:sfrdesignerformbackcolor
+msgid "Background color"
+msgstr "Цвет фона"
+
+#: lr_const:sbandeditorformcapt
+msgid "Band data source"
+msgstr "Источник данных для поля"
+
+#: lr_const:svbandeditorformcapt
+msgid "Band data sources"
+msgstr "Источники данных для поля"
+
+#: lr_const:sbandtypesformbtype
+msgid "Band type"
+msgstr "Тип поля"
+
+#: lr_const:sband
+msgid "Band:"
+msgstr "Поле:"
+
+#: lr_const:svbandeditorformbnd
+msgid "Bands"
+msgstr "Поля"
+
+#: lr_const:sbarcodeformtitle
+msgid "Barcode editor"
+msgstr "Редактор штрих-кода"
+
+#: lr_const:sroundrectformbegincolor
+msgid "Begin color"
+msgstr "Начальный цвет"
+
+#: lr_const:sbmpfile
+msgid "Bitmap file"
+msgstr "Файл изображения"
+
+#: lr_const:sfrdesignerformbold
+msgid "Bold"
+msgstr "Жирный"
+
+#: lr_const:scateg5
+msgid "Boolean"
+msgstr "Логический"
+
+#: lr_const:sfrdesignerformbottomalign
+msgid "Bottom align"
+msgstr "Выравнивание по нижнему краю"
+
+#: lr_const:sfrdesignerformbottomframe
+msgid "Bottom frame line"
+msgstr "Нижняя линия фрейма"
+
+#: lr_const:sbreaked
+msgid "Breaked"
+msgstr "Разорванный"
+
+#: lr_const:sfrdesignerform_bring
+msgid "Bring to &front"
+msgstr "П&еренести вперёд"
+
+#: lr_const:sfrdesignerformbring
+msgid "Bring to front"
+msgstr "Перенести вперёд"
+
+#: lr_const:spaper24
+msgid "C Sheet, 17 x 22\""
+msgstr "C Sheet, 17 x 22\""
+
+#: lr_const:shilightformcolor
+msgid "C&olor..."
+msgstr "&Цвет..."
+
+#: lr_const:sfrdesignerform_cut
+msgid "C&ut"
+msgstr "&Вырезать"
+
+#: lr_const:spaper29
+msgid "C3 Envelope,  324 x 458 mm"
+msgstr "C3 Envelope,  324 x 458 mm"
+
+#: lr_const:spaper30
+msgid "C4 Envelope,  229 x 324 mm"
+msgstr "C4 Envelope,  229 x 324 mm"
+
+#: lr_const:spaper28
+msgid "C5 Envelope, 162 x 229 mm"
+msgstr "C5 Envelope, 162 x 229 mm"
+
+#: lr_const:spaper31
+msgid "C6 Envelope,  114 x 162 mm"
+msgstr "C6 Envelope,  114 x 162 mm"
+
+#: lr_const:spaper32
+msgid "C65 Envelope, 114 x 229 mm"
+msgstr "C65 Envelope, 114 x 229 mm"
+
+#: lr_const:sdescriptioncount
+msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgstr "COUNT(<BandName>)/Возвращает число строк данных в <BandName>. "
+
+#: lr_const:scsvfile
+msgid "CSV File"
+msgstr "Файл CSV"
+
+#: lr_const:scancel
+msgid "Cancel"
+msgstr "Отмена"
+
+#: lr_const:sfrdesignerformceneralign
+msgid "Center align"
+msgstr "Выравнивание по центру"
+
+#: lr_const:sfrdesignerformcenterhwind
+msgid "Center horizontally in window"
+msgstr "Центрировать по горизонтали в окне"
+
+#: lr_const:spicturecenter
+msgid "Center picture"
+msgstr "По центру"
+
+#: lr_const:sfrdesignerformcentervertwing
+msgid "Center vertically in window"
+msgstr "Центрировать по вертикали в окне"
+
+#: lr_const:sbarcodeformchksum
+msgid "Check&sum"
+msgstr "Контрольная с&умма"
+
+#: lr_const:sclassobjectnotfound
+msgid "Class Object \"%s\" not found"
+msgstr "Объект \"%s\" класса не найден"
+
+#: lr_const:sroundrectformhint
+msgid "Click here to define the shadow color or gradian colors"
+msgstr "Щёлкните здесь для задания цвета тени либо цветов градиента"
+
+#: lr_const:sfrdesignerformclose
+msgid "Close"
+msgstr "Закрыть"
+
+#: lr_const:sfrdesignerformclosedesigner
+msgid "Close designer"
+msgstr "Закрыть дизайнер"
+
+#: lr_const:spreviewformclose
+msgid "Close preview"
+msgstr "Закрыть окно предварительного просмотра"
+
+#: lr_const:shilightformcolor2
+msgid "Co&lor..."
+msgstr "&Цвет..."
+
+#: lr_const:sroundrectformcolor
+msgid "Color"
+msgstr "Цвет"
+
+#: lr_const:sdesoptionsformcoloredbutton
+msgid "Colored &buttons"
+msgstr "Цветные &кнопки"
+
+#: lr_const:sband16
+msgid "Column footer"
+msgstr "Примечание столбца"
+
+#: lr_const:sband15
+msgid "Column header"
+msgstr "Заголовок столбца"
+
+#: lr_const:svar7
+msgid "Column#"
+msgstr "Столбец №"
+
+#: lr_const:spgoptformcolumn
+msgid "Columns"
+msgstr "Столбцы"
+
+#: lr_const:sdocoptformcomments
+msgid "Comments"
+msgstr "Комментарии"
+
+#: lr_const:shilightformcond
+msgid "Condition"
+msgstr "Условие"
+
+#: lr_const:sconfirm
+msgid "Confirm"
+msgstr "Подтвердить"
+
+#: lr_const:sfrdesignerformcopy
+msgid "Copy"
+msgstr "Копировать"
+
+#: lr_const:sevformcopy
+msgid "Copy variables"
+msgstr "Копировать переменные"
+
+#: lr_const:sband20
+msgid "Cross data"
+msgstr "Cross-данные"
+
+#: lr_const:sband21
+msgid "Cross footer"
+msgstr "Cross-примечание"
+
+#: lr_const:sband19
+msgid "Cross header"
+msgstr "Cross-заголовок"
+
+#: lr_const:sprintformcurpg
+msgid "Current &page"
+msgstr "Текущая &страница"
+
+#: lr_const:svar8
+msgid "Current line#"
+msgstr "Текущая строка#"
+
+#: lr_const:sroundrectformcurve
+msgid "Curve"
+msgstr "Кривая"
+
+#: lr_const:spaper256
+msgid "Custom"
+msgstr "Пользовательское"
+
+#: lr_const:sfrdesignerformcut
+msgid "Cut"
+msgstr "Вырезать"
+
+#: lr_const:spaper25
+msgid "D Sheet, 22 x 34\""
+msgstr "D Sheet, 22 x 34\""
+
+#: lr_const:sdescriptiondayof
+msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+msgstr "DAYOF(<Date>)/Возвращает номер дня (1..31) для заданной <Date>."
+
+#: lr_const:spaper27
+msgid "DL Envelope, 110 x 220 mm"
+msgstr "DL Envelope, 110 x 220 mm"
+
+#: lr_const:spaper90
+msgid "DMPAPER_12X11 304.8X279.4"
+msgstr "DMPAPER_12X11 304.8X279.4"
+
+#: lr_const:spaper76
+msgid "DMPAPER_A3_ROTATED 420x297"
+msgstr "DMPAPER_A3_ROTATED 420x297"
+
+#: lr_const:spaper77
+msgid "DMPAPER_A4_ROTATED 297X210"
+msgstr "DMPAPER_A4_ROTATED 297X210"
+
+#: lr_const:spaper78
+msgid "DMPAPER_A5_ROTATED 210X148"
+msgstr "DMPAPER_A5_ROTATED 210X148"
+
+#: lr_const:spaper83
+msgid "DMPAPER_A6_ROTATED 148X105"
+msgstr "DMPAPER_A6_ROTATED 148X105"
+
+#: lr_const:spaper79
+msgid "DMPAPER_B4_JIS_ROTATED 364X257"
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
+
+#: lr_const:spaper80
+msgid "DMPAPER_B5_JIS_ROTATED 257X182"
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
+
+#: lr_const:spaper88
+msgid "DMPAPER_B6_JIS 128X122"
+msgstr "DMPAPER_B6_JIS 128X122"
+
+#: lr_const:spaper89
+msgid "DMPAPER_B6_JIS_ROTATED 182X128"
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
+
+#: lr_const:spaper82
+msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+
+#: lr_const:spaper81
+msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+
+#: lr_const:spaper73
+msgid "DMPAPER_JENV_CHOU3 120X235"
+msgstr "DMPAPER_JENV_CHOU3 120X235"
+
+#: lr_const:spaper86
+msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+
+#: lr_const:spaper74
+msgid "DMPAPER_JENV_CHOU4 90X205"
+msgstr "DMPAPER_JENV_CHOU4 90X205"
+
+#: lr_const:spaper87
+msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+
+#: lr_const:spaper71
+msgid "DMPAPER_JENV_KAKU2 240X132"
+msgstr "DMPAPER_JENV_KAKU2 240X132"
+
+#: lr_const:spaper84
+msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+
+#: lr_const:spaper72
+msgid "DMPAPER_JENV_KAKU3 216X277"
+msgstr "DMPAPER_JENV_KAKU3 216X277"
+
+#: lr_const:spaper85
+msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+
+#: lr_const:spaper91
+msgid "DMPAPER_JENV_YOU4 105X235"
+msgstr "DMPAPER_JENV_YOU4 105X235"
+
+#: lr_const:spaper92
+msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
+
+#: lr_const:spaper75
+msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
+
+#: lr_const:spaper93
+msgid "DMPAPER_P16K 146X215"
+msgstr "DMPAPER_P16K 146X215"
+
+#: lr_const:spaper106
+msgid "DMPAPER_P16K_ROTATED 215X146"
+msgstr "DMPAPER_P16K_ROTATED 215X146"
+
+#: lr_const:spaper94
+msgid "DMPAPER_P32K 97X151"
+msgstr "DMPAPER_P32K 97X151"
+
+#: lr_const:spaper95
+msgid "DMPAPER_P32KBIG 97X151"
+msgstr "DMPAPER_P32KBIG 97X151"
+
+#: lr_const:spaper108
+msgid "DMPAPER_P32KBIG_ROTATED 151X97"
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
+
+#: lr_const:spaper107
+msgid "DMPAPER_P32K_ROTATED 151X97"
+msgstr "DMPAPER_P32K_ROTATED 151X97"
+
+#: lr_const:spaper96
+msgid "DMPAPER_PENV_1 102X165"
+msgstr "DMPAPER_PENV_1 102X165"
+
+#: lr_const:spaper105
+msgid "DMPAPER_PENV_10 324X458"
+msgstr "DMPAPER_PENV_10 324X458"
+
+#: lr_const:spaper118
+msgid "DMPAPER_PENV_10_ROTATED 458X324"
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
+
+#: lr_const:spaper109
+msgid "DMPAPER_PENV_1_ROTATED 165X102"
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
+
+#: lr_const:spaper97
+msgid "DMPAPER_PENV_2 102X176"
+msgstr "DMPAPER_PENV_2 102X176"
+
+#: lr_const:spaper110
+msgid "DMPAPER_PENV_2_ROTATED 176X102"
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
+
+#: lr_const:spaper98
+msgid "DMPAPER_PENV_3 125X176"
+msgstr "DMPAPER_PENV_3 125X176"
+
+#: lr_const:spaper111
+msgid "DMPAPER_PENV_3_ROTATED 176X125"
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
+
+#: lr_const:spaper99
+msgid "DMPAPER_PENV_4 110X208"
+msgstr "DMPAPER_PENV_4 110X208"
+
+#: lr_const:spaper112
+msgid "DMPAPER_PENV_4_ROTATED 208X110"
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
+
+#: lr_const:spaper100
+msgid "DMPAPER_PENV_5 110X220"
+msgstr "DMPAPER_PENV_5 110X220"
+
+#: lr_const:spaper113
+msgid "DMPAPER_PENV_5_ROTATED 220X110"
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
+
+#: lr_const:spaper101
+msgid "DMPAPER_PENV_6 120X230"
+msgstr "DMPAPER_PENV_6 120X230"
+
+#: lr_const:spaper114
+msgid "DMPAPER_PENV_6_ROTATED 230X120"
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
+
+#: lr_const:spaper102
+msgid "DMPAPER_PENV_7 160X230"
+msgstr "DMPAPER_PENV_7 160X230"
+
+#: lr_const:spaper115
+msgid "DMPAPER_PENV_7_ROTATED 230X160"
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
+
+#: lr_const:spaper103
+msgid "DMPAPER_PENV_8 120X309"
+msgstr "DMPAPER_PENV_8 120X309"
+
+#: lr_const:spaper116
+msgid "DMPAPER_PENV_8_ROTATED 309X120"
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
+
+#: lr_const:spaper104
+msgid "DMPAPER_PENV_9 229X324"
+msgstr "DMPAPER_PENV_9 229X324"
+
+#: lr_const:spaper117
+msgid "DMPAPER_PENV_9_ROTATED 324X229"
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
+
+#: lr_const:sroundrectformdata
+msgid "Data .."
+msgstr "Данные .."
+
+#: lr_const:sbandeditorformdatasrc
+msgid "Data source"
+msgstr "Источник данных"
+
+#: lr_const:svar3
+msgid "Date"
+msgstr "Дата"
+
+#: lr_const:sdatetimecategory
+msgid "Date and time"
+msgstr "Дата и время"
+
+#: lr_const:sdefaultprinter
+msgid "Default printer"
+msgstr "Принтер по умолчанию"
+
+#: lr_const:spreviewformdel
+msgid "Delete page"
+msgstr "Удалить страницу"
+
+#: lr_const:stemplformdesc
+msgid "Description"
+msgstr "Описание"
+
+#: lr_const:sdesignreport
+msgid "Design report"
+msgstr "Составить отчёт"
+
+#: lr_const:sdesoptionsformdes
+msgid "Designer"
+msgstr "Дизайнер"
+
+#: lr_const:sband9
+msgid "Detail data"
+msgstr "Detail-данные"
+
+#: lr_const:sband10
+msgid "Detail footer"
+msgstr "Detail-примечание"
+
+#: lr_const:sband8
+msgid "Detail header"
+msgstr "Detail-заголовок"
+
+#: lr_const:sshape5
+msgid "Diagonal1"
+msgstr "Диагональный1"
+
+#: lr_const:sshape6
+msgid "Diagonal2"
+msgstr "Диагональный2"
+
+#: lr_const:spaper69
+msgid "Double Japanese Postcard 200 x 148 mm"
+msgstr "Double Japanese Postcard 200 x 148 mm"
+
+#: lr_const:sfrdesignerformdrawline
+msgid "Draw lines"
+msgstr "Рисовать линии"
+
+#: lr_const:spaper26
+msgid "E Sheet, 34 x 44\""
+msgstr "E Sheet, 34 x 44\""
+
+#: lr_const:sfrdesignerform_exit
+msgid "E&xit"
+msgstr "&Выход"
+
+#: lr_const:spreviewformedit
+msgid "Edit page"
+msgstr "Редактировать страницу"
+
+#: lr_const:sshape3
+msgid "Ellipse"
+msgstr "Эллипс"
+
+#: lr_const:sroundrectformendcolor
+msgid "End Color"
+msgstr "Конечный цвет"
+
+#: lr_const:sprintforminfo
+msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
+msgstr "Введите номера и/или диапазоны страниц, разделённые запятыми. Например, 1,3,5-12"
+
+#: lr_const:spaper47
+msgid "Envelope Invite 220 x 220 mm"
+msgstr "Envelope Invite 220 x 220 mm"
+
+#: lr_const:serror
+msgid "Error"
+msgstr "Ошибка"
+
+#: lr_const:sbarcodeerror
+msgid "Error in barcode"
+msgstr "Ошибка в штрихкоде"
+
+#: lr_const:spaper7
+msgid "Executive, 7 1/4 x 10 1/2\""
+msgstr "Executive, 7 1/4 x 10 1/2\""
+
+#: lr_const:svar2
+msgid "Expression"
+msgstr "Выражение"
+
+#: lr_const:sdescriptionformatdatetime
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Преобразует значение <DateTime> в строку, используя маску <Fmt>."
+
+#: lr_const:sdescriptionformatfloat
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Преобразует значение <Numeric> в строку, используя маску <Fmt>."
+
+#: lr_const:sdescriptionformattext
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Mask>, <String>)/Применяет маску <Mask> к заданной строке <String> и возвращает форматированную строку."
+
+#: lr_const:sfrvariables
+msgid "FR variables"
+msgstr "Переменные FR"
+
+#: lr_const:sformat54
+msgid "False;True"
+msgstr "False;True"
+
+#: lr_const:sformfile
+msgid "FastReport form"
+msgstr "Форма FastReport"
+
+#: lr_const:stemplfile
+msgid "FastReport template"
+msgstr "Шаблон FastReport"
+
+#: lr_const:sfilter
+msgid "Filter properties"
+msgstr "Фильтр свойств"
+
+#: lr_const:sfindtextcaption
+msgid "Find text"
+msgstr "Найти текст"
+
+#: lr_const:sfrdesignerformfitgrid
+msgid "Fit to grid"
+msgstr "Уместить в сетку"
+
+#: lr_const:spaper14
+msgid "Folio, 8 1/2 x 13\""
+msgstr "Folio, 8 1/2 x 13\""
+
+#: lr_const:shilightformfont
+msgid "Font"
+msgstr "Шрифт"
+
+#: lr_const:sfrdesignerformfont
+msgid "Font color"
+msgstr "Цвет шрифта"
+
+#: lr_const:sfrdesignerformfontname
+msgid "Font name"
+msgstr "Имя шрифта"
+
+#: lr_const:sfrdesignerformfontsize
+msgid "Font size"
+msgstr "Размер шрифта"
+
+#: lr_const:sfont
+msgid "Font..."
+msgstr "Шрифт..."
+
+#: lr_const:sformnewpage
+msgid "Force new page"
+msgstr "С новой страницы"
+
+#: lr_const:sfmtformfrac
+msgid "Fraction &symbol"
+msgstr "Ра&зделитель"
+
+#: lr_const:sfrdesignerformframecolor
+msgid "Frame color"
+msgstr "Цвет фрейма"
+
+#: lr_const:sfrdesignerformframewidth
+msgid "Frame width"
+msgstr "Ширина фрейма"
+
+#: lr_const:sroundrectformframed
+msgid "Framed zone"
+msgstr "Зона фрейма"
+
+#: lr_const:spaper41
+msgid "German Legal Fanfold, 8 1/2 x 13\""
+msgstr "German Legal Fanfold, 8 1/2 x 13\""
+
+#: lr_const:spaper40
+msgid "German Std Fanfold, 8 1/2 x 12\""
+msgstr "German Std Fanfold, 8 1/2 x 12\""
+
+#: lr_const:sroundrectformgradian
+msgid "Gradian"
+msgstr "Градиан"
+
+#: lr_const:sdesoptionsformgrid
+msgid "Grid"
+msgstr "Сетка"
+
+#: lr_const:sfrdesignerformgridalign
+msgid "Grid align"
+msgstr "Выравнивать по сетке"
+
+#: lr_const:sdesoptionsformgrdsize
+msgid "Grid size"
+msgstr "Шаг сетки"
+
+#: lr_const:sgroupeditorformcapt
+msgid "Group"
+msgstr "Группа"
+
+#: lr_const:sband18
+msgid "Group footer"
+msgstr "Примечание группы"
+
+#: lr_const:sband17
+msgid "Group header"
+msgstr "Заголовок группы"
+
+#: lr_const:shtmfile
+msgid "HTML file"
+msgstr "Файл HTML"
+
+#: lr_const:sfrdesignerform_help2
+msgid "Help &tool"
+msgstr "&Инструмент помощи"
+
+#: lr_const:shilightformhilitattr
+msgid "Highlight attributes"
+msgstr "Подсветить атрибуты"
+
+#: lr_const:sdescriptioninput
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Выводит диалоговое окно с заголовком <Caption> и полем ввода. Если задан параметр [Default], помещает эту строку в поле ввода. После нажатия пользователем кнопки OK возвращает введённую строку."
+
+#: lr_const:sinches
+msgid "Inches"
+msgstr "Дюймы"
+
+#: lr_const:sinsertfieldsformband
+msgid "Include &bands"
+msgstr "Включить &поля"
+
+#: lr_const:sinsbarcode
+msgid "Insert Barcode object"
+msgstr "Вставить объект Barcode"
+
+#: lr_const:sinschart
+msgid "Insert Chart object"
+msgstr "Вставить объект Chart"
+
+#: lr_const:sinscheckbox
+msgid "Insert CheckBox object"
+msgstr "Вставить объект CheckBox"
+
+#: lr_const:sfieldsforminsert
+msgid "Insert DB field"
+msgstr "Вставить поле БД"
+
+#: lr_const:sinsertfields
+msgid "Insert DB fields"
+msgstr "Вставить поля БД"
+
+#: lr_const:sinsshape
+msgid "Insert Shape object"
+msgstr "Вставить объект-фигуру"
+
+#: lr_const:sinsroundrect
+msgid "Insert an RoundRect with shadow area"
+msgstr "Вставить прямоугольник с округлёнными углами (RoundRect) с областью тени"
+
+#: lr_const:sfrdesignerforminsband
+msgid "Insert band"
+msgstr "Вставить поле"
+
+#: lr_const:sinsertfieldsformcapt
+msgid "Insert fields"
+msgstr "Вставить изображение"
+
+#: lr_const:sbandtypesformcapt
+msgid "Insert new band"
+msgstr "Вставить новое поле"
+
+#: lr_const:sfrdesignerforminspict
+msgid "Insert picture"
+msgstr "Вставить изображение"
+
+#: lr_const:sfrdesignerforminsrect
+msgid "Insert rectangle object"
+msgstr "Вставить объект-прямоугольник"
+
+#: lr_const:sfrdesignerforminssub
+msgid "Insert subreport"
+msgstr "Вставить подотчёт"
+
+#: lr_const:sbarcodeformvar
+msgid "Insert variable"
+msgstr "Вставить переменную"
+
+#: lr_const:sfrdesignerformitalic
+msgid "Italic"
+msgstr "Курсив"
+
+#: lr_const:spaper36
+msgid "Italy Envelope, 110 x 230 mm"
+msgstr "Italy Envelope, 110 x 230 mm"
+
+#: lr_const:spaper43
+msgid "Japanese Postcard 100 x 148 mm"
+msgstr "Japanese Postcard 100 x 148 mm"
+
+#: lr_const:skeepaspectratio
+msgid "Keep aspect ratio"
+msgstr "Сохранять соотношение сторон"
+
+#: lr_const:sdocoptformkeywords
+msgid "Keys words"
+msgstr "Ключевые слова"
+
+#: lr_const:sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<String>)/Возвращает длину строки <String>."
+
+#: lr_const:sdescriptionlowercase
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<String>)/Преобразует символы строки <String> в нижний регистр."
+
+#: lr_const:slazformfile
+msgid "LazReport form"
+msgstr "Форма LazReport"
+
+#: lr_const:spaper4
+msgid "Ledger, 17 x 11\""
+msgstr "Ledger, 17 x 11\""
+
+#: lr_const:sfrdesignerformleftalign
+msgid "Left align"
+msgstr "Выравнивание по левому краю"
+
+#: lr_const:sfrdesignerformleftframe
+msgid "Left frame line"
+msgstr "Левая линия фрейма"
+
+#: lr_const:spaper51
+msgid "Legal Extra 9/275 x 15\""
+msgstr "Legal Extra 9/275 x 15\""
+
+#: lr_const:spaper5
+msgid "Legal, 8 1/2 x 14\""
+msgstr "Legal, 8 1/2 x 14\""
+
+#: lr_const:spaper50
+msgid "Letter Extra 9/275 x 12\""
+msgstr "Letter Extra 9/275 x 12\""
+
+#: lr_const:spaper56
+msgid "Letter Extra Transverse 9/275 x 12\""
+msgstr "Letter Extra Transverse 9/275 x 12\""
+
+#: lr_const:spaper59
+msgid "Letter Plus 8.5 x 12.69\""
+msgstr "Letter Plus 8.5 x 12.69\""
+
+#: lr_const:spaper54
+msgid "Letter Transverse 8/275 x 11\""
+msgstr "Letter Transverse 8/275 x 11\""
+
+#: lr_const:spaper2
+msgid "Letter small, 8 1/2 x 11\""
+msgstr "Letter small, 8 1/2 x 11\""
+
+#: lr_const:spaper1
+msgid "Letter, 8 1/2 x 11\""
+msgstr "Letter, 8 1/2 x 11\""
+
+#: lr_const:sfrdesignerform_line
+msgid "Line style"
+msgstr "Стиль линии"
+
+#: lr_const:svar6
+msgid "Line through#"
+msgstr "Строки до№"
+
+#: lr_const:svar5
+msgid "Line#"
+msgstr "Строка№"
+
+#: lr_const:sdescriptionmax
+msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr "MAX(<Expression> [,BandName [,1]])/Вычисляет максимум выражения <Expression> для данной строки [BandName]. Если используется параметр [1], в вычисления включаются и невидимые строки."
+
+#: lr_const:sdescriptionmaxnum
+msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+msgstr "MAXNUM(<Value1>, <Value2>)/Возвращает большее из заданных значений."
+
+#: lr_const:sdescriptionmessagebox
+msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Выводит стандартное диалоговое окно с заголовком <Title>, текстом <Text> и кнопками <Buttons>."
+
+#: lr_const:sdescriptionmin
+msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr "MIN(<Expression> [,BandName [,1]])/Вычисляет минимум выражения <Expression> для данной строки [BandName]. Если используется параметр [1], в вычисления включаются и невидимые строки."
+
+#: lr_const:sdescriptionminnum
+msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr "MINNUM(<Value1>, <Value2>)/Возвращает меньшее из заданных значений."
+
+#: lr_const:smm
+msgid "MM"
+msgstr "MM"
+
+#: lr_const:sdescriptionmonthof
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Date>)/Возвращает номер месяца (1..12) для заданной даты <Date>."
+
+#: lr_const:spgoptformmargins
+msgid "Margins"
+msgstr "Поля"
+
+#: lr_const:sband6
+msgid "Master data"
+msgstr "Master-данные"
+
+#: lr_const:sband7
+msgid "Master footer"
+msgstr "Master-примечание"
+
+#: lr_const:sband5
+msgid "Master header"
+msgstr "Master-заголовок"
+
+#: lr_const:smathcategory
+msgid "Math"
+msgstr "Математические"
+
+#: lr_const:spaper37
+msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
+msgstr "Monarch Envelope, 3 7/8 x 7 1/2\""
+
+#: lr_const:sdescriptionnamecase
+msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgstr "NAMECASE(<String>)/Преобразует символы строки <String> в нижний регистр, и первый символ - в верхний регистр."
+
+#: lr_const:stemplformnewrp
+msgid "New report"
+msgstr "Новый отчёт"
+
+#: lr_const:sno
+msgid "No"
+msgstr "Нет"
+
+#: lr_const:sfrdesignerformnoframe
+msgid "No frame"
+msgstr "Нет фрейма"
+
+#: lr_const:sformat52
+msgid "No;Yes"
+msgstr "Нет;Да"
+
+#: lr_const:sband22
+msgid "None"
+msgstr "Нет"
+
+#: lr_const:sfrdesignerformnormaltext
+msgid "Normal text / 90 degrees"
+msgstr "Нормальный текст / 90 градусов"
+
+#: lr_const:spaper18
+msgid "Note, 8 1/2 x 11\""
+msgstr "Note, 8 1/2 x 11\""
+
+#: lr_const:scateg2
+msgid "Number"
+msgstr "Число"
+
+#: lr_const:sfrdesignerform_insp
+msgid "Object &Inspector"
+msgstr "Инспектор о&бъектов"
+
+#: lr_const:sobjectinspector
+msgid "Object inspector"
+msgstr "Инспектор объектов"
+
+#: lr_const:sdesoptionsformobj
+msgid "Object moving"
+msgstr "Перемещение объектов"
+
+#: lr_const:sfrdesignerformobj
+msgid "Objects"
+msgstr "Объекты"
+
+#: lr_const:sok
+msgid "Ok"
+msgstr "OK"
+
+#: lr_const:sonfirstpage
+msgid "On first page"
+msgstr "На первой странице"
+
+#: lr_const:sonlastpage
+msgid "On last page"
+msgstr "На последней странице"
+
+#: lr_const:sfrdesignerformopenrp
+msgid "Open report"
+msgstr "Открыть отчёт"
+
+#: lr_const:spgoptformoptions
+msgid "Options"
+msgstr "Настройки"
+
+#: lr_const:spgoptformor
+msgid "Orientation"
+msgstr "Ориентация"
+
+#: lr_const:sfindtextorg
+msgid "Origin"
+msgstr "Точка отсчёта"
+
+#: lr_const:shilightformother
+msgid "Ot&her"
+msgstr "Пр&очее"
+
+#: lr_const:sdesoptionsformother
+msgid "Other"
+msgstr "Прочие"
+
+#: lr_const:sother
+msgid "Other..."
+msgstr "Другой..."
+
+#: lr_const:sband14
+msgid "Overlay"
+msgstr "Оверлей"
+
+#: lr_const:sdescriptionpos
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Возвращает позицию подстроки <SubString> в строке <String> ."
+
+#: lr_const:spg
+msgid "Page"
+msgstr "Страница"
+
+#: lr_const:sband4
+msgid "Page footer"
+msgstr "Нижний колонтитул"
+
+#: lr_const:sband3
+msgid "Page header"
+msgstr "Верхний колонтитул"
+
+#: lr_const:spgoptformpgmargins
+msgid "Page margins"
+msgstr "Поля страницы"
+
+#: lr_const:spgoptformcapt
+msgid "Page options"
+msgstr "Свойства страницы"
+
+#: lr_const:sprintformpgrange
+msgid "Page range"
+msgstr "Диапазон страниц"
+
+#: lr_const:svar1
+msgid "Page#"
+msgstr "Страница №"
+
+#: lr_const:spgoptformpaper
+msgid "Paper"
+msgstr "Бумага"
+
+#: lr_const:sfrdesignerformpast
+msgid "Paste"
+msgstr "Вставить"
+
+#: lr_const:sevformpaste
+msgid "Paste variables"
+msgstr "Вставить переменные"
+
+#: lr_const:sfirstpass
+msgid "Performing 1st pass:"
+msgstr "Производится первый проход:"
+
+#: lr_const:sgeditorformcapt
+msgid "Picture"
+msgstr "Изображение"
+
+#: lr_const:spictfile
+msgid "Picture file"
+msgstr "Файл изображения"
+
+#: lr_const:spixels
+msgid "Pixels"
+msgstr "Пиксели"
+
+#: lr_const:sinsertfieldsformplace
+msgid "Placement"
+msgstr "Размещение"
+
+#: lr_const:sfrdesignerform_preview
+msgid "Pre&view"
+msgstr "П&редварительный просмотр"
+
+#: lr_const:spreview
+msgid "Preview"
+msgstr "Предварительный просмотр"
+
+#: lr_const:sfrdesignerformpreview
+msgid "Preview report"
+msgstr "Предварительный просмотр отчёта"
+
+#: lr_const:sprintformprint
+msgid "Print"
+msgstr "Печать"
+
+#: lr_const:sprintifsubsetempty
+msgid "Print if detail empty"
+msgstr "Печатать если подчинённый отчёт пустой"
+
+#: lr_const:spreviewformprint
+msgid "Print report"
+msgstr "Печать отчёта"
+
+#: lr_const:sdocoptformprinter
+msgid "Printer"
+msgstr "Принтер"
+
+#: lr_const:sprintererror
+msgid "Printer selected is not valid"
+msgstr "Выбран неверный принтер"
+
+#: lr_const:spageprinting
+msgid "Printing page:"
+msgstr "Печать страницы:"
+
+#: lr_const:spagepreparing
+msgid "Processing page:"
+msgstr "Обработка страницы:"
+
+#: lr_const:sprintformprop
+msgid "Properties"
+msgstr "Свойства"
+
+#: lr_const:sroundrectformcaption
+msgid "Property editor"
+msgstr "Редактор свойств"
+
+#: lr_const:spaper15
+msgid "Quarto Sheet, 215 x 275 mm"
+msgstr "Quarto Sheet, 215 x 275 mm"
+
+#: lr_const:sshape1
+msgid "Rectangle"
+msgstr "Прямоугольник"
+
+#: lr_const:sfrdesignerformredo
+msgid "Redo cancelled action"
+msgstr "Повторить отменённое действие"
+
+#: lr_const:sfrdesignerformremovepg
+msgid "Remove page"
+msgstr "Удалить страницу"
+
+#: lr_const:sremovepg
+msgid "Remove this page?"
+msgstr "Удалить эту страницу?"
+
+#: lr_const:srepfile
+msgid "Report file"
+msgstr "Файл очёта"
+
+#: lr_const:sdocoptformopt
+msgid "Report options"
+msgstr "Свойства отчёта"
+
+#: lr_const:sreportpreparing
+msgid "Report preparing"
+msgstr "Подготовка отчёта"
+
+#: lr_const:sband2
+msgid "Report summary"
+msgstr "Итог отчёта"
+
+#: lr_const:sband1
+msgid "Report title"
+msgstr "Заголовок отчёта"
+
+#: lr_const:sdesoptionsformunits
+msgid "Report units"
+msgstr "Единицы измерения"
+
+#: lr_const:sdoc
+msgid "Report:"
+msgstr "Отчёт:"
+
+#: lr_const:srtffile
+msgid "Rich Text file"
+msgstr "Файл Rich Text"
+
+#: lr_const:sfrdesignerformrightalign
+msgid "Right align"
+msgstr "Выравнивание по правому краю"
+
+#: lr_const:sfrdesignerformrightframe
+msgid "Right frame line"
+msgstr "Правая линия фрейма"
+
+#: lr_const:sbarcodeformrotate
+msgid "Rotation"
+msgstr "Поворот"
+
+#: lr_const:sshape2
+msgid "Rounded rectangle"
+msgstr "Прямоугольник с округлёнными углами"
+
+#: lr_const:seditorformscr
+msgid "S&cript"
+msgstr "С&крипт"
+
+#: lr_const:sdesoptionsformshape
+msgid "S&hape"
+msgstr "&Контур"
+
+#: lr_const:sdescriptionstrtodate
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<String>)/Преобразует строку <String> в дату."
+
+#: lr_const:sdescriptionstrtotime
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<String>)/Преобразует строку <String> во время."
+
+#: lr_const:sdescriptionsum
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expression> [,BandName [,1]])/Вычисляет сумму выражения <Expression> для данной строки [BandName]. Если используется параметр [1], в вычисления включаются и невидимые строки."
+
+#: lr_const:sroundrectformsample
+msgid "Sample :"
+msgstr "Образец:"
+
+#: lr_const:sfrdesignerform_saveas
+msgid "Save &as..."
+msgstr "Сохранить &как..."
+
+#: lr_const:ssavechanges
+msgid "Save changes"
+msgstr "Сохранить изменения"
+
+#: lr_const:sfrdesignerformsaverp
+msgid "Save report"
+msgstr "Сохранить отчёт"
+
+#: lr_const:spreviewformscale
+msgid "Scale"
+msgstr "Масштаб"
+
+#: lr_const:sfrdesignerform_selectall
+msgid "Select &all"
+msgstr "В&ыделить всё"
+
+#: lr_const:sfrdesignerformselectall
+msgid "Select all"
+msgstr "Выделить всё"
+
+#: lr_const:sfrdesignerformselobj
+msgid "Select object"
+msgstr "Выбрать объект"
+
+#: lr_const:sfrdesignerform_back
+msgid "Send to &back"
+msgstr "О&тправить назад"
+
+#: lr_const:sfrdesignerformback
+msgid "Send to back"
+msgstr "Отправить назад"
+
+#: lr_const:sroundrectformshadow
+msgid "Shadow width"
+msgstr "Ширина тени"
+
+#: lr_const:sshapeformcaption
+msgid "Shape"
+msgstr "Контур"
+
+#: lr_const:sshapeformkind
+msgid "Shape kind"
+msgstr "Тип фигуры"
+
+#: lr_const:sdesoptionsformshowband
+msgid "Show band &titles"
+msgstr "Показывать &заголовки полей"
+
+#: lr_const:spreviewformhelp
+msgid "Show help"
+msgstr "Показать справку"
+
+#: lr_const:srepeatheader
+msgid "Show on all pages"
+msgstr "Показывать на всех страницах"
+
+#: lr_const:spgoptformsize
+msgid "Size"
+msgstr "Размер"
+
+#: lr_const:sfrdesignerformspace
+msgid "Space equally, horizontally"
+msgstr "Расположить равномерно по горизонтали"
+
+#: lr_const:sfrdesignerformspaceeqvert
+msgid "Space equally, vertically"
+msgstr "Расположить равномерно по вертикали"
+
+#: lr_const:sfrdesignerformstd
+msgid "Standard"
+msgstr "Стандартная"
+
+#: lr_const:spaper6
+msgid "Statement, 5 1/2 x 8 1/2\""
+msgstr "Statement, 5 1/2 x 8 1/2\""
+
+#: lr_const:sstretched
+msgid "Stretched"
+msgstr "Растянутое"
+
+#: lr_const:sstringcategory
+msgid "String"
+msgstr "Строковые"
+
+#: lr_const:sroundrectformstyle
+msgid "Style"
+msgstr "Стиль"
+
+#: lr_const:ssubreportonpage
+msgid "SubReport on page"
+msgstr "Подотчёт на странице"
+
+#: lr_const:sband12
+msgid "Subdetail data"
+msgstr "Subdetail-данные"
+
+#: lr_const:sband13
+msgid "Subdetail footer"
+msgstr "Subdetail-примечание"
+
+#: lr_const:sband11
+msgid "Subdetail header"
+msgstr "Subdetail-заголовок"
+
+#: lr_const:sdocoptformsubject
+msgid "Subject"
+msgstr "Тема"
+
+#: lr_const:spaper57
+msgid "SuperASuperAA4 227 x 356 mm"
+msgstr "SuperASuperAA4 227 x 356 mm"
+
+#: lr_const:spaper58
+msgid "SuperBSuperBA3 305 x 487 mm"
+msgstr "SuperBSuperBA3 305 x 487 mm"
+
+#: lr_const:sdescriptiontrim
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Удаляет пробелы в начале и конце строки <String> и возвращает результат."
+
+#: lr_const:spaper52
+msgid "Tabloid Extra 11.69 x 18\""
+msgstr "Tabloid Extra 11.69 x 18\""
+
+#: lr_const:spaper3
+msgid "Tabloid, 11 x 17\""
+msgstr "Tabloid, 11 x 17\""
+
+#: lr_const:sfrdesignerformtext
+msgid "Text"
+msgstr "Текст"
+
+#: lr_const:seditorformcapt
+msgid "Text editor"
+msgstr "Редактор текста"
+
+#: lr_const:sfindtexttext
+msgid "Text to &find"
+msgstr "Искать &текст"
+
+#: lr_const:svar4
+msgid "Time"
+msgstr "Время"
+
+#: lr_const:sdocoptformtitle
+msgid "Title"
+msgstr "Заголовок"
+
+#: lr_const:sfrdesignerform_tools2
+msgid "Too&ls"
+msgstr "&Инструменты"
+
+#: lr_const:sfrdesignerformtools
+msgid "Tools"
+msgstr "Инструменты"
+
+#: lr_const:sfrdesignerformtopalign
+msgid "Top align"
+msgstr "Выравнивание по верхнему краю"
+
+#: lr_const:sfrdesignerformtopframe
+msgid "Top frame line"
+msgstr "Верхняя линия фрейма"
+
+#: lr_const:svar9
+msgid "TotalPages"
+msgstr "TotalPages"
+
+#: lr_const:stransparent
+msgid "Transparent"
+msgstr "Прозрачный"
+
+#: lr_const:sshape4
+msgid "Triangle"
+msgstr "Треугольник"
+
+#: lr_const:sdescriptionuppercase
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<String>)/Меняет регистр символов в <String> на верхний."
+
+#: lr_const:spaper39
+msgid "US Std Fanfold, 14 7/8 x 11\""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
+
+#: lr_const:sfrdesignerformunderline
+msgid "Underline"
+msgstr "Подчёркнутый"
+
+#: lr_const:sfrdesignerformundo
+msgid "Undo last action"
+msgstr "Отменить последнее действие"
+
+#: lr_const:sfrferror
+msgid "Unsupported FRF format"
+msgstr "Неподдерживаемый формат FRF"
+
+#: lr_const:suntitled
+msgid "Untitled"
+msgstr "Безымянный"
+
+#: lr_const:sevformvalue
+msgid "Va&lue"
+msgstr "&Значение"
+
+#: lr_const:sevformvars
+msgid "Va&riables..."
+msgstr "Пере&менные..."
+
+#: lr_const:sfmtformvarfmt
+msgid "Variable format"
+msgstr "Формат переменной"
+
+#: lr_const:svarformat
+msgid "Variable format..."
+msgstr "Формат переменной..."
+
+#: lr_const:sfmtformfrmtvar
+msgid "Variable formatting"
+msgstr "Форматирование переменной"
+
+#: lr_const:svarformcapt
+msgid "Variables"
+msgstr "Переменные"
+
+#: lr_const:sfrdesignerform_var
+msgid "Variables &list..."
+msgstr "Сп&исок переменных..."
+
+#: lr_const:sroundrectformvar
+msgid "Variables ..."
+msgstr "Переменные..."
+
+#: lr_const:sevformcapt
+msgid "Variables editor"
+msgstr "Редактор переменных"
+
+#: lr_const:svaredformcapt
+msgid "Variables list"
+msgstr "Список переменных"
+
+#: lr_const:sfrdesignerformvertcenter
+msgid "Vertical center"
+msgstr "Центрировать по вертикали"
+
+#: lr_const:sroundrectformstyledif
+msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
+msgstr "Вертикальный,Горизонтальный,Эллиптический,Прямоугольник,Гориз._Центр, Верт._Центр"
+
+#: lr_const:svirtualdataset
+msgid "Virtual Dataset"
+msgstr "Виртуальный набор данных"
+
+#: lr_const:sfrdesignerformwidthalign
+msgid "Width align"
+msgstr "Выравнивание по ширине"
+
+#: lr_const:swordbreak
+msgid "Word break"
+msgstr "Разрыв слов"
+
+#: lr_const:swordwrap
+msgid "Word wrap"
+msgstr "Перенос слов"
+
+#: lr_const:sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr "YEAROF(<Date>)/Возвращает год для заданной даты <Date>."
+
+#: lr_const:syes
+msgid "Yes"
+msgstr "Да"
+
+#: lr_const:sbarcodezoom
+msgid "Zoom"
+msgstr "Масштаб"
+
+#: lr_const:snotassigned
+msgid "[None]"
+msgstr "[Нет]"
+
+#: lr_const:spicture
+msgid "[Picture]"
+msgstr "[Изображение]"
+
+#: lr_const:sformat53
+msgid "_;x"
+msgstr "_;x"
+
+#: lr_const:sdateformat3
+msgid "d mmm yyyy"
+msgstr "д ммм гггг"
+
+#: lr_const:sdateformat4
+msgid "d mmmm yyyy"
+msgstr "д мммм гггг"
+
+#: lr_const:sfrom
+msgid "from"
+msgstr "из"
+
+#: lr_const:stimeformat4
+msgid "h:nn"
+msgstr "ч:мм"
+
+#: lr_const:stimeformat2
+msgid "h:nn:ss"
+msgstr "ч:мм:сс"
+
+#: lr_const:stimeformat3
+msgid "hh:nn"
+msgstr "чч:мм"
+
+#: lr_const:stimeformat1
+msgid "hh:nn:ss"
+msgstr "чч:мм:сс"
+
+#: lr_const:sdateformat1
+msgid "mm.dd.yy"
+msgstr "mm.dd.yy"
+
+#: lr_const:sdateformat2
+msgid "mm.dd.yyyy"
+msgstr "mm.dd.yyyy"
+
+#: lr_const:sto
+msgid "to"
+msgstr "в"
+

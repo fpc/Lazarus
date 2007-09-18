@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-17 01:36+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+
+#: maincalleditor:cereditreport
+msgid "Edit Report"
+msgstr "Редактировать отчёт"
+
+#: maincalleditor:cernewreport
+msgid "New report"
+msgstr "Новый отчёт"
+
+#: maincalleditor:ceropenreport
+msgid "Open report"
+msgstr "Открыть отчёт"
+
+#: maincalleditor:cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr "Ошибка PrepareReport!"
+
+#: maincalleditor:cerpreviewreport
+msgid "Preview report"
+msgstr "Предварительный просмотр отчёта"
+
+#: maincalleditor:cerprintgrid
+msgid "Print grid"
+msgstr "Печать сетки"
+
+#: maincalleditor:cerprintreport
+msgid "Print report"
+msgstr "Печать отчёта"
+
+#: maincalleditor:cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr "Эта функция ещё не реализована!"
+
