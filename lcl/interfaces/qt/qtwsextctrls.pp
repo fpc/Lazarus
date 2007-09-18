@@ -376,12 +376,24 @@ class function TQtWSCustomNotebook.GetTabIndexAtPos(
 var
   TabWidget: TQtTabWidget;
   APoint: TQtPoint;
+ {$ifndef USE_QT_4_3}
+  w: QTabBarH;
+ {$endif}
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
   if TabWidget.TabBar <> nil then
   begin
     APoint := QtPoint(AClientPos.x, AClientPos.y);
-    QTabBar_tabAt(TabWidget.TabBar, @APoint);
+    {$ifdef USE_QT_4_3}
+    Result := QTabBar_tabAt(TabWidget.TabBar, @APoint);
+    {$else}
+    w := QWidget_childAt(TabWidget.TabBar, APoint);
+    if w <> nil then
+    begin
+      Result := QTabWidget_indexOf(QTabWidgetH(TabWidget.Widget), w);
+    end else
+      Result := -1;
+    {$endif}
   end
   else
     Result := -1;
