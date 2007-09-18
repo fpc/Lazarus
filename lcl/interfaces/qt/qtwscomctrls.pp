@@ -427,8 +427,10 @@ begin
       QtProgressBar.setInvertedAppearance(True);
     end;
   else { pbHorizontal is default }
+  begin
     QtProgressBar.setOrientation(QtHorizontal);
     QtProgressBar.setInvertedAppearance(False);
+  end;
   end;
 
   QtProgressBar.setTextVisible(AProgressBar.BarShowText);
