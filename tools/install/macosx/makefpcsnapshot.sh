@@ -77,6 +77,7 @@ if [ ! -d  "$FPCBUILDDIR/fpcsrc" ]; then
 fi
 
 cd $FPCBUILDDIR
+export NOGDB=1
 make distclean PP=$PPC_RELEASE
 make build PP=$PPC_RELEASE DATA2INC=$FPCBUILDDIR/fpcsrc/utils/data2inc
 
