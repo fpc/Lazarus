@@ -3133,6 +3133,7 @@ end;
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 var
   R: TRect;
+  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
@@ -3142,9 +3143,14 @@ begin
   begin
     R := TQtWidget(aHandle).getClientBounds;
     OffsetRect(Rect^, R.Left, R.Top);
-  end;
-  
-  TQtWidget(aHandle).Update(Rect);
+	  TQtWidget(aHandle).Update(Rect);
+    if bErase and (TQtWidget(aHandle).Context <> 0) then
+    begin
+      QtDC := TQtDeviceContext(TQtWidget(aHandle).Context);
+      QPainter_eraseRect(QtDC.Widget, Rect);
+    end;
+  end else
+	  TQtWidget(aHandle).Update;
 
   Result := True;
 end;
