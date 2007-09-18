@@ -1926,7 +1926,10 @@ resourcestring
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
   lisLazBuildCleanBuild = 'Clean+Build';
-
+  lisLazBuildBuildOptions ='Build Options';
+  lisLazBuildQuickBuildOptions = 'Quick Build Options';
+  lisLazBuildAdvancedBuildOptions = 'Advanced Build Options';
+  
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
   listCompilerInternalError = 'Internal compiler error! (%d)';

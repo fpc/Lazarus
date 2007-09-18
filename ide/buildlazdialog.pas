@@ -20,6 +20,7 @@
 
   Author: Mattias Gaertner
   Converted to lfm by: Matthijs Willemstein
+  Quickoptions added by: Giuliano Colla
 
   Abstract:
     Defines the TBuildLazarusOptions which stores the settings for the
@@ -27,10 +28,22 @@
     TConfigureBuildLazarusDlg is used to edit TBuildLazarusOptions.
 
     The BuildLazarus function will build the lazarus parts.
+
+    Building occurs only with options defined in the Advanced Page.
+    The Quick Page is just used to set options there.
+    Therefore advanced users can ignore the Quick Page, while beginners
+    can see the effect of the choice made by looking at the Advanced Page.
 }
 unit BuildLazDialog;
 
 {$mode objfpc}{$H+}
+
+
+// MWE: ??? changed this to a define, it was found in original submitted code
+//          I didn't notice any change
+// Original comment:
+// This is required to overcome some bugs in TNotebook. Remove whne TNotebook is fixed
+{.$define UsePageInvalidate}
 
 interface
 
@@ -44,6 +57,7 @@ uses
   CompilerOptions, ImgList, Themes, ComCtrls;
 
 type
+
   { TBuildLazarusItem }
 
   TMakeMode =
@@ -98,6 +112,7 @@ type
 
   TBuildLazarusOptions = class
   private
+    FAdvanced: boolean;
     FCleanAll: boolean;
     FGlobals: TGlobalCompilerOptions;
     FItemCodeTools: TBuildLazarusItem;
@@ -116,6 +131,8 @@ type
     FTargetDirectory: string;
     fTargetOS: string;
     fLCLPlatform: TLCLPlatform;
+    fTargetPlatform: TLCLPlatform; // holds selection for LCL Build
+    fIDEPlatform: TLCLPlatform;  // holds selection for IDE Build
     fStaticAutoInstallPackages: TStringList;
     FWithStaticPackages: boolean;
     FItems: TList; // list of TBuildLazarusItem
@@ -151,11 +168,14 @@ type
     property ItemIDE: TBuildLazarusItem read FItemIDE;
     property ItemStarter: TBuildLazarusItem read FItemStarter;
     property ItemExamples: TBuildLazarusItem read FItemExamples;
+    property Advanced: boolean read FAdvanced write FAdvanced;
     property CleanAll: boolean read FCleanAll write FCleanAll;
     property ExtraOptions: string read FExtraOptions write FExtraOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
     property TargetCPU: string read FTargetCPU write SetTargetCPU;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
+    property IDEPlatform: TLCLPlatform read fIDEPlatform write fIDEPlatform;
+    property TargetPlatform: TLCLPlatform read fTargetPlatform write fTargetPlatform;
     property StaticAutoInstallPackages: TStringList
                                                 read fStaticAutoInstallPackages;
     property TargetDirectory: string read FTargetDirectory
@@ -171,30 +191,42 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
-    CompileButton: TButton;
+    TargetDirectoryButton: TButton;
     CancelButton: TButton;
-    CleanAllCheckBox: TCheckBox;
+    AppLCLInterfaceComboBox: TComboBox;
+    IDELCLInterfaceComboBox: TComboBox;
+    QuickLCLInterfaceComboLabel: TLabel;
+    AppLCLLabel: TLabel;
+    IDELCLLabel: TLabel;
+    QuickBuildOptionsRadioGroup: TRadioGroup;
+    RestartAfterBuildCheckBox: TCheckBox;
     ConfirmBuildCheckBox: TCheckBox;
-    ItemListHeader: THeaderControl;
+    CleanAllCheckBox: TCheckBox;
+    TargetDirectoryComboBox: TComboBox;
+    TargetCPUComboBox: TComboBox;
+    OptionsEdit: TEdit;
+    TargetOsEdit: TEdit;
+    OptionsLabel: TLabel;
+    TargetOSLabel: TLabel;
+    TargetDirectoryLabel: TLabel;
+    TargetCPULabel: TLabel;
     ItemsListBox: TListBox;
+    WithStaticPackagesCheckBox: TCheckBox;
+    ItemListHeader: THeaderControl;
+    Notebook: TNotebook;
+    QuickBuildOptionsPage: TPage;
+    AdvancedBuildOptionsPage: TPage;
+    Panel1: TPanel;
     LCLInterfaceRadioGroup: TRadioGroup;
     SaveSettingsButton: TButton;
-    OptionsEdit: TEdit;
-    OptionsLabel: TLabel;
-    RestartAfterBuildCheckBox: TCheckBox;
-    TargetCPUComboBox: TComboBox;
-    TargetCPULabel: TLabel;
-    TargetDirectoryButton: TButton;
-    TargetDirectoryComboBox: TComboBox;
-    TargetDirectoryLabel: TLabel;
-    TargetOSEdit: TEdit;
-    TargetOSLabel: TLabel;
-    WithStaticPackagesCheckBox: TCheckBox;
+    CompileButton: TButton;
+    procedure AppLCLInterfaceComboBoxChange(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure ItemListHeaderResize(Sender: TObject);
     procedure ItemListHeaderSectionClick(HeaderControl: TCustomHeaderControl;
       Section: THeaderSection);
@@ -203,16 +235,22 @@ type
     procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure NotebookPageChanged(Sender: TObject);
+    procedure QuickBuildOptionsRadioGroupClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
   private
-    Options: TBuildLazarusOptions;
+    FAdvanced: Boolean;
+    FOptions: TBuildLazarusOptions;
     function GetMakeModeAtX(const X: Integer; var MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
+    procedure SetAdvanced(AValue: boolean);
   public
     procedure Load(SourceOptions: TBuildLazarusOptions);
     procedure Save(DestOptions: TBuildLazarusOptions);
+    property  Advanced: Boolean read FAdvanced write SetAdvanced;
+    property  Options: TBuildLazarusOptions read FOptions;
   end;
 
 function ShowConfigureBuildLazarusDlg(
@@ -233,6 +271,7 @@ function GetMakeIDEConfigFilename: string;
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 
 implementation
+
 uses
   IDEImagesIntf;
 
@@ -272,8 +311,10 @@ begin
   try
     ConfigBuildLazDlg.Load(Options);
     Result:=ConfigBuildLazDlg.ShowModal;
-    if Result in [mrOk,mrYes] then
+    if Result in [mrOk,mrYes] then begin
+      DebugLn('ShowConfigureBuildLazarusDialog');
       ConfigBuildLazDlg.Save(Options);
+      end;
   finally
     ConfigBuildLazDlg.Free;
   end;
@@ -694,13 +735,22 @@ begin
     Text := 'Action';
   end;
 
-  Options := TBuildLazarusOptions.Create;
+  FOptions := TBuildLazarusOptions.Create;
   CleanAllCheckBox.Caption := lisLazBuildCleanAll;
   OptionsLabel.Caption := lisLazBuildOptions;
   LCLInterfaceRadioGroup.Caption := lisLazBuildLCLInterface;
-  for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do begin
+  QuickLCLInterfaceComboLabel.Caption := lisLazBuildLCLInterface;
+  QuickBuildOptionsRadioGroup.Caption := lisLazBuildBuildOptions;
+  QuickBuildOptionsPage.Caption := lisLazBuildQuickBuildOptions;
+  AdvancedBuildOptionsPage.Caption := lisLazBuildAdvancedBuildOptions;
+
+  for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do
+  begin
     LCLInterfaceRadioGroup.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
+    AppLCLInterfaceComboBox.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
+    IDELCLInterfaceComboBox.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
   end;
+  
   WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
@@ -713,12 +763,17 @@ begin
 
   IDEDialogLayoutList.ApplyLayout(Self, 500, 500);
 
-  Load(Options);
+  Load(FOptions);
 end;
 
 procedure TConfigureBuildLazarusDlg.FormDestroy(Sender: TObject);
 begin
-  Options.Free;
+  FreeAndNil(FOptions);
+end;
+
+procedure TConfigureBuildLazarusDlg.FormShow(Sender: TObject);
+begin
+  Advanced := Options.Advanced;
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemListHeaderResize(Sender: TObject);
@@ -785,11 +840,11 @@ begin
       ButtonRect.Top := (ButtonRect.Top + ButtonRect.Bottom - RadioSize) div 2;
       ButtonRect.Bottom := ButtonRect.Top + RadioSize;
     end;
-    
+
     ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);
     Inc(x, ButtonSize);
   end;
-  
+
   // draw description
   ItemsListBox.Canvas.Brush.Style:=bsClear;
   ItemsListBox.Canvas.TextOut(x+2,
@@ -815,6 +870,7 @@ begin
     exit;
   Options.Items[i].MakeMode:=NewMakeMode;
   ItemsListBox.Invalidate;
+  QuickBuildOptionsRadioGroup.ItemIndex := 5;
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
@@ -829,12 +885,6 @@ begin
     if (i<0) or (i>=Options.Count) then exit;
     HintStr := MakeModeNames[MakeMode];
   end;
-end;
-
-procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
-begin
-  Save(Options);
-  ModalResult:=mrOk;
 end;
 
 procedure TConfigureBuildLazarusDlg.TargetDirectoryButtonClick(Sender: TObject);
@@ -914,13 +964,15 @@ begin
 
   OptionsEdit.Text:=Options.ExtraOptions;
   LCLInterfaceRadioGroup.ItemIndex:=ord(Options.LCLPlatform);
+  AppLCLInterfaceComboBox.ItemIndex:=ord(Options.TargetPlatform);
+  IDELCLInterfaceComboBox.ItemIndex:=ord(Options.IDEPlatform);
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   TargetCPUComboBox.Text:=Options.TargetCPU;
-  
+
   Invalidate;
 end;
 
@@ -928,9 +980,18 @@ procedure TConfigureBuildLazarusDlg.Save(DestOptions: TBuildLazarusOptions);
 begin
   if DestOptions=nil then exit;
 
+  Options.Advanced := Advanced;
   Options.CleanAll:=CleanAllCheckBox.Checked;
   Options.ExtraOptions:=OptionsEdit.Text;
   Options.LCLPlatform:=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
+  if AppLCLInterfaceComboBox.ItemIndex = -1 then
+    Options.TargetPlatform:= Options.LCLPlatform
+  else
+    Options.TargetPlatform:= TLCLPlatform(AppLCLInterfaceComboBox.ItemIndex);
+  if IDELCLInterfaceComboBox.ItemIndex = -1 then
+    Options.IDEPlatform := Options.LCLPlatform
+  else
+    Options.IDEPlatform := TLCLPlatform(IDELCLInterfaceComboBox.ItemIndex);
   Options.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
   Options.ConfirmBuild:=ConfirmBuildCheckBox.Checked;
@@ -941,9 +1002,26 @@ begin
   DestOptions.Assign(Options);
 end;
 
-procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
+procedure TConfigureBuildLazarusDlg.SetAdvanced(AValue: boolean);
 begin
-  ModalResult:=mrCancel;
+  if AValue = FAdvanced then Exit;
+  FAdvanced := AValue;
+
+  if FAdvanced
+  then Notebook.PageIndex := 1
+  else Notebook.PageIndex := 0;
+end;
+
+procedure TConfigureBuildLazarusDlg.AppLCLInterfaceComboBoxChange(
+  Sender: TObject);
+var
+  Combo: TComboBox;
+begin
+  Combo := Sender as TComboBox;
+  LCLInterfaceRadioGroup.ItemIndex := Combo.ItemIndex;
+  {$ifdef UsePageInvalidate}
+  AdvancedBuildOptionsPage.Invalidate;
+  {$endif}
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);
@@ -952,10 +1030,90 @@ begin
   ModalResult:=mrYes;
 end;
 
+procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
+begin
+  Save(Options);
+  ModalResult:=mrOk;
+end;
+
+procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
+begin
+  ModalResult:=mrCancel;
+end;
+
 procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TConfigureBuildLazarusDlg.NotebookPageChanged(Sender: TObject);
+begin
+  FAdvanced := Notebook.ActivePageComponent = AdvancedBuildOptionsPage;
+
+  {$ifdef UsePageInvalidate}
+  if Notebook.ActivePageComponent <> nil
+  then Notebook.ActivePageComponent.Invalidate;
+  {$endif}
+end;
+
+procedure TConfigureBuildLazarusDlg.QuickBuildOptionsRadioGroupClick(
+  Sender: TObject);
+
+  procedure SetOptions(ASet, AReset: TMakeMode; ASetItem: TBuildLazarusItem);
+  var
+    i: Integer;
+    Item: TBuildLazarusItem;
+  begin
+    for i := 0 to Options.Count -1 do
+    begin
+      Item := Options.Items[i];
+      if Item = ASetItem
+      then Item.MakeMode := ASet
+      else Item.MakeMode := AReset;
+    end;
+  end;
+
+begin
+
+  if QuickBuildOptionsRadioGroup.ItemIndex = 0
+  then begin     // Build LCL
+    if AppLCLInterfaceComboBox.ItemIndex > -1
+    then LCLInterfaceRadioGroup.ItemIndex := AppLCLInterfaceComboBox.ItemIndex;
+    IDELCLInterfaceComboBox.Enabled := False;
+    AppLCLInterfaceComboBox.Enabled := True;
+  end
+  else begin     // Build IDE
+    if IDELCLInterfaceComboBox.ItemIndex > -1
+    then LCLInterfaceRadioGroup.ItemIndex := IDELCLInterfaceComboBox.ItemIndex;
+    AppLCLInterfaceComboBox.Enabled := False;
+    IDELCLInterfaceComboBox.Enabled := True;
+  end;
+
+  case QuickBuildOptionsRadioGroup.ItemIndex of
+    0 : begin  // Build LCL
+      SetOptions(mmBuild, mmNone, Options.ItemLCL);
+    end;
+    1 : begin // Build IDE with Packages
+      SetOptions(mmBuild, mmNone, Options.ItemIDE);
+      WithStaticPackagesCheckBox.Checked := True;
+    end;
+    2 : begin // Build IDE w/out Packages
+      SetOptions(mmBuild, mmNone, Options.ItemIDE);
+      WithStaticPackagesCheckBox.Checked := False;
+    end;
+    3 : begin // Build All
+      SetOptions(mmNone, mmBuild, nil);
+      WithStaticPackagesCheckBox.Checked := True;
+    end;
+   4 : begin // Clean + Build All
+      SetOptions(mmNone, mmCleanBuild, nil);
+      WithStaticPackagesCheckBox.Checked := True;
+    end;
+  end;
+  {$ifdef UsePageInvalidate}
+  AdvancedBuildOptionsPage.Invalidate;
+  {$endif}
 end;
 
 { TBuildLazarusItem }
@@ -1215,6 +1373,7 @@ begin
       Path+'Build'+Items[i].Name+'/Value',
       MakeModeNames[Items[i].MakeMode]));
   end;
+  FAdvanced:=XMLConfig.GetValue(Path+'Advanced/Value',false);
   FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',false);
   FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
@@ -1224,6 +1383,17 @@ begin
     fLCLPlatform:=GetDefaultLCLWidgetType
   else
     fLCLPlatform:=DirNameToLCLPlatform(LCLPlatformStr);
+  LCLPlatformStr:= XMLConfig.GetValue(Path+'TargetLCLPlatform/Value','');
+  if LCLPlatformStr='' then
+    fTargetPlatform:=GetDefaultLCLWidgetType
+  else
+    fTargetPlatform:=DirNameToLCLPlatform(LCLPlatformStr);
+
+  LCLPlatformStr:= XMLConfig.GetValue(Path+'IDELCLPlatform/Value','');
+  if LCLPlatformStr='' then
+    fIDEPlatform:=GetDefaultLCLWidgetType
+  else
+    fIDEPlatform:=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
                   XMLConfig.GetValue(Path+'TargetDirectory/Value',
                                      DefaultTargetDirectory)));
@@ -1247,12 +1417,19 @@ begin
       MakeModeNames[Items[i].DefaultMakeMode]);
   end;
 
+  XMLConfig.SetDeleteValue(Path+'Advanced/Value',FAdvanced,false);
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
   XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformDirNames[fLCLPlatform],
+                           LCLPlatformDirNames[GetDefaultLCLWidgetType]);
+  XMLConfig.SetDeleteValue(Path+'TargetLCLPlatform/Value',
+                           LCLPlatformDirNames[fTargetPlatform],
+                           LCLPlatformDirNames[GetDefaultLCLWidgetType]);
+  XMLConfig.SetDeleteValue(Path+'IDELCLPlatform/Value',
+                           LCLPlatformDirNames[fIDEPlatform],
                            LCLPlatformDirNames[GetDefaultLCLWidgetType]);
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
@@ -1276,11 +1453,14 @@ var
 begin
   if (Source=nil) or (Source=Self) then exit;
   Clear;
+  Advanced:=Source.Advanced;
   CleanAll:=Source.CleanAll;
   ExtraOptions:=Source.ExtraOptions;
   TargetOS:=Source.TargetOS;
   TargetCPU:=Source.TargetCPU;
   LCLPlatform:=Source.LCLPlatform;
+  TargetPlatform:=Source.TargetPlatform;
+  IDEPlatform:= Source.IDEPlatform;
   TargetDirectory:=Source.TargetDirectory;
   WithStaticPackages:=Source.WithStaticPackages;
   RestartAfterBuild:=Source.RestartAfterBuild;
@@ -1337,3 +1517,4 @@ initialization
   {$I buildlazdialog.lrs}
 
 end.
+
