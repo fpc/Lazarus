@@ -1,12 +1,18 @@
-#: pfidesource:sdescrpfselection
-msgid "Pretty-Format Selection"
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pfidesource:sdescrformatting
+msgid "Formatting commands"
 msgstr ""
 
 #: pfidesource:sdescrpffile
 msgid "Pretty-Format File"
 msgstr ""
 
-#: pfidesource:sdescrformatting
-msgid "Formatting commands"
+#: pfidesource:sdescrpfselection
+msgid "Pretty-Format Selection"
 msgstr ""
 

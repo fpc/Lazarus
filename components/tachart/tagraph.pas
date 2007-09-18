@@ -34,7 +34,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, TAEngine;
+  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, TAEngine, Clipbrd;
 
 const
   MinDouble=-1.7e308;
@@ -310,9 +310,14 @@ type
     procedure ImageToGraph(XIn,YIn:Integer;var XOut,YOut:Double);
     procedure DisplaySeries;
 
+    procedure SaveToBitmapFile(Const FileName:String);
+    procedure CopyToClipboardBitmap;
+
     property SeriesCount:Integer read GetSeriesCount;
 
     function GetNewColor:TColor;
+    
+    function GetRectangle:TRect;
 
     property Canvas;
 
@@ -427,13 +432,8 @@ Constructor TChartAxis.Create(AOwner: TCustomChart);
 begin
      inherited Create;
      FOwner := AOwner;
-     FVisible := True;
      FTitle := TChartAxisTitle.Create(AOwner);
      FGrid := TChartPen.Create;
-     FGrid.Width:=1;
-     FGrid.Color:=clGray;
-     FGrid.Style:=psDot;
-     FGrid.Visible := True;
      FGrid.OnChange := StyleChanged;
 end;
 
@@ -610,7 +610,6 @@ Constructor TChartTitle.Create(AOwner: TCustomChart);
 begin
      inherited create;
      FOwner := AOwner;
-     FVisible := false;
 
      FFont := TFont.Create;
      FFont.Color := clBlue;
@@ -921,15 +920,18 @@ begin
     FTitle := TChartTitle.Create(Self);
     FTitle.Alignment := taCenter;
     FTitle.Text.Add('TAChart');
-    FTitle.Visible := true;
     FFoot := TChartTitle.Create(Self);
 
     FLeftAxis := TChartAxis.Create(Self);
     FLeftAxis.Title.Angle := 90;
     FLeftAxis.Inverted := false;
+    FLeftAxis.Grid.Visible := True;
+    FLeftAxis.Grid.Style := psDot;
     FBottomAxis := TChartAxis.Create(Self);
     FBottomAxis.Title.Angle := 0;
     FBottomAxis.Inverted := false;
+    FBottomAxis.Grid.Visible := True;
+    FBottomAxis.Grid.Style := psDot;
 
     FFrame :=  TChartPen.Create;
     FFrame.Visible := true;
@@ -1295,8 +1297,8 @@ begin
                         YGraphToImage(Marque,YTemp);
                         Canvas.Brush.Assign(FGraphBrush);
                         //draw grid
-                        if FBottomAxis.Grid.Visible then begin
-                           Canvas.Pen.Assign(FBottomAxis.Grid);
+                        if FLeftAxis.Grid.Visible then begin
+                           Canvas.Pen.Assign(FLeftAxis.Grid);
                            if (YTemp<>YImageMax) and (YTemp<>YImageMin) then
                            begin
                                 Canvas.MoveTo(XImageMin,YTemp);
@@ -1328,8 +1330,8 @@ begin
                         YGraphToImage(Marque,YTemp);
                         Canvas.Brush.Assign(FGraphBrush);
                         //draw grid
-                        if FBottomAxis.Grid.Visible then begin
-                           Canvas.Pen.Assign(FBottomAxis.Grid);
+                        if FLeftAxis.Grid.Visible then begin
+                           Canvas.Pen.Assign(FLeftAxis.Grid);
                            if (YTemp<>YImageMax) and (YTemp<>YImageMin) then
                            begin
                                 Canvas.MoveTo(XImageMin,YTemp);
@@ -1770,15 +1772,50 @@ begin
    YImageToGraph(YIn,YOut);
 end;
 
+procedure TChart.SaveToBitmapFile(Const FileName:String);
+var tmpR:TRect;
+    tmpBitmap: TBitmap;
+begin
+  try
+    tmpBitmap := TBitmap.Create;
+    tmpR:=GetRectangle;
+    tmpBitmap.Width := tmpR.Right-tmpR.Left;
+    tmpBitmap.Height:= tmpR.Bottom-tmpR.Top;
+    tmpBitmap.Canvas.CopyRect(tmpR, Canvas, tmpR);
+    tmpBitmap.SaveToFile(FileName);
+  finally
+    tmpBitmap.Free;
+  end;
+end;
+
+procedure TChart.CopyToClipboardBitmap;
+var tmpBitmap:TBitmap;
+    tmpR:TRect;
+begin
+  try
+    tmpBitmap:=TBitmap.Create;
+    tmpR:=GetRectangle;
+    tmpBitmap.Width := tmpR.Right-tmpR.Left;
+    tmpBitmap.Height:= tmpR.Bottom-tmpR.Top;
+    tmpBitmap.Canvas.CopyRect(tmpR, Canvas, tmpR);
+    ClipBoard.Assign(tmpBitmap);
+  finally
+    tmpBitmap.Free;
+  end;
+end;
+
+
 procedure TChart.DisplaySeries;
 var
    i:Integer;
    Serie:TChartSeries;
    Rgn : HRGN;
+   p: array[0..1] of TPoint;
 begin
+     if FSeries.Count = 0 then Exit;
+
      //set cliping region so we don't draw outsite
-     Rgn := CreateRectRgn(XImageMin, YImageMax, XImageMax, YImageMin);
-     SelectClipRgn (Canvas.Handle, Rgn);
+     IntersectClipRect(Canvas.Handle, XImageMin, YImageMax, XImageMax, YImageMin);
 
      // Update all series
      for i:=0 to FSeries.Count-1 do begin
@@ -2105,6 +2142,14 @@ for i:=1 to MaxColor do
    end;
 Randomize;
 Result:=RGB(Random(255),Random(255),Random(255));
+end;
+
+function TChart.GetRectangle:TRect;
+begin
+     Result.Left := 0;
+     Result.Top := 0;
+     Result.Right := Width;
+     Result.Bottom := Height;
 end;
 
 procedure TChart.SetLegend(Value:TChartLegend);
