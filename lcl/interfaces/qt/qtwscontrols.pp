@@ -330,7 +330,7 @@ class function TQtWSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
+  if not WSCheckHandleAllocated(AWincontrol, 'GetText') then
     Exit;
 
   AText := UTF8Encode(TQtWidget(AWinControl.Handle).getText);
@@ -340,7 +340,7 @@ end;
 class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;
   const AText: string);
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then
     Exit;
 
   TQtWidget(AWinControl.Handle).setText(GetUtf8String(AText));
