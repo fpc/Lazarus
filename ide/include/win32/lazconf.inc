@@ -128,7 +128,7 @@ end;
 
 function GetDefaultTestBuildDirectory: string;
 begin
-  Result := SysUtils.GetEnvironmentVariable('TEMP');
+  Result := SysUtils.GetTempDir;
   if Result <> '' then exit;
   Result := DefaultDrive + '\temp\';
   if DirPathExists(Result) then exit;
