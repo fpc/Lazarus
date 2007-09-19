@@ -1350,6 +1350,7 @@ function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,
   AMethodName: string): string;
 var StartPos, NamePos, ProcLen: integer;
   s: string;
+  KeyWordPos: LongInt;
 begin
   if CompareSubStrings('CLASS ',AProcCode,1,1,6,false)<>0 then
     StartPos:=1
@@ -1359,8 +1360,11 @@ begin
   // read proc keyword 'procedure', 'function', ...
   while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
     inc(StartPos);
+  KeyWordPos:=StartPos;
   while (StartPos<=ProcLen) and (IsIdentChar[AProcCode[StartPos]]) do
     inc(StartPos);
+  if KeyWordPos=StartPos then
+    raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
   while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
     inc(StartPos);
   NamePos:=StartPos;

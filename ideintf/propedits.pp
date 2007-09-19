@@ -300,6 +300,7 @@ type
     function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility
     function GetUnitName(Index: Integer = 0): string;
     function GetPropTypeUnitName(Index: Integer = 0): string;
+    function GetPropertyPath(Index: integer = 0): string;// e.g. 'TForm1.Color'
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -1101,17 +1102,18 @@ type
   TPropHookChangeLookupRoot = procedure of object;
   // methods
   TPropHookCreateMethod = function(const Name: ShortString; ATypeInfo: PTypeInfo;
-    APropertyOwner: TPersistent; const APropertyName: shortstring): TMethod of object;
+      APersistent: TPersistent; const APropertyPath: string): TMethod of object;
   TPropHookGetMethodName = function(const Method: TMethod;
                                     CheckOwner: TObject): ShortString of object;
   TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
   TPropHookMethodExists = function(const Name:ShortString; TypeData: PTypeData;
-    var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean of object;
+                 var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean
+                 ):boolean of object;
   TPropHookRenameMethod = procedure(const CurName, NewName:ShortString) of object;
   TPropHookShowMethod = procedure(const Name:ShortString) of object;
   TPropHookMethodFromAncestor = function(const Method:TMethod):boolean of object;
   TPropHookChainCall = procedure(const AMethodName, InstanceName,
-    InstanceMethod:ShortString; TypeData:PTypeData) of object;
+                      InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
   TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
   TPropHookGetComponentName = function(AComponent:TComponent):ShortString of object;
@@ -1201,12 +1203,12 @@ type
     // lookup root
     property LookupRoot: TPersistent read FLookupRoot write SetLookupRoot;
     // methods
-    function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo;
-                          APropertyOwner: TPersistent;
-                          const APropertyName: shortstring): TMethod;
+    function CreateMethod(const Name: ShortString; ATypeInfo:PTypeInfo;
+                          APersistent: TPersistent;
+                          const APropertyPath: string): TMethod;
     function GetMethodName(const Method: TMethod; CheckOwner: TObject): ShortString;
-    procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
-    function MethodExists(const Name:ShortString; TypeData: PTypeData;
+    procedure GetMethods(TypeData: PTypeData; Proc: TGetStringProc);
+    function MethodExists(const Name: ShortString; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName: ShortString);
     procedure ShowMethod(const Name: ShortString);
@@ -2085,6 +2087,11 @@ begin
     // parent class
     ATypeInfo:=hp^.ParentInfo;
   end;
+end;
+
+function TPropertyEditor.GetPropertyPath(Index: integer): string;
+begin
+  Result:=GetComponent(Index).ClassName+'.'+GetName;
 end;
 
 function TPropertyEditor.GetFloatValue:Extended;
@@ -3937,7 +3944,8 @@ begin
     //writeln('### TMethodPropertyEditor.SetValue E');
     CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
     SetMethodValue(
-       PropertyHook.CreateMethod(NewValue,GetPropType,GetComponent(0),GetName));
+       PropertyHook.CreateMethod(NewValue,GetPropType,
+                                 GetComponent(0),GetPropertyPath(0)));
     //writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
       {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
@@ -5097,9 +5105,9 @@ end;
 
 { TPropertyEditorHook }
 
-function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
+function TPropertyEditorHook.CreateMethod(const Name: Shortstring;
   ATypeInfo: PTypeInfo;
-  APropertyOwner: TPersistent; const APropertyName: shortstring): TMethod;
+  APersistent: TPersistent; const APropertyPath: string): TMethod;
 var
   i: Integer;
   Handler: TPropHookCreateMethod;
@@ -5110,7 +5118,7 @@ begin
     i:=GetHandlerCount(htCreateMethod);
     while GetNextHandlerIndex(htCreateMethod,i) do begin
       Handler:=TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
-      Result:=Handler(Name,ATypeInfo,APropertyOwner,APropertyName);
+      Result:=Handler(Name,ATypeInfo,APersistent,APropertyPath);
       if (Result.Data<>nil) or (Result.Code<>nil) then exit;
     end;
   end;

@@ -2087,6 +2087,7 @@ begin
     then begin
       Result:=true;
       FCodeTemplates.ExecuteCompletion(AToken,FEditor);
+      exit;
     end;
   end;
 end;
@@ -2109,6 +2110,7 @@ begin
     then begin
       Result:=true;
       FCodeTemplates.ExecuteCompletion(AToken,FEditor);
+      exit;
     end;
   end;
 end;

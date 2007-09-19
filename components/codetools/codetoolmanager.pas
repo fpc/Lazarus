@@ -614,17 +614,15 @@ type
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo;
           UseTypeInfoForParameters: boolean = false;
-          const ATypeUnitName: string = '';
-          APropertyOwner: TPersistent = nil;
-          const APropertyName: string = ''): boolean;
+          const APropertyUnitName: string = ''; const APropertyPath: string = ''
+          ): boolean;
 
     // private class parts
     function CreatePrivateMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo;
           UseTypeInfoForParameters: boolean = false;
-          const ATypeUnitName: string = '';
-          APropertyOwner: TPersistent = nil; const APropertyName: string = ''
-          ): boolean;
+          const APropertyUnitName: string = '';
+          const APropertyPath: string = ''): boolean;
 
     // IDE % directives
     function GetIDEDirectives(Code: TCodeBuffer;
@@ -2700,8 +2698,8 @@ end;
 
 function TCodeToolManager.CreatePublishedMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
-  UseTypeInfoForParameters: boolean; const ATypeUnitName: string;
-  APropertyOwner: TPersistent; const APropertyName: string): boolean;
+  UseTypeInfoForParameters: boolean;
+  const APropertyUnitName: string; const APropertyPath: string): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePublishedMethod A');
@@ -2711,9 +2709,7 @@ begin
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
-            NewMethodName,ATypeInfo,
-            ATypeUnitName,
-            APropertyOwner,APropertyName,
+            NewMethodName,ATypeInfo,APropertyUnitName,APropertyPath,
             SourceChangeCache,UseTypeInfoForParameters,pcsPublished);
   except
     on e: Exception do Result:=HandleException(e);
@@ -2722,8 +2718,8 @@ end;
 
 function TCodeToolManager.CreatePrivateMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
-  UseTypeInfoForParameters: boolean; const ATypeUnitName: string;
-  APropertyOwner: TPersistent; const APropertyName: string): boolean;
+  UseTypeInfoForParameters: boolean;
+  const APropertyUnitName, APropertyPath: string): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePrivateMethod A');
@@ -2733,8 +2729,7 @@ begin
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
-            NewMethodName,ATypeInfo,
-            ATypeUnitName,APropertyOwner,APropertyName,
+            NewMethodName,ATypeInfo,APropertyUnitName,APropertyPath,
             SourceChangeCache,UseTypeInfoForParameters,pcsPrivate);
   except
     on e: Exception do Result:=HandleException(e);

@@ -87,16 +87,13 @@ type
         
     function CreateMethod(const UpperClassName,
         AMethodName: string; ATypeInfo: PTypeInfo;
-        const ATypeUnitName: string;
-        APropertyOwner: TPersistent; const APropertyName: string;
+        const APropertyUnitName, APropertyPath: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished): boolean;
     function CreateMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string;
-        ATypeInfo: PTypeInfo;
-        const ATypeUnitName: string;
-        APropertyOwner: TPersistent; const APropertyName: string;
+        ATypeInfo: PTypeInfo; const APropertyUnitName, APropertyPath: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished): boolean;
@@ -418,7 +415,7 @@ begin
       end;
       Params.SetIdentifier(Self,@TypeName[1],nil);
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
-      DebugLn(['TEventsCodeTool.FindMethodTypeInfo TypeName=',TypeName,' MainFilename=',MainFilename]);
+      //DebugLn(['TEventsCodeTool.FindMethodTypeInfo TypeName=',TypeName,' MainFilename=',MainFilename]);
       FindIdentifierInContext(Params);
       // find proc node
       if Params.NewNode.Desc<>ctnTypeDefinition then begin
@@ -648,8 +645,8 @@ begin
 end;
 
 function TEventsCodeTool.CreateMethod(const UpperClassName,
-  AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
-  APropertyOwner: TPersistent; const APropertyName: string;
+  AMethodName: string; ATypeInfo: PTypeInfo;
+  const APropertyUnitName, APropertyPath: string;
   SourceChangeCache: TSourceChangeCache;
   UseTypeInfoForParameters: boolean;
   Section: TPascalClassSection): boolean;
@@ -658,14 +655,14 @@ begin
   Result:=false;
   BuildTree(false);
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,ATypeUnitName,
-                       APropertyOwner,APropertyName,
+  Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
+                       APropertyUnitName,APropertyPath,
                        SourceChangeCache,UseTypeInfoForParameters,Section);
 end;
 
 function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
-  const AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
-  APropertyOwner: TPersistent; const APropertyName: string;
+  const AMethodName: string; ATypeInfo: PTypeInfo;
+  const APropertyUnitName, APropertyPath: string;
   SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
   Section: TPascalClassSection): boolean;
 
@@ -677,6 +674,35 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
     AddNeededUnitToMainUsesSection(PChar(MethodUnitName));
     // ToDo
     // search every parameter type and collect units
+  end;
+  
+  function FindPropertyType(out FindContext: TFindContext): boolean;
+  begin
+    Result:=false;
+    if APropertyPath<>'' then begin
+      // find unit of property
+      if APropertyUnitName='' then begin
+        FindContext.Tool:=Self;
+      end else begin
+        FindContext.Tool:=FindCodeToolForUsedUnit(APropertyUnitName,'',true);
+        if FindContext.Tool=nil then
+          raise Exception.Create('failed to get codetool for unit '+APropertyUnitName);
+      end;
+      // find property with type
+      if not FindContext.Tool.FindDeclarationOfPropertyPath(
+        APropertyPath,FindContext,true)
+      then exit;
+      if FindContext.Node.Desc<>ctnProperty then
+        FindContext.Tool.RaiseException(
+          APropertyPath+' is not a property.'
+          +' See '+FindContext.Tool.MainFilename
+          +' '+FindContext.Tool.CleanPosToStr(FindContext.Node.StartPos));
+      // find type
+      FindContext:=(FindContext.Tool as TEventsCodeTool)
+                                              .FindMethodTypeInfo(ATypeInfo,'');
+    end else
+      FindContext:=FindMethodTypeInfo(ATypeInfo,APropertyUnitName);
+    Result:=true;
   end;
   
 var
@@ -705,13 +731,7 @@ begin
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end else begin
       // search typeinfo in source
-      {$IFDEF EnableNewFindMethodTypeInfo}
-      if (APropertyOwner<>nil)
-      and (APropertyName<>'') then
-        FindContext:=FindMethodTypeInfo(ATypeInfo,APropertyOwner,APropertyName)
-      else
-      {$ENDIF}
-        FindContext:=FindMethodTypeInfo(ATypeInfo,ATypeUnitName);
+      if not FindPropertyType(FindContext) then exit;
       AddNeededUnits(FindContext);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
              +FindContext.Tool.ExtractProcHead(FindContext.Node,
@@ -837,7 +857,7 @@ begin
       {$ENDIF}
 
       Result.Add(CurExprType);
-      Params.Load(OldInput);
+      Params.Load(OldInput,true);
 
     end;
   end;

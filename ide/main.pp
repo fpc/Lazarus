@@ -388,8 +388,8 @@ type
                                     IdentIsMethod: boolean): boolean;
     function OnPropHookCreateMethod(const AMethodName:ShortString;
                                     ATypeInfo:PTypeInfo;
-                                    APropertyOwner: TPersistent;
-                                    const APropertyName: shortstring): TMethod;
+                                    APersistent: TPersistent;
+                                    const APropertyPath: string): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
     function OnPropHookBeforeAddPersistent(Sender: TObject;
@@ -12694,7 +12694,7 @@ end;
 
 function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo;
-  APropertyOwner: TPersistent; const APropertyName: shortstring): TMethod;
+  APersistent: TPersistent; const APropertyPath: string): TMethod;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   r: boolean;
@@ -12707,6 +12707,7 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
+  DebugLn(['[TMainIDE.OnPropHookCreateMethod] Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
   OldChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
@@ -12714,8 +12715,7 @@ begin
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,AMethodName,
-        ATypeInfo,false,GetClassUnitName(APropertyOwner.ClassType),
-        APropertyOwner,APropertyName);
+        ATypeInfo,false,GetClassUnitName(APersistent.ClassType),APropertyPath);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);

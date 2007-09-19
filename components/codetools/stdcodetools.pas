@@ -1747,7 +1747,7 @@ var
       try
         Params.Save(OldInput);
         if FindIdentifierInContext(Params) then begin
-          Params.Load(OldInput);
+          Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
           if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
             Result:=CleanFindContext;
@@ -1800,7 +1800,7 @@ var
       try
         Params.Save(OldInput);
         if FindIdentifierInContext(Params) then begin
-          Params.Load(OldInput);
+          Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
           if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
             Result:=CleanFindContext;
