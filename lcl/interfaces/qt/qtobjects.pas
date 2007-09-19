@@ -266,6 +266,7 @@ type
     procedure DrawText(x,y,w,h,flags: Integer; s:PWideString); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
+    procedure eraseRect(ARect: PRect);
     procedure fillRect(ARect: PRect; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer); overload;
@@ -1558,6 +1559,11 @@ end;
 procedure TQtDeviceContext.drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
 begin
   QPainter_drawEllipse(Widget, x, y, w, h);
+end;
+
+procedure TQtDeviceContext.eraseRect(ARect: PRect);
+begin
+  QPainter_eraseRect(Widget, ARect);
 end;
 
 procedure TQtDeviceContext.fillRect(ARect: PRect; ABrush: QBrushH);

@@ -527,6 +527,7 @@ type
     
     procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
+    function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
     function getCurrentIndex: Integer;
@@ -4310,9 +4311,7 @@ end;
 function TQtTabWidget.getTabBar: QTabBarH;
 begin
   if FTabBar = nil then
-  begin
-    // FTabBar := QTabWidget_tabBar(QTabWidgetH(Widget));
-  end;
+    FTabBar := QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget));
   Result := FTabBar;
 end;
 
@@ -4416,6 +4415,11 @@ begin
   except
     Application.HandleException(nil);
   end;
+end;
+
+function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
+begin
+  Result := QTabWidget_indexOf(QTabWidgetH(Widget), AWidget);
 end;
 
 procedure TQtTabWidget.setTabText(index: Integer; p2: WideString);

@@ -72,7 +72,7 @@ type
 
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
-    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
+    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
@@ -377,7 +377,7 @@ var
   TabWidget: TQtTabWidget;
   APoint: TQtPoint;
  {$ifndef USE_QT_4_3}
-  w: QTabBarH;
+  w: QWidgetH;
  {$endif}
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
@@ -387,11 +387,10 @@ begin
     {$ifdef USE_QT_4_3}
     Result := QTabBar_tabAt(TabWidget.TabBar, @APoint);
     {$else}
-    w := QTabBarH(QWidget_childAt(TabWidget.TabBar, @APoint));
+    w := QWidget_childAt(TabWidget.TabBar, @APoint);
     if w <> nil then
-    begin
-      Result := QTabWidget_indexOf(QTabWidgetH(TabWidget.Widget), w);
-    end else
+      Result := TabWidget.indexOf(w);
+    else
       Result := -1;
     {$endif}
   end

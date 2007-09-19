@@ -1338,11 +1338,11 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
 var
-	EnumLogFont: TEnumLogFontEx;
-	Metric: TNewTextMetricEx;
-	FontList: TStringList;
-	FontType: Integer;
-	i: Integer;
+  EnumLogFont: TEnumLogFontEx;
+  Metric: TNewTextMetricEx;
+  FontList: TStringList;
+  FontType: Integer;
+  i: Integer;
 
   function QtGetFontFamilies(var List:TStringList):integer;
   var
@@ -1355,7 +1355,7 @@ var
     FontDB := QFontDatabase_create();
     StrLst := QStringList_create;
     try
-      QFontDatabase_families(FontDB,StrLst);
+      QFontDatabase_families(FontDB, StrLst);
       Result := QStringList_size(StrLst);
       for j := 0 to Result - 1 do
       begin
@@ -1366,7 +1366,7 @@ var
       QFontDatabase_destroy(FontDB);
       QStringList_destroy(StrLst);
     end;
-	end;
+  end;
   
 begin
   {$ifdef VerboseQtWinAPI}
@@ -1375,25 +1375,25 @@ begin
   Result := 0;
   
   if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
-  (lpLogFont^.lfFaceName= '') and
-  (lpLogFont^.lfPitchAndFamily = 0) then
+     (lpLogFont^.lfFaceName= '') and
+     (lpLogFont^.lfPitchAndFamily = 0) then
   begin
     FontList := TStringList.create;
     try
-      if QtGetFontFamilies(FontList)>0 then
+      if QtGetFontFamilies(FontList) > 0 then
       begin
         for i := 0 to FontList.Count-1 do
         begin
-  	      EnumLogFont.elfLogFont.lfFaceName := FontList[i];
-  	      Result := Callback(EnumLogFont, Metric, FontType, LParam);
+          EnumLogFont.elfLogFont.lfFaceName := FontList[i];
+          Result := Callback(EnumLogFont, Metric, FontType, LParam);
         end;
       end;
     finally
-    	FontList.free;
+      FontList.free;
     end;
   end else
   begin
-		{$note implement}
+   {$note implement}
     Result := 0;
   end;
 end;
@@ -2537,7 +2537,6 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
   function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
   var
     Handle : QPaletteH;
-    QColor : PQColor;
   begin
     Handle := QPalette_create;
     QApplication_palette(Handle);
@@ -3234,7 +3233,6 @@ end;
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 var
   R: TRect;
-  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
@@ -3244,14 +3242,11 @@ begin
   begin
     R := TQtWidget(aHandle).getClientBounds;
     OffsetRect(Rect^, R.Left, R.Top);
-	  TQtWidget(aHandle).Update(Rect);
     if bErase and (TQtWidget(aHandle).Context <> 0) then
-    begin
-      QtDC := TQtDeviceContext(TQtWidget(aHandle).Context);
-      QPainter_eraseRect(QtDC.Widget, Rect);
-    end;
+      TQtDeviceContext(TQtWidget(aHandle).Context).eraseRect(Rect);
+    TQtWidget(aHandle).Update(Rect);
   end else
-	  TQtWidget(aHandle).Update;
+    TQtWidget(aHandle).Update;
 
   Result := True;
 end;
