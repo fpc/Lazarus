@@ -4298,11 +4298,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtTextEdit.SignalTextChanged; cdecl;
 var
-   Msg: TLMessage;
+	Msg: TLMessage;
 begin
-   FillChar(Msg, SizeOf(Msg), #0);
-   Msg.Msg := CM_TEXTCHANGED;
-   DeliverMessage(Msg);
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(Msg);
 end;
 
 { TQtTabWidget }
@@ -5622,10 +5622,13 @@ begin
   NMLV.hdr.code := LVN_ITEMCHANGING;
   
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
+
+  if NMLV.iItem = -1 then
+    exit;
+    
+	AParent := QTreeWidgetItem_parent(Current);
   
-  AParent := QTreeWidgetItem_parent(Current);
-  
-  if AParent <> NiL then
+  if AParent <> nil then
     ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Current)
   else
     ASubIndex := 0;
@@ -5637,7 +5640,7 @@ begin
   Msg.NMHdr := @NMLV.hdr;
   
   if Current <> Previous then
-  DeliverMessage(Msg);
+  	DeliverMessage(Msg);
   
 end;
 
@@ -5667,8 +5670,13 @@ begin
 
   Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
   AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
-  AParent := QTreeWidgetItem_parent(Item);
-  if AParent <> NiL then
+  
+  if AIndex = -1 then
+    exit;
+    
+ 	AParent := QTreeWidgetItem_parent(Item);
+   
+  if AParent <> nil then
     ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Item)
   else
     ASubIndex := 0;
@@ -6119,7 +6127,7 @@ begin
   {$endif}
   FHScrollbar := AScrollBar;
   if Assigned(FHScrollBar) then
-  QAbstractScrollArea_setHorizontalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FHScrollBar.Widget));
+    QAbstractScrollArea_setHorizontalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FHScrollBar.Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -6134,7 +6142,7 @@ begin
   {$endif}
   FVScrollBar := AScrollBar;
   if Assigned(FVScrollBar) then
-  QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
+    QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
 end;
 
 procedure TQtAbstractScrollArea.setVisible(visible: Boolean);
@@ -6333,7 +6341,7 @@ begin
   d := QDate_day(ADate);
   if (y <> aYear) or (m <> aMonth)
   or (d <> aDay) then
-  DeliverMessage(Msg);
+  	DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -6355,7 +6363,7 @@ begin
   d := QDate_day(ADate);
   if (y <> aYear) or (m <> aMonth)
   or (d <> aDay) then
-  DeliverMessage(Msg);
+  	DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
