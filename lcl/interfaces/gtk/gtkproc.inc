@@ -210,46 +210,20 @@ begin
   GDK2.gdk_region_xor(result, source2);
 end;
 
-Procedure gdk_text_extents(FontDesc: PPangoFontDescription;
+Procedure gdk_text_extents(TheFont: TGtkIntfFont;
   Str: PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent: Pgint);
 var
   Layout : PPangoLayout;
-  AttrList : PPangoAttrList;
-  Attr : PPangoAttribute;
   Extents : TPangoRectangle;
-  AttrListAllocated: Boolean;
 begin
-  //DebugLn(['gdk_text_extents Str="',Str,'" StrLength=',StrLength,' lbearing=',lbearing<>nil,' rbearing=',rbearing<>Nil,' width=',width<>nil,' ascent=',ascent<>nil,' descent=',descent<>Nil,' ',FontDesc<>Nil]);
-  GetStyle(lgsDefault);
-  Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsDefault), nil);
-  pango_layout_set_font_description(Layout, FontDesc);
-  AttrList := pango_layout_get_attributes(Layout);
-
-  AttrListAllocated:=false;
-  if (AttrList = nil) then begin
-    AttrList := pango_attr_list_new();
-    AttrListAllocated:=true;
-  end;
-
-  Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-  pango_attr_list_change(AttrList,Attr);
-
-  Attr := pango_attr_strikethrough_new(False);
-  pango_attr_list_change(AttrList,Attr);
-
-  pango_layout_set_attributes(Layout, AttrList);
-
+  //DebugLn(['gdk_text_extents Str="',Str,'" StrLength=',StrLength,' lbearing=',lbearing<>nil,' rbearing=',rbearing<>Nil,' width=',width<>nil,' ascent=',ascent<>nil,' descent=',descent<>Nil,' ',TheFont<>Nil]);
+  Layout:=TheFont;
   pango_layout_set_single_paragraph_mode(Layout, TRUE);
   pango_layout_set_width(Layout, -1);
-
-  pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
-
   pango_layout_set_text(Layout, Str, StrLength);
-
   if Assigned(width) then
     pango_layout_get_pixel_size(Layout, width, nil);
-    
   if Assigned(lbearing) or Assigned(rbearing)
   or Assigned(ascent) or Assigned(descent) then begin
     pango_layout_get_extents(Layout, nil, @Extents);
@@ -266,10 +240,6 @@ begin
     if Assigned(descent) then
       descent^ := PANGO_DESCENT(extents) div PANGO_SCALE;
   end;
-  
-  if AttrListAllocated then
-    pango_attr_list_unref(AttrList);
-  g_object_unref(Layout);
 end;
 
 {$EndIf Gtk2}
@@ -986,7 +956,7 @@ begin
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
 
-  Result.DC:=BeginPaint(THandle(Widget), PS^);
+  Result.DC:=BeginPaint(THandle(PtrUInt(Widget)), PS^);
   Result.PaintStruct:=PS;
   Result.Result:=0;
   if FreeGtkPaintMsg then
@@ -1005,7 +975,7 @@ begin
          DC := TDeviceContext(Msg^.WParam)
        else
          DC := TDeviceContext(PS^.hdc);
-       EndPaint(THandle(DC.DCWidget), PS^);
+       EndPaint(THandle(PtrUInt(DC.DCWidget)), PS^);
        Dispose(PS);
        Msg^.LParam:=0;
        Msg^.WParam:=0;
@@ -1032,7 +1002,7 @@ begin
          DC := TDeviceContext(Msg^.WParam)
        else
          DC := TDeviceContext(PS^.hdc);
-       EndPaint(THandle(DC.DCWidget), PS^);
+       EndPaint(THandle(PtrUInt(DC.DCWidget)), PS^);
        Dispose(PS);
        Msg^.LParam:=0;
        Msg^.WParam:=0;
@@ -1344,7 +1314,7 @@ begin
     DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
   if CenterVertically then
     DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
-  DestDC:=GetDC(HDC(DestWidget));
+  DestDC:=GetDC(HDC(PtrUInt(DestWidget)));
 
   //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
   //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
@@ -1352,7 +1322,7 @@ begin
   StretchBlt(DestDC, DestLeft, DestTop, ImageWidth, ImageHeight,
     Bitmap.Canvas.Handle, 0, 0, ImageWidth, ImageHeight,
     SRCCOPY);
-  ReleaseDC(HDC(DestWidget),DestDC);
+  ReleaseDC(HDC(PtrUInt(DestWidget)),DestDC);
   Bitmap.Free;
 end;
 {$endif}
@@ -1588,7 +1558,7 @@ begin
           SourceDC.GDIObjects[g]:=nil;
         if MoveGDIOwnerShip then begin
           if OwnedGDIObjects[g]<>nil then begin
-            DeleteObject(HGDIOBJ(OwnedGDIObjects[g]));
+            DeleteObject(HGDIOBJ(PtrUInt(OwnedGDIObjects[g])));
           end;
           CurGDIObject:=SourceDC.OwnedGDIObjects[g];
           if CurGDIObject<>nil then begin
@@ -4774,8 +4744,8 @@ begin
     MouseCaptureType:=mctGTK;
     if MouseCaptureWidget<>nil then begin
       // the MouseCaptureWidget is probably not a main widget
-      SendMessage(HWnd(MouseCaptureWidget), LM_CAPTURECHANGED, 0,
-        HWnd(OldMouseCaptureWidget));
+      SendMessage(HWnd(PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0,
+        HWnd(PtrUInt(OldMouseCaptureWidget)));
     end;
   end;
 end;
@@ -8362,7 +8332,7 @@ begin
     {$ENDIF}
     {$IFDEF GTK2}
     If (Style <> nil) then begin
-      PangoFontDesc := pango_font_description_copy(Style^.font_desc);
+      PangoFontDesc := Style^.font_desc;
       if PangoFontDesc<>nil then begin
         Result:=pango_font_description_get_family(PangoFontDesc);
       end;
@@ -9382,7 +9352,7 @@ end;
 
 
 {-------------------------------------------------------------------------------
-  Function GetTextExtentIgnoringAmpersands(Font : PGDKFont;
+  Function GetTextExtentIgnoringAmpersands(TheFont: PGDKFont;
     Str : PChar; StrLength: integer;
     MaxWidth: Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 
@@ -9390,15 +9360,9 @@ end;
   That means, ampersands are not counted.
   Negative MaxWidth means no limit.
 -------------------------------------------------------------------------------}
-{$Ifdef GTK2}
-Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription;
+Procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
   Str : PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent : Pgint);
-{$Else}
-Procedure GetTextExtentIgnoringAmpersands(FontDesc : PGDKFont;
-  Str : PChar; StrLength: integer;
-  lbearing, rbearing, width, ascent, descent : Pgint);
-{$EndIf}
 var
   NewStr : PChar;
   i: integer;
@@ -9413,37 +9377,49 @@ begin
       StrLength:=StrLen(NewStr);
     end;
   end;
-  gdk_text_extents(FontDesc, NewStr, StrLength,
+  gdk_text_extents(TheFont, NewStr, StrLength,
                    lbearing, rBearing, width, ascent, descent);
   if NewStr<>Str then
     StrDispose(NewStr);
 end;
 
 {------------------------------------------------------------------------------
-  function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+  function FontIsDoubleByteCharsFont(TheFont: TGtkIntfFont): boolean;
 
   This is only a heuristic
  ------------------------------------------------------------------------------}
-function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+function FontIsDoubleByteCharsFont(TheFont: TGtkIntfFont): boolean;
 var
   SingleCharLen, DoubleCharLen: integer;
 begin
+  {$IFDEF Gtk1}
   SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
   DoubleCharLen:=gdk_text_width(TheFont, #0'A', 2);
+  {$ELSE}
+  pango_layout_set_single_paragraph_mode(TheFont, TRUE);
+  pango_layout_set_width(TheFont, -1);
+  pango_layout_set_text(TheFont, 'A', 1);
+  pango_layout_get_pixel_size(TheFont, @SingleCharLen, nil);
+  pango_layout_set_text(TheFont, #0'A', 2);
+  pango_layout_get_pixel_size(TheFont, @DoubleCharLen, nil);
+  {$ENDIF}
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
 
 {------------------------------------------------------------------------------
-  function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
+  function FontIsMonoSpaceFont(TheFont: TGtkIntfFont): boolean;
 
   This is only a heuristic
  ------------------------------------------------------------------------------}
-function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
+function FontIsMonoSpaceFont(TheFont: TGtkIntfFont): boolean;
 var
+  {$IFDEF Gtk1}
   SingleCharLen: LongInt;
+  {$ENDIF}
   MWidth: LongInt;
   IWidth: LongInt;
 begin
+  {$IFDEF Gtk1}
   SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
   if SingleCharLen=0 then begin
     // assume a double byte character font
@@ -9454,28 +9430,16 @@ begin
     MWidth:=gdk_text_width(TheFont, 'm', 1);
     IWidth:=gdk_text_width(TheFont, 'i', 1);
   end;
+  {$ELSE}
+  pango_layout_set_single_paragraph_mode(TheFont, TRUE);
+  pango_layout_set_width(TheFont, -1);
+  pango_layout_set_text(TheFont, 'm', 1);
+  pango_layout_get_pixel_size(TheFont, @MWidth, nil);
+  pango_layout_set_text(TheFont, 'i', 1);
+  pango_layout_get_pixel_size(TheFont, @IWidth, nil);
+  {$ENDIF}
   Result:=MWidth=IWidth;
 end;
-
-{$Ifdef GTK2}
-function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
-var
-  Font: PGdkFont;
-begin
-  Font:=gdk_font_from_description(TheFont);
-  Result:=FontIsDoubleByteCharsFont(Font);
-  gdk_font_unref(Font);
-end;
-
-function FontIsMonoSpaceFont(TheFont: PPangoFontDescription): boolean;
-var
-  Font: PGdkFont;
-begin
-  Font:=gdk_font_from_description(TheFont);
-  Result:=FontIsMonoSpaceFont(Font);
-  gdk_font_unref(Font);
-end;
-{$ENDIF Gtk2}
 
 {------------------------------------------------------------------------------
   Method:   GDKPixel2GDIRGB

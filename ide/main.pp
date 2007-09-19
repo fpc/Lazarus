@@ -12934,6 +12934,8 @@ end;
 
 procedure TMainIDE.OnPropHookAddDependency(const AClass: TClass;
   const AnUnitName: shortstring);
+// add a package dependency to the package/project of the currently active
+// designed component.
 var
   RequiredUnitName: String;
   AnUnitInfo: TUnitInfo;

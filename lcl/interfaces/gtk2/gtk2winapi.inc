@@ -106,8 +106,8 @@ begin
   end;
 
   // create cursor from pixbuf
-  Result := hCursor(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
-    ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot));
+  Result := HCursor(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
+    ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot)));
 end;
 
 function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
@@ -272,7 +272,7 @@ begin
       end else begin
         // return the new font
         GdiObject^.LogFont:=LogFont;
-        Result := HFONT(GdiObject);
+        Result := HFONT(PtrUInt(GdiObject));
       end;
     end else begin
       {$IFDEF VerboseFonts}

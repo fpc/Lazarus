@@ -2988,6 +2988,7 @@ resourcestring
   lisPckOptsUsage = 'Usage';
   lisPOChoosePoFileDirectory = 'Choose .po file directory';
   lisPckOptsIDEIntegration = 'IDE Integration';
+  lisPckOptsProvides = 'Provides';
   lisPckOptsDescriptionAbstract = 'Description/Abstract';
   lisPckOptsAuthor = 'Author:';
   lisPckOptsLicense = 'License:';
@@ -3409,6 +3410,8 @@ resourcestring
   rsRemove = '&Remove';
   lisAutomaticallyOnLineBreak = 'automatically on line break';
   lisAutomaticallyOnSpace = 'automatically on space';
+  lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
+    +'provides the same as the following packages:';
 
 implementation
 end.

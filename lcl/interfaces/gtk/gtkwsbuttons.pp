@@ -111,7 +111,7 @@ var
 begin
   BitBtn := AWinControl as TCustomBitBtn;
 
-  Result := TLCLIntfHandle(gtk_button_new);
+  Result := TLCLIntfHandle(PtrUInt(gtk_button_new));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Pointer(Result),dbgsName(AWinControl));

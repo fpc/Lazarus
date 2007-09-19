@@ -203,12 +203,6 @@ type
     // images
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
-    {$note TODO: remove}
-    (*
-    procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);virtual;
-    procedure LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);virtual;
-    procedure LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);virtual;
-    *)
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
     function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;

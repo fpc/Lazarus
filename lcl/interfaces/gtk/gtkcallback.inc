@@ -330,7 +330,7 @@ begin
   Mess.Minimized:=false;
   Mess.ActiveWindow:=0;
   if GtkWidgetIsA(Widget, gtk_window_get_type) then
-    Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
+    Mess.ActiveWindow:=HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget));
   Mess.Result := 0;
   //DebugLn('gtkactivateCB ',DbgSName(TObject(Data)));
   DeliverMessage(Data, Mess);
@@ -637,7 +637,7 @@ begin
   Mess.Minimized:=false;
   Mess.ActiveWindow:=0;
   if GtkWidgetIsA(Widget, gtk_window_get_type) then
-    Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
+    Mess.ActiveWindow:=HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget));
   Mess.Result := 0;
   DeliverMessage(Data, Mess); // send message directly (not Post)
 
@@ -3067,7 +3067,7 @@ begin
       if Pos < High(SmallPos)
       then SmallPos := Pos
       else SmallPos := High(SmallPos);
-      ScrollBar := HWND(Scroll);
+      ScrollBar := HWND(PtrUInt(Scroll));
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(False, ScrollType,
                                        gtk_range_get_update_policy(Scroll));
@@ -3093,7 +3093,7 @@ begin
       then SmallPos := Pos
       else SmallPos := High(SmallPos);
       //DebugLn('GTKVScrollCB A Adjustment^.Value=',dbgs(Adjustment^.Value),' SmallPos=',dbgs(SmallPos));
-      ScrollBar := HWND(Scroll);
+      ScrollBar := HWND(PtrUInt(Scroll));
       ScrollType := get_gtk_scroll_type(Scroll);
       // GTK1 has a bug with wheel mouse. It sometimes gives the wrong direction.
       ScrollCode := ScrollTypeToSbCode(True, ScrollType,

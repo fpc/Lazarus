@@ -146,7 +146,7 @@ begin
     SetContainerMenuToggleSize;
 
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(MenuItem),GroupIndex);
+      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)),GroupIndex);
   end;
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
@@ -162,7 +162,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(MenuItemWidget,dbgsName(AMenuItem));
   {$ENDIF}
-  Result := THandle(MenuItemWidget);
+  Result := THandle(PtrUInt(MenuItemWidget));
 end;
 
 class procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);

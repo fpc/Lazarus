@@ -255,7 +255,7 @@ begin
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
   GTKWidgetSet.FinishComponentCreate(AWinControl, AWidget);
-  Result := TLCLIntfHandle(AWidget);
+  Result := TLCLIntfHandle(PtrUInt(AWidget));
 end;
 
 class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
@@ -593,7 +593,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
 end;
 
 class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);

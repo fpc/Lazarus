@@ -108,12 +108,12 @@ begin
     with Msg.DrawListItemStruct^ do begin
       ItemID:=ItemIndex;
       Area:=AreaRect;
-      DC:=GetDC(HWnd(Widget));
+      DC:=GetDC(HWnd(PtrUInt(Widget)));
       ItemState:=State;
     end;
     //DebugLn('gtkListItemDrawAfterCB ',DbgSName(LCLList.Owner),' Widget=',DbgS(Widget));
     Result := DeliverMessage(LCLList.Owner, Msg)=0;
-    ReleaseDC(HWnd(Widget),Msg.DrawListItemStruct^.DC);
+    ReleaseDC(HWnd(PtrUInt(Widget)),Msg.DrawListItemStruct^.DC);
   finally
     Dispose(Msg.DrawListItemStruct);
   end;

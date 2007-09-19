@@ -167,7 +167,7 @@ begin
                                         gtk_adjustment_new(1,1,100,1,1,1)),1,0);
   gtk_widget_show_all(p);
   gtkWidgetSet.FinishComponentCreate(AWinControl, P);
-  Result := THandle(P);
+  Result := THandle(PtrUInt(P));
 end;
 
 initialization

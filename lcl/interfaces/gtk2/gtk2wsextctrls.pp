@@ -245,7 +245,7 @@ begin
     HookNoteBookClass;
   //DebugLn(['TGtk2WSCustomNotebook.CreateHandle ',DbgSName(AWinControl)]);
   P := PGtkNoteBook(TGtkWSCustomNotebook.CreateHandle(AWinControl, AParams));
-  Result := HWND(P);
+  Result := HWND(PtrUInt(P));
 end;
 
 class function TGtk2WSCustomNotebook.GetDefaultClientRect(

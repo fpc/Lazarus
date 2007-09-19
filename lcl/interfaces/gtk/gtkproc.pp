@@ -784,21 +784,14 @@ procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
 function LoadDefaultFont: TGtkIntfFont;
-function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
-function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
+function FontIsDoubleByteCharsFont(TheFont: TGtkIntfFont): boolean;
+function FontIsMonoSpaceFont(TheFont: TGtkIntfFont): boolean;
 {$Ifdef GTK2}
-function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
-function FontIsMonoSpaceFont(TheFont: PPangoFontDescription): boolean;
 function LoadDefaultFontDesc: PPangoFontDescription;
-procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription;
-  Str: PChar; StrLength: integer;
-  lbearing, rbearing, width, ascent, descent: Pgint);
 {$ENDIF}
-{$IFDEF GTK1}
-procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont;
+procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
   Str: PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent: Pgint);
-{$EndIf}
 function GetDefaultFontName: string;
 procedure FillScreenFonts(ScreenFonts: TStrings);
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
@@ -837,7 +830,7 @@ function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
   Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
 
   //mimic GDKFont Routines With Pango -->
-  Procedure gdk_text_extents(FontDesc: PPangoFontDescription;
+  Procedure gdk_text_extents(TheFont: TGtkIntfFont;
         Str: PChar; StrLength: integer;
         lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}

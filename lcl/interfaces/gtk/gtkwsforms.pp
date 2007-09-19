@@ -303,7 +303,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
 end;
 
 class procedure TGtkWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
@@ -428,7 +428,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
 end;
 
 initialization

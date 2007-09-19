@@ -563,7 +563,7 @@ begin
   csStaticText:
     begin
       if TStaticText(AWinControl).ShowAccelChar then begin
-        DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
+        DC := GetDC(HDC(PtrUInt(GetStyleWidget(lgsLabel))));
         aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(
                               DC, pLabel, TStaticText(AWinControl).Width, false);
         DeleteDC(DC);
@@ -743,7 +743,7 @@ begin
   if V < High(Msg.SmallPos)
   then Msg.SmallPos := V
   else Msg.SmallPos := High(Msg.SmallPos);
-  Msg.ScrollBar := HWND(ScrollingData^.HScroll);
+  Msg.ScrollBar := HWND(PtrUInt(ScrollingData^.HScroll));
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
@@ -805,7 +805,7 @@ begin
   if V < High(Msg.SmallPos)
   then Msg.SmallPos := V
   else Msg.SmallPos := High(Msg.SmallPos);
-  Msg.ScrollBar := HWND(ScrollingData^.HScroll);
+  Msg.ScrollBar := HWND(PtrUInt(ScrollingData^.HScroll));
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
@@ -823,7 +823,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(Widget);
+  Result := THandle(PtrUInt(Widget));
   if Result = 0 then Exit;
 
   gtk_widget_show(Widget);

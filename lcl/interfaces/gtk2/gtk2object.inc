@@ -550,7 +550,7 @@ begin
   end;
 
   gdk_pixbuf_unref(pixbuf);
-  Result := HBitmap(Pixmap);
+  Result := HBitmap(PtrUInt(Pixmap));
 end;
 
 {------------------------------------------------------------------------------

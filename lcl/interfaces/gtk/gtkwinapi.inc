@@ -854,7 +854,7 @@ begin
     LoadDataByPixbufLoader;
   end;
 
-  Result := HBITMAP(GdiObject);
+  Result := HBITMAP(PtrUInt(GdiObject));
 
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
@@ -984,7 +984,7 @@ begin
       If not GObject^.IsNullBrush then
         SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
     end;
-    Result := HBRUSH(GObject);
+    Result := HBRUSH(PtrUInt(GObject));
   except
     Result:=0;
     DisposeGDIObject(GObject);
@@ -1092,7 +1092,7 @@ begin
 
   GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
-  Result := HBITMAP(GdiObject);
+  Result := HBITMAP(PtrUInt(GdiObject));
 
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
@@ -1163,7 +1163,10 @@ function TGtkWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
     begin
       // c_bit := Ord(0.222 * c.red + 0.707 * c.green + 0.071 * c.blue >= $8000);
       // do some int math
-      c_bit := Ord(222 * c.red + 707 * c.green + 071 * c.blue >= $8000 * 1000);
+      c_bit := Ord(cardinal(222) * c.red
+                 + cardinal(707) * c.green
+                 + cardinal(071) * c.blue
+                 >= $8000 * 1000);
       m_bit := ord(MaskPixel = 1);
 
       AImgBits^ := AImgBits^ or (c_bit shl offset);
@@ -1254,8 +1257,8 @@ begin
   bg.blue := 0;
   bg.pixel := 0;
 
-  Result := hCursor(gdk_cursor_new_from_pixmap (srcbitmap, mskbitmap, @fg, @bg,
-    ACursorInfo^.xHotspot, ACursorInfo^.yHotspot));
+  Result := HCursor(PtrUInt(gdk_cursor_new_from_pixmap (srcbitmap, mskbitmap,
+      @fg, @bg, ACursorInfo^.xHotspot, ACursorInfo^.yHotspot)));
     
   gdk_pixmap_unref(srcbitmap);
   gdk_pixmap_unref(mskbitmap);
@@ -1809,7 +1812,7 @@ begin
       Result := 0;
     end
     else begin
-      Result := HFONT(GdiObject);
+      Result := HFONT(PtrUInt(GdiObject));
     end;
 
     if Result = 0
@@ -1860,7 +1863,7 @@ begin
   GObject^.IndexTable.OnGetKeyForHashItem:=@GetIndexAsKey;
   InitializePalette(GObject, LogPalette.palPalEntry, LogPalette.palNumEntries);
 
-  Result := HPALETTE(GObject);
+  Result := HPALETTE(PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -1885,7 +1888,7 @@ begin
     SetGDIColorRef(GObject^.GDIPenColor,lopnColor);
   end;
 
-  Result := HPEN(GObject);
+  Result := HPEN(PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -1996,7 +1999,7 @@ begin
 
   FreeMem(PointArray);
 
-  Result := HRGN(GObject);
+  Result := HRGN(PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -2034,7 +2037,7 @@ begin
   GObject^.GDIRegionObject := RegionObj;
   gdk_region_destroy(RRGN);
 
-  Result := HRGN(GObject);
+  Result := HRGN(PtrUInt(GObject));
   //DebugLn('TGtkWidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
@@ -4288,7 +4291,7 @@ begin
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
           // return the window
-          Result := HWND(GetMainWidget(PGtkWidget(Window)));
+          Result := HWND(PtrUInt(GetMainWidget(PGtkWidget(Window))));
           //DebugLn('TGtkWidgetSet.GetActiveWindow Result=',GetWidgetDebugReport(PgtkWidget(Result)));
           Break;
         end;
@@ -4380,7 +4383,7 @@ begin
         Widget:=nil;
     end;
   end;
-  Result := HWnd(Widget);
+  Result := HWnd(PtrUInt(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -4771,7 +4774,7 @@ begin
     DebugLn('WARNING: [TGtkWidgetSet.GetClipRGN] Invalid HRGN');
   end
   else if (TDeviceContext(DC).ClipRegion<>nil)
-  and (not IsValidGDIObject(HGDIOBJ(TDeviceContext(DC).ClipRegion))) then
+  and (not IsValidGDIObject(HGDIOBJ(PtrUInt(TDeviceContext(DC).ClipRegion)))) then
     Result := ERROR
   else with TDeviceContext(DC) do
   begin
@@ -5138,7 +5141,7 @@ begin
         
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
-          Result := HWND(GetMainWidget(Widget));
+          Result := HWND(PtrUInt(GetMainWidget(Widget)));
           Break;
         end;
       end;
@@ -5408,7 +5411,7 @@ begin
   //DebugLn('TGtkWidgetSet.GetParent ',DbgS(Handle));
   Result:=0;
   if Handle<>0 then
-    Result:=HWnd(PGtkWidget(Handle)^.Parent);
+    Result:=HWnd(PtrUInt(PGtkWidget(Handle)^.Parent));
 end;
 
 
@@ -5647,7 +5650,7 @@ begin
         end;
 
         If FStockSystemFont = 0 then
-          FStockSystemFont := HFont(CreateDefaultFont);
+          FStockSystemFont := HFont(PtrUInt(CreateDefaultFont));
         Result := FStockSystemFont;
       end;
 (*    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
@@ -6437,11 +6440,11 @@ begin
     Result := False;
 
     //Sanity Checks For Vertices Size vs. Count
-    If MemSize(Vertices) < SizeOf(tagTRIVERTEX)*NumVertices then
+    If MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
       exit;
 
     //Sanity Checks For Meshes Size vs. Count
-    If MemSize(Meshes) < MeshSize[DoFillTriangle]*NumMeshes then
+    If MemSize(Meshes) < PtrUInt(MeshSize[DoFillTriangle]*NumMeshes) then
       exit;
 
     For I := 0 to NumMeshes - 1 do begin
@@ -6979,7 +6982,7 @@ begin
         DeleteObject(RGN);
         GetClipBox(DC, @ClipRect);
         // draw polygon area
-        FillRect(DC, ClipRect, HBrush(GetBrush));
+        FillRect(DC, ClipRect, HBrush(PtrUInt(GetBrush)));
         // restore old clipping
         SelectClipRGN(DC, Tmp);
         DeleteObject(Tmp);
@@ -7294,7 +7297,7 @@ const
     begin
       if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
       and gtk_is_radio_menu_item(Item^.Data)
-      and (GroupIndex = PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
+      and (PtrUInt(GroupIndex) = PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
       then begin
         Result := gtk_radio_menu_item_group(PGtkRadioMenuItem(Item^.Data));
         Exit;
@@ -7521,7 +7524,7 @@ begin
         if CurGDIObject<>nil then begin
           if CurGDIObject^.Owner<>aDC then
             RaiseGDBException('');
-          DeleteObject(HGDIOBJ(CurGDIObject));
+          DeleteObject(HGDIOBJ(PtrUInt(CurGDIObject)));
           if aDC.OwnedGDIObjects[g]<>nil then
             RaiseGDBException('');
         end;
@@ -7752,7 +7755,7 @@ begin
       OldClipRegion:=ClipRegion;
       ClipRegion := nil;// decrease DCCount
       if (OldClipRegion=OwnedGDIObjects[gdiRegion]) then
-        DeleteObject(HGDIOBJ(OldClipRegion));
+        DeleteObject(HGDIOBJ(PtrUInt(OldClipRegion)));
     end;
 
     If (RGN = 0) then begin
@@ -7824,7 +7827,7 @@ var
     NewDrawable: PGdkPixmap;
   begin
     Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
-    Result := HBITMAP(DevCon.GetBitmap); // always create, because a valid GDIObject is needed to restore
+    Result := HBITMAP(PtrUInt(DevCon.GetBitmap)); // always create, because a valid GDIObject is needed to restore
     if DevCon.CurrentBitmap = GDIObject then Exit;
     
     DevCon.CurrentBitmap := GDIObject;
@@ -7876,7 +7879,7 @@ begin
     gdiBrush: begin
       Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
 
-      Result := HBRUSH(DevCon.GetBrush);// always create, because a valid GDIObject is needed to restore
+      Result := HBRUSH(PtrUInt(DevCon.GetBrush));// always create, because a valid GDIObject is needed to restore
       if DevCon.CurrentBrush = GDIObject then Exit;
       
       DevCon.CurrentBrush := GDIObject;
@@ -7893,7 +7896,7 @@ begin
     gdiFont: begin
       Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
         
-      Result := HFONT(DevCon.GetFont);// always create, because a valid GDIObject is needed to restore
+      Result := HFONT(PtrUInt(DevCon.GetFont));// always create, because a valid GDIObject is needed to restore
       if DevCon.CurrentFont = GDIObject then Exit;
       
       DevCon.CurrentFont := GDIObject;
@@ -7906,7 +7909,7 @@ begin
     end;
 
     gdiPen: begin
-      Result := HPEN(DevCon.GetPen);// always create, because a valid GDIObject is needed to restore
+      Result := HPEN(PtrUInt(DevCon.GetPen));// always create, because a valid GDIObject is needed to restore
       if DevCon.CurrentPen = GDIObject then Exit;
 
       DevCon.CurrentPen := PGDIObject(GDIObj);
@@ -7917,7 +7920,7 @@ begin
     end;
 
     gdiRegion: begin
-      Result := HRGN(DevCon.ClipRegion);
+      Result := HRGN(PtrUInt(DevCon.ClipRegion));
       if DevCon.GC <> nil
       then SelectClipRGN(DC, GDIObj)
       else DevCon.ClipRegion := nil;
@@ -9404,7 +9407,7 @@ begin
     
     aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
     //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
-    FillRect(DC,aRect,hBrush(GetBrush));
+    FillRect(DC,aRect,hBrush(PtrUInt(GetBrush)));
     UpdateDCTextMetric(TDeviceContext(DC));
     TxtPt.X := X;
     {$IfDef Win32}

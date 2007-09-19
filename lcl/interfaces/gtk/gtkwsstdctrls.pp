@@ -540,7 +540,7 @@ begin
         Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
         GList:= PGtkCList(Widget)^.selection;
         while Assigned(GList) do begin
-          if PtrUInt(GList^.data) = AIndex then begin
+          if PtrUInt(GList^.data) = PtrUInt(AIndex) then begin
             Result:=true;
             exit;
           end else
@@ -934,7 +934,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
 end;
 {$ENDIF}
 
@@ -1054,7 +1054,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
 end;
 
 class procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
@@ -1092,7 +1092,7 @@ var
   Allocation: TGTKAllocation;
 begin
   Button := AWinControl as TCustomButton;
-  Result := TLCLIntfHandle(gtk_button_new_with_label('button'));
+  Result := TLCLIntfHandle(PtrUInt(gtk_button_new_with_label('button')));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Pointer(Result),'button');
@@ -1326,7 +1326,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
   DebugLn(['TGtkWSCustomMemo.CreateHandle ']);
 end;
 
@@ -1496,7 +1496,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
 end;
 
 class procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;

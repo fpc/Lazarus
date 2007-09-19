@@ -135,6 +135,7 @@ begin
   {$IFDEF Gtk1}
   gdk_font_ref(AFont);
   {$ELSE}
+  //DebugLn(['ReferenceGtkIntfFont ',dbgs(AFont)]);
   g_object_ref(AFont);
   {$ENDIF}
 end;
@@ -144,6 +145,7 @@ begin
   {$IFDEF Gtk1}
   gdk_font_unref(AFont);
   {$ELSE}
+  //DebugLn(['UnreferenceGtkIntfFont ',dbgs(AFont)]);
   g_object_unref(AFont);
   {$ENDIF}
 end;

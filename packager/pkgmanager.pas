@@ -2110,6 +2110,14 @@ begin
     Result:=mrCancel;
     exit;
   end;
+  if PackageGraph.FindPackageProvidingName(AProject.FirstRequiredDependency,
+    APackage.Name)<>nil then
+  begin
+    // package is already provided by another package
+    Result:=mrCancel;
+    exit;
+  end;
+
   if OnlyTestIfPossible then
     exit(mrOk);
   // add a dependency for the package to the project

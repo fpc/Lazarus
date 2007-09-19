@@ -597,6 +597,7 @@ type
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
+    FProvides: TStrings;
     FRSTOutputDirectory: string;
     fPublishOptions: TPublishPackageOptions;
     FRemovedFiles: TFPList; // TFPList of TPkgFile
@@ -630,6 +631,7 @@ type
     procedure SetLazDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
     procedure SetOutputStateFile(const AValue: string);
+    procedure SetProvides(const AValue: TStrings);
     procedure SetRSTOutputDirectory(const AValue: string);
     procedure SetRegistered(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
@@ -734,6 +736,8 @@ type
     procedure AddUsedByDependency(Dependency: TPkgDependency);
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
     function UsedByDepByIndex(Index: integer): TPkgDependency;
+    // provides
+    function ProvidesPackage(const AName: string): boolean;
     // ID
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
   public
@@ -784,6 +788,7 @@ type
                                           write SetPackageType;
     property RSTOutputDirectory: string read FRSTOutputDirectory
                                         write SetRSTOutputDirectory;
+    property Provides: TStrings read FProvides write SetProvides;
     property PublishOptions: TPublishPackageOptions
                                      read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
@@ -2263,6 +2268,13 @@ begin
   FOutputStateFile:=NewStateFile;
 end;
 
+procedure TLazPackage.SetProvides(const AValue: TStrings);
+begin
+  if (AValue=FProvides) or (FProvides.Equals(AValue)) then exit;
+  FProvides.Assign(AValue);
+  Modified:=true;
+end;
+
 procedure TLazPackage.SetRSTOutputDirectory(const AValue: string);
 var
   NewValue: String;
@@ -2332,6 +2344,7 @@ begin
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
+  FProvides:=TStringList.Create;
   Clear;
   FUsageOptions.ParsedOpts.InvalidateGraphOnChange:=true;
 end;
@@ -2341,6 +2354,7 @@ begin
   Include(FFlags,lpfDestroying);
   Clear;
   FreeAndNil(fPublishOptions);
+  FreeAndNil(FProvides);
   FreeAndNil(FDefineTemplates);
   FreeAndNil(FRemovedFiles);
   FreeAndNil(FFiles);
@@ -2402,6 +2416,7 @@ begin
   FRegistered:=false;
   FUsageOptions.Clear;
   fPublishOptions.Clear;
+  FProvides.Clear;
   UpdateSourceDirectories;
   // set some nice start values
   if not (lpfDestroying in FFlags) then begin
@@ -2542,6 +2557,7 @@ begin
                                   PathDelimChanged);
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
                                     PathDelimChanged);
+  LoadStringList(XMLConfig,FProvides,Path+'Provides/');
   EndUpdate;
   Modified:=false;
   UnlockModified;
@@ -2593,6 +2609,7 @@ begin
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/');
+  SaveStringList(XMLConfig,FProvides,Path+'Provides/');
   Modified:=false;
 end;
 
@@ -2821,6 +2838,16 @@ end;
 function TLazPackage.UsedByDepByIndex(Index: integer): TPkgDependency;
 begin
   Result:=GetDependencyWithIndex(FFirstUsedByDependency,pdlUsedBy,Index);
+end;
+
+function TLazPackage.ProvidesPackage(const AName: string): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to Provides.Count-1 do
+    if SysUtils.CompareText(Provides[i],AName)=0 then
+      exit(true);
+  Result:=false;
 end;
 
 function TLazPackage.AddFile(const NewFilename, NewUnitName: string;

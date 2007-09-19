@@ -212,6 +212,8 @@ type
                                      ResolveLinks: boolean): TLazPackage;
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
+    function FindPackageProvidingName(FirstDependency: TPkgDependency;
+                 const Name: string): TLazPackage;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
@@ -794,6 +796,31 @@ begin
     Result:=TLazPackage(ANode.Data)
   else
     Result:=nil;
+end;
+
+function TLazPackageGraph.FindPackageProvidingName(
+  FirstDependency: TPkgDependency;
+  const Name: string): TLazPackage;
+  
+  function Search(ADependency: TPkgDependency; out Found: TLazPackage
+    ): boolean;
+  begin
+    while ADependency<>nil do begin
+      Found:=ADependency.RequiredPackage;
+      if (Found<>nil) and (not (lpfVisited in Found.Flags)) then begin
+        Found.Flags:=Found.Flags+[lpfVisited];
+        if Found.ProvidesPackage(Name)
+        or Search(Found.FirstRequiredDependency,Found) then
+          exit(true);
+      end;
+      ADependency:=ADependency.NextRequiresDependency;
+    end;
+    Result:=false;
+  end;
+  
+begin
+  MarkAllPackagesAsNotVisited;
+  Result:=nil;
 end;
 
 function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;

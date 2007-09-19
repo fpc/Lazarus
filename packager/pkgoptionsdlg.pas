@@ -98,6 +98,10 @@ type
     RSTOutputGroupBox: TGroupBox;
     RSTOutputDirectoryEdit: TEdit;
     RSTOutputDirectoryButton: TButton;
+    // Provides page
+    ProvidesPage: TPage;
+    ProvidesLabel: TLabel;
+    ProvidesMemo: TMemo;
     // buttons
     OkButton: TButton;
     CancelButton: TButton;
@@ -123,6 +127,7 @@ type
     procedure SetupUsagePage(PageIndex: integer);
     procedure SetupDescriptionPage(PageIndex: integer);
     procedure SetupIDEPage(PageIndex: integer);
+    procedure SetupProvidesPage(PageIndex: integer);
     procedure ReadOptionsFromPackage;
     procedure ReadPkgTypeFromPackage;
     function GetEditForPathButton(AButton: TPathEditorButton): TEdit;
@@ -440,11 +445,6 @@ begin
 
   // Usage page
   LazPackage.PackageType:=NewPackageType;
-  case UpdateRadioGroup.ItemIndex of
-  2: LazPackage.AutoUpdate:=pupManually;
-  1: LazPackage.AutoUpdate:=pupOnRebuildingAll;
-  else LazPackage.AutoUpdate:=pupAsNeeded;
-  end;
   with LazPackage.UsageOptions do begin
     UnitPath:=TrimSearchPath(UnitPathEdit.Text,'');
     IncludePath:=TrimSearchPath(IncludePathEdit.Text,'');
@@ -453,8 +453,19 @@ begin
     LinkerOptions:=LinkerOptionsMemo.Text;
     CustomOptions:=CustomOptionsMemo.Text;
   end;
+  
+  // IDE integration page
+  case UpdateRadioGroup.ItemIndex of
+  2: LazPackage.AutoUpdate:=pupManually;
+  1: LazPackage.AutoUpdate:=pupOnRebuildingAll;
+  else LazPackage.AutoUpdate:=pupAsNeeded;
+  end;
+
   LazPackage.LazDocPaths:=LazDocPathEdit.Text;
   LazPackage.RSTOutputDirectory:=RSTOutputDirectoryEdit.Text;
+
+  // Provides page
+  LazPackage.Provides:=ProvidesMemo.Lines;
 
   ModalResult:=mrOk;
 end;
@@ -555,12 +566,14 @@ begin
     Pages.Add(lisPckOptsUsage);
     Pages.Add(lisToDoLDescription);
     Pages.Add(lisPckOptsIDEIntegration);
+    Pages.Add(lisPckOptsProvides);
     PageIndex:=0;
   end;
   
   SetupUsagePage(0);
   SetupDescriptionPage(1);
   SetupIDEPage(2);
+  SetupProvidesPage(3);
 
   OkButton:=TButton.Create(Self);
   with OkButton do begin
@@ -812,6 +825,33 @@ begin
   RSTOutputDirectoryEdit.AnchorToNeighbour(akRight,0,RSTOutputDirectoryButton);
 end;
 
+procedure TPackageOptionsDialog.SetupProvidesPage(PageIndex: integer);
+begin
+  // Usage page
+  ProvidesPage:=Notebook.Page[PageIndex];
+  
+  ProvidesLabel:=TLabel.Create(Self);
+  with ProvidesLabel do begin
+    Name:='ProvidesLabel';
+    AutoSize:=false;
+    Caption:=lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages;
+    AnchorParallel(akLeft,6,ProvidesPage);
+    AnchorParallel(akRight,6,ProvidesPage);
+    Height:=50;
+    Parent:=ProvidesPage;
+  end;
+  
+  ProvidesMemo:=TMemo.Create(Self);
+  with ProvidesMemo do begin
+    Name:='ProvidesMemo';
+    AnchorToNeighbour(akTop,6,ProvidesLabel);
+    AnchorParallel(akLeft,6,ProvidesPage);
+    AnchorParallel(akRight,6,ProvidesPage);
+    AnchorParallel(akBottom,6,ProvidesPage);
+    Parent:=ProvidesPage;
+  end;
+end;
+
 procedure TPackageOptionsDialog.SetupUsagePage(PageIndex: integer);
 begin
   // Usage page
@@ -990,8 +1030,12 @@ begin
     CustomOptionsMemo.Text:=CustomOptions;
   end;
   
+  // IDE integration
   LazDocPathEdit.Text:=LazPackage.LazDocPaths;
   RSTOutputDirectoryEdit.Text:=LazPackage.RSTOutputDirectory;
+  
+  // Provides
+  ProvidesMemo.Lines.Assign(LazPackage.Provides);
 end;
 
 procedure TPackageOptionsDialog.ReadPkgTypeFromPackage;
