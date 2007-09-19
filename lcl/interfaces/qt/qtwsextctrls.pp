@@ -387,7 +387,7 @@ begin
     {$ifdef USE_QT_4_3}
     Result := QTabBar_tabAt(TabWidget.TabBar, @APoint);
     {$else}
-    w := QWidget_childAt(TabWidget.TabBar, APoint);
+    w := QTabBarH(QWidget_childAt(TabWidget.TabBar, @APoint));
     if w <> nil then
     begin
       Result := QTabWidget_indexOf(QTabWidgetH(TabWidget.Widget), w);
