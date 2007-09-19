@@ -1458,19 +1458,18 @@ begin
   IsSysKey := (QtAltModifier and Modifiers) <> $0;
   KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
 
-  {
-    on windows we can use:
-
+  {$ifdef windows}
     KeyMsg.CharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
-
-  }
+  // todo: VK to Win_VK for other os too
+  {$endif}
 
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
 
   // Translates a Qt4 Key to a LCL VK_* key
-  KeyMsg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text);
-  
+  if KeyMsg.CharCode = 0 then
+    KeyMsg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text);
+
   {------------------------------------------------------------------------------
    Sends the adequate key messages
    ------------------------------------------------------------------------------}
