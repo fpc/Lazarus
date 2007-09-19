@@ -711,7 +711,7 @@ begin
 
 
   if QTreeWidget_columnCount(TW) <> TListView(ALV).Columns.Count then
-  QTreeWidget_setColumnCount(TW, TListView(ALV).Columns.Count);
+  	QTreeWidget_setColumnCount(TW, TListView(ALV).Columns.Count);
   
   TWI := QTreeWidget_headerItem(TW);
 
@@ -727,7 +727,7 @@ begin
   HV := QTreeView_header(TW);
   
   if not QHeaderView_isClickable(HV) then
-  QHeaderView_setClickable(HV, True);
+  	QHeaderView_setClickable(HV, True);
 
 end;
 
@@ -916,16 +916,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
-{var
+var
   TW: QTreeWidgetH;
-  TWI: QTreeWidgetItemH;}
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDelete') then
     Exit;
-
-{  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-  TWI := QTreeWidget_takeTopLevelItem(TW, AIndex);}
-  {$note implement}
+  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
+  QTreeWidget_takeTopLevelItem(TW, AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -946,9 +943,9 @@ begin
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   AState := QTreeWidgetItem_checkState(TWI, 0);
   if AState = QtChecked then
-  Result := True
+  	Result := True
   else
-  Result := False;
+  	Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1067,9 +1064,9 @@ begin
   if ALV.CheckBoxes then
   begin
     if AItem.Checked then
-    QTreeWidgetItem_setCheckState(TWI, 0, QtChecked)
+    	QTreeWidgetItem_setCheckState(TWI, 0, QtChecked)
     else
-    QTreeWidgetItem_setCheckState(TWI, 0, QtUnchecked);
+    	QTreeWidgetItem_setCheckState(TWI, 0, QtUnchecked);
   end;
   
   QTreeWidgetItem_setText(TWI, 0, @Str);
