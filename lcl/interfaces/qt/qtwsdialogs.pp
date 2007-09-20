@@ -177,7 +177,7 @@ class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog)
   function GetExtensionString(ASource: String; AStart, ALength: Integer): String; inline;
   begin
     // replace *.ext1, *.ext2 by *.ext1 *.ext2
-    Result := '(' + StringReplace(Copy(ASource, AStart, ALength), ',', ' ', [rfReplaceAll]) + ')';
+    Result := '(' + StringReplace(Copy(ASource, AStart, ALength), ';', ' ', [rfReplaceAll]) + ')';
   end;
   
 var
