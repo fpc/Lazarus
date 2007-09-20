@@ -2317,7 +2317,7 @@ var
       Output.Write(s[1], Length(s));
   end;
 
-  procedure WriteWideString(const s: String);
+  procedure WriteWideString(const s: WideString);
   begin
     WriteLRSInteger(Output,Length(s));
     if Length(s) > 0 then
