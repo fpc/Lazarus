@@ -833,7 +833,7 @@ begin
   ProvidesLabel:=TLabel.Create(Self);
   with ProvidesLabel do begin
     Name:='ProvidesLabel';
-    AutoSize:=false;
+    AutoSize:=true;
     Caption:=lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages;
     AnchorParallel(akLeft,6,ProvidesPage);
     AnchorParallel(akRight,6,ProvidesPage);
