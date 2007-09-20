@@ -255,7 +255,7 @@ type
   TDOMNode_WithChildren = class(TDOMNode)
   protected
     FFirstChild, FLastChild: TDOMNode;
-    FChildNodeTree: TAVLTree;
+    FChildNodeTree: TAVLTree;// tree of TDOMNode sorted for Name (=> there can be doubles)
     function GetFirstChild: TDOMNode; override;
     function GetLastChild: TDOMNode; override;
     procedure CloneChildren(ACopy: TDOMNode; ACloneOwner: TDOMDocument);
@@ -881,6 +881,7 @@ function TDOMNode_WithChildren.AppendChild(NewChild: TDOMNode): TDOMNode;
 var
   Parent: TDOMNode;
 begin
+  //writeln('TDOMNode_WithChildren.AppendChild ',NodeName,' NewChild=',NewChild.NodeName);
   if NewChild.FOwnerDocument <> FOwnerDocument then
     raise EDOMWrongDocument.Create('NodeWC.AppendChild');
 
@@ -892,8 +893,10 @@ begin
     Parent := Parent.ParentNode;
   end;
 
-  if NewChild.FParentNode = Self then
-    RemoveChild(NewChild);
+  if NewChild.FParentNode<>nil then begin
+    //writeln('TDOMNode_WithChildren.AppendChild old NewChild.FParentNode=',NewChild.FParentNode.NodeName);
+    NewChild.FParentNode.RemoveChild(NewChild);
+  end;
 
   if NewChild.NodeType = DOCUMENT_FRAGMENT_NODE then
     raise EDOMNotSupported.Create('NodeWC.AppendChild for DocumentFragments')
@@ -957,6 +960,7 @@ procedure TDOMNode_WithChildren.AddToChildNodeTree(NewNode: TDOMNode);
 var
   ChildCount: Integer;
   ANode: TDOMNode;
+  NewNodeAdded: Boolean;
 begin
   if (FChildNodeTree=nil) then begin
     // there is no childnodetree yet
@@ -972,15 +976,22 @@ begin
       FChildNodeTree:=TAVLTree.Create(@CompareDOMNodeWithDOMNode);
       // add all existing childs
       ANode := FirstChild;
+      NewNodeAdded:=false;
       while Assigned(ANode) do begin
-        if (FChildNodeTree.Find(ANode)=nil) then
-          FChildNodeTree.Add(ANode);
+        if ANode=NewNode then NewNodeAdded:=true;
+        FChildNodeTree.Add(ANode);
         ANode := ANode.NextSibling;
       end;
+      if not NewNodeAdded then
+        FChildNodeTree.Add(NewNode);
     end;
-  end;
-  if Assigned(FChildNodeTree) and (FChildNodeTree.Find(NewNode)=nil) then
+  end else begin
+    {if (FChildNodeTree.Find(NewNode)<>nil) then begin
+      writeln('TDOMNode_WithChildren.AddToChildNodeTree adding same value ',NewNOde.NodeName);
+      CTDumpStack;
+    end;}
     FChildNodeTree.Add(NewNode);
+  end;
   //if FChildNodeTree.ConsistencyCheck<>0 then
   //  raise exception.Create('TDOMNode_WithChildren.FindNode');
 end;
@@ -988,7 +999,7 @@ end;
 procedure TDOMNode_WithChildren.RemoveFromChildNodeTree(OldNode: TDOMNode);
 begin
   if FChildNodeTree<>nil then
-    FChildNodeTree.Remove(OldNode);
+    FChildNodeTree.RemovePointer(OldNode);// doubles are allowed, so Remove can not be used
   //if (FChildNodeTree<>nil) and (FChildNodeTree.ConsistencyCheck<>0) then
   //  raise exception.Create('TDOMNode_WithChildren.FindNode');
 end;
