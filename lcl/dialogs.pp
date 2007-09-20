@@ -70,6 +70,7 @@ type
     FTitle : string;
     FUserChoice: integer;
     FHelpContext: THelpContext;
+    FCanCloseCalled: Boolean;
     procedure SetHandle(const AValue: THandle);
     procedure SetHeight(const AValue: integer);
     procedure SetWidth(const AValue: integer);
@@ -83,6 +84,7 @@ type
     property UserChoice: integer read FUserChoice write FUserChoice;
     procedure Close; virtual;
     procedure DoShow; virtual;
+    procedure DoCanClose(var CanClose: Boolean); virtual;
     procedure DoClose; virtual;
     function HandleAllocated: boolean;
   published

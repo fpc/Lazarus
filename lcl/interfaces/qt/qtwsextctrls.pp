@@ -389,7 +389,7 @@ begin
     {$else}
     w := QWidget_childAt(TabWidget.TabBar, @APoint);
     if w <> nil then
-      Result := TabWidget.indexOf(w);
+      Result := TabWidget.indexOf(w)
     else
       Result := -1;
     {$endif}

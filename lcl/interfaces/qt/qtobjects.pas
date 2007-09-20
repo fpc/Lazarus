@@ -398,6 +398,26 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
   
+  { TQtStringList }
+
+  TQtStringList = class(TStrings)
+  private
+    FHandle: QStringListH;
+    FOwnHandle: Boolean;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+  public
+    constructor Create;
+    constructor Create(Source: QStringListH);
+    destructor Destroy; override;
+
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+    property Handle: QStringListH read FHandle;
+  end;
+  
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
 procedure DebugRegion(const msg: string; Rgn: QRegionH);
@@ -2372,6 +2392,58 @@ begin
     QIcon_destroy(FHandle);
     
   inherited Destroy;
+end;
+
+{ TQtStringList }
+
+function TQtStringList.Get(Index: Integer): string;
+var
+  W: Widestring;
+begin
+  QStringList_at(FHandle, @W, Index);
+  Result := Utf8Encode(W);
+end;
+
+function TQtStringList.GetCount: Integer;
+begin
+  Result := QStringList_size(FHandle);
+end;
+
+constructor TQtStringList.Create;
+begin
+  FHandle := QStringList_create();
+  FOwnHandle := True;
+end;
+
+constructor TQtStringList.Create(Source: QStringListH);
+begin
+  FHandle := Source;
+  FOwnHandle := False;
+end;
+
+destructor TQtStringList.Destroy;
+begin
+  if FOwnHandle then
+    QStringList_destroy(FHandle);
+  inherited Destroy;
+end;
+
+procedure TQtStringList.Clear;
+begin
+  QStringList_clear(FHandle);
+end;
+
+procedure TQtStringList.Delete(Index: Integer);
+begin
+  QStringList_removeAt(FHandle, Index);
+end;
+
+procedure TQtStringList.Insert(Index: Integer; const S: string);
+var
+  W: WideString;
+begin
+  W := GetUtf8String(S);
+  QStringList_insert(FHandle, Index, @W);
 end;
 
 end.

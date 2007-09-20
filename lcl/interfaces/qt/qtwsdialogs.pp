@@ -46,9 +46,11 @@ type
   TQtWSCommonDialog = class(TWSCommonDialog)
   private
   protected
+    class function GetDialogParent(const ACommonDialog: TCommonDialog): QWidgetH;
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TQtWSFileDialog }
@@ -56,7 +58,10 @@ type
   TQtWSFileDialog = class(TWSFileDialog)
   private
   protected
+    class function GetQtFilterString(const AFileDialog: TFileDialog): WideString;
+    class procedure UpdateProperties(const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
   public
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -90,6 +95,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -107,13 +113,32 @@ type
   private
   protected
   public
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
 
 implementation
 
+const
+  QtDialogCodeToModalResultMap: array[QDialogDialogCode] of TModalResult =
+  (
+{QDialogRejected} mrCancel,
+{QDialogAccepted} mrOk
+  );
+  
 { TQtWSCommonDialog }
+
+class function TQtWSCommonDialog.GetDialogParent(const ACommonDialog: TCommonDialog): QWidgetH;
+begin
+  if ACommonDialog.Owner is TWinControl then
+    Result := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
+  else
+  if Assigned(Application.MainForm) then
+    Result := TQtWidget(Application.MainForm.Handle).Widget
+  else
+    Result := nil;
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtWSCommonDialog.CreateHandle
@@ -124,7 +149,8 @@ implementation
  ------------------------------------------------------------------------------}
 class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  Result := 0;
+  Result := THandle(TQtDialog.Create(ACommonDialog, GetDialogParent(ACommonDialog)));
+  TQtDialog(Result).AttachEvents;
 end;
 
 {------------------------------------------------------------------------------
@@ -136,49 +162,22 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
+  TQtDialog(ACommonDialog.Handle).Release;
+end;
 
+class procedure TQtWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
+begin
+  TQtDialog(ACommonDialog.Handle).exec;
 end;
 
 { TQtWSFileDialog }
 
-{------------------------------------------------------------------------------
-  Function: TQtWSFileDialog.ShowModal
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
+class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog): WideString;
 var
-  Caption, Dir, Filter, selectedFilter, ReturnText: WideString;
   TmpFilter, strExtensions: string;
-  FileDialog: TFileDialog;
-  options: QFileDialogOptions;
-  Parent: QWidgetH;
-  ReturnList: QStringListH;
   ParserState, Position, i: Integer;
 begin
-  {------------------------------------------------------------------------------
-    Initialization of variables
-   ------------------------------------------------------------------------------}
-  ReturnText := '';
-  TmpFilter := '';
-  selectedFilter := '';
-
-  {------------------------------------------------------------------------------
-    Initialization of the dialog fields
-   ------------------------------------------------------------------------------}
-  if ACommonDialog.Owner is TWinControl then
-   Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
-  else if Assigned(Application.MainForm) then
-   Parent := TQtWidget(Application.MainForm.Handle).Widget
-  else Parent := nil;
-
-  Caption := GetUtf8String(ACommonDialog.Title);
-
-  FileDialog := TFileDialog(ACommonDialog);
-
-  Dir := GetUtf8String(FileDialog.InitialDir);
-
-  {------------------------------------------------------------------------------
+    {------------------------------------------------------------------------------
     This is a parser that converts LCL filter strings to Qt filter strings
 
     The parses states are:
@@ -208,104 +207,140 @@ begin
 
   ParserState := 0;
   Position := 1;
+  TmpFilter := '';
 
-  for i := 1 to Length(FileDialog.Filter) do
+  for i := 1 to Length(AFileDialog.Filter) do
   begin
-    if Copy(FileDialog.Filter, i, 1) = '|' then
+    if Copy(AFileDialog.Filter, i, 1) = '|' then
     begin
       ParserState := ParserState + 1;
 
       if ParserState = 1 then
-       TmpFilter := TmpFilter + Copy(FileDialog.Filter, Position, i - Position)
-      else if ParserState = 2 then
+        TmpFilter := TmpFilter + Copy(AFileDialog.Filter, Position, i - Position)
+      else
+      if ParserState = 2 then
       begin
-        strExtensions := '(' + Copy(FileDialog.Filter, Position, i - Position) + ')';
+        strExtensions := '(' + Copy(AFileDialog.Filter, Position, i - Position) + ')';
 
-        if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + ' ' + strExtensions;
+        if Pos(strExtensions, TmpFilter) = 0 then
+          TmpFilter := TmpFilter + ' ' + strExtensions;
 
         TmpFilter := TmpFilter + ';;';
 
         ParserState := 0;
       end;
 
-      if i <> Length(FileDialog.Filter) then Position := i + 1;
+      if i <> Length(AFileDialog.Filter) then
+        Position := i + 1;
     end;
   end;
 
-  strExtensions := '(' + Copy(FileDialog.Filter, Position, i + 1 - Position) + ')';
+  strExtensions := '(' + Copy(AFileDialog.Filter, Position, i + 1 - Position) + ')';
 
-  if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + ' ' + strExtensions;
+  if Pos(strExtensions, TmpFilter) = 0 then
+    TmpFilter := TmpFilter + ' ' + strExtensions;
+  Result := GetUtf8String(TmpFilter);
+end;
 
-  {$ifdef VerboseQt}
-    WriteLn('[TQtWSCommonDialog.ShowModal] Parsed Filter: ', TmpFilter);
-  {$endif}
+class procedure TQtWSFileDialog.UpdateProperties(
+  const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
+var
+  ATitle: WideString;
+begin
+  ATitle := GetUtf8String(AFileDialog.Title);
+  QtFileDialog.setWindowTitle(@ATitle);
+  QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
+  QtFileDialog.setFilter(GetQtFilterString(AFileDialog));
+  QtFileDialog.setConfirmOverwrite(ofOverwritePrompt in TOpenDialog(AFileDialog).Options);
+  QtFileDialog.setReadOnly(ofReadOnly in TOpenDialog(AFileDialog).Options);
+  QtFileDialog.setSizeGripEnabled(ofEnableSizing in TOpenDialog(AFileDialog).Options);
 
-  Filter := GetUtf8String(TmpFilter);
+  if ofViewDetail in TOpenDialog(AFileDialog).Options then
+    QtFileDialog.setViewMode(QFileDialogDetail)
+  else
+    QtFileDialog.setViewMode(QFileDialogList);
+    
+  if ofFileMustExist in TOpenDialog(AFileDialog).Options then
+  begin
+    if ofAllowMultiSelect in TOpenDialog(AFileDialog).Options then
+      QtFileDialog.setFileMode(QFileDialogExistingFiles)
+    else
+      QtFileDialog.setFileMode(QFileDialogExistingFile)
+  end
+  else
+    QtFileDialog.setFileMode(QFileDialogAnyFile);
+  QtFileDialog.setLabelText(QFileDialogFileName, GetUtf8String(AFileDialog.FileName));
+end;
 
+class function TQtWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+var
+  FileDialog: TQtFileDialog;
+begin
+  FileDialog := TQtFileDialog.Create(ACommonDialog, TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+  FileDialog.AttachEvents;
+  
+  Result := THandle(FileDialog);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWSFileDialog.ShowModal
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  selectedFilter, ReturnText: WideString;
+  FileDialog: TFileDialog;
+  ReturnList: QStringListH;
+  i: integer;
+  QtFileDialog: TQtFileDialog;
+begin
   {------------------------------------------------------------------------------
-    Qt doesn´t have most of the dialog options available on LCL
+    Initialization of variables
    ------------------------------------------------------------------------------}
+  ReturnText := '';
+  selectedFilter := '';
 
-  options := 0;
+  FileDialog := TFileDialog(ACommonDialog);
+  QtFileDialog := TQtFileDialog(FileDialog.Handle);
+  
+  UpdateProperties(FileDialog, QtFileDialog);
 
   {------------------------------------------------------------------------------
     Code to call the dialog
    ------------------------------------------------------------------------------}
-  if ACommonDialog is TSaveDialog then
-  begin
-    if ofOverwritePrompt in TSaveDialog(ACommonDialog).Options then
-     options := options or QFileDialogDontConfirmOverwrite;
+  if FileDialog is TSaveDialog then
+    QtFileDialog.setAcceptMode(QFileDialogAcceptSave)
+  else
+  if FileDialog is TOpenDialog then
+    QtFileDialog.setAcceptMode(QFileDialogAcceptOpen)
+  else
+  if ACommonDialog is TSelectDirectoryDialog then
+    QtFileDialog.setFileMode(QFileDialogDirectoryOnly);
 
-    Dir := Dir + ExtractFileName(FileDialog.FileName);
-
-    QFileDialog_getSaveFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
-
-    if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
-    else ACommonDialog.UserChoice := mrOK;
-
-    FileDialog.FileName := UTF8Encode(ReturnText);
-  end
-  else if ACommonDialog is TOpenDialog then
-  begin
-    if ofAllowMultiSelect in TOpenDialog(ACommonDialog).Options then
+  FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
+  ReturnList := QStringList_create;
+  try
+    QtFileDialog.selectedFiles(ReturnList);
+    for i := 0 to QStringList_size(ReturnList) - 1 do
     begin
-      ReturnList := QStringList_create;
-      try
-      
-        QFileDialog_getOpenFileNames(ReturnList, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
-
-        for i := 0 to QStringList_size(ReturnList) - 1 do
-        begin
-          QStringList_at(ReturnList, @ReturnText, i);
-          FileDialog.Files.Add(UTF8Encode(ReturnText));
-        end;
-        
-        ReturnText := FileDialog.Files.Text;
-        
-      finally
-        QStringList_destroy(ReturnList);
-      end;
-    end
-    else
-    begin
-      QFileDialog_getOpenFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
-
-      FileDialog.FileName := UTF8Encode(ReturnText);
+      QStringList_at(ReturnList, @ReturnText, i);
+      FileDialog.Files.Add(UTF8Encode(ReturnText));
+      if i = 0 then
+        FileDialog.FileName := UTF8Encode(ReturnText);
     end;
-
-    if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
-    else ACommonDialog.UserChoice := mrOK;
-  end
-  else if ACommonDialog is TSelectDirectoryDialog then
-  begin
-    QFileDialog_getExistingDirectory(@ReturnText, Parent, @Caption, @Dir);
-
-    if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
-    else ACommonDialog.UserChoice := mrOK;
+    ReturnText := FileDialog.Files.Text;
+  finally
+    QStringList_destroy(ReturnList);
   end;
 end;
 
 { TQtWSColorDialog }
+
+class function TQtWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+begin
+  Result := 0;
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtWSColorDialog.ShowModal
@@ -314,38 +349,45 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSColorDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  AColor: TQColor;
-  ARefColor: TColor;
-  Parent: QWidgetH;
+  AColor: TColor;
+  AQColor: TQColor;
+  AQtColor: QColorH;
   ARgb: QRgb;
   ReturnBool: Boolean;
-  AQtColor: QColorH;
 begin
+  AColor := ColorToRgb(TColorDialog(ACommonDialog).Color);
+  AQColor.Alpha := $FFFF;
+  AQColor.ColorSpec := 1;
+  AQColor.Pad := 0;
+  ColorRefToTQColor(AColor, AQColor);
+  AQtColor := QColor_create(PQColor(@AQColor));
+  ARgb := QColor_rgba(AQtColor);
 
-  if ACommonDialog.Owner is TWinControl then
-    Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
-  else if Assigned(Application.MainForm) then
-    Parent := TQtWidget(Application.MainForm.Handle).Widget
-  else Parent := nil;
+  ARgb := QColorDialog_getRgba(ARgb, @ReturnBool,
+    TQtWSCommonDialog.GetDialogParent(ACommonDialog));
 
-  ARefColor:= ColorToRgb(TColorDialog(ACommonDialog).Color);
-
-  ARgb := QColorDialog_getRgba(QRgb(ARefColor), @ReturnBool, Parent);
-
-  AQtColor := QColor_create(ARgb);
+  QColor_fromRgba(PQColor(AQtColor), ARgb);
   try
-    QColor_toRgb(AQtColor, @AColor);
-    TQColorToColorRef(AColor, ARefColor);
-    TColorDialog(ACommonDialog).Color := ARefColor;
+    QColor_toRgb(AQtColor, @AQColor);
+    TQColorToColorRef(AQColor, AColor);
+    TColorDialog(ACommonDialog).Color := AColor;
   finally
     QColor_destroy(AQtColor);
   end;
 
-  if ReturnBool then ACommonDialog.UserChoice := mrOk
-  else ACommonDialog.UserChoice := mrCancel;
+  if ReturnBool then
+    ACommonDialog.UserChoice := mrOk
+  else
+    ACommonDialog.UserChoice := mrCancel;
 end;
 
 { TQtWSFontDialog }
+
+class function TQtWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog
+  ): THandle;
+begin
+  Result := 0;
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtWSFontDialog.ShowModal
@@ -354,20 +396,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSFontDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  Parent: QWidgetH;
   ReturnFont, CurrentFont: QFontH;
   ReturnBool: Boolean;
   Str: WideString;
 begin
-  {------------------------------------------------------------------------------
-    Initialization of options
-   ------------------------------------------------------------------------------}
-  if ACommonDialog.Owner is TWinControl then
-    Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
-  else if Assigned(Application.MainForm) then
-    Parent := TQtWidget(Application.MainForm.Handle).Widget
-  else Parent := nil;
-
   {------------------------------------------------------------------------------
     Code to call the dialog
    ------------------------------------------------------------------------------}
@@ -375,7 +407,8 @@ begin
 
   ReturnFont := QFont_create;
   try
-    QFontDialog_getFont(ReturnFont, @ReturnBool, CurrentFont, Parent);
+    QFontDialog_getFont(ReturnFont, @ReturnBool, CurrentFont,
+      TQtWSCommonDialog.GetDialogParent(ACommonDialog));
    
     QFont_family(ReturnFont, @Str);
     TFontDialog(ACommonDialog).Font.Name := UTF8Encode(Str);
@@ -404,8 +437,10 @@ begin
     QFont_destroy(ReturnFont);
   end;
 
-  if ReturnBool then ACommonDialog.UserChoice := mrOk
-  else ACommonDialog.UserChoice := mrCancel;
+  if ReturnBool then
+    ACommonDialog.UserChoice := mrOk
+  else
+    ACommonDialog.UserChoice := mrCancel;
 end;
 
 initialization

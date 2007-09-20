@@ -49,6 +49,13 @@ begin
   if Assigned(FOnShow) then FOnShow(Self);
 end;
 
+procedure TCommonDialog.DoCanClose(var CanClose: Boolean);
+begin
+  FCanCloseCalled := True;
+  if Assigned(FOnCanClose) then
+    OnCanClose(Self, CanClose);
+end;
+
 procedure TCommonDialog.DoClose;
 begin
   if Assigned(FOnClose) then FOnClose(Self);
@@ -79,20 +86,27 @@ end;
 function TCommonDialog.DoExecute : boolean;
 var CanClose: boolean;
 begin
-  if Assigned(FOnShow) then FOnShow(Self);
+  FCanCloseCalled := False;
+  if Assigned(FOnShow) then
+    FOnShow(Self);
   TWSCommonDialogClass(WidgetSetClass).ShowModal(Self);
-  repeat
-    if (FUserChoice <> mrNone) and (Handle<>0)
-    and (OnCanClose<>nil) then begin
-      CanClose:=true;
-      OnCanClose(Self,CanClose);
-      if not CanClose then FUserChoice:=mrNone;
-    end;
-    if FUserChoice <> mrNone then
-      break;
-    { win32 widgetset dialogs use their own message loop,
-      so only FUserChoice may have been set already }
-    Application.HandleMessage;
-  until false;
+  // can close was called from widgetset loop
+  if not FCanCloseCalled then
+  begin
+    repeat
+      if (FUserChoice <> mrNone) and (Handle<>0) then
+      begin
+        CanClose := True;
+        DoCanClose(CanClose);
+        if not CanClose then
+          FUserChoice:=mrNone;
+      end;
+      if FUserChoice <> mrNone then
+        break;
+      { win32 widgetset dialogs use their own message loop,
+        so only FUserChoice may have been set already }
+      Application.HandleMessage;
+    until false;
+  end;
   Result := (FUserChoice = mrOk);
 end;

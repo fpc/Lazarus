@@ -922,8 +922,7 @@ var
   ColorDark, ColorLight: TColor;
   ClientRect: TRect;
   QtDC: TQtDeviceContext;
-  Pen: QPenH;
-  
+
   procedure InternalDrawEdge(Outer: Boolean; const R: TRect);
   var
     X1, Y1, X2, Y2: Integer;

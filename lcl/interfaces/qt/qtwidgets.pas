@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, Types,
   // LCL
   LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls, CommCtrl,
-  ExtCtrls, StdCtrls, Menus;
+  ExtCtrls, StdCtrls, Menus, Dialogs;
 
 type
   // forward declarations
@@ -83,7 +83,6 @@ type
     function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
     function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
-    function DeliverMessage(var Msg): LRESULT;
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
@@ -95,6 +94,7 @@ type
 
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetGeometry; virtual; overload;
+    function DeliverMessage(var Msg): LRESULT; virtual;
   public
     AVariant: QVariantH;
     LCLObject: TWinControl;
@@ -111,7 +111,7 @@ type
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotShow(vShow: Boolean); cdecl;
-    procedure SlotClose; cdecl;
+    function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
     procedure SlotFocus(FocusIn: Boolean); cdecl;
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
@@ -872,10 +872,47 @@ type
   { TQtDialog }
   
   TQtDialog = class(TQtWidget)
-  private
+  protected
+    FDialog: TCommonDialog;
+    function CreateWidget(parent: QWidgetH; f: QtWindowFlags):QWidgetH; virtual; overload;
   public
-    constructor Create(parent: QWidgetH = nil; f: QtWindowFlags = 0); overload;
+    constructor Create(ADialog: TCommonDialog; parent: QWidgetH = nil; f: QtWindowFlags = 0); overload;
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    function DeliverMessage(var Msg): LRESULT; override;
+    function SlotClose: Boolean; cdecl; override;
+  public
     function exec: Integer;
+    procedure setSizeGripEnabled(const AEnabled: Boolean);
+  end;
+  
+  { TQtFileDialog }
+
+  TQtFileDialog = class(TQtDialog)
+  private
+    FCurrentChangedHook: QFileDialog_hookH;
+    FDirecotyEnteredHook: QFileDialog_hookH;
+    FFilterSelectedHook: QFileDialog_hookH;
+  protected
+    function CreateWidget(parent: QWidgetH; f: QtWindowFlags):QWidgetH; override;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    procedure CurrentChangedEvent(path: PWideString); cdecl;
+    procedure FilterSelectedEvent(filter: PWideString); cdecl;
+    procedure DirectoryEnteredEvent(directory: PWideString); cdecl;
+  public
+    procedure getFilters(const retval: QStringListH);
+    function selectFile: WideString;
+    procedure selectedFiles(retval: QStringListH);
+    procedure setAcceptMode(const AMode: QFileDialogAcceptMode);
+    procedure setConfirmOverwrite(const AValue: Boolean);
+    procedure setDirectory(const ADirectory: WideString);
+    procedure setFileMode(const AMode: QFileDialogFileMode);
+    procedure setFilter(const AFilter: WideString);
+    procedure setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
+    procedure setReadOnly(const AReadOnly: Boolean);
+    procedure setViewMode(const AMode: QFileDialogViewMode);
   end;
   
   { TQtCalendar }
@@ -1256,9 +1293,9 @@ begin
     QEventShow: SlotShow(True);
     QEventHide: SlotShow(False);
     QEventClose:
+      if not SlotClose then
       begin
         QEvent_ignore(Event);
-        SlotClose;
         Result := True;
       end;
     QEventDestroy: SlotDestroy;
@@ -1339,13 +1376,20 @@ end;
   Note: LCL uses LM_CLOSEQUERY to set the form visibility and if we don�t send this
  message, you won�t be able to show a form twice.
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotClose; cdecl;
+function TQtWidget.SlotClose: Boolean; cdecl;
+var
+  Msg : TLMessage;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotClose');
   {$endif}
+  FillChar(Msg, SizeOf(Msg), 0);
 
-  LCLSendCloseQueryMsg(LCLObject);
+  Msg.Msg := LM_CLOSEQUERY;
+
+  DeliverMessage(Msg);
+  
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -6008,14 +6052,55 @@ end;
 
 { TQtDialog }
 
-constructor TQtDialog.Create(parent: QWidgetH; f: QtWindowFlags);
+function TQtDialog.CreateWidget(parent: QWidgetH; f: QtWindowFlags): QWidgetH;
 begin
-  Widget := QDialog_create(parent, f);
+  Result := QDialog_create(parent, f);
+end;
+
+constructor TQtDialog.Create(ADialog: TCommonDialog; parent: QWidgetH; f: QtWindowFlags);
+begin
+  FDialog := ADialog;
+  Widget := CreateWidget(parent, f);
+end;
+
+procedure TQtDialog.AttachEvents;
+begin
+  inherited AttachEvents;
+end;
+
+procedure TQtDialog.DetachEvents;
+begin
+  inherited DetachEvents;
+end;
+
+function TQtDialog.DeliverMessage(var Msg): LRESULT;
+begin
+  try
+    if FDialog.HandleAllocated then
+    begin
+      FDialog.Dispatch(TLMessage(Msg));
+      Result := TLMessage(Msg).Result;
+    end else
+      Result := 0;
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+function TQtDialog.SlotClose: Boolean; cdecl;
+begin
+  Result := True;
+  FDialog.DoCanClose(Result);
 end;
 
 function TQtDialog.exec: Integer;
 begin
   Result := QDialog_exec(QDialogH(Widget));
+end;
+
+procedure TQtDialog.setSizeGripEnabled(const AEnabled: Boolean);
+begin
+  QDialog_setSizeGripEnabled(QDialogH(Widget), AEnabled);
 end;
 
 { TQtAbstractScrollArea }
@@ -6601,6 +6686,132 @@ begin
     RecreateWidget;
     AttachEvents;
   end;
+end;
+
+{ TQtFileDialog }
+
+function TQtFileDialog.CreateWidget(parent: QWidgetH; f: QtWindowFlags): QWidgetH;
+begin
+  Result := QFileDialog_create(parent, f);
+end;
+
+procedure TQtFileDialog.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  FCurrentChangedHook := QFileDialog_hook_create(Widget);
+  FDirecotyEnteredHook := QFileDialog_hook_create(Widget);
+  FFilterSelectedHook := QFileDialog_hook_create(Widget);
+
+  {$IFDEF USE_QT_4_3}
+  QFileDialog_filterSelected_Event(Method) := FilterSelectedEvent;
+  QFileDialog_hook_hook_filterSelected(FFilterSelectedHook, Method);
+  {$ENDIF}
+  
+  QFileDialog_currentChanged_Event(Method) := CurrentChangedEvent;
+  QFileDialog_hook_hook_currentChanged(FCurrentChangedHook, Method);
+
+  {$IFDEF USE_QT_4_3}
+  QFileDialog_directoryEntered_Event(Method) := DirectoryEnteredEvent;
+  QFileDialog_hook_hook_directoryEntered(FDirecotyEnteredHook, Method);
+  {$ENDIF}
+end;
+
+procedure TQtFileDialog.DetachEvents;
+begin
+  QFileDialog_hook_destroy(FCurrentChangedHook);
+  QFileDialog_hook_destroy(FFilterSelectedHook);
+  QFileDialog_hook_destroy(FDirecotyEnteredHook);
+
+  inherited DetachEvents;
+end;
+
+function TQtFileDialog.selectFile: WideString;
+begin
+  QFileDialog_selectFile(QFileDialogH(Widget), @Result);
+end;
+
+procedure TQtFileDialog.selectedFiles(retval: QStringListH);
+begin
+  QFileDialog_selectedFiles(QFileDialogH(Widget), retval);
+end;
+
+procedure TQtFileDialog.setAcceptMode(const AMode: QFileDialogAcceptMode);
+begin
+  QFileDialog_setAcceptMode(QFileDialogH(Widget), AMode)
+end;
+
+procedure TQtFileDialog.setConfirmOverwrite(const AValue: Boolean);
+begin
+  QFileDialog_setConfirmOverwrite(QFileDialogH(Widget), AValue);
+end;
+
+procedure TQtFileDialog.setDirectory(const ADirectory: WideString);
+begin
+  QFileDialog_setDirectory(QFileDialogH(Widget), @ADirectory);
+end;
+
+procedure TQtFileDialog.setFileMode(const AMode: QFileDialogFileMode);
+begin
+  QFileDialog_setFileMode(QFileDialogH(Widget), AMode);
+end;
+
+procedure TQtFileDialog.setFilter(const AFilter: WideString);
+begin
+  QFileDialog_setFilter(QFileDialogH(Widget), @AFilter);
+end;
+
+procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
+begin
+  QFileDialog_setLabelText(QFileDialogH(Widget), ALabel, @AText);
+end;
+
+procedure TQtFileDialog.setReadOnly(const AReadOnly: Boolean);
+begin
+  QFileDialog_setReadOnly(QFileDialogH(Widget), AReadOnly);
+end;
+
+procedure TQtFileDialog.setViewMode(const AMode: QFileDialogViewMode);
+begin
+  QFileDialog_setViewMode(QFileDialogH(Widget), AMode);
+end;
+
+procedure TQtFileDialog.FilterSelectedEvent(filter: PWideString); cdecl;
+var
+  List: TQtStringList;
+  index: Integer;
+begin
+  if filter <> nil then
+  begin
+    List := TQtStringList.Create;
+    getFilters(List.Handle);
+    index := List.IndexOf(Utf8Encode(filter^));
+    if index <> -1 then
+      TFileDialog(FDialog).IntfFileTypeChanged(index + 1);
+    List.Free;
+  end;
+end;
+
+procedure TQtFileDialog.CurrentChangedEvent(path: PWideString); cdecl;
+begin
+  if FDialog is TOpenDialog then
+  begin
+    TOpenDialog(FDialog).FileName := Utf8Encode(path^);
+    TOpenDialog(FDialog).DoSelectionChange;
+  end;
+end;
+
+procedure TQtFileDialog.DirectoryEnteredEvent(directory: PWideString); cdecl;
+begin
+  if FDialog is TOpenDialog then
+    TOpenDialog(FDialog).DoFolderChange;
+end;
+
+procedure TQtFileDialog.getFilters(const retval: QStringListH);
+begin
+  QFileDialog_filters(QFileDialogH(Widget), retval);
 end;
 
 end.
