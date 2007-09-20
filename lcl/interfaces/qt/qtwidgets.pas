@@ -698,6 +698,7 @@ type
 
   TQtListView = class(TQtAbstractItemView)
   public
+    procedure setSelectionMode(const AMode: QAbstractItemViewSelectionMode);
   end;
 
   { TQtListWidget }
@@ -6812,6 +6813,14 @@ end;
 procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
   QFileDialog_filters(QFileDialogH(Widget), retval);
+end;
+
+{ TQtListView }
+
+procedure TQtListView.setSelectionMode(
+  const AMode: QAbstractItemViewSelectionMode);
+begin
+  QAbstractItemView_setSelectionMode(QAbstractItemViewH(Widget), AMode);
 end;
 
 end.

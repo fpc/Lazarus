@@ -414,15 +414,15 @@ var
 begin
   QtListWidget := TQtListWidget.Create(AWinControl, AParams);
   
-  SelMode := QAbstractItemViewSingleSelection;
-  if TCustomListBox(AWinControl).MultiSelect
-  then
-    SelMode := QAbstractItemViewMultiSelection;
-  if TCustomListBox(AWinControl).ExtendedSelect
-  then
-    SelMode := QAbstractItemViewExtendedSelection;
+  if TCustomListBox(AWinControl).MultiSelect then
+    if TCustomListBox(AWinControl).ExtendedSelect then
+      SelMode := QAbstractItemViewExtendedSelection
+    else
+      SelMode := QAbstractItemViewMultiSelection
+  else
+    SelMode := QAbstractItemViewSingleSelection;
 
-  QAbstractItemView_setSelectionMode(QAbstractItemViewH(QtListWidget.Widget), SelMode);
+  QtListWidget.setSelectionMode(SelMode);
 
   QtListWidget.AttachEvents;
   
@@ -587,14 +587,19 @@ var
   QtListWidget: TQtListWidget;
   SelMode: QAbstractItemViewSelectionMode;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetSelectionMode') then
+    Exit;
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
-  SelMode := QAbstractItemViewSingleSelection;
+
   if AMultiSelect then
-    SelMode := QAbstractItemViewMultiSelection;
-  if AExtendedSelect then
-    SelMode := QAbstractItemViewExtendedSelection;
-    
-  QAbstractItemView_setSelectionMode(QAbstractItemViewH(QtListWidget.Widget), SelMode);
+    if AExtendedSelect then
+      SelMode := QAbstractItemViewExtendedSelection
+    else
+      SelMode := QAbstractItemViewMultiSelection
+  else
+    SelMode := QAbstractItemViewSingleSelection;
+
+  QtListWidget.setSelectionMode(SelMode);
 end;
 
 {------------------------------------------------------------------------------
