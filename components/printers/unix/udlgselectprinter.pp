@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, Spin, ComCtrls, LCLType,
+  Buttons, ExtCtrls, Spin, ComCtrls, LCLType, InterfaceBase,
   Printers, OsPrinters, CUPSDyn;
 
 type
@@ -177,6 +177,12 @@ begin
   //Set Height of form
   btnReduc.Tag:=1;
   btnReducCLICK(nil);
+  if WidgetSet.LCLPlatform = lpCarbon then
+    begin  //Can't hide tabs with button on Carbon, so just expand dialog.
+    btnReduc.Tag:=0;
+    btnReducCLICK(nil);
+    btnReduc.Visible:=False;
+    end;
 end;
 
 
