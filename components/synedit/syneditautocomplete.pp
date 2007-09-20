@@ -589,7 +589,6 @@ var
     fCompletionValues.Add(sComplValue);
     sComplValue := '';
     fAttributes.Add(CurAttributes);
-    CurAttributes:=TStringList.Create;
   end;
 
 begin
