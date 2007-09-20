@@ -224,6 +224,10 @@ msgstr "工程(&P)"
 msgid "&Properties"
 msgstr "属性(&P)"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "替换(&R)"
@@ -400,6 +404,10 @@ msgstr "添加文件"
 msgid "Add Files"
 msgstr "添加多个文件"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "添加 LFM,LRS 文件,如果它们存在"
@@ -531,6 +539,10 @@ msgstr "附加的搜索路径"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "调整行高适应前面的注释"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -951,6 +963,10 @@ msgstr "构建 Lazarus"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "构建号"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1612,6 +1628,10 @@ msgstr "组件"
 msgid "Components menu commands"
 msgstr "组件菜单命令"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr ""
@@ -1935,6 +1955,10 @@ msgstr "使用数据模块(Datamodule)创建一个单元."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "请先创建一个工程!"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6148,6 +6172,10 @@ msgstr ""
 msgid "Protected Method"
 msgstr "Protected Method"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Public Method"
@@ -6171,6 +6199,10 @@ msgstr "发布工程目录"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Published Method"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6479,6 +6511,10 @@ msgstr "替换所选失败."
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "报告"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8468,6 +8504,10 @@ msgstr "这个好像是一个 pascal 文件.%s建议将文件名小写来消除�
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "包已经安装了,但是 lpk 文件没有找到.它的所有组件都不可用,请修复."
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "源代码只用来编译和安装包."
@@ -9632,6 +9672,14 @@ msgstr "自动动态安装"
 msgid "auto install static"
 msgstr "自动静态安装"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9690,6 +9738,10 @@ msgstr "调试信息输出的文件. 如果没有指定, 调试信息将输出�
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

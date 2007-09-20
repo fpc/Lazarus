@@ -223,6 +223,10 @@ msgstr "&Projekt"
 msgid "&Properties"
 msgstr "&Eigenschaften"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "E&rsetzen mit"
@@ -399,6 +403,10 @@ msgstr "Datei hinzufügen"
 msgid "Add Files"
 msgstr "Dateien hinzufügen"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "LFM- und LRS-Dateien hinzufügen, wenn es sie gibt"
@@ -530,6 +538,10 @@ msgstr "Zusätzlicher Suchpfad"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Ausrichten der oberen Zeile an Kommentar vorne"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -950,6 +962,10 @@ msgstr "Lazarus erstellen"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "Build-Nummer"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1611,6 +1627,10 @@ msgstr "Komponenten"
 msgid "Components menu commands"
 msgstr "Komponenten-Menübefehle"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr "%sBuild Datei%s einrichten"
@@ -1934,6 +1954,10 @@ msgstr "Erzeugen einer neuen Unit mit einem Datenmodul."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Erzeugen Sie zuerst ein Projekt!"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6147,6 +6171,10 @@ msgstr "Protected"
 msgid "Protected Method"
 msgstr "Protected-Methode"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Public-Methode (öffentlich)"
@@ -6170,6 +6198,10 @@ msgstr "Veröffentliche Projektverzeichnis"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Veröffentlichte Methode"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6478,6 +6510,10 @@ msgstr "Das Ersetzen der Auswahl ist gescheitert."
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Report"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8467,6 +8503,10 @@ msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in K
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Dieses Package ist installiert, aber die lpk-Datei wurde nicht gefunden. Alle enthaltenen Komponenten sind abgeschaltet. Bitte beheben Sie den Fehler."
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages."
@@ -9631,6 +9671,14 @@ msgstr "dynamische automatische Installation"
 msgid "auto install static"
 msgstr "statische automatische Installation"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "beginnt"
@@ -9690,6 +9738,10 @@ msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Falls nichts angegeben 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfache Prüfen von Kommandozeilenoptionen, Bearbeiten von Exceptions und so weiter. Die Programmdatei wird automatisch von Lazarus betreut."
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

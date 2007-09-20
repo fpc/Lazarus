@@ -1,18 +1,12 @@
-msgid ""
-msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-
-#: frmtemplatevariables:sdescription
-msgid "Description"
+#: frmtemplatevariables:svariable
+msgid "Variable"
 msgstr ""
 
 #: frmtemplatevariables:svalue
 msgid "Value"
 msgstr ""
 
-#: frmtemplatevariables:svariable
-msgid "Variable"
+#: frmtemplatevariables:sdescription
+msgid "Description"
 msgstr ""
 

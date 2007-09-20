@@ -221,6 +221,10 @@ msgstr "&Projecte"
 msgid "&Properties"
 msgstr "&Propietats"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "&Reemplaça amb"
@@ -397,6 +401,10 @@ msgstr "Afegeix el fitxer"
 msgid "Add Files"
 msgstr "Afegeix els fitxers"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "Afegeix els fitxers LFM i LRS, si existeixen"
@@ -528,6 +536,10 @@ msgstr "Trajectòria de cerca addicional"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Ajusta la línia de sobre a causa del comentari de davant"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -948,6 +960,10 @@ msgstr "Munta el Lazarus"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "Munta el número"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1609,6 +1625,10 @@ msgstr "Components"
 msgid "Components menu commands"
 msgstr "Ordres del menú de components"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr ""
@@ -1932,6 +1952,10 @@ msgstr "Crea una nova unitat amb un mòdul de dades."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Creeu primer un projecte!"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6145,6 +6169,10 @@ msgstr ""
 msgid "Protected Method"
 msgstr "Mètode protegit"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Mètode públic"
@@ -6168,6 +6196,10 @@ msgstr "Publica el directori del projecte"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Mètode publicat"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6476,6 +6508,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Informa"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8465,6 +8501,10 @@ msgstr "Sembla un arxiu pascal.%sS'hi recomana utilitzar minúscules per evitar 
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr ""
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "Aquesta font només s'utilitza per compilar i instal·lar el paquet."
@@ -9629,6 +9669,14 @@ msgstr "auto intal·la dinàmicament"
 msgid "auto install static"
 msgstr "auto intal·la estàticament"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9687,6 +9735,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

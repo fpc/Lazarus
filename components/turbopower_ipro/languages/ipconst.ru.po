@@ -1055,6 +1055,10 @@ msgstr "HEAD: (%s)"
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) - неудачно"
 
+#: ipconst:snntpcmdhelp
+msgid "HELP"
+msgstr ""
+
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
 msgstr ""
@@ -1723,6 +1727,10 @@ msgstr ""
 msgid "Protocol wrong type for socket"
 msgstr ""
 
+#: ipconst:spop3cmdquit
+msgid "QUIT"
+msgstr ""
+
 #: ipconst:sssquit
 msgid "Quit"
 msgstr ""
@@ -1945,6 +1953,10 @@ msgstr ""
 
 #: ipconst:sseekingdiskfileto
 msgid "Seeking disk file to "
+msgstr ""
+
+#: ipconst:sntselectgroup
+msgid "Selecting Group"
 msgstr ""
 
 #: ipconst:snsgroup

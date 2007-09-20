@@ -220,6 +220,10 @@ msgstr "プロジェクト(&P)"
 msgid "&Properties"
 msgstr "プロパティ(&P)"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "置換(&R)"
@@ -396,6 +400,10 @@ msgstr "ファイル追加"
 msgid "Add Files"
 msgstr "複数ファイルを追加"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "LFM, LRSファイルがあるなら追加"
@@ -527,6 +535,10 @@ msgstr "その他の検索パス"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "前のコメントのため先頭行を調整"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -947,6 +959,10 @@ msgstr "Lazarusを構築"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "構築番号"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1608,6 +1624,10 @@ msgstr "コンポーネント"
 msgid "Components menu commands"
 msgstr "コンポーネントメニューコマンド"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr ""
@@ -1931,6 +1951,10 @@ msgstr "新規にデータモジュールを有するユニットを作成"
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "初めにプロジェクトを作成してください！"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6144,6 +6168,10 @@ msgstr ""
 msgid "Protected Method"
 msgstr "保後されたメソッド"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Publicメソッド"
@@ -6167,6 +6195,10 @@ msgstr "プロジェクトを発行するディレクトリ"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "発行されたメソッド"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6475,6 +6507,10 @@ msgstr "選択部分の置換に失敗"
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "レポート"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8464,6 +8500,10 @@ msgstr "これはpascalファイルのようです。%sいくつかのファイ�
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "このパッケージはインストールされましたが、lpkファイルが見つかりません。そのすべてのコンポーネントは無効にされています。修復してください。"
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "このソースはそのパッケージをコンパイルしてインストールためにのみ用いられます。"
@@ -9628,6 +9668,14 @@ msgstr "動的な自動インストール"
 msgid "auto install static"
 msgstr "静的な自動インストール"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9686,6 +9734,10 @@ msgstr "デバッグ出力が書き込まれるファイル。それが指定さ
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

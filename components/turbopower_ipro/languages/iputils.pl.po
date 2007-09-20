@@ -11,11 +11,11 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: iputils:sshortversion
-msgid "v%.2f"
-msgstr "v%.2f"
-
 #: iputils:slongversion
 msgid "Version %.2f"
 msgstr "Wersja %.2f"
+
+#: iputils:sshortversion
+msgid "v%.2f"
+msgstr "v%.2f"
 

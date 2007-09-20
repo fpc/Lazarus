@@ -105,6 +105,7 @@ type
 
 var
   DefaultWindowInfo: TWindowInfo;
+  OverwriteCheck: Integer = 0;
   ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
 
 

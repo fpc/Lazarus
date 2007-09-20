@@ -9,15 +9,15 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: frmtemplatevariables:svariable
-msgid "Variable"
-msgstr "Variabile"
+#: frmtemplatevariables:sdescription
+msgid "Description"
+msgstr "Descrizione"
 
 #: frmtemplatevariables:svalue
 msgid "Value"
 msgstr "Valore"
 
-#: frmtemplatevariables:sdescription
-msgid "Description"
-msgstr "Descrizione"
+#: frmtemplatevariables:svariable
+msgid "Variable"
+msgstr "Variabile"
 

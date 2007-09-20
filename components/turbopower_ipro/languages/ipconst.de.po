@@ -1064,6 +1064,10 @@ msgstr "HEAD: (%s)"
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) FAILED"
 
+#: ipconst:snntpcmdhelp
+msgid "HELP"
+msgstr ""
+
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
 msgstr "Handshake-Fehler."
@@ -1732,6 +1736,10 @@ msgstr "Protokoll nicht unterstützt"
 msgid "Protocol wrong type for socket"
 msgstr "Falscher Protokolltyp für Socket"
 
+#: ipconst:spop3cmdquit
+msgid "QUIT"
+msgstr ""
+
 #: ipconst:sssquit
 msgid "Quit"
 msgstr "Ende"
@@ -1955,6 +1963,10 @@ msgstr "Sicherheitsfunktionen nicht unterstützt"
 #: ipconst:sseekingdiskfileto
 msgid "Seeking disk file to "
 msgstr "Dateisuche bei"
+
+#: ipconst:sntselectgroup
+msgid "Selecting Group"
+msgstr ""
 
 #: ipconst:snsgroup
 msgid "Selecting group"

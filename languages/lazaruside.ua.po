@@ -210,6 +210,10 @@ msgstr "&Проект"
 msgid "&Properties"
 msgstr "&Властивості"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "&Замінити на"
@@ -386,6 +390,10 @@ msgstr "Додати файл"
 msgid "Add Files"
 msgstr "Додати файли"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "Додати LFM, LRS файли, якщо вони існують"
@@ -517,6 +525,10 @@ msgstr "Додатковий пошуковий шлях"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Вирівняти верхній рядок за рахунок коментаря попереду"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -937,6 +949,10 @@ msgstr "Побудувати Lazarus"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "Номер побудови"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1598,6 +1614,10 @@ msgstr "Коментарі"
 msgid "Components menu commands"
 msgstr "Команди компонентів меню"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr "Налаштувати %sBuild File%s"
@@ -1921,6 +1941,10 @@ msgstr "Створити новий модуль з модулем даних."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Спочатку створіть проект!"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6134,6 +6158,10 @@ msgstr "Захищений"
 msgid "Protected Method"
 msgstr "Захищений метод"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Спільний метод"
@@ -6157,6 +6185,10 @@ msgstr "Тека публікації проекту"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Опублікований метод"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6465,6 +6497,10 @@ msgstr "Помилка заміни"
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Звіт"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8454,6 +8490,10 @@ msgstr "Це виглядає як pascal файл.%sРекомендуєтьс�
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Цей пакунок встановлений але lpk-файл не був знайдений. Всі компоненти дезактивовані. Будь-ласка, виправте проблему."
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "Цей код вимагає тільки компіляції і встановлення пакунку."
@@ -9618,6 +9658,14 @@ msgstr "авто-встановити динамічно"
 msgid "auto install static"
 msgstr "авто-встановити статично"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "починається"
@@ -9676,6 +9724,10 @@ msgstr "файл, куди буде записуватись налагоджу�
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

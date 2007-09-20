@@ -1,5 +1,4 @@
-# translation of iputils.po to Lithuanian
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of iputils.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -11,11 +10,11 @@ msgstr ""
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: iputils:sshortversion
-msgid "v%.2f"
-msgstr "v%.2f"
-
 #: iputils:slongversion
 msgid "Version %.2f"
 msgstr "Versaja %.2f"
+
+#: iputils:sshortversion
+msgid "v%.2f"
+msgstr "v%.2f"
 

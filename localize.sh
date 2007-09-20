@@ -10,7 +10,8 @@
 # - updates all translated xx.po files
 #
 
-set -x
+# enable for debugging
+#set -x
 set -e
 
 if [ ! -x tools/updatepofiles ]; then
@@ -19,38 +20,48 @@ if [ ! -x tools/updatepofiles ]; then
   cd -
 fi
 
-# IDE
-IDE_RST=`find units -name lazarusidestrconsts.rst | xargs ls -1t | head -1`;
-rstconv -i $IDE_RST -o languages/lazaruside.po
-./tools/updatepofiles languages/lazaruside.po
+if [ "@"$FPCTARGET == "@" ]; then
+  FPCTARGET=`fpc -iTP`-`fpc -iTO`
+  if [ $FPCTARGET == "-" ]; then
+    FPCTARGET=""
+  fi
+fi
 
-# IDEIntf
-ObjInsp_RST=`find ideintf/units -name objinspstrconsts.rst | xargs ls -1t | head -1`;
-rstconv -i $ObjInsp_RST -o ideintf/languages/objinspstrconsts.po
-tools/updatepofiles ideintf/languages/objinspstrconsts.po
+RSTFILES=(
+  ". lazarusidestrconsts lazaruside"
+  "ideintf objinspstrconsts"
+  "ideintf fieldslist"
+  "ideintf fieldseditor"
+  "components/codetools codetoolsstrconsts"
+  "components/synedit syneditstrconst synedit"
+  "components/synedit synmacrorecorder"
+  "components/synedit synhighlighterunixshellscript"
+  "components/tdbf registerdbf"
+  "components/turbopower_ipro ipconst"
+  "components/turbopower_ipro iputils"
+  "components/cgi cgimodules"
+  "components/memds frmselectdataset"
+  "components/printers/design ideprinting"
+  "components/projecttemplates projecttemplates"
+  "components/projecttemplates frmtemplatevariables"
+  "components/projecttemplates idetemplateproject"
+  "lcl lclstrconsts"
+)  
 
-# CodeTools
-CodeTools_RST=`find components/codetools/units -name codetoolsstrconsts.rst | xargs ls -1t | head -1`;
-rstconv -i $CodeTools_RST \
-  -o components/codetools/languages/codetools.po
-./tools/updatepofiles components/codetools/languages/codetools.po
+for idx in ${!RSTFILES[@]}; do
+  LINE=(${RSTFILES[idx]})
+  RSTDIR=${LINE[0]}  
+  RSTFILE=${LINE[1]}  
+  POFILE=${LINE[2]:-$RSTFILE}
+   
+  RST=`find $RSTDIR/{units,lib}/$FPCTARGET -name $RSTFILE.rst | xargs ls -1t | head -1`;
+  
+  if [ "@"$RST != "@" ]; then
+    echo $RSTDIR/languages/$POFILE.po
+    rstconv -i $RST -o $RSTDIR/languages/$POFILE.po
+    ./tools/updatepofiles $RSTDIR/languages/$POFILE.po
+  fi
+done
 
-# SynEdit
-SynEdit_RST=`find components/synedit/units -name syneditstrconst.rst | xargs ls -1t | head -1`;
-rstconv -i $SynEdit_RST \
-  -o components/synedit/languages/synedit.po
-./tools/updatepofiles components/synedit/languages/synedit.po
-
-# SynMacroRecorder
-SynMacroRec_RST=`find components/synedit/units -name synmacrorecorder.rst | xargs ls -1t | head -1`;
-rstconv -i $SynMacroRec_RST \
-  -o components/synedit/languages/synmacrorecorder.po
-./tools/updatepofiles components/synedit/languages/synmacrorecorder.po
-
-# LCL
-LCL_RST=`find lcl/units -name lclstrconsts.rst | xargs ls -1t | head -1`;
-rstconv -i $LCL_RST -o lcl/languages/lclstrconsts.po
-./tools/updatepofiles lcl/languages/lclstrconsts.po
-
-# end.
+exit 0
 

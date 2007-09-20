@@ -1061,6 +1061,10 @@ msgstr "HEAD: (%s)"
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) NEPAVYKO"
 
+#: ipconst:snntpcmdhelp
+msgid "HELP"
+msgstr ""
+
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
 msgstr "Nepavyko patrvirtinti ryšio užmezgimo."
@@ -1729,6 +1733,10 @@ msgstr "Protokolas nepalaikomas"
 msgid "Protocol wrong type for socket"
 msgstr "Protokolo tipas netinka jungčiai"
 
+#: ipconst:spop3cmdquit
+msgid "QUIT"
+msgstr ""
+
 #: ipconst:sssquit
 msgid "Quit"
 msgstr "Baigti"
@@ -1952,6 +1960,10 @@ msgstr "Saugumo funkcijos nepalaikomos"
 #: ipconst:sseekingdiskfileto
 msgid "Seeking disk file to "
 msgstr "Disko faile peršokama į "
+
+#: ipconst:sntselectgroup
+msgid "Selecting Group"
+msgstr ""
 
 #: ipconst:snsgroup
 msgid "Selecting group"

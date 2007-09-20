@@ -223,6 +223,10 @@ msgstr "Projek&tas"
 msgid "&Properties"
 msgstr "&Savybės"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "&Pakeisti šiuo"
@@ -399,6 +403,10 @@ msgstr "Pridėti failą"
 msgid "Add Files"
 msgstr "Pridėti failus"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "Pridėti esamus LFM bei LRS failus"
@@ -530,6 +538,10 @@ msgstr "Papildomi paieškos keliai"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Turi matytis ir komentaras"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -954,6 +966,10 @@ msgstr "Daryti Lazarus"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "Darymo numeris"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1615,6 +1631,10 @@ msgstr "Komponentės"
 msgid "Components menu commands"
 msgstr "Maniu \"Komponentės\" komandos"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr "Derinti %sDaryti failą%s"
@@ -1938,6 +1958,10 @@ msgstr "Kurti naują modulį su duomenų moduliu."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Pirma sukurkite projektą!"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6153,6 +6177,10 @@ msgstr "Protected"
 msgid "Protected Method"
 msgstr "Protected metodas"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Public metodas"
@@ -6176,6 +6204,10 @@ msgstr "Skelbiamo projekto katalogas"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Published metodas"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6484,6 +6516,10 @@ msgstr "Pakeisti pažymėtąjį nepavyko."
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Ataskaita"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8485,6 +8521,10 @@ msgstr "Panašu kad tai paskalio failas.%sRekomenduotina failo varde naudoti tik
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Šis paketas įdiegtas, tačiau nerastas jo lpk failas. Pasyvinami visi jo komponentai. Ištaisykite tai."
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "Šis pirminis kodas skirtas tik paketo kompiliavimui ir diegimui."
@@ -9651,6 +9691,14 @@ msgstr "automatiškai diegti kaip dinamišką"
 msgid "auto install static"
 msgstr "automatiškai diegti kaip statišką"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "prasideda"
@@ -9709,6 +9757,10 @@ msgstr "Failas, į kurį bus rašoma derinimo išvestis. Jei jis nenurodytas, ta
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

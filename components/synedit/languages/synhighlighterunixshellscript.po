@@ -1,0 +1,4 @@
+#: synhighlighterunixshellscript:langname
+msgid "UNIX Shell Script"
+msgstr ""
+

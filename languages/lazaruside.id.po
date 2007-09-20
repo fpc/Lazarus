@@ -221,6 +221,10 @@ msgstr "&Proyek"
 msgid "&Properties"
 msgstr "&Properti"
 
+#: lazarusidestrconsts:rsremove
+msgid "&Remove"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "&Ganti Dengan"
@@ -397,6 +401,10 @@ msgstr "Tambah File"
 msgid "Add Files"
 msgstr "Tambah File"
 
+#: lazarusidestrconsts:rsaddinverse
+msgid "Add Inverse"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
 msgstr "Tambah file LFM, LRS, jika ada"
@@ -528,6 +536,10 @@ msgstr "Tambahan path pencarian"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Sesuaikan baris atas karena komentar di depan"
+
+#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
+msgid "Advanced Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -948,6 +960,10 @@ msgstr "Bangun Lazarus"
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
 msgstr "Angka Buatan"
+
+#: lazarusidestrconsts:lislazbuildbuildoptions
+msgid "Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1609,6 +1625,10 @@ msgstr "Komponen"
 msgid "Components menu commands"
 msgstr "Perintah menu Komponen"
 
+#: lazarusidestrconsts:rsconditionaldefines
+msgid "Conditional defines"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
 msgstr "Konfig %sBuild File%s"
@@ -1932,6 +1952,10 @@ msgstr "Buat unit baru dengan modul data."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Buat proyek dulu!"
+
+#: lazarusidestrconsts:rscreatenewdefine
+msgid "Create new define"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6145,6 +6169,10 @@ msgstr ""
 msgid "Protected Method"
 msgstr "Metode Protected"
 
+#: lazarusidestrconsts:lispckoptsprovides
+msgid "Provides"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Metode Public"
@@ -6168,6 +6196,10 @@ msgstr "Direktori publikasi proyek"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Metode Published"
+
+#: lazarusidestrconsts:lislazbuildquickbuildoptions
+msgid "Quick Build Options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6476,6 +6508,10 @@ msgstr "Penggantian yang dipilih gagal."
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Laporan"
+
+#: lazarusidestrconsts:lismenureportingbug
+msgid "Reporting a bug..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8465,6 +8501,10 @@ msgstr "Ini sepertinya file pascal. %s direkomendasikan untuk menggunakan nama f
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Paket diinstalasi, tetapi file lpk tidak ditemukan. Semua komponennya di-non aktifkan. Silahkan betulkan ini."
 
+#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
+msgid "This package provides the same as the following packages:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
 msgstr "Sumber ini hanya digunakan untuk kompilasi dan instalasi paket."
@@ -9629,6 +9669,14 @@ msgstr "otomatis menginstalasi dinamis"
 msgid "auto install static"
 msgstr "otomatis menginstalasi statis"
 
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr ""
+
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9687,6 +9735,10 @@ msgstr "file, dimana output debug ditulisnya. Jika tidak ditetapkan, output debu
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisreportingbugurl
+msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
