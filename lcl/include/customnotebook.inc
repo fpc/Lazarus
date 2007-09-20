@@ -395,6 +395,8 @@ procedure TCustomNotebook.SetImages(const AValue: TImageList);
 begin
   if FImages=AValue then exit;
   FImages:=AValue;
+  if HandleAllocated then
+    TWSCustomNotebookClass(WidgetSetClass).SetImageList(Self, AValue);
   UpdateTabProperties;
 end;
 

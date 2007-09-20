@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLProc, Controls, ExtCtrls, Classes,
+  LCLProc, Controls, ExtCtrls, Classes, ImgList,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls;
 
@@ -67,6 +67,7 @@ type
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; virtual;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; virtual;
+    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); virtual;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); virtual;
@@ -248,6 +249,11 @@ class function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebo
   const AClientPos: TPoint): integer;
 begin
   Result := -1;
+end;
+
+class procedure TWSCustomNotebook.SetImageList(
+  const ANotebook: TCustomNotebook; const AImageList: TCustomImageList);
+begin
 end;
 
 class procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;

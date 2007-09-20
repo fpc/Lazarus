@@ -32,9 +32,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  SysUtils, Windows, ExtCtrls, Classes, Controls, LCLType, LCLIntf, Themes,
+  SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf, Themes,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, Win32Extra, Win32Int, Win32Proc, InterfaceBase,
+  WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc, InterfaceBase,
   Win32WSControls;
 
 type
@@ -71,6 +71,7 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -384,6 +385,10 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+
+  if TCustomNoteBook(AWinControl).Images <> nil then
+    SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomNoteBook(AWinControl).Images.Handle);
+
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
   Params.WindowInfo^.needParentPaint := false;
@@ -396,9 +401,10 @@ var
 begin
   with ANotebook do
   begin
-    TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+    TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
     // store object as extra, so we can verify we got the right page later
     TCI.lParam := PtrUInt(AChild);
+    TCI.iImage := AChild.ImageIndex;
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
@@ -460,8 +466,9 @@ begin
     Res := Windows.SendMessage(ANotebook.Handle, TCM_GETITEM, RealIndex, LPARAM(@TCI));
     if (Res = 0) or (PtrUInt(TCI.lParam) <> PtrUInt(lPage)) then
     begin
-      TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+      TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       TCI.lParam := PtrUInt(lPage);
+      TCI.iImage := lPage.ImageIndex;
 {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
@@ -556,6 +563,18 @@ begin
   hittestInfo.pt.X := AClientPos.X;
   hittestInfo.pt.Y := AClientPos.Y;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
+end;
+
+class procedure TWin32WSCustomNotebook.SetImageList(
+  const ANotebook: TCustomNotebook; const AImageList: TCustomImageList);
+begin
+  if not WSCheckHandleAllocated(ANotebook, 'SetImageList') then
+    Exit;
+
+  if AImageList <> nil then
+    SendMessage(ANoteBook.Handle, TCM_SETIMAGELIST, 0, AImageList.Handle)
+  else
+    SendMessage(ANoteBook.Handle, TCM_SETIMAGELIST, 0, 0);
 end;
 
 class procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
