@@ -219,6 +219,16 @@ type
   public
   end;
 
+  { TQtWSCustomTrayIcon }
+
+  TQtWSCustomTrayIcon = class(TWSCustomTrayIcon)
+  public
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; override;
+  end;
 
 implementation
 
@@ -493,6 +503,84 @@ begin
   Result := THandle(QtGroupBox);
 end;
 
+{ TQtWSCustomTrayIcon }
+
+class function TQtWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  SystemTrayIcon: TQtSystemTrayIcon;
+begin
+  Result := False;
+
+  SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
+
+  SystemTrayIcon.Hide;
+
+  QIcon_destroy(SystemTrayIcon.IconHandle);
+  
+  SystemTrayIcon.IconHandle := nil;
+
+  SystemTrayIcon.Free;
+
+  ATrayIcon.Handle := 0;
+
+  Result := True;
+end;
+
+class function TQtWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  Text: WideString;
+  SystemTrayIcon: TQtSystemTrayIcon;
+begin
+  Result := False;
+
+  SystemTrayIcon.IconHandle := TQtSystemTrayIcon.TIconToQIconH(ATrayIcon.Icon);
+
+  SystemTrayIcon := TQtSystemTrayIcon.Create(SystemTrayIcon.IconHandle);
+
+  ATrayIcon.Handle := PtrInt(SystemTrayIcon);
+
+  Text := UTF8Decode(ATrayIcon.Hint);
+  SystemTrayIcon.setToolTip(Text);
+
+  if Assigned(ATrayIcon.PopUpMenu) then
+   if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+
+  SystemTrayIcon.show;
+
+  Result := True;
+end;
+
+{*******************************************************************
+*  TQtWSCustomTrayIcon.InternalUpdate ()
+*
+*  DESCRIPTION:    Makes modifications to the Icon while running
+*                  i.e. without hiding it and showing again
+*******************************************************************}
+class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
+var
+  SystemTrayIcon: TQtSystemTrayIcon;
+begin
+  if (ATrayIcon.Handle = 0) then Exit;
+
+  SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
+
+  { PopUpMenu }
+  if Assigned(ATrayIcon.PopUpMenu) then
+   if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+end;
+
+class function TQtWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
+class function TQtWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
+begin
+  Result := ATrayIcon.Icon.Canvas;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -520,5 +608,6 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TQtWSLabeledEdit);
   RegisterWSComponent(TCustomPanel, TQtWSCustomPanel);
 //  RegisterWSComponent(TPanel, TQtWSPanel);
+  RegisterWSComponent(TCustomTrayIcon, TQtWSCustomTrayIcon);
 ////////////////////////////////////////////////////
 end.

@@ -34,7 +34,8 @@ interface
 
 uses
   SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
-  Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes;
+  Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
+  LCLClasses, Menus;
 
 type
   { workaround problem with fcl }
@@ -1061,6 +1062,59 @@ type
     property OnStartDrag;
   end;
 
+  { TCustomTrayIcon }
+
+  TCustomTrayIcon = class(TLCLComponent)
+  private
+    FPopUpMenu: TPopupMenu;
+    FIcon: TIcon;
+    FHint: string;
+    FVisible, FShowIcon, FShowHint: Boolean;
+    FOnPaint, FOnClick, FOnDblClick: TNotifyEvent;
+    FOnMouseDown, FOnMouseUp: TMouseEvent;
+    FOnMouseMove: TMouseMoveEvent;
+    function GetCanvas: TCanvas;
+    procedure SetVisible(Value: Boolean);
+  public
+    Handle: PtrInt;
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function Hide: Boolean;
+    function Show: Boolean;
+    procedure InternalUpdate;
+    function GetPosition: TPoint;
+    property Canvas: TCanvas read GetCanvas;
+    property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
+    property Icon: TIcon read FIcon write FIcon;
+    property Hint: string read FHint write FHint;
+    property ShowHint: Boolean read FShowHint write FShowHint;
+    property ShowIcon: Boolean read FShowIcon write FShowIcon;
+    property Visible: Boolean read FVisible write SetVisible;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
+    property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+  end;
+
+  { TTrayIcon }
+  
+  TTrayIcon = class(TCustomTrayIcon)
+  published
+    property PopUpMenu;
+    property Icon;
+    property Hint;
+    property ShowHint;
+    property ShowIcon;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseMove;
+    property OnPaint;
+  end;
 
 const
   TCN_First = 0-550;
@@ -1079,7 +1133,7 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
   RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook,
-                                   TLabeledEdit,TSplitter]);
+                                   TLabeledEdit,TSplitter,TTrayIcon]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
   RegisterNoIcon([TPage]);
 end;
@@ -1100,6 +1154,7 @@ end;
 {$I radiogroup.inc}
 {$I bevel.inc}
 {$I customimage.inc}
+{$I customtrayicon.inc}
 
 initialization
   DockSplitterClass:=TSplitter;

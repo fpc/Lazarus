@@ -2197,6 +2197,7 @@ images/components/ttogglebox.xpm -text svneol=native#image/x-xpixmap
 images/components/ttoolbar.xpm -text svneol=native#image/x-xpixmap
 images/components/ttoolbutton.xpm -text svneol=native#image/x-xpixmap
 images/components/ttrackbar.xpm -text svneol=native#image/x-xpixmap
+images/components/ttrayicon.xpm -text
 images/components/ttreeview.xpm -text svneol=native#image/x-xpixmap
 images/components/tupdown.xpm -text svneol=native#image/x-xpixmap
 images/components/txmlconfig.xpm svneol=native#text/plain
@@ -2559,6 +2560,7 @@ lcl/include/custompage.inc svneol=native#text/pascal
 lcl/include/custompanel.inc svneol=native#text/pascal
 lcl/include/customsplitter.inc svneol=native#text/pascal
 lcl/include/customstatictext.inc svneol=native#text/pascal
+lcl/include/customtrayicon.inc -text
 lcl/include/customupdown.inc svneol=native#text/pascal
 lcl/include/dbcalendar.inc svneol=native#text/pascal
 lcl/include/dbcheckbox.inc svneol=native#text/pascal

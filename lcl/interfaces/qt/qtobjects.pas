@@ -332,10 +332,12 @@ type
   private
   public
     Handle: QSystemTrayIconH;
+    IconHandle: QIconH; // For external use
   public
     constructor Create(vIcon: QIconH); virtual;
     destructor Destroy; override;
   public
+    class function TIconToQIconH(const AIcon: TIcon): QIconH; // Helper function for TTrayIcon
     procedure setContextMenu(menu: QMenuH);
     procedure setIcon(icon: QIconH);
     procedure setToolTip(tip: WideString);
@@ -2070,6 +2072,27 @@ begin
   QSystemTrayIcon_destroy(handle);
 
   inherited Destroy;
+end;
+
+{*******************************************************************
+*  TQtSystemTrayIcon.TIconToQIconH ()
+*
+*  DESCRIPTION:    Converts a TIcon to a QIconH
+*******************************************************************}
+class function TQtSystemTrayIcon.TIconToQIconH(const AIcon: TIcon): QIconH;
+var
+  Pixmap: QPixmapH;
+begin
+  if (AIcon <> nil) and (AIcon.Handle <> 0) then
+  begin
+    Pixmap := QPixmap_create();
+    QPixmap_fromImage(Pixmap, TQtImage(AIcon.Handle).Handle);
+
+    Result := QIcon_create(Pixmap);
+    QPixmap_destroy(Pixmap);
+  end
+  else
+    Result := QIcon_create();
 end;
 
 procedure TQtSystemTrayIcon.setContextMenu(menu: QMenuH);

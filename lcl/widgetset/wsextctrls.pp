@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLProc, Controls, ExtCtrls, Classes, ImgList,
+  LCLProc, Controls, ExtCtrls, Classes, ImgList, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls;
 
@@ -162,6 +162,18 @@ type
 
   TWSPanel = class(TWSCustomPanel)
   end;
+
+  { TWSCustomTrayIcon }
+
+  TWSCustomTrayIcon = class(TWSLCLComponent)
+  public
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); virtual;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; virtual;
+    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; virtual;
+  end;
+  TWSCustomTrayIconClass = class of TWSCustomTrayIcon;
 
 
 implementation
@@ -284,6 +296,67 @@ begin
   debugln('TWSCustomSplitter.DrawSplitter TODO');
 end;
 
+{ TWSCustomTrayIcon }
+
+{*******************************************************************
+*  TWSCustomTrayIcon.Hide ()
+*
+*  DESCRIPTION:    Hides the Icon
+*
+*  RETURNS:        If successfull
+*
+*******************************************************************}
+class function TWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
+begin
+  Result := False;
+end;
+
+{*******************************************************************
+*  TWSCustomTrayIcon.Show ()
+*
+*  DESCRIPTION:    Shows the Icon
+*
+*  RETURNS:        If successfull
+*
+*******************************************************************}
+class function TWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+begin
+  Result := False;
+end;
+
+{*******************************************************************
+*  TWSCustomTrayIcon.InternalUpdate ()
+*
+*  DESCRIPTION:    Makes modifications to the Icon while running
+*                  i.e. without hiding it and showing again
+*******************************************************************}
+class procedure TWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
+begin
+
+end;
+
+{*******************************************************************
+*  TWSCustomTrayIcon.GetPosition ()
+*
+*  DESCRIPTION:    Returns the position of the tray icon on the display.
+*                  This function is utilized to show message boxes near
+*                  the icon
+*******************************************************************}
+class function TWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
+{*******************************************************************
+*  TWSCustomTrayIcon.GetCanvas ()
+*
+*  DESCRIPTION:    Getter method of the Canvas property
+*******************************************************************}
+class function TWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
+begin
+  Result := nil;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -309,5 +382,6 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TWSLabeledEdit);
 //  RegisterWSComponent(TCustomPanel, TWSCustomPanel);
 //  RegisterWSComponent(TPanel, TWSPanel);
+  RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
 ////////////////////////////////////////////////////
 end.
