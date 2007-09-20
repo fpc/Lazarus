@@ -173,6 +173,13 @@ end;
 { TQtWSFileDialog }
 
 class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog): WideString;
+
+  function GetExtensionString(ASource: String; AStart, ALength: Integer): String; inline;
+  begin
+    // replace *.ext1, *.ext2 by *.ext1 *.ext2
+    Result := '(' + StringReplace(Copy(ASource, AStart, ALength), ',', ' ', [rfReplaceAll]) + ')';
+  end;
+  
 var
   TmpFilter, strExtensions: string;
   ParserState, Position, i: Integer;
@@ -220,7 +227,7 @@ begin
       else
       if ParserState = 2 then
       begin
-        strExtensions := '(' + Copy(AFileDialog.Filter, Position, i - Position) + ')';
+        strExtensions := GetExtensionString(AFileDialog.Filter, Position, i - Position);
 
         if Pos(strExtensions, TmpFilter) = 0 then
           TmpFilter := TmpFilter + ' ' + strExtensions;
@@ -235,7 +242,7 @@ begin
     end;
   end;
 
-  strExtensions := '(' + Copy(AFileDialog.Filter, Position, i + 1 - Position) + ')';
+  strExtensions := GetExtensionString(AFileDialog.Filter, Position, i + 1 - Position);
 
   if Pos(strExtensions, TmpFilter) = 0 then
     TmpFilter := TmpFilter + ' ' + strExtensions;
@@ -260,15 +267,14 @@ begin
   else
     QtFileDialog.setViewMode(QFileDialogList);
     
+  if ofAllowMultiSelect in TOpenDialog(AFileDialog).Options then
+    QtFileDialog.setFileMode(QFileDialogExistingFiles)
+  else
   if ofFileMustExist in TOpenDialog(AFileDialog).Options then
-  begin
-    if ofAllowMultiSelect in TOpenDialog(AFileDialog).Options then
-      QtFileDialog.setFileMode(QFileDialogExistingFiles)
-    else
-      QtFileDialog.setFileMode(QFileDialogExistingFile)
-  end
+    QtFileDialog.setFileMode(QFileDialogExistingFile)
   else
     QtFileDialog.setFileMode(QFileDialogAnyFile);
+    
   QtFileDialog.setLabelText(QFileDialogFileName, GetUtf8String(AFileDialog.FileName));
 end;
 
