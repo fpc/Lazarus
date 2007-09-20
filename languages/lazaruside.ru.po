@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-17 01:44+0300\n"
+"PO-Revision-Date: 2007-09-20 01:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -223,7 +223,7 @@ msgstr "&Свойства"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "&Удалить"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -403,7 +403,7 @@ msgstr "Добавить файлы"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Добавить инверсию"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -539,7 +539,7 @@ msgstr "Выровнять верхнюю строку по комментари
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Расширенные параметры сборки"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -963,7 +963,7 @@ msgstr "Номер сборки"
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "Параметры сборки"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1627,7 +1627,7 @@ msgstr "Команды компонентов меню"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
+msgstr "Условные определения"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1955,7 +1955,7 @@ msgstr "Создайте сперва проект!"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
-msgstr ""
+msgstr "Создать новое определение"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -5563,7 +5563,7 @@ msgstr "Открыть недавние"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr "Открыть недавний пакет ..."
+msgstr "Открыть недавний пакет"
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6171,7 +6171,7 @@ msgstr "Защищённый метод"
 
 #: lazarusidestrconsts:lispckoptsprovides
 msgid "Provides"
-msgstr ""
+msgstr "Возможности"
 
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
@@ -6199,7 +6199,7 @@ msgstr "Опубликованный метод"
 
 #: lazarusidestrconsts:lislazbuildquickbuildoptions
 msgid "Quick Build Options"
-msgstr ""
+msgstr "Простые параметры сборки"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6511,7 +6511,7 @@ msgstr "Отчет"
 
 #: lazarusidestrconsts:lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Сообщить об ошибке..."
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8503,7 +8503,7 @@ msgstr "Пакет установлен, но файл lpk не найден. В
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
-msgstr ""
+msgstr "Этот пакет предоставляет те же возможности, что и следующие пакеты:"
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9043,23 +9043,23 @@ msgstr "Сдвинуть блок влево"
 
 #: lazarusidestrconsts:lispckedituninstall
 msgid "Uninstall"
-msgstr "Деинсталлировать"
+msgstr "Удалить"
 
 #: lazarusidestrconsts:lispckexpluninstallonnextstart
 msgid "Uninstall on next start"
-msgstr "Деинсталлировать при след. пуске"
+msgstr "Удалить при след. пуске"
 
 #: lazarusidestrconsts:lispkgmanguninstallpackage2
 msgid "Uninstall package %s?"
-msgstr "Деинсталлировать пакет %s?"
+msgstr "Удалить пакет %s?"
 
 #: lazarusidestrconsts:lispkgmanguninstallpackage
 msgid "Uninstall package?"
-msgstr "Деинсталлировать пакет?"
+msgstr "Удалить пакет?"
 
 #: lazarusidestrconsts:lisuninstallselection
 msgid "Uninstall selection"
-msgstr "Деинсталлировать выделение"
+msgstr "Удалить выбранное"
 
 #: lazarusidestrconsts:lispkgfiletypeunit
 msgid "Unit"
@@ -9671,11 +9671,11 @@ msgstr "автоустановить статически"
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
 msgid "automatically on line break"
-msgstr ""
+msgstr "Автоматически при переходе на новую строку"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "automatically on space"
-msgstr ""
+msgstr "Автоматически при нажатии пробела"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
@@ -9739,7 +9739,7 @@ msgstr "Программа FreePascal, использующая TCustomApplicati
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr ""
+msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
