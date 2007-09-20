@@ -1,8 +1,8 @@
 #: cgimodules:serrnorequesthandler
 msgid "%s: No CGI request handler set."
-msgstr ""
+msgstr "%s: Nenhum manipulador de CGI request configurado."
 
 #: cgimodules:serrnomainmodule
 msgid "No CGI datamodule to handle CGI request."
-msgstr ""
+msgstr "Nenhum datamodule de CGI para manipular o CGI request."
 
