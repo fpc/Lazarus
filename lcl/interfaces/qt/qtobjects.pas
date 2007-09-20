@@ -226,6 +226,7 @@ type
 
   TQtDeviceContext = class(TObject)
   private
+    FPenPos: TQtPoint;
     FOwnPainter: Boolean;
     SelFont: TQTFont;
     SelBrush: TQTBrush;
@@ -273,6 +274,9 @@ type
 
     procedure setBrushOrigin(x, y: Integer);
     procedure brushOrigin(retval: PPoint);
+    procedure getPenPos(retval: PPoint);
+    procedure setPenPos(x, y: Integer);
+
     function font: TQtFont;
     procedure setFont(f: TQtFont);
     function brush: TQtBrush;
@@ -1266,6 +1270,8 @@ begin
   end;
   FOwnPainter := True;
   CreateObjects;
+  FPenPos.X := 0;
+  FPenPos.Y := 0;
 end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
@@ -1651,6 +1657,18 @@ begin
   QPainter_brushOrigin(Widget, @QtPoint);
   retval^.x := QtPoint.x;
   retval^.y := QtPoint.y;
+end;
+
+procedure TQtDeviceContext.getPenPos(retval: PPoint);
+begin
+  retval^.x := FPenPos.x;
+  retval^.y := FPenPos.y;
+end;
+
+procedure TQtDeviceContext.setPenPos(x, y: Integer);
+begin
+  FPenPos.X := x;
+  FPenPos.Y := y;
 end;
 
 {------------------------------------------------------------------------------

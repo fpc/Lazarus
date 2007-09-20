@@ -3272,7 +3272,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
-  BrushPos: TPoint;
+  PenPos: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI LineTo]');
@@ -3282,11 +3282,9 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  //TODO: check this brushorigin stuff, don't smell good.
-  //      replace with DC local point.
-  TQtDeviceContext(DC).brushOrigin(@BrushPos);
+  TQtDeviceContext(DC).getPenPos(@PenPos);
 
-  TQtDeviceContext(DC).drawLine( BrushPos.X, BrushPos.Y, X, Y);
+  TQtDeviceContext(DC).drawLine( PenPos.X, PenPos.Y, X, Y);
    
   MoveToEx(DC, X, Y, nil);
   
@@ -3326,9 +3324,9 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  if (OldPoint <> nil) then TQtDeviceContext(DC).brushOrigin(OldPoint);
+  if (OldPoint <> nil) then TQtDeviceContext(DC).getPenPos(OldPoint);
 
-  TQtDeviceContext(DC).setBrushOrigin(X, Y);
+  TQtDeviceContext(DC).setPenPos(X, Y);
   
   Result := True;
 end;
