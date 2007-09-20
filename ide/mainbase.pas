@@ -456,8 +456,8 @@ begin
     ParentMI:=itmSearchFindReplace;
 
     CreateMenuItem(ParentMI, itmSearchFind, 'itmSearchFind', lisMenuFind2, 'menu_search_find');
-    CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext);
-    CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious);
+    CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext, 'menu_search_find_next');
+    CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious, 'menu_search_find_previous');
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles, 'menu_search_files');
     CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace',
       lisMenuReplace2, 'menu_search_replace');
@@ -503,7 +503,7 @@ begin
     CreateMenuSeparatorSection(mnuView,itmViewMainWindows,'itmViewMainWindows');
     ParentMI:=itmViewMainWindows;
 
-    CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector);
+    CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector, 'menu_view_inspector');
     CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor);
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer);
     CreateMenuItem(ParentMI,itmViewLazDoc,'itmViewLazDoc',lisMenuLazDoc);   //DBlaszijk 5-sep-05
@@ -523,7 +523,7 @@ begin
 
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
-    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor);
+    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '', true, EnvironmentOptions.ComponentPaletteVisible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '', true, EnvironmentOptions.IDESpeedButtonsVisible);
     CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'debugger');
@@ -695,7 +695,7 @@ begin
     ParentMI:=itmBuildingLazarus;
 
     CreateMenuItem(ParentMI,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_build_lazarus');
-    CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus);
+    CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus, 'menu_configure_build_lazarus');
   end;
 end;
 
@@ -747,7 +747,7 @@ begin
     CreateMenuItem(ParentMI,itmHelpReportingBug,'itmHelpReportingBug',
                    lisMenuReportingBug, 'menu_reportingbug');
     CreateMenuItem(ParentMI,itmHelpConfigureHelp,'itmHelpConfigureHelp',
-                   lisMenuConfigureHelp);
+                   lisMenuConfigureHelp, 'menu_configure_help');
 
     CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
     ParentMI:=itmInfoHelps;
