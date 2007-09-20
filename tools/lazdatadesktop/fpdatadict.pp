@@ -53,7 +53,7 @@ Type
     procedure SetSectionName(const Value: String); override;
   Public
     Constructor Create(ACollection : TCollection); override;
-    Procedure ImportFromField(F : TField);
+    Procedure ImportFromField(F: TField; Existing : Boolean = True);
     Procedure ApplyToField(F : TField);
     Procedure Assign(Source : TPersistent);  override;
     Procedure SaveToIni(Ini: TCustomInifile; ASection : String); override;
@@ -634,7 +634,7 @@ begin
   FAlignMent:=taLeftJustify;
 end;
 
-procedure TDDFieldDef.ImportFromField(F: TField);
+procedure TDDFieldDef.ImportFromField(F: TField; Existing : Boolean = True);
 begin
   FieldName:=F.FieldName;
   FieldType:=F.DataType;
@@ -647,15 +647,18 @@ begin
     else if F is TFloatField then
       Precision:=TFloatField(F).Precision;
     end;
-  AlignMent:=F.AlignMent;
-  DisplayWidth:=F.DisplayWidth;
-  CustomConstraint:=F.CustomConstraint;
-  ConstraintErrorMessage:=F.ConstraintErrorMessage;
-  DefaultExpression:=F.DefaultExpression;
-  DisplayLabel:=F.DisplayLabel;
-  ReadOnly:=F.ReadOnly;
-  Required:=F.Required;
-  Visible:=F.Visible;
+  if not Existing then
+  begin
+    AlignMent:=F.AlignMent;
+    DisplayWidth:=F.DisplayWidth;
+    CustomConstraint:=F.CustomConstraint;
+    ConstraintErrorMessage:=F.ConstraintErrorMessage;
+    DefaultExpression:=F.DefaultExpression;
+    DisplayLabel:=F.DisplayLabel;
+    ReadOnly:=F.ReadOnly;
+    Required:=F.Required;
+    Visible:=F.Visible;
+  end;
 end;
 
 procedure TDDFieldDef.ApplyToField(F: TField);
@@ -883,27 +886,34 @@ end;
 Function TDDTableDef.ImportFromDataset(Dataset: TDataSet; DoClear : Boolean = False; UpdateExisting : Boolean = True) : Integer;
 
 Var
-  I  : Integer;
+  I : Integer;
   FD : TDDFieldDef;
-  F  : TField;
+  F : TField;
+  FieldExists : Boolean;
   
 begin
   if DoClear then
     FFieldDefs.Clear;
   For I:=0 to Dataset.Fields.Count-1 do
-    begin
+  begin
     F:=Dataset.Fields[i];
     FD:=FFieldDefs.FindField(F.FieldName);
     If (FD=Nil) then
-      FD:=FFieldDefs.AddField(F.FieldName)
-    else if not UpdateExisting then
-      FD:=Nil;
-    if (FD<>Nil) then
-      begin
-      Inc(Result);
-      FD.ImportFromField(F);
-      end;
+    begin
+      FD:=FFieldDefs.AddField(F.FieldName);
+      FieldExists := False;
+    end
+    else
+    begin
+      if not UpdateExisting then FD:=Nil;
+      FieldExists := True;
     end;
+    if (FD<>Nil) then
+    begin
+      Inc(Result);
+      FD.ImportFromField(F,FieldExists);
+    end;
+  end;
 end;
 
 procedure TDDTableDef.ApplyToDataset(Dataset: TDataset);
