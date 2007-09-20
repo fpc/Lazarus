@@ -33,7 +33,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtprivate, qtwidgets, qtproc,
+  qtprivate, qtwidgets, qtproc, QtWsControls,
   // RTL
   math,
   // LCL
@@ -549,7 +549,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 begin
-
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetBorder') then
+    Exit;
+  TQtWSWinControl.SetBorderStyle(ACustomListBox, ACustomListBox.BorderStyle);
 end;
 
 class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer);
