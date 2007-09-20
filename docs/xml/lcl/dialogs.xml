@@ -183,8 +183,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
-        <short>Common Dialog</short>
-        <descr>Common Dialog: the base type from which all other dialogs are derived. Use the "Create" method to make an instance of the dialog, the "Execute" method to show it to the user and the "Close" method to release it and free the used resources.</descr>
+        <short>The base type from which other dialogs are derived</short>
+        <descr>Common Dialog: the base type from which all other dialogs are derived. <br/>
+Use the "Create" method to make an instance of the dialog, <br/>
+the "Execute" method to show it to the user <br/>
+and the "Close" method to release it and free the used resources.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCommonDialog.FHandle">
@@ -269,13 +272,12 @@
       <element name="TCommonDialog.SetWidth.AValue"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCommonDialog.DoExecute">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The function that actually takes care of executing the dialog</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCommonDialog.DoExecute.Result"><short/></element>
+      <element name="TCommonDialog.DoExecute.Result">
+        <short>Returns True if the correct exit button was pressed</short>
+      </element>
       <!-- variable Visibility: public -->
       <element name="TCommonDialog.FCompStyle">
         <short/>
@@ -284,21 +286,20 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCommonDialog.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create a new dialog</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.Create.TheOwner"><short/></element>
+      <element name="TCommonDialog.Create.TheOwner">
+        <short>The owner of the dialog: the component that called it</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TCommonDialog.Execute">
         <short>A public method of a dialog showing the appropriate dialog.</short>
-        <descr>Use the execute method of a dialog to show it and then check the result to see if the user made a valid choice and pressed the OK button. The result of this method is a boolean. If it is true the user pressed OK.</descr>
+        <descr>Use the execute method of a dialog to show it <br/>and then check the result to see if the user made a valid choice and pressed the OK button.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCommonDialog.Execute.Result">
-        <short>Boolean</short>
+        <short>Returns True if the user pressed the OK button</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCommonDialog.Handle">
@@ -314,24 +315,15 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCommonDialog.Close">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Close the dialog and return the memory used</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCommonDialog.DoShow">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>the procedure that actually takes care of showing the dialog box</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCommonDialog.DoClose">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The procedure that actually closes the dialog</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCommonDialog.HandleAllocated">
@@ -529,12 +521,12 @@
       <!-- property Visibility: published -->
       <element name="TFileDialog.Filter">
         <short>A string property which contains possible filters.</short>
-        <descr>This is a string which contains the filters a user can choose from. The available filters and their description are separated by pipe symbols. To set this property during runtime assign a value like: "All files|*.*|Lazarus Project files|*.lpr"</descr>
+        <descr>This is a string which contains the filters a user can choose from. <br/>The available filters and their description are separated by pipe symbols. <br/>To set this property during runtime assign a value like: "All files|*.*|Lazarus Project files|*.lpr"<br/></descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.FilterIndex">
         <short>Integer property setting the used file filter.</short>
-        <descr>This property sets which file filter is teh default. Set this porperty to 2 to set the second filter as default.</descr>
+        <descr>This property sets which file filter is the default. Set <br/>this porperty to 2 to set the second filter as default.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.InitialDir">
@@ -548,7 +540,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TOpenOption">
-        <short>A set of possible options which can be used in OpenDialog</short>
+        <short>A list of possible options which can be used in OpenDialog</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofReadOnly"><short/></element>
@@ -600,9 +592,7 @@
       <element name="TOpenOption.ofAutoPreview"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TOpenOptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set of TOpenOption</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefaultOpenDialogOptions">
@@ -648,7 +638,7 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.CheckFile">
-        <short>A protected function which checkes if the choosen file meets all requirements.</short>
+        <short>A protected function which checks if the chosen file meets all requirements.</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TOpenDialog.CheckFile.Result"><short/></element>
@@ -656,7 +646,7 @@
       <element name="TOpenDialog.CheckFile.AFilename"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.CheckAllFiles">
-        <short>A protected method which call CheckFile for each selected file.</short>
+        <short>A protected method which calls CheckFile for each selected file.</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TOpenDialog.CheckAllFiles.Result"><short/></element>
@@ -695,17 +685,17 @@
       <!-- property Visibility: published -->
       <element name="TOpenDialog.OnFolderChange">
         <short>Event triggered when the user changes the folder in the OpenDialog.</short>
-        <descr>This event is called when the user changes the folder (directory) in the OpenDialog. Note: changing the folder will also trigger the OnSelectionChange event.</descr>
+        <descr>This event is called when the user changes the folder (directory) in the OpenDialog. <br/>Note: changing the folder will also trigger the OnSelectionChange event.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TOpenDialog.OnSelectionChange">
         <short>Event triggered when the user changes the selection made in the OpenDialog.</short>
-        <descr>This event is triggered when the user changes the selected file in the OpenDialog. Note: When the user changes the folder OnSelectionChange will be called first.</descr>
+        <descr>This event is triggered when the user changes the selected file in the OpenDialog. <br/>Note: When the user changes the folder OnSelectionChange will be called first.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TSaveDialog">
         <short>Save Dialog</short>
-        <descr>Save Dialog:  invoked when the application requires to save a file. <br/>If the file is already open or a filename has been specified, then the current buffer is written to that file; if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.</descr>
+        <descr>Save Dialog:  invoked when the application requires to save a file. <br/>If the file is already open or a filename has been specified, then the current buffer is written to that file; <br/>if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TSaveDialog.Create">
@@ -1092,7 +1082,7 @@ Call the Execute function to show the color dialog.</descr>
       <!-- property Visibility: published -->
       <element name="TFontDialog.PreviewText">
         <short>The text displayed in the preview pane of the dialog.</short>
-        <descr>Standard the preview plane of the dialog shows all letters both in uppercase and lowercase.</descr>
+        <descr>As a standard, the preview plane of the dialog <br/>shows all letters both in uppercase and lowercase.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFindOption">
@@ -1137,11 +1127,11 @@ Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frReplace">
-        <short>This flag is set if only the first occurence of the search string is to be replaced with the replace string.</short>
+        <short>This flag is set if only the first occurence of the search string <br/>is to be replaced with the replace string.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frReplaceAll">
-        <short>This flag is set if all occurences of the search string are to be replaced with the replace string.</short>
+        <short>This flag is set if all occurences of the search string <br/>are to be replaced with the replace string.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frWholeWord">
@@ -1159,27 +1149,23 @@ Call the Execute function to show the color dialog.</descr>
       <element name="MessageDlg">
         <short>Message Dialog</short>
         <descr>Show a message to the user and receive his response. 
-
-There are four versions of this function. The first version displays a dialog with the standard caption, the second, third and fourth versions enable you to set the caption.<br/>
-The third version allows for a Default button; the fourth version contains a help keyword instead of using context-based help.
 <br/>
+There are four versions of this function. <br/>The first version displays a dialog with the standard caption, <br/>the second, third and fourth versions enable you to set the caption.<br/><br/>
+The third version allows for a Default button; <br/>the fourth version contains a help keyword instead of using context-based help.
+<br/><br/>
+If the first 'Caption' argument is missing, no caption is shown on the box.<br/><br/>
+    This is the most complete and elaborate of the message dialogs, <br/>and allows the programmer considerable control over the appearance of the dialog box.<br/><br/>
 
-If the first 'Caption' argument is missing, no caption is shown on the box.<br/>
+    The arguments defining the kind of box and its icon are types rather than integer constants, <br/>and the buttons can be specified as a set in square brackets <br/>eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/><br/>
 
-    This is the most complete and elaborate of the message dialogs, and allows the programmer considerable control over the appearance of the dialog box.<br/>
-
-
-    The arguments defining the kind of box and its icon are types rather than integer constants, and the buttons can be specified as a set in square brackets eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/>
-
-
-    The HelpCtx argument allows the use of Context Help<br/>
-
-    The return value from the Function is the identity of the button pressed, expressed as an integer (see the definitions below, [mrNone..mrAll]).</descr>
+    The HelpCtx argument allows the use of Context Help<br/><br/>
+    The return value from the Function is the identity of the button pressed, <br/>expressed as an integer (see the constant definitions in <link id="TControl"/>, [mrNone..mrAll]).</descr>
+        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="MessageDlg.Result">
         <short>The result of this function is the button the user pressed to close the dialog.</short>
-        <descr>The result of this function is the button the user pressed to close the dialog.</descr>
+        <descr>The result of this function is the button the user pressed to close the dialog.<br/>This is expresed as an integer</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.aCaption">
@@ -1194,24 +1180,25 @@ If the first 'Caption' argument is missing, no caption is shown on the box.<br/>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.DlgType">
         <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
+        <descr>The DlgType parameter indicates the type of dialog to show. <br/>You can choose from <br/>mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which set of button captions have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
+        <descr>Buttons indicate which set of button captions have to be shown on the dialog. <br/>You can choose from predefined sets: <br/>mbAbortRetryIgnore, <br/>mbOKCancel, <br/>mbYesNo, mbYesNoCancel, <br/>or you can make your own set.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.HelpCtx">
-        <short>HelpCtx is used to specify which topic form the help should be shown.</short>
-        <descr>HelpCtx is used to specify which topic form the help should be shown.</descr>
+        <short>HelpCtx is used to specify which topic from the help should be shown.</short>
+        <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="MessageDlgPos">
         <short>An extended MessageDlg function.</short>
         <descr>This function performs the same function as the <link id="MessageDlg">MessageDlg</link>
-function. It has been extended with parameters to place the dialog on a certain postion on the screen in stead of in the centre of the screen.
-The MessageDlgPos function does not enable you to choose the caption of the dialog.</descr>
+
+function. <br/>It has been extended with parameters to place the dialog on a certain postion on the screen instead of in the centre of the screen.
+<br/>The MessageDlgPos function does not enable you to choose the caption of the dialog.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="MessageDlgPos.Result">
@@ -1226,17 +1213,17 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.DlgType">
         <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
+        <descr>The DlgType parameter indicates the type of dialog to show. <br/>You can choose from <br/>mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which buttons have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
+        <descr>Buttons indicate which buttons have to be shown on the dialog. <br/>You can choose from predefined sets: <br/>mbAbortRetryIgnore, <br/>mbOKCancel, <br/>mbYesNo, <br/>mbYesNoCancel, <br/>or you can make your own set.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.HelpCtx">
-        <short>HelpCtx is used to specify which topic form the help should be shown.</short>
-        <descr>HelpCtx is used to specify which topic form the help should be shown.</descr>
+        <short>HelpCtx is used to specify which topic from the help should be shown.</short>
+        <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.X">
@@ -1266,17 +1253,17 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.DlgType">
         <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
+        <descr>The DlgType parameter indicates the type of dialog to show. <br/>You can choose from <br/>mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which buttons have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
+        <descr>Buttons indicate which buttons have to be shown on the dialog. <br/>You can choose from predefined sets: <br/>mbAbortRetryIgnore, <br/>mbOKCancel, <br/>mbYesNo, <br/>mbYesNoCancel, <br/>or you can make your own set.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.HelpCtx">
-        <short>HelpCtx is used to specify which topic form the help should be shown.</short>
-        <descr>HelpCtx is used to specify which topic form the help should be shown.</descr>
+        <short>HelpCtx is used to specify which topic from the help should be shown.</short>
+        <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.X">
@@ -1296,13 +1283,11 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
         <short>Show a question to the user and get a response</short>
-        <descr>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.<br/>
-Buttons is a list of TModalResult and strings. For each TModalResult a button is
- created. To set a custom caption, add a string after a button.
+        <descr>QuestionDlg has the same functionality as MessageDlg <br/>except for the parameter Buttons which is of a different type. <br/>You can define your own captions and return values of this function.<br/><br/>
+Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>) and strings. <br/>For each TModalResult a button is
+ created. <br/>To set a custom caption, add a string after a button.<br/><br/>
 
-The default TModalResults defined in controls.pp (mrNone..mrLast) don't need
- 
- caption. The default captions will be used.</descr>
+The default TModalResults defined in controls.pp (mrNone..mrLast) <br/>doesn't need a caption. The default captions will be used.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="QuestionDlg.Result">
@@ -1326,27 +1311,24 @@ The default TModalResults defined in controls.pp (mrNone..mrLast) don't need
       <!-- argument Visibility: default -->
       <element name="QuestionDlg.Buttons">
         <short>An array of return values and caption for the buttons on the question dialog.</short>
-        <descr>Buttons is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists of only predefined return values like mrOK and mrCancel, the standard OK and Cancel buttons will be shown.<br/>
-The strength of this functions is however that you can fill the array like: [400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake'],  which will create a dialog with three buttons; the captions of the buttons will be the strings given in the array. <br/>The return value of the function will be 400, 401 or 402, depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.</descr>
+        <descr>Buttons is defined as a array of const. <br/>This means you can define any number of buttons to be shown. <br/>If your array consists of only predefined return values like mrOK and mrCancel, <br/>the standard OK and Cancel buttons will be shown.<br/><br/>
+
+The strength of this function is however that you can fill the array like: <br/>[400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake'],  <br/>which will create a dialog with three buttons; <br/>the captions of the buttons will be the strings given in the array. <br/>
+The return value of the function will be 400, 401 or 402, <br/>depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="QuestionDlg.HelpCtx">
-        <short>HelpCtx is used to specify which topic form the help should be shown.</short>
-        <descr>HelpCtx is used to specify which topic form the help should be shown.</descr>
+        <short>HelpCtx is used to specify which topic from the help should be shown.</short>
+        <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="ShowMessage">
         <short>Show Message</short>
         <descr>Procedure ShowMessage (const Msg: string);<br/>
+    The simplest message dialog: takes a simple string as argument, <br/>displays it in a stereotyped box, <br/>and waits for a mouse-click or enter-key event <br/>before returning to the calling routine or program.<br/><br/>
+    This is a modal procedure call, <br/>that is the box is displayed, receives focus, <br/>and does not relinquish focus until the OK box is clicked or otherwise selected.<br/><br/>
 
-{ Defined in Dialogs.pp }<br/>
-
-    The simplest message dialog: takes a simple string as argument, displays it in a stereotyped box, and waits for a mouse-click or enter-key event before returning to the calling routine or program.<br/>
-
-    This is a modal procedure call, that is the box is displayed, receives focus, and does not relinquish focus until the OK box is clicked or otherwise selected.<br/><br/>
-Example<br/>
-
-<code>Program LazMessage;
+Example<br/><code>Program LazMessage;
 Uses Dialogs;
 begin
   ShowMessage ('This is a message from Lazarus')
@@ -1363,7 +1345,7 @@ end.
         <short>Shows a message assembled from a format string and an array of arguments.</short>
         <descr>This procedure is an extension to the <link id="ShowMessage">ShowMessage</link>
 
- procedure. The parameters it takes are the same as the Format function.</descr>
+ procedure. The parameters it takes are the same as the <link id="#rtl.SysUtils.Format">Format</link> function.</descr>
         <seealso><link id="ShowMessage"/></seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1397,8 +1379,8 @@ end.
         <short>Use InputQuery to show a dialog box to get some input from the user</short>
         <descr>
           <p>Two versions of this function which displays a prompt and expects user input of textual data;</p>
-          <p>The first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password),
- the second omits this property. </p>
+          <p>The first includes a MaskInput boolean argument <br/>which determines whether the user input is masked out by asterisks in the text-input box <br/>(like during entry of a password),
+ <br/>the second omits this property. </p>
           <p>The text entered by the user is returned in the variable argument 'Value'. 
 The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). </p>
           <p>Omitting the MaskInput argument is equivalent to setting it FALSE.</p>
@@ -1407,8 +1389,8 @@ The function result is a boolean which returns TRUE if the OK button was pressed
       </element>
       <!-- function result Visibility: default -->
       <element name="InputQuery.Result">
-        <short>This function returns a Boolean as result</short>
-        <descr>If the result is True, the user pressed OK in the dialog box. Did the user press Cancel the result will be false.</descr>
+        <short>Returns True of OK button was pressed, False if Cancel was pressed or abnormal exit</short>
+        <descr>Result is True if the user pressed OK or hit RETURN in the dialog box. If the user pressed Cancel or the dialog was closed without pressing a button the result will be false.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="InputQuery.ACaption">
@@ -1421,12 +1403,12 @@ The function result is a boolean which returns TRUE if the OK button was pressed
       <!-- argument Visibility: default -->
       <element name="InputQuery.MaskInput">
         <short>Determines if the dialog shows *s or the actual input.</short>
-        <descr>Set MaskInput to true if you want to hide the input and display asterixes.</descr>
+        <descr>Set MaskInput to true if you want to hide the input and display asterisks.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="InputQuery.Value">
         <short>The value the user entered.</short>
-        <descr>When the DialogBox is shown the text in the Editbox will be Value. When ENTER is pressed or OK clicked, Value will be the text from the Editbox.</descr>
+        <descr>When the DialogBox is shown the text in the Editbox will be Value. <br/>This string can be altered or amended by the user. <br/>When ENTER is pressed or OK clicked, Value will be the (possibly amended) text from the Editbox.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="InputBox">
@@ -1463,9 +1445,9 @@ The function result is a boolean which returns TRUE if the OK button was pressed
       <!-- function Visibility: default -->
       <element name="PasswordBox">
         <short>Password Box</short>
-        <descr>PasswordBox:  a specialised form of the InputQuery. <br/>The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.<br/><code>Function PasswordBox(const ACaption, APrompt : String) : String;
-</code><br/>
-    Behaves very similarly to the InputQuery function with MaskInput = TRUE; the difference is that the password that was typed in is returned as the result of the function (like InputBox).</descr>
+        <descr>PasswordBox:  a specialised form of the InputQuery. <br/>
+The editbox on the dialog box will mask the input. <br/>The only parameters are aCaption and aPrompt.<br/>
+    Behaves very similarly to the InputQuery function with MaskInput = TRUE; <br/>the difference is that the password that was typed in is returned as the result of the function (like InputBox).</descr>
         <seealso>
           <link id="InputQuery"/>
           <link id="InputBox"/>
@@ -1488,7 +1470,6 @@ The function result is a boolean which returns TRUE if the OK button was pressed
         <short>A function that allows to user to select a directory.</short>
         <descr>This function will show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>
 Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
-
 There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.</descr>
       </element>
       <!-- function result Visibility: default -->
@@ -1525,12 +1506,14 @@ There are two version of this function, the second one having the ability to ind
       </element>
       <element name="TFindDialog">
         <short>A dialog used for finding text within the current editor or text buffer</short>
-        <descr>Opens a dialog box allowing the user to enter text for searching.<br/>As this is the parent class for the TReplaceDialog, it contains definitions for the Replace method, but the Replace option does not actually appear when the dialog is displayed: you need to use TReplaceDialog to do that</descr>
+        <descr>Opens a dialog box allowing the user to enter text for searching, for example in a text editor.<br/>
+As TFindDialog is the parent class for the TReplaceDialog, <br/>it contains definitions for the Replace method, <br/>but the Replace option does not actually appear when the dialog is displayed: <br/>you need to use TReplaceDialog to do that<br/></descr>
         <seealso><link id="TReplaceDialog"/></seealso>
       </element>
       <element name="TReplaceDialog">
         <short>A dialog allowing the user to replace text</short>
-        <descr>The dialog appears and offers boxes for the user to enter text for searching and text to replace it. <br/>A number of buttons appear, offering the choice to replace this instance, find next, replace all</descr>
+        <descr>The dialog appears and offers boxes for the user to enter text for searching and text to replace it, <br/>for example while editing a file or large piece of text. <br/>
+A number of buttons appear, offering the choice to replace this instance, find next, replace all</descr>
         <seealso><link id="TFindDialog"/></seealso>
       </element>
     </module>
