@@ -4750,7 +4750,7 @@ begin
     E5.Text := IntToStr(Margins.Right * 5 div 18);
     E6.Text := IntToStr(Margins.Bottom * 5 div 18);
     E7.Text := IntToStr(ColGap * 5 div 18);
-    Edit1.Text := IntToStr(ColCount);
+    ecolCount.Value := ColCount;
     WasOk := False;
     if ShowModal = mrOk then
     begin
@@ -4787,7 +4787,7 @@ begin
           ColGap := 0;
         end;
       end;
-      ColCount := StrToInt(Edit1.Text);
+      ColCount := ecolCount.Value;
       ChangePaper(p, w, h, Orientation);
       CurPage := CurPage; // for repaint and other
       UpdScrollbars;

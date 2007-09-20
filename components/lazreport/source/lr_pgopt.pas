@@ -17,24 +17,34 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls,ComCtrls,LCLType;
+  ExtCtrls, Buttons, StdCtrls,ComCtrls,LCLType, ButtonPanel, Spin;
 
 type
 
 { TfrPgoptForm }
 
 TfrPgoptForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
+  ButtonPanel1: TButtonPanel;
+  CB5: TCheckBox;
+  E3: TEdit;
+  E4: TEdit;
+  E5: TEdit;
+  E6: TEdit;
+  GroupBox4: TGroupBox;
+  Label3: TLabel;
+  Label4: TLabel;
+  Label5: TLabel;
+  Label6: TLabel;
     PageControl1: TPageControl;
+    ecolCount: TSpinEdit;
+    Panel1: TPanel;
+    RB1: TRadioButton;
+    RB2: TRadioButton;
     TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     GroupBox2: TGroupBox;
     imgLandScape: TImage;
     imgPortrait: TImage;
-    RB1: TRadioButton;
-    RB2: TRadioButton;
     GroupBox1: TGroupBox;
     CB1: TCheckBox;
     GroupBox3: TGroupBox;
@@ -43,24 +53,10 @@ TfrPgoptForm = class(TForm)
     E2: TEdit;
     Label1: TLabel;
     Label2: TLabel;
-    GroupBox4: TGroupBox;
-    CB5: TCheckBox;
-    E3: TEdit;
-    Label3: TLabel;
-    Label4: TLabel;
-    E4: TEdit;
-    Label5: TLabel;
-    Label6: TLabel;
-    E5: TEdit;
-    E6: TEdit;
     GroupBox5: TGroupBox;
     Label7: TLabel;
     E7: TEdit;
     Label8: TLabel;
-    Edit1: TEdit;
-    Panel8: TPanel;
-    SB1: TSpeedButton;
-    SB2: TSpeedButton;
     procedure ComB1DrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       State: TOwnerDrawState);
     procedure RB1Click(Sender: TObject);
@@ -69,8 +65,6 @@ TfrPgoptForm = class(TForm)
     procedure ComB1Click(Sender: TObject);
     procedure CB5Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure SB1Click(Sender: TObject);
-    procedure SB2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -82,7 +76,7 @@ var
 
 implementation
 
-uses LR_Prntr, LR_Class, LR_Const, LR_Utils;
+uses LR_Prntr, LR_Class, LR_Const, LR_Utils, Math;
 
 procedure TfrPgoptForm.RB1Click(Sender: TObject);
 begin
@@ -132,8 +126,19 @@ end;
 
 procedure TfrPgoptForm.FormActivate(Sender: TObject);
 begin
-  if RB1.Checked then RB1Click(nil) else RB2Click(nil);
-  ComB1Click(nil); CB5Click(nil);
+  OnActivate:=nil;
+  if RB1.Checked then
+    RB1Click(nil)
+  else
+    RB2Click(nil);
+  ComB1Click(nil);
+  CB5Click(nil);
+
+  ComB1.Width:=E1.Width;
+  ecolCount.Width:=E1.Width;
+  
+  Label3.Left:=Max(Label3.Left, Label4.Width + Label4.Left);
+  Label3.Left:=Max(Label3.Left, Label5.Width + Label5.Left);
 end;
 
 procedure TfrPgoptForm.ComB1Click(Sender: TObject);
@@ -158,8 +163,9 @@ begin
   GroupBox3.Caption :=sPgoptFormSize;
   Label1.Caption := sPgoptFormWidth;
   Label2.Caption := sPgoptFormHeight;
-  TabSheet2.Caption := sPgoptFormMargins;
+//  TabSheet2.Caption := sPgoptFormMargins;
   GroupBox4.Caption := sPgoptFormPgMargins;
+//  Label9.Caption := sPgoptFormPgMargins;
   Label3.Caption := sPgoptFormLeft;
   Label4.Caption := sPgoptFormTop;
   Label5.Caption := sPgoptFormRight;
@@ -171,28 +177,8 @@ begin
   GroupBox5.Caption := sPgoptFormColumn;
   Label7.Caption := sPgoptFormNumber;
   Label8.Caption := sPgoptFormColGap;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
-procedure TfrPgoptForm.SB1Click(Sender: TObject);
-var
-  i: Integer;
-begin
-  i := StrToInt(Edit1.Text);
-  Inc(i);
-  Edit1.Text := IntToStr(i);
-end;
-
-procedure TfrPgoptForm.SB2Click(Sender: TObject);
-var
-  i: Integer;
-begin
-  i := StrToInt(Edit1.Text);
-  Dec(i);
-  if i < 0 then i := 0;
-  Edit1.Text := IntToStr(i);
-end;
 
 initialization
   {$I lr_pgopt.lrs}
