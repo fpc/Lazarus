@@ -97,7 +97,7 @@ begin
   Result := DefWindowProc(Handle, iMsg, WParam_, LParam_);
 end;
 
-{ TWidgetTrayIcon }
+{ TWin32WSCustomTrayIcon }
 
 {*******************************************************************
 *  TWin32WSCustomTrayIcon.Hide ()
@@ -194,7 +194,7 @@ begin
 end;
 
 {*******************************************************************
-*  TWidgetTrayIcon.InternalUpdate ()
+*  TWin32WSCustomTrayIcon.InternalUpdate ()
 *
 *  DESCRIPTION:    Makes modifications to the Icon while running
 *                  i.e. without hiding it and showing again
@@ -224,10 +224,5 @@ end;
 class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result := Point(0, 0);
-end;
-
-class function TWin32WSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
-begin
-  Result := ATrayIcon.Icon.Canvas;
 end;
 

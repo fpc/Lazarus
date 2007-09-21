@@ -227,7 +227,6 @@ type
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
-    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; override;
   end;
 
 implementation
@@ -574,11 +573,6 @@ end;
 class function TQtWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result := Point(0, 0);
-end;
-
-class function TQtWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
-begin
-  Result := ATrayIcon.Icon.Canvas;
 end;
 
 initialization

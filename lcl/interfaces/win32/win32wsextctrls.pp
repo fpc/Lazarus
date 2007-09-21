@@ -33,7 +33,6 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf, Themes,
-  Graphics,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc, InterfaceBase,
   Win32WSControls;
@@ -225,7 +224,6 @@ type
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
-    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; override;
   end;
 
 procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);

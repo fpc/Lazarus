@@ -22,6 +22,8 @@
 }
 unit Gtk2WSExtCtrls;
 
+{$I ../gtk/gtkdefines.inc}
+
 {$mode objfpc}{$H+}
 
 interface
@@ -30,7 +32,7 @@ uses
   // libs
   Math, GLib2, Gtk2, Gdk2, Gtk2Int, gtkProc, GtkDef,
   // LCL
-  LCLProc, ExtCtrls, Classes, Controls, LCLType,
+  LCLProc, ExtCtrls, Classes, Controls, SysUtils, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
   GtkWSExtCtrls, gtk2WSPrivate;
@@ -204,10 +206,27 @@ type
   public
   end;
 
+  { TGtk2WSCustomTrayIcon }
+
+  TGtk2WSCustomTrayIcon = class(TWSCustomTrayIcon)
+  public
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+  end;
 
 implementation
 
-uses interfacebase;
+uses
+{$ifdef HasX}
+  x, xlib, xutil,
+{$endif}
+//  gtk2, gdk2, glib2, gtkdef, gtkproc,
+{$ifdef HasGdk2X}
+  gdk2x,
+{$endif}
+  interfacebase;
 
 type
   GtkNotebookPressEventProc = function (widget:PGtkWidget; event:PGdkEventButton):gboolean; cdecl;
@@ -293,6 +312,8 @@ begin
   {$ENDIF}
 end;
 
+{$include gtk2trayicon.inc}
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -321,5 +342,6 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TGtk2WSLabeledEdit);
 //  RegisterWSComponent(TCustomPanel, TGtk2WSCustomPanel);
 //  RegisterWSComponent(TPanel, TGtk2WSPanel);
+  RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
 ////////////////////////////////////////////////////
 end.

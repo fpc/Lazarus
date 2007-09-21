@@ -166,7 +166,7 @@ end;
 *******************************************************************}
 function TCustomTrayIcon.GetCanvas: TCanvas;
 begin
-  Result := TWSCustomTrayIconClass(WidgetSetClass).GetCanvas(Self);
+  Result := Icon.Canvas;// TWSCustomTrayIconClass(WidgetSetClass).GetCanvas(Self);
 end;
 
 // included by extctrls.pp
