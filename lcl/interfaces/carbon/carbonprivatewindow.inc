@@ -1306,7 +1306,10 @@ begin
   //DebugLn('TCarbonWindow.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
 
   if AVisible or (csDesigning in LCLobject.ComponentState) then
-    FPCMacOSAll.ShowWindow(WindowRef(Widget))
+  begin
+    SelectWindow(WindowRef(Widget)); // activate and move window to front
+    FPCMacOSAll.ShowWindow(WindowRef(Widget));
+  end
   else
     FPCMacOSAll.HideWindow(WindowRef(Widget));
 end;
