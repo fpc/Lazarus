@@ -21,7 +21,7 @@
 }
 unit qtwidgets;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -155,7 +155,7 @@ type
     procedure setCursor(const ACursor: QCursorH);
     procedure setEnabled(p1: Boolean);
     procedure setFocus;
-    procedure setFocusPolicy(const APolicy: QtFocusPolicy);
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); virtual;
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); overload;
     procedure setMaximumSize(AWidth, AHeight: Integer);
@@ -518,6 +518,7 @@ type
   TQtTabWidget = class(TQtWidget)
   private
     FCurrentChangedHook: QTabWidget_hookH;
+    FTabBarEventHook: QWidget_hookH;
     FTabBar: QTabBarH;
     function getTabBar: QTabBarH;
   protected
@@ -526,6 +527,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
   public
     function indexOf(const AWidget: QWidgetH): integer;
@@ -534,7 +536,8 @@ type
     function getCurrentIndex: Integer;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
-    procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
+    procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: WideString);
     property TabBar: QTabBarH read getTabBar;
   end;
@@ -1066,7 +1069,9 @@ begin
 
   // set focus policy
   if LCLObject.TabStop then
-    setFocusPolicy(QtClickFocus);
+    setFocusPolicy(QtClickFocus)
+  else
+    setFocusPolicy(QtNoFocus);
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -1446,6 +1451,9 @@ begin
       'Reason = ', QtFocusReasonToStr[QFocusEvent_reason(QFocusEventH(Event))]);
   {$endif}
 
+  if QFocusEvent_reason(QFocusEventH(Event)) = QtTabFocusReason then
+    DebugLn('Warning Qt handled Tab and set focus iself for ', dbgsname(LCLObject));
+    
   FillChar(Msg, SizeOf(Msg), #0);
 
   if FocusIn then
@@ -1626,8 +1634,8 @@ var
 
     function LastClickAtSamePosition: boolean;
     begin
-      Result:= (Abs(MousePos.X-LastMouse.MousePos.X) <= DblClickThreshold) and
-               (Abs(MousePos.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
+      Result:= (Abs(MousePos^.X-LastMouse.MousePos.X) <= DblClickThreshold) and
+               (Abs(MousePos^.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
     end;
 
     function LastClickInTime: boolean;
@@ -1987,8 +1995,8 @@ procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
 begin
   with getClientBounds do
   begin
-    dec(APoint.x, Left);
-    dec(APoint.y, Top);
+    dec(APoint^.x, Left);
+    dec(APoint^.y, Top);
   end;
 end;
 
@@ -2652,7 +2660,7 @@ begin
   if ssAlt   in Shift then Inc(Result, QtALT);
 end;
 
-function TQtWidget.QueryInterface(const iid: tguid; out obj): longint;
+function TQtWidget.QueryInterface(const iid: tguid; out obj): longint; stdcall;
 begin
   if GetInterface(iid, obj) then
     Result := 0
@@ -2660,12 +2668,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TQtWidget._AddRef: longint;
+function TQtWidget._AddRef: longint; stdcall;
 begin
   Result := -1; // no ref counting
 end;
 
-function TQtWidget._Release: longint;
+function TQtWidget._Release: longint; stdcall;
 begin
   Result := -1;
 end;
@@ -2940,7 +2948,7 @@ begin
   inherited AttachEvents;
   
   FClickedHook := QAbstractButton_hook_create(Widget);
-  QAbstractButton_clicked2_Event(Method) := SlotClicked;
+  QAbstractButton_clicked2_Event(Method) := @SlotClicked;
   QAbstractButton_hook_hook_clicked2(FClickedHook, Method);
 end;
 
@@ -3340,7 +3348,7 @@ var
 begin
   inherited AttachEvents;
   FStateChangedHook := QCheckBox_hook_create(Widget);
-  QCheckBox_stateChanged_Event(Method) := SignalStateChanged;
+  QCheckBox_stateChanged_Event(Method) := @SignalStateChanged;
   QCheckBox_hook_hook_stateChanged(FStateChangedHook, Method);
 end;
 
@@ -3406,7 +3414,7 @@ begin
   inherited AttachEvents;
   FClickedHook := QAbstractButton_hook_create(Widget);
   
-  QAbstractButton_clicked_Event(Method) := SignalClicked;
+  QAbstractButton_clicked_Event(Method) := @SignalClicked;
   QAbstractButton_hook_hook_clicked(FClickedHook, Method);
 end;
 
@@ -3842,19 +3850,19 @@ var
   Method: TMethod;
 begin
   inherited AttachEvents;
-  QAbstractSlider_rangeChanged_Event(Method) := SlotRangeChanged;
+  QAbstractSlider_rangeChanged_Event(Method) := @SlotRangeChanged;
   QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, Method);
 
-  QAbstractSlider_sliderMoved_Event(Method) := SlotSliderMoved;
+  QAbstractSlider_sliderMoved_Event(Method) := @SlotSliderMoved;
   QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
 
-  QAbstractSlider_sliderPressed_Event(Method) := SlotSliderPressed;
+  QAbstractSlider_sliderPressed_Event(Method) := @SlotSliderPressed;
   QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, Method);
 
-  QAbstractSlider_sliderReleased_Event(Method) := SlotSliderReleased;
+  QAbstractSlider_sliderReleased_Event(Method) := @SlotSliderReleased;
   QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, Method);
 
-  QAbstractSlider_valueChanged_Event(Method) := SlotValueChanged;
+  QAbstractSlider_valueChanged_Event(Method) := @SlotValueChanged;
   QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, Method);
 end;
 
@@ -3922,19 +3930,19 @@ var
 begin
   inherited AttachEvents;
   
-  QAbstractSlider_rangeChanged_Event(Method) := SlotRangeChanged;
+  QAbstractSlider_rangeChanged_Event(Method) := @SlotRangeChanged;
   QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, Method);
 
-  QAbstractSlider_sliderMoved_Event(Method) := SlotSliderMoved;
+  QAbstractSlider_sliderMoved_Event(Method) := @SlotSliderMoved;
   QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
 
-  QAbstractSlider_sliderPressed_Event(Method) := SlotSliderPressed;
+  QAbstractSlider_sliderPressed_Event(Method) := @SlotSliderPressed;
   QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, Method);
 
-  QAbstractSlider_sliderReleased_Event(Method) := SlotSliderReleased;
+  QAbstractSlider_sliderReleased_Event(Method) := @SlotSliderReleased;
   QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, Method);
 
-  QAbstractSlider_valueChanged_Event(Method) := SlotValueChanged;
+  QAbstractSlider_valueChanged_Event(Method) := @SlotValueChanged;
   QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, Method);
 end;
 
@@ -4050,7 +4058,7 @@ begin
   FTextChanged := QLineEdit_hook_create(Widget);
   {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
    workaround: add try..except around SetLength() }
-  QLineEdit_textChanged_Event(Method) := SignalTextChanged;
+  QLineEdit_textChanged_Event(Method) := @SignalTextChanged;
   QLineEdit_hook_hook_textChanged(FTextChanged, Method);
 end;
 
@@ -4307,7 +4315,7 @@ begin
   FTextChangedHook := QTextEdit_hook_create(Widget);
   {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
    workaround: add try..except around SetLength() }
-  QTextEdit_textChanged_Event(Method) := SignalTextChanged;
+  QTextEdit_textChanged_Event(Method) := @SignalTextChanged;
   QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
 end;
 
@@ -4357,15 +4365,43 @@ var
 begin
   inherited AttachEvents;
   FCurrentChangedHook := QTabWidget_hook_create(Widget);
-  
-  QTabWidget_currentChanged_Event(Method) := SignalCurrentChanged;
+  FTabBarEventHook := QWidget_hook_create(TabBar);
+
+  QTabWidget_currentChanged_Event(Method) := @SignalCurrentChanged;
   QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, Method);
+  TEventFilterMethod(Method) := @EventFilter;
+  QObject_hook_hook_events(FTabBarEventHook, Method);
 end;
 
 procedure TQtTabWidget.DetachEvents;
 begin
   QTabWidget_hook_destroy(FCurrentChangedHook);
+  QWidget_hook_destroy(FTabBarEventHook);
   inherited DetachEvents;
+end;
+
+function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  BeginEventProcessing;
+  if (Sender = TabBar) then
+  begin
+    Result := False;
+
+    QEvent_accept(Event);
+
+    case QEvent_type(Event) of
+      QEventKeyPress,
+      QEventKeyRelease: SlotKey(Event);
+    else
+      QEvent_ignore(Event);
+    end;
+  end else
+  begin
+    Result := inherited EventFilter(Sender, Event);
+  end;
+
+  EndEventProcessing;
 end;
 
 {------------------------------------------------------------------------------
@@ -4406,12 +4442,18 @@ begin
   QTabWidget_setCurrentIndex(QTabWidgetH(Widget), AIndex);
 end;
 
+procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  inherited setFocusPolicy(APolicy);
+  QWidget_setFocusPolicy(TabBar, APolicy);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtTabWidget.setTabPosition
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTabWidget.SetTabPosition(ATabPosition: QTabWidgetTabPosition);
+procedure TQtTabWidget.setTabPosition(ATabPosition: QTabWidgetTabPosition);
 begin
   QTabWidget_setTabPosition(QTabWidgetH(Widget), ATabPosition);
 end;
@@ -4655,15 +4697,15 @@ begin
   FChangeHook := QComboBox_hook_create(Widget);
   FSelectHook := QComboBox_hook_create(Widget);
   // OnChange event
-  QComboBox_editTextChanged_Event(Method) := SlotChange;
+  QComboBox_editTextChanged_Event(Method) := @SlotChange;
   QComboBox_hook_hook_editTextChanged(FChangeHook, Method);
   // OnSelect event
-  QComboBox_currentIndexChanged_Event(Method) := SlotSelect;
+  QComboBox_currentIndexChanged_Event(Method) := @SlotSelect;
   QComboBox_hook_hook_currentIndexChanged(FSelectHook, Method);
   
   // DropList events
   FDropListEventHook := QObject_hook_create(DropList.Widget);
-  TEventFilterMethod(Method) := EventFilter;
+  TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FDropListEventHook, Method);
 end;
 
@@ -4867,7 +4909,7 @@ begin
 
   FEditingFinishedHook := QAbstractSpinBox_hook_create(Widget);
   {TODO: find out which TLMessage should be sended }
-  QAbstractSpinBox_editingFinished_Event(Method) := SignalEditingFinished;
+  QAbstractSpinBox_editingFinished_Event(Method) := @SignalEditingFinished;
   QAbstractSpinBox_hook_hook_editingFinished(FEditingFinishedHook, Method);
 end;
 
@@ -4943,7 +4985,7 @@ var
 begin
   inherited AttachEvents;
   FValueChangedHook := QDoubleSpinBox_hook_create(Widget);
-  QDoubleSpinBox_valueChanged_Event(Method) := SignalValueChanged;
+  QDoubleSpinBox_valueChanged_Event(Method) := @SignalValueChanged;
   QDoubleSpinBox_hook_hook_valueChanged(FValueChangedHook, Method);
 end;
 
@@ -5004,7 +5046,7 @@ var
 begin
   inherited AttachEvents;
   FValueChangedHook := QSpinBox_hook_create(Widget);
-  QSpinBox_valueChanged_Event(Method) := SignalValueChanged;
+  QSpinBox_valueChanged_Event(Method) := @SignalValueChanged;
   QSpinBox_hook_hook_valueChanged(FValueChangedHook, Method);
 end;
 
@@ -5039,13 +5081,13 @@ begin
   FItemClickedHook := QListWidget_hook_create(Widget);
 
   // OnSelectionChange event
-  QListWidget_currentItemChanged_Event(Method) := SlotSelectionChange;
+  QListWidget_currentItemChanged_Event(Method) := @SlotSelectionChange;
   QListWidget_hook_hook_currentItemChanged(FSelectionChangeHook, Method);
 
-  QListWidget_itemDoubleClicked_Event(Method) := SignalItemDoubleClicked;
+  QListWidget_itemDoubleClicked_Event(Method) := @SignalItemDoubleClicked;
   QListWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
 
-  QListWidget_itemClicked_Event(Method) := SignalItemClicked;
+  QListWidget_itemClicked_Event(Method) := @SignalItemClicked;
   QListWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
 end;
 
@@ -5278,7 +5320,7 @@ begin
   inherited AttachEvents;
   FSelectionClicked := QHeaderView_hook_create(Widget);
   
-  QHeaderView_sectionClicked_Event(Method) := SignalSectionClicked;
+  QHeaderView_sectionClicked_Event(Method) := @SignalSectionClicked;
   QHeaderView_hook_hook_sectionClicked(FSelectionClicked, Method);
 end;
 
@@ -5409,28 +5451,28 @@ begin
   FItemPressedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   
-  QTreeWidget_currentItemChanged_Event(Method) := SignalCurrentItemChanged;
+  QTreeWidget_currentItemChanged_Event(Method) := @SignalCurrentItemChanged;
   QTreeWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook, Method);
 
-  QTreeWidget_itemDoubleClicked_Event(Method) := SignalItemDoubleClicked;
+  QTreeWidget_itemDoubleClicked_Event(Method) := @SignalItemDoubleClicked;
   QTreeWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
 
-  QTreeWidget_itemClicked_Event(Method) := SignalItemClicked;
+  QTreeWidget_itemClicked_Event(Method) := @SignalItemClicked;
   QTreeWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
 
-  QTreeWidget_itemActivated_Event(Method) := SignalItemActivated;
+  QTreeWidget_itemActivated_Event(Method) := @SignalItemActivated;
   QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, Method);
 
-  QTreeWidget_itemChanged_Event(Method) := SignalItemChanged;
+  QTreeWidget_itemChanged_Event(Method) := @SignalItemChanged;
   QTreeWidget_hook_hook_ItemChanged(FItemChangedHook, Method);
 
-  QTreeWidget_itemSelectionChanged_Event(Method) := SignalItemSelectionChanged;
+  QTreeWidget_itemSelectionChanged_Event(Method) := @SignalItemSelectionChanged;
   QTreeWidget_hook_hook_ItemSelectionChanged(FItemSelectionChangedHook, Method);
 
-  QTreeWidget_itemPressed_Event(Method) := SignalItemPressed;
+  QTreeWidget_itemPressed_Event(Method) := @SignalItemPressed;
   QTreeWidget_hook_hook_ItemPressed(FItemPressedHook, Method);
 
-  QTreeWidget_itemEntered_Event(Method) := SignalItemEntered;
+  QTreeWidget_itemEntered_Event(Method) := @SignalItemEntered;
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, Method);
 end;
 
@@ -5755,9 +5797,9 @@ begin
   FActionHook := QAction_hook_create(ActionHandle);
   FEventHook := QObject_hook_create(Widget);
 
-  QAction_triggered_Event(Method) := SlotTriggered;
+  QAction_triggered_Event(Method) := @SlotTriggered;
   QAction_hook_hook_triggered(FActionHook, Method);
-  TEventFilterMethod(Method) := EventFilter;
+  TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FEventHook, Method);
 end;
 
@@ -5794,7 +5836,7 @@ end;
 
 function TQtMenu.addSeparator: TQtMenu;
 begin
-  Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), nil));
+  Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), PWideString(nil)));
   Result.setSeparator(True);
 end;
 
@@ -5936,7 +5978,7 @@ begin
     FVisible := True;
     setVisible(FVisible);
   end;
-  Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), nil));
+  Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), PWideString(nil)));
   Result.setSeparator(True);
 end;
 
@@ -5967,7 +6009,7 @@ begin
   inherited AttachEvents;
 
   FValueChangedHook := QProgressBar_hook_create(Widget);
-  QProgressBar_valueChanged_Event(Method) := SignalValueChanged;
+  QProgressBar_valueChanged_Event(Method) := @SignalValueChanged;
   QProgressBar_hook_hook_valueChanged(FValueChangedHook, Method);
 end;
 
@@ -6012,7 +6054,7 @@ begin
   QProgressBar_setInvertedAppearance(QProgressBarH(Widget), invert);
 end;
 
-procedure TQtProgressBar.SignalValueChanged(Value: Integer);
+procedure TQtProgressBar.SignalValueChanged(Value: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -6371,16 +6413,16 @@ begin
   FSelectionChangedHook := QCalendarWidget_hook_create(Widget);
   FCurrentPageChangedHook := QCalendarWidget_hook_create(Widget);
   
-  QCalendarWidget_clicked_Event(Method) := SignalClicked;
+  QCalendarWidget_clicked_Event(Method) := @SignalClicked;
   QCalendarWidget_hook_hook_clicked(FClickedHook, Method);
 
-  QCalendarWidget_activated_Event(Method) := SignalActivated;
+  QCalendarWidget_activated_Event(Method) := @SignalActivated;
   QCalendarWidget_hook_hook_activated(FActivatedHook, Method);
 
-  QCalendarWidget_selectionChanged_Event(Method) := SignalSelectionChanged;
+  QCalendarWidget_selectionChanged_Event(Method) := @SignalSelectionChanged;
   QCalendarWidget_hook_hook_selectionChanged(FSelectionChangedHook, Method);
 
-  QCalendarWidget_currentPageChanged_Event(Method) := SignalCurrentPageChanged;
+  QCalendarWidget_currentPageChanged_Event(Method) := @SignalCurrentPageChanged;
   QCalendarWidget_hook_hook_currentPageChanged(FCurrentPageChangedHook, Method);
 end;
 
@@ -6579,10 +6621,10 @@ begin
   begin
     FNewDelegate := QLCLItemDelegate_create(Widget);
 
-    QLCLItemDelegate_sizeHint_Override(Method) := ItemDelegateSizeHint;
+    QLCLItemDelegate_sizeHint_Override(Method) := @ItemDelegateSizeHint;
     QLCLItemDelegate_override_sizeHint(FNewDelegate, Method);
 
-    QLCLItemDelegate_paint_Override(Method) := ItemDelegatePaint;
+    QLCLItemDelegate_paint_Override(Method) := @ItemDelegatePaint;
     QLCLItemDelegate_override_Paint(FNewDelegate, Method);
 
     FOldDelegate := QAbstractItemView_itemDelegate(QAbstractItemViewH(Widget));
@@ -6690,15 +6732,15 @@ begin
   FFilterSelectedHook := QFileDialog_hook_create(Widget);
 
   {$IFDEF USE_QT_4_3}
-  QFileDialog_filterSelected_Event(Method) := FilterSelectedEvent;
+  QFileDialog_filterSelected_Event(Method) := @FilterSelectedEvent;
   QFileDialog_hook_hook_filterSelected(FFilterSelectedHook, Method);
   {$ENDIF}
   
-  QFileDialog_currentChanged_Event(Method) := CurrentChangedEvent;
+  QFileDialog_currentChanged_Event(Method) := @CurrentChangedEvent;
   QFileDialog_hook_hook_currentChanged(FCurrentChangedHook, Method);
 
   {$IFDEF USE_QT_4_3}
-  QFileDialog_directoryEntered_Event(Method) := DirectoryEnteredEvent;
+  QFileDialog_directoryEntered_Event(Method) := @DirectoryEnteredEvent;
   QFileDialog_hook_hook_directoryEntered(FDirecotyEnteredHook, Method);
   {$ENDIF}
 end;
