@@ -26,6 +26,10 @@ const EndValue = TMyInteger(1);
 type
   TMyInteger = longint;
   PMyRecord = ^TMyRecord;
+  TMyFunc = procedure(i: integer);
+  MyNilFunc = TMyFunc(0);
+  Func2 = MyNilFunc;
+  Func3 = Func2;
 
 implementation
 

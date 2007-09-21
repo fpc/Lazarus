@@ -1430,7 +1430,7 @@ var
     if (NeededType<>Node.Desc) or (not OnlyWrongType) then begin
       // add alias
       if NeededType<>Node.Desc then begin
-        DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',ReferingNode.DescAsString]);
+        DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',NodeDescToStr(NeededType)]);
       end;
       if TreeOfCodeTreeNodeExt=nil then
         TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
@@ -1543,7 +1543,6 @@ var
   AVLNode: TAVLTreeNode;
   NodeExt: TCodeTreeNodeExtension;
   DefNode: TCodeTreeNode;
-  ReferingNode: TCodeTreeNode;
   NextAVLNode: TAVLTreeNode;
   ReferingNodeInFront: TCodeTreeNode;
   ReferingNodeBehind: TCodeTreeNode;
@@ -1563,12 +1562,11 @@ begin
     NextAVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
-    ReferingNode:=TCodeTreeNode(NodeExt.Data);
     ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
-    if (ReferingNode=nil)
-    or (not (ReferingNode.Desc in [ctnTypeDefinition,ctnConstDefinition]))
+    if (not (ReferingType in [ctnTypeDefinition,ctnConstDefinition]))
     or (DefNode.Desc=ReferingType) then begin
       TreeOfCodeTreeNodeExt.Delete(AVLNode);
+      NodeExtMemManager.DisposeNode(NodeExt);
     end;
     AVLNode:=NextAVLNode;
   end;
@@ -1578,10 +1576,9 @@ begin
   while AVLNode<>nil do begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
-    ReferingNode:=TCodeTreeNode(NodeExt.Data);
     ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
 
-    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
+    DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
 
     case ReferingType of
     ctnTypeDefinition: NewSrc:='type';

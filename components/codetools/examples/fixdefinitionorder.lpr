@@ -47,11 +47,16 @@ begin
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
     
-  // fix constants
-  if not CodeToolBoss.FixForwardDefinitions(Code) then begin
+  if not CodeToolBoss.FixAllAliasDefinitions(Code) then begin
     writeln('FixAllAliasDefinitions failed');
     exit;
   end;
+
+  // fix constants
+  {if not CodeToolBoss.FixForwardDefinitions(Code) then begin
+    writeln('FixForwardDefinitions failed');
+    exit;
+  end;}
 
   // write the new source:
   writeln('-----------------------------------');
