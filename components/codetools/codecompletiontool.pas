@@ -79,9 +79,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  PascalParserTool, MethodJumpTool, FindDeclarationTool, KeywordFuncLists,
-  CodeToolsStructs, BasicCodeTools, LinkScanner, SourceChanger,
-  CodeGraph, AVL_Tree;
+  CustomCodeTool, PascalParserTool, MethodJumpTool, FindDeclarationTool,
+  KeywordFuncLists, CodeToolsStructs, BasicCodeTools, LinkScanner,
+  SourceChanger, CodeGraph, AVL_Tree;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -203,13 +203,16 @@ type
     function FindTypeCastFunctions(out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceTypeCastFunctions(TreeOfCodeTreeNodeExt: TAVLTree;
                                 SourceChangeCache: TSourceChangeCache): boolean;
+    function MovePointerTypesToTargetSections(
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function FixForwardDefinitions(SourceChangeCache: TSourceChangeCache
                                    ): boolean;
     function GatherUnitDefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
                       OnlyInterface, ExceptionOnRedefinition: boolean): boolean;
     function BuildUnitDefinitionGraph(
-                        out DefinitionesTreeOfCodeTreeNodeExt: TAVLTree;
+                        out DefinitionsTreeOfCodeTreeNodeExt: TAVLTree;
                         out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
+    procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -236,6 +239,38 @@ type
 
   
 implementation
+
+type
+  TNodeMoveEdge = class
+  public
+    GraphNode: TCodeGraphNode;
+    DestPos: integer;
+    TologicalLevel: integer;
+    SrcPos: integer;
+  end;
+  
+function CompareNodeMoveEdges(NodeMove1, NodeMove2: Pointer): integer;
+var
+  Node1: TNodeMoveEdge;
+  Node2: TNodeMoveEdge;
+begin
+  Node1:=TNodeMoveEdge(NodeMove1);
+  Node2:=TNodeMoveEdge(NodeMove2);
+  if Node1.DestPos>Node2.DestPos then
+    Result:=1
+  else if Node1.DestPos<Node2.DestPos then
+    Result:=-1
+  else if Node1.TologicalLevel>Node2.TologicalLevel then
+    Result:=1
+  else if Node1.TologicalLevel<Node2.TologicalLevel then
+    Result:=-1
+  else if Node1.SrcPos>Node2.SrcPos then
+    Result:=1
+  else if Node1.SrcPos<Node2.SrcPos then
+    Result:=-1
+  else
+    Result:=0;
+end;
 
 
 { TCodeCompletionCodeTool }
@@ -2074,7 +2109,7 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TCodeCompletionCodeTool.FixForwardDefinitions(
+function TCodeCompletionCodeTool.MovePointerTypesToTargetSections(
   SourceChangeCache: TSourceChangeCache): boolean;
 const
   NodeMovedFlag = 1;
@@ -2083,7 +2118,8 @@ var
   
   procedure InitNodeMoves;
   begin
-    NodeMoves:=TCodeGraph.Create;
+    if NodeMoves=nil then
+      NodeMoves:=TCodeGraph.Create;
   end;
   
   procedure ClearNodeMoves;
@@ -2117,7 +2153,7 @@ var
   function ApplyNodeMove(GraphNode: TCodeGraphNode; MoveNode: boolean;
     InsertPos, Indent: integer): boolean;
   // if MoveNode=true then move code of GraphNode.Node to InsertPos
-  // Always: recursively all nodes that should be moved to GraphNode too
+  // Always: move recursively all nodes that should be moved to GraphNode too
   var
     AVLNode: TAVLTreeNode;
     GraphEdge: TCodeGraphEdge;
@@ -2163,7 +2199,7 @@ var
     Result:=true;
   end;
   
-  function ApplyNodeMoves: boolean;
+  function ApplyNodeMoves(ExceptionOnCircle: boolean): boolean;
   var
     GraphEdge: TCodeGraphEdge;
     ListOfGraphNodes: TFPList;
@@ -2175,25 +2211,40 @@ var
     Result:=false;
     if NodeMoves.Edges.Count=0 then exit(true);
     
-    // check that every node has at most one destination
+    // check that every node has no more than one destination
     GraphNode:=NodeMoves.FindGraphNodeWithNumberOfOutEdges(2,-1);
     if GraphNode<>nil then begin
-      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.ApplyNodeMoves inconsistency: node should be moved to several places: ',ExtractNode(GraphNode.Node,[])]);
-      raise Exception.Create('TCodeCompletionCodeTool.FixForwardDefinitions.ApplyNodeMoves node should be moved to several places');
+      DebugLn(['TCodeCompletionCodeTool.MovePointerTypesToTargetSections.ApplyNodeMoves inconsistency: node should be moved to several places: ',ExtractNode(GraphNode.Node,[])]);
+      raise Exception.Create('TCodeCompletionCodeTool.MovePointerTypesToTargetSections.ApplyNodeMoves node should be moved to several places');
     end;
     
     // sort topologically and break all circles
     repeat
-      GraphEdge:=NodeMoves.GetTopologicalSortedList(ListOfGraphNodes);
+      GraphEdge:=NodeMoves.GetTopologicalSortedList(ListOfGraphNodes,true,false,true);
       if GraphEdge=nil then break;
-      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.ApplyNodeMoves break circle: From=',ExtractNode(GraphEdge.FromNode.Node,[]),' To=',ExtractNode(GraphEdge.ToNode.Node,[])]);
+      if ExceptionOnCircle then
+        raise Exception.Create('TCodeCompletionCodeTool.MovePointerTypesToTargetSections.ApplyNodeMoves found circle: From='+ExtractNode(GraphEdge.FromNode.Node,[])+' To='+ExtractNode(GraphEdge.ToNode.Node,[]));
+      DebugLn(['TCodeCompletionCodeTool.MovePointerTypesToTargetSections.ApplyNodeMoves break circle: From=',ExtractNode(GraphEdge.FromNode.Node,[]),' To=',ExtractNode(GraphEdge.ToNode.Node,[])]);
       NodeMoves.DeleteEdge(GraphEdge);
       ListOfGraphNodes.Free;
     until false;
     
-    // apply changes
-    // the ListOfGraphNodes is sorted topologically with nodes at end must be
-    // moved first
+    for i:=0 to ListOfGraphNodes.Count-1 do begin
+      GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+      DebugLn(['ApplyNodeMoves i=',i,' ',ExtractNode(GraphNode.Node,[]),' InFrontCnt=',GraphNode.InTreeCount,' BehindCnt=',GraphNode.OutTreeCount]);
+    end;
+    
+    { apply changes
+      the ListOfGraphNodes is sorted topologically with nodes at end must be
+      moved first
+      For example:
+        var AnArray: array[0..EndValue] of char;
+        const EndValue = TMyInteger(1);
+        type TMyInteger = longint;
+      Edges: TMyInteger -> AnArray
+             EndValue -> AnArray
+      List:
+    }
     NodeMoves.ClearNodeFlags;
     for i:=ListOfGraphNodes.Count-1 downto 0 do begin
       GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
@@ -2206,79 +2257,686 @@ var
     Result:=SourceChangeCache.Apply;
   end;
 
-  function MovePointerTypesToTargetSections: boolean;
-  var
-    Definitions: TAVLTree;// tree of TCodeTreeNodeExtension
-    Graph: TCodeGraph;
-    AVLNode: TAVLTreeNode;
-    NodeExt: TCodeTreeNodeExtension;
-    Node: TCodeTreeNode;
-    GraphNode: TCodeGraphNode;
-    RequiredAVLNode: TAVLTreeNode;
-    GraphEdge: TCodeGraphEdge;
-    RequiredNode: TCodeTreeNode;
-    RequiredTypeNode: TCodeTreeNode;
-  begin
-    Result:=false;
-    try
-      // move the pointer types to the same type sections
-      if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
-      SourceChangeCache.MainScanner:=Scanner;
-      if Definitions=nil then exit(true);
-      InitNodeMoves;
-      
-      AVLNode:=Definitions.FindLowest;
-      while AVLNode<>nil do begin
-        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-        Node:=NodeExt.Node;
-        if (Node.Desc=ctnTypeDefinition) and (Node.FirstChild<>nil)
-        and (Node.FirstChild.Desc=ctnPointerType) then begin
-          // this is a pointer type
-          // check if it only depends on the type nodes of a single section
-          //DebugLn(['MovePointerTypesToTargetSections Pointer=',ExtractNode(Node,[])]);
-          RequiredTypeNode:=nil;
-          GraphNode:=Graph.GetGraphNode(Node,false);
-          if GraphNode.OutTree<>nil then begin
-            RequiredAVLNode:=GraphNode.OutTree.FindLowest;
-            while RequiredAVLNode<>nil do begin
-              GraphEdge:=TCodeGraphEdge(RequiredAVLNode.Data);
-              RequiredNode:=GraphEdge.ToNode.Node;
-              if (RequiredNode.Desc=ctnTypeDefinition)
-              and (RequiredNode.Parent.Desc=ctnTypeSection) then begin
-                //DebugLn(['MovePointerTypesToTargetSections required=',ExtractNode(RequiredNode,[])]);
-                if RequiredTypeNode=nil then begin
-                  RequiredTypeNode:=RequiredNode;
-                end
-                else if RequiredTypeNode.Parent<>RequiredNode.Parent then begin
-                  DebugLn(['MovePointerTypesToTargetSections required nodes in different type sections']);
-                  RequiredTypeNode:=nil;
-                  break;
-                end;
-              end else begin
-                DebugLn(['MovePointerTypesToTargetSections required nodes are not only types']);
+var
+  Definitions: TAVLTree;// tree of TCodeTreeNodeExtension
+  Graph: TCodeGraph;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  Node: TCodeTreeNode;
+  GraphNode: TCodeGraphNode;
+  RequiredAVLNode: TAVLTreeNode;
+  GraphEdge: TCodeGraphEdge;
+  RequiredNode: TCodeTreeNode;
+  RequiredTypeNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  NodeMoves:=nil;
+  Definitions:=nil;
+  Graph:=nil;
+  try
+    // move the pointer types to the same type sections
+    if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;
+    SourceChangeCache.MainScanner:=Scanner;
+    if Definitions=nil then exit(true);
+    InitNodeMoves;
+    
+    AVLNode:=Definitions.FindLowest;
+    while AVLNode<>nil do begin
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      Node:=NodeExt.Node;
+      if (Node.Desc=ctnTypeDefinition) and (Node.FirstChild<>nil)
+      and (Node.FirstChild.Desc=ctnPointerType) then begin
+        // this is a pointer type
+        // check if it only depends on the type nodes of a single section
+        //DebugLn(['MovePointerTypesToTargetSections Pointer=',ExtractNode(Node,[])]);
+        RequiredTypeNode:=nil;
+        GraphNode:=Graph.GetGraphNode(Node,false);
+        if GraphNode.OutTree<>nil then begin
+          RequiredAVLNode:=GraphNode.OutTree.FindLowest;
+          while RequiredAVLNode<>nil do begin
+            GraphEdge:=TCodeGraphEdge(RequiredAVLNode.Data);
+            RequiredNode:=GraphEdge.ToNode.Node;
+            if (RequiredNode.Desc=ctnTypeDefinition)
+            and (RequiredNode.Parent.Desc=ctnTypeSection) then begin
+              //DebugLn(['MovePointerTypesToTargetSections required=',ExtractNode(RequiredNode,[])]);
+              if RequiredTypeNode=nil then begin
+                RequiredTypeNode:=RequiredNode;
+              end
+              else if RequiredTypeNode.Parent<>RequiredNode.Parent then begin
+                DebugLn(['MovePointerTypesToTargetSections required nodes in different type sections']);
                 RequiredTypeNode:=nil;
                 break;
               end;
-              RequiredAVLNode:=GraphNode.OutTree.FindSuccessor(RequiredAVLNode);
+            end else begin
+              DebugLn(['MovePointerTypesToTargetSections required nodes are not only types']);
+              RequiredTypeNode:=nil;
+              break;
             end;
-          end;
-          if (RequiredTypeNode<>nil) then begin
-            // this pointer type depends only on the type nodes of a single type
-            // section
-            if (Node.Parent<>RequiredNode.Parent) then begin
-              // pointer type is in other section => move
-              DebugLn(['MovePointerTypesToTargetSections move Pointer=',ExtractNode(Node,[]),' Required=',ExtractNode(RequiredNode,[])]);
-              AddMove(Node,RequiredNode);
-            end;
+            RequiredAVLNode:=GraphNode.OutTree.FindSuccessor(RequiredAVLNode);
           end;
         end;
-        AVLNode:=Definitions.FindSuccessor(AVLNode);
+        if (RequiredTypeNode<>nil) then begin
+          // this pointer type depends only on the type nodes of a single type
+          // section
+          if (Node.Parent<>RequiredNode.Parent) then begin
+            // pointer type is in other section => move
+            DebugLn(['MovePointerTypesToTargetSections move Pointer=',ExtractNode(Node,[]),' Required=',ExtractNode(RequiredNode,[])]);
+            AddMove(Node,RequiredNode);
+          end;
+        end;
       end;
-      Result:=ApplyNodeMoves;
-    finally
+      AVLNode:=Definitions.FindSuccessor(AVLNode);
+    end;
+    Result:=ApplyNodeMoves(false);
+  finally
+    NodeExtMemManager.DisposeAVLTree(Definitions);
+    Graph.Free;
+    ClearNodeMoves;
+  end;
+end;
+
+function TCodeCompletionCodeTool.FixForwardDefinitions(
+  SourceChangeCache: TSourceChangeCache): boolean;
+
+  function UpdateGraph(var Definitions: TAVLTree; var Graph: TCodeGraph;
+    Rebuild: boolean): boolean;
+  begin
+    if Definitions<>nil then begin
       NodeExtMemManager.DisposeAVLTree(Definitions);
+      Definitions:=nil;
+    end;
+    if Graph<>nil then begin
       Graph.Free;
-      ClearNodeMoves;
+      Graph:=nil;
+    end;
+    if Rebuild then
+      Result:=BuildUnitDefinitionGraph(Definitions,Graph,true)
+    else
+      Result:=true;
+  end;
+
+  function CreateTypeSectionForCircle(CircleOfGraphNodes: TFPList;
+    var Definitions: TAVLTree; var Graph: TCodeGraph): boolean;
+  // CircleOfGraphNodes is a list of TCodeGraphNode that should be moved
+  // to a new type section
+  
+    function IndexOfNode(Node: TCodeTreeNode): integer;
+    begin
+      Result:=CircleOfGraphNodes.Count-1;
+      while (Result>=0)
+      and (TCodeGraphNode(CircleOfGraphNodes[Result]).Node<>Node) do
+        dec(Result);
+    end;
+  
+  var
+    i: Integer;
+    GraphNode: TCodeGraphNode;
+    Node: TCodeTreeNode;
+    NewTxt: String;
+    EndGap: TGapTyp;
+    InsertPos: LongInt;
+    Indent: LongInt;
+    FromPos: LongInt;
+    ToPos: LongInt;
+  begin
+    // check if whole type sections are moved and combine them
+    i:=CircleOfGraphNodes.Count-1;
+    while i>=0 do begin
+      GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+      Node:=GraphNode.Node;
+      if Node.Parent.Desc=ctnTypeSection then begin
+        if IndexOfNode(Node.Parent)>=0 then begin
+          // the whole type section of this type will be moved
+          // => remove this type
+          CircleOfGraphNodes.Delete(i);
+        end else begin
+          // check if all types of this type section will be moved
+          Node:=Node.Parent.FirstChild;
+          while (Node<>nil) and (IndexOfNode(Node)>=0) do
+            Node:=Node.NextBrother;
+          if Node=nil then begin
+            // all types of this type section will be moved
+            // => remove the type and add the type section instead
+            CircleOfGraphNodes.Delete(i);
+            CircleOfGraphNodes.Add(Graph.AddGraphNode(GraphNode.Node.Parent));
+          end;
+        end;
+      end;
+      dec(i);
+    end;
+  
+    // create new type section
+    // Note: InsertPos must be outside the types and type sections which are moved
+    GraphNode:=TCodeGraphNode(CircleOfGraphNodes[0]);
+    Node:=GraphNode.Node;
+    if Node.Parent.Desc=ctnTypeSection then
+      Node:=Node.Parent;
+    InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+    Indent:=GetLineIndent(Src,Node.StartPos);
+    SourceChangeCache.Replace(gtEmptyLine,gtNewLine,InsertPos,InsertPos,
+      GetIndentStr(Indent)+'type');
+    inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
+    // move the types
+    for i:=0 to CircleOfGraphNodes.Count-1 do begin
+      GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+      Node:=GraphNode.Node;
+      if i=CircleOfGraphNodes.Count-1 then
+        EndGap:=gtEmptyLine
+      else
+        EndGap:=gtNewLine;
+      if Node.Desc=ctnTypeSection then begin
+        // remove type section
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+        ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
+        DebugLn(['CreateTypeSectionForCircle Removing type section: ',ExtractCode(FromPos,ToPos,[])]);
+        SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
+        // add all types of type section to new type section
+        if Node.FirstChild<>nil then begin
+          FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.FirstChild.StartPos);
+          ToPos:=FindLineEndOrCodeAfterPosition(Node.LastChild.EndPos);
+          NewTxt:=GetIndentStr(Indent)+ExtractCode(FromPos,ToPos,[phpWithComments]);
+          DebugLn(['CreateTypeSectionForCircle Adding types: ',NewTxt]);
+          SourceChangeCache.Replace(gtNewLine,EndGap,InsertPos,InsertPos,NewTxt);
+        end;
+      end else if Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+        // remove type
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+        ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
+        DebugLn(['CreateTypeSectionForCircle Removing node: ',ExtractCode(FromPos,ToPos,[])]);
+        SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
+        // add type to new type section
+        NewTxt:=GetIndentStr(Indent)+ExtractNode(Node,[phpWithComments]);
+        DebugLn(['CreateTypeSectionForCircle Adding type: ',NewTxt]);
+        SourceChangeCache.Replace(gtNewLine,EndGap,InsertPos,InsertPos,NewTxt);
+      end else
+        raise Exception.Create('inconsistency');
+    end;
+    // apply changes
+    Result:=SourceChangeCache.Apply;
+    if not Result then exit;
+    // rebuild graph
+    Result:=UpdateGraph(Definitions,Graph,true);
+    DebugLn(['CreateTypeSectionForCircle ',Src]);
+  end;
+
+  function FixCircle(var Definitions: TAVLTree;
+    var Graph: TCodeGraph; CircleNode: TCodeGraphNode): boolean;
+  var
+    CircleOfGraphNodes: TFPList; // list of TCodeGraphNode
+
+    procedure RaiseCanNotFixCircle(const Msg: string);
+    var
+      i: Integer;
+      GraphNode: TCodeGraphNode;
+      s: String;
+    begin
+      DebugLn(['RaiseCanNotFixCircle Msg="',Msg,'"']);
+      s:='Can not auto fix a circle in definitions: '+Msg;
+      for i:=0 to CircleOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+        DebugLn(['  ',i,': ',GetRedefinitionNodeText(GraphNode.Node)]);
+      end;
+      raise Exception.Create(s);
+    end;
+    
+  var
+    i: Integer;
+    GraphNode: TCodeGraphNode;
+    ParentNode: TCodeTreeNode;
+    Node: TCodeTreeNode;
+    NeedsMoving: Boolean;
+  begin
+    Result:=false;
+    CircleOfGraphNodes:=nil;
+    try
+      // get all nodes of this CircleOfGraphNodes
+      Graph.GetMaximumCircle(CircleNode,CircleOfGraphNodes);
+      // check if all nodes are types
+      for i:=0 to CircleOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+        if not (GraphNode.Node.Desc in [ctnTypeDefinition,ctnGenericType])
+        then begin
+          RaiseCanNotFixCircle('Only types can build circles, not '+GraphNode.Node.DescAsString);
+        end;
+      end;
+      NeedsMoving:=false;
+      // check if the whole type CircleOfGraphNodes has one parent
+      ParentNode:=TCodeGraphNode(CircleOfGraphNodes[0]).Node.Parent;
+      for i:=1 to CircleOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+        if GraphNode.Node.Parent<>ParentNode then begin
+          DebugLn(['FixCircle circle is not yet in one type section -> needs moving']);
+          NeedsMoving:=true;
+          break;
+        end;
+      end;
+      // check if the parent only contains the CircleOfGraphNodes nodes
+      if not NeedsMoving then begin
+        Node:=ParentNode.FirstChild;
+        while Node<>nil do begin
+          i:=CircleOfGraphNodes.Count-1;
+          while (i>=0) and (TCodeGraphNode(CircleOfGraphNodes[i]).Node<>Node) do dec(i);
+          if i<0 then begin
+            DebugLn(['FixCircle circle has not yet its own type section -> needs moving']);
+            NeedsMoving:=true;
+            break;
+          end;
+          Node:=Node.NextBrother;
+        end;
+      end;
+      
+      if NeedsMoving then begin
+        DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.FixCircle moving types into one type section']);
+        Result:=CreateTypeSectionForCircle(CircleOfGraphNodes,Definitions,Graph);
+        exit;
+      end else begin
+        // remove definitions nodes and use the type section instead
+        DebugLn(['FixCircle already ok']);
+        Graph.CombineNodes(CircleOfGraphNodes,Graph.GetGraphNode(ParentNode,true));
+      end;
+
+    finally
+      CircleOfGraphNodes.Free;
+    end;
+    Result:=true;
+  end;
+  
+  function CheckCircles(var Definitions: TAVLTree;
+    var Graph: TCodeGraph): boolean;
+  var
+    ListOfGraphNodes: TFPList;
+    CircleEdge: TCodeGraphEdge;
+  begin
+    Result:=false;
+    ListOfGraphNodes:=nil;
+    try
+      Graph.DeleteSelfCircles;
+      repeat
+        WriteCodeGraphDebugReport(Graph);
+        CircleEdge:=Graph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
+        if CircleEdge=nil then break;
+        DebugLn(['FixForwardDefinitions.CheckCircles Circle found containing ',
+          GetRedefinitionNodeText(CircleEdge.FromNode.Node),
+          ' and ',
+          GetRedefinitionNodeText(CircleEdge.ToNode.Node)]);
+        if not FixCircle(Definitions,Graph,CircleEdge.FromNode) then exit;
+      until false;
+    finally
+      ListOfGraphNodes.Free;
+    end;
+    Result:=true;
+  end;
+  
+  function MoveNodes(TreeOfNodeMoveEdges: TAVLTree): boolean;
+  // TreeOfNodeMoveEdges is a tree of TNodeMoveEdge
+  // it is sorted for insert position (i.e. left node must be inserted
+  //   in front of right node)
+  
+    function NodeWillBeMoved(Node: TCodeTreeNode): boolean;
+    var
+      AVLNode: TAVLTreeNode;
+      CurMove: TNodeMoveEdge;
+      GraphNode: TCodeGraphNode;
+    begin
+      AVLNode:=TreeOfNodeMoveEdges.FindLowest;
+      while AVLNode<>nil do begin
+        CurMove:=TNodeMoveEdge(AVLNode.Data);
+        GraphNode:=CurMove.GraphNode;
+        if GraphNode.Node=Node then exit(true);
+        AVLNode:=TreeOfNodeMoveEdges.FindSuccessor(AVLNode);
+      end;
+      Result:=false;
+    end;
+    
+    function GetFirstVarDefSequenceNode(Node: TCodeTreeNode): TCodeTreeNode;
+    begin
+      while (Node.PriorBrother<>nil) and (Node.PriorBrother.FirstChild=nil) do
+        Node:=Node.PriorBrother;
+      Result:=Node;
+    end;
+
+    function GetLastVarDefSequenceNode(Node: TCodeTreeNode): TCodeTreeNode;
+    begin
+      Result:=nil;
+      while (Node<>nil) do begin
+        Result:=Node;
+        if (Node.FirstChild<>nil) then break;
+        Node:=Node.NextBrother;
+      end;
+    end;
+
+    function WholeVarDefSequenceWillBeMoved(Node: TCodeTreeNode): boolean;
+    // test, if all variable definitions of a sequence will be moved
+    // example: var a,b,c: integer;
+    begin
+      Node:=GetFirstVarDefSequenceNode(Node);
+      while (Node<>nil) do begin
+        if not NodeWillBeMoved(Node) then exit(false);
+        if (Node.FirstChild<>nil) then break;
+        Node:=Node.NextBrother;
+      end;
+      Result:=true;
+    end;
+  
+  var
+    AVLNode: TAVLTreeNode;
+    CurMove: TNodeMoveEdge;
+    GraphNode: TCodeGraphNode;
+    PosGraphNode: TCodeGraphNode;
+    Node: TCodeTreeNode;
+    FromPos: LongInt;
+    ToPos: LongInt;
+    DestNode: TCodeTreeNode;
+    NextAVLNode: TAVLTreeNode;
+    NextMove: TNodeMoveEdge;
+    NextGraphNode: TCodeGraphNode;
+    NextPosGraphNode: TCodeGraphNode;
+    NextInsertAtSamePos: boolean;
+    NeedSection: TCodeTreeNodeDesc;
+    LastSection: TCodeTreeNodeDesc;
+    LastInsertAtSamePos: boolean;
+    InsertPos: LongInt;
+    Indent: LongInt;
+    DestSection: TCodeTreeNodeDesc;
+    NewTxt: String;
+  begin
+    Result:=false;
+    AVLNode:=TreeOfNodeMoveEdges.FindLowest;
+    LastSection:=ctnNone;
+    LastInsertAtSamePos:=false;
+    DestNode:=nil;
+    DestSection:=ctnNone;
+    while AVLNode<>nil do begin
+      CurMove:=TNodeMoveEdge(AVLNode.Data);
+      GraphNode:=CurMove.GraphNode;
+      PosGraphNode:=TCodeGraphNode(GraphNode.Data);
+      NextAVLNode:=TreeOfNodeMoveEdges.FindSuccessor(AVLNode);
+      if NextAVLNode<>nil then begin
+        NextMove:=TNodeMoveEdge(NextAVLNode.Data);
+        NextGraphNode:=NextMove.GraphNode;
+        NextPosGraphNode:=TCodeGraphNode(NextGraphNode.Data);
+        NextInsertAtSamePos:=NextPosGraphNode=PosGraphNode;
+      end else begin
+        NextInsertAtSamePos:=false;
+      end;
+      DebugLn(['MoveNodes: move ',
+        GetRedefinitionNodeText(GraphNode.Node),' ',CleanPosToStr(GraphNode.Node.StartPos),
+        ' (TopoLvl=',CurMove.TologicalLevel,')',
+        ' in front of ',GetRedefinitionNodeText(PosGraphNode.Node),' ',CleanPosToStr(PosGraphNode.Node.StartPos)
+        ]);
+      Node:=GraphNode.Node;
+      DestNode:=PosGraphNode.Node;
+      
+      // remove node
+      if Node.Desc=ctnVarDefinition then begin
+        // removing a variable definition can be tricky, because for example
+        // var a,b,c: integer;
+        if Node.FirstChild<>nil then begin
+          // this is the last of a sequence
+          if WholeVarDefSequenceWillBeMoved(Node) then begin
+            // the whole variable definition will be moved
+            // and this is the last of the sequence
+            // => remove the whole definition (names and type)
+            FromPos:=FindLineEndOrCodeInFrontOfPosition(
+                                     GetFirstVarDefSequenceNode(Node).StartPos);
+            ToPos:=FindLineEndOrCodeAfterPosition(
+                                        GetLastVarDefSequenceNode(Node).EndPos);
+          end else if NodeWillBeMoved(Node.PriorBrother) then begin
+            // this is for example: var a,b,c: integer
+            // and only b and c will be moved. The b, plus the space behind was
+            // already marked for removal
+            // => remove the c and the space behind
+            FromPos:=Node.StartPos;
+            MoveCursorToNodeStart(Node);
+            ReadNextAtom;// read identifier
+            AtomIsIdentifier(true);
+            ReadNextAtom;// read colon
+            ToPos:=CurPos.StartPos;
+          end else begin
+            // this is for example: var a,b: integer
+            // and only b will be moved.
+            // => remove ,b plus the space behind
+            MoveCursorToNodeStart(Node.PriorBrother);
+            ReadNextAtom;// read identifier
+            AtomIsIdentifier(true);
+            ReadNextAtom;// read comma
+            if not AtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
+            FromPos:=CurPos.StartPos;
+            ReadNextAtom;// read identifier
+            AtomIsIdentifier(true);
+            ReadNextAtom;//read colon
+            if not AtomIsChar(':') then RaiseCharExpectedButAtomFound(':');
+            ToPos:=CurPos.StartPos;
+          end;
+        end else begin
+          // this is not the last of a sequence
+          if WholeVarDefSequenceWillBeMoved(Node) then begin
+            // the whole sequence will be moved. This is done by the last node.
+            // => nothing to do
+            FromPos:=0;
+            ToPos:=0;
+          end else begin
+            // remove the name plus the next comma
+            FromPos:=Node.StartPos;
+            MoveCursorToNodeStart(Node);
+            ReadNextAtom;// read identifier
+            AtomIsIdentifier(true);
+            ReadNextAtom;// read comma
+            if not AtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
+            ToPos:=CurPos.StartPos;
+          end;
+        end;
+      end else begin
+        // remove the whole node
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+        ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
+      end;
+      if ToPos>FromPos then begin
+        DebugLn(['MoveNodes remove "',ExtractCode(FromPos,ToPos,[]),'"']);
+        if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then
+          exit;
+      end;
+
+      // find insert position
+      if not LastInsertAtSamePos then begin
+        if (DestNode.Desc in AllIdentifierDefinitions) then begin
+          DestNode:=GetFirstVarDefSequenceNode(DestNode);
+          if DestNode.PriorBrother<>nil then begin
+            // the destination is in front of a definition, but in the middle
+            // of a section
+            // example: type a=char; | b=byte;
+            // => insert in front of destination
+            DestSection:=DestNode.Parent.Desc;
+          end else begin
+            // the destination is the first node of a section
+            // example: type | t=char;
+            // => insert in front of the section
+            DestNode:=DestNode.Parent;
+            DestSection:=DestNode.Desc;
+          end;
+        end else begin
+          // the destination is not in a section
+          // example: in front of a type section
+          // => insert in front of destination
+          DestSection:=DestNode.Desc;
+        end;
+        InsertPos:=FindLineEndOrCodeAfterPosition(DestNode.StartPos);
+        Indent:=GetLineIndent(Src,DestNode.StartPos);
+      end;
+      
+      // start a new section if needed
+      if Node.Desc in AllIdentifierDefinitions then
+        NeedSection:=Node.Parent.Desc
+      else
+        NeedSection:=ctnNone;
+      if (LastInsertAtSamePos and (NeedSection<>LastSection))
+      or ((not LastInsertAtSamePos) and (NeedSection<>DestNode.Desc)) then begin
+        // start a new section
+        case NeedSection of
+        ctnVarDefinition: NewTxt:='var';
+        ctnConstDefinition: NewTxt:='const';
+        ctnResStrSection: NewTxt:='resourcestring';
+        ctnTypeSection: NewTxt:='type';
+        ctnLabelSection: NewTxt:='label';
+        else NewTxt:='';
+        end;
+        if NewTxt<>'' then begin
+          DebugLn(['MoveNodes start new section: insert "',NewTxt,'"']);
+          if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+                                           InsertPos,InsertPos,NewTxt)
+          then
+            exit;
+        end;
+      end;
+
+      // insert node
+      if Node.Desc=ctnVarDefinition then begin
+        NewTxt:=GetIdentifier(@Src[Node.StartPos]);
+        MoveCursorToNodeStart(GetLastVarDefSequenceNode(Node));
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        ReadNextAtom;
+        if not AtomIsChar(':') then RaiseCharExpectedButAtomFound(':');
+        FromPos:=CurPos.StartPos;
+        ToPos:=Node.EndPos;
+        NewTxt:=NewTxt+ExtractCode(FromPos,ToPos,[phpWithComments]);
+      end else begin
+        FromPos:=Node.StartPos;
+        ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
+        NewTxt:=ExtractCode(FromPos,ToPos,[phpWithComments]);
+      end;
+      NewTxt:=GetIndentStr(Indent)+NewTxt;
+      if Node.Desc in AllIdentifierDefinitions then
+        NewTxt:=GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)+NewTxt;
+      DebugLn(['MoveNodes insert "',NewTxt,'"']);
+      if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+        NewTxt) then exit;
+
+      // restore destination section if needed
+      if not NextInsertAtSamePos then begin
+        // this was the last insertion at this destination
+        if (NeedSection<>DestSection)
+        and (DestSection in AllDefinitionSections) then begin
+          // restore the section of destination
+          case DestSection of
+          ctnVarDefinition: NewTxt:='var';
+          ctnConstDefinition: NewTxt:='const';
+          ctnResStrSection: NewTxt:='resourcestring';
+          ctnTypeSection: NewTxt:='type';
+          ctnLabelSection: NewTxt:='label';
+          else NewTxt:='';
+          end;
+          if NewTxt<>'' then begin
+            DebugLn(['MoveNodes restore destination  section: insert "',NewTxt,'"']);
+            if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+                                             InsertPos,InsertPos,NewTxt)
+            then
+              exit;
+          end;
+        end;
+      end;
+
+      LastSection:=NeedSection;
+      LastInsertAtSamePos:=NextInsertAtSamePos;
+      AVLNode:=NextAVLNode;
+    end;
+    Result:=SourceChangeCache.Apply;
+  end;
+
+  function CheckOrder(var Definitions: TAVLTree;
+    var Graph: TCodeGraph): boolean;
+  // sort definitions topologically in source
+  // the Graph must be acyclic
+  var
+    ListOfGraphNodes: TFPList;
+    CircleEdge: TCodeGraphEdge;
+    i: Integer;
+    GraphNode: TCodeGraphNode;
+    AVLNode: TAVLTreeNode;
+    UsedByGraphNode: TCodeGraphNode;
+    PosGraphNode: TCodeGraphNode;
+    PosUsedByGraphNode: TCodeGraphNode;
+    NodeMoveEdges: TAVLTree;
+    NewMoveEdge: TNodeMoveEdge;
+  begin
+    Result:=false;
+    ListOfGraphNodes:=nil;
+    NodeMoveEdges:=TAVLTree.Create(@CompareNodeMoveEdges);
+    try
+      WriteCodeGraphDebugReport(Graph);
+      // create a topologically sorted list
+      CircleEdge:=Graph.GetTopologicalSortedList(ListOfGraphNodes,false,true,false);
+      if CircleEdge<>nil then
+        raise Exception.Create('not acyclic');
+
+      { set the GraphNode.Data to those GraphNodes leaves
+        with the lowest Node.StartPos
+        For example:
+          var AnArray: array[0..EndValue] of char;
+          const EndValue = TMyInteger(1);
+          type TMyInteger = integer;
+        EndValue must be moved in front of AnArray
+        and TMyInteger must be moved in front of EndValue and AnArray.
+        The topological list gives:
+          TMyInteger
+          EndValue
+          AnArray
+        NOTE: topological order alone can not be used,
+          because unrelated definitions will be mixed somehow.
+      }
+      // init the destinations
+      for i:=0 to ListOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+        DebugLn(['CheckOrder ',GetRedefinitionNodeText(GraphNode.Node)]);
+        GraphNode.Data:=GraphNode;
+      end;
+      // calculate the destinations as minimum of all dependencies
+      for i:=ListOfGraphNodes.Count-1 downto 0 do begin
+        GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+        if GraphNode.InTree<>nil then begin
+          AVLNode:=GraphNode.InTree.FindLowest;
+          while AVLNode<>nil do begin
+            UsedByGraphNode:=TCodeGraphEdge(AVLNode.Data).FromNode;
+            // for example: type TMyPointer = TMyInteger;
+            // GraphNode.Node is TMyInteger
+            // UsedByGraphNode.Node is TMyPointer
+            DebugLn(['CheckOrder GraphNode=',GetRedefinitionNodeText(GraphNode.Node),' UsedBy=',GetRedefinitionNodeText(UsedByGraphNode.Node)]);
+            PosGraphNode:=TCodeGraphNode(GraphNode.Data);
+            PosUsedByGraphNode:=TCodeGraphNode(UsedByGraphNode.Data);
+            if PosGraphNode.Node.StartPos>PosUsedByGraphNode.Node.StartPos then
+              GraphNode.Data:=PosUsedByGraphNode;
+            AVLNode:=GraphNode.InTree.FindSuccessor(AVLNode);
+          end;
+        end;
+      end;
+      // create the list of moves
+      // sorted for: 1. destination position,
+      //             2. topological level,
+      //             3. origin position in source
+      for i:=0 to ListOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+        PosGraphNode:=TCodeGraphNode(GraphNode.Data);
+        if GraphNode<>PosGraphNode then begin
+          DebugLn(['CheckOrder Move: ',
+            GetRedefinitionNodeText(GraphNode.Node),' ',CleanPosToStr(GraphNode.Node.StartPos),
+            ' TopoLvl=',GraphNode.Flags,
+            ' in front of ',GetRedefinitionNodeText(PosGraphNode.Node),' ',CleanPosToStr(PosGraphNode.Node.StartPos)
+            ]);
+          NewMoveEdge:=TNodeMoveEdge.Create;
+          NewMoveEdge.GraphNode:=GraphNode;
+          NewMoveEdge.DestPos:=PosGraphNode.Node.StartPos;
+          NewMoveEdge.TologicalLevel:=GraphNode.Flags;
+          NewMoveEdge.SrcPos:=GraphNode.Node.StartPos;
+          NodeMoveEdges.Add(NewMoveEdge);
+        end;
+      end;
+      
+      Result:=MoveNodes(NodeMoveEdges);
+    finally
+      NodeMoveEdges.FreeAndClear;
+      NodeMoveEdges.Free;
+      ListOfGraphNodes.Free;
     end;
   end;
   
@@ -2288,19 +2946,24 @@ var
 begin
   Result:=false;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
-  NodeMoves:=nil;
   Definitions:=nil;
   Graph:=nil;
   try
+    // Workaround:
     // move the pointer types to the same type sections
-    if not MovePointerTypesToTargetSections then exit;
-    if not BuildUnitDefinitionGraph(Definitions,Graph,true) then exit;
-
+    if not MovePointerTypesToTargetSections(SourceChangeCache) then exit;
+    exit(true);
+    
+    if not BuildUnitDefinitionGraph(Definitions,Graph,true) or (Graph=nil) then
+      exit;
+    SourceChangeCache.MainScanner:=Scanner;
+    // fix circles
+    if not CheckCircles(Definitions,Graph) then exit;
+    // now the graph is acyclic and nodes can be moved
+    if not CheckOrder(Definitions,Graph) then exit;
   finally
-    NodeExtMemManager.DisposeAVLTree(Definitions);
-    Graph.Free;
+    UpdateGraph(Definitions,Graph,false);
   end;
-
   Result:=true;
 end;
 
@@ -2381,7 +3044,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
-  DefinitionesTreeOfCodeTreeNodeExt: TAVLTree; out Graph: TCodeGraph;
+  DefinitionsTreeOfCodeTreeNodeExt: TAVLTree; out Graph: TCodeGraph;
   OnlyInterface: boolean): boolean;
   
   procedure CheckRange(Node: TCodeTreeNode; FromPos, ToPos: integer);
@@ -2399,7 +3062,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
       if (CurPos.StartPos>=ToPos) or (CurPos.StartPos>SrcLen) then break;
       if AtomIsIdentifier(false) then begin
         Identifier:=GetAtom;
-        NodeExt:=FindCodeTreeNodeExt(DefinitionesTreeOfCodeTreeNodeExt,
+        NodeExt:=FindCodeTreeNodeExt(DefinitionsTreeOfCodeTreeNodeExt,
                                      Identifier);
         if NodeExt<>nil then begin
           if Graph=nil then
@@ -2477,21 +3140,90 @@ var
   Node: TCodeTreeNode;
 begin
   Result:=false;
-  DefinitionesTreeOfCodeTreeNodeExt:=nil;
+  DefinitionsTreeOfCodeTreeNodeExt:=nil;
   Graph:=nil;
-  if not GatherUnitDefinitions(DefinitionesTreeOfCodeTreeNodeExt,false,true) then
+  if not GatherUnitDefinitions(DefinitionsTreeOfCodeTreeNodeExt,false,true) then
     exit;
-  if DefinitionesTreeOfCodeTreeNodeExt=nil then exit(true);
+  if DefinitionsTreeOfCodeTreeNodeExt=nil then exit(true);
   
-  AVLNode:=DefinitionesTreeOfCodeTreeNodeExt.FindLowest;
+  AVLNode:=DefinitionsTreeOfCodeTreeNodeExt.FindLowest;
   while AVLNode<>nil do begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     Node:=NodeExt.Node;
     CheckSubNode(Node,Node);
-    AVLNode:=DefinitionesTreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+    AVLNode:=DefinitionsTreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
   end;
 
   Result:=true;
+end;
+
+procedure TCodeCompletionCodeTool.WriteCodeGraphDebugReport(Graph: TCodeGraph);
+
+  function NodeToStr(Node: TCodeTreeNode): string;
+  begin
+    case Node.Desc of
+    ctnProcedure:
+      Result:=ExtractProcHead(Node,[phpInUpperCase,phpWithoutSemicolon]);
+    ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnEnumIdentifier,
+    ctnGenericType:
+      Result:=ExtractDefinitionName(Node);
+    else
+      Result:=Node.DescAsString;
+    end;
+    Result:=Result+'{'+CleanPosToStr(Node.StartPos)+'}';
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  GraphNode: TCodeGraphNode;
+  Node: TCodeTreeNode;
+  Cnt: LongInt;
+  EdgeAVLNode: TAVLTreeNode;
+  Edge: TCodeGraphEdge;
+begin
+  DebugLn(['TCodeCompletionCodeTool.WriteCodeGraphDebugReport ',DbgSName(Graph),
+    ' NodeCount=',Graph.Nodes.Count,
+    ' EdgeCount=',Graph.Edges.Count]);
+  Graph.ConsistencyCheck;
+  AVLNode:=Graph.Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    GraphNode:=TCodeGraphNode(AVLNode.Data);
+    Node:=GraphNode.Node;
+    DebugLn(['  ',NodeToStr(Node),' needs ',GraphNode.OutTreeCount,' definitions, is used by ',GraphNode.InTreeCount,' definitions.']);
+    if GraphNode.OutTreeCount>0 then begin
+      DbgOut('    Needs:');
+      EdgeAVLNode:=GraphNode.OutTree.FindLowest;
+      Cnt:=0;
+      while EdgeAVLNode<>nil do begin
+        inc(Cnt);
+        if Cnt=5 then begin
+          DbgOut(' ...');
+          break;
+        end;
+        Edge:=TCodeGraphEdge(EdgeAVLNode.Data);
+        DbgOut(' '+NodeToStr(Edge.ToNode.Node));
+        EdgeAVLNode:=GraphNode.OutTree.FindSuccessor(EdgeAVLNode);
+      end;
+      DebugLn;
+    end;
+    if GraphNode.InTreeCount>0 then begin
+      DbgOut('    Used by:');
+      EdgeAVLNode:=GraphNode.InTree.FindLowest;
+      Cnt:=0;
+      while EdgeAVLNode<>nil do begin
+        inc(Cnt);
+        if Cnt=5 then begin
+          DbgOut(' ...');
+          break;
+        end;
+        Edge:=TCodeGraphEdge(EdgeAVLNode.Data);
+        DbgOut(' '+NodeToStr(Edge.FromNode.Node));
+        EdgeAVLNode:=GraphNode.InTree.FindSuccessor(EdgeAVLNode);
+      end;
+      DebugLn;
+    end;
+    AVLNode:=Graph.Nodes.FindSuccessor(AVLNode);
+  end;
 end;
 
 function TCodeCompletionCodeTool.InitClassCompletion(

@@ -229,6 +229,7 @@ procedure MergeSort(List: PPointer; ListLength: PtrInt;
                     Compare: TListSortCompare);
 function GetNextDelimitedItem(const List: string; Delimiter: char;
                               var Position: integer): string;
+function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // debugging
 procedure DebugLn(Args: array of const);
@@ -1854,6 +1855,19 @@ begin
     inc(Position);
   Result:=copy(List,StartPos,Position-StartPos);
   if Position<=length(List) then inc(Position); // skip Delimiter
+end;
+
+function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
+var
+  Next: TAVLTreeNode;
+begin
+  if Tree=nil then exit(nil);
+  Result:=Tree.FindLowest;
+  while Result<>nil do begin
+    Next:=Tree.FindSuccessor(Result);
+    if (Next<>nil) and (Tree.OnCompare(Result.Data,Next.Data)=0) then exit;
+    Result:=Next;
+  end;
 end;
 
 procedure DebugLn(Args: array of const);

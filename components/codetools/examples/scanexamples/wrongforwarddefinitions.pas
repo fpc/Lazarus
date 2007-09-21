@@ -20,6 +20,9 @@ type
     Next: PMyRecord;
   end;
 
+var AnArray: array[0..EndValue] of char;
+const EndValue = TMyInteger(1);
+
 type
   TMyInteger = longint;
   PMyRecord = ^TMyRecord;

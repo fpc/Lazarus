@@ -58,6 +58,9 @@ type
   { TCodeGraphEdge }
 
   TCodeGraphEdge = class
+  private
+    FInternalFlags: integer;
+  public
     FromNode: TCodeGraphNode;
     ToNode: TCodeGraphNode;
     Data: Pointer;  // custom data
@@ -67,6 +70,8 @@ type
   { TCodeGraph }
 
   TCodeGraph = class
+  private
+    procedure ClearInternalNodeFlags;
   public
     Nodes: TAVLTree; // tree of TCodeGraphNode sorted for Node
     Edges: TAVLTree; // tree of TCodeGraphEdge sorted for FromNode,ToNode
@@ -91,8 +96,13 @@ type
                      CreateIfNotExists: boolean): TCodeGraphEdge;
     procedure DeleteEdge(FromNode, ToNode: TCodeTreeNode);
     procedure DeleteEdge(Edge: TCodeGraphEdge);
-    function GetTopologicalSortedList(out ListOfGraphNodes: TFPList
-                                      ): TCodeGraphEdge;
+    procedure DeleteSelfCircles;
+    procedure CombineNodes(ListOfGraphNodes: TFPList; GraphNode: TCodeGraphNode);
+    function GetTopologicalSortedList(out ListOfGraphNodes: TFPList;
+                    InEdgeDirection, SetTopologicalLvl, SortForStartPos: boolean
+                    ): TCodeGraphEdge;
+    procedure GetMaximumCircle(StartNode: TCodeGraphNode;
+                               out ListOfGraphNodes: TFPList);
 
     function FindAVLNodeOfNode(Node: TCodeTreeNode): TAVLTreeNode;
     function FindAVLNodeOfToNode(InTree: TAVLTree; ToNode: TCodeTreeNode
@@ -100,6 +110,8 @@ type
     function FindAVLNodeOfFromNode(OutTree: TAVLTree; FromNode: TCodeTreeNode
                                    ): TAVLTreeNode;
     function FindAVLNodeOfEdge(FromNode, ToNode: TCodeTreeNode): TAVLTreeNode;
+    
+    procedure ConsistencyCheck;
   end;
   
 function CompareGraphNodeByNode(GraphNode1, GraphNode2: Pointer): integer;
@@ -112,7 +124,6 @@ function ComparePointerWithGraphEdgeToNode(p, GraphEdge: Pointer): integer;
 
 function CompareGraphEdgeByNodes(GraphEdge1, GraphEdge2: Pointer): integer;
 function CompareEdgeKeyWithGraphEdge(EdgeKey, GraphEdge: Pointer): integer;
-
 
 implementation
 
@@ -129,6 +140,7 @@ begin
     Result:=-1
   else
     Result:=0;
+  //DebugLn(['CompareGraphNodeByNode ',Node1.DescAsString,' ',Node2.DescAsString,' ',Result]);
 end;
 
 function ComparePointerWithGraphNodeNode(p, GraphNode: Pointer): integer;
@@ -142,6 +154,7 @@ begin
     Result:=-1
   else
     Result:=0;
+  //DebugLn(['ComparePointerWithGraphNodeNode ',TCodeTreeNode(p).DescAsString,' ',Node.DescAsString,' ',Result]);
 end;
 
 function CompareGraphEdgeByFromNode(GraphEdge1, GraphEdge2: Pointer): integer;
@@ -244,7 +257,45 @@ begin
   Result:=0;
 end;
 
+function CompareGraphNodesForTopoLvlAndStartPos(
+  GraphNode1, GraphNode2: Pointer): integer;
+// 1 if lower Level (FInternalFlags) or if lvl is the same and lower Node.StartPos
+var
+  Level1: LongInt;
+  Level2: LongInt;
+  StartPos1: LongInt;
+  StartPos2: LongInt;
+begin
+  Level1:=TCodeGraphNode(GraphNode1).FInternalFlags;
+  Level2:=TCodeGraphNode(GraphNode2).FInternalFlags;
+  if Level1<Level2 then
+    Result:=1
+  else if Level1>Level2 then
+    Result:=-1
+  else begin
+    StartPos1:=TCodeGraphNode(GraphNode1).Node.StartPos;
+    StartPos2:=TCodeGraphNode(GraphNode2).Node.StartPos;
+    if StartPos1<StartPos2 then
+      Result:=1
+    else if StartPos1>StartPos2 then
+      Result:=-1
+    else
+      Result:=0;
+  end;
+end;
+
 { TCodeGraph }
+
+procedure TCodeGraph.ClearInternalNodeFlags;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    TCodeGraphNode(AVLNode.Data).FInternalFlags:=0;
+    AVLNode:=Nodes.FindSuccessor(AVLNode);
+  end;
+end;
 
 constructor TCodeGraph.Create;
 begin
@@ -287,6 +338,7 @@ begin
   AVLNode:=Nodes.FindLowest;
   while AVLNode<>nil do begin
     TCodeGraphNode(AVLNode.Data).Flags:=0;
+    TCodeGraphNode(AVLNode.Data).FInternalFlags:=0;
     AVLNode:=Nodes.FindSuccessor(AVLNode);
   end;
 end;
@@ -298,6 +350,7 @@ begin
   AVLNode:=Edges.FindLowest;
   while AVLNode<>nil do begin
     TCodeGraphEdge(AVLNode.Data).Flags:=0;
+    TCodeGraphEdge(AVLNode.Data).FInternalFlags:=0;
     AVLNode:=Edges.FindSuccessor(AVLNode);
   end;
 end;
@@ -346,6 +399,7 @@ function TCodeGraph.GetGraphNode(Node: TCodeTreeNode; CreateIfNotExists: boolean
 var
   AVLNode: TAVLTreeNode;
 begin
+  if Node=nil then exit(nil);
   AVLNode:=FindAVLNodeOfNode(Node);
   if AVLNode<>nil then
     Result:=TCodeGraphNode(AVLNode.Data)
@@ -370,31 +424,33 @@ begin
   AVLNode:=FindAVLNodeOfNode(Node);
   if AVLNode=nil then exit;
   GraphNode:=TCodeGraphNode(AVLNode.Data);
-  if GraphNode.OutTree<>nil then begin
+  OutTree:=GraphNode.OutTree;
+  if OutTree<>nil then begin
     // remove all edges coming from this Node
-    OutTree:=GraphNode.OutTree;
     OutAVLNode:=OutTree.FindLowest;
     while OutAVLNode<>nil do begin
       Edge:=TCodeGraphEdge(OutAVLNode.Data);
       InTree:=Edge.ToNode.InTree;
       InTree.Remove(Edge);
+      Edges.Remove(Edge);
       Edge.Free;
       OutAVLNode:=OutTree.FindSuccessor(OutAVLNode);
     end;
-    OutTree.Clear;
+    OutTree.Free;
   end;
-  if GraphNode.InTree<>nil then begin
-    // remove all edges goind to this Node
-    InTree:=GraphNode.InTree;
+  InTree:=GraphNode.InTree;
+  if InTree<>nil then begin
+    // remove all edges going to this Node
     InAVLNode:=InTree.FindLowest;
     while InAVLNode<>nil do begin
       Edge:=TCodeGraphEdge(InAVLNode.Data);
-      OutTree:=Edge.ToNode.OutTree;
+      OutTree:=Edge.FromNode.OutTree;
       OutTree.Remove(Edge);
+      Edges.Remove(Edge);
       Edge.Free;
       InAVLNode:=InTree.FindSuccessor(InAVLNode);
     end;
-    InTree.Clear;
+    InTree.Free;
   end;
   Nodes.Delete(AVLNode);
   GraphNode.Free;
@@ -455,11 +511,80 @@ begin
   Edge.Free;
 end;
 
-function TCodeGraph.GetTopologicalSortedList(out ListOfGraphNodes: TFPList
-  ): TCodeGraphEdge;
-// returns nil if there is no circle
-// else: returns a circle edge
-// ListOfTGraphNodes are the GraphNodes, that could be sorted topologically
+procedure TCodeGraph.DeleteSelfCircles;
+var
+  AVLNode: TAVLTreeNode;
+  NextNode: TAVLTreeNode;
+  Edge: TCodeGraphEdge;
+begin
+  AVLNode:=Edges.FindLowest;
+  while AVLNode<>nil do begin
+    NextNode:=Edges.FindSuccessor(AVLNode);
+    Edge:=TCodeGraphEdge(AVLNode.Data);
+    if Edge.FromNode=Edge.ToNode then
+      DeleteEdge(Edge);
+    AVLNode:=NextNode;
+  end;
+end;
+
+procedure TCodeGraph.CombineNodes(ListOfGraphNodes: TFPList;
+  GraphNode: TCodeGraphNode);
+// combines all nodes in ListOfGraphNodes into the super node Node
+var
+  i: Integer;
+  CurGraphNode: TCodeGraphNode;
+  AVLNode: TAVLTreeNode;
+  Edge: TCodeGraphEdge;
+begin
+  if ListOfGraphNodes=nil then exit;
+  // create for each edge to/from the List an edge to the super node
+  for i:=0 to ListOfGraphNodes.Count-1 do begin
+    CurGraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+    if CurGraphNode=GraphNode then continue;
+    if CurGraphNode.InTree<>nil then begin
+      AVLNode:=CurGraphNode.InTree.FindLowest;
+      while AVLNode<>nil do begin
+        Edge:=TCodeGraphEdge(AVLNode.Data);
+        // add an edge to super node
+        if Edge.FromNode<>GraphNode then
+          AddEdge(Edge.FromNode.Node,GraphNode.Node);
+        AVLNode:=CurGraphNode.InTree.FindSuccessor(AVLNode);
+      end;
+    end;
+    if CurGraphNode.OutTree<>nil then begin
+      AVLNode:=CurGraphNode.OutTree.FindLowest;
+      while AVLNode<>nil do begin
+        Edge:=TCodeGraphEdge(AVLNode.Data);
+        // add an edge from super node
+        if Edge.ToNode<>GraphNode then
+          AddEdge(GraphNode.Node,Edge.ToNode.Node);
+        AVLNode:=CurGraphNode.OutTree.FindSuccessor(AVLNode);
+      end;
+    end;
+  end;
+  // delete list nodes
+  for i:=0 to ListOfGraphNodes.Count-1 do begin
+    CurGraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+    if CurGraphNode=GraphNode then continue;
+    // remove list node
+    DeleteGraphNode(CurGraphNode.Node);
+  end;
+end;
+
+function TCodeGraph.GetTopologicalSortedList(out ListOfGraphNodes: TFPList;
+  InEdgeDirection, SetTopologicalLvl, SortForStartPos: boolean): TCodeGraphEdge;
+{ returns nil if there is no circle
+  else: returns a circle edge
+  ListOfTGraphNodes are all those GraphNodes, that could be sorted topologically
+  if InEdgeDirection=true then the list starts with the nodes without in-edges
+  else the list start with the nodes without out-edges
+  
+  if SetTopologicalLvl=true then the GraphNode.Flags will be set to the
+    topological level, starting at 0 for nodes with no in edges.
+  
+  if SortForStartPos=true the nodes will be sorted for Node.StartPos
+    as secondary order, keeping the topologically order
+}
 var
   NodeQueue: array of TCodeGraphNode;
   QueueStart: Integer;
@@ -467,6 +592,7 @@ var
   
   procedure AddNode(GraphNode: TCodeGraphNode);
   begin
+    //DebugLn(['AddNode ',GraphNode.Node.DescAsString]);
     NodeQueue[QueueEnd]:=GraphNode;
     inc(QueueEnd);
   end;
@@ -474,15 +600,17 @@ var
 var
   AVLNode: TAVLTreeNode;
   GraphNode: TCodeGraphNode;
-  i: Integer;
-  WorkGraph: TCodeGraph;
   GraphEdge: TCodeGraphEdge;
-  ToGraphNode: TCodeGraphNode;
+  CurGraphNode: TCodeGraphNode;
   EdgeAVLNode: TAVLTreeNode;
+  i: Integer;
+  CurTree: TAVLTree;
+  SortedNodes: TAVLTree;
 begin
+  //DebugLn(['TCodeGraph.GetTopologicalSortedList START']);
   Result:=nil;
   ListOfGraphNodes:=TFPList.Create;
-  if (Nodes=nil) or (Nodes.Count=0) then exit(nil);
+  if (Nodes=nil) or (Nodes.Count=0) then exit;
   ListOfGraphNodes.Capacity:=Nodes.Count;
 
   try
@@ -495,11 +623,15 @@ begin
     AVLNode:=Nodes.FindLowest;
     while AVLNode<>nil do begin
       GraphNode:=TCodeGraphNode(AVLNode.Data);
-      if (GraphNode.InTree=nil) or (GraphNode.InTree.Count=0) then begin
+      if InEdgeDirection then
+        CurTree:=GraphNode.InTree
+      else
+        CurTree:=GraphNode.OutTree;
+      if (CurTree=nil) or (CurTree.Count=0) then begin
         GraphNode.FInternalFlags:=0;
         AddNode(GraphNode);
       end else begin
-        GraphNode.FInternalFlags:=GraphNode.InTree.Count;
+        GraphNode.FInternalFlags:=CurTree.Count;
       end;
       AVLNode:=Nodes.FindSuccessor(AVLNode);
     end;
@@ -510,16 +642,23 @@ begin
       inc(QueueStart);
       ListOfGraphNodes.Add(GraphNode);
       // update the FInternalFlags counter
-      if (GraphNode.OutTree<>nil) then begin
-        EdgeAVLNode:=GraphNode.OutTree.FindLowest;
+      if InEdgeDirection then
+        CurTree:=GraphNode.OutTree
+      else
+        CurTree:=GraphNode.InTree;
+      if (CurTree<>nil) then begin
+        EdgeAVLNode:=CurTree.FindLowest;
         while EdgeAVLNode<>nil do begin
           GraphEdge:=TCodeGraphEdge(EdgeAVLNode.Data);
-          ToGraphNode:=GraphEdge.ToNode;
-          dec(ToGraphNode.FInternalFlags);
-          if ToGraphNode.FInternalFlags=0 then
+          if InEdgeDirection then
+            CurGraphNode:=GraphEdge.ToNode
+          else
+            CurGraphNode:=GraphEdge.FromNode;
+          dec(CurGraphNode.FInternalFlags);
+          if CurGraphNode.FInternalFlags=0 then
             // a new node has no incoming edges => add to the queue
-            AddNode(ToGraphNode);
-          EdgeAVLNode:=GraphNode.OutTree.FindSuccessor(EdgeAVLNode);
+            AddNode(CurGraphNode);
+          EdgeAVLNode:=CurTree.FindSuccessor(EdgeAVLNode);
         end;
       end;
     end;
@@ -530,25 +669,129 @@ begin
       AVLNode:=Nodes.FindLowest;
       while (AVLNode<>nil) and (Result=nil) do begin
         GraphNode:=TCodeGraphNode(AVLNode.Data);
-        if GraphNode.FInternalFlags>0 then begin
+        if InEdgeDirection then
+          CurTree:=GraphNode.OutTree
+        else
+          CurTree:=GraphNode.InTree;
+        if (GraphNode.FInternalFlags>0) and (CurTree<>nil) and (CurTree.Count>0)
+        then begin
           // find an edge of a circle
-          EdgeAVLNode:=GraphNode.OutTree.FindLowest;
+          EdgeAVLNode:=CurTree.FindLowest;
           while EdgeAVLNode<>nil do begin
             GraphEdge:=TCodeGraphEdge(EdgeAVLNode.Data);
-            ToGraphNode:=GraphEdge.ToNode;
-            if ToGraphNode.FInternalFlags>0 then begin
+            if (InEdgeDirection and (GraphEdge.ToNode.OutTreeCount>0))
+            or ((not InEdgeDirection) and (GraphEdge.FromNode.InTreeCount>0))
+            then begin
               Result:=GraphEdge;
               break;
             end;
-            EdgeAVLNode:=GraphNode.OutTree.FindSuccessor(EdgeAVLNode);
+            EdgeAVLNode:=CurTree.FindSuccessor(EdgeAVLNode);
           end;
         end;
         AVLNode:=Nodes.FindSuccessor(AVLNode);
       end;
     end;
+
+    if (ListOfGraphNodes.Count>=1) then begin
+      if SortForStartPos or SetTopologicalLvl then begin
+        // calculate the topological levels
+        if SortForStartPos then
+          SortedNodes:=TAVLTree.Create(@CompareGraphNodesForTopoLvlAndStartPos)
+        else
+          SortedNodes:=nil;
+        ClearInternalNodeFlags;
+        for i:=0 to ListOfGraphNodes.Count-1 do begin
+          GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+          // find the maximum incoming topological level
+          GraphNode.FInternalFlags:=0;
+          if InEdgeDirection then
+            CurTree:=GraphNode.InTree
+          else
+            CurTree:=GraphNode.OutTree;
+          if (CurTree<>nil) then begin
+            EdgeAVLNode:=CurTree.FindLowest;
+            while EdgeAVLNode<>nil do begin
+              GraphEdge:=TCodeGraphEdge(EdgeAVLNode.Data);
+              if InEdgeDirection then
+                CurGraphNode:=GraphEdge.FromNode
+              else
+                CurGraphNode:=GraphEdge.ToNode;
+              if GraphNode.FInternalFlags<=CurGraphNode.FInternalFlags then
+                // set the level to one higher than the maximum
+                GraphNode.FInternalFlags:=CurGraphNode.FInternalFlags+1;
+              EdgeAVLNode:=CurTree.FindSuccessor(EdgeAVLNode);
+            end;
+          end;
+          // now level of this node is complete
+          if SetTopologicalLvl then
+            GraphNode.Flags:=GraphNode.FInternalFlags;
+          if SortForStartPos then
+            SortedNodes.Add(GraphNode);
+        end;
+        if SortForStartPos then begin
+          // rebuild list with sorted nodes
+          ListOfGraphNodes.Clear;
+          AVLNode:=SortedNodes.FindLowest;
+          while AVLNode<>nil do begin
+            ListOfGraphNodes.Add(AVLNode.Data);
+            AVLNode:=SortedNodes.FindSuccessor(AVLNode);
+          end;
+          SortedNodes.Free;
+        end;
+      end;
+    end;
   finally
     SetLength(NodeQueue,0);
   end;
+  //DebugLn(['TCodeGraph.GetTopologicalSortedList END']);
+end;
+
+procedure TCodeGraph.GetMaximumCircle(StartNode: TCodeGraphNode; out
+  ListOfGraphNodes: TFPList);
+
+  procedure AddNode(ANode: TCodeGraphNode);
+  begin
+    ANode.FInternalFlags:=2;
+    ListOfGraphNodes.Add(ANode);
+  end;
+  
+  procedure MarkReachableNodes(Node: TCodeGraphNode);
+  var
+    AVLNode: TAVLTreeNode;
+    Edge: TCodeGraphEdge;
+  begin
+    Node.FInternalFlags:=1;
+    if Node.OutTree=nil then exit;
+    AVLNode:=Node.OutTree.FindLowest;
+    while AVLNode<>nil do begin
+      Edge:=TCodeGraphEdge(AVLNode.Data);
+      if Edge.ToNode.FInternalFlags=0 then
+        MarkReachableNodes(Edge.ToNode);
+      AVLNode:=Node.OutTree.FindSuccessor(AVLNode);
+    end;
+  end;
+  
+  procedure AddCircleNodes(Node: TCodeGraphNode);
+  var
+    AVLNode: TAVLTreeNode;
+    Edge: TCodeGraphEdge;
+  begin
+    AddNode(Node);
+    if Node.InTree=nil then exit;
+    AVLNode:=Node.InTree.FindLowest;
+    while AVLNode<>nil do begin
+      Edge:=TCodeGraphEdge(AVLNode.Data);
+      if Edge.FromNode.FInternalFlags=1 then
+        AddCircleNodes(Edge.FromNode);
+      AVLNode:=Node.InTree.FindSuccessor(AVLNode);
+    end;
+  end;
+  
+begin
+  ListOfGraphNodes:=TFPList.Create;
+  ClearNodeFlags;
+  MarkReachableNodes(StartNode);
+  AddCircleNodes(StartNode);
 end;
 
 function TCodeGraph.GetEdge(FromNode, ToNode: TCodeTreeNode;
@@ -610,6 +853,83 @@ begin
   EdgeKey.FromNode:=FromNode;
   EdgeKey.ToNode:=ToNode;
   Result:=Edges.FindKey(@EdgeKey,@CompareEdgeKeyWithGraphEdge);
+end;
+
+procedure TCodeGraph.ConsistencyCheck;
+
+  procedure e(const Msg: string);
+  begin
+    raise Exception.Create('TCodeGraph.ConsistencyCheck '+Msg);
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  GraphNode: TCodeGraphNode;
+  EdgeAVLNode: TAVLTreeNode;
+  Edge: TCodeGraphEdge;
+begin
+  if Nodes=nil then
+    e('');
+  if Edges=nil then
+    e('');
+  if Nodes.ConsistencyCheck<>0 then
+    e('');
+  if Edges.ConsistencyCheck<>0 then
+    e('');
+  if AVLTreeHasDoubles(Nodes)<>nil then
+    e('');
+  if AVLTreeHasDoubles(Edges)<>nil then
+    e('');
+
+  AVLNode:=Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    GraphNode:=TCodeGraphNode(AVLNode.Data);
+    if GraphNode.InTree<>nil then begin
+      if GraphNode.InTree.ConsistencyCheck<>0 then
+        e('');
+      if AVLTreeHasDoubles(GraphNode.InTree)<>nil then
+        e('');
+      EdgeAVLNode:=GraphNode.InTree.FindLowest;
+      while EdgeAVLNode<>nil do begin
+        Edge:=TCodeGraphEdge(EdgeAVLNode.Data);
+        if Edges.Find(Edge)=nil then
+          e('');
+        if Edge.ToNode<>GraphNode then
+          e('');
+        EdgeAVLNode:=GraphNode.InTree.FindSuccessor(EdgeAVLNode);
+      end;
+    end;
+    if GraphNode.OutTree<>nil then begin
+      if GraphNode.OutTree.ConsistencyCheck<>0 then
+        e('');
+      if AVLTreeHasDoubles(GraphNode.OutTree)<>nil then
+        e('');
+      EdgeAVLNode:=GraphNode.OutTree.FindLowest;
+      while EdgeAVLNode<>nil do begin
+        Edge:=TCodeGraphEdge(EdgeAVLNode.Data);
+        if Edges.Find(Edge)=nil then
+          e('');
+        if Edge.FromNode<>GraphNode then
+          e('');
+        EdgeAVLNode:=GraphNode.OutTree.FindSuccessor(EdgeAVLNode);
+      end;
+    end;
+    AVLNode:=Nodes.FindSuccessor(AVLNode);
+  end;
+  
+  AVLNode:=Edges.FindLowest;
+  while AVLNode<>nil do begin
+    Edge:=TCodeGraphEdge(AVLNode.Data);
+    if Nodes.Find(Edge.FromNode)=nil then
+      e('');
+    if Nodes.Find(Edge.ToNode)=nil then
+      e('');
+    if Edge.FromNode.OutTree.Find(Edge)=nil then
+      e('');
+    if Edge.ToNode.InTree.Find(Edge)=nil then
+      e('');
+    AVLNode:=Edges.FindSuccessor(AVLNode);
+  end;
 end;
 
 { TCodeGraphNode }
