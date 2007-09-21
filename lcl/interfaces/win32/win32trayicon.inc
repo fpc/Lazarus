@@ -183,7 +183,7 @@ begin
   tnid.hWnd := ATrayIcon.Handle;
   tnid.uID := uIDTrayIcon;
   tnid.uFlags := NIF_MESSAGE or NIF_ICON;
-  if ATrayIcon.ShowHint then tnid.uFlags := tnid.uFlags or NIF_TIP;
+  if (ATrayIcon.Hint <> '') then tnid.uFlags := tnid.uFlags or NIF_TIP;
   tnid.uCallbackMessage := WM_USER + uIDTrayIcon;
   tnid.hIcon := ATrayIcon.Icon.Handle;
   buffer := PChar(ATrayIcon.Hint);

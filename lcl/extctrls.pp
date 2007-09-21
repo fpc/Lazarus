@@ -1069,7 +1069,7 @@ type
     FPopUpMenu: TPopupMenu;
     FIcon: TIcon;
     FHint: string;
-    FVisible, FShowIcon, FShowHint: Boolean;
+    FVisible, FShowIcon: Boolean;
     FOnPaint, FOnClick, FOnDblClick: TNotifyEvent;
     FOnMouseDown, FOnMouseUp: TMouseEvent;
     FOnMouseMove: TMouseMoveEvent;
@@ -1087,7 +1087,6 @@ type
     property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property Icon: TIcon read FIcon write FIcon;
     property Hint: string read FHint write FHint;
-    property ShowHint: Boolean read FShowHint write FShowHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon;
     property Visible: Boolean read FVisible write SetVisible;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -1105,8 +1104,6 @@ type
     property PopUpMenu;
     property Icon;
     property Hint;
-    property ShowHint;
-    property ShowIcon;
     property Visible;
     property OnClick;
     property OnDblClick;
