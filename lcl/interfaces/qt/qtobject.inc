@@ -93,8 +93,16 @@ end;
   Initializes the application
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  Method: TMethod;
+  FHook: QObject_hookH;
 begin
   App := QApplication_Create(@argc, argv);
+
+  // install global event filter
+  FHook := QObject_hook_create(App);
+  TEventFilterMethod(Method) := @EventFilter;
+  QObject_hook_hook_events(FHook, Method);
 end;
 
 {------------------------------------------------------------------------------
@@ -190,6 +198,28 @@ begin
   // TODO: uncomment if you want to test TQtThemeServices
   Result := TQtThemeServices.Create;
   //Result := inherited CreateThemeServices;
+end;
+
+function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  case QEvent_type(Event) of
+    QEventFocusIn:
+      begin
+        if QObject_inherits(Sender, 'QWidget') then
+        begin
+          if QWidget_focusPolicy(QWidgetH(Sender)) = QtTabFocus then
+          begin
+            // remove tab from focus policy
+            QWidget_setFocusPolicy(QWidgetH(Sender), QtClickFocus);
+            QWidget_setFocus(FOldFocusWidget);
+          end
+          else
+            FOldFocusWidget := QWidgetH(Sender);
+        end;
+      end;
+  end;
 end;
 
 function TQtWidgetSet.LCLPlatform: TLCLPlatform;

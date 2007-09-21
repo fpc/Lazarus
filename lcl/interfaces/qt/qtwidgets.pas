@@ -32,7 +32,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtobjects, qtproc,
+  qtobjects,
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
@@ -551,6 +551,7 @@ type
     FOwnerDrawn: Boolean;
     FSelectHook: QComboBox_hookH;
     FDropListEventHook: QObject_hookH;
+    FLineEditEventHook: QObject_hookH;
     // parts
     FLineEdit: QLineEditH;
     FDropList: TQtListWidget;
@@ -623,6 +624,7 @@ type
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
     function getText: WideString; override;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setMinimum(const v: single); virtual; abstract;
     procedure setMaximum(const v: single); virtual; abstract;
     procedure setSingleStep(const v: single); virtual; abstract;
@@ -985,7 +987,8 @@ implementation
 
 uses
   LCLMessageGlue,
-  qtCaret;
+  qtCaret,
+  qtproc;
 
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
@@ -1446,15 +1449,16 @@ const
 {$endif}
 var
   Msg: TLMessage;
+  NewFocusWidget: QWidgetH;
+  NewFocusObject: TQtWidget;
 begin
   {$ifdef VerboseFocus}
     WriteLn('TQtWidget.SlotFocus In=',FocusIn,' For ', dbgsname(LCLObject),
-      'Reason = ', QtFocusReasonToStr[QFocusEvent_reason(QFocusEventH(Event))]);
+      ' Reason = ', QtFocusReasonToStr[QFocusEvent_reason(QFocusEventH(Event))]);
+    if QFocusEvent_reason(QFocusEventH(Event)) = QtTabFocusReason then
+      DebugLn('Warning Qt handled Tab and set focus iself. Event for object ', dbgsname(LCLObject));
   {$endif}
 
-  if QFocusEvent_reason(QFocusEventH(Event)) = QtTabFocusReason then
-    DebugLn('Warning Qt handled Tab and set focus iself for ', dbgsname(LCLObject));
-    
   FillChar(Msg, SizeOf(Msg), #0);
 
   if FocusIn then
@@ -4446,7 +4450,7 @@ end;
 procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
   inherited setFocusPolicy(APolicy);
-  QWidget_setFocusPolicy(TabBar, APolicy);
+  QWidget_setFocusPolicy(TabBar, QtNoFocus{APolicy});
 end;
 
 {------------------------------------------------------------------------------
@@ -4501,6 +4505,8 @@ end;
 { TQtComboBox }
 
 function TQtComboBox.GetLineEdit: QLineEditH;
+var
+  Method: TMethod;
 begin
   if not getEditable then
   begin
@@ -4509,7 +4515,12 @@ begin
   else
   begin
     if FLineEdit = nil then
+    begin
       FLineEdit := QComboBox_lineEdit(QComboBoxH(Widget));
+      FLineEditEventHook := QWidget_hook_create(FLineEdit);
+      TEventFilterMethod(Method) := @EventFilter;
+      QObject_hook_hook_events(FLineEditEventHook, Method);
+    end;
   end;
   Result := FLineEdit;
 end;
@@ -4676,7 +4687,9 @@ procedure TQtComboBox.setEditable(const AValue: Boolean);
 begin
   QComboBox_setEditable(QComboBoxH(Widget), AValue);
   if not AValue then
-    FLineEdit := nil;
+    FLineEdit := nil
+  else
+    QWidget_setFocusPolicy(LineEdit, getFocusPolicy);
 end;
 
 procedure TQtComboBox.setText(const W: WideString);
@@ -4730,6 +4743,19 @@ begin
     case QEvent_type(Event) of
       QEventShow: SlotDropListVisibility(True);
       QEventHide: SlotDropListVisibility(False);
+    else
+      QEvent_ignore(Event);
+    end;
+  end else
+  if (Sender = FLineEdit) then
+  begin
+    Result := False;
+
+    QEvent_accept(Event);
+
+    case QEvent_type(Event) of
+      QEventKeyPress,
+      QEventKeyRelease: SlotKey(Event);
     else
       QEvent_ignore(Event);
     end;
@@ -4889,6 +4915,12 @@ begin
     QLineEdit_text(LineEdit, @Result)
   else
     Result := '';
+end;
+
+procedure TQtAbstractSpinBox.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  inherited setFocusPolicy(APolicy);
+  QWidget_setFocusPolicy(LineEdit, APolicy);
 end;
 
 procedure TQtAbstractSpinBox.setReadOnly(const r: Boolean);

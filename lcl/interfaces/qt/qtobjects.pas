@@ -32,7 +32,6 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtproc,
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
@@ -444,6 +443,9 @@ function QtScreenContext: TQtDeviceContext;
 
 implementation
 
+uses
+  qtproc;
+  
 const
   ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
   (
