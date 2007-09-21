@@ -4662,9 +4662,11 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
+{$IFNDEF DisableDoubleBuf}
 var
   NewBufferWidth: Integer;
   NewBufferHeight: Integer;
+{$ENDIF}
 begin
   if (SavedCanvas<>nil) then RaiseGDBException('');
   {$IFNDEF DisableDoubleBuf}
