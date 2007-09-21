@@ -3527,27 +3527,34 @@ begin
   Result:=true;
   if CheckData then begin
     if Modified then begin
-      DebugLn('TProject.SomethingModified Modified');
+      //DebugLn('TProject.SomethingModified Modified');
       exit;
     end;
-    if CompilerOptions.Modified then exit;
+    if CompilerOptions.Modified then begin
+      Modified:=true;
+      DebugLn(['TProject.SomethingModified CompilerOptions']);
+      exit;
+    end;
     for i:=0 to UnitCount-1 do
       if (Units[i].IsPartOfProject) and Units[i].Modified then begin
+        Modified:=true;
         DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
         exit;
       end;
   end;
   if CheckSession then begin
     if SessionModified then begin
-      DebugLn('TProject.SomethingModified SessionModified');
+      //DebugLn('TProject.SomethingModified SessionModified');
       exit;
     end;
     for i:=0 to UnitCount-1 do begin
       if Units[i].SessionModified then begin
+        SessionModified:=true;
         DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
         exit;
       end;
       if (not Units[i].IsPartOfProject) and Units[i].Modified then begin
+        SessionModified:=true;
         DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
         exit;
       end;

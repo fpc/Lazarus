@@ -761,6 +761,7 @@ type
       IgnorePageIndex: integer): string;
     function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
     function GetAncestorLookupRoot(AnUnitInfo: TUnitInfo): TComponent;
+    procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean);
 
     // useful file methods
     function FindUnitFile(const AFilename: string): string; override;
@@ -5560,6 +5561,26 @@ begin
     Result:=nil;
 end;
 
+procedure TMainIDE.UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean);
+var
+  SrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(SrcEdit,AnUnitInfo);
+  // menu items
+  if UpdateSaveAll then
+    MainIDEBar.itmProjectSave.Enabled := SomethingOfProjectIsModified;
+  MainIDEBar.itmFileSave.Enabled := (SrcEdit<>nil)
+                                     and SourceNotebook.GetActiveSe.Modified;
+  if UpdateSaveAll then
+    MainIDEBar.itmFileSaveAll.Enabled := (SrcEdit<>nil)
+                                        and SourceNotebook.SomethingModified;
+  // toolbar buttons
+  MainIDEBar.SaveSpeedBtn.Enabled := MainIDEBar.itmFileSave.Enabled;
+  if UpdateSaveAll then
+    MainIDEBar.SaveAllSpeedBtn.Enabled := MainIDEBar.itmFileSaveAll.Enabled;
+end;
+
 function TMainIDE.CreateProjectObject(ProjectDesc,
   FallbackProjectDesc: TProjectDescriptor): TProject;
 begin
@@ -6328,7 +6349,7 @@ begin
   if not (sfSaveToTestDir in Flags) then begin
     ActiveUnitInfo.ClearModifieds;
     ActiveSrcEdit.Modified:=false;
-    MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
+    UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   SourceNoteBook.UpdateStatusBar;
 
@@ -7359,6 +7380,9 @@ begin
   // everything went well => clear all modified flags
   Project1.ClearModifieds(true);
 
+  // update menu and buttons state
+  UpdateSaveMenuItemsAndButtons(true);
+
   DebugLn('TMainIDE.DoSaveProject End');
   Result:=mrOk;
 end;
@@ -8364,6 +8388,7 @@ begin
   CurResult:=DoCallModalFunctionHandler(lihtOnSavedAll);
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
+  UpdateSaveMenuItemsAndButtons(true);
 end;
 
 procedure TMainIDE.DoRestart;
@@ -11704,7 +11729,7 @@ begin
     Project1.UnitWithEditorIndex(SourceNotebook.Notebook.PageIndex);
   if ActiveUnitInfo = nil then Exit;
 
-  MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
+  UpdateSaveMenuItemsAndButtons(false);
   MainIDEBar.ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component)
                                           or (ActiveUnitInfo.ComponentName<>'');
 end;
@@ -11713,7 +11738,7 @@ end;
 Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
 begin
   if SourceNotebook.Notebook = nil then Exit;
-  MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
+  UpdateSaveMenuItemsAndButtons(false);
 end;
 
 procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
@@ -12371,8 +12396,7 @@ begin
   FormEditor1.CheckDesignerPositions;
   FormEditor1.PaintAllDesignerItems;
   GetCurrentUnit(SrcEdit,AnUnitInfo);
-  MainIDEBar.SaveSpeedBtn.Enabled := (SrcEdit<>nil)
-                                        and SourceNotebook.GetActiveSe.Modified;
+  UpdateSaveMenuItemsAndButtons(true);
   if Screen.ActiveForm<>nil then begin
     AnIDesigner:=Screen.ActiveForm.Designer;
     if AnIDesigner is TDesigner then begin

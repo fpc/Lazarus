@@ -1317,6 +1317,7 @@ begin
   // write
   InvalidateFileStateCache;
   XMLConfigFile.Flush;
+  FModified := False;
 end;
 
 procedure TBaseCompilerOptions.SetModified(const AValue: boolean);
