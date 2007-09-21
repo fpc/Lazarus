@@ -68,9 +68,6 @@ begin
 
   QtCalendar.AttachEvents;
 
-
-  QWidget_setFocusPolicy(QtCalendar.Widget, QtTabFocus or QtClickFocus);
-  
   Result := THandle(QtCalendar);
 end;
 

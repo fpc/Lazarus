@@ -113,7 +113,7 @@ type
     procedure SlotShow(vShow: Boolean); cdecl;
     function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
-    procedure SlotFocus(FocusIn: Boolean); cdecl;
+    procedure SlotFocus(Event: QEventH; FocusIn: Boolean); cdecl;
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
@@ -139,6 +139,7 @@ type
     procedure ShowMaximized;
     function getClientBounds: TRect; virtual;
     function getEnabled: Boolean;
+    function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
@@ -153,6 +154,8 @@ type
     procedure setColor(const Value: PQColor); virtual;
     procedure setCursor(const ACursor: QCursorH);
     procedure setEnabled(p1: Boolean);
+    procedure setFocus;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy);
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); overload;
     procedure setMaximumSize(AWidth, AHeight: Integer);
@@ -166,7 +169,6 @@ type
     procedure setWindowModality(windowModality: QtWindowModality);
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
-    procedure setTabOrder(p1, p2: TQtWidget);
     procedure setUpdatesEnabled(const AEnabled: Boolean);
     procedure setWindowState(AState: QtWindowStates);
     procedure sizeHint(size: PSize);
@@ -343,7 +345,6 @@ type
     ToolBar: TQtToolBar;
     destructor Destroy; override;
     function getClientBounds: TRect; override;
-    procedure setTabOrders;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
@@ -1065,7 +1066,7 @@ begin
 
   // set focus policy
   if LCLObject.TabStop then
-    QWidget_setFocusPolicy(Widget, QtStrongFocus);
+    setFocusPolicy(QtClickFocus);
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -1301,10 +1302,10 @@ begin
       end;
     QEventDestroy: SlotDestroy;
     QEventEnter: SlotMouseEnter(Event);
-    QEventFocusIn: SlotFocus(True);
+    QEventFocusIn: SlotFocus(Event, True);
     QEventFocusOut:
     begin
-      SlotFocus(False);
+      SlotFocus(Event, False);
       if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason then
         releaseMouse;
     end;
@@ -1421,12 +1422,28 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotFocus(FocusIn: Boolean); cdecl;
+procedure TQtWidget.SlotFocus(Event: QEventH; FocusIn: Boolean); cdecl;
+{$ifdef VerboseFocus}
+const
+  QtFocusReasonToStr: array[QtFocusReason] of String =
+  (
+{QtMouseFocusReason       } 'QtMouseFocusReason',
+{QtTabFocusReason         } 'QtTabFocusReason',
+{QtBacktabFocusReason     } 'QtBacktabFocusReason',
+{QtActiveWindowFocusReason} 'QtActiveWindowFocusReason',
+{QtPopupFocusReason       } 'QtPopupFocusReason',
+{QtShortcutFocusReason    } 'QtShortcutFocusReason',
+{QtMenuBarFocusReason     } 'QtMenuBarFocusReason',
+{QtOtherFocusReason       } 'QtOtherFocusReason',
+{QtNoFocusReason          } 'QtNoFocusReason'
+  );
+{$endif}
 var
   Msg: TLMessage;
 begin
   {$ifdef VerboseFocus}
-    WriteLn('TQtWidget.SlotFocus In=',FocusIn,' For ', dbgsname(LCLObject));
+    WriteLn('TQtWidget.SlotFocus In=',FocusIn,' For ', dbgsname(LCLObject),
+      'Reason = ', QtFocusReasonToStr[QFocusEvent_reason(QFocusEventH(Event))]);
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -2093,6 +2110,11 @@ begin
   Result := QWidget_isEnabled(Widget);
 end;
 
+function TQtWidget.getFocusPolicy: QtFocusPolicy;
+begin
+  Result := QWidget_focusPolicy(Widget);
+end;
+
 function TQtWidget.getFrameGeometry: TRect;
 begin
   QWidget_frameGeometry(Widget, @Result);
@@ -2161,6 +2183,16 @@ end;
 procedure TQtWidget.setEnabled(p1: Boolean);
 begin
   QWidget_setEnabled(Widget, p1);
+end;
+
+procedure TQtWidget.setFocus;
+begin
+  QWidget_setFocus(Widget);
+end;
+
+procedure TQtWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  QWidget_setFocusPolicy(Widget, APolicy);
 end;
 
 procedure TQtWidget.setFont(AFont: QFontH);
@@ -2239,11 +2271,6 @@ begin
   R := getGeometry;
   R.Bottom := R.Top + p1;
   setGeometry(R);
-end;
-
-procedure TQtWidget.setTabOrder(p1, p2: TQtWidget);
-begin
-  QWidget_setTabOrder(p1.Widget, p2.Widget);
 end;
 
 procedure TQtWidget.setUpdatesEnabled(const AEnabled: Boolean);
@@ -3079,50 +3106,6 @@ begin
     if TCustomForm(LCLObject).FormStyle <> fsMDIChild then
       inc(Result.Top, R.Bottom - R.Top);
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtMainWindow.setTabOrders
-  Params:  None
-  Returns: Nothing
-  
-  Sets the tab order of all controls on a form.
- ------------------------------------------------------------------------------}
-procedure TQtMainWindow.setTabOrders;
-var
- i: Integer;
- Form: TForm;
- List: TFPList;
-begin
-  Form := TForm(LCLObject);
-
-  List := TFPList.Create;
-  Form.GetTabOrderList(List);
-
-  for i := 0 to List.Count - 2 do
-  begin
-    setTabOrder(TQtWidget(TWinControl(List.Items[i]).Handle),
-     TQtWidget(TWinControl(List.Items[i + 1]).Handle));
-
-   {$ifdef VerboseQt}
-     WriteLn('Setting Tab Order first: ', TWinControl(List.Items[i]).Name, ' second: ',
-      TWinControl(List.Items[i + 1]).Name);
-   {$endif}
-  end;
-
- { The last element points to the first }
-  if List.Count > 1 then
-  begin
-    setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
-     TQtWidget(TWinControl(List.Items[0]).Handle));
-
-   {$ifdef VerboseQt}
-     WriteLn('Setting Tab Order first: ', TWinControl(List.Items[List.Count - 1]).Name, ' second: ',
-      TWinControl(List.Items[0]).Name);
-   {$endif}
-  end;
-
-  List.Free;
 end;
 
 function TQtMainWindow.getText: WideString;

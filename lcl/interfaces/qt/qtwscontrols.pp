@@ -184,8 +184,7 @@ begin
       {$endif}
       Widget.setWindowModality(QtApplicationModal);
     end;
-    TQtMainWindow(Widget).SetTabOrders;
-    
+
     if TForm(AWinControl).FormStyle = fsMDIChild then
     begin
       {MDI windows have to be resized , since titlebar is included into widget geometry !}
@@ -212,22 +211,13 @@ end;
 class function TQtWSWinControl.CanFocus(const AWinControl: TWinControl): Boolean;
 var
   Widget: TQtWidget;
-  FocusWidget: QWidgetH;
 begin
-  Result := False;
-  if not WSCheckHandleAllocated(AWinControl, 'CanFocus') then
-    Exit;
-
-  Widget := TQtWidget(AWinControl.Handle);
-  if Assigned(Widget.LCLObject.Parent) then
-    FocusWidget := QWidget_focusWidget(TQtWidget(Widget.LCLObject.Parent.Handle).Widget)
-  else
-    FocusWidget := QWidget_focusWidget(Widget.Widget);
-  
-  Result := (FocusWidget <> nil) and
-            QWidget_isEnabled(FocusWidget) and
-            QWidget_isVisible(FocusWidget) and
-            (QWidget_focusPolicy(FocusWidget) <> QtNoFocus);
+  if AWinControl.HandleAllocated then
+  begin
+    Widget := TQtWidget(AWinControl.Handle);
+    Result := (Widget.getFocusPolicy <> QtNoFocus);
+  end else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -471,10 +461,6 @@ begin
     Exit;
 
   Widget := TQtWidget(AWinControl.Handle);
-
-  // if the widget is a form, this is a place to set the Tab order
-  if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
-    TQtMainWindow(Widget).SetTabOrders;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
 end;

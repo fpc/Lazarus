@@ -1237,8 +1237,10 @@ Begin
       DebugLn(' NewActiveControl=nil');
     {$ENDIF}
     FActiveControl := AWinControl;
-    if ([csLoading,csDestroying]*ComponentState=[]) then begin
-      if FActive then SetWindowFocus;
+    if ([csLoading,csDestroying]*ComponentState=[]) then
+    begin
+      if FActive then
+        SetWindowFocus;
       ActiveChanged;
     end;
   end;

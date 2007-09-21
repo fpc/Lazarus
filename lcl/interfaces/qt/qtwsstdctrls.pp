@@ -914,9 +914,6 @@ begin
   QtPushButton := TQtPushButton.Create(AWinControl, AParams);
   QtPushButton.AttachEvents;
 
-  // Focus
-  QWidget_setFocusPolicy(QtPushButton.Widget, QtStrongFocus);
-
   // Returns the Handle
   Result := THandle(QtPushButton);
 end;
@@ -1298,8 +1295,6 @@ begin
   QAbstractButton_setCheckable(QAbstractButtonH(QtToggleBox.Widget), True);
   QtToggleBox.AttachEvents;
   
-  QWidget_setFocusPolicy(QtToggleBox.Widget, QtTabFocus or QtClickFocus);
-
   Result := THandle(QtToggleBox);
 end;
 
