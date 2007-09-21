@@ -910,11 +910,28 @@ end;
 class procedure TQtWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
 var
   TW: QTreeWidgetH;
+  QtItem: QTreeWidgetItemH;
+  Item: TListItem;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDelete') then
     Exit;
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   QTreeWidget_takeTopLevelItem(TW, AIndex);
+
+  {$note FIXME workaround issue #9746}
+  {workaround for ListOutOfBounds in some cases. Described with issue #9746}
+  QtItem := QTreeWidget_currentItem(TW);
+
+  if QtItem <> nil then
+  begin
+    Item := ALV.Selected;
+    if Assigned(Item) then
+    begin
+      if Item.Index <> QTreeWidget_indexOfTopLevelItem(TW, QtItem) then
+        TListView(ALV).Items[QTreeWidget_indexOfTopLevelItem(TW, QtItem)].Selected := True;
+    end;
+  end;
+
 end;
 
 {------------------------------------------------------------------------------

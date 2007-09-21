@@ -1370,6 +1370,7 @@ begin
      (lpLogFont^.lfFaceName= '') and
      (lpLogFont^.lfPitchAndFamily = 0) then
   begin
+    FontType := 0;
     FontList := TStringList.create;
     try
       if QtGetFontFamilies(FontList) > 0 then
