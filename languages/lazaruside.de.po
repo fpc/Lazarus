@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-31 15:35+0100\n"
+"PO-Revision-Date: 2007-09-21 20:34+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -225,7 +225,7 @@ msgstr "&Eigenschaften"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "&Löschen"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -405,7 +405,7 @@ msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Um"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -541,7 +541,7 @@ msgstr "Ausrichten der oberen Zeile an Kommentar vorne"
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Erweiterte Build-Optionen"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -965,7 +965,7 @@ msgstr "Build-Nummer"
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "Build-Optionen"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1629,7 +1629,7 @@ msgstr "Komponenten-Menübefehle"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
+msgstr "Compilerschalter"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1957,7 +1957,7 @@ msgstr "Erzeugen Sie zuerst ein Projekt!"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
-msgstr ""
+msgstr "Erzeugt neuen Schalter"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -6173,7 +6173,7 @@ msgstr "Protected-Methode"
 
 #: lazarusidestrconsts:lispckoptsprovides
 msgid "Provides"
-msgstr ""
+msgstr "Stellt zur Verfügung"
 
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
@@ -6201,7 +6201,7 @@ msgstr "Veröffentlichte Methode"
 
 #: lazarusidestrconsts:lislazbuildquickbuildoptions
 msgid "Quick Build Options"
-msgstr ""
+msgstr "Optionen für schnelles Build"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6513,7 +6513,7 @@ msgstr "Report"
 
 #: lazarusidestrconsts:lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Fehler melden ..."
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -7929,7 +7929,7 @@ msgstr "Das Free-Pascal-Projektverzeichnis"
 
 #: lazarusidestrconsts:listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
-msgstr "Das Free-Pascal-Quelltextverzeichnis wurde nicht gefunden.%sEinige Quelltextfunktionen werden nicht funktionieren.%sEs wird empfohlen, dass Sie den FPC-Quelltext installieren und den Pfad auf sie setzen, und zwar unter%sEinstellungen->Umgebungseinstellungen->Dateien"
+msgstr "Das Free-Pascal-Quelltextverzeichnis wurde nicht gefunden.%sEinige Quelltextfunktionen werden nicht funktionieren.%sEs wird empfohlen, den FPC-Quelltext zu installieren und den Pfad darauf zu setzen, und zwar unter%sEinstellungen->Umgebungseinstellungen->Dateien"
 
 #: lazarusidestrconsts:lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
@@ -8505,7 +8505,7 @@ msgstr "Dieses Package ist installiert, aber die lpk-Datei wurde nicht gefunden.
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
-msgstr ""
+msgstr "Dieses Package stellt dasselbe wie die folgenden Packages bereit:"
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9673,11 +9673,11 @@ msgstr "statische automatische Installation"
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
 msgid "automatically on line break"
-msgstr ""
+msgstr "automatically nach Zeilenumbruch"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "automatically on space"
-msgstr ""
+msgstr "automatisch auf Speicherplatz"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
@@ -9741,7 +9741,7 @@ msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfa
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr ""
+msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
