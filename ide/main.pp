@@ -5570,11 +5570,10 @@ begin
   // menu items
   if UpdateSaveAll then
     MainIDEBar.itmProjectSave.Enabled := SomethingOfProjectIsModified;
-  MainIDEBar.itmFileSave.Enabled := (SrcEdit<>nil)
-                                     and SourceNotebook.GetActiveSe.Modified;
+  MainIDEBar.itmFileSave.Enabled := ((SrcEdit<>nil)
+                                     and SourceNotebook.GetActiveSe.Modified);
   if UpdateSaveAll then
-    MainIDEBar.itmFileSaveAll.Enabled := (SrcEdit<>nil)
-                                        and SourceNotebook.SomethingModified;
+    MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
   // toolbar buttons
   MainIDEBar.SaveSpeedBtn.Enabled := MainIDEBar.itmFileSave.Enabled;
   if UpdateSaveAll then
