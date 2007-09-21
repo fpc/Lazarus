@@ -1,21 +1,46 @@
-+-----------------------------+
-!       LINUX/WIN32           !
-+-----------------------------+
+OVERVIEW
 
-Required : 
-  - FPC 2.0.0 Last CVS version
-  - LAZARUS Last CVS version
-  - Pakage Printer4Lazarus installed
+LazReport is a group of components to add reporting capabilities to applications,
+it uses a visual designer to create banded reports and includes a report engine
+with previewer and includes a interpreter to run user scripts.  Report designer can
+be invoked at runtime. 
 
-Known Bugs
-  - On change zoom, that kill X server. I noticed that that occurs when resize one Font.            [Fixed]
-  - since the end of October, there is an error "Division by zero" if ShowProgress:=True            [Fixed]
-  12-abr-2005:
-  - Dragging a band containing objects, hides the first object of the list                          [Fixed]	
-  - Windows: report designer doesn't start with a new page, laz win32 problem, patch already sent.  [Fixed 21/04/05 add OnShow(self) in onResize() of designer]
-  - Windows: preview or print doesn't work correctly if ShowProgress:=true
-  - Linux: report designer scrollbars doesn't work
-  - Linux & Windows: The font list is not filled with list of fonts (use OI to change fonts)
-  20-apr-2005
-  - Cross tab report not work                                                                        [Fixed]
+LICENSE
 
+LazReport is based on FreeReport 2.32 and thanks to Fast Reports Inc. it's
+available under modified LGPL, the same license as the Lazarus LCL.
+see files LazReport/ license.txt, license-rus.txt and license-lazreport.txt
+for detail.
+
+AUTHORS
+
+FreeReport was created for Fast Reports Inc.
+LazReport initial port was made by Olivier Guilbaud.
+Lazarus integration and fixes by Jesus Reyes A.
+Many contributors, see contributors.txt file
+
+INSTALL
+
+To install LazReport under lazarus IDE:
+
+1. Open LazReport Package. Menu: Components->Open package file (.lpk)...
+2. Open file $LazarusPath/components/lazreport/source/lazreport.lpk
+3. Compile
+4. Install
+
+Next time lazarus is started, it should show a LazReport tab in component
+palette.
+
+DOCUMENTAION.
+
+Specific docs for LazReport are yet to be written, but there is valuable information
+in $lazreportPath/doc directory, the file fr_eng.sxw is an OpenOffice word document
+explaining FastReport v2.32 and most things should be applied to LazReport too.
+
+Some tests are provided in samples directory to help user to get started in LazReport.
+
+BUG REPORTS.
+
+Please report problems using the freepascal bugtracker: 
+http://www.freepascal.org/mantis/main_page.php, project: "Lazarus Packages", Category
+"LazReport", for patches please submit a bug report and attach the patch to it.
