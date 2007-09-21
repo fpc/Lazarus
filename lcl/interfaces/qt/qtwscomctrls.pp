@@ -243,8 +243,8 @@ const
   PanelBevelToQtFrameShapeMap: array[TStatusPanelBevel] of Integer =
   (
 {pbNone   } Integer(QFrameNoFrame),
-{pbLowered} Integer(QFramePanel) or Integer(QFrameSunken),
-{pbRaised } Integer(QFramePanel) or Integer(QFrameRaised)
+{pbLowered} Integer(QFrameStyledPanel) or Integer(QFrameSunken),
+{pbRaised } Integer(QFrameStyledPanel) or Integer(QFrameRaised)
   );
 
   TickMarkToQtSliderTickPositionMap: array[TTickMark] of QSliderTickPosition =
@@ -497,9 +497,9 @@ begin
 
     //  QWidget_setContentsMargins(QtStatusBar.APanels[i], 0, 0, 2, 0);
       
-      QWidget_geometry(QtStatusBar.Widget, @R);
+      R := QtStatusBar.getFrameGeometry;
       QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
-      QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i], 100);
+      QtStatusBar.addWidget(QtStatusBar.APanels[i], AStatusBar.Panels[i].Width);
     end;
   end;
 
@@ -637,22 +637,14 @@ begin
         QFrame_setLineWidth(QFrameH(QtStatusBar.APanels[i]), 1);
         QFrame_setMidLineWidth(QFrameH(QtStatusBar.APanels[i]), 0);
 
-        if AStatusBar.Panels[i].Bevel = pbNone then
-        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFrameNoFrame))
-        else
-        if AStatusBar.Panels[i].Bevel = pbLowered then
-        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]),Ord(QFramePanel) or Ord(QFrameSunken))
-        else
-        if AStatusBar.Panels[i].Bevel = pbRaised then
-        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), Ord(QFramePanel) or Ord(QFrameRaised));
+        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), PanelBevelToQtFrameShapeMap[AStatusBar.Panels[i].Bevel]);
 
-        QWidget_frameGeometry(QtStatusBar.Widget, @R);
+        R := QtStatusBar.getFrameGeometry;
         QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
         
-        QStatusBar_addWidget(QStatusBarH(QtStatusBar.Widget),QtStatusBar.APanels[i], 100);
-        QWidget_show(QtStatusBar. APanels[i]);
+        QtStatusBar.addWidget(QtStatusBar.APanels[i], AStatusBar.Panels[i].Width);
+        QWidget_show(QtStatusBar.APanels[i]);
       end;
-      
     end
   end;
 end;

@@ -872,6 +872,7 @@ type
   public
     APanels: Array of QLabelH;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
+    procedure addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
   end;
   
   { TQtDialog }
@@ -6074,6 +6075,11 @@ end;
 procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
 begin
   QStatusBar_showMessage(QStatusBarH(Widget), text, timeout);
+end;
+
+procedure TQtStatusBar.addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
+begin
+  QStatusBar_addWidget(QStatusBarH(Widget), AWidget, AStretch);
 end;
 
 { TQtDialog }
