@@ -1510,36 +1510,27 @@ end;
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
   QtFontMetrics: TQtFontMetrics;
+  AFont: TQtFont;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
   {$endif}
 
-  QtFontMetrics := TQtFontMetrics.Create(Font.Widget);
+  AFont := Font;
+  QtFontMetrics := TQtFontMetrics.Create(AFont.Widget);
   try
-
-    Save;
-    
-    translate(x, y);
-    
-    {when Parent=nil we'll create vFont on demand, otherwise
-     we'll get 1 unfreed mem block}
-    if (Parent = nil) and (vFont = nil) then
-      vFont := TQtFont(GetStockObject(SYSTEM_FONT));
-      
-    Rotate(-0.1 * vFont.Angle);
+    if AFont.Angle <> 0 then
+      Rotate(-0.1 * AFont.Angle);
     
     RestoreTextColor;
     
-    QPainter_drawText(Widget, 0, QtFontMetrics.ascent, s);
+    QPainter_drawText(Widget, x, y + QtFontMetrics.ascent, s);
     
     RestorePenColor;
     
-    Restore;
-    
     {$ifdef VerboseQt}
     WriteLn(' Font metrics height: ', QtFontMetrics.height, ' Angle: ',
-      Round(0.1 * vFont.Angle));
+      Round(0.1 * AFont.Angle));
     {$endif}
   finally
     QtFontMetrics.Free;
