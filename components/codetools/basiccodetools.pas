@@ -94,7 +94,7 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     StopAtDirectives: boolean = true): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean;
-    StopAtDirectives: boolean = true): integer;
+    StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false): integer;
 function FindFirstLineEndInFrontOfInCode(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
@@ -1752,10 +1752,32 @@ end;
 
 function FindLineEndOrCodeAfterPosition(const Source: string;
    Position, MaxPosition: integer; NestedComments: boolean;
-   StopAtDirectives: boolean): integer;
+   StopAtDirectives: boolean; SkipEmptyLines: boolean): integer;
 { search forward for a line end or code
   ignore line ends in comments
   Result is Position of Start of Line End
+  
+  if SkipEmptyLines=true, it will skip empty lines at the end
+  
+  Examples: | is the Position and # is the Result
+  
+  1. var i: integer;|#
+     var j: integer;
+     
+  2. var i: integer;| (*
+     *) #var j: integer;
+     
+  3. SkipEmptyLines=false
+     var i: integer;|
+     #
+     // comment
+     var j: integer;
+     
+  4. SkipEmptyLines=true
+     var i: integer;|
+
+     #// comment
+     var j: integer;
 }
 var SrcLen: integer;
 
@@ -1809,6 +1831,27 @@ var SrcLen: integer;
     end;
     Result:=true;
   end;
+  
+  procedure DoSkipEmptyLines(var p: integer);
+  var
+    OldPos: LongInt;
+  begin
+    OldPos:=p;
+    repeat
+      while (p<=SrcLen) and (Source[p] in [' ',#9]) do inc(p);
+      if (p<=SrcLen) and (Source[p] in [#10,#13]) then begin
+        // an empty line => skip
+        OldPos:=p;// remember position in front of new line characters
+        inc(p);
+        if (p<=SrcLen) and (Source[p] in [#10,#13]) and (Source[p]<>Source[p-1])
+        then
+          inc(p);
+      end else begin
+        p:=OldPos;
+        exit;
+      end;
+    until false;
+  end;
 
 begin
   SrcLen:=length(Source);
@@ -1820,7 +1863,10 @@ begin
       '{','(','/':
         if not ReadComment(Result) then exit;
       #10,#13:
-        exit;
+        begin
+          if SkipEmptyLines then DoSkipEmptyLines(Result);
+          exit;
+        end;
       #9,' ',';':
         inc(Result);
     else

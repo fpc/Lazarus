@@ -217,6 +217,7 @@ begin
   TextConverterToolClasses.RegisterClass(TConvertFunctionTypesToPointers);
   TextConverterToolClasses.RegisterClass(TPostH2PasTools);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
+  TextConverterToolClasses.RegisterClass(TRemoveDoubleSemicolons);
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);

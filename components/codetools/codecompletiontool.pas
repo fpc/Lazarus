@@ -1363,54 +1363,82 @@ var
 
   procedure CheckAlias(Node: TCodeTreeNode);
   var
-    WrongType: Boolean;
     ReferingNode: TCodeTreeNode;
     ReferingNodeText: String;
     ReferingPos: LongInt;
     NodeExt: TCodeTreeNodeExtension;
     AVLNode: TAVLTreeNode;
-  begin
-    // check if definition is an alias
-    // Example: const A = B;
-    if (Node.Parent=nil) then exit;
-    if not (Node.Parent.Desc in [ctnConstSection,ctnTypeSection]) then exit;
-    // this is a const or type
-    MoveCursorToNodeStart(Node);
-    ReadNextAtom;
-    if CurPos.Flag<>cafWord then exit;
-    ReadNextAtom;
-    if CurPos.Flag<>cafEqual then exit;
-    ReadNextAtom;
-    if CurPos.Flag<>cafWord then exit;
-    ReferingPos:=CurPos.StartPos;
-    ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then exit;
-
-    // this is a const or type alias
-    //DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',Node.DescAsString,' ',ExtractNode(Node,[])]);
-    WrongType:=false;
-    ReferingNode:=nil;
-    if OnlyWrongType then begin
+    BracketStartPos: LongInt;
+    NeededType: TCodeTreeNodeDesc;
+    
+    procedure GetReferingNode;
+    begin
+      if ReferingNodeText<>'' then exit;
       ReferingNodeText:=GetIdentifier(@Src[ReferingPos]);
       AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,ReferingNodeText);
       if (AVLNode<>nil) then begin
         NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
         ReferingNode:=NodeExt.Node;
-        if ReferingNode.Desc<>Node.Desc then begin
-          // this alias has wrong type
-          WrongType:=true;
-          DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',ReferingNode.DescAsString]);
+      end;
+    end;
+    
+  begin
+    // check if definition is an alias
+    // Example: const A = B;  or   const A = B();
+    if (Node.Parent=nil) then exit;
+    if not (Node.Parent.Desc in [ctnConstSection,ctnTypeSection]) then exit;
+    // this is a const or type
+    MoveCursorToNodeStart(Node);
+    // read A
+    ReadNextAtom;
+    if CurPos.Flag<>cafWord then exit;
+    // read =
+    ReadNextAtom;
+    if CurPos.Flag<>cafEqual then exit;
+    // read B
+    ReadNextAtom;
+    if CurPos.Flag<>cafWord then exit;
+    ReferingPos:=CurPos.StartPos;
+    ReadNextAtom;
+    if CurPos.Flag=cafRoundBracketOpen then begin
+      BracketStartPos:=CurPos.StartPos;
+      ReadTilBracketClose(true);
+      //BracketEndPos:=CurPos.StartPos;
+      ReadNextAtom;
+    end else
+      BracketStartPos:=0;
+    if CurPos.Flag<>cafSemicolon then exit;
+    
+    ReferingNode:=nil;
+    NeededType:=ctnNone;
+
+    if BracketStartPos>0 then begin
+      if WordIsKeyWord.DoIt(@Src[ReferingPos]) then exit;
+      // this is a type cast
+      NeededType:=ctnConstDefinition;
+    end else begin
+      // this is a const or type alias
+      //DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',Node.DescAsString,' ',ExtractNode(Node,[])]);
+      if OnlyWrongType then begin
+        GetReferingNode;
+        if (ReferingNode<>nil) then begin
+          NeededType:=ReferingNode.Desc;
         end;
       end;
     end;
-    if WrongType or (not OnlyWrongType) then begin
+    if NeededType=ctnNone then exit;
+    if (NeededType<>Node.Desc) or (not OnlyWrongType) then begin
       // add alias
+      if NeededType<>Node.Desc then begin
+        DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',ReferingNode.DescAsString]);
+      end;
       if TreeOfCodeTreeNodeExt=nil then
         TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
       NodeExt:=NodeExtMemManager.NewNode;
       NodeExt.Node:=Node;
       NodeExt.Txt:=GetRedefinitionNodeText(Node);
       NodeExt.Data:=ReferingNode;
+      NodeExt.Flags:=NeededType;
       TreeOfCodeTreeNodeExt.Add(NodeExt);
     end;
   end;
@@ -1492,7 +1520,7 @@ function TCodeCompletionCodeTool.FixAliasDefinitions(
   ): boolean;
 { replaces public dummy functions with a constant.
   The function body will be removed.
-  See the function FindConstFunctions.
+  See the function FindAliasDefinitions.
 }
   function FindReferingNode(DefNode: TCodeTreeNode): TCodeTreeNode;
   var
@@ -1521,6 +1549,7 @@ var
   ReferingNodeBehind: TCodeTreeNode;
   NewSrc: String;
   FromPos: LongInt;
+  ReferingType: TCodeTreeNodeDesc;
 begin
   Result:=false;
   if SourceChangeCache=nil then exit;
@@ -1535,9 +1564,10 @@ begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
     ReferingNode:=TCodeTreeNode(NodeExt.Data);
+    ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
     if (ReferingNode=nil)
     or (not (ReferingNode.Desc in [ctnTypeDefinition,ctnConstDefinition]))
-    or (DefNode.Desc=ReferingNode.Desc) then begin
+    or (DefNode.Desc=ReferingType) then begin
       TreeOfCodeTreeNodeExt.Delete(AVLNode);
     end;
     AVLNode:=NextAVLNode;
@@ -1549,10 +1579,11 @@ begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
     ReferingNode:=TCodeTreeNode(NodeExt.Data);
+    ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
 
-    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',ReferingNode.DescAsString]);
+    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
 
-    case ReferingNode.Desc of
+    case ReferingType of
     ctnTypeDefinition: NewSrc:='type';
     ctnConstDefinition: NewSrc:='const';
     else NewSrc:='bug';
@@ -1569,7 +1600,7 @@ begin
       // this is not the start of the section
       ReferingNodeInFront:=FindReferingNode(DefNode.PriorBrother);
       if (ReferingNodeInFront=nil)
-      or (ReferingNodeInFront.Desc<>ReferingNode.Desc) then begin
+      or (ReferingNodeInFront.Desc<>ReferingType) then begin
         // the node in front has a different section
         FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
         if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
@@ -1592,9 +1623,11 @@ begin
         ctnConstDefinition: NewSrc:='const';
         else NewSrc:='';
         end;
-        FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.NextBrother.StartPos);
-        if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
-           FromPos,FromPos,NewSrc) then exit;
+        if NewSrc<>'' then begin
+          FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.NextBrother.StartPos);
+          if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+             FromPos,FromPos,NewSrc) then exit;
+        end;
       end;
     end;
 
@@ -1892,7 +1925,7 @@ var
     ResultType: PChar;
   begin
     if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then exit;
-    DebugLn(['CheckProcNode START ',ExtractProcHead(ProcNode,[])]);
+    //DebugLn(['CheckProcNode START ',ExtractProcHead(ProcNode,[])]);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     // read 'function'
@@ -1954,7 +1987,7 @@ var
     end;
     if Node.Desc<>ctnBeginBlock then exit;
 
-    DebugLn(['CheckProcNode has begin block']);
+    //DebugLn(['CheckProcNode has begin block']);
 
     // check begin block is only a single assignment
     MoveCursorToNodeStart(Node);
@@ -1982,7 +2015,7 @@ var
     // read )
     ReadNextAtom;
     if CurPos.Flag<>cafRoundBracketClose then exit;
-    DebugLn(['CheckProcNode FOUND']);
+    //DebugLn(['CheckProcNode FOUND']);
 
     // save values
     ResultNodeExt:=NodeExtMemManager.NewNode;
@@ -2428,7 +2461,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       if Node.Desc=ctnTypeSection then begin
         // remove type section
         FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
-        ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
+        ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos,true);
         DebugLn(['CreateTypeSectionForCircle Removing type section: ',ExtractCode(FromPos,ToPos,[])]);
         SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
         // add all types of type section to new type section
@@ -2457,7 +2490,6 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     if not Result then exit;
     // rebuild graph
     Result:=UpdateGraph(Definitions,Graph,true);
-    DebugLn(['CreateTypeSectionForCircle ',Src]);
   end;
 
   function FixCircle(var Definitions: TAVLTree;
@@ -2553,7 +2585,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     try
       Graph.DeleteSelfCircles;
       repeat
-        WriteCodeGraphDebugReport(Graph);
+        //WriteCodeGraphDebugReport(Graph);
         CircleEdge:=Graph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
         if CircleEdge=nil then break;
         DebugLn(['FixForwardDefinitions.CheckCircles Circle found containing ',
@@ -2613,7 +2645,18 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       Node:=GetFirstVarDefSequenceNode(Node);
       while (Node<>nil) do begin
         if not NodeWillBeMoved(Node) then exit(false);
-        if (Node.FirstChild<>nil) then break;
+        if (Node.FirstChild<>nil) then break;// this is the last of the sequence
+        Node:=Node.NextBrother;
+      end;
+      Result:=true;
+    end;
+    
+    function WholeSectionWillBeMoved(Node: TCodeTreeNode): boolean;
+    // test, if all child nodes will be moved
+    begin
+      Node:=Node.FirstChild;
+      while (Node<>nil) do begin
+        if not NodeWillBeMoved(Node) then exit(false);
         Node:=Node.NextBrother;
       end;
       Result:=true;
@@ -2622,16 +2665,16 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
   var
     AVLNode: TAVLTreeNode;
     CurMove: TNodeMoveEdge;
-    GraphNode: TCodeGraphNode;
-    PosGraphNode: TCodeGraphNode;
+    GraphNode: TCodeGraphNode;// move what
+    PosGraphNode: TCodeGraphNode;// move where (in front of)
     Node: TCodeTreeNode;
     FromPos: LongInt;
     ToPos: LongInt;
     DestNode: TCodeTreeNode;
     NextAVLNode: TAVLTreeNode;
     NextMove: TNodeMoveEdge;
-    NextGraphNode: TCodeGraphNode;
-    NextPosGraphNode: TCodeGraphNode;
+    NextGraphNode: TCodeGraphNode;// move what next
+    NextPosGraphNode: TCodeGraphNode;// move where next (in front of)
     NextInsertAtSamePos: boolean;
     NeedSection: TCodeTreeNodeDesc;
     LastSection: TCodeTreeNodeDesc;
@@ -2640,6 +2683,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     Indent: LongInt;
     DestSection: TCodeTreeNodeDesc;
     NewTxt: String;
+    DestNodeInFront: TCodeTreeNode;
   begin
     Result:=false;
     AVLNode:=TreeOfNodeMoveEdges.FindLowest;
@@ -2647,15 +2691,16 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     LastInsertAtSamePos:=false;
     DestNode:=nil;
     DestSection:=ctnNone;
+    // process every move
     while AVLNode<>nil do begin
       CurMove:=TNodeMoveEdge(AVLNode.Data);
-      GraphNode:=CurMove.GraphNode;
-      PosGraphNode:=TCodeGraphNode(GraphNode.Data);
+      GraphNode:=CurMove.GraphNode;// move what
+      PosGraphNode:=TCodeGraphNode(GraphNode.Data);// move where (in front of)
       NextAVLNode:=TreeOfNodeMoveEdges.FindSuccessor(AVLNode);
       if NextAVLNode<>nil then begin
         NextMove:=TNodeMoveEdge(NextAVLNode.Data);
-        NextGraphNode:=NextMove.GraphNode;
-        NextPosGraphNode:=TCodeGraphNode(NextGraphNode.Data);
+        NextGraphNode:=NextMove.GraphNode;// move what next
+        NextPosGraphNode:=TCodeGraphNode(NextGraphNode.Data);// move where next
         NextInsertAtSamePos:=NextPosGraphNode=PosGraphNode;
       end else begin
         NextInsertAtSamePos:=false;
@@ -2669,7 +2714,23 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       DestNode:=PosGraphNode.Node;
       
       // remove node
-      if Node.Desc=ctnVarDefinition then begin
+      if (Node.Parent<>nil)
+      and (Node.Parent.Desc in AllDefinitionSections)
+      and WholeSectionWillBeMoved(Node.Parent) then begin
+        // the whole type/var/const section will be moved
+        if Node.PriorBrother=nil then begin
+          // this is the first node of the section
+          // => remove the whole section
+          FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.Parent.StartPos);
+          ToPos:=FindLineEndOrCodeAfterPosition(Node.Parent.EndPos,true);
+        end else begin
+          // this is not the first node of the section
+          // => remove nothing
+          FromPos:=0;
+          ToPos:=0;
+        end;
+      end
+      else if Node.Desc=ctnVarDefinition then begin
         // removing a variable definition can be tricky, because for example
         // var a,b,c: integer;
         if Node.FirstChild<>nil then begin
@@ -2681,7 +2742,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             FromPos:=FindLineEndOrCodeInFrontOfPosition(
                                      GetFirstVarDefSequenceNode(Node).StartPos);
             ToPos:=FindLineEndOrCodeAfterPosition(
-                                        GetLastVarDefSequenceNode(Node).EndPos);
+                                   GetLastVarDefSequenceNode(Node).EndPos,true);
           end else if NodeWillBeMoved(Node.PriorBrother) then begin
             // this is for example: var a,b,c: integer
             // and only b and c will be moved. The b, plus the space behind was
@@ -2691,8 +2752,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             MoveCursorToNodeStart(Node);
             ReadNextAtom;// read identifier
             AtomIsIdentifier(true);
-            ReadNextAtom;// read colon
-            ToPos:=CurPos.StartPos;
+            ToPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,true);
           end else begin
             // this is for example: var a,b: integer
             // and only b will be moved.
@@ -2717,8 +2777,8 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             FromPos:=0;
             ToPos:=0;
           end else begin
-            // remove the name plus the next comma
-            FromPos:=Node.StartPos;
+            // remove the b,
+            FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
             MoveCursorToNodeStart(Node);
             ReadNextAtom;// read identifier
             AtomIsIdentifier(true);
@@ -2738,44 +2798,65 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
           exit;
       end;
 
+      // find needed section type
+      if Node.Desc in AllIdentifierDefinitions then
+        NeedSection:=Node.Parent.Desc
+      else
+        NeedSection:=ctnNone;
+
       // find insert position
       if not LastInsertAtSamePos then begin
+        //DebugLn(['MoveNodes LastInsertAtSamePos=false, compute destination ...']);
         if (DestNode.Desc in AllIdentifierDefinitions) then begin
           DestNode:=GetFirstVarDefSequenceNode(DestNode);
+          DestSection:=DestNode.Parent.Desc;
           if DestNode.PriorBrother<>nil then begin
             // the destination is in front of a definition, but in the middle
             // of a section
             // example: type a=char; | b=byte;
             // => insert in front of destination
-            DestSection:=DestNode.Parent.Desc;
+            //DebugLn(['MoveNodes destination is middle of a section. Node in front=',GetRedefinitionNodeText(DestNode.PriorBrother)]);
           end else begin
             // the destination is the first node of a section
             // example: type | t=char;
-            // => insert in front of the section
-            DestNode:=DestNode.Parent;
-            DestSection:=DestNode.Desc;
+            if NeedSection=DestSection then begin
+              // insertion needs the same section type
+              // => insert in front of destination
+            end else begin
+              // insertion needs another section type
+              // => insert in front of the section
+              DestNode:=DestNode.Parent;
+            end;
+            //DebugLn(['MoveNodes destination is first node of a section ']);
           end;
         end else begin
           // the destination is not in a section
           // example: in front of a type section
           // => insert in front of destination
-          DestSection:=DestNode.Desc;
+          // find the section in front
+          DestNodeInFront:=DestNode.PriorBrother;
+          while (DestNodeInFront<>nil) and NodeWillBeMoved(DestNodeInFront) do
+            DestNodeInFront:=DestNodeInFront.PriorBrother;
+          if (DestNodeInFront<>nil)
+          and (DestNodeInFront.Desc in AllDefinitionSections) then
+            DestSection:=DestNodeInFront.Desc
+          else
+            DestSection:=ctnNone;
+          //DebugLn(['MoveNodes destination is not in a section']);
         end;
         InsertPos:=FindLineEndOrCodeAfterPosition(DestNode.StartPos);
         Indent:=GetLineIndent(Src,DestNode.StartPos);
+        //DebugLn(['MoveNodes DestNode=',GetRedefinitionNodeText(DestNode),':',DestNode.DescAsString,' DestSection=',NodeDescToStr(DestSection)]);
       end;
       
       // start a new section if needed
-      if Node.Desc in AllIdentifierDefinitions then
-        NeedSection:=Node.Parent.Desc
-      else
-        NeedSection:=ctnNone;
+      //DebugLn(['MoveNodes LastInsertAtSamePos=',LastInsertAtSamePos,' NeedSection=',NodeDescToStr(NeedSection),' LastSection=',NodeDescToStr(LastSection),' DestSection=',NodeDescToStr(DestSection)]);
       if (LastInsertAtSamePos and (NeedSection<>LastSection))
-      or ((not LastInsertAtSamePos) and (NeedSection<>DestNode.Desc)) then begin
+      or ((not LastInsertAtSamePos) and (NeedSection<>DestSection)) then begin
         // start a new section
         case NeedSection of
-        ctnVarDefinition: NewTxt:='var';
-        ctnConstDefinition: NewTxt:='const';
+        ctnVarSection: NewTxt:='var';
+        ctnConstSection: NewTxt:='const';
         ctnResStrSection: NewTxt:='resourcestring';
         ctnTypeSection: NewTxt:='type';
         ctnLabelSection: NewTxt:='label';
@@ -2787,6 +2868,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
                                            InsertPos,InsertPos,NewTxt)
           then
             exit;
+          Indent:=SourceChangeCache.BeautifyCodeOptions.Indent;
         end;
       end;
 
@@ -2807,8 +2889,6 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
         NewTxt:=ExtractCode(FromPos,ToPos,[phpWithComments]);
       end;
       NewTxt:=GetIndentStr(Indent)+NewTxt;
-      if Node.Desc in AllIdentifierDefinitions then
-        NewTxt:=GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)+NewTxt;
       DebugLn(['MoveNodes insert "',NewTxt,'"']);
       if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
         NewTxt) then exit;
@@ -2864,7 +2944,8 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     ListOfGraphNodes:=nil;
     NodeMoveEdges:=TAVLTree.Create(@CompareNodeMoveEdges);
     try
-      WriteCodeGraphDebugReport(Graph);
+      //WriteCodeGraphDebugReport(Graph);
+      
       // create a topologically sorted list
       CircleEdge:=Graph.GetTopologicalSortedList(ListOfGraphNodes,false,true,false);
       if CircleEdge<>nil then
@@ -2888,7 +2969,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       // init the destinations
       for i:=0 to ListOfGraphNodes.Count-1 do begin
         GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
-        DebugLn(['CheckOrder ',GetRedefinitionNodeText(GraphNode.Node)]);
+        //DebugLn(['CheckOrder ',GetRedefinitionNodeText(GraphNode.Node)]);
         GraphNode.Data:=GraphNode;
       end;
       // calculate the destinations as minimum of all dependencies
@@ -2901,7 +2982,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             // for example: type TMyPointer = TMyInteger;
             // GraphNode.Node is TMyInteger
             // UsedByGraphNode.Node is TMyPointer
-            DebugLn(['CheckOrder GraphNode=',GetRedefinitionNodeText(GraphNode.Node),' UsedBy=',GetRedefinitionNodeText(UsedByGraphNode.Node)]);
+            //DebugLn(['CheckOrder GraphNode=',GetRedefinitionNodeText(GraphNode.Node),' UsedBy=',GetRedefinitionNodeText(UsedByGraphNode.Node)]);
             PosGraphNode:=TCodeGraphNode(GraphNode.Data);
             PosUsedByGraphNode:=TCodeGraphNode(UsedByGraphNode.Data);
             if PosGraphNode.Node.StartPos>PosUsedByGraphNode.Node.StartPos then
@@ -2951,8 +3032,8 @@ begin
   try
     // Workaround:
     // move the pointer types to the same type sections
-    if not MovePointerTypesToTargetSections(SourceChangeCache) then exit;
-    exit(true);
+    //if not MovePointerTypesToTargetSections(SourceChangeCache) then exit;
+    //exit(true);
     
     if not BuildUnitDefinitionGraph(Definitions,Graph,true) or (Graph=nil) then
       exit;

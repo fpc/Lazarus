@@ -102,8 +102,18 @@ type
   end;
 
 
+  { TRemoveDoubleSemicolons -
+    Remove double semicolons }
+
+  TRemoveDoubleSemicolons = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
   { TRemoveSystemTypes -
-    Remove type redefinitons like PLongint }
+    Remove type redefinitions like PLongint }
 
   TRemoveSystemTypes = class(TCustomTextConverterTool)
   public
@@ -290,6 +300,7 @@ type
   TPostH2PasToolsOption = (
     phReplaceUnitFilenameWithUnitName, // Replace "unit filename;" with "unit name;"
     phRemoveIncludeDirectives, // remove include directives
+    phRemoveDoubleSemicolons, // Remove double semicolons
     phRemoveSystemTypes, // Remove type redefinitons like PLongint
     phFixH2PasMissingIFDEFsInUnit, // add missing IFDEFs for function bodies
     phReduceCompilerDirectivesInUnit, // removes unneeded directives
@@ -2301,7 +2312,7 @@ end;
 
 class function TRemoveSystemTypes.ClassDescription: string;
 begin
-  Result:='Remove type redefinitons like PLongint';
+  Result:='Remove type redefinitions like PLongint';
 end;
 
 function TRemoveSystemTypes.Execute(aText: TIDETextConverter): TModalResult;
@@ -2314,6 +2325,7 @@ begin
   Result:=mrCancel;
   if aText=nil then exit;
   Source:=aText.Source;
+  
   Flags:=[sesoReplace,sesoReplaceAll,sesoRegExpr];
   Prompt:=false;
   SearchFor:='^\s*('
@@ -2327,6 +2339,12 @@ begin
     +');\s*$';
   Result:=IDESearchInText('',Source,SearchFor,'',Flags,Prompt,nil);
   if Result<>mrOk then exit;
+  
+  // replace NULL with nil
+  Flags:=[sesoReplace,sesoReplaceAll,sesoRegExpr,sesoMatchCase];
+  Result:=IDESearchInText('',Source,'\bNULL\b','nil',Flags,Prompt,nil);
+  if Result<>mrOk then exit;
+  
   aText.Source:=Source;
 end;
 
@@ -3644,6 +3662,8 @@ begin
              TReplaceUnitFilenameWithUnitName,Result) then exit;
   if not Run(phRemoveIncludeDirectives,
              TRemoveIncludeDirectives,Result) then exit;
+  if not Run(phRemoveDoubleSemicolons,
+             TRemoveDoubleSemicolons,Result) then exit;
   if not Run(phRemoveSystemTypes,
              TRemoveSystemTypes,Result) then exit;
   if not Run(phFixH2PasMissingIFDEFsInUnit,
@@ -3840,6 +3860,72 @@ begin
     DebugLn(['TFixForwardDefinitions.Execute failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
+  Result:=mrOk;
+end;
+
+{ TRemoveDoubleSemicolons }
+
+class function TRemoveDoubleSemicolons.ClassDescription: string;
+begin
+  Result:='Remove double semicolons';
+end;
+
+function TRemoveDoubleSemicolons.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Position: Integer;
+  Source, NewSrc: String;
+  AtomStart: integer;
+  LastAtomWasSemicolon: Boolean;
+  SemicolonPositions: array of integer;
+  SemicolonCount: Integer;
+  i: Integer;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Source:=aText.Source;
+  
+  // find all double semicolons
+  Position:=1;
+  LastAtomWasSemicolon:=false;
+  Setlength(SemicolonPositions,0);
+  SemicolonCount:=0;
+  repeat
+    ReadRawNextPascalAtom(Source,Position,AtomStart,true);
+    if AtomStart>length(Source) then break;
+    if Source[AtomStart]=';' then begin
+      if LastAtomWasSemicolon then begin
+        if length(SemicolonPositions)<=SemicolonCount then
+          SetLength(SemicolonPositions,length(SemicolonPositions)*2+2);
+        SemicolonPositions[SemicolonCount]:=AtomStart;
+        inc(SemicolonCount);
+      end;
+      LastAtomWasSemicolon:=true;
+    end else begin
+      LastAtomWasSemicolon:=false;
+    end;
+  until false;
+
+  // build new source without semicolons
+  if SemicolonCount>0 then begin
+    SetLength(NewSrc,length(Source)-SemicolonCount);
+    AtomStart:=1;
+    i:=0;
+    while i<SemicolonCount do begin
+      Position:=SemicolonPositions[i];
+      if Position>AtomStart then
+        System.Move(Source[AtomStart],NewSrc[AtomStart-i],Position-AtomStart);
+      AtomStart:=Position+1;
+      inc(i);
+    end;
+    Position:=length(Source)+1;
+    if Position>AtomStart then
+      System.Move(Source[AtomStart],NewSrc[AtomStart-i],Position-AtomStart);
+    aText.Source:=NewSrc;
+  end;
+
+  // clean up
+  Setlength(SemicolonPositions,0);
   Result:=mrOk;
 end;
 
