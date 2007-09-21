@@ -55,6 +55,9 @@ end;
 *******************************************************************}
 destructor TCustomTrayIcon.Destroy;
 begin
+  { Avoids an unremoved icon on the tray }
+  Hide;
+
   FIcon.Free;
 
   inherited Destroy;

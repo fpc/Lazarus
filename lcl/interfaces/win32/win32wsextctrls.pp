@@ -33,6 +33,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf, Themes,
+  Graphics,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc, InterfaceBase,
   Win32WSControls;
@@ -216,13 +217,24 @@ type
   public
   end;
 
+  { TWin32WSCustomTrayIcon }
+
+  TWin32WSCustomTrayIcon = class(TWSCustomTrayIcon)
+  public
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; override;
+  end;
+
 procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
 function  NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
 
 implementation
 
 uses
-  LMessages;
+  Forms, LMessages, ShellAPI;
 
 function IsNotebookGroupFocused(const ANotebook: TCustomNotebook): boolean;
 var
@@ -656,6 +668,8 @@ begin
   end;
 end;
 
+{$include win32trayicon.inc}
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -683,5 +697,6 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TWin32WSLabeledEdit);
   RegisterWSComponent(TCustomPanel, TWin32WSCustomPanel);
 //  RegisterWSComponent(TPanel, TWin32WSPanel);
+  RegisterWSComponent(TCustomTrayIcon, TWin32WSCustomTrayIcon);
 ////////////////////////////////////////////////////
 end.
