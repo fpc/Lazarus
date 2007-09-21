@@ -1,4 +1,4 @@
-{%MainUnit win32wsextctrls.pp}
+{%MainUnit gtk2wsextctrls.pp}
 {
  gtk2trayicon.inc
 
@@ -21,13 +21,6 @@
 }
 
 { TGtk2WSCustomTrayIcon }
-
-//  if ShowIcon then GtkForm.Canvas.Draw(0, 0, Icon);
-
-//  if Assigned(OnPaint) then OnPaint(Self);
-
-//  Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs, Menus,
-//  x, xlib, xutil, gtk2, gdk2, gdk2x, glib2, gtkdef, gtkproc;
 
 const
   SYSTEM_TRAY_REQUEST_DOCK   = 0;

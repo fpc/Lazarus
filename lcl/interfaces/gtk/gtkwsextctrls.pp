@@ -33,7 +33,7 @@ uses
 {$ELSE GTK2}
   gtk, gdk, glib, gtk1WSPrivate,
 {$ENDIF GTK2}
-  GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes,
+  GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes, Forms, SysUtils, Menus,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
 
 type
@@ -211,7 +211,24 @@ type
   public
   end;
 
+  { TGtkWSCustomTrayIcon }
+
+{$IFDEF GTK1}
+  TGtkWSCustomTrayIcon = class(TWSCustomTrayIcon)
+  public
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+  end;
+{$ENDIF}
+
 implementation
+
+{$IFDEF GTK1}
+uses
+  x, xlib, xutil;
+{$ENDIF}
 
 const
   GtkPositionTypeMap: array[TTabPosition] of TGtkPositionType =
@@ -624,6 +641,9 @@ begin
   UpdateWidgetStyleOfControl(AWinControl);
 end;
 
+{$IFDEF GTK1}
+  {$include gtk1trayicon.inc}
+{$ENDIF}
 
 initialization
 
@@ -654,6 +674,9 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TGtkWSLabeledEdit);
   RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
 //  RegisterWSComponent(TPanel, TGtkWSPanel);
+{$IFDEF GTK1}
+  RegisterWSComponent(TCustomTrayIcon, TGtkWSCustomTrayIcon);
+{$ENDIF}
 ////////////////////////////////////////////////////
 
 end.
