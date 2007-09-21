@@ -292,6 +292,7 @@ type
   public
     procedure SetSourceText(const SourceText: string); virtual; abstract;
     function GetSourceText: string; virtual; abstract;
+    procedure ClearModifieds; virtual; abstract;
   public
     property IsPartOfProject: boolean read FIsPartOfProject
                                       write SetIsPartOfProject;
@@ -558,7 +559,7 @@ type
     procedure AddSrcPath(const SrcPathAddition: string); virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     function ShortDescription: string;
-    procedure ClearModifieds;
+    procedure ClearModifieds(ClearUnits: boolean);
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
   public
@@ -1147,10 +1148,15 @@ begin
     Result:=ExtractFileNameOnly(ProjectInfoFile);
 end;
 
-procedure TLazProject.ClearModifieds;
+procedure TLazProject.ClearModifieds(ClearUnits: boolean);
+var
+  i: Integer;
 begin
   Modified:=false;
   SessionModified:=false;
+  if ClearUnits then
+    for i:=0 to FileCount-1 do
+      Files[i].ClearModifieds;
 end;
 
 { TLazProjectFile }

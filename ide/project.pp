@@ -207,7 +207,7 @@ type
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
     procedure Clear;
-    procedure ClearModifieds;
+    procedure ClearModifieds; override;
     procedure ClearComponentDependencies;
     procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
                               const NewUnitName: string);

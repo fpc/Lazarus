@@ -7355,6 +7355,9 @@ begin
 
   // update all lrs files
   DoUpdateProjectAutomaticFiles;
+  
+  // everything went well => clear all modified flags
+  Project1.ClearModifieds(true);
 
   DebugLn('TMainIDE.DoSaveProject End');
   Result:=mrOk;
@@ -7561,9 +7564,7 @@ begin
     end;
 
     // set all modified to false
-    for i:=0 to Project1.UnitCount-1 do
-      Project1.Units[i].ClearModifieds;
-    Project1.ClearModifieds;
+    Project1.ClearModifieds(true);
 
     IncreaseCompilerParseStamp;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
