@@ -41,6 +41,7 @@ uses
 type
   // forward declarations
   TQtImage = class;
+  TQtFontMetrics = class;
 
   { TQtObject }
   TQtObject = class(TObject)
@@ -121,6 +122,8 @@ type
 
   TQtFont = class(TQtResource)
   private
+    FMetrics: TQtFontMetrics;
+    function GetMetrics: TQtFontMetrics;
   public
     Widget: QFontH;
     Angle: Integer;
@@ -142,6 +145,8 @@ type
     procedure setFamily(p1: string);
     procedure family(retval: PWideString);
     function fixedPitch: Boolean;
+    
+    property Metrics: TQtFontMetrics read GetMetrics;
   end;
 
   { TQtFontMetrics }
@@ -160,6 +165,7 @@ type
     function descent: Integer;
     function leading: Integer;
     function maxWidth: Integer;
+    procedure boundingRect(retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil);
     function charWidth(str: WideString; pos: Integer): Integer;
   end;
 
@@ -838,6 +844,13 @@ end;
 
 { TQtFont }
 
+function TQtFont.GetMetrics: TQtFontMetrics;
+begin
+  if FMetrics = nil then
+    FMetrics := TQtFontMetrics.Create(Widget);
+  Result := FMetrics;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtFont.Create
   Params:  None
@@ -849,9 +862,11 @@ begin
     WriteLn('TQtFont.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
-  if CreateHandle then Widget := QFont_create;
+  if CreateHandle then
+    Widget := QFont_create;
   
   FShared := AShared;
+  FMetrics := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -865,6 +880,7 @@ begin
     WriteLn('TQtFont.Destroy');
   {$endif}
 
+  FMetrics.Free;
   if not FShared and (Widget <> nil) then
     QFont_destroy(Widget);
 
@@ -993,6 +1009,11 @@ end;
 function TQtFontMetrics.maxWidth: Integer;
 begin
   Result := QFontMetrics_maxWidth(Widget);
+end;
+
+procedure TQtFontMetrics.boundingRect(retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil);
+begin
+  QFontMetrics_boundingRect(Widget, retval, r, flags, text, tabstops, tabarray);
 end;
 
 function TQtFontMetrics.charWidth(str: WideString; pos: Integer): Integer;
@@ -1509,7 +1530,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
-  QtFontMetrics: TQtFontMetrics;
   AFont: TQtFont;
 begin
   {$ifdef VerboseQt}
@@ -1517,24 +1537,19 @@ begin
   {$endif}
 
   AFont := Font;
-  QtFontMetrics := TQtFontMetrics.Create(AFont.Widget);
-  try
-    if AFont.Angle <> 0 then
-      Rotate(-0.1 * AFont.Angle);
-    
-    RestoreTextColor;
-    
-    QPainter_drawText(Widget, x, y + QtFontMetrics.ascent, s);
-    
-    RestorePenColor;
-    
-    {$ifdef VerboseQt}
-    WriteLn(' Font metrics height: ', QtFontMetrics.height, ' Angle: ',
-      Round(0.1 * AFont.Angle));
-    {$endif}
-  finally
-    QtFontMetrics.Free;
-  end;
+  if AFont.Angle <> 0 then
+    Rotate(-0.1 * AFont.Angle);
+  
+  RestoreTextColor;
+  
+  QPainter_drawText(Widget, x, y + AFont.Metrics.ascent, s);
+  
+  RestorePenColor;
+  
+  {$ifdef VerboseQt}
+  WriteLn(' Font metrics height: ', AFont.Metrics.height, ' Angle: ',
+    Round(0.1 * AFont.Angle));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

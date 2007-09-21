@@ -1148,7 +1148,6 @@ function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var ARect: TRect; Flags: Cardinal): Integer;
 var
   WideStr: WideString;
-  QtFontMetrics: TQtFontMetrics;
   R: TRect;
   F: Integer;
   QtDC: TQtDeviceContext;
@@ -1167,46 +1166,40 @@ begin
 
   WideStr := GetUtf8String(Str);
 
-  QtFontMetrics := TQtFontMetrics.Create(QtDC.font.Widget);
-  try
-    // convert DT flags to QT Flags
-    F := 0;
-    // horizontal alignment
-    if Flags and DT_CENTER <> 0 then
-      F := F or  QTAlignHCenter
-    else
-    if Flags and DT_RIGHT <> 0 then
-      F := F or QTAlignRight
-    else
-      F := F or QTAlignLeft;
-    // vertical alignment
-    if Flags and DT_VCENTER <> 0 then
-      F := F or QTAlignVCenter
-    else
-    if Flags and DT_BOTTOM <> 0 then
-      F := F or QTAlignBottom
-    else
-      F := F or QTAlignTop;
+  // convert DT flags to QT Flags
+  F := 0;
+  // horizontal alignment
+  if Flags and DT_CENTER <> 0 then
+    F := F or  QTAlignHCenter
+  else
+  if Flags and DT_RIGHT <> 0 then
+    F := F or QTAlignRight
+  else
+    F := F or QTAlignLeft;
+  // vertical alignment
+  if Flags and DT_VCENTER <> 0 then
+    F := F or QTAlignVCenter
+  else
+  if Flags and DT_BOTTOM <> 0 then
+    F := F or QTAlignBottom
+  else
+    F := F or QTAlignTop;
 
-    // mutually exclusive wordbreak and singleline
-    if Flags and DT_WORDBREAK <> 0 then
-      F := F or $1000{QTTExtWordWrap}
-    else
-    if Flags and DT_SINGLELINE <> 0 then
-      F := F or $100;{QTTextSingleLine;}
+  // mutually exclusive wordbreak and singleline
+  if Flags and DT_WORDBREAK <> 0 then
+    F := F or $1000{QTTExtWordWrap}
+  else
+  if Flags and DT_SINGLELINE <> 0 then
+    F := F or $100;{QTTextSingleLine;}
 
-    if Flags and DT_NOPREFIX = 0 then
-      F := F or $800;{QTTextShowMnemonic;}
-    
-    QFontMetrics_BoundingRect(QtFontMetrics.Widget, @R, @ARect, F, @WideStr);
-    
-    
-    //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
-    Result := QtFontMetrics.height;
-
-  finally
-    QtFontMetrics.Free;
-  end;
+  if Flags and DT_NOPREFIX = 0 then
+    F := F or $800;{QTTextShowMnemonic;}
+  
+  QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
+  
+  
+  //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
+  Result := QtDC.font.Metrics.height;
 
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
@@ -2949,8 +2942,8 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
-  QtFontMetrics: TQtFontMetrics;
   WideStr: WideString;
+  QtDC: TQtDeviceContext absolute DC;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextExtentPoint]');
@@ -2960,14 +2953,9 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
-  try
-    WideStr := GetUtf8String(Str);
-    Size.cx := QtFontMetrics.width(@WideStr);
-    Size.cy := QtFontMetrics.height;
-  finally
-    QtFontMetrics.Free;
-  end;
+  WideStr := GetUtf8String(Str);
+  Size.cx := QtDC.font.Metrics.width(@WideStr);
+  Size.cy := QtDC.font.Metrics.height;
 
   Result := True;
 end;
@@ -2982,6 +2970,7 @@ function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   QtFontMetrics: TQtFontMetrics;
   FontFamily: WideString;
+  QtDC: TQtDeviceContext absolute DC;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextMetrics]');
@@ -2991,41 +2980,38 @@ begin
 
   if Result then
   begin
-    QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
-    try
-      TM.tmHeight := QtFontMetrics.height;
-      TM.tmAscent := QtFontMetrics.ascent;
-      TM.tmDescent := QtFontMetrics.descent;
-      TM.tmInternalLeading := QtFontMetrics.leading;
-      TM.tmExternalLeading := 0;
-      TM.tmAveCharWidth := QtFontMetrics.charWidth('x', 0);
-      TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-      TM.tmWeight := TQtDeviceContext(DC).font.weight;
-      TM.tmOverhang := 0;
-      TM.tmDigitizedAspectX := 0;
-      TM.tmDigitizedAspectY := 0;
-      TM.tmFirstChar := 'a';
-      TM.tmLastChar := 'z';
-      TM.tmDefaultChar := 'x';
-      TM.tmBreakChar := '?';
-      TM.tmItalic := 0;
-      TM.tmUnderlined := 0;
-      TM.tmStruckOut := 0;
-      
-      TQtDeviceContext(DC).font.family(@FontFamily);
-      
-      { Defaults to a TrueType font.
-        Note that the meaning of the FIXED_PITCH constant is the opposite of
-        the name implies, according to MSDN docs. Just a small inconsistency
-        on Windows API that we have to mimic. }
-      if TQtDeviceContext(DC).font.fixedPitch then
-        TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
-      else TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+    QtFontMetrics := QtDC.font.Metrics;
+    TM.tmHeight := QtFontMetrics.height;
+    TM.tmAscent := QtFontMetrics.ascent;
+    TM.tmDescent := QtFontMetrics.descent;
+    TM.tmInternalLeading := QtFontMetrics.leading;
+    TM.tmExternalLeading := 0;
+    TM.tmAveCharWidth := QtFontMetrics.charWidth('x', 0);
+    TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
+    TM.tmWeight := QtDC.font.weight;
+    TM.tmOverhang := 0;
+    TM.tmDigitizedAspectX := 0;
+    TM.tmDigitizedAspectY := 0;
+    TM.tmFirstChar := 'a';
+    TM.tmLastChar := 'z';
+    TM.tmDefaultChar := 'x';
+    TM.tmBreakChar := '?';
+    TM.tmItalic := 0;
+    TM.tmUnderlined := 0;
+    TM.tmStruckOut := 0;
+    
+    QtDC.font.family(@FontFamily);
+    
+    { Defaults to a TrueType font.
+      Note that the meaning of the FIXED_PITCH constant is the opposite of
+      the name implies, according to MSDN docs. Just a small inconsistency
+      on Windows API that we have to mimic. }
+    if QtDC.font.fixedPitch then
+      TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+    else
+      TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
 
-      TM.tmCharSet := EASTEUROPE_CHARSET;
-    finally
-      QtFontMetrics.Free;
-    end;
+    TM.tmCharSet := EASTEUROPE_CHARSET;
   end;
 end;
 
