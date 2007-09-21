@@ -248,17 +248,19 @@ begin
     wrtIndent;
   wrtChr('<');
   wrtStr(node.NodeName);
-  for i := 0 to node.Attributes.Length - 1 do
-  begin
-    attr := node.Attributes.Item[i];
-    wrtChr(' ');
-    wrtStr(attr.NodeName);
-    wrtChr('=');
-    s := attr.NodeValue;
-    // !!!: Replace special characters in "s" such as '&', '<', '>'
-    wrtChr('"');
-    ConvWrite(s, AttrSpecialChars, @AttrSpecialCharCallback);
-    wrtChr('"');
+  if not (node.IsEmpty) then begin
+    for i := 0 to node.Attributes.Length - 1 do
+    begin
+      attr := node.Attributes.Item[i];
+      wrtChr(' ');
+      wrtStr(attr.NodeName);
+      wrtChr('=');
+      s := attr.NodeValue;
+      // !!!: Replace special characters in "s" such as '&', '<', '>'
+      wrtChr('"');
+      ConvWrite(s, AttrSpecialChars, @AttrSpecialCharCallback);
+      wrtChr('"');
+    end;
   end;
   Child := node.FirstChild;
   if Child = nil then begin

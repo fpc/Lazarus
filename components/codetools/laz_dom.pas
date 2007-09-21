@@ -203,6 +203,8 @@ type
     function Release: LongInt; virtual;
   end;
 
+  { TDOMNode }
+
   TDOMNode = class
   protected
     FNodeName, FNodeValue: DOMString;
@@ -241,6 +243,7 @@ type
     function AppendChild(NewChild: TDOMNode): TDOMNode; virtual;
     function HasChildNodes: Boolean; virtual;
     function CloneNode(deep: Boolean): TDOMNode; overload;
+    function IsEmpty: Boolean; virtual;
 
     // Extensions to DOM interface:
     function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; virtual;
@@ -445,7 +448,7 @@ type
     function  RemoveAttributeNode(OldAttr: TDOMAttr): TDOMAttr;
     // Free NodeList with TDOMNodeList.Release!
     function  GetElementsByTagName(const name: DOMString): TDOMNodeList;
-    function  IsEmpty: Boolean;
+    function  IsEmpty: Boolean; override;
     procedure Normalize;
 
     property AttribStrings[const Name: DOMString]: DOMString
@@ -726,6 +729,11 @@ function TDOMNode.CloneNode(deep: Boolean): TDOMNode;
 begin
   if deep then ;
   Result:=CloneNode(deep, FOwnerDocument);
+end;
+
+function TDOMNode.IsEmpty: Boolean;
+begin
+  Result:=true;
 end;
 
 function TDOMNode.CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode;
