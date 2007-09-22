@@ -5569,9 +5569,12 @@ begin
   GetCurrentUnit(SrcEdit,AnUnitInfo);
   // menu items
   if UpdateSaveAll then
-    MainIDEBar.itmProjectSave.Enabled := SomethingOfProjectIsModified;
-  MainIDEBar.itmFileSave.Enabled := ((SrcEdit<>nil)
-                                     and SourceNotebook.GetActiveSe.Modified);
+    MainIDEBar.itmProjectSave.Enabled :=
+     SomethingOfProjectIsModified
+     or ((Project1<>nil) and Project1.IsVirtual);
+  MainIDEBar.itmFileSave.Enabled :=
+    ((SrcEdit<>nil) and SrcEdit.Modified)
+    or ((AnUnitInfo<>nil) and (AnUnitInfo.IsVirtual));
   if UpdateSaveAll then
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
   // toolbar buttons
