@@ -1710,6 +1710,7 @@ type
     procedure UpdateControlState;
     procedure UpdateShowing; virtual;
     procedure WndProc(var Message: TLMessage); override;
+    procedure WSSetText(const AText: String); virtual;
   protected
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
@@ -3270,5 +3271,6 @@ finalization
   FreeThenNil(Mouse);
 
 end.
+
 
 

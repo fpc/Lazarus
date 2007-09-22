@@ -147,6 +147,13 @@ begin
   end;
 end;
 
+procedure TCustomCheckBox.RealSetText(const Value: TCaption);
+begin
+  if Value = Text then
+    Exit;
+  inherited RealSetText(Value);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomCheckBox.Toggle
   Params: none
@@ -183,27 +190,26 @@ begin
   inherited Loaded;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomCheckBox.RealSetText(const Value: TCaption);
- ------------------------------------------------------------------------------}
-procedure TCustomCheckBox.RealSetText(const Value: TCaption);
+procedure TCustomCheckBox.WSSetText(const AText: String);
 var
   ParseStr : String;
   AccelIndex : Longint;
-  OldKey: word;
+  OldShortCut: TShortCut;
 begin
-  if Value=Text then exit;
-  Inherited RealSetText(Value);
-  If HandleAllocated and (not (csDesigning in ComponentState)) then begin
-    ParseStr := Value;
+  if (not HandleAllocated) then
+    exit;
+  if not (csDesigning in ComponentState) then
+  begin
+    ParseStr := AText;
     AccelIndex := DeleteAmpersands(ParseStr);
-    If AccelIndex > -1 then begin
-      OldKey := FShortCut;
-      FShortCut := Char2VK(ParseStr[AccelIndex]);
-      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldKey, FShortCut);
+    if AccelIndex > -1 then
+    begin
+      OldShortCut := FShortCut;
+      FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
+      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
     end;
   end;
-  InvalidatePreferredSize;
+  inherited WSSetText(AText);
   AdjustSize;
 end;
 

@@ -1003,13 +1003,13 @@ type
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
-    procedure RealSetText(const Value: TCaption); override;
-    procedure WSSetDefault;
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     function IsBorderSpacingInnerBorderStored: Boolean; override;
     property ParentColor default false;
     function UseRightToLeftAlignment: Boolean; override;
+    procedure WSSetDefault;
+    procedure WSSetText(const AText: String); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
@@ -1099,6 +1099,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
     procedure Loaded; override;
+    procedure WSSetText(const AText: String); override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
@@ -1502,6 +1503,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

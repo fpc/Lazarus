@@ -3492,6 +3492,12 @@ Begin
   inherited WndProc(Message);
 end;
 
+procedure TWinControl.WSSetText(const AText: String);
+begin
+  TWSWinControlClass(WidgetSetClass).SetText(Self, AText);
+  InvalidatePreferredSize;
+end;
+
 {------------------------------------------------------------------------------
   procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
   
@@ -5327,12 +5333,13 @@ begin
     EnableWindow(Handle, Enabled);
 
   // Delay the setting of text until it is completely loaded
-  if not (csLoading in ComponentState) then begin
+  if not (csLoading in ComponentState) then
+  begin
     if GetCachedText(CachedText) then
-      TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
+      WSSetText(CachedText);
     InvalidatePreferredSize;
   end;
-  
+
   if csDesigning in ComponentState
   then TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
   else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
@@ -5445,7 +5452,7 @@ begin
     if HandleAllocated then begin
       // Set cached caption
       if GetCachedText(CachedText) then
-        TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
+        WSSetText(CachedText);
       InvalidatePreferredSize;
 
       if wcfColorChanged in FWinControlFlags then begin
@@ -6045,10 +6052,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.RealSetText(const AValue: TCaption);
 begin
-  if HandleAllocated 
-  and (not (csLoading in ComponentState))
-  then begin
-    TWSWinControlClass(WidgetSetClass).SetText(Self, AValue);
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
+    WSSetText(AValue);
     InvalidatePreferredSize;
   end;
   inherited RealSetText(AValue);

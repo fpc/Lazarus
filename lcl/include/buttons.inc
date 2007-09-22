@@ -260,24 +260,6 @@ begin
   end;
 end;
 
-procedure TCustomButton.RealSetText(const Value: TCaption);
-var
-  ParseStr : String;
-  AccelIndex : Longint;
-  OldShortCut: TShortCut;
-begin
-  inherited RealSetText(Value);
-  If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
-  ParseStr := Value;
-  AccelIndex := DeleteAmpersands(ParseStr);
-  If AccelIndex > -1 then begin
-    OldShortCut := FShortCut;
-    FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
-    TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
-  end;
-  AdjustSize;
-end;
-
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no childs
@@ -293,6 +275,29 @@ function TCustomButton.UseRightToLeftAlignment: Boolean;
 begin
   //Button always has center alignment
   Result := False;
+end;
+
+procedure TCustomButton.WSSetText(const AText: String);
+var
+  ParseStr : String;
+  AccelIndex : Longint;
+  OldShortCut: TShortCut;
+begin
+  if (not HandleAllocated) then
+    exit;
+  if not (csDesigning in ComponentState) then
+  begin
+    ParseStr := AText;
+    AccelIndex := DeleteAmpersands(ParseStr);
+    if AccelIndex > -1 then
+    begin
+      OldShortCut := FShortCut;
+      FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
+      TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
+    end;
+  end;
+  inherited WSSetText(AText);
+  AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -311,6 +316,7 @@ procedure TButton.Click;
 begin
   inherited Click;
 end;
+
 
 
 
