@@ -1643,6 +1643,16 @@ examples/toolbar.lpi svneol=native#text/plain
 examples/toolbar.pp svneol=native#text/pascal
 examples/trackbar.lpi svneol=native#text/plain
 examples/trackbar.pp svneol=native#text/pascal
+examples/trayicon/createbundle.sh -text
+examples/trayicon/frmtest.dfm -text
+examples/trayicon/frmtest.lfm -text
+examples/trayicon/frmtest.lrs -text
+examples/trayicon/frmtest.pas -text
+examples/trayicon/icon.ico -text
+examples/trayicon/magnifier.res -text
+examples/trayicon/wndtray.dpr -text
+examples/trayicon/wndtray.lpi -text
+examples/trayicon/wndtray.lps -text
 examples/treeview/README.txt svneol=native#text/plain
 examples/treeview/TV_Add_Remove.dpr svneol=native#text/pascal
 examples/treeview/TV_Add_Remove.res svneol=native#unset
