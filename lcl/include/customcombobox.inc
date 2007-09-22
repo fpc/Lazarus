@@ -103,6 +103,12 @@ begin
   end;
 end;
 
+class function TCustomComboBox.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=100;
+  Result.Y:=25;
+end;
+
 procedure TCustomComboBox.DoEnter;
 begin
   inherited DoEnter;
@@ -709,7 +715,7 @@ begin
   inherited Create(TheOwner);
 
   fCompStyle := csComboBox;
-  SetInitialBounds(0,0,100,25);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FItems := TStringlist.Create;
   FItemIndex:=-1;
   FMaxLength := -1;

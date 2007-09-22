@@ -36,7 +36,7 @@ begin
   Canvas.Font := Screen.HintFont;
   BorderStyle := bsNone;
   Caption := 'THintWindow';
-  SetInitialBounds(1,1,25,25);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FHideInterval := 3000;
   TheTimer := TCustomTimer.Create(self);
   FAutoHideTimer := TheTimer;
@@ -89,6 +89,12 @@ begin
   DrawText(Canvas.GetUpdatedHandle([csFontValid]),
            PChar(Caption), Length(Caption), ARect,
            DT_NOPREFIX or DT_CENTER or DT_VCENTER or DT_WORDBREAK);
+end;
+
+class function THintWindow.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=25;
+  Result.Y:=25;
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);

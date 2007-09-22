@@ -104,6 +104,12 @@ begin
   if FUpdatePending then UpdateControl;
 end;
 
+class function TCustomFloatSpinEdit.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=50;
+  Result.Y:=23;
+end;
+
 procedure TCustomFloatSpinEdit.SetValue(const AValue: Single);
 begin
   if FValue = AValue then Exit;
@@ -146,7 +152,7 @@ begin
   FUpdatePending := True;
   FValueChanged := True;
 
-  SetInitialBounds(0, 0, 50, 23);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
 function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Single): Single;

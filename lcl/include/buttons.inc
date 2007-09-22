@@ -36,7 +36,7 @@ begin
   Align := alNone;
   BorderSpacing.InnerBorder:=4;
   // setup default sizes
-  SetInitialBounds(0,0,75,25);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -287,6 +287,12 @@ end;
 function TCustomButton.IsBorderSpacingInnerBorderStored: Boolean;
 begin
   Result:=BorderSpacing.InnerBorder<>2;
+end;
+
+class function TCustomButton.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=75;
+  Result.Y:=25;
 end;
 
 function TCustomButton.UseRightToLeftAlignment: Boolean;

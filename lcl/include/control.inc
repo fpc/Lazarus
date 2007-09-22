@@ -2812,6 +2812,7 @@ begin
     ' NewClientSize='+dbgs(NewBaseParentClientSize)+
     '');}
   FBaseBounds:=NewBaseBounds;
+  Include(FControlFlags,cfBaseBoundsValid);
   FBaseParentClientSize:=NewBaseParentClientSize;
   fLastAlignedBounds:=Rect(0,0,0,0);
 end;
@@ -4008,7 +4009,7 @@ end;
   instead.
 
   Raw: If not Raw then the values will be adjusted by the constraints and
-  undefined values will be replaced by the current width and height.
+  undefined values will be replaced by GetDefaultWidth/GetDefaultHeight.
 
   WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
   has a minimum size. But for stacking multiple TRadioButtons there should be
@@ -4021,17 +4022,31 @@ end;
 procedure TControl.GetPreferredSize(var PreferredWidth,
   PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
 begin
-  if not (cfPreferredSizeValid in FControlFlags) then begin
-    CalculatePreferredSize(FPreferredWidth,FPreferredHeight,WithThemeSpace);
-    Include(FControlFlags,cfPreferredSizeValid);
+  if WithThemeSpace then begin
+    if not (cfPreferredSizeValid in FControlFlags) then begin
+      CalculatePreferredSize(FPreferredWidth,FPreferredHeight,true);
+      Include(FControlFlags,cfPreferredSizeValid);
+    end;
+    PreferredWidth:=FPreferredWidth;
+    PreferredHeight:=FPreferredHeight;
+  end else begin
+    if not (cfPreferredMinSizeValid in FControlFlags) then begin
+      CalculatePreferredSize(FPreferredMinWidth,FPreferredMinHeight,false);
+      Include(FControlFlags,cfPreferredMinSizeValid);
+    end;
+    PreferredWidth:=FPreferredMinWidth;
+    PreferredHeight:=FPreferredMinHeight;
   end;
-  PreferredWidth:=FPreferredWidth;
-  PreferredHeight:=FPreferredHeight;
 
   if not Raw then begin
-    // use Width and Height for undefined preferred size
-    if PreferredWidth<=0 then PreferredWidth:=Width;
-    if PreferredHeight<=0 then PreferredHeight:=Height;
+    // use defaults for undefined preferred size
+    if AutoSize then begin
+      if PreferredWidth<=0 then PreferredWidth:=GetDefaultWidth;
+      if PreferredHeight<=0 then PreferredHeight:=GetDefaultHeight;
+    end else begin
+      if PreferredWidth<=0 then PreferredWidth:=Width;
+      if PreferredHeight<=0 then PreferredHeight:=Height;
+    end;
     
     // if this control is aligned adjust PreferredWidth and/or PreferredHeight
     if Parent<>nil then begin
@@ -4055,6 +4070,71 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.GetDefaultWidth: integer;
+
+  The default width for this control independent of any calculated values
+  like Width and GetPreferredSize.
+ ------------------------------------------------------------------------------}
+function TControl.GetDefaultWidth: integer;
+begin
+  if cfBaseBoundsValid in FControlFlags then
+    Result:=FBaseBounds.Right-FBaseBounds.Left
+  else if cfWidthLoaded in FControlFlags then
+    Result:=FReadBounds.Right-FReadBounds.Left
+  else
+    Result:=GetControlClassDefaultSize.X;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.GetDefaultHeight: integer;
+
+  The default height for this control independent of any calculated values
+  like Height and GetPreferredSize.
+ ------------------------------------------------------------------------------}
+function TControl.GetDefaultHeight: integer;
+begin
+  if cfBaseBoundsValid in FControlFlags then
+    Result:=BaseBounds.Bottom-BaseBounds.Top
+  else if cfHeightLoaded in FControlFlags then
+    Result:=FReadBounds.Bottom-FReadBounds.Top
+  else
+    Result:=GetControlClassDefaultSize.Y;
+end;
+
+{------------------------------------------------------------------------------
+  class function TControl.GetControlClassDefaultSize: TPoint;
+
+  The default size of this type of controls.
+  Used by GetDefaultWidth and GetDefaultHeight.
+ ------------------------------------------------------------------------------}
+class function TControl.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=75;
+  Result.Y:=50;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.CNPreferredSizeChanged;
+
+  Utility function to retrieve Left,Top,Right and Bottom.
+ ------------------------------------------------------------------------------}
+function TControl.GetSidePosition(Side: TAnchorKind): integer;
+begin
+  case Side of
+  akLeft: Result:=Left;
+  akTop: Result:=Top;
+  akRight: Result:=Left+Width;
+  akBottom: Result:=Top+Bottom;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.CNPreferredSizeChanged;
+
+  Called by the LCL interface, when something changed that effects the result
+  of the interface values for GetPreferredSize.
+ ------------------------------------------------------------------------------}
 procedure TControl.CNPreferredSizeChanged;
 begin
   InvalidatePreferredSize;
@@ -4072,6 +4152,7 @@ begin
   AControl:=Self;
   while AControl<>nil do begin
     Exclude(AControl.FControlFlags,cfPreferredSizeValid);
+    Exclude(AControl.FControlFlags,cfPreferredMinSizeValid);
     AControl:=AControl.Parent;
   end;
 end;

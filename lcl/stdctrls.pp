@@ -160,6 +160,7 @@ type
 
   TCustomGroupBox = class (TWinControl)
   protected
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); Override;
   end;
@@ -293,6 +294,7 @@ type
     procedure DoExit; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure LMChanged(var Msg); message LM_CHANGED;
     procedure Change; dynamic;
     procedure Select; dynamic;
@@ -484,6 +486,7 @@ type
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure CheckIndex(const AIndex: Integer);
     function GetItemHeight: Integer;
     function GetItemIndex: integer; virtual;
@@ -672,6 +675,7 @@ type
     procedure SetSelText(const Val: string); virtual;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
@@ -753,6 +757,7 @@ type
     function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -894,6 +899,7 @@ type
     procedure SetFocusControl(Val: TWinControl); virtual;
     procedure SetShowAccelChar(Val: boolean); virtual;
     function DialogChar(var Message: TLMKey): boolean; override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -1008,6 +1014,7 @@ type
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     function IsBorderSpacingInnerBorderStored: Boolean; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     property ParentColor default false;
     function UseRightToLeftAlignment: Boolean; override;
   public
@@ -1098,6 +1105,7 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1355,6 +1363,7 @@ type
     procedure TextChanged; override;
     procedure Resize; override;
     procedure FontChanged(Sender: TObject); override;
+    class function GetControlClassDefaultSize: TPoint; override;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1380,12 +1389,12 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
     property OptimalFill: Boolean read FOptimalFill write SetOptimalFill default false;
   public
+    constructor Create(TheOwner: TComponent); override;
     function CalcFittingFontHeight(const TheText: string;
                                    MaxWidth, MaxHeight: Integer; var FontHeight,
                                    NeededWidth, NeededHeight: integer): Boolean;
     function ColorIsStored: boolean; override;
     function AdjustFontForOptimalFill: Boolean;
-    constructor Create(TheOwner: TComponent); override;
     procedure Paint; override;
     property AutoSize default True;
     property Color default clNone;

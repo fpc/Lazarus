@@ -17,7 +17,7 @@
 constructor TShape.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  SetInitialBounds(0,0,65,65);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   ControlStyle := ControlStyle + [csReplicatable];
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
@@ -105,3 +105,10 @@ begin
     StyleChanged(Self);
   end;
 end;
+
+class function TShape.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=65;
+  Result.Y:=65;
+end;
+
