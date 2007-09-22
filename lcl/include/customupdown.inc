@@ -209,7 +209,7 @@ begin
   FOrientation := udVertical;
   MinBtn := TUpDownButton.CreateWithParams(Self, btPrev);
   MaxBtn := TUpDownButton.CreateWithParams(Self, btNext);
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,17,31);
   BTimerProc := nil;
   BTimerBounds := Rect(0,0,0,0);
   FArrowKeys := True;
@@ -390,12 +390,6 @@ procedure TCustomUpDown.DoOnResize;
 begin
   inherited DoOnResize;
   UpdateOrientation;
-end;
-
-class function TCustomUpDown.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=17;
-  Result.Y:=31;
 end;
 
 procedure TCustomUpDown.Notification(AComponent: TComponent;

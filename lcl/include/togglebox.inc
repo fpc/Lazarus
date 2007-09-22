@@ -21,6 +21,7 @@ begin
   inherited Create(TheOwner);
   fCompStyle := csToggleBox;
   AutoSize:=false;
+  SetInitialBounds(0,0,90,25);
 end;
 
 {------------------------------------------------------------------------------}

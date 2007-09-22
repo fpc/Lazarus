@@ -135,15 +135,9 @@ begin
   UnlockSelectionChange;
 end;
 
-class function TCustomListBox.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=100;
-  Result.Y:=80;
-end;
-
-{------------------------------------------------------------------------------
- procedure TCustomListBox.UpdateSelectionMode
-------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{ procedure TCustomListBox.UpdateSelectionMode                                 }
+{------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSelectionMode;
 begin
   if not HandleAllocated then exit;
@@ -467,9 +461,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomListBox.Create
-------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{  function TCustomListBox.Create                                      }
+{------------------------------------------------------------------------------}
 constructor TCustomListBox.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
@@ -485,13 +479,13 @@ begin
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, 100, 80);
   UnlockSelectionChange;
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomListBox.Destroy
-------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{  function TCustomListBox.Destroy                                      }
+{------------------------------------------------------------------------------}
 destructor TCustomListBox.Destroy;
 begin
   Destroying;

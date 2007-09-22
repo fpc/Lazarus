@@ -41,7 +41,7 @@ begin
   FAlignment := taCenter;
   FFullRepaint := true;
   Color:=clBtnFace;// clBackground;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,170,50);
   ParentColor := True;
 end;
 
@@ -136,12 +136,6 @@ begin
   if BevelInner <> bvNone then Inc(BevelSize, BevelWidth);
   //debugln('TCustomPanel.AdjustClientRect ',DbgSName(Self),' BorderWidth=',dbgs(BorderWidth),' BevelWidth=',dbgs(BevelWidth),' BevelSize=',dbgs(BevelSize));
   InflateRect(Rect, -BevelSize, -BevelSize);
-end;
-
-class function TCustomPanel.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=170;
-  Result.Y:=50;
 end;
 
 procedure TCustomPanel.Loaded;

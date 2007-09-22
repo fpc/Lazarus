@@ -30,6 +30,7 @@ begin
   FButtonGlyph.OnChange := @GlyphChanged;
   Align := alNone;
   BorderSpacing.InnerBorder:=4;
+  SetInitialBounds(0,0,75,30);
   RealizeKind;
 end;
 
@@ -260,12 +261,6 @@ end;
 function TCustomBitBtn.IsBorderSpacingInnerBorderStored: Boolean;
 begin
   Result:=BorderSpacing.InnerBorder<>4;
-end;
-
-class function TCustomBitBtn.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=75;
-  Result.Y:=30;
 end;
 
 // included by buttons.pp

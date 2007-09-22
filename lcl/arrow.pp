@@ -41,8 +41,6 @@ Type
   TArrowType = (atUp, atDown, atLeft, atRight);
   TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut);
 
-  { TArrow }
-
   TArrow = class(TCustomControl)
   private
     FArrowType : TArrowType;
@@ -54,7 +52,6 @@ Type
     procedure SetProps;
   protected
     procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -100,7 +97,7 @@ begin
   fCompStyle := csArrow;
   fArrowType := atLeft;
   fShadowType := stEtchedIn;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,10,10);
 end;
 
 destructor TArrow.Destroy;
@@ -118,12 +115,6 @@ procedure TArrow.Paint;
 begin
   WidgetSet.DrawArrow(Self, Canvas);
   inherited Paint;
-end;
-
-class function TArrow.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=10;
-  Result.Y:=10;
 end;
 
 procedure TArrow.InitializeWnd;

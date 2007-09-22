@@ -46,13 +46,13 @@ begin
   fCompStyle := csProgressBar;
   FPosition  := 0;
   FStep      := 10;
-  FMin       := 0;
-  FMax       := 100;
+  FMin	      := 0;
+  FMax	      := 100;
   FSmooth    := false;
   FOrientation      := pbHorizontal;
   FBarShowText      := false;
   FBarTextFormat    := '%v from [%l-%u] (=%p%%)';
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,100,20);
 end;   
 
 {------------------------------------------------------------------------------
@@ -73,12 +73,6 @@ procedure TCustomProgressBar.Loaded;
 begin
   inherited Loaded;
   ApplyChanges;
-end;
-
-class function TCustomProgressBar.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=100;
-  Result.Y:=20;
 end;
 
 {------------------------------------------------------------------------------

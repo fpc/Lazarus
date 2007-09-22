@@ -969,12 +969,6 @@ begin
   end;
 end;
 
-class function TCustomForm.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=320;
-  Result.Y:=240;
-end;
-
 procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
   if (NewDockSite<>HostDockSite) then begin
@@ -1383,7 +1377,7 @@ begin
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,320,240);
   ParentColor := False;
   ParentFont := False;
   Ctl3D := True;

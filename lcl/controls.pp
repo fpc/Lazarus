@@ -760,9 +760,7 @@ type
     cfClientHeightLoaded,
     cfLastAlignedBoundsValid,
     cfBoundsRectForNewParentValid,
-    cfBaseBoundsValid,
     cfPreferredSizeValid,
-    cfPreferredMinSizeValid,
     cfOnResizeNeeded,
     cfOnChangeBoundsNeeded
     );
@@ -865,8 +863,6 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FPopupMenu: TPopupMenu;
-    FPreferredMinWidth: integer;// without theme space
-    FPreferredMinHeight: integer;// without theme space
     FPreferredWidth: integer;// with theme space
     FPreferredHeight: integer;// with theme space
     FReadBounds: TRect;
@@ -1176,10 +1172,6 @@ type
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); virtual;
-    function GetDefaultWidth: integer;
-    function GetDefaultHeight: integer;
-    class function GetControlClassDefaultSize: TPoint; virtual;
-    function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     function GetAnchorsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
@@ -1582,8 +1574,6 @@ type
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AdjustClientRect(var ARect: TRect); virtual;
-    procedure CreateControlAlignList(TheAlign: TAlign;
-                                    AlignList: TFPList; StartControl: TControl);
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
@@ -1607,7 +1597,7 @@ type
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace,
-                             UsePreferredSizes: boolean); virtual;
+                             FixateParentAnchors: boolean); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);

@@ -870,7 +870,6 @@ type
     procedure HintsChanged(Sender: TObject); virtual;
     procedure ButtonClickHandler(Sender: TObject); virtual;
     procedure DoOnResize; override;
-    class function GetControlClassDefaultSize: TPoint; override;
     procedure BeginUpdateButtons; virtual;
     procedure EndUpdateButtons; virtual;
   public

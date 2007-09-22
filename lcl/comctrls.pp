@@ -445,7 +445,6 @@ type
     procedure UpdateTabImages;
     procedure ImageListChange(Sender: TObject);
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    class function GetControlClassDefaultSize: TPoint; override;
     procedure Paint; override;
     function GetDisplayRectWithBorder: TRect; virtual;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -1117,7 +1116,6 @@ type
     procedure ApplyChanges;
     procedure InitializeWnd; override;
     procedure Loaded; override;
-    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure StepIt;
@@ -1219,7 +1217,6 @@ type
     Procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
-    class function GetControlClassDefaultSize: TPoint; override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click(Button: TUDBtnType); dynamic; overload;
@@ -1362,7 +1359,6 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
                          WithThemeSpace: Boolean); override;
-    class function GetControlClassDefaultSize: TPoint; override;
     procedure Loaded; override;
     procedure RefreshControl; virtual;
     procedure SetToolBar(NewToolBar: TToolBar);
@@ -1479,7 +1475,6 @@ type
     procedure RemoveButton(Button: TToolButton);
   protected
     procedure AdjustClientRect(var ARect: TRect); override;
-    class function GetControlClassDefaultSize: TPoint; override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
     procedure ClickButton(Button: TToolButton); dynamic;
@@ -1603,7 +1598,6 @@ type
   protected
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
-    class function GetControlClassDefaultSize: TPoint; override;
     procedure InitializeWnd; override;
     procedure Loaded; override;
   public
@@ -2580,7 +2574,6 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure UpdateState;
-    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

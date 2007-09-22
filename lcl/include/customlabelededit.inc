@@ -105,6 +105,7 @@ begin
   FLabelPosition := lpAbove;
   FLabelSpacing := 3;
   CreateInternalLabel;
+  SetInitialBounds(0,0,80,25);
 end;
 
 procedure TCustomLabeledEdit.CreateInternalLabel;

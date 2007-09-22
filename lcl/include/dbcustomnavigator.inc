@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pp}
+{%MainUnit ../dbctrls.pas}
 {
  *****************************************************************************
  *                                                                           *
@@ -336,12 +336,6 @@ begin
     UpdateButtons;
 end;
 
-class function TDBCustomNavigator.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=241;
-  Result.Y:=25;
-end;
-
 procedure TDBCustomNavigator.BeginUpdateButtons;
 begin
   inc(FUpdateButtonsLock);
@@ -373,7 +367,7 @@ begin
   BevelOuter:=bvNone;
   BevelInner:=bvNone;
   FConfirmDelete:=True;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,241,25);
   UpdateButtons;
   EndUpdateButtons;
   UpdateHints;

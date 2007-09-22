@@ -39,7 +39,7 @@ begin
   FGlyph := TButtonGlyph.Create;
   FGlyph.OnChange := @GlyphChanged;
 
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, 23, 22);
   ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents];
 
   FLayout:= blGlyphLeft;
@@ -391,12 +391,6 @@ end;
 function TCustomSpeedButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TSpeedButtonActionLink;
-end;
-
-class function TCustomSpeedButton.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=23;
-  Result.Y:=22;
 end;
 
 {------------------------------------------------------------------------------

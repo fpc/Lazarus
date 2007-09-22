@@ -70,7 +70,7 @@ begin
   FTickMarks:=tmBottomRight;
   FTickStyle:=tsAuto;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,100,25);
 end;
 
 {------------------------------------------------------------------------------
@@ -311,12 +311,6 @@ begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
   if Assigned (FOnChange) then FOnChange(Self);
-end;
-
-class function TCustomTrackBar.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=100;
-  Result.Y:=25;
 end;
 
 {------------------------------------------------------------------------------

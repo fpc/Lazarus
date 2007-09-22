@@ -41,6 +41,7 @@ begin
   ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
   ChildSizing.LeftRightSpacing:=6;
   ChildSizing.TopBottomSpacing:=6;
+  SetInitialBounds(0,0,150,100);
 end;
 
 destructor TCustomCheckGroup.Destroy;

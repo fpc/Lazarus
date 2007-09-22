@@ -28,7 +28,7 @@ begin
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
   FUseParentCanvas := false;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,100,100);
 end;
 
 destructor TCustomImage.Destroy;
@@ -91,6 +91,7 @@ var
   end;
   
 begin
+  if not AutoSize then Exit;  // needless to check
   if AutoSizing then Exit;    // we shouldn't come here in the first place
   
   BeginAutoSizing;
@@ -108,6 +109,7 @@ begin
     if (NewWidth<>Width) or (NewHeight<>Height)
     then begin
       SetBounds(Left, Top, NewWidth, NewHeight);
+//      PictureChanged(Self);
     end;
   finally
     EndAutoSizing;
@@ -194,12 +196,6 @@ procedure TCustomImage.CalculatePreferredSize(var PreferredWidth,
 begin
   PreferredWidth := Picture.Width;
   PreferredHeight := Picture.Height;
-end;
-
-class function TCustomImage.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=90;
-  Result.Y:=90;
 end;
 
 procedure TCustomImage.Paint;

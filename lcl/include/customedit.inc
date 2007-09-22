@@ -52,7 +52,7 @@ begin
   FMaxLength:= -1;
   ParentColor := false;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,80,23);
   FEchoMode := emNormal;
   BorderStyle := bsSingle;
   FAutoSelect := False;
@@ -345,12 +345,6 @@ function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no childs
   Result:=false;
-end;
-
-class function TCustomEdit.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=80;
-  Result.Y:=23;
 end;
 
 procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);

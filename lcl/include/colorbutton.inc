@@ -26,7 +26,7 @@ begin
   FButtonColorSize := 16;
   FBorderWidth := 2;
   FButtonColorAutoSize := True;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(1, 1, 75, 25);
 end;
 
 destructor TColorButton.Destroy;
@@ -127,12 +127,6 @@ begin
   Result:=Bounds(AClient.Left + AOffset.X, AClient.Top + AOffset.Y,
     Size.CX - 1, Size.CY - 1);
   Canvas.Rectangle(Result);
-end;
-
-class function TColorButton.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=75;
-  Result.Y:=25;
 end;
 
 procedure TColorButton.SetButtonColorSize(const AValue: Integer);

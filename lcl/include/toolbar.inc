@@ -72,7 +72,7 @@ begin
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := @HotImageListChange;
   EdgeBorders := [ebTop];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,150,26);
   Align := alTop;
 end;
 
@@ -545,12 +545,6 @@ procedure TToolBar.AdjustClientRect(var ARect: TRect);
 begin
   inherited AdjustClientRect(ARect);
   inc(ARect.Left,Indent);
-end;
-
-class function TToolBar.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=150;
-  Result.Y:=26;
 end;
 
 function TToolBar.FindButtonFromAccel(Accel: Word): TToolButton;

@@ -20,7 +20,7 @@ constructor TPaintBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,105,105);
 end;
 
 procedure TPaintBox.Paint;
@@ -43,12 +43,6 @@ begin
     Canvas.Brush.Color := Color;
     inherited Paint;
   end;
-end;
-
-class function TPaintBox.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=105;
-  Result.Y:=105;
 end;
 
 // included by extctrls.pp

@@ -79,7 +79,6 @@ type
     procedure SetLabelPosition(const AValue: TPosLabel);
   protected
     procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -158,7 +157,7 @@ begin
   FBars:=TBarChartItems.Create(Self);
   FDepth:=5;
   FLabelPosition:=plLeft;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,150,120);
 end;
 
 destructor TCustomBarChart.Destroy;
@@ -365,12 +364,6 @@ begin
     end;
     end;
   Canvas.Pen.Style:=psSolid;
-end;
-
-class function TCustomBarChart.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=150;
-  Result.Y:=120;
 end;
 
 procedure TCustomBarChart.Clear;

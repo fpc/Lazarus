@@ -37,7 +37,7 @@ begin
   end;
   FHoverTime := -1;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,100,90);
   ParentColor := False;
   Color := clWindow;  
   FCanvas := TControlCanvas.Create;
@@ -45,9 +45,9 @@ begin
   FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips];
 end;
 
-{------------------------------------------------------------------------------
-   TCustomListView CustomDraw
-------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{   TCustomListView CustomDraw                                                 }
+{------------------------------------------------------------------------------}
 function TCustomListView.CustomDraw(const ARect: TRect; AStage: TCustomDrawStage): Boolean;
 begin
   Result := True;

@@ -33,7 +33,7 @@ begin
   FShowAccelChar:= true;
   FStaticBorderStyle:=sbsNone;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, 65, 17);
 end;
 
 {------------------------------------------------------------------------------
@@ -121,12 +121,6 @@ begin
     Result := true;
   end else
     Result := inherited;
-end;
-
-class function TCustomStaticText.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=65;
-  Result.Y:=17;
 end;
 
 Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);

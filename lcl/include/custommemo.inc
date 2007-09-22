@@ -38,6 +38,7 @@ begin
   //TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
+  SetInitialBounds(0,0,150,90);
 end;
 
 {------------------------------------------------------------------------------
@@ -245,12 +246,6 @@ begin
     Message.CharCode := VK_UNKNOWN;
     Message.Result := 1;
   end;
-end;
-
-class function TCustomMemo.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=150;
-  Result.Y:=90;
 end;
 
 procedure TCustomMemo.SetWantTabs(const NewWantTabs: boolean);

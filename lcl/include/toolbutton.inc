@@ -60,7 +60,7 @@ begin
   FImageIndex := -1;
   FStyle := tbsButton;
   ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0,0,23,22);
 end;
 
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -807,12 +807,6 @@ begin
       inc(PreferredWidth,FToolBar.FDropDownWidth);
     end;
   end;
-end;
-
-class function TToolButton.GetControlClassDefaultSize: TPoint;
-begin
-  Result.X:=23;
-  Result.Y:=22;
 end;
 
 

@@ -60,7 +60,6 @@ type
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
-    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: Single): Single;
