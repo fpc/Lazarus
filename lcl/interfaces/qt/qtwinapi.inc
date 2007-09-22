@@ -99,6 +99,7 @@ begin
       //Write('>>> Setting Paint ClipRegion: ');
       //DebugRegion('PaintData.ClipRegion: ', Widget.PaintData.ClipRegion);
       DC.setClipRegion(Widget.PaintData.ClipRegion);
+      DC.setClipping(True);
     end;
     if Widget.PaintData.ClipRect <> nil then
     begin

@@ -6178,7 +6178,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
-  FViewPortWidget := NiL;
+  FViewPortWidget := niL;
   Result := QScrollArea_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -6371,8 +6371,12 @@ begin
 
   FillChar(AParams, SizeOf(AParams), #0);
   FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
+{$ifdef QtGraphicsSpeedUp}
+  QWidget_setAttribute(Widget, QtWA_OpaquePaintEvent);
+  QWidget_setBackgroundRole(FViewPortWidget.Widget, QPaletteNoRole);
+{$endif}
   FViewPortWidget.AttachEvents;
-  
+
   QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), FViewPortWidget.Widget);
 end;
 

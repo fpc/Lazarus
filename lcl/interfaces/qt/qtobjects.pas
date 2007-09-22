@@ -294,6 +294,7 @@ type
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
     function region: TQtRegion;
+    procedure setClipping(const AValue: Boolean);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
     procedure setRegion(ARegion: TQtRegion);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
@@ -1291,7 +1292,12 @@ begin
       Widget := QPainter_create(QPaintDeviceH(ParentPixmap));
     end
     else
+    begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
+    {$ifdef QtGraphicsSpeedUp}
+      QPainter_setRenderHint(Widget, QPainterTextAntialiasing, False);
+    {$endif}
+    end;
   end;
   FOwnPainter := True;
   CreateObjects;
@@ -1937,6 +1943,11 @@ begin
     
   QPainter_clipRegion(Widget,  vRegion.Widget);
   Result := vRegion;
+end;
+
+procedure TQtDeviceContext.setClipping(const AValue: Boolean);
+begin
+  QPainter_setClipping(Widget, AValue);
 end;
 
 procedure TQtDeviceContext.setClipRegion(ARegion: QRegionH;
