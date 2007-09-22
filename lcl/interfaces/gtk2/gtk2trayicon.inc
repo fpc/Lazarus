@@ -33,10 +33,10 @@ var
   fWindow: TWindow;
   fScreen: PScreen;
   fScreenID: longint;
-  GtkForm: PGtkWidget;
   fTrayParent: TWindow;
 {$endif}
 
+  GtkForm: PGtkWidget;
   fOwner: TComponent;
   fEmbedded: Boolean;
   fMsgCount: Integer;
