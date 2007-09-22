@@ -172,8 +172,9 @@ type
   public
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
-    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+    class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); override;
@@ -669,8 +670,8 @@ class procedure TQtWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const
 var
   AStr: WideString;
 begin
-  if Length(AText) = 0 then
-    exit;
+  if not WSCheckHandleAllocated(ACustomMemo, 'AppendText') or (Length(AText) = 0) then
+    Exit;
   AStr := GetUtf8String(AText);
   TQtTextEdit(ACustomMemo.Handle).append(AStr);
 end;
@@ -678,6 +679,8 @@ end;
 class procedure TQtWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
   const AAlignment: TAlignment);
 begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetAlignment') then
+    Exit;
   TQtTextEdit(ACustomMemo.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;
 
@@ -691,6 +694,8 @@ class function TQtWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStri
 var
   TextEditH: QTextEditH;
 begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'GetStrings') then
+    Exit;
   if not Assigned(TQtTextEdit(ACustomMemo.Handle).FList) then
   begin
     TextEditH := QTextEditH((TQtTextEdit(ACustomMemo.Handle).Widget));  // set to proper type
@@ -709,10 +714,33 @@ begin
   TQtTextEdit(ACustomMemo.Handle).setScrollStyle(NewScrollBars);
 end;
 
+class procedure TQtWSCustomMemo.SetWantReturns(const ACustomMemo: TCustomMemo;
+  const NewWantReturns: boolean);
+begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetWantReturns') then
+    Exit;
+  with TQtTextEdit(ACustomMemo.Handle) do
+  begin
+    if NewWantReturns then
+      KeysToEat := KeysToEat - [VK_RETURN]
+    else
+      KeysToEat := KeysToEat + [VK_RETURN];
+  end;
+end;
+
 class procedure TQtWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
   const NewWantTabs: boolean);
 begin
-  TQtTextEdit(ACustomMemo.Handle).setTabChangesFocus(not NewWantTabs);
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetWantTabs') then
+    Exit;
+  with TQtTextEdit(ACustomMemo.Handle) do
+  begin
+    setTabChangesFocus(not NewWantTabs);
+    if NewWantTabs then
+      KeysToEat := KeysToEat - [VK_TAB]
+    else
+      KeysToEat := KeysToEat + [VK_TAB];
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -722,6 +750,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetWordWrap') then
+    Exit;
   TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
 end;
 

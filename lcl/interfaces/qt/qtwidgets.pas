@@ -43,6 +43,8 @@ type
   // forward declarations
   TQtListWidget = class;
 
+  TByteSet = set of byte;
+  
   // records
   TPaintData = record
     ClipRect: Prect;
@@ -76,6 +78,7 @@ type
     FContext: HDC;
     FParams: TCreateParams;
     FDefaultCursor: QCursorH;
+    FKeysToEat: TByteSet;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -115,7 +118,7 @@ type
     procedure SlotDestroy; cdecl;
     procedure SlotFocus(Event: QEventH; FocusIn: Boolean); cdecl;
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
-    procedure SlotKey(Event: QEventH); cdecl;
+    function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseEnter(Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
@@ -176,6 +179,7 @@ type
     function windowModality: QtWindowModality;
 
     property Context: HDC read FContext;
+    property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
@@ -1023,6 +1027,7 @@ begin
   // Initializes the properties
   FProps := nil;
   LCLObject := AWinControl;
+  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
 
   FParams := AParams;
   InitializeWidget;
@@ -1037,6 +1042,7 @@ begin
   // Initializes the properties
   FProps := niL;
   LCLObject := AWinControl;
+  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
 
   // Creates the widget
   Widget := AWidget;
@@ -1329,8 +1335,7 @@ begin
     QEventKeyPress,
     QEventKeyRelease:
       begin
-        SlotKey(Event);
-        Result := LCLObject is TCustomControl;
+        Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
       end;
     QEventLeave: SlotMouseEnter(Event);
 
@@ -1504,7 +1509,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotKey(Event: QEventH); cdecl;
+function TQtWidget.SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 const
   CN_KeyDownMsgs: array[Boolean] of UINT = (CN_KEYDOWN, CN_SYSKEYDOWN);
   CN_KeyUpMsgs: array[Boolean] of UINT = (CN_KEYUP, CN_SYSKEYUP);
@@ -1519,12 +1524,19 @@ var
   IsSysKey: Boolean;
   Text: WideString;
   UTF8Char: TUTF8Char;
+  ACharCode: Word;
+  AChar: Char;
+  AKeyEvent: QKeyEventH;
 begin
   {$ifdef VerboseQt}
     Write('TQtWidget.SlotKey');
   {$endif}
 
+  Result := True;
   FillChar(KeyMsg, SizeOf(KeyMsg), #0);
+  FillChar(CharMsg, SizeOf(CharMsg), #0);
+  UTF8Char := '';
+  AChar := #0;
 
   // Detects special keys (shift, alt, control, etc)
   Modifiers := QKeyEvent_modifiers(QKeyEventH(Event));
@@ -1532,7 +1544,8 @@ begin
   KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
 
   {$ifdef windows}
-    KeyMsg.CharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+    ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+    KeyMsg.CharCode := ACharCode;
   // todo: VK to Win_VK for other os too
   {$endif}
 
@@ -1541,7 +1554,10 @@ begin
 
   // Translates a Qt4 Key to a LCL VK_* key
   if KeyMsg.CharCode = 0 then
-    KeyMsg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text);
+  begin
+    ACharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text);
+    KeyMsg.CharCode := ACharCode;
+  end;
 
   {------------------------------------------------------------------------------
    Sends the adequate key messages
@@ -1587,7 +1603,8 @@ begin
     FillChar(CharMsg, SizeOf(CharMsg), 0);
     CharMsg.Msg := CN_CharMsg[IsSysKey];
     CharMsg.KeyData := KeyMsg.KeyData;
-    CharMsg.CharCode := ord(Text[1]);
+    AChar := Text[1];
+    CharMsg.CharCode := Word(AChar);
 
     //Send message to LCL
     NotifyApplicationUserInput(CharMsg.Msg);
@@ -1602,8 +1619,37 @@ begin
     CharMsg.Msg := LM_CharMsg[IsSysKey];
 
     NotifyApplicationUserInput(CharMsg.Msg);
-    if DeliverMessage(CharMsg) <> 0 then
-      Exit;
+    DeliverMessage(CharMsg);
+  end;
+  
+  // check if data was changed during key handling
+  if (KeyMsg.CharCode <> ACharCode) or (UTF8Char <> TUTF8Char(Text)) or (Word(AChar) <> CharMsg.CharCode) then
+  begin
+    // data was changed
+    if UTF8Char <> TUTF8Char(Text) then
+      Text := Utf8Char
+    else
+    if Word(AChar) <> CharMsg.CharCode then
+      Text := Char(CharMsg.CharCode);
+    AKeyEvent := QKeyEvent_createExtendedKeyEvent(
+      QEvent_type(Event),
+      LCLKeyToQtKey(KeyMsg.CharCode),
+      Modifiers,
+      0,
+      KeyMsg.CharCode,
+      0,
+      @Text,
+      QKeyEvent_isAutoRepeat(QKeyEventH(Event)),
+      QKeyEvent_count(QKeyEventH(Event))
+      );
+    try
+      QCoreApplication_sendEvent(Sender, AKeyEvent);
+    finally
+      QKeyEvent_destroy(AKeyEvent);
+    end;
+  end else
+  begin
+    Result := KeyMsg.CharCode in KeysToEat;
   end;
 end;
 
@@ -4178,6 +4224,7 @@ begin
   {$endif}
 
   Result := QTextEdit_create();
+  FKeysToEat := [];
 end;
 
 procedure TQtTextEdit.append(AStr: WideString);
@@ -4337,7 +4384,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtTextEdit.SignalTextChanged; cdecl;
 var
-	Msg: TLMessage;
+  Msg: TLMessage;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
@@ -4395,7 +4442,7 @@ begin
 
     case QEvent_type(Event) of
       QEventKeyPress,
-      QEventKeyRelease: SlotKey(Event);
+      QEventKeyRelease: SlotKey(Sender, Event);
     else
       QEvent_ignore(Event);
     end;
@@ -4753,7 +4800,7 @@ begin
 
     case QEvent_type(Event) of
       QEventKeyPress,
-      QEventKeyRelease: SlotKey(Event);
+      QEventKeyRelease: SlotKey(Sender, Event);
     else
       QEvent_ignore(Event);
     end;
