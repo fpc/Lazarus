@@ -278,7 +278,7 @@ type
     procedure fillRect(x, y, w, h: Integer); overload;
 
     procedure setBrushOrigin(x, y: Integer);
-    procedure brushOrigin(retval: PPoint);
+    procedure getBrushOrigin(retval: PPoint);
     procedure getPenPos(retval: PPoint);
     procedure setPenPos(x, y: Integer);
 
@@ -1656,7 +1656,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.brushOrigin(retval: PPoint);
+procedure TQtDeviceContext.getBrushOrigin(retval: PPoint);
 var
   QtPoint: TQtPoint;
 begin

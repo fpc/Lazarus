@@ -1449,8 +1449,6 @@ const
 {$endif}
 var
   Msg: TLMessage;
-  NewFocusWidget: QWidgetH;
-  NewFocusObject: TQtWidget;
 begin
   {$ifdef VerboseFocus}
     WriteLn('TQtWidget.SlotFocus In=',FocusIn,' For ', dbgsname(LCLObject),
