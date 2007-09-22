@@ -2014,7 +2014,7 @@ var ChildCreated: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
   if UpAtomIs('CLASS') then begin
-    if CurSection<>ctnImplementation then
+    if not (CurSection in [ctnImplementation]+AllSourceTypes) then
       RaiseStringExpectedButAtomFound(ctsIdentifier);
     ReadNextAtom;
     if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then
