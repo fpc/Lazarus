@@ -654,7 +654,11 @@ begin
   end;
   Poly := QPolygon_create(NumPts, @pts[0]);
   try
-    QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
+    {fillmode can be ALTERNATE or WINDING as msdn says}
+    if FillMode = ALTERNATE then
+			QtRegion := TQtRegion.Create(True, Poly, QtOddEvenFill)
+    else
+    	QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
     Result := HRGN(QtRegion);
   finally
     QPolygon_destroy(Poly);
