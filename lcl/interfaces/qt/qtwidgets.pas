@@ -97,7 +97,6 @@ type
 
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetGeometry; virtual; overload;
-    function DeliverMessage(var Msg): LRESULT; virtual;
   public
     AVariant: QVariantH;
     LCLObject: TWinControl;
@@ -112,6 +111,7 @@ type
     destructor Destroy; override;
     function  GetContainerWidget: QWidgetH; virtual;
   public
+    function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotShow(vShow: Boolean); cdecl;
     function SlotClose: Boolean; cdecl; virtual;

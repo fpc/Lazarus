@@ -3382,11 +3382,24 @@ begin
 end;
 
 function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
+{var
+  Widget: TQtWidget absolute Handle;
+  Event: QEventH;
+}
 begin
   Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.PostMessage] missing implementation ');
-  {$endif}
+  if Handle <> 0 then
+  begin
+    {$note todo ask in bindings}
+{
+    Event := QEvent_create(QEventUser);
+    try
+      QCoreApplication_postEvent(Widget.Widget, Event);
+    finally
+      QEvent_destroy(Event);
+    end;
+}
+  end;
 end;
 {------------------------------------------------------------------------------
   Function: Rectangle
@@ -3744,6 +3757,22 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
+end;
+
+function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
+  WParam: WParam; LParam: LParam): LResult;
+var
+  Widget: TQtWidget absolute HandleWnd;
+  Message: TLMessage;
+begin
+  if HandleWnd <> 0 then
+  begin
+    Message.msg := Msg;
+    Message.wParam := WParam;
+    Message.lParam := LParam;
+    Message.Result := 0;
+    Result := Widget.DeliverMessage(Message);
+  end;
 end;
 
 function TQtWidgetSet.SetActiveWindow(Handle: HWND): HWND;
