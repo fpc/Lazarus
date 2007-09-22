@@ -1,4 +1,4 @@
-fpdoc --package=lcl --show-private --output=/home/kirkpatc/FreePascal/doc.tmp/ --format=html --content --descr=/home/kirkpatc/FreePascal/lazarus/docs/xml/lcl/controls.xml --input=/home/kirkpatc/FreePascal/lazarus/lcl/controls.pp<?xml version="1.0"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -2924,18 +2924,26 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>The main ancestor class for visual controls.</short>
-        <descr>TControl is the main ancestor class for all visual controls.<br/>
-<br/>
-          The definition includes a large number of constants, types and methods that are inherited by derived classes and types.<br/>
-<br/>
-          These include devices for defining and controlling <br/>the state and position of the object <br/>(including alignment and anchoring), <br/>
+        <descr>TControl is the main ancestor class for all visual controls.<br/><br/>
+
+          The definition includes a large number of constants, types and methods that are inherited by derived classes and types.<br/><br/>
+
+          These include devices for defining and controlling <br/>
+the state and position of the object <br/>
+(including alignment and anchoring), <br/>
+
 the state of the mouse, <br/>
+
 whether dragging or docked, <br/>
-the size and type of border, <br/>the way child components should behave, <br/>the way actions should occur in response to various events, <br/>
+
+the size and type of border, <br/>
+the way child components should behave, <br/>
+the way actions should occur in response to various events, <br/>
+
 and the way the Control should be drawn.<br/></descr>
         <seealso>
           <link id="lclClasses.TLCLComponent"/>
-          <link id="lclClasses.TComponent"/>
+          <link id="#rtl.Classes.TComponent"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -5360,22 +5368,32 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.DragDrop.Source"><short/></element>
+      <element name="TControl.DragDrop.Source">
+        <short>The object to be dragged and dropped</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.DragDrop.X"><short/></element>
+      <element name="TControl.DragDrop.X">
+        <short>The X co-ordinate to which the object is to be dropped (target)</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.DragDrop.Y"><short/></element>
+      <element name="TControl.DragDrop.Y">
+        <short>The Y co-ordinate to which the object is to be dropped (target)</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Dock">
         <short>Dock - Procedure governing Docking of Control</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>Performs checks that there is already a valid host control <br/>to which the present control is to be docked, <br/>removes old controls from the list of docked controls <br/>and adds the new control to the list, <br/>then calls DoDock to perform the actual docking process</descr>
+        <errors>An exception is raised if there is already a docking process in progress for this control</errors>
+        <seealso><link id="DoDock"/></seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.Dock.NewDockSite"><short/></element>
+      <element name="TControl.Dock.NewDockSite">
+        <short>The host control to which which the current control is to be docked</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.Dock.ARect"><short/></element>
+      <element name="TControl.Dock.ARect">
+        <short>The position at which the control is to be docked</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>ManualDock - permits operator-defined docking</short>
@@ -5385,23 +5403,31 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
     ControlSide: TAlign): Boolean;
 
   Docks this control to DropControl or on NewDockSite.
-  If DropControl is not nil, ControlSide defines on which side of DropControl
+  If DropControl is not <B>nil</B>, ControlSide defines on which side of DropControl
   this control is docked. (alNone,alClient for stacked in pages). DropControl
   will become part of a TDockManager.
-  If DropControl is nil, then DropControl becomes a normal child of NewDockSite
+  If DropControl is <B>nil</B>, then DropControl becomes a normal child of NewDockSite
   and ControlSide is ignored.
 ------------------------------------------------------------------------------}
 </pre>
         </descr>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.ManualDock.Result"><short/></element>
+      <element name="TControl.ManualDock.Result">
+        <short>The function returns True if a manual dock has been successfully performed</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ManualDock.NewDockSite"><short/></element>
+      <element name="TControl.ManualDock.NewDockSite">
+        <short>The new site to which the control is docked, if DropControl has been found to be <B>nil</B></short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ManualDock.DropControl"><short/></element>
+      <element name="TControl.ManualDock.DropControl">
+        <short>If <B>nil</B> (default) then ignored else used as the control for docking, on side specified by ControlSide</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ManualDock.ControlSide"><short/></element>
+      <element name="TControl.ManualDock.ControlSide">
+        <short>The side on which the control is to be docked, if DropControl is not <B>nil</B></short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
         <short>ManualFloat - the opposite of ManualDock, allows operator to Float a control</short>
@@ -5418,35 +5444,48 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         </descr>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.ManualFloat.Result"><short/></element>
+      <element name="TControl.ManualFloat.Result">
+        <short>The function returns True if a manual float has been succesfully performed</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ManualFloat.TheScreenRect"><short/></element>
+      <element name="TControl.ManualFloat.TheScreenRect">
+        <short>The rectangle within which the floating control is located</short>
+        <descr>The rectangle within which the floating control is located <br/>(ie the location of the floating dock site to which the control is docked)</descr>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.ReplaceDockedControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Remove a previously docked control and put a new control in its place</short>
+        <descr>Checks to see whether there is a previously docked control, <br/>and removes it, then puts the new control in its place</descr>
+        <seealso><link id="ManualDock"/></seealso>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.ReplaceDockedControl.Result"><short/></element>
+      <element name="TControl.ReplaceDockedControl.Result">
+        <short>Returns True if a docked control has been successfully replaced with a new one</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ReplaceDockedControl.Control"><short/></element>
+      <element name="TControl.ReplaceDockedControl.Control">
+        <short>The old control that was previously docked at this site</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ReplaceDockedControl.NewDockSite"><short/></element>
+      <element name="TControl.ReplaceDockedControl.NewDockSite">
+        <short>The new site for docking; used if DropControl is <B>nil</B></short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ReplaceDockedControl.DropControl"><short/></element>
+      <element name="TControl.ReplaceDockedControl.DropControl">
+        <short>The control site to be used for docking, unless it is <B>nil</B> when it is igored. Passed straight through as an argument to ManualDock</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.ReplaceDockedControl.ControlSide"><short/></element>
+      <element name="TControl.ReplaceDockedControl.ControlSide">
+        <short>The side to which the new control is to be aligned; passed straight through as an argument to ManualDock</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TControl.Dragging">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Returns True if the control is being dragged</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.Dragging.Result"><short/></element>
+      <element name="TControl.Dragging.Result">
+        <short>Returns True if the control is being dragged</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
         <descr>
@@ -5466,13 +5505,12 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizeDelayed">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Auto-sizing has been delayed until some other process is complete</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControl.AutoSizeDelayed.Result"><short/></element>
+      <element name="TControl.AutoSizeDelayed.Result">
+        <short>Returns True if auto-sizing has been delayed</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToNeighbour">
         <short>AnchorToNeighbour - anchoring instructions</short>
@@ -5487,11 +5525,17 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         </descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorToNeighbour.Side"><short/></element>
+      <element name="TControl.AnchorToNeighbour.Side">
+        <short>The side on which we should anchor</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorToNeighbour.Space"><short/></element>
+      <element name="TControl.AnchorToNeighbour.Space">
+        <short>The size of the space to be left around the control when anchoring</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorToNeighbour.Sibling"><short/></element>
+      <element name="TControl.AnchorToNeighbour.Sibling">
+        <short>The sibling control to which we should anchor</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorParallel">
         <short>AnchorParallel - instructions for anchoring beside another control</short>
@@ -5500,60 +5544,76 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorParallel.Side"><short/></element>
+      <element name="TControl.AnchorParallel.Side">
+        <short>The side on which we should anchor to the sibling</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorParallel.Space"><short/></element>
+      <element name="TControl.AnchorParallel.Space">
+        <short>The size of the space to be left around the control when anchoring</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorParallel.Sibling"><short/></element>
+      <element name="TControl.AnchorParallel.Sibling">
+        <short>The sibling control to which we should anchor in a parallel manner</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorHorizontalCenterTo">
         <short>AnchorHorizontal - instructions for anchoring</short>
-        <descr>Sibling - another control to which the current control is to be anchored, centred horizontally</descr>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorHorizontalCenterTo.Sibling">
-        <short/>
-        <descr/>
+        <short>Another control to which the current control is to be anchored, centred horizontally</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorVerticalCenterTo">
         <short>AnchorVertical - instructions for anchoring</short>
-        <descr>Sibling - another control to which the current control is to be anchored, centred vertically</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.AnchorVerticalCenterTo.Sibling"><short/></element>
+      <element name="TControl.AnchorVerticalCenterTo.Sibling">
+        <short>Another control to which the current control is to be anchored, centred vertically</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the boundaries defining the position of the current control</short>
+        <descr>Height, Width, and position of Top Left pixel</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetBounds.aLeft"><short/></element>
+      <element name="TControl.SetBounds.aLeft">
+        <short>The X co-ordinate of the top left pixel of the control</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetBounds.aTop"><short/></element>
+      <element name="TControl.SetBounds.aTop">
+        <short>The Y co-ordinate of the top left pixel of the control</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetBounds.aWidth"><short/></element>
+      <element name="TControl.SetBounds.aWidth">
+        <short>The width of the control</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetBounds.aHeight"><short/></element>
+      <element name="TControl.SetBounds.aHeight">
+        <short>The height of the control</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetInitialBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the bounds of the control initially, when it is created</short>
+        <descr>Checks that this is a new control, <br/>then calls SetBounds to set up coordinates defining its position</descr>
+        <seealso><link id="SetBounds"/></seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetInitialBounds.aLeft"><short/></element>
+      <element name="TControl.SetInitialBounds.aLeft">
+        <short>X co-ordinate of top left pixel</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetInitialBounds.aTop"><short/></element>
+      <element name="TControl.SetInitialBounds.aTop">
+        <short>Y co-ordinate of top left pixel</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetInitialBounds.aWidth"><short/></element>
+      <element name="TControl.SetInitialBounds.aWidth">
+        <short>Width of control</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TControl.SetInitialBounds.aHeight"><short/></element>
+      <element name="TControl.SetInitialBounds.aHeight">
+        <short>Height of control</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBoundsKeepBase">
         <short/>
@@ -6082,11 +6142,9 @@ Bounding rectangle (top-left, bottom-right) is defined in TRect</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>Caption - the text-string appearing on the Control, usually used to identify its function</short>
-        <descr>By default, the Caption appears the same as the control Name in the Object Inspector, <br/>and the developer needs to set it explicitly to some new text.<br/> <br/>
+        <descr>By default, the Caption appears the same as the control Name in the Object Inspector, <br/>and the developer needs to set it explicitly to some new text.<br/><br/>
 
-Gets caption as a text-string (GetText), or stores the new caption (SetText). Shows flag if caption is stored (IsCaptionStored).<br/> <br/> <pre>
-
- * The VCL implementation relies on the virtual Get/SetTextBuf to 
+Gets caption as a text-string (GetText), or stores the new caption (SetText). Shows flag if caption is stored (IsCaptionStored).<br/><br/><pre>* The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
  * (unnecesary) text copies.
  * The LCL uses strings for exchanging text (more efficient).
@@ -6199,7 +6257,8 @@ Reads or Writes flag if bounds are changed</descr>
       <!-- property Visibility: public -->
       <element name="TControl.OnClick">
         <short>Event Handler for mouse click</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>Reads or writes a flag if  amouse click is detected, and sets a flag if a value is stored.</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</descr>
         <seealso><link id="#rtl.Classes.TNotifyEvent"/></seealso>
       </element>
       <!-- property Visibility: public -->
@@ -6240,7 +6299,8 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <element name="TControl.Visible">
         <short>The Visible property represents the ability to see a visual control.</short>
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden.
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
           Setting Visible to True is equivalent to calling Show method.
           Setting Visible to False is equivalent to calling Hide method.</pre>
           <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
@@ -10388,7 +10448,6 @@ TGraphicControl, you must query the ClientRect.</pre>
         <errors/>
         <seealso/>
       </element>
-      <element name="TControlEGetTopParent"/>
     </module>
     <!-- Controls -->
   </package>
