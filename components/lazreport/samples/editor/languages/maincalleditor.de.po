@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-19 12:57+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Language-Team: \n"
+
+#: maincalleditor:cereditreport
+msgid "Edit Report"
+msgstr "Report bearbeiten"
+
+#: maincalleditor:cernewreport
+msgid "New report"
+msgstr "Neuer Report"
+
+#: maincalleditor:ceropenreport
+msgid "Open report"
+msgstr "Report öffnen"
+
+#: maincalleditor:cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr "PrepareReport fehlgeschlagen!"
+
+#: maincalleditor:cerpreviewreport
+msgid "Preview report"
+msgstr "Report-Vorschau"
+
+#: maincalleditor:cerprintgrid
+msgid "Print grid"
+msgstr "Gitter drucken"
+
+#: maincalleditor:cerprintreport
+msgid "Print report"
+msgstr "Report drucken"
+
+#: maincalleditor:cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr "Diese Funktion ist noch nicht implementiert!"
+
