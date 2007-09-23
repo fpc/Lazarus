@@ -4495,7 +4495,7 @@ end;
 procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
   inherited setFocusPolicy(APolicy);
-  QWidget_setFocusPolicy(TabBar, QtNoFocus{APolicy});
+  QWidget_setFocusPolicy(TabBar, QtClickFocus);
 end;
 
 {------------------------------------------------------------------------------
