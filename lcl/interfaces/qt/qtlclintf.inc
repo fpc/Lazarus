@@ -461,7 +461,12 @@ begin
   begin
     WinID := QWidget_winId(Context.Parent);
     try
-      Pixmap.grabWindow(WinID);
+      // if you have dual monitors then getDeviceSize return
+      // more width than screen width, but grabWindow will only grab one
+      // screen, so its width will be less
+      // Solution: we can either pass prefered size to grabWindow or
+      // correct Description size after. I see the first solution as more correct.
+      Pixmap.grabWindow(WinID, 0, 0, DCSize.cx, DCSize.cy);
       Image := QImage_Create;
       Pixmap.toImage(Image);
       RawImage_FromImage(Image);
