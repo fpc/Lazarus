@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.51 }
+{ Version : 1.50 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -10346,17 +10346,7 @@ procedure QIODevice_hook_hook_aboutToClose(handle: QIODevice_hookH; hook: QHookH
 
 procedure initPWideStrings(CUPS, UOPS, LOPS, IPS, FPS: Pointer); cdecl; external QtIntf name 'initPWideStrings';
 procedure InitializePIntArray(GPP, GPL, SPL: Pointer); cdecl; external QtIntf name 'initializePIntArray';
-
-
-// Special-Purpose Global Functions Exported by Qt
-
-{$IFDEF LINUX}
-procedure QtX11WaitForWindowManager(handle : QWidgetH); cdecl; external QtIntf name 'qtx11waitforwindowmanager';
-{$ENDIF}
-
-{$IFDEF DARWIN}
-procedure QtMacSetDockMenu(handle : QMenuH); cdecl; external QtIntf name 'qtmacsetdockmenu';
-{$ENDIF}
+                       
 
 implementation
 uses SysUtils,Math;
