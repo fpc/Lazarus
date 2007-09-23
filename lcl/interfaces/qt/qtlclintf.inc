@@ -445,6 +445,7 @@ begin
 
   Result := True;
 
+  ARawImage.Init;
   FillStandardDescription(ARawImage.Description);
   Context := TQtDeviceContext(ADC);
 
