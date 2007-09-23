@@ -875,19 +875,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: DrawFrameControl
-  Params: DC: HDC; const Rect : TRect; uType, uState : Cardinal
-  Returns: Boolean
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
-begin
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.DrawFrameControl] missing implementation ');
-  {$endif}
-end;
-
-{------------------------------------------------------------------------------
   Method: DrawFocusRect
   Params: DC: HDC; const Rect: TRect
   Returns: Boolean

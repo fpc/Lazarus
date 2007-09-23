@@ -1029,7 +1029,7 @@ begin
     Options := Options or DT_WORDBREAK;
 
   If Style.SingleLine then
-      Options := Options or DT_SINGLELINE;
+    Options := Options or DT_SINGLELINE;
 
   If not Style.Clipping then
     Options := Options or DT_NOCLIP;

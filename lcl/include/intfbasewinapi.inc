@@ -208,8 +208,54 @@ begin
 end;
 
 function TWidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
+var
+  Details: TThemedElementDetails;
+  ButtonDetail: TThemedButton;
+  ToolBarDetail: TThemedToolBar;
 begin
-  Result := False;
+  if uType = DFC_BUTTON then
+  begin
+    case (uState and $1F) of
+      DFCS_BUTTONCHECK:
+        if uState and DFCS_CHECKED <> 0 then
+          ButtonDetail := tbCheckBoxCheckedNormal
+        else
+          ButtonDetail := tbCheckBoxUncheckedNormal;
+      DFCS_BUTTONRADIO:
+        if uState and DFCS_CHECKED <> 0 then
+          ButtonDetail := tbRadioButtonCheckedNormal
+        else
+          ButtonDetail := tbRadioButtonUncheckedNormal;
+      DFCS_BUTTONPUSH:
+        ButtonDetail := tbPushButtonNormal;
+    end;
+
+    if (uState and DFCS_INACTIVE) <> 0 then
+      inc(ButtonDetail, 3)
+    else
+    if (uState and DFCS_PUSHED) <> 0 then
+      inc(ButtonDetail, 2)
+    else
+    if (uState and DFCS_HOT) <> 0 then
+      inc(ButtonDetail, 1);
+
+    if (uState and DFCS_BUTTONPUSH <> 0) and (uState and DFCS_FLAT <> 0) then
+    begin
+      ToolBarDetail := ttbButtonNormal;
+      inc(ToolBarDetail, Integer(ButtonDetail) - Integer(tbPushButtonNormal));
+      Details := ThemeServices.GetElementDetails(ToolBarDetail);
+    end
+    else
+      Details := ThemeServices.GetElementDetails(ButtonDetail);
+
+    ThemeServices.DrawElement(DC, Details, Rect);
+{    if uState and DFCS_ADJUSTRECT then
+      Rect := ThemeServices.ContentRect(DC, Details, Rect);
+}
+    Result := True;
+  end
+  else
+    Result := False;
 end;
 
 function TWidgetset.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
