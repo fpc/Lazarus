@@ -164,10 +164,6 @@ components/tdbf/*.bak
 components/tdbf/languages/*.bak
 components/tdbf/languages/units
 components/tdbf/units
-components/trayicon/*.bak
-components/trayicon/examples/*.bak
-components/trayicon/examples/units
-components/trayicon/units
 components/turbopower_ipro/*.bak
 components/turbopower_ipro/languages/*.bak
 components/turbopower_ipro/languages/units
