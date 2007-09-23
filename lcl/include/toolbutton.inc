@@ -93,7 +93,7 @@ procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var DropDownMenuDropped:boolean;
 begin
-  //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
+  //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',dbgs(X),',',dbgs(Y));
   if (Button=mbLeft) and (tbfPressed in FToolButtonFlags) then begin
     Exclude(FToolButtonFlags,tbfPressed);
     Invalidate;
@@ -174,6 +174,7 @@ begin
     // calculate button area(s)
     ButtonRect:=PaintRect;
     FLastButtonDrawFlags:=GetButtonDrawFlags;
+    
     if (FLastButtonDrawFlags and DFCS_PUSHED) <> 0 then
       OffsetRect(ButtonRect, 1, 1);
     if Style=tbsDropDown then begin
@@ -360,9 +361,10 @@ begin
   //DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
   SetMouseInControl(false);
-  if (not MouseCapture) and (tbfPressed in FToolButtonFlags) then begin
-    Invalidate;
+  if (not MouseCapture) and (tbfPressed in FToolButtonFlags) then
+  begin
     Exclude(FToolButtonFlags,tbfPressed);
+    Invalidate;
   end;
 end;
 

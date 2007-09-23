@@ -79,6 +79,7 @@ type
     FParams: TCreateParams;
     FDefaultCursor: QCursorH;
     FKeysToEat: TByteSet;
+    FText: WideString;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -120,7 +121,7 @@ type
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
-    procedure SlotMouseEnter(Event: QEventH); cdecl;
+    procedure SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
@@ -147,8 +148,8 @@ type
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
     function getText: WideString; virtual;
-    procedure grabMouse;
-    function hasFocus: Boolean;
+    procedure grabMouse; virtual;
+    function hasFocus: Boolean; virtual;
     procedure lowerWidget;
     procedure move(ANewLeft, ANewTop: Integer);
     procedure raiseWidget;
@@ -273,6 +274,8 @@ type
     function verticalScrollBar: TQtScrollBar;
     function viewport: TQtWidget;
     function getClientBounds: TRect; override;
+    procedure grabMouse; override;
+    function hasFocus: Boolean; override;
     procedure SetColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
@@ -955,13 +958,11 @@ type
   TQtPage = class(TQtWidget)
   protected
     FIcon: QIconH;
-    FText: WideString;
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getIcon: QIconH;
     function getIndex: Integer;
     function getTabWidget: QTabWidgetH;
-    function getText: WideString; override;
     procedure setIcon(const AIcon: QIconH);
     procedure setText(const W: WideString); override;
   end;
@@ -1316,7 +1317,8 @@ begin
         Result := True;
       end;
     QEventDestroy: SlotDestroy;
-    QEventEnter: SlotMouseEnter(Event);
+    QEventEnter,
+    QEventLeave: SlotMouseEnter(Sender, Event);
     QEventFocusIn: SlotFocus(Event, True);
     QEventFocusOut:
     begin
@@ -1337,7 +1339,6 @@ begin
       begin
         Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
       end;
-    QEventLeave: SlotMouseEnter(Event);
 
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
@@ -1797,7 +1798,7 @@ begin
   DeliverMessage(Msg);
 end;
 
-procedure TQtWidget.SlotMouseEnter(Event: QEventH); cdecl;
+procedure TQtWidget.SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -2189,7 +2190,7 @@ end;
 
 function TQtWidget.getText: WideString;
 begin
-  Result := '';
+  Result := FText;
 end;
 
 function TQtWidget.getClientBounds: TRect;
@@ -2294,7 +2295,7 @@ end;
 
 procedure TQtWidget.setText(const W: WideString);
 begin
-  // nothing
+  FText := W;
 end;
 
 procedure TQtWidget.setWindowFlags(_type: QtWindowFlags);
@@ -6403,6 +6404,16 @@ begin
   end;
 end;
 
+procedure TQtAbstractScrollArea.grabMouse;
+begin
+  viewport.grabMouse;
+end;
+
+function TQtAbstractScrollArea.hasFocus: Boolean;
+begin
+  Result := inherited hasFocus or viewport.hasFocus;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtAbstractScrollArea.viewportNeeded
   Params:  None
@@ -6668,11 +6679,6 @@ begin
     Result := nil;
 end;
 
-function TQtPage.getText: WideString;
-begin
-  Result := FText;
-end;
-
 procedure TQtPage.setIcon(const AIcon: QIconH);
 var
   AParent: QTabWidgetH;
@@ -6687,7 +6693,7 @@ procedure TQtPage.setText(const W: WideString);
 var
   AParent: QTabWidgetH;
 begin
-  FText := W;
+  inherited setText(W);
   AParent := getTabWidget;
   if AParent <> nil then
     QTabWidget_setTabText(AParent, getIndex, @W);

@@ -195,8 +195,10 @@ type
   private
   protected
   public
+{$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+{$endif}
   end;
 
   { TQtWSToolBar }
@@ -205,8 +207,10 @@ type
   private
   protected
   public
+{$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+{$endif}
   end;
 
   { TQtWSTrackBar }
@@ -263,6 +267,7 @@ const
 
 { TQtWSToolButton }
 
+{$ifdef WSToolBar}
 class function TQtWSToolButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtToolButton: TQtToolButton;
@@ -272,7 +277,6 @@ begin
 
   Result := THandle(QtToolButton);
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TQtWSToolButton.SetColor
@@ -335,6 +339,7 @@ begin
   // Set color of the widget to QColor
   TQtToolBar(AWinControl.Handle).SetColor(@QColor);
 end;
+{$endif}
 
 { TQtWSTrackBar }
 
@@ -1281,10 +1286,12 @@ initialization
   RegisterWSComponent(TCustomProgressBar, TQtWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TQtWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TQtWSUpDown);
-  RegisterWSComponent(TToolButton, TQtWSToolButton);
-  RegisterWSComponent(TToolBar, TQtWSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
+//  RegisterWSComponent(TToolButton, TQtWSToolButton);
+//  RegisterWSComponent(TToolBar, TQtWSToolBar);
+{$ifdef WSToolBar}
+  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
+  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
+{$endif}
   RegisterWSComponent(TCustomTrackBar, TQtWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TQtWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TQtWSTreeView);
