@@ -33,7 +33,6 @@ TComponentDatalink idea was taken from Joanna Carter's article
 unit DBGrids;
 
 {$mode objfpc}{$H+}
-{$define EnableIsSeq}
 
 {$IF defined(VER2_0_2) and defined(win32)}
 // FPC <= 2.0.2 compatibility code
@@ -366,6 +365,7 @@ type
     function  ValueMatch(const BaseValue, TestValue: string): Boolean;
     procedure ToggleSelectedRow;
     procedure SelectRecord(AValue: boolean);
+    procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
   protected
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
@@ -408,6 +408,9 @@ type
     function  GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GridCanModify: boolean;
+    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
+    procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
+                  out HsbRange,VsbRange, HsbPage, VsbPage:Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
@@ -421,12 +424,10 @@ type
     procedure RemoveAutomaticColumns;
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
-    function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
     procedure UpdateActive; virtual;
     procedure UpdateData; virtual;
     function  UpdateGridCounts: Integer;
-    procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); override;
     procedure VisualChange; override;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
@@ -1183,7 +1184,7 @@ begin
           ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
   {$endif}
 
-  IsSeq := FDatalink.DataSet.IsSequenced {$ifndef EnableIsSeq} and false {$endif};
+  IsSeq := FDatalink.DataSet.IsSequenced;
   case Message.ScrollCode of
     SB_TOP:
       DsGoto(True);
@@ -1351,40 +1352,17 @@ end;
 
 procedure TCustomDBGrid.UpdateScrollbarRange;
 var
-  aRange, aPage: Integer;
-  aPos: Integer;
-  isSeq: boolean;
+  aRange, aPage, aPos: Integer;
   ScrollInfo: TScrollInfo;
 begin
   if not HandleAllocated then exit;
-  if FDatalink.Active then begin
-    IsSeq := FDatalink.dataset.IsSequenced{$ifndef EnableIsSeq}and false{$endif};
-    if IsSeq then begin
-      aRange := GetRecordCount + VisibleRowCount - 1;
-      aPage := VisibleRowCount;
-      if aPage<1 then aPage := 1;
-      if FDatalink.BOF then aPos := 0 else
-      if FDatalink.EOF then aPos := aRange
-      else
-        aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
-      if aPos<0 then aPos:=0;
-    end else begin
-      aRange := 6;
-      aPage := 2;
-      if FDatalink.EOF then aPos := 4 else
-      if FDatalink.BOF then aPos := 0
-      else aPos := 2;
-    end;
-  end else begin
-    aRange := 0;
-    aPage := 0;
-    aPos := 0;
-  end;
-  
-  //ScrollBarRange(SB_VERT, aRange, aPage);
-  //ScrollBarPosition(SB_VERT, aPos);
+
+  GetScrollBarParams(aRange, aPage, aPos);
+
   FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  
+  {TODO: try to move this out}
   {$ifdef WINDOWS}
   ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
   ScrollInfo.ntrackPos := 0;
@@ -1405,7 +1383,6 @@ begin
     (ScrollBars in [ssBoth, ssVertical]) or
     ((Scrollbars in [ssAutoVertical, ssAutoBoth]) and (aRange>aPAge))
   );
-  
   FOldPosition := aPos;
   {$ifdef dbgDBGrid}
   DebugLn('UpdateScrollBarRange: Handle=',IntToStr(Handle),
@@ -1432,7 +1409,6 @@ begin
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged INIT'); {$endif}
   if UpdateGridCounts=0 then
     EmptyGrid;
-  UpdateScrollBarRange;
   RestoreEditor;
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged FIN'); {$endif}
 end;
@@ -2146,18 +2122,6 @@ begin
   FTempText := Value;
 end;
 
-function TCustomDBGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
-begin
-  if Which=ssHorizontal then
-    Result:= true
-  else
-    Result:=inherited ScrollBarAutomatic(Which);
-  {$ifdef dbgScroll}
-  DebugLn('TCustomDBGrid.ScrollbarAutomatic Which=',dbgs(Ord(Which)),
-    ' Result=',dbgs(Result));
-  {$endif}
-end;
-
 function TCustomDBGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
@@ -2354,6 +2318,33 @@ function TCustomDBGrid.GridCanModify: boolean;
 begin
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
     and FDataLink.Active and FDatalink.DataSet.CanModify;
+end;
+
+procedure TCustomDBGrid.GetSBVisibility(out HsbVisible, VsbVisible: boolean);
+var
+  aRange,aPage,aPos: Integer;
+begin
+  inherited GetSBVisibility(HsbVisible, VsbVisible);
+  VSbVisible := (ScrollBars in [ssVertical, ssBoth]);
+  if not VSbVisible and ScrollBarAutomatic(ssVertical) then begin
+    GetScrollbarParams(aRange,aPage, aPos);
+    if ARange>aPage then
+      VSbVisible:=True;
+  end;
+end;
+
+procedure TCustomDBGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
+  HsbRange, VsbRange, HsbPage, VsbPage: Integer);
+var
+  aPos: Integer;
+begin
+  inherited GetSBRanges(HsbVisible, VsbVisible, HsbRange, VsbRange, HsbPage, VsbPage);
+  if VSbVisible then
+    GetScrollbarParams(VsbRange, VsbPage, aPos)
+  else begin
+    VsbRange := 0;
+    VsbPage := 0;
+  end;
 end;
 
 procedure TCustomDBGrid.MoveSelection;
@@ -2654,22 +2645,6 @@ begin
   {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts END');{$endif}
 end;
 
-procedure TCustomDBGrid.UpdateVertScrollbar(const aVisible: boolean;
-  const aRange, aPage: Integer);
-begin
-  {$ifdef DbgScroll}
-  DebugLn('TCustomDBGrid.UpdateVertScrollbar: Vis=',dbgs(aVisible),
-    ' Range=',dbgs(aRange),' Page=',dbgs(aPage));
-  {$endif}
-  if (Scrollbars in [ssAutoVertical, ssAutoBoth]) then begin
-    // ssAutovertical and ssAutoBoth would get the scrollbar hidden
-    // but this case should be handled as if the scrollbar where
-    // ssVertical or ssBoth
-    ScrollBarShow(SB_VERT, True)
-  end else
-    ScrollBarShow(SB_VERT, AVisible);
-end;
-
 procedure TCustomDBGrid.VisualChange;
 begin
   if FVisualChangeCount=0 then begin
@@ -2800,6 +2775,32 @@ procedure TCustomDBGrid.SelectRecord(AValue: boolean);
 begin
   if dgMultiSelect in Options then
     FSelectedRows.CurrentRowSelected := AValue;
+end;
+
+procedure TCustomDBGrid.GetScrollbarParams(out aRange, aPage, aPos: Integer);
+begin
+  if (FDatalink<>nil) and FDatalink.Active then begin
+    if FDatalink.dataset.IsSequenced then begin
+      aRange := GetRecordCount + VisibleRowCount - 1;
+      aPage := VisibleRowCount;
+      if aPage<1 then aPage := 1;
+      if FDatalink.BOF then aPos := 0 else
+      if FDatalink.EOF then aPos := aRange
+      else
+        aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
+      if aPos<0 then aPos:=0;
+    end else begin
+      aRange := 6;
+      aPage := 2;
+      if FDatalink.EOF then aPos := 4 else
+      if FDatalink.BOF then aPos := 0
+      else aPos := 2;
+    end;
+  end else begin
+    aRange := 0;
+    aPage := 0;
+    aPos := 0;
+  end;
 end;
 
 destructor TCustomDBGrid.Destroy;

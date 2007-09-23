@@ -633,7 +633,6 @@ type
     function  GetBorderWidth: Integer;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
-    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);
     function  GetSelection: TGridRect;
     function  GetTopRow: Longint;
     function  GetVisibleColCount: Integer;
@@ -776,6 +775,9 @@ type
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl;
     function  GetScrollBarPosition(Which: integer): Integer;
+    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
+    procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
+                  out HsbRange,VsbRange, HsbPage, VsbPage:Integer); virtual;
     function  GetEditMask(ACol, ARow: Longint): string; dynamic;
     function  GetEditText(ACol, ARow: Longint): string; dynamic;
     function  GetFixedcolor: TColor; virtual;
@@ -2314,34 +2316,16 @@ procedure TCustomGrid.ResetSizes;
   procedure CalcScrollbarsRange;
   var
     HsbVisible, VsbVisible: boolean;
-    HsbRange, VsbRange, Tw, Th: Integer;
+    HsbRange,VsbRange: Integer;
+    HsbPage, VsbPage: Integer;
   begin
     with FGCache do begin
       // Horizontal scrollbar
       GetSBVisibility(HsbVisible, VsbVisible);
-      
-      if HsbVisible then begin
-        HsbRange:=GridWidth + 2 - GetBorderWidth;
-        if not (goSmoothScroll in Options) then begin
-          TW:= integer(PtrUInt(AccumWidth[MaxTopLeft.X]))-(HsbRange-ClientWidth);
-          HsbRange:=HsbRange + TW - FixedWidth + 1;
-        end;
-      end else
-        HsbRange:=0;
-
-      // Vertical scrollbar
-      if VsbVisible then begin
-        VSbRange:= GridHeight + 2 - GetBorderWidth;
-        if not (goSmoothScroll in Options) then begin
-          TH:= integer(PtrUInt(accumHeight[MaxTopLeft.Y]))-(VsbRange-ClientHeight);
-          VsbRange:=VsbRange + TH -FixedHeight + 1;
-        end;
-      end else
-        VsbRange:= 0;
-        
-      UpdateVertScrollBar(VsbVisible, VsbRange, ClientHeight);
-      UpdateHorzScrollBar(HsbVisible, HsbRange, ClientWidth);
-      {$ifdef DbgVisualChange}
+      GetSBRanges(HsbVisible,VsbVisible,HsbRange,VsbRange,HsbPage,VsbPage);
+      UpdateVertScrollBar(VsbVisible, VsbRange, VsbPage);
+      UpdateHorzScrollBar(HsbVisible, HsbRange, HsbPage);
+      {$ifdef DbgScroll}
       DebugLn('VRange=',dbgs(VsbRange),' Visible=',dbgs(VSbVisible));
       DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
       {$endif}
@@ -2474,7 +2458,7 @@ procedure TCustomGrid.ScrollBarShow(Which: Integer; aValue: boolean);
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarShow: Which=',IntToStr(Which), ' Avalue=',BoolToStr(AValue));
+    DebugLn('ScrollbarShow: Which=',IntToStr(Which), ' Avalue=',dbgs(AValue));
     {$endif}
     ShowScrollBar(Handle,Which,aValue);
     if Which in [SB_BOTH, SB_VERT] then FVSbVisible := AValue else
@@ -3577,6 +3561,38 @@ begin
 
   if ScrollBarAutomatic(ssHorizontal) then
     HsbVisible := HsbVisible and not AutoFillColumns;
+  {$ifdef dbgscroll}
+  DebugLn('TCustomGrid.GetSBVisibility H=',dbgs(HsbVisible),' V=',dbgs(VsbVisible));
+  {$endif}
+end;
+
+procedure TCustomGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
+  HsbRange, VsbRange, HsbPage, VSbPage: Integer);
+var
+  Tw, Th: Integer;
+begin
+  with FGCache do begin
+    if HsbVisible then begin
+      HsbRange:=GridWidth + 2 - GetBorderWidth;
+      if not (goSmoothScroll in Options) then begin
+        TW:= integer(PtrUInt(AccumWidth[MaxTopLeft.X]))-(HsbRange-ClientWidth);
+        HsbRange:=HsbRange + TW - FixedWidth + 1;
+      end;
+    end else
+      HsbRange:=0;
+
+    if VsbVisible then begin
+      VSbRange:= GridHeight + 2 - GetBorderWidth;
+      if not (goSmoothScroll in Options) then begin
+        TH:= integer(PtrUInt(accumHeight[MaxTopLeft.Y]))-(VsbRange-ClientHeight);
+        VsbRange:=VsbRange + TH -FixedHeight + 1;
+      end;
+    end else
+      VsbRange:= 0;
+
+    HsbPage := ClientWidth;
+    VSbPage := ClientHeight;
+  end;
 end;
 
 procedure TCustomGrid.UpdateSBVisibility;
