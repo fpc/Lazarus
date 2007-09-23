@@ -2279,17 +2279,21 @@ end;
 function TQtWidgetSet.GetParent(Handle : HWND): HWND;
 var
   QtWidget: TQtWidget;
-  Parent: TQtWidget;
+  w: QWidgetH;
 begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetParent] possible wrong implementation ');
+	{$ifdef VerboseQtWinAPI}
+  writeln('Trace:> [WinAPI GetParent] Handle: ' + dbghex(Handle));
   {$endif}
+  
   QtWidget := TQtWidget(Handle);
-  if Assigned(QtWidget.LCLObject.Parent) then
-  begin
-    Parent := TQtWidget(QtWidget.LCLObject.Parent.Handle);
-    Result := HWND(Parent);
-  end;
+  
+  w := QWidget_parentWidget(QtWidget.Widget);
+  
+  Result := HWND(QtObjectFromWidgetH(w));
+  
+	{$ifdef VerboseQtWinAPI}
+  writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
+  {$endif}
 end;
 
 function TQtWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;

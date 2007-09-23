@@ -198,6 +198,10 @@ var
   QtWg: TQtWidget;
 begin
   Result := nil;
+  
+  if WidgetH = nil then
+    exit;
+    
   V := QVariant_Create();
   try
     QObject_property(QObjectH(WidgetH), V, 'lclwidget');
