@@ -785,7 +785,7 @@ type
     FCopies       : Integer;
     FCurPage      : TfrPage;
     
-    FDefaultTitle : String;
+//    FDefaultTitle : String;
     FTitle        : String;
     FSubject      : string;
     FKeyWords     : string;
@@ -793,7 +793,7 @@ type
     
     
     function FormatValue(V: Variant; Format: Integer; const FormatStr: String): String;
-    function GetLRTitle: String;
+//    function GetLRTitle: String;
 
     procedure OnGetParsFunction(const aName: String; p1, p2, p3: Variant;
                                 var val: Variant);
@@ -903,7 +903,7 @@ type
     property StoreInDFM: Boolean read FStoreInDFM write FStoreInDFM default False;
     property DataType : TfrDataType read FDataType write FDataType;
 
-    property Title: String read GetLRTitle write FDefaultTitle;
+    property Title: String read FTitle write FTitle;
 
     property OnBeginDoc: TBeginDocEvent read FOnBeginDoc write FOnBeginDoc;
     property OnEndDoc: TEndDocEvent read FOnEndDoc write FOnEndDoc;
@@ -1625,6 +1625,8 @@ begin
 end;
 
 procedure TfrView.LoadFromXML(XML: TXMLConfig; Path: String);
+var
+  S:string;
 begin
   inherited LoadFromXML(XML,Path);
   StreamMode := TfrStreamMode(XML.GetValue(Path+'StreamMode/Value', 0)); // TODO Check default
@@ -1645,8 +1647,13 @@ begin
   FFrameWidth := XML.GetValue(Path+'Frames/FrameWidth/Value', 1); // TODO Check default
   FFramecolor := StringToColor(XML.GetValue(Path+'Frames/FrameColor/Value', 'clBlack')); // TODO Check default
 
-  RestoreProperty('Frames',XML.GetValue(Path+'Frames/FrameBorders/Value',''));
-  RestoreProperty('FrameStyle',XML.GetValue(Path+'Frames/FrameStyle/Value',''));
+  S:=XML.GetValue(Path+'Frames/FrameBorders/Value','');
+  if S<>'' then
+    RestoreProperty('Frames',S);
+
+  S:=XML.GetValue(Path+'Frames/FrameStyle/Value','');
+  if S<>'' then
+    RestoreProperty('FrameStyle',S);
 
   FFillColor := StringToColor(XML.GetValue(Path+'FillColor/Value', 'clWindow')); // TODO Check default
   if StreamMode = smDesigning then
@@ -6766,6 +6773,7 @@ begin
   DecimalSeparator := c;
 end;
 
+{
 function TfrReport.GetLRTitle: String;
 begin
   if csDesigning in ComponentState then
@@ -6778,7 +6786,7 @@ begin
       Result:=fDefaultTitle;
   end;
 end;
-
+}
 procedure TfrReport.GetVariableValue(const s: String; var aValue: Variant);
 var
   Value: TfrValue;
@@ -6926,7 +6934,15 @@ begin
   fKeyWords := XML.GetValue(Path+'KeyWords/Value', '');
   fSubject  := XML.GetValue(Path+'Subject/Value', '');
   fTitle    := XML.GetValue(Path+'Title/Value', '');
-  
+
+//  XML.SetValue(Path+'ReportCreateDate/Value', FReportCreateDate);
+//  XML.SetValue(Path+'ReportCreateDate/Value', FReportLastChange);
+  FReportVersionBuild:=XML.GetValue(Path+'ReportVersionBuild/Value', '');
+  FReportVersionMajor:=XML.GetValue(Path+'ReportVersionMajor/Value', '');
+  FReportVersionMinor:=XML.GetValue(Path+'ReportVersionMinor/Value', '');
+  FReportVersionRelease:=XML.GetValue(Path+'ReportVersionRelease/Value', '');
+  FReportAutor:=XML.GetValue(Path+'ReportAutor/Value', '');
+
   if frVersion < 21 then
     frVersion := 21;
   if frVersion <= frCurrentVersion then
@@ -7020,7 +7036,15 @@ begin
   XML.SetValue(Path+'Subject/Value', fSubject);
   XML.SetValue(Path+'KeyWords/Value', fKeyWords);
   XML.SetValue(Path+'Comments/Value', fComments.Text);
-  
+
+//  XML.SetValue(Path+'ReportCreateDate/Value', FReportCreateDate);
+//  XML.SetValue(Path+'ReportCreateDate/Value', FReportLastChange);
+  XML.SetValue(Path+'ReportVersionBuild/Value', FReportVersionBuild);
+  XML.SetValue(Path+'ReportVersionMajor/Value', FReportVersionMajor);
+  XML.SetValue(Path+'ReportVersionMinor/Value', FReportVersionMinor);
+  XML.SetValue(Path+'ReportVersionRelease/Value', FReportVersionRelease);
+  XML.SetValue(Path+'ReportAutor/Value', FReportAutor);
+
   Pages.SaveToXML(XML, Path+'Pages/');
 end;
 
@@ -7931,7 +7955,7 @@ end;
 
 procedure TfrReport.ClearAttribs;
 begin
-  FDefaultTitle:='';
+//  FDefaultTitle:='';
   FTitle:='';
   FSubject:='';
   FKeyWords:='';

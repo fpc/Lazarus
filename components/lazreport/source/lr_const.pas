@@ -109,15 +109,22 @@ resourcestring
   sFieldsFormAviableDB = '&Available DB''s';
 
 //--- DocOptForm resources ----------------------------------------------------
-  sDocOptFormOpt = 'Report options';
-  sDocOptFormPrinter = 'Printer';
-  sDocOptFormSelect = '&Select when report loaded';
-  sDocOptFormOther = 'Other';
-  sDocOptForm2Pass = '&Two-pass report';
-  sDocOptFormTitle = 'Title';
-  sDocOptFormSubject = 'Subject';
-  sDocOptFormKeyWords='Keys words';
-  sDocOptFormComments='Comments';
+  sDocOptFormOpt      = 'Report options';
+  sDocOptFormPrinter  = 'Printer';
+  sDocOptFormSelect   = '&Select when report loaded';
+  sDocOptFormOther    = 'Other';
+  sDocOptForm2Pass    = '&Two-pass report';
+  sDocOptFormTitle    = 'Title';
+  sDocOptFormSubject  = 'Subject';
+  sDocOptFormKeyWords = 'Keys words';
+  sDocOptFormComments = 'Comments';
+  sDocVersion         = 'Version';
+  sDocMajor           = 'Major';
+  sDocMinor           = 'Minor';
+  sDocRelease         = 'Release';
+  sDocBuild           = 'Build';
+  sDocAutor           = 'Autor';
+  
   
 //--- EvForm resources --------------------------------------------------------
   sEvFormCapt = 'Variables editor';

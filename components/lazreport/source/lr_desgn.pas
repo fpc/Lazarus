@@ -4801,22 +4801,31 @@ begin
   frDocOptForm := TfrDocOptForm.Create(nil);
   with frDocOptForm do
   begin
-    CB1.Checked    := not CurReport.PrintToDefault;
-    CB2.Checked    := CurReport.DoublePass;
-    edTitle.Text   := CurReport.Title;
-    edComments.Text:=CurReport.Comments.Text;
-    edKeyWords.Text:=CurReport.KeyWords;
-    edSubject.Text :=CurReport.Subject;
-    
+    CB1.Checked     := not CurReport.PrintToDefault;
+    CB2.Checked     := CurReport.DoublePass;
+    edTitle.Text    := CurReport.Title;
+    edComments.Text := CurReport.Comments.Text;
+    edKeyWords.Text := CurReport.KeyWords;
+    edSubject.Text  := CurReport.Subject;
+    edAutor.Text    := CurReport.ReportAutor;
+    edtMaj.Text     := CurReport.ReportVersionMajor;
+    edtMinor.Text   := CurReport.ReportVersionMinor;
+    edtRelease.Text := CurReport.ReportVersionRelease;
+    edtBuild.Text   := CurReport.ReportVersionBuild;
     if ShowModal = mrOk then
     begin
       CurReport.PrintToDefault := not CB1.Checked;
       CurReport.DoublePass := CB2.Checked;
-      CurReport.ChangePrinter(Prn.PrinterIndex, ComB1.ItemIndex);
+      CurReport.ChangePrinter(Prn.PrinterIndex, ListBox1.ItemIndex);
       CurReport.Title:=edTitle.Text;
       CurReport.Subject:=edSubject.Text;
       CurReport.KeyWords:=edKeyWords.Text;
       CurReport.Comments.Text:=edComments.Text;
+      CurReport.ReportVersionMajor:=edtMaj.Text;
+      CurReport.ReportVersionMinor:=edtMinor.Text;
+      CurReport.ReportVersionRelease:=edtRelease.Text;
+      CurReport.ReportVersionBuild:=edtBuild.Text;
+      CurReport.ReportAutor:=edAutor.Text;
       Modified := True;
       FileModified := True;
     end;
@@ -5053,8 +5062,29 @@ end;
 
 procedure TfrDesignerForm.frDesignerFormCloseQuery(Sender: TObject;
   var CanClose: boolean);
+var
+  Res:integer;
 begin
-
+  if FileModified and (not ((csDesigning in CurReport.ComponentState) and CurReport.StoreInDFM)) then
+  begin
+    Res:=Application.MessageBox(PChar(sSaveChanges + ' ' + sTo + ' ' + ExtractFileName(CurDocName) + '?'),
+      PChar(sConfirm), mb_IconQuestion + mb_YesNoCancel);
+      
+    case Res of
+      mrNo:
+        begin
+          CanClose := True;
+          ModalResult := mrCancel;
+        end;
+      mrYes:
+          begin
+            FileBtn3Click(nil);
+            CanClose := not FileModified;
+          end;
+    else
+      CanClose := False;
+    end;
+  end;
 end;
 
 {----------------------------------------------------------------------------}

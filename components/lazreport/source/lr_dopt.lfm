@@ -1,176 +1,406 @@
 object frDocOptForm: TfrDocOptForm
-  BorderStyle = bsDialog
+  Left = 314
+  Height = 499
+  Top = 202
+  Width = 468
+  HorzScrollBar.Page = 467
+  VertScrollBar.Page = 498
+  ActiveControl = TabSheet1
+  BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Report options'
-  ClientHeight = 389
-  ClientWidth = 380
+  ClientHeight = 499
+  ClientWidth = 468
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnActivate = FormActivate
   OnCreate = FormCreate
-  PixelsPerInch = 75
   Position = poScreenCenter
-  TextHeight = 13
-  HorzScrollBar.Page = 379
-  VertScrollBar.Page = 388
-  Left = 215
-  Height = 389
-  Top = 162
-  Width = 380
-  object GroupBox1: TGroupBox
-    BorderSpacing.OnChange = nil
-    Caption = 'Printer'
-    ClientHeight = 56
-    ClientWidth = 367
-    ParentColor = True
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 50
+    Top = 449
+    Width = 456
+    Align = alBottom
     TabOrder = 0
-    Left = 4
-    Height = 73
-    Top = 4
-    Width = 371
-    object ComB1: TComboBox
-      BorderSpacing.OnChange = nil
-      ItemHeight = 13
-      MaxLength = 0
-      Style = csDropDownList
-      TabOrder = 0
-      Left = 10
-      Height = 21
-      Top = 5
-      Width = 344
-      HelpContext = 68
-    end
-    object CB1: TCheckBox
-      AllowGrayed = True
-      BorderSpacing.OnChange = nil
-      Caption = '&Select when report loaded'
-      TabOrder = 1
-      Left = 8
-      Height = 17
-      Top = 37
-      Width = 308
-      HelpContext = 77
-    end
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
-  object GroupBox2: TGroupBox
-    BorderSpacing.OnChange = nil
-    Caption = 'Other'
-    ClientHeight = 251
-    ClientWidth = 367
-    ParentColor = True
+  object PageControl1: TPageControl
+    Left = 6
+    Height = 437
+    Top = 6
+    Width = 456
+    ActivePage = TabSheet2
+    Align = alClient
+    BorderSpacing.Around = 6
+    TabIndex = 1
     TabOrder = 1
-    Left = 4
-    Height = 268
-    Top = 84
-    Width = 371
-    object labTitle: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Title'
-      Color = clNone
-      Left = 11
-      Height = 17
-      Top = 34
-      Width = 32
+    object TabSheet1: TTabSheet
+      Caption = 'Options'
+      ClientHeight = 411
+      ClientWidth = 448
+      object labPrinter: TLabel
+        Left = 6
+        Height = 14
+        Top = 6
+        Width = 33
+        Caption = 'Printer'
+        ParentColor = False
+      end
+      object ListBox1: TListBox
+        AnchorSideLeft.Control = labPrinter
+        AnchorSideTop.Control = labPrinter
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 224
+        Top = 26
+        Width = 430
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        OnDrawItem = ListBox1DrawItem
+        Style = lbOwnerDrawFixed
+        TabOrder = 0
+      end
+      object CB1: TCheckBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = ListBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 13
+        Top = 262
+        Width = 144
+        HelpContext = 77
+        AllowGrayed = True
+        BorderSpacing.Top = 6
+        BorderSpacing.Around = 6
+        Caption = '&Select when report loaded'
+        TabOrder = 1
+      end
+      object CB2: TCheckBox
+        AnchorSideLeft.Control = CB1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ListBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 168
+        Height = 13
+        Top = 262
+        Width = 96
+        HelpContext = 86
+        AllowGrayed = True
+        BorderSpacing.Left = 12
+        BorderSpacing.Top = 6
+        BorderSpacing.Around = 6
+        Caption = '&Two-pass report'
+        TabOrder = 2
+      end
     end
-    object labSubject: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Subject'
-      Color = clNone
-      Left = 10
-      Height = 17
-      Top = 62
-      Width = 65
-    end
-    object labKeyWords: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Keys works'
-      Color = clNone
-      Left = 11
-      Height = 17
-      Top = 90
-      Width = 65
-    end
-    object labComments: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Comments'
-      Color = clNone
-      Left = 11
-      Height = 17
-      Top = 109
-      Width = 65
-    end
-    object CB2: TCheckBox
-      AllowGrayed = True
-      BorderSpacing.OnChange = nil
-      Caption = '&Two-pass report'
-      TabOrder = 0
-      Left = 10
-      Height = 17
-      Top = 5
-      Width = 304
-      HelpContext = 86
-    end
-    object edTitle: TEdit
-      BorderSpacing.OnChange = nil
-      TabOrder = 1
-      Text = 'edTitle'
-      Left = 82
-      Height = 23
-      Top = 28
-      Width = 272
-    end
-    object edSubject: TEdit
-      TabOrder = 2
-      Text = 'Edit1'
-      Left = 82
-      Height = 23
-      Top = 56
-      Width = 272
-    end
-    object edKeyWords: TEdit
-      TabOrder = 3
-      Text = 'Edit1'
-      Left = 82
-      Height = 23
-      Top = 84
-      Width = 272
-    end
-    object edComments: TMemo
-      BorderSpacing.OnChange = nil
-      Lines.Strings = (
-        'Memo1'
-      )
-      ScrollBars = ssAutoBoth
-      TabOrder = 4
-      Left = 10
-      Height = 117
-      Top = 127
-      Width = 349
+    object TabSheet2: TTabSheet
+      Caption = 'Other'
+      ClientHeight = 411
+      ClientWidth = 448
+      object GroupBox3: TGroupBox
+        AnchorSideRight.Side = asrBottom
+        Height = 73
+        Top = 338
+        Width = 448
+        Align = alBottom
+        AutoSize = True
+        Caption = 'Version'
+        ClientHeight = 55
+        ClientWidth = 444
+        TabOrder = 0
+        object labMaj: TLabel
+          Left = 6
+          Height = 14
+          Top = 6
+          Width = 32
+          Caption = 'labMaj'
+          ParentColor = False
+        end
+        object labMinor: TLabel
+          AnchorSideLeft.Control = edtMaj
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = labMaj
+          Left = 104
+          Height = 14
+          Top = 6
+          Width = 41
+          BorderSpacing.Left = 12
+          Caption = 'labMinor'
+          ParentColor = False
+        end
+        object labRelease: TLabel
+          AnchorSideLeft.Control = edtMinor
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = labMaj
+          Left = 202
+          Height = 14
+          Top = 6
+          Width = 53
+          BorderSpacing.Left = 12
+          Caption = 'labRelease'
+          ParentColor = False
+        end
+        object labBuild: TLabel
+          AnchorSideLeft.Control = edtRelease
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = labMaj
+          Left = 300
+          Height = 14
+          Top = 6
+          Width = 37
+          BorderSpacing.Left = 12
+          Caption = 'labBuild'
+          ParentColor = False
+        end
+        object edtMaj: TEdit
+          AnchorSideLeft.Control = labMaj
+          AnchorSideTop.Control = labMaj
+          AnchorSideTop.Side = asrBottom
+          Left = 12
+          Height = 23
+          Top = 26
+          Width = 80
+          AutoSize = True
+          BorderSpacing.Bottom = 6
+          BorderSpacing.Around = 6
+          TabOrder = 0
+          Text = 'edtMaj'
+        end
+        object edtMinor: TEdit
+          AnchorSideLeft.Control = labMinor
+          AnchorSideTop.Control = labMinor
+          AnchorSideTop.Side = asrBottom
+          Left = 110
+          Height = 23
+          Top = 26
+          Width = 80
+          AutoSize = True
+          BorderSpacing.Bottom = 6
+          BorderSpacing.Around = 6
+          TabOrder = 1
+          Text = 'edtMinor'
+        end
+        object edtRelease: TEdit
+          AnchorSideLeft.Control = labRelease
+          AnchorSideTop.Control = labRelease
+          AnchorSideTop.Side = asrBottom
+          Left = 208
+          Height = 23
+          Top = 26
+          Width = 80
+          AutoSize = True
+          BorderSpacing.Bottom = 6
+          BorderSpacing.Around = 6
+          TabOrder = 2
+          Text = 'edtRelease'
+        end
+        object edtBuild: TEdit
+          AnchorSideLeft.Control = labBuild
+          AnchorSideTop.Control = labBuild
+          AnchorSideTop.Side = asrBottom
+          Left = 306
+          Height = 23
+          Top = 26
+          Width = 80
+          AutoSize = True
+          BorderSpacing.Bottom = 6
+          BorderSpacing.Around = 6
+          TabOrder = 3
+          Text = 'edtBuild'
+        end
+      end
+      object GroupBox2: TGroupBox
+        AnchorSideLeft.Control = GroupBox3
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = GroupBox3
+        Height = 338
+        Width = 448
+        Align = alClient
+        Caption = 'Other'
+        ClientHeight = 320
+        ClientWidth = 444
+        TabOrder = 1
+        object labTitle: TLabel
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 14
+          Top = 6
+          Width = 21
+          Caption = 'Title'
+          ParentColor = False
+        end
+        object labSubject: TLabel
+          AnchorSideLeft.Control = labTitle
+          AnchorSideTop.Control = edAutor
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 14
+          Top = 104
+          Width = 37
+          Caption = 'Subject'
+          ParentColor = False
+        end
+        object labKeyWords: TLabel
+          AnchorSideLeft.Control = labTitle
+          AnchorSideTop.Control = edSubject
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 14
+          Top = 153
+          Width = 55
+          Caption = 'Keys works'
+          ParentColor = False
+        end
+        object labComments: TLabel
+          AnchorSideLeft.Control = labTitle
+          AnchorSideTop.Control = edKeyWords
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 14
+          Top = 202
+          Width = 51
+          Caption = 'Comments'
+          ParentColor = False
+        end
+        object labAutor: TLabel
+          AnchorSideLeft.Control = labTitle
+          AnchorSideTop.Control = edTitle
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 14
+          Top = 55
+          Width = 42
+          Caption = 'labAutor'
+          ParentColor = False
+        end
+        object edTitle: TEdit
+          AnchorSideLeft.Control = labTitle
+          AnchorSideTop.Control = labTitle
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 12
+          Height = 23
+          Top = 26
+          Width = 426
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Around = 6
+          TabOrder = 0
+          Text = 'edTitle'
+        end
+        object edSubject: TEdit
+          AnchorSideTop.Control = labSubject
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 12
+          Height = 23
+          Top = 124
+          Width = 426
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Around = 6
+          TabOrder = 1
+          Text = 'Edit1'
+        end
+        object edKeyWords: TEdit
+          AnchorSideLeft.Control = labKeyWords
+          AnchorSideTop.Control = labKeyWords
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 12
+          Height = 23
+          Top = 173
+          Width = 426
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Around = 6
+          TabOrder = 2
+          Text = 'Edit1'
+        end
+        object edComments: TMemo
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = labComments
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = GroupBox2
+          AnchorSideBottom.Side = asrBottom
+          Left = 6
+          Height = 92
+          Top = 222
+          Width = 432
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Around = 6
+          Lines.Strings = (
+            'Memo1'
+          )
+          ScrollBars = ssAutoBoth
+          TabOrder = 3
+        end
+        object edAutor: TEdit
+          AnchorSideLeft.Control = labAutor
+          AnchorSideTop.Control = labAutor
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 12
+          Height = 23
+          Top = 75
+          Width = 426
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Around = 6
+          TabOrder = 4
+          Text = 'Edit1'
+        end
+      end
     end
   end
-  object Button1: TButton
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 2
-    Left = 216
-    Height = 25
-    Top = 360
-    Width = 75
-    HelpContext = 40
-  end
-  object Button2: TButton
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 3
-    Left = 296
-    Height = 25
-    Top = 360
-    Width = 75
-    HelpContext = 50
+  object ImageList1: TImageList
+    left = 384
+    top = 304
+    Bitmap = {
+      4C6901000000100000001000000000000000000000000000000000000009B3B3
+      B3CFDFDFDFF0DDDDDDF0DDDDDDF0EBEBEBF0E6E6E6F0DDDDDDF03535355F0000
+      00000000000000000000000000000000000000000000000000000000000ACECE
+      CEE1FFFFFFFFFFFFFFFFFFFFFFFFF9F9F9FFF3F3F3FFE7E7E7FF3838386C0000
+      00000000000000000000000000000000000000000000000000000000000ACDCD
+      CDDDFFFFFFFFFEFEFEFFF6F6F6FFEEEEEEFFE8E8E8FFDEDEDEFF3939396A0000
+      000000000000000000000000000000000000000000000000000000000005D1D1
+      D1DCFFFFFFFFF8F8F8FFF0F0F0FFE8E8E8FFE2E2E2FFD9D9D9FF353535650000
+      00000000000000000000000000000000000000000000000000002A2A2A1EC7C7
+      C7E3EEEEEEFFE0E0E0FFD8D8D8FFD1D1D1FFCBCBCBFFC1C1C1FF515151830000
+      0007000000000000000000000000000000000000000000000000A3A3A3C6C0C0
+      C0FEC3C3C3FFC0C0C0FFB9B9B9FFB2B2B2FFABABABFFA0A0A0FFACACACFB5151
+      517A000000000000000000000000000000006B666B32938D9387F2F2F2FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFCFCFCFFF7F7F7FFF1F1F1FFEBEBEBFFECECECFFB1B1
+      B1E1535353650B0B0B16000000003B383B4DBED9BEF7C7EDC7FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFAFAFAFD500000014928D92ABDAF7DAFFB9E5B9FFFCFBFCFFFAFA
+      FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFBFBFBFFFBFBFBFFFBFB
+      FBFFFFFFFFFFFAFAFAFF35353560B7B9B7DBF5F1F5FFF5F0F5FFEEEFEEFFEFEF
+      EFFFF0F0F0FFF0F0F0FFF0F0F0FFF0F0F0FFF0F0F0FFEFEFEFFFEFEFEFFFEFEF
+      EFFFEDEDEDFFF2F2F2FF62626296BDBDBDE7D7D7D7FFDBDBDBFFDFDFDFFFE1E1
+      E1FFE2E2E2FFE3E3E3FFE3E3E3FFE3E3E3FFE3E3E3FFE2E2E2FFE0E0E0FFDFDF
+      DFFFD8D8D8FFDFDFDFFF6A6A6AA5A3A3A3D7CFCFCFFFA3A3A3FF8E8E8EFF8484
+      84FF848484FF848484FF848484FF848484FF848484FF858585FF878787FF8F8F
+      8FFFB6B6B6FFD4D4D4FF555555986D6D6DA3D0D0D0FF454545FF070707FF5C5C
+      5CFF636363FF626262FF626262FF606060FF5E5E5EFF5D5D5DFF464646FF0202
+      02FF828282FFC8C8C8FF2A2A2A651B1B1B38808080D0878787FB989898FEFBFB
+      FBFFFFFFFFFFFFFFFFFFFDFDFDFFF5F5F5FFEDEDEDFFE7E7E7FFCFCFCFFF8181
+      81FF8C8C8CF55F5F5FBA00000018000000000000000D1F1F1F4ADBDBDBF7FFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFF3F3F3FFEBEBEBFFEBEBEBFF8181
+      81CB0A0A0A3200000006000000000000000000000000000000106A6A6A9C7171
+      71A46F6F6FA46E6E6EA46B6B6BA4666666A4636363A4616161A4626262A53D3D
+      3D7C000000000000000000000000
+    }
   end
 end
