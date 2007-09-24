@@ -375,11 +375,13 @@ End;
   Returns: the corresponding mime type as string
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): String;
+var
+  FormatLength: Integer;
 Begin
   Assert(False, 'Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Start');
   SetLength(Result,1000);
-  Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
-  SetLength(Result,StrLen(PChar(Result)));
+  FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
+  SetLength(Result,FormatLength);
   {$IFDEF VerboseWin32Clipbrd}
   debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
   {$ENDIF}
@@ -400,28 +402,50 @@ var
   DataHandle: HGLOBAL;
   Data: pointer;
   Size: integer;
+  DbgFormatID: integer;
+  Bitmap: TBitmap;
 Begin
   Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
   {$IFDEF VerboseWin32Clipbrd}
   debugln('TWin32WidgetSet.ClipboardGetData FormatID=',dbgs(FormatID));
+  Windows.OpenClipboard(Windows.HWND(nil));
+  DbgFormatID := 0;
+  repeat
+    DbgFormatID := EnumClipboardFormats(DbgFormatID);
+    debugln('Available FormatID=',dbgs(DbgFormatID), ' ', ClipboardFormatToMimeType(DbgFormatID));
+  until (DbgFormatID=0);
+  Windows.CloseClipboard;
   {$ENDIF}
+  if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
+    then FormatID := CF_BITMAP;
   if (FormatID=0) or (Stream=nil) or
     not Windows.IsClipboardFormatAvailable(FormatID) then exit;
 
   if Windows.OpenClipboard(Windows.HWND(nil)) then
     try
-      DataHandle := Windows.GetClipboardData(FormatID);
-      if DataHandle<>HWND(0) then begin
-        Size := Windows.GlobalSize(DataHandle);
-        if Size>0 then begin
-          Data := Windows.GlobalLock(DataHandle);
-          try
-            Stream.Write(Data^, Size);
-          finally
-            Windows.GlobalUnlock(DataHandle);
+      if FormatID=Windows.CF_BITMAP then begin
+        Bitmap:= TBitmap.Create;
+        Bitmap.TransparentColor := clNone;
+        DataHandle := Windows.GetClipboardData(FormatID);
+        Bitmap.SetHandles(DataHandle, 0);
+        Bitmap.SaveToStream(Stream);
+        Bitmap.Free;
+        Result := true;
+      end
+      else begin
+        DataHandle := Windows.GetClipboardData(FormatID);
+        if DataHandle<>HWND(0) then begin
+          Size := Windows.GlobalSize(DataHandle);
+          if Size>0 then begin
+            Data := Windows.GlobalLock(DataHandle);
+            try
+              Stream.Write(Data^, Size);
+            finally
+              Windows.GlobalUnlock(DataHandle);
+            end;
+            Result := true;
           end;
-          Result := true;
         end;
       end;
     finally
@@ -609,7 +633,7 @@ Function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClip
 Begin
   if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
     Result := Windows.CF_TEXT
-  else if AMimeType=PredefinedClipboardMimeTypes[pcfBitmap] then
+  else if (AMimeType=PredefinedClipboardMimeTypes[pcfBitmap]) then
     Result := Windows.CF_BITMAP
   else
     Result := Windows.RegisterClipboardFormat(PChar(AMimeType));

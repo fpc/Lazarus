@@ -1,0 +1,2519 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus 1.x\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-22 01:08+0700\n"
+"Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
+"Language-Team: Indonesian <ade999@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ipconst:swinsockerr
+msgid "WinSock Error (%d): %s, on API '%s'"
+msgstr "WinSock Salah (%d): %s, pada API '%s'"
+
+#: ipconst:sraserr
+msgid "Ras Error (%d): on API '%s'"
+msgstr "Ras Salah (%d): pada API '%s'"
+
+#: ipconst:sactiveerr
+msgid "Cannot set property on an active socket"
+msgstr "Tidak bisa menyetel properti pada soket aktif"
+
+#: ipconst:saccessprocerr
+msgid "Win32 error loading '%s' pointer: %s"
+msgstr "Kesalahan Win32 mengambil '%s' pointer: %s"
+
+#: ipconst:snowinsock2err
+msgid "%s requires WinSock 2, and this system only has WinSock 1"
+msgstr "%s memerlukan WinSock 2, dan sistem ini hanya memiliki WinSock 1"
+
+#: ipconst:snosockerr
+msgid "Socket not assigned"
+msgstr "Soket tidak ditempatkan"
+
+#: ipconst:snostreamerr
+msgid "Stream not assigned"
+msgstr "Stream tidak ditempati"
+
+#: ipconst:snotimererr
+msgid "Not enough system timers available"
+msgstr "Timer sistem tidak cukup tersedia"
+
+#: ipconst:sindexerr
+msgid "Index out of range"
+msgstr "Indeks di luar jangkauan"
+
+#: ipconst:ssockserr
+msgid "SOCKS request refused - %d"
+msgstr "Permintaan SOCKS ditolak - %d"
+
+#: ipconst:sreadlineerr
+msgid "Received line too long, exceeds MaxLineBuf"
+msgstr "Baris yang diterima terlalu panjang, melebihi MaxLineBuf"
+
+#: ipconst:snomemorystreamerr
+msgid "No Memory Stream assigned"
+msgstr "Memori Stream tidak ditempati"
+
+#: ipconst:seventconnect
+msgid "Connect: Loc: %s Rem: %s"
+msgstr "Sambung: Lok: %s Rem: %s"
+
+#: ipconst:seventdisconnect
+msgid "Close:   Loc: %s Rem: %s"
+msgstr "Tutup:   Lok: %s Rem: %s"
+
+#: ipconst:snotenoughdata
+msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
+msgstr "Data tidak cukup dalam antrian (%s byte) untuk memuaskan permintaan baca (%s byte)"
+
+#: ipconst:srowcoloor
+msgid "%s: either row %d or col %d is out of range"
+msgstr "%s: baik baris %d ataupun kolom %d di luar jangkauan"
+
+#: ipconst:srowrowoor
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr "TIpTerminalArray.ScrollRows: baik baris awal %d ataupun baris akhir %d di luar jangkauan"
+
+#: ipconst:sinvitemsize
+msgid "TIpTerminalArray.GetItemPtr: invalid item size"
+msgstr "TIpTerminalArray.GetItemPtr: ukuran item tidak benar"
+
+#: ipconst:slesszero
+msgid "%s: new col count %d is less than zero"
+msgstr "%s: jumlah kol baru %d kurang dari nol"
+
+#: ipconst:sposreqd
+msgid "%s: count must be positive"
+msgstr "%s: jumlah harus positif"
+
+#: ipconst:srowoor
+msgid "%s: row number is out of range"
+msgstr "%s: nomor baris di luar jangkauan"
+
+#: ipconst:sinvscrollrow
+msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+msgstr "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+
+#: ipconst:scounttoosmall
+msgid "%s: new count too small"
+msgstr "%s: jumlah baru terlalu kecil"
+
+#: ipconst:swsaeintr
+msgid "Interrupted function call"
+msgstr "Pemanggilan fungsi diinterupsi"
+
+#: ipconst:swsaebadf
+msgid "Bad file descriptor"
+msgstr "Deskriptor file buruk"
+
+#: ipconst:swsaeacces
+msgid "Permission denied"
+msgstr "Perijinan ditolak"
+
+#: ipconst:swsaefault
+msgid "Bad address"
+msgstr "Alamat tidak benar"
+
+#: ipconst:swsaeinval
+msgid "Invalid argument"
+msgstr "Argumen tidak benar"
+
+#: ipconst:swsaemfile
+msgid "Too many open files"
+msgstr "Terlalu banyak file terbuka"
+
+#: ipconst:swsaewouldblock
+msgid "Resource temporarily unavailable"
+msgstr "Resource sementara tidak tersedia"
+
+#: ipconst:swsaeinprogress
+msgid "Operation now in progress"
+msgstr "Operasi sekarang sedang berlangsung"
+
+#: ipconst:swsaealready
+msgid "Operation already in progress"
+msgstr "Operasi sedang dilakukan"
+
+#: ipconst:swsaenotsock
+msgid "Socket operation on nonsocket"
+msgstr "Operasi soket pada nonsoket"
+
+#: ipconst:swsaedestaddrreq
+msgid "Destination address required"
+msgstr "Alamat tujuan diperlukan"
+
+#: ipconst:swsaemsgsize
+msgid "Message too long"
+msgstr "Pesan terlalu panjang"
+
+#: ipconst:swsaeprototype
+msgid "Protocol wrong type for socket"
+msgstr "Tipe protokol salah untuk soket"
+
+#: ipconst:swsaenoprotoopt
+msgid "Bad protocol option"
+msgstr "Opsi protokol salah"
+
+#: ipconst:swsaeprotonosupport
+msgid "Protocol not supported"
+msgstr "Protokol tidak didukung"
+
+#: ipconst:swsaesocktnosupport
+msgid "Socket type not supported"
+msgstr "Tipe soket tidak didukung"
+
+#: ipconst:swsaeopnotsupp
+msgid "Operation not supported"
+msgstr "Operasi tidak didukung"
+
+#: ipconst:swsaepfnosupport
+msgid "Protocol family not supported"
+msgstr "Keluarga protokol tidak didukung"
+
+#: ipconst:swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr "Keluarga alamat tidak didukung oleh keluarga protokol"
+
+#: ipconst:swsaeaddrinuse
+msgid "Address already in use"
+msgstr "Sudah dalam penggunaan"
+
+#: ipconst:swsaeaddrnotavail
+msgid "Cannot assign requested address"
+msgstr "Tidak bisa menempatkan alamat yang diminta"
+
+#: ipconst:swsaenetdown
+msgid "Network is down"
+msgstr "Jaringan putus"
+
+#: ipconst:swsaenetunreach
+msgid "Network is unreachable"
+msgstr "Jaringan tidak tercapai"
+
+#: ipconst:swsaenetreset
+msgid "Network dropped connection on reset"
+msgstr "Jaringan memutuskan koneksi saat reset"
+
+#: ipconst:swsaeconnaborted
+msgid "Software caused connection abort"
+msgstr "SOftware menyebabkan pembatalan koneksi"
+
+#: ipconst:swsaeconnreset
+msgid "Connection reset by peer"
+msgstr "Koneksi direset oleh peer"
+
+#: ipconst:swsaenobufs
+msgid "No buffer space available"
+msgstr "Ruang bufer tidak tersedia"
+
+#: ipconst:swsaeisconn
+msgid "Socket is already connected"
+msgstr "Soket sudah tersambung"
+
+#: ipconst:swsaenotconn
+msgid "Socket is not connected"
+msgstr "Soket tidak tersambung"
+
+#: ipconst:swsaeshutdown
+msgid "Cannot send after socket shutdown"
+msgstr "Tidak  bisa mengirim setelah soket putus"
+
+#: ipconst:swsaetoomanyrefs
+msgid "Too many references; cannot splice"
+msgstr "Terlalu banyak referensil tidak bisa splice"
+
+#: ipconst:swsaetimedout
+msgid "Connection timed out"
+msgstr "Koneksi kehabisan waktu"
+
+#: ipconst:swsaeconnrefused
+msgid "Connection refused"
+msgstr "Koneksi ditolak"
+
+#: ipconst:swsaeloop
+msgid "Too many levels of symbolic links"
+msgstr "Terlalu banyak tingkat dari link simbolis"
+
+#: ipconst:swsaenametoolong
+msgid "File name too long"
+msgstr "Nama file terlalu panjang"
+
+#: ipconst:swsaehostdown
+msgid "Host is down"
+msgstr "Host mati"
+
+#: ipconst:swsaehostunreach
+msgid "No route to host"
+msgstr "Tidak ada rute ke host"
+
+#: ipconst:swsaenotempty
+msgid "Directory not empty"
+msgstr "Direktori tidak kosong"
+
+#: ipconst:swsaeproclim
+msgid "Too many processes"
+msgstr "Terlalu banyak proses"
+
+#: ipconst:swsaeusers
+msgid "Too many users"
+msgstr "Terlalu banyak pengguna"
+
+#: ipconst:swsaedquot
+msgid "Disk quota exceeded"
+msgstr "Kuota disk terlampaui"
+
+#: ipconst:swsaestale
+msgid "Stale NFS file handle"
+msgstr "Kendali file NFS jatuh"
+
+#: ipconst:swsaeremote
+msgid "Too many levels of remote in path"
+msgstr "Terlalu banyak tingkat remote dalam path"
+
+#: ipconst:swsasysnotready
+msgid "Network subsystem is unavailable"
+msgstr "Subsistem jaringan tidak tersedia"
+
+#: ipconst:swsavernotsupported
+msgid "WinSock DLL version not supported"
+msgstr "Versi DLL WinSock tidak didukung"
+
+#: ipconst:swsanotinitialised
+msgid "Successful WSAStartup not yet performed"
+msgstr "WSAStartup yang sukses belum dilakukan"
+
+#: ipconst:swsaediscon
+msgid "Graceful shutdown in progress"
+msgstr "Mematikan dengan baik sedang berlangsung"
+
+#: ipconst:swsaenomore
+msgid "No more data available"
+msgstr "Tidak ada data lagi tersedia"
+
+#: ipconst:swsaecancelled
+msgid "Cancelled"
+msgstr "Dibatalkan"
+
+#: ipconst:swsaeinvalidproctable
+msgid "Invalid procedure table from service provider"
+msgstr "Tabel prosedur tidak benar dari penyedia layanan"
+
+#: ipconst:swsaeinvalidprovider
+msgid "Invalid service provider version number"
+msgstr "Nomor versi penyedia layanan tidak benar"
+
+#: ipconst:swsaeproviderfailedinit
+msgid "Unable to initialize a service provider"
+msgstr "Tidak bisa menginisialisasi penyedia layanan"
+
+#: ipconst:swsasyscallfailure
+msgid "System call failure"
+msgstr "Kegagalan pemanggilan sistem"
+
+#: ipconst:swsaservice_not_found
+msgid "Service not found"
+msgstr "Layanan tidak ditemukan"
+
+#: ipconst:swsatype_not_found
+msgid "Type not found"
+msgstr "Tipe tidak ditemukan"
+
+#: ipconst:swsa_e_no_more
+msgid "No more data available"
+msgstr "Tidak ada data lagi tersedia"
+
+#: ipconst:swsa_e_cancelled
+msgid "Lookup cancelled"
+msgstr "Lookup dibatalkan"
+
+#: ipconst:swsaerefused
+msgid "Refused"
+msgstr "Ditolak"
+
+#: ipconst:swsahost_not_found
+msgid "Host not found"
+msgstr "Host tidak ditemukan"
+
+#: ipconst:swsatry_again
+msgid "Nonauthoritative host not found"
+msgstr "Non otoratif host ditemukan"
+
+#: ipconst:swsano_recovery
+msgid "This is a nonrecoverable error"
+msgstr "Ini adalah kesalahan tidak bisa ditemukan kembali"
+
+#: ipconst:swsano_data
+msgid "Valid name, no data record of requested type"
+msgstr "Nama benar, tidak ada rekaman data atas tipe yang diminta"
+
+#: ipconst:swsa_qos_receivers
+msgid "At least one Reserve has arrived"
+msgstr "Setidaknya satu penyediaan diterima"
+
+#: ipconst:swsa_qos_senders
+msgid "At least one Path has arrived"
+msgstr "Setidaknya satu Path diterima"
+
+#: ipconst:swsa_qos_no_senders
+msgid "There are no senders"
+msgstr "Tidak ada pengirim"
+
+#: ipconst:swsa_qos_no_receivers
+msgid "There are no receivers"
+msgstr "Tidak ada penerima"
+
+#: ipconst:swsa_qos_request_confirmed
+msgid "Reserve has been confirmed"
+msgstr "Penyediaan sudah dikonfirmasi"
+
+#: ipconst:swsa_qos_admission_failure
+msgid "Error due to lack of resources"
+msgstr "Kesalahan karena kekurangan sumber daya"
+
+#: ipconst:swsa_qos_policy_failure
+msgid "Rejected for administrative reasons - bad credentials"
+msgstr "Ditolak untuk alasan administratis - kredensial salah"
+
+#: ipconst:swsa_qos_bad_style
+msgid "Unknown or conflicting style"
+msgstr "Tidak dikenal atau gaya konflik"
+
+#: ipconst:swsa_qos_bad_object
+msgid "Problem filterspec or providerspecific buffer"
+msgstr "Masalah filterspec atau bufer providerspecific"
+
+#: ipconst:swsa_qos_traffic_ctrl_error
+msgid "Problem with some part of the flowspec"
+msgstr "Masalah dengan beberapa bagian dari flowspec"
+
+#: ipconst:swsa_qos_generic_error
+msgid "General error"
+msgstr "Kesalahan umum"
+
+#: ipconst:shtmlnotcontainer
+msgid "Parent is not a container"
+msgstr "Leluhur bukan kontainer"
+
+#: ipconst:shtmllineerror
+msgid "Error \"%s\" at line %d, position %d"
+msgstr "Kesalahan \"%s\" di baris %d, posisi %d"
+
+#: ipconst:shtmlcharstackoverfl
+msgid "Character stack overflow"
+msgstr "Stack karakter overflow"
+
+#: ipconst:shtmltokenstackoverfl
+msgid "Token stack overflow"
+msgstr "Stack token overflow"
+
+#: ipconst:shtmlencnotsupported
+msgid " encoding not supported"
+msgstr " enkode tidak didukung"
+
+#: ipconst:shtmlinternal
+msgid "Internal error"
+msgstr " Kesalahan internal"
+
+#: ipconst:shtmlnodataprovider
+msgid "No data provider assigned"
+msgstr "Tidak ada penyedia data ditempatkan"
+
+#: ipconst:shtmlresunavail
+msgid "Resource unavailable:"
+msgstr "Resource tidak tersedia"
+
+#: ipconst:shtmlunsupprotocol
+msgid "Unsupported protocol in URL:%s"
+msgstr "Protokol dalam URL tidak didukung:%s"
+
+#: ipconst:shtmlexp
+msgid " expected"
+msgstr " diharapkan"
+
+#: ipconst:shtmldashexp
+msgid "- expected"
+msgstr "- diharapkan"
+
+#: ipconst:shtmlinvtype
+msgid "Invalid type specified"
+msgstr "Tipe tidak benar yang ditetapkan"
+
+#: ipconst:shtmlunknowntok
+msgid "Unknown token"
+msgstr "Token tidak dikenal"
+
+#: ipconst:shtmlinvint
+msgid "Invalid integer constant"
+msgstr "Konstan integer tidak benar"
+
+#: ipconst:shtmlinvalign
+msgid "Invalid alignment specified"
+msgstr "Penjajaran yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvvaltype
+msgid "Invalid value type specified"
+msgstr "Tipe nilai yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvshape
+msgid "Invalid shape specified"
+msgstr "Bentuk yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvmethod
+msgid "Invalid method specified"
+msgstr "Metode yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvdir
+msgid "Invalid dir value specified"
+msgstr "Nilai dir yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvcolor
+msgid "Invalid color constant:"
+msgstr "Konstan warna tidak benar:"
+
+#: ipconst:shtmlinvframe
+msgid "Invalid frame specified"
+msgstr "Bingkai yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvrule
+msgid "Invalid rule specified"
+msgstr "Aturn yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvscope
+msgid "Invalid scope specified"
+msgstr "Lingkup yang ditetapkan tidak benar"
+
+#: ipconst:shtmlinvscroll
+msgid "Invalid scrolling specified"
+msgstr "Penggulungan yang ditetapkan tidak benar"
+
+#: ipconst:shtmldefsubmitcaption
+msgid "Submit"
+msgstr "Kirim"
+
+#: ipconst:shtmldefresetcaption
+msgid "Reset"
+msgstr "Reset"
+
+#: ipconst:shtmldefbrowsecaption
+msgid "Browse..."
+msgstr "Browse..."
+
+#: ipconst:shtmlinvpicture
+msgid "Invalid picture returned"
+msgstr "Gambar yang ditetapkan tidak benar"
+
+#: ipconst:shtmlnographic
+msgid "Picture object contains no graphic object"
+msgstr "Obyek gambar tidak berisi obyek grafik"
+
+#: ipconst:shtmlinvgraphic
+msgid "Invalid graphic returned"
+msgstr "Grafik yang dikembalikan tidak benar"
+
+#: ipconst:shtmlnogetimage
+msgid "No OnGetImage event handler assigned"
+msgstr "Tidak ada pengendali event OnGetImage yang ditetapkan"
+
+#: ipconst:srasopenport
+msgid "Open port"
+msgstr "Buka port"
+
+#: ipconst:srasportopened
+msgid "Port opened"
+msgstr "Port dibuka"
+
+#: ipconst:srasconnectdevice
+msgid "Connect device"
+msgstr "Sambungkan device"
+
+#: ipconst:srasdeviceconnected
+msgid "Device connected"
+msgstr "Device tersambung"
+
+#: ipconst:srasalldevicesconnected
+msgid "All devices connected"
+msgstr "Semua device tersambung"
+
+#: ipconst:srasauthenticate
+msgid "Authenticate"
+msgstr "Otentikasi"
+
+#: ipconst:srasauthnotify
+msgid "Authenticate notify"
+msgstr "Pemberitahuan Otentikasi"
+
+#: ipconst:srasauthretry
+msgid "Authenticate retry"
+msgstr "Percobaan otentikasi"
+
+#: ipconst:srasauthcallback
+msgid "Authenticate callback"
+msgstr "Callback otentikasi"
+
+#: ipconst:srasauthchangepassword
+msgid "Authenticate change password"
+msgstr "Otentikasi perubahan kata sandi"
+
+#: ipconst:srasauthproject
+msgid "Authenticate project"
+msgstr "Otentikasi proyek"
+
+#: ipconst:srasauthlinkspeed
+msgid "Authenticate link speed"
+msgstr "Otentikasi kecepatan sambungan"
+
+#: ipconst:srasauthack
+msgid "Authenticate acknowledged"
+msgstr "Otentikasi pengakuan"
+
+#: ipconst:srasreauthenticate
+msgid "Re-authenticate"
+msgstr "Otentikasi ulang"
+
+#: ipconst:srasauthenticated
+msgid "Authenticated"
+msgstr "Diotentikasi"
+
+#: ipconst:srasprepareforcallback
+msgid "Prepare for callback"
+msgstr "Persiapan untuk callback"
+
+#: ipconst:sraswaitformodemreset
+msgid "Wait for modem reset"
+msgstr "Menunggu" reset modem
+
+#: ipconst:sraswaitforcallback
+msgid "Wait for callback"
+msgstr "Menunggu callback"
+
+#: ipconst:srasprojected
+msgid "Projected"
+msgstr "Diproyeksikan"
+
+#: ipconst:srasstartauthentication
+msgid "Start authentication"
+msgstr "Mulai otentikasi"
+
+#: ipconst:srascallbackcomplete
+msgid "Callback complete"
+msgstr "Callbacj selesai"
+
+#: ipconst:sraslogonnetwork
+msgid "Logon network"
+msgstr "Masuk jaringan"
+
+#: ipconst:srassubentryconnected
+msgid "Sub-entry connected"
+msgstr "Sub-entri tersambung"
+
+#: ipconst:srassubentrydisconnected
+msgid "Sub-entry disconnected"
+msgstr "Sub-entri diputuskan"
+
+#: ipconst:sraspaused
+msgid "Paused"
+msgstr "Diistirahatkan"
+
+#: ipconst:srasinteractive
+msgid "Interactive"
+msgstr "Interaktif"
+
+#: ipconst:srasretryauthentication
+msgid "Retry authentication"
+msgstr "Mencoba ulang otentikasi"
+
+#: ipconst:srascallbacksetbycaller
+msgid "Callback set by caller"
+msgstr "Setelan callback oleh pemanggil"
+
+#: ipconst:sraspasswordexpired
+msgid "Password expired"
+msgstr "Kata sasndi berakhir"
+
+#: ipconst:srasconnected
+msgid "Connected"
+msgstr "Tersambung"
+
+#: ipconst:srasdisconnected
+msgid "Disconnected"
+msgstr "Terputus"
+
+#: ipconst:snoseekforread
+msgid "No seek for read"
+msgstr "Tidak ada pencarian untuk membaca"
+
+#: ipconst:snoseekforwrite
+msgid "No seek for write"
+msgstr "Tidak ada pencarian untuk menulis"
+
+#: ipconst:scannotwritetostream
+msgid "Cannot write to stream"
+msgstr "Tidak bisa menulis ke stream"
+
+#: ipconst:sbadseekorigin
+msgid "Invalid seek origin"
+msgstr "Asal seek tidak benar"
+
+#: ipconst:sbadlineterminator
+msgid "Invalid line terminator"
+msgstr "Pemutus baris tidak benar"
+
+#: ipconst:sbadlinelength
+msgid "Invalid line length"
+msgstr "Panjang baris tidak benar"
+
+#: ipconst:sbadpath
+msgid "Path does not exist"
+msgstr "Path tidak ada"
+
+#: ipconst:sstreamcreated
+msgid "Successfully created "
+msgstr "Dibuat dengan sukses "
+
+#: ipconst:sstreamcreateerror
+msgid "Stream create error "
+msgstr "Pembuatan stream salah "
+
+#: ipconst:sdestroying
+msgid "Destroying"
+msgstr "Menghancurkan"
+
+#: ipconst:sattemptingtoread
+msgid "Attempting to read "
+msgstr "Mencoba untuk membaca "
+
+#: ipconst:sattemptingtowrite
+msgid "Attempting to write "
+msgstr "Mencoba untuk menulis "
+
+#: ipconst:sbytesfromstream
+msgid " bytes from stream"
+msgstr " byte dari stream"
+
+#: ipconst:sbytestostream
+msgid " bytes to stream"
+msgstr " byte ke stream"
+
+#: ipconst:sbytesreadfromstream
+msgid " bytes read from stream"
+msgstr " byte dibaca dari stream"
+
+#: ipconst:sbyteswrittentostream
+msgid " bytes written to stream"
+msgstr " byte ditulis ke stream"
+
+#: ipconst:sfilename
+msgid " Filename: "
+msgstr " Nama file: "
+
+#: ipconst:srenameddiskfileto
+msgid "Renamed disk file to "
+msgstr "Mengganti file disk ke "
+
+#: ipconst:sseekingdiskfileto
+msgid "Seeking disk file to "
+msgstr "Mencari file disk ke "
+
+#: ipconst:swriteafterrename
+msgid "***Write after rename"
+msgstr "***Menulis setelah mengganti nama"
+
+#: ipconst:soriginfrombegin
+msgid "When origin is soFromBeginning, Offset must be >= 0"
+msgstr "Ketika asal adalah soFromBeginning, Ofset harus >= 0"
+
+#: ipconst:soriginfromend
+msgid "When origin is soFromEnd, Offset must be <= 0"
+msgstr "Ketika asal adalah soFromEnd, Ofset harus <= 0"
+
+#: ipconst:smemmapfilenamerequired
+msgid "You must specify a file name for TIpMemMapStream"
+msgstr "Anda harus menetapkan nama file untuk TIpMemMapStream"
+
+#: ipconst:smemmapmustbeclosed
+msgid "The %s method requires the TIpMemMapStream instance to be closed"
+msgstr "Metode %s memerlukan turunan TIpMemMapStream untuk ditutup"
+
+#: ipconst:smemmapmustbeopen
+msgid "The %s method requires the TIpMemMapStream instance to be opened"
+msgstr "Metode %s memerlukan turunan TIpMemMapStream untuk dibuka"
+
+#: ipconst:sbadoffset
+msgid "Invalid stream offset"
+msgstr "Ofset stream tidak benar"
+
+#: ipconst:snoboundary
+msgid "No Mime boundary"
+msgstr "Tidak ada batasan Mime"
+
+#: ipconst:slistnotassigned
+msgid "List not assigned"
+msgstr "Daftar tidak ditempati"
+
+#: ipconst:sbinhexbadformat
+msgid "Invalid BinHex format"
+msgstr "Format BinHex tidak benar"
+
+#: ipconst:sbinhexcolonexpected
+msgid "\":\" expected"
+msgstr "\":\" diharapkan"
+
+#: ipconst:sbinhexbadchar
+msgid "Invalid BinHex character"
+msgstr "Karakter BinHex tidak benar"
+
+#: ipconst:sbinhexoddchar
+msgid "One odd character"
+msgstr "Satu karakter ganjil"
+
+#: ipconst:sbinhexbadheadercrc
+msgid "Bad header CRC"
+msgstr "CRC header tidak benar"
+
+#: ipconst:sbinhexbaddatacrc
+msgid "Bad header CRC"
+msgstr "CRC header tidak benar"
+
+#: ipconst:sbinhexlengtherr
+msgid "Invalid data length"
+msgstr "Panjang data tidak benar"
+
+#: ipconst:sbinhexresourceforkerr
+msgid "Resource fork present"
+msgstr "Garpu sumber daya ada"
+
+#: ipconst:suuencodecounterr
+msgid "Count <> Len or Count > 63"
+msgstr "Count <> Len atau Count > 63"
+
+#: ipconst:slinelengtherr
+msgid "Invalid line length for encoded text"
+msgstr "Panjang baris untuk teks dienkode tidak benar"
+
+#: ipconst:sunsupportedencoding
+msgid "Encoding method not supported"
+msgstr "Metode enkode tidak didukung"
+
+#: ipconst:sipicmp_success
+msgid "Successful"
+msgstr "Sukses"
+
+#: ipconst:sipicmp_buf_too_small
+msgid "Buffer too small"
+msgstr "Bufer terlalu kecil"
+
+#: ipconst:sipicmp_dest_net_unreachable
+msgid "Destination network unreachable"
+msgstr "Jaringan tujuan tidak tercapai"
+
+#: ipconst:sipicmp_dest_host_unreachable
+msgid "Destination host unreachable"
+msgstr "Host tujuan tidak tercapai"
+
+#: ipconst:sipicmp_dest_prot_unreachable
+msgid "Destination protocol unreachable"
+msgstr "Protokol tujuan tidak tercapai"
+
+#: ipconst:sipicmp_dest_port_unreachable
+msgid "Destination port unreachable"
+msgstr "Port tujuan tidak bisa dicapai"
+
+#: ipconst:sipicmp_no_resources
+msgid "Destination does not have resources to complete"
+msgstr "Tujuan tidak memiliki sumber daya untuk menyelesaikan"
+
+#: ipconst:sipicmp_bad_option
+msgid "Bad option"
+msgstr "Opsi salah"
+
+#: ipconst:sipicmp_hw_error
+msgid "Hardware error"
+msgstr "Hardware salah"
+
+#: ipconst:sipicmp_packet_too_big
+msgid "Packet too large"
+msgstr "Paket terlalu besar"
+
+#: ipconst:sipicmp_req_timed_out
+msgid "Request timed out"
+msgstr "Waktu permintaan berakhir"
+
+#: ipconst:sipicmp_bad_req
+msgid "Bad request"
+msgstr "Permintaan salah"
+
+#: ipconst:sipicmp_bad_route
+msgid "Bad route"
+msgstr "Rute buruk"
+
+#: ipconst:sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr "Waktu hidup berakhir selama transmit"
+
+#: ipconst:sipicmp_ttl_expired_reassem
+msgid "Time to live expired during reassembly"
+msgstr "Waktu hidup berakhir selama reassembly"
+
+#: ipconst:sipicmp_param_problem
+msgid "Parameter problem"
+msgstr "Masalah parameter"
+
+#: ipconst:sipicmp_source_quench
+msgid "Destination is busy"
+msgstr "Tujuan sibuk"
+
+#: ipconst:sipicmp_option_too_big
+msgid "Option too large"
+msgstr "Opsi terlalu besar"
+
+#: ipconst:sipicmp_bad_destination
+msgid "Bad destination"
+msgstr "Tujuan buruk"
+
+#: ipconst:sipicmp_unknown
+msgid "Unknown status"
+msgstr "Status tidak dikenal"
+
+#: ipconst:slogicmpclass
+msgid "[ICMP] "
+msgstr "[ICMP] "
+
+#: ipconst:sicmpecho
+msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
+msgstr "Jawaban echo (nomor Hop: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
+
+#: ipconst:sicmpechostring
+msgid "Echo string: %s"
+msgstr "String echo: %s"
+
+#: ipconst:sicmppingstart
+msgid "Pinging %s with %d bytes data"
+msgstr "Ping %s dengan %d byte data"
+
+#: ipconst:sicmptracestart
+msgid "Trace to %s started"
+msgstr "Melacak %s dimulai"
+
+#: ipconst:sicmptracecomplete
+msgid "Trace complete (%s), %d hops"
+msgstr "Pelacakan selesai (%s), %d hops"
+
+#: ipconst:sicmpthreadexecute
+msgid "Thread %d executing (Hop number = %d)"
+msgstr "Thread %d berjalan (nomor Hop = %d)"
+
+#: ipconst:sicmpthreadterminate
+msgid "Thread %d terminating (Hop number = %d)"
+msgstr "Thread %d berakhir (nomor Hop = %d)"
+
+#: ipconst:swrongstateerr
+msgid "Can not comply, wrong state"
+msgstr "Tidak bisa mengikuti, kondisi salah"
+
+#: ipconst:snorecipients
+msgid "No recipients specified"
+msgstr "Tidak ada penerima yang ditetapkan"
+
+#: ipconst:sinvalrespcode
+msgid "Invalid response code"
+msgstr "Kode respon tidak benar"
+
+#: ipconst:sssnoop
+msgid "No operation"
+msgstr "Tidak ada operasi"
+
+#: ipconst:sssconnect
+msgid "Connecting"
+msgstr "Menyambungkan"
+
+#: ipconst:sssehlo
+msgid "Logging on with EHLO"
+msgstr "Masuk dengan EHLO"
+
+#: ipconst:ssshelo
+msgid "Logging on with HELO"
+msgstr "Masuk dengan HELO"
+
+#: ipconst:sssmailfrom
+msgid "Sending sender's info"
+msgstr "Mengirimkan info pengirim"
+
+#: ipconst:sssrcptto
+msgid "Sending MailTo info"
+msgstr "Mengirimkan info MailTo"
+
+#: ipconst:sssrcptcc
+msgid "Sending CC info"
+msgstr "Mengirimkan info CC"
+
+#: ipconst:sssrcptbcc
+msgid "Sending BCC info"
+msgstr "Mengirimkan info BCC"
+
+#: ipconst:sssdata
+msgid "Sending Data"
+msgstr "Mengirimkan Data"
+
+#: ipconst:sssrset
+msgid "Resetting server"
+msgstr "Mereset server"
+
+#: ipconst:ssssend
+msgid "ssSend"
+msgstr "ssSend"
+
+#: ipconst:ssssoml
+msgid "ssSoml"
+msgstr "ssSoml"
+
+#: ipconst:ssssaml
+msgid "ssSaml"
+msgstr "ssSaml"
+
+#: ipconst:sssverify
+msgid "Verifying"
+msgstr "Memverifikasi"
+
+#: ipconst:sssexpand
+msgid "Expanding"
+msgstr "Melebarkan"
+
+#: ipconst:ssshelp
+msgid "Help"
+msgstr "Bantuan"
+
+#: ipconst:sssturn
+msgid "ssTurn"
+msgstr "ssTurn"
+
+#: ipconst:sssquit
+msgid "Quit"
+msgstr "Keluar"
+
+#: ipconst:ssssendenvelope
+msgid "Sending Envelope"
+msgstr "Mengirimkan Amplop"
+
+#: ipconst:ssssendmessage
+msgid "Sending Message"
+msgstr "Mengirimkan pesan"
+
+#: ipconst:sssspecial
+msgid "Sending special command"
+msgstr "MEngirimkan perintah spesial"
+
+#: ipconst:sssauthlogin
+msgid "Requesting authentication"
+msgstr "Meminta otentikasi"
+
+#: ipconst:sssauthuser
+msgid "Authenticating username"
+msgstr "Mengotentikasi nama pengguna"
+
+#: ipconst:sssauthpass
+msgid "Authenticating password"
+msgstr "Mengotentikasi kata sandi"
+
+#: ipconst:sstnotask
+msgid "None"
+msgstr "Tidak ada"
+
+#: ipconst:sstlogon
+msgid "Logging on"
+msgstr "Masuk"
+
+#: ipconst:sstsendmail
+msgid "Sending mail"
+msgstr "Mengirimkan surat"
+
+#: ipconst:ssterror
+msgid "An error has occured during this task."
+msgstr "Kesalahan terjadi selama tugas ini."
+
+#: ipconst:ssmtpresponse02
+msgid "Success, "
+msgstr "Sukses, "
+
+#: ipconst:ssmtpresponse04
+msgid "Transient, "
+msgstr "Sementara, "
+
+#: ipconst:ssmtpresponse05
+msgid "Persistent, "
+msgstr "Persisten, "
+
+#: ipconst:ssmtpresponse10
+msgid "Other address status"
+msgstr "Status alamat lainnya"
+
+#: ipconst:ssmtpresponse11
+msgid "Bad destination mailbox address"
+msgstr "Alamat kotak surat tujuan buruk"
+
+#: ipconst:ssmtpresponse12
+msgid "Bad destination system address"
+msgstr "Alamat sistem tujuan buruk"
+
+#: ipconst:ssmtpresponse13
+msgid "Bad destination mailbox address syntax"
+msgstr "Sintaks alamat kotak surat tujuan buruk"
+
+#: ipconst:ssmtpresponse14
+msgid "Destination mailbox address ambiguous"
+msgstr "Alamat kotak surat tujuan tidak jelas"
+
+#: ipconst:ssmtpresponse15
+msgid "Destination mailbox address valid"
+msgstr "Alamat koktak surat tujuan benar"
+
+#: ipconst:ssmtpresponse16
+msgid "Mailbox has moved"
+msgstr "Kotak surat sudah dipindahkan"
+
+#: ipconst:ssmtpresponse17
+msgid "Bad sender's mailbox address syntax"
+msgstr "Sintaks alamat kotak surat pengirim buruk"
+
+#: ipconst:ssmtpresponse18
+msgid "Bad sender's system address"
+msgstr "Alamat sistem pengirim buruk"
+
+#: ipconst:ssmtpresponse20
+msgid "Other or undefined mailbox status"
+msgstr "Yang lainnya atau status kotak surat tidak didefinisikan"
+
+#: ipconst:ssmtpresponse21
+msgid "Mailbox disabled, not accepting messages"
+msgstr "Kotak surat dimatikan, tidak menerima pesan"
+
+#: ipconst:ssmtpresponse22
+msgid "Mailbox full"
+msgstr "Kotak surat penuh"
+
+#: ipconst:ssmtpresponse23
+msgid "Message length exceeds administrative limit."
+msgstr "Panjang pesan melebihi batas administratif"
+
+#: ipconst:ssmtpresponse24
+msgid "Mailing list expansion problem"
+msgstr "Masalah ekspansi Milis"
+
+#: ipconst:ssmtpresponse30
+msgid "Other or undefined mail system status"
+msgstr "Yang lainnya atau status sistem surat tidak didefinisikan"
+
+#: ipconst:ssmtpresponse31
+msgid "Mail system full"
+msgstr "Sistem Surat penuh"
+
+#: ipconst:ssmtpresponse32
+msgid "System not accepting network messages"
+msgstr "Sistem tidak menerima pesan jaringan"
+
+#: ipconst:ssmtpresponse33
+msgid "System not capable of selected features"
+msgstr "Sistem tidak mampu atas fitur yang dipilih"
+
+#: ipconst:ssmtpresponse34
+msgid "Message too big for system"
+msgstr "Pesan terlalu besar untuk sistem"
+
+#: ipconst:ssmtpresponse40
+msgid "Other or undefined network or routing status"
+msgstr "Yang lainnya atau jaringan atau status rute tidak didefinisikan"
+
+#: ipconst:ssmtpresponse41
+msgid "No answer from host"
+msgstr "Tidak ada jawaban dari host"
+
+#: ipconst:ssmtpresponse42
+msgid "Bad connection"
+msgstr "Koneksi buruk"
+
+#: ipconst:ssmtpresponse43
+msgid "Routing server failure"
+msgstr "Merutekan server gagal"
+
+#: ipconst:ssmtpresponse44
+msgid "Unable to route"
+msgstr "Tidak bisas merutekan"
+
+#: ipconst:ssmtpresponse45
+msgid "Network congestion"
+msgstr "Kemacetan jaringan"
+
+#: ipconst:ssmtpresponse46
+msgid "Routing loop detected"
+msgstr "Pengulangan rute terdeteksi"
+
+#: ipconst:ssmtpresponse47
+msgid "Delivery time expired"
+msgstr "Waktu pengiriman berakhir"
+
+#: ipconst:ssmtpresponse50
+msgid "Other or undefined protocol status"
+msgstr "Yang lain atau status protokol tidak didefinisikan"
+
+#: ipconst:ssmtpresponse51
+msgid "Invalid command"
+msgstr "Perintah tidak benar"
+
+#: ipconst:ssmtpresponse52
+msgid "Syntax error"
+msgstr "Sintaks salah"
+
+#: ipconst:ssmtpresponse53
+msgid "Too many recipients"
+msgstr "Terlalu banyak penerima"
+
+#: ipconst:ssmtpresponse54
+msgid "Invalid command arguments"
+msgstr "Argumen perintah tidak benar"
+
+#: ipconst:ssmtpresponse55
+msgid "Wrong protocol version"
+msgstr "Versi protokol salah"
+
+#: ipconst:ssmtpresponse60
+msgid "Other or undefined media error"
+msgstr "Yang lain atau kesalahan media tidak didefinisikan"
+
+#: ipconst:ssmtpresponse61
+msgid "Media not supported"
+msgstr "Media tidak didukung"
+
+#: ipconst:ssmtpresponse62
+msgid "Conversion required and prohibited"
+msgstr "Konversi diperlukan dan dilarang"
+
+#: ipconst:ssmtpresponse63
+msgid "Conversion required but not supported"
+msgstr "Konversi diperlukan tapi tidak didukung"
+
+#: ipconst:ssmtpresponse64
+msgid "Conversion with loss performed"
+msgstr "Konversi dengan kehilangan dilakukan"
+
+#: ipconst:ssmtpresponse65
+msgid "Conversion failed"
+msgstr "Konversi gagal"
+
+#: ipconst:ssmtpresponse70
+msgid "Other or undefined security status"
+msgstr "Status keamanan tidak didefinisikan atau yang lainnya"
+
+#: ipconst:ssmtpresponse71
+msgid "Delivery not authorized, message refused"
+msgstr "Pengiriman tidak diotoarisasi, pesan ditolak"
+
+#: ipconst:ssmtpresponse72
+msgid "Mailing list expansion prohibited"
+msgstr "Ekspansi Milis dilarang"
+
+#: ipconst:ssmtpresponse73
+msgid "Security conversion required but not possible"
+msgstr "Konversi keamanan diperlukan tapi tidak mungkin"
+
+#: ipconst:ssmtpresponse74
+msgid "Security features not supported"
+msgstr "Fitur keamanan tidak didukung"
+
+#: ipconst:ssmtpresponse75
+msgid "Cryptographic failure"
+msgstr "Kriptografi gagal"
+
+#: ipconst:ssmtpresponse76
+msgid "Cryptographic algorithm not supported"
+msgstr "Algoritma kriptografi tidak didukung"
+
+#: ipconst:ssmtpresponse77
+msgid "Message integrity failure"
+msgstr "Kegagalan integritas pesan"
+
+#: ipconst:ssmtpresponseunknown
+msgid "Unknown response code"
+msgstr "Kode respon tidak dikenal"
+
+#: ipconst:ssmtpresponsesubunknown
+msgid "Unknown subcode"
+msgstr "Subkode tidak dikenal"
+
+#: ipconst:slogsmtpclass
+msgid "[SMTP] "
+msgstr "[SMTP] "
+
+#: ipconst:slogmultiline
+msgid "Generating OnMultiLineResponse event"
+msgstr "Membuat event OnMultiLineResponse"
+
+#: ipconst:slogresponse
+msgid "Generating OnResponse event, Code = "
+msgstr "Membuat event OnResponse, Kode = "
+
+#: ipconst:slogsmtpnextmessage
+msgid "Generating OnNextMessage event"
+msgstr "Membuat event OnNextMessage"
+
+#: ipconst:slogencodeactionstart
+msgid "Generating OnEncodeAction(Start)"
+msgstr "Membuat OnEncodeAction(Start)"
+
+#: ipconst:slogencodeactionstop
+msgid "Generating OnEncodeAction(Stop)"
+msgstr "Membuat OnEncodeAction(Stop)"
+
+#: ipconst:slogtaskcomplete
+msgid "Generating OnTaskComplete event "
+msgstr "Membuat event OnTaskComplete"
+
+#: ipconst:slogtaskstart
+msgid "Starting task: "
+msgstr "Memulai tugas: "
+
+#: ipconst:slognextmessageready
+msgid "Next message ready"
+msgstr "Pesan berikutnya siap"
+
+#: ipconst:slognextmessagenotready
+msgid "Next message not ready"
+msgstr "Pesan berikutnya tidak siap"
+
+#: ipconst:slogssnoop
+msgid " (ssNoOp)"
+msgstr " (ssNoOp)"
+
+#: ipconst:slogssconnect
+msgid " (ssConnect)"
+msgstr " (ssConnect)"
+
+#: ipconst:slogehlo
+msgid " (ssEhlo)"
+msgstr " (ssEhlo)"
+
+#: ipconst:sloghelo
+msgid " (ssHelo)"
+msgstr " (ssHelo)"
+
+#: ipconst:slogmailfrom
+msgid " (ssMailFrom)"
+msgstr " (ssMailFrom)"
+
+#: ipconst:slogrcptto
+msgid " (ssRcptTo)"
+msgstr " (ssRcptTo)"
+
+#: ipconst:slogrcptcc
+msgid " (ssRcptCc)"
+msgstr " (ssRcptCc)"
+
+#: ipconst:slogrcptbcc
+msgid " (ssRcptBcc)"
+msgstr " (ssRcptBcc)"
+
+#: ipconst:slogdata
+msgid " (ssData)"
+msgstr " (ssData)"
+
+#: ipconst:slogrset
+msgid " (ssRSet)"
+msgstr " (ssRSet)"
+
+#: ipconst:slogsend
+msgid " (ssSend)"
+msgstr " (ssSend)"
+
+#: ipconst:slogsoml
+msgid " (ssSoml)"
+msgstr " (ssSoml)"
+
+#: ipconst:slogsaml
+msgid " (ssSaml)"
+msgstr " (ssSaml)"
+
+#: ipconst:slogverify
+msgid " (ssVerify)"
+msgstr " (ssVerify)"
+
+#: ipconst:slogexpand
+msgid " (ssExpand)"
+msgstr " (ssExpand)"
+
+#: ipconst:sloghelp
+msgid " (ssHelp)"
+msgstr " (ssHelp)"
+
+#: ipconst:slogturn
+msgid " (ssTurn)"
+msgstr " (ssTurn)"
+
+#: ipconst:slogquit
+msgid " (ssQuit)"
+msgstr " (ssQuit)"
+
+#: ipconst:slogsendenvelope
+msgid " (ssSendEnvelope)"
+msgstr " (ssSendEnvelope)"
+
+#: ipconst:slogsendmessage
+msgid " (ssSendMessage)"
+msgstr " (ssSendMessage)"
+
+#: ipconst:slogspecial
+msgid " (ssSpecial)"
+msgstr " (ssSpecial)"
+
+#: ipconst:slogauthlogin
+msgid " (ssAuthLogin)"
+msgstr " (ssAuthLogin)"
+
+#: ipconst:slogauthuser
+msgid " (ssAuthUser)"
+msgstr " (ssAuthUser)"
+
+#: ipconst:slogauthpass
+msgid " (ssAuthPass)"
+msgstr " (ssAuthPass)"
+
+#: ipconst:slogstnotask
+msgid " (stNoTask)"
+msgstr " (stNoTask)"
+
+#: ipconst:slogstlogon
+msgid " (stLogon)"
+msgstr " (stLogon)"
+
+#: ipconst:slogstsendmail
+msgid " (stSendMail)"
+msgstr " (stSendMail)"
+
+#: ipconst:spop3okresp
+msgid "+OK"
+msgstr "+OK"
+
+#: ipconst:spop3errresp
+msgid "-ERR"
+msgstr "-ERR"
+
+#: ipconst:spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr "%s tidak bisa dipanggil dalam keadaan otentikasi"
+
+#: ipconst:spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr "%s tidak bisa dipanggil dalam keadaan transaksi"
+
+#: ipconst:spop3cmdapop
+msgid "APOP"
+msgstr "APOP"
+
+#: ipconst:spop3cmdtop
+msgid "TOP"
+msgstr "TOP"
+
+#: ipconst:spop3cmdlist
+msgid "LIST"
+msgstr "LIST"
+
+#: ipconst:spop3cmdrset
+msgid "RSET"
+msgstr "RSET"
+
+#: ipconst:spop3cmdretr
+msgid "RETR"
+msgstr "RETR"
+
+#: ipconst:spop3cmddele
+msgid "DELE"
+msgstr "DELE"
+
+#: ipconst:spop3cmdpass
+msgid "PASS"
+msgstr "PASS"
+
+#: ipconst:spop3cmdquit
+msgid "QUIT"
+msgstr "QUIT"
+
+#: ipconst:spop3cmdstat
+msgid "STAT"
+msgstr "STAT"
+
+#: ipconst:spop3cmduidl
+msgid "UIDL"
+msgstr "UIDL"
+
+#: ipconst:spop3cmduser
+msgid "USER"
+msgstr "USER"
+
+#: ipconst:spop3cmdnoop
+msgid "NOOP"
+msgstr "NOOP"
+
+#: ipconst:spsnoop
+msgid "No operation"
+msgstr "Tidak ada operasi"
+
+#: ipconst:spsconnect
+msgid "Connecting to server"
+msgstr "Menyambung ke server"
+
+#: ipconst:spsuser
+msgid "Logging on with User"
+msgstr "Masuk dengan Pengguna"
+
+#: ipconst:spspass
+msgid "Logging on with Password"
+msgstr "Masuk dengan Kata sandi"
+
+#: ipconst:spsstat
+msgid "Retrieving mailbox status"
+msgstr "Mengambil status kotak surat"
+
+#: ipconst:spslist
+msgid "Retrieving mailbox list"
+msgstr "Mengambil daftar kotak surat"
+
+#: ipconst:spsretr
+msgid "Retrieving message"
+msgstr "Mengambil pesan"
+
+#: ipconst:spsdele
+msgid "Marking message for deletion"
+msgstr "Menandai pesan untuk penghapusan"
+
+#: ipconst:spsrset
+msgid "Resetting messages"
+msgstr "Mereset pesan"
+
+#: ipconst:spsapop
+msgid "Logging on with APOP"
+msgstr "Masuk dengan APOP"
+
+#: ipconst:spstop
+msgid "Retrieving top of message"
+msgstr "Mengambil pesan teratas"
+
+#: ipconst:spsuidl
+msgid "Retrieving mailbox UID list"
+msgstr "Mengambil daftar UID kotak surat"
+
+#: ipconst:spsquit
+msgid "Disconnecting"
+msgstr "Memutuskan"
+
+#: ipconst:spsspecial
+msgid "Special command"
+msgstr "Perintah khusus"
+
+#: ipconst:spsunknown
+msgid "Unknown state"
+msgstr "Keadaan tidak dikenal"
+
+#: ipconst:sptnone
+msgid "No task"
+msgstr "Tidak ada tugas"
+
+#: ipconst:sptlogon
+msgid "Logging on"
+msgstr "Masuk"
+
+#: ipconst:sptlist
+msgid "Retrieving mailbox list"
+msgstr "Mengambil daftar kotak surat"
+
+#: ipconst:sptuidl
+msgid "Retrieving mailbox UID list"
+msgstr "Mengambil daftar UID kotak surat"
+
+#: ipconst:spterror
+msgid "An error occured with the last task."
+msgstr "Kesalahan terjadi dengan tugas terakhir"
+
+#: ipconst:sptunknown
+msgid "Unknown task"
+msgstr "Tugas tidak dikenal"
+
+#: ipconst:slogpop3class
+msgid "[POP3] "
+msgstr "[POP3] "
+
+#: ipconst:slogstate
+msgid "State change: "
+msgstr "Kondisi berubah: "
+
+#: ipconst:slogptnone
+msgid " (ptNone)"
+msgstr " (ptNone)"
+
+#: ipconst:slogptlogon
+msgid " (ptLogon)"
+msgstr " (ptLogon)"
+
+#: ipconst:slogptlist
+msgid " (ptList)"
+msgstr " (ptList)"
+
+#: ipconst:slogptuidl
+msgid " (ptUIDL)"
+msgstr " (ptUIDL)"
+
+#: ipconst:slogpsnoop
+msgid " {psNoOp)"
+msgstr " {psNoOp)"
+
+#: ipconst:slogpsconnect
+msgid " (psConnect)"
+msgstr " (psConnect)"
+
+#: ipconst:slogpsuser
+msgid " (psUser)"
+msgstr " (psUser)"
+
+#: ipconst:slogpspass
+msgid " (psPass)"
+msgstr " (psPass)"
+
+#: ipconst:slogpsstat
+msgid " (psStat)"
+msgstr " (psStat)"
+
+#: ipconst:slogoslist
+msgid " (psList)"
+msgstr " (psList)"
+
+#: ipconst:slogpsretr
+msgid " (psRetr)"
+msgstr " (psRetr)"
+
+#: ipconst:slogpsdele
+msgid " (psDele)"
+msgstr " (psDele)"
+
+#: ipconst:slogpsrset
+msgid " (psRSet)"
+msgstr " (psRSet)"
+
+#: ipconst:slogpsapop
+msgid " (psApop)"
+msgstr " (psApop)"
+
+#: ipconst:slogpstop
+msgid " (psTop)"
+msgstr " (psTop)"
+
+#: ipconst:slogpsuidl
+msgid " (psUidl)"
+msgstr " (psUidl)"
+
+#: ipconst:slogpsquit
+msgid " (psQuit)"
+msgstr " (psQuit)"
+
+#: ipconst:slogpsspecial
+msgid " (psSpecial)"
+msgstr " (psSpecial)"
+
+#: ipconst:slogpop3message
+msgid "Generating OnMessage event"
+msgstr "Membuat event OnMessage"
+
+#: ipconst:slogpop3top
+msgid "Generating OnTop event"
+msgstr "Membuat event OnTop"
+
+#: ipconst:snntpcmdarticle
+msgid "ARTICLE"
+msgstr "ARTICLE"
+
+#: ipconst:snntpcmdauthpass
+msgid "AUTHINFO PASS"
+msgstr "AUTHINFO PASS"
+
+#: ipconst:snntpcmdauthuser
+msgid "AUTHINFO USER"
+msgstr "AUTHINFO USER"
+
+#: ipconst:snntpcmdbody
+msgid "BODY"
+msgstr "BODY"
+
+#: ipconst:snntpcmdhead
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ipconst:snntpcmdstat
+msgid "STAT"
+msgstr "STAT"
+
+#: ipconst:snntpcmddate
+msgid "DATE"
+msgstr "DATE"
+
+#: ipconst:snntpcmdgroup
+msgid "GROUP"
+msgstr "GROUP"
+
+#: ipconst:snntpcmdhelp
+msgid "HELP"
+msgstr "HELP"
+
+#: ipconst:snntpcmdlast
+msgid "LAST"
+msgstr "LAST"
+
+#: ipconst:snntpcmdlist
+msgid "LIST"
+msgstr "LIST"
+
+#: ipconst:snntpcmdlistacttimes
+msgid "LIST ACTIVE.TIMES"
+msgstr "LIST ACTIVE.TIMES"
+
+#: ipconst:snntpcmdlistdistribpats
+msgid "LIST DISTRIB.PATS"
+msgstr "LIST DISTRIB.PATS"
+
+#: ipconst:snntpcmdlistdistrib
+msgid "LIST DISTRIBUTIONS"
+msgstr "LIST DISTRIBUTIONS"
+
+#: ipconst:snntpcmdlistnewsgroups
+msgid "LIST NEWSGROUPS"
+msgstr "LIST NEWSGROUPS"
+
+#: ipconst:snntpcmdlistoverfmt
+msgid "LIST OVERVIEW.FMT"
+msgstr "LIST OVERVIEW.FMT"
+
+#: ipconst:snntpcmdlistgroup
+msgid "LISTGROUP"
+msgstr "LISTGROUP"
+
+#: ipconst:snntpcmdnewgroups
+msgid "NEWGROUPS"
+msgstr "NEWGROUPS"
+
+#: ipconst:snntpcmdnewnews
+msgid "NEWNEWS"
+msgstr "NEWNEWS"
+
+#: ipconst:snntpcmdnext
+msgid "NEXT"
+msgstr "NEXT"
+
+#: ipconst:snntpcmdxover
+msgid "XOVER"
+msgstr "XOVER"
+
+#: ipconst:snntpcmdpat
+msgid "PAT"
+msgstr "PAT"
+
+#: ipconst:snntpcmdpost
+msgid "POST"
+msgstr "POST"
+
+#: ipconst:snntpcmdquit
+msgid "QUIT"
+msgstr "QUIT"
+
+#: ipconst:snntpcmdlistext
+msgid "LIST EXTENSIONS"
+msgstr "LIST EXTENSIONS"
+
+#: ipconst:snsnoop
+msgid "No operation"
+msgstr "Tidak ada operasi"
+
+#: ipconst:snsconnect
+msgid "Connecting"
+msgstr "Menyambung"
+
+#: ipconst:snsnewgroups
+msgid "Getting new news groups"
+msgstr "Mendapatkan grup berita baru"
+
+#: ipconst:snsnewnews
+msgid "Getting new articles"
+msgstr "Mendapatkan artikel baru"
+
+#: ipconst:snsarticle
+msgid "Retrieving article"
+msgstr "Mengambil artikel"
+
+#: ipconst:snsstat
+msgid "Retrieving status"
+msgstr "Mengambil status"
+
+#: ipconst:snsbody
+msgid "Retrieving body"
+msgstr "Mengambil badan"
+
+#: ipconst:snshead
+msgid "Retrieving heading"
+msgstr "Mengambil heading"
+
+#: ipconst:snsgroup
+msgid "Selecting group"
+msgstr "Memilih grup"
+
+#: ipconst:snslist
+msgid "Retrieving list"
+msgstr "Mengambil daftar"
+
+#: ipconst:snslast
+msgid "Selecting previous article"
+msgstr "Memilih artikel sebelumnya"
+
+#: ipconst:snsnext
+msgid "Selecting next article"
+msgstr "Memilih artikel berikutnya"
+
+#: ipconst:snsprepost
+msgid "Preparing to post article"
+msgstr "Menyiapkan untuk menulis artikel"
+
+#: ipconst:snspost
+msgid "Posting article"
+msgstr "Menulis artikel"
+
+#: ipconst:snsquit
+msgid "Disconnecting"
+msgstr "Memutuskan"
+
+#: ipconst:snshelp
+msgid "Retrieving help"
+msgstr "Mengambil bantuan"
+
+#: ipconst:snsspecial
+msgid "Sending special command"
+msgstr "Mengirimkan perintah spesial"
+
+#: ipconst:snsauthuser
+msgid "Authorizing user"
+msgstr "Mengotorisasi pengguna"
+
+#: ipconst:snsauthpass
+msgid "Authorizing password"
+msgstr "Kata sandi Otorisasi"
+
+#: ipconst:snslistext
+msgid "Retrieving list of extended commands"
+msgstr "MEngambil daftar perintah lanjutan"
+
+#: ipconst:snslistactivetimes
+msgid "Retrieving active times"
+msgstr "Mengambil waktu aktif"
+
+#: ipconst:snslistdistributions
+msgid "Retrieving list of distributions"
+msgstr "Mengambil daftar distribusi"
+
+#: ipconst:snslistdistribpats
+msgid "Retrieving distribution patterns"
+msgstr "MEngambil pola distribusi"
+
+#: ipconst:snslistnewsgroups
+msgid "Retrieving list of available news groups"
+msgstr "MEngambil daftar grup berita tersedia"
+
+#: ipconst:snslistoverviewfmt
+msgid "Retrieving overview format"
+msgstr "MEngambil format tinjauan"
+
+#: ipconst:snslistgroup
+msgid "Retrieving article numbers"
+msgstr "MEngambil nomor artikel"
+
+#: ipconst:snsover
+msgid "Retrieving overview"
+msgstr "Mengambil tinjauan"
+
+#: ipconst:snspat
+msgid "Retrieving patterns"
+msgstr "Mengambil pola"
+
+#: ipconst:snsdate
+msgid "Retrieving server date"
+msgstr "Mengambil tanggal server"
+
+#: ipconst:sntnotask
+msgid "No task"
+msgstr "Tidak ada tugas"
+
+#: ipconst:sntauthenticate
+msgid "Authenticating"
+msgstr "Otentikasi"
+
+#: ipconst:sntselectgroup
+msgid "Selecting Group"
+msgstr "Memilih Grup"
+
+#: ipconst:sntnewnews
+msgid "Retrieving new news"
+msgstr "Menerima berita baru"
+
+#: ipconst:sntpostto
+msgid "Posting article"
+msgstr "Menulis artikel"
+
+#: ipconst:slognntpclass
+msgid "[NNTP] "
+msgstr "[NNTP] "
+
+#: ipconst:slogarticle
+msgid "Generating OnArticle event"
+msgstr "Membuat event OnArticle"
+
+#: ipconst:slogntnotask
+msgid " (ntNoTask)"
+msgstr " (ntNoTask)"
+
+#: ipconst:slogntauthenticate
+msgid " (ntAuthenticate)"
+msgstr " (ntAuthenticate)"
+
+#: ipconst:slogntselectgroup
+msgid " (ntSelectGroup)"
+msgstr " (ntSelectGroup)"
+
+#: ipconst:slogntnewnews
+msgid " (ntNewNews)"
+msgstr " (ntNewNews)"
+
+#: ipconst:slogntpostto
+msgid " (ntPostTo)"
+msgstr " (ntPostTo)"
+
+#: ipconst:slognsnoop
+msgid " (nsNoOp)"
+msgstr " (nsNoOp)"
+
+#: ipconst:slognsconnect
+msgid " (nsConnect)"
+msgstr " (nsConnect)"
+
+#: ipconst:slognsnewgroups
+msgid " (nsNewGroups)"
+msgstr " (nsNewGroups)"
+
+#: ipconst:slognsnewnews
+msgid " (nsNewNews)"
+msgstr " (nsNewNews)"
+
+#: ipconst:slognsarticle
+msgid " (nsArticle)"
+msgstr " (nsArticle)"
+
+#: ipconst:slognsstat
+msgid " (nsStat)"
+msgstr " (nsStat)"
+
+#: ipconst:slognsbody
+msgid " (nsBody)"
+msgstr " (nsBody)"
+
+#: ipconst:slognshead
+msgid " (nsHead)"
+msgstr " (nsHead)"
+
+#: ipconst:slognsgroup
+msgid " (nsGroup)"
+msgstr " (nsGroup)"
+
+#: ipconst:slognslist
+msgid " (nsList)"
+msgstr " (nsList)"
+
+#: ipconst:slognslast
+msgid " (nsLast)"
+msgstr " (nsLast)"
+
+#: ipconst:slognsnext
+msgid " (nsNext)"
+msgstr " (nsNext)"
+
+#: ipconst:slognsprepost
+msgid " (nsPrePost)"
+msgstr " (nsPrePost)"
+
+#: ipconst:slognspost
+msgid " (nsPost)"
+msgstr " (nsPost)"
+
+#: ipconst:slognsquit
+msgid " (nsQuit)"
+msgstr " (nsQuit)"
+
+#: ipconst:slognshelp
+msgid " (nsHelp)"
+msgstr " (nsHelp)"
+
+#: ipconst:slognsspecial
+msgid " (nsSpecial)"
+msgstr " (nsSpecial)"
+
+#: ipconst:slognsauthuser
+msgid " (nsAuthUser)"
+msgstr " (nsAuthUser)"
+
+#: ipconst:slognsauthpass
+msgid " (nsAuthPass)"
+msgstr " (nsAuthPass)"
+
+#: ipconst:slognslistext
+msgid " (nsListExt)"
+msgstr " (nsListExt)"
+
+#: ipconst:slognslistactivetimes
+msgid " (nsListActiveTimes)"
+msgstr " (nsListActiveTimes)"
+
+#: ipconst:slognslistdistributions
+msgid " (nsListDistributions)"
+msgstr " (nsListDistributions)"
+
+#: ipconst:slognslistdistribpats
+msgid " (nsListDistribPats)"
+msgstr " (nsListDistribPats)"
+
+#: ipconst:slognslistnewsgroups
+msgid " (nsListNewsGroups)"
+msgstr " (nsListNewsGroups)"
+
+#: ipconst:slognslistoverviewfmt
+msgid " (nsListOverviewFmt)"
+msgstr " (nsListOverviewFmt)"
+
+#: ipconst:slognslistgroup
+msgid " (nsListGroup)"
+msgstr " (nsListGroup)"
+
+#: ipconst:slognsover
+msgid " (nsOver)"
+msgstr " (nsOver)"
+
+#: ipconst:slognspat
+msgid " (nsPat)"
+msgstr " (nsPat)"
+
+#: ipconst:slognsdate
+msgid " (nsDate)"
+msgstr " (nsDate)"
+
+#: ipconst:httpconnect
+msgid "Connected: (%s)"
+msgstr "Tersambung: (%s)"
+
+#: ipconst:httpdisconnect
+msgid "Disconnected: (%s), %s Total bytes received"
+msgstr "Diputuskan: (%s), %s Total byte diterima"
+
+#: ipconst:httpprogress
+msgid "Progress Made: (%s), %s bytes received"
+msgstr "Progres Dibuat: (%s), %s byte diterima"
+
+#: ipconst:httpget
+msgid "GET: (%s)"
+msgstr "GET: (%s)"
+
+#: ipconst:httpgeterror
+msgid "GET: (%s) FAILED"
+msgstr "GET: (%s) GAGAL"
+
+#: ipconst:httphead
+msgid "HEAD: (%s)"
+msgstr "HEAD: (%s)"
+
+#: ipconst:httpheaderror
+msgid "HEAD: (%s) FAILED"
+msgstr "HEAD: (%s) GAGAL"
+
+#: ipconst:httppost
+msgid "POST: (%s)"
+msgstr "POST: (%s)"
+
+#: ipconst:httpposterror
+msgid "POST: (%s) FAILED"
+msgstr "POST: (%s) GAGAL"
+
+#: ipconst:httpdownload
+msgid "Download: (%s), Error downloading"
+msgstr "Download: (%s), Kesalahan men-download"
+
+#: ipconst:httpsizemismatch
+msgid "Download: (%s), Size Mismatch expecting %s , got %s"
+msgstr "Download: (%s), Ukuran salah mengharapkan %s , didapat %s"
+
+#: ipconst:httpgotheader
+msgid "Download: (%s), Got Header Data"
+msgstr "Download: (%s), Didapat Data Header"
+
+#: ipconst:httpcantloadgraphic
+msgid "Unable to load graphic %s"
+msgstr "Tidak bisa mengambil grafik %s"
+
+#: ipconst:httpnoheaderdata
+msgid "No Header Data for Entity"
+msgstr "Tidak ada Data Header untuk Entitas"
+
+#: ipconst:cachedirnotexist
+msgid "Cache directory %s does not exist."
+msgstr "Direktori cache %s tidak ada."
+
+#: ipconst:cacheadding
+msgid "Caching item (%s = %s)"
+msgstr "Men-cache item (%s = %s)"
+
+#: ipconst:cacheretrieving
+msgid "Loading from Cache (%s = %s)"
+msgstr "Mengambil dari Cache (%s = %s)"
+
+#: ipconst:cachecheckfreshness
+msgid "Checking Freshness (%s)"
+msgstr "Memeriksa Kesegaran (%s)"
+
+#: ipconst:providerunknownpicture
+msgid "Invalid picture format"
+msgstr "Format gambar tidak benar"
+
+#: ipconst:providerunknownformat
+msgid "Don't know how to handle %s"
+msgstr "Tidak tahu bagaimana untuk menangani %s"
+
+#: ipconst:providerunknownrequest
+msgid "Unknown request type \"%s\""
+msgstr "Tipe permintaan \"%s\" tidak dikenal"
+
+#: ipconst:sbadframelistobject
+msgid "Unrecognized object of class %s in GIF Frame List"
+msgstr "Obyek kelas %s dalam Daftar Bingkai GIF tidak dikenal"
+
+#: ipconst:sbadimagelibfileformat
+msgid "Unrecognized file format"
+msgstr "Format file tidak dikenal"
+
+#: ipconst:sbadimagelibstream
+msgid "ImageLib must use TMemoryStreams"
+msgstr "ImageLib harus menggunakan TMemoryStreams"
+
+#: ipconst:spngbadpixeldepth
+msgid "Unrecognized pixel depth of %d"
+msgstr "Kedalaman pixel %d tidak dikenal"
+
+#: ipconst:spngmissingihdr
+msgid "IHDR Chunk is missing"
+msgstr "IHDR Chunk hilang"
+
+#: ipconst:spngchunkidandlength
+msgid "PNG Chunk: %s  Length: %d"
+msgstr "PNG Chunk: %s  Panjang: %d"
+
+#: ipconst:spngmissingiend
+msgid "End of PNG found with no IEND chunk"
+msgstr "Akhir PNG ditemukan tanpa chunk IEND"
+
+#: ipconst:spngeffectivefilter
+msgid "Effective filter is %s"
+msgstr "Filter efektif adalah %s"
+
+#: ipconst:spngbadinterlacemethod
+msgid "Unrecognized Interlace Method"
+msgstr "Metode Interlace Tidak Dikenal"
+
+#: ipconst:spngdefilterpass
+msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
+msgstr "Unfiltering Pass %d  Ukuran: %dx%d  Dari: %dx%d"
+
+#: ipconst:spngfilterchange
+msgid "Filter changed on Row %d to %x"
+msgstr "Filter berubah pada Baris %d ke %x"
+
+#: ipconst:spngbadcolortype
+msgid "Unrecognized color type of %d"
+msgstr "Tipe warna %d tidak dikenal"
+
+#: ipconst:spngerrorconstant
+msgid "**** ERROR ****"
+msgstr "**** SALAH ****"
+
+#: ipconst:spngwarningconstant
+msgid "**** WARNING ****"
+msgstr "**** PERINGATAN ****""
+
+#: ipconst:spngbadbitdepth
+msgid "Unsupported Bit Depth of %d"
+msgstr "Kedalaman Bit %d Tidak Didukung"
+
+#: ipconst:spngbadchunktype
+msgid "Unrecognized Chunk Type: %s"
+msgstr "Tipe Chunk Tidak Dikenal: %s"
+
+#: ipconst:spngbadsignature
+msgid "Invalid PNG Signature"
+msgstr "Tanda PNG Tidak Benar"
+
+#: ipconst:spngnoclipboard
+msgid "PNG Clipboard support is not supported."
+msgstr "Dukungan Clipboard PNG tidak didukung"
+
+#: ipconst:spngunsupportedfeature
+msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
+msgstr "Bagian %s ditemukan dalam file PNG. Fitur ini tidak didukung dalam versi dekoder PNG"
+
+#: ipconst:spngbuffertoosmall
+msgid "PNG Buffer too small."
+msgstr "Bufer PNG terlalu kecil"
+
+#: ipconst:spngmemoryrequired
+msgid "Memory required for image: %d bytes"
+msgstr "Memori yang diperlukan untuk gambar: %d byte"
+
+#: ipconst:spnggamatoolong
+msgid "gAMA chunk is long"
+msgstr "Bagian Gama panjang"
+
+#: ipconst:spnggamatooshort
+msgid "gAMA chunk is short"
+msgstr "Bagian Gama pendek"
+
+#: ipconst:spnggammacorrection
+msgid "Gamma Correction: %f"
+msgstr "Koreksi Gama: %f"
+
+#: ipconst:spngihdrtoolong
+msgid "IHDR chunk is long."
+msgstr "Bagian IHDR panjang."
+
+#: ipconst:spngihdrtooshort
+msgid "IHDR chunk is short."
+msgstr "Bagian IHDR pendek."
+
+#: ipconst:spngimagesize
+msgid "Image size is %dx%d pixels"
+msgstr "Ukuran gambar adalah %dx%d pixel"
+
+#: ipconst:spngbitdepth
+msgid "Bit Depth: %d"
+msgstr "Kedalaman Bit: %d"
+
+#: ipconst:spngcolortype
+msgid "Color Type: %d"
+msgstr "Tipe Warna: %d"
+
+#: ipconst:spngcompressionmethod
+msgid "Compression Method: %d"
+msgstr "Metode Kompresi: %d"
+
+#: ipconst:spngfiltermethod
+msgid "Filter Method: %d"
+msgstr "Metode Filter: %d"
+
+#: ipconst:spnginterlacemethod
+msgid "Interlace Method: %d"
+msgstr "Metode Interlace: %d"
+
+#: ipconst:spngbadpalettelength
+msgid "Invalid Palette Length"
+msgstr "Panjang Palet Tidak Benar
+
+#: ipconst:spngpalettetoolong
+msgid "Too many palette entries"
+msgstr "Terlalu banyak entri palet"
+
+#: ipconst:spngpaletteentry
+msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
+msgstr "Entri Palet %d - Merah: %d   Hijau: %d   Biru: %d"
+
+#: ipconst:spngtimetoolong
+msgid "tIME chunk is long."
+msgstr "Bagian jam panjang"
+
+#: ipconst:spngtimetooshort
+msgid "tIME chunk is short."
+msgstr "Bagian Jam pendek"
+
+#: ipconst:spngmodificationdate
+msgid "Modification Date: %s"
+msgstr "Tanggal Modifikasi: %s"
+
+#: ipconst:spngbadmodificationtime
+msgid "Invalid Modification Time"
+msgstr "Waktu Modifikasi Tidak Benar"
+
+#: ipconst:spngpalettetransparency
+msgid "Palette Transparency: %d  Alpha %d"
+msgstr "Transparansi Palet: %d  Alfa %d"
+
+#: ipconst:spngtransparentcolor
+msgid "Transparent Color: %x"
+msgstr "Warna Transparan: %x"
+
+#: ipconst:spngtruncateddata
+msgid "Chunk data is truncated"
+msgstr "Bagian data terpotong"
+
+#: ipconst:spngtruncatedcrc
+msgid "CRC Code is truncated"
+msgstr "Kode CRC terpotong"
+
+#: ipconst:spngcannotsave
+msgid "PNG Saving is not supported"
+msgstr "Penyimpanan PNG tidak didukung"
+
+#: ipconst:swebimagenotfound
+msgid "%s was not found"
+msgstr "%s tidak ditemukan"
+
+#: ipconst:swebimagecannotload
+msgid "Cannot load %s"
+msgstr "Tidak bisa mengambil %s"
+
+#: ipconst:swebimagestreambad
+msgid "Cannot load image from stream"
+msgstr "Tidak bisa mengambil gambar dari stream"
+
+#: ipconst:sftpopen
+msgid "Connected to "
+msgstr "Tersambung ke "
+
+#: ipconst:sftpclose
+msgid "Disconnected"
+msgstr "Diputuskan"
+
+#: ipconst:sftplogin
+msgid " logged in"
+msgstr " masuk"
+
+#: ipconst:sftplogout
+msgid " logged out"
+msgstr " keluar"
+
+#: ipconst:sftpdelete
+msgid "Deleting "
+msgstr "Menghapus "
+
+#: ipconst:sftprename
+msgid "Renaming "
+msgstr "Mengganti nama "
+
+#: ipconst:sftpretrieve
+msgid "Retrieving "
+msgstr "Mengambil "
+
+#: ipconst:sftpstore
+msgid "Storing "
+msgstr "Menyimpan "
+
+#: ipconst:sftpcomplete
+msgid "Transfer complete. "
+msgstr "Transfer lengkap. "
+
+#: ipconst:sftpbytestransferred
+msgid " bytes Transferred"
+msgstr " byte Ditransfer"
+
+#: ipconst:sftprestart
+msgid "Attempting to re-start transfer of "
+msgstr "Mencoba untuk memulai lagi transfer "
+
+#: ipconst:sftptimeout
+msgid "Transfer timed out"
+msgstr "Transfer kehabisan waktu"
+
+#: ipconst:sftpuserabort
+msgid "Transfer aborted by user"
+msgstr "Transfer dibatalkan oleh pengguna"
+
+#: ipconst:sbrokerdownloadreq
+msgid "Download %s?"
+msgstr "Download %s?"
+
+#: ipconst:sbrokerdownloadtitle
+msgid "Download?"
+msgstr "Download?"
+
+#: ipconst:sbibuffernotassigned
+msgid "Buffer not assigned"
+msgstr "Bufer tidak ditempati"
+
+#: ipconst:ssslnocertificate
+msgid "Certificate is not available."
+msgstr "Sertifikat tidak tersedia."
+
+#: ipconst:ssslunsupportedencoding
+msgid "Unsupported public encoding."
+msgstr "Enkode publik tidak didukung"
+
+#: ipconst:ssslunsupportedchiper
+msgid "Unsupported cipher chosen."
+msgstr "Cipher yang dipilih tidak didukung."
+
+#: ipconst:ssslbadpublicencoding
+msgid "Bad public encoding type."
+msgstr "Tipe enkode publik buruk."
+
+#: ipconst:ssslpaddingerror
+msgid "Padding error."
+msgstr "Pemadatan salah."
+
+#: ipconst:ssslparsererror
+msgid "Parsing error."
+msgstr "Penguraian salah."
+
+#: ipconst:ssslinvalidcipher
+msgid "Invalid cipher."
+msgstr "Cipher tidak benar."
+
+#: ipconst:ssslclosenotify
+msgid "Server sent close notify."
+msgstr "Server mengirimkan pemberitahuan penutupan."
+
+#: ipconst:ssslunexpectedmessage
+msgid "Server received an unexpected message."
+msgstr "Server menerima pesan yang tidak diharapkan."
+
+#: ipconst:ssslbadrecordmac
+msgid "Server received a bad record MAC."
+msgstr "Server menerima rekaman MAC buruk."
+
+#: ipconst:ssslcompressionfailure
+msgid "Compression failure."
+msgstr "Kompresi gagal."
+
+#: ipconst:ssslhandshakefailure
+msgid "Handshake failure."
+msgstr "Handshake gagal."
+
+#: ipconst:ssslbadcertificate
+msgid "Bad certificate."
+msgstr "Sertifikat Buruk."
+
+#: ipconst:ssslunsupportedcertificate
+msgid "Unsupported Certificate."
+msgstr "Sertifikat Tidak Didukung."
+
+#: ipconst:ssslrevokedcertificate
+msgid "Revoked Certificate."
+msgstr "Sertifikat Dihidupkan."
+
+#: ipconst:ssslexpiredcertificate
+msgid "Expired Certificate."
+msgstr "Sertifikat Berakhir"
+
+#: ipconst:ssslunknowncertificate
+msgid "Unknown Certificate."
+msgstr "Sertifikat Tidak Dikenal."
+
+#: ipconst:ssslillegalparameter
+msgid "Illegal Parameter."
+msgstr "Parameter tidak benar."
+
+#: ipconst:ssslreadsizemissmatch
+msgid "Read size miss-match."
+msgstr "Ukuran baca tidak sama."
+
+#: ipconst:ssslreaderror
+msgid "Read error."
+msgstr "Pembacaan salah."
+
+#: ipconst:ssslpointernotassigned
+msgid "Pointer not assigned."
+msgstr "Pointer tidak ditempatkan"
+
+#: ipconst:ssslfailedhelloparse
+msgid "Did not parse server hello correctly."
+msgstr "Tidak menguraikan hello server dengan benar."
+
+#: ipconst:ssslencryptiontype
+msgid "Encryption type not defined."
+msgstr "Tipe enkripsi tidak didefinisikan."
+
+#: ipconst:ssslblocksizeerror
+msgid "Block size error"
+msgstr "Ukuran blok salah"
+
+#: ipconst:ssslservernohandshake
+msgid "Server cid not return a handshake message."
+msgstr "Server tidak mengembalikan pesan handshake."
+
+#: ipconst:ssslservernoserverhello
+msgid "Server cid not return a server hello message."
+msgstr "Server tidak mengembalikan pesan serverhello."
+
+#: ipconst:ssslbadcompressionvalue
+msgid "Compression value is wrong."
+msgstr "Nilai kompresi salah"
+
+#: ipconst:ssslbadcerttype
+msgid "Cert type not found"
+msgstr "Tipe Cert tidak ditemukan"
+
+#: ipconst:ssslbadkeyexchangetype
+msgid "Key exchange message expected but not received"
+msgstr "Pesan pertukaran kunci diharapkan tapi tidak diterima"
+
+#: ipconst:ssslbufferoverflow
+msgid "Buffer overflow error."
+msgstr "Kesalahan bufer berlebihan"
+
+#: ipconst:ssslnohashtype
+msgid "No hash type selected."
+msgstr "Tipe hash tidak dipilih."
+
+#: ipconst:ssslnomessageencslected
+msgid "No message encoding type selected."
+msgstr "Tipe enkode pesan tidak dipilih."
+
+#: ipconst:ssslbadmac
+msgid "MAC did not match."
+msgstr "MAC tidak sama."
+
+#: ipconst:ssslsessidtolong
+msgid "Session ID is longer than 32 bytes."
+msgstr "ID Sesi lebih panjang dari 32 byte."
+
+#: ipconst:ssslbadmd5hash
+msgid "MD5 hash did not match."
+msgstr "Hash MD5 tidak sama."
+
+#: ipconst:ssslbadsha1hash
+msgid "SHA1 hash did not match."
+msgstr "Hash SHA1 tidak sama"
+
+#: ipconst:ssslencryptbuf2small
+msgid "Encrypt buffer to small."
+msgstr "Bufer enkripsi terlalu kecil"
+
+#: ipconst:ssslshabuf2small
+msgid "SHA1 buffer to small."
+msgstr "Bufer SHA1 terlalu kecil."
+
+#: ipconst:ssslbuffersizemissmatch
+msgid "Buffer size miss-match."
+msgstr "Ukuran bufer tidak sama."
+
+#: ipconst:ssslnotenoughkeymaterail
+msgid "Not enough key material."
+msgstr "Material kunci tidak cukup."
+
+#: ipconst:sslnopremastersecret
+msgid "No pre-master secret."
+msgstr "Tidak ada rahasia pra-master."
+
+#: ipconst:ssslnoroom
+msgid "Not enough memory available to read SSL record."
+msgstr "Memori tidak cukup tersedia untuk membaca rekaman SSL."
+
+#: ipconst:ssslunprocesseddata
+msgid "SSL data processing error."
+msgstr "Kesalahan pemrosesan data SSL"
+
+#: ipconst:ssslconnectchange
+msgid "Can not change SSL status while connected."
+msgstr "Tidak bisa mengubah status SSL selama tersambung."
+

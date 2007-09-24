@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus Code Tools v1.x\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-29 22:39+0700\n"
+"PO-Revision-Date: 2007-09-22 22:39+0700\n"
 "Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
 "Language-Team: Zaenal Mutaqin <ade999@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -229,11 +229,11 @@ msgstr "Jika TargetOS<>win32 lalu"
 
 #: codetoolsstrconsts:ctsifdeflinux
 msgid "IfDef Linux"
-msgstr ""
+msgstr "IfDef Linux"
 
 #: codetoolsstrconsts:ctsifdefwindows
 msgid "IfDef Windows"
-msgstr ""
+msgstr "IfDef Windows"
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -257,7 +257,7 @@ msgstr "Sumber Lazarus"
 
 #: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "Pengulangan definisi %s tidak dibolehkan"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
@@ -365,11 +365,11 @@ msgstr "direktori komponen dalam %s bukan sebuah direktori"
 
 #: codetoolsstrconsts:ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr ""
+msgstr "menambah %s ke IncPath"
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
-msgstr "tambahkan %s ke SrcPath"
+msgstr "menambah %s ke SrcPath"
 
 #: codetoolsstrconsts:ctsanlclproject
 msgid "an LCL project"
@@ -509,7 +509,7 @@ msgstr "file hanya baca"
 
 #: codetoolsstrconsts:ctsgenericidentifier
 msgid "generic identifier"
-msgstr ""
+msgstr "pengenal generik"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
@@ -621,7 +621,7 @@ msgstr "keyword (contoh. %s) diharapkan, tapi %s ditemukan"
 
 #: codetoolsstrconsts:ctskeywordin
 msgid "keyword \"in\""
-msgstr "keyword \"in\""
+msgstr "kata kunci \"in\""
 
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
@@ -745,7 +745,7 @@ msgstr "akhir sumber tidak diharapkan"
 
 #: codetoolsstrconsts:ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr "keyword tidak diharapkan \"%s\""
+msgstr "kata kunci tidak diharapkan \"%s\""
 
 #: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"

@@ -1257,6 +1257,7 @@ begin
       LazPackage.DefineTemplates.AllChanged;
     Free;
   end;
+  UpdateTitle;
   UpdateButtons;
   UpdateStatusBar;
 end;

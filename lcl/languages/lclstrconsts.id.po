@@ -69,7 +69,7 @@ msgstr "&Tutup"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Direktori"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -165,7 +165,7 @@ msgstr "Semua file (%s)|%s|%s"
 
 #: lclstrconsts:ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -241,7 +241,7 @@ msgstr "Pembuatan cachable salah: "
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -301,7 +301,7 @@ msgstr "Kesalahan saat mengeksekusi %s%s%s:%s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Kesalahan ketika menyimpan bitmap"
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -369,7 +369,7 @@ msgstr "File grid tidak ada"
 
 #: lclstrconsts:rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr ""
+msgstr "Indeks grid di luar jangkauan"
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
@@ -713,7 +713,7 @@ msgstr "Teks"
 
 #: lclstrconsts:sinvalidcharset
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
+msgstr "set karakter dalam mask \"%s\" tidak benar!"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."

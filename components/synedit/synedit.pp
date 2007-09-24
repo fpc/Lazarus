@@ -7892,7 +7892,7 @@ begin
             if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} > Len +1
             then begin
               // only move caret one column
-              Helper := '';
+              Helper := ' ';
               CaretX := CaretX - 1;
             end else if CaretX = 1 then begin
               // join this line with the last line if possible
@@ -7969,8 +7969,8 @@ begin
                   CaretX := LogicalToPhysicalCol(Temp,LogCaretXY.X);
                   Helper := Copy(Temp, LogCaretXY.X, LogCounter);
                   System.Delete(Temp, LogCaretXY.X, LogCounter);
-                  //debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
-                  //  ' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
+                  debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
+                    ' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
                   {$ENDIF USE_UTF8BIDI_LCL}
                 {$ELSE}
                   {$IFDEF SYN_MBCSSUPPORT}

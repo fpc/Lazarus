@@ -647,7 +647,7 @@ msgstr "Ok"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "Saat Menambah, Periksa Duplikasi dalam Item"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -859,7 +859,7 @@ msgstr "Teks:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr ""
+msgstr "Item \"%s\" sudah didaftarkan. Tetap tambahkan?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -907,9 +907,9 @@ msgstr "Panjang"
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr "Word"
+msgstr "Kata"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
-msgstr ""
+msgstr "n. kolom"
 

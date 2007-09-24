@@ -40,12 +40,17 @@
         <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Lazarus"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="..\debugger\gdbmidebugger.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GDBMIDebugger"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -55,6 +60,8 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="$(LazarusDir)\ide\include\"/>
+      <OtherUnitFiles Value="$(LazarusDir)\designer\;$(LazarusDir)\packager\"/>
       <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

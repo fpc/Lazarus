@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus 1.x\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-30 01:16+0700\n"
+"PO-Revision-Date: 2007-09-22 01:16+0700\n"
 "Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
 "Language-Team: Indonesian <ade999@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -223,7 +223,7 @@ msgstr "&Properti"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "&Hapus"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -371,7 +371,7 @@ msgstr "Terima"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
+msgstr "Pengakuan"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -403,7 +403,7 @@ msgstr "Tambah File"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Tambah Inverse"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -539,7 +539,7 @@ msgstr "Sesuaikan baris atas karena komentar di depan"
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Opsi Pembangunan Lanjutan"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -963,7 +963,7 @@ msgstr "Angka Buatan"
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "Opsi Pembangunan"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1107,7 +1107,7 @@ msgstr "Ubah"
 
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
-msgstr "Ubah Class"
+msgstr "Ubah Kelas"
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
@@ -1115,7 +1115,7 @@ msgstr "Ubah Font"
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
-msgstr ""
+msgstr "Ubah leluhur ..."
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -1359,7 +1359,7 @@ msgstr "Kode"
 
 #: lazarusidestrconsts:lismenuviewcodebrowser
 msgid "Code Browser"
-msgstr ""
+msgstr "Browser Kode"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
@@ -1379,7 +1379,7 @@ msgstr "Piranti Kode"
 
 #: lazarusidestrconsts:liscodebrowser
 msgid "Code browser"
-msgstr ""
+msgstr "Browser Kode"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
@@ -1403,7 +1403,7 @@ msgstr "Opsi CodeExplorer"
 
 #: lazarusidestrconsts:liscodetools
 msgid "CodeTools"
-msgstr ""
+msgstr "CodeTools"
 
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
@@ -1455,15 +1455,15 @@ msgstr "Opsi Codetools"
 
 #: lazarusidestrconsts:liscollapseallclasses
 msgid "Collapse all classes"
-msgstr ""
+msgstr "Sempitkan semua kelas"
 
 #: lazarusidestrconsts:liscollapseallpackages
 msgid "Collapse all packages"
-msgstr ""
+msgstr "Sempitkan semua paket"
 
 #: lazarusidestrconsts:liscollapseallunits
 msgid "Collapse all units"
-msgstr ""
+msgstr "Sempitkan semua unit"
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -1603,7 +1603,7 @@ msgstr "Lengkapi properti"
 
 #: lazarusidestrconsts:liscomponent
 msgid "Component"
-msgstr ""
+msgstr "Komponen"
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
@@ -1627,7 +1627,7 @@ msgstr "Perintah menu Komponen"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
+msgstr "Definisi kondisional"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1707,7 +1707,7 @@ msgstr "Konflik ditemukan"
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
-msgstr ""
+msgstr "Aplikasi Konsol"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -1955,7 +1955,7 @@ msgstr "Buat proyek dulu!"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
-msgstr ""
+msgstr "Buat definisi baru"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -2343,7 +2343,7 @@ msgstr "Arah"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Direktif"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -2395,7 +2395,7 @@ msgstr "Jangan tutup IDE"
 
 #: lazarusidestrconsts:lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr ""
+msgstr "Jangan tutup proyek"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -2763,7 +2763,7 @@ msgstr "Contoh"
 
 #: lazarusidestrconsts:lisexamples
 msgid "Examples"
-msgstr ""
+msgstr "Contoh"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -2815,15 +2815,15 @@ msgstr "Keluar tanpa Menyimpan"
 
 #: lazarusidestrconsts:lisexpandallclasses
 msgid "Expand all classes"
-msgstr ""
+msgstr "Lebarkan semua kelas"
 
 #: lazarusidestrconsts:lisexpandallpackages
 msgid "Expand all packages"
-msgstr ""
+msgstr "Lebarkan semua paket"
 
 #: lazarusidestrconsts:lisexpandallunits
 msgid "Expand all units"
-msgstr ""
+msgstr "Lebarkan semua unit"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
@@ -2831,7 +2831,7 @@ msgstr "Nama file lebar dari file editor saat ini"
 
 #: lazarusidestrconsts:lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Ekspor ..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -3055,7 +3055,7 @@ msgstr "File"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3667,7 +3667,7 @@ msgstr "ID"
 
 #: lazarusidestrconsts:liside
 msgid "IDE"
-msgstr ""
+msgstr "IDE"
 
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
@@ -3675,7 +3675,7 @@ msgstr "Integrasi IDE"
 
 #: lazarusidestrconsts:lisideintf
 msgid "IDE Interface"
-msgstr ""
+msgstr "Antarmuka IDE"
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -3691,7 +3691,7 @@ msgstr "Pengenal"
 
 #: lazarusidestrconsts:lisidentifierbeginswith
 msgid "Identifier begins with ..."
-msgstr ""
+msgstr "Pengenal dimulai dengan ..."
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
@@ -3699,7 +3699,7 @@ msgstr "Pelengkapan pengenal"
 
 #: lazarusidestrconsts:lisidentifiercontains
 msgid "Identifier contains ..."
-msgstr ""
+msgstr "Pengenal berisi ..."
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4139,7 +4139,7 @@ msgstr "Interface"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
-msgstr ""
+msgstr "Kesalahan kompilator internal! (%d)"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -4263,7 +4263,7 @@ msgstr "Pemilihan multi tidak benar"
 
 #: lazarusidestrconsts:liserrinvalidoption
 msgid "Invalid option at position %d: \"%s\""
-msgstr "opsi tidak benar di posisi %d: \"%s\""
+msgstr "Opsi tidak benar di posisi %d: \"%s\""
 
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
@@ -4359,7 +4359,7 @@ msgstr "Tinggi item"
 
 #: lazarusidestrconsts:lisjitform
 msgid "JIT Form"
-msgstr ""
+msgstr "Formulir JIT"
 
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
@@ -4471,7 +4471,7 @@ msgstr "Kebijakan Kata kunci"
 
 #: lazarusidestrconsts:lislcl
 msgid "LCL"
-msgstr ""
+msgstr "LCL"
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -4579,7 +4579,7 @@ msgstr "File Lazarus"
 
 #: lazarusidestrconsts:lislazaruside
 msgid "Lazarus IDE"
-msgstr ""
+msgstr "Lazarus IDE"
 
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
@@ -4675,19 +4675,19 @@ msgstr "Tingkat 0 (tidak ada Optimasi ekstra)"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (quick and debugger friendly)"
-msgstr ""
+msgstr "Tingkat 1 (cepat dan ramah debugger)"
 
 #: lazarusidestrconsts:dlglevel2opt
 msgid "Level 2 (Level 1 + quick optimizations)"
-msgstr ""
+msgstr "Tingkat 2 (Tingkat 1 + optimasi cepat)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr ""
+msgstr "Tingkat 3 (Tingkat 2 + optimasi lambat)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
-msgstr ""
+msgstr "Tingkat"
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -4707,7 +4707,7 @@ msgstr "Lisensi:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Lisensi: GPL/LGPL%sLazarus adalah IDE untuk membuat aplikasi (grafis dan konsol) dengan Free Pascal. Free Pascal adalah (L)GPL kompilator Pascal dan Object Pascal yang berjalan pada Windows, Linux, Mac OS X, FreeBSD dan banyak lagi.%sLazarus adalah bagian yang hilang dari teka-teki yang akan membolehkan anda mengembangkan program untuk semua platform di atas dalam lingkungan mirip Delphi. IDE adalah piranti RAD yang menyertakan desainer formulir.%sKarena Lazarus berkembang kami memerlukan lebih banyak para pengembang."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -4751,7 +4751,7 @@ msgstr "Penggabungan"
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lithuania"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -5723,7 +5723,7 @@ msgstr "Opsi Paket"
 
 #: lazarusidestrconsts:lispkgreg
 msgid "Package Registration"
-msgstr ""
+msgstr "Registrasi Paket"
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -5767,11 +5767,11 @@ msgstr "Nama paket sudah ada"
 
 #: lazarusidestrconsts:lispackagenamebeginswith
 msgid "Package name begins with ..."
-msgstr ""
+msgstr "Nama paket dimulai dengan ..."
 
 #: lazarusidestrconsts:lispackagenamecontains
 msgid "Package name contains ..."
-msgstr ""
+msgstr "Nama paket berisi ..."
 
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
@@ -5987,7 +5987,7 @@ msgstr "Sebelumnya"
 
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
-msgstr ""
+msgstr "Private"
 
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
@@ -6163,7 +6163,7 @@ msgstr "Nama properti"
 
 #: lazarusidestrconsts:lisprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -6171,7 +6171,7 @@ msgstr "Metode Protected"
 
 #: lazarusidestrconsts:lispckoptsprovides
 msgid "Provides"
-msgstr ""
+msgstr "Menyediakan"
 
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
@@ -6199,7 +6199,7 @@ msgstr "Metode Published"
 
 #: lazarusidestrconsts:lislazbuildquickbuildoptions
 msgid "Quick Build Options"
-msgstr ""
+msgstr "Opsi Pembangunan Cepat"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6511,7 +6511,7 @@ msgstr "Laporan"
 
 #: lazarusidestrconsts:lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Melaporkan bug..."
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -7395,7 +7395,7 @@ msgstr "Tampilkan petunjuk dalam Inspektor Objek"
 
 #: lazarusidestrconsts:lisshowidentifiers
 msgid "Show identifiers"
-msgstr ""
+msgstr "Tampilkan pengenal"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -7415,7 +7415,7 @@ msgstr "Tampilkan urutan tab lama"
 
 #: lazarusidestrconsts:lisshowpackages
 msgid "Show packages"
-msgstr ""
+msgstr "Tampilkan paket"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
@@ -7431,7 +7431,7 @@ msgstr "Tampilkan file yang dicoba"
 
 #: lazarusidestrconsts:lisshowunits
 msgid "Show units"
-msgstr ""
+msgstr "Tampilkan unit"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -7475,7 +7475,7 @@ msgstr "Lewati pengambilan proyek terakhir"
 
 #: lazarusidestrconsts:lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr ""
+msgstr "Lewati paket ini"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -7599,7 +7599,7 @@ msgstr "Mulai dengan proyek baru"
 
 #: lazarusidestrconsts:lisstarter
 msgid "Starter"
-msgstr ""
+msgstr "Pemula"
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -7727,7 +7727,7 @@ msgstr "Simbol didepan (.~pp)"
 
 #: lazarusidestrconsts:lissynedit
 msgid "SynEdit"
-msgstr ""
+msgstr "SynEdit"
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
@@ -7907,7 +7907,7 @@ msgstr "FCL - FreePascal Component Library menyediakan dasar kelas untuk objek p
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgstr ""
+msgstr "Direktori sumber FPC \"%s\" nampaknya tidak benar. Biasanya ia berisi direktori seperti rtl, packages, compiler, ... ."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -8179,7 +8179,7 @@ msgstr "Aplikasi induk %s%s%s bukan eksekutabel."
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
 msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
+msgstr "Menjalankan Bundel Aplikasi %s%s%s%stidak ada atau bukan executable.%s%sLihat Proyek -> Opsi proyek -> Aplikasi."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -8503,7 +8503,7 @@ msgstr "Paket diinstalasi, tetapi file lpk tidak ditemukan. Semua komponennya di
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
-msgstr ""
+msgstr "Paket ini menyediakan hal yang sama seperti paket berikut:"
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9123,11 +9123,11 @@ msgstr "Nama unit sudah ada"
 
 #: lazarusidestrconsts:lisunitnamebeginswith
 msgid "Unit name begins with ..."
-msgstr ""
+msgstr "Nama unit dimulai dengan ..."
 
 #: lazarusidestrconsts:lisunitnamecontains
 msgid "Unit name contains ..."
-msgstr ""
+msgstr "Nama unit berisi ..."
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
@@ -9207,7 +9207,7 @@ msgstr "Gunakan Ansi Strings"
 
 #: lazarusidestrconsts:dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (darwin only)"
-msgstr ""
+msgstr "Gunakan Bundel Aplikasi untuk menjalankan dan debugging (hanya darwin)"
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -9239,7 +9239,7 @@ msgstr "Gunakan aplikasi peluncuran"
 
 #: lazarusidestrconsts:dlgpousemanifest
 msgid "Use manifest file to enable themes (windows only)"
-msgstr ""
+msgstr "Gunakan file manifest untuk menghidupkan tema (hany windows)"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -9419,7 +9419,7 @@ msgstr "Lihat pemanggilan stack"
 
 #: lazarusidestrconsts:srkmectogglecodebrowser
 msgid "View code browser"
-msgstr ""
+msgstr "Lihat browser kode"
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"
@@ -9575,7 +9575,7 @@ msgstr "Dengan Paket"
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
-msgstr ""
+msgstr "Dengan paket yang diperlukan"
 
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -9671,15 +9671,15 @@ msgstr "otomatis menginstalasi statis"
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
 msgid "automatically on line break"
-msgstr ""
+msgstr "otomatis memisahkan baris"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "automatically on space"
-msgstr ""
+msgstr "otomatis pada spasi"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
-msgstr ""
+msgstr "mulai"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
@@ -9715,7 +9715,7 @@ msgstr "file konfig pembangunan"
 
 #: lazarusidestrconsts:liscontains
 msgid "contains"
-msgstr ""
+msgstr "berisi"
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
@@ -9735,11 +9735,11 @@ msgstr "file, dimana output debug ditulisnya. Jika tidak ditetapkan, output debu
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "program freepascal menggunakan TCustomApplication untuk memudahkan memeriksa opsi baris perintah, penanganan eksepsi, dll. File program secara otomatis dipelihara oleh lazarus."
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr ""
+msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
