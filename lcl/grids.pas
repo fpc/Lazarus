@@ -46,7 +46,7 @@ unit Grids;
 interface
 
 uses
-  Types, Classes, SysUtils, Math, LCLStrConsts, LCLProc, LCLType, LCLIntf,
+  Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray, LMessages,
   XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
 
@@ -1225,11 +1225,14 @@ type
 
   TCustomStringGrid = class;
   
+  { TStringGridStrings }
+
   TStringGridStrings = class(TStrings)
   private
     FGrid: TCustomStringGrid;
     FIsCol: Boolean;
     FIndex: Integer;
+    FOwner: TMap;
     function ConvertIndexLineCol(Index: Integer; var Line, Col: Integer): boolean;
   protected
     procedure Clear; override;
@@ -1240,7 +1243,8 @@ type
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; aObject: TObject); override;
   public
-    constructor Create(aGrid: TCustomStringGrid; aIsCol: Boolean; aIndex: Longint);
+    constructor Create(aGrid: TCustomStringGrid; OwnerMap:TMap; aIsCol: Boolean; aIndex: Longint);
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
@@ -1252,10 +1256,13 @@ type
   TCustomStringGrid = class(TCustomDrawGrid)
     private
       FModified: boolean;
+      FColsMap,FRowsMap: TMap;
       function  GetCells(ACol, ARow: Integer): string;
       function  GetCols(index: Integer): TStrings;
       function  GetObjects(ACol, ARow: Integer): TObject;
       function  GetRows(index: Integer): TStrings;
+      procedure MapFree(var aMap: TMap);
+      function  MapGetColsRows(IsCols: boolean; Index:Integer; var AMap:TMap):TStrings;
       procedure ReadCells(Reader: TReader);
       procedure SetCells(ACol, ARow: Integer; const AValue: string);
       procedure SetCols(index: Integer; const AValue: TStrings);
@@ -1287,7 +1294,7 @@ type
 
     public
       constructor Create(AOwner: TComponent); override;
-      //destructor Destroy; override;
+      destructor Destroy; override;
       procedure AutoSizeColumn(aCol: Integer);
       procedure AutoSizeColumns;
       procedure Clean; overload;
@@ -7232,13 +7239,23 @@ begin
     RaiseError;
 end;
 
-constructor TStringGridStrings.Create(aGrid: TCustomStringGrid; aIscol: boolean;
+constructor TStringGridStrings.Create(aGrid: TCustomStringGrid; OwnerMap: TMap; aIscol: boolean;
   aIndex: Longint);
 begin
   inherited Create;
   FGrid := aGrid;
   FIsCol := aIsCol;
   FIndex := aIndex;
+  FOwner := OwnerMap;
+  if FOwner<>nil then
+    FOwner.Add(FIndex, Self);
+end;
+
+destructor TStringGridStrings.Destroy;
+begin
+  if FOwner<>nil then
+    FOwner.Delete(FIndex);
+  inherited Destroy;
 end;
 
 procedure TStringGridStrings.Assign(Source: TPersistent);
@@ -7521,6 +7538,37 @@ end;
 
 { TCustomStringGrid }
 
+procedure TCustomStringGrid.MapFree(var aMap: TMap);
+var
+  Iterator: TMapIterator;
+  SGL: TStringGridStrings;
+begin
+  if AMap=nil then
+    exit;
+  Iterator := TMapIterator.Create(AMap);
+  Iterator.First;
+  while not Iterator.EOM do begin
+    Iterator.GetData(SGL);
+    if SGL<>nil then
+      SGL.Free;
+    Iterator.Next;
+  end;
+  Iterator.Free;
+  FreeAndNil(AMap);
+end;
+
+function TCustomStringGrid.MapGetColsRows(IsCols: boolean; Index: Integer;
+  var AMap: TMap): TStrings;
+begin
+  if AMap=nil then
+    AMap := TMap.Create(itu4, SizeOf(TStringGridStrings));
+
+  if AMap.HasId(Index) then
+    AMap.GetData(index, Result)
+  else
+    Result:=TStringGridStrings.Create(Self, AMap, IsCols, index);
+end;
+
 function TCustomStringGrid.Getcells(aCol, aRow: Integer): string;
 var
    C: PCellProps;
@@ -7532,7 +7580,7 @@ end;
 
 function TCustomStringGrid.GetCols(index: Integer): TStrings;
 begin
-  Result := TStringGridStrings.Create(Self, True, index);
+  Result := MapGetColsRows(True,  Index, FColsMap);
 end;
 
 function TCustomStringGrid.GetObjects(ACol, ARow: Integer): TObject;
@@ -7546,7 +7594,7 @@ end;
 
 function TCustomStringGrid.GetRows(index: Integer): TStrings;
 begin
-  Result:=TStringGridStrings.Create(Self, False, index);
+  Result := MapGetColsRows(False, Index, FRowsMap);
 end;
 
 procedure TCustomStringGrid.ReadCells(Reader: TReader);
@@ -7609,7 +7657,7 @@ procedure TCustomStringGrid.SetCols(index: Integer; const AValue: TStrings);
 var
   SGL: TStringGridStrings;
 begin
-  SGL := TStringGridStrings.Create(Self, True, index);
+  SGL := TStringGridStrings.Create(Self, nil, True, index);
   SGL.Assign(AValue);
   SGL.Free;
 end;
@@ -7631,7 +7679,7 @@ procedure TCustomStringGrid.SetRows(index: Integer; const AValue: TStrings);
 var
   SGL: TStringGridStrings;
 begin
-  SGL := TStringGridStrings.Create(Self, False, index);
+  SGL := TStringGridStrings.Create(Self, nil, False, index);
   SGL.Assign(AValue);
   SGL.Free;
 end;
@@ -7926,6 +7974,13 @@ begin
     //WordBreak := False
   end;
   ExtendedSelect := True;
+end;
+
+destructor TCustomStringGrid.Destroy;
+begin
+  MapFree(FRowsMap);
+  MapFree(FColsMap);
+  inherited Destroy;
 end;
 
 procedure TCustomStringGrid.AutoSizeColumn(aCol: Integer);
