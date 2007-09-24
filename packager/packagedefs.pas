@@ -3444,9 +3444,14 @@ end;
 
 function TLazPackageID.Compare(PackageID2: TLazPackageID): integer;
 begin
-  Result:=CompareText(Name,PackageID2.Name);
-  if Result<>0 then exit;
-  Result:=Version.Compare(PackageID2.Version);
+  if PackageID2 <> nil then
+  begin
+    Result:=CompareText(Name,PackageID2.Name);
+    if Result<>0 then exit;
+    Result:=Version.Compare(PackageID2.Version);
+  end
+  else
+    Result := -1;
 end;
 
 function TLazPackageID.CompareMask(ExactPackageID: TLazPackageID): integer;
