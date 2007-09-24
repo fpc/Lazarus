@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.50 }
+{ Version : 1.51 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -134,6 +134,7 @@ QDateH = class(TObject) end;
 QDateTimeH = class(TObject) end;
 QDirH = class(TObject) end;
 QEventH = class(TObject) end;
+  QLCLMessageEventH = class(QEventH) end;
   QActionEventH = class(QEventH) end;
   QChildEventH = class(QEventH) end;
   QCloseEventH = class(QEventH) end;
@@ -288,6 +289,8 @@ QObjectH = class(TObject) end;
           QHeaderViewH = class(QAbstractItemViewH) end;
           QListViewH = class(QAbstractItemViewH) end;
             QListWidgetH = class(QListViewH) end;
+          QTableViewH = class(QAbstractItemViewH) end;
+            QTableWidgetH = class(QTableViewH) end;
           QTreeViewH = class(QAbstractItemViewH) end;
             QTreeWidgetH = class(QTreeViewH) end;
         QGraphicsViewH = class(QAbstractScrollAreaH) end;
@@ -374,6 +377,8 @@ QStyleOptionH = class(TObject) end;
   QStyleOptionViewItemH = class(QStyleOptionH) end;
     QStyleOptionViewItemV2H = class(QStyleOptionViewItemH) end;
 QSystemLocaleH = class(TObject) end;
+QTableWidgetItemH = class(TObject) end;
+QTableWidgetSelectionRangeH = class(TObject) end;
 QTextBlockH = class(TObject) end;
 QTextCursorH = class(TObject) end;
 QTextDocumentFragmentH = class(TObject) end;
@@ -458,6 +463,10 @@ QHeaderView_hookH = class(QAbstractItemView_hookH) end;
 QStandardItem_hookH = class(QObject_hookH) end;
 QStandardItemModel_hookH = class(QAbstractItemModel_hookH) end;
 QAbstractItemDelegate_hookH = class(QObject_hookH) end;
+QTableView_hookH = class(QAbstractItemView_hookH) end;
+QTableWidgetSelectionRange_hookH = class(QObject_hookH) end;
+QTableWidgetItem_hookH = class(QObject_hookH) end;
+QTableWidget_hookH = class(QTableView_hookH) end;
 QDialog_hookH = class(QWidget_hookH) end;
 QFileDialog_hookH = class(QDialog_hookH) end;
 QProgressDialog_hookH = class(QDialog_hookH) end;
@@ -3666,6 +3675,18 @@ procedure QWindowStateChangeEvent_destroy(handle: QWindowStateChangeEventH); cde
 function QWindowStateChangeEvent_create(aOldState: QtWindowStates; isOverride: Boolean): QWindowStateChangeEventH; overload; cdecl; external QtIntf name 'QWindowStateChangeEvent_create2';
 function QWindowStateChangeEvent_oldState(handle: QWindowStateChangeEventH): QtWindowStates; cdecl; external QtIntf name 'QWindowStateChangeEvent_oldState';
 function QWindowStateChangeEvent_isOverride(handle: QWindowStateChangeEventH): Boolean; cdecl; external QtIntf name 'QWindowStateChangeEvent_isOverride';
+
+function QLCLMessageEvent_create(aType: QEventType): QLCLMessageEventH; overload; cdecl; external QtIntf name 'QLCLMessageEvent_create';
+procedure QLCLMessageEvent_destroy(handle: QLCLMessageEventH); cdecl; external QtIntf name 'QLCLMessageEvent_destroy'; 
+function QLCLMessageEvent_create(aType: QEventType; aMsg: LongWord; aWParam: LongWord; aLParam: LongWord; aMsgResult: LongWord): QLCLMessageEventH; overload; cdecl; external QtIntf name 'QLCLMessageEvent_create2';
+function QLCLMessageEvent_getMsg(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getMsg';
+function QLCLMessageEvent_getWParam(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getWParam';
+function QLCLMessageEvent_getLParam(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getLParam';
+function QLCLMessageEvent_getMsgResult(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getMsgResult';
+procedure QLCLMessageEvent_setMsg(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setMsg';
+procedure QLCLMessageEvent_setWParam(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setWParam';
+procedure QLCLMessageEvent_setLParam(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setLParam';
+procedure QLCLMessageEvent_setMsgResult(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setMsgResult';
 
 function QCursor_create(): QCursorH; overload; cdecl; external QtIntf name 'QCursor_create';
 procedure QCursor_destroy(handle: QCursorH); cdecl; external QtIntf name 'QCursor_destroy'; 
@@ -7450,6 +7471,184 @@ procedure QItemDelegate_updateEditorGeometry(handle: QItemDelegateH; editor: QWi
 function QItemDelegate_itemEditorFactory(handle: QItemDelegateH): QItemEditorFactoryH; cdecl; external QtIntf name 'QItemDelegate_itemEditorFactory';
 procedure QItemDelegate_setItemEditorFactory(handle: QItemDelegateH; factory: QItemEditorFactoryH); cdecl; external QtIntf name 'QItemDelegate_setItemEditorFactory';
 
+function QTableView_create(parent: QWidgetH = nil): QTableViewH; cdecl; external QtIntf name 'QTableView_create';
+procedure QTableView_destroy(handle: QTableViewH); cdecl; external QtIntf name 'QTableView_destroy'; 
+procedure QTableView_setModel(handle: QTableViewH; model: QAbstractItemModelH); cdecl; external QtIntf name 'QTableView_setModel';
+procedure QTableView_setRootIndex(handle: QTableViewH; index: QModelIndexH); cdecl; external QtIntf name 'QTableView_setRootIndex';
+procedure QTableView_setSelectionModel(handle: QTableViewH; selectionModel: QItemSelectionModelH); cdecl; external QtIntf name 'QTableView_setSelectionModel';
+function QTableView_horizontalHeader(handle: QTableViewH): QHeaderViewH; cdecl; external QtIntf name 'QTableView_horizontalHeader';
+function QTableView_verticalHeader(handle: QTableViewH): QHeaderViewH; cdecl; external QtIntf name 'QTableView_verticalHeader';
+procedure QTableView_setHorizontalHeader(handle: QTableViewH; header: QHeaderViewH); cdecl; external QtIntf name 'QTableView_setHorizontalHeader';
+procedure QTableView_setVerticalHeader(handle: QTableViewH; header: QHeaderViewH); cdecl; external QtIntf name 'QTableView_setVerticalHeader';
+function QTableView_rowViewportPosition(handle: QTableViewH; row: Integer): Integer; cdecl; external QtIntf name 'QTableView_rowViewportPosition';
+function QTableView_rowAt(handle: QTableViewH; y: Integer): Integer; cdecl; external QtIntf name 'QTableView_rowAt';
+procedure QTableView_setRowHeight(handle: QTableViewH; row: Integer; height: Integer); cdecl; external QtIntf name 'QTableView_setRowHeight';
+function QTableView_rowHeight(handle: QTableViewH; row: Integer): Integer; cdecl; external QtIntf name 'QTableView_rowHeight';
+function QTableView_columnViewportPosition(handle: QTableViewH; column: Integer): Integer; cdecl; external QtIntf name 'QTableView_columnViewportPosition';
+function QTableView_columnAt(handle: QTableViewH; x: Integer): Integer; cdecl; external QtIntf name 'QTableView_columnAt';
+procedure QTableView_setColumnWidth(handle: QTableViewH; column: Integer; width: Integer); cdecl; external QtIntf name 'QTableView_setColumnWidth';
+function QTableView_columnWidth(handle: QTableViewH; column: Integer): Integer; cdecl; external QtIntf name 'QTableView_columnWidth';
+function QTableView_isRowHidden(handle: QTableViewH; row: Integer): Boolean; cdecl; external QtIntf name 'QTableView_isRowHidden';
+procedure QTableView_setRowHidden(handle: QTableViewH; row: Integer; hide: Boolean); cdecl; external QtIntf name 'QTableView_setRowHidden';
+function QTableView_isColumnHidden(handle: QTableViewH; column: Integer): Boolean; cdecl; external QtIntf name 'QTableView_isColumnHidden';
+procedure QTableView_setColumnHidden(handle: QTableViewH; column: Integer; hide: Boolean); cdecl; external QtIntf name 'QTableView_setColumnHidden';
+procedure QTableView_setSortingEnabled(handle: QTableViewH; enable: Boolean); cdecl; external QtIntf name 'QTableView_setSortingEnabled';
+function QTableView_isSortingEnabled(handle: QTableViewH): Boolean; cdecl; external QtIntf name 'QTableView_isSortingEnabled';
+function QTableView_showGrid(handle: QTableViewH): Boolean; cdecl; external QtIntf name 'QTableView_showGrid';
+function QTableView_gridStyle(handle: QTableViewH): QtPenStyle; cdecl; external QtIntf name 'QTableView_gridStyle';
+procedure QTableView_setGridStyle(handle: QTableViewH; style: QtPenStyle); cdecl; external QtIntf name 'QTableView_setGridStyle';
+procedure QTableView_visualRect(handle: QTableViewH; retval: PRect; index: QModelIndexH); cdecl; external QtIntf name 'QTableView_visualRect';
+procedure QTableView_scrollTo(handle: QTableViewH; index: QModelIndexH; hint: QAbstractItemViewScrollHint); cdecl; external QtIntf name 'QTableView_scrollTo';
+procedure QTableView_indexAt(handle: QTableViewH; retval: QModelIndexH; p: PQtPoint); cdecl; external QtIntf name 'QTableView_indexAt';
+procedure QTableView_setSpan(handle: QTableViewH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer); cdecl; external QtIntf name 'QTableView_setSpan';
+function QTableView_rowSpan(handle: QTableViewH; row: Integer; column: Integer): Integer; cdecl; external QtIntf name 'QTableView_rowSpan';
+function QTableView_columnSpan(handle: QTableViewH; row: Integer; column: Integer): Integer; cdecl; external QtIntf name 'QTableView_columnSpan';
+procedure QTableView_sortByColumn(handle: QTableViewH; column: Integer; order: QtSortOrder); overload; cdecl; external QtIntf name 'QTableView_sortByColumn';
+procedure QTableView_selectRow(handle: QTableViewH; row: Integer); cdecl; external QtIntf name 'QTableView_selectRow';
+procedure QTableView_selectColumn(handle: QTableViewH; column: Integer); cdecl; external QtIntf name 'QTableView_selectColumn';
+procedure QTableView_hideRow(handle: QTableViewH; row: Integer); cdecl; external QtIntf name 'QTableView_hideRow';
+procedure QTableView_hideColumn(handle: QTableViewH; column: Integer); cdecl; external QtIntf name 'QTableView_hideColumn';
+procedure QTableView_showRow(handle: QTableViewH; row: Integer); cdecl; external QtIntf name 'QTableView_showRow';
+procedure QTableView_showColumn(handle: QTableViewH; column: Integer); cdecl; external QtIntf name 'QTableView_showColumn';
+procedure QTableView_resizeRowToContents(handle: QTableViewH; row: Integer); cdecl; external QtIntf name 'QTableView_resizeRowToContents';
+procedure QTableView_resizeRowsToContents(handle: QTableViewH); cdecl; external QtIntf name 'QTableView_resizeRowsToContents';
+procedure QTableView_resizeColumnToContents(handle: QTableViewH; column: Integer); cdecl; external QtIntf name 'QTableView_resizeColumnToContents';
+procedure QTableView_resizeColumnsToContents(handle: QTableViewH); cdecl; external QtIntf name 'QTableView_resizeColumnsToContents';
+procedure QTableView_sortByColumn(handle: QTableViewH; column: Integer); overload; cdecl; external QtIntf name 'QTableView_sortByColumn2';
+procedure QTableView_setShowGrid(handle: QTableViewH; show: Boolean); cdecl; external QtIntf name 'QTableView_setShowGrid';
+
+
+type
+  QTableWidgetItemItemType = (  //QTableWidgetItem::ItemType (2s)
+    QTableWidgetItemType = 0,
+    QTableWidgetItemUserType = 1000 );
+
+function QTableWidgetSelectionRange_create(): QTableWidgetSelectionRangeH; overload; cdecl; external QtIntf name 'QTableWidgetSelectionRange_create';
+procedure QTableWidgetSelectionRange_destroy(handle: QTableWidgetSelectionRangeH); cdecl; external QtIntf name 'QTableWidgetSelectionRange_destroy'; 
+function QTableWidgetSelectionRange_create(top: Integer; left: Integer; bottom: Integer; right: Integer): QTableWidgetSelectionRangeH; overload; cdecl; external QtIntf name 'QTableWidgetSelectionRange_create2';
+function QTableWidgetSelectionRange_create(other: QTableWidgetSelectionRangeH): QTableWidgetSelectionRangeH; overload; cdecl; external QtIntf name 'QTableWidgetSelectionRange_create3';
+function QTableWidgetSelectionRange_topRow(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external QtIntf name 'QTableWidgetSelectionRange_topRow';
+function QTableWidgetSelectionRange_bottomRow(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external QtIntf name 'QTableWidgetSelectionRange_bottomRow';
+function QTableWidgetSelectionRange_leftColumn(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external QtIntf name 'QTableWidgetSelectionRange_leftColumn';
+function QTableWidgetSelectionRange_rightColumn(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external QtIntf name 'QTableWidgetSelectionRange_rightColumn';
+function QTableWidgetSelectionRange_rowCount(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external QtIntf name 'QTableWidgetSelectionRange_rowCount';
+function QTableWidgetSelectionRange_columnCount(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external QtIntf name 'QTableWidgetSelectionRange_columnCount';
+
+function QTableWidgetItem_create(_type: Integer = QTableWidgetItemType): QTableWidgetItemH; overload; cdecl; external QtIntf name 'QTableWidgetItem_create';
+procedure QTableWidgetItem_destroy(handle: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidgetItem_destroy'; 
+function QTableWidgetItem_create(text: PWideString; _type: Integer = QTableWidgetItemType): QTableWidgetItemH; overload; cdecl; external QtIntf name 'QTableWidgetItem_create2';
+function QTableWidgetItem_create(icon: QIconH; text: PWideString; _type: Integer = QTableWidgetItemType): QTableWidgetItemH; overload; cdecl; external QtIntf name 'QTableWidgetItem_create3';
+function QTableWidgetItem_create(other: QTableWidgetItemH): QTableWidgetItemH; overload; cdecl; external QtIntf name 'QTableWidgetItem_create4';
+function QTableWidgetItem_clone(handle: QTableWidgetItemH): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidgetItem_clone';
+function QTableWidgetItem_tableWidget(handle: QTableWidgetItemH): QTableWidgetH; cdecl; external QtIntf name 'QTableWidgetItem_tableWidget';
+function QTableWidgetItem_row(handle: QTableWidgetItemH): Integer; cdecl; external QtIntf name 'QTableWidgetItem_row';
+function QTableWidgetItem_column(handle: QTableWidgetItemH): Integer; cdecl; external QtIntf name 'QTableWidgetItem_column';
+procedure QTableWidgetItem_setSelected(handle: QTableWidgetItemH; select: Boolean); cdecl; external QtIntf name 'QTableWidgetItem_setSelected';
+function QTableWidgetItem_isSelected(handle: QTableWidgetItemH): Boolean; cdecl; external QtIntf name 'QTableWidgetItem_isSelected';
+function QTableWidgetItem_flags(handle: QTableWidgetItemH): QtItemFlags; cdecl; external QtIntf name 'QTableWidgetItem_flags';
+procedure QTableWidgetItem_setFlags(handle: QTableWidgetItemH; flags: QtItemFlags); cdecl; external QtIntf name 'QTableWidgetItem_setFlags';
+procedure QTableWidgetItem_text(handle: QTableWidgetItemH; retval: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_text';
+procedure QTableWidgetItem_setText(handle: QTableWidgetItemH; text: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_setText';
+procedure QTableWidgetItem_icon(handle: QTableWidgetItemH; retval: QIconH); cdecl; external QtIntf name 'QTableWidgetItem_icon';
+procedure QTableWidgetItem_setIcon(handle: QTableWidgetItemH; icon: QIconH); cdecl; external QtIntf name 'QTableWidgetItem_setIcon';
+procedure QTableWidgetItem_statusTip(handle: QTableWidgetItemH; retval: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_statusTip';
+procedure QTableWidgetItem_setStatusTip(handle: QTableWidgetItemH; statusTip: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_setStatusTip';
+procedure QTableWidgetItem_toolTip(handle: QTableWidgetItemH; retval: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_toolTip';
+procedure QTableWidgetItem_setToolTip(handle: QTableWidgetItemH; toolTip: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_setToolTip';
+procedure QTableWidgetItem_whatsThis(handle: QTableWidgetItemH; retval: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_whatsThis';
+procedure QTableWidgetItem_setWhatsThis(handle: QTableWidgetItemH; whatsThis: PWideString); cdecl; external QtIntf name 'QTableWidgetItem_setWhatsThis';
+procedure QTableWidgetItem_font(handle: QTableWidgetItemH; retval: QFontH); cdecl; external QtIntf name 'QTableWidgetItem_font';
+procedure QTableWidgetItem_setFont(handle: QTableWidgetItemH; font: QFontH); cdecl; external QtIntf name 'QTableWidgetItem_setFont';
+function QTableWidgetItem_textAlignment(handle: QTableWidgetItemH): Integer; cdecl; external QtIntf name 'QTableWidgetItem_textAlignment';
+procedure QTableWidgetItem_setTextAlignment(handle: QTableWidgetItemH; alignment: Integer); cdecl; external QtIntf name 'QTableWidgetItem_setTextAlignment';
+procedure QTableWidgetItem_backgroundColor(handle: QTableWidgetItemH; retval: PQColor); cdecl; external QtIntf name 'QTableWidgetItem_backgroundColor';
+procedure QTableWidgetItem_setBackgroundColor(handle: QTableWidgetItemH; color: PQColor); cdecl; external QtIntf name 'QTableWidgetItem_setBackgroundColor';
+procedure QTableWidgetItem_background(handle: QTableWidgetItemH; retval: QBrushH); cdecl; external QtIntf name 'QTableWidgetItem_background';
+procedure QTableWidgetItem_setBackground(handle: QTableWidgetItemH; brush: QBrushH); cdecl; external QtIntf name 'QTableWidgetItem_setBackground';
+procedure QTableWidgetItem_textColor(handle: QTableWidgetItemH; retval: PQColor); cdecl; external QtIntf name 'QTableWidgetItem_textColor';
+procedure QTableWidgetItem_setTextColor(handle: QTableWidgetItemH; color: PQColor); cdecl; external QtIntf name 'QTableWidgetItem_setTextColor';
+procedure QTableWidgetItem_foreground(handle: QTableWidgetItemH; retval: QBrushH); cdecl; external QtIntf name 'QTableWidgetItem_foreground';
+procedure QTableWidgetItem_setForeground(handle: QTableWidgetItemH; brush: QBrushH); cdecl; external QtIntf name 'QTableWidgetItem_setForeground';
+function QTableWidgetItem_checkState(handle: QTableWidgetItemH): QtCheckState; cdecl; external QtIntf name 'QTableWidgetItem_checkState';
+procedure QTableWidgetItem_setCheckState(handle: QTableWidgetItemH; state: QtCheckState); cdecl; external QtIntf name 'QTableWidgetItem_setCheckState';
+procedure QTableWidgetItem_sizeHint(handle: QTableWidgetItemH; retval: PSize); cdecl; external QtIntf name 'QTableWidgetItem_sizeHint';
+procedure QTableWidgetItem_setSizeHint(handle: QTableWidgetItemH; size: PSize); cdecl; external QtIntf name 'QTableWidgetItem_setSizeHint';
+procedure QTableWidgetItem_data(handle: QTableWidgetItemH; retval: QVariantH; role: Integer); cdecl; external QtIntf name 'QTableWidgetItem_data';
+procedure QTableWidgetItem_setData(handle: QTableWidgetItemH; role: Integer; value: QVariantH); cdecl; external QtIntf name 'QTableWidgetItem_setData';
+procedure QTableWidgetItem_read(handle: QTableWidgetItemH; _in: QDataStreamH); cdecl; external QtIntf name 'QTableWidgetItem_read';
+procedure QTableWidgetItem_write(handle: QTableWidgetItemH; _out: QDataStreamH); cdecl; external QtIntf name 'QTableWidgetItem_write';
+function QTableWidgetItem_type(handle: QTableWidgetItemH): Integer; cdecl; external QtIntf name 'QTableWidgetItem_type';
+
+function QTableWidget_create(parent: QWidgetH = nil): QTableWidgetH; overload; cdecl; external QtIntf name 'QTableWidget_create';
+procedure QTableWidget_destroy(handle: QTableWidgetH); cdecl; external QtIntf name 'QTableWidget_destroy'; 
+function QTableWidget_create(rows: Integer; columns: Integer; parent: QWidgetH = nil): QTableWidgetH; overload; cdecl; external QtIntf name 'QTableWidget_create2';
+procedure QTableWidget_setRowCount(handle: QTableWidgetH; rows: Integer); cdecl; external QtIntf name 'QTableWidget_setRowCount';
+function QTableWidget_rowCount(handle: QTableWidgetH): Integer; cdecl; external QtIntf name 'QTableWidget_rowCount';
+procedure QTableWidget_setColumnCount(handle: QTableWidgetH; columns: Integer); cdecl; external QtIntf name 'QTableWidget_setColumnCount';
+function QTableWidget_columnCount(handle: QTableWidgetH): Integer; cdecl; external QtIntf name 'QTableWidget_columnCount';
+function QTableWidget_row(handle: QTableWidgetH; item: QTableWidgetItemH): Integer; cdecl; external QtIntf name 'QTableWidget_row';
+function QTableWidget_column(handle: QTableWidgetH; item: QTableWidgetItemH): Integer; cdecl; external QtIntf name 'QTableWidget_column';
+function QTableWidget_item(handle: QTableWidgetH; row: Integer; column: Integer): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_item';
+procedure QTableWidget_setItem(handle: QTableWidgetH; row: Integer; column: Integer; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_setItem';
+function QTableWidget_takeItem(handle: QTableWidgetH; row: Integer; column: Integer): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_takeItem';
+function QTableWidget_verticalHeaderItem(handle: QTableWidgetH; row: Integer): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_verticalHeaderItem';
+procedure QTableWidget_setVerticalHeaderItem(handle: QTableWidgetH; row: Integer; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_setVerticalHeaderItem';
+function QTableWidget_takeVerticalHeaderItem(handle: QTableWidgetH; row: Integer): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_takeVerticalHeaderItem';
+function QTableWidget_horizontalHeaderItem(handle: QTableWidgetH; column: Integer): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_horizontalHeaderItem';
+procedure QTableWidget_setHorizontalHeaderItem(handle: QTableWidgetH; column: Integer; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_setHorizontalHeaderItem';
+function QTableWidget_takeHorizontalHeaderItem(handle: QTableWidgetH; column: Integer): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_takeHorizontalHeaderItem';
+procedure QTableWidget_setVerticalHeaderLabels(handle: QTableWidgetH; labels: QStringListH); cdecl; external QtIntf name 'QTableWidget_setVerticalHeaderLabels';
+procedure QTableWidget_setHorizontalHeaderLabels(handle: QTableWidgetH; labels: QStringListH); cdecl; external QtIntf name 'QTableWidget_setHorizontalHeaderLabels';
+function QTableWidget_currentRow(handle: QTableWidgetH): Integer; cdecl; external QtIntf name 'QTableWidget_currentRow';
+function QTableWidget_currentColumn(handle: QTableWidgetH): Integer; cdecl; external QtIntf name 'QTableWidget_currentColumn';
+function QTableWidget_currentItem(handle: QTableWidgetH): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_currentItem';
+procedure QTableWidget_setCurrentItem(handle: QTableWidgetH; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_setCurrentItem';
+procedure QTableWidget_setCurrentCell(handle: QTableWidgetH; row: Integer; column: Integer); cdecl; external QtIntf name 'QTableWidget_setCurrentCell';
+procedure QTableWidget_sortItems(handle: QTableWidgetH; column: Integer; order: QtSortOrder = QtAscendingOrder); cdecl; external QtIntf name 'QTableWidget_sortItems';
+procedure QTableWidget_setSortingEnabled(handle: QTableWidgetH; enable: Boolean); cdecl; external QtIntf name 'QTableWidget_setSortingEnabled';
+function QTableWidget_isSortingEnabled(handle: QTableWidgetH): Boolean; cdecl; external QtIntf name 'QTableWidget_isSortingEnabled';
+procedure QTableWidget_editItem(handle: QTableWidgetH; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_editItem';
+procedure QTableWidget_openPersistentEditor(handle: QTableWidgetH; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_openPersistentEditor';
+procedure QTableWidget_closePersistentEditor(handle: QTableWidgetH; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_closePersistentEditor';
+function QTableWidget_cellWidget(handle: QTableWidgetH; row: Integer; column: Integer): QWidgetH; cdecl; external QtIntf name 'QTableWidget_cellWidget';
+procedure QTableWidget_setCellWidget(handle: QTableWidgetH; row: Integer; column: Integer; widget: QWidgetH); cdecl; external QtIntf name 'QTableWidget_setCellWidget';
+function QTableWidget_isItemSelected(handle: QTableWidgetH; item: QTableWidgetItemH): Boolean; cdecl; external QtIntf name 'QTableWidget_isItemSelected';
+procedure QTableWidget_setItemSelected(handle: QTableWidgetH; item: QTableWidgetItemH; select: Boolean); cdecl; external QtIntf name 'QTableWidget_setItemSelected';
+procedure QTableWidget_setRangeSelected(handle: QTableWidgetH; range: QTableWidgetSelectionRangeH; select: Boolean); cdecl; external QtIntf name 'QTableWidget_setRangeSelected';
+function QTableWidget_visualRow(handle: QTableWidgetH; logicalRow: Integer): Integer; cdecl; external QtIntf name 'QTableWidget_visualRow';
+function QTableWidget_visualColumn(handle: QTableWidgetH; logicalColumn: Integer): Integer; cdecl; external QtIntf name 'QTableWidget_visualColumn';
+function QTableWidget_itemAt(handle: QTableWidgetH; p: PQtPoint): QTableWidgetItemH; overload; cdecl; external QtIntf name 'QTableWidget_itemAt';
+function QTableWidget_itemAt(handle: QTableWidgetH; x: Integer; y: Integer): QTableWidgetItemH; overload; cdecl; external QtIntf name 'QTableWidget_itemAt2';
+procedure QTableWidget_visualItemRect(handle: QTableWidgetH; retval: PRect; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_visualItemRect';
+function QTableWidget_itemPrototype(handle: QTableWidgetH): QTableWidgetItemH; cdecl; external QtIntf name 'QTableWidget_itemPrototype';
+procedure QTableWidget_setItemPrototype(handle: QTableWidgetH; item: QTableWidgetItemH); cdecl; external QtIntf name 'QTableWidget_setItemPrototype';
+procedure QTableWidget_scrollToItem(handle: QTableWidgetH; item: QTableWidgetItemH; hint: QAbstractItemViewScrollHint); cdecl; external QtIntf name 'QTableWidget_scrollToItem';
+procedure QTableWidget_insertRow(handle: QTableWidgetH; row: Integer); cdecl; external QtIntf name 'QTableWidget_insertRow';
+procedure QTableWidget_insertColumn(handle: QTableWidgetH; column: Integer); cdecl; external QtIntf name 'QTableWidget_insertColumn';
+procedure QTableWidget_removeRow(handle: QTableWidgetH; row: Integer); cdecl; external QtIntf name 'QTableWidget_removeRow';
+procedure QTableWidget_removeColumn(handle: QTableWidgetH; column: Integer); cdecl; external QtIntf name 'QTableWidget_removeColumn';
+procedure QTableWidget_clear(handle: QTableWidgetH); cdecl; external QtIntf name 'QTableWidget_clear';
+procedure QTableWidget_clearContents(handle: QTableWidgetH); cdecl; external QtIntf name 'QTableWidget_clearContents';
+
+
+type
+  QTableWidget_itemPressed_Event = procedure (item: QTableWidgetItemH) of object cdecl;
+  QTableWidget_itemClicked_Event = procedure (item: QTableWidgetItemH) of object cdecl;
+  QTableWidget_itemDoubleClicked_Event = procedure (item: QTableWidgetItemH) of object cdecl;
+  QTableWidget_itemActivated_Event = procedure (item: QTableWidgetItemH) of object cdecl;
+  QTableWidget_itemEntered_Event = procedure (item: QTableWidgetItemH) of object cdecl;
+  QTableWidget_itemChanged_Event = procedure (item: QTableWidgetItemH) of object cdecl;
+  QTableWidget_currentItemChanged_Event = procedure (current: QTableWidgetItemH; previous: QTableWidgetItemH) of object cdecl;
+  QTableWidget_itemSelectionChanged_Event = procedure () of object cdecl;
+  QTableWidget_cellPressed_Event = procedure (row: Integer; column: Integer) of object cdecl;
+  QTableWidget_cellClicked_Event = procedure (row: Integer; column: Integer) of object cdecl;
+  QTableWidget_cellDoubleClicked_Event = procedure (row: Integer; column: Integer) of object cdecl;
+  QTableWidget_cellActivated_Event = procedure (row: Integer; column: Integer) of object cdecl;
+  QTableWidget_cellEntered_Event = procedure (row: Integer; column: Integer) of object cdecl;
+  QTableWidget_cellChanged_Event = procedure (row: Integer; column: Integer) of object cdecl;
+  QTableWidget_currentCellChanged_Event = procedure (currentRow: Integer; currentColumn: Integer; previousRow: Integer; previousColumn: Integer) of object cdecl;
+
+
 function QLCLItemDelegate_create(parent: QObjectH = nil): QLCLItemDelegateH; cdecl; external QtIntf name 'QLCLItemDelegate_create';
 procedure QLCLItemDelegate_destroy(handle: QLCLItemDelegateH); cdecl; external QtIntf name 'QLCLItemDelegate_destroy'; 
 procedure QLCLItemDelegate_override_sizeHint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_sizeHint';
@@ -9706,6 +9905,33 @@ procedure QAbstractItemDelegate_hook_hook_commitData(handle: QAbstractItemDelega
 procedure QAbstractItemDelegate_hook_hook_closeEditor(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor';
 procedure QAbstractItemDelegate_hook_hook_closeEditor2(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor2';
 
+function QTableView_hook_create(handle: QObjectH): QTableView_hookH; cdecl; external QtIntf name 'QTableView_hook_create';
+procedure QTableView_hook_destroy(handle: QTableView_hookH); cdecl; external QtIntf name 'QTableView_hook_destroy'; 
+
+function QTableWidgetSelectionRange_hook_create(handle: QObjectH): QTableWidgetSelectionRange_hookH; cdecl; external QtIntf name 'QTableWidgetSelectionRange_hook_create';
+procedure QTableWidgetSelectionRange_hook_destroy(handle: QTableWidgetSelectionRange_hookH); cdecl; external QtIntf name 'QTableWidgetSelectionRange_hook_destroy'; 
+
+function QTableWidgetItem_hook_create(handle: QObjectH): QTableWidgetItem_hookH; cdecl; external QtIntf name 'QTableWidgetItem_hook_create';
+procedure QTableWidgetItem_hook_destroy(handle: QTableWidgetItem_hookH); cdecl; external QtIntf name 'QTableWidgetItem_hook_destroy'; 
+
+function QTableWidget_hook_create(handle: QObjectH): QTableWidget_hookH; cdecl; external QtIntf name 'QTableWidget_hook_create';
+procedure QTableWidget_hook_destroy(handle: QTableWidget_hookH); cdecl; external QtIntf name 'QTableWidget_hook_destroy'; 
+procedure QTableWidget_hook_hook_itemPressed(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemPressed';
+procedure QTableWidget_hook_hook_itemClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemClicked';
+procedure QTableWidget_hook_hook_itemDoubleClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemDoubleClicked';
+procedure QTableWidget_hook_hook_itemActivated(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemActivated';
+procedure QTableWidget_hook_hook_itemEntered(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemEntered';
+procedure QTableWidget_hook_hook_itemChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemChanged';
+procedure QTableWidget_hook_hook_currentItemChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentItemChanged';
+procedure QTableWidget_hook_hook_itemSelectionChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemSelectionChanged';
+procedure QTableWidget_hook_hook_cellPressed(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellPressed';
+procedure QTableWidget_hook_hook_cellClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellClicked';
+procedure QTableWidget_hook_hook_cellDoubleClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellDoubleClicked';
+procedure QTableWidget_hook_hook_cellActivated(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellActivated';
+procedure QTableWidget_hook_hook_cellEntered(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellEntered';
+procedure QTableWidget_hook_hook_cellChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellChanged';
+procedure QTableWidget_hook_hook_currentCellChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentCellChanged';
+
 function QDialog_hook_create(handle: QObjectH): QDialog_hookH; cdecl; external QtIntf name 'QDialog_hook_create';
 procedure QDialog_hook_destroy(handle: QDialog_hookH); cdecl; external QtIntf name 'QDialog_hook_destroy'; 
 procedure QDialog_hook_hook_finished(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_finished';
@@ -9740,7 +9966,17 @@ procedure QIODevice_hook_hook_aboutToClose(handle: QIODevice_hookH; hook: QHookH
 
 procedure initPWideStrings(CUPS, UOPS, LOPS, IPS, FPS: Pointer); cdecl; external QtIntf name 'initPWideStrings';
 procedure InitializePIntArray(GPP, GPL, SPL: Pointer); cdecl; external QtIntf name 'initializePIntArray';
-                       
+
+
+// Special-Purpose Global Functions Exported by Qt
+
+{$IFDEF LINUX}
+procedure QtX11WaitForWindowManager(handle : QWidgetH); cdecl; external QtIntf name 'qtx11waitforwindowmanager';
+{$ENDIF}
+
+{$IFDEF DARWIN}
+procedure QtMacSetDockMenu(handle : QMenuH); cdecl; external QtIntf name 'qtmacsetdockmenu';
+{$ENDIF}
 
 implementation
 uses SysUtils,Math;
