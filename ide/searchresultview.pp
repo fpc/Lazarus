@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, InputHistory,
   IDEProcs, FindInFilesDlg, Project, MainIntf;
 
 type
@@ -233,8 +233,8 @@ begin
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
   fListBoxFont:= TFont.Create;
-  fListBoxFont.Name:= 'courier';
-  fListBoxFont.Height:= 12;
+  fListBoxFont.Height:=EditorOpts.EditorFontHeight; // set Height before name for XLFD !
+  fListBoxFont.Name:=EditorOpts.EditorFont;
   fListBoxFont.Style:= [];
   fOnSelectionChanged:= nil;
   ShowHint:= True;
@@ -735,8 +735,8 @@ begin
             OnShowHint:= @LazLBShowHint;
             OnMouseMove:= @LazLBMousemove;
             OnMouseWheel:= @LazLBMouseWheel;
-            Font.Name:=fListBoxFont.Name;
             Font.Height:=fListBoxFont.Height;
+            Font.Name:=fListBoxFont.Name;            
             ShowHint:= true;
             NewListBox.Canvas.Color:= clWhite;
           end;//with
