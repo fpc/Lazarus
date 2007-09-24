@@ -33,7 +33,7 @@
 program Lazarus;
 
 {$mode objfpc}{$H+}
-{$apptype console}
+
 {$I ide.inc}
 
 {$IFDEF WIN32}
