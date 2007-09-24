@@ -213,10 +213,6 @@ msgstr "&Projeto"
 msgid "&Properties"
 msgstr "&Propriedades"
 
-#: lazarusidestrconsts:rsremove
-msgid "&Remove"
-msgstr ""
-
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
 msgstr "&Substituir por"
@@ -283,7 +279,7 @@ msgstr "<escolha um arquivo existente>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou mofica-la sob os termos da licenca GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior com as seguintes modificacoes:%sComo uma excecao especial, os detentores do copyright desta biblioteca dao permissao para usa-la com modulos independentes para produzir um executavel, independentemente dos termos de licenca destes modulos independentes, e copiar e distribuir o executavel resultante sob os termos de sua escolha, desde que voce encontre, para cada modulo independente vinculado, os termos e condicoes da licenca daquele modulo. Um modulo independente e um modulo que nao e derivado ou baseado nesta biblioteca. Se voce modificar esta biblioteca voce deve estender esta excecao a sua versao da biblioteca, mas nao e obrigado a fazer isto. Se voce nao quiser fazer isto, elimine o estatuto desta excecao da sua versao.%sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou mofica-la sob os termos da licenca GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior com as seguintes modificacoes:%sComo uma exceção especial, os detentores do copyright desta biblioteca dao permissao para usa-la com modulos independentes para produzir um executavel, independentemente dos termos de licenca destes modulos independentes, e copiar e distribuir o executavel resultante sob os termos de sua escolha, desde que voce encontre, para cada modulo independente vinculado, os termos e condicoes da licenca daquele modulo. Um modulo independente e um modulo que nao e derivado ou baseado nesta biblioteca. Se voce modificar esta biblioteca voce deve estender esta exceção a sua versao da biblioteca, mas nao e obrigado a fazer isto. Se voce nao quiser fazer isto, elimine o estatuto desta exceção da sua versao.%sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -319,7 +315,7 @@ msgstr "Um simples arquivo de programa Pascal.%sEle pode ser usado para um teste
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
-msgstr "Uma ferramenta para ser válida necessita de um t�tulo e nome de arquivo."
+msgstr "Uma ferramenta para ser válida necessita de um t�-tulo e nome de arquivo."
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
@@ -361,10 +357,6 @@ msgstr "Sobre o Lazarus"
 msgid "Accept"
 msgstr "Aceitar"
 
-#: lazarusidestrconsts:lisacknowledgements
-msgid "Acknowledgements"
-msgstr ""
-
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "Ação: %s"
@@ -392,10 +384,6 @@ msgstr "Adicionar Arquivo"
 #: lazarusidestrconsts:lisa2paddfiles
 msgid "Add Files"
 msgstr "Adicionar Arquivos"
-
-#: lazarusidestrconsts:rsaddinverse
-msgid "Add Inverse"
-msgstr ""
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -479,7 +467,7 @@ msgstr "Adicionar caminhos para pacotes/projetos dependentes"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr "Adicionar ponto e v�rgula"
+msgstr "Adicionar ponto e v�-rgula"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -529,10 +517,6 @@ msgstr "Caminho de busca Adicional"
 msgid "Adjust top line due to comment in front"
 msgstr "Ajustar linha do topo devido ao comentário em frente"
 
-#: lazarusidestrconsts:lislazbuildadvancedbuildoptions
-msgid "Advanced Build Options"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
 msgstr "AfricÂner"
@@ -577,7 +561,7 @@ msgstr "Permitir busca por multiplas linhas"
 msgid "Alphabetically"
 msgstr "Alfabeticamente"
 
-#: lazarusidestrconsts:srkm_alt
+#: lazarusidestrconsts:lisedtexttoolalt
 msgid "Alt"
 msgstr "Alt"
 
@@ -887,7 +871,7 @@ msgstr "Quebrar linha, manter o cursor"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmbreakonlazarusexceptions
 msgid "Break on Lazarus Exceptions"
-msgstr "Parar nas excessões do Lazarus"
+msgstr "Parar nas exceções do Lazarus"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -917,7 +901,7 @@ msgstr "Navegador para Compilador (%s)"
 msgid "Build"
 msgstr "Construir"
 
-#: lazarusidestrconsts:lislazbuildbuildcodetools
+#: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
 msgstr "Construir Ferramentas de Código"
 
@@ -925,11 +909,15 @@ msgstr "Construir Ferramentas de Código"
 msgid "Build Command"
 msgstr "Construir Comando"
 
+#: lazarusidestrconsts:lisbuildcomponent
+msgid "Build Component"
+msgstr "Construir Componente"
+
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
 msgstr "Construir Componentes (SynEdit, Ferramentas de Código)"
 
-#: lazarusidestrconsts:lislazbuildbuildexamples
+#: lazarusidestrconsts:lisbuildexamples
 msgid "Build Examples"
 msgstr "Construir Exemplos"
 
@@ -937,13 +925,25 @@ msgstr "Construir Exemplos"
 msgid "Build File"
 msgstr "Construir Arquivo"
 
-#: lazarusidestrconsts:lislazbuildbuildide
+#: lazarusidestrconsts:lisbuildide
 msgid "Build IDE"
 msgstr "Construir IDE"
+
+#: lazarusidestrconsts:lisbuildideintf
+msgid "Build IDE Interface"
+msgstr "Construir a Inteface da IDE"
+
+#: lazarusidestrconsts:lisbuildjitform
+msgid "Build JIT Form"
+msgstr "Build 'JIT Form'"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Construir JITForm"
+
+#: lazarusidestrconsts:lisbuildlcl
+msgid "Build LCL"
+msgstr "Construir LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -953,11 +953,15 @@ msgstr "Construir Lazarus"
 msgid "Build Number"
 msgstr "Número da Construção"
 
-#: lazarusidestrconsts:lislazbuildbuildoptions
-msgid "Build Options"
-msgstr ""
+#: lazarusidestrconsts:lisbuildpkgreg
+msgid "Build Package Registration"
+msgstr "Registro de Construção do Pacote""
 
-#: lazarusidestrconsts:lislazbuildbuildsynedit
+#: lazarusidestrconsts:lisbuildstarter
+msgid "Build Starter"
+msgstr "Iniciador de Construção"
+
+#: lazarusidestrconsts:lisbuildsynedit
 msgid "Build SynEdit"
 msgstr "Construir SynEdit"
 
@@ -1393,10 +1397,6 @@ msgstr "Modelos de Codigos"
 msgid "CodeExplorer Options"
 msgstr "Opções do Explorador de Código"
 
-#: lazarusidestrconsts:liscodetools
-msgid "CodeTools"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr "Ferramentas de codigo - ferramentas e funcoes para analisar, visualizar e editar fontes Pascal"
@@ -1593,10 +1593,6 @@ msgstr "Complementação de Código"
 msgid "Complete properties"
 msgstr "Completar propriedades"
 
-#: lazarusidestrconsts:liscomponent
-msgid "Component"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
 msgstr "Classe de componente %s%s%s já definida"
@@ -1616,10 +1612,6 @@ msgstr "Componentes"
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
 msgstr "Comandos do menu Componentes"
-
-#: lazarusidestrconsts:rsconditionaldefines
-msgid "Conditional defines"
-msgstr ""
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1696,10 +1688,6 @@ msgstr "Conflito "
 #: lazarusidestrconsts:lispeconflictfound
 msgid "Conflict found"
 msgstr "Conflito encontrado"
-
-#: lazarusidestrconsts:lisconsoleapplication
-msgid "Console application"
-msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -1945,10 +1933,6 @@ msgstr "Criar uma nova unidade com um datamodule."
 msgid "Create a project first!"
 msgstr "Criar um projeto primeiro!"
 
-#: lazarusidestrconsts:rscreatenewdefine
-msgid "Create new define"
-msgstr ""
-
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
 msgstr "Criar novo arquivo"
@@ -1961,7 +1945,7 @@ msgstr "Criar novo projeto"
 msgid "Creation"
 msgstr "Criação"
 
-#: lazarusidestrconsts:srkm_ctrl
+#: lazarusidestrconsts:lisedtexttoolctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -2333,10 +2317,6 @@ msgstr "Arquivos do editor Diff"
 msgid "Direction"
 msgstr "Direção"
 
-#: lazarusidestrconsts:lisdirectives
-msgid "Directives"
-msgstr ""
-
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
 msgstr "Diretório"
@@ -2391,7 +2371,7 @@ msgstr "Nao fechar o projeto"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
-msgstr "Não salvar nenhuma informação de sessão"
+msgstr "Não salvar informação de sessão"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2753,10 +2733,6 @@ msgstr "Registro de Eventos"
 msgid "Example"
 msgstr "Exemplo"
 
-#: lazarusidestrconsts:lisexamples
-msgid "Examples"
-msgstr ""
-
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Filtro de Exclusão"
@@ -3087,7 +3063,7 @@ msgstr "Localizar Declaração no Cursor"
 
 #: lazarusidestrconsts:uemfindidentifierreferences
 msgid "Find Identifier References"
-msgstr "Localizar referências do identificador"
+msgstr "Localizar Referências do Identificador"
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References ..."
@@ -3657,17 +3633,9 @@ msgstr "Já lhe disse: não foi implementado ainda"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts:liside
-msgid "IDE"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Integração com a IDE"
-
-#: lazarusidestrconsts:lisideintf
-msgid "IDE Interface"
-msgstr ""
 
 #: lazarusidestrconsts:lisideoptions
 msgid "IDE Options:"
@@ -3775,7 +3743,7 @@ msgstr "Ignorar espaços no inicio da linha"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr "Ignorar esta excessão"
+msgstr "Ignorar esta exceção"
 
 #: lazarusidestrconsts:lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
@@ -4349,10 +4317,6 @@ msgstr "Italico"
 msgid "Item height"
 msgstr "Altura do Item"
 
-#: lazarusidestrconsts:lisjitform
-msgid "JIT Form"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
 msgstr "Japones"
@@ -4460,10 +4424,6 @@ msgstr "Palavra-Chave"
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
 msgstr "Politica de Palavras-Chaves"
-
-#: lazarusidestrconsts:lislcl
-msgid "LCL"
-msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -4666,16 +4626,16 @@ msgid "Level 0 (no extra Optimizations)"
 msgstr "Nível 0 (nenhuma Otimização extra)"
 
 #: lazarusidestrconsts:dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
-msgstr ""
+msgid "Level 1 (Quick Optimizations)"
+msgstr "Nível 1 (Rápido Otimização)"
 
 #: lazarusidestrconsts:dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
-msgstr ""
+msgid "Level 2 (Level 1 + Slower Optimizations)"
+msgstr "Nível 2 (Nível 1 + Otimizações mais lentas)"
 
 #: lazarusidestrconsts:dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr ""
+msgid "Level 3 (Level 2 + Uncertain)"
+msgstr "Nível 3 (Nível 2 + Incertas)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -4698,8 +4658,8 @@ msgid "License:"
 msgstr "Licença:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
+msgstr "Licenca: GPL/LGPL%sO Lazarus é uma coleção de bibliotecas de classes para o Free Pascal que emula o Delphi. Free Pascal é um compilador (L)GPL que roda em Linux, Win32, OS/2, 68K e mais. O Free Pascal é desenhado para entender e compilar em sintaxe Delphi, que naturalmente é OOP.%sO Lazarus é a parte que faltava de um quebra-cabeças que permitirá a você desenvolver programas como em Delphi em todas as plataformas acima. A IDE será eventualmente uma ferramenta RAD como o Delphi.%sComo o Lazarus está crescendo, precisamos de mais desenvolvedores."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -4740,10 +4700,6 @@ msgstr "Vinculador"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Vinculando"
-
-#: lazarusidestrconsts:rslanguagelithuanian
-msgid "Lithuanian"
-msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -5099,7 +5055,7 @@ msgstr "Move caminho acima"
 
 #: lazarusidestrconsts:fdmordermovetoback
 msgid "Move to back"
-msgstr "Mover para atrás"
+msgstr "Mover para trás"
 
 #: lazarusidestrconsts:fdmordermovetofront
 msgid "Move to front"
@@ -5319,7 +5275,7 @@ msgstr "Modo de seleção normal"
 
 #: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
-msgstr "Normalmente o filtro é uma expressão regular. Em Sintaxe Simples um . é um caractere normal, um * significa qualquer coisa, um ? significa qualquer caractere, v�rgula e ponto-e-virugla separam alternativas. Por exemplo: Simples Sintaxe *.pas;*.pp corresponde a ^(.*\\.pas|.*\\.pp)$"
+msgstr "Normalmente o filtro é uma expressão regular. Em Sintaxe Simples um . é um caractere normal, um * significa qualquer coisa, um ? significa qualquer caractere, v�-rgula e ponto-e-v�-rgula separam alternativas. Por exemplo: Simples Sintaxe *.pas;*.pp corresponde a ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
@@ -5367,7 +5323,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
-msgstr "Excecao do SO"
+msgstr "Exceção do SO"
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
@@ -5623,7 +5579,7 @@ msgstr "Outros Fontes (arquivos .pp/.pas, usado somente pela IDE não pelo Compi
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Outros arquivos de unidade (-Fu) (ponto e v�rgula é o delimitador)"
+msgstr "Outros arquivos de unidade (-Fu) (ponto e v�-rgula é o delimitador)"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -5712,10 +5668,6 @@ msgstr "Nome do Pacote:"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opções do Pacote"
-
-#: lazarusidestrconsts:lispkgreg
-msgid "Package Registration"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -6161,10 +6113,6 @@ msgstr ""
 msgid "Protected Method"
 msgstr "Método Protegido"
 
-#: lazarusidestrconsts:lispckoptsprovides
-msgid "Provides"
-msgstr ""
-
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Método Publico"
@@ -6188,10 +6136,6 @@ msgstr "Diretório para publicação do projeto"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Método Publicado"
-
-#: lazarusidestrconsts:lislazbuildquickbuildoptions
-msgid "Quick Build Options"
-msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6500,10 +6444,6 @@ msgstr "Falha na Substituição da seleção."
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Relatorio"
-
-#: lazarusidestrconsts:lismenureportingbug
-msgid "Reporting a bug..."
-msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -7163,11 +7103,11 @@ msgstr "Ferramenta de seleção"
 
 #: lazarusidestrconsts:liscodetoolsoptssemicolon
 msgid "Semicolon"
-msgstr "Ponto-e-V�rgula"
+msgstr "Ponto-e-V�-rgula"
 
 #: lazarusidestrconsts:dlgposavesession
 msgid "Session"
-msgstr "Seção"
+msgstr "Sessão"
 
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
@@ -7241,6 +7181,10 @@ msgstr "Ajustar propriedade de variável"
 msgid "Set the breakpoint anyway"
 msgstr "Ajustar o ponto de interrupção"
 
+#: lazarusidestrconsts:lislazbuildsettobuildall
+msgid "Set to %sBuild All%s"
+msgstr "Configurar %sConstruir Tudo%s"
+
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
 msgstr "Shift"
@@ -7255,7 +7199,7 @@ msgstr "Ordem"
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
-msgstr ""
+msgstr "Encolher ou expandir nome de arquivo"
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
@@ -7275,7 +7219,7 @@ msgstr "Mostrar Erros"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr "Mostrar linhas-guia"
+msgstr "Mostrar Linhas-Guia"
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
@@ -7283,11 +7227,11 @@ msgstr "Mostrar Dicas"
 
 #: lazarusidestrconsts:dlghintsparametersendernotused
 msgid "Show Hints for parameter \"Sender\" not used"
-msgstr ""
+msgstr "Mostrar dicas para parametro \"Sender"\ nao usado"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr "Mostrar Dicas para unidades nao utilizadas no código principal"
+msgstr "Mostrar dicas para unidades nao utilizadas no código principal"
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
@@ -7343,7 +7287,7 @@ msgstr "Mostrar Opções de Compilador"
 
 #: lazarusidestrconsts:dlgshowcaps
 msgid "Show component captions"
-msgstr "Mostrar titulos de componente"
+msgstr "Mostrar t�-tulos de componente"
 
 #: lazarusidestrconsts:dlgshowconditionals
 msgid "Show conditionals"
@@ -7387,7 +7331,7 @@ msgstr "Mostrar dicas no Inspetor de Objetos"
 
 #: lazarusidestrconsts:lisshowidentifiers
 msgid "Show identifiers"
-msgstr ""
+msgstr "Mostrar identificadores"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -7395,7 +7339,7 @@ msgstr "Mostar Número de Linhas"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
-msgstr "Mostrar Mensagem na parada"
+msgstr "Mostrar mensagem na parada"
 
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
@@ -7403,7 +7347,7 @@ msgstr "Não Mostrar Nada (somente erros)"
 
 #: lazarusidestrconsts:lisshowoldtaborder
 msgid "Show old tab order"
-msgstr "Mostrar antiga Ordem de Tabulação"
+msgstr "Mostrar antiga ordem de tabulação"
 
 #: lazarusidestrconsts:lisshowpackages
 msgid "Show packages"
@@ -7419,11 +7363,11 @@ msgstr "Mostrar Sumario"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
-msgstr "Mostrar Arquivos provados"
+msgstr "Mostrar arquivos provados"
 
 #: lazarusidestrconsts:lisshowunits
 msgid "Show units"
-msgstr ""
+msgstr "Mostrar unidades"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -7465,17 +7409,13 @@ msgstr "Saltar arquivo e continuar carregando"
 msgid "Skip loading last project"
 msgstr "Ignorar carregamento do ultimo projeto"
 
-#: lazarusidestrconsts:lispkgmangskipthispackage
-msgid "Skip this package"
-msgstr ""
-
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Código Pequeno"
 
 #: lazarusidestrconsts:dlgcosmartlinkable
 msgid "Smart Linkable"
-msgstr "Vinculação Inteligente"
+msgstr "Vinculação inteligente"
 
 #: lazarusidestrconsts:dlgsmarttabs
 msgid "Smart tabs"
@@ -7543,11 +7483,11 @@ msgstr "Fonte da página %s%s%s foi modificado. Salvar?"
 
 #: lazarusidestrconsts:lissourcepaths
 msgid "Source paths"
-msgstr ""
+msgstr "Caminhos dos fontes"
 
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
-msgstr "Pre-exibir Fonte"
+msgstr "Pré-exibir Fonte"
 
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
@@ -7588,10 +7528,6 @@ msgstr "Menu Ajuda Padrão"
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Iniciar com um novo projeto"
-
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr ""
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -7716,10 +7652,6 @@ msgstr "Símbolo atrás (.pp~)"
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
 msgstr "Símbolo à frente (.~pp)"
-
-#: lazarusidestrconsts:lissynedit
-msgid "SynEdit"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
@@ -8169,10 +8101,6 @@ msgstr "As seguintes unidades não foram encontradas:%s%s%s%s1)  Essas unidades 
 msgid "The host application %s%s%s is not executable."
 msgstr "A Aplicação hospedeira %s%s%s não é um executável."
 
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
-
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "A aplicação %s%s%s%s não existe ou não é um executável.%s%sVeja Executar -> Parâmetros de Execução -> Local"
@@ -8492,10 +8420,6 @@ msgstr "Este parece um arquivo Pascal.%sE recomendado usar arquivos com nome em 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Este pacote está instalado, mas o arquivo LPK não foi encontrado. Todos esses componentes estão desativados. Por favor corrija isso."
-
-#: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
-msgid "This package provides the same as the following packages:"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9197,10 +9121,6 @@ msgstr "Uso"
 msgid "Use Ansi Strings"
 msgstr "Usar Sequências de Caracteres Ansi"
 
-#: lazarusidestrconsts:dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (darwin only)"
-msgstr ""
-
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
 msgstr "Usar Filtro de Exclusao"
@@ -9228,10 +9148,6 @@ msgstr "Usar Exibição"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Usar inicialização de aplicação"
-
-#: lazarusidestrconsts:dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
-msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -9661,14 +9577,6 @@ msgstr "dinamico auto-instalado"
 msgid "auto install static"
 msgstr "estatico auto-instalado"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "começa"
@@ -9724,14 +9632,6 @@ msgstr "avaliar/modificar"
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr "arquivo, onde saída do debug é escrita. Se não especificado, saída do debug é escrita no console."
-
-#: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
-
-#: lazarusidestrconsts:lisreportingbugurl
-msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
