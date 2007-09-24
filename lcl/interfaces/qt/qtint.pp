@@ -135,7 +135,8 @@ type
 
 const
    TargetEntrys = 3;
-
+   QEventLCLMessage = QEventUser;
+   
 var
   QtWidgetSet: TQtWidgetSet;
 

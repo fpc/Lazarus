@@ -32,7 +32,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtobjects,
+  qtobjects, qtint,
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
@@ -128,6 +128,7 @@ type
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
     procedure SlotContextMenu; cdecl;
+    procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
   public
     procedure Activate;
     procedure BringToFront;
@@ -1360,6 +1361,11 @@ begin
     QEventResize: SlotResize;
     QEventPaint: SlotPaint(Event);
     QEventContextMenu: SlotContextMenu;
+    QEventLCLMessage:
+      begin
+        SlotLCLMessage(Sender, Event);
+        Result := True;
+      end;
   else
     QEvent_ignore(Event);
   end;
@@ -2030,6 +2036,18 @@ procedure TQtWidget.SlotContextMenu; cdecl;
 begin
   if Assigned(LCLObject.PopupMenu) then
    LCLObject.PopupMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
+
+procedure TQtWidget.SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  MessageEvent: QLCLMessageEventH absolute Event;
+  Msg: TLMessage;
+begin
+  Msg.msg := QLCLMessageEvent_getMsg(MessageEvent);
+  Msg.wParam := QLCLMessageEvent_getWParam(MessageEvent);
+  Msg.lParam := QLCLMessageEvent_getLParam(MessageEvent);
+  Msg.Result := 0;
+  DeliverMessage(Msg);
 end;
 
 procedure TQtWidget.Activate;

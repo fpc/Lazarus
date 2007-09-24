@@ -141,8 +141,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  if QCoreApplication_hasPendingEvents
-  then
+  if QCoreApplication_hasPendingEvents then
     QCoreApplication_processEvents();
 end;
 

@@ -3377,23 +3377,16 @@ begin
 end;
 
 function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
-{var
+var
   Widget: TQtWidget absolute Handle;
-  Event: QEventH;
-}
+  Event: QLCLMessageEventH;
 begin
   Result := False;
   if Handle <> 0 then
   begin
-    {$note todo ask in bindings}
-{
-    Event := QEvent_create(QEventUser);
-    try
-      QCoreApplication_postEvent(Widget.Widget, Event);
-    finally
-      QEvent_destroy(Event);
-    end;
-}
+    Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
+    QCoreApplication_postEvent(Widget.Widget, Event);
+    Result := True;
   end;
 end;
 {------------------------------------------------------------------------------
