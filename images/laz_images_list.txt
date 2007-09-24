@@ -95,7 +95,9 @@ menu/menu_uncomment_16.xpm
 menu/menu_undo.png
 menu/menu_unindent.png
 menu/menu_view_anchor_editor.png
+menu/menu_view_code_explorer.png
 menu/menu_view_inspector.png
+menu/menu_view_source_editor.png
 menu/menu_view_toggle_form_unit.png
 codeexplorer/ce_class.xpm
 codeexplorer/ce_const.xpm
