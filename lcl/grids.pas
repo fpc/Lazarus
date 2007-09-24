@@ -5209,6 +5209,8 @@ var
   R: TRect;
 begin
   {$ifdef dbgPaint} DebugLn('InvalidateCol  Col=',IntToStr(aCol)); {$Endif}
+  if not HandleAllocated then
+    exit;
   R:=CellRect(aCol, FTopLeft.y);
   R.Top:=0; // Full Column
   R.Bottom:=FGCache.MaxClientXY.Y;
@@ -5220,6 +5222,8 @@ var
   R: TRect;
 begin
   {$IFDEF dbgPaint} DebugLn('InvalidateFromCol  Col=',IntToStr(aCol)); {$Endif}
+  if not HandleAllocated then
+    exit;
   R:=CellRect(aCol, FTopLeft.y);
   R.Top:=0; // Full Column
   R.BottomRight := FGCache.MaxClientXY;
@@ -5231,6 +5235,8 @@ var
   R: TRect;
 begin
   {$ifdef DbgPaint} DebugLn('InvalidateRow  Row=',IntToStr(aRow)); {$Endif}
+  if not HandleAllocated then
+    exit;
   R:=CellRect(fTopLeft.x, aRow);
   R.Left:=0; // Full row
   R.Right:=FGCache.MaxClientXY.X;
@@ -5588,6 +5594,8 @@ procedure TCustomGrid.InvalidateRange(const aRange: TRect);
 var
   RIni,RFin: TRect;
 begin
+  if not HandleAllocated then
+    exit;
   RIni := CellRect(aRange.Left, aRange.Top);
   RFin := CellRect(aRange.Right, aRange.Bottom);
   RIni.Right := RFin.Right;
