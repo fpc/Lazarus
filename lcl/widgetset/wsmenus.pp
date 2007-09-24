@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Menus, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, LCLType;
+  WSLCLClasses, LCLType, LCLProc;
 
 type
   { TWSMenuItem }
@@ -86,6 +86,8 @@ type
   end;
   TWSPopupMenuClass = class of TWSPopupMenu;
 
+function WSCheckMenuItem(const AMenuItem: TMenuItem;
+  const AProcName: String): Boolean;
 
 implementation
 
@@ -162,6 +164,19 @@ end;
 
 class procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 begin
+end;
+
+function WSCheckMenuItem(const AMenuItem: TMenuItem;
+  const AProcName: String): Boolean;
+
+  procedure Warn;
+  begin
+    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AMenuItem.Name, AMenuItem.ClassName]);
+  end;
+begin
+  Result := AMenuItem.HandleAllocated;
+  if Result then Exit;
+  Warn;
 end;
 
 initialization

@@ -86,6 +86,7 @@ type
     procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
   public
     constructor Create;
     destructor Destroy; override;

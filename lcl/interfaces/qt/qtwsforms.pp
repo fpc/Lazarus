@@ -191,12 +191,6 @@ begin
     QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
   {$endif}
 
-  R := AWinControl.ClientRect;
-  R1 := QtMainWindow.MenuBar.getGeometry;
-  R1.Right := R.Right;
-  QtMainWindow.MenuBar.setGeometry(R1);
-  QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
-
   // Return the handle
   Result := THandle(QtMainWindow);
 end;

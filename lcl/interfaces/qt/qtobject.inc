@@ -193,11 +193,31 @@ begin
   // TODO
 end;
 
+procedure TQtWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+var
+  AWidget, AMenuWidget: TQtWidget;
+  QtMainWindow: TQtMainWindow absolute AWidget;
+  QtMenuBar: TQtMenuBar absolute AMenuWidget;
+  R, R1: TRect;
+begin
+  AMenuWidget := TQtWidget((AMenuObject as TMenu).Handle);
+  if AMenuWidget is TQtMenuBar then
+  begin
+    AWidget := TQtWidget(TWinControl(AMenuObject.Owner).Handle);
+    if AWidget is TQtMainWindow then
+    begin
+      R := AWidget.LCLObject.ClientRect;
+      R1 := QtMainWindow.MenuBar.getGeometry;
+      R1.Right := R.Right;
+      QtMenuBar.setGeometry(R1);
+      QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
+    end;
+  end;
+end;
+
 function TQtWidgetSet.CreateThemeServices: TThemeServices;
 begin
-  // TODO: uncomment if you want to test TQtThemeServices
   Result := TQtThemeServices.Create;
-  //Result := inherited CreateThemeServices;
 end;
 
 function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;

@@ -806,11 +806,11 @@ type
   private
     FIcon: QIconH;
     FActionHook: QAction_hookH;
+    FMenuItem: TMenuItem;
+  protected
+    function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
   public
-    MenuItem: TMenuItem;
-  public
-    constructor Create(const AParent: QWidgetH); overload;
-    constructor Create(const AHandle: QMenuH); overload;
+    constructor Create(const AMenuItem: TMenuItem); overload;
     destructor Destroy; override;
   public
     procedure AttachEvents; override;
@@ -822,8 +822,7 @@ type
   public
     procedure PopUp(pos: PQtPoint; at: QActionH = nil);
     function actionHandle: QActionH;
-    function addMenu(title: PWideString): TQtMenu;
-    function addSeparator: TQtMenu;
+    function addMenu(AMenu: QMenuH): QActionH;
     function getVisible: Boolean; override;
     function getText: WideString; override;
     procedure setChecked(p1: Boolean);
@@ -846,8 +845,7 @@ type
   public
     constructor Create(const AParent: QWidgetH); overload;
   public
-    function addMenu(title: PWideString): TQtMenu;
-    function addSeparator: TQtMenu;
+    function addMenu(AMenu: QMenuH): QActionH;
     function getGeometry: TRect; override;
   end;
 
@@ -1079,10 +1077,13 @@ begin
   SetGeometry;
 
   // set focus policy
-  if LCLObject.TabStop then
-    setFocusPolicy(QtClickFocus)
-  else
-    setFocusPolicy(QtNoFocus);
+  if LCLObject <> nil then
+  begin
+    if LCLObject.TabStop then
+      setFocusPolicy(QtClickFocus)
+    else
+      setFocusPolicy(QtNoFocus);
+  end;
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -2792,7 +2793,8 @@ end;
 
 procedure TQtWidget.SetGeometry;
 begin
-  setGeometry(LCLObject.BoundsRect);
+  if LCLObject <> nil then
+    setGeometry(LCLObject.BoundsRect);
 end;
 
 { TQtAbstractButton }
@@ -5848,18 +5850,18 @@ end;
 
 { TQtMenu }
 
-constructor TQtMenu.Create(const AParent: QWidgetH);
+function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
 begin
-  Create;
-  Widget := QMenu_Create(AParent);
   FIcon := nil;
+  Result := QMenu_create();
 end;
 
-constructor TQtMenu.Create(const AHandle: QMenuH);
+constructor TQtMenu.Create(const AMenuItem: TMenuItem);
+var
+  AParams: TCreateParams;
 begin
-  Create;
-  Widget := AHandle;
-  FIcon := nil;
+  FMenuItem := AMenuItem;
+  inherited Create(nil, AParams);
 end;
 
 destructor TQtMenu.Destroy;
@@ -5908,15 +5910,10 @@ begin
   Result := QMenu_menuAction(QMenuH(Widget));
 end;
 
-function TQtMenu.addMenu(title: PWideString): TQtMenu;
+function TQtMenu.addMenu(AMenu: QMenuH): QActionH;
 begin
-  Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), title));
-end;
-
-function TQtMenu.addSeparator: TQtMenu;
-begin
-  Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), PWideString(nil)));
-  Result.setSeparator(True);
+  setHasSubmenu(True);
+  Result := QMenu_addMenu(QMenuH(Widget), AMenu);
 end;
 
 function TQtMenu.getVisible: Boolean;
@@ -6013,8 +6010,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMenu.SlotTriggered(checked: Boolean); cdecl;
 begin
-  if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then
-   MenuItem.OnClick(Self.MenuItem);
+  if Assigned(FMenuItem) and Assigned(FMenuItem.OnClick) then
+    FMenuItem.OnClick(FMenuItem);
 end;
 
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -6039,26 +6036,14 @@ begin
   setVisible(FVisible);
 end;
 
-function TQtMenuBar.addMenu(title: PWideString): TQtMenu;
+function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;
 begin
   if not FVisible then
   begin
     FVisible := True;
     setVisible(FVisible);
   end;
-  
-  Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), title));
-end;
-
-function TQtMenuBar.addSeparator: TQtMenu;
-begin
-  if not FVisible then
-  begin
-    FVisible := True;
-    setVisible(FVisible);
-  end;
-  Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), PWideString(nil)));
-  Result.setSeparator(True);
+  Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
 end;
 
 function TQtMenuBar.getGeometry: TRect;
