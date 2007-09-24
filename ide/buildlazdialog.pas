@@ -254,7 +254,7 @@ type
   end;
 
 function ShowConfigureBuildLazarusDlg(
-  Options: TBuildLazarusOptions): TModalResult;
+  AOptions: TBuildLazarusOptions): TModalResult;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
@@ -301,20 +301,22 @@ begin
 end;
 
 function ShowConfigureBuildLazarusDlg(
-  Options: TBuildLazarusOptions): TModalResult;
+  AOptions: TBuildLazarusOptions): TModalResult;
 // mrOk=save
 // mrYes=save and compile
-var ConfigBuildLazDlg: TConfigureBuildLazarusDlg;
+var
+  ConfigBuildLazDlg: TConfigureBuildLazarusDlg;
 begin
-  Result:=mrCancel;
-  ConfigBuildLazDlg:=TConfigureBuildLazarusDlg.Create(nil);
+  Result := mrCancel;
+  ConfigBuildLazDlg := TConfigureBuildLazarusDlg.Create(nil);
   try
-    ConfigBuildLazDlg.Load(Options);
-    Result:=ConfigBuildLazDlg.ShowModal;
-    if Result in [mrOk,mrYes] then begin
-      DebugLn('ShowConfigureBuildLazarusDialog');
-      ConfigBuildLazDlg.Save(Options);
-      end;
+    ConfigBuildLazDlg.Load(AOptions);
+    Result := ConfigBuildLazDlg.ShowModal;
+    if Result in [mrOk,mrYes]
+    then begin
+      //DebugLn('ShowConfigureBuildLazarusDialog');
+      AOptions.Assign(ConfigBuildLazDlg.Options);
+    end;
   finally
     ConfigBuildLazDlg.Free;
   end;
