@@ -222,7 +222,7 @@ begin
     WriteLn('[TQtWSMenuItem.SetCaption] Caption: ' + AMenuItem.Caption + ' NewCaption: ', ACaption);
   {$endif}
 
-  if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
 
   Widget := TQtWidget(AMenuItem.Handle);
@@ -243,7 +243,7 @@ begin
     WriteLn('[TQtWSMenuItem.SetCaption] SetShortCut: ' + AMenuItem.Caption);
   {$endif}
 
-  if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
 
   Widget := TQtWidget(AMenuItem.Handle);
@@ -261,7 +261,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSMenuItem.SetVisible] SetShortCut: ' + AMenuItem.Caption + ' Visible: ', Visible);
   {$endif}
-  if not WSCheckMenuItem(AMenuItem, 'SetVisible') then
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
     
   TQtMenu(AMenuItem.Handle).setVisible(Visible);
@@ -276,7 +276,7 @@ class function TQtWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked:
 begin
   Result := False;
 
-  if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
 
   TQtMenu(AMenuItem.Handle).setChecked(Checked);
@@ -308,7 +308,15 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean;
 begin
-  Result := SetCheck(AMenuItem, AMenuItem.Checked);
+  Result := False;
+
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+    Exit;
+
+  TQtMenu(AMenuItem.Handle).setCheckable(RadioItem);
+  SetCheck(AMenuItem, AMenuItem.Checked);
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -318,9 +326,11 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
-  if not WSCheckMenuItem(AMenuItem, 'SetRightJustify') then
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
 
+  // what should be done here? maybe this?
+  TQtMenu(AMenuItem.Handle).setAttribute(QtWA_RightToLeft, Justified);
   Result := True;
 end;
 

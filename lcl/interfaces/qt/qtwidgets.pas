@@ -155,6 +155,7 @@ type
     procedure raiseWidget;
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
+    procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
     procedure setColor(const Value: PQColor); virtual;
     procedure setCursor(const ACursor: QCursorH);
     procedure setEnabled(p1: Boolean);
@@ -2237,6 +2238,12 @@ begin
   // so better to look for current Capture widget to release it instead of pass Widget as argument
   AGrabWidget := QWidget_mouseGrabber();
   QWidget_releaseMouse(AGrabWidget);
+end;
+
+procedure TQtWidget.setAttribute(const Attr: QtWidgetAttribute;
+  const TurnOn: Boolean);
+begin
+  QWidget_setAttribute(Widget, Attr, TurnOn);
 end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);
@@ -6415,7 +6422,7 @@ begin
   FillChar(AParams, SizeOf(AParams), #0);
   FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
 {$ifdef QtGraphicsSpeedUp}
-  QWidget_setAttribute(Widget, QtWA_OpaquePaintEvent);
+  setAttribute(QtWA_OpaquePaintEvent);
   QWidget_setBackgroundRole(FViewPortWidget.Widget, QPaletteNoRole);
 {$endif}
   FViewPortWidget.AttachEvents;
