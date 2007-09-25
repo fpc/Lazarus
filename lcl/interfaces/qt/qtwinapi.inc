@@ -3752,15 +3752,18 @@ function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   WParam: WParam; LParam: LParam): LResult;
 var
   Widget: TQtWidget absolute HandleWnd;
-  Message: TLMessage;
+  Event: QLCLMessageEventH;
 begin
+  Result := 0;
   if HandleWnd <> 0 then
   begin
-    Message.msg := Msg;
-    Message.wParam := WParam;
-    Message.lParam := LParam;
-    Message.Result := 0;
-    Result := Widget.DeliverMessage(Message);
+    Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
+    try
+      QCoreApplication_sendEvent(Widget.Widget, Event);
+      Result := QLCLMessageEvent_getMsgResult(Event);
+    finally
+      QLCLMessageEvent_destroy(Event);
+    end;
   end;
 end;
 

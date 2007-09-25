@@ -2060,7 +2060,7 @@ begin
   Msg.wParam := QLCLMessageEvent_getWParam(MessageEvent);
   Msg.lParam := QLCLMessageEvent_getLParam(MessageEvent);
   Msg.Result := 0;
-  DeliverMessage(Msg);
+  QLCLMessageEvent_setMsgResult(MessageEvent, DeliverMessage(Msg));
 end;
 
 procedure TQtWidget.Activate;
