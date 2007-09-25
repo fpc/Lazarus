@@ -1150,17 +1150,32 @@ Call the Execute function to show the color dialog.</descr>
         <short>Message Dialog</short>
         <descr>Show a message to the user and receive his response. 
 <br/>
-There are four versions of this function. <br/>The first version displays a dialog with the standard caption, <br/>the second, third and fourth versions enable you to set the caption.<br/><br/>
-The third version allows for a Default button; <br/>the fourth version contains a help keyword instead of using context-based help.
-<br/><br/>
-If the first 'Caption' argument is missing, no caption is shown on the box.<br/><br/>
-    This is the most complete and elaborate of the message dialogs, <br/>and allows the programmer considerable control over the appearance of the dialog box.<br/><br/>
 
-    The arguments defining the kind of box and its icon are types rather than integer constants, <br/>and the buttons can be specified as a set in square brackets <br/>eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/><br/>
+There are four versions of this function. <br/>
+The first version displays a dialog with the standard caption, <br/>
+the second, third and fourth versions enable you to set the caption.<br/><br/>
+
+The third version allows for a Default button; <br/>
+the fourth version contains a help keyword instead of using context-based help.
+<br/><br/>
+
+If the first 'Caption' argument is missing, no caption is shown on the box.<br/><br/>
+
+    This is the most complete and elaborate of the message dialogs, <br/>
+and allows the programmer considerable control over the appearance of the dialog box.<br/><br/>
+
+
+    The arguments defining the kind of box and its icon are types rather than integer constants, <br/>
+and the buttons can be specified as a set in square brackets <br/>
+eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/><br/>
+
 
     The HelpCtx argument allows the use of Context Help<br/><br/>
-    The return value from the Function is the identity of the button pressed, <br/>expressed as an integer (see the constant definitions in <link id="TControl"/>, [mrNone..mrAll]).</descr>
-        <seealso/>
+
+    The return value from the Function is the identity of the button pressed, <br/>
+expressed as an integer (see the constant definitions in <link id="TControl"/>
+, [mrNone..mrAll]).</descr>
+        <example file="dialogs/trymessagedlg.pas"/>
       </element>
       <!-- function result Visibility: default -->
       <element name="MessageDlg.Result">
@@ -1283,11 +1298,23 @@ function. <br/>It has been extended with parameters to place the dialog on a cer
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
         <short>Show a question to the user and get a response</short>
-        <descr>QuestionDlg has the same functionality as MessageDlg <br/>except for the parameter Buttons which is of a different type. <br/>You can define your own captions and return values of this function.<br/><br/>
-Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>) and strings. <br/>For each TModalResult a button is
- created. <br/>To set a custom caption, add a string after a button.<br/><br/>
+        <descr>QuestionDlg has the same functionality as MessageDlg <br/>
+except for the parameter Buttons which is of a different type. <br/>
+You can define your own captions and return values of this function.<br/><br/>
 
-The default TModalResults defined in controls.pp (mrNone..mrLast) <br/>doesn't need a caption. The default captions will be used.</descr>
+Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>
+) and strings. <br/>
+For each TModalResult a button is
+ created. <br/>
+To set a custom caption, add a string after a button.<br/><br/>
+
+
+The default TModalResults defined in controls.pp (mrNone..mrLast) <br/>
+doesn't need a caption. The default captions will be used.</descr>
+        <seealso>
+          <link id="MessageDlg"/>
+          <link id="InputQuery"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="QuestionDlg.Result">
@@ -1325,15 +1352,24 @@ The return value of the function will be 400, 401 or 402, <br/>depending on whet
       <element name="ShowMessage">
         <short>Show Message</short>
         <descr>Procedure ShowMessage (const Msg: string);<br/>
-    The simplest message dialog: takes a simple string as argument, <br/>displays it in a stereotyped box, <br/>and waits for a mouse-click or enter-key event <br/>before returning to the calling routine or program.<br/><br/>
-    This is a modal procedure call, <br/>that is the box is displayed, receives focus, <br/>and does not relinquish focus until the OK box is clicked or otherwise selected.<br/><br/>
 
-Example<br/><code>Program LazMessage;
-Uses Dialogs;
-begin
-  ShowMessage ('This is a message from Lazarus')
-end.
-</code></descr>
+
+    The simplest message dialog: takes a simple string as argument, <br/>
+
+displays it in a stereotyped box, <br/>
+
+and waits for a mouse-click or enter-key event <br/>
+
+before returning to the calling routine or program.<br/><br/>
+
+
+    This is a modal procedure call, <br/>
+
+that is the box is displayed, receives focus, <br/>
+
+and does not relinquish focus until the OK box is clicked or otherwise selected.<br/><br/></descr>
+        <seealso><link id="forms.TApplication.MessageBox"/></seealso>
+        <example file="dialogs/tryshowmessage.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessage.aMsg">
@@ -1385,7 +1421,11 @@ end.
 The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). </p>
           <p>Omitting the MaskInput argument is equivalent to setting it FALSE.</p>
         </descr>
-        <seealso><link id="InputBox"/></seealso>
+        <seealso>
+          <link id="InputBox"/>
+          <link id="PasswordBox"/>
+        </seealso>
+        <example file="dialogs/inputquery.pas"/>
       </element>
       <!-- function result Visibility: default -->
       <element name="InputQuery.Result">
@@ -1499,10 +1539,8 @@ There are two version of this function, the second one having the ability to ind
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Register the components used in the current application, so that they can be recognised</short>
+        <seealso><link id="#rtl.classes.registercomponents"/></seealso>
       </element>
       <element name="TFindDialog">
         <short>A dialog used for finding text within the current editor or text buffer</short>

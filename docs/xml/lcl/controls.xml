@@ -6113,7 +6113,8 @@ Either reads a flag containing the set of anchors to be used, or writes a set of
       <element name="TControl.AnchorSide">
         <short>Finds which side to use for anchor</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
-Finds which side is to be used to anchor this control, and what relationships it has to other controls nearby. For complex relationships, use the Side property of the parent class TAnchorSide, and make a reference eg using asrCenter</descr>
+
+Finds which side is to be used to anchor this control, <br/>and what relationships it has to other controls nearby. <br/>For complex relationships, use the Side property of the parent class TAnchorSide, <br/>and make a reference eg using asrCenter</descr>
         <seealso><link id="TAnchorSide"/></seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6883,10 +6884,9 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- object Visibility: default -->
       <element name="TWinControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The base class for all windowed controls</short>
+        <descr>Defines many of the properties inherited by child classes, <br/>particularly those related to size, position, bounds, docking, <br/>the responses to mouse movements and key presses. <br/>Defines procedures and functions related to windowed controls, <br/>some of which override virtual methods defined in ancestor classes.</descr>
+        <seealso><link id="TControl"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TWinControl.FAlignLevel">
@@ -8519,21 +8519,19 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BorderWidth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Property to determine width of the window's border</short>
+        <descr>// properties which are supported by all descendents<br/><br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BoundsLockCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Finds how many of the Bounds are locked</short>
+        <descr>// properties which are supported by all descendents</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Brush">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Find which type of brush to use for drawing the control</short>
+        <descr>// properties which are supported by all descendents</descr>
+        <seealso><link id="graphics.TBrush"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.CachedClientHeight">
@@ -8555,23 +8553,22 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ControlCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The number of controls associated with this window</short>
+        <descr>// properties which are supported by all descendents</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Controls">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Finds which controls are found in this window</short>
+        <descr>// properties which are supported by all descendents</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TWinControl.Controls.Index"><short/></element>
+      <element name="TWinControl.Controls.Index">
+        <short>Numerical value to identify the control within the window</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DefWndProc">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The default procedure to be associated with the window</short>
+        <descr>// properties which are supported by all descendents<br/>reads or writes a flag to define what is the default procedure</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClientCount">
@@ -9264,10 +9261,12 @@ TGraphicControl, you must query the ClientRect.</pre>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomControl">
-        <short>TCustomControl - the base class for window controls</short>
+        <short>TCustomControl - a base class for many window controls</short>
         <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border</descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl"/>
+          <link id="TControl"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomControl.FCanvas">
@@ -10443,10 +10442,8 @@ TGraphicControl, you must query the ClientRect.</pre>
       <element name="AdjustBorderSpace.Bottom"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Register the components used in the current application, so that they can be recognised</short>
+        <seealso><link id="#rtl.classes.registercomponents"/></seealso>
       </element>
     </module>
     <!-- Controls -->

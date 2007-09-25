@@ -1225,7 +1225,11 @@ docs/xml/lcl/dbctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbgrids.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/defaulttranslator.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dialogs.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/dialogs/inputbox.pas svneol=native#text/plain
+docs/xml/lcl/dialogs/displaymessagebox.pas svneol=native#text/pascal
+docs/xml/lcl/dialogs/inputbox.pas svneol=native#text/pascal
+docs/xml/lcl/dialogs/inputquery.pas svneol=native#text/pascal
+docs/xml/lcl/dialogs/trymessagedlg.pas svneol=native#text/pascal
+docs/xml/lcl/dialogs/tryshowmessage.pas svneol=native#text/pascal
 docs/xml/lcl/dirsel.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynamicarray.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynamicarray/tarrayexample.pas svneol=native#text/plain
