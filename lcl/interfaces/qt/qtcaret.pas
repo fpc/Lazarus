@@ -49,7 +49,6 @@ type
   TEmulatedCaret = class(TComponent)
   private
     FTimer: TTimer;
-    FWndId: Cardinal;
     FWidget: TQtWidget;
     FPixmap: QPixmapH;
     FWidth, FHeight: Integer;
@@ -423,14 +422,14 @@ begin
   if FWidget <> nil then
     FWidget.HasCaret := False;
 
+{$ifdef QtPaintOnViewport}
+  if AWidget is TQtAbstractScrollArea then
+    AWidget := TQtAbstractScrollArea(AWidget).viewport;
+{$endif}
+    
   FWidget := AWidget;
   if FWidget <> nil then
-  begin
-    FWndId := QWidget_winId(FWidget.Widget);
     FWidget.HasCaret := True;
-  end
-  else
-    FWndId := 0;
 end;
 
 procedure TEmulatedCaret.UpdateCaret;

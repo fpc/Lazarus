@@ -80,6 +80,7 @@ type
     FDefaultCursor: QCursorH;
     FKeysToEat: TByteSet;
     FText: WideString;
+    FHasCaret: Boolean;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -97,11 +98,11 @@ type
     function _Release : longint;stdcall;
 
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
+    procedure SetHasCaret(const AValue: Boolean);
     procedure SetGeometry; virtual; overload;
   public
     AVariant: QVariantH;
     LCLObject: TWinControl;
-    HasCaret: Boolean;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
@@ -156,12 +157,15 @@ type
     procedure raiseWidget;
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
+    procedure setAutoFillBackground(const AValue: Boolean);
     procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
+    procedure setBackgroundRole(const ARole: QPaletteColorRole);
     procedure setColor(const Value: PQColor); virtual;
     procedure setCursor(const ACursor: QCursorH);
     procedure setEnabled(p1: Boolean);
     procedure setFocus;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); virtual;
+    procedure setFocusProxy(const AWidget: QWidgetH);
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); overload;
     procedure setMaximumSize(AWidth, AHeight: Integer);
@@ -186,6 +190,7 @@ type
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
+    property HasCaret: Boolean read FHasCaret write SetHasCaret;
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -270,6 +275,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
     function cornerWidget: TQtWidget;
     function horizontalScrollBar: TQtScrollBar;
@@ -277,12 +283,12 @@ type
     function viewport: TQtWidget;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
-    function hasFocus: Boolean; override;
     procedure SetColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure setTextColor(const Value: PQColor); override;
+    procedure setViewport(const AViewPort: QWidgetH);
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
     procedure viewportNeeded;
@@ -2265,10 +2271,20 @@ begin
   QWidget_releaseMouse(AGrabWidget);
 end;
 
+procedure TQtWidget.setAutoFillBackground(const AValue: Boolean);
+begin
+  QWidget_setAutoFillBackground(Widget, AValue);
+end;
+
 procedure TQtWidget.setAttribute(const Attr: QtWidgetAttribute;
   const TurnOn: Boolean);
 begin
   QWidget_setAttribute(Widget, Attr, TurnOn);
+end;
+
+procedure TQtWidget.setBackgroundRole(const ARole: QPaletteColorRole);
+begin
+  QWidget_setBackgroundRole(Widget, ARole);
 end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);
@@ -2284,6 +2300,11 @@ end;
 procedure TQtWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
   QWidget_setFocusPolicy(Widget, APolicy);
+end;
+
+procedure TQtWidget.setFocusProxy(const AWidget: QWidgetH);
+begin
+  QWidget_setFocusProxy(Widget, AWidget);
 end;
 
 procedure TQtWidget.setFont(AFont: QFontH);
@@ -2464,6 +2485,11 @@ begin
       // then try to map that char to VK_ code
     end;
   end;
+end;
+
+procedure TQtWidget.SetHasCaret(const AValue: Boolean);
+begin
+  FHasCaret := AValue;
 end;
 
 function TQtWidget.LCLKeyToQtKey(AKey: Word): Integer;
@@ -6265,6 +6291,17 @@ begin
   inherited Destroy;
 end;
 
+function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+{$ifdef QtPaintOnViewport}
+  if QEvent_type(Event) = QEventPaint then
+    Result := False
+  else
+{$endif}
+    Result := inherited EventFilter(Sender, Event);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtAbstractScrollArea.cornerWidget
   Params:  None
@@ -6329,6 +6366,11 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
+end;
+
+procedure TQtAbstractScrollArea.setViewport(const AViewPort: QWidgetH);
+begin
+  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), AViewPort);
 end;
 
 {------------------------------------------------------------------------------
@@ -6427,11 +6469,6 @@ begin
   viewport.grabMouse;
 end;
 
-function TQtAbstractScrollArea.hasFocus: Boolean;
-begin
-  Result := inherited hasFocus or viewport.hasFocus;
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtAbstractScrollArea.viewportNeeded
   Params:  None
@@ -6451,14 +6488,20 @@ begin
   begin
     FillChar(AParams, SizeOf(AParams), #0);
     FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
-  end else
-    FViewPortWidget := TQtWidget.CreateFrom(LCLObject, AViewPort);
-{$ifdef QtGraphicsSpeedUp}
-  setAttribute(QtWA_OpaquePaintEvent);
-  QWidget_setBackgroundRole(FViewPortWidget.Widget, QPaletteNoRole);
+    FViewPortWidget.setFocusProxy(Widget);
+{$ifdef QtPaintOnViewport}
+    FViewPortWidget.setBackgroundRole(QPaletteNoRole);
+    FViewPortWidget.setAutoFillBackground(False);
+    setViewport(FViewPortWidget.Widget);
 {$endif}
-  FViewPortWidget.AttachEvents;
-  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), FViewPortWidget.Widget);
+  end else
+  begin
+    FViewPortWidget := TQtWidget.CreateFrom(LCLObject, AViewPort);
+  end;
+  FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
+{$ifndef QtPaintOnViewport}
+  setViewport(FViewPortWidget.Widget);
+{$endif}
 end;
 
 {------------------------------------------------------------------------------
