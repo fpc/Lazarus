@@ -462,7 +462,7 @@ begin
     CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace',
       lisMenuReplace2, 'menu_search_replace');
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind);
-    CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine);
+    CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine, 'menu_goto_line');
 
     CreateMenuSeparatorSection(mnuSearch,itmJumpings,'itmJumpings');
     ParentMI:=itmJumpings;
@@ -515,7 +515,7 @@ begin
     CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits, 'menu_view_units');
     CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
-    CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo);
+    CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
     CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
 
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');

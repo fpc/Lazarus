@@ -58,6 +58,7 @@ menu/menu_edit_sort_16.xpm
 menu/menu_edit_uppercase.png
 menu/menu_environment_options.png
 menu/menu_exit.png
+menu/menu_goto_line.png
 menu/menu_help.png
 menu/menu_indent.png
 menu/menu_information.png
@@ -101,6 +102,7 @@ menu/menu_view_forms.png
 menu/menu_view_inspector.png
 menu/menu_view_source_editor.png
 menu/menu_view_toggle_form_unit.png
+menu/menu_view_unit_info.png
 menu/menu_view_units.png
 codeexplorer/ce_class.xpm
 codeexplorer/ce_const.xpm
