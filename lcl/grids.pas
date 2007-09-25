@@ -134,7 +134,7 @@ type
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
   
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
-    gfRevEditorTab, gfVisualChange);
+    gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged);
   TGridFlags = set of TGridFlagsOption;
 
 const
@@ -598,6 +598,7 @@ type
     procedure CheckIndex(IsColumn: Boolean; Index: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     function  GetSelectedColumn: TGridColumn;
+    function IsDefRowHeightStored: boolean;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetBorderColor(const AValue: TColor);
@@ -691,6 +692,7 @@ type
     procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
+    procedure AdjustDefaultRowHeight; virtual;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); dynamic;
@@ -774,6 +776,7 @@ type
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; virtual;
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl;
+    function  GetDefaultRowHeight: integer; virtual;
     function  GetScrollBarPosition(Which: integer): Integer;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
@@ -863,7 +866,7 @@ type
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default DEFCOLWIDTH;
-    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default DEFROWHEIGHT;
+    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight stored IsDefRowHeightStored;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
@@ -2094,6 +2097,14 @@ begin
 
 end;
 
+procedure TCustomGrid.AdjustDefaultRowHeight;
+begin
+  if not (gfDefRowHeightChanged in GridFlags) then begin
+    DefaultRowHeight := Canvas.TextHeight('Fj')+7;
+    Exclude(FGridFlags, gfDefRowHeightChanged);
+  end;
+end;
+
 procedure TCustomGrid.SetColCount(AValue: Integer);
 begin
   if Columns.Enabled then
@@ -2151,6 +2162,7 @@ var
   i: Integer;
 begin
   if AValue=fDefRowHeight then Exit;
+  include(FGridFlags, gfDefRowHeightChanged);
   FDefRowheight:=AValue;
   for i:=0 to RowCount-1 do
     FRows[i] := Pointer(-1);
@@ -3472,6 +3484,7 @@ procedure TCustomGrid.CreateWnd;
 begin
   //DebugLn('TCustomGrid.CreateWnd ',DbgSName(Self));
   inherited CreateWnd;
+  AdjustDefaultRowHeight;
   CheckPosition;
   VisualChange;
 end;
@@ -3746,6 +3759,13 @@ end;
 function TCustomGrid.GetSelectedColumn: TGridColumn;
 begin
   Result := ColumnFromGridColumn(Col);
+end;
+
+function TCustomGrid.IsDefRowHeightStored: boolean;
+begin
+  result :=
+    (gfDefRowHeightChanged in GridFlags) and
+    (FDefRowHeight<>GetDefaultRowHeight);
 end;
 
 function TCustomGrid.IsAltColorStored: boolean;
@@ -6289,6 +6309,11 @@ begin
   end;
 end;
 
+function TCustomGrid.GetDefaultRowHeight: integer;
+begin
+  result := DEFROWHEIGHT;
+end;
+
 function TCustomGrid.GetScrollBarPosition(Which: integer): Integer;
 var
   ScrollInfo: TScrollInfo;
@@ -6567,7 +6592,7 @@ begin
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
   FDefColWidth:=DEFCOLWIDTH;
-  FDefRowHeight:=DEFROWHEIGHT;
+  FDefRowHeight:=GetDefaultRowHeight;
   FGridLineColor:=clSilver;
   FGridLineStyle:=psSolid;
   FGridLineWidth := 1;

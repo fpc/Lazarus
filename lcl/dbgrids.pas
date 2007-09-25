@@ -367,6 +367,7 @@ type
     procedure SelectRecord(AValue: boolean);
     procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
   protected
+    procedure AdjustDefaultRowHeight; override;
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
@@ -400,6 +401,7 @@ type
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; override;
     function  GetDefaultColumnTitle(Column: Integer): string; override;
+    function  GetDefaultRowHeight: integer; override;
     function  GetDsFieldFromGridColumn(Column: Integer): TField;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
@@ -494,7 +496,7 @@ type
     property Constraints;
     property DataSource;
     property DefaultDrawing;
-    property DefaultRowHeight default 18;
+    property DefaultRowHeight;
     property DragCursor;
     //property DragKind;
     property DragMode;
@@ -2226,6 +2228,11 @@ begin
     Result := '';
 end;
 
+function TCustomDBGrid.GetDefaultRowHeight: integer;
+begin
+  Result:= 18;
+end;
+
 procedure TCustomDBGrid.DoExit;
 begin
   {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit INIT');{$Endif}
@@ -2690,9 +2697,7 @@ begin
   AutoAdvance := aaRightDown;
 
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
-  ScrolLBars:=ssBoth;
-
-  DefaultRowHeight := 18;
+  ScrollBars:=ssBoth;
 
   // Default bitmaps for cbsCheckedColumn
   FUnCheckedBitmap := TBitmap.Create;
@@ -2800,6 +2805,14 @@ begin
     aRange := 0;
     aPage := 0;
     aPos := 0;
+  end;
+end;
+
+procedure TCustomDBGrid.AdjustDefaultRowHeight;
+begin
+  if not (gfDefRowHeightChanged in GridFlags) then begin
+    DefaultRowHeight := Canvas.TextHeight('Fj')+5;
+    GridFlags := GridFlags - [gfDefRowHeightChanged];
   end;
 end;
 
