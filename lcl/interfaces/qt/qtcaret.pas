@@ -338,18 +338,18 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
-  if RespondToFocus and ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
+  if RespondToFocus then
   begin
-    Timer.Enabled := False;
-    Hide;
-    try
+    if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
+    begin
+      Hide;
+      try
+        FPos := Value;
+      finally
+        Show(FWidget);
+      end;
+    end else
       FPos := Value;
-      FVisible := True;
-      FVisibleState := False;
-      DoTimer(Timer);
-    finally
-      Timer.Enabled := True;
-    end;
   end else
   begin
     if FVisible and ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
