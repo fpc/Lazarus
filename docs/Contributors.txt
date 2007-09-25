@@ -36,7 +36,8 @@ Gerard Visent
 Giuliano Colla
 Giulio Bernardi
 GongYu
-Graeme Geldenhuys 
+Graeme Geldenhuys
+Grzegorz Zakrzewski
 Hans-Joachim Ott
 Hwang Weng Sun
 Ido Kanner
