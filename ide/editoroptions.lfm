@@ -5,60 +5,77 @@ object EditorOptionsForm: TEditorOptionsForm
   Width = 481
   HorzScrollBar.Page = 480
   VertScrollBar.Page = 530
-  ActiveControl = ColorPreview
+  ActiveControl = LanguageComboBox
   Caption = 'EditorOptionsForm'
   ClientHeight = 531
   ClientWidth = 481
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 400
   Position = poScreenCenter
   object MainNotebook: TNotebook
     Height = 491
     Width = 481
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 3
+    PageIndex = 0
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
-      ClientWidth = 477
-      ClientHeight = 460
+      ClientWidth = 473
+      ClientHeight = 465
       object BlockIndentLabel: TLabel
-        Left = 114
-        Height = 18
-        Top = 366
-        Width = 104
+        AnchorSideLeft.Control = BlockIndentComboBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Control = BlockIndentComboBox
+        AnchorSideBottom.Side = asrCenter
+        Left = 112
+        Height = 14
+        Top = 387
+        Width = 82
         Anchors = [akLeft, akBottom]
+        BorderSpacing.Around = 6
         Caption = 'BlockIndentLabel'
-        Color = clNone
         ParentColor = False
       end
       object UndoLimitLabel: TLabel
-        Left = 114
-        Height = 18
-        Top = 396
-        Width = 93
+        AnchorSideLeft.Control = UndoLimitComboBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Control = UndoLimitComboBox
+        AnchorSideBottom.Side = asrCenter
+        Left = 112
+        Height = 14
+        Top = 414
+        Width = 72
         Anchors = [akLeft, akBottom]
+        BorderSpacing.Around = 6
         Caption = 'UndoLimitLabel'
-        Color = clNone
         ParentColor = False
       end
       object TabWidthsLabel: TLabel
-        Left = 114
-        Height = 18
-        Top = 426
-        Width = 98
+        AnchorSideLeft.Control = TabWidthsComboBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Control = TabWidthsComboBox
+        AnchorSideBottom.Side = asrCenter
+        Left = 112
+        Height = 14
+        Top = 441
+        Width = 77
         Anchors = [akLeft, akBottom]
+        BorderSpacing.Around = 6
         Caption = 'TabWidthsLabel'
-        Color = clNone
         ParentColor = False
       end
       object EditorOptionsGroupBox: TCheckGroup
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = BlockIndentLabel
         Left = 6
-        Height = 349
+        Height = 369
         Top = 6
-        Width = 465
+        Width = 461
         Align = alTop
-        Anchors = [akTop, akLeft, akBottom]
+        Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFill = True
+        BorderSpacing.Bottom = 6
         BorderSpacing.Around = 6
         Caption = 'EditorOptionsGroupBox'
         ChildSizing.LeftRightSpacing = 6
@@ -75,12 +92,15 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 0
       end
       object BlockIndentComboBox: TComboBox
+        AnchorSideBottom.Control = UndoLimitComboBox
         Left = 6
-        Height = 24
-        Top = 363
+        Height = 21
+        Top = 384
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        BorderSpacing.Around = 6
+        ItemHeight = 13
         Items.Strings = (
           '1'
           '2'
@@ -94,12 +114,15 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 1
       end
       object UndoLimitComboBox: TComboBox
+        AnchorSideBottom.Control = TabWidthsComboBox
         Left = 6
-        Height = 24
-        Top = 393
+        Height = 21
+        Top = 411
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        BorderSpacing.Around = 6
+        ItemHeight = 13
         Items.Strings = (
           '32767'
           '4096'
@@ -112,12 +135,16 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 2
       end
       object TabWidthsComboBox: TComboBox
+        AnchorSideBottom.Control = GeneralPage
+        AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 24
-        Top = 423
+        Height = 21
+        Top = 438
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        BorderSpacing.Around = 6
+        ItemHeight = 13
         Items.Strings = (
           '1'
           '2'
@@ -133,17 +160,17 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object DisplayPage: TPage
       Caption = 'DisplayPage'
-      ClientWidth = 477
-      ClientHeight = 460
+      ClientWidth = 473
+      ClientHeight = 465
       object MarginAndGutterGroupBox: TGroupBox
         Left = 6
         Height = 128
         Top = 6
-        Width = 465
+        Width = 461
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'MarginAndGutterGroupBox'
-        ClientHeight = 109
+        ClientHeight = 128
         ClientWidth = 461
         TabOrder = 0
         object RightMarginLabel: TLabel
@@ -152,7 +179,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Top = 10
           Width = 104
           Caption = 'RightMarginLabel'
-          Color = clNone
           ParentColor = False
         end
         object RightMarginColorButton: TColorButton
@@ -181,7 +207,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Top = 34
           Width = 136
           Caption = 'RightMarginColorLabel'
-          Color = clNone
           ParentColor = False
         end
         object GutterWidthLabel: TLabel
@@ -190,7 +215,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Top = 60
           Width = 108
           Caption = 'GutterWidthLabel'
-          Color = clNone
           ParentColor = False
         end
         object GutterColorLabel: TLabel
@@ -199,7 +223,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Top = 82
           Width = 103
           Caption = 'GutterColorLabel'
-          Color = clNone
           ParentColor = False
         end
         object VisibleRightMarginCheckBox: TCheckBox
@@ -231,10 +254,11 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object RightMarginComboBox: TComboBox
           Left = 246
-          Height = 24
+          Height = 21
           Top = 8
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 13
           Items.Strings = (
             '80'
             '78'
@@ -248,10 +272,11 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object GutterWidthComboBox: TComboBox
           Left = 246
-          Height = 24
+          Height = 21
           Top = 58
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 13
           Items.Strings = (
             '40'
             '35'
@@ -270,64 +295,62 @@ object EditorOptionsForm: TEditorOptionsForm
         Left = 6
         Height = 136
         Top = 140
-        Width = 465
+        Width = 461
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'EditorFontGroupBox'
-        ClientHeight = 117
-        ClientWidth = 461
+        ClientHeight = 118
+        ClientWidth = 457
         TabOrder = 1
         object EditorFontLabel: TLabel
           Left = 6
           Height = 18
           Top = 6
-          Width = 449
+          Width = 445
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Caption = 'EditorFontLabel'
-          Color = clNone
           ParentColor = False
         end
         object EditorFontHeightLabel: TLabel
           Left = 116
           Height = 18
           Top = 60
-          Width = 338
+          Width = 318
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'EditorFontHeightLabel'
-          Color = clNone
           ParentColor = False
         end
         object ExtraLineSpacingLabel: TLabel
           Left = 116
           Height = 18
           Top = 90
-          Width = 338
+          Width = 318
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'ExtraLineSpacingLabel'
-          Color = clNone
           ParentColor = False
         end
         object EditorFontComboBox: TComboBox
           AnchorSideRight.Control = EditorFontButton
           Left = 6
-          Height = 24
+          Height = 21
           Top = 29
-          Width = 420
+          Width = 400
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Around = 6
+          ItemHeight = 13
           MaxLength = 0
           OnEditingDone = EditorFontComboBoxEditingDone
           TabOrder = 0
           Text = 'EditorFontComboBox'
         end
         object EditorFontButton: TButton
-          Left = 432
+          Left = 412
           Height = 21
           Top = 29
           Width = 16
@@ -339,10 +362,11 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object EditorFontHeightComboBox: TComboBox
           Left = 6
-          Height = 24
+          Height = 21
           Top = 58
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 13
           Items.Strings = (
             '10'
             '11'
@@ -362,10 +386,11 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object ExtraLineSpacingComboBox: TComboBox
           Left = 6
-          Height = 24
+          Height = 21
           Top = 88
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 13
           Items.Strings = (
             '0'
             '1'
@@ -380,9 +405,9 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object DisplayPreview: TSynEdit
         Left = 6
-        Height = 172
+        Height = 177
         Top = 282
-        Width = 465
+        Width = 461
         Align = alBottom
         BorderSpacing.Around = 6
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -721,8 +746,8 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object KeymappingPage: TPage
       Caption = 'KeymappingPage'
-      ClientWidth = 477
-      ClientHeight = 460
+      ClientWidth = 473
+      ClientHeight = 465
       object KeyMappingHelpLabel: TLabel
         Left = 6
         Height = 18
@@ -733,7 +758,6 @@ object EditorOptionsForm: TEditorOptionsForm
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'KeyMappingHelpLabel'
-        Color = clNone
         ParentColor = False
       end
       object KeyMappingChooseSchemeButton: TButton
@@ -782,42 +806,38 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object ColorPage: TPage
       Caption = 'ColorPage'
-      ClientWidth = 477
-      ClientHeight = 460
+      ClientWidth = 473
+      ClientHeight = 465
       object LanguageLabel: TLabel
         Left = 214
-        Height = 21
+        Height = 14
         Top = 12
-        Width = 88
+        Width = 73
         Caption = 'LanguageLabel'
-        Color = clNone
         ParentColor = False
       end
       object ColorSchemeLabel: TLabel
         Left = 214
-        Height = 21
+        Height = 14
         Top = 36
-        Width = 111
+        Width = 88
         Caption = 'ColorSchemeLabel'
-        Color = clNone
         ParentColor = False
       end
       object FileExtensionsLabel: TLabel
         Left = 214
-        Height = 21
+        Height = 14
         Top = 60
-        Width = 118
+        Width = 94
         Caption = 'FileExtensionsLabel'
-        Color = clNone
         ParentColor = False
       end
       object ColorElementLabel: TLabel
         Left = 4
-        Height = 21
+        Height = 14
         Top = 90
-        Width = 111
+        Width = 89
         Caption = 'ColorElementLabel'
-        Color = clNone
         ParentColor = False
       end
       object LanguageComboBox: TComboBox
@@ -826,6 +846,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Top = 10
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 13
         MaxLength = 0
         OnChange = ComboBoxOnChange
         OnExit = ComboBoxOnExit
@@ -839,6 +860,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Top = 34
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 13
         MaxLength = 0
         OnChange = ComboBoxOnChange
         OnExit = ComboBoxOnExit
@@ -852,6 +874,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Top = 58
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 13
         Items.Strings = (
           'pp;pas;inc;lpr;lrs;dpr;dpk'
           'pp;pas;inc;lpr;lrs'
@@ -865,9 +888,9 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorPreview: TSynEdit
         Left = 4
-        Height = 97
+        Height = 102
         Top = 359
-        Width = 469
+        Width = 465
         Align = alBottom
         BorderSpacing.Around = 4
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1211,46 +1234,54 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 200
         OnSelectionChange = ColorElementListBoxSelectionChange
         TabOrder = 4
-        TopIndex = -1
       end
       object SetAttributeToDefaultButton: TButton
+        AnchorSideRight.Control = ColorPage
+        AnchorSideRight.Side = asrBottom
         Left = 212
         Height = 25
         Top = 90
-        Width = 263
+        Width = 255
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
         BorderSpacing.InnerBorder = 4
         Caption = 'SetAttributeToDefaultButton'
         OnClick = SetAttributeToDefaultButtonClick
         TabOrder = 5
       end
       object SetAllAttributesToDefaultButton: TButton
+        AnchorSideRight.Control = ColorPage
+        AnchorSideRight.Side = asrBottom
         Left = 212
         Height = 25
         Top = 122
-        Width = 263
+        Width = 255
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
         BorderSpacing.InnerBorder = 4
         Caption = 'SetAllAttributesToDefaultButton'
         OnClick = SetAllAttributesToDefaultButtonClick
         TabOrder = 6
       end
       object TextAttributesGroupBox: TGroupBox
+        AnchorSideRight.Control = ColorPage
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = ColorPreview
         Left = 212
-        Height = 196
+        Height = 199
         Top = 154
-        Width = 263
-        Anchors = [akTop, akLeft, akRight]
+        Width = 255
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         Caption = 'Attributes'
-        ClientHeight = 177
-        ClientWidth = 259
+        ClientHeight = 181
+        ClientWidth = 251
         TabOrder = 7
         object ForeGroundLabel: TLabel
           Left = 8
-          Height = 21
-          Width = 100
+          Height = 14
+          Width = 83
           Caption = 'ForeGroundLabel'
-          Color = clNone
           ParentColor = False
         end
         object ForegroundColorButton: TColorButton
@@ -1258,7 +1289,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 21
-          Top = 23
+          Top = 16
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
@@ -1271,7 +1302,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 21
-          Top = 72
+          Top = 58
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
@@ -1283,21 +1314,20 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 8
-          Height = 21
-          Top = 49
-          Width = 104
+          Height = 14
+          Top = 42
+          Width = 83
           BorderSpacing.Top = 28
           Caption = 'BackGroundLabel'
-          Color = clNone
           ParentColor = False
         end
         object ForeGroundUseDefaultCheckBox: TCheckBox
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 20
-          Top = 23
-          Width = 148
+          Height = 13
+          Top = 16
+          Width = 124
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 2
           Caption = 'ForeGroundUseDefaultCheckBox'
@@ -1308,9 +1338,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = BackGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 20
-          Top = 70
-          Width = 148
+          Height = 13
+          Top = 56
+          Width = 124
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Right = 2
           Caption = 'BackGroundUseDefaultCheckBox'
@@ -1319,9 +1349,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextBoldCheckBox: TCheckBox
           Left = 6
-          Height = 20
-          Top = 99
-          Width = 247
+          Height = 13
+          Top = 124
+          Width = 239
           Align = alBottom
           BorderSpacing.Around = 6
           Caption = 'TextBoldCheckBox'
@@ -1330,9 +1360,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextItalicCheckBox: TCheckBox
           Left = 6
-          Height = 20
-          Top = 125
-          Width = 247
+          Height = 13
+          Top = 143
+          Width = 239
           Align = alBottom
           BorderSpacing.Around = 6
           Caption = 'TextItalicCheckBox'
@@ -1341,9 +1371,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextUnderlineCheckBox: TCheckBox
           Left = 6
-          Height = 20
-          Top = 151
-          Width = 247
+          Height = 13
+          Top = 162
+          Width = 239
           Align = alBottom
           BorderSpacing.Around = 6
           Caption = 'TextUnderlineCheckBox'
@@ -1354,8 +1384,8 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object CodetoolsPage: TPage
       Caption = 'CodetoolsPage'
-      ClientWidth = 477
-      ClientHeight = 460
+      ClientWidth = 473
+      ClientHeight = 465
       object AutomaticFeaturesGroupBox: TGroupBox
         Left = 6
         Height = 448
@@ -1364,8 +1394,8 @@ object EditorOptionsForm: TEditorOptionsForm
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'AutomaticFeaturesGroupBox'
-        ClientHeight = 429
-        ClientWidth = 461
+        ClientHeight = 448
+        ClientWidth = 465
         TabOrder = 0
         object AutoDelayLabel: TLabel
           Left = 6
@@ -1376,7 +1406,6 @@ object EditorOptionsForm: TEditorOptionsForm
           BorderSpacing.Top = 24
           BorderSpacing.Around = 6
           Caption = 'AutoDelayLabel'
-          Color = clNone
           ParentColor = False
         end
         object AutoDelayMinLabel: TLabel
@@ -1388,7 +1417,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 115
           BorderSpacing.Top = 2
           Caption = 'AutoDelayMinLabel'
-          Color = clNone
           ParentColor = False
         end
         object AutoDelayMaxLabel: TLabel
@@ -1402,7 +1430,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 2
           Caption = 'AutoDelayMaxLabel'
-          Color = clNone
           ParentColor = False
         end
         object AutoIdentifierCompletionCheckBox: TCheckBox
@@ -1466,15 +1493,14 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object CodeFolding: TPage
       Caption = 'CodeFolding'
-      ClientWidth = 477
-      ClientHeight = 460
+      ClientWidth = 473
+      ClientHeight = 465
       object lblDividerDrawLevel: TLabel
         Left = 6
         Height = 13
         Top = 71
         Width = 114
         Caption = 'lblDividerDrawLevel'
-        Color = clNone
         ParentColor = False
       end
       object Bevel1: TBevel
@@ -1510,10 +1536,10 @@ object EditorOptionsForm: TEditorOptionsForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 380
+    Left = 383
     Height = 25
     Top = 500
-    Width = 95
+    Width = 92
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -1528,7 +1554,7 @@ object EditorOptionsForm: TEditorOptionsForm
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 299
+    Left = 302
     Height = 25
     Top = 500
     Width = 75
@@ -1548,240 +1574,117 @@ object EditorOptionsForm: TEditorOptionsForm
     left = 400
     top = 40
     Bitmap = {
-      6C690200000015000000150000004E1000002F2A2058504D202A2F0A73746174
-      69632063686172202A206B65796D617063617465676F72795F78706D5B5D203D
-      207B0A223232203232203139312032222C0A2220200963204E6F6E65222C0A22
-      2E2009632023344234453438222C0A222B2009632023384439313842222C0A22
-      402009632023414141454138222C0A22232009632023433343374332222C0A22
-      242009632023443244364431222C0A22252009632023413141344131222C0A22
-      262009632023383038353741222C0A222A2009632023423542414230222C0A22
-      3D2009632023393039333844222C0A222D2009632023394139433939222C0A22
-      3B2009632023393339343933222C0A223E2009632023424343304243222C0A22
-      2C2009632023453645414535222C0A22272009632023423042324145222C0A22
-      292009632023344534453442222C0A22212009632023414442314141222C0A22
-      7E2009632023414442314138222C0A227B2009632023433043344244222C0A22
-      5D2009632023384439303843222C0A225E2009632023384238443842222C0A22
-      2F2009632023393739413937222C0A22282009632023453445374534222C0A22
-      5F2009632023393539373932222C0A223A2009632023343634393432222C0A22
-      3C2009632023334534303341222C0A225B2009632023373837413738222C0A22
-      7D2009632023453745394537222C0A227C2009632023443144324430222C0A22
-      312009632023414442304143222C0A22322009632023423642384234222C0A22
-      332009632023424142444239222C0A22342009632023434644334346222C0A22
-      352009632023374538303743222C0A22362009632023353235363444222C0A22
-      372009632023344334463437222C0A22382009632023334233443336222C0A22
-      392009632023344535303441222C0A22302009632023393739423935222C0A22
-      612009632023413841434135222C0A22622009632023434243464342222C0A22
-      632009632023433043354331222C0A22642009632023413741414137222C0A22
-      652009632023424242434242222C0A22662009632023463046324630222C0A22
-      672009632023454546304546222C0A22682009632023453345354533222C0A22
-      692009632023434143444341222C0A226A2009632023424443304244222C0A22
-      6B2009632023393439383933222C0A226C2009632023373137353642222C0A22
-      6D2009632023363036333539222C0A226E2009632023344234453436222C0A22
-      6F2009632023374438313738222C0A22702009632023423542394230222C0A22
-      712009632023393539383934222C0A22722009632023413941414138222C0A22
-      732009632023443344354433222C0A22742009632023434344304343222C0A22
-      752009632023453645414536222C0A22762009632023413041343945222C0A22
-      772009632023343134343430222C0A22782009632023444144434441222C0A22
-      792009632023424342454242222C0A227A2009632023413341364132222C0A22
-      412009632023423642424234222C0A22422009632023423442384233222C0A22
-      432009632023384439313843222C0A22442009632023364337323636222C0A22
-      452009632023354636333542222C0A22462009632023394541333942222C0A22
-      472009632023414242304137222C0A22482009632023434143444336222C0A22
-      492009632023384639303845222C0A224A2009632023394239433941222C0A22
-      4B2009632023394439463944222C0A224C2009632023444144444441222C0A22
-      4D2009632023384338463841222C0A224E2009632023344134443436222C0A22
-      4F2009632023334333463338222C0A22502009632023354536313543222C0A22
-      512009632023393939453935222C0A22522009632023373637393734222C0A22
-      532009632023364236443642222C0A22542009632023453445384534222C0A22
-      552009632023444545324445222C0A22562009632023423042344146222C0A22
-      572009632023373337363731222C0A22582009632023454145444541222C0A22
-      592009632023443144334430222C0A225A2009632023413841424135222C0A22
-      602009632023413841434137222C0A22202E09632023443444394433222C0A22
-      2E2E09632023443944444438222C0A222B2E09632023373137343730222C0A22
-      402E09632023353435383530222C0A22232E09632023344334463438222C0A22
-      242E09632023343334363344222C0A22252E09632023393139373843222C0A22
-      262E09632023423042374141222C0A222A2E09632023384539323843222C0A22
-      3D2E09632023443144354430222C0A222D2E09632023373737393736222C0A22
-      3B2E09632023374337463743222C0A223E2E09632023423942434239222C0A22
-      2C2E09632023424442464244222C0A22272E09632023344234433437222C0A22
-      292E09632023363536373634222C0A22212E09632023463346354633222C0A22
-      7E2E09632023454245434542222C0A227B2E09632023453545374535222C0A22
-      5D2E09632023414442304144222C0A225E2E09632023383538383833222C0A22
-      2F2E09632023373437383645222C0A22282E09632023363036343542222C0A22
-      5F2E09632023344535333439222C0A223A2E09632023343234363344222C0A22
-      3C2E09632023374137443741222C0A225B2E09632023443344364432222C0A22
-      7D2E09632023414542324142222C0A227C2E09632023423342384230222C0A22
-      312E09632023443044334345222C0A22322E09632023423842434238222C0A22
-      332E09632023453145354531222C0A22342E09632023413041343946222C0A22
-      352E09632023344535313442222C0A22362E09632023344435313439222C0A22
-      372E09632023453445364534222C0A22382E09632023453745384537222C0A22
-      392E09632023453245354532222C0A22302E09632023444545334445222C0A22
-      612E09632023444445324444222C0A22622E09632023413641424134222C0A22
-      632E09632023373537413730222C0A22642E09632023363436383545222C0A22
-      652E09632023353235373443222C0A22662E09632023344134443435222C0A22
-      672E09632023423342374233222C0A22682E09632023454646324546222C0A22
-      692E09632023463146324631222C0A226A2E09632023443444374434222C0A22
-      6B2E09632023424242454242222C0A226C2E09632023414542314144222C0A22
-      6D2E09632023393339373931222C0A226E2E09632023363436383546222C0A22
-      6F2E09632023354336313537222C0A22702E09632023344234463436222C0A22
-      712E09632023343734423431222C0A22722E09632023424242444241222C0A22
-      732E09632023444345314443222C0A22742E09632023413641424133222C0A22
-      752E09632023373537413646222C0A22762E09632023363636423631222C0A22
-      772E09632023344134453435222C0A22782E09632023444344464443222C0A22
-      792E09632023454646304546222C0A227A2E09632023453945394539222C0A22
-      412E09632023453245374532222C0A22422E09632023443744434437222C0A22
-      432E09632023373537393646222C0A22442E09632023363136353542222C0A22
-      452E09632023344635343439222C0A22462E09632023343634423431222C0A22
-      472E09632023393439373934222C0A22482E09632023443544394435222C0A22
-      492E09632023444645344446222C0A224A2E09632023444445314443222C0A22
-      4B2E09632023413141373943222C0A224C2E09632023373437393645222C0A22
-      4D2E09632023353035343443222C0A224E2E09632023454245454542222C0A22
-      4F2E09632023444645334446222C0A22502E09632023444144454441222C0A22
-      512E09632023413041343944222C0A22522E09632023363336373545222C0A22
-      532E09632023344435323438222C0A22542E09632023384439303844222C0A22
-      552E09632023374338303739222C0A22562E09632023334534313342222C0A22
-      572E09632023364436463644222C0A22582E09632023443244364432222C0A22
-      592E09632023444245304441222C0A225A2E09632023394541343939222C0A22
-      602E09632023373437413645222C0A22202B09632023354636343542222C0A22
-      2E2B09632023384238453842222C0A222B2B09632023443044334430222C0A22
-      402B09632023443644394435222C0A22232B09632023393239373844222C0A22
-      242B09632023354135453534222C0A22252B09632023363236323631222C0A22
-      2020202020202020202020202020202020202020202020202020202020202020
-      202020202020202020202020222C0A2220202020202020202020202020202020
-      20202020202020202020202020202020202020202020202020202020222C0A22
-      2020202020202020202020202020202020202020202020202020202020202020
-      202020202020202020202020222C0A2220202020202020202020202020202020
-      20202020202020202020202020202020202020202020202020202020222C0A22
-      2020202020202020202020202E202B2040202320242025202020202020202020
-      202020202020202020202020222C0A222020202020202020202026202A203D20
-      2D203B203E202C202720292020202020202020202020202020202020222C0A22
-      202020202020202021207E207B205D205E202F2028205F203A203C2020202020
-      202020202020202020202020222C0A222020202020205B207D207C2031203220
-      33203420352036203720382039203020612062206320642020202020222C0A22
-      202020202020652066206720682069206A206B206C206D206E206F2070207120
-      722073207420752076207720222C0A22202020202020782079207A2041204220
-      642043204420452046204720482049204A204B204C204D204E204F20222C0A22
-      202020202020502051205220532054204C20552056205720582059205A206020
-      202E2E2E2B2E402E232E242E222C0A2220202020252E262E2A2E3D2E2D2E3B2E
-      3E2E2C2E272E292E212E7E2E58207B2E5D2E5E2E2F2E282E5F2E3A2E222C0A22
-      20203C2E5B2E7D2E7C2E312E322E332E342E352E362E232E372E382E392E302E
-      612E622E632E642E652E662E222C0A222020672E682E692E6A2E6B2E6C2E6D2E
-      6E2E6F2E702E712E722E28205520732E732E742E752E762E772E2020222C0A22
-      2020782E792E7A2E392E412E422E4620432E442E452E462E2020472E482E492E
-      4A2E4B2E4C2E4D2E20202020222C0A2220202C2E4E2E7B2E4F2E732E502E512E
-      2F2E522E532E2020202020202020542E5D2E552E562E202020202020222C0A22
-      20202020572E582E612E732E592E5A2E602E202B202020202020202020202020
-      202020202020202020202020222C0A2220202020202020202E2B2B2B402B232B
-      242B2020202020202020202020202020202020202020202020202020222C0A22
-      202020202020202020202020252B202020202020202020202020202020202020
-      202020202020202020202020222C0A2220202020202020202020202020202020
-      20202020202020202020202020202020202020202020202020202020222C0A22
-      2020202020202020202020202020202020202020202020202020202020202020
-      202020202020202020202020222C0A2220202020202020202020202020202020
-      20202020202020202020202020202020202020202020202020202020227D3B0A
-      BE0C00002F2A2058504D202A2F0A7374617469632063686172202A206B65796D
-      617072656C6174696F6E5F78706D5B5D203D207B0A2232322032322031333420
-      32222C0A2220200963204E6F6E65222C0A222E2009632023433043304330222C
-      0A222B2009632023434343434343222C0A22402009632023434143414341222C
-      0A22232009632023433943394339222C0A22242009632023433843384338222C
-      0A22252009632023433743374337222C0A22262009632023433643364336222C
-      0A222A2009632023433543354335222C0A223D2009632023433143314331222C
-      0A222D2009632023424142414241222C0A223B2009632023423842384238222C
-      0A223E2009632023423442344234222C0A222C2009632023414441444144222C
-      0A22272009632023413041304130222C0A22292009632023463646364636222C
-      0A22212009632023454545454545222C0A227E2009632023453645364536222C
-      0A227B2009632023453745374537222C0A225D2009632023453845384538222C
-      0A225E2009632023453545354535222C0A222F2009632023453445344534222C
-      0A22282009632023453245324532222C0A225F2009632023444544454445222C
-      0A223A2009632023373937393739222C0A223C2009632023413541354135222C
-      0A225B2009632023463946394639222C0A227D2009632023443944394439222C
-      0A227C2009632023443744374437222C0A22312009632023444244424442222C
-      0A22322009632023453145314531222C0A22332009632023453945394539222C
-      0A22342009632023454245424542222C0A22352009632023454445444544222C
-      0A22362009632023454645464546222C0A22372009632023434443444344222C
-      0A22382009632023423242324232222C0A22392009632023373437343734222C
-      0A22302009632023413441344134222C0A22612009632023463746374637222C
-      0A22622009632023463546354635222C0A22632009632023443844384438222C
-      0A22642009632023444144414441222C0A22652009632023463146314631222C
-      0A22662009632023434243424342222C0A22672009632023413841384138222C
-      0A22682009632023364636463646222C0A22692009632023413241324132222C
-      0A226A2009632023463346334633222C0A226B2009632023444444444444222C
-      0A226C2009632023453045304530222C0A226D2009632023453345334533222C
-      0A226E2009632023423942394239222C0A226F2009632023394539453945222C
-      0A22702009632023364436443644222C0A22712009632023413141314131222C
-      0A22722009632023454145414541222C0A22732009632023384438443844222C
-      0A22742009632023463246324632222C0A22752009632023463446344634222C
-      0A22762009632023394439443944222C0A22772009632023364236423642222C
-      0A22782009632023463046304630222C0A22792009632023423142314231222C
-      0A227A2009632023433343334333222C0A22412009632023393439343934222C
-      0A22422009632023363936393639222C0A22432009632023454345434543222C
-      0A22442009632023393339333933222C0A22452009632023383938393839222C
-      0A22462009632023363336333633222C0A22472009632023424642464246222C
-      0A22482009632023384238423842222C0A22492009632023363536353635222C
-      0A224A2009632023433443344334222C0A224B2009632023363136313631222C
-      0A224C2009632023443144314431222C0A224D2009632023424342434243222C
-      0A224E2009632023383438343834222C0A224F2009632023363036303630222C
-      0A22502009632023393739373937222C0A22512009632023364536453645222C
-      0A22522009632023393639363936222C0A22532009632023363236323632222C
-      0A22542009632023443244324432222C0A22552009632023463846384638222C
-      0A22562009632023374637463746222C0A22572009632023354435443544222C
-      0A22582009632023394639463946222C0A22592009632023353535353535222C
-      0A225A2009632023374237423742222C0A22602009632023354335433543222C
-      0A22202E09632023374337433743222C0A222E2E09632023384538453845222C
-      0A222B2E09632023393039303930222C0A22402E09632023464146414641222C
-      0A22232E09632023423642364236222C0A22242E09632023373837383738222C
-      0A22252E09632023354135413541222C0A22262E09632023394339433943222C
-      0A222A2E09632023444644464446222C0A223D2E09632023464246424642222C
-      0A222D2E09632023414541454145222C0A223B2E09632023373337333733222C
-      0A223E2E09632023353635363536222C0A222C2E09632023394139413941222C
-      0A22272E09632023443544354435222C0A22292E09632023424242424242222C
-      0A22212E09632023423742374237222C0A227E2E09632023414141414141222C
-      0A227B2E09632023353435343534222C0A225D2E09632023393539353935222C
-      0A225E2E09632023373737373737222C0A222F2E09632023343834383438222C
-      0A22282E09632023343534353435222C0A225F2E09632023343734373437222C
-      0A223A2E09632023344234423442222C0A223C2E09632023344634463446222C
-      0A225B2E09632023353035303530222C0A227D2E09632023344334433443222C
-      0A227C2E09632023344534453445222C0A22312E09632023364336433643222C
-      0A22322E09632023353135313531222C0A22332E09632023383138313831222C
-      0A22342E09632023334533453345222C0A22352E09632023343234323432222C
-      0A22362E09632023343034303430222C0A22372E09632023343334333433222C
-      0A22382E09632023343634363436222C0A22392E09632023343934393439222C
-      0A22302E09632023323932393239222C0A22612E09632023323332333233222C
-      0A22622E09632023323232323232222C0A22632E09632023323432343234222C
-      0A22202020202020202020202020202020202020202020202020202020202020
-      2020202020202020202020202020222C0A222020202020202020202020202020
-      202020202020202020202020202020202020202020202020202020202020222C
-      0A222020202020202E202B204020402023202420252026202A203D202D203B20
-      3E202C2027202020202020202020222C0A222020202027202920292021207E20
-      7E207E207B205D207E205E202F2028205F202B203B203A20202020202020222C
-      0A22202020203C205B2029207D207C2031205F2032202F207E20332034203520
-      3620372038203920202020202020222C0A222020202030206120622063206420
-      5F2032202F207E2033203420352036206520662067206820202020202020222C
-      0A222020202069206A206A2064206B206C206D207E205D2033206E207D206520
-      6A2026206F207020202020202020222C0A22202020207120362065205F206C20
-      6D205E205D20722032207320332074207520262076207720202020202020222C
-      0A22202020207120352078206C2028205E207B2072205E2079206F2024206A20
-      62207A2041204220202020202020222C0A22202020202720352078206D205E20
-      7B2072204320442045202C2046207D202920472048204920202020202020222C
-      0A22202020202720432078205E207E203320342021206B2031204A204B204C20
-      61204D204E204F20202020202020222C0A22202020202720342078207B203320
-      3420352078205020512052205320542055202D2056205720202020202020222C
-      0A222020202058205D2036203320342035203620652059206B20632057204C20
-      5B203B205A206020202020202020222C0A22202020206F205E20432034203520
-      3620652074203C20202E2E2E2B2E4020402E232E242E252E202020202020222C
-      0A2220202020262E2A2E5D20212036207820742075206220432062205B20402E
-      3D2E2D2E3B2E3E2E202020202020222C0A22202020202C2E272E282031202520
-      292E6E206E20212E3E203820792079207E2E5A2077207B2E202020202020222C
-      0A22202020205D2E37202E205E2E2F2E282E5F2E3A2E3C2E5B2E7D2E5F2E2F2E
-      7C2E3E2E312E322E202020202020222C0A2220202020332E262E6020342E352E
-      362E352E372E382E2F2E282E372E372E282E392E59207D2E202020202020222C
-      0A222020202020202020302E612E612E622E622E622E622E622E622E622E622E
-      622E622E632E2020202020202020222C0A222020202020202020202020202020
-      202020202020202020202020202020202020202020202020202020202020222C
-      0A22202020202020202020202020202020202020202020202020202020202020
-      2020202020202020202020202020222C0A222020202020202020202020202020
-      202020202020202020202020202020202020202020202020202020202020227D
-      3B0A
+      4C69020000001500000015000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000484E4BFF8B918DFFA8AE
+      AAFFC2C7C3FFD1D6D2FFA1A4A1FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000007A8580FFB0BAB5FF8D9390FF999C9AFF939493FFBCC0BCFFE5EA
+      E6FFAEB2B0FF4B4E4EFF00000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000AAB1ADFFA8B1ADFFBDC4
+      C0FF8C908DFF8B8D8BFF979A97FFE4E7E4FF929795FF424946FF3A403EFF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000787A78FFE7E9E7FFD0D2D1FFACB0ADFFB4B8B6FFB9BDBAFFCFD3
+      CFFF7C807EFF4D5652FF474F4CFF363D3BFF4A504EFF959B97FFA5ACA8FFCBCF
+      CBFFC1C5C0FFA7AAA7FF00000000000000000000000000000000BBBCBBFFF0F2
+      F0FFEFF0EEFFE3E5E3FFCACDCAFFBDC0BDFF939894FF6B7571FF596360FF464E
+      4BFF78817DFFB0B9B5FF949895FFA8AAA9FFD3D5D3FFCCD0CCFFE6EAE6FF9EA4
+      A0FF000000000000000000000000DADCDAFFBBBEBCFFA2A6A3FFB4BBB6FFB3B8
+      B4FFA7AAA7FF8C918DFF66726CFF5B635FFF9BA39EFFA7B0ABFFC6CDCAFF8E90
+      8FFF9A9C9BFF9D9F9DFFDADDDAFF8A8F8CFF464D4AFF00000000000000000000
+      00005C615EFF959E99FF747976FF6B6D6BFFE4E8E4FFDADDDAFFDEE2DEFFAFB4
+      B0FF717673FFEAEDEAFFD0D3D1FFA5ABA8FFA7ACA8FFD3D9D4FFD8DDD9FF7074
+      71FF505854FF484F4CFF00000000000000008C9791FFAAB7B0FF8C928EFFD0D5
+      D1FF767977FF7C7F7CFFB9BCB9FFBDBFBDFF474C4BFF646765FFF3F5F3FFEBEC
+      EBFFEAEDEAFFE5E7E5FFADB0ADFF838885FF6E7874FF5B6460FF49534EFF0000
+      00007A7D7AFFD2D6D3FFABB2AEFFB0B8B3FFCED3D0FFB8BCB8FFE1E5E1FF9FA4
+      A0FF4B514EFF49514DFF484F4CFFE4E6E4FFE7E8E7FFE2E5E2FFDEE3DEFFDDE2
+      DDFFA4ABA6FF707A75FF5E6864FF4C5752FF00000000B3B7B3FFEFF2EFFFF1F2
+      F1FFD4D7D4FFBBBEBBFFADB1AEFF919793FF5F6864FF57615CFF464F4BFF414B
+      47FFBABDBBFFE4E7E4FFDEE2DEFFDCE1DCFFDCE1DCFFA3ABA6FF6F7A75FF616B
+      66FF454E4AFF00000000DCDFDCFFEFF0EFFFE9E9E9FFE2E5E2FFE2E7E2FFD7DC
+      D7FF9BA39EFF6F7975FF5B6561FF49544FFF414B46FF00000000949794FFD5D9
+      D5FFDFE4DFFFDCE1DDFF9CA7A1FF6E7974FF4C5450FF0000000000000000BDBF
+      BDFFEBEEEBFFE5E7E5FFDFE3DFFFDCE1DCFFDADEDAFF9DA4A0FF6E7874FF5E67
+      63FF48524DFF000000000000000000000000000000008D908DFFADB0ADFF7980
+      7CFF3B413EFF000000000000000000000000000000006D6F6DFFD2D6D2FFDDE2
+      DDFFDCE1DCFFDAE0DBFF99A49EFF6E7A74FF5B645FFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000008B8E8BFFD0D3D0FFD5D9D6FF8D97
+      92FF545E5AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000616262FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000C0C0C0FFCCCCCCFFCACACAFFCACACAFFC9C9C9FFC8C8C8FFC7C7
+      C7FFC6C6C6FFC5C5C5FFC1C1C1FFBABABAFFB8B8B8FFB4B4B4FFADADADFFA0A0
+      A0FF0000000000000000000000000000000000000000A0A0A0FFF6F6F6FFF6F6
+      F6FFEEEEEEFFE6E6E6FFE6E6E6FFE6E6E6FFE7E7E7FFE8E8E8FFE6E6E6FFE5E5
+      E5FFE4E4E4FFE2E2E2FFDEDEDEFFCCCCCCFFB8B8B8FF797979FF000000000000
+      00000000000000000000A5A5A5FFF9F9F9FFF6F6F6FFD9D9D9FFD7D7D7FFDBDB
+      DBFFDEDEDEFFE1E1E1FFE4E4E4FFE6E6E6FFE9E9E9FFEBEBEBFFEDEDEDFFEFEF
+      EFFFCDCDCDFFB2B2B2FF747474FF00000000000000000000000000000000A4A4
+      A4FFF7F7F7FFF5F5F5FFD8D8D8FFDADADAFFDEDEDEFFE1E1E1FFE4E4E4FFE6E6
+      E6FFE9E9E9FFEBEBEBFFEDEDEDFFEFEFEFFFF1F1F1FFCBCBCBFFA8A8A8FF6F6F
+      6FFF00000000000000000000000000000000A2A2A2FFF3F3F3FFF3F3F3FFDADA
+      DAFFDDDDDDFFE0E0E0FFE3E3E3FFE6E6E6FFE8E8E8FFE9E9E9FFB9B9B9FFD9D9
+      D9FFF1F1F1FFF3F3F3FFC6C6C6FF9E9E9EFF6D6D6DFF00000000000000000000
+      000000000000A1A1A1FFEFEFEFFFF1F1F1FFDEDEDEFFE0E0E0FFE3E3E3FFE5E5
+      E5FFE8E8E8FFEAEAEAFFE1E1E1FF8D8D8DFFE9E9E9FFF2F2F2FFF4F4F4FFC6C6
+      C6FF9D9D9DFF6B6B6BFF00000000000000000000000000000000A1A1A1FFEDED
+      EDFFF0F0F0FFE0E0E0FFE2E2E2FFE5E5E5FFE7E7E7FFEAEAEAFFE5E5E5FFB1B1
+      B1FF9E9E9EFFC8C8C8FFF3F3F3FFF5F5F5FFC3C3C3FF949494FF696969FF0000
+      0000000000000000000000000000A0A0A0FFEDEDEDFFF0F0F0FFE3E3E3FFE5E5
+      E5FFE7E7E7FFEAEAEAFFECECECFF939393FF898989FFADADADFF636363FFD9D9
+      D9FFF6F6F6FFBFBFBFFF8B8B8BFF656565FF0000000000000000000000000000
+      0000A0A0A0FFECECECFFF0F0F0FFE5E5E5FFE6E6E6FFE9E9E9FFEBEBEBFFEEEE
+      EEFFDDDDDDFFDBDBDBFFC4C4C4FF616161FFD1D1D1FFF7F7F7FFBCBCBCFF8484
+      84FF606060FF00000000000000000000000000000000A0A0A0FFEBEBEBFFF0F0
+      F0FFE7E7E7FFE9E9E9FFEBEBEBFFEDEDEDFFF0F0F0FF979797FF6E6E6EFF9696
+      96FF626262FFD2D2D2FFF8F8F8FFBABABAFF7F7F7FFF5D5D5DFF000000000000
+      000000000000000000009F9F9FFFE8E8E8FFEFEFEFFFE9E9E9FFEBEBEBFFEDED
+      EDFFEFEFEFFFF1F1F1FF555555FFDDDDDDFFD8D8D8FF5D5D5DFFD1D1D1FFF9F9
+      F9FFB8B8B8FF7B7B7BFF5C5C5CFF000000000000000000000000000000009E9E
+      9EFFE5E5E5FFECECECFFEBEBEBFFEDEDEDFFEFEFEFFFF1F1F1FFF2F2F2FFA5A5
+      A5FF7C7C7CFF8E8E8EFF909090FFCACACAFFFAFAFAFFB6B6B6FF787878FF5A5A
+      5AFF000000000000000000000000000000009C9C9CFFDFDFDFFFE8E8E8FFEEEE
+      EEFFEFEFEFFFF0F0F0FFF2F2F2FFF4F4F4FFF5F5F5FFECECECFFF5F5F5FFF9F9
+      F9FFFAFAFAFFFBFBFBFFAEAEAEFF737373FF565656FF00000000000000000000
+      0000000000009A9A9AFFD5D5D5FFE2E2E2FFDBDBDBFFC7C7C7FFBBBBBBFFB9B9
+      B9FFB9B9B9FFB7B7B7FFB4B4B4FFB2B2B2FFB1B1B1FFB1B1B1FFAAAAAAFF7B7B
+      7BFF6B6B6BFF545454FF00000000000000000000000000000000959595FFCDCD
+      CDFFC0C0C0FF777777FF484848FF454545FF474747FF4B4B4BFF4F4F4FFF5050
+      50FF4C4C4CFF474747FF484848FF4E4E4EFF565656FF6C6C6CFF515151FF0000
+      0000000000000000000000000000818181FF9C9C9CFF5C5C5CFF3E3E3EFF4242
+      42FF404040FF424242FF434343FF464646FF484848FF454545FF434343FF4343
+      43FF454545FF494949FF555555FF4C4C4CFF0000000000000000000000000000
+      00000000000000000000292929FF232323FF232323FF222222FF222222FF2222
+      22FF222222FF222222FF222222FF222222FF222222FF222222FF222222FF2424
+      24FF000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000
     }
   end
 end

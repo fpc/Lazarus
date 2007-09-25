@@ -7,6 +7,8 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   VertScrollBar.Page = 301
   ActiveControl = Memo
   Caption = 'StringsPropEditorFrm'
+  ClientHeight = 302
+  ClientWidth = 400
   Constraints.MinHeight = 160
   Constraints.MinWidth = 180
   OnCreate = FormCreate
@@ -20,26 +22,29 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
+    ClientHeight = 241
+    ClientWidth = 384
     TabOrder = 0
     object StatusLabel: TLabel
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 9
-      Height = 17
-      Top = 215
-      Width = 87
+      Height = 14
+      Top = 221
+      Width = 57
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'StatusLabel'
-      Color = clNone
       ParentColor = False
     end
     object Memo: TMemo
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = SortButton
       AnchorSideBottom.Control = StatusLabel
       Left = 6
-      Height = 203
+      Height = 209
       Top = 6
-      Width = 274
+      Width = 291
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       OnChange = MemoChange
@@ -48,7 +53,11 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       WordWrap = False
     end
     object SortButton: TButton
-      Left = 288
+      AnchorSideLeft.Control = Memo
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 303
       Height = 25
       Top = 6
       Width = 75
@@ -68,7 +77,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 226
+    Left = 233
     Height = 25
     Top = 271
     Width = 75
@@ -90,10 +99,10 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 307
+    Left = 314
     Height = 25
     Top = 271
-    Width = 87
+    Width = 80
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
