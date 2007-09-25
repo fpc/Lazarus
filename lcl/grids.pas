@@ -439,7 +439,7 @@ type
     property MaxSize: Integer read GetMaxSize write SetMaxSize stored isMaxSizeStored;
     property PickList: TStrings read GetPickList write SetPickList;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
-    property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored;
+    property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored default 1;
     property Title: TGridColumnTitle read FTitle write SetTitle;
     property Width: Integer read GetWidth write SetWidth stored IsWidthStored default DEFCOLWIDTH;
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
@@ -987,7 +987,6 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
-    procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
@@ -7402,15 +7401,6 @@ procedure TCustomDrawGrid.HeaderSized(IsColumn: Boolean; index: Integer);
 begin
   inherited HeaderSized(IsColumn, index);
   if Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
-end;
-
-procedure TCustomDrawGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin, aMax,
-  aPriority: Integer);
-begin
-  if Index<FixedCols then
-    aPriority := 0
-  else
-    aPriority := 1;
 end;
 
 function TCustomDrawGrid.GetEditMask(aCol, aRow: Longint): string;
