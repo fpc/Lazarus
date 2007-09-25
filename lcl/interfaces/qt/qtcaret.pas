@@ -306,17 +306,12 @@ end;
 
 procedure TEmulatedCaret.DrawCaret;
 var
-  DestDev: QPaintDeviceH;
-  Painter: QPainterH;
   R: TRect;
 begin
   if IsValid and FVisible and FVisibleState then
   begin
-    DestDev := QWidget_to_QPaintDevice(FWidget.Widget);
-    Painter := QPainter_create(DestDev);
     R := Rect(0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
-    QPainter_drawPixmap(Painter, PQtPoint(@FPos), FPixmap, PRect(@R));
-    QPainter_destroy(Painter);
+    TQtDeviceContext(FWidget.Context).drawPixmap(PQtPoint(@FPos), FPixmap, PRect(@R));
   end;
 end;
 
@@ -344,8 +339,7 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
-  if RespondToFocus and
-  ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
+  if RespondToFocus and ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
     Timer.Enabled := False;
     Hide;
@@ -421,8 +415,7 @@ end;
 
 function TEmulatedCaret.IsValid: Boolean;
 begin
-  Result := (FWidget <> nil) and (FPixmap <> nil) and
-    (QWidget_find(FWndId) <> nil);
+  Result := (FWidget <> nil) and (FPixmap <> nil) and (FWidget.Context <> 0);
 end;
 
 procedure TEmulatedCaret.SetWidget(AWidget: TQtWidget);
@@ -444,12 +437,12 @@ procedure TEmulatedCaret.UpdateCaret;
 var
   R: TRect;
 begin
-  if (FWidget <> nil) and not (FWidget.Context <> 0) then
+  if (FWidget <> nil) then
   begin
     R.Left := FPos.x;
     R.Top := FPos.y;
-    R.Right := R.Left + FWidth;
-    R.Bottom := R.Top + FHeight;
+    R.Right := R.Left + FWidth + 1;
+    R.Bottom := R.Top + FHeight + 1;
     FWidget.Update(@R);
   end;
 end;

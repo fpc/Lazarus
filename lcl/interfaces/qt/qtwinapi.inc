@@ -3855,12 +3855,12 @@ end;
 
 function TQtWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
-  Result := QtCaret.SetCaretPos(X + 2, Y);
+  Result := QtCaret.SetCaretPos(X, Y);
 end;
 
 function TQtWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
-  Result := QtCaret.SetCaretPos(X + 2, Y);
+  Result := QtCaret.SetCaretPos(X, Y);
 end;
 
 function TQtWidgetSet.SetCaretRespondToFocus(handle: HWND;

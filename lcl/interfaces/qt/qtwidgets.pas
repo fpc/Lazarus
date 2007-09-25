@@ -286,8 +286,13 @@ type
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
     procedure viewportNeeded;
-    procedure Update(ARect: PRect = nil); override;
-    procedure Repaint(ARect: PRect = nil); override;
+  end;
+  
+  { TQtGraphicView }
+
+  TQtGraphicsView = class(TQtAbstractScrollArea)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   end;
 
   { TQtArrow }
@@ -1951,7 +1956,7 @@ var
   AStruct: PPaintStruct;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotPaint');
+    WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
   {$endif}
   if (LCLObject is TWinControl) then
   begin
@@ -6436,41 +6441,24 @@ end;
 procedure TQtAbstractScrollArea.viewportNeeded;
 var
   AParams: TCreateParams;
+  AViewPort: QWidgetH;
 begin
   if FViewPortWidget <> niL then
     exit;
 
-  FillChar(AParams, SizeOf(AParams), #0);
-  FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
+  AViewPort := nil;//QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+  if AViewPort = nil then
+  begin
+    FillChar(AParams, SizeOf(AParams), #0);
+    FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
+  end else
+    FViewPortWidget := TQtWidget.CreateFrom(LCLObject, AViewPort);
 {$ifdef QtGraphicsSpeedUp}
   setAttribute(QtWA_OpaquePaintEvent);
   QWidget_setBackgroundRole(FViewPortWidget.Widget, QPaletteNoRole);
 {$endif}
   FViewPortWidget.AttachEvents;
-
   QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), FViewPortWidget.Widget);
-end;
-
-procedure TQtAbstractScrollArea.Update(ARect: PRect);
-begin
-  if ARect <> nil then
-  begin
-    OffsetRect(ARect^, -1, -1);
-    QWidget_update(viewport.widget, ARect);
-  end
-  else
-    QWidget_update(viewport.widget);
-end;
-
-procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
-begin
-  if ARect <> nil then
-  begin
-    OffsetRect(ARect^, -1, -1);
-    QWidget_repaint(viewport.widget, ARect);
-  end
-  else
-    QWidget_repaint(viewport.widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -6974,6 +6962,15 @@ procedure TQtListView.setSelectionMode(
   const AMode: QAbstractItemViewSelectionMode);
 begin
   QAbstractItemView_setSelectionMode(QAbstractItemViewH(Widget), AMode);
+end;
+
+{ TQtGraphicView }
+
+function TQtGraphicsView.CreateWidget(const AParams: TCreateParams): QWidgetH;
+begin
+  FViewPortWidget := nil;
+  Result := QGraphicsView_create();
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 end.

@@ -269,9 +269,10 @@ type
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString); overload;
-    procedure DrawText(x,y,w,h,flags: Integer; s:PWideString); overload;
+    procedure drawText(x,y,w,h,flags: Integer; s:PWideString); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
+    procedure drawPixmap(p: PQtPoint; pm: QPixmapH; sr: PRect);
     procedure eraseRect(ARect: PRect);
     procedure fillRect(ARect: PRect; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer; ABrush: QBrushH); overload;
@@ -1601,6 +1602,11 @@ end;
 procedure TQtDeviceContext.drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
 begin
   QPainter_drawEllipse(Widget, x, y, w, h);
+end;
+
+procedure TQtDeviceContext.drawPixmap(p: PQtPoint; pm: QPixmapH; sr: PRect);
+begin
+  QPainter_drawPixmap(Widget, p, pm, sr);
 end;
 
 procedure TQtDeviceContext.eraseRect(ARect: PRect);
