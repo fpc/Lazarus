@@ -2396,27 +2396,29 @@ begin
 
   if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomScrollBar) then
   begin
-  
-    case BarFlag of
-      SB_HORZ: QtScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
-      SB_VERT: QtScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
-    end;
+    if (TQtWidget(Handle) is TQtAbstractScrollArea) then
+    begin
+      case BarFlag of
+        SB_HORZ: QtScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
+        SB_VERT: QtScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
+      end;
 
-    if QtScrollBar = nil then exit;
+      if QtScrollBar = nil then exit;
 
-    ScrollInfo.nTrackPos := 0;
+      ScrollInfo.nTrackPos := 0;
 
-    ScrollInfo.nMax := QtScrollBar.getMax;
-    ScrollInfo.nMin := QtScrollBar.getMin;
-    ScrollInfo.nPage := QtScrollBar.getPageStep;
-    ScrollInfo.nPos := QtScrollBar.getValue;
-    ScrollInfo.fMask := SIF_ALL;
-    ScrollInfo.cbSize := SizeOf(ScrollInfo);
-
-    Result := True;
+      ScrollInfo.nMax := QtScrollBar.getMax;
+      ScrollInfo.nMin := QtScrollBar.getMin;
+      ScrollInfo.nPage := QtScrollBar.getPageStep;
+      ScrollInfo.nPos := QtScrollBar.getValue;
+      ScrollInfo.fMask := SIF_ALL;
+      ScrollInfo.cbSize := SizeOf(ScrollInfo);
+      Result := True;
+    end else
+      Result := False;
   end
   else
-	  FScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
+    FScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
 
   if Assigned(FScrollBar) then
   begin
@@ -3224,8 +3226,7 @@ begin
   begin
     R := TQtWidget(aHandle).getClientBounds;
     OffsetRect(Rect^, R.Left, R.Top);
-    if bErase and (TQtWidget(aHandle).Context <> 0) then
-      TQtDeviceContext(TQtWidget(aHandle).Context).eraseRect(Rect);
+    // no need to handle bErase. Qt automatically erase rect on paint event according to docs
     TQtWidget(aHandle).Update(Rect);
   end else
     TQtWidget(aHandle).Update;
@@ -4188,7 +4189,7 @@ begin
         Scrollbar.Width := R.Right - ScrollBar.Height;
         ScrollBar.Top := R.Bottom - ScrollBar.Height;
         
-        if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
+        if (TQtWidget(Handle) is TQtAbstractScrollArea) then
         begin
           ScrollBar.Parent := TQtAbstractScrollArea(Handle).LCLObject;
           TQtAbstractScrollArea(Handle).sethorizontalScrollBar(TQtScrollBar(ScrollBar.Handle));
@@ -4229,7 +4230,7 @@ begin
         ScrollBar.Top := 0;
         {TODO: Check why BorderWidth is 0 when BorderStyle is eg. bsSingle ?!? }
         ScrollBar.Left := R.Right - ScrollBar.Width;
-        if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
+        if (TQtWidget(Handle) is TQtAbstractScrollArea) then
         begin
           ScrollBar.Parent := TQtAbstractScrollArea(Handle).LCLObject;
           TQtAbstractScrollArea(Handle).setVerticalScrollBar(TQtScrollBar(ScrollBar.Handle));

@@ -125,7 +125,7 @@ type
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
-    procedure SlotPaint(Event: QEventH); cdecl;
+    procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
     procedure SlotContextMenu; cdecl;
     procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
@@ -133,8 +133,8 @@ type
     procedure Activate;
     procedure BringToFront;
     procedure OffsetMousePos(APoint: PQtPoint); virtual;
-    procedure Update(ARect: PRect = nil);
-    procedure Repaint(ARect: PRect = nil);
+    procedure Update(ARect: PRect = nil); virtual;
+    procedure Repaint(ARect: PRect = nil); virtual;
     procedure setWindowTitle(Str: PWideString);
     procedure WindowTitle(Str: PWideString);
     procedure Hide;
@@ -286,6 +286,8 @@ type
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
     procedure viewportNeeded;
+    procedure Update(ARect: PRect = nil); override;
+    procedure Repaint(ARect: PRect = nil); override;
   end;
 
   { TQtArrow }
@@ -1359,7 +1361,7 @@ begin
       end;
     QEventMove: SlotMove(Event);
     QEventResize: SlotResize;
-    QEventPaint: SlotPaint(Event);
+    QEventPaint: SlotPaint(Sender, Event);
     QEventContextMenu: SlotContextMenu;
     QEventLCLMessage:
       begin
@@ -1943,7 +1945,7 @@ end;
 
   Sends a LM_PAINT message to the LCL. This is for windowed controls only
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotPaint(Event: QEventH); cdecl;
+procedure TQtWidget.SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMPaint;
   AStruct: PPaintStruct;
@@ -5885,6 +5887,7 @@ constructor TQtMenu.Create(const AMenuItem: TMenuItem);
 var
   AParams: TCreateParams;
 begin
+  FillChar(AParams, SizeOf(AParams), #0);
   FMenuItem := AMenuItem;
   inherited Create(nil, AParams);
 end;
@@ -6236,7 +6239,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
-  FViewPortWidget := niL;
+  FViewPortWidget := nil;
   Result := QScrollArea_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -6446,6 +6449,28 @@ begin
   FViewPortWidget.AttachEvents;
 
   QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), FViewPortWidget.Widget);
+end;
+
+procedure TQtAbstractScrollArea.Update(ARect: PRect);
+begin
+  if ARect <> nil then
+  begin
+    OffsetRect(ARect^, -1, -1);
+    QWidget_update(viewport.widget, ARect);
+  end
+  else
+    QWidget_update(viewport.widget);
+end;
+
+procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
+begin
+  if ARect <> nil then
+  begin
+    OffsetRect(ARect^, -1, -1);
+    QWidget_repaint(viewport.widget, ARect);
+  end
+  else
+    QWidget_repaint(viewport.widget);
 end;
 
 {------------------------------------------------------------------------------
