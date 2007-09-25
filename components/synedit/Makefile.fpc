@@ -7,10 +7,25 @@
 name=synedit
 version=1.0.3
 
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),wince)
+LCL_PLATFORM=wince
+else
+LCL_PLATFORM=gtk
+endif
+endif
+endif
+export LCL_PLATFORM
+
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
-options=-gl
+options=-gl -dlcl$(LCL_PLATFORM)
 
 [target]
 units=allsyneditunits
@@ -25,7 +40,7 @@ implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
 [require]
 # Adding lcl does not work, because it adds the source path.
 #packages=lcl
-packages=fcl regexpr
+packages=regexpr
 
 [default]
 #lcldir=../../lcl
@@ -43,3 +58,4 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditunits$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditunits$(PPUEXT)
+

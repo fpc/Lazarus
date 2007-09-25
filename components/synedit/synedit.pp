@@ -46,8 +46,8 @@ unit SynEdit;
 
 {$I synedit.inc}
 
-{$IFDEF UseGTKDoubleBuf}
-{$DEFINE DisableDoubleBuf}
+{$IFDEF LCLGTK1}
+{$DEFINE EnableDoubleBuf}
 {$ENDIF}
 
 interface
@@ -674,7 +674,7 @@ type
   protected
     fGutterWidth: Integer;
     fInternalImage: TSynInternalImage;
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF EnableDoubleBuf}
     BufferBitmap: TBitmap; // the double buffer
     {$ENDIF}
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
@@ -4662,14 +4662,14 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
-{$IFNDEF DisableDoubleBuf}
+{$IFDEF EnableDoubleBuf}
 var
   NewBufferWidth: Integer;
   NewBufferHeight: Integer;
 {$ENDIF}
 begin
   if (SavedCanvas<>nil) then RaiseGDBException('');
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF EnableDoubleBuf}
   if BufferBitmap=nil then
     BufferBitmap:=TBitmap.Create;
   NewBufferWidth:=BufferBitmap.Width;
@@ -4689,7 +4689,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.EndPaintBuffer(const ClipRect: TRect);
 begin
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF EnableDoubleBuf}
   if (SavedCanvas=nil) then RaiseGDBException('');
   if not (SavedCanvas is TControlCanvas) then RaiseGDBException('');
   Canvas:=SavedCanvas;
@@ -9993,7 +9993,7 @@ begin
     DragAcceptFiles(Handle, FALSE);
     {$ENDIF}
   end;
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF EnableDoubleBuf}
   FreeAndNil(BufferBitmap);
   {$ENDIF}
   {$IFDEF SYN_LAZARUS}

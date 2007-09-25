@@ -818,8 +818,7 @@ begin
     OldLink:=TPackageLink(ANode.Data);
     FUserLinksSortID.Delete(ANode);
     FUserLinksSortFile.Remove(OldLink);
-    if OldLink <> APackageID then
-      OldLink.Free;
+    OldLink.Free;
     Modified:=true;
   end;
   // remove from global links
@@ -827,11 +826,9 @@ begin
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
     FGlobalLinks.Delete(ANode);
-    if OldLink <> APackageID then
-      OldLink.Free;
+    OldLink.Free;
     Modified:=true;
   end;
-  APackageID.Free;
   EndUpdate;
 end;
 
