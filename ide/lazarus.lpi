@@ -13,6 +13,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
+      <Title Value="Lazarus"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -40,12 +41,17 @@
         <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Lazarus"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="..\debugger\gdbmidebugger.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GDBMIDebugger"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

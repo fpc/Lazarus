@@ -136,9 +136,6 @@ ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
 endif
 	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
 endif
-ifeq ($(OS_TARGET), win32)
-        $(MAKE) lazarus.res
-endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 else
@@ -152,16 +149,10 @@ idepkg: $(COMPILER_UNITTARGETDIR)
 #-----------------------------------------------------------------------------
 bigide: $(COMPILER_UNITTARGETDIR)
         -$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
-ifeq ($(OS_TARGET), win32)
-        $(MAKE) lazarus.res
-endif
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)
-ifeq ($(OS_TARGET), win32)
-        $(MAKE) startlazarus.res
-endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
 else
@@ -199,9 +190,9 @@ cleanide:
         -$(DEL) $(wildcard ../converter/*$(PPUEXT))
         -$(DEL) $(wildcard ../doceditor/*$(OEXT))
         -$(DEL) $(wildcard ../doceditor/*$(PPUEXT))
-ifeq ($(OS_TARGET), win32)
-        -$(DEL) lazarus.res startlazarus.res
-        -$(DEL) lazarus.or startlazarus.or
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.or)
+        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res)
 endif
 
 cleanlaz: clean cleanide

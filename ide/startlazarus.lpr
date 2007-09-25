@@ -30,8 +30,8 @@ program StartLazarus;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF WIN32}
-  {$R *.res}
+{$IFDEF WINDOWS}
+  {$R *.rc}
 {$ENDIF}
 
 uses

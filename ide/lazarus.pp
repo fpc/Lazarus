@@ -36,11 +36,7 @@ program Lazarus;
 
 {$I ide.inc}
 
-{$IFDEF WIN32}
-  {$R lazarus.res}
-{$ENDIF}
-
-{$IFDEF WIN64}
+{$IFDEF WINDOWS}
   {$R lazarus.rc}
 {$ENDIF}
 
@@ -81,6 +77,7 @@ uses
 
 begin
   LazarusRevisionStr:=RevisionStr;
+  Application.Title:='Lazarus';
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
   if Application.Terminated then exit;
