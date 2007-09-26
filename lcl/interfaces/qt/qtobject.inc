@@ -188,8 +188,11 @@ end;
 }
 
 procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
+var
+  W: WideString;
 begin
-  // TODO
+  W := GetUtf8String(ATitle);
+  QCoreApplication_setApplicationName(@W);
 end;
 
 procedure TQtWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
@@ -210,6 +213,7 @@ begin
       R1.Right := R.Right;
       QtMenuBar.setGeometry(R1);
       QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
+      QtMainWindow.setVisible(True);
     end;
   end;
 end;
@@ -294,7 +298,7 @@ end;
 
 procedure TQtWidgetSet.DCRedraw(CanvasHandle: HDC);
 begin
-
+  // TODO: implement me
 end;
 
 procedure TQtWidgetSet.SetDesigning(AComponent: TComponent);
@@ -407,7 +411,7 @@ end;
 
 procedure TQtWidgetSet.SetQtDefaultDC(Handle: HDC);
 begin
-	FStockDefaultDC := Handle;
+  FStockDefaultDC := Handle;
 end;
 
 procedure TQtWidgetSet.InitStockItems;
@@ -439,21 +443,21 @@ begin
   
   LogBrush.lbColor := $FFFFFF;
   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
-	TQtBrush(FStockWhiteBrush).FShared := True;
+  TQtBrush(FStockWhiteBrush).FShared := True;
 
   LogPen.lopnStyle := PS_NULL;
   LogPen.lopnWidth.X := 1;
   LogPen.lopnColor := $FFFFFF;
   FStockNullPen := CreatePenIndirect(LogPen);
-	TQtPen(FStockNullPen).FShared := True;
+  TQtPen(FStockNullPen).FShared := True;
  
   LogPen.lopnStyle := PS_SOLID;
   FStockWhitePen := CreatePenIndirect(LogPen);
-	TQtPen(FStockWhitePen).FShared := True;
+  TQtPen(FStockWhitePen).FShared := True;
  
   LogPen.lopnColor := $000000;
   FStockBlackPen := CreatePenIndirect(LogPen);
-	TQtPen(FStockBlackPen).FShared := True;
+  TQtPen(FStockBlackPen).FShared := True;
 
   FStockSystemFont := 0;//Styles aren't initialized yet
   
