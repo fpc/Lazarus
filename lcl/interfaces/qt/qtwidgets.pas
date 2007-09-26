@@ -6271,8 +6271,9 @@ begin
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
   FViewPortWidget := nil;
-  Result := QScrollArea_create();
+  Result := QAbstractScrollArea_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+  QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
 end;
 
 {------------------------------------------------------------------------------

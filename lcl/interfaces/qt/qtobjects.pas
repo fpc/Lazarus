@@ -210,6 +210,7 @@ type
       Const Fill: QtFillRule = QtWindingFill); virtual; overload;
     destructor Destroy; override;
     function GetRegionType: integer;
+    function getBoundingRect: TRect;
   end;
 
   // NOTE: PQtDCData was a pointer to a structure with QPainter information
@@ -280,6 +281,7 @@ type
 
     procedure setBrushOrigin(x, y: Integer);
     procedure getBrushOrigin(retval: PPoint);
+    function getClipping: Boolean;
     procedure getPenPos(retval: PPoint);
     procedure setPenPos(x, y: Integer);
 
@@ -294,7 +296,7 @@ type
     function SetBkMode(BkMode: Integer): Integer;
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
-    function region: TQtRegion;
+    function getClipRegion: TQtRegion;
     procedure setClipping(const AValue: Boolean);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
     procedure setRegion(ARegion: TQtRegion);
@@ -1251,6 +1253,11 @@ begin
   end;
 end;
 
+function TQtRegion.getBoundingRect: TRect;
+begin
+  QRegion_boundingRect(Widget, @Result);
+end;
+
 { TQtDeviceContext }
 
 {------------------------------------------------------------------------------
@@ -1295,9 +1302,6 @@ begin
     else
     begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
-    {$ifdef QtGraphicsSpeedUp}
-      QPainter_setRenderHint(Widget, QPainterTextAntialiasing, False);
-    {$endif}
     end;
   end;
   FOwnPainter := True;
@@ -1389,7 +1393,7 @@ var
   Rgn: QRegionH;
   ok: boolean;
 begin
-  ok := QPainter_hasClipping(Widget);
+  ok := getClipping;
   Write(Msg, 'DC: HasClipping=', ok);
   
   if Ok then
@@ -1540,6 +1544,8 @@ end;
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
   AFont: TQtFont;
+  ARect: TRect;
+  dy: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -1548,10 +1554,22 @@ begin
   AFont := Font;
   if AFont.Angle <> 0 then
     Rotate(-0.1 * AFont.Angle);
-  
+
+  y := y + AFont.Metrics.ascent;
+
+  // manual check for clipping
+  if getClipping then
+  begin
+    dy := AFont.Metrics.height;
+    ARect := getClipRegion.getBoundingRect;
+    if (y + dy < ARect.Top) or (y > ARect.Bottom) or
+       (x > ARect.Right) then
+      Exit;
+  end;
+
   RestoreTextColor;
   
-  QPainter_drawText(Widget, x, y + AFont.Metrics.ascent, s);
+  QPainter_drawText(Widget, x, y, s);
   
   RestorePenColor;
   
@@ -1679,6 +1697,11 @@ begin
   QPainter_brushOrigin(Widget, @QtPoint);
   retval^.x := QtPoint.x;
   retval^.y := QtPoint.y;
+end;
+
+function TQtDeviceContext.getClipping: Boolean;
+begin
+  Result := QPainter_hasClipping(Widget);
 end;
 
 procedure TQtDeviceContext.getPenPos(retval: PPoint);
@@ -1939,7 +1962,7 @@ end;
   Params:  None
   Returns: The current clip region
  ------------------------------------------------------------------------------}
-function TQtDeviceContext.region: TQtRegion;
+function TQtDeviceContext.getClipRegion: TQtRegion;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.region() ');
