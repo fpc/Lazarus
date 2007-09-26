@@ -4512,7 +4512,7 @@ begin
     +'  cthreads,'+le
     +'  {$ENDIF}{$ENDIF}'+le
     +'  Classes'+le
-    +'  { add your units here };'+le
+    +'  { you can add units after this };'+le
     +le
     +'begin'+le
     +'end.'+le
@@ -4571,7 +4571,7 @@ begin
     +'  {$ENDIF}{$ENDIF}'+le
     +'  Interfaces, // this includes the LCL widgetset'+le
     +'  Forms'+le
-    +'  { add your units here };'+le
+    +'  { you can add units after this };'+le
     +le
     +'begin'+le
     +'  Application.Initialize;'+le
@@ -4637,7 +4637,7 @@ begin
       +le
       +'uses'+le
       +'  Classes, SysUtils'+le
-      +'  { add your units here };'+le
+      +'  { you can add units after this };'+le
       +le
       +'begin'+le
       +'end.'+le
@@ -4703,7 +4703,7 @@ begin
     +le
     +'uses'+le
     +'  Classes'+le
-    +'  { add your units here };'+le
+    +'  { you can add units after this };'+le
     +le
     +'begin'+le
     +'end.'+le
@@ -4867,7 +4867,7 @@ begin
   NewSource.Add('  cthreads,');
   NewSource.Add('  {$ENDIF}{$ENDIF}');
   NewSource.Add('  Classes, SysUtils, CustApp');
-  NewSource.Add('  { add your units here };');
+  NewSource.Add('  { you can add units after this };');
   NewSource.Add('');
   NewSource.Add('type');
   NewSource.Add('');
