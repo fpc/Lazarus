@@ -81,6 +81,7 @@ type
     FKeysToEat: TByteSet;
     FText: WideString;
     FHasCaret: Boolean;
+    FHasPaint: Boolean;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -1042,6 +1043,7 @@ begin
   FProps := nil;
   LCLObject := AWinControl;
   FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
+  FHasPaint := False;
 
   FParams := AParams;
   InitializeWidget;
@@ -1057,6 +1059,7 @@ begin
   FProps := niL;
   LCLObject := AWinControl;
   FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
+  FHasPaint := False;
 
   // Creates the widget
   Widget := AWidget;
@@ -1372,7 +1375,11 @@ begin
       end;
     QEventMove: SlotMove(Event);
     QEventResize: SlotResize;
-    QEventPaint: SlotPaint(Sender, Event);
+    QEventPaint:
+      begin
+        if FHasPaint then
+          SlotPaint(Sender, Event);
+      end;
     QEventContextMenu: SlotContextMenu;
     QEventLCLMessage:
       begin
@@ -2845,6 +2852,7 @@ end;
 
 function TQtWidget.CreateWidget(const Params: TCreateParams): QWidgetH;
 begin
+  FHasPaint := True;
   Widget := QWidget_create();
   Result := Widget;
 end;
@@ -3098,8 +3106,8 @@ begin
   {$endif}
   
 
+  FHasPaint := True;
   IsMainForm := False;
-
   
   w := QApplication_activeWindow;
 
@@ -3592,6 +3600,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtFrame.Create');
   {$endif}
+  FHasPaint := True;
   Result := QFrame_create();
   QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -3656,6 +3665,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtArrow.Create');
   {$endif}
+  FHasPaint := True;
   Result := QFrame_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -6270,6 +6280,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractScrollArea.Create');
   {$endif}
+  FHasPaint := True;
   FViewPortWidget := nil;
   Result := QAbstractScrollArea_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -6467,7 +6478,10 @@ end;
 
 procedure TQtAbstractScrollArea.grabMouse;
 begin
-  viewport.grabMouse;
+  if LCLObject is TCustomControl then
+    viewport.grabMouse
+  else
+    inherited grabMouse;
 end;
 
 {------------------------------------------------------------------------------
@@ -6698,6 +6712,7 @@ end;
 
 function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
+  FHasPaint := True;
   Result := QWidget_create(nil, QtToolTip);
   MenuBar := nil;
 end;
@@ -6706,6 +6721,7 @@ end;
 
 function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
+  FHasPaint := True;
   Result := QWidget_create;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -7012,6 +7028,7 @@ end;
 
 function TQtGraphicsView.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
+  FHasPaint := True;
   FViewPortWidget := nil;
   Result := QGraphicsView_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
