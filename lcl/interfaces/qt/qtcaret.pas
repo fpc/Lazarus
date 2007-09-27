@@ -440,8 +440,8 @@ begin
   begin
     R.Left := FPos.x;
     R.Top := FPos.y;
-    R.Right := R.Left + FWidth + 1;
-    R.Bottom := R.Top + FHeight + 1;
+    R.Right := R.Left + FWidth + 2;
+    R.Bottom := R.Top + FHeight + 2;
     FWidget.Update(@R);
   end;
 end;
