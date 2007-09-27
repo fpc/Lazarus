@@ -1397,10 +1397,8 @@ function TQtWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Intege
 var
   Region: QRegionH;
   ExRegion: QRegionH;
-  QtDC: TQtDeviceContext;
+  QtDC: TQtDeviceContext absolute dc;
   R: TRect;
-  R1: PRect;
-  X1,Y1,X2,Y2: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExcludeClipRect]');
@@ -1409,24 +1407,14 @@ begin
   Result := ERROR;
   
   if not IsValidDC(DC) then Exit;
-  
-  QtDC := TQtDeviceContext(DC);
-  
-  
-  X1 := Left;
-  Y1 := Top;
-  X2 := Right;
-  Y2 := Bottom;
-  
-  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X1, Y1, @X2, @Y2);
 
-  ExRegion := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1, QRegionRectangle);
+  ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
   Region := QRegion_create;
   try
     QPainter_clipRegion(QtDC.Widget, Region);
     QRegion_subtract(Region, Region, ExRegion);
     QtDC.setClipRegion(Region);
-    QPainter_setClipping(QtDC.Widget, True);
+    QtDC.setClipping(True);
     
     if QRegion_isEmpty(Region)
     then
@@ -1434,14 +1422,11 @@ begin
     else
     begin
       QRegion_boundingRect(Region, @R);
-      New(R1);
-      R1^ := R;
-      if QRegion_contains(Region, R1)
+      if QRegion_contains(Region, PRect(@R))
       then
         Result := SIMPLEREGION
       else
-        RESULT := COMPLEXREGION;
-      Dispose(R1);
+        Result := COMPLEXREGION;
     end;
   finally
     QRegion_destroy(Region);
