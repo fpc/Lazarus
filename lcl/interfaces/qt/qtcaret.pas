@@ -49,6 +49,7 @@ type
   TEmulatedCaret = class(TComponent)
   private
     FTimer: TTimer;
+    FOldRect: TRect;
     FWidget: TQtWidget;
     FPixmap: QPixmapH;
     FWidth, FHeight: Integer;
@@ -259,6 +260,8 @@ begin
   inherited Create(AOwner);
   InitializeCriticalSection(FCritSect);
 
+  FOldRect := Rect(0, 0, 1, 1);
+  
   FTimer := TTimer.Create(self);
   FTimer.Enabled := False;
   FTimer.Interval := GetCaretBlinkTime;
@@ -338,31 +341,11 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
-  if RespondToFocus then
+  if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
-    if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
-    begin
-      Hide;
-      try
-        FPos := Value;
-      finally
-        Show(FWidget);
-      end;
-    end else
-      FPos := Value;
-  end else
-  begin
-    if FVisible and ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
-    begin
-      Hide;
-      try
-        FPos := Value;
-      finally
-        Show(FWidget);
-      end;
-    end
-    else
-      FPos := Value;
+    FPos := Value;
+    if RespondToFocus then
+      UpdateCaret;
   end;
 end;
 
@@ -442,7 +425,13 @@ begin
     R.Top := FPos.y;
     R.Right := R.Left + FWidth + 2;
     R.Bottom := R.Top + FHeight + 2;
-    FWidget.Update(@R);
+    if FWidget.Context = 0 then
+    begin
+      if not EqualRect(FOldRect, R) then
+        FWidget.Update(@FOldRect);
+      FWidget.Update(@R);
+    end;
+    FOldRect := R;
   end;
 end;
 
