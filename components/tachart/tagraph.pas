@@ -9,8 +9,6 @@
 
  *****************************************************************************
  *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
- *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
  *  for details about the copyright.                                         *
  *                                                                           *
@@ -19,6 +17,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+Authors: Luís Rodrigues and Philippe Martinole
+
 }
 unit TAGraph;
 
@@ -234,6 +235,8 @@ type
     FBackColor: TColor;
 
     FAxisVisible: boolean;
+    
+    FNumBarSeries: integer;
 
     procedure SetAutoUpdateXMin(Value:Boolean);
     procedure SetAutoUpdateXMax(Value:Boolean);
@@ -314,6 +317,8 @@ type
     procedure CopyToClipboardBitmap;
 
     property SeriesCount:Integer read GetSeriesCount;
+    
+    property NumBarSeries: integer read FNumBarSeries;
 
     function GetNewColor:TColor;
     
@@ -936,6 +941,8 @@ begin
     FFrame :=  TChartPen.Create;
     FFrame.Visible := true;
     FFrame.OnChange := StyleChanged;
+    
+    FNumBarSeries := 0;
 end;
 
 destructor TChart.Destroy;
@@ -1364,7 +1371,7 @@ end;
 procedure TChart.DrawLegend;
 var
    w,h,x1,y1,x2,y2,i,TH:Integer;
-   MySerie:TSerie;
+   MySerie:TChartSeries;
 begin
    TmpBrush.Assign(Canvas.Brush);
    TmpPen.Assign(Canvas.Pen);
@@ -1379,10 +1386,10 @@ begin
    end else begin
       h:=5+SeriesInLegendCount*(TH+5);
    end;
-   x1:=Width-w-5;
+   x1 := Width-w-5;
    y1 := YImageMax;
-   x2:=x1+w;
-   y2:=y1+h;
+   x2 := x1+w;
+   y2 := y1+h;
 
    // Border
    Canvas.Brush.Assign(FGraphBrush);
@@ -1405,10 +1412,21 @@ begin
       for i:=0 to SeriesCount-1 do begin
          MySerie:=Series[i];
          if MySerie.ShowInLegend then begin
-            Canvas.TextOut(x1+20,y1+5+i*(TH+5),MySerie.Title);
+            Canvas.Brush.Assign(FGraphBrush);
+            Canvas.TextOut(x1+25,y1+5+i*(TH+5),MySerie.Title);
             Canvas.Pen.Color := MySerie.SeriesColor;
-            Canvas.MoveTo(x1+5,y1+5+i*(TH+5)+TH div 2);
-            Canvas.LineTo(x1+15,y1+5+i*(TH+5)+TH div 2);
+            if MySerie is TBarSeries then begin
+              Canvas.Pen.Color := clBlack;
+              Canvas.Brush.Assign( (MySerie as TBarSeries).BarBrush);
+              Canvas.Rectangle(x1+5,y1+i*(TH+5)+TH div 2, x1+22,y1+10+i*(TH+5)+TH div 2);
+            end else if MySerie is TAreaSeries then begin
+              Canvas.Pen.Color := clBlack;
+              Canvas.Brush.Color := MySerie.SeriesColor;;
+              Canvas.Rectangle(x1+5,y1+i*(TH+5)+TH div 2, x1+22,y1+10+i*(TH+5)+TH div 2);
+            end else if (MySerie is TLine) or (MySerie is TSerie)  then begin
+              Canvas.MoveTo(x1+5,y1+5+i*(TH+5)+TH div 2);
+              Canvas.LineTo(x1+22,y1+5+i*(TH+5)+TH div 2);
+            end else  if MySerie is TPieSeries then begin end; //down't draw
          end;
       end;
    end;
@@ -1525,7 +1543,6 @@ end;
 
 procedure TChart.SetGraphBrush(Value:TBrush);
 begin
-    Showmessage('ad');
     FGraphBrush.Assign(Value);
 end;
 
@@ -1540,6 +1557,11 @@ begin
      end;
      Series.Add(Serie);
      TChartSeries(Serie).ParentChart := Self;
+     
+     if Serie is TBarSeries then begin
+       (Serie as TBarSeries).SeriesNumber := FNumBarSeries;
+       inc(FNumBarSeries); //FIXME: this is never decremented when series is deleted
+     end;
 end;
 
 procedure TChart.DeleteSerie(Serie:TComponent);

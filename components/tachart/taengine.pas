@@ -9,8 +9,6 @@
 
  *****************************************************************************
  *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
- *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
  *  for details about the copyright.                                         *
  *                                                                           *
@@ -19,6 +17,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+Authors: Luís Rodrigues and Philippe Martinole
+
 }
 unit TAEngine;
 

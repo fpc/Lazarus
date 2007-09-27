@@ -9,8 +9,6 @@
 
  *****************************************************************************
  *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
- *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
  *  for details about the copyright.                                         *
  *                                                                           *
@@ -19,6 +17,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+Authors: Luís Rodrigues and Philippe Martinole
+
 }
 
 unit TASeries;
@@ -83,6 +84,7 @@ type
 
     function Count:Integer;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor) : Longint; virtual;
+    function Add(aValue: Double; XLabel: String; Color: TColor) : Longint; virtual;
     procedure Delete(Index:Integer); virtual;
     procedure Clear;
 //    function AddY(X, Y: Double; XLabel: String; Color: TColor) : Longint;
@@ -116,7 +118,7 @@ type
     Constructor Create(AOwner:TChartSeries);
     Destructor Destroy; override;
 //    Procedure Draw(px,py:Integer; ColorValue:TColor; AStyle:TSeriesPointerStyle);
-    Procedure Draw(px,py:Integer);
+    Procedure Draw(px,py:Integer; SeriesColor: TColor);
 
     property ParentSeries:TChartSeries read FOwner;
     Procedure Assign(Source:TPersistent); override;
@@ -140,6 +142,8 @@ type
     FBarPen: TPen;
 
     FBarWidthPercent: Integer;
+    
+    FSeriesNumber: Integer;
 
     Procedure SetBarWidthPercent(Value:Integer);
     procedure SetBarBrush(Value:TBrush);
@@ -160,6 +164,7 @@ type
     property BarPen: TPen read FBarPen write SetBarPen;
     property Title;
     property Active;
+    property SeriesNumber: Integer read FSeriesNumber write FSeriesNumber;
   end;
 
   TPieSeries = class(TChartSeries)
@@ -369,6 +374,17 @@ begin
    result := FCoordList.IndexOf( Coordn );
 end;
 
+function TChartSeries.Add(aValue: Double; XLabel: String; Color: TColor) : Longint;
+var XVal: Integer;
+begin
+    if FCoordList.Count = 0 then
+      XVal := 0
+    else
+      XVal :=  Round(PChartCoord(FCoordList.Items[ FCoordList.Count-1 ])^.x);
+     AddXY(XVal+1, aValue, XLabel, Color);
+end;
+
+
 procedure TChartSeries.Delete(Index:Integer);
 begin
      Dispose( PChartCoord(FCoordList.Items[Index]) );
@@ -469,7 +485,7 @@ begin
    inherited Destroy;
 end;
 
-Procedure TSeriesPointer.Draw(px,py:Integer);
+Procedure TSeriesPointer.Draw(px,py:Integer; SeriesColor: TColor);
 begin
      with FOwner do begin
         ParentChart.Canvas.Brush.Assign( FBrush );
@@ -477,21 +493,25 @@ begin
 
         case FStyle of
             psRectangle: begin
+               ParentChart.Canvas.Brush.Color := SeriesColor;
                ParentChart.Canvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
             end;
             psCross: begin
+               ParentChart.Canvas.Pen.Color := SeriesColor;
                ParentChart.Canvas.MoveTo(px-FHorizSize,py);
                ParentChart.Canvas.LineTo(px+FHorizSize+1,py);
                ParentChart.Canvas.MoveTo(px,py-FVertSize);
                ParentChart.Canvas.LineTo(px,py+FVertSize+1);
             end;
             psDiagCross: begin
+               ParentChart.Canvas.Pen.Color := SeriesColor;
                ParentChart.Canvas.MoveTo(px-FHorizSize,py-FVertSize);
                ParentChart.Canvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
                ParentChart.Canvas.MoveTo(px-FHorizSize,py+FVertSize+1);
                ParentChart.Canvas.LineTo(px+FHorizSize+1,py-FVertSize);
             end;
             psStar: begin
+               ParentChart.Canvas.Pen.Color := SeriesColor;
                ParentChart.Canvas.MoveTo(px-FHorizSize,py);
                ParentChart.Canvas.LineTo(px+FHorizSize+1,py);
                ParentChart.Canvas.MoveTo(px,py-FVertSize);
@@ -503,6 +523,7 @@ begin
                ParentChart.Canvas.LineTo(px+FHorizSize+1,py-FVertSize);
             end;
             psCircle: begin
+               ParentChart.Canvas.Brush.Color := SeriesColor;
                ParentChart.Canvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
             end;
         end;
@@ -744,10 +765,7 @@ begin
       Points:
         if FShowPoints and (yi1>=YMin) and (yi1<=YMax)
            and (xi1>=XMin) and (xi1<=XMax) then begin
-           ParentChart.Canvas.Pen.Color := clBlack;
-           ParentChart.Canvas.Brush.Color:=graphCoord^.Color;
-
-           FPointer.Draw(xi1, yi1 );
+           FPointer.Draw(xi1, yi1, SeriesColor);
          end;
 
    end;
@@ -760,16 +778,15 @@ begin
 
    if FShowPoints and (yi1>=YMin) and
       (yi1<=YMax) and (xi1>=XMin) and (xi1<=XMax) then begin
-         ParentChart.Canvas.Pen.Color := clBlack;
-         ParentChart.Canvas.Brush.Color:=graphCoord^.Color;
-         FPointer.draw( xi1, yi1 );
+         FPointer.draw( xi1, yi1, SeriesColor );
    end;
 end;
 
 
 function TSerie.AddXY(X, Y: Double; XLabel: String; Color: TColor) : Longint;
 begin
-     if Color = clTAColor then Color := SeriesColor;
+     if Color = clTAColor then
+       Color := SeriesColor;
 
      inherited AddXY(X, Y, XLabel, Color);
 
@@ -1183,7 +1200,7 @@ var
    graphCoordTop: ChartCoord;
    graphCoordBottom: ChartCoord;
    topX, topY, bottomY: Integer;
-   barWidth: Integer;
+   barWidth, TotalbarWidth: Integer;
 
    bx1, by1, bx2, by2: integer;
 
@@ -1215,8 +1232,9 @@ begin
    ParentChart.Canvas.Brush.Assign( FBarBrush );
 
    //calc the single bar width
-   barWidth:=Round((FBarWidthPercent*0.01)*ParentChart.ChartWidth/FCoordList.Count);
-   // barWidth:=barWidth div NumBarSeries; //to use with multibar
+   TotalbarWidth:=Round((FBarWidthPercent*0.01)*ParentChart.ChartWidth/FCoordList.Count);
+   //to use with multibar -- with is on by default
+   barWidth:=TotalbarWidth div ParentChart.NumBarSeries;
 
 
    for i := 0 to FCoordList.Count - 1 do begin
@@ -1240,12 +1258,15 @@ begin
           ParentChart.GraphToImage(graphCoordTop.x, graphCoordTop.y, topX, topY);
           ParentChart.YGraphToImage(graphCoordBottom.y, bottomY);
 
-          ParentChart.Canvas.Brush.Color := graphCoordTop.Color;
-
           //calc coords for bar
-          bx1 := topX-(barWidth div 2);
+{          bx1 := topX-(barWidth div 2);
           by1 := topY;
           bx2 := topX+(barWidth div 2);
+          by2 := bottomY;
+}
+          bx1 := topX-(TotalbarWidth div 2) + SeriesNumber*barWidth;
+          by1 := topY;
+          bx2 := topX-(TotalbarWidth div 2) + SeriesNumber*barWidth + barWidth;
           by2 := bottomY;
 
 

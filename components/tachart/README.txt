@@ -43,10 +43,15 @@ Installation
 
 Changes
 -------
+
+* 27/09/2007 - Bugfixes and partially implemented multibar in TBarSeries
+* 29/08/2007 - Bugfixes and implement Bug fixes SaveToBitmapFile 
+                 and CopyToClipboardBitmap
+* 27/08/2007 - Bugfixes and implement Inverted Axis (by Helio Rocha-Pinto)
 * 17/04/2007 - Series clipping bugfixes and partially implement TSeriesPointer
 * 12/03/2007 - Bugfixes and implement ShowInLegend
 * 01/01/2007 - Initial Release
 
-
-Copyright (C) 2005-2006 by Philippe Martinole  <philippe.martinole@teleauto.org>
 Copyright (C) 2006-2007 by Luis Rodrigues  <lr@neei.uevora.pt>
+Copyright (C) 2005-2006 by Philippe Martinole  <philippe.martinole@teleauto.org>
+
