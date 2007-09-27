@@ -1697,6 +1697,8 @@ begin
       // of the columns must fill completly the grid's
       // available width, let it be that column the last
       ForcedIndex := ColCount-1;
+      if ForcedIndex>=FixedCols then
+        Dec(FixedSizeWidth, GetColWidths(ForcedIndex));
       Count := 1;
     end else
       ForcedIndex := -1;
