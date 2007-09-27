@@ -1536,7 +1536,7 @@ begin
 
   if Str <> nil then
   begin
-    WideStr := GetUtf8String(Str);
+    WideStr := GetUtf8String(Copy(Str, 1, Count));
 
     QtDC.drawText(X, Y, @WideStr);
   end;
