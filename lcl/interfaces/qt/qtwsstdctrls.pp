@@ -357,9 +357,6 @@ class procedure TQtWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   QtScrollBar: TQtScrollBar;
   RA,RB: TRect;
-  IsSameGeometry: Boolean;
-  PagePos: Integer;
-  PagePosW: Integer;
 begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
 
@@ -367,39 +364,30 @@ begin
   QtScrollBar.setPageStep(AScrollBar.PageSize * 2);
   QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
   
-  PagePos := QtScrollBar.getValue;
-  PagePosW := PagePos + QtScrollBar.getPageStep;
-
-  if (AScrollBar.Position < PagePos)
-  or (AScrollBar.Position > PagePosW)
-  or QtScrollBar.SliderPressed then
-    QtScrollBar.setValue(AScrollBar.Position);
+  QtScrollBar.setValue(AScrollBar.Position);
   
   RA := QtScrollBar.LCLObject.ClientRect;
   RB := AScrollBar.ClientRect;
   
-  IsSameGeometry := (RA.Left = RB.Left) and (RA.Top = RB.Top) and (RA.Right = RB.Right) and (RA.Bottom = RB.Bottom);
-
-  if not IsSameGeometry then
+  if not EqualRect(RA, RB) then
     QWidget_setGeometry(QtScrollbar.Widget,AScrollBar.Left,AScrollBar.Top,AScrollBar.Width,AScrollBar.Height);
     {don't update geometry each time}
 
   case AScrollBar.Kind of
     sbHorizontal:
     begin
-      QTScrollBar.SetOrientation(QtHorizontal);
-      QTScrollBar.setInvertedAppereance(False);
-      QTScrollBar.setInvertedControls(False);
+      QtScrollBar.SetOrientation(QtHorizontal);
+      QtScrollBar.setInvertedAppereance(False);
+      QtScrollBar.setInvertedControls(False);
     end;
     sbVertical:
     begin
-      QTScrollBar.SetOrientation(QtVertical);
-      QTScrollBar.setInvertedAppereance(False);
-      QTScrollBar.setInvertedControls(True);
+      QtScrollBar.SetOrientation(QtVertical);
+      QtScrollBar.setInvertedAppereance(False);
+      QtScrollBar.setInvertedControls(True);
     end;
   end;
 end;
-
 
 { TQtWSCustomListBox }
 
