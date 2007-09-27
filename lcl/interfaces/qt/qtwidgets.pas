@@ -3552,6 +3552,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtGroupBox.Create ');
   {$endif}
+  FHasPaint := True;
   Result := QGroupBox_create();
   FCentralWidget := QWidget_create(Result, 0);
   Layout := QVBoxLayout_create(Result);

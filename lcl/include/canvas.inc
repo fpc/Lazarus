@@ -1051,7 +1051,8 @@ begin
   if Style.SystemFont or Style.Clipping or (not Style.Opaque) then
     SaveState;
 
-  if Style.SystemFont then begin
+  if Style.SystemFont then
+  begin
     Options := Options or DT_INTERNAL;
     SelectObject(DC, GetStockObject(DEFAULT_GUI_FONT));
   end;
@@ -1063,9 +1064,10 @@ begin
   if Style.Layout = tlTop then
     fRect.Top := Y;
 
-  if (Style.Alignment in [taRightJustify,taCenter])
-  or (Style.Layout in [tlCenter,tlBottom]) then begin
-    DrawText(DC,pChar(Text),Length(Text),fRect,DT_CALCRECT or Options);
+  if (Style.Alignment in [taRightJustify,taCenter]) or
+    (Style.Layout in [tlCenter,tlBottom]) then
+  begin
+    DrawText(DC, pChar(Text), Length(Text), fRect, DT_CALCRECT or Options);
     case Style.Alignment of
       taRightJustify : OffsetRect(fRect, ARect.Right - fRect.Right, 0);
       taCenter : OffsetRect(fRect, (ARect.Right - fRect.Right) div 2, 0);
@@ -1077,27 +1079,27 @@ begin
     end;
   end;
 
-  if Style.Clipping then begin
+  if Style.Clipping then
+  begin
     IntersectRect(ARect, ARect, fRect);
     with ARect do
       InterSectClipRect(DC, Left, Top, Right, Bottom);
     Options := Options or DT_NOCLIP; // no clipping as we are handling it here
   end;
 
-  if Style.Opaque then begin
-    FillRect(fRect);
-  end else begin
+  if Style.Opaque then
+    FillRect(fRect)
+  else
     SetBkMode(DC, TRANSPARENT);
-  end;
-  
+
   if Style.SystemFont then
     SetTextColor(DC, Font.Color);
   //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
   DrawText(DC, pChar(Text), Length(Text), fRect, Options);
   
-  if Style.Opaque and (csBrushValid in FState) then begin
-    if Brush.Style=bsSolid then
-      // restore BKMode
+  if Style.Opaque and (csBrushValid in FState) then
+  begin
+    if Brush.Style=bsSolid then // restore BKMode
       SetBkMode(DC, OPAQUE)
   end;
 

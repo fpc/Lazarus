@@ -279,10 +279,11 @@ type
     procedure fillRect(x, y, w, h: Integer; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer); overload;
 
-    procedure setBrushOrigin(x, y: Integer);
     procedure getBrushOrigin(retval: PPoint);
     function getClipping: Boolean;
     procedure getPenPos(retval: PPoint);
+    function getWorldMatrix: QMatrixH;
+    procedure setBrushOrigin(x, y: Integer);
     procedure setPenPos(x, y: Integer);
 
     function font: TQtFont;
@@ -1708,6 +1709,11 @@ procedure TQtDeviceContext.getPenPos(retval: PPoint);
 begin
   retval^.x := FPenPos.x;
   retval^.y := FPenPos.y;
+end;
+
+function TQtDeviceContext.getWorldMatrix: QMatrixH;
+begin
+  Result := QPainter_worldMatrix(Widget);
 end;
 
 procedure TQtDeviceContext.setPenPos(x, y: Integer);

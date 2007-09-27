@@ -1186,6 +1186,9 @@ begin
 
   if Flags and DT_NOPREFIX = 0 then
     F := F or $800;{QTTextShowMnemonic;}
+
+  if Flags and DT_NOCLIP = 0 then
+    F := F or $200; {QtTextDontClip}
   
   QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
   
@@ -3153,42 +3156,32 @@ end;
 
 function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 var
+  QtDC: TQtDeviceContext absolute dc;
   IntersectRgn, Rgn: QRegionH;
-  X1,Y1,X2,Y2: Integer;
-  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('***** [WinAPI TQtWidgetSet.IntersectClipRect] ');
   {$endif}
   Result := ERROR;
   if not IsValidDC(DC) then exit;
-  
-  QtDC := TQtDeviceContext(DC);
-  
-  X1 := Left;
-  Y1 := Top;
-  X2 := Right;
-  Y2 := Bottom;
-  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X1, Y1, @X1, @Y1);
-  QMatrix_map(QPainter_worldMatrix(QtDC.Widget), X2, Y2, @X2, @Y2);
 
-  IntersectRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1);
+  IntersectRgn := QRegion_create(Left, Top, Right - Left, Bottom - Top);
   Rgn := QRegion_create;
   try
-    if QPainter_hasClipping(QtDC.Widget) then
+    if QtDC.getClipping then
     begin
       QPainter_clipRegion(QtDC.Widget, Rgn);
       if QRegion_isEmpty(Rgn) then
-        QRegion_unite(Rgn, Rgn, IntersectRgn)
+        QtDC.setClipRegion(IntersectRgn)
       else
-        QRegion_intersect(Rgn, Rgn, IntersectRgn);
+        QtDC.setClipRegion(IntersectRgn, QtIntersectClip);
     end
     else
     begin
       QtDC.setClipRegion(InterSectRgn);
       QPainter_clipRegion(QtDC.Widget, Rgn);
     end;
-    QPainter_setClipping(QtDC.Widget, True);
+    QtDC.setClipping(True);
     Result := QtDC.GetRegionType(Rgn);
   finally
     QRegion_destroy(IntersectRgn);
