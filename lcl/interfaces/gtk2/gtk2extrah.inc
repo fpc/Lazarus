@@ -66,6 +66,10 @@ function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x,
 function gdk_display_get_default_cursor_size(display: PGdkDisplay): guint; cdecl; external gdklib;
 procedure gdk_display_get_maximal_cursor_size(display: PGdkDisplay; w, h: pguint); cdecl; external gdklib;
 
+{$ifdef GTK_2_8}
+// gdk 2.8
+procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
+{$endif}
 { for future use
 function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
 function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdecl; external gdklib;

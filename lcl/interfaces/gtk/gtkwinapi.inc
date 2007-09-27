@@ -3307,8 +3307,10 @@ begin
   end;
   FontList := TStringlist.Create;
   try
-    if Family<>'' then Tmp := '-*-'+Family+'-*-*-*-*-*-*-*-*-*-*-*-*'
-    else               Tmp := '-*'; // get rid of aliases
+    if Family<>'' then
+      Tmp := '-*-'+Family+'-*-*-*-*-*-*-*-*-*-*-*-*'
+    else
+      Tmp := '-*'; // get rid of aliases
     {$ifdef VerboseEnumFonts}
     WriteLn('Looking for fonts matching: ', tmp);
     {$endif}
@@ -5697,11 +5699,15 @@ var
   P: Pointer;
   ax,ay,ah,aw: gint;
   auw, auh: guint;
- {$ifndef GTK2}{$ifdef HasX}
+ {$ifdef GTK2}
+  display: PGdkDisplay;
+ {$else}
+ {$ifdef HasX}
    XDisplay: PDisplay;
    XScreen: PScreen;
    XWindow: TWindow;
- {$endif}{$endif}
+ {$endif}
+ {$endif}
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
@@ -5820,15 +5826,19 @@ begin
     SM_CXMAXIMIZED:
       begin
         {$IFDEF HasX}
-        if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=aw
-                                        else getSystemMetrics(SM_CXSCREEN);
+        if XGetWorkarea(ax,ay,aw,ah)>=0 then
+          Result := aw
+        else
+          Result := getSystemMetrics(SM_CXSCREEN);
         {$ENDIF}
       end;
     SM_CYMAXIMIZED:
       begin
         {$IFDEF HasX}
-         if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=ah
-                                        else getSystemMetrics(SM_CYSCREEN);
+         if XGetWorkarea(ax,ay,aw,ah)>=0 then
+           Result := ah
+         else
+           Result := getSystemMetrics(SM_CYSCREEN);
         {$ENDIF}
       end;
     SM_CXMAXTRACK:
@@ -5887,8 +5897,7 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
-    SM_CXSCREEN,
-    SM_CXVIRTUALSCREEN:
+    SM_CXSCREEN:
       begin
         {$IFDEF GTK1} { Partial fix for multi monitor systems - force use of first one }
         {$IFDEF UseXinerama}
@@ -5898,6 +5907,18 @@ begin
         {$ENDIF}
         {$ENDIF}
           result := gdk_Screen_Width;
+      end;
+    SM_CXVIRTUALSCREEN:
+      begin
+        {$ifdef GTK2}
+        aw := 0;
+        display := gdk_display_get_default();
+        for ax := 0 to gdk_display_get_n_screens(display) - 1 do
+          inc(aw, gdk_screen_get_width(gdk_display_get_screen(display, ax)));
+        Result := ax;
+        {$else}
+        Result := getSystemMetrics(SM_CXSCREEN);
+        {$endif}
       end;
     SM_CYSCREEN,
     SM_CYVIRTUALSCREEN:
@@ -8433,13 +8454,13 @@ begin
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
 end;
-{$ELSE UNIX}
+{$ELSE HasX}
 begin
   Result := False;
   DebugLn('TGtkWidgetSet.SetCursorPos not implemented for this platform');
   // Can this call TWin32WidgetSet.SetCursorPos?
 end;
-{$ENDIF UNIX}
+{$ENDIF HasX}
 
 {------------------------------------------------------------------------------
   Function: SetFocus

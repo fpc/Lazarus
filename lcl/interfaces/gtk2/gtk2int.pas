@@ -31,6 +31,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+//{$I gtkdefines.inc}
+
 uses
   Types, Classes, SysUtils,
   {$IfNDef GTK2_2}

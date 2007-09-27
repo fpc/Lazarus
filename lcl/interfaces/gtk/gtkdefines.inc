@@ -79,6 +79,7 @@
     // not supported
     {$fatal X is required for GTK1}
   {$endif}
+  {$define GTK_2_8}
 {$endif}
 
 

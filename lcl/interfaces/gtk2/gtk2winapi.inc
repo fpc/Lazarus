@@ -481,6 +481,16 @@ begin
   end;
 end;
 
+function TGtk2WidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+begin
+{$ifdef GTK_2_8}
+  gdk_display_warp_pointer(gdk_display_get_default(), gdk_screen_get_default(), X, Y);
+  Result := True;
+{$else}
+  Result:=inherited SetCursorPos(X, Y);
+{$endif}
+end;
+
 {------------------------------------------------------------------------------
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
