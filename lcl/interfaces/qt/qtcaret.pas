@@ -48,6 +48,7 @@ type
 
   TEmulatedCaret = class(TComponent)
   private
+    FDiff: Comp;
     FTimer: TTimer;
     FOldRect: TRect;
     FWidget: TQtWidget;
@@ -340,18 +341,51 @@ begin
 end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
+var
+  Test: TQtPoint;
+  w: TQtWidget;
 begin
   if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
+    FDiff := TimeStampToMSecs(DateTimeToTimeStamp(Now));
     FPos := Value;
-    if RespondToFocus then
-      UpdateCaret;
+    FTimer.Enabled := False;
+    try
+      DoTimer(FTimer);
+      if RespondToFocus then
+        UpdateCaret;
+    finally
+      FTimer.Enabled := True;
+    end;
+
+  end else
+  begin
+    FPos := Value;
+    if FWidget.Context = 0 then
+    begin
+      FTimer.Enabled := False;
+      FVisibleState := True;
+    end else
+      if not FTimer.Enabled then
+        FTimer.Enabled := True;
   end;
 end;
 
 procedure TEmulatedCaret.DoTimer(Sender: TObject);
+var
+  TimerDiff: Comp;
 begin
-  FVisibleState := not FVisibleState;
+
+  TimerDiff := TimeStampToMSecs(DateTimeToTimeStamp(Now));
+  if (TimerDiff - FDiff) < FTimer.Interval then
+  begin
+    {now caret is drawn if in paintEvent}
+    FVisible := True;
+    FVisibleState := True;
+    exit;
+  end else
+    FVisibleState := not FVisibleState;
+   
   if FVisible then
     UpdateCaret;
 end;
