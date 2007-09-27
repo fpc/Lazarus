@@ -4867,14 +4867,13 @@ begin
   if (Sender = FLineEdit) then
   begin
     Result := False;
-
-    QEvent_accept(Event);
-
     case QEvent_type(Event) of
       QEventKeyPress,
-      QEventKeyRelease: SlotKey(Sender, Event);
-    else
-      QEvent_ignore(Event);
+      QEventKeyRelease:
+      begin
+        QEvent_accept(Event);
+      	SlotKey(Sender, Event);
+      end;
     end;
   end else
   begin
