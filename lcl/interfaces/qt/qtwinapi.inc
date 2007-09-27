@@ -2609,6 +2609,8 @@ begin
           WriteLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT          ');
         {$endif}
       end;
+    SM_CMONITORS:
+      Result := QDesktopWidget_numScreens(QApplication_desktop());
     SM_CMOUSEBUTTONS:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
@@ -2669,27 +2671,14 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
       end;
-    { Size of the array bitmap on the horizontal scrollbar
-      Currently hardcoded, but more research should be made to check if Qt gives this info }
-    SM_CXHSCROLL:
-      begin
-        Result := 15;
-      end;
-    SM_CYHSCROLL:
-      begin
-        Result := 15;
-      end;
     SM_CXHTHUMB:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
       end;
-    SM_CXICON:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICON           ');
-      end;
+    SM_CXICON,
     SM_CYICON:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICON           ');
+        Result := 32;
       end;
     SM_CXICONSPACING:
       begin
@@ -2789,13 +2778,10 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZEFRAME      ');
       end;
-    SM_CXSMICON:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMICON         ');
-      end;
+    SM_CXSMICON,
     SM_CYSMICON:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMICON         ');
+        Result := 16
       end;
     SM_CXSMSIZE:
       begin
@@ -2813,19 +2799,16 @@ begin
       begin
         Result := QWidget_height(QApplication_desktop);
       end;
-    { Size of the array bitmap on the vertical scrollbar
-      Currently hardcoded, but more research should be made to check if Qt gives this info }
-    SM_CXVSCROLL:
+    SM_CXVSCROLL,
+    SM_CYVSCROLL,
+    SM_CXHSCROLL,
+    SM_CYHSCROLL:
       begin
-        Result := 15;
-      end;
-    SM_CYVSCROLL:
-      begin
-        Result := 15;
+        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
       end;
     SM_CYCAPTION:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCAPTION        ');
+        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
       end;
     SM_CYKANJIWINDOW:
       begin
