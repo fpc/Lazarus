@@ -79,12 +79,6 @@ components/mpaslex/units
 components/opengl/*.bak
 components/opengl/example/*.bak
 components/opengl/example/units
-components/opengl/gtk2x11/*.bak
-components/opengl/gtk2x11/include/*.bak
-components/opengl/gtk2x11/include/units
-components/opengl/gtk2x11/scripts/*.bak
-components/opengl/gtk2x11/scripts/units
-components/opengl/gtk2x11/units
 components/opengl/units
 components/popupnotifier/*.bak
 components/popupnotifier/demo/*.bak
