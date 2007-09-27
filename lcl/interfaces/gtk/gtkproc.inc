@@ -7150,9 +7150,10 @@ begin
     GdkWindow:=GetControlWindow(aWidget);
     if (GdkWindow<>nil) and (GTK_WIDGET_MAPPED(aWidget)) then begin
       // window is mapped = window manager has put the window somewhere
+      // under windows GtkLeft and GtkTop equal to -32000 for some reason
       gdk_window_get_root_origin(GdkWindow, @GtkLeft, @GtkTop);
-      Left:=GtkLeft;
-      Top:=GtkTop;
+      Left := GtkLeft;
+      Top := GtkTop;
     end else begin
       // the gtk has not yet put the window to the final position
       // => the gtk/gdk position is not reliable

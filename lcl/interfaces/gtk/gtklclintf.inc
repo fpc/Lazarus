@@ -536,12 +536,7 @@ begin
     {$IFDEF Gtk1}
     exit;
     {$ELSE}
-      {$IFDEF HasX}
       Drawable := gdk_screen_get_root_window(gdk_screen_get_default);
-      {$ELSE}
-      {$note: todo implement}
-      exit;
-      {$ENDIF}
     {$ENDIF}
   end;
   Result := RawImage_FromDrawable(ARawImage, Drawable, nil, R);
