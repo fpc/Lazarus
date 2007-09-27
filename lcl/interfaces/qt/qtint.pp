@@ -110,7 +110,7 @@ type
     function CreateDefaultFont: HFONT; virtual;
     function GetQtDefaultDC: HDC; virtual;
     procedure DeleteDefaultDC; virtual;
-		procedure SetQtDefaultDC(Handle: HDC); virtual;
+    procedure SetQtDefaultDC(Handle: HDC); virtual;
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
 

@@ -286,7 +286,7 @@ begin
   if IsValidDC(CanvasHandle) then
   begin
     //WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor));
-    Painter :=TQtDeviceContext(CanvasHandle).Widget;
+    Painter := TQtDeviceContext(CanvasHandle).Widget;
     Pen := QPainter_pen(Painter);
     QPen_color(Pen, @ASavedColor);
     QColor_setRgb(QColorH(@Color),Red(AColor),Green(AColor),Blue(AColor));

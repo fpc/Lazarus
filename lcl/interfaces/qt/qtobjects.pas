@@ -1556,6 +1556,7 @@ begin
   if AFont.Angle <> 0 then
     Rotate(-0.1 * AFont.Angle);
 
+  // what about AFont.Metrics.descent and AFont.Metrics.leading ?
   y := y + AFont.Metrics.ascent;
 
   // manual check for clipping
