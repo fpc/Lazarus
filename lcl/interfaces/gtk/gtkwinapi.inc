@@ -2579,7 +2579,7 @@ var
            State,
            Shadow,
            nil,
-           Widget,
+           GetStyleWidget(lgsButton),
            'button',
            Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
            Rect.Right-Rect.Left,Rect.Bottom-Rect.Top)
@@ -2588,7 +2588,7 @@ var
            State,
            Shadow,
            nil,
-           Widget,
+           GetStyleWidget(lgsButton),
            'button',
            Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
            Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
@@ -2658,10 +2658,12 @@ var
     end;
   end;
 
-var ClientWidget: PGtkWidget;
+var 
+  ClientWidget: PGtkWidget;
 begin
   Result := False;
-  if IsValidDC(DC) then begin
+  if IsValidDC(DC) then 
+  begin
     Widget:=TDeviceContext(DC).DCWidget;
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget<>nil then
