@@ -674,7 +674,7 @@ begin
     while r>=l do begin
       m:=(l+r) shr 1;
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      cmp:=ComparePCharFirstCaseInsThenCase(PChar(Pointer(UnitName)),CurFilename);
+      cmp:=stricomp(PChar(Pointer(UnitName)),CurFilename);
       if cmp>0 then
         l:=m+1
       else if cmp<0 then
@@ -683,9 +683,17 @@ begin
         break;
     end;
     // now all files above m are higher than the Unitname
-    // -> check that m is equal or above
+    // -> check that m is equal or above = find lowest
     if (Cmp>0) then
-      inc(m);
+      inc(m)
+    else if (Cmp=0) then begin
+      while (m>0) do begin
+        CurFilename:=@FListing.Names[FListing.NameStarts[m-1]];
+        cmp:=stricomp(PChar(Pointer(UnitName)),CurFilename);
+        if cmp<>0 then break;
+      end;
+    end;
+      
     // now all files below m are lower than the Unitname
     // -> now find a filename with correct case and extension
     while m<FListing.NameCount do begin
