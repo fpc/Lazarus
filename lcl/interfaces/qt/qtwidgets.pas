@@ -1096,7 +1096,7 @@ begin
   SetGeometry;
 
   // set focus policy
-  if LCLObject <> nil then
+  if (LCLObject <> nil) and not (Self is TQtMainWindow) then
   begin
     if LCLObject.TabStop then
       setFocusPolicy(QtClickFocus)
