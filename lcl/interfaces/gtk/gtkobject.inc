@@ -923,10 +923,10 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
       else begin
         // resize form
         {$IFDEF VerboseFormPositioning}
-        DebugLn('VFP SendCachedLCLMessages1 ',GetControlWindow(Widget)<>nil);
+        DebugLn('VFP SendCachedLCLMessages1 ', dbgs(GetControlWindow(Widget)<>nil));
         if (LCLControl is TCustomForm) then
           DebugLn('VFP SendCachedLCLMessages2 ',LCLControl.ClassName,' ',
-            LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
+            dbgs(LCLControl.Left),',',dbgs(LCLControl.Top),',',dbgs(LCLControl.Width),',',dbgs(LCLControl.Height));
         {$ENDIF}
         SetWindowSizeAndPosition(PgtkWindow(Widget),TWinControl(LCLControl));
       end;
@@ -5304,28 +5304,38 @@ begin
     end;
 
     // before making the widget visible, set the position and size
-    if FWidgetsWithResizeRequest.Contains(SenderWidget) then begin
-      if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
+    // this is not possible for windows - for windows position will be setted
+    // after widget become visible
+    if FWidgetsWithResizeRequest.Contains(SenderWidget) then
+    begin
+      if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then
+      begin
         // top level control (a form without parent)
         {$IFDEF VerboseFormPositioning}
         DebugLn('VFP [TGtkWidgetSet.ShowHide] A set bounds ',
           LCLControl.Name,':',LCLControl.ClassName,
-          ' Window=',GetControlWindow(SenderWidget)<>nil,
-          ' ',LCLControl.Left,',',LCLControl.Top,
-          ',',LCLControl.Width,',',LCLControl.Height);
+          ' Window=',dbgs(GetControlWindow(SenderWidget)<>nil),
+          ' ',dbgs(LCLControl.Left),',',dbgs(LCLControl.Top),
+          ',',dbgs(LCLControl.Width),',',dbgs(LCLControl.Height));
         {$ENDIF}
         SetWindowSizeAndPosition(PgtkWindow(SenderWidget),LCLControl);
-      end else if (LCLControl.Parent<>nil) then begin
+      end
+      else
+      if (LCLControl.Parent<>nil) then
+      begin
         // resize widget
         {$IFDEF VerboseSizeMsg}
         DebugLn(['TGtkWidgetSet.ShowHide ',DbgSName(LCLControl)]);
         {$ENDIF}
         SetWidgetSizeAndPosition(LCLControl);
       end;
+    {$ifndef windows}
       UnsetResizeRequest(SenderWidget);
+    {$endif}
     end;
 
-    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
+    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then
+    begin
       If (ACustomForm.BorderStyle <> bsSizeable) or
         ((ACustomForm.FormStyle in fsAllStayOnTop)
          and (not (csDesigning in ACustomForm.ComponentState)))
