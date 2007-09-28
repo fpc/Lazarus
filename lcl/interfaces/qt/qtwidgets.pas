@@ -248,6 +248,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
   end;
 
@@ -1042,7 +1043,7 @@ begin
   // Initializes the properties
   FProps := nil;
   LCLObject := AWinControl;
-  FKeysToEat := [VK_TAB{, VK_RETURN, VK_ESCAPE}];
+  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
   FHasPaint := False;
 
   FParams := AParams;
@@ -1058,7 +1059,7 @@ begin
   // Initializes the properties
   FProps := niL;
   LCLObject := AWinControl;
-  FKeysToEat := [VK_TAB{, VK_RETURN, VK_ESCAPE}];
+  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
   FHasPaint := False;
 
   // Creates the widget
@@ -3138,7 +3139,7 @@ begin
 
   FHasPaint := True;
   IsMainForm := False;
-  
+
   w := QApplication_activeWindow;
 
   if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible)) then
@@ -3994,6 +3995,17 @@ begin
     WriteLn('TQtScrollBar.Create');
   {$endif}
   Result := QScrollBar_create();
+end;
+
+function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  case QEvent_type(Event) of
+    QEventKeyPress,
+    QEventKeyRelease: Result := False;
+  else
+    Result := inherited EventFilter(Sender, Event);
+  end;
 end;
 
 procedure TQtScrollBar.AttachEvents;
