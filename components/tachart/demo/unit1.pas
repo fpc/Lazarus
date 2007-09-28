@@ -26,8 +26,10 @@ type
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
     Legend: TCheckBox;
     Panel1: TPanel;
+    procedure CheckBox5Change(Sender: TObject);
     procedure Panel1Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -66,6 +68,12 @@ implementation
 procedure TForm1.Panel1Click(Sender: TObject);
 begin
 
+end;
+
+procedure TForm1.CheckBox5Change(Sender: TObject);
+begin
+  Chart1.BottomAxis.Inverted := CheckBox5.Checked;
+  Chart1.LeftAxis.Inverted := CheckBox5.Checked;
 end;
 
 procedure TForm1.Button9Click(Sender: TObject);

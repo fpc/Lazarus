@@ -1,11 +1,14 @@
 object Form1: TForm1
-  Left = 290
+  Left = 345
   Height = 499
-  Top = 202
+  Top = 114
   Width = 585
   HorzScrollBar.Page = 584
   VertScrollBar.Page = 498
+  ActiveControl = Button1
   Caption = 'Form1'
+  ClientHeight = 499
+  ClientWidth = 585
   object Chart1: TChart
     Height = 430
     Width = 585
@@ -16,52 +19,38 @@ object Form1: TForm1
     Legend.Alignment = laRight
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
-    Legend.Frame.OnChange = nil
-    Legend.OnChange = nil
     Title.Visible = True
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Font.Height = -11
     Title.Font.Name = 'MS Sans Serif'
-    Title.Frame.OnChange = nil
     Title.Alignment = taCenter
     Title.Text.Strings = (
       'Centered Chart Title'
     )
-    Title.OnChange = nil
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed
     Foot.Font.Height = -13
     Foot.Font.Name = 'MS Sans Serif'
     Foot.Font.Style = [fsBold]
-    Foot.Frame.OnChange = nil
-    Foot.Alignment = taCenter
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
     )
-    Foot.OnChange = nil
     AllowZoom = True
     LeftAxis.Visible = True
     LeftAxis.Title.Angle = 90
     LeftAxis.Title.Font.Height = -11
     LeftAxis.Title.Font.Name = 'MS Sans Serif'
-    LeftAxis.Title.OnChange = nil
     LeftAxis.Grid.Color = clGray
     LeftAxis.Grid.Style = psDot
     LeftAxis.Grid.Visible = True
-    LeftAxis.Grid.OnChange = nil
-    LeftAxis.OnChange = nil
     BottomAxis.Visible = True
     BottomAxis.Title.Font.Height = -11
     BottomAxis.Title.Font.Name = 'MS Sans Serif'
-    BottomAxis.Title.OnChange = nil
     BottomAxis.Grid.Color = clGray
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
-    BottomAxis.Grid.OnChange = nil
-    BottomAxis.OnChange = nil
     Frame.Visible = True
-    Frame.OnChange = nil
     BackColor = clBtnFace
     AxisVisible = True
     Align = alClient
@@ -73,6 +62,8 @@ object Form1: TForm1
     Top = 430
     Width = 585
     Align = alBottom
+    ClientHeight = 69
+    ClientWidth = 585
     TabOrder = 0
     OnClick = Panel1Click
     object Button1: TButton
@@ -205,6 +196,15 @@ object Form1: TForm1
       Caption = 'Footer'
       OnChange = CheckBox4Change
       TabOrder = 12
+    end
+    object CheckBox5: TCheckBox
+      Left = 496
+      Height = 21
+      Top = 40
+      Width = 69
+      Caption = 'Inverted'
+      OnChange = CheckBox5Change
+      TabOrder = 13
     end
   end
 end
