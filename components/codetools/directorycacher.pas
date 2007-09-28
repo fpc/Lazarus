@@ -674,7 +674,7 @@ begin
     while r>=l do begin
       m:=(l+r) shr 1;
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      cmp:=stricomp(PChar(Pointer(UnitName)),CurFilename);
+      cmp:=ComparePCharFirstCaseInsThenCase(PChar(Pointer(UnitName)),CurFilename);
       if cmp>0 then
         l:=m+1
       else if cmp<0 then
