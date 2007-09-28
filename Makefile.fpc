@@ -108,6 +108,7 @@ else
         $(MKDIR) $(INSTALL_PREFIX)/share/lazarus
         $(MKDIR) $(INSTALL_BINDIR)
         $(MKDIR) $(INSTALL_MAN_DIR)
+        $(MKDIR) $(INSTALL_MAN_DIR)/man1
 endif
 #-----------------------------------------------------------------------------
 # Many C expect 'make install' to copy the binaries to somewhere
