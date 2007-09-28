@@ -282,10 +282,8 @@ begin
   else
     Scale2 := ClientWidthDbl/ 500;
   {$ELSE}
-  Scale1 := Double(ClientHeight)
-              / Printer.PageHeight;
-  Scale2 := Double(ClientWidth)
-              / Printer.PageWidth;
+  Scale1 := ClientHeight/ Printer.PageHeight; //JMN
+  Scale2 := ClientWidth/ Printer.PageWidth; //JMN
   {$ENDIF}
   if Scale1 < Scale2 then
     Scale0 := Scale1
@@ -337,7 +335,9 @@ begin
   SetZoom(Zoom); {force recalc of preview sizes}
 end;
 
+{$IFDEF IP_LAZARUS}
 initialization
   {$I iphtmlpv.lrs}
+{$ENDIF}
 
 end.

@@ -37,8 +37,7 @@ uses Classes, SysUtils, LResources, Graphics, LCLProc,
 {$ELSE}
 uses
   Windows, SysUtils, Graphics, Classes, Dialogs, ShellApi,
-
-  IpConst, IpUtils, IpSock, IpCache, IpHtml, IpHttp, IpMsg, IpStrms, IpFtp;
+  IpConst, IpUtils, {IpSock, IpCache,} IpHtml, {IpHttp,} IpMsg, IpStrms{, IpFtp};
 {$ENDIF}
 
 const
@@ -131,9 +130,7 @@ TIpCustomHtmlDataProvider = class(TIpAbstractHtmlDataProvider)
     function CanHandle(const URL : string) : Boolean; override;
   end;
 
-{$IFDEF IP_LAZARUS}
-procedure register;
-{$ENDIF}
+procedure Register;
 
 implementation
 
@@ -379,12 +376,10 @@ begin
   { Do Nothing }
 end;
 
-{$IFDEF IP_LAZARUS}
 procedure Register;
 begin
   RegisterComponents('IPro', [TIpFileDataProvider]);
 end;
-{$ENDIF}
 
 
 end.

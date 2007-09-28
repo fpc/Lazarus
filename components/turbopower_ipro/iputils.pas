@@ -47,6 +47,7 @@ uses
   Messages,
   Windows,
   ExtCtrls,
+  SyncObjs, //JMN
   {$ENDIF}
   Classes,
   Controls,
@@ -130,7 +131,11 @@ type
     { Property variables }
     FModule : TIpHandle;
     { Internal variables }
+   {$IFDEF IP_LAZARUS}
     baPropCS : TCriticalSection;
+   {$ELSE}
+    baPropCS : TRTLCriticalSection; //JMN
+   {$ENDIF}
   protected
     property Module : TIpHandle read FModule write FModule;
   public
@@ -142,7 +147,11 @@ type
 
   TIpBasePersistent = class(TPersistent)
   private
+   {$IFDEF IP_LAZARUS}
     bpPropCS : TCriticalSection;
+   {$ELSE}
+    bpPropCS : TRTLCriticalSection; //JMN
+   {$ENDIF}
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -878,6 +887,7 @@ end;
 
 { Compares two fixed size structures }
 function IpCompStruct(const S1, S2; Size : Cardinal) : Integer;
+{$IFDEF IP_LAZARUS}
 {$IFDEF CPUI386}
 asm
   push   edi
@@ -903,6 +913,34 @@ end;
 begin
   Result := CompareMemRange(@S1, @S2, Size);
 end;
+{$ENDIF}
+{$ELSE}
+{$IFDEF CPU386}
+asm
+  push   edi
+  push   esi
+  mov    esi, eax
+  mov    edi, edx
+  xor    eax, eax
+  or     ecx, ecx
+  jz     @@CSDone
+
+  repe   cmpsb
+  je     @@CSDone
+
+  inc    eax
+  ja     @@CSDone
+  or     eax, -1
+
+@@CSDone:
+  pop    esi
+  pop    edi
+end;
+{$ELSE}
+begin
+  Result := CompareMemRange(@S1, @S2, Size);
+end;
+{$ENDIF}
 {$ENDIF}
 
 function IpCharCount(const Buffer; BufSize : DWORD; C : AnsiChar) : DWORD;
@@ -1479,8 +1517,7 @@ begin
         {$IFNDEF IP_LAZARUS}
         '/': { ignore };
         {$ENDIF}
-
-        '.', '\','/': begin { start of a local path }                      {!!.12}
+        '.', '\'{$IFDEF IP_LAZARUS},'/'{$ENDIF}: begin { start of a local path }                      {!!.12}  //JMN
           PotPath := PotPath + P^;                                     {!!.12}
           State := psLocalPath;                                        {!!.12}
         end;                                                           {!!.12}
@@ -2697,6 +2734,10 @@ const MimeTypeExt : Array[0..4] of String = ('.htm','.html','.txt','.jpg','.png'
       MimeTypes   : Array[0..4] of String = ('text/html','text/html','text/plain','image/jpeg','image/png');
 {$endif}
 
+{$IFDEF VER2_0_2}
+type
+ TMyRegistry=Class(TRegistry);
+{$ENDIF}
 function GetLocalContent(const TheFileName: string): string;
 var
   Reg : TRegistry;
@@ -2721,8 +2762,14 @@ begin
   begin
     Reg := nil;
     try
+      {$IFDEF VER2_0_2}
+      Reg := TMyRegistry.Create;
+      Reg.RootKey := HKEY_CLASSES_ROOT;
+      TMyRegistry(Reg).SetCurrentKey(Reg.RootKey);
+      {$ELSE}
       Reg := TRegistry.Create;
       Reg.RootKey := HKEY_CLASSES_ROOT;
+      {$ENDIF}
       if Reg.OpenKey(Ext, False) then
         Result := Reg.ReadString('Content Type');
     finally

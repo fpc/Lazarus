@@ -17,7 +17,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is TurbºoPower Internet Professional
+ * The Original Code is Turbo Power Internet Professional
  *
  * The Initial Developer of the Original Code is
  * TurboPower Software
@@ -56,20 +56,24 @@ uses
   SysUtils,
   Classes,
   Graphics,
-  {$IFDEF UseGifImageUnit}
-    GifImage,
+  {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+      GifImage,
+    {$ELSE}
+      IpAnim,
+      {$IFDEF AndersGIFImage }
+        IpAnAGif,
+      {$ENDIF}
+      {$IFDEF ImageLibGIFImage }
+        IpAnImgL,
+      {$ENDIF}
+    {$ENDIF}
+    {$IFDEF UsePNGGraphic}
+      IpPNGImg,
+    {$ENDIF}
   {$ELSE}
-    IpAnim,
-    {$IFDEF AndersGIFImage }
-      IpAnAGif,
-    {$ENDIF}
-    {$IFDEF ImageLibGIFImage }
-      IpAnImgL,
-    {$ENDIF}
+  GIFImage,
   {$ENDIF}
-  {$IFDEF UsePNGGraphic}
-    IpPNGImg,
-  {$ENDIF}      
   Controls,
   StdCtrls,
   ExtCtrls,
@@ -84,6 +88,9 @@ uses
   TypInfo; {!!.10}
 
 type
+  {$IFNDEF IP_LAZARUS} //JMN
+    PtrInt = Longint;
+  {$ENDIF}
   {Note: Some of the code below relies on the fact that
    the end tag (when present) immediately follows the
    start tag.}
@@ -418,14 +425,9 @@ type
     procedure DoChange;
     function GetValue: Integer;
     procedure SetValue(const Value: Integer);
-    {$IFDEF IP_LAZARUS}
   public
     constructor Create(AValue: Integer);
-    {$ENDIF}
   published {public} {!!.12}
-    {$IFNDEF IP_LAZARUS}
-    constructor Create(AValue: Integer);
-    {$EndIf}
     property Value: Integer read GetValue write SetValue;
     property OnChange: TNotifyEvent read FChange write FChange;
   end;
@@ -557,7 +559,11 @@ type
     FLinkColor : TColor;
     FVLinkColor : TColor;
     FALinkColor : TColor;
+   {$IFDEF IP_LAZARUS}
     FBgColor : TColorRef;
+   {$ELSE}
+    FBgColor : TColor;
+   {$ENDIF}
     FPreformatted : Boolean;
     FNoBreak : Boolean;
     FUseCount: Integer;
@@ -570,7 +576,11 @@ type
     property LinkColor : TColor read FLinkColor write FLinkColor;
     property VLinkColor : TColor read FVLinkColor write FVLinkColor;
     property ALinkColor : TColor read FALinkColor write FALinkColor;
+   {$IFDEF IP_LAZARUS}
     property BgColor : TColorRef read FBgColor write FBgColor;
+   {$ELSE}
+    property BgColor : TColor read FBgColor write FBgColor;
+   {$ENDIF}
     property Preformatted : Boolean read FPreformatted write FPreformatted;
     property NoBreak : Boolean read FNoBreak write FNoBreak;
     property UseCount : Integer read FUseCount write FUseCount;
@@ -587,7 +597,11 @@ type
     function GetAlignment: TIpHtmlAlign;
     function GetALinkColor: TColor;
     function GetBaseFontSize: integer;
+   {$IFDEF IP_LAZARUS}
     function GetBgColor: TColorRef;
+   {$ELSE}
+    function GetBgColor: TColor;
+   {$ENDIF}
     function GetFontBaseline: integer;
     function GetFontColor: TColor;
     function GetFontName: string;
@@ -600,7 +614,11 @@ type
     procedure SetAlignment(const Value: TIpHtmlAlign);
     procedure SetALinkColor(const Value: TColor);
     procedure SetBaseFontSize(const Value: integer);
+   {$IFDEF IP_LAZARUS}
     procedure SetBgColor(const Value: TColorRef);
+   {$ELSE}
+    procedure SetBgColor(const Value: TColor);
+   {$ENDIF}
     procedure SetFontBaseline(const Value: integer);
     procedure SetFontColor(const Value: TColor);
     procedure SetFontName(const Value: string);
@@ -634,7 +652,11 @@ type
     property LinkColor : TColor read GetLinkColor write SetLinkColor;
     property VLinkColor : TColor read GetVLinkColor write SetVLinkColor;
     property ALinkColor : TColor read GetALinkColor write SetALinkColor;
+   {$IFDEF IP_LAZARUS}
     property BgColor : TColorRef read GetBgColor write SetBgColor;
+   {$ELSE}
+    property BgColor : TColor read GetBgColor write SetBgColor;
+   {$ENDIF}
     property Preformatted : Boolean read GetPreformatted write SetPreformatted;
     property NoBreak : Boolean read GetNoBreak write SetNoBreak;
   end;
@@ -881,16 +903,28 @@ type
   protected
     FSize: TIpHtmlRelSize;
     FFace: string;
+   {$IFDEF IP_LAZARUS}
     FColor: TColorRef;
+   {$ELSE}
+    FColor: TColor;
+   {$ENDIF}
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
+   {$IFDEF IP_LAZARUS}
     procedure SetColor(const Value: TColorRef);
+   {$ELSE}
+    procedure SetColor(const Value: TColor);
+   {$ENDIF}
     procedure SetFace(const Value: string);
     procedure SizeChanged(Sender: TObject);
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
   published {public}                                                   {!!.10}
+   {$IFDEF IP_LAZARUS}
     property Color : TColorRef read FColor write SetColor;
+   {$ELSE}
+    property Color : TColor read FColor write SetColor;
+   {$ENDIF}
     property Face : string read FFace write SetFace;
     property Size : TIpHtmlRelSize read FSize write FSize;
   end;
@@ -1061,32 +1095,56 @@ type
 
   TIpHtmlNodeBODY = class(TIpHtmlNodeBlock)
   protected
-    FBgColor : TColorRef;
+   {$IFDEF IP_LAZARUS}
+    FBgColor : TColor;
     FText : TColorRef;
     FLink : TColorRef;
     FVLink : TColorRef;
     FALink : TColorRef;
+   {$ELSE}
+    FBgColor : TColor;
+    FText : TColor;
+    FLink : TColor;
+    FVLink : TColor;
+    FALink : TColor;
+   {$ENDIF}
     FBackground : string;
     BGPicture : TPicture;
     procedure Render(const RenderProps: TIpHtmlProps); override;
-    procedure SetAlink(const Value: TColorRef);
     procedure SetBackground(const Value: string);
+   {$IFDEF IP_LAZARUS}
+    procedure SetAlink(const Value: TColorRef);
     procedure SetBgcolor(const Value: TColorRef);
     procedure SetLink(const Value: TColorRef);
     procedure SetText(const Value: TColorRef);
     procedure SetVlink(const Value: TColorRef);
+   {$ELSE}
+    procedure SetAlink(const Value: TColor);
+    procedure SetBgcolor(const Value: TColor);
+    procedure SetLink(const Value: TColor);
+    procedure SetText(const Value: TColor);
+    procedure SetVlink(const Value: TColor);
+   {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure ImageChange(NewPicture : TPicture); override;
 
   published {public}                                                   {!!.10}
-    property ALink : TColorRef read Falink write SetAlink;
     property Background : string read Fbackground write SetBackground;
+   {$IFDEF IP_LAZARUS}
+    property ALink : TColorRef read Falink write SetAlink;
     property BgColor : TColorRef read Fbgcolor write SetBgcolor;
     property Link : TColorRef read Flink write SetLink;
     property Text : TColorRef read Ftext write SetText;
     property VLink : TColorRef read Fvlink write SetVlink;
+   {$ELSE}
+    property ALink : TColor read Falink write SetAlink;
+    property BgColor : TColor read Fbgcolor write SetBgcolor;
+    property Link : TColor read Flink write SetLink;
+    property Text : TColor read Ftext write SetText;
+    property VLink : TColor read Fvlink write SetVlink;
+   {$ENDIF}
   end;
 
   TIpHtmlNodeNOFRAMES = class(TIpHtmlNodeCore);
@@ -1273,7 +1331,11 @@ type
 
   TIpHtmlNodeHR = class(TIpHtmlNodeAlignInline)
   protected
+   {$IFDEF IP_LAZARUS}
     FColor: TColorRef;
+   {$ELSE}
+    FColor: TColor;
+   {$ENDIF}
     FNoShade : Boolean;
     FSize : TIpHtmlInteger;                                            {!!.10}
     FWidth : TIpHtmlLength;
@@ -1289,7 +1351,11 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
   published {public}                                                   {!!.10}
+   {$IFDEF IP_LAZARUS}
     property Color : TColorRef read FColor write FColor;
+   {$ELSE}
+    property Color : TColor read FColor write FColor;
+   {$ENDIF}
     property NoShade  : Boolean read FNoShade write FNoShade;
     property Size : TIpHtmlInteger read FSize write FSize;             {!!.10}
     property Width : TIpHtmlLength read FWidth write FWidth;
@@ -1655,7 +1721,11 @@ type
   TIpHtmlNodeTABLE = class(TIpHtmlNodeAlignInline)
   protected
     FSummary: string;
+   {$IFDEF IP_LAZARUS}
     FBgColor: TColorRef;
+   {$ELSE}
+    FBgColor: TColor;
+   {$ENDIF}
     FFrame: TIpHtmlFrameProp;
     FRules: TIpHtmlRules;
     FCellSpacing: Integer;
@@ -1704,7 +1774,11 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
   published {public}                                                   {!!.10}
+   {$IFDEF IP_LAZARUS}
     property BgColor : TColorRef read FBgColor write FBgColor;
+   {$ELSE}
+    property BgColor : TColor read FBgColor write FBgColor;
+   {$ENDIF}
     property Border : Integer read FBorder write SetBorder;            {!!.10}
     property CalcMinWidth: Integer read FMin;                          {!!.10}
     property CalcMaxWidth: Integer read FMax;                          {!!.10}
@@ -1810,7 +1884,11 @@ type
     FColspan: Integer;
     FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
+   {$IFDEF IP_LAZARUS}
     FBgColor : TColorRef;
+   {$ELSE}
+    FBgColor : TColor;
+   {$ENDIF}
     FPadRect : TRect;
     procedure Render( const RenderProps: TIpHtmlProps); override;
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect); override;
@@ -1823,7 +1901,11 @@ type
     destructor Destroy; override;
   published {public}                                                   {!!.10}
     property Align : TIpHtmlAlign read FAlign write FAlign;
+   {$IFDEF IP_LAZARUS}
     property BgColor : TColorRef read FBgColor write FBgColor;
+   {$ELSE}
+    property BgColor : TColor read FBgColor write FBgColor;
+   {$ENDIF}
     property CalcWidthMin: Integer read FCalcWidthMin;                 {!!.10}
     property CalcWidthMax: Integer read FCalcWidthMax;                 {!!.10}
     property Colspan : Integer read FColspan write FColspan;
@@ -2069,16 +2151,27 @@ type
     FTarget : TCanvas;
     DefaultProps : TIpHtmlProps;
     Body : TIpHtmlNodeBODY;
+   {$IFDEF IP_LAZARUS}
     FVLinkColor: TColorRef;
     FLinkColor: TColorRef;
     FAlinkColor: TColorRef;
     FTextColor: TColorRef;
+   {$ELSE}
+    FVLinkColor: TColor;
+    FLinkColor: TColor;
+    FAlinkColor: TColor;
+    FTextColor: TColor;
+   {$ENDIF}
     FTitleNode : TIpHtmlNodeTITLE;
-    {$IFDEF UseGifImageUnit}
+   {$IFDEF IP_LAZARUS}
+      {$IFDEF UseGifImageUnit}
+      GifImages : TList;
+      {$ELSE}
+      AnimationFrames : TList;
+      {$ENDIF}
+   {$ELSE}
     GifImages : TList;
-    {$ELSE}
-    AnimationFrames : TList;
-    {$ENDIF}
+   {$ENDIF}
     FOnGetImageX : TIpHtmlDataGetImageEvent;
     FOnScroll : TIpHtmlScrollEvent;
     CurFrameSet : TIpHtmlNodeFRAMESET;
@@ -2146,7 +2239,11 @@ type
     function FindPropB(const pFontBaseline: integer;
       const pFontColor: TColor; const pAlignment: TIpHtmlAlign;
       const pVAlignment: TIpHtmlVAlign3; const pLinkColor, pVLinkColor,
+   {$IFDEF IP_LAZARUS}
       pALinkColor: TColor; const pBgColor: TColorRef; const pPreformatted,
+   {$ELSE}
+      pALinkColor: TColor; const pBgColor: TColor; const pPreformatted,
+   {$ENDIF}
       pNoBreak: Boolean): TIpHtmlPropB;
     procedure ClearCache;
     function CheckKnownURL(URL: string): boolean;
@@ -2218,7 +2315,11 @@ type
     procedure ParseTABLE(Parent: TIpHtmlNode;
         const EndTokens: TIpHtmlTokenSet);
     function FindAttribute(const AttrName: string): string;
+   {$IFDEF IP_LAZARUS}
     function ColorFromString(S: string): TColorRef;
+   {$ELSE}
+    function ColorFromString(S: string): TColor;
+   {$ENDIF}
     function ParseAlignment: TIpHtmlAlign;
     function ParseCellAlign(Default : TIpHtmlAlign) : TIpHtmlAlign;
     function ParseFrameProp(Default: TIpHtmlFrameProp) : TIpHtmlFrameProp;
@@ -2334,10 +2435,17 @@ type
     property OnInvalidateRect : TInvalidateEvent
       read FOnInvalidateRect write FOnInvalidateRect;
     property Target : TCanvas read FTarget;
+   {$IFDEF IP_LAZARUS}
     property TextColor : TColorRef read FTextColor write FTextColor;
     property LinkColor : TColorRef read FLinkColor write FLinkColor;
     property VLinkColor : TColorRef read FVLinkColor write FVLinkColor;
     property ALinkColor : TColorRef read FAlinkColor write FAlinkColor;
+   {$ELSE}
+    property TextColor : TColor read FTextColor write FTextColor;
+    property LinkColor : TColor read FLinkColor write FLinkColor;
+    property VLinkColor : TColor read FVLinkColor write FVLinkColor;
+    property ALinkColor : TColor read FAlinkColor write FAlinkColor;
+   {$ENDIF}
     property HasFrames : Boolean read FHasFrames;
     property OnGetImageX : TIpHtmlDataGetImageEvent
                 read FOnGetImageX write FOnGetImageX;
@@ -2542,7 +2650,7 @@ type
     function GetPrintPageCount: Integer;
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
-    procedure EraseBackground(DC: HDC); override;
+    procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF} //JMN
   end;
 
   TIpAbstractHtmlDataProvider = class(TIpBaseComponent)
@@ -2754,7 +2862,7 @@ type
     function GetPrintPageCount: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
+    procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF} //JMN
 
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
@@ -2933,15 +3041,17 @@ function MinI2(const I1, I2: Integer) : Integer;
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
   Avail: Integer; var Sections: Integer): TIntArr;                     {!!.10}
 
-{$IFDEF IP_LAZARUS}
 procedure Register;
-{$ENDIF}
 
 implementation
 
 uses
   Printers,
   IpHtmlPv; {!!.10}
+
+{$IFNDEF IP_LAZARUS}
+{$R *.res}
+{$ENDIF}
 
 var
   FlatSB_GetScrollInfo: function(hWnd: HWND; BarFlag: Integer;
@@ -2997,12 +3107,12 @@ begin
     DebugLn(dbgs(R));
   Canvas.Pen.Color := OldPenColor;
 end;
+{$ENDIF}
 
 procedure Register;
 begin
   RegisterComponents('IPro', [TIpHtmlPanel]);
 end;
-{$ENDIF}
 
 {!!.14 new}
 {$IFNDEF VERSION3ONLY}
@@ -3440,7 +3550,7 @@ const
   NullRect : TRect = (Left:0; Top:0; Right:0; Bottom:0);
 
 {$IFNDEF IP_LAZARUS}
-{$R IpHtml.res}
+//{$R IpHtml.res} // JMN
 {$EndIf}
 
 {!!.10 new}
@@ -4324,7 +4434,7 @@ begin
       Owner.Target.Brush.Color := clWhite;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
-    if BGColor <> -1 then begin
+    if BGColor <> -1 then begin 
       Owner.Target.Brush.Color := BGColor;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
@@ -4378,7 +4488,11 @@ begin
   Invalidate;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeBODY.SetAlink(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlNodeBODY.SetAlink(const Value: TColor);
+{$ENDIF}
 begin
   if Value <> FAlink then begin
     Falink := Value;
@@ -4394,7 +4508,11 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeBODY.SetBgcolor(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlNodeBODY.SetBgcolor(const Value: TColor);
+{$ENDIF}
 begin
   if Value <> FBgColor then begin
     Fbgcolor := Value;
@@ -4402,7 +4520,11 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeBODY.SetLink(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlNodeBODY.SetLink(const Value: TColor);
+{$ENDIF}
 begin
   if Value <> FLink then begin
     Flink := Value;
@@ -4410,7 +4532,11 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeBODY.SetText(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlNodeBODY.SetText(const Value: TColor);
+{$ENDIF}
 begin
   if Value <> FText then begin
     Ftext := Value;
@@ -4418,7 +4544,11 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeBODY.SetVlink(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlNodeBODY.SetVlink(const Value: TColor);
+{$ENDIF}
 begin
   if Value <> FVLink then begin
     Fvlink := Value;
@@ -4505,15 +4635,21 @@ procedure TIpHtml.Clear;
 var
   i : Integer;
 begin
-  {$IFDEF UseGifImageUnit}
+  {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+    for i := 0 to pred(GifImages.Count) do
+      if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
+        TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic).PaintStop;
+    {$ELSE}
+    for i := 0 to pred(AnimationFrames.Count) do
+      if TIpHtmlNodeIMG(AnimationFrames[i]).FPicture <> nil then
+        TIpAnimatedGraphic(TIpHtmlNodeIMG(AnimationFrames[i]).FPicture.Graphic).
+          AggressiveDrawing := False;
+    {$ENDIF}
+  {$ELSE}
   for i := 0 to pred(GifImages.Count) do
     if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
       TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic).PaintStop;
-  {$ELSE}
-  for i := 0 to pred(AnimationFrames.Count) do
-    if TIpHtmlNodeIMG(AnimationFrames[i]).FPicture <> nil then
-      TIpAnimatedGraphic(TIpHtmlNodeIMG(AnimationFrames[i]).FPicture.Graphic).
-        AggressiveDrawing := False;
   {$ENDIF}
   ClearGifQueue;
   FHotNode := nil;
@@ -5055,7 +5191,11 @@ begin
         CurToken := IpHtmlTagUnknown;
         i := HtmlTokenList.IndexOf(string(TokenStringBuf));
         if i <> -1 then
+          {$IFDEF IP_LAZARUS}
           CurToken := TIpHtmlToken(PtrInt(HtmlTokenList.Objects[i]));
+          {$ELSE}
+          CurToken := TIpHtmlToken(PtrInt(HtmlTokenList.Objects[i]));
+          {$ENDIF}
 
         {If the token was a single terminated token ( <tok/>
          as opposed to normal a <tok></tok> sequence), we fake
@@ -7234,7 +7374,11 @@ begin
       ReportError(SHtmlInvDir);
 end;
 
+{$IFDEF IP_LAZARUS}
 function TIpHtml.ColorFromString(S : string) : TColorRef;
+{$ELSE}
+function TIpHtml.ColorFromString(S : string) : TColor;
+{$ENDIF}
 var
   R, G, B, Err : Integer;
 begin
@@ -7387,7 +7531,9 @@ end;
 procedure TIpHtml.ParseFrameSet(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
-DebugLn('TIpHtml.ParseFrameSet A');
+ {$IFDEF IP_LAZARUS} //JMN
+  DebugLn('TIpHtml.ParseFrameSet A');
+ {$ENDIF}
   FHasFrames := True;
   while CurToken = IpHtmlTagFRAMESET do begin
     CurFrameSet := TIpHtmlNodeFRAMESET.Create(Parent);
@@ -7557,18 +7703,25 @@ begin
   LinkColor := clBlue;
   VLinkColor := clPurple;
   ALinkColor := clRed;
-  {$IFDEF UseGifImageUnit}
-  GifImages := TList.Create;
+  {$IFDEF IP_LAZARUS}
+    {$IFDEF UseGifImageUnit}
+    GifImages := TList.Create;
+    {$ELSE}
+    AnimationFrames := TList.Create;
+    {$ENDIF}
   {$ELSE}
-  AnimationFrames := TList.Create;
+  GifImages := TList.Create;
   {$ENDIF}
   NameList := TStringList.Create;
   DefaultImage := TPicture.Create;
   TmpBitmap := TBitmap.Create;
   try
     {$IFNDEF IP_LAZARUS}
+    TmpBitmap.LoadFromResourceName (HInstance, 'DEFAULTIMAGE'); //JMN
+    (**
     TmpBitmap.LoadFromResourceName(FindClassHInstance(                      {!!.06}
       TIpHTMLCustomPanel), 'DEFAULTIMAGE');
+    **)
     DefaultImage.Graphic := TmpBitmap;
     {$ELSE}
     if LazarusResources.Find('DEFAULTIMAGE')<>nil then begin
@@ -7641,16 +7794,22 @@ destructor TIpHtml.Destroy;
 var
   i : Integer;
 begin
-  {$IFDEF UseGifImageUnit}
+ {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+    for i := 0 to pred(GifImages.Count) do
+      if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
+        TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic).PaintStop;
+    {$ELSE}
+    for i := 0 to pred(AnimationFrames.Count) do
+      if TIpHtmlNodeIMG(AnimationFrames[i]).FPicture <> nil then
+        TIpAnimatedGraphic(TIpHtmlNodeIMG(AnimationFrames[i]).FPicture.Graphic).
+          AggressiveDrawing := False;
+    {$ENDIF}
+ {$ELSE}
   for i := 0 to pred(GifImages.Count) do
     if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
       TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic).PaintStop;
-  {$ELSE}
-  for i := 0 to pred(AnimationFrames.Count) do
-    if TIpHtmlNodeIMG(AnimationFrames[i]).FPicture <> nil then
-      TIpAnimatedGraphic(TIpHtmlNodeIMG(AnimationFrames[i]).FPicture.Graphic).
-        AggressiveDrawing := False;
-  {$ENDIF}
+ {$ENDIF}
   Destroying := True;
   PaintBufferBitmap.Free;
   ClearGifQueue;
@@ -7669,11 +7828,15 @@ begin
   MapImgList.Free;
   ControlList.Free;
   DefaultProps.Free;
+ {$IFDEF IP_LAZARUS} //JMN
   {$IFDEF UseGifImageUnit}
   GifImages.Free;
   {$ELSE}
   AnimationFrames.Free;
   {$ENDIF}
+ {$ELSE}
+  GifImages.Free;
+ {$ENDIF}
   ElementPool.EnumerateItems(FinalizeRecs);
   ElementPool.Free;
   ClearCache;
@@ -8128,18 +8291,26 @@ begin
     TargetCanvas.FillRect(ClientRect);
     exit;
   end;
-  {$IFDEF UseGifImageUnit}
+ {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+    for i := 0 to pred(GifImages.Count) do
+      if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
+        with TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic) do
+          if Painters <> nil then
+            PaintStop;
+    {$ELSE}
+    for i := 0 to pred(AnimationFrames.Count) do
+      if TIpHtmlNodeIMG(AnimationFrames[i]).FPicture <> nil then
+        with TIpAnimatedGraphic(TIpHtmlNodeIMG(AnimationFrames[i]).FPicture.Graphic) do
+          AggressiveDrawing := False;
+    {$ENDIF}
+ {$ELSE}
   for i := 0 to pred(GifImages.Count) do
     if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
       with TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic) do
         if Painters <> nil then
           PaintStop;
-  {$ELSE}
-  for i := 0 to pred(AnimationFrames.Count) do
-    if TIpHtmlNodeIMG(AnimationFrames[i]).FPicture <> nil then
-      with TIpAnimatedGraphic(TIpHtmlNodeIMG(AnimationFrames[i]).FPicture.Graphic) do
-        AggressiveDrawing := False;
-  {$ENDIF}
+ {$ENDIF}
   for i := 0 to pred(ControlList.Count) do
     TIpHtmlNode(ControlList[i]).UnmarkControl;
   SetDefaultProps;
@@ -9033,7 +9204,11 @@ begin
   FSize.Free;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeFONT.SetColor(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlNodeFONT.SetColor(const Value: TColor);
+{$ENDIF}
 begin
   if Value <> FColor then begin
     FColor := Value;
@@ -12923,18 +13098,26 @@ begin
     end;                                                               {!!.02}
     *)
 
-    {$IFDEF UseGifImageUnit}
+   {$IFDEF IP_LAZARUS} //JMN
+      {$IFDEF UseGifImageUnit}
+      if (FPicture <> nil)
+      and (FPicture.Graphic <> nil)
+      and (FPicture.Graphic is TGifImage)
+      then
+        Owner.GifImages.Add(Self);
+      {$ELSE}
+      if (FPicture <> nil)
+      and (FPicture.Graphic <> nil)
+      and (FPicture.Graphic is TIpAnimatedGraphic)
+      then
+        Owner.AnimationFrames.Add(Self);
+      {$ENDIF}
+    {$ELSE}
     if (FPicture <> nil)
     and (FPicture.Graphic <> nil)
     and (FPicture.Graphic is TGifImage)
     then
       Owner.GifImages.Add(Self);
-    {$ELSE}
-    if (FPicture <> nil)
-    and (FPicture.Graphic <> nil)
-    and (FPicture.Graphic is TIpAnimatedGraphic)
-    then
-      Owner.AnimationFrames.Add(Self);
     {$ENDIF}
   end;
 end;
@@ -12942,18 +13125,26 @@ end;
 {!!.02 new - logic moved here from .Destroy}
 procedure TIpHtmlNodeIMG.UnloadImage;
 begin
-  {$IFDEF UseGifImageUnit}
+  {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+    if (FPicture <> nil)
+    and (FPicture.Graphic <> nil)
+    and (FPicture.Graphic is TGifImage)
+    then
+      Owner.GifImages.Remove(Self);
+    {$ELSE}
+    if (FPicture <> nil)
+    and (FPicture.Graphic <> nil)
+    and (FPicture.Graphic is TIpAnimatedGraphic)
+    then
+      Owner.AnimationFrames.Remove(Self);
+    {$ENDIF}
+  {$ELSE}
   if (FPicture <> nil)
   and (FPicture.Graphic <> nil)
   and (FPicture.Graphic is TGifImage)
   then
-    Owner.GifImages.Remove(Self);
-  {$ELSE}
-  if (FPicture <> nil)
-  and (FPicture.Graphic <> nil)
-  and (FPicture.Graphic is TIpAnimatedGraphic)
-  then
-    Owner.AnimationFrames.Remove(Self);
+      Owner.GifImages.Remove(Self);
   {$ENDIF}
   if FPicture <> Owner.DefaultImage then begin
     FPicture.Free;
@@ -13064,21 +13255,23 @@ begin
     FPicture.Graphic.Transparent := True;
     NetDrawRect := R;
     if PageRectToScreen(R, R) then begin
-      {$IFDEF UseGifImageUnit}
-      if (FPicture.Graphic is TGifImage)
-      and (TGifImage(FPicture.Graphic).Images.Count > 1) then begin
-        TGifImage(FPicture.Graphic).DrawOptions :=
-          TGifImage(FPicture.Graphic).DrawOptions + [goDirectDraw];
-        Owner.AddGifQueue(FPicture.Graphic, R);
-      end else
-      {$ELSE}
-      if (FPicture.Graphic is TIpAnimatedGraphic)
-      and (TIpAnimatedGraphic(FPicture.Graphic).Images.Count > 1) then begin
-        TIpAnimatedGraphic(FPicture.Graphic).AggressiveDrawing := True;
-        Owner.AddGifQueue(FPicture.Graphic, R);
-      end else
-      {$ENDIF}
+      {$IFDEF IP_LAZARUS} //JMN
+        {$IFDEF UseGifImageUnit}
+        if (FPicture.Graphic is TGifImage)
+        and (TGifImage(FPicture.Graphic).Images.Count > 1) then begin
+          TGifImage(FPicture.Graphic).DrawOptions :=
+            TGifImage(FPicture.Graphic).DrawOptions + [goDirectDraw];
+          Owner.AddGifQueue(FPicture.Graphic, R);
+        end else
+        {$ELSE}
+        if (FPicture.Graphic is TIpAnimatedGraphic)
+        and (TIpAnimatedGraphic(FPicture.Graphic).Images.Count > 1) then begin
+          TIpAnimatedGraphic(FPicture.Graphic).AggressiveDrawing := True;
+          Owner.AddGifQueue(FPicture.Graphic, R);
+        end else
       begin
+        {$ENDIF}
+      {$ENDIF}
         if FPicture = Owner.DefaultImage then begin
           if ((NetDrawRect.Right - NetDrawRect.Left) > FPicture.Graphic.Width)
           and ((NetDrawRect.Bottom - NetDrawRect.Top) > FPicture.Graphic.Height) then begin
@@ -13089,7 +13282,9 @@ begin
             Owner.Target.StretchDraw(R, FPicture.Graphic);
         end else
           Owner.Target.StretchDraw(R, FPicture.Graphic);
+      {$IFDEF IP_LAZARUS} //JMN
       end;
+      {$ENDIF}
     end;
   end
 end;
@@ -13119,35 +13314,51 @@ begin
   Owner.CheckImage(NewPicture);
   {$ENDIF}
   OldDim := GetDim(-1);
-  {$IFDEF UseGifImageUnit}
+  {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+    if (FPicture <> nil)
+    and (FPicture.Graphic <> nil)
+    and (FPicture.Graphic is TGifImage)
+    then
+      Owner.GifImages.Remove(Self);
+    {$ELSE}
+    if (FPicture <> nil)
+    and (FPicture.Graphic <> nil)
+    and (FPicture.Graphic is TIpAnimatedGraphic)
+    then
+      Owner.AnimationFrames.Remove(Self);
+    {$ENDIF}
+ {$ELSE}
   if (FPicture <> nil)
   and (FPicture.Graphic <> nil)
   and (FPicture.Graphic is TGifImage)
   then
     Owner.GifImages.Remove(Self);
-  {$ELSE}
-  if (FPicture <> nil)
-  and (FPicture.Graphic <> nil)
-  and (FPicture.Graphic is TIpAnimatedGraphic)
-  then
-    Owner.AnimationFrames.Remove(Self);
-  {$ENDIF}
+ {$ENDIF}
   if FPicture <> Owner.DefaultImage then
     FPicture.Free;
   FPicture := NewPicture;
-  {$IFDEF UseGifImageUnit}
+  {$IFDEF IP_LAZARUS} //JMN
+    {$IFDEF UseGifImageUnit}
+    if (FPicture <> nil)
+    and (FPicture.Graphic <> nil)
+    and (FPicture.Graphic is TGifImage)
+    then
+      Owner.GifImages.Add(Self);
+    {$ELSE}
+    if (FPicture <> nil)
+    and (FPicture.Graphic <> nil)
+    and (FPicture.Graphic is TIpAnimatedGraphic)
+    then
+      Owner.AnimationFrames.Add(Self);
+    {$ENDIF}
+ {$ELSE}
   if (FPicture <> nil)
   and (FPicture.Graphic <> nil)
   and (FPicture.Graphic is TGifImage)
   then
     Owner.GifImages.Add(Self);
-  {$ELSE}
-  if (FPicture <> nil)
-  and (FPicture.Graphic <> nil)
-  and (FPicture.Graphic is TIpAnimatedGraphic)
-  then
-    Owner.AnimationFrames.Add(Self);
-  {$ENDIF}
+ {$ENDIF}
   SizeWidth.PixelsType := hpUndefined;
   Dim := GetDim(0);
   if (Dim.cx <> OldDim.cx)
@@ -14598,7 +14809,11 @@ begin
   Result := PropA.BaseFontSize;
 end;
 
+{$IFDEF IP_LAZARUS}
 function TIpHtmlProps.GetBgColor: TColorRef;
+{$ELSE}
+function TIpHtmlProps.GetBgColor: TColor;
+{$ENDIF}
 begin
   Result := PropB.BgColor;
 end;
@@ -14689,7 +14904,11 @@ function TIpHtml.FindPropB(
   const pLinkColor : TColor;
   const pVLinkColor : TColor;
   const pALinkColor : TColor;
+  {$IFDEF IP_LAZARUS}
   const pBgColor : TColorRef;
+  {$ELSE}
+  const pBgColor : TColor;
+  {$ENDIF}
   const pPreformatted : Boolean;
   const pNoBreak : Boolean
   ): TIpHtmlPropB;
@@ -14770,7 +14989,11 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 procedure TIpHtmlProps.SetBgColor(const Value: TColorRef);
+{$ELSE}
+procedure TIpHtmlProps.SetBgColor(const Value: TColor);
+{$ENDIF}
 var
   NewPropB : TIpHtmlPropB;
 begin
