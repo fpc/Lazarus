@@ -4314,6 +4314,10 @@ begin
   IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
     Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
     d('../gtk;')+SrcPath,da_Define));
+  // add '../gtk' to the IncPath
+  IntfDirTemplate.AddChild(TDefineTemplate.Create('IncPath',
+    Format(ctsAddsDirToIncludePath,['gtk']),ExternalMacroStart+'IncPath',
+    d('../gtk;')+IncPath,da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
   
   // <LazarusSrcDir>/lcl/interfaces/win32
