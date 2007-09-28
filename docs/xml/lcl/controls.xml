@@ -6090,7 +6090,8 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <!-- property Visibility: public -->
       <element name="TControl.Action">
         <short>The action to be associated with this control</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>
+        <descr>// standard properties, which should be supported by all descendants
+<br/>
 Can either read the action already associated with the control (GetAction), or write an action to be associated (SetAction)</descr>
         <seealso><link id="#rtl.Classes.TBasicAction"/></seealso>
       </element>
@@ -8520,46 +8521,46 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <!-- property Visibility: public -->
       <element name="TWinControl.BorderWidth">
         <short>Property to determine width of the window's border</short>
-        <descr>// properties which are supported by all descendents<br/><br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
+        <descr>// properties which are supported by all descendants<br/><br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BoundsLockCount">
         <short>Finds how many of the Bounds are locked</short>
-        <descr>// properties which are supported by all descendents</descr>
+        <descr>// properties which are supported by all descendants</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Brush">
         <short>Find which type of brush to use for drawing the control</short>
-        <descr>// properties which are supported by all descendents</descr>
+        <descr>// properties which are supported by all descendants</descr>
         <seealso><link id="graphics.TBrush"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.CachedClientHeight">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Stored value of client height</short>
+        <descr>Read value fom flag</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.CachedClientWidth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Storeed value of Client Width</short>
+        <descr>Reads value from flag</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ChildSizing">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Definitions of how any child control is to be sized</short>
+        <descr>Reads values from flag or stores values to flag. Most of the properties are inherited from TControlChildSizing, <br/>which you should read to find out more about this control</descr>
+        <seealso><link id="TControlChildSizing"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ControlCount">
         <short>The number of controls associated with this window</short>
-        <descr>// properties which are supported by all descendents</descr>
+        <descr>// properties which are supported by all descendants <br/>Reads value from flag</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Controls">
         <short>Finds which controls are found in this window</short>
-        <descr>// properties which are supported by all descendents</descr>
+        <descr>// properties which are supported by all descendants
+<br/>
+ Reads values from a flag; Index is a number signifying which control, from a list</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.Controls.Index">
@@ -8568,63 +8569,56 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <!-- property Visibility: public -->
       <element name="TWinControl.DefWndProc">
         <short>The default procedure to be associated with the window</short>
-        <descr>// properties which are supported by all descendents<br/>reads or writes a flag to define what is the default procedure</descr>
+        <descr>// properties which are supported by all descendants<br/>reads or writes a flag to define what is the default procedure</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClientCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The number of clients to which this control is docked</short>
+        <descr>Reads count from flag</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClients">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The dock clients of this window</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TWinControl.DockClients.Index"><short/></element>
+      <element name="TWinControl.DockClients.Index">
+        <short>The serial numbers (Index) of the dock clients</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockManager">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Property that actually controls the docking process</short>
+        <descr>Reads or writes a flag. Derived from the parent class TDockManager</descr>
+        <seealso><link id="TDockManager"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockSite">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is this a dock site? Default false</short>
+        <descr>Reads or sets a flag to show whether this is a dock site. Default false</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DoubleBuffered">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Are the contents of this window to be double buffered?</short>
+        <descr>Reads or writes flag to determine whether double buffering is to be used</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Handle for identifying and manipulating this window</short>
+        <descr>Reads from or writes handle to flag</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.IsResizing">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is the window being re-sized?</short>
+        <descr>Reads or writes flag to indicate re-sizing</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The place this control occupies in the list of tabs</short>
+        <descr>Reads or writes information in flag; default is -1</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.TabStop">
         <short>Determines if the user can tab to a control.</short>
-        <descr/>
-        <seealso/>
+        <descr>Reads or writes boolean flag; default is False</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
