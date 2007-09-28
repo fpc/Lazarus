@@ -17,6 +17,7 @@ implicitunits=gtk2int
 options=-gl -dgtk2
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../gtk .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk2
+includedir=../gtk
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
