@@ -886,8 +886,8 @@ begin
   New(Widgets);
   with Widgets^ do begin
     ItemCache := nil;
-    GetMem(GTypeArray, SizeOf(GType)*(nColumns{+1}));
-    for i := 0 to (nColumns div 2) -1 do begin
+    GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
+    for i := 0 to (nColumns div 2) - 1 do begin
       GTypeArray[i*2] := GDK_TYPE_PIXBUF;
       GTypeArray[(i*2)+1] := G_TYPE_STRING;
     end;
