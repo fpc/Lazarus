@@ -201,16 +201,6 @@ begin
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
-  
-  {note: TSynBaseCompletionForm (AutoCompletion in IDE) is frameless (bsNone)
-   so we MUST grab kbd if we want control over it.}
-  if AWinControl.ClassName = 'TSynBaseCompletionForm' then
-  begin
-    if AWinControl.HandleObjectShouldBeVisible then
-      QWidget_grabKeyboard(Widget.Widget)
-    else
-      QWidget_releaseKeyboard(Widget.Widget);
-  end;
 end;
 
 {------------------------------------------------------------------------------

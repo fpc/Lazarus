@@ -1042,7 +1042,7 @@ begin
   // Initializes the properties
   FProps := nil;
   LCLObject := AWinControl;
-  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
+  FKeysToEat := [VK_TAB{, VK_RETURN, VK_ESCAPE}];
   FHasPaint := False;
 
   FParams := AParams;
@@ -1058,7 +1058,7 @@ begin
   // Initializes the properties
   FProps := niL;
   LCLObject := AWinControl;
-  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
+  FKeysToEat := [VK_TAB{, VK_RETURN, VK_ESCAPE}];
   FHasPaint := False;
 
   // Creates the widget
@@ -1558,7 +1558,7 @@ var
   AKeyEvent: QKeyEventH;
 begin
   {$ifdef VerboseQt}
-    Write('TQtWidget.SlotKey');
+    DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
   {$endif}
 
   Result := True;
@@ -1597,13 +1597,18 @@ begin
   end;
 
   {$ifdef VerboseQt}
-    WriteLn(' message: ', Msg.Msg);
+    WriteLn(' message: ', KeyMsg.Msg);
   {$endif}
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
     NotifyApplicationUserInput(KeyMsg.Msg);
     if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+    begin
+  {$ifdef VerboseQt}
+      WriteLn('handled!');
+  {$endif}
       Exit;
+    end;
 
     // here we should let widgetset to handle key
     //...
@@ -1612,19 +1617,33 @@ begin
       QEventKeyPress: KeyMsg.Msg := LM_KeyDownMsgs[IsSysKey];
       QEventKeyRelease: KeyMsg.Msg := LM_KeyUpMsgs[IsSysKey];
     end;
+  {$ifdef VerboseQt}
+    WriteLn(' message: ', KeyMsg.Msg);
+  {$endif}
     NotifyApplicationUserInput(KeyMsg.Msg);
     if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+    begin
       // the LCL handled the key
+  {$ifdef VerboseQt}
+      WriteLn('handled!');
+  {$endif}
       Exit;
+    end;
   end;
   { Also sends a utf-8 key event for key down }
 
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
     UTF8Char := TUTF8Char(Text);
+  {$ifdef VerboseQt}
+    WriteLn('sending char ', UTF8Char);
+  {$endif}
     if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
     begin
       // the LCL has handled the key
+  {$ifdef VerboseQt}
+      WriteLn('handled!');
+  {$endif}
       Exit;
     end;
 
@@ -1636,10 +1655,18 @@ begin
     CharMsg.CharCode := Word(AChar);
 
     //Send message to LCL
+  {$ifdef VerboseQt}
+    WriteLn(' message: ', CharMsg.Msg);
+  {$endif}
     NotifyApplicationUserInput(CharMsg.Msg);
     if (DeliverMessage(CharMsg) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
-      // the LCL handled the key
+    begin
+      // the LCL has handled the key
+  {$ifdef VerboseQt}
+      WriteLn('handled!');
+  {$endif}
       Exit;
+    end;
 
     //Here is where we (interface) can do something with the key
     //...
@@ -1647,6 +1674,9 @@ begin
     //Send a LM_(SYS)CHAR
     CharMsg.Msg := LM_CharMsg[IsSysKey];
 
+  {$ifdef VerboseQt}
+    WriteLn(' message: ', CharMsg.Msg);
+  {$endif}
     NotifyApplicationUserInput(CharMsg.Msg);
     DeliverMessage(CharMsg);
   end;
@@ -4872,7 +4902,7 @@ begin
       QEventKeyRelease:
       begin
         QEvent_accept(Event);
-      	SlotKey(Sender, Event);
+      	Result := SlotKey(Sender, Event);
       end;
     end;
   end else

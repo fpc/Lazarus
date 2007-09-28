@@ -1243,8 +1243,8 @@ begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.EnableWindow] possible wrong implementation');
   {$endif}
-  if TQtWidget(hWnd).LCLObject.ClassName<>'TScrollBar' then
-    QWidget_setEnabled(TQtWidget(hWnd).Widget, bEnable);
+  if not (TQtWidget(hWnd).LCLObject is TScrollBar) then
+    TQtWidget(hWnd).setEnabled(bEnable);
 end;
 
 {------------------------------------------------------------------------------
@@ -1536,7 +1536,10 @@ begin
 
   if Str <> nil then
   begin
-    WideStr := GetUtf8String(Copy(Str, 1, Count));
+    if Count >= 0 then
+      WideStr := GetUtf8String(Copy(Str, 1, Count))
+    else
+      WideStr := GetUtf8String(Str);
 
     QtDC.drawText(X, Y, @WideStr);
   end;

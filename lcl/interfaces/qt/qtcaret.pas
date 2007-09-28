@@ -347,7 +347,7 @@ begin
     FTimer.Enabled := False;
     FVisibleState := FWidget.Context = 0;
     if RespondToFocus then
-    	UpdateCaret;
+      UpdateCaret;
   end else
   begin
     if FWidget.Context = 0 then
