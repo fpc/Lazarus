@@ -6904,16 +6904,18 @@ var
   IsTopLevelWidget: Boolean;
   {$ENDIF}
 begin
-  Widget:=PGtkWidget(LCLControl.Handle);
-  if not WidgetSizeIsEditable(Widget) then exit;
-  Later:=true;
+  Widget := PGtkWidget(LCLControl.Handle);
+  if not WidgetSizeIsEditable(Widget) then
+    Exit;
+  Later := true;
   {$IFDEF Gtk2}
   // add resize request immediately
-  IsTopLevelWidget:= (LCLControl is TCustomForm)
-                     and (LCLControl.Parent = nil);
-  if not IsTopLevelWidget then begin
+  IsTopLevelWidget:= (LCLControl is TCustomForm) and
+                     (LCLControl.Parent = nil);
+  if not IsTopLevelWidget then
+  begin
     SetWidgetSizeAndPosition(LCLControl);
-    Later:=false;
+    Later := false;
   end;
   {$ENDIF}
   if Later then
@@ -7082,20 +7084,21 @@ begin
   // set geometry default size
   //Info:=gtk_window_get_geometry_info(Window, TRUE);
   //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
-    gtk_window_set_default_size(Window,Width,Height);
+    gtk_window_set_default_size(Window, Width, Height);
 
   {$IFDEF Gtk2}
   // resize
-  gtk_window_resize(Window,Width,Height);
+  gtk_window_resize(Window, Width, Height);
   // reposition
-  gtk_window_move(Window,AWinControl.Left,AWinControl.Top);
+  gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
   // force early resize
-  allocation:=PgtkWidget(Window)^.allocation;
-  allocation.width:=Width;
-  allocation.height:=Height;
-  gtk_widget_size_allocate(PgtkWidget(Window),@allocation);// Beware: this triggers callbacks
+  allocation := PGtkWidget(Window)^.allocation;
+  allocation.width := Width;
+  allocation.height := Height;
+  gtk_widget_size_allocate(PGtkWidget(Window), @allocation);// Beware: this triggers callbacks
 
-  if (PGtkWidget(Window)^.Window<>nil) then begin
+  if (PGtkWidget(Window)^.Window <> nil) then
+  begin
     // resize gdkwindow directly (sometimes the gtk forgets this)
     gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
       AWinControl.Top,Width,Height)
@@ -7150,7 +7153,6 @@ begin
     GdkWindow:=GetControlWindow(aWidget);
     if (GdkWindow<>nil) and (GTK_WIDGET_MAPPED(aWidget)) then begin
       // window is mapped = window manager has put the window somewhere
-      // under windows GtkLeft and GtkTop equal to -32000 for some reason
       gdk_window_get_root_origin(GdkWindow, @GtkLeft, @GtkTop);
       Left := GtkLeft;
       Top := GtkTop;

@@ -4874,17 +4874,18 @@ begin
   {$ENDIF}
   NewLeft:=Left;
   NewTop:=Top;
-  if (Message.SizeType and Size_SourceIsInterface)>0 then begin
+  if (Message.SizeType and Size_SourceIsInterface)>0 then
+  begin
     // interface widget has resized
     // -> update position and realized bounds
-    NewLeft:=FBoundsRealized.Left;
-    NewTop:=FBoundsRealized.Top;
+    NewLeft := FBoundsRealized.Left;
+    NewTop := FBoundsRealized.Top;
     if HandleAllocated then
       GetWindowRelativePosition(Handle,NewLeft,NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized)
-    and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then exit;
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized) and
+       (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then exit;
     FBoundsRealized:=NewBoundsRealized;
     InvalidatePreferredSize;
   end;

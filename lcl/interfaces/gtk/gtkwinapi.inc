@@ -6277,12 +6277,13 @@ function TGtkWidgetSet.GetWindowRelativePosition(Handle : hwnd;
 var
   aWidget: PGtkWidget;
 begin
-  aWidget:=PGtkWidget(Handle);
-  if GtkWidgetIsA(aWidget,GTK_TYPE_WIDGET) then begin
-    Result:=true;
-    GetWidgetRelativePosition(aWidget,Left,Top);
+  aWidget := PGtkWidget(Handle);
+  if GtkWidgetIsA(aWidget, GTK_TYPE_WIDGET) then
+  begin
+    Result := true;
+    GetWidgetRelativePosition(aWidget, Left, Top);
   end else
-    Result:=false;
+    Result := false;
 end;
 
 {------------------------------------------------------------------------------
