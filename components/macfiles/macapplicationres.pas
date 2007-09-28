@@ -92,7 +92,7 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('    </dict>');
       sl.Add('  </array>');
       sl.Add('</dict>');
-      sl.Add('</plist>);');
+      sl.Add('</plist>');
       sl.SaveToFile(PLInfoListFilename);
     finally
       sl.Free;
