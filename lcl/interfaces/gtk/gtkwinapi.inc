@@ -5700,7 +5700,8 @@ var
   ax,ay,ah,aw: gint;
   auw, auh: guint;
  {$ifdef GTK2}
-  display: PGdkDisplay;
+  screen: PGdkScreen;
+  ARect: TGdkRectangle;
  {$else}
  {$ifdef HasX}
    XDisplay: PDisplay;
@@ -5899,38 +5900,41 @@ begin
       end;
     SM_CXSCREEN:
       begin
-        {$IFDEF GTK1} { Partial fix for multi monitor systems - force use of first one }
-        {$IFDEF UseXinerama}
+        {$ifdef GTK1} { Partial fix for multi monitor systems - force use of first one }
+        {$ifdef UseXinerama}
         if GetFirstScreen then
           result := FirstScreen.x
         else
-        {$ENDIF}
-        {$ENDIF}
+        {$endif}
           result := gdk_Screen_Width;
+        {$else}
+        screen := gdk_screen_get_default();
+        gdk_screen_get_monitor_geometry(screen, 0, @ARect);
+        Result := ARect.width;
+        {$endif}
       end;
     SM_CXVIRTUALSCREEN:
       begin
-        {$ifdef GTK2}
-        aw := 0;
-        display := gdk_display_get_default();
-        for ax := 0 to gdk_display_get_n_screens(display) - 1 do
-          inc(aw, gdk_screen_get_width(gdk_display_get_screen(display, ax)));
-        Result := ax;
-        {$else}
-        Result := getSystemMetrics(SM_CXSCREEN);
-        {$endif}
+        Result := gdk_Screen_Width;
       end;
-    SM_CYSCREEN,
-    SM_CYVIRTUALSCREEN:
+    SM_CYSCREEN:
       begin
-        {$IFDEF GTK1}
-        {$IFDEF UseXinerama}
+        {$ifdef GTK1}
+        {$ifdef UseXinerama}
         if GetFirstScreen then
           result := FirstScreen.y
         else
-        {$ENDIF}
-        {$ENDIF}
-          result := gdk_Screen_Height;
+        {$endif}
+        result := gdk_Screen_Height;
+        {$else}
+        screen := gdk_screen_get_default();
+        gdk_screen_get_monitor_geometry(screen, 0, @ARect);
+        Result := ARect.height;
+        {$endif}
+      end;
+    SM_CYVIRTUALSCREEN:
+      begin
+        result := gdk_Screen_Height;
       end;
     SM_CXSIZE:
       begin
