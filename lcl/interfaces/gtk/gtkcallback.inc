@@ -1156,8 +1156,12 @@ begin
 
   // if iconified in changed then OnIconify...
 
-  if GTK_WIDGET_REALIZED(Widget) then begin
-    if TObject(Data) is TCustomForm then begin
+  if GTK_WIDGET_REALIZED(Widget) then
+  begin
+    if (GDK_WINDOW_STATE_WITHDRAWN and state^.changed_mask) = 1 then // visibility changed - this is another message block
+      exit;
+    if TObject(Data) is TCustomForm then
+    begin
       TheForm := TCustomForm(Data);
       //DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),' new_window_state=',state^.new_window_state,' changed_mask=',state^.changed_mask]);
       if TheForm.Parent = nil then begin
@@ -1170,7 +1174,8 @@ begin
         GtkHeight:=Widget^.Allocation.Height;
         if GtkHeight<0 then GtkHeight:=0;
         //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
-        if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then begin
+        if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then
+        begin
           {$IFDEF HasX}
           NetAtom := gdk_atom_intern('_NET_WM_DESKTOP', True);
           if NetAtom > 0 then begin
