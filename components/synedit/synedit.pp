@@ -47,7 +47,10 @@ unit SynEdit;
 {$I synedit.inc}
 
 {$IFDEF LCLGTK1}
-{$DEFINE EnableDoubleBuf}
+{$DEFINE EnableDoubleBuf} // gtk1 does not have double buffering
+{$ENDIF}
+{$IFDEF LCLGTK2}
+{$DEFINE EnableDoubleBuf} // gtk2 paints faster to memory
 {$ENDIF}
 
 interface

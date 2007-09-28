@@ -22,7 +22,7 @@
 
   Abstract:
     Caches for directories.
-    The codetools works directory based, that means all define templates are the
+    The codetools work directory based, that means all define templates are the
     same for all files in a directory.
     That's why all the units in a directory use the same search paths and find
     the same files.
