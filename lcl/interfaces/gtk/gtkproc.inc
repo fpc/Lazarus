@@ -8085,6 +8085,13 @@ begin
         gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
         gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
       end
+{$ifdef gtk2}
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsTreeView])=0 then begin
+        lgs:=lgsTreeView;
+        StyleObject^.Widget := gtk_tree_view_new;
+      end
+{$endif}
     else
       If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
         lgs:=lgsGTK_Default;

@@ -16,7 +16,7 @@ uses
   // lcl
   InterfaceBase, LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
-  gtkdef, gtkint, gtkproc;
+  gtkdef, gtkint, gtkproc, gtkglobals;
   
 type
   TGtkPainterType =
@@ -159,6 +159,7 @@ begin
             case Details.Part of
               BP_PUSHBUTTON:
                 begin
+                  Result.Widget := GetStyleWidget(lgsButton);
                   Result.State := GtkButtonMap[Details.State];
                   if Details.State = PBS_PRESSED then
                     Result.Shadow := GTK_SHADOW_IN
@@ -172,6 +173,7 @@ begin
                 end;
               BP_RADIOBUTTON:
                 begin
+                  Result.Widget := GetStyleWidget(lgsRadiobutton);
                   Result.State := GtkRadioCheckBoxMap[Details.State];
                   if Details.State >= RBS_CHECKEDNORMAL then
                     Result.Shadow := GTK_SHADOW_IN
@@ -182,6 +184,7 @@ begin
                 end;
               BP_CHECKBOX:
                 begin
+                  Result.Widget := GetStyleWidget(lgsCheckbox);
                   Result.State := GtkRadioCheckBoxMap[Details.State];
                   Result.Detail := 'checkbutton';
                   if Details.State >= CBS_MIXEDNORMAL then
@@ -197,6 +200,7 @@ begin
           end;
         teHeader:
           begin
+            Result.Widget := GetStyleWidget(lgsButton);
             Result.State := GtkButtonMap[Details.State];
             if Details.State = PBS_PRESSED then
               Result.Shadow := GTK_SHADOW_IN
@@ -213,6 +217,7 @@ begin
             case Details.Part of
               TP_BUTTON:
                 begin
+                  Result.Widget := GetStyleWidget(lgsButton);
                   Result.State := GtkButtonMap[Details.State];
                   if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
                     Result.Shadow := GTK_SHADOW_IN
@@ -244,9 +249,15 @@ begin
   to alternate splitter painting}
 
                   if Details.Part = RP_GRIPPER then
-                    Result.Detail := 'hpaned'
+                  begin
+                    Result.Detail := 'hpaned';
+                    Result.Widget := GetStyleWidget(lgsHorizontalPaned);
+                  end
                   else
+                  begin
                     Result.Detail := 'vpaned';
+                    Result.Widget := GetStyleWidget(lgsVerticalPaned);
+                  end;
                   Result.Painter := gptBox;
 
 {                  Result.Detail := 'paned';

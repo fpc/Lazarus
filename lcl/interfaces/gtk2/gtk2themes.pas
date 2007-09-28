@@ -12,7 +12,7 @@ uses
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
-  GtkDef, Gtk2Int, GtkProc, GtkThemes;
+  GtkDef, Gtk2Int, GtkProc, GtkThemes, GtkGlobals;
   
 type
   { TGtk2ThemeServices }
@@ -38,6 +38,7 @@ begin
     case Details.Element of
       teHeader:
         begin
+          Result.Widget := GetStyleWidget(lgsTreeView);
           Result.State := GtkButtonMap[Details.State];
           if Details.State = PBS_PRESSED then
             Result.Shadow := GTK_SHADOW_IN
@@ -59,12 +60,19 @@ begin
                 Result.Detail := 'paned';
                 Result.Painter := gptHandle;
                 if Details.Part = RP_GRIPPER then
-                  Result.Orientation := GTK_ORIENTATION_VERTICAL
+                begin
+                  Result.Orientation := GTK_ORIENTATION_VERTICAL;
+                  Result.Widget := GetStyleWidget(lgsVerticalPaned);
+                end
                 else
+                begin
                   Result.Orientation := GTK_ORIENTATION_HORIZONTAL;
+                  Result.Widget := GetStyleWidget(lgsHorizontalPaned);
+                end;
               end;
             RP_BAND:
               begin
+                Result.Widget := GetStyleWidget(lgsVerticalPaned);
                 Result.State := GtkButtonMap[Details.State];
                 Result.Shadow := GTK_SHADOW_NONE;
                 Result.Detail := 'paned';

@@ -122,6 +122,7 @@ type
     lgsHScale,
     lgsVScale,
     lgsGroupBox,
+    lgsTreeView, // for gtk2
     // user defined
     lgsUserDefined
     );
@@ -149,6 +150,7 @@ const
     'hscale',
     'vscale',
     'groupbox',
+    'treeview',
     ''
     );
 
