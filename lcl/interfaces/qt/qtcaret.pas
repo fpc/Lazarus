@@ -341,6 +341,14 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
+
+  if (FWidget = nil) then
+  begin
+    FPos.X := 0;
+    FPos.Y := 0;
+    exit;
+  end;
+  
   if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
     FPos := Value;
