@@ -43,6 +43,7 @@ menu/menu_build_file.png
 menu/menu_build_lazarus.png
 menu/menu_clean.png
 menu/menu_close.png
+menu/menu_close_all.png
 menu/menu_configure_build_lazarus.png
 menu/menu_configure_help.png
 menu/menu_codetoolsdefineseditor.png
@@ -58,6 +59,7 @@ menu/menu_edit_sort_16.xpm
 menu/menu_edit_uppercase.png
 menu/menu_environment_options.png
 menu/menu_exit.png
+menu/menu_file_revert.png
 menu/menu_goto_line.png
 menu/menu_help.png
 menu/menu_indent.png
@@ -73,6 +75,7 @@ menu/menu_project_options.png
 menu/menu_quick_compile.png
 menu/menu_redo.png
 menu/menu_reportingbug.png
+menu/menu_reset_debugger.png
 menu/menu_restart_16.xpm
 menu/menu_run.png
 menu/menu_run_cursor.png
