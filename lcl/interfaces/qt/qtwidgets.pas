@@ -2079,8 +2079,8 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := QWidget_width(Widget);
-  Msg.Height := QWidget_height(Widget);
+  Msg.Width := getWidth;
+  Msg.Height := getHeight;
 
   DeliverMessage(Msg);
 end;
@@ -3353,8 +3353,8 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := QWidget_width(Widget);
-  Msg.Height := QWidget_height(Widget);
+  Msg.Width := getWidth;
+  Msg.Height := getHeight;
 
   try
     LCLObject.WindowProc(TLMessage(Msg));
@@ -6154,7 +6154,7 @@ constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
   Create;
   Widget := QMenuBar_create(AParent);
-  FHeight := QWidget_height(Widget);
+  FHeight := getHeight;
   FVisible := False;
   setVisible(FVisible);
 end;

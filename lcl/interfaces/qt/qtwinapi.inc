@@ -3101,8 +3101,8 @@ begin
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
   ARect.Top := APos.x;
   ARect.Left := APos.y;
-  ARect.Bottom := ARect.Top + QWidget_height(TQtWidget(Handle).Widget);
-  ARect.Right := ARect.Left + QWidget_width(TQtWidget(Handle).Widget);
+  ARect.Bottom := ARect.Top + TQtWidget(Handle).getHeight;
+  ARect.Right := ARect.Left + TQtWidget(Handle).getWidth;
 
   Result := -1;
 end;
@@ -3144,8 +3144,8 @@ begin
 
   Result := False;
 
-  Height := QWidget_height(TQtWidget(Handle).Widget);
-  Width := QWidget_width(TQtWidget(Handle).Widget);
+  Height := TQtWidget(Handle).getHeight;
+  Width := TQtWidget(Handle).getWidth;
 
   Result := True;
 
