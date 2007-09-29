@@ -40,7 +40,7 @@ program Lazarus;
   {$R lazarus.rc}
 {$ENDIF}
 
-{off $DEFINE IDE_MEM_CHECK}
+{$DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,

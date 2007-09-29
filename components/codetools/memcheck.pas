@@ -12,7 +12,7 @@ interface
    check by CRC value if not changed after release
    WARNING this needs extremely much memory (PM) }
 
-{ $DEFINE Extra}
+{$DEFINE Extra}
 
 {$inline off}// inline off for stack traces
 
@@ -362,11 +362,13 @@ begin
       is_in_getmem_list:=true;
      pp:=pp^.previous;
      inc(i);
-     if i>loc_info^.getmem_cnt-loc_info^.freemem_cnt then
+     if i>loc_info^.getmem_cnt-loc_info^.freemem_cnt then begin
        if useownfile then
          writeln(ownfile,'error in linked list of heap_mem_info')
        else
          writeln(stderr,'error in linked list of heap_mem_info');
+       RunError(204);
+     end;
    end;
 end;
 
