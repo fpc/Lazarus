@@ -1871,31 +1871,31 @@ begin
       and (FormStyle = fsMDIChild)
       and (Self <> Application.Mainform)
       then begin
-        X:= (Application.Mainform.ClientWidth - Width) div 2;
-        Y:= (Application.Mainform.ClientHeight - Height) div 2;
+        X := (Application.Mainform.ClientWidth - Width) div 2;
+        Y := (Application.Mainform.ClientHeight - Height) div 2;
       end
       else begin
         case Position of
         //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly
         poDesktopCenter :
           begin
-            X:= (Screen.DesktopWidth - Width) div 2;
-            Y:= (Screen.DesktopHeight - Height) div 2;
+            X := (Screen.DesktopWidth - Width) div 2;
+            Y := (Screen.DesktopHeight - Height) div 2;
           end;
         poScreenCenter :
           begin
-            X:= (Screen.Width - Width) div 2;
-            Y:= (Screen.Height - Height) div 2;
+            X := (Screen.Width - Width) div 2;
+            Y := (Screen.Height - Height) div 2;
           end;
         poMainFormCenter :
           if (Self <> Application.MainForm) then begin
-            X:= ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
-            Y:= ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
+            X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
+            Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
           end;
         poOwnerFormCenter :
           if (Owner is TCustomForm) then begin
-            X:= ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
-            Y:= ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
+            X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
+            Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
           end;
         end;
       end;

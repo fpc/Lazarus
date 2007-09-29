@@ -134,6 +134,10 @@ type
 
 implementation
 
+type
+  TWinControlAccess = class(TWinControl)
+  end;
+
 { TWin32WSScrollBox }
 
 class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
@@ -231,16 +235,27 @@ begin
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
-    // TODO: Use TCustomForm.Position
-{    Left := LongInt(CW_USEDEFAULT);
-    Top := LongInt(CW_USEDEFAULT);
-    Width := LongInt(CW_USEDEFAULT);
-    Height := LongInt(CW_USEDEFAULT);}
     AdjustFormBounds(lForm, Bounds);
-    Left := Bounds.Left;
-    Top := Bounds.Top;
-    Width := Bounds.Right - Bounds.Left;
-    Height := Bounds.Bottom - Bounds.Top;
+    if lForm.Position in [poDefault, poDefaultPosOnly] then
+    begin
+      Left := CW_USEDEFAULT;
+      Top := CW_USEDEFAULT;
+    end
+    else
+    begin
+      Left := Bounds.Left;
+      Top := Bounds.Top;
+    end;
+    if lForm.Position in [poDefault, poDefaultSizeOnly] then
+    begin
+      Width := CW_USEDEFAULT;
+      Height := CW_USEDEFAULT;
+    end
+    else
+    begin
+      Width := Bounds.Right - Bounds.Left;
+      Height := Bounds.Bottom - Bounds.Top;
+    end;
     SubClassWndProc := nil;
     if ((Application = nil) or (Application.MainForm <> lForm))  and
        ( not (csDesigning in lForm.ComponentState) and
@@ -284,8 +299,10 @@ end;
 class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
-  SizeRect: Windows.RECT;
+  AForm: TCustomForm absolute AWinControl;
+  CurRect, SizeRect: Windows.RECT;
   BorderStyle: TFormBorderStyle;
+  L, T, W, H: Integer;
 begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
@@ -299,10 +316,34 @@ begin
   BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
       BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+
+  L := ALeft;
+  T := ATop;
+  W := SizeRect.Right - SizeRect.Left;
+  H := SizeRect.Bottom - SizeRect.Top;
+  
+  // we are calling setbounds in TWinControl.Initialize
+  // if position is default it will be changed to designed. We dont want this.
+  if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
+  begin
+    if GetWindowRect(AForm.Handle, CurRect) then
+    begin
+      if AForm.Position in [poDefault, poDefaultPosOnly] then
+      begin
+        L := CurRect.Left;
+        T := CurRect.Top;
+      end;
+
+      if AForm.Position in [poDefault, poDefaultSizeOnly] then
+      begin
+        W := CurRect.Right - CurRect.Left;
+        H := CurRect.Bottom - CurRect.Top;
+      end;
+    end;
+  end;
       
   // rect adjusted, pass to inherited to do real work
-  TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, SizeRect.Right - SizeRect.Left, 
-    SizeRect.Bottom - SizeRect.Top);
+  TWin32WSWinControl.SetBounds(AWinControl, L, T, W, H);
 end;
 
 class procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
