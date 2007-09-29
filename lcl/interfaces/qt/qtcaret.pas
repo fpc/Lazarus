@@ -341,7 +341,6 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
-
   if (FWidget = nil) or (FWidget.Widget = nil) then
   begin
     FPos.X := 0;
@@ -438,13 +437,13 @@ procedure TEmulatedCaret.UpdateCaret;
 var
   R: TRect;
 begin
-  if (FWidget <> nil) and (FWidget.Widget <> nil) then
+  if (FWidget <> nil) then
   begin
     R.Left := FPos.x;
     R.Top := FPos.y;
     R.Right := R.Left + FWidth + 2;
     R.Bottom := R.Top + FHeight + 2;
-    if FWidget.Context = 0 then
+    if (FWidget.Context = 0) and (FWidget.Widget <> nil) then
     begin
       if not EqualRect(FOldRect, R) then
         FWidget.Update(@FOldRect);

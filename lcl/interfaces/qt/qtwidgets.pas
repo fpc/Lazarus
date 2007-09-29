@@ -1123,6 +1123,9 @@ begin
   
   QCursor_destroy(FDefaultCursor);
   
+  if HasCaret then
+    DestroyCaret;
+    
   if (Widget <> nil) and FOwnWidget then
     QWidget_destroy(QWidgetH(Widget));
   Widget := nil;
