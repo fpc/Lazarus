@@ -4412,11 +4412,11 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  WideStr := GetUtf8String(Str);
+  if Count >= 0 then
+    WideStr := GetUtf8String(Copy(Str, 1, Count))
+  else
+    WideStr := GetUtf8String(Str);
 
-//  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
-//  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);
-  
   TQtDeviceContext(DC).drawText(X, Y, @WideStr);
   
   Result := True;
