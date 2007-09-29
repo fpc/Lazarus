@@ -6514,20 +6514,14 @@ begin
 end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
-var
-  R: TRect;
 begin
   Result := inherited getClientBounds;
+  
   if (FVScrollbar <> nil) and (FVScrollbar.getVisible) then
-  begin
-    R := FVScrollbar.getGeometry;
-    dec(Result.Right, R.Right - R.Left);
-  end;
+    dec(Result.Right, FVScrollBar.getWidth);
+    
   if (FHScrollbar <> nil) and (FHScrollbar.getVisible) then
-  begin
-    R := FHScrollbar.getGeometry;
-    dec(Result.Bottom, R.Bottom - R.Top);
-  end;
+    dec(Result.Bottom, FHScrollBar.getHeight);
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
