@@ -1232,9 +1232,9 @@ function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): B
 begin
   {maybe we can put creating of scrollbar here instead of SetScrollInfo() }
   Result := False;
-//  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
+  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.EnableScrollbar] missing implementation ');
-//  {$endif}
+  {$endif}
 end;
 
 function TQtWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
