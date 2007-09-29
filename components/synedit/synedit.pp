@@ -2876,7 +2876,7 @@ var
         fInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
             fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight,
             fTextHeight);
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.BookmarkImages.Width);
+        Inc(aGutterOffs^[iLine], fBookMarkOpt.Xoffset);
       end;
     end;
   end;
