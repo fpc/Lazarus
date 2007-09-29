@@ -554,81 +554,6 @@ type
     property OnUserCheckboxBitmap;
   end;
 
-  PCharArray   = Array[0..6+13] of PChar;
-
-const
-  IMGDBGrayedBox : PCharArray =
-    (
-  '13 13 6 1',
-  ' 	c None',
-  '.	c #808080',
-  '+	c #FFFFFF',
-  '@	c #404040',
-  '#	c #D4D0C8',
-  '$	c #000000',
-
-  '############+',
-  '#..........#+',
-  '#.##########+',
-  '#.#######.##+',
-  '#.######..##+',
-  '#.#.###...##+',
-  '#.#..#...###+',
-  '#.#.....####+',
-  '#.##...#####+',
-  '#.###.######+',
-  '#.##########+',
-  '############+',
-  '+++++++++++++');
-
-  IMGDBCheckedBox : PCharArray =
-    (
-  '13 13 6 1',
-  ' 	c None',
-  '.	c #808080',
-  '+	c #FFFFFF',
-  '@	c #404040',
-  '#	c #D4D0C8',
-  '$	c #000000',
-
-  '............+',
-  '.@@@@@@@@@@#+',
-  '.@+++++++++#+',
-  '.@+++++++$+#+',
-  '.@++++++$$+#+',
-  '.@+$+++$$$+#+',
-  '.@+$$+$$$++#+',
-  '.@+$$$$$+++#+',
-  '.@++$$$++++#+',
-  '.@+++$+++++#+',
-  '.@+++++++++#+',
-  '.###########+',
-  '+++++++++++++');
-
-  IMGDBUnCheckedBox : PCharArray =
-    (
-  '13 13 6 1',
-  ' 	c None',
-  '.	c #808080',
-  '+	c #FFFFFF',
-  '@	c #404040',
-  '#	c #D4D0C8',
-  '$	c #000000',
-
-  '............+',
-  '.@@@@@@@@@@#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.@+++++++++#+',
-  '.###########+',
-  '+++++++++++++');
-
 procedure Register;
 
 implementation
@@ -2701,14 +2626,11 @@ begin
 
   // Default bitmaps for cbsCheckedColumn
   FUnCheckedBitmap := TBitmap.Create;
-  FUnCheckedBitmap.Handle := CreatePixmapIndirect(@IMGDBUnCheckedBox[0],
-    GetSysColor(COLOR_BTNFACE));
+  FUnCheckedBitmap.LoadFromLazarusResource('dbgriduncheckedcb');
   FCheckedBitmap := TBitmap.Create;
-  FCheckedBitmap.Handle := CreatePixmapIndirect(@IMGDBCheckedBox[0],
-    GetSysColor(COLOR_BTNFACE));
+  FCheckedBitmap.LoadFromLazarusResource('dbgridcheckedcb');
   FGrayedBitmap := TBitmap.Create;
-  FGrayedBitmap.Handle := CreatePixmapIndirect(@IMGDBGrayedBox[0],
-    GetSysColor(COLOR_BTNFACE));
+  FGrayedBitmap.LoadFromLazarusResource('dbgridgrayedcb');
 end;
 
 procedure TCustomDBGrid.InitiateAction;
