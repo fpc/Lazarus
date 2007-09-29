@@ -7857,7 +7857,7 @@ var
     Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
     Result := HBITMAP(PtrUInt(DevCon.GetBitmap)); // always create, because a valid GDIObject is needed to restore
     if DevCon.CurrentBitmap = GDIObject then Exit;
-    
+
     DevCon.CurrentBitmap := GDIObject;
     with DevCon.CurrentBitmap^ do
       case GDIBitmapType of
@@ -7870,7 +7870,8 @@ var
 
     if NewDrawable = nil
     then begin
-      DebugLn('[TGtkWidgetSet.SelectObject] - Empty bitmap, DC=0x%x', [DC]);
+      // no drawable: this is normal, when restoring the default bitmap (FreeDC)
+      //DebugLn('[TGtkWidgetSet.SelectObject] - Empty bitmap, DC=0x%x', [DC]);
       Exit;
     end;
 
