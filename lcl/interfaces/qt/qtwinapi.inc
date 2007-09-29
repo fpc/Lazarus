@@ -4298,6 +4298,65 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
+  Params  Handle: HWND; wBar: Integer; bShow: Boolean
+  Result
+------------------------------------------------------------------------------}
+function TQtWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
+var
+  w: TQtWidget;
+  ScrollArea: TQtAbstractScrollArea;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI ShowScrollBar] Handle: ', dbghex(Handle),' wBar: ',wBar);
+  {$endif}
+  
+  Result := (Handle <> 0);
+ 
+  if not Result then exit;
+  
+  w := TQtWidget(Handle);
+
+  if w is TQtAbstractScrollArea then
+  begin
+    ScrollArea := TQtAbstractScrollArea(w);
+    
+    case wBar of
+      SB_BOTH:
+      begin
+        if bShow then
+          ScrollArea.setScrollStyle(ssBoth)
+        else
+          ScrollArea.setScrollStyle(ssNone);
+      end;
+      SB_HORZ:
+      begin
+        if bShow then
+          ScrollArea.setScrollStyle(ssHorizontal)
+        else
+          QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
+      end;
+      SB_VERT:
+      begin
+        if bShow then
+          ScrollArea.setScrollStyle(ssVertical)
+        else
+          QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
+      end;
+      SB_CTL:
+      begin
+        if bShow then
+          ScrollArea.Show
+        else
+          ScrollArea.Hide;
+      end;
+    end;
+
+  end else
+    Result := False;
+end;
+
+{------------------------------------------------------------------------------
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
   nCmdShow:
