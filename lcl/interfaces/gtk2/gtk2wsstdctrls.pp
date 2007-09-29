@@ -1329,7 +1329,7 @@ begin
 
   // inherited DestroyHandle doesn't work, because that is determined at
   // compile time, while the WS class hierarchy is created at runtime
-  TWSWinControlClass(TGtk2WSCustomComboBox.Classparent).DestroyHandle(AWinControl);
+  TWSWinControlClass(Classparent).DestroyHandle(AWinControl);
 end;
 
 { TGtk2WSCustomGroupBox }
