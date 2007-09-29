@@ -6411,9 +6411,9 @@ begin
   {$endif}
   FCornerWidget := AWidget;
   if Assigned(FCornerWidget) then
-  QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
+    QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
   else
-  QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
+    QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
 end;
 
 {------------------------------------------------------------------------------

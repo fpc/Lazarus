@@ -361,13 +361,17 @@ begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
 
   {feels much better with *2 pagesize}
-  QtScrollBar.setPageStep(AScrollBar.PageSize * 2);
+
+  QtScrollBar.setPageStep(AScrollBar.PageSize);
+  QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
+  
   QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
   
   QtScrollBar.setValue(AScrollBar.Position);
   
   RA := QtScrollBar.LCLObject.ClientRect;
   RB := AScrollBar.ClientRect;
+
   
   if not EqualRect(RA, RB) then
     QWidget_setGeometry(QtScrollbar.Widget,AScrollBar.Left,AScrollBar.Top,AScrollBar.Width,AScrollBar.Height);
