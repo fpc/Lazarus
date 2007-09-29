@@ -87,6 +87,7 @@ type
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     class function  GetDefaultClientRect(const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect): boolean; virtual;
+    class function GetMouseInteractiveInDesigner(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
@@ -215,6 +216,12 @@ class function TWSWinControl.GetDefaultClientRect(
   var aClientRect: TRect): boolean;
 begin
   Result:=false;
+end;
+
+class function TWSWinControl.GetMouseInteractiveInDesigner(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+begin
+  Result := False;
 end;
 
 class procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);

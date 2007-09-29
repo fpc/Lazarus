@@ -71,6 +71,7 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetMouseInteractiveInDesigner(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
@@ -275,8 +276,6 @@ begin
       end;
       Inc(I);
     end;
-    if I = ControlList.Count then
-      Windows.SetFocus(Page.Handle);
   finally
     ControlList.Free;
   end;
@@ -570,9 +569,18 @@ class function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomN
 var
   hittestInfo: TC_HITTESTINFO;
 begin
-  hittestInfo.pt.X := AClientPos.X;
-  hittestInfo.pt.Y := AClientPos.Y;
+  hittestInfo.pt := AClientPos;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
+end;
+
+class function TWin32WSCustomNotebook.GetMouseInteractiveInDesigner(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+var
+  AIndex, ACurIndex: Integer;
+begin
+  AIndex := GetTabIndexAtPos(TCustomNoteBook(AWinControl), AClientPos);
+  ACurIndex := SendMessage(AWinControl.Handle, TCM_GETCURSEL, 0, 0);
+  Result := (AIndex <> -1) and (AIndex <> ACurIndex);
 end;
 
 class procedure TWin32WSCustomNotebook.SetImageList(

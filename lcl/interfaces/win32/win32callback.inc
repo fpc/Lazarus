@@ -2411,11 +2411,44 @@ end;
  ------------------------------------------------------------------------------}
 function OverlayWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  Parent: HWND;
+  Owner: TWinControl;
+  Control: TControl;
+  P: TPoint;
 begin
   case Msg of
     WM_ERASEBKGND:
     begin
       Result := 1;
+    end;
+    WM_NCHITTEST:
+    begin
+      // By default overlay window handle all mouse messages
+      Result := HTCLIENT;
+      
+      // Check if overlayed control want to handle mouse messages
+      Parent := Windows.GetParent(Window);
+      Owner := GetWindowInfo(Parent)^.WinControl;
+      P.x := GET_X_LPARAM(lParam);
+      P.y := GET_Y_LPARAM(lParam);
+      Windows.ScreenToClient(Parent, P);
+      if (Owner is TCustomForm) then
+      begin
+        // ask form about control under mouse. we need TWinControl
+        Control := Owner.ControlAtPos(P, [capfAllowWinControls]);        
+        if (Control <> nil) and not (Control is TWinControl) then
+          Control := Control.Parent;
+      end
+      else
+        Control := nil;
+      if (Control <> nil) then
+      begin
+        // Now ask control is it needs mouse messages
+        MapWindowPoints(Parent, TWinControl(Control).Handle, P, 1);
+        if TWSWinControlClass(TWinControl(Control).WidgetSetClass).GetMouseInteractiveInDesigner(TWinControl(Control), P) then
+          Result := HTTRANSPARENT
+      end;
     end;
     WM_KEYFIRST..WM_KEYLAST, WM_MOUSEFIRST..WM_MOUSELAST:
     begin

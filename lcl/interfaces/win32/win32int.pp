@@ -256,6 +256,7 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 implementation
 
 uses
+  WsControls,
   Win32Proc,
 ////////////////////////////////////////////////////
 // I M P O R T A N T
