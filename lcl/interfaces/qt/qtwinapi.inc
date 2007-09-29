@@ -3151,6 +3151,202 @@ begin
   // ?
 end;
 
+{------------------------------------------------------------------------------
+  Function: GradientFill
+  Params: DC - DeviceContext to perform on
+          Vertices - array of Points W/Color & Alpha
+          NumVertices - Number of Vertices
+          Meshes - array of Triangle or Rectangle Meshes,
+                   each mesh representing one Gradient Fill
+          NumMeshes - Number of Meshes
+          Mode - Gradient Type, either Triangle,
+                 Vertical Rect, Horizontal Rect
+
+  Returns: true on success
+
+  Performs multiple Gradient Fills, either a Three way Triangle Gradient,
+  or a two way Rectangle Gradient, each Vertex point also supports optional
+  Alpha/Transparency for more advanced Gradients.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
+  NumVertices : Longint;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): boolean;
+
+  function DoFillTriangle : Boolean;
+  begin
+    Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
+  end;
+
+  function DoFillVRect : Boolean;
+  begin
+    Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
+  end;
+
+  procedure GetGradientBrush(BeginColor, EndColor : TColorRef; Position,
+    TotalSteps : Longint; var GradientBrush : hBrush);
+  var
+    R1, G1, B1 : Integer;
+    R2, G2, B2 : Integer;
+    NewBrush : TLogBrush;
+  begin
+    GetRGBIntValues(BeginColor,R1,G1,B1);
+    GetRGBIntValues(EndColor,R2,G2,B2);
+
+    R1 := R1 + (Position*(R2 - R1) div TotalSteps);
+    G1 := G1 + (Position*(G2 - G1) div TotalSteps);
+    B1 := B1 + (Position*(B2 - B1) div TotalSteps);
+
+    with NewBrush do
+    begin
+      lbStyle := BS_SOLID;
+      lbColor := RGB(R1,G1,B1);
+    end;
+
+    if GradientBrush <> 0 then
+      LCLIntf.DeleteObject(GradientBrush);
+    GradientBrush := LCLIntf.CreateBrushIndirect(NewBrush);
+  end;
+
+  function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
+  {var
+    V1, V2, V3 : tagTRIVERTEX;
+    C1, C2, C3 : TColorRef;
+  begin
+    With Mesh do begin
+      Result := (Vertex1 < NumVertices) and (Vertex2 >= 0) and
+        (Vertex2 < NumVertices) and (Vertex2 >= 0) and
+        (Vertex3 < NumVertices) and (Vertex3 >= 0);
+
+      If (Vertex1 = Vertex2) or (Vertex1 = Vertex3) or
+        (Vertex2 = Vertex3) or not Result
+      then
+        exit;
+
+      V1 := Vertices[Vertex1];
+      V2 := Vertices[Vertex2];
+      V3 := Vertices[Vertex3];
+
+      //Check to make sure they are in reasonable positions..
+
+      //then what??
+    end;}
+  begin
+    Result := False;
+  end;
+
+  function FillRectMesh(Mesh : tagGradientRect) : boolean;
+  var
+    TL,BR : tagTRIVERTEX;
+    StartColor, EndColor : TColorRef;
+    I, Swap : Longint;
+    SwapColors : Boolean;
+    UseBrush : hBrush;
+    Steps, MaxSteps : Longint;
+  begin
+    with Mesh do
+    begin
+      Result := (UpperLeft < NumVertices) and (UpperLeft >= 0) and
+        (LowerRight < NumVertices) and (LowerRight >= 0);
+      if (LowerRight = UpperLeft) or not Result then
+        exit;
+      TL := Vertices[UpperLeft];
+      BR := Vertices[LowerRight];
+      SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
+      if BR.X < TL.X then
+      begin
+        Swap := BR.X;
+        BR.X := TL.X;
+        TL.X := Swap;
+      end;
+      if BR.Y < TL.Y then
+      begin
+        Swap := BR.Y;
+        BR.Y := TL.Y;
+        TL.Y := Swap;
+      end;
+      StartColor := RGB(TL.Red, TL.Green, TL.Blue);
+      EndColor := RGB(BR.Red, BR.Green, BR.Blue);
+      if SwapColors then
+      begin
+        Swap := StartColor;
+        StartColor := EndColor;
+        EndColor := Swap;
+      end;
+      UseBrush := 0;
+      MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
+      if MaxSteps >= 4 then
+        MaxSteps := Floor(Power(2, MaxSteps))
+      else
+        MaxSteps := 256;
+      if DoFillVRect then
+      begin
+        Steps := Min(BR.Y - TL.Y, MaxSteps);
+        for I := 0 to Steps - 1 do
+        begin
+          GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
+            LCLIntf.FillRect(DC, Rect(TL.X, TL.Y + I, BR.X, TL.Y + I + 1),
+              UseBrush);
+        end;
+      end
+      else
+      begin
+        Steps := Min(BR.X - TL.X, MaxSteps);
+        for i := 0 to  Steps - 1 do
+        begin
+          GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
+          LCLIntf.FillRect(DC, Rect(TL.X + I, TL.Y, TL.X + I + 1, BR.Y),
+            UseBrush);
+        end;
+      end;
+      If UseBrush <> 0 then
+        LCLIntf.DeleteObject(UseBrush);
+    end;
+  end;
+
+const
+  MeshSize: Array[Boolean] of Integer = (
+    SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
+var
+  i : Integer;
+begin
+//  {$ifdef VerboseQtWinAPI}
+    WriteLn('***** [WinAPI TQtWidgetSet.GradientFill] ');
+//  {$endif}
+
+  //Currently Alpha blending is ignored... Ideas anyone?
+  Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
+            and (Vertices <> nil);
+  if Result and DoFillTriangle then
+    Result := NumVertices >= 3;
+  if Result then
+  begin
+    Result := False;
+
+    //Sanity Checks For Vertices Size vs. Count
+    if MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
+      exit;
+
+    //Sanity Checks For Meshes Size vs. Count
+    if MemSize(Meshes) < PtrUInt(MeshSize[DoFillTriangle]*NumMeshes) then
+      exit;
+
+    for I := 0 to NumMeshes - 1 do
+    begin
+      if DoFillTriangle then
+      begin
+        If Not FillTriMesh(PGradientTriangle(Meshes)[I]) then
+          exit;
+      end
+      else
+      begin
+        if not FillRectMesh(PGradientRect(Meshes)[I]) then
+          exit;
+      end;
+    end;
+    Result := True;
+  end;
+end;
+
 function TQtWidgetSet.HideCaret(hWnd: HWND): Boolean;
 begin
   Result := (hWnd <> 0) and QtCaret.HideCaret(TQtWidget(hWnd));
