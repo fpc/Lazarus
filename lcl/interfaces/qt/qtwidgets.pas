@@ -151,6 +151,8 @@ type
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
     function getText: WideString; virtual;
+    function getHeight: Integer;
+    function getWidth: Integer;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
     procedure lowerWidget;
@@ -2262,6 +2264,16 @@ end;
 function TQtWidget.getText: WideString;
 begin
   Result := FText;
+end;
+
+function TQtWidget.getHeight: Integer;
+begin
+  Result := QWidget_height(Widget);
+end;
+
+function TQtWidget.getWidth: Integer;
+begin
+  Result := QWidget_width(Widget);
 end;
 
 function TQtWidget.getClientBounds: TRect;

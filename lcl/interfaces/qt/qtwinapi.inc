@@ -2334,19 +2334,67 @@ begin
 end;
 
 function TQtWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+var
+  w: TQtWidget;
+  ScrollBar: TQtScrollBar;
 begin
-  Result := 15;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetScrollBarSize] missing implementation ');
+	{$ifdef VerboseQtWinAPI}
+  writeln('Trace:> [WinAPI GetScrollBarSize] Handle: ' + dbghex(Handle),' BarKind: ',BarKind);
   {$endif}
+  Result := 0;
+  if Handle = 0 then exit;
+  
+  w := TQtWidget(Handle);
+  
+  {TODO: find out what to do with TCustomForm descendants }
+  if w is TQtAbstractScrollArea then
+  begin
+    if BarKind = SM_CYVSCROLL then
+      ScrollBar := TQtAbstractScrollArea(w).verticalScrollBar
+    else
+      ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
+  end else
+  if w is TQtScrollBar then
+  	ScrollBar := TQtScrollBar(w)
+  else
+    ScrollBar := nil;
+  if ScrollBar <> nil then
+  begin
+  	if BarKind = SM_CYVSCROLL then
+    	Result := ScrollBar.getWidth
+    else
+      Result := ScrollBar.getHeight;
+  end;
 end;
 
 function TQtWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
+var
+  w: TQtWidget;
+  ScrollBar: TQtScrollBar;
 begin
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetScrollBarVisible] missing implementation ');
+	{$ifdef VerboseQtWinAPI}
+  writeln('Trace:> [WinAPI GetScrollBarVisible] Handle: ' + dbghex(Handle),' SBStyle: ',SBStyle);
   {$endif}
+  Result := False;
+  if Handle = 0 then exit;
+
+  w := TQtWidget(Handle);
+
+  {TODO: find out what to do with TCustomForm descendants }
+  if w is TQtAbstractScrollArea then
+  begin
+    if SBStyle = SB_VERT then
+      ScrollBar := TQtAbstractScrollArea(w).verticalScrollBar
+    else
+      ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
+  end else
+  if w is TQtScrollBar then
+  	ScrollBar := TQtScrollBar(w)
+  else
+    ScrollBar := nil;
+    
+  if ScrollBar <> nil then
+    Result := ScrollBar.getVisible;
 end;
 
 {------------------------------------------------------------------------------
