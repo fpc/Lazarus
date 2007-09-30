@@ -1296,7 +1296,8 @@ begin
 
   SetMainWidget(Box, ComboWidget);
   SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
-  SetMainWidget(Box, PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
+  if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
+    SetMainWidget(Box, PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
 
   WidgetInfo^.CoreWidget := ComboWidget;
   WidgetInfo^.ClientWidget := Box;
