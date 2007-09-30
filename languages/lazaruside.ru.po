@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Project-Id-Version: lazaruside\n"
@@ -9735,7 +9735,7 @@ msgstr "файл, куда записывается вывод отладки. �
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки опций компндной строки, обработки исключений и т. д. Программный файл автоматически поддерживается lazarus."
+msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки опций командной строки, обработки исключений и т. д. Программный файл автоматически поддерживается lazarus."
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
