@@ -46,7 +46,7 @@ const
   Enumerates and removes properties for the target window
  -----------------------------------------------------------------------------}
 Function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
-Begin
+begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
   Assert(False, 'Trace:PropEnumProc - Start');
@@ -55,7 +55,7 @@ Begin
   RemoveProp(Window, Str);
   Result := True;
   Assert(False, 'Trace:PropEnumProc - Exit');
-End;
+end;
 
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
@@ -1115,20 +1115,20 @@ begin
 
   Case Msg Of
     WM_ACTIVATE:
-    Begin
+    begin
       Case LOWORD(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
-        Begin
+        begin
           LMessage.Msg := LM_ACTIVATE
-        End;
+        end;
         WA_INACTIVE:
-        Begin
+        begin
           LMessage.Msg := LM_DEACTIVATE;
-        End;
-      End;
-    End;
+        end;
+      end;
+    end;
     WM_ACTIVATEAPP:
-    Begin
+    begin
       if Window = TWin32WidgetSet(WidgetSet).AppHandle then
       begin
         if WParam <> 0 then
@@ -1144,33 +1144,33 @@ begin
           CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, 0);
         end;
       end;
-    End;
+    end;
     BM_SETCHECK:
-    Begin
+    begin
       LMessage.Msg := LM_CHANGED;
-    End;
+    end;
     WM_CAPTURECHANGED:
-    Begin
+    begin
       LMessage.Msg := LM_CAPTURECHANGED;
-    End;
+    end;
     CB_DELETESTRING, LB_DELETESTRING:
-    Begin
+    begin
       LMessage.Msg := LM_DELETETEXT;
-    End;
+    end;
     CB_INSERTSTRING, LB_INSERTSTRING:
-    Begin
+    begin
       PLMsg:=@LMInsertText;
       With LMInsertText Do
-      Begin
+      begin
         Msg := LM_INSERTTEXT;
         Position := WParam;
         NewText := PChar(LParam);
         Length := System.Length(NewText);
 //        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
-      End;
-    End;
+      end;
+    end;
     WM_CHAR:
-    Begin
+    begin
       if not UnicodeEnabledOS or not HandleUnicodeChar(Word(WParam)) then
       begin
         PLMsg:=@LMChar;
@@ -1339,15 +1339,15 @@ begin
       LMessage.Msg := LM_CLEARSEL;
     end;
     WM_COPY:
-    Begin
+    begin
       LMessage.Msg := LM_COPYTOCLIP;
-    End;
+    end;
     WM_CUT:
-    Begin
+    begin
       LMessage.Msg := LM_CUTTOCLIP;
-    End;
+    end;
     WM_DESTROY:
-    Begin
+    begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
       if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
@@ -1358,9 +1358,9 @@ begin
       if WindowInfo^.Overlay<>HWND(nil) then
         Windows.DestroyWindow(WindowInfo^.Overlay);
       LMessage.Msg := LM_DESTROY;
-    End;
+    end;
     WM_DESTROYCLIPBOARD:
-    Begin
+    begin
       if assigned(OnClipBoardRequest) then begin
         {$IFDEF VerboseWin32Clipbrd}
         debugln('WM_DESTROYCLIPBOARD');
@@ -1369,9 +1369,9 @@ begin
         OnClipBoardRequest := nil;
         LMessage.Result := 0;
       end;
-    End;
+    end;
     WM_DRAWITEM:
-    Begin
+    begin
       if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
       begin
         menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
@@ -1424,9 +1424,9 @@ begin
         end;
         WinProcess := false;
       end;
-    End;
+    end;
     WM_ENABLE:
-    Begin
+    begin
       If WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
       If Window=TWin32WidgetSet(WidgetSet).FAppHandle then
@@ -1443,9 +1443,9 @@ begin
       if not ThemeServices.ThemesEnabled
       and (lWinControl is TCustomBitBtn)
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
-    End;
+    end;
     WM_ERASEBKGND:
-    Begin
+    begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
 {$ifdef MSG_DEBUG}
       case eraseBkgndCommand of
@@ -1487,16 +1487,16 @@ begin
         LMessage.Result := 1;
       end;
       WinProcess := false;
-    End;
+    end;
     WM_EXITMENULOOP:
       // is it a popup menu
       if longbool(WPARAM) and assigned(WindowInfo^.PopupMenu) then
         WindowInfo^.PopupMenu.Close;
     WM_GETDLGCODE:
-    Begin
+    begin
       LMessage.Result := DLGC_WANTALLKEYS;
       WinProcess := false;
-    End;
+    end;
 {
     * TODO: make it work... icon does not show up yet, so better disable it
     WM_GETICON:
@@ -1513,61 +1513,61 @@ begin
     WM_HSCROLL:
       HandleScrollMessage(LM_HSCROLL);
     WM_KEYDOWN:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
-      Begin
+      begin
         Msg := CN_KEYDOWN;
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         Assert(False,'  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
-      End;
+      end;
       WinProcess := false;
-    End;
+    end;
     WM_KEYUP:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
-      Begin
+      begin
         Msg := CN_KEYUP;
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
         Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-      End;
+      end;
       WinProcess := false;
-    End;
+    end;
     WM_KILLFOCUS:
-    Begin
+    begin
 {$ifdef DEBUG_CARET}
       DebugLn('WM_KILLFOCUS received for window ', IntToHex(Window, 8));
 {$endif}
       LMessage.Msg := LM_KILLFOCUS;
       LMessage.WParam := WParam;
-    End;
+    end;
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
     WM_LBUTTONDBLCLK:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_LBUTTONDBLCLK;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
+      end;
 
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
         CheckListBoxLButtonDown;
-    End;
+    end;
     WM_LBUTTONDOWN:
-    Begin
+    begin
       // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
       // simulate double click, assume focus change due to first mouse-click
       if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
@@ -1585,12 +1585,12 @@ begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_LBUTTONDOWN;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
+      end;
 
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
@@ -1600,73 +1600,73 @@ begin
           ((lWinControl = nil) or (lWinControl.CanFocus)) then
         Windows.SetFocus(Window);
 
-    End;
+    end;
     WM_LBUTTONUP:
-    Begin
+    begin
       if (MouseDownWindow = Window) and (MouseDownFocusStatus = mfNone) then
         MouseDownFocusStatus := mfFocusSense;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_LBUTTONUP;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
-    End;
+      end;
+    end;
     WM_MBUTTONDBLCLK:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_MBUTTONDBLCLK;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
-    End;
+      end;
+    end;
     WM_MBUTTONDOWN:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_MBUTTONDOWN;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
-    End;
+      end;
+    end;
     WM_MBUTTONUP:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_MBUTTONUP;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
-    End;
+      end;
+    end;
     WM_MOUSEHOVER:
-    Begin
+    begin
       NotifyUserInput := True;
       LMessage.Msg := LM_ENTER;
-    End;
+    end;
     WM_MOUSELEAVE:
-    Begin
+    begin
       NotifyUserInput := True;
       LMessage.Msg := LM_LEAVE;
-    End;
+    end;
     WM_MOUSEMOVE:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouseMove;
       With LMMouseMove Do
-      Begin
+      begin
         Msg := LM_MOUSEMOVE;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
@@ -1684,14 +1684,14 @@ begin
           WindowInfo^.MouseX := XPos;
           WindowInfo^.MouseY := YPos;
         end;
-      End;
-    End;
+      end;
+    end;
     WM_MOUSEWHEEL:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouseEvent;
       With LMMouseEvent Do
-      Begin
+      begin
         X := GET_X_LPARAM(LParam);
         Y := GET_Y_LPARAM(LParam);
         // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
@@ -1762,12 +1762,12 @@ begin
       end;
     end;
     WM_NCLBUTTONDOWN:
-    Begin
+    begin
       NotifyUserInput := True;
       Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
-    End;
+    end;
     WM_NOTIFY:
-    Begin
+    begin
       WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
 {$ifdef MSG_DEBUG}
       DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
@@ -1798,7 +1798,7 @@ begin
             lWinControl := WindowInfo^.WinControl;
             PLMsg:=@LMMouse;
             With LMMouse Do
-            Begin
+            begin
               Msg := LM_RBUTTONUP;
               Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
               Keys := 0;  // I don't know how to get this information
@@ -1809,7 +1809,7 @@ begin
       else
         PLMsg:=@LMNotify;
         With LMNotify Do
-        Begin
+        begin
           Msg := LM_NOTIFY;
           IDCtrl := WParam;
           NMHdr := PNMHDR(LParam);
@@ -1848,53 +1848,53 @@ begin
       end;
     end;
     WM_PAINT:
-    Begin
+    begin
       SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
-    End;
+    end;
     WM_PASTE:
-    Begin
+    begin
       LMessage.Msg := LM_PASTEFROMCLIP;
-    End;
+    end;
     WM_RBUTTONDBLCLK:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_RBUTTONDBLCLK;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
-      End;
-    End;
+      end;
+    end;
     WM_RBUTTONDOWN:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_RBUTTONDOWN;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
         Result := 0;
-      End;
-    End;
+      end;
+    end;
     WM_RBUTTONUP:
-    Begin
+    begin
       NotifyUserInput := True;
       WinProcess := false;
       PLMsg:=@LMMouse;
       With LMMouse Do
-      Begin
+      begin
         Msg := LM_RBUTTONUP;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
         Result := 0;
-      End;
-    End;
+      end;
+    end;
     WM_CONTEXTMENU:
     begin
       WinProcess := false;
@@ -1920,7 +1920,7 @@ begin
       HandleSetCursor;
     end;
     WM_SETFOCUS:
-    Begin
+    begin
 {$ifdef DEBUG_CARET}
       DebugLn('WM_SETFOCUS received for window ', IntToHex(Window, 8));
 {$endif}
@@ -1936,16 +1936,16 @@ begin
       // RadioButton functionality
       if (lWinControl <> nil) and (lWinControl is TRadioButton) then
         Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
-    End;
+    end;
     WM_SHOWWINDOW:
-    Begin
+    begin
       Assert(False, 'Trace:WindowProc - Got WM_SHOWWINDOW');
       With TLMShowWindow(LMessage) Do
-      Begin
+      begin
         Msg := LM_SHOWWINDOW;
         Show := WParam <> 0;
         Status := LParam;
-      End;
+      end;
       //DebugLn(GetStackTrace(false));
       if assigned(lWinControl) and ((WParam<>0) or not lWinControl.Visible)
         and ((WParam=0) or lWinControl.Visible)
@@ -1957,72 +1957,72 @@ begin
           Flags := SW_SHOWNOACTIVATE;
         Windows.ShowWindow(TWin32WidgetSet(WidgetSet).FAppHandle, Flags);
       end;
-    End;
+    end;
     WM_SYSCHAR:
-    Begin
+    begin
       PLMsg:=@LMChar;
       With LMChar Do
-      Begin
+      begin
         Msg := CN_SYSCHAR;
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-      End;
+      end;
       WinProcess := false;
-    End;
+    end;
     WM_SYSCOMMAND:
     begin
       HandleSysCommand;
     end;
     WM_SYSKEYDOWN:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
-      Begin
+      begin
         Msg := CN_SYSKEYDOWN;
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-      End;
+      end;
       WinProcess := false;
-    End;
+    end;
     WM_SYSKEYUP:
-    Begin
+    begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
-      Begin
+      begin
         Msg := CN_SYSKEYUP;
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-      End;
+      end;
       WinProcess := false;
-    End;
+    end;
     WM_TIMER:
-    Begin
+    begin
       LMessage.Msg := LM_TIMER;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
-    End;
+    end;
     WM_VSCROLL:
       HandleScrollMessage(LM_VSCROLL);
     WM_WINDOWPOSCHANGED:
-    Begin
+    begin
       With TLMWindowPosMsg(LMessage) Do
-      Begin
+      begin
         Msg := LM_WINDOWPOSCHANGED;
         Unused := WParam;
         WindowPos := PWindowPos(LParam);
-      End;
+      end;
       // cross-interface compatible: complete invalidate on resize
       if (PWindowPos(LParam)^.flags and SWP_NOSIZE) = 0 then
         Windows.InvalidateRect(Window, nil, true);
-    End;
+    end;
     WM_MEASUREITEM:
-    Begin
+    begin
       if WParam = 0 then begin
         menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
         if menuItem is TMenuItem then
@@ -2053,7 +2053,7 @@ begin
           end;
         end;
       end;
-    End;
+    end;
     WM_THEMECHANGED:
     begin
       // winxp theme changed, recheck whether themes are enabled
@@ -2082,7 +2082,7 @@ begin
     end;
 
 {$endif}
-  End;
+  end;
 
   If WinProcess Then
   begin
@@ -2092,10 +2092,10 @@ begin
 
   Case Msg Of
     WM_MOVE:
-    Begin
+    begin
       PLMsg:=@LMMove;
       With LMMove Do
-      Begin
+      begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
@@ -2126,12 +2126,12 @@ begin
           if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
             exit;
         end;
-      End;
-    End;
+      end;
+    end;
     WM_SIZE:
-    Begin
+    begin
       With TLMSize(LMessage) Do
-      Begin
+      begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
         GetWindowSize(Window, NewWidth, NewHeight);
@@ -2158,8 +2158,8 @@ begin
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
-      End;
-    End;
+      end;
+    end;
     BM_SETCHECK:
     begin
       if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
@@ -2381,7 +2381,7 @@ begin
   else                               Result := PLMsg^.Result;
 
   Assert(False, 'Trace:WindowProc - Exit');
-End;
+end;
 
 {$ifdef MSG_DEBUG}
 
