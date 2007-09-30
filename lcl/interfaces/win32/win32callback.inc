@@ -2017,7 +2017,7 @@ begin
       HandleScrollMessage(LM_VSCROLL);
     WM_WINDOWPOSCHANGED:
     begin
-      With TLMWindowPosMsg(LMessage) Do
+      with TLMWindowPosMsg(LMessage) Do
       begin
         Msg := LM_WINDOWPOSCHANGED;
         Unused := WParam;
@@ -2143,6 +2143,8 @@ begin
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
+        if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+          lWinControl := Application.MainForm;
         if lWinControl <> nil then
         begin
           {$IFDEF VerboseSizeMsg}

@@ -205,9 +205,9 @@ const
 
 // for SetWindowPos
 
-SWP_DEFERERASE      = $2000;
-SWP_ASYNCWINDOWPOS  = $4000;
-
+SWP_DEFERERASE     = $2000;
+SWP_ASYNCWINDOWPOS = $4000;
+SWP_STATECHANGED   = $8000; // used by windows but not documented (used even in wine)
 
 {not used anymore
 // missing listview macros
