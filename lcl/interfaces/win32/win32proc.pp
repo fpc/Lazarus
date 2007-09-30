@@ -1056,7 +1056,8 @@ var
   WindowInfo: PWindowInfo;
 begin
   // prevent recursive calling when the AppHandle window is disabled
-  If InDisableApplicationWindows then exit;
+  If InDisableApplicationWindows then
+    exit;
   InDisableApplicationWindows:=true;
   New(DisableWindowsInfo);
   DisableWindowsInfo^.NewModalWindow := Window;
@@ -1083,7 +1084,7 @@ begin
   end;
 end;
 
-function EnumStatOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
+function EnumStayOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
 var
   AStyle: DWord;
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
@@ -1108,7 +1109,7 @@ begin
   WindowInfo := GetWindowInfo(Window);
   WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
   EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
-    @EnumStatOnTopRemove, LPARAM(StayOnTopWindowsInfo));
+    @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
   Dispose(StayOnTopWindowsInfo);
 end;
 
