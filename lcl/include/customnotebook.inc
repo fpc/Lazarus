@@ -319,8 +319,9 @@ end;
 
 function TCustomNotebook.CanChangePageIndex: boolean;
 begin
-  Result:=true;
-  if Assigned(OnChanging) then OnChanging(Self,Result);
+  Result := True;
+  if ([csDestroying] * ComponentState = []) and Assigned(OnChanging) then
+    OnChanging(Self,Result);
 end;
 
 function TCustomNotebook.GetMinimumTabWidth: integer;

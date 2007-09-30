@@ -69,7 +69,8 @@ begin
   Result:=FState;
   // get the actual state of the component
   // don't read from interface during loading
-  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then begin
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+  begin
     Result := TWSCustomCheckBoxClass(WidgetSetClass).RetrieveState(Self);
     //debugln('TCustomCheckBox.RetrieveState ',dbgsname(Self),' ',dbgs(ord(Result)));
   end;
@@ -84,13 +85,13 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomCheckBox.Create(TheOwner : TComponent);
 begin
-  Inherited Create(TheOwner);
+  inherited Create(TheOwner);
   fCompStyle := csCheckbox;
-  FState       := cbUnchecked;
+  FState := cbUnchecked;
   FAllowGrayed := false;
   TabStop := true;
-  SetInitialBounds(0,0,90,23);
-  AutoSize:=true;
+  SetInitialBounds(0, 0, 90, 23);
+  AutoSize := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -128,7 +129,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetChecked(Value : Boolean);
 var
-  OldState : TCheckBoxState;
+  OldState: TCheckBoxState;
 begin
   OldState := FState;
   If Value then
@@ -138,12 +139,12 @@ begin
   //debugln('TCustomCheckBox.DoChange ',dbgsname(Self),' ',dbgs(ord(FState)));
   if FState <> OldState then
   begin
-    if Assigned(Action)
-    and (Action is TCustomAction) then
-      TCustomAction(Action).Checked := FState=cbChecked;
+    if Assigned(Action) and (Action is TCustomAction) then
+      TCustomAction(Action).Checked := FState = cbChecked;
     ApplyChanges;
     DoOnChange;
-    if (not UseOnChange) and (not ClicksDisabled) then Click;
+    if (not UseOnChange) and (not ClicksDisabled) then
+      Click;
   end;
 end;
 
@@ -175,7 +176,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.ApplyChanges;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then begin
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
     //debugln('TCustomCheckBox.ApplyChanges ',dbgsname(Self),' ',dbgs(ord(FState)),' ',WidgetSetClass.ClassName);
     TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   end;
@@ -185,8 +187,8 @@ procedure TCustomCheckBox.Loaded;
 begin
   // Send first the FState to the interface before calling inherited,
   // otherwise the FState will be lost and the default interface State is taken.
-  if HandleAllocated
-  then TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
+  if HandleAllocated then
+    TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   inherited Loaded;
 end;
 
@@ -218,12 +220,11 @@ begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then
   begin
     SetFocus;
-    if Focused then Toggle;
+    if Focused then
+      Toggle;
     Result := true;
   end else
     Result := inherited;
 end;
-
-// included by stdctrls.pp
 
 // included by stdctrls.pp
