@@ -1935,7 +1935,7 @@ begin
         Windows.SendMessage(Window, EM_SETSEL, 0, -1);
       // RadioButton functionality
       if (lWinControl <> nil) and (lWinControl is TRadioButton) then
-        Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
+        Windows.PostMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
     end;
     WM_SHOWWINDOW:
     begin
