@@ -43,16 +43,6 @@ tools\updatepofiles languages\lazaruside.po
 rstconv -i %ObjInsp_RST% -o ideintf\languages\objinspstrconsts.po
 tools\updatepofiles ideintf\languages\objinspstrconsts.po
 
-@REM FieldsEditor
-@set FieldsEditor_RST=ideintf\units\%ArchOS%\fieldseditor.rst
-rstconv -i %FieldsEditor_RST% -o ideintf\languages\fieldseditor.po
-tools\updatepofiles ideintf\languages\fieldseditor.po
-
-@REM FieldsList
-@set FieldsList_RST=ideintf\units\%ArchOS%\fieldslist.rst
-rstconv -i %FieldsList_RST% -o ideintf\languages\fieldslist.po
-tools\updatepofiles ideintf\languages\fieldslist.po
-
 @REM INSTALLER
 @set Installer_RST=tools\install\win\installerstrconsts.rst
 if not exist %Installer_RST% goto SkipInstaller

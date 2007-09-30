@@ -1,4 +1,0 @@
-#: fieldslist:rstitle
-msgid "FieldDefs"
-msgstr ""
-

@@ -22,8 +22,8 @@ interface
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms,
   Controls, Menus, Graphics, Dialogs, ComCtrls,
-  db, ActnList, StdCtrls, ComponentEditors, PropEdits, LCLType,
-  NewField, FieldsList, ComponentReg;
+  db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
+  PropEdits, LCLType, NewField, FieldsList, ComponentReg;
 
 type
 
@@ -107,15 +107,19 @@ type
 
 implementation
 
-resourcestring
-  rsTitle = 'Edit fields';
-
 { TDSFieldsEditorFrm }
 
 procedure TDSFieldsEditorFrm.AddFieldsActnExecute(Sender: TObject);
 var FieldsList: TFieldsListFrm;
 begin
-  FieldsList :=  TFieldsListFrm.Create(Self, LinkDataset, Designer);
+  try
+    FieldsList :=  TFieldsListFrm.Create(Self, LinkDataset, Designer);
+  except
+    on E:Exception do begin
+      ShowMessage(fesNoFields+^M+fesCheckDSet+^M^M+E.Message);
+      exit;
+    end;
+  end;
   try
     FieldsList.ShowModal;
   finally
@@ -131,7 +135,7 @@ begin
 
   LinkDataset := ADataset;
   FDesigner := ADesigner;
-  Caption := rsTitle + ' - ' + LinkDataset.Name;
+  Caption := fesFeTitle + ' - ' + LinkDataset.Name;
   FieldsListBox.Clear;
   RefreshFieldsListBox(False);
 
@@ -338,7 +342,7 @@ begin
       FieldsListBox.Items[i] := Field.FieldName;
   end else
   if AComponent is TDataset And (AComponent = LinkDataset) then
-    Caption := rsTitle + ' - ' + LinkDataset.Name;
+    Caption := fesFeTitle + ' - ' + LinkDataset.Name;
 end;
 
 procedure TDSFieldsEditorFrm.OnPersistentDeleting(APersistent: TPersistent);
@@ -416,7 +420,7 @@ end;
 function TFieldsComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := rsTitle;
+    0: Result := fesFeTitle;
   end;
 end;
 

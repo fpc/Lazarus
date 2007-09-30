@@ -316,8 +316,14 @@ resourcestring
   s_SuggestSplitImage = 'Do you want to split the image?';
   s_AddAsSingle = 'Add as single';
   s_SplitImage = 'Split image';
-
-
+  
+  // Fields Editor
+  fesFeTitle = 'Edit Fields';
+  fesNoFields = 'It was not possible to get the dataset field''s list';
+  fesCheckDset = 'Check dataset settings';
+  fesFlTitle = 'FieldDefs';
+  fesNoFieldsNote = 'Field''s list is not available, can''t check for duplicates';
+  
 implementation
 
 end.

@@ -21,14 +21,15 @@ interface
 
 uses
   Classes, Math, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, DB, LResources, ComponentEditors,
-  PropEdits, TypInfo;
+  ExtCtrls, StdCtrls, Buttons, DB, LResources, ObjInspStrConsts,
+  ComponentEditors, PropEdits, TypInfo;
 
 type
 
   { TNewFieldFrm }
 
   TNewFieldFrm=class(TForm)
+    NoteLbl: TLabel;
     Panel2: TPanel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -84,6 +85,8 @@ var
   NewFieldFrm: TNewFieldFrm;
 
 implementation
+
+
 
 procedure SplitFieldsList(FldList: string; AList: TStrings);
 const
@@ -154,11 +157,20 @@ end ;
 procedure TNewFieldFrm.FormCreate(Sender: TObject);
 var i: integer;
 begin
-  if Assigned(LinkDataSet) then
-    LinkDataset.FieldDefs.Update;
-    for i := 0 to LinkDataSet.FieldDefs.Count - 1 do begin
-      SelectKeyFields.Items.Add(LinkDataSet.FieldDefs[i].Name);
+  NoteLbl.Caption := fesNoFieldsNote;
+  if Assigned(LinkDataSet) then begin
+    try
+      LinkDataset.FieldDefs.Update;
+    except
+      on E:Exception do begin
+        NoteLbl.visible := true;
+        Panel1.Height := 100;
+      end;
     end;
+  end;
+  for i := 0 to LinkDataSet.FieldDefs.Count - 1 do begin
+    SelectKeyFields.Items.Add(LinkDataSet.FieldDefs[i].Name);
+  end;
   RadioGroup1.ItemIndex := 0;
   RadioGroup1Click(Nil);
 end;

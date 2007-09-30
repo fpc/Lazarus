@@ -1,27 +1,26 @@
 object DSFieldsEditorFrm: TDSFieldsEditorFrm
+  Left = 132
+  Height = 288
+  Top = 174
+  Width = 215
+  HorzScrollBar.Page = 214
+  VertScrollBar.Page = 287
+  ActiveControl = FieldsListBox
   Caption = 'Fields Editor'
   ClientHeight = 288
   ClientWidth = 215
   OnClose = FieldsEditorFrmClose
   OnDestroy = FieldsEditorFrmDestroy
-  PixelsPerInch = 96
   Position = poDefaultPosOnly
-  HorzScrollBar.Page = 214
-  VertScrollBar.Page = 287
-  Left = 256
-  Height = 288
-  Top = 117
-  Width = 215
   object FieldsListBox: TListBox
+    Height = 288
+    Width = 215
     Align = alClient
-    BorderSpacing.OnChange = nil
     MultiSelect = True
     OnClick = ListBox1Click
     OnKeyDown = FieldsListBoxKeyDown
     PopupMenu = PopupMenu1
     TabOrder = 0
-    Height = 288
-    Width = 215
   end
   object PopupMenu1: TPopupMenu
     left = 8
@@ -59,46 +58,53 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     left = 40
     top = 144
     object AddFieldsActn: TAction
+      Category = 'Fields'
       Caption = '&Add fields'
+      DisableIfNoHandler = True
       Hint = 'Add fields from FieldDefs'
       OnExecute = AddFieldsActnExecute
       ShortCut = 16429
-      Category = 'Fields'
     end
     object DeleteFieldsActn: TAction
+      Category = 'Fields'
       Caption = '&Delete'
+      DisableIfNoHandler = True
       Hint = 'Delete selected field(s)'
       OnExecute = DeleteFieldsActnExecute
       ShortCut = 46
-      Category = 'Fields'
     end
     object NewActn: TAction
+      Category = 'Fields'
       Caption = '&New'
+      DisableIfNoHandler = True
       Hint = 'Create new field and add it at current position'
       OnExecute = NewActnExecute
       ShortCut = 45
-      Category = 'Fields'
     end
     object MoveUpActn: TAction
-      Caption = 'Move &Up'
-      OnExecute = MoveUpActnExecute
       Category = 'Fields'
+      Caption = 'Move &Up'
+      DisableIfNoHandler = True
+      OnExecute = MoveUpActnExecute
     end
     object MoveDownActn: TAction
-      Caption = 'Move &Down'
-      OnExecute = MoveDownActnExecute
       Category = 'Fields'
+      Caption = 'Move &Down'
+      DisableIfNoHandler = True
+      OnExecute = MoveDownActnExecute
     end
     object SelectAllActn: TAction
+      Category = 'Fields'
       Caption = '&Select all'
+      DisableIfNoHandler = True
       OnExecute = SelectAllActnExecute
       ShortCut = 16449
-      Category = 'Fields'
     end
     object UnselectAllActn: TAction
-      Caption = '&Unselect all'
-      OnExecute = UnselectAllActnExecute
       Category = 'Fields'
+      Caption = '&Unselect all'
+      DisableIfNoHandler = True
+      OnExecute = UnselectAllActnExecute
     end
   end
 end

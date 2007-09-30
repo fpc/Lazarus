@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  Buttons, DB, StdCtrls, ComponentEditors, PropEdits;
+  Buttons, DB, StdCtrls, ObjInspStrConsts, ComponentEditors, PropEdits;
 
 type
 
@@ -60,9 +60,6 @@ var
 
 implementation
 
-resourcestring
-  rsTitle = 'FieldDefs';
-  
 { TFieldsListFrm }
 
 procedure TFieldsListFrm.BitBtnOkClick(Sender: TObject);
@@ -137,7 +134,7 @@ begin
   if Not Assigned(LinkDataset) then ShowMessage('LinkDataset = nil!')
   else begin
     FDesigner := ADesigner;
-    Caption := rsTitle + ' - ' + LinkDataset.Name;
+    Caption := fesFlTitle + ' - ' + LinkDataset.Name;
   end;
   RefreshFieldsList;
 end;
