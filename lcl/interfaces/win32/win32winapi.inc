@@ -2970,10 +2970,10 @@ end;
 
   The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetFocus(HWnd: HWND): HWND;
-Begin
+function TWin32WidgetSet.SetFocus(HWnd: HWND): HWND;
+begin
   Result := Windows.SetFocus(HWnd);
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method:  SetForegroundWindow

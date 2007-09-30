@@ -867,7 +867,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm WndProc
 ------------------------------------------------------------------------------}
-procedure TCustomForm.WndProc(Var TheMessage : TLMessage);
+procedure TCustomForm.WndProc(var TheMessage : TLMessage);
 var
   FocusHandle : HWND;
   MenuItem : TMenuItem;
@@ -876,16 +876,18 @@ begin
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
       begin
-        if not FocusMessages then Exit;
-        if (Msg = LM_SetFocus) and not (csDesigning in ComponentState)
-        then begin
+        if not FocusMessages then
+          Exit;
+        if (Msg = LM_SETFOCUS) and not (csDesigning in ComponentState) then
+        begin
           FocusHandle := 0;
 
-          if FormStyle = fsMDIFORM
-          then begin
+          if FormStyle = fsMDIFORM then
+          begin
             // ToDo
           end
-          else begin
+          else
+          begin
             if (FActiveControl <> nil) and (FActiveControl <> Self)
             and FActiveControl.Visible and FActiveControl.Enabled
             and ([csLoading,csDestroying]*ComponentState=[])
@@ -1589,7 +1591,6 @@ var
   ParentForm: TCustomForm;
 begin
   Result := False;
-
   if (csDestroying in Control.ComponentState) then exit;
 
   if (Parent<>nil) then begin
@@ -1937,7 +1938,7 @@ Function TCustomForm.ShowModal: Integer;
 
 var
   //WindowList: Pointer;
-  SaveFocusCount: Integer;
+  SavedFocusState: TFocusState;
   //SaveCursor: TCursor;
   //SaveCount: Integer;
   ActiveWindow: HWnd;
@@ -1960,7 +1961,7 @@ begin
 
   Include(FFormState, fsModal);
   ActiveWindow := GetActiveWindow;
-  SaveFocusCount := FocusCount;
+  SavedFocusState := SaveFocusState;
   Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
   Screen.FFocusedForm := Self;
   Screen.MoveFormToFocusFront(Self);
@@ -2012,9 +2013,10 @@ begin
     end else
       Screen.FFocusedForm := nil;
     Exclude(FFormState, fsModal);
-    FocusCount := SaveFocusCount;
+    RestoreFocusState(SavedFocusState);
     //DebugLn('TCustomForm.ShowModal ',dbgs(ActiveWindow));
-    if ActiveWindow <> 0 then SetActiveWindow(ActiveWindow);
+    if ActiveWindow <> 0 then
+      SetActiveWindow(ActiveWindow);
   end;
 end;
 
