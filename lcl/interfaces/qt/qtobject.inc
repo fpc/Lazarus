@@ -98,11 +98,25 @@ var
   FHook: QObject_hookH;
 begin
   App := QApplication_Create(@argc, argv);
-
+  
+  {no more crazy menus if we disable fading & animating
+   my proposal is to remove this ifdef and disable
+   effects by default, or set IFNDEF QT_USE_MENU_EFFECTS }
+  {$IFDEF QT_NO_MENU_EFFECTS}
+  QApplication_setEffectEnabled(QtUI_AnimateMenu, False);
+  QApplication_setEffectEnabled(QtUI_FadeMenu, False);
+  {$ENDIF}
+  
+  {This hook crashes linux & darwin ocasionally !
+   todo: check what happens with win32
+   and possibly remove this hook at all.
+   Tabs works under linux & darwin without this hook}
+  {$ifdef windows}
   // install global event filter
   FHook := QObject_hook_create(App);
   TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FHook, Method);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
