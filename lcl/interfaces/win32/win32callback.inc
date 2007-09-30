@@ -1427,13 +1427,19 @@ begin
     end;
     WM_ENABLE:
     begin
-      If WParam <> 0 Then
+      if WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
-      If Window=TWin32WidgetSet(WidgetSet).FAppHandle then
-        if WParam=0 then
-          DisableApplicationWindows(Window)
+      if Window = TWin32WidgetSet(WidgetSet).FAppHandle then
+        if WParam = 0 then
+        begin
+          RemoveStayOnTopFlags(Window);
+          DisableApplicationWindows(Window);
+        end
         else
+        begin
+          RestoreStayOnTopFlags(Window);
           EnableApplicationWindows(Window);
+        end;
 
       If (lWinControl is TCustomFloatSpinEdit) then
         EnableFloatSpinEditBuddy(Window, WParam<>0);

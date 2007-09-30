@@ -378,6 +378,7 @@ class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   DisableApplicationWindows(ACustomForm.Handle);
   ShowWindow(ACustomForm.Handle, SW_SHOW);
+  BringWindowToTop(ACustomForm.Handle);
 end;
 
 { TWin32WSHintWindow }

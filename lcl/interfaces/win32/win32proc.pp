@@ -46,6 +46,7 @@ Type
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
     DisabledWindowList: TList;// a list of windows that were disabled when showing modal
+    StayOnTopList: TList;
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
@@ -101,8 +102,12 @@ function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
 function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
+
 procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
+procedure RemoveStayOnTopFlags(Window: HWND);
+procedure RestoreStayOnTopFlags(Window: HWND);
+
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
@@ -121,6 +126,12 @@ type
   TDisableWindowsInfo = record
     NewModalWindow: HWND;
     DisabledWindowList: TList;
+  end;
+  
+  PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
+  TStayOnTopWindowsInfo = record
+    AppWindow: HWND;
+    StayOnTopList: TList;
   end;
 
 var
@@ -987,6 +998,7 @@ begin
   if Result then
   begin
     WindowInfo^.DisabledWindowList.Free;
+    WindowInfo^.StayOnTopList.Free;
     Dispose(WindowInfo);
   end;
 end;
@@ -1070,6 +1082,50 @@ begin
     FreeAndNil(WindowInfo^.DisabledWindowList);
   end;
 end;
+
+function EnumStatOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
+var
+  AStyle: DWord;
+  StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
+begin
+  Result := Handle <> StayOnTopWindowsInfo^.AppWindow;
+  AStyle := GetWindowLong(Handle, GWL_EXSTYLE);
+  if (AStyle and WS_EX_TOPMOST) <> 0 then // if stay on top then
+  begin
+    StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
+    SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+  end;
+end;
+
+procedure RemoveStayOnTopFlags(Window: HWND);
+var
+  StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
+  WindowInfo: PWindowInfo;
+begin
+  New(StayOnTopWindowsInfo);
+  StayOnTopWindowsInfo^.AppWindow := Window;
+  StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
+  WindowInfo := GetWindowInfo(Window);
+  WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
+  EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
+    @EnumStatOnTopRemove, LPARAM(StayOnTopWindowsInfo));
+  Dispose(StayOnTopWindowsInfo);
+end;
+
+procedure RestoreStayOnTopFlags(Window: HWND);
+var
+  WindowInfo: PWindowInfo;
+  I: integer;
+begin
+  WindowInfo := GetWindowInfo(Window);
+  if WindowInfo^.StayOnTopList <> nil then
+  begin
+    for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
+      SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+    FreeAndNil(WindowInfo^.StayOnTopList);
+  end;
+end;
+
 
 {-------------------------------------------------------------------------------
   procedure AddToChangedMenus(Window: HWnd);
