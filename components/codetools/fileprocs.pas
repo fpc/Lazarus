@@ -2515,6 +2515,7 @@ begin
 end;
 
 initialization
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('fileprocs.pas: initialization');{$ENDIF}
   InternalInit;
 
 finalization

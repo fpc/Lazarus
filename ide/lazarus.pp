@@ -76,6 +76,7 @@ uses
 {$I revision.inc}
 
 begin
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: begin');{$ENDIF}
   LazarusRevisionStr:=RevisionStr;
   Application.Title:='Lazarus';
   Application.Initialize;
@@ -92,9 +93,7 @@ begin
   MainIDE:=TMainIDE.Create(Application);
   MainIDE.CreateOftenUsedForms;
   MainIDE.StartIDE;
-  {$IFDEF IDE_MEM_CHECK}
-  CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
-  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');{$ENDIF}
 
   try
     Application.Run;

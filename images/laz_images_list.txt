@@ -44,12 +44,13 @@ menu/menu_build_lazarus.png
 menu/menu_clean.png
 menu/menu_close.png
 menu/menu_close_all.png
-menu/menu_configure_build_lazarus.png
-menu/menu_configure_help.png
 menu/menu_codetoolsdefineseditor.png
 menu/menu_codetoolsoptions.png
 menu/menu_comment_16.xpm
 menu/menu_compiler_options.png
+menu/menu_configure_build_lazarus.png
+menu/menu_configure_help.png
+menu/menu_dfm_to_lfm.png
 menu/menu_editor_options.png
 menu/menu_edit_copy.png
 menu/menu_edit_cut.png
@@ -89,6 +90,7 @@ menu/menu_search_files.png
 menu/menu_search_find.png
 menu/menu_search_find_next.png
 menu/menu_search_find_previous.png
+menu/menu_search_openfile_atcursor.png
 menu/menu_search_replace.png
 menu/menu_select_all.png
 menu/menu_stepinto.png
@@ -105,8 +107,8 @@ menu/menu_view_forms.png
 menu/menu_view_inspector.png
 menu/menu_view_source_editor.png
 menu/menu_view_toggle_form_unit.png
-menu/menu_view_unit_info.png
 menu/menu_view_units.png
+menu/menu_view_unit_info.png
 codeexplorer/ce_class.xpm
 codeexplorer/ce_const.xpm
 codeexplorer/ce_default.xpm

@@ -1058,7 +1058,9 @@ end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);
 begin
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INHERITED');{$ENDIF}
 
   SetupDialogs;
   RunExternalTool:=@OnRunExternalTool;
@@ -1069,6 +1071,7 @@ begin
   {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
 
   // load options
   CreatePrimaryConfigPath;
@@ -1084,6 +1087,7 @@ begin
 
   // setup the code tools
   InitCodeToolBoss;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
@@ -1101,6 +1105,7 @@ begin
   SetupSpeedButtons;
   SetupComponentNoteBook;
   ConnectMainBarEvents;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MENU');{$ENDIF}
 
   // create main IDE register items
   NewIDEItems:=TNewLazIDEItemCategories.Create;
@@ -1113,6 +1118,7 @@ begin
   PkgBoss.ConnectMainBarEvents;
   HelpBoss:=THelpManager.Create(nil);
   HelpBoss.ConnectMainBarEvents;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MANAGERS');{$ENDIF}
   // setup the IDE components
   LoadMenuShortCuts;
   SetupOutputFilter;
@@ -1122,12 +1128,14 @@ begin
   SetupSourceNotebook;
   SetupControlSelection;
   SetupTextConverters;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
   // Main IDE bar created and setup completed -> Show it
   MainIDEBar.Show;
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INSTALLED COMPONENTS');{$ENDIF}
 
   // load package configs
   HelpBoss.LoadHelpOptions;
@@ -1137,6 +1145,7 @@ end;
 
 procedure TMainIDE.StartIDE;
 begin
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE START');{$ENDIF}
   // set Application handlers
   Application.AddOnUserInputHandler(@OnApplicationUserInput);
   Application.AddOnIdleHandler(@OnApplicationIdle);
@@ -1151,6 +1160,7 @@ begin
   // reopen extra windows
   ReOpenIDEWindows;
   DoShowMessagesView;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
 
 destructor TMainIDE.Destroy;
@@ -13365,6 +13375,7 @@ end;
 //-----------------------------------------------------------------------------
 
 initialization
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('main.pp: initialization');{$ENDIF}
   {$I ../images/laz_images.lrs}
   {$I ../images/mainicon.lrs}
   ShowSplashScreen:=true;

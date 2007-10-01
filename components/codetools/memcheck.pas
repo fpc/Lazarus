@@ -58,7 +58,7 @@ const
   { install heaptrc memorymanager }
   useheaptrace : boolean=true;
   { less checking }
-  quicktrace : boolean=true;
+  quicktrace : boolean=false;
   { calls halt() on error by default !! }
   HaltOnError : boolean = true;
   { Halt on exit if any memory was not freed }
@@ -1474,6 +1474,7 @@ Initialization
   { heaptrc can be disabled from the environment }
   if useheaptrace then
    TraceInit;
+  CheckHeapWrtMemCnt('memcheck.pas Initialization');
 finalization
   if useheaptrace then
    TraceExit;
