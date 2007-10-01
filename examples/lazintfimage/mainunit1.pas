@@ -84,7 +84,7 @@ begin
         TempIntfImg.Colors[px,py]:=CurColor;
       end;
     end;
-    TempIntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
+    TempIntfImg.CreateBitmaps(ImgHandle,ImgMaskHandle,false);
     TempBitmap.Handle:=ImgHandle;
     TempBitmap.MaskHandle:=ImgMaskHandle;
     Canvas.Draw(x,y,TempBitmap);
@@ -231,7 +231,7 @@ begin
     croix(px+x,py+y);
     {$ENDIF}
     
-    TempIntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
+    TempIntfImg.CreateBitmaps(ImgHandle,ImgMaskHandle,false);
     TempBitmap.Handle:=ImgHandle;
     TempBitmap.MaskHandle:=ImgMaskHandle;
     aCanvas.Draw(x-dx,y-dy,TempBitmap);

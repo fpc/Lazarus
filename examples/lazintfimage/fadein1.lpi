@@ -1,43 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="Fade In - Example for TLazIntfImage"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <CursorPos X="8" Y="11"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="fadein1.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FadeIn1"/>
-        <UsageCount Value="20"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="19" Y="59"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="mainunit1.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="mainunit1.lrs"/>
-        <TopLine Value="37"/>
-        <UnitName Value="MainUnit1"/>
-        <UsageCount Value="20"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -56,9 +32,33 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="fadein1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FadeIn1"/>
+        <CursorPos X="8" Y="11"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mainunit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="mainunit1.lrs"/>
+        <UnitName Value="MainUnit1"/>
+        <CursorPos X="30" Y="234"/>
+        <TopLine Value="215"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="5"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>

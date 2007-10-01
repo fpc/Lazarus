@@ -244,7 +244,7 @@ type
                               ExceptionOnError: boolean): boolean; virtual;
     procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromBitmap(ABitmap, AMaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
-    procedure CreateBitmaps(var ABitmap, AMask: HBitmap; ASkipMask: boolean = False); virtual;
+    procedure CreateBitmaps(out ABitmap, AMask: HBitmap; ASkipMask: boolean = False); virtual;
     procedure SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean = True); virtual;
     procedure GetRawImage(out ARawImage: TRawImage); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
@@ -2979,7 +2979,7 @@ begin
   SetRawImage(RawImage);
 end;
 
-procedure TLazIntfImage.CreateBitmaps(var ABitmap, AMask: HBitmap; ASkipMask: boolean);
+procedure TLazIntfImage.CreateBitmaps(out ABitmap, AMask: HBitmap; ASkipMask: boolean);
 begin
   if not RawImage_CreateBitmaps(FRawImage, ABitmap, AMask, ASkipMask)
   then raise FPImageException.Create('Failed to create handles');
