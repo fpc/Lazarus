@@ -40,7 +40,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   FPImage, GraphType, IntfGraphics, StdCtrls;
 
 type
@@ -70,6 +70,7 @@ var
   IntfImage: TLazIntfImage;
   ScanLineImage: TLazIntfImage;
   y: Integer;
+  ImgFormatDescription: TRawImageDescription;
 begin
   MyBitmap:=TBitmap.Create;
 
@@ -77,14 +78,17 @@ begin
   // keep in mind that you access it in bytes, not words or dwords
   // For example PowerPC uses another byte order (endian big)
   ScanLineImage:=TLazIntfImage.Create(0,0);
-  ScanLineImage.Set_BPP32_B8G8R8_A1_BIO_TTB(30,20);
+  ImgFormatDescription.Init_BPP32_B8G8R8_BIO_TTB(30,20);
+  ScanLineImage.DataDescription:=ImgFormatDescription;
 
-  // call the very fast and very specific drawing function
+  // call the pf24bit specific drawing function
   for y:=0 to ScanLineImage.Height-1 do
     PaintToRGB32bitScanLine(y,ScanLineImage.Width,
                             ScanLineImage.GetDataLineStart(y));
 
   // create IntfImage with the format of the current LCL interface
+  MyBitmap.Width:=ScanLineImage.Width;
+  MyBitmap.Height:=ScanLineImage.Height;
   IntfImage:=MyBitmap.CreateIntfImage;
   // convert the content from the very specific to the current format
   IntfImage.CopyPixels(ScanLineImage);
@@ -114,8 +118,8 @@ var
 begin
   // fill line with gray
   for i:=0 to (ImgWidth*4)-1 do
-    PByte(LineStart)[i]:=128; // set red, green and blue to 128
-  // set one pixel to red
+    PByte(LineStart)[i]:=0; // set red, green and blue to 128 (i.e. gray)
+  // set one pixel to red (this creates a red line)
   PByte(LineStart)[(Row mod ImgWidth)*4+2]:=255;
 end;
 

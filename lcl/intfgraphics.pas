@@ -291,7 +291,7 @@ type
 
 
   { TLazAVLPalette }
-  { This descendent of TFPPalette uses a AVL tree for speed up. }
+  { This descendent of TFPPalette uses an AVL tree for speed up. }
 
   TLazAVLPalette = class(TFPPalette)
   protected
@@ -1106,7 +1106,7 @@ procedure TLazIntfImage.SetDataDescription(const ADescription: TRawImageDescript
 begin
   if CompareMem(@FRawImage.Description, @ADescription, SizeOf(TRawImageDescription))
   then Exit;
-  
+
   CheckDescription(ADescription, True);
   BeginUpdate;
   try
@@ -1114,7 +1114,6 @@ begin
     FRawImage.Description := ADescription;
     ChooseGetSetColorFunctions;
     SetSize(ADescription.Width, ADescription.Height);
-    FCreateAllDataNeeded := False;
   finally
     EndUpdate;
   end;
@@ -2888,9 +2887,9 @@ begin
   if FUpdateCount > 0 then Exit;
 
   if FCreateAllDataNeeded then
-     CreateData;
+    CreateData;
   if FGetSetColorFunctionsUpdateNeeded then
-     ChooseGetSetColorFunctions;
+    ChooseGetSetColorFunctions;
 end;
 
 procedure TLazIntfImage.SetSize(AWidth, AHeight: integer);
