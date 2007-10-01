@@ -224,7 +224,7 @@ msgstr "&Proprietà"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "&Rimuovi"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -404,7 +404,7 @@ msgstr "Aggiungi file"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Aggiungi inverso"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -540,7 +540,7 @@ msgstr "Aggiusta linea in testa a causa del commento nel frontespizio"
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Opzioni di Build avanzate"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -964,7 +964,7 @@ msgstr "Numero di build"
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "Opzioni di Build"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1116,7 +1116,7 @@ msgstr "Cambia Carattere"
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
-msgstr ""
+msgstr "Cambia padre ..."
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -2344,7 +2344,7 @@ msgstr "Direzione"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Direttive"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -3364,43 +3364,43 @@ msgstr "Vai alla riga numero"
 
 #: lazarusidestrconsts:liskmgotomarker0
 msgid "Go to marker 0"
-msgstr ""
+msgstr "Vai al segnalibro 0"
 
 #: lazarusidestrconsts:liskmgotomarker1
 msgid "Go to marker 1"
-msgstr ""
+msgstr "Vai al segnalibro 1"
 
 #: lazarusidestrconsts:liskmgotomarker2
 msgid "Go to marker 2"
-msgstr ""
+msgstr "Vai al segnalibro 2"
 
 #: lazarusidestrconsts:liskmgotomarker3
 msgid "Go to marker 3"
-msgstr ""
+msgstr "Vai al segnalibro 3"
 
 #: lazarusidestrconsts:liskmgotomarker4
 msgid "Go to marker 4"
-msgstr ""
+msgstr "Vai al segnalibro 4"
 
 #: lazarusidestrconsts:liskmgotomarker5
 msgid "Go to marker 5"
-msgstr ""
+msgstr "Vai al segnalibro 5"
 
 #: lazarusidestrconsts:liskmgotomarker6
 msgid "Go to marker 6"
-msgstr ""
+msgstr "Vai al segnalibro 6"
 
 #: lazarusidestrconsts:liskmgotomarker7
 msgid "Go to marker 7"
-msgstr ""
+msgstr "Vai al segnalibro 7"
 
 #: lazarusidestrconsts:liskmgotomarker8
 msgid "Go to marker 8"
-msgstr ""
+msgstr "Vai al segnalibro 8"
 
 #: lazarusidestrconsts:liskmgotomarker9
 msgid "Go to marker 9"
-msgstr ""
+msgstr "Vai al segnalibro 9"
 
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
@@ -3416,43 +3416,43 @@ msgstr "Vai all'editor precedente"
 
 #: lazarusidestrconsts:liskmgotosourceeditor1
 msgid "Go to source editor 1"
-msgstr ""
+msgstr "Vai all'editor sorgenti 1"
 
 #: lazarusidestrconsts:liskmgotosourceeditor10
 msgid "Go to source editor 10"
-msgstr ""
+msgstr "Vai all'editor sorgenti 10"
 
 #: lazarusidestrconsts:liskmgotosourceeditor2
 msgid "Go to source editor 2"
-msgstr ""
+msgstr "Vai all'editor sorgenti 2"
 
 #: lazarusidestrconsts:liskmgotosourceeditor3
 msgid "Go to source editor 3"
-msgstr ""
+msgstr "Vai all'editor sorgenti 3"
 
 #: lazarusidestrconsts:liskmgotosourceeditor4
 msgid "Go to source editor 4"
-msgstr ""
+msgstr "Vai all'editor sorgenti 4"
 
 #: lazarusidestrconsts:liskmgotosourceeditor5
 msgid "Go to source editor 5"
-msgstr ""
+msgstr "Vai all'editor sorgenti 5"
 
 #: lazarusidestrconsts:liskmgotosourceeditor6
 msgid "Go to source editor 6"
-msgstr ""
+msgstr "Vai all'editor sorgenti 6"
 
 #: lazarusidestrconsts:liskmgotosourceeditor7
 msgid "Go to source editor 7"
-msgstr ""
+msgstr "Vai all'editor sorgenti 7"
 
 #: lazarusidestrconsts:liskmgotosourceeditor8
 msgid "Go to source editor 8"
-msgstr ""
+msgstr "Vai all'editor sorgenti 8"
 
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
-msgstr ""
+msgstr "Vai all'editor sorgenti 9"
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -4712,7 +4712,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
-msgstr ""
+msgstr "Limita il conteggio righe a"
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4752,7 +4752,7 @@ msgstr "Linking"
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituano"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -6512,7 +6512,7 @@ msgstr "Rapporto"
 
 #: lazarusidestrconsts:lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Segnalare un bug..."
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -7204,43 +7204,43 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmsetmarker0
 msgid "Set marker 0"
-msgstr ""
+msgstr "Imposta segnalibro 0"
 
 #: lazarusidestrconsts:liskmsetmarker1
 msgid "Set marker 1"
-msgstr ""
+msgstr "Imposta segnalibro 1"
 
 #: lazarusidestrconsts:liskmsetmarker2
 msgid "Set marker 2"
-msgstr ""
+msgstr "Imposta segnalibro 2"
 
 #: lazarusidestrconsts:liskmsetmarker3
 msgid "Set marker 3"
-msgstr ""
+msgstr "Imposta segnalibro 3"
 
 #: lazarusidestrconsts:liskmsetmarker4
 msgid "Set marker 4"
-msgstr ""
+msgstr "Imposta segnalibro 4"
 
 #: lazarusidestrconsts:liskmsetmarker5
 msgid "Set marker 5"
-msgstr ""
+msgstr "Imposta segnalibro 5"
 
 #: lazarusidestrconsts:liskmsetmarker6
 msgid "Set marker 6"
-msgstr ""
+msgstr "Imposta segnalibro 6"
 
 #: lazarusidestrconsts:liskmsetmarker7
 msgid "Set marker 7"
-msgstr ""
+msgstr "Imposta segnalibro 7"
 
 #: lazarusidestrconsts:liskmsetmarker8
 msgid "Set marker 8"
-msgstr ""
+msgstr "Imposta segnalibro 8"
 
 #: lazarusidestrconsts:liskmsetmarker9
 msgid "Set marker 9"
-msgstr ""
+msgstr "Imposta segnalibro 9"
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7476,7 +7476,7 @@ msgstr "Salta il caricamento dell'ultimo progetto"
 
 #: lazarusidestrconsts:lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr ""
+msgstr "Salta questo pacchetto"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"

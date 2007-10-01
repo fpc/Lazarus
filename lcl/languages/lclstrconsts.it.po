@@ -162,7 +162,7 @@ msgstr "Tutti i file (%s)|%s|%s"
 
 #: lclstrconsts:ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -238,7 +238,7 @@ msgstr "Creazione errore intercettabile gdb:"
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -298,7 +298,7 @@ msgstr "Errore eseguendo %s%s%s:%s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Errore salvando il bitmap."
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -710,7 +710,7 @@ msgstr "Testo"
 
 #: lclstrconsts:sinvalidcharset
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
+msgstr "Il carattere di mask \"%s\" non è valido"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."

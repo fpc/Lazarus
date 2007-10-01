@@ -254,7 +254,7 @@ msgstr "Sorgenti di Lazarus"
 
 #: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "Le definizioni annidate %s non sono permesse"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
@@ -506,7 +506,7 @@ msgstr "il file è in sola lettura"
 
 #: codetoolsstrconsts:ctsgenericidentifier
 msgid "generic identifier"
-msgstr ""
+msgstr "identificatore generico"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
