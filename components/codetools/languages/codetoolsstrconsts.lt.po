@@ -1,14 +1,16 @@
-# translation of codetoolsstrconsts.po to Lithuanian Header entry was created by KBabel!: codetoolsstrconsts:ctsothercompilerdefines Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of codetoolsstrconsts.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-27 21:19+0300\n"
+"PO-Revision-Date: 2007-09-29 13:38+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -256,7 +258,7 @@ msgstr "Lazarus pirminis kodas"
 
 #: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "Įdėtinės %s apibrėžtys neleidžiamos"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
@@ -508,7 +510,7 @@ msgstr "failas tik skaitymui"
 
 #: codetoolsstrconsts:ctsgenericidentifier
 msgid "generic identifier"
-msgstr ""
+msgstr "daugybinis identifikatorius"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

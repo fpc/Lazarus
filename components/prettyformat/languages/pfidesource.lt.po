@@ -1,7 +1,4 @@
 # translation of pfidesource.po to Lithuanian
-# Header entry was created by KBabel!
-#
-#: pfidesource:sdescrpfselection
 # Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""

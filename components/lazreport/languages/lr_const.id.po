@@ -57,13 +57,13 @@ msgstr "J&ajarkan palet"
 msgid "&All"
 msgstr "Semu&a"
 
-#: lr_const:sinsertfieldsformaviabledset
-msgid "&Available datasets"
-msgstr "D&ataset tersedia"
-
 #: lr_const:sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr "DB Tersedi&a"
+
+#: lr_const:sinsertfieldsformaviabledset
+msgid "&Available datasets"
+msgstr "D&ataset tersedia"
 
 #: lr_const:seditorformbig
 msgid "&Big font"
@@ -193,13 +193,13 @@ msgstr "&Kiri, mm"
 msgid "&Load..."
 msgstr "&Ambil..."
 
-#: lr_const:seditorformmemo
-msgid "&Memo"
-msgstr "&Memo"
-
 #: lr_const:sdesoptionsformmm
 msgid "&MM"
 msgstr "&MM"
+
+#: lr_const:seditorformmemo
+msgid "&Memo"
+msgstr "&Memo"
 
 #: lr_const:sfrdesignerform_new
 msgid "&New..."
@@ -473,13 +473,13 @@ msgstr "A4 Extra 9.27 x 12.69\""
 msgid "A4 Plus 210 x 330 mm"
 msgstr "A4 Plus 210 x 330 mm"
 
-#: lr_const:spaper10
-msgid "A4 small sheet, 210 x 297 mm"
-msgstr "A4 small sheet, 210 x 297 mm"
-
 #: lr_const:spaper55
 msgid "A4 Transverse 210 x 297 mm"
 msgstr "A4 Transverse 210 x 297 mm"
+
+#: lr_const:spaper10
+msgid "A4 small sheet, 210 x 297 mm"
+msgstr "A4 small sheet, 210 x 297 mm"
 
 #: lr_const:spaper11
 msgid "A5 148 x 210 mm"
@@ -496,6 +496,14 @@ msgstr "A5 Transverse 148 x 210 mm"
 #: lr_const:spaper70
 msgid "A6 105x148 mm"
 msgstr "A6 105x148 mm"
+
+#: lr_const:stextfile
+msgid "ASCII Text file"
+msgstr "File Teks ASCII"
+
+#: lr_const:sdescriptionavg
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expression> [,BandName [,1]])/Menghitung rata-rata <Expression> untuk [BandName] dari baris yang diberikan. Jika parameter [1] dipakai, menghitung rata-rata untuk baris yang tidak terlihat juga."
 
 #: lr_const:saboutformcapt
 msgid "About FastReport"
@@ -553,10 +561,6 @@ msgstr "Semua garis bingkai"
 msgid "An error occured during calculating"
 msgstr "Kesalahan terjadi saat menghitung"
 
-#: lr_const:stextfile
-msgid "ASCII Text file"
-msgstr "File Teks ASCII"
-
 #: lr_const:sautosize
 msgid "Auto size"
 msgstr "Ukur otomatis"
@@ -564,10 +568,6 @@ msgstr "Ukur otomatis"
 #: lr_const:sfilterparam
 msgid "Average font height:"
 msgstr "Rata-rata tinggi font:"
-
-#: lr_const:sdescriptionavg
-msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
-msgstr "AVG(<Expression> [,BandName [,1]])/Menghitung rata-rata <Expression> untuk [BandName] dari baris yang diberikan. Jika parameter [1] dipakai, menghitung rata-rata untuk baris yang tidak terlihat juga."
 
 #: lr_const:spaper42
 msgid "B4 (ISO) 250 x 353 mm"
@@ -701,6 +701,14 @@ msgstr "C6 Amplop,  114 x 162 mm"
 msgid "C65 Envelope, 114 x 229 mm"
 msgstr "C65 Amplop, 114 x 229 mm"
 
+#: lr_const:sdescriptioncount
+msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgstr "COUNT(<BandName>)/Mengembalikan jumlah baris-data yang diberikan dalam <BandName>. "
+
+#: lr_const:scsvfile
+msgid "CSV File"
+msgstr "File CSV"
+
 #: lr_const:scancel
 msgid "Cancel"
 msgstr "Batal"
@@ -793,10 +801,6 @@ msgstr "Copy"
 msgid "Copy variables"
 msgstr "Copy variabel"
 
-#: lr_const:sdescriptioncount
-msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
-msgstr "COUNT(<BandName>)/Mengembalikan jumlah baris-data yang diberikan dalam <BandName>. "
-
 #: lr_const:sband20
 msgid "Cross data"
 msgstr "Data silang"
@@ -808,10 +812,6 @@ msgstr "Footer silang"
 #: lr_const:sband19
 msgid "Cross header"
 msgstr "Header silang"
-
-#: lr_const:scsvfile
-msgid "CSV File"
-msgstr "File CSV"
 
 #: lr_const:sprintformcurpg
 msgid "Current &page"
@@ -833,77 +833,13 @@ msgstr "Kustom"
 msgid "Cut"
 msgstr "Cut"
 
-#: lr_const:sdateformat3
-msgid "d mmm yyyy"
-msgstr "d mmm yyyy"
-
-#: lr_const:sdateformat4
-msgid "d mmmm yyyy"
-msgstr "d mmmm yyyy"
-
 #: lr_const:spaper25
 msgid "D Sheet, 22 x 34\""
 msgstr "D Sheet, 22 x 34\""
 
-#: lr_const:sroundrectformdata
-msgid "Data .."
-msgstr "Data .."
-
-#: lr_const:sbandeditorformdatasrc
-msgid "Data source"
-msgstr "Sumber data"
-
-#: lr_const:svar3
-msgid "Date"
-msgstr "Tanggal"
-
-#: lr_const:sdatetimecategory
-msgid "Date and time"
-msgstr "Tanggal dan jam"
-
 #: lr_const:sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Date>)/Mengembalikan angka hari (1..31) dari tanggal <Date>."
-
-#: lr_const:sdefaultprinter
-msgid "Default printer"
-msgstr "Printer standar"
-
-#: lr_const:spreviewformdel
-msgid "Delete page"
-msgstr "Hapus halaman"
-
-#: lr_const:stemplformdesc
-msgid "Description"
-msgstr "Deskripsi"
-
-#: lr_const:sdesignreport
-msgid "Design report"
-msgstr "Desain laporan"
-
-#: lr_const:sdesoptionsformdes
-msgid "Designer"
-msgstr "Desainer"
-
-#: lr_const:sband9
-msgid "Detail data"
-msgstr "Detail data"
-
-#: lr_const:sband10
-msgid "Detail footer"
-msgstr "Detail footer"
-
-#: lr_const:sband8
-msgid "Detail header"
-msgstr "Detail header"
-
-#: lr_const:sshape5
-msgid "Diagonal1"
-msgstr "Diagonal1"
-
-#: lr_const:sshape6
-msgid "Diagonal2"
-msgstr "Diagonal2"
 
 #: lr_const:spaper27
 msgid "DL Envelope, 110 x 220 mm"
@@ -1101,6 +1037,62 @@ msgstr "DMPAPER_PENV_9 229X324"
 msgid "DMPAPER_PENV_9_ROTATED 324X229"
 msgstr "DMPAPER_PENV_9_ROTATED 324X229"
 
+#: lr_const:sroundrectformdata
+msgid "Data .."
+msgstr "Data .."
+
+#: lr_const:sbandeditorformdatasrc
+msgid "Data source"
+msgstr "Sumber data"
+
+#: lr_const:svar3
+msgid "Date"
+msgstr "Tanggal"
+
+#: lr_const:sdatetimecategory
+msgid "Date and time"
+msgstr "Tanggal dan jam"
+
+#: lr_const:sdefaultprinter
+msgid "Default printer"
+msgstr "Printer standar"
+
+#: lr_const:spreviewformdel
+msgid "Delete page"
+msgstr "Hapus halaman"
+
+#: lr_const:stemplformdesc
+msgid "Description"
+msgstr "Deskripsi"
+
+#: lr_const:sdesignreport
+msgid "Design report"
+msgstr "Desain laporan"
+
+#: lr_const:sdesoptionsformdes
+msgid "Designer"
+msgstr "Desainer"
+
+#: lr_const:sband9
+msgid "Detail data"
+msgstr "Detail data"
+
+#: lr_const:sband10
+msgid "Detail footer"
+msgstr "Detail footer"
+
+#: lr_const:sband8
+msgid "Detail header"
+msgstr "Detail header"
+
+#: lr_const:sshape5
+msgid "Diagonal1"
+msgstr "Diagonal1"
+
+#: lr_const:sshape6
+msgid "Diagonal2"
+msgstr "Diagonal2"
+
 #: lr_const:spaper69
 msgid "Double Japanese Postcard 200 x 148 mm"
 msgstr "Double Japanese Postcard 200 x 148 mm"
@@ -1152,6 +1144,22 @@ msgstr "Executive, 7 1/4 x 10 1/2\""
 #: lr_const:svar2
 msgid "Expression"
 msgstr "Ekspresi"
+
+#: lr_const:sdescriptionformatdatetime
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Mengubah nilai <DateTime> ke string menggunakan mask dalam <Fmt>."
+
+#: lr_const:sdescriptionformatfloat
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Mengubah nilai <Numeric> ke string menggunakan mask dalam <Fmt>."
+
+#: lr_const:sdescriptionformattext
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Mask>, <String>)/Menerapkan <Mask> ke <String> dan mengembalikan string yang dibentuk."
+
+#: lr_const:sfrvariables
+msgid "FR variables"
+msgstr "Variabel FR"
 
 #: lr_const:sformat54
 msgid "False;True"
@@ -1205,22 +1213,6 @@ msgstr "Font..."
 msgid "Force new page"
 msgstr "Paksa halaman baru"
 
-#: lr_const:sdescriptionformatdatetime
-msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
-msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Mengubah nilai <DateTime> ke string menggunakan mask dalam <Fmt>."
-
-#: lr_const:sdescriptionformatfloat
-msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
-msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Mengubah nilai <Numeric> ke string menggunakan mask dalam <Fmt>."
-
-#: lr_const:sdescriptionformattext
-msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
-msgstr "FORMATTEXT(<Mask>, <String>)/Menerapkan <Mask> ke <String> dan mengembalikan string yang dibentuk."
-
-#: lr_const:sfrvariables
-msgid "FR variables"
-msgstr "Variabel FR"
-
 #: lr_const:sfmtformfrac
 msgid "Fraction &symbol"
 msgstr "&Simbol fraksi"
@@ -1236,10 +1228,6 @@ msgstr "Panjang bingkai"
 #: lr_const:sroundrectformframed
 msgid "Framed zone"
 msgstr "Zona bingkai"
-
-#: lr_const:sfrom
-msgid "from"
-msgstr "dari"
 
 #: lr_const:spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
@@ -1277,33 +1265,21 @@ msgstr "Footer grup"
 msgid "Group header"
 msgstr "Header grup"
 
-#: lr_const:stimeformat4
-msgid "h:nn"
-msgstr "h:nn"
-
-#: lr_const:stimeformat2
-msgid "h:nn:ss"
-msgstr "h:nn:ss"
+#: lr_const:shtmfile
+msgid "HTML file"
+msgstr "File HTML"
 
 #: lr_const:sfrdesignerform_help2
 msgid "Help &tool"
 msgstr "Piran&ti bantuan"
 
-#: lr_const:stimeformat3
-msgid "hh:nn"
-msgstr "hh:nn"
-
-#: lr_const:stimeformat1
-msgid "hh:nn:ss"
-msgstr "hh:nn:ss"
-
 #: lr_const:shilightformhilitattr
 msgid "Highlight attributes"
 msgstr "Atribut penerang"
 
-#: lr_const:shtmfile
-msgid "HTML file"
-msgstr "File HTML"
+#: lr_const:sdescriptioninput
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Menampilkan jendela dialog dengan headstring <Caption> dan kotak edit. Jika parameter [Default] disetel, menaruh string ini dalam kotak edit. Setelah pengguna mengklik OK, mengembalikan string input."
 
 #: lr_const:sinches
 msgid "Inches"
@@ -1312,18 +1288,6 @@ msgstr "Inci"
 #: lr_const:sinsertfieldsformband
 msgid "Include &bands"
 msgstr "Sertakan &band"
-
-#: lr_const:sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr "INPUT(<Caption> [,Default])/Menampilkan jendela dialog dengan headstring <Caption> dan kotak edit. Jika parameter [Default] disetel, menaruh string ini dalam kotak edit. Setelah pengguna mengklik OK, mengembalikan string input."
-
-#: lr_const:sinsroundrect
-msgid "Insert an RoundRect with shadow area"
-msgstr "Sisipkan KotakBulat dengan bayangan area"
-
-#: lr_const:sfrdesignerforminsband
-msgid "Insert band"
-msgstr "Sisipkan band"
 
 #: lr_const:sinsbarcode
 msgid "Insert Barcode object"
@@ -1345,6 +1309,18 @@ msgstr "Sisipkan field DB"
 msgid "Insert DB fields"
 msgstr "Sisipkan field DB"
 
+#: lr_const:sinsshape
+msgid "Insert Shape object"
+msgstr "Sisipkan obyek Bentuk"
+
+#: lr_const:sinsroundrect
+msgid "Insert an RoundRect with shadow area"
+msgstr "Sisipkan KotakBulat dengan bayangan area"
+
+#: lr_const:sfrdesignerforminsband
+msgid "Insert band"
+msgstr "Sisipkan band"
+
 #: lr_const:sinsertfieldsformcapt
 msgid "Insert fields"
 msgstr "Sisipkan field"
@@ -1360,10 +1336,6 @@ msgstr "Sisipkan gambar"
 #: lr_const:sfrdesignerforminsrect
 msgid "Insert rectangle object"
 msgstr "Sisipkan obyek kotak"
-
-#: lr_const:sinsshape
-msgid "Insert Shape object"
-msgstr "Sisipkan obyek Bentuk"
 
 #: lr_const:sfrdesignerforminssub
 msgid "Insert subreport"
@@ -1393,6 +1365,14 @@ msgstr "Jaga raso aspek"
 msgid "Keys words"
 msgstr "Kata kunci"
 
+#: lr_const:sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<String>)/Mengembalikan panjang <String>."
+
+#: lr_const:sdescriptionlowercase
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<String>)/Mengubah Simbol <String> ke huruf kecil."
+
 #: lr_const:slazformfile
 msgid "LazReport form"
 msgstr "Formulir LazReport"
@@ -1417,10 +1397,6 @@ msgstr "Legal Extra 9/275 x 15\""
 msgid "Legal, 8 1/2 x 14\""
 msgstr "Legal, 8 1/2 x 14\""
 
-#: lr_const:sdescriptionlength
-msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr "LENGTH(<String>)/Mengembalikan panjang <String>."
-
 #: lr_const:spaper50
 msgid "Letter Extra 9/275 x 12\""
 msgstr "Letter Extra 9/275 x 12\""
@@ -1433,13 +1409,13 @@ msgstr "Letter Extra Transverse 9/275 x 12\""
 msgid "Letter Plus 8.5 x 12.69\""
 msgstr "Letter Plus 8.5 x 12.69\""
 
-#: lr_const:spaper2
-msgid "Letter small, 8 1/2 x 11\""
-msgstr "Letter small, 8 1/2 x 11\""
-
 #: lr_const:spaper54
 msgid "Letter Transverse 8/275 x 11\""
 msgstr "Letter Transverse 8/275 x 11\""
+
+#: lr_const:spaper2
+msgid "Letter small, 8 1/2 x 11\""
+msgstr "Letter small, 8 1/2 x 11\""
 
 #: lr_const:spaper1
 msgid "Letter, 8 1/2 x 11\""
@@ -1456,30 +1432,6 @@ msgstr "Garis tercoret#"
 #: lr_const:svar5
 msgid "Line#"
 msgstr "Baris#"
-
-#: lr_const:sdescriptionlowercase
-msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr "LOWERCASE(<String>)/Mengubah Simbol <String> ke huruf kecil."
-
-#: lr_const:spgoptformmargins
-msgid "Margins"
-msgstr "Marjin"
-
-#: lr_const:sband6
-msgid "Master data"
-msgstr "Data master"
-
-#: lr_const:sband7
-msgid "Master footer"
-msgstr "Footer master"
-
-#: lr_const:sband5
-msgid "Master header"
-msgstr "Header master"
-
-#: lr_const:smathcategory
-msgid "Math"
-msgstr "Matematika"
 
 #: lr_const:sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
@@ -1505,21 +1457,33 @@ msgstr "MINNUM(<Value1>, <Value2>)/Mengembalikan min nilai yang diberikan."
 msgid "MM"
 msgstr "MM"
 
-#: lr_const:sdateformat1
-msgid "mm.dd.yy"
-msgstr "mm.dd.yy"
+#: lr_const:sdescriptionmonthof
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Date>)/Mengembalikan angka bulan (1..12) dari tanggal <Date>."
 
-#: lr_const:sdateformat2
-msgid "mm.dd.yyyy"
-msgstr "mm.dd.yyyy"
+#: lr_const:spgoptformmargins
+msgid "Margins"
+msgstr "Marjin"
+
+#: lr_const:sband6
+msgid "Master data"
+msgstr "Data master"
+
+#: lr_const:sband7
+msgid "Master footer"
+msgstr "Footer master"
+
+#: lr_const:sband5
+msgid "Master header"
+msgstr "Header master"
+
+#: lr_const:smathcategory
+msgid "Math"
+msgstr "Matematika"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
 msgstr "Monarch Envelope, 3 7/8 x 7 1/2\""
-
-#: lr_const:sdescriptionmonthof
-msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
-msgstr "MONTHOF(<Date>)/Mengembalikan angka bulan (1..12) dari tanggal <Date>."
 
 #: lr_const:sdescriptionnamecase
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
@@ -1617,6 +1581,10 @@ msgstr "Lain-lain..."
 msgid "Overlay"
 msgstr "Overlay"
 
+#: lr_const:sdescriptionpos
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Mengembalikan posisi substring dari string yang diberikan."
+
 #: lr_const:spg
 msgid "Page"
 msgstr "Halaman"
@@ -1676,10 +1644,6 @@ msgstr "Pixel"
 #: lr_const:sinsertfieldsformplace
 msgid "Placement"
 msgstr "Penempatan"
-
-#: lr_const:sdescriptionpos
-msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr "POS(<SubString>, <String>)/Mengembalikan posisi substring dari string yang diberikan."
 
 #: lr_const:sfrdesignerform_preview
 msgid "Pre&view"
@@ -1805,6 +1769,18 @@ msgstr "&Naskah"
 msgid "S&hape"
 msgstr "B&entuk"
 
+#: lr_const:sdescriptionstrtodate
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<String>)/Mengubah <String> ke tanggal."
+
+#: lr_const:sdescriptionstrtotime
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<String>)/MEngubah <String> ke jam."
+
+#: lr_const:sdescriptionsum
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expression> [,BandName [,1]])/Menghitung jumlah <Expression> untuk [BandName] baris yang diberikan. Jika parameter [1] dipakai, menghitung jumlah untuk baris yang tidak terlihat juga."
+
 #: lr_const:sroundrectformsample
 msgid "Sample :"
 msgstr "Contoh:"
@@ -1897,17 +1873,13 @@ msgstr "Direntangkan"
 msgid "String"
 msgstr "String"
 
-#: lr_const:sdescriptionstrtodate
-msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr "STRTODATE(<String>)/Mengubah <String> ke tanggal."
-
-#: lr_const:sdescriptionstrtotime
-msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr "STRTOTIME(<String>)/MEngubah <String> ke jam."
-
 #: lr_const:sroundrectformstyle
 msgid "Style"
 msgstr "Gaya"
+
+#: lr_const:ssubreportonpage
+msgid "SubReport on page"
+msgstr "SubLaporan pada halaman"
 
 #: lr_const:sband12
 msgid "Subdetail data"
@@ -1925,14 +1897,6 @@ msgstr "Header Subdetail"
 msgid "Subject"
 msgstr "Subyek"
 
-#: lr_const:ssubreportonpage
-msgid "SubReport on page"
-msgstr "SubLaporan pada halaman"
-
-#: lr_const:sdescriptionsum
-msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr "SUM(<Expression> [,BandName [,1]])/Menghitung jumlah <Expression> untuk [BandName] baris yang diberikan. Jika parameter [1] dipakai, menghitung jumlah untuk baris yang tidak terlihat juga."
-
 #: lr_const:spaper57
 msgid "SuperASuperAA4 227 x 356 mm"
 msgstr "SuperASuperAA4 227 x 356 mm"
@@ -1940,6 +1904,10 @@ msgstr "SuperASuperAA4 227 x 356 mm"
 #: lr_const:spaper58
 msgid "SuperBSuperBA3 305 x 487 mm"
 msgstr "SuperBSuperBA3 305 x 487 mm"
+
+#: lr_const:sdescriptiontrim
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Membuang semua heading dan spasi tersisa dalam <String> dan mengembalikan string hasil."
 
 #: lr_const:spaper52
 msgid "Tabloid Extra 11.69 x 18\""
@@ -1969,10 +1937,6 @@ msgstr "Jam"
 msgid "Title"
 msgstr "Judul"
 
-#: lr_const:sto
-msgid "to"
-msgstr "ke"
-
 #: lr_const:sfrdesignerform_tools2
 msgid "Too&ls"
 msgstr "P&iranti"
@@ -2001,9 +1965,13 @@ msgstr "Transparan"
 msgid "Triangle"
 msgstr "Segi tiga"
 
-#: lr_const:sdescriptiontrim
-msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
-msgstr "TRIM(<String>)/Membuang semua heading dan spasi tersisa dalam <String> dan mengembalikan string hasil."
+#: lr_const:sdescriptionuppercase
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<String>)/Mengubah simbol <String> ke huruf besar."
+
+#: lr_const:spaper39
+msgid "US Std Fanfold, 14 7/8 x 11\""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
 
 #: lr_const:sfrdesignerformunderline
 msgid "Underline"
@@ -2020,14 +1988,6 @@ msgstr "Format FRF tidak didukung"
 #: lr_const:suntitled
 msgid "Untitled"
 msgstr "Tidak berjudul"
-
-#: lr_const:sdescriptionuppercase
-msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr "UPPERCASE(<String>)/Mengubah simbol <String> ke huruf besar."
-
-#: lr_const:spaper39
-msgid "US Std Fanfold, 14 7/8 x 11\""
-msgstr "US Std Fanfold, 14 7/8 x 11\""
 
 #: lr_const:sevformvalue
 msgid "Va&lue"
@@ -2116,4 +2076,44 @@ msgstr "[Gambar]"
 #: lr_const:sformat53
 msgid "_;x"
 msgstr "_;x"
+
+#: lr_const:sdateformat3
+msgid "d mmm yyyy"
+msgstr "d mmm yyyy"
+
+#: lr_const:sdateformat4
+msgid "d mmmm yyyy"
+msgstr "d mmmm yyyy"
+
+#: lr_const:sfrom
+msgid "from"
+msgstr "dari"
+
+#: lr_const:stimeformat4
+msgid "h:nn"
+msgstr "h:nn"
+
+#: lr_const:stimeformat2
+msgid "h:nn:ss"
+msgstr "h:nn:ss"
+
+#: lr_const:stimeformat3
+msgid "hh:nn"
+msgstr "hh:nn"
+
+#: lr_const:stimeformat1
+msgid "hh:nn:ss"
+msgstr "hh:nn:ss"
+
+#: lr_const:sdateformat1
+msgid "mm.dd.yy"
+msgstr "mm.dd.yy"
+
+#: lr_const:sdateformat2
+msgid "mm.dd.yyyy"
+msgstr "mm.dd.yyyy"
+
+#: lr_const:sto
+msgid "to"
+msgstr "ke"
 

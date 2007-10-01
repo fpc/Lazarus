@@ -1,10 +1,11 @@
-# translation of lclstrconsts.po to Lithuanian Header entry was created by KBabel!: lclstrconsts:snomdiform Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of lclstrconsts.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-26 14:51+0300\n"
+"PO-Revision-Date: 2007-09-29 16:01+0300\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
-msgstr "pakeista"
+msgstr "  pakeista "
 
 #: lclstrconsts:rssize
 msgid "  size "
-msgstr "dydis"
+msgstr "  dydis "
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -149,7 +150,7 @@ msgstr "--sync     Kai XServer ryšys sukurtas, vykdyti \"XSynchronize (display,
 
 #: lclstrconsts:rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as parent"
-msgstr "Valdiklio tėvas negali būti jis pats"
+msgstr "Valdiklio tėvas negali būti pats valdiklis"
 
 #: lclstrconsts:rsmbabort
 msgid "Abort"

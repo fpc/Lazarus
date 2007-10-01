@@ -1,0 +1,45 @@
+# translation of maincalleditor.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-09-29 14:51+0300\n"
+"Project-Id-Version: maincalleditor\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: maincalleditor:cereditreport
+msgid "Edit Report"
+msgstr "Keisti pranešimą"
+
+#: maincalleditor:cernewreport
+msgid "New report"
+msgstr "Naujas pranešimas"
+
+#: maincalleditor:ceropenreport
+msgid "Open report"
+msgstr "Atverti pranešimą"
+
+#: maincalleditor:cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr "PrepareReport nepavyko!"
+
+#: maincalleditor:cerpreviewreport
+msgid "Preview report"
+msgstr "Pranešimo peržiūra"
+
+#: maincalleditor:cerprintgrid
+msgid "Print grid"
+msgstr "Spausdinti tinklelį"
+
+#: maincalleditor:cerprintreport
+msgid "Print report"
+msgstr "Spausdinti pranešimą"
+
+#: maincalleditor:cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr "Ši funkcija dar neįgyvendinta!"
+

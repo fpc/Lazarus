@@ -1,3 +1,5 @@
+# translation of mainunit.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,4 +11,64 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+
+#
+msgid "Codepage LazConverter for PAS, LFM, LRS & INC files v0.0.4"
+msgstr "Koduotės konverteris LazConverter (PAS, LFM, LRS ir INC failams) v0.0.4"
+
+#
+msgid "Path to your project:"
+msgstr "Kelias iki jūsų projekto:"
+
+#
+msgid "Path"
+msgstr "Kelias"
+
+#
+msgid "Convert From:"
+msgstr "Konvertuoti iš:"
+
+#
+msgid "Convert To:"
+msgstr "Konvertuoti į:"
+
+#
+msgid "Include subdirectories"
+msgstr "Ir pokatalogiuose"
+
+#
+msgid "Search"
+msgstr "Ieškoti"
+
+#
+msgid "Convert"
+msgstr "Konvertuoti"
+
+#
+msgid "Directory:"
+msgstr "Katalogas:"
+
+#
+msgid "Ready..."
+msgstr "Parengtyje..."
+
+#
+msgid "Remove from conversion"
+msgstr "Nekonvertuoti"
+
+#
+msgid "View"
+msgstr "Peržiūrėti"
+
+#
+msgid "View File"
+msgstr "Peržiūrėti failą"
+
+#
+msgid "-"
+msgstr "-"
+
+#
+msgid "Remove From Conversion"
+msgstr "Nekonvertuoti"
 

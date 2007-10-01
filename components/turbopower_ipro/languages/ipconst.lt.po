@@ -1,10 +1,12 @@
+# translation of ipconst.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-27 14:04+0300\n"
+"PO-Revision-Date: 2007-09-29 15:09+0300\n"
 "Project-Id-Version: ipconst\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -1063,7 +1065,7 @@ msgstr "HEAD: (%s) NEPAVYKO"
 
 #: ipconst:snntpcmdhelp
 msgid "HELP"
-msgstr ""
+msgstr "HELP"
 
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
@@ -1735,7 +1737,7 @@ msgstr "Protokolo tipas netinka jungčiai"
 
 #: ipconst:spop3cmdquit
 msgid "QUIT"
-msgstr ""
+msgstr "QUIT"
 
 #: ipconst:sssquit
 msgid "Quit"
@@ -1963,7 +1965,7 @@ msgstr "Disko faile peršokama į "
 
 #: ipconst:sntselectgroup
 msgid "Selecting Group"
-msgstr ""
+msgstr "Žymima grupė"
 
 #: ipconst:snsgroup
 msgid "Selecting group"

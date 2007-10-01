@@ -1,0 +1,19 @@
+# translation of fieldslist.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# Header entry was created by KBabel!
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Mime-Version: 1.0"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2007-09-29 15:20+0300\n"
+"Project-Id-Version: fieldslist\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: fieldslist:rstitle
+msgid "FieldDefs"
+msgstr "FieldDefs"
+

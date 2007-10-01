@@ -1,10 +1,11 @@
-# translation of lazaruside.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of lazaruside.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-09 14:29+0300\n"
+"PO-Revision-Date: 2007-09-29 15:57+0300\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -225,7 +226,7 @@ msgstr "&Savybės"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "&Pašalinti"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -405,7 +406,7 @@ msgstr "Pridėti failus"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Pridėti atvirkščiai"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -541,7 +542,7 @@ msgstr "Turi matytis ir komentaras"
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Sudėtingesnės darymo parinktys"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -969,7 +970,7 @@ msgstr "Darymo numeris"
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "Darymo parinktys"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1633,7 +1634,7 @@ msgstr "Maniu \"Komponentės\" komandos"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
+msgstr "Sąlyginės apibrėžtys"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1713,7 +1714,7 @@ msgstr "Aptiktas konfliktas"
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
-msgstr ""
+msgstr "Konsolės programa"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -1961,7 +1962,7 @@ msgstr "Pirma sukurkite projektą!"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
-msgstr ""
+msgstr "Sukurti naują apibrėžtį"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -2349,7 +2350,7 @@ msgstr "Kryptis"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Direktyvos"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -3553,7 +3554,7 @@ msgstr "Kairiosios paraštės plotis"
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
-msgstr "Slikti tik per puse lapo"
+msgstr "Slinkti tik per puse lapo"
 
 #: lazarusidestrconsts:lismenueditorhandleonclickevent
 msgid "Handle OnClick Event"
@@ -4691,7 +4692,7 @@ msgstr "2 lygis (1 lygis + registro duomenų bereikalingų pakartotinų įkėlim
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr "3 lygis (2 lygis +kitos laiką ryjančios optimizacijos)"
+msgstr "3 lygis (2 lygis + kitos, ilgai daromos optimizacijos)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -6179,7 +6180,7 @@ msgstr "Protected metodas"
 
 #: lazarusidestrconsts:lispckoptsprovides
 msgid "Provides"
-msgstr ""
+msgstr "Pateiktys"
 
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
@@ -6207,7 +6208,7 @@ msgstr "Published metodas"
 
 #: lazarusidestrconsts:lislazbuildquickbuildoptions
 msgid "Quick Build Options"
-msgstr ""
+msgstr "Lengvos darymo parinktys"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6519,7 +6520,7 @@ msgstr "Ataskaita"
 
 #: lazarusidestrconsts:lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Pranešti apie ydą..."
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8063,7 +8064,7 @@ msgstr "Dabartinis failo%s%s%s%s modulio kelias yra%s%s%s%s.%s%sTrūksta įrašo
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "Nerasta derintuvė %s%s%s%s, arba ji nėra vykdomasis failas.%s%sŽvilgterėkit į \"Aplinka -> Derintuvės parinktys\"."
+msgstr "Nerasta derintuvė %s%s%s,%sarba ji nėra vykdomasis failas.%s%sŽvilgterėkit į \"Aplinka -> Derintuvės parinktys\"."
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -8523,7 +8524,7 @@ msgstr "Šis paketas įdiegtas, tačiau nerastas jo lpk failas. Pasyvinami visi 
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
-msgstr ""
+msgstr "Šis paketas pateikia tą patį kaip ir šie paketai:"
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9693,11 +9694,11 @@ msgstr "automatiškai diegti kaip statišką"
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
 msgid "automatically on line break"
-msgstr ""
+msgstr "automatiškai, laužiant eilutę"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "automatically on space"
-msgstr ""
+msgstr "automatiškai, įterpiant tarpo simbolį"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
@@ -9757,11 +9758,11 @@ msgstr "Failas, į kurį bus rašoma derinimo išvestis. Jei jis nenurodytas, ta
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "FreePascal programa, naudojanti TCustomApplication, skirta lengvam komandinės eilutės parinkčių tikrinimui, išskirtinių situacijų apdorojimui ir kt. Programos failu automatiškai rūpinsis Lazarus."
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr ""
+msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
