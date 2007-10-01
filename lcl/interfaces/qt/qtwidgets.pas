@@ -3220,7 +3220,12 @@ begin
     {$endif}
     
     // Main menu bar
+    
+    {TODO: remove this ifdef as soon as we create MenuBar on demand creation,
+     not per default !}
+    {$ifdef windows}
     if Assigned(TCustomForm(LCLObject).Menu) then
+    {$endif}
     	MenuBar := TQtMenuBar.Create(Result);
 
     FCentralWidget := QWidget_create(Result);
