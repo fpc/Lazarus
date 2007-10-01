@@ -249,6 +249,9 @@ begin
           if QWidget_focusPolicy(QWidgetH(Sender)) = QtTabFocus then
           begin
             // remove tab from focus policy
+            {$ifdef VerboseTabbedControls}
+              WriteLn('found Taabed widget ', PtrInt(Sender));
+            {$endif}
             QWidget_setFocusPolicy(QWidgetH(Sender), QtClickFocus);
             QWidget_setFocus(FOldFocusWidget);
           end
