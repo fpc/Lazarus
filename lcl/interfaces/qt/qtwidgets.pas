@@ -3219,7 +3219,8 @@ begin
     {$endif}
     
     // Main menu bar
-    MenuBar := TQtMenuBar.Create(Result);
+    if Assigned(TCustomForm(LCLObject).Menu) then
+    	MenuBar := TQtMenuBar.Create(Result);
 
     FCentralWidget := QWidget_create(Result);
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
@@ -4572,6 +4573,9 @@ begin
     case QEvent_type(Event) of
       QEventKeyPress,
       QEventKeyRelease: SlotKey(Sender, Event);
+      QEventMouseButtonPress,
+      QEventMouseButtonRelease,
+      QEventMouseButtonDblClick: SlotMouse(Sender, Event);
     else
       QEvent_ignore(Event);
     end;

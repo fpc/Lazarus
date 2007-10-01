@@ -244,7 +244,7 @@ begin
   case QEvent_type(Event) of
     QEventFocusIn:
       begin
-        if QObject_inherits(Sender, 'QWidget') then
+        if QObject_isWidgetType(Sender) then
         begin
           if QWidget_focusPolicy(QWidgetH(Sender)) = QtTabFocus then
           begin
