@@ -825,6 +825,7 @@ type
   private
     FIcon: QIconH;
     FActionHook: QAction_hookH;
+    FActionHandle: QActionH;
     FMenuItem: TMenuItem;
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
@@ -5983,6 +5984,7 @@ function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
 begin
   FIcon := nil;
   Result := QMenu_create();
+  FActionHandle := nil;;
 end;
 
 constructor TQtMenu.Create(const AMenuItem: TMenuItem);
@@ -6037,7 +6039,9 @@ end;
 
 function TQtMenu.actionHandle: QActionH;
 begin
-  Result := QMenu_menuAction(QMenuH(Widget));
+  if FActionHandle = nil then
+    FActionHandle := QMenu_menuAction(QMenuH(Widget));
+  Result := FActionHandle;
 end;
 
 function TQtMenu.addMenu(AMenu: QMenuH): QActionH;
@@ -6068,8 +6072,7 @@ end;
 
 procedure TQtMenu.setChecked(p1: Boolean);
 begin
-  if p1 then setCheckable(True)
-  else setCheckable(False);
+  setCheckable(p1);
 
   QAction_setChecked(ActionHandle, p1);
 end;
