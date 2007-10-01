@@ -92,6 +92,8 @@ begin
   ParameterEdit.Text:='';
   
   FillMacrosListbox;
+
+  MacrosListBoxSelectionChange(self, False);
 end;
 
 procedure TCodeMacroSelectDlg.FormClose(Sender: TObject;
