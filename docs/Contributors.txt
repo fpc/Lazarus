@@ -60,6 +60,7 @@ Lagunov Aleksey
 Laurent Jacques
 Luca Olivetti
 Luis R. Hilario B.
+Luis Rodrigues made TChart and misc patches
 Luiz Americo
 Marc Geldon
 Marc Weustink
