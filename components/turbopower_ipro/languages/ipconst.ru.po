@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-19 03:18+0300\n"
+"PO-Revision-Date: 2007-09-29 17:11+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -619,27 +619,27 @@ msgstr ""
 
 #: ipconst:shtmldefbrowsecaption
 msgid "Browse..."
-msgstr ""
+msgstr "Обзор..."
 
 #: ipconst:sbibuffernotassigned
 msgid "Buffer not assigned"
-msgstr ""
+msgstr "Буфер не назначен"
 
 #: ipconst:ssslbufferoverflow
 msgid "Buffer overflow error."
-msgstr ""
+msgstr "Ошибка переполнения буфера."
 
 #: ipconst:ssslbuffersizemissmatch
 msgid "Buffer size miss-match."
-msgstr ""
+msgstr "Несоответствие размеров буфера."
 
 #: ipconst:sipicmp_buf_too_small
 msgid "Buffer too small"
-msgstr ""
+msgstr "Буфер слишком мал"
 
 #: ipconst:spngtruncatedcrc
 msgid "CRC Code is truncated"
-msgstr ""
+msgstr "Сумма CRC отрезана"
 
 #: ipconst:cachedirnotexist
 msgid "Cache directory %s does not exist."
@@ -1069,15 +1069,15 @@ msgstr ""
 
 #: ipconst:ssshelp
 msgid "Help"
-msgstr ""
+msgstr "Справка"
 
 #: ipconst:swsaehostdown
 msgid "Host is down"
-msgstr ""
+msgstr "Удалённый компьютер не отвечает"
 
 #: ipconst:swsahost_not_found
 msgid "Host not found"
-msgstr ""
+msgstr "Удалённый компьютер не найден"
 
 #: ipconst:spngmissingihdr
 msgid "IHDR Chunk is missing"
@@ -1093,7 +1093,7 @@ msgstr ""
 
 #: ipconst:ssslillegalparameter
 msgid "Illegal Parameter."
-msgstr ""
+msgstr "Неверный параметр."
 
 #: ipconst:spngimagesize
 msgid "Image size is %dx%d pixels"
@@ -1337,27 +1337,27 @@ msgstr ""
 
 #: ipconst:ssslbadmac
 msgid "MAC did not match."
-msgstr ""
+msgstr "MAC не совпадает."
 
 #: ipconst:ssslbadmd5hash
 msgid "MD5 hash did not match."
-msgstr ""
+msgstr "Хэш MD5 не совпадает."
 
 #: ipconst:ssmtpresponse31
 msgid "Mail system full"
-msgstr ""
+msgstr "Почтовая система перегружена"
 
 #: ipconst:ssmtpresponse21
 msgid "Mailbox disabled, not accepting messages"
-msgstr ""
+msgstr "Почтовый ящик отключён и не принимает сообщения"
 
 #: ipconst:ssmtpresponse22
 msgid "Mailbox full"
-msgstr ""
+msgstr "Почтовый ящик переполнен"
 
 #: ipconst:ssmtpresponse16
 msgid "Mailbox has moved"
-msgstr ""
+msgstr "Почтовый ящик был перемещён"
 
 #: ipconst:ssmtpresponse24
 msgid "Mailing list expansion problem"
@@ -1393,7 +1393,7 @@ msgstr ""
 
 #: ipconst:swsaemsgsize
 msgid "Message too long"
-msgstr ""
+msgstr "Сообщение слишком длинное"
 
 #: ipconst:spngmodificationdate
 msgid "Modification Date: %s"
@@ -1425,11 +1425,11 @@ msgstr ""
 
 #: ipconst:swsaenetdown
 msgid "Network is down"
-msgstr ""
+msgstr "Сеть не работает"
 
 #: ipconst:swsaenetunreach
 msgid "Network is unreachable"
-msgstr ""
+msgstr "Сеть недоступна"
 
 #: ipconst:swsasysnotready
 msgid "Network subsystem is unavailable"
@@ -1437,11 +1437,11 @@ msgstr ""
 
 #: ipconst:slognextmessagenotready
 msgid "Next message not ready"
-msgstr ""
+msgstr "Следующее сообщение не готово"
 
 #: ipconst:slognextmessageready
 msgid "Next message ready"
-msgstr ""
+msgstr "Следующее сообщение готово"
 
 #: ipconst:httpnoheaderdata
 msgid "No Header Data for Entity"
@@ -1453,7 +1453,7 @@ msgstr ""
 
 #: ipconst:snoboundary
 msgid "No Mime boundary"
-msgstr ""
+msgstr "Нет границы Mime"
 
 #: ipconst:shtmlnogetimage
 msgid "No OnGetImage event handler assigned"
@@ -1509,7 +1509,7 @@ msgstr ""
 
 #: ipconst:sptnone
 msgid "No task"
-msgstr ""
+msgstr "Нет задачи"
 
 #: ipconst:swsatry_again
 msgid "Nonauthoritative host not found"
@@ -1517,7 +1517,7 @@ msgstr ""
 
 #: ipconst:sstnotask
 msgid "None"
-msgstr ""
+msgstr "Нет"
 
 #: ipconst:snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
@@ -1541,7 +1541,7 @@ msgstr ""
 
 #: ipconst:srasopenport
 msgid "Open port"
-msgstr ""
+msgstr "Открыть порт"
 
 #: ipconst:swsaealready
 msgid "Operation already in progress"
@@ -1625,7 +1625,7 @@ msgstr "POST: (%s) передать не удалось"
 
 #: ipconst:sipicmp_packet_too_big
 msgid "Packet too large"
-msgstr ""
+msgstr "Слишком большой пакет"
 
 #: ipconst:ssslpaddingerror
 msgid "Padding error."
@@ -1649,7 +1649,7 @@ msgstr ""
 
 #: ipconst:ssslparsererror
 msgid "Parsing error."
-msgstr ""
+msgstr "Ошибка разбора."
 
 #: ipconst:sraspasswordexpired
 msgid "Password expired"
@@ -1665,7 +1665,7 @@ msgstr ""
 
 #: ipconst:swsaeacces
 msgid "Permission denied"
-msgstr ""
+msgstr "Отказано"
 
 #: ipconst:ssmtpresponse05
 msgid "Persistent, "
@@ -1733,7 +1733,7 @@ msgstr ""
 
 #: ipconst:sssquit
 msgid "Quit"
-msgstr ""
+msgstr "Выход"
 
 #: ipconst:spop3cmdretr
 msgid "RETR"
@@ -1793,7 +1793,7 @@ msgstr ""
 
 #: ipconst:shtmldefresetcaption
 msgid "Reset"
-msgstr ""
+msgstr "Сброс"
 
 #: ipconst:spsrset
 msgid "Resetting messages"
@@ -1925,11 +1925,11 @@ msgstr ""
 
 #: ipconst:ssslshabuf2small
 msgid "SHA1 buffer to small."
-msgstr ""
+msgstr "Буфер SHA1 слишком мал."
 
 #: ipconst:ssslbadsha1hash
 msgid "SHA1 hash did not match."
-msgstr ""
+msgstr "Хэш SHA1 не совпадает."
 
 #: ipconst:ssockserr
 msgid "SOCKS request refused - %d"
@@ -1937,7 +1937,7 @@ msgstr ""
 
 #: ipconst:ssslunprocesseddata
 msgid "SSL data processing error."
-msgstr ""
+msgstr "Ошибка обработки данных SSL"
 
 #: ipconst:spop3cmdstat
 msgid "STAT"
@@ -1973,39 +1973,39 @@ msgstr ""
 
 #: ipconst:sssrcptbcc
 msgid "Sending BCC info"
-msgstr ""
+msgstr "Отправка информации BCC"
 
 #: ipconst:sssrcptcc
 msgid "Sending CC info"
-msgstr ""
+msgstr "Отправка информации CC"
 
 #: ipconst:sssdata
 msgid "Sending Data"
-msgstr ""
+msgstr "Отправка данных"
 
 #: ipconst:ssssendenvelope
 msgid "Sending Envelope"
-msgstr ""
+msgstr "Отпрака конверта"
 
 #: ipconst:sssrcptto
 msgid "Sending MailTo info"
-msgstr ""
+msgstr "Отправка информации MailTo"
 
 #: ipconst:ssssendmessage
 msgid "Sending Message"
-msgstr ""
+msgstr "Отправка сообщения"
 
 #: ipconst:sstsendmail
 msgid "Sending mail"
-msgstr ""
+msgstr "Отправка почты"
 
 #: ipconst:sssmailfrom
 msgid "Sending sender's info"
-msgstr ""
+msgstr "Отправка информации об отправителе"
 
 #: ipconst:sssspecial
 msgid "Sending special command"
-msgstr ""
+msgstr "Отправка специальной команды"
 
 #: ipconst:ssslservernohandshake
 msgid "Server cid not return a handshake message."
@@ -2029,7 +2029,7 @@ msgstr ""
 
 #: ipconst:swsaservice_not_found
 msgid "Service not found"
-msgstr ""
+msgstr "Служба не найдена"
 
 #: ipconst:ssslsessidtolong
 msgid "Session ID is longer than 32 bytes."
@@ -2041,11 +2041,11 @@ msgstr ""
 
 #: ipconst:swsaenotconn
 msgid "Socket is not connected"
-msgstr ""
+msgstr "Сокет не подключён"
 
 #: ipconst:snosockerr
 msgid "Socket not assigned"
-msgstr ""
+msgstr "Сокет не назначен"
 
 #: ipconst:swsaenotsock
 msgid "Socket operation on nonsocket"
@@ -2061,7 +2061,7 @@ msgstr ""
 
 #: ipconst:spsspecial
 msgid "Special command"
-msgstr ""
+msgstr "Специальная команда"
 
 #: ipconst:swsaestale
 msgid "Stale NFS file handle"
@@ -2117,15 +2117,15 @@ msgstr ""
 
 #: ipconst:sstreamcreated
 msgid "Successfully created "
-msgstr ""
+msgstr "Успешно создано"
 
 #: ipconst:ssmtpresponse52
 msgid "Syntax error"
-msgstr ""
+msgstr "Синтаксическая ошибка"
 
 #: ipconst:swsasyscallfailure
 msgid "System call failure"
-msgstr ""
+msgstr "Ошибка системного вызова"
 
 #: ipconst:ssmtpresponse32
 msgid "System not accepting network messages"
@@ -2161,11 +2161,11 @@ msgstr ""
 
 #: ipconst:swsa_qos_no_receivers
 msgid "There are no receivers"
-msgstr ""
+msgstr "Нет принимающих"
 
 #: ipconst:swsa_qos_no_senders
 msgid "There are no senders"
-msgstr ""
+msgstr "Нет отправителей"
 
 #: ipconst:swsano_recovery
 msgid "This is a nonrecoverable error"
@@ -2197,7 +2197,7 @@ msgstr ""
 
 #: ipconst:swsaeloop
 msgid "Too many levels of symbolic links"
-msgstr ""
+msgstr "Слишком много уровней символических ссылок"
 
 #: ipconst:swsaemfile
 msgid "Too many open files"
@@ -2241,7 +2241,7 @@ msgstr "Передача завершена."
 
 #: ipconst:sftptimeout
 msgid "Transfer timed out"
-msgstr ""
+msgstr "Передача прекращена по тайм-ауту"
 
 #: ipconst:ssmtpresponse04
 msgid "Transient, "
@@ -2329,7 +2329,7 @@ msgstr ""
 
 #: ipconst:sbadimagelibfileformat
 msgid "Unrecognized file format"
-msgstr ""
+msgstr "Неопознанный формат файла"
 
 #: ipconst:sbadframelistobject
 msgid "Unrecognized object of class %s in GIF Frame List"
@@ -2345,15 +2345,15 @@ msgstr ""
 
 #: ipconst:ssslunsupportedcertificate
 msgid "Unsupported Certificate."
-msgstr ""
+msgstr "Неподдерживаемый сертификат."
 
 #: ipconst:ssslunsupportedchiper
 msgid "Unsupported cipher chosen."
-msgstr ""
+msgstr "Выбран неподдерживаемый шифр."
 
 #: ipconst:shtmlunsupprotocol
 msgid "Unsupported protocol in URL:%s"
-msgstr ""
+msgstr "Неподдерживаемый протокол в URL:%s"
 
 #: ipconst:ssslunsupportedencoding
 msgid "Unsupported public encoding."
@@ -2361,11 +2361,11 @@ msgstr ""
 
 #: ipconst:swsano_data
 msgid "Valid name, no data record of requested type"
-msgstr ""
+msgstr "Верное имя, но отсутствует запись данных запрошенного типа"
 
 #: ipconst:sssverify
 msgid "Verifying"
-msgstr ""
+msgstr "Проверка"
 
 #: ipconst:sraswaitforcallback
 msgid "Wait for callback"

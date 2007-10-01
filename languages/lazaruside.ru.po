@@ -1,11 +1,11 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Project-Id-Version: lazaruside\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-20 01:06+0300\n"
+"PO-Revision-Date: 2007-09-30 17:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2567,11 +2567,11 @@ msgstr "Включить макросы"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
-msgstr "Включено"
+msgstr "Включить"
 
 #: lazarusidestrconsts:lisanchorenabledhint
 msgid "Enabled = Include %s in Anchors"
-msgstr "Включено = Добавить %s к привязкам"
+msgstr "Включена = Добавить %s к привязкам"
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
@@ -5163,7 +5163,7 @@ msgstr "Имя:"
 
 #: lazarusidestrconsts:dlgnaming
 msgid "Naming"
-msgstr "Названия"
+msgstr "Именование"
 
 #: lazarusidestrconsts:lisceoneveronlymanually
 msgid "Never, only manually"
@@ -5487,11 +5487,11 @@ msgstr "Открыть недавнее"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent ..."
-msgstr "Открыть недавнее ..."
+msgstr "Открыть недавнее"
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
-msgstr "Открыть недавний проект ..."
+msgstr "Открыть недавний проект"
 
 #: lazarusidestrconsts:liscpopenunit
 msgid "Open Unit %s"
@@ -5723,7 +5723,7 @@ msgstr "Параметры пакета"
 
 #: lazarusidestrconsts:lispkgreg
 msgid "Package Registration"
-msgstr "Регистрация пакета"
+msgstr "Регистрация пакетов"
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
@@ -6575,7 +6575,7 @@ msgstr "Возврат"
 
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
-msgstr "Обратный экспорт"
+msgstr "Вернуть"
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
@@ -6703,7 +6703,7 @@ msgstr "Сохранить как"
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
-msgstr "Сохранить как-автопереименовать в нижний регистр"
+msgstr "Автопереименование в нижний регистр в диалоге 'Сохранить как'"
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As ..."
@@ -9487,7 +9487,7 @@ msgstr "Показать наблюдения"
 
 #: lazarusidestrconsts:lishlpoptsviewers
 msgid "Viewers"
-msgstr "Смотрелки"
+msgstr "Программы просмотра"
 
 #: lazarusidestrconsts:lispkgfiletypevirtualunit
 msgid "Virtual Unit"
@@ -9539,7 +9539,7 @@ msgstr "При переключении файла в редакторе исх�
 
 #: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
 msgid "When this file is active in source editor ..."
-msgstr "Когда этот фпйл является текущим в редакторе исходного кода ..."
+msgstr "Когда этот файл является текущим в редакторе исходного кода ..."
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
