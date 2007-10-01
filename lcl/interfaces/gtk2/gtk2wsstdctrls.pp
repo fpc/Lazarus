@@ -515,9 +515,9 @@ begin
   Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
 
   Gtk2WidgetSet.SetWidgetColor(Widget, AWinControl.Font.Color, clNone,
-            [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-            Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
-
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+        GTK_STYLE_TEXT]);
+  Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
 end;
 
 class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
