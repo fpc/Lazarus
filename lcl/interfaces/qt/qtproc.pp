@@ -38,6 +38,7 @@ uses
   GraphType;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
+function GetPixelsPerInch: Integer;
 function GetUtf8String(S: String): WideString;
 
 implementation
@@ -88,6 +89,19 @@ begin
   Result := Utf8Decode(S);
   if (Result = '') and (S <> '') then
     Result := S;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetPixelsPerInch
+  Params: none
+  Returns: pixels per inch value eg. 96
+ ------------------------------------------------------------------------------}
+function GetPixelsPerInch: Integer;
+var
+  QtDC: QPaintDeviceH;
+begin
+  QtDC := QWidget_to_QPaintDevice(QApplication_desktop);
+  Result := QPaintDevice_logicalDpiY(QtDC);
 end;
 
 end.
