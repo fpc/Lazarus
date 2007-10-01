@@ -229,6 +229,10 @@ msgstr "Caràcter"
 msgid "Characters for Blanks"
 msgstr ""
 
+#: objinspstrconsts:fescheckdset
+msgid "Check dataset settings"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
@@ -389,6 +393,10 @@ msgstr "Su&rt"
 msgid "Edit"
 msgstr "Edita"
 
+#: objinspstrconsts:fesfetitle
+msgid "Edit Fields"
+msgstr ""
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -436,6 +444,14 @@ msgstr "Surt"
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
 msgstr "Favorits"
+
+#: objinspstrconsts:fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr ""
+
+#: objinspstrconsts:fesfltitle
+msgid "FieldDefs"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -512,6 +528,10 @@ msgstr "Valor numèric invàlid"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Valor invàlid per la propietat"
+
+#: objinspstrconsts:fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr ""
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"

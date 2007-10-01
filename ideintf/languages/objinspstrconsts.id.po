@@ -229,6 +229,10 @@ msgstr "Char"
 msgid "Characters for Blanks"
 msgstr "Karakter untuk Blank"
 
+#: objinspstrconsts:fescheckdset
+msgid "Check dataset settings"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "CheckGroup Editor"
@@ -389,6 +393,10 @@ msgstr "&Keluar"
 msgid "Edit"
 msgstr "Edit"
 
+#: objinspstrconsts:fesfetitle
+msgid "Edit Fields"
+msgstr ""
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Edit Item ListView..."
@@ -436,6 +444,14 @@ msgstr "Keluar"
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
 msgstr "Favorit"
+
+#: objinspstrconsts:fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr ""
+
+#: objinspstrconsts:fesfltitle
+msgid "FieldDefs"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -512,6 +528,10 @@ msgstr "Nilai numerik tidak benar"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Nilai properti tidak benar"
+
+#: objinspstrconsts:fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr ""
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"

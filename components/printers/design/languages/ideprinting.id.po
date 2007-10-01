@@ -10,6 +10,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ideprinting:sdescrpfselection
-msgid "Cetak..."
+msgid "Print..."
 msgstr ""
 

@@ -1022,3 +1022,23 @@ msgstr ""
 msgid "Split image"
 msgstr ""
 
+#: objinspstrconsts:fesfetitle
+msgid "Edit Fields"
+msgstr ""
+
+#: objinspstrconsts:fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr ""
+
+#: objinspstrconsts:fescheckdset
+msgid "Check dataset settings"
+msgstr ""
+
+#: objinspstrconsts:fesfltitle
+msgid "FieldDefs"
+msgstr ""
+
+#: objinspstrconsts:fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr ""
+

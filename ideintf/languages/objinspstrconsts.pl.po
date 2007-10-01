@@ -232,6 +232,10 @@ msgstr "Char"
 msgid "Characters for Blanks"
 msgstr ""
 
+#: objinspstrconsts:fescheckdset
+msgid "Check dataset settings"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "Edytor CheckGroup"
@@ -392,6 +396,10 @@ msgstr "Za&kończ"
 msgid "Edit"
 msgstr "Edycja"
 
+#: objinspstrconsts:fesfetitle
+msgid "Edit Fields"
+msgstr ""
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Edytuj elementy ListView..."
@@ -438,6 +446,14 @@ msgstr "Zakończ"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
+msgstr ""
+
+#: objinspstrconsts:fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr ""
+
+#: objinspstrconsts:fesfltitle
+msgid "FieldDefs"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
@@ -515,6 +531,10 @@ msgstr ""
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Nieprawidłowa wartość właściwości"
+
+#: objinspstrconsts:fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr ""
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"

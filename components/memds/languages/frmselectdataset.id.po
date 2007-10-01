@@ -9,17 +9,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: frmselectdataset:serrcomponentnotfound
-msgid "Error: Component \"%s\" not found"
-msgstr "Salah: Komponen \"%s\" tidak ditemukan"
+#: frmselectdataset:smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Copy data dari Dataset"
 
 #: frmselectdataset:smenucreatedataset
 msgid "Create dataset"
 msgstr "Buat dataset"
 
-#: frmselectdataset:smenucopydataset
-msgid "Copy data from Dataset"
-msgstr "Copy data dari Dataset"
+#: frmselectdataset:serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Salah: Komponen \"%s\" tidak ditemukan"
 
 #: frmselectdataset:serrselectdataset
 msgid "Please select a dataset first"
