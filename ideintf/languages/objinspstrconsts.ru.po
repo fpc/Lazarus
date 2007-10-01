@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-29 17:41+0300\n"
+"PO-Revision-Date: 2007-10-02 01:54+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -231,7 +231,7 @@ msgstr "Символы для пробелов"
 
 #: objinspstrconsts:fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Проверить настройки набора данных"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -395,7 +395,7 @@ msgstr "Редактировать"
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
-msgstr ""
+msgstr "Редактировать поля"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
@@ -447,11 +447,11 @@ msgstr "Избранное"
 
 #: objinspstrconsts:fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
+msgstr "Список полей недоступен, не могу проверить наличие дубликатов"
 
 #: objinspstrconsts:fesfltitle
 msgid "FieldDefs"
-msgstr ""
+msgstr "FieldDefs"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -531,7 +531,7 @@ msgstr "Неверное значение свойства"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr ""
+msgstr "Не удалось получить список полей набора данных"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
