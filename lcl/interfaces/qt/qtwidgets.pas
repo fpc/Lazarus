@@ -4543,6 +4543,13 @@ begin
     WriteLn('TQtTabWidget.Create');
   {$endif}
   Result := QTabWidget_create();
+  
+  {note: for some reason tabbar scroll buttons are not enabled as default option
+  under mac - but under linux & win are. Qt docs says that this options is enabled
+  as default ... possible qt bug}
+  {$ifdef darwin}
+  QTabWidget_setUsesScrollButtons(QTabWidgetH(Result), True);
+  {$endif}
 end;
 
 procedure TQtTabWidget.AttachEvents;
