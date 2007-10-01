@@ -3223,7 +3223,7 @@ begin
     
     {TODO: remove this ifdef as soon as we create MenuBar on demand creation,
      not per default !}
-    {$ifdef windows}
+    {$ifndef windows}
     if Assigned(TCustomForm(LCLObject).Menu) then
     {$endif}
     	MenuBar := TQtMenuBar.Create(Result);
