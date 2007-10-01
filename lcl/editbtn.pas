@@ -39,10 +39,12 @@ type
     FButton: TSpeedButton;
     FButtonNeedsFocus: Boolean;
     FOnButtonClick : TNotifyEvent;
+    function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
     function GetDirectInput: Boolean;
     function GetFlat: Boolean;
     Procedure CheckButtonVisible;
+    procedure SetButtonHint(const AValue: TTranslateString);
     procedure SetButtonNeedsFocus(const AValue: Boolean);
     procedure SetButtonWidth(const AValue: Integer);
     procedure SetDirectInput(const AValue: Boolean);
@@ -70,6 +72,7 @@ type
     property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
     property OnButtonClick : TNotifyEvent read FOnButtonClick write FOnButtonClick;
     property Button: TSpeedButton read FButton;
+    property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -91,6 +94,7 @@ type
     property BorderSpacing;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property ButtonHint;
     property CharCase;
     property Color;
     property Ctl3D;
@@ -534,6 +538,11 @@ begin
   Result:=FButton.Width;
 end;
 
+function TCustomEditButton.GetButtonHint: TTranslateString;
+begin
+  Result:=FButton.Hint;
+end;
+
 function TCustomEditButton.GetDirectInput: Boolean;
 begin
   Result := not ReadOnly;
@@ -552,6 +561,11 @@ begin
   If Assigned(FButton) then
     FButton.Visible:=(csdesigning in ComponentState) or
                      (Visible and (Focused or not FButtonNeedsFocus));
+end;
+
+procedure TCustomEditButton.SetButtonHint(const AValue: TTranslateString);
+begin
+  FButton.Hint:=AValue;
 end;
 
 procedure TCustomEditButton.SetButtonNeedsFocus(const AValue: Boolean);
