@@ -1,4 +1,0 @@
-#: fieldseditor:rstitle
-msgid "Edit fields"
-msgstr ""
-

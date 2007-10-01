@@ -30,8 +30,6 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   "ideintf objinspstrconsts"
-  "ideintf fieldslist"
-  "ideintf fieldseditor"
   "components/codetools codetoolsstrconsts"
   "components/synedit syneditstrconst synedit"
   "components/synedit synmacrorecorder"
