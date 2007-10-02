@@ -99,6 +99,8 @@ var
 begin
   App := QApplication_Create(@argc, argv);
   
+  FOldFocusWidget := nil;
+  
   {no more crazy menus if we disable fading & animating
    my proposal is to remove this ifdef and disable
    effects by default, or set IFNDEF QT_USE_MENU_EFFECTS }
@@ -147,7 +149,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWidgetSet.AppWaitMessage
+  Method: TQtWidgetSet.AppProcessMessages
   Params:  None
   Returns: Nothing
 
@@ -156,7 +158,7 @@ end;
 procedure TQtWidgetSet.AppProcessMessages;
 begin
   if QCoreApplication_hasPendingEvents then
-    QCoreApplication_processEvents();
+    QCoreApplication_processEvents(QEventLoopAllEvents or QEventLoopDeferredDeletion);
 end;
 
 {------------------------------------------------------------------------------
@@ -253,7 +255,8 @@ begin
               WriteLn('found Taabed widget ', PtrInt(Sender));
             {$endif}
             QWidget_setFocusPolicy(QWidgetH(Sender), QtClickFocus);
-            QWidget_setFocus(FOldFocusWidget);
+            if FOldFocusWidget <> nil then
+              QWidget_setFocus(FOldFocusWidget);
           end
           else
             FOldFocusWidget := QWidgetH(Sender);
