@@ -1832,7 +1832,7 @@ begin
       end;
     teToolBar:
       begin
-        if IsPushed(Details) then
+        if IsPushed(Details) or IsChecked(Details) then
           Bevel := bvLowered
         else
         if IsHot(Details) then
