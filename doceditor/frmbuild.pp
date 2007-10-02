@@ -663,8 +663,8 @@ Var
 
 begin
   Result:=cmdFPDoc;
-  Result:=Result+' --package="'+CBPackage.Text+'"';
-  Result:=Result+' --output="'+Eoutput.Text+'"';
+  Result:=Result+' --package='+CBPackage.Text;
+  Result:=Result+' --output='+Eoutput.Text;
   Result:=Result+' --format='+CBFormat.Text;
   If CBShowPrivate.Checked then
     Result:=Result+' --show-private';
@@ -675,13 +675,13 @@ begin
   if CBWarnNoNode.Checked then
     Result:=Result+' --warn-no-node';
   if (FEImportFile.FileName<>'') then
-    Result:=Result+' --import="'+FEImportFile.FileName+'"';
+    Result:=Result+' --import='+FEImportFile.FileName;
   if (ETargetOS.Text<>'') then
     Result:=Result+' --ostarget='+ETargetOS.Text;
   if (ETargetCPU.Text<>'') then
     Result:=Result+' --cputarget='+ETargetCPU.Text;
   For I:=1 to DescrFileCount do
-    Result:=Result+' --descr="'+DescrFile(I-1)+'"';
+    Result:=Result+' --descr='+DescrFile(I-1);
   For I:=1 to SourceFileCount do
     begin
     GetSourceOptions(I-1,FN,O);
