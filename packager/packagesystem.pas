@@ -3339,7 +3339,7 @@ begin
           PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
           if (PkgLink=nil) then break;
           if OpenDependencyWithPackageLink(Dependency,PkgLink) then break;
-          PkgLinks.RemoveLink(PkgLink);
+          PkgLinks.RemoveLink(PkgLink,true);
         until false;
         if (Dependency.LoadPackageResult=lprNotFound)
         and (Dependency.DefaultFilename<>'') then begin
@@ -3360,7 +3360,7 @@ begin
                 PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
                 if (PkgLink<>nil) then begin
                   if not OpenDependencyWithPackageLink(Dependency,PkgLink) then
-                    PkgLinks.RemoveLink(PkgLink);
+                    PkgLinks.RemoveLink(PkgLink,true);
                 end;
               end;
             end;
@@ -3377,7 +3377,7 @@ begin
               PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
               if (PkgLink<>nil) then begin
                 if not OpenDependencyWithPackageLink(Dependency,PkgLink) then
-                  PkgLinks.RemoveLink(PkgLink);
+                  PkgLinks.RemoveLink(PkgLink,true);
               end;
             end;
           end;

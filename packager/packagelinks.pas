@@ -150,7 +150,7 @@ type
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
-    procedure RemoveLink(APackageID: TLazPackageID);
+    procedure RemoveLink(APackageID: TLazPackageID; FreeID: boolean);
   public
     property Modified: boolean read FModified write SetModified;
     property DependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename
@@ -756,7 +756,7 @@ begin
       Result:=OldLink;
       exit;
     end;
-    RemoveLink(APackage);
+    RemoveLink(APackage,false);
   end;
   // add user link
   NewLink:=TPackageLink.Create;
@@ -806,7 +806,7 @@ begin
   Result:=NewLink;
 end;
 
-procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);
+procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID; FreeID: boolean);
 var
   ANode: TAVLTreeNode;
   OldLink: TPackageLink;
@@ -831,7 +831,8 @@ begin
       OldLink.Free;
     Modified:=true;
   end;
-  APackageID.Free;
+  if FreeID then
+    APackageID.Free;
   EndUpdate;
 end;
 
