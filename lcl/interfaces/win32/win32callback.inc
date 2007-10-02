@@ -2140,11 +2140,14 @@ begin
       begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
+        if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+        begin
+          lWinControl := Application.MainForm;
+          Window := Application.MainForm.Handle;
+        end;
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
-        if Window = TWin32WidgetSet(WidgetSet).AppHandle then
-          lWinControl := Application.MainForm;
         if lWinControl <> nil then
         begin
           {$IFDEF VerboseSizeMsg}
