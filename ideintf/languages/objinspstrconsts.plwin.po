@@ -1,14 +1,3 @@
-msgid ""
-msgstr ""
-"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
-"PO-Revision-Date: 2004-02-06 02:26+0100\n"
-"Project-Id-Version: objinspstrconsts\n"
-"Language-Team: polski <pl@li.org>\n"
-"Content-Type: text/plain; charset=CP1250\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
-"Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr ""

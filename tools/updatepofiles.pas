@@ -161,7 +161,7 @@ begin
       while Line<SrcFile.Count do begin
         s:=SrcFile[Line];
         if (s<>'') and (s[1]='"') then begin
-          Result^.ID:=Result^.ID+copy(s,2,length(s)-2);
+          Result^.ID:=Result^.ID+#10+copy(s,2,length(s)-2);
           inc(Line);
         end else
           break;
@@ -175,7 +175,7 @@ begin
           while Line<SrcFile.Count do begin
             s:=SrcFile[Line];
             if (s<>'') and (s[1]='"') then begin
-              Result^.Str:=Result^.Str+copy(s,2,length(s)-2);
+              Result^.Str:=Result^.Str+#10+copy(s,2,length(s)-2);
               inc(Line);
             end else
               break;
@@ -194,36 +194,22 @@ procedure WriteMessageItem(MsgItem: PMsgItem; DestFile: TStringList);
   var
     s: String;
     p: Integer;
-    PrefixWritten: Boolean;
   begin
     s:=Prefix+' "';
-    PrefixWritten:=false;
     p:=1;
     while (p<=length(Str)) do begin
-      if Str[p]='\' then begin
-        inc(p,2);
-        if (p<=length(Str)+1) and (Str[p-1]='n') then begin
-          // a new line \n
-          // -> break line
-          if not PrefixWritten then begin
-            // end last line and add it
-            s:=s+'"';
-            DestFile.Add(s);
-            PrefixWritten:=true;
-            s:='"';
-          end;
-          // add line
-          s:=s+copy(Str,1,p-1)+'"';
-          DestFile.Add(s);
-          Str:=copy(Str,p,length(Str));
-          p:=1;
-          // start new line
-          s:='"';
-        end;
+      if Str[p]=#10 then begin
+        // a new line
+        s:=s+copy(Str,1,p-1)+'"';
+        DestFile.Add(s);
+        Str:=copy(Str,p+1,length(Str));
+        p:=1;
+        // start new line
+        s:='"';
       end else
         inc(p);
     end;
-    if (Str<>'') or (not PrefixWritten) then begin
+    if (Str<>'') or (s<>'"') then begin
       s:=s+Str+'"';
       DestFile.Add(s);
     end;

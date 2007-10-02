@@ -1,16 +1,3 @@
-# translation of objinspstrconsts.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
-msgid ""
-msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 15:19+0300\n"
-"Project-Id-Version: objinspstrconsts\n"
-"Language-Team: Lithuanian\n"
-"X-Generator: KBabel 1.11.4\n"
-"MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d eilučių, %d simbolių"
@@ -598,6 +585,7 @@ msgstr "Perkelti žemyn"
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
 msgstr ""
+""
 "Perkelti\n"
 "eilutes/\n"
 "stulpelius"
