@@ -2479,35 +2479,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
- Function: ComboBoxWindowProc
- Params: Window - The window that receives a message
-         Msg    - The message received
-         WParam - Word parameter
-         LParam - Long-integer parameter
-  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
-
-  Handles the messages sent to a combobox control by Windows or other
-  applications
- ------------------------------------------------------------------------------}
-function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
-begin
-  // darn MS: if combobox has edit control, and combobox receives focus, it
-  // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
-  // also don't pass WM_SETFOCUS to the lcl,
-  // it will get one from the edit control
-  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
-     (Windows.GetTopWindow(Window) <> HWND(nil)) then
-  begin
-    // continue normal processing, don't send to lcl
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-  end else begin
-    // normal processing
-    Result := WindowProc(Window, Msg, WParam, LParam);
-  end;
-end;
-
-{------------------------------------------------------------------------------
  Procedure: TimerCallBackProc
  Params: window_hnd - handle of window for timer message, not set in this implementation
          msg        - WM_TIMER message

@@ -46,18 +46,30 @@ type
   end;
   PNMCustomDraw=^TNMCustomDraw;
 
-  TNMLVCustomDraw = Record
-                   hdr          : NMHDR;
-                   dwDrawStage  : DWORD;
-                   hdc          : HDC;
-                   rc           : TRECT;
-                   dwItemSpec   : DWORD;
-                   uItemState   : UINT;
-                   lItemlParam  : longint;
-		   clrText,clrTextBk:COLORREF;
-                   iSubItem     :longint;
-                END;
+  TNMLVCustomDraw = record
+    hdr          : NMHDR;
+    dwDrawStage  : DWORD;
+    hdc          : HDC;
+    rc           : TRECT;
+    dwItemSpec   : DWORD;
+    uItemState   : UINT;
+    lItemlParam  : longint;
+    clrText,clrTextBk:COLORREF;
+    iSubItem     :longint;
+  end;
   PNMLVCustomDraw=^TNMLVCustomDraw;
+
+  tagCOMBOBOXINFO = record
+    cbSize: DWORD;
+    rcItem: TRect;
+    rcButton: TRect;
+    stateButton: DWORD;
+    hwndCombo: HWND;
+    hwndItem: HWND;
+    hwndList: HWND;
+  end;
+  TComboboxInfo = tagCOMBOBOXINFO;
+  PComboboxInfo = ^TComboboxInfo;
 
 { Win32 API constants not included in windows.pp }
 const
@@ -248,6 +260,7 @@ const
 // load dynamic and use ownfunction if not defined
 var
   AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+  GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
 
 const
   // ComCtlVersions
@@ -405,15 +418,19 @@ end;
 
 const 
   msimg32lib = 'msimg32.dll';
+  user32lib = 'user32.dll';
  
 var
   msimg32handle: THandle = 0;
+  user32handle: THandle = 0;
 
 procedure Initialize;
 var
   p: Pointer;
 begin                
   AlphaBlend := @_AlphaBlend;
+  GetComboBoxInfo := nil;
+
   msimg32handle := LoadLibrary(msimg32lib);
   if msimg32handle <> 0
   then begin 
@@ -421,14 +438,28 @@ begin
     if p <> nil
     then Pointer(AlphaBlend) := p;
   end;
+  
+  user32handle := LoadLibrary(user32lib);
+  if user32handle <> 0 then
+  begin
+    p := GetProcAddress(user32handle, 'GetComboBoxInfo');
+    if p <> nil then
+      Pointer(GetComboboxInfo) := p;
+  end;
 end;
 
 procedure Finalize;
 begin
   AlphaBlend := @_AlphaBlend;
+  GetComboboxInfo := nil;
+
   if msimg32handle <> 0
   then FreeLibrary(msimg32handle);
   msimg32handle := 0;
+  
+  if user32handle <> 0 then
+    FreeLibrary(user32handle);
+  user32handle := 0;
 end;
 
 initialization
@@ -437,4 +468,4 @@ initialization
 finalization
   Finalize;
 
-End.
+end.
