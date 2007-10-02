@@ -3165,7 +3165,14 @@ begin
 
     Result := QMainWindow_create(nil, QtWindow);
     
-    MenuBar := TQtMenuBar.Create(Result);
+    {$ifdef darwin}
+      if csDesigning in ComponentState then
+        MenuBar := TQtMenuBar.Create(nil)
+      else
+        MenuBar := TQtMenuBar.Create(Result);
+    {$else}
+      MenuBar := TQtMenuBar.Create(Result);
+    {$endif}
     
     {$ifdef USE_QT_4_3}
       if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
@@ -3221,12 +3228,11 @@ begin
     
     // Main menu bar
     
-    {TODO: remove this ifdef as soon as we create MenuBar on demand creation,
-     not per default !}
-    {$ifndef windows}
-    if Assigned(TCustomForm(LCLObject).Menu) then
+    {$ifdef darwin}
+      MenuBar := TQtMenuBar.Create(nil);
+    {$else}
+      MenuBar := TQtMenuBar.Create(Result);
     {$endif}
-    	MenuBar := TQtMenuBar.Create(Result);
 
     FCentralWidget := QWidget_create(Result);
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
