@@ -3166,7 +3166,7 @@ begin
     Result := QMainWindow_create(nil, QtWindow);
     
     {$ifdef darwin}
-      if csDesigning in ComponentState then
+      if csDesigning in LCLObject.ComponentState then
         MenuBar := TQtMenuBar.Create(nil)
       else
         MenuBar := TQtMenuBar.Create(Result);
