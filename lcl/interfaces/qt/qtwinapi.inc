@@ -885,7 +885,7 @@ var
   QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(hDC));
+    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(DC));
   {$endif}
   Result := False;
 
@@ -3773,10 +3773,10 @@ begin
   
   DCData := TQtDeviceContext(DC).CreateDCData;
   Result := 1;
-  SavedDCList.Insert(Result, DCData)
+  SavedDCList.Insert(Result, DCData);
   
   {$ifdef VerboseQTWinAPI}
-  WriteLn('Trace:< [WinAPI SaveDC] result=', result);
+  WriteLn('Trace:< [WinAPI SaveDC] result=', Result);
   {$Endif}
 end;
 
