@@ -1,0 +1,1302 @@
+object CodeToolsOptsDlg: TCodeToolsOptsDlg
+  Left = 955
+  Height = 435
+  Top = 454
+  Width = 560
+  HorzScrollBar.Page = 559
+  VertScrollBar.Page = 434
+  ActiveControl = OKButton
+  BorderStyle = bsSizeToolWin
+  Caption = 'CodeToolsOptsDlg'
+  ClientHeight = 435
+  ClientWidth = 560
+  Constraints.MinHeight = 435
+  Constraints.MinWidth = 485
+  OnCreate = FormCreate
+  OnResize = FormResize
+  Position = poScreenCenter
+  object Notebook: TNotebook
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CancelButton
+    Height = 398
+    Width = 560
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    PageIndex = 5
+    TabOrder = 0
+    object GeneralPage: TPage
+      AnchorSideTop.Control = CodeCreationPage
+      Caption = 'GeneralPage'
+      ClientWidth = 552
+      ClientHeight = 372
+      object SrcPathGroupBox: TGroupBox
+        AnchorSideLeft.Control = GeneralPage
+        AnchorSideTop.Control = GeneralPage
+        AnchorSideRight.Control = GeneralPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 56
+        Top = 6
+        Width = 465
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'SrcPathGroupBox'
+        ClientHeight = 56
+        ClientWidth = 465
+        TabOrder = 0
+        object SrcPathEdit: TEdit
+          AnchorSideLeft.Control = SrcPathGroupBox
+          AnchorSideRight.Control = SrcPathGroupBox
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 8
+          Width = 449
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          TabOrder = 0
+          Text = 'SrcPathEdit'
+        end
+      end
+      object JumpingGroupBox: TGroupBox
+        AnchorSideLeft.Control = GeneralPage
+        AnchorSideTop.Control = SrcPathGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = GeneralPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 102
+        Top = 68
+        Width = 465
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'JumpingGroupBox'
+        ClientHeight = 102
+        ClientWidth = 465
+        TabOrder = 1
+        object AdjustTopLineDueToCommentCheckBox: TCheckBox
+          AnchorSideLeft.Control = JumpingGroupBox
+          AnchorSideTop.Control = JumpingGroupBox
+          Left = 6
+          Height = 13
+          Top = 6
+          Width = 214
+          BorderSpacing.Around = 6
+          Caption = 'AdjustTopLineDueToCommentCheckBox'
+          TabOrder = 0
+        end
+        object JumpCenteredCheckBox: TCheckBox
+          AnchorSideLeft.Control = JumpingGroupBox
+          AnchorSideTop.Control = AdjustTopLineDueToCommentCheckBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 13
+          Top = 31
+          Width = 137
+          BorderSpacing.Top = 6
+          BorderSpacing.Around = 6
+          Caption = 'JumpCenteredCheckBox'
+          TabOrder = 1
+        end
+        object CursorBeyondEOLCheckBox: TCheckBox
+          AnchorSideLeft.Control = JumpingGroupBox
+          AnchorSideTop.Control = JumpCenteredCheckBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 13
+          Top = 56
+          Width = 156
+          BorderSpacing.Top = 6
+          BorderSpacing.Around = 6
+          Caption = 'CursorBeyondEOLCheckBox'
+          TabOrder = 2
+        end
+      end
+    end
+    object CodeCreationPage: TPage
+      Caption = 'CodeCreationPage'
+      ClientWidth = 552
+      ClientHeight = 372
+      object ClassPartInsertPolicyRadioGroup: TRadioGroup
+        AnchorSideLeft.Control = CodeCreationPage
+        AnchorSideTop.Control = CodeCreationPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 100
+        Top = 6
+        Width = 222
+        AutoFill = True
+        BorderSpacing.Around = 6
+        Caption = 'ClassPartInsertPolicyRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        TabOrder = 0
+      end
+      object MixMethodsAndPropertiesCheckBox: TCheckBox
+        AnchorSideLeft.Control = CodeCreationPage
+        AnchorSideTop.Control = ClassPartInsertPolicyRadioGroup
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 13
+        Top = 112
+        Width = 192
+        BorderSpacing.Around = 6
+        Caption = 'MixMethodsAndPropertiesCheckBox'
+        TabOrder = 1
+      end
+      object MethodInsertPolicyRadioGroup: TRadioGroup
+        AnchorSideLeft.Control = ClassPartInsertPolicyRadioGroup
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CodeCreationPage
+        AnchorSideRight.Control = CodeCreationPage
+        AnchorSideRight.Side = asrBottom
+        Left = 234
+        Height = 100
+        Top = 6
+        Width = 237
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        BorderSpacing.Around = 6
+        Caption = 'MethodInsertPolicyRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        TabOrder = 2
+      end
+      object ForwardProcsInsertPolicyRadioGroup: TRadioGroup
+        AnchorSideLeft.Control = CodeCreationPage
+        AnchorSideTop.Control = MixMethodsAndPropertiesCheckBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = ClassPartInsertPolicyRadioGroup
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 100
+        Top = 137
+        Width = 222
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 12
+        Caption = 'ForwardProcsInsertPolicyRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        TabOrder = 3
+      end
+      object ForwardProcsKeepOrderCheckBox: TCheckBox
+        AnchorSideLeft.Control = ForwardProcsInsertPolicyRadioGroup
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
+        Left = 234
+        Height = 13
+        Top = 143
+        Width = 185
+        BorderSpacing.Around = 6
+        Caption = 'ForwardProcsKeepOrderCheckBox'
+        TabOrder = 4
+      end
+      object ClassHeaderCommentsCheckBox: TCheckBox
+        AnchorSideLeft.Control = ForwardProcsInsertPolicyRadioGroup
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ForwardProcsKeepOrderCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 234
+        Height = 13
+        Top = 162
+        Width = 178
+        BorderSpacing.Around = 6
+        Caption = 'ClassHeaderCommentsCheckBox'
+        TabOrder = 5
+      end
+      object PropertyCompletionGroupBox: TGroupBox
+        AnchorSideLeft.Control = CodeCreationPage
+        AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CodeCreationPage
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 123
+        Top = 243
+        Width = 465
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'PropertyCompletionGroupBox'
+        ClientHeight = 123
+        ClientWidth = 465
+        TabOrder = 6
+        object PropertyReadIdentPrefixLabel: TLabel
+          AnchorSideTop.Control = PropertyReadIdentPrefixEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = PropertyReadIdentPrefixEdit
+          Left = -13
+          Height = 14
+          Top = 35
+          Width = 147
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = 'PropertyReadIdentPrefixLabel'
+          ParentColor = False
+        end
+        object PropertyWriteIdentPrefixLabel: TLabel
+          AnchorSideTop.Control = PropertyWriteIdentPrefixEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = PropertyWriteIdentPrefixEdit
+          Left = -14
+          Height = 14
+          Top = 58
+          Width = 148
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = 'PropertyWriteIdentPrefixLabel'
+          ParentColor = False
+        end
+        object PropertyStoredIdentPostfixLabel: TLabel
+          AnchorSideTop.Control = PropertyStoredIdentPostfixEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = PropertyStoredIdentPostfixEdit
+          Left = -25
+          Height = 14
+          Top = 81
+          Width = 159
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = 'PropertyStoredIdentPostfixLabel'
+          ParentColor = False
+        end
+        object PrivateVariablePrefixLabel: TLabel
+          AnchorSideTop.Control = PrivateVariablePrefixEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = PrivateVariablePrefixEdit
+          Left = 243
+          Height = 14
+          Top = 35
+          Width = 126
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = 'PrivateVariablePrefixLabel'
+          ParentColor = False
+        end
+        object SetPropertyVariablenameLabel: TLabel
+          AnchorSideTop.Control = SetPropertyVariablenameEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = SetPropertyVariablenameEdit
+          Left = 221
+          Height = 14
+          Top = 58
+          Width = 148
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = 'SetPropertyVariablenameLabel'
+          ParentColor = False
+        end
+        object PropertyCompletionCheckBox: TCheckBox
+          AnchorSideLeft.Control = PropertyCompletionGroupBox
+          AnchorSideTop.Control = PropertyCompletionGroupBox
+          Left = 6
+          Height = 13
+          Top = 6
+          Width = 160
+          BorderSpacing.Around = 6
+          Caption = 'PropertyCompletionCheckBox'
+          TabOrder = 0
+        end
+        object PropertyReadIdentPrefixEdit: TEdit
+          AnchorSideLeft.Control = PropertyWriteIdentPrefixEdit
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = PropertyWriteIdentPrefixEdit
+          AnchorSideRight.Side = asrBottom
+          Left = 140
+          Height = 23
+          Top = 31
+          Width = 80
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 1
+          Text = 'PropertyReadIdentPrefixEdit'
+        end
+        object PropertyWriteIdentPrefixEdit: TEdit
+          AnchorSideTop.Control = PropertyReadIdentPrefixEdit
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          Left = 140
+          Height = 23
+          Top = 54
+          Width = 80
+          TabOrder = 2
+          Text = 'PropertyWriteIdentPrefixEdit'
+        end
+        object PropertyStoredIdentPostfixEdit: TEdit
+          AnchorSideTop.Control = PropertyWriteIdentPrefixEdit
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          Left = 140
+          Height = 23
+          Top = 77
+          Width = 80
+          TabOrder = 3
+          Text = 'PropertyStoredIdentPostfixEdit'
+        end
+        object PrivateVariablePrefixEdit: TEdit
+          AnchorSideTop.Control = PropertyReadIdentPrefixEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = PropertyCompletionGroupBox
+          AnchorSideRight.Side = asrBottom
+          Left = 375
+          Height = 23
+          Top = 31
+          Width = 80
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          TabOrder = 4
+          Text = 'PrivateVariablePrefixEdit'
+        end
+        object SetPropertyVariablenameEdit: TEdit
+          AnchorSideTop.Control = PropertyWriteIdentPrefixEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = PropertyCompletionGroupBox
+          AnchorSideRight.Side = asrBottom
+          Left = 375
+          Height = 23
+          Top = 54
+          Width = 80
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          TabOrder = 5
+          Text = 'SetPropertyVariablenameEdit'
+        end
+      end
+    end
+    object WordsPoliciesPage: TPage
+      Caption = 'WordsPoliciesPage'
+      ClientWidth = 552
+      ClientHeight = 372
+      object KeyWordPolicyRadioGroup: TRadioGroup
+        AnchorSideLeft.Control = WordsPoliciesPage
+        AnchorSideTop.Control = WordsPoliciesPage
+        AnchorSideRight.Control = WordsPoliciesPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 100
+        Top = 6
+        Width = 465
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        BorderSpacing.Around = 6
+        Caption = 'KeyWordPolicyRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        OnClick = UpdateExamples
+        TabOrder = 0
+      end
+      object IdentifierPolicyRadioGroup: TRadioGroup
+        AnchorSideLeft.Control = WordsPoliciesPage
+        AnchorSideTop.Control = KeyWordPolicyRadioGroup
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = WordsPoliciesPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 100
+        Top = 112
+        Width = 465
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        BorderSpacing.Around = 6
+        Caption = 'IdentifierPolicyRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        OnClick = UpdateExamples
+        TabOrder = 1
+      end
+    end
+    object LineSplittingPage: TPage
+      Caption = 'LineSplittingPage'
+      ClientWidth = 552
+      ClientHeight = 372
+      object LineLengthLabel: TLabel
+        AnchorSideTop.Control = LineLengthEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = LineLengthEdit
+        Left = 48
+        Height = 14
+        Top = 14
+        Width = 78
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
+        Caption = 'LineLengthLabel'
+        ParentColor = False
+      end
+      object SplitPreviewLabel: TLabel
+        AnchorSideLeft.Control = SplitPreviewSynEdit
+        AnchorSideBottom.Control = SplitPreviewSynEdit
+        Left = 268
+        Height = 16
+        Top = 18
+        Width = 84
+        Anchors = [akTop, akLeft, akBottom]
+        Caption = 'SplitPreviewLabel'
+        ParentColor = False
+      end
+      object LineLengthEdit: TEdit
+        Left = 132
+        Height = 23
+        Top = 10
+        Width = 50
+        OnChange = UpdateExamples
+        TabOrder = 0
+        Text = 'LineLengthEdit'
+      end
+      object DoNotSplitLineInFrontGroupBox: TGroupBox
+        AnchorSideLeft.Control = LineSplittingPage
+        AnchorSideTop.Control = LineLengthEdit
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SplitPreviewSynEdit
+        Left = 6
+        Height = 153
+        Top = 39
+        Width = 256
+        BorderSpacing.Around = 6
+        Caption = 'DoNotSplitLineInFrontGroupBox'
+        TabOrder = 1
+        OnClick = UpdateExamples
+      end
+      object DoNotSplitLineAfterGroupBox: TGroupBox
+        AnchorSideLeft.Control = LineSplittingPage
+        AnchorSideTop.Control = DoNotSplitLineInFrontGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = DoNotSplitLineInFrontGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 153
+        Top = 198
+        Width = 256
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        Caption = 'DoNotSplitLineAfterGroupBox'
+        TabOrder = 2
+        OnClick = UpdateExamples
+      end
+      object SplitPreviewSynEdit: TSynEdit
+        AnchorSideLeft.Control = DoNotSplitLineInFrontGroupBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = LineSplittingPage
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = LineSplittingPage
+        AnchorSideBottom.Side = asrBottom
+        Left = 268
+        Height = 332
+        Top = 34
+        Width = 278
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = -16
+        Font.Name = 'courier'
+        ParentColor = False
+        TabOrder = 3
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
+        Gutter.CodeFoldingWidth = 14
+        Keystrokes = <        
+          item
+            Command = 3
+            ShortCut = 38
+          end        
+          item
+            Command = 103
+            ShortCut = 8230
+          end        
+          item
+            Command = 211
+            ShortCut = 16422
+          end        
+          item
+            Command = 4
+            ShortCut = 40
+          end        
+          item
+            Command = 104
+            ShortCut = 8232
+          end        
+          item
+            Command = 212
+            ShortCut = 16424
+          end        
+          item
+            Command = 1
+            ShortCut = 37
+          end        
+          item
+            Command = 101
+            ShortCut = 8229
+          end        
+          item
+            Command = 5
+            ShortCut = 16421
+          end        
+          item
+            Command = 105
+            ShortCut = 24613
+          end        
+          item
+            Command = 2
+            ShortCut = 39
+          end        
+          item
+            Command = 102
+            ShortCut = 8231
+          end        
+          item
+            Command = 6
+            ShortCut = 16423
+          end        
+          item
+            Command = 106
+            ShortCut = 24615
+          end        
+          item
+            Command = 10
+            ShortCut = 34
+          end        
+          item
+            Command = 110
+            ShortCut = 8226
+          end        
+          item
+            Command = 14
+            ShortCut = 16418
+          end        
+          item
+            Command = 114
+            ShortCut = 24610
+          end        
+          item
+            Command = 9
+            ShortCut = 33
+          end        
+          item
+            Command = 109
+            ShortCut = 8225
+          end        
+          item
+            Command = 13
+            ShortCut = 16417
+          end        
+          item
+            Command = 113
+            ShortCut = 24609
+          end        
+          item
+            Command = 7
+            ShortCut = 36
+          end        
+          item
+            Command = 107
+            ShortCut = 8228
+          end        
+          item
+            Command = 15
+            ShortCut = 16420
+          end        
+          item
+            Command = 115
+            ShortCut = 24612
+          end        
+          item
+            Command = 8
+            ShortCut = 35
+          end        
+          item
+            Command = 108
+            ShortCut = 8227
+          end        
+          item
+            Command = 16
+            ShortCut = 16419
+          end        
+          item
+            Command = 116
+            ShortCut = 24611
+          end        
+          item
+            Command = 223
+            ShortCut = 45
+          end        
+          item
+            Command = 201
+            ShortCut = 16429
+          end        
+          item
+            Command = 604
+            ShortCut = 8237
+          end        
+          item
+            Command = 502
+            ShortCut = 46
+          end        
+          item
+            Command = 603
+            ShortCut = 8238
+          end        
+          item
+            Command = 501
+            ShortCut = 8
+          end        
+          item
+            Command = 501
+            ShortCut = 8200
+          end        
+          item
+            Command = 504
+            ShortCut = 16392
+          end        
+          item
+            Command = 601
+            ShortCut = 32776
+          end        
+          item
+            Command = 602
+            ShortCut = 40968
+          end        
+          item
+            Command = 509
+            ShortCut = 13
+          end        
+          item
+            Command = 199
+            ShortCut = 16449
+          end        
+          item
+            Command = 201
+            ShortCut = 16451
+          end        
+          item
+            Command = 610
+            ShortCut = 24649
+          end        
+          item
+            Command = 509
+            ShortCut = 16461
+          end        
+          item
+            Command = 510
+            ShortCut = 16462
+          end        
+          item
+            Command = 503
+            ShortCut = 16468
+          end        
+          item
+            Command = 611
+            ShortCut = 24661
+          end        
+          item
+            Command = 604
+            ShortCut = 16470
+          end        
+          item
+            Command = 603
+            ShortCut = 16472
+          end        
+          item
+            Command = 507
+            ShortCut = 16473
+          end        
+          item
+            Command = 506
+            ShortCut = 24665
+          end        
+          item
+            Command = 601
+            ShortCut = 16474
+          end        
+          item
+            Command = 602
+            ShortCut = 24666
+          end        
+          item
+            Command = 301
+            ShortCut = 16432
+          end        
+          item
+            Command = 302
+            ShortCut = 16433
+          end        
+          item
+            Command = 303
+            ShortCut = 16434
+          end        
+          item
+            Command = 304
+            ShortCut = 16435
+          end        
+          item
+            Command = 305
+            ShortCut = 16436
+          end        
+          item
+            Command = 306
+            ShortCut = 16437
+          end        
+          item
+            Command = 307
+            ShortCut = 16438
+          end        
+          item
+            Command = 308
+            ShortCut = 16439
+          end        
+          item
+            Command = 309
+            ShortCut = 16440
+          end        
+          item
+            Command = 310
+            ShortCut = 16441
+          end        
+          item
+            Command = 351
+            ShortCut = 24624
+          end        
+          item
+            Command = 352
+            ShortCut = 24625
+          end        
+          item
+            Command = 353
+            ShortCut = 24626
+          end        
+          item
+            Command = 354
+            ShortCut = 24627
+          end        
+          item
+            Command = 355
+            ShortCut = 24628
+          end        
+          item
+            Command = 356
+            ShortCut = 24629
+          end        
+          item
+            Command = 357
+            ShortCut = 24630
+          end        
+          item
+            Command = 358
+            ShortCut = 24631
+          end        
+          item
+            Command = 359
+            ShortCut = 24632
+          end        
+          item
+            Command = 360
+            ShortCut = 24633
+          end        
+          item
+            Command = 231
+            ShortCut = 24654
+          end        
+          item
+            Command = 232
+            ShortCut = 24643
+          end        
+          item
+            Command = 233
+            ShortCut = 24652
+          end        
+          item
+            Command = 612
+            ShortCut = 9
+          end        
+          item
+            Command = 613
+            ShortCut = 8201
+          end        
+          item
+            Command = 250
+            ShortCut = 24642
+          end>
+        Lines.Strings = (
+          'SplitPreviewSynEdit'
+        )
+        SelectedColor.OnChange = nil
+      end
+    end
+    object SpaceNotCosmosPage: TPage
+      Caption = 'SpaceNotCosmosPage'
+      ClientWidth = 552
+      ClientHeight = 372
+      object SpacePreviewLabel: TLabel
+        AnchorSideLeft.Control = SpaceNotCosmosPage
+        AnchorSideTop.Control = DoInsertSpaceInFrontGroupBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 14
+        Top = 162
+        Width = 93
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'SpacePreviewLabel'
+        ParentColor = False
+      end
+      object DoInsertSpaceInFrontGroupBox: TGroupBox
+        AnchorSideLeft.Control = SpaceNotCosmosPage
+        AnchorSideTop.Control = SpaceNotCosmosPage
+        Left = 6
+        Height = 150
+        Top = 6
+        Width = 266
+        BorderSpacing.Around = 6
+        Caption = 'DoInsertSpaceInFrontGroupBox'
+        TabOrder = 0
+        OnClick = UpdateExamples
+      end
+      object DoInsertSpaceAfterGroupBox: TGroupBox
+        AnchorSideLeft.Control = DoInsertSpaceInFrontGroupBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SpaceNotCosmosPage
+        AnchorSideRight.Control = SpaceNotCosmosPage
+        AnchorSideRight.Side = asrBottom
+        Left = 278
+        Height = 150
+        Top = 6
+        Width = 268
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'DoInsertSpaceAfterGroupBox'
+        TabOrder = 1
+        OnClick = UpdateExamples
+      end
+      object SpacePreviewSynEdit: TSynEdit
+        AnchorSideLeft.Control = SpaceNotCosmosPage
+        AnchorSideTop.Control = SpacePreviewLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SpaceNotCosmosPage
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = SpaceNotCosmosPage
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 190
+        Top = 176
+        Width = 540
+        BorderSpacing.Left = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = -16
+        Font.Name = 'courier'
+        ParentColor = False
+        TabOrder = 2
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
+        Gutter.CodeFoldingWidth = 14
+        Keystrokes = <        
+          item
+            Command = 3
+            ShortCut = 38
+          end        
+          item
+            Command = 103
+            ShortCut = 8230
+          end        
+          item
+            Command = 211
+            ShortCut = 16422
+          end        
+          item
+            Command = 4
+            ShortCut = 40
+          end        
+          item
+            Command = 104
+            ShortCut = 8232
+          end        
+          item
+            Command = 212
+            ShortCut = 16424
+          end        
+          item
+            Command = 1
+            ShortCut = 37
+          end        
+          item
+            Command = 101
+            ShortCut = 8229
+          end        
+          item
+            Command = 5
+            ShortCut = 16421
+          end        
+          item
+            Command = 105
+            ShortCut = 24613
+          end        
+          item
+            Command = 2
+            ShortCut = 39
+          end        
+          item
+            Command = 102
+            ShortCut = 8231
+          end        
+          item
+            Command = 6
+            ShortCut = 16423
+          end        
+          item
+            Command = 106
+            ShortCut = 24615
+          end        
+          item
+            Command = 10
+            ShortCut = 34
+          end        
+          item
+            Command = 110
+            ShortCut = 8226
+          end        
+          item
+            Command = 14
+            ShortCut = 16418
+          end        
+          item
+            Command = 114
+            ShortCut = 24610
+          end        
+          item
+            Command = 9
+            ShortCut = 33
+          end        
+          item
+            Command = 109
+            ShortCut = 8225
+          end        
+          item
+            Command = 13
+            ShortCut = 16417
+          end        
+          item
+            Command = 113
+            ShortCut = 24609
+          end        
+          item
+            Command = 7
+            ShortCut = 36
+          end        
+          item
+            Command = 107
+            ShortCut = 8228
+          end        
+          item
+            Command = 15
+            ShortCut = 16420
+          end        
+          item
+            Command = 115
+            ShortCut = 24612
+          end        
+          item
+            Command = 8
+            ShortCut = 35
+          end        
+          item
+            Command = 108
+            ShortCut = 8227
+          end        
+          item
+            Command = 16
+            ShortCut = 16419
+          end        
+          item
+            Command = 116
+            ShortCut = 24611
+          end        
+          item
+            Command = 223
+            ShortCut = 45
+          end        
+          item
+            Command = 201
+            ShortCut = 16429
+          end        
+          item
+            Command = 604
+            ShortCut = 8237
+          end        
+          item
+            Command = 502
+            ShortCut = 46
+          end        
+          item
+            Command = 603
+            ShortCut = 8238
+          end        
+          item
+            Command = 501
+            ShortCut = 8
+          end        
+          item
+            Command = 501
+            ShortCut = 8200
+          end        
+          item
+            Command = 504
+            ShortCut = 16392
+          end        
+          item
+            Command = 601
+            ShortCut = 32776
+          end        
+          item
+            Command = 602
+            ShortCut = 40968
+          end        
+          item
+            Command = 509
+            ShortCut = 13
+          end        
+          item
+            Command = 199
+            ShortCut = 16449
+          end        
+          item
+            Command = 201
+            ShortCut = 16451
+          end        
+          item
+            Command = 610
+            ShortCut = 24649
+          end        
+          item
+            Command = 509
+            ShortCut = 16461
+          end        
+          item
+            Command = 510
+            ShortCut = 16462
+          end        
+          item
+            Command = 503
+            ShortCut = 16468
+          end        
+          item
+            Command = 611
+            ShortCut = 24661
+          end        
+          item
+            Command = 604
+            ShortCut = 16470
+          end        
+          item
+            Command = 603
+            ShortCut = 16472
+          end        
+          item
+            Command = 507
+            ShortCut = 16473
+          end        
+          item
+            Command = 506
+            ShortCut = 24665
+          end        
+          item
+            Command = 601
+            ShortCut = 16474
+          end        
+          item
+            Command = 602
+            ShortCut = 24666
+          end        
+          item
+            Command = 301
+            ShortCut = 16432
+          end        
+          item
+            Command = 302
+            ShortCut = 16433
+          end        
+          item
+            Command = 303
+            ShortCut = 16434
+          end        
+          item
+            Command = 304
+            ShortCut = 16435
+          end        
+          item
+            Command = 305
+            ShortCut = 16436
+          end        
+          item
+            Command = 306
+            ShortCut = 16437
+          end        
+          item
+            Command = 307
+            ShortCut = 16438
+          end        
+          item
+            Command = 308
+            ShortCut = 16439
+          end        
+          item
+            Command = 309
+            ShortCut = 16440
+          end        
+          item
+            Command = 310
+            ShortCut = 16441
+          end        
+          item
+            Command = 351
+            ShortCut = 24624
+          end        
+          item
+            Command = 352
+            ShortCut = 24625
+          end        
+          item
+            Command = 353
+            ShortCut = 24626
+          end        
+          item
+            Command = 354
+            ShortCut = 24627
+          end        
+          item
+            Command = 355
+            ShortCut = 24628
+          end        
+          item
+            Command = 356
+            ShortCut = 24629
+          end        
+          item
+            Command = 357
+            ShortCut = 24630
+          end        
+          item
+            Command = 358
+            ShortCut = 24631
+          end        
+          item
+            Command = 359
+            ShortCut = 24632
+          end        
+          item
+            Command = 360
+            ShortCut = 24633
+          end        
+          item
+            Command = 231
+            ShortCut = 24654
+          end        
+          item
+            Command = 232
+            ShortCut = 24643
+          end        
+          item
+            Command = 233
+            ShortCut = 24652
+          end        
+          item
+            Command = 612
+            ShortCut = 9
+          end        
+          item
+            Command = 613
+            ShortCut = 8201
+          end        
+          item
+            Command = 250
+            ShortCut = 24642
+          end>
+        Lines.Strings = (
+          'SpacePreviewSynEdit'
+        )
+        SelectedColor.OnChange = nil
+      end
+    end
+    object IdentifierCompletionPage: TPage
+      Caption = 'IdentifierCompletionPage'
+      ClientWidth = 552
+      ClientHeight = 372
+      object ICAddSemicolonCheckBox: TCheckBox
+        AnchorSideLeft.Control = IdentifierCompletionPage
+        AnchorSideTop.Control = IdentifierCompletionPage
+        Left = 6
+        Height = 13
+        Top = 6
+        Width = 147
+        BorderSpacing.Around = 6
+        Caption = 'ICAddSemicolonCheckBox'
+        TabOrder = 0
+      end
+    end
+  end
+  object OKButton: TButton
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 364
+    Height = 25
+    Top = 404
+    Width = 92
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OKButton'
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object CancelButton: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 462
+    Height = 25
+    Top = 404
+    Width = 92
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end
