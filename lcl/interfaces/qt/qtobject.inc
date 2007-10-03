@@ -101,14 +101,6 @@ begin
   
   FOldFocusWidget := nil;
   
-  {no more crazy menus if we disable fading & animating
-   my proposal is to remove this ifdef and disable
-   effects by default, or set IFNDEF QT_USE_MENU_EFFECTS }
-  {$IFDEF QT_NO_MENU_EFFECTS}
-  QApplication_setEffectEnabled(QtUI_AnimateMenu, False);
-  QApplication_setEffectEnabled(QtUI_FadeMenu, False);
-  {$ENDIF}
-  
   {This hook crashes linux & darwin ocasionally !
    todo: check what happens with win32
    and possibly remove this hook at all.
@@ -130,8 +122,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
-  if Assigned(ALoop) then ALoop;
-  //QApplication_Exec;
+  // use LCL loop
+  if Assigned(ALoop) then
+    ALoop;
 end;
 
 {------------------------------------------------------------------------------
