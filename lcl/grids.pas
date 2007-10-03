@@ -414,7 +414,7 @@ type
     function  GetDefaultSizePriority: Integer;
     function  GetDefaultVisible: boolean; virtual;
     function  GetDefaultWidth: Integer; virtual;
-    procedure ColumnChanged;
+    procedure ColumnChanged; virtual;
     procedure AllColumnsChange;
     function  CreateTitle: TGridColumnTitle; virtual;
 
