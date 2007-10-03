@@ -1,0 +1,31 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFormMove','FORMDATA',[
+  'TPF0'#9'TFormMove'#8'FormMove'#4'Left'#3'+'#1#6'Height'#3#235#0#3'Top'#3#153
+  +#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3
+  +#234#0#13'ActiveControl'#7#9'ButtonYes'#11'BorderIcons'#11#12'biSystemMenu'
+  +#10'biMinimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#12'Move Element'
+  +#28'ChildSizing.LeftRightSpacing'#2#10#28'ChildSizing.TopBottomSpacing'#2#10
+  +#12'ClientHeight'#3#235#0#11'ClientWidth'#3#144#1#0#6'TLabel'#8'LabelSrc'#4
+  +'Left'#2#10#6'Height'#2'*'#3'Top'#2'B'#5'Width'#3'{'#1#8'AutoSize'#8#11'Pare'
+  +'ntColor'#8#0#0#6'TLabel'#9'LabelDest'#4'Left'#2#10#6'Height'#2#14#3'Top'#3
+  +#156#0#5'Width'#2'd'#7'Caption'#6#20'Destination element:'#11'ParentColor'#8
+  +#0#0#6'TLabel'#15'LabelSrcElement'#4'Left'#2#10#6'Height'#2#18#3'Top'#2'x'#5
+  +'Width'#2'*'#10'Font.Style'#11#6'fsBold'#0#11'ParentColor'#8#0#0#7'TButton'#9
+  +'ButtonYes'#4'Left'#2'B'#6'Height'#2#25#3'Top'#3#199#0#5'Width'#2'K'#7'Ancho'
+  +'rs'#11#7'akRight'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'
+  +#6#3'Yes'#11'ModalResult'#2#6#8'TabOrder'#2#0#0#0#7'TButton'#8'ButtonNo'#4'L'
+  +'eft'#3#150#0#6'Height'#2#25#3'Top'#3#199#0#5'Width'#2'K'#7'Anchors'#11#7'ak'
+  +'Right'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#2'No'#11
+  +'ModalResult'#2#7#8'TabOrder'#2#1#0#0#11'TStaticText'#10'StaticText'#4'Left'
+  +#2#10#6'Height'#2'*'#3'Top'#2#10#5'Width'#3'|'#1#5'Align'#7#5'alTop'#7'Capti'
+  +'on'#6'aThe following FPDoc element is not present in the skeleton. Move its'
+  +' contents into different one?'#5'Color'#7#9'clBtnFace'#10'Font.Style'#11#6
+  +'fsBold'#0#0#0#9'TComboBox'#12'ComboBoxDest'#4'Left'#3#132#0#6'Height'#2#21#3
+  +'Top'#3#150#0#5'Width'#3#2#1#16'AutoCompleteText'#11#22'cbactEndOfLineComple'
+  +'te'#20'cbactSearchAscending'#0#10'ItemHeight'#2#13#5'Style'#7#14'csDropDown'
+  +'List'#8'TabOrder'#2#2#0#0#7'TButton'#10'ButtonMove'#4'Left'#3#234#0#6'Heigh'
+  +'t'#2#25#3'Top'#3#199#0#5'Width'#3#155#0#25'BorderSpacing.InnerBorder'#2#4#7
+  +'Caption'#6#23'Move to another file...'#7'OnClick'#7#15'ButtonMoveClick'#8'T'
+  +'abOrder'#2#3#0#0#0
+]);

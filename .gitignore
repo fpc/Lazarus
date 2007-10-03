@@ -186,6 +186,10 @@ designer/jitform/*.bak
 designer/jitform/units
 designer/units
 doceditor/*.bak
+doceditor/fpdocupdater/*.bak
+doceditor/fpdocupdater/units
+doceditor/fpdocupdater/units/*.bak
+doceditor/fpdocupdater/units/units
 doceditor/images/*.bak
 doceditor/images/units
 doceditor/units

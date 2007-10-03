@@ -1,0 +1,220 @@
+object Form1: TForm1
+  Left = 253
+  Height = 484
+  Top = 156
+  Width = 531
+  HorzScrollBar.Page = 530
+  VertScrollBar.Page = 483
+  ActiveControl = EditDocs
+  Caption = 'FPDoc Updater'
+  ClientHeight = 484
+  ClientWidth = 531
+  Constraints.MinHeight = 464
+  Constraints.MinWidth = 300
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  object LabelDocs: TLabel
+    Left = 12
+    Height = 14
+    Top = 18
+    Width = 82
+    Caption = 'FPDoc files path:'
+    ParentColor = False
+  end
+  object LabelUnits: TLabel
+    Left = 12
+    Height = 14
+    Top = 51
+    Width = 54
+    Caption = 'Units path:'
+    ParentColor = False
+  end
+  object LabelBackup: TLabel
+    Left = 395
+    Height = 14
+    Top = 246
+    Width = 89
+    Anchors = [akTop, akRight]
+    Caption = 'Backup extension:'
+    ParentColor = False
+  end
+  object LabelPackage: TLabel
+    Left = 395
+    Height = 14
+    Top = 161
+    Width = 45
+    Anchors = [akTop, akRight]
+    Caption = 'Package:'
+    ParentColor = False
+  end
+  object LabelMakeSkel: TLabel
+    Left = 11
+    Height = 14
+    Top = 124
+    Width = 95
+    Caption = 'MakeSkel tool path:'
+    ParentColor = False
+  end
+  object LabelInclude: TLabel
+    Left = 11
+    Height = 14
+    Top = 90
+    Width = 87
+    Caption = 'Include files path:'
+    ParentColor = False
+  end
+  object EditDocs: TDirectoryEdit
+    Left = 126
+    Height = 23
+    Top = 12
+    Width = 347
+    Directory = 'D:\Projects\Lazarus\Docs\xml\lcl\'
+    OnAcceptDirectory = EditDocsAcceptDirectory
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentColor = False
+    TabOrder = 0
+    OnEditingDone = EditDocsEditingDone
+  end
+  object EditUnits: TDirectoryEdit
+    Left = 126
+    Height = 23
+    Top = 48
+    Width = 347
+    Directory = 'D:\Projects\Lazarus\LCL\'
+    OnAcceptDirectory = EditUnitsAcceptDirectory
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentColor = False
+    TabOrder = 1
+    OnEditingDone = EditDocsEditingDone
+  end
+  object ButtonUpdate: TButton
+    Left = 395
+    Height = 25
+    Top = 354
+    Width = 122
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update'
+    OnClick = ButtonUpdateClick
+    TabOrder = 2
+  end
+  object ButtonUpdateAll: TButton
+    Left = 395
+    Height = 25
+    Top = 426
+    Width = 122
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update All'
+    OnClick = ButtonUpdateAllClick
+    TabOrder = 3
+  end
+  object ButtonUpdateNew: TButton
+    Left = 395
+    Height = 25
+    Top = 390
+    Width = 122
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update New'
+    Font.Color = clRed
+    OnClick = ButtonUpdateNewClick
+    TabOrder = 4
+  end
+  object ButtonRefresh: TButton
+    Left = 395
+    Height = 25
+    Top = 312
+    Width = 122
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Refresh'
+    OnClick = ButtonRefreshClick
+    TabOrder = 5
+  end
+  object ListBox: TListBox
+    Left = 12
+    Height = 295
+    Top = 156
+    Width = 371
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    MultiSelect = True
+    OnDrawItem = ListBoxDrawItem
+    Style = lbOwnerDrawFixed
+    TabOrder = 6
+  end
+  object CheckBoxBackup: TCheckBox
+    Left = 395
+    Height = 13
+    Top = 222
+    Width = 114
+    Anchors = [akTop, akRight]
+    Caption = 'Backup FPDoc files'
+    Checked = True
+    State = cbChecked
+    TabOrder = 7
+  end
+  object EditBackup: TEdit
+    Left = 407
+    Height = 23
+    Top = 270
+    Width = 80
+    Anchors = [akTop, akRight]
+    TabOrder = 8
+    Text = 'bak'
+  end
+  object EditPackage: TEdit
+    Left = 407
+    Height = 23
+    Top = 186
+    Width = 80
+    Anchors = [akTop, akRight]
+    TabOrder = 9
+    Text = 'LCL'
+  end
+  object EditMakeSkel: TFileNameEdit
+    Left = 125
+    Height = 23
+    Top = 120
+    Width = 347
+    FileName = 'D:\Projects\fpcbeta\bin\i386-win32\makeskel'
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentColor = False
+    TabOrder = 10
+  end
+  object EditInclude: TDirectoryEdit
+    Left = 125
+    Height = 23
+    Top = 84
+    Width = 348
+    Directory = 'D:\Projects\Lazarus\LCL\Include'
+    OnAcceptDirectory = EditIncludeAcceptDirectory
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentColor = False
+    TabOrder = 11
+    OnEditingDone = EditDocsEditingDone
+  end
+  object StatusBar: TStatusBar
+    Height = 20
+    Top = 464
+    Width = 531
+    Panels = <>
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Open FPDoc file'
+    DefaultExt = '.xml'
+    Filter = 'FPDoc file (*.xml)|*.xml|All files|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 24
+    top = 168
+  end
+end

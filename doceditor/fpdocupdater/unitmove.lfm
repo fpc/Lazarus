@@ -1,0 +1,92 @@
+object FormMove: TFormMove
+  Left = 299
+  Height = 235
+  Top = 153
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 234
+  ActiveControl = ButtonYes
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Move Element'
+  ChildSizing.LeftRightSpacing = 10
+  ChildSizing.TopBottomSpacing = 10
+  ClientHeight = 235
+  ClientWidth = 400
+  object LabelSrc: TLabel
+    Left = 10
+    Height = 42
+    Top = 66
+    Width = 379
+    AutoSize = False
+    ParentColor = False
+  end
+  object LabelDest: TLabel
+    Left = 10
+    Height = 14
+    Top = 156
+    Width = 100
+    Caption = 'Destination element:'
+    ParentColor = False
+  end
+  object LabelSrcElement: TLabel
+    Left = 10
+    Height = 18
+    Top = 120
+    Width = 42
+    Font.Style = [fsBold]
+    ParentColor = False
+  end
+  object ButtonYes: TButton
+    Left = 66
+    Height = 25
+    Top = 199
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Yes'
+    ModalResult = 6
+    TabOrder = 0
+  end
+  object ButtonNo: TButton
+    Left = 150
+    Height = 25
+    Top = 199
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'No'
+    ModalResult = 7
+    TabOrder = 1
+  end
+  object StaticText: TStaticText
+    Left = 10
+    Height = 42
+    Top = 10
+    Width = 380
+    Align = alTop
+    Caption = 'The following FPDoc element is not present in the skeleton. Move its contents into different one?'
+    Color = clBtnFace
+    Font.Style = [fsBold]
+  end
+  object ComboBoxDest: TComboBox
+    Left = 132
+    Height = 21
+    Top = 150
+    Width = 258
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 2
+  end
+  object ButtonMove: TButton
+    Left = 234
+    Height = 25
+    Top = 199
+    Width = 155
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Move to another file...'
+    OnClick = ButtonMoveClick
+    TabOrder = 3
+  end
+end
