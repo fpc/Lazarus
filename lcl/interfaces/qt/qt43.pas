@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.51 }
+{ Version : 1.52 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -288,6 +288,7 @@ QObjectH = class(TObject) end;
     QDockWidgetH = class(QWidgetH) end;
     QFrameH = class(QWidgetH) end;
       QAbstractScrollAreaH = class(QFrameH) end;
+        QLCLAbstractScrollAreaH = class(QAbstractScrollAreaH) end;
         QAbstractItemViewH = class(QAbstractScrollAreaH) end;
           QHeaderViewH = class(QAbstractItemViewH) end;
           QListViewH = class(QAbstractItemViewH) end;
@@ -491,6 +492,7 @@ QIODevice_hookH = class(QObject_hookH) end;
 
 QLCLItemDelegate_sizeHint_Override = procedure (option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize) of object cdecl;
 QLCLItemDelegate_paint_Override = procedure (painter : QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
+QLCLAbstractScrollArea_viewportEvent_Override = procedure (event: QEventH; retval: PBoolean) of object cdecl;
 function QtPoint(X,Y:integer): TQtPoint;
 function QObject_hook_create(handle : QObjectH) : QObject_hookH; cdecl; external QtIntf name 'QObject_hook_create';
 procedure QObject_hook_destroy(handle : QObject_hookH ); cdecl; external QtIntf name 'QObject_hook_destroy';
@@ -5835,6 +5837,11 @@ procedure QAbstractScrollArea_setViewport(handle: QAbstractScrollAreaH; widget: 
 procedure QAbstractScrollArea_maximumViewportSize(handle: QAbstractScrollAreaH; retval: PSize); cdecl; external QtIntf name 'QAbstractScrollArea_maximumViewportSize';
 procedure QAbstractScrollArea_minimumSizeHint(handle: QAbstractScrollAreaH; retval: PSize); cdecl; external QtIntf name 'QAbstractScrollArea_minimumSizeHint';
 procedure QAbstractScrollArea_sizeHint(handle: QAbstractScrollAreaH; retval: PSize); cdecl; external QtIntf name 'QAbstractScrollArea_sizeHint';
+
+function QLCLAbstractScrollArea_create(parent: QWidgetH = nil): QLCLAbstractScrollAreaH; cdecl; external QtIntf name 'QLCLAbstractScrollArea_create';
+procedure QLCLAbstractScrollArea_destroy(handle: QLCLAbstractScrollAreaH); cdecl; external QtIntf name 'QLCLAbstractScrollArea_destroy'; 
+procedure QLCLAbstractScrollArea_override_viewportEvent(handle: QLCLAbstractScrollAreaH; hook: QHookH); cdecl; external QtIntf name 'QLCLAbstractScrollArea_override_viewportEvent';
+function QLCLAbstractScrollArea_InheritedViewportEvent(handle: QLCLAbstractScrollAreaH; event: QEventH): Boolean; cdecl; external QtIntf name 'QLCLAbstractScrollArea_InheritedViewportEvent';
 
 
 type
