@@ -25,7 +25,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 560
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 5
+    PageIndex = 0
     TabOrder = 0
     object GeneralPage: TPage
       AnchorSideTop.Control = CodeCreationPage
@@ -40,12 +40,12 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Left = 6
         Height = 56
         Top = 6
-        Width = 465
+        Width = 540
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'SrcPathGroupBox'
-        ClientHeight = 56
-        ClientWidth = 465
+        ClientHeight = 38
+        ClientWidth = 536
         TabOrder = 0
         object SrcPathEdit: TEdit
           AnchorSideLeft.Control = SrcPathGroupBox
@@ -54,7 +54,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           Left = 6
           Height = 23
           Top = 8
-          Width = 449
+          Width = 524
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -68,14 +68,15 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideRight.Control = GeneralPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 102
+        Height = 93
         Top = 68
-        Width = 465
+        Width = 540
         Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'JumpingGroupBox'
-        ClientHeight = 102
-        ClientWidth = 465
+        ClientHeight = 75
+        ClientWidth = 536
         TabOrder = 1
         object AdjustTopLineDueToCommentCheckBox: TCheckBox
           AnchorSideLeft.Control = JumpingGroupBox
@@ -526,9 +527,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentColor = False
         TabOrder = 3
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -854,7 +853,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SplitPreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object SpaceNotCosmosPage: TPage
@@ -924,9 +922,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentColor = False
         TabOrder = 2
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1252,7 +1248,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SpacePreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object IdentifierCompletionPage: TPage
