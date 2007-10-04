@@ -9228,7 +9228,7 @@ paint requests received by the parent control.</pre>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
-        <descr><p>The TGraphicsControl.Canvas is a clipping window to the parent canvas.</br></br>
+        <descr><p>The TGraphicsControl.Canvas is a clipping window to the parent canvas.<br/><br/>
           If you ask for the Canvas.Width or Canvas.Height, you are actually 
 getting the parent control's Canvas dimensions. To get the dimensions of the 
 TGraphicControl, you must query the ClientRect.</p>
