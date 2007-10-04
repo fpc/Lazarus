@@ -82,6 +82,7 @@ type
     FText: WideString;
     FHasCaret: Boolean;
     FHasPaint: Boolean;
+    FOwner: TQtWidget;
 
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
@@ -105,14 +106,15 @@ type
     AVariant: QVariantH;
     LCLObject: TWinControl;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; reintroduce;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
     procedure InitializeWidget;
     procedure DeInitializeWidget;
     procedure RecreateWidget;
+    procedure DestroyNotify(AWidget: TQtWidget); virtual;
     
     destructor Destroy; override;
-    function  GetContainerWidget: QWidgetH; virtual;
+    function GetContainerWidget: QWidgetH; virtual;
   public
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -280,6 +282,8 @@ type
   public
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function ViewPortEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure DestroyNotify(AWidget: TQtWidget); override;
   public
     function cornerWidget: TQtWidget;
     function horizontalScrollBar: TQtScrollBar;
@@ -1042,6 +1046,7 @@ constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCre
 begin
   inherited Create;
 
+  FOwner := nil;
   FOwnWidget := True;
   // Initializes the properties
   FProps := nil;
@@ -1058,6 +1063,7 @@ constructor TQtWidget.CreateFrom(const AWinControl: TWinControl;
 begin
   inherited Create;
 
+  FOwner := nil;
   FOwnWidget := False;
   // Initializes the properties
   FProps := niL;
@@ -1146,6 +1152,12 @@ begin
     setParent(Parent);
 end;
 
+procedure TQtWidget.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FOwner then
+    FOwner := nil;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.Destroy
   Params:  None
@@ -1155,17 +1167,20 @@ destructor TQtWidget.Destroy;
 begin
   DeinitializeWidget;
 
-  if FProps<>nil then
+  if FProps <> nil then
   begin
     FProps.Free;
     FProps:=nil;
   end;
 
-  if FPaintData.ClipRegion<>nil then
+  if FPaintData.ClipRegion <> nil then
   begin
     QRegion_Destroy(FPaintData.ClipRegion);
     FPaintData.ClipRegion:=nil;
   end;
+  
+  if FOwner <> nil then
+    FOwner.DestroyNotify(Self);
 
   inherited Destroy;
 end;
@@ -5575,7 +5590,7 @@ begin
   
   Msg.Msg := CN_NOTIFY;
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_COLUMNCLICK;
+  NMLV.hdr.code := UINT(LVN_COLUMNCLICK);
   NMLV.iItem := -1;
   NMLV.iSubItem := logicalIndex;
   
@@ -5735,7 +5750,7 @@ begin
   Msg.Msg := LM_PRESSED;
   
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.hdr.code := UINT(LVN_ITEMCHANGED);
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -5767,7 +5782,7 @@ begin
   Msg.Msg := LM_CLICKED;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := NM_CLICK;
+  NMLV.hdr.code := UINT(NM_CLICK);
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -5803,7 +5818,7 @@ begin
   Msg.Msg := LM_LBUTTONDBLCLK;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := NM_DBLCLK;
+  NMLV.hdr.code := UINT(NM_DBLCLK);
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -5833,7 +5848,7 @@ begin
   Msg.Msg := CN_NOTIFY;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.hdr.code := UINT(LVN_ITEMCHANGED);
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -5921,7 +5936,7 @@ begin
   Msg.Msg := CN_NOTIFY;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGING;
+  NMLV.hdr.code := UINT(LVN_ITEMCHANGING);
   
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
 
@@ -5967,7 +5982,7 @@ begin
 
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.hdr.code := UINT(LVN_ITEMCHANGED);
 
 
   Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
@@ -6364,7 +6379,7 @@ begin
   {$endif}
   FHasPaint := True;
   FViewPortWidget := nil;
-  Result := QAbstractScrollArea_create();
+  Result := QLCLAbstractScrollArea_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
 end;
@@ -6380,20 +6395,48 @@ begin
     WriteLn('TQAbstractScrollArea.Destroy');
   {$endif}
   if Assigned(FViewPortWidget) then
-    FViewPortWidget.Free;
+    FreeAndNil(FViewPortWidget);
 
   inherited Destroy;
 end;
 
-function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH
-  ): Boolean; cdecl;
+function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-{$ifdef QtPaintOnViewport}
   if QEvent_type(Event) = QEventPaint then
     Result := False
   else
-{$endif}
     Result := inherited EventFilter(Sender, Event);
+end;
+
+function TQtAbstractScrollArea.ViewPortEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+{$ifdef VerboseViewPortEventFilter}
+  WriteLn(QEvent_type(Event));
+{$endif}
+  Result := False;
+  QEvent_accept(Event);
+  case QEvent_type(Event) of
+    QEventPaint : viewport.SlotPaint(Sender, Event);
+  else
+    Result := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), Event);
+  end;
+end;
+
+procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FCornerWidget then
+    FCornerWidget := nil;
+
+  if AWidget = FViewPortWidget then
+    FViewPortWidget := nil;
+
+  if AWidget = FHScrollbar then
+    FHScrollbar := nil;
+
+  if AWidget = FVScrollbar then
+    FVScrollbar := nil;
+
+  inherited DestroyNotify(AWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -6570,29 +6613,29 @@ procedure TQtAbstractScrollArea.viewportNeeded;
 var
   AParams: TCreateParams;
   AViewPort: QWidgetH;
+  Method: TMethod;
 begin
   if FViewPortWidget <> niL then
     exit;
 
-  AViewPort := nil;//QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+  AViewPort := nil;// QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
   if AViewPort = nil then
   begin
     FillChar(AParams, SizeOf(AParams), #0);
     FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
     FViewPortWidget.setFocusProxy(Widget);
-{$ifdef QtPaintOnViewport}
     FViewPortWidget.setBackgroundRole(QPaletteNoRole);
     FViewPortWidget.setAutoFillBackground(False);
-    setViewport(FViewPortWidget.Widget);
-{$endif}
   end else
   begin
     FViewPortWidget := TQtWidget.CreateFrom(LCLObject, AViewPort);
   end;
+  FViewPortWidget.FOwner := Self;
   FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
-{$ifndef QtPaintOnViewport}
+
+  TEventFilterMethod(Method) := @ViewPortEventFilter;
+  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
   setViewport(FViewPortWidget.Widget);
-{$endif}
 end;
 
 {------------------------------------------------------------------------------

@@ -423,11 +423,9 @@ begin
   if FWidget <> nil then
     FWidget.HasCaret := False;
 
-{$ifdef QtPaintOnViewport}
   if AWidget is TQtAbstractScrollArea then
     AWidget := TQtAbstractScrollArea(AWidget).viewport;
-{$endif}
-    
+
   FWidget := AWidget;
   if FWidget <> nil then
     FWidget.HasCaret := True;
