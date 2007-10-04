@@ -6405,12 +6405,11 @@ function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cde
 var
   R: TRect;
 begin
-
   case QEvent_type(Event) of
     QEventResize: Result := False;
     QEventLayoutRequest:
     begin
-      {TODO: do something here  }
+      {TODO: something here  (maybe) }
        Result := False;
     end;
   else
@@ -6457,17 +6456,16 @@ end;
 function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   case QEvent_type(Event) of
-    QEventPaint: Result := False;
-    QEventResize,
+    QEventPaint,
+    QEventLayoutRequest: Result := False;
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick,
-    QEventWheel,
-    QEventLayoutRequest:
+    QEventWheel:
     begin
       Result := False;
       if QEvent_spontaneous(Event) then
-      	ViewPortEventFilter(Event, @Result);
+        ViewPortEventFilter(Event, @Result);
     end;
     else
       Result := inherited EventFilter(Sender, Event);
