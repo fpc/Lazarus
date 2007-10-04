@@ -148,7 +148,6 @@ begin
   QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
   QtAbstractScrollArea.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
   QtAbstractScrollArea.AttachEvents;
-  QtAbstractScrollArea.viewportNeeded;
   Result := THandle(QtAbstractScrollArea);
 
   {$ifdef VerboseQt}
