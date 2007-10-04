@@ -3522,7 +3522,7 @@ and the way the Control should be drawn.<br/></descr>
         <short>Function to get text-string associated with control</short>
         <descr>Uses RealGetText rather than GetTextBuf to avoid unnecessary read-writes to PChar buffers</descr>
         <seealso>
-          <link id="GetTextBuf"/>
+          <link id="TControl.GetTextBuf">GetTextBuf</link>
           <link id="RealGetText"/>
         </seealso>
       </element>
@@ -3900,8 +3900,8 @@ and the way the Control should be drawn.<br/></descr>
         <short>Stores text in buffer</short>
         <descr>Uses RealSetText rather than SetTextBuf to avoid unnecessary read-writes to PChar buffer</descr>
         <seealso>
-          <link id="RealSetText"/>
-          <link id="SetTextBuf"/>
+          <link id="TControl.RealSetText">RealSetText</link>
+          <link id="TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4943,9 +4943,9 @@ and the way the Control should be drawn.<br/></descr>
         <short>Function to get a text-string associated with the control</short>
         <descr>This is the function that is actually used by GetTextBuf, and loads a string rather than performing read-write to a PChar buffer</descr>
         <seealso>
-          <link id="GetTextBuf"/>
-          <link id="RealSetText"/>
-          <link id="SetTextBuf"/>
+          <link id="TControl.GetTextBuf">GetTextBuf</link>
+          <link id="TControl.RealSetText">RealSetText</link>
+          <link id="TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -4957,9 +4957,9 @@ and the way the Control should be drawn.<br/></descr>
         <short>Procedure to store text associated with the control in a string</short>
         <descr>This is the procedure that is actually used by SetTextBuf, and stores text as a string rather than performing read-write to a PChar buffer</descr>
         <seealso>
-          <link id="SetTextBuf"/>
-          <link id="RealGetText"/>
-          <link id="GetTextBuf"/>
+          <link id="TControl.SetTextBuf">SetTextBuf</link>
+          <link id="TControl.RealGetText">RealGetText</link>
+          <link id="TControl.GetTextBuf">GetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5384,7 +5384,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
         <short>Dock - Procedure governing Docking of Control</short>
         <descr><p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls DoDock to perform the actual docking process</p></descr>
         <errors>An exception is raised if there is already a docking process in progress for this control</errors>
-        <seealso><link id="DoDock"/></seealso>
+        <seealso><link id="TControl.DoDock">DoDock</link></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.Dock.NewDockSite">
@@ -5397,19 +5397,9 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>ManualDock - permits operator-defined docking</short>
-        <descr><p>
-          <pre>{------------------------------------------------------------------------------
-  function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
-    ControlSide: TAlign): Boolean;
-
-  Docks this control to DropControl or on NewDockSite.
-  If DropControl is not <B>nil</B>, ControlSide defines on which side of DropControl
-  this control is docked. (alNone,alClient for stacked in pages). DropControl
-  will become part of a TDockManager.
-  If DropControl is <B>nil</B>, then DropControl becomes a normal child of NewDockSite
-  and ControlSide is ignored.
-------------------------------------------------------------------------------}
-</pre></p>
+        <descr><p>Docks this control to DropControl or on NewDockSite.</p>
+<p>If DropControl is not <b>nil</b>, ControlSide defines on which side of DropControl this control is docked. (alNone,alClient for stacked in pages). DropControl will become part of a TDockManager.</p>
+<p>If DropControl is <b>nil</b>, then DropControl becomes a normal child of NewDockSite and ControlSide is ignored.</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
@@ -5418,15 +5408,15 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ManualDock.NewDockSite">
-        <short>The new site to which the control is docked, if DropControl has been found to be <B>nil</B></short>
+        <short>The new site to which the control is docked, if DropControl has been found to be <b>nil</b></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ManualDock.DropControl">
-        <short>If <B>nil</B> (default) then ignored else used as the control for docking, on side specified by ControlSide</short>
+        <short>If <b>nil</b> (default) then ignored else used as the control for docking, on side specified by ControlSide</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ManualDock.ControlSide">
-        <short>The side on which the control is to be docked, if DropControl is not <B>nil</B></short>
+        <short>The side on which the control is to be docked, if DropControl is not <b>nil</b></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
@@ -5456,7 +5446,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <element name="TControl.ReplaceDockedControl">
         <short>Remove a previously docked control and put a new control in its place</short>
         <descr>Checks to see whether there is a previously docked control, <br/>and removes it, then puts the new control in its place</descr>
-        <seealso><link id="ManualDock"/></seealso>
+        <seealso><link id="TControl.ManualDock">ManualDock</link></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ReplaceDockedControl.Result">
@@ -5468,11 +5458,11 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ReplaceDockedControl.NewDockSite">
-        <short>The new site for docking; used if DropControl is <B>nil</B></short>
+        <short>The new site for docking; used if DropControl is <b>nil</b></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ReplaceDockedControl.DropControl">
-        <short>The control site to be used for docking, unless it is <B>nil</B> when it is igored. Passed straight through as an argument to ManualDock</short>
+        <short>The control site to be used for docking, unless it is <b>nil</b> when it is igored. Passed straight through as an argument to ManualDock</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ReplaceDockedControl.ControlSide">
@@ -5596,7 +5586,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <element name="TControl.SetInitialBounds">
         <short>Sets the bounds of the control initially, when it is created</short>
         <descr>Checks that this is a new control, <br/>then calls SetBounds to set up coordinates defining its position</descr>
-        <seealso><link id="SetBounds"/></seealso>
+        <seealso><link id="TControl.SetBounds">SetBounds</link></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetInitialBounds.aLeft">
@@ -5870,8 +5860,8 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
 </pre>
         </descr>
         <seealso>
-          <link id="RealGetText"/>
-          <link id="GetText"/>
+          <link id="TControl.RealGetText">RealGetText</link>
+          <link id="TControl.GetText">GetText</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -5914,8 +5904,8 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
 </pre>
         </descr>
         <seealso>
-          <link id="RealSetText"/>
-          <link id="SetText"/>
+          <link id="TControl.RealSetText">RealSetText</link>
+          <link id="TControl.SetText">SetText</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6144,26 +6134,17 @@ Bounding rectangle (top-left, bottom-right) is defined in TRect</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>Caption - the text-string appearing on the Control, usually used to identify its function</short>
-        <descr><p>By default, the Caption appears the same as the control Name in the Object Inspector, <br/>and the developer needs to set it explicitly to some new text.<br/><br/>
-
-Gets caption as a text-string (GetText), or stores the new caption (SetText). Shows flag if caption is stored (IsCaptionStored).<br/><br/><pre>* The VCL implementation relies on the virtual Get/SetTextBuf to 
- * exchange text between widgets and VCL. This means a lot of 
- * (unnecesary) text copies.
- * The LCL uses strings for exchanging text (more efficient).
- * To maintain VCL compatibility, the virtual RealGet/SetText is
- * introduced. These functions interface with the LCLInterface. The
- * default Get/SetTextbuf implementation calls the RealGet/SetText.
- * As long as the Get/SetTextBuf isn't overridden Get/SetText 
- * calls RealGet/SetText to avoid PChar copying.
- * To keep things optimal, LCL implementations should always 
- * override RealGet/SetText. Get/SetTextBuf is only kept for
- * compatibility.
- 
-
-</pre></p></descr>
+        <descr><p>By default, the Caption appears the same as the control Name in the Object Inspector, 
+and the developer needs to set it explicitly to some new text.</p>
+<p>Gets caption as a text-string (GetText), or stores the new caption (SetText). Shows flag if caption is stored (IsCaptionStored).</p>
+<p>The VCL implementation relies on the virtual Get/SetTextBuf to exchange text between widgets and VCL. This means a lot of 
+(unnecesary) text copies. The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual RealGet/SetText is
+introduced. These functions interface with the LCLInterface. The default Get/SetTextbuf implementation calls the RealGet/SetText.
+As long as the Get/SetTextBuf isn't overridden Get/SetText calls RealGet/SetText to avoid PChar copying.
+To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p></descr>
         <seealso>
-          <link id="GetText"/>
-          <link id="SetText"/>
+          <link id="TControl.GetText">GetText</link>
+          <link id="TControl.SetText">SetText</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -6275,7 +6256,7 @@ Reads or writes a flag if  a mouse click is detected, and sets a flag if a value
         <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse hovers over an object) is to be shown</descr>
         <seealso>
           <link id="THintInfo"/>
-          <link id="TControShowHintEvent"/>
+          <link id="TControlShowHintEvent"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -6295,7 +6276,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <element name="TControl.ShowHint">
         <short>Flag to determine: Is hint to be displayed for this control?</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint</descr>
-        <seealso><link id="OnShowHint"/></seealso>
+        <seealso><link id="TControl.OnShowHint">OnShowHint</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
@@ -9233,7 +9214,7 @@ paint requests received by the parent control.</pre>
 getting the parent control's Canvas dimensions. To get the dimensions of the 
 TGraphicControl, you must query the ClientRect.</p>
         </descr>
-        <seealso><link id="FCanvas"/></seealso>
+        <seealso><link id="TGraphicControl.FCanvas">FCanvas</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.OnPaint">
