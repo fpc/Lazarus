@@ -1134,6 +1134,7 @@ var
   ObjID: Integer = 0;
   BoolStr: Array[0..3] of String;
   HookList: TList;
+  FRInitialized: Boolean = False;
 
   // variables used through report building
   PrevY, PrevBottomY, ColumnXAdjust: Integer;
@@ -6489,8 +6490,31 @@ end;
 
 {----------------------------------------------------------------------------}
 constructor TfrReport.Create(AOwner: TComponent);
+const
+  Clr: Array[0..1] of TColor = (clWhite, clSilver);
+
+var
+  j: Integer;
+  i: Integer;
 begin
   inherited Create(AOwner);
+  if not FRInitialized then
+  begin
+    FRInitialized := True;
+    SBmp := TBitmap.Create;
+    TempBmp := TBitmap.Create;
+    SBmp.Width := 8;
+    SBmp.Height := 8;
+    TempBmp.Width := 8;
+    TempBmp.Height := 8;
+    for j := 0 to 7 do
+    begin
+      for i := 0 to 7 do
+        SBmp.Canvas.Pixels[i, j] := Clr[(j + i) mod 2];
+    end;
+    frProgressForm := TfrProgressForm.Create(nil);
+  end;
+
   FPages := TfrPages.Create(Self);
   FEMFPages := TfrEMFPages.Create(Self);
   FVars := TStringList.Create;
@@ -8708,30 +8732,15 @@ end;
 
 {----------------------------------------------------------------------------}
 procedure DoInit;
-const
-  Clr: Array[0..1] of TColor = (clWhite, clSilver);
-var
-  i, j: Integer;
 begin
   RegisterClasses([TfrPageReport,TfrPageDialog]);
   
   frDesigner:=nil;
   
   SMemo := TStringList.Create;
-  SBmp := TBitmap.Create;
-  TempBmp := TBitmap.Create;
-  SBmp.Width := 8;
-  SBmp.Height := 8;
-  TempBmp.Width := 8;
-  TempBmp.Height := 8;
-  for j := 0 to 7 do
-  begin
-    for i := 0 to 7 do
-      SBmp.Canvas.Pixels[i, j] := Clr[(j + i) mod 2];
-  end;
-  
+
   frRegisterFunctionLibrary(TfrStdFunctionLibrary);
-  frProgressForm := TfrProgressForm.Create(nil);
+  
   
   frCharset := StrToInt(sCharset);
 
