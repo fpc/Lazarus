@@ -32,22 +32,12 @@
         <PackageName Value="CodeTools"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="1">
       <Unit0>
         <Filename Value="fixdefinitionorder.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FixDefinitionOrder"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="scanexamples/simplefunctions.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleFunctions"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="scanexamples/wrongforwarddefinitions.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="WrongForwardDefinitions"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

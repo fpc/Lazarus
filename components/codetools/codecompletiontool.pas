@@ -1384,7 +1384,8 @@ var
     
   begin
     // check if definition is an alias
-    // Example: const A = B;  or   const A = B();
+    // Example:  const A = B;  or   const A = B();
+    
     if (Node.Parent=nil) then exit;
     if not (Node.Parent.Desc in [ctnConstSection,ctnTypeSection]) then exit;
     // this is a const or type
@@ -1427,34 +1428,27 @@ var
       end;
     end;
     if NeededType=ctnNone then exit;
-    if (NeededType<>Node.Desc) or (not OnlyWrongType) then begin
-      // add alias
-      if NeededType<>Node.Desc then begin
-        DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',NodeDescToStr(NeededType)]);
-      end;
-      if TreeOfCodeTreeNodeExt=nil then
-        TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-      NodeExt:=NodeExtMemManager.NewNode;
-      NodeExt.Node:=Node;
-      NodeExt.Txt:=GetRedefinitionNodeText(Node);
-      NodeExt.Data:=ReferingNode;
-      NodeExt.Flags:=NeededType;
-      TreeOfCodeTreeNodeExt.Add(NodeExt);
+    // add alias
+    if NeededType<>Node.Desc then begin
+      DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',NodeDescToStr(NeededType)]);
     end;
+    if TreeOfCodeTreeNodeExt=nil then
+      TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt.Node:=Node;
+    NodeExt.Txt:=GetRedefinitionNodeText(Node);
+    NodeExt.Data:=ReferingNode;
+    NodeExt.Flags:=NeededType;
+    TreeOfCodeTreeNodeExt.Add(NodeExt);
   end;
-
-var
-  NodeExt: TCodeTreeNodeExtension;
-  Node: TCodeTreeNode;
-  NodeText: String;
-  AVLNode: TAVLTreeNode;
-begin
-  Result:=false;
-  TreeOfCodeTreeNodeExt:=nil;
-  BuildTree(true);
-
-  AllNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-  try
+  
+  procedure CollectAllDefinitions;
+  var
+    Node: TCodeTreeNode;
+    NodeText: String;
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+  begin
     Node:=Tree.Root;
     while Node<>nil do begin
       case Node.Desc of
@@ -1489,7 +1483,12 @@ begin
         Node:=Node.Next;
       end;
     end;
-
+  end;
+  
+  procedure CollectAllAliasDefinitions;
+  var
+    Node: TCodeTreeNode;
+  begin
     Node:=Tree.Root;
     while Node<>nil do begin
       case Node.Desc of
@@ -1508,7 +1507,101 @@ begin
         Node:=Node.Next;
       end;
     end;
+  end;
+  
+  procedure ResolveAliases;
+  
+    function FindAliasRoot(Node: TCodeTreeNode;
+      out NeededRootDesc: TCodeTreeNodeDesc): TCodeTreeNode;
+    var
+      AliasText: String;
+      AVLNode: TAVLTreeNode;
+      ReferingNode: TCodeTreeNode;
+      OldDesc: TCodeTreeNodeDesc;
+      NodeExt: TCodeTreeNodeExtension;
+    begin
+      Result:=Node;
+      NeededRootDesc:=Node.Desc;
+      AliasText:=GetRedefinitionNodeText(Node);
+      if AliasText='' then exit;
+      AVLNode:=FindCodeTreeNodeExtAVLNode(TreeOfCodeTreeNodeExt,AliasText);
+      if AVLNode=nil then exit;
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      NeededRootDesc:=TCodeTreeNodeDesc(NodeExt.Flags);
 
+      ReferingNode:=TCodeTreeNode(NodeExt.Data);
+      if ReferingNode=nil then exit;
+      // this is an alias => search further
+      if ReferingNode.Desc=ctnNone then begin
+        // circle
+        exit;
+      end;
+      // mark node as visited
+      OldDesc:=Node.Desc;
+      Node.Desc:=ctnNone;
+      Result:=FindAliasRoot(ReferingNode,NeededRootDesc);
+      // unmark node as visited
+      Node.Desc:=OldDesc;
+      if NeededRootDesc=ctnNone then
+        NeededRootDesc:=Node.Desc;
+    end;
+  
+  var
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+    ReferingNode: TCodeTreeNode;
+    NeededType: TCodeTreeNodeDesc;
+  begin
+    if TreeOfCodeTreeNodeExt=nil then exit;
+    AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
+    while AVLNode<>nil do begin
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      ReferingNode:=TCodeTreeNode(NodeExt.Data);
+      if ReferingNode<>nil then begin
+        // this node is an alias.
+        // => find the root alias
+        ReferingNode:=FindAliasRoot(ReferingNode,NeededType);
+        NodeExt.Data:=ReferingNode;
+        NodeExt.Flags:=NeededType;
+      end;
+      AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+    end;
+  end;
+  
+  procedure RemoveGoodAliases;
+  var
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+    NeededType: TCodeTreeNodeDesc;
+    NextAVLNode: TAVLTreeNode;
+  begin
+    AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
+    while AVLNode<>nil do begin
+      NextAVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      NeededType:=TCodeTreeNodeDesc(NodeExt.Flags);
+      if NodeExt.Node.Desc=NeededType then begin
+        TreeOfCodeTreeNodeExt.RemovePointer(NodeExt);
+        NodeExtMemManager.DisposeNode(NodeExt);
+      end;
+      AVLNode:=NextAVLNode;
+    end;
+  end;
+  
+begin
+  Result:=false;
+  TreeOfCodeTreeNodeExt:=nil;
+  BuildTree(true);
+
+  AllNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+    if OnlyWrongType then
+      CollectAllDefinitions;
+    CollectAllAliasDefinitions;
+    if OnlyWrongType then begin
+      ResolveAliases;
+      RemoveGoodAliases;
+    end;
   finally
     NodeExtMemManager.DisposeAVLTree(AllNodes);
   end;
@@ -1522,7 +1615,7 @@ function TCodeCompletionCodeTool.FixAliasDefinitions(
   The function body will be removed.
   See the function FindAliasDefinitions.
 }
-  function FindReferingNode(DefNode: TCodeTreeNode): TCodeTreeNode;
+  function FindReferingNodeExt(DefNode: TCodeTreeNode): TCodeTreeNodeExtension;
   var
     AVLNode: TAVLTreeNode;
     NodeExt: TCodeTreeNodeExtension;
@@ -1531,7 +1624,7 @@ function TCodeCompletionCodeTool.FixAliasDefinitions(
     while AVLNode<>nil do begin
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
       if NodeExt.Node=DefNode then begin
-        Result:=TCodeTreeNode(NodeExt.Data);
+        Result:=NodeExt;
         exit;
       end;
       AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
@@ -1544,8 +1637,8 @@ var
   NodeExt: TCodeTreeNodeExtension;
   DefNode: TCodeTreeNode;
   NextAVLNode: TAVLTreeNode;
-  ReferingNodeInFront: TCodeTreeNode;
-  ReferingNodeBehind: TCodeTreeNode;
+  ReferingNodeInFront: TCodeTreeNodeExtension;
+  ReferingNodeBehind: TCodeTreeNodeExtension;
   NewSrc: String;
   FromPos: LongInt;
   ReferingType: TCodeTreeNodeDesc;
@@ -1577,8 +1670,9 @@ begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
     ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
+    ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
 
-    DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
+    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
 
     case ReferingType of
     ctnTypeDefinition: NewSrc:='type';
@@ -1595,9 +1689,10 @@ begin
         CurPos.StartPos,CurPos.EndPos,NewSrc) then exit;
     end else begin
       // this is not the start of the section
-      ReferingNodeInFront:=FindReferingNode(DefNode.PriorBrother);
+      ReferingNodeInFront:=FindReferingNodeExt(DefNode.PriorBrother);
       if (ReferingNodeInFront=nil)
-      or (ReferingNodeInFront.Desc<>ReferingType) then begin
+      or (TCodeTreeNodeDesc(ReferingNodeInFront.Flags)<>ReferingType) then
+      begin
         // the node in front has a different section
         FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
         if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
@@ -1610,7 +1705,7 @@ begin
       // this is the end of the section
     end else begin
       // this is not the end of the section
-      ReferingNodeBehind:=FindReferingNode(DefNode.NextBrother);
+      ReferingNodeBehind:=FindReferingNodeExt(DefNode.NextBrother);
       if ReferingNodeBehind<>nil then begin
         // the next node will change the section
       end else begin
@@ -2893,12 +2988,14 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       // restore destination section if needed
       if not NextInsertAtSamePos then begin
         // this was the last insertion at this destination
-        if (NeedSection<>DestSection)
+        DebugLn(['MoveNodes this was the last insertion at this dest NeedSection=',NodeDescToStr(NeedSection),' DestSection=',NodeDescToStr(DestSection)]);
+        if (DestNode.Desc in AllIdentifierDefinitions)
+        and (NeedSection<>DestSection)
         and (DestSection in AllDefinitionSections) then begin
           // restore the section of destination
           case DestSection of
-          ctnVarDefinition: NewTxt:='var';
-          ctnConstDefinition: NewTxt:='const';
+          ctnVarSection: NewTxt:='var';
+          ctnConstSection: NewTxt:='const';
           ctnResStrSection: NewTxt:='resourcestring';
           ctnTypeSection: NewTxt:='type';
           ctnLabelSection: NewTxt:='label';

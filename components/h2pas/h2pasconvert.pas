@@ -2267,9 +2267,26 @@ begin
   i:=0;
   while i<=Lines.Count-1 do begin
     Line:=Lines[i];
+    // example: #define MPI_ARGV_NULL (char **)0
     if REMatches(Line,'^#define\s+([a-zA-Z0-9_]+)\s+(\(.*\*\)0)\s*($|//|/\*)')
     then begin
       REVarPos(2,MacroStart,MacroLen);
+      Line:=copy(Line,1,MacroStart-1)+'NULL'
+        +copy(Line,MacroStart+MacroLen,length(Line));
+      Lines[i]:=Line;
+    end
+    else // example: #define MPI_NULL_COPY_FN   ((MPI_Copy_function *)0)
+    if REMatches(Line,'^#define\s+([a-zA-Z0-9_]+)\s+(\(\(.*\*\)0\))\s*($|//|/\*)')
+    then begin
+      REVarPos(2,MacroStart,MacroLen);
+      Line:=copy(Line,1,MacroStart-1)+'NULL'
+        +copy(Line,MacroStart+MacroLen,length(Line));
+      Lines[i]:=Line;
+    end
+    else // example: *)0)
+    if REMatches(Line,'\*\)(0)\)')
+    then begin
+      REVarPos(1,MacroStart,MacroLen);
       Line:=copy(Line,1,MacroStart-1)+'NULL'
         +copy(Line,MacroStart+MacroLen,length(Line));
       Lines[i]:=Line;
