@@ -5382,7 +5382,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <!-- procedure Visibility: public -->
       <element name="TControl.Dock">
         <short>Dock - Procedure governing Docking of Control</short>
-        <descr>Performs checks that there is already a valid host control <br/>to which the present control is to be docked, <br/>removes old controls from the list of docked controls <br/>and adds the new control to the list, <br/>then calls DoDock to perform the actual docking process</descr>
+        <descr><p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls DoDock to perform the actual docking process</p></descr>
         <errors>An exception is raised if there is already a docking process in progress for this control</errors>
         <seealso><link id="DoDock"/></seealso>
       </element>
@@ -5397,7 +5397,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>ManualDock - permits operator-defined docking</short>
-        <descr>
+        <descr><p>
           <pre>{------------------------------------------------------------------------------
   function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
     ControlSide: TAlign): Boolean;
@@ -5409,7 +5409,7 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
   If DropControl is <B>nil</B>, then DropControl becomes a normal child of NewDockSite
   and ControlSide is ignored.
 ------------------------------------------------------------------------------}
-</pre>
+</pre></p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
@@ -6144,7 +6144,7 @@ Bounding rectangle (top-left, bottom-right) is defined in TRect</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>Caption - the text-string appearing on the Control, usually used to identify its function</short>
-        <descr>By default, the Caption appears the same as the control Name in the Object Inspector, <br/>and the developer needs to set it explicitly to some new text.<br/><br/>
+        <descr><p>By default, the Caption appears the same as the control Name in the Object Inspector, <br/>and the developer needs to set it explicitly to some new text.<br/><br/>
 
 Gets caption as a text-string (GetText), or stores the new caption (SetText). Shows flag if caption is stored (IsCaptionStored).<br/><br/><pre>* The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
@@ -6160,7 +6160,7 @@ Gets caption as a text-string (GetText), or stores the new caption (SetText). Sh
  * compatibility.
  
 
-</pre></descr>
+</pre></p></descr>
         <seealso>
           <link id="GetText"/>
           <link id="SetText"/>
@@ -9228,12 +9228,10 @@ paint requests received by the parent control.</pre>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
-        <descr>
-          <pre>The TGraphicsControl.Canvas is a clipping window to the parent 
-canvas.
+        <descr><p>The TGraphicsControl.Canvas is a clipping window to the parent canvas.</br></br>
           If you ask for the Canvas.Width or Canvas.Height, you are actually 
 getting the parent control's Canvas dimensions. To get the dimensions of the 
-TGraphicControl, you must query the ClientRect.</pre>
+TGraphicControl, you must query the ClientRect.</p>
         </descr>
         <seealso><link id="FCanvas"/></seealso>
       </element>
