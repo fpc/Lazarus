@@ -6580,7 +6580,8 @@ end;
 procedure TQtAbstractScrollArea.setVisible(visible: Boolean);
 begin
   inherited setVisible(visible);
-  viewPort.setVisible(visible);
+  if FViewPortWidget <> nil then
+    FViewPortWidget.setVisible(visible);
 end;
 
 {------------------------------------------------------------------------------
