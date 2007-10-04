@@ -6405,12 +6405,12 @@ function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cde
 var
   R: TRect;
 begin
+
   case QEvent_type(Event) of
     QEventResize: Result := False;
     QEventLayoutRequest:
     begin
-      {TODO: we'll never catch this place, since layout request comes
-       into scrollarea only. arghhh ?!$Q#$!#!# }
+      {TODO: do something here  }
        Result := False;
     end;
   else
@@ -6457,15 +6457,17 @@ end;
 function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   case QEvent_type(Event) of
-    QEventPaint,
+    QEventPaint: Result := False;
+    QEventResize,
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
-    QEventMouseButtonDblClick: Result := False;
+    QEventMouseButtonDblClick,
+    QEventWheel,
     QEventLayoutRequest:
     begin
       Result := False;
-      {TODO: Check what we can do here with viewport, seem that this
-       comes too late (after few resize events ...) }
+      if QEvent_spontaneous(Event) then
+      	ViewPortEventFilter(Event, @Result);
     end;
     else
       Result := inherited EventFilter(Sender, Event);
@@ -6477,8 +6479,7 @@ begin
   {$ifdef VerboseViewPortEventFilter}
     WriteLn('ViewPortEventFilter ',QEvent_type(Event));
   {$endif}
-  retval^ := false;
-  // QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
+  retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
@@ -6694,6 +6695,7 @@ begin
 
   QLCLAbstractScrollArea_viewportEvent_Override(Method) := @ViewPortEventFilter;
   QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
+  
   setViewport(FViewPortWidget.Widget);
 end;
 
