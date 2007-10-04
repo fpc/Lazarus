@@ -282,7 +282,8 @@ type
   public
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    function ViewPortEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
+
     procedure DestroyNotify(AWidget: TQtWidget); override;
   public
     function cornerWidget: TQtWidget;
@@ -6408,12 +6409,12 @@ begin
     Result := inherited EventFilter(Sender, Event);
 end;
 
-function TQtAbstractScrollArea.ViewPortEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+procedure TQtAbstractScrollArea.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
 begin
   {$ifdef VerboseViewPortEventFilter}
-	  WriteLn(QEvent_type(Event));
+    WriteLn(QEvent_type(Event));
   {$endif}
-	Result := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), Event);
+  retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
@@ -6627,7 +6628,7 @@ begin
   FViewPortWidget.FOwner := Self;
   FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
 
-  TEventFilterMethod(Method) := @ViewPortEventFilter;
+  QLCLAbstractScrollArea_viewportEvent_Override(Method) := @ViewPortEventFilter;
   QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
   setViewport(FViewPortWidget.Widget);
 end;
