@@ -6410,16 +6410,10 @@ end;
 
 function TQtAbstractScrollArea.ViewPortEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-{$ifdef VerboseViewPortEventFilter}
-  WriteLn(QEvent_type(Event));
-{$endif}
-  Result := False;
-  QEvent_accept(Event);
-  case QEvent_type(Event) of
-    QEventPaint : viewport.SlotPaint(Sender, Event);
-  else
-    Result := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), Event);
-  end;
+  {$ifdef VerboseViewPortEventFilter}
+	  WriteLn(QEvent_type(Event));
+  {$endif}
+	Result := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), Event);
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
