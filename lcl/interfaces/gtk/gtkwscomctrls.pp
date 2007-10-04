@@ -34,7 +34,7 @@ uses
   GLib, Gtk, Gdk,
   {$ENDIF}
   // LCL
-  ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics, CommCtrl,
+  ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
   StdCtrls, LCLProc, ImgList, Math,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc, WSControls,

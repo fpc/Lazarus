@@ -362,7 +362,7 @@ uses
   GtkThemes,
 ////////////////////////////////////////////////////
   Buttons, StdCtrls, PairSplitter,
-  GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
+  GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin,
   ExtCtrls, FileCtrl, LResources, gtkglobals;
 
 {$I gtklistsl.inc}

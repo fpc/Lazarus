@@ -165,7 +165,7 @@ uses
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
-  Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
+  Spin, ExtCtrls, FileCtrl, LResources;
 
 // the implementation of the utility methods
 {$I carbonobject.inc}

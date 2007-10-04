@@ -40,7 +40,7 @@ interface
 uses
   SysUtils, Types, Classes, Math, LCLStrConsts, LResources, LCLIntf, LCLType,
   LCLProc, AvgLvlTree, LMessages, ImgList, ActnList, GraphType, Graphics, Menus,
-  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl, Buttons, Themes;
+  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons, Themes;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,

@@ -2428,6 +2428,134 @@ const
   MK_XBUTTON1 = $20;
   MK_XBUTTON2 = $40;
 
+//==============================================
+// Constants from commctrl
+//==============================================
+
+//-------------
+// Common
+//-------------
+
+const
+  //all controls
+  NM_FIRST           = 0;      
+  NM_OUTOFMEMORY     = NM_FIRST - 1;
+  NM_CLICK           = NM_FIRST - 2;
+  NM_DBLCLK          = NM_FIRST - 3;
+  NM_RETURN          = NM_FIRST - 4;
+  NM_RCLICK          = NM_FIRST - 5;
+  NM_RDBLCLK         = NM_FIRST - 6;
+  NM_SETFOCUS        = NM_FIRST - 7;
+  NM_KILLFOCUS       = NM_FIRST - 8;
+  NM_CUSTOMDRAW      = NM_FIRST - 12;
+  NM_HOVER           = NM_FIRST - 13;
+  NM_NCHITTEST       = NM_FIRST - 14;   
+  NM_KEYDOWN         = NM_FIRST - 15;   
+  NM_RELEASEDCAPTURE = NM_FIRST - 16;
+  NM_SETCURSOR       = NM_FIRST - 17;   
+  NM_CHAR            = NM_FIRST - 18;   
+
+  NM_LAST            = NM_FIRST - 99;
+    
+  //listview
+  LVN_FIRST    = -100;   
+  LVN_LAST     = -199;
+  
+  //header
+  HDN_FIRST    = -300;   
+  HDN_LAST     = -399;
+  
+  //treeview
+  TVN_FIRST    = -400;   
+  TVN_LAST     = -499;
+  
+  //tooltips
+  TTN_FIRST    = -520;   
+  TTN_LAST     = -549;
+  
+  //tab control
+  TCN_FIRST    = -550;   
+  TCN_LAST     = -580;
+  
+  // toolbar
+  TBN_First    = -700;
+  TBN_Last     = -720;
+
+const
+  CCS_TOP                 = $00000001;
+  CCS_NOMOVEY             = $00000002;
+  CCS_BOTTOM              = $00000003;
+  CCS_NORESIZE            = $00000004;
+  CCS_NOPARENTALIGN       = $00000008;
+  CCS_ADJUSTABLE          = $00000020;
+  CCS_NODIVIDER           = $00000040;
+  CCS_VERT                = $00000080;
+  CCS_LEFT                = (CCS_VERT or CCS_TOP);
+  CCS_RIGHT               = (CCS_VERT or CCS_BOTTOM);
+  CCS_NOMOVEX             = (CCS_VERT or CCS_NOMOVEY);
+
+  ICC_LISTVIEW_CLASSES   = $00000001;
+  ICC_TREEVIEW_CLASSES   = $00000002;
+  ICC_BAR_CLASSES        = $00000004;
+  ICC_TAB_CLASSES        = $00000008;
+  ICC_UPDOWN_CLASS       = $00000010;
+  ICC_PROGRESS_CLASS     = $00000020;
+  ICC_HOTKEY_CLASS       = $00000040;
+  ICC_ANIMATE_CLASS      = $00000080;
+  ICC_WIN95_CLASSES      = $000000FF;
+  ICC_DATE_CLASSES       = $00000100;
+  ICC_USEREX_CLASSES     = $00000200;
+  ICC_COOL_CLASSES       = $00000400;
+  ICC_INTERNET_CLASSES   = $00000800;
+  ICC_PAGESCROLLER_CLASS = $00001000;
+  ICC_NATIVEFNTCTL_CLASS = $00002000;
+
+//-------------
+// Listview
+//-------------
+const
+  LVN_ITEMCHANGING    = LVN_FIRST-0;
+  LVN_ITEMCHANGED     = LVN_FIRST-1;
+  LVN_INSERTITEM      = LVN_FIRST-2;
+  LVN_DELETEITEM      = LVN_FIRST-3;
+  LVN_DELETEALLITEMS  = LVN_FIRST-4;
+  LVN_COLUMNCLICK     = LVN_FIRST-8;
+  LVN_BEGINDRAG       = LVN_FIRST-9;
+  LVN_BEGINRDRAG      = LVN_FIRST-11;
+
+const
+  LVIF_TEXT           = $0001;
+  LVIF_IMAGE          = $0002;
+  LVIF_PARAM          = $0004;
+  LVIF_STATE          = $0008;
+  LVIF_INDENT         = $0010;
+  LVIF_NORECOMPUTE    = $0800;
+
+  LVIS_FOCUSED        = $0001;
+  LVIS_SELECTED       = $0002;
+  LVIS_CUT            = $0004;
+  LVIS_DROPHILITED    = $0008;
+  LVIS_ACTIVATING     = $0020;
+
+  LVIS_OVERLAYMASK    = $0F00;
+  LVIS_STATEIMAGEMASK = $F000;
+
+type
+  PNMListView = ^TNMListView;
+  TNMListView = packed record
+    hdr: TNMHDR;
+    iItem: Integer;
+    iSubItem: Integer;
+    uNewState: UINT;
+    uOldState: UINT;
+    uChanged: UINT;
+    ptAction: TPoint;
+    lParam: LPARAM;
+  end;
+  _NM_LISTVIEW = TNMListView;
+  NM_LISTVIEW = TNMListView;
+  tagNMLISTVIEW = TNMListView;
+
 
 Function CS_To_String(CompStyle: Integer): String;
 // key mapping

@@ -30,7 +30,7 @@ uses
   // libs
   GLib2, Gtk2, Gdk2, Gdk2pixbuf,
   // LCL
-  ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics, CommCtrl,
+  ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
   StdCtrls, LCLProc, ImgList, Math, Sysutils,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
