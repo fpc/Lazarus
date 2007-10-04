@@ -6442,16 +6442,10 @@ function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Bo
 begin
   case QEvent_type(Event) of
     QEventPaint,
-    QEventLayoutRequest: Result := False;
+    QEventLayoutRequest,
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
-    QEventMouseButtonDblClick,
-    QEventWheel:
-    begin
-      Result := False;
-      if QEvent_spontaneous(Event) then
-        ViewPortEventFilter(Event, @Result);
-    end;
+    QEventMouseButtonDblClick: Result := False;
     else
       Result := inherited EventFilter(Sender, Event);
   end;
