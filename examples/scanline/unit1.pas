@@ -118,7 +118,7 @@ var
 begin
   // fill line with gray
   for i:=0 to (ImgWidth*4)-1 do
-    PByte(LineStart)[i]:=0; // set red, green and blue to 128 (i.e. gray)
+    PByte(LineStart)[i]:=0; // set red, green and blue to 0 (i.e. black)
   // set one pixel to red (this creates a red line)
   PByte(LineStart)[(Row mod ImgWidth)*4+2]:=255;
 end;
