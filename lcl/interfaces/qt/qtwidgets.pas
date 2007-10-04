@@ -42,6 +42,7 @@ uses
 type
   // forward declarations
   TQtListWidget = class;
+  TQtViewPort = class;
 
   TByteSet = set of byte;
   
@@ -107,7 +108,7 @@ type
     LCLObject: TWinControl;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; reintroduce;
-    constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
+    constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); virtual;
     procedure InitializeWidget;
     procedure DeInitializeWidget;
     procedure RecreateWidget;
@@ -274,7 +275,7 @@ type
   TQtAbstractScrollArea = class(TQtFrame)
   private
     FCornerWidget: TQtWidget;
-    FViewPortWidget: TQtWidget;
+    FViewPortWidget: TQtViewPort;
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
   protected
@@ -289,7 +290,7 @@ type
     function cornerWidget: TQtWidget;
     function horizontalScrollBar: TQtScrollBar;
     function verticalScrollBar: TQtScrollBar;
-    function viewport: TQtWidget;
+    function viewport: TQtViewPort;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure SetColor(const Value: PQColor); override;
@@ -301,6 +302,17 @@ type
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
     procedure viewportNeeded;
+  end;
+  
+  { TQtViewPort }
+  TQtViewPort = class(TQtWidget)
+  public
+    ParentArea: TQtAbstractScrollArea;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); override;
+    function getClientBounds: TRect; override;
+    procedure OffsetMousePos(APoint: PQtPoint); override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
   
   { TQtGraphicView }
@@ -6365,6 +6377,47 @@ begin
   QDialog_setSizeGripEnabled(QDialogH(Widget), AEnabled);
 end;
 
+
+{ TQtViewPort }
+constructor TQtViewPort.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+begin
+  inherited Create(AWinControl, AParams);
+  ParentArea := TQtAbstractScrollArea(AWinControl.Handle);
+end;
+
+constructor TQtViewPort.CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
+begin
+  inherited CreateFrom(AWinControl, AWidget);
+  ParentArea := TQtAbstractScrollArea(AWinControl.Handle);
+end;
+
+function TQtViewPort.getClientBounds: TRect;
+begin
+  Result := inherited getClientBounds;
+end;
+
+procedure TQtViewPort.OffsetMousePos(APoint: PQtPoint);
+begin
+  inherited OffsetMousePos(APoint);
+end;
+
+function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  R: TRect;
+begin
+  case QEvent_type(Event) of
+    QEventResize: Result := False;
+    QEventLayoutRequest:
+    begin
+      {TODO: we'll never catch this place, since layout request comes
+       into scrollarea only. arghhh ?!$Q#$!#!# }
+       Result := False;
+    end;
+  else
+    Result := inherited EventFilter(Sender, Event);
+  end;
+end;
+
 { TQtAbstractScrollArea }
 
 {------------------------------------------------------------------------------
@@ -6403,18 +6456,29 @@ end;
 
 function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  if QEvent_type(Event) = QEventPaint then
-    Result := False
-  else
-    Result := inherited EventFilter(Sender, Event);
+  case QEvent_type(Event) of
+    QEventPaint,
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: Result := False;
+    QEventLayoutRequest:
+    begin
+      Result := False;
+      {TODO: Check what we can do here with viewport, seem that this
+       comes too late (after few resize events ...) }
+    end;
+    else
+      Result := inherited EventFilter(Sender, Event);
+  end;
 end;
 
 procedure TQtAbstractScrollArea.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
 begin
   {$ifdef VerboseViewPortEventFilter}
-    WriteLn(QEvent_type(Event));
+    WriteLn('ViewPortEventFilter ',QEvent_type(Event));
   {$endif}
-  retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
+  retval^ := false;
+  // QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
@@ -6573,7 +6637,7 @@ end;
   Params:  None
   Returns: viewport widget of QAbstractScrollArea
  ------------------------------------------------------------------------------}
-function TQtAbstractScrollArea.viewport: TQtWidget;
+function TQtAbstractScrollArea.viewport: TQtViewport;
 begin
   viewportNeeded;
   Result := FViewPortWidget;
@@ -6585,7 +6649,7 @@ begin
   
   if (FVScrollbar <> nil) and (FVScrollbar.getVisible) then
     dec(Result.Right, FVScrollBar.getWidth);
-    
+
   if (FHScrollbar <> nil) and (FHScrollbar.getVisible) then
     dec(Result.Bottom, FHScrollBar.getHeight);
 end;
@@ -6617,13 +6681,13 @@ begin
   if AViewPort = nil then
   begin
     FillChar(AParams, SizeOf(AParams), #0);
-    FViewPortWidget := TQtWidget.Create(LCLObject, AParams);
+    FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
     FViewPortWidget.setFocusProxy(Widget);
     FViewPortWidget.setBackgroundRole(QPaletteNoRole);
     FViewPortWidget.setAutoFillBackground(False);
   end else
   begin
-    FViewPortWidget := TQtWidget.CreateFrom(LCLObject, AViewPort);
+    FViewPortWidget := TQtViewPort.CreateFrom(LCLObject, AViewPort);
   end;
   FViewPortWidget.FOwner := Self;
   FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
