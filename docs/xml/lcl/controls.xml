@@ -6300,7 +6300,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
         <descr>// standard properties, which should be supported by all descendants<br/>Reads message from flag area, or stores a message</descr>
         <seealso>
           <link id="TWndMethod"/>
-          <link id="Messages.TLMessage"/>
+          <link id="LMessages.TLMessage"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->

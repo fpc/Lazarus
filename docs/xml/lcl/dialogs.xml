@@ -1173,7 +1173,7 @@ eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/><br/>
     The HelpCtx argument allows the use of Context Help<br/><br/>
 
     The return value from the Function is the identity of the button pressed, <br/>
-expressed as an integer (see the constant definitions in <link id="TControl"/>
+expressed as an integer (see the constant definitions in <link id="Controls.TControl">TControl</link>
 , [mrNone..mrAll]).</descr>
         <example file="dialogs/trymessagedlg.pas"/>
       </element>
