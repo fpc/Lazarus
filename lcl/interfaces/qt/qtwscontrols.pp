@@ -148,6 +148,7 @@ begin
   QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
   QtAbstractScrollArea.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
   QtAbstractScrollArea.AttachEvents;
+  QtAbstractScrollArea.viewportNeeded;
   Result := THandle(QtAbstractScrollArea);
 
   {$ifdef VerboseQt}
@@ -171,12 +172,8 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     Exit;
 
-  
   Widget := TQtWidget(AWinControl.Handle);
   
-  if Widget is TQtAbstractScrollArea then
-	  TQtAbstractScrollArea(Widget).viewportNeeded;
-
   if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
   begin
     if fsModal in TForm(AWinControl).FormState then

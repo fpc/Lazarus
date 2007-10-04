@@ -307,9 +307,6 @@ type
   { TQtViewPort }
   TQtViewPort = class(TQtWidget)
   public
-    ParentArea: TQtAbstractScrollArea;
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
-    constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); override;
     function getClientBounds: TRect; override;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -6377,19 +6374,7 @@ begin
   QDialog_setSizeGripEnabled(QDialogH(Widget), AEnabled);
 end;
 
-
 { TQtViewPort }
-constructor TQtViewPort.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
-begin
-  inherited Create(AWinControl, AParams);
-  ParentArea := TQtAbstractScrollArea(AWinControl.Handle);
-end;
-
-constructor TQtViewPort.CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH);
-begin
-  inherited CreateFrom(AWinControl, AWidget);
-  ParentArea := TQtAbstractScrollArea(AWinControl.Handle);
-end;
 
 function TQtViewPort.getClientBounds: TRect;
 begin
@@ -6670,24 +6655,15 @@ end;
 procedure TQtAbstractScrollArea.viewportNeeded;
 var
   AParams: TCreateParams;
-  AViewPort: QWidgetH;
   Method: TMethod;
 begin
   if FViewPortWidget <> niL then
     exit;
-
-  AViewPort := nil;// QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
-  if AViewPort = nil then
-  begin
-    FillChar(AParams, SizeOf(AParams), #0);
-    FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
-    FViewPortWidget.setFocusProxy(Widget);
-    FViewPortWidget.setBackgroundRole(QPaletteNoRole);
-    FViewPortWidget.setAutoFillBackground(False);
-  end else
-  begin
-    FViewPortWidget := TQtViewPort.CreateFrom(LCLObject, AViewPort);
-  end;
+  FillChar(AParams, SizeOf(AParams), #0);
+  FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
+  FViewPortWidget.setFocusProxy(Widget);
+  FViewPortWidget.setBackgroundRole(QPaletteNoRole);
+  FViewPortWidget.setAutoFillBackground(False);
   FViewPortWidget.FOwner := Self;
   FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
 
