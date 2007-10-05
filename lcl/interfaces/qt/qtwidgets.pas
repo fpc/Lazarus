@@ -6388,9 +6388,8 @@ begin
   inherited OffsetMousePos(APoint);
 end;
 
+
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  R: TRect;
 begin
   case QEvent_type(Event) of
     QEventResize: Result := False;
@@ -6449,7 +6448,6 @@ function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Bo
 begin
   case QEvent_type(Event) of
     QEventPaint,
-    QEventLayoutRequest,
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick: Result := False;
@@ -6570,13 +6568,25 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtAbstractScrollArea.setHorizontalScrollBar(AScrollBar: TQtScrollBar);
+var
+  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.setHorizontalScrollBar');
   {$endif}
   FHScrollbar := AScrollBar;
   if Assigned(FHScrollBar) then
+  begin
     QAbstractScrollArea_setHorizontalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FHScrollBar.Widget));
+    {$note WORKAROUND}
+    if not (csDesigning in LCLObject.ComponentState) then
+    begin
+      i := getHeight;
+      QWidget_resize(Widget,getWidth,i + FHScrollBar.getHeight);
+      QWidget_update(Widget);
+      QWidget_resize(Widget,getWidth, i);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6585,13 +6595,25 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtAbstractScrollArea.setVerticalScrollBar(AScrollBar: TQtScrollBar);
+var
+  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.setVerticalScrollBar');
   {$endif}
   FVScrollBar := AScrollBar;
   if Assigned(FVScrollBar) then
+  begin
     QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
+    {$note WORKAROUND}
+    if not (csDesigning in LCLObject.ComponentState) and (horizontalScrollBar <> nil) then
+    begin
+      i := getHeight;
+      QWidget_resize(Widget,getWidth,i + FVScrollBar.getWidth);
+      QWidget_update(Widget);
+      QWidget_resize(Widget,getWidth, i);
+    end;
+  end;
 end;
 
 procedure TQtAbstractScrollArea.setVisible(visible: Boolean);
