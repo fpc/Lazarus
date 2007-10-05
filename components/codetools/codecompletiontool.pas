@@ -1442,12 +1442,28 @@ var
     TreeOfCodeTreeNodeExt.Add(NodeExt);
   end;
   
+  procedure UpdateDefinition(const NodeText: string; Node: TCodeTreeNode);
+  var
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
+    if AVLNode=nil then begin
+      // add new node
+      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt.Node:=Node;
+      NodeExt.Txt:=NodeText;
+      AllNodes.Add(NodeExt);
+    end else begin
+      // update node
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      NodeExt.Node:=Node;
+    end;
+  end;
+  
   procedure CollectAllDefinitions;
   var
     Node: TCodeTreeNode;
-    NodeText: String;
-    AVLNode: TAVLTreeNode;
-    NodeExt: TCodeTreeNodeExtension;
   begin
     Node:=Tree.Root;
     while Node<>nil do begin
@@ -1458,27 +1474,15 @@ var
         break;
       ctnTypeDefinition, ctnConstDefinition:
         begin
-          if OnlyWrongType then begin
-            // remember the definition
-            NodeText:=GetRedefinitionNodeText(Node);
-            AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
-            if AVLNode=nil then begin
-              // add new node
-              NodeExt:=NodeExtMemManager.NewNode;
-              NodeExt.Node:=Node;
-              NodeExt.Txt:=NodeText;
-              AllNodes.Add(NodeExt);
-            end else begin
-              // update node
-              NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-              NodeExt.Node:=Node;
-            end;
-          end;
-
+          // remember the definition
+          UpdateDefinition(GetRedefinitionNodeText(Node),Node);
           Node:=Node.NextSkipChilds;
         end;
       ctnProcedure:
-        Node:=Node.NextSkipChilds;
+        begin
+          //UpdateDefinition(GetRedefinitionNodeText(Node),Node);
+          Node:=Node.NextSkipChilds;
+        end;
       else
         Node:=Node.Next;
       end;

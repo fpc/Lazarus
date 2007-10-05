@@ -27,13 +27,17 @@ type
   TMyInteger = longint;
   PMyRecord = ^TMyRecord;
   TMyFunc = procedure(i: integer);
-  MyNilFunc = TMyFunc(0);
-  Func2 = MyNilFunc;
-  Func3 = Func2;
+  MyNilFunc = TMyFunc(0);// should be changed to const
+  Func2 = MyNilFunc;     // should be changed to const
+  Func3 = Func2;         // should be changed to const
 
 type
-  MPI_Delete_function = function (_para1:MPI_Comm; _para2:longint; _para3:pointer; _para4:pointer):longint;cdecl;
-    MPI_NULL_DELETE_FN = MPI_Delete_function(0);
+  FuncType1 = function (_para2:longint; _para3:pointer; _para4:pointer):longint;cdecl;
+    MPI_NULL_DELETE_FN = MPI_Delete_function(0);// should be changed to const
+
+  function ExternalFunc1(_para1:longint; _para2:pointer):longint;cdecl;external name 'ExternalFunc1';
+const
+    ExternalFuncAlias1 = ExternalFunc1;// should be replaced with full declaration
 
 implementation
 
