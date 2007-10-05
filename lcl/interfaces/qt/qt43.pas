@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.52 }
+{ Version : 1.53 }
 
 {$ifdef fpc}
   {$mode delphi}
