@@ -306,11 +306,8 @@ type
   
   { TQtViewPort }
   TQtViewPort = class(TQtWidget)
-  private
-    FViewPortInMouseWheel: Boolean;
   public
     function getClientBounds: TRect; override;
-    procedure OffsetMousePos(APoint: PQtPoint); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
   
@@ -6383,21 +6380,11 @@ begin
   Result := inherited getClientBounds;
 end;
 
-procedure TQtViewPort.OffsetMousePos(APoint: PQtPoint);
-begin
-  inherited OffsetMousePos(APoint);
-end;
-
-
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   case QEvent_type(Event) of
+    QEventWheel,
     QEventResize: Result := False;
-    QEventWheel:
-    begin
-      FViewPortInMouseWheel := True;
-      Result := False;
-    end;
     QEventLayoutRequest:
     begin
       {TODO: something here  (maybe) }
@@ -6450,17 +6437,9 @@ begin
     QEventPaint,
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
-    QEventMouseButtonDblClick: Result := False;
-    QEventWheel:
-    begin
-      if viewport.FViewPortInMouseWheel then
-      begin
-        QEvent_ignore(Event);
-        viewport.FViewPortInMouseWheel := False;
-        ViewPortEventFilter(Event, @Result);
-      end else
-        Result := False;
-    end;
+    QEventMouseButtonDblClick,
+    QEventWheel,
+    QEventContextMenu: Result := False;
     else
       Result := inherited EventFilter(Sender, Event);
   end;
@@ -6471,7 +6450,23 @@ begin
   {$ifdef VerboseViewPortEventFilter}
     WriteLn('ViewPortEventFilter ',QEvent_type(Event));
   {$endif}
-  retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
+  
+  QEvent_accept(Event);
+
+  case QEvent_type(Event) of
+    QEventResize,
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick,
+    QEventPaint:
+    begin
+      retval^ := True;
+      viewport.EventFilter(viewport.Widget, Event);
+      QEvent_ignore(Event);
+    end;
+  else
+    retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
+  end;
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
@@ -6663,12 +6658,13 @@ end;
 function TQtAbstractScrollArea.getClientBounds: TRect;
 begin
   Result := inherited getClientBounds;
-  
+
   if (FVScrollbar <> nil) and (FVScrollbar.getVisible) then
     dec(Result.Right, FVScrollBar.getWidth);
 
   if (FHScrollbar <> nil) and (FHScrollbar.getVisible) then
     dec(Result.Bottom, FHScrollBar.getHeight);
+
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
@@ -6694,7 +6690,6 @@ begin
     exit;
   FillChar(AParams, SizeOf(AParams), #0);
   FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
-  FViewPortWidget.FViewPortInMouseWheel := False;
   FViewPortWidget.setFocusProxy(Widget);
   FViewPortWidget.setBackgroundRole(QPaletteNoRole);
   FViewPortWidget.setAutoFillBackground(False);
@@ -6703,7 +6698,7 @@ begin
 
   QLCLAbstractScrollArea_viewportEvent_Override(Method) := @ViewPortEventFilter;
   QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
-  
+
   setViewport(FViewPortWidget.Widget);
 end;
 
