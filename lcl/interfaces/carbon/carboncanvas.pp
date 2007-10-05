@@ -109,7 +109,6 @@ type
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
   public
     procedure DrawFocusRect(const ARect: TRect);
-    procedure DrawFrameControl(var ARect: TRect; AType, AState: Cardinal);
     procedure DrawSplitter(const ARect: TRect);
     
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
@@ -725,53 +724,6 @@ begin
   OSError(
     HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal),
     Self, 'DrawFocusRect', 'HIThemeDrawFocusRect');
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonDeviceContext.DrawFrameControl
-  Params:  ARect   - Bounding rectangle, returned adujsted to frame client area
-           AType   - Frame-control type
-           AUState - Frame-control state
-
-  Draws a frame control of the specified type and style
- ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.DrawFrameControl(var ARect: TRect; AType,
-  AState: Cardinal);
-var
-  DrawInfo: HIThemeButtonDrawInfo;
-  LabelRect: HIRect;
-begin
-  case AType of
-  DFC_BUTTON:
-    begin
-      DrawInfo.version := 0;
-      
-      if (AState and DFCS_INACTIVE > 0) then
-        DrawInfo.state := kThemeStateInactive
-      else
-      begin
-        if (AState and DFCS_PUSHED > 0) then
-          DrawInfo.state := kThemeStatePressed
-        else
-          DrawInfo.state := kThemeStateActive;
-      end;
-        
-      DrawInfo.kind := kThemeBevelButtonSmall;
-      DrawInfo.value := 0;
-      DrawInfo.adornment := kThemeAdornmentNone;
-    
-      LabelRect := RectToCGRect(ARect);
-      
-      OSError(
-        HIThemeDrawButton(LabelRect, DrawInfo, CGContext,
-          kHIThemeOrientationNormal, @LabelRect),
-        Self, 'DrawFrameControl', 'HIThemeDrawButton');
-        
-      ARect := CGRectToRect(LabelRect);
-    end;
-  else
-    DebugLn('TCarbonDeviceContext.DrawFrameControl TODO Type: ' + DbgS(AType));
-  end;
 end;
 
 {------------------------------------------------------------------------------

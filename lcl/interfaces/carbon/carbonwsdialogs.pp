@@ -193,13 +193,14 @@ var
   DialogRef: NavDialogRef;
   DialogReply: NavReplyRecord;
   FileCount: Integer;
-  FileIdx: Integer;
+  FileIdx, I: Integer;
   Keyword: AEKeyword;
   FileDesc: AEDesc;
   FileRef: FSRef;
   FileURL: CFURLRef;
   FileCFStr: CFStringRef;
   Filters: TParseStringList;
+  T: String;
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
@@ -218,14 +219,17 @@ begin
 
   FilterUPP := NewNavObjectFilterUPP(NavObjectFilterProcPtr(@FilterCallback));
 
+  // user cannot pick individual filter -> use all
   Filters := TParseStringList.Create(FileDialog.Filter, '|');
   try
-    if (FileDialog.FilterIndex > 0) and
-      (FileDialog.FilterIndex * 2 - 1 <= Filters.Count) then
+    T := '';
+    for I := 1 to Filters.Count div 2 do
     begin
-      //DebugLn('Filter ' + Filters[FileDialog.FilterIndex * 2 - 1]);
-      FilterMask := TMaskList.Create(Filters[FileDialog.FilterIndex * 2 - 1]);
+      //DebugLn('Filter ' + Filters[I * 2 - 1]);
+      if T <> '' then T := T + ';' + Filters[I * 2 - 1]
+      else T := Filters[I * 2 - 1];
     end;
+    if T <> '' then FilterMask := TMaskList.Create(T);
   finally
     Filters.Free;
   end;

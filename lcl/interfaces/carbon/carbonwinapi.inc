@@ -536,22 +536,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; UType,
   UState: Cardinal): Boolean;
-var
-  R: TRect;
 begin
-  Result := False;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.DrawFrameControl DC: ' + DbgS(DC) + ' R: ' +
-      DbgS(Rect) + ' Type: ' + DbgS(UType) + ' Style: ' + DbgS(UState));
-  {$ENDIF}
-
-  if not CheckDC(DC, 'DrawFrameControl') then Exit;
-
-  R := Rect;
-  TCarbonDeviceContext(DC).DrawFrameControl(R, UType, UState);
-
-  Result := True;
+  Result := inherited DrawFrameControl(DC, Rect, UType, UState);
 end;
 
 function TCarbonWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;

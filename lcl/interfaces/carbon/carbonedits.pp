@@ -808,11 +808,21 @@ end;
   Returns: Bounding rect for edit
  ------------------------------------------------------------------------------}
 function TCarbonSpinEdit.GetEditBounds(const ARect: HIRect): HIRect;
+var
+  H: Single;
 begin
+  if LCLObject.AutoSize then
+  begin // apply edit preffered height if autosize
+    H := GetPreferredSize.y;
+    if H = 0 then H := ARect.size.height;
+  end
+  else
+    H := ARect.size.height;
+    
   Result.origin.x := ARect.origin.x;
-  Result.origin.y := ARect.origin.y;
+  Result.origin.y := ARect.origin.y + (ARect.size.height - H) / 2;
   Result.size.width := ARect.size.width - (UpDownThemeWidth + 2 * FocusRectThemeOutset);
-  Result.size.height := ARect.size.height;
+  Result.size.height := H;
 end;
 
 {------------------------------------------------------------------------------
@@ -824,7 +834,7 @@ function TCarbonSpinEdit.GetUpDownBounds(const ARect: HIRect): HIRect;
 begin
   Result.origin.x := ARect.origin.x + ARect.size.width - (UpDownThemeWidth);
   Result.origin.y := ARect.origin.y;
-  Result.size.width := ARect.size.width;
+  Result.size.width := UpDownThemeWidth;
   Result.size.height := ARect.size.height;
 end;
 
@@ -837,6 +847,8 @@ end;
 procedure TCarbonSpinEdit.CreateWidget(const AParams: TCreateParams);
 var
   CFString: CFStringRef;
+const
+  SingleLine: Boolean = True;
 begin
   CreateCFString(AParams.Caption, CFString);
   try
@@ -848,6 +860,12 @@ begin
   finally
     FreeCFString(CFString);
   end;
+  
+  // set edit single line
+  OSError(
+    SetControlData(Widget, kControlEntireControl, kControlEditTextSingleLineTag,
+      SizeOf(Boolean), @SingleLine),
+    Self, SCreateWidget, SSetData);
   
   if OSError(
       CreateLittleArrowsControl(GetTopParentWindow,
@@ -951,6 +969,8 @@ begin
     kControlUpButtonPart:   FValue := FValue + FIncrement;
     kControlDownButtonPart: FValue := FValue - FIncrement;
   end;
+  
+  FValue := (LCLObject as TCustomFloatSpinEdit).GetLimitedValue(FValue);
   
   inherited SetText((LCLObject as TCustomFloatSpinEdit).ValueToStr(FValue));
   inherited TextDidChange;
