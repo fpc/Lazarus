@@ -315,6 +315,8 @@ function FindCodeTreeNodeExt(Tree: TAVLTree; const Txt: string
 function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string): TAVLTreeNode;
 function CompareTxtWithCodeTreeNodeExt(p: Pointer;
                                        NodeData: pointer): integer;
+function CompareIdentifierWithCodeTreeNodeExt(p: Pointer;
+                                              NodeData: pointer): integer;
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithNodeStartPos(
@@ -457,6 +459,15 @@ begin
   s:=PAnsistring(p)^;
   Result:=CompareTextIgnoringSpace(s,NodeExt.Txt,false);
   //debugln('CompareTxtWithCodeTreeNodeExt ',NodeExt.Txt,' ',s,' ',dbgs(Result));
+end;
+
+function CompareIdentifierWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
+  ): integer;
+var
+  NodeExt: TCodeTreeNodeExtension;
+begin
+  NodeExt:=TCodeTreeNodeExtension(NodeData);
+  Result:=CompareIdentifierPtrs(p,Pointer(NodeExt.Txt));
 end;
 
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;

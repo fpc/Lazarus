@@ -24,9 +24,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
-  Forms, Controls, Dialogs, FileUtil, FileProcs, AvgLvlTree,
+  Forms, Controls, Dialogs, FileUtil, FileProcs, AVL_Tree,
   // CodeTools
-  KeywordFuncLists, BasicCodeTools, CodeCache, CodeToolManager,
+  CodeAtom, CodeTree, KeywordFuncLists, BasicCodeTools, CodeCache,
+  SourceChanger, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -153,8 +154,8 @@ type
   TReplaceImplicitTypes = class(TCustomTextConverterTool)
   private
     Src: String;
-    ImplicitTypes: TAvgLvlTree;// tree of TImplicitType
-    ExplicitTypes: TAvgLvlTree;// tree of TImplicitType
+    ImplicitTypes: TAVLTree;// tree of TImplicitType
+    ExplicitTypes: TAVLTree;// tree of TImplicitType
     TypeStart: LongInt;
     TypeEnd: integer; // 0 means invalid
     ConstSectionStart: LongInt;
@@ -203,6 +204,16 @@ type
   end;
   
 
+  { TAddMissingPointerTypes
+    Add missing pointer types like PPPChar }
+
+  TAddMissingPointerTypes = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
   { TFixAliasDefinitionsInUnit - fix section type of alias definitions
 
     Checks all alias definitions of the form
@@ -216,6 +227,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
   
+  
   { TFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies }
 
   TFixH2PasMissingIFDEFsInUnit = class(TCustomTextConverterTool)
@@ -223,6 +235,7 @@ type
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
+  
 
   { TReduceCompilerDirectivesInUnit - removes unneeded directives }
 
@@ -241,6 +254,7 @@ type
     property Undefines: TStrings read FUndefines write SetUndefines;
     property Defines: TStrings read FDefines write SetDefines;
   end;
+
 
   { TReplaceConstFunctionsInUnit - replace simple assignment functions with constants }
 
@@ -308,6 +322,7 @@ type
     phRemoveEmptyTypeVarConstSections, // Remove empty type/var/const sections
     phReplaceImplicitTypes, // Search implicit types in parameters and add types for them
     phFixArrayOfParameterType, // Replace "array of )" with "array of const)"
+    phAddMissingPointerTypes, // add missing pointer types
     phRemoveRedefinitionsInUnit, // Removes redefinitions of types, variables, constants and resourcestrings
     phFixAliasDefinitionsInUnit, // fix section type of alias definitions
     phReplaceConstFunctionsInUnit, // replace simple assignment functions with constants
@@ -608,6 +623,20 @@ type
     property Executing: boolean read FExecuting;
     property LastUsedFilename: string read FLastUsedFilename;
   end;
+  
+const
+  PreDefinedH2PasTypes: array[1..10] of string = (
+    'Char',
+    'Byte',
+    'SmallInt',
+    'Word',
+    'Longint',
+    'DWord',
+    'Int64',
+    'QWord',
+    'Single',
+    'Double'
+    );
 
 implementation
 
@@ -2137,7 +2166,7 @@ end;
 function TRemoveEmptyCMacrosTool.Execute(aText: TIDETextConverter
   ): TModalResult;
 var
-  EmptyMacros: TAvgLvlTree;// tree of PChar
+  EmptyMacros: TAVLTree;// tree of PChar
 
   procedure AddEmptyMacro(const MacroName: string);
   var
@@ -2146,7 +2175,7 @@ var
   begin
     //DebugLn(['AddEmptyMacro MacroName="',MacroName,'"']);
     if EmptyMacros=nil then
-      EmptyMacros:=TAvgLvlTree.Create(TListSortCompare(@CompareIdentifiers));
+      EmptyMacros:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
     Identifier:=@MacroName[1];
     if EmptyMacros.Find(Identifier)<>nil then exit;
     TempStr:=MacroName; // increase refcount
@@ -2159,7 +2188,7 @@ var
   var
     OldMacroName: String;
     Identifier: PChar;
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
   begin
     //DebugLn(['DeleteEmptyMacro MacroName="',MacroName,'"']);
     if EmptyMacros=nil then exit;
@@ -2175,7 +2204,7 @@ var
   procedure FreeMacros;
   var
     CurMacroName: String;
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
   begin
     if EmptyMacros=nil then exit;
     CurMacroName:='';
@@ -2338,6 +2367,7 @@ var
   Flags: TSrcEditSearchOptions;
   Prompt: Boolean;
   SearchFor: string;
+  i: Integer;
 begin
   Result:=mrCancel;
   if aText=nil then exit;
@@ -2345,15 +2375,14 @@ begin
   
   Flags:=[sesoReplace,sesoReplaceAll,sesoRegExpr];
   Prompt:=false;
-  SearchFor:='^\s*('
-     +'PLongint\s*=\s*\^Longint'
-    +'|PSmallInt\s*=\s*\^SmallInt'
-    +'|PByte\s*=\s*\^Byte'
-    +'|PWord\s*=\s*\^Word'
-    +'|PDWord\s*=\s*\^DWord'
-    +'|PDouble\s*=\s*\^Double'
-    +'|PChar\s*=\s*\^Char'
-    +');\s*$';
+  SearchFor:='';
+  for i:=Low(PreDefinedH2PasTypes) to High(PreDefinedH2PasTypes) do begin
+    if SearchFor<>'' then
+      SearchFor:=SearchFor+'|';
+    SearchFor:=SearchFor
+               +'P'+PreDefinedH2PasTypes[i]+'\s*=\s*\^'+PreDefinedH2PasTypes[i];
+  end;
+  SearchFor:='^\s*('+SearchFor+');\s*$';
   Result:=IDESearchInText('',Source,SearchFor,'',Flags,Prompt,nil);
   if Result<>mrOk then exit;
   
@@ -2591,7 +2620,7 @@ begin
     NewType.Code:=TypeCode;
     NewType.MaxPosition:=StartPos;
     if ImplicitTypes=nil then
-      ImplicitTypes:=TAvgLvlTree.Create(@CompareImplicitTypeNames);
+      ImplicitTypes:=TAVLTree.Create(@CompareImplicitTypeNames);
     ImplicitTypes.Add(NewType);
   end;
   ModalResult:=mrOk;
@@ -2608,7 +2637,7 @@ end;
 
 procedure TReplaceImplicitTypes.AdjustMinPositions(const Identifier: string);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAVLTreeNode;
   Item: TImplicitType;
   Position: Integer;
   AtomStart: LongInt;
@@ -3013,7 +3042,7 @@ function TReplaceImplicitTypes.InsertNewTypes(var ModalResult: TModalResult
   end;
 
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAVLTreeNode;
   Item: TImplicitType;
   InsertPos: integer;
   NextItem: TImplicitType;
@@ -3110,7 +3139,7 @@ var
   EndPos: Integer;
   TypeCode: String;
   TypeName: String;
-  Node: TAvgLvlTreeNode;
+  Node: TAVLTreeNode;
   Item: TImplicitType;
 begin
   Result:=false;
@@ -3322,11 +3351,11 @@ function TFixAliasDefinitionsInUnit.Execute(aText: TIDETextConverter
   ): TModalResult;
 begin
   Result:=mrCancel;
+  if aText=nil then exit;
   if (not FilenameIsPascalUnit(aText.Filename)) then begin
     DebugLn(['TFixAliasDefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
     exit(mrOk);// ignore
   end;
-  // finish codetools FixAllAliasDefinitions
   if not CodeToolBoss.FixAllAliasDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
     DebugLn(['TFixAliasDefinitionsInUnit.Execute FixAllAliasDefinitions failed ',CodeToolBoss.ErrorMessage]);
     exit;
@@ -3687,17 +3716,19 @@ begin
              TFixH2PasMissingIFDEFsInUnit,Result) then exit;
   // reduce compiler directives so that other tools can work with less double data
   if not ReduceCompilerDirectives(Changed,Result) then exit;
-  // remove h2pas redefinitions, so data get unambiguous types
+  // remove h2pas redefinitions to data get unambiguous types
   if not Run(phRemoveRedefinedPointerTypes,
              TRemoveRedefinedPointerTypes,Result) then exit;
   if not Run(phRemoveEmptyTypeVarConstSections,
              TRemoveEmptyTypeVarConstSections,Result) then exit;
-  // replace implicit types, not converted by h2pas
+  // add / replace implicit types, not converted by h2pas
   if not Run(phReplaceImplicitTypes,
              TReplaceImplicitTypes,Result) then exit;
   if not Run(phFixArrayOfParameterType,
              TFixArrayOfParameterType,Result) then exit;
-  // remove redefinitions, so data get unambiguous types
+  if not Run(phAddMissingPointerTypes,
+             TAddMissingPointerTypes,Result) then exit;
+  // remove redefinitions, to data get unambiguous types
   if not Run(phRemoveRedefinitionsInUnit,
              TRemoveRedefinitionsInUnit,Result) then exit;
 
@@ -3741,7 +3772,7 @@ function TConvertFunctionTypesToPointers.Execute(aText: TIDETextConverter
 var
   Src: String;
   SrcLen: Integer;
-  FuncTypes: TAvgLvlTree; // tree of TImplicitType
+  FuncTypes: TAVLTree; // tree of TImplicitType
 
   procedure CheckTypeDef(var p: integer);
   // Check if it is:  typedef identifier ( funcname ) (
@@ -3786,7 +3817,7 @@ var
     NewType.Name:=copy(Src,StartPos,EndPos-StartPos);
     writeln('TConvertFunctionTypesToPointers.Execute.CheckType function type found  Name=',NewType.Name);
     if FuncTypes=nil then
-      FuncTypes:=TAvgLvlTree.Create(@CompareImplicitTypeNames);
+      FuncTypes:=TAVLTree.Create(@CompareImplicitTypeNames);
     FuncTypes.Add(NewType);
     // add * in front of name
     System.Insert('*',Src,StartPos);
@@ -3943,6 +3974,242 @@ begin
 
   // clean up
   Setlength(SemicolonPositions,0);
+  Result:=mrOk;
+end;
+
+{ TAddMissingPointerTypes }
+
+class function TAddMissingPointerTypes.ClassDescription: string;
+begin
+  Result:='Add missing pointer types like PPPChar';
+end;
+
+function TAddMissingPointerTypes.Execute(aText: TIDETextConverter
+  ): TModalResult;
+{ h2pas converts implicit pointer types like 'Identifier ***' to PPPIdentifier,
+  but it only adds PIdentifier = ^Identifier.
+  This tool adds the missing
+    PPIdentifier = ^PIdentifier;
+    PPPIdentifier = ^PPIdentifier;
+}
+var
+  Tool: TCodeTool;
+  Definitions: TAVLTree;// tree of TCodeTreeNodeExtension
+  NeededPointerTypes: TAVLTree; // tree of TImplicitType
+  DefaultTypeSectionPos: integer;
+  
+  function IdentifierIsDefined(Identifier: PChar): boolean;
+  var
+    i: Integer;
+  begin
+    if WordIsKeyWord.DoIt(Identifier) then exit(true);
+    if WordIsPredefinedFPCIdentifier.DoIt(Identifier) then exit(true);
+    if (Definitions<>nil)
+    and (Definitions.FindKey(Identifier,@CompareIdentifierWithCodeTreeNodeExt)<>nil)
+    then exit(true);
+    for i:=Low(PreDefinedH2PasTypes) to High(PreDefinedH2PasTypes) do begin
+      if CompareIdentifierPtrs(Identifier,Pointer(PreDefinedH2PasTypes[i]))=0 then
+        exit(true);
+      // check for predefined pointer types
+      if (Identifier^ in ['p','P'])
+      and (IsIdentChar[Identifier[1]])
+      and (CompareIdentifierPtrs(@Identifier[1],Pointer(PreDefinedH2PasTypes[i]))=0)
+      then
+        exit(true);
+    end;
+    //DebugLn(['IdentifierIsDefined not found: ',GetIdentifier(Identifier)]);
+    Result:=false;
+  end;
+  
+  procedure AddNeededPointerType(Position, Count: integer);
+  var
+    Item: TImplicitType;
+    Identifier: PChar;
+    AVLNode: TAVLTreeNode;
+  begin
+    if NeededPointerTypes=nil then
+      NeededPointerTypes:=TAVLTree.Create(@CompareImplicitTypeNames);
+    Identifier:=@Tool.Src[Position+Count];
+    AVLNode:=NeededPointerTypes.FindKey(Identifier,
+                                        @CompareImplicitTypeStringAndName);
+    //DebugLn(['AddNeededPointerType ',GetIdentifier(Identifier),' Position=',Position,' Count=',Count]);
+    if AVLNode<>nil then begin
+      Item:=TImplicitType(AVLNode.Data);
+      if Item.MaxPosition<Count then
+        Item.MaxPosition:=Count;
+    end else begin
+      Item:=TImplicitType.Create;
+      Item.Name:=GetIdentifier(Identifier);
+      Item.MinPosition:=Position;
+      Item.MaxPosition:=Count;
+      NeededPointerTypes.Add(Item);
+    end;
+  end;
+  
+  procedure CheckIdentifier(Position: integer);
+  var
+    Identifier: PChar;
+    Level: Integer;
+  begin
+    Identifier:=@Tool.Src[Position];
+    Level:=0;
+    while (Identifier[Level] in ['p','P']) do begin
+      // this identifier starts with a P, so it can be a pointer type
+      if IdentifierIsDefined(@Tool.Src[Position+Level]) then break;
+      inc(Level);
+    end;
+    //DebugLn(['CheckIdentifier ',GetIdentifier(Identifier),' Level=',Level]);
+    if Level=0 then begin
+      // the identifier is defined
+      exit;
+    end;
+    if (not (Identifier[Level] in ['p','P']))
+    and (IsIdentChar[Identifier[Level]])
+    and not (IdentifierIsDefined(@Tool.Src[Position+Level])) then begin
+      // the base type is not defined
+      // => this is not a pointer type
+    end;
+    AddNeededPointerType(Position,Level);
+  end;
+  
+  function AddNeededPointerTypesToSource(Item: TImplicitType): boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+    Node: TCodeTreeNode;
+    i: Integer;
+    NewTxt: String;
+    InsertPos: LongInt;
+    Indent: LongInt;
+    Identifier: String;
+  begin
+    Result:=false;
+    
+    CodeToolBoss.SourceChangeCache.MainScanner:=Tool.Scanner;
+    
+    // find definition
+    InsertPos:=0;
+    if (Definitions<>nil) then begin
+      AVLNode:=Definitions.FindKey(Pointer(Item.Name),
+                                   @CompareIdentifierWithCodeTreeNodeExt);
+      if AVLNode<>nil then begin
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        Node:=NodeExt.Node;
+        InsertPos:=Tool.FindLineEndOrCodeAfterPosition(Node.EndPos);
+        Indent:=GetLineIndent(Tool.Src,Node.StartPos);
+      end;
+    end;
+    if (InsertPos<1) then begin
+      if DefaultTypeSectionPos<1 then begin
+        // start a type section at the beginning
+        Node:=Tool.FindMainUsesSection(false);
+        if Node<>nil then begin
+          if Node.NextBrother<>nil then
+            Node:=Node.NextBrother;
+        end else begin
+          Node:=Tool.FindInterfaceNode;
+          if Node<>nil then begin
+            if Node.FirstChild<>nil then
+              Node:=Node.FirstChild;
+          end;
+        end;
+        if Node<>nil then begin
+          if Node.Desc=ctnUsesSection then begin
+            // insert behind node
+            DefaultTypeSectionPos:=
+                    Tool.FindLineEndOrCodeAfterPosition(Node.EndPos);
+          end else if Node.Desc=ctnInterface then begin
+            // insert at end of node
+            DefaultTypeSectionPos:=Node.EndPos;
+          end else begin
+            // insert in front of node
+            DefaultTypeSectionPos:=
+                    Tool.FindLineEndOrCodeInFrontOfPosition(Node.StartPos,true);
+          end;
+        end else begin
+          DefaultTypeSectionPos:=1;
+        end;
+        DebugLn(['AddNeededPointerTypesToSource start type section']);
+        if not CodeToolBoss.SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+          DefaultTypeSectionPos,DefaultTypeSectionPos,'type') then exit;
+      end;
+      InsertPos:=DefaultTypeSectionPos;
+      Indent:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.Indent;
+    end;
+    
+    // add pointer types
+    Identifier:=Item.Name;
+    NewTxt:='';
+    for i:=Item.MaxPosition downto 1 do begin
+      if NewTxt<>'' then
+        NewTxt:=NewTxt+CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.LineEnd;
+      NewTxt:=NewTxt+GetIndentStr(Indent)+'P'+Identifier+'=^'+Identifier+';';
+      Identifier:='P'+Identifier;
+    end;
+    DebugLn(['AddNeededPointerTypesToSource Add pointer types: "',NewTxt,'"']);
+    Result:=CodeToolBoss.SourceChangeCache.Replace(gtNewLine,gtNewLine,
+      InsertPos,InsertPos,NewTxt);
+  end;
+
+  function AddNeededPointerTypesToSource: boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    Item: TImplicitType;
+  begin
+    Result:=true;
+    if NeededPointerTypes<>nil then begin
+      AVLNode:=NeededPointerTypes.FindLowest;
+      while AVLNode<>nil do begin
+        Item:=TImplicitType(AVLNode.Data);
+        if not AddNeededPointerTypesToSource(Item) then exit;
+        AVLNode:=NeededPointerTypes.FindSuccessor(AVLNode);
+      end;
+      Result:=CodeToolBoss.SourceChangeCache.Apply;
+    end;
+  end;
+  
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TAddMissingPointerTypes.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  if not CodeToolBoss.Explore(TCodeBuffer(aText.CodeBuffer),Tool,true,false)
+  then begin
+    DebugLn(['TAddMissingPointerTypes.Execute Explore failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
+  DebugLn(['TAddMissingPointerTypes.Execute ']);
+  Definitions:=nil;
+  NeededPointerTypes:=nil;
+  DefaultTypeSectionPos:=0;
+  try
+    // collect definitions
+    if not Tool.GatherUnitDefinitions(Definitions,true,false) then begin
+      DebugLn(['TAddMissingPointerTypes.Execute GatherUnitDefinitions failed ',CodeToolBoss.ErrorMessage]);
+      exit;
+    end;
+    // check all used identifiers
+    Tool.MoveCursorToCleanPos(1);
+    while Tool.CurPos.StartPos<Tool.SrcLen do begin
+      Tool.ReadNextAtom;
+      if Tool.CurPos.StartPos>=Tool.SrcLen then break;
+      if (Tool.CurPos.Flag=cafWord) then
+        CheckIdentifier(Tool.CurPos.StartPos);
+    end;
+    // add all needed pointer types
+    if not AddNeededPointerTypesToSource then exit;
+  finally
+    if Definitions<>nil then begin
+      NodeExtMemManager.DisposeAVLTree(Definitions);
+      Definitions:=nil;
+    end;
+    if NeededPointerTypes<>nil then begin
+      NeededPointerTypes.FreeAndClear;
+      NeededPointerTypes.Free;
+    end;
+  end;
   Result:=mrOk;
 end;
 

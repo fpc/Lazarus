@@ -19,6 +19,8 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
+  
+  This is an example unit to demonstrate some features of the code completion.
 }
 unit Completion1;
 
@@ -33,7 +35,15 @@ implementation
 
 procedure DoSomething;
 begin
-  s:='Path'+PathDelim;
+  // put the cursor at the beginning of this comment and code completion will
+  // add DoSomething to the interface
+  
+  Str:='Path'+PathDelim; // put the cursor on 'Str' and code completion will
+            // insert a local variable var Str: String in front of the 'begin'
+
+  // Not yet implemented:
+  //NewProcedure(12345); // put the cursor on 'NewProcedure' and code completion
+            // will create a new procedure
 end;
 
 end.
