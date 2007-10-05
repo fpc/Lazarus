@@ -3169,11 +3169,8 @@ Help - When you klick this button an Question Cursor appears and the help routin
       </element>
       <!-- property Visibility: published -->
       <element name="TForm.DockSite">
-        <short>
-          <short>Specifies the control that has the focus on the form</short>
-          <descr>Use activecontrol to set or get the control that has the focus on this form</descr>
-        </short>
-        <descr/>
+        <short>Specifies the control that has the focus on the form</short>
+        <descr>Use activecontrol to set or get the control that has the focus on this form</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->

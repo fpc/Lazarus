@@ -1127,11 +1127,11 @@ Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frReplace">
-        <short>This flag is set if only the first occurence of the search string <br/>is to be replaced with the replace string.</short>
+        <short>This flag is set if only the first occurence of the search string is to be replaced with the replace string.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frReplaceAll">
-        <short>This flag is set if all occurences of the search string <br/>are to be replaced with the replace string.</short>
+        <short>This flag is set if all occurences of the search string are to be replaced with the replace string.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frWholeWord">
