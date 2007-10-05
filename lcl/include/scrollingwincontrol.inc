@@ -82,7 +82,7 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
     OtherScrollbar: TControlScrollBar;
     OldAutoRange: LongInt;
   begin
-    OldAutoRange:=p_Bar.FAutoRange;
+    OldAutoRange := p_Bar.FAutoRange;
     p_Bar.FAutoRange := 0;
     OtherScrollbar := p_Bar.GetOtherScrollBar;
     if OtherScrollbar.FVisible then
@@ -93,16 +93,16 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
       SBSize := ClientHeight - SBSize
     else
       SBSize := ClientWidth - SBSize;
-    if (p_Bar.fRange>SBSize) and (SBSize>0) then
+    if (p_Bar.FRange > SBSize) and (SBSize>0) then
       p_Bar.FAutoRange := (p_Bar.FRange - SBSize)
     else
       p_Bar.FAutoRange := 0;
     {$IFDEF VerboseScrollingWinControl}
-    if p_Bar.Kind = sbHorizontal then
+    if p_Bar.DebugCondition then
       DebugLn(['UpdateRange p_Bar.fRange=',p_Bar.fRange,' SBSize=',SBSize,' ClientWidth=',ClientWidth,' FAutoRange=',p_Bar.FAutoRange]);
     {$ENDIF}
-    if OldAutoRange<>p_Bar.FAutoRange then
-      Result:=true;
+    if OldAutoRange <> p_Bar.FAutoRange then
+      Result := true;
   end;
   
   procedure UpdateVisible(p_Bar: TControlScrollBar);
@@ -121,24 +121,26 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
       p_Bar.FVisible := True
     else
       p_Bar.FVisible := False;
-    if OldVisible<>p_Bar.FVisible then
-      Result:=true;
+    if OldVisible <> p_Bar.FVisible then
+      Result := true;
   end;
   
 var
   NewPage: Integer;
 begin
-  Result:=false;
+  Result := false;
   // page
-  NewPage:=Max(1,Min(ClientWidth -1, High(HorzScrollbar.FPage)));
-  if NewPage<>HorzScrollbar.FPage then begin
+  NewPage := Max(1,Min(ClientWidth -1, High(HorzScrollbar.FPage)));
+  if NewPage <> HorzScrollbar.FPage then
+  begin
     HorzScrollbar.FPage := NewPage;
-    Result:=true;
+    Result := true;
   end;
   NewPage := Max(1,Min(ClientHeight -1, High(VertScrollbar.FPage)));
-  if NewPage<>VertScrollbar.FPage then begin
+  if NewPage <> VertScrollbar.FPage then
+  begin
     VertScrollbar.FPage := NewPage;
-    Result:=true;
+    Result := true;
   end;
   // range
   UpdateRange(HorzScrollbar);

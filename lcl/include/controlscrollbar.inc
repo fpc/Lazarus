@@ -40,7 +40,7 @@ begin
     if Value > FAutoRange then
     begin
       {$IFDEF VerboseScrollingWinControl}
-      if Kind=sbHorizontal then
+      if DebugCondition then
         DebugLn(['TControlScrollBar.SetPosition FAutoRange Value=',Value,' > AutoRange=',FAutoRange]);
       {$ENDIF}
       SetPosition(FAutoRange);
@@ -51,7 +51,7 @@ begin
   if Value > Range then
   begin
     {$IFDEF VerboseScrollingWinControl}
-    if Kind = sbHorizontal then
+    if DebugCondition then
       DebugLn(['TControlScrollBar.SetPosition Range Value=',Value,' > Range=',Range]);
     {$ENDIF}
     SetPosition(Range);
@@ -59,7 +59,7 @@ begin
   end;
 
   {$IFDEF VerboseScrollingWinControl}
-  if Kind = sbHorizontal then
+  if DebugCondition then
     DebugLn(['TControlScrollBar.SetPosition Value=',Value,' FPosition=',FPosition]);
   {$ENDIF}
   if Value = FPosition then
@@ -76,7 +76,7 @@ begin
   begin
     InvalidateScollInfo;
     {$IFDEF VerboseScrollingWinControl}
-    if Kind = sbHorizontal then
+    if DebugCondition then
       DebugLn(['TControlScrollBar.SetPosition FPosition=',FPosition]);
     {$ENDIF}
     SetScrollPos(ControlHandle, IntfBarKind[Kind], FPosition, Visible);
@@ -195,7 +195,7 @@ begin
     exit;
   FRange := Value;
   {$IFDEF VerboseScrollingWinControl}
-  if Kind = sbHorizontal then
+  if DebugCondition then
     DebugLn(['TControlScrollBar.SetRange ',Self,' fRange=',FRange]);
   {$ENDIF}
   ControlUpdateScrollBars;
@@ -292,14 +292,15 @@ begin
       SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
     end;
     {$IFDEF VerboseScrollingWinControl}
-    if Kind = sbHorizontal then
+    if DebugCondition then
       DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange]);
     {$ENDIF}
   end;
 
   SetPosition(FPosition);
 
-  if FControl is TScrollingWinControl then begin
+  if FControl is TScrollingWinControl then
+  begin
     // I am not positive that this is right, but it appeared to be when I
     // compared results to Delphi 4
     if FSmooth then
@@ -311,6 +312,13 @@ procedure TControlScrollBar.InvalidateScollInfo;
 begin
   FOldScrollInfoValid:=false;
 end;
+
+{$ifdef VerboseScrollingWinControl}
+function TControlScrollBar.DebugCondition: Boolean;
+begin
+  Result := (Kind = sbHorizontal);
+end;
+{$endif}
 
 function TControlScrollBar.ControlAutoScroll: boolean;
 begin
@@ -347,7 +355,8 @@ begin
     Exit;
   end;
   {$IFDEF VerboseScrollingWinControl}
-  DebugLn(['TControlScrollBar.ScrollHandler Message.ScrollCode=',Message.ScrollCode,' FPosition=',FPosition,' NewPos=',NewPos,' Range=',Range]);
+  if DebugCondition then
+    DebugLn(['TControlScrollBar.ScrollHandler Message.ScrollCode=',Message.ScrollCode,' FPosition=',FPosition,' NewPos=',NewPos,' Range=',Range]);
   {$ENDIF}
   if NewPos < 0 then
     NewPos := 0;

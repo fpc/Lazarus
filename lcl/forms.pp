@@ -117,6 +117,9 @@ type
     procedure SetVisible(const Value: Boolean); virtual;
     procedure UpdateScrollBar; virtual;
     procedure InvalidateScollInfo;
+  {$ifdef VerboseScrollingWinControl}
+    function DebugCondition: Boolean;
+  {$endif}
   public
     constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
