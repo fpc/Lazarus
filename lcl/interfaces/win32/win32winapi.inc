@@ -1664,7 +1664,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:  GetClientRect
+  Method:  GetClientBounds
   Params: Handle - handle of window
           Rect   - record for client coordinates
   Returns: If the function succeeds
