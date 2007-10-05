@@ -154,37 +154,21 @@ rFormcenter - Centers the Form on owner form</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poDesigned">
-        <short/>
-      </element>
+      <element name="TPosition.poDesigned"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poDefault">
-        <short/>
-      </element>
+      <element name="TPosition.poDefault"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poDefaultPosOnly">
-        <short/>
-      </element>
+      <element name="TPosition.poDefaultPosOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poDefaultSizeOnly">
-        <short/>
-      </element>
+      <element name="TPosition.poDefaultSizeOnly"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poScreenCenter">
-        <short/>
-      </element>
+      <element name="TPosition.poScreenCenter"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poDesktopCenter">
-        <short/>
-      </element>
+      <element name="TPosition.poDesktopCenter"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poMainFormCenter">
-        <short/>
-      </element>
+      <element name="TPosition.poMainFormCenter"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPosition.poOwnerFormCenter">
-        <short/>
-      </element>
+      <element name="TPosition.poOwnerFormCenter"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TWindowState">
         <short>Represents the actual State of the Form</short>
@@ -194,17 +178,11 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TWindowState.wsNormal">
-        <short/>
-      </element>
+      <element name="TWindowState.wsNormal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TWindowState.wsMinimized">
-        <short/>
-      </element>
+      <element name="TWindowState.wsMinimized"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TWindowState.wsMaximized">
-        <short/>
-      </element>
+      <element name="TWindowState.wsMaximized"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TCloseAction">
         <short/>
@@ -212,21 +190,13 @@ sMaximized - The form appears maximized</descr>
         <seealso>&lt;link id="TCustomForm.OnClose"&gt;TCustomForm.OnClose&lt;/link&gt;</seealso>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TCloseAction.caNone">
-        <short/>
-      </element>
+      <element name="TCloseAction.caNone"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TCloseAction.caHide">
-        <short/>
-      </element>
+      <element name="TCloseAction.caHide"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TCloseAction.caFree">
-        <short/>
-      </element>
+      <element name="TCloseAction.caFree"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TCloseAction.caMinimize">
-        <short/>
-      </element>
+      <element name="TCloseAction.caMinimize"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollBarKind">
         <short/>
@@ -234,13 +204,9 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollBarKind.sbHorizontal">
-        <short/>
-      </element>
+      <element name="TScrollBarKind.sbHorizontal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollBarKind.sbVertical">
-        <short/>
-      </element>
+      <element name="TScrollBarKind.sbVertical"><short/></element>
       <!-- range type Visibility: default -->
       <element name="TScrollBarInc">
         <short/>
@@ -254,17 +220,11 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollBarStyle.ssRegular">
-        <short/>
-      </element>
+      <element name="TScrollBarStyle.ssRegular"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollBarStyle.ssFlat">
-        <short/>
-      </element>
+      <element name="TScrollBarStyle.ssFlat"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollBarStyle.ssHotTrack">
-        <short/>
-      </element>
+      <element name="TScrollBarStyle.ssHotTrack"><short/></element>
       <!-- object Visibility: default -->
       <element name="EScrollBar">
         <short>Exception in Scroll Bar</short>
@@ -273,8 +233,8 @@ sMaximized - The form appears maximized</descr>
       <!-- object Visibility: default -->
       <element name="TControlScrollBar">
         <short>Control Scroll Bar</short>
-        <descr>Control Scroll Bar: Scroll Bar control for adding to windows. Can be horizontal or vertical.
-</descr>
+        <descr>Control Scroll Bar: Scroll Bar control for adding to windows. Can be horizontal or vertical.<br/>
+This is an ancestor class for many form types and classes of windowed controls</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControlScrollBar.FAutoRange">
@@ -338,9 +298,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.ControlAutoScroll.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.ControlAutoScroll.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ControlHandle">
         <short/>
@@ -349,9 +307,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.ControlHandle.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.ControlHandle.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetIncrement">
         <short/>
@@ -360,9 +316,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetIncrement.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetIncrement.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetPage">
         <short/>
@@ -371,9 +325,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetPage.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetPage.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetPosition">
         <short/>
@@ -382,9 +334,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetPosition.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetPosition.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetRange">
         <short/>
@@ -393,9 +343,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetRange.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetRange.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetSize">
         <short/>
@@ -404,9 +352,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetSize.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetSize.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetSmooth">
         <short/>
@@ -415,9 +361,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetSmooth.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetSmooth.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetVisible">
         <short/>
@@ -426,9 +370,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.GetVisible.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.GetVisible.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.HandleAllocated">
         <short/>
@@ -437,9 +379,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.HandleAllocated.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.HandleAllocated.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.SmoothIsStored">
         <short/>
@@ -448,9 +388,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.SmoothIsStored.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SmoothIsStored.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.VisibleIsStored">
         <short/>
@@ -459,9 +397,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TControlScrollBar.VisibleIsStored.Result">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.VisibleIsStored.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.AutoCalcRange">
         <short/>
@@ -484,13 +420,9 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.ScrollControlBy.DeltaX">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.ScrollControlBy.DeltaX"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.ScrollControlBy.DeltaY">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.ScrollControlBy.DeltaY"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.ScrollHandler">
         <short/>
@@ -499,9 +431,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.ScrollHandler.Message">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.ScrollHandler.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetIncrement">
         <short/>
@@ -510,9 +440,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetIncrement.AValue">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetIncrement.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetPage">
         <short/>
@@ -521,9 +449,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetPage.AValue">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetPage.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetPosition">
         <short/>
@@ -532,9 +458,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetPosition.Value">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetPosition.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetRange">
         <short/>
@@ -543,9 +467,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetRange.Value">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetRange.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetSize">
         <short/>
@@ -554,9 +476,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetSize.AValue">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetSize.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetSmooth">
         <short/>
@@ -565,9 +485,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetSmooth.Value">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetSmooth.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetVisible">
         <short/>
@@ -576,9 +494,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TControlScrollBar.SetVisible.Value">
-        <short/>
-      </element>
+      <element name="TControlScrollBar.SetVisible.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.UpdateScrollBar">
         <short/>
@@ -588,139 +504,110 @@ sMaximized - The form appears maximized</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TControlScrollBar.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create an instance of a Scroll Bar Control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlScrollBar.Create.AControl">
-        <short/>
+        <short>The identity of the windowed control in which the scroll bar is found</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlScrollBar.Create.AKind">
-        <short/>
+        <short>Whether this is a horizontal or a vertical scrollbar</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControlScrollBar.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Finds some properties of the control bar from the source control</short>
+        <descr>Assigns the contents of the source object to the current object; in particular finds the increment, position, range and whether smooth scrolling is to  be feature and whether the scroll bar is visible</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlScrollBar.Assign.Source">
-        <short/>
+        <short>The object that called this instance of the class</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.IsScrollBarVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Visibility of scroll bar</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.IsScrollBarVisible.Result">
-        <short/>
+        <short>Returns 'True' if scroll bar visible</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.ScrollPos">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Position of the indicator cursor on the scroll bar</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.ScrollPos.Result">
-        <short/>
+        <short>Returns position of the scroll cursor as an integer</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TControlScrollBar.Kind">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Finds which kind of scroll bar this is: horizontal or vertical</short>
+        <descr>Reads a flag to determine which kind of scroll bar</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetOtherScrollBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Finds out details of the other scroll bar</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetOtherScrollBar.Result">
-        <short/>
+        <short>Returns a link to the details of the other scroll bar</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetHorzScrollBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find out details about the horizontal scroll bar</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetHorzScrollBar.Result">
-        <short/>
+        <short>Returns details of the horizontal scroll bar as a pointer to a structure</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetVertScrollBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find out details of the vertical scroll bar</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetVertScrollBar.Result">
-        <short/>
+        <short>Returns details of the vertical scroll bar as a pointer to a structure</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TControlScrollBar.Size">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determine the size of the scroll bar</short>
+        <descr>Reads or writes a flag to determine the size; by default the size is not stored</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Increment">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The size of the scrolling increment</short>
+        <descr>The amount by which the scroll indicator moves if the triangle at either end of the bar is selected.<br/>
+Read or write a flag to determine the increment, an integer with a default value of 8 (pixels)</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Page">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The size of the paging increment for scrolling</short>
+        <descr>The amount by which the scroll indicator moves if the cursor selects the scroll bar above, below or on either side of the scroll indicator. <br/>Reads or writes a flag to determine paging increment; default value is 80 pixels</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Smooth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determine whether smooth scrolling is to be implemented</short>
+        <descr>Reads or writes a flag to determine smooth scrolling, and sets a flag is the scrolling status is stored</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Position">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Position of the scroll bar</short>
+        <descr>Reads or writes a flag with the position; default is zero</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Range">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The range (extent) of the scroll bar</short>
+        <descr>Reads or writes a flag to determine the range; default is zero</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is the scroll bar visible?</short>
+        <descr>Reads or writes flag to determine visibility, and sets a flag if the property is stored</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollingWinControl">
         <short>Scrolling Window Control</short>
-        <descr>Scrolling Window Control: A window control with scroll bars</descr>
-        <errors/>
-        <seealso/>
+        <descr>Scrolling Window Control: A window control with scroll bars.<br/>An ancestor class for many forms with scrolling windows</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TScrollingWinControl.FHorzScrollBar">
@@ -766,9 +653,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.SetAutoScroll.Value">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.SetAutoScroll.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScrollingWinControl.SetHorzScrollBar">
         <short/>
@@ -777,9 +662,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.SetHorzScrollBar.Value">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.SetHorzScrollBar.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScrollingWinControl.SetVertScrollBar">
         <short/>
@@ -788,9 +671,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.SetVertScrollBar.Value">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.SetVertScrollBar.Value"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScrollingWinControl.StoreScrollBars">
         <short/>
@@ -799,9 +680,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScrollingWinControl.StoreScrollBars.Result">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.StoreScrollBars.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.AlignControls">
         <short/>
@@ -810,13 +689,9 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.AlignControls.AControl">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.AlignControls.AControl"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.AlignControls.ARect">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.AlignControls.ARect"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.CreateWnd">
         <short/>
@@ -832,9 +707,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.WMEraseBkgnd.Message">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.WMEraseBkgnd.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.WMPaint">
         <short/>
@@ -843,9 +716,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.WMPaint.message">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.WMPaint.message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.DoOnResize">
         <short/>
@@ -861,9 +732,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.WMHScroll.Message">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.WMHScroll.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.WMVScroll">
         <short/>
@@ -872,9 +741,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.WMVScroll.Message">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.WMVScroll.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.ScrollBy">
         <short/>
@@ -883,13 +750,9 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.ScrollBy.DeltaX">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.ScrollBy.DeltaX"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.ScrollBy.DeltaY">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.ScrollBy.DeltaY"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TScrollingWinControl.OnPaint">
         <short/>
@@ -898,21 +761,17 @@ sMaximized - The form appears maximized</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TScrollingWinControl.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create an instance of a scrolling window control</short>
+        <descr>This constructor can override the constructor of an ancestor class</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScrollingWinControl.Create.AOwner">
-        <short/>
+        <short>The component that owns the scolling window control</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TScrollingWinControl.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>DEstroy this instance of scrolling window control, and free its resources</short>
+        <descr>Can override destructor of parent class</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScrollingWinControl.Paint">
@@ -929,15 +788,11 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollingWinControl.PaintWindow.dc">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.PaintWindow.dc"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScrollingWinControl.UpdateScrollbars">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Update the position of the scroll indicatores in the scroll bars</short>
+        <descr>Checks if the scroll bars are in process of being loaded or destroyed; if so, or if there is no valid handle, exit. If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TScrollingWinControl.HasVisibleScrollbars">
@@ -947,9 +802,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScrollingWinControl.HasVisibleScrollbars.Result">
-        <short/>
-      </element>
+      <element name="TScrollingWinControl.HasVisibleScrollbars.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScrollingWinControl.Canvas">
         <short/>
@@ -958,9 +811,8 @@ sMaximized - The form appears maximized</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollingWinControl.AutoScroll">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Does auto-scrolling apply?</short>
+        <descr>Reads or writes a flag to determine auto-scrolling</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollingWinControl.HorzScrollBar">
@@ -987,9 +839,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScrollBox.GetClientScrollOffset.Result">
-        <short/>
-      </element>
+      <element name="TScrollBox.GetClientScrollOffset.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TScrollBox.Create">
         <short/>
@@ -998,9 +848,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollBox.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TScrollBox.Create.AOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TScrollBox.Align">
         <short/>
@@ -1254,9 +1102,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.AddActionList.ActionList">
-        <short/>
-      </element>
+      <element name="TCustomFrame.AddActionList.ActionList"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomFrame.RemoveActionList">
         <short/>
@@ -1265,9 +1111,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.RemoveActionList.ActionList">
-        <short/>
-      </element>
+      <element name="TCustomFrame.RemoveActionList.ActionList"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.GetChildren">
         <short/>
@@ -1276,13 +1120,9 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.GetChildren.Proc">
-        <short/>
-      </element>
+      <element name="TCustomFrame.GetChildren.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.GetChildren.Root">
-        <short/>
-      </element>
+      <element name="TCustomFrame.GetChildren.Root"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.Notification">
         <short/>
@@ -1291,13 +1131,9 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TCustomFrame.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomFrame.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.SetParent">
         <short/>
@@ -1306,9 +1142,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.SetParent.AParent">
-        <short/>
-      </element>
+      <element name="TCustomFrame.SetParent.AParent"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomFrame.Create">
         <short/>
@@ -1317,9 +1151,7 @@ sMaximized - The form appears maximized</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomFrame.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomFrame.Create.AOwner"><short/></element>
       <!-- "class of" type Visibility: default -->
       <element name="TCustomFrameClass">
         <short/>
@@ -1612,21 +1444,13 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBorderIcon.biSystemMenu">
-        <short/>
-      </element>
+      <element name="TBorderIcon.biSystemMenu"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBorderIcon.biMinimize">
-        <short/>
-      </element>
+      <element name="TBorderIcon.biMinimize"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBorderIcon.biMaximize">
-        <short/>
-      </element>
+      <element name="TBorderIcon.biMaximize"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBorderIcon.biHelp">
-        <short/>
-      </element>
+      <element name="TBorderIcon.biHelp"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TBorderIcons">
         <short/>
@@ -1640,13 +1464,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCloseEvent.Sender">
-        <short/>
-      </element>
+      <element name="TCloseEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCloseEvent.CloseAction">
-        <short/>
-      </element>
+      <element name="TCloseEvent.CloseAction"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TCloseQueryEvent">
         <short/>
@@ -1654,13 +1474,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCloseQueryEvent.Sender">
-        <short/>
-      </element>
+      <element name="TCloseQueryEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCloseQueryEvent.CanClose">
-        <short/>
-      </element>
+      <element name="TCloseQueryEvent.CanClose"><short/></element>
       <!-- function type Visibility: default -->
       <element name="THelpEvent">
         <short/>
@@ -1668,21 +1484,13 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="THelpEvent.Result">
-        <short/>
-      </element>
+      <element name="THelpEvent.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THelpEvent.Command">
-        <short/>
-      </element>
+      <element name="THelpEvent.Command"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THelpEvent.Data">
-        <short/>
-      </element>
+      <element name="THelpEvent.Data"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THelpEvent.CallHelp">
-        <short/>
-      </element>
+      <element name="THelpEvent.CallHelp"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TFormStateType">
         <short/>
@@ -1690,37 +1498,21 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsCreating">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsCreating"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsVisible">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsVisible"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsShowing">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsShowing"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsModal">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsModal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsCreatedMDIChild">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsCreatedMDIChild"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsBorderStyleChanged">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsBorderStyleChanged"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsFormStyleChanged">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsFormStyleChanged"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormStateType.fsFirstShow">
-        <short/>
-      </element>
+      <element name="TFormStateType.fsFirstShow"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TFormState">
         <short/>
@@ -1740,13 +1532,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormHandlerType.fhtFirstShow">
-        <short/>
-      </element>
+      <element name="TFormHandlerType.fhtFirstShow"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFormHandlerType.fhtClose">
-        <short/>
-      </element>
+      <element name="TFormHandlerType.fhtClose"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomForm">
         <short>Custom Form</short>
@@ -1934,9 +1722,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.IsForm.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.IsForm.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomForm.IsHelpFileStored">
         <short/>
@@ -1945,9 +1731,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.IsHelpFileStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.IsHelpFileStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomForm.IsIconStored">
         <short/>
@@ -1956,9 +1740,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.IsIconStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.IsIconStored.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.ClientWndProc">
         <short/>
@@ -1967,9 +1749,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.ClientWndProc.Message">
-        <short/>
-      </element>
+      <element name="TCustomForm.ClientWndProc.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.CloseModal">
         <short/>
@@ -1999,9 +1779,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.IconChanged.Sender">
-        <short/>
-      </element>
+      <element name="TCustomForm.IconChanged.Sender"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomForm.IsKeyPreviewStored">
         <short/>
@@ -2010,9 +1788,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.IsKeyPreviewStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.IsKeyPreviewStored.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetActive">
         <short/>
@@ -2021,9 +1797,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetActive.AValue">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetActive.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetActiveControl">
         <short/>
@@ -2032,9 +1806,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetActiveControl.AWinControl">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetActiveControl.AWinControl"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetBorderIcons">
         <short/>
@@ -2043,9 +1815,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetBorderIcons.NewIcons">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetBorderIcons.NewIcons"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetFormBorderStyle">
         <short/>
@@ -2054,9 +1824,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetFormBorderStyle.NewStyle">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetFormBorderStyle.NewStyle"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetCancelControl">
         <short/>
@@ -2065,9 +1833,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetCancelControl.NewControl">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetCancelControl.NewControl"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetDefaultControl">
         <short/>
@@ -2076,9 +1842,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetDefaultControl.NewControl">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetDefaultControl.NewControl"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetDesigner">
         <short/>
@@ -2087,9 +1851,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetDesigner.Value">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetDesigner.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetFormStyle">
         <short/>
@@ -2098,9 +1860,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetFormStyle.Value">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetFormStyle.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetIcon">
         <short/>
@@ -2109,9 +1869,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetIcon.AValue">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetIcon.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetMenu">
         <short/>
@@ -2120,9 +1878,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetMenu.Value">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetMenu.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetModalResult">
         <short/>
@@ -2131,9 +1887,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetModalResult.AValue">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetModalResult.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetPosition">
         <short/>
@@ -2142,9 +1896,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetPosition.Value">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetPosition.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetVisible">
         <short/>
@@ -2153,9 +1905,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetVisible.Value">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetVisible.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetWindowFocus">
         <short/>
@@ -2171,9 +1921,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetWindowState.Value">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetWindowState.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMActivate">
         <short/>
@@ -2182,9 +1930,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WMActivate.Message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WMActivate.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMCloseQuery">
         <short/>
@@ -2193,9 +1939,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WMCloseQuery.message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WMCloseQuery.message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMDeactivate">
         <short/>
@@ -2204,9 +1948,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WMDeactivate.Message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WMDeactivate.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMPaint">
         <short/>
@@ -2215,9 +1957,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WMPaint.message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WMPaint.message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMShowWindow">
         <short/>
@@ -2226,9 +1966,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WMShowWindow.message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WMShowWindow.message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMSize">
         <short/>
@@ -2237,9 +1975,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WMSize.message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WMSize.message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.AddHandler">
         <short/>
@@ -2248,17 +1984,11 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandler.HandlerType">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandler.HandlerType"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandler.Handler">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandler.AsLast"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.RemoveHandler">
         <short/>
@@ -2267,13 +1997,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.RemoveHandler.HandlerType">
-        <short/>
-      </element>
+      <element name="TCustomForm.RemoveHandler.HandlerType"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.RemoveHandler.Handler">
-        <short/>
-      </element>
+      <element name="TCustomForm.RemoveHandler.Handler"><short/></element>
       <!-- variable Visibility: protected -->
       <element name="TCustomForm.FFormBorderStyle">
         <short/>
@@ -2294,9 +2020,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.CloseQuery.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.CloseQuery.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.FormUpdating">
         <short/>
@@ -2305,9 +2029,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.FormUpdating.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.FormUpdating.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Activate">
         <short/>
@@ -2337,9 +2059,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.CreateParams.Params">
-        <short/>
-      </element>
+      <element name="TCustomForm.CreateParams.Params"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CreateWnd">
         <short/>
@@ -2369,9 +2089,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DoClose.CloseAction">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoClose.CloseAction"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoHide">
         <short/>
@@ -2401,13 +2119,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.GetChildren.Proc">
-        <short/>
-      </element>
+      <element name="TCustomForm.GetChildren.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.GetChildren.Root">
-        <short/>
-      </element>
+      <element name="TCustomForm.GetChildren.Root"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Loaded">
         <short/>
@@ -2430,13 +2144,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TCustomForm.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomForm.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.PaintWindow">
         <short/>
@@ -2445,9 +2155,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.PaintWindow.dc">
-        <short/>
-      </element>
+      <element name="TCustomForm.PaintWindow.dc"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.RequestAlign">
         <short/>
@@ -2463,9 +2171,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetZOrder.Topmost">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetZOrder.Topmost"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.SetParent">
         <short/>
@@ -2474,9 +2180,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetParent.NewParent">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetParent.NewParent"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateShowing">
         <short/>
@@ -2513,9 +2217,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WndProc.TheMessage">
-        <short/>
-      </element>
+      <element name="TCustomForm.WndProc.TheMessage"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.VisibleIsStored">
         <short/>
@@ -2524,9 +2226,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.VisibleIsStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.VisibleIsStored.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.ColorIsStored">
         <short/>
@@ -2535,9 +2235,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.ColorIsStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.ColorIsStored.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoDock">
         <short/>
@@ -2546,13 +2244,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DoDock.NewDockSite">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoDock.NewDockSite"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DoDock.ARect">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoDock.ARect"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.GetFloating">
         <short/>
@@ -2561,9 +2255,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.GetFloating.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.GetFloating.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMActionExecute">
         <short/>
@@ -2572,9 +2264,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.CMActionExecute.Message">
-        <short/>
-      </element>
+      <element name="TCustomForm.CMActionExecute.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMActionUpdate">
         <short/>
@@ -2583,9 +2273,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.CMActionUpdate.Message">
-        <short/>
-      </element>
+      <element name="TCustomForm.CMActionUpdate.Message"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.DoExecuteAction">
         <short/>
@@ -2594,13 +2282,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.DoExecuteAction.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoExecuteAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DoExecuteAction.ExeAction">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoExecuteAction.ExeAction"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.DoUpdateAction">
         <short/>
@@ -2609,13 +2293,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.DoUpdateAction.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoUpdateAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DoUpdateAction.TheAction">
-        <short/>
-      </element>
+      <element name="TCustomForm.DoUpdateAction.TheAction"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateActions">
         <short/>
@@ -2631,9 +2311,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomForm.Create.AOwner"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomForm.CreateNew">
         <short/>
@@ -2642,13 +2320,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.CreateNew.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomForm.CreateNew.AOwner"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.CreateNew.Num">
-        <short/>
-      </element>
+      <element name="TCustomForm.CreateNew.Num"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.BeforeDestruction">
         <short/>
@@ -2664,9 +2338,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.GetIconHandle.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.GetIconHandle.Result"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomForm.Destroy">
         <short/>
@@ -2717,17 +2389,11 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.WantChildKey.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.WantChildKey.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WantChildKey.Child">
-        <short/>
-      </element>
+      <element name="TCustomForm.WantChildKey.Child"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.WantChildKey.Message">
-        <short/>
-      </element>
+      <element name="TCustomForm.WantChildKey.Message"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.DefocusControl">
         <short/>
@@ -2736,13 +2402,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DefocusControl.Control">
-        <short/>
-      </element>
+      <element name="TCustomForm.DefocusControl.Control"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.DefocusControl.Removing">
-        <short/>
-      </element>
+      <element name="TCustomForm.DefocusControl.Removing"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.SetFocus">
         <short/>
@@ -2758,13 +2420,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.SetFocusedControl.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetFocusedControl.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.SetFocusedControl.Control">
-        <short/>
-      </element>
+      <element name="TCustomForm.SetFocusedControl.Control"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.FocusControl">
         <short/>
@@ -2773,9 +2431,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.FocusControl.WinControl">
-        <short/>
-      </element>
+      <element name="TCustomForm.FocusControl.WinControl"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.ShowModal">
         <short/>
@@ -2784,9 +2440,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.ShowModal.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.ShowModal.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.GetRolesForControl">
         <short/>
@@ -2795,13 +2449,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomForm.GetRolesForControl.Result">
-        <short/>
-      </element>
+      <element name="TCustomForm.GetRolesForControl.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.GetRolesForControl.AControl">
-        <short/>
-      </element>
+      <element name="TCustomForm.GetRolesForControl.AControl"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveAllHandlersOfObject">
         <short/>
@@ -2810,9 +2460,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.RemoveAllHandlersOfObject.AnObject">
-        <short/>
-      </element>
+      <element name="TCustomForm.RemoveAllHandlersOfObject.AnObject"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerFirstShow">
         <short/>
@@ -2821,13 +2469,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandlerFirstShow.OnFirstShowHandler">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandlerFirstShow.OnFirstShowHandler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandlerFirstShow.AsLast">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandlerFirstShow.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerFirstShow">
         <short/>
@@ -2836,9 +2480,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.RemoveHandlerFirstShow.OnFirstShowHandler">
-        <short/>
-      </element>
+      <element name="TCustomForm.RemoveHandlerFirstShow.OnFirstShowHandler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerClose">
         <short/>
@@ -2847,13 +2489,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandlerClose.OnCloseHandler">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandlerClose.OnCloseHandler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.AddHandlerClose.AsLast">
-        <short/>
-      </element>
+      <element name="TCustomForm.AddHandlerClose.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerClose">
         <short/>
@@ -2862,9 +2500,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.RemoveHandlerClose.OnCloseHandler">
-        <short/>
-      </element>
+      <element name="TCustomForm.RemoveHandlerClose.OnCloseHandler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Dock">
         <short/>
@@ -2873,13 +2509,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.Dock.NewDockSite">
-        <short/>
-      </element>
+      <element name="TCustomForm.Dock.NewDockSite"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomForm.Dock.ARect">
-        <short/>
-      </element>
+      <element name="TCustomForm.Dock.ARect"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Active">
         <short>Is true when the form has the focus</short>
@@ -3440,13 +3072,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.DoAddDockClient.Client">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.DoAddDockClient.Client"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.DoAddDockClient.ARect">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.DoAddDockClient.ARect"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.DoRemoveDockClient">
         <short/>
@@ -3455,9 +3083,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.DoRemoveDockClient.Client">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.DoRemoveDockClient.Client"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.GetSiteInfo">
         <short/>
@@ -3466,21 +3092,13 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.GetSiteInfo.Client">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.GetSiteInfo.Client"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.GetSiteInfo.InfluenceRect">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.GetSiteInfo.InfluenceRect"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.GetSiteInfo.MousePos">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.GetSiteInfo.MousePos"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.GetSiteInfo.CanDock">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.GetSiteInfo.CanDock"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.Loaded">
         <short/>
@@ -3496,9 +3114,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomDockForm.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomDockForm.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomDockForm.AutoScroll">
         <short/>
@@ -3560,9 +3176,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.SetAutoHide.Value">
-        <short/>
-      </element>
+      <element name="THintWindow.SetAutoHide.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="THintWindow.AutoHideHint">
         <short/>
@@ -3571,9 +3185,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.AutoHideHint.Sender">
-        <short/>
-      </element>
+      <element name="THintWindow.AutoHideHint.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="THintWindow.SetHideInterval">
         <short/>
@@ -3582,9 +3194,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.SetHideInterval.Value">
-        <short/>
-      </element>
+      <element name="THintWindow.SetHideInterval.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="THintWindow.Paint">
         <short/>
@@ -3600,9 +3210,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.Create.AOwner">
-        <short/>
-      </element>
+      <element name="THintWindow.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="THintWindow.Destroy">
         <short/>
@@ -3618,13 +3226,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.ActivateHint.ARect">
-        <short/>
-      </element>
+      <element name="THintWindow.ActivateHint.ARect"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.ActivateHint.AHint">
-        <short/>
-      </element>
+      <element name="THintWindow.ActivateHint.AHint"><short/></element>
       <!-- function Visibility: public -->
       <element name="THintWindow.CalcHintRect">
         <short/>
@@ -3633,21 +3237,13 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="THintWindow.CalcHintRect.Result">
-        <short/>
-      </element>
+      <element name="THintWindow.CalcHintRect.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.CalcHintRect.MaxWidth">
-        <short/>
-      </element>
+      <element name="THintWindow.CalcHintRect.MaxWidth"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.CalcHintRect.AHint">
-        <short/>
-      </element>
+      <element name="THintWindow.CalcHintRect.AHint"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THintWindow.CalcHintRect.AData">
-        <short/>
-      </element>
+      <element name="THintWindow.CalcHintRect.AData"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="THintWindow.ReleaseHandle">
         <short/>
@@ -3710,13 +3306,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreenFormEvent.Sender">
-        <short/>
-      </element>
+      <element name="TScreenFormEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreenFormEvent.Form">
-        <short/>
-      </element>
+      <element name="TScreenFormEvent.Form"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TScreenActiveFormChangedEvent">
         <short/>
@@ -3724,13 +3316,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreenActiveFormChangedEvent.Sender">
-        <short/>
-      </element>
+      <element name="TScreenActiveFormChangedEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreenActiveFormChangedEvent.LastForm">
-        <short/>
-      </element>
+      <element name="TScreenActiveFormChangedEvent.LastForm"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TScreenControlEvent">
         <short/>
@@ -3738,13 +3326,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreenControlEvent.Sender">
-        <short/>
-      </element>
+      <element name="TScreenControlEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreenControlEvent.LastControl">
-        <short/>
-      </element>
+      <element name="TScreenControlEvent.LastControl"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TScreenNotification">
         <short/>
@@ -3752,21 +3336,13 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScreenNotification.snFormAdded">
-        <short/>
-      </element>
+      <element name="TScreenNotification.snFormAdded"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScreenNotification.snRemoveForm">
-        <short/>
-      </element>
+      <element name="TScreenNotification.snRemoveForm"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScreenNotification.snActiveControlChanged">
-        <short/>
-      </element>
+      <element name="TScreenNotification.snActiveControlChanged"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScreenNotification.snActiveFormChanged">
-        <short/>
-      </element>
+      <element name="TScreenNotification.snActiveFormChanged"><short/></element>
       <!-- object Visibility: default -->
       <element name="TScreen">
         <short>Screen</short>
@@ -3909,9 +3485,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.DeleteCursor.Index">
-        <short/>
-      </element>
+      <element name="TScreen.DeleteCursor.Index"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.DestroyCursors">
         <short/>
@@ -3927,13 +3501,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetCursors.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetCursors.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.GetCursors.Index">
-        <short/>
-      </element>
+      <element name="TScreen.GetCursors.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetCustomFormCount">
         <short/>
@@ -3942,9 +3512,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetCustomFormCount.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetCustomFormCount.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetCustomForms">
         <short/>
@@ -3953,13 +3521,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetCustomForms.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetCustomForms.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.GetCustomForms.Index">
-        <short/>
-      </element>
+      <element name="TScreen.GetCustomForms.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetCustomFormsZOrdered">
         <short/>
@@ -3968,13 +3532,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetCustomFormsZOrdered.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetCustomFormsZOrdered.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.GetCustomFormsZOrdered.Index">
-        <short/>
-      </element>
+      <element name="TScreen.GetCustomFormsZOrdered.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetFonts">
         <short/>
@@ -3983,9 +3543,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetFonts.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetFonts.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetFormCount">
         <short/>
@@ -3994,9 +3552,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetFormCount.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetFormCount.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetForms">
         <short/>
@@ -4005,13 +3561,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetForms.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetForms.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.GetForms.IIndex">
-        <short/>
-      </element>
+      <element name="TScreen.GetForms.IIndex"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetHeight">
         <short/>
@@ -4020,9 +3572,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetHeight.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetHeight.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetWidth">
         <short/>
@@ -4031,9 +3581,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetWidth.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetWidth.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.AddForm">
         <short/>
@@ -4042,9 +3590,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddForm.AForm">
-        <short/>
-      </element>
+      <element name="TScreen.AddForm.AForm"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.RemoveForm">
         <short/>
@@ -4053,9 +3599,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveForm.AForm">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveForm.AForm"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.SetCursor">
         <short/>
@@ -4064,9 +3608,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.SetCursor.AValue">
-        <short/>
-      </element>
+      <element name="TScreen.SetCursor.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.SetCursors">
         <short/>
@@ -4075,13 +3617,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.SetCursors.Index">
-        <short/>
-      </element>
+      <element name="TScreen.SetCursors.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.SetCursors.AValue">
-        <short/>
-      </element>
+      <element name="TScreen.SetCursors.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.UpdateLastActive">
         <short/>
@@ -4097,17 +3635,11 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandler.HandlerType">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandler.HandlerType"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandler.Handler">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandler.AsLast"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.RemoveHandler">
         <short/>
@@ -4116,13 +3648,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveHandler.HandlerType">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveHandler.HandlerType"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveHandler.Handler">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveHandler.Handler"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TScreen.GetHintFont">
         <short/>
@@ -4131,9 +3659,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.GetHintFont.Result">
-        <short/>
-      </element>
+      <element name="TScreen.GetHintFont.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TScreen.Create">
         <short/>
@@ -4142,9 +3668,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TScreen.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TScreen.Destroy">
         <short/>
@@ -4160,13 +3684,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.CustomFormIndex.Result">
-        <short/>
-      </element>
+      <element name="TScreen.CustomFormIndex.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.CustomFormIndex.AForm">
-        <short/>
-      </element>
+      <element name="TScreen.CustomFormIndex.AForm"><short/></element>
       <!-- function Visibility: public -->
       <element name="TScreen.FormIndex">
         <short/>
@@ -4175,13 +3695,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.FormIndex.Result">
-        <short/>
-      </element>
+      <element name="TScreen.FormIndex.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.FormIndex.AForm">
-        <short/>
-      </element>
+      <element name="TScreen.FormIndex.AForm"><short/></element>
       <!-- function Visibility: public -->
       <element name="TScreen.CustomFormZIndex">
         <short/>
@@ -4190,13 +3706,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.CustomFormZIndex.Result">
-        <short/>
-      </element>
+      <element name="TScreen.CustomFormZIndex.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.CustomFormZIndex.AForm">
-        <short/>
-      </element>
+      <element name="TScreen.CustomFormZIndex.AForm"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.MoveFormToFocusFront">
         <short/>
@@ -4205,9 +3717,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.MoveFormToFocusFront.ACustomForm">
-        <short/>
-      </element>
+      <element name="TScreen.MoveFormToFocusFront.ACustomForm"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.MoveFormToZFront">
         <short/>
@@ -4216,9 +3726,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.MoveFormToZFront.ACustomForm">
-        <short/>
-      </element>
+      <element name="TScreen.MoveFormToZFront.ACustomForm"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.UpdateScreen">
         <short/>
@@ -4234,13 +3742,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerFormAdded.OnFormAdded">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerFormAdded.OnFormAdded"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerFormAdded.AsLast">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerFormAdded.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerFormAdded">
         <short/>
@@ -4249,9 +3753,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveHandlerFormAdded.OnFormAdded">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveHandlerFormAdded.OnFormAdded"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerRemoveForm">
         <short/>
@@ -4260,13 +3762,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerRemoveForm.OnRemoveForm">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerRemoveForm.OnRemoveForm"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerRemoveForm.AsLast">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerRemoveForm.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerRemoveForm">
         <short/>
@@ -4275,9 +3773,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveHandlerRemoveForm.OnRemoveForm">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveHandlerRemoveForm.OnRemoveForm"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerActiveControlChanged">
         <short/>
@@ -4286,13 +3782,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerActiveControlChanged.OnActiveControlChanged">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerActiveControlChanged.OnActiveControlChanged"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerActiveControlChanged.AsLast">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerActiveControlChanged.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerActiveControlChanged">
         <short/>
@@ -4301,9 +3793,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveHandlerActiveControlChanged.OnActiveControlChanged">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveHandlerActiveControlChanged.OnActiveControlChanged"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerActiveFormChanged">
         <short/>
@@ -4312,13 +3802,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerActiveFormChanged.OnActiveFormChanged">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerActiveFormChanged.OnActiveFormChanged"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.AddHandlerActiveFormChanged.AsLast">
-        <short/>
-      </element>
+      <element name="TScreen.AddHandlerActiveFormChanged.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerActiveFormChanged">
         <short/>
@@ -4327,9 +3813,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.RemoveHandlerActiveFormChanged.OnActiveFormChanged">
-        <short/>
-      </element>
+      <element name="TScreen.RemoveHandlerActiveFormChanged.OnActiveFormChanged"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveControl">
         <short/>
@@ -4361,9 +3845,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.Cursors.Index">
-        <short/>
-      </element>
+      <element name="TScreen.Cursors.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomFormCount">
         <short/>
@@ -4377,9 +3859,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.CustomForms.Index">
-        <short/>
-      </element>
+      <element name="TScreen.CustomForms.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomFormsZOrdered">
         <short/>
@@ -4387,9 +3867,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.CustomFormsZOrdered.Index">
-        <short/>
-      </element>
+      <element name="TScreen.CustomFormsZOrdered.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.FocusedForm">
         <short/>
@@ -4409,9 +3887,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.Forms.Index">
-        <short/>
-      </element>
+      <element name="TScreen.Forms.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.Fonts">
         <short/>
@@ -4461,13 +3937,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TExceptionEvent.Sender">
-        <short/>
-      </element>
+      <element name="TExceptionEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TExceptionEvent.E">
-        <short/>
-      </element>
+      <element name="TExceptionEvent.E"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TIdleEvent">
         <short/>
@@ -4475,13 +3947,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleEvent.Sender">
-        <short/>
-      </element>
+      <element name="TIdleEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIdleEvent.Done">
-        <short/>
-      </element>
+      <element name="TIdleEvent.Done"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TOnUserInputEvent">
         <short/>
@@ -4489,13 +3957,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TOnUserInputEvent.Sender">
-        <short/>
-      </element>
+      <element name="TOnUserInputEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TOnUserInputEvent.Msg">
-        <short/>
-      </element>
+      <element name="TOnUserInputEvent.Msg"><short/></element>
       <!-- pointer type Visibility: default -->
       <element name="PHintInfo">
         <short/>
@@ -4641,21 +4105,13 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TAppHintTimerType.ahtNone">
-        <short/>
-      </element>
+      <element name="TAppHintTimerType.ahtNone"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TAppHintTimerType.ahtShowHint">
-        <short/>
-      </element>
+      <element name="TAppHintTimerType.ahtShowHint"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TAppHintTimerType.ahtHideHint">
-        <short/>
-      </element>
+      <element name="TAppHintTimerType.ahtHideHint"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TAppHintTimerType.ahtReshowHint">
-        <short/>
-      </element>
+      <element name="TAppHintTimerType.ahtReshowHint"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TShowHintEvent">
         <short/>
@@ -4663,17 +4119,11 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShowHintEvent.HintStr">
-        <short/>
-      </element>
+      <element name="TShowHintEvent.HintStr"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TShowHintEvent.CanShow">
-        <short/>
-      </element>
+      <element name="TShowHintEvent.CanShow"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TShowHintEvent.HintInfo">
-        <short/>
-      </element>
+      <element name="TShowHintEvent.HintInfo"><short/></element>
       <!-- record type Visibility: default -->
       <element name="THintInfoAtMouse">
         <short/>
@@ -4705,29 +4155,17 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationFlag.AppWaiting">
-        <short/>
-      </element>
+      <element name="TApplicationFlag.AppWaiting"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationFlag.AppIdleEndSent">
-        <short/>
-      </element>
+      <element name="TApplicationFlag.AppIdleEndSent"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationFlag.AppHandlingException">
-        <short/>
-      </element>
+      <element name="TApplicationFlag.AppHandlingException"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationFlag.AppNoExceptionMessages">
-        <short/>
-      </element>
+      <element name="TApplicationFlag.AppNoExceptionMessages"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationFlag.AppDestroying">
-        <short/>
-      </element>
+      <element name="TApplicationFlag.AppDestroying"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationFlag.AppDoNotReleaseComponents">
-        <short/>
-      </element>
+      <element name="TApplicationFlag.AppDoNotReleaseComponents"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TApplicationFlags">
         <short/>
@@ -4741,17 +4179,11 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationNavigationOption.anoTabToSelectNext">
-        <short/>
-      </element>
+      <element name="TApplicationNavigationOption.anoTabToSelectNext"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationNavigationOption.anoReturnForDefaultControl">
-        <short/>
-      </element>
+      <element name="TApplicationNavigationOption.anoReturnForDefaultControl"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationNavigationOption.anoEscapeForCancelControl">
-        <short/>
-      </element>
+      <element name="TApplicationNavigationOption.anoEscapeForCancelControl"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TApplicationNavigationOptions">
         <short/>
@@ -4765,25 +4197,15 @@ Help - When you klick this button an Question Cursor appears and the help routin
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationHandlerType.ahtIdle">
-        <short/>
-      </element>
+      <element name="TApplicationHandlerType.ahtIdle"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationHandlerType.ahtIdleEnd">
-        <short/>
-      </element>
+      <element name="TApplicationHandlerType.ahtIdleEnd"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationHandlerType.ahtKeyDownBefore">
-        <short/>
-      </element>
+      <element name="TApplicationHandlerType.ahtKeyDownBefore"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationHandlerType.ahtKeyDownAfter">
-        <short/>
-      </element>
+      <element name="TApplicationHandlerType.ahtKeyDownAfter"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TApplicationHandlerType.ahtUserInput">
-        <short/>
-      </element>
+      <element name="TApplicationHandlerType.ahtUserInput"><short/></element>
       <!-- object Visibility: default -->
       <element name="TApplication">
         <short>Application</short>
@@ -4986,9 +4408,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.GetCurrentHelpFile.Result">
-        <short/>
-      </element>
+      <element name="TApplication.GetCurrentHelpFile.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetExename">
         <short/>
@@ -4997,9 +4417,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.GetExename.Result">
-        <short/>
-      </element>
+      <element name="TApplication.GetExename.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetIconHandle">
         <short/>
@@ -5008,9 +4426,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.GetIconHandle.Result">
-        <short/>
-      </element>
+      <element name="TApplication.GetIconHandle.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetTitle">
         <short/>
@@ -5019,9 +4435,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.GetTitle.Result">
-        <short/>
-      </element>
+      <element name="TApplication.GetTitle.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.IconChanged">
         <short/>
@@ -5030,9 +4444,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.IconChanged.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.IconChanged.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.Idle">
         <short/>
@@ -5048,17 +4460,11 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.InvokeHelp.Result">
-        <short/>
-      </element>
+      <element name="TApplication.InvokeHelp.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.InvokeHelp.Command">
-        <short/>
-      </element>
+      <element name="TApplication.InvokeHelp.Command"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.InvokeHelp.Data">
-        <short/>
-      </element>
+      <element name="TApplication.InvokeHelp.Data"><short/></element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetControlAtMouse">
         <short/>
@@ -5067,9 +4473,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.GetControlAtMouse.Result">
-        <short/>
-      </element>
+      <element name="TApplication.GetControlAtMouse.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetNavigation">
         <short/>
@@ -5078,9 +4482,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetNavigation.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetNavigation.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.UpdateMouseControl">
         <short/>
@@ -5089,9 +4491,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.UpdateMouseControl.NewMouseControl">
-        <short/>
-      </element>
+      <element name="TApplication.UpdateMouseControl.NewMouseControl"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.MouseIdle">
         <short/>
@@ -5100,9 +4500,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.MouseIdle.CurrentControl">
-        <short/>
-      </element>
+      <element name="TApplication.MouseIdle.CurrentControl"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetCaptureExceptions">
         <short/>
@@ -5111,9 +4509,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetCaptureExceptions.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetCaptureExceptions.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetHint">
         <short/>
@@ -5122,9 +4518,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetHint.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetHint.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetHintColor">
         <short/>
@@ -5133,9 +4527,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetHintColor.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetHintColor.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetIcon">
         <short/>
@@ -5144,9 +4536,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetIcon.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetIcon.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetShowHint">
         <short/>
@@ -5155,9 +4545,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetShowHint.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetShowHint.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.StopHintTimer">
         <short/>
@@ -5173,9 +4561,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.ValidateHelpSystem.Result">
-        <short/>
-      </element>
+      <element name="TApplication.ValidateHelpSystem.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.WndProc">
         <short/>
@@ -5184,9 +4570,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.WndProc.AMessage">
-        <short/>
-      </element>
+      <element name="TApplication.WndProc.AMessage"><short/></element>
       <!-- function Visibility: private -->
       <element name="TApplication.DispatchAction">
         <short/>
@@ -5195,17 +4579,11 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.DispatchAction.Result">
-        <short/>
-      </element>
+      <element name="TApplication.DispatchAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.DispatchAction.Msg">
-        <short/>
-      </element>
+      <element name="TApplication.DispatchAction.Msg"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.DispatchAction.Action">
-        <short/>
-      </element>
+      <element name="TApplication.DispatchAction.Action"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.AddHandler">
         <short/>
@@ -5214,17 +4592,11 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddHandler.HandlerType">
-        <short/>
-      </element>
+      <element name="TApplication.AddHandler.HandlerType"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.AddHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TApplication.AddHandler.AsLast"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.RemoveHandler">
         <short/>
@@ -5233,13 +4605,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveHandler.HandlerType">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveHandler.HandlerType"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveHandler.Handler"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TApplication.GetConsoleApplication">
         <short/>
@@ -5248,9 +4616,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.GetConsoleApplication.Result">
-        <short/>
-      </element>
+      <element name="TApplication.GetConsoleApplication.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.NotifyIdleHandler">
         <short/>
@@ -5273,13 +4639,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.IsHintMsg.Result">
-        <short/>
-      </element>
+      <element name="TApplication.IsHintMsg.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.IsHintMsg.Msg">
-        <short/>
-      </element>
+      <element name="TApplication.IsHintMsg.Msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.DoOnMouseMove">
         <short/>
@@ -5295,9 +4657,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ShowHintWindow.Info">
-        <short/>
-      </element>
+      <element name="TApplication.ShowHintWindow.Info"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.OnHintTimer">
         <short/>
@@ -5306,9 +4666,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.OnHintTimer.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.OnHintTimer.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.SetTitle">
         <short/>
@@ -5317,9 +4675,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.SetTitle.AValue">
-        <short/>
-      </element>
+      <element name="TApplication.SetTitle.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.StartHintTimer">
         <short/>
@@ -5328,13 +4684,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.StartHintTimer.Interval">
-        <short/>
-      </element>
+      <element name="TApplication.StartHintTimer.Interval"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.StartHintTimer.TimerType">
-        <short/>
-      </element>
+      <element name="TApplication.StartHintTimer.TimerType"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.UpdateVisible">
         <short/>
@@ -5357,9 +4709,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.MenuPopupHandler.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.MenuPopupHandler.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.DoFreeReleaseComponents">
         <short/>
@@ -5375,9 +4725,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TApplication.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TApplication.Destroy">
         <short/>
@@ -5393,9 +4741,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ControlDestroyed.AControl">
-        <short/>
-      </element>
+      <element name="TApplication.ControlDestroyed.AControl"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.BringToFront">
         <short/>
@@ -5411,13 +4757,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.CreateForm.InstanceClass">
-        <short/>
-      </element>
+      <element name="TApplication.CreateForm.InstanceClass"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.CreateForm.Reference">
-        <short/>
-      </element>
+      <element name="TApplication.CreateForm.Reference"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.QueueAsyncCall">
         <short>Queues a given method after all other events have been processed.</short>
@@ -5427,13 +4769,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <example file="forms/tapplication_queueasynccall.pas"/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.QueueAsyncCall.AMethod">
-        <short/>
-      </element>
+      <element name="TApplication.QueueAsyncCall.AMethod"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.QueueAsyncCall.Data">
-        <short/>
-      </element>
+      <element name="TApplication.QueueAsyncCall.Data"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ReleaseComponent">
         <short/>
@@ -5442,9 +4780,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ReleaseComponent.AComponent">
-        <short/>
-      </element>
+      <element name="TApplication.ReleaseComponent.AComponent"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.ExecuteAction">
         <short/>
@@ -5453,13 +4789,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.ExecuteAction.Result">
-        <short/>
-      </element>
+      <element name="TApplication.ExecuteAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ExecuteAction.ExeAction">
-        <short/>
-      </element>
+      <element name="TApplication.ExecuteAction.ExeAction"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.UpdateAction">
         <short/>
@@ -5468,13 +4800,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.UpdateAction.Result">
-        <short/>
-      </element>
+      <element name="TApplication.UpdateAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.UpdateAction.TheAction">
-        <short/>
-      </element>
+      <element name="TApplication.UpdateAction.TheAction"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.HandleAllocated">
         <short/>
@@ -5483,9 +4811,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.HandleAllocated.Result">
-        <short/>
-      </element>
+      <element name="TApplication.HandleAllocated.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleException">
         <short/>
@@ -5494,9 +4820,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HandleException.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.HandleException.Sender"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleMessage">
         <short/>
@@ -5512,17 +4836,11 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.HelpCommand.Result">
-        <short/>
-      </element>
+      <element name="TApplication.HelpCommand.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HelpCommand.Command">
-        <short/>
-      </element>
+      <element name="TApplication.HelpCommand.Command"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HelpCommand.Data">
-        <short/>
-      </element>
+      <element name="TApplication.HelpCommand.Data"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpContext">
         <short/>
@@ -5531,13 +4849,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.HelpContext.Result">
-        <short/>
-      </element>
+      <element name="TApplication.HelpContext.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HelpContext.Context">
-        <short/>
-      </element>
+      <element name="TApplication.HelpContext.Context"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpJump">
         <short/>
@@ -5546,13 +4860,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.HelpJump.Result">
-        <short/>
-      </element>
+      <element name="TApplication.HelpJump.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HelpJump.JumpID">
-        <short/>
-      </element>
+      <element name="TApplication.HelpJump.JumpID"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpKeyword">
         <short/>
@@ -5561,13 +4871,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.HelpKeyword.Result">
-        <short/>
-      </element>
+      <element name="TApplication.HelpKeyword.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HelpKeyword.Keyword">
-        <short/>
-      </element>
+      <element name="TApplication.HelpKeyword.Keyword"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HideAllFormsWithStayOnTop">
         <short/>
@@ -5583,9 +4889,7 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TApplication.IsWaiting.Result">
-        <short/>
-      </element>
+      <element name="TApplication.IsWaiting.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.CancelHint">
         <short/>
@@ -5608,13 +4912,9 @@ Includes useful function MessageBox, a simple dialog</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HintMouseMessage.Control">
-        <short/>
-      </element>
+      <element name="TApplication.HintMouseMessage.Control"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.HintMouseMessage.AMessage">
-        <short/>
-      </element>
+      <element name="TApplication.HintMouseMessage.AMessage"><short/></element>
       <!-- property Visibility: public -->
       <element name="TApplication.Icon">
         <short/>
@@ -5699,13 +4999,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TApplication.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TApplication.Notification.Operation"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ProcessMessages">
         <short/>
@@ -5728,9 +5024,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ShowException.E">
-        <short/>
-      </element>
+      <element name="TApplication.ShowException.E"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Terminate">
         <short/>
@@ -5746,9 +5040,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyUserInputHandler.Msg">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyUserInputHandler.Msg"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.NotifyKeyDownBeforeHandler">
         <short/>
@@ -5757,17 +5049,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyKeyDownBeforeHandler.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyKeyDownBeforeHandler.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyKeyDownBeforeHandler.Key">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyKeyDownBeforeHandler.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyKeyDownBeforeHandler.Shift">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyKeyDownBeforeHandler.Shift"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.NotifyKeyDownHandler">
         <short/>
@@ -5776,17 +5062,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyKeyDownHandler.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyKeyDownHandler.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyKeyDownHandler.Key">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyKeyDownHandler.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.NotifyKeyDownHandler.Shift">
-        <short/>
-      </element>
+      <element name="TApplication.NotifyKeyDownHandler.Shift"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ControlKeyDown">
         <short/>
@@ -5795,17 +5075,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ControlKeyDown.Sender">
-        <short/>
-      </element>
+      <element name="TApplication.ControlKeyDown.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ControlKeyDown.Key">
-        <short/>
-      </element>
+      <element name="TApplication.ControlKeyDown.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ControlKeyDown.Shift">
-        <short/>
-      </element>
+      <element name="TApplication.ControlKeyDown.Shift"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnIdleHandler">
         <short/>
@@ -5814,13 +5088,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnIdleHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnIdleHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnIdleHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnIdleHandler.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnIdleHandler">
         <short/>
@@ -5829,9 +5099,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveOnIdleHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveOnIdleHandler.Handler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnIdleEndHandler">
         <short/>
@@ -5840,13 +5108,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnIdleEndHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnIdleEndHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnIdleEndHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnIdleEndHandler.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnIdleEndHandler">
         <short/>
@@ -5855,9 +5119,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveOnIdleEndHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveOnIdleEndHandler.Handler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnUserInputHandler">
         <short/>
@@ -5866,13 +5128,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnUserInputHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnUserInputHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnUserInputHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnUserInputHandler.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnUserInputHandler">
         <short/>
@@ -5881,9 +5139,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveOnUserInputHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveOnUserInputHandler.Handler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnKeyDownBeforeHandler">
         <short/>
@@ -5892,13 +5148,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnKeyDownBeforeHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnKeyDownBeforeHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnKeyDownBeforeHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnKeyDownBeforeHandler.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnKeyDownBeforeHandler">
         <short/>
@@ -5907,9 +5159,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveOnKeyDownBeforeHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveOnKeyDownBeforeHandler.Handler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnKeyDownHandler">
         <short/>
@@ -5918,13 +5168,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnKeyDownHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnKeyDownHandler.Handler"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.AddOnKeyDownHandler.AsLast">
-        <short/>
-      </element>
+      <element name="TApplication.AddOnKeyDownHandler.AsLast"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnKeyDownHandler">
         <short/>
@@ -5933,9 +5179,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveOnKeyDownHandler.Handler">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveOnKeyDownHandler.Handler"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveAllHandlersOfObject">
         <short/>
@@ -5944,9 +5188,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.RemoveAllHandlersOfObject.AnObject">
-        <short/>
-      </element>
+      <element name="TApplication.RemoveAllHandlersOfObject.AnObject"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DoBeforeMouseMessage">
         <short/>
@@ -5955,9 +5197,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.DoBeforeMouseMessage.CurMouseControl">
-        <short/>
-      </element>
+      <element name="TApplication.DoBeforeMouseMessage.CurMouseControl"><short/></element>
       <!-- property Visibility: public -->
       <element name="TApplication.CaptureExceptions">
         <short/>
@@ -6193,9 +5433,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetCaptureExceptions.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetCaptureExceptions.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHelpFile">
         <short/>
@@ -6204,9 +5442,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHelpFile.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHelpFile.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHint">
         <short/>
@@ -6215,9 +5451,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHint.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHint.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintColor">
         <short/>
@@ -6226,9 +5460,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHintColor.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHintColor.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintHidePause">
         <short/>
@@ -6237,9 +5469,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHintHidePause.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHintHidePause.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintPause">
         <short/>
@@ -6248,9 +5478,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHintPause.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHintPause.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintShortCuts">
         <short/>
@@ -6259,9 +5487,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHintShortCuts.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHintShortCuts.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintShortPause">
         <short/>
@@ -6270,9 +5496,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetHintShortPause.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetHintShortPause.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetShowHint">
         <short/>
@@ -6281,9 +5505,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetShowHint.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetShowHint.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetTitle">
         <short/>
@@ -6292,9 +5514,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetTitle.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetTitle.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnException">
         <short/>
@@ -6303,9 +5523,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnException.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnException.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnIdle">
         <short/>
@@ -6314,9 +5532,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnIdle.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnIdle.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnIdleEnd">
         <short/>
@@ -6325,9 +5541,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnIdleEnd.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnIdleEnd.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnHelp">
         <short/>
@@ -6336,9 +5550,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnHelp.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnHelp.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnHint">
         <short/>
@@ -6347,9 +5559,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnHint.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnHint.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnShowHint">
         <short/>
@@ -6358,9 +5568,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnShowHint.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnShowHint.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnUserInput">
         <short/>
@@ -6369,9 +5577,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.SetOnUserInput.AValue">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.SetOnUserInput.AValue"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TApplicationProperties.Create">
         <short/>
@@ -6380,9 +5586,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplicationProperties.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TApplicationProperties.Create.AOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.CaptureExceptions">
         <short/>
@@ -6500,17 +5704,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TIDesigner.IsDesignMsg.Result">
-        <short/>
-      </element>
+      <element name="TIDesigner.IsDesignMsg.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.IsDesignMsg.Sender">
-        <short/>
-      </element>
+      <element name="TIDesigner.IsDesignMsg.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.IsDesignMsg.Message">
-        <short/>
-      </element>
+      <element name="TIDesigner.IsDesignMsg.Message"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.Modified">
         <short/>
@@ -6526,13 +5724,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TIDesigner.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TIDesigner.Notification.Operation"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.PaintGrid">
         <short/>
@@ -6548,17 +5742,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.ValidateRename.AComponent">
-        <short/>
-      </element>
+      <element name="TIDesigner.ValidateRename.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.ValidateRename.CurName">
-        <short/>
-      </element>
+      <element name="TIDesigner.ValidateRename.CurName"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.ValidateRename.NewName">
-        <short/>
-      </element>
+      <element name="TIDesigner.ValidateRename.NewName"><short/></element>
       <!-- function Visibility: public -->
       <element name="TIDesigner.GetShiftState">
         <short/>
@@ -6567,9 +5755,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TIDesigner.GetShiftState.Result">
-        <short/>
-      </element>
+      <element name="TIDesigner.GetShiftState.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.SelectOnlyThisComponent">
         <short/>
@@ -6578,9 +5764,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.SelectOnlyThisComponent.AComponent">
-        <short/>
-      </element>
+      <element name="TIDesigner.SelectOnlyThisComponent.AComponent"><short/></element>
       <!-- function Visibility: public -->
       <element name="TIDesigner.UniqueName">
         <short/>
@@ -6589,13 +5773,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TIDesigner.UniqueName.Result">
-        <short/>
-      </element>
+      <element name="TIDesigner.UniqueName.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIDesigner.UniqueName.BaseName">
-        <short/>
-      </element>
+      <element name="TIDesigner.UniqueName.BaseName"><short/></element>
       <!-- object Visibility: default -->
       <element name="TFormPropertyStorage">
         <short/>
@@ -6611,9 +5791,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFormPropertyStorage.FormFirstShow.Sender">
-        <short/>
-      </element>
+      <element name="TFormPropertyStorage.FormFirstShow.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TFormPropertyStorage.FormClose">
         <short/>
@@ -6622,13 +5800,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFormPropertyStorage.FormClose.Sender">
-        <short/>
-      </element>
+      <element name="TFormPropertyStorage.FormClose.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TFormPropertyStorage.FormClose.CloseAction">
-        <short/>
-      </element>
+      <element name="TFormPropertyStorage.FormClose.CloseAction"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TFormPropertyStorage.Create">
         <short/>
@@ -6637,9 +5811,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFormPropertyStorage.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TFormPropertyStorage.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TFormPropertyStorage.Destroy">
         <short/>
@@ -6690,9 +5862,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDataModule.OldCreateOrderIsStored.Result">
-        <short/>
-      </element>
+      <element name="TDataModule.OldCreateOrderIsStored.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.ReadHeight">
         <short/>
@@ -6701,9 +5871,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.ReadHeight.Reader">
-        <short/>
-      </element>
+      <element name="TDataModule.ReadHeight.Reader"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.ReadHorizontalOffset">
         <short/>
@@ -6712,9 +5880,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.ReadHorizontalOffset.Reader">
-        <short/>
-      </element>
+      <element name="TDataModule.ReadHorizontalOffset.Reader"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.ReadVerticalOffset">
         <short/>
@@ -6723,9 +5889,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.ReadVerticalOffset.Reader">
-        <short/>
-      </element>
+      <element name="TDataModule.ReadVerticalOffset.Reader"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.ReadWidth">
         <short/>
@@ -6734,9 +5898,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.ReadWidth.Reader">
-        <short/>
-      </element>
+      <element name="TDataModule.ReadWidth.Reader"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.WriteWidth">
         <short/>
@@ -6745,9 +5907,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.WriteWidth.Writer">
-        <short/>
-      </element>
+      <element name="TDataModule.WriteWidth.Writer"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.WriteHorizontalOffset">
         <short/>
@@ -6756,9 +5916,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.WriteHorizontalOffset.Writer">
-        <short/>
-      </element>
+      <element name="TDataModule.WriteHorizontalOffset.Writer"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.WriteVerticalOffset">
         <short/>
@@ -6767,9 +5925,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.WriteVerticalOffset.Writer">
-        <short/>
-      </element>
+      <element name="TDataModule.WriteVerticalOffset.Writer"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TDataModule.WriteHeight">
         <short/>
@@ -6778,9 +5934,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.WriteHeight.Writer">
-        <short/>
-      </element>
+      <element name="TDataModule.WriteHeight.Writer"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TDataModule.DoCreate">
         <short/>
@@ -6803,9 +5957,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.DefineProperties.Filer">
-        <short/>
-      </element>
+      <element name="TDataModule.DefineProperties.Filer"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TDataModule.GetChildren">
         <short/>
@@ -6814,13 +5966,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.GetChildren.Proc">
-        <short/>
-      </element>
+      <element name="TDataModule.GetChildren.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.GetChildren.Root">
-        <short/>
-      </element>
+      <element name="TDataModule.GetChildren.Root"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TDataModule.HandleCreateException">
         <short/>
@@ -6829,9 +5977,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDataModule.HandleCreateException.Result">
-        <short/>
-      </element>
+      <element name="TDataModule.HandleCreateException.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TDataModule.ReadState">
         <short/>
@@ -6840,9 +5986,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.ReadState.Reader">
-        <short/>
-      </element>
+      <element name="TDataModule.ReadState.Reader"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TDataModule.Create">
         <short/>
@@ -6851,9 +5995,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TDataModule.Create.TheOwner"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TDataModule.CreateNew">
         <short/>
@@ -6862,13 +6004,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.CreateNew.TheOwner">
-        <short/>
-      </element>
+      <element name="TDataModule.CreateNew.TheOwner"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TDataModule.CreateNew.CreateMode">
-        <short/>
-      </element>
+      <element name="TDataModule.CreateNew.CreateMode"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TDataModule.Destroy">
         <short/>
@@ -6933,9 +6071,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="DataModule">
-        <short/>
-      </element>
+      <element name="DataModule"><short/></element>
       <!-- constant Visibility: default -->
       <element name="ApplicationHandleException">
         <short/>
@@ -6943,9 +6079,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="Sender">
-        <short/>
-      </element>
+      <element name="Sender"><short/></element>
       <!-- constant Visibility: default -->
       <element name="ApplicationShowException">
         <short/>
@@ -6953,9 +6087,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="E">
-        <short/>
-      </element>
+      <element name="E"><short/></element>
       <!-- function Visibility: default -->
       <element name="KeysToShiftState">
         <short/>
@@ -6964,13 +6096,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="KeysToShiftState.Result">
-        <short/>
-      </element>
+      <element name="KeysToShiftState.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="KeysToShiftState.Keys">
-        <short/>
-      </element>
+      <element name="KeysToShiftState.Keys"><short/></element>
       <!-- function Visibility: default -->
       <element name="KeyDataToShiftState">
         <short/>
@@ -6979,13 +6107,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="KeyDataToShiftState.Result">
-        <short/>
-      </element>
+      <element name="KeyDataToShiftState.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="KeyDataToShiftState.KeyData">
-        <short/>
-      </element>
+      <element name="KeyDataToShiftState.KeyData"><short/></element>
       <!-- alias type Visibility: default -->
       <element name="TFocusState">
         <short/>
@@ -7000,9 +6124,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="SaveFocusState.Result">
-        <short/>
-      </element>
+      <element name="SaveFocusState.Result"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="RestoreFocusState">
         <short/>
@@ -7011,9 +6133,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="RestoreFocusState.FocusState">
-        <short/>
-      </element>
+      <element name="RestoreFocusState.FocusState"><short/></element>
       <!-- function type Visibility: default -->
       <element name="TGetDesignerFormEvent">
         <short/>
@@ -7021,13 +6141,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TGetDesignerFormEvent.Result">
-        <short/>
-      </element>
+      <element name="TGetDesignerFormEvent.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TGetDesignerFormEvent.AComponent">
-        <short/>
-      </element>
+      <element name="TGetDesignerFormEvent.AComponent"><short/></element>
       <!-- variable Visibility: default -->
       <element name="OnGetDesignerForm">
         <short/>
@@ -7042,13 +6158,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="GetParentForm.Result">
-        <short/>
-      </element>
+      <element name="GetParentForm.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="GetParentForm.Control">
-        <short/>
-      </element>
+      <element name="GetParentForm.Control"><short/></element>
       <!-- function Visibility: default -->
       <element name="GetDesignerForm">
         <short/>
@@ -7057,13 +6169,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="GetDesignerForm.Result">
-        <short/>
-      </element>
+      <element name="GetDesignerForm.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="GetDesignerForm.AComponent">
-        <short/>
-      </element>
+      <element name="GetDesignerForm.AComponent"><short/></element>
       <!-- function Visibility: default -->
       <element name="FindRootDesigner">
         <short/>
@@ -7072,13 +6180,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="FindRootDesigner.Result">
-        <short/>
-      </element>
+      <element name="FindRootDesigner.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="FindRootDesigner.AComponent">
-        <short/>
-      </element>
+      <element name="FindRootDesigner.AComponent"><short/></element>
       <!-- function Visibility: default -->
       <element name="IsAccel">
         <short/>
@@ -7087,17 +6191,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="IsAccel.Result">
-        <short/>
-      </element>
+      <element name="IsAccel.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="IsAccel.VK">
-        <short/>
-      </element>
+      <element name="IsAccel.VK"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="IsAccel.Str">
-        <short/>
-      </element>
+      <element name="IsAccel.Str"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="NotifyApplicationUserInput">
         <short/>
@@ -7106,9 +6204,7 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="NotifyApplicationUserInput.Msg">
-        <short/>
-      </element>
+      <element name="NotifyApplicationUserInput.Msg"><short/></element>
       <!-- function Visibility: default -->
       <element name="InitResourceComponent">
         <short/>
@@ -7117,17 +6213,11 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="InitResourceComponent.Result">
-        <short/>
-      </element>
+      <element name="InitResourceComponent.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="InitResourceComponent.Instance">
-        <short/>
-      </element>
+      <element name="InitResourceComponent.Instance"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="InitResourceComponent.RootAncestor">
-        <short/>
-      </element>
+      <element name="InitResourceComponent.RootAncestor"><short/></element>
       <!-- function Visibility: default -->
       <element name="GetShortHint">
         <short/>
@@ -7136,13 +6226,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="GetShortHint.Result">
-        <short/>
-      </element>
+      <element name="GetShortHint.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="GetShortHint.Hint">
-        <short/>
-      </element>
+      <element name="GetShortHint.Hint"><short/></element>
       <!-- function Visibility: default -->
       <element name="GetLongHint">
         <short/>
@@ -7151,13 +6237,9 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="GetLongHint.Result">
-        <short/>
-      </element>
+      <element name="GetLongHint.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="GetLongHint.Hint">
-        <short/>
-      </element>
+      <element name="GetLongHint.Hint"><short/></element>
       <!-- variable Visibility: default -->
       <element name="Application">
         <short/>
@@ -7189,21 +6271,13 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMessageBoxFunction.Result">
-        <short/>
-      </element>
+      <element name="TMessageBoxFunction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMessageBoxFunction.Text">
-        <short/>
-      </element>
+      <element name="TMessageBoxFunction.Text"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMessageBoxFunction.Caption">
-        <short/>
-      </element>
+      <element name="TMessageBoxFunction.Caption"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMessageBoxFunction.Flags">
-        <short/>
-      </element>
+      <element name="TMessageBoxFunction.Flags"><short/></element>
       <!-- variable Visibility: default -->
       <element name="MessageBoxFunction">
         <short/>
