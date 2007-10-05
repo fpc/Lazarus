@@ -83,32 +83,19 @@ var
   disp: GDHandle;
   aglPixFmt: TAGLPixelFormat;
   aglContext: TAGLContext;
-  ACarbonWindow: WindowRef;
-  CFString: CFStringRef;
-  Control: ControlRef;
-  R: FPCMacOSAll.Rect;
-  Info: PWidgetInfo;
-  ParentWindow: WindowPtr;
+  Control: TCarbonCustomControl;
   AttrList: PInteger;
+  C: TCreateParams;
 begin
   if AWinControl.Parent=nil then
     RaiseGDBException('GLCarbonAGLContext.LOpenGLCreateContext no parent');
-  ParentWindow:=WindowRef(AWinControl.Parent.Handle);
 
-  // create a dummy control
-  R:=GetCarbonRect(AWinControl.BoundsRect);
-  Control:=nil;
-  CFString := CFStringCreateWithCString(nil, Pointer(PChar('SubControl')),
-                                        kCFStringEncodingUTF8);
-  if CreatePushButtonControl(ParentWindow, R, CFString, Control) <> noErr
-  then
-    debugln('CreatePushButtonControl failed');
-  CFRelease(Pointer(CFString));
-
-  // create LCL WidgetInfo
-  Result:=HWnd(Control);
-  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  C.X := AWinControl.Left;
+  C.Y := AWinControl.Top;
+  C.Width := AWinControl.Width;
+  C.Height := AWinControl.Height;
+  // create a custom control
+  Control := TCarbonCustomControl.Create(AWinControl, C);
 
   // create the AGL context
   disp := GetMainDevice ();
@@ -120,12 +107,12 @@ begin
 
   // use the carbon window.
   // TODO: find a way to use only the control for the context
-  ACarbonWindow:=WindowRef(GetParentForm(AWinControl).Handle);
-  aglSetDrawable(aglContext,GetWindowPort(ACarbonWindow));
+  aglSetDrawable(aglContext,
+    GetWindowPort(TCarbonWindow(GetParentForm(AWinControl).Handle).Widget));
 
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
-  CreateAGLControlInfo(Control,AGLContext);
+  CreateAGLControlInfo(Control.Widget, AGLContext);
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
@@ -134,11 +121,11 @@ var
   Info: PAGLControlInfo;
 begin
   if not AWinControl.HandleAllocated then exit;
-  Ref:=ControlRef(AWinControl.Handle);
-  Info:=GetAGLControlInfo(Ref);
+  Ref := ControlRef(TCarbonControl(AWinControl.Handle).Widget);
+  Info := GetAGLControlInfo(Ref);
   if Info=nil then exit;
   aglDestroyContext(Info^.AGLContext);
-  Info^.AGLContext:=nil;
+  Info^.AGLContext := nil;
   FreeAGLControlInfo(Ref);
 end;
 
