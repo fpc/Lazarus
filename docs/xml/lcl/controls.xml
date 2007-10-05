@@ -466,9 +466,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TMouseButton">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Type defining the three mouse buttons (left, middle, right)</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TMouseButton.mbLeft"><short/></element>
@@ -820,10 +818,12 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlCanvas">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The base class for the canvas property of several graphic controls, such as TGraphicControl and TCustomControl</short>
+        <seealso>
+          <link id="TGraphicControl"/>
+          <link id="TCustomControl"/>
+          <link id="TCanvas"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControlCanvas.FControl">
@@ -868,17 +868,11 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TControlCanvas.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create this instance of Control Canvas</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TControlCanvas.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Destroy this Control Canvas and free its resources</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControlCanvas.FreeHandle">
@@ -889,9 +883,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControlCanvas.Control">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Control object for which this is the Canvas</short>
+        <descr>Reads or writes a flag to determine the identity of the Control object</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragImageList">
@@ -1188,10 +1181,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The base class for many objects that are designed to be dragged and dropped</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDragObject.FDragTarget">
@@ -1236,11 +1226,7 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TDragObject.FCancelling">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TDragObject.FCancelling"/>
       <!-- function Visibility: private -->
       <element name="TDragObject.Capture">
         <short/>
@@ -1365,87 +1351,72 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDragObject.KeyUp.Shift"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TDragObject.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Destroy this instance of TDragObject</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Assigns a particular source to this drag object</short>
+        <descr>Finds out a lot of information about the source object, such as its operating-system handle, size, position, how much the mouse is allowed to move before the object is moved, and whether the object is to be kept visible during the drag process.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDragObject.Assign.Source"><short/></element>
+      <element name="TDragObject.Assign.Source">
+        <short>The object, with all its properties, that is to be dragged</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TDragObject.GetName">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find name of the object for dragging</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDragObject.GetName.Result"><short/></element>
+      <element name="TDragObject.GetName.Result">
+        <short>The object's name returned as a string</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.HideDragImage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure for hiding the drag image during movement</short>
+        <seealso><link id="ShowDragImage"/></seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragObject.Instance">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>// exist only for compatibility</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDragObject.Instance.Result"><short/></element>
+      <element name="TDragObject.Instance.Result">
+        <short>zero</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.ShowDragImage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure for keeping the image visible during movement</short>
+        <seealso><link id="HideDragImage"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.Cancelling">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is this drag object being cancelled?</short>
+        <descr>Reads or sets flag to determine whether this drag image is being cancelled. Property has a boolean value, true if cancelling</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragHandle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Finds Operating-System handle for this object</short>
+        <descr>Reads or writes flag for operating-system handle</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragPos">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Find position for this object</short>
+        <descr>Reads or writes flag with position (as X, Y co-ordinates)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragTargetPos">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The position of the taget control object to which the currect object is to be dragged</short>
+        <descr>Reads or writes flag with position (X, Y co-ordinates) of control object to which the current object is to be dragged</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragTarget">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The control object to which the current object is to be dragged (target)</short>
+        <descr>Reads or writes flag with identity of the target control object to which the currect object is to be dragged</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.Dropped">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Has the drag object been dropped yet?</short>
+        <descr>Boolean property, true if the object has been dropped; reads or writes a flag with this information</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.MouseDeltaX">
@@ -1467,10 +1438,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TBaseDragControlObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>An ancestor class for many drag control objects</short>
+        <seealso><link id="TDragObject"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBaseDragControlObject.FControl">
@@ -1508,27 +1477,27 @@ mrLast=mrYesToAll=10</descr>
       <element name="TBaseDragControlObject.Finished.Accepted"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TBaseDragControlObject.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Creates an instance of this object</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseDragControlObject.Create.AControl"><short/></element>
+      <element name="TBaseDragControlObject.Create.AControl">
+        <short>The control object that is to be dragged</short>
+        <descr>Reads or writes flag with identity of object for dragging</descr>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TBaseDragControlObject.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Assigns source object</short>
+        <descr>Overrides definition in parent class</descr>
+        <seealso><link id="TDragObject"/></seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseDragControlObject.Assign.Source"><short/></element>
+      <element name="TBaseDragControlObject.Assign.Source">
+        <short>The object that is to be dragged</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TBaseDragControlObject.Control">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The identity of the control to be dragged</short>
+        <descr>Reads or writes flag with identity of control object</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragControlObject">
@@ -1835,10 +1804,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDockManager">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A base class for managing the docking process</short>
+        <descr>The declaration contains a number of procedure definitions that are 'virtual' and 'abstract'. <br/>This means that there is no implementation specified: <br/>these essentially represent 'place-holders',  and it is the responsibility of the developer of descendant classes <br/>to override these methods and implement them as desired.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.BeginUpdate">
@@ -9354,10 +9321,8 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="TControlPropertyStorage.GetPropertyList.List"><short/></element>
       <!-- object Visibility: default -->
       <element name="TDockZone">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TDockZone is a node in the TDockTree and encapsulates a region into which  other zones or a single control are contained.</short>
+        <descr>This is an ancestor class for TDockTree, in the sense that it forms the elementary component of which the tree is constructed</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDockZone.FChildControl">
@@ -9523,13 +9488,13 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="TDockZone.GetNextVisibleZone.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TDockZone.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create this instance of Dock Zone</short>
+        <descr>Specifies the tree to which this zone belongs, and and child zones which it contains</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockZone.Create.TheTree"><short/></element>
+      <element name="TDockZone.Create.TheTree">
+        <short>The dock tree to which this zone belongs</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TDockZone.ExpandZoneLimit">
         <short/>
@@ -9689,7 +9654,7 @@ TGraphicControl, you must query the ClientRect.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TDockTree">
-        <short>TDockTree</short>
+        <short>A tree of dock zones - every docked window has one tree</short>
         <descr>
           <code>{ TDockTree - a tree of TDockZones - Every docked window has one tree
 
@@ -9774,11 +9739,10 @@ TGraphicControl, you must query the ClientRect.</p>
     ResetBounds - TODO for Delphi compatibility
     SetReplacingControl - TODO for Delphi compatibility
     PaintSite - TODO for Delphi compatibility
-
+}
 </code>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso><link id="TDockManager"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDockTree.FBorderWidth">
@@ -9856,10 +9820,7 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="TDockTree.AdjustDockRect.ARect"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.BeginUpdate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Update the entries in the tree (increment the update count)</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.EndUpdate">
@@ -9993,19 +9954,15 @@ TGraphicControl, you must query the ClientRect.</p>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDockTree.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create a new instance of a docking tree</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockTree.Create.TheDockSite"><short/></element>
+      <element name="TDockTree.Create.TheDockSite">
+        <short>The window control that is to be the site for docking</short>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDockTree.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Remove this instance of dock tree, and free its resources</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDockTree.PaintSite">
@@ -10024,10 +9981,8 @@ TGraphicControl, you must query the ClientRect.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TMouse">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Some properties of the current Mouse</short>
+        <descr>Contains information about current mouse position, whether it has captured an object, whether it is dragging the object, and how far the mouse is allowed to move before the captured object is made to move.</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TMouse.FCapture">
@@ -10085,41 +10040,32 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="TMouse.GetIsDragging.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TMouse.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create an instance of the Mouse object</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TMouse.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Destroy this instance of the mouse object</short>
+        <descr>Can be a locally defined method to override the method specified by the parent object</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.Capture">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>System handle for the captured object</short>
+        <descr>Reads or writes a system variable identifying the captured object</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.CursorPos">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The screen position of the cursor</short>
+        <descr>Reads or writes a variable to determine the position of the cursor (a point with X, Y co-ordinates)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.DragImmediate">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Does the object get dragged as soon as the mouse moves?</short>
+        <descr>Reads or writes a flag to determine whether to move the object immediately the mouse moves: default is true</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.DragThreshold">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The least distance the mouse must move before the captured object is moved</short>
+        <descr>Reads or writes a flag to deterine the threshold movement (if DragImmediate was false). Default is 5 pixels</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.IsDragging">
