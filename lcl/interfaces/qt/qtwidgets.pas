@@ -306,6 +306,8 @@ type
   
   { TQtViewPort }
   TQtViewPort = class(TQtWidget)
+  private
+    FViewPortInMouseWheel: Boolean;
   public
     function getClientBounds: TRect; override;
     procedure OffsetMousePos(APoint: PQtPoint); override;
@@ -6392,6 +6394,11 @@ var
 begin
   case QEvent_type(Event) of
     QEventResize: Result := False;
+    QEventWheel:
+    begin
+      FViewPortInMouseWheel := True;
+      Result := False;
+    end;
     QEventLayoutRequest:
     begin
       {TODO: something here  (maybe) }
@@ -6446,6 +6453,16 @@ begin
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick: Result := False;
+    QEventWheel:
+    begin
+      if viewport.FViewPortInMouseWheel then
+      begin
+        QEvent_ignore(Event);
+        viewport.FViewPortInMouseWheel := False;
+        ViewPortEventFilter(Event, @Result);
+      end else
+        Result := False;
+    end;
     else
       Result := inherited EventFilter(Sender, Event);
   end;
@@ -6655,6 +6672,7 @@ begin
     exit;
   FillChar(AParams, SizeOf(AParams), #0);
   FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
+  FViewPortWidget.FViewPortInMouseWheel := False;
   FViewPortWidget.setFocusProxy(Widget);
   FViewPortWidget.setBackgroundRole(QPaletteNoRole);
   FViewPortWidget.setAutoFillBackground(False);
