@@ -4306,7 +4306,7 @@ begin
       (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then exit;
 
       ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
-
+      
       if not Assigned(ScrollBar) then exit;
 
       if not Assigned(ScrollBar.Parent) then
@@ -4325,32 +4325,14 @@ begin
       then
         exit;
 
-      {do not localize !}
-      ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
-
-      if not Assigned(ScrollBar)
-      and not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
+      if TQtWidget(Handle) is TQtAbstractScrollArea then
       begin
-        ScrollBar := TScrollBar.Create(TQtWidget(Handle).LCLObject);
-        ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'; {do not localize !}
-        ScrollBar.Parent := TQtWidget(Handle).LCLObject;
-        ScrollBar.Kind := sbHorizontal;
-        R := TQtWidget(Handle).LCLObject.ClientRect;
-        {if we have -width then av raises }
-        if (R.Right - ScrollBar.Height) >= 0 then
-        Scrollbar.Width := R.Right - ScrollBar.Height;
-        ScrollBar.Top := R.Bottom - ScrollBar.Height;
-        
-        if (TQtWidget(Handle) is TQtAbstractScrollArea) then
-        begin
-          ScrollBar.Parent := TQtAbstractScrollArea(Handle).LCLObject;
-          TQtAbstractScrollArea(Handle).sethorizontalScrollBar(TQtScrollBar(ScrollBar.Handle));
-          {TODO: howto find ScrollBar style ?!?}
-          TQtAbstractScrollArea(Handle).setScrollStyle(ssAutoHorizontal);
-          TQtAbstractScrollArea(Handle).horizontalScrollBar.Show;
-        end;
-      end;
-      
+        if TQtAbstractScrollArea(Handle).horizontalScrollBar <> nil then
+          ScrollBar := TScrollBar(TQtAbstractScrollArea(Handle).horizontalScrollBar.LCLObject);
+      end else
+        {do not localize !}
+        ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
+
       if Assigned(ScrollBar) then
         ScrollBar.Visible := bRedraw;
       
@@ -4363,34 +4345,14 @@ begin
       then
         exit;
 
-      {do not localize !}
-      ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
-                   
-      if not Assigned(ScrollBar)
-      and not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomForm) then
+      if TQtWidget(Handle) is TQtAbstractScrollArea then
       begin
-        ScrollBar := TScrollBar.Create(TQtWidget(Handle).LCLObject);
-        ScrollBar.Name := TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR';  {do not localize !}
-        ScrollBar.Parent := TQtWidget(Handle).LCLObject;
-        ScrollBar.Kind := sbVertical;
-        R := TQtWidget(Handle).LCLObject.ClientRect;
+        if TQtAbstractScrollArea(Handle).verticalScrollBar <> nil then
+          ScrollBar := TScrollBar(TQtAbstractScrollArea(Handle).verticalScrollBar.LCLObject);
+      end else
+        {do not localize !}
+        ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
 
-        Scrollbar.Height := R.Bottom;
-
-        ScrollBar.Top := 0;
-        {TODO: Check why BorderWidth is 0 when BorderStyle is eg. bsSingle ?!? }
-        ScrollBar.Left := R.Right - ScrollBar.Width;
-        if (TQtWidget(Handle) is TQtAbstractScrollArea) then
-        begin
-          ScrollBar.Parent := TQtAbstractScrollArea(Handle).LCLObject;
-          TQtAbstractScrollArea(Handle).setVerticalScrollBar(TQtScrollBar(ScrollBar.Handle));
-          {TODO: howto find ScrollBar style ?!?}
-          TQtAbstractScrollArea(Handle).setScrollStyle(ssAutoVertical);
-          TQtAbstractScrollArea(Handle).verticalScrollBar.Show;
-        end;
-
-      end;
-      
       if Assigned(ScrollBar) then
         ScrollBar.Visible := bRedraw;
 
@@ -4433,6 +4395,34 @@ function TQtWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean)
 var
   w: TQtWidget;
   ScrollArea: TQtAbstractScrollArea;
+  ScrollBar: TScrollBar;
+  
+  procedure PrepareHorizontalScrollBar;
+  begin
+    if ScrollArea.horizontalScrollBar = nil then
+    begin
+      ScrollBar := TScrollBar.Create(w.LCLObject);
+      ScrollBar.Parent := w.LCLObject;
+      ScrollBar.Kind := sbHorizontal;
+      ScrollArea.sethorizontalScrollBar(TQtScrollBar(ScrollBar.Handle));
+      ScrollArea.setScrollStyle(ssAutoHorizontal);
+      ScrollArea.horizontalScrollBar.Show;
+    end;
+  end;
+
+  procedure PrepareVerticalScrollBar;
+  begin
+    if ScrollArea.verticalScrollBar = nil then
+    begin
+      ScrollBar := TScrollBar.Create(w.LCLObject);
+      ScrollBar.Parent := w.LCLObject;
+      ScrollBar.Kind := sbVertical;
+      ScrollArea.setverticalScrollBar(TQtScrollBar(ScrollBar.Handle));
+      ScrollArea.setScrollStyle(ssAutoVertical);
+      ScrollArea.verticalScrollBar.Show;
+    end;
+  end;
+
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ShowScrollBar] Handle: ', dbghex(Handle),' wBar: ',wBar);
@@ -4447,29 +4437,35 @@ begin
   if w is TQtAbstractScrollArea then
   begin
     ScrollArea := TQtAbstractScrollArea(w);
-    
     case wBar of
       SB_BOTH:
       begin
+        PrepareHorizontalScrollBar;
+        PrepareVerticalScrollBar;
         if bShow then
           ScrollArea.setScrollStyle(ssBoth)
         else
           ScrollArea.setScrollStyle(ssNone);
       end;
+      
       SB_HORZ:
       begin
+        PrepareHorizontalScrollBar;
         if bShow then
           ScrollArea.setScrollStyle(ssHorizontal)
         else
           QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
       end;
+      
       SB_VERT:
       begin
+        PrepareVerticalScrollBar;
         if bShow then
           ScrollArea.setScrollStyle(ssVertical)
         else
           QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
       end;
+      
       SB_CTL:
       begin
         if bShow then

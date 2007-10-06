@@ -2055,6 +2055,7 @@ begin
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
     Msg.PaintStruct^.hdc := FContext;
 
+
     with getClientBounds do
       SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
 
@@ -6577,7 +6578,7 @@ begin
     if not (csDesigning in LCLObject.ComponentState) then
     begin
       i := getHeight;
-      QWidget_resize(Widget,getWidth,i + FHScrollBar.getHeight);
+      QWidget_resize(Widget,getWidth,i + GetSystemMetrics(SM_CYHSCROLL));
       QWidget_update(Widget);
       QWidget_resize(Widget,getWidth, i);
     end;
@@ -6601,12 +6602,12 @@ begin
   begin
     QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
     {$note WORKAROUND}
-    if not (csDesigning in LCLObject.ComponentState) and (horizontalScrollBar <> nil) then
+    if not (csDesigning in LCLObject.ComponentState) then
     begin
-      i := getHeight;
-      QWidget_resize(Widget,getWidth,i + FVScrollBar.getWidth);
+      i := getWidth;
+      QWidget_resize(Widget,i + GetSystemMetrics(SM_CXVSCROLL), getHeight);
       QWidget_update(Widget);
-      QWidget_resize(Widget,getWidth, i);
+      QWidget_resize(Widget,i, GetHeight);
     end;
   end;
 end;
