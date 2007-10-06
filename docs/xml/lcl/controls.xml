@@ -822,7 +822,7 @@ mrLast=mrYesToAll=10</descr>
         <seealso>
           <link id="TGraphicControl"/>
           <link id="TCustomControl"/>
-          <link id="TCanvas"/>
+          <link id="Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -1373,7 +1373,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.HideDragImage">
         <short>Procedure for hiding the drag image during movement</short>
-        <seealso><link id="ShowDragImage"/></seealso>
+        <seealso><link id="TDragObject.ShowDragImage">ShowDragImage</link></seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragObject.Instance">
@@ -1386,7 +1386,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.ShowDragImage">
         <short>Procedure for keeping the image visible during movement</short>
-        <seealso><link id="HideDragImage"/></seealso>
+        <seealso><link id="TDragObject.HideDragImage">HideDragImage</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.Cancelling">
@@ -9133,7 +9133,7 @@ paint requests received by the parent control.</pre>
         </descr>
         <seealso>
           <link id="TWinControl"/>
-          <link id="Graphics.TCanvas"/>
+          <link id="Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
