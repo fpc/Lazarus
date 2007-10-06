@@ -1998,8 +1998,8 @@ var
   Language: String;
 begin
   //DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.RSTOutputDirectory]);
-  if (APackage.RSTOutputDirectory='') then exit;
-  Directory:=AppendPathDelim(APackage.GetRSTOutDirectory);
+  if (APackage.POOutputDirectory='') then exit;
+  Directory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
   Language:=EnvironmentOptions.LanguageID;
   if Language='' then begin

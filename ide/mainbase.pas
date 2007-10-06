@@ -577,12 +577,6 @@ begin
     CreateMenuItem(ParentMI,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject);
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewSource);
 
-    {$IFDEF TRANSLATESTRING}
-    CreateMenuSeparatorSection(mnuProject,itmProjectPoFileSection,'itmProjectPoFileSection');
-    ParentMI:=itmProjectPoFileSection;
-    CreateMenuItem(ParentMI, itmProjectCreatePoFiles,'itmProjectCreatePoFiles', lisMenuCreatePoFile);
-    CreateMenuItem(ParentMI, itmProjectCollectPoFiles, 'itmProjectCollectPoFiles', lisMenuCollectPoFil);
-    {$ENDIF}
   end;
 end;
 

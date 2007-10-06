@@ -1,0 +1,512 @@
+object PackageOptionsDialog: TPackageOptionsDialog
+  Left = 303
+  Height = 439
+  Top = 191
+  Width = 528
+  HorzScrollBar.Page = 527
+  VertScrollBar.Page = 438
+  ActiveControl = CancelButton
+  Caption = 'Form2'
+  ClientHeight = 439
+  ClientWidth = 528
+  OnClose = PackageOptionsDialogClose
+  object CancelButton: TButton
+    Left = 442
+    Height = 31
+    Top = 400
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    Constraints.MinWidth = 75
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object OKButton: TButton
+    AnchorSideRight.Control = CancelButton
+    Left = 357
+    Height = 31
+    Top = 400
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 10
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OK'
+    Constraints.MinWidth = 75
+    Default = True
+    ModalResult = 1
+    OnClick = OkButtonClick
+    TabOrder = 1
+  end
+  object Notebook: TNotebook
+    AnchorSideBottom.Control = OKButton
+    Height = 390
+    Width = 528
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    PageIndex = 0
+    TabOrder = 0
+    object UsagePage: TPage
+      Caption = 'Usage'
+      ClientWidth = 524
+      ClientHeight = 363
+      object AddPathsGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 128
+        Top = 7
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'Add paths to dependent packages/projects'
+        ClientHeight = 113
+        ClientWidth = 508
+        TabOrder = 0
+        object UnitPathLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 3
+          Width = 23
+          Caption = 'Unit'
+          ParentColor = False
+        end
+        object IncludePathLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 30
+          Width = 41
+          Caption = 'Include'
+          ParentColor = False
+        end
+        object ObjectPathLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 57
+          Width = 37
+          Caption = 'Object'
+          ParentColor = False
+        end
+        object LibraryPathLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 84
+          Width = 40
+          Caption = 'Library'
+          ParentColor = False
+        end
+        object UnitPathEdit: TEdit
+          Left = 62
+          Height = 23
+          Width = 410
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          TabOrder = 0
+        end
+        object IncludePathEdit: TEdit
+          Left = 62
+          Height = 23
+          Top = 27
+          Width = 410
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          TabOrder = 1
+        end
+        object ObjectPathEdit: TEdit
+          Left = 62
+          Height = 23
+          Top = 54
+          Width = 410
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          TabOrder = 2
+        end
+        object LibraryPathEdit: TEdit
+          Left = 62
+          Height = 23
+          Top = 81
+          Width = 410
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          TabOrder = 3
+        end
+      end
+      object AddOptionsGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 214
+        Top = 143
+        Width = 512
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'Add options to dependent packages and projects'
+        ClientHeight = 199
+        ClientWidth = 508
+        TabOrder = 1
+        object LinkerOptionsLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 11
+          Width = 30
+          Caption = 'Links'
+          ParentColor = False
+        end
+        object CustomOptionsLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 91
+          Width = 45
+          Caption = 'Custom'
+          ParentColor = False
+        end
+        object LinkerOptionsMemo: TMemo
+          Left = 62
+          Height = 72
+          Top = 11
+          Width = 438
+          Anchors = [akTop, akLeft, akRight]
+          ScrollBars = ssAutoVertical
+          TabOrder = 0
+        end
+        object CustomOptionsMemo: TMemo
+          Left = 62
+          Height = 88
+          Top = 99
+          Width = 438
+          Anchors = [akTop, akLeft, akRight]
+          ScrollBars = ssAutoVertical
+          TabOrder = 1
+        end
+      end
+    end
+    object DescriptionPage: TPage
+      Caption = 'Description'
+      ClientWidth = 524
+      ClientHeight = 363
+      object DescriptionGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 72
+        Top = 7
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'Description/Abstract'
+        ClientHeight = 57
+        ClientWidth = 508
+        TabOrder = 0
+        object DescriptionMemo: TMemo
+          Height = 57
+          Width = 508
+          Align = alClient
+          ScrollBars = ssAutoBoth
+          TabOrder = 0
+        end
+      end
+      object AuthorGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 43
+        Top = 87
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'Author:'
+        ClientHeight = 28
+        ClientWidth = 508
+        TabOrder = 1
+        object AuthorEdit: TEdit
+          Left = 6
+          Height = 23
+          Width = 502
+          Align = alTop
+          BorderSpacing.Left = 6
+          TabOrder = 0
+        end
+      end
+      object LicenseGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 72
+        Top = 151
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'License:'
+        ClientHeight = 57
+        ClientWidth = 508
+        TabOrder = 2
+        object LicenseMemo: TMemo
+          Height = 57
+          Width = 508
+          Align = alClient
+          ScrollBars = ssAutoBoth
+          TabOrder = 0
+        end
+      end
+      object VersionGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 126
+        Top = 231
+        Width = 512
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'Version'
+        ClientHeight = 111
+        ClientWidth = 508
+        TabOrder = 3
+        object VersionMajorLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 3
+          Width = 32
+          Caption = 'Major'
+          ParentColor = False
+        end
+        object VersionMinorLabel: TLabel
+          Left = 110
+          Height = 20
+          Top = 3
+          Width = 32
+          Caption = 'Minor'
+          ParentColor = False
+        end
+        object VersionReleaseLabel: TLabel
+          Left = 214
+          Height = 20
+          Top = 3
+          Width = 46
+          Caption = 'Release'
+          ParentColor = False
+        end
+        object VersionBuildLabel: TLabel
+          Left = 318
+          Height = 20
+          Top = 3
+          Width = 77
+          Caption = 'Build Number'
+          ParentColor = False
+        end
+        object VersionMajorSpinEdit: TSpinEdit
+          Left = 6
+          Height = 23
+          Top = 20
+          Width = 68
+          MaxValue = 9999
+          TabOrder = 0
+        end
+        object VersionMinorSpinEdit: TSpinEdit
+          Left = 110
+          Height = 23
+          Top = 20
+          Width = 68
+          MaxValue = 9999
+          TabOrder = 1
+        end
+        object VersionReleaseSpinEdit: TSpinEdit
+          Left = 214
+          Height = 23
+          Top = 20
+          Width = 68
+          MaxValue = 9999
+          TabOrder = 2
+        end
+        object VersionBuildSpinEdit: TSpinEdit
+          Left = 318
+          Height = 23
+          Top = 20
+          Width = 68
+          MaxValue = 9999
+          TabOrder = 3
+        end
+        object AutoIncrementOnBuildCheckBox: TCheckBox
+          Left = 6
+          Height = 21
+          Top = 51
+          Width = 250
+          Caption = 'Automatically increment version on build'
+          Enabled = False
+          TabOrder = 4
+        end
+      end
+    end
+    object IDEPage: TPage
+      Caption = 'IDE Integration'
+      ClientWidth = 524
+      ClientHeight = 363
+      object PkgTypeRadioGroup: TRadioGroup
+        Left = 6
+        Height = 116
+        Top = 7
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        Caption = 'PackageType'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 101
+        ClientWidth = 508
+        ItemIndex = 2
+        Items.Strings = (
+          'Designtime only'
+          'Runtime only'
+          'Designtime and Runtime'
+        )
+        OnClick = PkgTypeRadioGroupClick
+        TabOrder = 0
+      end
+      object UpdateRadioGroup: TRadioGroup
+        Left = 6
+        Height = 116
+        Top = 127
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        Caption = 'Update/Rebuild'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 101
+        ClientWidth = 508
+        ItemIndex = 0
+        Items.Strings = (
+          'Automatically rebuild as needed'
+          'Auto rebuild when rebuilding all'
+          'Manual compilation (never automatically)'
+        )
+        TabOrder = 1
+      end
+      object LazDocGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 48
+        Top = 247
+        Width = 512
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'LazDoc - Lazarus documentation'
+        ClientHeight = 33
+        ClientWidth = 508
+        TabOrder = 2
+        object LazDocPathEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 3
+          Width = 464
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          TabOrder = 0
+        end
+      end
+    end
+    object ProvidesPage: TPage
+      Caption = 'Provides'
+      ClientWidth = 524
+      ClientHeight = 363
+      object AddOptionsGroupBox1: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 350
+        Top = 7
+        Width = 512
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'This package provides the same as the following packages:'
+        ClientHeight = 335
+        ClientWidth = 508
+        TabOrder = 0
+        object ProvidesMemo: TMemo
+          Height = 335
+          Width = 508
+          Align = alClient
+          ScrollBars = ssAutoVertical
+          TabOrder = 0
+        end
+      end
+    end
+    object i18n: TPage
+      Caption = 'i18n'
+      ClientWidth = 524
+      ClientHeight = 363
+      object I18NGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 81
+        Top = 39
+        Width = 506
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'i18n Options'
+        ClientHeight = 66
+        ClientWidth = 502
+        TabOrder = 0
+        object PoOutDirLabel: TLabel
+          Left = 6
+          Height = 20
+          Top = 3
+          Width = 116
+          Caption = 'PO Output Directory:'
+          ParentColor = False
+        end
+        object POOutDirEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 27
+          Width = 466
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          TabOrder = 0
+        end
+        object POOutDirButton: TButton
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 472
+          Height = 23
+          Top = 27
+          Width = 24
+          Anchors = [akTop, akRight, akBottom]
+          BorderSpacing.Right = 6
+          BorderSpacing.InnerBorder = 4
+          Caption = '...'
+          OnClick = POOutputDirectoryButtonClick
+          TabOrder = 1
+        end
+      end
+      object EnableI18NCheckBox: TCheckBox
+        Left = 6
+        Height = 21
+        Top = 7
+        Width = 88
+        Caption = 'Enable i18n'
+        OnChange = EnableI18NCheckBoxChange
+        TabOrder = 1
+      end
+    end
+  end
+end

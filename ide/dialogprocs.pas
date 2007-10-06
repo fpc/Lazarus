@@ -71,6 +71,8 @@ function SaveCodeBufferToFile(ACodeBuffer: TCodeBuffer;
                          const Filename: string; Backup: boolean = false): TModalResult;
 function LoadStringListFromFile(const Filename, ListTitle: string;
                                 var sl: TStrings): TModalResult;
+function SaveStringListToFile(const Filename, ListTitle: string;
+                                var sl: TStrings): TModalResult;
 function CreateEmptyFile(const Filename: string;
                          ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckCreatingFile(const AFilename: string;
@@ -265,10 +267,29 @@ begin
     on E: Exception do begin
       IDEMessageDialog('Error','Error loading '+ListTitle+' from'#13
       +Filename+#13#13
-        +E.Message,mtError,[mbOk]);
+      +E.Message,mtError,[mbOk]);
     end;
   end;
 end;
+
+function SaveStringListToFile(const Filename, ListTitle: string;
+  var sl: TStrings): TModalResult;
+begin
+  Result:=mrCancel;
+  if sl=nil then
+    sl:=TStringList.Create;
+  try
+    sl.SaveToFile(Filename);
+    Result:=mrOk;
+  except
+    on E: Exception do begin
+      IDEMessageDialog('Error','Error saving '+ListTitle+' to'#13
+      +Filename+#13#13
+      +E.Message,mtError,[mbOk]);
+    end;
+  end;
+end;
+
 
 function CreateEmptyFile(const Filename: string; ErrorButtons: TMsgDlgButtons
   ): TModalResult;

@@ -100,7 +100,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_scrolled_window_new(nil, nil);
-  Result := TLCLIntfHandle(Widget);
+  Result := TLCLIntfHandle(PtrUInt(Widget));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));

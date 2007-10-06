@@ -490,7 +490,6 @@ type
   { TProject }
 
   TProject = class(TLazProject)
-    procedure VersionInfoModified(Sender: TObject);
   private
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
@@ -499,13 +498,11 @@ type
     fChanged: boolean;
     FCompilerOptions: TProjectCompilerOptions;
     FDefineTemplates: TProjectDefineTemplates;
-
+    fDestroying: boolean;
+    FEnableI18N: boolean;
+    fFirst: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
-    fFirst: array[TUnitInfoList] of TUnitInfo;
-
-    fDestroying: boolean;
-    FUseAppBundle: Boolean;
     fIconPath: String;
     FJumpHistory: TProjectJumpHistory;
     FLastCompilerFileDate: integer;
@@ -523,6 +520,7 @@ type
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
     fPathDelimChanged: boolean;
+    FPOOutputDirectory: string;
     fProjectDirectory: string;
     fProjectDirectoryReferenced: string;
     fProjectInfoFile: String;  // the lpi filename
@@ -534,10 +532,9 @@ type
     FTargetFileExt: String;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
-
+    FUseAppBundle: Boolean;
     FVersionInfo: TProjectVersionInfo;
     FXPManifest: TProjectXPManifest;
-    
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -558,12 +555,15 @@ type
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
     procedure SetMainProject(const AValue: boolean);
     procedure SetTargetFilename(const NewTargetFilename: string);
+    procedure SetEnableI18N(const AValue: boolean);
+    procedure SetPOOutputDirectory(const AValue: string);
     procedure SetMainUnitID(const AValue: Integer);
     procedure UpdateProjectDirectory;
     procedure UpdateSessionFilename;
     procedure UpdateSourceDirectories;
     procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
+    procedure VersionInfoModified(Sender: TObject);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -715,7 +715,7 @@ type
     procedure UpdateSyntaxHighlighter;
     
     // i18n
-    function GetRSTOutDirectory: string;
+    function GetPOOutDirectory: string;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -780,6 +780,11 @@ type
     
     property VersionInfo: TProjectVersionInfo read FVersionInfo;
     property XPManifest: TProjectXPManifest read FXPManifest;
+    
+    property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
+    property POOutputDirectory: string read FPOOutputDirectory
+                                       write SetPOOutputDirectory;
+
   end;
 
 const
@@ -797,7 +802,7 @@ implementation
 uses frmcustomapplicationoptions;
 
 const
-  ProjectInfoFileVersion = 5;
+  ProjectInfoFileVersion = 6;
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
@@ -1779,11 +1784,12 @@ begin
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
-        CreateRelativeSearchPath(LazDocPaths,ProjectDirectory), '');
+                    CreateRelativeSearchPath(LazDocPaths,ProjectDirectory), '');
       
       // i18n
-      xmlconfig.SetDeleteValue(Path+'RST/OutDir',
-        CreateRelativePath(RSTOutputDirectory,ProjectDirectory), '');
+      xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
+      xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
+                   CreateRelativePath(POOutputDirectory,ProjectDirectory) , '');
 
       // VersionInfo
       xmlconfig.SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
@@ -2161,8 +2167,15 @@ begin
                              fPathDelimChanged);
 
       // i18n
-      RSTOutputDirectory := SwitchPathDelims(
+      if FileVersion<6 then begin
+        POOutputDirectory := SwitchPathDelims(
                    xmlconfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+        EnableI18N := POOutputDirectory <> '';
+      end else begin
+        EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+        POOutputDirectory := SwitchPathDelims(
+             xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+      end;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options
@@ -2942,6 +2955,20 @@ begin
   FCompilerOptions.TargetFilename:=NewTargetFilename;
 end;
 
+procedure TProject.SetEnableI18N(const AValue: boolean);
+begin
+  if FEnableI18N=AValue then exit;
+  FEnableI18N:=AValue;
+  Modified:=true;
+end;
+
+procedure TProject.SetPOOutputDirectory(const AValue: string);
+begin
+  if FPOOutputDirectory=AValue then exit;
+  FPOOutputDirectory:=AValue;
+  Modified:=true;
+end;
+
 function TProject.GetMainFilename: String;
 begin
   if MainUnitID>=0 then Result:=MainUnitInfo.Filename
@@ -3456,9 +3483,9 @@ begin
   end;
 end;
 
-function TProject.GetRSTOutDirectory: string;
+function TProject.GetPOOutDirectory: string;
 begin
-  Result:=RSTOutputDirectory;
+  Result:=POOutputDirectory;
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);
   LongenFilename(Result);

@@ -574,6 +574,7 @@ type
     FDefineTemplates: TLazPackageDefineTemplates;
     FDescription: string;
     FDirectory: string;
+    FEnableI18N: boolean;
     FFilename: string;
     FFileReadOnly: boolean;
     FFiles: TFPList; // TFPList of TPkgFile
@@ -597,11 +598,11 @@ type
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
+    FPOOutputDirectory: string;
     FProvides: TStrings;
-    FRSTOutputDirectory: string;
     fPublishOptions: TPublishPackageOptions;
-    FRemovedFiles: TFPList; // TFPList of TPkgFile
     FRegistered: boolean;
+    FRemovedFiles: TFPList; // TFPList of TPkgFile
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FTopologicalLevel: integer;
@@ -632,7 +633,8 @@ type
     procedure SetLicense(const AValue: string);
     procedure SetOutputStateFile(const AValue: string);
     procedure SetProvides(const AValue: TStrings);
-    procedure SetRSTOutputDirectory(const AValue: string);
+    procedure SetPOOutputDirectory(const AValue: string);
+    procedure SetEnableI18N(const AValue: boolean);
     procedure SetRegistered(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetName(const AValue: string); override;
@@ -675,7 +677,7 @@ type
     function GetStateFilename: string;
     function GetSrcFilename: string;
     function GetCompilerFilename: string;
-    function GetRSTOutDirectory: string;
+    function GetPOOutDirectory: string;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
@@ -759,6 +761,7 @@ type
     property Directory: string read FDirectory; // the path of the .lpk file
     property Editor: TBasePackageEditor read FPackageEditor
                                         write SetPackageEditor;
+    property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
     property FileCount: integer read GetFileCount;
     property Filename: string read FFilename write SetFilename;//the .lpk filename
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
@@ -786,8 +789,8 @@ type
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
-    property RSTOutputDirectory: string read FRSTOutputDirectory
-                                        write SetRSTOutputDirectory;
+    property POOutputDirectory: string read FPOOutputDirectory
+                                       write SetPOOutputDirectory;
     property Provides: TStrings read FProvides write SetProvides;
     property PublishOptions: TPublishPackageOptions
                                      read fPublishOptions write fPublishOptions;
@@ -818,7 +821,7 @@ type
   
 
 const
-  LazPkgXMLFileVersion = 2;
+  LazPkgXMLFileVersion = 3;
   
   PkgFileTypeNames: array[TPkgFileType] of string = (
     'pftUnit', 'pftVirtualUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftText',
@@ -2275,13 +2278,20 @@ begin
   Modified:=true;
 end;
 
-procedure TLazPackage.SetRSTOutputDirectory(const AValue: string);
+procedure TLazPackage.SetPOOutputDirectory(const AValue: string);
 var
   NewValue: String;
 begin
   NewValue:=TrimFilename(AValue);
-  if FRSTOutputDirectory=NewValue then exit;
-  FRSTOutputDirectory:=NewValue;
+  if FPOOutputDirectory=NewValue then exit;
+  FPOOutputDirectory:=NewValue;
+  Modified:=true;
+end;
+
+procedure TLazPackage.SetEnableI18N(const AValue: boolean);
+begin
+  if FEnableI18N=AValue then exit;
+  FEnableI18N:=AValue;
   Modified:=true;
 end;
 
@@ -2542,8 +2552,17 @@ begin
                             PathDelimChanged);
   fLazDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
                             PathDelimChanged);
-  FRSTOutputDirectory:=SwitchPathDelims(XMLConfig.GetValue(Path+'RST/OutDir',''),
-                            PathDelimChanged);
+  // i18n
+  if FileVersion<3 then begin
+    FPOOutputDirectory := SwitchPathDelims(
+              xmlconfig.GetValue(Path+'RST/OutDir/Value', ''),PathDelimChanged);
+    EnableI18N := FPOOutputDirectory <> '';
+  end else begin
+    EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+    FPOOutputDirectory := SwitchPathDelims(
+             xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),PathDelimChanged);
+  end;
+
   LoadFiles(Path+'Files/',FFiles);
   UpdateSourceDirectories;
   LoadFlags(Path);
@@ -2602,7 +2621,10 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',OutputStateFile,'');
   XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,'');
-  XMLConfig.SetDeleteValue(Path+'RST/OutDir',FRSTOutputDirectory,'');
+
+  XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
+  XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',FPOOutputDirectory, '');
+
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
@@ -3220,9 +3242,9 @@ begin
   Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosCompilerPath);
 end;
 
-function TLazPackage.GetRSTOutDirectory: string;
+function TLazPackage.GetPOOutDirectory: string;
 begin
-  Result:=TrimFilename(SubstitutePkgMacro(fRSTOutputDirectory,false));
+  Result:=TrimFilename(SubstitutePkgMacro(fPOOutputDirectory,false));
   LongenFilename(Result);
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);

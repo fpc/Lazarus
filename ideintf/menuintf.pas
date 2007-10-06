@@ -318,9 +318,7 @@ var
       itmProjectSaveSection: TIDEMenuSection;
       itmProjectWindowSection: TIDEMenuSection;
       itmProjectAddRemoveSection: TIDEMenuSection;
-      {$IFDEF TRANSLATESTRING}
-      itmProjectPoFileSection: TIDEMenuSection;
-      {$ENDIF}
+
 
     // run menu
     mnuRun: TIDEMenuSection;

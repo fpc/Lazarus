@@ -85,7 +85,6 @@ type
     property Res: TLResource read FRes;
   end;
 
-{$IFDEF TRANSLATESTRING}
   { TAbstractTranslator}
   TAbstractTranslator = class(TObject)//Should it be somewhat more than TObject?
   public
@@ -96,7 +95,6 @@ type
 
 var LRSTranslator: TAbstractTranslator;
 type
-{$ENDIF}
   { TLRSObjectReader }
 
   TLRSObjectReader = class(TAbstractObjectReader)
@@ -152,6 +150,7 @@ type
     FBuffer: Pointer;
     FBufSize: Integer;
     FBufPos: Integer;
+    FInstanceStack: TStringList;
     FSignatureWritten: Boolean;
   protected
     procedure FlushBuffer;
@@ -183,6 +182,7 @@ type
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;
     procedure EndProperty; override;
+    function GetStackPath(Root: TComponent): string;
 
     procedure WriteBinary(const Buffer; Count: LongInt); override;
     procedure WriteBoolean(Value: Boolean); override;
@@ -196,6 +196,8 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
+    
+    property InstanceStack: TStringList read FInstanceStack write FInstanceStack;// list of TPersistent
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
   
@@ -2731,10 +2733,10 @@ var
   Driver: TAbstractObjectReader;
 begin
   Result:=TReader.Create(s,4096);
-  {$IFDEF TRANSLATESTRING}
+  //If included Default translator LRSTranslator will be set	
   if Assigned(LRSTranslator) then
     Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
-  {$ENDIF}
+
   DestroyDriver:=false;
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
   // hack to set a write protected variable.
@@ -3924,6 +3926,8 @@ begin
   FStream := Stream;
   FBufSize := BufSize;
   GetMem(FBuffer, BufSize);
+  FInstanceStack:=TStringList.Create;
+  FInstanceStack.Add('');
 end;
 
 destructor TLRSObjectWriter.Destroy;
@@ -3932,14 +3936,20 @@ begin
   if Assigned(FStream) then
     FlushBuffer;
 
-  if Assigned(FBuffer) then
+  if Assigned(FBuffer) then begin
     FreeMem(FBuffer, FBufSize);
+    FBuffer:=nil;
+  end;
+
+  FreeAndNil(FInstanceStack);
 
   inherited Destroy;
 end;
 
 procedure TLRSObjectWriter.BeginCollection;
 begin
+  //DebugLn(['TLRSObjectWriter.BeginCollection ',FInstanceStack.Count]);
+  FInstanceStack.Add('');
   WriteValue(vaCollection);
 end;
 
@@ -3948,6 +3958,10 @@ procedure TLRSObjectWriter.BeginComponent(Component: TComponent;
 var
   Prefix: Byte;
 begin
+  //DebugLn(['TLRSObjectWriter.BeginComponent ',FInstanceStack.Count]);
+  FInstanceStack.AddObject(Component.Name,Component);
+  FInstanceStack.Add('');// start list of properties
+
   if not FSignatureWritten then
   begin
     Write(FilerSignature[1], length(FilerSignature));
@@ -3969,21 +3983,58 @@ end;
 
 procedure TLRSObjectWriter.BeginList;
 begin
+  //DebugLn(['TLRSObjectWriter.BeginList ',FInstanceStack.Count]);
+  FInstanceStack.Add('');
   WriteValue(vaList);
 end;
 
 procedure TLRSObjectWriter.EndList;
 begin
+  //DebugLn(['TLRSObjectWriter.EndList ',FInstanceStack.Count]);
   WriteValue(vaNull);
+  FInstanceStack.Delete(FInstanceStack.Count-1);
 end;
 
 procedure TLRSObjectWriter.BeginProperty(const PropName: String);
 begin
+  //DebugLn(['TLRSObjectWriter.BeginProperty ',FInstanceStack.Count,' ',PropName]);
+  FInstanceStack.Add(PropName);
   WriteStr(PropName);
 end;
 
 procedure TLRSObjectWriter.EndProperty;
 begin
+  //DebugLn(['TLRSObjectWriter.EndProperty ',FInstanceStack.Count]);
+  FInstanceStack.Delete(FInstanceStack.Count-1);
+end;
+
+function TLRSObjectWriter.GetStackPath(Root: TComponent): string;
+var
+  i: Integer;
+  CurInstance: TPersistent;
+  CurComponent: TComponent;
+  CurName: string;
+begin
+  Result:='';
+  for i:=0 to InstanceStack.Count-1 do begin
+    CurInstance:=TPersistent(InstanceStack.Objects[i]);
+    if (CurInstance is TComponent) and (Root<>nil) then begin
+      CurComponent:=TComponent(CurInstance);
+      if CurComponent=Root then begin
+        Result:=CurComponent.ClassName;
+        continue;
+      end;
+      if CurComponent.Owner=Root then begin
+        Result:=CurComponent.Owner.ClassName+'.'+CurComponent.Name;
+        continue;
+      end;
+    end;
+    CurName:=InstanceStack[i];
+    if CurName<>'' then begin
+      if Result<>'' then Result:=Result+'.';
+      Result:=Result+CurName;
+    end;
+  end;
 end;
 
 procedure TLRSObjectWriter.WriteBinary(const Buffer; Count: LongInt);

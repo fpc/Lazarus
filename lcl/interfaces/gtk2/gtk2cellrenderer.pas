@@ -178,7 +178,7 @@ begin
       ItemState:=State;
     end;
     DeliverMessage(AWinControl, Msg);
-    GTK2WidgetSet.ReleaseDC(HWnd(Widget),Msg.DrawListItemStruct^.DC);
+    GTK2WidgetSet.ReleaseDC(HWnd(PtrUInt(Widget)),Msg.DrawListItemStruct^.DC);
   finally
     Dispose(Msg.DrawListItemStruct);
   end;

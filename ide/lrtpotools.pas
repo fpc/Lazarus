@@ -1,4 +1,3 @@
-unit LrtPoTools;
 { Copyright (C) 2004 V.I.Volchenko, Lazarus and FreePascal Developers Teams
 
  ***************************************************************************
@@ -20,233 +19,153 @@ unit LrtPoTools;
  *                                                                         *
  ***************************************************************************
 }
-//TODO: Make more quick mechanism for .po updating
-//This source uses a portion of GPL'ed code from rstconv.pp from fpc/utils
+unit LrtPoTools;
+
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms;
-type
-  TPOStyle=(postStandard,postPropName,postFull);
-procedure Lrt2Po(const LRTFile:string;POStyle:TPOStyle);
-procedure CombinePoFiles(SL:TStrings;const FName:string);
+  Classes, SysUtils, LCLProc, Controls, Forms, FileUtil, StringHashList,
+  DialogProcs;
+
+function AddFiles2Po(Files: TStrings; const POFilename: string): TModalResult;
 
 implementation
 
-function OKStr(const s:string):string;
+function StrToPoStr(const s:string):string;
 var
-   i: Integer;
+  SrcPos, DestPos: Integer;
+  NewLength: Integer;
 begin
-  Result:='';
-  for i:=1 to Length(s) do
-   case s[i] of
-   '"':Result:=Result+'\"';
-   '%':Result:=Result+'\%';
-   '\':Result:=Result+'\\';
-   '#':Result:=Result+'\#';
-   //TODO: check if that's all
-   else Result:=Result+s[i];
-   end;
-end;
-
-procedure Lrt2Po(const LRTFile: string;POStyle:TPoStyle);
-var
-  SL1: TStringList;
-  SL2: TStringList;
-  i: Integer;
-  p: LongInt;
-  k: LongInt;
-  s: string;
-  DotPos: LongInt;
-  EqPos: LongInt;
-  s1: String;
-  j: Integer;
-  found: Boolean;
-  m: LongInt;
-begin
-  SL1:=TStringList.Create;
-  SL2:=TStringList.Create;
-  if FileExists(LRTFile) then SL1.LoadFromFile(LRTFile);
-// Trying to process RST file in addition
-
-  if FileExists(ChangeFileExt(LRTFile,'.rst')) then
-  begin
-    SL2.LoadFromFile(ChangeFileExt(LRTFile,'.rst'));
-    // Some code from rstconv used here
-    k:=0;
-    while k<SL2.Count do
-    begin
-      s:=SL2[k];
-      If (Length(S)=0) or (S[1]='#') then begin inc(k);continue;end;
-      DotPos := Pos('.', s);
-      EqPos := Pos('=', s);
-      if DotPos > EqPos then // paranoia checking.
-        DotPos := 0;
-
-      s1 := '';
-      i := EqPos + 1;
-      while i <= Length(s) do
-      begin
-        if s[i] = '''' then
+  NewLength:=length(s);
+  for SrcPos:=1 to length(s) do
+    if s[SrcPos] in ['"','%','\','#'] then inc(NewLength);
+  if NewLength=length(s) then begin
+    Result:=s;
+  end else begin
+    SetLength(Result,NewLength);
+    DestPos:=1;
+    for SrcPos:=1 to length(s) do begin
+      case s[SrcPos] of
+      '"','%','\','#':
         begin
-          Inc(i);
-          j := i;
-          while (i <= Length(s)) and (s[i] <> '''') do
-            Inc(i);
-          s1 := s1 + Copy(s, j, i - j);
-          Inc(i);
-        end else if s[i] = '#' then
-        begin
-          Inc(i);
-          j := i;
-          while (i <= Length(s)) and (s[i] in ['0'..'9']) do
-            Inc(i);
-          s1 := s1 + Chr(StrToInt(Copy(s, j, i - j)));
-        end else if s[i] = '+' then
-        begin
-          if k<SL2.Count-1 then begin s:=SL2[k+1];inc(k);end;
-          i := 1;
-        end else
-          Inc(i);
-      end;
-      SL1.Add(s1);
-      inc(k);
-    end;
-  end;
-  SL2.Clear;
-  for i:=0 to SL1.Count-1 do
-  begin
-    found:=false;
-    for j:=0 to SL2.Count-1 do
-      if SL2[j]=SL1[i] then begin found:=true;break;end;
-    if not found then SL2.Add(SL1[i]);
-  end;
-  SL1.Clear;
-  SL1.AddStrings(SL2);
-  SL2.Clear;
-  for i:=0 to SL1.Count-1 do
-  begin
-   case POStyle of
-    postStandard:
-      begin
-        p:=Pos('=',SL1[i]);
-        s:=copy(SL1[i],p+1,Length(SL1[i])-p);//if p=0, that's OK, all the string
-      end;
-    postPropName:
-      begin
-        p:=Pos('.',SL1[i]);
-        s:=copy(SL1[i],p+1,Length(SL1[i])-p);
-      end;
-    postFull:s:=SL1[i];
-   end;
-   s:=OKStr(s);
-   p:=pos(SL1[i],'=');
-   SL2.Add('#'+copy(SL1[i],1,p-1));
-   SL2.Add('msgid  "'+s+'"');
-   SL2.Add('msgstr ""');
-   SL2.Add('');
-  end;
-  s:=ChangeFileExt(LRTFile,'.po');
-  if not FileExists(s) then
-  try
-    SL2.SaveToFile(s);
-  finally
-    SL1.Free;SL2.Free;
-  end
-  else try
-    SL1.Clear;
-    SL1.LoadFromFile(s);
-    for i:=0 to SL2.Count-1 do
-    begin
-      for j:=0 to SL1.Count-1 do
-      begin
-        if (Length(SL1[j])>6) and
-         (Length(SL2[i])>6) and
-         (LeftStr(SL1[j],5)='msgid') and
-         (LeftStr(SL2[i],5)='msgid')and
-         (Trim(copy(SL1[j],6,length(SL1[j])-5))=Trim(copy(SL2[i],5,length(SL2[i])-4)))
-        then //found!
-        begin
-          //Ignore any comment etc
-          k:=j;
-          while (k<SL1.Count) and
-          ((length(SL1[k])<7) or
-           (LeftStr(SL1[k],5)<>'msgstr')) do inc(k);
-          if (k<SL1.Count) then
-          begin
-            m:=i;
-            while (m<SL2.Count) and
-            ((length(SL2[m])<7) or
-             (LeftStr(SL2[m],5)<>'msgstr')) do inc(m);
-            if (m<SL2.Count)then
-             SL2[m]:=SL1[k];
-          end;
+          Result[DestPos]:='\';
+          inc(DestPos);
+          Result[DestPos]:=s[SrcPos];
+          inc(DestPos);
         end;
+      else
+        Result[DestPos]:=s[SrcPos];
+        inc(DestPos);
       end;
     end;
-    if FileExists(s) then DeleteFile(s);
-    SL2.SaveToFile(s);
-  finally
-    SL1.Free;SL2.Free;
   end;
 end;
 
-procedure CombinePoFiles(SL:TStrings;const FName:string);
+function AddFiles2Po(Files: TStrings; const POFilename: string): TModalResult;
+type
+  TFileType = (ftLrt, ftRst);
 var
-  SL1,SL2: TStringList;
-  i: Integer;
-  k: Integer;
-  function ComparePoStrings(const s1,s2:string):boolean;
+  POValuesHash: TStringHashList;
+  POFileChanged: boolean;
+  POLines: TStrings;
+
+  procedure AddFile2PoAux(InputLines: TStringList; FileType: TFileType);
   var
-    S3: String;
-    s4: String;
+    i: integer;
+    p: LongInt;
+    Value,Identifier: string;
+    Line: string;
   begin
-    S3:=Trim(s1);s4:=Trim(S2);
-    Result:=false;
-    if length(s3)<6 then exit;
-    if length(s4)<6 then exit;
-    if LeftStr(S3,5)<>'msgid' then exit;
-    if LeftStr(S4,5)<>'msgid' then exit;
-    if Trim(copy(s3,6,length(s3)-5))<>Trim(copy(s4,6,length(s4)-5)) then exit;
-    Result:=true;
-  end;
-begin
-  SL1:=TStringList.Create;
-  SL2:=TStringList.Create;
-  for i:=0 to SL.Count-1 do
-  begin
-    SL2.Clear;
-    SL2.LoadFromFile(SL[i]);
-    SL1.AddStrings(SL2);
-  end;
-  //Removing dublicates. Seems that I have just overprogrammed the code.
-  //This code needs to be tested.
-  SL2.Clear;//SL2 will be IDList
-  k:=0;
-  while k<SL1.Count do
-  begin
-    if k<SL1.Count-1 then for i:=k+1 to SL1.Count-1 do
-      if ComparePoStrings(SL1[k],SL1[i]) then
-      begin
-        inc(k);
-        while (k<SL1.Count)and(LeftStr(Trim(SL1[k]),6)<>'msgstr') do
-        begin
-          SL2.Add(SL1[k]);
-          inc(k);
+    //for each string in lrt/rst list check if in PO, if not add
+    for i:=0 to InputLines.Count-1 do begin
+      Line:=InputLines[i];
+      if Line='' then continue;
+      case FileType of
+        ftLrt: begin
+          p:=Pos('=',Line);
+          Value:=StrToPoStr( copy(Line,p+1,Length(Line)-p) );//if p=0, that's OK, all the string
+          Identifier:=copy(Line,1,p-1);
         end;
-        if k<SL1.Count then inc(k);
-        break;
+        ftRst: begin
+          if (Line[1]='#') then continue;
+          p:=Pos('=',Line);
+          Value:=StrToPoStr( copy(Line,p+2,Length(Line)-p-2) ); //copy ignoring ''
+          if Length(Value) = 0 then continue;
+          Identifier := copy(Line,1,p-1);
+        end;
       end;
-    if k<SL1.Count then SL2.Add(SL1[k]);
-    inc(k);
+
+      if POValuesHash.Find(Value) = -1 then begin
+        DebugLn(['AddFile2PoAux Add ',Identifier,'="',Value,'"']);
+        POFileChanged := true;
+        POLines.Add('#: '+Identifier);
+        POLines.Add('msgid "'+Value+'"');
+        POLines.Add('msgstr ""');
+        POLines.Add('');
+        POValuesHash.Add(Value);
+      end;
+    end;
   end;
+
+var
+  InputLines: TStringList;
+  i: Integer;
+  s: String;
+  Filename: string;
+begin
+  if (Files=nil) or (Files.Count=0) then exit(mrOk);
+
+  POFileChanged := false;
+  POLines:=TStringList.Create;
+  InputLines:=TStringList.Create;
+  POValuesHash := TStringHashList.Create(true);
   try
-    if FileExists(FName) then DeleteFile(FName);
-    SL2.SaveToFile(FName);
+
+    //load old po file into a StringList and HashList
+    POLines.Clear;
+    if FileExists(POFilename) then begin
+      Result:=LoadStringListFromFile(POFilename, 'PO File', POLines);
+      if Result <> mrOK then Exit;
+
+      for i := 0 to POLines.Count-1 do begin
+        s:=POLines[i];
+        if LeftStr(s, 7) = 'msgid "' then begin
+          s := copy(s, 8,length(s)-8);
+          POValuesHash.Add(s);
+        end;
+      end;
+    end;
+
+    //merge changes of every input file
+    // At the moment it only adds new strings and replaces values,
+    // but does not delete unused -> ToDo
+    for i:=0 to Files.Count-1 do begin
+      Filename:=Files[i];
+      if (CompareFileExt(Filename,'.lrt')=0)
+      or (CompareFileExt(Filename,'.rst')=0) then begin
+        //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
+        InputLines.Clear;
+        Result:=LoadStringListFromFile(Filename, 'Update PO file '+POFilename,
+                                       InputLines);
+        if Result <> mrOK then Exit;
+        if CompareFileExt(Filename,'.lrt')=0 then
+          AddFile2PoAux(InputLines, ftLrt)
+        else
+          AddFile2PoAux(InputLines, ftRst);
+      end
+    end;
+
+    //if PO file changed save it
+    if POFileChanged then
+      Result:=SaveStringListToFile(POFilename, 'PO File', POLines)
+    else
+      Result:=mrOk;
   finally
-    SL1.Free;SL2.Free;
+    POLines.Free;
+    InputLines.Free;
+    POValuesHash.Free;
   end;
 end;
 

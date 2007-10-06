@@ -60,10 +60,8 @@ uses
   WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,
   WSToolwin,
   WSProc,
-  WSDesigner
-  {$ifdef TRANSLATESTRING}
-  ,DefaultTranslator
-  {$ENDIF};
+  WSDesigner,
+  DefaultTranslator;
 
 implementation
 

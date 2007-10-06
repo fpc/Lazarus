@@ -1055,7 +1055,7 @@ begin
 end;
 
 procedure TBitmap.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
-const
+(*const
   PixelFormatToBppMap: array[TPixelFormat] of integer =
   (
 { pfDevice } 32,
@@ -1067,7 +1067,7 @@ const
 { pf24bit  } 24,
 { pf32bit  } 32,
 { pfCustom } 32
-  );
+  );*)
 var
   BmpWriter: TFPWriterBMP absolute ImgWriter;
 //  bpp: integer;

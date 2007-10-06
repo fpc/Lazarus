@@ -221,11 +221,6 @@ type
         itmProjectAddTo: TIDEMenuCommand;
         itmProjectRemoveFrom: TIDEMenuCommand;
         itmProjectViewSource: TIDEMenuCommand;
-      {$IFDEF TRANSLATESTRING}
-      //itmProjectPoFileSection: TIDEMenuSection;
-        itmProjectCreatePoFiles: TIDEMenuCommand;
-        itmProjectCollectPoFiles: TIDEMenuCommand;
-      {$ENDIF}
 
     // run menu
     //mnuRun: TIDEMenuSection;

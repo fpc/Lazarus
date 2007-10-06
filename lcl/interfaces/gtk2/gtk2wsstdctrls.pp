@@ -728,7 +728,7 @@ begin
   p :=  gtk_entry_new();
   gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);
   gtk_widget_show_all(P);
-  Result := TLCLIntfHandle(P);
+  Result := TLCLIntfHandle(PtrUInt(P));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(p,dbgsName(AWinControl));
   {$ENDIF}
@@ -1314,7 +1314,7 @@ begin
   if ACustomComboBox.Items is TStringList then
     ItemList.Sorted:=TStringList(ACustomComboBox.Items).Sorted;
 
-  Result := TLCLIntfHandle(Box);
+  Result := TLCLIntfHandle(PtrUInt(Box));
 end;
 
 class procedure TGtk2WSCustomComboBox.DestroyHandle(

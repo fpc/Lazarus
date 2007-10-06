@@ -48,9 +48,9 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
-    RSTOutDirButton: TButton;
-    RSTOutDirEdit: TEdit;
-    RSTGroupBox: TGroupBox;
+    EnableI18NCheckBox: TCheckBox;
+    I18NGroupBox: TGroupBox;
+    PoOutDirLabel: TLabel;
 
     Notebook: TNotebook;
     ApplicationPage:    TPage;
@@ -58,6 +58,8 @@ type
     MiscPage:    TPage;
     LazDocPage:    TPage;
     i18nPage: TPage;
+    POOutDirButton: TButton;
+    POOutDirEdit: TEdit;
     SavePage: TPage;
     UseAppBundleCheckBox: TCheckBox;
     UseXPManifestCheckBox: TCheckBox;
@@ -134,6 +136,7 @@ type
     CancelButton: TButton;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
+    procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure FormsPageResize(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
@@ -145,7 +148,7 @@ type
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormDownBtnClick(Sender: TObject);
-    procedure RSTOutDirButtonClick(Sender: TObject);
+    procedure POOutDirButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
@@ -158,6 +161,7 @@ type
     procedure SetupVersionInfoPage(PageIndex: Integer);
     procedure SetupI18NPage(PageIndex: Integer);
     procedure EnableVersionInfo(UseVersionInfo: boolean);
+    procedure Enablei18nInfo(Usei18n: boolean);
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: String): Integer;
@@ -310,7 +314,7 @@ end;
 
 procedure TProjectOptionsDialog.SetupI18NPage(PageIndex: Integer);
 begin
-  RSTGroupBox.Caption:='Directory of .po files';
+
 end;
 
 procedure TProjectOptionsDialog.EnableVersionInfo(UseVersionInfo: boolean);
@@ -339,6 +343,12 @@ begin
   CopyrightEdit.Enabled := UseVersionInfo;
   AdditionalInfoButton.Enabled := UseVersionInfo;
 end;
+
+procedure TProjectOptionsDialog.Enablei18nInfo(Usei18n: boolean);
+begin
+  I18NGroupBox.Enabled := Usei18n;
+end;
+
 
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
 var
@@ -381,9 +391,12 @@ begin
   SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
   
   // i18n
-  AFilename:=Project.RSTOutputDirectory;
+  AFilename:=Project.POOutputDirectory;
   Project.ShortenFilename(AFilename);
-  RSTOutDirEdit.Text:=AFilename;
+  POOutDirEdit.Text:=AFilename;
+  EnableI18NCheckBox.Checked := Project.Enablei18n;
+  Enablei18nInfo( Project.Enablei18n );
+
   
   // VersionInfo
   VersionSpinEdit.Value := Project.VersionInfo.VersionNr;
@@ -465,9 +478,10 @@ begin
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
     
     // i18n
-    AFilename:=TrimFilename(RSTOutDirEdit.Text);
+    AFilename:=TrimFilename(POOutDirEdit.Text);
     Project.LongenFilename(AFilename);
-    Project.RSTOutputDirectory:=AFilename;
+    Project.POOutputDirectory:=AFilename;
+    Project.EnableI18N := EnableI18NCheckBox.Checked;
 
     // VersionInfo
     Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
@@ -512,6 +526,11 @@ begin
    ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
    if InfoModified then
       Project.Modified:=InfoModified;
+end;
+
+procedure TProjectOptionsDialog.EnableI18NCheckBoxChange(Sender: TObject);
+begin
+   Enablei18nInfo(EnableI18NCheckBox.Checked);
 end;
 
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
@@ -744,7 +763,7 @@ begin
   SelectOnlyThisAutoCreateForm(i + 1);
 end;
 
-procedure TProjectOptionsDialog.RSTOutDirButtonClick(Sender: TObject);
+procedure TProjectOptionsDialog.POOutDirButtonClick(Sender: TObject);
 var
   NewDirectory: string;
 begin
@@ -752,7 +771,7 @@ begin
                                    Project.ProjectDirectory);
   if NewDirectory='' then exit;
   Project.ShortenFilename(NewDirectory);
-  RSTOutDirEdit.Text:=NewDirectory;
+  POOutDirEdit.Text:=NewDirectory;
 end;
 
 procedure TProjectOptionsDialog.UseVersionInfoCheckBoxChange(Sender: TObject);

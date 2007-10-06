@@ -103,10 +103,8 @@ uses
   {$ELSE}
   MenuPropEdit,
   {$ENDIF}
-  {$IFDEF TRANSLATESTRING}
   //LRT stuff
   LrtPoTools,
-  {$ENDIF}
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
@@ -252,10 +250,6 @@ type
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuViewProjectTodosClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
-    {$IFDEF TRANSLATESTRING}
-    procedure mnuProjectCreatePoFilesClicked(Sender : TObject);
-    procedure mnuProjectCollectPoFilesClicked(Sender : TObject);
-    {$ENDIF}
 
     // run menu
     procedure mnuBuildProjectClicked(Sender: TObject);
@@ -308,7 +302,6 @@ type
 
     procedure OpenFileDownArrowClicked(Sender: TObject);
     procedure mnuOpenFilePopupClick(Sender: TObject);
-
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
@@ -699,7 +692,7 @@ type
                                          SrcFilename: string): TModalResult;
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; override;
-    function ConvertProjectRSTFiles(AProject: TProject): TModalResult;
+    function UpdateProjectPOFile(AProject: TProject): TModalResult;
     function DoAbortBuild: TModalResult;
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
@@ -2084,10 +2077,6 @@ begin
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
     itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
-    {$IFDEF TRANSLATESTRING}
-    itmProjectCreatePoFiles.OnClick:=@mnuProjectCreatePoFilesClicked;
-    itmProjectCollectPoFiles.OnClick:=@mnuProjectCollectPoFilesClicked;
-    {$ENDIF}
   end;
 end;
 
@@ -3270,50 +3259,67 @@ begin
   end;
 end;
 
-{$IFDEF TRANSLATESTRING}
-procedure TMainIDE.mnuProjectCreatePoFilesClicked(Sender: TObject);
+function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
 var
-  i: Integer;
+  Files: TStringList;
+  POFilename: String;
+  AnUnitInfo: TUnitInfo;
+  CurFilename: String;
+  POFileAge: LongInt;
+  POFileAgeValid: Boolean;
+  POOutDir: String;
+  LRTFilename: String;
+  RSTFilename: String;
 begin
-  //Ensure the project is saved
-  if DoSaveAll([sfCheckAmbiguousFiles])<>mrOk then exit;
-  //Ensure the project is compiled, so all rst files are present
-  if DoBuildProject(crBuild,[pbfCleanCompile])<>mrOk then exit;
-  for i:=0 to Project1.FileCount-1 do
-  begin
-    if FileExists(ChangeFileExt(Project1.Files[i].Filename,'.lrt'))
-     or FileExists(ChangeFileExt(Project1.Files[i].Filename,'.rst')) then
-      Lrt2Po(ChangeFileExt(Project1.Files[i].Filename,'.lrt'),postStandard);
-      //TODO: Style must be in options
-  end;
-end;
+  Result:=mrCancel;
+  if (not AProject.EnableI18N) or AProject.IsVirtual then exit(mrOk);
 
-procedure TMainIDE.mnuProjectCollectPoFilesClicked(Sender: TObject);
-var
-  SL: TStringList;
-  LNG: String;
-  ext: String;
-  i: Integer;
-begin
-  if DoSaveAll([sfCheckAmbiguousFiles])<>mrOk then exit;
-  LNG:=InputBox(lisEnterTransla, lisLeaveEmptyFo, '');
-  SL:=TStringList.Create;
+  POFilename := MainBuildBoss.GetProjectTargetFilename;
+  if POFilename='' then begin
+    DebugLn(['TMainIDE.UpdateProjectPOFile unable to get project target filename']);
+    exit;
+  end;
+  POFilename:=ChangeFileExt(POFilename, '.po');
+
+  if AProject.POOutputDirectory <> '' then begin
+    POOutDir:=AProject.GetPOOutDirectory;
+    if POOutDir<>'' then
+      POFilename:=TrimFilename(POOutDir+ExtractFileName(POFilename));
+  end;
+  
+  POFileAgeValid:=false;
+  if FileExistsCached(POFilename) then begin
+    POFileAge:=FileAge(POFilename);
+    POFileAgeValid:=true;
+  end;
+  
+  //DebugLn(['TMainIDE.UpdateProjectPOFile Updating POFilename="',POFilename,'"']);
+
+  Files := TStringList.Create;
   try
-    if LNG='' then ext:='.po' else ext:='.'+LNG+'.po';
-    for i:=0 to Project1.FileCount-1 do
-    begin
-      if not Project1.Files[i].IsPartOfProject then continue;
-      if ChangeFileExt(Project1.Files[i].Filename,'.po')=ChangeFileExt(Project1.MainFilename,'.po')
-        then continue;
-      if FileExists(ChangeFileExt(Project1.Files[i].Filename,ext)) then
-      SL.Add(ChangeFileExt(Project1.Files[i].Filename,ext));
+    AnUnitInfo:=AProject.FirstPartOfProject;
+    while AnUnitInfo<>nil do begin
+      CurFilename:=AnUnitInfo.Filename;
+      if (not AnUnitInfo.IsVirtual) and FilenameIsPascalSource(CurFilename) then
+      begin
+        // check .lst file
+        LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
+        if FileExistsCached(LRTFilename)
+        and ((not POFileAgeValid) or (FileAge(LRTFilename)>POFileAge)) then
+          Files.Add(LRTFilename);
+        // check .rst file
+        RSTFilename:=ChangeFileExt(CurFilename,'.rst');
+        if FileExistsCached(RSTFilename)
+        and ((not POFileAgeValid) or (FileAge(RSTFilename)>POFileAge)) then
+          Files.Add(RSTFilename);
+      end;
+      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
-    CombinePoFiles(SL,ChangeFileExt(Project1.MainFilename,ext));
+    Result:=AddFiles2Po(Files, POFilename);
   finally
-    SL.Free;
+    Files.Destroy;
   end;
 end;
-{$ENDIF}
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
@@ -4145,24 +4151,27 @@ begin
   Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
 end;
 
-{$IFDEF TRANSLATESTRING}
 { TLRTGrubber }
 type
-  TLRTGrubber=class(TObject)
-     private
-       FGrubbed: TStrings;
-     public
-       constructor Create;
-       destructor Destroy;override;
-       procedure Grub(Sender:TObject; const Instance: TPersistent; PropInfo: PPropInfo; var Content:string);
-       property Grubbed:TStrings read FGrubbed;
-     end;
+  TLRTGrubber = class(TObject)
+  private
+    FGrubbed: TStrings;
+    FWriter: TWriter;
+  public
+    constructor Create(TheWriter: TWriter);
+    destructor Destroy; override;
+    procedure Grub(Sender: TObject; const Instance: TPersistent;
+                   PropInfo: PPropInfo; var Content: string);
+    property Grubbed: TStrings read FGrubbed;
+    property Writer: TWriter read FWriter write FWriter;
+  end;
 
-
-constructor TLRTGrubber.Create;
+constructor TLRTGrubber.Create(TheWriter: TWriter);
 begin
   inherited Create;
   FGrubbed:=TStringList.Create;
+  FWriter:=TheWriter;
+  FWriter.OnWriteStringProperty:=@Grub;
 end;
 
 destructor TLRTGrubber.Destroy;
@@ -4173,14 +4182,24 @@ end;
 
 procedure TLRTGrubber.Grub(Sender: TObject; const Instance: TPersistent;
   PropInfo: PPropInfo; var Content: string);
+var
+  LRSWriter: TLRSObjectWriter;
+  Path: String;
 begin
   if not Assigned(Instance) then exit;
   if not Assigned(PropInfo) then exit;
-  if (AnsiUpperCase(PropInfo^.PropType^.Name)<>'TTRANSLATESTRING')
-  and not (Instance is TMenuItem) then exit;
-  FGrubbed.Add(AnsiUpperCase(Instance.ClassName+'.'+PropInfo^.Name)+'='+Content);
+  if CompareText(PropInfo^.PropType^.Name,'TTRANSLATESTRING')<>0 then exit;
+  Path:='';
+  if Writer.Driver is TLRSObjectWriter then begin
+    LRSWriter:=TLRSObjectWriter(Writer.Driver);
+    Path:=LRSWriter.GetStackPath(Writer.Root);
+  end else begin
+    Path:=Instance.ClassName+'.'+PropInfo^.Name;
+  end;
+
+  FGrubbed.Add(Uppercase(Path)+'='+Content);
+  //DebugLn(['TLRTGrubber.Grub "',FGrubbed[FGrubbed.Count-1],'"']);
 end;
-{$ENDIF}
 
 function TMainIDE.DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
@@ -4195,7 +4214,8 @@ var
   ADesigner: TDesigner;
   AncestorUnit: TUnitInfo;
   AncestorInstance: TComponent;
-  {$IFDEF TRANSLATESTRING}Grubber:TLRTGrubber;{$ENDIF}
+  Grubber: TLRTGrubber;
+  LRTFilename: String;
 begin
   Result:=mrCancel;
 
@@ -4229,20 +4249,17 @@ begin
                        AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize;
     Writer:=nil;
     DestroyDriver:=false;
+    Grubber:=nil;
     try
       Result:=mrOk;
       repeat
         try
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
-          {$IFDEF TRANSLATESTRING}
-          //The original idea was to make a callback just in IDE
-          //There is a theoretical possibility that in unusual situation
-          //we will grub two components simultaneously. How?
-          //I don't know, now this is not possible.
-          Grubber:=TLRTGrubber.Create;
-          Writer.OnWriteStringProperty:=@Grubber.Grub;
-          {$ENDIF}
+          //used to save lrt files
+          if AnUnitInfo.Project.EnableI18N then begin
+            Grubber:=TLRTGrubber.Create(Writer);
+          end;
           {$IFDEF EnableFakeMethods}
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           {$ENDIF}
@@ -4404,25 +4421,25 @@ begin
       end;
       // Now the most important file (.lfm) is saved.
       // Now save the secondary files
-      {$IFDEF TRANSLATESTRING}
+
       // save the .lrt file containing the list of all translatable strings of
       // the component
-      if ComponentSavingOk and (Grubber.Grubbed.Count>0)
+      if ComponentSavingOk
+      and (Grubber<>nil) and (Grubber.Grubbed.Count>0)
       and not (sfSaveToTestDir in Flags) then begin
-        // TODO: Add to project or environment options making .po files
-        Result:=SaveStringToFile(ChangeFileExt(AnUnitInfo.Filename,'.lrt'),
-                                 Grubber.Grubbed.Text,[mbIgnore,mbAbort]);
+        LRTFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrt');
+        DebugLn(['TMainIDE.DoSaveUnitComponent save lrt: ',LRTFilename]);
+        Result:=SaveStringToFile(LRTFilename,Grubber.Grubbed.Text,
+                                 [mbIgnore,mbAbort],AnUnitInfo.Filename);
         if (Result<>mrOk) and (Result<>mrIgnore) then exit;
       end;
-      {$ENDIF}
+
     finally
       try
         BinCompStream.Free;
         if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
         Writer.Free;
-        {$IFDEF TRANSLATESTRING}
         Grubber.Free;
-        {$ENDIF}
       except
         on E: Exception do begin
           debugln('TMainIDE.SaveFileResources Error cleaning up: ',E.Message);
@@ -8249,9 +8266,10 @@ begin
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
         if Result<>mrOk then exit;
 
-        // upate .po files
-        Result:=ConvertProjectRSTFiles(Project1);
+        // upate project .po file
+        Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then exit;
+
       finally
         ToolStatus:=itNone;
       end;
@@ -8280,26 +8298,6 @@ begin
     MessagesView.EndBlock;
   end;
   Result:=mrOk;
-end;
-
-function TMainIDE.ConvertProjectRSTFiles(AProject: TProject): TModalResult;
-var
-  RSTOutputDirectory: String;
-  OutputDirectory: String;
-begin
-  Result:=mrOk;
-  if AProject.RSTOutputDirectory='' then exit;// nothing to do
-
-  // convert all .rst files in project output directory
-  RSTOutputDirectory:=AppendPathDelim(AProject.GetRSTOutDirectory);
-  OutputDirectory:=AppendPathDelim(AProject.GetOutputDirectory);
-  if not ConvertRSTFiles(OutputDirectory,RSTOutputDirectory) then begin
-    DebugLn(['TMainIDE.ConvertProjectRSTFiles FAILED: OutputDirectory=',OutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
-    exit(mrCancel);
-  end;
-  Result:=mrOK;
-
-  // TODO: copy .po files of packages
 end;
 
 function TMainIDE.DoAbortBuild: TModalResult;

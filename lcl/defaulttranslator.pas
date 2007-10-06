@@ -19,13 +19,8 @@ unit DefaultTranslator;
 It seeks for localized .mo file in some common places. If you want to find
 .mo file anywhere else, don't use this unit but initialize LRSMoFile variable
 from LResources in your project by yourself. If you need standard translation,
-just use this unit in your project.
-String translation works quite stable, but noone can guarantee some by-effects,
-so all these stuff needs definition TRANSLATESTRING. Anyway, it is incompartible
-with old fpc versions (1.0.x, 1.9.x up to 1.9.5 except of late December 2004
-vers). Current FPC contains all hooks required, so use fpc-1.9.6+, then rebuild
-lazarus with -dTRANSLATESTRING. If don't, this unit (and any such translation)
-will translate resourcestrings only.
+just use this unit in your project and enable i18n in project options.
+
 Another reason for including this unit may be using localized LCL stuff. This
 unit localizes LCL too, if it finds lcl.xxx.mo at that place, where main
 localization found.
@@ -43,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LResources, GetText, Controls, typinfo
   {$IFDEF WINDOWS},Windows{$ENDIF};
-{$IFDEF TRANSLATESTRING}
+
 type
  TDefaultTranslator=class(TAbstractTranslator)
  private
@@ -53,7 +48,7 @@ type
   destructor Destroy;override;
   procedure TranslateStringProperty(Sender:TObject; const Instance: TPersistent; PropInfo: PPropInfo; var Content:string);override;
  end;
-{$ENDIF}
+
 implementation
 uses Menus;
 
@@ -162,9 +157,6 @@ begin
  Result:='';
 end;
 var lcfn:string;
-{$IFNDEF TRANSLATESTRING}
-{$WARNING TranslateString is not enabled. Nothing to translate}
-{$ELSE}
 
 { TDefaultTranslator }
 
@@ -218,7 +210,7 @@ begin
   if s1<>'' then Content:=s1;
   //TODO:another types of translation
 end;
-{$ENDIF}
+
 var Dot1:integer;
     LCLPath:string;
 initialization
@@ -243,9 +235,9 @@ initialization
       if FileExists(LCLPath) then
         TranslateResourceStrings(LCLPath);
     end;
-    {$IFDEF TRANSLATESTRING}
+
     LRSTranslator:=TDefaultTranslator.Create(lcfn);
-    {$ENDIF}
+
   end;
 finalization
 end.

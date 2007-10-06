@@ -268,6 +268,7 @@ begin
   P:= PChar(Key);
   Len:= Length(Key);
   Result := Len;
+  // use the last 30 characters to compute the hash
   case fCaseSensitive of
   True:
     for I:= Len -1 downto 0 do

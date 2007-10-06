@@ -37,9 +37,6 @@ var
 {$endif}
 
   GtkForm: PGtkWidget;
-  fOwner: TComponent;
-  fEmbedded: Boolean;
-  fMsgCount: Integer;
   Tips: PGtkTooltips;
 
 {$ifdef HasX}
@@ -56,6 +53,7 @@ var
 function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
 begin
   WriteLn('Error: ' + IntToStr(ErrorEv^.error_code));
+  Result:=0;
 end;
 
 {*******************************************************************
@@ -71,7 +69,6 @@ end;
 function SendMessage(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
 var
   Ev: TXEvent;
-  fmt: Integer;
 begin
   FillChar(Ev, SizeOf(TXEvent), $0);
 
@@ -141,8 +138,6 @@ end;
 *
 *******************************************************************}
 procedure realize_cb(widget: PGtkWidget; user_data: gpointer); cdecl;
-var
-  gdk_screen: PGdkScreen;
 begin
 {$ifdef HasGdk2X}
 
@@ -328,8 +323,6 @@ begin
   *  Creates the GtkPlug
   *******************************************************************}
 
-  fEmbedded := False;
-
   GtkForm := gtk_plug_new(0);
 
   Tips := gtk_tooltips_new;
@@ -379,8 +372,6 @@ begin
   *******************************************************************}
 
   gtk_widget_show(GtkForm);
-
-  fEmbedded := True;
 
   Result := True;
 end;

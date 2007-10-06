@@ -1183,7 +1183,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
-    RSTOutputDirectory:='languages';
+    POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
 
     // add requirements
@@ -1232,7 +1232,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
-    RSTOutputDirectory:='languages';
+    POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
 
     // add requirements
@@ -1291,7 +1291,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
-    RSTOutputDirectory:='languages';
+    POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
 
     // add requirements
@@ -1367,7 +1367,7 @@ begin
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
-    RSTOutputDirectory:='languages';
+    POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
 
     // add requirements
@@ -2648,7 +2648,7 @@ begin
       end;
 
       // update .po files
-      if (APackage.RSTOutputDirectory<>'') then begin
+      if (APackage.POOutputDirectory<>'') then begin
         Result:=ConvertPackageRSTFiles(APackage);
         if Result<>mrOk then begin
           DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
@@ -2699,8 +2699,8 @@ var
   RSTOutputDirectory: String;
 begin
   Result:=mrOK;
-  if (APackage.RSTOutputDirectory='') then exit;// nothing to do
-  RSTOutputDirectory:=AppendPathDelim(APackage.GetRSTOutDirectory);
+  if (APackage.POOutputDirectory='') then exit;// nothing to do
+  RSTOutputDirectory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
   // find all .rst files in package output directory
   PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
