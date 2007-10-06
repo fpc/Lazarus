@@ -322,29 +322,8 @@ var
 begin
   QtScrollBar := TQtScrollBar.Create(AWinControl, AParams);
 
-  case TScrollBar(AWinControl).Kind of
-    sbHorizontal:
-    begin
-      QtScrollBar.SetOrientation(QtHorizontal);
-      QtScrollBar.setInvertedAppereance(False);
-      QTScrollBar.setInvertedControls(False);
-      TScrollBar(AWinControl).Height := TScrollBar(AWinControl).Height;
-    end;
-    sbVertical:
-    begin
-      QtScrollBar.SetOrientation(QtVertical);
-      QtScrollBar.setInvertedAppereance(False);
-      QTScrollBar.setInvertedControls(True);
-      TScrollBar(AWinControl).Width := TScrollBar(AWinControl).Width;
-    end;
-  end;
-  
-  QtScrollbar.setGeometry(TScrollBar(AWinControl).BoundsRect);
-  QtScrollBar.setRange(TScrollBar(AWinControl).Min, TScrollBar(AWinControl).Max);
-  QtScrollbar.setValue(TScrollBar(AWinControl).Position);
-  QtScrollBar.setPageStep(TScrollBar(AWinControl).PageSize);
   QtScrollBar.AttachEvents;
-
+  
   Result := THandle(QtScrollbar);
 end;
 
@@ -356,11 +335,8 @@ end;
 class procedure TQtWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   QtScrollBar: TQtScrollBar;
-  RA,RB: TRect;
 begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
-
-  {feels much better with *2 pagesize}
 
   QtScrollBar.setPageStep(AScrollBar.PageSize);
   QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
@@ -369,14 +345,6 @@ begin
   
   QtScrollBar.setValue(AScrollBar.Position);
   
-  RA := QtScrollBar.LCLObject.ClientRect;
-  RB := AScrollBar.ClientRect;
-
-  
-  if not EqualRect(RA, RB) then
-    QWidget_setGeometry(QtScrollbar.Widget,AScrollBar.Left,AScrollBar.Top,AScrollBar.Width,AScrollBar.Height);
-    {don't update geometry each time}
-
   case AScrollBar.Kind of
     sbHorizontal:
     begin
