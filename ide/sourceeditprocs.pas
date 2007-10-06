@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls,
   SynEdit, SynRegExpr, SynCompletion,
-  BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
+  BasicCodeTools, CodeTree, CodeAtom, CodeCache, SourceChanger, CodeToolManager,
   PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
   LazIDEIntf, TextTools, IDETextConverter,
   DialogProcs, MainIntf, EditorOptions, CodeToolsOptions;
@@ -506,6 +506,15 @@ begin
     Result:=Result+' := ';
     CursorAtEnd:=false;
   end;}
+  
+  if (ilcfStartIsLValue in  IdentList.ContextFlags) then begin
+    if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
+    or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then
+      Result:=Result+' ';
+    Result:=Result+':=';
+    if (atSymbol in CodeToolsOpts.DoInsertSpaceAfter) then
+      Result:=Result+' ';
+  end;
   
   if AddChar<>'' then
     Result:=Result+AddChar;

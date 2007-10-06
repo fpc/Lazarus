@@ -1393,14 +1393,13 @@ begin
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
         begin
           if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
-             or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
-                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+          or UpAtomIs('TRY') or UpAtomIs('FOR') or UpAtomIs('DO')
           then begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
           end;
           if UpAtomIs('IF') or UpAtomIs('FOR') or UpAtomIs('DO')
-          or UpAtomIs('CASE') or UpAtomIs('OF') then begin
+          or UpAtomIs('CASE') or UpAtomIs('OF') or UpAtomIs('WHILE') then begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfIsExpression];
           end;
