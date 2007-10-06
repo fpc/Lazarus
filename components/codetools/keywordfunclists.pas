@@ -666,25 +666,26 @@ begin
   IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordMethodSpecifier);
   with IsKeyWordMethodSpecifier do begin
-    Add('ABSTRACT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CDECL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('EXTDECL'     ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
-    ADD('MWPASCAL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('NOSTACKFRAME',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DEPRECATED'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DISPID'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DYNAMIC'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INLINE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('MESSAGE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('OVERLOAD'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('OVERRIDE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PLATFORM'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('POPSTACK'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('REGISTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('REINTRODUCE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('STDCALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('VIRTUAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('STATIC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ABSTRACT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPID'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DYNAMIC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INLINE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MESSAGE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OVERLOAD'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OVERRIDE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PLATFORM'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REINTRODUCE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STATIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VIRTUAL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
@@ -716,25 +717,27 @@ begin
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // kylix
+    Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureTypeSpecifier);
   with IsKeyWordProcedureTypeSpecifier do begin
-    Add('STDCALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('REGISTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('POPSTACK'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CDECL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('EXTDECL'     ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
-    ADD('MWPASCAL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PASCAL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('FAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('NEAR'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('NOSTACKFRAME',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DEPRECATED'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PLATFORM'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SAFECALL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PLATFORM'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;

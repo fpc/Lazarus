@@ -510,8 +510,10 @@ begin
     CurNode.Desc:=CurSection;
     ReadNextAtom; // read source name
     AtomIsIdentifier(true);
-    ReadNextAtom; // read ';' (or 'platform;')
+    ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
     if UpAtomIs('PLATFORM') then
+      ReadNextAtom;
+    if UpAtomIs('UNIMPLEMENTED') then
       ReadNextAtom;
     if (CurPos.Flag<>cafSemicolon) then
       RaiseCharExpectedButAtomFound(';');
@@ -3195,7 +3197,9 @@ begin
   end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
-    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') then ReadNextAtom;
+    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
+    then
+      ReadNextAtom;
   end;
   Result:=true;
 end;
@@ -3250,7 +3254,9 @@ begin
   end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
-    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') then ReadNextAtom;
+    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
+    then
+      ReadNextAtom;
   end;
   Result:=true;
 end;
@@ -3511,7 +3517,9 @@ begin
         SaveRaiseException(ctsInvalidSubrange);
       CurNode.EndPos:=CurPos.StartPos;
     end;
-    if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') then ReadNextAtom;
+    if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED')
+    then
+      ReadNextAtom;
   end else begin
     // enum or subrange
     ReadTillTypeEnd;
@@ -3616,7 +3624,9 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close record
   ReadNextAtom;
-  if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') then ReadNextAtom;
+  if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED')
+  then
+    ReadNextAtom;
   Result:=true;
 end;
 
