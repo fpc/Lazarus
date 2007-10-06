@@ -1420,11 +1420,9 @@ var
     end else begin
       // this is a const or type alias
       //DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',Node.DescAsString,' ',ExtractNode(Node,[])]);
-      if OnlyWrongType then begin
-        GetReferingNode;
-        if (ReferingNode<>nil) then begin
-          NeededType:=ReferingNode.Desc;
-        end;
+      GetReferingNode;
+      if (ReferingNode<>nil) then begin
+        NeededType:=ReferingNode.Desc;
       end;
     end;
     if NeededType=ctnNone then exit;
@@ -1480,7 +1478,7 @@ var
         end;
       ctnProcedure:
         begin
-          //UpdateDefinition(GetRedefinitionNodeText(Node),Node);
+          UpdateDefinition(ExtractProcName(Node,[]),Node);
           Node:=Node.NextSkipChilds;
         end;
       else
@@ -1526,7 +1524,10 @@ var
     begin
       Result:=Node;
       NeededRootDesc:=Node.Desc;
-      AliasText:=GetRedefinitionNodeText(Node);
+      if Node.Desc=ctnProcedure then
+        AliasText:=ExtractProcName(Node,[])
+      else
+        AliasText:=GetRedefinitionNodeText(Node);
       if AliasText='' then exit;
       AVLNode:=FindCodeTreeNodeExtAVLNode(TreeOfCodeTreeNodeExt,AliasText);
       if AVLNode=nil then exit;
@@ -1640,12 +1641,17 @@ var
   AVLNode: TAVLTreeNode;
   NodeExt: TCodeTreeNodeExtension;
   DefNode: TCodeTreeNode;
+  ReferingNode: TCodeTreeNode;
   NextAVLNode: TAVLTreeNode;
   ReferingNodeInFront: TCodeTreeNodeExtension;
   ReferingNodeBehind: TCodeTreeNodeExtension;
   NewSrc: String;
   FromPos: LongInt;
+  ToPos: LongInt;
   ReferingType: TCodeTreeNodeDesc;
+  NewSection: String;
+  ProcName: String;
+  OldProcName: String;
 begin
   Result:=false;
   if SourceChangeCache=nil then exit;
@@ -1660,7 +1666,14 @@ begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
     ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
-    if (not (ReferingType in [ctnTypeDefinition,ctnConstDefinition]))
+    ReferingNode:=TCodeTreeNode(NodeExt.Data);
+    if (ReferingType=ctnProcedure) then begin
+      // procedure alias => check if it is an 'external' procedure
+      if (ReferingNode=nil) or (ReferingNode.Desc<>ctnProcedure)
+      or (not ProcNodeHasSpecifier(ReferingNode,psEXTERNAL)) then
+        ReferingType:=ctnNone;
+    end;
+    if (not (ReferingType in [ctnTypeDefinition,ctnConstDefinition,ctnProcedure]))
     or (DefNode.Desc=ReferingType) then begin
       TreeOfCodeTreeNodeExt.Delete(AVLNode);
       NodeExtMemManager.DisposeNode(NodeExt);
@@ -1674,34 +1687,67 @@ begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     DefNode:=NodeExt.Node;
     ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
-    ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
+    ReferingNode:=TCodeTreeNode(NodeExt.Data);
 
     //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
 
-    case ReferingType of
-    ctnTypeDefinition: NewSrc:='type';
-    ctnConstDefinition: NewSrc:='const';
-    else NewSrc:='bug';
-    end;
-    
     // check in front
-    if DefNode.PriorBrother=nil then begin
-      // this is the start of the section
-      MoveCursorToNodeStart(DefNode.Parent);
-      ReadNextAtom;
-      if not SourceChangeCache.Replace(gtNone,gtNone,
-        CurPos.StartPos,CurPos.EndPos,NewSrc) then exit;
-    end else begin
-      // this is not the start of the section
-      ReferingNodeInFront:=FindReferingNodeExt(DefNode.PriorBrother);
-      if (ReferingNodeInFront=nil)
-      or (TCodeTreeNodeDesc(ReferingNodeInFront.Flags)<>ReferingType) then
-      begin
-        // the node in front has a different section
-        FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
-        if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
-           FromPos,FromPos,NewSrc) then exit;
+    if ReferingType in [ctnTypeDefinition,ctnConstDefinition] then begin
+      case ReferingType of
+      ctnTypeDefinition: NewSection:='type';
+      ctnConstDefinition: NewSection:='const';
+      ctnProcedure: NewSrc:='';
+      else NewSection:='bug';
       end;
+
+      if DefNode.PriorBrother=nil then begin
+        // this is the start of the section
+        MoveCursorToNodeStart(DefNode.Parent);
+        ReadNextAtom;
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          CurPos.StartPos,CurPos.EndPos,NewSection) then exit;
+      end else begin
+        // this is not the start of the section
+        ReferingNodeInFront:=FindReferingNodeExt(DefNode.PriorBrother);
+        if (ReferingNodeInFront=nil)
+        or (TCodeTreeNodeDesc(ReferingNodeInFront.Flags)<>ReferingType) then
+        begin
+          // the node in front has a different section
+          FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
+          if not SourceChangeCache.Replace(gtEmptyLine,gtNewLine,
+             FromPos,FromPos,NewSection) then exit;
+        end;
+      end;
+    end else if ReferingType=ctnProcedure then begin
+      // alias to an external procedure
+      // => replace alias with complete external procedure header
+
+      if DefNode.PriorBrother=nil then begin
+        // this is the start of the section
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.Parent.StartPos);
+        ToPos:=FindLineEndOrCodeInFrontOfPosition(DefNode.StartPos);
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          FromPos,ToPos,'') then exit;
+      end;
+
+      NewSrc:=ExtractProcHead(ReferingNode,[phpWithStart,phpWithVarModifiers,
+        phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+        phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
+      OldProcName:=ExtractProcName(ReferingNode,[]);
+      FromPos:=System.Pos(OldProcName,NewSrc);
+      if DefNode.Desc in [ctnTypeDefinition,ctnConstDefinition] then
+        ProcName:=ExtractDefinitionName(DefNode)
+      else if DefNode.Desc=ctnProcedure then
+        ProcName:=ExtractProcName(DefNode,[])
+      else
+        ProcName:=NodeExt.Txt;
+      NewSrc:=copy(NewSrc,1,FromPos-1)+ProcName
+             +copy(NewSrc,FromPos+length(OldProcName),length(NewSrc));
+      FromPos:=DefNode.StartPos;
+      ToPos:=DefNode.EndPos;
+      if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,NewSrc)
+      then
+        exit;
     end;
     
     // check behind
