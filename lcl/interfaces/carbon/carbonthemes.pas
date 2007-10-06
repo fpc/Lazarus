@@ -33,10 +33,10 @@ type
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
 
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
-    procedure DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
-    procedure DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
-    procedure DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
-    procedure DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+    function DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+    function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+    function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+    function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
@@ -79,7 +79,7 @@ begin
   if IsHot(Details) then
     Result := kThemeStateRollover
   else
-   Result := kThemeStateActive;
+    Result := kThemeStateActive;
 end;
 
 {------------------------------------------------------------------------------
@@ -88,11 +88,12 @@ end;
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle
+  Returns: ClientRect
 
   Draws a button element with native Carbon look
  ------------------------------------------------------------------------------}
-procedure TCarbonThemeServices.DrawButtonElement(DC: TCarbonDeviceContext;
-  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+function TCarbonThemeServices.DrawButtonElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 const
   ButtonMap: array[BP_PUSHBUTTON..BP_USERBUTTON] of ThemeButtonKind =
   (
@@ -114,7 +115,6 @@ begin
   ButtonDrawInfo.value := kThemeButtonOff;
   ButtonDrawInfo.adornment := kThemeAdornmentNone;
 
-  //InflateRect(R, 0, -2); // HiThemeDrawButton can draw outside it rect
   LabelRect := RectToCGRect(R);
 
   if Details.Part = BP_GROUPBOX then
@@ -127,6 +127,8 @@ begin
       HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
         kHIThemeOrientationNormal, @LabelRect),
       Self, 'DrawButtonElement', 'HIThemeDrawButton');
+      
+  Result := CGRectToRect(LabelRect);
 end;
 
 {------------------------------------------------------------------------------
@@ -135,11 +137,12 @@ end;
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle
+  Returns: ClientRect
 
   Draws a header (THeaderControl same as ListView header) element with native Carbon look
  ------------------------------------------------------------------------------}
-procedure TCarbonThemeServices.DrawHeaderElement(DC: TCarbonDeviceContext;
-  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+function TCarbonThemeServices.DrawHeaderElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
   HeaderDrawInfo: HiThemeHeaderDrawInfo;
   PaintRect: HIRect;
@@ -151,7 +154,10 @@ begin
   OSError(
     HIThemeDrawHeader(PaintRect, HeaderDrawInfo, DC.CGContext,
       kHIThemeOrientationNormal),
-    Self, 'DrawHeaderElement', 'HIThemeDrawHeader')
+    Self, 'DrawHeaderElement', 'HIThemeDrawHeader');
+    
+  Result := CGRectToRect(PaintRect);
+  InflateRect(Result, -2, -2);
 end;
 
 {------------------------------------------------------------------------------
@@ -160,11 +166,12 @@ end;
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle
+  Returns: ClientRect
 
   Draws a rebar element (splitter) with native Carbon look
  ------------------------------------------------------------------------------}
-procedure TCarbonThemeServices.DrawRebarElement(DC: TCarbonDeviceContext;
-  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+function TCarbonThemeServices.DrawRebarElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
   SplitterInfo: HIThemeSplitterDrawInfo;
   PlacardInfo: HIThemePlacardDrawInfo;
@@ -193,6 +200,8 @@ begin
       HIThemeDrawPlacard(ARect, PlacardInfo, DC.CGContext, kHIThemeOrientationNormal),
       Self, SName, 'HIThemeDrawPlacard');
   end;
+  
+  Result := CGRectToRect(ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -201,33 +210,40 @@ end;
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle
+  Returns: ClientRect
 
   Draws a tool bar element with native Carbon look
  ------------------------------------------------------------------------------}
-procedure TCarbonThemeServices.DrawToolBarElement(DC: TCarbonDeviceContext;
-  Details: TThemedElementDetails; R: TRect; ClipRect: PRect);
+function TCarbonThemeServices.DrawToolBarElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
   LabelRect: HIRect;
 begin
   if Details.Part = TP_BUTTON then
   begin
-
-    // TODO: if state is inactive or normal button should not have borders (or maybe I am wrong for mac?)
-
     ButtonDrawInfo.version := 0;
     ButtonDrawInfo.State := GetDrawState(Details);
     ButtonDrawInfo.kind := kThemeBevelButtonSmall;
     ButtonDrawInfo.value := kThemeButtonOff;
     ButtonDrawInfo.adornment := kThemeAdornmentNone;
 
-    //InflateRect(R, 0, -2); // HiThemeDrawButton can draw outside it rect
     LabelRect := RectToCGRect(R);
 
-    OSError(
-      HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
-        kHIThemeOrientationNormal, @LabelRect),
-      Self, 'DrawButtonElement', 'HIThemeDrawButton');
+    // if button is normal or disabled, draw it to dummy context, to eliminate borders
+    if (ButtonDrawInfo.State = kThemeStateActive) or
+      (ButtonDrawInfo.State = kThemeStateInActive) then
+      OSError(
+        HIThemeDrawButton(LabelRect, ButtonDrawInfo, DefaultContext.CGContext,
+          kHIThemeOrientationNormal, @LabelRect),
+        Self, 'DrawButtonElement', 'HIThemeDrawButton')
+    else
+      OSError(
+        HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
+          kHIThemeOrientationNormal, @LabelRect),
+        Self, 'DrawButtonElement', 'HIThemeDrawButton');
+        
+    Result := CGRectToRect(LabelRect);
   end;
 end;
 
@@ -270,11 +286,11 @@ function TCarbonThemeServices.ContentRect(DC: HDC;
 begin
   Result := BoundingRect;
 
-  // If you know how to get actual value, please do
-  // This should be one of theme metric
-
   case Details.Element of
-    teHeader: InflateRect(Result, -2, -2);
+    teHeader: Result := DrawHeaderElement(DefaultContext, Details, BoundingRect, nil);
+    teButton: Result := DrawButtonElement(DefaultContext, Details, BoundingRect, nil);
+    teRebar: Result := DrawRebarElement(DefaultContext, Details, BoundingRect, nil);
+    teToolBar: Result := DrawToolBarElement(DefaultContext, Details, BoundingRect, nil);
   end;
 end;
 

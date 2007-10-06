@@ -919,6 +919,8 @@ var
 const
   SName = 'Frame3D';
 begin
+  FillRect(ARect, CurrentBrush);
+
   if Style = bvRaised then
   begin
     if OSError(GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D),

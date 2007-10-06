@@ -89,7 +89,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
-    procedure ValueChanged; override;
+    procedure IndicatorMoved; override;
     procedure DoAction(AControlPart: ControlPartCode); override;
     procedure SetParams; virtual;
   end;
@@ -322,11 +322,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonScrollBar.ValueChanged
+  Method:  TCarbonScrollBar.IndicatorMoved
 
-  Value changed event handler
+  Indicator moved event handler
  ------------------------------------------------------------------------------}
-procedure TCarbonScrollBar.ValueChanged;
+procedure TCarbonScrollBar.IndicatorMoved;
 var
   ScrollMsg: TLMScroll;
 begin
@@ -336,7 +336,8 @@ begin
   ScrollMsg.ScrollCode := SB_THUMBTRACK;
   ScrollMsg.Pos := GetControl32BitValue(ControlRef(Widget));
   ScrollMsg.ScrollBar := HWND(Widget);
-
+  
+  ValueChanged;
   DeliverMessage(LCLObject, ScrollMsg);
 end;
 
