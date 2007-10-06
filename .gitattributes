@@ -3050,7 +3050,6 @@ lcl/maskedit.pp svneol=native#text/pascal
 lcl/masks.pas svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
 lcl/nonwin32/README.txt svneol=native#text/plain
-lcl/nonwin32/commctrl.pp svneol=native#text/pascal
 lcl/nonwin32/messages.pp svneol=native#text/pascal
 lcl/pairsplitter.pas svneol=native#text/pascal
 lcl/postscriptcanvas.pas svneol=native#text/pascal
