@@ -1,0 +1,17 @@
+{ Este es un archivo de recurso de Lazarus generado automáticamente }
+
+LazarusResources.Add('TThreadOptionsDialog','FORMDATA',[
+  'TPF0'#20'TThreadOptionsDialog'#19'ThreadOptionsDialog'#4'Left'#3#26#1#6'Heig'
+  +'ht'#2'j'#3'Top'#3#183#0#5'Width'#3#27#1#18'HorzScrollBar.Page'#3#26#1#18'Ve'
+  +'rtScrollBar.Page'#2'i'#13'ActiveControl'#7#14'ThreadNameEdit'#11'BorderIcon'
+  +'s'#11#0#7'Caption'#6#19'ThreadOptionsDialog'#12'ClientHeight'#2'j'#11'Clien'
+  +'tWidth'#3#27#1#8'Position'#7#15'poDesktopCenter'#0#9'TGroupBox'#15'OptionsG'
+  +'roupBox'#6'Height'#2'A'#5'Width'#3#27#1#5'Align'#7#5'alTop'#12'ClientHeight'
+  +#2'/'#11'ClientWidth'#3#23#1#8'TabOrder'#2#1#0#6'TLabel'#15'ThreadNameLabel'
+  +#4'Left'#2#22#6'Height'#2#17#3'Top'#2#2#5'Width'#2'Z'#11'ParentColor'#8#0#0#5
+  +'TEdit'#14'ThreadNameEdit'#4'Left'#2#22#6'Height'#2#22#3'Top'#2#16#5'Width'#3
+  +#232#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#0#0#0#0#7
+  +'TButton'#16'CreateUnitButton'#4'Left'#2'('#6'Height'#2#25#3'Top'#2'I'#5'Wid'
+  +'th'#3#200#0#7'Anchors'#11#6'akLeft'#7'akRight'#8'akBottom'#0#25'BorderSpaci'
+  +'ng.InnerBorder'#2#4#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#0
+]);
