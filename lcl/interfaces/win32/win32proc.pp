@@ -807,6 +807,7 @@ End;
     TGroupBox's client area is the area inside the groupbox frame.
     Hence, the LeftOffset is the frame width and the TopOffset is the caption
     height.
+  It is used in GetClientBounds to define LCL bounds from win32 bounds.
 -------------------------------------------------------------------------------}
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 var
@@ -821,18 +822,23 @@ Begin
   TheWinControl:=TWinControl(Sender);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  ORect.Left := 0;
-  ORect.Top := 0;
+  FillChar(ORect, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
     with TScrollingWinControl(TheWinControl) do
     begin
       if HorzScrollBar <> nil then
-        ORect.Left := -HorzScrollBar.Position;
+      begin
+        // left and right bounds are shifted by scroll position
+        ORect.Left := HorzScrollBar.Position;
+        ORect.Right := HorzScrollBar.Position;
+      end;
       if VertScrollBar <> nil then
-        ORect.Top := -VertScrollBar.Position;
+      begin
+        // top and bottom bounds are shifted by scroll position
+        ORect.Top := VertScrollBar.Position;
+        ORect.Bottom := VertScrollBar.Position;
+      end;
     end;
-  ORect.Bottom := 0;
-  ORect.Right := 0;
   If (TheWinControl is TCustomGroupBox) Then
   Begin
     // The client area of a groupbox under win32 is the whole size, including

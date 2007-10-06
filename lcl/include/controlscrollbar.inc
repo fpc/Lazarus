@@ -79,7 +79,8 @@ begin
     if DebugCondition then
       DebugLn(['TControlScrollBar.SetPosition FPosition=',FPosition]);
     {$ENDIF}
-    SetScrollPos(ControlHandle, IntfBarKind[Kind], FPosition, Visible);
+    // send position to interface and store it back to FPosition (this way LCL will have actual position value)
+    FPosition := SetScrollPos(ControlHandle, IntfBarKind[Kind], FPosition, Visible);
   end;
 end;
 
