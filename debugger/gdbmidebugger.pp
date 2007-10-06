@@ -2170,8 +2170,9 @@ begin
   // then the rtl is compiled with regcalls
   RetrieveRegCall;
 
-  if Arguments <>''
-  then ExecuteCommand('-exec-arguments %s', [Arguments], [cfIgnoreError]);
+  // also call execute -exec-arguments if there are no arguments in this run
+  // so the possible arguments of a previous run are cleared
+  ExecuteCommand('-exec-arguments %s', [Arguments], [cfIgnoreError]);
   
   if tfHasSymbols in FTargetFlags
   then begin
