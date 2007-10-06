@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  fpgui, fpguiwsprivate,
+  fpguiwsprivate,
   // LCL
   Classes, StdCtrls, Controls, LCLType,
   // Widgetset
@@ -258,6 +258,12 @@ type
 
 implementation
 
+uses
+  gui_combobox,
+  gui_edit,
+  gui_checkbox,
+  gui_radiobutton;
+
 { TFpGuiWSCustomComboBox }
 
 {------------------------------------------------------------------------------
@@ -295,11 +301,11 @@ end;
 class function TFpGuiWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
-  vComboBox: TFComboBox;
+  vComboBox: TfpgComboBox;
 begin
   vComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
-  Result := vComboBox.ItemIndex;
+  Result := vComboBox.FocusItem-1;    // TfpgComboBox is 1-based
 end;
 
 {------------------------------------------------------------------------------
@@ -310,11 +316,11 @@ end;
 class procedure TFpGuiWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 var
-  vComboBox: TFComboBox;
+  vComboBox: TfpgComboBox;
 begin
   vComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
-  vComboBox.ItemIndex := NewIndex;
+  vComboBox.FocusItem := NewIndex+1;    // TfpgComboBox is 1-based
 end;
 
 {------------------------------------------------------------------------------
@@ -325,7 +331,7 @@ end;
 class function TFpGuiWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 var
-  FComboBox: TFComboBox;
+  FComboBox: TfpgComboBox;
 begin
   FComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
@@ -363,7 +369,7 @@ end;
 class function TFpGuiWSCustomEdit.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
-  vEdit: TFEdit;
+  vEdit: TfpgEdit;
 begin
   vEdit := TFPGUIPrivateEdit(AWinControl.Handle).Edit;
 
@@ -380,7 +386,7 @@ end;
 class procedure TFpGuiWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: string);
 var
-  vEdit: TFEdit;
+  vEdit: TfpgEdit;
 begin
   vEdit := TFPGUIPrivateEdit(AWinControl.Handle).Edit;
 
@@ -430,12 +436,14 @@ end;
 class function TFpGuiWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
-  vCheckBox: TFCheckBox;
+  vCheckBox: TfpgCheckBox;
 begin
   vCheckBox := TFPGUIPrivateCheckBox(ACustomCheckBox.Handle).CheckBox;
 
-  if vCheckBox.Checked then Result := cbChecked
-  else Result := cbUnchecked;
+  if vCheckBox.Checked then
+    Result := cbChecked
+  else
+    Result := cbUnchecked;
 end;
 
 class procedure TFpGuiWSCustomCheckBox.SetShortCut(
@@ -448,35 +456,33 @@ end;
 class procedure TFpGuiWSCustomCheckBox.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 var
-  vCheckBox: TFCheckBox;
+  vCheckBox: TfpgCheckBox;
 begin
   vCheckBox := TFPGUIPrivateCheckBox(ACustomCheckBox.Handle).CheckBox;
 
-  if NewState = cbChecked then vCheckBox.Checked := True
-  else vCheckBox.Checked := False;
+  if NewState = cbChecked then
+    vCheckBox.Checked := True
+  else
+    vCheckBox.Checked := False;
 end;
 
 class function TFpGuiWSCustomCheckBox.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
-  vCheckBox: TFCheckBox;
+  vCheckBox: TfpgCheckBox;
 begin
   Result := False;
-
   vCheckBox := TFPGUIPrivateCheckBox(AWinControl.Handle).CheckBox;
-
   AText := vCheckBox.Text;
-  
   Result := True;
 end;
 
 class procedure TFpGuiWSCustomCheckBox.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
-  vCheckBox: TFCheckBox;
+  vCheckBox: TfpgCheckBox;
 begin
   vCheckBox := TFPGUIPrivateCheckBox(AWinControl.Handle).CheckBox;
-
   vCheckBox.Text := AText;
 end;
 
@@ -498,12 +504,14 @@ end;
 class function TFpGuiWSRadioButton.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
-  vRadioButton: TFRadioButton;
+  vRadioButton: TfpgRadioButton;
 begin
   vRadioButton := TFPGUIPrivateRadioButton(ACustomCheckBox.Handle).RadioButton;
 
-  if vRadioButton.Checked then Result := cbChecked
-  else Result := cbUnchecked;
+  if vRadioButton.Checked then
+    Result := cbChecked
+  else
+    Result := cbUnchecked;
 end;
 
 class procedure TFpGuiWSRadioButton.SetShortCut(
@@ -516,35 +524,33 @@ end;
 class procedure TFpGuiWSRadioButton.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 var
-  vRadioButton: TFRadioButton;
+  vRadioButton: TfpgRadioButton;
 begin
   vRadioButton := TFPGUIPrivateRadioButton(ACustomCheckBox.Handle).RadioButton;
 
-  if NewState = cbChecked then vRadioButton.Checked := True
-  else vRadioButton.Checked := False;
+  if NewState = cbChecked then
+    vRadioButton.Checked := True
+  else
+    vRadioButton.Checked := False;
 end;
 
 class function TFpGuiWSRadioButton.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
-  vRadioButton: TFRadioButton;
+  vRadioButton: TfpgRadioButton;
 begin
   Result := False;
-
   vRadioButton := TFPGUIPrivateRadioButton(AWinControl.Handle).RadioButton;
-
   AText := vRadioButton.Text;
-
   Result := True;
 end;
 
 class procedure TFpGuiWSRadioButton.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
-  vRadioButton: TFRadioButton;
+  vRadioButton: TfpgRadioButton;
 begin
   vRadioButton := TFPGUIPrivateRadioButton(AWinControl.Handle).RadioButton;
-
   vRadioButton.Text := AText;
 end;
 
@@ -581,7 +587,7 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TFpGuiWSCustomLabel);
 //  RegisterWSComponent(TLabel, TFpGuiWSLabel);
 //  RegisterWSComponent(TButtonControl, TFpGuiWSButtonControl);
-  RegisterWSComponent(Buttons.TCustomButton, TFpGuiWSButton);
+  RegisterWSComponent(TCustomButton, TFpGuiWSButton);
   RegisterWSComponent(TCustomCheckBox, TFpGuiWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TFpGuiWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TFpGuiWSToggleBox);

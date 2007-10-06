@@ -75,12 +75,12 @@ end;
   Initializes the application
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-var
-  Display: String;
+//var
+//  Display: String;
 begin
   // This doesn't hurt. on other playforms than X it just will do nothing
-  Display := GetEnvironmentVariable('DISPLAY');
-  GFApplication.Initialize(Display);
+//  Display := GetEnvironmentVariable('DISPLAY');
+  fpgApplication.Initialize;
   //GFApplication.QuitWhenLastWindowCloses := False;
 end;
 
@@ -93,7 +93,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
-  vMainForm: TFForm;
+  vMainForm: TfpgForm;
 begin
   { Shows the main form }
   if Assigned(Application.MainForm) then
@@ -101,9 +101,8 @@ begin
     vMainForm := TFPGUIPrivateWindow(Application.MainForm.Handle).Form;
     vMainForm.Show;
   end;
-
   // GFApplication.EventFilter can maybe be used on X11 for aloop but it is X only
-  GFApplication.Run;
+  fpgApplication.Run;
 end;
 
 {------------------------------------------------------------------------------
@@ -126,6 +125,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppProcessMessages;
 begin
+  fpgApplication.ProcessMessages;
 end;
 
 {------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppTerminate;
 begin
-  GFApplication.Quit;
+  fpgApplication.Terminated := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -149,6 +149,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppMinimize;
 begin
+end;
+
+procedure TFpGuiWidgetSet.AppRestore;
+begin
+
 end;
 
 {------------------------------------------------------------------------------
@@ -185,7 +190,7 @@ end;
 
 procedure TFpGuiWidgetSet.SetDesigning(AComponent: TComponent);
 begin
-
+//  Include(AComponent.ComponentState, csDesigning);
 end;
 
 function TFpGuiWidgetSet.InitHintFont(HintFont: TObject): Boolean;

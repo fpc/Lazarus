@@ -41,7 +41,8 @@ uses
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
   GraphType,
   // Interface
-  fpgui, fpgfx,
+  fpgfx,
+  gui_form,
   FPGUIWSPrivate;
 
 type
@@ -51,8 +52,6 @@ type
   TFpGuiWidgetSet = Class(TWidgetSet)
   private
   public
-    function LCLPlatform: TLCLPlatform; override;
-
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
@@ -60,8 +59,10 @@ type
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;
     procedure AppMinimize; override;
+    procedure AppRestore; override;
     procedure AppBringToFront; override;
 //    procedure AppSetTitle(const ATitle: string); override;
+    function LCLPlatform: TLCLPlatform; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -72,9 +73,10 @@ type
     procedure SetDesigning(AComponent: TComponent); override;
 
     function  InitHintFont(HintFont: TObject): Boolean; override;
+    
 
     // create and destroy
-    function CreateComponent(Sender : TObject): THandle; override; // deprecated
+    function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
 

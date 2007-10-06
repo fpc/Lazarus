@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  fpgui, fpguiwsprivate,
+  fpguiwsprivate,
   // LCL
   Controls, LCLType,
   // Widgetset
@@ -111,6 +111,9 @@ type
 
 implementation
 
+uses
+  gfx_widget;
+
 { TFpGuiWSWinControl }
 
 {------------------------------------------------------------------------------
@@ -147,10 +150,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.Invalidate(const AWinControl: TWinControl);
 var
-  FPWidget: TFWidget;
+  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
-  FPWIdget.Redraw;
+  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
+  FPWIdget.Invalidate;
 end;
 
 {------------------------------------------------------------------------------
@@ -165,10 +168,10 @@ end;
 class procedure TFpGuiWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
-  FPWidget: TFWidget;
+  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
-  FPWIdget.SetBounds(ALeft, ATop, AWidth, AHeight);
+  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
+  FPWIdget.SetPosition(ALeft, ATop, AWidth, AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -182,10 +185,10 @@ end;
 class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
 var
-  FPWidget: TFWidget;
+  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
-  FPWIdget.SetBounds(ALeft, ATop, AWincontrol.Width, AWinControl.Height);
+  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
+  FPWIdget.SetPosition(ALeft, ATop, AWinControl.Width, AWinControl.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -199,10 +202,10 @@ end;
 class procedure TFpGuiWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 var
-  FPWidget: TFWidget;
+  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
-  FPWIdget.SetBounds(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
+  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
+  FPWIdget.SetPosition(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -214,9 +217,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
-  FPWidget: TFWidget;
+  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
+  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
   FPWidget.Visible := not FPWidget.Visible;
 end;
 

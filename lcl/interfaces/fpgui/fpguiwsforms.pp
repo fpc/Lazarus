@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  fpgui, fpgfx, gfxbase, fpguiwsprivate,
+  fpgfx, gfxbase, fpguiwsprivate,
   // LCL
   Classes, Forms, LCLType, Controls,
   // Widgetset
@@ -179,10 +179,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomForm.SetFormBorderStyle(const AForm: Forms.TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
-var
-  FPForm: TFPGUIPrivateWindow;
+//var
+//  FPForm: TFPGUIPrivateWindow;
 begin
-  FPForm := TFPGUIPrivateWindow(AForm.Handle);
+//  FPForm := TFPGUIPrivateWindow(AForm.Handle);
 
 end;
 
@@ -212,7 +212,7 @@ initialization
 //  RegisterWSComponent(TScrollBox, TFpGuiWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TFpGuiWSCustomFrame);
 //  RegisterWSComponent(TFrame, TFpGuiWSFrame);
-  RegisterWSComponent(Forms.TCustomForm, TFpGuiWSCustomForm);
+  RegisterWSComponent(TCustomForm, TFpGuiWSCustomForm);
 //  RegisterWSComponent(Forms.TForm, TFpGuiWSForm);
 //  RegisterWSComponent(THintWindow, TFpGuiWSHintWindow);
 //  RegisterWSComponent(TScreen, TFpGuiWSScreen);

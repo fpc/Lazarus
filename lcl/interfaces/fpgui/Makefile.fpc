@@ -7,7 +7,7 @@
 main=lcl
 
 [require]
-packages=rtl fcl 
+packages=rtl fcl-base 
 
 [target]
 units=interfaces
@@ -28,8 +28,9 @@ endif
 
 [compiler]
 options=-gl -dfpgui
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . gfx gui gfx/$(fpGUIPlatform)
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . corelib gui corelib/$(fpGUIPlatform)
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/fpgui
+includedir=corelib
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \

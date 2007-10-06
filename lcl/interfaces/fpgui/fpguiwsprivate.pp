@@ -37,14 +37,15 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  fpgui, fpgfx;
+  gfx_widget, gui_form, gui_button, gui_combobox, gui_dialogs,
+  gui_edit, gui_checkbox, gui_radiobutton;
 
 
 type
 
   IContainer = interface(IInterface)
-    procedure AddChild(AWidget: TFWidget);
-    procedure RemoveChild(AWidget: TFWidget);
+    procedure AddChild(AWidget: TfpgWidget);
+    procedure RemoveChild(AWidget: TfpgWidget);
   end;
 
   ISimpleText = interface(IInterface)
@@ -65,7 +66,7 @@ type
 
   TFPGUIPrivateWidget = class(TFPGUIPrivate)
   private
-    FWidget: TFWidget;
+    FWidget: TfpgWidget;
     FLCLObject: TWinControl;
     function GetVisible: Boolean;
     procedure SetVisible(const AValue: Boolean);
@@ -79,7 +80,7 @@ type
 
     property LCLObject: TWinControl read FLCLObject;
     property Visible: Boolean read GetVisible write SetVisible;
-    property Widget: TFWidget read FWidget write FWidget;
+    property Widget: TfpgWidget read FWidget write FWidget;
   end;
 
 
@@ -89,13 +90,12 @@ type
   TFPGUIPrivateContainer = class(TFPGUIPrivateWidget, IContainer)
   private
   protected
-    fFixed: TFFixedLayout;
   public
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
   // IContainer
-    procedure AddChild(AWidget: TFWidget);
-    procedure RemoveChild(AWidget: TFWidget);
+    procedure AddChild(AWidget: TfpgWidget);
+    procedure RemoveChild(AWidget: TfpgWidget);
   end;
 
 
@@ -116,10 +116,9 @@ type
   private
   protected
   public
-    function Form: TFForm;
+    function Form: TfpgForm;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
-    procedure DestroyWidget; override;
     destructor Destroy; override;
     procedure SetSize(AWidth, AHeight: LongInt); override;
     procedure SetPosition(AX, AY: Integer); override;
@@ -132,7 +131,7 @@ type
   { TFPGUIPrivateDialog }
   { Private class for dialogs }
 
-  TFPGUIPrivateDialog = class(TFWidget) // is there a dialog widget?
+  TFPGUIPrivateDialog = class(TfpgBaseDialog)
   private
   protected
   public
@@ -147,10 +146,9 @@ type
     procedure Clicked(Sender: TObject);
   protected
   public
-    function Button: TFButton;
+    function Button: TfpgButton;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
-    procedure DestroyWidget; override;
     // ISimpleText
     procedure SetText(const AText: String);
     function GetText: String;
@@ -162,9 +160,8 @@ type
   private
   protected
   public
-    function ComboBox: TFComboBox;
+    function ComboBox: TfpgComboBox;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
-    procedure DestroyWidget; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
   end;
 
@@ -175,7 +172,7 @@ type
   private
   protected
   public
-    function Edit: TFEdit;
+    function Edit: TfpgEdit;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     // ISimpleText
@@ -189,7 +186,7 @@ type
   private
   protected
   public
-    function CheckBox: TFCheckBox;
+    function CheckBox: TfpgCheckBox;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     // ISimpleText
@@ -203,7 +200,7 @@ type
   private
   protected
   public
-    function RadioButton: TFRadioButton;
+    function RadioButton: TfpgRadioButton;
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     // ISimpleText
@@ -220,7 +217,8 @@ type
 
 implementation
 
-uses LCLMessageGlue, GfxBase;
+uses
+  LCLMessageGlue, GfxBase;
 
 { TFPGUIPrivate }
 
@@ -262,12 +260,12 @@ end;
 
 procedure TFPGUIPrivateWidget.SetSize(AWidth, AHeight: LongInt);
 begin
-  Widget.SetBounds(Widget.Left, Widget.Top, AWidth, AHeight);
+  Widget.SetPosition(Widget.Left, Widget.Top, AWidth, AHeight);
 end;
 
 procedure TFPGUIPrivateWidget.SetPosition(AX, AY: Integer);
 begin
-  Widget.SetBounds(AX, AY, Widget.Width, Widget.Height);
+  Widget.SetPosition(AX, AY, Widget.Width, Widget.Height);
 end;
 
 { TFPGUIPrivateContainer }
@@ -276,23 +274,19 @@ constructor TFPGUIPrivateContainer.Create(ALCLObject: TWinControl;
   const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-
-  FFixed := TFFixedLayout.Create(Widget);
 end;
 
 destructor TFPGUIPrivateContainer.Destroy;
 begin
-  FFixed.Free;
-
   inherited Destroy;
 end;
 
-procedure TFPGUIPrivateContainer.AddChild(AWidget: TFWidget);
+procedure TFPGUIPrivateContainer.AddChild(AWidget: TfpgWidget);
 begin
-  fFixed.AddWidget(AWidget, 0, 0);
+//  fFixed.AddWidget(AWidget, 0, 0);
 end;
 
-procedure TFPGUIPrivateContainer.RemoveChild(AWidget: TFWidget);
+procedure TFPGUIPrivateContainer.RemoveChild(AWidget: TfpgWidget);
 begin
 //  fFixed.RemoveChild(AWidget);
 end;
@@ -304,9 +298,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TFPGUIPrivateWindow.Form: TFForm;
+function TFPGUIPrivateWindow.Form: TfpgForm;
 begin
-  Result := TFForm(Widget);
+  Result := TfpgForm(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -316,7 +310,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.SetSize(AWidth, AHeight: LongInt);
 begin
-  Form.Wnd.SetSize(Size(AWidth, AHeight));
+  Form.SetPosition(Form.Top, Form.Left, AWidth, AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -326,7 +320,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.SetPosition(AX, AY: Integer);
 begin
-  Form.Wnd.SetPosition(Point(AX, AY));
+  Form.SetPosition(AX, AY, Form.Width, Form.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -338,7 +332,7 @@ constructor TFPGUIPrivateWindow.Create(ALCLObject: TWinControl; const AParams: T
 begin
   inherited Create(ALCLObject, AParams);
 
-  Form.InsertChild(fFixed);
+//  Form.InsertChild(fFixed);
 end;
 
 {------------------------------------------------------------------------------
@@ -351,12 +345,8 @@ begin
 {$IFDEF VerboseFPGUIIntf}
   WriteLn('[TFPGUIPrivateWindow.CreateWidget]');
 {$ENDIF}
-
-  Widget := TFForm.Create(nil);
-
-  Form.Wnd.SetSize(Size(AParams.Width, AParams.Height));
-
-  Form.Wnd.SetPosition(Point(AParams.X, AParams.Y));
+  Widget := TfpgForm.Create(nil);
+  Form.SetPosition(AParams.X, AParams.Y, AParams.Width, AParams.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -380,7 +370,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.SetText(const AText: String);
 begin
-  Form.Wnd.Title := AText;
+  Form.WindowTitle := AText;
 end;
 
 {------------------------------------------------------------------------------
@@ -390,7 +380,7 @@ end;
  ------------------------------------------------------------------------------}
 function TFPGUIPrivateWindow.GetText: String;
 begin
-  Result := Form.Wnd.Title;
+  Result := Form.WindowTitle;
 end;
 
 { TFPGUIPrivateButton }
@@ -410,9 +400,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TFPGUIPrivateButton.Button: TFButton;
+function TFPGUIPrivateButton.Button: TfpgButton;
 begin
-  Result := TFButton(Widget);
+  Result := TfpgButton(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -430,11 +420,8 @@ begin
 
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
-  Widget := TFButton.Create(ParentContainer.Widget);
-
-  ParentContainer.AddChild(Widget);
-
-  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+  Widget := TfpgButton.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -477,9 +464,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TFPGUIPrivateComboBox.ComboBox: TFComboBox;
+function TFPGUIPrivateComboBox.ComboBox: TfpgComboBox;
 begin
-  Result := TFComboBox(Widget);
+  Result := TfpgComboBox(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -493,11 +480,8 @@ var
 begin
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
-  Widget := TFComboBox.Create(ParentContainer.Widget);
-
-  ParentContainer.AddChild(Widget);
-
-  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+  Widget := TfpgComboBox.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -511,24 +495,6 @@ begin
   inherited Create(ALCLObject, AParams);
 
   // Events
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFPGUIPrivateComboBox.DestroyWidget
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TFPGUIPrivateComboBox.DestroyWidget;
-begin
-{
-var
-  ParentContainer: TFPGUIPrivateContainer;
-begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  ParentContainer.RemoveChild(Widget);
-
-  Widget.Free;}
 end;
 
 { TFPGUIPrivateEdit }
@@ -557,11 +523,8 @@ var
 begin
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
-  Widget := TFEdit.Create(ParentContainer.Widget);
-
-  ParentContainer.AddChild(Widget);
-
-  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+  Widget := TfpgEdit.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -569,9 +532,9 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TFPGUIPrivateEdit.Edit: TFEdit;
+function TFPGUIPrivateEdit.Edit: TfpgEdit;
 begin
-  Result := TFEdit(Widget);
+  Result := TfpgEdit(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -596,9 +559,9 @@ end;
 
 { TFPGUIPrivateCheckBox }
 
-function TFPGUIPrivateCheckBox.CheckBox: TFCheckBox;
+function TFPGUIPrivateCheckBox.CheckBox: TfpgCheckBox;
 begin
-  Result := TFCheckBox(Widget);
+  Result := TfpgCheckBox(Widget);
 end;
 
 constructor TFPGUIPrivateCheckBox.Create(ALCLObject: TWinControl;
@@ -613,11 +576,8 @@ var
 begin
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
-  Widget := TFCheckBox.Create(ParentContainer.Widget);
-
-  ParentContainer.AddChild(Widget);
-
-  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+  Widget := TfpgCheckBox.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 procedure TFPGUIPrivateCheckBox.SetText(const AText: String);
@@ -632,9 +592,9 @@ end;
 
 { TFPGUIPrivateRadioButton }
 
-function TFPGUIPrivateRadioButton.RadioButton: TFRadioButton;
+function TFPGUIPrivateRadioButton.RadioButton: TfpgRadioButton;
 begin
-  Result := TFRadioButton(Widget);
+  Result := TfpgRadioButton(Widget);
 end;
 
 constructor TFPGUIPrivateRadioButton.Create(ALCLObject: TWinControl;
@@ -649,11 +609,8 @@ var
 begin
   ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
 
-  Widget := TFRadioButton.Create(ParentContainer.Widget);
-
-  ParentContainer.AddChild(Widget);
-
-  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+  Widget := TfpgRadioButton.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 procedure TFPGUIPrivateRadioButton.SetText(const AText: String);
