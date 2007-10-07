@@ -814,6 +814,7 @@ type
     function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer;
                              var Index,Rest:Integer): boolean;
     procedure Paint; override;
+    procedure ParentFormHandleInitialized; override;
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure ResetEditor;
@@ -2692,6 +2693,11 @@ begin
   end;
 end;
 
+procedure TCustomGrid.ParentFormHandleInitialized;
+begin
+  AdjustDefaultRowHeight;
+end;
+
 procedure TCustomGrid.PickListItemSelected(Sender: TObject);
 begin
   if Assigned(OnPickListSelect) then
@@ -3486,7 +3492,6 @@ procedure TCustomGrid.CreateWnd;
 begin
   //DebugLn('TCustomGrid.CreateWnd ',DbgSName(Self));
   inherited CreateWnd;
-  AdjustDefaultRowHeight;
   CheckPosition;
   VisualChange;
 end;
