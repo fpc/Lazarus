@@ -1,63 +1,128 @@
 object ExtractProcDialog: TExtractProcDialog
+  Left = 392
+  Height = 201
+  Top = 383
+  Width = 420
+  HorzScrollBar.Page = 419
+  VertScrollBar.Page = 200
+  ActiveControl = NameEdit
+  BorderIcons = [biSystemMenu]
   Caption = 'ExtractProcDialog'
-  ClientHeight = 230
-  ClientWidth = 446
+  ClientHeight = 201
+  ClientWidth = 420
   OnClose = ExtractProcDialogClose
   OnCreate = ExtractProcDialogCREATE
-  PixelsPerInch = 90
-  HorzScrollBar.Page = 447
-  VertScrollBar.Page = 231
-  Left = 358
-  Height = 230
-  Top = 247
-  Width = 446
   object TypeRadiogroup: TRadioGroup
-    Anchors = [akTop, akLeft, akRight]
+    AnchorSideBottom.Control = NameGroupbox
+    Left = 6
+    Height = 96
+    Top = 6
+    Width = 408
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Around = 6
     Caption = 'TypeRadiogroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 1
     ColumnLayout = clVerticalThenHorizontal
-    ParentColor = True
-    Left = 8
-    Height = 120
-    Top = 8
-    Width = 430
-  end
-  object OkButton: TButton
-    Caption = 'OkButton'
-    OnClick = OkButtonCLICK
-    TabOrder = 0
-    Left = 88
-    Height = 25
-    Top = 192
-    Width = 120
-  end
-  object CancelButton: TButton
-    Cancel = True
-    Caption = 'CancelButton'
-    ModalResult = 2
     TabOrder = 1
-    Left = 248
-    Height = 25
-    Top = 192
-    Width = 120
   end
   object NameGroupbox: TGroupBox
-    Anchors = [akTop, akLeft, akRight]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 53
+    Top = 108
+    Width = 408
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 6
     Caption = 'NameGroupbox'
-    ClientHeight = 27
-    ClientWidth = 426
-    ParentColor = True
+    ClientHeight = 35
+    ClientWidth = 404
     ParentCtl3D = False
-    TabOrder = 2
-    Left = 8
-    Height = 44
-    Top = 135
-    Width = 430
+    TabOrder = 0
     object NameEdit: TEdit
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 392
       Align = alTop
+      BorderSpacing.Around = 6
       TabOrder = 0
       Text = 'NameEdit'
-      Height = 23
-      Width = 426
     end
+  end
+  object HelpButton: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 28
+    Top = 167
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Help'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Kind = bkHelp
+    NumGlyphs = 0
+    OnClick = HelpButtonClick
+    TabOrder = 2
+  end
+  object CancelButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 334
+    Height = 28
+    Top = 167
+    Width = 80
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Cancel = True
+    Caption = 'Cancel'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 3
+  end
+  object OkButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 253
+    Height = 28
+    Top = 167
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&OK'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = OkButtonCLICK
+    TabOrder = 4
   end
 end

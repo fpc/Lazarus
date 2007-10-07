@@ -7,15 +7,20 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, StdCtrls, CodeCache, CodeToolManager, ExtractProcTool,
-  LazarusIDEStrConsts, IDEProcs, MiscOptions;
+  LazarusIDEStrConsts, IDEProcs, MiscOptions, IDEContextHelpEdit;
 
 type
+
+  { TExtractProcDialog }
+
   TExtractProcDialog = class(TForm)
     NameEdit: TEDIT;
     NameGroupbox: TGROUPBOX;
-    OkButton: TBUTTON;
-    CancelButton: TBUTTON;
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
+    HelpButton: TBitBtn;
     TypeRadiogroup: TRADIOGROUP;
+    procedure HelpButtonClick(Sender: TObject);
     procedure ExtractProcDialogCREATE(Sender: TObject);
     procedure ExtractProcDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
@@ -104,6 +109,11 @@ begin
   CancelButton.Caption:=dlgCancel;
   TypeRadiogroup.Caption:=dlgEnvType;
   NameEdit.Text:=MiscellaneousOptions.ExtractProcName;
+end;
+
+procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TExtractProcDialog.ExtractProcDialogClose(Sender: TObject;
