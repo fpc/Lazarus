@@ -530,6 +530,10 @@ msgstr "Opzioni aggiuntive del compilatore ereditate dai pacchetti"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "File aggiuntivi da cercare (cioè /percorso/*.pas;/percorso2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Percorso di ricerca opzionale"
@@ -782,6 +786,10 @@ msgstr "Automatico (o inglese)"
 msgid "Automatic features"
 msgstr "Features automatiche"
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Con l'operazione di build incrementa automaticamnente la versione"
@@ -990,6 +998,10 @@ msgstr "Esegui build di un nuovo progetto"
 msgid "Build project/program"
 msgstr "Build del progetto/programma"
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "Macro in stile C (globale)"
@@ -1137,6 +1149,10 @@ msgstr "Char"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Mappa caratteri"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1854,6 +1870,10 @@ msgstr "Copia la parola sulla copia nulla"
 msgid "Copying a whole form is not implemented."
 msgstr "La copia di una form intera non è stata implementata."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Contatore (.pp;1)"
@@ -2565,6 +2585,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Abilita le macro"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3818,6 +3842,10 @@ msgstr "Includi i file (-Fi):"
 msgid "Include Filter"
 msgstr "Includi Filtro"
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "File include"
@@ -4522,6 +4550,14 @@ msgstr "Lingua"
 msgid "Language Exceptions"
 msgstr "Eccezioni del linguaggio"
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Ultima"
@@ -4818,6 +4854,10 @@ msgstr "La unit principale è 'Sorgente Pascal'"
 msgid "Major"
 msgstr "Maggiore"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Crea l'eseguibile"
@@ -4917,6 +4957,10 @@ msgstr "Versione minima:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Minore"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5638,6 +5682,10 @@ msgstr "Altri file unit (-Fu) (il delimitatore è puntoevirgola):"
 msgid "Other files"
 msgstr "Altri file"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr "Output"
@@ -5673,6 +5721,10 @@ msgstr "Sovrascrivi il file su disco"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Sovrascrivere il file?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9318,6 +9370,14 @@ msgstr "Versione"
 msgid "Version Info"
 msgstr "Informazioni sulla versione"
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "Verticale"
@@ -9740,6 +9800,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

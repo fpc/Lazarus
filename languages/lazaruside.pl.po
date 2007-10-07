@@ -533,6 +533,10 @@ msgstr ""
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr ""
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr ""
@@ -785,6 +789,10 @@ msgstr "automatyczny (lub angielski)"
 msgid "Automatic features"
 msgstr ""
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Automatycznie zwiększ numer wersji przy budowaniu"
@@ -993,6 +1001,10 @@ msgstr "Utwórz nowy projekt"
 msgid "Build project/program"
 msgstr ""
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "Makra w stylu C (globalne)"
@@ -1140,6 +1152,10 @@ msgstr "Znak"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Tablica znaków"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1857,6 +1873,10 @@ msgstr "Kopiuj słowo jeśli nic nie wybrano"
 msgid "Copying a whole form is not implemented."
 msgstr ""
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Licznik (.pp;1)"
@@ -2568,6 +2588,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Włącz makra"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3821,6 +3845,10 @@ msgstr ""
 msgid "Include Filter"
 msgstr ""
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "Plik dołączany (include)"
@@ -4525,6 +4553,14 @@ msgstr "Język"
 msgid "Language Exceptions"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Na końcu"
@@ -4821,6 +4857,10 @@ msgstr ""
 msgid "Major"
 msgstr "Major"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Utwórz plik wykonywalny"
@@ -4920,6 +4960,10 @@ msgstr "Minimalny nr wersji:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Minor"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5641,6 +5685,10 @@ msgstr ""
 msgid "Other files"
 msgstr "Inne pliki"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr ""
@@ -5676,6 +5724,10 @@ msgstr ""
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Zastąpić plik?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9321,6 +9373,14 @@ msgstr "Wersja"
 msgid "Version Info"
 msgstr ""
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr ""
@@ -9743,6 +9803,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

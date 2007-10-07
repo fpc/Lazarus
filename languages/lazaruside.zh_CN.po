@@ -532,6 +532,10 @@ msgstr "从包继承附加的编译选项"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "查找附加的文件 (例如: /path/*.pas;/path2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "附加的搜索路径"
@@ -784,6 +788,10 @@ msgstr "自动(或者英语)"
 msgid "Automatic features"
 msgstr "高级自动功能"
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "版本号自动递增"
@@ -992,6 +1000,10 @@ msgstr "构建新的工程"
 msgid "Build project/program"
 msgstr ""
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "C 风格的宏 (全局)"
@@ -1139,6 +1151,10 @@ msgstr "Char"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "字符表"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1856,6 +1872,10 @@ msgstr "在没有复制时复制单词"
 msgid "Copying a whole form is not implemented."
 msgstr "复制整个窗体失败."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "计数器 (.pp;1)"
@@ -2567,6 +2587,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "允许宏"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3820,6 +3844,10 @@ msgstr "包含文件 (-Fi):"
 msgid "Include Filter"
 msgstr "包含过滤器"
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "包含文件"
@@ -4524,6 +4552,14 @@ msgstr "语言"
 msgid "Language Exceptions"
 msgstr "语言异常"
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "末尾"
@@ -4820,6 +4856,10 @@ msgstr "主单元是 Pascal 代码"
 msgid "Major"
 msgstr "主号"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "生成可执行程序"
@@ -4919,6 +4959,10 @@ msgstr "最小版本:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "副版本号"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5640,6 +5684,10 @@ msgstr "补充单元文件 (-Fu) (分号格开):"
 msgid "Other files"
 msgstr "其余文件"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr "输出"
@@ -5675,6 +5723,10 @@ msgstr "覆盖磁盘上的文件"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "覆盖文件?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9320,6 +9372,14 @@ msgstr "版本"
 msgid "Version Info"
 msgstr ""
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "垂直"
@@ -9742,6 +9802,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

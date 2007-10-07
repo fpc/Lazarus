@@ -1,5 +1,4 @@
-# translation of lazaruside.po to Lithuanian
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of lazaruside.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -532,6 +531,10 @@ msgstr "Papildomi iš paketų paveldėtos kompiliatoriaus parinktys"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "Ieškoti ir kituose failuose (pvz.: /path/*.pas;/path2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Papildomi paieškos keliai"
@@ -784,6 +787,10 @@ msgstr "Automatiškai (arba anglų)"
 msgid "Automatic features"
 msgstr "Automatinės ypatybės"
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Padarius, automatiškai didinti versijos numerį"
@@ -996,6 +1003,10 @@ msgstr "Daryti naująjį projektą"
 msgid "Build project/program"
 msgstr "Daryti projektą/programą"
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "C stiliaus makrokomandos (globaliai)"
@@ -1143,6 +1154,10 @@ msgstr "Simbolis"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Simbolių lentelė"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1860,6 +1875,10 @@ msgstr "Kai kopijuojant nieks nepažymėta- kopijuoti žodį"
 msgid "Copying a whole form is not implemented."
 msgstr "Visos formos kopijavimas dar nėra įgyvendintas."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Skaitliukas (.pp.1)"
@@ -2571,6 +2590,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Įgalinti makrokomandas"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3824,6 +3847,10 @@ msgstr "Įterpiami failai (-Fi):"
 msgid "Include Filter"
 msgstr "Įterpimo filtras"
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "Įtraukiamasis"
@@ -4528,6 +4555,14 @@ msgstr "Kalba"
 msgid "Language Exceptions"
 msgstr "Kalbos išimtinės situacijos"
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Gale"
@@ -4826,6 +4861,10 @@ msgstr "Pagrindinis modulis yra Paskalio pirminis kodas"
 msgid "Major"
 msgstr "Didysis"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Daryti vykdomąjį failą"
@@ -4925,6 +4964,10 @@ msgstr "Minimali versija:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Mažasis"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5646,6 +5689,10 @@ msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais)"
 msgid "Other files"
 msgstr "Kiti failai"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr "Išvestis"
@@ -5681,6 +5728,10 @@ msgstr "Perrašyti failą diske"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Perrašyti failą?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9340,6 +9391,14 @@ msgstr "Versija"
 msgid "Version Info"
 msgstr "Versijos informacija"
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "Vertikaliai "
@@ -9763,6 +9822,14 @@ msgstr "FreePascal programa, naudojanti TCustomApplication, skirta lengvam koman
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

@@ -1283,6 +1283,23 @@ resourcestring
     +'maintained by lazarus.';
   dlgPOFroms = 'Forms';
   dlgPOMisc = 'Miscellaneous';
+  dlgPOI18n = 'i18n';
+  rsEnableI18n = 'Enable i18n';
+  rsI18nOptions = 'i18n Options';
+  rsPOOutputDirectory = 'PO Output Directory:';
+  rsIncludeVersionInfoInExecutable = 'Include Version Info in executable';
+  rsVersionNumbering = 'Version numbering';
+  rsVersion = 'Version:';
+  rsMajorRevision = 'Major revision:';
+  rsMinorRevision = 'Minor revision:';
+  rsBuild = 'Build:';
+  rsAutomaticallyIncreaseBuildNumber = 'Automatically increase build number';
+  rsLanguageOptions = 'Language options';
+  rsLanguageSelection = 'Language selection:';
+  rsCharacterSet = 'Character set:';
+  rsOtherInfo = 'Other info';
+  rsCopyright = 'Copyright:';
+  rsAdditionalInfo = 'Additional info';
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application Settings';
   dlgPOTitle = 'Title:';
@@ -3414,4 +3431,5 @@ resourcestring
     +'provides the same as the following packages:';
 
 implementation
+
 end.

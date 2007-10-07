@@ -529,6 +529,10 @@ msgstr "Additionele compiler opties gelijk aan die van packages"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "Additionele bestanden om te zoeken (d.w.z. /pad/*.pas, /pad2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Additioneel zoekpad"
@@ -781,6 +785,10 @@ msgstr "Automatisch (of Engels)"
 msgid "Automatic features"
 msgstr "Automatische kenmerken"
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Automatisch ophogen van versie bij bouwen"
@@ -989,6 +997,10 @@ msgstr "Bouw nieuw project"
 msgid "Build project/program"
 msgstr ""
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "C -stijl macro's (globaal)"
@@ -1136,6 +1148,10 @@ msgstr "Karakter"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Karakter tabel"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1853,6 +1869,10 @@ msgstr "Kopieer woord asl niets geselecteerd"
 msgid "Copying a whole form is not implemented."
 msgstr "Een geheel formulier kopiëren is niet geimplementeerd."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Teller (.pp;1)"
@@ -2564,6 +2584,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Schakel Macro's in"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3817,6 +3841,10 @@ msgstr "Include bestanden (-Fi):"
 msgid "Include Filter"
 msgstr "Include filter"
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "Include bestand"
@@ -4521,6 +4549,14 @@ msgstr "Taal"
 msgid "Language Exceptions"
 msgstr "Taal uitzonderingen"
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Laatste"
@@ -4817,6 +4853,10 @@ msgstr "De hoofd unit is pascal broncode"
 msgid "Major"
 msgstr "Major"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Maak Executable"
@@ -4916,6 +4956,10 @@ msgstr "Minimum Versie:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Minor"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5637,6 +5681,10 @@ msgstr "Andere unit bestanden (-Fu)"
 msgid "Other files"
 msgstr "Andere bestanden"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr ""
@@ -5672,6 +5720,10 @@ msgstr "Bestand op disk overschrijven"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Bestand overschrijven?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9317,6 +9369,14 @@ msgstr "Versie"
 msgid "Version Info"
 msgstr "Verie informatie"
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "Verticaal"
@@ -9739,6 +9799,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject

@@ -529,6 +529,10 @@ msgstr "Дополнительные параметры компилятора, 
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "Дополнительные файлы для поиска (напр. /path/*.pas;/path2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Дополнительный путь поиска"
@@ -781,6 +785,10 @@ msgstr "Автоматически (или английский)"
 msgid "Automatic features"
 msgstr "Автоматические функции"
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Автоматически увеличить версию при сборке"
@@ -989,6 +997,10 @@ msgstr "Собрать новый проект"
 msgid "Build project/program"
 msgstr "Собрать проект/программу"
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "Макросы стиля C (глобально)"
@@ -1136,6 +1148,10 @@ msgstr "Символ"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Таблица символов"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1853,6 +1869,10 @@ msgstr "Слово при пустом копировании"
 msgid "Copying a whole form is not implemented."
 msgstr "Копирование всей формы не реализовано."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Счетчик (.pp;1)"
@@ -2564,6 +2584,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Включить макросы"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3817,6 +3841,10 @@ msgstr "Включаемые файлы (-Fi):"
 msgid "Include Filter"
 msgstr "Включающий фильтр"
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "Включаемый файл:"
@@ -4521,6 +4549,14 @@ msgstr "Язык"
 msgid "Language Exceptions"
 msgstr "Исключения языка"
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Последним"
@@ -4817,6 +4853,10 @@ msgstr "Главный модуль - исходник Паскаля"
 msgid "Major"
 msgstr "Главная"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Создать исполняемый"
@@ -4916,6 +4956,10 @@ msgstr "Миним. версия:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Вторичная"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5637,6 +5681,10 @@ msgstr "Другие модули (-Fu) (разделитель точка с з
 msgid "Other files"
 msgstr "Др. файлы"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr "Вывод"
@@ -5672,6 +5720,10 @@ msgstr "Перезаписать файл на диске"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Переписать файл?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9317,6 +9369,14 @@ msgstr "Версия"
 msgid "Version Info"
 msgstr "Информация о версии"
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "Вертикально"
@@ -9740,6 +9800,14 @@ msgstr "Программа FreePascal, использующая TCustomApplicati
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

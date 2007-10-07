@@ -38,7 +38,7 @@ interface
 uses
   Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
   Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
-  FileUtil,
+  FileUtil, IDEContextHelpEdit,
   IDEWindowIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest;
@@ -132,16 +132,17 @@ type
     AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
 
     // buttons at bottom
-    OKButton: TButton;
-    CancelButton: TButton;
+    HelpButton: TBitBtn;
+    CancelButton: TBitBtn;
+    OKButton: TBitBtn;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure FormsPageResize(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
-    procedure NotebookChangeBounds(Sender: TObject);
     procedure ProjectOptionsClose(Sender: TObject;
                                   var CloseAction: TCloseAction);
     procedure FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
@@ -310,11 +311,29 @@ end;
 procedure TProjectOptionsDialog.SetupVersionInfoPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := VersionInfoTitle;
+  UseVersionInfoCheckBox.Caption := rsIncludeVersionInfoInExecutable;
+  VersionInfoGroupBox.Caption := rsVersionNumbering;
+  VersionLabel.Caption := rsVersion;
+  MajorRevisionLabel.Caption := rsMajorRevision;
+  MinorRevisionLabel.Caption := rsMinorRevision;
+  BuildLabel.Caption := rsBuild;
+  AutomaticallyIncreaseBuildCheckBox.Caption := rsAutomaticallyIncreaseBuildNumber;
+  LanguageSettingsGroupBox.Caption := rsLanguageOptions;
+  LanguageSelectionLabel.Caption := rsLanguageSelection;
+  CharacterSetLabel.Caption := rsCharacterSet;
+  OtherInfoGroupBox.Caption := rsOtherInfo;
+  DescriptionLabel.Caption := lisCodeToolsDefsDescription;
+  CopyrightLabel.Caption := rsCopyright;
+  AdditionalInfoButton.Caption := rsAdditionalInfo;
 end;
 
 procedure TProjectOptionsDialog.SetupI18NPage(PageIndex: Integer);
 begin
+  NoteBook.Page[PageIndex].Caption := dlgPOI18n;
 
+  EnableI18NCheckBox.Caption := rsEnableI18n;
+  I18NGroupBox.Caption := rsI18nOptions;
+  PoOutDirLabel.Caption := rsPOOutputDirectory;
 end;
 
 procedure TProjectOptionsDialog.EnableVersionInfo(UseVersionInfo: boolean);
@@ -348,7 +367,6 @@ procedure TProjectOptionsDialog.Enablei18nInfo(Usei18n: boolean);
 begin
   I18NGroupBox.Enabled := Usei18n;
 end;
-
 
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
 var
@@ -507,6 +525,11 @@ begin
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
+procedure TProjectOptionsDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TProjectOptionsDialog.FormsPageResize(Sender: TObject);
 begin
   with FormsAutoCreatedListBox do
@@ -543,11 +566,6 @@ procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
 begin
   if (LazDocListBox.ItemIndex >= 0) then
     LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
-end;
-
-procedure TProjectOptionsDialog.NotebookChangeBounds(Sender: TObject);
-begin
-
 end;
 
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
@@ -849,8 +867,7 @@ begin
         mtWarning, [mbCancel], 0);
       Result := False;
       exit;
-    end// set Application.Title:= statement
-  ;
+    end;// set Application.Title:= statement
 
   if (OldTitle <> '') and Project.TitleIsDefault then
     if not CodeToolBoss.RemoveApplicationTitleStatement(
@@ -862,8 +879,7 @@ begin
         mtWarning, [mbCancel], 0);
       Result := False;
       exit;
-    end// delete title
-  ;
+    end;// delete title
 end;
 
 initialization

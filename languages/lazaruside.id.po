@@ -529,6 +529,10 @@ msgstr "Opsi kompilator tambahan diturunkan dari paket"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "File tambahan yang dicari (contoh /path/*.pas;/path2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Tambahan path pencarian"
@@ -781,6 +785,10 @@ msgstr "Otomatis (atau Inggris)"
 msgid "Automatic features"
 msgstr "Fitur otomatis"
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Otomatis menaikan versi pada buatan"
@@ -989,6 +997,10 @@ msgstr "Bangun proyek baru"
 msgid "Build project/program"
 msgstr "Bangun proyek/program"
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "Gaya Makro C (global)"
@@ -1136,6 +1148,10 @@ msgstr "Karakter"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Peta Karakter"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1853,6 +1869,10 @@ msgstr "Copy kata pada copy kosong"
 msgid "Copying a whole form is not implemented."
 msgstr "Meng-copy seluruh form tidak diimplementasikan."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Penghitung (.pp;1)"
@@ -2564,6 +2584,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Hidupkan makro"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3817,6 +3841,10 @@ msgstr "File Include (-Fi):"
 msgid "Include Filter"
 msgstr "Filter Include"
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "File Include"
@@ -4521,6 +4549,14 @@ msgstr "Bahasa"
 msgid "Language Exceptions"
 msgstr "Eksepsi Bahasa"
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Terakhir"
@@ -4817,6 +4853,10 @@ msgstr "Unit Utama adalah Sumber Pascal"
 msgid "Major"
 msgstr "Mayor"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Buat Eksekutabel"
@@ -4916,6 +4956,10 @@ msgstr "Versi Minimum:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Minor"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5637,6 +5681,10 @@ msgstr "File Unit Lain (-Fu) (Pemisah adalah titik koma):"
 msgid "Other files"
 msgstr "File Lain"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr "Output"
@@ -5672,6 +5720,10 @@ msgstr "Timpa file pada disk"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Timpa file?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9317,6 +9369,14 @@ msgstr "Versi"
 msgid "Version Info"
 msgstr "Info Versi"
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "Vertikal"
@@ -9740,6 +9800,14 @@ msgstr "program freepascal menggunakan TCustomApplication untuk memudahkan memer
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

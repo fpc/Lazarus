@@ -529,6 +529,10 @@ msgstr "Opcions addicionals del compilador heretades dels paquets"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "Fitxers addicionals a cercar (p.e. /trajectòria/*.pas;/trajec2/*.pp)"
 
+#: lazarusidestrconsts:rsadditionalinfo
+msgid "Additional info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Trajectòria de cerca addicional"
@@ -781,6 +785,10 @@ msgstr "Automàtic (o Anglès)"
 msgid "Automatic features"
 msgstr ""
 
+#: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
+msgid "Automatically increase build number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "En muntar, incrementa la versió automàticament"
@@ -989,6 +997,10 @@ msgstr "Munta un projecte nou"
 msgid "Build project/program"
 msgstr ""
 
+#: lazarusidestrconsts:rsbuild
+msgid "Build:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
 msgstr "Macroinstruccions estil C (global)"
@@ -1136,6 +1148,10 @@ msgstr "Caràcter"
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr "Mapa de Caràcters"
+
+#: lazarusidestrconsts:rscharacterset
+msgid "Character set:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1853,6 +1869,10 @@ msgstr "Copia paraula abans de no copiar-la"
 msgid "Copying a whole form is not implemented."
 msgstr "Copiar una forma sencera no està implementat."
 
+#: lazarusidestrconsts:rscopyright
+msgid "Copyright:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Comptador (.pp;1)"
@@ -2564,6 +2584,10 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
 msgstr "Permet Macroinstruccions"
+
+#: lazarusidestrconsts:rsenablei18n
+msgid "Enable i18n"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3817,6 +3841,10 @@ msgstr "Fitxers Inclosos (-Fi):"
 msgid "Include Filter"
 msgstr ""
 
+#: lazarusidestrconsts:rsincludeversioninfoinexecutable
+msgid "Include Version Info in executable"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
 msgstr "Inclou el fitxer"
@@ -4521,6 +4549,14 @@ msgstr "Llenguatge"
 msgid "Language Exceptions"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageoptions
+msgid "Language options"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageselection
+msgid "Language selection:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
 msgstr "Últim"
@@ -4817,6 +4853,10 @@ msgstr "La unitat principal és codi font Pascal"
 msgid "Major"
 msgstr "Major"
 
+#: lazarusidestrconsts:rsmajorrevision
+msgid "Major revision:"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Fes executable"
@@ -4916,6 +4956,10 @@ msgstr "Número mínim de la versió:"
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
 msgstr "Menor"
+
+#: lazarusidestrconsts:rsminorrevision
+msgid "Minor revision:"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5637,6 +5681,10 @@ msgstr "Altres fitxers d'unitats (-Fu) (El delimitador és punt i coma):"
 msgid "Other files"
 msgstr "Altres fitxers"
 
+#: lazarusidestrconsts:rsotherinfo
+msgid "Other info"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
 msgstr "Eixida"
@@ -5672,6 +5720,10 @@ msgstr "Sobreescriu arxiu al disc"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Voleu sobrescriure el fitxer?"
+
+#: lazarusidestrconsts:rspooutputdirectory
+msgid "PO Output Directory:"
+msgstr ""
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -9317,6 +9369,14 @@ msgstr "Versió"
 msgid "Version Info"
 msgstr "Informació de la versió"
 
+#: lazarusidestrconsts:rsversionnumbering
+msgid "Version numbering"
+msgstr ""
+
+#: lazarusidestrconsts:rsversion
+msgid "Version:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
 msgstr "Vertical"
@@ -9739,6 +9799,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoi18n
+msgid "i18n"
+msgstr ""
+
+#: lazarusidestrconsts:rsi18noptions
+msgid "i18n Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
