@@ -6649,6 +6649,7 @@ var
   PosMsg : TLMWindowPosChanged;
   MainWidget: PGtkWidget;
   FixedWidget: PGtkWidget;
+  Requisition: TGtkRequisition;
 
   procedure UpdateLCLPos;
   begin
@@ -6693,9 +6694,19 @@ begin
 
   GetWidgetRelativePosition(MainWidget,GtkLeft,GtkTop);
 
+  {$ifdef gtk2}
+  gtk_widget_get_size_request(MainWidget, @GtkWidth, @GtkHeight);
+
+  if GtkWidth < 0 then
+    GtkWidth:=MainWidget^.Allocation.Width;
+  if GtkHeight < 0 then
+    GtkHeight:=MainWidget^.Allocation.Height;
+  {$else}
   GtkWidth:=MainWidget^.Allocation.Width;
-  if GtkWidth<0 then GtkWidth:=0;
   GtkHeight:=MainWidget^.Allocation.Height;
+  {$endif}
+
+  if GtkWidth<0 then GtkWidth:=0;
   if GtkHeight<0 then GtkHeight:=0;
 
   IsTopLevelWidget:=(LCLControl is TCustomForm) and (LCLControl.Parent=nil);
