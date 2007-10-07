@@ -138,20 +138,14 @@
       <!-- enumeration type Visibility: default -->
       <element name="TPosition">
         <short>Represents the Position and Size on Screen of an Form</short>
-        <descr>poDesigned - The Form appears like it is positioned and sized in the designer.
-poDefault - The window manager decides how the form appear
-oDefaultPosOnly - Designed size and position form windowmanager
-
-DefaultSizeOnly - Designed position and size from windowmanager
-p
-creencenter - Centers the form on screen
-po
-sctopcenter - Centers the form on desktop
-poM
-nFormCenter - Centers the Form on mainform
-poOw
-rFormcenter - Centers the Form on owner form</descr>
-        <seealso/>
+        <descr>poDesigned - The Form appears like it is positioned and sized in the Form Designer<br/>
+poDefault - The window manager decides how the form is to appear, in a default position and size<br/>
+poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager<br/>
+poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager<br/>
+poScreenCenter - Centers the form on screen<br/>
+poDeskTopCenter - Centers the form on desktop<br/>
+poMainFormCenter - Centers the Form on the Main Form<br/>
+poOwnerFormCenter - Centers the Form on Owner form</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPosition.poDesigned"><short/></element>
@@ -171,11 +165,10 @@ rFormcenter - Centers the Form on owner form</descr>
       <element name="TPosition.poOwnerFormCenter"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TWindowState">
-        <short>Represents the actual State of the Form</short>
-        <descr>wsNormal - The form appears normal
-wsMinimized - The form appears minimized
-sMaximized - The form appears maximized</descr>
-        <seealso/>
+        <short>Represents the actual State of the window on the screen</short>
+        <descr>wsNormal - The window appears normal<br/>
+wsMinimized - The window appears minimized<br/>
+wsMaximized - The window appears maximized</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TWindowState.wsNormal"><short/></element>
@@ -792,7 +785,7 @@ Read or write a flag to determine the increment, an integer with a default value
       <!-- procedure Visibility: public -->
       <element name="TScrollingWinControl.UpdateScrollbars">
         <short>Update the position of the scroll indicatores in the scroll bars</short>
-        <descr>Checks if the scroll bars are in process of being loaded or destroyed; if so, or if there is no valid handle, exit. If the indicators are valid, re-computes position etc</descr>
+        <descr>Checks if the scroll bars are in process of being loaded or destroyed; <br/>if so, or if there is no valid handle, exit. <br/>If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TScrollingWinControl.HasVisibleScrollbars">
@@ -1435,12 +1428,11 @@ Read or write a flag to determine the increment, an integer with a default value
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBorderIcon">
-        <short>Specifies wich icon appears on the top of the Form</short>
-        <descr>biSystemMenu - The form has a System menu (Maybe not all windowmanager supports this)
-biMinimize - The form has an minimize button
-iMaximize - The form has a maximize button
-
-Help - When you klick this button an Question Cursor appears and the help routines are called if you klick on an control</descr>
+        <short>Specifies which icon appears on the top border of the Form</short>
+        <descr>biSystemMenu - The form has a System menu (Maybe not all windowmanager supports this)<br/>
+biMinimize - The form has an minimize button<br/>
+iMaximize - The form has a maximize button<br/>
+Help - When you click this button a Question Cursor appears and the help routines are called if you click on an control</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -2526,21 +2518,25 @@ Help - When you klick this button an Question Cursor appears and the help routin
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderIcons">
-        <short>Specifies wich icons appear on th top of the form</short>
-        <descr>Use bordericons to get or set the icons that appear on the top of the form</descr>
-        <seealso/>
+        <short>Specifies which icons appear on the top of the form</short>
+        <descr>Use bordericons flags to get or set the icons that appear on the top border of the form. <br/>
+		By default we see down-triangle or other generic icon on the left, <br/>
+		which activates a pop-up system menu allowing closure or re-sizing of the form, <br/>
+		and on the right end we see the minimise and  re-size/maximise buttons, <br/>
+		but of course these can be customised by the developer.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderStyle">
-        <short>Specifies the appearence of the form</short>
-        <descr>Use borderstyle to get or set the appearance of the form</descr>
-        <seealso/>
+        <short>Specifies the appearance of the form's border</short>
+        <descr>Use borderstyle to get or set the appearance of the form's border. <br/>
+		By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.CancelControl">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The control associated with the cancel action</short>
+        <descr>Reads or writes a flag to determine the control associated with the Cancel action (exit from the control without changing anything). <br/>
+		This is usually a button with the caption 'Cancel', but might be an 'Exit' button or anything else the developer decides.. <br/>
+		This control is selected either by explicitly clicking with the mouse, or by hitting the 'Esc' key</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Caption">
@@ -2550,15 +2546,14 @@ Help - When you klick this button an Question Cursor appears and the help routin
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The colour of the form</short>
+        <descr>The form's colour; by default it is the same as the colour specified for button faces.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.DefaultControl">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The control associated with the default action for this form</short>
+        <descr>Reads or sets a flag determining the default control. <br/>
+		This is typically a button such as 'Accept' which is highlighted in some way on-screen to indicate that this is the default action, and is selected either by hitting 'Return' or 'Enter' or by selecting that control with the mouse</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Designer">
@@ -2568,21 +2563,29 @@ Help - When you klick this button an Question Cursor appears and the help routin
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormState">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines the state of the form</short>
+        <descr>Reads or writes a flag to determine the form's state: <br/>
+		is it being created, is this its first showing, is the border style being changed, etc. <br/>
+		FormState is a set, so could take zero or more of possible values.</descr>
+        <seealso>
+          <link id="Forms.TFormState">TFormState</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormStyle">
-        <short>Determinates the forms style</short>
-        <descr/>
-        <seealso/>
+        <short>Determinates the style of the form</short>
+        <descr>Reads or writes flag to determine the style of the form. <br/>
+		Default is 'normal', but could be MDIChild or MDINormal, <br/>
+		could stay on top or could be a 'Splash' form.<br/>
+		FormStyle is a set, could take zero or more of these values.</descr>
+        <seealso><link id="Controls.TFormStyle">TFormStyle</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.HelpFile">
         <short>Specifies the help file that is used by the form</short>
-        <descr/>
-        <seealso/>
+        <descr>Reads or writes a flag to determine identity of Help file, <br/>
+		and to determine whether its name is stored.<br/>
+		Property contains filename as a string.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Icon">
@@ -2598,15 +2601,15 @@ Help - When you klick this button an Question Cursor appears and the help routin
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Menu">
-        <short>Specifies an mainmenu for this form</short>
-        <descr>Drop an tmainmenu on the form and select it here to show it on the form</descr>
-        <seealso/>
+        <short>Specifies a MainMenu for this form</short>
+        <descr>Drop a TMainMenu on the form and select it here to show it on the form.<br/></descr>
+        <seealso><link id="Menus.TMainMenu">TMainMenu</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ModalResult">
         <short>Specifies the return value of an modal form</short>
-        <descr>If the form is modal, then this is the return value</descr>
-        <seealso/>
+        <descr>Reads or writes a flag to determine whether there is a modal resut. <br/>
+		If the form is modal, returns an integer value.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnActivate">
@@ -2676,15 +2679,16 @@ Help - When you klick this button an Question Cursor appears and the help routin
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.PixelsPerInch">
-        <short>Represents the scaling of the form in proportion to the screen resolution</short>
-        <descr/>
-        <seealso/>
+        <short>The scaling of the form in proportion to the screen resolution</short>
+        <descr>Reads or writes a flag to determine the scaling factor (a longinteger). <br/>
+		Not normally stored locally</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Position">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The position of the form on the screen</short>
+        <descr>Reads or writes a flag to determine screen position of form. <br/>
+		By default it is in the position that it was placed in the Form Designer</descr>
+        <seealso><link id="Forms.TPosition">TPosition</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.TextHeight">
@@ -2701,8 +2705,9 @@ Help - When you klick this button an Question Cursor appears and the help routin
       <!-- property Visibility: public -->
       <element name="TCustomForm.WindowState">
         <short>Represents how the form appears on the screen</short>
-        <descr/>
-        <seealso/>
+        <descr>Reads or write flag to determnie state of the window on screen. <br/>
+		Default is normal (ie not minimised or maximised)</descr>
+        <seealso><link id="Forms.TWindowState">TWindowState</link></seealso>
       </element>
       <!-- object Visibility: default -->
       <element name="TForm">
@@ -3394,7 +3399,7 @@ Help - When you klick this button an Question Cursor appears and the help routin
       <element name="TScreen.FCustomFormsZOrdered">
         <short/>
         <descr>
-          <short>Specifies wich style the form border has</short>
+          <short>Specifies which style the form border has</short>
         </descr>
         <seealso/>
       </element>
@@ -4931,7 +4936,8 @@ Includes useful function MessageBox, a simple dialog</descr>
       <!-- function Visibility: public -->
       <element name="TApplication.MessageBox">
         <short>Message Box</short>
-        <descr>Message Box: a useful function to display a message.<br/>The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]<br/>
+        <descr>Message Box: a useful function to display a message.<br/>
+		The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]<br/>
 
 It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</descr>
       </element>
@@ -4964,7 +4970,8 @@ Can be one of the following values:<br/><br/>
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Flags">
         <short>Flags</short>
-        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.<br/><br/>
+        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> 
+		MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.<br/><br/>
 The following button constants are available:<br/><br/>
  MB_OK<br/>
  MB_OKCANCEL<br/>
