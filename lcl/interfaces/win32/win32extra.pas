@@ -31,7 +31,7 @@ unit Win32Extra;
 interface
 
 uses 
-  InterfaceBase, Classes, Windows, GraphType, LCLType;
+  InterfaceBase, Classes, LCLType, Windows, GraphType, SysUtils;
 
 { Win32 API records not included in windows.pp }
 type
@@ -83,10 +83,77 @@ const
   GA_ROOT = 2;
   { The window's owner }
   GA_ROOTOWNER = 3;
-  { Application starting cursor }
-  IDC_APPSTARTING = 32650;
-  { Hand cursor }
-  IDC_HAND = 32649;
+  
+  { month picker, date picker, time picker, updown }
+  ICC_DATE_CLASSES       = $00000100;
+
+
+ // OEM Resource Ordinal Numbers
+  OBM_CLOSED         = System.MakeIntResource(32731);
+  OBM_TRTYPE         = System.MakeIntResource(32732);
+  OBM_LFARROWI       = System.MakeIntResource(32734);
+  OBM_RGARROWI       = System.MakeIntResource(32735);
+  OBM_DNARROWI       = System.MakeIntResource(32736);
+  OBM_UPARROWI       = System.MakeIntResource(32737);
+  OBM_COMBO          = System.MakeIntResource(32738);
+  OBM_MNARROW        = System.MakeIntResource(32739);
+  OBM_LFARROWD       = System.MakeIntResource(32740);
+  OBM_RGARROWD       = System.MakeIntResource(32741);
+  OBM_DNARROWD       = System.MakeIntResource(32742);
+  OBM_UPARROWD       = System.MakeIntResource(32743);
+  OBM_RESTORED       = System.MakeIntResource(32744);
+  OBM_ZOOMD          = System.MakeIntResource(32745);
+  OBM_REDUCED        = System.MakeIntResource(32746);
+  OBM_RESTORE        = System.MakeIntResource(32747);
+  OBM_ZOOM           = System.MakeIntResource(32748);
+  OBM_REDUCE         = System.MakeIntResource(32749);
+  OBM_LFARROW        = System.MakeIntResource(32750);
+  OBM_RGARROW        = System.MakeIntResource(32751);
+  OBM_DNARROW        = System.MakeIntResource(32752);
+  OBM_UPARROW        = System.MakeIntResource(32753);
+  OBM_CLOSE          = System.MakeIntResource(32754);
+  OBM_OLD_RESTORE    = System.MakeIntResource(32755);
+  OBM_OLD_ZOOM       = System.MakeIntResource(32756);
+  OBM_OLD_REDUCE     = System.MakeIntResource(32757);
+  OBM_BTNCORNERS     = System.MakeIntResource(32758);
+  OBM_CHECKBOXES     = System.MakeIntResource(32759);
+  OBM_CHECK          = System.MakeIntResource(32760);
+  OBM_BTSIZE         = System.MakeIntResource(32761);
+  OBM_OLD_LFARROW    = System.MakeIntResource(32762);
+  OBM_OLD_RGARROW    = System.MakeIntResource(32763);
+  OBM_OLD_DNARROW    = System.MakeIntResource(32764);
+  OBM_OLD_UPARROW    = System.MakeIntResource(32765);
+  OBM_SIZE           = System.MakeIntResource(32766);
+  OBM_OLD_CLOSE      = System.MakeIntResource(32767);
+
+  OCR_NORMAL         = System.MakeIntResource(32512);
+  OCR_IBEAM          = System.MakeIntResource(32513);
+  OCR_WAIT           = System.MakeIntResource(32514);
+  OCR_CROSS          = System.MakeIntResource(32515);
+  OCR_UP             = System.MakeIntResource(32516);
+  OCR_SIZE           = System.MakeIntResource(32640);
+  OCR_ICON           = System.MakeIntResource(32641);
+  OCR_SIZENWSE       = System.MakeIntResource(32642);
+  OCR_SIZENESW       = System.MakeIntResource(32643);
+  OCR_SIZEWE         = System.MakeIntResource(32644);
+  OCR_SIZENS         = System.MakeIntResource(32645);
+  OCR_SIZEALL        = System.MakeIntResource(32646);
+  OCR_ICOCUR         = System.MakeIntResource(32647);
+  OCR_NO             = System.MakeIntResource(32648);
+  OCR_HAND           = System.MakeIntResource(32649);
+  OCR_APPSTARTING    = System.MakeIntResource(32650);
+  OCR_HELP           = System.MakeIntResource(32651);
+
+  OIC_SAMPLE         = System.MakeIntResource(32512);
+  OIC_HAND           = System.MakeIntResource(32513);
+  OIC_QUES           = System.MakeIntResource(32514);
+  OIC_BANG           = System.MakeIntResource(32515);
+  OIC_NOTE           = System.MakeIntResource(32516);
+  OIC_WINLOGO        = System.MakeIntResource(32517);
+  OIC_WARNING        = OIC_BANG;
+  OIC_ERROR          = OIC_HAND;
+  OIC_INFORMATION    = OIC_NOTE;
+
   { Get the progress bar range }
   PBM_GETRANGE = 1031;
   { Smooth progrss bar }
@@ -319,7 +386,8 @@ function GetFileVersion(FileName: string): dword;
 
 implementation
 
-Uses SysUtils;
+uses
+  Win32Proc;
 
 {$PACKRECORDS NORMAL}
 
@@ -358,61 +426,370 @@ end;
 {$endif VER2_0}
 
 function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
-{var
+var
+  SCA: Byte absolute blendFunction.SourceConstantAlpha;
+
   R: TRect;
-  SrcImage, DstImage: TRawImage;
-  SrcDC: HDC;
-  bmp: HBITMAP;
-  X, Y: Integer;}
+  DC, TmpDC: HDC;
+  OldBmp, OldTmpBmp, SrcBmp, DstBmp, TmpBmp, AlphaBmp: HBITMAP;
+  StretchSrc: Boolean;
+  SrcSection, DstSection: TDIBSection;
+  Info: record
+    Header: TBitmapInfoHeader;
+    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+  end;
+
+  SrcBytesPtr, DstBytesPtr, TmpBytesPtr, AlphaBytesPtr: Pointer;
+  SrcLinePtr, DstLinePtr: PByte;
+  CleanupSrc, CleanupSrcPtr, CleanupDst, CleanupAlpha: Boolean;
+  SrcSize: Cardinal;
+  SrcPixelBytes, DstPixelBytes: Byte;
+  SrcRowStride, DstRowStride: Integer;
+  SrcLineOrder: TRawImageLineOrder;
+
+  X, Y: Integer;
+  SrcRGBA, TmpRGBA, DstRGBA: PRGBAQuad;
+  SrcAlpha: PByte;
+  NotAlpha: Byte;
 begin
-  if blendFunction.AlphaFormat = 0
+  if nXOriginSrc < 0 then Exit(False);
+  if nYOriginSrc < 0 then Exit(False);
+  if nWidthSrc < 0 then Exit(False);
+  if nHeightSrc < 0 then Exit(False);
+  if nWidthDest < 0 then Exit(False);
+  if nHeightDest < 0 then Exit(False);
+
+  if blendFunction.SourceConstantAlpha = 0
+  then Exit(True); // nothing to do
+
+  if (blendFunction.AlphaFormat = 0)
+  and (blendFunction.SourceConstantAlpha = 255)
   then begin
-    Result := True;
-    case blendFunction.SourceConstantAlpha of
-      0: begin
-        Exit;
+    // simple strechblt
+    Result := StretchBlt(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, SRCCOPY);
+    Exit;
+  end;
+
+  // get source info, atleast bitmap, if possible also section
+  if GetObjectType(hdcSrc) <> OBJ_MEMDC then Exit(False);
+  SrcBmp := GetCurrentObject(hdcSrc, OBJ_BITMAP);
+  if GetObject(SrcBmp, SizeOf(SrcSection), @SrcSection) = 0 then Exit(False);
+  if nXOriginSrc + nWidthSrc > SrcSection.dsBm.bmWidth then Exit(False);
+  if nYOriginSrc + nHeightSrc > SrcSection.dsBm.bmHeight then Exit(False);
+
+  if (blendFunction.AlphaFormat = AC_SRC_ALPHA) and (SrcSection.dsBm.bmBitsPixel <> 32) then Exit(False); // invalid
+
+  // get destination info, atleast bitmap, if possible also section
+  if GetObjectType(hdcDest) = OBJ_MEMDC
+  then DstBmp := GetCurrentObject(hdcDest, OBJ_BITMAP)
+  else DstBmp := 0;
+  if (DstBmp = 0) or (GetObject(DstBmp, SizeOf(DstSection), @DstSection) = 0)
+  then begin
+    // GetCurrentObject can only be used on memory devices,
+    // so fill in some values manually
+    DstSection.dsBm.bmWidth := GetDeviceCaps(hdcDest, HORZRES);
+    DstSection.dsBm.bmHeight := GetDeviceCaps(hdcDest, VERTRES);
+    DstSection.dsBm.bmBitsPixel := GetDeviceCaps(hdcDest, BITSPIXEL);
+    DstSection.dsBm.bmBits := nil;
+  end;
+
+  // docs doesn't require dest retangle inside dest.
+  // however if dest rect is outside the destination, we're done here
+  if nXOriginDest + nWidthDest < 0 then Exit(True);
+  if nYOriginDest + nHeightDest < 0 then Exit(True);
+  if nXOriginDest >= DstSection.dsBm.bmWidth then Exit(True);
+  if nYOriginDest >= DstSection.dsBm.bmHeight then Exit(True);
+  
+  // get lineorder of source so we use the right direction
+  SrcLineOrder := GetBitmapOrder(SrcSection.dsBm, SrcBmp);
+
+  // setup info shared by alpha, source and destination bytes
+  FillChar(Info, sizeof(Info), 0);
+  Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
+  Info.Header.biWidth := nWidthDest;
+  if SrcLineOrder = riloBottomToTop
+  then Info.Header.biHeight := nHeightDest
+  else Info.Header.biHeight := -nHeightDest;
+  Info.Header.biPlanes := 1;
+  Info.Header.biBitCount := 32;
+  Info.Header.biSizeImage := nWidthDest * nHeightDest * 4;
+  Info.Header.biCompression := BI_BITFIELDS;
+  // when 24bpp, CE only supports B8G8R8 encoding
+  Info.Colors[0] := $FF0000; {le-red}
+  Info.Colors[1] := $00FF00; {le-green}
+  Info.Colors[2] := $0000FF; {le-blue}
+
+  StretchSrc := (nWidthDest <> nWidthSrc) or (nHeightDest <> nHeightSrc);
+  if StretchSrc
+  then begin
+    // we need to strech the source
+
+    // create alphabmp
+    if blendFunction.AlphaFormat = AC_SRC_ALPHA
+    then begin
+      // create alpha source data
+      R := Classes.Rect(nXOriginSrc, nYOriginSrc, nXOriginSrc + nWidthSrc, nYOriginSrc + nHeightSrc);
+      if not GetBitmapBytes(SrcSection.dsBm, SrcBmp, R, rileDWordBoundary, SrcLineOrder, SrcBytesPtr, SrcSize) then Exit(False);
+
+      // set info to source size
+      Info.Header.biWidth := nWidthSrc;
+      if SrcLineOrder = riloBottomToTop
+      then Info.Header.biHeight := nHeightSrc
+      else Info.Header.biHeight := -nHeightSrc;
+      Info.Header.biSizeImage := nWidthSrc * nHeightSrc * 4;
+
+      // create temp bitmap to store orginal grayscale alpha
+      TmpBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, TmpBytesPtr, 0, 0);
+      if TmpBmp = 0 then Exit(False);
+      if TmpBytesPtr = nil
+      then begin
+        FreeMem(SrcBytesPtr);
+        DeleteObject(TmpBmp);
+        Exit(False);
       end;
-      255: begin
-        // simple strechblt
-        StretchBlt(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, SRCCOPY);
+
+      // create grayscale image from alpha
+      TmpRGBA := TmpBytesPtr;
+      SrcRGBA := SrcBytesPtr;
+      while SrcSize > 0 do
+      begin
+        TmpRGBA^.Blue := SrcRGBA^.Alpha;
+        TmpRGBA^.Green := SrcRGBA^.Alpha;
+        TmpRGBA^.Red := SrcRGBA^.Alpha;
+        TmpRGBA^.Alpha := 255;
+        Inc(SrcRGBA);
+        Inc(TmpRGBA);
+        Dec(SrcSize, 4);
       end;
+
+      // restore to destination size
+      Info.Header.biWidth := nWidthDest;
+      if SrcLineOrder = riloBottomToTop
+      then Info.Header.biHeight := nHeightDest
+      else Info.Header.biHeight := -nHeightDest;
+      Info.Header.biSizeImage := nWidthDest * nHeightDest * 4;
+
+      // create bitmap to store stretched grayscale alpha
+      AlphaBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, AlphaBytesPtr, 0, 0);
+      if (AlphaBmp = 0) or (AlphaBytesPtr = nil)
+      then begin
+        FreeMem(SrcBytesPtr);
+        DeleteObject(TmpBmp);
+        DeleteObject(AlphaBmp);
+        Exit(False);
+      end;
+
+      // stretch grayscale alpha bitmap
+      DC := CreateCompatibleDC(hdcSrc);
+      OldBmp := SelectObject(DC, AlphaBmp);
+      TmpDC := CreateCompatibleDC(hdcSrc);
+      OldTmpBmp := SelectObject(TmpDC, TmpBmp);
+      StretchBlt(DC, 0, 0, nWidthDest, nHeightDest, TmpDC, 0, 0, nWidthSrc, nHeightSrc, SRCCOPY);
+      SelectObject(DC, OldBmp);
+      DeleteDC(DC);
+      SelectObject(TmpDC, OldTmpBmp);
+      DeleteDC(TmpDC);
+      DeleteObject(TmpBmp);
+      FreeMem(SrcBytesPtr);
+
+      // as long as AlphaBmp exists, AlphaBytesPtr is valid.
+      CleanupAlpha := True;
+    end
+    else begin
+      CleanupAlpha := False;
+    end;
+
+    // create new srcbmp
+    SrcBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, SrcBytesPtr, 0, 0);
+    if (SrcBmp = 0) or (SrcBytesPtr = nil)
+    then begin
+      DeleteObject(AlphaBmp);
+      DeleteObject(SrcBmp);
+      Exit(False);
+    end;
+    SrcSize := Info.Header.biSizeImage;
+    CleanupSrc := True;
+    CleanupSrcPtr := False;
+    SrcPixelBytes := 4;
+    SrcRowStride := nWidthDest * SrcPixelBytes;
+
+    DC := CreateCompatibleDC(hdcSrc);
+    OldBmp := SelectObject(DC, SrcBmp);
+    StretchBlt(DC, 0, 0, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, SRCCOPY);
+    SelectObject(DC, OldBmp);
+    DeleteDC(DC);
+
+    // adjust source size
+    nWidthSrc := nWidthDest;
+    nHeightSrc := nHeightDest;
+    nXOriginSrc := 0;
+    nYOriginSrc := 0;
+  end
+  else begin
+    // only get source data
+    SrcPixelBytes := SrcSection.dsBm.bmBitsPixel shr 3;
+    if SrcSection.dsBm.bmBits <> nil
+    then begin
+      // source is a dibsection :)
+      SrcBytesPtr := SrcSection.dsBm.bmBits;
+      SrcRowStride := SrcSection.dsBm.bmWidthBytes;
+      CleanupSrc := False;
+      CleanupSrcPtr := False;
+    end
+    else begin
+      R := Classes.Rect(nXOriginSrc, nYOriginSrc, nXOriginSrc + nWidthSrc, nYOriginSrc + nHeightSrc);
+      if not GetBitmapBytes(SrcSection.dsBm, SrcBmp, R, rileDWordBoundary, SrcLineOrder, SrcBytesPtr, SrcSize) then Exit;
+      SrcRowStride := nWidthSrc * SrcPixelBytes;
+      CleanupSrc := False;
+      CleanupSrcPtr := True;
+      nXOriginSrc := 0;
+      nYOriginSrc := 0;
+    end;
+    AlphaBytesPtr := nil;
+    CleanupAlpha := False;
+  end;
+
+  // if a palette destination or destination isn't a section, create a temp DIB
+  if (DstSection.dsBm.bmBitsPixel < 24)
+  or (DstSection.dsBm.bmBits = nil)
+  or (DstSection.dsBmih.biCompression <> BI_RGB)
+  then begin
+    // create temp dib
+    DstBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstBytesPtr, 0, 0);
+    // copy destination
+    DC := CreateCompatibleDC(hdcDest);
+    OldBmp := SelectObject(DC, DstBmp);
+    BitBlt(DC, 0, 0, nWidthDest, nHeightDest, hdcDest, nXOriginDest, nYOriginDest, SRCCOPY);
+    SelectObject(DC, OldBmp);
+    DeleteDC(DC);
+    DstPixelBytes := 4;
+    DstRowStride := nWidthDest * DstPixelBytes;
+    CleanupDst := True;
+  end
+  else begin
+    DstBytesPtr := DstSection.dsBm.bmBits;
+    DstPixelBytes := DstSection.dsBm.bmBitsPixel shr 3;
+    DstRowStride := DstSection.dsBm.bmWidthBytes;
+    Inc(PByte(DstBytesPtr), nXOriginDest + nYOriginDest * DstRowStride);
+    CleanupDst := False;
+  end;
+
+  // blend image
+  SrcLinePtr := SrcBytesPtr;
+  Inc(SrcLinePtr, nXOriginSrc + nYOriginSrc * SrcRowStride);
+  DstLinePtr := DstBytesPtr;
+
+  if blendFunction.AlphaFormat = AC_SRC_ALPHA
+  then begin
+    if AlphaBytesPtr <> nil
+    then SrcAlpha := AlphaBytesPtr;
+
+    if SCA {blendFunction.SourceConstantAlpha} = 255
+    then begin
+      for y := 1 to nHeightDest do
+      begin
+        SrcRGBA := Pointer(SrcLinePtr);
+        if AlphaBytesPtr = nil
+        then SrcAlpha := @SrcRGBA^.Alpha;
+        DstRGBA := Pointer(DstLinePtr);
+        for x := 1 to nWidthDest do
+        begin
+          if SrcAlpha^ <> 0
+          then begin
+            NotAlpha := not SrcAlpha^;
+            DstRGBA^.Red   := SrcRgba^.Red   + (DstRGBA^.Red   * NotAlpha) div 255;
+            DstRGBA^.Green := SrcRgba^.Green + (DstRGBA^.Green * NotAlpha) div 255;
+            DstRGBA^.Blue  := SrcRgba^.Blue  + (DstRGBA^.Blue  * NotAlpha) div 255;
+            if DstPixelBytes = 4
+            then DstRGBA^.Alpha := SrcAlpha^ + (DstRGBA^.Alpha * NotAlpha) div 255;
+          end;
+          Inc(SrcRGBA);
+          Inc(SrcAlpha, 4);
+          Inc(PByte(DstRGBA), DstPixelBytes);
+        end;
+        Inc(SrcLinePtr, SrcRowStride);
+        Inc(DstLinePtr, DstRowStride);
+      end;
+    end
+    else begin
+      for y := 1 to nHeightDest do
+      begin
+        SrcRGBA := Pointer(SrcLinePtr);
+        if AlphaBytesPtr = nil
+        then SrcAlpha := @SrcRGBA^.Alpha;
+        DstRGBA := Pointer(DstLinePtr);
+        for x := 1 to nWidthDest do
+        begin
+          if SrcAlpha^ <> 0
+          then begin
+            NotAlpha := not SrcAlpha^;
+            DstRGBA^.Red   := (SrcRgba^.Red   * SCA + DstRGBA^.Red   * NotAlpha) div 255;
+            DstRGBA^.Green := (SrcRgba^.Green * SCA + DstRGBA^.Green * NotAlpha) div 255;
+            DstRGBA^.Blue  := (SrcRgba^.Blue  * SCA + DstRGBA^.Blue  * NotAlpha) div 255;
+            if DstPixelBytes = 4
+            then DstRGBA^.Alpha := (SrcAlpha^ * SCA + DstRGBA^.Alpha * NotAlpha) div 255;
+          end;
+          Inc(SrcRGBA);
+          Inc(SrcAlpha, 4);
+          Inc(PByte(DstRGBA), DstPixelBytes);
+        end;
+        Inc(SrcLinePtr, SrcRowStride);
+        Inc(DstLinePtr, DstRowStride);
+      end;
+    end;
+  end
+  else begin
+    // no source alpha
+    NotAlpha := not SCA;
+    for y := 1 to nHeightDest do
+    begin
+      SrcRGBA := Pointer(SrcLinePtr);
+      if AlphaBytesPtr = nil
+      then SrcAlpha := @SrcRGBA^.Alpha;
+      DstRGBA := Pointer(DstLinePtr);
+      for x := 1 to nWidthDest do
+      begin
+        DstRGBA^.Red :=   (SrcRGBA^.Red   * SCA + DstRGBA^.Red   * NotAlpha) div 255;
+        DstRGBA^.Green := (SrcRGBA^.Green * SCA + DstRGBA^.Green * NotAlpha) div 255;
+        DstRGBA^.Blue :=  (SrcRGBA^.Blue  * SCA + DstRGBA^.Blue  * NotAlpha) div 255;
+        if (DstPixelBytes = 4) and (SrcPixelBytes = 4)
+        then DstRGBA^.Alpha := (SrcAlpha^ * SCA + DstRGBA^.Alpha * NotAlpha) div 255;
+        Inc(PByte(SrcRGBA), SrcPixelBytes);
+        Inc(PByte(DstRGBA), DstPixelBytes);
+        Inc(SrcAlpha, 4);
+      end;
+      Inc(SrcLinePtr, SrcRowStride);
+      Inc(DstLinePtr, DstRowStride);
     end;
   end;
 
-  // TODO: implement someday for win95 and NT
-
-(*
-  // get source by replacing it with a dummy
-  R := Rect(nXOriginSrc, nYOriginSrc, nXOriginSrc + nWidthSrc, nYOriginSrc + nHeightSrc);
-  bmp := CreateBitmap(1,1,1,1,nil);
-  bmp := SelectObject(hdcSrc, bmp);
-  Result := Widgetset.RawImage_FromBitmap(SrcImage, bmp, 0, R);
-  // Restore source
-  bmp := SelectObject(hdcSrc, bmp);
-
-  // Get destination
-  bmp := SelectObject(hdcDest, bmp);
-  // check if destination is 32bit, copy to temp 32bit if not so
-  // ...
-  // create dstimage
-  Result := Widgetset.RawImage_FromBitmap(DstImage, bmp, 0, R);
-  // Restore destination
-  bmp := SelectObject(hdcDest, bmp);
-
-  // check if resized
-  if (nWidthDest <> nWidthSrc) or (nHeightDest <> nHeightSrc)
+  // Replace destination if needed and do cleanup
+  if CleanupDst
   then begin
-    // separate image and alpha, scale the resulting image and recreate Src Rawimage
-
+    DC := CreateCompatibleDC(hdcDest);
+    OldBmp := SelectObject(DC, DstBmp);
+    BitBlt(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, DC, 0, 0, SRCCOPY);
+    SelectObject(DC, OldBmp);
+    DeleteDC(DC);
+    DeleteObject(DstBmp);
   end;
-  
-  // loop through pixels
-  
-  // create and bitblt destination bitmap
-  
-  // cleanup
-  
-*)
+  if CleanupSrc
+  then DeleteObject(SrcBmp);
+  if CleanupSrcPtr
+  then FreeMem(SrcBytesPtr);
+  if CleanupAlpha
+  then DeleteObject(AlphaBmp);
+end;
+
+// win98 only supports dibsections, so if not a dib section,
+// we draw ourselves
+var
+  AlphaBlend98: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+
+function _AlphaBlend98(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+begin
+  // we can check the bitmaptypes here and call AlphaBlend98, but for now, just call own implementation
+  Result := _AlphaBlend(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, blendFunction);
 end;
 
 
@@ -427,16 +804,29 @@ var
 procedure Initialize;
 var
   p: Pointer;
-begin                
-  AlphaBlend := @_AlphaBlend;
+begin
   GetComboBoxInfo := nil;
+
+  AlphaBlend := @_AlphaBlend;
 
   msimg32handle := LoadLibrary(msimg32lib);
   if msimg32handle <> 0
   then begin 
     p := GetProcAddress(msimg32handle, 'AlphaBlend');
     if p <> nil
-    then Pointer(AlphaBlend) := p;
+    then begin
+      // Detect win98 since aplhablend doesn't support all bitmap types
+      if WindowsVersion = wv98
+      then begin
+        // windows 98
+        Pointer(AlphaBlend98) := p;
+        AlphaBlend := @_AlphaBlend98;
+      end
+      else begin
+        // other
+        Pointer(AlphaBlend) := p;
+      end;
+    end;
   end;
   
   user32handle := LoadLibrary(user32lib);

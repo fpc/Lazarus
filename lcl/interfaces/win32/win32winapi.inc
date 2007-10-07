@@ -3271,13 +3271,10 @@ function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Intege
     ByteCount: PtrUInt;
     Header: Windows.TBitmapInfoHeader;
   begin
-    Result := 0;
     // todo, process only requested rectangle
-    if not GetBitmapBytes(AWinBmp, ABitmap, Rect(0, 0, AWinBmp.bmWidth, AWinBmp.bmHeight), rileDWordBoundary, Data, ByteCount)
-    then begin
-      Exit;
-    end;
-    
+    if not GetBitmapBytes(AWinBmp, ABitmap, Rect(0, 0, AWinBmp.bmWidth, AWinBmp.bmHeight), rileDWordBoundary, riloTopToBottom, Data, ByteCount)
+    then Exit(0);
+
     Pixel := Data;
     ByteCount := ByteCount shr 2;
     while ByteCount > 0 do

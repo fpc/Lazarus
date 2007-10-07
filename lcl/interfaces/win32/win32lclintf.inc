@@ -377,25 +377,55 @@ end;
 
 function TWin32WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap): HBitmap;
 var
-  AIconHandle: HIcon;
-  AIconInfo: TIconInfo;
+  IconHandle: HIcon;
+  IconInfo: TIconInfo;
+  Bitmap: Windows.TBitmap;
+  x, y: Integer;
+  LinePtr: PByte;
+  Pixel: PRGBAQuad;
 begin
-  Result := 0;
   case StockID of
-    idDialogWarning: AIconHandle := LoadIcon(0, IDI_EXCLAMATION);
-    idDialogError  : AIconHandle := LoadIcon(0, IDI_HAND);
-    idDialogInfo   : AIconHandle := LoadIcon(0, IDI_ASTERISK);
-    idDialogConfirm: AIconHandle := LoadIcon(0, IDI_QUESTION);
+    idDialogWarning: IconHandle := LoadImage(0, OIC_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogError  : IconHandle := LoadImage(0, OIC_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogInfo   : IconHandle := LoadImage(0, OIC_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogConfirm: IconHandle := LoadImage(0, OIC_QUES, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
   else
-    AIconHandle := 0;
+    IconHandle := 0;
   end;
-  if AIconHandle <> 0 then
+  if IconHandle = 0 then Exit(0);
+  if not GetIconInfo(IconHandle, @IconInfo) then Exit(0);
+
+  Result := IconInfo.hbmColor;
+  Mask := IconInfo.hbmMask;
+  
+  if WindowsVersion >= wvXP then Exit; // XP and up return alpha bitmaps
+  if GetObject(Result, SizeOf(Bitmap), @Bitmap) = 0 then Exit;
+  if Bitmap.bmBitsPixel <> 32 then Exit; // we only need to "fix" 32bpp images
+
+  Result := CopyImage(IconInfo.hbmColor, IMAGE_BITMAP, 0, 0, LR_COPYDELETEORG or LR_CREATEDIBSECTION);
+  if WindowsVersion in [wv95, wv98, wvME]
+  then begin
+    // 95 or ME aren't tested, so if icons appear invisible remove them
+    // only copying is enough
+    Exit;
+  end;
+  
+  // Others remain ( wvUnknown, wvNT4, wv2000 )
+  
+  if GetObject(Result, SizeOf(Bitmap), @Bitmap) = 0 then Exit; // ???
+  if Bitmap.bmBits = nil then Exit; // ?? we requested a dibsection, but didn't get one ??
+
+  LinePtr := Bitmap.bmBits;
+  
+  for y := Bitmap.bmHeight downto 1 do
   begin
-    if GetIconInfo(AIconHandle, @AIconInfo) then
+    Pixel := Pointer(LinePtr);
+    for x := Bitmap.bmWidth downto 1 do
     begin
-      Result := AIconInfo.hbmColor;
-      Mask := AIconInfo.hbmMask;
-    end
+      Pixel^.Alpha := 255;
+      Inc(Pixel);
+    end;
+    Inc(LinePtr, Bitmap.bmWidthBytes);
   end;
 end;
 
@@ -560,9 +590,9 @@ begin
 
   ARawImage.Description.Width := R.Right - R.Left;
   ARawImage.Description.Height := R.Bottom - R.Top;
-
+  
   // copy bitmap
-  Result := GetBitmapBytes(WinBmp, ABitmap, R, ARawImage.Description.LineEnd, ARawImage.Data, ARawImage.DataSize);
+  Result := GetBitmapBytes(WinBmp, ABitmap, R, ARawImage.Description.LineEnd, ARawImage.Description.LineOrder, ARawImage.Data, ARawImage.DataSize);
 
   // check mask
   if AMask <> 0 then
@@ -570,7 +600,7 @@ begin
     if Windows.GetObject(AMask, SizeOf(WinBmp), @WinBmp) = 0
     then Exit(False);
 
-    Result := GetBitmapBytes(WinBmp, AMask, R, ARawImage.Description.MaskLineEnd, ARawImage.Mask, ARawImage.MaskSize);
+    Result := GetBitmapBytes(WinBmp, AMask, R, ARawImage.Description.MaskLineEnd, ARawImage.Description.LineOrder, ARawImage.Mask, ARawImage.MaskSize);
   end
   else begin
     ARawImage.Description.MaskBitsPerPixel := 0;

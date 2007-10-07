@@ -33,8 +33,8 @@ interface
 uses
   windows, ctypes, sysutils, win32Extra;
 
-procedure DbgDumpBitmap(ABitmap: HBITMAP; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
-procedure DbgDumpDC(ADC: HDC; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
+procedure DbgDumpBitmap(ABitmap: HBITMAP; ATitle: String = ''; AUseBitBlt: Boolean = False; AWidth: Integer = -1; AHeight: Integer = -1);
+procedure DbgDumpDC(ADC: HDC; ATitle: String = ''; AUseBitBlt: Boolean = False; AWidth: Integer = -1; AHeight: Integer = -1);
 
 implementation
 
@@ -160,7 +160,7 @@ begin
   ShowWindow(window, SW_SHOWNOACTIVATE); 
 end;
 
-procedure InternalDumpBitmap(ABitmap: HBITMAP; ADesc, ATitle: String; AWidth: Integer; AHeight: Integer);
+procedure InternalDumpBitmap(ABitmap: HBITMAP; ADesc, ATitle: String; AWidth: Integer; AHeight: Integer; AUseBitBlt: Boolean);
 var
   Info: PDbgDumpInfo;
   h,w,d: Integer;
@@ -188,25 +188,25 @@ begin
   Info^.Height := AHeight;
   Info^.OrgWidth := w;
   Info^.OrgHeight := h;
-  Info^.UseAlphaBlend := d > 24;
+  Info^.UseAlphaBlend := (d > 24) and not AUseBitBlt;
 
   ATitle := ATitle + Format(' (%s W:%d H:%d D:%d)', [ADesc, w, h, d]);
   DbgCreateWindow(Info, ATitle);
 end;
 
-procedure DbgDumpBitmap(ABitmap: HBITMAP; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
+procedure DbgDumpBitmap(ABitmap: HBITMAP; ATitle: String; AUseBitBlt: Boolean; AWidth, AHeight: Integer);
 begin
-  InternalDumpBitmap(ABitmap, Format('Bitmap:$%x', [ABitmap]), ATitle, AWidth, AHeight);
+  InternalDumpBitmap(ABitmap, Format('Bitmap:$%x', [ABitmap]), ATitle, AWidth, AHeight, AUseBitBlt);
 end;
 
-procedure DbgDumpDC(ADC: HDC; ATitle: String; AWidth, AHeight: Integer);
+procedure DbgDumpDC(ADC: HDC; ATitle: String; AUseBitBlt: Boolean; AWidth, AHeight: Integer);
 var
   bmp: HBITMAP;
 begin
   bmp := CreateBitmap(1,1,1,1,nil);
   // select dummy to get selected bitmap
   bmp := SelectObject(ADC, bmp);
-  InternalDumpBitmap(bmp, Format('DC:$%x', [ADC]), ATitle, AWidth, AHeight);
+  InternalDumpBitmap(bmp, Format('DC:$%x', [ADC]), ATitle, AWidth, AHeight, AUseBitBlt);
   // restore bitmap and delete dummy
   DeleteObject(SelectObject(ADC, bmp));
 end;

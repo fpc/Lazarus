@@ -117,9 +117,11 @@ procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
 
-function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP):TRawImageLineOrder;
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
 
 procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
+function GetLastErrorText(AErrorCode: Cardinal): String;
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -133,12 +135,30 @@ type
     AppWindow: HWND;
     StayOnTopList: TList;
   end;
+  
+  TWindowsVersion = (
+    wvUnknown,
+    wv95,
+    wvNT4,
+    wv98,
+    wvMe,
+    wv2000,
+    wvXP,
+    wvServer2003,
+    //wvServer2003R2,  // has the same major/minor as wvServer2003
+    wvVista,
+    //wvServer2008,    // has the same major/minor as wvVista
+    wvLater
+  );
 
 var
   DefaultWindowInfo: TWindowInfo;
   WindowInfoAtom: ATOM;
   ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
   UnicodeEnabledOS: Boolean = False;
+
+  WindowsVersion: TWindowsVersion = wvUnknown;
+
 
 implementation
 
@@ -1324,7 +1344,95 @@ begin
   ADesc.MaskBitOrder := riboReversedBits;
 end;
 
-function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): TRawImageLineOrder;
+  procedure DbgLog(const AFunc: String);
+  begin
+    DebugLn('GetBitmapOrder - GetDIBits ', AFunc, ' failed: ', GetLastErrorText(Windows.GetLastError));
+  end;
+
+var
+  SrcPixel: PCardinal absolute AWinBmp.bmBits;
+  OrgPixel, TstPixel: Cardinal;
+  Scanline: Pointer;
+  DC: HDC;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+  end;
+  
+  FullScanLine: Boolean; // win9x requires a full scanline to be retrieved
+                         // others won't fail when one pixel is requested
+begin
+  if AWinBmp.bmBits = nil
+  then begin
+    // no DIBsection so always bottom-up
+    Exit(riloBottomToTop);
+  end;
+
+  // try to figure out the orientation of the given bitmap.
+  // Unfortunately MS doesn't provide a direct function for this.
+  // So modify the first pixel to see if it changes. This pixel is always part
+  // of the first scanline of the given bitmap.
+  // When we request the data through GetDIBits as bottom-up, windows adjusts
+  // the data when it is a top-down. So if the pixel doesn't change the bitmap
+  // was internally a top-down image.
+  
+  FullScanLine := Win32Platform = VER_PLATFORM_WIN32_WINDOWS;
+  if FullScanLine
+  then ScanLine := GetMem(AWinBmp.bmWidthBytes);
+
+  FillChar(Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
+  Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
+  DC := Windows.GetDC(0);
+  if Windows.GetDIBits(DC, ABitmap, 0, 1, nil, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+  then begin
+    DbgLog('Getinfo');
+    // failed ???
+    Exit(riloBottomToTop);
+  end;
+
+  // Get only 1 pixel (or full scanline for win9x)
+  OrgPixel := 0;
+  if FullScanLine
+  then begin
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, ScanLine, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('OrgPixel')
+    else OrgPixel := PCardinal(ScanLine)^;
+  end
+  else begin
+    Info.Header.biWidth := 1;
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, @OrgPixel, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('OrgPixel');
+  end;
+
+  // modify pixel
+  SrcPixel^ := not SrcPixel^;
+  
+  // get test
+  TstPixel := 0;
+  if FullScanLine
+  then begin
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, ScanLine, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('TstPixel')
+    else TstPixel := PCardinal(ScanLine)^;
+  end
+  else begin
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, @TstPixel, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('TstPixel');
+  end;
+
+  if OrgPixel = TstPixel
+  then Result := riloTopToBottom
+  else Result := riloBottomToTop;
+
+  // restore pixel & cleanup
+  SrcPixel^ := not SrcPixel^;
+  Windows.ReleaseDC(0, DC);
+  if FullScanLine
+  then FreeMem(Scanline);
+end;
+
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
 var
   DC: HDC;
   Info: record
@@ -1336,14 +1444,17 @@ var
   SrcData: PByte;
   SrcSize: PtrUInt;
   SrcLineBytes: Cardinal;
+  SrcLineOrder: TRawImageLineOrder;
   StartScan: Integer;
 begin
+  SrcLineOrder := GetBitmapOrder(AWinBmp, ABitmap);
+
   if AWinBmp.bmBits <> nil
   then begin
     // this is bitmapsection data :) we can just copy the bits
 
     with AWinBmp do
-      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, SrcLineOrder, ALineOrder, ALineEnd, AData, ADataSize);
     Exit;
   end;
 
@@ -1391,7 +1502,7 @@ begin
   R.Bottom := H;
 
   with Info.Header do
-    Result := Result and CopyImageData(biWidth, H, SrcLineBytes, biBitCount, SrcData, R, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+    Result := Result and CopyImageData(biWidth, H, SrcLineBytes, biBitCount, SrcData, R, riloTopToBottom, ALineOrder, ALineEnd, AData, ADataSize);
 
   FreeMem(SrcData);
 end;
@@ -1430,6 +1541,26 @@ begin
   DeleteObject(Brush);
 end;
 
+function GetLastErrorText(AErrorCode: Cardinal): String;
+var
+  r: cardinal;
+  tmp: PChar;
+begin
+  tmp := nil;
+  r := Windows.FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER or FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
+    nil, AErrorCode, LANG_NEUTRAL, @tmp, 0, nil);
+
+  if r = 0 then Exit('');
+
+  Result := tmp;
+  SetLength(Result, Length(Result)-2);
+
+  if tmp <> nil
+  then LocalFree(HLOCAL(tmp));
+end;
+
+
 procedure DoInitialization;
 begin
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
@@ -1440,6 +1571,37 @@ begin
  {$ifdef WindowsUnicodeSupport}
   UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
  {$endif}
+ 
+ case Win32MajorVersion of
+   0..3:;
+   4: begin
+     if Win32Platform = VER_PLATFORM_WIN32_NT
+     then WindowsVersion := wvNT4
+     else
+       case Win32MinorVersion of
+         10: WindowsVersion := wv98;
+         90: WindowsVersion := wvME;
+       else
+         WindowsVersion :=wv95;
+       end;
+   end;
+   5: begin
+     case Win32MinorVersion of
+       0: WindowsVersion := wv2000;
+       1: WindowsVersion := wvXP;
+     else
+       // XP64 has also a 5.2 version
+       // we could detect that based on arch and versioninfo.Producttype
+       WindowsVersion := wvServer2003;
+     end;
+   end;
+   6: begin
+     WindowsVersion := wvVista;
+   end;
+ else
+   WindowsVersion := wvLater;
+ end;
+ 
 end;
 
 {$IFDEF ASSERT_IS_ON}

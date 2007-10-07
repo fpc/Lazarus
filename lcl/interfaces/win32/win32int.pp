@@ -47,7 +47,9 @@ uses
   Themes, Win32Debug, Maps;
 
 const
-// standard windows cursors
+  // standard windows cursors
+  // they are already defined in the rtl, however the
+  // const = const defines after this fail with an illegal expression
   IDC_ARROW     = System.MakeIntResource(32512);
   IDC_IBEAM     = System.MakeIntResource(32513);
   IDC_WAIT      = System.MakeIntResource(32514);
@@ -92,10 +94,10 @@ const
      IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE, IDC_IBEAM, IDC_CROSS,
      IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
-  { month picker, date picker, time picker, updown }
-  ICC_DATE_CLASSES       = $00000100;
 
-// standard windows icons (WinUser.h)
+  // standard windows icons (WinUser.h)
+  // they are already defined in the rtl, however the
+  // const = const defines after this fail with an illegal expression
   IDI_APPLICATION = System.MakeIntResource(32512);
   IDI_HAND        = System.MakeIntResource(32513);
   IDI_QUESTION    = System.MakeIntResource(32514);
