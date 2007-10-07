@@ -1431,8 +1431,8 @@ Read or write a flag to determine the increment, an integer with a default value
         <short>Specifies which icon appears on the top border of the Form</short>
         <descr>biSystemMenu - The form has a System menu (Maybe not all windowmanager supports this)<br/>
 biMinimize - The form has an minimize button<br/>
-iMaximize - The form has a maximize button<br/>
-Help - When you click this button a Question Cursor appears and the help routines are called if you click on an control</descr>
+biMaximize - The form has a maximize button<br/>
+biHelp - When you click this button a Question Cursor appears and the help routines are called if you click on an control</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -2705,8 +2705,8 @@ Help - When you click this button a Question Cursor appears and the help routine
       <!-- property Visibility: public -->
       <element name="TCustomForm.WindowState">
         <short>Represents how the form appears on the screen</short>
-        <descr>Reads or write flag to determnie state of the window on screen. <br/>
-		Default is normal (ie not minimised or maximised)</descr>
+        <descr>Reads or write flag to determine state of the window on screen. <br/>
+		Default is 'normal' (ie not minimised or maximised)</descr>
         <seealso><link id="Forms.TWindowState">TWindowState</link></seealso>
       </element>
       <!-- object Visibility: default -->
