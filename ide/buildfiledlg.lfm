@@ -6,6 +6,7 @@ object BuildFileDialog: TBuildFileDialog
   HorzScrollBar.Page = 413
   VertScrollBar.Page = 343
   ActiveControl = AlwaysCompileFirstCheckbox
+  BorderIcons = [biSystemMenu]
   Caption = 'BuildFileDialog'
   ClientHeight = 344
   ClientWidth = 414
@@ -72,8 +73,8 @@ object BuildFileDialog: TBuildFileDialog
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Build Command'
-        ClientHeight = 52
-        ClientWidth = 390
+        ClientHeight = 70
+        ClientWidth = 394
         ParentCtl3D = False
         TabOrder = 0
         object BuildCommandMemo: TMemo
@@ -118,8 +119,8 @@ object BuildFileDialog: TBuildFileDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working directory (Leave empty for file path)'
-        ClientHeight = 35
-        ClientWidth = 390
+        ClientHeight = 53
+        ClientWidth = 394
         ParentCtl3D = False
         TabOrder = 3
         object BuildWorkDirCombobox: TComboBox
