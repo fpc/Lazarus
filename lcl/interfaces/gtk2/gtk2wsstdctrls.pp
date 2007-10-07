@@ -897,6 +897,12 @@ begin
   LCLSendChangedMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
+procedure GtkSelectedCB(AWidget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
+begin
+  if WidgetInfo^.UserData <> nil then Exit;
+  LCLSendSelectionChangedMsg(TControl(WidgetInfo^.LCLObject));
+end;
+
 class procedure TGtk2WSCustomComboBox.SetCallbacks(
   const AWinControl: TWinControl; const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
@@ -905,6 +911,7 @@ var
   AEntry: PGtkObject;
   AButton: PGtkObject;
   APrivate: PGtkComboBoxPrivate;
+  AMenu: PGtkObject;
   BtnPressID: guint;
   HandlerID: guint;
   ComboWidget: PGtkComboBox;
@@ -969,10 +976,20 @@ begin
     // Anything?
   end;
 
-  if APrivate^.popup_widget<>nil then begin
-    g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
-    g_signal_connect_after(APrivate^.popup_widget, 'hide', TGCallback(@GtkPopupHideCB), AWidgetInfo);
+  AMenu := nil;
+  if (APrivate^.popup_widget <> nil)
+  and (GTK_IS_MENU(APrivate^.popup_widget)) then
+    AMenu := GTK_OBJECT(APrivate^.popup_widget)
+  else if (APrivate^.popup_window <> nil)
+  and (GTK_IS_MENU(APrivate^.popup_window)) then
+    AMenu := GTK_OBJECT(APrivate^.popup_window);
+
+  if Assigned(AMenu) then begin
+    g_signal_connect(AMenu, 'show', G_CALLBACK(@GtkPopupShowCB), AWidgetInfo);
+    g_signal_connect_after(AMenu, 'hide', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
+    g_signal_connect(AMenu, 'selection-done', G_CALLBACK(@GtkSelectedCB), AWidgetInfo);
   end;
+
   //g_signal_connect(ComboWidget, 'popup-shown', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
 end;
