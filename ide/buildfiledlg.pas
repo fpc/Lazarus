@@ -776,7 +776,9 @@ begin
     AutoSize:=true;
     Anchors:=[akTop,akRight];
     Top:=0;
-    AnchorParallel(akRight,6,Self);
+    BorderSpacing.Around := 6;
+    AnchorParallel(akTop,0,Self);
+    AnchorParallel(akRight,0,Self);
     Parent:=Self;
   end;
   
@@ -785,7 +787,8 @@ begin
     Name:='ListBox';
     OnClick:=@ListBoxClick;
     Align:=alLeft;
-    AnchorToNeighbour(akRight,6,AddButton);
+    BorderSpacing.Around := 6;
+    AnchorToNeighbour(akRight, 0, AddButton);
     Parent:=Self;
   end;
 end;
