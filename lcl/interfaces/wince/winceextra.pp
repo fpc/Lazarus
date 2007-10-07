@@ -383,7 +383,6 @@ var
   DC, TmpDC: HDC;
   OldBmp, OldTmpBmp, SrcBmp, DstBmp, TmpBmp, AlphaBmp: HBITMAP;
   StretchSrc: Boolean;
-  SrcWinBmp, DstWinBmp: TBitmap;
   SrcSection, DstSection: TDIBSection;
   Info: record
     Header: TBitmapInfoHeader;
@@ -419,31 +418,31 @@ begin
     Exit;
   end;
 
-  // get source info
+  // get source info, atleast bitmap, section if available
   SrcBmp := GetCurrentObject(hdcSrc, OBJ_BITMAP);
-  if GetObject(SrcBmp, SizeOf(SrcWinBmp), @SrcWinBmp) = 0 then Exit(False);
-  if nXOriginSrc + nWidthSrc > SrcWinBmp.bmWidth then Exit(False);
-  if nYOriginSrc + nHeightSrc > SrcWinBmp.bmHeight then Exit(False);
+  if GetObject(SrcBmp, SizeOf(SrcSection), @SrcSection) = 0 then Exit(False);
+  if nXOriginSrc + nWidthSrc > SrcSection.dsBm.bmWidth then Exit(False);
+  if nYOriginSrc + nHeightSrc > SrcSection.dsBm.bmHeight then Exit(False);
   
-  if (blendFunction.AlphaFormat = AC_SRC_ALPHA) and (SrcWinBmp.bmBitsPixel <> 32) then Exit; // invalid
+  if (blendFunction.AlphaFormat = AC_SRC_ALPHA) and (SrcSection.dsBm.bmBitsPixel <> 32) then Exit(False); // invalid
 
-  // get destination info
+  // get destination info, atleast bitmap, section if available
   DstBmp := GetCurrentObject(hdcDest, OBJ_BITMAP);
-  if (DstBmp = 0) or (GetObject(DstBmp, SizeOf(DstWinBmp), @DstWinBmp) = 0)
+  if (DstBmp = 0) or (GetObject(DstBmp, SizeOf(DstSection), @DstSection) = 0)
   then begin
     // GetCurrentObject can only be used on memory devices,
     // so fill in some values manually
-    DstWinBmp.bmWidth := GetDeviceCaps(hdcDest, HORZRES);
-    DstWinBmp.bmHeight := GetDeviceCaps(hdcDest, VERTRES);
-    DstWinBmp.bmBitsPixel := GetDeviceCaps(hdcDest, BITSPIXEL);
+    DstSection.dsBm.bmWidth := GetDeviceCaps(hdcDest, HORZRES);
+    DstSection.dsBm.bmHeight := GetDeviceCaps(hdcDest, VERTRES);
+    DstSection.dsBm.bmBitsPixel := GetDeviceCaps(hdcDest, BITSPIXEL);
   end;
 
   // docs doesn't require dest retangle inside dest.
   // however if dest rect is outside the destination, we're done here
   if nXOriginDest + nWidthDest < 0 then Exit(True);
   if nYOriginDest + nHeightDest < 0 then Exit(True);
-  if nXOriginDest >= DstWinBmp.bmWidth then Exit(True);
-  if nYOriginDest >= DstWinBmp.bmHeight then Exit(True);
+  if nXOriginDest >= DstSection.dsBm.bmWidth then Exit(True);
+  if nYOriginDest >= DstSection.dsBm.bmHeight then Exit(True);
   
   // setup info shared by alpha, source and destination bytes
   FillChar(Info, sizeof(Info), 0);
@@ -469,7 +468,7 @@ begin
     then begin
       // create alpha source data
       R := Rect(nXOriginSrc, nYOriginSrc, nXOriginSrc + nWidthSrc, nYOriginSrc + nHeightSrc);
-      if not GetBitmapBytes(SrcBmp, R, rileDWordBoundary, SrcBytesPtr, SrcSize) then Exit;
+      if not GetBitmapBytes(SrcBmp, R, rileDWordBoundary, SrcBytesPtr, SrcSize) then Exit(False);
 
       // set info to source size
       Info.Header.biWidth := nWidthSrc;
@@ -563,12 +562,12 @@ begin
   end
   else begin
     // only get source data
-    SrcPixelBytes := SrcWinBmp.bmBitsPixel shr 3;
-    if GetObject(SrcBmp, SizeOf(SrcSection), @SrcSection) <> 0
+    SrcPixelBytes := SrcSection.dsBm.bmBitsPixel shr 3;
+    if SrcSection.dsBm.bmBits <> nil
     then begin
       // source is a dibsection :)
       SrcBytesPtr := SrcSection.dsBm.bmBits;
-      SrcRowStride := SrcWinBmp.bmWidth * SrcPixelBytes;
+      SrcRowStride := SrcSection.dsBm.bmWidthBytes;
       CleanupSrc := False;
       CleanupSrcPtr := False;
     end
@@ -586,8 +585,8 @@ begin
   end;
 
   // if a palette destination or destination isn't a section, create a temp DIB
-  if (DstWinBmp.bmBitsPixel < 24)
-  or (GetObject(DstBmp, SizeOf(DstSection), @DstSection) = 0)
+  if (DstSection.dsBm.bmBitsPixel < 24)
+  or (DstSection.dsBm.bmBits = nil)
   or (DstSection.dsBmih.biCompression <> BI_RGB)
   then begin
     // create temp dib
@@ -604,8 +603,8 @@ begin
   end
   else begin
     DstBytesPtr := DstSection.dsBm.bmBits;
-    DstPixelBytes := DstWinBmp.bmBitsPixel shr 3;
-    DstRowStride := DstWinBmp.bmWidth * DstPixelBytes;
+    DstPixelBytes := DstSection.dsBm.bmBitsPixel shr 3;
+    DstRowStride := DstSection.dsBm.bmWidthBytes;
     Inc(PByte(DstBytesPtr), nXOriginDest + nYOriginDest * DstRowStride);
     CleanupDst := False;
   end;
