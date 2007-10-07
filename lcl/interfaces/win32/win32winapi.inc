@@ -3264,37 +3264,61 @@ End;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 
-  function CreatePremultipliedBitmap(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): HBITMAP;
+  function CreatePremultipliedBitmap(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; out AAlphaBmp: HBITMAP): Boolean;
   var
     Data: Pointer;
     Pixel: PRGBAQuad;
     ByteCount: PtrUInt;
     Header: Windows.TBitmapInfoHeader;
+    HasAlpha0, HasAlphaN, HasAlpha255: Boolean;
   begin
     // todo, process only requested rectangle
+    Result := False;
     if not GetBitmapBytes(AWinBmp, ABitmap, Rect(0, 0, AWinBmp.bmWidth, AWinBmp.bmHeight), rileDWordBoundary, riloTopToBottom, Data, ByteCount)
-    then Exit(0);
+    then Exit;
 
+    HasAlpha0 := False;
+    HasAlphaN := False;
+    HasAlpha255 := False;
     Pixel := Data;
     ByteCount := ByteCount shr 2;
     while ByteCount > 0 do
     begin
-      Pixel^.Red := (Pixel^.Red * Pixel^.Alpha) shr 8;
-      Pixel^.Green := (Pixel^.Green * Pixel^.Alpha) shr 8;
-      Pixel^.Blue := (Pixel^.Blue * Pixel^.Alpha) shr 8;
+      case Pixel^.Alpha of
+        0: begin
+          Pixel^.Red   := 0;
+          Pixel^.Green := 0;
+          Pixel^.Blue  := 0;
+          HasAlpha0 := True;
+        end;
+        255: begin
+          HasAlpha255 := True;
+        end;
+      else
+        Pixel^.Red   := (Pixel^.Red   * Pixel^.Alpha) div 255;
+        Pixel^.Green := (Pixel^.Green * Pixel^.Alpha) div 255;
+        Pixel^.Blue  := (Pixel^.Blue  * Pixel^.Alpha) div 255;
+        HasAlphaN := True;
+      end;
       Inc(Pixel);
       Dec(ByteCount);
     end;
 
-    FillChar(Header, SizeOf(Header), 0);
-    Header.biSize := SizeOf(Header);
-    Header.biWidth := AWinBmp.bmWidth;
-    Header.biHeight := -AWinBmp.bmHeight;
-    Header.biPlanes := 1;
-    Header.biBitCount := 32;
-    Header.biCompression := BI_RGB;
+    // only create bitmap when not opaque or not fully transparent
+    // (all zero alpha is unlikly for alpha bitmap, so it is probably a bitmap without alpha channel)
+    Result := HasAlphaN or (HasAlpha0 and HasAlpha255);
+    if Result
+    then begin
+      FillChar(Header, SizeOf(Header), 0);
+      Header.biSize := SizeOf(Header);
+      Header.biWidth := AWinBmp.bmWidth;
+      Header.biHeight := -AWinBmp.bmHeight;
+      Header.biPlanes := 1;
+      Header.biBitCount := 32;
+      Header.biCompression := BI_RGB;
 
-    Result := Windows.CreateDIBitmap(SrcDC, Header, CBM_INIT, Data, Windows.TBitmapInfo((@Header)^), DIB_RGB_COLORS);
+      AAlphaBmp := Windows.CreateDIBitmap(SrcDC, Header, CBM_INIT, Data, Windows.TBitmapInfo((@Header)^), DIB_RGB_COLORS);
+    end;
     Freemem(Data);
   end;
 var
@@ -3312,11 +3336,11 @@ begin
   bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
   // get info
   HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
-          and (WinBmp.bmBitsPixel = 32);
+          and (WinBmp.bmBitsPixel = 32)
+          and CreatePremultipliedBitmap(WinBmp, Bmp, AlphaBmp);
+
   if HasAlpha
   then begin
-    // premultiply pixels
-    AlphaBmp := CreatePremultipliedBitmap(WinBmp, Bmp);
     AlphaDC := Windows.CreateCompatibleDC(SrcDC);
     AlphaObj := Windows.SelectObject(AlphaDC, AlphaBmp);
 
@@ -3344,7 +3368,8 @@ begin
         Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
       end;
     end;
-  end else begin
+  end
+  else begin
     MaskDC := Windows.CreateCompatibleDC(DestDC);
     MaskObj := Windows.SelectObject(MaskDC, Mask);
 
