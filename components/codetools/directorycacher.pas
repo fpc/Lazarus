@@ -186,6 +186,8 @@ function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
 function ComparePAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
 
 function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
+function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
+function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
 
 type
   TUnitNameLink = class
@@ -216,28 +218,66 @@ begin
 end;
 
 function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
-var
-  p1: PChar;
-  p2: PChar;
 begin
-  // first compare both filenames case insensitive
-  p1:=PChar(Data1);
-  p2:=PChar(Data2);
+  Result:=ComparePCharCaseInsensitive(Data1,Data2);
+  if Result=0 then
+    Result:=ComparePCharCaseSensitive(Data1,Data2);
+end;
+
+function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
+var
+  p1: PChar absolute Data1;
+  p2: PChar absolute Data2;
+begin
   while (FPUpChars[p1^]=FPUpChars[p2^]) and (p1^<>#0) do begin
     inc(p1);
     inc(p2);
   end;
   Result:=ord(FPUpChars[p1^])-ord(FPUpChars[p2^]);
-  if Result=0 then begin
-    // then compare both filenames case sensitive
-    p1:=PChar(Data1);
-    p2:=PChar(Data2);
-    while (p1^=p2^) and (p1^<>#0) do begin
-      inc(p1);
-      inc(p2);
-    end;
-    Result:=ord(p1^)-ord(p2^);
+end;
+
+function ComparePCharCaseInsensitive(Data1, Data2: Pointer;
+  MaxCount: PtrInt): integer;
+var
+  p1: PChar absolute Data1;
+  p2: PChar absolute Data2;
+begin
+  while (FPUpChars[p1^]=FPUpChars[p2^]) and (p1^<>#0) and (MaxCount>0) do begin
+    inc(p1);
+    inc(p2);
+    dec(MaxCount);
   end;
+  if MaxCount=0 then
+    Result:=0
+  else
+    Result:=ord(FPUpChars[p1^])-ord(FPUpChars[p2^]);
+end;
+
+function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
+var
+  p1: PChar absolute Data1;
+  p2: PChar absolute Data2;
+begin
+  while (p1^=p2^) and (p1^<>#0) do begin
+    inc(p1);
+    inc(p2);
+  end;
+  Result:=ord(p1^)-ord(p2^);
+end;
+
+function ComparePCharUnitNameWithFilename(UnitNameP, FilenameP: Pointer): integer;
+var
+  UnitName: PChar absolute UnitNameP;
+  Filename: PChar absolute FilenameP;
+begin
+  while (FPUpChars[UnitName^]=FPUpChars[Filename^]) and (UnitName^<>#0) do begin
+    inc(UnitName);
+    inc(Filename);
+  end;
+  if (UnitName^=#0) and (Filename^='.') then
+    Result:=0
+  else
+    Result:=ord(FPUpChars[UnitName^])-ord(FPUpChars[Filename^]);
 end;
 
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
@@ -267,10 +307,10 @@ begin
     if UnitLinkLen>0 then begin
       {$IFDEF ShowTriedFiles}
       DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
-        AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
+        ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
-      and (AnsiStrLIComp(PChar(Pointer(TheUnitName)),@UnitLinks[UnitLinkStart],
+      and (ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],
            UnitLinkLen)=0)
       then begin
         // unit found -> parse filename
@@ -625,12 +665,12 @@ begin
       case FileCase of
       ctsfcDefault:
         {$IFDEF CaseInsensitiveFilenames}
-        cmp:=stricomp(PChar(Pointer(ShortFilename)),CurFilename);// pointer type cast avoids #0 check
+        cmp:=ComparePCharCaseInsensitive(Pointer(ShortFilename)),CurFilenames);// pointer type cast avoids #0 check
         {$ELSE}
-        cmp:=strcomp(PChar(Pointer(ShortFilename)),CurFilename);
+        cmp:=ComparePCharCaseSensitive(Pointer(ShortFilename),CurFilename);
         {$ENDIF}
       ctsfcAllCase,ctsfcLoUpCase:
-        cmp:=stricomp(PChar(Pointer(ShortFilename)),CurFilename);
+        cmp:=ComparePCharCaseInsensitive(Pointer(ShortFilename),CurFilename);
       else RaiseDontKnow;
       end;
       if cmp>0 then
@@ -674,7 +714,7 @@ begin
     while r>=l do begin
       m:=(l+r) shr 1;
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      cmp:=stricomp(PChar(Pointer(UnitName)),CurFilename);
+      cmp:=ComparePCharUnitNameWithFilename(Pointer(UnitName),CurFilename);
       if cmp>0 then
         l:=m+1
       else if cmp<0 then
@@ -682,37 +722,29 @@ begin
       else
         break;
     end;
-    // now all files above m are higher than the Unitname
-    // -> check that m is equal or above = find lowest
-    if (Cmp>0) then
-      inc(m)
-    else if (Cmp=0) then begin
-      while (m>0) do begin
-        CurFilename:=@FListing.Names[FListing.NameStarts[m-1]];
-        cmp:=stricomp(PChar(Pointer(UnitName)),CurFilename);
-        if cmp<>0 then break;
-      end;
-    end;
-      
-    // now all files below m are lower than the Unitname
+    if cmp<>0 then exit;
+    // m is now on a filename with the right unit name, but maybe no the right
+    // extension
+    // go to the first filename with the right unit name
+    while (m>0)
+    and (ComparePCharUnitNameWithFilename(Pointer(UnitName),
+                      @FListing.Names[FListing.NameStarts[m-1]])=0)
+    do
+      dec(m);
     // -> now find a filename with correct case and extension
     while m<FListing.NameCount do begin
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      CurFilenameLen:=strlen(CurFilename);
+      // check if filename has the right unitname
+      if (ComparePCharUnitNameWithFilename(Pointer(UnitName),CurFilename)<>0)
+      then
+        break;
       //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
       //  DebugLn('TCTDirectoryCache.FindUnitSource NEXT ',CurFilename);
 
-      // check if the filename prefix is the unitname
-      // if not, then all filenames are not compatible as well
-      if CurFilenameLen<length(UnitName) then break;
-      if strlicomp(CurFilename,PChar(Pointer(Unitname)),length(UnitName))<>0
-      then break;
-
       // check if the filename fits
-      if (CompareFilenameOnly(CurFilename,CurFilenameLen,
-                             PChar(Pointer(UnitName)),length(UnitName),false)=0)
-      and FilenameIsPascalUnit(CurFilename,CurFilenameLen,false)
-      then begin
+      CurFilenameLen:=strlen(CurFilename);
+      if FilenameIsPascalUnit(CurFilename,CurFilenameLen,false) then
+      begin
         // the unitname is ok and the extension is ok
         Result:=CurFilename;
         if AnyCase then begin
