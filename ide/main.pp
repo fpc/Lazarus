@@ -3284,7 +3284,7 @@ begin
   if AProject.POOutputDirectory <> '' then begin
     POOutDir:=AProject.GetPOOutDirectory;
     if POOutDir<>'' then
-      POFilename:=TrimFilename(POOutDir+ExtractFileName(POFilename));
+      POFilename:=TrimFilename(AppendPathDelim(POOutDir)+ExtractFileName(POFilename));
   end;
   
   POFileAgeValid:=false;
