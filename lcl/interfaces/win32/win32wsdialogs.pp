@@ -639,16 +639,19 @@ begin
   end;
   Result := 0;
 end;
-
 class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
   bi : TBrowseInfo;
+  Options: TOpenOptions;
   Buffer : PChar;
   iidl : PItemIDList;
   InitialDir: string;
 begin
   Buffer := CoTaskMemAlloc(MAX_PATH);
   InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
+  
+  Options := TSelectDirectoryDialog(ACommonDialog).Options;
+  
   if length(InitialDir)=0 then
     InitialDir := TSelectDirectoryDialog(ACommonDialog).InitialDir;
   if length(InitialDir)>0 then begin
@@ -666,6 +669,8 @@ begin
     pszDisplayName := Buffer;
     lpszTitle := PChar(ACommonDialog.Title);
     ulFlags := BIF_RETURNONLYFSDIRS;
+    if not (ofOldStyleDialog in Options) then
+       ulFlags := ulFlags + BIF_NEWDIALOGSTYLE;
     lpfn := @BrowseForFolderCallback;
     // this value will be passed to callback proc as lpData
     lParam := LclType.LParam(PChar(InitialDir));

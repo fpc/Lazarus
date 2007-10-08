@@ -174,6 +174,13 @@ const
   
   { BrowseForFolder dialog}
   BIF_RETURNONLYFSDIRS = 1;
+  BIF_NEWDIALOGSTYLE = $40;
+    //Version 5.0. Use the new user interface. Setting this flag provides the
+    //user with a larger dialog box that can be resized. The dialog box has
+    //several new capabilities, including: drag-and-drop capability within the
+    //dialog box, reordering, shortcut menus, new folders, delete, and other
+    //shortcut menu commands. To use this flag, you must call OleInitialize or
+    //CoInitialize before calling SHBrowseForFolder.
 
   BFFM_INITIALIZED = 1;
   BFFM_SELCHANGED = 2;
