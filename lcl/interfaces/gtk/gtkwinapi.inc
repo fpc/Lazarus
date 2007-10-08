@@ -1229,7 +1229,11 @@ begin
   
   {$note TODO: add support for mono cursors}
   Img := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
-  Msk := CreateGdkMaskBitmap(ACursorInfo^.hbmColor, ACursorInfo^.hbmMask);
+  if (PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapType = gbPixmap) and
+     (PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask <> nil) then
+    Msk := PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask
+  else
+    Msk := PGDIObject(ACursorInfo^.hbmMask)^.GDIBitmapObject;
 
   gdk_drawable_get_size(Img, @W, @H);
 
@@ -1241,8 +1245,8 @@ begin
 
   GetColorMask(Img, Msk, @ImgBits[0], @MskBits[0], W, H);
 
-  srcbitmap := gdk_bitmap_create_from_data (nil, @ImgBits[0], W, H);
-  mskbitmap := gdk_bitmap_create_from_data (nil, @MskBits[0], W, H);
+  srcbitmap := gdk_bitmap_create_from_data(nil, @ImgBits[0], W, H);
+  mskbitmap := gdk_bitmap_create_from_data(nil, @MskBits[0], W, H);
 
 
   // white
@@ -1257,12 +1261,13 @@ begin
   bg.blue := 0;
   bg.pixel := 0;
 
-  Result := HCursor(PtrUInt(gdk_cursor_new_from_pixmap (srcbitmap, mskbitmap,
+  Result := HCursor(PtrUInt(gdk_cursor_new_from_pixmap(srcbitmap, mskbitmap,
       @fg, @bg, ACursorInfo^.xHotspot, ACursorInfo^.yHotspot)));
     
   gdk_pixmap_unref(srcbitmap);
   gdk_pixmap_unref(mskbitmap);
-  if Msk <> nil then gdk_pixmap_unref(msk);
+  if Msk <> nil then
+    gdk_pixmap_unref(msk);
 end;
 
 function TGtkWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
