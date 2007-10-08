@@ -508,7 +508,8 @@ begin
   end;}
   
   if (ilcfStartIsLValue in  IdentList.ContextFlags)
-  and (not IdentItem.HasChilds) then begin
+  and (not IdentItem.HasChilds)
+  and (not IdentList.StartUpAtomBehindIs(':=')) then begin
     if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
     or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then
       Result:=Result+' ';
