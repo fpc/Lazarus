@@ -1309,23 +1309,26 @@ begin
         else
           break;
       until false;
+      //DebugLn(['TBeautifyCodeOptions.BeautifyStatement ',CurAtom,' LastAtomType=',AtomTypeNames[LastAtomType],',',LastAtomType in DoNotInsertSpaceAfter,',',LastAtomType in DoInsertSpaceAfter,' CurAtomType=',AtomTypeNames[CurAtomType],',',CurAtomType in DoNotInsertSpaceInFront,',',CurAtomType in DoInsertSpaceInFront]);
       if ((Result='') or (Result[length(Result)]<>' '))
       and (not (CurAtomType in DoNotInsertSpaceInFront))
       and (not (LastAtomType in DoNotInsertSpaceAfter))
       and ((CurAtomType in DoInsertSpaceInFront)
            or (LastAtomType in DoInsertSpaceAfter))
-      then
+      then begin
+        //DebugLn(['TBeautifyCodeOptions.BeautifyStatement ADDING space']);
         AddAtom(Result,' ');
-      {if (CurAtomType=atIdentifier) and (LastAtomType=atColon) then begin
-        DebugLn('SPLIT LINE  CurPos='+dbgs(CurPos)+' CurAtom="'+CurAtom+'"'
+      end;
+      if (CurAtomType=atIdentifier) and (LastAtomType=atColon) then begin
+        {DebugLn('SPLIT LINE  CurPos='+dbgs(CurPos)+' CurAtom="'+CurAtom+'"'
           +' CurAtomType='+AtomTypeNames[CurAtomType]
           +' LastAtomType=',AtomTypeNames[LastAtomType]
           +' CurNot='+dbgs(CurAtomType in DoNotInsertSpaceInFront)
           +' LastNot='+dbgs(LastAtomType in DoNotInsertSpaceAfter)
           +' Cur='+dbgs(CurAtomType in DoInsertSpaceInFront)
           +' Last='+dbgs(LastAtomType in DoInsertSpaceAfter)
-          +' ..."'+copy(Result,length(Result)-10,10)+'"');
-      end;}
+          +' ..."'+copy(Result,length(Result)-10,10)+'"');}
+      end;
       
       if (not (CurAtomType in DoNotSplitLineInFront))
       and (not (LastAtomType in DoNotSplitLineAfter)) then

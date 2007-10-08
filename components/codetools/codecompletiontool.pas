@@ -5424,7 +5424,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       then
         RValue:='@'+RValue;
       RValue:=':='+RValue;
-      SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(RValue,0);
+      RValue:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(RValue,0);
       StartInsertPos:=AssignmentOperator;
       EndInsertPos:=SemicolonPos+1;
       if EndInsertPos<1 then
