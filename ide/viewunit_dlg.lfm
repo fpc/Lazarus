@@ -1,25 +1,30 @@
 object ViewUnitDialog: TViewUnitDialog
   Left = 337
-  Height = 265
+  Height = 300
   Top = 295
-  Width = 315
-  HorzScrollBar.Page = 314
-  VertScrollBar.Page = 264
+  Width = 320
+  HorzScrollBar.Page = 319
+  VertScrollBar.Page = 299
   ActiveControl = Listbox
+  BorderIcons = [biSystemMenu]
   Caption = 'View Project Units'
-  ClientHeight = 265
-  ClientWidth = 315
+  ClientHeight = 300
+  ClientWidth = 320
   Position = poScreenCenter
   object btnOK: TBitBtn
-    AnchorSideTop.Control = btnCancel
     AnchorSideRight.Control = btnCancel
-    Left = 107
-    Height = 25
-    Top = 231
-    Width = 96
-    Anchors = [akTop, akRight]
-    BorderSpacing.Right = 5
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 153
+    Height = 28
+    Top = 266
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = '&OK'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
     ModalResult = 1
@@ -28,18 +33,22 @@ object ViewUnitDialog: TViewUnitDialog
     TabOrder = 1
   end
   object btnCancel: TBitBtn
-    AnchorSideTop.Control = MultiSelectCheckBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Listbox
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 208
-    Height = 25
-    Top = 231
-    Width = 96
-    Anchors = [akTop, akRight]
-    BorderSpacing.Top = 5
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 234
+    Height = 28
+    Top = 266
+    Width = 80
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
@@ -47,42 +56,63 @@ object ViewUnitDialog: TViewUnitDialog
     TabOrder = 2
   end
   object Edit: TEdit
-    Left = 10
+    Left = 6
     Height = 25
-    Top = 10
-    Width = 294
-    Anchors = [akTop, akLeft, akRight]
+    Top = 6
+    Width = 308
+    Align = alTop
+    Anchors = [akRight]
+    BorderSpacing.Around = 6
     Enabled = False
     TabOrder = 3
   end
   object Listbox: TListBox
-    AnchorSideLeft.Control = Edit
-    AnchorSideTop.Control = Edit
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Edit
     AnchorSideRight.Side = asrBottom
-    Left = 10
-    Height = 168
-    Top = 40
-    Width = 294
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Top = 5
+    AnchorSideBottom.Control = MultiSelectCheckBox
+    Left = 6
+    Height = 204
+    Top = 37
+    Width = 308
+    Align = alTop
+    Anchors = [akBottom]
+    BorderSpacing.Around = 6
     ClickOnSelChange = False
     OnDblClick = BTNOKCLICK
     OnKeyDown = ListboxKeyDown
     TabOrder = 0
   end
   object MultiSelectCheckBox: TCheckBox
-    AnchorSideLeft.Control = Edit
-    AnchorSideTop.Control = Listbox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
-    Left = 10
+    AnchorSideBottom.Control = btnCancel
+    Left = 6
     Height = 13
-    Top = 213
+    Top = 247
     Width = 75
-    BorderSpacing.Top = 5
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
     Caption = 'Multi Select'
     OnClick = MultiselectCheckBoxClick
     TabOrder = 4
+  end
+  object HelpButton: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 28
+    Top = 266
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Help'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Kind = bkHelp
+    NumGlyphs = 0
+    OnClick = HelpButtonClick
+    TabOrder = 5
   end
 end

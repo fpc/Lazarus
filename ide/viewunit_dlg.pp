@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
-  LazarusIdeStrConsts, IDEWindowIntf;
+  LazarusIdeStrConsts, IDEWindowIntf, IDEContextHelpEdit;
 
 type
   TViewUnitsEntry = class
@@ -54,11 +54,13 @@ type
   { TViewUnitDialog }
 
   TViewUnitDialog = class(TForm)
+    HelpButton: TBitBtn;
     Edit: TEdit;
     ListBox: TListBox;
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
     MultiSelectCheckBox: TCheckBox;
+    procedure HelpButtonClick(Sender: TObject);
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -67,14 +69,11 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
-
 function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
   const Caption: string): TModalResult;
   // Entries is a list of TViewUnitsEntry(s)
 
-
 implementation
-
 
 function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
   const Caption: string): TModalResult;
@@ -140,6 +139,11 @@ Begin
   ModalResult := mrOK;
 End;
 
+procedure TViewUnitDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
@@ -159,10 +163,8 @@ begin
   ListBox.Multiselect:=MultiselectCheckBox.Checked;
 end;
 
-
 initialization
  {$I viewunit_dlg.lrs}
-
 
 end.
 
