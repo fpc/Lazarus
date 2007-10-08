@@ -127,7 +127,7 @@ type
   
   TIdentifierListContextFlag = (
     ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
-    ilcfStartIsLValue,     // position is start of one statement. e.g. 'A:='
+    ilcfStartIsLValue,     // position is start of one statement. e.g. 'A:=', does not check if A can be assigned
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A end'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration // context allows to declare a procedure/method
@@ -1669,6 +1669,12 @@ begin
   if (Node=nil) then exit;
   if (GetDesc=ctnVarDefinition) then
     Result:=true;
+  if (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+    if Tool.PropertyHasSpecifier(Node,'write') then exit(true);
+    if Tool.PropNodeIsTypeLess(Node) then begin
+      exit(true);// ToDo: search the real property definition
+    end;
+  end;
 end;
 
 procedure TIdentifierListItem.UpdateBaseContext;

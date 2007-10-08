@@ -79,6 +79,8 @@ type
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
+    function PropertyHasSpecifier(PropNode: TCodeTreeNode;
+                                  const s: string): boolean;
 
     // procs
     function ExtractProcName(ProcNode: TCodeTreeNode;
@@ -1575,6 +1577,59 @@ begin
     ReadNextAtom;
   end;
   Result:=(CurPos.Flag<>cafColon);
+end;
+
+function TPascalReaderTool.PropertyHasSpecifier(PropNode: TCodeTreeNode;
+  const s: string): boolean;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=false;
+  if (PropNode=nil) or (not (PropNode.Desc in [ctnProperty,ctnGlobalProperty]))
+  then
+    exit;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom;
+  if not UpAtomIs('PROPERTY') then RaiseStringExpectedButAtomFound('property');
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if CurPos.Flag=cafEdgedBracketOpen then begin
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
+  if CurPos.Flag=cafColon then begin
+    // read type
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if CurPos.Flag=cafPoint then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+    end;
+  end;
+  // read specifiers
+  while not (CurPos.Flag in [cafSemicolon,cafNone]) do begin
+    if WordIsPropertySpecifier.DoIt(@Src[CurPos.StartPos]) then begin
+      if AtomIs(s) then exit(true);
+    end else if CurPos.Flag=cafEdgedBracketOpen then begin
+      ReadTilBracketClose(true);
+      ReadNextAtom;
+    end;
+    ReadNextAtom;
+  end;
+  // read default
+  while CurPos.Flag=cafSemicolon do begin
+    ReadNextAtom;
+    if UpAtomIs('DEFAULT') or UpAtomIs('NODEFAULT') or UpAtomIs('DEPRECATED')
+    then begin
+      if AtomIs(s) then exit(true);
+    end else
+      exit;
+    ReadNextAtom;
+  end;
 end;
 
 function TPascalReaderTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode

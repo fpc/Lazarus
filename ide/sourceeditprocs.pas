@@ -511,6 +511,7 @@ begin
   if (ilcfStartIsLValue in  IdentList.ContextFlags)
   and (not IdentItem.HasChilds)
   and (not IdentList.StartUpAtomBehindIs(':='))
+  and (IdentItem.CanBeAssigned)
   and CodeToolsOpts.IdentComplAddAssignOperator then begin
     if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
     or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then
