@@ -209,7 +209,7 @@ function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
 // environment
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
-procedure GetProgramSearchPath(var SearchPath: string; out Delim: char);
+function GetProgramSearchPath: string;
 function ProgramDirectory: string;
 
 // debugging
@@ -1530,8 +1530,6 @@ function FindProgram(const Programname, BaseDirectory: string;
   WithBaseDirectory: boolean): string;
 var
   Flags: TSearchFileInPathFlags;
-  SearchPath: string;
-  Delim: char;
 begin
   if FilenameIsAbsolute(Programname) then begin
     if FileExists(Programname) then
@@ -1543,9 +1541,8 @@ begin
   Flags:=[];
   if not WithBaseDirectory then
     Include(Flags,sffDontSearchInBasePath);
-  GetProgramSearchPath(SearchPath,Delim);
-  Result:=FileUtil.SearchFileInPath(Programname,BaseDirectory,SearchPath,
-                                    Delim,Flags);
+  Result:=FileUtil.SearchFileInPath(Programname,BaseDirectory,
+                                    GetProgramSearchPath,PathSep,Flags);
 end;
 
 function DateToCfgStr(const Date: TDateTime): string;
@@ -2214,10 +2211,9 @@ begin
   Result:='<'+GetCurrentUserName+'@'+GetEnvironmentVariable('HOSTNAME')+'>';
 end;
 
-procedure GetProgramSearchPath(var SearchPath: string; out Delim: char);
+function GetProgramSearchPath: string;
 begin
-  SearchPath:=GetEnvironmentVariable('PATH');
-  Delim:=':';
+  GetProgramSearchPath := GetEnvironmentVariable('PATH');
 end;
 
 {------------------------------------------------------------------------------
