@@ -122,9 +122,8 @@ type
     FLazPackage: TLazPackage;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
-    procedure SetupUsagePage(PageIndex: integer);
-    procedure SetupIDEPage(PageIndex: integer);
-    procedure SetupProvidesPage(PageIndex: integer);
+    procedure SetupUsagePage;
+    procedure SetupIDEPage;
     procedure ReadOptionsFromPackage;
     procedure ReadPkgTypeFromPackage;
     function GetEditForPathButton(AButton: TPathEditorButton): TEdit;
@@ -385,12 +384,11 @@ end;
 
 procedure TPackageOptionsDialog.SetupComponents;
 begin
-  SetupUsagePage(0);
-  SetupIDEPage(2);
-  SetupProvidesPage(3);
+  SetupUsagePage();
+  SetupIDEPage();
 end;
 
-procedure TPackageOptionsDialog.SetupIDEPage(PageIndex: integer);
+procedure TPackageOptionsDialog.SetupIDEPage;
 begin
   // lazdoc
   LazDocPathButton:=TPathEditorButton.Create(Self);
@@ -409,12 +407,8 @@ begin
   LazDocPathEdit.AnchorToNeighbour(akRight,0,LazDocPathButton);
 end;
 
-procedure TPackageOptionsDialog.SetupProvidesPage(PageIndex: integer);
-begin
 
-end;
-
-procedure TPackageOptionsDialog.SetupUsagePage(PageIndex: integer);
+procedure TPackageOptionsDialog.SetupUsagePage;
 begin
   // Usage page
   UnitPathButton:=TPathEditorButton.Create(Self);
