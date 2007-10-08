@@ -148,10 +148,11 @@ type
     function Update: Boolean; override;
   public
     function Activate: Boolean; virtual;
-    
+
     procedure CloseModal; virtual;
     procedure ShowModal; virtual;
     
+    function SetForeground: Boolean; virtual;
     function Show(AShow: Integer): Boolean; virtual;
 
     procedure SetBorderIcons(ABorderIcons: TBorderIcons); virtual;

@@ -63,6 +63,7 @@ type
   TCarbonWidget = class
   private
     FProperties: TStringList;
+    FCursor: HCURSOR;
     function GetProperty(AIndex: String): Pointer;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
   protected
@@ -94,6 +95,7 @@ type
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
     procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); virtual; abstract;
+    procedure SetCursor(ACursor: HCURSOR); virtual;
     
     procedure ScrollBy(DX, DY: Integer); virtual;
     procedure SetFocus; virtual; abstract;
@@ -113,6 +115,7 @@ type
      - area for embedding child controls
      - processes track and draw event                  }
     property Content: ControlRef read GetContent;
+    property Cursor: HCURSOR read FCursor;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
   end;
   
@@ -533,6 +536,17 @@ procedure TCarbonWidget.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
 begin
   DebugLn(ClassName + '.GetScrollInfo unsupported or not implemented!');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.SetCursor
+  Params:  ACursor - Handle of cursor to set
+
+  Sets the cursor
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.SetCursor(ACursor: HCURSOR);
+begin
+  FCursor := ACursor;
 end;
 
 {------------------------------------------------------------------------------

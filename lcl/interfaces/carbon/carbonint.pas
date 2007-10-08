@@ -161,7 +161,7 @@ uses
   { these can/should go up }
   CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
   CarbonLists, CarbonTabs,
-  CarbonThemes, CarbonCanvas, CarbonStrings,
+  CarbonThemes, CarbonCanvas, CarbonStrings, CarbonClipboard,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,

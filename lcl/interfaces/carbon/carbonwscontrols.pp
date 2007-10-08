@@ -77,6 +77,7 @@ type
                                       const AOldPos, ANewPos: Integer;
                                       const AChildren: TFPList); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
@@ -202,6 +203,21 @@ begin
   if not CheckHandle(AWinControl, Self, 'SetColor') then Exit;
 
   TCarbonWidget(AWinControl.Handle).SetColor(AWinControl.Color);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSWinControl.SetFont
+  Params:  AWinControl - LCL control
+           ACursor     - Cursor
+
+  Sets the cursor of control in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSWinControl.SetCursor(const AWinControl: TWinControl;
+  const ACursor: HCursor);
+begin
+  if not CheckHandle(AWinControl, Self, 'SetCursor') then Exit;
+
+  TCarbonWidget(AWinControl.Handle).SetCursor(ACursor);
 end;
 
 {------------------------------------------------------------------------------

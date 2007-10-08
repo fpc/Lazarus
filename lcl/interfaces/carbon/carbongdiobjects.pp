@@ -244,6 +244,7 @@ type
   TCarbonCursor = class(TCarbonGDIObject)
   private
     FCursorType: TCarbonCursorType;
+    FDefault: Boolean;
     FThemeCursor: ThemeCursor;
     // animation
     FAnimationStep: Integer;
@@ -260,7 +261,7 @@ type
   public
     constructor Create;
     constructor CreateFromInfo(AInfo: PIconInfo);
-    constructor CreateThemed(AThemeCursor: ThemeCursor);
+    constructor CreateThemed(AThemeCursor: ThemeCursor; ADefault: Boolean = False);
     destructor Destroy; override;
 
     procedure Install;
@@ -269,6 +270,7 @@ type
     class function HardwareCursorsSupported: Boolean;
   public
     property CursorType: TCarbonCursorType read FCursorType;
+    property Default: Boolean read FDefault;
   end;
   
 function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String; AParamName: String = ''): Boolean;
@@ -1394,7 +1396,8 @@ end;
 
   Creates new theme cursor
  ------------------------------------------------------------------------------}
-constructor TCarbonCursor.CreateThemed(AThemeCursor: ThemeCursor);
+constructor TCarbonCursor.CreateThemed(AThemeCursor: ThemeCursor;
+  ADefault: Boolean);
 const
   kThemeCursorTypeMap: array[kThemeArrowCursor..22] of TCarbonCursorType =
   (
@@ -1424,6 +1427,7 @@ const
   );
 begin
   Create;
+  FDefault := ADefault;
   FThemeCursor := AThemeCursor;
   if (AThemeCursor >= Low(kThemeCursorTypeMap)) and
      (AThemeCursor <= High(kThemeCursorTypeMap)) then

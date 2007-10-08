@@ -258,7 +258,7 @@ begin
   //Find out which control the mouse event should occur for
   Control := nil;
   if OSError(HIViewGetViewForMouseEvent(AWidget.Content, AEvent, Control),
-    SName, 'HIViewGetViewForMouseEvent') then Exit;
+    SName, SViewForMouse) then Exit;
   if Control = nil then Exit;
   
   Widget := GetCarbonWidget(Control);
@@ -1307,7 +1307,6 @@ begin
 
   if AVisible or (csDesigning in LCLobject.ComponentState) then
   begin
-    SelectWindow(WindowRef(Widget)); // activate and move window to front
     FPCMacOSAll.ShowWindow(WindowRef(Widget));
   end
   else
@@ -1407,6 +1406,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWindow.SetForeground
+  Returns: If the function succeeds
+
+  Brings the Carbon window to front and activates it
+------------------------------------------------------------------------------}
+function TCarbonWindow.SetForeground: Boolean;
+begin
+  Result := False;
+  SelectWindow(WindowRef(Widget)); // activate and move window to front
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWindow.Show
   Params:  AShow - (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED)
   Returns: If the function succeeds
@@ -1423,6 +1435,8 @@ const
   SZoomIdeal = 'ZoomWindowIdeal';
 begin
   Result := False;
+  
+  DebugLn('TCarbonWindow.Show ' + DbgS(AShow));
 
   case AShow of
   SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
@@ -1448,6 +1462,8 @@ begin
         if OSError(ZoomWindowIdeal(WindowRef(Widget), inZoomOut, P),
          Self, SName, SZoomIdeal, 'inZoomOut') then Exit;
       end;
+
+    SetForeground;
   end;
   SW_MINIMIZE:
     begin

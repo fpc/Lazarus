@@ -48,7 +48,8 @@ begin
   begin
     AThemeCursor := CursorToThemeCursor[TCursor(ACursor)];
     if AThemeCursor <> kThemeUndefCursor then
-      Result := hCursor(TCarbonCursor.CreateThemed(AThemeCursor));
+      Result := hCursor(TCarbonCursor.CreateThemed(AThemeCursor,
+        TCursor(ACursor) = crDefault));
   end;
   
   {$IFDEF VerboseLCLIntf}

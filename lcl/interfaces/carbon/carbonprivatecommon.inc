@@ -229,7 +229,6 @@ function CarbonCommon_CursorChange(ANextHandler: EventHandlerCallRef;
 var
   ALocation: FPCMacOSAll.Point;
   AModifiers: UInt32;
-  ACursor: TCursor;
   ACursorWasSet: Boolean;
   
   Widget:  TCarbonWidget; //
@@ -256,19 +255,20 @@ begin
   Widget := GetCarbonWidget(Control);
   if Widget = nil then Exit;
   
-  GlobalToLocal(ALocation);
-  
-  if OSError(HandleControlSetCursor(Control, ALocation, AModifiers, ACursorWasSet),
-    SName, 'HandleControlSetCursor') then
+  if Screen.Cursor = crDefault then // we can change cursor
+  begin
     ACursorWasSet := False;
     
-  if not ACursorWasSet then
-  begin
-    ACursor := Screen.Cursor;
-    if ACursor = crDefault then
-      ACursor := Widget.LCLObject.Cursor;
+    // if widget has default cursor set - get it from Carbon
+    if TCarbonCursor(Widget.Cursor).Default then
+    begin
+      GlobalToLocal(ALocation);
 
-    WidgetSet.SetCursor(Screen.Cursors[ACursor]);
+      if OSError(HandleControlSetCursor(Control, ALocation, AModifiers, ACursorWasSet),
+        SName, 'HandleControlSetCursor') then ACursorWasSet := False;
+    end;
+    
+    if not ACursorWasSet then WidgetSet.SetCursor(Widget.Cursor);
   end;
       
   Result := noErr;

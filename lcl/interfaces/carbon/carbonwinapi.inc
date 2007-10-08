@@ -117,36 +117,97 @@ begin
   {$ENDIF}
 end;
 
-function TCarbonWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat
-  ): string;
+{------------------------------------------------------------------------------
+  Method:  ClipboardFormatToMimeType
+  Params:  FormatID - A registered format identifier (0 is invalid)
+  Returns: The corresponding mime type as string
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
 begin
-  Result:=inherited ClipboardFormatToMimeType(FormatID);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ClipboardFormatToMimeType FormatID: ' + DbgS(FormatID));
+  {$ENDIF}
+  
+  Result := Clipboard.FormatToMimeType(FormatID);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetData
+  Params:  ClipboardType - Clipboard type
+           FormatID      - A registered format identifier (0 is invalid)
+           Stream        - If format is available, it will be appended to this
+                           stream
+  Returns: If the function succeeds
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 begin
-  Result:=inherited ClipboardGetData(ClipboardType, FormatID, Stream);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ClipboardGetData ClipboardType' +
+      ClipboardTypeName[ClipboardType] + ' FormatID: ' + DbgS(FormatID));
+  {$ENDIF}
+  
+  Result := Clipboard.GetData(ClipboardType, FormatID, Stream);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetFormats
+  Params:  ClipboardType - The type of clipboard operation
+           Count         - The number of clipboard formats
+           List          - Pointer to an array of supported formats
+                           (you must free it yourself)
+  Returns: If the function succeeds
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;
+  var Count: integer; var List: PClipboardFormat): Boolean;
 begin
-  Result:=inherited ClipboardGetFormats(ClipboardType, Count, List);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ClipboardGetFormats ClipboardType' +
+      ClipboardTypeName[ClipboardType]);
+  {$ENDIF}
+  
+  Result := Clipboard.GetFormats(ClipboardType, Count, List);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetOwnerShip
+  Params:  ClipboardType - Type of clipboard
+           OnRequestProc - TClipboardRequestEvent is defined in LCLType.pp
+                           If OnRequestProc is nil the onwership will end.
+           FormatCount   - Number of formats
+           Formats       - Array of TClipboardFormat. The supported formats the
+                           owner provides.
+
+  Returns: If the function succeeds
+
+  Sets the supported formats and requests ownership for the clipboard.
+  The OnRequestProc is used to get the data from the LCL and to put it on the
+  clipboard.
+  If someone else requests the ownership, the OnRequestProc will be executed
+  with the invalid FormatID 0 to notify the old owner of the lost of ownership.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 begin
-  Result:=inherited ClipboardGetOwnerShip(ClipboardType, OnRequestProc,
-    FormatCount, Formats);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ClipboardGetOwnerShip ClipboardType' +
+      ClipboardTypeName[ClipboardType] + ' FormatCount: ' + DbgS(FormatCount));
+  {$ENDIF}
+  
+  Result := Clipboard.GetOwnerShip(ClipboardType, OnRequestProc, FormatCount,
+    Formats);
 end;
 
-function TCarbonWidgetSet.ClipboardRegisterFormat(const AMimeType: string
-  ): TClipboardFormat;
+{------------------------------------------------------------------------------
+  Method:  ClipboardRegisterFormat
+  Params:  AMimeType - A string (usually a MIME type) identifying a new format
+                       type to register
+  Returns: The registered Format identifier (TClipboardFormat)
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
-  Result:=inherited ClipboardRegisterFormat(AMimeType);
+  Result := Clipboard.RegisterFormat(AMimeType);
 end;
 
 function TCarbonWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
@@ -2602,6 +2663,7 @@ begin
   
   Result := FCurrentCursor;
   if not CheckCursor(ACursor, 'SetCursor') then Exit;
+  if FCurrentCursor = ACursor then Exit;
 
   // If we setted cursor before, them we should uninstall it.
   // This needs for animated cursors (because of threading) and wait cursor
@@ -2651,7 +2713,7 @@ begin
 
   if not CheckWidget(HWnd, 'SetForegroundWindow', TCarbonWindow) then Exit;
   
-  Result := TCarbonWindow(HWnd).Activate;
+  Result := TCarbonWindow(HWnd).SetForeground;
 end;
 
 {------------------------------------------------------------------------------
