@@ -138,7 +138,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="TPosition">
         <short>Represents the Position and Size on Screen of an Form</short>
-        <descr>poDesigned - The Form appears like it is positioned and sized in the Form Designer<br/>
+        <descr>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer<br/>
 poDefault - The window manager decides how the form is to appear, in a default position and size<br/>
 poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager<br/>
 poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager<br/>
