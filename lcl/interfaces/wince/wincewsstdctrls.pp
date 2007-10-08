@@ -810,33 +810,23 @@ end;
 class function TWinCEWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  hwnd: THandle;
-  Str: PWideChar;
-  
+  Params: TCreateWindowExParams;
 begin
-  {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSCustomEdit.CreateHandle');
-  {$endif}
-
-  Str := StringToPWideChar(AWinControl.Caption);
-
-  hwnd := CreateWindow(
-    @EditClsName,               // Name of the registered class
-    Str,                       // Title of the window
-    WS_CHILD or WS_VISIBLE,     // Style of the window
-    AWinControl.Left,           // x-position (at beginning)
-    AWinControl.Top,            // y-position (at beginning)
-    AWinControl.Width,          // window width
-    AWinControl.Height,         // window height
-    AWinControl.Parent.Handle,  // handle to parent or owner window
-    0,                          // handle to menu
-    System.hInstance,           // handle to application instance
-    nil);                       // pointer to window-creation data
-
-  if (hwnd = 0) then WriteLn('CreateWindow failed');
-
-  FreeMem(Str);
-  Result := hwnd;
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := @EditClsName;
+    WindowTitle := StrCaption;
+    Flags := Flags or ES_AUTOHSCROLL;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  // edit is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.needParentPaint := false;
+  Result := Params.Window;
 end;
 
 class function  TWinCEWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
