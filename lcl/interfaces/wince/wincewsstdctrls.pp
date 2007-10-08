@@ -317,7 +317,7 @@ begin
       sbVertical:
         Flags := Flags or SBS_VERT;
     end;
-    pClassName := 'SCROLLBAR';
+    pClassName := @ScrollBarClsName;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -383,7 +383,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
     Flags := Flags Or BS_GROUPBOX;
   end;
@@ -447,7 +447,7 @@ begin
       if BorderStyle=bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     end;
-    pClassName := 'LISTBOX';
+    pClassName := @ListBoxClsName;
     Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
                        LBS_NOTIFY);
   end;
@@ -615,7 +615,7 @@ begin
     Flags := Flags or CalcComboBoxWinFlags(TCustomComboBox(AWinControl));
     If TComboBox(AWinControl).Sorted Then
       Flags:= Flags or CBS_SORT;
-    pClassName := 'COMBOBOX';
+    pClassName := @ComboboxClsName;
     Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
     SubClassWndProc := @ComboBoxWindowProc;
   end;
@@ -922,7 +922,7 @@ begin
     else
       Flags := Flags or ES_AUTOHSCROLL;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    pClassName := 'EDIT';
+    pClassName := @EditClsName;
     WindowTitle := StrCaption;
   end;
   // create window
@@ -1129,7 +1129,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName;
     WindowTitle := StringToPWideChar(AWinControl.Caption);
     if TCustomCheckBox(AWinControl).AllowGrayed then
       Flags := Flags Or BS_AUTO3STATE
@@ -1199,7 +1199,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
     Flags := Flags or BS_AUTOCHECKBOX or BS_PUSHLIKE;
   end;

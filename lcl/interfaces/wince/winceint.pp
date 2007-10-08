@@ -187,6 +187,8 @@ const
   LabelClsName: array[0..6] of WideChar = ('S','T','A','T','I','C',#0);
   ComboboxClsName: array[0..8] of WideChar = ('C','O','M','B','O','B','O','X',#0);
   TabControlClsName: array[0..15] of WideChar = ('S','y','s','T','a','b','C','o','n','t','r','o','l','3','2',#0);
+  ScrollBarClsName: array[0..9] of WideChar = ('S','C','R','O','L','L','B','A','R',#0);
+  ListBoxClsName: array[0..7] of WideChar = ('L','I','S','T','B','O','X',#0);
 
   CP_UTF7                  = 65000;         { UTF-7 translation }
   CP_UTF8                  = 65001;         { UTF-8 translation }
