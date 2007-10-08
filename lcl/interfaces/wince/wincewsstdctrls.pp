@@ -958,7 +958,7 @@ end;
 
 class procedure TWinCEWSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
 var
-tmpWideStr : PWideChar;
+  tmpWideStr : PWideChar;
 begin
   tmpWideStr := StringToPWideChar(AText);
   SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(tmpWideStr)));
