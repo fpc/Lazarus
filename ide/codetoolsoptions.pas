@@ -49,6 +49,7 @@ type
   private
     FClassHeaderComments: boolean;
     FFilename: string;
+    FIdentComplAddAssignOperator: Boolean;
 
     // General
     FSrcPath: string;
@@ -163,6 +164,8 @@ type
     // identifier completion
     property IdentComplAddSemicolon: Boolean read FIdentComplAddSemicolon
                                              write FIdentComplAddSemicolon;
+    property IdentComplAddAssignOperator: Boolean read FIdentComplAddAssignOperator
+                                             write FIdentComplAddAssignOperator;
   end;
 
 
@@ -225,6 +228,7 @@ type
     
     // identifier completion
     ICAddSemicolonCheckBox: TCheckBox;
+    ICAddAssignOperatorCheckBox: TCheckBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -483,6 +487,8 @@ begin
     // identifier completion
     FIdentComplAddSemicolon:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AddSemicolon',true);
+    FIdentComplAddAssignOperator:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/AddAssignOperator',true);
 
     XMLConfig.Free;
   except
@@ -580,6 +586,8 @@ begin
     // identifier completion
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddSemicolon',
       FIdentComplAddSemicolon,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddAssignOperator',
+      FIdentComplAddAssignOperator,true);
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -651,6 +659,7 @@ begin
     
     // identifier completion
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
+    FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
   end else begin
     Clear;
   end;
@@ -695,6 +704,7 @@ begin
   
   // identifier completion
   FIdentComplAddSemicolon:=true;
+  FIdentComplAddAssignOperator:=true;
 end;
 
 procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
@@ -965,6 +975,8 @@ procedure TCodeToolsOptsDlg.SetupIdentifierCompletionPage(PageID: integer);
 begin
   with ICAddSemicolonCheckBox do
     Caption:=dlgAddSemicolon;
+  with ICAddAssignOperatorCheckBox do
+    Caption:=dlgAddAssignmentOperator;
 end;
 
 procedure TCodeToolsOptsDlg.ResizeLineSplittingPage;
@@ -1141,6 +1153,7 @@ begin
   
   // identifier completion
   ICAddSemicolonCheckBox.Checked:=Options.IdentComplAddSemicolon;
+  ICAddAssignOperatorCheckBox.Checked:=Options.IdentComplAddAssignOperator;
 end;
 
 procedure TCodeToolsOptsDlg.WriteSettings(Options: TCodeToolsOptions);
@@ -1202,6 +1215,7 @@ begin
 
   // identifier completion
   Options.IdentComplAddSemicolon:=ICAddSemicolonCheckBox.Checked;
+  Options.IdentComplAddAssignOperator:=ICAddAssignOperatorCheckBox.Checked;
 end;
 
 procedure TCodeToolsOptsDlg.SetAtomCheckBoxes(AtomTypes: TAtomTypes;

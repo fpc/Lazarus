@@ -1134,6 +1134,7 @@ resourcestring
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
   dlgAddSemicolon = 'Add semicolon';
+  dlgAddAssignmentOperator = 'Add assignment operator :=';
 
   // source editor
   locwndSrcEditor = 'Lazarus Source Editor';

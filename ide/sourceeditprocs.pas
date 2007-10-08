@@ -506,10 +506,12 @@ begin
     Result:=Result+' := ';
     CursorAtEnd:=false;
   end;}
-  
+
+  // add assignment operator :=
   if (ilcfStartIsLValue in  IdentList.ContextFlags)
   and (not IdentItem.HasChilds)
-  and (not IdentList.StartUpAtomBehindIs(':=')) then begin
+  and (not IdentList.StartUpAtomBehindIs(':='))
+  and CodeToolsOpts.IdentComplAddAssignOperator then begin
     if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
     or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then
       Result:=Result+' ';
@@ -517,7 +519,8 @@ begin
     if (atSymbol in CodeToolsOpts.DoInsertSpaceAfter) then
       Result:=Result+' ';
   end;
-  
+
+  // add last typed character (that ended the identifier completion and starts a new token)
   if AddChar<>'' then
     Result:=Result+AddChar;
 
