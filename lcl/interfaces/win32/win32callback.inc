@@ -806,7 +806,7 @@ var
                 Application.MainForm.Left, Application.MainForm.Top,
                 Application.MainForm.Width, 0, SWP_NOACTIVATE);
                 if Application.MainForm.HandleAllocated then
-                 Windows.ShowWindow(Application.MainForm.Handle,SW_HIDE);
+                 Windows.ShowWindow(Application.MainForm.Handle, SW_HIDE);
 
               Application.IntfAppMinimize;
           end;
@@ -821,9 +821,9 @@ var
               and Application.MainForm.HandleAllocated then
           begin
             PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            Windows.ShowWindow(Application.MainForm.Handle,SW_SHOW);
-            if Windows.IsWindowEnabled(Application.MainForm.Handle)
-             then Windows.SetActiveWindow(Application.MainForm.Handle);
+            Windows.ShowWindow(Application.MainForm.Handle, SW_RESTORE);
+            if Windows.IsWindowEnabled(Application.MainForm.Handle) then
+              Windows.SetActiveWindow(Application.MainForm.Handle);
             WinProcess := false;
 
             Application.IntfAppRestore;
