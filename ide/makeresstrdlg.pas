@@ -43,13 +43,14 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls, StdCtrls,
   Dialogs, LResources, LazarusIDEStrConsts, IDEWindowIntf, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
-  EditorOptions, InputHistory, MiscOptions, ExtCtrls;
+  EditorOptions, InputHistory, MiscOptions, ExtCtrls, IDEContextHelpEdit;
 
 type
 
   { TMakeResStrDialog }
 
   TMakeResStrDialog = class(TForm)
+    HelpButton: TBitBtn;
     CustomIdentifierCheckBox: TCheckBox;
     IdentifierGroupBox: TGroupBox;
     IdentifierEdit: TEdit;
@@ -57,12 +58,10 @@ type
     IdentLengthLabel: TLabel;
     IdentPrefixComboBox: TComboBox;
     IdentPrefixLabel: TLabel;
-    // source synedit
-    StringConstGroupBox: TGroupBox;
-    StringConstSynEdit: TSynEdit;
     
     // options
     ConversionGroupBox: TGroupBox;
+    CodePanel: TPanel;
     // resourcestring section
     ResStrSectionLabel: TLabel;
     ResStrSectionComboBox: TComboBox;
@@ -73,14 +72,16 @@ type
     AppendResStrRadioButton: TRadioButton;
     InsertAlphabeticallyResStrRadioButton: TRadioButton;
     InsertContextSensitiveRadioButton: TRadioButton;
-    
-    // preview
-    SrcPreviewGroupBox: TGroupBox;
-    SrcPreviewSynEdit: TSynEdit;
+
 
     // ok+cancel buttons
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
+    Splitter1: TSplitter;
+    SrcPreviewGroupBox: TGroupBox;
+    SrcPreviewSynEdit: TSynEdit;
+    StringConstGroupBox: TGroupBox;
+    StringConstSynEdit: TSynEdit;
 
     // highlighter
     SynPasSyn: TSynPasSyn;
@@ -88,6 +89,7 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure IdentLengthComboBoxChange(Sender: TObject);
     procedure IdentPrefixComboBoxChange(Sender: TObject);
     procedure IdentifierEditChange(Sender: TObject);
@@ -202,6 +204,11 @@ end;
 procedure TMakeResStrDialog.FormCreate(Sender: TObject);
 begin
   ActiveControl:=OkButton;
+end;
+
+procedure TMakeResStrDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TMakeResStrDialog.IdentLengthComboBoxChange(Sender: TObject);
