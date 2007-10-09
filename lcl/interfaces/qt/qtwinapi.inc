@@ -3462,6 +3462,8 @@ end;
 function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   PenPos: TPoint;
+  CX: Integer;
+  CY: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI LineTo]');
@@ -3473,9 +3475,18 @@ begin
 
   TQtDeviceContext(DC).getPenPos(@PenPos);
 
-  TQtDeviceContext(DC).drawLine( PenPos.X, PenPos.Y, X, Y);
-   
-  MoveToEx(DC, X, Y, nil);
+  CX := X;
+  CY := Y;
+  
+  if (CX <> PenPos.X) and (CX > 0) and (CX > PenPos.X) then
+    CX := CX - 1;
+  
+  if (CY <> PenPos.Y) and (CY > 0) and (CY > PenPos.Y) then
+    CY := CY - 1;
+  
+  TQtDeviceContext(DC).drawLine( PenPos.X, PenPos.Y, CX, CY);
+
+  MoveToEx(DC, CX, CY, nil);
   
   Result := True;
 end;
