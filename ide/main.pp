@@ -7577,12 +7577,19 @@ begin
       if LowestEditorIndex<0 then break;
 
       // reopen file
-      Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
-                    [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
-      if Result=mrAbort then begin
-        exit;
-      end;
       AnUnitInfo:=Project1.Units[LowestUnitIndex];
+      if (not AnUnitInfo.IsPartOfProject)
+      and (not FileExistsCached(AnUnitInfo.Filename)) then begin
+        // this file does not exist, but is not important => silently ignore
+      end
+      else begin
+        // reopen file
+        Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,
+                      [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
+        if Result=mrAbort then begin
+          exit;
+        end;
+      end;
       if ((AnUnitInfo.Filename<>'')
       and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)<>nil))
       then begin
