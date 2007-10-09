@@ -1,0 +1,49 @@
+object TodoDialog: TTodoDialog
+  Left = 363
+  Height = 257
+  Top = 216
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 256
+  ActiveControl = OkButton
+  Caption = 'Insert Todo'
+  ClientHeight = 257
+  ClientWidth = 400
+  object TodoLabel: TLabel
+    Left = 16
+    Height = 14
+    Top = 8
+    Width = 27
+    Caption = 'Text:'
+    FocusControl = TodoMemo
+    ParentColor = False
+  end
+  object OkButton: TButton
+    Left = 112
+    Height = 25
+    Top = 208
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object CancelButton: TButton
+    Left = 208
+    Height = 25
+    Top = 208
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object TodoMemo: TMemo
+    Left = 16
+    Height = 168
+    Top = 24
+    Width = 368
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+end

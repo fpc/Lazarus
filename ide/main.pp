@@ -206,6 +206,7 @@ type
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
+    procedure mnuInsertTodo(Sender: TObject);
 
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
@@ -1590,6 +1591,7 @@ begin
   SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
+  SourceNotebook.OnInsertTodoClicked := @mnuInsertTodo;
   SourceNotebook.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
@@ -13141,6 +13143,11 @@ end;
 procedure TMainIDE.mnuEditInsertChangeLogEntryClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertChangeLogEntry);
+end;
+
+procedure TMainIDE.mnuInsertTodo(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertTodo);
 end;
 
 procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);

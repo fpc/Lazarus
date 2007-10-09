@@ -73,6 +73,7 @@ type
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetOptions(const AValue: TCompilerOptions);
     procedure SetMsgDirectory(Index: integer; const CurDir: string);
+    function CheckSpecialCharsInPath(const Title, Path: string): TModalResult;
     function CheckCompilerExecutable(const CompilerFilename: string): TModalResult;
     function CheckAmbiguousFPCCfg(const CompilerFilename: string): TModalResult;
     function CheckCompilerConfig(const CompilerFilename: string;
@@ -142,6 +143,67 @@ begin
   FDirectories[Index]:=CurDir;
 end;
 
+function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, Path: string
+  ): TModalResult;
+  
+  procedure AddStr(var s: string; const Addition: string);
+  begin
+    if s='' then
+      s:='contains: '
+    else
+      s:=s+', ';
+    s:=s+Addition;
+  end;
+  
+var
+  i: Integer;
+  HasSpaces: Boolean;
+  HasSpecialChars: Boolean;
+  HasNonASCII: Boolean;
+  HasWrongPathDelim: Boolean;
+  HasUnusualChars: Boolean;
+  HasNewLine: Boolean;
+  Warning: String;
+  ErrorMsg: String;
+begin
+  HasSpaces:=false;
+  HasSpecialChars:=false;
+  HasNonASCII:=false;
+  HasWrongPathDelim:=false;
+  HasUnusualChars:=false;
+  HasNewLine:=false;
+  for i:=1 to length(Path) do begin
+    case Path[i] of
+    #10,#13: HasNewLine:=true;
+    #0..#8,#11,#12,#14..#31: HasSpecialChars:=true;
+    #9,' ': HasSpaces:=true;
+    '/','\': if Path[i]<>PathDelim then HasWrongPathDelim:=true;
+    '@','#','$','&','*','(',')','[',']','+','~','<','>','?','|': HasUnusualChars:=true;
+    #128..#255: HasNonASCII:=true;
+    end;
+  end;
+  Warning:='';
+  ErrorMsg:='';
+  if HasSpaces then AddStr(Warning,'spaces');
+  if HasSpecialChars then AddStr(ErrorMsg,'special characters');
+  if HasNonASCII then AddStr(Warning,'non ASCII');
+  if HasWrongPathDelim then AddStr(Warning,'wrong path delimiter');
+  if HasUnusualChars then AddStr(Warning,'unusual characters');
+  if HasNewLine then AddStr(ErrorMsg,'unusual characters');
+
+  if Warning<>'' then
+    AddWarning(Title+' '+Warning);
+  if ErrorMsg<>'' then begin
+    Result:=QuestionDlg('Invalid search path',Title+' '+ErrorMsg,mtError,
+      [mrIgnore,'Skip',mrAbort],0);
+  end else begin
+    if Warning='' then
+      Result:=mrOk
+    else
+      Result:=mrIgnore;
+  end;
+end;
+
 function TCheckCompilerOptsDlg.CheckCompilerExecutable(
   const CompilerFilename: string): TModalResult;
 var
@@ -156,7 +218,7 @@ begin
       Result:=QuestionDlg('Invalid compiler',
         'The compiler "'+CompilerFilename+'" is not an executable file.'#13
         +'Details: '+E.Message,
-        mtError,[mrCancel,'Skip',mrAbort],0);
+        mtError,[mrIgnore,'Skip',mrAbort],0);
       exit;
     end;
   end;
@@ -171,7 +233,7 @@ begin
       'There are several FreePascal Compilers in your path.'#13#13
       +CompilerFiles.Text+#13
       +'Maybe you forgot to delete an old compiler?',
-      mtWarning,[mbCancel,mbIgnore],0);
+      mtWarning,[mbAbort,mbIgnore],0);
     if Result<>mrIgnore then exit;
   end;
   
@@ -715,6 +777,7 @@ var
   FPC_PPUs: TStrings;
   TargetUnitPath: String;
   Target_PPUs: TStrings;
+  cp: TParsedCompilerOptString;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
@@ -724,6 +787,17 @@ begin
   FPC_PPUs:=nil;
   Target_PPUs:=nil;
   try
+    // check for special characters in search paths
+    for cp:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
+    begin
+      if cp in ParsedCompilerSearchPaths then begin
+        Result:=CheckSpecialCharsInPath(
+          copy(ParsedCompilerOptStringNames[cp],5,100),
+          Options.ParsedOpts.GetParsedValue(cp));
+        if not (Result in [mrOk,mrIgnore]) then exit;
+      end;
+    end;
+  
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
 
     // check compiler filename
@@ -748,7 +822,7 @@ begin
     Result:=CheckForAmbiguousPPUs(FPC_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // check if unit paths do not contain sources
+    // check if FPC unit paths do not contain sources
     Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
@@ -768,6 +842,10 @@ begin
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
     
+    // ToDo: check if search paths of packages/projects intersects
+    
+    // ToDo: check ppu checksums and versions
+
     if OutputListbox.Items.Count=0 then
       AddMsg('All tests succeeded.','',-1);
 

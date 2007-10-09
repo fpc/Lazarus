@@ -60,7 +60,7 @@ uses
   CodeTemplatesDlg,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
-  BaseDebugManager, Debugger, MainIntf;
+  BaseDebugManager, Debugger, MainIntf, TodoDlg;
 
 type
   TSourceNotebook = class;
@@ -265,6 +265,7 @@ type
     procedure InsertLGPLNotice(CommentType: TCommentType);
     procedure InsertModifiedLGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
+    procedure InsertTodo;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
     procedure InsertCVSKeyword(const AKeyWord: string);
@@ -435,6 +436,7 @@ type
     procedure FindNextWordOccurrenceClicked(Sender: TObject);
     procedure FindPrevWordOccurrenceClicked(Sender: TObject);
     procedure FindInFilesClicked(Sender: TObject);
+    procedure InsertTodoClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
@@ -472,6 +474,7 @@ type
     FOnEditorVisibleChanged: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnInitIdentCompletion: TOnInitIdentCompletion;
+    FOnInsertTodoClicked: TNotifyEvent;
     FOnShowCodeContext: TOnShowCodeContext;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMovingPage: TOnMovingPage;
@@ -740,6 +743,8 @@ type
                  read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
                        read FOnInitIdentCompletion write FOnInitIdentCompletion;
+    property OnInsertTodoClicked: TNotifyEvent
+               read FOnInsertTodoClicked write FOnInsertTodoClicked;
     property OnShowCodeContext: TOnShowCodeContext
                                read FOnShowCodeContext write FOnShowCodeContext;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
@@ -820,12 +825,14 @@ var
     SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
+  SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
   SrcEditMenuEditorProperties: TIDEMenuCommand;
+
 
 procedure RegisterStandardSourceEditorMenuItems;
 
@@ -965,6 +972,9 @@ begin
     SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
                                         'InvertAssignment',uemInvertAssignment);
 
+  SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
+                                        'InsertTodo',uemInsertTodo);
+
   // register the Flags section
   SrcEditMenuSectionFlags:=RegisterIDEMenuSection(SourceEditorMenuRoot,
                                                   'Flags section');
@@ -979,6 +989,7 @@ begin
     SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
     SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
                                         'EditorProperties',uemEditorProperties);
+
 end;
 
 { TSourceEditor }
@@ -1546,6 +1557,9 @@ Begin
   ecInsertDateTime:
     InsertDateTime;
 
+  ecInsertTodo:
+    InsertTodo;
+
   ecInsertChangeLogEntry:
     InsertChangeLogEntry;
 
@@ -1883,6 +1897,17 @@ procedure TSourceEditor.InsertUsername;
 begin
   if ReadOnly then Exit;
   FEditor.SelText:=GetCurrentUserName;
+end;
+
+procedure TSourceEditor.InsertTodo;
+Var
+  TodoMsg: TStrings;
+begin
+  if ReadOnly then Exit;
+  TodoMsg:= TStringList.Create;
+  if ShowTodoDialog(TodoMsg) then
+    FEditor.SelText:=CommentText('TODO: '+TodoMsg.Text, comtPascal);
+  TodoMsg.Free;
 end;
 
 procedure TSourceEditor.InsertDateTime;
@@ -3937,6 +3962,8 @@ begin
   SrcEditMenuMoveEditorLeft.OnClick:=@MoveEditorLeftClicked;
   SrcEditMenuMoveEditorRight.OnClick:=@MoveEditorRightClicked;
 
+  SrcEditMenuInsertTodo.OnClick:=@InsertTodoClicked;
+
   SrcEditMenuCompleteCode.OnClick:=@CompleteCodeMenuItemClick;
   SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
   SrcEditMenuExtractProc.OnClick:=@ExtractProcMenuItemClick;
@@ -4852,6 +4879,12 @@ begin
   SrcEdit := GetActiveSE;
   if SrcEdit<>nil then
     SrcEdit.DoEditorExecuteCommand(ecFindInFiles);
+end;
+
+procedure TSourceNotebook.InsertTodoClicked(Sender: TObject);
+begin
+  if Assigned(FOnInsertTodoClicked) then
+    FOnInsertTodoClicked(Sender);
 end;
 
 Procedure TSourceNotebook.CutClicked(Sender: TObject);

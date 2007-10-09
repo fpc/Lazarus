@@ -1474,6 +1474,7 @@ resourcestring
     +'system seems to use it.%sThat means non ASCII characters will probably '
     +'be shown incorrect.%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
+  uemInsertTodo = 'Insert Todo';
 
   // Form designer
   lisInvalidMultiselection = 'Invalid multiselection';
