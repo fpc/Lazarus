@@ -665,7 +665,7 @@ begin
       case FileCase of
       ctsfcDefault:
         {$IFDEF CaseInsensitiveFilenames}
-        cmp:=ComparePCharCaseInsensitive(Pointer(ShortFilename)),CurFilenames);// pointer type cast avoids #0 check
+        cmp:=ComparePCharCaseInsensitive(Pointer(ShortFilename),CurFilename);// pointer type cast avoids #0 check
         {$ELSE}
         cmp:=ComparePCharCaseSensitive(Pointer(ShortFilename),CurFilename);
         {$ENDIF}
