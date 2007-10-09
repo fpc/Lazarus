@@ -736,19 +736,28 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 
-type
-  TBitmapHeader = packed record
-    FileHeader : tagBitmapFileHeader;
-    InfoHeader : tagBitmapInfoHeader;
-  end;
+
+const
+  MIN_LOADER_HEADER_SIZE = 128;
   
+type
+  // the loader internally used starts decoding the header after 128 bytes.
+  // by adding dummy bytes and adjusting the data offset, we make sure that we
+  // we write atleast 128 bytes
+  
+  TBitmapHeader = packed record
+    FileHeader: tagBitmapFileHeader;
+    InfoHeader: tagBitmapInfoHeader;
+    Dummy: array[1..MIN_LOADER_HEADER_SIZE] of Byte;
+  end;
+
 var
   GdiObject: PGdiObject;
 
   procedure FillBitmapInfo(out Header: TBitmapHeader);
   begin
     FillChar(Header, SizeOf(Header), 0);
-
+    
     Header.InfoHeader.biSize := SizeOf(Header.InfoHeader);
     Header.InfoHeader.biWidth := Width;
     Header.InfoHeader.biHeight := Height;
@@ -760,37 +769,72 @@ var
     Header.InfoHeader.biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY);
 
     Header.FileHeader.bfType      := LeToN($4D42);
-    Header.FileHeader.bfSize      := SizeOf(Header) + Header.InfoHeader.biSizeImage;
-    Header.FileHeader.bfOffBits   := SizeOf(Header);
+    Header.FileHeader.bfSize      := MIN_LOADER_HEADER_SIZE + Header.InfoHeader.biSizeImage;
+    Header.FileHeader.bfOffBits   := MIN_LOADER_HEADER_SIZE;
   end;
 
   procedure LoadDataByPixbufLoader;
+  const
+    ALIGNDATA: Word = 0;
   var
     Header: TBitmapHeader;
     Loader: PGdkPixbufLoader;
     Src: PGDKPixbuf;
+    res: Boolean;
+    LineSize, Count: Integer;
+    BitsPtr: PByte;
   begin
     Loader := gdk_pixbuf_loader_new;
     if Loader = nil then Exit;
 
+
     FillBitmapInfo(Header);
-
-    SRC := nil;
-
-    if gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@Header), SizeOf(Header) {$ifdef gtk2},nil{$endif})
-    then begin
-      if gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitmapBits), Header.InfoHeader.biSizeImage {$ifdef gtk2},nil{$endif})
+    Src := nil;
+    try
+      if not gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@Header), MIN_LOADER_HEADER_SIZE {$ifdef gtk2},nil{$endif})
       then begin
-        Src := gdk_pixbuf_loader_get_pixbuf(loader);
-        if Src = nil
-        then DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Pixbuf!');
+        DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Bitmap Header!');
+        Exit;
+      end;
+      
+      LineSize := (((BitCount * Width + 15) shr 4) shl 1);
+      if (LineSize and 2) <> 0
+      then begin
+        // bitmapdata needs to be DWord aligned, while CreateBitmap is word aligned
+        // so "feed" the loader line by line :(
+        Count := Height;
+        res := True;
+        BitsPtr := BitmapBits;
+        while res and (Count > 0) do
+        begin
+          res := gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitsPtr), LineSize {$ifdef gtk2},nil{$endif})
+             and gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@ALIGNDATA), 2 {$ifdef gtk2},nil{$endif});
+          Inc(BitsPtr, LineSize);
+          Dec(Count);
+        end;
       end
-      else DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Image!');
-    end
-    else DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Bitmap Header!');
-    gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
+      else begin
+        // data is DWord aligned :)
+        res := gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitmapBits), Header.InfoHeader.biSizeImage {$ifdef gtk2},nil{$endif});
+      end;
+    
+      if not res
+      then begin
+        DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Image!');
+        Exit;
+      end;
 
-    if Src = nil then Exit;
+      Src := gdk_pixbuf_loader_get_pixbuf(loader);
+      if Src = nil
+      then begin
+        DebugLn('WARNING: [TGtkWidgetSet.CreateBitmap] Error occured loading Pixbuf!');
+        Exit;
+      end;
+
+    finally
+      gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
+    end;
+    {$note todo create 1bit bitmap when requested} // then next always returns system depth
 
     gdk_pixbuf_render_pixmap_and_mask(Src, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
     gdk_pixbuf_unref(Src);
