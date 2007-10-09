@@ -418,7 +418,7 @@ type
 
     FReadSize: Integer;      // Size (in bytes) of 1 scanline.
     FBFI: TBitMapInfoHeader; // The header as read from the stream.
-    FPalette: PFPcolor;      // Buffer with Palette entries.
+    FPalette: PFPColor;      // Buffer with Palette entries.
     FBitsPerPixel: Integer;  // bits per pixel (1, 4, 8, 15, 16, 24, 32)
     FLineBuf: PByte;         // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
 
@@ -4774,6 +4774,8 @@ procedure TLazReaderPartIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
   Row, Column: Integer;
   NewColor: TFPColor;
+  BufPtr: PByte;
+  MaskBit: Byte;
 begin
   InternalReadHead;
   
@@ -4794,13 +4796,34 @@ begin
     for Row := Img.Height - 1 downto 0 do
     begin
       ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
-      for Column:=0 to Img.Width-1 do
+      BufPtr := LineBuf;
+      MaskBit := $80;
+      for Column:=0 to FImage.Width - 1 do
       begin
-        NewColor := img.colors[Column,Row];
-        if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
-          NewColor.alpha := alphaTransparent else
-          NewColor.alpha := alphaOpaque;
-        img.colors[Column,Row] := NewColor;
+        if BufPtr^ and MaskBit = 0
+        then begin
+          // opaque
+          FImage.Masked[Column, Row] := False;
+        end
+        else begin
+          // transparent
+          FImage.Masked[Column, Row] := True;
+          // add alpha when source wasn't 32bit
+          if FBitsPerPixel <> 32
+          then begin
+            NewColor := FImage.Colors[Column, Row];
+            NewColor.Alpha := alphaTransparent;
+            FImage.Colors[Column, Row] := NewColor;
+          end;
+        end;
+        if MaskBit = 1
+        then begin
+          MaskBit := $80;
+          Inc(BufPtr);
+        end
+        else begin
+          MaskBit := MaskBit shr 1;
+        end;
       end;
     end;
   finally
@@ -4850,6 +4873,9 @@ var
   i: Integer;
   Bitmap: TBitmap;
 begin
+  // Force Maskmode to none, icons have their own mask, no need to generate
+  FMaskMode := lrmmNone;
+
   // force alpha description
   CheckAlphaDescription(TheImage);
 
@@ -4914,7 +4940,7 @@ var
 begin
   FnStartPos := Stream.Position;
   Stream.Read(IconHeader,SizeOf(IconHeader));
-  With IconHeader do
+  with IconHeader do
     Result := (idReserved=0) and (LEtoN(idType)=1);
   FnIcons := LEtoN(IconHeader.idCount);
 end;
