@@ -1011,9 +1011,8 @@ begin
     AMenu := GTK_OBJECT(APrivate^.popup_window);
 
   if Assigned(AMenu) then begin
-//    g_signal_connect(AMenu, 'selection-done', TGCallback(@GtkSelectedCB), AWidgetInfo);
     g_signal_connect(AMenu, 'show', G_CALLBACK(@GtkPopupShowCB), AWidgetInfo);
-    g_signal_connect_after(AMenu, 'hide', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
+    g_signal_connect_after(AMenu, 'selection-done', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
   end;
 
   //g_signal_connect(ComboWidget, 'popup-shown', TGCallback(@GtkPopupShowCB), AWidgetInfo);
