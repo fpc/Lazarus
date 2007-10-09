@@ -62,6 +62,7 @@ uses
 const
   GtkListItemGtkListTag = 'GtkList';
   GtkListItemLCLListTag = 'LCLList';
+  GtkComboLCLItemIndexTag = 'LCLItemIndex';
   
 
   {$if Declared(TOldStyleCustomImageList)}
