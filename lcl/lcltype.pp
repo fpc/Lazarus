@@ -66,8 +66,6 @@ type
 
   TCriticalSection = PtrUInt;
   PCriticalSection = ^TCriticalSection;
-  TRTLCriticalSection = pointer;
-
 
 {$ifndef WINDOWS}
   {$IFDEF CPU64}
