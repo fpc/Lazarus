@@ -927,7 +927,7 @@ end;
 
   Sets the caption of a menuItem.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetCaption(const AValue: string);
+procedure TMenuItem.SetCaption(const AValue: TTranslateString);
 begin
   if FCaption = AValue then exit;
   FCaption := AValue;

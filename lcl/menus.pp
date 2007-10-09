@@ -140,7 +140,7 @@ type
     function IsShortCutStored: boolean;
     function IsVisibleStored: boolean;
     procedure SetAutoCheck(const AValue: boolean);
-    procedure SetCaption(const AValue: string);
+    procedure SetCaption(const AValue: TTranslateString);
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
@@ -232,7 +232,7 @@ type
   published
     property Action: TBasicAction read GetAction write SetAction;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
-    property Caption: String read FCaption write SetCaption
+    property Caption: TTranslateString read FCaption write SetCaption
                              stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked
                               stored IsCheckedStored default False;
@@ -243,7 +243,7 @@ type
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property HelpContext: THelpContext read FHelpContext write FHelpContext
                                            stored IsHelpContextStored default 0;
-    property Hint: String read FHint write FHint stored IsHintStored;
+    property Hint: TTranslateString read FHint write FHint stored IsHintStored;
     property ImageIndex: Integer read FImageIndex write SetImageIndex
                                            stored IsImageIndexStored default -1;
     property RadioItem: Boolean read FRadioItem write SetRadioItem
