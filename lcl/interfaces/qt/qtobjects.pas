@@ -1867,6 +1867,7 @@ begin
   AColor.g:=AColor.g+(AColor.g shr 8);
   AColor.b:=(AColorRef and $ff0000) shr 8;
   AColor.b:=AColor.b+(AColor.b shr 8);
+  AColor.ColorSpec := Ord(QColorRGB);
 end;
 
 procedure DebugRegion(const msg: string; Rgn: QRegionH);
