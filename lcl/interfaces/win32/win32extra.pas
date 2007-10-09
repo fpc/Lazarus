@@ -449,7 +449,7 @@ var
   SrcBytesPtr, DstBytesPtr, TmpBytesPtr, AlphaBytesPtr: Pointer;
   SrcLinePtr, DstLinePtr: PByte;
   CleanupSrc, CleanupSrcPtr, CleanupDst, CleanupAlpha: Boolean;
-  SrcSize: Cardinal;
+  SrcSize: PtrUInt;
   SrcPixelBytes, DstPixelBytes: Byte;
   SrcRowStride, DstRowStride: Integer;
   SrcLineOrder: TRawImageLineOrder;
