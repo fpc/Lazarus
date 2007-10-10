@@ -172,6 +172,8 @@ uses
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+var
+  InRemoveStayOnTopFlags: Integer = 0;
 {------------------------------------------------------------------------------
   Function: WM_To_String
   Params: WM_Message - a WinDows message
@@ -1120,7 +1122,7 @@ begin
   if (AStyle and WS_EX_TOPMOST) <> 0 then // if stay on top then
   begin
     StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
-    SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+    SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
   end;
 end;
 
@@ -1129,14 +1131,18 @@ var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
   WindowInfo: PWindowInfo;
 begin
-  New(StayOnTopWindowsInfo);
-  StayOnTopWindowsInfo^.AppWindow := Window;
-  StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
-  WindowInfo := GetWindowInfo(Window);
-  WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
-  EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
-    @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
-  Dispose(StayOnTopWindowsInfo);
+  if InRemoveStayOnTopFlags = 0 then
+  begin
+    New(StayOnTopWindowsInfo);
+    StayOnTopWindowsInfo^.AppWindow := Window;
+    StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
+    WindowInfo := GetWindowInfo(Window);
+    WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
+    EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
+      @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
+    Dispose(StayOnTopWindowsInfo);
+  end;
+  inc(InRemoveStayOnTopFlags);
 end;
 
 procedure RestoreStayOnTopFlags(Window: HWND);
@@ -1144,13 +1150,18 @@ var
   WindowInfo: PWindowInfo;
   I: integer;
 begin
-  WindowInfo := GetWindowInfo(Window);
-  if WindowInfo^.StayOnTopList <> nil then
+  if InRemoveStayOnTopFlags = 1 then
   begin
-    for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
-      SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-    FreeAndNil(WindowInfo^.StayOnTopList);
+    WindowInfo := GetWindowInfo(Window);
+    if WindowInfo^.StayOnTopList <> nil then
+    begin
+      for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
+        SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+      FreeAndNil(WindowInfo^.StayOnTopList);
+    end;
   end;
+  if InRemoveStayOnTopFlags > 0 then
+    dec(InRemoveStayOnTopFlags);
 end;
 
 

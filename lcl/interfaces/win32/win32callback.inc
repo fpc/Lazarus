@@ -1113,13 +1113,13 @@ begin
   Assert(False, 'Trace:WindowProc - Checking Proc');
   Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
 
-  Case Msg Of
+  case Msg of
     WM_ACTIVATE:
     begin
-      Case LOWORD(WParam) Of
+      case LOWORD(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
         begin
-          LMessage.Msg := LM_ACTIVATE
+          LMessage.Msg := LM_ACTIVATE;
         end;
         WA_INACTIVE:
         begin
@@ -1131,17 +1131,22 @@ begin
     begin
       if Window = TWin32WidgetSet(WidgetSet).AppHandle then
       begin
-        if WParam <> 0 then
+        if WParam <> 0 then // activated
         begin
+          RestoreStayOnTopFlags(Window);
           Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_TOP,
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        end
+        else
+        begin // deactivated
+          RemoveStayOnTopFlags(Window);
         end;
 
         // activate/deactivate main window
         if (Application <> nil) and (Application.MainForm <> nil) and
             Application.MainForm.HandleAllocated then
         begin
-          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, 0);
+          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, LParam);
         end;
       end;
     end;
