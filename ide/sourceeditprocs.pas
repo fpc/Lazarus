@@ -62,6 +62,7 @@ type
                                    const Filename: string;
                                    UpdateFromDisk, Revert: Boolean;
                                    out CodeBuffer: Pointer): boolean; override;
+    procedure AssignCodeToolBossError(Target: TCustomTextConverterTool); override;
   end;
   
 procedure SetupTextConverters;
@@ -695,6 +696,19 @@ function TLazTextConverterToolClasses.LoadCodeBufferFromFile(
 begin
   CodeBuffer:=CodeToolBoss.LoadFile(Filename,UpdateFromDisk,Revert);
   Result:=CodeBuffer<>nil;
+end;
+
+procedure TLazTextConverterToolClasses.AssignCodeToolBossError(
+  Target: TCustomTextConverterTool);
+begin
+  Target.ErrorMsg:=CodeToolBoss.ErrorMessage;
+  Target.ErrorLine:=CodeToolBoss.ErrorLine;
+  Target.ErrorColumn:=CodeToolBoss.ErrorColumn;
+  Target.ErrorTopLine:=CodeToolBoss.ErrorTopLine;
+  if CodeToolBoss.ErrorCode<>nil then
+    Target.ErrorFilename:=CodeToolBoss.ErrorCode.Filename
+  else
+    Target.ErrorFilename:='';
 end;
 
 function TLazTextConverterToolClasses.SupportsType(aTextType: TTextConverterType

@@ -80,7 +80,7 @@ type
     procedure Clear;
     procedure CheckType(aTextType: TTextConverterType);
     function SupportsType(aTextType: TTextConverterType): boolean; virtual;
-    function Execute(ToolList: TComponent): TModalResult;// run the tools
+    function Execute(ToolList: TComponent; out ErrorTool: TComponent): TModalResult;// run the tools
     function LoadFromFile(const AFilename: string;
                           UseIDECache: Boolean = true;
                           UpdateFromDisk: Boolean = true;
@@ -107,6 +107,11 @@ type
     FCaption: string;
     FDescription: string;
     FEnabled: boolean;
+    FErrorColumn: integer;
+    FErrorFilename: string;
+    FErrorLine: integer;
+    FErrorMsg: string;
+    FErrorTopLine: integer;
     function IsCaptionStored: boolean;
     procedure SetCaption(const AValue: string);
     procedure SetDescription(const AValue: string);
@@ -116,6 +121,14 @@ type
     constructor Create(TheOwner: TComponent); override;
     function Execute(aText: TIDETextConverter): TModalResult; virtual; abstract;
     procedure Assign(Source: TPersistent); override;
+    procedure ClearError; virtual;
+    procedure AssignError(Source: TCustomTextConverterTool);
+    procedure AssignCodeToolBossError;
+    property ErrorMsg: string read FErrorMsg write FErrorMsg;
+    property ErrorLine: integer read FErrorLine write FErrorLine;
+    property ErrorColumn: integer read FErrorColumn write FErrorColumn;
+    property ErrorTopLine: integer read FErrorTopLine write FErrorTopLine;
+    property ErrorFilename: string read FErrorFilename write FErrorFilename;
   published
     property Caption: string read FCaption write SetCaption stored IsCaptionStored;
     property Description: string read FDescription write SetDescription;
@@ -198,6 +211,7 @@ type
                                  const Filename: string;
                                  UpdateFromDisk, Revert: Boolean;
                                  out CodeBuffer: Pointer): boolean; virtual; abstract;
+    procedure AssignCodeToolBossError(Target: TCustomTextConverterTool); virtual; abstract;
   end;
   
 var
@@ -634,22 +648,27 @@ begin
            and (TextConverterToolClasses.SupportsType(aTextType)));
 end;
 
-function TIDETextConverter.Execute(ToolList: TComponent): TModalResult;
+function TIDETextConverter.Execute(ToolList: TComponent;
+  out ErrorTool: TComponent): TModalResult;
 var
   i: Integer;
   Tool: TCustomTextConverterTool;
   CurResult: TModalResult;
 begin
   Result:=mrOk;
+  ErrorTool:=nil;
   for i:=0 to ToolList.ComponentCount-1 do begin
     if ToolList.Components[i] is TCustomTextConverterTool then begin
       Tool:=TCustomTextConverterTool(ToolList.Components[i]);
       if Tool.Enabled then begin
+        Tool.ClearError;
         CurResult:=Tool.Execute(Self);
         if CurResult=mrIgnore then
-          Result:=mrCancel
-        else if CurResult<>mrOk then
+          Result:=mrOk
+        else if CurResult<>mrOk then begin
+          ErrorTool:=Tool;
           exit(mrAbort);
+        end;
       end;
     end;
   end;
@@ -756,6 +775,33 @@ begin
     Description:=Src.Description;
   end else
     inherited Assign(Source);
+end;
+
+procedure TCustomTextConverterTool.ClearError;
+begin
+  FErrorMsg:='';
+  FErrorLine:=0;
+  FErrorColumn:=0;
+  FErrorTopLine:=0;
+  FErrorFilename:='';
+end;
+
+procedure TCustomTextConverterTool.AssignError(Source: TCustomTextConverterTool
+  );
+begin
+  FErrorMsg:=Source.ErrorMsg;
+  FErrorLine:=Source.ErrorLine;
+  FErrorColumn:=Source.ErrorColumn;
+  FErrorTopLine:=Source.ErrorTopLine;
+  FErrorFilename:=Source.ErrorFilename;
+end;
+
+procedure TCustomTextConverterTool.AssignCodeToolBossError;
+begin
+  if Assigned(TextConverterToolClasses) then
+    TextConverterToolClasses.AssignCodeToolBossError(Self)
+  else
+    ClearError;
 end;
 
 class function TCustomTextConverterTool.FirstLineOfClassDescription: string;

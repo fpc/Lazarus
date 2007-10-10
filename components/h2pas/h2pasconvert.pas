@@ -1842,6 +1842,8 @@ begin
 end;
 
 function TH2PasConverter.ConvertFile(AFile: TH2PasFile): TModalResult;
+var
+  TextConverter: TIDETextConverter;
 
   procedure CloseOrRevertEditorFile(const Filename: string);
   begin
@@ -1850,13 +1852,41 @@ function TH2PasConverter.ConvertFile(AFile: TH2PasFile): TModalResult;
     else
       LazarusIDE.DoCloseEditorFile(Filename,[cfQuiet]);
   end;
+  
+  function ExecuteTools(List: TComponent; const DefaultFilename: string
+    ): TModalResult;
+  var
+    ErrorComponent: TComponent;
+    ErrorTool: TCustomTextConverterTool;
+    ErrMsg: String;
+  begin
+    Result:=TextConverter.Execute(List,ErrorComponent);
+    if Result=mrOk then exit;
+    if ErrorComponent is TCustomTextConverterTool then begin
+      ErrorTool:=TCustomTextConverterTool(ErrorComponent);
+      ErrMsg:=ErrorTool.ErrorFilename;
+      if ErrMsg='' then
+        ErrMsg:=DefaultFilename;
+      if ErrorTool.ErrorLine>0 then begin
+        ErrMsg:=ErrMsg+'('+IntToStr(ErrorTool.ErrorLine)+',';
+        if ErrorTool.ErrorColumn>0 then
+          ErrMsg:=ErrMsg+IntToStr(ErrorTool.ErrorColumn)
+        else
+          ErrMsg:=ErrMsg+'1';
+        ErrMsg:=ErrMsg+')';
+      end;
+      ErrMsg:=ErrMsg+' Error: '+ErrorTool.ErrorMsg+' ('+ErrorTool.Caption+')';
+    end else begin
+      ErrMsg:=DefaultFilename;
+    end;
+    DebugLn(['TH2PasConverter.ConvertFile Failed: ',ErrMsg]);
+  end;
 
 var
   OutputFilename: String;
   TempCHeaderFilename: String;
   InputFilename: String;
   Tool: TH2PasTool;
-  TextConverter: TIDETextConverter;
 begin
   Result:=mrCancel;
   FLastUsedFilename:='';
@@ -1895,7 +1925,7 @@ begin
     end;
 
     // run converters for .h file to make it compatible for h2pas
-    Result:=TextConverter.Execute(Project.PreH2PasTools);
+    Result:=ExecuteTools(Project.PreH2PasTools,TempCHeaderFilename);
     if Result<>mrOk then begin
       DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PreH2PasTools on ',TempCHeaderFilename]);
       exit;
@@ -1925,10 +1955,10 @@ begin
 
     // run beautification tools for new pascal code
     TextConverter.InitWithFilename(OutputFilename);
-    DebugLn(['TH2PasConverter.ConvertFile OutputFilename: ',copy(TextConverter.Source,1,300)]);
-    Result:=TextConverter.Execute(Project.PostH2PasTools);
+    //DebugLn(['TH2PasConverter.ConvertFile Output: ',copy(TextConverter.Source,1,300)]);
+    Result:=ExecuteTools(Project.PostH2PasTools,OutputFilename);
     if Result<>mrOk then begin
-      DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PostH2PasTools on ',TempCHeaderFilename]);
+      DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PostH2PasTools on ',OutputFilename]);
       exit;
     end;
     TextConverter.Filename:=OutputFilename;// save
@@ -2384,13 +2414,19 @@ begin
   end;
   SearchFor:='^\s*('+SearchFor+');\s*$';
   Result:=IDESearchInText('',Source,SearchFor,'',Flags,Prompt,nil);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    ErrorMsg:='deletion of "'+SearchFor+'" failed';
+    exit;
+  end;
   
   // replace NULL with nil
   Flags:=[sesoReplace,sesoReplaceAll,sesoRegExpr,sesoMatchCase];
   Result:=IDESearchInText('',Source,'\bNULL\b','nil',Flags,Prompt,nil);
-  if Result<>mrOk then exit;
-  
+  if Result<>mrOk then begin
+    ErrorMsg:='replacing of NULL with nil failed';
+    exit;
+  end;
+
   aText.Source:=Source;
 end;
 
@@ -2953,6 +2989,8 @@ var
   CurAtom: String;
   Identifier: String;
   TypeDefStart: LongInt;
+  ErrLine: integer;
+  ErrCol: integer;
 begin
   Result:=false;
   ModalResult:=mrCancel;
@@ -2982,6 +3020,10 @@ begin
           TypeDefStart:=Position;
           Result:=ReadTypeDefinition(Position);
           if not Result then begin
+            SrcPosToLineCol(Src,TypeStart,ErrLine,ErrCol);
+            ErrorColumn:=ErrCol;
+            ErrorLine:=ErrLine;
+            ErrorMsg:='FindExplicitTypes FAILED reading type definition '+Identifier;
             DebugLn(['FindExplicitTypes FAILED reading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
             exit;
           end;
@@ -2997,6 +3039,10 @@ begin
           //DebugLn(['FindExplicitTypes Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
           Result:=ReadTypeDefinition(Position);
           if not Result then begin
+            SrcPosToLineCol(Src,TypeStart,ErrLine,ErrCol);
+            ErrorColumn:=ErrCol;
+            ErrorLine:=ErrLine;
+            ErrorMsg:='FindExplicitTypes FAILED Rereading type definition '+Identifier;
             DebugLn(['FindExplicitTypes FAILED Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
             exit;
           end;
@@ -3013,6 +3059,10 @@ begin
       //DebugLn(['TReplaceImplicitTypes.FindExplicitTypesAndConstants finding end of const section ...']);
       Result:=ReadConstSection(Position);
       if not Result then begin
+        SrcPosToLineCol(Src,ConstSectionStart,ErrLine,ErrCol);
+        ErrorColumn:=ErrCol;
+        ErrorLine:=ErrLine;
+        ErrorMsg:='FindExplicitTypes FAILED reading const section';
         DebugLn(['FindExplicitTypes FAILED reading const section at ',PosToStr(ConstSectionStart)]);
         exit;
       end;
@@ -3022,6 +3072,10 @@ begin
       //DebugLn(['TReplaceImplicitTypes.FindExplicitTypesAndConstants collecting const identifiers ...']);
       Result:=ReadConstSection(Position);
       if not Result then begin
+        SrcPosToLineCol(Src,ConstSectionStart,ErrLine,ErrCol);
+        ErrorColumn:=ErrCol;
+        ErrorLine:=ErrLine;
+        ErrorMsg:='FindExplicitTypes FAILED reading const section';
         DebugLn(['FindExplicitTypes FAILED reading const section at ',PosToStr(ConstSectionStart)]);
         exit;
       end;
@@ -3330,6 +3384,7 @@ begin
     exit(mrOk);// ignore
   end;
   if not CodeToolBoss.RemoveAllRedefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
+    AssignCodeToolBossError;
     DebugLn(['TRemoveRedefinitionsInUnit.Execute RemoveAllRedefinitions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
@@ -3357,6 +3412,7 @@ begin
     exit(mrOk);// ignore
   end;
   if not CodeToolBoss.FixAllAliasDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
+    AssignCodeToolBossError;
     DebugLn(['TFixAliasDefinitionsInUnit.Execute FixAllAliasDefinitions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
@@ -3379,7 +3435,11 @@ begin
   Result:=mrCancel;
   Changed:=false;
   Code:=TCodeBuffer(aText.CodeBuffer);
-  if not CodeToolBoss.FixMissingH2PasDirectives(Code,Changed) then exit;
+  if not CodeToolBoss.FixMissingH2PasDirectives(Code,Changed) then begin
+    AssignCodeToolBossError;
+    DebugLn(['TFixH2PasMissingIFDEFsInUnit.Execute failed ',CodeToolBoss.ErrorMessage]);
+    exit;
+  end;
   Result:=mrOk;
 end;
 
@@ -3428,8 +3488,11 @@ begin
   Changed:=false;
   Code:=TCodeBuffer(aText.CodeBuffer);
   if not CodeToolBoss.ReduceCompilerDirectives(Code,Undefines,Defines,Changed)
-  then
+  then begin
+    AssignCodeToolBossError;
+    DebugLn(['TReduceCompilerDirectivesInUnit.Execute failed ',ErrorMsg]);
     exit;
+  end;
   Result:=mrOk;
 end;
 
@@ -3449,6 +3512,7 @@ begin
     exit(mrOk);// ignore
   end;
   if not CodeToolBoss.ReplaceAllConstFunctions(TCodeBuffer(aText.CodeBuffer)) then begin
+    AssignCodeToolBossError;
     DebugLn(['TReplaceConstFunctionsInUnit.Execute ReplaceAllConstFunctions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
@@ -3471,6 +3535,7 @@ begin
     exit(mrOk);// ignore
   end;
   if not CodeToolBoss.ReplaceAllTypeCastFunctions(TCodeBuffer(aText.CodeBuffer)) then begin
+    AssignCodeToolBossError;
     DebugLn(['TReplaceTypeCastFunctionsInUnit.Execute ReplaceAllTypeCastFunctions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
@@ -3496,59 +3561,42 @@ begin
 end;
 
 function TPreH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
-var
-  Tool: TCustomTextConverterTool;
+
+  function Run(Option: TPreH2PasToolsOption;
+    ToolClass: TCustomTextConverterToolClass;
+    out aResult: TModalResult): boolean;
+  var
+    Tool: TCustomTextConverterTool;
+  begin
+    Result:=true;
+    aResult:=mrOk;
+    if not (Option in Options) then exit;
+    DebugLn(['TPreH2PasTools.Execute.Run ',ToolClass.ClassName]);
+    Tool:=ToolClass.Create(nil);
+    try
+      Tool.ClearError;
+      aResult:=Tool.Execute(aText);
+      if aResult<>mrOk then begin
+        AssignError(Tool);
+        DebugLn(['TPreH2PasTools.Execute.Run failed: ',ToolClass.ClassName]);
+        exit(false);
+      end;
+    finally
+      Tool.Free;
+    end;
+  end;
+
 begin
-  if phRemoveCPlusPlusExternCTool in Options then begin
-    Tool:=TRemoveCPlusPlusExternCTool.Create(nil);
-    try
-      Result:=Tool.Execute(aText);
-      if Result<>mrOk then exit;
-    finally
-      Tool.Free;
-    end;
-  end;
-  
-  if phRemoveEmptyCMacrosTool in Options then begin
-    Tool:=TRemoveEmptyCMacrosTool.Create(nil);
-    try
-      Result:=Tool.Execute(aText);
-      if Result<>mrOk then exit;
-    finally
-      Tool.Free;
-    end;
-  end;
-
-  if phReplaceEdgedBracketPairWithStar in Options then begin
-    Tool:=TReplaceEdgedBracketPairWithStar.Create(nil);
-    try
-      Result:=Tool.Execute(aText);
-      if Result<>mrOk then exit;
-    finally
-      Tool.Free;
-    end;
-  end;
-
-  if phReplaceMacro0PointerWithNULL in Options then begin
-    Tool:=TReplaceMacro0PointerWithNULL.Create(nil);
-    try
-      Result:=Tool.Execute(aText);
-      if Result<>mrOk then exit;
-    finally
-      Tool.Free;
-    end;
-  end;
-  
-  if phConvertFunctionTypesToPointers in Options then begin
-    Tool:=TConvertFunctionTypesToPointers.Create(nil);
-    try
-      Result:=Tool.Execute(aText);
-      if Result<>mrOk then exit;
-    finally
-      Tool.Free;
-    end;
-  end;
-
+  if not Run(phRemoveCPlusPlusExternCTool,
+             TRemoveCPlusPlusExternCTool,Result) then exit;
+  if not Run(phRemoveEmptyCMacrosTool,
+             TRemoveEmptyCMacrosTool,Result) then exit;
+  if not Run(phReplaceEdgedBracketPairWithStar,
+             TReplaceEdgedBracketPairWithStar,Result) then exit;
+  if not Run(phReplaceMacro0PointerWithNULL,
+             TReplaceMacro0PointerWithNULL,Result) then exit;
+  if not Run(phConvertFunctionTypesToPointers,
+             TConvertFunctionTypesToPointers,Result) then exit;
   Result:=mrOk;
 end;
 
@@ -3614,8 +3662,10 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
     DebugLn(['TPostH2PasTools.Execute.Run ',ToolClass.ClassName]);
     Tool:=ToolClass.Create(nil);
     try
+      Tool.ClearError;
       aResult:=Tool.Execute(aText);
       if aResult<>mrOk then begin
+        AssignError(Tool);
         DebugLn(['TPostH2PasTools.Execute.Run failed: ',ToolClass.ClassName]);
         exit(false);
       end;
@@ -3636,6 +3686,7 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
     if not CodeToolBoss.ReduceCompilerDirectives(Code,Undefines,Defines,Changed)
     then begin
       DebugLn(['TPostH2PasTools.Execute.ReduceCompilerDirectives failed']);
+      AssignCodeToolBossError;
       aResult:=mrCancel;
       exit(false);
     end;
@@ -3656,6 +3707,7 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
       Code:=TCodeBuffer(aText.CodeBuffer);
       if not CodeToolBoss.ReplaceAllConstFunctions(Code) then begin
         DebugLn(['ReplaceAllConstFunctions failed']);
+        AssignCodeToolBossError;
         aResult:=mrCancel;
         exit(false);
       end;
@@ -3665,6 +3717,7 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
       DebugLn(['TPostH2PasTools.Execute ReplaceAllTypeCastFunctions ']);
       if not CodeToolBoss.ReplaceAllTypeCastFunctions(Code) then begin
         DebugLn(['ReplaceAllTypeCastFunctions failed']);
+        AssignCodeToolBossError;
         aResult:=mrCancel;
         exit(false);
       end;
@@ -3688,6 +3741,7 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
       Code:=TCodeBuffer(aText.CodeBuffer);
       if not CodeToolBoss.FixAllAliasDefinitions(Code) then begin
         DebugLn(['FixAliasDefinitions failed']);
+        AssignCodeToolBossError;
         aResult:=mrCancel;
         exit(false);
       end;
@@ -3905,6 +3959,7 @@ begin
     exit(mrOk);// ignore
   end;
   if not CodeToolBoss.FixForwardDefinitions(TCodeBuffer(aText.CodeBuffer)) then begin
+    AssignCodeToolBossError;
     DebugLn(['TFixForwardDefinitions.Execute failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
@@ -4177,6 +4232,7 @@ begin
   end;
   if not CodeToolBoss.Explore(TCodeBuffer(aText.CodeBuffer),Tool,true,false)
   then begin
+    AssignCodeToolBossError;
     DebugLn(['TAddMissingPointerTypes.Execute Explore failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
@@ -4187,6 +4243,7 @@ begin
   try
     // collect definitions
     if not Tool.GatherUnitDefinitions(Definitions,true,false) then begin
+      AssignCodeToolBossError;
       DebugLn(['TAddMissingPointerTypes.Execute GatherUnitDefinitions failed ',CodeToolBoss.ErrorMessage]);
       exit;
     end;
