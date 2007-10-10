@@ -30,7 +30,7 @@ uses
   KeywordFuncLists, CodeToolManager,
   IDEExternToolIntf,
   IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
-  CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf, Menus;
+  CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf, Menus, ExtCtrls;
 
 type
   TCompilerOptionsTest = (
@@ -57,12 +57,12 @@ type
     CloseButton1: TBitBtn;
     CopyOutputMenuItem: TMenuItem;
     OutputPopupMenu: TPopupMenu;
+    Splitter1: TSplitter;
     TestMemo: TMemo;
     TestGroupbox: TGroupBox;
     OutputListbox: TListbox;
     OutputGroupBox: TGroupBox;
     procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
-    procedure CloseButtonCLICK(Sender: TObject);
     procedure CopyOutputMenuItemClick(Sender: TObject);
   private
     FMacroList: TTransferMacroList;
@@ -117,11 +117,6 @@ procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject;
 begin
   Application.RemoveOnIdleHandler(@ApplicationOnIdle);
   DoTest;
-end;
-
-procedure TCheckCompilerOptsDlg.CloseButtonCLICK(Sender: TObject);
-begin
-  ModalResult:=mrOk;
 end;
 
 procedure TCheckCompilerOptsDlg.CopyOutputMenuItemClick(Sender: TObject);
