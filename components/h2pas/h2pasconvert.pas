@@ -1164,9 +1164,9 @@ begin
   // FFilename is kept
   FConstantsInsteadOfEnums:=true;
   FCompactOutputmode:=false;
-  FCreateIncludeFile:=true;
+  FCreateIncludeFile:=false;
   FLibname:='';
-  FOutputExt:='.inc';
+  FOutputExt:='.pas';
   FPackAllRecords:=false;
   FPalmOSSYSTrap:=false;
   FPforPointers:=true;
@@ -1326,9 +1326,9 @@ begin
   // FFilename is not saved
   FConstantsInsteadOfEnums:=Config.GetValue('ConstantsInsteadOfEnums/Value',true);
   FCompactOutputmode:=Config.GetValue('CompactOutputmode/Value',false);
-  FCreateIncludeFile:=Config.GetValue('CreateIncludeFile/Value',true);
+  FCreateIncludeFile:=Config.GetValue('CreateIncludeFile/Value',false);
   FLibname:=Config.GetValue('Libname/Value','');
-  FOutputExt:=Config.GetValue('OutputExt/Value','.inc');
+  FOutputExt:=Config.GetValue('OutputExt/Value','.pas');
   FPackAllRecords:=Config.GetValue('PackAllRecords/Value',false);
   FPalmOSSYSTrap:=Config.GetValue('PalmOSSYSTrap/Value',false);
   FPforPointers:=Config.GetValue('PforPointers/Value',true);
@@ -1396,9 +1396,9 @@ begin
   // FFilename is kept
   Config.SetDeleteValue('ConstantsInsteadOfEnums/Value',FConstantsInsteadOfEnums,true);
   Config.SetDeleteValue('CompactOutputmode/Value',FCompactOutputmode,false);
-  Config.SetDeleteValue('CreateIncludeFile/Value',FCreateIncludeFile,true);
+  Config.SetDeleteValue('CreateIncludeFile/Value',FCreateIncludeFile,false);
   Config.SetDeleteValue('Libname/Value',FLibname,'');
-  Config.SetDeleteValue('OutputExt/Value',FOutputExt,'.inc');
+  Config.SetDeleteValue('OutputExt/Value',FOutputExt,'.pas');
   Config.SetDeleteValue('PackAllRecords/Value',FPackAllRecords,false);
   Config.SetDeleteValue('PalmOSSYSTrap/Value',FPalmOSSYSTrap,false);
   Config.SetDeleteValue('PforPointers/Value',FPforPointers,true);
