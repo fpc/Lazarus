@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-30 17:50+0300\n"
+"PO-Revision-Date: 2007-10-10 20:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -531,7 +531,7 @@ msgstr "Дополнительные файлы для поиска (напр. /
 
 #: lazarusidestrconsts:rsadditionalinfo
 msgid "Additional info"
-msgstr ""
+msgstr "Дополнительно"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
@@ -787,7 +787,7 @@ msgstr "Автоматические функции"
 
 #: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
-msgstr ""
+msgstr "Автоматически наращивать номер сборки"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -999,7 +999,7 @@ msgstr "Собрать проект/программу"
 
 #: lazarusidestrconsts:rsbuild
 msgid "Build:"
-msgstr ""
+msgstr "Сборка:"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1151,7 +1151,7 @@ msgstr "Таблица символов"
 
 #: lazarusidestrconsts:rscharacterset
 msgid "Character set:"
-msgstr ""
+msgstr "Набор символов:"
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1523,7 +1523,7 @@ msgstr "Команда после установки модуля"
 
 #: lazarusidestrconsts:srkmcatcmdcmd
 msgid "Command commands"
-msgstr "Команда команды"
+msgstr "Управляющие команды"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -1639,7 +1639,7 @@ msgstr "Компоненты"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
-msgstr "Команды компонентов меню"
+msgstr "Команды меню Компоненты"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
@@ -1871,7 +1871,7 @@ msgstr "Копирование всей формы не реализовано."
 
 #: lazarusidestrconsts:rscopyright
 msgid "Copyright:"
-msgstr ""
+msgstr "Копирайт:"
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -2587,7 +2587,7 @@ msgstr "Включить макросы"
 
 #: lazarusidestrconsts:rsenablei18n
 msgid "Enable i18n"
-msgstr ""
+msgstr "Включить i18n"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2643,7 +2643,7 @@ msgstr "Окружение"
 
 #: lazarusidestrconsts:srkmcatenvmenu
 msgid "Environment menu commands"
-msgstr "Команды меню окружения"
+msgstr "Команды меню Окружение"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
@@ -3019,7 +3019,7 @@ msgstr "Маска файла (*;*.*;*.bak?)"
 
 #: lazarusidestrconsts:srkmcatfilemenu
 msgid "File menu commands"
-msgstr "Команды меню файл"
+msgstr "Команды меню Файл"
 
 #: lazarusidestrconsts:lisa2pfilename
 msgid "File name:"
@@ -3843,7 +3843,7 @@ msgstr "Включающий фильтр"
 
 #: lazarusidestrconsts:rsincludeversioninfoinexecutable
 msgid "Include Version Info in executable"
-msgstr ""
+msgstr "Добавлять информацию о версии в исполнимый файл"
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -4551,11 +4551,11 @@ msgstr "Исключения языка"
 
 #: lazarusidestrconsts:rslanguageoptions
 msgid "Language options"
-msgstr ""
+msgstr "Настройки языка"
 
 #: lazarusidestrconsts:rslanguageselection
 msgid "Language selection:"
-msgstr ""
+msgstr "Выбор языка:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -4855,7 +4855,7 @@ msgstr "Главная"
 
 #: lazarusidestrconsts:rsmajorrevision
 msgid "Major revision:"
-msgstr ""
+msgstr "Старшая рев.:"
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
@@ -4959,7 +4959,7 @@ msgstr "Вторичная"
 
 #: lazarusidestrconsts:rsminorrevision
 msgid "Minor revision:"
-msgstr ""
+msgstr "Младшая рев.:"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5323,7 +5323,7 @@ msgstr "Отладчик не указан"
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
-msgstr "Не найдено ошибок раскладок."
+msgstr "Ошибок в раскладке не найдено."
 
 #: lazarusidestrconsts:lisnewdlgnoitemselected
 msgid "No item selected"
@@ -5683,7 +5683,7 @@ msgstr "Др. файлы"
 
 #: lazarusidestrconsts:rsotherinfo
 msgid "Other info"
-msgstr ""
+msgstr "Прочие сведения"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
@@ -5723,7 +5723,7 @@ msgstr "Переписать файл?"
 
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
-msgstr ""
+msgstr "Каталог вывода файлов PO:"
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -6699,7 +6699,7 @@ msgstr "Параметры запуска ..."
 
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
-msgstr "Комаднды меню Запуск"
+msgstr "Команды меню Запуск"
 
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
@@ -9371,11 +9371,11 @@ msgstr "Информация о версии"
 
 #: lazarusidestrconsts:rsversionnumbering
 msgid "Version numbering"
-msgstr ""
+msgstr "Номера версий"
 
 #: lazarusidestrconsts:rsversion
 msgid "Version:"
-msgstr ""
+msgstr "Версия:"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
@@ -9803,11 +9803,11 @@ msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts:dlgpoi18n
 msgid "i18n"
-msgstr ""
+msgstr "i18n"
 
 #: lazarusidestrconsts:rsi18noptions
 msgid "i18n Options"
-msgstr ""
+msgstr "Настройки i18n"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"

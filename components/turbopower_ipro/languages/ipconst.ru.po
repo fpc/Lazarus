@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-29 17:11+0300\n"
+"PO-Revision-Date: 2007-10-10 20:46+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -419,7 +419,7 @@ msgstr "+OK"
 
 #: ipconst:shtmldashexp
 msgid "- expected"
-msgstr ""
+msgstr "- ожидается"
 
 #: ipconst:spop3errresp
 msgid "-ERR"
@@ -459,11 +459,11 @@ msgstr "Все устройства подсоединены"
 
 #: ipconst:ssterror
 msgid "An error has occured during this task."
-msgstr ""
+msgstr "Во время выполнения этой задачи произошла ошибка."
 
 #: ipconst:spterror
 msgid "An error occured with the last task."
-msgstr ""
+msgstr "Во время выполнения последней задачи произошла ошибка."
 
 #: ipconst:swsa_qos_senders
 msgid "At least one Path has arrived"
@@ -475,15 +475,15 @@ msgstr ""
 
 #: ipconst:sftprestart
 msgid "Attempting to re-start transfer of "
-msgstr ""
+msgstr "Попытка заново начать передачу"
 
 #: ipconst:sattemptingtoread
 msgid "Attempting to read "
-msgstr ""
+msgstr "Попытка чтения"
 
 #: ipconst:sattemptingtowrite
 msgid "Attempting to write "
-msgstr ""
+msgstr "Попытка записи"
 
 #: ipconst:srasauthenticate
 msgid "Authenticate"
@@ -555,11 +555,11 @@ msgstr "Неверный сертификат"
 
 #: ipconst:ssmtpresponse42
 msgid "Bad connection"
-msgstr ""
+msgstr "Неверное соединение"
 
 #: ipconst:sipicmp_bad_destination
 msgid "Bad destination"
-msgstr ""
+msgstr "Неверное направление"
 
 #: ipconst:ssmtpresponse11
 msgid "Bad destination mailbox address"
@@ -575,19 +575,19 @@ msgstr ""
 
 #: ipconst:swsaebadf
 msgid "Bad file descriptor"
-msgstr ""
+msgstr "Неверный дескриптор файла"
 
 #: ipconst:sbinhexbadheadercrc
 msgid "Bad header CRC"
-msgstr ""
+msgstr "Не сходится CRC заголовка"
 
 #: ipconst:sipicmp_bad_option
 msgid "Bad option"
-msgstr ""
+msgstr "Неверный параметр"
 
 #: ipconst:swsaenoprotoopt
 msgid "Bad protocol option"
-msgstr ""
+msgstr "Неверный параметр протокола"
 
 #: ipconst:ssslbadpublicencoding
 msgid "Bad public encoding type."
@@ -595,11 +595,11 @@ msgstr ""
 
 #: ipconst:sipicmp_bad_req
 msgid "Bad request"
-msgstr ""
+msgstr "Неверный запрос"
 
 #: ipconst:sipicmp_bad_route
 msgid "Bad route"
-msgstr ""
+msgstr "Неверный маршрут"
 
 #: ipconst:ssmtpresponse17
 msgid "Bad sender's mailbox address syntax"
@@ -615,7 +615,7 @@ msgstr ""
 
 #: ipconst:ssslblocksizeerror
 msgid "Block size error"
-msgstr ""
+msgstr "Ошибка в размере блока"
 
 #: ipconst:shtmldefbrowsecaption
 msgid "Browse..."
@@ -699,11 +699,11 @@ msgstr ""
 
 #: ipconst:ssslnocertificate
 msgid "Certificate is not available."
-msgstr ""
+msgstr "Сертификат недоступен."
 
 #: ipconst:shtmlcharstackoverfl
 msgid "Character stack overflow"
-msgstr ""
+msgstr "Переполнение стека символов"
 
 #: ipconst:cachecheckfreshness
 msgid "Checking Freshness (%s)"
@@ -719,7 +719,7 @@ msgstr ""
 
 #: ipconst:spngcolortype
 msgid "Color Type: %d"
-msgstr ""
+msgstr "Тип цвета: %d"
 
 #: ipconst:spngcompressionmethod
 msgid "Compression Method: %d"
@@ -727,7 +727,7 @@ msgstr ""
 
 #: ipconst:ssslcompressionfailure
 msgid "Compression failure."
-msgstr ""
+msgstr "Ошибка при сжатии."
 
 #: ipconst:ssslbadcompressionvalue
 msgid "Compression value is wrong."
@@ -735,7 +735,7 @@ msgstr ""
 
 #: ipconst:srasconnectdevice
 msgid "Connect device"
-msgstr ""
+msgstr "Подключить устройство"
 
 #: ipconst:seventconnect
 msgid "Connect: Loc: %s Rem: %s"
@@ -911,21 +911,27 @@ msgstr ""
 
 #: ipconst:sbrokerdownloadtitle
 msgid "Download?"
-msgstr ""
+msgstr "Загрузить?"
 
 #: ipconst:sicmpecho
 msgid ""
-"Echo reply (Hop number: %d)\015\n"
-"             Status = %d\015\n"
-"             RTTime = %d\015\n"
-"             Ttl = %d\015\n"
-"             Tos = %d\015\n"
+"Echo reply (Hop number: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
 "             IpFlags = %d"
 msgstr ""
+"Эхо-ответ (Число хопов: %d)\n"
+"             Статус = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
-msgstr ""
+msgstr "Эхо-строка: %s"
 
 #: ipconst:spngeffectivefilter
 msgid "Effective filter is %s"
@@ -1057,7 +1063,7 @@ msgstr "HEAD: (%s) - неудачно"
 
 #: ipconst:snntpcmdhelp
 msgid "HELP"
-msgstr ""
+msgstr "HELP"
 
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
@@ -1065,7 +1071,7 @@ msgstr ""
 
 #: ipconst:sipicmp_hw_error
 msgid "Hardware error"
-msgstr ""
+msgstr "Аппаратная ошибка"
 
 #: ipconst:ssshelp
 msgid "Help"
@@ -1117,7 +1123,7 @@ msgstr ""
 
 #: ipconst:shtmlinternal
 msgid "Internal error"
-msgstr ""
+msgstr "Внутренняя ошибка"
 
 #: ipconst:swsaeintr
 msgid "Interrupted function call"
@@ -1125,11 +1131,11 @@ msgstr ""
 
 #: ipconst:sbinhexbadchar
 msgid "Invalid BinHex character"
-msgstr ""
+msgstr "Неверный символ BinHex"
 
 #: ipconst:sbinhexbadformat
 msgid "Invalid BinHex format"
-msgstr ""
+msgstr "Неверный формат BinHex"
 
 #: ipconst:spngbadmodificationtime
 msgid "Invalid Modification Time"
@@ -1141,7 +1147,7 @@ msgstr ""
 
 #: ipconst:spngbadpalettelength
 msgid "Invalid Palette Length"
-msgstr ""
+msgstr "Неверная длина палитры"
 
 #: ipconst:shtmlinvalign
 msgid "Invalid alignment specified"
@@ -1149,11 +1155,11 @@ msgstr ""
 
 #: ipconst:swsaeinval
 msgid "Invalid argument"
-msgstr ""
+msgstr "Неверный аргумент"
 
 #: ipconst:ssslinvalidcipher
 msgid "Invalid cipher."
-msgstr ""
+msgstr "Неверный шифр."
 
 #: ipconst:shtmlinvcolor
 msgid "Invalid color constant:"
@@ -1161,7 +1167,7 @@ msgstr ""
 
 #: ipconst:ssmtpresponse51
 msgid "Invalid command"
-msgstr ""
+msgstr "Неверная команда"
 
 #: ipconst:ssmtpresponse54
 msgid "Invalid command arguments"
@@ -1169,7 +1175,7 @@ msgstr ""
 
 #: ipconst:sbinhexlengtherr
 msgid "Invalid data length"
-msgstr ""
+msgstr "Неверная длина данных"
 
 #: ipconst:shtmlinvdir
 msgid "Invalid dir value specified"
@@ -1729,7 +1735,7 @@ msgstr ""
 
 #: ipconst:spop3cmdquit
 msgid "QUIT"
-msgstr ""
+msgstr "QUIT"
 
 #: ipconst:sssquit
 msgid "Quit"
@@ -2101,15 +2107,15 @@ msgstr ""
 
 #: ipconst:shtmldefsubmitcaption
 msgid "Submit"
-msgstr ""
+msgstr "Отправить"
 
 #: ipconst:ssmtpresponse02
 msgid "Success, "
-msgstr ""
+msgstr "Успех, "
 
 #: ipconst:sipicmp_success
 msgid "Successful"
-msgstr ""
+msgstr "Успешно"
 
 #: ipconst:swsanotinitialised
 msgid "Successful WSAStartup not yet performed"
