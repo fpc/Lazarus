@@ -68,10 +68,14 @@ menu/menu_new.png
 menu/menu_new_form.png
 menu/menu_new_unit.png
 menu/menu_open.png
-menu/menu_open_project.png
 menu/menu_pause.png
+menu/menu_project_close.png
 menu/menu_project_inspector.png
+menu/menu_project_new.png
+menu/menu_project_open.png
 menu/menu_project_options.png
+menu/menu_project_save.png
+menu/menu_project_saveas.png
 menu/menu_quick_compile.png
 menu/menu_redo.png
 menu/menu_reportingbug.png

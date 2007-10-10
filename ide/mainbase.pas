@@ -545,21 +545,21 @@ begin
     CreateMenuSeparatorSection(mnuProject,itmProjectNewSection,'itmProjectNewSection');
     ParentMI:=itmProjectNewSection;
 
-    CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject);
+    CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject, 'menu_project_new');
     CreateMenuItem(ParentMI,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectOpenSection,'itmProjectOpenSection');
     ParentMI:=itmProjectOpenSection;
 
-    CreateMenuItem(ParentMI,itmProjectOpen,'itmProjectOpen',lisMenuOpenProject,'menu_open_project');
+    CreateMenuItem(ParentMI,itmProjectOpen,'itmProjectOpen',lisMenuOpenProject,'menu_project_open');
     CreateMenuSubSection(ParentMI,itmProjectRecentOpen,'itmProjectRecentOpen',lisMenuOpenRecentProject);
-    CreateMenuItem(ParentMI,itmProjectClose,'itmProjectClose',lisMenuCloseProject);
+    CreateMenuItem(ParentMI,itmProjectClose,'itmProjectClose',lisMenuCloseProject, 'menu_project_close');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectSaveSection,'itmProjectSaveSection');
     ParentMI:=itmProjectSaveSection;
 
-    CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject);
-    CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs);
+    CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject, 'menu_project_save');
+    CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs, 'menu_project_saveas');
     CreateMenuItem(ParentMI,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectWindowSection,'itmProjectWindowSection');
