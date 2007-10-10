@@ -3087,15 +3087,18 @@ begin
           TypeFound:=Params.NewCodeTool.FindIdentifierInContext(Params);
         end;
         if TypeFound then begin
-          // only types allowed here, not generics
-          if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+          // only types allowed here
+          if Params.NewNode.Desc=ctnTypeDefinition then begin
             if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
               // circle detected
               Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
               RaiseCircleDefs;
             end;
             Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                          Params.NewNode)
+                                                          Params.NewNode);
+          end else if Params.NewNode.Desc=ctnGenericParameter then begin
+            Result.Tool:=Params.NewCodeTool;
+            Result.Node:=Params.NewNode;
           end else begin
             // not a type
             MoveCursorToNodeStart(DummyNode);
@@ -3132,8 +3135,8 @@ begin
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=Result.Node.Parent;
           if FindIdentifierInContext(Params) then begin
-            // only types allowed, not generics
-            if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+            // only types allowed
+            if Params.NewNode.Desc=ctnTypeDefinition then begin
               if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
                 // circle detected
                 Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
@@ -3141,6 +3144,9 @@ begin
               end;
               Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                             Params.NewNode)
+            end else if Params.NewNode.Desc=ctnGenericParameter then begin
+              Result.Tool:=Params.NewCodeTool;
+              Result.Node:=Params.NewNode;
             end else begin
               // not a type
               MoveCursorToCleanPos(OldPos);
@@ -5596,10 +5602,13 @@ var
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=ExprType.Context.Node.Parent;
           if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
-            // only types allowed, not generics
-            if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+            // only types allowed
+            if Params.NewNode.Desc=ctnTypeDefinition then begin
               ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                                Params.NewNode)
+                                                                Params.NewNode);
+            end else if Params.NewNode.Desc=ctnGenericParameter then begin
+              ExprType.Context.Tool:=Params.NewCodeTool;
+              ExprType.Context.Node:=Params.NewNode;
             end else begin
               // not a type
               ExprType.Context.Tool.ReadTilTypeOfProperty(ExprType.Context.Node);
