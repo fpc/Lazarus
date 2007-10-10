@@ -1016,7 +1016,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
-  if not (CurNode.Desc in (AllClassBaseSections+[ctnClassInterface])) then
+  if not (CurNode.Desc in (AllClassSections+[ctnClassInterface])) then
     RaiseIdentExpectedButAtomFound;
 
   HasForwardModifier:=false;
