@@ -6649,7 +6649,6 @@ var
   PosMsg : TLMWindowPosChanged;
   MainWidget: PGtkWidget;
   FixedWidget: PGtkWidget;
-  Requisition: TGtkRequisition;
 
   procedure UpdateLCLPos;
   begin
