@@ -112,6 +112,7 @@ type
   public
     procedure SetMainMenuEnabled(AEnabled: Boolean);
     procedure SetRootMenu(const AMenu: TMainMenu);
+    property MainMenu: TMainMenu read FMainMenu;
   public
     procedure SetCaptureWidget(const AWidget: HWND);
   end;

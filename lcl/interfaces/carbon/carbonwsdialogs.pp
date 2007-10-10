@@ -171,6 +171,46 @@ begin
   //DebugLn('FilterCallback ' + DbgS(FilterMask) + ' ' + ExtractFilename(FilePath) + ' ' + DbgS(Result));
 end;  {FilterCallback}
 
+procedure NavDialogCallback(CallBackSelector: NavEventCallbackMessage;
+  CallBackParms: NavCBRecPtr; CallBackUD: UnivPtr); stdcall;
+var
+  Dir: AEDesc;
+  DirRef: FSRef;
+  DirURL: CFURLRef;
+  DirCFStr: CFStringRef;
+const
+  SName = 'NavDialogCallback';
+begin
+  //DebugLn('NavDialogCallback ' + DbgS(CallbackUD));
+  if CallbackUD = nil then  // No user data passed?
+    Exit;
+    
+  case CallBackSelector of
+  kNavCBStart:
+    begin
+      // Set InitialDir
+      if DirectoryExists(TFileDialog(CallbackUD).InitialDir) then
+      begin
+        //DebugLn('Set InitialDir ' + TFileDialog(CallbackUD).InitialDir);
+        CreateCFString(TFileDialog(CallbackUD).InitialDir, DirCFStr);
+        try
+          DirURL := CFURLCreateWithFileSystemPath(nil, DirCFStr,
+            kCFURLPOSIXPathStyle, True);
+        finally
+          FreeCFString(DirCFStr);
+        end;
+
+        if DirURL <> nil then
+          if CFURLGetFSRef(DirURL, DirRef) then
+            if not OSError(AECreateDesc(typeFSRef, @DirRef, SizeOf(FSRef), Dir),
+              SName, 'AECreateDesc') then
+              OSError(NavCustomControl(CallBackParms^.context, kNavCtlSetLocation, @Dir),
+                SName, 'NavCustomControl');
+      end;
+    end;
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSFileDialog.ShowModal
@@ -184,12 +224,12 @@ end;  {FilterCallback}
 class procedure TCarbonWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
  {
   Called by Execute method of TOpenDialog, TSaveDialog and TSelectDirectoryDialog.
-   TODO: Figure out how to use dialog's InitialDir property.
  }
 var
   FileDialog: TFileDialog;
   CreationOptions: NavDialogCreationOptions;
   FilterUPP: NavObjectFilterUPP;
+  NavDialogUPP: NavEventUPP;
   DialogRef: NavDialogRef;
   DialogReply: NavReplyRecord;
   FileCount: Integer;
@@ -218,6 +258,7 @@ begin
   FileDialog.UserChoice := mrCancel; // Return this if user cancels or we need to exit
 
   FilterUPP := NewNavObjectFilterUPP(NavObjectFilterProcPtr(@FilterCallback));
+  NavDialogUPP := NewNavEventUPP(NavEventProcPtr(@NavDialogCallback));
 
   // user cannot pick individual filter -> use all
   Filters := TParseStringList.Create(FileDialog.Filter, '|');
@@ -249,14 +290,14 @@ begin
          
       // Create Save dialog
       if OSError(
-        NavCreatePutFileDialog(@CreationOptions, 0, 0, nil, nil, DialogRef),
+        NavCreatePutFileDialog(@CreationOptions, 0, 0, NavDialogUPP, nil, DialogRef),
          Self, SShowModal, 'NavCreatePutFileDialog') then Exit;
     end
     else
       if FileDialog is TSelectDirectoryDialog then // Create Choose folder dialog
       begin
         if OSError(
-          NavCreateChooseFolderDialog(@CreationOptions, nil, 
+          NavCreateChooseFolderDialog(@CreationOptions, NavDialogUPP,
            FilterUPP, UnivPtr(FileDialog), DialogRef),
            Self, SShowModal, 'NavCreateChooseFolderDialog') then Exit;
       end
@@ -272,7 +313,7 @@ begin
 
           // Create Open dialog
           if OSError(
-            NavCreateGetFileDialog(@CreationOptions, nil, nil, nil, 
+            NavCreateGetFileDialog(@CreationOptions, nil, NavDialogUPP, nil,
              FilterUPP, UnivPtr(FileDialog), DialogRef),
              Self, SShowModal, 'NavCreateGetFileDialog') then Exit;
         end;
@@ -338,6 +379,7 @@ begin
   finally
     FreeAndNil(FilterMask);
     DisposeNavObjectFilterUPP(FilterUPP);
+    DisposeNavEventUPP(NavDialogUPP);
     FreeCFString(CreationOptions.windowTitle);
     FreeCFString(CreationOptions.saveFileName);
   end;

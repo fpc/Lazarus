@@ -41,6 +41,7 @@ Grzegorz Zakrzewski
 Hans-Joachim Ott
 Hwang Weng Sun
 Ido Kanner
+James Chandler Jr.
 Jan Foster
 Jason King
 Jeffrey A. Wormsley

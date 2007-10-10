@@ -1401,8 +1401,9 @@ begin
     SetWindowModality(WindowRef(Widget), kWindowModalityAppModal, nil),
     Self, 'ShowModal', SSetModality);
 
-  CarbonWidgetSet.SetMainMenuEnabled(False);
   SelectWindow(WindowRef(Widget));
+  if CarbonWidgetSet.MainMenu <> (LCLObject as TCustomForm).Menu then
+    CarbonWidgetSet.SetMainMenuEnabled(False);
 end;
 
 {------------------------------------------------------------------------------

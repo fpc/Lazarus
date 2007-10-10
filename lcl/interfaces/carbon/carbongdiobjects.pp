@@ -197,14 +197,14 @@ const
   kThemeUndefCursor = ThemeCursor(-1); // undefined mac theme cursor
   
   CursorToThemeCursor: array[crLow..crHigh] of ThemeCursor =
-    ({crSizeSE      } kThemeResizeLeftCursor, {!!}
+    ({crSizeSE      } kThemeResizeRightCursor, {!!}
      {crSizeS       } kThemeResizeDownCursor,
-     {crSizeSW      } kThemeResizeRightCursor, {!!}
-     {crSizeE       } kThemeResizeLeftCursor,
-     {crSizeW       } kThemeResizeRightCursor,
-     {crSizeNE      } kThemeResizeLeftCursor, {!!}
+     {crSizeSW      } kThemeResizeLeftCursor, {!!}
+     {crSizeE       } kThemeResizeRightCursor,
+     {crSizeW       } kThemeResizeLeftCursor,
+     {crSizeNE      } kThemeResizeRightCursor, {!!}
      {crSizeN       } kThemeResizeUpCursor,
-     {crSizeNW      } kThemeResizeRightCursor, {!!}
+     {crSizeNW      } kThemeResizeLeftCursor, {!!}
      {crSizeAll     } kThemeUndefCursor,           // will be loaded from resource
      {crHandPoint   } kThemePointingHandCursor,
      {crHelp        } kThemeUndefCursor,           // will be loaded from resource
@@ -220,7 +220,7 @@ const
      {crUpArrow     } kThemeUndefCursor,           // will be loaded from resource
      {crSizeWE      } kThemeResizeLeftRightCursor,
      {crSizeNWSE    } kThemeResizeLeftRightCursor, {!!}
-     {crSizeNS      } kThemeResizeLeftRightCursor, {!!}
+     {crSizeNS      } kThemeResizeUpDownCursor, {!!}
      {crSizeNESW    } kThemeResizeLeftRightCursor, {!!}
      {undefined     } kThemeArrowCursor, {!!}
      {crIBeam       } kThemeIBeamCursor,
