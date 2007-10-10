@@ -1156,7 +1156,8 @@ begin
     if WindowInfo^.StayOnTopList <> nil then
     begin
       for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
-        SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]),
+          HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
       FreeAndNil(WindowInfo^.StayOnTopList);
     end;
   end;

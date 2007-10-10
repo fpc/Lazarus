@@ -1133,20 +1133,25 @@ begin
       begin
         if WParam <> 0 then // activated
         begin
+          //WriteLn('Restore');
           RestoreStayOnTopFlags(Window);
           Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_TOP,
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end
         else
         begin // deactivated
+          //WriteLn('Remove');
           RemoveStayOnTopFlags(Window);
+          Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_BOTTOM,
+            0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
 
         // activate/deactivate main window
         if (Application <> nil) and (Application.MainForm <> nil) and
             Application.MainForm.HandleAllocated then
         begin
-          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, LParam);
+          //WriteLn('Activate/Deactivate main window');
+          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, 0);
         end;
       end;
     end;
