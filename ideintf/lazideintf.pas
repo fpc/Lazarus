@@ -202,7 +202,7 @@ type
     function ShowProgress(const SomeText: string;
                           Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
     function DoJumpToCompilerMessage(Index:integer;
-      FocusEditor: boolean): boolean; virtual; abstract;
+                              FocusEditor: boolean): boolean; virtual; abstract;
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView; virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;

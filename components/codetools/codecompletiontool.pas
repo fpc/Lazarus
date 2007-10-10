@@ -3198,7 +3198,8 @@ function TCodeCompletionCodeTool.GatherUnitDefinitions(out
   
   procedure RaiseRedefinition(Node1, Node2: TCodeTreeNode);
   begin
-    raise Exception.Create('redefinition found: '+GetRedefinitionNodeText(Node1)
+    MoveCursorToNodeStart(Node1);
+    RaiseException('redefinition found: '+GetRedefinitionNodeText(Node1)
       +' at '+CleanPosToStr(Node1.StartPos)
       +' and at '+CleanPosToStr(Node2.StartPos));
   end;

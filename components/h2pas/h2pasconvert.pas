@@ -1859,27 +1859,44 @@ var
     ErrorComponent: TComponent;
     ErrorTool: TCustomTextConverterTool;
     ErrMsg: String;
+    Line: Integer;
+    Col: Integer;
+    Filename: String;
+    BaseDir: String;
   begin
     Result:=TextConverter.Execute(List,ErrorComponent);
     if Result=mrOk then exit;
+    Line:=0;
+    Col:=0;
+    Filename:='';
     if ErrorComponent is TCustomTextConverterTool then begin
       ErrorTool:=TCustomTextConverterTool(ErrorComponent);
-      ErrMsg:=ErrorTool.ErrorFilename;
-      if ErrMsg='' then
-        ErrMsg:=DefaultFilename;
-      if ErrorTool.ErrorLine>0 then begin
-        ErrMsg:=ErrMsg+'('+IntToStr(ErrorTool.ErrorLine)+',';
-        if ErrorTool.ErrorColumn>0 then
-          ErrMsg:=ErrMsg+IntToStr(ErrorTool.ErrorColumn)
-        else
-          ErrMsg:=ErrMsg+'1';
-        ErrMsg:=ErrMsg+')';
-      end;
-      ErrMsg:=ErrMsg+' Error: '+ErrorTool.ErrorMsg+' ('+ErrorTool.Caption+')';
-    end else begin
-      ErrMsg:=DefaultFilename;
+      Line:=ErrorTool.ErrorLine;
+      Col:=ErrorTool.ErrorColumn;
+      Filename:=ErrorTool.ErrorFilename;
     end;
+    if Filename='' then
+      Filename:=DefaultFilename;
+    // create error message
+    ErrMsg:=Filename;
+    BaseDir:=ExtractFilePath(Project.BaseDir);
+    Filename:=CreateRelativePath(Filename,BaseDir);
+    
+    if ErrMsg='' then
+      ErrMsg:=DefaultFilename;
+    if Line>0 then begin
+      ErrMsg:=ErrMsg+'('+IntToStr(Line)+',';
+      if Col>0 then
+        ErrMsg:=ErrMsg+IntToStr(Col)
+      else
+        ErrMsg:=ErrMsg+'1';
+      ErrMsg:=ErrMsg+')';
+    end;
+    ErrMsg:=ErrMsg+' Error: '+ErrorTool.ErrorMsg+' ('+ErrorTool.Caption+')';
     DebugLn(['TH2PasConverter.ConvertFile Failed: ',ErrMsg]);
+    IDEMessagesWindow.AddMsg(ErrMsg,BaseDir,-1);
+    LazarusIDE.DoJumpToCompilerMessage(IDEMessagesWindow.LinesCount-1,true);
+    Result:=mrAbort;
   end;
 
 var
