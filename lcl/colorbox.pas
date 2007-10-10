@@ -225,8 +225,7 @@ function TColorBox.GetSelected: TColor;
 begin
   Result := 0;
   if ItemIndex >= 0 then
-    if not IdentToColor(Items[ItemIndex], LongInt(Result)) then
-      Result := 0;
+    Result := StringToColor(Items[ItemIndex]);
 end;
 
 {------------------------------------------------------------------------------
@@ -240,8 +239,8 @@ end;
 
 function TColorBox.GetColor(Index : Integer): TColor;
 begin
-  if Not IdentToColor(Items[Index],Result) then
-    Result:=clNone;
+  if not IdentToColor(Items[Index], Result) then
+    Result := clNone;
 end;
 
 {------------------------------------------------------------------------------
@@ -256,15 +255,17 @@ end;
 procedure TColorBox.SetSelected(Value: TColor);
 var
   c: integer;
-  i: Longint;
+  selColor: TColor;
 begin
   ItemIndex := -1;
-
   for c := 0 to Pred(Items.Count) do
-    if IdentToColor(Items[c], i) then
-      if i = Value then
-        ItemIndex := c;
+  begin
+    selColor := StringToColor(Items[c]);
+    if selColor = Value then
+      ItemIndex := c;
+  end;
 end;
+
 {------------------------------------------------------------------------------
   Method:   TColorBox.SetPalette
   Params:   Value
@@ -309,7 +310,6 @@ end;
 procedure TColorBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   r: TRect;
-  ItemColor: TColor;
   BrushColor: TColor;
   PenColor: TColor;
 begin
@@ -326,8 +326,7 @@ begin
     BrushColor := Brush.Color;
     PenColor := Pen.Color;
 
-    if IdentToColor(Items[Index], LongInt(ItemColor)) then
-      Brush.Color := ItemColor;
+    Brush.Color := StringToColor(Items[Index]);
       
     Pen.Color := clBlack;
 
