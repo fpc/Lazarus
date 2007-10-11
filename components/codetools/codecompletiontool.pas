@@ -1367,7 +1367,6 @@ var
     ReferingNodeText: String;
     ReferingPos: LongInt;
     NodeExt: TCodeTreeNodeExtension;
-    AVLNode: TAVLTreeNode;
     BracketStartPos: LongInt;
     NeededType: TCodeTreeNodeDesc;
     
@@ -1375,11 +1374,9 @@ var
     begin
       if ReferingNodeText<>'' then exit;
       ReferingNodeText:=GetIdentifier(@Src[ReferingPos]);
-      AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,ReferingNodeText);
-      if (AVLNode<>nil) then begin
-        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      NodeExt:=FindCodeTreeNodeExtWithIdentifier(AllNodes,PChar(ReferingNodeText));
+      if (NodeExt<>nil) then
         ReferingNode:=NodeExt.Node;
-      end;
     end;
     
   begin
@@ -1417,6 +1414,12 @@ var
       if WordIsKeyWord.DoIt(@Src[ReferingPos]) then exit;
       // this is a type cast
       NeededType:=ctnConstDefinition;
+      GetReferingNode;
+      if (ReferingNode<>nil) then begin
+        // ToDo: check if it is a typecast to a procedure type
+        // then the alias should be replaced with a procdure
+        //if (ReferingNode=ctnTypeDefinition)
+      end;
     end else begin
       // this is a const or type alias
       //DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Alias: ',Node.DescAsString,' ',ExtractNode(Node,[])]);
@@ -1798,6 +1801,11 @@ function TCodeCompletionCodeTool.FindConstFunctions(
 }
 var
   Definitions: TAVLTree;
+  
+  function FindProcWithName(Identifier: PChar): TCodeTreeNodeExtension;
+  begin
+    Result:=FindCodeTreeNodeExtWithIdentifier(Definitions,Identifier);
+  end;
 
   procedure CheckProcNode(ProcNode: TCodeTreeNode);
   // check if node is a function (not class function)
@@ -1813,16 +1821,34 @@ var
     function CheckExprIdentifier(Identifier: PChar): boolean;
     var
       NodeExt: TCodeTreeNodeExtension;
+      NewPos: Integer;
+      AtomStart: integer;
     begin
       Result:=true;
       if CompareIdentifiers('Result',Identifier)=0 then exit;
       if CompareIdentifiers(PChar(FuncName),Identifier)=0 then exit;
       // check for const and type definitions
       NodeExt:=FindCodeTreeNodeExt(Definitions,GetIdentifier(Identifier));
+      if NodeExt=nil then
+        NodeExt:=FindProcWithName(Identifier);
+      
       if (NodeExt<>nil) and (NodeExt.Node<>nil) then begin
         if NodeExt.Node.Desc in [ctnConstDefinition,ctnTypeDefinition] then
           exit;
+        if (NodeExt.Node.Desc=ctnProcedure) and IsPCharInSrc(Identifier) then
+        begin
+          // read atom behind identifier name
+          NewPos:=PtrInt(PtrUInt(Identifier))-PtrInt(PtrUInt(@Src[1]))+1;
+          inc(NewPos,GetIdentLen(Identifier));
+          ReadRawNextPascalAtom(Src,NewPos,AtomStart,Scanner.NestedComments);
+          if (AtomStart<=SrcLen) and (Src[AtomStart]<>'(') then begin
+            // no parameters
+            // this is the function pointer, not the result => constant
+            exit;
+          end;
+        end;
       end;
+
       // check for compiler built in operators, constants and types
       if IsWordBuiltInFunc.DoIt(Identifier) then exit;
       if WordIsBinaryOperator.DoIt(Identifier) then exit;
@@ -1931,6 +1957,7 @@ begin
 
     // first step: find all unit identifiers (excluding implementation section)
     if not GatherUnitDefinitions(Definitions,true,true) then exit;
+    DebugLn(['TCodeCompletionCodeTool.FindConstFunctions ',Src]);
     
     // now check all functions
     Node:=Tree.Root;
@@ -3277,7 +3304,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
   // search the range for defined identifiers
   // and add edges to graph
   var
-    Identifier: String;
+    Identifier: PChar;
     NodeExt: TCodeTreeNodeExtension;
   begin
     if (FromPos>=ToPos) or (FromPos<1) then exit;
@@ -3287,8 +3314,9 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
       ReadNextAtom;
       if (CurPos.StartPos>=ToPos) or (CurPos.StartPos>SrcLen) then break;
       if AtomIsIdentifier(false) then begin
-        Identifier:=GetAtom;
-        NodeExt:=FindCodeTreeNodeExt(DefinitionsTreeOfCodeTreeNodeExt,
+        Identifier:=@Src[CurPos.StartPos];
+        NodeExt:=FindCodeTreeNodeExtWithIdentifier(
+                                     DefinitionsTreeOfCodeTreeNodeExt,
                                      Identifier);
         if NodeExt<>nil then begin
           if Graph=nil then
@@ -3331,7 +3359,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
           while ChildNode<>nil do begin
             if (ChildNode.Desc=ctnVarDefinition) and (ChildNode.FirstChild<>nil)
             then begin
-              CheckSubNode(Node,ChildNode);
+              CheckRange(Node,ChildNode.FirstChild.StartPos,ChildNode.EndPos);
             end;
             ChildNode:=ChildNode.NextBrother;
           end;

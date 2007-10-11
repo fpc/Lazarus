@@ -312,7 +312,12 @@ var
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
 function FindCodeTreeNodeExt(Tree: TAVLTree; const Txt: string
                              ): TCodeTreeNodeExtension;
-function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string): TAVLTreeNode;
+function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string
+                                    ): TAVLTreeNode;
+function FindCodeTreeNodeExtWithIdentifier(Tree: TAVLTree; Identifier: PChar
+                             ): TCodeTreeNodeExtension;
+function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
+                                               Identifier: PChar): TAVLTreeNode;
 function CompareTxtWithCodeTreeNodeExt(p: Pointer;
                                        NodeData: pointer): integer;
 function CompareIdentifierWithCodeTreeNodeExt(p: Pointer;
@@ -447,6 +452,24 @@ function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string
   ): TAVLTreeNode;
 begin
   Result:=Tree.FindKey(@Txt,@CompareTxtWithCodeTreeNodeExt);
+end;
+
+function FindCodeTreeNodeExtWithIdentifier(Tree: TAVLTree; Identifier: PChar
+  ): TCodeTreeNodeExtension;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree,Identifier);
+  if AVLNode<>nil then
+    Result:=TCodeTreeNodeExtension(AVLNode.Data)
+  else
+    Result:=nil;
+end;
+
+function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
+  Identifier: PChar): TAVLTreeNode;
+begin
+  Result:=Tree.FindKey(Identifier,@CompareIdentifierWithCodeTreeNodeExt);
 end;
 
 function CompareTxtWithCodeTreeNodeExt(p: Pointer; NodeData: pointer

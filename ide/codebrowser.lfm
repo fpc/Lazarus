@@ -7,6 +7,8 @@ object CodeBrowserView: TCodeBrowserView
   VertScrollBar.Page = 563
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
+  ClientHeight = 564
+  ClientWidth = 634
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -18,6 +20,8 @@ object CodeBrowserView: TCodeBrowserView
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
+    ClientHeight = 31
+    ClientWidth = 618
     TabOrder = 0
     object ScopeComboBox: TComboBox
       Left = 3
@@ -34,7 +38,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 328
       Height = 22
       Top = 3
-      Width = 275
+      Width = 269
       Caption = 'ScopeWithRequiredPackagesCheckBox'
       OnChange = ScopeWithRequiredPackagesCheckBoxChange
       TabOrder = 1
@@ -57,12 +61,14 @@ object CodeBrowserView: TCodeBrowserView
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'OptionsGroupBox'
+    ClientHeight = 31
+    ClientWidth = 618
     TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
       Left = 12
       Height = 22
       Top = 8
-      Width = 167
+      Width = 164
       Caption = 'ShowPrivateCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
@@ -72,7 +78,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 272
       Height = 22
       Top = 8
-      Width = 184
+      Width = 182
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowProtectedCheckBoxChange
       TabOrder = 1
@@ -82,13 +88,13 @@ object CodeBrowserView: TCodeBrowserView
   object BrowseTreeView: TTreeView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
-    Height = 296
+    Height = 297
     Top = 246
     Width = 634
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
-    DefaultItemHeight = 16
+    DefaultItemHeight = 19
     Images = ImageList1
     ParentShowHint = False
     PopupMenu = PopupMenu1
@@ -100,8 +106,8 @@ object CodeBrowserView: TCodeBrowserView
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoToolTips]
   end
   object StatusBar1: TStatusBar
-    Height = 22
-    Top = 542
+    Height = 21
+    Top = 543
     Width = 634
     Panels = <>
   end
@@ -118,6 +124,8 @@ object CodeBrowserView: TCodeBrowserView
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'LevelsGroupBox'
+    ClientHeight = 103
+    ClientWidth = 618
     TabOrder = 3
     object PackageFilterBeginsSpeedButton: TSpeedButton
       AnchorSideLeft.Control = PackageFilterEdit
@@ -217,7 +225,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 4
-      Width = 185
+      Width = 181
       Caption = 'ShowPackagesCheckBox'
       OnChange = ShowPackagesCheckBoxChange
       TabOrder = 0
@@ -227,7 +235,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 32
-      Width = 155
+      Width = 154
       Caption = 'ShowUnitsCheckBox'
       OnChange = ShowUnitsCheckBoxChange
       TabOrder = 1
@@ -237,7 +245,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 59
-      Width = 185
+      Width = 183
       Caption = 'ShowIdentifiersCheckBox'
       OnChange = ShowIdentifiersCheckBoxChange
       TabOrder = 2
@@ -278,6 +286,8 @@ object CodeBrowserView: TCodeBrowserView
     end
   end
   object ImageList1: TImageList
+    Height = 18
+    Width = 18
     left = 298
     top = 196
   end

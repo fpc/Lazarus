@@ -3202,7 +3202,10 @@ begin
   try
     Result:=FCurCodeTool.GetSourceName;
   except
-    on e: Exception do HandleException(e);
+    on e: Exception do begin
+      Result:=FCurCodeTool.ExtractSourceName;
+      HandleException(e);
+    end;
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetSourceName B ',Code.Filename,' ',dbgs(Code.SourceLength));

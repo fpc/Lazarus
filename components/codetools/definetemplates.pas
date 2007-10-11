@@ -3609,6 +3609,11 @@ var
   IFTempl: TDefineTemplate;
   FCLBaseDir: TDefineTemplate;
   FCLBaseSrcDir: TDefineTemplate;
+  PackagesBaseDir: TDefineTemplate;
+  LibasyncDir: TDefineTemplate;
+  PackagesExtraDir: TDefineTemplate;
+  PkgExtraGraphDir: TDefineTemplate;
+  PkgExtraAMunitsDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3787,6 +3792,47 @@ begin
     +';'+DefinePathMacro+'/'+SrcOS+DS
     +';'+IncPathMacro)
     ,da_DefineRecurse));
+    
+  // packages/base
+  PackagesBaseDir:=TDefineTemplate.Create('base','base','','base',da_Directory);
+  PackagesDir.AddChild(PackagesBaseDir);
+  
+  // packages/base/libasync
+  LibasyncDir:=TDefineTemplate.Create('libasync','libasync','','libasync',
+                                      da_Directory);
+  PackagesBaseDir.AddChild(LibasyncDir);
+  LibasyncDir.AddChild(TDefineTemplate.Create('Include Path',
+    Format(ctsIncludeDirectoriesPlusDirs,['packages/base/libasync']),
+    ExternalMacroStart+'IncPath',
+    d(   DefinePathMacro+'/'
+    +';'+IncPathMacro)
+    ,da_DefineRecurse));
+    
+  // packages/extra
+  PackagesExtraDir:=TDefineTemplate.Create('extra','extra','','extra',da_Directory);
+  PackagesDir.AddChild(PackagesExtraDir);
+
+  // packages/extra/graph
+  PkgExtraGraphDir:=TDefineTemplate.Create('graph','graph','','graph',
+                                           da_Directory);
+  PackagesExtraDir.AddChild(PkgExtraGraphDir);
+  PkgExtraGraphDir.AddChild(TDefineTemplate.Create('Include Path',
+    Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+    ExternalMacroStart+'IncPath',
+    d(   DefinePathMacro+'/inc/'
+    +';'+IncPathMacro)
+    ,da_DefineRecurse));
+
+  // packages/extra/amunits
+  PkgExtraAMunitsDir:=TDefineTemplate.Create('amunits','amunits','','amunits',
+                                           da_Directory);
+  PackagesExtraDir.AddChild(PkgExtraAMunitsDir);
+  PkgExtraAMunitsDir.AddChild(TDefineTemplate.Create('Include Path',
+    Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+    ExternalMacroStart+'IncPath',
+    d(   DefinePathMacro+'/inc/'
+    +';'+IncPathMacro)
+    ,da_DefineRecurse));
 
   // utils
   UtilsDir:=TDefineTemplate.Create('Utils',ctsUtilsDirectories,'',
@@ -3801,7 +3847,7 @@ begin
     Format(ctsAddsDirToSourcePath,['..']),ExternalMacroStart+'SrcPath',
     '..;'+ExternalMacroStart+'SrcPath',da_DefineRecurse));
 
-  // packages
+  // installer
   InstallerDir:=TDefineTemplate.Create('Installer',ctsInstallerDirectories,'',
      'installer',da_Directory);
   InstallerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',

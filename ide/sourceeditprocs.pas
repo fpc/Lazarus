@@ -394,6 +394,8 @@ begin
   CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,Result,'');
   if CodeBuf=nil then exit;
   Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
+  if Result='' then
+    Result:=GetIdentifier(IdentItem.Identifier);
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;

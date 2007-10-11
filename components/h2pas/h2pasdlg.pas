@@ -1238,6 +1238,7 @@ begin
   
   // save
   try
+    DebugLn(['TH2PasDialog.SaveProject saving project']);
     Converter.SaveProject(NewFilename);
     Result:=mrOk;
   except

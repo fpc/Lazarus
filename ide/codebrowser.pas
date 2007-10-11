@@ -30,7 +30,6 @@
 
   Notes:
     The codetools provides TCodeTree of every unit.
-    
 }
 unit CodeBrowser;
 
@@ -251,42 +250,42 @@ type
   { TCodeBrowserView }
 
   TCodeBrowserView = class(TForm)
-    UnitFilterEdit: TEdit;
-    IdentifierFilterEdit: TEdit;
-    PackageFilterEdit: TEdit;
-    ShowIdentifiersCheckBox: TCheckBox;
-    ShowUnitsCheckBox: TCheckBox;
-    ShowPackagesCheckBox: TCheckBox;
-    ExpandAllPackagesMenuItem: TMenuItem;
-    CollapseAllPackagesMenuItem: TMenuItem;
-    ExpandAllUnitsMenuItem: TMenuItem;
-    CollapseAllUnitsMenuItem: TMenuItem;
-    ExpandAllClassesMenuItem: TMenuItem;
-    CollapseAllClassesMenuItem: TMenuItem;
+    AllClassesSeparatorMenuItem: TMenuItem;
     AllPackagesSeparatorMenuItem: TMenuItem;
     AllUnitsSeparatorMenuItem: TMenuItem;
-    LevelsGroupBox: TGroupBox;
-    AllClassesSeparatorMenuItem: TMenuItem;
-    ExportMenuItem: TMenuItem;
+    BrowseTreeView: TTreeView;
+    CollapseAllClassesMenuItem: TMenuItem;
+    CollapseAllPackagesMenuItem: TMenuItem;
+    CollapseAllUnitsMenuItem: TMenuItem;
     CopyDescriptionMenuItem: TMenuItem;
     CopyIdentifierMenuItem: TMenuItem;
     CopySeparatorMenuItem: TMenuItem;
-    PopupMenu1: TPopupMenu;
-    ShowProtectedCheckBox: TCheckBox;
-    ShowPrivateCheckBox: TCheckBox;
-    ImageList1: TImageList;
-    OptionsGroupBox: TGroupBox;
-    ScopeWithRequiredPackagesCheckBox: TCheckBox;
-    ScopeComboBox: TComboBox;
-    ScopeGroupBox: TGroupBox;
-    BrowseTreeView: TTreeView;
-    PackageFilterBeginsSpeedButton: TSpeedButton;
-    PackageFilterContainsSpeedButton: TSpeedButton;
-    UnitFilterBeginsSpeedButton: TSpeedButton;
-    UnitFilterContainsSpeedButton: TSpeedButton;
+    ExpandAllClassesMenuItem: TMenuItem;
+    ExpandAllPackagesMenuItem: TMenuItem;
+    ExpandAllUnitsMenuItem: TMenuItem;
+    ExportMenuItem: TMenuItem;
     IdentifierFilterBeginsSpeedButton: TSpeedButton;
     IdentifierFilterContainsSpeedButton: TSpeedButton;
+    IdentifierFilterEdit: TEdit;
+    ImageList1: TImageList;
+    LevelsGroupBox: TGroupBox;
+    OptionsGroupBox: TGroupBox;
+    PackageFilterBeginsSpeedButton: TSpeedButton;
+    PackageFilterContainsSpeedButton: TSpeedButton;
+    PackageFilterEdit: TEdit;
+    PopupMenu1: TPopupMenu;
+    ScopeComboBox: TComboBox;
+    ScopeGroupBox: TGroupBox;
+    ScopeWithRequiredPackagesCheckBox: TCheckBox;
+    ShowIdentifiersCheckBox: TCheckBox;
+    ShowPackagesCheckBox: TCheckBox;
+    ShowPrivateCheckBox: TCheckBox;
+    ShowProtectedCheckBox: TCheckBox;
+    ShowUnitsCheckBox: TCheckBox;
     StatusBar1: TStatusBar;
+    UnitFilterBeginsSpeedButton: TSpeedButton;
+    UnitFilterContainsSpeedButton: TSpeedButton;
+    UnitFilterEdit: TEdit;
     procedure BrowseTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
@@ -694,15 +693,25 @@ procedure TCodeBrowserView.InitImageList;
 
   procedure AddResImg(ImgList: TImageList; const ResName: string;
     out ImgID: integer);
-  var Pixmap: TPixmap;
+  var
+    Bitmap: TBitmap;
+    Resource: TLResource;
   begin
-    Pixmap:=TPixmap.Create;
-    if LazarusResources.Find(ResName)=nil then
+    Resource:=LazarusResources.Find(ResName);
+    if Resource=nil then
       DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
         ' WARNING: icon not found: "',ResName,'"');
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImgID:=ImgList.Add(Pixmap,nil);
-    Pixmap.Free;
+    if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
+      Bitmap:=TPixmap.Create;
+    end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
+      Bitmap:=TPortableNetworkGraphic.Create;
+    end else
+      DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
+        ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
+    Bitmap.LoadFromLazarusResource(ResName);
+    //DebugLn(['AddResImg ',ResName,' ',Bitmap.Width,' ',Bitmap.Height]);
+    ImgID:=ImgList.Add(Bitmap,nil);
+    Bitmap.Free;
   end;
 
 begin
@@ -1884,6 +1893,8 @@ var
       CurNode:=TCodeBrowserNode(CodeNode);
       if CurNode.Description<>'' then begin
         inc(NewIdentifierCount);
+        //if (NewIdentifierCount mod 100)=0 then
+        //  DebugLn(['AddTreeNodes ',NewIdentifierCount,' ',CurNode.Description]);
         TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
                                                   CurNode.Description,CodeNode);
         TVNode.ImageIndex:=GetNodeImage(CodeNode);

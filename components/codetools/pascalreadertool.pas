@@ -1339,8 +1339,10 @@ function TPascalReaderTool.ExtractSourceName: string;
 var
   NamePos: TAtomPosition;
 begin
-  GetSourceNamePos(NamePos);
-  Result:=GetAtom;
+  if GetSourceNamePos(NamePos) then
+    Result:=GetAtom
+  else
+    Result:='';
 end;
 
 function TPascalReaderTool.FindInterfaceNode: TCodeTreeNode;
