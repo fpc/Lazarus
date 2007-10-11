@@ -197,6 +197,7 @@ type
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
+    property HasPaint: Boolean read FHasPaint write FHasPaint;
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -735,7 +736,7 @@ type
     function visualRect(Index: QModelIndexH): TRect;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
-    procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl;
+    procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; virtual;
   end;
 
