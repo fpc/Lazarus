@@ -3138,7 +3138,7 @@ begin
     Result:=0
   else begin
     Result:=LastVisibleNode.Top+LastVisibleNode.Height
-             -(ClientHeight-ScrollBarWidth)+2*BorderWidth;
+             -(ClientHeight-ScrollBarWidth)+2*integer(BorderWidth);
     //DebugLn('>>> ',LastVisibleNode.Text,' ',Result);
     if Result<0 then Result:=0;
   end;
