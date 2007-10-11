@@ -425,6 +425,10 @@ msgstr ""
 msgid "Add an item"
 msgstr "Dodaj element"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr ""
@@ -4037,6 +4041,10 @@ msgstr "Wstaw nowy element (powy¿ej)"
 msgid "Insert Template"
 msgstr "Wstaw szablon"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Wstaw alfabetycznie"
@@ -4579,6 +4587,10 @@ msgstr "Linia poleceñ uruchamianego programu"
 
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc

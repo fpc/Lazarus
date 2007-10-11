@@ -3026,6 +3026,7 @@ resourcestring
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';
   lisPckOptsManualCompilationNeverAutomatically = 'Manual compilation (never '
     +'automatically)';
+  lisPckOptsLazDocLazarusDocumentation = 'LazDoc - Lazarus documentation';
   lisPckOptsAddPathsToDependentPackagesProjects = 'Add paths to dependent '
     +'packages/projects';
   lisPckOptsInclude = 'Include';

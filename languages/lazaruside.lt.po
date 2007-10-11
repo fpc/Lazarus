@@ -427,6 +427,10 @@ msgstr "Įdėti į projektą aktyvųjį modulį"
 msgid "Add an item"
 msgstr "Pridėti elementą"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr "Padėti stabdos tašką"
@@ -4043,6 +4047,10 @@ msgstr "Įterpti naują elementą (prieš)"
 msgid "Insert Template"
 msgstr "Įterpti šabloną"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Įterpti pagal abėcėlę"
@@ -4586,6 +4594,10 @@ msgstr "Startuojamos paskirties komandinė eilutė"
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
 msgstr "LazDoc"
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"

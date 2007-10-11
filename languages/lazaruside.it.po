@@ -426,6 +426,10 @@ msgstr "Aggiungi la unit attiva al progetto"
 msgid "Add an item"
 msgstr "Aggiungi una voce"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr "Aggiungi un breakpoint"
@@ -4038,6 +4042,10 @@ msgstr "Inserisci nuova voce (prima)"
 msgid "Insert Template"
 msgstr "Inserisci modello"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Inserisci in ordine alfabetico"
@@ -4581,6 +4589,10 @@ msgstr "Esecuzione riga di comando di destinazione"
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
 msgstr "LazDoc"
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"

@@ -428,6 +428,10 @@ msgstr ""
 msgid "Add an item"
 msgstr "添加一个项目"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr ""
@@ -4040,6 +4044,10 @@ msgstr "在前面插入项目"
 msgid "Insert Template"
 msgstr "插入模板"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "按字母顺序插入"
@@ -4583,6 +4591,10 @@ msgstr "运行目标命令行命令"
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
 msgstr "LazDoc 文档"
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"

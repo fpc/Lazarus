@@ -50,7 +50,6 @@ type
 
   TPackageOptionsDialog = class(TForm)
     AdditionalInfoButton: TButton;
-    AddOptionsGroupBox1: TGroupBox;
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
@@ -384,22 +383,61 @@ end;
 
 procedure TPackageOptionsDialog.SetupComponents;
 begin
-  SetupUsagePage();
-  SetupIDEPage();
+  Notebook.Page[0].Caption:=lisPckOptsUsage;
+  Notebook.Page[1].Caption:=lisToDoLDescription;
+  Notebook.Page[2].Caption:=lisPckOptsIDEIntegration;
+  Notebook.Page[3].Caption:=lisPckOptsProvides;
+  Notebook.Page[4].Caption:=dlgPOI18n;
+
+  OKButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
+
+  SetupUsagePage;
+  SetupIDEPage;
+  
+  //Description page
+  DescriptionGroupBox.Caption:=lisPckOptsDescriptionAbstract;
+  AuthorGroupBox.Caption:=lisPckOptsAuthor;
+  LicenseGroupBox.Caption:=lisPckOptsLicense;
+  VersionGroupBox.Caption:=lisVersion;
+  VersionMajorLabel.Caption:=lisPckOptsMajor;
+  VersionMinorLabel.Caption:=lisPckOptsMinor;
+  VersionReleaseLabel.Caption:=lisPckOptsRelease;
+  VersionBuildLabel.Caption:=lisBuildNumber;
+  AutoIncrementOnBuildCheckBox.Caption:=lisPckOptsAutomaticallyIncrementVersionOnBuild;
+  
+  //Provides page
+  ProvidesGroupBox.Caption:=lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages;
+  
+  //i18n page
+  EnableI18NCheckBox.Caption:=rsEnableI18n;
+  I18NGroupBox.Caption:=rsI18nOptions;
+  PoOutDirlabel.Caption:=rsPOOutputDirectory;
+  
 end;
 
 procedure TPackageOptionsDialog.SetupIDEPage;
 begin
   // lazdoc
+  PkgTypeRadioGroup.Caption:=lisPckOptsPackageType;
+  PkgTypeRadioGroup.Items[0]:=lisPckOptsDesigntimeOnly;
+  PkgTypeRadioGroup.Items[1]:=lisPckOptsRuntimeOnly;
+  PkgTypeRadioGroup.Items[2]:=lisPckOptsDesigntimeAndRuntime;
+  UpdateRadioGroup.Caption:=lisPckOptsUpdateRebuild;
+  UpdateRadioGroup.Items[0]:=lisPckOptsAutomaticallyRebuildAsNeeded;
+  UpdateRadioGroup.Items[1]:=lisPckOptsAutoRebuildWhenRebuildingAll;
+  UpdateRadioGroup.Items[2]:=lisPckOptsManualCompilationNeverAutomatically;
+  LazDocGroupBox.Caption:=lisPckOptsLazDocLazarusDocumentation;
+
   LazDocPathButton:=TPathEditorButton.Create(Self);
   with LazDocPathButton do begin
     Name:='LazDocPathButton';
     Caption:='...';
     AutoSize:=true;
-    Anchors:=[akTop,akRight,akBottom];
+    Anchors:=[akRight];
     AnchorParallel(akRight,6,LazDocGroupBox);
+    AnchorParallel(akTop,0,LazDocPathEdit);
     AnchorParallel(akBottom,0,LazDocPathEdit);
-    Width := 24; Height := 23;
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=LazDocGroupBox;
@@ -411,17 +449,25 @@ end;
 procedure TPackageOptionsDialog.SetupUsagePage;
 begin
   // Usage page
+  AddPathsGroupBox.Caption:=lisPckOptsAddPathsToDependentPackagesProjects;
+  UnitPathLabel.Caption:=lisPkgFileTypeUnit;
+  IncludePathLabel.Caption:=lisPckOptsInclude;
+  ObjectPathLabel.Caption:=lisPckOptsObject;
+  LibraryPathLabel.Caption:=lisPckOptsLibrary;
+  AddOptionsGroupBox.Caption:=lisPckOptsAddOptionsToDependentPackagesAndProjects;
+  LinkerOptionsLabel.Caption:=lisPckOptsLinker;
+  CustomOptionsLabel.Caption:=lisPckOptsCustom;
+
   UnitPathButton:=TPathEditorButton.Create(Self);
   with UnitPathButton do begin
     Name:='UnitPathButton';
     Parent:=AddPathsGroupBox;
     Caption:='...';
     AutoSize:=true;
-    Anchors:=[akTop,akRight,akBottom];
+    Anchors:=[akRight];
     AnchorParallel(akRight,6,AddPathsGroupBox);
+    AnchorParallel(akTop,0,UnitPathEdit);
     AnchorParallel(akBottom,0,UnitPathEdit);
-    Width := 24; Height := 23;
-    Left := 452; Top := 0;
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
   end;
@@ -432,11 +478,10 @@ begin
     Parent:=AddPathsGroupBox;
     Caption:='...';
     AutoSize:=true;
-    Anchors:=[akTop,akRight,akBottom];
+    Anchors:=[akRight];
     AnchorParallel(akRight,6,AddPathsGroupBox);
+    AnchorParallel(akTop,0,IncludePathEdit);
     AnchorParallel(akBottom,0,IncludePathEdit);
-    Width := 24; Height := 23;
-    Left := 452; Top := 27;
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
   end;
@@ -447,11 +492,10 @@ begin
     Parent:=AddPathsGroupBox;
     Caption:='...';
     AutoSize:=true;
-    Anchors:=[akTop,akRight,akBottom];
+    Anchors:=[akRight];
     AnchorParallel(akRight,6,AddPathsGroupBox);
+    AnchorParallel(akTop,0,ObjectPathEdit);
     AnchorParallel(akBottom,0,ObjectPathEdit);
-    Width := 24; Height := 23;
-    Left := 452; Top := 54;
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
   end;
@@ -462,11 +506,10 @@ begin
     Parent:=AddPathsGroupBox;
     Caption:='...';
     AutoSize:=true;
-    Anchors:=[akTop,akRight,akBottom];
+    Anchors:=[akRight];
     AnchorParallel(akRight,6,AddPathsGroupBox);
+    AnchorParallel(akTop,0,LibraryPathEdit);
     AnchorParallel(akBottom,0,LibraryPathEdit);
-    Width := 24; Height := 23;
-    Left := 452; Top := 81;
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
   end;

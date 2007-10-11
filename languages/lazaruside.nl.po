@@ -425,6 +425,10 @@ msgstr ""
 msgid "Add an item"
 msgstr "Item toevoegen"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr ""
@@ -4037,6 +4041,10 @@ msgstr "Nieuw Item toevoegen (voor)"
 msgid "Insert Template"
 msgstr "Invoegen Template"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Alfabetisch invoegen"
@@ -4580,6 +4588,10 @@ msgstr "Commandoregel voor het starten van programma"
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
 msgstr "LazDoc"
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"

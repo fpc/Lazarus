@@ -4589,6 +4589,10 @@ msgstr "Командная строка для запуска"
 msgid "LazDoc"
 msgstr "LazDoc"
 
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
+
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"
 msgstr "Редактор LazDoc"

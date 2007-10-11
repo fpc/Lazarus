@@ -425,6 +425,10 @@ msgstr "Tambah unit aktif ke proyek"
 msgid "Add an item"
 msgstr "Tambah item"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr "Tambah titik pisah"
@@ -4037,6 +4041,10 @@ msgstr "Sisipkan Item Baru (sebelum)"
 msgid "Insert Template"
 msgstr "Sisipkan Template"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Sisipkan secara alfabetik"
@@ -4580,6 +4588,10 @@ msgstr "Menjalankan baris perintah target"
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
 msgstr "LazDoc"
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"

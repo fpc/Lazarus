@@ -427,6 +427,10 @@ msgstr "Aktive Unit zum Projekt zufügen"
 msgid "Add an item"
 msgstr "Eintrag hinzufügen"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr "Haltpunkt hinzufügen"
@@ -4039,6 +4043,10 @@ msgstr "Neuen Eintrag einfügen (davor)"
 msgid "Insert Template"
 msgstr "Vorlage einfügen"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Alphabetisch einfügen"
@@ -4582,6 +4590,10 @@ msgstr "Startkommando des Projektes"
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
 msgstr "LazDoc"
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"

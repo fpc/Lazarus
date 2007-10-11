@@ -414,6 +414,10 @@ msgstr "Додати активний модуль до проекту"
 msgid "Add an item"
 msgstr "Додати пункт"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr "Додати точку зупину"
@@ -4026,6 +4030,10 @@ msgstr "Вставити новий пункт (перед)"
 msgid "Insert Template"
 msgstr "Вставити шаблон"
 
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Вставити за алфавітом"
@@ -4568,6 +4576,10 @@ msgstr "Командний рядок виконуваної програми"
 
 #: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc

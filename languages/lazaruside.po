@@ -3350,6 +3350,10 @@ msgstr ""
 msgid "Add semicolon"
 msgstr ""
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr ""
+
 #: lazarusidestrconsts:locwndsrceditor
 msgid "Lazarus Source Editor"
 msgstr ""
@@ -4560,6 +4564,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuedonotsho
 msgid "Do not show this message again."
+msgstr ""
+
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidmultiselection
@@ -9148,6 +9156,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptsmanualcompilationneverautomatically
 msgid "Manual compilation (never automatically)"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
