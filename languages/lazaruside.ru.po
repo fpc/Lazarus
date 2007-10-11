@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-10 20:31+0300\n"
+"PO-Revision-Date: 2007-10-11 15:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -425,6 +425,10 @@ msgstr "Добавить текущий модуль к проекту"
 msgid "Add an item"
 msgstr "Добавить элемент"
 
+#: lazarusidestrconsts:dlgaddassignmentoperator
+msgid "Add assignment operator :="
+msgstr "Добавить оператор присваивания :="
+
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
 msgstr "Добавить точку останова"
@@ -439,7 +443,7 @@ msgstr "Добавить шаблон кода"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
-msgstr "Добавить файл редактора к Проекту"
+msgstr "Добавить файл редактора в проект"
 
 #: lazarusidestrconsts:lisprojaddeditorfile
 msgid "Add editor files"
@@ -4036,6 +4040,10 @@ msgstr "Вставить новый пункт (перед)"
 #: lazarusidestrconsts:liscodetoolsdefsinserttemplate
 msgid "Insert Template"
 msgstr "Вставить шаблон"
+
+#: lazarusidestrconsts:ueminserttodo
+msgid "Insert Todo"
+msgstr "Вставить Todo"
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -9399,7 +9407,7 @@ msgstr "Показать обозреватель кода"
 
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
-msgstr "Показать Палитру Компонентов"
+msgstr "Показать палитру компонентов"
 
 #: lazarusidestrconsts:srkmectogglelazdoc
 msgid "View Documentation Editor"
@@ -9419,7 +9427,7 @@ msgstr "Просмотр истории переходов ..."
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr "Показать Инспектор объектов"
+msgstr "Показать инспектор объектов"
 
 #: lazarusidestrconsts:lispckeditviewpackgesource
 msgid "View Package Source"
