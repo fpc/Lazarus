@@ -128,6 +128,7 @@ type
     procedure Init_BPP32_B8G8R8_BIO_TTB(AWidth, AHeight: integer);
     procedure Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
     procedure Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight: integer);
+    procedure Init_BPP32_B8G8R8A8_M1_BIO_TTB(AWidth, AHeight: integer);
 
     function GetDescriptionFromMask: TRawImageDescription;
     function GetDescriptionFromAlpha: TRawImageDescription;
@@ -670,7 +671,7 @@ begin
   MaskBitsPerPixel := 1;
   MaskBitOrder := riboBitsInOrder;
 //  MaskShift := 0;        // the shift (=position) of the mask bit
-  MaskLineEnd := rileDWordBoundary;
+  MaskLineEnd := rileWordBoundary;
 end;
 
 procedure TRawImageDescription.Init_BPP32_B8G8R8_BIO_TTB(AWidth, AHeight: integer);
@@ -741,7 +742,7 @@ begin
   MaskBitsPerPixel := 1;
   MaskBitOrder := riboBitsInOrder;
 //  MaskShift := 0;        // the shift (=position) of the mask bit
-  MaskLineEnd := rileDWordBoundary;
+  MaskLineEnd := rileWordBoundary;
 end;
 
 function TRawImageDescription.MaskBitsPerLine: PtrUInt;
@@ -787,6 +788,15 @@ begin
   AlphaPrec := 8;
   AlphaShift := 24;
 //  MaskBitsPerPixel := 0;
+end;
+
+procedure TRawImageDescription.Init_BPP32_B8G8R8A8_M1_BIO_TTB(AWidth, AHeight: integer);
+begin
+  Init_BPP32_B8G8R8A8_BIO_TTB(Width, Height);
+
+  MaskBitsPerPixel := 1;
+  MaskBitOrder := riboBitsInOrder;
+  MaskLineEnd := rileWordBoundary;
 end;
 
 

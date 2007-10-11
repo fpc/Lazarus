@@ -649,7 +649,17 @@ begin
   if Desc.AlphaPrec >= 8 then Exit;
 
   if not AddAlphaToDescription(Desc, 8)
-  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
+  then begin
+    Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Desc.Width, Desc.Height);
+    // copy mask description
+    with TLazIntfImage(AImage).DataDescription do
+    begin
+      Desc.MaskBitsPerPixel := MaskBitsPerPixel;
+      Desc.MaskShift := MaskShift;
+      Desc.MaskLineEnd := MaskLineEnd;
+      Desc.MaskBitOrder := MaskBitOrder;
+    end;
+  end;
 
   TLazIntfImage(AImage).DataDescription := Desc;
 end;
