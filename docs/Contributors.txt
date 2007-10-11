@@ -64,6 +64,7 @@ Luis Rodrigues made TChart and misc patches
 Luiz Americo
 Marc Geldon
 Marc Weustink
+Marc Fokker
 Martin Patik
 Martin Smat
 Marton Papp
