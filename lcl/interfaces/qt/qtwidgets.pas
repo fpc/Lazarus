@@ -734,6 +734,9 @@ type
     function getModel: QAbstractItemModelH;
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
+    procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
+    procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
+    procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
@@ -787,6 +790,13 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
+    function getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
+    procedure setResizeMode(AResizeMode: QHeaderViewResizeMode);
+    procedure moveSection(AFromIndex: Integer; AToIndex: Integer);
+    procedure resizeSection(ASection: Integer; ASize: Integer);
+    procedure setHighlightSections(AValue: Boolean);
+    procedure setDefaultSectionSize(AValue: Integer);
+    procedure setStretchLastSection(AValue: Boolean);
   end;
 
   { TQtTreeView }
@@ -5611,6 +5621,41 @@ begin
   
 end;
 
+function TQtHeaderView.getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
+begin
+  Result := QHeaderView_resizeMode(QHeaderViewH(Widget), AIndex);
+end;
+
+procedure TQtHeaderView.setResizeMode(AResizeMode: QHeaderViewResizeMode);
+begin
+  QHeaderView_setResizeMode(QHeaderViewH(Widget), AResizeMode);
+end;
+
+procedure TQtHeaderView.moveSection(AFromIndex: Integer; AToIndex: Integer);
+begin
+  QHeaderView_moveSection(QHeaderViewH(Widget), AFromIndex, AToIndex);
+end;
+
+procedure TQtHeaderView.resizeSection(ASection: Integer; ASize: Integer);
+begin
+  QHeaderView_resizeSection(QHeaderViewH(Widget), ASection, ASize);
+end;
+
+procedure TQtHeaderView.setHighlightSections(AValue: Boolean);
+begin
+  QHeaderView_setHighlightSections(QHeaderViewH(Widget), AValue);
+end;
+
+procedure TQtHeaderView.setDefaultSectionSize(AValue: Integer);
+begin
+  QHeaderView_setDefaultSectionSize(QHeaderViewH(Widget), AValue);
+end;
+
+procedure TQtHeaderView.setStretchLastSection(AValue: Boolean);
+begin
+  QHeaderView_setStretchLastSection(QHeaderViewH(Widget), AValue);
+end;
+
   { TQtTreeView }
 
 {------------------------------------------------------------------------------
@@ -7021,6 +7066,24 @@ end;
 function TQtAbstractItemView.visualRect(Index: QModelIndexH): TRect;
 begin
   QAbstractItemView_visualRect(QAbstractItemViewH(Widget), @Result, Index);
+end;
+
+procedure TQtAbstractItemView.setEditTriggers(
+  ATriggers: QAbstractItemViewEditTriggers);
+begin
+  QAbstractItemView_setEditTriggers(QAbstractItemViewH(Widget), ATriggers);
+end;
+
+procedure TQtAbstractItemView.setSelectionMode(
+  AMode: QAbstractItemViewSelectionMode);
+begin
+  QAbstractItemView_setSelectionMode(QAbstractItemViewH(Widget), AMode);
+end;
+
+procedure TQtAbstractItemView.setSelectionBehavior(
+  ABehavior: QAbstractItemViewSelectionBehavior);
+begin
+  QAbstractItemView_setSelectionBehavior(QAbstractItemViewH(Widget), ABehavior);
 end;
 
 procedure TQtAbstractItemView.ItemDelegateSizeHint(
