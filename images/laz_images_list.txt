@@ -103,8 +103,10 @@ menu/menu_select_all.png
 menu/menu_stepinto.png
 menu/menu_stepover.png
 menu/menu_stop.png
+menu/menu_tool_check_lfm.png
 menu/menu_tool_dfm_to_lfm.png
 menu/menu_tool_diff.png
+menu/menu_tool_make_resourcestring.png
 menu/menu_tool_syntax_check.png
 menu/menu_uncomment_16.xpm
 menu/menu_undo.png
