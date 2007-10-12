@@ -40,12 +40,16 @@ type
   TCarbonClipboard = class
   private
     FPasteboards: Array [TClipboardType] of PasteboardRef;
-    FFormats: TList; // list of CFStringRef UTIs
+    FFormats: TList; // list of CFStringRef UTIs, 1 is reserved for text/plain
+    FOnClipboardRequest: Array [TClipboardType] of TClipboardRequestEvent;
+    
     function FindFormat(const UTI: CFStringRef): TClipboardFormat;
   public
     constructor Create;
     destructor Destroy; override;
   public
+    procedure CheckOwnerShip;
+    function Clear(ClipboardType: TClipboardType): Boolean;
     function FormatToMimeType(FormatID: TClipboardFormat): String;
     function GetData(ClipboardType: TClipboardType; FormatID: TClipboardFormat;
       Stream: TStream): Boolean;
@@ -102,10 +106,13 @@ var
   T: TClipboardType;
 begin
   for T := Low(TClipboardType) to High(TClipboardType) do
+  begin
     OSError(
       PasteboardCreate(ClipboardTypeToPasteboard[T], FPasteboards[T]),
       Self, SCreate, 'PasteboardCreate', ClipboardTypeName[T]);
-      
+
+    FOnClipboardRequest[T] := nil;
+  end;
   FFormats := TList.Create;
   FFormats.Add(nil);
   
@@ -133,6 +140,45 @@ begin
     CFRelease(FPasteboards[T]);
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonClipboard.CheckOwnerShip
+
+  Checks the ownership
+ ------------------------------------------------------------------------------}
+procedure TCarbonClipboard.CheckOwnerShip;
+var
+  T: TClipboardType;
+begin
+  for T := Low(TClipboardType) to High(TClipboardType) do
+  begin
+    if FOnClipboardRequest[T] = nil then Continue;
+    if (PasteboardSynchronize(FPasteboards[T]) and
+      kPasteboardClientIsOwner) = 0 then
+    begin  // inform LCL about ownership lost
+      FOnClipboardRequest[T](0, nil);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonClipboard.Clear
+  Params:  ClipboardType - Clipboard type
+  Returns: If the function succeeds
+  
+  Clears the specified clipboard and gets ownership
+ ------------------------------------------------------------------------------}
+function TCarbonClipboard.Clear(ClipboardType: TClipboardType): Boolean;
+var
+  Pasteboard: PasteboardRef;
+begin
+  Result := False;
+  Pasteboard := FPasteboards[ClipboardType];
+  
+  if OSError(PasteboardClear(Pasteboard), Self, 'Clear', 'PasteboardClear') then Exit;
+  PasteboardSynchronize(Pasteboard);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -222,9 +268,14 @@ begin
         if OSError(PasteboardCopyItemFlavorData(Pasteboard, ID, UTI, FlavorData),
           Self, SGetData, 'PasteboardCopyItemFlavorData') then Continue;
         try
+          if CFDataGetLength(FlavorData) = 0 then
+          begin
+            Result := True;
+            Exit;
+          end;
           //DebugLn('TCarbonClipboard.GetData Paste FlavordataLength: ' + DbgS(CFDataGetLength(FlavorData)));
 
-          if FormatID = 1 then // convert plain/text UTF-16 to UTF-8
+          if FormatID = 1 then // convert text/plain UTF-16 to UTF-8
           begin
             SetLength(S, (CFDataGetLength(FlavorData) div 2) * 3);
             if ConvertUTF16ToUTF8(PChar(S), Length(S) + 1,
@@ -336,9 +387,74 @@ end;
 function TCarbonClipboard.GetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
   Formats: PClipboardFormat): Boolean;
+  
+  procedure PutOnClipboard;
+  var
+    Data: CFDataRef;
+    UTI: CFStringRef;
+    DataStream: TMemoryStream;
+    I: Integer;
+    L: SizeUInt;
+    W: WideString;
+  begin
+    DataStream := TMemoryStream.Create;
+
+    for I := 0 to FormatCount - 1 do
+    begin
+      DataStream.Size := 0;
+      DataStream.Position := 0;
+
+      if not ((Formats[I] > 0) and (Formats[I] < FFormats.Count)) then
+      begin
+        DebugLn('TCarbonClipboard.GetOwnerShip Error: Invalid Format ' + DbgS(Formats[I]) + ' specified!');
+        Continue;
+      end;
+      
+      UTI := CFStringRef(FFormats[Formats[I]]);
+      FOnClipBoardRequest[ClipboardType](Formats[I], DataStream);
+      
+      if Formats[I] = 1 then // convert plain/text UTF-8 to UTF-16
+      begin
+        SetLength(W, DataStream.Size);
+        if ConvertUTF8ToUTF16(PWideChar(W), Length(W) + 1, PChar(DataStream.Memory),
+          DataStream.Size, [toInvalidCharToSymbol], L) <> trNoError then Exit;
+          
+        SetLength(W, L - 1);
+        Data := CFDataCreate(nil, PChar(W), (L - 1) * 2);
+      end
+      else
+        Data := CFDataCreate(nil, DataStream.Memory, DataStream.Size);
+
+      OSError(PasteboardPutItemFlavor(FPasteboards[ClipboardType],
+          PasteboardItemID(1), UTI, Data, 0),
+        Self, 'GetOwnerShip', 'PasteboardPutItemFlavor');
+    end;
+
+    DataStream.Free;
+  end;
+  
 begin
   Result := False;
-  DebugLn('TCarbonClipboard.GetOwnerShip TODO');
+  DebugLn('TCarbonClipboard.GetOwnerShip');
+
+  if (FormatCount = 0) or (OnRequestProc = nil) then
+  begin
+    // The LCL indicates it doesn't have the clipboard data anymore
+    // and the interface can't use the OnRequestProc anymore.
+    FOnClipboardRequest[ClipboardType] := nil;
+  end
+  else
+  begin
+    // clear OnClipBoardRequest to prevent destroying the LCL clipboard,
+    // when emptying the clipboard
+    FOnClipboardRequest[ClipboardType] := nil;
+    if not Clear(ClipboardType) then Exit;
+    
+    FOnClipboardRequest[ClipboardType] := OnRequestProc;
+    PutOnClipboard;
+  end;
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -351,14 +467,16 @@ function TCarbonClipboard.RegisterFormat(const AMimeType: String): TClipboardFor
 var
   UTI, M: CFStringRef;
 begin
-  CreateCFString(AMimeType, M);
-  try
-    if AMimeType = PredefinedClipboardMimeTypes[pcfText] then
-      CreateCFString('public.utf16-plain-text', UTI)
-    else
+  if AMimeType = PredefinedClipboardMimeTypes[pcfText] then
+    CreateCFString('public.utf16-plain-text', UTI)
+  else
+  begin
+    CreateCFString(AMimeType, M);
+    try
       UTI := UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, M, nil);
-  finally
-    FreeCFString(M);
+    finally
+      FreeCFString(M);
+    end;
   end;
   
   Result := FindFormat(UTI);

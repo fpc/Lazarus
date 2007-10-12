@@ -471,6 +471,8 @@ begin
     SendEventToEventTarget(Event, Target);
     ReleaseEvent(Event);
     
+    Clipboard.CheckOwnerShip;
+    
   until Application.Terminated;
   
   {$IFDEF VerboseObject}
