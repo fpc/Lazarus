@@ -1055,21 +1055,10 @@ class function TGtk2WSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
   WidgetInfo: PWidgetInfo;
-  Entry: PGtkEntry;
-  Text: String;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
   
   Result := gtk_combo_box_get_active(PGtkComboBox(WidgetInfo^.CoreWidget));
-
-  // if the combo is an editable ...
-  if (Result = -1) then begin
-    Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
-    if Entry<>nil then begin
-      Text := gtk_entry_get_text(Entry);
-      Result := ACustomComboBox.Items.IndexOf(Text);
-    end;
-  end;
 end;
 
 class function TGtk2WSCustomComboBox.GetMaxLength(
