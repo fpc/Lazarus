@@ -1072,6 +1072,29 @@ begin
 
 end;
 
+class function TGtk2WSCustomListView.GetItemAt(const ALV: TCustomListView; x,
+  y: integer): Integer;
+var
+  Widgets: PTVWidgets;
+  ItemPath: PGtkTreePath;
+  Column: PGtkTreeViewColumn;
+begin
+  Result := -1;
+  if not WSCheckHandleAllocated(ALV, 'GetItemAt')
+  then Exit;
+  
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  
+  if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widgets^.MainView), x, y, ItemPath, Column, nil, nil) then
+  begin
+    if ItemPath <> nil then
+    begin
+      Result := gtk_tree_path_get_indices(ItemPath)^;
+      gtk_tree_path_free(ItemPath);
+    end;
+  end;
+end;
+
 class function TGtk2WSCustomListView.GetSelCount(const ALV: TCustomListView
   ): Integer;
 var
@@ -1286,6 +1309,8 @@ begin
   with Widgets^ do begin
 
     case AValue of
+      vsIcon, // TODO this can be a GtkIconView if someone implements it
+      vsSmallIcon,
       vsList:
         begin
           SetNeedDefaultColumn(ALV, True);
