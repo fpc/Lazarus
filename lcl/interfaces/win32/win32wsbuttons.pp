@@ -67,7 +67,7 @@ type
   public
   end;
 
-procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
+procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; const ButtonCaption: string);
 
 implementation
 
@@ -121,7 +121,7 @@ type
 
   Updates the button image combining the glyph and caption
  ------------------------------------------------------------------------------}
-procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
+procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; const ButtonCaption: string);
 var
   BitBtnLayout: TButtonLayout; // Layout of button and glyph
   BitBtnHandle: HWND; // Handle to bitbtn window
@@ -138,7 +138,11 @@ var
   BitmapRect: Windows.RECT;
   ButtonImageList: BUTTON_IMAGELIST;
   I: integer;
-
+  {$IFDEF WindowsUnicodeSupport}
+  ButtonCaptionA: string;
+  ButtonCaptionW: widestring;
+  {$ENDIF}
+  
   procedure DrawBitmap(AState: TButtonState);
   var
     MonoDC: HDC;
@@ -217,7 +221,14 @@ var
     end;
     SetBkMode(hdcNewBitmap, TRANSPARENT);
     SetTextColor(hdcNewBitmap, 0);
+    {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags)
+    else
+      DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
+    {$ELSE}
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
+    {$ENDIF}
     SelectObject(hdcNewBitmap, OldBitmapHandle);
   end;
 
@@ -239,7 +250,19 @@ begin
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
   OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Handle);
+  {$IFDEF WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    ButtonCaptionW := UTF8Decode(ButtonCaption);
+    GetTextExtentPoint32W(hdcNewBitmap, LPWSTR(ButtonCaptionW), Length(ButtonCaptionW), TextSize);
+  end else
+  begin
+    ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
+    GetTextExtentPoint32(hdcNewBitmap, LPSTR(ButtonCaptionA), Length(ButtonCaptionA), TextSize);
+  end;
+  {$ELSE}
   GetTextExtentPoint32(hdcNewBitmap, LPSTR(ButtonCaption), Length(ButtonCaption), TextSize);
+  {$ENDIF}
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
@@ -434,14 +457,14 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then Exit;
   TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
   if TCustomBitBtn(AWinControl).Spacing = -1 then
-    DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
+    DrawBitBtnImage(TCustomBitBtn(AWinControl), AWinControl.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetColor(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
   TWin32WSWinControl.SetColor(AWinControl);
-  DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
+  DrawBitBtnImage(TCustomBitBtn(AWinControl), AWinControl.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetFont(const AWinControl: TWinControl;
@@ -449,41 +472,41 @@ class procedure TWin32WSBitBtn.SetFont(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then Exit;
   TWin32WSWinControl.SetFont(AWinControl, AFont);
-  DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
+  DrawBitBtnImage(TCustomBitBtn(AWinControl), AWinControl.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then Exit;
-  DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
+  DrawBitBtnImage(ABitBtn, ABitBtn.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then Exit;
-  DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
+  DrawBitBtnImage(ABitBtn, ABitBtn.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetMargin') then Exit;
-  DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
+  DrawBitBtnImage(ABitBtn, ABitBtn.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetSpacing') then Exit;
-  DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
+  DrawBitBtnImage(ABitBtn, ABitBtn.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
-  DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AText));
+  DrawBitBtnImage(TCustomBitBtn(AWinControl), AText);
 end;
 
 initialization
