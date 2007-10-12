@@ -800,7 +800,7 @@ var
       LineSize := (((BitCount * Width + 15) shr 4) shl 1);
       if (LineSize and 2) <> 0
       then begin
-        // bitmapdata needs to be DWord aligned, while CreateBitmap is word aligned
+        // bitmapdata needs to be DWord aligned, while CreateBitmap is Word aligned
         // so "feed" the loader line by line :(
         Count := Height;
         res := True;
@@ -834,7 +834,6 @@ var
     finally
       gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
     end;
-    {$note todo create 1bit bitmap when requested} // then next always returns system depth
 
     gdk_pixbuf_render_pixmap_and_mask(Src, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
     gdk_pixbuf_unref(Src);
@@ -859,6 +858,40 @@ var
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
   end;
+  
+  procedure LoadBitmapData;
+  var
+    LineSize, n: Integer;
+    BitsPtr: Pointer;
+    Src, Dst: PByte;
+  begin
+    LineSize := Width shr 3;
+    if (LineSize and 1) <> 0
+    then begin
+      // the gdk_bitmap_create_from_data expects data byte aligned while
+      // Createbitmap is word aligned. adjust data
+      BitsPtr := GetMem(LineSize * Height);
+      Dst := BitsPtr;
+      Src := BitmapBits;
+      for n := 1 to height do
+      begin
+        Move(Src^, Dst^, LineSize);
+        Inc(Src, LineSize + 1);
+        Inc(Dst, LineSize);
+      end;
+    end
+    else begin
+      BitsPtr := BitmapBits;
+    end;
+
+    GdiObject^.GDIBitmapType := gbBitmap;
+    GdiObject^.GDIBitmapObject := gdk_bitmap_create_from_data(nil, BitsPtr, Width, Height);
+    GdiObject^.Visual := nil; // bitmaps don't have a visual
+    GdiObject^.SystemVisual := False;
+    
+    if BitsPtr <> BitmapBits
+    then FreeMem(BitsPtr);
+  end;
 
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrUInt(BitmapBits)]));
@@ -878,24 +911,29 @@ begin
     then begin
       GdiObject^.GDIBitmapType := gbBitmap;
       GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, 1);
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
+      GdiObject^.Visual := nil; // bitmaps don't have a visual
     end
     else begin
       GdiObject^.GDIBitmapType := gbPixmap;
       GdiObject^.GDIPixmapObject.Image := gdk_pixmap_new(nil, Width, Height, BitCount);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject.Image);
+      gdk_visual_ref(GdiObject^.Visual);
     end;
-    gdk_visual_ref(GdiObject^.Visual);
     GdiObject^.SystemVisual := False;
   end
   else begin
-    // Load the data by faking it as a windows bitmap stream (this handles all conversion)
-    // Problem with his method is that it doesn't result in the bitmap requested.
-    // it is always a device compatible bitmap
-    // maybe we should add a gdPixBuf type the the GDIObject for formats not conmpatible
-    // with a native pixmap format
-
-    LoadDataByPixbufLoader;
+    if BitCount = 1
+    then begin
+      LoadBitmapData;
+    end
+    else begin
+      // Load the data by faking it as a windows bitmap stream (this handles all conversion)
+      // Problem with his method is that it doesn't result in the bitmap requested.
+      // it is always a device compatible bitmap
+      // maybe we should add a gdPixBuf type the the GDIObject for formats not compatible
+      // with a native pixmap format
+      LoadDataByPixbufLoader;
+    end;
   end;
 
   Result := HBITMAP(PtrUInt(GdiObject));
