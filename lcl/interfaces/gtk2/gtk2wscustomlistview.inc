@@ -182,6 +182,7 @@ begin
   // this function is called *before* the item is selected
   // The result should be True to allow the Item to change selection
   Result := True;
+
   Widgets := PTVWidgets(WidgetInfo^.UserData);
   Str := gtk_tree_path_to_string(path);
   
@@ -195,16 +196,18 @@ begin
   NM.uChanged := LVIF_STATE;
   msg.NMHdr := @NM.hdr;
   {Result := }DeliverMessage(WidgetInfo^.LCLObject, msg){ = 0};
-  
+
   if not Result then Exit;
 
-
   // this stops a loop when you use the shift key to select multiple entries
-  for i := 0 to Widgets^.ItemCache.Count-1 do begin
-    if (Widgets^.ItemCache.Strings[i] = Str) and (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected))))
-    then begin
-      Result := False;
-      Exit;
+  if gtk_tree_selection_get_mode(selection) = GTK_SELECTION_MULTIPLE then
+  begin
+    for i := 0 to Widgets^.ItemCache.Count-1 do begin
+      if (Widgets^.ItemCache.Strings[i] = Str) and (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected))))
+      then begin
+        Result := False;
+        Exit;
+      end;
     end;
   end;
   Widgets^.ItemCache.AddObject(Str,TObject(ptrint(Ord(path_is_currently_selected))));
