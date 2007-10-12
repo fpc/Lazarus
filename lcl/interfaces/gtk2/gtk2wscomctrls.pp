@@ -90,6 +90,7 @@ type
     class procedure ReCreateListStore(const ALV: TCustomListView;const TVWidgets: PTVWidgets); virtual;
     class procedure ReCreateItems(const ALV: TCustomListView); virtual;
     class procedure SetPropertyInternal(const ALV: TCustomListView; const Widgets: PTVWidgets; const AProp: TListViewProperty; const AIsSet: Boolean);
+    class procedure SetNeedDefaultColumn(const ALV: TCustomListView; const AValue: Boolean);
   protected
     class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
   public

@@ -331,6 +331,53 @@ begin
   end;
 end;
 
+class procedure TGtk2WSCustomListView.SetNeedDefaultColumn(
+  const ALV: TCustomListView; const AValue: Boolean);
+var
+  Widgets: PTVWidgets;
+  GtkColumn: PGtkTreeViewColumn;
+  pixrenderer,
+  textrenderer: PGtkCellRenderer;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetNeedDefaultColumn')
+  then Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  
+  GtkColumn := g_object_get_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN');
+  if AValue = True then
+  begin
+    if GtkColumn = nil then
+    begin
+      GtkColumn := gtk_tree_view_column_new();
+
+      gtk_widget_unset_flags(PGtkWidget(GtkColumn), GTK_CAN_FOCUS);
+
+      // add renderers
+      pixrenderer := gtk_cell_renderer_pixbuf_new();
+      textrenderer := gtk_cell_renderer_text_new();
+
+      gtk_tree_view_column_pack_start(GtkColumn, pixrenderer, FALSE);
+      gtk_tree_view_column_set_attributes(GtkColumn, pixrenderer,['pixbuf', 0, nil]);
+      gtk_tree_view_column_pack_start(GtkColumn, textrenderer, True);
+      gtk_tree_view_column_set_attributes(GtkColumn, textrenderer, ['text',1, nil]);
+
+      // insert column
+      gtk_tree_view_insert_column(GTK_TREE_VIEW(Widgets^.MainView), GtkColumn, 0);
+      
+      g_object_set_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN', GtkColumn);
+
+    end;
+  end
+  else begin // No Column Needed
+    if GtkColumn <> nil then
+    begin
+      gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn);
+      g_object_set_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN', nil);
+    end;
+  end;
+end;
+
 class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
@@ -1227,6 +1274,7 @@ class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
 begin
+  WriteLn('SetViewStyle');
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle')
   then Exit;
 
@@ -1237,10 +1285,12 @@ begin
     case AValue of
       vsList:
         begin
+          SetNeedDefaultColumn(ALV, True);
           gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (MainView), False);
         end;
       vsReport:
         begin
+          SetNeedDefaultColumn(ALV, False);
           if TLVHack(ALV).ShowColumnHeaders = True then
             gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (MainView), True);
         end;
