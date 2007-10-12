@@ -155,6 +155,63 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetControlConstraints
+  Params: Constraints: TObject
+  Returns: true on success
+
+  Updates the constraints object (e.g. TSizeConstraints) with interface specific
+  bounds.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetControlConstraints(Constraints: TObject): boolean;
+var
+  SizeConstraints: TSizeConstraints;
+  MinWidth: Integer;
+  MinHeight: Integer;
+  MaxWidth: Integer;
+  MaxHeight: Integer;
+  SizeHint: TSize;
+  Ct: TWinControl;
+begin
+  Result := True;
+  if Constraints is TSizeConstraints then
+  begin
+  
+    MinWidth := 0;
+    MinHeight := 0;
+    MaxWidth:=0;
+    MaxHeight:=0;
+    
+    SizeConstraints := TSizeConstraints(Constraints);
+
+    if (SizeConstraints.Control=nil) then exit;
+
+    if SizeConstraints.Control is TWinControl then
+      Ct := TWinControl(SizeConstraints.Control);
+
+    if Assigned(Ct) and ct.HandleAllocated then
+    begin
+      QWidget_minimumSize(TQtWidget(Ct.Handle).Widget, @SizeHint);
+
+      MinWidth := SizeHint.cx;
+      MinHeight := SizeHint.cy;
+      
+      if MinWidth < 0 then
+        MinWidth := 0;
+      if MinHeight < 0 then
+        MinHeight := 0;
+        
+      QWidget_maximumSize(TQtWidget(Ct.Handle).Widget, @SizeHint);
+      
+      MaxWidth := SizeHint.cx;
+      MaxHeight := SizeHint.cy;
+      
+      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
+                                              MinWidth,MinHeight);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: IntfSendsUTF8KeyPress
   Params:
   Returns:
@@ -489,6 +546,13 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
   {$endif}
+end;
+
+function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+    Result := TextOut(DC, X, Y, Str, Count);
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

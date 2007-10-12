@@ -36,6 +36,8 @@ procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
+function GetControlConstraints(Constraints: TObject): boolean; override;
+
 function IntfSendsUTF8KeyPress: boolean; override;
 
 function PromptUser(const DialogCaption : string;
@@ -54,4 +56,7 @@ function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescriptio
 
 function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean; override;
 function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
+
+function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
