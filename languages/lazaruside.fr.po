@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-09-06 21:41+0100\n"
+"PO-Revision-Date: 2007-10-12 22:06+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -225,7 +225,7 @@ msgstr "&Propriétés"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "&Retirer"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -405,7 +405,7 @@ msgstr "Ajouter des fichiers"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Ajouter inverse"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -429,7 +429,7 @@ msgstr "Ajouter un élément"
 
 #: lazarusidestrconsts:dlgaddassignmentoperator
 msgid "Add assignment operator :="
-msgstr ""
+msgstr "Ajouter opérateur d'assignement :="
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
@@ -537,7 +537,7 @@ msgstr "Fichiers additionnels à chercher (i.e. /chemin/*.pas;/chemin2/*.pp)"
 
 #: lazarusidestrconsts:rsadditionalinfo
 msgid "Additional info"
-msgstr ""
+msgstr "Information additionnelle"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
@@ -549,7 +549,7 @@ msgstr "Ajuster la ligne supérieure au commentaire qui précède"
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Options de construction avancées"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
@@ -793,7 +793,7 @@ msgstr "Dispositifs automatiques "
 
 #: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
-msgstr ""
+msgstr "Augmenter Automatiquement le numéro de construction"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -977,7 +977,7 @@ msgstr "Numéro de construction"
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "Options de construction"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -1005,7 +1005,7 @@ msgstr "Construire le programme/projet"
 
 #: lazarusidestrconsts:rsbuild
 msgid "Build:"
-msgstr ""
+msgstr "Construiction :"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1157,7 +1157,7 @@ msgstr "Table des caractères"
 
 #: lazarusidestrconsts:rscharacterset
 msgid "Character set:"
-msgstr ""
+msgstr "Jeu de caractères :"
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1649,7 +1649,7 @@ msgstr "Commandes du menu composants"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
+msgstr "Définitions conditionnelle"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1877,7 +1877,7 @@ msgstr "La copie d'une fiche complète n'est pas encore implémentée."
 
 #: lazarusidestrconsts:rscopyright
 msgid "Copyright:"
-msgstr ""
+msgstr "Copyright :"
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -1981,7 +1981,7 @@ msgstr "Veuillez d'abord créer un projet !"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
-msgstr ""
+msgstr "Créer une nouvelle définition"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
@@ -2593,7 +2593,7 @@ msgstr "Permettre les macros"
 
 #: lazarusidestrconsts:rsenablei18n
 msgid "Enable i18n"
-msgstr ""
+msgstr "Activer i18n"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -3849,7 +3849,7 @@ msgstr "Inclure le filtre"
 
 #: lazarusidestrconsts:rsincludeversioninfoinexecutable
 msgid "Include Version Info in executable"
-msgstr ""
+msgstr "Inclure Version Info dans l'exécutable"
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -4045,7 +4045,7 @@ msgstr "Insérer un modèle"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
-msgstr ""
+msgstr "Insérer Todo"
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -4561,11 +4561,11 @@ msgstr "Exceptions de langue"
 
 #: lazarusidestrconsts:rslanguageoptions
 msgid "Language options"
-msgstr ""
+msgstr "Options de langue"
 
 #: lazarusidestrconsts:rslanguageselection
 msgid "Language selection:"
-msgstr ""
+msgstr "Sélection de la langue:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -4593,7 +4593,7 @@ msgstr "LazDoc"
 
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
-msgstr ""
+msgstr "LazDoc - Lazarus documentation"
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"
@@ -4869,7 +4869,7 @@ msgstr "Principal"
 
 #: lazarusidestrconsts:rsmajorrevision
 msgid "Major revision:"
-msgstr ""
+msgstr "Révision Majeur :"
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
@@ -4973,7 +4973,7 @@ msgstr "Mineur"
 
 #: lazarusidestrconsts:rsminorrevision
 msgid "Minor revision:"
-msgstr ""
+msgstr "Révision mineur :"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5697,7 +5697,7 @@ msgstr "Autres fichiers"
 
 #: lazarusidestrconsts:rsotherinfo
 msgid "Other info"
-msgstr ""
+msgstr "Autre information"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
@@ -5737,7 +5737,7 @@ msgstr "Ecraser le fichier ?"
 
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
-msgstr ""
+msgstr "Répertoire de sortie PO"
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -6237,7 +6237,7 @@ msgstr "Méthode protégée"
 
 #: lazarusidestrconsts:lispckoptsprovides
 msgid "Provides"
-msgstr ""
+msgstr "Fournit"
 
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
@@ -6265,7 +6265,7 @@ msgstr "Méthode publiée"
 
 #: lazarusidestrconsts:lislazbuildquickbuildoptions
 msgid "Quick Build Options"
-msgstr ""
+msgstr "Options de construction rapide"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
@@ -6577,7 +6577,7 @@ msgstr "Rapport"
 
 #: lazarusidestrconsts:lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Signaler un bogue ..."
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
@@ -8569,7 +8569,7 @@ msgstr "Ce paquet est installé, mais le fichier de lpk n'a pas été trouvé. T
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
-msgstr ""
+msgstr "Ce paquet fournit les mêmes que les paquets suivants :"
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9385,11 +9385,11 @@ msgstr "Information sur la version"
 
 #: lazarusidestrconsts:rsversionnumbering
 msgid "Version numbering"
-msgstr ""
+msgstr "Numérotation de version"
 
 #: lazarusidestrconsts:rsversion
 msgid "Version:"
-msgstr ""
+msgstr "Version :"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
@@ -9413,11 +9413,11 @@ msgstr "Afficher l'explorateur de code"
 
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
-msgstr "Voir la palette des composants"
+msgstr "Afficher la palette des composants"
 
 #: lazarusidestrconsts:srkmectogglelazdoc
 msgid "View Documentation Editor"
-msgstr "Voir la documentation de l'éditeur"
+msgstr "Afficher l'éditeur de documentation"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
@@ -9425,7 +9425,7 @@ msgstr "Afficher les fiches"
 
 #: lazarusidestrconsts:lismenuviewidespeedbuttons
 msgid "View IDE speed buttons"
-msgstr "Voir les boutons rapides de l'IDE"
+msgstr "Afficher les boutons rapides de l'IDE"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
@@ -9453,7 +9453,7 @@ msgstr "Afficher le source"
 
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
-msgstr "Voir le source (.lfm)"
+msgstr "Afficher le source (.lfm)"
 
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
@@ -9465,15 +9465,15 @@ msgstr "Afficher la liste des ToDo ..."
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
-msgstr "Dépendances d'unités"
+msgstr "Afficher Dépendances d'unités"
 
 #: lazarusidestrconsts:liskmviewunitinfo
 msgid "View Unit Info"
-msgstr "voir l'information d'unité"
+msgstr "Afficher l'info d'unité"
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
-msgstr "Informations de l'unité"
+msgstr "Afficher information sur l'unité"
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
@@ -9493,11 +9493,11 @@ msgstr "Afficher la pile d'appel"
 
 #: lazarusidestrconsts:srkmectogglecodebrowser
 msgid "View code browser"
-msgstr "Voir le navigateur de code"
+msgstr "Afficher le navigateur de code"
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"
-msgstr "Voir la palette de composant"
+msgstr "Afficher la palette de composant"
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
@@ -9517,47 +9517,47 @@ msgstr "Afficher les variables locales"
 
 #: lazarusidestrconsts:srkmcatviewmenu
 msgid "View menu commands"
-msgstr "Commandes du menu Voir"
+msgstr "Afficher les Commandes du menu"
 
 #: lazarusidestrconsts:srkmectogglemessages
 msgid "View messages"
-msgstr "Voir les messages"
+msgstr "Afficher les messages"
 
 #: lazarusidestrconsts:liskmviewprojecttodolist
 msgid "View project ToDo list"
-msgstr "Voir la liste des ToDo du projet"
+msgstr "Afficher la liste des ToDo du projet"
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
-msgstr "Voir les fiches du projet"
+msgstr "Afficher les fiches du projet"
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"
-msgstr "Voir les options du projet"
+msgstr "Afficher les options du projet"
 
 #: lazarusidestrconsts:liskmviewprojectsource
 msgid "View project source"
-msgstr "Voir les sources du projet"
+msgstr "Afficher les sources du projet"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
-msgstr "Voir les unités du projet"
+msgstr "Afficher les unités du projet"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
-msgstr "Voir les dépendances de l'unité"
+msgstr "Afficher les dépendances de l'unité"
 
 #: lazarusidestrconsts:srkmecviewunitinfo
 msgid "View unit information"
-msgstr "Voir les informations de l'unité"
+msgstr "Afficher les informations de l'unité"
 
 #: lazarusidestrconsts:srkmecviewunits
 msgid "View units"
-msgstr "Voir les unités"
+msgstr "Afficher les unités"
 
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
-msgstr "Voir les points de suivi"
+msgstr "Afficher les points de suivi"
 
 #: lazarusidestrconsts:lishlpoptsviewers
 msgid "Viewers"
@@ -9745,11 +9745,11 @@ msgstr "Installation auto statique"
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
 msgid "automatically on line break"
-msgstr ""
+msgstr "Automatiquement sur Retour à la ligne"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "automatically on space"
-msgstr ""
+msgstr "Automatiquement sur espace"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
@@ -9813,15 +9813,15 @@ msgstr "Programme freepascal employant TCustomApplication pour vérifier facilem
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr ""
+msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report/fr"
 
 #: lazarusidestrconsts:dlgpoi18n
 msgid "i18n"
-msgstr ""
+msgstr "i18n"
 
 #: lazarusidestrconsts:rsi18noptions
 msgid "i18n Options"
-msgstr ""
+msgstr "Options i18n"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
