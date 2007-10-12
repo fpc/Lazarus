@@ -1414,7 +1414,7 @@ var
       if WordIsKeyWord.DoIt(@Src[ReferingPos]) then exit;
       // this is a type cast
       NeededType:=ctnConstDefinition;
-      GetReferingNode;
+      //GetReferingNode;
       if (ReferingNode<>nil) then begin
         // ToDo: check if it is a typecast to a procedure type
         // then the alias should be replaced with a procdure
