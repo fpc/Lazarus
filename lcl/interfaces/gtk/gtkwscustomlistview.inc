@@ -898,6 +898,7 @@ begin
     CListWidget := PGtkCList(gtk_clist_new(1));
     gtk_clist_column_titles_hide(CListWidget);
     gtk_clist_set_column_auto_resize(CListWidget, 0, True);
+    //gtk_clist_set_row_height(CListWidget, 30);
   end;
   gtk_clist_set_shadow_type(CListWidget, GTK_SHADOW_IN);
 
@@ -1184,13 +1185,17 @@ class procedure TGtkWSCustomListView.SetDefaultItemHeight(const ALV: TCustomList
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
+const
+  GTK_CLIST_ROW_HEIGHT_SET = 1 shl 1;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetDefaultItemHeight')
   then Exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
-  
+
+  if (AValue = 0) and (CListWidget^.flags and GTK_CLIST_ROW_HEIGHT_SET = 0) then
+    exit;
   gtk_clist_set_row_height(CListWidget, AValue);
 end;
 
