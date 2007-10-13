@@ -90,6 +90,7 @@ begin
     g_free(value);
   end;
   Mess.Msg := LM_CHANGED;
+  Val(arg1, Mess.WParam);
   Mess.Result := 0;
   DeliverMessage(widgetInfo^.lclObject, Mess);
 end;
