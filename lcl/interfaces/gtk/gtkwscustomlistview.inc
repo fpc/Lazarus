@@ -61,7 +61,13 @@ function GtkWSCustomListView_ClickColumn(AList: PGTKCList; AColumn: Integer; AIn
 var
   msg: TLMNotify;
   NM: TNMListView;
+  ALV: TListView;
 begin
+  // this can happen when no columns are added which crashes the program
+  ALV := TListView(AInfo^.LCLObject);
+  if AColumn > ALV.Columns.Count-1 then
+    Exit;
+    
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
