@@ -1745,7 +1745,8 @@ var
   
   procedure DataSourceFinalize;
   begin
-    gdk_pixbuf_unref(Source);
+    if Source <> nil
+    then gdk_pixbuf_unref(Source);
   end;
 
   procedure WriteData(Value : PByte; Size : Longint);
@@ -2734,7 +2735,8 @@ var
 
     // unset clipping mask for transparency
     ResetGCClipping(DestDC, DstDevContext.GC);
-    gdk_bitmap_unref(ClipMask);
+    if ClipMask <> nil
+    then gdk_bitmap_unref(ClipMask);
 
     // restore raster operation to SRCCOPY
     gdk_gc_set_function(DstDevContext.GC, GDK_Copy);
