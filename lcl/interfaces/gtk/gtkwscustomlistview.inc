@@ -898,7 +898,6 @@ begin
     CListWidget := PGtkCList(gtk_clist_new(1));
     gtk_clist_column_titles_hide(CListWidget);
     gtk_clist_set_column_auto_resize(CListWidget, 0, True);
-    //gtk_clist_set_row_height(CListWidget, 30);
   end;
   gtk_clist_set_shadow_type(CListWidget, GTK_SHADOW_IN);
 
