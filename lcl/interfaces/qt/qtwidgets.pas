@@ -370,6 +370,7 @@ type
 
   TQtMenuBar = class;
   TQtToolBar = class;
+  TQtStatusBar = class;
 
   TQtMainWindow = class(TQtWidget)
   private
@@ -383,6 +384,7 @@ type
 {$endif}
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
+    StatusBar: TQtStatusBar;
     destructor Destroy; override;
     function getClientBounds: TRect; override;
     function getText: WideString; override;
@@ -727,10 +729,24 @@ type
   private
     FOldDelegate: QAbstractItemDelegateH;
     FNewDelegate: QLCLItemDelegateH;
+    FSignalActivated: QAbstractItemView_hookH;
+    FSignalClicked: QAbstractItemView_hookH;
+    FSignalDoubleClicked: QAbstractItemView_hookH;
+    FSignalEntered: QAbstractItemView_hookH;
+    FSignalPressed: QAbstractItemView_hookH;
+    FSignalViewportEntered: QAbstractItemView_hookH;
     function GetOwnerDrawn: Boolean;
     procedure SetOwnerDrawn(const AValue: Boolean);
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    procedure signalActivated(index: QModelIndexH); cdecl; virtual;
+    procedure signalClicked(index: QModelIndexH); cdecl; virtual;
+    procedure signalDoubleClicked(index: QModelIndexH); cdecl; virtual;
+    procedure signalEntered(index: QModelIndexH); cdecl; virtual;
+    procedure signalPressed(index: QModelIndexH); cdecl; virtual;
+    procedure signalViewportEntered; cdecl; virtual;
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
     function getModel: QAbstractItemModelH;
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
@@ -1089,16 +1105,32 @@ begin
   FProps := niL;
   LCLObject := AWinControl;
   FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
-  FHasPaint := False;
-
+  
   // Creates the widget
   Widget := AWidget;
+  
+  FDefaultCursor := QCursor_create();
+  QWidget_cursor(Widget, FDefaultCursor);
 
   // set Handle->QWidget map
   AVariant := QVariant_Create(Int64(ptruint(Self)));
   QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
 
   fillchar(FPaintData, sizeOf(FPaintData), 0);
+  
+  SetGeometry;
+  
+  // set focus policy
+  if (LCLObject <> nil) and not (Self is TQtMainWindow) then
+  begin
+    if LCLObject.TabStop then
+      setFocusPolicy(QtClickFocus)
+    else
+      setFocusPolicy(QtNoFocus);
+  end;
+
+  // Set mouse move messages policy
+  QWidget_setMouseTracking(Widget, True);
 end;
 
 procedure TQtWidget.InitializeWidget;
@@ -3198,9 +3230,9 @@ begin
   begin
   
     IsMainForm := True;
-
+    StatusBar := nil;
     Result := QMainWindow_create(nil, QtWindow);
-    
+
     {$ifdef darwin}
       if csDesigning in LCLObject.ComponentState then
         MenuBar := TQtMenuBar.Create(nil)
@@ -3321,7 +3353,8 @@ var
   R: TRect;
 begin
   Result := inherited getClientBounds;
-  if (MenuBar <> nil) and (MenuBar.getVisible) then
+  if (MenuBar <> nil) and (MenuBar.getVisible) and
+  not (TCustomForm(LCLObject).FormStyle in [fsMDIForm, fsMDIChild]) then
   begin
     R := MenuBar.getGeometry;
     if TCustomForm(LCLObject).FormStyle <> fsMDIChild then
@@ -4059,6 +4092,7 @@ begin
     WriteLn('TQtScrollBar.Create');
   {$endif}
   Result := QScrollBar_create();
+  FHasPaint := True;
 end;
 
 function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
@@ -6355,6 +6389,7 @@ function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   SetLength(APanels, 0);
   Result := QStatusBar_create();
+  Widget := Result;
 end;
 
 procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
@@ -7051,6 +7086,90 @@ begin
   inherited Create(AWinControl, AParams);
   FOldDelegate := nil;
   FNewDelegate := nil;
+end;
+
+procedure TQtAbstractItemView.signalActivated(index: QModelIndexH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  // writeln('SIGNAL: TQtAbstractItemView.signalActivated');
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_ACTIVATE;
+  DeliverMessage( Msg );
+end;
+
+procedure TQtAbstractItemView.signalClicked(index: QModelIndexH); cdecl;
+begin
+  {use to be overriden by descedants, don''t implement it here,
+   or U get in trouble with TQtListView && TQtListWidget items.}
+end;
+
+procedure TQtAbstractItemView.signalDoubleClicked(index: QModelIndexH); cdecl;
+begin
+  {use to be overriden by descedants, don''t implement it here,
+   or U get in trouble with TQtListView && TQtListWidget items.}
+end;
+
+procedure TQtAbstractItemView.signalEntered(index: QModelIndexH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_ENTER;
+  DeliverMessage( Msg );
+end;
+
+procedure TQtAbstractItemView.signalPressed(index: QModelIndexH); cdecl;
+begin
+  {should be overriden by descedants}
+end;
+
+procedure TQtAbstractItemView.SignalViewportEntered; cdecl;
+begin
+  {should be overriden by descedants}
+end;
+
+procedure TQtAbstractItemView.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FSignalActivated := QAbstractItemView_hook_create(Widget);
+  FSignalClicked := QAbstractItemView_hook_create(Widget);
+  FSignalDoubleClicked := QAbstractItemView_hook_create(Widget);
+  FSignalEntered := QAbstractItemView_hook_create(Widget);
+  FSignalPressed := QAbstractItemView_hook_create(Widget);
+  FSignalViewportEntered := QAbstractItemView_hook_create(Widget);
+  
+  QAbstractItemView_activated_Event(Method) := @SignalActivated;
+  QAbstractItemView_hook_hook_activated(FSignalActivated, Method);
+
+  QAbstractItemView_clicked_Event(Method) := @SignalClicked;
+  QAbstractItemView_hook_hook_clicked(FSignalClicked, Method);
+  
+  QAbstractItemView_doubleClicked_Event(Method) := @SignalDoubleClicked;
+  QAbstractItemView_hook_hook_doubleClicked(FSignalDoubleClicked, Method);
+  
+  QAbstractItemView_entered_Event(Method) := @SignalEntered;
+  QAbstractItemView_hook_hook_entered(FSignalEntered, Method);
+
+  QAbstractItemView_pressed_Event(Method) := @SignalPressed;
+  QAbstractItemView_hook_hook_pressed(FSignalPressed, Method);
+
+  QAbstractItemView_viewportEntered_Event(Method) := @SignalViewportEntered;
+  QAbstractItemView_hook_hook_viewportEntered(FSignalViewportEntered, Method);
+
+end;
+
+procedure TQtAbstractItemView.DetachEvents;
+begin
+  QAbstractItemView_hook_destroy(FSignalActivated);
+  QAbstractItemView_hook_destroy(FSignalClicked);
+  QAbstractItemView_hook_destroy(FSignalDoubleClicked);
+  QAbstractItemView_hook_destroy(FSignalEntered);
+  QAbstractItemView_hook_destroy(FSignalPressed);
+  QAbstractItemView_hook_destroy(FSignalViewportEntered);
+  inherited DetachEvents;
 end;
 
 function TQtAbstractItemView.getModel: QAbstractItemModelH;

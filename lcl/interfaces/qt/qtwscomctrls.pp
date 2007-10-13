@@ -465,8 +465,12 @@ begin
     QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
 
     Parent := TQtWidget(AControl.Parent.Handle);
-    if (Parent is TQtMainWindow) then
+    if (Parent is TQtMainWindow) and (TQtMainWindow(Parent).IsMainForm)
+    and (TQtMainWindow(Parent).StatusBar = nil) then
+    begin
+      TQtMainWindow(Parent).StatusBar := QtStatusBar;
       TQtMainWindow(Parent).setStatusBar(QStatusBarH(QtStatusBar.Widget));
+    end;
   end;
 end;
 
@@ -474,12 +478,26 @@ class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const
 var
   AStatusBar: TStatusBar absolute AWinControl;
   QtStatusBar: TQtStatusBar;
+  QtParent: TQtWidget;
+  w: QStatusBarH;
   Str: WideString;
   i: Integer;
   R: TRect;
 begin
-  QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
-  QtStatusBar.AttachEvents;
+
+  if Assigned(AWinControl.Parent) then
+    QtParent := TQtWidget(AWinControl.Parent.Handle);
+    
+  if Assigned(QtParent) and
+    (QtParent is TQtMainWindow) and
+    TQtMainWindow(QtParent).IsMainForm then
+  begin
+    w := QMainWindow_statusBar(QMainWindowH(TQtMainWindow(QtParent).Widget));
+    QWidget_geometry(w, @R);
+    QtStatusBar := TQtStatusBar.CreateFrom(AWinControl, w);
+    AWinControl.SetInitialBounds(R.Left, R.Top, R.Right, R.Bottom);
+  end else
+    QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
 
   if AStatusBar.SimplePanel then
   begin
@@ -493,20 +511,13 @@ begin
     begin
       Str := GetUtf8String(AStatusBar.Panels[i].Text);
       QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
-
-      QFrame_setLineWidth(QFrameH(QtStatusBar.APanels[i]), 1);
-      QFrame_setMidLineWidth(QFrameH(QtStatusBar.APanels[i]), 0);
-      
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]),
-        PanelBevelToQtFrameShapeMap[AStatusBar.Panels[i].Bevel]);
-
-    //  QWidget_setContentsMargins(QtStatusBar.APanels[i], 0, 0, 2, 0);
-      
       R := QtStatusBar.getFrameGeometry;
       QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
       QtStatusBar.addWidget(QtStatusBar.APanels[i], AStatusBar.Panels[i].Width);
     end;
   end;
+  
+  QtStatusBar.AttachEvents;
 
   // Return handle
 
@@ -566,11 +577,7 @@ begin
     if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
-      
       QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
-      
-      QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[PanelIndex]),
-        PanelBevelToQtFrameShapeMap[AStatusBar.Panels[PanelIndex].Bevel]);
     end;
   end;
 end;
@@ -638,11 +645,6 @@ begin
         Str := GetUtf8String(AStatusBar.Panels[i].Text);
         
         QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
-
-        QFrame_setLineWidth(QFrameH(QtStatusBar.APanels[i]), 1);
-        QFrame_setMidLineWidth(QFrameH(QtStatusBar.APanels[i]), 0);
-
-        QFrame_setFrameStyle(QFrameH(QtStatusBar.APanels[i]), PanelBevelToQtFrameShapeMap[AStatusBar.Panels[i].Bevel]);
 
         R := QtStatusBar.getFrameGeometry;
         QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
