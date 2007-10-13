@@ -1906,6 +1906,7 @@ var
   fileInfo : PGChar;
   {$IfDef GTK2}
   fileList : PPgchar;
+  FontDesc: PPangoFontDescription;
   {$else}
   cListRow : PGList;
   fileList : PGTKCList;
@@ -2093,14 +2094,38 @@ begin
     //debugln('gtkDialogOKclickedCB FontName=',FontName);
     //SelectedFont:=gdk_font_load(PChar(FontName));
     //debugln('gtkDialogOKclickedCB ',dbgs(SelectedFont));
-
-    // extract basic font attributes from the font name in XLFD format
-    ALogFont:=XLFDNameToLogFont(FontName);
-    TFontDialog(theDialog).Font.Assign(ALogFont);
-    // set the font name in XLFD format
-    // a font name in XLFD format overrides in the gtk interface all other font
-    // settings.
-    TFontDialog(theDialog).Font.Name := FontName;
+    
+    if IsFontNameXLogicalFontDesc(FontName) then begin
+      // extract basic font attributes from the font name in XLFD format
+      ALogFont:=XLFDNameToLogFont(FontName);
+      TFontDialog(theDialog).Font.Assign(ALogFont);
+      // set the font name in XLFD format
+      // a font name in XLFD format overrides in the gtk interface all other font
+      // settings.
+      TFontDialog(theDialog).Font.Name := FontName;
+    end else begin
+      {$ifdef GTK2}
+      FontDesc := pango_font_description_from_string(PChar(FontName));
+      with TFontDialog(theDialog).Font do
+      begin
+        BeginUpdate;
+        Size := pango_font_description_get_size(FontDesc) div PANGO_SCALE;
+        if pango_font_description_get_weight(FontDesc) >= PANGO_WEIGHT_BOLD then
+          Style := Style + [fsBold]
+        else
+          Style := Style - [fsBold];
+        if pango_font_description_get_style(FontDesc) > PANGO_STYLE_NORMAL then
+          Style := Style + [fsItalic]
+        else
+          Style := Style - [fsItalic];
+        Name := pango_font_description_get_family(FontDesc);
+        EndUpdate;
+      end;
+      pango_font_description_free(FontDesc);
+      {$else}
+      debugln('Gtk1 should have valid XLogicalFontDesc!');
+      {$endif}
+    end;
 
     Assert(False, 'Trace:-----'+TFontDialog(theDialog).Font.Name+'----');
   end;
@@ -2169,6 +2194,9 @@ var
   theDialog : TCommonDialog;
   FontName: string;
   ALogFont: TLogFont;
+  {$ifdef GTK2}
+  FontDesc: PPangoFontDescription;
+  {$endif}
 begin
   Result := CallBackDefaultReturn;
   if (Widget=nil) then ;
@@ -2176,15 +2204,39 @@ begin
   if (theDialog is TFontDialog)
   and (fdApplyButton in TFontDialog(theDialog).Options)
   and (Assigned(TFontDialog(theDialog).OnApplyClicked)) then begin
-    // extract basic font attributes from the font name in XLFD format
     FontName := gtk_font_selection_dialog_get_font_name(
                                     pgtkfontselectiondialog(theDialog.Handle));
-    ALogFont:=XLFDNameToLogFont(FontName);
-    TFontDialog(theDialog).Font.Assign(ALogFont);
-    // set the font name in XLFD format
-    // a font name in XLFD format overrides in the gtk interface all other font
-    // settings.
-    TFontDialog(theDialog).Font.Name := FontName;
+    if IsFontNameXLogicalFontDesc(FontName) then begin
+      // extract basic font attributes from the font name in XLFD format
+      ALogFont:=XLFDNameToLogFont(FontName);
+      TFontDialog(theDialog).Font.Assign(ALogFont);
+      // set the font name in XLFD format
+      // a font name in XLFD format overrides in the gtk interface all other font
+      // settings.
+      TFontDialog(theDialog).Font.Name := FontName;
+    end else begin
+      {$ifdef GTK2}
+      FontDesc := pango_font_description_from_string(PChar(FontName));
+      with TFontDialog(theDialog).Font do
+      begin
+        BeginUpdate;
+        Size := pango_font_description_get_size(FontDesc) div PANGO_SCALE;
+        if pango_font_description_get_weight(FontDesc) >= PANGO_WEIGHT_BOLD then
+          Style := Style + [fsBold]
+        else
+          Style := Style - [fsBold];
+        if pango_font_description_get_style(FontDesc) > PANGO_STYLE_NORMAL then
+          Style := Style + [fsItalic]
+        else
+          Style := Style - [fsItalic];
+        Name := pango_font_description_get_family(FontDesc);
+        EndUpdate;
+      end;
+      pango_font_description_free(FontDesc);
+      {$else}
+      debugln('Gtk1 should have valid XLogicalFontDesc!');
+      {$endif}
+    end;
     TFontDialog(theDialog).OnApplyClicked(theDialog);
   end;
 end;
