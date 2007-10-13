@@ -185,6 +185,9 @@ begin
 
     if (SizeConstraints.Control=nil) then exit;
 
+    if SizeConstraints.Control is TStatusBar then
+      exit;
+      
     if SizeConstraints.Control is TWinControl then
       Ct := TWinControl(SizeConstraints.Control);
 
