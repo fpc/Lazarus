@@ -4463,6 +4463,10 @@ var
   FontType: TGtkFontType;
 const
   FixedFilter: array [0..2] of PChar = ( 'c', 'm', nil );
+{$ELSE}
+var
+  FontDesc: PPangoFontDescription;
+  TmpStr: pChar;
 {$ENDIF}
 begin
   SelWidget := gtk_font_selection_dialog_new(Title);
@@ -4488,7 +4492,33 @@ begin
   // set font name in XLFD format
   if IsFontNameXLogicalFontDesc(FontDialog.Font.Name) then
     gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(SelWidget),
-      PChar(FontDialog.Font.Name));
+      PChar(FontDialog.Font.Name))
+  else begin
+    {$ifdef GTK2}
+    FontDesc := pango_font_description_new;
+    with FontDialog.Font do begin
+      pango_font_description_set_size(FontDesc, Size * PANGO_SCALE);
+      
+      if fsBold in Style then
+        pango_font_description_set_weight(FontDesc, PANGO_WEIGHT_BOLD)
+      else
+        pango_font_description_set_weight(FontDesc, PANGO_WEIGHT_NORMAL);
+        
+      if fsItalic in Style then
+        pango_font_description_set_style(FontDesc, PANGO_STYLE_ITALIC)
+      else
+        pango_font_description_set_style(FontDesc, PANGO_STYLE_NORMAL);
+        
+      pango_font_description_set_family(FontDesc, pChar(Name));
+    end;
+    TmpStr := pango_font_description_to_string(FontDesc);
+    gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(SelWidget), TmpStr);
+    g_free(TmpStr);
+    pango_font_description_free(FontDesc);
+    {$else}
+    debugln('Gtk1 should have IsFontNameXLogicalFontDesc true!');
+    {$endif}
+  end;
 
   {$IFDEF GTK1}
   { This functionality does not seem to be available in GTK2 }
