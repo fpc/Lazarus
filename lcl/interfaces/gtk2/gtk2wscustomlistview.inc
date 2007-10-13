@@ -1276,6 +1276,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if not GTK_WIDGET_REALIZED(Widgets^.MainView) then
+    gtk_widget_realize(Widgets^.MainView);
   gtk_tree_view_scroll_to_point(PGtkTreeView(Widgets^.MainView), AValue.X, AValue.Y);
 end;
 
