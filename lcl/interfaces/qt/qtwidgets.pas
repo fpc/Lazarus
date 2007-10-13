@@ -590,6 +590,7 @@ type
   private
     // hooks
     FChangeHook: QComboBox_hookH;
+    FActivateHook: QComboBox_hookH;
     FOwnerDrawn: Boolean;
     FSelectHook: QComboBox_hookH;
     FDropListEventHook: QObject_hookH;
@@ -637,6 +638,7 @@ type
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
+    procedure SlotActivate(index: Integer); cdecl;
     procedure SlotChange(p1: PWideString); cdecl;
     procedure SlotSelect(index: Integer); cdecl;
     procedure SlotDropListVisibility(AVisible: Boolean); cdecl;
@@ -4975,9 +4977,15 @@ var
 begin
   inherited AttachEvents;
 
+  FActivateHook := QComboBox_hook_create(Widget);
   FChangeHook := QComboBox_hook_create(Widget);
   FSelectHook := QComboBox_hook_create(Widget);
-  // OnChange event
+
+  // OnChange event if itemindex changed by mouse or kbd
+  QComboBox_activated_Event(Method) := @SlotActivate;
+  QComboBox_hook_hook_activated(FActivateHook, Method);
+  
+  // OnChange event -> fires only when text changed
   QComboBox_editTextChanged_Event(Method) := @SlotChange;
   QComboBox_hook_hook_editTextChanged(FChangeHook, Method);
   // OnSelect event
@@ -4992,6 +5000,7 @@ end;
 
 procedure TQtComboBox.DetachEvents;
 begin
+  QComboBox_hook_destroy(FActivateHook);
   QComboBox_hook_destroy(FChangeHook);
   QComboBox_hook_destroy(FSelectHook);
 
@@ -4999,6 +5008,8 @@ begin
 end;
 
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  ev: QEventH;
 begin
   BeginEventProcessing;
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
@@ -5009,7 +5020,14 @@ begin
     
     case QEvent_type(Event) of
       QEventShow: SlotDropListVisibility(True);
-      QEventHide: SlotDropListVisibility(False);
+      QEventHide:
+      begin
+        {we must delay SlotDropDownVisiblity according to #9574
+         so order is OnChange(if editable)->OnSelect->OnCloseUp }
+        ev := QEvent_create(QEventHideToParent);
+        QCoreApplication_postEvent(Sender, ev);
+      end;
+      QEventHideToParent: SlotDropListVisibility(False);
     else
       QEvent_ignore(Event);
     end;
@@ -5044,6 +5062,24 @@ begin
   end;
   
   EndEventProcessing;
+end;
+
+procedure TQtComboBox.SlotActivate(index: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if InUpdate then
+    Exit;
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_ACTIVATE;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
 end;
 
 procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
@@ -5090,16 +5126,16 @@ const
     CBN_DROPDOWN
   );
 var
-  Message : TLMCommand;
+  Msg : TLMCommand;
 begin
   if InUpdate then
     Exit;
-    
-  FillChar(Message, SizeOf(Message), 0);
-  Message.Msg := CN_COMMAND;
-  Message.NotifyCode := VisibilityToCodeMap[AVisible];
 
-  DeliverMessage(Message);
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := CN_COMMAND;
+  Msg.NotifyCode := VisibilityToCodeMap[AVisible];
+
+  DeliverMessage(Msg);
 end;
 
 { TQtAbstractSpinBox }
