@@ -683,7 +683,7 @@ begin
 
   // blend image
   SrcLinePtr := SrcBytesPtr;
-  Inc(SrcLinePtr, nXOriginSrc + nYOriginSrc * SrcRowStride);
+  Inc(SrcLinePtr, nXOriginSrc * SrcPixelBytes + nYOriginSrc * SrcRowStride);
   DstLinePtr := DstBytesPtr;
 
   if blendFunction.AlphaFormat = AC_SRC_ALPHA
