@@ -119,6 +119,7 @@ type
     class function GetDropTarget(const ALV: TCustomListView): Integer; override;
     class function GetFocused(const ALV: TCustomListView): Integer; override;
     class function GetHoverTime(const ALV: TCustomListView): Integer; override;
+    class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
     class function GetSelection(const ALV: TCustomListView): Integer; override;
     class function GetTopItem(const ALV: TCustomListView): Integer; override;

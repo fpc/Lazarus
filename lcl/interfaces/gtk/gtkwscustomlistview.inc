@@ -1046,6 +1046,44 @@ begin
   Result := -1; // = default
 end;
 
+class function TGtkWSCustomListView.GetItemAt(const ALV: TCustomListView; x,
+  y: integer): Integer;
+var
+  WidgetInfo: PWidgetInfo;
+  CListWidget: PGtkCList;
+  I, FirstRowY, LastRowY: Integer;
+  ScrolledTop: Integer;
+  RowHeight: Integer;
+  
+begin
+  if not WSCheckHandleAllocated(ALV, 'GetItemAt')
+  then Exit(-1);
+
+  WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
+  CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  
+  ScrolledTop := Trunc(CListWidget^.vadjustment^.value);
+
+  FirstRowY := ScrolledTop;
+  
+  // For some reason the actual row height is one pixel more than the size it says
+  RowHeight := CListWidget^.row_height+1;
+
+  Dec(y, CListWidget^.column_title_area.height);
+
+  LastRowY := FirstRowY + CListWidget^.clist_window_height;
+  
+  Inc(y, ScrolledTop);
+  
+  for I := FirstRowY div RowHeight to LastRowY div RowHeight do
+  begin
+    if I > CListWidget^.rows-1 then
+      Exit;
+    if (I * RowHeight < y) and ((I+1) * RowHeight >= y-1) then
+      Exit(I);
+  end;
+end;
+
 class function TGtkWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
