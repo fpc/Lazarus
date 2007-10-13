@@ -74,7 +74,7 @@ const
   );
   
   IMAGETPYEMAP: array[TImageType] of DWord = (
-{ itImage } 0,
+{ itImage } ILD_NORMAL,
 { itMask }  ILD_MASK
   );
   
@@ -163,20 +163,18 @@ class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACo
     bmp := 0;
     DC := GetDC(0);
     bmp := Windows.CreateDIBSection(DC, Info, DIB_RGB_COLORS, BitsPtr, 0, 0);
-    Info.bmiHeader.biBitCount := 1;
-    msk := Windows.CreateDIBSection(DC, Info, DIB_RGB_COLORS, MaskPtr, 0, 0);
     ReleaseDC(0, DC);
 
-    if (bmp = 0) or (msk =0) or (BitsPtr = nil) or (MaskPtr = nil)
-    then begin
+    if (bmp = 0) or (BitsPtr = nil) then
+    begin
       DeleteObject(bmp);
-      DeleteObject(msk);
       Exit;
     end;
 
     DataCount := AWidth * AHeight;
     DataSize := DataCount * SizeOf(AData^);
-    MaskStride := ((AWidth + 31) shr 5) shl 2; // align to DWord
+    MaskStride := ((AWidth + 15) shr 4) shl 1; // align to Word
+    MaskPtr := AllocMem(AHeight * MaskStride);
     while ACount > 0 do
     begin
       System.Move(AData^, BitsPtr^, DataSize);
@@ -197,15 +195,16 @@ class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACo
         Inc(LinePtr, MaskStride);
       end;
 
+      msk := CreateBitmap(AWidth, AHeight, 1, 1, MaskPtr);
       if AReplaceIndex = -1
       then ImageList_Add(AListHandle, bmp, msk)
       else ImageList_Replace(AListHandle, AReplaceIndex, bmp, msk);
       Dec(ACount);
+      DeleteObject(msk);
     end;
-
+    FreeMem(MaskPtr);
 
     DeleteObject(bmp);
-    DeleteObject(msk);
   end;
 
 begin
