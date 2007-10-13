@@ -79,7 +79,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Left = 5
       Height = 185
       Top = 5
-      Width = 170
+      Width = 166
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
@@ -97,10 +97,10 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Control = GroupBox1
       AnchorSideRight.Control = GroupBox1
       AnchorSideRight.Side = asrBottom
-      Left = 180
+      Left = 176
       Height = 25
       Top = 5
-      Width = 104
+      Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
@@ -117,10 +117,10 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnNewItem
       AnchorSideRight.Side = asrBottom
-      Left = 180
+      Left = 176
       Height = 25
       Top = 35
-      Width = 104
+      Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       BorderSpacing.InnerBorder = 4
@@ -134,10 +134,10 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnNewSubItem
       AnchorSideRight.Side = asrBottom
-      Left = 180
+      Left = 176
       Height = 25
       Top = 65
-      Width = 104
+      Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       BorderSpacing.InnerBorder = 4
@@ -151,10 +151,10 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnDelete
       AnchorSideRight.Side = asrBottom
-      Left = 180
+      Left = 176
       Height = 25
       Top = 95
-      Width = 104
+      Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       BorderSpacing.InnerBorder = 4
@@ -168,10 +168,10 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnLoad
       AnchorSideRight.Side = asrBottom
-      Left = 180
+      Left = 176
       Height = 25
       Top = 125
-      Width = 104
+      Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       BorderSpacing.InnerBorder = 4
@@ -205,80 +205,92 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object LabelImageIndex: TLabel
       AnchorSideLeft.Control = LabelText
-      AnchorSideTop.Control = LabelText
+      AnchorSideTop.Control = edtText
       AnchorSideTop.Side = asrBottom
       Left = 5
       Height = 14
-      Top = 39
+      Top = 49
       Width = 66
-      BorderSpacing.Top = 20
+      BorderSpacing.Top = 5
       Caption = 'Image Index:'
       FocusControl = edtIndexImg
       ParentColor = False
     end
     object LabelSelectedIndex: TLabel
       AnchorSideLeft.Control = LabelImageIndex
-      AnchorSideTop.Control = LabelImageIndex
+      AnchorSideTop.Control = edtIndexImg
       AnchorSideTop.Side = asrBottom
       Left = 5
       Height = 14
-      Top = 73
+      Top = 93
       Width = 75
-      BorderSpacing.Top = 20
+      BorderSpacing.Top = 5
       Caption = 'Selected index:'
       FocusControl = edtIndexSel
       ParentColor = False
     end
     object LabelStateIndex: TLabel
       AnchorSideLeft.Control = LabelSelectedIndex
-      AnchorSideTop.Control = LabelSelectedIndex
+      AnchorSideTop.Control = edtIndexSel
       AnchorSideTop.Side = asrBottom
       Left = 5
       Height = 14
-      Top = 107
+      Top = 137
       Width = 62
-      BorderSpacing.Top = 20
+      BorderSpacing.Top = 5
       Caption = 'State Index:'
       FocusControl = edtIndexState
       ParentColor = False
     end
     object edtText: TEdit
+      AnchorSideLeft.Control = LabelText
       AnchorSideTop.Control = LabelText
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 1
-      Width = 91
+      Top = 21
+      Width = 191
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 5
       OnChange = Edit1Change
       TabOrder = 0
     end
     object edtIndexImg: TEdit
+      AnchorSideLeft.Control = LabelImageIndex
       AnchorSideTop.Control = LabelImageIndex
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 35
+      Top = 65
       Width = 48
+      BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
       TabOrder = 1
     end
     object edtIndexSel: TEdit
+      AnchorSideLeft.Control = LabelSelectedIndex
       AnchorSideTop.Control = LabelSelectedIndex
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 69
+      Top = 109
       Width = 48
+      BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
       TabOrder = 2
     end
     object edtIndexState: TEdit
+      AnchorSideLeft.Control = LabelStateIndex
       AnchorSideTop.Control = LabelStateIndex
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 103
+      Top = 153
       Width = 48
+      BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
       TabOrder = 3
     end

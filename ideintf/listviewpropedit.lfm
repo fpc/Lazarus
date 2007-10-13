@@ -79,7 +79,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       Left = 5
       Height = 170
       Top = 5
-      Width = 162
+      Width = 158
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
@@ -97,10 +97,10 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = GroupBox1
       AnchorSideRight.Control = GroupBox1
       AnchorSideRight.Side = asrBottom
-      Left = 172
+      Left = 168
       Height = 25
       Top = 5
-      Width = 112
+      Width = 116
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
@@ -117,10 +117,10 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnNewItem
       AnchorSideRight.Side = asrBottom
-      Left = 172
+      Left = 168
       Height = 25
       Top = 35
-      Width = 112
+      Width = 116
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       BorderSpacing.InnerBorder = 4
@@ -134,10 +134,10 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnNewSubItem
       AnchorSideRight.Side = asrBottom
-      Left = 172
+      Left = 168
       Height = 25
       Top = 65
-      Width = 112
+      Width = 116
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       BorderSpacing.InnerBorder = 4
@@ -171,60 +171,68 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     end
     object LabelImageIndex: TLabel
       AnchorSideLeft.Control = LabelCaption
-      AnchorSideTop.Control = LabelCaption
+      AnchorSideTop.Control = edtText
       AnchorSideTop.Side = asrBottom
       Left = 5
       Height = 14
-      Top = 39
+      Top = 49
       Width = 66
-      BorderSpacing.Top = 20
+      BorderSpacing.Top = 5
       Caption = 'Image Index:'
       FocusControl = edtIndexImg
       ParentColor = False
     end
     object LabelStateIndex: TLabel
       AnchorSideLeft.Control = LabelImageIndex
-      AnchorSideTop.Control = LabelImageIndex
+      AnchorSideTop.Control = edtIndexImg
       AnchorSideTop.Side = asrBottom
       Left = 5
       Height = 14
-      Top = 73
+      Top = 93
       Width = 62
-      BorderSpacing.Top = 20
+      BorderSpacing.Top = 5
       Caption = 'State Index:'
       FocusControl = edtIndexState
       ParentColor = False
       Visible = False
     end
     object edtText: TEdit
+      AnchorSideLeft.Control = LabelCaption
       AnchorSideTop.Control = LabelCaption
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 1
-      Width = 91
+      Top = 21
+      Width = 191
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 5
       OnChange = Edit1Change
       TabOrder = 0
     end
     object edtIndexImg: TEdit
       AnchorSideLeft.Control = edtText
       AnchorSideTop.Control = LabelImageIndex
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 35
+      Top = 65
       Width = 48
+      BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
       TabOrder = 1
     end
     object edtIndexState: TEdit
       AnchorSideLeft.Control = edtIndexImg
       AnchorSideTop.Control = LabelStateIndex
-      AnchorSideTop.Side = asrCenter
-      Left = 106
+      AnchorSideTop.Side = asrBottom
+      Left = 5
       Height = 23
-      Top = 69
+      Top = 109
       Width = 48
+      BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
       TabOrder = 2
       Visible = False
