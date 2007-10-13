@@ -5273,6 +5273,10 @@ function TGtkWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   KEYSTATE: array[Boolean] of Smallint = (0, -32768 { $8000});
   TOGGLESTATE: array[Boolean] of Smallint = (0, 1);
+{$IFDEF GTK2}
+var
+  GtkModMask: guint32;
+{$ENDIF}
 begin
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
@@ -5301,6 +5305,17 @@ begin
   if Result <> 0 then
     Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
                                     PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
+  {$IFDEF GTK2}
+  {$WARNING If there are tons of new keyboard errors this is probably the cause}
+  GtkModMask := gtk_accelerator_get_default_mod_mask;
+  if Result and $8000 > 0 then
+  begin
+    if (nVirtKey = VK_CONTROL) and (GtkModMask and GDK_CONTROL_MASK = 0) then
+      Result := Result and not $8000;
+    //if (nVirtKey = VK_SHIFT) and (GtkModMask and GDK_SHIFT_MASK = 0 then
+    //  Result := Result and not $8000;
+  end;
+  {$ENDIF}
   {$ENDIF}
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
