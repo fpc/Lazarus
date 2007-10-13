@@ -197,6 +197,10 @@ begin
         TForm(AWinControl).ReAlign;
       end;
     end;
+
+    if TCustomForm(AWinControl).WindowState in [wsMaximized] then
+      TQtMainWindow(Widget).setWindowState(QtWindowMaximized);
+
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
