@@ -3227,7 +3227,8 @@ begin
 
   w := QApplication_activeWindow;
 
-  if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible)) then
+  if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible))
+  and (TCustomForm(LCLObject).FormStyle <> fsSplash) then
   begin
   
     IsMainForm := True;
@@ -3288,10 +3289,19 @@ begin
       end
       else
       begin
-        Result := QWidget_create(nil, QtWindow);
+        if (TCustomForm(LCLObject).FormStyle = fsSplash) and
+        not (csDesigning in LCLObject.ComponentState) then
+          Result := QWidget_create(nil, QtSplashScreen)
+        else
+          Result := QWidget_create(nil, QtWindow);
         QWidget_setAttribute(Result, QtWA_Hover);
       end;
     {$else}
+      if (TCustomForm(LCLObject).FormStyle = fsSplash) and
+      not (csDesigning in ComponentState) then
+      then
+        Result := QWidget_create(nil, QtSplashScreen);
+      else
       Result := QWidget_create(nil, QtWindow);
     {$endif}
     

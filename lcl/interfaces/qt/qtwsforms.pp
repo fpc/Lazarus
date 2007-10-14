@@ -352,7 +352,8 @@ begin
   Flags := GetQtBorderStyle(ABorderStyle) or GetQtFormStyle(AFormStyle);
   if (Flags and QtFramelessWindowHint) = 0 then
     Flags := Flags or GetQtBorderIcons(ABorderIcons);
-  AWidget.setWindowFlags(Flags);
+  if not (csDesigning in AWidget.LCLObject.ComponentState) then
+    AWidget.setWindowFlags(Flags);
   AWidget.setVisible(AVisible);
 end;
 
