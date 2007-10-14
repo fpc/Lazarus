@@ -142,6 +142,7 @@ type
     procedure ReferenceSideButtonClicked(Sender: TObject);
   private
     FSelection: TPersistentSelectionList;
+    FSelectedControlsList: TList;
     FUpdating: Boolean;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -179,6 +180,16 @@ implementation
 { TAnchorDesigner }
 
 procedure TAnchorDesigner.AnchorDesignerCreate(Sender: TObject);
+  
+  procedure LoadGlyph(ASpeedButton: TSpeedButton; AImageName: String);
+  var
+    ABitmap: TBitmap;
+  begin
+    ABitmap := LoadBitmapFromLazarusResource(AImageName);
+    ASpeedButton.Glyph := ABitmap;
+    ABitmap.Free;
+  end;
+  
 var
   AnchorEnabledHint: String;
 begin
@@ -186,6 +197,7 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   KeyPreview:=true;
   FSelection:=TPersistentSelectionList.Create;
+  FSelectedControlsList := TList.Create;
 
   AnchorEnabledHint:=lisAnchorEnabledHint;
 
@@ -232,18 +244,18 @@ begin
   TopSiblingComboBox.Hint:=lisTopSiblingComboBoxHint;
   TopSiblingLabel.Caption:=lisSibling;
 
-  LeftRefLeftSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_left');
-  LeftRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_horizontal');
-  LeftRefRightSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_left_right');
-  RightRefLeftSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_left_right');
-  RightRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_horizontal');
-  RightRefRightSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_right');
-  TopRefTopSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_top');
-  TopRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_vertical');
-  TopRefBottomSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_top_bottom');
-  BottomRefTopSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_top_bottom');
-  BottomRefCenterSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_center_vertical');
-  BottomRefBottomSpeedButton.Glyph := LoadBitmapFromLazarusResource('anchor_bottom');
+  LoadGlyph(LeftRefLeftSpeedButton, 'anchor_left');
+  LoadGlyph(LeftRefCenterSpeedButton, 'anchor_center_horizontal');
+  LoadGlyph(LeftRefRightSpeedButton, 'anchor_left_right');
+  LoadGlyph(RightRefLeftSpeedButton, 'anchor_left_right');
+  LoadGlyph(RightRefCenterSpeedButton, 'anchor_center_horizontal');
+  LoadGlyph(RightRefRightSpeedButton, 'anchor_right');
+  LoadGlyph(TopRefTopSpeedButton, 'anchor_top');
+  LoadGlyph(TopRefCenterSpeedButton, 'anchor_center_vertical');
+  LoadGlyph(TopRefBottomSpeedButton, 'anchor_top_bottom');
+  LoadGlyph(BottomRefTopSpeedButton, 'anchor_top_bottom');
+  LoadGlyph(BottomRefCenterSpeedButton, 'anchor_center_vertical');
+  LoadGlyph(BottomRefBottomSpeedButton, 'anchor_bottom');
 
   // autosizing
   BottomSiblingLabel.AnchorToNeighbour(akLeft,10,BottomAnchoredCheckBox);
@@ -264,6 +276,7 @@ begin
   FreeAndNil(Values);
   GlobalDesignHook.RemoveAllHandlersForObject(Self);
   FreeAndNil(FSelection);
+  FreeAndNil(FSelectedControlsList);
 end;
 
 procedure TAnchorDesigner.AnchorDesignerShow(Sender: TObject);
@@ -698,7 +711,11 @@ begin
     CurPersistent:=FSelection[i];
     if CurPersistent is TControl then begin
       AControl:=TControl(CurPersistent);
-      if Result=nil then Result:=TList.Create;
+      if Result = nil then
+      begin
+        Result := FSelectedControlsList;
+        Result.Clear;
+      end;
       Result.Add(AControl);
     end;
   end;
