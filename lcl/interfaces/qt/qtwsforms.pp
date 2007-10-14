@@ -302,8 +302,9 @@ begin
       Result := QtDialog;
     bsToolWindow:
       Result := QtTool or QtMSWindowsFixedSizeDialogHint;
+    {qt doesn't have sizeToolWin, it's regular qtWindow}
     bsSizeToolWin:
-      Result := QtTool;
+      Result := QtWindow { QtTool };
     else
       Result := QtWidget;
   end;
