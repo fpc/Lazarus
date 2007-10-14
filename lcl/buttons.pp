@@ -103,7 +103,8 @@ type
     FLayout: TButtonLayout;
     FMargin: integer;
     FSpacing: Integer;
-    Function GetGlyph: TBitmap;
+    FMultiGlyph: TBitmap;
+    function GetGlyph: TBitmap;
     function GetNumGlyphs: Integer;
     Function IsGlyphStored: Boolean;
     Procedure SetGlyph(AValue: TBitmap);
@@ -113,7 +114,7 @@ type
     procedure SetNumGlyphs(AValue: Integer);
     Procedure SetSpacing(AValue: Integer);
     procedure RealizeKind;
-
+    procedure DrawGlyph;
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(aKind: TBitBtnKind): String;
   protected
