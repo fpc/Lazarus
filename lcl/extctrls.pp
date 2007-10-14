@@ -188,6 +188,7 @@ type
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
@@ -356,6 +357,8 @@ type
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
+  protected
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -494,6 +497,7 @@ type
   TPaintBox = class(TGraphicControl)
   protected
     procedure Paint; override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Canvas;
@@ -556,6 +560,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure DoAutoSize; override;
     procedure Paint; override;
   public
@@ -994,6 +999,7 @@ type
     procedure SetBorderWidth(const Value: TBorderWidth);
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     procedure Loaded; override;
     procedure RealSetText(const Value: TCaption); override;

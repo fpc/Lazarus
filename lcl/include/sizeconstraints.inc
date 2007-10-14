@@ -137,9 +137,9 @@ var
 begin
   Result:=Width;
   MinW:=EffectiveMinWidth;
-  if (MinW>0) and (Width<MinW) then Width:=MinW;
+  if (MinW>0) and (Result<MinW) then Result:=MinW;
   MaxW:=EffectiveMaxWidth;
-  if (MaxW>0) and (Width>MaxW) then Width:=MaxW;
+  if (MaxW>0) and (Result>MaxW) then Result:=MaxW;
 end;
 
 function TSizeConstraints.MinMaxHeight(Height: integer): integer;
@@ -149,9 +149,9 @@ var
 begin
   Result:=Height;
   MinH:=EffectiveMinHeight;
-  if (MinH>0) and (Height<MinH) then Height:=MinH;
+  if (MinH>0) and (Result<MinH) then Result:=MinH;
   MaxH:=EffectiveMaxHeight;
-  if (MaxH>0) and (Height>MaxH) then Height:=MaxH;
+  if (MaxH>0) and (Result>MaxH) then Result:=MaxH;
 end;
 
 {------------------------------------------------------------------------------

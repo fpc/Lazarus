@@ -14,16 +14,21 @@
  *****************************************************************************
 }
 
-{------------------------------------------------------------------------------}
-{  function TCustomGroupBox.Create                                             }
-{------------------------------------------------------------------------------}
+class function TCustomGroupBox.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=185;
+  Result.Y:=105;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomGroupBox.Create
+------------------------------------------------------------------------------}
 constructor TCustomGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csGroupBox;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  Width:= 185;
-  Height:= 105;
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
 // included by stdctrls.pp

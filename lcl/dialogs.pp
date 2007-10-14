@@ -253,6 +253,7 @@ type
     function GetGlyphSize(PaintRect: TRect): TSize; override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; Override;

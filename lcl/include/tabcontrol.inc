@@ -530,6 +530,12 @@ begin
   TTabControlStrings(FTabs).TabControlBoundsChange;
 end;
 
+class function TCustomTabControl.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=200;
+  Result.Y:=150;
+end;
+
 procedure TCustomTabControl.Paint;
 var
   ARect: TRect;
@@ -587,7 +593,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FTabs:=TTabControlNoteBookStrings.Create(Self);
-  SetInitialBounds(0,0,200,150);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   BorderWidth:=2;
   FTabControlCreating:=false;
 end;

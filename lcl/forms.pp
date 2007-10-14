@@ -157,6 +157,7 @@ type
     procedure CreateWnd; override;
     function  GetClientScrollOffset: TPoint; override;
     procedure DoOnResize; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
@@ -250,6 +251,7 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetParent(AParent: TWinControl); override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -464,6 +466,7 @@ type
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
     procedure DoSendBoundsToInterface; override;
+    class function GetControlClassDefaultSize: TPoint; override;
   protected
     // drag and dock
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
@@ -683,6 +686,7 @@ type
     procedure SetHideInterval(Value : Integer);
   protected
     procedure Paint; override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

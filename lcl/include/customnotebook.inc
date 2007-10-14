@@ -212,7 +212,7 @@ begin
   TabPosition := tpTop;
   TabStop := true;
   ShowTabs := True;
-  SetInitialBounds(0,0,200,200);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -717,6 +717,12 @@ end;
 function TCustomNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
+end;
+
+class function TCustomNotebook.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=200;
+  Result.Y:=200;
 end;
 
 {------------------------------------------------------------------------------

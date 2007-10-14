@@ -77,6 +77,7 @@ Type
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
     procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
     procedure LMDayChanged(var Message: TLMessage); message LM_DAYCHANGED;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -147,7 +148,7 @@ constructor TCustomCalendar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csCalendar;
-  SetInitialBounds(0,0,190,153);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls];
   Date := FormatDateTime(ShortDateFormat,Now);
@@ -305,6 +306,12 @@ procedure TCustomCalendar.LMDAYChanged(var Message: TLMessage);
 begin
   if Assigned(OnDayChanged) then OnDayChanged(self);
   if Assigned(OnChange) then OnChange(self);
+end;
+
+class function TCustomCalendar.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=190;
+  Result.Y:=153;
 end;
 
 procedure TCustomCalendar.LMMonthChanged(var Message: TLMessage);

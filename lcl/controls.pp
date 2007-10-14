@@ -652,7 +652,7 @@ type
     tries to keep the distance between the left side of the control and the
     right side of its parent client area.
     With AnchorSide[akLeft] you can define a different reference side. The
-    kept distance is defined by the BorderSpacing.
+    kept distance is defined by the BorderSpacing and Parent.ChildSizing.
     
     Example1:
        +-----+  +-----+
@@ -684,8 +684,6 @@ type
       Or use this. It's equivalent:
         A.AnchorSide[akBottom].Side:=arsCenter;
         A.AnchorSide[akBottom].Control:=B;
-
-
     }
   TAnchorSideChangeOperation = (ascoAdd, ascoRemove, ascoChangeSide);
 
@@ -760,7 +758,9 @@ type
     cfClientHeightLoaded,
     cfLastAlignedBoundsValid,
     cfBoundsRectForNewParentValid,
+    cfBaseBoundsValid,
     cfPreferredSizeValid,
+    cfPreferredMinSizeValid,
     cfOnResizeNeeded,
     cfOnChangeBoundsNeeded
     );
@@ -863,6 +863,8 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FPopupMenu: TPopupMenu;
+    FPreferredMinWidth: integer;// without theme space
+    FPreferredMinHeight: integer;// without theme space
     FPreferredWidth: integer;// with theme space
     FPreferredHeight: integer;// with theme space
     FReadBounds: TRect;
@@ -1172,6 +1174,10 @@ type
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); virtual;
+    function GetDefaultWidth: integer;
+    function GetDefaultHeight: integer;
+    class function GetControlClassDefaultSize: TPoint; virtual;
+    function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     function GetAnchorsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
@@ -1574,6 +1580,8 @@ type
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AdjustClientRect(var ARect: TRect); virtual;
+    procedure CreateControlAlignList(TheAlign: TAlign;
+                                    AlignList: TFPList; StartControl: TControl);
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
@@ -1596,8 +1604,6 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
-    procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace,
-                             FixateParentAnchors: boolean); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
@@ -2204,6 +2210,8 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   
 function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
+function DbgS(a: TAlign): string; overload;
+function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string;
 
 // register (called by the package initialization in design mode)
 procedure Register;
@@ -2306,6 +2314,21 @@ begin
     end;
   end;
   Result:='['+Result+']';
+end;
+
+function DbgS(a: TAlign): string;
+begin
+  Result:=AlignNames[a];
+end;
+
+function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string;
+begin
+  case Side of
+  asrTop: if a in [akLeft,akRight] then Result:='asrLeft' else Result:='asrTop';
+  asrBottom: if a in [akLeft,akRight] then Result:='asrRight' else Result:='asrBottom';
+  asrCenter: Result:='asrCenter';
+  else Result:='asr???';
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3079,24 +3102,25 @@ begin
       OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
       case ReferenceSide of
       
-      asrTop:
+      asrTop: // asrTop = asrLeft
         if Kind in [akLeft,akRight] then begin
           // anchor to left side of ReferenceControl
           if ReferenceControl=OwnerParent then
             Position:=0
           else
             Position:=ReferenceControl.Left;
+          if ReferenceControl=OwnerParent then
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                    OwnerParent.ChildSizing.LeftRightSpacing)
+          else if Kind=akRight then
+            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                 OwnerParent.ChildSizing.HorizontalSpacing);
           if Kind=akLeft then begin
             // anchor left of ReferenceControl and left of Owner
             inc(Position,OwnerBorderSpacing);
           end else begin
             // anchor left of ReferenceControl and right of Owner
-            if ReferenceControl=OwnerParent then
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                      OwnerParent.ChildSizing.LeftRightSpacing)
-            else
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                               ReferenceControl.BorderSpacing.GetSpace(akLeft));
             dec(Position,OwnerBorderSpacing);
           end;
         end else begin
@@ -3105,36 +3129,38 @@ begin
             Position:=0
           else
             Position:=ReferenceControl.Top;
+          if ReferenceControl=OwnerParent then
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                    OwnerParent.ChildSizing.TopBottomSpacing)
+          else if Kind=akBottom then
+            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                 OwnerParent.ChildSizing.VerticalSpacing);
           if Kind=akTop then begin
             // anchor top of ReferenceControl and top of Owner
             inc(Position,OwnerBorderSpacing);
           end else begin
             // anchor top of ReferenceControl and bottom of Owner
-            if ReferenceControl=OwnerParent then
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                      OwnerParent.ChildSizing.TopBottomSpacing)
-            else
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                ReferenceControl.BorderSpacing.GetSpace(akTop));
             dec(Position,OwnerBorderSpacing);
           end;
         end;
 
-      asrBottom:
+      asrBottom: // asrBottom = asrRight
         if Kind in [akLeft,akRight] then begin
           // anchor to right side of ReferenceControl
           if ReferenceControl=OwnerParent then
             Position:=OwnerParent.ClientWidth
           else
             Position:=ReferenceControl.Left+ReferenceControl.Width;
+          if ReferenceControl=OwnerParent then
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                    OwnerParent.ChildSizing.LeftRightSpacing)
+          else if Kind=akLeft then
+            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                 OwnerParent.ChildSizing.HorizontalSpacing);
           if Kind=akLeft then begin
             // anchor right of ReferenceControl and left of Owner
-            if ReferenceControl=OwnerParent then
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                      OwnerParent.ChildSizing.LeftRightSpacing)
-            else
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                              ReferenceControl.BorderSpacing.GetSpace(akRight));
             inc(Position,OwnerBorderSpacing);
           end else begin
             // anchor right of ReferenceControl and right of Owner
@@ -3146,14 +3172,15 @@ begin
             Position:=OwnerParent.ClientHeight
           else
             Position:=ReferenceControl.Top+ReferenceControl.Height;
+          if ReferenceControl=OwnerParent then
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                    OwnerParent.ChildSizing.TopBottomSpacing)
+          else if Kind=akTop then
+            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                 OwnerParent.ChildSizing.VerticalSpacing);
           if Kind=akTop then begin
             // anchor bottom of ReferenceControl and top of Owner
-            if ReferenceControl=OwnerParent then
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                      OwnerParent.ChildSizing.TopBottomSpacing)
-            else
-              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                             ReferenceControl.BorderSpacing.GetSpace(akBottom));
             inc(Position,OwnerBorderSpacing);
           end else begin
             // anchor bottom of ReferenceControl and bottom of Owner

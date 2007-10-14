@@ -101,6 +101,7 @@ type
   protected
     function GetCursor: TCursor; override;
     procedure SetCursor(Value: TCursor); override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -331,6 +332,12 @@ begin
     inherited SetCursor(Value);
 end;
 
+class function TCustomPairSplitter.GetControlClassDefaultSize: TPoint;
+begin
+  Result.X:=90;
+  Result.Y:=90;
+end;
+
 constructor TCustomPairSplitter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -338,7 +345,7 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   FSplitterType := pstHorizontal;
   Cursor := crHSplit;
-  SetInitialBounds(0, 0, 90, 90);
+  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FPosition:=45;
   CreateSides;
 end;
