@@ -1920,6 +1920,7 @@ begin
     Name:='edtErrorCnt';
     Text := '';
     Constraints.MinWidth:=100;
+    AutoSize:=true;
     Parent := grpErrorCnt;
     AnchorAsAlign(alTop,0);
   end;
