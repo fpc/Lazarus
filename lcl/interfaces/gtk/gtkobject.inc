@@ -422,7 +422,7 @@ begin
 
     n:=0;
     {$ifndef TraceGdiCalls}
-    write(ProcName,'   GDIOs:');
+    DbgOut(ProcName,'   GDIOs:');
     {$endif}
     HashItem := FGDIObjects.FirstHashItem;
     while (HashItem <> nil) do
