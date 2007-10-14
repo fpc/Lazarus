@@ -134,8 +134,14 @@ begin
   then begin
     w := 0; h:= 0; d := 0;
   end
-  else gdk_window_get_geometry(ABitmap, nil,nil,@w,@h,@d);
-  
+  else
+  {$ifdef gtk1}
+    gdk_window_get_geometry(ABitmap, nil,nil,@w,@h,@d);
+  {$else}
+    gdk_drawable_get_size(ABitmap, @w, @h);
+    d := gdk_drawable_get_depth(ABitmap);
+  {$endif}
+
   if AWidth = -1 then AWidth := W;
   if AHeight = -1 then AHeight := H;
   Info^.Width := AWidth;
