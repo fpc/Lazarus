@@ -2209,8 +2209,10 @@ var
     DstLinePtr := ARawImage.Data;
     DstBytesPerLine := ARawImage.Description.BytesPerLine;
 
-    DstMask := not (((1 shl ADesc.AlphaPrec) - 1) shl ADesc.AlphaShift);
-    DstSet  := not DstMask;
+    if ADesc.ByteOrder = DefaultByteOrder
+    then DstSet := (not ($FFFFFFFF shl ADesc.AlphaPrec)) shl ADesc.AlphaShift
+    else DstSet := (not ($FFFFFFFF shr ADesc.AlphaPrec)) shr ADesc.AlphaShift;
+    DstMask  := not DstSet;
 
     for Y := 0 to AHeight - 1 do
     begin
