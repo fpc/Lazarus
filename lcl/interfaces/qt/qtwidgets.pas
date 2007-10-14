@@ -594,7 +594,6 @@ type
     FOwnerDrawn: Boolean;
     FSelectHook: QComboBox_hookH;
     FDropListEventHook: QObject_hookH;
-    FLineEditEventHook: QObject_hookH;
     // parts
     FLineEdit: QLineEditH;
     FDropList: TQtListWidget;
@@ -4786,9 +4785,7 @@ begin
     if FLineEdit = nil then
     begin
       FLineEdit := QComboBox_lineEdit(QComboBoxH(Widget));
-      FLineEditEventHook := QWidget_hook_create(FLineEdit);
-      TEventFilterMethod(Method) := @EventFilter;
-      QObject_hook_hook_events(FLineEditEventHook, Method);
+      QObject_disconnect(FLineEdit,'2returnPressed()', Widget, '1_q_returnPressed()');
     end;
   end;
   Result := FLineEdit;
@@ -5010,6 +5007,7 @@ end;
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   ev: QEventH;
+  str: WideString;
 begin
   BeginEventProcessing;
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
@@ -5032,18 +5030,6 @@ begin
       QEvent_ignore(Event);
     end;
   end else
-  if (Sender = FLineEdit) then
-  begin
-    Result := False;
-    case QEvent_type(Event) of
-      QEventKeyPress,
-      QEventKeyRelease:
-      begin
-        QEvent_accept(Event);
-      	Result := SlotKey(Sender, Event);
-      end;
-    end;
-  end else
   begin
     case QEvent_type(Event) of
       QEventFocusIn:
@@ -5057,6 +5043,27 @@ begin
             QLineEdit_selectAll(QLineEditH(LineEdit));
         end;
       end;
+
+      QEventKeyPress,
+      QEventKeyRelease:
+      begin
+      
+        if (QEvent_type(Event) = QEventKeyRelease) and
+        ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Return) or
+        (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter)) and
+        (QKeyEvent_modifiers(QKeyEventH(Event)) = QtNoModifier) and
+        (FLineEdit <> nil) and (QWidget_hasFocus(FLineEdit)) then
+        begin
+          Str := UTF8Encode(getText);
+          if TCustomComboBox(LCLObject).Items.IndexOf(Str) < 0 then
+            TCustomComboBox(LCLObject).AddItem(Str, nil);
+        end;
+        
+        QEvent_accept(Event);
+      	Result := SlotKey(Sender, Event);
+       
+      end;
+
     end;
     Result := inherited EventFilter(Sender, Event);
   end;
