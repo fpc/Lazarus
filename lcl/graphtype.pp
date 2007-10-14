@@ -947,12 +947,12 @@ function TRawImage.IsMasked(ATestPixels: Boolean): Boolean;
     begin
       DebugLn('RawImageMaskIsEmpty EdgeByte y=',dbgs(y),' x=',dbgs(x),
         ' Byte=',HexStr(Cardinal(p^),2),
-        ' UnusedMask=',HexStr(Cardinal(UnusedMask),2),
-        ' OR='+dbgs(p^ or UnusedMask),
+        //' UnusedMask=',HexStr(Cardinal(UnusedMask),2),
+        //' OR='+dbgs(p^ or UnusedMask),
         ' UnusedBitsAtEnd='+dbgs(UnusedBitsAtEnd),
         ' UsedBitsPerLine='+dbgs(UsedBitsPerLine),
         ' Width='+dbgs(Width),
-        ' ARawImage.Description.AlphaBitsPerPixel='+dbgs(Description.AlphaBitsPerPixel));
+        ' ARawImage.Description.MaskBitsPerPixel='+dbgs(Description.MaskBitsPerPixel));
     end;
     {$endif}
 

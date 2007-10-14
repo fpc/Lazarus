@@ -2437,7 +2437,7 @@ begin
     DebugLn('TGtkWidgetSet.RawImage_AddMask: A BytesPerLine=',dbgs(Image^.bpl),
       ' theType=',dbgs({$IFDEF Gtk1}Image^.thetype{$ELSE}ord(Image^._type){$ENDIF}),
       ' depth=',dbgs(Image^.depth),' AnImage^.bpp=',dbgs(Image^.bpp));
-    DebugLn('RawImage=', RawImageDescription_AsString(ARawImage.Description));
+    DebugLn('RawImage=', ARawImage.Description.AsString);
     {$ENDIF}
 
     // See also GetWindowRawImageDescription
