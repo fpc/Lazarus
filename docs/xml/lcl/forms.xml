@@ -180,7 +180,7 @@ wsMaximized - The window appears maximized</descr>
       <element name="TCloseAction">
         <short/>
         <descr/>
-        <seealso>&lt;link id="TCustomForm.OnClose"&gt;TCustomForm.OnClose&lt;/link&gt;</seealso>
+        <seealso><link id="TCustomForm.OnClose">TCustomForm.OnClose</link></seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caNone"><short/></element>
@@ -2565,20 +2565,23 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.FormState">
         <short>Determines the state of the form</short>
         <descr>Reads or writes a flag to determine the form's state: <br/>
+
 		is it being created, is this its first showing, is the border style being changed, etc. <br/>
+
 		FormState is a set, so could take zero or more of possible values.</descr>
-        <seealso>
-          <link id="Forms.TFormState">TFormState</link>
-        </seealso>
+        <seealso><link id="TFormState"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormStyle">
         <short>Determinates the style of the form</short>
         <descr>Reads or writes flag to determine the style of the form. <br/>
+
 		Default is 'normal', but could be MDIChild or MDINormal, <br/>
+
 		could stay on top or could be a 'Splash' form.<br/>
+
 		FormStyle is a set, could take zero or more of these values.</descr>
-        <seealso><link id="Controls.TFormStyle">TFormStyle</link></seealso>
+        <seealso><link id="TFormStyle"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.HelpFile">
@@ -2603,7 +2606,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.Menu">
         <short>Specifies a MainMenu for this form</short>
         <descr>Drop a TMainMenu on the form and select it here to show it on the form.<br/></descr>
-        <seealso><link id="Menus.TMainMenu">TMainMenu</link></seealso>
+        <seealso><link id="TMainMenu"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ModalResult">
@@ -2687,8 +2690,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.Position">
         <short>The position of the form on the screen</short>
         <descr>Reads or writes a flag to determine screen position of form. <br/>
+
 		By default it is in the position that it was placed in the Form Designer</descr>
-        <seealso><link id="Forms.TPosition">TPosition</link></seealso>
+        <seealso><link id="TPosition"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.TextHeight">
@@ -2706,13 +2710,22 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.WindowState">
         <short>Represents how the form appears on the screen</short>
         <descr>Reads or write flag to determine state of the window on screen. <br/>
+
 		Default is 'normal' (ie not minimised or maximised)</descr>
-        <seealso><link id="Forms.TWindowState">TWindowState</link></seealso>
+        <seealso><link id="TWindowState"/></seealso>
       </element>
       <!-- object Visibility: default -->
       <element name="TForm">
         <short>Form</short>
-        <descr>Form - the fundamental visual object that appears in every GUI application</descr>
+        <descr>Form - the fundamental visual object that appears in every GUI application.<br/>
+Most of the properties are inherited from the ancestors</descr>
+        <seealso>
+          <link id="TCustomForm"/>
+          <link id="TScrollingWinControl"/>
+          <link id="TCustomControl"/>
+          <link id="TWinControl"/>
+          <link id="TControl"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TForm.FClientHandle">
@@ -2740,9 +2753,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: published -->
       <element name="TForm.ActiveControl">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Specifies the control that has the focus on the form</short>
+        <descr>Use active control to set or get the control that has the focus on this form</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TForm.Align">
@@ -2805,11 +2817,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DockSite">
-        <short>Specifies the control that has the focus on the form</short>
-        <descr>Use activecontrol to set or get the control that has the focus on this form</descr>
-        <seealso/>
-      </element>
+      <element name="TForm.DockSite"/>
       <!-- property Visibility: published -->
       <element name="TForm.Enabled">
         <short/>
@@ -4213,9 +4221,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TApplicationHandlerType.ahtUserInput"><short/></element>
       <!-- object Visibility: default -->
       <element name="TApplication">
-        <short>Application</short>
-        <descr>Application - the whole current program, described as an object.<br/>
-
+        <short>Application - the whole current program, described as an object</short>
+        <descr>Application - the whole current program, described as an object.<br/><br/>
 Includes useful function MessageBox, a simple dialog</descr>
       </element>
       <!-- variable Visibility: private -->
@@ -4724,42 +4731,34 @@ Includes useful function MessageBox, a simple dialog</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TApplication.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create an instance of TApplication</short>
+        <descr>This instance of the constructor performs most of the setting up of the environment for the application. The instances of Create that occur in some of the ancestor classes are place holders rather than actual instructions for constructing the object</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.Create.AOwner"><short/></element>
+      <element name="TApplication.Create.AOwner">
+        <short>The Owner object that invoked this instance of TApplication</short>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TApplication.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Destroy this instance of TApplication and free its resources</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ControlDestroyed">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Method for dealing with a control that has been destroyed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.ControlDestroyed.AControl"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.BringToFront">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use the selected widget set's method to bring the application's form(s) to the front</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.CreateForm">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create Form or any other kind of component</short>
+        <descr>Note: The name is confusing and only kept for Delphi compatibility. <br/>
+It can actually create any kind of component<br/><br/>
+Creates a Component instance, sets the pointer to the component variable and loads the component. <br/>
+If it is a form it will be added to the application's forms list</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.CreateForm.InstanceClass"><short/></element>
@@ -4767,16 +4766,17 @@ Includes useful function MessageBox, a simple dialog</descr>
       <element name="TApplication.CreateForm.Reference"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.QueueAsyncCall">
-        <short>Queues a given method after all other events have been processed.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Insert a given asynchronous call into the queue</short>
         <example file="forms/tapplication_queueasynccall.pas"/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.QueueAsyncCall.AMethod"><short/></element>
+      <element name="TApplication.QueueAsyncCall.AMethod">
+        <short>The method to be used for the asynchronous call</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.QueueAsyncCall.Data"><short/></element>
+      <element name="TApplication.QueueAsyncCall.Data">
+        <short>The data structure used by the asynchronous call method</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ReleaseComponent">
         <short/>
@@ -4788,10 +4788,8 @@ Includes useful function MessageBox, a simple dialog</descr>
       <element name="TApplication.ReleaseComponent.AComponent"><short/></element>
       <!-- function Visibility: public -->
       <element name="TApplication.ExecuteAction">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The method to be used to execute the action associated with the Application</short>
+        <descr>This is a function that should be supplied by the developer, to override the placeholders declared in ancestor classes</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.ExecuteAction.Result"><short/></element>
@@ -4819,19 +4817,17 @@ Includes useful function MessageBox, a simple dialog</descr>
       <element name="TApplication.HandleAllocated.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleException">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Exception handler - methods to be followed in response to exceptions</short>
+        <descr>Individual exception handler methods should be supplied by the developer, to override place-holder entries declared in ancestor classes.<br/>
+This method checks whether the application is required to halt if an exception occurs, or invokes the appropriate handler. <br/>
+
+It also writes details of the exception to the appropriate place for debugging.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.HandleException.Sender"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleMessage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Process all events according to the method defined for the widget set</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpCommand">
@@ -4897,17 +4893,11 @@ Includes useful function MessageBox, a simple dialog</descr>
       <element name="TApplication.IsWaiting.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.CancelHint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Cancels a request for a hint, if there is no hint timer or no hint to display</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HideHint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Don't display the hint</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HintMouseMessage">
@@ -4922,24 +4912,24 @@ Includes useful function MessageBox, a simple dialog</descr>
       <element name="TApplication.HintMouseMessage.AMessage"><short/></element>
       <!-- property Visibility: public -->
       <element name="TApplication.Icon">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>the icon to be associated with this application</short>
+        <descr>Reads or writes a flag to determine the Icon</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Initialize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Initialize any forms associated with the application</short>
+        <descr>Finds the appropriate widget set, reads the application's icon (if any) from the Lazarus Resource file, initialises the screen, and leaves it ready for processing.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.MessageBox">
         <short>Message Box</short>
         <descr>Message Box: a useful function to display a message.<br/>
+
 		The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]<br/>
 
+
 It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</descr>
+        <example file="dialogs/displaymessagebox.pas"/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.MessageBox.Result">
@@ -4993,10 +4983,7 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Minimize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Minimise the form using the widget set's method</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Notification">
@@ -5018,20 +5005,18 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Run">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>the method to be used to make the application execute.</short>
+        <descr>This method should be supplied by the developer, and should be the main process control procedure for the application</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ShowException">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Show any exception that has occurred</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TApplication.ShowException.E"><short/></element>
+      <element name="TApplication.ShowException.E">
+        <short>The exception that is to be displayed</short>
+        <seealso><link id="#rtl.sysutils.exception"/></seealso>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Terminate">
         <short/>
@@ -5207,9 +5192,7 @@ These constants are declared on the LCLType unit.
       <element name="TApplication.DoBeforeMouseMessage.CurMouseControl"><short/></element>
       <!-- property Visibility: public -->
       <element name="TApplication.CaptureExceptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>If exceptions have occurred, find out what they are, ready for processing</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Handle">
@@ -5219,27 +5202,21 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The hint associated with the main application</short>
+        <descr>A hint is a small pop-up mesage that appears briefly while the mouse hovers over a specified area of the screen. It usually displays useful information about how to use an object or what data should be entered, etc<br/><br/>
+Reads or writes a flag to determine the hint associated with the application</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintColor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The colour used to display the hint</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintHidePause">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The delay period after mouse entry before the hint becomes visible</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintPause">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The length of time for which the hint is displayed</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintShortCuts">
@@ -5255,15 +5232,19 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Navigation">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determine how the form is to be navigated</short>
+        <descr>Reads or writes a flag to determine the navigation method: <br/>
+Is <b>Tab</b> used to move to next control? <br/>
+Does <b>Enter</b> or <b>Ret</b> activate the default action? <br/>
+Does <b>Esc</b> perform the cancel action? <br/>
+Does <b>F1</b> activate a Help system?<br/><br/>
+Navigation Options is a set, so can take zero or more of the available values</descr>
+        <seealso><link id="TApplicationNavigationOptions"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.MainForm">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Main Form used by the application for process control and for data input/output</short>
+        <descr>Reads a flag to get particulars of the main form</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnActionExecute">
@@ -5321,9 +5302,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Title">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Title to be displayed in the top border of the Main Window</short>
+        <descr>Reads or writes a flag to determine the Title string</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TApplicationProperties">
