@@ -254,6 +254,10 @@ i,x: Integer;
 Item: TListItem;
 begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  
+  // needed for when we are creating so items in the ListView are not added twice
+  if gtk_tree_model_iter_n_children(GTK_TREE_MODEL(Widgets^.TreeModel), nil) = 0 then
+    Exit;
 
   gtk_list_store_clear(PGtkListStore(Widgets^.TreeModel));
   for i := 0 to TLVHack(ALV).Items.Count-1 do begin
