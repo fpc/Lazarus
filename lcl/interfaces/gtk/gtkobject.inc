@@ -2216,7 +2216,15 @@ var
 
     for Y := 0 to AHeight - 1 do
     begin
+      // bit order for X11 differ from other bit orders, at least it differ from
+      // win32 and direct_fb
+      // x11 stores bits in order while others in reversed order
+      // this difference cause us to write such nice ifdefs here and below
+      {$ifdef HasX}
       SrcMask := 1;
+      {$else}
+      SrcMask := $80;
+      {$endif}
       SrcPtr := SrcLinePtr;
       DstPtr := DstLinePtr;
       for x := 0 to AWidth - 1 do
@@ -2225,10 +2233,18 @@ var
         then DstPtr32^ := DstPtr32^ and DstMask
         else DstPtr32^ := (DstPtr32^ and DstMask) or DstSet;
         Inc(DstPtr32);
+        {$ifdef HasX}
         SrcMask := SrcMask shl 1;
+        {$else}
+        SrcMask := SrcMask shr 1;
+        {$endif}
         if SrcMask = 0
         then begin
+          {$ifdef HasX}
           SrcMask := 1;
+          {$else}
+          SrcMask := $80;
+          {$endif}
           Inc(SrcPtr);
         end;
       end;
