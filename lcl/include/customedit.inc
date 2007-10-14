@@ -441,17 +441,5 @@ begin
  inherited DoExit;
 end;
 
-procedure TCustomEdit.InitializeWnd;
-var
-  ASelStart, ASelLength : integer;
-begin
-  inherited InitializeWnd;
-  if FSelStart <> FSelLength then begin
-    ASelStart:= FSelStart;
-    ASelLength:= FSelLength;
-    SelStart:= ASelStart;
-    SelLength:= ASelLength;
-  end;
-end;
 
 // included by stdctrls.pp

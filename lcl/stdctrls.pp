@@ -665,7 +665,6 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
-    procedure InitializeWnd; override;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
