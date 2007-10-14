@@ -1122,7 +1122,7 @@ begin
   FBitsPerPixel := ABitsPerPixel;
   FType := AType;
 
-  FBytesPerRow := MulDiv(AWidth, ABitsPerPixel, 8);
+  FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
   m := FBytesPerRow and ALIGNBITS[AAlignment];
   if m <> 0
   then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - m);
