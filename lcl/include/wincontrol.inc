@@ -947,7 +947,8 @@ begin
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if a in AnchorAlign[Child.Align] then begin
         // the aligned sides can not be anchored to a control
-        DebugLn(['TAutoSizeCtrlData.FixControlProperties aligned sides can not be anchored ',DbgSName(Child),' a=',dbgs(a),' old=',DbgSName(Child.AnchorSide[a].Control),' new=nil']);
+        if Child.AnchorSide[a].Control<>nil then
+          DebugLn(['TAutoSizeCtrlData.FixControlProperties aligned sides can not be anchored ',DbgSName(Child),' a=',dbgs(a),' old=',DbgSName(Child.AnchorSide[a].Control),' new=nil']);
         Child.AnchorSide[a].Control:=nil;
       end;
       if Child.AnchorSide[a].Side=asrCenter then begin
