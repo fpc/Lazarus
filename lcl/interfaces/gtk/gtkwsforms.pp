@@ -322,11 +322,7 @@ begin
   if not WSCheckHandleAllocated(AForm, 'SetFormBorderStyle')
   then Exit;
 
-  inherited SetFormBorderStyle(AForm, AFormBorderStyle);
-  // the form border style can only be set at creation time.
-  // This is Delphi compatible, so no Recreatewnd needed.
-  {$note check if this implies that the lcl recreates the handle here}
-  // otherwise the lcl recreatewnd call should be removed and placed here.
+  RecreateWnd(AForm);
 end;
 
 class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
