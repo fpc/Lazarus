@@ -1142,7 +1142,12 @@ begin
         begin // deactivated
           //WriteLn('Remove');
           RemoveStayOnTopFlags(Window);
-          Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_BOTTOM,
+          // this is workarond. After RemoveStayOnTopFlags previously stay on top windows are
+          // stil on top. So if you switch application they will be on top before second switch
+          TargetWindow := GetNextWindow(TWin32WidgetSet(WidgetSet).AppHandle, GW_HWNDNEXT);
+          if TargetWindow = 0 then
+            TargetWindow := HWND_BOTTOM;
+          Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, TargetWindow,
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
 

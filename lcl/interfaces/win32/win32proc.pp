@@ -1117,12 +1117,13 @@ var
   AStyle: DWord;
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
 begin
-  Result := Handle <> StayOnTopWindowsInfo^.AppWindow;
+  Result := True;
   AStyle := GetWindowLong(Handle, GWL_EXSTYLE);
   if (AStyle and WS_EX_TOPMOST) <> 0 then // if stay on top then
   begin
     StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
-    SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+    SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+      SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSENDCHANGING);
   end;
 end;
 
@@ -1131,6 +1132,7 @@ var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
   WindowInfo: PWindowInfo;
 begin
+  // WriteLn('RemoveStayOnTopFlags 1');
   if InRemoveStayOnTopFlags = 0 then
   begin
     New(StayOnTopWindowsInfo);
@@ -1143,6 +1145,7 @@ begin
     Dispose(StayOnTopWindowsInfo);
   end;
   inc(InRemoveStayOnTopFlags);
+  // WriteLn('RemoveStayOnTopFlags 2');
 end;
 
 procedure RestoreStayOnTopFlags(Window: HWND);
@@ -1150,6 +1153,7 @@ var
   WindowInfo: PWindowInfo;
   I: integer;
 begin
+  // WriteLn('RestoreStayOnTopFlags 1');
   if InRemoveStayOnTopFlags = 1 then
   begin
     WindowInfo := GetWindowInfo(Window);
@@ -1157,12 +1161,14 @@ begin
     begin
       for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
         SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]),
-          HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+          HWND_TOPMOST, 0, 0, 0, 0,
+          SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSENDCHANGING);
       FreeAndNil(WindowInfo^.StayOnTopList);
     end;
   end;
   if InRemoveStayOnTopFlags > 0 then
     dec(InRemoveStayOnTopFlags);
+  // WriteLn('RestoreStayOnTopFlags 2');
 end;
 
 
