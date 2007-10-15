@@ -61,7 +61,12 @@ begin
   if FState=NewState then exit;
   FState:=NewState;
   //debugln('TCustomCheckBox.DoChange CHANGED ',dbgsname(Self),' ',dbgs(ord(FState)));
-  DoOnChange;
+  inherited Click; // emulate delphi OnClick behaviour
+end;
+
+procedure TCustomCheckBox.Click;
+begin
+  // skip clicks by WM_MOUSEUP
 end;
 
 function TCustomCheckBox.RetrieveState: TCheckBoxState;

@@ -1096,6 +1096,7 @@ type
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
   protected
+    procedure Click; override;
     function RetrieveState: TCheckBoxState;
     procedure InitializeWnd; override;
     procedure Toggle; virtual;
