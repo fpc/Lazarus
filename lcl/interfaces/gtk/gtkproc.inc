@@ -6627,7 +6627,7 @@ begin
     if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
       dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ELSE}
-    if GtkWidgetIsA(Widget,GTK_TYPE_BUTTON) then
+    if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_TYPE_BUTTON then
       dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ENDIF}
   end;
