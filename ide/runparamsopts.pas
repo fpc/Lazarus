@@ -431,8 +431,7 @@ end;
 
 procedure TRunParamsOptsDlg.FormResize(Sender: TObject);
 begin
-  SystemVariablesGroupBox.Height := (Notebook.Page[1].Height - 37) div 2;
-  UserOverridesGroupBox.Height   := SystemVariablesGroupBox.Height;
+  UserOverridesGroupBox.Height := (Notebook.Page[1].Height - 37) div 2;
 
   SystemVariablesListView.Column[0].Width := SystemVariablesListView.Width div 2;
   SystemVariablesListView.Column[1].Width := SystemVariablesListView.Column[0].Width;

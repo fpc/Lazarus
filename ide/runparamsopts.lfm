@@ -44,7 +44,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Width = 500
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 2
     object Page1: TPage
       Caption = 'Page1'
@@ -52,8 +52,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       ClientHeight = 424
       object DisplayGroupBox: TGroupBox
         Left = 6
-        Height = 82
-        Top = 211
+        Height = 67
+        Top = 181
         Width = 484
         Align = alTop
         AutoSize = True
@@ -88,7 +88,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object CmdLineParametersGroupBox: TGroupBox
         Left = 6
-        Height = 54
+        Height = 39
         Top = 65
         Width = 484
         Align = alTop
@@ -113,8 +113,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object UseLaunchingApplicationGroupBox: TGroupBox
         Left = 6
-        Height = 80
-        Top = 125
+        Height = 65
+        Top = 110
         Width = 484
         Align = alTop
         AutoSize = True
@@ -187,8 +187,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object WorkingDirectoryGroupBox: TGroupBox
         Left = 6
-        Height = 68
-        Top = 299
+        Height = 53
+        Top = 254
         Width = 484
         Align = alTop
         AutoSize = True
@@ -239,11 +239,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         TabOrder = 0
       end
       object UserOverridesGroupBox: TGroupBox
+        AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 161
         Top = 229
         Width = 484
         Align = alBottom
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'UserOverridesGroupBox'
         ClientHeight = 142
