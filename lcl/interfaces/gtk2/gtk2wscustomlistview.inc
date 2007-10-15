@@ -420,7 +420,8 @@ begin
 
   with Widgets^ do begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
-    gtk_tree_view_remove_column(PGtkTreeView(MainView), GtkColumn);
+    if GtkColumn<>nil then
+      gtk_tree_view_remove_column(PGtkTreeView(MainView), GtkColumn);
   end;
 end;
 
@@ -1272,7 +1273,8 @@ begin
 //  inherited SetSort(ALV, AType, AColumn);
 end;
 
-class procedure TGtk2WSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
+class procedure TGtk2WSCustomListView.SetViewOrigin(const ALV: TCustomListView;
+  const AValue: TPoint);
 var
   Widgets: PTVWidgets;
 begin
@@ -1280,8 +1282,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  if not GTK_WIDGET_REALIZED(Widgets^.MainView) then
-    gtk_widget_realize(Widgets^.MainView);
+  //DebugLn(['TGtk2WSCustomListView.SetViewOrigin ',GetWidgetDebugReport(Widgets^.MainView)]);
+  if not GTK_WIDGET_REALIZED(Widgets^.MainView) then exit;
   gtk_tree_view_scroll_to_point(PGtkTreeView(Widgets^.MainView), AValue.X, AValue.Y);
 end;
 
@@ -1295,6 +1297,7 @@ class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
   begin
     for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
       GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
+      if GtkColumn=nil then continue;
       if not (Show)
       or (Show and (PtrUInt(g_object_get_data(G_OBJECT(GtkColumn),
                                              PChar('Visible')))<>0))
