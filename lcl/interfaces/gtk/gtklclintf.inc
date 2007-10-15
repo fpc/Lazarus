@@ -125,7 +125,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): boolean;
+function TGtkWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage;
+  out ABitmap, AMask: HBitmap; ASkipMask: Boolean): boolean;
 type
   TFourBytes = packed record
     B0,B1,B2,B3: Byte;
@@ -806,6 +807,4 @@ procedure TGtkWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHan
 begin
 end;
 {$endif}
-
-
 

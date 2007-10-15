@@ -6620,11 +6620,14 @@ begin
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
   if not WithThemeSpace then begin
-    //DebugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
-    //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
+    //debugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
+    //debugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
     //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
     {$IFDEF Gtk1}
     if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+      dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
+    {$ELSE}
+    if GtkWidgetIsA(Widget,GTK_TYPE_BUTTON) then
       dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ENDIF}
   end;
