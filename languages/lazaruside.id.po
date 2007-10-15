@@ -1529,6 +1529,10 @@ msgstr "Perintah setelah mempublikasikan modul"
 msgid "Command commands"
 msgstr "Perintah Perintah"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Parameter baris perintah (tanpa nama aplikasi)"

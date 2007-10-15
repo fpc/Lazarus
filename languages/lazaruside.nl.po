@@ -1529,6 +1529,10 @@ msgstr "Opdracht na publiceren module"
 msgid "Command commands"
 msgstr "Opdrachtopdrachten"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Command line parameters (zonder applicatie naam)"

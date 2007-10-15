@@ -1529,6 +1529,10 @@ msgstr "Команда после установки модуля"
 msgid "Command commands"
 msgstr "Управляющие команды"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Параметры командной строки (без имени приложения)"

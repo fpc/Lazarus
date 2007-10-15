@@ -1528,6 +1528,10 @@ msgstr "Comando después de módulo de publicación"
 msgid "Command commands"
 msgstr "Comandos de comando"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Parámetros de la línea de comandos (sin el nombre de la aplicación)"

@@ -1533,6 +1533,10 @@ msgstr "Polecenie po module publikacji"
 msgid "Command commands"
 msgstr "Sterowanie"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Parametry linii poleceń (bez nazwy pliku)"

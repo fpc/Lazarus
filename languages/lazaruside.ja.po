@@ -1528,6 +1528,10 @@ msgstr "モジュールの発行後のコマンド"
 msgid "Command commands"
 msgstr "コマンド コマンド"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "コマンドライン引数（アプリケーション名なしで）"

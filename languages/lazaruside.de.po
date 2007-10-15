@@ -1531,6 +1531,10 @@ msgstr "Auszuführender Befehl nach Veröffentlichung"
 msgid "Command commands"
 msgstr "Kommandoanweisungen"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Kommandozeilenparameter (ohne Programmname)"

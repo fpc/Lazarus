@@ -1529,6 +1529,10 @@ msgstr ""
 msgid "Command commands"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr ""

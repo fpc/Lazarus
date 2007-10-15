@@ -1529,6 +1529,10 @@ msgstr "Ordre després de publicar el mòdul"
 msgid "Command commands"
 msgstr "Ordres de les instruccions"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Paràmetres de la línia d'ordres (sense nom d'aplicació)"

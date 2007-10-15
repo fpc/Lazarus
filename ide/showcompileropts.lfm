@@ -1,57 +1,78 @@
 object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
+  Left = 358
+  Height = 194
+  Top = 337
+  Width = 390
+  HorzScrollBar.Page = 389
+  VertScrollBar.Page = 193
   ActiveControl = OkButton
   Caption = 'Compiler Options'
   ClientHeight = 194
   ClientWidth = 390
   OnCreate = FormCreate
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 389
-  VertScrollBar.Page = 193
-  Left = 358
-  Height = 194
-  Top = 337
-  Width = 390
   object OkButton: TButton
-    Anchors = [akBottom]
+    AnchorSideTop.Control = CmdLineGroupbox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CmdLineGroupbox
+    AnchorSideRight.Side = asrBottom
+    Left = 309
+    Height = 25
+    Top = 160
+    Width = 75
+    Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
     Caption = 'Ok'
     OnClick = OkButtonCLICK
     TabOrder = 0
-    Left = 157
-    Height = 25
-    Top = 159
-    Width = 75
   end
   object CmdLineGroupbox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideBottom.Control = OkButton
+    Left = 6
+    Height = 148
+    Top = 6
+    Width = 378
     Align = alTop
-    Anchors = [akTop, akLeft, akBottom]
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     Caption = 'Command line parameters'
-    ClientHeight = 135
-    ClientWidth = 386
+    ClientHeight = 130
+    ClientWidth = 374
     ParentCtl3D = False
     TabOrder = 1
-    Height = 152
-    Width = 390
     object CmdLineMemo: TMemo
+      AnchorSideLeft.Control = CmdLineGroupbox
+      AnchorSideTop.Control = CmdLineGroupbox
+      AnchorSideRight.Control = CmdLineGroupbox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = CmdLineGroupbox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 118
+      Top = 6
+      Width = 362
       Align = alClient
+      BorderSpacing.Around = 6
       Lines.Strings = (
         'CmdLineMemo'
       )
       TabOrder = 0
-      Height = 135
-      Width = 386
     end
   end
   object RelativePathsCheckBox: TCheckBox
-    Anchors = [akLeft, akBottom]
+    AnchorSideLeft.Control = CmdLineGroupbox
+    AnchorSideTop.Control = OkButton
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 166
+    Width = 135
     Caption = 'RelativePathsCheckBox'
     Checked = True
     OnChange = RelativePathsCheckBoxChange
     State = cbChecked
     TabOrder = 2
-    Left = 11
-    Height = 20
-    Top = 164
-    Width = 160
   end
 end

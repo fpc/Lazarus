@@ -1518,6 +1518,10 @@ msgstr ""
 msgid "Command commands"
 msgstr "Komentojen komennot"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Komentorivin parametrit (ilman ohjelman omaa nimeä)"

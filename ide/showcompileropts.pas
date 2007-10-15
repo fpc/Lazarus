@@ -89,7 +89,10 @@ end;
 
 procedure TShowCompilerOptionsDlg.FormCreate(Sender: TObject);
 begin
+  CmdLineGroupBox.Caption:=dlgCommandLineParameters;
+  Self.Caption:=dlgCompilerOptions;
   RelativePathsCheckBox.Caption:=lisRelativePaths;
+  OKButton.Caption:=lisOkBtn;
 end;
 
 procedure TShowCompilerOptionsDlg.SetCompilerOpts(

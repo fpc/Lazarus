@@ -1276,6 +1276,9 @@ resourcestring
   dlgMainViewUnits = 'View project units';
   dlgMultiSelect = 'Multi Select';
   
+  // show compiler options dialog
+  dlgCommandLineParameters = 'Command line parameters';
+  
   // project options dialog
   dlgProjectOptions = 'Project Options';
   dlgPOApplication = 'Application';

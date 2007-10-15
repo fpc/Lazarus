@@ -1531,6 +1531,10 @@ msgstr "Commande après l'édition du module"
 msgid "Command commands"
 msgstr "Commande commandes"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Paramètres de la ligne de commande (sans le nom de l'application)"

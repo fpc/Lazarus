@@ -1532,6 +1532,10 @@ msgstr "发布后运行命令"
 msgid "Command commands"
 msgstr "命令行命令"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "命令行参数 (没有程序名)"

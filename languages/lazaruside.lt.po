@@ -1535,6 +1535,10 @@ msgstr "Komanda po modulio paskelbimo"
 msgid "Command commands"
 msgstr "Menių \"Komandos\" komandos"
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Komandinės eilutės parametrai (be programos vardo)"

@@ -3866,6 +3866,10 @@ msgstr ""
 msgid "Multi Select"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
 msgstr ""
