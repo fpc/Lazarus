@@ -2728,7 +2728,7 @@ var
   function WidthDependsOnParent: boolean;
   begin
     if Parent=nil then
-      Result:=true // top level controls depend on the window manager
+      Result:=false
     else
       Result:=Parent.ChildSizing.Layout<>cclNone;
   end;
@@ -2749,7 +2749,7 @@ var
   function HeightDependsOnParent: boolean;
   begin
     if Parent=nil then
-      Result:=true // top level controls depend on the window manager
+      Result:=false
     else
       Result:=Parent.ChildSizing.Layout<>cclNone;
   end;

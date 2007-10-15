@@ -6088,7 +6088,7 @@ begin
   with ButtonPanel do begin
     Name:='ButtonPanel';
     Align:=alBottom;
-    Anchors:=Anchors-[akTop];
+    AnchorToNeighbour(akTop,0,Edit1);
     AutoSize:=true;
     BevelOuter:=bvNone;
     Caption:='';

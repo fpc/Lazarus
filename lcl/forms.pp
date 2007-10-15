@@ -336,7 +336,8 @@ type
     fsCreatedMDIChild,
     fsBorderStyleChanged,
     fsFormStyleChanged,
-    fsFirstShow  // form is shown for the first time
+    fsFirstShow,  // form is shown for the first time
+    fsDisableAutoSize
     );
   TFormState = set of TFormStateType;
 
@@ -466,6 +467,7 @@ type
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
     procedure DoSendBoundsToInterface; override;
+    procedure DoAutoSize; override;
     class function GetControlClassDefaultSize: TPoint; override;
   protected
     // drag and dock

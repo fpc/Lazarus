@@ -519,6 +519,7 @@ end;
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
 begin
   //DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
+  Include(FFormState,fsDisableAutoSize);
   inherited WMPaint(Message);
   //DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;
@@ -969,6 +970,12 @@ begin
     FRestoredWidth:=Width;
     FRestoredHeight:=Height;
   end;
+end;
+
+procedure TCustomForm.DoAutoSize;
+begin
+  if (WindowState=wsNormal) and (not (fsDisableAutoSize in FFormState)) then
+    inherited DoAutoSize;
 end;
 
 class function TCustomForm.GetControlClassDefaultSize: TPoint;
