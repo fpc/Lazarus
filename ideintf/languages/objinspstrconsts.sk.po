@@ -1,3 +1,18 @@
+# Slovak translation of lazarus
+#
+# Ivan Masár <helix84@centrum.sk>, 2007. 
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lazarus 0.9.22\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-11 00:27+0100\n"
+"Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d riadkov, %d znakov"
@@ -356,7 +371,7 @@ msgstr "Zmazať záložku"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr "Zmazať položku %d \"%s\"?"
+msgstr "Zmazať položku %d „%s“?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -656,7 +671,7 @@ msgstr "Ok"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "Kontrolovať duplicitné položky pri pridávaní"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -867,8 +882,8 @@ msgid "Text:"
 msgstr "Text:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr ""
+msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgstr "Položka „%s“ je už uvedená. Pridať ju aj tak? "
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -920,5 +935,5 @@ msgstr "Slovo"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
-msgstr ""
+msgstr "n. stĺpcov"
 
