@@ -1065,6 +1065,7 @@ begin
   GotoDialog.SetBounds(NewLeft,NewTop,GotoDialog.Width,GotoDialog.Height);
   if (GotoDialog.ShowModal = mrOK) then
     GotoLine(StrToIntDef(GotoDialog.Edit1.Text,1));
+  Self.FocusEditor;
 end;
 
 procedure TSourceEditor.GetDialogPosition(Width, Height:integer;
@@ -6112,14 +6113,23 @@ end;
 procedure TfrmGoto.DoShow;
 begin
   Edit1.SelectAll;
+  Edit1.SetFocus;
   inherited DoShow;
 end;
 
 procedure TfrmGoto.Edit1KeyDown(Sender: TObject; var Key:Word;
    Shift:TShiftState);
 begin
-  if (Key=VK_RETURN) then ModalResult:=mrOk;
-  if (Key=VK_ESCAPE) then ModalResult:=mrCancel;
+  if (Key=VK_RETURN) then
+  begin
+    ModalResult:=mrOk;
+    Key := 0;
+  end;
+  if (Key=VK_ESCAPE) then
+  begin
+    ModalResult:=mrCancel;
+    Key := 0;
+  end;
 end;
 
 { TSynEditPlugin1 }
