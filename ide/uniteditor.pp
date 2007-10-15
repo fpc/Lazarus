@@ -785,6 +785,7 @@ type
   TfrmGoto = class(TForm)
     Label1: TLabel;
     Edit1: TEdit;
+    ButtonPanel: TPanel;
     btnOK: TBitbtn;
     btnCancel: TBitBtn;
     procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -6054,14 +6055,15 @@ begin
 
   Position := poDesigned;
   Width := 250;
-  Height := 100;
+  Height := 115;
   Caption := lisMenuGotoLine;
   BorderStyle:= bsDialog;
   ChildSizing.SetGridSpacing(6);
 
-  Label1 := TLabel.Create(self);
+  Label1 := TLabel.Create(Self);
   with Label1 do
   Begin
+    Name:='Label1';
     Parent := Self;
     Left := 6;
     Top := 6;
@@ -6069,9 +6071,10 @@ begin
     Caption := lisUEGotoLine;
   end;
 
-  Edit1 := TEdit.Create(self);
+  Edit1 := TEdit.Create(Self);
   with Edit1 do
   Begin
+    Name:='Edit1';
     Parent := self;
     Left := 6;
     AnchorToNeighbour(akTop,6,Label1);
@@ -6080,33 +6083,48 @@ begin
     Caption := '';
     OnKeyDown:=@Edit1KeyDown;
   end;
-
-  btnOK := TBitbtn.Create(self);
-  with btnOK do
-  Begin
-    Name:='btnOK';
-    AnchorToNeighbour(akTop,6,Edit1);
-    Left := 40;
-    kind := bkOK;
-    Default:=true;
+  
+  ButtonPanel := TPanel.Create(Self);
+  with ButtonPanel do begin
+    Name:='ButtonPanel';
+    Align:=alBottom;
+    Anchors:=Anchors-[akTop];
     AutoSize:=true;
-    Parent := self;
+    BevelOuter:=bvNone;
+    Caption:='';
+    Parent:=Self;
   end;
 
-  btnCancel := TBitbtn.Create(self);
+  btnCancel := TBitbtn.Create(Self);
   with btnCancel do
   Begin
     Name:='btnCancel';
-    AnchorToNeighbour(akTop,6,Edit1);
-    Left := 120;
-    kind := bkCancel;
+    AnchorParallel(akTop,0,ButtonPanel);
+    AnchorParallel(akBottom,0,ButtonPanel);
+    AnchorParallel(akRight,6,ButtonPanel);
+    Anchors:=Anchors-[akLeft];
+    Kind := bkCancel;
     AutoSize:=true;
     Default:=false;
-    Parent := self;
+    Parent := ButtonPanel;
+  end;
+
+  btnOK := TBitbtn.Create(Self);
+  with btnOK do
+  Begin
+    Name:='btnOK';
+    AnchorParallel(akTop,0,ButtonPanel);
+    AnchorParallel(akBottom,0,ButtonPanel);
+    AnchorToNeighbour(akRight,6,btnCancel);
+    Anchors:=Anchors-[akLeft];
+    Kind := bkOK;
+    Default:=true;
+    AutoSize:=true;
+    Parent := ButtonPanel;
   end;
 
   AutoSize:=true;
-  
+
   ActiveControl:=Edit1;
 end;
 
