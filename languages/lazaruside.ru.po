@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-12 23:54+0300\n"
+"PO-Revision-Date: 2007-10-13 21:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1531,7 +1531,7 @@ msgstr "Управляющие команды"
 
 #: lazarusidestrconsts:dlgcommandlineparameters
 msgid "Command line parameters"
-msgstr ""
+msgstr "Параметры командной строки"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
