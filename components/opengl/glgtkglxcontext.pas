@@ -149,7 +149,7 @@ type
   TGdkGLContextPrivate = record
     xdisplay: PDisplay;
     glxcontext: TGLXContext;
-    ref_count: guint;
+    ref_count: gint;
   end;
   PGdkGLContextPrivate = ^TGdkGLContextPrivate;
 
@@ -272,7 +272,6 @@ begin
   dpy := GetDefaultXDisplay;
   {$IFDEF Lclgtk2}
   DebugLn('get_xvisualinfo dpy=',XDisplayAsString(dpy));
-  
   DebugLn('get_xvisualinfo visual=',GdkVisualAsString(Visual));
   RaiseGDBException('not implemented for gtk2');
   {$ENDIF}
@@ -347,13 +346,11 @@ begin
   RaiseGDBException('');
   {$ENDIF}
 
-  //writeln('gdk_gl_choose_visual A ');
   if attrList=nil then begin
     Result:=nil;
     exit;
   end;
 
-  //writeln('gdk_gl_choose_visual B ');
   dpy := GetDefaultXDisplay;
   vi := glXChooseVisual(dpy,DefaultScreen(dpy), attrlist);
   if (vi=nil) then begin
@@ -361,7 +358,6 @@ begin
     exit;
   end;
 
-  //writeln('gdk_gl_choose_visual C ');
   visual := gdkx_visual_get(vi^.visualid);
   XFree(vi);
   Result:=visual;
@@ -406,9 +402,7 @@ begin
   dpy := GetDefaultXDisplay;
 
   {$IFDEF lclgtk2}
-  DebugLn(['gdk_gl_context_share_new AAA1']);
   vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
-  DebugLn(['gdk_gl_context_share_new AAA2']);
   {$ELSE}
   if visual=nil then exit;
   vi := get_xvisualinfo(visual);
@@ -420,7 +414,6 @@ begin
                                    direct=1)
   else
     glxcontext := glXCreateContext(dpy, vi, nil, direct=1);
-  DebugLn(['gdk_gl_context_share_new AAA3']);
 
   XFree(vi);
   if (glxcontext = nil) then exit;
@@ -458,6 +451,7 @@ begin
   if context=nil then exit;
   PrivateContext := PGdkGLContextPrivate(context);
   inc(PrivateContext^.ref_count);
+  //DebugLn(['gdk_gl_context_ref ref_count=',PrivateContext^.ref_count]);
   Result:=context;
 end;
 
@@ -469,13 +463,15 @@ begin
 
   PrivateContext:=PGdkGLContextPrivate(context);
 
-  if (PrivateContext^.ref_count > 1) then
-    dec(PrivateContext^.ref_count)
-  else begin
+  dec(PrivateContext^.ref_count);
+  if (PrivateContext^.ref_count = 0) then begin
+    //DebugLn(['gdk_gl_context_unref START ref_count=',PrivateContext^.ref_count]);
     if (PrivateContext^.glxcontext = glXGetCurrentContext()) then
       glXMakeCurrent(PrivateContext^.xdisplay, None, nil);
     glXDestroyContext(PrivateContext^.xdisplay, PrivateContext^.glxcontext);
+    PrivateContext^.glxcontext:=nil;
     g_free(PrivateContext);
+    //DebugLn(['gdk_gl_context_unref END']);
   end;
 end;
 
@@ -531,13 +527,13 @@ procedure gtk_gl_area_init(
   ); cdecl;
 begin
   if theClass=nil then ;
-  DebugLn(['gtk_gl_area_init START']);
+  //DebugLn(['gtk_gl_area_init START']);
   PGtkGLArea(gl_area)^.glcontext:=nil;
   {$IFDEF LclGtk2}
   gtk_widget_set_double_buffered(PGtkWidget(gl_area),gdkFALSE);
   GTK_WIDGET_UNSET_FLAGS(PGtkWidget(gl_area),GTK_NO_WINDOW);
   {$ENDIF}
-  DebugLn(['gtk_gl_area_init END']);
+  //DebugLn(['gtk_gl_area_init END']);
 end;
 
 function GTK_TYPE_GL_AREA: TGtkType;
@@ -621,12 +617,10 @@ var
   gl_area: PGtkGLArea;
 begin
   Result:=nil;
-  DebugLn(['gtk_gl_area_share_new START']);
-  //writeln('gtk_gl_area_share_new A ');
+  //DebugLn(['gtk_gl_area_share_new START']);
   if (share<>nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
   {$IFNDEF MSWindows}
-  //writeln('gtk_gl_area_share_new B ');
   {$IFDEF lclgtk2}
   visual := nil;
   {$ELSE}
@@ -635,14 +629,10 @@ begin
   {$ENDIF}
   {$ENDIF non MSWindows}
 
-  //writeln('gtk_gl_area_share_new C ');
-  DebugLn(['gtk_gl_area_share_new BBB1']);
   sharelist := nil;
   if share<>nil then sharelist:=share^.glcontext;
   glcontext := gdk_gl_context_share_new(visual, sharelist, 1, attrlist);
   if (glcontext = nil) then exit;
-  DebugLn(['gtk_gl_area_share_new BBB2']);
-  //writeln('gtk_gl_area_share_new D ');
 
   {$IFNDEF MSWindows}
   if visual<>nil then begin
@@ -654,8 +644,6 @@ begin
 
   gl_area := gtk_type_new (gtk_gl_area_get_type);
   gl_area^.glcontext := glcontext;
-  //writeln('gtk_gl_area_share_new E ',gl_area<>nil);
-  DebugLn(['gtk_gl_area_share_new BBB3']);
 
   {$IFNDEF MSWindows}
   if visual<>nil then begin
@@ -674,9 +662,9 @@ begin
   if not GTK_IS_GL_AREA(glarea) then exit;
   if not GTK_WIDGET_REALIZED(PGtkWidget(glarea)) then exit;
 
-  DebugLn(['gtk_gl_area_make_current START']);
+  //DebugLn(['gtk_gl_area_make_current START']);
   Result:=gdk_gl_make_current(PGtkWidget(glarea)^.window, glarea^.glcontext);
-  DebugLn(['gtk_gl_area_make_current END']);
+  //DebugLn(['gtk_gl_area_make_current END']);
 end;
 
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;
@@ -737,14 +725,14 @@ begin
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
   try
     if SharedControl<>nil then begin
-      SharedArea:=PGtkGLArea(SharedControl.Handle);
+      SharedArea:=PGtkGLArea(PtrUInt(SharedControl.Handle));
       if not GTK_IS_GL_AREA(SharedArea) then
         RaiseGDBException('LOpenGLCreateContext');
       NewWidget:=gtk_gl_area_share_new(AttrList,SharedArea);
     end else begin
       NewWidget:=gtk_gl_area_new(AttrList);
     end;
-    Result:=HWND(NewWidget);
+    Result:=HWND(Pointer(NewWidget));
     PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
     {$IFDEF LCLGtk}
     TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget);

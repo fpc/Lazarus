@@ -20,7 +20,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   OpenGLContext, GL, GLU;
 
 type
@@ -31,6 +31,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure OpenGLControl1Paint(Sender: TObject);
     procedure OpenGLControl1Resize(Sender: TObject);
+    procedure OnAppIdle(Sender: TObject; var Done: Boolean);
   private
   public
     cube_rotationx: GLFloat;
@@ -59,6 +60,8 @@ begin
     OnResize:=@OpenGLControl1Resize;
     AutoResizeViewport:=true;
   end;
+  
+  Application.AddOnIdleHandler(@OnAppIdle);
 end;
 
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);
@@ -136,7 +139,13 @@ procedure TForm1.OpenGLControl1Resize(Sender: TObject);
 begin
   if Sender=nil then ;
   if OpenGLControl1.Height <= 0 then exit;
+end;
 
+procedure TForm1.OnAppIdle(Sender: TObject; var Done: Boolean);
+begin
+  Done:=false;
+  //DebugLn(['TForm1.OnAppIdle ']);
+  OpenGLControl1.Invalidate;
 end;
 
 initialization
