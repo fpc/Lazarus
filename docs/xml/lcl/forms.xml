@@ -180,7 +180,9 @@ wsMaximized - The window appears maximized</descr>
       <element name="TCloseAction">
         <short/>
         <descr/>
-        <seealso><link id="TCustomForm.OnClose">TCustomForm.OnClose</link></seealso>
+        <seealso>
+          <link id="TCustomForm.OnClose">TCustomForm.OnClose</link>
+        </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caNone"><short/></element>
@@ -2523,7 +2525,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
 		By default we see down-triangle or other generic icon on the left, <br/>
 		which activates a pop-up system menu allowing closure or re-sizing of the form, <br/>
 		and on the right end we see the minimise and  re-size/maximise buttons, <br/>
-		but of course these can be customised by the developer.</descr>
+		but of course these can be customised by the application programmer.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderStyle">
@@ -2535,7 +2537,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.CancelControl">
         <short>The control associated with the cancel action</short>
         <descr>Reads or writes a flag to determine the control associated with the Cancel action (exit from the control without changing anything). <br/>
-		This is usually a button with the caption 'Cancel', but might be an 'Exit' button or anything else the developer decides.. <br/>
+		This is usually a button with the caption 'Cancel', but might be an 'Exit' button or anything else the application programmer decides.. <br/>
 		This control is selected either by explicitly clicking with the mouse, or by hitting the 'Esc' key</descr>
       </element>
       <!-- property Visibility: public -->
@@ -3675,42 +3677,38 @@ Most of the properties are inherited from the ancestors</descr>
       <element name="TScreen.GetHintFont.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TScreen.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create an instance of TScreen</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreen.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TScreen.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Destroy this instance of TScreen</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.CustomFormIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The Index number of a Custom Form on the screen</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.CustomFormIndex.Result"><short/></element>
+      <element name="TScreen.CustomFormIndex.Result">
+        <short>The Index number of the Custom Form, stored as an integer</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.CustomFormIndex.AForm"><short/></element>
+      <element name="TScreen.CustomFormIndex.AForm">
+        <short>The Custom Form to which the Index refers</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TScreen.FormIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The index number of a Form on the Screen</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TScreen.FormIndex.Result"><short/></element>
+      <element name="TScreen.FormIndex.Result">
+        <short>The index number of the Form, stored as an integer</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.FormIndex.AForm"><short/></element>
+      <element name="TScreen.FormIndex.AForm">
+        <short>The Form to which the Index refers</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TScreen.CustomFormZIndex">
         <short/>
@@ -3742,10 +3740,7 @@ Most of the properties are inherited from the ancestors</descr>
       <element name="TScreen.MoveFormToZFront.ACustomForm"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.UpdateScreen">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Method for updating screen</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerFormAdded">
@@ -3829,27 +3824,27 @@ Most of the properties are inherited from the ancestors</descr>
       <element name="TScreen.RemoveHandlerActiveFormChanged.OnActiveFormChanged"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveControl">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The identity of the active control on this screen</short>
+        <descr>Reads a flag to determine the active control</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveCustomForm">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The identity of the active Custom Form on this screen</short>
+        <descr>Reads a flag to determine the active Custom Form</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveForm">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The identity of the active Form on this Screen</short>
+        <descr>Reads a flag to determine the active Form</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Cursor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The cursor being used in this screen</short>
+        <descr>Reads or writes a flag to determine the cursor. <br/>
+		This can take any integer value, but there are several pre-determined cursor styles <br/>
+		listed as constants in 'Controls', <br/>
+		and these should be used to define the cursor for the current screen</descr>
+        <seealso><link id="Controls.crDefault"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Cursors">
@@ -3861,9 +3856,8 @@ Most of the properties are inherited from the ancestors</descr>
       <element name="TScreen.Cursors.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomFormCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The number of Custom Forms on this screen</short>
+        <descr>Reads flag to determine number of Custom Forms (integer)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomForms">
@@ -3889,41 +3883,36 @@ Most of the properties are inherited from the ancestors</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.FormCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The number of Forms on this screen</short>
+        <descr>Reads a flag to determine the number of Forms (integer)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Forms">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The list of Forms in this Screen</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScreen.Forms.Index"><short/></element>
+      <element name="TScreen.Forms.Index">
+        <short>Index number of a Form, stored as an integer</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Fonts">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The fonts to be used in this screen</short>
+        <descr>Reads a flag to determine the fonts to be used; their names are stored as a list of strings</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Height">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The height of the screen</short>
+        <descr>Reads a flag to determine screen height; stored as an integer</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.HintFont">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The font to be used to display hints</short>
+        <descr>Reads a flag to determine the font to be used (font name stored as a string)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Width">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The width of the screen</short>
+        <descr>Reads flag to determine screen width, stored as an integer</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.OnActiveControlChange">
@@ -3939,9 +3928,8 @@ Most of the properties are inherited from the ancestors</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.PixelsPerInch">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Scaling factor for displaying graphic information on the screen</short>
+        <descr>Reads a flag to determine number of pixels per inch (integer)</descr>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TExceptionEvent">
@@ -4789,7 +4777,7 @@ If it is a form it will be added to the application's forms list</descr>
       <!-- function Visibility: public -->
       <element name="TApplication.ExecuteAction">
         <short>The method to be used to execute the action associated with the Application</short>
-        <descr>This is a function that should be supplied by the developer, to override the placeholders declared in ancestor classes</descr>
+        <descr>This is a function that should be supplied by the application programmer, to override the placeholders declared in ancestor classes</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.ExecuteAction.Result"><short/></element>
@@ -4818,7 +4806,7 @@ If it is a form it will be added to the application's forms list</descr>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleException">
         <short>Exception handler - methods to be followed in response to exceptions</short>
-        <descr>Individual exception handler methods should be supplied by the developer, to override place-holder entries declared in ancestor classes.<br/>
+        <descr>Individual exception handler methods should be supplied by the application programmer, to override place-holder entries declared in ancestor classes.<br/>
 This method checks whether the application is required to halt if an exception occurs, or invokes the appropriate handler. <br/>
 
 It also writes details of the exception to the appropriate place for debugging.</descr>
@@ -5006,7 +4994,7 @@ These constants are declared on the LCLType unit.
       <!-- procedure Visibility: public -->
       <element name="TApplication.Run">
         <short>the method to be used to make the application execute.</short>
-        <descr>This method should be supplied by the developer, and should be the main process control procedure for the application</descr>
+        <descr>This method should be supplied by the application programmer, and should be the main process control procedure for the application</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ShowException">
@@ -5567,36 +5555,29 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TApplicationProperties.SetOnUserInput.AValue"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TApplicationProperties.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create an instance of TApplication Properties</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplicationProperties.Create.AOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.CaptureExceptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determine whether exceptions are being captured</short>
+        <descr>Boolean property (true if exceptions are being captured); reads or writes flag to see if they are being captured</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.HelpFile">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines which file to use for Help</short>
+        <descr>Reads or writes flag to determine name of Help file - name is stored as a string</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines Hint to be used</short>
+        <descr>Reads or writes flag to determine Hint - stored as a string</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.HintColor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Colour to be used when displaying Hint</short>
+        <descr>Reads or writes flag to determine Hint colour (stored as a TColor integer)</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.HintHidePause">
@@ -5624,15 +5605,12 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines whether a hint is to be displayed</short>
+        <descr>Read or write flag to determine whether to display hint (stored as boolean, True if hint is to be displayed)</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.Title">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Title to be shown in Application's top Border</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.OnException">
