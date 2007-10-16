@@ -51,6 +51,7 @@ type
 
   TLazFindReplaceDialog = class(TForm)
     BackwardRadioButton: TRadioButton;
+    BtnPanel: TPanel;
     ReplaceAllButton: TBitBtn;
     CaseSensitiveCheckBox: TCheckBox;
     EntireScopeRadioButton: TRadioButton;

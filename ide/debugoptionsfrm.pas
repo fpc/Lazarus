@@ -65,6 +65,7 @@ type
     cmbDebuggerType: TCOMBOBOX;
     cmbDebuggerPath: TCOMBOBOX;
     N1: TMENUITEM;
+    BtnPanel: TPanel;
     pnlDebugSpecific: TPanel;
     seLimitLinecount: TSPINEDIT;
     txtAdditionalPath: TEDIT;

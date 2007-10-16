@@ -447,14 +447,25 @@ var
   buttonx: integer;
   CurButton: TSpeedButton;
   Rows: Integer;
+  ButtonCount: Integer;
+  MaxBtnPerRow: Integer;
 begin
-  Rows:=Page.ClientHeight div ComponentPaletteBtnHeight;
+  ButtonCount:=0;
+  // skip the first control (this is the selection tool (TSpeedButton))
+  for j:= 1 to Page.ControlCount-1 do begin
+    CurButton:=TSpeedbutton(Page.Controls[j]);
+    if not (CurButton is TSpeedButton) then continue;
+    inc(ButtonCount);
+  end;
+
+  ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
+
+  MaxBtnPerRow:=((Page.ClientWidth - ButtonX) div ComponentPaletteBtnWidth);
+  Rows:=((ButtonCount-1) div MaxBtnPerRow)+1;
   //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
   // automatically set optimal row count and re-position controls to use height optimally
 
-  if Rows = 0 then Rows:= 1; // avoid division by zero
-
-  ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
+  if Rows <= 0 then Rows:= 1; // avoid division by zero
 
   for j:= 1 to Page.ControlCount-1 do begin
     CurButton:=TSpeedbutton(Page.Controls[j]);

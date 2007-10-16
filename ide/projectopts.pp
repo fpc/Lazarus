@@ -50,6 +50,7 @@ type
   TProjectOptionsDialog = class(TForm)
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
+    PODBtnPanel: TPanel;
     PoOutDirLabel: TLabel;
 
     Notebook: TNotebook;
