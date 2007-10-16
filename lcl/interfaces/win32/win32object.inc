@@ -599,7 +599,7 @@ Var
   ParentPanel: HWND;
   Flags: dword;
 Begin
-  If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
+  If (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
   ParentPanel := GetWindowInfo(Handle)^.ParentPanel;
   if ParentPanel <> 0 then
