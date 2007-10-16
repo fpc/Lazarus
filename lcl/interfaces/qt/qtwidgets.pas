@@ -3298,11 +3298,10 @@ begin
       end;
     {$else}
       if (TCustomForm(LCLObject).FormStyle = fsSplash) and
-      not (csDesigning in ComponentState) then
-      then
-        Result := QWidget_create(nil, QtSplashScreen);
+      not (csDesigning in LCLObject.ComponentState) then
+        Result := QWidget_create(nil, QtSplashScreen)
       else
-      Result := QWidget_create(nil, QtWindow);
+        Result := QWidget_create(nil, QtWindow);
     {$endif}
     
     // Main menu bar
