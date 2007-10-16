@@ -7,7 +7,7 @@
 main=lazarus/lcl
 
 [require]
-packages=rtl fcl
+packages=rtl
 
 [target]
 units=interfaces

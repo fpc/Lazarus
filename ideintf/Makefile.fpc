@@ -55,7 +55,7 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
 
 [require]
-packages=fcl
+packages=
 
 [default]
 lcldir=../lcl

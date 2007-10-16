@@ -22,7 +22,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [require]
-packages=fcl
+packages=
 
 [rules]
 cleanlaz: clean

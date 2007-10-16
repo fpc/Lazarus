@@ -71,7 +71,7 @@ implicitunits= \
 rsts=lclstrconsts
 
 [require]
-packages=fcl
+packages=
 
 [prerules]
 ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)

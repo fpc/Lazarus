@@ -8,7 +8,7 @@ name=codetools
 version=1.0
 
 [require]
-packages=fcl
+packages=
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)

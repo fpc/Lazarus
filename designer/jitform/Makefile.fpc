@@ -19,7 +19,7 @@ units=jitform
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [require]
-packages=fcl
+packages=
 
 [default]
 lcldir=../../lcl

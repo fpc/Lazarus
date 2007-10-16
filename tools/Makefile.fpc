@@ -12,7 +12,7 @@ dirs=apiwizz
 programs=lazres svn2revisioninc updatepofiles lrstolfm
 
 [require]
-packages=rtl fcl
+packages=rtl
 
 [compiler]
 options=-gl $(LAZARUS_LIBPATHS)

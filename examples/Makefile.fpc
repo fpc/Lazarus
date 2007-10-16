@@ -32,7 +32,7 @@ units=hello \
   trackbar
 
 [require]
-packages=fcl regexpr
+packages=regexpr
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \

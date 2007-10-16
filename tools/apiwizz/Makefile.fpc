@@ -10,7 +10,7 @@ version=0.7a
 programs=apiwizz
 
 [require]
-packages=rtl fcl
+packages=rtl
 
 [clean]
 #units=apiwizard

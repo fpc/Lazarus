@@ -7,7 +7,7 @@ name=lazarus
 version=0.9b
 
 [require]
-packages=fcl regexpr
+packages=regexpr
 
 [target]
 programs=lazarus startlazarus
