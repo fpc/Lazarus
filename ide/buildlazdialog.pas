@@ -498,6 +498,8 @@ var
   NewUnitDirectory: String;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
+  NewTargetOS: String;
+  NewTargetCPU: String;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -561,15 +563,18 @@ begin
 
       DefaultTargetOS:=GetDefaultTargetOS;
       DefaultTargetCPU:=GetDefaultTargetCPU;
-      if ((Options.TargetOS<>'')
-          and (CompareText(Options.TargetOS,DefaultTargetOS)<>0))
-      or ((Options.TargetCPU<>'')
-          and (CompareText(Options.TargetCPU,DefaultTargetCPU)<>0)) then
+      NewTargetOS:=Options.TargetOS;
+      NewTargetCPU:=Options.TargetCPU;
+      if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
+      if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
+      DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
+      if(CompareText(NewTargetOS,DefaultTargetOS)<>0)
+      or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0) then
       begin
         // Case 2. crosscompiling the IDE
         // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
         NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
-                            +PathDelim+Options.TargetCPU+'-'+Options.TargetOS;
+                            +PathDelim+NewTargetOS+'-'+NewTargetCPU;
         Macros.SubstituteStr(NewUnitDirectory);
         debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS,' Options.TargetCPU=',Options.TargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
         Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
@@ -590,7 +595,7 @@ begin
             // create directory <primary config dir>/bin/
             NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
             NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                            +PathDelim+Options.TargetCPU+'-'+Options.TargetOS;
+                            +PathDelim+NewTargetCPU+'-'+NewTargetOS;
             debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
             Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
             if Result<>mrOk then exit;
@@ -599,7 +604,7 @@ begin
             if OSLocksExecutables then begin
               // Case 4. the current executable is locked
               // => use a different output name
-              NewTargetFilename:='lazarus.new'+GetExecutableExt(Options.TargetOS);
+              NewTargetFilename:='lazarus.new'+GetExecutableExt(NewTargetOS);
               debugln('CreateBuildLazarusOptions exe locked NewTargetFilename=',NewTargetFilename);
             end else begin
               // Case 5. or else: => just compile to current directory
@@ -629,7 +634,7 @@ begin
       // For example under linux, where executables don't need any extension
       // fpc removes the last extension of the -o option.
       // Trick fpc:
-      if GetExecutableExt(Options.TargetOS)='' then
+      if GetExecutableExt(NewTargetOS)='' then
         NewTargetFilename:=NewTargetFilename+'.dummy';
       AppendExtraOption('-o'+NewTargetFilename);
     end;
