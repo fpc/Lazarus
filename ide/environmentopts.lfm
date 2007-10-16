@@ -25,17 +25,17 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       ClientHeight = 448
       object MaxRecentOpenFilesLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 20
         Top = 10
-        Width = 140
+        Width = 165
         Caption = 'MaxRecentOpenFilesLabel'
         ParentColor = False
       end
       object MaxRecentProjectFilesLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 20
         Top = 58
-        Width = 148
+        Width = 175
         Caption = 'MaxRecentProjectFilesLabel'
         ParentColor = False
       end
@@ -85,7 +85,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = FilesPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 15
+        Height = 22
         Top = 106
         Width = 526
         Anchors = [akTop, akLeft, akRight]
@@ -558,7 +558,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 20
-          Top = 126
+          Top = 128
           Width = 94
           BorderSpacing.Around = 6
           Caption = 'GridColorLabel'
@@ -578,9 +578,11 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object GridSizeYLabel: TLabel
           AnchorSideLeft.Control = GridGroupBox
+          AnchorSideTop.Control = GridSizeXLabel
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 20
-          Top = 100
+          Top = 102
           Width = 95
           BorderSpacing.Around = 6
           Caption = 'GridSizeYLabel'
@@ -593,7 +595,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrCenter
           Left = 106
           Height = 23
-          Top = 125
+          Top = 127
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -655,7 +657,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrCenter
           Left = 107
           Height = 21
-          Top = 100
+          Top = 102
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Items.Strings = (
@@ -1019,17 +1021,22 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Top = 7
         Width = 526
         Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         BorderSpacing.Left = 5
         BorderSpacing.Top = 5
         BorderSpacing.Right = 6
         Caption = 'ObjectInspectorColorsGroupBox'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.HorizontalSpacing = 2
+        ChildSizing.VerticalSpacing = 2
         ClientHeight = 154
         ClientWidth = 522
         TabOrder = 0
         object OIBackgroundColorButton: TColorButton
           Left = 6
           Height = 23
-          Top = 5
+          Top = 6
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1038,7 +1045,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OISubPropsColorButton: TColorButton
           Left = 6
           Height = 23
-          Top = 29
+          Top = 30
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1047,7 +1054,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIReferencesColorButton: TColorButton
           Left = 6
           Height = 23
-          Top = 53
+          Top = 54
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1056,7 +1063,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIValueColorButton: TColorButton
           Left = 6
           Height = 23
-          Top = 77
+          Top = 78
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1065,7 +1072,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIDefaultValueColorButton: TColorButton
           Left = 6
           Height = 23
-          Top = 101
+          Top = 102
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1074,7 +1081,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIPropNameColorButton: TColorButton
           Left = 6
           Height = 23
-          Top = 125
+          Top = 126
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1083,7 +1090,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIBackgroundColorLabel: TLabel
           Left = 65
           Height = 20
-          Top = 11
+          Top = 12
           Width = 442
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIBackgroundColorLabel'
@@ -1092,7 +1099,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OISubPropsColorLabel: TLabel
           Left = 65
           Height = 20
-          Top = 35
+          Top = 36
           Width = 442
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OISubPropsColorLabel'
@@ -1101,7 +1108,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIReferencesColorLabel: TLabel
           Left = 65
           Height = 20
-          Top = 59
+          Top = 60
           Width = 442
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIReferencesColorLabel'
@@ -1110,7 +1117,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIValueColorLabel: TLabel
           Left = 65
           Height = 20
-          Top = 83
+          Top = 84
           Width = 442
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIValueColorLabel'
@@ -1119,7 +1126,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIDefaultValueColorLabel: TLabel
           Left = 65
           Height = 20
-          Top = 107
+          Top = 108
           Width = 442
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIDefaultValueColorLabel'
@@ -1128,7 +1135,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object OIPropNameColorLabel: TLabel
           Left = 65
           Height = 20
-          Top = 131
+          Top = 132
           Width = 442
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIPropNameColorLabel'
@@ -1438,6 +1445,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Caption = 'PascalFileExtRadiogroup'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
         Columns = 2
@@ -1456,6 +1467,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Caption = 'CharcaseFileActionRadioGroup'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
         Columns = 2
@@ -1474,6 +1489,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Caption = 'AmbiguousFileActionRadioGroup'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
         Columns = 2
@@ -1488,13 +1507,14 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = LazDocPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 204
+        Height = 205
         Top = 6
         Width = 526
         Align = alTop
+        AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 185
+        ClientHeight = 186
         ClientWidth = 522
         TabOrder = 0
         object LazDocListBox: TListBox
@@ -1508,11 +1528,15 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           TopIndex = -1
         end
         object LazDocAddPathButton: TButton
+          AnchorSideLeft.Control = LazDocPathsGroupBox
+          AnchorSideTop.Control = LazDocListBox
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 31
-          Top = 122
+          Top = 120
           Width = 163
           AutoSize = True
+          BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
@@ -1521,9 +1545,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LazDocDeletePathButton: TButton
           AnchorSideLeft.Control = LazDocAddPathButton
           AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = LazDocAddPathButton
           Left = 179
           Height = 31
-          Top = 122
+          Top = 120
           Width = 180
           AutoSize = True
           BorderSpacing.Left = 10
@@ -1532,36 +1557,35 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
         end
-        object LazDocPathEdit: TEdit
-          AnchorSideTop.Control = LazDocAddPathButton
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = LazDocBrowseButton
-          Left = 6
-          Height = 23
-          Top = 159
-          Width = 486
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          BorderSpacing.Top = 6
-          TabOrder = 3
-          Text = 'LazDocPathEdit'
-        end
         object LazDocBrowseButton: TButton
-          AnchorSideLeft.Control = LazDocPathEdit
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = LazDocPathEdit
           AnchorSideRight.Control = LazDocPathsGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 492
           Height = 23
-          Top = 159
+          Top = 157
           Width = 24
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
+          TabOrder = 3
+        end
+        object LazDocPathEdit: TEdit
+          AnchorSideLeft.Control = LazDocPathsGroupBox
+          AnchorSideTop.Control = LazDocAddPathButton
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = LazDocBrowseButton
+          Left = 6
+          Height = 23
+          Top = 157
+          Width = 480
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
           TabOrder = 4
+          Text = 'LazDocPathEdit'
         end
       end
     end
