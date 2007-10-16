@@ -824,15 +824,18 @@ begin
     // first make the new page visible
     //DebugLn(['TCustomNotebook.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
     if CurPage.Visible then begin
-      // TCustomPage.IsControlVisible is overriden
-      // therefore AutoSizing of childs was skipped => do it now
       if FPageIndexOnLastShow<>fPageIndex then begin
-        FPageIndexOnLastShow:=fPageIndex;
+        // some widgetsets like win32/64 do not send WM_SIZE messages for
+        // hidden pages. Force resizing page (it is alClient).
+        ReAlign;
+        // TCustomPage.IsControlVisible is overriden
+        // therefore AutoSizing of childs was skipped => do it now
         CurPage.ReAlign;
       end;
     end else begin
       CurPage.Visible := true;
     end;
+    FPageIndexOnLastShow:=fPageIndex;
     CurPage.DoShow;
     if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
        (FPageIndexOnLastChange <> FPageIndex) then

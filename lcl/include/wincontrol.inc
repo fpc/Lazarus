@@ -25,9 +25,9 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-{off $DEFINE CHECK_POSITION}
+{ $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'xxTHintWindow';
+const CheckPostionClassName = 'xxxTPage';
 const CheckPostionName = 'xxxPathsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -5839,7 +5839,7 @@ var
   NewBoundsRealized: TRect;
 begin
   {$IFDEF VerboseSizeMsg}
-  //if CheckPosition(Self) then
+  if CheckPosition(Self) then
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
