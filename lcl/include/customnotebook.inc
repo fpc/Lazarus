@@ -47,7 +47,7 @@ end;
  ------------------------------------------------------------------------------}
 function TNBPages.Get(Index: Integer): String;
 begin
-//DebugLn('TNBPages.Get Index=',Index);
+  //DebugLn('TNBPages.Get Index=',Index);
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.Get Index out of bounds');
   Result := TCustomPage(fPageList[Index]).Caption;
@@ -207,6 +207,7 @@ begin
   fAccess := TNBPages.Create(TListWithEvent(fPageList), Self);
   fPageIndex := -1;
   FLoadedPageIndex:=-1;
+  FPageIndexOnLastShow:=-1;
 
   ControlStyle := [csAcceptsControls];
   TabPosition := tpTop;
@@ -730,6 +731,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
 Begin
+  //DebugLn(['TCustomNotebook.Change ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   ShowCurrentPage;
   fPageIndexOnLastChange := fPageIndex;
   if ([csLoading,csDestroying]*ComponentState=[])
@@ -743,6 +745,7 @@ begin
   inherited Loaded;
   if FLoadedPageIndex>=0 then PageIndex:=FLoadedPageIndex;
   FLoadedPageIndex:=-1;
+  //DebugLn(['TCustomNotebook.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   fPageIndexOnLastChange:=PageIndex;
   if HandleAllocated then DoCreateWnd;
 end;
@@ -762,6 +765,8 @@ end;
   TCustomNotebook CNNotify
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.CNNotify(var Message: TLMNotify);
+var
+  OldPageIndex: LongInt;
 Begin
   with Message do
     Case NMHdr^.code of
@@ -769,16 +774,20 @@ Begin
         begin
           // set the page from the NMHDR^.idfrom
           if (not fAddingPages) then begin
+            OldPageIndex:=FPageIndex;
             FPageIndex := NMHDR^.idfrom;
             if FPageIndex>=PageCount then
               FPageIndex:=-1;
-            //debugln('TCustomNotebook.CNNotify A fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex);
+            //debugln(['TCustomNotebook.CNNotify ',DbgSName(Self),' A Old=',OldPageIndex,' fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex]);
+            //if PageIndex>=0 then DebugLn(['TCustomNotebook.CNNotify Page=',DbgSName(Page[PageIndex]),' Visible=',Page[PageIndex].Visible]);
             UpdateAllDesignerFlags;
             if ([csLoading,csDestroying]*ComponentState=[]) then begin
-              if fPageIndexOnLastChange<>fPageIndex then begin
-                Change;
+              if OldPageIndex<>fPageIndex then begin
                 if csDesigning in ComponentState then
                   OwnerFormDesignerModified(Self);
+                //DebugLn(['TCustomNotebook.CNNotify ',DbgSName(Page[PageIndex]),' ',Page[PageIndex].Visible]);
+                ResizeDelayedAutoSizeChildren;
+                Change;
               end;
             end;
           end;
@@ -806,11 +815,25 @@ end;
   Makes sure Visible = true for page which has index FPageIndex
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.ShowCurrentPage;
+var
+  CurPage: TCustomPage;
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
   begin
-    Page[FPageIndex].Visible := true;
-    Page[FPageIndex].DoShow;
+    CurPage:=Page[FPageIndex];
+    // first make the new page visible
+    //DebugLn(['TCustomNotebook.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
+    if CurPage.Visible then begin
+      // TCustomPage.IsControlVisible is overriden
+      // therefore AutoSizing of childs was skipped => do it now
+      if FPageIndexOnLastShow<>fPageIndex then begin
+        FPageIndexOnLastShow:=fPageIndex;
+        CurPage.ReAlign;
+      end;
+    end else begin
+      CurPage.Visible := true;
+    end;
+    CurPage.DoShow;
     if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
        (FPageIndexOnLastChange <> FPageIndex) then
     begin

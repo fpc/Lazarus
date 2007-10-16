@@ -25,10 +25,10 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-{ $DEFINE CHECK_POSITION}
+{off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTHintWindow';
-const CheckPostionName = 'xxListBox1';
+const CheckPostionName = 'xxxPathsPage';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -2000,9 +2000,7 @@ begin
 
     if (Control.Align = TheAlign)
       and ((TheAlign = alNone)
-        or Control.IsControlVisible
-        or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
-                                 [csAcceptsControls, csNoDesignVisible])) then
+        or Control.IsControlVisible) then
     begin
       if Control = StartControl then Continue;
 
@@ -2679,7 +2677,9 @@ var
   AWinControl: TWinControl;
 begin
   if ControlCount=0 then exit;
+  //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren START ',DbgSName(Self),' Visible=',Visible]);
   if AutoSizeDelayed then exit;
+  //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren RUN ',DbgSName(Self)]);
   DisableAlign;
   try
     for i:=0 to ControlCount-1 do begin
@@ -2917,8 +2917,8 @@ begin
     end;
   finally
     Exclude(FControlFlags,cfAutoSizeNeeded);
-    EnableAlign;
     EnableAutoSizing;
+    EnableAlign;
   end;
 end;
 
@@ -3125,7 +3125,9 @@ begin
   Dec(FAlignLevel);
   //DebugLn(['TWinControl.EnableAlign ',dbgsName(Self),' ',FAlignLevel]);
   if FAlignLevel = 0 then begin
-    if csAlignmentNeeded in ControlState then ReAlign;
+    if (csAlignmentNeeded in ControlState)
+    or (wcfReAlignNeeded in FWinControlFlags) then
+      ReAlign;
   end;
 end;
 
@@ -3364,9 +3366,9 @@ begin
     Result:=inherited GetChildsRect(Scrolled);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl SetBorderStyle                                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl SetBorderStyle
+------------------------------------------------------------------------------}
 procedure TWinControl.SetBorderStyle(NewStyle: TBorderStyle);
 begin
   FBorderStyle := NewStyle;
@@ -3374,15 +3376,16 @@ begin
     TWSWinControlClass(WidgetSetClass).SetBorderStyle(Self, NewStyle);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl SetBorderWidth                                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl SetBorderWidth
+------------------------------------------------------------------------------}
 Procedure TWinControl.SetBorderWidth(value : TBorderWidth);
 Begin
-  //TODO: SETBORDERWIDTH - Not sure if anything more is needed here
+  if FBorderWidth = Value then exit;
   FBorderWidth := Value;
   Invalidate;
   InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -5196,9 +5199,9 @@ begin
   Exclude(FWinControlFlags,wcfReAlignNeeded);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl Remove                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl Remove
+------------------------------------------------------------------------------}
 procedure TWinControl.Remove(AControl : TControl);
 begin
   if AControl <> nil then
@@ -6190,59 +6193,59 @@ begin
     //RaiseGDBException('');
   end;
 
-  // Control is not visible at this moment. It will be showed in UpdateShowing
-  // call later in CreateWnd
-  FShowing := False;
-  Exclude(FWinControlFlags, wcfHandleVisible);
-  
-  Include(FWinControlFlags,wcfCreatingHandle);
-  try
-    CreateParams(Params);
-    with Params do begin
-      if (WndParent = 0) and (Style and WS_CHILD <> 0) then
-        RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
-      Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
-    end;
-
-    FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
-    if not HandleAllocated then
-      RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
-    //debugln('TWinControl.CreateWnd ',DbgSName(Self));
-    Constraints.UpdateInterfaceConstraints;
-    InvalidatePreferredSize;
-    TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
-
-    //WriteClientRect('A');
-    if Parent <> nil then AddControl;
-    //WriteClientRect('B');
-
-    Include(FWinControlFlags, wcfInitializing);
-    InitializeWnd;
-    
-  finally
-    Exclude(FWinControlFlags, wcfInitializing);
-    Exclude(FWinControlFlags, wcfCreatingHandle);
-  end;
-
-  Include(FWinControlFlags, wcfCreatingChildHandles);
-  try
-    //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-    //WriteClientRect('C');
-
-    if FWinControls <> nil then begin
-      for i := 0 to FWinControls.Count - 1 do
-        with TWinControl(FWinControls.Items[i]) do
-          if IsControlVisible then HandleNeeded;
-    end;
-
-    ChildHandlesCreated;
-  finally
-    Exclude(FWinControlFlags,wcfCreatingChildHandles);
-  end;
-
-  // size this control
   DisableAlign;
+  DisableAutoSizing;
   try
+    // Control is not visible at this moment. It will be showed in UpdateShowing
+    FShowing := False;
+    Exclude(FWinControlFlags, wcfHandleVisible);
+
+    Include(FWinControlFlags,wcfCreatingHandle);
+    try
+      CreateParams(Params);
+      with Params do begin
+        if (WndParent = 0) and (Style and WS_CHILD <> 0) then
+          RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
+        Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
+      end;
+
+      FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
+      if not HandleAllocated then
+        RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
+      //debugln('TWinControl.CreateWnd ',DbgSName(Self));
+      Constraints.UpdateInterfaceConstraints;
+      InvalidatePreferredSize;
+      TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
+
+      //WriteClientRect('A');
+      if Parent <> nil then AddControl;
+      //WriteClientRect('B');
+
+      Include(FWinControlFlags, wcfInitializing);
+      InitializeWnd;
+
+    finally
+      Exclude(FWinControlFlags, wcfInitializing);
+      Exclude(FWinControlFlags, wcfCreatingHandle);
+    end;
+
+    Include(FWinControlFlags, wcfCreatingChildHandles);
+    try
+      //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      //WriteClientRect('C');
+
+      if FWinControls <> nil then begin
+        for i := 0 to FWinControls.Count - 1 do
+          with TWinControl(FWinControls.Items[i]) do
+            if IsControlVisible then HandleNeeded;
+      end;
+
+      ChildHandlesCreated;
+    finally
+      Exclude(FWinControlFlags,wcfCreatingChildHandles);
+    end;
+
+    // size this control
     UpdateShowing;
     AdjustSize;
     if FControls<>nil then
@@ -6251,6 +6254,7 @@ begin
     // realign childs
     ReAlign;
   finally
+    EnableAutoSizing;
     EnableAlign;
   end;
 
@@ -6278,43 +6282,47 @@ begin
   //First set the WinControl property.
   //The win32 interface depends on it to determine where to send call backs.
   SetProp(Handle,'WinControl',TWinControl(Self));
+  DisableAlign;
+  DisableAutoSizing;
+  try
+    {$IFDEF CHECK_POSITION}
+    if CheckPosition(Self) then
+      DebugLn('[TWinControl.InitializeWnd] A ',DbgSName(Self),
+      ' OldRelBounds=',dbgs(FBoundsRealized),
+      ' -> NewBounds=',dbgs(BoundsRect));
+    {$ENDIF}
+    DoSendBoundsToInterface;
 
-  {$IFDEF CHECK_POSITION}
-  if CheckPosition(Self) then
-    DebugLn('[TWinControl.InitializeWnd] A ',DbgSName(Self),
-    ' OldRelBounds=',dbgs(FBoundsRealized),
-    ' -> NewBounds=',dbgs(BoundsRect));
-  {$ENDIF}
-  DoSendBoundsToInterface;
+    if wcfColorChanged in FWinControlFlags then begin
+      // replace by update style call
+      TWSWinControlClass(WidgetSetClass).SetColor(Self);
+      FWinControlFlags:=FWinControlFlags-[wcfColorChanged];
+    end;
+    if wcfFontChanged in FWinControlFlags then begin
+      // replace by update style call
+      TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
+      FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
+    end;
 
-  if wcfColorChanged in FWinControlFlags then begin
-    // replace by update style call
-    TWSWinControlClass(WidgetSetClass).SetColor(Self);
-    FWinControlFlags:=FWinControlFlags-[wcfColorChanged];
+    if not (csDesigning in ComponentState) then
+      EnableWindow(Handle, Enabled);
+
+    // Delay the setting of text until it is completely loaded
+    if not (csLoading in ComponentState) then
+    begin
+      if GetCachedText(CachedText) then
+        WSSetText(CachedText);
+      InvalidatePreferredSize;
+    end;
+
+    if csDesigning in ComponentState
+    then TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
+    else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
+  finally
+    EnableAutoSizing;
+    EnableAlign;
   end;
-  if wcfFontChanged in FWinControlFlags then begin
-    // replace by update style call
-    TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
-    FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
-  end;
-
-  if not (csDesigning in ComponentState) then
-    EnableWindow(Handle, Enabled);
-
-  // Delay the setting of text until it is completely loaded
-  if not (csLoading in ComponentState) then
-  begin
-    if GetCachedText(CachedText) then
-      WSSetText(CachedText);
-    InvalidatePreferredSize;
-  end;
-
-  if csDesigning in ComponentState
-  then TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
-  else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
-
-
-  // send pending resize event
+  // send pending OnResize
   Resize;
 end;
 
@@ -6396,6 +6404,7 @@ var
   LoadedClientSize: TPoint;
 begin
   DisableAlign;
+  DisableAutoSizing;
   try
     //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
     if cfClientWidthLoaded in FControlFlags then
@@ -6444,6 +6453,7 @@ begin
     if HandleAllocated and ([csDestroying]*ComponentState=[]) then
       DoSendShowHideToInterface;
   finally
+    EnableAutoSizing;
     EnableAlign;
   end;
 end;
@@ -6757,7 +6767,7 @@ begin
       ' -> New=',Dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-      NewBounds:=Bounds(Left, Top, Width, Height);
+      //NewBounds:=Bounds(Left, Top, Width, Height);
     finally
       UnlockRealizeBounds;
     end;
@@ -6886,6 +6896,8 @@ begin
   begin
     WSSetText(AValue);
     InvalidatePreferredSize;
+    //DebugLn(['TWinControl.RealSetText ',DbgSName(Self),' ',AValue]);
+    AdjustSize;
   end;
   inherited RealSetText(AValue);
 end;
@@ -6924,8 +6936,6 @@ begin
   or (csNoDesignVisible in ControlStyle)
   then
     UpdateControlState;
-    
-  ResizeDelayedAutoSizeChildren;
 end;
 
 procedure TWinControl.DoSendShowHideToInterface;

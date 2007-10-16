@@ -40,12 +40,13 @@
 ------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
+  //debugln(['TControl.AdjustSize START ',DbgSName(Self),' AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed]);
   if (not AutoSizeCanStart) or AutoSizeDelayed then begin
     //debugln('TControl.AdjustSize AutoSizeDelayed ',DbgSName(Self));
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
-  //debugln('TControl.AdjustSize DoAutoSize ',DbgSName(Self));
+  //debugln(['TControl.AdjustSize DoAutoSize ',DbgSName(Self)]);
   DoAutoSize;
   Exclude(FControlFlags,cfAutoSizeNeeded);
 end;
@@ -339,7 +340,7 @@ var
   OldHeight: Integer;
   NewBounds: TRect;
 
-  function UpdatePosSizeChanged: boolean;
+  function PosSizeKept: boolean;
   begin
     SizeChanged:= (FWidth <> OldWidth) or (FHeight <> OldHeight);
     PosChanged:= (FLeft <> OldLeft) or (FTop <> OldTop);
@@ -394,16 +395,16 @@ begin
       // resize parents client area
       if Parent <> nil then
         Parent.AdjustSize;
-      if UpdatePosSizeChanged then exit;
+      if PosSizeKept then exit;
       // notify before autosizing
       BoundsChanged;
-      if UpdatePosSizeChanged then exit;
+      if PosSizeKept then exit;
       //if csDesigning in ComponentState then
       //  DebugLn('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
 
       // autosize this control and its brothers
       RequestAlign;
-      if UpdatePosSizeChanged then exit;
+      if PosSizeKept then exit;
       // autosize childs
       if SizeChanged and (Self is TWinControl) then
         TWinControl(Self).ReAlign;
@@ -419,7 +420,7 @@ begin
     dec(FSizeLock);
     UnlockBaseBounds;
   end;
-  if UpdatePosSizeChanged then exit;
+  if PosSizeKept then exit;
 
   // send messages, if this is the top level call
   if FSizeLock>0 then exit;
@@ -433,7 +434,7 @@ begin
     Resize;
     CheckOnChangeBounds;
     // for delphi compatibility send size/move messages
-    UpdatePosSizeChanged;
+    PosSizeKept;
     SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
 end;
@@ -2136,8 +2137,8 @@ begin
           and (not AutoSizing)
           and (not (csDestroying in ComponentState))
           and IsControlVisible;
+  {$IFDEF VerboseCanAutoSize}
   if (not Result) and AutoSize then begin
-    {$IFDEF VerboseCanAutoSize}
     DbgOut('TControl.AutoSizeCanStart Self='+DbgSName(Self)+' ');
     if not AutoSize then DebugLn('not AutoSize')
     else if AutoSizing then DebugLn('AutoSizing')
@@ -2147,8 +2148,8 @@ begin
               ' csDesigning=',dbgs(csDesigning in ComponentState),
               ' csNoDesignVisible=',dbgs(csNoDesignVisible in ControlStyle))
     else DebugLn('?');
-    {$ENDIF}
   end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3214,17 +3215,31 @@ end;
 
 ------------------------------------------------------------------------------}
 procedure TControl.SetVisible(Value : Boolean);
+var
+  AsWincontrol: TWinControl;
 begin
   if FVisible <> Value then begin
+    //DebugLn(['TControl.SetVisible ',DbgSName(Self),' NewVisible=',Value]);
     VisibleChanging;
     FVisible := Value;
     try
       Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
       Include(FControlFlags,cfRequestAlignNeeded);
-      if FVisible then
+      if (Self is TWinControl) then
+        AsWincontrol:=TWinControl(Self)
+      else
+        AsWincontrol:=nil;
+      if FVisible then begin
+        if AsWincontrol<>nil then
+          Include(AsWincontrol.FWinControlFlags,wcfReAlignNeeded);
         AdjustSize;
+        if (AsWincontrol<>nil) and (wcfReAlignNeeded in AsWincontrol.FWinControlFlags) then
+          AsWincontrol.ReAlign;
+      end;
       if cfRequestAlignNeeded in FControlFlags then
         RequestAlign;
+      if AsWincontrol<>nil then
+        AsWincontrol.ResizeDelayedAutoSizeChildren;
     finally
       VisibleChanged;
     end;
@@ -3593,9 +3608,9 @@ begin
   RealSetText(Buffer);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl RealSetText                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl RealSetText
+------------------------------------------------------------------------------}
 procedure TControl.RealSetText(const Value: TCaption);
 begin
   if FCaption = Value then Exit;

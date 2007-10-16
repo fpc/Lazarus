@@ -172,7 +172,6 @@ begin
   if (Parent<>nil) and (Parent is TCustomNotebook) then begin
     TCustomNotebook(Parent).MoveTab(Self,AValue);
   end;
-  // ToDo
   //DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 

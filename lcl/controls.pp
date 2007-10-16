@@ -961,11 +961,11 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
                          WithThemeSpace: Boolean); virtual;
-    procedure DoOnResize; virtual;
-    procedure DoOnChangeBounds; virtual;
-    procedure CheckOnChangeBounds;
-    procedure Resize; virtual;
-    procedure RequestAlign; dynamic;
+    procedure DoOnResize; virtual;// call OnReresize
+    procedure DoOnChangeBounds; virtual;// call OnChangeBounds
+    procedure CheckOnChangeBounds;// checks for changes and calls DoOnChangeBounds
+    procedure Resize; virtual;// checks for changes and calls DoOnResize
+    procedure RequestAlign; dynamic;// smart calling Parent.AlignControls
     procedure UpdateAnchorRules;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
@@ -1150,7 +1150,7 @@ type
     function Dragging: Boolean;
   public
     // size
-    procedure AdjustSize; virtual;
+    procedure AdjustSize; virtual;// smart calling DoAutoSize
     function AutoSizeDelayed: boolean; virtual;
     function NeedParentForAutoSize: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
@@ -1202,8 +1202,8 @@ type
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function GetTopParent: TControl;
-    function IsVisible: Boolean; virtual;
-    function IsControlVisible: Boolean; virtual;
+    function IsVisible: Boolean; virtual;// checks parents too
+    function IsControlVisible: Boolean; virtual;// does not check parents
     function FormIsUpdating: boolean; virtual;
     procedure Hide;
     procedure Refresh;
@@ -1594,9 +1594,9 @@ type
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure DoSendShowHideToInterface; virtual;
-    procedure ControlsAligned; virtual;
+    procedure ControlsAligned; virtual;// called by AlignControls after aligning controls
     procedure DoSendBoundsToInterface; virtual;
-    procedure RealizeBounds; virtual;
+    procedure RealizeBounds; virtual;// checks for changes and calls DoSendBoundsToInterface
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;

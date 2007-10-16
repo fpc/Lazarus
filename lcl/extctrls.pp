@@ -146,10 +146,11 @@ type
     FOptions: TNoteBookOptions;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;
+    FPageIndexOnLastShow: integer;
     FPageList: TList;  // TListWithEvent of TCustomPage
     FShowTabs: Boolean;
     FTabPosition: TTabPosition;
-    Procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
+    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;

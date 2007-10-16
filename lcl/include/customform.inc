@@ -978,6 +978,14 @@ begin
     inherited DoAutoSize;
 end;
 
+procedure TCustomForm.SetAutoSize(const Value: Boolean);
+begin
+  if Value=AutoSize then exit;
+  if Value=true then
+    Exclude(FFormState,fsDisableAutoSize);
+  inherited SetAutoSize(Value);
+end;
+
 class function TCustomForm.GetControlClassDefaultSize: TPoint;
 begin
   Result.X:=320;

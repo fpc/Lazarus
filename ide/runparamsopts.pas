@@ -134,8 +134,8 @@ type
     SystemVariablesListView: TListView;
     UserOverridesListView: TListView;
     Notebook: TNotebook;
-    Page1:    TPage;
-    Page2:    TPage;
+    GeneralPage:    TPage;
+    EnvVarsPage:    TPage;
     OkButton: TButton;
     CancelButton: TButton;
     procedure FormResize(Sender: TObject);

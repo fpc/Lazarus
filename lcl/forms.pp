@@ -468,6 +468,7 @@ type
     function ColorIsStored: boolean; override;
     procedure DoSendBoundsToInterface; override;
     procedure DoAutoSize; override;
+    procedure SetAutoSize(const Value: Boolean); override;
     class function GetControlClassDefaultSize: TPoint; override;
   protected
     // drag and dock

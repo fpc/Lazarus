@@ -15,8 +15,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   object OkButton: TButton
     AnchorSideRight.Control = CancelButton
     Left = 296
-    Height = 37
-    Top = 458
+    Height = 31
+    Top = 464
     Width = 80
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -28,8 +28,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   end
   object CancelButton: TButton
     Left = 382
-    Height = 37
-    Top = 458
+    Height = 31
+    Top = 464
     Width = 106
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -46,14 +46,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     PageIndex = 1
     TabOrder = 2
-    object Page1: TPage
-      Caption = 'Page1'
+    object GeneralPage: TPage
+      Caption = 'GeneralPage'
       ClientWidth = 496
       ClientHeight = 424
       object DisplayGroupBox: TGroupBox
         Left = 6
-        Height = 67
-        Top = 181
+        Height = 82
+        Top = 220
         Width = 484
         Align = alTop
         AutoSize = True
@@ -88,8 +88,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object CmdLineParametersGroupBox: TGroupBox
         Left = 6
-        Height = 39
-        Top = 65
+        Height = 54
+        Top = 74
         Width = 484
         Align = alTop
         AutoSize = True
@@ -113,8 +113,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object UseLaunchingApplicationGroupBox: TGroupBox
         Left = 6
-        Height = 65
-        Top = 110
+        Height = 80
+        Top = 134
         Width = 484
         Align = alTop
         AutoSize = True
@@ -151,19 +151,19 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object HostApplicationGroupBox: TGroupBox
         Left = 6
-        Height = 53
+        Height = 62
         Top = 6
         Width = 484
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'HostApplicationGroupBox'
-        ClientHeight = 49
+        ClientHeight = 43
         ClientWidth = 480
         TabOrder = 2
         object HostApplicationBrowseBtn: TButton
           Left = 451
-          Height = 37
+          Height = 31
           Top = 6
           Width = 23
           Align = alRight
@@ -175,7 +175,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
         object HostApplicationEdit: TEdit
           Left = 6
-          Height = 37
+          Height = 31
           Top = 6
           Width = 439
           Align = alClient
@@ -187,8 +187,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object WorkingDirectoryGroupBox: TGroupBox
         Left = 6
-        Height = 53
-        Top = 254
+        Height = 68
+        Top = 308
         Width = 484
         Align = alTop
         AutoSize = True
@@ -223,8 +223,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
       end
     end
-    object Page2: TPage
-      Caption = 'Page2'
+    object EnvVarsPage: TPage
+      Caption = 'EnvVarsPage'
       ClientWidth = 496
       ClientHeight = 424
       object IncludeSystemVariablesCheckBox: TCheckBox
@@ -253,8 +253,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         TabOrder = 1
         object UserOverridesAddButton: TButton
           Left = 6
-          Height = 37
-          Top = 96
+          Height = 31
+          Top = 102
           Width = 179
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -268,8 +268,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideLeft.Control = UserOverridesAddButton
           AnchorSideLeft.Side = asrBottom
           Left = 191
-          Height = 37
-          Top = 96
+          Height = 31
+          Top = 102
           Width = 178
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -283,8 +283,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideLeft.Control = UserOverridesEditButton
           AnchorSideLeft.Side = asrBottom
           Left = 375
-          Height = 37
-          Top = 96
+          Height = 31
+          Top = 102
           Width = 196
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -297,7 +297,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         object UserOverridesListView: TListView
           AnchorSideBottom.Control = UserOverridesAddButton
           Left = 6
-          Height = 84
+          Height = 90
           Top = 6
           Width = 468
           Align = alTop
