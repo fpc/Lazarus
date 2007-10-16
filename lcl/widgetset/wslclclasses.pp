@@ -25,6 +25,8 @@ unit WSLCLClasses;
 {$mode objfpc}{$H+}
 
 {off $DEFINE VerboseWSRegistration}
+{off $DEFINE VerboseWSRegistration_methods}
+{off $DEFINE VerboseWSRegistration_treedump}
 
 interface
 ////////////////////////////////////////////////////
@@ -297,7 +299,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       Cmnt := PPointer(Pointer(CommonClass) + vmtMethodTable)^;
       if Cmnt <> nil
       then begin
-        {$IFDEF VerboseWSRegistration}
+        {$IFDEF VerboseWSRegistration_methods}
         DebugLn(Indent, '*', CommonClass.Classname, ' method count: ', IntToStr(Cmnt^.Count));
         Indent := Indent + ' ';
         {$ENDIF}
@@ -308,7 +310,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
         // Loop though the VMT to see what is overridden
         for n := 0 to Cmnt^.Count - 1 do
         begin
-          {$IFDEF VerboseWSRegistration}
+          {$IFDEF VerboseWSRegistration_methods}
           DebugLn(Indent, 'Search: ', Cmnt^.Entries[n].Name^);
           {$ENDIF}
 
@@ -317,13 +319,13 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
           begin
             if Cvmt^[idx] = SearchAddr
             then begin
-              {$IFDEF VerboseWSRegistration}
+              {$IFDEF VerboseWSRegistration_methods}
               DebugLn(Indent, 'Found at index: ', IntToStr(idx));
               {$ENDIF}
 
               if Processed[idx]
               then begin
-                {$IFDEF VerboseWSRegistration}
+                {$IFDEF VerboseWSRegistration_methods}
                 DebugLn(Indent, 'Procesed -> skipping');
                 {$ENDIF}
                 Break;
@@ -333,7 +335,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
               if  (Vvmt^[idx] = SearchAddr)  //original
               and (Pvmt^[idx] <> SearchAddr) //overridden by parent
               then begin
-                {$IFDEF VerboseWSRegistration}
+                {$IFDEF VerboseWSRegistration_methods}
                 DebugLn(Indent, Format('Updating %p -> %p', [Vvmt^[idx], Pvmt^[idx]]));
                 {$ENDIF}
                 Vvmt^[idx] := Pvmt^[idx];
@@ -399,32 +401,6 @@ begin
   UpdateChildren(Node);
 end;
 
-procedure DoInitialization;
-begin
-  MComponentIndex := TStringList.Create;
-  MComponentIndex.Sorted := True;
-  MComponentIndex.Duplicates := dupError;
-
-  MWSRegisterIndex := TStringList.Create;
-  MWSRegisterIndex.Sorted := True;
-  MWSRegisterIndex.Duplicates := dupError;
-end;
-
-procedure DoFinalization;
-var
-  n: Integer;
-  Node: PClassNode;
-begin
-  for n := 0 to MComponentIndex.Count - 1 do
-  begin
-    Node := PClassNode(MComponentIndex.Objects[n]);
-    if Node^.VClass <> nil
-    then Freemem(Node^.VClass);
-    Dispose(Node);
-  end;
-  FreeAndNil(MComponentIndex);
-  FreeAndNil(MWSRegisterIndex);
-end;
 
 { TWSLCLComponent }
 
@@ -437,6 +413,89 @@ end;
 
 class procedure TWSLCLHandleComponent.DestroyHandle(AComponent: TComponent);
 begin
+end;
+
+
+
+procedure DoInitialization;
+begin
+  MComponentIndex := TStringList.Create;
+  MComponentIndex.Sorted := True;
+  MComponentIndex.Duplicates := dupError;
+
+  MWSRegisterIndex := TStringList.Create;
+  MWSRegisterIndex.Sorted := True;
+  MWSRegisterIndex.Duplicates := dupError;
+end;
+
+{$ifdef VerboseWSRegistration_treedump}
+procedure DumpVTree;
+  procedure DumpNode(ANode: PClassNode; AIndent: String = '');
+  begin
+    if ANode = nil then Exit;
+
+    DbgOut(AIndent);
+
+    DbgOut('LCLClass=');
+    if ANode^.LCLClass = nil
+    then DbgOut('nil')
+    else DbgOut(ANode^.LCLClass.Classname);
+
+    DbgOut(' WSClass=');
+    if ANode^.WSClass = nil
+    then DbgOut('nil')
+    else DbgOut(ANode^.WSClass.Classname);
+
+    DbgOut(' VClass=');
+    if ANode^.VClass = nil
+    then DbgOut('nil')
+    else begin
+      DbgOut(TClass(ANode^.VClass).Classname);
+      DbgOut(' VClass.Parent=');
+      if TClass(ANode^.VClass).ClassParent = nil
+      then DbgOut('nil')
+      else DbgOut(TClass(ANode^.VClass).ClassParent.ClassName)
+    end;
+
+    DbgOut(' VClassName=''', ANode^.VClassName, '''');
+    DebugLn;
+
+    DumpNode(ANode^.Child, AIndent + ' ');
+
+    DumpNode(ANode^.Sibling, AIndent);
+  end;
+
+var
+  n: Integer;
+  Node: PClassNode;
+begin
+  for n := 0 to MComponentIndex.Count - 1 do
+  begin
+    Node := PClassNode(MComponentIndex.Objects[n]);
+    if Node^.Parent = nil
+    then DumpNode(Node);
+  end;
+end;
+{$endif}
+
+procedure DoFinalization;
+var
+  n: Integer;
+  Node: PClassNode;
+begin
+  {$ifdef VerboseWSRegistration_treedump}
+  DumpVTree;
+  {$endif}
+
+  for n := 0 to MComponentIndex.Count - 1 do
+  begin
+    Node := PClassNode(MComponentIndex.Objects[n]);
+    if Node^.VClass <> nil
+    then Freemem(Node^.VClass);
+    Dispose(Node);
+  end;
+  FreeAndNil(MComponentIndex);
+  FreeAndNil(MWSRegisterIndex);
 end;
 
 initialization
