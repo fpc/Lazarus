@@ -12,7 +12,7 @@ if [ ! -d "$BuildRoot" ]; then
 fi
 
 # the binutils version to download
-BinutilsVersion=2.16
+BinutilsVersion=2.18
 BinutilsDownloadPath=http://ftp.gnu.org/gnu/binutils/
 
 # the FPC targets
@@ -191,8 +191,8 @@ if [ $DownloadFPC = "yes" ]; then
     svn up
     cd -
   else
-    echo "SVN checkout for FPC 2.0 ..."
-    svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 fpc
+    echo "SVN checkout for FPC 2.2 ..."
+    svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_2 fpc
   fi
   if [ -d install ]; then
     cd install
@@ -201,8 +201,8 @@ if [ $DownloadFPC = "yes" ]; then
     svn up
     cd -
   else
-    echo "SVN checkout for FPC 2.0 install ..."
-    svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install install
+    echo "SVN checkout for FPC 2.2 install ..."
+    svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_2/install install
   fi
 fi
 

@@ -180,6 +180,13 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
     cp -a $BuildRoot/binutils/cross/destination/$FPCLibDir/$Target $DestDir
   done
 
+  #----------------------------------------------------------------------------
+  # copy tools (windres)
+  #----------------------------------------------------------------------------
+  FPCLibDir=lib/fpc/$CompilerVersionStr # !!! no / at end
+  DestDir=$FPCBuildDir/usr/$FPCLibDir
+  cp -p $BuildRoot/bin/* $DestDir/
+  
   #------------------------------------------------------------------------------
   # create rulez and files
 
