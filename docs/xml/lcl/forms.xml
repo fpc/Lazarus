@@ -4911,12 +4911,10 @@ It also writes details of the exception to the appropriate place for debugging.<
       <!-- function Visibility: public -->
       <element name="TApplication.MessageBox">
         <short>Message Box</short>
-        <descr>Message Box: a useful function to display a message.<br/>
-
-		The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]<br/>
-
-
+        <descr><i>Message Box:</i> a useful function to display a message.<br/>The function is used internally to display messages during the handling of <i>Exceptions</i>, but is also available to application programmers as an alternative to some of the message dialogs found in <i>Dialogs</i>.<br/>
+The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]<br/><br/>
 It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</descr>
+        <seealso><link id="Dialogs.MessageDlg"/></seealso>
         <example file="dialogs/displaymessagebox.pas"/>
       </element>
       <!-- function result Visibility: default -->
