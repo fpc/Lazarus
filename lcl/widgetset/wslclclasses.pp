@@ -356,7 +356,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     ANode^.VClassName := '(V)' + ANode^.WSClass.ClassName;
     PPointer(ANode^.VClass + vmtClassName)^ := @ANode^.VClassName;
     // Adjust classparent
-    PPointer(ANode^.VClass + vmtParent)^ := PPointer(Pointer(ParentWSNode^.WSClass) + vmtParent)^;
+    PPointer(ANode^.VClass + vmtParent)^ := ParentWSNode^.WSClass;
     // Delete methodtable entry
     PPointer(ANode^.VClass + vmtMethodTable)^ := nil;
   end;
