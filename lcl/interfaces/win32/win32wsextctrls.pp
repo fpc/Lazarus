@@ -34,8 +34,8 @@ uses
 ////////////////////////////////////////////////////
   SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf, Themes,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc, InterfaceBase,
-  Win32WSControls;
+  WSControls, WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc,
+  InterfaceBase, Win32WSControls;
 
 type
 
@@ -47,6 +47,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
@@ -321,6 +322,23 @@ begin
       needParentPaint := true;
       isTabPage := true;
     end;
+end;
+
+class procedure TWin32WSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+var
+  PageIndex: integer;
+  PageControlHandle: HWND;
+begin
+  // remove tab from pagecontrol
+  if (AWinControl.Parent <> nil) and (AWinControl.Parent.HandleAllocated) then
+  begin
+    PageControlHandle := AWinControl.Parent.Handle;
+    PageIndex := TCustomPage(AWinControl).PageIndex;
+    if PageIndex <> -1 then
+      Windows.SendMessage(PageControlHandle, TCM_DELETEITEM,
+        Windows.WPARAM(PageIndex), 0);
+  end;
+  TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
 end;
 
 class procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
