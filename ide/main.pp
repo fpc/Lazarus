@@ -1430,8 +1430,6 @@ begin
     Name := 'pnlSpeedButtons';
     Parent:= MainIDEBar;
     Align := alLeft;
-    Top := 0;
-    Left:= 0;
     Caption:= '';
     BevelWidth:=1;
     BevelOuter:=bvRaised;
@@ -1468,8 +1466,6 @@ begin
   MainIDEBar.StepOverSpeedButton   := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
 
   MainIDEBar.pnlSpeedButtons.Width := ButtonLeft+3;
-  MainIDEBar.pnlSpeedButtons.Height := ButtonTop+3;
-
 
   // create the popupmenu for the OpenFileArrowSpeedBtn
   MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(OwningComponent);
@@ -1494,10 +1490,6 @@ begin
     Parent := MainIDEBar;
     Name := 'ComponentNotebook';
     Align := alClient;
-    Left := MainIDEBar.pnlSpeedButtons.Left + MainIDEBar.pnlSpeedButtons.Width;
-    Top := 0;
-    Width := MainIDEBar.ClientWidth - Left;
-    Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
     Visible:=EnvironmentOptions.ComponentPaletteVisible;
   end;
 end;
