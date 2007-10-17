@@ -58,6 +58,7 @@ type
 
   TfrmCompilerOptions = class(TForm)
     MainNoteBook: TNoteBook;
+    BtnPanel: TPanel;
 
     { Search Paths Controls }
     PathPage: TPage;
