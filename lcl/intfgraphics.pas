@@ -132,6 +132,9 @@ type
     {$endif}
     function GetMasked(x, y: integer): Boolean;
     function GetTColors(x, y: integer): TGraphicsColor;
+
+    procedure InternalSetSize(AWidth, AHeight: integer);
+
     procedure SetMasked(x, y: integer; const AValue: Boolean);
     procedure SetTColors(x, y: integer; const AValue: TGraphicsColor);
   protected
@@ -1123,7 +1126,8 @@ begin
     FreeData;
     FRawImage.Description := ADescription;
     ChooseGetSetColorFunctions;
-    SetSize(ADescription.Width, ADescription.Height);
+    InternalSetSize(ADescription.Width, ADescription.Height);
+    CreateData;
   finally
     EndUpdate;
   end;
@@ -2902,7 +2906,7 @@ begin
     ChooseGetSetColorFunctions;
 end;
 
-procedure TLazIntfImage.SetSize(AWidth, AHeight: integer);
+procedure TLazIntfImage.InternalSetSize(AWidth, AHeight: integer);
   procedure Error;
   begin
     raise FPImageException.Create('Invalid Size');
@@ -2911,9 +2915,14 @@ begin
   if (AWidth = Width) and (AHeight = Height) then exit;
   if (AWidth<0) or (AHeight<0) then Error;
   inherited SetSize(AWidth, AHeight);
-  
+
   FRawImage.Description.Width := Width;
   FRawImage.Description.Height := Height;
+end;
+
+procedure TLazIntfImage.SetSize(AWidth, AHeight: integer);
+begin
+  InternalSetSize(AWidth, AHeight);
   CreateData;
 end;
 
