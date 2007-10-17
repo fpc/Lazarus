@@ -29,6 +29,7 @@
  *                                                                         *
  ***************************************************************************
 }
+
 unit CompilerOptionsDlg;
 
 {$mode objfpc}{$H+}
@@ -39,7 +40,7 @@ uses
   Forms, Classes, LCLProc, SysUtils, InterfaceBase,
   ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
-  ProjectIntf, IDEWindowIntf,
+  ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
   CompilerOptions, ShowCompilerOpts, Project, PackageDefs;
 
@@ -53,11 +54,11 @@ type
     ccomlNone
     );
   
-
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
-    nbMain: TNotebook;
+    MainNoteBook: TNoteBook;
+
     { Search Paths Controls }
     PathPage: TPage;
     
@@ -91,23 +92,11 @@ type
     { Parsing Controls }
     ParsingPage: TPage;
     grpStyle: TRadioGroup;
-
-    grpSyntaxOptions: TGroupBox;
-    chkSymD2Ext: TCheckBox;
-    chkSymCOper: TCheckBox;
-    chkSymIncludeAssertions: TCheckBox;
-    chkSymAllowLab: TCheckBox;
-    chkSymUseAnsiStrings: TCheckBox;
-    chkSymCPPInline: TCheckBox;
-    chkSymCMacros: TCheckBox;
-    chkSymDelphiCompat: TCheckBox;
-    chkSymTP7Compat: TCheckBox;
-    chkSymGPCCompat: TCheckBox;
-    chkSymConstInit: TCheckBox;
-    chkSymStaticKwd: TCheckBox;
+    grpSyntaxOptions: TCheckGroup;
 
     { Code Generation Controls }
     CodeGenPage: TPage;
+
     grpSmartLinkUnit: TGroupBox;
     chkSmartLinkUnit: TCheckBox;
 
@@ -132,7 +121,6 @@ type
     TargetCPUComboBox: TComboBox;
     lblTargeti386Proc : TLabel;
     Targeti386ProcComboBox: TComboBox;
-    TargetOSGroupBox: TGroupBox;
 
     grpOptimizations: TGroupBox;
     chkOptVarsInReg: TCheckBox;
@@ -141,7 +129,6 @@ type
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
-
 
     { Linking Controls }
     LinkingPage: TPage;
@@ -160,33 +147,13 @@ type
     grpOptions: TGroupBox;
     chkOptionsLinkOpt: TCheckBox;
     edtOptionsLinkOpt: TEdit;
+    
     TargetSpecificsGrpBox: TGroupBox;
     chkWin32GraphicApp: TCheckBox;
 
     { Messages Controls }
     MsgPage: TPage;
-    grpVerbosity: TGroupBox;
-    chkErrors: TCheckBox;
-    chkWarnings: TCheckBox;
-    chkNotes: TCheckBox;
-    chkHints: TCheckBox;
-    chkGeneralInfo: TCheckBox;
-    chkLineNumbers: TCheckBox;
-    chkEverything: TCheckBox;
-    chkShowSummary: TCheckBox;
-    chkAllProcsOnError: TCheckBox;
-    chkDebugInfo: TCheckBox;
-    chkUsedFiles: TCheckBox;
-    chkTriedFiles: TCheckBox;
-    chkDefinedMacros: TCheckBox;
-    chkCompiledProc: TCheckBox;
-    chkConditionals: TCheckBox;
-    chkExecutableInfo: TCheckBox;
-    chkNothing: TCheckBox;
-    chkHintsForUnusedUnitsInMainSrc: TCheckBox;
-    chkHintsForSenderNotUsed: TCheckBox;
-    chkFPCLogo: TCheckBox;
-
+    grpVerbosity: TCheckGroup;
     grpErrorCnt: TGroupBox;
     edtErrorCnt: TEdit;
 
@@ -201,6 +168,7 @@ type
 
     { Inherited Options }
     InheritedPage: TPage;
+    InhSplitter: TSplitter;
     InhNoteLabel: TLabel;
     InhTreeView: TTreeView;
     InhItemMemo: TMemo;
@@ -242,24 +210,25 @@ type
     ExecuteAfterShowAllCheckBox: TCheckBox;
 
     { Buttons }
-    btnShowOptions: TButton;
-    btnOK: TButton;
-    btnCancel: TButton;
-    btnCheck: TButton;
-    btnLoadSave: TButton;
+    btnShowOptions: TBitBtn;
+    btnOK: TBitBtn;
+    btnCancel: TBitBtn;
+    btnCheck: TBitBtn;
+    btnLoadSave: TBitBtn;
+    HelpButton: TBitBtn;
 
     procedure ButtonOKClicked(Sender: TObject);
     procedure btnTestClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure chkCustomConfigFileClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
-    procedure frmCompilerOptionsClose(Sender: TObject;
-                                      var CloseAction: TCloseAction);
-    procedure grpVerbosityResize(Sender: TObject);
+    procedure frmCompilerOptionsClose(Sender: TObject; var CloseAction: TCloseAction);
   private
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
@@ -299,18 +268,10 @@ type
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
 
-
 implementation
 
 uses
   IDEImagesIntf;
-
-const
-  XMARGIN = 6;
-  YMARGIN = 6;
-
-  WCOLABEL  = 90; // the with of the labels on the Compiler tab
-
 
 type
   TInheritedNodeData = record
@@ -318,8 +279,6 @@ type
     Option: TInheritedCompilerOption;
   end;
   PInheritedNodeData = ^TInheritedNodeData;
-
-
 
 {------------------------------------------------------------------------------
   TfrmCompilerOptions Constructor
@@ -329,10 +288,8 @@ var
   Page: integer;
 begin
   inherited Create(TheOwner);
-  Name:='CompilerOptionsDlg';
   Caption := dlgCompilerOptions;
 
-  Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,550,450);
 
   ImageIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
@@ -341,26 +298,7 @@ begin
 
   DisableAlign;
   try
-    nbMain := TNotebook.Create(Self);
-    with nbMain do begin
-      Name:='MainNotebook';
-      Align:=alTop;
-      Parent:=Self;
-    end;
-
-    // Add the pages
-    with nbMain.Pages do begin
-      Add(dlgSearchPaths);
-      Add(dlgCOParsing);
-      Add(dlgCodeGeneration);
-      Add(dlgCOLinking);
-      Add(dlgCOMessages);
-      Add(dlgCOOther);
-      Add(dlgCOInherited);
-      Add(dlgCOCompilation);
-    end;
-    nbMain.PageIndex:=0;
-
+    MainNotebook.PageIndex:=0;
     Page:=0;
 
     SetupSearchPathsTab(Page);
@@ -380,14 +318,10 @@ begin
     SetupCompilationTab(Page);
     inc(Page);
     SetupButtonBar;
-    nbMain.AnchorToNeighbour(akBottom,6,btnLoadSave);
+    MainNotebook.AnchorToNeighbour(akBottom,6,btnLoadSave);
   finally
     EnableAlign;
   end;
-
-  //TODO: MWE: Are these still needed ?
-  // can't we just use a Doxxx portected method ?
-  OnClose:=@frmCompilerOptionsClose;
 end;
 
 {------------------------------------------------------------------------------}
@@ -486,6 +420,26 @@ begin
   end;
 end;
 
+procedure TfrmCompilerOptions.FormResize(Sender: TObject);
+var
+  w: integer;
+begin
+  //CodeGenPage
+  grpChecks.Constraints.MinHeight := grpSmartLinkUnit.Height + grpHeapSize.Height;
+  w := grpOptimizations.Width div 2;
+  chkOptVarsInReg.Left:= w;
+  chkOptUncertain.Left := w;
+  w := (CodeGenPage.Width - 18) div 2;
+  grpChecks.Width := w;
+  w := w - w div 2;
+  grpGenerate.Width := w;
+end;
+
+procedure TfrmCompilerOptions.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TfrmCompilerOptions.InhTreeViewSelectionChanged(Sender: TObject);
 var
   ANode: TTreeNode;
@@ -553,18 +507,21 @@ begin
   else
     grpStyle.ItemIndex:=0;
 
-  chkSymD2Ext.Checked := Options.Delphi2Extensions;
-  chkSymCOper.Checked := Options.CStyleOperators;
-  chkSymIncludeAssertions.Checked := Options.IncludeAssertionCode;
-  chkSymAllowLab.Checked := Options.AllowLabel;
-  chkSymCPPInline.Checked := Options.CPPInline;
-  chkSymCMacros.Checked := Options.CStyleMacros;
-  chkSymTP7Compat.Checked := Options.TPCompatible;
-  chkSymConstInit.Checked := Options.InitConstructor;
-  chkSymStaticKwd.Checked := Options.StaticKeyword;
-  chkSymDelphiCompat.Checked := Options.DelphiCompat;
-  chkSymUseAnsiStrings.Checked := Options.UseAnsiStrings;
-  chkSymGPCCompat.Checked := Options.GPCCompat;
+  with grpSyntaxOptions do
+  begin
+    Checked[0] := Options.Delphi2Extensions;
+    Checked[1] := Options.CStyleOperators;
+    Checked[2] := Options.IncludeAssertionCode;
+    Checked[3] := Options.AllowLabel;
+    Checked[4] := Options.CPPInline;
+    Checked[5] := Options.CStyleMacros;
+    Checked[6] := Options.TPCompatible;
+    Checked[7] := Options.InitConstructor;
+    Checked[8] := Options.StaticKeyword;
+    Checked[9] := Options.DelphiCompat;
+    Checked[10] := Options.UseAnsiStrings;
+    Checked[11] := Options.GPCCompat;
+  end;
 
   // code generation
   chkSmartLinkUnit.Checked := Options.SmartLinkUnit;
@@ -629,28 +586,29 @@ begin
   grpOptions.Enabled:=EnabledLinkerOpts;
 
   // messages
-  chkErrors.Checked := Options.ShowErrors;
-  chkWarnings.Checked := Options.ShowWarn;
-  chkNotes.Checked := Options.ShowNotes;
-  chkHints.Checked := Options.ShowHints;
-  chkGeneralInfo.Checked := Options.ShowGenInfo;
-  chkLineNumbers.Checked := Options.ShowLineNum;
-  chkEverything.Checked := Options.ShowAll;
-  chkAllProcsOnError.Checked := Options.ShowAllProcsOnError;
-  chkDebugInfo.Checked := Options.ShowDebugInfo;
-  chkUsedFiles.Checked := Options.ShowUsedFiles;
-  chkTriedFiles.Checked := Options.ShowTriedFiles;
-  chkDefinedMacros.Checked := Options.ShowDefMacros;
-  chkCompiledProc.Checked := Options.ShowCompProc;
-  chkConditionals.Checked := Options.ShowCond;
-  chkExecutableInfo.Checked := Options.ShowExecInfo;
-  chkNothing.Checked := Options.ShowNothing;
-  chkShowSummary.Checked := Options.ShowSummary;
-  chkHintsForUnusedUnitsInMainSrc.Checked :=
-                                       Options.ShowHintsForUnusedUnitsInMainSrc;
-  chkHintsForSenderNotUsed.Checked := Options.ShowHintsForSenderNotUsed;
-
-  chkFPCLogo.Checked := Options.WriteFPCLogo;
+  with grpVerbosity do
+  begin
+    Checked[0] := Options.ShowErrors;
+    Checked[1] := Options.ShowHintsForSenderNotUsed;
+    Checked[2] := Options.ShowWarn;
+    Checked[3] := Options.ShowDebugInfo;
+    Checked[4] := Options.ShowNotes;
+    Checked[5] := Options.ShowUsedFiles;
+    Checked[6] := Options.ShowHints;
+    Checked[7] := Options.ShowTriedFiles;
+    Checked[8] := Options.ShowGenInfo;
+    Checked[9] := Options.ShowDefMacros;
+    Checked[10] := Options.ShowLineNum;
+    Checked[11] := Options.ShowCompProc;
+    Checked[12] := Options.ShowAllProcsOnError;
+    Checked[13] := Options.ShowCond;
+    Checked[14] := Options.ShowAll;
+    Checked[15] := Options.ShowExecInfo;
+    Checked[16] := Options.ShowSummary;
+    Checked[17] := Options.ShowNothing;
+    Checked[18] := Options.ShowHintsForUnusedUnitsInMainSrc;
+    Checked[19] := Options.WriteFPCLogo;
+  end;
 
   // other
   chkConfigFile.Checked := not Options.DontUseConfigFile;
@@ -868,18 +826,22 @@ begin
 
   // parsing;
   Options.AssemblerStyle := grpStyle.ItemIndex;
-  Options.Delphi2Extensions := chkSymD2Ext.Checked;
-  Options.CStyleOperators := chkSymCOper.Checked;
-  Options.IncludeAssertionCode := chkSymIncludeAssertions.Checked;
-  Options.AllowLabel := chkSymAllowLab.Checked;
-  Options.CPPInline := chkSymCPPInline.Checked;
-  Options.CStyleMacros := chkSymCMacros.Checked;
-  Options.TPCompatible := chkSymTP7Compat.Checked;
-  Options.InitConstructor := chkSymConstInit.Checked;
-  Options.StaticKeyword := chkSymStaticKwd.Checked;
-  Options.DelphiCompat := chkSymDelphiCompat.Checked;
-  Options.UseAnsiStrings := chkSymUseAnsiStrings.Checked;
-  Options.GPCCompat := chkSymGPCCompat.Checked;
+
+  with grpSyntaxOptions do
+  begin
+    Options.Delphi2Extensions := Checked[0];
+    Options.CStyleOperators := Checked[1];
+    Options.IncludeAssertionCode := Checked[2];
+    Options.AllowLabel := Checked[3];
+    Options.CPPInline := Checked[4];
+    Options.CStyleMacros := Checked[5];
+    Options.TPCompatible := Checked[6];
+    Options.InitConstructor := Checked[7];
+    Options.StaticKeyword := Checked[8];
+    Options.DelphiCompat := Checked[9];
+    Options.UseAnsiStrings := Checked[10];
+    Options.GPCCompat := Checked[11];
+  end;
 
   // code generation
   Options.SmartLinkUnit := chkSmartLinkUnit.Checked;
@@ -940,29 +902,30 @@ begin
   Options.LinkSmart := chkLinkSmart.Checked;
 
   // messages
-  Options.ShowErrors := chkErrors.Checked;
-  Options.ShowWarn := chkWarnings.Checked;
-  Options.ShowNotes := chkNotes.Checked;
-  Options.ShowHints := chkHints.Checked;
-  Options.ShowGenInfo := chkGeneralInfo.Checked;
-  Options.ShowLineNum := chkLineNumbers.Checked;
-  Options.ShowAll := chkEverything.Checked;
-  Options.ShowAllProcsOnError := chkAllProcsOnError.Checked;
-  Options.ShowDebugInfo := chkDebugInfo.Checked;
-  Options.ShowUsedFiles := chkUsedFiles.Checked;
-  Options.ShowTriedFiles := chkTriedFiles.Checked;
-  Options.ShowDefMacros := chkDefinedMacros.Checked;
-  Options.ShowCompProc := chkCompiledProc.Checked;
-  Options.ShowCond := chkConditionals.Checked;
-  Options.ShowExecInfo := chkExecutableInfo.Checked;
-  Options.ShowNothing := chkNothing.Checked;
-  Options.ShowSummary := chkShowSummary.Checked;
-  Options.ShowHintsForUnusedUnitsInMainSrc :=
-                                        chkHintsForUnusedUnitsInMainSrc.Checked;
-  Options.ShowHintsForSenderNotUsed := chkHintsForSenderNotUsed.Checked;
-
-  Options.WriteFPCLogo := chkFPCLogo.Checked;
-
+  with grpVerbosity do
+  begin
+    Options.ShowErrors := Checked[0];
+    Options.ShowHintsForSenderNotUsed := Checked[1];
+    Options.ShowWarn := Checked[2];
+    Options.ShowDebugInfo := Checked[3];
+    Options.ShowNotes := Checked[4];
+    Options.ShowUsedFiles := Checked[5];
+    Options.ShowHints := Checked[6];
+    Options.ShowTriedFiles := Checked[7];
+    Options.ShowGenInfo := Checked[8];
+    Options.ShowDefMacros := Checked[9];
+    Options.ShowLineNum := Checked[10];
+    Options.ShowCompProc := Checked[11];
+    Options.ShowAllProcsOnError := Checked[12];
+    Options.ShowCond := Checked[13];
+    Options.ShowAll := Checked[14];
+    Options.ShowExecInfo := Checked[15];
+    Options.ShowSummary := Checked[16];
+    Options.ShowNothing := Checked[17];
+    Options.ShowHintsForUnusedUnitsInMainSrc := Checked[18];
+    Options.WriteFPCLogo := Checked[19];
+  end;
+  
   // other
   Options.DontUseConfigFile := not chkConfigFile.Checked;
   Options.CustomConfigFile := chkCustomConfigFile.Checked;
@@ -1152,130 +1115,37 @@ end;
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupParsingTab(Page: integer);
 begin
-  // Setup the Parsing Tab
-  ParsingPage:=nbMain.Page[Page];
-  ParsingPage.Name:='ParsingPage';
+  MainNoteBook.Page[Page].Caption:= dlgCOParsing;
 
-  grpStyle := TRadioGroup.Create(Self);
+  // Setup the Parsing Tab
   with grpStyle do begin
-    Name:='grpStyle';
     Caption := dlgCOStyle+' (-R)';
+
     with Items do begin
       BeginUpdate;
-      Items.Add('Default');
-      Items.Add('Intel');
-      Items.Add('AT&&T');
+      Add('Default');
+      Add('Intel');
+      Add('AT&&T');
       EndUpdate;
     end;
-    Columns:=3;
-    Parent := ParsingPage;
-    AnchorAsAlign(alTop,6);
-    Height:=40;
   end;
 
-  grpSyntaxOptions := TGroupBox.Create(Self);
   with grpSyntaxOptions do begin
-    Name:='grpSyntaxOptions';
-    ChildSizing.SetGridSpacing(6);
-    Parent := ParsingPage;
-    AnchorToCompanion(akTop,6,grpStyle);
     AutoSize:=true;
     Caption := dlgSyntaxOptions;
-  end;
 
-  chkSymD2Ext := TCheckBox.Create(Self);
-  with chkSymD2Ext do begin
-    Name:='chkSymD2Ext';
-    Parent := grpSyntaxOptions;
-    Caption := dlgDelphi2Ext+' (-S2)';
-  end;
-
-  chkSymCOper := TCheckBox.Create(Self);
-  with chkSymCOper do begin
-    Name:='chkSymCOper';
-    AnchorToNeighbour(akTop,6,chkSymD2Ext);
-    Parent := grpSyntaxOptions;
-    Caption := dlgCOCOps+' (-Sc)';
-  end;
-
-  chkSymIncludeAssertions := TCheckBox.Create(Self);
-  with chkSymIncludeAssertions do begin
-    Name:='chkSymIncludeAssertions';
-    AnchorToNeighbour(akTop,6,chkSymCOper);
-    Parent := grpSyntaxOptions;
-    Caption := dlgAssertCode+' (-Sa)';
-  end;
-
-  chkSymAllowLab := TCheckBox.Create(Self);
-  with chkSymAllowLab do begin
-    Name:='chkSymAllowLab';
-    AnchorToNeighbour(akTop,6,chkSymIncludeAssertions);
-    Parent := grpSyntaxOptions;
-    Caption := dlgLabelGoto+' (-Sg)';
-  end;
-
-  chkSymCPPInline := TCheckBox.Create(Self);
-  with chkSymCPPInline do begin
-    Name:='chkSymCPPInline';
-    AnchorToNeighbour(akTop,6,chkSymAllowLab);
-    Parent := grpSyntaxOptions;
-    Caption := dlgCppInline+' (-Si)';
-  end;
-
-  chkSymCMacros := TCheckBox.Create(Self);
-  with chkSymCMacros do begin
-    Name:='chkSymCMacros';
-    AnchorToNeighbour(akTop,6,chkSymCPPInline);
-    Parent := grpSyntaxOptions;
-    Caption := dlgCMacro+' (-Sm)';
-  end;
-
-  chkSymTP7Compat := TCheckBox.Create(Self);
-  with chkSymTP7Compat do begin
-    Name:='chkSymTP7Compat';
-    AnchorToNeighbour(akTop,6,chkSymCMacros);
-    Parent := grpSyntaxOptions;
-    Caption := dlgBP7Cptb+' (-So)';
-  end;
-
-  chkSymConstInit := TCheckBox.Create(Self);
-  with chkSymConstInit do begin
-    Name:='chkSymConstInit';
-    AnchorToNeighbour(akTop,6,chkSymTP7Compat);
-    Parent := grpSyntaxOptions;
-    Caption := dlgInitDoneOnly+' (-Ss)';
-  end;
-
-  chkSymStaticKwd := TCheckBox.Create(Self);
-  with chkSymStaticKwd do begin
-    Name:='chkSymStaticKwd';
-    AnchorToNeighbour(akTop,6,chkSymConstInit);
-    Parent := grpSyntaxOptions;
-    Caption := dlgStaticKeyword+' (-St)';
-  end;
-
-  chkSymDelphiCompat := TCheckBox.Create(Self);
-  with chkSymDelphiCompat do begin
-    Name:='chkSymDelphiCompat';
-    AnchorToNeighbour(akTop,6,chkSymStaticKwd);
-    Parent := grpSyntaxOptions;
-    Caption := dlgDeplhiComp+' (-Sd)';
-  end;
-
-  chkSymUseAnsiStrings := TCheckBox.Create(Self);
-  with chkSymUseAnsiStrings do begin
-    Name:='chkSymUseAnsiStrings';
-    AnchorToNeighbour(akTop,6,chkSymDelphiCompat);
-    Parent := grpSyntaxOptions;
-    Caption := dlgCOAnsiStr+' (-Sh)';
-  end;
-
-  chkSymGPCCompat := TCheckBox.Create(Self);
-  with chkSymGPCCompat do begin
-    Name:='chkSymGPCCompat';
-    AnchorToNeighbour(akTop,6,chkSymUseAnsiStrings);
-    Parent := grpSyntaxOptions;
-    Caption := dlgGPCComp+' (-Sp)';
+    Items.Add(dlgDelphi2Ext+' (-S2)');
+    Items.Add(dlgCOCOps+' (-Sc)');
+    Items.Add(dlgAssertCode+' (-Sa)');
+    Items.Add(dlgLabelGoto+' (-Sg)');
+    Items.Add(dlgCppInline+' (-Si)');
+    Items.Add(dlgCMacro+' (-Sm)');
+    Items.Add(dlgBP7Cptb+' (-So)');
+    Items.Add(dlgInitDoneOnly+' (-Ss)');
+    Items.Add(dlgStaticKeyword+' (-St)');
+    Items.Add(dlgDeplhiComp+' (-Sd)');
+    Items.Add(dlgCOAnsiStr+' (-Sh)');
+    Items.Add(dlgGPCComp+' (-Sp)');
   end;
 end;
 
@@ -1286,156 +1156,30 @@ end;
 procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 begin
   // Setup the Code Generation Tab
-  CodeGenPage:=nbMain.Page[Page];
-  CodeGenPage.Name:='CodePage';
+  MainNoteBook.Page[Page].Caption:= dlgCodeGeneration;
 
-  grpSmartLinkUnit := TGroupBox.Create(Self);
-  with grpSmartLinkUnit do begin
-    Name:='grpSmartLinkUnit';
-    Top := 6;
-    Left := 6;
-    Caption := dlgCOUnitStyle;
-    AutoSize:=true;
-    ChildSizing.SetGridSpacing(6);
-    Parent := CodeGenPage;
-  end;
+  grpSmartLinkUnit.Caption := dlgCOUnitStyle;
+  chkSmartLinkUnit.Caption := dlgCOSmartLinkable + ' (-CX)';
 
-  chkSmartLinkUnit := TCheckBox.Create(Self);
-  with chkSmartLinkUnit do begin
-    Name:='chkSmartLinkUnit';
-    Caption := dlgCOSmartLinkable + ' (-CX)';
-    Parent := grpSmartLinkUnit;
-  end;
+  grpChecks.Caption := dlgCOChecks;
+  chkChecksIO.Caption := 'I/O (-Ci)';
+  chkChecksRange.Caption := dlgCORange+' (-Cr)';
+  chkChecksOverflow.Caption := dlgCOOverflow+' (-Co)';
+  chkChecksStack.Caption := dlgCOStack+' (-Ct)';
 
-  {------------------------------------------------------------}
-  grpChecks := TGroupBox.Create(Self);
-  with grpChecks do begin
-    Name:='grpChecks';
-    Top := 6;
-    AnchorToNeighbour(akLeft,6,grpSmartLinkUnit);
-    Caption := dlgCOChecks;
-    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
-    ChildSizing.SetGridSpacing(6);
-    ChildSizing.ControlsPerLine:=2;
-    AutoSize:=true;
-    Parent := CodeGenPage;
-  end;
+  grpHeapSize.Caption := dlgHeapSize +' (-Ch):';
+  edtHeapSize.Text := '';
 
-  chkChecksIO := TCheckBox.Create(Self);
-  with chkChecksIO do begin
-    Name:='chkChecksIO';
-    Caption := 'I/O (-Ci)';
-    Parent := grpChecks;
-  end;
+  grpGenerate.Caption := dlgCOGenerate;
+  radGenNormal.Caption := dlgCONormal+' (none)';
+  radGenFaster.Caption := dlgCOFast+' (-OG)';
+  radGenSmaller.Caption := dlgCOSmaller+' (-Og)';
 
-  chkChecksRange := TCheckBox.Create(Self);
-  with chkChecksRange do begin
-    Name:='chkChecksRange';
-    Caption := dlgCORange+' (-Cr)';
-    Parent := grpChecks;
-  end;
+  grpTargetPlatform.Caption := dlgTargetPlatform;
+  lblTargetOS.Caption := dlgTargetOS+' (-T)';
 
-  chkChecksOverflow := TCheckBox.Create(Self);
-  with chkChecksOverflow do begin
-    Name:='chkChecksOverflow';
-    Caption := dlgCOOverflow+' (-Co)';
-    Parent := grpChecks;
-  end;
-
-  chkChecksStack := TCheckBox.Create(Self);
-  with chkChecksStack do begin
-    Name:='chkChecksStack';
-    Caption := dlgCOStack+' (-Ct)';
-    Parent := grpChecks;
-  end;
-
-  {------------------------------------------------------------}
-
-  grpHeapSize := TGroupBox.Create(Self);
-  with grpHeapSize do begin
-    Name:='grpHeapSize';
-    Top := 6;
-    AnchorToNeighbour(akLeft,6,grpChecks);
-    Caption := dlgHeapSize +' (-Ch):';
-    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CodeGenPage;
-  end;
-
-  edtHeapSize := TEdit.Create(grpHeapSize);
-  with edtHeapSize do begin
-    Name:='edtHeapSize';
-    Caption := dlgHeapSize;
-    Text := '';
-    Parent := grpHeapSize;
-  end;
-
-  {------------------------------------------------------------}
-
-  grpGenerate := TGroupBox.Create(Self);
-  with grpGenerate do begin
-    Name:='grpGenerate';
-    AnchorToNeighbour(akTop,6,grpChecks);
-    Caption := dlgCOGenerate;
-    ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CodeGenPage;
-  end;
-
-  radGenNormal := TRadioButton.Create(grpGenerate);
-  with radGenNormal do begin
-    Name:='radGenNormal';
-    Caption := dlgCONormal+' (none)';
-    Parent := grpGenerate;
-  end;
-
-  radGenFaster := TRadioButton.Create(grpGenerate);
-  with radGenFaster do begin
-    Name:='radGenFaster';
-    Caption := dlgCOFast+' (-OG)';
-    Parent := grpGenerate;
-  end;
-
-  radGenSmaller := TRadioButton.Create(grpGenerate);
-  with radGenSmaller do begin
-    Name:='radGenSmaller';
-    Caption := dlgCOSmaller+' (-Og)';
-    Parent := grpGenerate;
-  end;
-
-
-  {------------------------------------------------------------}
-
-  grpTargetPlatform := TGroupBox.Create(Self);
-  with grpTargetPlatform do begin
-    Name := 'grpTargetPlatform';
-    AnchorToNeighbour(akTop,6,grpChecks);
-    AnchorToNeighbour(akLeft,6,grpGenerate);
-    AnchorParallel(akRight,6,CodeGenPage);
-    Caption := dlgTargetPlatform;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CodeGenPage;
-  end;
-
-  lblTargetOS := TLabel.Create(Self);
-  with lblTargetOS do begin
-    Name := 'lblTargetOS';
-    Parent := grpTargetPlatform;
-    Caption := dlgTargetOS+' (-T)';
-  end;
-
-  TargetOSComboBox:=TComboBox.Create(Self);
-  with TargetOSComboBox do begin
-    Name:='TargetOSComboBox';
-    Parent := grpTargetPlatform;
-    Left := 100;
-    Top := 0;
-    Constraints.MinWidth:=100;
-    AnchorParallel(akRight,6,Parent);
-    AnchorToNeighbour(akLeft,6,lblTargetOS);
+  with TargetOSComboBox do
+  begin
     with Items do begin
       Add('('+rsiwpDefault+')');
       Add('Darwin');
@@ -1448,38 +1192,26 @@ begin
       Add('Win64');
       Add('WinCE');
       //Add('go32v2');
-      //Add('os2'); 
-      //Add('beos'); 
-      //Add('qnx'); 
-      //Add('netware'); 
-      //Add('wdosx'); 
-      //Add('emx'); 
-      //Add('watcom'); 
+      //Add('os2');
+      //Add('beos');
+      //Add('qnx');
+      //Add('netware');
+      //Add('wdosx');
+      //Add('emx');
+      //Add('watcom');
       //Add('netwlibc');
       //Add('amiga');
       //Add('atari');
-      //Add('palmos'); 
-      //Add('macos'); 
-      //Add('morphos'); 
+      //Add('palmos');
+      //Add('macos');
+      //Add('morphos');
     end;
     ItemIndex:=0;
   end;
 
-  lblTargetOS.AnchorVerticalCenterTo(TargetOSComboBox);
+  lblTargetCPU.Caption :=dlgTargetCPU+' (-P)';
 
-  lblTargetCPU := TLabel.Create(Self);
-  with lblTargetCPU do begin
-    Name := 'lblTargetCPU';
-    Parent := grpTargetPlatform;
-    Caption :=dlgTargetCPU+' (-P)';
-  end;
-
-  TargetCPUComboBox:=TComboBox.Create(Self);
   with TargetCPUComboBox do begin
-    Name:='TargetCPUComboBox';
-    Parent := grpTargetPlatform;
-    AnchorToCompanion(akTop,1,TargetOSComboBox);
-    AutoSize:=true;
     with Items do begin
       Add('('+rsiwpDefault+')');
       Add('arm');
@@ -1491,21 +1223,10 @@ begin
     end;
     ItemIndex:=0;
   end;
-  lblTargetCPU.AnchorVerticalCenterTo(TargetCPUComboBox);
 
-  lblTargeti386Proc := TLabel.Create(Self);
-  with lblTargeti386Proc do begin
-    Name := 'lblTargeti386Proc';
-    Parent := grpTargetPlatform;
-    Caption := dlgTargetProc;
-  end;
+  lblTargeti386Proc.Caption := dlgTargetProc;
 
-  Targeti386ProcComboBox:=TComboBox.Create(Self);
   with Targeti386ProcComboBox do begin
-    Name:='Targeti386ProcComboBox';
-    Parent := grpTargetPlatform;
-    AnchorToCompanion(akTop,1,TargetCPUComboBox);
-    AutoSize:=true;
     with Items do begin
       Add('('+rsiwpDefault+')');
       Add('386/486 (-Op1)');
@@ -1514,63 +1235,14 @@ begin
     end;
     ItemIndex:=0;
   end;
-  lblTargeti386Proc.AnchorVerticalCenterTo(Targeti386ProcComboBox);
 
-  {------------------------------------------------------------}
-
-  grpOptimizations := TGroupBox.Create(Self);
-  with grpOptimizations do begin
-    Name:='grpOptimizations';
-    AnchorParallel(akLeft,6,Parent);
-    AnchorToNeighbour(akTop,6,grpTargetPlatform);
-    Caption := dlgOptimiz;
-    ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CodeGenPage;
-  end;
-
-  radOptLevelNone := TRadioButton.Create(grpOptimizations);
-  with radOptLevelNone do begin
-    Name:='radOptLevelNone';
-    Parent := grpOptimizations;
-    Caption :=  dlgLevelNoneOpt+' (none)';
-  end;
-
-  radOptLevel1 := TRadioButton.Create(grpOptimizations);
-  with radOptLevel1 do begin
-    Name:='radOptLevel1';
-    Parent := grpOptimizations;
-    Caption :=  dlgLevel1Opt+' (-O1)';
-  end;
-
-  radOptLevel2 := TRadioButton.Create(grpOptimizations);
-  with radOptLevel2 do begin
-    Name:='radOptLevel2';
-    Parent := grpOptimizations;
-    Caption := dlgLevel2Opt+' (-O2)';
-  end;
-
-  radOptLevel3 := TRadioButton.Create(grpOptimizations);
-  with radOptLevel3 do begin
-    Name:='radOptLevel3';
-    Parent := grpOptimizations;
-    Caption := dlgLevel3Opt+' (-O3)';
-  end;
-
-  chkOptVarsInReg := TCheckBox.Create(Self);
-  with chkOptVarsInReg do begin
-    Name:='chkOptVarsInReg';
-    Parent := grpOptimizations;
-    Caption := dlgCOKeepVarsReg+' (-Or)';
-  end;
-
-  chkOptUncertain := TCheckBox.Create(Self);
-  with chkOptUncertain do begin
-    Name:='chkOptUncertain';
-    Parent := grpOptimizations;
-    Caption := dlgUncertOpt+' (-Ou)';
-  end;
+  grpOptimizations.Caption := dlgOptimiz;
+  radOptLevelNone.Caption :=  dlgLevelNoneOpt+' (none)';
+  radOptLevel1.Caption :=  dlgLevel1Opt+' (-O1)';
+  radOptLevel2.Caption := dlgLevel2Opt+' (-O2)';
+  radOptLevel3.Caption := dlgLevel3Opt+' (-O3)';
+  chkOptVarsInReg.Caption := dlgCOKeepVarsReg+' (-Or)';
+  chkOptUncertain.Caption := dlgUncertOpt+' (-Ou)';
 end;
 
 {------------------------------------------------------------------------------
@@ -1578,138 +1250,31 @@ end;
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
 begin
-  // Setup the Linking Tab
-  LinkingPage:=nbMain.Page[Page];
-  LinkingPage.Name:='LinkingPage';
+  MainNoteBook.Page[Page].Caption:= dlgCOLinking;
 
-  grpDebugging := TGroupBox.Create(Self);
+  // Setup the Linking Tab
   with grpDebugging do begin
-    Name:='grpDebugging';
     AutoSize:=true;
     Caption := dlgCODebugging;
-    Parent := LinkingPage;
-    ChildSizing.SetGridSpacing(6);
-    ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
-    AnchorAsAlign(alTop,6);
   end;
 
-  chkDebugGDB := TCheckBox.Create(Self);
-  with chkDebugGDB do begin
-    Name:='chkDebugGDB';
-    Caption := dlgCOGDB+' (-g)';
-    Parent := grpDebugging;
-  end;
+  chkDebugGDB.Caption := dlgCOGDB+' (-g)';
+  chkDebugDBX.Caption := dlgCODBX+' (-gd)';
+  chkUseLineInfoUnit.Caption := dlgLNumsBct+' (-gl)';
+  chkUseHeaptrc.Caption := dlgCOHeaptrc+' (-gh)';
+  chkUseValgrind.Caption := dlgCOValgrind+' (-gv)';
+  chkGenGProfCode.Caption := dlgGPROF+' (-pg)';
+  chkSymbolsStrip.Caption := dlgCOStrip+' (-Xs)';
 
-  chkDebugDBX := TCheckBox.Create(Self);
-  with chkDebugDBX do begin
-    Name:='chkDebugDBX';
-    Caption := dlgCODBX+' (-gd)';
-    Parent := grpDebugging;
-  end;
+  grpLinkLibraries.Caption := dlgLinkLibraries;
+  chkLinkSmart.Caption := dlgLinkSmart+' (-XX)';
 
-  chkUseLineInfoUnit := TCheckBox.Create(Self);
-  with chkUseLineInfoUnit do begin
-    Name:='chkUseLineInfoUnit';
-    Caption := dlgLNumsBct+' (-gl)';
-    Parent := grpDebugging;
-  end;
+  TargetSpecificsGrpBox.Caption := lisCOTargetOSSpecificOptions;
+  chkWin32GraphicApp.Caption := 'Win32 gui application (-WG)';
 
-  chkUseHeaptrc := TCheckBox.Create(Self);
-  with chkUseHeaptrc do begin
-    Name:='chkUseHeaptrc';
-    Caption := dlgCOHeaptrc+' (-gh)';
-    Parent := grpDebugging;
-  end;
-
-  chkUseValgrind := TCheckBox.Create(Self);
-  with chkUseValgrind do begin
-    Name:='chkUseValgrind';
-    Caption := dlgCOValgrind+' (-gv)';
-    Parent := grpDebugging;
-  end;
-
-  chkGenGProfCode := TCheckBox.Create(Self);
-  with chkGenGProfCode do begin
-    Name:='chkGenGProfCode';
-    Caption := dlgGPROF+' (-pg)';
-    Parent := grpDebugging;
-  end;
-
-  chkSymbolsStrip := TCheckBox.Create(Self);
-  with chkSymbolsStrip do begin
-    Name:='chkSymbolsStrip';
-    Caption := dlgCOStrip+' (-Xs)';
-    Parent := grpDebugging;
-  end;
-
-  {------------------------------------------------------------}
-
-  grpLinkLibraries := TGroupBox.Create(Self);
-  with grpLinkLibraries do begin
-    Name:='grpLinkLibraries';
-    Left:=6;
-    AnchorToNeighbour(akTop,6,grpDebugging);
-    AutoSize:=true;
-    Caption := dlgLinkLibraries;
-    ChildSizing.SetGridSpacing(6);
-    Parent := LinkingPage;
-  end;
-
-  chkLinkSmart := TCheckBox.Create(Self);
-  with chkLinkSmart do begin
-    Name:='chkLinkSmart';
-    Caption := dlgLinkSmart+' (-XX)';
-    Parent := grpLinkLibraries;
-  end;
-
-  {------------------------------------------------------------}
-
-  TargetSpecificsGrpBox := TGroupBox.Create(Self);
-  with TargetSpecificsGrpBox do begin
-    Name:='TargetSpecificsGrpBox';
-    AnchorToNeighbour(akLeft,6,grpLinkLibraries);
-    AnchorToNeighbour(akTop,6,grpDebugging);
-    AnchorParallel(akRight,6,LinkingPage);
-    Caption := lisCOTargetOSSpecificOptions;
-    AutoSize:=true;
-    ChildSizing.SetGridSpacing(6);
-    Parent := LinkingPage;
-  end;
-
-  chkWin32GraphicApp := TCheckBox.Create(Self);
-  with chkWin32GraphicApp do begin
-    Name:='chkWin32GraphicApp';
-    Caption := 'Win32 gui application (-WG)';
-    Parent := TargetSpecificsGrpBox;
-  end;
-
-  {------------------------------------------------------------}
-
-  grpOptions := TGroupBox.Create(Self);
-  with grpOptions do begin
-    Name:='grpOptions';
-    Left:=6;
-    AnchorToNeighbour(akTop,6,grpLinkLibraries);
-    Caption := dlgCOOpts+' (-k)';
-    AutoSize:=true;
-    ChildSizing.SetGridSpacing(6);
-    ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
-    Parent := LinkingPage;
-  end;
-
-  chkOptionsLinkOpt := TCheckBox.Create(Self);
-  with chkOptionsLinkOpt do begin
-    Name:='chkOptionsLinkOpt';
-    Caption := dlgPassOptsLinker;
-    Parent := grpOptions;
-  end;
-
-  edtOptionsLinkOpt := TEdit.Create(grpOptions);
-  with edtOptionsLinkOpt do begin
-    Name:='edtOptionsLinkOpt';
-    Text := '';
-    Parent := grpOptions;
-  end;
+  grpOptions.Caption := dlgCOOpts+' (-k)';
+  chkOptionsLinkOpt.Caption := dlgPassOptsLinker;
+  edtOptionsLinkOpt.Text := '';
 end;
 
 {------------------------------------------------------------------------------
@@ -1718,274 +1283,48 @@ end;
 procedure TfrmCompilerOptions.SetupMessagesTab(Page: integer);
 begin
   // Setup the Messages Tab
-  MsgPage:=nbMain.Page[Page];
-  MsgPage.Name:='MessagesPage';
+  MainNoteBook.Page[Page].Caption:= dlgCOMessages;
 
-  grpVerbosity := TGroupBox.Create(Self);
   with grpVerbosity do begin
-    Name:='grpVerbosity';
-    Left:=6;
-    Top:=6;
-    AnchorParallel(akRight,6,MsgPage);
     Caption := dlgVerbosity;
     AutoSize:=true;
-    ChildSizing.SetGridSpacing(6);
-    Parent := MsgPage;
-    OnResize:=@grpVerbosityResize;
+
+    Items.Add(dlgCOShowErr+' (-ve)');
+    Items.Add(dlgHintsParameterSenderNotUsed+' (none)');
+    Items.Add(dlgShowWarnings+' (-vw)');
+    Items.Add(dlgShowDebugInfo+' (-vd)');
+    Items.Add(dlgShowNotes+' (-vn)');
+    Items.Add(dlgShowUsedFiles+' (-vu)');
+    Items.Add(dlgShowHint+' (-vh)');
+    Items.Add(dlgShowTriedFiles+' (-vt)');
+    Items.Add(dlgShowGeneralInfo+' (-vi)');
+    Items.Add(dlgShowDefinedMacros+' (-vm)');
+    Items.Add(dlgShowCompilingLineNumbers+' (-vl)');
+    Items.Add(dlgShowCompiledProcedures+' (-vp)');
+    Items.Add(dlgShowProcsError+' (-vb)');
+    Items.Add(dlgShowConditionals+' (-vc)');
+    Items.Add(dlgShowEverything+' (-va)');
+    Items.Add(dlgShowExecutableInfo+' (-vx)');
+    Items.Add(dlgShowSummary+' (none)');
+    Items.Add(dlgShowNothing+' (-v0)');
+    Items.Add(dlgHintsUnused+' (none)');
+    Items.Add(dlgWriteFPCLogo+' (-l)');
   end;
 
-  chkErrors := TCheckBox.Create(Self);
-  with chkErrors do begin
-    Name:='chkErrors';
-    Caption := dlgCOShowErr+' (-ve)';
-    Parent := grpVerbosity;
-  end;
-
-  chkWarnings := TCheckBox.Create(Self);
-  with chkWarnings do begin
-    Name:='chkWarnings';
-    AnchorToNeighbour(akTop,6,chkErrors);
-    Caption := dlgShowWarnings+' (-vw)';
-    Parent := grpVerbosity;
-  end;
-
-  chkNotes := TCheckBox.Create(Self);
-  with chkNotes do begin
-    Name:='chkNotes';
-    Caption := dlgShowNotes+' (-vn)';
-    AnchorToNeighbour(akTop,6,chkWarnings);
-    Parent := grpVerbosity;
-  end;
-
-  chkHints := TCheckBox.Create(Self);
-  with chkHints do begin
-    Name:='chkHints';
-    Caption := dlgShowHint+' (-vh)';
-    AnchorToNeighbour(akTop,6,chkNotes);
-    Parent := grpVerbosity;
-  end;
-
-  chkGeneralInfo := TCheckBox.Create(Self);
-  with chkGeneralInfo do begin
-    Name:='chkGeneralInfo';
-    Caption := dlgShowGeneralInfo+' (-vi)';
-    AnchorToNeighbour(akTop,6,chkHints);
-    Parent := grpVerbosity;
-  end;
-
-  chkLineNumbers := TCheckBox.Create(Self);
-  with chkLineNumbers do begin
-    Name:='chkLineNumbers';
-    Caption := dlgShowCompilingLineNumbers+' (-vl)';
-    AnchorToNeighbour(akTop,6,chkGeneralInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkAllProcsOnError := TCheckBox.Create(Self);
-  with chkAllProcsOnError do begin
-    Name:='chkAllProcsOnError';
-    Caption := dlgShowProcsError+' (-vb)';
-    AnchorToNeighbour(akTop,6,chkLineNumbers);
-    Parent := grpVerbosity;
-  end;
-
-  chkEverything := TCheckBox.Create(Self);
-  with chkEverything do begin
-    Name:='chkEverything';
-    Caption := dlgShowEverything+' (-va)';
-    AnchorToNeighbour(akTop,6,chkAllProcsOnError);
-    Parent := grpVerbosity;
-  end;
-
-  chkShowSummary := TCheckBox.Create(Self);
-  with chkShowSummary do begin
-    Name:='chkShowSummary';
-    Caption := dlgShowSummary+' (none)';
-    AnchorToNeighbour(akTop,6,chkEverything);
-    Parent := grpVerbosity;
-  end;
-
-  chkHintsForUnusedUnitsInMainSrc := TCheckBox.Create(Self);
-  with chkHintsForUnusedUnitsInMainSrc do begin
-    Name:='chkHintsForUnusedUnitsInMainSrc';
-    Caption := dlgHintsUnused+' (none)';
-    AnchorToNeighbour(akTop,6,chkShowSummary);
-    Parent := grpVerbosity;
-  end;
-
-  chkHintsForSenderNotUsed := TCheckBox.Create(Self);
-  with chkHintsForSenderNotUsed do begin
-    Name:='chkHintsForSenderNotUsed';
-    Caption := dlgHintsParameterSenderNotUsed+' (none)';
-    AnchorToNeighbour(akTop,6,chkHintsForUnusedUnitsInMainSrc);
-    Parent := grpVerbosity;
-  end;
-
-  // right column
-  
-  chkDebugInfo := TCheckBox.Create(Self);
-  with chkDebugInfo do begin
-    Name:='chkDebugInfo';
-    Caption := dlgShowDebugInfo+' (-vd)';
-    Left := (grpVerbosity.ClientWidth div 2)+4;
-    Parent := grpVerbosity;
-  end;
-
-  chkUsedFiles := TCheckBox.Create(Self);
-  with chkUsedFiles do begin
-    Name:='chkUsedFiles';
-    Caption := dlgShowUsedFiles+' (-vu)';
-    AnchorToNeighbour(akTop,6,chkDebugInfo);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkTriedFiles := TCheckBox.Create(Self);
-  with chkTriedFiles do begin
-    Name:='chkTriedFiles';
-    Caption := dlgShowTriedFiles+' (-vt)';
-    AnchorToNeighbour(akTop,6,chkUsedFiles);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkDefinedMacros := TCheckBox.Create(Self);
-  with chkDefinedMacros do begin
-    Name:='chkDefinedMacros';
-    Caption := dlgShowDefinedMacros+' (-vm)';
-    AnchorToNeighbour(akTop,6,chkTriedFiles);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkCompiledProc := TCheckBox.Create(Self);
-  with chkCompiledProc do begin
-    Name:='chkCompiledProc';
-    Caption := dlgShowCompiledProcedures+' (-vp)';
-    AnchorToNeighbour(akTop,6,chkDefinedMacros);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkConditionals := TCheckBox.Create(Self);
-  with chkConditionals do begin
-    Name:='chkConditionals';
-    Caption := dlgShowConditionals+' (-vc)';
-    AnchorToNeighbour(akTop,6,chkCompiledProc);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkExecutableInfo := TCheckBox.Create(Self);
-  with chkExecutableInfo do begin
-    Name:='chkExecutableInfo';
-    Caption := dlgShowExecutableInfo+' (-vx)';
-    AnchorToNeighbour(akTop,6,chkConditionals);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkNothing := TCheckBox.Create(Self);
-  with chkNothing do begin
-    Name:='chkNothing';
-    Caption := dlgShowNothing+' (-v0)';
-    AnchorToNeighbour(akTop,6,chkExecutableInfo);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  chkFPCLogo := TCheckBox.Create(Self);
-  with chkFPCLogo do begin
-    Name:='chkFPCLogo';
-    Caption := dlgWriteFPCLogo+' (-l)';
-    AnchorToNeighbour(akTop,6,chkNothing);
-    AnchorParallel(akLeft,0,chkDebugInfo);
-    Parent := grpVerbosity;
-  end;
-
-  {------------------------------------------------------------}
-  grpErrorCnt := TGroupBox.Create(Self);
-  with grpErrorCnt do begin
-    Name:='grpErrorCnt';
-    Left:=6;
-    AnchorToNeighbour(akTop,6,grpVerbosity);
-    AutoSize:=true;
-    Caption := dlgStopAfterNrErr+' (-Se)';
-    ChildSizing.SetGridSpacing(6);
-    Parent := MsgPage;
-  end;
-
-  edtErrorCnt := TEdit.Create(grpErrorCnt);
-  with edtErrorCnt do begin
-    Name:='edtErrorCnt';
-    Text := '';
-    Constraints.MinWidth:=100;
-    AutoSize:=true;
-    Parent := grpErrorCnt;
-    AnchorAsAlign(alTop,0);
-  end;
+  grpErrorCnt.Caption := dlgStopAfterNrErr+' (-Se)';
+  edtErrorCnt.Text := '';
 end;
 
 procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
 begin
-  OtherPage:=nbMain.Page[Page];
-  OtherPage.Name:='OtherPage';
+  MainNoteBook.Page[Page].Caption:= dlgCOOther;
 
-  grpConfigFile := TGroupBox.Create(Self);
-  with grpConfigFile do begin
-    Name:='grpConfigFile';
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Caption := dlgConfigFiles;
-    Parent := OtherPage;
-    AnchorAsAlign(alTop,6);
-  end;
+  grpConfigFile.Caption := dlgConfigFiles;
+  chkConfigFile.Caption := dlgUseFpcCfg+' (If not checked: -n)';
+  chkCustomConfigFile.Caption := dlgUseCustomConfig+' (@)';
+  edtConfigPath.Text := '';
 
-  chkConfigFile := TCheckBox.Create(Self);
-  with chkConfigFile do begin
-    Name:='chkConfigFile';
-    Caption := dlgUseFpcCfg+' (If not checked: -n)';
-    Left:=6;
-    Parent := grpConfigFile;
-  end;
-
-  chkCustomConfigFile := TCheckBox.Create(Self);
-  with chkCustomConfigFile do begin
-    Name:='chkCustomConfigFile';
-    Caption := dlgUseCustomConfig+' (@)';
-    AnchorToNeighbour(akTop,6,chkConfigFile);
-    Left:=6;
-    Parent := grpConfigFile;
-    OnClick:=@chkCustomConfigFileClick;
-  end;
-
-  edtConfigPath := TEdit.Create(grpConfigFile);
-  with edtConfigPath do begin
-    Name:='edtConfigPath';
-    Constraints.MinWidth:=200;
-    Left:=6;
-    AnchorToNeighbour(akTop,6,chkCustomConfigFile);
-    Text := '';
-    AnchorParallel(akRight,6,grpConfigFile);
-    AutoSize:=true;
-    Parent := grpConfigFile;
-  end;
-
-  grpCustomOptions := TGroupBox.Create(Self);
-  with grpCustomOptions do begin
-    Name:='grpCustomOptions';
-    AnchorToCompanion(akTop,6,grpConfigFile);
-    Caption:=lisCustomOptions2;
-    Height:=200;
-    Parent := OtherPage;
-  end;
-
-  memCustomOptions := TMemo.Create(Self);
-  with memCustomOptions do begin
-    Name:='memCustomOptions';
-    Parent:=grpCustomOptions;
-    Align:=alClient;
-  end;
+  grpCustomOptions.Caption:=lisCustomOptions2;
 end;
 
 {------------------------------------------------------------------------------
@@ -1993,212 +1332,60 @@ end;
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
 begin
-  InheritedPage:=nbMain.Page[Page];
-  InheritedPage.Name:='InheritedPage';
+  MainNoteBook.Page[Page].Caption:= dlgCOInherited;
 
-  InhNoteLabel:=TLabel.Create(Self);
-  with InhNoteLabel do begin
-    Name:='InhNoteLabel';
-    Caption:=lisAdditionalCompilerOptionsInheritedFromPackages;
-    Parent:=InheritedPage;
-  end;
+  InhNoteLabel.Caption:=lisAdditionalCompilerOptionsInheritedFromPackages;
 
-  InhTreeView:=TTreeView.Create(Self);
   with InhTreeView do begin
-    Name:='InhTreeView';
     Options:=Options+[tvoReadOnly, tvoRightClickSelect, tvoShowRoot,
                       tvoKeepCollapsedNodes];
     Images := IDEImages.Images_16;
-    AnchorToNeighbour(akTop,6,InhNoteLabel);
-    AnchorParallel(akLeft,0,InheritedPage);
-    AnchorParallel(akRight,0,InheritedPage);
-    Parent:=InheritedPage;
-    OnSelectionChanged:=@InhTreeViewSelectionChanged;
   end;
 
-  InhItemMemo:=TMemo.Create(Self);
-  with InhItemMemo do begin
-    Name:='InhItemMemo';
-    ReadOnly:=true;
-    WordWrap:=true;
-    ScrollBars:=ssAutoVertical;
-    Text:=lisSelectANode;
-    Anchors:=[akLeft,akRight,akBottom];
-    Height:=100;
-    Parent:=InheritedPage;
-    AnchorAsAlign(alBottom,0);
-  end;
-  InhTreeView.AnchorToNeighbour(akBottom,0,InhItemMemo);
+  InhItemMemo.Text:=lisSelectANode;
 end;
 
 procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
 // the real edit width is calculated in the groupbox resize
 // here the controls are given initial sizes to avoid jumpy controls
 
-  procedure CreateGroup(AGroupBox: TGroupBox;
-    var lblRunIf: TLabel;
-    var chkCompile: TCheckBox;
-    var chkBuild: TCheckBox;
-    var chkRun: TCheckBox;
-    var lblCommand: TLabel;
-    var edtCommand: TEdit;
-    WithScanFlags: boolean;
-    var chkScanFPC: TCheckBox;
-    var chkScanMake: TCheckBox;
-    var chkShowAll: TCheckBox);
-  begin
-    lblRunIf := TLabel.Create(Self);
-    with lblRunIf do begin
-      Caption := lisCOCallOn;
-      Parent:=AGroupBox;
-    end;
-
-    chkCompile := TCheckBox.Create(Self);
-    with chkCompile do begin
-      Caption := lisCOCallOnCompile;
-      AnchorToNeighbour(akLeft,6,lblRunIf);
-      Constraints.MinWidth:=WCOLABEL;
-      Parent:=AGroupBox;
-    end;
-    lblRunIf.AnchorVerticalCenterTo(chkCompile);
-
-    chkBuild := TCheckBox.Create(Self);
-    with chkBuild do begin
-      Caption := lisCOCallOnBuild;
-      AnchorToCompanion(akLeft,6,chkCompile);
-      Constraints.MinWidth:=WCOLABEL;
-      Parent:=AGroupBox;
-    end;
-
-    chkRun := TCheckBox.Create(Self);
-    with chkRun do begin
-      Caption := lisCOCallOnRun;
-      AnchorToCompanion(akLeft,6,chkBuild);
-      Constraints.MinWidth:=WCOLABEL;
-      Parent:=AGroupBox;
-    end;
-    
-    lblCommand := TLabel.Create(Self);
-    with lblCommand do begin
-      Caption:=lisCOCommand;
-      Parent:=AGroupBox;
-    end;
-    
-    edtCommand := TEdit.Create(Self);
-    with edtCommand do begin
-      AnchorToNeighbour(akTop,6,chkCompile);
-      AnchorToNeighbour(akLeft,6,lblCommand);
-      AnchorParallel(akRight,6,AGroupBox);
-      Text:='';
-      Parent:=AGroupBox;
-    end;
-    lblCommand.AnchorVerticalCenterTo(edtCommand);
-
-    if WithScanFlags then begin
-      chkScanFPC := TCheckBox.Create(Self);
-      with chkScanFPC do begin
-        Caption := lisCOScanForFPCMessages;
-        AnchorToNeighbour(akTop,6,edtCommand);
-        Constraints.MinWidth:=WCOLABEL;
-        Parent:=AGroupBox;
-      end;
-
-      chkScanMake := TCheckBox.Create(Self);
-      with chkScanMake do begin
-        Caption := lisCOScanForMakeMessages;
-        AnchorToNeighbour(akTop,6,chkScanFPC);
-        Constraints.MinWidth:=WCOLABEL;
-        Parent:=AGroupBox;
-      end;
-
-      chkShowAll := TCheckBox.Create(Self);
-      with chkShowAll do begin
-        Caption := lisCOShowAllMessages;
-        AnchorToCompanion(akLeft,15,chkScanFPC);
-        Constraints.MinWidth:=WCOLABEL;
-        Parent:=AGroupBox;
-      end;
-    end;
-  end;
-
 begin
-  CompilationPage := nbMain.Page[Page];
-  CompilationPage.Name:='CompilationPage';
+  MainNoteBook.Page[Page].Caption:= dlgCOCompilation;
 
-  chkCreateMakefile:=TCheckBox.Create(Self);
-  with chkCreateMakefile do begin
-    Name := 'chkCreateMakefile';
-    Caption := 'Create Makefile';
-    Left:=6;
-    Top:=6;
-    Parent := CompilationPage;
-  end;
+  chkCreateMakefile.Caption := 'Create Makefile';
 
-  {------------------------------------------------------------}
+  ExecuteAfterGroupBox.Caption := lisCOExecuteBefore;
+  chkExecBeforeBuild.Caption := lisCOCallOnBuild;
+  chkExecBeforeCompile.Caption := lisCOCallOnCompile;
+  chkExecBeforeRun.Caption := lisCOCallOnRun;
+  ExecuteBeforeCommandEdit.Text:='';
+  ExecuteBeforeCommandLabel.Caption:=lisCOCommand;
+  ExecuteBeforeScanFPCCheckBox.Caption := lisCOScanForFPCMessages;
+  ExecuteBeforeScanMakeCheckBox.Caption := lisCOScanForMakeMessages;
+  ExecuteBeforeShowAllCheckBox.Caption := lisCOShowAllMessages;
+  lblRunIfExecBefore.Caption := lisCOCallOn;
 
-  ExecuteBeforeGroupBox:=TGroupBox.Create(Self);
-  with ExecuteBeforeGroupBox do begin
-    Name := 'ExecuteBeforeGroupBox';
-    Left:=6;
-    AnchorToNeighbour(akTop,6,chkCreateMakefile);
-    AnchorParallel(akRight,6,CompilationPage);
-    Caption := lisCOExecuteBefore;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CompilationPage;
-  end;
-
-  CreateGroup(ExecuteBeforeGroupBox,
-    lblRunIfExecBefore,chkExecBeforeCompile,chkExecBeforeBuild,chkExecBeforeRun,
-    ExecuteBeforeCommandLabel,ExecuteBeforeCommandEdit,
-    true,
-    ExecuteBeforeScanFPCCheckBox,ExecuteBeforeScanMakeCheckBox,
-    ExecuteBeforeShowAllCheckBox
-  );
-
-  {------------------------------------------------------------}
-
-  grpCompiler := TGroupBox.Create(Self);
-  with grpCompiler do begin
-    Name := 'grpCompiler';
-    AnchorToCompanion(akTop,6,ExecuteBeforeGroupBox);
-    Caption := lisCompiler;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CompilationPage;
-  end;
-
-  CreateGroup(grpCompiler,
-    lblRunIfCompiler,chkCompilerCompile,chkCompilerBuild,chkCompilerRun,
-    lblCompiler,edtCompiler,
-    false,
-    ExecuteBeforeScanFPCCheckBox,ExecuteBeforeScanMakeCheckBox,
-    ExecuteBeforeShowAllCheckBox
-  );
-  chkCompilerCompile.Checked := True;
+  grpCompiler.Caption := lisCompiler;
+  chkCompilerBuild.Caption := lisCOCallOnBuild;
   chkCompilerBuild.Checked := True;
+  chkCompilerCompile.Caption := lisCOCallOnCompile;
+  chkCompilerCompile.Checked := True;
+  chkCompilerRun.Caption := lisCOCallOnRun;
   chkCompilerRun.Checked := True;
+  edtCompiler.Text:='';
+  lblCompiler.Caption:=lisCOCommand;
+  lblRunIfCompiler.Caption := lisCOCallOn;
 
-  {------------------------------------------------------------}
-
-  ExecuteAfterGroupBox:=TGroupBox.Create(Self);
-  with ExecuteAfterGroupBox do begin
-    Name := 'ExecuteAfterGroupBox';
-    Left:=6;
-    AnchorToCompanion(akTop,6,grpCompiler);
-    Caption := lisCOExecuteAfter;
-    ChildSizing.SetGridSpacing(6);
-    AutoSize:=true;
-    Parent := CompilationPage;
-  end;
-
-  CreateGroup(ExecuteAfterGroupBox,
-    lblRunIfExecAfter,chkExecAfterCompile,chkExecAfterBuild,chkExecAfterRun,
-    ExecuteAfterCommandLabel,ExecuteAfterCommandEdit,
-    true,
-    ExecuteAfterScanFPCCheckBox,ExecuteAfterScanMakeCheckBox,
-    ExecuteAfterShowAllCheckBox
-  );
+  ExecuteBeforeGroupBox.Caption := lisCOExecuteAfter;
+  chkExecAfterBuild.Caption := lisCOCallOnBuild;
+  chkExecAfterCompile.Caption := lisCOCallOnCompile;
+  chkExecAfterRun.Caption := lisCOCallOnRun;
+  ExecuteAfterCommandEdit.Text:='';
+  ExecuteAfterCommandLabel.Caption:=lisCOCommand;
+  ExecuteAfterScanFPCCheckBox.Caption := lisCOScanForFPCMessages;
+  ExecuteAfterScanMakeCheckBox.Caption := lisCOScanForMakeMessages;
+  ExecuteAfterShowAllCheckBox.Caption := lisCOShowAllMessages;
+  lblRunIfExecAfter.Caption := lisCOCallOn;
 end;
 
 {------------------------------------------------------------------------------
@@ -2209,30 +1396,9 @@ var
   LCLInterface: TLCLPlatform;
 begin
   // Setup the Search Paths Tab
-  PathPage:=nbMain.Page[Page];
-  PathPage.Name:='PathsPage';
-  PathPage.ChildSizing.SetGridSpacing(6);
+  MainNoteBook.Page[Page].Caption:= dlgSearchPaths;
 
-  lblOtherUnits := TLabel.Create(Self);
-  with lblOtherUnits do begin
-    Name:='lblOtherUnits';
-    Parent := PathPage;
-    Left:=6;
-    Top:=6;
-    Caption := dlgOtherUnitFiles;
-  end;
-
-  edtOtherUnits := TEdit.Create(Self);
-  with edtOtherUnits do begin
-    Name:='edtOtherUnits';
-    Text := '';
-    Left:=6;
-    AnchorToNeighbour(akTop,6,lblOtherUnits);
-    Constraints.MinWidth:=200;
-    AutoSize:=true;
-    Parent := PathPage;
-  end;
-
+  lblOtherUnits.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn:=TPathEditorButton.Create(Self);
   with OtherUnitsPathEditBtn do begin
     Name:='OtherUnitsPathEditBtn';
@@ -2245,31 +1411,14 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
+    BorderSpacing.InnerBorder := 0;
+    Constraints.MinHeight:= 25;
   end;
-  edtOtherUnits.AnchorToNeighbour(akRight,2,OtherUnitsPathEditBtn);
+  edtOtherUnits.AnchorToNeighbour(akRight,0,OtherUnitsPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblIncludeFiles := TLabel.Create(Self);
-  with lblIncludeFiles do begin
-    Name:='grpIncludeFiles';
-    Left:=6;
-    AnchorToNeighbour(akTop,10,edtOtherUnits);
-    Caption := dlgCOIncFiles;
-    Parent := PathPage;
-  end;
-
-  edtIncludeFiles := TEdit.Create(Self);
-  with edtIncludeFiles do begin
-    Name:='edtIncludeFiles';
-    Text := '';
-    Left:=6;
-    AnchorToNeighbour(akTop,2,lblIncludeFiles);
-    Constraints.MinWidth:=200;
-    AutoSize:=true;
-    Parent := PathPage;
-  end;
-
+  lblIncludeFiles .Caption := dlgCOIncFiles;
   IncludeFilesPathEditBtn:=TPathEditorButton.Create(Self);
   with IncludeFilesPathEditBtn do begin
     Name:='IncludeFilesPathEditBtn';
@@ -2282,31 +1431,14 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
+    BorderSpacing.InnerBorder := 0;
+    Constraints.MinHeight:= 25;
   end;
-  edtIncludeFiles.AnchorToNeighbour(akRight,2,IncludeFilesPathEditBtn);
+  edtIncludeFiles.AnchorToNeighbour(akRight,0,IncludeFilesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblOtherSources := TLabel.Create(Self);
-  with lblOtherSources do begin
-    Name:='lblOtherSources';
-    Left:=6;
-    AnchorToNeighbour(akTop,10,edtIncludeFiles);
-    Caption := dlgCOSources;
-    Parent := PathPage;
-  end;
-
-  edtOtherSources := TEdit.Create(Self);
-  with edtOtherSources do begin
-    Name:='edtOtherSources';
-    Text := '';
-    Left:=6;
-    AnchorToNeighbour(akTop,2,lblOtherSources);
-    Constraints.MinWidth:=200;
-    AutoSize:=true;
-    Parent := PathPage;
-  end;
-
+  lblOtherSources.Caption := dlgCOSources;
   OtherSourcesPathEditBtn:=TPathEditorButton.Create(Self);
   with OtherSourcesPathEditBtn do begin
     Name:='OtherSourcesPathEditBtn';
@@ -2319,31 +1451,14 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
+    BorderSpacing.InnerBorder := 0;
+    Constraints.MinHeight:= 25;
   end;
-  edtOtherSources.AnchorToNeighbour(akRight,2,OtherSourcesPathEditBtn);
+  edtOtherSources.AnchorToNeighbour(akRight,0,OtherSourcesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblLibraries := TLabel.Create(Self);
-  with lblLibraries do begin
-    Name:='lblLibraries';
-    Left:=6;
-    AnchorToNeighbour(akTop,10,edtOtherSources);
-    Caption := dlgCOLibraries;
-    Parent := PathPage;
-  end;
-
-  edtLibraries := TEdit.Create(Self);
-  with edtLibraries do begin
-    Name:='edtLibraries';
-    Text := '';
-    Constraints.MinWidth:=200;
-    Left:=6;
-    AnchorToNeighbour(akTop,2,lblLibraries);
-    AutoSize:=true;
-    Parent := PathPage;
-  end;
-
+  lblLibraries.Caption := dlgCOLibraries;
   LibrariesPathEditBtn:=TPathEditorButton.Create(Self);
   with LibrariesPathEditBtn do begin
     Name:='LibrariesPathEditBtn';
@@ -2356,31 +1471,14 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
+    BorderSpacing.InnerBorder := 0;
+    Constraints.MinHeight:= 25;
   end;
-  edtLibraries.AnchorToNeighbour(akRight,2,LibrariesPathEditBtn);
+  edtLibraries.AnchorToNeighbour(akRight,0,LibrariesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblUnitOutputDir := TLabel.Create(Self);
-  with lblUnitOutputDir do begin
-    Name:='lblUnitOutputDir';
-    Left:=6;
-    AnchorToNeighbour(akTop,10,edtLibraries);
-    Caption := dlgUnitOutp;
-    Parent := PathPage;
-  end;
-
-  edtUnitOutputDir := TEdit.Create(Self);
-  with edtUnitOutputDir do begin
-    Name:='edtUnitOutputDir';
-    Text := '';
-    Left:=6;
-    AnchorToNeighbour(akTop,2,lblUnitOutputDir);
-    Constraints.MinWidth:=200;
-    AutoSize:=true;
-    Parent := PathPage;
-  end;
-
+  lblUnitOutputDir.Caption := dlgUnitOutp;
   btnUnitOutputDir:=TButton.Create(Self);
   with btnUnitOutputDir do begin
     Name:='btnUnitOutputDir';
@@ -2392,31 +1490,14 @@ begin
     Caption:='...';
     OnClick:=@FileBrowseBtnClick;
     Parent:=PathPage;
+    BorderSpacing.InnerBorder := 0;
+    Constraints.MinHeight:= 25;
   end;
-  edtUnitOutputDir.AnchorToNeighbour(akRight,2,btnUnitOutputDir);
+  edtUnitOutputDir.AnchorToNeighbour(akRight,0,btnUnitOutputDir);
 
   {------------------------------------------------------------}
 
-  lblDebugPath := TLabel.Create(Self);
-  with lblDebugPath do begin
-    Name:='lblDebugPath';
-    Left:=6;
-    AnchorToNeighbour(akTop,10,edtUnitOutputDir);
-    Caption := dlgCODebugPath;
-    Parent := PathPage;
-  end;
-
-  edtDebugPath := TEdit.Create(Self);
-  with edtDebugPath do begin
-    Name:='edtDebugPath';
-    Text := '';
-    Left:=6;
-    AnchorToNeighbour(akTop,2,lblDebugPath);
-    Constraints.MinWidth:=200;
-    AutoSize:=true;
-    Parent := PathPage;
-  end;
-
+  lblDebugPath.Caption := dlgCODebugPath;
   DebugPathEditBtn:=TPathEditorButton.Create(Self);
   with DebugPathEditBtn do begin
     Name:='DebugPathEditBtn';
@@ -2429,24 +1510,15 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
+    BorderSpacing.InnerBorder := 0;
+    Constraints.MinHeight:= 25;
   end;
-  edtDebugPath.AnchorToNeighbour(akRight,2,DebugPathEditBtn);
+  edtDebugPath.AnchorToNeighbour(akRight,0,DebugPathEditBtn);
 
   {------------------------------------------------------------}
 
-  LCLWidgetTypeLabel:=TLabel.Create(Self);
-  with LCLWidgetTypeLabel do begin
-    Name:='LCLWidgetTypeLabel';
-    Left:=6;
-    Caption:=Format(lisCOVarious, [lisLCLWidgetType]);
-    Parent := PathPage;
-  end;
-
-  LCLWidgetTypeComboBox:=TComboBox.Create(Self);
+  LCLWidgetTypeLabel.Caption:=Format(lisCOVarious, [lisLCLWidgetType]);
   with LCLWidgetTypeComboBox do begin
-    Name:='LCLWidgetTypeComboBox';
-    AnchorToNeighbour(akLeft,6,LCLWidgetTypeLabel);
-    AnchorToNeighbour(akTop,10,edtDebugPath);
     with Items do begin
       BeginUpdate;
       Add(Format(lisCOdefault,
@@ -2458,10 +1530,8 @@ begin
     end;
     ItemIndex:=1;
     Constraints.MinWidth:=150;
-    AutoSize:=true;
-    Parent := PathPage;
+    AutoSize:=True;
   end;
-  LCLWidgetTypeLabel.AnchorVerticalCenterTo(LCLWidgetTypeComboBox);
 end;
 
 {------------------------------------------------------------------------------
@@ -2470,59 +1540,12 @@ end;
 procedure TfrmCompilerOptions.SetupButtonBar;
 begin
   // Setup the Button Bar
-  btnOK := TButton.Create(Self);
-  with btnOK do begin
-    Caption := lisOkBtn;
-    AutoSize:=true;
-    OnClick := @ButtonOKClicked;
-    Constraints.MinWidth:=60;
-    Parent := Self;
-  end;
-
-  btnCancel := TButton.Create(Self);
-  with btnCancel do begin
-    Caption := dlgCancel;
-    AutoSize:=true;
-    ModalResult := mrCancel;
-    Constraints.MinWidth:=60;
-    Parent := Self;
-  end;
+  btnOK.Caption := lisOkBtn;
+  btnCancel.Caption := dlgCancel;
   CancelControl:=btnCancel;
-
-  btnShowOptions := TButton.Create(Self);
-  with btnShowOptions do begin
-    Caption := dlgCOShowOptions;
-    AutoSize:=true;
-    OnClick := @ButtonShowOptionsClicked;
-    Constraints.MinWidth:=60;
-    Parent := Self;
-  end;
-
-  btnCheck := TButton.Create(Self);
-  with btnCheck do begin
-    Caption := lisCompTest;
-    AutoSize:=true;
-    OnClick := @btnTestClicked;
-    Constraints.MinWidth:=60;
-    Parent := Self;
-  end;
-
-  btnLoadSave := TButton.Create(Self);
-  with btnLoadSave do begin
-    Caption := dlgCOLoadSave;
-    AutoSize:=true;
-    OnClick := @ButtonLoadSaveClick;
-    Constraints.MinWidth:=60;
-    Parent := Self;
-  end;
-  
-  btnLoadSave.Anchors:=[akRight,akBottom];
-  btnLoadSave.AnchorParallel(akRight,6,Self);
-  btnLoadSave.AnchorParallel(akBottom,6,Self);
-  btnCheck.AnchorToCompanion(akRight,10,btnLoadSave);
-  btnShowOptions.AnchorToCompanion(akRight,10,btnCheck);
-  btnCancel.AnchorToCompanion(akRight,10,btnShowOptions);
-  btnOK.AnchorToCompanion(akRight,10,btnCancel);
+  btnShowOptions.Caption := dlgCOShowOptions;
+  btnCheck.Caption := lisCompTest;
+  btnLoadSave.Caption := dlgCOLoadSave;
 end;
 
 procedure TfrmCompilerOptions.chkCustomConfigFileClick(Sender: TObject);
@@ -2611,11 +1634,6 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TfrmCompilerOptions.grpVerbosityResize(Sender: TObject);
-begin
-  chkDebugInfo.Left := (grpVerbosity.ClientWidth div 2)+4;
-end;
-
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);
 begin
   if FReadOnly=AValue then exit;
@@ -2623,5 +1641,8 @@ begin
   btnOk.Enabled:=not FReadOnly;
   btnCheck.Enabled:=not FReadOnly;
 end;
+
+initialization
+  {$I compileroptionsdlg.lrs}
 
 end.
