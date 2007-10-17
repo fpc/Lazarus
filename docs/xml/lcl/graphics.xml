@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Graphics">
-      <short/>
+      <short>Unit contains definitions for many fundamental classes and types used in graphic applications</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="SysUtils">
@@ -2459,35 +2459,29 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphic">
-        <short>Base class for dealing with <i>Graphic</i> images</short>
-        <descr>
-          <p>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats.</p>
-          <pre><i>LoadFromFile</i> - Read the graphic from the file system.  The old contents of
-        the graphic are lost.  If the file is not of the right format, an exception will be generated.
-      <i>SaveToFile</i> - Writes the graphic to disk in the file provided.
-      <i>LoadFromStream</i> - Like <i>LoadFromFile</i> except source is a stream (e.g.  <i>TBlobStream</i>).
-      <i>SaveToStream</i> - stream analogue of <i>SaveToFile</i>.
-      <i>LoadFromClipboardFormat</i> - Replaces the current image with the data
-        provided.  If the <i>TGraphic</i> does not support that format it will generate
-        an exception.
-      <i>SaveToClipboardFormats</i> - Converts the image to a clipboard format.  If the
-        image does not support being translated into a clipboard format it
-        will generate an exception.
-      <i>Height</i> - The native, unstretched, height of the graphic.
-      <i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes.
-      <i>Transparent</i> - Some parts of the image are not opaque, ie the background
-        can be seen through.
-      <i>Width</i> - The native, unstretched, width of the graphic.
-      <i>OnChange</i> - Called whenever the graphic changes
-      <i>PaletteModified</i> - Indicates in <i>OnChange</i> whether color palette has changed.
-        Stays true until whoever is responsible for realizing this new palette
-        (ex: TImage) sets it to False.
-      <i>OnProgress</i> - Generic progress indicator event. Propagates out to <i>TPicture</i>
-        and <i>TImage OnProgress</i> events.
-</pre>
-          <br/>
-          <p>As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes</p>
-        </descr>
+        <short>Base class for dealing with <i>Graphic</i>   images</short>
+        <descr><p>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <b>BitMap</b>, <i>Icon</i> etc which have a <i>Canvas</i> element defined</p><br/><i>LoadFromFile</i>
+ - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><i>SaveToFile</i>
+ - Writes the graphic to disk in the file provided.<br/><i>LoadFromStream</i>
+ - Like <i>LoadFromFile</i>
+ except source is a stream (e.g.  <i>TBlobStream</i>
+).<br/><i>SaveToStream</i>
+ - stream analogue of <i>SaveToFile</i>
+.<br/><i>LoadFromClipboardFormat</i>
+ - Replaces the current image with the data provided.  If the <i>TGraphic</i>
+ does not support that format it will generate an exception.<br/><i>SaveToClipboardFormats</i>
+ - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><i>Height</i>
+ - The native, unstretched, height of the graphic.<br/><i>Palette</i>
+ - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><i>Transparent</i>
+ - Some parts of the image are not opaque, ie the background can be seen through.<br/><i>Width</i>
+ - The native, unstretched, width of the graphic.<br/><i>OnChange</i>
+ - Called whenever the graphic changes<br/><i>PaletteModified</i>
+ - Indicates in <i>OnChange</i>
+ whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><i>OnProgress</i>
+ - Generic progress indicator event. Propagates out to <i>TPicture</i>
+  and <i>TImage OnProgress</i>
+ events.
+<br/><br/><p>As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes</p></descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphic.FModified">
@@ -2917,10 +2911,84 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPicture">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TPicture</i>     is a <i>TGraphic</i>     container, used in place of a <i>TGraphic</i>   if the graphic can be of any <i>TGraphic</i>     class.</short>
+        <descr><i>TPicture</i>
+ is a <i>TGraphic</i>
+ container.  It is used in place of a <i>TGraphic</i>
+ if the graphic can be of any <i>TGraphic</i>
+ class. <br/>
+
+
+It is not a direct descendant of <i>TGraphic</i>
+, so you will not see <i>TGraphic</i>
+ listed in the <i>Inheritance</i>
+ chart, but it contains a property <i>Graphic</i>
+, of type <i>TGraphic</i>
+, so can contain all the properties of a <i>TGraphic</i><br/><br/>
+
+Defines many <b>private</b>
+ methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc<br/>
+It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a Canvas property.<br/><br/><i>LoadFromFile</i>
+ and <i>SaveToFile</i>
+ are polymorphic. For example, if the <i>TPicture</i>
+ is holding an <i>Icon</i>
+, you can  <i>LoadFromFile</i>
+ a bitmap file, where if the class is <i>TIcon</i>
+ you could only read  .ICO files.<br/><br/><i>LoadFromFile</i>
+
+ - Reads a picture from disk. The <i>TGraphic</i>
+
+ class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.<br/><i>SaveToFile</i>
+
+ - Writes the picture to disk.<br/><i>LoadFromClipboardFormat</i>
+
+ - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.<br/><i>SaveToClipboardFormats</i>
+
+ - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.<br/><i>SupportsClipboardFormat</i>
+
+ - Returns true if the given clipboard format  is supported by <i>LoadFromClipboardFormat</i>
+
+.<br/><i>Assign</i>
+
+ - Copies the contents of the given <i>TPicture</i>
+
+.  Used most often in  the implementation of TPicture properties.<br/><i>RegisterFileFormat</i>
+
+ - Register a new <i>TGraphic</i>
+
+ class for use in  <i>LoadFromFile</i>
+
+.<br/><i>RegisterClipboardFormat</i>
+
+ - Registers a new <i>TGraphic</i>
+
+ class for use in  <i>LoadFromClipboardFormat</i>
+
+.<br/><i>UnRegisterGraphicClass</i>
+
+ - Removes all references to the specified <i>TGraphic</i>
+
+  class and all its descendants from the file format and clipboard format internal lists.<br/><i>Height</i>
+
+ - The native, unstretched, height of the picture.<br/><i>Width</i>
+
+ - The native, unstretched, width of the picture.<br/><i>Graphic</i>
+
+ - The <i>TGraphic</i>
+
+ object contained by the <i>TPicture</i><br/><i>Bitmap</i>
+
+ - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.<br/><i>Pixmap</i>
+
+ - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.<br/><i>PNG</i>
+
+ - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<i>TPortableNetworkGraphic</i>
+
+) is returned.<br/><i>PNM</i>
+
+ - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (<i>TPortableAnyMapGraphic</i>
+
+) is returned.<br/></descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPicture.FGraphic">
@@ -3116,45 +3184,43 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TPicture.Progress.DoContinue"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TPicture.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TPicture</i> constructor</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TPicture.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TPicture</i> destructor</short>
+        <descr>Any destructor method defined here will <b>override</b> destructors defined in ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromFile">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>LoadFromFile</i> - Reads a picture from disk</short>
+        <descr><i>LoadFromFile</i> - Reads a picture from disk. The <i>TGraphic</i> class created is determined by the file extension of the file.</descr>
+        <errors>If the file extension is  not recognized an exception is generated</errors>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPicture.LoadFromFile.Filename"><short/></element>
+      <element name="TPicture.LoadFromFile.Filename">
+        <short>The name of the file containing the picture, stored as a string</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.SaveToFile">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>SaveToFile</i> - Writes the picture to disk</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPicture.SaveToFile.Filename"><short/></element>
+      <element name="TPicture.SaveToFile.Filename">
+        <short>The name of the file to save the picture, stored as a string</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromClipboardFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <i>LoadFromClipboardFormat</i>
+        </short>
+        <descr><i>LoadFromClipboardFormat</i> - ToDo: Reads the picture from the handle provided in the given clipboard format.</descr>
+        <errors>If the format is not supported, an exception is generated</errors>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPicture.LoadFromClipboardFormat.FormatID"><short/></element>
+      <element name="TPicture.LoadFromClipboardFormat.FormatID">
+        <short>The identifier for the clipboard format</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromClipboardFormatID">
         <short/>
@@ -3168,39 +3234,35 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TPicture.LoadFromClipboardFormatID.FormatID"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.SaveToClipboardFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>SaveToClipboardFormats</i> - Allocates a global handle and writes the picture in its native clipboard format</short>
+        <descr><i>SaveToClipboardFormats</i> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPicture.SaveToClipboardFormat.FormatID"><short/></element>
+      <element name="TPicture.SaveToClipboardFormat.FormatID">
+        <short>Identity of the clipboard format</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TPicture.SupportsClipboardFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by <i>LoadFromClipboardFormat</i></short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPicture.SupportsClipboardFormat.Result"><short/></element>
+      <element name="TPicture.SupportsClipboardFormat.Result">
+        <short>Boolean - returns true if format supported</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPicture.SupportsClipboardFormat.FormatID"><short/></element>
+      <element name="TPicture.SupportsClipboardFormat.FormatID">
+        <short>Identity of the clipboard format</short>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Assign</i> - Copies the contents of the given <i>TPicture</i></short>
+        <descr><i>Assign</i> - Copies the contents of the given <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.Assign.Source"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterFileFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>RegisterFileFormat</i> - Register a new <i>TGraphic</i> class for use in  <i>LoadFromFile</i></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.RegisterFileFormat.AnExtension"><short/></element>
@@ -3210,10 +3272,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TPicture.RegisterFileFormat.AGraphicClass"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterClipboardFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>RegisterClipboardFormat</i> - Registers a new <i>TGraphic</i> class for use in  <i>LoadFromClipboardFormat</i></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.RegisterClipboardFormat.FormatID"><short/></element>
@@ -3221,61 +3280,47 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TPicture.RegisterClipboardFormat.AGraphicClass"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.UnregisterGraphicClass">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>UnRegisterGraphicClass</i>  - Removes all references to the specified <i>TGraphic</i></short>
+        <descr><i>UnRegisterGraphicClass</i>
+ - Removes all references to the specified <i>TGraphic</i>
+  class and all its descendants from the file format and clipboard format internal lists</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.UnregisterGraphicClass.AClass"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.Clear">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Clear</i> - removes the graphic</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Bitmap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Bitmap</i> - Returns a bitmap</short>
+        <descr><i>Bitmap</i> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Pixmap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Pixmap</i> - Returns a pixmap</short>
+        <descr><i>Pixmap</i> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.PNG">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>PNG</i> - Returns a png</short>
+        <descr><i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<i>TPortableNetworkGraphic</i>) is returned</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Icon">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Icon</i> contained within the picture</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Graphic">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Graphic</i> - The <i>TGraphic</i> object contained by the <i>TPicture</i></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Height">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Height</i> - The native, unstretched, height of the picture</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Width">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Width</i> - The native, unstretched, width of the picture</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.OnChange">
@@ -3305,10 +3350,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCanvas">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TCanvas</i> - where most of the drawing is performed</short>
+        <descr><i>TCanvas</i> is a class that defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCanvas.FAutoRedraw">
@@ -3715,10 +3758,14 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Arc">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Arc</i>   to draw an elliptically curved line with the current Pen</short>
+        <descr>Method:   TCanvas.Arc<br/>
+
+Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey<br/>
+
+Returns:  Nothing<br/><br/>
+
+Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.x"><short/></element>
@@ -3734,10 +3781,24 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.Arc.angle2"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Arc">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Arc</i>  to draw an elliptically curved line with the current Pen</short>
+        <descr>Method:   TCanvas.Arc<br/>
+
+Params:   ALeft, ATop, ARight, ABottom, angle1, angle2<br/>
+
+Returns:  Nothing<br/><br/>
+
+Use Arc to draw an elliptically curved line with the current Pen.<br/>
+
+The angles angle1 and angle2 are 1/16th of a degree. <br/>
+
+For example, a full  circle equals 5760 (16*360). <br/>
+
+Positive values of <i>Angle</i>
+ and <i>AngleLength</i>
+ mean counter-clockwise while negative values mean clockwise direction.<br/>
+
+Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.x"><short/></element>
@@ -3772,10 +3833,13 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.BrushCopy.TransparentColor"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Chord">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Chord</i> to draw a filled Chord-shape on the canvas</short>
+        <descr>Method:   TCanvas.Chord<br/>
+Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg<br/>
+Returns:  Nothing<br/><br/>
+Use <i>Chord</i> to draw a filled Chord-shape on the canvas. The angles <i>angle1</i> and <i>angle2</i> are 1/16th of a degree. For example, a full circle equals 5760(16*360).<br/>
+Positive values of <i>Angle</i> and <i>AngleLength</i> mean counter-clockwise while negative values mean clockwise direction. <br/>
+Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Chord.x"><short/></element>
@@ -3851,10 +3915,10 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.StretchDraw.SrcGraphic"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Ellipse</i> to draw a filled circle or ellipse on the canvas</short>
+        <descr>Method:   TCanvas.Ellipse<br/>
+Params:   X1, Y1, X2, Y2<br/>
+Returns:  Nothing<br/><br/>Use <i>Ellipse</i> to draw a filled circle or ellipse on the canvas.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Ellipse.ARect"><short/></element>
@@ -4012,10 +4076,26 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.MoveTo.Y1"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RadialPie">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Pie</i>  to draw a filled pie-shaped wedge on the canvas</short>
+        <descr>Method:   TCanvas.RadialPie<br/>
+
+Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer<br/>
+
+Returns:  Nothing<br/><br/>
+
+Use <i>Pie</i>
+ to draw a filled pie-shaped wedge on the canvas.<br/>
+
+The angles <i>StartAngle16Deg</i>
+ and <i>EndAngle16Deg</i>
+ are 1/16th of a degree.<br/>
+
+For example, a full circle equals 5760 (16*360).<br/>
+
+Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction.<br/>
+
+Zero degrees is at the 3 o'clock position</descr>
+        <seealso><link id="Pie"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.x"><short/></element>
@@ -4054,10 +4134,11 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.RadialPie.ey"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Pie">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Pie</i> to draw a filled Pie-shaped wedge on the canvas</short>
+        <descr>Method:   TCanvas.Pie<br/>
+Params:   EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX, StartY, EndX, EndY<br/>
+Returns:  Nothing<br/><br/>
+Use <i>Pie</i> to draw a filled Pie-shaped wedge on the canvas. The pie is part of an ellipse between the points EllipseX1, EllipseY1, EllipseX2, EllipseY2. The values StartX, StartY and EndX, EndY represent the starting and ending radial-points between which the Bounding-Arc is drawn. <br/></descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Pie.EllipseX1"><short/></element>
@@ -4077,10 +4158,16 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.Pie.EndY"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.PolyBezier">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Polybezier</i> to draw cubic Bezier curves</short>
+        <descr>Method:  TCanvas.PolyBezier<br/>
+Params:  Points, Filled, Continous<br/>
+Returns: Boolean<br/><br/>
+Use <i>Polybezier</i> to draw cubic Bezier curves. <br/>
+The first curve is drawn from the first point to the fourth point with the second and third points being the control points. <br/>
+If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
+If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
+Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/><br/>
+If the Filled Flag is set to TRUE then the resulting Poly-Bezier will be drawn as a Polygon.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.PolyBezier.Points"><short/></element>
@@ -4120,10 +4207,44 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.Polygon.NumPts"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polygon">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Polygon</i>  to draw a closed, many-sided shape on the canvas, using the value   of Pen</short>
+        <descr>Method:   TCanvas.Polygon<br/>
+
+Params:   Points: array of TPoint; Winding: Boolean = False; StartIndex: Integer = 0; NumPts: Integer = -1<br/>
+
+Returns:  Nothing<br/><br/>
+
+Use <i>Polygon</i>
+ to draw a closed, many-sided shape on the canvas, using the value of <i>Pen</i>
+. After drawing the complete shape, <i>Polygon</i>
+ fills the shape using the value of <i>Brush</i>
+.<br/><br/>
+
+The <i>Points</i>
+ parameter is an array of points that give the vertices of the polygon.<br/><i>Winding</i>
+ determines how the polygon is filled. When <i>Winding</i>
+ is True, <i>Polygon</i>
+
+  fills the shape using the <i>Winding</i>
+ fill algorithm. <br/>
+
+When <i>Winding</i>
+ is False, <i>Polygon</i>
+ uses the even-odd (alternative) fill algorithm.<br/><i>StartIndex</i>
+ gives the index of the first point in the array to use. All points before this are ignored.<br/><i>NumPts</i>
+ indicates the number of points to use, starting at <i>StartIndex</i>
+.<br/>
+
+If <i>NumPts</i>
+ is -1 (the default), <i>Polygon</i>
+ uses all points from <i>StartIndex</i>
+ to the end of the array.<br/>
+
+The first point is always connected to the last point.<br/>
+
+To draw a polygon on the canvas, without filling it, use the <i>Polyline</i>
+ method,  specifying the first point a second time at the end.</descr>
+        <seealso><link id="PolyLine"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Polygon.Points"><short/></element>
@@ -4155,10 +4276,36 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.Polyline.NumPts"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polyline">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Use <i>Polyline</i>  to connect a set of points on the canvas</short>
+        <descr>Method:   TCanvas.Polyline<br/>
+
+Params:   Points: array of TPoint; StartIndex: Integer = 0; NumPts: Integer = -1<br/>
+
+Returns:  Nothing<br/><br/>
+
+Use <i>Polyline</i>
+ to connect a set of points on the <i>Canvas</i>
+. If you specify only two points, <i>Polyline</i>
+ draws a single line.<br/>
+
+The <i>Points</i>
+ parameter is an array of points to be connected.<br/><i>StartIndex</i>
+ identifies the first point in the array to use.<br/><i>NumPts</i>
+ indicates the number of points to use. If <i>NumPts</i>
+ is -1 (the default), <i>PolyLine</i>
+ uses all the points from <i>StartIndex</i>
+ to the end of the array.<br/>
+
+Calling the <i>MoveTo</i>
+ function with the value of the first point, and then repeatedly calling <i>LineTo</i>
+ with all subsequent points will draw the same image on the canvas. However, unlike <i>LineTo</i>
+, <i>Polyline</i>
+ does not change the value of <i>PenPos</i>
+.</descr>
+        <seealso>
+          <link id="MoveTo"/>
+          <link id="LineTo"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Polyline.Points"><short/></element>
