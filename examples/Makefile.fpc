@@ -32,6 +32,7 @@ units=hello \
   trackbar
 
 [require]
+libc=y
 packages=regexpr
 
 [clean]

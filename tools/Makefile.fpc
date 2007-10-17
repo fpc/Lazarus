@@ -12,6 +12,7 @@ dirs=apiwizz
 programs=lazres svn2revisioninc updatepofiles lrstolfm
 
 [require]
+libc=y
 packages=rtl
 
 [compiler]
