@@ -7,6 +7,7 @@ name=lazaruside
 version=0.9b
 
 [require]
+libc=y
 packages=regexpr
 
 [target]
