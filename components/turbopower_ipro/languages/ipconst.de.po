@@ -917,20 +917,8 @@ msgid "Download?"
 msgstr "Herunterladen?"
 
 #: ipconst:sicmpecho
-msgid ""
-"Echo reply (Hop number: %d)\015\n"
-"             Status = %d\015\n"
-"             RTTime = %d\015\n"
-"             Ttl = %d\015\n"
-"             Tos = %d\015\n"
-"             IpFlags = %d"
+msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
 msgstr ""
-"Echo-Antwort (Hop-Nummer: %d)\015\n"
-"             Status = %d\015\n"
-"             RTTime = %d\015\n"
-"             Ttl = %d\015\n"
-"             Tos = %d\015\n"
-"             IpFlags = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"

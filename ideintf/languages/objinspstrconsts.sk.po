@@ -1,7 +1,4 @@
-# Slovak translation of lazarus
-#
-# Ivan Masár <helix84@centrum.sk>, 2007. 
-#
+# Slovak translation of lazarus Ivan Masár <helix84@centrum.sk>, 2007. 
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarus 0.9.22\n"
@@ -882,8 +879,8 @@ msgid "Text:"
 msgstr "Text:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway? "
-msgstr "Položka „%s“ je už uvedená. Pridať ju aj tak? "
+msgid "The \"%s\" Item is already listed. Add it anyway?"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

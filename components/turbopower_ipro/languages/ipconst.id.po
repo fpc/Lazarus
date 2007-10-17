@@ -914,20 +914,8 @@ msgid "Download?"
 msgstr "Download?"
 
 #: ipconst:sicmpecho
-msgid ""
-"Echo reply (Hop number: %d)\015\n"
-"             Status = %d\015\n"
-"             RTTime = %d\015\n"
-"             Ttl = %d\015\n"
-"             Tos = %d\015\n"
-"             IpFlags = %d"
+msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
 msgstr ""
-"Jawaban echo (nomor Hop: %d)\015\n"
-"             Status = %d\015\n"
-"             RTTime = %d\015\n"
-"             Ttl = %d\015\n"
-"             Tos = %d\015\n"
-"             IpFlags = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"

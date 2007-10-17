@@ -1,5 +1,4 @@
-# translation of synhighlighterunixshellscript.po to Lithuanian
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of synhighlighterunixshellscript.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
