@@ -76,10 +76,13 @@ type
     Context: TCarbonContext; // Carbon content area context
     Widget: Pointer;         // Reference to the Carbon window or control
   public
+    procedure FocusSet; dynamic;
+    procedure FocusKilled; dynamic;
+    procedure BoundsChanged; virtual;
+  public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
     procedure AddToWidget(AParent: TCarbonWidget); virtual; abstract;
-    procedure BoundsChanged; virtual;
     function GetClientRect(var ARect: TRect): Boolean; virtual; abstract;
     function GetPreferredSize: TPoint; virtual;
     function GetMousePos: TPoint; virtual; abstract;
@@ -371,6 +374,26 @@ begin
   begin
     FProperties.AddObject(AIndex, TObject(AValue));
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.FocusSet
+
+  Handles set focus
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.FocusSet;
+begin
+  LCLSendSetFocusMsg(LCLObject);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.FocusKilled
+
+  Handles kill focus
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.FocusKilled;
+begin
+  LCLSendKillFocusMsg(LCLObject);
 end;
 
 {------------------------------------------------------------------------------

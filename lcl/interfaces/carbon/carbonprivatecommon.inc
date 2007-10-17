@@ -350,9 +350,9 @@ begin
   end;
 
   if FocusPart <> kControlFocusNoPart then
-    LCLSendSetFocusMsg(AWidget.LCLObject)
+    AWidget.FocusSet
   else
-    LCLSendKillFocusMsg(AWidget.LCLObject);
+    AWidget.FocusKilled;
 end;
 
 {------------------------------------------------------------------------------

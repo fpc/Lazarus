@@ -82,6 +82,8 @@ type
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ListItemSelected(AIndex: Integer); virtual;
     procedure ValueChanged; override;
+    procedure FocusSet; override;
+    procedure FocusKilled; override;
   public
     function GetText(var S: String): Boolean; override;
     procedure SetReadOnly(AReadOnly: Boolean); override;
@@ -628,6 +630,30 @@ end;
 procedure TCarbonComboBox.ValueChanged;
 begin
   if FReadOnly then ListItemSelected(GetValue - 1);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.FocusSet
+
+  Handles set focus
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.FocusSet;
+begin
+  inherited;
+  // emulate DropDown event here
+  LCLSendDropDownMsg(LCLObject);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.FocusKilled
+
+  Handles kill focus
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.FocusKilled;
+begin
+  inherited;
+  // emulate CloseUp event here
+  LCLSendCloseUpMsg(LCLObject);
 end;
 
 {------------------------------------------------------------------------------

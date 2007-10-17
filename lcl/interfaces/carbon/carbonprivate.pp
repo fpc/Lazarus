@@ -171,17 +171,19 @@ type
   TCarbonCustomControl = class(TCarbonControl)
   private
     FScrollView: HIViewRef;
-    FScrollOrigin: TPoint;
+    FScrollOrigin: HIPoint;
     FScrollSize: TPoint;
     FScrollPageSize: TPoint;
+    FMulX: Single; // multiply x coords to fit real page size
+    FMulY: Single; // multiply y coords to fit real page size
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetFrame(Index: Integer): ControlRef; override;
   public
-    procedure GetInfo(out AImageSize, AViewSize, ALineSize, AOrigin: TPoint); dynamic;
-    procedure ScrollTo(const ANewOrigin: TPoint); dynamic;
+    procedure GetInfo(out AImageSize, AViewSize, ALineSize: HISize; out AOrigin: HIPoint); virtual;
+    procedure ScrollTo(const ANewOrigin: HIPoint); virtual;
   public
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
@@ -363,7 +365,6 @@ function CarbonScrollable_GetInfo(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  ImageSize, ViewSize, LineSize, Origin: TPoint;
   ImageHISize, ViewHISize, LineHISize: HISize;
   HIOrigin: HIPoint;
 const
@@ -373,12 +374,7 @@ begin
     DebugLn('CarbonScrollable_GetInfo ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
 
-  (AWidget as TCarbonCustomControl).GetInfo(ImageSize, ViewSize, LineSize, Origin);
-  
-  ImageHISize := PointToHISize(ImageSize);
-  ViewHISize := PointToHISize(ViewSize);
-  LineHISize := PointToHISize(LineSize);
-  HIOrigin := PointToHIPoint(Origin);
+  (AWidget as TCarbonCustomControl).GetInfo(ImageHISize, ViewHISize, LineHISize, HIOrigin);
   
   OSError(SetEventParameter(AEvent, kEventParamImageSize, typeHISize,
     SizeOf(HISize), @ImageHISize), SName, SSetEvent, 'kEventParamImageSize');
@@ -411,7 +407,7 @@ begin
       SizeOf(HIPoint), nil, @Origin), 'CarbonScrollable_ScrollTo', SGetEvent,
     'kEventParamOrigin') then Exit;
   
-  (AWidget as TCarbonCustomControl).ScrollTo(HIPointToPoint(Origin));
+  (AWidget as TCarbonCustomControl).ScrollTo(Origin);
   
   Result := noErr;
 end;
@@ -455,7 +451,9 @@ begin
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
   FScrollPageSize := Classes.Point(0, 0);
-  FScrollOrigin := Classes.Point(0, 0);
+  FScrollOrigin := GetHIPoint(0, 0);
+  FMulX := 1;
+  FMulY := 1;
     
   inherited;
 end;
@@ -489,15 +487,27 @@ end;
            ALineSize  - Size of scrollable line
            AOrigin    - Scroll position
 
-  Handles scrollableget info event
+  Handles scrollable get info event
  ------------------------------------------------------------------------------}
-procedure TCarbonCustomControl.GetInfo(out AImageSize, AViewSize,
-  ALineSize, AOrigin: TPoint);
+procedure TCarbonCustomControl.GetInfo(out AImageSize, AViewSize, ALineSize: HISize;
+  out AOrigin: HIPoint);
+var
+  C: TRect;
 begin
-  AOrigin := FScrollOrigin;
-  AImageSize := FScrollSize;
-  AViewSize := FScrollPageSize;
-  ALineSize := Classes.Point(10, 10);
+  // modify coordinates to fit real page size
+  GetClientRect(C);
+  
+  if FScrollPageSize.X = 0 then FMulX := 1
+  else
+    FMulX := (C.Right - C.Left) / FScrollPageSize.X;
+  if FScrollPageSize.Y = 0 then FMulY := 1
+  else
+    FMulY := (C.Bottom - C.Top) / FScrollPageSize.Y;
+  
+  AOrigin := GetHIPoint(FScrollOrigin.X * FMulX, FScrollOrigin.Y * FMulY);
+  AImageSize := GetHISize(FScrollSize.X * FMulX, FScrollSize.Y * FMulY);
+  AViewSize := GetHISize(C.Right - C.Left, C.Bottom - C.Top);
+  ALineSize := GetHISize(FScrollPageSize.X * FMulX / 40, FScrollPageSize.Y * FMulY / 40);
   
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +
@@ -512,7 +522,7 @@ end;
 
   Handles scrollable scroll to event
  ------------------------------------------------------------------------------}
-procedure TCarbonCustomControl.ScrollTo(const ANewOrigin: TPoint);
+procedure TCarbonCustomControl.ScrollTo(const ANewOrigin: HIPoint);
 var
   ScrollMsg: TLMScroll;
 begin
@@ -521,14 +531,19 @@ begin
       DbgS(ANewOrigin));
   {$ENDIF}
   
-  FScrollOrigin := ANewOrigin;
+  if FMulX = 0 then FScrollOrigin.X := 0
+  else
+    FScrollOrigin.X := ANewOrigin.X / FMulX;
+  if FMulY = 0 then FScrollOrigin.Y := 0
+  else
+    FScrollOrigin.Y := ANewOrigin.Y / FMulY;
   
   // send vertical scroll
   FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
   with ScrollMsg do
   begin
     Msg := LM_VSCROLL;
-    Pos := ANewOrigin.Y;
+    Pos := Round(FScrollOrigin.Y);
     ScrollCode := SB_THUMBPOSITION;
   end;
   DeliverMessage(LCLObject, ScrollMsg);
@@ -538,7 +553,7 @@ begin
   with ScrollMsg do
   begin
     Msg := LM_HSCROLL;
-    Pos := ANewOrigin.X;
+    Pos := Round(FScrollOrigin.X);
     ScrollCode := SB_THUMBPOSITION;
   end;
   DeliverMessage(LCLObject, ScrollMsg);
@@ -590,9 +605,9 @@ begin
   {$ENDIF}
 
   if SBStyle = SB_HORZ then
-    Result := FScrollOrigin.X;
+    Result := Round(FScrollOrigin.X);
   if SBStyle = SB_VERT then
-    Result := FScrollOrigin.Y;
+    Result := Round(FScrollOrigin.Y);
 
   if (SIF_RANGE and ScrollInfo.fMask) > 0 then
   begin
@@ -665,9 +680,9 @@ begin
   if (SIF_POS and ScrollInfo.fMask) > 0 then
   begin
     if SBStyle = SB_HORZ then
-      ScrollInfo.nPos := FScrollOrigin.X;
+      ScrollInfo.nPos := Round(FScrollOrigin.X);
     if SBStyle = SB_VERT then
-      ScrollInfo.nPos := FScrollOrigin.Y;
+      ScrollInfo.nPos := Round(FScrollOrigin.Y);
   end;
 
   if (SIF_PAGE and ScrollInfo.fMask) > 0 then

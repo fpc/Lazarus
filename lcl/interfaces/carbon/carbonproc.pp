@@ -78,8 +78,10 @@ const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
 procedure CreateCFString(const S: String; out AString: CFStringRef);
+procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out AString: CFStringRef);
 procedure FreeCFString(var AString: CFStringRef);
-function CFStringToStr(AString: CFStringRef): String;
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
+function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
 
 function RoundFixed(const F: Fixed): Integer;
 
@@ -104,6 +106,8 @@ function HIRectToCarbonRect(const ARect: HIRect): FPCMacOSAll.Rect;
 function PointToHIPoint(const APoint: TPoint): HIPoint;
 function PointToHISize(const APoint: TPoint): HISize;
 function HIPointToPoint(const APoint: HIPoint): TPoint;
+function GetHIPoint(X, Y: Single): HIPoint;
+function GetHISize(X, Y: Single): HISize;
 
 function ColorToRGBColor(const AColor: TColor): RGBColor;
 function RGBColorToColor(const AColor: RGBColor): TColor;
@@ -111,6 +115,8 @@ function CreateCGColor(const AColor: TColor): CGColorRef;
 
 function DbgS(const ARect: FPCMacOSAll.Rect): string; overload;
 function DbgS(const AColor: FPCMacOSAll.RGBColor): string; overload;
+function DbgS(const APoint: HIPoint): string; overload;
+function DbgS(const ASize: HISize): string; overload;
 
 implementation
 
@@ -493,11 +499,28 @@ end;
   Params:  S       - UTF-8 string
            AString - Core Foundation string ref
 
-  Creates new Core Foundation string form specified string
+  Creates new Core Foundation string from the specified string
  ------------------------------------------------------------------------------}
 procedure CreateCFString(const S: String; out AString: CFStringRef);
 begin
   AString := CFStringCreateWithCString(nil, Pointer(PChar(S)), DEFAULT_CFSTRING_ENCODING);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CreateCFString
+  Params:  Data     - CFDataRef
+           Encoding - Data encoding format
+           AString  - Core Foundation string ref
+
+  Creates new Core Foundation string from the specified data and format
+ ------------------------------------------------------------------------------}
+procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out
+  AString: CFStringRef);
+begin
+  AString := nil;
+  if Data = nil then Exit;
+  AString := CFStringCreateWithBytes(nil, CFDataGetBytePtr(Data),
+    CFDataGetLength(Data), Encoding, False);
 end;
 
 {------------------------------------------------------------------------------
@@ -514,12 +537,13 @@ end;
 
 {------------------------------------------------------------------------------
   Name:    CFStringToStr
-  Params:  AString - Core Foundation string ref
+  Params:  AString  - Core Foundation string ref
+           Encoding - Result data encoding format
   Returns: UTF-8 string
 
   Converts Core Foundation string to string
  ------------------------------------------------------------------------------}
-function CFStringToStr(AString: CFStringRef): String;
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding): String;
 var
   Str: Pointer;
   StrSize: CFIndex;
@@ -532,7 +556,7 @@ begin
   end;
 
   // Try the quick way first
-  Str := CFStringGetCStringPtr(AString, DEFAULT_CFSTRING_ENCODING);
+  Str := CFStringGetCStringPtr(AString, Encoding);
   if Str <> nil then
     Result := PChar(Str)
   else
@@ -541,14 +565,33 @@ begin
     StrRange.location := 0;
     StrRange.length := CFStringGetLength(AString);
     
-    CFStringGetBytes(AString, StrRange, DEFAULT_CFSTRING_ENCODING,
-      0, False, nil, 0, StrSize);
+    CFStringGetBytes(AString, StrRange, Encoding,
+      Ord('?'), False, nil, 0, StrSize);
     SetLength(Result, StrSize);
 
     if StrSize > 0 then
-      CFStringGetBytes(AString, StrRange, DEFAULT_CFSTRING_ENCODING,
-        0, False, @Result[1], StrSize, StrSize);
+      CFStringGetBytes(AString, StrRange, Encoding,
+        Ord('?'), False, @Result[1], StrSize, StrSize);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CFStringToData
+  Params:  AString  - Core Foundation string ref
+           Encoding - Result data encoding format
+  Returns: CFDataRef
+
+  Converts Core Foundation string to data
+ ------------------------------------------------------------------------------}
+function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding): CFDataRef;
+var
+  S: String;
+begin
+  Result := nil;
+  if AString = nil then Exit;
+  S := CFStringToStr(AString, Encoding);
+  
+  Result := CFDataCreate(nil, @S[1], Length(S));
 end;
 
 {------------------------------------------------------------------------------
@@ -811,6 +854,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:    GetHIPoint
+  Params:  X, Y
+  Returns: HIPoint
+ ------------------------------------------------------------------------------}
+function GetHIPoint(X, Y: Single): HIPoint;
+begin
+  Result.X := X;
+  Result.Y := Y;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetHISize
+  Params:  X, Y
+  Returns: HISize
+ ------------------------------------------------------------------------------}
+function GetHISize(X, Y: Single): HISize;
+begin
+  Result.width := X;
+  Result.height := Y;
+end;
+
+{------------------------------------------------------------------------------
   Name:    ColorToRGBColor
   Params:  AColor - Color
   Returns: Carbon RGBColor
@@ -873,6 +938,16 @@ begin
     'R: ' + IntToHex(AColor.Red, 4) +
     ' G: ' + IntToHex(AColor.Green, 4) +
     ' B: ' + IntToHex(AColor.Blue, 4);
+end;
+
+function DbgS(const APoint: HIPoint): string;
+begin
+  Result := 'X: ' + DbgS(APoint.X) + ' Y: ' + DbgS(APoint.Y);
+end;
+
+function DbgS(const ASize: HISize): string;
+begin
+  Result := 'W: ' + DbgS(ASize.width) + ' H: ' + DbgS(ASize.height);
 end;
 
 {------------------------------------------------------------------------------

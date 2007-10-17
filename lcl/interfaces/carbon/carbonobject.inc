@@ -471,7 +471,8 @@ begin
     SendEventToEventTarget(Event, Target);
     ReleaseEvent(Event);
     
-    Clipboard.CheckOwnerShip;
+    if Clipboard <> nil then
+      if Clipboard.OwnerShips > 0 then Clipboard.CheckOwnerShip;
     
   until Application.Terminated;
   

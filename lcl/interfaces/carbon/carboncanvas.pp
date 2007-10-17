@@ -609,6 +609,7 @@ var
   W: WideString;
   Tag: ATSUAttributeTag;
   DataSize: ByteCount;
+  Options: ATSLineLayoutOptions;
   PValue: ATSUAttributeValuePtr;
 const
   SName = 'BeginTextRender';
@@ -643,7 +644,19 @@ begin
   PValue := @(CurrentFont.LineRotation);
   if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
     Self, SName, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
-      
+
+  // disable fractional positions of glyphs in layout
+  // TODO: restrict to monspaced fonts only
+  Tag := kATSULineLayoutOptionsTag;
+  DataSize := SizeOf(ATSLineLayoutOptions);
+
+  Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
+    kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
+  PValue := @Options;
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
+    Self, SName, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
+
+
   // set layout context
   Tag := kATSUCGContextTag;
   DataSize := SizeOf(CGContextRef);
