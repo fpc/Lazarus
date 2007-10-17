@@ -2730,7 +2730,7 @@ var
     if Parent=nil then
       Result:=false
     else
-      Result:=Parent.ChildSizing.Layout<>cclNone;
+      Result:=(Parent.ChildSizing.Layout<>cclNone);
   end;
 
   function HeightAnchored(CurAnchors: TAnchors): boolean;
@@ -2768,6 +2768,11 @@ var
     MinSpaceLeft: LongInt;
     MinSpaceTop: LongInt;
   begin
+    if ChildSizing.Layout<>cclNone then begin
+      dx:=0;
+      dy:=0;
+      exit;
+    end;
     dx:=High(integer);
     dy:=High(integer);
     MinSpaceLeft:=ChildSizing.LeftRightSpacing;
