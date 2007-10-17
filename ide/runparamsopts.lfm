@@ -44,7 +44,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Width = 500
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 2
     object GeneralPage: TPage
       Caption = 'GeneralPage'
@@ -53,7 +53,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object DisplayGroupBox: TGroupBox
         Left = 6
         Height = 82
-        Top = 220
+        Top = 226
         Width = 484
         Align = alTop
         AutoSize = True
@@ -89,7 +89,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object CmdLineParametersGroupBox: TGroupBox
         Left = 6
         Height = 54
-        Top = 74
+        Top = 80
         Width = 484
         Align = alTop
         AutoSize = True
@@ -114,7 +114,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object UseLaunchingApplicationGroupBox: TGroupBox
         Left = 6
         Height = 80
-        Top = 134
+        Top = 140
         Width = 484
         Align = alTop
         AutoSize = True
@@ -151,34 +151,45 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object HostApplicationGroupBox: TGroupBox
         Left = 6
-        Height = 62
+        Height = 68
         Top = 6
         Width = 484
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'HostApplicationGroupBox'
-        ClientHeight = 43
+        ClientHeight = 49
         ClientWidth = 480
         TabOrder = 2
         object HostApplicationBrowseBtn: TButton
-          Left = 451
-          Height = 31
+          AnchorSideTop.Control = HostApplicationGroupBox
+          AnchorSideRight.Control = HostApplicationGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = HostApplicationEdit
+          AnchorSideBottom.Side = asrBottom
+          Left = 286
+          Height = 27
           Top = 6
-          Width = 23
-          Align = alRight
-          BorderSpacing.Around = 6
+          Width = 188
+          Anchors = [akTop, akRight, akBottom]
+          AutoSize = True
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'HostApplicationBrowseBtn'
           OnClick = HostApplicationBrowseBtnClick
           TabOrder = 0
         end
         object HostApplicationEdit: TEdit
+          AnchorSideLeft.Control = HostApplicationGroupBox
+          AnchorSideTop.Control = HostApplicationGroupBox
+          AnchorSideRight.Control = HostApplicationBrowseBtn
           Left = 6
-          Height = 31
+          Height = 27
           Top = 6
-          Width = 439
-          Align = alClient
+          Width = 274
+          Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           BorderSpacing.Around = 6
           TabOrder = 1
@@ -188,7 +199,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object WorkingDirectoryGroupBox: TGroupBox
         Left = 6
         Height = 68
-        Top = 308
+        Top = 314
         Width = 484
         Align = alTop
         AutoSize = True
@@ -198,23 +209,34 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         ClientWidth = 480
         TabOrder = 4
         object WorkingDirectoryBtn: TButton
-          Left = 451
-          Height = 37
+          AnchorSideTop.Control = WorkingDirectoryGroupBox
+          AnchorSideRight.Control = WorkingDirectoryGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = WorkingDirectoryComboBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 325
+          Height = 27
           Top = 6
-          Width = 23
-          Align = alRight
-          BorderSpacing.Around = 6
+          Width = 149
+          Anchors = [akTop, akRight, akBottom]
+          AutoSize = True
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'WorkingDirectoryBtn'
           OnClick = WorkingDirectoryBtnClick
           TabOrder = 0
         end
         object WorkingDirectoryComboBox: TComboBox
+          AnchorSideLeft.Control = WorkingDirectoryGroupBox
+          AnchorSideTop.Control = WorkingDirectoryGroupBox
+          AnchorSideRight.Control = WorkingDirectoryBtn
           Left = 6
-          Height = 37
+          Height = 27
           Top = 6
-          Width = 439
-          Align = alClient
+          Width = 313
+          Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Around = 6
           MaxLength = 0
