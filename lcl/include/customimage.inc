@@ -122,10 +122,14 @@ begin
 end;
 
 procedure TCustomImage.SetTransparent(Value : Boolean);
+
 begin
   if FTransparent=Value then exit;
   FTransparent := Value;
-  PictureChanged(Self);
+  if  (FPicture.Graphic is TBitmap)
+  and (FPicture.Graphic.Transparent <> FTransparent)
+  then FPicture.Graphic.Transparent := FTransparent
+  else PictureChanged(Self);
 end;
 
 procedure TCustomImage.SetCenter(Value : Boolean);
