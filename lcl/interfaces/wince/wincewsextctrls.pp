@@ -34,7 +34,7 @@ uses
 ////////////////////////////////////////////////////
   Windows, SysUtils, ExtCtrls, Classes, Controls, LCLType, LCLIntf,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
+  WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
   WinCEWSControls;
 
 type
@@ -47,6 +47,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
@@ -303,6 +304,23 @@ begin
   end;
 end;
 
+class procedure TWinCEWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+var
+  PageIndex: integer;
+  PageControlHandle: HWND;
+begin
+  // remove tab from pagecontrol
+  if (AWinControl.Parent <> nil) and (AWinControl.Parent.HandleAllocated) then
+  begin
+    PageControlHandle := AWinControl.Parent.Handle;
+    PageIndex := TCustomPage(AWinControl).PageIndex;
+    if PageIndex <> -1 then
+      Windows.SendMessage(PageControlHandle, TCM_DELETEITEM,
+        Windows.WPARAM(PageIndex), 0);
+  end;
+  TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
+end;
+
 class procedure TWinCEWSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
 var
   TCI: TC_ITEM;
@@ -323,8 +341,8 @@ begin
     begin
       Assert(False, Format('Trace:TWinCEWSCustomPage.SetText --> %S', [AText]));
       TCI.mask := TCIF_TEXT;
-      TCI.pszText := StringToPWideChar(AText);
-      Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
+      TCI.pszText := PWideChar(Utf8Decode(AText));
+      Windows.SendMessage(NotebookHandle, TCM_SETITEMW, PageIndex, LPARAM(@TCI));
     end;
   end;
 end;
@@ -350,24 +368,23 @@ begin
   // customization of Params
   with Params do
   begin
-    case TCustomNoteBook(AWinControl).TabPosition of
-      tpTop:
-        Flags := Flags and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
-      tpBottom:
-        Flags := (Flags or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
-      tpLeft:
-        Flags := (Flags or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
-      tpRight:
-        Flags := Flags or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
-    end;
+    // Hard-coded bottom style as per MS guidelines
+    // so that the user won't cover the screen with the hand while changing tabs
+    // Without doing this the text on the Tab becomes invisible
+    Flags := (Flags or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
     pClassName := WC_TABCONTROL;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+  
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
   Params.WindowInfo^.needParentPaint := false;
+
+  // The Windows CE tab controls are backwards compatible with older versions
+  // so we need to specify if we desire the more modern flat style manually
+  //SendMessage(Params.Window, CCM_SETVERSION, COMCTL32_VERSION, 0);
 end;
 
 class procedure TWinCEWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
@@ -378,9 +395,9 @@ begin
   with ANotebook do
   begin
     TCI.Mask := TCIF_TEXT or TCIF_PARAM;
-    TCI.pszText := StringToPWideChar(AChild.Caption);
+    TCI.pszText := PWideChar(Utf8Decode(AChild.Caption));
     // store object as extra, so we can verify we got the right page later
-    TCI.lParam := dword(AChild);
+    TCI.lParam := PtrUInt(AChild);
     Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
@@ -393,7 +410,7 @@ class procedure TWinCEWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook
   const AChild: TCustomPage; const NewIndex: integer);
 begin
   RemovePage(ANotebook, AChild.PageIndex);
-  AddPage(ANotebook,AChild,NewIndex);
+  AddPage(ANotebook, AChild, NewIndex);
 end;
 
 class procedure TWinCEWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
@@ -430,7 +447,7 @@ begin
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM;
       TCI.lParam := PtrUInt(lPage);
-      TCI.pszText := StringToPWideChar(lPage.Caption);
+      TCI.pszText := PWideChar(Utf8Decode(lPage.Caption));
       Windows.SendMessage(WinHandle, TCM_INSERTITEM, RealIndex, LPARAM(@TCI));
     end;
     Inc(RealIndex);
@@ -448,14 +465,14 @@ begin
   WinHandle := ANotebook.Handle;
   // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
   LCLIntf.GetClientRect(WinHandle, R);
-  R.Right := R.Right - R.Left;
-  R.Bottom := R.Bottom - R.Top;
   for I := 0 to ANotebook.PageCount - 1 do
   begin
     lPage := ANotebook.Page[I];
     // we don't need to resize non-existing pages yet, they will be sized when created
     if lPage.HandleAllocated then
-      SetBounds(lPage, R.Left, R.Top, R.Right, R.Bottom);
+      // The Windows CE notebook as some alignment problems which we need to workaround
+      // by adding an extra change to the position it gives us for the sheet position
+      SetBounds(lPage, R.Left - 3, R.Top, R.Right - R.Left + 3, R.Bottom - R.Top);
   end;
 end;
 
@@ -562,12 +579,8 @@ end;
 
 class procedure TWinCEWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
 begin
-  if AShowTabs then
-  begin
-    AddAllNBPages(ANotebook);
-  end else begin
-    RemoveAllNBPages(ANotebook);
-  end;
+  if AShowTabs then AddAllNBPages(ANotebook)
+  else RemoveAllNBPages(ANotebook);
 end;
 
 { TWinCEWSCustomPanel }
