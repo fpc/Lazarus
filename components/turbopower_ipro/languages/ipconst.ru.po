@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-10 20:46+0300\n"
+"PO-Revision-Date: 2007-10-18 02:58+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -895,19 +895,19 @@ msgstr ""
 
 #: ipconst:sbrokerdownloadreq
 msgid "Download %s?"
-msgstr ""
+msgstr "Загрузить %s?"
 
 #: ipconst:httpdownload
 msgid "Download: (%s), Error downloading"
-msgstr ""
+msgstr "Загрузка: (%s), ошибка загрузки"
 
 #: ipconst:httpgotheader
 msgid "Download: (%s), Got Header Data"
-msgstr ""
+msgstr "Загрузка: (%s), получены данные заголовка"
 
 #: ipconst:httpsizemismatch
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
-msgstr ""
+msgstr "Загрузка: (%s), несоответствие размера: ожидалось %s, получено %s"
 
 #: ipconst:sbrokerdownloadtitle
 msgid "Download?"
@@ -916,6 +916,15 @@ msgstr "Загрузить?"
 #: ipconst:sicmpecho
 msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
 msgstr ""
+<<<<<<< .mine
+"Эхо-ответ (Число хоповr: %d)\n"
+"            Статус = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"            Флаги IP = %d"
+=======
+>>>>>>> .r12512
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
@@ -923,23 +932,23 @@ msgstr "Эхо-строка: %s"
 
 #: ipconst:spngeffectivefilter
 msgid "Effective filter is %s"
-msgstr ""
+msgstr "Действующим фильтром является %s"
 
 #: ipconst:sunsupportedencoding
 msgid "Encoding method not supported"
-msgstr ""
+msgstr "Метод кодирования не поддерживается"
 
 #: ipconst:ssslencryptbuf2small
 msgid "Encrypt buffer to small."
-msgstr ""
+msgstr "Буфер шифрования слишком мал."
 
 #: ipconst:ssslencryptiontype
 msgid "Encryption type not defined."
-msgstr ""
+msgstr "Тип шифрования не задан."
 
 #: ipconst:spngmissingiend
 msgid "End of PNG found with no IEND chunk"
-msgstr ""
+msgstr "Обнаружен конец файла PNG без области IEND"
 
 #: ipconst:shtmllineerror
 msgid "Error \"%s\" at line %d, position %d"

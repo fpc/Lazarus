@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-13 21:40+0300\n"
+"PO-Revision-Date: 2007-10-18 03:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1007,15 +1007,15 @@ msgstr "Сборка:"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
-msgstr "Макросы стиля C (глобально)"
+msgstr "Макросы в стиле C (глобально)"
 
 #: lazarusidestrconsts:dlgcocops
 msgid "C Style Operators (*=, +=, /= and -=)"
-msgstr "Операторы стиля C (*=, +=, /= and -=)"
+msgstr "Операторы в стиле C (*=, +=, /= and -=)"
 
 #: lazarusidestrconsts:dlgcppinline
 msgid "C++ Styled INLINE"
-msgstr "INLINE стиля C++"
+msgstr "INLINE в стиле C++"
 
 #: lazarusidestrconsts:lismenuinsertcvskeyword
 msgid "CVS keyword"
@@ -1171,7 +1171,7 @@ msgstr "Целостность?"
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
-msgstr "Проверка:"
+msgstr "Проверки"
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
@@ -1659,7 +1659,7 @@ msgstr "Настройка %sСборки файла%s"
 
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
-msgstr "Файлы настроек:"
+msgstr "Файлы настроек"
 
 #: lazarusidestrconsts:lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
@@ -2143,7 +2143,7 @@ msgstr "Тип отладчика и путь"
 
 #: lazarusidestrconsts:dlgcodebugging
 msgid "Debugging:"
-msgstr "Отладка:"
+msgstr "Отладка"
 
 #: lazarusidestrconsts:rsiwpdefault
 msgid "Default"
@@ -3363,7 +3363,7 @@ msgstr "Создать код для valgrind"
 
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
-msgstr "Создать:"
+msgstr "Кодогенерация"
 
 #: lazarusidestrconsts:rslanguagegerman
 msgid "German"
@@ -4459,7 +4459,7 @@ msgstr "Сохранять положение курсора по оси X"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
-msgstr "Хранить нек. переменные в регистрах"
+msgstr "Хранить отдельные переменные в регистрах"
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -4791,7 +4791,7 @@ msgstr "Умное связывание"
 
 #: lazarusidestrconsts:dlglinklibraries
 msgid "Link Style:"
-msgstr "Стиль сборки:"
+msgstr "Стиль связывания"
 
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
@@ -5643,7 +5643,7 @@ msgstr "Открыть модуль"
 
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
-msgstr "Оптимизация:"
+msgstr "Оптимизации"
 
 #: lazarusidestrconsts:liserrnooptionallowed
 msgid "Option at position %d does not allow an argument: %s"
@@ -5671,7 +5671,7 @@ msgstr "Настройки:"
 
 #: lazarusidestrconsts:dlgcoopts
 msgid "Options: "
-msgstr "Настройки: "
+msgstr "Параметры"
 
 #: lazarusidestrconsts:fdmorder
 msgid "Order"
@@ -5691,7 +5691,7 @@ msgstr "Другие исходные коды (файлы .pp/.pas, нужны 
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Другие модули (-Fu) (разделитель точка с запятой):"
+msgstr "Другие модули (-Fu) (разделитель - точка с запятой):"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -7363,7 +7363,7 @@ msgstr "Подсказки 'Parameter \"Sender\" not used'"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr "Подсказки для неиспользуемых модулей в главном файле исходного кода"
+msgstr "Подсказки о неиспользуемых модулях"
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
@@ -7751,7 +7751,7 @@ msgstr "Вырезать символы из бинарника"
 
 #: lazarusidestrconsts:dlgcostyle
 msgid "Style:"
-msgstr "Стиль:"
+msgstr "Стиль"
 
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
@@ -7871,7 +7871,7 @@ msgstr "Для ОС:"
 
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
-msgstr "Целевая Платформа:"
+msgstr "Целевая платформа"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -9067,7 +9067,7 @@ msgstr "Не могу записать в файл %s%s%s!"
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
-msgstr "Нестандартная оптимизация"
+msgstr "Ненадёжные оптимизации"
 
 #: lazarusidestrconsts:lismenuuncommentselection
 msgid "Uncomment selection"
@@ -9171,7 +9171,7 @@ msgstr "Путь модуля"
 
 #: lazarusidestrconsts:dlgcounitstyle
 msgid "Unit Style:"
-msgstr "Стиль модулей:"
+msgstr "Стиль модулей"
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
@@ -9283,7 +9283,7 @@ msgstr "Использовать Исключающий фильтр"
 
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
-msgstr "Использовать модуль Heaprc"
+msgstr "Использовать модуль Heaptrc"
 
 #: lazarusidestrconsts:lisuseincludefilter
 msgid "Use Include Filter"
@@ -9375,7 +9375,7 @@ msgstr "Переменная: %s"
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
-msgstr "Подробность вывода при компиляции:"
+msgstr "Подробность вывода при компиляции"
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
