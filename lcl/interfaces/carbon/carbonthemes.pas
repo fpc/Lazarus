@@ -112,7 +112,13 @@ begin
   ButtonDrawInfo.version := 0;
   ButtonDrawInfo.State := GetDrawState(Details);
   ButtonDrawInfo.kind := ButtonMap[Details.Part];
-  ButtonDrawInfo.value := kThemeButtonOff;
+  if IsMixed(Details) then
+    ButtonDrawInfo.value := kThemeButtonMixed
+  else
+  if IsChecked(Details) then
+    ButtonDrawInfo.value := kThemeButtonOn
+  else
+    ButtonDrawInfo.value := kThemeButtonOff;
   ButtonDrawInfo.adornment := kThemeAdornmentNone;
 
   LabelRect := RectToCGRect(R);
