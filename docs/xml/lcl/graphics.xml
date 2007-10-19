@@ -3870,17 +3870,17 @@ Zero degrees is at the 3 o'clock position.</descr>
       <element name="TCanvas.StretchDraw.SrcGraphic"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
-        <short>Use <i>Ellipse</i> to draw a filled circle or ellipse on the canvas</short>
-        <descr>Method:   TCanvas.Ellipse<br/>
-Params:   X1, Y1, X2, Y2<br/>
-Returns:  Nothing<br/><br/>Use <i>Ellipse</i> to draw a filled circle or ellipse on the canvas.</descr>
+        <short/>
+        <descr/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Ellipse.ARect"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
-        <short/>
-        <descr/>
+	      <short>Use <i>Ellipse</i> to draw a filled circle or ellipse on the canvas</short>
+	      <descr>Method:   TCanvas.Ellipse<br/>
+		      Params:   X1, Y1, X2, Y2<br/>
+Returns:  Nothing<br/><br/>Use <i>Ellipse</i> to draw a filled circle or ellipse on the canvas.</descr>
         <errors/>
         <seealso/>
       </element>
