@@ -54,37 +54,7 @@ begin
 end;
 
 procedure Frame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
-
-  procedure DoRect;
-  var
-    TopRight, BottomLeft: TPoint;
-  begin
-    with Canvas, Rect do
-    begin
-      TopRight.X := Right;
-      TopRight.Y := Top;
-      BottomLeft.X := Left;
-      BottomLeft.Y := Bottom;
-      Pen.Color := TopColor;
-      PolyLine([BottomLeft, TopLeft, TopRight]);
-      Pen.Color := BottomColor;
-      Dec(BottomLeft.X);
-      PolyLine([TopRight, BottomRight, BottomLeft]);
-    end;
-  end;
-
 begin
-  Canvas.Pen.Width := 1;
-  Dec(Rect.Bottom);
-  Dec(Rect.Right);
-  while Width > 0 do
-  begin
-    Dec(Width);
-    DoRect;
-    InflateRect(Rect, -1, -1);
-  end;
-  Inc(Rect.Bottom);
-  Inc(Rect.Right);
 end;
 
 end.
