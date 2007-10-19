@@ -189,10 +189,12 @@ var
   TextIter: TGtkTextIter;
 begin
   if not ACustomEdit.HandleAllocated then exit;
+
   TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
   TextBuffer := gtk_text_view_get_buffer(TextView);
   gtk_text_buffer_get_iter_at_offset(TextBuffer, @TextIter, NewStart);
-  gtk_text_buffer_place_cursor(TextBuffer, @TextIter);
+  gtk_text_buffer_place_cursor(TextBuffer, @TextIter); // needed to move the cursor
+  gtk_text_view_scroll_to_iter(TextView, @TextIter, 0, False, 0, 0); // this ensures the cursor is visible
 end;
 
 class procedure TGtk2WSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
