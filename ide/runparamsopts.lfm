@@ -53,7 +53,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object DisplayGroupBox: TGroupBox
         Left = 6
         Height = 82
-        Top = 226
+        Top = 232
         Width = 484
         Align = alTop
         AutoSize = True
@@ -88,19 +88,19 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object CmdLineParametersGroupBox: TGroupBox
         Left = 6
-        Height = 54
+        Height = 56
         Top = 80
         Width = 484
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'CmdLineParametersGroupBox'
-        ClientHeight = 35
+        ClientHeight = 37
         ClientWidth = 480
         TabOrder = 0
         object CmdLineParametersComboBox: TComboBox
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
           Width = 468
           Align = alTop
@@ -113,14 +113,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object UseLaunchingApplicationGroupBox: TGroupBox
         Left = 6
-        Height = 80
-        Top = 140
+        Height = 84
+        Top = 142
         Width = 484
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'UseLaunchingApplicationGroupBox'
-        ClientHeight = 61
+        ClientHeight = 65
         ClientWidth = 480
         TabOrder = 1
         object UseLaunchingApplicationCheckBox: TCheckBox
@@ -138,7 +138,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
         object UseLaunchingApplicationComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 34
           Width = 468
           Align = alTop
@@ -199,7 +199,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object WorkingDirectoryGroupBox: TGroupBox
         Left = 6
         Height = 68
-        Top = 314
+        Top = 320
         Width = 484
         Align = alTop
         AutoSize = True

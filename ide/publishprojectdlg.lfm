@@ -8,6 +8,8 @@ object PublishProjectDialog: TPublishProjectDialog
   ActiveControl = DestDirComboBox
   BorderIcons = [biSystemMenu]
   Caption = 'Publish Project'
+  ClientHeight = 505
+  ClientWidth = 484
   OnCreate = FormCreate
   Position = poScreenCenter
   object DestDirGroupBox: TGroupBox
@@ -18,22 +20,23 @@ object PublishProjectDialog: TPublishProjectDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Destination directory'
+    ClientHeight = 92
+    ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 0
     OnResize = DestDirGroupBoxRESIZE
     object CommandAfterLabel: TLabel
       Left = 6
-      Height = 14
+      Height = 20
       Top = 33
       Width = 442
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Command after:'
-      Color = clNone
       ParentColor = False
     end
     object DestDirComboBox: TComboBox
       Left = 6
-      Height = 21
+      Height = 25
       Top = 1
       Width = 406
       Anchors = [akTop, akLeft, akRight]
@@ -46,10 +49,10 @@ object PublishProjectDialog: TPublishProjectDialog
     object BrowseDestDirBitBtn: TBitBtn
       AnchorSideBottom.Control = DestDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 413
-      Height = 21
+      Left = 415
+      Height = 25
       Top = 1
-      Width = 37
+      Width = 35
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
       Caption = '...'
@@ -59,7 +62,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object CommandAfterCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 25
       Top = 58
       Width = 444
       Anchors = [akTop, akLeft, akRight]
@@ -72,18 +75,20 @@ object PublishProjectDialog: TPublishProjectDialog
   end
   object FilesGroupbox: TGroupBox
     Left = 6
-    Height = 43
+    Height = 53
     Top = 123
     Width = 472
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Files'
+    ClientHeight = 34
+    ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 1
     object IgnoreBinariesCheckbox: TCheckBox
       Left = 6
-      Height = 13
+      Height = 22
       Top = 6
       Width = 456
       Align = alTop
@@ -95,18 +100,20 @@ object PublishProjectDialog: TPublishProjectDialog
   end
   object ProjectInfoGroupbox: TGroupBox
     Left = 6
-    Height = 62
+    Height = 81
     Top = 360
     Width = 472
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Project Information'
+    ClientHeight = 62
+    ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 4
     object SaveClosedEditorFilesInfoCheckbox: TCheckBox
       Left = 6
-      Height = 13
+      Height = 22
       Top = 6
       Width = 456
       Align = alTop
@@ -117,7 +124,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
       Left = 6
-      Height = 13
+      Height = 22
       Top = 25
       Width = 456
       Align = alTop
@@ -134,9 +141,9 @@ object PublishProjectDialog: TPublishProjectDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 25
-    Top = 474
-    Width = 92
+    Height = 31
+    Top = 468
+    Width = 107
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -153,23 +160,25 @@ object PublishProjectDialog: TPublishProjectDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Include Filter'
+    ClientHeight = 69
+    ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 2
     TabStop = True
     object UseIncludeFilterCheckbox: TCheckBox
       Left = 6
-      Height = 13
+      Height = 22
       Top = 1
-      Width = 102
+      Width = 132
       AllowGrayed = True
       Caption = 'Use Include Filter'
       TabOrder = 0
     end
     object IncFilterSimpleSyntaxCheckbox: TCheckBox
       Left = 199
-      Height = 13
+      Height = 22
       Top = 1
-      Width = 86
+      Width = 116
       AllowGrayed = True
       Caption = 'Simple Syntax'
       ParentShowHint = False
@@ -178,7 +187,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object IncludeFilterCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 25
       Top = 33
       Width = 444
       Anchors = [akTop, akLeft, akRight]
@@ -197,23 +206,25 @@ object PublishProjectDialog: TPublishProjectDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Exclude Filter'
+    ClientHeight = 69
+    ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 3
     TabStop = True
     object UseExcludeFilterCheckbox: TCheckBox
       Left = 6
-      Height = 13
+      Height = 22
       Top = 1
-      Width = 105
+      Width = 136
       AllowGrayed = True
       Caption = 'Use Exclude Filter'
       TabOrder = 0
     end
     object ExcFilterSimpleSyntaxCheckbox: TCheckBox
       Left = 199
-      Height = 13
+      Height = 22
       Top = 1
-      Width = 86
+      Width = 116
       AllowGrayed = True
       Caption = 'Simple Syntax'
       ParentShowHint = False
@@ -222,7 +233,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object ExcludeFilterCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 25
       Top = 33
       Width = 446
       Anchors = [akTop, akLeft, akRight]
@@ -237,10 +248,10 @@ object PublishProjectDialog: TPublishProjectDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 322
-    Height = 38
-    Top = 461
-    Width = 66
+    Left = 327
+    Height = 34
+    Top = 465
+    Width = 61
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -257,10 +268,10 @@ object PublishProjectDialog: TPublishProjectDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 394
-    Height = 38
-    Top = 461
-    Width = 84
+    Left = 390
+    Height = 36
+    Top = 463
+    Width = 88
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

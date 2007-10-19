@@ -1,10 +1,11 @@
 object frmCompilerOptions: TfrmCompilerOptions
   Left = 339
   Height = 528
-  Top = 294
+  Top = 187
   Width = 669
   HorzScrollBar.Page = 668
   VertScrollBar.Page = 527
+  ActiveControl = edtOtherUnits
   BorderIcons = [biSystemMenu]
   Caption = 'frmCompilerOptions'
   ClientHeight = 528
@@ -16,16 +17,16 @@ object frmCompilerOptions: TfrmCompilerOptions
   Position = poScreenCenter
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
-    Height = 478
+    Height = 480
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 7
+    PageIndex = 0
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object lblOtherUnits: TLabel
         Left = 6
         Height = 20
@@ -115,7 +116,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Left = 6
         Height = 20
         Top = 306
-        Width = 127
+        Width = 128
         BorderSpacing.Top = 6
         BorderSpacing.Around = 6
         Caption = 'LCLWidgetTypeLabel'
@@ -227,8 +228,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideLeft.Control = LCLWidgetTypeLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = LCLWidgetTypeLabel
-        Left = 139
-        Height = 21
+        Left = 140
+        Height = 25
         Top = 306
         Width = 155
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -253,6 +254,10 @@ object frmCompilerOptions: TfrmCompilerOptions
         Caption = 'grpStyle'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 3
         Columns = 3
@@ -269,6 +274,10 @@ object frmCompilerOptions: TfrmCompilerOptions
         Caption = 'grpSyntaxOptions'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
         TabOrder = 1
@@ -400,7 +409,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideBottom.Control = grpTargetPlatform
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 106
+        Height = 118
         Top = 149
         Width = 136
         Anchors = [akTop, akLeft, akBottom]
@@ -409,7 +418,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'grpGenerate'
-        ClientHeight = 87
+        ClientHeight = 99
         ClientWidth = 132
         TabOrder = 3
         object radGenNormal: TRadioButton
@@ -453,14 +462,14 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
         Left = 148
-        Height = 106
+        Height = 118
         Top = 149
         Width = 511
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpTargetPlatform'
-        ClientHeight = 87
+        ClientHeight = 99
         ClientWidth = 507
         TabOrder = 4
         object lblTargetOS: TLabel
@@ -480,7 +489,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 20
-          Top = 33
+          Top = 37
           Width = 81
           BorderSpacing.Around = 6
           Caption = 'lblTargetCPU'
@@ -492,8 +501,8 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 20
-          Top = 60
-          Width = 108
+          Top = 68
+          Width = 109
           BorderSpacing.Around = 6
           Caption = 'lblTargeti386Proc'
           ParentColor = False
@@ -505,7 +514,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
           Left = 91
-          Height = 21
+          Height = 25
           Top = 6
           Width = 410
           Anchors = [akTop, akLeft, akRight]
@@ -524,8 +533,8 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
           Left = 99
-          Height = 21
-          Top = 33
+          Height = 25
+          Top = 37
           Width = 402
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -542,10 +551,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
-          Left = 126
-          Height = 21
-          Top = 60
-          Width = 375
+          Left = 127
+          Height = 25
+          Top = 68
+          Width = 374
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -564,13 +573,13 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideBottom.Control = CodeGenPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 180
-        Top = 261
+        Height = 168
+        Top = 273
         Width = 653
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'grpOptimizations'
-        ClientHeight = 161
+        ClientHeight = 149
         ClientWidth = 649
         TabOrder = 5
         object radOptLevelNone: TRadioButton
@@ -827,6 +836,10 @@ object frmCompilerOptions: TfrmCompilerOptions
         Caption = 'grpVerbosity'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
         Columns = 2
@@ -1347,21 +1360,21 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
   end
   object BtnPanel: TPanel
-    Height = 50
-    Top = 478
+    Height = 48
+    Top = 480
     Width = 669
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 48
     ClientWidth = 669
     TabOrder = 1
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 38
+      Height = 36
       Top = 6
-      Width = 76
+      Width = 75
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
@@ -1375,8 +1388,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnShowOptions: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 137
-      Height = 38
+      Left = 135
+      Height = 36
       Top = 6
       Width = 143
       Align = alRight
@@ -1427,8 +1440,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnCheck: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 286
-      Height = 38
+      Left = 284
+      Height = 36
       Top = 6
       Width = 75
       Align = alRight
@@ -1445,8 +1458,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnLoadSave: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 367
-      Height = 38
+      Left = 365
+      Height = 36
       Top = 6
       Width = 123
       Align = alRight
@@ -1495,8 +1508,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 496
-      Height = 38
+      Left = 494
+      Height = 36
       Top = 6
       Width = 75
       Align = alRight
@@ -1513,10 +1526,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     object btnCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 577
-      Height = 38
+      Left = 575
+      Height = 36
       Top = 6
-      Width = 86
+      Width = 88
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

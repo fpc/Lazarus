@@ -15,7 +15,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   Position = poScreenCenter
   object nbDebugOptions: TNotebook
     AnchorSideBottom.Control = BtnPanel
-    Height = 392
+    Height = 393
     Width = 482
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -24,17 +24,17 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     object pgGeneral: TPage
       Caption = 'pgGeneral'
       ClientWidth = 478
-      ClientHeight = 361
+      ClientHeight = 362
       object gbDebuggerType: TGroupBox
         Left = 6
-        Height = 83
+        Height = 87
         Top = 6
         Width = 466
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Debugger type and path'
-        ClientHeight = 64
+        ClientHeight = 68
         ClientWidth = 462
         ParentCtl3D = False
         TabOrder = 0
@@ -44,7 +44,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Control = gbDebuggerType
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 21
+          Height = 25
           Top = 6
           Width = 450
           Anchors = [akTop, akLeft, akRight]
@@ -61,8 +61,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = cmdOpenDebuggerPath
           Left = 6
-          Height = 21
-          Top = 33
+          Height = 25
+          Top = 37
           Width = 421
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -78,7 +78,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           Left = 433
           Height = 25
-          Top = 33
+          Top = 37
           Width = 23
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
@@ -96,7 +96,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 56
-        Top = 95
+        Top = 99
         Width = 466
         Align = alTop
         AutoSize = True
@@ -143,19 +143,19 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         AnchorSideBottom.Control = pgGeneral
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 136
-        Top = 219
+        Height = 133
+        Top = 223
         Width = 466
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'Debugger specific options (depends on type of debugger)'
-        ClientHeight = 117
+        ClientHeight = 114
         ClientWidth = 462
         ParentCtl3D = False
         TabOrder = 2
         object pnlDebugSpecific: TPanel
           Left = 6
-          Height = 105
+          Height = 102
           Top = 6
           Width = 450
           Align = alClient
@@ -175,7 +175,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 56
-        Top = 157
+        Top = 161
         Width = 466
         Align = alTop
         AutoFill = True
@@ -195,7 +195,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     object pgEventLog: TPage
       Caption = 'pgEventLog'
       ClientWidth = 478
-      ClientHeight = 361
+      ClientHeight = 362
       object gbGeneral: TGroupBox
         Left = 6
         Height = 132
@@ -237,13 +237,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbMessages: TGroupBox
         Left = 6
-        Height = 211
+        Height = 212
         Top = 144
         Width = 466
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'Messages'
-        ClientHeight = 192
+        ClientHeight = 193
         ClientWidth = 462
         Enabled = False
         ParentCtl3D = False
@@ -316,16 +316,16 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     object pgExceptions: TPage
       Caption = 'pgExceptions'
       ClientWidth = 478
-      ClientHeight = 361
+      ClientHeight = 362
       object bgIgnoreExceptions: TGroupBox
         Left = 6
-        Height = 321
+        Height = 322
         Top = 6
         Width = 466
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'Ignore these exceptions'
-        ClientHeight = 302
+        ClientHeight = 303
         ClientWidth = 462
         ParentCtl3D = False
         TabOrder = 0
@@ -336,7 +336,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Side = asrBottom
           Left = 381
           Height = 25
-          Top = 271
+          Top = 272
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -355,7 +355,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Side = asrBottom
           Left = 300
           Height = 25
-          Top = 271
+          Top = 272
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -371,7 +371,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = cmdExceptionAdd
           Left = 6
-          Height = 259
+          Height = 260
           Top = 6
           Width = 450
           Align = alTop
@@ -385,7 +385,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       object chkBreakOnException: TCheckBox
         Left = 6
         Height = 22
-        Top = 333
+        Top = 334
         Width = 466
         Align = alBottom
         AllowGrayed = True
@@ -398,16 +398,16 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     object pgSignals: TPage
       Caption = 'pgSignals'
       ClientWidth = 478
-      ClientHeight = 361
+      ClientHeight = 362
       object gbSignals: TGroupBox
         Left = 6
-        Height = 349
+        Height = 350
         Top = 6
         Width = 466
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'Signals'
-        ClientHeight = 330
+        ClientHeight = 331
         ClientWidth = 462
         ParentCtl3D = False
         TabOrder = 0
@@ -418,7 +418,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Side = asrBottom
           Left = 381
           Height = 25
-          Top = 299
+          Top = 300
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -436,7 +436,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Side = asrBottom
           Left = 300
           Height = 25
-          Top = 299
+          Top = 300
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -450,7 +450,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         object lvSignals: TListView
           AnchorSideBottom.Control = cmdSignalAdd
           Left = 6
-          Height = 287
+          Height = 288
           Top = 6
           Width = 450
           Align = alTop
@@ -480,19 +480,19 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
   end
   object BtnPanel: TPanel
-    Height = 50
-    Top = 393
+    Height = 48
+    Top = 395
     Width = 482
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 48
     ClientWidth = 482
     TabOrder = 1
     object cmdOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 309
-      Height = 38
+      Left = 307
+      Height = 36
       Top = 6
       Width = 75
       Align = alRight
@@ -509,10 +509,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     object cmdCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 390
-      Height = 38
+      Left = 388
+      Height = 36
       Top = 6
-      Width = 86
+      Width = 88
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

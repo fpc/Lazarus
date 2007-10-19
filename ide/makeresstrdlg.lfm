@@ -1,7 +1,7 @@
 object MakeResStrDialog: TMakeResStrDialog
   Left = 433
   Height = 513
-  Top = 289
+  Top = 202
   Width = 480
   HorzScrollBar.Page = 479
   VertScrollBar.Page = 512
@@ -16,7 +16,7 @@ object MakeResStrDialog: TMakeResStrDialog
   Position = poScreenCenter
   object ConversionGroupBox: TGroupBox
     Left = 6
-    Height = 202
+    Height = 234
     Top = 6
     Width = 468
     Align = alTop
@@ -24,7 +24,7 @@ object MakeResStrDialog: TMakeResStrDialog
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
     Caption = 'ConversionGroupBox'
-    ClientHeight = 184
+    ClientHeight = 215
     ClientWidth = 464
     TabOrder = 0
     object ResStrSectionLabel: TLabel
@@ -32,9 +32,9 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Control = IdentifierGroupBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 14
-      Top = 113
-      Width = 93
+      Height = 20
+      Top = 127
+      Width = 124
       Alignment = taRightJustify
       BorderSpacing.Top = 2
       BorderSpacing.Around = 6
@@ -47,9 +47,9 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Control = ResStrSectionComboBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 14
-      Top = 140
-      Width = 132
+      Height = 20
+      Top = 158
+      Width = 176
       Alignment = taRightJustify
       BorderSpacing.Top = 2
       BorderSpacing.Around = 6
@@ -63,9 +63,9 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 13
-      Top = 165
-      Width = 148
+      Height = 22
+      Top = 187
+      Width = 192
       BorderSpacing.Around = 6
       Caption = 'AppendResStrRadioButton'
       Checked = True
@@ -77,10 +77,10 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ResStrWithSameValuesCombobox
       AnchorSideTop.Side = asrBottom
-      Left = 368
-      Height = 13
-      Top = 165
-      Width = 184
+      Left = 477
+      Height = 22
+      Top = 187
+      Width = 246
       BorderSpacing.Around = 6
       Caption = 'InsertContextSensitiveRadioButton'
       TabOrder = 1
@@ -90,10 +90,10 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ResStrWithSameValuesCombobox
       AnchorSideTop.Side = asrBottom
-      Left = 160
-      Height = 13
-      Top = 165
-      Width = 202
+      Left = 204
+      Height = 22
+      Top = 187
+      Width = 267
       BorderSpacing.Around = 6
       Caption = 'InsertAlphabeticallyResStrRadioButton'
       TabOrder = 2
@@ -105,14 +105,13 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ConversionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 111
-      Height = 21
-      Top = 111
-      Width = 347
+      Left = 142
+      Height = 25
+      Top = 125
+      Width = 316
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
       MaxLength = 0
       OnChange = ResStrSectionComboBoxChange
       TabOrder = 3
@@ -125,14 +124,13 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ConversionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 150
-      Height = 21
-      Top = 138
-      Width = 308
+      Left = 194
+      Height = 25
+      Top = 156
+      Width = 264
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
       MaxLength = 0
       OnChange = ResStrWithSameValuesComboboxChange
       TabOrder = 4
@@ -140,24 +138,24 @@ object MakeResStrDialog: TMakeResStrDialog
     end
     object IdentifierGroupBox: TGroupBox
       Left = 6
-      Height = 99
+      Height = 113
       Top = 6
       Width = 452
       Align = alTop
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'IdentifierGroupBox'
-      ClientHeight = 81
+      ClientHeight = 94
       ClientWidth = 448
       TabOrder = 5
       object IdentLengthLabel: TLabel
         AnchorSideTop.Control = CustomIdentifierCheckBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = IdentLengthComboBox
-        Left = 251
-        Height = 14
-        Top = 27
-        Width = 85
+        Left = 225
+        Height = 20
+        Top = 36
+        Width = 111
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 2
@@ -170,9 +168,9 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideTop.Control = CustomIdentifierCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 14
-        Top = 27
-        Width = 80
+        Height = 20
+        Top = 36
+        Width = 102
         Alignment = taRightJustify
         BorderSpacing.Top = 2
         BorderSpacing.Around = 6
@@ -187,10 +185,10 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = IdentifierGroupBox
         AnchorSideRight.Side = asrBottom
-        Left = 92
+        Left = 114
         Height = 23
-        Top = 52
-        Width = 350
+        Top = 65
+        Width = 328
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Enabled = False
@@ -200,13 +198,11 @@ object MakeResStrDialog: TMakeResStrDialog
       end
       object CustomIdentifierCheckBox: TCheckBox
         AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = IdentifierEdit
         Left = 6
-        Height = 13
+        Height = 22
         Top = 6
         Width = 436
         Align = alTop
-        Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
         Caption = 'CustomIdentifierCheckBox'
         OnChange = CustomIdentifierCheckBoxClick
@@ -219,13 +215,12 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideRight.Control = IdentifierGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 342
-        Height = 21
-        Top = 25
+        Height = 25
+        Top = 34
         Width = 100
         Anchors = [akTop, akRight]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Around = 6
-        ItemHeight = 13
         MaxLength = 0
         OnChange = IdentLengthComboBoxChange
         TabOrder = 2
@@ -236,13 +231,12 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CustomIdentifierCheckBox
         AnchorSideTop.Side = asrBottom
-        Left = 92
-        Height = 21
-        Top = 25
+        Left = 114
+        Height = 25
+        Top = 34
         Width = 100
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Around = 6
-        ItemHeight = 13
         MaxLength = 0
         OnChange = IdentPrefixComboBoxChange
         TabOrder = 3
@@ -254,9 +248,9 @@ object MakeResStrDialog: TMakeResStrDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 313
-    Height = 28
-    Top = 479
+    Left = 305
+    Height = 34
+    Top = 473
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -276,10 +270,10 @@ object MakeResStrDialog: TMakeResStrDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 394
-    Height = 28
-    Top = 479
-    Width = 80
+    Left = 386
+    Height = 36
+    Top = 471
+    Width = 88
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -298,8 +292,8 @@ object MakeResStrDialog: TMakeResStrDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 12
-    Height = 28
-    Top = 479
+    Height = 36
+    Top = 471
     Width = 75
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -315,30 +309,30 @@ object MakeResStrDialog: TMakeResStrDialog
   object CodePanel: TPanel
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 259
-    Top = 214
+    Height = 219
+    Top = 246
     Width = 468
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 259
+    ClientHeight = 219
     ClientWidth = 468
     TabOrder = 4
     object SrcPreviewGroupBox: TGroupBox
       AnchorSideBottom.Control = CancelButton
-      Height = 127
+      Height = 87
       Width = 468
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'SrcPreviewGroupBox'
-      ClientHeight = 109
+      ClientHeight = 68
       ClientWidth = 464
       TabOrder = 0
       OnResize = IdentPrefixLabelResize
       object SrcPreviewSynEdit: TSynEdit
         Left = 6
-        Height = 97
+        Height = 56
         Top = 6
         Width = 452
         Align = alClient
@@ -351,7 +345,9 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -678,20 +674,21 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'SrcPreviewSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object StringConstGroupBox: TGroupBox
       Height = 127
-      Top = 132
+      Top = 92
       Width = 468
       Align = alClient
       Caption = 'StringConstGroupBox'
-      ClientHeight = 109
+      ClientHeight = 108
       ClientWidth = 464
       TabOrder = 1
       object StringConstSynEdit: TSynEdit
         Left = 6
-        Height = 97
+        Height = 96
         Top = 6
         Width = 452
         Align = alClient
@@ -704,7 +701,9 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -1031,12 +1030,13 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'StringConstSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object Splitter1: TSplitter
       Cursor = crVSplit
       Height = 5
-      Top = 127
+      Top = 87
       Width = 468
       Align = alTop
       ResizeAnchor = akTop

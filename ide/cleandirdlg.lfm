@@ -1,41 +1,38 @@
 object CleanDirectoryDialog: TCleanDirectoryDialog
   Left = 316
-  Height = 287
+  Height = 328
   Top = 212
   Width = 450
   HorzScrollBar.Page = 449
-  VertScrollBar.Page = 286
+  VertScrollBar.Page = 327
   ActiveControl = DirCombobox
   AutoSize = True
   BorderIcons = [biSystemMenu]
   Caption = 'Clean Directory'
-  ClientHeight = 287
+  ClientHeight = 328
   ClientWidth = 450
   OnCreate = CleanDirectoryDialogCreate
   Position = poScreenCenter
   object DirGroupbox: TGroupBox
     Left = 6
-    Height = 70
+    Height = 78
     Top = 6
     Width = 438
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Directory'
-    ClientHeight = 52
+    ClientHeight = 59
     ClientWidth = 434
     ParentCtl3D = False
     TabOrder = 0
     object DirCombobox: TComboBox
       AnchorSideRight.Control = DirBrowseButton
-      Left = 7
-      Height = 21
-      Top = 6
-      Width = 393
+      Height = 25
+      Width = 400
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -45,8 +42,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AnchorSideTop.Control = DirCombobox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 13
-      Top = 33
+      Height = 22
+      Top = 31
       Width = 422
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -63,7 +60,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AnchorSideRight.Side = asrBottom
       Left = 406
       Height = 21
-      Top = 6
+      Top = 2
       Width = 23
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 5
@@ -75,26 +72,25 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   end
   object RemoveGroupbox: TGroupBox
     Left = 6
-    Height = 70
-    Top = 82
+    Height = 84
+    Top = 90
     Width = 438
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Remove files matching filter:'
-    ClientHeight = 52
+    ClientHeight = 65
     ClientWidth = 434
     ParentCtl3D = False
     TabOrder = 1
     object RemoveCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 25
       Top = 6
       Width = 422
       Align = alTop
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -102,8 +98,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
     object SimpleSyntaxRemoveCheckbox: TCheckBox
       Left = 6
-      Height = 13
-      Top = 33
+      Height = 22
+      Top = 37
       Width = 422
       Align = alTop
       BorderSpacing.Around = 6
@@ -113,26 +109,25 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   end
   object KeepGroupbox: TGroupBox
     Left = 6
-    Height = 89
-    Top = 158
+    Height = 112
+    Top = 180
     Width = 438
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Keep files matching filter:'
-    ClientHeight = 71
+    ClientHeight = 93
     ClientWidth = 434
     ParentCtl3D = False
     TabOrder = 2
     object KeepCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 25
       Top = 6
       Width = 422
       Align = alTop
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -140,8 +135,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
     object SimpleSyntaxKeepCheckbox: TCheckBox
       Left = 6
-      Height = 13
-      Top = 33
+      Height = 22
+      Top = 37
       Width = 422
       Align = alTop
       BorderSpacing.Around = 6
@@ -150,8 +145,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
     object KeepTextFilesCheckbox: TCheckBox
       Left = 6
-      Height = 13
-      Top = 52
+      Height = 22
+      Top = 65
       Width = 422
       Align = alTop
       BorderSpacing.Around = 6
@@ -165,9 +160,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 283
-    Height = 28
-    Top = 253
+    Left = 275
+    Height = 34
+    Top = 298
     Width = 75
     Anchors = [akTop, akRight]
     AutoSize = True
@@ -189,10 +184,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 364
-    Height = 28
-    Top = 253
-    Width = 80
+    Left = 356
+    Height = 36
+    Top = 298
+    Width = 88
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -212,8 +207,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 28
-    Top = 253
+    Height = 36
+    Top = 298
     Width = 75
     AutoSize = True
     BorderSpacing.Around = 6

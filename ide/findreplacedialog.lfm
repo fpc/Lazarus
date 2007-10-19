@@ -21,8 +21,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 20
-    Top = 12
-    Width = 97
+    Top = 14
+    Width = 98
     Alignment = taRightJustify
     BorderSpacing.Left = 6
     Caption = 'TextToFindLabel'
@@ -35,7 +35,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 20
-    Top = 39
+    Top = 41
     Width = 111
     Alignment = taRightJustify
     BorderSpacing.Left = 6
@@ -48,10 +48,10 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 115
-    Height = 21
+    Left = 116
+    Height = 25
     Top = 12
-    Width = 299
+    Width = 298
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -68,7 +68,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 129
-    Height = 21
+    Height = 25
     Top = 39
     Width = 285
     Anchors = [akTop, akLeft, akRight]
@@ -87,15 +87,15 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 256
-    Top = 66
+    Height = 253
+    Top = 70
     Width = 199
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'OptionsGroupBox'
-    ClientHeight = 237
+    ClientHeight = 234
     ClientWidth = 195
     TabOrder = 2
     OnResize = OptionsGroupBoxResize
@@ -179,7 +179,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     Left = 211
     Height = 74
-    Top = 146
+    Top = 150
     Width = 199
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
@@ -219,7 +219,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     Left = 211
     Height = 74
-    Top = 226
+    Top = 230
     Width = 199
     BorderSpacing.Around = 6
     Caption = 'DirectionGroupBox'
@@ -259,7 +259,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     Left = 211
     Height = 74
-    Top = 66
+    Top = 70
     Width = 199
     BorderSpacing.Around = 6
     Caption = 'OriginGroupBox'
@@ -295,19 +295,19 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 45
-    Top = 328
+    Height = 44
+    Top = 329
     Width = 420
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 45
+    ClientHeight = 44
     ClientWidth = 420
     TabOrder = 6
     object ReplaceAllButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 209
-      Height = 33
+      Left = 211
+      Height = 32
       Top = 6
       Width = 50
       Align = alRight
@@ -324,10 +324,10 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 265
-      Height = 33
+      Left = 267
+      Height = 32
       Top = 6
-      Width = 61
+      Width = 57
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -344,10 +344,10 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 332
-      Height = 33
+      Left = 330
+      Height = 32
       Top = 6
-      Width = 82
+      Width = 84
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
