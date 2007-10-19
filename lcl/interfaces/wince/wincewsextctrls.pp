@@ -223,6 +223,10 @@ implementation
 uses
   LMessages;
 
+type
+  TCustomPageAccess = class(TCustomPage)
+  end;
+  
 function IsNotebookGroupFocused(const ANotebook: TCustomNotebook): boolean;
 var
   lNotebookHandle, lWindow: HWND;
@@ -309,8 +313,10 @@ var
   PageIndex: integer;
   PageControlHandle: HWND;
 begin
-  // remove tab from pagecontrol
-  if (AWinControl.Parent <> nil) and (AWinControl.Parent.HandleAllocated) then
+  // remove tab from pagecontrol only if not pfRemoving is set
+  // if pfRemoving is set then Tab has been deleted by RemovePage
+  if (AWinControl.Parent <> nil) and (AWinControl.Parent.HandleAllocated) and
+     not (pfRemoving in TCustomPageAccess(AWinControl).Flags) then
   begin
     PageControlHandle := AWinControl.Parent.Handle;
     PageIndex := TCustomPage(AWinControl).PageIndex;
