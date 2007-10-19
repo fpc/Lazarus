@@ -2460,28 +2460,24 @@
       <!-- object Visibility: default -->
       <element name="TGraphic">
         <short>Base class for dealing with <i>Graphic</i>   images</short>
-        <descr><p>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <b>BitMap</b>, <i>Icon</i> etc which have a <i>Canvas</i> element defined</p><br/><i>LoadFromFile</i>
- - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><i>SaveToFile</i>
- - Writes the graphic to disk in the file provided.<br/><i>LoadFromStream</i>
- - Like <i>LoadFromFile</i>
- except source is a stream (e.g.  <i>TBlobStream</i>
-).<br/><i>SaveToStream</i>
- - stream analogue of <i>SaveToFile</i>
-.<br/><i>LoadFromClipboardFormat</i>
- - Replaces the current image with the data provided.  If the <i>TGraphic</i>
- does not support that format it will generate an exception.<br/><i>SaveToClipboardFormats</i>
- - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><i>Height</i>
- - The native, unstretched, height of the graphic.<br/><i>Palette</i>
- - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><i>Transparent</i>
- - Some parts of the image are not opaque, ie the background can be seen through.<br/><i>Width</i>
- - The native, unstretched, width of the graphic.<br/><i>OnChange</i>
- - Called whenever the graphic changes<br/><i>PaletteModified</i>
- - Indicates in <i>OnChange</i>
- whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><i>OnProgress</i>
- - Generic progress indicator event. Propagates out to <i>TPicture</i>
-  and <i>TImage OnProgress</i>
- events.
-<br/><br/><p>As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes</p></descr>
+        <descr>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <i>BitMap</i>, <i>Icon</i> etc which have a <i>Canvas</i> element defined <br/> 
+		<i>LoadFromFile</i> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/> 
+		<i>SaveToFile</i> - Writes the graphic to disk in the file provided.<br/> 
+		<i>LoadFromStream</i> - Like <i>LoadFromFile</i>  except source is a stream (e.g.  <i>TBlobStream</i>
+).<br/> 
+<i>SaveToStream</i> - stream analogue of <i>SaveToFile</i> .<br/> 
+<i>LoadFromClipboardFormat</i> - Replaces the current image with the data provided.  If the <i>TGraphic</i>
+ does not support that format it will generate an exception.<br/> 
+ <i>SaveToClipboardFormats</i> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/> 
+ <i>Height</i> - The native, unstretched, height of the graphic.<br/> 
+ <i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/> 
+ <i>Transparent</i> - Some parts of the image are not opaque, ie the background can be seen through.<br/> 
+ <i>Width</i> - The native, unstretched, width of the graphic.<br/> 
+ <i>OnChange</i> - Called whenever the graphic changes<br/> 
+ <i>PaletteModified</i> - Indicates in <i>OnChange</i>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/> 
+ <i>OnProgress</i> - Generic progress indicator event. Propagates out to <i>TPicture</i>
+  and <i>TImage OnProgress</i> events.<br/> <br/> 
+  As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphic.FModified">
@@ -2885,8 +2881,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.Palette">
-        <short><i>Palette</i> - Color palette of image</short>
-        <descr><i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes</descr>
+        <short> <i>Palette</i> - Color palette of image</short>
+        <descr> <i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.PaletteModified">
@@ -2896,12 +2892,12 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.Transparent">
-        <short><i>Transparent</i> - Some parts of the image are not opaque. ie the background
+        <short> <i>Transparent</i> - Some parts of the image are not opaque. ie the background
  can be seen through</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.Width">
-        <short><i>Width</i> - The native, unstretched, width of the graphic.</short>
+        <short> <i>Width</i> - The native, unstretched, width of the graphic.</short>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TGraphicClass">
@@ -2911,8 +2907,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPicture">
-        <short><i>TPicture</i>     is a <i>TGraphic</i>     container, used in place of a <i>TGraphic</i>   if the graphic can be of any <i>TGraphic</i>     class.</short>
-        <descr><i>TPicture</i>
+        <short> <i>TPicture</i>     is a <i>TGraphic</i>     container, used in place of a <i>TGraphic</i>   if the graphic can be of any <i>TGraphic</i>     class.</short>
+        <descr> <i>TPicture</i>
  is a <i>TGraphic</i>
  container.  It is used in place of a <i>TGraphic</i>
  if the graphic can be of any <i>TGraphic</i>
@@ -2928,67 +2924,26 @@ It is not a direct descendant of <i>TGraphic</i>
 
 Defines many <b>private</b>
  methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc<br/>
-It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a Canvas property.<br/><br/><i>LoadFromFile</i>
- and <i>SaveToFile</i>
- are polymorphic. For example, if the <i>TPicture</i>
- is holding an <i>Icon</i>
-, you can  <i>LoadFromFile</i>
- a bitmap file, where if the class is <i>TIcon</i>
- you could only read  .ICO files.<br/><br/><i>LoadFromFile</i>
+It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a Canvas property.<br/> <br/>
+<i>LoadFromFile</i> and <i>SaveToFile</i> are polymorphic. For example, if the <i>TPicture</i> is holding an <i>Icon</i>, you can  <i>LoadFromFile</i> a bitmap file, where if the class is <i>TIcon</i> you could only read  .ICO files.<br/> <br/>
+<i>LoadFromFile</i> - Reads a picture from disk. The <i>TGraphic</i> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.<br/>
+<i>SaveToFile</i> - Writes the picture to disk.<br/>
+<i>LoadFromClipboardFormat</i> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.<br/>
+<i>SaveToClipboardFormats</i> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.<br/>
+<i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by <i>LoadFromClipboardFormat</i>
 
- - Reads a picture from disk. The <i>TGraphic</i>
-
- class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.<br/><i>SaveToFile</i>
-
- - Writes the picture to disk.<br/><i>LoadFromClipboardFormat</i>
-
- - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.<br/><i>SaveToClipboardFormats</i>
-
- - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.<br/><i>SupportsClipboardFormat</i>
-
- - Returns true if the given clipboard format  is supported by <i>LoadFromClipboardFormat</i>
-
-.<br/><i>Assign</i>
-
- - Copies the contents of the given <i>TPicture</i>
-
-.  Used most often in  the implementation of TPicture properties.<br/><i>RegisterFileFormat</i>
-
- - Register a new <i>TGraphic</i>
-
- class for use in  <i>LoadFromFile</i>
-
-.<br/><i>RegisterClipboardFormat</i>
-
- - Registers a new <i>TGraphic</i>
-
- class for use in  <i>LoadFromClipboardFormat</i>
-
-.<br/><i>UnRegisterGraphicClass</i>
-
- - Removes all references to the specified <i>TGraphic</i>
-
-  class and all its descendants from the file format and clipboard format internal lists.<br/><i>Height</i>
-
- - The native, unstretched, height of the picture.<br/><i>Width</i>
-
- - The native, unstretched, width of the picture.<br/><i>Graphic</i>
-
- - The <i>TGraphic</i>
-
- object contained by the <i>TPicture</i><br/><i>Bitmap</i>
-
- - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.<br/><i>Pixmap</i>
-
- - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.<br/><i>PNG</i>
-
- - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<i>TPortableNetworkGraphic</i>
-
-) is returned.<br/><i>PNM</i>
-
- - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (<i>TPortableAnyMapGraphic</i>
-
-) is returned.<br/></descr>
+.<br/>
+<i>Assign</i> - Copies the contents of the given <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.<br/>
+<i>RegisterFileFormat</i> - Register a new <i>TGraphic</i> class for use in  <i>LoadFromFile</i>.<br/>
+<i>RegisterClipboardFormat</i> - Registers a new <i>TGraphic</i> class for use in  <i>LoadFromClipboardFormat</i>.<br/>
+<i>UnRegisterGraphicClass</i> - Removes all references to the specified <i>TGraphic</i> class and all its descendants from the file format and clipboard format internal lists.<br/>
+<i>Height</i> - The native, unstretched, height of the picture.<br/>
+<i>Width</i> - The native, unstretched, width of the picture.<br/>
+<i>Graphic</i> - The <i>TGraphic</i> object contained by the <i>TPicture</i> <br/> 
+<i>Bitmap</i> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.<br/>
+<i>Pixmap</i> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.<br/>
+<i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<i>TPortableNetworkGraphic</i>) is returned.<br/>
+<i>PNM</i> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (<i>TPortableAnyMapGraphic</i>) is returned.<br/> </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPicture.FGraphic">
