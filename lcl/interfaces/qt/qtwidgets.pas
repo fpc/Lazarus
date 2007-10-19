@@ -2928,7 +2928,10 @@ end;
 
 function TQtWidget.GetWidget: QWidgetH;
 begin
-  Result := QWidgetH(TheObject);
+  if TheObject <> nil then
+    Result := QWidgetH(TheObject)
+  else
+    Result := nil;
 end;
 
 function TQtWidget.DeliverMessage(var Msg): LRESULT;

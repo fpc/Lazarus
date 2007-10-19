@@ -36,8 +36,6 @@ procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
-function GetControlConstraints(Constraints: TObject): boolean; override;
-
 function IntfSendsUTF8KeyPress: boolean; override;
 
 function PromptUser(const DialogCaption : string;
