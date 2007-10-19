@@ -231,14 +231,18 @@ begin
     ButtonDrawInfo.version := 0;
     ButtonDrawInfo.State := GetDrawState(Details);
     ButtonDrawInfo.kind := kThemeBevelButtonSmall;
-    ButtonDrawInfo.value := kThemeButtonOff;
+    if IsChecked(Details) then
+      ButtonDrawInfo.value := kThemeButtonOn
+    else
+      ButtonDrawInfo.value := kThemeButtonOff;
     ButtonDrawInfo.adornment := kThemeAdornmentNone;
 
     LabelRect := RectToCGRect(R);
 
     // if button is normal or disabled, draw it to dummy context, to eliminate borders
-    if (ButtonDrawInfo.State = kThemeStateActive) or
-      (ButtonDrawInfo.State = kThemeStateInActive) then
+    if ((ButtonDrawInfo.State = kThemeStateActive) or
+      (ButtonDrawInfo.State = kThemeStateInActive)) and
+      (ButtonDrawInfo.value = kThemeButtonOff) then
       OSError(
         HIThemeDrawButton(LabelRect, ButtonDrawInfo, DefaultContext.CGContext,
           kHIThemeOrientationNormal, @LabelRect),
