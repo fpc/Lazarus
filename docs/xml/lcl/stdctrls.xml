@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="StdCtrls">
-      <short/>
+      <short>Contains Class definitions of several Standard Controls used in the Lazarus IDE</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -106,33 +106,19 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssNone">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssNone"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssHorizontal">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssHorizontal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssVertical">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssVertical"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssBoth">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssBoth"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssAutoHorizontal">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssAutoHorizontal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssAutoVertical">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssAutoVertical"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollStyle.ssAutoBoth">
-        <short/>
-      </element>
+      <element name="TScrollStyle.ssAutoBoth"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollCode">
         <short/>
@@ -140,41 +126,23 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scLineUp">
-        <short/>
-      </element>
+      <element name="TScrollCode.scLineUp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scLineDown">
-        <short/>
-      </element>
+      <element name="TScrollCode.scLineDown"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scPageUp">
-        <short/>
-      </element>
+      <element name="TScrollCode.scPageUp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scPageDown">
-        <short/>
-      </element>
+      <element name="TScrollCode.scPageDown"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scPosition">
-        <short/>
-      </element>
+      <element name="TScrollCode.scPosition"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scTrack">
-        <short/>
-      </element>
+      <element name="TScrollCode.scTrack"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scTop">
-        <short/>
-      </element>
+      <element name="TScrollCode.scTop"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scBottom">
-        <short/>
-      </element>
+      <element name="TScrollCode.scBottom"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scEndScroll">
-        <short/>
-      </element>
+      <element name="TScrollCode.scEndScroll"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TScrollEvent">
         <short/>
@@ -182,17 +150,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollEvent.Sender">
-        <short/>
-      </element>
+      <element name="TScrollEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScrollEvent.ScrollCode">
-        <short/>
-      </element>
+      <element name="TScrollEvent.ScrollCode"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScrollEvent.ScrollPos">
-        <short/>
-      </element>
+      <element name="TScrollEvent.ScrollPos"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomScrollBar">
         <short>Custom Scroll Bar</short>
@@ -266,9 +228,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.DoScroll.Message">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.DoScroll.Message"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomScrollBar.NotRightToLeft">
         <short/>
@@ -277,9 +237,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomScrollBar.NotRightToLeft.Result">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.NotRightToLeft.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.SetKind">
         <short/>
@@ -288,9 +246,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetKind.Value">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetKind.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.SetMax">
         <short/>
@@ -299,9 +255,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetMax.Value">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetMax.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.SetMin">
         <short/>
@@ -310,9 +264,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetMin.Value">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetMin.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.SetPosition">
         <short/>
@@ -321,9 +273,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetPosition.Value">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetPosition.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.SetPageSize">
         <short/>
@@ -332,9 +282,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetPageSize.Value">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetPageSize.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.CNHScroll">
         <short/>
@@ -343,9 +291,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.CNHScroll.Message">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.CNHScroll.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.CNVScroll">
         <short/>
@@ -354,9 +300,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.CNVScroll.Message">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.CNVScroll.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.CNCtlColorScrollBar">
         <short/>
@@ -365,9 +309,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.CNCtlColorScrollBar.Message">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.CNCtlColorScrollBar.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.WMEraseBkgnd">
         <short/>
@@ -376,9 +318,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.WMEraseBkgnd.Message">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.WMEraseBkgnd.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.CreateParams">
         <short/>
@@ -387,9 +327,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.CreateParams.Params">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.CreateParams.Params"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.CreateWnd">
         <short/>
@@ -412,13 +350,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.Scroll.ScrollCode">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.Scroll.ScrollCode"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.Scroll.ScrollPos">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.Scroll.ScrollPos"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomScrollBar.Create">
         <short/>
@@ -427,9 +361,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomScrollBar.SetParams">
         <short/>
@@ -438,17 +370,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetParams.APosition">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetParams.APosition"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetParams.AMin">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetParams.AMin"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomScrollBar.SetParams.AMax">
-        <short/>
-      </element>
+      <element name="TCustomScrollBar.SetParams.AMax"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Kind">
         <short/>
@@ -731,9 +657,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomGroupBox.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomGroupBox.Create.AOwner"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomGroupBox.CanTab">
         <short/>
@@ -742,9 +666,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomGroupBox.CanTab.Result">
-        <short/>
-      </element>
+      <element name="TCustomGroupBox.CanTab.Result"><short/></element>
       <!-- object Visibility: default -->
       <element name="TGroupBox">
         <short>Group Box</short>
@@ -1041,25 +963,15 @@ Defines the behavior of the AutoComplete feature.
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxAutoCompleteTextOption.cbactEnabled">
-        <short/>
-      </element>
+      <element name="TComboBoxAutoCompleteTextOption.cbactEnabled"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxAutoCompleteTextOption.cbactEndOfLineComplete">
-        <short/>
-      </element>
+      <element name="TComboBoxAutoCompleteTextOption.cbactEndOfLineComplete"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxAutoCompleteTextOption.cbactRetainPrefixCase">
-        <short/>
-      </element>
+      <element name="TComboBoxAutoCompleteTextOption.cbactRetainPrefixCase"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxAutoCompleteTextOption.cbactSearchCaseSensitive">
-        <short/>
-      </element>
+      <element name="TComboBoxAutoCompleteTextOption.cbactSearchCaseSensitive"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxAutoCompleteTextOption.cbactSearchAscending">
-        <short/>
-      </element>
+      <element name="TComboBoxAutoCompleteTextOption.cbactSearchAscending"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TComboBoxAutoCompleteText">
         <short>TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;</short>
@@ -1072,25 +984,15 @@ Defines the behavior of the AutoComplete feature.
         <descr>ComboBox Style: may be Simple, a Drop-Down or a drop-down list, or some version drawn by the Owner</descr>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxStyle.csDropDown">
-        <short/>
-      </element>
+      <element name="TComboBoxStyle.csDropDown"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxStyle.csSimple">
-        <short/>
-      </element>
+      <element name="TComboBoxStyle.csSimple"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxStyle.csDropDownList">
-        <short/>
-      </element>
+      <element name="TComboBoxStyle.csDropDownList"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxStyle.csOwnerDrawFixed">
-        <short/>
-      </element>
+      <element name="TComboBoxStyle.csOwnerDrawFixed"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TComboBoxStyle.csOwnerDrawVariable">
-        <short/>
-      </element>
+      <element name="TComboBoxStyle.csOwnerDrawVariable"><short/></element>
       <!-- alias type Visibility: default -->
       <element name="TOwnerDrawState">
         <short/>
@@ -1104,21 +1006,13 @@ Defines the behavior of the AutoComplete feature.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDrawItemEvent.Control">
-        <short/>
-      </element>
+      <element name="TDrawItemEvent.Control"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TDrawItemEvent.Index">
-        <short/>
-      </element>
+      <element name="TDrawItemEvent.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TDrawItemEvent.ARect">
-        <short/>
-      </element>
+      <element name="TDrawItemEvent.ARect"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TDrawItemEvent.State">
-        <short/>
-      </element>
+      <element name="TDrawItemEvent.State"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TMeasureItemEvent">
         <short/>
@@ -1126,17 +1020,11 @@ Defines the behavior of the AutoComplete feature.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMeasureItemEvent.Control">
-        <short/>
-      </element>
+      <element name="TMeasureItemEvent.Control"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMeasureItemEvent.Index">
-        <short/>
-      </element>
+      <element name="TMeasureItemEvent.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMeasureItemEvent.Height">
-        <short/>
-      </element>
+      <element name="TMeasureItemEvent.Height"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomComboBox">
         <short>Custom Combo Box</short>
@@ -1317,9 +1205,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetDroppedDown.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetDroppedDown.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomComboBox.GetItemWidth">
         <short/>
@@ -1328,9 +1214,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetItemWidth.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetItemWidth.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.SetItemWidth">
         <short/>
@@ -1339,9 +1223,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetItemWidth.AValue">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetItemWidth.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.SetItems">
         <short/>
@@ -1350,9 +1232,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetItems.Value">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetItems.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.LMDrawListItem">
         <short/>
@@ -1361,9 +1241,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.LMDrawListItem.TheMessage">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.LMDrawListItem.TheMessage"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.CNCommand">
         <short/>
@@ -1372,9 +1250,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.CNCommand.TheMessage">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.CNCommand.TheMessage"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.UpdateSorted">
         <short/>
@@ -1390,9 +1266,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetArrowKeysTraverseList.Value">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetArrowKeysTraverseList.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.CreateWnd">
         <short/>
@@ -1415,17 +1289,11 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.DrawItem.Index">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.DrawItem.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.DrawItem.ARect">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.DrawItem.ARect"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.DrawItem.State">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.DrawItem.State"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.LMChange">
         <short/>
@@ -1434,9 +1302,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.LMChange.msg">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.LMChange.msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.Change">
         <short/>
@@ -1480,9 +1346,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetItemCount.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetItemCount.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetItemHeight">
         <short/>
@@ -1491,9 +1355,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetItemHeight.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetItemHeight.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetSelLength">
         <short/>
@@ -1502,9 +1364,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetSelLength.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetSelLength.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetSelStart">
         <short/>
@@ -1513,9 +1373,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetSelStart.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetSelStart.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetSelText">
         <short/>
@@ -1524,9 +1382,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetSelText.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetSelText.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetItemIndex">
         <short/>
@@ -1535,9 +1391,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetItemIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetItemIndex.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetMaxLength">
         <short/>
@@ -1546,9 +1400,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.GetMaxLength.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.GetMaxLength.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.InitializeWnd">
         <short/>
@@ -1564,13 +1416,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.SelectItem.Result">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SelectItem.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SelectItem.AnItem">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SelectItem.AnItem"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetDropDownCount">
         <short/>
@@ -1579,9 +1427,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetDropDownCount.AValue">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetDropDownCount.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetDroppedDown">
         <short/>
@@ -1590,9 +1436,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetDroppedDown.AValue">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetDroppedDown.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetItemHeight">
         <short/>
@@ -1601,9 +1445,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetItemHeight.AValue">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetItemHeight.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetItemIndex">
         <short/>
@@ -1612,9 +1454,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetItemIndex.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetItemIndex.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetMaxLength">
         <short/>
@@ -1623,9 +1463,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetMaxLength.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetMaxLength.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetSelLength">
         <short/>
@@ -1634,9 +1472,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetSelLength.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetSelLength.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetSelStart">
         <short/>
@@ -1645,9 +1481,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetSelStart.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetSelStart.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetSelText">
         <short/>
@@ -1656,9 +1490,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetSelText.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetSelText.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetSorted">
         <short/>
@@ -1667,9 +1499,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetSorted.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetSorted.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetStyle">
         <short/>
@@ -1678,9 +1508,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetStyle.Val">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.SetStyle.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.KeyDown">
         <short/>
@@ -1689,13 +1517,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.KeyDown.Key">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.KeyDown.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.KeyDown.Shift">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.KeyDown.Shift"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.DropDownCount">
         <short/>
@@ -1770,9 +1594,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomComboBox.Destroy">
         <short/>
@@ -1788,13 +1610,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddItem.Item">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddItem.Item"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddItem.AnObject">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddItem.AnObject"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.AddHistoryItem">
         <short/>
@@ -1803,21 +1621,13 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.Item">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.Item"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.MaxHistoryCount">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.MaxHistoryCount"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.SetAsText">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.SetAsText"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.CaseSensitive">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.CaseSensitive"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.AddHistoryItem">
         <short/>
@@ -1826,25 +1636,15 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.Item">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.Item"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.AnObject">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.AnObject"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.MaxHistoryCount">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.MaxHistoryCount"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.SetAsText">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.SetAsText"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.CaseSensitive">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.AddHistoryItem.CaseSensitive"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.Clear">
         <short/>
@@ -1879,13 +1679,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.MeasureItem.Index">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.MeasureItem.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.MeasureItem.TheHeight">
-        <short/>
-      </element>
+      <element name="TCustomComboBox.MeasureItem.TheHeight"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.SelectAll">
         <short/>
@@ -2276,17 +2072,11 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TListBoxStyle.lbStandard">
-        <short/>
-      </element>
+      <element name="TListBoxStyle.lbStandard"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TListBoxStyle.lbOwnerDrawFixed">
-        <short/>
-      </element>
+      <element name="TListBoxStyle.lbOwnerDrawFixed"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TListBoxStyle.lbOwnerDrawVariable">
-        <short/>
-      </element>
+      <element name="TListBoxStyle.lbOwnerDrawVariable"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TSelectionChangeEvent">
         <short/>
@@ -2294,13 +2084,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSelectionChangeEvent.Sender">
-        <short/>
-      </element>
+      <element name="TSelectionChangeEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TSelectionChangeEvent.User">
-        <short/>
-      </element>
+      <element name="TSelectionChangeEvent.User"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomListBox">
         <short>Custom List Box</short>
@@ -2410,9 +2196,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetTopIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetTopIndex.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListBox.SetTopIndex">
         <short/>
@@ -2421,9 +2205,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetTopIndex.AValue">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetTopIndex.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListBox.UpdateSelectionMode">
         <short/>
@@ -2446,9 +2228,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.LMDrawListItem.TheMessage">
-        <short/>
-      </element>
+      <element name="TCustomListBox.LMDrawListItem.TheMessage"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListBox.LMSelChange">
         <short/>
@@ -2457,9 +2237,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.LMSelChange.TheMessage">
-        <short/>
-      </element>
+      <element name="TCustomListBox.LMSelChange.TheMessage"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListBox.SendItemSelected">
         <short/>
@@ -2468,13 +2246,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SendItemSelected.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SendItemSelected.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SendItemSelected.IsSelected">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SendItemSelected.IsSelected"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.AssignItemDataToCache">
         <short/>
@@ -2483,13 +2257,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.AssignItemDataToCache.AIndex">
-        <short/>
-      </element>
+      <element name="TCustomListBox.AssignItemDataToCache.AIndex"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.AssignItemDataToCache.AData">
-        <short/>
-      </element>
+      <element name="TCustomListBox.AssignItemDataToCache.AData"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.AssignCacheToItemData">
         <short/>
@@ -2498,13 +2268,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.AssignCacheToItemData.AIndex">
-        <short/>
-      </element>
+      <element name="TCustomListBox.AssignCacheToItemData.AIndex"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.AssignCacheToItemData.AData">
-        <short/>
-      </element>
+      <element name="TCustomListBox.AssignCacheToItemData.AData"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.Loaded">
         <short/>
@@ -2534,9 +2300,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.CheckIndex.AIndex">
-        <short/>
-      </element>
+      <element name="TCustomListBox.CheckIndex.AIndex"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetItemHeight">
         <short/>
@@ -2545,9 +2309,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetItemHeight.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetItemHeight.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetItemIndex">
         <short/>
@@ -2556,9 +2318,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetItemIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetItemIndex.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetSelCount">
         <short/>
@@ -2567,9 +2327,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetSelCount.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetSelCount.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetSelected">
         <short/>
@@ -2578,13 +2336,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetSelected.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetSelected.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.GetSelected.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetSelected.Index"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetCachedDataSize">
         <short/>
@@ -2593,9 +2347,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetCachedDataSize.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetCachedDataSize.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetCachedData">
         <short/>
@@ -2604,13 +2356,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetCachedData.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetCachedData.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.GetCachedData.AIndex">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetCachedData.AIndex"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetExtendedSelect">
         <short/>
@@ -2619,9 +2367,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetExtendedSelect.Val">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetExtendedSelect.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetItemIndex">
         <short/>
@@ -2630,9 +2376,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetItemIndex.Val">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetItemIndex.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetItems">
         <short/>
@@ -2641,9 +2385,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetItems.Value">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetItems.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetItemHeight">
         <short/>
@@ -2652,9 +2394,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetItemHeight.Value">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetItemHeight.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetMultiSelect">
         <short/>
@@ -2663,9 +2403,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetMultiSelect.Val">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetMultiSelect.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetSelected">
         <short/>
@@ -2674,13 +2412,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetSelected.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetSelected.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetSelected.Val">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetSelected.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetSorted">
         <short/>
@@ -2689,9 +2423,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetSorted.Val">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetSorted.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetStyle">
         <short/>
@@ -2700,9 +2432,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetStyle.Val">
-        <short/>
-      </element>
+      <element name="TCustomListBox.SetStyle.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.DrawItem">
         <short/>
@@ -2711,17 +2441,11 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.DrawItem.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.DrawItem.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.DrawItem.ARect">
-        <short/>
-      </element>
+      <element name="TCustomListBox.DrawItem.ARect"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.DrawItem.State">
-        <short/>
-      </element>
+      <element name="TCustomListBox.DrawItem.State"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.DoSelectionChange">
         <short/>
@@ -2730,9 +2454,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.DoSelectionChange.User">
-        <short/>
-      </element>
+      <element name="TCustomListBox.DoSelectionChange.User"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SendItemIndex">
         <short/>
@@ -2754,9 +2476,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomListBox.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomListBox.Destroy">
         <short/>
@@ -2772,13 +2492,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.GetIndexAtY.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetIndexAtY.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.GetIndexAtY.Y">
-        <short/>
-      </element>
+      <element name="TCustomListBox.GetIndexAtY.Y"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomListBox.ItemAtPos">
         <short/>
@@ -2787,17 +2503,11 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.ItemAtPos.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemAtPos.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.ItemAtPos.Pos">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemAtPos.Pos"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.ItemAtPos.Existing">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemAtPos.Existing"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomListBox.ItemRect">
         <short/>
@@ -2806,13 +2516,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.ItemRect.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemRect.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.ItemRect.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemRect.Index"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomListBox.ItemVisible">
         <short/>
@@ -2821,13 +2527,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.ItemVisible.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemVisible.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.ItemVisible.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemVisible.Index"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomListBox.ItemFullyVisible">
         <short/>
@@ -2836,13 +2538,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomListBox.ItemFullyVisible.Result">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemFullyVisible.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.ItemFullyVisible.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.ItemFullyVisible.Index"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomListBox.MakeCurrentVisible">
         <short/>
@@ -2858,13 +2556,9 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.MeasureItem.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.MeasureItem.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.MeasureItem.TheHeight">
-        <short/>
-      </element>
+      <element name="TCustomListBox.MeasureItem.TheHeight"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomListBox.Clear">
         <short/>
@@ -3109,9 +2803,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomListBox.Selected.Index">
-        <short/>
-      </element>
+      <element name="TCustomListBox.Selected.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ShowHint">
         <short/>
@@ -3430,17 +3122,11 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TEchoMode.emNormal">
-        <short/>
-      </element>
+      <element name="TEchoMode.emNormal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TEchoMode.emNone">
-        <short/>
-      </element>
+      <element name="TEchoMode.emNone"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TEchoMode.emPassword">
-        <short/>
-      </element>
+      <element name="TEchoMode.emPassword"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomEdit">
         <short>Custom Edit</short>
@@ -3531,9 +3217,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomEdit.GetModified.Result">
-        <short/>
-      </element>
+      <element name="TCustomEdit.GetModified.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomEdit.SetCharCase">
         <short/>
@@ -3542,9 +3226,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetCharCase.Value">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetCharCase.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomEdit.SetMaxLength">
         <short/>
@@ -3553,9 +3235,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetMaxLength.Value">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetMaxLength.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomEdit.SetModified">
         <short/>
@@ -3564,9 +3244,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetModified.Value">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetModified.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomEdit.SetPasswordChar">
         <short/>
@@ -3575,9 +3253,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetPasswordChar.AValue">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetPasswordChar.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomEdit.SetReadOnly">
         <short/>
@@ -3586,9 +3262,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetReadOnly.Value">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetReadOnly.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.CalculatePreferredSize">
         <short/>
@@ -3597,13 +3271,9 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.CalculatePreferredSize.PreferredWidth">
-        <short/>
-      </element>
+      <element name="TCustomEdit.CalculatePreferredSize.PreferredWidth"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.CalculatePreferredSize.PreferredHeight">
-        <short/>
-      </element>
+      <element name="TCustomEdit.CalculatePreferredSize.PreferredHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.CreateWnd">
         <short/>
@@ -3619,9 +3289,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.CMTextChanged.Message">
-        <short/>
-      </element>
+      <element name="TCustomEdit.CMTextChanged.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.Change">
         <short/>
@@ -3637,9 +3305,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomEdit.GetSelLength.Result">
-        <short/>
-      </element>
+      <element name="TCustomEdit.GetSelLength.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelStart">
         <short/>
@@ -3648,9 +3314,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomEdit.GetSelStart.Result">
-        <short/>
-      </element>
+      <element name="TCustomEdit.GetSelStart.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelText">
         <short/>
@@ -3659,9 +3323,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomEdit.GetSelText.Result">
-        <short/>
-      </element>
+      <element name="TCustomEdit.GetSelText.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.InitializeWnd">
         <short/>
@@ -3677,9 +3339,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetEchoMode.Val">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetEchoMode.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetSelLength">
         <short/>
@@ -3688,9 +3348,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetSelLength.Val">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetSelLength.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetSelStart">
         <short/>
@@ -3699,9 +3357,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetSelStart.Val">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetSelStart.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetSelText">
         <short/>
@@ -3710,9 +3366,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.SetSelText.Val">
-        <short/>
-      </element>
+      <element name="TCustomEdit.SetSelText.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.RealSetText">
         <short/>
@@ -3721,9 +3375,7 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.RealSetText.Value">
-        <short/>
-      </element>
+      <element name="TCustomEdit.RealSetText.Value"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.ChildClassAllowed">
         <short/>
@@ -3732,13 +3384,9 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomEdit.ChildClassAllowed.Result">
-        <short/>
-      </element>
+      <element name="TCustomEdit.ChildClassAllowed.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.ChildClassAllowed.ChildClass">
-        <short/>
-      </element>
+      <element name="TCustomEdit.ChildClassAllowed.ChildClass"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.KeyUp">
         <short/>
@@ -3747,13 +3395,9 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.KeyUp.Key">
-        <short/>
-      </element>
+      <element name="TCustomEdit.KeyUp.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.KeyUp.Shift">
-        <short/>
-      </element>
+      <element name="TCustomEdit.KeyUp.Shift"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomEdit.AutoSelect">
         <short>property AutoSelect: Boolean</short>
@@ -3775,49 +3419,30 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomEdit.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>CustomEdit</i> constructor</short>
+        <descr><i>CustomEdit</i> constructor,  supplied code will <b>override</b> declarations by ancestor classes</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomEdit.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomEdit.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.SelectAll">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Selects all text in buffer, in preparation for an operation such as Copy or Clear</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.ClearSelection">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Clears selected portion of Text</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.CopyToClipboard">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Copies selected text to the clipboard</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.CutToClipboard">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Cuts selected text (ie removes it) and stores it in the clipboard</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.PasteFromClipboard">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Pastes the contents of the clipboard into the current position in <i>Text</i></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.CharCase">
@@ -3828,9 +3453,10 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.EchoMode">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>EchoMode</i>: how the typed characters are to appear on the screen</short>
+        <descr><i>EchoMode</i>: can be None (no character appears); Normal (the character typed is shown directly); Password (a series of *** or other chosen characters are displayed instead of the typed characters). <br/>
+Reads or writes a flag to determine the mode<br/>
+Default is normal</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.MaxLength">
@@ -3894,8 +3520,8 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Text">
-        <short>Text</short>
-        <descr>Text: the character string contained in the Edit Box</descr>
+        <short><i>Text</i>: the character string contained in the Edit Box</short>
+        <descr>Most of the operations (such as <i>Select</i>, <i>Clear</i>, <i>Cut</i>, <i>Copy</i> are performed in this part of the object, which holds the actual string being edited</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TMemoScrollbar">
@@ -3912,9 +3538,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMemoScrollbar.GetHorzScrollBar.Result">
-        <short/>
-      </element>
+      <element name="TMemoScrollbar.GetHorzScrollBar.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMemoScrollbar.GetVertScrollBar">
         <short/>
@@ -3923,9 +3547,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMemoScrollbar.GetVertScrollBar.Result">
-        <short/>
-      </element>
+      <element name="TMemoScrollbar.GetVertScrollBar.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TMemoScrollbar.Increment">
         <short/>
@@ -4011,9 +3633,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.SetHorzScrollBar.AValue">
-        <short/>
-      </element>
+      <element name="TCustomMemo.SetHorzScrollBar.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomMemo.SetVertScrollBar">
         <short/>
@@ -4022,9 +3642,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.SetVertScrollBar.AValue">
-        <short/>
-      </element>
+      <element name="TCustomMemo.SetVertScrollBar.AValue"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomMemo.StoreScrollBars">
         <short/>
@@ -4033,9 +3651,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomMemo.StoreScrollBars.Result">
-        <short/>
-      </element>
+      <element name="TCustomMemo.StoreScrollBars.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetLines">
         <short/>
@@ -4044,9 +3660,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.SetLines.Value">
-        <short/>
-      </element>
+      <element name="TCustomMemo.SetLines.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetWordWrap">
         <short/>
@@ -4055,9 +3669,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.SetWordWrap.Value">
-        <short/>
-      </element>
+      <element name="TCustomMemo.SetWordWrap.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetScrollBars">
         <short/>
@@ -4066,9 +3678,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.SetScrollBars.Value">
-        <short/>
-      </element>
+      <element name="TCustomMemo.SetScrollBars.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.InitializeWnd">
         <short/>
@@ -4091,9 +3701,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomMemo.WordWrapIsStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomMemo.WordWrapIsStored.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.ControlKeyDown">
         <short/>
@@ -4102,37 +3710,29 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.ControlKeyDown.Key">
-        <short/>
-      </element>
+      <element name="TCustomMemo.ControlKeyDown.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.ControlKeyDown.Shift">
-        <short/>
-      </element>
+      <element name="TCustomMemo.ControlKeyDown.Shift"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomMemo.Create">
-        <short>Create</short>
-        <descr>Create the Custom memo widget</descr>
+        <short><i>CustomMemo</i> constructor</short>
+        <descr><i>CustomMemo</i> constructor. Supplied code will <b>override</b> definition in ancestor classes</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomMemo.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomMemo.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomMemo.Destroy">
-        <short>Destroy</short>
-        <descr>Destroy the CustomMemo widget when you have finished with it</descr>
+        <short><i>CustomMemo</i> destructor</short>
+        <descr><i>CustomMemo</i> destructor. Supplied code will <b>override</b> definitions from ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomMemo.Append">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Append</i> a line of text to the <i>CustomMemo</i></short>
+        <descr><i>Append</i> a line of text to the <i>CustomMemo</i>. The <i>Value</i> is an explicit string to be passed to the procedure for insertion at the end of the text buffer <i>Lines</i></descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.Append.Value">
-        <short/>
+        <short><i>Value</i>: the string to be added to <i>Lines</i></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomMemo.Clear">
@@ -4572,9 +4172,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetAlignment.Value">
-        <short/>
-      </element>
+      <element name="TCustomLabel.SetAlignment.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLabel.SetLayout">
         <short/>
@@ -4583,9 +4181,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetLayout.Value">
-        <short/>
-      </element>
+      <element name="TCustomLabel.SetLayout.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLabel.SetWordWrap">
         <short/>
@@ -4594,9 +4190,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetWordWrap.Value">
-        <short/>
-      </element>
+      <element name="TCustomLabel.SetWordWrap.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLabel.WMActivate">
         <short/>
@@ -4605,9 +4199,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.WMActivate.Message">
-        <short/>
-      </element>
+      <element name="TCustomLabel.WMActivate.Message"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomLabel.GetLabelText">
         <short/>
@@ -4616,9 +4208,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLabel.GetLabelText.Result">
-        <short/>
-      </element>
+      <element name="TCustomLabel.GetLabelText.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.RealSetText">
         <short/>
@@ -4627,9 +4217,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.RealSetText.AValue">
-        <short/>
-      </element>
+      <element name="TCustomLabel.RealSetText.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.Notification">
         <short/>
@@ -4638,13 +4226,9 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TCustomLabel.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomLabel.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetFocusControl">
         <short/>
@@ -4653,9 +4237,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetFocusControl.Val">
-        <short/>
-      </element>
+      <element name="TCustomLabel.SetFocusControl.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetShowAccelChar">
         <short/>
@@ -4664,9 +4246,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetShowAccelChar.Val">
-        <short/>
-      </element>
+      <element name="TCustomLabel.SetShowAccelChar.Val"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.DoAutoSize">
         <short/>
@@ -4682,9 +4262,7 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomLabel.Create.AOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomLabel.Alignment">
         <short/>
@@ -4913,9 +4491,7 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TButtonControl.IsCheckedStored.Result">
-        <short/>
-      </element>
+      <element name="TButtonControl.IsCheckedStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TButtonControl.UseOnChangeIsStored">
         <short/>
@@ -4924,9 +4500,7 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TButtonControl.UseOnChangeIsStored.Result">
-        <short/>
-      </element>
+      <element name="TButtonControl.UseOnChangeIsStored.Result"><short/></element>
       <!-- variable Visibility: protected -->
       <element name="TButtonControl.fLastCheckedOnChange">
         <short/>
@@ -4941,9 +4515,7 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TButtonControl.GetChecked.Result">
-        <short/>
-      </element>
+      <element name="TButtonControl.GetChecked.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonControl.SetChecked">
         <short/>
@@ -4952,9 +4524,7 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonControl.SetChecked.Value">
-        <short/>
-      </element>
+      <element name="TButtonControl.SetChecked.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonControl.DoOnChange">
         <short/>
@@ -4977,9 +4547,7 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TButtonControl.ColorIsStored.Result">
-        <short/>
-      </element>
+      <element name="TButtonControl.ColorIsStored.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonControl.Loaded">
         <short/>
@@ -5019,9 +4587,7 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonControl.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TButtonControl.Create.TheOwner"><short/></element>
       <!-- range type Visibility: default -->
       <element name="TLeftRight">
         <short/>
@@ -5055,9 +4621,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
       <element name="TCustomCheckBox">
         <short>TCustomCheckBox is the ancestor of all check-box components.</short>
         <descr>Custom Check Box: The base (abstract) class from which the TCheckBox is derived.  Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</descr>
-        <seealso>
-          <link id="TCheckBox"/>
-        </seealso>
+        <seealso><link id="TCheckBox"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomCheckBox.FAllowGrayed">
@@ -5085,9 +4649,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckBox.SetState.Value">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.SetState.Value"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomCheckBox.GetState">
         <short/>
@@ -5096,9 +4658,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckBox.GetState.Result">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.GetState.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckBox.DoChange">
         <short/>
@@ -5107,9 +4667,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckBox.DoChange.Msg">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.DoChange.Msg"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomCheckBox.RetrieveState">
         <short/>
@@ -5118,9 +4676,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckBox.RetrieveState.Result">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.RetrieveState.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.InitializeWnd">
         <short/>
@@ -5143,9 +4699,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckBox.GetChecked.Result">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.GetChecked.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.SetChecked">
         <short/>
@@ -5154,9 +4708,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckBox.SetChecked.Value">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.SetChecked.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.RealSetText">
         <short/>
@@ -5165,9 +4717,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckBox.RealSetText.Value">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.RealSetText.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.ApplyChanges">
         <short/>
@@ -5183,9 +4733,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckBox.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomCheckBox.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.AllowGrayed">
         <short>Determines whether the check box can be in a "grayed" state.</short>
@@ -5437,9 +4985,7 @@ User-defined Procedure</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TToggleBox.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TToggleBox.Create.TheOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TToggleBox.AllowGrayed">
         <short/>
@@ -5627,9 +5173,7 @@ User-defined Procedure</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TRadioButton.RealSetText.Value">
-        <short/>
-      </element>
+      <element name="TRadioButton.RealSetText.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TRadioButton.DoAutoSize">
         <short/>
@@ -5645,9 +5189,7 @@ User-defined Procedure</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TRadioButton.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TRadioButton.Create.TheOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TRadioButton.Align">
         <short/>
@@ -5871,17 +5413,11 @@ User-defined Procedure</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TStaticBorderStyle.sbsNone">
-        <short/>
-      </element>
+      <element name="TStaticBorderStyle.sbsNone"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TStaticBorderStyle.sbsSingle">
-        <short/>
-      </element>
+      <element name="TStaticBorderStyle.sbsSingle"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TStaticBorderStyle.sbsSunken">
-        <short/>
-      </element>
+      <element name="TStaticBorderStyle.sbsSunken"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomStaticText">
         <short>Custom Static Text</short>
@@ -5926,9 +5462,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.FontChange.Sender">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.FontChange.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.DoAutoSize">
         <short/>
@@ -5944,9 +5478,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.CMTextChanged.Message">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.CMTextChanged.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.WMActivate">
         <short/>
@@ -5955,9 +5487,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.WMActivate.Message">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.WMActivate.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.Notification">
         <short/>
@@ -5966,13 +5496,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.SetAlignment">
         <short/>
@@ -5981,9 +5507,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetAlignment.Value">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.SetAlignment.Value"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomStaticText.GetAlignment">
         <short/>
@@ -5992,9 +5516,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.GetAlignment.Result">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.GetAlignment.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.SetStaticBorderStyle">
         <short/>
@@ -6003,9 +5525,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetStaticBorderStyle.Value">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.SetStaticBorderStyle.Value"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomStaticText.GetStaticBorderStyle">
         <short/>
@@ -6014,9 +5534,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.GetStaticBorderStyle.Result">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.GetStaticBorderStyle.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.SetFocusControl">
         <short/>
@@ -6025,9 +5543,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetFocusControl.Value">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.SetFocusControl.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.SetShowAccelChar">
         <short/>
@@ -6036,9 +5552,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetShowAccelChar.Value">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.SetShowAccelChar.Value"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomStaticText.GetShowAccelChar">
         <short/>
@@ -6047,9 +5561,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.GetShowAccelChar.Result">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.GetShowAccelChar.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomStaticText.CanTab">
         <short/>
@@ -6058,9 +5570,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.CanTab.Result">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.CanTab.Result"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomStaticText.Alignment">
         <short/>
@@ -6093,9 +5603,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomStaticText.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStaticText.Paint">
         <short/>
