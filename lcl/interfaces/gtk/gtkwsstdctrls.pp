@@ -1002,6 +1002,7 @@ class procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 var
 Widget: PGtkWidget;
+MaxPos: Integer;
 begin
   Widget:=GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget;
   if WidgetGetSelStart(Widget)=NewStart then exit;
@@ -1009,7 +1010,8 @@ begin
   // event. Then the LCL gets notified and wants to react: force thaw (unfreeze)
   if GTK_IS_TEXT(Widget) then
     gtk_text_thaw(PGtkText(Widget));
-  gtk_editable_set_position(PGtkOldEditable(Widget), NewStart);
+  MaxPos := gtk_text_get_length(PGtkText(Widget));
+  gtk_editable_set_position(PGtkOldEditable(Widget), Min(NewStart, MaxPos));
   WidgetSetSelLength(Widget,0); // Setting the selection start should cancel any selection
 end;
 
