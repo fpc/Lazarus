@@ -16,72 +16,57 @@ object DirSelDlg: TDirSelDlg
   OnShow = FormShow
   Position = poScreenCenter
   object Panel1: TPanel
-    Height = 41
-    Top = 289
+    Height = 43
+    Top = 287
     Width = 335
     Align = alBottom
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
+    ClientHeight = 43
     ClientWidth = 335
-    TabOrder = 4
+    TabOrder = 2
     TabStop = True
     object btnOK: TButton
-      AnchorSideRight.Control = btnCancel
-      AnchorSideBottom.Control = btnCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 161
-      Height = 25
-      Top = 10
+      Left = 164
+      Height = 31
+      Top = 6
       Width = 75
-      Anchors = [akRight, akBottom]
+      Align = alRight
       AutoSize = True
+      BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       Caption = 'btnOK'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       ModalResult = 1
       TabOrder = 0
     end
     object btnCancel: TButton
-      AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 242
-      Height = 25
-      Top = 10
-      Width = 87
-      Anchors = [akRight, akBottom]
+      Left = 245
+      Height = 31
+      Top = 6
+      Width = 84
+      Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       Cancel = True
       Caption = 'btnCancel'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       ModalResult = 2
       TabOrder = 1
     end
   end
-  object Panel2: TPanel
-    Height = 265
-    Top = 24
-    Width = 7
-    Align = alLeft
-    BevelOuter = bvNone
-    TabOrder = 1
-    TabStop = True
-  end
-  object Panel3: TPanel
+  object DirectoryPanel: TPanel
     Height = 24
     Width = 335
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 24
     ClientWidth = 335
-    TabOrder = 2
+    TabOrder = 1
     TabStop = True
     object lblDirectory: TLabel
       Left = 140
@@ -89,31 +74,21 @@ object DirSelDlg: TDirSelDlg
       Top = 4
       Width = 76
       Caption = '&Directory'
-      Color = clNone
       FocusControl = TV
       Layout = tlCenter
       ParentColor = False
     end
   end
-  object Panel4: TPanel
-    Left = 328
-    Height = 265
-    Top = 24
-    Width = 7
-    Align = alRight
-    BevelOuter = bvNone
-    TabOrder = 3
-    TabStop = True
-  end
   object TV: TTreeView
-    Left = 7
-    Height = 265
-    Top = 24
-    Width = 321
+    Left = 6
+    Height = 251
+    Top = 30
+    Width = 323
     Align = alClient
+    BorderSpacing.Around = 6
     Constraints.MinHeight = 100
     Constraints.MinWidth = 100
-    DefaultItemHeight = 18
+    DefaultItemHeight = 19
     ParentColor = True
     ParentCtl3D = False
     ParentFont = True

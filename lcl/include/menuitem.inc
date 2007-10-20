@@ -892,6 +892,7 @@ begin
   if Enabled then Flags:=Flags+'E';
   if RadioItem then Flags:=Flags+'R';
   if Checked then Flags:=Flags+'C';
+  if HandleAllocated then Flags:=Flags+'H';
   DbgOut(Prefix,' Name="',Name,'" Caption="',DbgStr(Caption),'" Flags=',Flags);
   if Parent<>nil then
     DbgOut(' ',dbgs(MenuIndex),'/',dbgs(Parent.Count));

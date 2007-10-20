@@ -44,7 +44,7 @@ uses
   LazConfigStorage, FileUtil,
   IDEExternToolIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
-  CompilerOptions, OutputFilter, LazarusIDEStrConsts;
+  CompilerOptions, OutputFilter, LazarusIDEStrConsts, ExtCtrls;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -111,6 +111,7 @@ type
     OKButton: TBitBtn;
     CancelButton: TBitBtn;
     ListBox: TListBox;
+    BtnPanel: TPanel;
     ToolBar: TToolBar;
     AddButton: TToolButton;
     RemoveButton: TToolButton;

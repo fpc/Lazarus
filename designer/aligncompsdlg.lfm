@@ -1,18 +1,21 @@
 object AlignComponentsDialog: TAlignComponentsDialog
-  Left = 312
+  Left = 362
   Height = 238
-  Top = 606
+  Top = 325
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 237
   ActiveControl = OKButton
   BorderStyle = bsSizeToolWin
   Caption = 'AlignComponentsDialog'
+  ClientHeight = 238
+  ClientWidth = 400
   OnResize = FormResize
   Position = poScreenCenter
   object HorizontalRadioGroup: TRadioGroup
+    AnchorSideBottom.Control = ACDBtnPanel
     Left = 6
-    Height = 195
+    Height = 176
     Top = 6
     Width = 191
     Anchors = [akTop, akLeft, akBottom]
@@ -30,9 +33,9 @@ object AlignComponentsDialog: TAlignComponentsDialog
     TabOrder = 0
   end
   object VerticalRadioGroup: TRadioGroup
-    AnchorSideBottom.Control = OKButton
+    AnchorSideBottom.Control = ACDBtnPanel
     Left = 203
-    Height = 195
+    Height = 176
     Top = 6
     Width = 191
     Anchors = [akTop, akRight, akBottom]
@@ -49,41 +52,49 @@ object AlignComponentsDialog: TAlignComponentsDialog
     ChildSizing.ControlsPerLine = 1
     TabOrder = 1
   end
-  object OKButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    Left = 226
-    Height = 25
-    Top = 207
-    Width = 75
-    Anchors = [akRight, akBottom]
+  object ACDBtnPanel: TPanel
+    Height = 50
+    Top = 188
+    Width = 400
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Right = 6
-    Caption = '&OK'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 400
     TabOrder = 2
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 307
-    Height = 25
-    Top = 207
-    Width = 87
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Caption = 'Cancel'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 3
+    object OKButton: TBitBtn
+      AnchorSideRight.Control = CancelButton
+      Left = 227
+      Height = 38
+      Top = 6
+      Width = 75
+      Align = alRight
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      Left = 308
+      Height = 38
+      Top = 6
+      Width = 86
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
+    end
   end
 end

@@ -17,16 +17,16 @@ object frmCompilerOptions: TfrmCompilerOptions
   Position = poScreenCenter
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
-    Height = 480
+    Height = 478
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
       ClientWidth = 665
-      ClientHeight = 449
+      ClientHeight = 447
       object lblOtherUnits: TLabel
         Left = 6
         Height = 20
@@ -116,7 +116,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Left = 6
         Height = 20
         Top = 306
-        Width = 128
+        Width = 127
         BorderSpacing.Top = 6
         BorderSpacing.Around = 6
         Caption = 'LCLWidgetTypeLabel'
@@ -228,7 +228,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideLeft.Control = LCLWidgetTypeLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = LCLWidgetTypeLabel
-        Left = 140
+        Left = 139
         Height = 25
         Top = 306
         Width = 155
@@ -286,7 +286,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object CodeGenPage: TPage
       Caption = 'CodeGenPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object grpSmartLinkUnit: TGroupBox
         AnchorSideLeft.Control = grpChecks
         AnchorSideLeft.Side = asrBottom
@@ -657,7 +657,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object LinkingPage: TPage
       Caption = 'LinkingPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object grpLinkLibraries: TGroupBox
         Left = 6
         Height = 53
@@ -824,7 +824,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object MsgPage: TPage
       Caption = 'MsgPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object grpVerbosity: TCheckGroup
         Left = 6
         Height = 196
@@ -872,7 +872,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object OtherPage: TPage
       Caption = 'OtherPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object grpConfigFile: TGroupBox
         Left = 6
         Height = 110
@@ -919,18 +919,18 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpCustomOptions: TGroupBox
         Left = 6
-        Height = 319
+        Height = 321
         Top = 122
         Width = 653
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCustomOptions'
-        ClientHeight = 300
+        ClientHeight = 317
         ClientWidth = 649
         TabOrder = 1
         object memCustomOptions: TMemo
           Left = 6
-          Height = 288
+          Height = 305
           Top = 6
           Width = 637
           Align = alClient
@@ -942,7 +942,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object InheritedPage: TPage
       Caption = 'InheritedPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object InhNoteLabel: TLabel
         Left = 6
         Height = 20
@@ -967,7 +967,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object InhItemMemo: TMemo
         Left = 6
-        Height = 157
+        Height = 159
         Top = 284
         Width = 653
         Align = alClient
@@ -990,7 +990,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object CompilationPage: TPage
       Caption = 'CompilationPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object chkCreateMakefile: TCheckBox
         Left = 6
         Height = 22
@@ -1360,21 +1360,21 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 480
+    Height = 50
+    Top = 478
     Width = 669
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 50
     ClientWidth = 669
     TabOrder = 1
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 36
+      Height = 38
       Top = 6
-      Width = 75
+      Width = 76
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
@@ -1388,8 +1388,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnShowOptions: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 135
-      Height = 36
+      Left = 137
+      Height = 38
       Top = 6
       Width = 143
       Align = alRight
@@ -1440,8 +1440,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnCheck: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 284
-      Height = 36
+      Left = 286
+      Height = 38
       Top = 6
       Width = 75
       Align = alRight
@@ -1458,8 +1458,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnLoadSave: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 365
-      Height = 36
+      Left = 367
+      Height = 38
       Top = 6
       Width = 123
       Align = alRight
@@ -1508,8 +1508,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 494
-      Height = 36
+      Left = 496
+      Height = 38
       Top = 6
       Width = 75
       Align = alRight
@@ -1526,10 +1526,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     object btnCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 575
-      Height = 36
+      Left = 577
+      Height = 38
       Top = 6
-      Width = 88
+      Width = 86
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

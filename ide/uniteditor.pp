@@ -4035,8 +4035,12 @@ end;
 function TSourceNotebook.AddContextPopupMenuItem(const NewCaption: string;
   const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TIDEMenuItem;
 begin
+  //DebugLn(['TSourceNotebook.AddContextPopupMenuItem ',NewCaption]);
   Result:=RegisterIDEMenuCommand(SrcEditMenuSectionFileDynamic.GetPath,
     'FileDynamic',NewCaption,NewOnClick);
+  //DebugLn(['TSourceNotebook.AddContextPopupMenuItem CHECKING CONSISTENCY']);
+  //SourceEditorMenuRoot.WriteDebugReport('',true);
+  //SourceEditorMenuRoot.ConsistencyCheck;
   Result.Enabled:=NewEnabled;
 end;
 

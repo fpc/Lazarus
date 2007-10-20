@@ -1,28 +1,29 @@
 object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
-  Left = 314
+  Left = 316
   Height = 522
-  Top = 124
+  Top = 174
   Width = 542
   HorzScrollBar.Page = 541
   VertScrollBar.Page = 521
-  ActiveControl = CancelButton
+  ActiveControl = HideIDEOnRunCheckBox
   Caption = 'EnvironmentOptionsDialog'
   ClientHeight = 522
   ClientWidth = 542
   OnResize = FormResize
   Position = poScreenCenter
   object Notebook: TNotebook
+    AnchorSideBottom.Control = EODBtnPanel
     Height = 479
     Width = 542
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnChangeBounds = NotebookChangeBounds
-    PageIndex = 0
+    PageIndex = 2
     TabOrder = 0
     object FilesPage: TPage
       Caption = 'FilesPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       object MaxRecentOpenFilesLabel: TLabel
         Left = 62
         Height = 20
@@ -324,7 +325,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object DesktopPage: TPage
       Caption = 'DesktopPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       object LanguageGroupBox: TGroupBox
         AnchorSideRight.Control = DesktopPage
         AnchorSideRight.Side = asrBottom
@@ -557,7 +558,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object FormEditorPage: TPage
       Caption = 'FormEditorPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       OnResize = FormEditorPageResize
       object GridGroupBox: TGroupBox
         Left = 6
@@ -1034,7 +1035,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object ObjectInspectorPage: TPage
       Caption = 'ObjectInspectorPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       object ObjectInspectorColorsGroupBox: TGroupBox
         AnchorSideRight.Control = ObjectInspectorPage
         AnchorSideRight.Side = asrBottom
@@ -1208,7 +1209,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object BackupPage: TPage
       Caption = 'BackupPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       object BackupHelpLabel: TLabel
         AnchorSideRight.Control = BackupPage
         AnchorSideRight.Side = asrBottom
@@ -1453,7 +1454,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object NamingPage: TPage
       Caption = 'NamingPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       object PascalFileExtRadiogroup: TRadioGroup
         AnchorSideRight.Control = NamingPage
         AnchorSideRight.Side = asrBottom
@@ -1524,7 +1525,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object LazDocPage: TPage
       Caption = 'LazDocPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 453
       object LazDocPathsGroupBox: TGroupBox
         AnchorSideRight.Control = LazDocPage
         AnchorSideRight.Side = asrBottom
@@ -1616,44 +1617,49 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       end
     end
   end
-  object CancelButton: TButton
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 430
-    Height = 25
-    Top = 491
-    Width = 106
-    Anchors = [akRight, akBottom]
+  object EODBtnPanel: TPanel
+    Height = 43
+    Top = 479
+    Width = 542
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
-    Cancel = True
-    Caption = 'CancelButton'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    OnClick = CancelButtonClick
+    BevelOuter = bvNone
+    ClientHeight = 43
+    ClientWidth = 542
     TabOrder = 1
-  end
-  object OkButton: TButton
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 349
-    Height = 25
-    Top = 491
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Ok'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    OnClick = OkButtonClick
-    TabOrder = 2
+    object OkButton: TButton
+      AnchorSideBottom.Side = asrBottom
+      Left = 349
+      Height = 31
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Ok'
+      Constraints.MinWidth = 75
+      Default = True
+      OnClick = OkButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TButton
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 430
+      Height = 31
+      Top = 6
+      Width = 106
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = 'CancelButton'
+      Constraints.MinWidth = 75
+      OnClick = CancelButtonClick
+      TabOrder = 1
+    end
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
     Title = 'Select Directory'

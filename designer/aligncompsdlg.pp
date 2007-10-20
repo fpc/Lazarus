@@ -39,6 +39,7 @@ type
     OKButton: TBitBtn;
     CancelButton: TBitBtn;
     HorizontalRadioGroup: TRadioGroup;
+    ACDBtnPanel: TPanel;
     VerticalRadioGroup: TRadioGroup;
     procedure FormResize(Sender: TObject);
   public

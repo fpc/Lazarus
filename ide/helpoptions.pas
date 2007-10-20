@@ -80,6 +80,7 @@ type
     DataBasesPropsGroupBox: TGroupBox;
     DatabasesListBox: TListBox;
     GeneralPage: TPage;
+    BtnPanel: TPanel;
     ViewerPropsGroupBox: TGroupBox;
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
@@ -92,6 +93,7 @@ type
       var CloseAction: TCloseAction);
     procedure HelpOptionsDialogCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
+    procedure BtnPanelClick(Sender: TObject);
     procedure ViewersListBoxSelectionChange(Sender: TObject; User: boolean);
   private
   public
@@ -171,6 +173,11 @@ procedure THelpOptionsDialog.OkButtonClick(Sender: TObject);
 begin
   HelpOpts.FPCDocsHTMLDirectory:=FPCDocHTMLEdit.Text;
   ModalResult:=mrOk;
+end;
+
+procedure THelpOptionsDialog.BtnPanelClick(Sender: TObject);
+begin
+
 end;
 
 procedure THelpOptionsDialog.ViewersListBoxSelectionChange(Sender: TObject;

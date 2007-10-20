@@ -449,6 +449,7 @@ type
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
+    EODBtnPanel: TPanel;
     WindowsPage: TPage;
     FormEditorPage: TPage;
     ObjectInspectorPage: TPage;

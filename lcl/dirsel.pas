@@ -31,14 +31,15 @@ uses
   StdCtrls, ComCtrls, ExtCtrls;
 
 type
+
+  { TDirSelDlg }
+
   TDirSelDlg = class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
     lblDirectory: TLabel;
     Panel1: TPanel;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    Panel4: TPanel;
+    DirectoryPanel: TPanel;
     TV: TTreeview;
     procedure FormShow(Sender: TObject);
     procedure TVExpanded(Sender: TObject; Node: TTreeNode);

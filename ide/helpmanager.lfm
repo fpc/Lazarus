@@ -1,64 +1,30 @@
 object HelpSelectorDialog: THelpSelectorDialog
   Left = 328
   Height = 300
-  Top = 573
+  Top = 414
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
-  ActiveControl = OKButton
   Caption = 'HelpSelectorDialog'
+  ClientHeight = 300
+  ClientWidth = 500
   OnClose = HelpSelectorDialogClose
   Position = poScreenCenter
-  object OKButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    Left = 326
-    Height = 25
-    Top = 268
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    Caption = '&OK'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 0
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 407
-    Height = 25
-    Top = 268
-    Width = 87
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    Caption = 'Cancel'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 1
-  end
   object NodesGroupBox: TGroupBox
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 256
+    Height = 250
     Top = 6
     Width = 488
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Align = alClient
     BorderSpacing.Around = 6
     Caption = 'NodesGroupBox'
-    TabOrder = 2
+    ClientHeight = 231
+    ClientWidth = 484
+    TabOrder = 0
     object NodesListBox: TListBox
       Left = 6
-      Height = 223
+      Height = 219
       Top = 6
       Width = 472
       Align = alClient
@@ -66,6 +32,47 @@ object HelpSelectorDialog: THelpSelectorDialog
       OnDblClick = NodesListBoxDblClick
       TabOrder = 0
       TopIndex = -1
+    end
+  end
+  object BtnPanel: TPanel
+    Height = 38
+    Top = 262
+    Width = 500
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 500
+    TabOrder = 1
+    object OKButton: TBitBtn
+      Left = 327
+      Height = 38
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      Left = 408
+      Height = 38
+      Width = 86
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
     end
   end
 end

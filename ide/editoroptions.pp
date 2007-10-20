@@ -355,6 +355,7 @@ type
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     CodeFolding: TPage;
+    BtnPanel: TPanel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     TabWidthsComboBox: TComboBox;

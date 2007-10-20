@@ -749,8 +749,8 @@ end;
 procedure TIDEMenuItem.WriteDebugReport(const Prefix: string;
   MenuItemDebugReport: boolean);
 begin
-  debugln(Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'"',
-    ' VisibleActive=',dbgs(VisibleActive));
+  debugln([Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'"',
+    ' VisibleActive=',dbgs(VisibleActive),' Handle=',((MenuItem<>nil) and (MenuItem.HandleAllocated))]);
   if MenuItemDebugReport and (MenuItem<>nil) then
     MenuItem.WriteDebugReport(Prefix);
 end;
@@ -1355,7 +1355,7 @@ begin
     ' ChildsAsSubMenu=',ChildsAsSubMenu,
     ' ContainerIndex=',GetContainerIndex(false),
     ' NeedSep:Top=',NeedTopSeparator,',Bottom=',NeedBottomSeparator,
-    ' Size='+dbgs(Size)]);
+    ' Size=',dbgs(Size)]);
   for i:=0 to Count-1 do Items[i].WriteDebugReport(Prefix+'  ',false);
   if MenuItemDebugReport and (MenuItem<>nil) then
     MenuItem.WriteDebugReport(Prefix);

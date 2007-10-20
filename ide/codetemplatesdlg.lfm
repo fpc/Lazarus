@@ -1,14 +1,14 @@
 object CodeTemplateDialog: TCodeTemplateDialog
-  Left = 310
-  Height = 612
-  Top = 162
+  Left = 306
+  Height = 542
+  Top = 136
   Width = 497
   HorzScrollBar.Page = 496
-  VertScrollBar.Page = 611
+  VertScrollBar.Page = 541
   ActiveControl = FilenameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'CodeTemplateDialog'
-  ClientHeight = 612
+  ClientHeight = 542
   ClientWidth = 497
   OnClose = FormClose
   OnCreate = FormCreate
@@ -138,17 +138,17 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = CancelButton
+    AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 339
+    Height = 250
     Top = 236
     Width = 485
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 320
+    ClientHeight = 231
     ClientWidth = 481
-    TabOrder = 4
+    TabOrder = 2
     object UseMacrosCheckBox: TCheckBox
       Left = 6
       Height = 22
@@ -165,8 +165,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       Left = 163
-      Height = 37
-      Top = -1
+      Height = 31
+      Top = 2
       Width = 138
       AutoSize = True
       BorderSpacing.Top = 6
@@ -184,8 +184,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 244
-      Top = 70
+      Height = 158
+      Top = 67
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -526,7 +526,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 42
+      Top = 39
       Width = 197
       BorderSpacing.Top = 6
       Caption = 'AutoOnLineBreakCheckBox'
@@ -538,54 +538,59 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = AutoOnLineBreakCheckBox
       Left = 215
       Height = 22
-      Top = 42
+      Top = 39
       Width = 175
       BorderSpacing.Left = 12
       Caption = 'AutoOnSpaceCheckBox'
       TabOrder = 4
     end
   end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 405
-    Height = 25
-    Top = 581
-    Width = 86
-    Anchors = [akRight, akBottom]
+  object BtnPanel: TPanel
+    Height = 50
+    Top = 492
+    Width = 497
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 2
-  end
-  object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 324
-    Height = 25
-    Top = 581
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonClick
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 497
     TabOrder = 3
+    object OkButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 324
+      Height = 38
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = OkButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 405
+      Height = 38
+      Top = 6
+      Width = 86
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
+    end
   end
   object ASynPasSyn: TSynFreePascalSyn
     Enabled = False

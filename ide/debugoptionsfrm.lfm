@@ -19,7 +19,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     Width = 482
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 3
     TabOrder = 0
     object pgGeneral: TPage
       Caption = 'pgGeneral'
@@ -335,15 +335,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Control = bgIgnoreExceptions
           AnchorSideBottom.Side = asrBottom
           Left = 381
-          Height = 25
-          Top = 272
+          Height = 31
+          Top = 266
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Remove'
-          Constraints.MaxHeight = 25
           Constraints.MinWidth = 75
           Enabled = False
           OnClick = cmdExceptionRemoveCLICK
@@ -354,15 +353,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Control = bgIgnoreExceptions
           AnchorSideBottom.Side = asrBottom
           Left = 300
-          Height = 25
-          Top = 272
+          Height = 31
+          Top = 266
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Add'
-          Constraints.MaxHeight = 25
           Constraints.MinWidth = 75
           OnClick = cmdExceptionAddCLICK
           TabOrder = 1
@@ -371,7 +369,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = cmdExceptionAdd
           Left = 6
-          Height = 260
+          Height = 254
           Top = 6
           Width = 450
           Align = alTop
@@ -417,15 +415,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Control = gbSignals
           AnchorSideBottom.Side = asrBottom
           Left = 381
-          Height = 25
-          Top = 300
+          Height = 31
+          Top = 294
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Remove'
-          Constraints.MaxHeight = 25
           Constraints.MinWidth = 75
           Enabled = False
           TabOrder = 0
@@ -435,22 +432,21 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideBottom.Control = gbSignals
           AnchorSideBottom.Side = asrBottom
           Left = 300
-          Height = 25
-          Top = 300
+          Height = 31
+          Top = 294
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Add'
-          Constraints.MaxHeight = 25
           Constraints.MinWidth = 75
           TabOrder = 1
         end
         object lvSignals: TListView
           AnchorSideBottom.Control = cmdSignalAdd
           Left = 6
-          Height = 288
+          Height = 282
           Top = 6
           Width = 450
           Align = alTop
@@ -480,19 +476,19 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 395
+    Height = 50
+    Top = 393
     Width = 482
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 50
     ClientWidth = 482
     TabOrder = 1
     object cmdOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 307
-      Height = 36
+      Left = 309
+      Height = 38
       Top = 6
       Width = 75
       Align = alRight
@@ -509,10 +505,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     object cmdCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 388
-      Height = 36
+      Left = 390
+      Height = 38
       Top = 6
-      Width = 88
+      Width = 86
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

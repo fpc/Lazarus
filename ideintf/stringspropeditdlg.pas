@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, Dialogs, StdCtrls,
-  TextTools, ObjInspStrConsts;
+  TextTools, ObjInspStrConsts, ExtCtrls;
   
 type
 
@@ -32,12 +32,14 @@ type
   TStringsPropEditorFrm = class(TForm)
     OKButton: TBitBtn;
     CancelButton: TBitBtn;
+    BtnPanel: TPanel;
     StatusLabel: TLabel;
     SortButton: TButton;
-    GroupBox1: TGroupBox;
+    TextGroupBox: TGroupBox;
     Memo: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure MemoChange(Sender: TObject);
+    procedure BtnPanelClick(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
   public
     procedure AddButtons; virtual;
@@ -71,6 +73,11 @@ begin
     StatusLabel.Caption := Format(ois1LineDChars, [NumChars])
   else
     StatusLabel.Caption := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
+end;
+
+procedure TStringsPropEditorFrm.BtnPanelClick(Sender: TObject);
+begin
+
 end;
 
 procedure TStringsPropEditorFrm.SortButtonClick(Sender: TObject);

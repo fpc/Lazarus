@@ -22,7 +22,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     Left = 6
     Height = 20
     Top = 14
-    Width = 98
+    Width = 97
     Alignment = taRightJustify
     BorderSpacing.Left = 6
     Caption = 'TextToFindLabel'
@@ -48,10 +48,10 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 116
+    Left = 115
     Height = 25
     Top = 12
-    Width = 298
+    Width = 299
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -87,7 +87,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 253
+    Height = 252
     Top = 70
     Width = 199
     Anchors = [akTop, akLeft, akBottom]
@@ -95,7 +95,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'OptionsGroupBox'
-    ClientHeight = 234
+    ClientHeight = 233
     ClientWidth = 195
     TabOrder = 2
     OnResize = OptionsGroupBoxResize
@@ -295,19 +295,19 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 44
-    Top = 329
+    Height = 45
+    Top = 328
     Width = 420
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 44
+    ClientHeight = 45
     ClientWidth = 420
     TabOrder = 6
     object ReplaceAllButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 211
-      Height = 32
+      Left = 209
+      Height = 33
       Top = 6
       Width = 50
       Align = alRight
@@ -315,8 +315,6 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 2
       Caption = '&All'
-      Constraints.MaxHeight = 33
-      Constraints.MinHeight = 28
       Kind = bkAll
       NumGlyphs = 0
       OnClick = ReplaceAllButtonClick
@@ -324,17 +322,15 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 267
-      Height = 32
+      Left = 265
+      Height = 33
       Top = 6
-      Width = 57
+      Width = 61
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 2
       Caption = '&OK'
-      Constraints.MaxHeight = 33
-      Constraints.MinHeight = 28
       Default = True
       Kind = bkOK
       NumGlyphs = 0
@@ -344,18 +340,16 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 330
-      Height = 32
+      Left = 332
+      Height = 33
       Top = 6
-      Width = 84
+      Width = 82
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 2
       Cancel = True
       Caption = 'Cancel'
-      Constraints.MaxHeight = 33
-      Constraints.MinHeight = 28
       Kind = bkCancel
       ModalResult = 2
       NumGlyphs = 0

@@ -13,36 +13,36 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Constraints.MinWidth = 180
   OnCreate = FormCreate
   Position = poScreenCenter
-  object GroupBox1: TGroupBox
-    AnchorSideBottom.Control = OKButton
+  object TextGroupBox: TGroupBox
+    AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 259
+    Height = 240
     Top = 6
     Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 241
+    ClientHeight = 221
     ClientWidth = 384
     TabOrder = 0
     object StatusLabel: TLabel
-      AnchorSideBottom.Control = GroupBox1
+      AnchorSideBottom.Control = TextGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 9
-      Height = 14
-      Top = 221
-      Width = 57
+      Height = 20
+      Top = 195
+      Width = 77
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'StatusLabel'
       ParentColor = False
     end
     object Memo: TMemo
-      AnchorSideLeft.Control = GroupBox1
+      AnchorSideLeft.Control = TextGroupBox
       AnchorSideRight.Control = SortButton
       AnchorSideBottom.Control = StatusLabel
       Left = 6
-      Height = 209
+      Height = 183
       Top = 6
       Width = 291
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -55,10 +55,10 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     object SortButton: TButton
       AnchorSideLeft.Control = Memo
       AnchorSideLeft.Side = asrBottom
-      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Control = TextGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 303
-      Height = 25
+      Height = 31
       Top = 6
       Width = 75
       Anchors = [akTop, akRight]
@@ -66,54 +66,56 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       Caption = 'Sort'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       OnClick = SortButtonClick
       TabOrder = 1
     end
   end
-  object OKButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 233
-    Height = 25
-    Top = 271
-    Width = 75
-    Anchors = [akRight, akBottom]
+  object BtnPanel: TPanel
+    Height = 50
+    Top = 252
+    Width = 400
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MaxHeight = 25
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 400
     TabOrder = 1
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 314
-    Height = 25
-    Top = 271
-    Width = 80
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MaxHeight = 25
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 2
+    OnClick = BtnPanelClick
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 308
+      Height = 38
+      Top = 6
+      Width = 86
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object OKButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 227
+      Height = 38
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 1
+    end
   end
 end

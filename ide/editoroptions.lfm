@@ -5,7 +5,6 @@ object EditorOptionsForm: TEditorOptionsForm
   Width = 481
   HorzScrollBar.Page = 480
   VertScrollBar.Page = 530
-  ActiveControl = CancelButton
   Caption = 'EditorOptionsForm'
   ClientHeight = 531
   ClientWidth = 481
@@ -13,16 +12,18 @@ object EditorOptionsForm: TEditorOptionsForm
   Constraints.MinWidth = 400
   Position = poScreenCenter
   object MainNotebook: TNotebook
-    Height = 491
+    AnchorSideBottom.Control = BtnPanel
+    Height = 482
     Width = 481
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    BorderSpacing.Bottom = 6
+    PageIndex = 2
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
       ClientWidth = 477
-      ClientHeight = 460
+      ClientHeight = 451
       object BlockIndentLabel: TLabel
         AnchorSideLeft.Control = BlockIndentComboBox
         AnchorSideLeft.Side = asrBottom
@@ -30,7 +31,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 20
-        Top = 369
+        Top = 360
         Width = 109
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -44,7 +45,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 20
-        Top = 400
+        Top = 391
         Width = 100
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -58,7 +59,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 20
-        Top = 431
+        Top = 422
         Width = 98
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -69,7 +70,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = BlockIndentLabel
         Left = 6
-        Height = 351
+        Height = 342
         Top = 6
         Width = 465
         Align = alTop
@@ -95,7 +96,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = UndoLimitComboBox
         Left = 6
         Height = 25
-        Top = 367
+        Top = 358
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -116,7 +117,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = TabWidthsComboBox
         Left = 6
         Height = 25
-        Top = 398
+        Top = 389
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -137,7 +138,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 25
-        Top = 429
+        Top = 420
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -407,8 +408,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Font.Name = 'courier'
         ParentColor = False
         TabOrder = 2
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -735,14 +734,13 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
     end
     object KeymappingPage: TPage
       Caption = 'KeymappingPage'
       ClientWidth = 477
-      ClientHeight = 460
+      ClientHeight = 451
       object KeyMappingHelpLabel: TLabel
         Left = 6
         Height = 20
@@ -785,7 +783,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object KeyMappingTreeView: TTreeView
         Left = 6
-        Height = 360
+        Height = 351
         Top = 94
         Width = 465
         Align = alClient
@@ -891,8 +889,6 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 3
         OnMouseDown = ColorPreviewMouseUp
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1219,7 +1215,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
       object ColorElementListBox: TListBox
@@ -1527,42 +1522,47 @@ object EditorOptionsForm: TEditorOptionsForm
       end
     end
   end
-  object CancelButton: TButton
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 369
-    Height = 25
-    Top = 500
-    Width = 106
-    Anchors = [akRight, akBottom]
+  object BtnPanel: TPanel
+    Height = 43
+    Top = 488
+    Width = 481
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
-    Caption = 'CancelButton'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    OnClick = CancelButtonClick
+    BevelOuter = bvNone
+    ClientHeight = 43
+    ClientWidth = 481
     TabOrder = 1
-  end
-  object OkButton: TButton
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 297
-    Height = 25
-    Top = 500
-    Width = 80
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
-    Caption = 'OkButton'
-    Constraints.MaxHeight = 25
-    Constraints.MinWidth = 75
-    OnClick = OkButtonClick
-    TabOrder = 2
+    object OkButton: TButton
+      AnchorSideBottom.Side = asrBottom
+      Left = 283
+      Height = 31
+      Top = 6
+      Width = 80
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'OkButton'
+      Constraints.MinWidth = 75
+      OnClick = OkButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TButton
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 369
+      Height = 31
+      Top = 6
+      Width = 106
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'CancelButton'
+      Constraints.MinWidth = 75
+      OnClick = CancelButtonClick
+      TabOrder = 1
+    end
   end
   object ImageList: TImageList
     Height = 21

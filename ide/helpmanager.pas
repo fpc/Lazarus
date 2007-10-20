@@ -124,6 +124,7 @@ type
     CancelButton: TBitBtn;
     NodesGroupBox: TGroupBox;
     NodesListBox: TListBox;
+    BtnPanel: TPanel;
     procedure HelpSelectorDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure NodesListBoxDblClick(Sender: TObject);

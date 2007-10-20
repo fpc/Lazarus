@@ -55,6 +55,7 @@ type
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     InsertMacroButton: TButton;
+    BtnPanel: TPanel;
     UseMacrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
