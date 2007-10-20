@@ -220,7 +220,6 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Width = 149
           Anchors = [akTop, akRight, akBottom]
           AutoSize = True
-          BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           BorderSpacing.InnerBorder = 4

@@ -1567,7 +1567,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.ParentFormHandleInitialized;
 begin
-  // The form is real connection to the target screen. For example, the gtk
+  // The form is really connection to the target screen. For example, the gtk
   // under X gathers some screen information not before form creation.
   // But this information is needed to create DeviceContexts, which
   // are needed to calculate Text Size and such stuff needed for AutoSizing.
@@ -2068,7 +2068,8 @@ Begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
     //debugln('TControl.SetAutoSize ',DbgSName(Self));
-    AdjustSize;
+    if FAutoSize then
+      AdjustSize;
   end;
 end;
 

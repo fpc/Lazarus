@@ -25,15 +25,20 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-{ $DEFINE CHECK_POSITION}
+{off $DEFINE VerboseAutoSizeCtrlData}
+
+{off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxxTPage';
-const CheckPostionName = 'xxxPathsPage';
+const CheckPostionName = 'WorkingDirectoryGroupBox';
+const CheckPostionParentName = 'WorkingDirectoryGroupBox';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
   Result:=(CompareText(AControl.ClassName,CheckPostionClassName)=0)
-           or (CompareText(AControl.Name,CheckPostionName)=0);
+           or (CompareText(AControl.Name,CheckPostionName)=0)
+           or ((AControl.Parent<>nil)
+               and (CompareText(AControl.Parent.Name,CheckPostionParentName)=0));
 end;
 {$ENDIF}
 { $DEFINE VerboseMouseBugfix}
@@ -93,10 +98,10 @@ type
     procedure SumTable;
     procedure ResizeTable(ChildSizing: TControlChildSizing;
                           TargetWidth, TargetHeight: integer);
-    function SetTableControlBounds(ChildSizing: TControlChildSizing): boolean;
+    function SetTableControlBounds(ChildSizing: TControlChildSizing): boolean;// true if changed
     function AlignControlsInTable(ListOfControls: TFPList;
                                   ChildSizing: TControlChildSizing;
-                                  TargetWidth, TargetHeight: integer): boolean;
+                                  TargetWidth, TargetHeight: integer): boolean;// true if changed
 
     // debugging
     procedure WriteDebugReport;
@@ -248,6 +253,7 @@ var
     for i := 0 to AlignList.Count - 1 do begin
       Child:=TControl(AlignList[i]);
       ChildData:=Childs[Child];
+      //DebugLn('DoAlign ',DbgSName(Child),' ',dbgs(Child.Align));
 
       for a:=Low(TAnchorKind) to High(TAnchorKind) do
         if a in AnchorAlign[TheAlign] then begin
@@ -256,6 +262,7 @@ var
             ChildData.Sides[a].Side:=asrLeft
           else
             ChildData.Sides[a].Side:=asrRight;
+          //DebugLn('DoAlign ',DbgSName(Child),' ',dbgs(a),' ',dbgs(a,ChildData.Sides[a].Side));
         end;
 
       case TheAlign of
@@ -317,22 +324,28 @@ begin
         SiblingData:=ChildData.Sides[a].CtrlData;
         // aligned or anchored to a sibling
         if a in [akLeft,akTop] then begin
-          NewSpace:=Max(WinControl.ChildSizing.HorizontalSpacing,
-                        ChildData.Borders[a]);
-          if ChildData.Sides[a].Side=asrLeft then
-            NewSpace:=Max(NewSpace,SiblingData.Borders[akLeft])
-          else if ChildData.Sides[a].Side=asrRight then
-            NewSpace:=Max(NewSpace,SiblingData.Borders[akRight])
+          NewSpace:=ChildData.Borders[a];
+          if ChildData.Sides[a].Side=asrRight then begin
+            NewSpace:=Max(NewSpace,WinControl.ChildSizing.HorizontalSpacing);
+            if a=akLeft then
+              NewSpace:=Max(NewSpace,SiblingData.Borders[akRight])
+            else
+              NewSpace:=Max(NewSpace,SiblingData.Borders[akBottom]);
+          end else if ChildData.Sides[a].Side=asrLeft then
+
           else if ChildData.Sides[a].Side=asrCenter then
             NewSpace:=0;
           ChildData.Sides[a].Space:=NewSpace;
         end else begin
-          NewSpace:=Max(WinControl.ChildSizing.VerticalSpacing,
-                        ChildData.Borders[a]);
-          if ChildData.Sides[a].Side=asrTop then
-            NewSpace:=Max(NewSpace,SiblingData.Borders[akTop])
-          else if ChildData.Sides[a].Side=asrBottom then
-            NewSpace:=Max(NewSpace,SiblingData.Borders[akBottom])
+          NewSpace:=ChildData.Borders[a];
+          if ChildData.Sides[a].Side=asrTop then begin
+            NewSpace:=Max(NewSpace,WinControl.ChildSizing.VerticalSpacing);
+            if a=akRight then
+              NewSpace:=Max(NewSpace,SiblingData.Borders[akLeft])
+            else
+              NewSpace:=Max(NewSpace,SiblingData.Borders[akTop]);
+          end else if ChildData.Sides[a].Side=asrBottom then
+
           else if ChildData.Sides[a].Side=asrCenter then
             NewSpace:=0;
           ChildData.Sides[a].Space:=NewSpace;
@@ -895,12 +908,16 @@ begin
 
     // setup space for dependencies
     SetupSpace;
-    //WriteDebugReport('Space completed','');
+    {$IFDEF VerboseAutoSizeCtrlData}
+    WriteDebugReport('Space completed','');
+    {$ENDIF}
 
     // calculate the needed positions for all childs
   until ComputePositions;
   
-  //WriteDebugReport('Positions completed','');
+  {$IFDEF VerboseAutoSizeCtrlData}
+  WriteDebugReport('Positions completed','');
+  {$ENDIF}
   
   // compute needed clientwidth/clientheight
   for i:=0 to ChildCount-1 do begin
@@ -923,7 +940,9 @@ begin
     end;
   end;
 
-  //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea END ',DbgSName(Control),' PreferredClientWidth/height=',PreferredClientWidth,',',PreferredClientHeight]);
+  {$IFDEF VerboseAutoSizeCtrlData}
+  DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea END ',DbgSName(Control),' PreferredClientWidth/height=',PreferredClientWidth,',',PreferredClientHeight]);
+  {$ENDIF}
 end;
 
 procedure TAutoSizeCtrlData.FixControlProperties(Child: TControl);
@@ -2024,6 +2043,8 @@ procedure TWinControl.AlignControls(AControl: TControl;
 var
   AlignList: TFPList;
   BoundsMutated: boolean;
+  LastBoundsMutated: TControl;
+  LastBoundsMutatedOld: TRect;
   RemainingBorderSpace: TRect; // borderspace around RemainingClientRect
                                // e.g. Right=3 means borderspace of 3
 
@@ -2459,6 +2480,10 @@ var
       //DebugLn(['DoPosition ',DbgSName(Control),' ',cfAutoSizeNeeded in Control.FControlFlags]);
       NewBounds:=Control.BoundsRect;
       BoundsMutated:=not CompareRect(@OldBounds,@NewBounds);
+      if BoundsMutated then begin
+        LastBoundsMutated:=Control;
+        LastBoundsMutatedOld:=OldBounds;
+      end;
       // Sometimes SetBounds change the bounds. For example due to constraints.
       // update the new bounds
       with Control do
@@ -2472,7 +2497,7 @@ var
       //if csDesigning in Control.ComponentState then
       if CheckPosition(Control) then
       with Control do
-        DebugLn('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',DbgS(Left,Top,Width,Height));
+        DebugLn('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',DbgSName(Control),' Bounds=',DbgS(Control.BoundsRect));
       {$ENDIF}
     end;
 
@@ -2579,6 +2604,7 @@ var
     //debugln('DoAlignNotAligned ',DbgSName(Self),' AlignList.Count=',dbgs(AlignList.Count));
     if AlignList.Count=0 then exit;
 
+    LastBoundsMutated:=nil;
     AlignNonAlignedControls(AlignList,BoundsMutated);
   end;
   
@@ -2587,10 +2613,20 @@ var
   ChildControl: TControl;
   OldRemainingClientRect: TRect;
   OldRemainingBorderSpace: TRect;
+  MaxTries: LongInt;
 begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
   //debugln('TWinControl.AlignControls ',DbgSName(Self));
+
+  // call delayed autosize
+  for i:=ControlCount-1 downto 0 do begin
+    ChildControl:=Controls[i];
+    if cfAutoSizeNeeded in ChildControl.FControlFlags then begin
+      //DebugLn(['TWinControl.AlignControls ',DbgSName(Self),' autosize needed for child ',DbgSName(ChildControl)]);
+      ChildControl.AdjustSize;
+    end;
+  end;
 
   // unset all align needed flags
   Exclude(FWinControlFlags,wcfReAlignNeeded);
@@ -2620,7 +2656,9 @@ begin
         // and so forth. This is allowed, so do up to n loop step.
         // Do not more, to avoid endless loops, if there are circle
         // dependencies.
-        for i:=0 to ControlCount-1 do begin
+        MaxTries:=ControlCount;
+        {$IFDEF CHECK_POSITION}inc(MaxTries);{$ENDIF}
+        for i:=1 to MaxTries do begin
           // align and anchor child controls
           BoundsMutated:=false;
           OldRemainingClientRect:=RemainingClientRect;
@@ -2634,6 +2672,11 @@ begin
           DoAlign(alNone);
           DoAlignNotAligned;
           if not BoundsMutated then break;
+          if (i=ControlCount+1) then begin
+            DebugLn(['TWinControl.AlignControls ENDLESS LOOP STOPPED ',DbgSName(Self),' i=',i]);
+            if LastBoundsMutated<>nil then
+              DebugLn(['TWinControl.AlignControls LAST CHANGED: ',DbgSName(LastBoundsMutated),' Old=',dbgs(LastBoundsMutatedOld),' Now=',dbgs(LastBoundsMutated.BoundsRect)]);
+          end;
           // update again
           RemainingClientRect:=OldRemainingClientRect;
           RemainingBorderSpace:=OldRemainingBorderSpace;
