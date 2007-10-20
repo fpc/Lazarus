@@ -6260,7 +6260,14 @@ begin
   
   if FAutoAdvance=aaNone then
     exit; // quick case, no auto movement allowed
-  
+    
+  if [goRowSelect,goRelaxedRowSelect]*Options=[goRowSelect] then begin
+    if Inverse then
+      ACol := FixedCols
+    else
+      ACol := ColCount-1;
+  end;
+
   // browse the grid in autoadvance order
   while CalcNextStep do begin
     ACol := ACol + DeltaCol;

@@ -1760,21 +1760,20 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           if dgTabs in Options then begin
+            if GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow) then begin
 
-            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+              if DeltaRow > 0 then begin
+                if doVKDown then
+                  //DeltaCol:=0; // tochk: strict? already in EOF, don't change column
+              end else
+              if DeltaRow < 0 then begin
+                if doVKUP then
+                  //DeltaCol:=0; // tochk: strict? already in BOF, don't change column
+              end;
 
-            if DeltaRow > 0 then begin
-              if doVKDown then
-                //DeltaCol:=0; // tochk: strict? already in EOF, don't change column
-            end else
-            if DeltaRow < 0 then begin
-              if doVKUP then
-                //DeltaCol:=0; // tochk: strict? already in BOF, don't change column
+              if (DeltaCol<>0) then
+                Col := Col + DeltaCol;
             end;
-
-            if (DeltaCol<>0) then
-              Col := Col + DeltaCol;
-
             Key := 0;
           end;
         end;
@@ -1788,11 +1787,12 @@ begin
           if (dgEditing in Options) and not EditorMode then
             EditorMode:=true
           else begin
-            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
-            if DeltaRow > 0 then
-              doVKDown;
-            if DeltaCol <> 0 then
-              Col := Col + DeltaCol;
+            if GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow) then begin
+              if DeltaRow > 0 then
+                doVKDown;
+              if DeltaCol <> 0 then
+                Col := Col + DeltaCol;
+            end;
             ResetEditor;
           end;
         end;
