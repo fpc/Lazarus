@@ -138,7 +138,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppWaitMessage;
 begin
-  QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
+  {we cannot call directly processEvents() with this flag
+   since it produces AV's sometimes, so better check is there
+   any pending event.}
+  if not QCoreApplication_hasPendingEvents then
+    QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
 end;
 
 {------------------------------------------------------------------------------
