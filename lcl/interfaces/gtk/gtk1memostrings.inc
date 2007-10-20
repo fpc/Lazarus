@@ -16,10 +16,19 @@
 }
 
 //////// Callbacks   //////
+type
+PFreezeRec = ^TFreezeRec;
+TFreezeRec = record
+  GtkText: PGtkText;
+  NewCursorPos: Integer;
+end;
 
-function GtkWS_GtkTextUnFreeze(GtkText: PGtkText): guint; cdecl;
+function GtkWS_GtkTextUnFreeze(Freeze: PFreezeRec): guint; cdecl;
 begin
-  gtk_text_thaw(GtkText);
+  gtk_text_thaw(Freeze^.GtkText);
+  if Freeze^.NewCursorPos <> -1 then
+    gtk_editable_set_position(PGtkEditable(Freeze^.GtkText), Freeze^.NewCursorPos);
+  Dispose(Freeze);
   Result := 0;
 end;
 
@@ -261,18 +270,27 @@ procedure TGtkMemoStrings.Insert(Index: integer; const S: string);
 var
   LineStart: Integer;
   NewLine: String;
+  NeedMoveCursor: Boolean;
+  Freeze: PFreezeRec;
 begin
+  Freeze := nil;
   if FGtkText^.freeze_count = 0 then begin
     gtk_text_freeze(FGtkText);
-    gtk_idle_add(TGtkfunction(@GtkWS_GtkTextUnFreeze), FGtkText);
+    New(Freeze);
+    Freeze^.GtkText := FGtkText;
+    Freeze^.NewCursorPos := -1;
+    gtk_idle_add(TGtkfunction(@GtkWS_GtkTextUnFreeze), Freeze);
   end;
 
   LockOnChange(PGtkObject(FGtkText),+1);
+
+  NeedMoveCursor := False;
 
   if Index < FCachedCount then begin
     //insert with LineEnding
     LineStart := FLineStartPos[Index];
     NewLine := S+LineEnding;
+    NeedMoveCursor := LineStart = gtk_editable_get_position(PGtkEditable(FGtkText));
     gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart);
   end
   else begin
@@ -282,8 +300,13 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart)
+    NeedMoveCursor := LineStart = gtk_editable_get_position(PGtkEditable(FGtkText));
+    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart);
   end;
+
+  // when we are thawed out we will move the cursor
+  if NeedMoveCursor and (Freeze <> nil) then
+    Freeze^.NewCursorPos := LineStart;
 
   LockOnChange(PGtkObject(FGtkText),-1);
 end;

@@ -127,6 +127,8 @@ procedure TGtk2MemoStrings.Insert(Index: integer; const S: string);
 var
   StartIter: TGtkTextIter;
   NewLine: String;
+  TextMark: PGtkTextMark;
+  CursorIter: TGtkTextIter;
 begin
   if Index < gtk_text_buffer_get_line_count(FGtkBuf) then begin
     //insert with LineEnding
@@ -143,6 +145,11 @@ begin
       NewLine := S+LineEnding;
     gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
   end;
+  
+  // always scroll so the cursor is visible
+  TextMark := gtk_text_buffer_get_insert(FGtkBuf);
+  gtk_text_buffer_get_iter_at_mark(FGtkBuf, @CursorIter, TextMark);
+  gtk_text_view_scroll_to_iter(FGtkText, @CursorIter, 0, False, 0, 0);
 end;
 
 procedure TGtk2MemoStrings.SetText(TheText: PChar);
