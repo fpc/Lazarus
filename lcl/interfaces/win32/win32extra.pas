@@ -487,10 +487,27 @@ begin
   if (blendFunction.AlphaFormat = AC_SRC_ALPHA) and (SrcSection.dsBm.bmBitsPixel <> 32) then Exit(False); // invalid
 
   // get destination info, atleast bitmap, if possible also section
-  if GetObjectType(hdcDest) = OBJ_MEMDC
-  then DstBmp := GetCurrentObject(hdcDest, OBJ_BITMAP)
-  else DstBmp := 0;
-  if (DstBmp = 0) or (GetObject(DstBmp, SizeOf(DstSection), @DstSection) = 0)
+  if WindowsVersion in [wv95, wv98]
+  then begin
+    // under windows 98 GetObjectType() sometimes produce AV inside and
+    // as result our debugger stopes and show exception
+    // lazarus is not alone application with such problem under windows 98
+    // here is workaround for windows 9x
+    DstBmp := GetCurrentObject(hdcDest, OBJ_BITMAP);
+    DstSection.dsBm.bmBits := nil;
+    if (DstBmp <> 0)
+    and ((GetObject(DstBmp, SizeOf(DstSection), @DstSection) < SizeOf(TDIBSection)) or (DstSection.dsBm.bmBits = nil))
+    then DstBmp := 0;
+  end
+  else begin
+    if GetObjectType(hdcDest) = OBJ_MEMDC
+    then DstBmp := GetCurrentObject(hdcDest, OBJ_BITMAP)
+    else DstBmp := 0;
+    if (DstBmp <> 0) and (GetObject(DstBmp, SizeOf(DstSection), @DstSection) = 0)
+    then DstBmp := 0;
+  end;
+
+  if (DstBmp = 0)
   then begin
     // GetCurrentObject can only be used on memory devices,
     // so fill in some values manually
