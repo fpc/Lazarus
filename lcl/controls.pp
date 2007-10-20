@@ -2933,6 +2933,10 @@ begin
     FShrinkVertical:=SrcSizing.ShrinkVertical;
     FControlsPerLine:=SrcSizing.ControlsPerLine;
     FLayout:=SrcSizing.Layout;
+    FLeftRightSpacing:=SrcSizing.LeftRightSpacing;
+    FTopBottomSpacing:=SrcSizing.TopBottomSpacing;
+    FHorizontalSpacing:=SrcSizing.HorizontalSpacing;
+    FVerticalSpacing:=SrcSizing.VerticalSpacing;
 
     Change;
   end else
@@ -2955,20 +2959,30 @@ begin
       and (FShrinkHorizontal=Sizing.ShrinkHorizontal)
       and (FShrinkVertical=Sizing.ShrinkVertical)
       and (FControlsPerLine=Sizing.ControlsPerLine)
-      and (FLayout=Sizing.Layout);
+      and (FLayout=Sizing.Layout)
+      and (FLeftRightSpacing=Sizing.LeftRightSpacing)
+      and (FTopBottomSpacing=Sizing.TopBottomSpacing)
+      and (FHorizontalSpacing=Sizing.HorizontalSpacing)
+      and (FVerticalSpacing=Sizing.VerticalSpacing);
 end;
 
 procedure TControlChildSizing.SetGridSpacing(Spacing: integer);
 begin
-  LeftRightSpacing:=Spacing;
-  TopBottomSpacing:=Spacing;
-  HorizontalSpacing:=Spacing;
-  VerticalSpacing:=Spacing;
+  if (LeftRightSpacing=Spacing)
+  and (TopBottomSpacing=Spacing)
+  and (HorizontalSpacing=Spacing)
+  and (VerticalSpacing=Spacing) then exit;
+  fLeftRightSpacing:=Spacing;
+  fTopBottomSpacing:=Spacing;
+  fHorizontalSpacing:=Spacing;
+  fVerticalSpacing:=Spacing;
+  Change;
 end;
 
 procedure TControlChildSizing.Change;
 begin
-  Control.DoChildSizingChange(Self);
+  if Control<>nil then
+    Control.DoChildSizingChange(Self);
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -3298,6 +3312,7 @@ finalization
   FreeThenNil(Mouse);
 
 end.
+
 
 
 

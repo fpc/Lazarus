@@ -73,7 +73,8 @@ type
     Index: array[TAutoSizeBoxOrientation] of Integer; // index in parent or grandparent
     ChildCount: array[TAutoSizeBoxOrientation] of Integer;
     Childs: array[TAutoSizeBoxOrientation] of PAutoSizeBox;
-    
+    NewControlBounds: TRect;
+
     // for nodes
     destructor Destroy; override;
     procedure Clear;
@@ -98,13 +99,16 @@ type
     procedure SumTable;
     procedure ResizeTable(ChildSizing: TControlChildSizing;
                           TargetWidth, TargetHeight: integer);
-    function SetTableControlBounds(ChildSizing: TControlChildSizing): boolean;// true if changed
+    procedure ComputeTableControlBounds(ChildSizing: TControlChildSizing);
+    function SetTableControlBounds(ChildSizing: TControlChildSizing
+                                   ): boolean;// true if changed
     function AlignControlsInTable(ListOfControls: TFPList;
                                   ChildSizing: TControlChildSizing;
-                                  TargetWidth, TargetHeight: integer): boolean;// true if changed
+                                  TargetWidth, TargetHeight: integer;
+                                  Apply: boolean): boolean;// true if changed
 
     // debugging
-    procedure WriteDebugReport;
+    procedure WriteDebugReport(const Title: string);
   end;
   
   { TAutoSizeCtrlData
@@ -148,11 +152,12 @@ type
   private
     FChilds: TAvgLvlTree;// tree of TAutoSizeCtrlData
     function GetChilds(AControl: TControl): TAutoSizeCtrlData;
+    procedure DoMoveNonAlignedChilds(Side: TAnchorKind;
+                                   var MoveDiff: integer; FindMinimum: boolean);
+    procedure SetupNonAlignedChilds(MoveNonAlignedChilds: boolean);
     procedure AlignChilds;
     procedure SetupSpace;
     function ComputePositions: boolean;// false if recomputation is needed (a property changed)
-    procedure DoMoveNonAlignedChilds(Side: TAnchorKind;
-                                   var MoveDiff: integer; FindMinimum: boolean);
   public
     Control: TControl; // the Control of a leaf node
     WinControl: TWinControl;// the Control as TWinControl (else nil)
@@ -169,6 +174,8 @@ type
                       out PreferredClientWidth, PreferredClientHeight: integer);
     procedure FixControlProperties(Child: TControl);
     procedure ClearSides;
+    procedure SetFixedLeftTop(ChildData: TAutoSizeCtrlData; Side: TAnchorKind;
+                              NewLeftTop: integer);
     property Childs[AControl: TControl]: TAutoSizeCtrlData read GetChilds; default;
     procedure WriteDebugReport(const Title, Prefix: string);
   end;
@@ -309,7 +316,7 @@ begin
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if ChildData.Sides[a].CtrlData=Self then begin
         // aligned or anchored to parent
-        if a in [akLeft,akTop] then begin
+        if a in [akLeft,akRight] then begin
           ChildData.Sides[a].Space:=Max(WinControl.ChildSizing.LeftRightSpacing,
                                         ChildData.Borders[a]);
         end else begin
@@ -354,13 +361,16 @@ begin
         // dangling side
         if a in [akLeft,akTop] then begin
           ChildData.Sides[a].Side:=asrRight;
-          ChildData.Sides[a].Space:=
-            Max(WinControl.ChildSizing.HorizontalSpacing,
-                ChildData.Borders[a]);
         end else begin
           ChildData.Sides[a].Side:=asrLeft;
+        end;
+        if a in [akLeft,akRight] then begin
           ChildData.Sides[a].Space:=
-            Max(WinControl.ChildSizing.VerticalSpacing,
+            Max(WinControl.ChildSizing.LeftRightSpacing,
+                ChildData.Borders[a]);
+        end else begin
+          ChildData.Sides[a].Space:=
+            Max(WinControl.ChildSizing.TopBottomSpacing,
                 ChildData.Borders[a]);
         end;
       end;
@@ -707,12 +717,86 @@ begin
           MoveDiffValid:=true;
         end;
       end else begin
-        ChildData.Sides[Side].CtrlData:=Self;
-        ChildData.Sides[Side].Side:=asrLeft;
-        ChildData.Sides[Side].Space:=Child.GetSidePosition(Side)-MoveDiff;
-        ChildData.Sides[Side].Distance[assddLeftTop]:=ChildData.Sides[Side].Space;
-        ChildData.Sides[Side].DistanceState[assddLeftTop]:=assdfValid;
+        SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side)-MoveDiff);
       end;
+    end;
+  end;
+end;
+
+procedure TAutoSizeCtrlData.SetupNonAlignedChilds(MoveNonAlignedChilds: boolean);
+var
+  ChildSizing: TControlChildSizing;
+  Box: TAutoSizeBox;
+  y: Integer;
+  RowBox: TAutoSizeBox;
+  x: Integer;
+  ControlBox: TAutoSizeBox;
+  Child: TControl;
+  NewBounds: TRect;
+  ChildData: TAutoSizeCtrlData;
+  MoveDiff: Integer;
+  AlignList: TFPList;
+begin
+  if ChildCount=0 then exit;
+  if WinControl.ChildSizing.Layout=cclNone then begin
+    // move the non-aligned controls (i.e. not aligned or fixed anchored)
+    // Find the leftmost and topmost of those controls
+    MoveDiff:=0;
+    DoMoveNonAlignedChilds(akLeft,MoveDiff,true);
+    //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akLeft MoveDiff=',MoveDiff]);
+    if not MoveNonAlignedChilds then MoveDiff:=0;
+    DoMoveNonAlignedChilds(akLeft,MoveDiff,false);
+    MoveDiff:=0;
+    DoMoveNonAlignedChilds(akTop,MoveDiff,true);
+    //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akTop MoveDiff=',MoveDiff]);
+    if not MoveNonAlignedChilds then MoveDiff:=0;
+    DoMoveNonAlignedChilds(akTop,MoveDiff,false);
+  end else begin
+    // there is an automatic layout for non aligned childs
+    // use the layout engine, but with static values
+    ChildSizing:=nil;
+    Box:=nil;
+    AlignList:=TFPList.Create;
+    try
+      WinControl.CreateControlAlignList(alNone,AlignList,nil);
+      if AlignList.Count=0 then exit;
+      ChildSizing:=TControlChildSizing.Create(nil);
+      Box:=TAutoSizeBox.Create;
+      // copy current ChildSizing ...
+      ChildSizing.Assign(WinControl.ChildSizing);
+      // ... and change it to static layout (i.e. independent of parent size)
+      ChildSizing.ShrinkHorizontal:=crsAnchorAligning;
+      ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
+      ChildSizing.ShrinkVertical:=crsAnchorAligning;
+      ChildSizing.EnlargeVertical:=crsAnchorAligning;
+      // compute static layout
+      Box.AlignControlsInTable(AlignList,ChildSizing,
+                          WinControl.ClientWidth,WinControl.ClientHeight,false);
+      //Box.WriteDebugReport('TAutoSizeCtrlData.SetupNonAlignedChilds');
+      // transfer the coords of the layout
+      for y:=0 to Box.ChildCount[asboVertical]-1 do begin
+        RowBox:=Box.Childs[asboVertical][y];
+        for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
+          ControlBox:=RowBox.Childs[asboHorizontal][x];
+          Child:=ControlBox.Control;
+          if Child=nil then continue;
+          NewBounds:=ControlBox.NewControlBounds;
+          //DebugLn(['TAutoSizeCtrlData.SetupNonAlignedChilds ',DbgSName(Child),' ',dbgs(NewBounds)]);
+          ChildData:=Childs[Child];
+          // set left
+          SetFixedLeftTop(ChildData,akLeft,NewBounds.Left);
+          // set width
+          ChildData.PreferredSize[asboHorizontal]:=NewBounds.Right-NewBounds.Left;
+          // set top
+          SetFixedLeftTop(ChildData,akTop,NewBounds.Top);
+          // set height
+          ChildData.PreferredSize[asboVertical]:=NewBounds.Bottom-NewBounds.Top;
+        end;
+      end;
+    finally
+      ChildSizing.Free;
+      Box.Free;
+      AlignList.Free;
     end;
   end;
 end;
@@ -720,26 +804,31 @@ end;
 procedure TAutoSizeCtrlData.ComputePreferredClientArea(
   MoveNonAlignedChilds: boolean;
   out PreferredClientWidth, PreferredClientHeight: integer);
-{ if MoveNonAlignedChilds=true then all non-aligned childs will be moved the
+{ if MoveNonAlignedChilds=true then all non-aligned childs will be moved in
   parallel, so that at least one child is positioned left most and one child
   is positioned top most.
 
   Type of controls:
-  1. non-aligned: the left side of the control has only a designed position.
+  1. layout: the left and top side of the control has only designed position
+      and Parent.ChildSizing.Layout <> cclNone.
+      That means: Align=alNone, Anchors=[akLeft,akTop],
+      AnchorSide[akLeft/akTop].Control=nil, Parent.ChildSizing.Layout <> cclNone
+  2. non-aligned: the left+top side of the control has only a designed position.
       That means: Align=alNone, akLeft is set, AnchorSide[akLeft].Control=nil
       and Parent.ChildSizing.Layout=cclNone
-  2. Aligned: Align<>alNone
+      Same for akTop.
+  3. Aligned: Align<>alNone
       These are put consecutively into the remaining space.
       BorderSpacing and AdjustClientRect defines the space.
       The aligned sides automatically set the Anchors and the AnchorSide.Control
       to nil.
       alLeft,alRight,alTop,alBottom have one free side, which can be anchored.
-  3. centered: akLeft and akRight are not set
-  4. one side anchored: akLeft is set and akRight is not
+  4. centered: akLeft and akRight are not set
+  5. one side anchored: akLeft is set and akRight is not
                      OR akRight is set and akLeft is not
-  4.1 anchored to a side (asrLeft,asrRight)
-  4.2 anchored to a center (asrCenter)
-  5. both sides anchored: akLeft and akRight not
+  5.1 anchored to a side (asrLeft,asrRight)
+  5.2 anchored to a center (asrCenter)
+  6. both sides anchored: akLeft and akRight not
      Note: asrCenter is not allowed here
 
   Circles and invalid combinations will be automatically fixed.
@@ -829,7 +918,6 @@ var
   VisibleCount: Integer;
   Child: TControl;
   ChildData: TAutoSizeCtrlData;
-  MoveDiff: Integer;
   a: TAnchorKind;
   CurNeededClientWH: Integer;
 begin
@@ -837,16 +925,7 @@ begin
   PreferredClientHeight:=0;
 
   if ChildCount=0 then exit;
-  if (WinControl.ChildSizing.Layout<>cclNone)
-  and ((WinControl.ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
-    or (WinControl.ChildSizing.ShrinkHorizontal<>crsAnchorAligning)
-    or (WinControl.ChildSizing.EnlargeVertical<>crsAnchorAligning)
-    or (WinControl.ChildSizing.ShrinkVertical<>crsAnchorAligning))
-  then begin
-    // dynamic layouts are not yet supported
-    exit;
-  end;
-  
+
   // fix control properties
   // check if there are visible childs
   VisibleCount:=0;
@@ -890,19 +969,7 @@ begin
       end;
     end;
 
-    // First move the non-aligned controls (i.e. not aligned or fixed anchored)
-    // Find the leftmost and topmost of those controls
-    MoveDiff:=0;
-    DoMoveNonAlignedChilds(akLeft,MoveDiff,true);
-    //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akLeft MoveDiff=',MoveDiff]);
-    if not MoveNonAlignedChilds then MoveDiff:=0;
-    DoMoveNonAlignedChilds(akLeft,MoveDiff,false);
-    MoveDiff:=0;
-    DoMoveNonAlignedChilds(akTop,MoveDiff,true);
-    //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akTop MoveDiff=',MoveDiff]);
-    if not MoveNonAlignedChilds then MoveDiff:=0;
-    DoMoveNonAlignedChilds(akTop,MoveDiff,false);
-
+    SetupNonAlignedChilds(MoveNonAlignedChilds);
     // setup the dependencies for Aligned controls
     AlignChilds;
 
@@ -1022,6 +1089,16 @@ begin
   end;
 end;
 
+procedure TAutoSizeCtrlData.SetFixedLeftTop(ChildData: TAutoSizeCtrlData;
+  Side: TAnchorKind; NewLeftTop: integer);
+begin
+  ChildData.Sides[Side].CtrlData:=Self;
+  ChildData.Sides[Side].Side:=asrLeft;
+  ChildData.Sides[Side].Space:=NewLeftTop;
+  ChildData.Sides[Side].Distance[assddLeftTop]:=NewLeftTop;
+  ChildData.Sides[Side].DistanceState[assddLeftTop]:=assdfValid;
+end;
+
 procedure TAutoSizeCtrlData.WriteDebugReport(const Title, Prefix: string);
 
   function GetDistance(a: TAnchorKind; d: TAutoSizeSideDistDirection): string;
@@ -1080,6 +1157,7 @@ begin
                            false, // with constraints
                            false  // without theme space
                            );
+  //DebugLn(['TAutoSizeBox.SetControl ',DbgSName(Control),' ',PreferredSize[asboHorizontal]]);
   Control.BorderSpacing.GetSpaceAround(Border);
   BorderLeftTop[asboHorizontal]:=Border.Left;
   BorderLeftTop[asboVertical]:=Border.Top;
@@ -1722,13 +1800,13 @@ begin
   //DebugLn('TAutoSizeBox.ResizeChilds CurSize=',dbgs(CurSize),' TargetSize=',dbgs(TargetSize));
   EnlargeStyle:=crsAnchorAligning;
   ShrinkStyle:=crsAnchorAligning;
+  i:=0;
   if TargetSize>CurSize then begin
     // enlarge
     if Orientation=asboHorizontal then
       EnlargeStyle:=ChildSizing.EnlargeHorizontal
     else
       EnlargeStyle:=ChildSizing.EnlargeVertical;
-    i:=0;
     while TargetSize>CurSize do begin
       // shrink childs
       GetChildMaxResize(MaxResizeFactorPerItem,ResizeableCount);
@@ -1755,7 +1833,6 @@ begin
       ShrinkStyle:=ChildSizing.ShrinkHorizontal
     else
       ShrinkStyle:=ChildSizing.ShrinkVertical;
-    i:=0;
     while TargetSize<CurSize do begin
       GetChildMinResize(MinResizeFactorPerItem,ResizeableCount);
       if (ResizeableCount=0) or (MinResizeFactorPerItem.Offset=0) then break;
@@ -1787,8 +1864,8 @@ begin
   ResizeChilds(ChildSizing,asboVertical,TargetHeight);
 end;
 
-function TAutoSizeBox.SetTableControlBounds(ChildSizing: TControlChildSizing
-  ): boolean;
+procedure TAutoSizeBox.ComputeTableControlBounds(ChildSizing: TControlChildSizing
+  );
 var
   y: Integer;
   RowBox: TAutoSizeBox;
@@ -1798,11 +1875,9 @@ var
   CurControl: TControl;
   NewBounds: TRect;
   CellBounds: TRect;
-  OldBounds: TRect;
   NewWidth: LongInt;
   NewHeight: LongInt;
 begin
-  Result:=false;
   //WriteDebugReport;
   for y:=0 to ChildCount[asboVertical]-1 do begin
     RowBox:=Childs[asboVertical][y];
@@ -1855,6 +1930,31 @@ begin
 
       NewBounds.Right:=NewBounds.Left+NewWidth;
       NewBounds.Bottom:=NewBounds.Top+NewHeight;
+      ControlBox.NewControlBounds:=NewBounds;
+    end;
+  end;
+end;
+
+function TAutoSizeBox.SetTableControlBounds(ChildSizing: TControlChildSizing
+  ): boolean;
+var
+  y: Integer;
+  RowBox: TAutoSizeBox;
+  x: Integer;
+  ControlBox: TAutoSizeBox;
+  CurControl: TControl;
+  NewBounds: TRect;
+  OldBounds: TRect;
+begin
+  Result:=false;
+  //WriteDebugReport;
+  for y:=0 to ChildCount[asboVertical]-1 do begin
+    RowBox:=Childs[asboVertical][y];
+    for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
+      ControlBox:=RowBox.Childs[asboHorizontal][x];
+      CurControl:=ControlBox.Control;
+      if CurControl=nil then continue;
+      NewBounds:=ControlBox.NewControlBounds;
       OldBounds:=CurControl.BoundsRect;
       if not CompareRect(@NewBounds,@OldBounds) then begin
         //DebugLn('TAutoSizeBox.SetTableControlBounds Control=',DbgSName(CurControl),' CellBounds=',dbgs(CellBounds),' NewBounds=',dbgs(NewBounds));
@@ -1869,15 +1969,22 @@ begin
 end;
 
 function TAutoSizeBox.AlignControlsInTable(ListOfControls: TFPList;
-  ChildSizing: TControlChildSizing; TargetWidth, TargetHeight: integer): boolean;
+  ChildSizing: TControlChildSizing; TargetWidth, TargetHeight: integer;
+  Apply: boolean): boolean;
+// true if a control was modified
 begin
   SetTableControls(ListOfControls,ChildSizing);
+  //WriteDebugReport('after SetTableControls');
   SumTable;
+  //WriteDebugReport('after SumTable');
   ResizeTable(ChildSizing,TargetWidth,TargetHeight);
-  Result:=SetTableControlBounds(ChildSizing);
+  //WriteDebugReport('after ResizeTable');
+  ComputeTableControlBounds(ChildSizing);
+  //WriteDebugReport('after ComputeTableControlBounds');
+  Result:=Apply and SetTableControlBounds(ChildSizing);
 end;
 
-procedure TAutoSizeBox.WriteDebugReport;
+procedure TAutoSizeBox.WriteDebugReport(const Title: string);
 var
   y: Integer;
   RowBox: TAutoSizeBox;
@@ -1885,7 +1992,7 @@ var
   CellBox: TAutoSizeBox;
   ColBox: TAutoSizeBox;
 begin
-  DebugLn('TAutoSizeBox.WriteDebugReport'
+  DebugLn('TAutoSizeBox.WriteDebugReport '+Title
     +' ChildCounts=',dbgs(ChildCount[asboHorizontal]),'x',dbgs(ChildCount[asboVertical]));
   for y:=0 to ChildCount[asboVertical]-1 do begin
     RowBox:=Childs[asboVertical][y];
@@ -1893,12 +2000,14 @@ begin
             ' MinY='+dbgs(RowBox.MinimumSize[asboVertical]),
             ' MaxY='+dbgs(RowBox.MaximumSize[asboVertical]),
             ' PrefY='+dbgs(RowBox.PreferredSize[asboVertical]),
+            ' BorderTop=',dbgs(RowBox.BorderLeftTop[asboVertical]),
             ' #Col='+dbgs(RowBox.ChildCount[asboHorizontal]));
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
       CellBox:=RowBox.Childs[asboHorizontal][x];
       DbgOut(' CellControl=',DbgSName(CellBox.Control),
              ' Min='+dbgs(CellBox.MinimumSize[asboHorizontal])+'x'+dbgs(CellBox.MinimumSize[asboVertical]),
              ' Max='+dbgs(CellBox.MaximumSize[asboHorizontal])+'x'+dbgs(CellBox.MaximumSize[asboVertical]),
+             ' BorderLeft=',dbgs(CellBox.BorderLeftTop[asboHorizontal]),
              ' Pref='+dbgs(CellBox.PreferredSize[asboHorizontal])+'x'+dbgs(CellBox.PreferredSize[asboVertical]),
              '');
     end;
@@ -2017,9 +2126,7 @@ begin
   begin
     Control := Controls[I];
 
-    if (Control.Align = TheAlign)
-      and ((TheAlign = alNone)
-        or Control.IsControlVisible) then
+    if (Control.Align = TheAlign) and Control.IsControlVisible then
     begin
       if Control = StartControl then Continue;
 
@@ -2762,10 +2869,7 @@ var
   
   function WidthDependsOnChilds: boolean;
   begin
-    Result:=HasVisibleChilds
-      and (ChildSizing.Layout<>cclNone)
-      and ((ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
-           or (ChildSizing.ShrinkHorizontal<>crsAnchorAligning));
+    Result:=false;
   end;
   
   function WidthDependsOnParent: boolean;
@@ -2783,10 +2887,7 @@ var
 
   function HeightDependsOnChilds: boolean;
   begin
-    Result:=HasVisibleChilds
-      and (ChildSizing.Layout<>cclNone)
-      and ((ChildSizing.EnlargeVertical<>crsAnchorAligning)
-           or (ChildSizing.ShrinkVertical<>crsAnchorAligning));
+    Result:=false;
   end;
 
   function HeightDependsOnParent: boolean;
@@ -5296,7 +5397,7 @@ begin
   Box:=TAutoSizeBox.Create;
   try
     BoundsModified:=Box.AlignControlsInTable(ListOfControls,ChildSizing,
-                                             ClientWidth,ClientHeight);
+                                             ClientWidth,ClientHeight,true);
   finally
     Box.Free;
   end;
