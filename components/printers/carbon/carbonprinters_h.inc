@@ -1,4 +1,4 @@
-{%MainUnit ../osprinters.pp}
+{%MainUnit ../osprinters.pas}
 uses
   Classes,SysUtils,Printers,LCLType;
 
