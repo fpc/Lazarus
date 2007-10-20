@@ -21,21 +21,21 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     TabOrder = 0
     object FilesPage: TPage
       Caption = 'FilesPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object MaxRecentOpenFilesLabel: TLabel
         Left = 62
-        Height = 14
+        Height = 20
         Top = -21
-        Width = 127
+        Width = 165
         Caption = 'MaxRecentOpenFilesLabel'
         ParentColor = False
       end
       object MaxRecentProjectFilesLabel: TLabel
         Left = 6
-        Height = 14
+        Height = 20
         Top = 58
-        Width = 135
+        Width = 175
         Caption = 'MaxRecentProjectFilesLabel'
         ParentColor = False
       end
@@ -43,13 +43,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = FilesPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
+        Height = 25
         Top = 26
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Right = 6
-        ItemHeight = 13
         Items.Strings = (
           '5'
           '10'
@@ -65,13 +64,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = FilesPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
+        Height = 25
         Top = 74
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Right = 6
-        ItemHeight = 13
         Items.Strings = (
           '5'
           '10'
@@ -87,9 +85,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = FilesPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 13
+        Height = 22
         Top = 106
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'OpenLastProjectAtStartCheckBox'
@@ -101,24 +99,23 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 54
         Top = 142
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'LazarusDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
+        ClientHeight = 35
+        ClientWidth = 522
         TabOrder = 3
         object LazarusDirComboBox: TComboBox
           AnchorSideLeft.Control = LazarusDirGroupBox
           AnchorSideRight.Control = LazarusDirButton
           Left = 6
-          Height = 21
+          Height = 25
           Top = 3
-          Width = 481
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 0
           Text = 'LazarusDirComboBox'
@@ -131,8 +128,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = LazarusDirComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
+          Left = 491
+          Height = 25
           Top = 3
           Width = 25
           Anchors = [akTop, akRight, akBottom]
@@ -149,24 +146,23 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 54
         Top = 197
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'CompilerPathGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
+        ClientHeight = 35
+        ClientWidth = 522
         TabOrder = 4
         object CompilerPathComboBox: TComboBox
           AnchorSideLeft.Control = CompilerPathGroupBox
           AnchorSideRight.Control = CompilerPathButton
           Left = 6
-          Height = 21
+          Height = 25
           Top = 3
-          Width = 481
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 0
           Text = 'CompilerPathComboBox'
@@ -177,8 +173,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = CompilerPathComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
+          Left = 491
+          Height = 25
           Top = 3
           Width = 25
           Anchors = [akTop, akRight, akBottom]
@@ -195,24 +191,23 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 54
         Top = 252
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'FPCSourceDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
+        ClientHeight = 35
+        ClientWidth = 522
         TabOrder = 5
         object FPCSourceDirComboBox: TComboBox
           AnchorSideLeft.Control = FPCSourceDirGroupBox
           AnchorSideRight.Control = FPCSourceDirButton
           Left = 6
-          Height = 21
+          Height = 25
           Top = 3
-          Width = 481
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 0
           Text = 'FPCSourceDirComboBox'
@@ -223,8 +218,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = FPCSourceDirComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
+          Left = 491
+          Height = 25
           Top = 3
           Width = 25
           Anchors = [akTop, akRight, akBottom]
@@ -241,24 +236,23 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 54
         Top = 307
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'MakePathGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
+        ClientHeight = 35
+        ClientWidth = 522
         TabOrder = 6
         object MakePathComboBox: TComboBox
           AnchorSideLeft.Control = MakePathGroupBox
           AnchorSideRight.Control = MakePathButton
           Left = 6
-          Height = 21
+          Height = 25
           Top = 3
-          Width = 481
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 0
           Text = 'MakePathComboBox'
@@ -269,8 +263,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = MakePathComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
+          Left = 491
+          Height = 25
           Top = 3
           Width = 25
           Anchors = [akTop, akRight, akBottom]
@@ -287,24 +281,23 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 54
         Top = 362
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'TestBuildDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
+        ClientHeight = 35
+        ClientWidth = 522
         TabOrder = 7
         object TestBuildDirComboBox: TComboBox
           AnchorSideLeft.Control = TestBuildDirGroupBox
           AnchorSideRight.Control = TestBuildDirButton
           Left = 6
-          Height = 21
+          Height = 25
           Top = 3
-          Width = 481
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 0
           Text = 'TestBuildDirComboBox'
@@ -315,8 +308,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = TestBuildDirComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
+          Left = 491
+          Height = 25
           Top = 3
           Width = 25
           Anchors = [akTop, akRight, akBottom]
@@ -330,33 +323,32 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
     object DesktopPage: TPage
       Caption = 'DesktopPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object LanguageGroupBox: TGroupBox
         AnchorSideRight.Control = DesktopPage
         AnchorSideRight.Side = asrBottom
         Left = 4
         Height = 56
         Top = 10
-        Width = 524
+        Width = 528
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'LanguageGroupBox'
-        ClientHeight = 38
-        ClientWidth = 520
+        ClientHeight = 37
+        ClientWidth = 524
         TabOrder = 0
         object LanguageComboBox: TComboBox
           AnchorSideLeft.Control = LanguageGroupBox
           AnchorSideRight.Control = LanguageGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 21
+          Height = 25
           Top = 8
-          Width = 508
+          Width = 512
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Around = 6
-          ItemHeight = 13
           MaxLength = 0
           Style = csDropDownList
           TabOrder = 0
@@ -364,17 +356,17 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       end
       object CheckDiskChangesWithLoadingCheckBox: TCheckBox
         Left = 6
-        Height = 13
+        Height = 22
         Top = 320
-        Width = 223
+        Width = 286
         Caption = 'CheckDiskChangesWithLoadingCheckBox'
         TabOrder = 1
       end
       object ShowHintsForComponentPaletteCheckBox: TCheckBox
         Left = 6
-        Height = 13
+        Height = 22
         Top = 342
-        Width = 222
+        Width = 293
         Caption = 'ShowHintsForComponentPaletteCheckBox'
         TabOrder = 2
       end
@@ -384,18 +376,18 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 4
         Height = 136
         Top = 74
-        Width = 524
+        Width = 528
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'AutoSaveGroupBox'
-        ClientHeight = 118
-        ClientWidth = 520
+        ClientHeight = 117
+        ClientWidth = 524
         TabOrder = 6
         object AutoSaveIntervalInSecsLabel: TLabel
           Left = 6
-          Height = 14
+          Height = 20
           Top = 67
-          Width = 465
+          Width = 469
           Anchors = [akTop, akLeft, akRight]
           Caption = 'AutoSaveIntervalInSecsLabel'
           Enabled = False
@@ -403,9 +395,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object AutoSaveEditorFilesCheckBox: TCheckBox
           Left = 6
-          Height = 13
+          Height = 22
           Top = 4
-          Width = 474
+          Width = 478
           Anchors = [akTop, akLeft, akRight]
           Caption = 'AutoSaveEditorFilesCheckBox'
           Enabled = False
@@ -413,9 +405,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object AutoSaveProjectCheckBox: TCheckBox
           Left = 6
-          Height = 13
+          Height = 22
           Top = 30
-          Width = 474
+          Width = 478
           Anchors = [akTop, akLeft, akRight]
           Caption = 'AutoSaveProjectCheckBox'
           Enabled = False
@@ -426,14 +418,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = AutoSaveGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 21
+          Height = 25
           Top = 87
-          Width = 508
+          Width = 512
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Around = 6
           Enabled = False
-          ItemHeight = 13
           Items.Strings = (
             '1200'
             '600'
@@ -450,12 +441,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 4
         Height = 97
         Top = 218
-        Width = 524
+        Width = 528
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'DesktopFilesGroupBox'
-        ClientHeight = 79
-        ClientWidth = 520
+        ClientHeight = 78
+        ClientWidth = 524
         TabOrder = 3
         object SaveDesktopSettingsToFileButton: TButton
           AnchorSideLeft.Control = DesktopFilesGroupBox
@@ -464,7 +455,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 8
-          Width = 508
+          Width = 512
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
@@ -479,7 +470,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 43
-          Width = 508
+          Width = 512
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
@@ -490,32 +481,32 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       end
       object ShowHintsForMainSpeedButtonsCheckBox: TCheckBox
         Left = 6
-        Height = 13
+        Height = 22
         Top = 362
-        Width = 225
+        Width = 295
         Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
         TabOrder = 4
       end
       object MsgViewDblClickJumpsCheckBox: TCheckBox
         Left = 6
-        Height = 13
+        Height = 22
         Top = 382
-        Width = 181
+        Width = 231
         Caption = 'MsgViewDblClickJumpsCheckBox'
         TabOrder = 5
       end
     end
     object WindowsPage: TPage
       Caption = 'WindowsPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object MinimizeAllOnMinimizeMainCheckBox: TCheckBox
         AnchorSideRight.Control = WindowsPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 13
+        Height = 22
         Top = 10
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'MinimizeAllOnMinimizeMainCheckBox'
@@ -526,9 +517,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = WindowsPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 13
+        Height = 22
         Top = 34
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'HideIDEOnRunCheckBox'
@@ -540,12 +531,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 320
         Top = 68
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Right = 6
         Caption = 'WindowPositionsGroupBox'
-        ClientHeight = 302
-        ClientWidth = 518
+        ClientHeight = 301
+        ClientWidth = 522
         TabOrder = 2
         object WindowPositionsListBox: TListBox
           AnchorSideLeft.Control = WindowPositionsGroupBox
@@ -554,18 +545,19 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 100
           Top = 6
-          Width = 506
+          Width = 510
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           OnMouseUp = WindowPositionsListBoxMouseUp
           TabOrder = 0
+          TopIndex = -1
         end
       end
     end
     object FormEditorPage: TPage
       Caption = 'FormEditorPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       OnResize = FormEditorPageResize
       object GridGroupBox: TGroupBox
         Left = 6
@@ -574,7 +566,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Width = 337
         BorderSpacing.Around = 6
         Caption = 'GridGroupBox'
-        ClientHeight = 194
+        ClientHeight = 193
         ClientWidth = 333
         TabOrder = 0
         object GridColorLabel: TLabel
@@ -582,9 +574,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = GridSizeYLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 101
-          Width = 70
+          Height = 20
+          Top = 140
+          Width = 94
           BorderSpacing.Top = 4
           BorderSpacing.Around = 6
           Caption = 'GridColorLabel'
@@ -595,9 +587,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = SnapToGridCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 53
-          Width = 70
+          Height = 20
+          Top = 80
+          Width = 96
           BorderSpacing.Around = 6
           Caption = 'GridSizeXLabel'
           ParentColor = False
@@ -607,9 +599,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = GridSizeXLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 77
-          Width = 70
+          Height = 20
+          Top = 110
+          Width = 95
           BorderSpacing.Top = 4
           BorderSpacing.Around = 6
           Caption = 'GridSizeYLabel'
@@ -620,9 +612,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = GridColorLabel
           AnchorSideTop.Side = asrCenter
-          Left = 82
+          Left = 106
           Height = 23
-          Top = 97
+          Top = 139
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -633,8 +625,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = ShowBorderSpaceCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 34
+          Height = 22
+          Top = 52
           Width = 253
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
@@ -645,8 +637,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object ShowGridCheckBox: TCheckBox
           AnchorSideLeft.Control = GridGroupBox
           Left = 6
-          Height = 13
-          Width = 115
+          Height = 22
+          Width = 147
           BorderSpacing.Left = 6
           Caption = 'ShowGridCheckBox'
           TabOrder = 0
@@ -656,12 +648,11 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = GridSizeXLabel
           AnchorSideTop.Side = asrCenter
-          Left = 82
-          Height = 21
-          Top = 50
+          Left = 108
+          Height = 25
+          Top = 78
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           Items.Strings = (
             '2'
             '5'
@@ -683,12 +674,11 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = GridSizeYLabel
           AnchorSideTop.Side = asrCenter
-          Left = 82
-          Height = 21
-          Top = 74
+          Left = 107
+          Height = 25
+          Top = 108
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           Items.Strings = (
             '2'
             '5'
@@ -710,9 +700,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = ShowGridCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 17
-          Width = 158
+          Height = 22
+          Top = 26
+          Width = 204
           BorderSpacing.Left = 6
           BorderSpacing.Top = 4
           Caption = 'ShowBorderSpaceCheckBox'
@@ -729,21 +719,21 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideBottom.Control = FormEditorPage
         AnchorSideBottom.Side = asrBottom
         Left = 349
-        Height = 223
+        Height = 218
         Top = 224
-        Width = 179
+        Width = 183
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'GuideLinesGroupBox'
-        ClientHeight = 205
-        ClientWidth = 175
+        ClientHeight = 199
+        ClientWidth = 179
         TabOrder = 1
         object GuideLineColorLeftTopButton: TColorButton
           AnchorSideTop.Control = GuideLineColorLeftTopLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 94
+          Top = 100
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -754,7 +744,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 143
+          Top = 155
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -765,9 +755,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = GuideLinesGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 14
+          Height = 20
           Top = 74
-          Width = 163
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'GuideLineColorLeftTopLabel'
@@ -780,9 +770,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = GuideLinesGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 123
-          Width = 163
+          Height = 20
+          Top = 129
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'GuideLineColorRightBottomLabel'
@@ -793,8 +783,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = GuideLinesGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 13
-          Width = 163
+          Height = 22
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'ShowGuideLinesCheckBox'
@@ -807,9 +797,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = GuideLinesGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 19
-          Width = 163
+          Height = 22
+          Top = 28
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'SnapToGuideLinesCheckBox'
@@ -824,13 +814,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideBottom.Control = FormEditorPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 223
+        Height = 218
         Top = 224
         Width = 337
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'FormEditMiscGroupBox'
-        ClientHeight = 205
+        ClientHeight = 199
         ClientWidth = 333
         TabOrder = 2
         object GrabberColorButton: TColorButton
@@ -838,9 +828,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = GrabberColorLabel
           AnchorSideTop.Side = asrCenter
-          Left = 102
+          Left = 132
           Height = 23
-          Top = 70
+          Top = 109
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -851,9 +841,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = MarkerColorLabel
           AnchorSideTop.Side = asrCenter
-          Left = 96
+          Left = 124
           Height = 23
-          Top = 94
+          Top = 139
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -864,9 +854,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = RightClickSelectsCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 74
-          Width = 90
+          Height = 20
+          Top = 110
+          Width = 120
           BorderSpacing.Top = 4
           BorderSpacing.Around = 6
           Caption = 'GrabberColorLabel'
@@ -877,9 +867,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = GrabberColorLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 98
-          Width = 84
+          Height = 20
+          Top = 140
+          Width = 112
           BorderSpacing.Top = 4
           BorderSpacing.Around = 6
           Caption = 'MarkerColorLabel'
@@ -888,7 +878,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object ShowComponentCaptionsCheckBox: TCheckBox
           AnchorSideLeft.Control = FormEditMiscGroupBox
           Left = 6
-          Height = 13
+          Height = 22
           Width = 256
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
@@ -900,8 +890,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = ShowComponentCaptionsCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 17
+          Height = 22
+          Top = 26
           Width = 256
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
@@ -914,8 +904,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = ShowEditorHintsCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 34
+          Height = 22
+          Top = 52
           Width = 256
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
@@ -928,8 +918,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = AutoCreateFormsOnOpenCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 51
+          Height = 22
+          Top = 78
           Width = 256
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
@@ -942,8 +932,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Control = MarkerColorLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 122
+          Height = 22
+          Top = 170
           Width = 254
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 4
@@ -962,12 +952,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 349
         Height = 212
         Top = 6
-        Width = 179
+        Width = 183
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'RubberbandGroupBox'
-        ClientHeight = 194
-        ClientWidth = 175
+        ClientHeight = 193
+        ClientWidth = 179
         Color = clBtnFace
         ParentColor = False
         TabOrder = 3
@@ -977,7 +967,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 26
+          Top = 32
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -989,7 +979,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 75
+          Top = 87
           Width = 50
           BorderWidth = 2
           ButtonColorSize = 16
@@ -1001,9 +991,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = RubberbandGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 14
+          Height = 20
           Top = 6
-          Width = 163
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'RubberbandSelectColorLabel'
@@ -1016,9 +1006,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = RubberbandGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 14
-          Top = 55
-          Width = 163
+          Height = 20
+          Top = 61
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'RubberbandCreateColorLabel'
@@ -1031,9 +1021,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = RubberbandGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 13
-          Top = 104
-          Width = 163
+          Height = 22
+          Top = 116
+          Width = 167
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'RubberbandSelectsGrandChildsCheckBox'
@@ -1043,15 +1033,15 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
     object ObjectInspectorPage: TPage
       Caption = 'ObjectInspectorPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object ObjectInspectorColorsGroupBox: TGroupBox
         AnchorSideRight.Control = ObjectInspectorPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 172
+        Height = 174
         Top = 7
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Left = 5
@@ -1062,8 +1052,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         ChildSizing.TopBottomSpacing = 6
         ChildSizing.HorizontalSpacing = 2
         ChildSizing.VerticalSpacing = 2
-        ClientHeight = 154
-        ClientWidth = 518
+        ClientHeight = 155
+        ClientWidth = 522
         TabOrder = 0
         object OIBackgroundColorButton: TColorButton
           Left = 6
@@ -1121,54 +1111,54 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object OIBackgroundColorLabel: TLabel
           Left = 65
-          Height = 14
+          Height = 20
           Top = 12
-          Width = 434
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIBackgroundColorLabel'
           ParentColor = False
         end
         object OISubPropsColorLabel: TLabel
           Left = 65
-          Height = 14
+          Height = 20
           Top = 36
-          Width = 434
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OISubPropsColorLabel'
           ParentColor = False
         end
         object OIReferencesColorLabel: TLabel
           Left = 65
-          Height = 14
+          Height = 20
           Top = 60
-          Width = 434
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIReferencesColorLabel'
           ParentColor = False
         end
         object OIValueColorLabel: TLabel
           Left = 65
-          Height = 14
+          Height = 20
           Top = 84
-          Width = 434
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIValueColorLabel'
           ParentColor = False
         end
         object OIDefaultValueColorLabel: TLabel
           Left = 65
-          Height = 14
+          Height = 20
           Top = 108
-          Width = 434
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIDefaultValueColorLabel'
           ParentColor = False
         end
         object OIPropNameColorLabel: TLabel
           Left = 65
-          Height = 14
+          Height = 20
           Top = 132
-          Width = 434
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIPropNameColorLabel'
           ParentColor = False
@@ -1180,27 +1170,27 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 105
         Top = 186
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'OIMiscGroupBox'
-        ClientHeight = 87
-        ClientWidth = 518
+        ClientHeight = 86
+        ClientWidth = 522
         TabOrder = 1
         object OIDefaultItemHeightLabel: TLabel
           Left = 6
-          Height = 14
+          Height = 20
           Top = 6
-          Width = 458
+          Width = 462
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIDefaultItemHeightLabel'
           ParentColor = False
         end
         object OIShowHintCheckBox: TCheckBox
           Left = 6
-          Height = 13
+          Height = 22
           Top = 55
-          Width = 458
+          Width = 462
           Anchors = [akTop, akLeft, akRight]
           Caption = 'OIShowHintCheckBox'
           TabOrder = 0
@@ -1217,15 +1207,15 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
     object BackupPage: TPage
       Caption = 'BackupPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object BackupHelpLabel: TLabel
         AnchorSideRight.Control = BackupPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 14
+        Height = 20
         Top = 7
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'BackupHelpLabel'
@@ -1237,12 +1227,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 201
         Top = 34
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'BackupProjectGroupBox'
-        ClientHeight = 183
-        ClientWidth = 518
+        ClientHeight = 182
+        ClientWidth = 522
         TabOrder = 0
         object BakProjAddExtLabel: TLabel
           AnchorSideLeft.Control = BakProjAddExtComboBox
@@ -1252,9 +1242,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = BackupProjectGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 112
-          Height = 14
-          Top = 101
-          Width = 400
+          Height = 20
+          Top = 100
+          Width = 404
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'BakProjAddExtLabel'
@@ -1268,9 +1258,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = BackupProjectGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 112
-          Height = 14
-          Top = 128
-          Width = 400
+          Height = 20
+          Top = 127
+          Width = 404
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'BakProjMaxCounterLabel'
@@ -1284,9 +1274,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = BackupProjectGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 112
-          Height = 14
-          Top = 155
-          Width = 400
+          Height = 20
+          Top = 154
+          Width = 404
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'BakProjSubDirLabel'
@@ -1297,7 +1287,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 88
-          Width = 506
+          Width = 510
           Anchors = [akTop, akLeft, akRight]
           AutoFill = True
           BorderSpacing.Around = 6
@@ -1316,33 +1306,30 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object BakProjAddExtComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 98
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 1
           Text = 'BakProjAddExtComboBox'
         end
         object BakProjMaxCounterComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 125
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 2
           Text = 'BakProjMaxCounterComboBox'
         end
         object BakProjSubDirComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 152
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 3
           Text = 'BakProjSubDirComboBox'
@@ -1354,12 +1341,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 196
         Top = 242
-        Width = 522
+        Width = 526
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'BackupOtherGroupBox'
-        ClientHeight = 178
-        ClientWidth = 518
+        ClientHeight = 177
+        ClientWidth = 522
         TabOrder = 1
         object BakOtherAddExtLabel: TLabel
           AnchorSideLeft.Control = BakOtherAddExtComboBox
@@ -1369,9 +1356,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = BackupOtherGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 112
-          Height = 14
-          Top = 98
-          Width = 400
+          Height = 20
+          Top = 97
+          Width = 404
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'BakOtherAddExtLabel'
@@ -1385,9 +1372,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = BackupOtherGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 112
-          Height = 14
-          Top = 125
-          Width = 400
+          Height = 20
+          Top = 124
+          Width = 404
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'BakOtherMaxCounterLabel'
@@ -1401,9 +1388,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = BackupOtherGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 112
-          Height = 14
-          Top = 152
-          Width = 400
+          Height = 20
+          Top = 151
+          Width = 404
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           Caption = 'BakOtherSubDirLabel'
@@ -1414,7 +1401,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 84
-          Width = 506
+          Width = 510
           Anchors = [akTop, akLeft, akRight]
           AutoFill = True
           BorderSpacing.Around = 6
@@ -1433,33 +1420,30 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object BakOtherAddExtComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 95
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 1
           Text = 'BakOtherAddExtComboBox'
         end
         object BakOtherMaxCounterComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 122
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 2
           Text = 'BakOtherMaxCounterComboBox'
         end
         object BakOtherSubDirComboBox: TComboBox
           Left = 6
-          Height = 21
+          Height = 25
           Top = 149
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
           MaxLength = 0
           TabOrder = 3
           Text = 'BakOtherSubDirComboBox'
@@ -1468,15 +1452,15 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
     object NamingPage: TPage
       Caption = 'NamingPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object PascalFileExtRadiogroup: TRadioGroup
         AnchorSideRight.Control = NamingPage
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 47
         Top = 6
-        Width = 522
+        Width = 526
         Align = alTop
         AutoFill = True
         BorderSpacing.Around = 6
@@ -1498,7 +1482,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 85
         Top = 165
-        Width = 522
+        Width = 526
         Align = alTop
         AutoFill = True
         BorderSpacing.Around = 6
@@ -1520,7 +1504,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Left = 6
         Height = 100
         Top = 59
-        Width = 522
+        Width = 526
         Align = alTop
         AutoFill = True
         BorderSpacing.Around = 6
@@ -1539,39 +1523,40 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
     object LazDocPage: TPage
       Caption = 'LazDocPage'
-      ClientWidth = 534
-      ClientHeight = 453
+      ClientWidth = 538
+      ClientHeight = 448
       object LazDocPathsGroupBox: TGroupBox
         AnchorSideRight.Control = LazDocPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 198
+        Height = 205
         Top = 6
-        Width = 522
+        Width = 526
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 180
-        ClientWidth = 518
+        ClientHeight = 186
+        ClientWidth = 522
         TabOrder = 0
         object LazDocListBox: TListBox
           Left = 6
           Height = 108
           Top = 6
-          Width = 506
+          Width = 510
           Align = alTop
           BorderSpacing.Around = 6
           TabOrder = 0
+          TopIndex = -1
         end
         object LazDocAddPathButton: TButton
           AnchorSideLeft.Control = LazDocPathsGroupBox
           AnchorSideTop.Control = LazDocListBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 25
+          Height = 31
           Top = 120
-          Width = 137
+          Width = 163
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
@@ -1583,10 +1568,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Control = LazDocAddPathButton
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = LazDocAddPathButton
-          Left = 153
-          Height = 25
+          Left = 179
+          Height = 31
           Top = 120
-          Width = 149
+          Width = 180
           AutoSize = True
           BorderSpacing.Left = 10
           BorderSpacing.InnerBorder = 4
@@ -1601,9 +1586,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = LazDocPathEdit
           AnchorSideBottom.Side = asrBottom
-          Left = 488
+          Left = 492
           Height = 23
-          Top = 151
+          Top = 157
           Width = 24
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
@@ -1619,8 +1604,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Control = LazDocBrowseButton
           Left = 6
           Height = 23
-          Top = 151
-          Width = 482
+          Top = 157
+          Width = 486
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -1636,10 +1621,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 444
+    Left = 430
     Height = 25
     Top = 491
-    Width = 92
+    Width = 106
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -1655,7 +1640,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 363
+    Left = 349
     Height = 25
     Top = 491
     Width = 75
