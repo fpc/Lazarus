@@ -215,7 +215,7 @@ begin
   ParserState := 0;
   Position := 1;
   TmpFilter := '';
-
+  
   for i := 1 to Length(AFileDialog.Filter) do
   begin
     if Copy(AFileDialog.Filter, i, 1) = '|' then
@@ -246,7 +246,11 @@ begin
 
   if Pos(strExtensions, TmpFilter) = 0 then
     TmpFilter := TmpFilter + ' ' + strExtensions;
-  Result := GetUtf8String(TmpFilter);
+    
+  if (AFileDialog is TSaveDialog) and (trim(TmpFilter)='()') then
+    Result := ''
+  else
+    Result := GetUtf8String(TmpFilter);
 end;
 
 class procedure TQtWSFileDialog.UpdateProperties(
@@ -274,8 +278,6 @@ begin
     QtFileDialog.setFileMode(QFileDialogExistingFile)
   else
     QtFileDialog.setFileMode(QFileDialogAnyFile);
-    
-  QtFileDialog.setLabelText(QFileDialogFileName, GetUtf8String(AFileDialog.FileName));
 end;
 
 class function TQtWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -295,7 +297,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  selectedFilter, ReturnText: WideString;
+  selectedFilter, ReturnText,
+  saveFileName, saveTitle, saveFilter: WideString;
   FileDialog: TFileDialog;
   ReturnList: QStringListH;
   i: integer;
@@ -306,6 +309,8 @@ begin
    ------------------------------------------------------------------------------}
   ReturnText := '';
   selectedFilter := '';
+  saveFileName := '';
+  saveTitle := '';
 
   FileDialog := TFileDialog(ACommonDialog);
   QtFileDialog := TQtFileDialog(FileDialog.Handle);
@@ -324,20 +329,35 @@ begin
   if ACommonDialog is TSelectDirectoryDialog then
     QtFileDialog.setFileMode(QFileDialogDirectoryOnly);
 
-  FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
-  ReturnList := QStringList_create;
-  try
-    QtFileDialog.selectedFiles(ReturnList);
-    for i := 0 to QStringList_size(ReturnList) - 1 do
+  if ACommonDialog is TSaveDialog then
+  begin
+    saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog));
+    saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
+    saveTitle := GetUTF8String(FileDialog.Title);
+    QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, {selectedFilter} nil, 0);
+    if ReturnText <> '' then
     begin
-      QStringList_at(ReturnList, @ReturnText, i);
-      FileDialog.Files.Add(UTF8Encode(ReturnText));
-      if i = 0 then
-        FileDialog.FileName := UTF8Encode(ReturnText);
+      FileDialog.FileName := UTF8Encode(ReturnText);
+      FileDialog.UserChoice := mrOK;
+    end else
+      FileDialog.UserChoice := mrCancel;
+  end else
+  begin
+    FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
+    ReturnList := QStringList_create;
+    try
+      QtFileDialog.selectedFiles(ReturnList);
+      for i := 0 to QStringList_size(ReturnList) - 1 do
+      begin
+        QStringList_at(ReturnList, @ReturnText, i);
+        FileDialog.Files.Add(UTF8Encode(ReturnText));
+        if i = 0 then
+          FileDialog.FileName := UTF8Encode(ReturnText);
+      end;
+      ReturnText := FileDialog.Files.Text;
+    finally
+      QStringList_destroy(ReturnList);
     end;
-    ReturnText := FileDialog.Files.Text;
-  finally
-    QStringList_destroy(ReturnList);
   end;
 end;
 
