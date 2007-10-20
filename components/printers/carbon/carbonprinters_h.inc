@@ -47,7 +47,3 @@ uses
   end;
 
 
-implementation
-
-end.
-
