@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-18 03:31+0300\n"
+"PO-Revision-Date: 2007-10-21 00:55+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -171,7 +171,7 @@ msgstr "&Закрыть страницу"
 
 #: lazarusidestrconsts:lismenucomponents
 msgid "&Components"
-msgstr "Компоненты"
+msgstr "&Компоненты"
 
 #: lazarusidestrconsts:liswldelete
 msgid "&Delete"
@@ -239,7 +239,7 @@ msgstr "&Пуск до курсора"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
-msgstr "&Поиск"
+msgstr "П&оиск"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
@@ -255,11 +255,11 @@ msgstr "&Инструменты"
 
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
-msgstr "&Просмотр"
+msgstr "П&росмотр"
 
 #: lazarusidestrconsts:lismenuwindows
 msgid "&Windows"
-msgstr "&Окна"
+msgstr "Ок&на"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -367,7 +367,7 @@ msgstr "О проекте Lazarus"
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
-msgstr "Принять"
+msgstr "Accept"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
@@ -1075,7 +1075,7 @@ msgstr "Не могу найти пускатель lazarus:%s%s"
 
 #: lazarusidestrconsts:srvk_capital
 msgid "Capital"
-msgstr "Заглавный"
+msgstr "CapsLock"
 
 #: lazarusidestrconsts:dlgcaretskipsselection
 msgid "Caret skips selection"
@@ -1331,7 +1331,7 @@ msgstr "Очистить+Собрать"
 
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
-msgstr "Очистить"
+msgstr "Clear"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
@@ -1763,7 +1763,7 @@ msgstr "Участники"
 
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
-msgstr "Элемент управления"
+msgstr "Control"
 
 #: lazarusidestrconsts:liscontrolneedsparent
 msgid "Control needs parent"
@@ -1779,7 +1779,7 @@ msgstr "Ошибка преобразования"
 
 #: lazarusidestrconsts:srvk_convert
 msgid "Convert"
-msgstr "Преобразовать"
+msgstr "Convert"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
@@ -2503,7 +2503,7 @@ msgstr "В&ключить все"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
-msgstr "&Окружение"
+msgstr "Окру&жение"
 
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
@@ -3099,7 +3099,7 @@ msgstr "Фильтровать по началу метода"
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
-msgstr "Финальный"
+msgstr "Final"
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
@@ -3903,7 +3903,7 @@ msgstr "Унаследованные"
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
-msgstr "Вставить"
+msgstr "Insert"
 
 #: lazarusidestrconsts:liskminsertifdef
 msgid "Insert $IFDEF"
@@ -4699,7 +4699,7 @@ msgstr "Оставьте пустым для файла .po по умолчан�
 
 #: lazarusidestrconsts:srvk_left
 msgid "Left"
-msgstr "Влево"
+msgstr "Стрелка влево"
 
 #: lazarusidestrconsts:lisleftgroupboxcaption
 msgid "Left anchoring"
@@ -4943,7 +4943,7 @@ msgstr "Максимальный счетчик"
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
-msgstr "Меню"
+msgstr "Menu"
 
 #: lazarusidestrconsts:lismenueditormenueditor
 msgid "Menu Editor"
@@ -5003,7 +5003,7 @@ msgstr "Смешивать методы и свойства"
 
 #: lazarusidestrconsts:srvk_modechange
 msgid "Mode Change"
-msgstr "Сменить режим"
+msgstr "Mode Change"
 
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
@@ -5307,7 +5307,7 @@ msgstr "Новая строка"
 
 #: lazarusidestrconsts:srvk_next
 msgid "Next"
-msgstr "Следующий"
+msgstr "Page Down"
 
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
@@ -5371,7 +5371,7 @@ msgstr "Элемент только для чтения"
 
 #: lazarusidestrconsts:srvk_nonconvert
 msgid "Nonconvert"
-msgstr "Без конвертации"
+msgstr "Nonconvert"
 
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
@@ -5951,7 +5951,7 @@ msgstr "Пауза"
 
 #: lazarusidestrconsts:srvk_pause
 msgid "Pause key"
-msgstr "Клавиша Pause"
+msgstr "Pause"
 
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
@@ -6051,7 +6051,7 @@ msgstr "Распечатать элементы todo"
 
 #: lazarusidestrconsts:srvk_prior
 msgid "Prior"
-msgstr "Перед"
+msgstr "Page Up"
 
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
@@ -6639,7 +6639,7 @@ msgstr "Продолжить при необработанных"
 
 #: lazarusidestrconsts:srvk_return
 msgid "Return"
-msgstr "Возврат"
+msgstr "Ввод"
 
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
@@ -6655,7 +6655,7 @@ msgstr "Вернуть пакет?"
 
 #: lazarusidestrconsts:srvk_right
 msgid "Right"
-msgstr "Справа"
+msgstr "Стрелка вправо"
 
 #: lazarusidestrconsts:dlgrightclickselects
 msgid "Right Click selects"
@@ -6963,7 +6963,7 @@ msgstr "Где"
 
 #: lazarusidestrconsts:srvk_scroll
 msgid "Scroll"
-msgstr "Прокрутить"
+msgstr "ScrollLock"
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -7567,7 +7567,7 @@ msgstr "Выравнивать по сетке"
 
 #: lazarusidestrconsts:srvk_snapshot
 msgid "Snapshot"
-msgstr "Снимок"
+msgstr "Snapshot"
 
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -7635,7 +7635,7 @@ msgstr "Равномерно"
 
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
-msgstr "Кнопка пробел"
+msgstr "Пробел"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
@@ -9735,7 +9735,7 @@ msgstr "добавить наблюдение"
 
 #: lazarusidestrconsts:srvk_apps
 msgid "application key"
-msgstr "клавиша приложения"
+msgstr "Клавиша приложения"
 
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
@@ -9963,7 +9963,7 @@ msgstr "сброс отладчика"
 
 #: lazarusidestrconsts:srvk_rwin
 msgid "right windows key"
-msgstr "правая клавиша Windows"
+msgstr "Правая клавиша Windows"
 
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"

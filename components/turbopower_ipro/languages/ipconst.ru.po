@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-18 02:58+0300\n"
+"PO-Revision-Date: 2007-10-21 00:45+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -387,19 +387,19 @@ msgstr "%s: число должно быть положительным"
 
 #: ipconst:srowcoloor
 msgid "%s: either row %d or col %d is out of range"
-msgstr ""
+msgstr "%s: строка %d либо столбец %d вышли за границы диапазона"
 
 #: ipconst:slesszero
 msgid "%s: new col count %d is less than zero"
-msgstr ""
+msgstr "%s: новое число столбцов %d меньше нуля"
 
 #: ipconst:scounttoosmall
 msgid "%s: new count too small"
-msgstr ""
+msgstr "%s: новое количество слишком мало"
 
 #: ipconst:srowoor
 msgid "%s: row number is out of range"
-msgstr ""
+msgstr "%s: число строк вне границ диапазона"
 
 #: ipconst:spngerrorconstant
 msgid "**** ERROR ****"
@@ -427,7 +427,7 @@ msgstr "-ERR"
 
 #: ipconst:spngunsupportedfeature
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
-msgstr ""
+msgstr "В файле PNG была найдена область %s. Эта возможность не поддерживается данной версией декодера PNG"
 
 #: ipconst:spop3cmdapop
 msgid "APOP"
@@ -467,11 +467,11 @@ msgstr "Во время выполнения последней задачи п�
 
 #: ipconst:swsa_qos_senders
 msgid "At least one Path has arrived"
-msgstr ""
+msgstr "Прибыл по крайней мере один путь"
 
 #: ipconst:swsa_qos_receivers
 msgid "At least one Reserve has arrived"
-msgstr ""
+msgstr "Прибыл по крайней мере один резерв"
 
 #: ipconst:sftprestart
 msgid "Attempting to re-start transfer of "
@@ -487,59 +487,59 @@ msgstr "Попытка записи"
 
 #: ipconst:srasauthenticate
 msgid "Authenticate"
-msgstr ""
+msgstr "Аутентифицировать"
 
 #: ipconst:srasauthack
 msgid "Authenticate acknowledged"
-msgstr ""
+msgstr "Аутентификация подтверждена"
 
 #: ipconst:srasauthcallback
 msgid "Authenticate callback"
-msgstr ""
+msgstr "Внешний обработчик аутентификации"
 
 #: ipconst:srasauthchangepassword
 msgid "Authenticate change password"
-msgstr ""
+msgstr "Аутентифицировать смену пароля"
 
 #: ipconst:srasauthlinkspeed
 msgid "Authenticate link speed"
-msgstr ""
+msgstr "Аутентифицировать скорость соединения"
 
 #: ipconst:srasauthnotify
 msgid "Authenticate notify"
-msgstr ""
+msgstr "Уведомление об аутентификации"
 
 #: ipconst:srasauthproject
 msgid "Authenticate project"
-msgstr ""
+msgstr "Аутентифицировать проект"
 
 #: ipconst:srasauthretry
 msgid "Authenticate retry"
-msgstr ""
+msgstr "Повторить аутентификацию"
 
 #: ipconst:srasauthenticated
 msgid "Authenticated"
-msgstr ""
+msgstr "Аутентифицирован"
 
 #: ipconst:sntauthenticate
 msgid "Authenticating"
-msgstr ""
+msgstr "Аутентификация"
 
 #: ipconst:sssauthpass
 msgid "Authenticating password"
-msgstr ""
+msgstr "Аутентификация пароля"
 
 #: ipconst:sssauthuser
 msgid "Authenticating username"
-msgstr ""
+msgstr "Аутентификация имени пользователя"
 
 #: ipconst:snsauthpass
 msgid "Authorizing password"
-msgstr ""
+msgstr "Авторизация пароля"
 
 #: ipconst:snsauthuser
 msgid "Authorizing user"
-msgstr ""
+msgstr "Авторизация пользователя"
 
 #: ipconst:snntpcmdbody
 msgid "BODY"
@@ -563,15 +563,15 @@ msgstr "Неверное направление"
 
 #: ipconst:ssmtpresponse11
 msgid "Bad destination mailbox address"
-msgstr ""
+msgstr "Неверный адрес почтового ящика получателя"
 
 #: ipconst:ssmtpresponse13
 msgid "Bad destination mailbox address syntax"
-msgstr ""
+msgstr "Неверный формат адреса почтового ящика получателя"
 
 #: ipconst:ssmtpresponse12
 msgid "Bad destination system address"
-msgstr ""
+msgstr "Неверный адрес целевой системы"
 
 #: ipconst:swsaebadf
 msgid "Bad file descriptor"
@@ -611,7 +611,7 @@ msgstr ""
 
 #: ipconst:spngbitdepth
 msgid "Bit Depth: %d"
-msgstr ""
+msgstr "Глубина: %d"
 
 #: ipconst:ssslblocksizeerror
 msgid "Block size error"
@@ -675,11 +675,11 @@ msgstr ""
 
 #: ipconst:swebimagecannotload
 msgid "Cannot load %s"
-msgstr ""
+msgstr "Невозможно загрузить %s"
 
 #: ipconst:swebimagestreambad
 msgid "Cannot load image from stream"
-msgstr ""
+msgstr "Невозможно загрузить изображение из потока"
 
 #: ipconst:swsaeshutdown
 msgid "Cannot send after socket shutdown"
@@ -691,11 +691,11 @@ msgstr ""
 
 #: ipconst:scannotwritetostream
 msgid "Cannot write to stream"
-msgstr ""
+msgstr "Невозможно записать в поток"
 
 #: ipconst:ssslbadcerttype
 msgid "Cert type not found"
-msgstr ""
+msgstr "Тип сертификата не найден"
 
 #: ipconst:ssslnocertificate
 msgid "Certificate is not available."
@@ -707,11 +707,11 @@ msgstr "Переполнение стека символов"
 
 #: ipconst:cachecheckfreshness
 msgid "Checking Freshness (%s)"
-msgstr ""
+msgstr "Проверка новизны (%s)"
 
 #: ipconst:spngtruncateddata
 msgid "Chunk data is truncated"
-msgstr ""
+msgstr "Данные последовательности обрезаны"
 
 #: ipconst:seventdisconnect
 msgid "Close:   Loc: %s Rem: %s"
@@ -791,11 +791,11 @@ msgstr ""
 
 #: ipconst:suuencodecounterr
 msgid "Count <> Len or Count > 63"
-msgstr ""
+msgstr "Count <> Len или Count > 63"
 
 #: ipconst:ssmtpresponse76
 msgid "Cryptographic algorithm not supported"
-msgstr ""
+msgstr "Криптографический алгоритм не поддерживается"
 
 #: ipconst:ssmtpresponse75
 msgid "Cryptographic failure"
@@ -859,35 +859,35 @@ msgstr ""
 
 #: ipconst:sdestroying
 msgid "Destroying"
-msgstr ""
+msgstr "Уничтожение"
 
 #: ipconst:srasdeviceconnected
 msgid "Device connected"
-msgstr ""
+msgstr "Устройство подсоединено"
 
 #: ipconst:ssslfailedhelloparse
 msgid "Did not parse server hello correctly."
-msgstr ""
+msgstr "Не удалось корректно разобрать hello сервера."
 
 #: ipconst:swsaenotempty
 msgid "Directory not empty"
-msgstr ""
+msgstr "Каталог не пустой"
 
 #: ipconst:srasdisconnected
 msgid "Disconnected"
-msgstr ""
+msgstr "Разъединено"
 
 #: ipconst:httpdisconnect
 msgid "Disconnected: (%s), %s Total bytes received"
-msgstr ""
+msgstr "Разъединено: (%s), всего получено %s байт"
 
 #: ipconst:spsquit
 msgid "Disconnecting"
-msgstr ""
+msgstr "Разъединение"
 
 #: ipconst:swsaedquot
 msgid "Disk quota exceeded"
-msgstr ""
+msgstr "Превышена квота на диске"
 
 #: ipconst:providerunknownformat
 msgid "Don't know how to handle %s"
@@ -914,17 +914,20 @@ msgid "Download?"
 msgstr "Загрузить?"
 
 #: ipconst:sicmpecho
-msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
+msgid ""
+"Echo reply (Hop number: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d"
 msgstr ""
-<<<<<<< .mine
-"Эхо-ответ (Число хоповr: %d)\n"
+"Эхо-ответ (Число хопов: %d)\n"
 "            Статус = %d\n"
 "             RTTime = %d\n"
 "             Ttl = %d\n"
 "             Tos = %d\n"
-"            Флаги IP = %d"
-=======
->>>>>>> .r12512
+"             Флаги IP = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
@@ -996,11 +999,11 @@ msgstr ""
 
 #: ipconst:swsa_qos_generic_error
 msgid "General error"
-msgstr ""
+msgstr "Общая ошибка"
 
 #: ipconst:slogarticle
 msgid "Generating OnArticle event"
-msgstr ""
+msgstr "Создание события OnArticle"
 
 #: ipconst:slogencodeactionstart
 msgid "Generating OnEncodeAction(Start)"
@@ -1012,7 +1015,7 @@ msgstr ""
 
 #: ipconst:slogpop3message
 msgid "Generating OnMessage event"
-msgstr ""
+msgstr "Создание события OnMessage"
 
 #: ipconst:slogmultiline
 msgid "Generating OnMultiLineResponse event"
@@ -1020,7 +1023,7 @@ msgstr ""
 
 #: ipconst:slogsmtpnextmessage
 msgid "Generating OnNextMessage event"
-msgstr ""
+msgstr "Создание события OnNextMessage"
 
 #: ipconst:slogresponse
 msgid "Generating OnResponse event, Code = "
@@ -1028,19 +1031,19 @@ msgstr ""
 
 #: ipconst:slogtaskcomplete
 msgid "Generating OnTaskComplete event "
-msgstr ""
+msgstr "Создание события OnTaskComplete"
 
 #: ipconst:slogpop3top
 msgid "Generating OnTop event"
-msgstr ""
+msgstr "Создание события OnTop"
 
 #: ipconst:snsnewnews
 msgid "Getting new articles"
-msgstr ""
+msgstr "Получение новых статей"
 
 #: ipconst:snsnewgroups
 msgid "Getting new news groups"
-msgstr ""
+msgstr "Получение новостных групп"
 
 #: ipconst:swsaediscon
 msgid "Graceful shutdown in progress"
@@ -1084,15 +1087,15 @@ msgstr "Удалённый компьютер не найден"
 
 #: ipconst:spngmissingihdr
 msgid "IHDR Chunk is missing"
-msgstr ""
+msgstr "Отсутствует последовательность IHDR"
 
 #: ipconst:spngihdrtoolong
 msgid "IHDR chunk is long."
-msgstr ""
+msgstr "Последовательность IHDR - длинная."
 
 #: ipconst:spngihdrtooshort
 msgid "IHDR chunk is short."
-msgstr ""
+msgstr "Последовательность IHDR - короткая."
 
 #: ipconst:ssslillegalparameter
 msgid "Illegal Parameter."
@@ -1100,15 +1103,15 @@ msgstr "Неверный параметр."
 
 #: ipconst:spngimagesize
 msgid "Image size is %dx%d pixels"
-msgstr ""
+msgstr "Размер изображения - %dx%d пикселов"
 
 #: ipconst:sbadimagelibstream
 msgid "ImageLib must use TMemoryStreams"
-msgstr ""
+msgstr "ImageLib должен  использовать TMemoryStream'ы"
 
 #: ipconst:sindexerr
 msgid "Index out of range"
-msgstr ""
+msgstr "Индекс вне границ диапазона"
 
 #: ipconst:srasinteractive
 msgid "Interactive"
@@ -1168,7 +1171,7 @@ msgstr "Неверная команда"
 
 #: ipconst:ssmtpresponse54
 msgid "Invalid command arguments"
-msgstr ""
+msgstr "Неверные аргументы команды"
 
 #: ipconst:sbinhexlengtherr
 msgid "Invalid data length"
@@ -1176,43 +1179,43 @@ msgstr "Неверная длина данных"
 
 #: ipconst:shtmlinvdir
 msgid "Invalid dir value specified"
-msgstr ""
+msgstr "Указано неверное имя каталога"
 
 #: ipconst:shtmlinvframe
 msgid "Invalid frame specified"
-msgstr ""
+msgstr "Указан неверный фрейм"
 
 #: ipconst:shtmlinvgraphic
 msgid "Invalid graphic returned"
-msgstr ""
+msgstr "Возвращена неверная графика"
 
 #: ipconst:shtmlinvint
 msgid "Invalid integer constant"
-msgstr ""
+msgstr "Неверная целая константа"
 
 #: ipconst:sbadlinelength
 msgid "Invalid line length"
-msgstr ""
+msgstr "Неверная длина строки"
 
 #: ipconst:slinelengtherr
 msgid "Invalid line length for encoded text"
-msgstr ""
+msgstr "Неверная длина строки для закодированного текста"
 
 #: ipconst:sbadlineterminator
 msgid "Invalid line terminator"
-msgstr ""
+msgstr "Неверный признак конца строки"
 
 #: ipconst:shtmlinvmethod
 msgid "Invalid method specified"
-msgstr ""
+msgstr "Указан неверный метод"
 
 #: ipconst:providerunknownpicture
 msgid "Invalid picture format"
-msgstr ""
+msgstr "Неверный формат изображения"
 
 #: ipconst:shtmlinvpicture
 msgid "Invalid picture returned"
-msgstr ""
+msgstr "Возвращено неверное изображение"
 
 #: ipconst:swsaeinvalidproctable
 msgid "Invalid procedure table from service provider"
@@ -1688,11 +1691,11 @@ msgstr ""
 
 #: ipconst:srasportopened
 msgid "Port opened"
-msgstr ""
+msgstr "Порт открыт"
 
 #: ipconst:snspost
 msgid "Posting article"
-msgstr ""
+msgstr "Отправка статьи"
 
 #: ipconst:srasprepareforcallback
 msgid "Prepare for callback"
@@ -1700,7 +1703,7 @@ msgstr ""
 
 #: ipconst:snsprepost
 msgid "Preparing to post article"
-msgstr ""
+msgstr "Подготовка к отправке статьи"
 
 #: ipconst:swsa_qos_bad_object
 msgid "Problem filterspec or providerspecific buffer"
@@ -1712,23 +1715,23 @@ msgstr ""
 
 #: ipconst:httpprogress
 msgid "Progress Made: (%s), %s bytes received"
-msgstr ""
+msgstr "Прогресс: (%s), получено %s байт"
 
 #: ipconst:srasprojected
 msgid "Projected"
-msgstr ""
+msgstr "Намечено"
 
 #: ipconst:swsaepfnosupport
 msgid "Protocol family not supported"
-msgstr ""
+msgstr "Семейство протоколов не поддерживается"
 
 #: ipconst:swsaeprotonosupport
 msgid "Protocol not supported"
-msgstr ""
+msgstr "Протокол не поддерживается"
 
 #: ipconst:swsaeprototype
 msgid "Protocol wrong type for socket"
-msgstr ""
+msgstr "Неверный тип протокола для сокета"
 
 #: ipconst:spop3cmdquit
 msgid "QUIT"
@@ -1748,7 +1751,7 @@ msgstr "RSET"
 
 #: ipconst:sraserr
 msgid "Ras Error (%d): on API '%s'"
-msgstr ""
+msgstr "Ошибка Ras  (%d): в API '%s'"
 
 #: ipconst:srasreauthenticate
 msgid "Re-authenticate"
@@ -1756,43 +1759,43 @@ msgstr ""
 
 #: ipconst:ssslreaderror
 msgid "Read error."
-msgstr ""
+msgstr "Ошибка чтения."
 
 #: ipconst:ssslreadsizemissmatch
 msgid "Read size miss-match."
-msgstr ""
+msgstr "Несоответствие размера прочитанного."
 
 #: ipconst:sreadlineerr
 msgid "Received line too long, exceeds MaxLineBuf"
-msgstr ""
+msgstr "Получена слишком длинная строка, превышающая MaxLineBuf"
 
 #: ipconst:swsaerefused
 msgid "Refused"
-msgstr ""
+msgstr "Отказано"
 
 #: ipconst:swsa_qos_policy_failure
 msgid "Rejected for administrative reasons - bad credentials"
-msgstr ""
+msgstr "Отклонено по административным причинам - неверные параметры доступа"
 
 #: ipconst:srenameddiskfileto
 msgid "Renamed disk file to "
-msgstr ""
+msgstr "Файл на диске переименован в "
 
 #: ipconst:sftprename
 msgid "Renaming "
-msgstr ""
+msgstr "Переименование"
 
 #: ipconst:sipicmp_req_timed_out
 msgid "Request timed out"
-msgstr ""
+msgstr "Время запроса истекло"
 
 #: ipconst:sssauthlogin
 msgid "Requesting authentication"
-msgstr ""
+msgstr "Запрос аутентификации"
 
 #: ipconst:swsa_qos_request_confirmed
 msgid "Reserve has been confirmed"
-msgstr ""
+msgstr "Резервирование было подтверждено"
 
 #: ipconst:shtmldefresetcaption
 msgid "Reset"
@@ -1800,27 +1803,27 @@ msgstr "Сброс"
 
 #: ipconst:spsrset
 msgid "Resetting messages"
-msgstr ""
+msgstr "Сброс сообщений"
 
 #: ipconst:sssrset
 msgid "Resetting server"
-msgstr ""
+msgstr "Сброс сервера"
 
 #: ipconst:sbinhexresourceforkerr
 msgid "Resource fork present"
-msgstr ""
+msgstr "Имеется ресурс-форк"
 
 #: ipconst:swsaewouldblock
 msgid "Resource temporarily unavailable"
-msgstr ""
+msgstr "Ресурс временно недоступен"
 
 #: ipconst:shtmlresunavail
 msgid "Resource unavailable:"
-msgstr ""
+msgstr "Ресурс недоступен:"
 
 #: ipconst:sftpretrieve
 msgid "Retrieving "
-msgstr ""
+msgstr "Загрузка"
 
 #: ipconst:snslistactivetimes
 msgid "Retrieving active times"
@@ -1828,15 +1831,15 @@ msgstr ""
 
 #: ipconst:snsarticle
 msgid "Retrieving article"
-msgstr ""
+msgstr "Загрузка статьи"
 
 #: ipconst:snslistgroup
 msgid "Retrieving article numbers"
-msgstr ""
+msgstr "Загрузка номеров статей"
 
 #: ipconst:snsbody
 msgid "Retrieving body"
-msgstr ""
+msgstr "Загрузка тела"
 
 #: ipconst:snslistdistribpats
 msgid "Retrieving distribution patterns"
@@ -2080,7 +2083,7 @@ msgstr ""
 
 #: ipconst:slogstate
 msgid "State change: "
-msgstr ""
+msgstr "Изменение состояния: "
 
 #: ipconst:sftpstore
 msgid "Storing "
@@ -2088,7 +2091,7 @@ msgstr ""
 
 #: ipconst:sstreamcreateerror
 msgid "Stream create error "
-msgstr ""
+msgstr "Ошибка создания потока"
 
 #: ipconst:snostreamerr
 msgid "Stream not assigned"
@@ -2216,7 +2219,7 @@ msgstr "Слишком много процессов"
 
 #: ipconst:ssmtpresponse53
 msgid "Too many recipients"
-msgstr ""
+msgstr "Слишком много получателей"
 
 #: ipconst:swsaetoomanyrefs
 msgid "Too many references; cannot splice"
@@ -2252,7 +2255,7 @@ msgstr ""
 
 #: ipconst:spngtransparentcolor
 msgid "Transparent Color: %x"
-msgstr ""
+msgstr "Прозрачный цвет: %x"
 
 #: ipconst:swsatype_not_found
 msgid "Type not found"
@@ -2376,7 +2379,7 @@ msgstr ""
 
 #: ipconst:sraswaitformodemreset
 msgid "Wait for modem reset"
-msgstr ""
+msgstr "Ожидание сброса модема"
 
 #: ipconst:soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
@@ -2388,15 +2391,15 @@ msgstr ""
 
 #: ipconst:saccessprocerr
 msgid "Win32 error loading '%s' pointer: %s"
-msgstr ""
+msgstr "Ошибка Win32 при загрузке указателя '%s: %s"
 
 #: ipconst:swsavernotsupported
 msgid "WinSock DLL version not supported"
-msgstr ""
+msgstr "Версия DLL Winsock не поддерживается"
 
 #: ipconst:swinsockerr
 msgid "WinSock Error (%d): %s, on API '%s'"
-msgstr ""
+msgstr "Ошибка WinSock (%d): %s, в API '%s'"
 
 #: ipconst:ssmtpresponse55
 msgid "Wrong protocol version"
@@ -2432,11 +2435,11 @@ msgstr "ожидается \":\""
 
 #: ipconst:spnggamatoolong
 msgid "gAMA chunk is long"
-msgstr ""
+msgstr "Последовательность gAMA - длинная."
 
 #: ipconst:spnggamatooshort
 msgid "gAMA chunk is short"
-msgstr ""
+msgstr "Последовательность gAMA - короткая."
 
 #: ipconst:ssssaml
 msgid "ssSaml"
@@ -2456,9 +2459,9 @@ msgstr "ssTurn"
 
 #: ipconst:spngtimetoolong
 msgid "tIME chunk is long."
-msgstr ""
+msgstr "Последовательность tIME - длинная."
 
 #: ipconst:spngtimetooshort
 msgid "tIME chunk is short."
-msgstr ""
+msgstr "Последовательность tIME - короткая."
 

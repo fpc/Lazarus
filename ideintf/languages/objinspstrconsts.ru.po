@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-02 01:54+0300\n"
+"PO-Revision-Date: 2007-10-21 00:49+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -255,7 +255,7 @@ msgstr "Очистить"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
-msgstr "Очистить картинку"
+msgstr "Очистить изображение"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -571,7 +571,7 @@ msgstr "Диалог загрузки изображения"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
-msgstr "Загрузить картинку"
+msgstr "Загрузить изображение"
 
 #: objinspstrconsts:sccssgedtload
 msgid "Load..."
@@ -703,7 +703,7 @@ msgstr "Вставить компоненты"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr "Картинка"
+msgstr "Изображение"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -771,7 +771,7 @@ msgstr "Сохранить изображение как"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
-msgstr "Сохранить картинку"
+msgstr "Сохранить изображение"
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
