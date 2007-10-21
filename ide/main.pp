@@ -5477,6 +5477,7 @@ begin
 
   // close dependencies
   if cfCloseDependencies in Flags then begin
+    DumpStack;
     Result:=CloseDependingUnitComponents(AnUnitInfo,Flags);
     if Result<>mrOk then exit;
   end;
@@ -6479,6 +6480,8 @@ var
   DiskFilename: String;
 
   function OpenResource: TModalResult;
+  var
+    CloseFlags: TCloseFlags;
   begin
     // read form data
     if FilenameIsPascalUnit(AFilename) then begin
@@ -6492,8 +6495,10 @@ var
       then begin
         // -> try to (re)load the lfm file
         //debugln('TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename);
-        Result:=DoLoadLFM(NewUnitInfo,Flags,
-                          [cfCloseDependencies,cfSaveDependencies]);
+        CloseFlags:=[cfSaveDependencies];
+        if ofRevert in Flags then
+          Include(CloseFlags,cfCloseDependencies);
+        Result:=DoLoadLFM(NewUnitInfo,Flags,CloseFlags);
         if Result<>mrOk then exit;
       end else begin
         Result:=mrOk;

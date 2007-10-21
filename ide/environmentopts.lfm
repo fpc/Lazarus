@@ -18,12 +18,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnChangeBounds = NotebookChangeBounds
-    PageIndex = 2
+    PageIndex = 3
     TabOrder = 0
     object FilesPage: TPage
       Caption = 'FilesPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       object MaxRecentOpenFilesLabel: TLabel
         Left = 62
         Height = 20
@@ -325,7 +325,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object DesktopPage: TPage
       Caption = 'DesktopPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       object LanguageGroupBox: TGroupBox
         AnchorSideRight.Control = DesktopPage
         AnchorSideRight.Side = asrBottom
@@ -558,7 +558,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object FormEditorPage: TPage
       Caption = 'FormEditorPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       OnResize = FormEditorPageResize
       object GridGroupBox: TGroupBox
         Left = 6
@@ -625,13 +625,16 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Control = GridGroupBox
           AnchorSideTop.Control = ShowBorderSpaceCheckBox
           AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GridGroupBox
+          AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 22
           Top = 52
-          Width = 253
+          Width = 321
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 4
+          BorderSpacing.Right = 6
           Caption = 'SnapToGridCheckBox'
           TabOrder = 1
         end
@@ -703,7 +706,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 22
           Top = 26
-          Width = 204
+          Width = 203
           BorderSpacing.Left = 6
           BorderSpacing.Top = 4
           Caption = 'ShowBorderSpaceCheckBox'
@@ -878,11 +881,14 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object ShowComponentCaptionsCheckBox: TCheckBox
           AnchorSideLeft.Control = FormEditMiscGroupBox
+          AnchorSideRight.Control = FormEditMiscGroupBox
+          AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 22
-          Width = 256
+          Width = 321
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
           Caption = 'ShowComponentCaptionsCheckBox'
           TabOrder = 0
         end
@@ -890,13 +896,16 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Control = FormEditMiscGroupBox
           AnchorSideTop.Control = ShowComponentCaptionsCheckBox
           AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = FormEditMiscGroupBox
+          AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 22
           Top = 26
-          Width = 256
+          Width = 321
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 4
+          BorderSpacing.Right = 6
           Caption = 'ShowEditorHintsCheckBox'
           TabOrder = 1
         end
@@ -904,13 +913,16 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Control = FormEditMiscGroupBox
           AnchorSideTop.Control = ShowEditorHintsCheckBox
           AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = FormEditMiscGroupBox
+          AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 22
           Top = 52
-          Width = 256
+          Width = 321
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 4
+          BorderSpacing.Right = 6
           Caption = 'AutoCreateFormsOnOpenCheckBox'
           TabOrder = 2
         end
@@ -918,10 +930,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Control = FormEditMiscGroupBox
           AnchorSideTop.Control = AutoCreateFormsOnOpenCheckBox
           AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = FormEditMiscGroupBox
+          AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 22
           Top = 78
-          Width = 256
+          Width = 327
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 4
@@ -932,10 +946,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideLeft.Control = FormEditMiscGroupBox
           AnchorSideTop.Control = MarkerColorLabel
           AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = FormEditMiscGroupBox
+          AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 22
           Top = 170
-          Width = 254
+          Width = 321
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 4
           BorderSpacing.Around = 6
@@ -1035,7 +1051,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object ObjectInspectorPage: TPage
       Caption = 'ObjectInspectorPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       object ObjectInspectorColorsGroupBox: TGroupBox
         AnchorSideRight.Control = ObjectInspectorPage
         AnchorSideRight.Side = asrBottom
@@ -1209,7 +1225,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object BackupPage: TPage
       Caption = 'BackupPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       object BackupHelpLabel: TLabel
         AnchorSideRight.Control = BackupPage
         AnchorSideRight.Side = asrBottom
@@ -1454,7 +1470,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object NamingPage: TPage
       Caption = 'NamingPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       object PascalFileExtRadiogroup: TRadioGroup
         AnchorSideRight.Control = NamingPage
         AnchorSideRight.Side = asrBottom
@@ -1525,7 +1541,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object LazDocPage: TPage
       Caption = 'LazDocPage'
       ClientWidth = 538
-      ClientHeight = 453
+      ClientHeight = 448
       object LazDocPathsGroupBox: TGroupBox
         AnchorSideRight.Control = LazDocPage
         AnchorSideRight.Side = asrBottom
