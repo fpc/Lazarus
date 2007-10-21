@@ -31,8 +31,9 @@ uses
 {$IFDEF GTK2}
   gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
-  gtk, gdk, glib, gtk1WSPrivate,
+  gtk, gdk, glib, gtk1WSPrivate, graphics,
 {$ENDIF GTK2}
+  gtkextra,
   GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes, Forms, SysUtils, Menus,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
 
@@ -220,6 +221,7 @@ type
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; override;
   end;
 {$ENDIF}
 
