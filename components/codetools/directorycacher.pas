@@ -274,8 +274,11 @@ begin
     inc(UnitName);
     inc(Filename);
   end;
-  if (UnitName^=#0) and (Filename^='.') then
-    Result:=0
+  if (UnitName^=#0) then
+     if (Filename^='.') then
+        Result:=0
+     else
+        Result:=ord('.')-ord(Filename^) // TG 2007-10-21
   else
     Result:=ord(FPUpChars[UnitName^])-ord(FPUpChars[Filename^]);
 end;
