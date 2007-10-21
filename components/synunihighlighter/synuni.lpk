@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="SynUni"/>
     <Author Value="Vit (Vitaly Nevzorov nevzorov@yahoo.com); Fantasist (Kirill Burtsev walking_in_the_sky@yahoo.com)"/>
     <CompilerOptions>
@@ -46,21 +46,24 @@ see http://www.mozilla.org/MPL/
         <UnitName Value="SynUniReg"/>
       </Item3>
     </Files>
-    <RST OutDir="languages/"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="SynEdit"/>
-      </Item1>
-      <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="IDEIntf"/>
-      </Item3>
-      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPkgs>
     <UsageOptions>

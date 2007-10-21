@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="ProjTemplates"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
@@ -57,15 +57,18 @@
         <UnitName Value="frmtemplatesettings"/>
       </Item8>
     </Files>
-    <RST OutDir="languages/"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
-      </Item1>
-      <Item2>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>

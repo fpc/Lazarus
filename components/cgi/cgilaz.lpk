@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="cgiLaz"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
@@ -27,7 +27,10 @@
         <UnitName Value="cgiModules"/>
       </Item1>
     </Files>
-    <RST OutDir="languages/"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>

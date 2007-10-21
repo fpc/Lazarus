@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="H2PasWizard"/>
     <CompilerOptions>
       <Version Value="5"/>
@@ -45,24 +45,27 @@
         <UnitName Value="IDETextConvListAdd"/>
       </Item7>
     </Files>
-    <RST OutDir="languages/"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="5">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
         <PackageName Value="IDEIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="CodeTools"/>
       </Item5>
     </RequiredPkgs>
     <UsageOptions>

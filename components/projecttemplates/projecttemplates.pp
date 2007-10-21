@@ -352,9 +352,6 @@ end;
 
 function TProjectTemplate.TargetFileName(FN: String; Values: TStrings): String;
 
-Var
-  RFN : String;
-
 begin
   Result:=ExtractRelativePath(Directory,FN);
   Result:=SubstituteString(Result,Values);

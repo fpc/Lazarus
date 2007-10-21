@@ -686,8 +686,10 @@ type
     procedure WriteInheritedUnparsedOptions;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
-    function SearchFile(const ShortFilename: string;
-                        SearchFlags: TSearchIDEFileFlags): TPkgFile;
+    function SearchShortFilename(const ShortFilename: string;
+                            SearchFlags: TSearchIDEFileFlags): TPkgFile;
+    function SearchFilename(const AFilename: string;
+                            SearchFlags: TSearchIDEFileFlags): TPkgFile;
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
@@ -2555,7 +2557,7 @@ begin
   // i18n
   if FileVersion<3 then begin
     FPOOutputDirectory := SwitchPathDelims(
-              xmlconfig.GetValue(Path+'RST/OutDir/Value', ''),PathDelimChanged);
+              xmlconfig.GetValue(Path+'RST/OutDir', ''),PathDelimChanged);
     EnableI18N := FPOOutputDirectory <> '';
   end else begin
     EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
@@ -3274,7 +3276,7 @@ begin
   while (Files[Result]<>PkgFile) do dec(Result);
 end;
 
-function TLazPackage.SearchFile(const ShortFilename: string;
+function TLazPackage.SearchShortFilename(const ShortFilename: string;
   SearchFlags: TSearchIDEFileFlags): TPkgFile;
 var
   SearchedFilename: String;
@@ -3300,6 +3302,36 @@ begin
   for i:=0 to FileCount-1 do begin
     Result:=Files[i];
     if FilenameFits(Result.GetShortFilename(true)) then exit;
+  end;
+  Result:=nil;
+end;
+
+function TLazPackage.SearchFilename(const AFilename: string;
+  SearchFlags: TSearchIDEFileFlags): TPkgFile;
+var
+  SearchedFilename: String;
+  i: Integer;
+
+  function FilenameFits(TheFilename: string): boolean;
+  begin
+    if siffIgnoreExtension in SearchFlags then
+      TheFileName:=ExtractFileNameWithoutExt(TheFileName);
+    //debugln('TLazPackage.SearchFile A ',SearchedFilename,' ',TheFilename);
+    if siffCaseSensitive in SearchFlags then
+      Result:=SearchedFilename=TheFilename
+    else
+      Result:=CompareText(SearchedFilename,TheFilename)=0;
+  end;
+
+begin
+  SearchedFilename:=AFilename;
+  if siffIgnoreExtension in SearchFlags then
+    SearchedFilename:=ExtractFileNameWithoutExt(SearchedFilename);
+
+  // search in files
+  for i:=0 to FileCount-1 do begin
+    Result:=Files[i];
+    if FilenameFits(Result.GetFullFilename) then exit;
   end;
   Result:=nil;
 end;

@@ -69,6 +69,8 @@ Var
 begin
   For I:=0 to FVariables.Count-1 do
     begin
+    V:='';
+    N:='';
     FVariables.GetNameValue(I,N,V);
     V:=SGVariables.Cells[1,I+1];
     FVariables[i]:=N+'='+V;
@@ -87,6 +89,8 @@ begin
   SGVariables.RowCount:=FVariables.Count+1;
   For I:=1 to FVariables.Count do
     begin
+    V:='';
+    N:='';
     FVariables.GetNameValue(I-1,N,V);
     SGVariables.Cells[0,I]:=N;
     SGVariables.Cells[1,I]:='';

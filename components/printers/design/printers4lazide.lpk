@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="printers4lazide"/>
     <CompilerOptions>
       <Version Value="5"/>
@@ -23,18 +23,21 @@
         <UnitName Value="ideprinting"/>
       </Item1>
     </Files>
-    <RST OutDir="languages/"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="printer4lazarus"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="printer4lazarus"/>
       </Item3>
     </RequiredPkgs>
     <UsageOptions>

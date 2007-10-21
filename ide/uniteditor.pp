@@ -3772,6 +3772,7 @@ var
   SelAvailAndWritable: Boolean;
   CurFilename: String;
 begin
+  //DebugLn(['TSourceNotebook.SrcPopUpMenuPopup ',dbgsName(Sender)]);
   //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup START ',true);
   //SourceEditorMenuRoot.ConsistencyCheck;
 

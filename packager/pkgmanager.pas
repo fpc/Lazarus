@@ -1997,7 +1997,7 @@ var
   FallbackLang: String;
   Language: String;
 begin
-  //DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.RSTOutputDirectory]);
+  //DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.POOutputDirectory]);
   if (APackage.POOutputDirectory='') then exit;
   Directory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
@@ -2015,6 +2015,7 @@ begin
   
   TranslatedUnits:=nil;
   try
+    //DebugLn(['TPkgManager.DoTranslatePackage ',APackage.Name,' Directory=',Directory,' Lang=',Lang,' FallbackLang=',FallbackLang]);
     TranslateWithFileMask(APackage,Directory,Lang);
     TranslateWithFileMask(APackage,Directory,FallbackLang);
   finally
@@ -3060,7 +3061,6 @@ var
 begin
   SrcEdit:=SourceNotebook.GetActiveSE;
   if SrcEdit<>nil then begin
-    //debugln('TPkgManager.GetPackageOfCurrentSourceEditor ',SrcEdit.Filename);
     Result:=SearchFile(SrcEdit.Filename,[],nil);
   end else
     SrcEdit:=nil;
@@ -3139,7 +3139,7 @@ begin
     APackage:=TLazPackage(InObject);
     CurFilename:=AFilename;
     APackage.ShortenFilename(CurFilename,true);
-    Result:=APackage.SearchFile(CurFilename,SearchFlags);
+    Result:=APackage.SearchShortFilename(CurFilename,SearchFlags);
     if Result<>nil then exit;
   end;
   if not (siffDoNotCheckAllPackages in SearchFlags) then begin
@@ -3147,8 +3147,8 @@ begin
       APackage:=PackageGraph[i];
       CurFilename:=AFilename;
       APackage.ShortenFilename(CurFilename,true);
-      Result:=APackage.SearchFile(CurFilename,SearchFlags);
-      //debugln('TPkgManager.SearchFile Pkg=',APackage.Filename,' CurFilename="',CurFilename,'"');
+      Result:=APackage.SearchShortFilename(CurFilename,SearchFlags);
+      //debugln(['TPkgManager.SearchFile Pkg=',APackage.Filename,' CurFilename="',CurFilename,'" ',Result<>nil]);
       if Result<>nil then exit;
     end;
   end;

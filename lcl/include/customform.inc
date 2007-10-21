@@ -1191,9 +1191,9 @@ begin
     TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm UpdateWindowState                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm UpdateWindowState
+------------------------------------------------------------------------------}
 Procedure TCustomForm.UpdateWindowState;
 Begin
 
@@ -1201,9 +1201,9 @@ Begin
   Assert(False, 'Trace:TODO: [TCustomForm.UpdateWindowState]');
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetWindowState                                             }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetWindowState
+------------------------------------------------------------------------------}
 Procedure TCustomForm.SetWindowState(Value : TWindowState);
 const
   ShowCommands: array[TWindowState] of Integer =
@@ -1228,9 +1228,9 @@ begin
   WindowState := prevWindowState;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetActiveControl                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetActiveControl
+------------------------------------------------------------------------------}
 Procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 Begin
   if FActiveControl <> AWinControl then

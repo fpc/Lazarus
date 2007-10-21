@@ -37,11 +37,10 @@ procedure Register;
 implementation
 
 uses
-  ContNrs, frmTemplateSettings, frmTemplateVariables, LazConfigStorage,
-  NewItemIntf, MenuIntf, IDECommands;
+  ContNrs, frmTemplateSettings, frmTemplateVariables,
+  NewItemIntf, MenuIntf;
 
 Var
-  TemplateProjectDescriptor : TTemplateProjectDescriptor;
   IDETemplates : TProjectTemplates = nil;
   itmFileNewFromTemplate : TIDEMenuSection;
   MenuList : TObjectList;
@@ -281,7 +280,6 @@ Var
   AFile: TLazProjectFile;
   FN : String;
   B : Boolean;
-  RFN : String;
   L : TStringList;
   
 begin
@@ -322,9 +320,8 @@ Function TTemplateProjectDescriptor.CreateStartFiles(AProject: TLazProject) : TM
 
 Var
   I : Integer;
-  E,FN,FN2 : String;
-  B : Boolean;
-  
+  E,FN : String;
+
 begin
   if Assigned(FTemplate) then
     begin
