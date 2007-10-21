@@ -3651,7 +3651,7 @@ begin
     Checked[Items.IndexOf(dlgShowScrollHint)] :=
                                   eoShowScrollHint in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in EditorOpts.SynEditOptions;
-    DebugLn(['TEditorOptionsForm.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
+    //DebugLn(['TEditorOptionsForm.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
     Checked[Items.IndexOf(dlgTabsToSpaces)] :=
                                     eoTabsToSpaces in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgTabIndent)]    := eoTabIndent in EditorOpts.SynEditOptions;
