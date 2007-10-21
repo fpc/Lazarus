@@ -285,7 +285,6 @@ type
     DockedRadioButton: TRadioButton;
     ApplyButton: TButton;
     GetWindowPositionButton: TButton;
-    procedure RadioButtonClick(Sender: TObject);
     procedure ApplyButtonClick(Sender: TObject);
     procedure GetWindowPositionButtonClick(Sender: TObject);
   private
@@ -909,7 +908,6 @@ begin
           Top := 6
         else
           AnchorToNeighbour(akTop,6,PreviousButton);
-        OnClick:=@RadioButtonClick;
         Caption:=GetRadioBtnCaptions(APlacement);
         Checked:=(APlacement=ALayout.WindowPlacement);
       end;
@@ -1006,21 +1004,6 @@ end;
 constructor TIDEWindowSetupLayoutComponent.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  fUpdateRadioButtons:=false;
-end;
-
-procedure TIDEWindowSetupLayoutComponent.RadioButtonClick(Sender: TObject);
-var APlacement: TIDEWindowPlacement;
-  ARadioButton: TRadioButton;
-begin
-  if fUpdateRadioButtons then exit;
-  fUpdateRadioButtons:=true;
-  for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
-  begin
-    ARadioButton:=GetPlacementRadioButtons(APlacement);
-    if ARadioButton<>nil then
-      ARadioButton.Checked:=(ARadioButton=Sender);
-  end;
   fUpdateRadioButtons:=false;
 end;
 
