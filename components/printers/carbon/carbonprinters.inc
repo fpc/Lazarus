@@ -53,11 +53,6 @@ begin
 //IMPLEMENT ME
 end;
 
-procedure TCarbonPrinter.SetDC;
-begin
-//IMPLEMENT ME
-end;
-
 procedure TCarbonPrinter.DoBeginDoc;
 begin
   inherited DoBeginDoc;
@@ -119,6 +114,7 @@ begin
 end;
 
 function TCarbonPrinter.DoGetPaperRect(aName: string;
+  var aPaperRc: TPaperRect): Integer;
 begin
   Result:=Inherited DoGetPaperRect(aName,aPaperRc);
 //IMPLEMENT ME

@@ -2,6 +2,7 @@
 uses
   Classes,SysUtils,Printers,LCLType;
 
+type
   { TCarbonPrinter }
 
   TCarbonPrinter = class(TPrinter)
