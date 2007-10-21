@@ -3761,7 +3761,7 @@ var
   MarkSrcEdit: TSourceEditor;
   MarkDesc: String;
   MarkEditorIndex: Integer;
-  MarkMenuItem: TMenuItem;
+  MarkMenuItem: TIDEMenuItem;
   EditorComp: TSynEdit;
   Marks: PSourceMark;
   MarkCount: integer;
@@ -3772,110 +3772,127 @@ var
   SelAvailAndWritable: Boolean;
   CurFilename: String;
 begin
-  RemoveUserDefinedMenuItems;
-  RemoveContextMenuItems;
+  //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup START ',true);
+  //SourceEditorMenuRoot.ConsistencyCheck;
 
-  ASrcEdit:=
+  SourceEditorMenuRoot.BeginUpdate;
+  try
+    RemoveUserDefinedMenuItems;
+    RemoveContextMenuItems;
+
+    ASrcEdit:=
          FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
-  if ASrcEdit=nil then exit;
-  EditorComp:=ASrcEdit.EditorComponent;
-
-  // Readonly, ShowLineNumbers
-  SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
-  SrcEditMenuShowLineNumbers.MenuItem.Checked:=EditorComp.Gutter.ShowLineNumbers;
-  UpdateHighlightMenuItems;
-
-  // bookmarks
-  for BookMarkID:=0 to 9 do begin
-    MarkDesc:=' '+IntToStr(BookMarkID);
-    MarkSrcEdit:=FindBookmark(BookMarkID);
-    if (MarkSrcEdit<>nil)
-    and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
-    then begin
-      MarkEditorIndex:=FindPageWithEditor(MarkSrcEdit);
-      MarkDesc:=MarkDesc+': '+Notebook.Pages[MarkEditorIndex]
-        +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
-    end;
-    // goto book mark item
-    MarkMenuItem:=SrcEditSubMenuGotoBookmarks.MenuItem[BookMarkID];
-    MarkMenuItem.Checked:=(MarkSrcEdit<>nil);
-    MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
-    // set book mark item
-    MarkMenuItem:=SrcEditSubMenuSetBookmarks.MenuItem[BookMarkID];
-    MarkMenuItem.Checked:=(MarkSrcEdit<>nil);
-    MarkMenuItem.Caption:=uemSetBookmark+MarkDesc;
-  end;
-
-  // editor layout
-  SrcEditMenuMoveEditorLeft.MenuItem.Enabled:=
-                                     (NoteBook<>nil) and (NoteBook.PageCount>1);
-  SrcEditMenuMoveEditorRight.MenuItem.Enabled:=
-                                     (NoteBook<>nil) and (NoteBook.PageCount>1);
-
-  EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
-  if EditorPopupPoint.X>EditorComp.GutterWidth then begin
-    // user clicked on text
-    SelAvail:=ASrcEdit.EditorComponent.SelAvail;
-    SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
-    SrcEditMenuEncloseSelection.MenuItem.Enabled := SelAvailAndWritable;
-    SrcEditMenuExtractProc.MenuItem.Enabled := SelAvailAndWritable;
-    SrcEditMenuInvertAssignment.MenuItem.Enabled := SelAvailAndWritable;
-    SrcEditMenuFindIdentifierReferences.MenuItem.Enabled:=
-                                   IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
-    SrcEditMenuRenameIdentifier.MenuItem.Enabled:=
-                                   IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
-                                   and (not ASrcEdit.ReadOnly);
-  end else begin
-    // user clicked on gutter
-    SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
-                                      Marks,MarkCount);
-    if Marks<>nil then begin
-      for i:=0 to MarkCount-1 do begin
-        CurMark:=Marks[i];
-        CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
+    if ASrcEdit=nil then begin
+      ASrcEdit:=GetActiveSE;
+      if ASrcEdit=nil then begin
+        DebugLn(['TSourceNotebook.SrcPopUpMenuPopup ASrcEdit=nil ',dbgsName(TPopupMenu(Sender).PopupComponent)]);
+        exit;
       end;
-      FreeMem(Marks);
     end;
-  end;
+    EditorComp:=ASrcEdit.EditorComponent;
 
-  // add context specific menu items
-  CurFilename:=ASrcEdit.FileName;
-  if (FilenameIsAbsolute(CurFilename)) then begin
-    if FilenameIsPascalUnit(CurFilename) then begin
-      if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
-        AddContextPopupMenuItem(
-          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
-          true,@OnPopupMenuOpenLFMFile);
-      if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
-        AddContextPopupMenuItem(
-          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
-          true,@OnPopupMenuOpenLRSFile);
-    end;
-    if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
-      if FileExists(ChangeFileExt(CurFilename,'.pas')) then
-        AddContextPopupMenuItem(
-          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
-          true,@OnPopupMenuOpenPasFile);
-      if FileExists(ChangeFileExt(CurFilename,'.pp')) then
-        AddContextPopupMenuItem(
-          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
-          true,@OnPopupMenuOpenPPFile);
-      if FileExists(ChangeFileExt(CurFilename,'.p')) then
-        AddContextPopupMenuItem(
-          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.p'),
-          true,@OnPopupMenuOpenPFile);
-    end;
-    if (CompareFileExt(CurFilename,'.lpi',true)=0)
-    or (CompareFileExt(CurFilename,'.lpk',true)=0) then begin
-      AddContextPopupMenuItem('Open '+ExtractFileName(CurFilename),true,
-                              @OnPopupMenuOpenFile);
-    end;
-  end;
-  
-  if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
+    // Readonly, ShowLineNumbers
+    SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
+    SrcEditMenuShowLineNumbers.MenuItem.Checked:=EditorComp.Gutter.ShowLineNumbers;
+    UpdateHighlightMenuItems;
 
-  SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
-  //SourceEditorMenuRoot.WriteDebugReport('   ',true);
+    // bookmarks
+    for BookMarkID:=0 to 9 do begin
+      MarkDesc:=' '+IntToStr(BookMarkID);
+      MarkSrcEdit:=FindBookmark(BookMarkID);
+      if (MarkSrcEdit<>nil)
+      and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
+      then begin
+        MarkEditorIndex:=FindPageWithEditor(MarkSrcEdit);
+        MarkDesc:=MarkDesc+': '+Notebook.Pages[MarkEditorIndex]
+          +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+      end;
+      // goto book mark item
+      MarkMenuItem:=SrcEditSubMenuGotoBookmarks[BookMarkID];
+      if MarkMenuItem is TIDEMenuCommand then
+        TIDEMenuCommand(MarkMenuItem).Checked:=(MarkSrcEdit<>nil);
+      MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
+      // set book mark item
+      MarkMenuItem:=SrcEditSubMenuSetBookmarks[BookMarkID];
+      if MarkMenuItem is TIDEMenuCommand then
+        TIDEMenuCommand(MarkMenuItem).Checked:=(MarkSrcEdit<>nil);
+      MarkMenuItem.Caption:=uemSetBookmark+MarkDesc;
+    end;
+
+    // editor layout
+    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:=
+                                       (NoteBook<>nil) and (NoteBook.PageCount>1);
+    SrcEditMenuMoveEditorRight.MenuItem.Enabled:=
+                                       (NoteBook<>nil) and (NoteBook.PageCount>1);
+
+    EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
+    if EditorPopupPoint.X>EditorComp.GutterWidth then begin
+      // user clicked on text
+      SelAvail:=ASrcEdit.EditorComponent.SelAvail;
+      SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
+      SrcEditMenuEncloseSelection.Enabled := SelAvailAndWritable;
+      SrcEditMenuExtractProc.Enabled := SelAvailAndWritable;
+      SrcEditMenuInvertAssignment.Enabled := SelAvailAndWritable;
+      SrcEditMenuFindIdentifierReferences.Enabled:=
+                                     IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
+      SrcEditMenuRenameIdentifier.Enabled:=
+                                     IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
+                                     and (not ASrcEdit.ReadOnly);
+    end else begin
+      // user clicked on gutter
+      SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
+                                        Marks,MarkCount);
+      if Marks<>nil then begin
+        for i:=0 to MarkCount-1 do begin
+          CurMark:=Marks[i];
+          CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
+        end;
+        FreeMem(Marks);
+      end;
+    end;
+
+    // add context specific menu items
+    CurFilename:=ASrcEdit.FileName;
+    if (FilenameIsAbsolute(CurFilename)) then begin
+      if FilenameIsPascalUnit(CurFilename) then begin
+        if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
+          AddContextPopupMenuItem(
+            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
+            true,@OnPopupMenuOpenLFMFile);
+        if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
+          AddContextPopupMenuItem(
+            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
+            true,@OnPopupMenuOpenLRSFile);
+      end;
+      if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
+        if FileExists(ChangeFileExt(CurFilename,'.pas')) then
+          AddContextPopupMenuItem(
+            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
+            true,@OnPopupMenuOpenPasFile);
+        if FileExists(ChangeFileExt(CurFilename,'.pp')) then
+          AddContextPopupMenuItem(
+            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
+            true,@OnPopupMenuOpenPPFile);
+        if FileExists(ChangeFileExt(CurFilename,'.p')) then
+          AddContextPopupMenuItem(
+            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.p'),
+            true,@OnPopupMenuOpenPFile);
+      end;
+      if (CompareFileExt(CurFilename,'.lpi',true)=0)
+      or (CompareFileExt(CurFilename,'.lpk',true)=0) then begin
+        AddContextPopupMenuItem('Open '+ExtractFileName(CurFilename),true,
+                                @OnPopupMenuOpenFile);
+      end;
+    end;
+
+    if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
+    
+    SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
+  finally
+    SourceEditorMenuRoot.EndUpdate;
+  end;
+  //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup END ',true);
+  //SourceEditorMenuRoot.ConsistencyCheck;
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
@@ -4035,12 +4052,8 @@ end;
 function TSourceNotebook.AddContextPopupMenuItem(const NewCaption: string;
   const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TIDEMenuItem;
 begin
-  //DebugLn(['TSourceNotebook.AddContextPopupMenuItem ',NewCaption]);
   Result:=RegisterIDEMenuCommand(SrcEditMenuSectionFileDynamic.GetPath,
-    'FileDynamic',NewCaption,NewOnClick);
-  //DebugLn(['TSourceNotebook.AddContextPopupMenuItem CHECKING CONSISTENCY']);
-  //SourceEditorMenuRoot.WriteDebugReport('',true);
-  //SourceEditorMenuRoot.ConsistencyCheck;
+                                 'FileDynamic',NewCaption,NewOnClick);
   Result.Enabled:=NewEnabled;
 end;
 

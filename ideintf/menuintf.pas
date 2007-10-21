@@ -691,7 +691,6 @@ begin
   //debugln('TIDEMenuItem.CreateMenuItem ',dbgsName(Self),' Name="',Name,'"');
   {$ENDIF}
   MenuItem:=MenuItemClass.Create(nil);
-  MenuItem.AddHandlerOnDestroy(@MenuItemDestroy);
   AutoFreeMenuItem:=true;
 end;
 
