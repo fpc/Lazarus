@@ -62,7 +62,6 @@ begin
   FState:=NewState;
   //debugln('TCustomCheckBox.DoChange CHANGED ',dbgsname(Self),' ',dbgs(ord(FState)));
   inherited Click; // emulate delphi OnClick behaviour
-  inherited CLick;
 end;
 
 procedure TCustomCheckBox.Click;
@@ -150,7 +149,7 @@ begin
     ApplyChanges;
     DoOnChange;
     if (not UseOnChange) and (not ClicksDisabled) then
-      Click;
+      inherited Click;
   end;
 end;
 
