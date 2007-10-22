@@ -9,6 +9,7 @@ type
     FGtkText : PGtkTextView;
     FGtkBuf: PGtkTextBuffer;
     FOwner: TWinControl;
+    FQueueCursorMove: Integer;
   protected
     function GetTextStr: string; override;
     function GetCount: integer; override;
@@ -25,6 +26,7 @@ type
     procedure Insert(Index : integer; const S: string); override;
     procedure SetText(TheText: PChar); override;
     //procedure Sort; virtual;
+    procedure QueueCursorMove(APosition: Integer);
   public
     //property Sorted: boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
@@ -35,6 +37,29 @@ type
 Implementation
 
 }
+
+function UpdateMemoCursorCB(AStrings: TGtk2MemoStrings): guint; cdecl;
+var
+  TextMark: PGtkTextMark;
+  CursorIter: TGtkTextIter;
+begin
+  Result := Ord(False); // destroy this timer
+
+  if AStrings.FQueueCursorMove = -1 then
+  begin
+    // always scroll so the cursor is visible
+    TextMark := gtk_text_buffer_get_insert(AStrings.FGtkBuf);
+    gtk_text_buffer_get_iter_at_mark(AStrings.FGtkBuf, @CursorIter, TextMark);
+  end
+  else begin
+    // SelStart was used and we should move to that location
+    gtk_text_buffer_get_iter_at_offset(AStrings.FGtkBuf, @CursorIter, AStrings.FQueueCursorMove);
+    gtk_text_buffer_place_cursor(AStrings.FGtkBuf, @CursorIter); // needed to move the cursor
+  end;
+  gtk_text_view_scroll_to_iter(AStrings.FGtkText, @CursorIter, 0, False, 0, 0);
+
+  AStrings.FQueueCursorMove := 0;
+end;
 
 function TGtk2MemoStrings.GetTextStr: string;
 var
@@ -125,16 +150,15 @@ end;
 
 procedure TGtk2MemoStrings.Insert(Index: integer; const S: string);
 var
-  StartIter: TGtkTextIter;
+  StartIter,
+  CursorIter: TGtkTextIter;
   NewLine: String;
   TextMark: PGtkTextMark;
-  CursorIter: TGtkTextIter;
 begin
   if Index < gtk_text_buffer_get_line_count(FGtkBuf) then begin
     //insert with LineEnding
     NewLine := S+LineEnding;
     gtk_text_buffer_get_iter_at_line(FGtkBuf, @StartIter, Index);
-    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
   end
   else begin
     //append with a preceding LineEnding
@@ -143,17 +167,32 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
+  end;
+
+  if FQueueCursorMove = 0 then
+  begin
+    TextMark := gtk_text_buffer_get_insert(FGtkBuf);
+    gtk_text_buffer_get_iter_at_mark(FGtkBuf, @CursorIter, TextMark);
+    if gtk_text_iter_equal(@StartIter, @CursorIter) then
+      QueueCursorMove(-1);
   end;
   
-  // always scroll so the cursor is visible
-  TextMark := gtk_text_buffer_get_insert(FGtkBuf);
-  gtk_text_buffer_get_iter_at_mark(FGtkBuf, @CursorIter, TextMark);
-  gtk_text_view_scroll_to_iter(FGtkText, @CursorIter, 0, False, 0, 0);
+  // and finally insert the new text
+  gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
 end;
 
 procedure TGtk2MemoStrings.SetText(TheText: PChar);
 begin
   gtk_text_buffer_set_text(FGtkBuf, TheText, -1);
 end;
+
+procedure TGtk2MemoStrings.QueueCursorMove(APosition: Integer);
+begin
+  // needed because there is a callback that updates the GtkBuffer
+  // internally so that it actually knows where the cursor is
+  if FQueueCursorMove = 0 then
+    g_idle_add(TGSourceFunc(@UpdateMemoCursorCB), Pointer(Self));
+  FQueueCursorMove := APosition;
+end;
+
 {$ENDIF}
