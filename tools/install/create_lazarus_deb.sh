@@ -141,7 +141,7 @@ mkdir -p $LazBuildDir/usr/bin/
 install -m 644 $LazDestDir/images/ide_icon48x48.png $LazBuildDir/usr/share/pixmaps/lazarus.png
 install -m 644 $LazDestDir/install/lazarus.desktop $LazBuildDir/usr/share/applications/lazarus.desktop
 install -m 644 $LazDestDir/install/lazarus-mime.xml $LazBuildDir/usr/share/mime/packages/lazarus.xml
-ln -s $LazDestDirInstalled/lazarus $LazBuildDir/usr/bin/lazarus
+ln -s $LazDestDirInstalled/lazarus $LazBuildDir/usr/bin/lazarus-ide
 ln -s $LazDestDirInstalled/startlazarus $LazBuildDir/usr/bin/startlazarus
 ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 
