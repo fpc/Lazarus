@@ -41,7 +41,7 @@ type
 
   { TDebuggerOptionsForm }
 
-  TDebuggerOptionsForm = class (TForm )
+  TDebuggerOptionsForm = class (TForm)
     cmdOK: TBitBtn;
     cmdCancel: TBitBtn;
     gcbDebuggerGeneralOptions: TCheckGroup;    

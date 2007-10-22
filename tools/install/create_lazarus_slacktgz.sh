@@ -64,7 +64,7 @@ cp -arf $SrcDir/* $BuildRoot/usr/lib/lazarus/
 
   cp  $SrcDir/images/ide_icon48x48.png $BuildRoot/usr/share/pixmaps/lazarus.png
   cp  $SrcDir/install/lazarus.desktop $BuildRoot/usr/share/applications/lazarus.desktop
-    ln -sf /usr/lib/lazarus/lazarus usr/bin/lazarus
+    ln -sf /usr/lib/lazarus/lazarus usr/bin/lazarus-ide
     ln -sf /usr/lib/lazarus/startlazarus usr/bin/startlazarus
     ln -sf /usr/lib/lazarus/lazbuild usr/bin/lazbuild
     cat $SrcDir/docs/lazbuild.1 | gzip > $BuildRoot/usr/man/man1/lazbuild.1.gz

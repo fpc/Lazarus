@@ -119,7 +119,7 @@ install:
 ifeq ($(OS_TARGET),win32)
 
 else
-        ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus
+        ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
         ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
         ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
         cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
