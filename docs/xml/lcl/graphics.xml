@@ -4966,10 +4966,12 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       </element>
       <!-- object Visibility: default -->
       <element name="TBitmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TBitmap</i> is the data of an image, and can be loaded from a file, stream or resource in .bmp  or .xpm format</short>
+        <descr><i>TBitmap</i> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)<br/>
+The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files).<br/>
+When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <i>Handle</i> is interface dependent.<br/>
+To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
+        <seealso><link id="IntfGraphics.TLazIntfImage"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBitmap.FCanvas">
@@ -5353,24 +5355,18 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <element name="TBitmap.FinalizeFPImageWriter.ImgWriter"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TBitmap.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>BitMap</i> constructor</short>
+        <descr><i>BitMap</i> constructor. The supplied code can <b>override</b> the definition from ancestor classes</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBitmap.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>BitMap</i> destructor</short>
+        <descr><i>BitMap</i> destructor. The supplied code can <b>override</b> the method defined for ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><b>Assign</b>: find out about the Source of the call.</short>
+        <descr><b>Assign</b>: find out about the Source of the call. If the <i>BitMap</i> data are already in use, the data are shared; if not, a new <i>BitMap</i> is produced</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.Assign.Source"><short/></element>
@@ -5423,10 +5419,7 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <element name="TBitmap.CreateFromBitmapHandles.SrcRect"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromDevice">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>LoadFromDevice</i>: obtain <i>BitMap</i> data from a device with Handle <i>DC</i></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromDevice.DC"><short/></element>
@@ -5443,28 +5436,24 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <element name="TBitmap.LazarusResourceTypeValid.ResourceType"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromStream">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>LoadFromStream</i>: obtains <i>BitMap</i> data from a <i>Stream</i></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromStream.Stream"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromLazarusResource">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream</short>
+        <descr><i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream<br/>
+Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream</i> to acquire the data</descr>
+        <seealso><link id="LoadFromStream"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromLazarusResource.ResName"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromResourceName">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <i>ToDo</i>
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromResourceName.Instance"><short/></element>
@@ -5472,10 +5461,9 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <element name="TBitmap.LoadFromResourceName.ResName"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromResourceID">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <i>ToDo</i>
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromResourceID.Instance"><short/></element>
@@ -5521,10 +5509,7 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <element name="TBitmap.GetFileExtensions.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromXPMFile">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>LoadFronXPMFile</i>: obtain data from file in native <i>PixMap</i> format</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromXPMFile.Filename"><short/></element>
