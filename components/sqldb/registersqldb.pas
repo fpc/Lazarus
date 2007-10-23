@@ -60,6 +60,7 @@ uses
   sqlite3conn,
 {$ENDIF}
   mysql50conn,
+  propedits,
   LazarusPackageIntf;
 
 procedure Register;
@@ -92,8 +93,38 @@ begin
                               TIBConnection]);
 end;
 
+Type
+  TSQLFirebirdFileNamePropertyEditor=class(TFileNamePropertyEditor)
+  protected
+    function GetFilter: String; override;
+    function GetInitialDirectory: string; override;
+  end;
+
+Resourcestring
+  SFireBirdDatabases = 'Firebird databases';
+  SInterbaseDatabases = 'Interbase databases';
+  
+{ TDbfFileNamePropertyEditor }
+
+function TSQLFirebirdFileNamePropertyEditor.GetFilter: String;
+begin
+  Result := sFireBirdDatabases+' (*.fb)|*.fb;*.fdb';
+  Result := Result + sInterbaseDatabases  +' (*.gdb)|*.gdb;*.GDB';
+  Result:= Result+ '|'+ inherited GetFilter;
+end;
+
+function TSQLFirebirdFileNamePropertyEditor.GetInitialDirectory: string;
+begin
+  Result:= (GetComponent(0) as TSQLConnection).DatabaseName;
+  Result:= ExtractFilePath(Result);
+end;
+
+
 procedure Register;
 begin
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TIBConnection, 'DatabaseName', TSQLFirebirdFileNamePropertyEditor);
+
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
 end;
 
