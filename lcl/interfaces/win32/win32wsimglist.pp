@@ -192,6 +192,9 @@ class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACo
           else P^ := P^ shl 1;
           Inc(AData);
         end;
+        // finish mask shifting
+        if (AWidth and $7) <> 0 then
+          P^ := P^ shl (7 - (AWidth mod 8));
         Inc(LinePtr, MaskStride);
       end;
 

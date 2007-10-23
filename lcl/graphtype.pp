@@ -319,7 +319,7 @@ begin
   if H < 0 then Exit;
   
   // calc destination rowstride
-  RS := (W * ABPP) shr 3;
+  RS := (W * ABPP + 7) shr 3;
   x := RS and SIZEMAP[ADestinationEnd];
   if x <> 0
   then Inc(RS, 1 + SIZEMAP[ADestinationEnd] - x);
