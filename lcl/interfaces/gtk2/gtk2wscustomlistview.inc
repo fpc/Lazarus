@@ -1052,8 +1052,11 @@ begin
 
   with Widgets^ do begin
     gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column);
-    if Path <> nil
-    then Result := StrToInt(PChar(Path));
+    if Path <> nil then
+    begin
+      Result := StrToInt(PChar(Path));
+      gtk_tree_path_free(Path);
+    end;
   end;
 end;
 

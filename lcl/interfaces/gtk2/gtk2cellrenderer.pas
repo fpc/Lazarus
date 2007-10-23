@@ -116,7 +116,10 @@ begin
     or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y, ItemPath, column, nil, nil)
     or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y+cell_area^.height, ItemPath, column, nil, nil)
     then
+    begin
       ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
+      gtk_tree_path_free(ItemPath);
+    end;
   end
   else if AWinControl is TCustomComboBox then begin
     // ComboItem is set in gtk2wsstdctrls
