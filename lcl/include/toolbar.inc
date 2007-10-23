@@ -58,7 +58,7 @@ begin
     csDoubleClicks, csMenuEvents, csSetCaption];
   FButtonWidth := 23;
   FButtonHeight := 22;
-  FDropDownWidth := 10;
+  FDropDownWidth := {$ifdef UseThemes}12{$else}10{$endif};
   FNewStyle := True;
   FWrapable := True;
   FButtons := TList.Create;

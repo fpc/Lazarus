@@ -135,6 +135,7 @@ end;
 
 procedure TToolButton.Paint;
 
+{$ifndef UseThemes}
   procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
   var
     ArrowRect: TRect;
@@ -153,12 +154,22 @@ procedure TToolButton.Paint;
     Canvas.Pen.Color:=clBlack;
     Canvas.Polygon(@Points[1],3,false);
   end;
+{$else}
+  procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
+  var
+    Details: TThemedElementDetails;
+  begin
+    Details := ThemeServices.GetElementDetails(
+      TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + ord(FLastButtonDrawDetail) - ord(ttbSplitButtonNormal)));
+    ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
+  end;
+{$endif}
 
 var
   PaintRect: TRect;
   ButtonRect: TRect;
-  DropDownButtonRect: TRect;
   DividerRect: TRect;
+  DropDownButtonRect: TRect;
   TextSize: TSize;
   TextPos: TPoint;
   IconSize: TPoint;
@@ -166,18 +177,28 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
   TS: TTextStyle;
+{$ifdef UseThemes}
+  Details: TThemedElementDetails;
+{$endif}
 begin
   //DebugLn(['TToolButton.Paint A ',DbgSName(Self),' FToolBar=',DbgSName(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style)]);
-  if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
+  if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then
+  begin
     PaintRect:=ClientRect; // the whole paint area
 
     // calculate button area(s)
     ButtonRect:=PaintRect;
-    FLastButtonDrawFlags:=GetButtonDrawFlags;
-    
+  {$ifdef UseThemes}
+    FLastButtonDrawDetail := GetButtonDrawDetail;
+    Details := ThemeServices.GetElementDetails(FLastButtonDrawDetail);
+  {$else}
+    FLastButtonDrawFlags := GetButtonDrawFlags;
     if (FLastButtonDrawFlags and DFCS_PUSHED) <> 0 then
       OffsetRect(ButtonRect, 1, 1);
-    if Style=tbsDropDown then begin
+  {$endif}
+
+    if Style=tbsDropDown then
+    begin
       DropDownButtonRect:=ButtonRect;
       DropDownButtonRect.Left:=
                         Max(0,DropDownButtonRect.Right-FToolBar.FDropDownWidth);
@@ -232,15 +253,23 @@ begin
     end;
 
     // draw button
-    if (Style in [tbsButton,tbsDropDown,tbsCheck])
-    and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
-      DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-        PaintRect{ButtonRect}, DFC_BUTTON, FLastButtonDrawFlags);
-      InflateRect(PaintRect, -2, -2);
+    if (Style in [tbsButton,tbsDropDown,tbsCheck{$ifdef UseThemes},tbsSeparator{$endif}])
+    {$ifndef UseThemes} and (FLastButtonDrawFlags and DFCS_FLAT = 0){$endif} then
+    begin
+      {$ifdef UseThemes}
+      ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+         Details, PaintRect);
+      PaintRect := ThemeServices.ContentRect(Canvas.Handle, Details, PaintRect);
+      {$else}
+       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+        PaintRect, DFC_BUTTON, FLastButtonDrawFlags);
+       InflateRect(PaintRect, -2, -2);
+      {$endif}
     end;
 
     // draw dropdown button
-    if Style in [tbsDropDown] then begin
+    if Style in [tbsDropDown] then
+    begin
       //DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       //  DropDownButtonRect, DFC_BUTTON, FLastButtonDrawFlags);
       DrawDropDownArrow(DropDownButtonRect);
@@ -648,6 +677,38 @@ begin
   end;
 end;
 
+{$ifdef UseThemes}
+function TToolButton.GetButtonDrawDetail: TThemedToolBar;
+begin
+  if Style = tbsDropDown then
+    Result := ttbSplitButtonNormal
+  else
+  if Style = tbsSeparator then
+    Result := ttbSeparatorNormal
+  else
+    Result := ttbButtonNormal;
+    
+  if not Enabled then
+    inc(Result, 3) // ttbButtonDisabled
+  else
+  begin
+    if Down then
+    begin // checked states
+      if FMouseInControl then
+        inc(Result, 5) // ttbButtonCheckedHot
+      else
+        inc(Result, 4) // ttbButtonChecked
+    end
+    else
+    begin
+      if (tbfPressed in FToolButtonFlags) and FMouseInControl then
+        inc(Result, 2) else // ttbButtonPressed
+      if FMouseInControl then
+        inc(Result, 1); // ttbButtonHot
+    end;
+  end;
+end;
+{$else}
 function TToolButton.GetButtonDrawFlags: integer;
 begin
   Result:=DFCS_BUTTONPUSH;
@@ -661,6 +722,7 @@ begin
   and (not FDown) then
     inc(Result,DFCS_FLAT);
 end;
+{$endif}
 
 procedure TToolButton.SetParent(AParent: TWinControl);
 var
@@ -799,14 +861,20 @@ begin
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.Y,'+',IconSize.Y,' Text=',TextPos.Y,'+',TextSize.cy]);
 
     // add button frame
-    FLastButtonDrawFlags:=GetButtonDrawFlags;
+    {$ifdef UseThemes}
+    FLastButtonDrawDetail := GetButtonDrawDetail;
+    {$else}
+    FLastButtonDrawFlags := GetButtonDrawFlags;
+    {$endif}
     if (Style in [tbsButton,tbsDropDown,tbsCheck])
-    and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
+    {$ifndef UseThemes} and (FLastButtonDrawFlags and DFCS_FLAT = 0){$endif} then
+    begin
       inc(PreferredWidth,4);
       inc(PreferredHeight,4);
     end;
-    if Style=tbsDropDown then begin
-      inc(PreferredWidth,FToolBar.FDropDownWidth);
+    if Style=tbsDropDown then
+    begin
+      inc(PreferredWidth, FToolBar.FDropDownWidth);
     end;
   end;
 end;
