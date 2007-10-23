@@ -865,7 +865,7 @@ var
     BitsPtr: Pointer;
     Src, Dst: PByte;
   begin
-    LineSize := Width shr 3;
+    LineSize := (Width + 7) shr 3;
     if (LineSize and 1) <> 0
     then begin
       // the gdk_bitmap_create_from_data expects data byte aligned while
