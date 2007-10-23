@@ -178,10 +178,9 @@ end;
 procedure TAboutForm.Paint;
 begin
   inherited Paint;
-  if FPixmap <>nil
-  then Canvas.Copyrect(
-    Bounds(12, PlatformLabel.Top+PlatformLabel.Height+6, Width, Height)
-    ,FPixmap.Canvas, Rect(0,0, Width, Height));
+  if FPixmap <> nil then
+    Canvas.Draw(12, PlatformLabel.Top + PlatformLabel.Height + 6,
+      FPixmap);
 end;
 
 initialization
