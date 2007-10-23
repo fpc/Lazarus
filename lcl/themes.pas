@@ -1743,9 +1743,12 @@ begin
     teButton:
       if Details.Part in [BP_RADIOBUTTON, BP_CHECKBOX] then
         Result := 13;
-    teRebar :
+    teRebar:
       if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
         Result := 30;
+    teToolBar:
+      if Details.Part = TP_SPLITBUTTONDROPDOWN then
+        Result := 10;
   end;
 end;
 

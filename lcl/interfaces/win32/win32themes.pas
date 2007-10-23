@@ -6,7 +6,7 @@ interface
 
 uses
   // os
-  Windows, Win32UxTheme, Win32Proc, Win32Extra,
+  Windows, Win32UxTheme, Win32Proc, Win32Extra, TmSchema,
   // rtl
   Classes, SysUtils,
   // lcl
@@ -32,6 +32,8 @@ type
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
   public
     destructor Destroy; override;
+
+    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
 
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect;
       ClipRect: PRect = nil); override;
@@ -107,6 +109,21 @@ destructor TWin32ThemeServices.Destroy;
 begin
   inherited Destroy;
   FreeThemeLibrary;
+end;
+
+function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails
+  ): Integer;
+begin
+  if ThemesEnabled then
+    case Details.Element of
+      teToolBar:
+        if Details.Part = TP_SPLITBUTTONDROPDOWN then
+          Result := 12;
+    else
+      Result:=inherited GetDetailSize(Details);
+    end
+  else
+    Result:=inherited GetDetailSize(Details);
 end;
 
 function TWin32ThemeServices.UseThemes: Boolean;
