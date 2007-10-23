@@ -43,9 +43,9 @@ uses
  // interfacebase
   InterfaceBase,
  // widgetset
- CarbonGDIObjects,
+  CarbonGDIObjects,
  {$ifdef DebugBitmaps}
- CarbonDebug,
+  CarbonDebug,
  {$endif}
  // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,

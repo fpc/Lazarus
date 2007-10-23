@@ -2676,6 +2676,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  SetCursorPos
+  Params:  X - global screen horizontal coordinate
+           Y - global screen vertical coordinate
+  Returns: If the function succeeds.
+
+  Sets the position of the cursor on the screen.
+  NOTE: does not generate events!
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+var
+	CursorPos: CGPoint;
+begin
+  Result := False;
+    
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetCursorPos X: ' + DbgS(X) + ' Y: ' + DbgS(Y));
+  {$ENDIF}
+
+  CursorPos.X := X;
+	CursorPos.Y := Y;
+  if OSError(CGWarpMouseCursorPosition(CursorPos), Self, 'SetCursorPos',
+    'CGWarpMouseCursorPosition') then Exit;
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetFocus
   Params:  HWnd - Handle of new focus window
   Returns: Previous focused window
@@ -3074,6 +3100,7 @@ end;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 
 
 

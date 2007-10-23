@@ -183,6 +183,7 @@ function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
+function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(HWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
@@ -206,4 +207,5 @@ function UpdateWindow(Handle: HWND): Boolean; override;
 function WindowFromPoint(Point : TPoint) : HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 

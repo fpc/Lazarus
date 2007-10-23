@@ -646,7 +646,6 @@ begin
     Self, SName, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
 
   // disable fractional positions of glyphs in layout
-  // TODO: restrict to monspaced fonts only
   Tag := kATSULineLayoutOptionsTag;
   DataSize := SizeOf(ATSLineLayoutOptions);
 
