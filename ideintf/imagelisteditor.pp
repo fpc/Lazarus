@@ -321,6 +321,7 @@ begin
         ImageList.Insert(TreeView.Selected.ImageIndex, T, nil);
       finally
         ImageList.EndUpdate;
+        T.Free;
       end;
       
       TreeView.Invalidate;

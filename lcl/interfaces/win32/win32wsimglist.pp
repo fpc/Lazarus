@@ -127,7 +127,7 @@ class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACo
 
     DataCount := AWidth * AHeight;
     DataSize := DataCount * SizeOf(AData^);
-    while ACOunt > 0 do
+    while ACount > 0 do
     begin
       System.Move(AData^, BitsPtr^, DataSize);
       if AReplaceIndex = -1
