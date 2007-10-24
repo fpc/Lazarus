@@ -2794,6 +2794,7 @@ lcl/interfaces/gtk/gtk1extra.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1extrah.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1memostrings.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1memostringsh.inc svneol=native#text/pascal
+lcl/interfaces/gtk/gtk1object.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1trayicon.inc -text
 lcl/interfaces/gtk/gtk1wsprivate.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkcallback.inc svneol=native#text/pascal
@@ -2815,7 +2816,6 @@ lcl/interfaces/gtk/gtklclintfh.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtklistsl.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtklistslh.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkmsgqueue.pp svneol=native#text/pascal
-lcl/interfaces/gtk/gtkobject.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkpagecallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkprivatewidget.inc svneol=native#text/plain
 lcl/interfaces/gtk/gtkproc.inc svneol=native#text/pascal

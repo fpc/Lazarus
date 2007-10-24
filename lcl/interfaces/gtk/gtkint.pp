@@ -367,7 +367,7 @@ uses
 
 {$I gtklistsl.inc}
 {$I gtkfiledialogutils.inc}
-{$I gtkobject.inc}
+{$I gtk1object.inc}
 {$I gtkwinapi.inc}
 {$I gtklclintf.inc}
 
