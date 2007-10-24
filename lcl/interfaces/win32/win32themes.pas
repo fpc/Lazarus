@@ -6,7 +6,7 @@ interface
 
 uses
   // os
-  Windows, Win32UxTheme, Win32Proc, Win32Extra, TmSchema,
+  Windows, Win32UxTheme, Win32Proc, Win32Extra, 
   // rtl
   Classes, SysUtils,
   // lcl
@@ -55,6 +55,9 @@ type
   end;
 
 implementation
+
+uses
+  TmSchema;
 
 const
 
