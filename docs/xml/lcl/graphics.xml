@@ -10,11 +10,8 @@
       <short>Unit contains definitions for many fundamental classes and types used in graphic applications</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="SysUtils"><short/>
+        <descr/><seealso/></element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
         <short/>
@@ -1933,33 +1930,26 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TPenData">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Data</i> associated with the current <i>Pen</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Operating System <i>Handle</i> associated with the current <i>Pen</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Colour</i> of the curent <i>Pen</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Width">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Width</i> in pixels of the current <i>Pen</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Style</i> asociated with the current <i>Pen</i></short>
+        <descr>The <i>Style</i> asociated with the current <i>Pen</i><br/>
+Can take any of the values:
+psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPenHandleCache">
@@ -1986,10 +1976,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPen">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The current <i>Pen</i> for drawing on the current <i>Canvas</i></short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPen.FHandle">
@@ -2090,56 +2077,50 @@
       <element name="TPen.SetWidth.value"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TPen.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Pen</i>  Constructor</short>
+        <descr>Most of its properties are <b>inherited</b>
+ from the parent class</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TPen.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Pen</i> Destructor</short>
+        <descr>Most of its properties are <b>inherited</b> from the parent class</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPen.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Copies the <i>Source</i><i>Pen</i> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPen.Assign.Source"><short/></element>
       <!-- property Visibility: public -->
       <element name="TPen.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>the Operating System <i>Handle</i> for the current <i>Pen</i></short>
+        <descr>Reads or writes a flag to determine the handle</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Colour </i>of th ecurrent <i>Pen</i></short>
+        <descr>Reads or Writes a flag to determine the colour. Default is black</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Mode">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Mode</i> for the current <i>Pen</i></short>
+        <descr>Can take any of the values:<br/>
+pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy,<br/>
+pmMergePenNot, pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,<br/>
+pmNotMerge, pmMask, pmNotMask, pmXor, pmNotXor<br/>
+Default is pmCopy</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Style</i> of the current <i>Pen</i></short>
+        <descr>Can be one of the following: <br/>
+psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear<br/>
+Default is psSolid</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Width">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Width</i> in pixels of the current <i>Pen</i></short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TBrushData">
@@ -5365,8 +5346,8 @@ To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Assign">
-        <short><b>Assign</b>: find out about the Source of the call.</short>
-        <descr><b>Assign</b>: find out about the Source of the call. If the <i>BitMap</i> data are already in use, the data are shared; if not, a new <i>BitMap</i> is produced</descr>
+        <short><i>Assign</i>: find out about the Source of the call.</short>
+        <descr><i>Assign</i>: find out about the Source of the call. If the <i>BitMap</i> data are already in use, the data are shared; if not, a new <i>BitMap</i> is produced</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.Assign.Source"><short/></element>
@@ -5509,7 +5490,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       <element name="TBitmap.GetFileExtensions.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromXPMFile">
-        <short><i>LoadFronXPMFile</i>: obtain data from file in native <i>PixMap</i> format</short>
+        <short><i>LoadFromXPMFile</i>: obtain data from file in native <i>PixMap</i> format</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromXPMFile.Filename"><short/></element>
@@ -5700,51 +5681,46 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- object Visibility: default -->
       <element name="TPixmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>PixMap</i>  - a class derived from <i>TBitMap</i> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
+        <descr><i>PixMap</i>
+  - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organises saving and writing</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TPixmap.LazarusResourceTypeValid">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>LazarusResourceTypeValid</i> - checks that specified resource has correct format</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPixmap.LazarusResourceTypeValid.Result"><short/></element>
+      <element name="TPixmap.LazarusResourceTypeValid.Result">
+        <short>Returns True if resource type is 'XPM'</short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TPixmap.LazarusResourceTypeValid.ResourceType"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TPixmap.WriteStream">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>WriteStream</i> - writes PixMap data to specified stream</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPixmap.WriteStream.Stream"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TPixmap.WriteStream.WriteSize"><short/></element>
+      <element name="TPixmap.WriteStream.WriteSize">
+        <short><i>True</i> if size of data in stream has been specified</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TPixmap.GetDefaultFPReader">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>GetDefaultFPReader</i> - obtains the correct tool</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPixmap.GetDefaultFPReader.Result"><short/></element>
+      <element name="TPixmap.GetDefaultFPReader.Result">
+        <short>Returns the correct tool for reading</short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TPixmap.GetDefaultFPWriter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>GetDefaultFPWriter</i> -  obtains the correct tool</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPixmap.GetDefaultFPWriter.Result"><short/></element>
+      <element name="TPixmap.GetDefaultFPWriter.Result">
+        <short>Returns the correct tool for writing</short>
+      </element>
       <!-- object Visibility: default -->
       <element name="TFPImageBitmap">
         <short/>
@@ -5892,10 +5868,17 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       <element name="TPortableNetworkGraphic.GetDefaultFPWriter.Result"><short/></element>
       <!-- object Visibility: default -->
       <element name="TIcon">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TIcon</i>  - icons, small images typically associated with applications, controls, etc. Stored in files with .ico extension</short>
+        <descr><i>TIcon</i>
+ reads and writes .ICO file format.<br/>
+
+A .ico file typically contains several versions of the same image. <br/>
+
+When loading, the largest/most colourful image is loaded as the <i>TBitmap</i>
+ and so can be handled as any other bitmap. Any other versions of the images are available via the  <i>Bitmaps</i>
+ property<br/>
+
+Writing is not (yet) implemented.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TIcon.FBitmaps">
@@ -5932,23 +5915,17 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       <element name="TIcon.GetFileExtensions.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TIcon.Bitmaps">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Bitmaps</i> - the list of alternative bitmaps (of various sizes)</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TIcon.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TIcon</i> destructor</short>
+        <descr><i>TIcon</i> destructor. Method can <b>override</b> the destructor defined in ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIcon.AddBitmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Add a bitmap to the current list</short>
+        <descr>Note that Ownership passes to <i>TIcon</i></descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TIcon.AddBitmap.Bitmap"><short/></element>
