@@ -2388,9 +2388,24 @@ end;
 
 function TGTKWidgetSet.RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; const ARect: TRect): boolean;
 // ARect must have the same dimension as the rawimage
+
+{$ifndef HasX}
+  function ReverseBits(A: Byte): Byte;
+  begin
+    Result := ((A shr 7) and $80) or
+              ((A shr 6) and $40 shl 1) or
+              ((A shr 5) and $20 shl 2) or
+              ((A shr 4) and $10 shl 3) or
+              ((A shr 3) and $08 shl 4) or
+              ((A shr 2) and $04 shl 5) or
+              ((A shr 1) and $02 shl 6) or
+              (A and $01 shl 7);
+  end;
+{$endif}
+
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
-  Width, Height, H: longint;
+  Width, Height, H{$ifndef HasX}, I{$endif}: longint;
   Image: PGdkImage;
   BytesPerLine: Integer;
   SrcPtr, DstPtr: PByte;
@@ -2478,7 +2493,13 @@ begin
         H := Height;
         while H > 0 do
         begin
+          {$ifdef HasX}
           System.Move(SrcPtr^, DstPtr^, BytesPerLine);
+          {$else}
+          // Windows has another bit order than X-server
+          for i := 0 to BytesPerLine - 1 do
+            DstPtr[i] := ReverseBits(SrcPtr[i]);
+          {$endif}
           Inc(SrcPtr, Image^.bpl);
           Inc(DstPtr, BytesPerLine);
           Dec(H);
