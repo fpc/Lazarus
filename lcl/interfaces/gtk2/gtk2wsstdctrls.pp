@@ -822,7 +822,7 @@ begin
   if Index = -1 then Index := GetItemIndex(ACustomComboBox);
 
   gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag,nil);
-  gtk_object_set_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag, LCLIndex);
+  gtk_object_set_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag, nil);
   gtk_widget_destroy(ComboWidget);
 
   // create the new widget with the old model
@@ -832,6 +832,7 @@ begin
   end;
   // undone the above increase of the ref count
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
+  gtk_object_set_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag, LCLIndex);
   g_object_unref (G_OBJECT(Model));
 
   SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
