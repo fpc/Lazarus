@@ -82,8 +82,8 @@ tools\updatepofiles components\cgi\languages\cgimodules.po
 
 @REM LazReport
 @set LazReport_RST=components\lazreport\source\lib\%ArchOS%\lr_const.rst
-rstconv -i %LazReport_RST% -o components\lazreport\languages\lr_const.po
-tools\updatepofiles components\lazreport\languages\lr_const.po
+rstconv -i %LazReport_RST% -o components\lazreport\source\languages\lr_const.po
+tools\updatepofiles components\lazreport\source\languages\lr_const.po
 
 @REM MemDS
 @set MemDS_RST=components\memds\lib\%ArchOS%\frmselectdataset.rst
