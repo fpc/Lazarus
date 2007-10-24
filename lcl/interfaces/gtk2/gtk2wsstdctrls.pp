@@ -103,7 +103,7 @@ type
   private
   protected
     class procedure ReCreateCombo(const ACustomComboBox: TCustomComboBox; const AWithEntry: Boolean; const AWidgetInfo: PWidgetInfo); virtual;
-    class procedure SetRenderer(const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget); virtual;
+    class procedure SetRenderer(const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget; AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetCallbacks(const AWinControl: tWinControl; const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -845,7 +845,7 @@ begin
     SetReadOnly(ACustomComboBox, ACustomComboBox.ReadOnly);
   end;
 
-  SetRenderer(ACustomComboBox, ComboWidget);
+  SetRenderer(ACustomComboBox, ComboWidget, AWidgetInfo);
   
   gtk_container_add(PGtkContainer(AWidgetInfo^.ClientWidget), ComboWidget);
   gtk_widget_show_all(AWidgetInfo^.ClientWidget);
@@ -854,45 +854,21 @@ begin
 end;
 
 class procedure TGtk2WSCustomComboBox.SetRenderer(
-  const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget);
+  const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget; AWidgetInfo: PWidgetInfo);
 var
   renderer : PGtkCellRenderer;
 begin
   renderer := LCLIntfCellRenderer_New();
+  g_object_set_data(G_OBJECT(renderer), 'widgetinfo', AWidgetInfo);
   gtk_cell_layout_clear(PGtkCellLayout(AWidget));
   gtk_cell_layout_pack_start(PGtkCellLayout(AWidget), renderer, True);
   gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
-end;
-
-procedure UpdateComboItemsCB(AComboItem: PGtkBin; WidgetInfo: PWidgetInfo); cdecl;
-var
-  renderer : PGtkCellRenderer;
-  AItem: PGtkCellLayout;
-  // AItem is really a GtkCellView which implements GtkCellRenderer
-begin
-  AItem :=  PGtkCellLayout(AComboItem^.child);
-  //WriteLn(G_OBJECT_CLASS_NAME(GTK_WIDGET_GET_CLASS(PGtkWidget(AItem))));
-
-  if g_object_get_data(G_OBJECT(AItem), 'ComboItem') <> nil then exit;
-
-  renderer := LCLIntfCellRenderer_New();
-  gtk_cell_layout_clear(AItem);
-  gtk_cell_layout_pack_start(AItem, renderer, True);
-  gtk_cell_layout_set_attributes(AItem, renderer, ['text', 0, nil]);
-  SetMainWidget(WidgetInfo^.CoreWidget, AItem);
-  g_object_set_data(G_OBJECT(AItem), 'ComboItem', AComboItem);
-  // used in gtk2cellrenderer. if you change this update cellrenderer as well - AH
-  g_object_set_data(G_OBJECT(renderer), 'ComboItem', AComboItem);
 end;
 
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
 begin
   // let the LCL change the items on the fly:
   LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
-  
-  // here we insure that the combo's menu items are using our internal renderer
-  // so we can use custom drawing
-  g_list_foreach(AMenu^.children, TGFunc(@UpdateComboItemsCB), WidgetInfo);
 end;
 
 procedure GtkPopupHideCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
@@ -1331,8 +1307,8 @@ begin
 
   gtk_container_add(PGtkContainer(Box), ComboWidget);
   gtk_widget_show_all(Box);
-
-  SetRenderer(ACustomComboBox, ComboWidget);
+  
+  SetRenderer(ACustomComboBox, ComboWidget, WidgetInfo);
 
   SetMainWidget(Box, ComboWidget);
   SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);

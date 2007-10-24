@@ -52,6 +52,9 @@ type
   PPPangoAttrList = ^PPangoAttrList;
 procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
 
+// gtk 2.6
+function gtk_cell_view_get_displayed_row(cell_view: Pointer): PGtkTreePath; cdecl; external;
+
 
 // gdk 2.2
 procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;

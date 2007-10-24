@@ -55,6 +55,7 @@ function LCLIntfCellRenderer_GetType: TGtkType;
 function LCLIntfCellRenderer_New: PGtkCellRenderer;
 
 implementation
+uses GtkExtra;
 
 procedure LCLIntfCellRenderer_Render(cell: PGtkCellRenderer; Window: PGdkWindow;
   Widget: PGtkWidget; background_area: PGdkRectangle; cell_area: PGdkRectangle;
@@ -71,8 +72,6 @@ var
   Msg: TLMDrawListItem;
   ItemPath: PGtkTreePath;
   Column: PGtkTreeViewColumn;
-  Menu: PGtkMenuShell;
-  MenuItem: PGtkMenuItem;
   DCWidget: PGtkWidget;
 begin
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
@@ -90,11 +89,12 @@ begin
   MainWidget:=GetMainWidget(Widget);
   if MainWidget=nil then exit;
   WidgetInfo:=GetWidgetInfo(MainWidget,false);
+  if WidgetInfo=nil then WidgetInfo:=GetWidgetInfo(cell,false);
   if WidgetInfo=nil then exit;
   LCLObject:=WidgetInfo^.LCLObject; // the listbox or combobox
   AWinControl:=LCLObject as TWinControl;
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
-
+  
   // check if the LCL object wants item paint messages
   if AWinControl is TCustomListbox then
     if TCustomListbox(AWinControl).Style = lbStandard then
@@ -122,25 +122,22 @@ begin
     end;
   end
   else if AWinControl is TCustomComboBox then begin
-    // ComboItem is set in gtk2wsstdctrls
-    MenuItem := g_object_get_data(G_OBJECT(cell), 'ComboItem');
-    if MenuItem <> nil then begin
-      Menu := PGtkMenuShell(gtk_widget_get_parent(PGtkWidget(MenuItem)));
-      if Menu <> nil then
-        ItemIndex := g_list_index(Menu^.children, MenuItem);
-      if ItemIndex > -1 then begin
+    ItemPath := gtk_cell_view_get_displayed_row(Widget);
+    if ItemPath <> nil then
+    begin
+      ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
+      gtk_tree_path_free(ItemPath);
+      if (Widget^.parent <> nil) and (GtkWidgetIsA(Widget^.parent,gtk_menu_item_get_type)) then
         AreaRect:=Bounds(0,0,
-                         PGtkWidget(MenuItem)^.allocation.width,
-                         PGtkWidget(MenuItem)^.allocation.height);
-      end;
-    end
-    else begin // it is a renderer not in the dropdown but the combo renderer itself
-      ItemIndex := TCustomComboBox(AWinControl).ItemIndex;
-      AreaRect:=Bounds(0,0, Widget^.allocation.Width, Widget^.allocation.height);
+                         Widget^.Parent^.allocation.width,
+                         Widget^.Parent^.allocation.height)
+      else
+        AreaRect:=Bounds(0,0,
+                         Widget^.allocation.width,
+                         Widget^.allocation.height);
     end;
-
   end;
-  
+
   if ItemIndex < 0 then ItemIndex := 0;
 
   // collect state flags
