@@ -387,8 +387,28 @@ begin
 end;
 
 class procedure TWin32WSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+var
+  TCI: TC_ITEM;
+  PageIndex: integer;
+  NotebookHandle: HWND;
 begin
-  // TODO: implement me!
+  PageIndex := ACustomPage.PageIndex;
+  NotebookHandle := ACustomPage.Parent.Handle;
+  // Check for valid page index
+  if (PageIndex>=0) and
+    (PageIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
+  begin
+    // retrieve page handle from tab as extra check (in case page isn't added yet).
+    TCI.mask := TCIF_PARAM;
+    Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
+    if PtrUInt(TCI.lParam)=PtrUInt(ACustomPage) then
+    begin
+      TCI.mask := TCIF_IMAGE;
+      TCI.iImage:=ACustomPage.ImageIndex;
+
+      Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
+    end;
+  end;
 end;
 
 { TWin32WSCustomNotebook }
