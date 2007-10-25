@@ -25,8 +25,8 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  LMessages, LCLProc, Controls, Forms, LCLIntf, LCLType, GTKDef, DynHashArray,
-  Maps;
+  LMessages, LCLProc, Controls, ComCtrls, Forms, LCLIntf, LCLType, GTKDef,
+  DynHashArray, Maps;
 
 {$I dragicons.inc}
 
@@ -391,10 +391,24 @@ var
   
 const
   aGtkJustification: array[TAlignment] of TGTKJustification =
-    (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
+  (
+{taLeftJustify } GTK_JUSTIFY_LEFT,
+{taRightJustify} GTK_JUSTIFY_RIGHT,
+{taCenter      } GTK_JUSTIFY_CENTER
+  );
 
-  aGtkSelectionMode: Array[Boolean] of TGtkSelectionMode =
-    (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
+  aGtkSelectionMode: array[Boolean] of TGtkSelectionMode =
+  (
+    GTK_SELECTION_SINGLE,
+    GTK_SELECTION_EXTENDED
+  );
+
+  aGtkShadowFromBevel: array[TStatusPanelBevel] of TGtkShadowType =
+  (
+{ pbNone    } GTK_SHADOW_NONE,
+{ pbLowered } GTK_SHADOW_IN,
+{ pbRaised  } GTK_SHADOW_OUT
+  );
 
   { file dialog }
 

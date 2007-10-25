@@ -6363,8 +6363,8 @@ begin
   //  ' frame=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.frame),
   //  ' thelabel=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.thelabel),
   // '');
-  FrameWidget:=PGTKStatusBar(StatusPanelWidget)^.frame;
-  LabelWidget:=PGtkLabel({$ifdef gtk2}PGTKStatusBar(StatusPanelWidget)^._label{$else}PGTKStatusBar(StatusPanelWidget)^.thelabel{$endif});
+  FrameWidget := PGTKStatusBar(StatusPanelWidget)^.frame;
+  LabelWidget := PGtkLabel({$ifdef gtk2}PGTKStatusBar(StatusPanelWidget)^._label{$else}PGTKStatusBar(StatusPanelWidget)^.thelabel{$endif});
 
   // Text
   if AStatusBar.SimplePanel then
@@ -6384,32 +6384,25 @@ begin
 
 
   // Alignment
-  if CurPanel<>nil then begin
+  if CurPanel<>nil then
+  begin
     //DebugLn('  Alignment="',ord(CurPanel.Alignment),'"');
-    case CurPanel.Alignment of
-    taLeftJustify: NewJustification:=GTK_JUSTIFY_LEFT;
-    taRightJustify: NewJustification:=GTK_JUSTIFY_RIGHT;
-    taCenter: NewJustification:=GTK_JUSTIFY_CENTER;
-    else
-      NewJustification:=GTK_JUSTIFY_LEFT;
-    end;
-    gtk_label_set_justify(LabelWidget,NewJustification);
+    NewJustification := aGtkJustification[CurPanel.Alignment];
+    if GTK_IS_LABEL(LabelWidget) then
+      gtk_label_set_justify(LabelWidget, NewJustification);
   end;
 
   // Bevel
-  if CurPanel<>nil then begin
-    case CurPanel.Bevel of
-    pbNone: NewShadowType:=GTK_SHADOW_NONE;
-    pbLowered: NewShadowType:=GTK_SHADOW_IN;
-    pbRaised: NewShadowType:=GTK_SHADOW_OUT;
-    else
-      NewShadowType:=GTK_SHADOW_IN;
-    end;
-    gtk_frame_set_shadow_type(PGtkFrame(FrameWidget),NewShadowType);
+  if CurPanel<>nil then
+  begin
+    NewShadowType := aGtkShadowFromBevel[CurPanel.Bevel];
+    if GTK_IS_FRAME(FrameWidget) then
+      gtk_frame_set_shadow_type(PGtkFrame(FrameWidget), NewShadowType);
   end;
 
   // Width
-  if (CurPanel<>nil) then begin
+  if (CurPanel<>nil) then
+  begin
     //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
     gtk_widget_set_usize(StatusPanelWidget,CurPanel.Width,
       StatusPanelWidget^.allocation.height);
