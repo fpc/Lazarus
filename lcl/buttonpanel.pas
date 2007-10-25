@@ -105,6 +105,7 @@ type
     property OnResize;
     property ShowButtons;
     property ShowGlyphs;
+    property Visible;
   end;
 
 procedure Register;
