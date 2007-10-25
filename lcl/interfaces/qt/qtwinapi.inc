@@ -4598,10 +4598,10 @@ begin
   //
   // stretch_factor := Width / SrcWidth;
   // Width := stretch_factor * (SrcWidthOrig - XSrc);
-  if (SrcWidth - XSrc > SrcWidthOrig) then
+  if (SrcWidth - XSrc <> Width) then
     Width := Width * (SrcWidthOrig - XSrc) div SrcWidth;
 
-  if (SrcHeight - YSrc > SrcHeightOrig) then
+  if (SrcHeight - YSrc <> Height) then
     Height := Height * (SrcHeightOrig - YSrc) div SrcHeight;
 
   DstRect := Bounds(X, Y, Width, Height);
