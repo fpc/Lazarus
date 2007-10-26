@@ -210,12 +210,12 @@ begin
           case Desc.LineEnd of
             rileQWordBoundary: begin
               RowStride := ImgWidth;
-              if RowStride and 1 = 1 then Inc(RowStride);
+              if ImgWidth and 1 <> 0 then Inc(RowStride);
               RowStride := RowStride shl 2;
             end;
             rileDQWordBoundary: begin
               RowStride := ImgWidth shr 1;
-              if RowStride and 1 = 1 then Inc(RowStride);
+              if ImgWidth and 3 <> 0 then Inc(RowStride);
               RowStride := RowStride shl 3;
             end;
           else
@@ -310,6 +310,8 @@ begin
         end;
 
         System.Move(ImgData^, GdkImage^.mem^, ImgDataSize);
+        if ImgDepth = 1
+        then CheckGdkImageBitOrder(GdkImage, GdkImage^.mem, ImgDataSize);
         GC := gdk_gc_new(Drawable);
         gdk_draw_image(Drawable, GC, GdkImage, 0, 0, 0, 0, ImgWidth, ImgHeight);
         gdk_gc_unref(GC);

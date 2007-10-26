@@ -1184,21 +1184,7 @@ begin
   end;
 
   // Creating PixBuf from pixmap
-  // force format when a mask is present
-  if ASrcMask <> nil
-  then begin
-    ScaleSrc := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, ASrcWidth, ASrcHeight);
-    if ScaleSrc = nil
-    then begin
-      Warn('ScaleSrc=nil');
-      Exit;
-    end;
-  end
-  else begin
-    ScaleSrc := nil;
-  end;
-  
-  ScaleSrc := gdk_pixbuf_get_from_drawable(ScaleSrc, ASrc, ASrcColorMap, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+  ScaleSrc := CreatePixbufFromDrawable(ASrc, ASrcColorMap, ASrcMask <> nil, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
   if ScaleSrc = nil
   then begin
     Warn('ScaleSrc=nil');
@@ -1214,14 +1200,8 @@ begin
       gdk_pixbuf_unref(ScaleSrc);
       Exit;
     end;
-    // force mask having alpha, so one pixel is 32 bit and we don't have to worry about rowstride
-    ScaleMsk := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, ASrcWidth, ASrcHeight);
-    if ScaleMsk = nil
-    then begin
-      Warn('ScaleMsk=nil');
-      Exit;
-    end;
-    gdk_pixbuf_get_from_drawable(ScaleMsk, ASrcMask, ASrcColorMap, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+    
+    ScaleMsk := CreatePixbufFromDrawable(ASrcMask, ASrcColorMap, True, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
     ApplyMask(gdk_pixbuf_get_pixels(ScaleSrc), gdk_pixbuf_get_pixels(ScaleMsk));
     gdk_pixbuf_unref(ScaleMsk);
   end;
@@ -1472,6 +1452,40 @@ begin
   gdk_window_copy_area(Result,GC,0,0,Bitmap,
                        SourceRect.Left,SourceRect.Top,SrcWidth,SrcHeight);
   GDK_GC_Unref(GC);
+end;
+
+procedure CheckGdkImageBitOrder(AImage: PGdkImage; AData: PByte; ADataCount: Integer);
+var
+  b: Byte;
+{$ifdef hasx}
+  XImage: XLib.PXimage;
+{$endif}
+begin
+{$ifdef hasx}
+  if AImage = nil then Exit;
+
+  XImage := PPointer(AImage+1)^;
+  if XImage^.bitmap_bit_order = LSBFirst then Exit;
+{$endif}
+
+  // on windows or bigendian servers the bits need to be swapped
+
+  while ADataCount > 0 do
+  begin
+    // reduce dereferences
+    b := AData^;
+    AData^ := (b and $01) shl 7
+           or (b and $02) shl 5
+           or (b and $04) shl 3
+           or (b and $08) shl 1
+           or (b and $10) shr 1
+           or (b and $20) shr 3
+           or (b and $40) shr 5
+           or (b and $80) shr 7;
+    Dec(ADataCount);
+    Inc(AData);
+  end;
+
 end;
 
 
@@ -5717,6 +5731,48 @@ begin
   // if pixbuf is not created, then destination data should be freed
   if Result = nil then
     g_free(dest);
+end;
+
+{-------------------------------------------------------------------------------
+  method CreatePixbufFromDrawable
+  Params: ASource: The source drawable
+          AColorMap: The colormap to use
+          AIncludeAplha: If set, the resulting pixmap has an alpha channel
+          ASrcX, ASrcY: Offset within the source
+          ADstX, ADstY: Offset within destination
+          AWidth, AHeight: Size of the new image
+  Result: New Pixbuf with refcount = 1
+
+  Replaces the gdk_pixbuf_get_from_drawable function which is buggy on big endian
+  X servers when an alpha channel is requested.
+-------------------------------------------------------------------------------}
+function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap; AIncludeAplha: Boolean; ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight: longint): PGdkPixbuf;
+{$ifndef HasX}
+const
+  CanRequestAlpha = True;
+var
+{$else}
+var
+  CanRequestAlpha: Boolean;
+{$endif}
+  PixBuf: PGdkPixBuf;
+begin
+  {$ifdef HasX}
+  CanRequestAlpha := BitmapBitOrder(gdk_display) = LSBFirst;
+  {$endif}
+  
+  if CanRequestAlpha and AIncludeAplha
+  then Pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, AWidth, AHeight)
+  else Pixbuf := nil;
+  
+  Result := gdk_pixbuf_get_from_drawable(Pixbuf, ASource, AColorMap, ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight);
+
+  if CanRequestAlpha then Exit; // we're done
+  if not AIncludeAplha then Exit;
+  
+  pixbuf := gdk_pixbuf_add_alpha(Result, false, #0,#0,#0);
+  gdk_pixbuf_unref(Result);
+  Result := pixbuf;
 end;
 
 {-------------------------------------------------------------------------------

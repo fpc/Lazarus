@@ -780,6 +780,7 @@ var
   Iter: TGtkTreeIter;
   BitImage: TBitmap;
   GPixBuf: PGDKPixBuf;
+  Drawable: PGdkDrawable;
 
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
@@ -787,23 +788,27 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
-    //Icon
-    if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then begin
-      if  (TLVHack(ALV).SmallImages <> nil)
-      and (AItem.ImageIndex > -1)
-      then
-      begin
-          BitImage := TBitmap.Create;
-          TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex,BitImage);
-          GPixBuf:=gdk_pixbuf_get_from_drawable(nil, PGdkDrawable(PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject)), nil,0,0,0,0,-1,-1) ;
-        end else begin
-           gpixbuf:=nil;
-          end;
+  //Icon
+  if not gtk_tree_model_iter_nth_child(Widgets^.TreeModel, @Iter, nil, AIndex) then Exit;
 
-       gtk_list_store_set(TreeModel, @Iter, [0 ,gpixbuf, -1]);
+  gpixbuf := nil;
+  if  (TLVHack(ALV).SmallImages <> nil)
+  and (AItem.ImageIndex > -1)
+  then begin
+    BitImage := TBitmap.Create;
+    TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, BitImage);
+    case PGDIObject(BitImage.handle)^.GDIBitmapType of
+      gbBitmap: Drawable := PGDIObject(BitImage.handle)^.GDIBitmapObject;
+      gbPixmap: Drawable := PGDIObject(BitImage.handle)^.GDIPixmapObject.Image; {$note TODO add alpha mask}
+    else
+      Drawable := nil;
     end;
+    
+    if Drawable <> nil
+    then GPixBuf := CreatePixbufFromDrawable(Drawable, nil, False, 0, 0, 0, 0, -1, -1);
   end;
+
+  gtk_list_store_set(Widgets^.TreeModel, @Iter, [0 ,gpixbuf, -1]);
 end;
 
 class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;

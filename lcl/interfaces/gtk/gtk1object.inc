@@ -1705,8 +1705,7 @@ var
         then begin
           {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize A1');{$endif}
           
-          Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
-             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+          Source := CreatePixbufFromDrawable(Bitmap^.GDIBitmapObject, Bitmap^.Colormap, False, 0,StartScan,0,0,Width,StartScan + NumScans);
           rowstride := gdk_pixbuf_get_rowstride(Source);
           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
           
@@ -1717,8 +1716,7 @@ var
         then begin
           {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize B1');{$endif}
           
-          Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIPixmapObject.Image,
-            Bitmap^.Colormap, 0, StartScan, 0, 0, Width, StartScan + NumScans);
+          Source := CreatePixbufFromDrawable(Bitmap^.GDIPixmapObject.Image, Bitmap^.Colormap, False, 0, StartScan, 0, 0, Width, StartScan + NumScans);
           {$note TODO: Apply alpha based on mask when 32bit mode is added}
             
           rowstride := gdk_pixbuf_get_rowstride(Source);
@@ -2027,33 +2025,6 @@ begin
     ADesc.MaskShift := 0;
     ADesc.MaskLineEnd := rileByteBoundary;
     ADesc.MaskBitOrder := riboBitsInOrder;
-
-(*
-    if ACustomAlpha and (ADesc.Format = ricfRGBA) and (ADesc.Depth = 24)
-    then begin
-      // add alpha channel
-
-      ADesc.Depth := 32;
-
-      // try to find out where we kan place the alpha channel
-      if  (Visual^.red_shift >= 8)
-      and (Visual^.green_shift >= 8)
-      and (Visual^.blue_shift >= 8)
-      then begin
-        // there is room at the lsb side
-        ADesc.AlphaPrec := 8;
-        ADesc.AlphaShift := 0;
-      end
-      else if (Visual^.red_shift < 24)
-          and (Visual^.green_shift < 24)
-          and (Visual^.blue_shift < 24)
-      then begin
-        // there is room at the msb side
-        ADesc.AlphaPrec := 8;
-        ADesc.AlphaShift := 24;
-      end;
-    end;
-*)
   end;
 
   {$IFDEF VerboseRawImage}
@@ -2073,9 +2044,8 @@ var
     pixels: pguchar;
   begin
     // create pixbuf with alpha channel first
-    Pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, ADesc.Width, ADesc.Height);
+    Pixbuf := CreatePixbufFromDrawable(ADrawable, gdk_colormap_get_system, True, ARect.Left, ARect.Top, 0, 0, ADesc.Width, ADesc.Height);
     try
-      Pixbuf := gdk_pixbuf_get_from_drawable(Pixbuf, ADrawable, gdk_colormap_get_system, ARect.Left, ARect.Top, 0, 0, ADesc.Width, ADesc.Height);
       pixels := gdk_pixbuf_get_pixels(Pixbuf);
       
       ARawImage.DataSize := PtrUInt(gdk_pixbuf_get_rowstride(Pixbuf)) * PtrUInt(ADesc.Height);
@@ -2123,8 +2093,12 @@ var
       ADesc.Width := Image^.Width;
       ADesc.Height := Image^.Height;
       ReAllocMem(ARawImage.Data, ARawImage.DataSize);
-      if ARawImage.DataSize > 0 then
+      if ARawImage.DataSize > 0
+      then begin
         System.Move(Image^.Mem^, ARawImage.Data^, ARawImage.DataSize);
+        if Image^.Depth = 1
+        then CheckGdkImageBitOrder(Image, ARawImage.Data, ARawImage.DataSize);
+      end;
 
       {$IFDEF VerboseRawImage}
       DebugLn('TGtkWidgetSet.RawImage_FromDrawable: H ',
@@ -2199,10 +2173,13 @@ var
     DstPtr32: PDWord absolute DstPtr;
     SrcBytesPerLine: Integer;
     DstBytesPerLine: Integer;
-    SrcMask: Byte;
+    SrcBit, SrcStartBit, ShiftInc: ShortInt;
     DstMask: DWord;
     DstSet: DWord;
     X, Y: Cardinal;
+    {$ifdef hasx}
+    XImage: PXimage;
+    {$endif}
   begin
     SrcLinePtr := AImage^.mem;
     SrcBytesPerLine := AImage^.bpl;
@@ -2213,38 +2190,35 @@ var
     then DstSet := (not ($FFFFFFFF shl ADesc.AlphaPrec)) shl ADesc.AlphaShift
     else DstSet := (not ($FFFFFFFF shr ADesc.AlphaPrec)) shr ADesc.AlphaShift;
     DstMask  := not DstSet;
+    
+    // bit order for X11 can be normal or reversed order, win32 and direct_fb
+    // is constant in reversed order
+    SrcStartBit := 7;
+    ShiftInc := -1;
+    {$ifdef HasX}
+    XImage := PPointer(AImage+1)^;
+    if XImage^.bitmap_bit_order = LSBFirst
+    then begin
+      SrcStartBit := 0;
+      ShiftInc := 1;
+    end;
+    {$endif}
 
     for Y := 0 to AHeight - 1 do
     begin
-      // bit order for X11 differ from other bit orders, at least it differ from
-      // win32 and direct_fb
-      // x11 stores bits in order while others in reversed order
-      // this difference cause us to write such nice ifdefs here and below
-      {$ifdef HasX}
-      SrcMask := 1;
-      {$else}
-      SrcMask := $80;
-      {$endif}
+      SrcBit := SrcStartBit;
       SrcPtr := SrcLinePtr;
       DstPtr := DstLinePtr;
       for x := 0 to AWidth - 1 do
       begin
-        if SrcPtr^ and SrcMask = 0
+        if SrcPtr^ and (1 shl SrcBit) = 0
         then DstPtr32^ := DstPtr32^ and DstMask
         else DstPtr32^ := (DstPtr32^ and DstMask) or DstSet;
         Inc(DstPtr32);
-        {$ifdef HasX}
-        SrcMask := SrcMask shl 1;
-        {$else}
-        SrcMask := SrcMask shr 1;
-        {$endif}
-        if SrcMask = 0
+        SrcBit := SrcBit + ShiftInc;
+        if SrcBit and $F8 <> 0
         then begin
-          {$ifdef HasX}
-          SrcMask := 1;
-          {$else}
-          SrcMask := $80;
-          {$endif}
+          SrcBit := SrcBit and 7;
           Inc(SrcPtr);
         end;
       end;
@@ -2389,23 +2363,9 @@ end;
 function TGTKWidgetSet.RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; const ARect: TRect): boolean;
 // ARect must have the same dimension as the rawimage
 
-{$ifndef HasX}
-  function ReverseBits(A: Byte): Byte;
-  begin
-    Result := ((A shr 7) and $80) or
-              ((A shr 6) and $40 shl 1) or
-              ((A shr 5) and $20 shl 2) or
-              ((A shr 4) and $10 shl 3) or
-              ((A shr 3) and $08 shl 4) or
-              ((A shr 2) and $04 shl 5) or
-              ((A shr 1) and $02 shl 6) or
-              (A and $01 shl 7);
-  end;
-{$endif}
-
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
-  Width, Height, H{$ifndef HasX}, I{$endif}: longint;
+  Width, Height, H: longint;
   Image: PGdkImage;
   BytesPerLine: Integer;
   SrcPtr, DstPtr: PByte;
@@ -2462,7 +2422,7 @@ begin
     DebugLn('WARNING: TGtkWidgetSet.RawImage_AddMask: gdk_image_get failed');
     Exit;
   end;
-  
+
   try
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.RawImage_AddMask: A BytesPerLine=',dbgs(Image^.bpl),
@@ -2493,18 +2453,13 @@ begin
         H := Height;
         while H > 0 do
         begin
-          {$ifdef HasX}
           System.Move(SrcPtr^, DstPtr^, BytesPerLine);
-          {$else}
-          // Windows has another bit order than X-server
-          for i := 0 to BytesPerLine - 1 do
-            DstPtr[i] := ReverseBits(SrcPtr[i]);
-          {$endif}
           Inc(SrcPtr, Image^.bpl);
           Inc(DstPtr, BytesPerLine);
           Dec(H);
         end;
       end;
+      CheckGdkImageBitOrder(Image, ARawImage.Mask, ARawImage.MaskSize);
     end;
 
 

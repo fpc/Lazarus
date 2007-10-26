@@ -663,6 +663,9 @@ procedure LoadXPMFromLazResource(const ResourceName: string;
   Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
 function GdkPixbufAddBitmapMask(pixbuf: PGdkPixbuf; mask:
   PGdkBitmap; mask_value: byte): PGdkPixbuf;
+  
+function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap; AIncludeAplha: Boolean; ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight :longint): PGdkPixbuf;
+
 
 // pixmaps
 procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
@@ -691,6 +694,8 @@ function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 function CreateGdkMaskBitmap(AImage, AMask: HBITMAP): PGdkBitmap;
 function CreateGdkMaskBitmap(AImageMask, AMask: PGdkBitmap): PGdkBitmap;
 function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
+procedure CheckGdkImageBitOrder(AImage: PGdkImage; AData: PByte; ADataCount: Integer);
+
 
 // menus
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;

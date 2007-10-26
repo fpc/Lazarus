@@ -2862,6 +2862,9 @@ var
   x, y, xStop, yStop: Integer;
   Color: TFPColor;
 begin
+  if FRawImage.Mask = nil then Exit;
+  if FRawImage.MaskSize = 0 then Exit;
+
   xStop := Width - 1;
   yStop := Height - 1;
 
