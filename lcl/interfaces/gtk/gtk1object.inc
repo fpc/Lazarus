@@ -2196,7 +2196,7 @@ var
     SrcStartBit := 7;
     ShiftInc := -1;
     {$ifdef HasX}
-    XImage := PPointer(AImage+1)^;
+    XImage := gdk_x11_image_get_ximage(AImage);
     if XImage^.bitmap_bit_order = LSBFirst
     then begin
       SrcStartBit := 0;

@@ -1464,7 +1464,7 @@ begin
 {$ifdef hasx}
   if AImage = nil then Exit;
 
-  XImage := PPointer(AImage+1)^;
+  XImage := gdk_x11_image_get_ximage(AImage);
   if XImage^.bitmap_bit_order = LSBFirst then Exit;
 {$endif}
 
