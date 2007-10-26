@@ -179,7 +179,6 @@ procedure TDefaultTranslator.TranslateStringProperty(Sender: TObject;
   const Instance: TPersistent; PropInfo: PPropInfo; var Content: string);
 var
   s: String;
-  s1: String;
 begin
   if not Assigned(FMOFile) then exit;
   if not Assigned(PropInfo) then exit;
@@ -187,28 +186,9 @@ begin
   if Instance is TComponent then
    if csDesigning in (Instance as TComponent).ComponentState then exit;
 {End DO :)}
-  if (AnsiUpperCase(PropInfo^.PropType^.Name)<>'TTRANSLATESTRING')and
-   not (Instance is TMenuItem)
-   then exit;
-  s:=AnsiUpperCase(Instance.ClassName+'.'+PropInfo^.Name)+'=';
-  s1:=s+Content;
-  s1:=FMOFile.Translate(s1);
-  if (copy(s1,1,length(s))=s)and(s1<>s+Content) then
-  begin
-    Content:=copy(s1,length(s)+1,length(s1)-length(s));
-    exit;
-  end;
-  s:=AnsiUpperCase(PropInfo^.Name)+'=';
-  s1:=s+Content;
-  s1:=FMOFile.Translate(s1);
-  if (copy(s1,1,length(s))=s)and(s1<>s+Content) then
-  begin
-    Content:=copy(s1,length(s)+1,length(s1)-length(s));
-    exit;
-  end;
-  s1:=FMOFile.Translate(Content);
-  if s1<>'' then Content:=s1;
-  //TODO:another types of translation
+  if (AnsiUpperCase(PropInfo^.PropType^.Name)<>'TTRANSLATESTRING') then exit;
+  s:=FMOFile.Translate(Content);
+  if s<>'' then Content:=s;
 end;
 
 var Dot1:integer;
