@@ -877,6 +877,12 @@ begin
   LCLSendCloseUpMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
+function GtkPopupCloseUp(WidgetInfo: Pointer): gboolean; cdecl;
+begin
+  LCLSendCloseUpMsg(TControl(PWidgetInfo(WidgetInfo)^.LCLObject));
+  Result := False;
+end;
+
 procedure GtkNotifyCB(AObject: PGObject; pspec: PGParamSpec; WidgetInfo: PWidgetInfo); cdecl;
 var
   AValue: TGValue;
@@ -887,7 +893,7 @@ begin
     g_value_init(@AValue, G_TYPE_BOOLEAN); // initialize for boolean
     g_object_get_property(AObject, pspec^.name, @AValue); // get property value
     if AValue.data[0].v_int = 0 then // if 0 = False then it is close up
-      LCLSendCloseUpMsg(TControl(WidgetInfo^.LCLObject))
+      g_idle_add(@GtkPopupCloseUp, WidgetInfo)
     else // in other case it is drop down
       LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
   end;
