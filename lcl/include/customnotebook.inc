@@ -560,11 +560,13 @@ begin
     {$IFDEF NOTEBOOK_DEBUG}
     DebugLn(['TCustomNoteBook.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
     {$ENDIF}
-    if not (pfAdded in APage.FFlags) then exit;
-    Exclude(APage.FFlags,pfAdded);
+    if not (pfAdded in APage.FFlags) or (pfRemoving in APage.FFlags) then
+      exit;
+    APage.FFlags := APage.FFlags - [pfAdded] + [pfRemoving];
     TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
     if APage.HandleAllocated then
       APage.DestroyHandle;
+    Exclude(APage.FFlags, pfRemoving);
   end;
 end;
 

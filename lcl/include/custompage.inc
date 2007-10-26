@@ -106,16 +106,10 @@ begin
   and (OldParent is TCustomNotebook)
   and (not (pfRemoving in FFlags)) then begin
     // remove from old pagelist
-    ParentNotebook:=TCustomNotebook(OldParent);
-    i:=PageIndex;
-    if i>=0 then begin
-      Include(FFlags,pfRemoving);
-      try
-        ParentNotebook.RemovePage(i);
-      finally
-        Exclude(FFlags,pfRemoving);
-      end;
-    end;
+    ParentNotebook := TCustomNotebook(OldParent);
+    i := PageIndex;
+    if i >= 0 then
+      ParentNotebook.RemovePage(i);
   end;
 
   inherited SetParent(AParent);
