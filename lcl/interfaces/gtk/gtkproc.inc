@@ -5774,11 +5774,8 @@ begin
   if CanRequestAlpha then Exit; // we're done
   if not AIncludeAplha then Exit;
   
-  {$if defined(VER2_0) or defined(GTK1)}
-  pixbuf := gdk_pixbuf_add_alpha(Result, false, #0,#0,#0);
-  {$else}
-  pixbuf := gdk_pixbuf_add_alpha(Result, false, 0,0,0);
-  {$endif}
+
+  pixbuf := gdk_pixbuf_add_alpha(Result, false, guchar(#0),guchar(#0),guchar(#0));
   gdk_pixbuf_unref(Result);
   Result := pixbuf;
 end;
