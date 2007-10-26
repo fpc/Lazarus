@@ -5770,7 +5770,11 @@ begin
   if CanRequestAlpha then Exit; // we're done
   if not AIncludeAplha then Exit;
   
+  {$ifdef VER2_0}
   pixbuf := gdk_pixbuf_add_alpha(Result, false, #0,#0,#0);
+  {$else}
+  pixbuf := gdk_pixbuf_add_alpha(Result, false, 0,0,0);
+  {$endif}
   gdk_pixbuf_unref(Result);
   Result := pixbuf;
 end;
