@@ -116,10 +116,14 @@ type
   end;
 
 const
-  CarbonDashStyle: Array [0..1] of Single = (4, 2);
-  CarbonDotStyle: Array [0..1] of Single = (2, 2);
-  CarbonDashDotStyle: Array [0..3] of Single = (4, 2, 2, 2);
-  CarbonDashDotDotStyle: Array [0..5] of Single = (4, 2, 2, 2, 2, 2);
+  // Paul Ishenin:
+  // pen shapes are compared with windows shapes and now a bit to bit equal
+  // please dont remove multiplier, maybe we will change it later
+  osx_pen_multiplier = 3;
+  CarbonDashStyle: Array [0..1] of Single = (6*osx_pen_multiplier, 2*osx_pen_multiplier);
+  CarbonDotStyle: Array [0..1] of Single = (1*osx_pen_multiplier, 1*osx_pen_multiplier);
+  CarbonDashDotStyle: Array [0..3] of Single = (3*osx_pen_multiplier, 2*osx_pen_multiplier, 1*osx_pen_multiplier, 2*osx_pen_multiplier);
+  CarbonDashDotDotStyle: Array [0..5] of Single = (3*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier);
 
 type
 
