@@ -516,3 +516,11 @@ function gdk_drawable_get_colormap(Drawable : PGDKDrawable) : PGdkColormap;
 begin
   result := gdk_window_get_colormap(Drawable);
 end;
+
+{$ifdef HasX}
+function gdk_x11_image_get_ximage(image: PGdkImage): PXImage;
+begin
+  Result := PGdkImagePrivate(Image)^.ximage;
+end;
+{$endif}
+

@@ -1464,11 +1464,7 @@ begin
 {$ifdef hasx}
   if AImage = nil then Exit;
 
-  {$IFDEF Gtk1}
-  XImage := PGdkImagePrivate(AImage)^.ximage;
-  {$ELSE}
   XImage := gdk_x11_image_get_ximage(AImage);
-  {$ENDIF}
   if XImage^.bitmap_bit_order = LSBFirst then Exit;
 {$endif}
 

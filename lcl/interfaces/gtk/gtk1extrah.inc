@@ -139,6 +139,11 @@ procedure gtk_color_selection_get_current_color(colorsel: PGTKColorSelection;
 procedure gtk_color_selection_set_current_color(colorsel: PGTKColorSelection;
                                                 Color: PGDKColor);
 
+//routines to mimic similar GTK2 routines/behaviour-->
+{$ifdef HasX}
+function gdk_x11_image_get_ximage(image:PGdkImage): PXImage;
+{$endif}
+
 
 {$ifdef UseXinerama}
   // Xinerama
