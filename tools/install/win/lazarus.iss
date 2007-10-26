@@ -9,6 +9,9 @@ EnableISX=true
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
+#define QtInfDir GetEnv('QTINFDIR')
+#define IDEWidgetSet GetEnv('IDE_WidgetSet')
+#define OutputFileName GetEnv('OutputFileName')
 [Setup]
 AppName={#AppName}
 AppVersion={#AppVersion}
@@ -19,7 +22,7 @@ AppUpdatesURL=http://www.lazarus.freepascal.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|c:\lazarus}
 DefaultGroupName={#AppName}
-OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCLongVersion}-{#SetupDate}-{#FPCTargetOS}
+OutputBaseFilename={#OutputFileName}
 InternalCompressLevel=ultra
 SolidCompression=true
 VersionInfoVersion={#AppVersion}
@@ -34,6 +37,9 @@ ShowTasksTreeLines=true
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Components]
+#if IDEWidgetSet!="qt"
+Name: installqtintfdll; Description: Install QT interface dll; Types: custom full compact
+#endif
 Name: associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
 Name: associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
 Name: associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom full
@@ -46,7 +52,12 @@ Name: associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions-{#FPCTargetOS}.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
 Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
-#if FPCVersion="2.2.0"
+#if IDEWidgetSet=="qt"
+Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
+#else
+Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: installqtintfdll; Tasks: 
+#endif
+#if FPCVersion=="2.2.0"
 Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {app}\ide; MinVersion: 1,0
 #endif
 

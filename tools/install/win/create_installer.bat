@@ -11,6 +11,10 @@ if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 :: it should have the debugger with the name gdb.exe in its bin subdirectory
 SET GDBDIR=c:\lazarus\source\mingw
 
+:: Path to the directory containing the qtinf dll matching the from 
+:: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
+SET QTINFDIR=c:\lazarus\source\qtinf
+
 :: Path to build directory. 
 :: In this directory an image of the installation will be built.
 SET BUILDDIR=c:\temp\lazbuild
@@ -27,8 +31,11 @@ SET LAZSVNDIR=%2
 :: Path to latest release compiler
 SET RELEASE_PPC=%3
 
+:: Optional parameter to indicate the LCL Widget set used by the IDE
+SET IDE_WIDGETSET=%4
+
 :: Name of fpc patch file
-SET PATCHFILE=%4
+SET PATCHFILE=%5
 
 ::=====================================================================
 :: no change needed after this.
@@ -86,13 +93,15 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 if exist %GDBDIR% %CP% -pr %GDBDIR% %BUILDDIR%
 
 :: create the installer
+SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%
+if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
-if not exist output\lazarus-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%.exe goto END
+if not exist output\%OutputFileName%.exe goto END
 
 :: delete build dir
-::rd /s /q %BUILDDIR% > NUL
+rd /s /q %BUILDDIR% > NUL
 
 :END
 
@@ -106,10 +115,11 @@ goto STOP
 :USAGE
 @echo off
 echo Usage:
-echo create_installer.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER [PATCHFILE]
+echo create_installer.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER [IDEWIDGETSET] [PATCHFILE]
 echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
 echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
+echo IDEWIDGETSET: optional, LCL platform used for compiling the IDE
 echo PATCHFILE: optional patch file for the fpc sources
 
 :STOP
