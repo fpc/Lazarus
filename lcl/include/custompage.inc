@@ -57,6 +57,10 @@ procedure TCustomPage.SetTabVisible(const AValue: Boolean);
 begin
   if AValue = FTabVisible then exit;
   FTabVisible := AValue;
+ 
+ if csDesigning in ComponentState then
+    Exit;
+
   TCustomNotebook(Parent).AddRemovePageHandle(Self);
   if FTabVisible then
   begin
