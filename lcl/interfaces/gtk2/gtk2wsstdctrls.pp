@@ -886,6 +886,7 @@ end;
 procedure GtkNotifyCB(AObject: PGObject; pspec: PGParamSpec; WidgetInfo: PWidgetInfo); cdecl;
 var
   AValue: TGValue;
+  AMenu: PGtkWidget;
 begin
   if pspec^.name = 'popup-shown' then
   begin
@@ -895,7 +896,11 @@ begin
     if AValue.data[0].v_int = 0 then // if 0 = False then it is close up
       g_idle_add(@GtkPopupCloseUp, WidgetInfo)
     else // in other case it is drop down
+    begin
       LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
+      AMenu := PGtkComboBoxPrivate(PGtkComboBox(WidgetInfo^.CoreWidget)^.priv)^.popup_widget;
+      gtk_menu_reposition(PGtkMenu(AMenu));
+    end;
   end;
 end;
 
@@ -958,9 +963,6 @@ begin
   end;
   
   g_signal_connect(ComboWidget, 'changed', TGCallback(@GtkChangedCB), AWidgetInfo);
-  {$ifdef windows}
-  g_signal_connect(ComboWidget, 'notify', TGCallback(@GtkNotifyCB), AWidgetInfo);
-  {$endif}
 
   // First the combo (or the entry)
   if gtk_is_combo_box_entry(ComboWidget) then begin
@@ -1013,11 +1015,15 @@ begin
   and (GTK_IS_MENU(APrivate^.popup_window)) then
     AMenu := GTK_OBJECT(APrivate^.popup_window);
 
-  if Assigned(AMenu) then
+  if Assigned(AMenu) and (gtk_major_version = 2) and (gtk_minor_version < 10) then
   begin
     g_signal_connect(AMenu, 'show', G_CALLBACK(@GtkPopupShowCB), AWidgetInfo);
     g_signal_connect_after(AMenu, 'selection-done', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
   end;
+
+  if (gtk_major_version >= 2) and (gtk_minor_version >= 10) then
+    g_signal_connect(ComboWidget, 'notify', TGCallback(@GtkNotifyCB), AWidgetInfo);
+
   
   // g_signal_connect(ComboWidget, 'set-focus-child', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
