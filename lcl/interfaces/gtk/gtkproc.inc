@@ -1464,7 +1464,11 @@ begin
 {$ifdef hasx}
   if AImage = nil then Exit;
 
+  {$IFDEF Gtk1}
+  XImage := PGdkImagePrivate(AImage)^.ximage;
+  {$ELSE}
   XImage := gdk_x11_image_get_ximage(AImage);
+  {$ENDIF}
   if XImage^.bitmap_bit_order = LSBFirst then Exit;
 {$endif}
 
@@ -5770,7 +5774,7 @@ begin
   if CanRequestAlpha then Exit; // we're done
   if not AIncludeAplha then Exit;
   
-  {$ifdef VER2_0}
+  {$if defined(VER2_0) or defined(GTK1)}
   pixbuf := gdk_pixbuf_add_alpha(Result, false, #0,#0,#0);
   {$else}
   pixbuf := gdk_pixbuf_add_alpha(Result, false, 0,0,0);

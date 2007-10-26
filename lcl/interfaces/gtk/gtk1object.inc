@@ -2196,7 +2196,11 @@ var
     SrcStartBit := 7;
     ShiftInc := -1;
     {$ifdef HasX}
+    {$IFDEF Gtk1}
+    XImage := PGdkImagePrivate(AImage)^.ximage;
+    {$ELSE}
     XImage := gdk_x11_image_get_ximage(AImage);
+    {$ENDIF}
     if XImage^.bitmap_bit_order = LSBFirst
     then begin
       SrcStartBit := 0;
