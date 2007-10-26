@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazarus 0.9.22\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-11 00:27+0100\n"
+"PO-Revision-Date: 2007-10-26 19:56+0100\n"
 "Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -232,7 +232,7 @@ msgstr "Znaky pre medzery"
 
 #: objinspstrconsts:fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Skontrolovať nastavenia dataset"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -396,7 +396,7 @@ msgstr "Edit"
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
-msgstr ""
+msgstr "Upraviť polia"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
@@ -448,11 +448,11 @@ msgstr "Obľúbené"
 
 #: objinspstrconsts:fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
+msgstr "Zoznam polí nie je dostupný, nie je možné skontrolovať duplicity"
 
 #: objinspstrconsts:fesfltitle
 msgid "FieldDefs"
-msgstr ""
+msgstr "FieldDefs"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -532,7 +532,7 @@ msgstr "Neplatná hodnota vlastnosti"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr ""
+msgstr "Nebolo možné získať zoznam poľa dataset"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
@@ -880,7 +880,7 @@ msgstr "Text:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr ""
+msgstr "Položka „%s“ je už v zozname. Chcete ju napriek tomu pridať?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
