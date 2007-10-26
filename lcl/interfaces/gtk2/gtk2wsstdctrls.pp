@@ -37,7 +37,7 @@ uses
   StdCtrls, LMessages,
 ////////////////////////////////////////////////////
   glib2,  gdk2, gtk2, Pango,
-  WSControls, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef,
+  WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef,
   LCLProc, Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 type
@@ -184,6 +184,8 @@ type
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
   end;
 
   { TGtk2WSCustomMemo }
@@ -741,6 +743,9 @@ class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
 var
   Entry: PGtkEntry;
 begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
+    Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
   Result :=  Min(Entry^.current_pos, Entry^.selection_bound);
 end;
@@ -750,8 +755,11 @@ class function TGtk2WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit
 var
   Entry: PGtkEntry;
 begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
+    Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
-  Result :=  ABS(Entry^.current_pos - Entry^.selection_bound);
+  Result := ABS(Entry^.current_pos - Entry^.selection_bound);
 end;
 
 class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
@@ -759,6 +767,8 @@ class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
 var
   Entry: PGtkEntry;
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetEchoMode') then
+    Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
   if NewMode in [emNone,emPassword] then begin
     gtk_entry_set_visibility(Entry,false);
@@ -774,6 +784,8 @@ var
   PWChar: Integer;
   Entry: PGtkEntry;
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetPasswordChar') then
+    Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
   if ACustomEdit.EchoMode=emNone then
     PWChar:=0
@@ -783,6 +795,33 @@ begin
       PWChar:=9679;
   end;
   gtk_entry_set_invisible_char(Entry,PWChar);
+end;
+
+class procedure TGtk2WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
+var
+  NewPos: Integer;
+  Entry: PGtkEntry;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
+    Exit;
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  if GetSelStart(ACustomEdit) = NewStart then exit;
+  NewPos := Min(NewStart, Entry^.text_max_length);
+  gtk_entry_set_position(Entry, NewPos);
+end;
+
+class procedure TGtk2WSCustomEdit.SetSelLength(
+  const ACustomEdit: TCustomEdit; NewLength: integer);
+var
+  Entry: PGtkEntry;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
+    Exit;
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  gtk_entry_select_region(Entry,
+    Entry^.current_pos,
+    Entry^.current_pos + NewLength);
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(
