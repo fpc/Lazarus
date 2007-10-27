@@ -755,6 +755,9 @@ type
     function GetWordAtRowCol(XY: TPoint): string;
     procedure GotoBookMark(BookMark: Integer);
     function IdentChars: TSynIdentChars;
+    {$IFDEF SYN_LAZARUS}
+    function IsIdentChar(const c: TUTF8Char): boolean;
+    {$ENDIF}
     procedure InvalidateGutter;
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
@@ -7129,6 +7132,13 @@ begin
     Result := [#33..#255];
     {$ENDIF}
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.IsIdentChar(const c: TUTF8Char): boolean;
+begin
+  Result:=(length(c)=1) and (c[1] in IdentChars);
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
 var
