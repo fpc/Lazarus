@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
@@ -47,7 +47,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmmain.lrs"/>
         <UnitName Value="frmmain"/>
-        <CursorPos X="28" Y="21"/>
+        <CursorPos X="13" Y="19"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="32"/>
@@ -63,8 +63,16 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
     <Other>
-      <CustomOptions Value="-ddsdebug"/>
+      <CustomOptions Value="-ddsdebug
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
