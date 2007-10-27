@@ -5,7 +5,7 @@ unit ButtonPanel;
 interface
 
 uses
-  Buttons, Classes, Controls, Dialogs, Extctrls, Forms, Graphics,
+  Buttons, Classes, LCLProc, Controls, Dialogs, Extctrls, Forms, Graphics,
   GraphType, LCLType, SysUtils;
 
 type
@@ -24,6 +24,8 @@ type
     property OnClick;
   end;
 
+  { TCustomButtonPanel }
+
   TCustomButtonPanel = class(TCustomPanel)
   private
     FCancelGlyph: TBitmap;
@@ -39,17 +41,19 @@ type
     FOKButton:   TPanelBitBtn;
     FButtonOrder: TButtonOrder;
     FDefaultButton: TPanelButton;
-    procedure DoShowButtons;
-    procedure SetShowButtons(Value: TPanelButtons);
-    procedure DoShowGlyphs;
-    procedure SetShowGlyphs(Value: TPanelButtons);
-    procedure DoButtonOrder;
+    procedure OrderButtonsRightToLeft(TheButtons: array of TControl);
     procedure ButtonOrderCloseCancelOK;
     procedure ButtonOrderCloseOKCancel;
-    procedure SetButtonOrder(Value: TButtonOrder);
+    procedure DoButtonOrder;
     procedure DoDefaultButton;
+    procedure DoShowButtons;
+    procedure DoShowGlyphs;
+    procedure SetButtonOrder(Value: TButtonOrder);
     procedure SetDefaultButton(Value: TPanelButton);
+    procedure SetShowButtons(Value: TPanelButtons);
+    procedure SetShowGlyphs(Value: TPanelButtons);
   protected
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -59,20 +63,7 @@ type
     property CloseButton: TPanelBitBtn Read FCloseButton stored false;
     property CancelButton: TPanelBitBtn Read FCancelButton stored false;
     property ButtonOrder: TButtonOrder Read FButtonOrder Write SetButtonOrder;
-    property TabOrder;
     property DefaultButton: TPanelButton Read FDefaultButton Write SetDefaultButton;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
     property ShowButtons: TPanelButtons Read FShowButtons Write SetShowButtons;
     property ShowGlyphs: TPanelButtons Read FShowGlyphs Write SetShowGlyphs;
   published
@@ -84,6 +75,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoSize;
     property OKButton;
     property HelpButton;
     property CloseButton;
@@ -204,15 +196,35 @@ begin
   end;
 end;
 
+procedure TCustomButtonPanel.OrderButtonsRightToLeft(
+  TheButtons: array of TControl);
+// reorder aligned buttons from left to right.
+// The buttons are Align=alRight. The order is determined by the Left property.
+// Set the Left+Wifth property to some values in ascending order and the LCL
+// will do the rest.
+var
+  i, x: Integer;
+begin
+  i:=High(TheButtons);
+  while (i>Low(TheButtons)) and (TheButtons[i-1].Left<TheButtons[i].Left) do
+    dec(i);
+  if i=Low(TheButtons) then exit;
+  
+  DisableAlign;
+  try
+    x:=ClientWidth;
+    for i:=High(TheButtons) downto Low(TheButtons) do begin
+      dec(x,TheButtons[i].Width);
+      TheButtons[i].Left:=x;
+    end;
+  finally
+    EnableAlign;
+  end;
+end;
+
 procedure TCustomButtonPanel.ButtonOrderCloseCancelOK;
 begin
-  FOKButton.Anchors     := [akRight];
-  FCancelButton.Left    := FOKButton.Left - FCancelButton.Width;
-  FCancelButton.Anchors := [akRight];
-  FCancelButton.AnchorSideRight.Control := FOKButton;
-  FCloseButton.Left     := FCancelButton.Left - FCloseButton.Width;
-  FCloseButton.Anchors  := [akRight];
-  FCloseButton.AnchorSideRight.Control := FCancelButton;
+  OrderButtonsRightToLeft([FCloseButton,FCancelButton,FOKButton]);
 
   //set taborder
   FOKButton.TabOrder     := 0;
@@ -223,13 +235,7 @@ end;
 
 procedure TCustomButtonPanel.ButtonOrderCloseOKCancel;
 begin
-  FCancelButton.Anchors := [akRight];
-  FOKButton.Left    := FCancelButton.Left - FOKButton.Width;
-  FOKButton.Anchors := [akRight];
-  FOKButton.AnchorSideRight.Control := FCancelButton;
-  FCloseButton.Left := FOKButton.Left - FCloseButton.Width;
-  FCloseButton.Anchors := [akRight];
-  FCloseButton.AnchorSideRight.Control := FOKButton;
+  OrderButtonsRightToLeft([FCloseButton,FOKButton,FCancelButton]);
 
   //set taborder
   FCancelButton.TabOrder := 0;
@@ -250,19 +256,10 @@ end;
 
 procedure TCustomButtonPanel.DoDefaultButton;
 begin
-  FOKButton.Default     := False;
-  FCancelButton.Default := False;
-  FCloseButton.Default  := False;
-  FHelpButton.Default   := False;
-
-  case FDefaultButton of
-    pbOK: FOKButton.Default     := True;
-    pbCancel: FCancelButton.Default := True;
-    pbClose: FCloseButton.Default := True;
-    pbHelp: FHelpButton.Default := True;
-    else
-      FOKButton.Default := True;
-  end;
+  FOKButton.Default     := FDefaultButton=pbOk;
+  FCancelButton.Default := FDefaultButton=pbCancel;
+  FCloseButton.Default  := FDefaultButton=pbClose;
+  FHelpButton.Default   := FDefaultButton=pbHelp;
 end;
 
 procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButton);
@@ -273,6 +270,14 @@ begin
   FDefaultButton := Value;
 
   DoDefaultButton;
+end;
+
+procedure TCustomButtonPanel.Loaded;
+begin
+  inherited Loaded;
+  DoDefaultButton;
+  DoShowGlyphs;
+  DoShowButtons;
 end;
 
 constructor TCustomButtonPanel.Create(AOwner: TComponent);
@@ -300,7 +305,6 @@ begin
     Height  := 2;
     BorderSpacing.Left := 6;
     BorderSpacing.Right := 6;
-    Visible := True;
   end;
   FCancelButton := TPanelBitBtn.Create(Self);
   with FCancelButton do
@@ -311,7 +315,6 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alRight;
-    Visible  := True;
   end;
   FCloseButton := TPanelBitBtn.Create(Self);
   with FCloseButton do
@@ -322,7 +325,6 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alRight;
-    Visible  := True;
   end;
   FHelpButton := TPanelBitBtn.Create(Self);
   with FHelpButton do
@@ -333,7 +335,6 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alLeft;
-    Visible  := True;
   end;
   FOKButton := TPanelBitBtn.Create(Self);
   with FOKButton do
@@ -344,7 +345,6 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alRight;
-    Visible  := True;
   end;
 
   FCancelGlyph := TBitmap.Create;
@@ -359,13 +359,14 @@ begin
 
   FDefaultButton := pbOK;
   FButtonOrder   := boDefault;
-  ShowButtons    := [pbOK, pbCancel, pbClose, pbHelp];
-  ShowGlyphs     := [pbOK, pbCancel, pbClose, pbHelp];
+  FShowButtons    := [pbOK, pbCancel, pbClose, pbHelp];
+  FShowGlyphs     := [pbOK, pbCancel, pbClose, pbHelp];
 
-  DoDefaultButton;
-  DoButtonOrder;
-  DoShowButtons;
-  DoShowGlyphs;
+  if not (csLoading in ComponentState) then begin
+    DoDefaultButton;
+    DoShowButtons;
+    DoShowGlyphs;
+  end;
 end;
 
 destructor TCustomButtonPanel.Destroy;

@@ -26,10 +26,11 @@
 {$ENDIF}
 
 {off $DEFINE VerboseAutoSizeCtrlData}
+{off $DEFINE VerboseMouseBugfix}
 
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'xxxTPage';
+const CheckPostionClassName = 'TButtonPanel';
 const CheckPostionName = 'WorkingDirectoryGroupBox';
 const CheckPostionParentName = 'WorkingDirectoryGroupBox';
 
@@ -41,7 +42,7 @@ begin
                and (CompareText(AControl.Parent.Name,CheckPostionParentName)=0));
 end;
 {$ENDIF}
-{ $DEFINE VerboseMouseBugfix}
+
 
 
 {------------------------------------------------------------------------------
@@ -2670,7 +2671,7 @@ var
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Self) then
       if AlignList.Count>0 then begin
-        DbgOut('[TWinControl.AlignControls.DoAlign] Self=',DbgSName(Self),
+        DbgOut('[TWinControl.AlignControls.DoAlign] Self=',DbgSName(Self),' Control=',dbgsName(AControl),
           ' current align=',AlignNames[AAlign],' AlignList=[');
         for i:=0 to AlignList.Count-1 do begin
           if i>0 then DbgOut(',');
