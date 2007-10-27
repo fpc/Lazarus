@@ -32,10 +32,10 @@ type
   { TGraphicPropertyEditorForm }
 
   TGraphicPropertyEditorForm = class(TForm)
+    OkCancelButtonPanel: TButtonPanel;
     ImagePreview: TImage;
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
     LoadButton: TButton;
+    LoadSaveBtnPanel: TPanel;
     SaveButton: TButton;
     ClearButton: TButton;
     GroupBox1: TGroupBox;
@@ -68,8 +68,8 @@ begin
   FileName := '';
   Caption := oisLoadImageDialog;
   GroupBox1.Caption:=oisPEPicture;
-  OKButton.Caption := oisOK;
-  CancelButton.Caption := oisCancel;
+  OkCancelButtonPanel.OKButton.Caption := oisOK;
+  OkCancelButtonPanel.CancelButton.Caption := oisCancel;
   LoadButton.Caption := oisLoad;
   SaveButton.Caption := oisSave;
   ClearButton.Caption := oisClear;
