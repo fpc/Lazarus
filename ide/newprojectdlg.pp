@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, LResources, Project, Buttons,
-  StdCtrls, ProjectIntf, LazarusIDEStrConsts;
+  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts;
 
 type
 
@@ -43,6 +43,7 @@ type
     CancelButton: TButton;
     ListBox: TListBox;
     HelpLabel: TLabel;
+    NPDBtnPanel: TPanel;
     procedure CreateButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
     procedure ListBoxDblClick(Sender: TObject);
@@ -117,7 +118,6 @@ begin
 
   ListBox:=TListBox.Create(Self);
   with ListBox do begin
-    Parent:=Self;
     Name:='ListBox';
     Left:=5;
     Top:=5;
@@ -135,46 +135,60 @@ begin
     ItemIndex:=0;
     OnDblClick:=@ListBoxDblClick;
     OnSelectionChange:=@ListBoxSelectionChange;
+    Parent:=Self;
   end;
 
   HelpLabel:=TLabel.Create(Self);
   with HelpLabel do begin
-    Parent:=Self;
     Name:='HelpLabel';
     Anchors := [akTop,akRight,akBottom];
     WordWrap:=true;
     Caption:=lisNPSelectAProjectType;
     AnchorToCompanion(akLeft,6,ListBox);
     AnchorParallel(akRight,6,Parent);
+    Parent:=Self;
+  end;
+
+  NPDBtnPanel:=TPanel.Create(Self);
+  with NPDBtnPanel do begin
+    Name:='NPDBtnPanel';
+    AutoSize:=true;
+    Align:=alBottom;
+    Caption:='';
+    BevelOuter:=bvNone;
+    Parent:=Self;
   end;
 
   CreateButton:=TButton.Create(Self);
   with CreateButton do begin
-    Parent:=Self;
     Name:='CreateButton';
     Width:=80;
     Height:=23;
-    Left:=Self.ClientWidth-Width*2-2*15;
-    Top:=Self.ClientHeight-40;
-    Anchors := [akRight,akBottom];
+    Left:=1;
     OnClick:=@CreateButtonClick;
     Caption:=lisNPCreate;
     Default:=true;
+    AutoSize:=true;
+    Parent:=NPDBtnPanel;
+    Align:=alRight;
   end;
 
   CancelButton:=TButton.Create(Self);
   with CancelButton do begin
-    Parent:=Self;
     Name:='CancelButton';
     Width:=80;
     Height:=23;
-    Left:=Self.ClientWidth-Width-15;
-    Top:=CreateButton.Top;
-    Anchors := [akRight,akBottom];
+    Left:=2;
     OnClick:=@CancelButtonClick;
     Caption:=dlgCancel;
     Cancel:=true;
+    AutoSize:=true;
+    Parent:=NPDBtnPanel;
+    Align:=alRight;
   end;
+
+  ListBox.AnchorToNeighbour(akBottom,6,NPDBtnPanel);
+  HelpLabel.AnchorToNeighbour(akBottom,6,NPDBtnPanel);
 end;
 
 procedure TNewProjectDialog.CreateButtonClick(Sender:TObject);
