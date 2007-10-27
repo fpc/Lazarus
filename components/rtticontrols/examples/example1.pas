@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, RTTICtrls,
-  StdCtrls;
+  RTTIGrids, StdCtrls;
 
 type
   TForm1 = class(TForm)
