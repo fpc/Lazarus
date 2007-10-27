@@ -1456,7 +1456,9 @@ end;
 
 procedure CheckGdkImageBitOrder(AImage: PGdkImage; AData: PByte; ADataCount: Integer);
 var
-  b: Byte;
+  b, count: Byte;
+  c: Cardinal;
+  
 {$ifdef hasx}
   XImage: XLib.PXimage;
 {$endif}
@@ -1469,20 +1471,51 @@ begin
 {$endif}
 
   // on windows or bigendian servers the bits need to be swapped
-
-  while ADataCount > 0 do
+  
+  // align dataptr first
+  count := PtrUint(AData) and 3;
+  if count > ADataCount then count := ADataCount;
+  Dec(ADataCount, Count);
+  
+  while (Count > 0) do
   begin
     // reduce dereferences
-    b := AData^;
-    AData^ := (b and $01) shl 7
-           or (b and $02) shl 5
-           or (b and $04) shl 3
-           or (b and $08) shl 1
-           or (b and $10) shr 1
-           or (b and $20) shr 3
-           or (b and $40) shr 5
-           or (b and $80) shr 7;
+    b      := AData^;
+    b      := ((b shr 4) and $0F) or ((b shl 4) and $F0);
+    b      := ((b shr 2) and $33) or ((b shl 2) and $CC);
+    AData^ := ((b shr 1) and $55) or ((b shl 1) and $AA);
+
+    Dec(Count);
+    Inc(AData);
+  end;
+  
+  // get remainder
+  Count := ADataCount and 3;
+  
+  // now swap bits with 4 in a row
+  ADataCount := ADataCount shr 2;
+  while (ADataCount > 0) do
+  begin
+    // reduce dereferences
+    c                 := PCardinal(AData)^;
+    c                 := ((c shr 4) and $0F0F0F0F) or ((c shl 4) and $F0F0F0F0);
+    c                 := ((c shr 2) and $33333333) or ((c shl 2) and $CCCCCCCC);
+    PCardinal(AData)^ := ((c shr 1) and $55555555) or ((c shl 1) and $AAAAAAAA);
+
     Dec(ADataCount);
+    Inc(AData, 4);
+  end;
+
+  // process remainder
+  while (Count > 0) do
+  begin
+    // reduce dereferences
+    b      := AData^;
+    b      := ((b shr 4) and $0F) or ((b shl 4) and $F0);
+    b      := ((b shr 2) and $33) or ((b shl 2) and $CC);
+    AData^ := ((b shr 1) and $55) or ((b shl 1) and $AA);
+
+    Dec(Count);
     Inc(AData);
   end;
 
