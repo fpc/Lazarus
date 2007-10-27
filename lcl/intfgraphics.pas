@@ -4708,7 +4708,7 @@ begin
       end;
       // force alpha description
       
-      // CheckAlphaDescription(TheImage);
+      CheckAlphaDescription(TheImage);
       SetupRead(0, TheImage.Width * 32, True);
     end;
   else
