@@ -17,7 +17,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property Caption;
+    property Caption stored true;// the translation of the IDE at designtime is used default item
     property Enabled;
     property Font;
     property Glyph;

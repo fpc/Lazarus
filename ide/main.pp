@@ -491,7 +491,6 @@ type
                                     // display the correct tab
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
-    FOpenEditorsOnCodeToolChange: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileValid: boolean;
 
@@ -501,7 +500,7 @@ type
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
-    function DoResetToolStatus(Interactive: boolean): boolean;
+    function DoResetToolStatus(Interactive: boolean): boolean; override;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
 
@@ -1350,7 +1349,7 @@ begin
   FCheckingFilesOnDisk:=true;
   try
     // stop debugging/compiling/...
-    if not DoResetToolStatus(true) then exit;
+    if (ToolStatus=itExiting) and (not DoResetToolStatus(true)) then exit;
 
     // check foreign windows
     if not CloseQueryIDEWindows then exit;
@@ -2938,7 +2937,7 @@ begin
     end;
 
   end;
-  Result:=true;
+  Result:=ToolStatus=itNone;
 end;
 
 procedure TMainIDE.Notification(AComponent: TComponent; Operation: TOperation);
@@ -9037,12 +9036,12 @@ var
   OldChange: Boolean;
 begin
   InputHistories.LastConvertDelphiUnit:=DelphiFilename;
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,[]);
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -9052,12 +9051,12 @@ var
   OldChange: Boolean;
 begin
   InputHistories.LastConvertDelphiProject:=DelphiFilename;
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     Result:=DelphiProject2Laz.ConvertDelphiToLazarusProject(DelphiFilename);
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -9067,12 +9066,12 @@ var
   OldChange: Boolean;
 begin
   InputHistories.LastConvertDelphiPackage:=DelphiFilename;
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     Result:=DelphiProject2Laz.ConvertDelphiToLazarusPackage(DelphiFilename);
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -10564,7 +10563,7 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
   UnitLinksChanged: boolean;
   TargetOS, TargetProcessor: string;
 begin
-  FOpenEditorsOnCodeToolChange:=false;
+  OpenEditorsOnCodeToolChange:=false;
 
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
@@ -10719,13 +10718,21 @@ procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
 // the CodeToolBoss built a list of Sources that will be modified
 // 1. open all of them in the source notebook
 // 2. lock the editors to reduce repaints and undo steps
-var i: integer;
+var
+  i: integer;
+  Flags: TOpenFlags;
+  CodeBuf: TCodeBuffer;
 begin
-  if FOpenEditorsOnCodeToolChange then begin
+  if OpenEditorsOnCodeToolChange then begin
     // open all sources in editor
     for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
+      CodeBuf:=Manager.SourceChangeCache.BuffersToModify[i];
+      //DebugLn(['TMainIDE.OnBeforeCodeToolBossApplyChanges i=',i,' ',CodeBUf.Filename]);
+      Flags:=[ofOnlyIfExists,ofDoNotLoadResource];
+      if CodeBuf.IsVirtual then
+        Include(Flags,ofVirtualFile);
       if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
-        -1,[ofOnlyIfExists,ofDoNotLoadResource])<>mrOk then
+        -1,Flags)<>mrOk then
       begin
         Abort:=true;
         exit;
@@ -11498,8 +11505,8 @@ var
   CursorXY: TPoint;
   OldChange: Boolean;
 begin
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     Result:=mrCancel;
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -11612,7 +11619,7 @@ begin
 
     Result:=mrOk;
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -11658,8 +11665,8 @@ var
   NewX, NewY, NewTopLine: integer;
   OldChange: Boolean;
 begin
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
     {$IFDEF IDE_DEBUG}
@@ -11683,7 +11690,7 @@ begin
       DoJumpToCodeToolBossError;
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -11706,8 +11713,8 @@ begin
   BlockBegin:=ActiveSrcEdit.EditorComponent.BlockBegin;
   BlockEnd:=ActiveSrcEdit.EditorComponent.BlockEnd;
 
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     CTResult:=ShowExtractProcDialog(ActiveUnitInfo.Source,BlockBegin,BlockEnd,
       NewSource,NewX,NewY,NewTopLine)=mrOk;
@@ -11719,7 +11726,7 @@ begin
         NewSource,NewX,NewY,NewTopLine,true);
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -12070,8 +12077,8 @@ begin
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
 
-  OldOpenEditorsOnCodeToolChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldOpenEditorsOnCodeToolChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
 
     // check ancestor component
@@ -12134,7 +12141,7 @@ begin
     // rename methods
     RenameMethods;
   finally
-    FOpenEditorsOnCodeToolChange:=OldOpenEditorsOnCodeToolChange;
+    OpenEditorsOnCodeToolChange:=OldOpenEditorsOnCodeToolChange;
   end;
 end;
 
@@ -12750,8 +12757,8 @@ begin
   writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
   DebugLn(['[TMainIDE.OnPropHookCreateMethod] Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
@@ -12771,7 +12778,7 @@ begin
       raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -12817,8 +12824,8 @@ begin
   writeln('');
   writeln('[TMainIDE.OnPropHookRenameMethod] ************');
   {$ENDIF}
-  OldChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
+  OldChange:=OpenEditorsOnCodeToolChange;
+  OpenEditorsOnCodeToolChange:=true;
   try
     // rename/create published method
     BossResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
@@ -12846,7 +12853,7 @@ begin
         +#13#13+lisError+ErrorMsg);
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=OldChange;
+    OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 

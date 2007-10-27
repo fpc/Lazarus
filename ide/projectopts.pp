@@ -77,7 +77,7 @@ type
     // Forms
     FormsAutoCreatedLabel: TLabel;
     FormsAutoCreatedListBox: TListBox;
-    FormsAvailFormsLabel:  TLabel;
+    FormsAvailFormsLabel: TLabel;
     FormsAvailFormsListBox: TListBox;
     FormsAddToAutoCreatedFormsBtn: TArrow;
     FormsRemoveFromAutoCreatedFormsBtn: TArrow;
@@ -233,6 +233,7 @@ begin
   Caption := dlgProjectOptions;
   OKButton.Caption:=lisOkBtn;
   CancelButton.Caption:=dlgCancel;
+  HelpButton.Caption:=lisMenuHelp;
 
   NoteBook.PageIndex := 0;
 

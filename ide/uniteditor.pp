@@ -179,8 +179,8 @@ type
     procedure UserCommandProcessed(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure ccAddMessage(Texts: String);
-    function AutoCompleteLineBreak: boolean;
-    function AutoCompleteSpace: boolean;
+    function AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
+       Category: TAutoCompleteOption): boolean;
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
@@ -1335,6 +1335,8 @@ Procedure TSourceEditor.ProcessCommand(Sender: TObject;
 // these are normal commands for synedit (lower than ecUserFirst),
 // define extra actions here
 // for non synedit keys (bigger than ecUserFirst) use ProcessUserCommand
+var
+  AddChar: Boolean;
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
 
@@ -1401,25 +1403,30 @@ begin
     
   ecChar:
     begin
-      if aChar=' ' then begin
-        if AutoCompleteSpace then begin
-          // do not set Command to ecNone, because the space should be inserted
-        end;
-      end;
-      //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(SourceCompletionTimer.Interval), Dbgs(FEditor.CaretXY));
-      if (Command=ecChar) and EditorOpts.AutoIdentifierCompletion then begin
+      AddChar:=true;
+      //debugln(['TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',SourceCompletionTimer.Interval,' ',Dbgs(FEditor.CaretXY),' ',FEditor.IsIdentChar(aChar)]);
+      if (aChar=' ') and AutoCompleteChar(aChar,AddChar,acoSpace) then begin
+        // completed
+      end else if (not FEditor.IsIdentChar(aChar))
+      and AutoCompleteChar(aChar,AddChar,acoWordEnd) then begin
+        // completed
+      end else if EditorOpts.AutoIdentifierCompletion then begin
         // store caret position to detect caret changes
         SourceCompletionCaretXY:=FEditor.CaretXY;
         // add the char
         inc(SourceCompletionCaretXY.x,length(AChar));
         SourceCompletionTimer.AutoEnabled:=true;
       end;
+      //DebugLn(['TSourceEditor.ProcessCommand AddCHar=',AddCHar]);
+      if not AddChar then Command:=ecNone;
     end;
     
   ecLineBreak:
-    if AutoCompleteLineBreak then
-      Command:=ecNone;
-
+    begin
+      AddChar:=true;
+      if AutoCompleteChar(aChar,AddChar,acoLineBreak) then ;
+      if not AddChar then Command:=ecNone;
+    end;
   end;
   //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
 end;
@@ -2096,47 +2103,32 @@ Begin
   ErrorMsgs.Add(Texts);
 End;
 
-function TSourceEditor.AutoCompleteLineBreak: boolean;
+function TSourceEditor.AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
+  Category: TAutoCompleteOption): boolean;
 var
   AToken: String;
   i: Integer;
   p: TPoint;
   Line: String;
+  CatName: String;
+  SrcToken: String;
 begin
   Result:=false;
   Line:=GetLineText;
   p:=GetCursorTextXY;
   if (p.x>length(Line)+1) or (Line='') then exit;
+  CatName:=AutoCompleteOptionNames[Category];
   for i:=0 to FCodeTemplates.Completions.Count-1 do begin
     AToken:=FCodeTemplates.Completions[i];
-    if (AnsiCompareText(AToken,copy(Line,length(Line)-length(AToken)+1,length(AToken)))=0)
-    and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CodeTemplateAutoOnLineBreak)>=0)
+    SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
+    //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)]);
+    if (AnsiCompareText(AToken,SrcToken)=0)
+    and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)>=0)
     then begin
       Result:=true;
       FCodeTemplates.ExecuteCompletion(AToken,FEditor);
-      exit;
-    end;
-  end;
-end;
-
-function TSourceEditor.AutoCompleteSpace: boolean;
-var
-  AToken: String;
-  i: Integer;
-  p: TPoint;
-  Line: String;
-begin
-  Result:=false;
-  Line:=GetLineText;
-  p:=GetCursorTextXY;
-  if (p.x>length(Line)+1) or (Line='') then exit;
-  for i:=0 to FCodeTemplates.Completions.Count-1 do begin
-    AToken:=FCodeTemplates.Completions[i];
-    if (AnsiCompareText(AToken,copy(Line,length(Line)-length(AToken)+1,length(AToken)))=0)
-    and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CodeTemplateAutoOnSpace)>=0)
-    then begin
-      Result:=true;
-      FCodeTemplates.ExecuteCompletion(AToken,FEditor);
+      AddChar:=FCodeTemplates.CompletionAttributes[i].IndexOfName(
+                                        AutoCompleteOptionNames[acoAddChar])>=0;
       exit;
     end;
   end;

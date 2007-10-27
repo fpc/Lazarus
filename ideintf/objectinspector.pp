@@ -2020,7 +2020,7 @@ end;
 
 function TOICustomPropertyGrid.TopMax:integer;
 begin
-  Result:=GridHeight-ClientHeight+2*BorderWidth;
+  Result:=GridHeight-ClientHeight+2*integer(BorderWidth);
   if Result<0 then Result:=0;
 end;
 

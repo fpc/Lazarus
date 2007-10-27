@@ -177,15 +177,15 @@ object CodeTemplateDialog: TCodeTemplateDialog
       TabOrder = 2
     end
     object TemplateSynEdit: TSynEdit
-      AnchorSideTop.Control = AutoOnLineBreakCheckBox
+      AnchorSideTop.Control = AutoOnCheckGroup
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = EditTemplateGroupBox
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 158
-      Top = 67
+      Height = 150
+      Top = 75
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -520,29 +520,32 @@ object CodeTemplateDialog: TCodeTemplateDialog
       )
       SelectedColor.OnChange = nil
     end
-    object AutoOnLineBreakCheckBox: TCheckBox
-      AnchorSideLeft.Control = UseMacrosCheckBox
+    object AutoOnCheckGroup: TCheckGroup
+      AnchorSideLeft.Control = EditTemplateGroupBox
       AnchorSideTop.Control = InsertMacroButton
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = EditTemplateGroupBox
+      AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
+      Height = 30
       Top = 39
-      Width = 197
-      BorderSpacing.Top = 6
-      Caption = 'AutoOnLineBreakCheckBox'
+      Width = 469
+      Anchors = [akTop, akLeft, akRight]
+      AutoFill = True
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'AutoOnCheckGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      Columns = 2
+      Constraints.MinHeight = 30
       TabOrder = 3
-    end
-    object AutoOnSpaceCheckBox: TCheckBox
-      AnchorSideLeft.Control = AutoOnLineBreakCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = AutoOnLineBreakCheckBox
-      Left = 215
-      Height = 22
-      Top = 39
-      Width = 175
-      BorderSpacing.Left = 12
-      Caption = 'AutoOnSpaceCheckBox'
-      TabOrder = 4
     end
   end
   object BtnPanel: TPanel
@@ -595,7 +598,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object ASynPasSyn: TSynFreePascalSyn
     Enabled = False
     NestedComments = True
-    left = 272
-    top = 24
+    left = 304
+    top = 344
   end
 end

@@ -348,6 +348,7 @@ var
   CurFilename: String;
   FileIsValid: boolean;
 begin
+  //DebugLn(['TOpenPictureDialog.UpdatePreview ']);
   CurFilename := FileName;
   if CurFilename = FPreviewFilename then exit;
 

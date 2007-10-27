@@ -127,6 +127,7 @@ type
   private
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     FMainBarSubTitle: string;
+    FOpenEditorsOnCodeToolChange: boolean;
     procedure AddHandler(HandlerType: TLazarusIDEHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
@@ -197,6 +198,9 @@ type
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
+    property OpenEditorsOnCodeToolChange: boolean
+                 read FOpenEditorsOnCodeToolChange
+                 write FOpenEditorsOnCodeToolChange;
 
     // progress and error messages
     function ShowProgress(const SomeText: string;

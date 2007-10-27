@@ -303,7 +303,7 @@ type
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency): TLoadPackageResult;
     procedure OpenInstalledDependency(Dependency: TPkgDependency;
-                                      InstallType: TPackageInstallType);
+                          InstallType: TPackageInstallType; var Quiet: boolean);
     procedure OpenRequiredDependencyList(FirstDependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(ADependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(ADependency: TPkgDependency);
@@ -3395,9 +3395,10 @@ begin
 end;
 
 procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
-  InstallType: TPackageInstallType);
+  InstallType: TPackageInstallType; var Quiet: boolean);
 var
   BrokenPackage: TLazPackage;
+  CurResult: TModalResult;
 begin
   OpenDependency(Dependency);
   if Dependency.LoadPackageResult<>lprSuccess then begin
@@ -3429,11 +3430,15 @@ begin
     AddPackage(BrokenPackage);
     DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
 
-    // tell the user
-    MessageDlg(lisPkgSysPackageFileNotFound,
-      Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
-        BrokenPackage.Name, '"', #13]),
-      mtError,[mbOk],0);
+    if not Quiet then begin
+      // tell the user
+      CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
+        Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
+          BrokenPackage.Name, '"', #13]),
+        mtError,[mrOk,mrYesToAll,'Skip these warnings'],0);
+      if CurResult=mrYesToAll then
+        Quiet:=true;
+    end;
 
     // open it
     if OpenDependency(Dependency)<>lprSuccess then

@@ -112,13 +112,14 @@ type
     procedure LoadMenuShortCuts; virtual;
     function GetToolStatus: TIDEToolStatus; override;
     procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
-    
+
     procedure mnuWindowsItemClick(Sender: TObject); virtual;
     procedure OnMainBarDestroy(Sender: TObject); virtual;
     
     procedure ConnectOutputFilter;
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
+    function DoResetToolStatus(Interactive: boolean): boolean; virtual; abstract;
 
     constructor Create(TheOwner: TComponent); override;
     procedure StartIDE; virtual; abstract;

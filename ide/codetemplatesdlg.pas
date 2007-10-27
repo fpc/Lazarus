@@ -38,9 +38,21 @@ uses
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect;
 
+type
+  TAutoCompleteOption = (
+    acoLineBreak,
+    acoSpace,
+    acoWordEnd,
+    acoAddChar
+    );
+
 const
-  CodeTemplateAutoOnLineBreak = 'AutoOnLineBreak';
-  CodeTemplateAutoOnSpace = 'AutoOnSpace';
+  AutoCompleteOptionNames: array[TAutoCompleteOption] of shortstring = (
+    'AutoOnLineBreak',
+    'AutoOnSpace',
+    'AutoOnWordEnd',
+    'AddChar'
+  );
 
 type
 
@@ -49,8 +61,7 @@ type
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
     ASynPasSyn: TSynFreePascalSyn;
-    AutoOnLineBreakCheckBox: TCheckBox;
-    AutoOnSpaceCheckBox: TCheckBox;
+    AutoOnCheckGroup: TCheckGroup;
     EditTemplateGroupBox: TGroupBox;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
@@ -654,8 +665,11 @@ begin
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;
-  AutoOnLineBreakCheckBox.Caption:=lisAutomaticallyOnLineBreak;
-  AutoOnSpaceCheckBox.Caption:=lisAutomaticallyOnSpace;
+  AutoOnCheckGroup.Caption:='Auto complete on ...';
+  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
+  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnSpace);
+  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
+  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
 
@@ -904,13 +918,13 @@ var
 var
   idx, a, sp, ep: integer;
   s: string;
-  AutoOnLineBreak: Boolean;
-  AutoOnSpace: Boolean;
+  AutoOnCat: array[TAutoCompleteOption] of Boolean;
   Attributes: TStrings;
+  c: TAutoCompleteOption;
 begin
   EnableMacros:=false;
-  AutoOnLineBreak:=false;
-  AutoOnSpace:=false;
+  for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
+    AutoOnCat[c]:=false;
   
   LineCount := 0;
   idx := TemplateListBox.ItemIndex;
@@ -929,8 +943,8 @@ begin
                            +' - '+dbgstr(SynAutoComplete.CompletionComments[a]);
     Attributes:=SynAutoComplete.CompletionAttributes[a];
     EnableMacros:=Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
-    AutoOnLineBreak:=Attributes.IndexOfName(CodeTemplateAutoOnLineBreak)>=0;
-    AutoOnSpace:=Attributes.IndexOfName(CodeTemplateAutoOnSpace)>=0;
+    for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
+      AutoOnCat[c]:=Attributes.IndexOfName(AutoCompleteOptionNames[c])>=0;
     LastTemplate := -1;
     s:=SynAutoComplete.CompletionValues[a];
     //debugln('TCodeTemplateDialog.ShowCurCodeTemplate s="',s,'"');
@@ -954,8 +968,8 @@ begin
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
   UseMacrosCheckBox.Checked:=EnableMacros;
-  AutoOnLineBreakCheckBox.Checked:=AutoOnLineBreak;
-  AutoOnSpaceCheckBox.Checked:=AutoOnSpace;
+  for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
+    AutoOnCheckGroup.Checked[ord(c)]:=AutoOnCat[c];
 end;
 
 procedure TCodeTemplateDialog.SaveCurCodeTemplate;
@@ -980,6 +994,7 @@ var
 var
   NewValue: string;
   l: integer;
+  c: TAutoCompleteOption;
 begin
   if LastTemplate<0 then exit;
   a := LastTemplate;
@@ -999,8 +1014,8 @@ begin
   SynAutoComplete.CompletionValues[a]:=NewValue;
   
   SetBooleanAttribute(CodeTemplateEnableMacros,UseMacrosCheckBox.Checked);
-  SetBooleanAttribute(CodeTemplateAutoOnLineBreak,AutoOnLineBreakCheckBox.Checked);
-  SetBooleanAttribute(CodeTemplateAutoOnSpace,AutoOnSpaceCheckBox.Checked);
+  for c:=low(TAutoCompleteOption) to High(TAutoCompleteOption) do
+     SetBooleanAttribute(AutoCompleteOptionNames[c],AutoOnCheckGroup.Checked[ord(c)]);
 
   //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate NewValue="',NewValue,'" SynAutoComplete.CompletionValues[a]="',SynAutoComplete.CompletionValues[a],'"');
 end;

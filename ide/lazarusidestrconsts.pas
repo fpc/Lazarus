@@ -3431,8 +3431,9 @@ resourcestring
   rsConditionalDefines = 'Conditional defines';
   rsAddInverse = 'Add Inverse';
   rsRemove = '&Remove';
-  lisAutomaticallyOnLineBreak = 'automatically on line break';
-  lisAutomaticallyOnSpace = 'automatically on space';
+  lisAutomaticallyOnLineBreak = 'line break';
+  lisAutomaticallyOnSpace = 'space';
+  lisAutomaticallyOnWordEnd = 'word end';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
     +'provides the same as the following packages:';
 

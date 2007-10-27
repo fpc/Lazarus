@@ -76,6 +76,7 @@ procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
 var
   CodeBuf: TCodeBuffer;
   UnneededUnitname: String;
+  OldChange: Boolean;
 begin
   if Step<>imqfoMenuItem then exit;
   if not GetMsgLineFilename(Msg,CodeBuf) then exit;
@@ -87,10 +88,18 @@ begin
   UnneededUnitname:=REVar(1);
 
   // remove unit
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
-  if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf,UnneededUnitname)
-  then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
+  if not LazarusIDE.BeginCodeTools then exit;
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+  try
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+    if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf,UnneededUnitname)
+    then begin
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+  finally
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
   end;
 
   // message fixed
@@ -101,6 +110,7 @@ function GetMsgLineFilename(Msg: TIDEMessageLine; out CodeBuf: TCodeBuffer
   ): boolean;
 var
   Filename: String;
+  TestDir: String;
 begin
   Result:=false;
   CodeBuf:=nil;
@@ -110,6 +120,9 @@ begin
   end;
 
   Filename:=Msg.Parts.Values['Filename'];
+  TestDir:=LazarusIDE.GetTestBuildDirectory;
+  if (TestDir<>'') or (FileIsInDirectory(Filename,TestDir)) then
+    Filename:=ExtractFileName(Filename);
   //DebugLn('GetMsgLineFilename Filename=',Filename,' ',Msg.Parts.Text);
   CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
   if CodeBuf=nil then begin

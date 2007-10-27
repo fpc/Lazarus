@@ -169,7 +169,7 @@ type
     procedure LoadStaticBasePackages;
     procedure LoadStaticCustomPackages;
     function LoadInstalledPackage(const PackageName: string;
-                                  AddToAutoInstall: boolean): TLazPackage;
+                    AddToAutoInstall: boolean; var Quiet: boolean): TLazPackage;
     procedure LoadAutoInstallPackages;
     procedure SortAutoInstallDependencies;
     procedure AddUnitToProjectMainUsesSection(AProject: TProject;
@@ -586,6 +586,7 @@ var
   PkgList: TFPList;
   i: Integer;
   APackage: TLazPackage;
+  CurResult: TModalResult;
 begin
   Ok:=false;
   PkgList:=nil;
@@ -604,12 +605,15 @@ begin
       if (APackage.PackageType=lptRunTime)
       and (APackage.FirstUsedByDependency=nil) then begin
         // this is a runtime only package, not needed by any other package
-        if IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
+        CurResult:=IDEQuestionDialog(lisPkgMangPackageIsNoDesigntimePackage,
           Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
             APackage.IDAsString, #13]),
-          mtWarning,[mbIgnore,mbCancel])<>mrIgnore
-        then
-          exit;
+          mtWarning,[mrIgnore,mrYesToAll,'Ignore all',mrCancel]);
+        case CurResult of
+        mrIgnore: ;
+        mrYesToAll: break;
+        else exit;
+        end;
       end;
     end;
 
@@ -1572,9 +1576,11 @@ var
   StaticPackage: PRegisteredPackage;
   i: Integer;
   APackage: TLazPackage;
+  Quiet: Boolean;
 begin
   StaticPackages:=LazarusPackageIntf.RegisteredPackages;
   if StaticPackages=nil then exit;
+  Quiet:=false;
   for i:=0 to StaticPackages.Count-1 do begin
     StaticPackage:=PRegisteredPackage(StaticPackages[i]);
     
@@ -1595,7 +1601,8 @@ begin
     
     // load package
     APackage:=LoadInstalledPackage(StaticPackage^.Name,
-                                   {$IFDEF BigIDE}True{$ELSE}False{$ENDIF});
+                                   {$IFDEF BigIDE}True{$ELSE}False{$ENDIF},
+                                   Quiet);
     
     // register
     PackageGraph.RegisterStaticPackage(APackage,StaticPackage^.RegisterProc);
@@ -1605,16 +1612,16 @@ begin
 end;
 
 function TPkgManager.LoadInstalledPackage(const PackageName: string;
-  AddToAutoInstall: boolean): TLazPackage;
+  AddToAutoInstall: boolean; var Quiet: boolean): TLazPackage;
 var
   NewDependency: TPkgDependency;
   PackageList: TStringList;
 begin
-  //DebugLn('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'"');
+  //DebugLn('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'" Quiet=',Quiet);
   NewDependency:=TPkgDependency.Create;
   NewDependency.Owner:=Self;
   NewDependency.PackageName:=PackageName;
-  PackageGraph.OpenInstalledDependency(NewDependency,pitStatic);
+  PackageGraph.OpenInstalledDependency(NewDependency,pitStatic,Quiet);
   Result:=NewDependency.RequiredPackage;
   if AddToAutoInstall and (Result<>nil) then begin
     NewDependency.AddToList(FirstAutoInstallDependency,pdlRequires);
@@ -3323,6 +3330,8 @@ var
   BuildIDEFlags: TBuildLazarusFlags;
   Msg: string;
 begin
+  if not MainIDE.DoResetToolStatus(true) then exit(mrCancel);
+
   PackageGraph.BeginUpdate(true);
   PkgList:=nil;
   try
