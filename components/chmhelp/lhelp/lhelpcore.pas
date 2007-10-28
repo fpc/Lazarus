@@ -24,8 +24,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls,
-  Menus, SimpleIPC, BaseContentProvider, FileContentProvider, ChmContentProvider
-  {$IFNDEF NO_LNET}, HTTPContentProvider{$ENDIF};
+  Menus, SimpleIPC, BaseContentProvider, FileContentProvider, ChmContentProvider;
 
 type
 

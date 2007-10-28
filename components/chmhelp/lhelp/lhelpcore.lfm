@@ -4,9 +4,9 @@ object HelpForm: THelpForm
   Top = 208
   Width = 758
   HorzScrollBar.Page = 757
-  VertScrollBar.Page = 508
+  VertScrollBar.Page = 509
   Caption = 'LHelp'
-  ClientHeight = 509
+  ClientHeight = 510
   ClientWidth = 758
   Icon.Data = {
     F6060000424DF606000000000000360000002800000018000000180000000100
@@ -260,7 +260,7 @@ object HelpForm: THelpForm
     end
   end
   object PageControl: TPageControl
-    Height = 477
+    Height = 478
     Top = 32
     Width = 758
     Align = alClient

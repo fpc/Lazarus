@@ -2,32 +2,13 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
-    <VersionInfo>
-      <UseVersionInfo Value="False"/>
-      <AutoIncrementBuild Value="False"/>
-      <CurrentVersionNr Value="0"/>
-      <CurrentMajorRevNr Value="0"/>
-      <CurrentMinorRevNr Value="0"/>
-      <CurrentBuildNr Value="0"/>
-      <ProjectVersion Value="1.0.0.0"/>
-      <Language Value="0409"/>
-      <CharSet Value="04E4"/>
-      <Comments Value=""/>
-      <CompanyName Value=""/>
-      <FileDescription Value=""/>
-      <InternalName Value=""/>
-      <LegalCopyright Value=""/>
-      <LegalTrademarks Value=""/>
-      <OriginalFilename Value=""/>
-      <ProductName Value=""/>
-    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -40,25 +21,22 @@
         <Display Value="192.168.0.250:0"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="TurboPowerIPro"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="chmpkg"/>
       </Item1>
       <Item2>
-        <PackageName Value="lnetpackage"/>
+        <PackageName Value="LCL"/>
       </Item2>
       <Item3>
         <PackageName Value="lhelpcontrolpkg"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="TurboPowerIPro"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item4>
-      <Item5>
-        <PackageName Value="chmpkg"/>
-      </Item5>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -109,6 +87,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="HTTPContentProvider"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="../packages/chm/chmpkg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="chmpkg"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
