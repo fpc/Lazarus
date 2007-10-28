@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 3
+    PageIndex = 7
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -925,12 +925,12 @@ object frmCompilerOptions: TfrmCompilerOptions
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCustomOptions'
-        ClientHeight = 317
+        ClientHeight = 302
         ClientWidth = 649
         TabOrder = 1
         object memCustomOptions: TMemo
           Left = 6
-          Height = 305
+          Height = 290
           Top = 6
           Width = 637
           Align = alClient
@@ -1003,14 +1003,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object ExecuteAfterGroupBox: TGroupBox
         Left = 6
-        Height = 102
-        Top = 222
+        Height = 108
+        Top = 234
         Width = 653
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'ExecuteAfterGroupBox'
-        ClientHeight = 83
+        ClientHeight = 89
         ClientWidth = 649
         TabOrder = 1
         object lblRunIfExecAfter: TLabel
@@ -1135,14 +1135,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpCompiler: TGroupBox
         Left = 6
-        Height = 74
-        Top = 142
+        Height = 80
+        Top = 148
         Width = 653
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpCompiler'
-        ClientHeight = 55
+        ClientHeight = 61
         ClientWidth = 649
         TabOrder = 2
         object lblRunIfCompiler: TLabel
@@ -1164,7 +1164,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           Height = 20
           Top = 32
           Width = 72
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          BorderSpacing.Bottom = 6
           Caption = 'lblCompiler'
           ParentColor = False
         end
@@ -1227,14 +1230,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object ExecuteBeforeGroupBox: TGroupBox
         Left = 6
-        Height = 102
+        Height = 108
         Top = 34
         Width = 653
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'ExecuteBeforeGroupBox'
-        ClientHeight = 83
+        ClientHeight = 89
         ClientWidth = 649
         TabOrder = 3
         object lblRunIfExecBefore: TLabel

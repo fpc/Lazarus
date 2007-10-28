@@ -749,6 +749,7 @@ begin
   FLoadedPageIndex:=-1;
   //DebugLn(['TCustomNotebook.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   fPageIndexOnLastChange:=PageIndex;
+  FPageIndexOnLastShow:=fPageIndexOnLastChange;
   if HandleAllocated then DoCreateWnd;
 end;
 
@@ -829,6 +830,7 @@ begin
       if FPageIndexOnLastShow<>fPageIndex then begin
         // some widgetsets like win32/64 do not send WM_SIZE messages for
         // hidden pages. Force resizing page (it is alClient).
+        //DebugLn(['TCustomNotebook.ShowCurrentPage ',dbgsName(Self),' ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible,' BoundsRect=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CurPage.BoundsRect=',dbgs(CurPage.BoundsRect),' CurPage.ClientRect=',dbgs(CurPage.ClientRect)]);
         ReAlign;
         // TCustomPage.IsControlVisible is overriden
         // therefore AutoSizing of childs was skipped => do it now

@@ -145,7 +145,7 @@ type
     fOnPageChanged: TNotifyEvent;
     FOptions: TNoteBookOptions;
     FPageIndex: Integer;
-    FPageIndexOnLastChange: integer;
+    FPageIndexOnLastChange: integer;// needed for unique OnChange events
     FPageIndexOnLastShow: integer;
     FPageList: TList;  // TListWithEvent of TCustomPage
     FShowTabs: Boolean;

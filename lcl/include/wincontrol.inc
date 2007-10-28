@@ -31,7 +31,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'TButtonPanel';
-const CheckPostionName = 'WorkingDirectoryGroupBox';
+const CheckPostionName = 'lblCompiler';
 const CheckPostionParentName = 'WorkingDirectoryGroupBox';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -2279,13 +2279,14 @@ var
       end;
       Result:=DefaultPosition;
       CurAnchorSide:=Control.AnchorSide[Kind];
-      //if CheckPosition(Control) and (Kind=akRight) then
-      //  debugln('GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' CurAnchorSide.Control=',DbgSName(CurAnchorSide.Control));
+      //if CheckPosition(Control) and (Kind=akLeft) then debugln(['GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' CurAnchorSide.Control=',DbgSName(CurAnchorSide.Control),' Spacing=',Control.BorderSpacing.GetSpace(Kind)]);
       CurAnchorSide.GetSidePosition(ReferenceControl,ReferenceSide,Position);
       if ReferenceControl<>nil then
         Result:=Position;
-      //if CheckPosition(Control) and (Kind=akRight) then
-      //  debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
+      //if CheckPosition(Control) and (Kind=akLeft) then begin
+        //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
+        //if ReferenceControl<>nil then DebugLn(['GetAnchorSidePosition ReferenceControl.BoundsRect=',dbgs(ReferenceControl.BoundsRect)]);
+      //end;
       AnchorSideCacheValid[Kind]:=true;
       AnchorSideCache[Kind]:=Result;
       if ReferenceSide=asrTop then ;
@@ -2369,7 +2370,7 @@ var
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
       if CheckPosition(Control) then
-      DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
+       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
         ' ParentBaseClientSize='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
@@ -2487,10 +2488,9 @@ var
       Control.BorderSpacing.GetSpaceAround(ChildAroundSpace);
       AdjustBorderSpace(CurRemainingClientRect,CurRemainingBorderSpace,
                         ChildAroundSpace);
-
       {$IFDEF CHECK_POSITION}
-      //if CheckPosition(Control) then
-        DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
+      if CheckPosition(Control) then
+        DebugLn('DoPosition Before aligning ',dbgsName(Control),' akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
                 ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
                 //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
                 ' New=',DbgS(NewLeft,NewTop,NewRight,NewBottom));
@@ -2932,7 +2932,7 @@ var
       and (Child.AnchorSide[akLeft].Control=nil) then begin
         // the left side of this control is only defined by designer coords
         p:=Child.Left
-           -Max(Child.BorderSpacing.GetSideSpace(akLeft),MinSpaceLeft)
+           -Max(Child.BorderSpacing.GetSpace(akLeft),MinSpaceLeft)
            -CurClientRect.Left;
         if dx>p then dx:=p;
       end;
@@ -2940,7 +2940,7 @@ var
       and (Child.AnchorSide[akTop].Control=nil) then begin
         // the top side of this control is only defined by designer coords
         p:=Child.Top
-           -Max(Child.BorderSpacing.GetSideSpace(akTop),MinSpaceTop)
+           -Max(Child.BorderSpacing.GetSpace(akTop),MinSpaceTop)
            -CurClientRect.Top;
         if dy>p then dy:=p;
       end;

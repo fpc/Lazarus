@@ -3114,6 +3114,7 @@ begin
       // ReferenceControl is visible
       // -> calculate Position
       OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
+      //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
       case ReferenceSide of
       
       asrTop: // asrTop = asrLeft
