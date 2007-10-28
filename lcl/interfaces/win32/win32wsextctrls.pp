@@ -72,7 +72,7 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class function GetMouseInteractiveInDesigner(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
@@ -617,7 +617,7 @@ begin
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
-class function TWin32WSCustomNotebook.GetMouseInteractiveInDesigner(
+class function TWin32WSCustomNotebook.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
 var
   AIndex, ACurIndex: Integer;

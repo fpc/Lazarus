@@ -2472,7 +2472,7 @@ begin
       begin
         // Now ask control is it needs mouse messages
         MapWindowPoints(Parent, TWinControl(Control).Handle, P, 1);
-        if TWSWinControlClass(TWinControl(Control).WidgetSetClass).GetMouseInteractiveInDesigner(TWinControl(Control), P) then
+        if TWSWinControlClass(TWinControl(Control).WidgetSetClass).GetDesignInteractive(TWinControl(Control), P) then
           Result := HTTRANSPARENT
       end;
     end;
