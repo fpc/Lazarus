@@ -1,7 +1,7 @@
 object ReplaceDialogForm: TReplaceDialogForm
-  Left = 460
+  Left = 412
   Height = 162
-  Top = 471
+  Top = 396
   Width = 432
   HorzScrollBar.Page = 431
   VertScrollBar.Page = 161
@@ -12,18 +12,18 @@ object ReplaceDialogForm: TReplaceDialogForm
   ClientWidth = 432
   object TextLabel: TLabel
     Left = 4
-    Height = 14
+    Height = 20
     Top = 19
-    Width = 57
+    Width = 70
     Caption = 'Text to find'
     FocusControl = EditFind
     ParentColor = False
   end
   object ReplaceLabel: TLabel
     Left = 4
-    Height = 14
+    Height = 20
     Top = 48
-    Width = 62
+    Width = 79
     Caption = 'Replace with'
     FocusControl = EditReplace
     ParentColor = False
@@ -48,17 +48,17 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object WholeWordsOnlyCheckBox: TCheckBox
     Left = 4
-    Height = 13
+    Height = 22
     Top = 80
-    Width = 104
+    Width = 133
     Caption = 'Whole words only'
     TabOrder = 2
   end
   object CaseSensitiveCheckBox: TCheckBox
     Left = 4
-    Height = 13
+    Height = 22
     Top = 104
-    Width = 88
+    Width = 116
     Caption = 'Case sensitive'
     TabOrder = 3
   end
@@ -69,7 +69,6 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 11
     Width = 91
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Find more'
     Default = True
     TabOrder = 4
@@ -81,7 +80,6 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 40
     Width = 91
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Replace'
     TabOrder = 5
   end
@@ -92,7 +90,6 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 68
     Width = 91
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Replace all'
     TabOrder = 6
   end
@@ -102,7 +99,6 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 96
     Width = 91
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -114,7 +110,6 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 129
     Width = 91
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Help'
     TabOrder = 8
   end
@@ -133,7 +128,7 @@ object ReplaceDialogForm: TReplaceDialogForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 27
+    ClientHeight = 26
     ClientWidth = 180
     Columns = 2
     Items.Strings = (

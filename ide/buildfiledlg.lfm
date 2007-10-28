@@ -1,7 +1,7 @@
 object BuildFileDialog: TBuildFileDialog
-  Left = 336
+  Left = 317
   Height = 344
-  Top = 221
+  Top = 196
   Width = 414
   HorzScrollBar.Page = 413
   VertScrollBar.Page = 343
@@ -16,7 +16,7 @@ object BuildFileDialog: TBuildFileDialog
   Position = poScreenCenter
   object Notebook1: TNotebook
     AnchorSideBottom.Control = HelpButton
-    Height = 304
+    Height = 296
     Width = 414
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -52,7 +52,7 @@ object BuildFileDialog: TBuildFileDialog
         object OverrideRunProjectCheckbox: TCheckBox
           Left = 6
           Height = 22
-          Top = 25
+          Top = 34
           Width = 382
           Align = alTop
           BorderSpacing.Around = 6
@@ -149,7 +149,6 @@ object BuildFileDialog: TBuildFileDialog
           Width = 25
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = BuildBrowseWorkDirButtonCLICK
           TabOrder = 1
@@ -159,7 +158,7 @@ object BuildFileDialog: TBuildFileDialog
     object RunPage: TPage
       Caption = 'Run'
       ClientWidth = 410
-      ClientHeight = 273
+      ClientHeight = 265
       object AlwaysCompileFirstCheckbox: TCheckBox
         Left = 6
         Height = 22
@@ -184,7 +183,7 @@ object BuildFileDialog: TBuildFileDialog
         TabOrder = 1
         object RunCommandMemo: TMemo
           Left = 6
-          Height = 54
+          Height = 39
           Top = 6
           Width = 382
           Align = alClient
@@ -235,7 +234,6 @@ object BuildFileDialog: TBuildFileDialog
           HelpType = htKeyword
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = BuildBrowseWorkDirButtonCLICK
           TabOrder = 1
@@ -267,10 +265,10 @@ object BuildFileDialog: TBuildFileDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 320
-    Height = 36
-    Top = 302
-    Width = 88
+    Left = 330
+    Height = 32
+    Top = 306
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -287,9 +285,9 @@ object BuildFileDialog: TBuildFileDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 247
-    Height = 34
-    Top = 304
+    Left = 249
+    Height = 36
+    Top = 302
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True

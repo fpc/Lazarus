@@ -1,7 +1,7 @@
 object InstallPkgSetDialog: TInstallPkgSetDialog
-  Left = 319
+  Left = 300
   Height = 441
-  Top = 178
+  Top = 167
   Width = 529
   HorzScrollBar.Page = 528
   VertScrollBar.Page = 440
@@ -21,12 +21,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InstallPkgGroupBox'
-    ClientHeight = 273
+    ClientHeight = 272
     ClientWidth = 251
     TabOrder = 0
     object InstallListBox: TListBox
       Left = 6
-      Height = 168
+      Height = 167
       Top = 6
       Width = 239
       Align = alClient
@@ -35,15 +35,15 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       MultiSelect = True
       OnSelectionChange = InstallListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object UninstallButton: TButton
       Left = 6
       Height = 25
-      Top = 180
+      Top = 179
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'UninstallButton'
       OnClick = UninstallButtonClick
       TabOrder = 1
@@ -51,11 +51,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ImportButton: TButton
       Left = 6
       Height = 25
-      Top = 211
+      Top = 210
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'ImportButton'
       OnClick = ImportButtonClick
       TabOrder = 2
@@ -63,11 +62,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ExportButton: TButton
       Left = 6
       Height = 25
-      Top = 242
+      Top = 241
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'ExportButton'
       OnClick = ExportButtonClick
       TabOrder = 3
@@ -81,12 +79,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'AvailablePkgGroupBox'
-    ClientHeight = 273
+    ClientHeight = 272
     ClientWidth = 251
     TabOrder = 1
     object AvailableListBox: TListBox
       Left = 6
-      Height = 230
+      Height = 229
       Top = 6
       Width = 239
       Align = alClient
@@ -95,15 +93,15 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       MultiSelect = True
       OnSelectionChange = AvailableListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object AddToInstallButton: TButton
       Left = 6
       Height = 25
-      Top = 242
+      Top = 241
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'AddToInstallButton'
       OnClick = AddToInstallButtonClick
       TabOrder = 1
@@ -111,12 +109,11 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object CancelButton: TButton
     Left = 6
-    Height = 25
-    Top = 406
-    Width = 92
+    Height = 29
+    Top = 402
+    Width = 98
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'CancelButton'
     ModalResult = 2
@@ -124,26 +121,24 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object SaveAndRebuildButton: TButton
     AnchorSideRight.Control = SaveAndExitButton
-    Left = 257
-    Height = 25
-    Top = 406
-    Width = 139
+    Left = 224
+    Height = 29
+    Top = 402
+    Width = 157
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'SaveAndRebuildButton'
     OnClick = InstallButtonClick
     TabOrder = 3
   end
   object SaveAndExitButton: TButton
-    Left = 402
-    Height = 25
-    Top = 406
-    Width = 120
+    Left = 387
+    Height = 29
+    Top = 402
+    Width = 135
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 4
     Caption = 'SaveAndExitButton'
     OnClick = SaveAndExitButtonClick
     TabOrder = 4
@@ -155,7 +150,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Width = 515
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'PkgInfoGroupBox'
-    ClientHeight = 67
+    ClientHeight = 66
     ClientWidth = 511
     TabOrder = 5
     object PkgInfoMemo: TMemo

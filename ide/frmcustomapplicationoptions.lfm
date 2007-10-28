@@ -1,7 +1,7 @@
 object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
-  Left = 409
+  Left = 386
   Height = 290
-  Top = 254
+  Top = 242
   Width = 460
   HorzScrollBar.Page = 459
   VertScrollBar.Page = 289
@@ -43,7 +43,6 @@ object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
     Top = 261
     Width = 75
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = '&Cancel'
     ModalResult = 2
@@ -55,7 +54,6 @@ object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
     Top = 261
     Width = 75
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 4
     Caption = '&OK'
     Default = True
     ModalResult = 1

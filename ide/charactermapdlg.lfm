@@ -1,12 +1,14 @@
 object CharacterMapDialog: TCharacterMapDialog
-  Left = 528
+  Left = 507
   Height = 397
-  Top = 142
+  Top = 139
   Width = 360
   HorzScrollBar.Page = 359
   VertScrollBar.Page = 396
   ActiveControl = CloseButton
   Caption = 'CharacterMapDialog'
+  ClientHeight = 397
+  ClientWidth = 360
   FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
@@ -18,7 +20,6 @@ object CharacterMapDialog: TCharacterMapDialog
     Width = 75
     Anchors = [akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Close'
     Default = True
@@ -34,17 +35,18 @@ object CharacterMapDialog: TCharacterMapDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Characters'
+    ClientHeight = 333
+    ClientWidth = 341
     ParentCtl3D = False
     TabOrder = 1
     object CharInfoLabel: TLabel
       Left = 6
       Height = 13
-      Top = 316
+      Top = 314
       Width = 329
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'CharInfoLabel'
-      Color = clNone
       ParentColor = False
     end
     object StringGrid1: TStringGrid

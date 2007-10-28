@@ -1,7 +1,7 @@
 object NewOtherDialog: TNewOtherDialog
-  Left = 236
+  Left = 254
   Height = 296
-  Top = 264
+  Top = 202
   Width = 397
   HorzScrollBar.Page = 396
   VertScrollBar.Page = 295
@@ -16,14 +16,13 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 285
-    Height = 37
-    Top = 253
-    Width = 106
+    Left = 293
+    Height = 29
+    Top = 261
+    Width = 98
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
     Constraints.MinHeight = 25
     Constraints.MinWidth = 75
@@ -34,14 +33,13 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 199
-    Height = 37
-    Top = 253
-    Width = 80
+    Left = 212
+    Height = 29
+    Top = 261
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'OkButton'
     Constraints.MinHeight = 25
     Constraints.MinWidth = 75
@@ -52,21 +50,21 @@ object NewOtherDialog: TNewOtherDialog
   object Panel1: TPanel
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 241
+    Height = 249
     Top = 6
     Width = 385
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 241
+    ClientHeight = 249
     ClientWidth = 385
     TabOrder = 2
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
       AnchorSideBottom.Control = CancelButton
-      Height = 241
+      Height = 249
       Width = 182
       Align = alClient
       DefaultItemHeight = 19
@@ -83,16 +81,16 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = CancelButton
       Left = 187
-      Height = 241
+      Height = 249
       Width = 198
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 222
+      ClientHeight = 230
       ClientWidth = 194
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
-        Height = 210
+        Height = 218
         Top = 6
         Width = 182
         Align = alClient
@@ -104,7 +102,7 @@ object NewOtherDialog: TNewOtherDialog
     end
     object Splitter1: TSplitter
       Left = 182
-      Height = 241
+      Height = 249
       Width = 5
       Align = alRight
       ResizeAnchor = akRight
@@ -115,13 +113,12 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 37
-    Top = 253
-    Width = 92
+    Height = 29
+    Top = 261
+    Width = 84
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'HelpButton'
     Constraints.MinHeight = 25
     Constraints.MinWidth = 75

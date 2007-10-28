@@ -1,7 +1,7 @@
 object CondForm: TCondForm
-  Left = 328
+  Left = 305
   Height = 326
-  Top = 287
+  Top = 265
   Width = 356
   HorzScrollBar.Page = 355
   HorzScrollBar.Range = 186
@@ -18,19 +18,19 @@ object CondForm: TCondForm
   Position = poScreenCenter
   object NewTestGroupBox: TGroupBox
     Left = 6
-    Height = 137
+    Height = 142
     Top = 6
     Width = 344
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NewTestGroupBox'
-    ClientHeight = 119
+    ClientHeight = 123
     ClientWidth = 340
     TabOrder = 0
     object FirstLabel: TLabel
       Left = 6
-      Height = 14
+      Height = 20
       Top = 6
       Width = 328
       Align = alTop
@@ -43,8 +43,8 @@ object CondForm: TCondForm
     object SecondLabel: TLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 14
-      Top = 47
+      Height = 20
+      Top = 53
       Width = 328
       Align = alTop
       BorderSpacing.Left = 6
@@ -57,14 +57,13 @@ object CondForm: TCondForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 21
-      Top = 20
+      Top = 26
       Width = 328
       Align = alTop
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
       ItemIndex = 0
       Items.Strings = (
         'MSWINDOWS'
@@ -87,14 +86,13 @@ object CondForm: TCondForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 21
-      Top = 61
+      Top = 73
       Width = 328
       Align = alTop
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
       ItemIndex = 0
       Items.Strings = (
         'NONE'
@@ -110,9 +108,9 @@ object CondForm: TCondForm
       AnchorSideTop.Control = SecondTest
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = AddInverse
-      Left = 87
-      Height = 25
-      Top = 88
+      Left = 85
+      Height = 29
+      Top = 100
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -130,15 +128,14 @@ object CondForm: TCondForm
       AnchorSideTop.Control = SecondTest
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RemoveBtn
-      Left = 168
-      Height = 25
-      Top = 88
-      Width = 85
+      Left = 166
+      Height = 29
+      Top = 100
+      Width = 87
       HelpType = htKeyword
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Add Inverse'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
@@ -153,8 +150,8 @@ object CondForm: TCondForm
       AnchorSideRight.Control = NewTestGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 259
-      Height = 25
-      Top = 88
+      Height = 29
+      Top = 100
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -171,8 +168,8 @@ object CondForm: TCondForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = OkBtn
     Left = 6
-    Height = 137
-    Top = 149
+    Height = 124
+    Top = 154
     Width = 344
     Align = alTop
     Anchors = [akTop, akBottom]
@@ -181,6 +178,7 @@ object CondForm: TCondForm
     OnDblClick = ListBoxDblClick
     OnKeyDown = ListBoxKeyDown
     TabOrder = 1
+    TopIndex = -1
   end
   object OkBtn: TBitBtn
     AnchorSideTop.Control = ListBox
@@ -188,9 +186,9 @@ object CondForm: TCondForm
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 189
-    Height = 28
-    Top = 292
+    Left = 191
+    Height = 36
+    Top = 284
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -209,10 +207,10 @@ object CondForm: TCondForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 270
-    Height = 28
-    Top = 292
-    Width = 80
+    Left = 272
+    Height = 32
+    Top = 288
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -230,8 +228,8 @@ object CondForm: TCondForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 28
-    Top = 292
+    Height = 36
+    Top = 284
     Width = 75
     Anchors = [akLeft, akBottom]
     AutoSize = True

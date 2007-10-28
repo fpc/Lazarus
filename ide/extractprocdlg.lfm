@@ -1,7 +1,7 @@
 object ExtractProcDialog: TExtractProcDialog
-  Left = 392
+  Left = 378
   Height = 201
-  Top = 383
+  Top = 374
   Width = 420
   HorzScrollBar.Page = 419
   VertScrollBar.Page = 200
@@ -15,7 +15,7 @@ object ExtractProcDialog: TExtractProcDialog
   object TypeRadiogroup: TRadioGroup
     AnchorSideBottom.Control = NameGroupbox
     Left = 6
-    Height = 96
+    Height = 91
     Top = 6
     Width = 408
     Align = alTop
@@ -41,13 +41,12 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 53
-    Top = 108
+    Height = 54
+    Top = 103
     Width = 408
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 6
     Caption = 'NameGroupbox'
     ClientHeight = 35
     ClientWidth = 404
@@ -69,8 +68,8 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 28
-    Top = 167
+    Height = 36
+    Top = 159
     Width = 75
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -88,10 +87,10 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 334
-    Height = 28
-    Top = 167
-    Width = 80
+    Left = 336
+    Height = 32
+    Top = 163
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -108,9 +107,9 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 253
-    Height = 28
-    Top = 167
+    Left = 255
+    Height = 36
+    Top = 159
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True

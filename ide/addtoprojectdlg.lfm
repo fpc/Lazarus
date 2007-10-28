@@ -1,7 +1,7 @@
 object AddToProjectDialog: TAddToProjectDialog
-  Left = 324
+  Left = 305
   Height = 300
-  Top = 251
+  Top = 250
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
@@ -53,7 +53,6 @@ object AddToProjectDialog: TAddToProjectDialog
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'AddFileButton'
         OnClick = AddFileButtonClick
         TabOrder = 1
@@ -65,7 +64,6 @@ object AddToProjectDialog: TAddToProjectDialog
         Width = 151
         Anchors = [akRight, akBottom]
         AutoSize = True
-        BorderSpacing.InnerBorder = 4
         Caption = 'CancelAddFileButton'
         ModalResult = 2
         TabOrder = 2
@@ -106,7 +104,6 @@ object AddToProjectDialog: TAddToProjectDialog
         Width = 156
         Anchors = [akRight, akBottom]
         AutoSize = True
-        BorderSpacing.InnerBorder = 4
         Caption = 'CancelDependButton'
         ModalResult = 2
         TabOrder = 0
@@ -120,7 +117,6 @@ object AddToProjectDialog: TAddToProjectDialog
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'NewDependButton'
         OnClick = NewDependButtonClick
         TabOrder = 1
@@ -179,7 +175,6 @@ object AddToProjectDialog: TAddToProjectDialog
         Width = 136
         Anchors = [akLeft, akBottom]
         AutoSize = True
-        BorderSpacing.InnerBorder = 4
         Caption = 'FilesBrowseButton'
         OnClick = FilesBrowseButtonClick
         TabOrder = 1
@@ -187,14 +182,13 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesShortenButton: TButton
         AnchorSideLeft.Control = FilesBrowseButton
         AnchorSideLeft.Side = asrBottom
-        Left = 125
+        Left = 148
         Height = 31
         Top = 231
         Width = 141
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'FilesShortenButton'
         OnClick = FilesShortenButtonClick
         TabOrder = 2
@@ -202,14 +196,13 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesDeleteButton: TButton
         AnchorSideLeft.Control = FilesShortenButton
         AnchorSideLeft.Side = asrBottom
-        Left = 246
+        Left = 295
         Height = 31
         Top = 231
         Width = 132
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'FilesDeleteButton'
         OnClick = FilesDeleteButtonClick
         TabOrder = 3
@@ -217,14 +210,13 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesAddButton: TButton
         AnchorSideLeft.Control = FilesDeleteButton
         AnchorSideLeft.Side = asrBottom
-        Left = 360
+        Left = 433
         Height = 31
         Top = 231
         Width = 115
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'FilesAddButton'
         OnClick = FilesAddButtonClick
         TabOrder = 4

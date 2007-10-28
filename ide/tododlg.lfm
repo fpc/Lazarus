@@ -1,7 +1,7 @@
 object TodoDialog: TTodoDialog
-  Left = 363
+  Left = 354
   Height = 257
-  Top = 216
+  Top = 215
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 256
@@ -11,9 +11,9 @@ object TodoDialog: TTodoDialog
   ClientWidth = 400
   object TodoLabel: TLabel
     Left = 16
-    Height = 14
+    Height = 20
     Top = 8
-    Width = 27
+    Width = 30
     Caption = 'Text:'
     FocusControl = TodoMemo
     ParentColor = False
@@ -23,7 +23,6 @@ object TodoDialog: TTodoDialog
     Height = 25
     Top = 208
     Width = 75
-    BorderSpacing.InnerBorder = 4
     Caption = 'Ok'
     ModalResult = 1
     TabOrder = 1
@@ -33,7 +32,6 @@ object TodoDialog: TTodoDialog
     Height = 25
     Top = 208
     Width = 75
-    BorderSpacing.InnerBorder = 4
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 2

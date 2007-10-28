@@ -1,7 +1,7 @@
 object DirSelDlg: TDirSelDlg
-  Left = 432
+  Left = 425
   Height = 330
-  Top = 234
+  Top = 231
   Width = 335
   HorzScrollBar.Page = 334
   HorzScrollBar.Range = 14
@@ -16,26 +16,25 @@ object DirSelDlg: TDirSelDlg
   OnShow = FormShow
   Position = poScreenCenter
   object Panel1: TPanel
-    Height = 43
-    Top = 287
+    Height = 41
+    Top = 289
     Width = 335
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 43
+    ClientHeight = 41
     ClientWidth = 335
     TabOrder = 2
     TabStop = True
     object btnOK: TButton
       AnchorSideBottom.Side = asrBottom
-      Left = 164
-      Height = 31
+      Left = 172
+      Height = 29
       Top = 6
       Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'btnOK'
       Constraints.MinWidth = 75
       ModalResult = 1
@@ -44,14 +43,13 @@ object DirSelDlg: TDirSelDlg
     object btnCancel: TButton
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 245
-      Height = 31
+      Left = 253
+      Height = 29
       Top = 6
-      Width = 84
+      Width = 76
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Cancel = True
       Caption = 'btnCancel'
       Constraints.MinWidth = 75
@@ -81,7 +79,7 @@ object DirSelDlg: TDirSelDlg
   end
   object TV: TTreeView
     Left = 6
-    Height = 251
+    Height = 253
     Top = 30
     Width = 323
     Align = alClient

@@ -1,7 +1,7 @@
 object ListViewItemsEditorForm: TListViewItemsEditorForm
-  Left = 313
+  Left = 293
   Height = 246
-  Top = 194
+  Top = 179
   Width = 510
   HorzScrollBar.Page = 509
   VertScrollBar.Page = 245
@@ -68,7 +68,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     Width = 293
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Items'
-    ClientHeight = 180
+    ClientHeight = 179
     ClientWidth = 289
     TabOrder = 4
     object TreeView1: TTreeView
@@ -77,14 +77,14 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 170
+      Height = 169
       Top = 5
       Width = 158
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
       BorderSpacing.Bottom = 5
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       HideSelection = False
       TabOrder = 0
       OnSelectionChanged = TreeView1SelectionChanged
@@ -105,7 +105,6 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
       BorderSpacing.Right = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '&New Item'
       Default = True
       OnClick = BtnNewItemClick
@@ -123,7 +122,6 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       Width = 116
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 4
       Caption = 'N&ew SubItem'
       OnClick = BtnNewItemClick
       TabOrder = 2
@@ -140,7 +138,6 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       Width = 116
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '&Delete'
       OnClick = btnDeleteClick
       TabOrder = 3
@@ -153,7 +150,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     Width = 205
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Item Properties'
-    ClientHeight = 180
+    ClientHeight = 179
     ClientWidth = 201
     TabOrder = 5
     object LabelCaption: TLabel

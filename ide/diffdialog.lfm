@@ -1,7 +1,7 @@
 object DiffDlg: TDiffDlg
-  Left = 313
+  Left = 298
   Height = 497
-  Top = 139
+  Top = 132
   Width = 598
   HelpType = htKeyword
   HorzScrollBar.Page = 597
@@ -18,14 +18,13 @@ object DiffDlg: TDiffDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 515
-    Height = 31
-    Top = 460
-    Width = 77
+    Left = 523
+    Height = 29
+    Top = 462
+    Width = 69
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'Save Diff'
     OnClick = SaveDiffButtonClick
     TabOrder = 0
@@ -34,14 +33,13 @@ object DiffDlg: TDiffDlg
     AnchorSideRight.Control = SaveDiffButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 364
-    Height = 31
-    Top = 460
-    Width = 145
+    Left = 380
+    Height = 29
+    Top = 462
+    Width = 137
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'OpenInEditorButton'
     ModalResult = 6
     TabOrder = 1
@@ -50,14 +48,13 @@ object DiffDlg: TDiffDlg
     AnchorSideRight.Control = OpenInEditorButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 260
-    Height = 31
-    Top = 460
-    Width = 98
+    Left = 284
+    Height = 29
+    Top = 462
+    Width = 90
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'CloseButton'
     ModalResult = 1
@@ -74,7 +71,6 @@ object DiffDlg: TDiffDlg
     Anchors = [akRight]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 6
     Caption = 'Text1GroupBox'
     ClientHeight = 59
     ClientWidth = 582
@@ -109,7 +105,6 @@ object DiffDlg: TDiffDlg
       Height = 25
       Width = 75
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
       Caption = 'Text1FileOpenButton'
       OnClick = FileOpenClick
       TabOrder = 2
@@ -123,7 +118,6 @@ object DiffDlg: TDiffDlg
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 6
     Caption = 'Text2GroupBox'
     ClientHeight = 59
     ClientWidth = 582
@@ -157,7 +151,6 @@ object DiffDlg: TDiffDlg
       Height = 25
       Width = 75
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
       Caption = 'Text2FileOpenButton'
       OnClick = FileOpenClick
       TabOrder = 2
@@ -172,7 +165,7 @@ object DiffDlg: TDiffDlg
     AnchorSideBottom.Control = CloseButton
     Left = 6
     Height = 85
-    Top = 369
+    Top = 371
     Width = 586
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
@@ -204,9 +197,7 @@ object DiffDlg: TDiffDlg
     ParentColor = False
     TabOrder = 6
     BookMarkOptions.Xoffset = -18
-    BookMarkOptions.OnChange = nil
     Gutter.Visible = False
-    Gutter.OnChange = nil
     Gutter.CodeFoldingWidth = 14
     Keystrokes = <    
       item
@@ -532,7 +523,6 @@ object DiffDlg: TDiffDlg
     Lines.Strings = (
       'DiffSynEdit'
     )
-    SelectedColor.OnChange = nil
   end
   object dlgSave: TSaveDialog
     Title = 'Save file as'

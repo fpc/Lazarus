@@ -1,16 +1,16 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TTodoDialog','FORMDATA',[
-  'TPF0'#11'TTodoDialog'#10'TodoDialog'#4'Left'#3'k'#1#6'Height'#3#1#1#3'Top'#3
-  +#216#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'
+  'TPF0'#11'TTodoDialog'#10'TodoDialog'#4'Left'#3'b'#1#6'Height'#3#1#1#3'Top'#3
+  +#215#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'
   +#3#0#1#13'ActiveControl'#7#8'OkButton'#7'Caption'#6#11'Insert Todo'#12'Clien'
   +'tHeight'#3#1#1#11'ClientWidth'#3#144#1#0#6'TLabel'#9'TodoLabel'#4'Left'#2#16
-  +#6'Height'#2#14#3'Top'#2#8#5'Width'#2#27#7'Caption'#6#5'Text:'#12'FocusContr'
+  +#6'Height'#2#20#3'Top'#2#8#5'Width'#2#30#7'Caption'#6#5'Text:'#12'FocusContr'
   +'ol'#7#8'TodoMemo'#11'ParentColor'#8#0#0#7'TButton'#8'OkButton'#4'Left'#2'p'
-  +#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2
-  +#4#7'Caption'#6#2'Ok'#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#12
-  +'CancelButton'#4'Left'#3#208#0#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'K'#25
-  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8
-  +'TabOrder'#2#2#0#0#5'TMemo'#8'TodoMemo'#4'Left'#2#16#6'Height'#3#168#0#3'Top'
-  +#2#24#5'Width'#3'p'#1#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#0#0#0
+  +#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'K'#7'Caption'#6#2'Ok'#11'ModalResu'
+  +'lt'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#12'CancelButton'#4'Left'#3#208#0#6'H'
+  +'eight'#2#25#3'Top'#3#208#0#5'Width'#2'K'#7'Caption'#6#6'Cancel'#11'ModalRes'
+  +'ult'#2#2#8'TabOrder'#2#2#0#0#5'TMemo'#8'TodoMemo'#4'Left'#2#16#6'Height'#3
+  +#168#0#3'Top'#2#24#5'Width'#3'p'#1#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrde'
+  +'r'#2#0#0#0#0
 ]);

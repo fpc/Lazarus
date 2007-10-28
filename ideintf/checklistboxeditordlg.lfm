@@ -1,36 +1,43 @@
 object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   Left = 316
-  Height = 284
+  Height = 198
   Top = 154
-  Width = 438
-  HorzScrollBar.Page = 437
-  VertScrollBar.Page = 283
+  Width = 445
+  HorzScrollBar.Page = 444
+  VertScrollBar.Page = 197
   ActiveControl = FCheck
   AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckListBoxEditorDlg'
+  ClientHeight = 198
+  ClientWidth = 445
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 200
   Position = poScreenCenter
   object FCheck: TCheckListBox
-    Height = 213
+    Height = 127
     Top = 35
-    Width = 438
+    Width = 445
     Align = alClient
     TabOrder = 0
+    TopIndex = -1
   end
   object FPanelOKCancel: TPanel
     Height = 36
-    Top = 248
-    Width = 438
+    Top = 162
+    Width = 445
     Align = alBottom
     BevelInner = bvLowered
+    ClientHeight = 36
+    ClientWidth = 445
     TabOrder = 1
     object BtnHelp: TBitBtn
       AnchorSideRight.Control = FPanelOKCancel
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 357
+      Left = 364
       Height = 25
       Top = 5
       Width = 75
@@ -45,7 +52,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideRight.Control = BtnHelp
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 276
+      Left = 283
       Height = 25
       Top = 5
       Width = 75
@@ -60,7 +67,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideRight.Control = BtnApply
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 195
+      Left = 202
       Height = 25
       Top = 5
       Width = 75
@@ -76,7 +83,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideRight.Control = BtnCancel
       AnchorSideBottom.Control = FPanelOKCancel
       AnchorSideBottom.Side = asrBottom
-      Left = 114
+      Left = 121
       Height = 25
       Top = 5
       Width = 75
@@ -92,22 +99,23 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   end
   object FPanelButtons: TPanel
     Height = 35
-    Width = 438
+    Width = 445
     Align = alTop
     AutoSize = True
     BevelInner = bvLowered
+    ClientHeight = 35
+    ClientWidth = 445
     TabOrder = 2
     object BtnAdd: TButton
       AnchorSideLeft.Control = FPanelButtons
       AnchorSideTop.Control = FPanelButtons
       Left = 6
-      Height = 25
+      Height = 29
       Top = 6
-      Width = 63
+      Width = 59
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnAdd'
       OnClick = AddItem
       TabOrder = 0
@@ -116,12 +124,11 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideLeft.Control = BtnAdd
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnAdd
-      Left = 69
-      Height = 25
+      Left = 65
+      Height = 29
       Top = 6
-      Width = 75
+      Width = 76
       AutoSize = True
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnDelete'
       OnClick = DeleteItem
       TabOrder = 1
@@ -130,13 +137,12 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideLeft.Control = BtnDelete
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnDelete
-      Left = 150
-      Height = 25
+      Left = 147
+      Height = 29
       Top = 6
-      Width = 58
+      Width = 52
       AutoSize = True
       BorderSpacing.Left = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnUp'
       OnClick = MoveUpItem
       TabOrder = 2
@@ -145,12 +151,11 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideLeft.Control = BtnUp
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnUp
-      Left = 208
-      Height = 25
+      Left = 199
+      Height = 29
       Top = 6
-      Width = 72
+      Width = 69
       AutoSize = True
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnDown'
       OnClick = MoveDownItem
       TabOrder = 3
@@ -159,13 +164,12 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       AnchorSideLeft.Control = BtnDown
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnDown
-      Left = 286
-      Height = 25
+      Left = 274
+      Height = 29
       Top = 6
       Width = 75
       AutoSize = True
       BorderSpacing.Left = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnModify'
       OnClick = ModifyItem
       TabOrder = 4

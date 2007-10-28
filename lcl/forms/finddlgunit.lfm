@@ -1,7 +1,7 @@
 object FindDialogForm: TFindDialogForm
-  Left = 451
+  Left = 432
   Height = 103
-  Top = 434
+  Top = 419
   Width = 444
   HorzScrollBar.Page = 443
   VertScrollBar.Page = 102
@@ -14,9 +14,9 @@ object FindDialogForm: TFindDialogForm
   Position = poDesktopCenter
   object FindLabel: TLabel
     Left = 6
-    Height = 14
+    Height = 20
     Top = 19
-    Width = 57
+    Width = 70
     Caption = 'Text to find'
     FocusControl = EditFind
     ParentColor = False
@@ -37,7 +37,6 @@ object FindDialogForm: TFindDialogForm
     Top = 8
     Width = 91
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Find more'
     Default = True
     TabOrder = 1
@@ -48,7 +47,6 @@ object FindDialogForm: TFindDialogForm
     Top = 40
     Width = 91
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -56,17 +54,17 @@ object FindDialogForm: TFindDialogForm
   end
   object WholeWordsOnlyCheckBox: TCheckBox
     Left = 6
-    Height = 13
+    Height = 22
     Top = 51
-    Width = 104
+    Width = 133
     Caption = 'Whole words only'
     TabOrder = 3
   end
   object CaseSensitiveCheckBox: TCheckBox
     Left = 6
-    Height = 13
+    Height = 22
     Top = 78
-    Width = 88
+    Width = 116
     Caption = 'Case sensitive'
     TabOrder = 4
   end
@@ -85,7 +83,7 @@ object FindDialogForm: TFindDialogForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 27
+    ClientHeight = 26
     ClientWidth = 193
     Columns = 2
     Items.Strings = (
@@ -100,7 +98,6 @@ object FindDialogForm: TFindDialogForm
     Top = 72
     Width = 91
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Help'
     TabOrder = 6
   end

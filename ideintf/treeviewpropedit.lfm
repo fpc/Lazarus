@@ -1,7 +1,7 @@
 object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
-  Left = 313
+  Left = 304
   Height = 261
-  Top = 194
+  Top = 189
   Width = 510
   HorzScrollBar.Page = 509
   VertScrollBar.Page = 260
@@ -68,7 +68,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     Width = 293
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Items'
-    ClientHeight = 195
+    ClientHeight = 194
     ClientWidth = 289
     TabOrder = 4
     object TreeView1: TTreeView
@@ -77,14 +77,14 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 185
+      Height = 184
       Top = 5
       Width = 166
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
       BorderSpacing.Bottom = 5
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       HideSelection = False
       TabOrder = 0
       OnSelectionChanged = TreeView1SelectionChanged
@@ -105,7 +105,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
       BorderSpacing.Right = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '&New Item'
       Default = True
       OnClick = BtnNewItemClick
@@ -123,7 +122,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 4
       Caption = 'N&ew SubItem'
       OnClick = BtnNewItemClick
       TabOrder = 2
@@ -140,7 +138,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '&Delete'
       OnClick = btnDeleteClick
       TabOrder = 3
@@ -157,7 +154,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '&Load'
       OnClick = btnLoadClick
       TabOrder = 4
@@ -174,7 +170,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Width = 108
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '&Save'
       OnClick = btnSaveClick
       TabOrder = 5
@@ -187,7 +182,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     Width = 205
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Item Properties'
-    ClientHeight = 195
+    ClientHeight = 194
     ClientWidth = 201
     TabOrder = 5
     object LabelText: TLabel

@@ -868,7 +868,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
           UseCurrentHeight:=false;
 
         if (not UseCurrentWidth) or (not UseCurrentHeight) then
-          Child.GetPreferredSize(CurPreferredWidth,CurPreferredHeight,true,false);
+          Child.GetPreferredSize(CurPreferredWidth,CurPreferredHeight,true,true);
 
         if UseCurrentWidth then
           NewWidth:=Child.Width
@@ -1156,7 +1156,7 @@ begin
   Control.GetPreferredSize(PreferredSize[asboHorizontal],
                            PreferredSize[asboVertical],
                            false, // with constraints
-                           false  // without theme space
+                           true  // with theme space
                            );
   //DebugLn(['TAutoSizeBox.SetControl ',DbgSName(Control),' ',PreferredSize[asboHorizontal]]);
   Control.BorderSpacing.GetSpaceAround(Border);
@@ -2471,7 +2471,7 @@ var
     if AAlign in [alLeft,alTop,alRight,alBottom,alClient] then begin
       { Realign
 
-        Use Align to align a control to the top, bottom, left, or right of a
+        Use Align to align a control to the top, bottom, left, right of a
         form or panel and have it remain there even if the size of the form,
         panel, or component that contains the control changes. When the parent
         is resized, an aligned control also resizes so that it continues to span
@@ -2489,7 +2489,7 @@ var
                         ChildAroundSpace);
 
       {$IFDEF CHECK_POSITION}
-      if CheckPosition(Control) then
+      //if CheckPosition(Control) then
         DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
                 ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
                 //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
@@ -2559,8 +2559,8 @@ var
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
       if CheckPosition(Control) then
-      with Control do
-        DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
+        with Control do
+          DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
           ' Align=',AlignNames[AAlign],
           ' Control=',Name,':',ClassName,
@@ -2667,6 +2667,7 @@ var
   var
     I: Integer;
   begin
+    //DebugLn(['DoAlign ',DbgSName(Self),' ',dbgs(ClientRect)]);
     CreateControlAlignList(AAlign,AlignList,AControl);
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Self) then
@@ -2751,6 +2752,7 @@ begin
     if NeedAlignWork then
     begin
       AdjustClientRect(RemainingClientRect);
+      //DebugLn(['TWinControl.AlignControls AAA1 ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
       RemainingBorderSpace:=Rect(0,0,0,0);
       // adjust RemainingClientRect by ChildSizing properties
       AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
@@ -3037,7 +3039,7 @@ begin
     if (not WidthIsFixed) or (not HeightIsFixed) then begin
       GetPreferredSize(PreferredWidth,PreferredHeight,
                        false,// with constraints
-                       false // without theme space
+                       true // with theme space
                        );
       //if ControlCount>0 then DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,' ControlCount=',ControlCount]);
     end else begin
@@ -3051,7 +3053,7 @@ begin
 
     // set new size
     {$IFDEF VerboseAutoSize}
-    debugln('DoAutoSize A ',DbgSName(Self),' Cur=',dbgs(Width),'x',dbgs(Height),' Prefer=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight),' WidgetClass=',WidgetSetClass.ClassName);
+    debugln(['DoAutoSize A ',DbgSName(Self),' Cur=',Width,'x',Height,' Prefer=',PreferredWidth,'x',PreferredHeight,' WidgetClass=',WidgetSetClass.ClassName,' Fixed=',WidthIsFixed,'x',HeightIsFixed]);
     {$ENDIF}
     if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
       // adjust Left/Top as well to reduce auto sizing overhead
@@ -5506,6 +5508,7 @@ var
   ARect: TRect;
   i: Integer;
   ChildControl: TControl;
+  NewRect: TRect;
 begin
   //if csDesigning in ComponentState then begin
   //  DbgOut('TWinControl.AlignControl ',Name,':',ClassName);
@@ -5534,6 +5537,11 @@ begin
   try
     ARect:= GetClientRect;
     AlignControls(AControl, ARect);
+    // some widgetsets updates their clientrect when the first child was moved
+    // do a second pass if ClientRect changed
+    NewRect:=GetClientRect;
+    if not CompareRect(@ARect,@NewRect) then
+      AlignControls(AControl, NewRect);
   finally
     Exclude(FControlState, csAlignmentNeeded);
     EnableAlign;

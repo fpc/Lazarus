@@ -1,8 +1,8 @@
 object HelpOptionsDialog: THelpOptionsDialog
   AnchorSideBottom.Side = asrBottom
-  Left = 312
+  Left = 264
   Height = 300
-  Top = 358
+  Top = 234
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
@@ -17,7 +17,7 @@ object HelpOptionsDialog: THelpOptionsDialog
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 238
+    Height = 240
     Top = 6
     Width = 488
     Align = alTop
@@ -57,7 +57,6 @@ object HelpOptionsDialog: THelpOptionsDialog
         Top = 10
         Width = 30
         Anchors = [akTop, akRight]
-        BorderSpacing.InnerBorder = 4
         Caption = '...'
         OnClick = FPCDocHTMLBrowseButtonClick
         TabOrder = 1
@@ -66,7 +65,7 @@ object HelpOptionsDialog: THelpOptionsDialog
     object ViewersPage: TPage
       Caption = 'ViewersPage'
       ClientWidth = 484
-      ClientHeight = 207
+      ClientHeight = 209
       object ViewersLabel: TLabel
         AnchorSideTop.Control = ViewerPropsGroupBox
         Left = 6
@@ -81,7 +80,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideTop.Control = ViewersLabel
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 168
+        Height = 170
         Top = 32
         Width = 152
         Anchors = [akTop, akLeft, akBottom]
@@ -96,7 +95,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideLeft.Control = ViewersListBox
         AnchorSideLeft.Side = asrBottom
         Left = 164
-        Height = 195
+        Height = 197
         Top = 6
         Width = 314
         Align = alRight
@@ -109,7 +108,7 @@ object HelpOptionsDialog: THelpOptionsDialog
     object DataBasePage: TPage
       Caption = 'DataBasePage'
       ClientWidth = 484
-      ClientHeight = 226
+      ClientHeight = 207
       object DatabasesLabel: TLabel
         AnchorSideTop.Control = DataBasesPropsGroupBox
         Left = 6
@@ -139,7 +138,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideLeft.Control = DatabasesListBox
         AnchorSideLeft.Side = asrBottom
         Left = 164
-        Height = 214
+        Height = 195
         Top = 6
         Width = 314
         Align = alRight
@@ -151,20 +150,20 @@ object HelpOptionsDialog: THelpOptionsDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 50
-    Top = 250
+    Height = 48
+    Top = 252
     Width = 500
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 48
     ClientWidth = 500
     TabOrder = 1
     OnClick = BtnPanelClick
     object OkButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 327
-      Height = 38
+      Left = 335
+      Height = 36
       Top = 6
       Width = 75
       Align = alRight
@@ -182,10 +181,10 @@ object HelpOptionsDialog: THelpOptionsDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 408
-      Height = 38
+      Left = 416
+      Height = 36
       Top = 6
-      Width = 86
+      Width = 78
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

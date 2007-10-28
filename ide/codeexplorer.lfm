@@ -1,7 +1,7 @@
 object CodeExplorerView: TCodeExplorerView
-  Left = 378
+  Left = 355
   Height = 517
-  Top = 175
+  Top = 142
   Width = 215
   HorzScrollBar.Page = 214
   VertScrollBar.Page = 516
@@ -15,10 +15,9 @@ object CodeExplorerView: TCodeExplorerView
   OnDestroy = CodeExplorerViewDestroy
   OnResize = CodeExplorerViewRESIZE
   object RefreshButton: TButton
-    Height = 37
+    Height = 29
     Width = 80
     AutoSize = True
-    BorderSpacing.InnerBorder = 4
     Caption = 'Refresh'
     Constraints.MinWidth = 80
     OnClick = RefreshButtonClick
@@ -28,11 +27,10 @@ object CodeExplorerView: TCodeExplorerView
     AnchorSideLeft.Control = RefreshButton
     AnchorSideLeft.Side = asrBottom
     Left = 83
-    Height = 37
+    Height = 29
     Width = 80
     AutoSize = True
     BorderSpacing.Left = 3
-    BorderSpacing.InnerBorder = 4
     Caption = 'Options'
     Constraints.MinWidth = 80
     OnClick = OptionsButtonClick
@@ -41,8 +39,8 @@ object CodeExplorerView: TCodeExplorerView
   object MainNotebook: TNotebook
     AnchorSideTop.Control = OptionsButton
     AnchorSideTop.Side = asrBottom
-    Height = 478
-    Top = 39
+    Height = 486
+    Top = 31
     Width = 215
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -53,11 +51,11 @@ object CodeExplorerView: TCodeExplorerView
     object CodePage: TPage
       Caption = 'CodePage'
       ClientWidth = 211
-      ClientHeight = 447
+      ClientHeight = 455
       object CodeTreeview: TTreeView
         AnchorSideTop.Control = CodeFilterEdit
         AnchorSideTop.Side = asrBottom
-        Height = 423
+        Height = 431
         Top = 24
         Width = 211
         Align = alBottom

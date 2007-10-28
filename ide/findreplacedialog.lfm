@@ -1,7 +1,7 @@
 object LazFindReplaceDialog: TLazFindReplaceDialog
-  Left = 334
+  Left = 326
   Height = 373
-  Top = 185
+  Top = 184
   Width = 420
   HorzScrollBar.Page = 419
   VertScrollBar.Page = 372
@@ -87,7 +87,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 252
+    Height = 249
     Top = 70
     Width = 199
     Anchors = [akTop, akLeft, akBottom]
@@ -95,7 +95,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'OptionsGroupBox'
-    ClientHeight = 233
+    ClientHeight = 230
     ClientWidth = 195
     TabOrder = 2
     OnResize = OptionsGroupBoxResize
@@ -295,25 +295,24 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 45
-    Top = 328
+    Height = 48
+    Top = 325
     Width = 420
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 45
+    ClientHeight = 48
     ClientWidth = 420
     TabOrder = 6
     object ReplaceAllButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 209
-      Height = 33
+      Left = 221
+      Height = 36
       Top = 6
-      Width = 50
+      Width = 46
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
       Caption = '&All'
       Kind = bkAll
       NumGlyphs = 0
@@ -322,14 +321,13 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 265
-      Height = 33
+      Left = 273
+      Height = 36
       Top = 6
-      Width = 61
+      Width = 57
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
       Caption = '&OK'
       Default = True
       Kind = bkOK
@@ -340,14 +338,13 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 332
-      Height = 33
+      Left = 336
+      Height = 36
       Top = 6
-      Width = 82
+      Width = 78
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
       Cancel = True
       Caption = 'Cancel'
       Kind = bkCancel

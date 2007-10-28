@@ -194,6 +194,7 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
+    Panel2: TPanel;
     TargetDirectoryButton: TButton;
     CancelButton: TButton;
     AppLCLInterfaceComboBox: TComboBox;
@@ -219,7 +220,7 @@ type
     Notebook: TNotebook;
     QuickBuildOptionsPage: TPage;
     AdvancedBuildOptionsPage: TPage;
-    Panel1: TPanel;
+    CBLDBtnPanel: TPanel;
     LCLInterfaceRadioGroup: TRadioGroup;
     SaveSettingsButton: TButton;
     CompileButton: TButton;

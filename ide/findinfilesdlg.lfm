@@ -1,7 +1,7 @@
 object LazFindInFilesDialog: TLazFindInFilesDialog
-  Left = 391
+  Left = 379
   Height = 460
-  Top = 158
+  Top = 155
   Width = 420
   HorzScrollBar.Page = 419
   VertScrollBar.Page = 459
@@ -20,17 +20,17 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 6
     Height = 20
     Top = 8
-    Width = 76
+    Width = 75
     Caption = 'Text To Find:'
     ParentColor = False
   end
   object TextToFindComboBox: TComboBox
     AnchorSideLeft.Control = TextToFindLabel
     AnchorSideLeft.Side = asrBottom
-    Left = 88
+    Left = 87
     Height = 25
     Top = 6
-    Width = 326
+    Width = 327
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -45,7 +45,6 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
-    BorderSpacing.InnerBorder = 6
     Caption = 'Options'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -171,14 +170,13 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   object OKButton: TButton
     AnchorSideRight.Control = CancelButton
     Left = 249
-    Height = 31
-    Top = 422
+    Height = 29
+    Top = 424
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 9
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'OK'
     Constraints.MinWidth = 75
     Default = True
@@ -191,13 +189,12 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 339
-    Height = 31
-    Top = 423
+    Height = 29
+    Top = 425
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     Constraints.MinWidth = 75

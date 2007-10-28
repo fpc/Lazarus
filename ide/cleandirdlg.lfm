@@ -1,15 +1,15 @@
 object CleanDirectoryDialog: TCleanDirectoryDialog
-  Left = 316
-  Height = 328
-  Top = 212
+  Left = 307
+  Height = 340
+  Top = 209
   Width = 450
   HorzScrollBar.Page = 449
-  VertScrollBar.Page = 327
+  VertScrollBar.Page = 339
   ActiveControl = DirCombobox
   AutoSize = True
   BorderIcons = [biSystemMenu]
   Caption = 'Clean Directory'
-  ClientHeight = 328
+  ClientHeight = 340
   ClientWidth = 450
   OnCreate = CleanDirectoryDialogCreate
   Position = poScreenCenter
@@ -64,7 +64,6 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Width = 23
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 5
-      BorderSpacing.InnerBorder = 4
       Caption = '...'
       OnClick = DirBrowseButtonClick
       TabOrder = 2
@@ -160,8 +159,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 275
-    Height = 34
+    Left = 285
+    Height = 36
     Top = 298
     Width = 75
     Anchors = [akTop, akRight]
@@ -184,10 +183,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 356
-    Height = 36
+    Left = 366
+    Height = 32
     Top = 298
-    Width = 88
+    Width = 78
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6

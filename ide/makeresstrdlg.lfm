@@ -1,7 +1,7 @@
 object MakeResStrDialog: TMakeResStrDialog
-  Left = 433
+  Left = 420
   Height = 513
-  Top = 202
+  Top = 201
   Width = 480
   HorzScrollBar.Page = 479
   VertScrollBar.Page = 512
@@ -22,7 +22,6 @@ object MakeResStrDialog: TMakeResStrDialog
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 6
     Caption = 'ConversionGroupBox'
     ClientHeight = 215
     ClientWidth = 464
@@ -248,9 +247,9 @@ object MakeResStrDialog: TMakeResStrDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 305
-    Height = 34
-    Top = 473
+    Left = 315
+    Height = 36
+    Top = 471
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -270,10 +269,10 @@ object MakeResStrDialog: TMakeResStrDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 386
-    Height = 36
-    Top = 471
-    Width = 88
+    Left = 396
+    Height = 32
+    Top = 475
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -309,30 +308,30 @@ object MakeResStrDialog: TMakeResStrDialog
   object CodePanel: TPanel
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 219
+    Height = 223
     Top = 246
     Width = 468
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 219
+    ClientHeight = 223
     ClientWidth = 468
     TabOrder = 4
     object SrcPreviewGroupBox: TGroupBox
       AnchorSideBottom.Control = CancelButton
-      Height = 87
+      Height = 91
       Width = 468
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'SrcPreviewGroupBox'
-      ClientHeight = 68
+      ClientHeight = 72
       ClientWidth = 464
       TabOrder = 0
       OnResize = IdentPrefixLabelResize
       object SrcPreviewSynEdit: TSynEdit
         Left = 6
-        Height = 56
+        Height = 60
         Top = 6
         Width = 452
         Align = alClient
@@ -345,9 +344,7 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -674,12 +671,11 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'SrcPreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object StringConstGroupBox: TGroupBox
       Height = 127
-      Top = 92
+      Top = 96
       Width = 468
       Align = alClient
       Caption = 'StringConstGroupBox'
@@ -701,9 +697,7 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -1030,13 +1024,12 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'StringConstSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object Splitter1: TSplitter
       Cursor = crVSplit
       Height = 5
-      Top = 87
+      Top = 91
       Width = 468
       Align = alTop
       ResizeAnchor = akTop

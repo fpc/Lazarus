@@ -82,7 +82,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 23
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = cmdOpenDebuggerPathCLICK
           TabOrder = 2
@@ -128,7 +127,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 23
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = cmdOpenAdditionalPathClick
           TabOrder = 1
@@ -341,7 +339,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'Remove'
           Constraints.MinWidth = 75
           Enabled = False
@@ -359,7 +356,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'Add'
           Constraints.MinWidth = 75
           OnClick = cmdExceptionAddCLICK
@@ -421,7 +417,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'Remove'
           Constraints.MinWidth = 75
           Enabled = False
@@ -438,7 +433,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'Add'
           Constraints.MinWidth = 75
           TabOrder = 1

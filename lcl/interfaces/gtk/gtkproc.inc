@@ -6702,16 +6702,24 @@ begin
   gtk_widget_size_request(Widget,@Requisition);
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
-  if not WithThemeSpace then begin
+  if WithThemeSpace then begin
+    {$IFDEF Gtk1}
+    //DebugLn(['GetGTKDefaultWidgetSize WithThemeSpace ',DbgSName(AWinControl),' ',GtkWidgetIsA(Widget,GTK_BUTTON_TYPE),' ',GetWidgetDebugReport(Widget),' ',2*gtk_widget_get_ythickness(Widget)]);
+    if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_BUTTON_TYPE then
+      inc(PreferredHeight,2*gtk_widget_get_ythickness(Widget))
+    else if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+      dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
+    {$ENDIF}
+  end else begin
     //debugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
     //debugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
     //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
     {$IFDEF Gtk1}
-    if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
-      dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
+    //if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+    //  dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ELSE}
-    if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_TYPE_BUTTON then
-      dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
+    //if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_TYPE_BUTTON then
+    //  dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ENDIF}
   end;
   {DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,

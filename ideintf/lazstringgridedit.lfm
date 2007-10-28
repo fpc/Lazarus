@@ -1,12 +1,14 @@
 object StringGridEditorDlg: TStringGridEditorDlg
-  Left = 259
+  Left = 256
   Height = 270
-  Top = 167
+  Top = 163
   Width = 520
   HorzScrollBar.Page = 519
   VertScrollBar.Page = 269
   ActiveControl = StringGrid
   Caption = 'StringGridEditorDlg'
+  ClientHeight = 270
+  ClientWidth = 520
   Constraints.MinHeight = 270
   Constraints.MinWidth = 340
   OnCreate = FormCreate
@@ -20,8 +22,9 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Align = alTop
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 6
     Caption = 'String Grid'
+    ClientHeight = 208
+    ClientWidth = 504
     TabOrder = 0
     object LabelMove: TLabel
       AnchorSideLeft.Control = ArrowDown
@@ -33,7 +36,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Top = 181
       Width = 96
       Caption = 'Move Cols/Rows'
-      Color = clNone
       ParentColor = False
     end
     object ArrowLeft: TArrow
@@ -97,7 +99,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Width = 85
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Load...'
       OnClick = BtnLoadClick
       TabOrder = 0
@@ -112,7 +113,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Top = 37
       Width = 85
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnSave'
       OnClick = BtnSaveClick
       TabOrder = 1
@@ -127,7 +127,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Top = 68
       Width = 85
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'BtnClean'
       OnClick = BtnCleanClick
       TabOrder = 2
@@ -135,7 +134,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     object StringGrid: TStringGrid
       AnchorSideRight.Control = BtnLoad
       Left = 6
-      Height = 198
+      Height = 196
       Top = 6
       Width = 401
       Align = alLeft
@@ -221,12 +220,12 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Title = 'Open'
     FilterIndex = 0
     left = 135
-    top = 343
+    top = 243
   end
   object SaveDialog: TSaveDialog
     Title = 'Save'
     FilterIndex = 0
     left = 168
-    top = 343
+    top = 243
   end
 end

@@ -1,11 +1,11 @@
 object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
-  Left = 518
+  Left = 384
   Height = 542
-  Top = 169
+  Top = 132
   Width = 489
   HorzScrollBar.Page = 488
   VertScrollBar.Page = 541
-  ActiveControl = SaveSettingsButton
+  ActiveControl = CompileButton
   BorderIcons = [biSystemMenu]
   Caption = 'ConfigureBuildLazarusDlg'
   ClientHeight = 542
@@ -16,65 +16,56 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  object Panel1: TPanel
+  object CBLDBtnPanel: TPanel
     AnchorSideLeft.Control = Notebook
     AnchorSideTop.Control = Notebook
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Notebook
     AnchorSideRight.Side = asrBottom
-    Height = 50
-    Top = 492
+    Height = 41
+    Top = 501
     Width = 489
     Align = alBottom
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 41
     ClientWidth = 489
     TabOrder = 0
     object CompileButton: TButton
-      AnchorSideRight.Control = SaveSettingsButton
-      AnchorSideBottom.Control = SaveSettingsButton
       AnchorSideBottom.Side = asrBottom
-      Left = 245
-      Height = 26
-      Top = 12
-      Width = 59
-      Anchors = [akRight, akBottom]
+      Left = 253
+      Height = 29
+      Top = 6
+      Width = 64
+      Align = alRight
       AutoSize = True
-      BorderSpacing.Right = 18
-      BorderSpacing.InnerBorder = 4
+      BorderSpacing.Around = 6
       Caption = 'Compile'
       OnClick = CompileButtonClick
       TabOrder = 0
     end
     object SaveSettingsButton: TButton
-      AnchorSideRight.Control = CancelButton
-      AnchorSideBottom.Control = CancelButton
       AnchorSideBottom.Side = asrBottom
-      Left = 322
-      Height = 26
-      Top = 12
-      Width = 89
-      Anchors = [akRight, akBottom]
+      Left = 323
+      Height = 29
+      Top = 6
+      Width = 99
+      Align = alRight
       AutoSize = True
-      BorderSpacing.Right = 18
-      BorderSpacing.InnerBorder = 4
+      BorderSpacing.Around = 6
       Caption = 'Save settings'
       OnClick = SaveSettingsButtonClick
       TabOrder = 1
     end
     object CancelButton: TButton
-      AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = Panel1
-      AnchorSideBottom.Side = asrCenter
-      Left = 429
-      Height = 26
-      Top = 12
-      Width = 54
-      Anchors = [akRight, akBottom]
+      Left = 428
+      Height = 29
+      Top = 6
+      Width = 55
+      Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Cancel = True
       Caption = 'Cancel'
       OnClick = CancelButtonClick
@@ -86,8 +77,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Panel1
-    Height = 492
+    AnchorSideBottom.Control = CBLDBtnPanel
+    Height = 501
     Width = 489
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnEnter = NotebookPageChanged
@@ -98,7 +89,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideBottom.Side = asrBottom
       Caption = 'QuickBuildOptions'
       ClientWidth = 485
-      ClientHeight = 461
+      ClientHeight = 470
       object QuickLCLInterfaceComboLabel: TLabel
         AnchorSideLeft.Control = QuickBuildOptionsRadioGroup
         AnchorSideLeft.Side = asrBottom
@@ -396,7 +387,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Anchors = [akTop, akRight, akBottom]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 4
         Caption = '...'
         OnClick = TargetDirectoryButtonClick
         TabOrder = 8

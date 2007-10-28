@@ -29,7 +29,6 @@ begin
   FButtonGlyph := TButtonGlyph.Create;
   FButtonGlyph.OnChange := @GlyphChanged;
   Align := alNone;
-  BorderSpacing.InnerBorder:=4;
   RealizeKind;
 end;
 
@@ -296,11 +295,6 @@ procedure TCustomBitBtn.TextChanged;
 begin
   inherited TextChanged;
   AdjustSize;
-end;
-
-function TCustomBitBtn.IsBorderSpacingInnerBorderStored: Boolean;
-begin
-  Result:=BorderSpacing.InnerBorder<>4;
 end;
 
 class function TCustomBitBtn.GetControlClassDefaultSize: TPoint;

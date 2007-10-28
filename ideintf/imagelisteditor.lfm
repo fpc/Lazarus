@@ -1,7 +1,7 @@
 object ImageListEditorDlg: TImageListEditorDlg
-  Left = 313
+  Left = 302
   Height = 379
-  Top = 194
+  Top = 191
   Width = 616
   HorzScrollBar.Page = 615
   VertScrollBar.Page = 378
@@ -48,8 +48,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       Height = 146
       Top = 32
       Width = 218
-      HorzScrollBar.Page = 213
-      VertScrollBar.Page = 141
+      HorzScrollBar.Page = 217
+      VertScrollBar.Page = 145
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Color = clGrayText
@@ -213,6 +213,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       )
       MaxLength = 0
       Palette = cpFull
+      Selected = clFuchsia
       TabOrder = 2
       Text = 'clFuchsia'
       OnChange = ColorBoxTransparentClick
@@ -309,7 +310,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Add...'
       Default = True
       OnClick = BtnAddClick
@@ -322,7 +322,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Clear'
       OnClick = BtnClearClick
       TabOrder = 2
@@ -334,7 +333,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = '&Delete'
       OnClick = BtnDeleteClick
       TabOrder = 3
@@ -347,7 +345,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Move Up'
       OnClick = BtnMoveUpClick
       TabOrder = 4
@@ -360,7 +357,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Width = 159
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Move Down'
       OnClick = BtnMoveUpClick
       TabOrder = 5
@@ -371,7 +367,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Top = 161
       Width = 159
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
       Caption = 'Save...'
       OnClick = BtnSaveClick
       TabOrder = 6

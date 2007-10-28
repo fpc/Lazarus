@@ -1,4 +1,11 @@
 object ContextHelpEditorDlg: TContextHelpEditorDlg
+  Left = 252
+  Height = 503
+  Top = 129
+  Width = 619
+  HorzScrollBar.Page = 618
+  VertScrollBar.Page = 502
+  ActiveControl = ControlsTreeView
   Caption = 'ContextHelpEditorDlg'
   ChildSizing.LeftRightSpacing = 6
   ChildSizing.TopBottomSpacing = 6
@@ -10,145 +17,135 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 618
-  VertScrollBar.Page = 502
-  Left = 290
-  Height = 503
-  Top = 163
-  Width = 619
   object WindowControlsGroupBox: TGroupBox
-    Align = alLeft
-    Caption = 'WindowControlsGroupBox'
-    ClientHeight = 428
-    ClientWidth = 301
-    TabOrder = 0
     Left = 6
     Height = 445
     Top = 6
     Width = 305
+    Align = alLeft
+    Caption = 'WindowControlsGroupBox'
+    ClientHeight = 426
+    ClientWidth = 301
+    TabOrder = 0
     object ControlsTreeView: TTreeView
-      Align = alClient
-      DefaultItemHeight = 14
-      TabOrder = 0
-      Height = 358
+      Height = 356
       Width = 301
+      Align = alClient
+      DefaultItemHeight = 19
+      TabOrder = 0
     end
     object CreateHelpNodeForControlButton: TButton
+      Height = 35
+      Top = 356
+      Width = 301
       Align = alBottom
-      BorderSpacing.InnerBorder = 4
       Caption = 'CreateHelpNodeForControlButton'
       OnClick = CreateHelpNodeForControlButtonClick
       TabOrder = 1
-      Height = 35
-      Top = 358
-      Width = 301
     end
     object TestButton: TButton
+      Height = 35
+      Top = 391
+      Width = 301
       Align = alBottom
-      BorderSpacing.InnerBorder = 4
       Caption = 'TestButton'
       OnClick = TestButtonClick
       TabOrder = 2
-      Height = 35
-      Top = 393
-      Width = 301
     end
   end
   object NodesGroupBox: TGroupBox
-    Align = alClient
-    Caption = 'NodesGroupBox'
-    ClientHeight = 428
-    ClientWidth = 281
-    TabOrder = 1
     Left = 328
     Height = 445
     Top = 6
     Width = 285
+    Align = alClient
+    Caption = 'NodesGroupBox'
+    ClientHeight = 426
+    ClientWidth = 281
+    TabOrder = 1
     object HelpNodesTreeView: TTreeView
+      Height = 313
+      Width = 281
       Align = alClient
-      DefaultItemHeight = 14
+      DefaultItemHeight = 19
       TabOrder = 0
       OnSelectionChanged = HelpNodesTreeViewSelectionChanged
-      Height = 315
-      Width = 281
     end
     object HelpNodePropertiesGroupBox: TGroupBox
+      Height = 113
+      Top = 313
+      Width = 281
       Align = alBottom
       Caption = 'HelpNodePropertiesGroupBox'
-      ClientHeight = 96
+      ClientHeight = 109
       ClientWidth = 277
       TabOrder = 1
-      Height = 113
-      Top = 315
-      Width = 281
       object NodeNameLabel: TLabel
-        Caption = 'Name:'
-        Color = clNone
-        ParentColor = False
         Left = 10
         Height = 13
         Top = 10
         Width = 36
+        Caption = 'Name:'
+        ParentColor = False
       end
       object NodePathLabel: TLabel
-        Caption = 'Path:'
-        Color = clNone
-        ParentColor = False
         Left = 10
         Height = 13
         Top = 40
         Width = 29
+        Caption = 'Path:'
+        ParentColor = False
       end
       object NodeHasHelpCheckBox: TCheckBox
-        Caption = 'NodeHasHelpCheckBox'
-        OnEditingDone = NodeHasHelpCheckBoxEditingDone
-        TabOrder = 0
         Left = 6
         Height = 24
         Top = 65
         Width = 162
+        Caption = 'NodeHasHelpCheckBox'
+        OnEditingDone = NodeHasHelpCheckBoxEditingDone
+        TabOrder = 0
       end
       object NodeNameEdit: TEdit
-        OnEditingDone = NodeNameEditEditingDone
-        TabOrder = 1
-        Text = 'NodeNameEdit'
         Left = 70
         Height = 23
         Top = 5
         Width = 204
+        OnEditingDone = NodeNameEditEditingDone
+        TabOrder = 1
+        Text = 'NodeNameEdit'
       end
       object NodePathEdit: TEdit
-        OnEditingDone = NodePathEditEditingDone
-        TabOrder = 2
-        Text = 'NodePathEdit'
         Left = 70
         Height = 23
         Top = 35
         Width = 204
+        OnEditingDone = NodePathEditEditingDone
+        TabOrder = 2
+        Text = 'NodePathEdit'
       end
     end
   end
   object Splitter1: TSplitter
-    Height = 445
-    Width = 5
-    Cursor = crHSplit
     Left = 317
     Height = 445
     Top = 6
     Width = 5
   end
   object Panel1: TPanel
+    Left = 6
+    Height = 40
+    Top = 457
+    Width = 607
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 40
     ClientWidth = 607
     TabOrder = 2
-    Left = 6
-    Height = 40
-    Top = 457
-    Width = 607
     object CancelBitBtn: TBitBtn
+      Left = 496
+      Height = 28
+      Top = 6
+      Width = 105
       Align = alRight
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
@@ -156,12 +153,12 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       ModalResult = 2
       NumGlyphs = 0
       TabOrder = 0
-      Left = 496
+    end
+    object OkBitBtn: TBitBtn
+      Left = 370
       Height = 28
       Top = 6
       Width = 105
-    end
-    object OkBitBtn: TBitBtn
       Align = alRight
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 15
@@ -172,10 +169,6 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       NumGlyphs = 0
       OnClick = OkBitBtnClick
       TabOrder = 1
-      Left = 370
-      Height = 28
-      Top = 6
-      Width = 105
     end
   end
 end

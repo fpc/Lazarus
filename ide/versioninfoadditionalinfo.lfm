@@ -1,7 +1,7 @@
 object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
-  Left = 300
+  Left = 289
   Height = 296
-  Top = 402
+  Top = 174
   Width = 395
   HorzScrollBar.Page = 394
   VertScrollBar.Page = 295
@@ -16,7 +16,6 @@ object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
     Height = 25
     Top = 264
     Width = 75
-    BorderSpacing.InnerBorder = 4
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -28,7 +27,7 @@ object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
     Top = 8
     Width = 376
     Caption = 'Additional Information'
-    ClientHeight = 230
+    ClientHeight = 229
     ClientWidth = 372
     TabOrder = 1
     object CommentsLabel: TLabel
@@ -148,7 +147,6 @@ object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
     Height = 25
     Top = 264
     Width = 75
-    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2

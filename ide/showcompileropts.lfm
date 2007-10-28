@@ -1,7 +1,7 @@
 object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
-  Left = 358
+  Left = 341
   Height = 194
-  Top = 337
+  Top = 320
   Width = 390
   HorzScrollBar.Page = 389
   VertScrollBar.Page = 193
@@ -20,7 +20,6 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     Top = 160
     Width = 75
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 4
     Caption = 'Ok'
     OnClick = OkButtonCLICK
     TabOrder = 0
@@ -38,7 +37,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Command line parameters'
-    ClientHeight = 130
+    ClientHeight = 129
     ClientWidth = 374
     ParentCtl3D = False
     TabOrder = 1
@@ -50,7 +49,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
       AnchorSideBottom.Control = CmdLineGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 118
+      Height = 117
       Top = 6
       Width = 362
       Align = alClient
@@ -66,9 +65,9 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     AnchorSideTop.Control = OkButton
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 13
-    Top = 166
-    Width = 135
+    Height = 22
+    Top = 161
+    Width = 171
     Caption = 'RelativePathsCheckBox'
     Checked = True
     OnChange = RelativePathsCheckBoxChange

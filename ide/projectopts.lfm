@@ -1,7 +1,7 @@
 object ProjectOptionsDialog: TProjectOptionsDialog
-  Left = 283
+  Left = 262
   Height = 417
-  Top = 219
+  Top = 209
   Width = 474
   HorzScrollBar.Page = 473
   VertScrollBar.Page = 416
@@ -16,7 +16,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   Position = poScreenCenter
   object Notebook: TNotebook
     AnchorSideBottom.Control = PODBtnPanel
-    Height = 367
+    Height = 369
     Width = 474
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -25,7 +25,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
       ClientWidth = 470
-      ClientHeight = 336
+      ClientHeight = 338
       object AppSettingsGroupBox: TGroupBox
         Left = 6
         Height = 124
@@ -83,14 +83,14 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       end
       object OutputSettingsGroupBox: TGroupBox
         Left = 6
-        Height = 80
+        Height = 74
         Top = 136
         Width = 458
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'OutputSettingsGroupBox'
-        ClientHeight = 61
+        ClientHeight = 55
         ClientWidth = 454
         TabOrder = 1
         object TargetFileLabel: TLabel
@@ -330,7 +330,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 163
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
@@ -346,7 +345,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 180
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'LazDocDeletePathButton'
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
@@ -376,7 +374,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 24
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
@@ -710,7 +707,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Anchors = [akTop, akRight]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'Additional Info'
           OnClick = AdditionalInfoButtonClick
           TabOrder = 2
@@ -771,7 +767,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 24
           Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = POOutDirButtonClick
           TabOrder = 1

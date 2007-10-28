@@ -1,11 +1,11 @@
 object LazDocForm: TLazDocForm
-  Left = 387
+  Left = 205
   Height = 117
-  Top = 623
+  Top = 511
   Width = 753
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 116
-  ActiveControl = ShortEdit
+  ActiveControl = InheritedShortEdit
   Caption = 'LazDoc editor'
   ClientHeight = 117
   ClientWidth = 753
@@ -23,11 +23,11 @@ object LazDocForm: TLazDocForm
     TabPosition = tpBottom
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
+      ClientHeight = 86
+      ClientWidth = 732
       object ShortEdit: TEdit
         Height = 23
-        Width = 726
+        Width = 730
         Align = alTop
         BorderSpacing.Right = 2
         OnEditingDone = DocumentationTagChange
@@ -37,11 +37,11 @@ object LazDocForm: TLazDocForm
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
+      ClientHeight = 86
+      ClientWidth = 732
       object DescrMemo: TMemo
-        Height = 87
-        Width = 726
+        Height = 82
+        Width = 730
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -54,11 +54,11 @@ object LazDocForm: TLazDocForm
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
+      ClientHeight = 86
+      ClientWidth = 732
       object ErrorsMemo: TMemo
-        Height = 87
-        Width = 726
+        Height = 82
+        Width = 730
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -71,14 +71,14 @@ object LazDocForm: TLazDocForm
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
+      ClientHeight = 86
+      ClientWidth = 732
       object LinkListBox: TListBox
         AnchorSideTop.Control = AddLinkButton
         AnchorSideTop.Side = asrBottom
-        Height = 58
+        Height = 53
         Top = 29
-        Width = 726
+        Width = 730
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 4
@@ -86,6 +86,7 @@ object LazDocForm: TLazDocForm
         BorderSpacing.Bottom = 4
         OnClick = LinkListBoxClick
         TabOrder = 0
+        TopIndex = -1
       end
       object AddLinkButton: TButton
         AnchorSideRight.Control = DeleteLinkButton
@@ -95,7 +96,6 @@ object LazDocForm: TLazDocForm
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'AddLinkButton'
         OnClick = AddLinkButtonClick
         TabOrder = 1
@@ -109,7 +109,6 @@ object LazDocForm: TLazDocForm
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 2
-        BorderSpacing.InnerBorder = 4
         Caption = 'DeleteLinkButton'
         OnClick = DeleteLinkButtonClick
         TabOrder = 2
@@ -134,7 +133,6 @@ object LazDocForm: TLazDocForm
         Top = 1
         Width = 225
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-        ItemHeight = 13
         MaxLength = 0
         OnChange = LinkChange
         TabOrder = 4
@@ -143,11 +141,11 @@ object LazDocForm: TLazDocForm
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
+      ClientHeight = 86
+      ClientWidth = 732
       object ExampleEdit: TEdit
         Height = 23
-        Width = 726
+        Width = 730
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = DocumentationTagChange
@@ -164,7 +162,6 @@ object LazDocForm: TLazDocForm
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 2
-        BorderSpacing.InnerBorder = 4
         Caption = 'BrowseExampleButton'
         OnClick = BrowseExampleButtonClick
         TabOrder = 1
@@ -172,12 +169,12 @@ object LazDocForm: TLazDocForm
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
+      ClientHeight = 86
+      ClientWidth = 732
       object InheritedShortLabel: TLabel
         Height = 14
         Top = 2
-        Width = 728
+        Width = 732
         Align = alTop
         BorderSpacing.Top = 2
         Caption = 'InheritedShortLabel'
@@ -191,7 +188,7 @@ object LazDocForm: TLazDocForm
         AnchorSideRight.Side = asrBottom
         Height = 23
         Top = 18
-        Width = 728
+        Width = 732
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
         ReadOnly = True
@@ -203,7 +200,6 @@ object LazDocForm: TLazDocForm
         Top = 54
         Width = 140
         AutoSize = True
-        BorderSpacing.InnerBorder = 4
         Caption = 'MoveToInheritedButton'
         OnClick = MoveToInheritedButtonClick
         TabOrder = 1
@@ -219,7 +215,6 @@ object LazDocForm: TLazDocForm
         Width = 147
         AutoSize = True
         BorderSpacing.Left = 10
-        BorderSpacing.InnerBorder = 4
         Caption = 'CopyFromInheritedButton'
         OnClick = CopyFromInheritedButtonClick
         TabOrder = 2

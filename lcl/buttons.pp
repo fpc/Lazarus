@@ -122,7 +122,6 @@ type
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
     procedure TextChanged; override;
-    function IsBorderSpacingInnerBorderStored: Boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;

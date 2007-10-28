@@ -1,7 +1,7 @@
 object CodeExplorerDlg: TCodeExplorerDlg
-  Left = 290
+  Left = 279
   Height = 300
-  Top = 163
+  Top = 167
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
@@ -15,27 +15,25 @@ object CodeExplorerDlg: TCodeExplorerDlg
   Position = poScreenCenter
   object OkButton: TButton
     AnchorSideRight.Control = CancelButton
-    Left = 200
-    Height = 37
-    Top = 256
-    Width = 80
+    Left = 216
+    Height = 29
+    Top = 264
+    Width = 72
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
   end
   object CancelButton: TButton
-    Left = 286
-    Height = 37
-    Top = 256
-    Width = 106
+    Left = 294
+    Height = 29
+    Top = 264
+    Width = 98
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 1

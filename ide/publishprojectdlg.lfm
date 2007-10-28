@@ -1,7 +1,7 @@
 object PublishProjectDialog: TPublishProjectDialog
-  Left = 330
+  Left = 319
   Height = 505
-  Top = 158
+  Top = 146
   Width = 484
   HorzScrollBar.Page = 483
   VertScrollBar.Page = 504
@@ -101,7 +101,7 @@ object PublishProjectDialog: TPublishProjectDialog
   object ProjectInfoGroupbox: TGroupBox
     Left = 6
     Height = 81
-    Top = 360
+    Top = 370
     Width = 472
     Align = alTop
     AutoSize = True
@@ -125,7 +125,7 @@ object PublishProjectDialog: TPublishProjectDialog
     object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
       Left = 6
       Height = 22
-      Top = 25
+      Top = 34
       Width = 456
       Align = alTop
       AllowGrayed = True
@@ -141,13 +141,12 @@ object PublishProjectDialog: TPublishProjectDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 31
-    Top = 468
-    Width = 107
+    Height = 29
+    Top = 470
+    Width = 99
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'Save settings'
     OnClick = SaveSettingsButtonCLICK
     TabOrder = 5
@@ -155,7 +154,7 @@ object PublishProjectDialog: TPublishProjectDialog
   object IncludeFilterGroupbox: TGroupBox
     Left = 6
     Height = 88
-    Top = 172
+    Top = 182
     Width = 472
     Align = alTop
     BorderSpacing.Around = 6
@@ -201,7 +200,7 @@ object PublishProjectDialog: TPublishProjectDialog
   object ExcludeFilterGroupbox: TGroupBox
     Left = 6
     Height = 88
-    Top = 266
+    Top = 276
     Width = 472
     Align = alTop
     BorderSpacing.Around = 6
@@ -248,10 +247,10 @@ object PublishProjectDialog: TPublishProjectDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 327
-    Height = 34
-    Top = 465
-    Width = 61
+    Left = 337
+    Height = 36
+    Top = 463
+    Width = 57
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -268,10 +267,10 @@ object PublishProjectDialog: TPublishProjectDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 390
-    Height = 36
-    Top = 463
-    Width = 88
+    Left = 400
+    Height = 32
+    Top = 467
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

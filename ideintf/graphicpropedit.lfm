@@ -1,7 +1,7 @@
 object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
-  Left = 290
+  Left = 277
   Height = 381
-  Top = 153
+  Top = 147
   Width = 436
   HorzScrollBar.Page = 435
   VertScrollBar.Page = 380
@@ -15,13 +15,13 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Position = poScreenCenter
   object GroupBox1: TGroupBox
     Left = 6
-    Height = 317
+    Height = 319
     Top = 6
     Width = 424
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'Picture'
-    ClientHeight = 298
+    ClientHeight = 300
     ClientWidth = 420
     TabOrder = 0
     object ScrollBox: TScrollBox
@@ -30,9 +30,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 286
+      Height = 288
       Top = 6
-      Width = 349
+      Width = 357
       AutoScroll = True
       Align = alClient
       BorderSpacing.Around = 6
@@ -46,23 +46,22 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       end
     end
     object LoadSaveBtnPanel: TPanel
-      Left = 361
-      Height = 286
+      Left = 369
+      Height = 288
       Top = 6
-      Width = 53
+      Width = 45
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       BevelOuter = bvNone
-      ClientHeight = 286
-      ClientWidth = 53
+      ClientHeight = 288
+      ClientWidth = 45
       TabOrder = 1
       object LoadButton: TButton
         Height = 25
-        Width = 53
+        Width = 45
         Align = alTop
         BorderSpacing.Bottom = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'Load'
         OnClick = LoadButtonClick
         TabOrder = 0
@@ -70,10 +69,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       object SaveButton: TButton
         Height = 25
         Top = 31
-        Width = 53
+        Width = 45
         Align = alTop
         BorderSpacing.Bottom = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'Save'
         OnClick = SaveButtonClick
         TabOrder = 1
@@ -81,10 +79,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       object ClearButton: TButton
         Height = 25
         Top = 62
-        Width = 53
+        Width = 45
         Align = alTop
         BorderSpacing.Bottom = 6
-        BorderSpacing.InnerBorder = 4
         Caption = 'Clear'
         OnClick = ClearButtonClick
         TabOrder = 2
@@ -93,10 +90,11 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   end
   object OkCancelButtonPanel: TButtonPanel
     Left = 6
-    Height = 52
-    Top = 329
+    Height = 50
+    Top = 331
     Width = 424
     Align = alBottom
+    AutoSize = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]

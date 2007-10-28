@@ -1,11 +1,11 @@
 object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
-  Left = 316
+  Left = 299
   Height = 522
-  Top = 174
+  Top = 169
   Width = 542
   HorzScrollBar.Page = 541
   VertScrollBar.Page = 521
-  ActiveControl = HideIDEOnRunCheckBox
+  ActiveControl = ShowGridCheckBox
   Caption = 'EnvironmentOptionsDialog'
   ClientHeight = 522
   ClientWidth = 542
@@ -13,7 +13,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   Position = poScreenCenter
   object Notebook: TNotebook
     AnchorSideBottom.Control = EODBtnPanel
-    Height = 479
+    Height = 481
     Width = 542
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -135,7 +135,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 25
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -180,7 +179,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 25
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = FilesButtonClick
           TabOrder = 1
@@ -225,7 +223,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 25
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -270,7 +267,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 25
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = FilesButtonClick
           TabOrder = 1
@@ -315,7 +311,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 25
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -459,7 +454,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 512
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'SaveDesktopSettingsToFileButton'
           OnClick = SaveDesktopSettingsToFileButtonClick
           TabOrder = 0
@@ -474,7 +468,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 512
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'LoadDesktopSettingsFromFileButton'
           OnClick = LoadDesktopSettingsFromFileButtonClick
           TabOrder = 1
@@ -558,7 +551,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object FormEditorPage: TPage
       Caption = 'FormEditorPage'
       ClientWidth = 538
-      ClientHeight = 448
+      ClientHeight = 450
       OnResize = FormEditorPageResize
       object GridGroupBox: TGroupBox
         Left = 6
@@ -723,13 +716,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideBottom.Control = FormEditorPage
         AnchorSideBottom.Side = asrBottom
         Left = 349
-        Height = 218
+        Height = 220
         Top = 224
         Width = 183
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'GuideLinesGroupBox'
-        ClientHeight = 199
+        ClientHeight = 201
         ClientWidth = 179
         TabOrder = 1
         object GuideLineColorLeftTopButton: TColorButton
@@ -818,13 +811,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideBottom.Control = FormEditorPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 218
+        Height = 220
         Top = 224
         Width = 337
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'FormEditMiscGroupBox'
-        ClientHeight = 199
+        ClientHeight = 201
         ClientWidth = 333
         TabOrder = 2
         object GrabberColorButton: TColorButton
@@ -1576,7 +1569,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 163
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 4
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
@@ -1591,7 +1583,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 180
           AutoSize = True
           BorderSpacing.Left = 10
-          BorderSpacing.InnerBorder = 4
           Caption = 'LazDocDeletePathButton'
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
@@ -1609,7 +1600,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 24
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
-          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 3
@@ -1634,25 +1624,24 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
   end
   object EODBtnPanel: TPanel
-    Height = 43
-    Top = 479
+    Height = 41
+    Top = 481
     Width = 542
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 43
+    ClientHeight = 41
     ClientWidth = 542
     TabOrder = 1
     object OkButton: TButton
       AnchorSideBottom.Side = asrBottom
-      Left = 349
-      Height = 31
+      Left = 357
+      Height = 29
       Top = 6
       Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Caption = 'Ok'
       Constraints.MinWidth = 75
       Default = True
@@ -1662,14 +1651,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object CancelButton: TButton
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 430
-      Height = 31
+      Left = 438
+      Height = 29
       Top = 6
-      Width = 106
+      Width = 98
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       Cancel = True
       Caption = 'CancelButton'
       Constraints.MinWidth = 75

@@ -1,7 +1,7 @@
 object CodeToolsOptsDlg: TCodeToolsOptsDlg
-  Left = 955
+  Left = 311
   Height = 435
-  Top = 454
+  Top = 178
   Width = 560
   HorzScrollBar.Page = 559
   VertScrollBar.Page = 434
@@ -44,7 +44,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'SrcPathGroupBox'
-        ClientHeight = 52
+        ClientHeight = 37
         ClientWidth = 540
         TabOrder = 0
         object SrcPathEdit: TEdit
@@ -527,9 +527,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentColor = False
         TabOrder = 3
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -855,7 +853,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SplitPreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object SpaceNotCosmosPage: TPage
@@ -925,9 +922,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentColor = False
         TabOrder = 2
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1253,7 +1248,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SpacePreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object IdentifierCompletionPage: TPage
@@ -1295,7 +1289,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 92
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'OKButton'
     ModalResult = 1
     TabOrder = 1
@@ -1311,7 +1304,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 92
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2

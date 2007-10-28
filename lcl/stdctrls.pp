@@ -1010,7 +1010,6 @@ type
     procedure SetParent(AParent: TWinControl); override;
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
-    function IsBorderSpacingInnerBorderStored: Boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
     property ParentColor default false;
     function UseRightToLeftAlignment: Boolean; override;

@@ -1,84 +1,85 @@
 object WatchPropertyDlg: TWatchPropertyDlg
+  Left = 336
+  Height = 206
+  Top = 227
+  Width = 420
+  HorzScrollBar.Page = 419
+  VertScrollBar.Page = 205
+  ActiveControl = chkAllowFunc
   Caption = 'Watch Properties'
   ClientHeight = 206
   ClientWidth = 420
-  PixelsPerInch = 95
   Position = poScreenCenter
-  HorzScrollBar.Page = 419
-  VertScrollBar.Page = 205
-  Left = 358
-  Height = 206
-  Top = 238
-  Width = 420
   object lblExpression: TLabel
-    Caption = 'Expression:'
-    Color = clNone
-    ParentColor = False
     Left = 16
-    Height = 13
+    Height = 20
     Top = 14
-    Width = 65
+    Width = 74
+    Caption = 'Expression:'
+    ParentColor = False
   end
   object lblRepCount: TLabel
-    Caption = 'Repeat Count:'
-    Color = clNone
-    ParentColor = False
     Left = 15
-    Height = 13
+    Height = 20
     Top = 45
-    Width = 80
+    Width = 91
+    Caption = 'Repeat Count:'
+    ParentColor = False
   end
   object lblDigits: TLabel
-    Caption = 'Digits:'
-    Color = clNone
-    ParentColor = False
     Left = 176
-    Height = 13
+    Height = 20
     Top = 45
-    Width = 35
+    Width = 41
+    Caption = 'Digits:'
+    ParentColor = False
   end
   object txtExpression: TEdit
-    TabOrder = 1
     Left = 105
     Height = 23
     Top = 8
     Width = 300
+    TabOrder = 1
   end
   object txtRepCount: TEdit
-    TabOrder = 2
-    Text = '0'
     Left = 105
     Height = 23
     Top = 39
     Width = 60
+    TabOrder = 2
+    Text = '0'
   end
   object txtDigits: TEdit
-    TabOrder = 5
-    Text = '0'
     Left = 225
     Height = 23
     Top = 39
     Width = 180
+    TabOrder = 5
+    Text = '0'
   end
   object chkEnabled: TCheckBox
+    Left = 15
+    Height = 22
+    Top = 65
+    Width = 75
     AllowGrayed = True
     Caption = 'Enabled'
     TabOrder = 7
-    Left = 15
-    Height = 20
-    Top = 65
-    Width = 73
   end
   object chkAllowFunc: TCheckBox
+    Left = 105
+    Height = 22
+    Top = 65
+    Width = 147
     AllowGrayed = True
     Caption = 'Allow Function Calls'
     TabOrder = 0
-    Left = 105
-    Height = 20
-    Top = 65
-    Width = 143
   end
   object rgStyle: TRadioGroup
+    Left = 15
+    Height = 78
+    Top = 90
+    Width = 390
     AutoFill = True
     Caption = 'Style'
     ChildSizing.LeftRightSpacing = 6
@@ -89,6 +90,8 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
+    ClientHeight = 59
+    ClientWidth = 386
     Columns = 3
     ItemIndex = 7
     Items.Strings = (
@@ -103,42 +106,35 @@ object WatchPropertyDlg: TWatchPropertyDlg
       'Memory Dump'
     )
     TabOrder = 3
-    Left = 15
-    Height = 78
-    Top = 90
-    Width = 390
   end
   object btnOK: TButton
-    BorderSpacing.InnerBorder = 4
+    Left = 170
+    Height = 25
+    Top = 176
+    Width = 75
     Caption = 'OK'
     Default = True
     ModalResult = 1
     OnClick = btnOKClick
     TabOrder = 4
-    Left = 170
-    Height = 25
-    Top = 176
-    Width = 75
   end
   object btnCancel: TButton
-    BorderSpacing.InnerBorder = 4
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 6
     Left = 250
     Height = 25
     Top = 176
     Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 6
   end
   object btnHelp: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Help'
-    OnClick = btnHelpClick
-    TabOrder = 8
     Left = 330
     Height = 25
     Top = 176
     Width = 75
+    Caption = 'Help'
+    OnClick = btnHelpClick
+    TabOrder = 8
   end
 end
