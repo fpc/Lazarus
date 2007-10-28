@@ -1540,7 +1540,8 @@ begin
   CancelControl:=btnCancel;
   btnShowOptions.Caption := dlgCOShowOptions;
   btnCheck.Caption := lisCompTest;
-  btnLoadSave.Caption := dlgCOLoadSave;
+  btnLoadSave.Hint := dlgCOLoadSave;
+  btnLoadSave.Caption := '...';
 end;
 
 procedure TfrmCompilerOptions.chkCustomConfigFileClick(Sender: TObject);

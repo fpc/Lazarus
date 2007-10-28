@@ -26,7 +26,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object PathPage: TPage
       Caption = 'PathPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object lblOtherUnits: TLabel
         Left = 6
         Height = 20
@@ -824,7 +824,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object MsgPage: TPage
       Caption = 'MsgPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object grpVerbosity: TCheckGroup
         Left = 6
         Height = 196
@@ -872,7 +872,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object OtherPage: TPage
       Caption = 'OtherPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object grpConfigFile: TGroupBox
         Left = 6
         Height = 110
@@ -919,18 +919,18 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpCustomOptions: TGroupBox
         Left = 6
-        Height = 319
+        Height = 321
         Top = 122
         Width = 653
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCustomOptions'
-        ClientHeight = 315
+        ClientHeight = 317
         ClientWidth = 649
         TabOrder = 1
         object memCustomOptions: TMemo
           Left = 6
-          Height = 303
+          Height = 305
           Top = 6
           Width = 637
           Align = alClient
@@ -942,7 +942,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object InheritedPage: TPage
       Caption = 'InheritedPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object InhNoteLabel: TLabel
         Left = 6
         Height = 20
@@ -967,7 +967,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object InhItemMemo: TMemo
         Left = 6
-        Height = 157
+        Height = 159
         Top = 284
         Width = 653
         Align = alClient
@@ -990,7 +990,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object CompilationPage: TPage
       Caption = 'CompilationPage'
       ClientWidth = 665
-      ClientHeight = 447
+      ClientHeight = 449
       object chkCreateMakefile: TCheckBox
         Left = 6
         Height = 22
@@ -1504,6 +1504,8 @@ object frmCompilerOptions: TfrmCompilerOptions
       }
       NumGlyphs = 0
       OnClick = ButtonLoadSaveClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
     end
     object btnOK: TBitBtn
