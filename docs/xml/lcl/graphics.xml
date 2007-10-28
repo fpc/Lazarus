@@ -10,8 +10,11 @@
       <short>Unit contains definitions for many fundamental classes and types used in graphic applications</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils"><short/>
-        <descr/><seealso/></element>
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
         <short/>
@@ -380,9 +383,7 @@
       <element name="TPenMode.pmNotXor"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TBrushStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Style of <i>Brush</i> to be used</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TBrushStyle.bsSolid"><short/></element>
@@ -2124,33 +2125,25 @@ Default is psSolid</descr>
       </element>
       <!-- record type Visibility: default -->
       <element name="TBrushData">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Data</i> associated with the current <i>Brush</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Operating System <i>Handle</i> associated with the current <i>Brush</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Colour</i> to be used by the current <i>Brush</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Bitmap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Bitmap</i> on which the current <i>Brush</i> is working</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Style</i>   to be used by the current <i>Brush</i></short>
+        <descr>Enumerated type defined in <i>TBrushStyle</i></descr>
+        <seealso><link id="TBrushStyle"/></seealso>
       </element>
       <!-- object Visibility: default -->
       <element name="TBrushHandleCache">
@@ -2177,10 +2170,7 @@ Default is psSolid</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TBrush">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The <i>Brush</i> to be used to <i>Paint</i> on the current <i>Canvas</i></short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBrush.FHandle">
@@ -2266,50 +2256,47 @@ Default is psSolid</descr>
       <element name="TBrush.SetStyle.Value"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TBrush.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Assign</i> - copies a <i>Source</i><i>Brush</i> to itself</short>
+        <descr>Method: TBrush.Assign<br/>
+  Params: Source: Another brush<br/>
+  Returns:  nothing<br/>
+
+  Copies the source brush to itself</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBrush.Assign.Source"><short/></element>
+      <element name="TBrush.Assign.Source">
+        <short><i>Source</i> - another <i>Brush</i></short>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TBrush.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Brush</i> constructor</short>
+        <descr><b>Inherits</b> most of its properties from ancestor Classes</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBrush.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Brush</i> destructor</short>
+        <descr><b>Inherits</b> properties to remove <i>Brush</i> and frees <i>Handle</i></descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TBrush.Bitmap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>BitMap</i> associated with the current <i>Brush</i></short>
+        <descr>Reads or writes a flag to determine the current <i>BitMap</i></descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TBrush.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Operating System <i>Handle</i> for this <i>Brush</i></short>
+        <descr>Reads or writes flag to determine system <i>Handle</i></descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBrush.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Colour</i> of the current <i>Brush</i></short>
+        <descr>Reads or writes a flag to determine the <i>Colour</i>. Default is White</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBrush.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Style</i> of the <i>Brush</i></short>
+        <descr>Enumerated type - default Solid</descr>
+        <seealso><link id="TBrushStyle"/></seealso>
       </element>
       <!-- record type Visibility: default -->
       <element name="TRegionData">
