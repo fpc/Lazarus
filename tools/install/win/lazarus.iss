@@ -255,38 +255,22 @@ const
   CP_ACP = 0;
   CP_UTF8 = 65001;
 
-function DumpString(const s: string): string;
-var
-  i: integer;
-begin
-  Result := '';
-  for i := 1 to length(s) do
-    result := result + '#' + IntToStr(ord(s[i]));
-end;
-
 function ConvertUTF8ToSystemCharSet(const UTF8String: string): string;
 var
   UTF8Length: integer;
   UCS2String : string;
   SystemCharSetString: string;
   ResultLength: integer;
-  Result2: integer;
 begin
-  MsgBox('UTF8String: ' + UTF8String + ' / ' + DumpString(UTF8String), mbInformation, MB_OK );
   UTF8Length := length(UTF8String);
   // this is certainly long enough
   SetLength(UCS2String, length(UTF8String)*2+1);
-  Result2 := MultiByteToWideChar(CP_UTF8, 0,
+  MultiByteToWideChar(CP_UTF8, 0,
     PChar(UTF8String), -1, PChar(UCS2String), UTF8Length + 1);
-  //MsgBox('Result2: ' + IntToStr(Result2), mbInformation, MB_OK );
-  if (Result2=0) then
-    MsgBox('GetLastError: ' + IntToStr(GetLastError), mbInformation, MB_OK );
-  MsgBox('UCS2String: ' + DumpString(UCS2String), mbInformation, MB_OK );
   SetLength(SystemCharSetString, Length(UTF8String));
   ResultLength := WideCharToMultiByte(CP_ACP, 0, PChar(UCS2String), -1,
     PChar(SystemCharSetString), Length(SystemCharSetString)+1, 0, 0) -1;
   Result := copy(SystemCharSetString, 1, ResultLength);
-  MsgBox('Result: ' + Result + ' / ' + DumpString(Result), mbInformation, MB_OK );
 end;
 
 function GetPoString(const msgid: string): string;
