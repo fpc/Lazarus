@@ -135,6 +135,7 @@ var
   GtkFilterList: PGSList;
   NewFilterIndex: Integer;
 begin
+  //DebugLn(['Gtk2FileChooserNotifyCB ']);
   if pspec^.name = 'filter' then
   begin // filter changed
     theDialog := TFileDialog(user_data);
@@ -165,6 +166,7 @@ var
   cFilenames1: PGSList;
   Files: TStringList;
 begin
+  //DebugLn(['Gtk2FileChooserResponseCB ']);
   theDialog := TFileDialog(data);
 
   if arg1 = GTK_RESPONSE_CANCEL then begin  
@@ -206,6 +208,24 @@ begin
 
   //?? StoreCommonDialogSetup(theDialog);
   theDialog.UserChoice := mrOK;
+end;
+
+procedure gtkFileChooserSelectionChangedCB(Chooser: PGtkFileChooser;
+  Data: Pointer); cdecl;
+var
+  cFilename: Pgchar;
+  theDialog: TFileDialog;
+begin
+  //DebugLn(['gtkFileChooserSelectionChangedCB ']);
+  cFilename := gtk_file_chooser_get_filename(Chooser);
+  theDialog:=TFileDialog(Data);
+  try
+    if theDialog is TOpenDialog then
+      UpdateDetailView(TOpenDialog(theDialog));
+  finally
+    if Assigned(cFilename) then
+      g_free(cFilename);
+  end;
 end;
 
 Procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
@@ -675,6 +695,11 @@ begin
   
   // Filter
   CreateOpenDialogFilter(OpenDialog,SelWidget);
+
+  // connect change event
+  g_signal_connect( gtk_object(FileSelWidget),
+    'selection-changed', gtk_signal_func(@gtkFileChooserSelectionChangedCB),
+    OpenDialog);
 
   (*  TODO
   // Details - a frame with a label

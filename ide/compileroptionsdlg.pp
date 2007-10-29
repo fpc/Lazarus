@@ -42,7 +42,7 @@ uses
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
   ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
-  CompilerOptions, ShowCompilerOpts, Project, PackageDefs;
+  IDEImagesIntf, CompilerOptions, ShowCompilerOpts, Project, PackageDefs;
 
 type
   { Compiler options form }
@@ -271,9 +271,6 @@ type
 
 implementation
 
-uses
-  IDEImagesIntf;
-
 type
   TInheritedNodeData = record
     FullText: string;
@@ -319,15 +316,14 @@ begin
     SetupCompilationTab(Page);
     inc(Page);
     SetupButtonBar;
-    MainNotebook.AnchorToNeighbour(akBottom,6,btnLoadSave);
   finally
     EnableAlign;
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions Destructor                                              }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions Destructor
+------------------------------------------------------------------------------}
 destructor TfrmCompilerOptions.Destroy;
 begin
   ClearInheritedTree;
@@ -1418,7 +1414,7 @@ begin
 
   {------------------------------------------------------------}
 
-  lblIncludeFiles .Caption := dlgCOIncFiles;
+  lblIncludeFiles.Caption := dlgCOIncFiles;
   IncludeFilesPathEditBtn:=TPathEditorButton.Create(Self);
   with IncludeFilesPathEditBtn do begin
     Name:='IncludeFilesPathEditBtn';
@@ -1525,7 +1521,7 @@ begin
     end;
     ItemIndex:=1;
     Constraints.MinWidth:=150;
-    AutoSize:=True;
+    // MG: does not work in win32 intf: AutoSize:=True;
   end;
 end;
 

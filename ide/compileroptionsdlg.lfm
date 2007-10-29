@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 7
+    PageIndex = 0
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -228,9 +228,10 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideLeft.Control = LCLWidgetTypeLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = LCLWidgetTypeLabel
+        AnchorSideTop.Side = asrCenter
         Left = 139
         Height = 25
-        Top = 306
+        Top = 304
         Width = 155
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Left = 6

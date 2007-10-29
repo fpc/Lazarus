@@ -4332,6 +4332,7 @@ var
   FileSelWidget: PGtkFileSelection;
   InitialFilter: string;
 begin
+  DebugLn(['TGtkWidgetSet.InitializeOpenDialog ']);
   FileSelWidget:=GTK_FILE_SELECTION(SelWidget);
 
   // Help button
@@ -4419,6 +4420,7 @@ end;
 procedure TGtkWidgetSet.InitializeFileDialog(FileDialog: TFileDialog;
   var SelWidget: PGtkWidget; Title: PChar);
 begin
+  //DebugLn(['TGtkWidgetSet.InitializeFileDialog ']);
   SelWidget := gtk_file_selection_new(Title);
 
   {****This is a major hack put by Cliff Baeseman to solve

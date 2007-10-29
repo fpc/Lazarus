@@ -2283,6 +2283,7 @@ var
   Filename, OldFilename, Details: string;
   Widget: PGtkWidget;
 begin
+  //DebugLn(['UpdateDetailView ']);
   Widget:=PGtkWidget(OpenDialog.Handle);
   {$IfDef GTK2}
   FileName:=gtk_file_chooser_get_filename(PGtkFileChooser(Widget));

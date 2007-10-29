@@ -348,7 +348,6 @@ var
   CurFilename: String;
   FileIsValid: boolean;
 begin
-  //DebugLn(['TOpenPictureDialog.UpdatePreview ']);
   CurFilename := FileName;
   if CurFilename = FPreviewFilename then exit;
 
@@ -371,8 +370,8 @@ end;
 constructor TOpenPictureDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FDefaultFilter := GraphicFilter(TGraphic)+'|'+Format(rsAllFiles,
-  [GetAllFilesMask, GetAllFilesMask,'']);
+  FDefaultFilter := GraphicFilter(TGraphic)+'|'+
+                       Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,'']);
   Filter:=FDefaultFilter;
 
   FPictureGroupBox:=TGroupBox.Create(Self);
@@ -437,7 +436,7 @@ const
    );
   BtnCaptions: array[cbSgn..cbMC] of String =
    ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
-    'MP', 'MS', 'MR', 'MC');
+    'MP','MS','MR','MC');
 
 { ---------------------------------------------------------------------
   Auxiliary
