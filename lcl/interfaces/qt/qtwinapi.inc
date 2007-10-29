@@ -4226,8 +4226,7 @@ function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
 var
   ScrollBar: TScrollBar;
   FScrollInfo: TScrollInfo;
-  R: TRect;
-  
+
 function PrepareScrollInfo: Integer;
 var
   iReCountMax: Integer;
@@ -4577,6 +4576,8 @@ var
   SrcRect, DstRect: TRect;
   SrcWidthOrig, SrcHeightOrig: Integer;
   Image: QImageH;
+  SrcMatrix: QMatrixH;
+  dx, dy: integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -4589,21 +4590,52 @@ begin
      ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
   {$endif}
 
+  SrcMatrix := QPainter_Matrix(SrcQDC.Widget);
   Image := SrcQDC.vImage;
   SrcWidthOrig := QImage_width(Image);
   SrcHeightOrig := QImage_height(Image);
+  QMatrix_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
+  // our map can have some transformations
+  if XSrc < 0 then // we cannot draw from negative coord, so we will draw from zero with shift
+  begin
+    dx := -XSrc;
+    XSrc := 0;
+  end
+  else
+    dx := 0;
+
+  if YSrc < 0 then
+  begin
+    dy := -YSrc;
+    YSrc := 0;
+  end
+  else
+    dy := 0;
 
   // if passed source Width/Height is more than original then
   // qt skip that, so for that case we should transform size here
   //
   // stretch_factor := Width / SrcWidth;
   // Width := stretch_factor * (SrcWidthOrig - XSrc);
-  if (SrcWidth - XSrc <> Width) then
+  if (SrcWidthOrig - XSrc < SrcWidth) then
     Width := Width * (SrcWidthOrig - XSrc) div SrcWidth;
 
-  if (SrcHeight - YSrc <> Height) then
+  if (SrcHeightOrig - YSrc < SrcHeight) then
     Height := Height * (SrcHeightOrig - YSrc) div SrcHeight;
 
+  if dx <> 0 then // apply shifts
+  begin
+    inc(X, dx);        // shift destination
+    dec(Width, dx);    // substract width
+    dec(SrcWidth, dx); // and dont forget about SrcWidth or we will get unneeded stretching
+  end;
+  if dy <> 0 then
+  begin
+    inc(Y, dy);
+    dec(Height, dy);
+    dec(SrcWidth, dy);
+  end;
+  
   DstRect := Bounds(X, Y, Width, Height);
   SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
   DstQDC.CorrectCoordinates(DstRect);
