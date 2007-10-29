@@ -2737,6 +2737,7 @@ var
   LookupRootIsSelected,
   OnlyNonVisualsAreSelected,
   CompsAreSelected: boolean;
+  MultiCompsAreSelected: boolean;
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
   
@@ -2796,12 +2797,13 @@ begin
   CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
                     and not LookupRootIsSelected;
   OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;
+  MultiCompsAreSelected := CompsAreSelected and (ControlSelection.Count>1);
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
 
-  DesignerMenuAlign.Enabled := CompsAreSelected;
-  DesignerMenuMirrorHorizontal.Enabled := CompsAreSelected;
-  DesignerMenuMirrorVertical.Enabled := CompsAreSelected;
+  DesignerMenuAlign.Enabled := MultiCompsAreSelected;
+  DesignerMenuMirrorHorizontal.Enabled := MultiCompsAreSelected;
+  DesignerMenuMirrorVertical.Enabled := MultiCompsAreSelected;
   DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
 
