@@ -404,7 +404,12 @@ begin
         #10, #13:
           begin
             SetString(Result, S, P - S);
+            {$IFDEF SYN_LAZARUS}
+            // a single #13 is used in Mac OS files
+            if (P[0] = #13) and (P[1] = #10) then begin
+            {$ELSE}
             if P[0] = #13 then begin
+            {$ENDIF}
               fDosFile := TRUE;
               Inc(P);
             end;
