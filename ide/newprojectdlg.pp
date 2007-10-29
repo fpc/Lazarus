@@ -169,6 +169,7 @@ begin
     Caption:=lisNPCreate;
     Default:=true;
     AutoSize:=true;
+    BorderSpacing.Around:=6;
     Parent:=NPDBtnPanel;
     Align:=alRight;
   end;
@@ -183,6 +184,7 @@ begin
     Caption:=dlgCancel;
     Cancel:=true;
     AutoSize:=true;
+    BorderSpacing.Around:=6;
     Parent:=NPDBtnPanel;
     Align:=alRight;
   end;
