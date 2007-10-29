@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 2
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -428,6 +428,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 6
           Width = 120
           Align = alTop
+          Anchors = [akTop, akLeft]
           BorderSpacing.Around = 6
           Caption = 'radGenNormal'
           Checked = True
@@ -440,6 +441,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 34
           Width = 120
           Align = alTop
+          Anchors = [akTop, akLeft]
           BorderSpacing.Around = 6
           Caption = 'radGenFaster'
           TabOrder = 1
@@ -450,6 +452,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 62
           Width = 120
           Align = alTop
+          Anchors = [akTop, akLeft]
           BorderSpacing.Around = 6
           Caption = 'radGenSmaller'
           TabOrder = 2
@@ -583,6 +586,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         ClientHeight = 151
         ClientWidth = 649
         TabOrder = 5
+        OnResize = grpOptimizationsResize
         object radOptLevelNone: TRadioButton
           AnchorSideLeft.Control = grpOptimizations
           AnchorSideTop.Control = grpOptimizations

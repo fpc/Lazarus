@@ -37,7 +37,7 @@ unit CompilerOptionsDlg;
 interface
 
 uses
-  Forms, Classes, LCLProc, SysUtils, InterfaceBase,
+  Forms, Classes, Math, LCLProc, SysUtils, InterfaceBase,
   ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
   ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
@@ -230,6 +230,7 @@ type
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure frmCompilerOptionsClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure grpOptimizationsResize(Sender: TObject);
   private
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
@@ -418,18 +419,7 @@ begin
 end;
 
 procedure TfrmCompilerOptions.FormResize(Sender: TObject);
-var
-  w: integer;
 begin
-  //CodeGenPage
-  grpChecks.Constraints.MinHeight := grpSmartLinkUnit.Height + grpHeapSize.Height;
-  w := grpOptimizations.Width div 2;
-  chkOptVarsInReg.Left:= w;
-  chkOptUncertain.Left := w;
-  w := (CodeGenPage.Width - 18) div 2;
-  grpChecks.Width := w;
-  w := w - w div 2;
-  grpGenerate.Width := w;
 end;
 
 procedure TfrmCompilerOptions.HelpButtonClick(Sender: TObject);
@@ -1624,6 +1614,15 @@ procedure TfrmCompilerOptions.frmCompilerOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TfrmCompilerOptions.grpOptimizationsResize(Sender: TObject);
+var
+  x: Integer;
+begin
+  x:=radOptLevel1.Left+Max(radOptLevel1.Width,radOptLevel2.Width)+6;
+  chkOptVarsInReg.Left:=x;
+  chkOptUncertain.Left:=x;
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);

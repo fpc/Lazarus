@@ -28,11 +28,11 @@
 {off $DEFINE VerboseAutoSizeCtrlData}
 {off $DEFINE VerboseMouseBugfix}
 
-{off $DEFINE CHECK_POSITION}
+{$DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'TButtonPanel';
-const CheckPostionName = 'lblCompiler';
-const CheckPostionParentName = 'WorkingDirectoryGroupBox';
+const CheckPostionName = 'grpGenerate';
+const CheckPostionParentName = 'xxxWorkingDirectoryGroupBox';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
