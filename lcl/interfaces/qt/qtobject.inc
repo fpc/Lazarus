@@ -142,7 +142,7 @@ begin
    since it produces AV's sometimes, so better check is there
    any pending event.}
   if not QCoreApplication_hasPendingEvents then
-    QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
+    QCoreApplication_processEvents(QEventLoopWaitForMoreEvents or QEventLoopDeferredDeletion);
 end;
 
 {------------------------------------------------------------------------------
