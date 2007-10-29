@@ -205,57 +205,42 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TFontData">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A <b>record</b> holding <i>Data</i> about the current <i>Font</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Operating System <i>Handle</i> for the current <i>Font</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Height">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Height</i> (in pixels) if the current <i>Font</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Pitch">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Pitch</i> (in points) of the current<i>Font</i></short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Style</i> of the <i>Font</i></short>
+        <descr>Bold, Italic, Strikeout or Underlined</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.CharSet">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Character Set</i> of the current <i>Font</i> (expresed as an integer)</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Name">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Name</i> (as a string) of the current <i>Font</i></short>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefFontData">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Data</i> about the <i>Default Font</i> in the current context</short>
+        <seealso><link id="TFontData"/></seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTextLayout">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>How the <i>Text</i>  is to be laid out in the Text Rectangle</short>
+        <descr>At the Bottom, Centre or Top of the available window or box</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTextLayout.tlTop"><short/></element>
@@ -265,9 +250,18 @@
       <element name="TTextLayout.tlBottom"><short/></element>
       <!-- record type Visibility: default -->
       <element name="TTextStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Style</i> of the <i>Text</i> to be drawn in a rectangle</short>
+        <descr>Alignment :  TextRect Only: horizontal alignment<br/>
+Layout    : TextRect Only: vertical alignment<br/>
+SingleLine: boolean;    If WordBreak is false then process #13, #10 as standard chars and perform no Line breaking.<br/>
+Clipping  : boolean;    TextRect Only: Clip Text to passed Rectangle<br/>
+ExpandTabs: boolean;    currently ignored<br/>
+ShowPrefix: boolean;    TextRect Only: Process first single ampersand per line as an underscore and draw double ampersand as a single ampersand<br/>
+Wordbreak : boolean;    TextRect Only: If line of text is too long to fit between left and right boundaries,   try to break into multiple lines between words<br/>
+Opaque    : boolean;    TextRect: Fills background with current Brush<br/>
+Opaque    :             TextOut : Fills background with current foreground color<br/>
+SystemFont: Boolean;    Use the system font instead of Canvas Font<br/>
+RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TTextStyle.Alignment">
@@ -1546,10 +1540,9 @@
       <element name="TFontHandleCache.Add.LongFontName"><short/></element>
       <!-- object Visibility: default -->
       <element name="TFont">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The <i>Font</i> to be used for drawing <i>Text</i></short>
+        <descr>Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData<br/>
+Individual properties such as Character Set, colour and size can be accessed in the public area</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TFont.FCanUTF8">
@@ -1807,24 +1800,23 @@
       <element name="TFont.SetStyle.Value"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TFont.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Font</i> constructor</short>
+        <descr>Opens a new instance of the class and sets defaults for character set, colour, size etc</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TFont.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Font</i> destructor</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Assign</i>  - copies the <i>LogFont</i>  or <i>Source</i> settings to itself</short>
+        <descr>Method: TFont.Assign<br/>
+
+Params: <i>ALogFont</i>: TLogFont or <i>Source</i>: another font<br/>
+
+Returns:  nothing<br/>
+
+Copies the logfont or source settings to itself</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.Assign.Source"><short/></element>
@@ -1889,15 +1881,12 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.CharSet">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Character Set</i> to be used by the current<i>Font</i></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Colour</i> of the current <i>Font</i></short>
+        <descr>Default is the same as the text used for the rest of the Window</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Height">
@@ -1907,27 +1896,24 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Name">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Name</i> of the <i>Font</i></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Pitch">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Pitch</i> type of the <i>Font</i></short>
+        <descr>Fixed or variable pitch, or Default<br/>
+Reads or writes a flag to determine pitch type</descr>
+        <seealso><link id="TPitch"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Size">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Font</i><i>Size</i> in pixels</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Style</i> of the <i>Font</i></short>
+        <descr>Bold, Italic, Strike out, Underline<br/>
+Property is a set, so may contain zero or more of the above (if set is empty, Normal font is displayed)</descr>
       </element>
       <!-- record type Visibility: default -->
       <element name="TPenData">
@@ -2100,7 +2086,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Color">
-        <short>The <i>Colour </i>of th ecurrent <i>Pen</i></short>
+        <short>The <i>Colour </i>of the current <i>Pen</i></short>
         <descr>Reads or Writes a flag to determine the colour. Default is black</descr>
       </element>
       <!-- property Visibility: published -->
@@ -2171,6 +2157,7 @@ Default is psSolid</descr>
       <!-- object Visibility: default -->
       <element name="TBrush">
         <short>The <i>Brush</i> to be used to <i>Paint</i> on the current <i>Canvas</i></short>
+        <descr>A <i>Brush</i> is typically used to fill an enclosed area on the<i>Canvas</i> with one particular colour or coloured pattern</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBrush.FHandle">
