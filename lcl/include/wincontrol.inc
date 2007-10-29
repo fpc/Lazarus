@@ -28,7 +28,7 @@
 {off $DEFINE VerboseAutoSizeCtrlData}
 {off $DEFINE VerboseMouseBugfix}
 
-{$DEFINE CHECK_POSITION}
+{off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'TButtonPanel';
 const CheckPostionName = 'grpGenerate';
