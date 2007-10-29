@@ -4,6 +4,8 @@ unit QtThemes;
 
 interface
 
+{$I qtdefines.inc}
+
 uses
   // rtl
   Types, Classes, SysUtils,

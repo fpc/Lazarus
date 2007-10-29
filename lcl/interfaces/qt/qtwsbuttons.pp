@@ -26,6 +26,8 @@ unit QtWSButtons;
 
 interface
 
+{$I qtdefines.inc}
+
 uses
   // Libs
 {$ifdef USE_QT_4_3}

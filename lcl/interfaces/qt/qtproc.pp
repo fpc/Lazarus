@@ -29,6 +29,8 @@ unit qtproc;
 
 interface
 
+{$I qtdefines.inc}
+
 uses
 {$ifdef USE_QT_4_3}
   qt43,

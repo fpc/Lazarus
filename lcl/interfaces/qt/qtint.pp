@@ -29,6 +29,8 @@ unit qtint;
 
 interface
 
+{$I qtdefines.inc}
+
 {$ifdef Trace}
 {$ASSERTIONS ON}
 {$endif}

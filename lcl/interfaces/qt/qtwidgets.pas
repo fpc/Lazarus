@@ -25,6 +25,8 @@ unit qtwidgets;
 
 interface
 
+{$I qtdefines.inc}
+
 uses
   // Bindings
 {$ifdef USE_QT_4_3}
