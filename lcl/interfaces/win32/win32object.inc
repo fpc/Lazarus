@@ -71,22 +71,6 @@ Begin
     end;
   end;
 
-  if FStockNullBrush <> 0 then
-  begin
-    DeleteObject(FStockNullBrush);
-    DeleteObject(FStockBlackBrush);
-    DeleteObject(FStockLtGrayBrush);
-    DeleteObject(FStockGrayBrush);
-    DeleteObject(FStockDkGrayBrush);
-    DeleteObject(FStockWhiteBrush);
-  end;
-
-  if FStatusFont <> 0 then
-  begin
-    Windows.DeleteObject(FStatusFont);
-    Windows.DeleteObject(FMessageFont);
-  end;
-
   FTimerData.Free;
 
   if FAppHandle <> 0 then
@@ -106,7 +90,6 @@ End;
 procedure TWin32WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   ICC: TINITCOMMONCONTROLSEX;
-  LogBrush: TLOGBRUSH;
   SysMenu: HMENU;
   Handle: HWND;
   DC: HDC;
@@ -117,30 +100,6 @@ begin
     Assert(False, 'Trace:Win32Object.Init - Register Failed');
     DebugLn('Trace:Win32Object.Init - Register Failed');
     Exit;
-  end;
-
-  //Init stock objects;
-  LogBrush.lbStyle := BS_NULL;
-  FStockNullBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbStyle := BS_SOLID;
-  LogBrush.lbColor := $000000;
-  FStockBlackBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $C0C0C0;
-  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $808080;
-  FStockGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $404040;
-  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $FFFFFF;
-  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
-
-  if FMetricsFailed then
-  begin
-    FStatusFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
-    FMessageFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
-  end else begin
-    FStatusFont := Windows.CreateFontIndirect(@FMetrics.lfStatusFont);
-    FMessageFont := Windows.CreateFontIndirect(@FMetrics.lfMessageFont);
   end;
 
   //TODO: Remove when the WS interface is implemented

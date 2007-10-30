@@ -149,16 +149,6 @@ type
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
 
-    FStockNullBrush: HBRUSH;
-    FStockBlackBrush: HBRUSH;
-    FStockLtGrayBrush: HBRUSH;
-    FStockGrayBrush: HBRUSH;
-    FStockDkGrayBrush: HBRUSH;
-    FStockWhiteBrush: HBRUSH;
-
-    FStatusFont: HFONT;
-    FMessageFont: HFONT;
-
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
@@ -222,7 +212,7 @@ type
     {$I win32winapih.inc}
     {$I win32lclintfh.inc}
 
-    property MessageFont: HFONT read FMessageFont;
+    //property MessageFont: HFONT read FMessageFont;
     property CommonControlsVersion: DWord read FCommonControlsVersion;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   end;
