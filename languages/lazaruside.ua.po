@@ -730,6 +730,10 @@ msgstr "Біля"
 msgid "Author:"
 msgstr "Автор:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Автостворювання форми при відкритті модуля"
@@ -9734,14 +9738,6 @@ msgstr "авто-встановити динамічно"
 msgid "auto install static"
 msgstr "авто-встановити статично"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "починається"
@@ -9865,6 +9861,10 @@ msgstr "ліва клавіша windows"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "шлях до бібліотек"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10018,6 +10018,10 @@ msgstr "ввімкнути OVERFLOWCHECKS на"
 msgid "set RANGECHECKS on"
 msgstr "ввімкнути RANGECHECKS на"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "статичний файл налаштувань пакунку"
@@ -10045,6 +10049,10 @@ msgstr "використовувати модуль HeapTrc"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "використовувати LineInfo"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

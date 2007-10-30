@@ -741,6 +741,10 @@ msgstr "Di"
 msgid "Author:"
 msgstr "Pembuat:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Otomatis buat form ketika membuka unit"
@@ -9745,14 +9749,6 @@ msgstr "otomatis menginstalasi dinamis"
 msgid "auto install static"
 msgstr "otomatis menginstalasi statis"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr "otomatis memisahkan baris"
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr "otomatis pada spasi"
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "mulai"
@@ -9876,6 +9872,10 @@ msgstr "kunci jendela kiri"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "path pustaka"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10029,6 +10029,10 @@ msgstr "set OVERFLOWCHECKS on"
 msgid "set RANGECHECKS on"
 msgstr "set RANGECHECKS on"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "file konfigurasi paket statik"
@@ -10056,6 +10060,10 @@ msgstr "gunakan unit HeapTrc"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "gunakan unit LineInfo"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

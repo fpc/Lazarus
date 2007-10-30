@@ -744,6 +744,10 @@ msgstr "在"
 msgid "Author:"
 msgstr "锚:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "当打开单元文件时自动创建窗体"
@@ -9748,14 +9752,6 @@ msgstr "自动动态安装"
 msgid "auto install static"
 msgstr "自动静态安装"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9879,6 +9875,10 @@ msgstr "左 Win 键"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "库文件(*.lib)文件目录"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10032,6 +10032,10 @@ msgstr "设置检查溢出 OVERFLOWCHECKS"
 msgid "set RANGECHECKS on"
 msgstr "设置检查范围 RANGECHECKS"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "静态包配置文件"
@@ -10059,6 +10063,10 @@ msgstr "使用 HeapTrc 单元"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "使用 LineInfo 单元"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

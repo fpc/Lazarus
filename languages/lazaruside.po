@@ -6766,6 +6766,10 @@ msgstr ""
 msgid "Edit code template"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetemplchange
 msgid "Change"
 msgstr ""
@@ -10411,11 +10415,15 @@ msgid "&Remove"
 msgstr ""
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
+msgid "line break"
 msgstr ""
 
 #: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
+msgid "space"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages

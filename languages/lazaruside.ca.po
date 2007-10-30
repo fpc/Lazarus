@@ -741,6 +741,10 @@ msgstr "A"
 msgid "Author:"
 msgstr "Autor"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Quan s'obri una unitat, crea la forma aut."
@@ -9745,14 +9749,6 @@ msgstr "auto intal·la dinàmicament"
 msgid "auto install static"
 msgstr "auto intal·la estàticament"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9876,6 +9872,10 @@ msgstr "tecla de finestres esquerres"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "trajectòria de les biblioteques"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10029,6 +10029,10 @@ msgstr "activa OVERFLOWCHECKS"
 msgid "set RANGECHECKS on"
 msgstr "activa RANGECHECKS"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "fitxer de configuració de paquets estàtics"
@@ -10056,6 +10060,10 @@ msgstr "utilitza la unitat HeapTrc"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "utilitza la unitat LineInfo"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

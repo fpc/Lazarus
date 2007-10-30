@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-21 00:55+0300\n"
+"PO-Revision-Date: 2007-10-28 20:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -740,6 +740,10 @@ msgstr "At"
 #: lazarusidestrconsts:lispckoptsauthor
 msgid "Author:"
 msgstr "Автор"
+
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr "Автозавершение при обнаружении..."
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
@@ -9745,14 +9749,6 @@ msgstr "автоустановить динамически"
 msgid "auto install static"
 msgstr "автоустановить статически"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr "Автоматически при переходе на новую строку"
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr "Автоматически при нажатии пробела"
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "начинается"
@@ -9876,6 +9872,10 @@ msgstr "Левая клавиша Windows"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "путь к библиотекам"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr "конца строки"
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10029,6 +10029,10 @@ msgstr "Включить OVERFLOWCHECKS"
 msgid "set RANGECHECKS on"
 msgstr "Включить RANGECHECKS"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr "пробела"
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "файл настроек статических пакетов"
@@ -10056,6 +10060,10 @@ msgstr "использовать модуль HeapTrc"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "использовать модуль LineInfo"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr "конца слова"
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

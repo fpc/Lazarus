@@ -741,6 +741,10 @@ msgstr "Bij"
 msgid "Author:"
 msgstr "Auteur:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Maak automatisch een formulier aan bij openen unit"
@@ -9745,14 +9749,6 @@ msgstr "Automatisch installeren dynamisch"
 msgid "auto install static"
 msgstr "Automatisch installeren statisch"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "begint met"
@@ -9876,6 +9872,10 @@ msgstr "linker windows toets"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "Bibliotheek pad"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10029,6 +10029,10 @@ msgstr "zet OVERFLOW controles aan"
 msgid "set RANGECHECKS on"
 msgstr "zet RANGE controles aam"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr " configuratiebestand statische packages"
@@ -10056,6 +10060,10 @@ msgstr "gebruik HeapTrc-unit"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "gebruik LineInfo-unit"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

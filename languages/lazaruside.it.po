@@ -742,6 +742,10 @@ msgstr "Chiocciola"
 msgid "Author:"
 msgstr "Autore:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Auto crea form durante l'apertura della unit"
@@ -9746,14 +9750,6 @@ msgstr "auto installato dinamico"
 msgid "auto install static"
 msgstr "auto installato statico"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "inizia"
@@ -9877,6 +9873,10 @@ msgstr "tasto finestre a sinistra"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "percorso libreria"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10030,6 +10030,10 @@ msgstr "imposta OVERFLOWCHECKS abilitati"
 msgid "set RANGECHECKS on"
 msgstr "imposta RANGECHECKS abilitati"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "file configurazione pacchetti statici"
@@ -10057,6 +10061,10 @@ msgstr "usa la unit HeapTrc"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "usa la unit LineInfo"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

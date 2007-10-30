@@ -741,6 +741,10 @@ msgstr "ב"
 msgid "Author:"
 msgstr ":מחבר"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "צור אוטומטית טופס כאשר יחידה נפתחת"
@@ -9745,14 +9749,6 @@ msgstr ""
 msgid "auto install static"
 msgstr ""
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9875,6 +9871,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
 msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
@@ -10029,6 +10029,10 @@ msgstr ""
 msgid "set RANGECHECKS on"
 msgstr ""
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr ""
@@ -10055,6 +10059,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidyes

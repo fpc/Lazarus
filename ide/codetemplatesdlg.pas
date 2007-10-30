@@ -665,7 +665,7 @@ begin
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;
-  AutoOnCheckGroup.Caption:='Auto complete on ...';
+  AutoOnCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
   AutoOnCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
   AutoOnCheckGroup.Items.Add(lisAutomaticallyOnSpace);
   AutoOnCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);

@@ -743,6 +743,10 @@ msgstr "Simbolis eta"
 msgid "Author:"
 msgstr "Autorius:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Atveriant modulį formą sukurti automatiškai"
@@ -9767,14 +9771,6 @@ msgstr "automatiškai diegti kaip dinamišką"
 msgid "auto install static"
 msgstr "automatiškai diegti kaip statišką"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr "automatiškai, laužiant eilutę"
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr "automatiškai, įterpiant tarpo simbolį"
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr "prasideda"
@@ -9898,6 +9894,10 @@ msgstr "kairysis windows klavišas"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "kelias iki bibliotekos"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10051,6 +10051,10 @@ msgstr "Įjungti OVERFLOWCHECKS"
 msgid "set RANGECHECKS on"
 msgstr "Įjungti RANGECHECKS"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "statinio paketo nustatymų failas"
@@ -10078,6 +10082,10 @@ msgstr "naudoti HeapTrc modulį"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "naudoti LineInfo modulį"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

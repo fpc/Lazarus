@@ -740,6 +740,10 @@ msgstr ""
 msgid "Author:"
 msgstr "著者:"
 
+#: lazarusidestrconsts:liscodetemplautocompleteon
+msgid "Auto complete on ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "ユニットを開くとき自動的にフォーム生成"
@@ -9744,14 +9748,6 @@ msgstr "動的な自動インストール"
 msgid "auto install static"
 msgstr "静的な自動インストール"
 
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "automatically on line break"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "automatically on space"
-msgstr ""
-
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
 msgstr ""
@@ -9875,6 +9871,10 @@ msgstr "左ウィンドウキー"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "ライブラリパス"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "line break"
+msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10028,6 +10028,10 @@ msgstr "OVERFLOWCHECKSをonに設定"
 msgid "set RANGECHECKS on"
 msgstr "RANGECHECKSをonに設定"
 
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "space"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "静的パッケージ設定ファイル"
@@ -10055,6 +10059,10 @@ msgstr "HeapTrcユニットを使う"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "LineInfoユニットを使う"
+
+#: lazarusidestrconsts:lisautomaticallyonwordend
+msgid "word end"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

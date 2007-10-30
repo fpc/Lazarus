@@ -2145,6 +2145,7 @@ resourcestring
   lisCodeTemplAddCodeTemplate = 'Add code template';
   lisCodeTemplAdd = 'Add';
   lisCodeTemplEditCodeTemplate = 'Edit code template';
+  lisCodeTemplAutoCompleteOn = 'Auto complete on ...';
   lisCodeTemplChange = 'Change';
   lisCodeTemplToken = 'Token:';
   lisCodeTemplComment = 'Comment:';
