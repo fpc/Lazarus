@@ -328,6 +328,11 @@ begin
     begin
       FixedHeight := true;
       FixedWidth := true;
+    end
+    else
+    if SizeConstraints.Control is TCustomComboBox then
+    begin
+      FixedHeight := True; // win32 combo has fixed height
     end;
     
     if (FixedHeight or FixedWidth)

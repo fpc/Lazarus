@@ -83,6 +83,8 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -766,6 +768,21 @@ begin
   StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
   if StringList <> nil then
     Height := StringList.ComboHeight;
+end;
+
+class procedure TWin32WSCustomComboBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if not AWinControl.HandleAllocated then
+  begin
+    // any idea about?
+    PreferredHeight := 0;
+  end
+  else
+  begin
+    PreferredHeight := AWinControl.Height;
+  end;
 end;
 
 class function TWin32WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
