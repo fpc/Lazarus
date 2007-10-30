@@ -137,7 +137,7 @@ var
 begin
   Result:=Width;
   MinW:=EffectiveMinWidth;
-  if (MinW>0) and (Result<MinW) then Result:=MinW;
+  if (Result<MinW) then Result:=MinW;
   MaxW:=EffectiveMaxWidth;
   if (MaxW>0) and (Result>MaxW) then Result:=MaxW;
 end;
@@ -149,7 +149,7 @@ var
 begin
   Result:=Height;
   MinH:=EffectiveMinHeight;
-  if (MinH>0) and (Result<MinH) then Result:=MinH;
+  if (Result<MinH) then Result:=MinH;
   MaxH:=EffectiveMaxHeight;
   if (MaxH>0) and (Result>MaxH) then Result:=MaxH;
 end;
