@@ -236,12 +236,22 @@ end;
 procedure TCarbonTabsControl.ShowTab;
 var
   I, VIndex: Integer;
+  R: TRect;
 begin
   VIndex := GetControl32BitValue(ControlRef(Widget)) - 1;
 
   // show tab with VIndex, hide the others
   for I := 0 to FTabs.Count - 1 do
+  begin
+    if I = VIndex then // update tab bounds
+    begin
+      GetClientRect(R);
+      OffsetRect(R, -R.Left, -R.Top);
+      TCarbonTab(FTabs[I]).SetBounds(R);
+    end;
+    
     TCarbonTab(FTabs[I]).ShowHide(I = VIndex);
+  end;
 end;
 
 {------------------------------------------------------------------------------
