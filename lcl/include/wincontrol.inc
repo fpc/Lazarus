@@ -30,9 +30,9 @@
 
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TButtonPanel';
-const CheckPostionName = 'grpGenerate';
-const CheckPostionParentName = 'xxxWorkingDirectoryGroupBox';
+const CheckPostionClassName = 'xxxTButtonPanel';
+const CheckPostionName = 'xxxedtUnitOutputDir';
+const CheckPostionParentName = 'PathPage';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
