@@ -1201,7 +1201,7 @@ begin
       Exit;
     end;
     
-    ScaleMsk := CreatePixbufFromDrawable(ASrcMask, ASrcColorMap, True, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+    ScaleMsk := CreatePixbufFromDrawable(ASrcMask, nil, True, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
     ApplyMask(gdk_pixbuf_get_pixels(ScaleSrc), gdk_pixbuf_get_pixels(ScaleMsk));
     gdk_pixbuf_unref(ScaleMsk);
   end;
@@ -5798,13 +5798,20 @@ begin
   then Pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, AWidth, AHeight)
   else Pixbuf := nil;
   
+  {$ifdef gtk1}
+  // gtk1 requires always a colormap and fails when none passed
+  // gtk2 fails when the depth of a colormap depth is different than the drawable
+  //      depth. It wil use the correct system map when none passed
+  if AColorMap = nil
+  then AColorMap := gdk_colormap_get_system;
+  {$endif}
   Result := gdk_pixbuf_get_from_drawable(Pixbuf, ASource, AColorMap, ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight);
 
   if CanRequestAlpha then Exit; // we're done
   if not AIncludeAplha then Exit;
   
 
-  pixbuf := gdk_pixbuf_add_alpha(Result, false, guchar(#0),guchar(#0),guchar(#0));
+  pixbuf := gdk_pixbuf_add_alpha(Result, false, guchar(0),guchar(0),guchar(0));
   gdk_pixbuf_unref(Result);
   Result := pixbuf;
 end;
