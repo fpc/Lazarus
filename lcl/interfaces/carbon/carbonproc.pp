@@ -72,6 +72,8 @@ function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
 
+function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): Integer;
+
 function CreateCustomHIView(const ARect: HIRect): HIViewRef;
 
 const
@@ -469,6 +471,18 @@ begin
   Desc.MaskBitsPerPixel := 1;
   Desc.MaskLineEnd := rileByteBoundary;
   Desc.MaskShift := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonThemeMetric
+  Params:  Metric       - Theme metric
+           DefaultValue
+  Returns: Theme metric value or default value if fails
+ ------------------------------------------------------------------------------}
+function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer): Integer;
+begin
+  if OSError(GetThemeMetric(Metric, Result),
+    'GetCarbonThemeMetric', 'GetThemeMetric') then Result := DefaultValue;
 end;
 
 {------------------------------------------------------------------------------

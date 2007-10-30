@@ -935,8 +935,7 @@ begin
 
   if Style = bvRaised then
   begin
-    if OSError(GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D),
-      Self, SName, SGetThemeMetric) then D := 1;
+    D := GetCarbonThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, 1);
 
     // draw frame as group box
     DrawInfo.version := 0;

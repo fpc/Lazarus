@@ -163,6 +163,7 @@ type
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
@@ -659,12 +660,10 @@ begin
     Self,SName,'GetDataBrowserHasScrollBars')
   then exit;
 
+
   if aVertical then
   begin
-    if OSError(
-       GetThemeMetric(kThemeMetricScrollBarWidth,scrollwidth),
-       Self,SName,'GetThemeMetric')
-    then exit;
+    scrollwidth := GetCarbonThemeMetric(kThemeMetricScrollBarWidth, 10);
   end
   else scrollwidth:=0;
 
@@ -1000,14 +999,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomMemo.SetAlignment
+  Params:  ACustomMemo - LCL custom memo
+           AAlignment  - New alignment
+
+  Sets the alignment of memo in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
+  const AAlignment: TAlignment);
+begin
+  if not CheckHandle(ACustomMemo, Self, 'SetAlignment') then Exit;
+
+  TCarbonMemo(ACustomMemo.Handle).SetAlignment(AAlignment);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWSCustomMemo.SetScrollbars
-  Params:  ACustomEdit   - LCL custom memo
+  Params:  ACustomMemo   - LCL custom memo
            NewScrollbars - New scrollbars style
 
   Sets the new scrollbars style of memo in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomMemo.SetScrollbars(
-  const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+class procedure TCarbonWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
+  const NewScrollbars: TScrollStyle);
 begin
   if not CheckHandle(ACustomMemo, Self, 'SetScrollbars') then Exit;
   

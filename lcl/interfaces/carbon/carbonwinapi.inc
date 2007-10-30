@@ -1632,8 +1632,7 @@ begin
 
   case NIndex of
     SM_CYHSCROLL, SM_CXVSCROLL:
-      OSError(GetThemeMetric(kThemeMetricScrollBarWidth, Result),
-        Self, 'GetSystemMetrics', SGetThemeMetric);
+      Result := GetCarbonThemeMetric(kThemeMetricScrollBarWidth);
     SM_CXSCREEN,
     SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
     SM_CYSCREEN,

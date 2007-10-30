@@ -163,7 +163,10 @@ type
     procedure DestroyWidget; override;
   public
     procedure TextDidChange; override;
+    
+    function SetTXNControl(Tag: TXNControlTag; const Data: TXNControlData): Boolean;
   public
+    procedure SetAlignment(AAlignment: TAlignment);
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
     procedure SetPasswordChar(AChar: Char); override;
@@ -814,8 +817,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonSpinEdit.UpDownThemeWidth: Integer;
 begin
-  OSError(GetThemeMetric(kThemeMetricLittleArrowsWidth, Result),
-    Self, 'UpDownThemeWidth', SGetThemeMetric);
+  Result := GetCarbonThemeMetric(kThemeMetricLittleArrowsWidth, 13);
 end;
 
 {------------------------------------------------------------------------------
@@ -824,8 +826,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonSpinEdit.FocusRectThemeOutset: Integer;
 begin
-  OSError(GetThemeMetric(kThemeMetricFocusRectOutset, Result),
-    Self, 'UpDownThemeWidth', SGetThemeMetric);
+  Result := GetCarbonThemeMetric(kThemeMetricFocusRectOutset, 4);
 end;
 
 {------------------------------------------------------------------------------
@@ -1283,6 +1284,45 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetTXNControl
+  Params:  Tag  - Tag
+           Data - Tag data
+
+  Sets the control data of TXN object in Carbon interface
+ ------------------------------------------------------------------------------}
+function TCarbonMemo.SetTXNControl(Tag: TXNControlTag;
+  const Data: TXNControlData): Boolean;
+begin
+  Result := False;
+  
+  if OSError(TXNSetTXNObjectControls(HITextViewGetTXNObject(ControlRef(Widget)),
+         False, 1, @Tag, @Data),
+      Self, 'SetTXNControl', SSetTXNControls) then Exit;
+  
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetAlignment
+  Params:  AAlignment  - New alignment
+
+  Sets the alignment of memo in Carbon interface
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.SetAlignment(AAlignment: TAlignment);
+var
+  Data: TXNControlData;
+begin
+  case AAlignment of
+    taLeftJustify:  Data.uValue := UInt32(kTXNFlushLeft);
+    taRightJustify: Data.uValue := UInt32(kTXNFlushRight);
+    taCenter:       Data.uValue := UInt32(kTXNCenter);
+  end;
+  SetTXNControl(kTXNJustificationTag, Data);
+  
+  Invalidate;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonMemo.SetColor
   Params:  AColor - New color
 
@@ -1368,19 +1408,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemo.SetReadOnly(AReadOnly: Boolean);
 var
-  Tag: TXNControlTag;
   Data: TXNControlData;
 begin
-  Tag := kTXNNoUserIOTag;
   if AReadOnly then
     Data.uValue := UInt32(kTXNReadOnly)
   else
     Data.uValue := UInt32(kTXNReadWrite);
-
-  OSError(
-    TXNSetTXNObjectControls(HITextViewGetTXNObject(ControlRef(Widget)),
-      False, 1, @Tag, @Data),
-    Self, 'SetReadOnly', SSetTXNControls);
+    
+  SetTXNControl(kTXNNoUserIOTag, Data);
 end;
 
 {------------------------------------------------------------------------------
@@ -1391,20 +1426,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemo.SetWordWrap(AWordWrap: Boolean);
 var
-  Tag: TXNControlTag;
   Data: TXNControlData;
 begin
-  Tag := kTXNWordWrapStateTag;
-  
   if AWordWrap then
     Data.uValue := UInt32(kTXNAutoWrap)
   else
     Data.uValue := UInt32(kTXNNoAutoWrap);
 
-  OSError(
-    TXNSetTXNObjectControls(HITextViewGetTXNObject(ControlRef(Widget)),
-      False, 1, @Tag, @Data),
-    Self, 'SetWordWrap', SSetTXNControls);
+  SetTXNControl(kTXNWordWrapStateTag, Data);
 
   Invalidate;
 end;

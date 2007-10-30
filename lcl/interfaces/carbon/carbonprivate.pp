@@ -943,7 +943,7 @@ begin
       begin
         Panel := TPanel.Create(LCLObject);
         Panel.Visible := False;
-        Panel.Anchors := [akLeft, akTop, akBottom];
+        
         Panel.Height := LCLObject.Height;
         Panel.Parent := LCLObject;
         
@@ -962,6 +962,15 @@ begin
           Panel.Caption := StatusBar.Panels[I].Text;
           Panel.Alignment := StatusBar.Panels[I].Alignment;
           Panel.BevelOuter := TPanelBevel(StatusBar.Panels[I].Bevel);
+        end;
+        
+        // fit last panel
+        if I < StatusBar.Panels.Count - 1 then
+          Panel.Anchors := [akLeft, akTop, akBottom]
+        else
+        begin
+          Panel.Width := StatusBar.Width - X;
+          Panel.Anchors := [akLeft, akRight, akTop, akBottom];
         end;
       end;
       Panel.Show;
