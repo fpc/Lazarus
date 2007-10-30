@@ -351,10 +351,10 @@ var
     {$ENDIF}
     CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.LazarusDirectory,
                                            FPCVersion,FPCRelease,FPCPatch);
-    if (FPCVersion=2) and (FPCRelease=2) and (FPCPatch=0)
-      and (FindProgram('cpp.exe', '', false)='') then
+    if (FPCVersion=2) and (FPCRelease=2) and (FPCPatch=0) then
       Tool.EnvironmentOverrides.Values['PATH']:=
         ExtractFileDir(CompilerPath)+PathSep+GetProgramSearchPath();
+      DebugLn(['AddCompilerDirToPath new path: ', Tool.EnvironmentOverrides.Values['PATH']]);
   end;
   {$ENDIF}
   
