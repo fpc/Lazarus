@@ -3444,6 +3444,8 @@ begin
           Result.Bottom:=FLoadedClientSize.Y;
       end;
     end;
+    Result.Right:=Max(Result.Left,Result.Right);
+    Result.Bottom:=Max(Result.Top,Result.Bottom);
     StoreClientRect(Result);
 
     {r:=inherited GetClientRect;
