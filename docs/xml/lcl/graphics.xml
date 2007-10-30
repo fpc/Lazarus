@@ -234,8 +234,13 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="DefFontData">
-        <short><i>Data</i> about the <i>Default Font</i> in the current context</short>
-        <seealso><link id="TFontData"/></seealso>
+        <short><i>Data</i>  about the <i>Default Font</i>  in the current context</short>
+        <descr>New TFont instances are initialized with the values in this structure.<br/>
+About font default values: The default font is chosen by the interfaces depending on the context. <br/>
+For example, there can be a different default font for a button and a groupbox.</descr>
+        <seealso><link id="TFontData">TFontDAta (In same Unit)</link>
+	<link id="Graphics.TFontData">TFontData (With Unit tag)</link>
+<link id="#lcl.Graphics.TFontData">TFontData (with Project and Unit tags)</link></seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTextLayout">
@@ -1376,10 +1381,9 @@ RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphicsObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Primitive ancestor class, mainly for Delphi compatibility</short>
+        <descr>TGraphicsObject - In Delphi VCL this is the ancestor of TFont, TPen and TBrush.<br/>
+Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphicsObject.FOnChanging">
@@ -2287,9 +2291,8 @@ Default is psSolid</descr>
       </element>
       <!-- record type Visibility: default -->
       <element name="TRegionData">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Data</i> about the current <i>Region</i> on the <i>Screen</i> or <i>Canvas</i></short>
+        <descr>At present the Region can only be rectangular; the ability to define it as a Polygon is not yet implemented</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRegionData.Handle">
@@ -2323,10 +2326,10 @@ Default is psSolid</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TRegion">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A defined <i>Region</i> on the screen, in which text is written</short>
+        <seealso><link id="TRegionData">TRegionData (in same Unit)</link>
+	<link id="Graphics.TRegionData">TRegionData (with Unit tag)</link>
+<link id="#lcl.Graphics.TRegionData">TRegionData (with Project, Unit tags)</link></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TRegion.FRegionData">
@@ -2379,38 +2382,33 @@ Default is psSolid</descr>
       <element name="TRegion.GetClipRect.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TRegion.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TRegion</i> constructor</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TRegion.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TRegion</i> destructor</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRegion.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Assign</i> - copies <i>Source</i> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TRegion.Assign.Source"><short/></element>
       <!-- property Visibility: public -->
       <element name="TRegion.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Operating System <i>Handle</i>  for this <i>Region</i></short>
+        <seealso>
+          <link id="#lcl.lcltypes.HRGN">HRGN (with Project, Unit tags)</link>
+	  <link id="lcltypes.HRGN">HRGN (with Unit tag)</link>
+	  <link id="HRGN">HRGN (with no project or unit tags)</link>
+          <link id="#rtl.sysutils.thandle">THandle (with project and unit tags)</link>
+	  <link id="sysutils.thandle">THandle (without project tag)</link>
+	  <link id="THandle">THandle (without project or unit tags)</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TRegion.ClipRect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The rectangle to be used for clipping text</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphic">
