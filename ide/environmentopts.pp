@@ -605,7 +605,6 @@ type
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure FormEditorPageResize(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
@@ -2165,13 +2164,9 @@ procedure TEnvironmentOptionsDialog.FormEditorPageResize(Sender: TObject);
 var
   w: Integer;
 begin
-  w:=((FormEditorPage.ClientWidth-3*5)*6) div 10;
+  w:=((FormEditorPage.ClientWidth-3*5)*5) div 10;
   GridGroupBox.Width:=w;
   FormEditMiscGroupBox.Width:=GridGroupBox.Width;
-end;
-
-procedure TEnvironmentOptionsDialog.FormResize(Sender: TObject);
-begin
 end;
 
 procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
