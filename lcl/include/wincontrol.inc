@@ -5866,6 +5866,9 @@ var
   ClientBoundRect: TRect;
 begin
   //DebugLn('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',DbgS(Msg.DC,8));
+  {$IFDEF VerboseResizeFlicker}
+  DebugLn('[TWinControl.WMPaint] ',DbgSName(Self),'  Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect));
+  {$ENDIF}
   if ([csDestroying,csLoading]*ComponentState<>[]) or (not HandleAllocated) then
     exit;
 
@@ -7120,8 +7123,28 @@ end;
 procedure TWinControl.DoSendBoundsToInterface;
 var
   NewBounds: TRect;
+  {$IFDEF VerboseResizeFlicker}
+  OldBounds: TRect;
+  {$ENDIF}
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
+  {$IFDEF VerboseResizeFlicker}
+  if HandleAllocated then begin
+    GetWindowRelativePosition(Handle,OldBounds.Left,OldBounds.Top);
+    GetWindowSize(Handle,OldBounds.Right,OldBounds.Bottom);
+    inc(OldBounds.Right,OldBounds.Left);
+    inc(OldBounds.Bottom,OldBounds.Top);
+  end else
+    OldBounds:=NewBounds;
+  DebugLn(['[TWinControl.DoSendBoundsToInterface] ',DbgSName(Self),
+    ' Old=',dbgs(OldBounds),
+    ' New=',dbgs(NewBounds),
+    ' PosChanged=',(OldBounds.Left<>NewBounds.Left) or (OldBounds.Top<>NewBounds.Top),
+    ' SizeChanged=',(OldBounds.Right-OldBounds.Left<>NewBounds.Right-NewBounds.Left)
+                 , (OldBounds.Bottom-OldBounds.Top<>NewBounds.Bottom-NewBounds.Top),
+    ' CurClient=',FClientWidth,'x',FClientHeight
+    ]);
+  {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
