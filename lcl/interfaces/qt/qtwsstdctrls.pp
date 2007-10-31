@@ -160,7 +160,6 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
-    //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TQtWSCustomMemo }
@@ -179,7 +178,6 @@ type
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
-    //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TQtWSEdit }
@@ -216,9 +214,6 @@ type
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-
-    {class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;}
   end;
 
   { TQtWSCustomCheckBox }
@@ -926,13 +921,6 @@ begin
   
   TQtAbstractButton(AButton.Handle).setShortcut(NewShortcut);
 end;
-
-{class procedure TQtWSButton.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-  PreferredWidth := QStyle_pixelMetric(QApplication_style(), QStylePM_DialogButtonsButtonWidth);
-  PreferredHeight := QStyle_pixelMetric(QApplication_style(), QStylePM_DialogButtonsButtonHeight);
-end;}
 
 {------------------------------------------------------------------------------
   Method: TQtWSButton.SetColor

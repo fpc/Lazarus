@@ -308,18 +308,10 @@ end;
 
 class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-var
-  PrefSize: TSize;
 begin
   if AWinControl.HandleAllocated then
-  begin
-    TQtWidget(AWinControl.Handle).sizeHint(@PrefSize);
-    if (PrefSize.cx >= 0) and (PrefSize.cy >=0) then
-    begin
-      PreferredWidth := PrefSize.cx;
-      PreferredHeight := PrefSize.cy;
-    end;
-  end;
+    TQtWidget(AWinControl.Handle).PreferredSize(PreferredWidth,
+      PreferredHeight, WithThemeSpace);
 end;
 
 class function TQtWSWinControl.GetText(const AWinControl: TWinControl;

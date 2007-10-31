@@ -36,7 +36,7 @@ uses
 {$endif}
   qtobjects, qtint,
   // Free Pascal
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, Math,
   // LCL
   LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls,
   ExtCtrls, StdCtrls, Menus, Dialogs;
@@ -162,6 +162,7 @@ type
     function hasFocus: Boolean; virtual;
     procedure lowerWidget;
     procedure move(ANewLeft, ANewTop: Integer);
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     procedure raiseWidget;
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
@@ -335,6 +336,7 @@ type
   TQtAbstractButton = class(TQtWidget)
   private
   public
+    function getIconSize: TSize;
     function getText: WideString; override;
     procedure setColor(const Value: PQColor); override;
     procedure setIcon(AIcon: QIconH);
@@ -361,6 +363,7 @@ type
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     destructor Destroy; override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -2376,6 +2379,18 @@ begin
   QWidget_move(Widget, ANewLeft, ANewTop);
 end;
 
+procedure TQtWidget.preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  PrefSize: TSize;
+begin
+  sizeHint(@PrefSize);
+  if (PrefSize.cx >= 0) and (PrefSize.cy >=0) then
+  begin
+    PreferredWidth := PrefSize.cx;
+    PreferredHeight := PrefSize.cy;
+  end;
+end;
+
 procedure TQtWidget.raiseWidget;
 begin
   QWidget_raise(Widget);
@@ -3040,6 +3055,11 @@ begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
 end;
 
+function TQtAbstractButton.getIconSize: TSize;
+begin
+  QAbstractButton_iconSize(QAbstractButtonH(Widget), @Result);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtAbstractButton.Text
   Params:  None
@@ -3178,6 +3198,52 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+procedure TQtPushButton.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+const
+  IconSpacing: Integer = 4;
+var
+  W: WideString;
+  AMetrics: QFontMetricsH;
+  ARect: TRect;
+  AIcon: QIconH;
+  ASize: TSize;
+begin
+  PreferredWidth := 0;
+  PreferredHeight := 0;
+
+  // first part - text width/height calculation
+  W := getText;
+  if W <> '' then
+  begin
+    AMetrics := QFontMetrics_create(QWidget_font(Widget));
+    PreferredWidth := QFontMetrics_width(AMetrics, @W, -1);
+    PreferredHeight := QFontMetrics_height(AMetrics);
+    QFontMetrics_destroy(AMetrics);
+  end;
+
+  // second part - icon width/height
+  AIcon := QIcon_create();
+  QAbstractButton_icon(QAbstractButtonH(Widget), AIcon);
+  if not QIcon_isNull(AIcon) then
+  begin
+    ASize := getIconSize;
+    inc(PreferredWidth, ASize.cx + IconSpacing);
+    PreferredHeight := Max(PreferredHeight, ASize.cy + IconSpacing);
+  end;
+  QIcon_destroy(AIcon);
+
+  // third part - space between bounds and contents
+  inc(PreferredWidth, 10);
+  inc(PreferredHeight, 4);
+
+  if WithThemeSpace then
+  begin
+    inc(PreferredWidth, 6);
+    inc(PreferredHeight, 6);
+  end;
 end;
 
 procedure TQtPushButton.AttachEvents;
