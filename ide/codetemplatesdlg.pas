@@ -669,7 +669,7 @@ begin
   AutoOnCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
   AutoOnCheckGroup.Items.Add(lisAutomaticallyOnSpace);
   AutoOnCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
-  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
+  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnAddSymbol);
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
 

@@ -3435,6 +3435,7 @@ resourcestring
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';
   lisAutomaticallyOnWordEnd = 'word end';
+  lisAutomaticallyOnAddSymbol = 'symbol';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
     +'provides the same as the following packages:';
 
