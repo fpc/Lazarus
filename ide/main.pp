@@ -5617,8 +5617,9 @@ begin
     if FallbackProjectDesc=nil then exit;
     Result:=TProject.Create(FallbackProjectDesc);
     FallbackProjectDesc.InitProject(Result);
-  end;
-  Result.EndUpdate;
+  end
+  else
+    Result.EndUpdate;
 
   Result.MainProject:=true;
   Result.OnFileBackup:=@MainBuildBoss.BackupFile;
