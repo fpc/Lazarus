@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-28 20:09+0300\n"
+"PO-Revision-Date: 2007-10-31 23:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10040,6 +10040,10 @@ msgstr "файл настроек статических пакетов"
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "остановить программу"
+
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr "символа"
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
