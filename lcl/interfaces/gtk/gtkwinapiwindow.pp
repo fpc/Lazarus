@@ -50,6 +50,9 @@ type
   TGTKAPIWidget = record
     // ! the ScrolledWindow must be the first attribute of this record !
     ScrolledWindow: TGTKScrolledWindow;
+{$if defined(win32) and defined(gtk2)}
+    Reserved1: Word; // workaround gtk2 win32 fpc bug: SizeOf(TGTKScrolledWindow) is less than in real
+{$ifend}
     Frame: PGtkFrame;
     Client: PGtkWidget;
   end;
@@ -72,6 +75,8 @@ procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   ShowHideOnFocus: boolean); 
 procedure GTKAPIWidget_GetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   var ShowHideOnFocus: boolean);
+
+procedure GTKAPIWidget_SetShadowType(APIWidget: PGTKAPIWidget; AShadowType: TGtkShadowType);
 
 function GTK_APIWIDGETCLIENT_TYPE: Guint;
 
@@ -190,6 +195,17 @@ procedure GTKAPIWidgetClient_GetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   var ShowHideOnFocus: boolean); forward;
 
 //-----------------------------
+
+procedure GTKAPIWidget_SetShadowType(APIWidget: PGTKAPIWidget;
+  AShadowType: TGtkShadowType);
+begin
+  if (APIWidget^.Frame <> nil) then
+    gtk_frame_set_shadow_type(APIWidget^.Frame, AShadowType)
+{$ifdef gtk2}
+  else
+    gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(APIWidget), AShadowType);
+{$endif}
+end;
 
 function GTK_APIWIDGETCLIENT_TYPE: Guint;
 begin
@@ -1122,4 +1138,5 @@ initialization
   MParentClass:=nil;
 
 end.
+
 

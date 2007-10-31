@@ -301,16 +301,8 @@ begin
   then Exit;
 
   Widget := PGtkWidget(AWinControl.Handle);
-  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
-    //DebugLn('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
-    APIWidget := PGTKAPIWidget(Widget);
-    if (APIWidget^.Frame<>nil) then begin
-      case ABorderStyle of
-      bsNone: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_NONE);
-      bsSingle: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_ETCHED_IN);
-      end;
-    end;
-  end;
+  if GtkWidgetIsA(Widget, GTKAPIWidget_GetType) then
+    GTKAPIWidget_SetShadowType(PGTKAPIWidget(Widget), BorderStyleShadowMap[ABorderStyle]);
 end;
 
 class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject;

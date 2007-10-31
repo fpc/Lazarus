@@ -4683,6 +4683,10 @@ begin
                         PGTKScrolledWindow(Result)^.HScrollBar);
     Step_Increment := 1;
   end;
+  
+  if AWinControl is TCustomControl then
+    GTKAPIWidget_SetShadowType(PGTKAPIWidget(Result),
+      BorderStyleShadowMap[TCustomControl(AWinControl).BorderStyle]);
 end;
 
 {------------------------------------------------------------------------------

@@ -290,6 +290,12 @@ const
     0, // bsToolWindow
     1  // bsSizeToolWin
   );
+  
+  BorderStyleShadowMap: array[TBorderStyle] of TGtkShadowType =
+  (
+{ bsNone   } GTK_SHADOW_NONE,
+{ bsSingle } GTK_SHADOW_ETCHED_IN
+  );
 
 
   // signals ------------------------------------------------------------------
