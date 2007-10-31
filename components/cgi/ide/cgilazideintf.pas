@@ -117,8 +117,6 @@ begin
     +'uses'+le
     +'  cgiModules;'+le
     +le
-    +'var'+le
-    +'  Applicaton: TModuledCGIApplication;'+le
     +'begin'+le
     +'  Application:=TModuledCGIApplication.Create(nil);'+le
     +'  Application.Initialize;'+le
