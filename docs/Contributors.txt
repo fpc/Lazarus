@@ -64,15 +64,16 @@ Luca Olivetti
 Luis R. Hilario B.
 Luis Rodrigues made TChart and misc patches
 Luiz Americo
+Marc Fokker
 Marc Geldon
 Marc Weustink
-Marc Fokker
 Martin Patik
 Martin Smat
 Marton Papp
 Martyn Ranyard
 Matthijs Willemstein
 Mattias Gaertner
+Maxim Ganetsky
 Mazen Neifer
 Michael A. Hess
 Micha Nelissen
