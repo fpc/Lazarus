@@ -1949,6 +1949,7 @@ type
   private
     FCount: integer;
     FFirstMultiSelected: TTreeNode;
+    FLastMultiSelected: TTreeNode;
     FKeepCollapsedNodes: boolean;
     FNodeCache: TNodeCache;
     FOwner: TCustomTreeView;

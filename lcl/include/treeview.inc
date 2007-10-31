@@ -468,14 +468,73 @@ end;
 procedure TTreeNode.BindToMultiSelected;
 var
   TheTreeNodes: TTreeNodes;
+  CurNode: TTreeNode;
 begin
   TheTreeNodes:=TreeNodes;
   if TheTreeNodes=nil then exit;
-  FNextMultiSelected:=TheTreeNodes.FFirstMultiSelected;
-  FPrevMultiSelected:=nil;
-  if FNextMultiSelected<>nil then
-    FNextMultiSelected.FPrevMultiSelected:=Self;
-  TheTreeNodes.FFirstMultiSelected:=Self;
+  
+  // Get the first selected node of the tree
+  CurNode := TheTreeNodes.FFirstMultiSelected;
+  
+  // Initialize self unbinded
+  Self.FPrevMultiSelected := nil;
+  Self.FNextMultiSelected := nil;
+  
+  // If there isn't any selected node, set self as first
+  if CurNode = nil then
+    TheTreeNodes.FFirstMultiSelected := Self
+  else
+  begin
+  
+    // if last selected node was the previous one
+    if (TheTreeNodes.FLastMultiSelected.AbsoluteIndex+1=Self.AbsoluteIndex) and (TheTreeNodes.FLastMultiSelected.FNextMultiSelected=nil) then
+    begin
+      TheTreeNodes.FLastMultiSelected.FNextMultiSelected := Self;
+      Self.FPrevMultiSelected := TheTreeNodes.FLastMultiSelected;
+    end
+    else
+    begin
+      // if last selected node was the next one
+      if (TheTreeNodes.FLastMultiSelected.AbsoluteIndex=Self.AbsoluteIndex+1) and (TheTreeNodes.FLastMultiSelected.FPrevMultiSelected=nil) then
+      begin
+        TheTreeNodes.FLastMultiSelected.FPrevMultiSelected := Self;
+        Self.FNextMultiSelected := TheTreeNodes.FLastMultiSelected;
+        TheTreeNodes.FFirstMultiSelected := Self
+      end
+      else
+      begin
+
+        // Scan linked list of selected nodes until one has a lower absolute index or we reach the end
+        While (CurNode.GetNextMultiSelected<>Nil) and (CurNode.AbsoluteIndex<Self.AbsoluteIndex) do
+          CurNode := CurNode.GetNextMultiSelected;
+
+        // last of the list
+        if CurNode.AbsoluteIndex < Self.AbsoluteIndex then
+        begin
+           CurNode.FNextMultiSelected := Self;
+           Self.FPrevMultiSelected    := CurNode;
+        end
+        else
+        // insert between two nodes
+        begin
+           Self.FPrevMultiSelected    := CurNode.FPrevMultiSelected;
+           Self.FNextMultiSelected    := CurNode;
+           if CurNode.FPrevMultiSelected <> nil then
+              CurNode.FPrevMultiSelected.FNextMultiSelected := Self;
+           CurNode.FPrevMultiSelected := Self;
+        end;
+        // Set self as head of the list if needed
+        if Self.FPrevMultiSelected = nil then
+          TheTreeNodes.FFirstMultiSelected := Self;
+      end;
+      
+    end;
+    
+  end;
+  
+  // Set self as last selected node
+  TheTreeNodes.FLastMultiSelected := Self;
+
 end;
 
 function TTreeNode.CompareCount(CompareMe: Integer): Boolean;
@@ -1114,6 +1173,17 @@ begin
   if TheTreeNodes=nil then exit;
   if TheTreeNodes.FFirstMultiSelected=Self then
     TheTreeNodes.FFirstMultiSelected:=FNextMultiSelected;
+  // Reset last multiselected node
+  if TheTreeNodes.FLastMultiSelected=Self then
+  begin
+    if Self.FNextMultiSelected <> nil then
+      TheTreeNodes.FLastMultiSelected := Self.FNextMultiSelected
+    else
+      if Self.FPrevMultiSelected <> nil then
+        TheTreeNodes.FLastMultiSelected := Self.FPrevMultiSelected
+      else
+        TheTreeNodes.FLastMultiSelected := nil;
+  end;
   if FNextMultiSelected<>nil then
     FNextMultiSelected.FPrevMultiSelected:=FPrevMultiSelected;
   if FPrevMultiSelected<>nil then
@@ -3386,7 +3456,7 @@ begin
   inherited KeyDown(Key, Shift);
 
   if (tvoAllowMultiSelect in FOptions) and (ssShift in Shift) then
-    lNode := FTreeNodes.FFirstMultiSelected
+    lNode := FTreeNodes.FLastMultiSelected
   else
     lNode := Selected;
     
