@@ -73,7 +73,7 @@ begin
   if not Enabled then Exit;
   
   FreeDialog := FColorDialog = nil;
-  if FColorDialog = nil then FColorDialog := TColorDialog.Create(Application);
+  if FColorDialog = nil then FColorDialog := TColorDialog.Create(GetTopParent);
   try
     NewColor := ButtonColor;
     FColorDialog.Color := ButtonColor;

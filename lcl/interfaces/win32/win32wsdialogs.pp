@@ -143,11 +143,6 @@ begin
   begin
     if Owner Is TWinControl then
       Result := TWinControl(Owner).Handle
-{
-    // TODO: fix Application.Handle to be the same as FAppHandle
-    else if Owner Is TApplication then
-      Result := TApplication(Owner).Handle
-}
     else
       Result := TWin32WidgetSet(WidgetSet).AppHandle;
   end;
