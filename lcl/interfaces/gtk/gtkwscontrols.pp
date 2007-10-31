@@ -295,7 +295,6 @@ class procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
   const ABorderStyle: TBorderStyle);
 var
   Widget: PGtkWidget;
-  APIWidget: PGTKAPIWidget;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle')
   then Exit;
