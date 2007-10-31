@@ -68,29 +68,29 @@ Type
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
 procedure EventTrace(Message: String; Data: TObject);
-Procedure AssertEx(Const Message: String; Const PassErr: Boolean;
+procedure AssertEx(Const Message: String; Const PassErr: Boolean;
   Const Severity: Byte);
-Procedure AssertEx(Const PassErr: Boolean; Const Message: String);
-Procedure AssertEx(Const Message: String);
-Function GetShiftState: TShiftState;
-Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
-Function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
-Procedure CallEvent(Const Target: TObject; Event: TNotifyEvent;
+procedure AssertEx(Const PassErr: Boolean; Const Message: String);
+procedure AssertEx(Const Message: String);
+function GetShiftState: TShiftState;
+function DeliverMessage(Const Target: Pointer; Var Message): Integer;
+function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
+procedure CallEvent(Const Target: TObject; Event: TNotifyEvent;
   Const Data: Pointer; Const EventType: TEventType);
-Function ObjectToHWND(Const AObject: TObject): HWND;
+function ObjectToHWND(Const AObject: TObject): HWND;
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
-Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
-Function GetAccelGroup(Const Control: HWND): HACCEL;
-Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word;
+procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
+function GetAccelGroup(Const Control: HWND): HACCEL;
+procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word;
   Const AModifier: TShiftState);
-Function GetAccelKey(Const Control: HWND): LPACCEL;
+function GetAccelKey(Const Control: HWND): LPACCEL;
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
-Procedure LCLBoundsToWin32Bounds(Sender: TObject;
+procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
-Procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
-Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
+procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
+procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
@@ -175,14 +175,14 @@ uses
 var
   InRemoveStayOnTopFlags: Integer = 0;
 {------------------------------------------------------------------------------
-  Function: WM_To_String
+  function: WM_To_String
   Params: WM_Message - a WinDows message
   Returns: A WinDows-message name
 
   Converts a winDows message identIfier to a string
  ------------------------------------------------------------------------------}
 function WM_To_String(WM_Message: Integer): string;
-Begin
+begin
  Case WM_Message of
   $0000: Result := 'WM_NULL';
   $0001: Result := 'WM_CREATE';
@@ -393,8 +393,8 @@ Begin
   $8000: Result := 'WM_APP';
   Else
     Result := 'Unknown(' + IntToStr(WM_Message) + ')';
-  End; {Case}
-End;
+  end; {Case}
+end;
 
 function WindowPosFlagsToString(Flags: UINT): string;
 var
@@ -430,90 +430,90 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Procedure: EventTrace
+  procedure: EventTrace
   Params: Message - Event name
           Data    - Object which fired this event
   Returns: Nothing
 
   Displays a trace about an event
  ------------------------------------------------------------------------------}
-Procedure EventTrace(Message: String; Data: TObject);
-Begin
+procedure EventTrace(Message: String; Data: TObject);
+begin
   If Data = Nil Then
     Assert(False, Format('Trace:Event [%S] fired', [Message]))
   Else
     Assert(False, Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
-End;
+end;
 
 {------------------------------------------------------------------------------
-  Function: AssertEx
+  function: AssertEx
   Params: Message  - Message sent
-          PassErr  - Pass error to a catching Procedure (default: False)
+          PassErr  - Pass error to a catching procedure (default: False)
           Severity - How severe is the error on a scale from 0 to 3
                      (default: 0)
   Returns: Nothing
 
   An expanded, better version of Assert
  ------------------------------------------------------------------------------}
-Procedure AssertEx(Const Message: String; Const PassErr: Boolean; Const Severity: Byte);
-Begin
+procedure AssertEx(Const Message: String; Const PassErr: Boolean; Const Severity: Byte);
+begin
   Case Severity Of
     0:
-    Begin
+    begin
       Assert(PassErr, Message);
-    End;
+    end;
     1:
-    Begin
+    begin
       Assert(PassErr, Format('Trace:%S', [Message]));
-    End;
+    end;
     2:
-    Begin
+    begin
       Case IsConsole Of
         True:
-        Begin
+        begin
           WriteLn(rsWin32Warning, Message);
-        End;
+        end;
         False:
-        Begin
+        begin
           MessageBox(0, PChar(Message), PChar(rsWin32Warning), MB_OK);
-        End;
-      End;
-    End;
+        end;
+      end;
+    end;
     3:
-    Begin
+    begin
       Case IsConsole Of
         True:
-        Begin
+        begin
           WriteLn(rsWin32Error, Message);
-        End;
+        end;
         False:
-        Begin
+        begin
           MessageBox(0, PChar(Message), Nil, MB_OK);
-        End;
-      End;
-    End;
-  End;
-End;
+        end;
+      end;
+    end;
+  end;
+end;
 
-Procedure AssertEx(Const PassErr: Boolean; Const Message: String);
-Begin
+procedure AssertEx(Const PassErr: Boolean; Const Message: String);
+begin
   AssertEx(Message, PassErr, 0);
-End;
+end;
 
-Procedure AssertEx(Const Message: String);
-Begin
+procedure AssertEx(Const Message: String);
+begin
   AssertEx(Message, False, 0);
-End;
+end;
 
 {------------------------------------------------------------------------------
-  Function: GetShiftState
+  function: GetShiftState
   Params: None
   Returns: A shift state
 
   Creates a TShiftState set based on the status when the function was called.
  ------------------------------------------------------------------------------}
-Function GetShiftState: TShiftState;
-Begin
+function GetShiftState: TShiftState;
+begin
   Result := [];
   // NOTE: it may be better to use GetAsyncKeyState
   // if GetKeyState AND $8000 <> 0 then down (e.g. shift)
@@ -540,10 +540,10 @@ Begin
   If (GetKeyState(VK_RBUTTON) and $8000) <> 0 then
     Result := Result + [ssRight];
   //TODO: ssAltGr
-End;
+end;
 
 {------------------------------------------------------------------------------
-  Procedure: GetWin32KeyInfo
+  procedure: GetWin32KeyInfo
   Params:  Event      - Requested info
            KeyCode    - the ASCII key code of the eventkey
            VirtualKey - the virtual key code of the eventkey
@@ -555,47 +555,47 @@ End;
   GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
 {
-Procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer; var SysKey, Extended, Toggle: Boolean);
+procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer; var SysKey, Extended, Toggle: Boolean);
 Const
   MVK_UNIFY_SIDES = 1;
-Begin
+begin
   Assert(False, 'TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
   KeyCode := Word(Event);
   VirtualKey := MapVirtualKey(KeyCode, MVK_UNIFY_SIDES);
   SysKey := (VirtualKey = VK_SHIFT) Or (VirtualKey = VK_CONTROL) Or (VirtualKey = VK_MENU);
   ExtEnded := (SysKey) Or (VirtualKey = VK_INSERT) Or (VirtualKey = VK_HOME) Or (VirtualKey = VK_LEFT) Or (VirtualKey = VK_UP) Or (VirtualKey = VK_RIGHT) Or (VirtualKey = VK_DOWN) Or (VirtualKey = VK_PRIOR) Or (VirtualKey = VK_NEXT) Or (VirtualKey = VK_END) Or (VirtualKey = VK_DIVIDE);
   Toggle := Lo(GetKeyState(VirtualKey)) = 1;
-End;
+end;
 }
 {------------------------------------------------------------------------------
-  Function: DeliverMessage
+  function: DeliverMessage
   Params:    Message - The message to process
   Returns:   True If handled
 
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
-Begin
+function DeliverMessage(Const Target: Pointer; Var Message): Integer;
+begin
   If Target = Nil Then
   begin
     DebugLn('[DeliverMessage Target: Pointer] Nil');
     Exit;
   end;
   If TObject(Target) Is TControl Then
-  Begin
+  begin
     TControl(Target).WinDowProc(TLMessage(Message));
   End
   Else
-  Begin
+  begin
     TObject(Target).Dispatch(TLMessage(Message));
-  End;
+  end;
 
   Result := TLMessage(Message).Result;
-End;
+end;
 
 {------------------------------------------------------------------------------
-  Function: DeliverMessage
+  function: DeliverMessage
   Params: Target  - The target object
           Message - The message to process
   Returns: Message result
@@ -603,8 +603,8 @@ End;
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-Function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
-Begin
+function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
+begin
   If Target = Nil Then
   begin
     DebugLn('[DeliverMessage (Target: TObject)] Nil');
@@ -615,10 +615,10 @@ Begin
   Else
     Target.Dispatch(Message);
   Result := Message.Result;
-End;
+end;
 
 {-----------------------------------------------------------------------------
-  Procedure: CallEvent
+  procedure: CallEvent
   Params: Target    - the object for which the event will be called
           Event     - event to call
           Data      - misc data
@@ -627,66 +627,66 @@ End;
 
   Calls an event
 -------------------------------------------------------------------------------}
-Procedure CallEvent(Const Target: TObject; Event: TNotifyEvent; Const Data: Pointer; Const EventType: TEventType);
-Begin
+procedure CallEvent(Const Target: TObject; Event: TNotifyEvent; Const Data: Pointer; Const EventType: TEventType);
+begin
   If Assigned(Target) And Assigned(Event) Then
-  Begin
+  begin
     Case EventType Of
       etNotify:
-      Begin
+      begin
         Event(Target);
-      End;
-    End;
-  End;
-End;
+      end;
+    end;
+  end;
+end;
 
 {------------------------------------------------------------------------------
-  Function: ObjectToHWND
+  function: ObjectToHWND
   Params: AObject - An LCL Object
   Returns: The Window handle of the given object
 
   Returns the Window handle of the given object, 0 if no object available
  ------------------------------------------------------------------------------}
-Function ObjectToHWND(Const AObject: TObject): HWND;
+function ObjectToHWND(Const AObject: TObject): HWND;
 Var
   Handle: HWND;
-Begin
+begin
   Handle:=0;
   If not assigned(AObject) Then
-  Begin
+  begin
     Assert (False, 'TRACE:[ObjectToHWND] Object not assigned');
   End
   Else If (AObject Is TWinControl) Then
-  Begin
+  begin
     If TWinControl(AObject).HandleAllocated Then
       Handle := TWinControl(AObject).Handle
   End
   Else If (AObject Is TMenuItem) Then
-  Begin
+  begin
     If TMenuItem(AObject).HandleAllocated Then
       Handle := TMenuItem(AObject).Handle
   End
   Else If (AObject Is TMenu) Then
-  Begin
+  begin
     If TMenu(AObject).HandleAllocated Then
       Handle := TMenu(AObject).Items.Handle
   End
   Else If (AObject Is TCommonDialog) Then
-  Begin
+  begin
     {If TCommonDialog(AObject).HandleAllocated Then }
     Handle := TCommonDialog(AObject).Handle
   End
   Else
-  Begin
+  begin
     Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
-  End;
+  end;
   Result := Handle;
   If Handle = 0 Then
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
-End;
+end;
 
 (***********************************************************************
-  Widget member Functions
+  Widget member functions
 ************************************************************************)
 
 {-------------------------------------------------------------------------------
@@ -729,10 +729,10 @@ end;
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
-Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
+procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
 var
   WindowInfo: PWindowInfo;
-Begin
+begin
   Assert(False, 'Trace:TODO: Code SetAccelGroup');
   WindowInfo := GetWindowInfo(Control);
   if WindowInfo <> @DefaultWindowInfo then
@@ -741,15 +741,15 @@ Begin
   end else begin
     DebugLn('Win32 - SetAccelGroup: no window info to store accelgroup in!');
   end;
-End;
+end;
 
-Function GetAccelGroup(Const Control: HWND): HACCEL;
-Begin
+function GetAccelGroup(Const Control: HWND): HACCEL;
+begin
   Assert(False, 'Trace:TODO: Code GetAccelGroup');
   Result := GetWindowInfo(Control)^.AccelGroup;
-End;
+end;
 
-Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
+procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
 var AccelCount: integer; {number of accelerators in table}
     NewCount: integer; {total sum of accelerators in the table}
     ControlIndex: integer; {index of new (modified) accelerator in table}
@@ -783,7 +783,7 @@ var AccelCount: integer; {number of accelerators in table}
 
 var
   WindowInfo: PWindowInfo;
-Begin
+begin
   WindowInfo := GetWindowInfo(Window);
   OldAccel := WindowInfo^.Accel;
   NullAccel := nil;
@@ -810,14 +810,14 @@ Begin
   end else begin
     DebugLn('Win32 - SetAccelKey: no windowinfo to put accelerator table in!');
   end;
-End;
+end;
 
-Function GetAccelKey(Const Control: HWND): LPACCEL;
-Begin
+function GetAccelKey(Const Control: HWND): LPACCEL;
+begin
   Assert(False, 'Trace:TODO: Code GetAccelKey');
   //Result := GetWindowInfo(Control)^.AccelKey;
   Result := nil;
-End;
+end;
 
 {-------------------------------------------------------------------------------
   function GetLCLClientOriginOffset(Sender: TObject;
@@ -838,7 +838,7 @@ var
   Handle: HWND;
   TheWinControl: TWinControl;
   ARect: TRect;
-Begin
+begin
   Result:=false;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
@@ -862,7 +862,7 @@ Begin
       end;
     end;
   If (TheWinControl is TCustomGroupBox) Then
-  Begin
+  begin
     // The client area of a groupbox under win32 is the whole size, including
     // the frame. The LCL defines the client area without the frame.
     // -> Adjust the position
@@ -902,16 +902,16 @@ begin
   Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
-Procedure LCLBoundsToWin32Bounds(Sender: TObject;
+procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 var
   ORect: TRect;
-Begin
+begin
   if (Sender=nil) or (not (Sender is TWinControl)) then exit;
   if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
   inc(Left, ORect.Left);
   inc(Top, ORect.Top);
-End;
+end;
 
 procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 {$NOTE Should be moved to WSWin32Forms, if the windowproc is splitted}
@@ -933,15 +933,15 @@ begin
   AHeight := SizeRect.Bottom - SizeRect.Top;
 end;
 
-Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
+procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 var
   ORect: TRect;
-Begin
+begin
   if (Sender=nil) or (not (Sender is TWinControl)) then exit;
   if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
   dec(Left, ORect.Left);
   dec(Top, ORect.Top);
-End;
+end;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
@@ -1039,7 +1039,7 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
-  Function: DisableWindowsProc
+  function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
           Data   - handle of current window form
   Returns: Whether the enumeration should continue
