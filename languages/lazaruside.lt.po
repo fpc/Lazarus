@@ -1,10 +1,11 @@
-# translation of lazaruside.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of lazaruside.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 15:57+0300\n"
+"PO-Revision-Date: 2007-10-30 13:01+0200\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
-msgstr "komanda 1 \""
+msgstr "    komanda 1 \""
 
 #: lazarusidestrconsts:srkmcommand2
 msgid "    command2 \""
-msgstr "komanda 2 \""
+msgstr "    komanda 2 \""
 
 #: lazarusidestrconsts:liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
@@ -53,7 +54,7 @@ msgstr "%s beta"
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
-msgstr "% baitų"
+msgstr "%s baitų"
 
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
@@ -429,7 +430,7 @@ msgstr "Pridėti elementą"
 
 #: lazarusidestrconsts:dlgaddassignmentoperator
 msgid "Add assignment operator :="
-msgstr ""
+msgstr "Padėti priskyrimo operatorių :="
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
@@ -493,7 +494,7 @@ msgstr "Įdėti kelius į priklausomus paketus/projektus"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr "Pridėti kabliataškį"
+msgstr "Padėti kabliataškį"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -537,7 +538,7 @@ msgstr "Ieškoti ir kituose failuose (pvz.: /path/*.pas;/path2/*.pp)"
 
 #: lazarusidestrconsts:rsadditionalinfo
 msgid "Additional info"
-msgstr ""
+msgstr "Papildoma informacija"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
@@ -743,10 +744,6 @@ msgstr "Simbolis eta"
 msgid "Author:"
 msgstr "Autorius:"
 
-#: lazarusidestrconsts:liscodetemplautocompleteon
-msgid "Auto complete on ..."
-msgstr ""
-
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
 msgstr "Atveriant modulį formą sukurti automatiškai"
@@ -797,7 +794,7 @@ msgstr "Automatinės ypatybės"
 
 #: lazarusidestrconsts:rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
-msgstr ""
+msgstr "Automatiškai didinti darymo numerį"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -879,7 +876,7 @@ msgstr "Kraštinės plotis"
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr ""
 "Pagrindinis kraštinės plotis apie komponentę.\n"
-"Ši reikšmė bus pridedama prie kitų kraštinių pločių"
+"Ši reikšmė bus pridedama prie kitų kraštinių pločių."
 
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
@@ -889,7 +886,7 @@ msgstr "Apačios prieraiša"
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr ""
 "Apatinės kraštinės plotis.\n"
-"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą apatinės kraštinės plotį"
+"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą apatinės kraštinės plotį."
 
 #: lazarusidestrconsts:lisbottomspaceequally
 msgid "Bottom space equally"
@@ -1013,7 +1010,7 @@ msgstr "Daryti projektą/programą"
 
 #: lazarusidestrconsts:rsbuild
 msgid "Build:"
-msgstr ""
+msgstr "Darymas:"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1077,7 +1074,7 @@ msgstr "Atsisakyti pervardyjimo"
 
 #: lazarusidestrconsts:lisaboutnocontributors
 msgid "Cannot find contributors list."
-msgstr "Nepavyko rasti talkininkų sąrašo"
+msgstr "Nepavyko rasti talkininkų sąrašo."
 
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
@@ -1165,7 +1162,7 @@ msgstr "Simbolių lentelė"
 
 #: lazarusidestrconsts:rscharacterset
 msgid "Character set:"
-msgstr ""
+msgstr "Koduotė:"
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -1541,7 +1538,7 @@ msgstr "Menių \"Komandos\" komandos"
 
 #: lazarusidestrconsts:dlgcommandlineparameters
 msgid "Command line parameters"
-msgstr ""
+msgstr "Komandinės eilutės parametrai"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -1889,7 +1886,7 @@ msgstr "Visos formos kopijavimas dar nėra įgyvendintas."
 
 #: lazarusidestrconsts:rscopyright
 msgid "Copyright:"
-msgstr ""
+msgstr "Autorinė teisė:"
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -2333,7 +2330,7 @@ msgstr "Aprašymas:"
 
 #: lazarusidestrconsts:lisoipdescription
 msgid "Description:  "
-msgstr "Aprašymas:"
+msgstr "Aprašymas:  "
 
 #: lazarusidestrconsts:liskeycatdesigner
 msgid "Designer commands"
@@ -2605,7 +2602,7 @@ msgstr "Įgalinti makrokomandas"
 
 #: lazarusidestrconsts:rsenablei18n
 msgid "Enable i18n"
-msgstr ""
+msgstr "Įgalinti internacionalizaciją"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2685,7 +2682,7 @@ msgstr "Klaida kreipiantis į XML"
 
 #: lazarusidestrconsts:lisiecoerroraccessingxmlfile
 msgid "Error accessing xml file %s%s%s:%s%s"
-msgstr "Įvyko klaida kreipiantis į XML falą %s%s%s:%s%s"
+msgstr "Įvyko klaida kreipiantis į XML failą %s%s%s:%s%s"
 
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
@@ -2701,7 +2698,7 @@ msgstr "Nepavyko ištrinti failą"
 
 #: lazarusidestrconsts:liserrorin
 msgid "Error in %s"
-msgstr "%s klaida"
+msgstr "%s yra klaida"
 
 #: lazarusidestrconsts:lisueerrorinregularexpression
 msgid "Error in regular expression"
@@ -2761,7 +2758,7 @@ msgstr "Įvyko klaida rašant %s%s%s%s%s"
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
-msgstr "Įvyko klaida rašant į informacijos apie projektą failą %s%s%s%s"
+msgstr "Įvyko klaida rašant į informacijos apie projektą failą %s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangerrorwritingfile
 msgid "Error writing file"
@@ -2773,7 +2770,7 @@ msgstr "Įvyko klaida rašant paketo sąrašą į failą%s%s%s%s"
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
-msgstr "Klaida:"
+msgstr "Klaida: "
 
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
@@ -3861,7 +3858,7 @@ msgstr "Įterpimo filtras"
 
 #: lazarusidestrconsts:rsincludeversioninfoinexecutable
 msgid "Include Version Info in executable"
-msgstr ""
+msgstr "Įrašyti versijos informaciją į vykdomąjį failą"
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -4057,7 +4054,7 @@ msgstr "Įterpti šabloną"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
-msgstr ""
+msgstr "Įterpti ToDo"
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -4281,7 +4278,7 @@ msgstr "Klaidingas tikslo katalogas"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
-msgstr "Klaidingas reiškinys.%sUžuomina: funkcijai \"Kurti resursų eilutę\" reikia eilutės konstantos, kuri yra tik viename faile.%sPažymėkite reiškinį ir bandykite vėl."
+msgstr "Klaidingas reiškinys.%sUžuomina: funkcijai \"Kurti resursų eilutę\" reikia eilutės konstantos, kuri yra tik viename faile. Pažymėkite reiškinį ir bandykite vėl."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
@@ -4573,11 +4570,11 @@ msgstr "Kalbos išimtinės situacijos"
 
 #: lazarusidestrconsts:rslanguageoptions
 msgid "Language options"
-msgstr ""
+msgstr "Kalbos parinktys"
 
 #: lazarusidestrconsts:rslanguageselection
 msgid "Language selection:"
-msgstr ""
+msgstr "Kalba:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -4605,7 +4602,7 @@ msgstr "LazDoc"
 
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
-msgstr ""
+msgstr "LazDoc - Lazarus dokumentacija"
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"
@@ -4719,7 +4716,7 @@ msgstr "Kairės prieraiša"
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
 msgstr ""
 "Kairės kraštinės plotis.\n"
-"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą kairiosios kraštinės plotį"
+"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą kairiosios kraštinės plotį."
 
 #: lazarusidestrconsts:lisleftsides
 msgid "Left sides"
@@ -4883,7 +4880,7 @@ msgstr "Didysis"
 
 #: lazarusidestrconsts:rsmajorrevision
 msgid "Major revision:"
-msgstr ""
+msgstr "Didysis poversijis:"
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
@@ -4943,7 +4940,7 @@ msgstr "Perdaug įrankių"
 
 #: lazarusidestrconsts:lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
-msgstr "Maksimali versija (nebūtina)"
+msgstr "Maksimali versija (nebūtina):"
 
 #: lazarusidestrconsts:lispckeditmaximumversion
 msgid "Maximum Version:"
@@ -4987,7 +4984,7 @@ msgstr "Mažasis"
 
 #: lazarusidestrconsts:rsminorrevision
 msgid "Minor revision:"
-msgstr ""
+msgstr "Mažasis poversijis:"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -5215,7 +5212,7 @@ msgstr "Pastaba: nerastas CodeTools nustatymų failas - naudojami numatytieji nu
 
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
-msgstr "Pastaba: įkeliami senasis CodeTools parinkčių failas:"
+msgstr "Pastaba: įkeliami senasis CodeTools parinkčių failas: "
 
 #: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
 msgid "NOTE: only absolute paths are supported now"
@@ -5423,7 +5420,7 @@ msgstr "Ne dabar"
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "Pastaba: visi klavišai bus nustatyti pagal pasirinktą schemą"
+msgstr "Pastaba: visi klavišai bus nustatyti pagal pasirinktą schemą."
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -5615,7 +5612,7 @@ msgstr "Atverti paketo failą"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr "Atverti paketo failą (.lpk)"
+msgstr "Atverti paketo failą (.lpk)..."
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -5659,7 +5656,7 @@ msgstr "Optimizacija:"
 
 #: lazarusidestrconsts:liserrnooptionallowed
 msgid "Option at position %d does not allow an argument: %s"
-msgstr "Parinkčiai ties pozicija %s argumentai nepriimtini: %s"
+msgstr "Parinkčiai ties pozicija %d argumentai nepriimtini: %s"
 
 #: lazarusidestrconsts:liserroptionneeded
 msgid "Option at position %d needs an argument : %s"
@@ -5703,7 +5700,7 @@ msgstr "Kiti pirminiai kodai (.pp/.pas failai, skirta tik IKA, ne kompiliatoriui
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais)"
+msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais):"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -5711,7 +5708,7 @@ msgstr "Kiti failai"
 
 #: lazarusidestrconsts:rsotherinfo
 msgid "Other info"
-msgstr ""
+msgstr "Kita informacija"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmoutput
 msgid "Output"
@@ -5751,7 +5748,7 @@ msgstr "Perrašyti failą?"
 
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
-msgstr ""
+msgstr "PO išvesties katalogas:"
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
@@ -6075,7 +6072,7 @@ msgstr "Private metodas"
 
 #: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "Prieš tesiant reiktų įdiegti kai kuriuos paketus.%sDėmesio:%sProjektas priklauso nuo kai kurių paketų, kuriuose yra moduliai su Register procedūra. Įprastai Register procedūra naudojama komponentėms diegti į IKA. Tačiau šie moduliai priklauso paketams, kurie dar nėra įdiegti į IKA. Bandant IKA atverti formą, kuri naudoja šias komponentes, bus pranešta kad trūksta komponenčių ir tolesnis formos įkėlimas gali pridaryti nepageidautinų nemalonumų.%s%sTai neatsilieps projekto atvėrimui ar jo pirminiam kodui.%s%sTai rik reiškia, kad nėra gerai prieš diegiant trūkstamus paketu atverti formas kūrimui.%s%s"
+msgstr "Prieš tesiant reiktų įdiegti kai kuriuos paketus.%s%sDėmesio:%sProjektas priklauso nuo kai kurių paketų, kuriuose yra moduliai su Register procedūra. Įprastai Register procedūra naudojama komponentėms diegti į IKA. Tačiau šie moduliai priklauso paketams, kurie dar nėra įdiegti į IKA. Bandant IKA atverti formą, kuri naudoja šias komponentes, bus pranešta kad trūksta komponenčių ir tolesnis formos įkėlimas gali pridaryti nepageidautinų nemalonumų.%s%sTai neatsilieps projekto atvėrimui ar jo pirminiam kodui.%s%sTai rik reiškia, kad nėra gerai prieš diegiant trūkstamus paketu atverti formas kūrimui.%s%s"
 
 #: lazarusidestrconsts:lisprocedure
 msgid "Procedure"
@@ -6681,7 +6678,7 @@ msgstr "Dešinės prieraiša"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr ""
 "Dešinės kraštinės plotis.\n"
-"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą dešiniosios kraštinės plotį"
+"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą dešiniosios kraštinės plotį."
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -6773,7 +6770,7 @@ msgstr "Išsaugoti"
 
 #: lazarusidestrconsts:lissave
 msgid "Save ..."
-msgstr "Išsaugoti"
+msgstr "Išsaugoti..."
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
@@ -7657,7 +7654,7 @@ msgstr "Ispanų"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
-msgstr "pirm.kod."
+msgstr "Pirm.kod."
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
@@ -7983,7 +7980,7 @@ msgstr "%s pagrindinis katalogas,%skuriame Borland įdiegė visus %s pirminius k
 
 #: lazarusidestrconsts:liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
-msgstr "%s projekto katalogas, kuriame yra .dpr ir .dpk failai."
+msgstr "%s projekto katalogas,%skuriame yra .dpr ir .dpk failai."
 
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
@@ -8023,7 +8020,7 @@ msgstr "LFM (Lazarus forma) faile aptikta klaidų. Pavyzdžiui, jame yra savybi�
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
-msgstr "Nerastas Lazarus katalogas %s%s%s%s.%sBe jo neis kurti LCL taikomųjų programų.%sPatikrinkite %s\"Aplinka -> Aplinkos parinktys -> Failai\"."
+msgstr "Nerastas Lazarus katalogas.%sBe jo neis kurti LCL taikomųjų programų.%sPatikrinkite \"Aplinka -> Aplinkos parinktys -> Failai\"."
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
 msgid "The Lazarus main directory."
@@ -8035,7 +8032,7 @@ msgstr "Maksimali versija %s%s%s klaidinga.%sNaudokite formatą \"Didysis.Mažas
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionislowerthantheminimimversion
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr "Maksimali versija žemesnė nei minimali"
+msgstr "Maksimali versija žemesnė už minimalią."
 
 #: lazarusidestrconsts:lisprojaddtheminimumversionisinvalid
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -8103,19 +8100,19 @@ msgstr "Klasės %s%s%skomponentų redaktorius padarė klaidą:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
-msgstr "Dabartinis FreePascal pirminio kodo katalogas  %s%s%s%s nėra geras.%sPatikrinkite %s\"Aplinka -> Aplinkos parinktys -> Failai\"."
+msgstr "Dabartinis FreePascal pirminio kodo katalogas %s%s%s%s nėra geras.%sPatikrinkite \"Aplinka -> Aplinkos parinktys -> Failai\"."
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Dabartinis FreePascal pirminių kodų katalogas %s%s%s%s nėra geras.%sPaspaudus \"Tinka\" bus parinktas numatytasis %s%s%s.%sArba jį galite nustatyti %s\"Aplinka -> Aplinkos parinktys -> Failai\"."
+msgstr "Dabartinis FreePascal pirminių kodų katalogas %s%s%s%s nėra geras.%sPaspaudus \"Tinka\" bus parinktas numatytasis %s%s%s.%sArba jį galite nustatyti \"Aplinka -> Aplinkos parinktys -> Failai\"."
 
 #: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
-msgstr "Dabartinis Lazarus katalogas %s%s%s%s nėra geras.%sBe jo neis kurti LCL taikomųjų programų.%sPatikrinkite %s\"Aplinka -> Aplinkos parinktys -> Failai\"."
+msgstr "Dabartinis Lazarus katalogas %s%s%s%s nėra geras.%sBe jo neis kurti LCL taikomųjų programų.%sPatikrinkite \"Aplinka -> Aplinkos parinktys -> Failai\"."
 
 #: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Dabartinis Lazarus katalogas %s%s%s%s nėra geras.%sBe jo neis kurti LCL taikomųjų programų.%sPaspaudus \"Tinka\" bus parinktas numatytasis %s%s%s.%sArba jį galite nustatyti %s\"Aplinka -> Aplinkos parinktys -> Failai\"."
+msgstr "Dabartinis Lazarus katalogas %s%s%s%s nėra geras.%sBe jo neis kurti LCL taikomųjų programų.%sPaspaudus \"Tinka\" bus parinktas numatytasis %s%s%s.%sArba jį galite nustatyti \"Aplinka -> Aplinkos parinktys -> Failai\"."
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -8179,7 +8176,7 @@ msgstr "Failas %s%s%s nėra Delphi projektas (.dpr)"
 
 #: lazarusidestrconsts:listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
-msgstr "Failas %s%s%s nėra Delhi modulis."
+msgstr "Failas %s%s%s nėra Delphi modulis."
 
 #: lazarusidestrconsts:lispkgmangthefileisnotalazaruspackage
 msgid "The file %s%s%s is not a lazarus package."
@@ -8355,7 +8352,7 @@ msgstr "Paketo vardas %s%s%s yra klaidingas.%sParinkite kitokį vardą (pvz.: pa
 
 #: lazarusidestrconsts:lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
-msgstr "Paketo vardas %s%s%s, įrašytas faile %s%s%s, yra klaidingas."
+msgstr "Paketo vardas %s%s%s, įrašytas%sfaile %s%s%s, yra klaidingas."
 
 #: lazarusidestrconsts:lisa2pthepagenameistoolongmax100chars
 msgid "The page name %s%s%s is too long (max 100 chars)."
@@ -8395,7 +8392,7 @@ msgstr "Projektui reikia paketo %s%s%s.%sTačiau jo nepavyko rasti. Žvilgterėk
 
 #: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
-msgstr "Resursų klasė %s%s%s paveldėjama nuo %s%s%s. Greičiausiai rašybos klaida TForm'ai."
+msgstr "Resursų klasė %s%s%s paveldėta iš %s%s%s. Greičiausiai rašybos klaida TForm-ai."
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8463,7 +8460,7 @@ msgstr "Daugiau funkcijų yra iškylančiame menių"
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
-msgstr "Kataloge yra failų, kurių vardai skiriasi tik raidžių lygiais:%s%s%sJuos ištrinti?"
+msgstr "Kataloge yra failų, kurių vardai%sskiriasi tik raidžių lygiais:%s%s%sJuos ištrinti?"
 
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
@@ -8475,7 +8472,7 @@ msgstr "Rastas FPC modulis tuo pačiu vardu kaip ir paketas:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
 msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
-msgstr "Rastas FPC modulis tuo pačiu vardu kaip ir:%s%s%s%s%s%s iš %s%s%s"
+msgstr "Rastas FPC modulis tuo pačiu vardu kaip ir:%s%s%s%s%s iš %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
 msgid "There is a circle in the required packages. See package graph."
@@ -8543,7 +8540,7 @@ msgstr "Komponentę srautu kopijuojant į iškarpinę įvyko klaida:%s%s"
 
 #: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
-msgstr "Failas nerastas nėviename įkeltame pakete"
+msgstr "Failas nerastas nėviename įkeltame pakete."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
@@ -8721,7 +8718,7 @@ msgstr "Viršaus prieraiša"
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr ""
 "Viršutinės kraštinės plotis.\n"
-"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą viršutinės kraštinės plotį"
+"Ši reikšmė pridėta prie pagrindinio kraštinės pločio ir nusakys bendrą viršutinės kraštinės plotį."
 
 #: lazarusidestrconsts:listopspaceequally
 msgid "Top space equally"
@@ -8897,7 +8894,7 @@ msgstr "LFM sraute nepavyko rasti %s."
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
-msgstr "Nepavyko rasti \"ResourceString\" sekcijos šiame ir kituose naudojamuose moduliuose"
+msgstr "Nepavyko rasti \"ResourceString\" sekcijos šiame ir kituose naudojamuose moduliuose."
 
 #: lazarusidestrconsts:lisunabletofindavalidclassnamein
 msgid "Unable to find a valid classname in %s%s%s"
@@ -8937,7 +8934,7 @@ msgstr "Nepavyko įkelti failą %s%s%s."
 
 #: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
-msgstr "Nepavyko įkelti senąjį resursų failą.%sResursų failas yra pirmasis įdedamasis failas \"initialization\" sekcijoje.%sPavyzdžiui: {$I %s.lrs}.%sKogero tai sintaksės klaida."
+msgstr "Nepavyko įkelti senąjį resursų failą.%sResursų failas yra pirmasis įdedamasis failas%s \"initialization\" sekcijoje.%sPavyzdžiui: {$I %s.lrs}.%sKogero tai sintaksės klaida."
 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
@@ -9013,7 +9010,7 @@ msgstr "Nepavyko pervardyti metodą. Pirma ištaisykite pranešimų lange rodom�
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
-msgstr "Nepavyko pirminiame kode pervardyti kintamąjį"
+msgstr "Nepavyko pirminiame kode pervardyti kintamąjį."
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -9185,7 +9182,7 @@ msgstr "Modulio vardas:"
 
 #: lazarusidestrconsts:lisaf2punitname
 msgid "Unit Name: "
-msgstr "Modulio vardas:"
+msgstr "Modulio vardas: "
 
 #: lazarusidestrconsts:lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -9253,7 +9250,7 @@ msgstr "Modulio vardas jau paminėtas projekte"
 
 #: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
-msgstr "Modulio ir failo vardai nesutampa.%Pavyzdžiui: jei modulis \"Unit1\" tada failas \"unit1.pas\"."
+msgstr "Modulio ir failo vardai nesutampa.%sPavyzdžiui: jei modulis \"Unit1\" tada failas \"unit1.pas\"."
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
@@ -9413,11 +9410,11 @@ msgstr "Versijos informacija"
 
 #: lazarusidestrconsts:rsversionnumbering
 msgid "Version numbering"
-msgstr ""
+msgstr "Versijos numeracija"
 
 #: lazarusidestrconsts:rsversion
 msgid "Version:"
-msgstr ""
+msgstr "Versija:"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
@@ -9741,11 +9738,11 @@ msgstr "Derinimo ar kompiliavimo metu negalima daryti Lazarus."
 
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
-msgstr "\" neegzistuoja"
+msgstr "\" neegzistuoja."
 
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
-msgstr "\" nėra skirtas rašymui"
+msgstr "\" nėra skirtas rašymui."
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
@@ -9770,6 +9767,14 @@ msgstr "automatiškai diegti kaip dinamišką"
 #: lazarusidestrconsts:lisoipautoinstallstatic
 msgid "auto install static"
 msgstr "automatiškai diegti kaip statišką"
+
+#: lazarusidestrconsts:lisautomaticallyonlinebreak
+msgid "automatically on line break"
+msgstr "automatiškai, laužiant eilutę"
+
+#: lazarusidestrconsts:lisautomaticallyonspace
+msgid "automatically on space"
+msgstr "automatiškai, įterpiant tarpo simbolį"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
@@ -9837,11 +9842,11 @@ msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts:dlgpoi18n
 msgid "i18n"
-msgstr ""
+msgstr "Internacionalizacija"
 
 #: lazarusidestrconsts:rsi18noptions
 msgid "i18n Options"
-msgstr ""
+msgstr "Internacionalizacijos nuostatos"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
@@ -9894,10 +9899,6 @@ msgstr "kairysis windows klavišas"
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "kelias iki bibliotekos"
-
-#: lazarusidestrconsts:lisautomaticallyonlinebreak
-msgid "line break"
-msgstr ""
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10051,10 +10052,6 @@ msgstr "Įjungti OVERFLOWCHECKS"
 msgid "set RANGECHECKS on"
 msgstr "Įjungti RANGECHECKS"
 
-#: lazarusidestrconsts:lisautomaticallyonspace
-msgid "space"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "statinio paketo nustatymų failas"
@@ -10082,10 +10079,6 @@ msgstr "naudoti HeapTrc modulį"
 #: lazarusidestrconsts:lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "naudoti LineInfo modulį"
-
-#: lazarusidestrconsts:lisautomaticallyonwordend
-msgid "word end"
-msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

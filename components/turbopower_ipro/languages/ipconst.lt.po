@@ -1,11 +1,12 @@
-# translation of ipconst.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of ipconst.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 15:09+0300\n"
+"PO-Revision-Date: 2007-10-30 11:18+0200\n"
 "Project-Id-Version: ipconst\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -660,7 +661,7 @@ msgstr "Atgalinį skambinimą parinko skambintojas"
 
 #: ipconst:ssslconnectchange
 msgid "Can not change SSL status while connected."
-msgstr "Prisijungus negalima keisti SSL būseną"
+msgstr "Prisijungus negalima keisti SSL būseną."
 
 #: ipconst:swrongstateerr
 msgid "Can not comply, wrong state"
@@ -700,7 +701,7 @@ msgstr "Nerastas sertifikato tipas"
 
 #: ipconst:ssslnocertificate
 msgid "Certificate is not available."
-msgstr "Sertifikato nėra"
+msgstr "Sertifikato nėra."
 
 #: ipconst:shtmlcharstackoverfl
 msgid "Character stack overflow"
@@ -916,7 +917,7 @@ msgstr "Atsiųsti?"
 
 #: ipconst:sicmpecho
 msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
-msgstr ""
+msgstr "Echo atsakymas (Hop numeris: %d)\015\n             Statusas = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
@@ -1468,11 +1469,11 @@ msgstr "Nepriskirtas duomenų teikėjas"
 
 #: ipconst:ssslnohashtype
 msgid "No hash type selected."
-msgstr "Nenurodytas maišos tipas"
+msgstr "Nenurodytas maišos tipas."
 
 #: ipconst:ssslnomessageencslected
 msgid "No message encoding type selected."
-msgstr "Nenurodytas pranešimo koduotės tipas"
+msgstr "Nenurodytas pranešimo koduotės tipas."
 
 #: ipconst:swsaenomore
 msgid "No more data available"
@@ -1932,7 +1933,7 @@ msgstr "Atsisakyta SOCKS užklausos - %d"
 
 #: ipconst:ssslunprocesseddata
 msgid "SSL data processing error."
-msgstr "SSL duomenų apdorojimo klaida"
+msgstr "SSL duomenų apdorojimo klaida."
 
 #: ipconst:spop3cmdstat
 msgid "STAT"

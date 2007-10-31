@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 14:46+0300\n"
+"PO-Revision-Date: 2007-10-30 10:46+0200\n"
 "Project-Id-Version: lr_const\n"
 "Language-Team: Lithuanian\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -225,7 +225,7 @@ msgstr "&Atverti..."
 
 #: lr_const:sfrdesignerform_opts
 msgid "&Options..."
-msgstr "&Parinktys"
+msgstr "&Parinktys..."
 
 #: lr_const:sfrdesignerform_pgopt
 msgid "&Page options..."

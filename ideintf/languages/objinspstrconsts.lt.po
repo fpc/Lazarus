@@ -1,10 +1,11 @@
-# translation of objinspstrconsts.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of objinspstrconsts.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 15:19+0300\n"
+"PO-Revision-Date: 2007-10-30 11:38+0200\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -161,7 +162,7 @@ msgstr "Įdėti į mėgstamiausiųjų sąrašą"
 
 #: objinspstrconsts:sccsiledtadd
 msgid "Add..."
-msgstr "Pridėti"
+msgstr "Pridėti..."
 
 #: objinspstrconsts:sccsiledtadjustment
 msgid "Adjustment"
@@ -233,7 +234,7 @@ msgstr "Tarpo simboliai"
 
 #: objinspstrconsts:fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Patikrinkite duomenų aibės nustatymus"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -397,7 +398,7 @@ msgstr "Keitimas"
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
-msgstr ""
+msgstr "Keisti laukus"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
@@ -449,11 +450,11 @@ msgstr "Mėgstamiausi"
 
 #: objinspstrconsts:fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
+msgstr "Nėra laukų sąrašo, tad neis patikrinti ar yra dublikatų"
 
 #: objinspstrconsts:fesfltitle
 msgid "FieldDefs"
-msgstr ""
+msgstr "FieldDefs"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -533,7 +534,7 @@ msgstr "Klaidinga savybės reikšmė"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr ""
+msgstr "Neįmanoma gauti duomenų aibės laukų sąrašo"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
@@ -788,11 +789,11 @@ msgstr "Pažymėti &viską"
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
-msgstr "Išrinkti &spalvą.."
+msgstr "Išrinkti &spalvą..."
 
 #: objinspstrconsts:oistdactfonteditheadline
 msgid "Select &Font..."
-msgstr "Išrinkti šri&ftą"
+msgstr "Išrinkti šri&ftą..."
 
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
