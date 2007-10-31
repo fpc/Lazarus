@@ -8750,7 +8750,7 @@ begin
         {$IFDEF Gtk1}
         GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
         {$ELSE}
-        GC := Style^.text_gc[GTK_STATE_PRELIGHT];
+        GC := Style^.text_gc[GTK_STATE_SELECTED];
         {$ENDIF}
         If GC = nil then begin
           Result.Fill := GDK_Solid;
