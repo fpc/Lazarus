@@ -17,25 +17,25 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnChangeBounds = NotebookChangeBounds
-    PageIndex = 3
+    PageIndex = 0
     TabOrder = 0
     object FilesPage: TPage
       Caption = 'FilesPage'
-      ClientWidth = 542
-      ClientHeight = 481
+      ClientWidth = 538
+      ClientHeight = 454
       object MaxRecentOpenFilesLabel: TLabel
-        Left = 62
-        Height = 20
-        Top = -21
-        Width = 165
+        Left = 6
+        Height = 13
+        Top = 10
+        Width = 153
         Caption = 'MaxRecentOpenFilesLabel'
         ParentColor = False
       end
       object MaxRecentProjectFilesLabel: TLabel
         Left = 6
-        Height = 20
+        Height = 13
         Top = 58
-        Width = 175
+        Width = 161
         Caption = 'MaxRecentProjectFilesLabel'
         ParentColor = False
       end
@@ -85,7 +85,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         AnchorSideRight.Control = FilesPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 22
+        Height = 20
         Top = 106
         Width = 526
         Anchors = [akTop, akLeft, akRight]
@@ -103,8 +103,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'LazarusDirGroupBox'
-        ClientHeight = 54
-        ClientWidth = 526
+        ClientHeight = 37
+        ClientWidth = 522
         TabOrder = 3
         object LazarusDirComboBox: TComboBox
           AnchorSideLeft.Control = LazarusDirGroupBox
@@ -112,7 +112,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 3
-          Width = 489
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -128,7 +128,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = LazarusDirComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 495
+          Left = 491
           Height = 25
           Top = 3
           Width = 25
@@ -149,8 +149,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'CompilerPathGroupBox'
-        ClientHeight = 54
-        ClientWidth = 526
+        ClientHeight = 37
+        ClientWidth = 522
         TabOrder = 4
         object CompilerPathComboBox: TComboBox
           AnchorSideLeft.Control = CompilerPathGroupBox
@@ -158,7 +158,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 3
-          Width = 489
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -172,7 +172,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = CompilerPathComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 495
+          Left = 491
           Height = 25
           Top = 3
           Width = 25
@@ -193,8 +193,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'FPCSourceDirGroupBox'
-        ClientHeight = 54
-        ClientWidth = 526
+        ClientHeight = 37
+        ClientWidth = 522
         TabOrder = 5
         object FPCSourceDirComboBox: TComboBox
           AnchorSideLeft.Control = FPCSourceDirGroupBox
@@ -202,7 +202,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 3
-          Width = 489
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -216,7 +216,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = FPCSourceDirComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 495
+          Left = 491
           Height = 25
           Top = 3
           Width = 25
@@ -237,8 +237,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'MakePathGroupBox'
-        ClientHeight = 54
-        ClientWidth = 526
+        ClientHeight = 37
+        ClientWidth = 522
         TabOrder = 6
         object MakePathComboBox: TComboBox
           AnchorSideLeft.Control = MakePathGroupBox
@@ -246,7 +246,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 3
-          Width = 489
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -260,7 +260,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = MakePathComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 495
+          Left = 491
           Height = 25
           Top = 3
           Width = 25
@@ -281,8 +281,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 6
         Caption = 'TestBuildDirGroupBox'
-        ClientHeight = 54
-        ClientWidth = 526
+        ClientHeight = 37
+        ClientWidth = 522
         TabOrder = 7
         object TestBuildDirComboBox: TComboBox
           AnchorSideLeft.Control = TestBuildDirGroupBox
@@ -290,7 +290,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 25
           Top = 3
-          Width = 489
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -304,7 +304,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = TestBuildDirComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 495
+          Left = 491
           Height = 25
           Top = 3
           Width = 25
@@ -319,7 +319,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object DesktopPage: TPage
       Caption = 'DesktopPage'
       ClientWidth = 542
-      ClientHeight = 481
+      ClientHeight = 484
       object LanguageGroupBox: TGroupBox
         AnchorSideRight.Control = DesktopPage
         AnchorSideRight.Side = asrBottom
@@ -492,7 +492,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object WindowsPage: TPage
       Caption = 'WindowsPage'
       ClientWidth = 542
-      ClientHeight = 481
+      ClientHeight = 484
       object MinimizeAllOnMinimizeMainCheckBox: TCheckBox
         AnchorSideRight.Control = WindowsPage
         AnchorSideRight.Side = asrBottom
@@ -1043,7 +1043,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object ObjectInspectorPage: TPage
       Caption = 'ObjectInspectorPage'
       ClientWidth = 542
-      ClientHeight = 481
+      ClientHeight = 484
       object ObjectInspectorColorsGroupBox: TGroupBox
         AnchorSideRight.Control = ObjectInspectorPage
         AnchorSideRight.Side = asrBottom
@@ -1217,7 +1217,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object BackupPage: TPage
       Caption = 'BackupPage'
       ClientWidth = 542
-      ClientHeight = 481
+      ClientHeight = 484
       object BackupHelpLabel: TLabel
         AnchorSideRight.Control = BackupPage
         AnchorSideRight.Side = asrBottom
@@ -1462,7 +1462,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object NamingPage: TPage
       Caption = 'NamingPage'
       ClientWidth = 542
-      ClientHeight = 481
+      ClientHeight = 484
       object PascalFileExtRadiogroup: TRadioGroup
         AnchorSideRight.Control = NamingPage
         AnchorSideRight.Side = asrBottom
@@ -1533,7 +1533,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     object LazDocPage: TPage
       Caption = 'LazDocPage'
       ClientWidth = 542
-      ClientHeight = 481
+      ClientHeight = 484
       object LazDocPathsGroupBox: TGroupBox
         AnchorSideRight.Control = LazDocPage
         AnchorSideRight.Side = asrBottom
