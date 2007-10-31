@@ -25,13 +25,13 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 560
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 5
+    PageIndex = 0
     TabOrder = 0
     object GeneralPage: TPage
       AnchorSideTop.Control = CodeCreationPage
       Caption = 'GeneralPage'
-      ClientWidth = 556
-      ClientHeight = 367
+      ClientWidth = 552
+      ClientHeight = 372
       object SrcPathGroupBox: TGroupBox
         AnchorSideLeft.Control = GeneralPage
         AnchorSideTop.Control = GeneralPage
@@ -40,12 +40,12 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Left = 6
         Height = 56
         Top = 6
-        Width = 544
+        Width = 540
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'SrcPathGroupBox'
-        ClientHeight = 37
-        ClientWidth = 540
+        ClientHeight = 38
+        ClientWidth = 536
         TabOrder = 0
         object SrcPathEdit: TEdit
           AnchorSideLeft.Control = SrcPathGroupBox
@@ -54,7 +54,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           Left = 6
           Height = 23
           Top = 8
-          Width = 528
+          Width = 524
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -68,23 +68,23 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideRight.Control = GeneralPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 121
+        Height = 111
         Top = 68
-        Width = 544
+        Width = 540
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'JumpingGroupBox'
-        ClientHeight = 102
-        ClientWidth = 540
+        ClientHeight = 93
+        ClientWidth = 536
         TabOrder = 1
         object AdjustTopLineDueToCommentCheckBox: TCheckBox
           AnchorSideLeft.Control = JumpingGroupBox
           AnchorSideTop.Control = JumpingGroupBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 276
+          Width = 220
           BorderSpacing.Around = 6
           Caption = 'AdjustTopLineDueToCommentCheckBox'
           TabOrder = 0
@@ -94,9 +94,9 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Control = AdjustTopLineDueToCommentCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 22
-          Top = 40
-          Width = 177
+          Height = 19
+          Top = 37
+          Width = 143
           BorderSpacing.Top = 6
           BorderSpacing.Around = 6
           Caption = 'JumpCenteredCheckBox'
@@ -107,9 +107,9 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Control = JumpCenteredCheckBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 22
-          Top = 74
-          Width = 202
+          Height = 19
+          Top = 68
+          Width = 162
           BorderSpacing.Top = 6
           BorderSpacing.Around = 6
           Caption = 'CursorBeyondEOLCheckBox'
@@ -119,8 +119,8 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     end
     object CodeCreationPage: TPage
       Caption = 'CodeCreationPage'
-      ClientWidth = 556
-      ClientHeight = 367
+      ClientWidth = 552
+      ClientHeight = 372
       object ClassPartInsertPolicyRadioGroup: TRadioGroup
         AnchorSideLeft.Control = CodeCreationPage
         AnchorSideTop.Control = CodeCreationPage
@@ -128,7 +128,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Left = 6
         Height = 100
         Top = 6
-        Width = 222
+        Width = 254
         AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'ClassPartInsertPolicyRadioGroup'
@@ -147,9 +147,9 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideTop.Control = ClassPartInsertPolicyRadioGroup
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 22
+        Height = 19
         Top = 112
-        Width = 252
+        Width = 198
         BorderSpacing.Around = 6
         Caption = 'MixMethodsAndPropertiesCheckBox'
         TabOrder = 1
@@ -160,10 +160,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideTop.Control = CodeCreationPage
         AnchorSideRight.Control = CodeCreationPage
         AnchorSideRight.Side = asrBottom
-        Left = 234
+        Left = 266
         Height = 100
         Top = 6
-        Width = 316
+        Width = 280
         Anchors = [akTop, akLeft, akRight]
         AutoFill = True
         BorderSpacing.Around = 6
@@ -186,8 +186,8 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 100
-        Top = 146
-        Width = 222
+        Top = 143
+        Width = 254
         Anchors = [akTop, akLeft, akRight]
         AutoFill = True
         BorderSpacing.Left = 6
@@ -207,10 +207,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideLeft.Control = ForwardProcsInsertPolicyRadioGroup
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
-        Left = 234
-        Height = 22
-        Top = 152
-        Width = 238
+        Left = 266
+        Height = 19
+        Top = 149
+        Width = 191
         BorderSpacing.Around = 6
         Caption = 'ForwardProcsKeepOrderCheckBox'
         TabOrder = 4
@@ -220,10 +220,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = ForwardProcsKeepOrderCheckBox
         AnchorSideTop.Side = asrBottom
-        Left = 234
-        Height = 22
-        Top = 180
-        Width = 239
+        Left = 266
+        Height = 19
+        Top = 174
+        Width = 184
         BorderSpacing.Around = 6
         Caption = 'ClassHeaderCommentsCheckBox'
         TabOrder = 5
@@ -237,22 +237,22 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 123
-        Top = 252
-        Width = 544
+        Top = 249
+        Width = 540
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'PropertyCompletionGroupBox'
-        ClientHeight = 104
-        ClientWidth = 540
+        ClientHeight = 105
+        ClientWidth = 536
         TabOrder = 6
         object PropertyReadIdentPrefixLabel: TLabel
           AnchorSideTop.Control = PropertyReadIdentPrefixEdit
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = PropertyReadIdentPrefixEdit
-          Left = -52
-          Height = 20
-          Top = 32
-          Width = 186
+          Left = -13
+          Height = 14
+          Top = 35
+          Width = 147
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           Caption = 'PropertyReadIdentPrefixLabel'
@@ -262,10 +262,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Control = PropertyWriteIdentPrefixEdit
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = PropertyWriteIdentPrefixEdit
-          Left = -52
-          Height = 20
-          Top = 55
-          Width = 186
+          Left = -14
+          Height = 14
+          Top = 58
+          Width = 148
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           Caption = 'PropertyWriteIdentPrefixLabel'
@@ -275,10 +275,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Control = PropertyStoredIdentPostfixEdit
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = PropertyStoredIdentPostfixEdit
-          Left = -71
-          Height = 20
-          Top = 78
-          Width = 205
+          Left = -25
+          Height = 14
+          Top = 81
+          Width = 159
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           Caption = 'PropertyStoredIdentPostfixLabel'
@@ -288,10 +288,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Control = PrivateVariablePrefixEdit
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = PrivateVariablePrefixEdit
-          Left = 284
-          Height = 20
-          Top = 32
-          Width = 164
+          Left = 318
+          Height = 14
+          Top = 35
+          Width = 126
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           Caption = 'PrivateVariablePrefixLabel'
@@ -301,10 +301,10 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Control = SetPropertyVariablenameEdit
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = SetPropertyVariablenameEdit
-          Left = 250
-          Height = 20
-          Top = 55
-          Width = 198
+          Left = 296
+          Height = 14
+          Top = 58
+          Width = 148
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           Caption = 'SetPropertyVariablenameLabel'
@@ -314,9 +314,9 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideLeft.Control = PropertyCompletionGroupBox
           AnchorSideTop.Control = PropertyCompletionGroupBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 213
+          Width = 166
           BorderSpacing.Around = 6
           Caption = 'PropertyCompletionCheckBox'
           TabOrder = 0
@@ -361,7 +361,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = PropertyCompletionGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 454
+          Left = 450
           Height = 23
           Top = 31
           Width = 80
@@ -375,7 +375,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = PropertyCompletionGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 454
+          Left = 450
           Height = 23
           Top = 54
           Width = 80
@@ -388,8 +388,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     end
     object WordsPoliciesPage: TPage
       Caption = 'WordsPoliciesPage'
-      ClientWidth = 556
-      ClientHeight = 367
       object KeyWordPolicyRadioGroup: TRadioGroup
         AnchorSideLeft.Control = WordsPoliciesPage
         AnchorSideTop.Control = WordsPoliciesPage
@@ -442,8 +440,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     end
     object LineSplittingPage: TPage
       Caption = 'LineSplittingPage'
-      ClientWidth = 556
-      ClientHeight = 367
       object LineLengthLabel: TLabel
         AnchorSideTop.Control = LineLengthEdit
         AnchorSideTop.Side = asrCenter
@@ -857,8 +853,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     end
     object SpaceNotCosmosPage: TPage
       Caption = 'SpaceNotCosmosPage'
-      ClientWidth = 556
-      ClientHeight = 367
       object SpacePreviewLabel: TLabel
         AnchorSideLeft.Control = SpaceNotCosmosPage
         AnchorSideTop.Control = DoInsertSpaceInFrontGroupBox
@@ -1252,8 +1246,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     end
     object IdentifierCompletionPage: TPage
       Caption = 'IdentifierCompletionPage'
-      ClientWidth = 556
-      ClientHeight = 367
       object ICAddSemicolonCheckBox: TCheckBox
         AnchorSideLeft.Control = IdentifierCompletionPage
         AnchorSideTop.Control = IdentifierCompletionPage
