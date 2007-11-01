@@ -209,7 +209,7 @@ class function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   AWidgetInfo: PWidgetInfo;
-  p          : pointer;          // ptr to the newly created GtkWidget
+  p: pointer;          // ptr to the newly created GtkWidget
   Box: Pointer;
   ABorderStyle: TFormBorderStyle;
   PCaption: PChar;

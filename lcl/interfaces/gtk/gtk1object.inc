@@ -3664,14 +3664,18 @@ begin
     LM_HSCROLL:
     begin
       Adjustment := GetAdjustment(gObject, False);
-      ConnectSenderSignal(Adjustment, 'value-changed', @GTKHScrollCB);
+      if Adjustment <> nil then
+        ConnectSenderSignal(Adjustment, 'value-changed', @GTKHScrollCB);
     end;
 
     LM_VSCROLL:
     begin
       Adjustment := GetAdjustment(gObject, True);
-      ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
-      ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
+      if Adjustment <> nil then
+      begin
+        ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
+        ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
+      end;
     end;
 
     LM_YEARCHANGED :  //calendar

@@ -9597,7 +9597,7 @@ end;
   Function GetWindowDecorations(AForm : TCustomForm) : Longint;
   
  ------------------------------------------------------------------------------}
-Function GetWindowDecorations(AForm : TCustomForm) : Longint;
+function GetWindowDecorations(AForm : TCustomForm) : Longint;
 var
   ABorderStyle: TFormBorderStyle;
 begin
@@ -9606,7 +9606,7 @@ begin
   else
     ABorderStyle:=bsSizeable;
     
-  Case ABorderStyle of
+  case ABorderStyle of
     bsNone : Result := 0;
 
     bsSingle : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
@@ -9647,7 +9647,7 @@ end;
   Function GetWindowFunction(AForm : TCustomForm) : Longint;
 
  ------------------------------------------------------------------------------}
-Function GetWindowFunction(AForm : TCustomForm) : Longint;
+function GetWindowFunction(AForm : TCustomForm) : Longint;
 var
   ABorderStyle: TFormBorderStyle;
 begin
@@ -9656,8 +9656,8 @@ begin
   else
     ABorderStyle:=bsSizeable;
 
-  Case ABorderStyle of
-    bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+  case ABorderStyle of
+    bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE {$ifndef windows}or GDK_FUNC_MOVE{$endif};
 
     bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
@@ -9683,7 +9683,8 @@ begin
     Result:=Result-GDK_FUNC_RESIZE;
 
   {$IFDEF Gtk2}
-  if (not (csDesigning in AForm.ComponentState)) then begin
+  if (not (csDesigning in AForm.ComponentState)) then
+  begin
     if not (biMinimize in AForm.BorderIcons) then
       Result:=Result and not GDK_FUNC_MINIMIZE;
     if not (biMaximize in AForm.BorderIcons) then
