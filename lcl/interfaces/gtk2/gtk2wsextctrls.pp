@@ -245,7 +245,7 @@ end;
 
 procedure HookNoteBookClass;
 var
-WidgetClass: PGtkWidgetClass;
+  WidgetClass: PGtkWidgetClass;
 begin
   WidgetClass := GTK_WIDGET_CLASS(gtk_type_class(gtk_notebook_get_type));
 

@@ -302,11 +302,11 @@ begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TGtkWSCustomNotebook.AddPage ',dbgsName(ANoteBook),' ',ANotebook.HandleAllocated,' AChild=',dbgsName(AChild),' ',AChild.HandleAllocated,' Child.TabVisible=',AChild.TabVisible]);
   {$ENDIF}
-  NoteBookWidget:=PGtkWidget(ANoteBook.Handle);
-  PageWidget:=PGtkWidget(AChild.Handle);
+  NoteBookWidget := PGtkWidget(ANoteBook.Handle);
+  PageWidget := PGtkWidget(AChild.Handle);
 
   // set LCL size
-  AChild.SetBounds(AChild.Left,AChild.Top,ANotebook.ClientWidth,ANotebook.ClientHeight);
+  AChild.SetBounds(AChild.Left, AChild.Top, ANotebook.ClientWidth, ANotebook.ClientHeight);
 
   if AChild.TabVisible then
     gtk_widget_show(PageWidget);
@@ -321,30 +321,28 @@ begin
   end;
   
   // create the tab (hbox container)
-  TabWidget:=gtk_hbox_new(false,1);
-  begin
-    gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
-    gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
-    // put a label into the tab
-    TabLabelWidget:=gtk_label_new('');
-    gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
-    gtk_widget_show(TabLabelWidget);
-    gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabLabelWidget);
-  end;
+  TabWidget := gtk_hbox_new(false,1);
+  gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
+  gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
+  // put a label into the tab
+  TabLabelWidget := gtk_label_new('');
+  gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
+  gtk_widget_show(TabLabelWidget);
+  gtk_box_pack_start_defaults(PGtkBox(TabWidget), TabLabelWidget);
+
   if AChild.TabVisible then
     gtk_widget_show(TabWidget);
 
   // create popup menu item
-  MenuWidget:=gtk_hbox_new(false,2);
-  begin
-    // set icon widget to nil
-    gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
-    // put a label into the menu
-    MenuLabelWidget:=gtk_label_new('');
-    gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
-    gtk_widget_show(MenuLabelWidget);
-    gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuLabelWidget);
-  end;
+  MenuWidget := gtk_hbox_new(false,2);
+  // set icon widget to nil
+  gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
+  // put a label into the menu
+  MenuLabelWidget := gtk_label_new('');
+  gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
+  gtk_widget_show(MenuLabelWidget);
+  gtk_box_pack_start_defaults(PGtkBox(MenuWidget), MenuLabelWidget);
+
   if AChild.TabVisible then
     gtk_widget_show(MenuWidget);
 
@@ -358,11 +356,11 @@ begin
   UpdateNoteBookClientWidget(ANoteBook);
   
   // init the size of the page widget
-  allocation.x:=ANoteBook.Left;
-  allocation.y:=ANoteBook.Top;
-  allocation.width:=ANoteBook.Width;
-  allocation.height:=ANoteBook.Height;
-  gtk_widget_size_allocate(NotebookWidget,@allocation);// Beware: this triggers callbacks
+  allocation.x := ANoteBook.Left;
+  allocation.y := ANoteBook.Top;
+  allocation.width := ANoteBook.Width;
+  allocation.height := ANoteBook.Height;
+  gtk_widget_size_allocate(NotebookWidget, @allocation);// Beware: this triggers callbacks
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TGtkWSCustomNotebook.AddPage PageWidget^.allocation=',dbgs(PageWidget^.allocation),' NotebookWidget=',dbgs(NotebookWidget^.allocation)]);
   {$ENDIF}
