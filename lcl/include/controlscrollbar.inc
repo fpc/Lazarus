@@ -223,19 +223,30 @@ end;
 
 procedure TControlScrollBar.AutoCalcRange;
 
+  function IsNonAligned(Control: TControl): boolean;
+  begin
+    Result:=(Control.Align=alNone)
+      and (Control.Anchors=[akLeft,akTop])
+      and (Control.AnchorSide[akLeft].Control=nil)
+      and (Control.AnchorSide[akTop].Control=nil);
+  end;
+
   procedure AutoCalcVRange;
   var
     I: Integer;
     TmpRange: Longint;
+    c: TControl;
   begin
     TmpRange := 0;
-    For I := 0 to FControl.ControlCount - 1 do
-      With FControl.Controls[I] do
-        if IsControlVisible then
-        begin
-          if (Align = alTop) or (Align = alNone) then
-            TmpRange := Max(TmpRange, Top + Height);
-        end;
+    For I := 0 to FControl.ControlCount - 1 do begin
+      c:=FControl.Controls[I];
+      if not c.IsControlVisible then continue;
+      if c.Align=alCustom then continue;
+      if akBottom in c.Anchors then continue;
+      if (c.Align<>alNone) and (akBottom in AnchorAlign[c.Align]) then continue;
+      if (FControl.ChildSizing.Layout<>cclNone) and IsNonAligned(c) then continue;
+      TmpRange := Max(TmpRange, c.Top + c.Height);
+    end;
     Range := TmpRange;
   end;
 
@@ -246,16 +257,14 @@ procedure TControlScrollBar.AutoCalcRange;
     c: TControl;
   begin
     TmpRange := 0;
-    for i := 0 to FControl.ControlCount - 1 do
-    begin
-      c := FControl.Controls[I];
-      if not C.IsControlVisible then
-        Continue;
-      if (c.Align <> alLeft) and (c.Align <> alNone) then
-        Continue;
-      {$IFDEF VerboseScrollingWinControl}
-      DebugLn(['AutoCalcHRange ',DbgSName(c),' Left=',c.Left]);
-      {$ENDIF}
+    for i := 0 to FControl.ControlCount - 1 do begin
+      c:=FControl.Controls[I];
+      if not c.IsControlVisible then continue;
+      if c.Align=alCustom then continue;
+      if akRight in c.Anchors then continue;
+      if (c.Align<>alNone) and (akRight in AnchorAlign[c.Align]) then continue;
+      if (FControl.ChildSizing.Layout<>cclNone)
+      and IsNonAligned(c) then continue;
       TmpRange := Max(TmpRange, c.Left + c.Width);
     end;
     Range := TmpRange;
