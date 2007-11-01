@@ -4316,9 +4316,9 @@ var
   NoteBookWidget: PGtkNotebook;
 begin
   if not TCustomNotebook(ANoteBook).HandleAllocated then exit;
-  NoteBookWidget:=PGtkNotebook(TCustomNotebook(ANoteBook).Handle);
-  ClientWidget:=nil;
-  SetFixedWidget(NoteBookWidget,ClientWidget);
+  NoteBookWidget := PGtkNotebook(TCustomNotebook(ANoteBook).Handle);
+  ClientWidget := nil;
+  SetFixedWidget(NoteBookWidget, ClientWidget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -4576,8 +4576,8 @@ var
   end;
 
 begin
-  ThePage:=TCustomPage(APage);
-  TheNoteBook:=TCustomNotebook(ANoteBook);
+  ThePage := TCustomPage(APage);
+  TheNoteBook := TCustomNotebook(ANoteBook);
   if (APage=nil) or (not ThePage.HandleAllocated) then exit;
   if TheNoteBook=nil then begin
     TheNoteBook:=TCustomNotebook(ThePage.Parent);

@@ -4759,9 +4759,10 @@ begin
   TempWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
-  if NotOnParentsClientArea then begin
-    WinWidgetInfo:=GetWidgetInfo(Result,true);
-    Include(WinWidgetInfo^.Flags,wwiNotOnParentsClientArea);
+  if NotOnParentsClientArea then
+  begin
+    WinWidgetInfo:=GetWidgetInfo(Result, true);
+    Include(WinWidgetInfo^.Flags, wwiNotOnParentsClientArea);
   end;
   SetFixedWidget(Result, TempWidget);
   SetMainWidget(Result, TempWidget);

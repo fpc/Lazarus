@@ -321,7 +321,7 @@ begin
   end;
   
   // create the tab (hbox container)
-  TabWidget := gtk_hbox_new(false,1);
+  TabWidget := gtk_hbox_new(false, 1);
   gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
   gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
   // put a label into the tab
@@ -334,7 +334,7 @@ begin
     gtk_widget_show(TabWidget);
 
   // create popup menu item
-  MenuWidget := gtk_hbox_new(false,2);
+  MenuWidget := gtk_hbox_new(false, 2);
   // set icon widget to nil
   gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
   // put a label into the menu
