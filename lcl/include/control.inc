@@ -4242,13 +4242,27 @@ begin
 end;
 
 procedure TControl.EnableAutoSizing;
+
+  procedure AdjustSizeRecursive(AControl: TControl);
+  var
+    AWinControl: TWinControl;
+    i: Integer;
+  begin
+    if cfAutoSizeNeeded in AControl.FControlFlags then
+      AControl.AdjustSize;
+    if AControl is TWinControl then begin
+      AWinControl:=TWinControl(AControl);
+      if AWincontrol.FWinControls<>nil then
+        for i:=0 to AWincontrol.FWinControls.Count-1 do
+          AdjustSizeRecursive(TControl(AWincontrol.FWinControls[i]));
+    end;
+  end;
+
 begin
   if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
   dec(FAutoSizingLockCount);
-  if FAutoSizingLockCount=0 then begin
-    if cfAutoSizeNeeded in FControlFlags then
-      AdjustSize;
-  end;
+  if FAutoSizingLockCount=0 then
+    AdjustSizeRecursive(Self);
 end;
 
 procedure TControl.EndAutoSizing;
