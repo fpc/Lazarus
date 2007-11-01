@@ -128,7 +128,7 @@ begin
     DebugLn('TControl.DoDock BEFORE Adjusting ',Name,' ',dbgs(ARect));
     // adjust new bounds, so that they at least fit into the client area of
     // its parent
-    LCLProc.MoveRectToFit(ARect,NewDockSite.ClientRect);
+    LCLProc.MoveRectToFit(ARect,NewDockSite.GetLogicalClientRect);
     // consider Align to increase chance the width/height is kept
     case Align of
     alLeft: OffsetRect(ARect,-ARect.Left,0);
@@ -1413,7 +1413,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl GetClientRect
+  TControl GetClientRect
+  
+  Returns the size of visual client area.
+  For example the inner size of a TGroupBox.
+  For a TScrollBox it is the visual size, not the logical size.
 ------------------------------------------------------------------------------}
 function TControl.GetClientRect: TRect;
 begin
@@ -1421,6 +1425,18 @@ begin
   Result.Top := 0;
   Result.Right := Width;
   Result.Bottom := Height;
+end;
+
+{------------------------------------------------------------------------------
+  TControl GetLogicalClientRect
+
+  Returns the size of complete client area. It can be bigger or smaller than
+  the visual size, but normally it is the same. For example a TScrollBox can
+  have different sizes.
+------------------------------------------------------------------------------}
+function TControl.GetLogicalClientRect: TRect;
+begin
+  Result:=ClientRect;
 end;
 
 {------------------------------------------------------------------------------

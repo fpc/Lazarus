@@ -737,6 +737,7 @@ var
   ChildData: TAutoSizeCtrlData;
   MoveDiff: Integer;
   AlignList: TFPList;
+  r: TRect;
 begin
   if ChildCount=0 then exit;
   if WinControl.ChildSizing.Layout=cclNone then begin
@@ -771,8 +772,8 @@ begin
       ChildSizing.ShrinkVertical:=crsAnchorAligning;
       ChildSizing.EnlargeVertical:=crsAnchorAligning;
       // compute static layout
-      Box.AlignControlsInTable(AlignList,ChildSizing,
-                          WinControl.ClientWidth,WinControl.ClientHeight,false);
+      r:=WinControl.GetLogicalClientRect;
+      Box.AlignControlsInTable(AlignList,ChildSizing,r.Right,r.Bottom,false);
       //Box.WriteDebugReport('TAutoSizeCtrlData.SetupNonAlignedChilds');
       // transfer the coords of the layout
       for y:=0 to Box.ChildCount[asboVertical]-1 do begin
@@ -2219,6 +2220,7 @@ var
     CurAlignAnchors: TAnchors;
     OldBounds: TRect;
     NewBounds: TRect;
+    r: TRect;
 
     function ConstraintWidth(NewWidth: integer): Integer;
     begin
@@ -2329,8 +2331,9 @@ var
       ConstraintWidth(NewLeft,NewWidth);
       ConstraintHeight(NewTop,NewHeight);
     end;
-    ParentClientWidth:=Control.Parent.ClientWidth;
-    ParentClientHeight:=Control.Parent.ClientHeight;
+    r:=Control.Parent.GetLogicalClientRect;
+    ParentClientWidth:=r.Right;
+    ParentClientHeight:=r.Bottom;
 
     InitAnchorSideCache;
     
@@ -2426,7 +2429,7 @@ var
         if akBottom in CurAnchors then begin
           // keep distance to bottom side of parent
           // -> change the height
-          NewBottom:=Control.Parent.ClientHeight
+          NewBottom:=ParentClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
           if (not (akBottom in CurAlignAnchors))
           and (akBottom in Control.Anchors) then
@@ -2441,7 +2444,7 @@ var
         if akBottom in CurAnchors then begin
           // keep distance to bottom side of parent
           // and keep new height
-          NewBottom:=Control.Parent.ClientHeight
+          NewBottom:=ParentClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
           if (not (akBottom in CurAlignAnchors))
           and (akBottom in Control.Anchors) then
@@ -2450,7 +2453,7 @@ var
         end else begin
           // do not anchor to the bottom
           // -> keep new height and center vertically
-          NewTop:=(Control.Parent.ClientHeight-NewHeight) div 2;
+          NewTop:=(ParentClientHeight-NewHeight) div 2;
         end;
       end;
       {$IFDEF CHECK_POSITION}
@@ -3014,7 +3017,7 @@ begin
 
     // move free childs as much as possible to left and top (all free childs the same)
     if HasVisibleChilds then begin
-      CurClientRect:=ClientRect;
+      CurClientRect:=GetLogicalClientRect;
       AdjustClientRect(CurClientRect);
       // get minimum left, top of non aligned childs
       GetMoveDiffForNonAlignedChilds(CurClientRect,dx,dy);
@@ -5409,6 +5412,7 @@ procedure TWinControl.AlignNonAlignedControls(ListOfControls: TFPList;
 }
 var
   Box: TAutoSizeBox;
+  r: TRect;
 begin
   // check if ChildSizing aligning is enabled
   if (ChildSizing.Layout=cclNone) or (ListOfControls.Count=0) then
@@ -5418,8 +5422,9 @@ begin
   
   Box:=TAutoSizeBox.Create;
   try
+    r:=GetLogicalClientRect;
     BoundsModified:=Box.AlignControlsInTable(ListOfControls,ChildSizing,
-                                             ClientWidth,ClientHeight,true);
+                                             r.Right,r.Bottom,true);
   finally
     Box.Free;
   end;
@@ -5554,11 +5559,11 @@ begin
 
   DisableAlign;
   try
-    ARect:= GetClientRect;
+    ARect:= GetLogicalClientRect;
     AlignControls(AControl, ARect);
     // some widgetsets updates their clientrect when the first child was moved
     // do a second pass if ClientRect changed
-    NewRect:=GetClientRect;
+    NewRect:=GetLogicalClientRect;
     if not CompareRect(@ARect,@NewRect) then
       AlignControls(AControl, NewRect);
   finally
@@ -5789,7 +5794,7 @@ var
   CurControl: TControl;
   AWidth: Integer;
 begin
-  AWidth:=ClientWidth;
+  AWidth:=GetLogicalClientRect.Right;
   for i:=0 to ControlCount-1 do begin
     CurControl:=Controls[i];
     CurControl.Left:=AWidth-CurControl.Left-CurControl.Width;

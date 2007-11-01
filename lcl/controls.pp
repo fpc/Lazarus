@@ -974,8 +974,9 @@ type
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     function IsAParentAligning: boolean;
     function GetClientOrigin: TPoint; virtual;
-    function GetClientRect: TRect; virtual;
-    function GetScrolledClientRect: TRect; virtual;
+    function GetClientRect: TRect; virtual;// visual size of client area
+    function GetLogicalClientRect: TRect; virtual;// logical size of client area (e.g. in a TScrollBox the logical client area can be bigger than the visual)
+    function GetScrolledClientRect: TRect; virtual;// visual client area scrolled
     function GetClientScrollOffset: TPoint; virtual;
     function GetControlOrigin: TPoint; virtual;
     function IsClientHeightStored: boolean; virtual;
@@ -3166,7 +3167,7 @@ begin
         if Kind in [akLeft,akRight] then begin
           // anchor to right side of ReferenceControl
           if ReferenceControl=OwnerParent then
-            Position:=OwnerParent.ClientWidth
+            Position:=OwnerParent.GetLogicalClientRect.Right
           else
             Position:=ReferenceControl.Left+ReferenceControl.Width;
           if ReferenceControl=OwnerParent then
@@ -3186,7 +3187,7 @@ begin
         end else begin
           // anchor to bottom side of ReferenceControl
           if ReferenceControl=OwnerParent then
-            Position:=OwnerParent.ClientHeight
+            Position:=OwnerParent.GetLogicalClientRect.Bottom
           else
             Position:=ReferenceControl.Top+ReferenceControl.Height;
           if ReferenceControl=OwnerParent then
