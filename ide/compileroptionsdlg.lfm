@@ -10,8 +10,8 @@ object frmCompilerOptions: TfrmCompilerOptions
   Caption = 'frmCompilerOptions'
   ClientHeight = 528
   ClientWidth = 669
-  Constraints.MinHeight = 450
-  Constraints.MinWidth = 580
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 600
   OnClose = frmCompilerOptionsClose
   OnResize = FormResize
   Position = poScreenCenter
