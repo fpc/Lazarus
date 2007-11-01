@@ -564,8 +564,8 @@ var
 begin
   Result:=true;
   if Constraints is TSizeConstraints then begin
-    MinWidth := 0;
-    MinHeight := 0;
+    MinWidth := 1;
+    MinHeight := 1;
     MaxWidth:=0;
     MaxHeight:=0;
     SizeConstraints:=TSizeConstraints(Constraints);

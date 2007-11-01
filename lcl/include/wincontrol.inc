@@ -2577,6 +2577,12 @@ var
           '');
       {$ENDIF}
     end;
+    
+    // apply the constraints
+    NewWidth:=ConstraintWidth(NewWidth);
+    NewHeight:=ConstraintHeight(NewHeight);
+    NewRight:=NewLeft+NewWidth;
+    NewBottom:=NewTop+NewHeight;
 
     // set the new bounds
     if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
