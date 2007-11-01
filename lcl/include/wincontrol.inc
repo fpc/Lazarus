@@ -31,8 +31,8 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxxTButtonPanel';
-const CheckPostionName = 'xxxedtUnitOutputDir';
-const CheckPostionParentName = 'PathPage';
+const CheckPostionName = 'xxInhTreeView';
+const CheckPostionParentName = 'xxxInheritedPage';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -1958,12 +1958,11 @@ begin
       NewBounds:=ControlBox.NewControlBounds;
       OldBounds:=CurControl.BoundsRect;
       if not CompareRect(@NewBounds,@OldBounds) then begin
-        //DebugLn('TAutoSizeBox.SetTableControlBounds Control=',DbgSName(CurControl),' CellBounds=',dbgs(CellBounds),' NewBounds=',dbgs(NewBounds));
         Result:=true;
-        CurControl.SetBoundsKeepBase(NewBounds.Left,
-                                     NewBounds.Top,
-                                     NewBounds.Right-NewBounds.Left,
-                                     NewBounds.Bottom-NewBounds.Top);
+        CurControl.SetAlignedBounds(NewBounds.Left,
+                                    NewBounds.Top,
+                                    NewBounds.Right-NewBounds.Left,
+                                    NewBounds.Bottom-NewBounds.Top);
       end;
     end;
   end;
@@ -2188,6 +2187,14 @@ var
     end;
   end;
   
+  function IsNotAligned(AControl: TControl): boolean;
+  begin
+    Result:=(AControl.Align=alNone)
+        and (AControl.Anchors=[akLeft,akTop])
+        and (AControl.AnchorSide[akLeft].Control=nil)
+        and (AControl.AnchorSide[akTop].Control=nil);
+  end;
+
   procedure DoPosition(Control: TControl; AAlign: TAlign);
   var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
@@ -2666,6 +2673,7 @@ var
   procedure DoAlign(AAlign: TAlign);
   var
     I: Integer;
+    Control: TControl;
   begin
     //DebugLn(['DoAlign ',DbgSName(Self),' ',dbgs(ClientRect)]);
     CreateControlAlignList(AAlign,AlignList,AControl);
@@ -2681,10 +2689,19 @@ var
         DebugLn(']');
       end;
     {$ENDIF}
-    
-    if not DoAlignChildControls(AAlign,AControl,AlignList,RemainingClientRect) then
-      for I := 0 to AlignList.Count - 1 do
-        DoPosition(TControl(AlignList[I]), AAlign);
+
+    // let override handle them
+    if DoAlignChildControls(AAlign,AControl,AlignList,RemainingClientRect) then
+      exit;
+    // remove controls that are positioned by other means
+    if (AAlign=alNone) and (AutoSize or (ChildSizing.Layout<>cclNone)) then
+      for I := AlignList.Count - 1 downto 0 do begin
+        Control:=TControl(AlignList[I]);
+        if IsNotAligned(Control) then AlignList.Delete(I);
+      end;
+    // anchor/align control
+    for I := 0 to AlignList.Count - 1 do
+      DoPosition(TControl(AlignList[I]), AAlign);
   end;
   
   procedure DoAlignNotAligned;
@@ -2701,14 +2718,8 @@ var
     AlignList.Clear;
     for i:=0 to ControlCount-1 do begin
       Control := Controls[i];
-      if (Control.Align=alNone)
-      and Control.IsControlVisible
-      and (Control.Anchors=[akLeft,akTop])
-      and (Control.AnchorSide[akLeft].Control=nil)
-      and (Control.AnchorSide[akTop].Control=nil)
-      then begin
+      if IsNotAligned(Control) and Control.IsControlVisible then
         AlignList.Add(Control);
-      end;
     end;
     //debugln('DoAlignNotAligned ',DbgSName(Self),' AlignList.Count=',dbgs(AlignList.Count));
     if AlignList.Count=0 then exit;
@@ -3065,7 +3076,7 @@ begin
         inc(NewTop,Height-PreferredHeight);
       //if CompareText(Name,'NewUnitOkButton')=0 then
         //debugln(['DoAutoSize Resize ',DbgSName(Self),' Old=',dbgs(BoundsRect),' New=',dbgs(Bounds(NewLeft,NewTop,PreferredWidth,PreferredHeight)),' WidthIsFixed=',WidthIsFixed,' HeightIsFixed=',HeightIsFixed,' Align=',dbgs(Align),' Anchors=',dbgs(Anchors)]);
-      SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight,true);
+      SetAlignedBounds(NewLeft,NewTop,PreferredWidth,PreferredHeight);
     end;
   finally
     Exclude(FControlFlags,cfAutoSizeNeeded);
@@ -3405,7 +3416,7 @@ function TWinControl.GetClientRect: TRect;
       {$ENDIF}
       if ClientSizeChanged then begin
         for i:=0 to ControlCount-1 do
-          Exclude(Controls[i].FControlFlags,cfLastAlignedBoundsValid);
+          Controls[i].fLastAlignedBoundsTried:=0;
       end;
       Exclude(FWinControlFlags,wcfClientRectNeedsUpdate);
     end;
@@ -5547,6 +5558,9 @@ begin
   finally
     Exclude(FControlState, csAlignmentNeeded);
     EnableAlign;
+    if (FAlignLevel=0) and (not IsAParentAligning) and (FWinControls<>nil) then
+      for i:=0 to FWinControls.Count-1 do
+        TWinControl(FWinControls[i]).RealizeBoundsRecursive;
   end;
 End;
 
@@ -6912,7 +6926,10 @@ begin
   if CheckPosition(Self) and (AWidth=1) then
     DumpStack;
   {$ENDIF}
-  if BoundsLockCount<>0 then exit;
+  if BoundsLockCount<>0 then begin
+    //DebugLn(['TWinControl.SetBounds ',DbgSName(Self),' ignoring loop Cur=',dbgs(BoundsRect),' ',dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
+    exit;
+  end;
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
 
@@ -7161,8 +7178,10 @@ var
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
   if HandleAllocated
-  and (not (csLoading in ComponentState))
-  and (not CompareRect(@NewBounds,@FBoundsRealized)) then
+  and ([csLoading,csDestroying]*ComponentState=[])
+  and (not (csDestroyingHandle in ControlState))
+  and (not CompareRect(@NewBounds,@FBoundsRealized))
+  and (not IsAParentAligning) then
   begin
     // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
@@ -7178,6 +7197,17 @@ begin
     finally
       EndUpdateBounds;
     end;
+  end;
+end;
+
+procedure TWinControl.RealizeBoundsRecursive;
+var
+  i: Integer;
+begin
+  RealizeBounds;
+  if FWinControls<>nil then begin
+    for i:=0 to FWinControls.Count-1 do
+      TWinControl(FWinControls[i]).RealizeBoundsRecursive;
   end;
 end;
 

@@ -756,7 +756,6 @@ type
     cfHeightLoaded,
     cfClientWidthLoaded,
     cfClientHeightLoaded,
-    cfLastAlignedBoundsValid,
     cfBoundsRectForNewParentValid,
     cfBaseBoundsValid,
     cfPreferredSizeValid,
@@ -826,6 +825,7 @@ type
     FHostDockSite: TWinControl;
     FIsControl: Boolean;
     fLastAlignedBounds: TRect;
+    fLastAlignedBoundsTried: integer;
     FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
     FLastDoChangeClientSize: TPoint;
@@ -972,6 +972,7 @@ type
     procedure ChangeScale(Multiplier, Divider: Integer); dynamic;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    function IsAParentAligning: boolean;
     function GetClientOrigin: TPoint; virtual;
     function GetClientRect: TRect; virtual;
     function GetScrolledClientRect: TRect; virtual;
@@ -1597,6 +1598,7 @@ type
     procedure ControlsAligned; virtual;// called by AlignControls after aligning controls
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;// checks for changes and calls DoSendBoundsToInterface
+    procedure RealizeBoundsRecursive;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;

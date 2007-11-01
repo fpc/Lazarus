@@ -286,17 +286,17 @@ constructor TfrmCompilerOptions.Create(TheOwner: TComponent);
 var 
   Page: integer;
 begin
-  inherited Create(TheOwner);
-  Caption := dlgCompilerOptions;
-
-  IDEDialogLayoutList.ApplyLayout(Self,550,450);
-
-  ImageIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
-  ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
-  ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
-
   DisableAlign;
   try
+    inherited Create(TheOwner);
+    Caption := dlgCompilerOptions;
+
+    IDEDialogLayoutList.ApplyLayout(Self,550,450);
+
+    ImageIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
+    ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
+    ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
+
     MainNotebook.PageIndex:=0;
     Page:=0;
 

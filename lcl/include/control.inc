@@ -1282,16 +1282,35 @@ var
   NewBounds: TRect;
 begin
   NewBounds:=Bounds(aLeft, aTop, aWidth, aHeight);
-  if (cfLastAlignedBoundsValid in FControlFlags)
-  and CompareRect(@NewBounds,@fLastAlignedBounds) then
-    exit;
+  if (fLastAlignedBoundsTried>0)
+  and CompareRect(@NewBounds,@fLastAlignedBounds) then begin
+    inc(fLastAlignedBoundsTried);
+    if fLastAlignedBoundsTried>4 then begin
+      DebugLn(['TControl.SetAlignedBounds ',DbgSName(Self),' last try ',dbgs(NewBounds),' try=',fLastAlignedBoundsTried]);
+      exit;
+    end;
+  end;
   fLastAlignedBounds:=NewBounds;
-  Include(FControlFlags,cfLastAlignedBoundsValid);
+  fLastAlignedBoundsTried:=1;
 
   //if AnsiCompareText(ClassName,'TSCROLLBAR')=0 then
   //  DebugLn('TControl.SetAlignedBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
 
   SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight, true);
+end;
+
+function TControl.IsAParentAligning: boolean;
+var
+  p: TWinControl;
+begin
+  p:=Parent;
+  while (p<>nil) do begin
+    if (wcfAligningControls in p.FWinControlFlags)
+    or (p.FAlignLevel>0) then
+      exit(true);
+    p:=p.Parent;
+  end;
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -2738,7 +2757,7 @@ begin
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
   OldAlign:=FAlign;
   FAlign := Value;
-  Exclude(FControlFlags,cfLastAlignedBoundsValid);
+  fLastAlignedBoundsTried:=0;
   // if anchors were on default then change them to new default
   // This is done for Delphi compatibility.
   if (Anchors=AnchorAlign[OldAlign]) and (Anchors<>AnchorAlign[FAlign]) then
@@ -2754,7 +2773,7 @@ procedure TControl.SetAnchors(const AValue: TAnchors);
 begin
   if Anchors=AValue then exit;
   FAnchors:=AValue;
-  Exclude(FControlFlags,cfLastAlignedBoundsValid);
+  fLastAlignedBoundsTried:=0;
   RequestAlign;
 end;
 
