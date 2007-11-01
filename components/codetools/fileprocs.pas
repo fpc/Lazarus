@@ -258,6 +258,7 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
 function DbgS(const c: char): string; overload;
 function DbgS(const c: cardinal): string; overload;
 function DbgS(const i: integer): string; overload;
+function DbgS(const i: int64): string; overload;
 function DbgS(const r: TRect): string; overload;
 function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
@@ -2017,6 +2018,11 @@ begin
 end;
 
 function DbgS(const i: integer): string;
+begin
+  Result:=IntToStr(i);
+end;
+
+function DbgS(const i: int64): string;
 begin
   Result:=IntToStr(i);
 end;

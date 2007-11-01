@@ -28,10 +28,10 @@
 {off $DEFINE VerboseAutoSizeCtrlData}
 {off $DEFINE VerboseMouseBugfix}
 
-{off $DEFINE CHECK_POSITION}
+{$DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxxTButtonPanel';
-const CheckPostionName = 'BakProjTypeRadioGroup';
+const CheckPostionName = 'xxxBakProjTypeRadioGroup';
 const CheckPostionParentName = 'xxxInheritedPage';
 
 function CheckPosition(AControl: TControl): boolean;
