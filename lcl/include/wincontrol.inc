@@ -31,7 +31,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxxTButtonPanel';
-const CheckPostionName = 'xxInhTreeView';
+const CheckPostionName = 'BakProjTypeRadioGroup';
 const CheckPostionParentName = 'xxxInheritedPage';
 
 function CheckPosition(AControl: TControl): boolean;
