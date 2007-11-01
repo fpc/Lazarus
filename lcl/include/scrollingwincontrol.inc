@@ -45,7 +45,8 @@ end;
 
 function TScrollingWinControl.GetLogicalClientRect: TRect;
 begin
-  Result:=Rect(0,0,Max(0,FHorzScrollBar.Range),Max(0,FVertScrollBar.Range));
+  Result:=Rect(0,0,Max(ClientWidth,FHorzScrollBar.Range),
+                   Max(ClientHeight,FVertScrollBar.Range));
 end;
 
 procedure TScrollingWinControl.AlignControls(AControl: TControl;
