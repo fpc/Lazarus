@@ -10041,6 +10041,10 @@ msgstr "fitxer de configuració de paquets estàtics"
 msgid "stop program"
 msgstr "atura el programa"
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr "aquest missatge d'ajuda"

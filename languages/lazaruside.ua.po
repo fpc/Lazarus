@@ -10030,6 +10030,10 @@ msgstr "статичний файл налаштувань пакунку"
 msgid "stop program"
 msgstr "зупинити програму"
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr "це довідкове повідомлення"

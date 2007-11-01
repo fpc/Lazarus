@@ -10426,6 +10426,10 @@ msgstr ""
 msgid "word end"
 msgstr ""
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
 msgstr ""

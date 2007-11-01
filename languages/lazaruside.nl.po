@@ -10041,6 +10041,10 @@ msgstr " configuratiebestand statische packages"
 msgid "stop program"
 msgstr "Stop programma"
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr "Dit Help bericht"

@@ -1,11 +1,12 @@
+# translation of lazaruside.po to Arabic Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
 msgid ""
 msgstr ""
-"Last-Translator: Mazen NEIFER <m.neifer@enertecgroup.com>\n"
-"PO-Revision-Date: 2004-07-06 19:46+0200\n"
-"Language-Team: Arabic <fr@li.org>\n"
+"Last-Translator: Mazen NEIFER <mazen.neifer@supaero.org>\n"
+"PO-Revision-Date: 2007-10-31 23:29+0100\n"
+"Language-Team: Arabic <ar@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
+"X-Generator: KBabel 1.11.4\n"
 "Project-Id-Version: lazaruside\n"
 "MIME-Version: 1.0\n"
 
@@ -55,11 +56,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
-msgstr ""
+msgstr "ملف %s"
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
-msgstr ""
+msgstr "%s أدمج مسبقا في المشروع"
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
@@ -155,31 +156,31 @@ msgstr ""
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
-msgstr ""
+msgstr "أضف"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
-msgstr ""
+msgstr "أضف نقطة وقوف"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
-msgstr ""
+msgstr "أغلق"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
-msgstr "أ&غلق الصفحة"
+msgstr "أغلق الصفحة"
 
 #: lazarusidestrconsts:lismenucomponents
 msgid "&Components"
-msgstr "&عناصر"
+msgstr "عناصر"
 
 #: lazarusidestrconsts:liswldelete
 msgid "&Delete"
-msgstr ""
+msgstr "إمسح"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
-msgstr "&إصدار"
+msgstr "إصدار"
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -187,7 +188,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
-msgstr "&جذاذة"
+msgstr "جذاذة"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
@@ -199,7 +200,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
-msgstr "م&عونة"
+msgstr "معونة"
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -215,15 +216,15 @@ msgstr "إفتح الجذاذة التي تحت المؤشرة"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
-msgstr "&مشروع"
+msgstr "مشروع"
 
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
-msgstr ""
+msgstr "خصائص"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "إمح"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -231,7 +232,7 @@ msgstr "أبدل بـ..."
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
-msgstr "&تشغيل"
+msgstr "تشغيل"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
@@ -239,7 +240,7 @@ msgstr "تشغيل حتى بلوغ المؤشرة"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
-msgstr "&بحث"
+msgstr "بحث"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
@@ -5263,7 +5264,7 @@ msgstr "&شكل جديد"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
-msgstr "مش ..."
+msgstr "مشروع &جديد ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
@@ -5279,7 +5280,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
-msgstr ""
+msgstr "وحدة جديدة"
 
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
@@ -5503,15 +5504,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
-msgstr ""
+msgstr "إفتح"
 
 #: lazarusidestrconsts:lisopenlfm
 msgid "Open %s"
-msgstr ""
+msgstr "إفتح %s"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
-msgstr " ..."
+msgstr "إفتح ..."
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -5535,15 +5536,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
-msgstr " ..."
+msgstr "إفتح المشروع ..."
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
-msgstr ""
+msgstr "إفتح جذاذة المشروع"
 
 #: lazarusidestrconsts:lisopenproject
 msgid "Open Project?"
-msgstr ""
+msgstr "إفتح المشروع؟"
 
 #: lazarusidestrconsts:lismenutemplateopenrecent
 msgid "Open Recent"
@@ -5919,7 +5920,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupaste
 msgid "Paste"
-msgstr ""
+msgstr "ألصق"
 
 #: lazarusidestrconsts:liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
@@ -10039,6 +10040,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage

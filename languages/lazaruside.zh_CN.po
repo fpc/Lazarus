@@ -10044,6 +10044,10 @@ msgstr "静态包配置文件"
 msgid "stop program"
 msgstr "停止程序"
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr "帮助信息"

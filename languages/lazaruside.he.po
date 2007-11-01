@@ -10041,6 +10041,10 @@ msgstr ""
 msgid "stop program"
 msgstr ""
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr ""

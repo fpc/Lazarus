@@ -10040,6 +10040,10 @@ msgstr "Archivo de configuración de paquetes estáticos"
 msgid "stop program"
 msgstr "Parar programa"
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr "este mensaje de ayuda"

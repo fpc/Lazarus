@@ -10040,6 +10040,10 @@ msgstr "静的パッケージ設定ファイル"
 msgid "stop program"
 msgstr "プログラムを停止"
 
+#: lazarusidestrconsts:lisautomaticallyonaddsymbol
+msgid "symbol"
+msgstr ""
+
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
 msgstr "このヘルプメッセージ"
