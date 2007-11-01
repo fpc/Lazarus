@@ -1,8 +1,9 @@
-# translation of lazaruside.po to Arabic Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
+# translation of lazaruside.po to Arabic
+# Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
 msgid ""
 msgstr ""
 "Last-Translator: Mazen NEIFER <mazen.neifer@supaero.org>\n"
-"PO-Revision-Date: 2007-10-31 23:29+0100\n"
+"PO-Revision-Date: 2007-11-01 17:28+0100\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -64,15 +65,15 @@ msgstr "%s أدمج مسبقا في المشروع"
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
-msgstr ""
+msgstr "ملف المشروع %s"
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr ""
+msgstr "%s%s%s ليس مقبولا كإسم مشروع. %s إختر إسما آخر رجاء"
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
-msgstr ""
+msgstr "%s%s%sليس مقبولا كإسم "
 
 #: lazarusidestrconsts:lisa2pisnotavalidunitname
 msgid "%s%s%s is not a valid unit name."
@@ -244,31 +245,31 @@ msgstr "بحث"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
-msgstr ""
+msgstr "أضف علامة موقع"
 
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
-msgstr ""
+msgstr "إبحث عن العبارة التالية"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
-msgstr "أ&دوات"
+msgstr "أدوات"
 
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
-msgstr "&هيأة"
+msgstr "هيأة"
 
 #: lazarusidestrconsts:lismenuwindows
 msgid "&Windows"
-msgstr "&نوافذ"
+msgstr "نوافذ"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(مصفاة)"
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
-msgstr ""
+msgstr "(هذا الملف لا يحتوي على ملفات)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -332,47 +333,47 @@ msgstr ""
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
-msgstr ""
+msgstr "أجهض"
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
-msgstr ""
+msgstr "أوقف البناء"
 
 #: lazarusidestrconsts:lisabortall
 msgid "Abort all"
-msgstr ""
+msgstr "أجهض الكل"
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
-msgstr ""
+msgstr "أوقف التحميل"
 
 #: lazarusidestrconsts:liskmabortbuilding
 msgid "Abort building"
-msgstr ""
+msgstr "أوقف البناء"
 
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
-msgstr ""
+msgstr "أوقف تحميل المشروع"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
-msgstr ""
+msgstr "أوقف التحميل بالكامل"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
-msgstr ""
+msgstr "بطاقة التعريف"
 
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
-msgstr ""
+msgstr "التعريف بلازاروس"
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "إقبل"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
+msgstr "الثناء"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -940,7 +941,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr ""
+msgstr "إبن"
 
 #: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -980,7 +981,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildoptions
 msgid "Build Options"
-msgstr ""
+msgstr "خيارات البناء"
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -988,7 +989,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenubuildall
 msgid "Build all"
-msgstr ""
+msgstr "إبن الكل"
 
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
@@ -996,11 +997,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
-msgstr ""
+msgstr "إبن لازاروس"
 
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
-msgstr ""
+msgstr "إبن مشروعا جديدا"
 
 #: lazarusidestrconsts:liskmbuildprojectprogram
 msgid "Build project/program"
@@ -1008,7 +1009,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rsbuild
 msgid "Build:"
-msgstr ""
+msgstr "بناء:"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1180,7 +1181,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
-msgstr ""
+msgstr "صيني"
 
 #: lazarusidestrconsts:lispochoosepofiledirectory
 msgid "Choose .po file directory"
@@ -1320,7 +1321,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1396,7 +1397,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1452,7 +1453,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools Options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -1464,7 +1465,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
@@ -1592,7 +1593,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1684,7 +1685,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -1696,7 +1697,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
@@ -1708,7 +1709,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1792,7 +1793,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
@@ -1800,7 +1801,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi project to Lazarus project"
@@ -1808,7 +1809,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi unit to Lazarus unit"
@@ -1816,7 +1817,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1828,11 +1829,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
-msgstr ""
+msgstr "إنسخ"
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
-msgstr ""
+msgstr "إنسخ الخطأ"
 
 #: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
 msgid "Copy all and hidden messages to clipboard"
@@ -1844,11 +1845,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
-msgstr ""
+msgstr "إنسخ الخطأ"
 
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
-msgstr ""
+msgstr "إنسخ إسم الجذاذة"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
@@ -1884,7 +1885,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rscopyright
 msgid "Copyright:"
-msgstr ""
+msgstr "حقوق الطبع"
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -1892,11 +1893,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnpcreate
 msgid "Create"
-msgstr ""
+msgstr "أنشئ"
 
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
-msgstr ""
+msgstr "أنشئ جذاذة ترجمة"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
@@ -2072,7 +2073,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
-msgstr ""
+msgstr "قص"
 
 #: lazarusidestrconsts:liskmcutselectedcomponentstoclipboard
 msgid "Cut selected Components to clipboard"
@@ -2116,7 +2117,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2184,7 +2185,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
-msgstr ""
+msgstr "إمح"
 
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
@@ -2508,7 +2509,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
-msgstr "ب&يئة"
+msgstr "بيئة"
 
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
@@ -2576,7 +2577,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2624,7 +2625,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2660,7 +2661,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2924,7 +2925,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -3120,11 +3121,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenufind2
 msgid "Find ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
@@ -3136,7 +3137,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3508,7 +3509,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -3628,11 +3629,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_help
 msgid "Help"
-msgstr ""
+msgstr "معونة"
 
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
-msgstr ""
+msgstr "خيارات المعونة"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3644,7 +3645,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
-msgstr ""
+msgstr "مساعد إختيار المعونة"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -4884,7 +4885,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -5268,7 +5269,7 @@ msgstr "مشروع &جديد ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -5484,11 +5485,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
-msgstr ""
+msgstr "معونة على شبكة الإتصالات العالمية"
 
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
-msgstr ""
+msgstr "المعونة على شبكة الإتصالات العالمية بخصوص هذا الموضوع لم تكتب بعد"
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
@@ -5548,15 +5549,15 @@ msgstr "إفتح المشروع؟"
 
 #: lazarusidestrconsts:lismenutemplateopenrecent
 msgid "Open Recent"
-msgstr ""
+msgstr "إفتح ملفا أستعمل حديثا"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent ..."
-msgstr " ..."
+msgstr "إفتح ملفا أستعمل حديثا ..."
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
-msgstr " ..."
+msgstr "إفتح مشروعا أستعمل حديثا ..."
 
 #: lazarusidestrconsts:liscpopenunit
 msgid "Open Unit %s"
@@ -5592,7 +5593,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisiecoopenorloadcompileroptions
 msgid "Open or Load Compiler Options"
@@ -5628,7 +5629,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5776,7 +5777,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupackagegraph
 msgid "Package Graph ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -6080,7 +6081,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -6152,7 +6153,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -6256,7 +6257,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmpublishproject
 msgid "Publish project"
@@ -6288,11 +6289,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
-msgstr "&خروج من البرنامج"
+msgstr "خروج من البرنامج"
 
 #: lazarusidestrconsts:lisquitlazarus
 msgid "Quit Lazarus"
-msgstr ""
+msgstr "خروج من لازاروس"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -6468,7 +6469,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -6516,7 +6517,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurenameidentifier
 msgid "Rename Identifier ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -6556,7 +6557,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "Replace ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -6780,7 +6781,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -6808,7 +6809,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -7592,7 +7593,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -9436,7 +9437,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -9468,7 +9469,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
