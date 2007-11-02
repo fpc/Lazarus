@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
@@ -25,7 +25,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="3">
       <Unit0>
         <Filename Value="startlazarus.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -36,14 +36,10 @@
         <UnitName Value="LazarusManager"/>
       </Unit1>
       <Unit2>
-        <Filename Value="LRemoteControl"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="lremotecontrol.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LRemoteControl"/>
-      </Unit3>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

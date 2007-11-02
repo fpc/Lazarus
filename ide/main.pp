@@ -8434,6 +8434,7 @@ procedure TMainIDE.DoRestart;
 
 var CanClose: boolean;
 begin
+  DebugLn(['TMainIDE.DoRestart ']);
   CanClose:=true;
   MainIDEBar.OnCloseQuery(Self, CanClose);
   if not CanClose then exit;
