@@ -148,10 +148,15 @@ end;
 
 procedure TCustomImage.PictureChanged(Sender : TObject);
 begin
-  if AutoSize and (Picture.Graphic <> nil)
+  if Picture.Graphic <> nil
   then begin
-    InvalidatePreferredSize;
-    AdjustSize;
+    if AutoSize
+    then begin
+      InvalidatePreferredSize;
+      AdjustSize;
+    end;
+    if FTransparent
+    then Picture.Graphic.Transparent := True;
   end;
   Invalidate;
 end;
