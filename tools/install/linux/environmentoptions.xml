@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <EnvironmentOptions>
+    <Version Value="106"/>
+    <Debugger Class="TGDBMIDebugger"/>
+    <DebuggerFilename Value="/usr/bin/gdb">
+    </DebuggerFilename>
+  </EnvironmentOptions>
+</CONFIG>

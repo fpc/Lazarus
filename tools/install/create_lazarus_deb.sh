@@ -63,6 +63,7 @@ TmpDir=/tmp/lazarus$LazVersion
 LazBuildDir=$TmpDir/lazarus_build
 LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
+EtcSrcDir=$CurDir/linux
 LazDestDir=$LazBuildDir/usr/share/lazarus
 LazDestDirInstalled=/usr/share/lazarus
  
@@ -148,6 +149,11 @@ ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
 cat $LazDestDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
+
+# default configs
+mkdir -p $LazBuildDir/etc/lazarus
+cp $EtcSrcDir/*.xml $LazBuildDir/etc/lazarus/
+chmod 644 $LazBuildDir/etc/lazarus/*.xml
 
 # fixing permissions
 echo "fixing permissions ..."
