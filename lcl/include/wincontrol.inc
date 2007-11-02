@@ -30,14 +30,12 @@
 
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TPage';
+const CheckPostionClassName = 'xxTPage';
 const CheckPostionName = 'xxxBakProjTypeRadioGroup';
-const CheckPostionParentName = 'xxxInheritedPage';
+const CheckPostionParentName = 'EnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
-  Result:=true;
-  exit;
   Result:=(CompareText(AControl.ClassName,CheckPostionClassName)=0)
            or (CompareText(AControl.Name,CheckPostionName)=0)
            or ((AControl.Parent<>nil)
@@ -2098,26 +2096,23 @@ procedure TWinControl.CreateControlAlignList(TheAlign: TAlign;
     Result := False;
     case AAlign of
       alTop:
-        Result := (Control1.Top < Control2.Top)
-             or ((Control1.Top = Control2.Top)
-                 and (Control1.FBaseBounds.Top<Control2.FBaseBounds.Top));
-      alLeft: Result := (Control1.Left < Control2.Left)
-                 or ((Control1.Left = Control2.Left)
-                     and (Control1.FBaseBounds.Left<Control2.FBaseBounds.Left));
+        Result := (Control1.FBaseBounds.Top < Control2.FBaseBounds.Top)
+             or ((Control1.FBaseBounds.Top = Control2.FBaseBounds.Top)
+                 and (Control1.Top<Control2.Top));
+      alLeft: Result := (Control1.FBaseBounds.Left < Control2.FBaseBounds.Left)
+                 or ((Control1.FBaseBounds.Left = Control2.FBaseBounds.Left)
+                     and (Control1.Left<Control2.Left));
       // contrary to VCL, we use > for alBottom, alRight
       // Maybe it is a bug in the VCL.
       // This results in first control is put rightmost/bottommost
-      alBottom: begin
-        Result :=
-          ((Control1.Top + Control1.Height) > (Control2.Top + Control2.Height))
-           or (((Control1.Top + Control1.Height) = (Control2.Top + Control2.Height))
-             and (Control1.FBaseBounds.Bottom > Control2.FBaseBounds.Bottom));
-          DebugLn(['InsertBefore Control1=',DbgSName(Control1),' ',dbgs(Control1.BoundsRect),' Control2=',DbgSName(Control2),' ',dbgs(Control2.BoundsRect),' Result=',Result]);
-        end;
+      alBottom: Result :=
+          (Control1.FBaseBounds.Bottom > Control2.FBaseBounds.Bottom)
+           or ((Control1.FBaseBounds.Bottom = Control2.FBaseBounds.Bottom)
+             and ((Control1.Top + Control1.Height) > (Control2.Top + Control2.Height)));
       alRight: Result :=
-          ((Control1.Left + Control1.Width) > (Control2.Left + Control2.Width))
-           or (((Control1.Left + Control1.Width) = (Control2.Left + Control2.Width))
-             and (Control1.FBaseBounds.Right > Control2.FBaseBounds.Right));
+          (Control1.FBaseBounds.Right > Control2.FBaseBounds.Right)
+           or ((Control1.FBaseBounds.Right = Control2.FBaseBounds.Right)
+             and ((Control1.Left + Control1.Width) > (Control2.Left + Control2.Width)));
     end;
   end;
 

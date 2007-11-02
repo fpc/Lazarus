@@ -138,7 +138,7 @@ type
     EnvVarsPage:    TPage;
     OkButton: TButton;
     CancelButton: TButton;
-    procedure FormResize(Sender: TObject);
+    procedure EnvVarsPageResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
@@ -345,7 +345,6 @@ begin
   OkButton.Caption := lisOkBtn;
   CancelButton.Caption := dlgCancel;
   CancelControl := CancelButton;
-  FormResize(nil);
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;
@@ -429,9 +428,13 @@ begin
   ModalResult := mrOk;
 end;
 
-procedure TRunParamsOptsDlg.FormResize(Sender: TObject);
+procedure TRunParamsOptsDlg.EnvVarsPageResize(Sender: TObject);
+var
+  NewHeight: Integer;
 begin
-  UserOverridesGroupBox.Height := (Notebook.Page[1].Height - 37) div 2;
+  NewHeight:=(Notebook.Page[1].Height - 37) div 2;
+  with UserOverridesGroupBox do
+    SetBounds(Left,Top+Height-NewHeight,Width,NewHeight);
 
   SystemVariablesListView.Column[0].Width := SystemVariablesListView.Width div 2;
   SystemVariablesListView.Column[1].Width := SystemVariablesListView.Column[0].Width;

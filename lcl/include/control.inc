@@ -2840,13 +2840,16 @@ begin
   and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
   then exit;
   //if csDesigning in ComponentState then
-  {if CompareText(ClassName,'TScrollBar')=0 then
-    DebugLn('TControl.UpdateBaseBounds '+dbgs(Self)+
-    ' OldBounds='+dbgs(FBaseBounds)+
-    ' OldClientSize='+dbgs(FBaseParentClientSize)+
-    ' NewBounds='+dbgs(NewBaseBounds)+
-    ' NewClientSize='+dbgs(NewBaseParentClientSize)+
-    '');}
+  {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then begin
+    DebugLn(['TControl.UpdateBaseBounds '+DbgSName(Self),
+    ' OldBounds='+dbgs(FBaseBounds),
+    ' OldClientSize='+dbgs(FBaseParentClientSize),
+    ' NewBounds='+dbgs(NewBaseBounds),
+    ' NewClientSize='+dbgs(NewBaseParentClientSize),
+    '']);
+  end;
+  {$ENDIF}
   FBaseBounds:=NewBaseBounds;
   Include(FControlFlags,cfBaseBoundsValid);
   FBaseParentClientSize:=NewBaseParentClientSize;
