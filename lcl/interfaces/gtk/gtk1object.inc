@@ -5968,7 +5968,7 @@ var
 begin
   if DC.HasGC
   then begin
-    WriteLN('[WARNING] OnCreateGCForDC called while GC exists');
+    debugLN('[WARNING] OnCreateGCForDC called while GC exists');
     Exit;
   end;
 

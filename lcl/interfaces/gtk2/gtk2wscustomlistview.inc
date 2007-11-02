@@ -1317,7 +1317,6 @@ class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
 begin
-  WriteLn('SetViewStyle');
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle')
   then Exit;
 
