@@ -72,6 +72,11 @@ var
   MaxWidth, MaxHeight: guint;
   pixbuf, masked_pixbuf: PGdkPixbuf;
 begin
+  {$IFDEF windows}
+  // read comments at bottom
+  Result := inherited CreateCursor(ACursorInfo);
+  exit;
+  {$endif}
   Result := 0;
   if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
 
@@ -106,6 +111,7 @@ begin
   end;
 
   // create cursor from pixbuf
+  // windows gtk2 crahes here, so it can load cursors at moment through gtk1 code
   Result := HCursor(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
     ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot)));
 end;
