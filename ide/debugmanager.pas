@@ -44,7 +44,7 @@ uses
   { for Get/SetForegroundWindow }
   LCLType, LCLIntf,   
   SynEdit, CodeCache, CodeToolManager,
-  MenuIntf, IDECommands, LazIDEIntf,
+  MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
@@ -932,6 +932,7 @@ var
   n: Integer;
   UserFilename: string;
   OpenDialog: TOpenDialog;
+  AnUnitInfo: TLazProjectFile;
 begin
   Result:=mrCancel;
   if Destroying then exit;
@@ -958,6 +959,14 @@ begin
           Break;
         end;
       end;
+    end;
+  end;
+  
+  if (not FilenameIsAbsolute(SrcFile)) then begin
+    AnUnitInfo:=Project1.FindFile(SrcFile,[pfsfOnlyEditorFiles]);
+    if AnUnitInfo<>nil then begin
+      // the file is an unsaved file -> can not be extended
+      exit;
     end;
   end;
 
