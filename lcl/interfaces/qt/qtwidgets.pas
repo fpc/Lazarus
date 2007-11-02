@@ -297,6 +297,7 @@ type
     function viewport: TQtViewPort;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure SetColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
@@ -6878,6 +6879,17 @@ begin
     viewport.grabMouse
   else
     inherited grabMouse;
+end;
+
+procedure TQtAbstractScrollArea.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  if LCLObject is TCustomControl then
+  begin
+    PreferredWidth := 0;
+    PreferredHeight := 0;
+  end else
+    inherited preferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 
 {------------------------------------------------------------------------------
