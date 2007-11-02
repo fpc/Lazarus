@@ -4182,9 +4182,10 @@ var
   DCOrigin: TPoint;
   BrushChanged: Boolean;
 begin
-  BrushChanged :=false;
+  BrushChanged := false;
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
-  if not Result then exit;
+  if not Result or IsRectEmpty(Rect) then
+    exit;
   with TDeviceContext(DC) do
   begin
     if not PGdiObject(Brush)^.IsNullBrush then begin
