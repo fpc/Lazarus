@@ -5815,6 +5815,7 @@ var
  {$endif}
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  Result := 0;
   case nIndex of
     SM_ARRANGE:
       begin
@@ -6074,13 +6075,15 @@ begin
       end;
     SM_CXVSCROLL:
       begin
-        P:=GetStyleWidget(lgsVerticalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Width;
+        P := GetStyleWidget(lgsVerticalScrollbar);
+        if P <> nil then
+          Result := GTK_Widget(P)^.requisition.Width;
       end;
     SM_CYVSCROLL:
       begin
-        P:=GetStyleWidget(lgsHorizontalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Height;
+        P := GetStyleWidget(lgsHorizontalScrollbar);
+        if P <> nil then
+          Result := GTK_Widget(P)^.requisition.Height;
       end;
     SM_CYCAPTION:
       begin
@@ -6150,7 +6153,6 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
-    else Result := 0;
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
 end;
