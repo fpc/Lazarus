@@ -895,7 +895,7 @@ begin
   StyleOption := QStyleOptionFocusRect_create;
   try
     QStyleOption_setRect(StyleOption, @Rect);
-    QStyle_drawControl(QApplication_style, QStyleCE_FocusFrame,StyleOption, QtDC.Widget, QtDC.Parent);
+    QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
     Result := True;
   finally
     QStyleOptionFocusRect_destroy(StyleOption);
