@@ -37,7 +37,7 @@ uses
 {$endif}
   qtwidgets,
   // LCL
-  SysUtils, Controls, LCLType, Graphics, Arrow,
+  SysUtils, Controls, LCLType, LCLProc, Graphics, Arrow,
 ////////////////////////////////////////////////////
   WSArrow, WSLCLClasses;
 
