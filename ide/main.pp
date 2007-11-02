@@ -8623,7 +8623,7 @@ begin
       exit;
     end;
 
-    // then compile the IDE
+    // then compile the 'installed' packages
     if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
     and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then exit;
 
@@ -8680,7 +8680,9 @@ begin
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
-                         IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
+                         IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean,
+                                        blfWithoutCompilingIDE]
+                         );
     if Result<>mrOk then exit;
 
   finally
@@ -8690,7 +8692,7 @@ begin
     MessagesView.EndBlock;
   end;
   if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
-     mnuRestartClicked(nil);
+    mnuRestartClicked(nil);
 end;
 
 function TMainIDE.DoBuildFile: TModalResult;

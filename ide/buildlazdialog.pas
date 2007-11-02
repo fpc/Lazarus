@@ -72,6 +72,7 @@ type
   TMakeModes = set of TMakeMode;
 
   TBuildLazarusFlag = (
+    blfWithoutCompilingIDE, // skip compiling stage of IDE
     blfWithoutLinkingIDE, // skip linking stage of IDE
     blfOnlyIDE,           // skip all but IDE
     blfDontClean,         // ignore clean up
@@ -360,6 +361,11 @@ var
   
 begin
   Result:=mrCancel;
+  
+  if (blfOnlyIDE in Flags) and (blfWithoutLinkingIDE in Flags)
+  and (blfWithoutCompilingIDE in Flags) then
+    exit(mrOk); // only IDE, but skip both parts -> nothing to do
+  
   Tool:=TExternalToolOptions.Create;
   try
     // setup external tool

@@ -493,7 +493,8 @@ begin
     SaveAutoInstallDependencies(true);
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
+    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE,
+                    blfWithoutCompilingIDE];
     if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit;
 
     if RebuildIDE then begin
