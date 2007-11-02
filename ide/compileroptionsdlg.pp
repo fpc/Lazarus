@@ -92,7 +92,7 @@ type
 
     { Parsing Controls }
     ParsingPage: TPage;
-    grpStyle: TRadioGroup;
+    grpAsmStyle: TRadioGroup;
     grpSyntaxOptions: TCheckGroup;
 
     { Code Generation Controls }
@@ -490,9 +490,9 @@ begin
 
   // parsing
   if (Options.AssemblerStyle in [1,2,3])  then
-    grpStyle.ItemIndex:=Options.AssemblerStyle
+    grpAsmStyle.ItemIndex:=Options.AssemblerStyle
   else
-    grpStyle.ItemIndex:=0;
+    grpAsmStyle.ItemIndex:=0;
 
   with grpSyntaxOptions do
   begin
@@ -812,7 +812,7 @@ begin
     Options.LCLWidgetType:= LCLPlatformDirNames[TLCLPlatform(i-1)];
 
   // parsing;
-  Options.AssemblerStyle := grpStyle.ItemIndex;
+  Options.AssemblerStyle := grpAsmStyle.ItemIndex;
 
   with grpSyntaxOptions do
   begin
@@ -1105,8 +1105,8 @@ begin
   MainNoteBook.Page[Page].Caption:= dlgCOParsing;
 
   // Setup the Parsing Tab
-  with grpStyle do begin
-    Caption := dlgCOStyle+' (-R)';
+  with grpAsmStyle do begin
+    Caption := dlgCOAsmStyle+' (-R)';
 
     with Items do begin
       BeginUpdate;

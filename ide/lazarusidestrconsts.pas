@@ -1158,7 +1158,7 @@ resourcestring
   lisSelectANode = 'Select a node';
   dlgShowCompilerOptions = 'Show compiler options';
   dlgCOOpts = 'Options: ';
-  dlgCOStyle = 'Style:';
+  dlgCOAsmStyle = 'Assembler style:';
   lisNoCompilerOptionsInherited = 'No compiler options inherited.';
   lisunitPath = 'unit path';
   lisincludePath = 'include path';

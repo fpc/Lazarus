@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 2
+    PageIndex = 1
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -244,7 +244,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       Caption = 'ParsingPage'
       ClientWidth = 665
       ClientHeight = 449
-      object grpStyle: TRadioGroup
+      object grpAsmStyle: TRadioGroup
         Left = 6
         Height = 40
         Top = 6
@@ -252,7 +252,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Align = alTop
         AutoFill = True
         BorderSpacing.Around = 6
-        Caption = 'grpStyle'
+        Caption = 'grpAsmStyle'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
         ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
@@ -428,7 +428,6 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 6
           Width = 120
           Align = alTop
-          Anchors = [akTop, akLeft]
           BorderSpacing.Around = 6
           Caption = 'radGenNormal'
           Checked = True
@@ -441,7 +440,6 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 34
           Width = 120
           Align = alTop
-          Anchors = [akTop, akLeft]
           BorderSpacing.Around = 6
           Caption = 'radGenFaster'
           TabOrder = 1
@@ -452,7 +450,6 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 62
           Width = 120
           Align = alTop
-          Anchors = [akTop, akLeft]
           BorderSpacing.Around = 6
           Caption = 'radGenSmaller'
           TabOrder = 2
@@ -987,7 +984,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Cursor = crVSplit
         Height = 5
         Top = 279
-        Width = 665
+        Width = 1
         Align = alTop
         ResizeAnchor = akTop
       end
