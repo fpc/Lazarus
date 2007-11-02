@@ -36,9 +36,9 @@ Type
     procedure AddResponseLn(const Msg : String); virtual;
     procedure AddResponse(const Fmt : String; Args : Array of const); virtual;
     procedure AddResponseLn(const Fmt : String; Args : Array of const); virtual;
+    property Response : TStream Read GetResponse;
   Published
     property OnCGIRequest : TNotifyEvent Read FOnCGIRequest Write FOnCGIRequest;
-    property Response : TStream Read GetResponse;
     property ContentType : String Read GetContentType Write SetContentType;
   end;
 
