@@ -408,12 +408,17 @@ function CodeMacroAddMissingEnd(const Parameter: string;
 var
   Line: String;
   p: TPoint;
+  CodeBuf: TCodeBuffer;
 begin
   Result:=true;
   Value:='';
   Line:=SrcEdit.CurrentLineText;
   p:=SrcEdit.CursorTextXY;
   if p.y<1 then exit;
+  CodeBuf:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+  if CodeBuf=nil then exit;
+  
+  
   while (p.y<=SrcEdit.LineCount) do begin
     Line:=SrcEdit.Lines[p.y-1];
     while (p.x<=length(Line)) do begin

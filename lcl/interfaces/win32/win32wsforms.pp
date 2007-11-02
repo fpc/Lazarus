@@ -142,6 +142,71 @@ type
 
 class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
+
+  {$IFDEF NewScrollingLayer}
+  procedure CreateScrollingLayer(ParentH: HWND);
+  var
+    Params: TCreateWindowExParams;
+  begin
+    // general initialization of Params
+    with Params do
+    begin
+      Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+      FlagsEx := 0;
+      Window := HWND(nil);
+      Buddy := HWND(nil);
+      Parent := ParentH;
+      SubClassWndProc := @WindowProc;
+      WindowTitle := nil;
+      StrCaption := 'TWin32WSScrollBox.CreateHandle ScrollLayer';
+      WindowTitle := nil;
+      Height := 50;
+      Left := 0;
+      //Parent := AWinControl.Parent;
+      Top := 0;
+      Width := 50;
+      Flags := Flags or WS_VISIBLE;
+      FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
+    end;
+    // customization of Params
+    with Params do
+    begin
+      pClassName := @ClsName[0];
+      SubClassWndProc := nil;
+    end;
+    // create window
+    with Params do
+    begin
+      MenuHandle := HMENU(nil);
+
+      Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+
+      if Window = 0 then
+      begin
+        raise exception.create('failed to create win32 sub control, error: '+IntToStr(GetLastError()));
+      end;
+    end;
+    with Params do
+    begin
+      if Window <> HWND(Nil) then
+      begin
+        // some controls (combobox) immediately send a message upon setting font
+        {WindowInfo := AllocWindowInfo(Window);
+        if GetWindowInfo(Parent)^.needParentPaint then
+          WindowInfo^.needParentPaint := true;
+        WindowInfo^.WinControl := AWinControl;
+        if SubClassWndProc <> nil then
+          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+            Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
+        lhFont := GetStockObject(DEFAULT_GUI_FONT)
+        Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);}
+      end;
+    end;
+    Result := Params.Window;
+  end;
+  {$ENDIF}
+  
 var
   Params: TCreateWindowExParams;
 begin
@@ -159,6 +224,10 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+  
+  {$IFDEF NewScrollingLayer}
+  CreateScrollingLayer(Result);
+  {$ENDIF}
 end;
 
 { TWin32WSScrollingWinControl }

@@ -219,6 +219,7 @@ end;
 
 procedure TScrollingWinControl.WMHScroll(var Message : TLMHScroll);
 begin
+  DebugLn(['TScrollingWinControl.WMHScroll ',dbgsName(Self)]);
   HorzScrollbar.ScrollHandler(Message);
 end;
 

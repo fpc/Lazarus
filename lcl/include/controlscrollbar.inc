@@ -65,7 +65,7 @@ begin
   if Value = FPosition then
     exit;
 
-  // scroll content of FControl
+  // scroll logical client area of FControl
   OldPosition := FPosition;
   FPosition := Value;
   if FControl is TScrollingWinControl then
