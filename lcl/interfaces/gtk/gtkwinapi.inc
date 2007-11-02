@@ -5901,13 +5901,15 @@ begin
       end;
     SM_CXHSCROLL:
       begin
-        P:=GetStyleWidget(lgsVerticalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Width;
+        P := GetStyleWidget(lgsVerticalScrollbar);
+        if P <> nil then
+          Result := GTK_Widget(P)^.requisition.Width;
       end;
     SM_CYHSCROLL:
       begin
-        P:=GetStyleWidget(lgsHorizontalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Height;
+        P := GetStyleWidget(lgsHorizontalScrollbar);
+        if P <> nil then
+          Result := GTK_Widget(P)^.requisition.Height;
       end;
     SM_CXHTHUMB:
       begin
