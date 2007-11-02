@@ -45,8 +45,14 @@ end;
 
 function TScrollingWinControl.GetLogicalClientRect: TRect;
 begin
-  Result:=Rect(0,0,Max(ClientWidth,FHorzScrollBar.Range),
-                   Max(ClientHeight,FVertScrollBar.Range));
+  Result:=ClientRect;
+  {if (FHorzScrollBar.Range>Result.Right)
+  or (FVertScrollBar.Range>Result.Bottom) then
+    DebugLn(['TScrollingWinControl.GetLogicalClientRect Client=',ClientWidth,'x',ClientHeight,' Ranges=',FHorzScrollBar.Range,'x',FVertScrollBar.Range]);}
+  if (FHorzScrollBar.Range>Result.Right) then
+    Result.Right:=FHorzScrollBar.Range;
+  if (FVertScrollBar.Range>Result.Bottom) then
+    Result.Bottom:=FVertScrollBar.Range;
 end;
 
 procedure TScrollingWinControl.AlignControls(AControl: TControl;
@@ -219,7 +225,7 @@ end;
 
 procedure TScrollingWinControl.WMHScroll(var Message : TLMHScroll);
 begin
-  DebugLn(['TScrollingWinControl.WMHScroll ',dbgsName(Self)]);
+  //DebugLn(['TScrollingWinControl.WMHScroll ',dbgsName(Self)]);
   HorzScrollbar.ScrollHandler(Message);
 end;
 

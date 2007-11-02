@@ -8859,7 +8859,6 @@ begin
     RealizeGtkStyleColor(Style,Result);
 end;
 
-{$IFDEF Gtk2}
 function GetStyleGroupboxFrameBorders: TRect;
 const s = 200;
 var
@@ -8877,8 +8876,12 @@ begin
     allocation.height:=s;
     gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
     FrameWidget:=pGtkFrame(StyleObject^.Widget);
+    {$IFDEF Gtk1}
+    allocation:=FrameWidget^.bin.child^.allocation;
+    {$ELSE}
     GTK_FRAME_GET_CLASS(FrameWidget)^.compute_child_allocation(
       FrameWidget,@allocation);
+    {$ENDIF}
     //DebugLn(['GetStyleGroupboxFrame BBB2 ',dbgs(allocation)]);
     f.Left:=Min(s,Max(0,allocation.x));
     f.Top:=Min(s,Max(0,allocation.y));
@@ -8921,6 +8924,7 @@ begin
   Result:=StyleObject^.FrameBorders;
 end;
 
+{$IFDEF Gtk2}
 function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
 const s = 400;
 var
@@ -8942,13 +8946,13 @@ begin
     InnerWidget:=PGTKWidget(
           gtk_object_get_data(PGtkObject(StyleObject^.Widget),'fixedwidget'));
     allocation:=InnerWidget^.allocation;
-    DebugLn(['GetStyleFormFrameBorders BBB2 ',dbgs(allocation),' WithMenu=',WithMenu,' ClientWidget=',GetWidgetDebugReport(InnerWidget)]);
+    //DebugLn(['GetStyleFormFrameBorders BBB2 ',dbgs(allocation),' WithMenu=',WithMenu,' ClientWidget=',GetWidgetDebugReport(InnerWidget)]);
     f.Left:=Min(s,Max(0,allocation.x));
     f.Top:=Min(s,Max(0,allocation.y));
     f.Right:=Max(0,Min(s-f.Left,s-allocation.x-allocation.width));
     f.Bottom:=Max(0,Min(s-f.Top,s-allocation.x-allocation.width));
     StyleObject^.FrameBorders:=f;
-    DebugLn(['GetStyleFormFrameBorders FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
+    //DebugLn(['GetStyleFormFrameBorders FrameBorders=',dbgs(StyleObject^.FrameBorders)]);
     StyleObject^.FrameBordersValid:=true;
   end;
   
@@ -8965,7 +8969,7 @@ begin
   Result.Top:=Min(Outer.height,Max(0,Inner.y));
   Result.Right:=Max(0,Min(Outer.width-f.Left,Outer.width-Inner.x-Inner.width));
   Result.Bottom:=Max(0,Min(Outer.height-f.Top,Outer.height-Inner.x-Inner.width));
-  DebugLn(['GetStyleFormFrameBorders BBB3 Inner=',dbgs(Inner),' Outer=',dbgs(Outer),' WithMenu=',WithMenu,' InnerWidget=',GetWidgetDebugReport(InnerWidget),' Result=',dbgs(Result)]);
+  //DebugLn(['GetStyleFormFrameBorders BBB3 Inner=',dbgs(Inner),' Outer=',dbgs(Outer),' WithMenu=',WithMenu,' InnerWidget=',GetWidgetDebugReport(InnerWidget),' Result=',dbgs(Result)]);
 end;
 {$ENDIF}
 

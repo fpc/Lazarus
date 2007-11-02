@@ -417,7 +417,7 @@ begin
   if p.y<1 then exit;
   CodeBuf:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
   if CodeBuf=nil then exit;
-  
+  // ToDo
   
   while (p.y<=SrcEdit.LineCount) do begin
     Line:=SrcEdit.Lines[p.y-1];

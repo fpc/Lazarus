@@ -30,7 +30,7 @@
 
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'xxxTButtonPanel';
+const CheckPostionClassName = 'TPage';
 const CheckPostionName = 'xxxBakProjTypeRadioGroup';
 const CheckPostionParentName = 'xxxInheritedPage';
 
@@ -3435,7 +3435,6 @@ function TWinControl.GetClientRect: TRect;
 var
   InterfaceWidth, InterfaceHeight: integer;
 begin
-  //DebugLn(['TWinControl.GetClientRect ',DbgSName(Self),' ',DbgSName(Parent)]);
   if wcfClientRectNeedsUpdate in FWinControlFlags then begin
     if TWSWinControlClass(WidgetSetClass).GetDefaultClientRect(Self,
       Left, Top, Width, Height, Result)
@@ -6480,7 +6479,8 @@ begin
       ' OldRelBounds=',dbgs(FBoundsRealized),
       ' -> NewBounds=',dbgs(BoundsRect));
     {$ENDIF}
-    DoSendBoundsToInterface;
+    if (Width>0) and (Height>0) then
+      DoSendBoundsToInterface;
 
     if wcfColorChanged in FWinControlFlags then begin
       // replace by update style call

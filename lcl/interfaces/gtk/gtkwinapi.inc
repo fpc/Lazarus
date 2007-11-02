@@ -4645,7 +4645,6 @@ Function TGtkWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean
 var
   Widget, ClientWidget: PGtkWidget;
   
-  {$IFDEF Gtk2}
   procedure GetNoteBookClientRect(NBWidget: PGtkNotebook);
   var
     PageIndex: LongInt;
@@ -4678,7 +4677,6 @@ var
       //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
     end;
   end;
-  {$ENDIF}
 
 begin
   Result := false;
@@ -4696,10 +4694,8 @@ begin
     ARect.Right:=0;
     ARect.Bottom:=0;
   end;
-  {$IFDEF Gtk2}
-  if GtkWidgetIsA(Widget,GTK_TYPE_NOTEBOOK) then
+  if GtkWidgetIsA(Widget,gtk_notebook_get_type) then
     GetNoteBookClientRect(PGtkNoteBook(Widget));
-  {$ENDIF}
   {$IfDef VerboseGetClientRect}
   if ClientWidget<>nil then begin
     DebugLn('GetClientRect  Widget=',DbgS(handle),

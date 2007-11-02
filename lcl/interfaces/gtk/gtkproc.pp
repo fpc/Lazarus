@@ -778,9 +778,9 @@ function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
 function GetStyleWithName(const WName: String): PGTKStyle;
 function GetStyleWidget(aStyle: TLazGtkStyle): PGTKWidget;
 function GetStyleWidgetWithName(const WName: String): PGTKWidget;
-{$IFDEF Gtk2}
 function GetStyleGroupboxFrameBorders: TRect;
 function GetStyleNotebookFrameBorders: TRect;
+{$IFDEF Gtk2}
 function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
 {$ENDIF}
 procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
