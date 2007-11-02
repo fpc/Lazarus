@@ -4040,9 +4040,9 @@ begin
     end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl IsControlMouseMsg                                               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl IsControlMouseMsg
+------------------------------------------------------------------------------}
 function TWinControl.IsControlMouseMsg(var TheMessage: TLMMouse) : Boolean;
 var
   Control : TControl;
@@ -4060,8 +4060,9 @@ begin
     then Control := CaptureControl;
   end
   else begin
-    // do not query wincontrol childs, because they get their own messages
-    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),[]);
+    // do query wincontrol childs, in case they overlap
+    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
+                            [capfAllowWinControls]);
   end;
 
   //DebugLn('TWinControl.IsControlMouseMsg B ',DbgSName(Self),' Control=',DbgSName(Control));
