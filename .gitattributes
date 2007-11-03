@@ -1186,6 +1186,7 @@ docs/Packages.txt svneol=native#text/plain
 docs/RemoteDebugging.txt svneol=native#text/plain
 docs/TODO svneol=native#text/plain
 docs/acknowledgements.txt svneol=native#text/plain
+docs/booth/ProdProgEntwMitOpenSourceSystems2007.odp -text
 docs/contributors.utf8 svneol=native#text/plain
 docs/html/README.txt svneol=native#text/plain
 docs/html/fpdoc.css svneol=native#text/css
