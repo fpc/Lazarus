@@ -102,9 +102,7 @@ type
     function SaveDC: Integer;
     function RestoreDC(ASavedDC: Integer): Boolean;
     
-    function BeginTextRender(AStr: PChar; ACount: Integer;
-                             const ADisableFractionalPositions:Boolean;
-                             out ALayout: ATSUTextLayout): Boolean;
+    function BeginTextRender(AStr: PChar; ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
     procedure EndTextRender(var ALayout: ATSUTextLayout);
     
     procedure SetAntialiasing(AValue: Boolean);
@@ -595,7 +593,6 @@ end;
   Method:  TCarbonDeviceContext.BeginTextRender
   Params:  AStr    - UTF8 string to render
            ACount  - Count of chars to render
-           ADisableFractionalPositions - whether to disable fractional positions
            ALayout - ATSU layout
   Returns: If the function suceeds
 
@@ -603,9 +600,8 @@ end;
   context to render the text.
   NOTE: Coordination system is set upside-down!
  ------------------------------------------------------------------------------}
-function TCarbonDeviceContext.BeginTextRender(AStr: PChar; ACount: Integer;
-                                              const ADisableFractionalPositions:Boolean;
-                                              out ALayout: ATSUTextLayout): Boolean;
+function TCarbonDeviceContext.BeginTextRender(AStr: PChar; ACount: Integer; out
+  ALayout: ATSUTextLayout): Boolean;
 var
   TextStyle: ATSUStyle;
   TextLength: LongWord;
@@ -650,16 +646,15 @@ begin
     Self, SName, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
 
   // disable fractional positions of glyphs in layout
-  if ADisableFractionalPositions then begin
-     Tag := kATSULineLayoutOptionsTag;
-     DataSize := SizeOf(ATSLineLayoutOptions);
+  Tag := kATSULineLayoutOptionsTag;
+  DataSize := SizeOf(ATSLineLayoutOptions);
 
-     Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
-     kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
-     PValue := @Options;
-     if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
-        Self, SName, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
-     end;
+  Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
+    kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
+  PValue := @Options;
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
+    Self, SName, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
+
 
   // set layout context
   Tag := kATSUCGContextTag;
@@ -842,7 +837,7 @@ const
 begin
   Result := False;
   
-  if not BeginTextRender(Str, Count, Dx<>nil, TextLayout) then
+  if not BeginTextRender(Str, Count, TextLayout) then
   begin
     // It is possible that the background should be filled even without text;
     if (Options and ETO_OPAQUE) > 0 then
@@ -980,7 +975,7 @@ begin
   Size.cx := 0;
   Size.cy := 0;
 
-  if not BeginTextRender(Str, Count, false, TextLayout) then Exit;
+  if not BeginTextRender(Str, Count, TextLayout) then Exit;
   try
     // finally compute the text dimensions
     if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
@@ -1023,7 +1018,7 @@ begin
 
   // According to the MSDN library, TEXTMETRIC:
   // the average char width is generally defined as the width of the letter x
-  if not BeginTextRender('x', 1, false, TextLayout) then Exit;
+  if not BeginTextRender('x', 1, TextLayout) then Exit;
   try
     if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
           kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
