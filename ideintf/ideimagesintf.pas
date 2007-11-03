@@ -25,7 +25,7 @@ unit IDEImagesIntf;
 interface
 
 uses
-  Classes, SysUtils, ImgList, Controls, Graphics, LResources;
+  Classes, SysUtils, LCLProc, ImgList, Controls, Graphics, LResources;
 
 type
 
@@ -164,6 +164,9 @@ begin
               Graphic.LoadFromStream(Stream);
               Result := List.Add(TBitmap(Graphic), nil);
               Names.AddObject(ImageName, TObject(PtrInt(Result)));
+              //DebugLn(['TIDEImages.LoadImage ',ImageName,' ',Graphic.Transparent]);
+              //if Graphic is TBitmap then
+              //  DebugLn(['TIDEImages.LoadImage ',dbgs(TBitmap(Graphic).TransparentColor),' ',dbgs(ord(TBitmap(Graphic).TransparentMode))]);
             finally
               Graphic.Free;
             end;

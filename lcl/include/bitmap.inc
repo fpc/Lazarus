@@ -1176,6 +1176,7 @@ var
   ImgHandle, MskHandle: HBitmap;
   TransColor: TColor;
 begin
+  //DebugLn(['TBitmap.CreateMask ',Width,'x',Height,' ',Transparent,' ',dbgs(ord(TransparentMode)),' ',dbgs(TransparentColor)]);
   if (Width = 0)
   or (Height = 0)
   or (AColor = clNone)

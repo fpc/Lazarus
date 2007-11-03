@@ -233,7 +233,7 @@ var
 begin
   // detect loop
   if FUseParentCanvas then exit;
-  
+
   if csDesigning in ComponentState
   then DrawFrame;
   

@@ -6670,7 +6670,8 @@ begin
     if (LCLObject=CurrentSentPaintMessageTarget) then begin
       DebugLn('NOTE: TGtkWidgetSet.InvalidateRect during paint message: ',
         LCLObject.ClassName);
-      //RaiseException('Double paint');
+      //DumpStack;
+      //RaiseGDBException('Double paint');
     end;
     {$IFDEF VerboseDsgnPaintMsg}
     if (LCLObject is TComponent)
