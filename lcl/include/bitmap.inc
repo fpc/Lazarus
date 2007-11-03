@@ -311,44 +311,12 @@ begin
 end;
 
 procedure TBitmap.SetTransparentColor(const AValue: TColor);
-var
-  IntfImage: TLazIntfImage;
-  y: Integer;
-  x: Integer;
-  CurColor: TFPColor;
-  ImgHandle, ImgMaskHandle: HBitmap;
-  r: Byte;
-  g: Byte;
-  b: Byte;
 begin
-  if FTransparentColor=AValue then exit;
-  FTransparentColor:=AValue;
-  if (FTransparentColor and not $ffffff)=0 then begin
-    IntfImage:=nil;
-    try
-      CreateIntfImage(IntfImage);
-      r:=Red(FTransparentColor);
-      g:=Green(FTransparentColor);
-      b:=Blue(FTransparentColor);
-      for y:=0 to IntfImage.Height-1 do begin
-        for x:=0 to IntfImage.Width-1 do begin
-          CurColor:=IntfImage.Colors[x,y];
-          if ((CurColor.red shr 8)=r)
-          and ((CurColor.green shr 8)=g)
-          and ((CurColor.blue shr 8)=b) then begin
-            CurColor.alpha:=alphaTransparent;
-          end else begin
-            CurColor.alpha:=alphaOpaque;
-          end;
-          IntfImage.Colors[x,y]:=CurColor;
-        end;
-      end;
-      IntfImage.CreateBitmaps(ImgHandle, ImgMaskHandle);
-      SetHandles(ImgHandle, ImgMaskHandle);
-    finally
-      IntfImage.Free;
-    end;
-  end;
+  if FTransparentColor = AValue then exit;
+  FTransparentColor := AValue;
+  if FTransparentMode <> tmFixed then Exit;
+
+  CreateMask;
 end;
 
 procedure TBitmap.UpdatePixelFormat;
@@ -456,7 +424,8 @@ end;
 
 procedure TBitMap.MaskHandleNeeded;
 begin
-  //TODO
+  if (FImage.FMaskHandle <> 0) then exit;
+  CreateMask;
 end;
 
 procedure TBitmap.LoadFromLazarusResource(const ResName: String);
@@ -1198,6 +1167,53 @@ begin
   CreateIntfImage(Result);
 end;
 
+procedure TBitmap.CreateMask;
+var
+  IntfImage: TLazIntfImage;
+  x, y, stopx, stopy: Integer;
+  TransColor: TColor;
+  ImgHandle, MskHandle: HBitmap;
+  Desc: TRawImageDescription;
+begin
+  if (Width = 0)
+  or (Height = 0)
+  or ((FTransparentMode = tmFixed) and(FTransparentColor = clNone))
+  then begin
+    SetHandles(FImage.FHandle, 0);
+    Exit;
+  end;
+  
+  {$note todo: move to IntfImage}
+  IntfImage := TLazIntfImage.Create(0, 0);
+  try
+    // load from bitmap needs a mask handle otherwise no mask description is
+    // created.
+    MskHandle := FImage.FMaskHandle;
+    if MskHandle = 0
+    then MskHandle := CreateBitmap(Width, Height, 1, 1, nil);
+    IntfImage.LoadFromBitmap(Handle, MskHandle);
+    if MskHandle <> FImage.FMaskHandle
+    then DeleteObject(MskHandle);
+    
+    stopx := IntfImage.Width - 1;
+    stopy := IntfImage.Height - 1;
+
+    if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
+    then TransColor := ColorToRGB(FTransparentColor)
+    else TransColor := FPColorToTColor(IntfImage.Colors[0, stopy]);
+
+    for y := 0 to stopy do
+      for x := 0 to stopx do
+        IntfImage.Masked[x,y] := FPColorToTColor(IntfImage.Colors[x,y]) = TransColor;
+
+    IntfImage.CreateBitmaps(ImgHandle, MskHandle);
+    SetHandles(FImage.FHandle, MskHandle);
+    DeleteObject(ImgHandle);
+  finally
+    IntfImage.Free;
+  end;
+end;
+
 function TBitmap.GetEmpty: boolean;
 begin
   Result:=FImage.IsEmpty;
@@ -1249,8 +1265,9 @@ end;
 
 procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
 begin
-  if Value=TransparentMode then exit;
+  if Value = TransparentMode then exit;
   FTransparentMode := Value;
+  CreateMask;
 end;
 
 // included by graphics.pp

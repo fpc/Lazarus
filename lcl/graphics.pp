@@ -1126,6 +1126,7 @@ type
     procedure FreeCanvasContext;
     function GetCanvas: TCanvas;
     procedure CreateCanvas;
+    procedure CreateMask;
     function GetMonochrome: Boolean;
     procedure SetHandle(Value: HBITMAP);
     procedure SetMaskHandle(NewMaskHandle: HBITMAP);
