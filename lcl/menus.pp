@@ -330,7 +330,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property Items;
     property OnChange;
   end;
 

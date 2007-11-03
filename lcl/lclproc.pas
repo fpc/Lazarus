@@ -1329,10 +1329,10 @@ begin
     vtQWord: DbgOut(dbgs(Args[i].VQWord^));
     vtBoolean: DbgOut(dbgs(Args[i].vboolean));
     vtExtended: DbgOut(dbgs(Args[i].VExtended^));
-{$ifdef FPC_CURRENCY_IS_INT64}
+{$if defined(FPC_CURRENCY_IS_INT64) and defined(VER2_0)}
     // MWE:
-    // ppcppc 2.0.2 has troubles in choosing the right dbgs() 
-    // so we convert here (i don't know about other versions
+    // ppcppc 2.0.x has troubles in choosing the right dbgs()
+    // so we convert here
     vtCurrency: DbgOut(dbgs(int64(Args[i].vCurrency^)/10000, 4));
 {$else}    
     vtCurrency: DbgOut(dbgs(Args[i].vCurrency^));
