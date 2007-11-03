@@ -115,7 +115,7 @@ type
     procedure ParseCommandLine;
     function GetCommandLineParameters: string;
     function GetLazarusPath(const FileName: string): string;
-    function RenameLazarusExecutables: TModalResult;
+    function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
     procedure WaitForLazarus;
   public
@@ -187,24 +187,19 @@ begin
       FileName + GetExeExt;
 end;
 
-function TLazarusManager.RenameLazarusExecutables: TModalResult;
+function TLazarusManager.RenameLazarusExecutable(const Directory: string
+  ): TModalResult;
 var
-  NewFileName: string;
-  BackupFileName: String;
+  NewFilename: String;
+  BackupFilename: String;
+  CurFilename: String;
 begin
-  Result := mrOK;
-  { There are several cases:
-    1. user has not yet created a custom IDE
-    2. user has created a custom IDE (~/.lazarus/bin/)
-  
-  
-  }
-  NewFileName := GetLazarusPath('lazarus.new');
-  FLazarusPath := GetLazarusPath('lazarus');
-  BackupFileName := GetLazarusPath('lazarus.old');
+  NewFilename:=AppendPathDelim(Directory)+'lazarus.new'+GetExeExt;
+  BackupFilename:=AppendPathDelim(Directory)+'lazarus.old'+GetExeExt;
+  CurFilename:=AppendPathDelim(Directory)+'lazarus'+GetExeExt;
   if FileExists(NewFileName) then
   begin
-    if FileExists(FLazarusPath) then
+    if FileExists(CurFilename) then
     begin
       if FileExists(BackupFileName) then
         if not DeleteFile(BackupFileName) then begin
@@ -213,25 +208,21 @@ begin
           Result := mrAbort;
           exit;
         end;
-      if not RenameFile(FLazarusPath, BackupFileName) then begin
+      if not RenameFile(CurFilename, BackupFileName) then begin
         MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [FLazarusPath, BackupFileName, SysErrorMessage(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
         exit;
       end;
     end;
-    if not RenameFile(NewFileName, FLazarusPath) then begin
+    if not RenameFile(NewFileName, CurFilename) then begin
       MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [NewFileName, FLazarusPath, SysErrorMessage(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
       exit;
     end;
   end;
-  if not FileExists(FLazarusPath) then begin
-    MessageDlg(format('Can''t find lazarus executable: %s', [FLazarusPath]),
-      mtError, [mbOK], 0);
-    Result := mrAbort;
-  end;
+  Result:=mrOk;
 end;
 
 procedure TLazarusManager.LazarusProcessStart(Sender: TObject);
@@ -287,12 +278,91 @@ end;
 procedure TLazarusManager.Run;
 var
   Restart: boolean;
+  DefaultDir: String;
+  CustomDir: String;
+  DefaultExe: String;
+  CustomExe: String;
+  MsgResult: TModalResult;
 begin
   WaitForLazarus;
+  try
+    DefaultDir:=ExtractFilePath(ExpandFileName(ParamStr(0)));
+    if DirectoryExists(DefaultDir) then
+      DefaultDir:=ReadAllLinks(DefaultDir,true);
+  except
+    on E: Exception do begin
+      MessageDlg('Error',E.Message,mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+  DefaultDir:=AppendPathDelim(DefaultDir);
+  CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
+
   repeat
     ShowSplash;
     Restart := false;
-    if RenameLazarusExecutables=mrOK then begin
+    { There are four places where the newest lazarus exe can be:
+      1. in the same directory as the startlazarus exe
+      1.1 as lazarus.new(.exe) (if the executable was write locked (windows))
+      1.2 as lazarus(.exe) (if the executable was writable (non windows))
+      2. in the config directory (e.g. ~/.lazarus/bin/)
+      2.1 as lazarus.new(.exe) (if the executable was write locked (windows))
+      2.2 as lazarus(.exe) (if the executable was writable (non windows))
+    }
+    if (RenameLazarusExecutable(DefaultDir)=mrOK)
+    and (RenameLazarusExecutable(CustomDir)=mrOK) then begin
+      DefaultExe:=DefaultDir+'lazarus'+GetExeExt;
+      CustomExe:=CustomDir+'lazarus'+GetExeExt;
+      if FileExists(DefaultExe) then begin
+        if FileExists(CustomExe) then begin
+          // both exist
+          if FileAge(CustomExe)>FileAge(DefaultExe) then begin
+            // the custom exe is newer => use custom
+            FLazarusPath:=CustomExe;
+          end else begin
+            // the custom exe is older => let user choose
+            MsgResult:=QuestionDlg('Multiple lazarus found',
+              'Which Lazarus should be started?'#13
+              +#13
+              +'The system default executable'#13
+              +DefaultExe+#13
+              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAge(DefaultExe)))+')'#13
+              +#13
+              +'Or your custom executable'#13
+              +CustomExe+#13
+              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAge(CustomExe)))+')'#13
+              ,mtConfirmation,
+              [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],0
+              );
+            case MsgResult of
+            mrYes: FLazarusPath:=DefaultExe;
+            mrNo: FLazarusPath:=CustomExe;
+            else break;
+            end;
+          end;
+        end else begin
+          // only the default exists => use default
+          FLazarusPath:=DefaultExe;
+        end;
+      end else begin
+        if FileExists(CustomExe) then begin
+          // only the custom exists => warn user
+          MessageDlg('System default is missing',
+            'The system default lazarus executable is missing, but your custom'
+            +'executable is still there:'#13
+            +CustomExe+#13
+            +'This will be started ...'
+            ,mtInformation,[mbOk],0);
+          FLazarusPath:=CustomExe;
+        end else begin
+          // no exe exists
+          MessageDlg('File not found','Can''t find the lazarus executable '+DefaultExe,
+            mtError,[mbAbort],0);
+          break;
+        end;
+      end;
+
+      DebugLn(['TLazarusManager.Run starting ',FLazarusPath,' ...']);
       FLazarusProcess :=
         TLazarusProcess.Create(FLazarusPath, GetCommandLineParameters);
       FLazarusProcess.OnStart := @LazarusProcessStart;
