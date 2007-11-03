@@ -725,7 +725,7 @@ begin
           begin
             Parent:= Page[NewPage];
             Align:= alClient;
-            BorderSpacing.Around := 6;
+            BorderSpacing.Around := 0;
             ClickOnSelChange:=false;
             OnClick:= @ListBoxClicked;
             OnDblClick:= @ListBoxDoubleClicked;
