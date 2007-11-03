@@ -193,6 +193,9 @@ var
   BackupFileName: String;
 begin
   Result := mrOK;
+  
+  
+  
   NewFileName := GetLazarusPath('lazarus.new');
   FLazarusPath := GetLazarusPath('lazarus');
   BackupFileName := GetLazarusPath('lazarus.old');

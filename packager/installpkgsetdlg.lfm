@@ -154,11 +154,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     ClientWidth = 511
     TabOrder = 5
     object PkgInfoMemo: TMemo
-      Left = 5
-      Height = 38
-      Top = 5
-      Width = 496
-      Anchors = [akTop, akLeft, akRight, akBottom]
+      Height = 66
+      Width = 511
+      Align = alClient
       ReadOnly = True
       ScrollBars = ssAutoVertical
       TabOrder = 0

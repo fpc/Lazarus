@@ -48,7 +48,6 @@ LazarusResources.Add('TInstallPkgSetDialog','FORMDATA',[
   +'upBox'#4'Left'#2#7#6'Height'#2'U'#3'Top'#3'2'#1#5'Width'#3#3#2#7'Anchors'#11
   +#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#15'PkgInfoGroupBox'#12'Clie'
   +'ntHeight'#2'B'#11'ClientWidth'#3#255#1#8'TabOrder'#2#5#0#5'TMemo'#11'PkgInf'
-  +'oMemo'#4'Left'#2#5#6'Height'#2'&'#3'Top'#2#5#5'Width'#3#240#1#7'Anchors'#11
-  +#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'ReadOnly'#9#10'ScrollBars'#7
-  +#14'ssAutoVertical'#8'TabOrder'#2#0#0#0#0#0
+  +'oMemo'#6'Height'#2'B'#5'Width'#3#255#1#5'Align'#7#8'alClient'#8'ReadOnly'#9
+  +#10'ScrollBars'#7#14'ssAutoVertical'#8'TabOrder'#2#0#0#0#0#0
 ]);
