@@ -2709,6 +2709,7 @@ begin
     exit(mrOK);
   end;
 
+  PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
   if not ConvertRSTFiles(PkgOutputDirectory,RSTOutputDirectory) then begin
     DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
     exit(mrCancel);
