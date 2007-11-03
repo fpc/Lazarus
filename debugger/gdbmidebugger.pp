@@ -1652,9 +1652,19 @@ function TGDBMIDebugger.ProcessRunning(var AStoppedParams: String): Boolean;
     DebugLn('[Debugger] Status output: ', Line);
   end;
 
-  procedure DoNotifyAsync(const Line: String);
+  procedure DoNotifyAsync(var Line: String);
+  var
+    S: String;
   begin
-    DebugLn('[Debugger] Notify output: ', Line);
+    S := GetPart('=', ',', Line);
+    case StringCase(S, ['shlibs-added', 'shlibs-updated']) of
+      0: begin
+        //TODO: track libs
+      end;
+      1:; //ignore
+    else
+      DebugLn('[Debugger] Notify output: ', Line);
+    end;
   end;
 
   procedure DoResultRecord(const Line: String);
