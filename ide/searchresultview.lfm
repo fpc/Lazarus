@@ -1,7 +1,7 @@
 object SearchResultsView: TSearchResultsView
-  Left = 244
+  Left = 247
   Height = 229
-  Top = 362
+  Top = 353
   Width = 799
   HorzScrollBar.Page = 798
   VertScrollBar.Page = 228
@@ -16,8 +16,8 @@ object SearchResultsView: TSearchResultsView
   object ResultsNoteBook: TNotebook
     AnchorSideTop.Control = gbSearchPhraseInList
     AnchorSideTop.Side = asrBottom
-    Height = 164
-    Top = 65
+    Height = 157
+    Top = 72
     Width = 799
     Align = alBottom
     Anchors = [akTop, akLeft]
@@ -30,9 +30,9 @@ object SearchResultsView: TSearchResultsView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 23
+    Height = 29
     Top = 6
-    Width = 90
+    Width = 97
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Search Again'
@@ -46,16 +46,16 @@ object SearchResultsView: TSearchResultsView
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 216
-    Height = 53
+    Left = 236
+    Height = 60
     Top = 6
-    Width = 577
+    Width = 557
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Search or Filter Phrases In List'
-    ClientHeight = 35
-    ClientWidth = 573
+    ClientHeight = 41
+    ClientWidth = 553
     TabOrder = 2
     object edSearchInList: TEdit
       AnchorSideLeft.Control = gbSearchPhraseInList
@@ -65,10 +65,9 @@ object SearchResultsView: TSearchResultsView
       Height = 23
       Hint = 'Enter one or more phrases that you want'#10'to Search or Filter in the list,'#10'seperated by space ( '' '' ), or comma ( , )'
       Top = 6
-      Width = 288
+      Width = 255
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      Font.CharSet = 35
       OnChange = edSearchInListChange
       OnKeyDown = edSearchInListKeyDown
       ParentShowHint = False
@@ -76,10 +75,10 @@ object SearchResultsView: TSearchResultsView
       TabOrder = 0
     end
     object bnForwardSearch: TButton
-      Left = 354
-      Height = 23
+      Left = 315
+      Height = 29
       Top = 6
-      Width = 101
+      Width = 111
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -88,10 +87,10 @@ object SearchResultsView: TSearchResultsView
       TabOrder = 1
     end
     object bnResetResults: TButton
-      Left = 461
-      Height = 23
+      Left = 432
+      Height = 29
       Top = 6
-      Width = 106
+      Width = 115
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -100,10 +99,10 @@ object SearchResultsView: TSearchResultsView
       TabOrder = 2
     end
     object bnFilter: TButton
-      Left = 300
-      Height = 23
+      Left = 267
+      Height = 29
       Top = 6
-      Width = 48
+      Width = 42
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -117,10 +116,10 @@ object SearchResultsView: TSearchResultsView
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 102
-    Height = 23
+    Left = 109
+    Height = 29
     Top = 6
-    Width = 108
+    Width = 121
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ClosePageButton'

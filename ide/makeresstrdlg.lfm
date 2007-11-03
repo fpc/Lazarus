@@ -1,7 +1,7 @@
 object MakeResStrDialog: TMakeResStrDialog
-  Left = 420
+  Left = 432
   Height = 513
-  Top = 201
+  Top = 212
   Width = 480
   HorzScrollBar.Page = 479
   VertScrollBar.Page = 512
@@ -336,7 +336,6 @@ object MakeResStrDialog: TMakeResStrDialog
         Width = 452
         Align = alClient
         BorderSpacing.Around = 6
-        Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -13
         Font.Name = 'Courier'
@@ -344,7 +343,9 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -671,6 +672,7 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'SrcPreviewSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object StringConstGroupBox: TGroupBox
@@ -689,7 +691,6 @@ object MakeResStrDialog: TMakeResStrDialog
         Width = 452
         Align = alClient
         BorderSpacing.Around = 6
-        Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -13
         Font.Name = 'Courier'
@@ -697,7 +698,9 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -1024,6 +1027,7 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'StringConstSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object Splitter1: TSplitter
