@@ -425,7 +425,9 @@ end;
 procedure TBitMap.MaskHandleNeeded;
 begin
   if (FImage.FMaskHandle <> 0) then exit;
-  CreateMask;
+  // not now, breaks alpha images, since they report themselves as transparent
+  // while no mask is needed
+  // CreateMask;
 end;
 
 procedure TBitmap.LoadFromLazarusResource(const ResName: String);
