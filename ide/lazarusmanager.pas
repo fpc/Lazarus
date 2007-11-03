@@ -193,9 +193,12 @@ var
   BackupFileName: String;
 begin
   Result := mrOK;
+  { There are several cases:
+    1. user has not yet created a custom IDE
+    2. user has created a custom IDE (~/.lazarus/bin/)
   
   
-  
+  }
   NewFileName := GetLazarusPath('lazarus.new');
   FLazarusPath := GetLazarusPath('lazarus');
   BackupFileName := GetLazarusPath('lazarus.old');

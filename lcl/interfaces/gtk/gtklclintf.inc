@@ -564,8 +564,8 @@ var
 begin
   Result:=true;
   if Constraints is TSizeConstraints then begin
-    MinWidth := 1;
-    MinHeight := 1;
+    MinWidth:=1;
+    MinHeight:=1;
     MaxWidth:=0;
     MaxHeight:=0;
     SizeConstraints:=TSizeConstraints(Constraints);
@@ -577,14 +577,13 @@ begin
       if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
         Widget:=GetStyleWidget(lgsHorizontalScrollbar);
         MinHeight:=Widget^.requisition.Height;
+        MaxHeight:=MinHeight;
       end else begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
         MinWidth:=Widget^.requisition.Width;
+        MaxWidth:=MinWidth;
       end;
       //DebugLn('TGtkWidgetSet.GetControlConstraints A '+dbgs(MinWidth)+','+dbgs(MinHeight),' ',dbgs(TScrollBar(SizeConstraints.Control).Kind=sbHorizontal),' ',TScrollBar(SizeConstraints.Control).Name);
-      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
-                                              MinWidth,MinHeight);
-      exit;
     end
     else if SizeConstraints.Control is TCustomSplitter then begin
       // TCustomSplitter
@@ -592,13 +591,12 @@ begin
       begin
         Widget:=GetStyleWidget(lgsHorizontalPaned);
         MinHeight:=Widget^.requisition.Height;
+        MaxHeight:=MinHeight;
       end else begin
         Widget:=GetStyleWidget(lgsVerticalPaned);
         MinWidth:=Widget^.requisition.Width;
+        MaxWidth:=MinWidth;
       end;
-      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
-                                              MinWidth,MinHeight);
-      exit;
     end
     else if SizeConstraints.Control is TCustomMemo then begin
       // TCustomMemo
