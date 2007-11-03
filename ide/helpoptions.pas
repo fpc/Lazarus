@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls,
+  StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit,
   ObjectInspector, LazHelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
 
@@ -70,22 +70,23 @@ type
   { THelpOptionsDialog }
 
   THelpOptionsDialog = class(TForm)
+    HelpButton: TBitBtn;
+    CancelButton: TBitBtn;
     FPCDocHTMLBrowseButton: TButton;
     FPCDocHTMLEdit: TEdit;
     FPCDocHTMLLabel: TLabel;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
     DataBasePage: TPage;
     DatabasesLabel: TLabel;
     DataBasesPropsGroupBox: TGroupBox;
     DatabasesListBox: TListBox;
     GeneralPage: TPage;
-    BtnPanel: TPanel;
+    OkButton: TBitBtn;
     ViewerPropsGroupBox: TGroupBox;
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
     MainNotebook: TNotebook;
     ViewersPage: TPage;
+    procedure HelpButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure DatabasesListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure FPCDocHTMLBrowseButtonClick(Sender: TObject);
@@ -153,6 +154,7 @@ begin
     Name:='ViewersPropertiesGrid';
     Parent:=ViewerPropsGroupBox;
     Align:=alClient;
+    BorderSpacing.Around := 6;
   end;
   
   DatabasesPropertiesGrid:=TCustomPropertiesGrid.Create(Self);
@@ -160,6 +162,7 @@ begin
     Name:='DatabasesPropertiesGrid';
     Parent:=DataBasesPropsGroupBox;
     Align:=alClient;
+    BorderSpacing.Around := 6;
   end;
 
   FillGeneralPage;
@@ -273,6 +276,11 @@ procedure THelpOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   // ToDo: restore backup
   ModalResult:=mrCancel;
+end;
+
+procedure THelpOptionsDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure THelpOptionsDialog.DatabasesListBoxSelectionChange(Sender: TObject;
