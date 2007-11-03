@@ -1250,7 +1250,7 @@ end;
 procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
 begin
   if Value=TransparentMode then exit;
-  DebugLn('Note: TBitmap.SetTransparentMode not implemented');
+  FTransparentMode := Value;
 end;
 
 // included by graphics.pp
