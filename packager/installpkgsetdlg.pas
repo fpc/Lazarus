@@ -308,8 +308,6 @@ begin
   w := (ClientWidth - 3 * x) div 2;
   InstallPkgGroupBox.SetBounds(x, x, w, Height - 150);
   AvailablePkgGroupBox.SetBounds(2 * x + w, x, w, Height - 150);
-
-  SaveAndRebuildButton.Left := (Width - SaveAndRebuildButton.Width) div 2 ;
 end;
 
 procedure TInstallPkgSetDialog.SaveAndExitButtonClick(Sender: TObject);
