@@ -10052,8 +10052,6 @@ function TMainIDE.FindSourceFile(const AFilename, BaseDirectory: string;
   Flags: TFindSourceFlags): string;
 var
   CompiledSrcExt: String;
-  CompiledFilename: String;
-  CurBaseDir: String;
   BaseDir: String;
   AlreadySearchedPaths: string;
   StartUnitPath: String;
@@ -10190,51 +10188,13 @@ begin
   end;
 
   CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
-  if (fsfSearchForProject in Flags)
-  and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
-  then
-    StartUnitPath:=Project1.CompilerOptions.GetUnitPath(false)
-  else
-    StartUnitPath:=CodeToolBoss.GetUnitPathForDirectory(BaseDir);
+  StartUnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(BaseDir);
   StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
 
   // if file is a pascal unit, search via unit and src paths
   if FilenameIsPascalUnit(AFilename) then begin
     // first search file in unit path
     if SearchInPath(StartUnitPath,AFilename,Result) then exit;
-
-    // then search file in SrcPath
-    if (fsfSearchForProject in Flags)
-    and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
-    then
-      SearchPath:=Project1.CompilerOptions.GetSrcPath(false)
-    else
-      SearchPath:=CodeToolBoss.GetSrcPathForDirectory(BaseDir);
-    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
-
-    // search for the compiled version in the
-    // unit path and all inherited unit paths
-    if CompiledSrcExt<>'' then begin
-      SearchFile:=ChangeFileExt(LowerCase(ExtractFilename(AFilename)),
-                                CompiledSrcExt);
-      SearchPath:=StartUnitPath;
-      CompiledFilename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-      {$IFDEF VerboseFindSourceFile}
-      writeln('TMainIDE.FindSourceFile trying compiled units in "',SearchPath,'" CompiledFilename=',CompiledFilename);
-      {$ENDIF}
-      if CompiledFilename<>'' then begin
-        // compiled version found -> search for source in CompiledSrcPath
-        CurBaseDir:=ExtractFilePath(CompiledFilename);
-        SearchPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(CurBaseDir);
-        SearchFile:=ExtractFilename(AFilename);
-        Result:=SearchFileInPath(SearchFile,CurBaseDir,SearchPath,';',[]);
-        {$IFDEF VerboseFindSourceFile}
-        writeln('TMainIDE.FindSourceFile trying indirect path "',SearchPath,'" Result=',Result);
-        {$ENDIF}
-        if Result<>'' then exit;
-      end;
-    end;
 
     // search unit in fpc source directory
     Result:=CodeToolBoss.FindUnitInUnitLinks(BaseDir,
