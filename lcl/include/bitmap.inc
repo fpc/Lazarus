@@ -265,7 +265,7 @@ end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
-  DebugLn('TBitMap.Mask not implemented');
+  CreateMask(ATransparentColor);
 end;
 
 function TBitmap.GetHandle: HBITMAP;
@@ -1167,17 +1167,20 @@ begin
   CreateIntfImage(Result);
 end;
 
-procedure TBitmap.CreateMask;
+procedure TBitmap.CreateMask(AColor: TColor);
 var
   IntfImage: TLazIntfImage;
   x, y, stopx, stopy: Integer;
-  TransColor: TColor;
   ImgHandle, MskHandle: HBitmap;
-  Desc: TRawImageDescription;
+  TransColor: TColor;
 begin
   if (Width = 0)
   or (Height = 0)
-  or ((FTransparentMode = tmFixed) and(FTransparentColor = clNone))
+  or (AColor = clNone)
+  or (  (FTransparentMode = tmFixed)
+    and (FTransparentColor = clNone)
+    and (AColor = clDefault)
+  )
   then begin
     SetHandles(FImage.FHandle, 0);
     Exit;
@@ -1198,9 +1201,13 @@ begin
     stopx := IntfImage.Width - 1;
     stopy := IntfImage.Height - 1;
 
-    if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
-    then TransColor := ColorToRGB(FTransparentColor)
-    else TransColor := FPColorToTColor(IntfImage.Colors[0, stopy]);
+    if AColor = clDefault
+    then begin
+      if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
+      then TransColor := ColorToRGB(FTransparentColor)
+      else TransColor := FPColorToTColor(IntfImage.Colors[0, stopy]);
+    end
+    else TransColor := ColorToRGB(AColor);
 
     for y := 0 to stopy do
       for x := 0 to stopx do
