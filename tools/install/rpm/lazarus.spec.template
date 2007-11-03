@@ -50,13 +50,18 @@ mkdir -p %{buildroot}%{_datadir}/pixmaps
 # mkdir -p %{buildroot}%{_datadir}/gnome/apps/Development
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_mandir}/man1
+mkdir -p %{buildroot}/etc/lazarus
 cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
   install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
+  install -m 644 lazarus/install/lazarus-mime.xml $LazBuildDir%{buildroot}%{_datadir}/mime/packages/lazarus.xml
 ln -sf ../%{_lib}/%{name}/lazarus %{buildroot}%{_bindir}/lazarus-ide
 ln -sf ../%{_lib}/%{name}/startlazarus %{buildroot}%{_bindir}/startlazarus
 ln -sf ../%{_lib}/%{name}/lazbuild %{buildroot}%{_bindir}/lazbuild
 cat lazarus/docs/lazbuild.1 | gzip > %{buildroot}%{_mandir}/man1/lazbuild.1.gz
+  install lazarus/tools/install/linux/editoroptions.xml %{buildroot}/etc/lazarus/editoroptions.xml
+  install lazarus/tools/install/linux/environmentoptions.xml %{buildroot}/etc/lazarus/environmentoptions.xml
+
 
 %clean
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
