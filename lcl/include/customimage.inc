@@ -19,12 +19,11 @@
 constructor TCustomImage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  // obsolete: FCompStyle := csImage;
   ControlStyle:= [csCaptureMouse, csClickEvents, csDoubleClicks];
   AutoSize := False;
   FCenter := False;
   FStretch := False;
-  FTransparent := True;
+  FTransparent := False;
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
   FUseParentCanvas := false;
