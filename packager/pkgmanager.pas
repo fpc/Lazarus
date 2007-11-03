@@ -1336,8 +1336,16 @@ begin
   CodeBuffer:=CodeToolBoss.LoadFile(MakefileFPCFilename,true,true);
   if CodeBuffer=nil then begin
     CodeBuffer:=CodeToolBoss.CreateFile(MakefileFPCFilename);
+    if CodeBuffer=nil then begin
+      if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename))
+      then begin
+        // the package source is read only => no problem
+        exit(mrOk);
+      end;
+      exit(mrCancel);
+    end;
   end;
-  
+
   if CompareTextIgnoringSpace(CodeBuffer.Source,s,false)=0 then begin
     // Makefile.fpc not changed
     Result:=mrOk;
@@ -1347,7 +1355,14 @@ begin
 
   //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
   Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename)) then
+    begin
+      // the package source is read only => no problem
+      Result:=mrOk;
+    end;
+    exit;
+  end;
   
   // call fpcmake to create the Makefile
   FPCMakeTool:=TIDEExternalToolOptions.Create;

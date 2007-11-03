@@ -2703,7 +2703,12 @@ begin
   RSTOutputDirectory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
   // find all .rst files in package output directory
-  PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
+  if not DirectoryIsWritableCached(RSTOutputDirectory) then begin
+    // this package is read only
+    DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles skipping read only directory '+RSTOutputDirectory]);
+    exit(mrOK);
+  end;
+
   if not ConvertRSTFiles(PkgOutputDirectory,RSTOutputDirectory) then begin
     DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
     exit(mrCancel);
