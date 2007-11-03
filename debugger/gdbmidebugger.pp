@@ -2029,32 +2029,32 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     FTargetIsBE := False;
   
     case StringCase(AFileType, [
-      'efi-app-ia32', 'elf32-i386',
+      'efi-app-ia32', 'elf32-i386', 'pei-i386',
       'elf64-x86-64',
       'mach-o-be',
       'mach-o-le',
       'pei-arm-little',
       'pei-arm-big'
     ], True, False) of
-      0..1: FTargetCPU := 'x86';
-      2: FTargetCPU := 'x86_64';
-      3: begin
+      0..2: FTargetCPU := 'x86';
+      3: FTargetCPU := 'x86_64';
+      4: begin
          //mach-o-be
         FTargetIsBE := True;
         if FGDBCPU <> ''
         then FTargetCPU := FGDBCPU
         else FTargetCPU := 'powerpc'; // guess
       end;
-      4: begin
+      5: begin
         //mach-o-le
         if FGDBCPU <> ''
         then FTargetCPU := FGDBCPU
         else FTargetCPU := 'x86'; // guess
       end;
-      5: begin
+      6: begin
         FTargetCPU := 'arm';
       end;
-      6: begin
+      7: begin
         FTargetIsBE := True;
         FTargetCPU := 'arm';
       end;
