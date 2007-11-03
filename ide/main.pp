@@ -8408,6 +8408,7 @@ begin
 end;
 
 procedure TMainIDE.DoRestart;
+
   procedure StartStarter;
   var
     StartLazProcess: TProcess;

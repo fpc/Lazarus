@@ -335,15 +335,15 @@ var
   fs: TFileStream;
   s: String;
 begin
-  TempFilename:=GetTempFilename(DirectoryName,'tstperm');
+  TempFilename:=GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
   try
-    InvalidateFileStateCache;
     fs:=TFileStream.Create(TempFilename,fmCreate);
     s:='WriteTest';
     fs.Write(s[1],length(s));
     fs.Free;
-    DeleteFile(TempFilename);
+    if not DeleteFile(TempFilename) then
+      InvalidateFileStateCache;
     Result:=true;
   except
   end;
