@@ -4589,11 +4589,8 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       <!-- argument Visibility: default -->
       <element name="TButtonControl.Create.TheOwner"><short/></element>
       <!-- range type Visibility: default -->
-      <element name="TLeftRight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomButton">
       <short>The ancestor class for TButton</short>
       <descr>TCustomButton is the ancestor for TButton. If you want to define your own button class, you should use this class to derive it from.</descr>
 </element>
