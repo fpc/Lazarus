@@ -401,7 +401,7 @@ begin
       [FDeviceContexts.Count]));
 
     n:=0;
-    write(ProcName,'  DCs:  ');
+    DbgOut(ProcName,'  DCs:  ');
     HashItem:=FDeviceContexts.FirstHashItem;
     while (n<7) and (HashItem<>nil) do
     begin
