@@ -6575,7 +6575,7 @@ msgstr "Zastąp tekst"
 
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
-msgstr "Zastąpić to wystąpienie %s%s%s%s przez %s%s%s%s"
+msgstr "Zastąpić to wystąpienie %s%s%s%s przez %s%s%s"
 
 #: lazarusidestrconsts:lisreplacingselectionfailed
 msgid "Replacing selection failed."
