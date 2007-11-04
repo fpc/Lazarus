@@ -83,7 +83,7 @@ LazarusResources.Add('TfrmCompilerOptions','FORMDATA',[
   +#21'LCLWidgetTypeComboBox'#22'AnchorSideLeft.Control'#7#18'LCLWidgetTypeLabe'
   +'l'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#18'LC'
   +'LWidgetTypeLabel'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#3#139#0#6'H'
-  +'eight'#2#25#3'Top'#3'0'#1#5'Width'#3#155#0#16'AutoCompleteText'#11#22'cbact'
+  +'eight'#2#25#3'Top'#3'0'#1#5'Width'#3#171#0#16'AutoCompleteText'#11#22'cbact'
   +'EndOfLineComplete'#20'cbactSearchAscending'#0#18'BorderSpacing.Left'#2#6#9
   +'MaxLength'#2#0#8'TabOrder'#2#6#4'Text'#6#21'LCLWidgetTypeComboBox'#0#0#0#5
   +'TPage'#11'ParsingPage'#7'Caption'#6#11'ParsingPage'#11'ClientWidth'#3#153#2

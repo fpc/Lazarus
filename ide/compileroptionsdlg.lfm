@@ -232,7 +232,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Left = 139
         Height = 25
         Top = 304
-        Width = 155
+        Width = 171
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Left = 6
         MaxLength = 0
