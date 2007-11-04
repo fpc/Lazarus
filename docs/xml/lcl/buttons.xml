@@ -147,8 +147,6 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TCustomButton">
-      <!-- object Visibility: default -->
       <element name="TButtonGlyph">
         <short>A small image that can be attached to buttons</short>
         <descr>Button Glyph: The graphics and legend on a button</descr>
