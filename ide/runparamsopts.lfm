@@ -256,13 +256,16 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         TabOrder = 0
       end
       object UserOverridesGroupBox: TGroupBox
+        AnchorSideLeft.Control = EnvVarsPage
         AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = EnvVarsPage
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = IncludeSystemVariablesCheckBox
         Left = 6
         Height = 161
         Top = 229
         Width = 484
-        Align = alBottom
-        Anchors = [akTop, akLeft, akRight]
+        Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'UserOverridesGroupBox'
         ClientHeight = 142
@@ -335,11 +338,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
       end
       object SystemVariablesGroupBox: TGroupBox
+        AnchorSideBottom.Control = UserOverridesGroupBox
         Left = 6
         Height = 217
         Top = 6
         Width = 484
-        Align = alClient
+        Align = alTop
+        Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'SystemVariablesGroupBox'
         ClientHeight = 198
