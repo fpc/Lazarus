@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-31 23:20+0300\n"
+"PO-Revision-Date: 2007-11-04 01:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -732,6 +732,10 @@ msgstr "Спросить"
 #: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
 msgstr "Спросить перед заменой каждого фрагмента"
+
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr "Стиль ассемблера:"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1925,7 +1929,7 @@ msgstr "Создать макросы FPC и пути к каталогу про
 msgid "Create LazDoc files"
 msgstr "Создать файлы LazDoc"
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Создать Makefile"
 
@@ -2149,7 +2153,7 @@ msgstr "Тип отладчика и путь"
 msgid "Debugging:"
 msgstr "Отладка"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -7753,10 +7757,6 @@ msgstr "Строки с тем же значением:"
 msgid "Strip Symbols From Executable"
 msgstr "Вырезать символы из бинарника"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Стиль"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Подпроцедура"
@@ -9636,6 +9636,10 @@ msgstr "Только целые слова"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Ширина:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr "Графическое приложение Win32"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
