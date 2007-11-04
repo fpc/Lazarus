@@ -33,9 +33,8 @@ cd <lazarusdir>/images/codetoolsdefines
 
 3. components_images.lrs
 
-cd <lazarusdir>/images/components/
-../../tools/lazres ../components_images.lrs *.xpm
-
+cd <lazarusdir>/images/
+../tools/lazres components_images.lrs @components_images_list.txt
 
 4. editoroptions.lrs
 
