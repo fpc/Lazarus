@@ -1,3 +1,11 @@
+lazarus (0.9.24)
+
+The Lazarus IDE is started with "startlazarus" or directly with "lazarus-ide".
+Formerly "lazarus-ide" was "lazarus", but due to a conflict with the tct package
+it has been renamed. That's why it is now "lazarus-ide".
+Please check your desktop icons.
+
+
 lazarus (0.9.22)
 
 The Lazarus IDE is started with "startlazarus" or directly with "lazarus".
