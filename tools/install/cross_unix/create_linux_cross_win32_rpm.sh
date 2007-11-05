@@ -159,6 +159,13 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   done
 
   #----------------------------------------------------------------------------
+  # copy tools (windres)
+  #----------------------------------------------------------------------------
+  FPCLibDir=lib/fpc/$CompilerVersionStr # !!! no / at end
+  DestDir=$FPCBuildDir/usr/$FPCLibDir
+  cp -p $BuildRoot/bin/* $DestDir/
+
+  #----------------------------------------------------------------------------
   # create tgz
   #----------------------------------------------------------------------------
   echo "creating tgz ..."
