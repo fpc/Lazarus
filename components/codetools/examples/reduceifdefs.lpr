@@ -48,11 +48,7 @@ begin
 
   // parse directives
   Tree:=TCompilerDirectivesTree.Create;
-  if not Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename))
-  then begin
-    writeln('failed parsing compiler directives');
-    exit;
-  end;
+  Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename));
 
   // complete reduce
   repeat

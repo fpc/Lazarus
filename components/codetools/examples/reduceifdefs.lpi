@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
@@ -26,28 +26,18 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="1">
       <Unit0>
         <Filename Value="reduceifdefs.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ReduceIFDEFs"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="scanexamples/simpleunit1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleUnit1"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="scanexamples/addeventexample.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="AddEventExample"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
