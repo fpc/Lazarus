@@ -105,3 +105,12 @@ is searched
 Enjoy !
 
 Michael.
+
+Missing file on windows
+-----------------------
+The cleandirs needs the fclel.res resource file on windows. It is provided by
+the FCL, but not distributed with fpc 2.2.0. You can copy  
+lazarus\fpc\2.2.0\source\packages\fcl-base\src\win\fclel.res
+into this example directory.
+
+Vincent
