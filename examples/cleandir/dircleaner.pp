@@ -268,7 +268,7 @@ Var
 begin
 {$ifdef mswindows}
    Path[0]:=#0;
-   SHGetFolderPath(0,CSIDL_PERSONAL,0,@PATH);
+   SHGetFolderPath(0,CSIDL_PERSONAL,0,0,@PATH);
    Result:=StrPas(Path);
 {$else}
    Result:=GetEnvironmentVariable('HOME');
