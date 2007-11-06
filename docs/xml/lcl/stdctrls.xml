@@ -355,19 +355,14 @@
       <element name="TCustomScrollBar.Scroll.ScrollPos"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomScrollBar.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomScrollBar</i> constructor</short>
+        <descr><i>TCustomScrollBar</i> constructor - <b>override</b> definition, so supplied method can supersede any inherited method. It sets up a few defaults which can be modified by the application programmer</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomScrollBar.SetParams">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Defines the Max and Min values, the size of the page and the position of the scroller</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.APosition"><short/></element>
@@ -377,68 +372,53 @@
       <element name="TCustomScrollBar.SetParams.AMax"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Kind">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Whether Horizontal or Vertical</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.LargeChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The size of the step to be taken by the scroller for a large change</short>
+        <descr>A large change is produced by the user clicking on the blank are above or below the scroller; it is rather analogous to the Page Down or Page Up functions of the Keyboard and typically moves the scroller and the contents of the page or canvas by a whole paragralph or half a page or a full page.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Max">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The maximum value (for bottom of the scroll bar or the right-most extent)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Min">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>the minimum value, for the top of the scroll bar or its left-most extent</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.PageSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>the size of the page on which this scrollbar is found</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Position">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The position of the scrollbar on the current page</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.SmallChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The size of the step to be taken by the scroller for a small change</short>
+        <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effet of using the up or down arrows on the keyboard, and typically produces a movement of a few pixels or a single line of text</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Whether the scrollbar can be reached by use of the Tab key - default is True</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler for any change in position of the scroller or other mouse movement or keyboard event associated with the scrollbar</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnScroll">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Handler for a scrolling event</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollBar">
         <short>Scroll Bar</short>
-        <descr>Scroll Bar for Text Box or Memo. Can be none, horizontal, vertical or both. May appear automatically when the text goes outside the window. <br/>Scroll codes may be line up or down, page up or down, track the mouse, top of panel, bottom of panel, or end scroll.</descr>
+        <descr>Scroll Bar for Text Box or Memo. Can be none, horizontal, vertical or both. May appear automatically when the text goes outside the window. <br/>
+Scroll codes may be line up or down, page up or down, track the mouse, top of panel, bottom of panel, or end scroll.
+<br/><br/>
+Inherits several properties from ancestor classes, and many properties can be adjusted with the Object Inspector and the Form Designer</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.Align">
@@ -4589,8 +4569,8 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       <!-- object Visibility: default -->
       <element name="TCustomButton">
         <short><i>TCustomButton</i> - the ancestor class for <i>TButton</i></short>
-        <descr><i>TCustomButton</i> is the ancestor for <i>TButton</i> <br/>
-		This class defines several of the methods to be used by descendant classes such as <i>TButton</i> <br/>
+        <descr><i>TCustomButton</i> is the ancestor for <i>TButton</i><br/>
+		This class defines several of the methods to be used by descendant classes such as <i>TButton</i><br/>
 		Use this class if you want to derive your own Button Class
 	</descr>
       </element>
@@ -4790,17 +4770,24 @@ Assigning an action sets other properties of the button as well, like Enabled an
       <element name="TButton.Align">
         <descr><br/><br/>
 
-		Possible values fo Allign are:<br/>
+
+		Possible values fo Align are:<br/>
+
 
 		alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
 
+
 		alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
+
 
 		alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
 
+
 		alRight: Like alLeft but on the right side of the parent control.<br/>
 
+
 		alNone: The control can be placed anywhere on the parent control.<br/>
+
 
 		alClient: The control takes all available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
       </element>
