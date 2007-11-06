@@ -129,19 +129,13 @@ begin
   Result.Y:=17;
 end;
 
-Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
-
-  procedure RaiseNotImplemented;
-  begin
-    raise Exception.Create('TCustomStaticText.SetStaticBorderStyle is not implemented yet');
-  end;
-
+procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
 begin
-  If FStaticBorderStyle <> Value then begin
-    if ([csDesigning,csLoading]*ComponentState=[csDesigning]) then
-      RaiseNotImplemented;
+  if FStaticBorderStyle <> Value then
+  begin
     FStaticBorderStyle := Value;
-    Invalidate;
+    if HandleAllocated then
+      TWSCustomStaticTextClass(WidgetsetClass).SetStaticBorderStyle(Self, Value);
   end;
 end;
 

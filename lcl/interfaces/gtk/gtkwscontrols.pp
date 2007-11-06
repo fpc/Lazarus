@@ -497,10 +497,8 @@ class procedure TGtkWSWinControl.SetText(const AWinControl: TWinControl;
   end;
 
 var
-  DC : hDC;
   P : Pointer;
   aLabel, pLabel: pchar;
-  s: string;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText')
   then Exit;
@@ -550,22 +548,6 @@ begin
   csFontDialog:
     if GtkWidgetIsA(p,gtk_window_get_type) then
       gtk_window_set_title(pGtkWindow(p),PLabel);
-
-  csStaticText:
-    begin
-      if TStaticText(AWinControl).ShowAccelChar then begin
-        DC := GetDC(HDC(PtrUInt(GetStyleWidget(lgsLabel))));
-        aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(
-                              DC, pLabel, TStaticText(AWinControl).Width, false);
-        DeleteDC(DC);
-        s:=aLabel;
-        GtkWidgetSet.SetLabelCaption(pGtkLabel(p), s
-           {$IFDEF Gtk1}, AWinControl,PGtkWidget(p), 'grab_focus'{$ENDIF});
-      end else begin
-        gtk_label_set_text(PGtkLabel(p), pLabel);
-        gtk_label_set_pattern(PGtkLabel(p), nil);
-      end;
-    end;
 
   csCheckBox,
   csToggleBox,

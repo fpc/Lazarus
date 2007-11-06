@@ -281,6 +281,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
   end;
 
   { TQtWSStaticText }
@@ -304,6 +305,21 @@ const
     QTextEditNoWrap,
     QTextEditWidgetWidth
   );
+
+  StaticBorderFrameShapeMap: array[TStaticBorderStyle] of QFrameShape =
+  (
+    QFrameNoFrame,
+    QFrameStyledPanel,
+    QFramePanel
+  );
+
+  StaticBorderFrameShadowMap: array[TStaticBorderStyle] of QFrameShadow =
+  (
+    QFramePlain,
+    QFramePlain,
+    QFrameSunken
+  );
+
 
 
 { TQtWSScrollBar }
@@ -868,6 +884,8 @@ begin
   QtStaticText.AttachEvents;
   
   QtStaticText.setAlignment(AlignmentMap[TCustomStaticText(AWinControl).Alignment]);
+  QtStaticText.setFrameShape(StaticBorderFrameShapeMap[TCustomStaticText(AWinControl).BorderStyle]);
+  QtStaticText.setFrameShadow(StaticBorderFrameShadowMap[TCustomStaticText(AWinControl).BorderStyle]);
 
   // Returns the Handle
   Result := THandle(QtStaticText);
@@ -882,6 +900,14 @@ class procedure TQtWSCustomStaticText.SetAlignment(
   const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
   TQtStaticText(ACustomStaticText.Handle).setAlignment(AlignmentMap[NewAlignment]);
+end;
+
+class procedure TQtWSCustomStaticText.SetStaticBorderStyle(
+  const ACustomStaticText: TCustomStaticText;
+  const NewBorderStyle: TStaticBorderStyle);
+begin
+  TQtStaticText(ACustomStaticText.Handle).setFrameShape(StaticBorderFrameShapeMap[NewBorderStyle]);
+  TQtStaticText(ACustomStaticText.Handle).setFrameShadow(StaticBorderFrameShadowMap[NewBorderStyle]);
 end;
 
 { TQtWSButton }

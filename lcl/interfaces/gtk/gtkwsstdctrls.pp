@@ -219,14 +219,21 @@ type
   TGtkWSCustomStaticText = class(TWSCustomStaticText)
   private
   protected
+    class function GetLabelWidget(AFrame: PGtkFrame): PGtkLabel;
+    class function GetBoxWidget(AFrame: PGtkFrame): PGtkEventBox;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
                                  const NewAlignment: TAlignment); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtkWSStaticText }
@@ -323,6 +330,14 @@ implementation
 
 uses
   GtkWSControls;
+  
+const
+  StaticBorderShadowMap: array[TStaticBorderStyle] of TGtkShadowType =
+  (
+    GTK_SHADOW_NONE,
+    GTK_SHADOW_ETCHED_IN,
+    GTK_SHADOW_IN
+  );
 
 {$ifdef gtk1}
 {$I gtk1memostrings.inc}
@@ -1045,36 +1060,173 @@ end;
 
 { TGtkWSCustomStaticText }
 
+class function TGtkWSCustomStaticText.GetLabelWidget(AFrame: PGtkFrame): PGtkLabel;
+begin
+  {$IFDEF GTK2}
+  Result := PGtkLabel(PGtkBin(GetBoxWidget(AFrame))^.child);
+  {$ELSE}
+  Result := PGtkLabel(GetBoxWidget(AFrame)^.bin.child);
+  {$ENDIF}
+end;
+
+class function TGtkWSCustomStaticText.GetBoxWidget(AFrame: PGtkFrame): PGtkEventBox;
+begin
+  {$IFDEF GTK2}
+  Result := PGtkEventBox(PGtkBin(AFrame)^.child);
+  {$ELSE}
+  Result := PGtkEventBox(AFrame^.bin.Child);
+  {$ENDIF}
+end;
+
 class function TGtkWSCustomStaticText.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
 var
-  p          : pointer;          // ptr to the newly created GtkWidget
+  AStaticText: TCustomStaticText;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+  EventBox, LblWidget: PGtkWidget;
 begin
-  p := nil;
+  // TStaticText control is a Text area with frame around. Both Text and Area around
+  // text can have their own color
+  
+  // To implement that in gtk we need:
+  // 1. GtkLabel to handle Text
+  // 2. GtkEventBox to draw color area around GtkLabel (since GtkLabel have no window)
+  // 3. GtkFrame to draw frame around Text area
+  // GtkFrame is our main widget - it is container and it contains GtkEventBox
+  // GtkEventBox is also containter and it contains GtkLabel
 
-  P := gtk_label_new(AParams.Caption);
-  SetLabelAlignment(PGtkLabel(p), TCustomStaticText(AWinControl).Alignment);
+  AStaticText := AWinControl as TCustomStaticText;
+  Result := TLCLIntfHandle(PtrUInt(gtk_frame_new(nil))); // frame is the main container - to decorate label
+  if Result = 0 then Exit;
 
-  GtkWidgetset.FinishComponentCreate(AWinControl, P);
+  gtk_frame_set_shadow_type(PGtkFrame(Result), StaticBorderShadowMap[AStaticText.BorderStyle]);
+  
+  EventBox := gtk_event_box_new;  // our area
+  LblWidget := gtk_label_new(''); // our text widget
+  gtk_container_add(PGtkContainer(EventBox), LblWidget);
+  SetLabelAlignment(PGtkLabel(LblWidget), AStaticText.Alignment);
+  gtk_widget_show(LblWidget);
+  gtk_widget_show(EventBox);
+  gtk_container_add(PGtkContainer(Result), EventBox);
+
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(Pointer(Result), dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AStaticText, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
 class procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
   const NewAlignment: TAlignment);
+var
+  LblWidget: PGtkLabel;
 begin
-  SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),NewAlignment);
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetAlignment')
+  then Exit;
+
+  LblWidget := GetLabelWidget(PGtkFrame(ACustomStaticText.Handle));
+  SetLabelAlignment(LblWidget, NewAlignment);
 end;
 
 class procedure TGtkWSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+  GetGTKDefaultWidgetSize(AWinControl, PreferredWidth, PreferredHeight,
                           WithThemeSpace);
   //debugln('TGtkWSCustomStaticText.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
+class function TGtkWSCustomStaticText.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+begin
+  // The text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
+class procedure TGtkWSCustomStaticText.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  FrameWidget: PGtkFrame;
+  LblWidget: PGtkLabel;
+  DC: HDC;
+  ALabel: PChar;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
+
+  FrameWidget := PGtkFrame(AWinControl.Handle);
+  LblWidget := GetLabelWidget(FrameWidget);
+
+  if TStaticText(AWinControl).ShowAccelChar then
+  begin
+    DC := Widgetset.GetDC(HDC(PtrUInt(GetStyleWidget(lgsLabel))));
+    ALabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(
+                          DC, PChar(AText), TStaticText(AWinControl).Width, false);
+    Widgetset.DeleteDC(DC);
+    GtkWidgetSet.SetLabelCaption(LblWidget, ALabel
+       {$IFDEF Gtk1}, AWinControl, PGtkWidget(FrameWidget), 'grab_focus'{$ENDIF});
+  end else
+  begin
+    gtk_label_set_text(LblWidget, PChar(AText));
+    gtk_label_set_pattern(LblWidget, nil);
+  end;
+end;
+
+class procedure TGtkWSCustomStaticText.SetStaticBorderStyle(
+  const ACustomStaticText: TCustomStaticText;
+  const NewBorderStyle: TStaticBorderStyle);
+begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetStaticBorderStyle')
+  then Exit;
+  gtk_frame_set_shadow_type(PGtkFrame(ACustomStaticText.Handle), StaticBorderShadowMap[NewBorderStyle]);
+end;
+
+class procedure TGtkWSCustomStaticText.SetCallbacks(
+  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  SignalConnect(AGtkWidget, 'grab_focus', @gtkActivateCB, AWidgetInfo);
+end;
+
+class procedure TGtkWSCustomStaticText.SetColor(const AWinControl: TWinControl
+  );
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor')
+  then Exit;
+
+  GtkWidgetSet.SetWidgetColor(PGtkWidget(GetBoxWidget(PGtkFrame(AWinControl.Handle))),
+                              clNone, AWinControl.Color,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+end;
+
+class procedure TGtkWSCustomStaticText.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont')
+  then Exit;
+  
+  if AFont.IsDefault then
+    Exit;
+    
+  Widget := PGtkWidget(GetLabelWidget(PGtkFrame(AWinControl.Handle)));
+
+  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.Font.Color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  GtkWidgetSet.SetWidgetFont(Widget, AFont);
 end;
 
 { TGtkWSButton }

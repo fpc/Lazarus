@@ -36,8 +36,8 @@ uses
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
   Themes,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType,
-  Win32Int, Win32Proc, InterfaceBase, Win32WSControls, Win32Extra;
+  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, InterfaceBase,
+  Win32Int, Win32Proc, Win32WSControls, Win32Extra;
 
 type
 
@@ -216,6 +216,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TWin32WSStaticText }
@@ -314,6 +316,24 @@ const
 {taLeftJustify } ES_LEFT,
 {taRightJustify} ES_RIGHT,
 {taCenter      } ES_CENTER
+  );
+
+  AlignmentToStaticTextFlags: array[TAlignment] of dword =
+  (
+    SS_LEFT,
+    SS_RIGHT,
+    SS_CENTER
+  );
+  BorderToStaticTextFlags: array[TStaticBorderStyle] of dword =
+  (
+    0,
+    WS_BORDER, // generic border
+    SS_SUNKEN  // the only one special border for text static controls
+  );
+  AccelCharToStaticTextFlags: array[Boolean] of dword =
+  (
+    SS_NOPREFIX,
+    0
   );
 
 {$I win32memostrings.inc}
@@ -1121,12 +1141,15 @@ end;
 
 { TWin32WSCustomStaticText }
 
-const
-  AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
-
-function CalcStaticTextFlags(const Alignment: TAlignment): dword;
+function CalcStaticTextFlags(
+   const AAlignment: TAlignment;
+   const ABorder: TStaticBorderStyle;
+   const AShowAccelChar: Boolean): dword;
 begin
-  Result := AlignmentToStaticTextFlags[Alignment];
+  Result :=
+   AlignmentToStaticTextFlags[AAlignment] or
+   BorderToStaticTextFlags[ABorder] or
+   AccelCharToStaticTextFlags[AShowAccelChar];
 end;
 
 class function TWin32WSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
@@ -1141,7 +1164,16 @@ begin
   begin
     pClassName := 'STATIC';
     WindowTitle := StrCaption;
-    Flags := Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);
+    // if control style have SS_NOTIFY then HTCLIENT otherwise HTTRANSPARENT =>
+    // so it will not understand mouse if there is no SS_NOTIFY
+    Flags := Flags or SS_NOTIFY or
+      CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment,
+       TCustomStaticText(AWinControl).BorderStyle, TCustomStaticText(AWinControl).ShowAccelChar);
+    if (TCustomStaticText(AWinControl).BorderStyle = sbsSingle) and ThemeServices.ThemesEnabled then
+    begin
+      Flags := Flags and not WS_BORDER; // under XP WS_BORDER is not themed and there are some problems with redraw
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE; // this is themed-border
+    end;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1150,8 +1182,35 @@ end;
 
 class procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetAlignment') then
+    exit;
   // can not apply on the fly: needs window recreate
   RecreateWnd(ACustomStaticText);
+end;
+
+class procedure TWin32WSCustomStaticText.SetStaticBorderStyle(
+  const ACustomStaticText: TCustomStaticText;
+  const NewBorderStyle: TStaticBorderStyle);
+begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetStaticBorderStyle') then
+    exit;
+  // can not apply on the fly: needs window recreate
+  RecreateWnd(ACustomStaticText);
+end;
+
+class procedure TWin32WSCustomStaticText.SetText(
+  const AWinControl: TWinControl; const AText: String);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then
+    exit;
+
+  // maybe we need TWSCustomStaticText.SetShowAccelChar ?
+  
+  if (GetWindowLong(AWinControl.Handle, GWL_STYLE) and SS_NOPREFIX) <>
+     AccelCharToStaticTextFlags[TCustomStaticText(AWinControl).ShowAccelChar] then
+    RecreateWnd(AWinControl);
+    
+  TWSWinControlClass(ClassParent).SetText(AWinControl, AText);
 end;
 
 { TWin32WSButtonControl }

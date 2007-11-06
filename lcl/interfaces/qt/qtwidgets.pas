@@ -153,9 +153,11 @@ type
     function getEnabled: Boolean;
     function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
+    function getThickness: TSize;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
     function getText: WideString; virtual;
+    function getTextStatic: Boolean; virtual;
     function getHeight: Integer;
     function getWidth: Integer;
     procedure grabMouse; virtual;
@@ -394,6 +396,7 @@ type
     destructor Destroy; override;
     function getClientBounds: TRect; override;
     function getText: WideString; override;
+    function getTextStatic: Boolean; override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
     procedure setStatusBar(AStatusBar: QStatusBarH);
@@ -515,6 +518,7 @@ type
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
     function getText: WideString; override;
+    function getTextStatic: Boolean; override;
     function hasSelectedText: Boolean;
     procedure setColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
@@ -543,6 +547,7 @@ type
     procedure append(AStr: WideString);
     function getMaxLength: Integer;
     function getText: WideString; override;
+    function getTextStatic: Boolean; override;
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
     function getSelectionLength: Integer;
@@ -627,6 +632,7 @@ type
     function getEditable: Boolean;
     function getMaxVisibleItems: Integer;
     function getText: WideString; override;
+    function getTextStatic: Boolean; override;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
@@ -673,6 +679,7 @@ type
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
     function getText: WideString; override;
+    function getTextStatic: Boolean; override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setMinimum(const v: single); virtual; abstract;
     procedure setMaximum(const v: single); virtual; abstract;
@@ -780,6 +787,7 @@ type
     FSelectionChangeHook: QListWidget_hookH;
     FItemDoubleClickedHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
+    FDisableSelectionChange: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -2330,6 +2338,16 @@ begin
   QWidget_frameGeometry(Widget, @Result);
 end;
 
+function TQtWidget.getThickness: TSize;
+var
+  AFrameRect, ARect: TRect;
+begin
+  QWidget_frameGeometry(Widget, @AFrameRect);
+  QWidget_geometry(Widget, @ARect);
+  Result.cx := (AFrameRect.Right - AFrameRect.Left) - (ARect.Right - ARect.Left);
+  Result.cy := (AFrameRect.Bottom - AFrameRect.Top) - (ARect.Bottom - ARect.Top);
+end;
+
 function TQtWidget.getGeometry: TRect;
 begin
   QWidget_geometry(Widget, @Result);
@@ -2343,6 +2361,11 @@ end;
 function TQtWidget.getText: WideString;
 begin
   Result := FText;
+end;
+
+function TQtWidget.getTextStatic: Boolean;
+begin
+  Result := True;
 end;
 
 function TQtWidget.getHeight: Integer;
@@ -3449,6 +3472,11 @@ begin
   WindowTitle(@Result);
 end;
 
+function TQtMainWindow.getTextStatic: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TQtMainWindow.setText(const W: WideString);
 begin
   setWindowTitle(@W);
@@ -3598,8 +3626,24 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtStaticText.SetText(const W: WideString);
+var
+  AmpersandPos: Integer;
+  LocalW: WideString;
 begin
-  QLabel_setText(QLabelH(Widget), @W);
+  LocalW := W;
+  if TCustomStaticText(LCLObject).ShowAccelChar then
+  begin
+    // replace '&' by underline
+    AmpersandPos := Pos('&', W);
+    if AmpersandPos > 0 then
+    begin
+      LocalW := Copy(W, 1, AmpersandPos - 1) + '<u>';
+      if AmpersandPos < Length(W) then
+        LocalW := LocalW + W[AmpersandPos + 1];
+      LocalW := LocalW + '</u>' + Copy(W, AmpersandPos + 2, Length(W));
+    end;
+  end;
+  QLabel_setText(QLabelH(Widget), @LocalW);
 end;
 
 procedure TQtStaticText.setAlignment(const AAlignment: QtAlignment);
@@ -4387,6 +4431,11 @@ begin
   QLineEdit_text(QLineEditH(Widget), @Result);
 end;
 
+function TQtLineEdit.getTextStatic: Boolean;
+begin
+  Result := False;
+end;
+
 function TQtLineEdit.hasSelectedText: Boolean;
 begin
   Result := QLineEdit_hasSelectedText(QLineEditH(Widget));
@@ -4535,6 +4584,11 @@ end;
 function TQtTextEdit.getText: WideString;
 begin
   QTextEdit_toPlainText(QTextEditH(Widget), @Result);
+end;
+
+function TQtTextEdit.getTextStatic: Boolean;
+begin
+  Result := False;
 end;
 
 function TQtTextEdit.getSelectionStart: Integer;
@@ -4995,6 +5049,11 @@ begin
   QComboBox_currentText(QComboBoxH(Widget), @Result);
 end;
 
+function TQtComboBox.getTextStatic: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
@@ -5307,6 +5366,11 @@ begin
     Result := '';
 end;
 
+function TQtAbstractSpinBox.getTextStatic: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TQtAbstractSpinBox.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
   inherited setFocusPolicy(APolicy);
@@ -5491,6 +5555,7 @@ end;
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   Result := QListWidget_create();
+  FDisableSelectionChange := False;
 end;
 
 procedure TQtListWidget.AttachEvents;
@@ -5533,6 +5598,8 @@ procedure TQtListWidget.SlotSelectionChange(current: QListWidgetItemH;
 var
   Msg: TLMessage;
 begin
+  if FDisableSelectionChange then
+    Exit;
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SELCHANGE;
@@ -5689,7 +5756,11 @@ begin
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, AText);
 
   if QListWidget_count(QListWidgetH(Widget)) = 1 then
+  begin
+    FDisableSelectionChange := True;
     QListWidget_setCurrentRow(QListWidgetH(Widget), 0);
+    FDisableSelectionChange := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------

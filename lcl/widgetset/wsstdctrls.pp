@@ -170,6 +170,7 @@ type
   TWSCustomStaticTextClass = class of TWSCustomStaticText;
   TWSCustomStaticText = class(TWSWinControl)
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); virtual;
+    class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); virtual;
   end;
 
   { TWSStaticText }
@@ -463,6 +464,13 @@ end;
 
 class procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
+end;
+
+class procedure TWSCustomStaticText.SetStaticBorderStyle(
+  const ACustomStaticText: TCustomStaticText;
+  const NewBorderStyle: TStaticBorderStyle);
+begin
+  // nothing
 end;
 
 { TWSButton }

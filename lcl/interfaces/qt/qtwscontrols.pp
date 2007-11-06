@@ -321,8 +321,9 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'GetText') then
     Exit;
 
-  AText := UTF8Encode(TQtWidget(AWinControl.Handle).getText);
-  Result := True;
+  Result := not TQtWidget(AWinControl.Handle).getTextStatic;
+  if Result then
+    AText := UTF8Encode(TQtWidget(AWinControl.Handle).getText);
 end;
 
 class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;
