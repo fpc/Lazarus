@@ -1116,6 +1116,7 @@ begin
   {$ENDIF}
 
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AStaticText, AParams);
+  WidgetInfo^.CoreWidget := EventBox;
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
