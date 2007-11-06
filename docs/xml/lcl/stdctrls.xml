@@ -6151,6 +6151,24 @@ You should take care when setting these options that they do not conflict with t
         <errors/>
         <seealso/>
       </element>
+      <topic name="HowToUseStdCtrls">
+        <short>How to use <i>StdCtrls</i></short>
+        <descr>
+          <p>The Unit <i>StdCtrls</i> contains definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
+          <p>Many of the final target controls that the application developer wants to use, such as <i>TButton</i>, <i>TMemo</i>, <i>TScrollBar</i> etc, have a corresponding ancestor class such as <i>TCustomButton</i>, <i>TCustomMemo</i> or <i>TCustomScrollBar</i>. Many of the properties and methods relevant to the final target control are defined fully in the <i>TCustomXXX</i> class, and are <b>inherited</b> by the final target control.
+	  </p>
+          <p>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created by the IDE together with the form, and destroyed when the form is destroyed.</p>
+          <p>However, if you create the component yourself by code don´t forget to free it when it is no longer needed.</p>
+          <br/>
+          <p><i>Constructors </i> allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</p>
+          <p><i>Destructors:</i> If you call <i>Destroy </i>for an object which hasn´t being initialized yet it will generate an error. Always use the <i>Free</i> method to deallocate objects, because it verifies if an object variable doesn´t contain the value <i>nil</i>.</p>
+          <p>Take the following precautions when creating your own <i>Destroy</i> method:</p>
+          <p>* Declare <i>Destroy</i> with the <b>override</b> directive, because it is a <b>virtual</b> method.</p>
+          <p>* Always call '<i>inherited Destroy;</i>' as the last thing on the destructor code.</p>
+          <p>* An <i>exception</i> may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the <i>exception</i> is not handled inside the constructor, the object will be only partially built. In this case <i>Destroy</i> will be called, so your destructor must check if the resources were really allocated before disposing of them.</p>
+          <p>* Remember to call <i>Free</i> for all objects created on the constructor.</p>
+        </descr>
+      </topic>
     </module>
     <!-- StdCtrls -->
   </package>
