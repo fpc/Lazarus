@@ -5798,11 +5798,14 @@ end;
 function TGtkWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   P: Pointer;
+{$ifdef HasX}
   ax,ay,ah,aw: gint;
+{$endif}
   auw, auh: guint;
  {$ifdef GTK2}
   screen: PGdkScreen;
   ARect: TGdkRectangle;
+  AValue: TGValue;
  {$else}
  {$ifdef HasX}
    XDisplay: PDisplay;
@@ -5908,9 +5911,21 @@ begin
         if P <> nil then
           Result := GTK_Widget(P)^.requisition.Height;
       end;
-    SM_CXHTHUMB:
+    SM_CXHTHUMB,
+    SM_CYVTHUMB:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
+        P := GetStyleWidget(lgsHorizontalScrollbar);
+        if P <> nil then
+        begin
+      {$ifdef gtk1}
+        _gtk_range_get_props(P, nil, nil, @Result, nil);
+      {$else}
+          FillChar(AValue, SizeOf(AValue), 0);
+          g_value_init(@AValue, G_TYPE_INT);
+          gtk_widget_style_get_property(P, 'slider-width', @AValue);
+          Result := AValue.data[0].v_int;
+      {$endif}
+        end;
       end;
     SM_CXICON:
       begin
@@ -6099,10 +6114,6 @@ begin
     SM_CYSMCAPTION:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
-      end;
-    SM_CYVTHUMB:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
       end;
     SM_DBCSENABLED:
       begin
@@ -9792,5 +9803,4 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$EndIf}
-
 

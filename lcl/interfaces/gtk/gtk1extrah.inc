@@ -55,6 +55,8 @@ function g_signal_connect_after(anObject: PGtkObject; name: Pgchar;
          cdecl; external gtkdll name 'gtk_signal_connect_after';
 function g_signal_lookup(name: Pgchar; anObject: TGTKType): guint;
          cdecl; external gtkdll name 'gtk_signal_lookup';
+procedure _gtk_range_get_props(range: PGtkRange; slider_width, trough_border,
+  stepper_size, stepper_spacing: pgint); cdecl; external gtkdll name '_gtk_range_get_props';
 
 function GDK_GET_CURRENT_DESKTOP(): gint;
 function GDK_WINDOW_GET_DESKTOP(Window: PGdkWindowPrivate): gint;
