@@ -87,10 +87,11 @@ type
   private
     class function IsIconView(const ALV: TCustomListView): Boolean; virtual;
     // needed when adding or removing columns to a list store
-    class procedure ReCreateListStore(const ALV: TCustomListView;const TVWidgets: PTVWidgets); virtual;
+    class procedure ReCreateListStore(const ALV: TCustomListView; const TVWidgets: PTVWidgets); virtual;
     class procedure ReCreateItems(const ALV: TCustomListView); virtual;
     class procedure SetPropertyInternal(const ALV: TCustomListView; const Widgets: PTVWidgets; const AProp: TListViewProperty; const AIsSet: Boolean);
     class procedure SetNeedDefaultColumn(const ALV: TCustomListView; const AValue: Boolean);
+    class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const Widgets: PTVWidgets; const Add: Boolean);
   protected
     class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
   public
@@ -110,8 +111,10 @@ type
 
     // items
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
+    class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
+    class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;

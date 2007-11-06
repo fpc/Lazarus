@@ -428,6 +428,19 @@ begin
   end;
 end;
 
+procedure TListItem.WSUpdateChecked;
+var
+  LV: TCustomListView;
+  Idx: Integer;
+  WSC: TWSCustomListViewClass;
+begin
+  LV := FOwner.FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  idx := GetIndex;
+
+  WSC.ItemSetChecked(LV, idx, Self, FChecked);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateAllowed                                                }
 {------------------------------------------------------------------------------}
@@ -456,8 +469,11 @@ var
   LV: TCustomListView;
 begin
   LV := FOwner.FOwner;
-  Result := LV.Checkboxes and
-      TWSCustomListViewClass(LV.WidgetSetClass).ItemGetChecked(LV, GetIndex, Self);
+  Result := LV.Checkboxes and WSUpdateAllowed;
+  if Result then
+    Result := TWSCustomListViewClass(LV.WidgetSetClass).ItemGetChecked(LV, GetIndex, Self)
+  else
+    Result := FChecked;
 end;
 
 {------------------------------------------------------------------------------}
@@ -569,6 +585,7 @@ var
   LV: TCustomListView;
 begin
   LV := FOwner.FOwner;
+  FChecked := AValue;
   if LV.Checkboxes and WSUpdateAllowed
   then TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, GetIndex, Self, AValue);
 end;

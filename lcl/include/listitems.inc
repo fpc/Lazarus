@@ -74,6 +74,7 @@ begin
   then begin
     AValue.WSUpdateText;
     AValue.WSUpdateImages;
+    AValue.WSUpdateChecked;
   end;
 end;
 
@@ -128,6 +129,7 @@ begin
   Include(FCacheItem.FFlags, lifCreated);
   FCacheItem.WSUpdateText;
   FCacheItem.WSUpdateImages;
+  FCacheItem.WSUpdateChecked;
 end;
 
 {------------------------------------------------------------------------------}

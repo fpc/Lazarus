@@ -611,6 +611,7 @@ type
     FData: Pointer;
     FImageIndex: Integer;
     FStates: TListItemStates;
+    FChecked: Boolean;
     function GetChecked: Boolean;
     function GetLeft: Integer;
     function GetListView: TCustomListView;
@@ -624,6 +625,7 @@ type
     function WSUpdateAllowed: Boolean;
     procedure WSUpdateText;
     procedure WSUpdateImages;
+    procedure WSUpdateChecked;
 
     procedure SetChecked(AValue: Boolean);
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);

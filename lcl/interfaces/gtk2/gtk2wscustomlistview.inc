@@ -23,6 +23,28 @@ type
 ////   Event Code  /////////////////////
 ////////////////////////////////////////
 
+procedure Gtk2_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; WidgetInfo: PWidgetInfo);cdecl;
+var
+  Widgets: PTVWidgets;
+  APath: PGtkTreePath;
+  AValue: gboolean;
+  Iter: TGtkTreeIter;
+begin
+  Widgets := PTVWidgets(WidgetInfo^.UserData);
+  APath := gtk_tree_path_new_from_string(PathStr);
+  with Widgets^ do
+  begin
+    if gtk_tree_model_get_iter(TreeModel, @Iter, APath) then
+    begin
+      gtk_tree_model_get(TreeModel, @Iter, [PGtkListStore(TreeModel)^.n_columns - 1,
+        @AValue, -1]);
+      AValue := not AValue;
+      gtk_list_store_set(PGtkListStore(TreeModel), @Iter,
+        [PGtkListStore(TreeModel)^.n_columns - 1, AValue, -1]);
+    end;
+  end;
+end;
+
 procedure Gtk2_ItemFocusChanged(treeview: PGtkTreeView; WidgetInfo: PWidgetInfo);cdecl;
 var
   msg: TLMNotify;
@@ -128,7 +150,6 @@ begin
   NM.iSubItem := AColumn.Index;
   msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
-
 end;
 
 procedure Gtk2_ItemSelectionChanged(selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
@@ -215,9 +236,6 @@ end;
 
 { TGtk2WSCustomListView }
 
-
-
-
 class function TGtk2WSCustomListView.IsIconView(const ALV: TCustomListView): Boolean;
 begin
   Result := False;
@@ -226,22 +244,25 @@ end;
 
 class procedure TGtk2WSCustomListView.ReCreateListStore(const ALV: TCustomListView; const TVWidgets: PTVWidgets);
 var
-GTypeArray: PGType;
-NewListStore: PGtkListStore;
-nColumns: Integer;
-i: Integer;
+  GTypeArray: PGType;
+  NewListStore: PGtkListStore;
+  i, nColumns: Integer;
 begin
-  nColumns := (TLVHack(ALV).Columns.Count*2);
-  if nColumns = 0 then nColumns := 2; // Add One Column By Default
-  GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
-  for i := 0 to (nColumns div 2)-1 do begin
+  nColumns := (Max(1, TLVHack(ALV).Columns.Count) * 2) + 1; // +1 for checkboxes
+
+  GetMem(GTypeArray, SizeOf(GType) * (nColumns + 1));
+  
+  for i := 0 to (nColumns div 2) - 1 do
+  begin
     GTypeArray[i*2] := GDK_TYPE_PIXBUF;
     GTypeArray[(i*2)+1] := G_TYPE_STRING;
   end;
+
+  GTypeArray[nColumns - 1] := G_TYPE_BOOLEAN; // checkboxes
   GTypeArray[nColumns] := 0;
 
   NewListStore := gtk_list_store_newv(nColumns, GTypeArray);
-  ReAllocMem(GTypeArray, 0);
+  FreeMem(GTypeArray);
 
   gtk_tree_view_set_model(PGtkTreeView(TVWidgets^.MainView), PGtkTreeModel(NewListStore));
   TVWidgets^.TreeModel := NewListStore;
@@ -249,9 +270,9 @@ end;
 
 class procedure TGtk2WSCustomListView.ReCreateItems(const ALV: TCustomListView);
 var
-Widgets: PTVWidgets;
-i,x: Integer;
-Item: TListItem;
+  Widgets: PTVWidgets;
+  i,x: Integer;
+  Item: TListItem;
 begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   
@@ -260,13 +281,14 @@ begin
     Exit;
 
   gtk_list_store_clear(PGtkListStore(Widgets^.TreeModel));
-  for i := 0 to TLVHack(ALV).Items.Count-1 do begin
+  for i := 0 to TLVHack(ALV).Items.Count-1 do
+  begin
     Item := TLVHack(ALV).Items.Item[i];
     ItemInsert(ALV, i , Item);
     ItemSetText(ALV, i, Item, 0, Item.Caption);
-    for X := 0 to Min(Item.SubItems.Count-1, TLVHack(ALV).Columns.Count-2) do begin
+    ItemSetChecked(ALV, i, Item, Item.Checked);
+    for X := 0 to Min(Item.SubItems.Count-1, TLVHack(ALV).Columns.Count-2) do
       ItemSetText(ALV, i, Item, x+1, Item.SubItems.Strings[x]);
-    end;
   end;
 end;
 
@@ -279,9 +301,10 @@ begin
       lvpAutoArrange: begin
         // TODO: implement ??
       end;
-      lvpCheckboxes: begin
-        // TODO: implement
-      end;
+      lvpCheckboxes:
+        begin
+          AddRemoveCheckboxRenderer(ALV, Widgets, AIsSet);
+        end;
       lvpColumnClick: begin
         // allow only column modifications when in report mode
         if TLVHack(ALV).ViewStyle <> vsReport then Exit;
@@ -385,6 +408,40 @@ begin
   end;
 end;
 
+class procedure TGtk2WSCustomListView.AddRemoveCheckboxRenderer(
+  const ALV: TCustomListView; const Widgets: PTVWidgets; const Add: Boolean);
+var
+  togglerenderer,
+  pixrenderer,
+  textrenderer: PGtkCellRenderer;
+  column: PGtkTreeViewColumn;
+begin
+  column := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), 0);
+
+  if Add then
+  begin
+    togglerenderer := gtk_cell_renderer_toggle_new();
+    // connect toggled signal
+    g_signal_connect(togglerenderer, 'toggled', TGTKSignalFunc(@Gtk2_ItemCheckedChanged), GetWidgetInfo(PGtkWidget(ALV.Handle)));
+    // add to column
+    gtk_tree_view_column_pack_start(column, togglerenderer, FALSE);
+    gtk_tree_view_column_set_attributes(column, togglerenderer, ['active', PGtkListStore(Widgets^.TreeModel)^.n_columns - 1, nil]);
+    // move to begin
+    gtk_cell_layout_reorder(GTK_CELL_LAYOUT(column), togglerenderer, 0);
+  end
+  else
+  begin
+    gtk_cell_layout_clear(GTK_CELL_LAYOUT(column));
+    pixrenderer := gtk_cell_renderer_pixbuf_new();
+    textrenderer := gtk_cell_renderer_text_new();
+
+    gtk_tree_view_column_pack_start(column, pixrenderer, FALSE);
+    gtk_tree_view_column_set_attributes(column, pixrenderer,['pixbuf', 0, nil]);
+    gtk_tree_view_column_pack_start(column, textrenderer, True);
+    gtk_tree_view_column_set_attributes(column, textrenderer, ['text',1, nil]);
+  end;
+end;
+
 class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
@@ -400,8 +457,6 @@ begin
   SignalConnect(PGtkWidget(Widgets^.TreeModel),     'row-inserted',      @Gtk2_ItemInserted,            AWidgetInfo);
   SignalConnect(PGtkWidget(Widgets^.TreeModel),     'row-deleted',       @Gtk2_ItemDeleted,             AWidgetInfo);
   SignalConnect(PGtkWidget(Widgets^.MainView),      'toggle-cursor-row', @Gtk2_ItemFocusChanged,        AWidgetInfo);
-
-  
 end;
 
 class procedure TGtk2WSCustomListView.ColumnDelete(const ALV: TCustomListView;
@@ -418,7 +473,8 @@ begin
   ReCreateListStore(ALV, PTVWidgets(Widgets^.WidgetInfo^.UserData));
   ReCreateItems(ALV);
 
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
     if GtkColumn<>nil then
       gtk_tree_view_remove_column(PGtkTreeView(MainView), GtkColumn);
@@ -457,9 +513,10 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert')
   then Exit;
 
-  if AIndex < 0 then RealIndex := 0;
-
-  RealIndex := AIndex *2;
+  if AIndex < 0 then
+    RealIndex := 0
+  else
+    RealIndex := AIndex * 2;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
@@ -482,7 +539,7 @@ begin
   gtk_tree_view_column_pack_start(column, pixrenderer, FALSE);
   gtk_tree_view_column_set_attributes(column, pixrenderer,['pixbuf', RealIndex, nil]);
   gtk_tree_view_column_pack_start(column, textrenderer, True);
-  gtk_tree_view_column_set_attributes(column, textrenderer, ['text',RealIndex+ 1, nil]);
+  gtk_tree_view_column_set_attributes(column, textrenderer, ['text', RealIndex + 1, nil]);
   
   //store the TColumn in the column data for callbacks
   g_object_set_data(G_OBJECT(column), PChar('TListColumn'), gpointer(AColumn));
@@ -693,6 +750,26 @@ begin
   end;
 end;
 
+class function TGtk2WSCustomListView.ItemGetChecked(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem): Boolean;
+var
+  Widgets: PTVWidgets;
+  Iter: TGtkTreeIter;
+  AValue: gboolean;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemGetChecked')
+  then Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  with Widgets^ do
+  begin
+    gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex);
+    gtk_tree_model_get(TreeModel, @Iter, [PGtkListStore(TreeModel)^.n_columns - 1,
+      @AValue, -1]);
+    Result := AValue;
+  end;
+end;
+
 class function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -772,6 +849,25 @@ begin
   end;
 end;
 
+class procedure TGtk2WSCustomListView.ItemSetChecked(
+  const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem;
+  const AChecked: Boolean);
+var
+  Widgets: PTVWidgets;
+  Iter: TGtkTreeIter;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetChecked')
+  then Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  with Widgets^ do
+  begin
+    gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex);
+    gtk_list_store_set(PGtkListStore(TreeModel), @Iter,
+      [PGtkListStore(TreeModel)^.n_columns - 1, gboolean(Ord(AChecked)), -1]);
+  end;
+end;
+
 class procedure TGtk2WSCustomListView.ItemSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex,
   AImageIndex: Integer);
@@ -781,7 +877,6 @@ var
   BitImage: TBitmap;
   GPixBuf: PGDKPixBuf;
   Drawable: PGdkDrawable;
-
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
   then Exit;
@@ -808,7 +903,7 @@ begin
     then GPixBuf := CreatePixbufFromDrawable(Drawable, nil, False, 0, 0, 0, 0, -1, -1);
   end;
 
-  gtk_list_store_set(Widgets^.TreeModel, @Iter, [0 ,gpixbuf, -1]);
+  gtk_list_store_set(Widgets^.TreeModel, @Iter, [0, gpixbuf, -1]);
 end;
 
 class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;
@@ -876,11 +971,13 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
     gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex);
     if ASubIndex = 0 then
       Str := AItem.Caption
-    else begin
+    else
+    begin
       if AItem.Subitems.Count < ASubIndex then Exit;//
       Str := AItem.Subitems.Strings[ASubIndex-1];
     end;
@@ -937,20 +1034,21 @@ begin
 
   gtk_widget_show(PGtkWidget(ScrollWidget));
 
-  nColumns := (TLVHack(ListView).Columns.Count*2){+1};
-
-  if nColumns = 0 then nColumns := 2; // Add One Column By Default
+  nColumns := (Max(1, TLVHack(ListView).Columns.Count) * 2) + 1;
 
   Widgets := nil;
 
   New(Widgets);
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
     ItemCache := nil;
-    GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
-    for i := 0 to (nColumns div 2) - 1 do begin
+    GetMem(GTypeArray, SizeOf(GType) * (nColumns + 1));
+    for i := 0 to (nColumns div 2) - 1 do
+    begin
       GTypeArray[i*2] := GDK_TYPE_PIXBUF;
       GTypeArray[(i*2)+1] := G_TYPE_STRING;
     end;
+    GTypeArray[nColumns - 1] := G_TYPE_BOOLEAN;
     GTypeArray[nColumns] := 0; // -1;
 
     TreeModel := gtk_list_store_newv(nColumns, GTypeArray);
