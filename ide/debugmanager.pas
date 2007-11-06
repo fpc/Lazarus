@@ -1329,7 +1329,6 @@ begin
          SourceNotebook.GetActiveSE.GetWordAtCurrentCaret;
   end;
   FDialogs[ADialogType].Show;
-  FDialogs[ADialogType].BringToFront;
 end;
 
 procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);

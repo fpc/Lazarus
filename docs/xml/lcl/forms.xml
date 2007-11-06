@@ -2363,7 +2363,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Show">
-        <short/>
+        <short>Shows, brings to front and activates the form</short>
         <descr/>
         <errors/>
         <seealso/>

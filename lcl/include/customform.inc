@@ -1525,7 +1525,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Show;
 begin
-  Visible:=true;
+  Visible := True;
+  BringToFront;
 end;
 
 {------------------------------------------------------------------------------
@@ -1533,7 +1534,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.ShowOnTop;
 begin
-  Show;
+  Visible := True;
   if WindowState=wsMinimized then WindowState:=wsNormal;
   BringToFront;
   //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
