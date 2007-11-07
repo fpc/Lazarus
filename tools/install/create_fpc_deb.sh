@@ -67,9 +67,7 @@ CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 FPCVersion="$CompilerVersion.$CompilerRelease"
-if [ "$CompilerPatch" != "0" ]; then
-  FPCVersion="$FPCVersion.$CompilerPatch"
-fi
+FPCVersion="$FPCVersion.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
 
