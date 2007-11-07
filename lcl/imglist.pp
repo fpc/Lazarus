@@ -110,6 +110,13 @@ type
 
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
+  TImageListDrawEffect =
+  (
+    ideNormal,      // no effect
+    ideDisabled,    // grayed image
+    ideHighlighted, // a bit highlighted image
+    ideShadowed     // a bit shadowed image
+  );
 
   TCustomImageList = class(TLCLHandleComponent)
   private
@@ -193,7 +200,8 @@ type
     {.$endif}
     procedure Delete(AIndex: Integer);
     destructor Destroy; override;
-    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True);
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True); overload;
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TImageListDrawEffect); overload;
     procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetBitmap(Index: Integer; Image: TBitmap);
     {$ifdef IMGLIST_KEEP_EXTRA}
@@ -238,15 +246,6 @@ type
     property ShareImages: Boolean read FShareImages write SetShareImages;
     property ImageType: TImageType read FImageType write FImageType default itImage;
   end;
-
-
-  { TImageList }
-{  TImageList = class(TCustomImageList)
-  published
-    Property Height;
-    Property Width;
-  end;
-}
 
 implementation
 

@@ -54,7 +54,7 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); virtual;
     class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType); virtual;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); virtual;
 
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
 
@@ -76,7 +76,7 @@ type
     FHeight: Integer;
   public
     constructor Create(AWidth, AHeight: Integer); reintroduce;
-    procedure Draw(AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle);
+    procedure Draw(AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle);
   end;
 
 { TDefaultImageListImplementor }
@@ -89,7 +89,7 @@ begin
 end;
 
 procedure TDefaultImageListImplementor.Draw(AIndex: Integer; ACanvas: TCanvas;
-  ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle);
+  ABounds: TRect; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle);
 var
   Bitmap: TBitmap;
 begin
@@ -158,12 +158,12 @@ begin
 end;
 
 class procedure TWSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckHandleAllocated(AList, 'Draw')
   then Exit;
 
-  TDefaultImageListImplementor(AList.Handle).Draw(AIndex, ACanvas, ABounds, AEnabled, AStyle);
+  TDefaultImageListImplementor(AList.Handle).Draw(AIndex, ACanvas, ABounds, ADrawEffect, AStyle);
 end;
 
 class procedure TWSCustomImageList.Insert(AList: TCustomImageList;

@@ -546,6 +546,18 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   AEnabled: Boolean);
+const
+  EffectMap: array[Boolean] of TImageListDrawEffect =
+  (
+    ideDisabled,
+    ideNormal
+  );
+begin
+  Draw(ACanvas, AX, AY, AIndex, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  ADrawEffect: TImageListDrawEffect);
 {$ifdef IMGLIST_OLDSTYLE}
 var
   aBitmap: TBitmap;
@@ -555,11 +567,11 @@ begin
 
   {$ifdef IMGLIST_OLDSTYLE}
   aBitmap := TBitmap(FImageList[AIndex]);
-  ACanvas.Draw(AX,AY,aBitmap);
+  ACanvas.Draw(AX, AY, aBitmap);
   {$else}
   HandleNeeded;
   TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
-                          BkColor, BlendColor, AEnabled, DrawingStyle, ImageType);
+                          BkColor, BlendColor, ADrawEffect, DrawingStyle, ImageType);
   {$endif}
 end;
 
