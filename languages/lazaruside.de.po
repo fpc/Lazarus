@@ -735,6 +735,10 @@ msgstr "Fragen"
 msgid "Ask before replacing each found text"
 msgstr "Vor jedem Textersetzen nachfragen"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "@"
@@ -1927,7 +1931,7 @@ msgstr "Erzeugen von FPC-Makros und Pfaden für ein FPC-Projektverzeichnis"
 msgid "Create LazDoc files"
 msgstr "Erzeuge LazDoc-Dateien"
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Makedatei erzeugen"
 
@@ -2151,7 +2155,7 @@ msgstr "Debuggertyp und -pfad"
 msgid "Debugging:"
 msgstr "Debugger:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Voreinstellung"
 
@@ -7755,10 +7759,6 @@ msgstr "Strings mit identischen Werten:"
 msgid "Strip Symbols From Executable"
 msgstr "Debuggersymbole aus der ausführbaren Datei entfernen"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Stil:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Unterprozedur"
@@ -9638,6 +9638,10 @@ msgstr "Nur ganze Worte"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Breite:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

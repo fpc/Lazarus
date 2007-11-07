@@ -1168,6 +1168,7 @@ resourcestring
   liscustomOptions = 'custom options';
   dlgCOAsIs = 'As-Is';
   dlgSyntaxOptions = 'Syntax options';
+  dlgAssemblerDefault = 'Default';
   dlgDelphi2Ext = 'Delphi 2 Extensions';
   dlgCOCOps = 'C Style Operators (*=, +=, /= and -=)';
   dlgAssertCode = 'Include Assertion Code';
@@ -1214,6 +1215,7 @@ resourcestring
   dlgLinkSmart = 'Link Smart';
   dlgPassOptsLinker = 'Pass Options To The Linker (Delimiter is space)';
   lisCOTargetOSSpecificOptions = 'Target OS specific options';
+  dlgWin32GUIApp = 'Win32 gui application';
   dlgVerbosity = 'Verbosity during compilation:';
   dlgCOShowErr = 'Show Errors';
   dlgShowWarnings = 'Show Warnings';
@@ -1259,6 +1261,7 @@ resourcestring
   lisCOCallOnCompile = 'Compile';
   lisCOCallOnBuild = 'Build';
   lisCOCallOnRun = 'Run';
+  dlgCOCreateMakefile = 'Create Makefile';
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
   lisAdditionalCompilerOptionsInheritedFromPackages = 'Additional compiler '
@@ -1278,7 +1281,7 @@ resourcestring
   
   // show compiler options dialog
   dlgCommandLineParameters = 'Command line parameters';
-  
+
   // project options dialog
   dlgProjectOptions = 'Project Options';
   dlgPOApplication = 'Application';

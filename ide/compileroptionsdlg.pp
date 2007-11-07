@@ -1110,7 +1110,7 @@ begin
 
     with Items do begin
       BeginUpdate;
-      Add('Default');
+      Add(dlgAssemblerDefault);
       Add('Intel');
       Add('AT&&T');
       EndUpdate;
@@ -1257,7 +1257,7 @@ begin
   chkLinkSmart.Caption := dlgLinkSmart+' (-XX)';
 
   TargetSpecificsGrpBox.Caption := lisCOTargetOSSpecificOptions;
-  chkWin32GraphicApp.Caption := 'Win32 gui application (-WG)';
+  chkWin32GraphicApp.Caption := dlgWin32GUIApp+' (-WG)';
 
   grpOptions.Caption := dlgCOOpts+' (-k)';
   chkOptionsLinkOpt.Caption := dlgPassOptsLinker;
@@ -1339,7 +1339,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOCompilation;
 
-  chkCreateMakefile.Caption := 'Create Makefile';
+  chkCreateMakefile.Caption := dlgCOCreateMakefile;
 
   ExecuteAfterGroupBox.Caption := lisCOExecuteBefore;
   chkExecBeforeBuild.Caption := lisCOCallOnBuild;

@@ -735,6 +735,10 @@ msgstr "Klausti"
 msgid "Ask before replacing each found text"
 msgstr "Klausti patvirtinimo kiekvienąkart prieš pakeičiant rastą tekstą"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "Simbolis eta"
@@ -1931,7 +1935,7 @@ msgstr "Sukurti FPC makrokomandas ir kelius FPC projekto katalogui"
 msgid "Create LazDoc files"
 msgstr "Kurti LazDoc failus"
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Sukurti Makefile"
 
@@ -2155,7 +2159,7 @@ msgstr "Derintuvės tipas ir failas"
 msgid "Debugging:"
 msgstr "Derinimas:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Numatytas"
 
@@ -7763,10 +7767,6 @@ msgstr "Eilutės su tokia pat reikšme:"
 msgid "Strip Symbols From Executable"
 msgstr "Pašalinti simbolius iš vykdomojo failo"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Stilius:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Vidinė procedūra"
@@ -9658,6 +9658,10 @@ msgstr "Tik visų žodžių"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Plotis:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
