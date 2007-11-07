@@ -398,12 +398,14 @@ procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   ARect, Adjusted: TRect;
+  CurAnchors: TAnchors;
 begin
-  PreferredWidth := 0;
-  PreferredHeight := ButtonHeight;
   ARect := ClientRect;
   Adjusted := ARect;
   AdjustClientRect(Adjusted);
+  PreferredWidth := ButtonWidth;
+  inc(PreferredWidth, (Adjusted.Left - ARect.Left) - (Adjusted.Right - ARect.Right));
+  PreferredHeight := ButtonHeight;
   inc(PreferredHeight, (Adjusted.Top - ARect.Top) - (Adjusted.Bottom - ARect.Bottom));
 end;
 
