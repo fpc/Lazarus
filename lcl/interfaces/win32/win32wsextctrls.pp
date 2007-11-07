@@ -404,7 +404,7 @@ begin
     if PtrUInt(TCI.lParam)=PtrUInt(ACustomPage) then
     begin
       TCI.mask := TCIF_IMAGE;
-      TCI.iImage:=ACustomPage.ImageIndex;
+      TCI.iImage := TCustomNotebook(ACustomPage.Parent).GetImageIndex(PageIndex);
 
       Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
     end;
@@ -457,7 +457,7 @@ begin
     TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
     // store object as extra, so we can verify we got the right page later
     TCI.lParam := PtrUInt(AChild);
-    TCI.iImage := AChild.ImageIndex;
+    TCI.iImage := ANotebook.GetImageIndex(AIndex);
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
@@ -521,7 +521,7 @@ begin
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       TCI.lParam := PtrUInt(lPage);
-      TCI.iImage := lPage.ImageIndex;
+      TCI.iImage := ANotebook.GetImageIndex(RealIndex);
 {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin

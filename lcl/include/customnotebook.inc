@@ -423,11 +423,10 @@ begin
   if fPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
   //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
-  if Page[AValue].TabVisible or (csDesigning in ComponentState) then begin
-    fPageIndex := AValue;
-    UpdateAllDesignerFlags;
-    DoSendPageIndex;
-  end;
+
+  fPageIndex := AValue;
+  UpdateAllDesignerFlags;
+  DoSendPageIndex;
 end;
 
 {------------------------------------------------------------------------------
