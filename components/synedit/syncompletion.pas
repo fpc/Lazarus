@@ -149,6 +149,7 @@ type
     Bitmap: TBitmap; // used for drawing
     fCurrentEditor: TComponent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
+    FOnPositionChanged: TNotifyEvent;
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
@@ -178,9 +179,10 @@ type
     property FontHeight:integer read FFontHeight write SetFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
-    property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;
-    property OnKeyNextChar: TNotifyEvent read FOnKeyNextChar write FOnKeyNextChar;
-    property OnKeyPrevChar: TNotifyEvent read FOnKeyPrevChar write FOnKeyPrevChar;
+    property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;// e.g. Tab
+    property OnKeyNextChar: TNotifyEvent read FOnKeyNextChar write FOnKeyNextChar;// e.g. arrow right
+    property OnKeyPrevChar: TNotifyEvent read FOnKeyPrevChar write FOnKeyPrevChar;// e.g. arrow left
+    property OnPositionChanged: TNotifyEvent read FOnPositionChanged write FOnPositionChanged;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
     property TextColor: TColor read FTextColor write FTextColor;
     property TextSelectedColor: TColor
@@ -201,6 +203,7 @@ type
     function GetClSelect: TColor;
     {$IFDEF SYN_LAZARUS}
     function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
+    function GetOnPositionChanged: TNotifyEvent;
     {$ENDIF}
     procedure SetClSelect(const Value: TColor);
     function GetCurrentString: string;
@@ -218,6 +221,7 @@ type
     procedure SetOnKeyPress(const Value: TKeyPressEvent);
     {$IFDEF SYN_LAZARUS}
     procedure SetOnMeasureItem(const AValue: TSynBaseCompletionMeasureItem);
+    procedure SetOnPositionChanged(const AValue: TNotifyEvent);
     {$ENDIF}
     procedure SetOnPaintItem(const Value: TSynBaseCompletionPaintItem);
     procedure SetPosition(const Value: Integer);
@@ -272,11 +276,13 @@ type
     property OnSearchPosition: TSynBaseCompletionSearchPosition
                              read GetOnSearchPosition write SetOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
-                                               write SetOnKeyCompletePrefix;
+                                               write SetOnKeyCompletePrefix;// e.g. Tab
     property OnKeyNextChar: TNotifyEvent read GetOnKeyNextChar
-                                         write SetOnKeyNextChar;
+                                         write SetOnKeyNextChar;// e.g. arrow right
     property OnKeyPrevChar: TNotifyEvent read GetOnKeyPrevChar
-                                         write SetOnKeyPrevChar;
+                                         write SetOnKeyPrevChar;// e.g. arrow left
+    property OnPositionChanged: TNotifyEvent read GetOnPositionChanged
+                                             write SetOnPositionChanged;
     {$ENDIF}
     property ClSelect: TColor read GetClSelect write SetClSelect;
     property AnsiStrings: boolean read SFAnsi write RFAnsi;
@@ -872,6 +878,7 @@ begin
       else if Scroll.Position < Position - NbLinesInWindow + 1 then
         Scroll.Position := Position - NbLinesInWindow + 1;
       Invalidate;
+      if Assigned(OnPositionChanged) then OnPositionChanged(Self);
     end;
   end;
   {$IFDEF SYN_LAZARUS}
@@ -1077,6 +1084,11 @@ procedure TSynBaseCompletion.SetOnMeasureItem(
 begin
   Form.OnMeasureItem := AValue;
 end;
+
+procedure TSynBaseCompletion.SetOnPositionChanged(const AValue: TNotifyEvent);
+begin
+  Form.OnPositionChanged :=  AValue;
+end;
 {$ENDIF}
 
 procedure TSynBaseCompletion.SetOnPaintItem(const Value:
@@ -1104,6 +1116,11 @@ end;
 function TSynBaseCompletion.GetOnMeasureItem: TSynBaseCompletionMeasureItem;
 begin
   Result := Form.OnMeasureItem;
+end;
+
+function TSynBaseCompletion.GetOnPositionChanged: TNotifyEvent;
+begin
+  Result := Form.OnPositionChanged;
 end;
 {$ENDIF}
 

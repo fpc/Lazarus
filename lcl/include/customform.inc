@@ -322,22 +322,22 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetVisible
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetVisible(Value : boolean);
-Begin
+procedure TCustomForm.SetVisible(Value : boolean);
+begin
   if (Value=(fsVisible in FFormState)) and (Visible=Value) then exit;
-  //DebugLn('[TCustomForm.SetVisible] START ',Name,':',ClassName,' Old=',Visible,' New=',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+  //DebugLn(['[TCustomForm.SetVisible] START ',Name,':',ClassName,' Old=',Visible,' New=',Value,' ',(fsCreating in FFormState)]);
   if Value then
     Include(FFormState, fsVisible)
   else
     Exclude(FFormState, fsVisible);
-  //DebugLn('TCustomForm.SetVisible ',Name,':',ClassName,' FormUpdating=',FormUpdating,' fsCreating=',fsCreating in FFormState);
+  //DebugLn(['TCustomForm.SetVisible ',Name,':',ClassName,' fsCreating=',fsCreating in FFormState]);
   if (fsCreating in FFormState) {or FormUpdating} then
     // will be done when finished loading
   else
   begin
     inherited Visible:=Value;
   end;
-  //DebugLn('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating,' ',Visible);
+  //DebugLn(['[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',Visible]);
 end;
 
 {------------------------------------------------------------------------------

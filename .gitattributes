@@ -1720,6 +1720,7 @@ ide/codeexplopts.pas svneol=native#text/pascal
 ide/codeexplorer.lfm svneol=native#text/plain
 ide/codeexplorer.lrs svneol=native#text/pascal
 ide/codeexplorer.pas svneol=native#text/pascal
+ide/codehelpform.pas svneol=native#text/plain
 ide/codemacroprompt.lfm svneol=native#text/plain
 ide/codemacroprompt.lrs svneol=native#text/plain
 ide/codemacroprompt.pas svneol=native#text/plain

@@ -94,7 +94,10 @@ type
     function HeightInLines: Integer; virtual; abstract;
     function CharWidth: integer; virtual; abstract;
     function CursorInPixel: TPoint; virtual; abstract;
-    function ScreenToPixelPosition(const Position: TPoint): TPoint; virtual; abstract;
+    function ScreenToPixelPosition(const Position: TPoint): TPoint; virtual; abstract;// ScreenXY to pixel in EditorControl.
+      // To get the desktop pixel coords use:
+      //   with SourceEditorWindow.ActiveEditor do
+      //     DesktopXY:=EditorControl.ClientToScreen(ScreenToPixelPosition(ScreenXY));
 
     // update
     procedure BeginUndoBlock; virtual; abstract;

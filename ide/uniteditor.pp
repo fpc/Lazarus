@@ -55,7 +55,7 @@ uses
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  MacroPromptDlg, TransferMacros, CodeContextForm,
+  MacroPromptDlg, TransferMacros, CodeContextForm, CodeHelpForm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
@@ -552,6 +552,7 @@ type
     procedure OnSynCompletionPrevChar(Sender: TObject);
     procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
     procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure OnSynCompletionPositionChanged(Sender: TObject);
     procedure DeactivateCompletionForm;
     procedure InitIdentCompletion(S: TStrings);
 
@@ -687,12 +688,15 @@ type
     procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
     procedure HideHint;
     procedure StartShowCodeContext(JumpToError: boolean);
+    procedure StartShowCodeHelp;
 
-    Procedure NewFile(const NewShortName: String; ASource: TCodeBuffer;
+    // new, close, focus
+    procedure NewFile(const NewShortName: String; ASource: TCodeBuffer;
                       FocusIt: boolean);
-    Procedure CloseFile(PageIndex:integer);
+    procedure CloseFile(PageIndex:integer);
     procedure FocusEditor;
 
+    // paste and copy
     procedure CutClicked(Sender: TObject);
     procedure CopyClicked(Sender: TObject);
     procedure PasteClicked(Sender: TObject);
@@ -1346,6 +1350,8 @@ begin
     // close hint windows
     if (CodeContextFrm<>nil) then
       CodeContextFrm.Hide;
+    if (CodeHelpFrm<>nil) then
+      CodeHelpFrm.Hide;
   end;
 
   if (FSourceNoteBook<>nil)
@@ -3000,6 +3006,7 @@ begin
   FreeAndNil(Gotodialog);
 
   FreeThenNil(CodeContextFrm);
+  FreeThenNil(CodeHelpFrm);
   FreeThenNil(aCompletion);
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
@@ -3045,6 +3052,7 @@ begin
         OnKeyPrevChar:=@OnSynCompletionPrevChar;
         OnKeyPress:=@OnSynCompletionKeyPress;
         OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
+        OnPositionChanged:=@OnSynCompletionPositionChanged;
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
@@ -3434,6 +3442,12 @@ begin
   //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
 end;
 
+procedure TSourceNotebook.OnSynCompletionPositionChanged(Sender: TObject);
+begin
+  if CodeHelpFrm<>nil then
+    CodeHelpFrm.UpdateHints;
+end;
+
 procedure TSourceNotebook.DeactivateCompletionForm;
 var
   ActSE: TSourceEditor;
@@ -3637,6 +3651,10 @@ Begin
       // ' TextSelectedColor=',DbgS(TextSelectedColor),
       // '');
     end;
+    if CurrentCompletionType=ctIdentCompletion then
+      StartShowCodeHelp
+    else if CodeHelpFrm<>nil then
+      CodeHelpFrm.HelpEnabled:=false;
   end;
 End;
 
@@ -4736,7 +4754,19 @@ begin
   end;
 end;
 
-Procedure TSourceNotebook.BookMarkSetClicked(Sender: TObject);
+procedure TSourceNotebook.StartShowCodeHelp;
+begin
+  if CodeHelpFrm=nil then begin
+    CodeHelpFrm:=TCodeHelpFrm.Create(Self);
+    CodeHelpFrm.Name:='TSourceNotebook_CodeHelpFrm';
+  end;
+  CodeHelpFrm.AnchorForm:=CurCompletionControl.TheForm;
+  {$IFDEF EnableCodeHelp}
+  CodeHelpFrm.HelpEnabled:=true;
+  {$ENDIF}
+end;
+
+procedure TSourceNotebook.BookMarkSetClicked(Sender: TObject);
 // popup menu:  set bookmark clicked
 var
   MenuItem: TIDEMenuItem;

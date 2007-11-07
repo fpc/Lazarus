@@ -739,6 +739,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TFont.SetDefault;
+
+  Set Font properties to default.
+ ------------------------------------------------------------------------------}
+procedure TFont.SetDefault;
+begin
+  BeginUpdate;
+  try
+    Name:=DefFontData.Name;
+    Charset:=DefFontData.CharSet;
+    Height:=DefFontData.Height;
+    Pitch:=DefFontData.Pitch;
+    Style:=DefFontData.Style;
+    Color:=clWindowText;
+  finally
+    EndUpdate;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TFont.SetSize
   Params: AValue: the new value
   Returns:  nothing

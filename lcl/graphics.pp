@@ -502,6 +502,7 @@ type
     procedure EndUpdate;
     function HandleAllocated: boolean;
     function IsDefault: boolean;
+    procedure SetDefault;
     property Handle: HFONT read GetHandle write SetHandle;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
     property CanUTF8: boolean read GetCanUTF8;

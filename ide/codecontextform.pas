@@ -28,6 +28,7 @@
   
   Abstract:
     The popup tooltip window for the source editor.
+    For example for the parameter hints.
 }
 unit CodeContextForm;
 
@@ -60,6 +61,7 @@ type
     FLastParameterIndex: integer;
     FParamListBracketOpenCodeXYPos: TCodeXYPosition;
     FProcNameCodeXYPos: TCodeXYPosition;
+    FSourceEditorTopIndex: integer;
     procedure CreateHints(const CodeContexts: TCodeContextInfo);
     procedure ClearMarksInHints;
     procedure MarkCurrentParameterInHints(ParameterIndex: integer); // 0 based
@@ -75,12 +77,13 @@ type
     property ProcNameCodeXYPos: TCodeXYPosition read FProcNameCodeXYPos;
     property ParamListBracketOpenCodeXYPos: TCodeXYPosition
                                             read FParamListBracketOpenCodeXYPos;
+    property SourceEditorTopIndex: integer read FSourceEditorTopIndex;
     property LastParameterIndex: integer read FLastParameterIndex;
   end;
 
 var
   CodeContextFrm: TCodeContextFrm = nil;
-  
+
 function ShowCodeContext(Code: TCodeBuffer): boolean;
 
 implementation
@@ -151,8 +154,8 @@ var
   DrawWidth: LongInt;
   DrawHeight: LongInt;
 begin
-  DrawWidth:=Self.ClientWidth;
-  DrawHeight:=Self.ClientHeight;
+  DrawWidth:=ClientWidth;
+  DrawHeight:=ClientHeight;
   DrawHints(DrawWidth,DrawHeight,true);
 end;
 
@@ -220,6 +223,7 @@ begin
     SrcEdit:=SourceEditorWindow.ActiveEditor;
     if (SrcEdit=nil) or (SrcEdit.CodeToolsBuffer<>ProcNameCodeXYPos.Code) then
       exit;
+    if SrcEdit.TopLine<>FSourceEditorTopIndex then exit;
 
     CurTextXY:=SrcEdit.CursorTextXY;
     BracketPos:=Point(ParamListBracketOpenCodeXYPos.X,
@@ -247,7 +251,7 @@ begin
         SetLength(Code,length(Code)-length(Line)+CurTextXY.X-1);
     end;
     //DebugLn('TCodeContextFrm.UpdateHints Code="',DbgStr(Code),'"');
-    
+
     // parse the code
     TokenEnd:=BracketPos.X;
     BracketLevel:=0;
@@ -496,6 +500,7 @@ begin
   // calculate screen position
   ScreenTextXY:=SrcEdit.TextToScreenPosition(CursorTextXY);
   ClientXY:=SrcEdit.ScreenToPixelPosition(ScreenTextXY);
+  FSourceEditorTopIndex:=SrcEdit.TopLine;
 
   // calculate size of hints
   DrawWidth:=SourceEditorWindow.ClientWidth;
