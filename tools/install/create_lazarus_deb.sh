@@ -97,16 +97,16 @@ if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
 # build for default platform
-make lcl packager/registration ideintf bigidecomponents OPT="$MAKEOPTS"
+make lcl packager/registration ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
 # build gtk2 .ppu
 export LCL_PLATFORM=gtk2
-make lcl packager/registration ideintf bigidecomponents OPT="$MAKEOPTS"
+make lcl packager/registration ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 # build IDE
 export LCL_PLATFORM=$LCLWidgetset
-make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
-make lazbuilder OPT="$MAKEOPTS"
-make tools OPT="$MAKEOPTS"
+make bigide PP=$ppcbin USESVN2REVISIONINC=0 OPT="$MAKEOPTS"
+make lazbuilder PP=$ppcbin OPT="$MAKEOPTS"
+make tools PP=$ppcbin OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 
 strip lazarus
