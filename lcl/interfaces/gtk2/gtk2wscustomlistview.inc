@@ -163,31 +163,28 @@ begin
   //DebugLn('Gtk2_ItemSelectionChanged');
   Widgets := PTVWidgets(WidgetInfo^.UserData);
   msg.Msg := CN_NOTIFY;
-  if (widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then begin
+  if (widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then
+  begin
     debugln(' Gtk2_ItemSelectionChanged  ItemChache=nil ',tComponent(widgetInfo^.lclObject).name);
     exit;
   end;
-  for i := 0 to Widgets^.ItemCache.Count -1 do begin
-
+  for i := 0 to Widgets^.ItemCache.Count -1 do
+  begin
     FillChar(NM, SizeOf(NM), 0);
     NM.hdr.hwndfrom := PtrUInt(Widgets^.MainView);
     NM.hdr.code := LVN_ITEMCHANGED;
     AIndex := Widgets^.ItemCache.Strings[i];
     NM.iItem := StrToInt(AIndex);
     NM.iSubItem := 0;//AColumn;
-  if Widgets^.ItemCache.Objects[i] <> nil then
-
+    if Widgets^.ItemCache.Objects[i] <> nil then
       NM.uOldState := LVIS_SELECTED
     else
       NM.uNewState := LVIS_SELECTED;
     NM.uChanged := LVIF_STATE;
     msg.NMHdr := @NM.hdr;
-
     DeliverMessage(WidgetInfo^.LCLObject, msg);
-
   end;
   Widgets^.ItemCache.Clear;
-
 end;
 
 function Gtk2WSLV_ItemSelected(selection: PGtkTreeSelection; model: PGtkTreeModel;
@@ -223,7 +220,8 @@ begin
   // this stops a loop when you use the shift key to select multiple entries
   if gtk_tree_selection_get_mode(selection) = GTK_SELECTION_MULTIPLE then
   begin
-    for i := 0 to Widgets^.ItemCache.Count-1 do begin
+    for i := 0 to Widgets^.ItemCache.Count-1 do
+    begin
       if (Widgets^.ItemCache.Strings[i] = Str) and (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected))))
       then begin
         Result := False;
@@ -824,10 +822,10 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
-    if ItemCache = nil then begin
+  with Widgets^ do
+  begin
+    if ItemCache = nil then
       ItemCache := TStringList.Create;
-    end;
     if AIndex = -1 then
       gtk_list_store_append(PGtkListStore(TreeModel), @Iter)
     else
@@ -1073,6 +1071,7 @@ begin
   
     Dispose(OrigScrollingData);
     WidgetInfo^.CoreWidget := PGtkWidget(MainView);
+    gtk_object_set_data(Pointer(MainView), 'widgetinfo', WidgetInfo);
     //SetMainWidget(ScrollWidget, MainView);
     //GetWidgetInfo(ScrollWidget, True)^.CoreWidget := PGtkWidget(MainView);
     gtk_widget_show_all(PGtkWidget(MainView));
@@ -1086,6 +1085,19 @@ begin
   Widgets^.WidgetInfo := GetWidgetInfo(ScrollWidget);
   SetCallbacks(PGtkWidget(ScrollWidget), Widgets^, Widgets^.WidgetInfo);
   *)
+end;
+
+class procedure TGtk2WSCustomListView.DestroyHandle(
+  const AWinControl: TWinControl);
+var
+  Widgets: PTVWidgets;
+begin
+  GetCommonTreeViewWidgets(PGtkWidget(AWinControl.Handle), Widgets);
+  // on widget destroy we have no ItemDeleted notification and we must destroy ItemChache ourself
+  // if things will change please remove this destroy
+  Widgets^.ItemCache.Free;
+  Widgets^.ItemCache := nil;
+  TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
 end;
 
 class procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);

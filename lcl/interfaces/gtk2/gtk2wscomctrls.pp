@@ -33,7 +33,7 @@ uses
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
   StdCtrls, LCLProc, ImgList, Math, Sysutils,
   // widgetset
-  WSComCtrls, WSLCLClasses, WSProc,
+  WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
   GtkWSComCtrls,
   GtkWSControls,
@@ -121,7 +121,8 @@ type
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
 
     // lv
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure BeginUpdate(const ALV: TCustomListView); override;
     class procedure EndUpdate(const ALV: TCustomListView); override;
