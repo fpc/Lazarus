@@ -1,4 +1,4 @@
-{
+{                   
  *****************************************************************************
  *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
@@ -135,27 +135,18 @@ function CreateGlyph(B: TBitmap; Width, Height: Integer;
   Adjustment: TGlyphAdjustment; TransparentColor: TColor = clFuchsia): TBitmap;
 begin
   Result := TBitmap.Create;
-  if (Adjustment = gaNone) then
-  begin
-    Result.Assign(B);
-  end
-  else
-  begin
-    Result.Width := Width;
-    Result.Height := Height;
-    Result.Canvas.Brush.Color := TransparentColor;
-    Result.Canvas.FillRect(Bounds(0, 0, Width, Height));
-
-    case Adjustment of
+  Result.Width := Width;
+  Result.Height := Height;
+  Result.Canvas.Brush.Color := TransparentColor;
+  Result.Canvas.FillRect(Bounds(0, 0, Width, Height));
+  case Adjustment of
     gaStretch: Result.Canvas.StretchDraw(Bounds(0, 0, Width, Height), B);
-    gaCrop: Result.Canvas.Draw(0, 0, B);
+    gaCrop, gaNone: Result.Canvas.Draw(0, 0, B);
     gaCenter: Result.Canvas.Draw((Width - B.Width) div 2, (Height - B.Height) div 2, B);
-    end;
-  
-    Result.TransparentColor := TransparentColor;
-    Result.Transparent := True;
-    Result.TransparentMode := tmAuto;
   end;
+  Result.TransparentColor := TransparentColor;
+  Result.Transparent:= True;
+  Result.TransparentMode := tmAuto;
 end;
 
 function CreateGlyphSplit(Src: TBitmap; Width, Height: Integer; SrcSplitIndex: Integer): TBitmap;
@@ -163,8 +154,13 @@ begin
   Result := TBitmap.Create;
   Result.Width := Width;
   Result.Height := Height;
+  Result.Canvas.Brush.Color:= Src.TransparentColor;
+  Result.Canvas.FillRect(Bounds(0, 0, Width, Height));
   Result.Canvas.CopyRect( Rect(0, 0, Width, Height),
     Src.Canvas, Bounds(SrcSplitIndex * Width, 0, Width, Height) );
+  Result.TransparentColor := Src.TransparentColor;
+  Result.Transparent := True;
+  Result.TransparentMode := tmAuto;
 end;
 
 { TImageListEditorDlg }
@@ -484,6 +480,8 @@ var
   v_PartCount: Integer;
   c_Part: Integer;
   v_CompositeBmp: TBitmap;
+  glyphTransparentColor:TColor;
+  glyphTransparentColorName:String;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   Bmp := nil;
@@ -491,7 +489,6 @@ begin
   Picture := TPicture.Create;
   try
     Picture.LoadFromFile(FileName);
-    
     Bmp := TBitmap.Create;
     Bmp.Assign(Picture.Bitmap);
   finally
@@ -502,6 +499,12 @@ begin
   begin
     if not Bmp.Empty then
     begin
+      glyphTransparentColor:= Bmp.Canvas.Pixels[0,Bmp.Height-1];
+      glyphTransparentColorName:= ColorToString(glyphTransparentColor);
+      If ColorBoxTransparent.Items.IndexOf(glyphTransparentColorName)<0 then
+        ColorBoxTransparent.Items.Add(glyphTransparentColorName);
+      ColorBoxTransparent.Selected := glyphTransparentColor;
+      Bmp.TransparentColor:= glyphTransparentColor;
       if (Bmp.Height = ImageList.Height)
         and (Bmp.Width > ImageList.Width)
         and (Bmp.Width mod ImageList.Width = 0)
@@ -523,14 +526,14 @@ begin
         if Assigned(v_CompositeBmp) then
           Bmp := CreateGlyphSplit(v_CompositeBmp, ImageList.Width, ImageList.Height, c_Part);
 
-        Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone);
+        Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone, Bmp.TransparentColor);
         I := ImageList.Add(Glyph, nil);
         Glyph.Free;
 
         New(P);
         P^.Bitmap := Bmp;
         P^.Adjustment := gaNone;
-        P^.TransparentColor := clFuchsia;
+        P^.TransparentColor := glyphTransparentColor;
 
         Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
         Node.ImageIndex := I;
