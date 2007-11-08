@@ -1438,9 +1438,9 @@ begin
 
   ButtonTop := 2;
   ButtonLeft := 2;
-  MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisMenuNewUnit);
+  MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'menu_new_unit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisMenuNewUnit);
 
-  MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
+  MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'menu_open'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
 
   // store left
   n := ButtonLeft;
@@ -1448,21 +1448,21 @@ begin
   MainIDEBar.OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
 
-  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'menu_save_16_dual'   , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
+  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'menu_save'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
   MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_save_all', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
-  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
-  MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform' , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
+  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'menu_new_form'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
+  MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'menu_view_toggle_form_unit' , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
   // new row
   ButtonLeft := 2;
-  MainIDEBar.ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
-  MainIDEBar.ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
+  MainIDEBar.ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'menu_view_units' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
+  MainIDEBar.ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'menu_view_forms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
   inc(ButtonLeft,13);
-  MainIDEBar.RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lisHintRun);
-  MainIDEBar.PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lisHintPause);
+  MainIDEBar.RunSpeedButton        := CreateButton('RunSpeedButton'       , 'menu_run'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lisHintRun);
+  MainIDEBar.PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'menu_pause'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lisHintPause);
   MainIDEBar.PauseSpeedButton.Enabled:=false;
-  MainIDEBar.StepIntoSpeedButton   := CreateButton('StepIntoSpeedButton'  , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lisHintStepInto);
-  MainIDEBar.StepOverSpeedButton   := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
+  MainIDEBar.StepIntoSpeedButton   := CreateButton('StepIntoSpeedButton'  , 'menu_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lisHintStepInto);
+  MainIDEBar.StepOverSpeedButton   := CreateButton('StepOverpeedButton'   , 'menu_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
 
   MainIDEBar.pnlSpeedButtons.Width := ButtonLeft+3;
 
