@@ -711,16 +711,17 @@ end;
 {$else}
 function TToolButton.GetButtonDrawFlags: integer;
 begin
-  Result:=DFCS_BUTTONPUSH;
-  if FDown
-  or ((tbfPressed in FToolButtonFlags) and FMouseInControl) then
-    inc(Result,DFCS_PUSHED);
-  if not Enabled then inc(Result,DFCS_INACTIVE);
+  Result := DFCS_BUTTONPUSH;
+  if not Enabled then
+    inc(Result, DFCS_INACTIVE)
+  else
+  if FDown or ((tbfPressed in FToolButtonFlags) and FMouseInControl) then
+    inc(Result, DFCS_PUSHED);
 
-  if (FToolBar<>nil) and FToolBar.Flat
-  and (not (csDesigning in ComponentState)) and (not FMouseInControl)
-  and (not FDown) then
-    inc(Result,DFCS_FLAT);
+  if (FToolBar <> nil) and FToolBar.Flat
+  and (not (csDesigning in ComponentState)) and (((not FMouseInControl)
+  and (not FDown)) or not Enabled) then
+    inc(Result, DFCS_FLAT);
 end;
 {$endif}
 
