@@ -96,9 +96,12 @@ end;
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 begin
   FImages.Clear;
-  FImages.Width := FOriginal.Width div Max(1, FNumGlyphs);
-  FImages.Height := FOriginal.Height;
-  FImages.Add(FOriginal, nil);
+  if (FOriginal.Width > 0) and (FOriginal.Height > 0) then
+  begin
+    FImages.Width := FOriginal.Width div Max(1, FNumGlyphs);
+    FImages.Height := FOriginal.Height;
+    FImages.Add(FOriginal, nil);
+  end;
 
   if Sender = FOriginal then
     if Assigned(FOnChange) then
