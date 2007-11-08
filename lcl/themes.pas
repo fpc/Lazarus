@@ -1862,8 +1862,19 @@ procedure TThemeServices.DrawIcon(ACanvas: TPersistent;
 var
   Canvas: TCanvas absolute ACanvas;
   ImageList: TCustomImageList absolute AImageList;
+  AEffect: TGraphicsDrawEffect;
 begin
-  ImageList.Draw(Canvas, P.X, P.Y, Index, not IsDisabled(Details));
+  if IsDisabled(Details) then
+    AEffect := gdeDisabled
+  else
+  if IsPushed(Details) then
+    AEffect := gdeShadowed
+  else
+  if IsHot(Details) then
+    AEffect := gdeHighlighted
+  else
+    AEffect := gdeNormal;
+  ImageList.Draw(Canvas, P.X, P.Y, Index, AEffect);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
