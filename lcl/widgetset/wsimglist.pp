@@ -40,7 +40,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes, Contnrs, GraphType, Graphics, ImgList, LCLType, LCLIntf,
+  Classes, Contnrs, GraphType, Graphics, IntfGraphics, ImgList, LCLType, LCLIntf,
   WSLCLClasses, WSProc;
 
 type
@@ -54,7 +54,7 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); virtual;
     class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); virtual;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); virtual;
 
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
 
@@ -74,27 +74,56 @@ type
   private
     FWidth: Integer;
     FHeight: Integer;
+    FList: TCustomImageList;
   public
-    constructor Create(AWidth, AHeight: Integer); reintroduce;
-    procedure Draw(AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle);
+    constructor Create(AList: TCustomImageList); reintroduce;
+    procedure Draw(AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle);
   end;
 
 { TDefaultImageListImplementor }
 
-constructor TDefaultImageListImplementor.Create(AWidth, AHeight: Integer);
+constructor TDefaultImageListImplementor.Create(AList: TCustomImageList);
 begin
   inherited Create(True);
-  FWidth := AWidth;
-  FHeight := AHeight;
+  FList := AList;
 end;
 
 procedure TDefaultImageListImplementor.Draw(AIndex: Integer; ACanvas: TCanvas;
-  ABounds: TRect; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle);
+  ABounds: TRect; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle);
 var
-  Bitmap: TBitmap;
+  ABitmap: TBitmap;
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  ImgHandle, MskHandle: HBitmap;
 begin
-  Bitmap := TBitmap(Items[AIndex]);
-  ACanvas.Draw(ABounds.Left, ABounds.Top, Bitmap);
+  if ADrawEffect = gdeNormal then
+  begin
+    ABitmap := TBitmap(Items[AIndex]);
+    ACanvas.Draw(ABounds.Left, ABounds.Top, ABitmap);
+  end
+  else
+  begin
+    FList.GetRawImage(AIndex, RawImg);
+    RawImg.PerformEffect(ADrawEffect, True);
+
+    ABitmap := TBitmap.Create;
+    if not RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
+    then begin
+      // bummer, the widgetset doesn't support our 32bit format, try device
+      ListImg := TLazIntfImage.Create(RawImg, False);
+      DeviceImg := TLazIntfImage.Create(0, 0);
+      DeviceImg.DataDescription := GetDescriptionFromDevice(0, FList.Width, FList.Height);
+      DeviceImg.CopyPixels(ListImg);
+      DeviceImg.GetRawImage(RawImg);
+      RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+      DeviceImg.Free;
+      ListImg.Free;
+    end;
+    ABitmap.SetHandles(ImgHandle, MskHandle);
+    ACanvas.Draw(ABounds.Left, ABounds.Top, ABitmap);
+    ABitmap.Free;
+    FreeMem(RawImg.Data);
+  end;
 end;
 
 function InternalCreateBitmap(AList: TCustomImageList; AWidth, AHeight: Integer; AData: PRGBAQuad): TBitmap;
@@ -129,7 +158,7 @@ var
   ABitmap: TBitmap;
   i: integer;
 begin
-  Result := TLCLIntfHandle(TDefaultImageListImplementor.Create(AWidth, AHeight));
+  Result := TLCLIntfHandle(TDefaultImageListImplementor.Create(AList));
 
   if AData <> nil then
   begin
@@ -158,7 +187,7 @@ begin
 end;
 
 class procedure TWSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckHandleAllocated(AList, 'Draw')
   then Exit;

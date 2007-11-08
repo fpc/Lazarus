@@ -53,7 +53,7 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
     class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
     class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
@@ -77,8 +77,6 @@ const
 { itImage } ILD_NORMAL,
 { itMask }  ILD_MASK
   );
-var
-  GreyColorMap: array[0..255] of Cardinal;
 
 function ColorToImagelistColor(AColor: TColor): DWord;
 begin
@@ -266,90 +264,65 @@ begin
 end;
 
 class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TImageListDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 var
-  hdcGrey, hdcBW: HDC;
-  hbmOld1, hbmGrey, hbmOld2, hbmBW: HBitmap;
-
-  InfoGrey: record
-    Header: TBitmapInfoHeader;
-    Colors: array[0..255] of Cardinal;
-  end;
-
-  BitsGrey: PChar;
   DrawParams: TImageListDrawParams;
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  ImgHandle, MskHandle: HBitmap;
+  ABitmap: TBitmap;
 begin
   if not WSCheckHandleAllocated(AList, 'Draw')
   then Exit;
 
-  if ADrawEffect <> ideDisabled then
+  if ADrawEffect = gdeNormal then
   begin
-    ImageList_DrawEx(HImageList(AList.Handle), AIndex, ACanvas.Handle, ABounds.Left,
-      ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
-      ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType])
+      ImageList_DrawEx(HImageList(AList.Handle), AIndex, ACanvas.Handle, ABounds.Left,
+        ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
+        ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
+  end
+  else
+  if (ADrawEffect = gdeDisabled) and (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) then
+  begin
+    // if it is manifested exe then use winXP algoriphm of gray painting
+    FillChar(DrawParams, SizeOf(DrawParams), 0);
+    DrawParams.cbSize := SizeOf(DrawParams);
+    DrawParams.himlL := HImageList(AList.Handle);
+    DrawParams.i := AIndex;
+    DrawParams.hdcDst := ACanvas.Handle;
+    DrawParams.x := ABounds.Left;
+    DrawParams.y := ABounds.Top;
+    DrawParams.cx := ABounds.Right;
+    DrawParams.cy := ABounds.Bottom;
+    DrawParams.rgbBk := ColorToImagelistColor(ABkColor);
+    DrawParams.rgbFg := ColorToImagelistColor(ABlendColor);
+    DrawParams.fStyle := DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType];
+    DrawParams.fState := ILS_SATURATE; // draw greyed
+    ImageList_DrawIndirect(@DrawParams);
   end
   else
   begin
-    // at moment only Disabled state is implemented
-    if (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) then
-    begin
-      FillChar(DrawParams, SizeOf(DrawParams), 0);
-      DrawParams.cbSize := SizeOf(DrawParams);
-      DrawParams.himlL := HImageList(AList.Handle);
-      DrawParams.i := AIndex;
-      DrawParams.hdcDst := ACanvas.Handle;
-      DrawParams.x := ABounds.Left;
-      DrawParams.y := ABounds.Top;
-      DrawParams.cx := ABounds.Right;
-      DrawParams.cy := ABounds.Bottom;
-      DrawParams.rgbBk := ColorToImagelistColor(ABkColor);
-      DrawParams.rgbFg := ColorToImagelistColor(ABlendColor);
-      DrawParams.fStyle := DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType];
-      DrawParams.fState := ILS_SATURATE; // draw greyed
-      ImageList_DrawIndirect(@DrawParams);
-    end else
-    begin
-      hdcGrey := CreateCompatibleDC(ACanvas.Handle);
-      hdcBW := CreateCompatibleDC(ACanvas.Handle);
-
-      // create grey bitmap
-      FillChar(InfoGrey, sizeof(InfoGrey), 0);
-      InfoGrey.Header.biSize := sizeof(InfoGrey.Header);
-      InfoGrey.Header.biWidth := AList.Width;
-      InfoGrey.Header.biHeight := AList.Height;
-      InfoGrey.Header.biPlanes := 1;
-      InfoGrey.Header.biBitCount := 8;
-      InfoGrey.Header.biCompression := BI_RGB;
-      // fill color table
-      System.Move(GreyColorMap, InfoGrey.Colors, 256 * SizeOf(Cardinal));
-      hbmGrey := CreateDIBSection(hdcGrey, Windows.PBitmapInfo(@InfoGrey)^, DIB_RGB_COLORS, BitsGrey, 0, 0);
-
-      hbmBW := CreateBitmap(AList.Width, AList.Height, 1, 0, nil);
-
-      hbmOld1 := SelectObject(hdcGrey, hbmGrey);
-      hbmOld2 := SelectObject(hdcBW, hbmBW);
-
-      // draw to greyDC
-      ImageList_DrawEx(HImageList(AList.Handle), AIndex, hdcGrey, 0,
-        0, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
-        ColorToImagelistColor(ABlendColor), ILD_NORMAL);
-      // draw to bwDC
-      ImageList_DrawEx(HImageList(AList.Handle), AIndex, hdcBW, 0,
-        0, ABounds.Right, ABounds.Bottom, clBlack,
-        clWhite, ILD_MASK);
-
-      // draw grey
-      BitBlt(ACanvas.Handle, ABounds.Left, ABounds.Top, ABounds.Right,
-        ABounds.Bottom, hdcGrey, 0, 0, SRCCOPY);
-      // mask
-      BitBlt(ACanvas.Handle, ABounds.Left, ABounds.Top, ABounds.Right,
-        ABounds.Bottom, hdcBW, 0, 0, SRCINVERT);
-
-      DeleteObject(SelectObject(hdcBW, hbmOld2));
-      DeleteDC(hdcBW);
-      DeleteObject(SelectObject(hdcGrey, hbmOld1));
-      DeleteDC(hdcGrey);
+    // use RawImage_PerformEffect to perform drawing effect
+    AList.GetRawImage(AIndex, RawImg);
+    RawImg.PerformEffect(ADrawEffect, True);
+    
+    ABitmap := TBitmap.Create;
+    if not Widgetset.RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
+    then begin
+      // bummer, the widgetset doesn't support our 32bit format, try device
+      ListImg := TLazIntfImage.Create(RawImg, False);
+      DeviceImg := TLazIntfImage.Create(0, 0);
+      DeviceImg.DataDescription := GetDescriptionFromDevice(0, AList.Width, AList.Height);
+      DeviceImg.CopyPixels(ListImg);
+      DeviceImg.GetRawImage(RawImg);
+      Widgetset.RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+      DeviceImg.Free;
+      ListImg.Free;
     end;
+    ABitmap.SetHandles(ImgHandle, MskHandle);
+    ACanvas.Draw(ABounds.Left, ABounds.Top, ABitmap);
+    ABitmap.Free;
+    FreeMem(RawImg.Data);
   end;
 end;
 
@@ -413,16 +386,7 @@ begin
   then AddData(ImageList, 1, AIndex, AList.Width, AList.Height, AData);
 end;
 
-procedure InitGreyColormap;
-var
-  i: Cardinal;
-begin
-  for i := 0 to 255 do
-    GreyColorMap[i] := $FF000000 or (i shl 16) or (i shl 8) or i;
-end;
-
 initialization
-  InitGreyColormap;
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////

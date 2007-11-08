@@ -46,7 +46,6 @@ begin
   );
 end;
 
-
 { TCustomImageList }
 
 {------------------------------------------------------------------------------
@@ -547,17 +546,17 @@ end;
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   AEnabled: Boolean);
 const
-  EffectMap: array[Boolean] of TImageListDrawEffect =
+  EffectMap: array[Boolean] of TGraphicsDrawEffect =
   (
-    ideDisabled,
-    ideNormal
+    gdeDisabled,
+    gdeNormal
   );
 begin
   Draw(ACanvas, AX, AY, AIndex, EffectMap[AEnabled]);
 end;
 
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
-  ADrawEffect: TImageListDrawEffect);
+  ADrawEffect: TGraphicsDrawEffect);
 {$ifdef IMGLIST_OLDSTYLE}
 var
   aBitmap: TBitmap;
@@ -642,11 +641,7 @@ begin
   {$ifdef IMGLIST_OLDSTYLE}
   Image.Assign(TBitMap(FImageList.Items[Index]));
   {$else}
-  CheckIndex(Index);
-  RawImg.Init;
-  FillDescription(RawImg.Description);
-  RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
-  RawImg.Data := @FData[Index * FWidth * FHeight];
+  GetRawImage(Index, RawImg);
 
   if not RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
   then begin
@@ -663,6 +658,16 @@ begin
   Image.SetHandles(ImgHandle, MskHandle);
 
   {$endif}
+end;
+
+procedure TCustomImageList.GetRawImage(Index: Integer; out Image: TRawImage);
+begin
+  if (FCount = 0) then Exit;
+  CheckIndex(Index);
+  Image.Init;
+  FillDescription(Image.Description);
+  Image.DataSize := FWidth * FHeight * SizeOF(FData[0]);
+  Image.Data := @FData[Index * FWidth * FHeight];
 end;
 
 {------------------------------------------------------------------------------

@@ -42,6 +42,13 @@ type
     fsBorder   // fill this color (it fills only conneted pixels of this color)
     );
   TGraphicsBevelCut = (bvNone, bvLowered, bvRaised, bvSpace);
+  TGraphicsDrawEffect =
+  (
+    gdeNormal,      // no effect
+    gdeDisabled,    // grayed image
+    gdeHighlighted, // a bit highlighted image
+    gdeShadowed     // a bit shadowed image
+  );
 
 //------------------------------------------------------------------------------
 // raw image data
@@ -173,6 +180,7 @@ type
     procedure ReleaseData;
     procedure ExtractRect(const ARect: TRect; out ADst: TRawImage);
 
+    procedure PerformEffect(const ADrawEffect: TGraphicsDrawEffect; CreateNewData: Boolean = True);
     function  ReadBits(const APosition: TRawImagePosition; APrec, AShift: Byte): Word;
     procedure ReadChannels(const APosition: TRawImagePosition; out ARed, AGreen, ABlue, AAlpha: Word);
     procedure ReadMask(const APosition: TRawImagePosition; out AMask: Boolean);
@@ -1401,6 +1409,75 @@ begin
   //DebugLn'ExtractRawImageRect Mask SrcRawImage=',RawImageDescriptionAsString(@SrcMaskDesc));
   ExtractData(Mask, MaskSize, Description.MaskBitsPerPixel, Description.MaskBitOrder,
               Description.MaskLineEnd, ADst.Mask, ADst.MaskSize);
+end;
+
+procedure TRawImage.PerformEffect(const ADrawEffect: TGraphicsDrawEffect;
+  CreateNewData: Boolean);
+const
+  GlowShadow = 48;
+  ColorMultiplier = (256 - GlowShadow) / 256;
+var
+  AData: PRGBAQuad;
+  P: Pointer;
+  i, j: integer;
+begin
+  if CreateNewData then
+  begin
+    GetMem(AData, DataSize);
+    Move(Data^, AData^, DataSize);
+    P := AData;
+  end
+  else
+  begin
+    P := Data;
+    AData := P;
+  end;
+  case ADrawEffect of
+    gdeNormal: ;
+    gdeDisabled:
+      begin
+        for i := 0 to Description.Height - 1 do
+          for j := 0 to Description.Width - 1 do
+          begin
+            with AData^ do
+            begin
+              Red := (Red + Green + Blue) div 3;
+              Green := Red;
+              Blue := Red;
+            end;
+            inc(AData);
+          end;
+      end;
+    gdeHighlighted:
+      begin
+        for i := 0 to Description.Height - 1 do
+          for j := 0 to Description.Width - 1 do
+          begin
+            with AData^ do
+            begin
+              Red := Round(GlowShadow + Red * ColorMultiplier);
+              Green := Round(GlowShadow + Green * ColorMultiplier);
+              Blue := Round(GlowShadow + Blue * ColorMultiplier);
+            end;
+            inc(AData);
+          end;
+      end;
+    gdeShadowed:
+      begin
+        for i := 0 to Description.Height - 1 do
+          for j := 0 to Description.Width - 1 do
+          begin
+            with AData^ do
+            begin
+              Red := Round(Red * ColorMultiplier);
+              Green := Round(Green * ColorMultiplier);
+              Blue := Round(Blue * ColorMultiplier);
+            end;
+            inc(AData);
+          end;
+      end;
+  end;
+  Data := P;
 end;
 
 { TRawImageLineStarts }
