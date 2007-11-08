@@ -196,7 +196,8 @@ type
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect); overload;
     procedure FillDescription(out ADesc: TRawImageDescription);
-    procedure GetBitmap(Index: Integer; Image: TBitmap);
+    procedure GetBitmap(Index: Integer; Image: TBitmap); overload;
+    procedure GetBitmap(Index: Integer; Image: TBitmap; AEffect: TGraphicsDrawEffect); overload;
     procedure GetRawImage(Index: Integer; out Image: TRawImage);
     {$ifdef IMGLIST_KEEP_EXTRA}
     procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;

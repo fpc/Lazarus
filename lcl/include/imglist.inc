@@ -59,6 +59,7 @@ end;
 
   The image is copied. To add it directly use AddDirect.
  ------------------------------------------------------------------------------}
+
 function TCustomImageList.Add(Image, Mask: TBitmap): Integer;
 begin
   {$ifdef IMGLIST_OLDSTYLE}
@@ -629,6 +630,12 @@ end;
   Creates a copy of the index'th image.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
+begin
+  GetBitmap(Index, Image, gdeNormal);
+end;
+
+procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap;
+  AEffect: TGraphicsDrawEffect);
 {$ifndef IMGLIST_OLDSTYLE}
 var
   RawImg: TRawImage;
@@ -636,12 +643,14 @@ var
   ImgHandle, MskHandle: HBitmap;
 {$endif}
 begin
-  if (FCount = 0) or (Image = nil) then Exit; 
+  if (FCount = 0) or (Image = nil) then Exit;
 
   {$ifdef IMGLIST_OLDSTYLE}
   Image.Assign(TBitMap(FImageList.Items[Index]));
   {$else}
   GetRawImage(Index, RawImg);
+  
+  RawImg.PerformEffect(AEffect, True);
 
   if not RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
   then begin
@@ -656,6 +665,8 @@ begin
     ListImg.Free;
   end;
   Image.SetHandles(ImgHandle, MskHandle);
+
+  RawImg.FreeData;
 
   {$endif}
 end;
@@ -823,6 +834,7 @@ var
   R: TRect;
   ImgData: PRGBAQuad;
   msk: THandle;
+  i, ACount: Integer;
 {$endif}
 begin
   if AImage = nil then Exit;
@@ -836,11 +848,16 @@ begin
   FMaskList.Insert(AIndex,AMask);
   FCount := FImageList.Count;
   {$else}
-  // todo: add support for multiple images
-  Inc(FCount);
+  ACount := AImage.Width div Width;
+  if ACount = 0 then
+    ACount := 1;
+  Inc(FCount, ACount);
   AllocData(FCount);
-  if AIndex < FCount - 1
-  then InternalMove(FCount - 1, AIndex, True);
+  if AIndex < FCount - ACount then
+  begin
+    for i := 0 to ACount - 1 do
+      InternalMove(FCount - i - 1, AIndex + i, True);
+  end;
   
   if AMask = nil
   then begin
@@ -849,12 +866,15 @@ begin
     else msk := 0;
   end
   else msk := AMask.Handle;
-  R := Rect(0, 0, FWidth, FHeight);
-  RawImage_FromBitmap(RawImg, AImage.Handle, msk, R);
-  ImgData := InternalSetImage(AIndex, RawImg);
 
-  if HandleAllocated
-  then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex, ImgData);
+  for i := 0 to ACount - 1 do
+  begin
+    R := Rect(FWidth * i, 0, FWidth * (i + 1), FHeight);
+    RawImage_FromBitmap(RawImg, AImage.Handle, msk, R);
+    ImgData := InternalSetImage(AIndex + i, RawImg);
+    if HandleAllocated
+    then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
+  end;
   {$endif}
 
   FChanged := true;

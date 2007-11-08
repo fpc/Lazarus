@@ -84,13 +84,8 @@ procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
 begin
   if HandleAllocated 
   then begin
-    if NumGlyphs > 1 then begin
-      DrawGlyph;
-      TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, FMultiGlyph);
-    end
-    else
-      TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);
-    end;
+    TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, FButtonGlyph);
+  end;
   InvalidatePreferredSize;
   AdjustSize;
 end;
@@ -227,34 +222,6 @@ begin
   end;
 end;
 
-procedure TCustomBitBtn.DrawGlyph;
-var
-  AGlyphRect: TRect;
-  AOffset: TPoint;
-  AState :TButtonState;
-begin
-  if FButtonGlyph.FOriginal = nil then exit;
-  AOffset.X:= 0;
-  AOffset.Y:= 0;
-  AGlyphRect.Left :=0;
-  AGlyphRect.Top := 0;
-  AGlyphRect.Bottom:= FButtonGlyph.Glyph.Height;
-  if NumGlyphs > 1 then
-    AGlyphRect.Right:= FButtonGlyph.Glyph.Width div NumGlyphs
-  else
-    AGlyphRect.Right:= FButtonGlyph.Glyph.Width;
-  if FMultiGlyph =nil then FMultiGlyph := TBitmap.Create;
-  FMultiGlyph.Height:=AGlyphRect.Bottom;
-  FMultiGlyph.Width:=AGlyphRect.Right;
-
-  FMultiGlyph.Canvas.Brush.Color:=Color;
-  FMultiGlyph.Canvas.FillRect(AGlyphRect);
-
-  if Enabled then AState := bsUp
-  else AState := bsDisabled;
-  FButtonGlyph.Draw(FMultiGlyph.Canvas,AGlyphRect,AOffset,AState,True,0);
-end;
-
 { Return the caption associated with the akind value.
   This function replaces BitBtnCaption const because the localizing
   dont work with an const array }
@@ -280,12 +247,7 @@ end;
 procedure TCustomBitBtn.InitializeWnd;
 begin
   inherited InitializeWnd;
-  if NumGlyphs > 1 then begin
-    DrawGlyph;
-    TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, FMultiGlyph);
-  end
-  else
-    TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);
+  TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, FButtonGlyph);
   TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);
   TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);  
   TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);  

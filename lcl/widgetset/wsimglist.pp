@@ -120,7 +120,7 @@ begin
     ABitmap.SetHandles(ImgHandle, MskHandle);
     ACanvas.Draw(ABounds.Left, ABounds.Top, ABitmap);
     ABitmap.Free;
-    FreeMem(RawImg.Data);
+    RawImg.FreeData;
   end;
 end;
 

@@ -37,7 +37,7 @@ uses
 {$endif}
   qtwidgets, qtobjects,
   // LCL
-  SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics,
+  SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics, GraphType,
   // Widgetset
   WSProc, WSButtons, WSLCLClasses;
 
@@ -49,7 +49,7 @@ type
   private
   protected
   public
-    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
   end;
 
   { TQtWSSpeedButton }
@@ -72,21 +72,30 @@ uses QtWSControls;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class procedure TQtWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap);
+class procedure TQtWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph);
 var
   AIcon: QIconH;
   APixmap: QPixmapH;
+  AGlyph: TBitmap;
+  AIndex: Integer;
+  AEffect: TGraphicsDrawEffect;
 begin
   APixmap := QPixmap_create();
-  QPixmap_fromImage(APixmap, TQtImage(AValue.Handle).Handle);
+
+  AGlyph := TBitmap.Create;
+  AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
+  AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+
+  QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
   try
     if APixmap <> nil then
     begin
       AIcon := QIcon_create(APixmap);
-      TQtAbstractButton(ABitbtn.Handle).setIcon(AIcon);
+      TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
     end;
   finally
     QPixmap_destroy(APixmap);
+    AGlyph.Free;
   end;
 end;
 

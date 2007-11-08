@@ -54,7 +54,7 @@ type
   
   TWSBitBtnClass = class of TWSBitBtn;
   TWSBitBtn = class(TWSButton)
-    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); virtual;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); virtual;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); virtual;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); virtual;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); virtual;
@@ -74,7 +74,7 @@ implementation
 { TWSCustomBitBtn }
 
 class procedure TWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TBitmap);
+  const AValue: TButtonGlyph);
 begin
 end;
 
