@@ -792,15 +792,16 @@ begin
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
             if (ANode<>nil) and (not IgnoreAll) then begin
               // pascal unit exists twice
-              Result:=QuestionDlg('Ambiguous unit found',
-                'The unit '+CurUnitName+' exists twice in the unit path of the '
-                +ContextDescription+':'#13
+              Result:=QuestionDlg(lisAmbiguousUnitFound2,
+                Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
+                  ContextDescription])
+                +#13
                 +#13
                 +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'#13
                 +'2. "'+CurFilename+'"'#13
                 +#13
-                +'Hint: Check if two packages contain a unit with the same name.',
-                mtWarning,[mrIgnore,mrYesToAll,'Ignore all',mrAbort],0);
+                +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
+                mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrAbort], 0);
               case Result of
               mrIgnore: ;
               mrYesToAll: IgnoreAll:=true;
