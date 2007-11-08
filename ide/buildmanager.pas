@@ -791,6 +791,7 @@ begin
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
             if (ANode<>nil) and (not IgnoreAll) then begin
+              DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.UnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
               Result:=QuestionDlg(lisAmbiguousUnitFound2,
                 Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
