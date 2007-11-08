@@ -752,6 +752,7 @@ var
   CurUnitTree: TAVLTree;
   FileInfoNeedClose: Boolean;
   UnitPath: String;
+  IgnoreAll: Boolean;
 begin
   Result:=mrOk;
   UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
@@ -774,6 +775,7 @@ begin
                                              UnitPath,StartPos,EndPos-StartPos)));
         FileInfoNeedClose:=true;
         if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+          IgnoreAll:=false;
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
@@ -788,9 +790,9 @@ begin
             // check if unit already found
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
-            if ANode<>nil then begin
+            if (ANode<>nil) and (not IgnoreAll) then begin
               // pascal unit exists twice
-              Result:=MessageDlg('Ambiguous unit found',
+              Result:=QuestionDlg('Ambiguous unit found',
                 'The unit '+CurUnitName+' exists twice in the unit path of the '
                 +ContextDescription+':'#13
                 +#13
@@ -798,8 +800,12 @@ begin
                 +'2. "'+CurFilename+'"'#13
                 +#13
                 +'Hint: Check if two packages contain a unit with the same name.',
-                mtWarning,[mbAbort,mbIgnore],0);
-              if Result<>mrIgnore then exit;
+                mtWarning,[mrIgnore,mrYesToAll,'Ignore all',mrAbort],0);
+              case Result of
+              mrIgnore: ;
+              mrYesToAll: IgnoreAll:=true;
+              else exit;
+              end;
             end;
             // add unit to tree
             New(AnUnitFile);
