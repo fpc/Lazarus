@@ -72,8 +72,6 @@ type
 
   TDefaultImageListImplementor = class(TObjectList)
   private
-    FWidth: Integer;
-    FHeight: Integer;
     FList: TCustomImageList;
   public
     constructor Create(AList: TCustomImageList); reintroduce;

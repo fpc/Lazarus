@@ -398,7 +398,6 @@ procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   ARect, Adjusted: TRect;
-  CurAnchors: TAnchors;
 begin
   ARect := ClientRect;
   Adjusted := ARect;
