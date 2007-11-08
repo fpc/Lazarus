@@ -867,13 +867,15 @@ begin
   end
   else msk := AMask.Handle;
 
+  R := Rect(0, 0, FWidth, FHeight);
   for i := 0 to ACount - 1 do
   begin
-    R := Rect(FWidth * i, 0, FWidth * (i + 1), FHeight);
     RawImage_FromBitmap(RawImg, AImage.Handle, msk, R);
     ImgData := InternalSetImage(AIndex + i, RawImg);
     if HandleAllocated
     then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
+    inc(R.Left, FWidth);
+    inc(R.Right, FWidth);
   end;
   {$endif}
 

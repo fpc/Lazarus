@@ -210,7 +210,7 @@ type
     FDownLoaded : Boolean;// value of Down set during loading
     FDragging: Boolean;
     FFlat: Boolean;
-    FGlyph:   TButtonGlyph;
+    FGlyph: TButtonGlyph;
     FGroupIndex: Integer;
     FLastDrawDetails: TThemedElementDetails;
     FLayout: TButtonLayout;
