@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-10-12 22:06+0100\n"
-"Language-Team: français <fr@li.org>\n"
+"PO-Revision-Date: 2007-11-08 21:15+0100\n"
+"Language-Team: français\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.10.2\n"
@@ -737,7 +737,7 @@ msgstr "Demander avant de remplacer chaque texte trouvé"
 
 #: lazarusidestrconsts:dlgcoasmstyle
 msgid "Assembler style:"
-msgstr ""
+msgstr "Style d'assembleur :"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -749,7 +749,7 @@ msgstr "Auteur:"
 
 #: lazarusidestrconsts:liscodetemplautocompleteon
 msgid "Auto complete on ..."
-msgstr ""
+msgstr "Auto complété sur ..."
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
@@ -1541,7 +1541,7 @@ msgstr "Commande commandes"
 
 #: lazarusidestrconsts:dlgcommandlineparameters
 msgid "Command line parameters"
-msgstr ""
+msgstr "Paramètres de ligne de commande"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -9641,7 +9641,7 @@ msgstr "Largeur:"
 
 #: lazarusidestrconsts:dlgwin32guiapp
 msgid "Win32 gui application"
-msgstr ""
+msgstr "Application Win32 gui"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
@@ -9881,7 +9881,7 @@ msgstr "Chemin des librairies"
 
 #: lazarusidestrconsts:lisautomaticallyonlinebreak
 msgid "line break"
-msgstr ""
+msgstr "Saut de ligne"
 
 #: lazarusidestrconsts:lislinkeroptions
 msgid "linker options"
@@ -10037,7 +10037,7 @@ msgstr "Activer RANGECHECKS"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "space"
-msgstr ""
+msgstr "Espace"
 
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
@@ -10049,7 +10049,7 @@ msgstr "Arrêter le programme"
 
 #: lazarusidestrconsts:lisautomaticallyonaddsymbol
 msgid "symbol"
-msgstr ""
+msgstr "Symbole"
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
@@ -10073,7 +10073,7 @@ msgstr "utiliser l'unité LineInfo"
 
 #: lazarusidestrconsts:lisautomaticallyonwordend
 msgid "word end"
-msgstr ""
+msgstr "Fin de mot"
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"
