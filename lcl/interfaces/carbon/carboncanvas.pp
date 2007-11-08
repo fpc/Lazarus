@@ -921,7 +921,6 @@ end;
            Style      - Frame style
 
   Draws a 3D border in Carbon native style
-  TODO: lowered style
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.Frame3D(var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut);
@@ -931,7 +930,7 @@ var
 const
   SName = 'Frame3D';
 begin
-  FillRect(ARect, CurrentBrush);
+  if CurrentBrush.Solid then FillRect(ARect, CurrentBrush);
 
   if Style = bvRaised then
   begin
@@ -1343,7 +1342,7 @@ begin
     else
     begin
       // use temp layer to mask source image
-      // todo find a way to maks "hard" when stretching, now some soft remains are visible
+      // todo find a way to mask "hard" when stretching, now some soft remains are visible
       LayRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
       Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
       try
@@ -1402,9 +1401,12 @@ end;
   Returns: Size of control context
  ------------------------------------------------------------------------------}
 function TCarbonControlContext.GetSize: TPoint;
+var
+  R: TRect;
 begin
-  Result.X := (FOwner.LCLObject as TControl).ClientWidth;
-  Result.Y := (FOwner.LCLObject as TControl).ClientHeight;
+  FOwner.GetClientRect(R);
+  Result.X := (R.Right - R.Left);
+  Result.Y := (R.Bottom - R.Top);
 end;
 
 {------------------------------------------------------------------------------

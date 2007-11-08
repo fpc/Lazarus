@@ -102,6 +102,8 @@ type
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
     procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
     function CreateCGColor: CGColorRef;
+    
+    property Solid: Boolean read FA;
   end;
 
   { TCarbonBrush }

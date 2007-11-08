@@ -904,7 +904,6 @@ end;
   Returns: If the function succeeds
 
   Draws a 3D border in Carbon native style
-  TODO: lowered style
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Frame3D(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;

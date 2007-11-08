@@ -174,7 +174,10 @@ end;
 class function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonWindow.Create(AWinControl, AParams));
+  if csDesigning in AWinControl.ComponentState then
+    Result := TLCLIntfHandle(TCarbonDesignWindow.Create(AWinControl, AParams))
+  else
+    Result := TLCLIntfHandle(TCarbonWindow.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------

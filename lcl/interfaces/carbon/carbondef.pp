@@ -79,6 +79,7 @@ type
     procedure FocusSet; dynamic;
     procedure FocusKilled; dynamic;
     procedure BoundsChanged; virtual;
+    procedure ControlAdded; dynamic;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -97,7 +98,8 @@ type
     function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
-    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); virtual; abstract;
+    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); virtual;
+    procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); virtual; abstract;
     procedure SetCursor(ACursor: HCURSOR); virtual;
     
     procedure ScrollBy(DX, DY: Integer); virtual;
@@ -471,6 +473,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidget.BoundsChanged
+
+  Notifies about control added
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.ControlAdded;
+begin
+  //
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidget.Create
   Params:  AObject - LCL conrol
            AParams - Creation parameters
@@ -559,6 +571,59 @@ procedure TCarbonWidget.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
 begin
   DebugLn(ClassName + '.GetScrollInfo unsupported or not implemented!');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetChildZPosition
+  Params:  AChild      - Child widget
+           AOldPos     - Old z position
+           ANewPos     - New z position
+           AChildren   - List of all child controls
+
+  Sets the child z position of Carbon widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer;
+  const AChildren: TFPList);
+var
+  RefWidget: TCarbonWidget;
+  Order: HIViewZOrderOp;
+  I, StopPos: Integer;
+  Child: TWinControl;
+begin
+  RefWidget := nil;
+
+  if ANewPos <= 0 then // send behind all
+    Order := kHIViewZOrderBelow
+  else
+    if ANewPos >= Pred(AChildren.Count) then // bring to front of all
+      Order := kHIViewZOrderAbove
+    else // custom position
+    begin
+      // Search for the first child above us with a handle.
+      // The child list is reversed form the windows order.
+      // If we don't find an allocated handle then exit.
+
+      if AOldPos > ANewPos then
+        StopPos := AOldPos // the child is moved to the bottom
+      else
+        StopPos := Pred(AChildren.Count); // the child is moved to the top
+
+      for I := Succ(ANewPos) to StopPos do
+      begin
+        Child := TWinControl(AChildren[I]);
+
+        if Child.HandleAllocated then
+        begin
+          RefWidget := TCarbonWidget(Child.Handle);
+          Order := kHIViewZOrderBelow;
+          Break;
+        end;
+      end;
+
+      if RefWidget = nil then Exit;
+    end;
+    
+  AChild.SetZOrder(Order, RefWidget);
 end;
 
 {------------------------------------------------------------------------------

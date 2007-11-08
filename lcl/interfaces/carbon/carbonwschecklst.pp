@@ -35,7 +35,7 @@ uses
   //widgetset
   WSCheckLst, WSLCLClasses,
   //LCL Carbon
-  CarbonDef, CarbonLists, CarbonStrings;
+  CarbonDef, CarbonListViews, CarbonStrings;
 
 type
 
@@ -47,7 +47,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
                     const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): boolean; override;
     class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
@@ -75,20 +74,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomCheckListBox.GetStrings
-  Params:  ACustomListBox - LCL custom list box
-  Returns: Items of check list box in Carbon interface
- ------------------------------------------------------------------------------}
-class function TCarbonWSCustomCheckListBox.GetStrings(
-  const ACustomListBox: TCustomListBox): TStrings;
-begin
-  Result := nil;
-  if not CheckHandle(ACustomListBox, Self, 'GetStrings') then Exit;
-
-  Result := TCarbonCheckListBoxStrings.Create(TCarbonCheckListBox(ACustomListBox.Handle));
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWSCustomCheckListBox.GetChecked
   Params:  ACustomCheckListBox - LCL custom check list box
            AIndex              - Item index
@@ -101,7 +86,7 @@ begin
   Result := false;
   if not CheckHandle(ACheckListBox, Self, 'GetChecked') then Exit;
 
-  Result:=TCarbonCheckListBox(ACheckListBox.Handle).GetChecked(AIndex);
+  Result := TCarbonCheckListBox(ACheckListBox.Handle).GetItemChecked(AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -119,7 +104,7 @@ class procedure TCarbonWSCustomCheckListBox.SetChecked(
 begin
   if not CheckHandle(ACheckListBox, Self, 'SetChecked') then Exit;
   
-  TCarbonCheckListBox(ACheckListBox.Handle).SetChecked(AIndex,AChecked);
+  TCarbonCheckListBox(ACheckListBox.Handle).SetItemChecked(AIndex, AChecked);
 end;
 
 initialization

@@ -168,6 +168,8 @@ begin
     OSError(HIViewAddSubview(AParent.Content, Frames[I]), Self, 'AddToWidget',
       SViewAddView);
   end;
+  
+  AParent.ControlAdded;
     
   //DebugLn('TCarbonControl.AddToWidget ' + LCLObject.Name + ' ' + DbgS(LCLObject.Parent.ClientRect));
 end;
@@ -695,64 +697,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonControl.SetChildZPosition
-  Params:  AChild      - Child widget
-           AOldPos     - Old z position
-           ANewPos     - New z position
-           AChildren   - List of all child controls
-
-  Sets the child z position of Carbon widget
- ------------------------------------------------------------------------------}
-procedure TCarbonControl.SetChildZPosition(AChild: TCarbonWidget;
-  const AOldPos, ANewPos: Integer; const AChildren: TFPList);
-var
-  RefView: HIViewRef;
-  Order: HIViewZOrderOp;
-  I, StopPos: Integer;
-  Child: TWinControl;
-begin
-  RefView := nil;
-  
-  if ANewPos <= 0 then // send behind all
-    Order := kHIViewZOrderBelow
-  else
-    if ANewPos >= Pred(AChildren.Count) then // bring to front of all
-      Order := kHIViewZOrderAbove
-    else // custom position
-    begin
-      // Search for the first child above us with a handle.
-      // The child list is reversed form the windows order.
-      // If we don't find an allocated handle then exit.
-
-      if AOldPos > ANewPos then
-        StopPos := AOldPos // the child is moved to the bottom
-      else
-        StopPos := Pred(AChildren.Count); // the child is moved to the top
-
-      for I := Succ(ANewPos) to StopPos do
-      begin
-        Child := TWinControl(AChildren[I]);
-        
-        if Child.HandleAllocated then
-        begin
-          RefView := ControlRef(TCarbonControl(Child.Handle).Frames[0]);
-          Order := kHIViewZOrderBelow;
-          Break;
-        end;
-      end;
-
-      if RefView = nil then Exit;
-    end;
-
-  OSError(HIViewSetZOrder((AChild as TCarbonControl).Frames[0], Order, RefView),
-    Self, 'SetChildZPosition', 'HIViewSetZOrder');
-    
-  if GetFrameCount = 2 then
-    OSError(HIViewSetZOrder((AChild as TCarbonControl).Frames[1], kHIViewZOrderAbove, (AChild as TCarbonControl).Frames[0]),
-      Self, 'SetChildZPosition', 'HIViewSetZOrder', 'Frames[1]');
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonControl.SetFocus
 
   Sets the focus to control
@@ -839,6 +783,36 @@ begin
     
   // invalidate control
   Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetZOrder
+  Params:  AOrder     - Order
+           ARefWidget - Reference widget
+
+  Sets the Z order of control
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetZOrder(AOrder: HIViewZOrderOp;
+  ARefWidget: TCarbonWidget);
+var
+  RefView: HIViewRef;
+const
+  SName = 'SetZOrder';
+begin
+  if ARefWidget = nil then
+    RefView := nil
+  else
+    if AOrder = kHIViewZOrderBelow then
+      RefView := TCarbonControl(ARefWidget).Frames[0]
+    else
+      RefView := TCarbonControl(ARefWidget).Frames[GetFrameCount - 1];
+
+  OSError(HIViewSetZOrder(Frames[0], AOrder, RefView),
+    Self, SName, 'HIViewSetZOrder');
+
+  if GetFrameCount = 2 then // second frame is allways above first
+    OSError(HIViewSetZOrder(Frames[1], kHIViewZOrderAbove, Frames[0]),
+      Self, SName, 'HIViewSetZOrder', 'Frames[1]');
 end;
 
 {------------------------------------------------------------------------------

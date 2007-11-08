@@ -161,7 +161,7 @@ uses
 ////////////////////////////////////////////////////
   { these can/should go up }
   CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
-  CarbonLists, CarbonTabs,
+  CarbonListViews, CarbonTabs,
   CarbonThemes, CarbonCanvas, CarbonStrings, CarbonClipboard,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   

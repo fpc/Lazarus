@@ -144,8 +144,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
-  // TODO: create frontmost control for designer context
-  Result := GetDC(WindowHandle);
+  Result := 0;
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.GetDesignerDC Handle: ' + DbgS(WindowHandle));
+  {$ENDIF}
+
+  if not CheckWidget(WindowHandle, 'GetDesignerDC', TCarbonDesignWindow) then Exit;
+  Result := HDC(TCarbonDesignWindow(WindowHandle).GetDesignContext);
 end;
 
 {------------------------------------------------------------------------------
@@ -523,6 +528,26 @@ begin
   end;
 
   Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, ARect)
+end;
+
+{------------------------------------------------------------------------------
+  Method:  ReleaseDesignerDC
+  Params:  Window - handle of window
+           DC     - handle of designer device context
+  Returns: 1 if the device context was released or 0 if it wasn't
+
+  Releases a designer device context (DC)
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
+begin
+  Result := 0;
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.ReleaseDesignerDC Handle: ' + DbgS(Window));
+  {$ENDIF}
+
+  if not CheckWidget(Window, 'ReleaseDesignerDC', TCarbonDesignWindow) then Exit;
+  TCarbonDesignWindow(Window).ReleaseDesignContext;
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------

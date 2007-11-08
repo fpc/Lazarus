@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSComCtrls.pp                              * 
- *                              ---------------                              * 
+ *                              CarbonWSComCtrls.pp                          *
+ *                              -------------------                          *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -33,11 +33,12 @@ uses
   // libs
   FPCMacOSAll,
   // LCL
-  Classes, Controls, ComCtrls, LCLType, LCLProc, Graphics, Math,
+  Classes, Controls, ComCtrls, StdCtrls, LCLType, LCLProc, Graphics, Math, ImgList,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonBars, CarbonStrings, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonBars, CarbonStrings, CarbonWSControls,
+  CarbonListViews;
 
 type
 
@@ -75,6 +76,61 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    // Column
+    class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
+    class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
+    class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
+    class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
+    class procedure ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment); override;
+    //class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); override;
+    class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); override;
+    class procedure ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer); override;
+    class procedure ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer); override;
+    class procedure ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer); override;
+    class procedure ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer); override;
+    class procedure ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean); override;
+
+    // Item
+    class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
+    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
+    class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
+    class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
+    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
+    class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
+    class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
+    class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
+    //class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;
+    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
+    class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
+    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
+
+    // LV
+    //class procedure BeginUpdate(const ALV: TCustomListView); override;
+    //class procedure EndUpdate(const ALV: TCustomListView); override;
+
+    class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
+    //class function GetDropTarget(const ALV: TCustomListView): Integer; override;
+    class function GetFocused(const ALV: TCustomListView): Integer; override;
+    //class function GetHoverTime(const ALV: TCustomListView): Integer; override;
+    class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
+    class function GetSelCount(const ALV: TCustomListView): Integer; override;
+    //class function GetSelection(const ALV: TCustomListView): Integer; override;
+    class function GetTopItem(const ALV: TCustomListView): Integer; override;
+    class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
+    class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
+
+    //class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
+    //class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
+    //class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
+    class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
+    class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
+    class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
+    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
+    class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
+    class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;
   end;
 
   { TCarbonWSListView }
@@ -221,6 +277,344 @@ begin
   TCarbonStatusBar(AStatusBar.Handle).UpdatePanel;
 end;
 
+{ TCarbonWSCustomListView }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListView.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new list view in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListView.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonListView.Create(AWinControl, AParams));
+end;
+
+class procedure TCarbonWSCustomListView.ColumnDelete
+  (const ALV: TCustomListView; const AIndex: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnDelete') then Exit;
+  
+  TCarbonListView(ALV.Handle).DeleteColumn(AIndex);
+end;
+
+class function TCarbonWSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn): Integer;
+begin
+  Result := 0;
+  if not CheckHandle(ALV, Self, 'ColumnGetWidth') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetColumn(AIndex).GetWidth;
+end;
+
+class procedure TCarbonWSCustomListView.ColumnInsert(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnInsert') then Exit;
+
+  TCarbonListView(ALV.Handle).InsertColumn(AIndex, AColumn);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnMove(const ALV: TCustomListView;
+  const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnMove') then Exit;
+
+  TCarbonListView(ALV.Handle).MoveColumn(AOldIndex, ANewIndex, AColumn);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetAlignment') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetAlignment(AAlignment);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetCaption') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetCaption(ACaption);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetImage') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetImageIndex(AImageIndex);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetMaxWidth') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetMaxWidth(AMaxWidth);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetMinWidth') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetMinWidth(AMinWidth);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetWidth') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetWidth(AWidth);
+end;
+
+class procedure TCarbonWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetVisible') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetVisible(AVisible);
+end;
+
+class procedure TCarbonWSCustomListView.ItemDelete(const ALV: TCustomListView;
+  const AIndex: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'ItemDelete') then Exit;
+
+  TCarbonListView(ALV.Handle).DeleteItem(AIndex);
+end;
+
+class function TCarbonWSCustomListView.ItemDisplayRect(const ALV: TCustomListView;
+  const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect;
+begin
+  if not CheckHandle(ALV, Self, 'ItemDisplayRect') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemRect(AIndex, ASubItem, ACode);
+end;
+
+class function TCarbonWSCustomListView.ItemGetChecked(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem): Boolean;
+begin
+  Result := False;
+  if not CheckHandle(ALV, Self, 'ItemGetChecked') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemChecked(AIndex);
+end;
+
+class function TCarbonWSCustomListView.ItemGetPosition(const ALV: TCustomListView;
+  const AIndex: Integer): TPoint;
+begin
+  if not CheckHandle(ALV, Self, 'ItemGetPosition') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemRect(AIndex).TopLeft;
+end;
+
+class function TCarbonWSCustomListView.ItemGetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  out AIsSet: Boolean): Boolean;
+begin
+  Result := False;
+  if not CheckHandle(ALV, Self, 'ItemGetState') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemState(AIndex, AState, AIsSet);
+end;
+
+class procedure TCarbonWSCustomListView.ItemInsert(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem);
+begin
+  if not CheckHandle(ALV, Self, 'ItemInsert') then Exit;
+
+  TCarbonListView(ALV.Handle).InsertItem(AIndex);
+end;
+
+class procedure TCarbonWSCustomListView.ItemSetChecked(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
+begin
+  if not CheckHandle(ALV, Self, 'ItemSetChecked') then Exit;
+
+  TCarbonListView(ALV.Handle).SetItemChecked(AIndex, AChecked);
+end;
+
+class procedure TCarbonWSCustomListView.ItemSetImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'ItemSetImage') then Exit;
+
+  TCarbonListView(ALV.Handle).UpdateItem(AIndex);
+end;
+
+class procedure TCarbonWSCustomListView.ItemSetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  const AIsSet: Boolean);
+begin
+  if not CheckHandle(ALV, Self, 'ItemSetState') then Exit;
+
+  TCarbonListView(ALV.Handle).SetItemState(AIndex, AState, AIsSet);
+end;
+
+class procedure TCarbonWSCustomListView.ItemSetText(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
+  const AText: String);
+begin
+  if not CheckHandle(ALV, Self, 'ItemSetText') then Exit;
+
+  TCarbonListView(ALV.Handle).UpdateItem(AIndex);
+end;
+
+class procedure TCarbonWSCustomListView.ItemShow(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+begin
+  if not CheckHandle(ALV, Self, 'ItemShow') then Exit;
+
+  TCarbonListView(ALV.Handle).ShowItem(AIndex, PartialOK);
+end;
+
+class function TCarbonWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
+begin
+  if not CheckHandle(ALV, Self, 'GetBoundingRect') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemsRect;
+end;
+
+class function TCarbonWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
+begin
+  Result := -1;
+  if not CheckHandle(ALV, Self, 'GetFocused') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemIndex;
+end;
+
+class function TCarbonWSCustomListView.GetItemAt(const ALV: TCustomListView; x,
+  y: integer): Integer;
+begin
+  Result := -1;
+  if not CheckHandle(ALV, Self, 'GetItemAt') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetItemAt(X, Y);
+end;
+
+class function TCarbonWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
+begin
+  Result := 0;
+  if not CheckHandle(ALV, Self, 'GetSelCount') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetSelCount;
+end;
+
+class function TCarbonWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
+begin
+  Result := 0;
+  if not CheckHandle(ALV, Self, 'GetTopItem') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetTopItem;
+end;
+
+class function TCarbonWSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
+begin
+  if not CheckHandle(ALV, Self, 'GetViewOrigin') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetViewOrigin;
+end;
+
+class function TCarbonWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
+begin
+  Result := 0;
+  if not CheckHandle(ALV, Self, 'GetVisibleRowCount') then Exit;
+
+  Result := TCarbonListView(ALV.Handle).GetVisibleRowCount;
+end;
+
+class procedure TCarbonWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView;
+  const AValue: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'SetDefaultItemHeight') then Exit;
+
+  TCarbonListView(ALV.Handle).SetItemsHeight(AValue);
+end;
+
+class procedure TCarbonWSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageList);
+begin
+  if not CheckHandle(ALV, Self, 'SetImageList') then Exit;
+
+  TCarbonListView(ALV.Handle).UpdateItems;
+end;
+
+class procedure TCarbonWSCustomListView.SetProperty(const ALV: TCustomListView;
+  const AProp: TListViewProperty; const AIsSet: Boolean);
+begin
+  if not CheckHandle(ALV, Self, 'SetProperty') then Exit;
+
+  // TODO
+  case AProp of
+  //lvpAutoArrange
+    lvpCheckboxes: TCarbonListView(ALV.Handle).ShowCheckboxes(AIsSet);
+  //lvpColumnClick
+  //lvpFlatScrollBars
+  //lvpFullDrag
+  //lvpGridLines
+  //lvpHideSelection
+  //lvpHotTrack
+    lvpMultiSelect: TCarbonListView(ALV.Handle).SetSelectionMode(AIsSet, False);
+    lvpOwnerDraw: TCarbonListView(ALV.Handle).SetOwnerDraw(AIsSet);
+  //lvpReadOnly
+    lvpRowSelect: TCarbonListView(ALV.Handle).SetRowSelect(AIsSet);
+    lvpShowColumnHeaders: TCarbonListView(ALV.Handle).ShowColumnHeaders(AIsSet);
+  //lvpShowWorkAreas
+  //lvpWrapText
+  //lvpToolTips
+  end;
+end;
+
+class procedure TCarbonWSCustomListView.SetProperties(const ALV: TCustomListView;
+  const AProps: TListViewProperties);
+var
+  AProp: TListViewProperty;
+begin
+  if not CheckHandle(ALV, Self, 'SetProperties') then Exit;
+  
+  for AProp := Low(TListViewProperty) to High(TListViewProperty) do
+    if AProp in AProps then SetProperty(ALV, AProp, True);
+end;
+
+class procedure TCarbonWSCustomListView.SetScrollBars(const ALV: TCustomListView;
+  const AValue: TScrollStyle);
+begin
+  if not CheckHandle(ALV, Self, 'SetScrollBars') then Exit;
+
+  TCarbonListView(ALV.Handle).SetScrollBars(AValue);
+end;
+
+class procedure TCarbonWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType;
+  const AColumn: Integer);
+begin
+  if not CheckHandle(ALV, Self, 'SetSort') then Exit;
+
+  // TODO
+end;
+
+class procedure TCarbonWSCustomListView.SetViewOrigin(const ALV: TCustomListView;
+  const AValue: TPoint);
+begin
+  if not CheckHandle(ALV, Self, 'SetViewOrigin') then Exit;
+
+  TCarbonListView(ALV.Handle).SetViewOrigin(AValue);
+end;
+
+class procedure TCarbonWSCustomListView.SetViewStyle(const ALV: TCustomListView;
+  const AValue: TViewStyle);
+begin
+  if not CheckHandle(ALV, Self, 'SetViewStyle') then Exit;
+
+  TCarbonListView(ALV.Handle).ShowAsList(AValue <> vsReport);
+end;
+
 { TCarbonWSProgressBar }
 
 {------------------------------------------------------------------------------
@@ -336,7 +730,7 @@ initialization
   RegisterWSComponent(TStatusBar, TCarbonWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TCarbonWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TCarbonWSPageControl);
-//  RegisterWSComponent(TCustomListView, TCarbonWSCustomListView);
+  RegisterWSComponent(TCustomListView, TCarbonWSCustomListView);
 //  RegisterWSComponent(TCustomListView, TCarbonWSListView);
   RegisterWSComponent(TCustomProgressBar, TCarbonWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TCarbonWSCustomUpDown);

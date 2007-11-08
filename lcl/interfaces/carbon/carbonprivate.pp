@@ -36,7 +36,7 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonDef,
+  CarbonDef, CarbonGDIObjects,
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
@@ -86,11 +86,11 @@ type
     function GetBounds(var ARect: TRect): Boolean; override;
     function GetScreenBounds(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
-    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
 
     procedure SetFocus; override;
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
+    procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); override;
     procedure ShowHide(AVisible: Boolean); override;
     
     function GetText(var S: String): Boolean; override;
@@ -135,11 +135,11 @@ type
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
     function SetBounds(const ARect: TRect): Boolean; override;
-    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
 
     procedure SetFocus; override;
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
+    procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); override;
     procedure ShowHide(AVisible: Boolean); override;
     
     function GetText(var S: String): Boolean; override;
@@ -164,6 +164,28 @@ type
   TCarbonHintWindow = class(TCarbonWindow)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+  end;
+  
+  { TCarbonDesignWindow }
+
+  TCarbonDesignWindow = class(TCarbonWindow)
+  private
+    FDesignControl: HIViewRef;
+    FDesignContext: TCarbonContext;
+    FDesignBitmap: TCarbonBitmap;
+    procedure BringDesignerToFront;
+  protected
+    procedure RegisterEvents; override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
+  public
+    procedure ControlAdded; override;
+    
+    function SetBounds(const ARect: TRect): Boolean; override;
+    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
+    
+    function GetDesignContext: TCarbonContext;
+    procedure ReleaseDesignContext;
   end;
 
   { TCarbonCustomControl }
@@ -249,7 +271,7 @@ function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
 implementation
 
 uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
-  CarbonWSStdCtrls, CarbonCanvas, CarbonGDIObjects;
+  CarbonWSStdCtrls, CarbonCanvas;
 
 {------------------------------------------------------------------------------
   Name:    RaiseCreateWidgetError
@@ -353,6 +375,220 @@ begin
     Self, SCreateWidget, SSetControlProp);
   
   SetColor(LCLObject.Color);
+end;
+
+{ TCarbonDesignWindow }
+
+{------------------------------------------------------------------------------
+  Name: CarbonDesign_Draw
+  Handles draw event
+ ------------------------------------------------------------------------------}
+function CarbonDesign_Draw(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  ADesignWindow: TCarbonDesignWindow;
+  AContext: TCarbonDeviceContext;
+  ABitmap: TCarbonBitmap;
+begin
+  {$IFDEF VerbosePaint}
+    Debugln('CarbonDesign_Draw ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  ADesignWindow := (AWidget as TCarbonDesignWindow);
+
+  AContext := TCarbonControlContext.Create(AWidget);
+  try
+    // set canvas context
+    if OSError(
+      GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
+        SizeOf(CGContextRef), nil, @AContext.CGContext),
+      'CarbonDesign_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
+
+    // let carbon draw/update
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+
+    // draw designer stuff
+    ABitmap := ADesignWindow.FDesignBitmap;
+    if ADesignWindow.FDesignContext <> nil then
+      AContext.StretchDraw(0, 0, ABitmap.Width, ABitmap.Height,
+        TCarbonBitmapContext(ADesignWindow.FDesignContext),
+        0, 0, ABitmap.Width, ABitmap.Height, nil, 0, 0, SRCCOPY);
+  finally
+    AContext.Free;
+  end;
+  {$IFDEF VerbosePaint}
+    Debugln('CarbonDesign_Draw end ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.BringDesignerToFront
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.BringDesignerToFront;
+begin
+  OSError(HIViewSetZOrder(FDesignControl, kHIViewZOrderAbove, nil),
+    Self, 'BringDesignerToFront', 'HIViewSetZOrder');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.RegisterEvents
+
+  Registers event handlers for design window
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  inherited;
+
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+  InstallControlEventHandler(FDesignControl,
+    RegisterEventHandler(@CarbonDesign_Draw),
+    1, @TmpSpec, Pointer(Self), nil);
+    
+
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
+  InstallControlEventHandler(FDesignControl,
+    RegisterEventHandler(@CarbonCommon_Track),
+    1, @TmpSpec, Pointer(Self), nil);
+
+  {$IFDEF VerboseWindowEvent}
+    DebugLn('TCarbonDesignWindow.RegisterEvents ', ClassName, ' ',
+      LCLObject.Name, ': ', LCLObject.ClassName);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon window for designing
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.CreateWidget(const AParams: TCreateParams);
+var
+  R: TRect;
+begin
+  inherited;
+  
+  // create custom view above all others
+  GetClientRect(R);
+  FDesignControl := CreateCustomHIView(RectToCGRect(R));
+  
+  OSError(
+    HIViewChangeFeatures(FDesignControl, kHIViewFeatureDoesNotUseSpecialParts,
+      kHIViewFeatureGetsFocusOnClick),
+    SCreateWidget, 'HIViewChangeFeatures');
+    
+  OSError(
+    SetControlProperty(FDesignControl, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    Self, SCreateWidget, SSetControlProp);
+    
+  OSError(HIViewAddSubview(Content, FDesignControl), Self, SCreateWidget, SViewAddView);
+  BringDesignerToFront;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.DestroyWidget
+
+  Override to do some clean-up
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.DestroyWidget;
+begin
+  DisposeControl(FDesignControl);
+  
+  inherited;
+  
+  FreeAndNil(FDesignContext);
+  FreeAndNil(FDesignBitmap);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.BoundsChanged
+
+  Notifies about control added
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.ControlAdded;
+begin
+  BringDesignerToFront;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.SetBounds
+  Params:  ARect - Record for window coordinates
+  Returns: If function succeeds
+
+  Sets the window content bounding rectangle relative to the window frame origin
+ ------------------------------------------------------------------------------}
+function TCarbonDesignWindow.SetBounds(const ARect: TRect): Boolean;
+var
+  R: TRect;
+begin
+  Result := inherited SetBounds(ARect);
+  
+  R := ARect;
+  OffsetRect(R, -R.Left, -R.Top);
+  OSError(HIViewSetFrame(FDesignControl, RectToCGRect(R)),
+    Self, SSetBounds, SViewFrame);
+    
+  BringDesignerToFront;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.SetChildZPosition
+  Params:  AChild      - Child widget
+           AOldPos     - Old z position
+           ANewPos     - New z position
+           AChildren   - List of all child controls
+
+  Sets the child z position of Carbon widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.SetChildZPosition(AChild: TCarbonWidget; const AOldPos,
+  ANewPos: Integer; const AChildren: TFPList);
+begin
+  inherited;
+  
+  BringDesignerToFront;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.GetDesignContext
+  Returns: Context for drawing designer stuff
+ ------------------------------------------------------------------------------}
+function TCarbonDesignWindow.GetDesignContext: TCarbonContext;
+var
+  R: TRect;
+begin
+  GetClientRect(R);
+
+  if FDesignBitmap <> nil then
+    if (R.Right - R.Left = FDesignBitmap.Width) and (R.Bottom - R.Top = FDesignBitmap.Height) then
+    begin
+      // the designer area has not been resized - clear it only
+      CGContextClearRect(FDesignContext.CGContext, RectToCGRect(R));
+      Result := FDesignContext;
+      Exit;
+    end;
+    
+  FreeAndNil(FDesignContext);
+  FreeAndNil(FDesignBitmap);
+  
+  FDesignContext := TCarbonBitmapContext.Create;
+  FDesignBitmap := TCarbonBitmap.Create(R.Right - R.Left, R.Bottom - R.Top, 32, 32, cbaDQWord, cbtARGB, nil);
+  (FDesignContext as TCarbonBitmapContext).Bitmap := FDesignBitmap;
+  
+  Result := FDesignContext;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.ReleaseDesignContext
+
+  Releases the context for drawing designer stuff
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.ReleaseDesignContext;
+begin
+  // redraw designer
+  Invalidate;
 end;
 
 { TCarbonCustomControl }
@@ -1057,7 +1293,6 @@ begin
 
   Invalidate;
 end;
-
 
 
 

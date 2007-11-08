@@ -440,6 +440,7 @@ var
   Event: EventRef;
   CurEventClass: TEventInt;
   CurEventKind: TEventInt;
+  P: TPoint;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppProcessMessages');
@@ -473,6 +474,9 @@ begin
     
     if Clipboard <> nil then
       if Clipboard.OwnerShips > 0 then Clipboard.CheckOwnerShip;
+      
+    //GetCursorPos(P);
+    //DebugLn('Mouse Pos: ' + DbgS(P));
     
   until Application.Terminated;
   

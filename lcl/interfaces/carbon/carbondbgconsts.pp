@@ -91,8 +91,6 @@ const
   
   SControlFont = 'kControlFontStyleTag';
   
-  SGetThemeMetric = 'GetThemeMetric';
-  
   SGetUnjustifiedBounds = 'ATSUGetUnjustifiedBounds';
   SCreateStyle = 'ATSUCreateStyle';
   SDisposeStyle = 'ATSUDisposeStyle';

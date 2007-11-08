@@ -1247,21 +1247,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWindow.SetChildZPosition
-  Params:  AChild      - Child widget
-           AOldPos     - Old z position
-           ANewPos     - New z position
-           AChildren   - List of all child controls
-
-  Sets the child z position of Carbon widget
- ------------------------------------------------------------------------------}
-procedure TCarbonWindow.SetChildZPosition(AChild: TCarbonWidget; const AOldPos,
-  ANewPos: Integer; const AChildren: TFPList);
-begin
-  // not supported
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWindow.SetFocus
 
   Sets the focus to window
@@ -1292,7 +1277,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetFont(const AFont: TFont);
 begin
-  //
+  // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.SetZOrder
+  Params:  AOrder     - Order
+           ARefWidget - Reference widget
+
+  Sets the Z order of window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.SetZOrder(AOrder: HIViewZOrderOp;
+  ARefWidget: TCarbonWidget);
+begin
+  // not supported
 end;
 
 {------------------------------------------------------------------------------

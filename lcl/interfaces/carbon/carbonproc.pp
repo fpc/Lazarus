@@ -504,6 +504,7 @@ begin
     HIViewChangeFeatures(Result, kHIViewFeatureAllowsSubviews or
       kHIViewFeatureGetsFocusOnClick, 0),
     SName, 'HIViewChangeFeatures');
+    
   OSError(HIViewSetVisible(Result, True), SName, SViewVisible);
   OSError(HIViewSetFrame(Result, ARect), SName, SViewFrame);
 end;

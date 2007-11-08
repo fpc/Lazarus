@@ -455,28 +455,28 @@ begin
   if GetEventParameter(AEvent, kEventParamATSUFontID, typeATSUFontID,
     nil, SizeOf(ID), nil, @ID) = noErr then
   begin
-    DebugLn('ID: ' + DbgS(ID));
+    //DebugLn('ID: ' + DbgS(ID));
     FontDialog.Font.Name := CarbonFontIDToFontName(ID);
   end;
   
   if GetEventParameter(AEvent, kEventParamATSUFontSize, typeATSUSize,
     nil, SizeOf(Size), nil, @Size) = noErr then
   begin
-    DebugLn('Size: ' + DbgS(RoundFixed(Size)));
+    //DebugLn('Size: ' + DbgS(RoundFixed(Size)));
     FontDialog.Font.Size := RoundFixed(Size);
   end;
   
   if GetEventParameter(AEvent, kEventParamFontColor, typeFontColor,
     nil, SizeOf(Color), nil, @Color) = noErr then
   begin
-    DebugLn('Color: ' + DbgS(RGBColorToColor(Color)));
+    //DebugLn('Color: ' + DbgS(RGBColorToColor(Color)));
     FontDialog.Font.Color := RGBColorToColor(Color);
   end;
   
   if GetEventParameter(AEvent, kEventParamFMFontStyle, typeFMFontStyle,
     nil, SizeOf(Style), nil, @Style) = noErr then
   begin
-    DebugLn('Style: ' + DbgS(Style));
+    //DebugLn('Style: ' + DbgS(Style));
     FontDialog.Font.Style := [];
     if (Style and FPCMacOSAll.bold) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsBold];

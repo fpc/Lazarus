@@ -56,6 +56,8 @@ function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescriptio
 function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean; override;
 function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
 
+function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas

@@ -81,6 +81,9 @@ begin
   finally
     FreeAndNil(AWidget.Context);
   end;
+  {$IFDEF VerbosePaint}
+    Debugln('CarbonCommon_Draw end ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

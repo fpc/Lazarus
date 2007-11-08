@@ -38,7 +38,7 @@ uses
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonBars, CarbonButtons, CarbonEdits,
-  CarbonLists, CarbonWSControls;
+  CarbonListViews, CarbonWSControls;
   
 type
 
@@ -537,37 +537,19 @@ begin
   Result := TLCLIntfHandle(TCarbonListBox.Create(AWinControl, AParams));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetIndexAtY
+  Params:  ACustomListBox - LCL custom list box
+           Y              - Y coordinate
+  Returns: The list box item at the specified position or -1
+ ------------------------------------------------------------------------------}
 class function TCarbonWSCustomListBox.GetIndexAtY(
   const ACustomListBox: TCustomListBox; y: integer): integer;
-var rowheight : UInt16;
-    atop, aleft : UInt32;
-    aWidget : ControlRef;
-    delta : integer;
-const
-  SName = 'GetIndexAtY';
 begin
-  Result:=0;
+  Result := -1;
+  if not CheckHandle(ACustomListBox, Self, 'GetIndexAtY') then Exit;
 
-  if ACustomListBox=nil then exit;
-  if not CheckWidget(ACustomListBox.Handle, SName) then Exit;
-  aWidget:=ControlRef(TCarbonListBox(ACustomListBox.Handle).Widget);
-  if aWidget=nil then exit;
-
-  if OSError(
-    GetDataBrowserTableViewRowHeight(aWidget,rowheight),
-    Self,SName,'GetDataBrowserTableViewRowHeight')
-  then exit;
-
-  if OSError(
-    GetDataBrowserScrollPosition(aWidget,atop,aleft),
-    Self,SName,'GetDataBrowserScrollPosition')
-  then exit;
-
-  if ACustomListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
-  else delta:=0;
-
-  Result:=(atop+y-delta) div rowheight;
-  if Result>=ACustomListBox.Items.Count then Result:=-1;
+  Result := TCarbonListBox(ACustomListBox.Handle).GetItemAt(0, Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -580,7 +562,7 @@ begin
   Result := 0;
   if not CheckHandle(ACustomListBox, Self, 'GetSelCount') then Exit;
   
-  Result:=TCarbonListBox(ACustomListBox.Handle).GetSelCount;
+  Result := TCarbonListBox(ACustomListBox.Handle).GetSelCount;
 end;
 
 {------------------------------------------------------------------------------
@@ -595,7 +577,7 @@ begin
   Result := False;
   if not CheckHandle(ACustomListBox, Self, 'GetSelected') then Exit;
 
-  Result:=TCarbonListBox(ACustomListBox.Handle).GetSelected(AIndex);
+  Result := TCarbonListBox(ACustomListBox.Handle).GetItemSelected(AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -603,8 +585,7 @@ end;
   Params:  ACustomListBox - LCL custom list box
   Returns: Items of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomListBox.GetStrings(
-  const ACustomListBox: TCustomListBox): TStrings;
+class function TCarbonWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 begin
   Result := nil;
   if not CheckHandle(ACustomListBox, Self, 'GetStrings') then Exit;
@@ -626,58 +607,24 @@ begin
   Result := TCarbonListBox(ACustomListBox.Handle).GetItemIndex;
 end;
 
-class function TCarbonWSCustomListBox.GetItemRect(
-  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
-  ): boolean;
-var rowheight : UInt16;
-    atop, aleft : UInt32;
-    aWidget : ControlRef;
-    aHoriz, aVertical : boolean;
-    scrollwidth : Sint32;
-    delta : integer;
-const
-  SName = 'GetItemRect';
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetItemRect
+  Params:  ACustomListBox - LCL custom list box
+           Index          - Item index
+           ARect          - Item rect
+  Returns: If the function succeeds
+  
+  Retrieves the bounding rect of the specified item of list box in Carbon
+  interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox;
+  Index: integer; var ARect: TRect): boolean;
 begin
-  Result:=false;
+  Result := False;
+  if not CheckHandle(ACustomListBox, Self, 'GetItemRect') then Exit;
 
-  if ACustomListBox=nil then exit;
-  if not CheckWidget(ACustomListBox.Handle, SName) then Exit;
-  aWidget:=ControlRef(TCarbonListBox(ACustomListBox.Handle).Widget);
-  if aWidget=nil then exit;
-
-  if OSError(
-    GetDataBrowserTableViewRowHeight(aWidget,rowheight),
-    Self,SName,'GetDataBrowserTableViewRowHeight')
-  then exit;
-
-  if OSError(
-    GetDataBrowserScrollPosition(aWidget,atop,aleft),
-    Self,SName,'GetDataBrowserScrollPosition')
-  then exit;
-
-  if OSError(
-    GetDataBrowserHasScrollBars(aWidget,aHoriz,aVertical),
-    Self,SName,'GetDataBrowserHasScrollBars')
-  then exit;
-
-
-  if aVertical then
-  begin
-    scrollwidth := GetCarbonThemeMetric(kThemeMetricScrollBarWidth, 10);
-  end
-  else scrollwidth:=0;
-
-  if ACustomListBox.BorderStyle=bsSingle then delta:=DataBrowserBorderWidth
-  else delta:=0;
-
-  //note: itemrect.right and bottom are outside the "real" itemrect.
-
-  ARect.Top:=(Index*rowheight)-atop+delta;
-  ARect.Left:=delta;
-  ARect.Bottom:=Arect.Top+rowheight;
-  ARect.Right:=ACustomListBox.Width-delta-scrollwidth;
-
-  Result:=true;
+  ARect := TCarbonListBox(ACustomListBox.Handle).GetItemRect(Index);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -691,7 +638,7 @@ begin
   Result := 0;
   if not CheckHandle(ACustomListBox, Self, 'GetTopIndex') then Exit;
 
-  Result:=TCarbonListBox(ACustomListBox.Handle).GetTopIndex;
+  Result := TCarbonListBox(ACustomListBox.Handle).GetTopItem;
 end;
 
 {------------------------------------------------------------------------------
@@ -708,7 +655,7 @@ class procedure TCarbonWSCustomListBox.SelectItem(
 begin
   if not CheckHandle(ACustomListBox, Self, 'SelectItem') then Exit;
 
-  TCarbonListBox(ACustomListBox.Handle).SelectItem(AIndex,ASelected);
+  TCarbonListBox(ACustomListBox.Handle).SelectItem(AIndex, ASelected);
 end;
 
 {------------------------------------------------------------------------------
@@ -718,8 +665,8 @@ end;
 
   Changes border style of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetBorderStyle(
-  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+class procedure TCarbonWSCustomListBox.SetBorderStyle(const AWinControl: TWinControl;
+  const ABorderStyle: TBorderStyle);
 begin
   if not CheckHandle(AWinControl, Self, 'SetBorderStyle') then Exit;
 
@@ -733,8 +680,8 @@ end;
 
   Sets item index of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetItemIndex(
-  const ACustomListBox: TCustomListBox; const AIndex: integer);
+class procedure TCarbonWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
+  const AIndex: integer);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetItemIndex') then Exit;
 
@@ -749,27 +696,25 @@ end;
 
   Changes selection mode of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetSelectionMode(
-  const ACustomListBox: TCustomListBox;
+class procedure TCarbonWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetSelectionMode') then Exit;
 
-  TCarbonListBox(ACustomListBox.Handle).SetSelectionMode(AExtendedSelect,AMultiSelect);
+  TCarbonListBox(ACustomListBox.Handle).SetSelectionMode(AExtendedSelect, AMultiSelect);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomListBox.SetStyle
-  Params:  ACustomListBox  - LCL custom list box
+  Params:  ACustomListBox - LCL custom list box
 
-  Changes style (standard,ownerdrawn...) of list box in Carbon interface
+  Changes style (standard, ownerdrawn...) of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetStyle(
-  const ACustomListBox: TCustomListBox);
+class procedure TCarbonWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetStyle') then Exit;
 
-  TCarbonListBox(ACustomListBox.Handle).SetStyle;
+  TCarbonListBox(ACustomListBox.Handle).SetOwnerDraw(ACustomListBox.Style <> lbStandard);
 end;
 
 {------------------------------------------------------------------------------
@@ -780,8 +725,8 @@ end;
 
   Sorts items of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetSorted(
-  const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+class procedure TCarbonWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+  AList: TStrings; ASorted: boolean);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetSorted') then Exit;
   
@@ -795,12 +740,12 @@ end;
 
   Sets top visible item of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetTopIndex(
-  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+class procedure TCarbonWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
+  const NewTopIndex: integer);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetTopIndex') then Exit;
 
-  TCarbonListBox(ACustomListBox.Handle).SetTopIndex(NewTopIndex);
+  TCarbonListBox(ACustomListBox.Handle).SetTopItem(NewTopIndex);
 end;
 
 { TCarbonWSCustomEdit }
