@@ -7547,7 +7547,7 @@ begin
     if Project1.MainUnitID>=0 then begin
       // read MainUnit Source
       Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
-                             [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
+                             [lbfUpdateFromDisk,lbfRevert]);// do not check if source is text
       if (Result<>mrOk) then exit;
       Project1.MainUnitInfo.Source:=NewBuf;
     end;

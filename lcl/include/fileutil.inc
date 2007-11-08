@@ -720,7 +720,7 @@ begin
   do
     dec(StartPos);
   ExtPos:=length(AFilename);
-  while (ExtPos>=StartPos) and (AFilename[StartPos]<>'.') do
+  while (ExtPos>=StartPos) and (AFilename[ExtPos]<>'.') do
     dec(ExtPos);
   if (ExtPos<StartPos) then ExtPos:=length(AFilename)+1;
   Result:=copy(AFilename,StartPos,ExtPos-StartPos);
