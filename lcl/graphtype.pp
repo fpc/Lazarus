@@ -1421,6 +1421,7 @@ var
   P: Pointer;
   i, j: integer;
 begin
+  // TODO: add check here for Description. Only RGBA data can be processed here.
   if CreateNewData then
   begin
     GetMem(AData, DataSize);
