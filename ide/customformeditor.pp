@@ -1616,7 +1616,7 @@ begin
   Result:=CreateComponentInterface(NewComponent,true);
 end;
 
-Procedure TCustomFormEditor.SetComponentNameAndClass(CI: TIComponentInterface;
+procedure TCustomFormEditor.SetComponentNameAndClass(CI: TIComponentInterface;
   const NewName, NewClassName: shortstring);
 var
   AComponent: TComponent;

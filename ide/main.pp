@@ -3929,6 +3929,10 @@ begin
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
       NewUnitInfo.CreateUnitName, new_x, new_y, 400,300));
+  if CInterface=nil then begin
+    DebugLn(['TMainIDE.CreateNewForm FormEditor1.CreateComponent failed ',dbgsName(TComponentClass(AncestorType))]);
+    exit(mrCancel);
+  end;
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;
