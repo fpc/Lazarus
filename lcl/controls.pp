@@ -3074,6 +3074,18 @@ procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
     raise Exception.Create('TAnchorSide.GetSidePosition invalid Side');
   end;
   
+  function GetNextCentered(ReferenceControl: TControl; Side: TAnchorKind;
+    var NextReferenceSide: TAnchorSide): boolean;
+  begin
+    if (Side in ReferenceControl.Anchors)
+    and (ReferenceControl.AnchorSide[Side].Control<>nil)
+    and (ReferenceControl.AnchorSide[Side].Side=asrCenter) then begin
+      Result:=true;
+      NextReferenceSide:=ReferenceControl.AnchorSide[Side];
+    end else
+      Result:=false;
+  end;
+  
 var
   NextReferenceSide: TAnchorSide;
   ChainLength: Integer;
@@ -3235,12 +3247,27 @@ begin
       // side found
       exit;
     end;
+    
     // ReferenceControl is not visible -> try next
-    if ReferenceControl=OwnerParent then
-      NextReferenceSide:=nil
-    else
-      NextReferenceSide:=ReferenceControl.AnchorSide[
-                                       AnchorReferenceSide[Kind,ReferenceSide]];
+    NextReferenceSide:=nil;
+    if ReferenceControl<>OwnerParent then begin
+      if ReferenceSide=asrCenter then begin
+        // center can only be anchored to another centered anchor
+        if Kind in [akLeft,akRight] then begin
+          if not GetNextCentered(ReferenceControl,akLeft,NextReferenceSide)
+          then   GetNextCentered(ReferenceControl,akRight,NextReferenceSide);
+        end else begin
+          if not GetNextCentered(ReferenceControl,akTop,NextReferenceSide)
+          then   GetNextCentered(ReferenceControl,akBottom,NextReferenceSide);
+        end;
+      end else if (ReferenceSide=asrLeft) = (Kind in [akLeft,akTop]) then begin
+        // anchor parallel (e.g. a left side to a left side)
+        NextReferenceSide:=ReferenceControl.AnchorSide[Kind];
+      end else begin
+        // anchor opposite (e.g. a left side to a right side)
+        NextReferenceSide:=ReferenceControl.AnchorSide[Kind];
+      end;
+    end;
     if (NextReferenceSide=nil) then begin
       //if CheckPosition(Owner) and (Kind=akRight) then
       //  DebugLn(['TAnchorSide.GetSidePosition not IsControlVisible ReferenceControl=',dbgsName(ReferenceControl)]);
@@ -3249,6 +3276,7 @@ begin
     end;
     ReferenceControl:=NextReferenceSide.Control;
     ReferenceSide:=NextReferenceSide.Side;
+    //DebugLn(['TAnchorSide.GetSidePosition ',DbgSName(FOwner),' ReferenceControl=',DbgSName(ReferenceControl),' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
   end;
 end;
 
