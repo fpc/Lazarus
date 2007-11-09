@@ -26,7 +26,6 @@
  *                                                                         *
  ***************************************************************************
 }
-{%RunCommand $MakeEx e($(EdFile))}
 unit BuildManager;
 
 {$mode objfpc}{$H+}
