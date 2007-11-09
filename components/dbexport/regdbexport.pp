@@ -17,6 +17,10 @@ unit regdbexport;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF VER2_3}
+{$ERROR this package requires FPC version 2.3.1}
+{$ENDIF}
+
 interface
 
 uses
