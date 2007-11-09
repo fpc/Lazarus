@@ -123,6 +123,7 @@ type
     FShowAlwaysCheckable: boolean;
     FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
+    FBitmapIsValid: Boolean;
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
     function GetBitmap: TBitmap;
     function GetCount: Integer;
@@ -173,7 +174,7 @@ type
     procedure SetAction(NewAction: TBasicAction);
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure SetGroupIndex(AValue: Byte);
-    Procedure SetImageIndex(value : Integer);
+    procedure SetImageIndex(value : Integer);
     procedure SetParentComponent(AValue : TComponent); override;
     procedure SetShortCut(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);

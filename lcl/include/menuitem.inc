@@ -100,6 +100,7 @@ begin
   FEnabled := True;
   FCommand := UniqueCommand;
   FImageIndex := -1;
+  FBitmapIsValid := False;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
@@ -368,14 +369,23 @@ var
   iml: TCustomImageList;
 begin
   if FBitmap = nil then
+  begin
     FBitmap := TBitmap.Create;
-  if ImageIndex >= 0
-  then begin
-    iml := GetImageList;
-    if iml <> nil
-    then iml.GetBitmap(ImageIndex, FBitmap);
+    FBitmapIsValid := False;
   end;
-  FBitmap.Transparent := True;
+
+  if not FBitmapIsValid then
+  begin
+    if ImageIndex >= 0
+    then begin
+      iml := GetImageList;
+      if (iml <> nil) and (ImageIndex < iml.Count)
+      then iml.GetBitmap(ImageIndex, FBitmap);
+    end;
+    FBitmap.Transparent := True;
+    FBitmapIsValid := True;
+  end;
+  
   Result := FBitmap;
 end;
 
@@ -581,8 +591,15 @@ end;
   Returns true if there is an icon
  ------------------------------------------------------------------------------}
 function TMenuItem.HasIcon: boolean;
+var
+  AImageList: TCustomImageList;
 begin
-  Result := (FBitmap <> nil) or ((ImageIndex >= 0) and (GetImageList <> nil));
+  Result := (FBitmap <> nil);
+  if not Result then
+  begin
+    AImageList := GetImageList;
+    Result := (AImageList <> nil) and (ImageIndex >= 0) and (ImageIndex < AImageList.Count);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -996,7 +1013,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetBitmap(const AValue: TBitmap);
 begin
-  if FBitmap = AValue then
+  // ImageList have highest priority
+  if (FBitmap = AValue) or ((GetImageList <> nil) and (ImageIndex <> -1)) then
     exit;
 
   if AValue <> nil then
@@ -1126,13 +1144,17 @@ end;
   Enables a menuItem.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetImageIndex(Value: Integer);
+var
+  AImageList: TCustomImageList;
 begin
   if FImageIndex = Value then
     exit;
   //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
+  FBitmapIsValid := False;
   FImageIndex := Value;
 
-  if FImageIndex = -1 then
+  AImageList := GetImageList;
+  if (FImageIndex < 0) or (AImageList = nil) or (FImageIndex >= AImageList.Count) then
     FreeAndNil(FBitmap);
     
   if HandleAllocated then
@@ -1142,7 +1164,6 @@ begin
       TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, nil);
 
   MenuChanged(False);
-  //TODO: TMenuItem.SetImageIndex
 end;
 
 {------------------------------------------------------------------------------
