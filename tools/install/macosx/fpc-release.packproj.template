@@ -102,56 +102,6 @@
 								<array>
 									<dict>
 										<key>Children</key>
-										<array>
-											<dict>
-												<key>Children</key>
-												<array/>
-												<key>GID</key>
-												<integer>0</integer>
-												<key>Path</key>
-												<string>Free Pascal Compiler</string>
-												<key>Path Type</key>
-												<integer>2</integer>
-												<key>Privileges</key>
-												<integer>493</integer>
-												<key>Type</key>
-												<integer>3</integer>
-												<key>UID</key>
-												<integer>0</integer>
-											</dict>
-										</array>
-										<key>GID</key>
-										<integer>80</integer>
-										<key>Path</key>
-										<string>Documentation</string>
-										<key>Path Type</key>
-										<integer>0</integer>
-										<key>Privileges</key>
-										<integer>509</integer>
-										<key>Type</key>
-										<integer>1</integer>
-										<key>UID</key>
-										<integer>0</integer>
-									</dict>
-								</array>
-								<key>GID</key>
-								<integer>80</integer>
-								<key>Path</key>
-								<string>Developer</string>
-								<key>Path Type</key>
-								<integer>0</integer>
-								<key>Privileges</key>
-								<integer>509</integer>
-								<key>Type</key>
-								<integer>1</integer>
-								<key>UID</key>
-								<integer>0</integer>
-							</dict>
-							<dict>
-								<key>Children</key>
-								<array>
-									<dict>
-										<key>Children</key>
 										<array/>
 										<key>GID</key>
 										<integer>80</integer>
@@ -1088,7 +1038,7 @@ For more information, see the readme.txt file or visit http://www.freepascal.org
 			<key>IFPkgFlagPackageSelection</key>
 			<integer>0</integer>
 			<key>Name</key>
-			<string>fpc-_FPCVERSION_</string>
+			<string>fpc-_FPCVERSION_-_FPCARCH_</string>
 			<key>Status</key>
 			<integer>1</integer>
 			<key>Type</key>
