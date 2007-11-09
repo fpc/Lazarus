@@ -37,7 +37,7 @@ uses
   // LCL
   LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
-  CodeToolManager, DefineTemplates,
+  BasicCodeTools, CodeToolManager, DefineTemplates,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   LazIDEIntf,
@@ -156,13 +156,14 @@ type
 
 function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
 begin
-  Result:=CompareText(UnitFile1^.UnitName,UnitFile2^.UnitName);
+  Result:=CompareIdentifierPtrs(Pointer(UnitFile1^.UnitName),
+                                Pointer(UnitFile2^.UnitName));
 end;
 
 function CompareUnitNameAndUnitFile(UnitName: PChar;
   UnitFile: PUnitFile): integer;
 begin
-  Result:=CompareStringPointerI(UnitName,PChar(UnitFile^.UnitName));
+  Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.UnitName));
 end;
 
 { TBuildManager }
@@ -785,6 +786,8 @@ begin
             else
               continue;
             CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
+            if (CurUnitName='') or (not IsValidIdent(CurUnitName)) then
+              continue;
             CurFilename:=CurDir+FileInfo.Name;
             // check if unit already found
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
@@ -981,11 +984,11 @@ function TBuildManager.MacroFuncProject(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   if Project1<>nil then begin
-    if CompareText(Param,'SrcPath')=0 then
+    if SysUtils.CompareText(Param,'SrcPath')=0 then
       Result:=Project1.CompilerOptions.GetSrcPath(false)
-    else if CompareText(Param,'IncPath')=0 then
+    else if SysUtils.CompareText(Param,'IncPath')=0 then
       Result:=Project1.CompilerOptions.GetIncludePath(false)
-    else if CompareText(Param,'UnitPath')=0 then
+    else if SysUtils.CompareText(Param,'UnitPath')=0 then
       Result:=Project1.CompilerOptions.GetUnitPath(false)
     else begin
       Result:='<Invalid parameter for macro Project:'+Param+'>';
