@@ -2818,13 +2818,10 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
-    SM_CXSIZEFRAME:
-      begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSIZEFRAME      ');
-      end;
+    SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSIZEFRAME      ');
+        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_MDIFrameWidth, nil, nil);
       end;
     SM_CXSMICON,
     SM_CYSMICON:

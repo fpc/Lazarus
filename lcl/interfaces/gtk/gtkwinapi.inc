@@ -6063,13 +6063,10 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
-    SM_CXSIZEFRAME:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZEFRAME      ');
-      end;
+    SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZEFRAME      ');
+        Result := 4;
       end;
     SM_CXSMICON:
       begin
