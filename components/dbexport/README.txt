@@ -1,3 +1,5 @@
+Requirements: FPC 2.3.1 revision 9169
+
 This is the Lazarus support for the Free Pascal DBExport units.
 These units provide exports from any TDataset to various file formats.
 
