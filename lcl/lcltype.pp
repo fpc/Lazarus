@@ -2596,7 +2596,7 @@ end;
 
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 begin
-  Result:=(int64(nNumber)*int64(nNumerator)) div nDenominator;
+  Result:=Round(int64(nNumber)*int64(nNumerator) / nDenominator);
 end;
 
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
