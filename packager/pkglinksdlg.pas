@@ -100,8 +100,10 @@ begin
   Caption:=lisPLDPackageLinks;
   CloseBitBtn.Caption:=lisMenuClose;
   FileMustExistCheckBox.Caption:=lisPLDOnlyExistingFiles;
-  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks;
-  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks;
+  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
+                                 +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
+  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
+                                      +' ('+PkgLinks.GetUserLinkFile+')';
   UpdateAll;
 end;
 

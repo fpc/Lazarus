@@ -5,6 +5,7 @@ object PackageLinksDialog: TPackageLinksDialog
   Width = 659
   HorzScrollBar.Page = 658
   VertScrollBar.Page = 450
+  ActiveControl = CloseBitBtn
   Caption = 'PackageLinksDialog'
   ClientHeight = 451
   ClientWidth = 659
@@ -28,7 +29,7 @@ object PackageLinksDialog: TPackageLinksDialog
     TabOrder = 0
   end
   object ScopeGroupBox: TGroupBox
-    Height = 53
+    Height = 109
     Width = 659
     Align = alTop
     AutoSize = True
@@ -38,23 +39,22 @@ object PackageLinksDialog: TPackageLinksDialog
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 3
-    ClientHeight = 34
+    ClientHeight = 90
     ClientWidth = 655
     TabOrder = 1
     object FileMustExistCheckBox: TCheckBox
       Left = 6
       Height = 22
       Top = 6
-      Width = 168
+      Width = 193
       Caption = 'FileMustExistCheckBox'
       OnChange = FileMustExistCheckBoxChange
       TabOrder = 0
     end
     object ShowGlobalLinksCheckBox: TCheckBox
-      Left = 180
+      Left = 6
       Height = 22
-      Top = 6
+      Top = 34
       Width = 193
       Caption = 'ShowGlobalLinksCheckBox'
       Checked = True
@@ -63,10 +63,10 @@ object PackageLinksDialog: TPackageLinksDialog
       TabOrder = 1
     end
     object ShowUserLinksCheckBox: TCheckBox
-      Left = 379
+      Left = 6
       Height = 22
-      Top = 6
-      Width = 183
+      Top = 62
+      Width = 193
       Caption = 'ShowUserLinksCheckBox'
       Checked = True
       OnChange = ShowUserLinksCheckBoxChange
@@ -76,8 +76,8 @@ object PackageLinksDialog: TPackageLinksDialog
   end
   object PkgStringGrid: TStringGrid
     AnchorSideBottom.Control = CloseBitBtn
-    Height = 350
-    Top = 53
+    Height = 294
+    Top = 109
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]

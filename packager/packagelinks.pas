@@ -140,6 +140,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function GetUserLinkFile: string;
+    function GetGlobalLinkDirectory: string;
     procedure UpdateGlobalLinks;
     procedure UpdateUserLinks;
     procedure UpdateAll;
@@ -315,6 +316,12 @@ begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+'packagefiles.xml';
 end;
 
+function TPackageLinks.GetGlobalLinkDirectory: string;
+begin
+  Result:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+                                  +'packager'+PathDelim+'globallinks'+PathDelim;
+end;
+
 procedure TPackageLinks.UpdateGlobalLinks;
 
   function ParseFilename(const Filename: string;
@@ -382,8 +389,7 @@ begin
   Exclude(FStates,plsGlobalLinksNeedUpdate);
   
   FGlobalLinks.FreeAndClear;
-  GlobalLinksDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
-                                  +'packager'+PathDelim+'globallinks'+PathDelim;
+  GlobalLinksDir:=GetGlobalLinkDirectory;
   //debugln('UpdateGlobalLinks A ',GlobalLinksDir);
   if FindFirst(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
     PkgVersion:=TPkgVersion.Create;
