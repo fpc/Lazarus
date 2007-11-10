@@ -77,6 +77,7 @@ implementation
 {$IFDEF LCLCarbon}
 // add units as needed for carbon, for the moment use cups ones.
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
+{$I cupsprndialogs.inc}
 {$ELSE}
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 {$I cupsprndialogs.inc}
