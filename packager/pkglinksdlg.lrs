@@ -1,0 +1,36 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TPackageLinksDialog','FORMDATA',[
+  'TPF0'#19'TPackageLinksDialog'#18'PackageLinksDialog'#4'Left'#3'"'#1#6'Height'
+  +#3#195#1#3'Top'#3#189#0#5'Width'#3#147#2#18'HorzScrollBar.Page'#3#146#2#18'V'
+  +'ertScrollBar.Page'#3#194#1#7'Caption'#6#18'PackageLinksDialog'#12'ClientHei'
+  +'ght'#3#195#1#11'ClientWidth'#3#147#2#8'OnCreate'#7#10'FormCreate'#0#7'TBitB'
+  +'tn'#11'CloseBitBtn'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRig'
+  +'ht.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSi'
+  +'deBottom.Side'#7#9'asrBottom'#4'Left'#3'C'#2#6'Height'#2'$'#3'Top'#3#153#1#5
+  +'Width'#2'J'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#20'BorderS'
+  +'pacing.Around'#2#6#7'Caption'#6#6'&Close'#4'Kind'#7#7'bkClose'#11'ModalResu'
+  +'lt'#2#1#9'NumGlyphs'#2#0#8'TabOrder'#2#0#0#0#9'TGroupBox'#13'ScopeGroupBox'
+  +#6'Height'#2'5'#5'Width'#3#147#2#5'Align'#7#5'alTop'#8'AutoSize'#9#7'Caption'
+  +#6#13'ScopeGroupBox'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.Top'
+  +'BottomSpacing'#2#6#29'ChildSizing.HorizontalSpacing'#2#6#27'ChildSizing.Ver'
+  +'ticalSpacing'#2#6#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'
+  +#27'ChildSizing.ControlsPerLine'#2#3#12'ClientHeight'#2'"'#11'ClientWidth'#3
+  +#143#2#8'TabOrder'#2#1#0#9'TCheckBox'#21'FileMustExistCheckBox'#4'Left'#2#6#6
+  +'Height'#2#22#3'Top'#2#6#5'Width'#3#168#0#7'Caption'#6#21'FileMustExistCheck'
+  +'Box'#8'OnChange'#7#27'FileMustExistCheckBoxChange'#8'TabOrder'#2#0#0#0#9'TC'
+  +'heckBox'#23'ShowGlobalLinksCheckBox'#4'Left'#3#180#0#6'Height'#2#22#3'Top'#2
+  +#6#5'Width'#3#193#0#7'Caption'#6#23'ShowGlobalLinksCheckBox'#7'Checked'#9#8
+  +'OnChange'#7#29'ShowGlobalLinksCheckBoxChange'#5'State'#7#9'cbChecked'#8'Tab'
+  +'Order'#2#1#0#0#9'TCheckBox'#21'ShowUserLinksCheckBox'#4'Left'#3'{'#1#6'Heig'
+  +'ht'#2#22#3'Top'#2#6#5'Width'#3#183#0#7'Caption'#6#21'ShowUserLinksCheckBox'
+  +#7'Checked'#9#8'OnChange'#7#27'ShowUserLinksCheckBoxChange'#5'State'#7#9'cbC'
+  +'hecked'#8'TabOrder'#2#2#0#0#0#11'TStringGrid'#13'PkgStringGrid'#24'AnchorSi'
+  +'deBottom.Control'#7#11'CloseBitBtn'#6'Height'#3'^'#1#3'Top'#2'5'#5'Width'#3
+  +#147#2#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akB'
+  +'ottom'#0#8'ColCount'#2#4#10'FixedColor'#7#9'clBtnFace'#9'FixedCols'#2#0#7'O'
+  +'ptions'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorz'
+  +'Line'#13'goRangeSelect'#11'goColSizing'#6'goTabs'#13'goColSpanning'#18'goDb'
+  +'lClickAutoSize'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7#10'ss'
+  +'AutoBoth'#8'TabOrder'#2#2#7'TabStop'#9#0#0#0
+]);

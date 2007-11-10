@@ -66,7 +66,11 @@ type
     ploUser
     );
   TPkgLinkOrigins = set of TPkgLinkOrigin;
-
+  
+const
+  AllPkgLinkOrigins = [low(TPkgLinkOrigin)..high(TPkgLinkOrigin)];
+  
+type
   TPackageLink = class(TLazPackageID)
   private
     FAutoCheckExists: boolean;
@@ -147,7 +151,8 @@ type
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
-    procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent);
+    procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
+                              Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
     procedure RemoveLink(APackageID: TLazPackageID; FreeID: boolean);
@@ -159,7 +164,9 @@ type
   end;
   
 var
-  PkgLinks: TPackageLinks; // set by the PkgBoss
+  PkgLinks: TPackageLinks = nil; // set by the PkgBoss
+
+function ComparePackageLinks(Data1, Data2: Pointer): integer;
 
 
 implementation
@@ -735,10 +742,12 @@ begin
 end;
 
 procedure TPackageLinks.IteratePackages(MustExist: boolean;
-  Event: TIteratePackagesEvent);
+  Event: TIteratePackagesEvent; Origins: TPkgLinkOrigins);
 begin
-  IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
-  IteratePackagesInTree(MustExist,FGlobalLinks,Event);
+  if ploUser in Origins then
+    IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
+  if ploGlobal in Origins then
+    IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;
 
 function TPackageLinks.AddUserLink(APackage: TLazPackage): TPackageLink;

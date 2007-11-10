@@ -61,7 +61,7 @@ uses
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg, IDETranslations,
   TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
-  LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
+  LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg, InstallPkgSetDlg,
   // bosses
   BaseBuildManager, BasePkgManager,
   MainBar, MainIntf, MainBase;
@@ -130,6 +130,7 @@ type
     procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgOpenPackageClicked(Sender: TObject);
+    procedure MainIDEViewPackageLinksClicked(Sender: TObject);
 
     // component palette
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
@@ -952,6 +953,11 @@ end;
 procedure TPkgManager.MainIDEitmPkgOpenPackageClicked(Sender: TObject);
 begin
   DoShowOpenInstalledPckDlg;
+end;
+
+procedure TPkgManager.MainIDEViewPackageLinksClicked(Sender: TObject);
+begin
+  ShowPackageLinks;
 end;
 
 procedure TPkgManager.MainIDEitmOpenRecentPackageClicked(Sender: TObject);
@@ -1813,6 +1819,8 @@ begin
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.OnClick :=@MainIDEitmConfigCustomCompsClicked;
     {$ENDIF}
+    
+    itmViewPackageLinks.OnClick := @MainIDEViewPackageLinksClicked;
   end;
   
   SetRecentPackagesMenu;

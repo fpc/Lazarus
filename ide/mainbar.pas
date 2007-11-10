@@ -198,6 +198,8 @@ type
           itmViewLocals: TIDEMenuCommand;
           itmViewCallStack: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
+        //itmViewIDEInternalsWindows: TIDEMenuSection;
+          itmViewPackageLinks: TIDEMenuCommand;
 
     // project menu
     //mnuProject: TIDEMenuSection;
