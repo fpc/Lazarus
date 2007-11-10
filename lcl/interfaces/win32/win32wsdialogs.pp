@@ -509,7 +509,14 @@ begin
     OpenFile := LPOPENFILENAME(ACommonDialog.Handle);
     if OpenFile^.lCustData <> 0 then
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
+
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then FreeMem(OpenFile^.lpStrFilter)
+    else StrDispose(OpenFile^.lpStrFilter);
+  {$else}
     StrDispose(OpenFile^.lpStrFilter);
+  {$endif}
+
     FreeMem(OpenFile^.lpStrFile);
     FreeMem(OpenFile);
   end;
@@ -549,7 +556,14 @@ begin
     OPENFILE := LPOPENFILENAME(ACommonDialog.Handle);
     if OPENFILE^.lCustData <> 0 then
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
+
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then FreeMem(OpenFile^.lpStrFilter)
+    else StrDispose(OpenFile^.lpStrFilter);
+  {$else}
     StrDispose(OpenFile^.lpStrFilter);
+  {$endif}
+
     FreeMem(OpenFile^.lpStrFile);
     FreeMem(OpenFile);
   end;
