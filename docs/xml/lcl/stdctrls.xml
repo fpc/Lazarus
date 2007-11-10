@@ -6202,13 +6202,13 @@ You should take care when setting these options that they do not conflict with t
 				      <tr><td>ReadOnly</td><td>Boolean property which, if True, signifies that the contents of the control can be read by the user or the calling routine, but cannot be written or changed.</td></tr>
 				      <tr><td>ShowHint</td><td>Allows a small window containing a context-sensitive Help or other description to be displayed when the mouse cursor 'hovers' over the control.</td></tr>
 				      <tr><td>Size (or Height and Width)</td><td>The dimensions of the control</td></tr>
-				      <tr><td>Style</td><td>Dummy</td></tr>
-				      <tr><td>TabOrder</td><td>Dummy</td></tr>
-				      <tr><td>TabStop</td><td>Dummy</td></tr>
-				      <tr><td>Text</td><td>Dummy</td></tr>
-				      <tr><td>Visible</td><td>Dummy</td></tr>
+				      <tr><td>Style</td><td>The options available for Style depend upon the sort of Control being considered: for instance the Style may be defined by TFormStyle, TBorderStyle, TButtonStyle etc.</td></tr>
+				      <tr><td>TabOrder</td><td>Integer defining where in the sequence of tabs on the Form this control is to lie</td></tr>
+				      <tr><td>TabStop</td><td>Boolean property which if True places this control in the sequence of objects that the user can reach by successively pressing the Tab key</td></tr>
+				      <tr><td>Text</td><td>The String of Text that represents the actual data that this control contains. Applies particularly to Text, Memo and StringList types of object</td></tr>
+				      <tr><td>Visible</td><td>If true, the object can be seen on the Form; if False, object is hidden</td></tr>
 			      </table>
-			      <p>Many actions are commonly listed in the 'Events' tab of the Object Inspector. If you select an entry in th elist, a ComboBox appears with a DropDown list showing any actions that have aleady been defined, and allowing you to choose one to be associated with this event. Alternatively you can select the ellipsis (three dots ...) and you will be taken to an area of the Source Editor where you can begin typing your own action instructions for the selected event.</p>
+			      <p>Many actions are commonly listed in the 'Events' tab of the Object Inspector. If you select an entry in the list, a ComboBox appears with a DropDown list showing any actions that have aleady been defined, and allowing you to choose one to be associated with this event. Alternatively you can select the ellipsis (three dots ...) and you will be taken to an area of the Source Editor where you can begin typing your own action instructions for the selected event.</p>
 			      <p>While there is a large number of available events for any given control, in practice it is only necessary to populate a few of them. For most controls, it is sufficient to provide coding for 'OnClick'; for more complex controls it may be necessary also to provide for 'OnEntry' (when the mouse cursor enters the Control and gives it focus) and 'OnExit' (when the mouse cursor leaves the Control; or you may need to write an event handler for 'OnChange' or 'OnScroll', depending on the nature of the particular control with which you are dealing.</p>
 			      <p>A common strategy in Object-Oriented programming is to provide an <link id="ActnList.TActionList">ActionList</link> with a number of pre-defined actions from which the most appropriate can be selected to use in any particular instance.
 				      <table>
@@ -6216,6 +6216,8 @@ You should take care when setting these options that they do not conflict with t
 					      <th><td>Action</td><td>Meaning</td></th>
 					      <tr><td>OnChange</td><td>Action to be taken if <u>any</u> change is deteted (eg mouse move, mode click, key press, edit text, alter picture, etc)</td></tr>
 					      <tr><td>OnClick</td><td>Action to be taken when the left mouse button is clicked. This is usually the main or default action of the control; for example clicking on a button or checkbox initiates the action associated with the checkbox. It may alternatively initate a process of selection, for instance in a TextBox or Memo, or signal the beginning of painting with a Pen or Brush.</td></tr>
+					      <tr><td>Click</td><td>A method to emulate in code the effect of clicking on a control. This method is most often found in Button-type controls (TButton, TBitBtn, TSpeedButton etc).<br/>
+					      A procedure can be written that calls the same code as the OnClick action. This facility can be particularly useful if the activation of one control by clicking initiates a cascade of other controls being activated, and the Click method can be used to initiate the action rather than having the user explicitly click on a lot of controls.
 					      <tr><td>OnDragDrop</td><td>Action to be taken during Drag-Drop manoeuvres, ie when the mouse is osed to 'capture' an item or some text etc and move it around the screen to a new location.</td></tr>
 					      <tr><td>OnEntry</td><td>Action to be taken when the mouse cursor enters the area occupied by the object, usually transfering focus to that object. This might include changes in the appearance of the object such as highlighting or raising the border.</td></tr>
 					      <tr><td>OnExit</td><td>Action to be taken when the mouse moves out of the area of the object, usually transferring focus out of the object.</td></tr>
