@@ -110,9 +110,22 @@ begin
   then Exit;
 
   lvc.Mask := LVCF_TEXT;
-  lvc.pszText := PChar(AColumn.Caption);
 
-  ListView_InsertColumn(ALV.Handle, AIndex, lvc);
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      lvc.pszText := PChar(PWideChar(Utf8Decode(AColumn.Caption)));
+      SendMessage(ALV.Handle, LVM_INSERTCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
+    end
+    else
+    begin
+      lvc.pszText := PChar(Utf8ToAnsi(AColumn.Caption));
+      ListView_InsertColumn(ALV.Handle, AIndex, lvc);
+    end;
+  {$else}
+    lvc.pszText := PChar(AColumn.Caption);
+    ListView_InsertColumn(ALV.Handle, AIndex, lvc);
+  {$endif}
 end;
 
 class procedure TWin32WSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
@@ -193,9 +206,22 @@ begin
   then Exit;
 
   lvc.Mask := LVCF_TEXT;
-  lvc.pszText := PChar(ACaption);
 
-  ListView_SetColumn(ALV.Handle, AIndex, lvc);
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      lvc.pszText := PChar(PWideChar(Utf8Decode(AColumn.Caption)));
+      SendMessage(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
+    end
+    else
+    begin
+      lvc.pszText := PChar(Utf8ToAnsi(ACaption));
+      ListView_SetColumn(ALV.Handle, AIndex, lvc);
+    end;
+  {$else}
+    lvc.pszText := PChar(ACaption);
+    ListView_SetColumn(ALV.Handle, AIndex, lvc);
+  {$endif}
 end;
 
 class procedure TWin32WSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
@@ -340,9 +366,22 @@ begin
   lvi.Mask := LVIF_TEXT;
   lvi.iItem := AIndex;
   lvi.iSubItem := 0;
-  lvi.pszText := PChar(AItem.Caption);
 
-  ListView_InsertItem(ALV.Handle, lvi);
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      lvi.pszText := PChar(PWideChar(Utf8Decode(AItem.Caption)));
+      SendMessage(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
+    end
+    else
+    begin
+      lvi.pszText := PChar(Utf8ToAnsi(AItem.Caption));
+      ListView_InsertItem(ALV.Handle, lvi);
+    end;
+  {$else}
+    lvi.pszText := PChar(AItem.Caption);
+    ListView_InsertItem(ALV.Handle, lvi);
+  {$endif}
 end;
 
 class procedure TWin32WSCustomListView.ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
@@ -396,11 +435,27 @@ begin
 end;
 
 class procedure TWin32WSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
+{$ifdef WindowsUnicodeSupport}
+var
+  _gnu_lvi : LV_ITEM;
+{$endif}
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText')
   then Exit;
 
-  ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(AText));
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      _gnu_lvi.iSubItem := ASubIndex;
+      _gnu_lvi.pszText := PChar(PWideChar(Utf8Decode(AText)));
+
+      SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
+    end
+    else
+      ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(Utf8ToAnsi(AText)));
+  {$else}
+    ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(AText));
+  {$endif}
 end;
 
 class procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);

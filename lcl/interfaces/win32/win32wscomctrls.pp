@@ -264,7 +264,15 @@ begin
     pbLowered: BevelType := 0;
     pbRaised: BevelType := Windows.SBT_POPOUT;
   end;
-  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
+
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXTW, StatusPanel.Index or BevelType, LPARAM(PWideChar(Utf8Decode(Text))))
+    else
+      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Utf8ToAnsi(Text))));
+  {$else}
+    Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
+  {$endif}
 end;
 
 procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);
@@ -348,7 +356,14 @@ end;
 class procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
   if AStatusBar.SimplePanel then
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      Windows.SendMessage(AStatusBar.Handle, SB_SETTEXTW, 255, LPARAM(PWideChar(Utf8Decode(AStatusBar.SimpleText))))
+    else
+      Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(Utf8ToAnsi(AStatusBar.SimpleText))))
+  {$else}
     Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(AStatusBar.SimpleText)))
+  {$endif}
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
