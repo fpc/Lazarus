@@ -3,7 +3,7 @@ type
 
 { TWin32MemoStrings }
 
-TWin32MemoStrings = class(TStrings)
+  TWin32MemoStrings = class(TStrings)
   private
     fHandle: HWND;
     FOwner: TWinControl;
@@ -157,7 +157,13 @@ end;
 
 procedure TWin32MemoStrings.SetText(TheText: PChar);
 begin
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS
+  then Windows.SetWindowTextW(fHandle, PWideChar(Utf8Decode(TheText)))
+  else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(TheText)));
+{$else}
   SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(TheText));
+{$endif}
 end;
 
 {$ENDIF}

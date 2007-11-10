@@ -1097,10 +1097,9 @@ begin
   Result := Params.Window;
 end;
 
-class function TWin32WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
-  ): TStrings;
+class function TWin32WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 begin
-  Result:=TWin32MemoStrings.Create(ACustomMemo.Handle, ACustomMemo)
+  Result := TWin32MemoStrings.Create(ACustomMemo.Handle, ACustomMemo)
 end;
 
 class procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
@@ -1130,7 +1129,14 @@ end;
 
 class procedure TWin32WSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
 begin
-  SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(Utf8Decode(AText))))
+    else
+      SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(Utf8ToAnsi(AText))));
+  {$else}
+    SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+  {$endif}
 end;
 
 class procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);

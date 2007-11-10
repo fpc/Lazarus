@@ -35,7 +35,8 @@ uses
 ////////////////////////////////////////////////////
   LCLProc, LCLType, Dialogs, Controls, Graphics, SysUtils, Classes,
 ////////////////////////////////////////////////////
-  WSDialogs, WSLCLClasses, Windows, Win32Extra, Win32Int, InterfaceBase;
+  WSDialogs, WSLCLClasses, Windows, Win32Extra, Win32Int, InterfaceBase,
+  Win32Proc;
 
 type
 
@@ -327,6 +328,7 @@ var
   FileName: string;
   InitialDir: String;
   FileNameBuffer: PChar;
+  FilterBuffer: WideString;
 begin
   FileNameBuffer := AllocMem(FileNameBufferLen + 1);
   FileName := AOpenDialog.FileName;
@@ -353,12 +355,35 @@ begin
     lStructSize := OpenFileNameSize;
     hWndOwner := GetOwnerHandle(AOpenDialog);
     hInstance := System.hInstance;
-    lpStrFilter := StrAlloc(Length(Filter)+1);
-    StrPCopy(lpStrFilter, Filter);
+
     nFilterIndex := AOpenDialog.FilterIndex;
     lpStrFile := FileNameBuffer;
+
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      FilterBuffer := Utf8Decode(Filter);
+      lpStrFilter := GetMem(Length(FilterBuffer) * 2 + 2);
+      Move(FilterBuffer[1], lpStrFilter^, Length(FilterBuffer) * 2 + 2);
+
+      lpStrTitle := PChar(PWideChar(Utf8Decode(AOpenDialog.Title)));
+    end
+    else
+    begin
+      lpStrFilter := StrAlloc(Length(Filter)+1);
+      StrPCopy(lpStrFilter, Utf8ToAnsi(Filter));
+
+      lpStrTitle := PChar(Utf8ToAnsi(AOpenDialog.Title));
+    end;
+  {$else}
+    lpStrFilter := StrAlloc(Length(Filter)+1);
+    StrPCopy(lpStrFilter, Filter);
+
     lpStrTitle := PChar(AOpenDialog.Title);
+  {$endif}
+
     lpStrInitialDir := PChar(InitialDir);
+
     nMaxFile := FileNameBufferLen + 1; // Size in TCHARs
     lpfnHook := @OpenFileDialogCallBack;
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
@@ -493,8 +518,19 @@ end;
 class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
   if ACommonDialog.Handle <> 0 then
+  begin
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+        GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+    else
+      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+        GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+  {$else}
     ProcessFileDialogResult(TOpenDialog(ACommonDialog),
       GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+  {$endif}
+  end;
 end;
 
 { TWin32WSOpenDialog }
@@ -522,8 +558,19 @@ end;
 class procedure TWin32WSOpenDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
   if ACommonDialog.Handle <> 0 then
+  begin
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+        GetOpenFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+    else
+      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+        GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+  {$else}
     ProcessFileDialogResult(TOpenDialog(ACommonDialog),
       GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+  {$endif}
+  end;
 end;
 
 { TWin32WSFontDialog }

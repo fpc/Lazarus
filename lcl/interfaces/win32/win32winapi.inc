@@ -2078,23 +2078,20 @@ Begin
   Assert(False, 'Trace:[TWin32WidgetSet.GetTextExtentPoint] - Start');
 {$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
-  if count = -1
-  then s := str
-  else begin
+  if count = -1 then
+    s := str
+  else
+  begin
     SetLength(s, count);
     move(str^, s[1], count);  
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS 
-  then begin
+  if UnicodeEnabledOS then
+  begin
     // TODO: use the real number of chars (and not the lenght)
     w := Utf8Decode(S);
     Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
-  end
-  else begin
-    S := Utf8ToAnsi(S);
-    Result := Windows.GetTextExtentPoint32(DC, PChar(S), Length(S), @Size);
-  end;  
+  end;
 {$else}
     Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
 {$endif}
