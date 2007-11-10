@@ -138,6 +138,21 @@ begin
 end;
 
 {*******************************************************************
+*  TCustomTrayIcon.ShowBalloonHint ()
+*
+*  DESCRIPTION:    Shows a small message balloon near the tray icon
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+procedure TCustomTrayIcon.ShowBalloonHint;
+begin
+  TWSCustomTrayIconClass(WidgetSetClass).ShowBalloonHint(Self);
+end;
+
+{*******************************************************************
 *  TCustomTrayIcon.GetPosition ()
 *
 *  DESCRIPTION:    Returns the position of the tray icon on the display.

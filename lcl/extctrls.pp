@@ -1073,8 +1073,14 @@ type
 
   { TCustomTrayIcon }
 
+  TBallonFlags = (bfNone, bfInfo, bfWarning, bfError);
+
   TCustomTrayIcon = class(TLCLComponent)
   private
+    FBalloonFlags: TBallonFlags;
+    FBalloonHint: string;
+    FBalloonTimeout: Integer;
+    FBalloonTitle: string;
     FPopUpMenu: TPopupMenu;
     FIcon: TIcon;
     FHint: string;
@@ -1091,13 +1097,20 @@ type
     function Hide: Boolean;
     function Show: Boolean;
     procedure InternalUpdate;
+    procedure ShowBalloonHint;
     function GetPosition: TPoint;
+    { Properties }
+    property BalloonFlags: TBallonFlags read FBalloonFlags write FBalloonFlags;
+    property BalloonHint: string read FBalloonHint write FBalloonHint;
+    property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
+    property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
     property Canvas: TCanvas read GetCanvas;
     property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property Icon: TIcon read FIcon write FIcon;
     property Hint: string read FHint write FHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon;
     property Visible: Boolean read FVisible write SetVisible;
+    { Events }
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
@@ -1110,6 +1123,10 @@ type
   
   TTrayIcon = class(TCustomTrayIcon)
   published
+    property BalloonFlags;
+    property BalloonHint;
+    property BalloonTimeout;
+    property BalloonTitle;
     property PopUpMenu;
     property Icon;
     property Hint;

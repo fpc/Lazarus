@@ -225,6 +225,7 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class procedure ShowBalloonHint(const ATrayIcon: TCustomTrayIcon); override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 

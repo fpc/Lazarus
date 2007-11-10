@@ -2,13 +2,13 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <Units Count="3">
       <Unit0>
         <Filename Value="wndtray.dpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wndtray"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="23"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmtest.pas"/>
@@ -17,17 +17,17 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmtest.lrs"/>
         <UnitName Value="frmtest"/>
-        <CursorPos X="1" Y="138"/>
-        <TopLine Value="128"/>
+        <CursorPos X="7" Y="51"/>
+        <TopLine Value="60"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="wscommontrayicon.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wscommontrayicon"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="23"/>
       </Unit2>
     </Units>
     <General>

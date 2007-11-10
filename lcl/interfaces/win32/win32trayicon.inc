@@ -199,12 +199,19 @@ end;
 *  DESCRIPTION:    Makes modifications to the Icon while running
 *                  i.e. without hiding it and showing again
 *
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
 *******************************************************************}
 class procedure TWin32WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
+begin
+
+end;
+
+{*******************************************************************
+*  TWin32WSCustomTrayIcon.ShowBalloonHint ()
+*
+*  DESCRIPTION:    Shows a small message balloon near the tray icon
+*
+*******************************************************************}
+class procedure TWin32WSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon);
 begin
 
 end;
@@ -215,10 +222,6 @@ end;
 *  DESCRIPTION:    Returns the position of the tray icon on the display.
 *                  This function is utilized to show message boxes near
 *                  the icon
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
 *
 *******************************************************************}
 class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;

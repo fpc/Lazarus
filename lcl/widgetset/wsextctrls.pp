@@ -170,6 +170,7 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); virtual;
+    class procedure ShowBalloonHint(const ATrayIcon: TCustomTrayIcon); virtual;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; virtual;
     class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; virtual;
   end;
@@ -298,57 +299,32 @@ end;
 
 { TWSCustomTrayIcon }
 
-{*******************************************************************
-*  TWSCustomTrayIcon.Hide ()
-*
-*  DESCRIPTION:    Hides the Icon
-*
-*  RETURNS:        If successfull
-*
-*******************************************************************}
 class function TWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
 begin
   Result := False;
 end;
 
-{*******************************************************************
-*  TWSCustomTrayIcon.Show ()
-*
-*  DESCRIPTION:    Shows the Icon
-*
-*  RETURNS:        If successfull
-*
-*******************************************************************}
 class function TWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 begin
   Result := False;
 end;
 
-{*******************************************************************
-*  TWSCustomTrayIcon.InternalUpdate ()
-*
-*  DESCRIPTION:    Makes modifications to the Icon while running
-*                  i.e. without hiding it and showing again
-*******************************************************************}
 class procedure TWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 begin
 
 end;
 
-{*******************************************************************
-*  TWSCustomTrayIcon.GetPosition ()
-*
-*  DESCRIPTION:    Returns the position of the tray icon on the display.
-*                  This function is utilized to show message boxes near
-*                  the icon
-*******************************************************************}
+class procedure TWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon);
+begin
+
+end;
+
 class function TWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result := Point(0, 0);
 end;
 
-class function TWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon
-  ): TCanvas;
+class function TWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
 begin
   Result := ATrayIcon.Icon.Canvas;
 end;
