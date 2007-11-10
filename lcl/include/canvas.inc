@@ -484,7 +484,7 @@ end;
 
 procedure TCanvas.DoFloodFill(x, y: integer);
 begin
-  FloodFill(x,y,Color,fsSurface);
+  FloodFill(x, y, Brush.Color, fsSurface);
 end;
 
 procedure TCanvas.DoMoveTo(x, y: integer);
@@ -1197,30 +1197,6 @@ procedure TCanvas.Line(const Points: TRect);
 begin
   with Points do
     Line(Left,Top,Right,Bottom);
-end;
-
-
-{------------------------------------------------------------------------------
-  Function: TCanvas.GetColor
-  Params:   None
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TCanvas.GetColor:TColor;
-begin
-  Result:=Brush.Color;
-end;
-
-
-{------------------------------------------------------------------------------
-  Method:   TCanvas.SetColor
-  Params:   None
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCanvas.SetColor(c:TColor);
-begin
-  Brush.Color:=c;
 end;
 
 {------------------------------------------------------------------------------

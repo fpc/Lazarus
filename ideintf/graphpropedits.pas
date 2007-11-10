@@ -386,7 +386,7 @@ begin
       if pedsSelected in AState then
         Brush.Color := clWindow
       else
-        Brush.Color := ACanvas.Color;
+        Brush.Color := ACanvas.Brush.Color;
       end else begin
         if pedsSelected in AState then
           Brush.Color := clHighlightText

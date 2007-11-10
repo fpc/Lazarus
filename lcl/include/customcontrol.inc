@@ -90,7 +90,7 @@ procedure TCustomControl.SetColor(Value: TColor);
 begin
   if Value=Color then exit;
   inherited SetColor(Value);
-  Canvas.Color:=Color;
+  Canvas.Brush.Color:=Color;
 end;
 
 {------------------------------------------------------------------------------

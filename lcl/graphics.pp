@@ -878,10 +878,8 @@ type
     procedure FontChanged(AFont: TObject);
     procedure PenChanged(APen: TObject);
     procedure RegionChanged(ARegion: TObject);
-    function GetColor: TColor;
     function GetHandle: HDC;
     procedure SetAutoRedraw(Value: Boolean); virtual;
-    procedure SetColor(c: TColor);
     procedure SetLazFont(value: TFont);
     procedure SetLazPen(value: TPen);
     procedure SetLazBrush(value: TBrush);
@@ -1024,7 +1022,6 @@ type
   published
     property AutoRedraw: Boolean read FAutoRedraw write SetAutoRedraw;
     property Brush: TBrush read FBrush write SetLazBrush;
-    property Color: TColor read GetColor write SetColor;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetLazFont;
     property Height : integer read GetHeight;
