@@ -187,14 +187,17 @@ var
 
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
+        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
         if themesActive then
         begin
           // non-themed winapi wants white/other as background/picture-disabled colors
           // themed winapi draws bitmap-as, with transparency defined by bitbtn.brush color
           SetBkColor(hdcNewBitmap, ColorToRGB(BitBtn.Brush.Color));
           SetTextColor(hdcNewBitmap, GetSysColor(COLOR_BTNSHADOW));
-        end;
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
+        end
+        else
+        if AEffect = gdeDisabled then
+          AEffect := gde1Bit;
 
         TWin32WSCustomImageList.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images, AIndex,
           hdcNewBitmap, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),

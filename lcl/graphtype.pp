@@ -47,7 +47,8 @@ type
     gdeNormal,      // no effect
     gdeDisabled,    // grayed image
     gdeHighlighted, // a bit highlighted image
-    gdeShadowed     // a bit shadowed image
+    gdeShadowed,    // a bit shadowed image
+    gde1Bit         // 1 Bit image (for non-XP windows buttons)
   );
 
 //------------------------------------------------------------------------------
@@ -1413,15 +1414,42 @@ end;
 
 procedure TRawImage.PerformEffect(const ADrawEffect: TGraphicsDrawEffect;
   CreateNewData: Boolean);
+  
+  function CheckDescription: Boolean;
+  begin
+    Result :=
+      (Description.Format = ricfRGBA) and
+      (Description.PaletteColorCount = 0) and
+      (Description.MaskBitsPerPixel = 0) and
+      (Description.Depth = 32) and
+      (Description.BitOrder = riboBitsInOrder) and
+      (Description.ByteOrder = riboMSBFirst) and
+      (Description.LineOrder = riloTopToBottom) and
+      (Description.BitsPerPixel = 32) and
+      (Description.RedPrec = 8) and
+      (Description.RedShift = 8) and
+      (Description.GreenPrec = 8) and
+      (Description.GreenShift = 16) and
+      (Description.BluePrec = 8) and
+      (Description.BlueShift = 24) and
+      (Description.AlphaPrec = 8) and
+      (Description.AlphaShift = 0);
+  end;
+  
 const
   GlowShadow = 48;
   ColorMultiplier = (256 - GlowShadow) / 256;
+// 1 Bit color weights. Total weight = 1000
+   R_Weight = 222;
+   G_Weight = 707;
+   B_Weight = 071;
+   H_Threshold = $D5; // threshold of highlight ($D5 is value from experiments. $80 is standard)
+
 var
   AData: PRGBAQuad;
   P: Pointer;
   i, j: integer;
 begin
-  // TODO: add check here for Description. Only RGBA data can be processed here.
   if CreateNewData then
   begin
     GetMem(AData, DataSize);
@@ -1433,6 +1461,12 @@ begin
     P := Data;
     AData := P;
   end;
+
+  // check here for Description. Only RGBA data can be processed here.
+  if not CheckDescription then
+    Exit;
+  
+  
   case ADrawEffect of
     gdeNormal: ;
     gdeDisabled:
@@ -1473,6 +1507,29 @@ begin
               Red := Round(Red * ColorMultiplier);
               Green := Round(Green * ColorMultiplier);
               Blue := Round(Blue * ColorMultiplier);
+            end;
+            inc(AData);
+          end;
+      end;
+    gde1Bit:
+      begin
+        for i := 0 to Description.Height - 1 do
+          for j := 0 to Description.Width - 1 do
+          begin
+            with AData^ do
+            begin
+              // color should be either black or none
+              Alpha := ord
+                (
+                  ((R_Weight * Red + G_Weight * Green + B_Weight * Blue) < H_Threshold * 1000) and
+                  (Alpha >= $80)
+                ) * $FF;
+              if Alpha = $FF then
+              begin
+                Red := 00;
+                Green := 00;
+                Blue := 00;
+              end;
             end;
             inc(AData);
           end;
