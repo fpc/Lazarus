@@ -141,6 +141,7 @@ type
   protected
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
+    function GetCompletionBoxPosition: integer; virtual; abstract;
   public
     function SourceEditorIntfWithFilename(
                                 const Filename: string): TSourceEditorInterface;
@@ -152,6 +153,8 @@ type
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
     function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
     procedure ClearErrorLines; virtual; abstract;
+
+    property CompletionBoxPosition: integer read GetCompletionBoxPosition;
   end;
   
   

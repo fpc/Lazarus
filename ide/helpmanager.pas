@@ -42,7 +42,7 @@ uses
   LazIDEIntf, HelpIntfs, IDEHelpIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages,
+  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, LazDoc,
   IDEContextHelpEdit;
 
 type
@@ -425,6 +425,8 @@ begin
   HelpViewers:=THelpViewers.Create;
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
+  
+  LazDocBoss:=TLazDocManager.Create;
 
   // register property editors for URL handling
   RegisterPropertyEditor(TypeInfo(AnsiString),
@@ -433,6 +435,7 @@ end;
 
 destructor THelpManager.Destroy;
 begin
+  FreeThenNil(LazDocBoss);
   FPCMessagesHelpDB:=nil;
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);

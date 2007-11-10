@@ -68,6 +68,9 @@ type
     procedure FreeDocs;
   end;
   
+var
+  LazDocBoss: TLazDocManager = nil;// set by the IDE
+  
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
 function CompareAnsistringWithLazFPDocFile(Key, Data: Pointer): integer;
 

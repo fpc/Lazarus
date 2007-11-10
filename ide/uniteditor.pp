@@ -59,7 +59,8 @@ uses
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
-  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
+  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
+  LazDocHints, LazDocFrm,
   BaseDebugManager, Debugger, MainIntf, TodoDlg;
 
 type
@@ -573,19 +574,20 @@ type
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure ShowSynEditHint(const MousePos: TPoint);
 
-    Procedure NextEditor;
-    Procedure PrevEditor;
+    procedure NextEditor;
+    procedure PrevEditor;
     procedure MoveEditor(OldPageIndex, NewPageIndex: integer);
     procedure MoveEditorLeft(PageIndex: integer);
     procedure MoveEditorRight(PageIndex: integer);
     procedure MoveActivePageLeft;
     procedure MoveActivePageRight;
-    Procedure ProcessParentCommand(Sender: TObject;
+    procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
-    Procedure ParentCommandProcessed(Sender: TObject;
+    procedure ParentCommandProcessed(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
+    function GetCompletionBoxPosition: integer; override;
 
     // marks
     function FindBookmark(BookmarkID: integer): TSourceEditor;
@@ -621,7 +623,7 @@ type
     function FindSourceEditorWithEditorComponent(
                                          EditorComp: TComponent): TSourceEditor;
     function FindSourceEditorWithFilename(const Filename: string): TSourceEditor;
-    Function GetActiveSE: TSourceEditor;
+    function GetActiveSE: TSourceEditor;
     procedure SetActiveSE(SrcEdit: TSourceEditor);
     function GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
@@ -633,11 +635,11 @@ type
     procedure GetSourceText(PageIndex: integer; OnlySelection: boolean;
                             var Source: string);
 
-    Function ActiveFileName: AnsiString;
-    Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
+    function ActiveFileName: AnsiString;
+    function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
-    Procedure ClearUnusedEditorComponents(Force: boolean);
+    procedure ClearUnusedEditorComponents(Force: boolean);
     procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
 
@@ -703,17 +705,17 @@ type
     procedure CopyFilenameClicked(Sender: TObject);
 
     // bookmarks
-    Procedure ToggleBookmark(Value: Integer);
-    Procedure SetBookmark(Value: Integer);
-    Procedure GotoBookmark(Value: Integer);
+    procedure ToggleBookmark(Value: Integer);
+    procedure SetBookmark(Value: Integer);
+    procedure GotoBookmark(Value: Integer);
 
-    Procedure ReloadEditorOptions;
+    procedure ReloadEditorOptions;
     procedure CheckFont;
-    Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
+    procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     function GetEditorControlSettings(EditControl: TControl): boolean; override;
     function GetHighlighterSettings(Highlighter: TObject): boolean; override;
 
-    Property CodeTemplateModul: TSynEditAutoComplete
+    property CodeTemplateModul: TSynEditAutoComplete
                                read FCodeTemplateModul write FCodeTemplateModul;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                    AnEditor: TCustomSynEdit; var Index:integer);
@@ -726,7 +728,7 @@ type
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                        Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
-  published
+  public
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked: TOnCloseSrcEditor
@@ -2169,7 +2171,7 @@ Begin
       OnCommandProcessed := @UserCommandProcessed;
       OnReplaceText := @OnReplace;
       OnGutterClick := @Self.OnGutterClick;
-      OnSpecialLineColors:=@OnEditorSpecialLineColor;
+      OnSpecialLineColors := @OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
@@ -4008,6 +4010,13 @@ begin
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 end;
 
+function TSourceNotebook.GetCompletionBoxPosition: integer;
+begin
+  Result:=-1;
+  if CurCompletionControl<>nil then
+    Result:=CurCompletionControl.Position;
+end;
+
 procedure TSourceNotebook.UpdateHighlightMenuItems;
 var
   h: TLazSyntaxHighlighter;
@@ -4759,6 +4768,7 @@ begin
   if CodeHelpFrm=nil then begin
     CodeHelpFrm:=TCodeHelpFrm.Create(Self);
     CodeHelpFrm.Name:='TSourceNotebook_CodeHelpFrm';
+    CodeHelpFrm.Provider:=TLazDocHintProvider.Create(CodeHelpFrm);
   end;
   CodeHelpFrm.AnchorForm:=CurCompletionControl.TheForm;
   {$IFDEF EnableCodeHelp}

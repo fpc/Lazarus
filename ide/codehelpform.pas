@@ -46,9 +46,15 @@ type
   { TCodeHintProvider }
 
   TCodeHintProvider = class(TComponent)
+  private
+    FControl: TControl;
+  protected
+    procedure SetControl(const AValue: TControl); virtual;
   public
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer); virtual;
     procedure Paint(Canvas: TCanvas; const ARect: TRect); virtual; abstract;
+    procedure UpdateHint; virtual;
+    property Control: TControl read FControl write SetControl;
   end;
 
   { TCodeHelpFrm }
@@ -89,7 +95,7 @@ type
     property PreferredHeight: integer read FPreferredHeight write SetPreferredHeight;
     property Provider: TCodeHintProvider read FProvider write SetProvider;
   end;
-
+  
 var
   CodeHelpFrm: TCodeHelpFrm = nil;
 
@@ -105,7 +111,6 @@ begin
     exit;
   end;
   UpdatePosition;
-  UpdateHints;
 end;
 
 procedure TCodeHelpFrm.FormCreate(Sender: TObject);
@@ -203,8 +208,12 @@ end;
 procedure TCodeHelpFrm.SetProvider(const AValue: TCodeHintProvider);
 begin
   if FProvider=AValue then exit;
+  if FProvider<>nil then begin
+    FProvider.Control:=nil;
+  end;
   FProvider:=AValue;
   if FProvider<>nil then begin
+    FProvider.Control:=Self;
     FProvider.GetPreferredSize(FPreferredWidth,FPreferredHeight);
   end;
 end;
@@ -268,7 +277,7 @@ var
   SrcEdit: TSourceEditorInterface;
   AnchorBounds: TRect;
 begin
-  if not NeedVisible then exit;
+  if (not NeedVisible) or Visible then exit;
   DesktopBounds:=Rect(30,30,Screen.DesktopWidth-30,Screen.DesktopHeight-50);
   NewBounds:=Bounds(DesktopBounds.Left,DesktopBounds.Top,30,30);
   
@@ -333,7 +342,7 @@ procedure TCodeHelpFrm.UpdateHints;
 begin
   if not Visible then exit;
   //DebugLn(['TCodeHelpFrm.UpdateHints ']);
-  
+  if Provider<>nil then Provider.UpdateHint;
 end;
 
 function TCodeHelpFrm.NeedVisible: boolean;
@@ -349,8 +358,19 @@ end;
 
 { TCodeHintProvider }
 
+procedure TCodeHintProvider.SetControl(const AValue: TControl);
+begin
+  if FControl=AValue then exit;
+  FControl:=AValue;
+end;
+
 procedure TCodeHintProvider.GetPreferredSize(var PreferredWidth,
   PreferredHeight: integer);
+begin
+
+end;
+
+procedure TCodeHintProvider.UpdateHint;
 begin
 
 end;

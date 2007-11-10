@@ -24,7 +24,6 @@
  *                                                                         *
  ***************************************************************************
 
-
   see for todo list: http://wiki.lazarus.freepascal.org/index.php/LazDoc
 }
 
@@ -37,13 +36,19 @@ unit LazDocFrm;
 interface
 
 uses
+  // FCL
   Classes, SysUtils, StrUtils,
+  // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics,
+  // Synedit
   SynEdit,
+  // codetools
   CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
+  // IDEIntf
   IDEHelpIntf, LazHelpIntf,
+  // IDE
   IDEOptionDefs, EnvironmentOpts,
   IDEProcs, LazarusIDEStrConsts, LazDocSelectInherited, LazDoc;
 
@@ -132,7 +137,6 @@ type
   private
     FCaretXY: TPoint;
     FChanged: Boolean;
-    FLazDocBoss: TLazDocManager;
     FFlags: TLazDocFormFlags;
     fUpdateLock: Integer;
     fEntry: TLazDocInheritedEntry;
@@ -170,7 +174,6 @@ type
     procedure ClearEntry(DoSave: Boolean);
     property DocFile: TLazFPDocFile read GetDocFile;
     property Doc: TXMLdocument read GetDoc;
-    property LazDocBoss: TLazDocManager read FLazDocBoss;
     property SourceFilename: string read GetSourceFilename;
     property CaretXY: TPoint read FCaretXY;
   end;
@@ -269,7 +272,6 @@ end;
 
 procedure TLazDocForm.FormCreate(Sender: TObject);
 begin
-  FLazDocBoss:=TLazDocManager.Create;
   fEntry:=TLazDocInheritedEntry.Create;
   
   Caption := lisLazDocMainFormCaption;
@@ -313,7 +315,6 @@ begin
   ClearInherited(false);
   Application.RemoveAllHandlersOfObject(Self);
   FreeAndNil(fEntry);
-  FreeAndNil(FLazDocBoss);
 end;
 
 procedure TLazDocForm.FormResize(Sender: TObject);
@@ -754,7 +755,7 @@ begin
       if not Entry.DocFilenameValid then begin
         Entry.DocFilenameValid:=true;
         Entry.DocFilename:=
-                     LazDocBoss.GetFPDocFilenameForSource(Entry.SrcFilename,true);
+                   LazDocBoss.GetFPDocFilenameForSource(Entry.SrcFilename,true);
         //DebugLn(['TLazDocForm.UpdateInheritedEntries Source=',Entry.SrcFilename,' -> FPDoc=',Entry.DocFilename]);
         if not All then exit;
       end;
