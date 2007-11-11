@@ -146,7 +146,7 @@ function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
 function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean; Override;
-Function PtInRegion(Rgn: HRGN; X, Y: Integer): Boolean; override;
+function PtInRegion(Rgn: HRGN; X, Y: Integer): Boolean; override;
 
 function RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean; override;
 function RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;
@@ -200,9 +200,9 @@ function TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean; O
 
 function WindowFromPoint(Point: TPoint): HWND; Override;
 
-Procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
-Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
-Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
-Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
+procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
+procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
+procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
+procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 
 //##apiwiz##eps##   // Do not remove

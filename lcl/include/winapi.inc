@@ -58,17 +58,17 @@ begin
   Result := WidgetSet.CallNextHookEx(hhk, ncode, WParam, LParam);
 end;
 
-Function CallWindowProc(lpPrevWndFunc :TFarProc; Handle : HWND; Msg : UINT; WParam: WParam; LParam: LParam): Integer;
+function CallWindowProc(lpPrevWndFunc :TFarProc; Handle : HWND; Msg : UINT; WParam: WParam; LParam: LParam): Integer;
 begin
   Result := WidgetSet.CallWindowProc(lpPrevWndFunc, Handle, Msg, WParam, LParam);
 end;
 
-Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
+function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := WidgetSet.ClientToScreen(Handle, P);
 end;
 
-Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
+function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 begin
   Result := WidgetSet.CombineRgn(Dest, Src1, Src2, fnCombineMode);
 end;
@@ -100,7 +100,7 @@ begin
   Result := WidgetSet.CreateBrushIndirect(LogBrush);
 end;
 
-Function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
+function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
 Begin
   Result := WidgetSet.CreateCaret(Handle, Bitmap, width, Height);
 end;
@@ -151,7 +151,7 @@ Begin
   Result := WidgetSet.CreateRectRgn(X1,Y1,X2,Y2);
 end;
 
-Procedure DeleteCriticalSection(var CritSection: TCriticalSection);
+procedure DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
   WidgetSet.DeleteCriticalSection(CritSection);
 end;
@@ -176,7 +176,7 @@ begin
   Result := WidgetSet.DestroyCursor(Handle);
 end;
 
-Function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
+function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
 Begin
   Result := WidgetSet.DrawFrameControl(DC, Rect, uType, uState);
 end;
@@ -211,7 +211,7 @@ begin
   Result := WidgetSet.EnableWindow(hWnd, bEnable);
 end;
 
-Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 Begin
   Result:=WidgetSet.EndPaint(Handle,PS);
 end;
@@ -275,7 +275,7 @@ begin
   Result:= WidgetSet.FrameRect(DC, ARect, hBr);
 end;
 
-Function GetActiveWindow : HWND;
+function GetActiveWindow : HWND;
 begin
   Result := WidgetSet.GetActiveWindow;
 end;
@@ -311,17 +311,17 @@ begin
   Result := WidgetSet.GetClientRect(handle, Rect);
 end;
 
-Function GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+function GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
   Result := WidgetSet.GetClipBox(DC, lpRect);
 end;
 
-Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
+function GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
 begin
   Result := WidgetSet.GetClipRGN(DC, RGN);
 end;
 
-Function GetCursorPos(var lpPoint:TPoint): Boolean;
+function GetCursorPos(var lpPoint:TPoint): Boolean;
 Begin
   Result := WidgetSet.GetCursorPos(lpPoint);
 end;
@@ -381,17 +381,17 @@ begin
                                               PaletteEntries);
 end;
 
-Function GetParent(Handle : HWND): HWND;
+function GetParent(Handle : HWND): HWND;
 begin
   Result := WidgetSet.GetParent(Handle);
 end;
 
-Function GetProp(Handle : hwnd; Str : PChar): Pointer;
+function GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
   Result := WidgetSet.GetProp(Handle,Str);
 end;
 
-Function GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
+function GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
 begin
   Result := WidgetSet.GetRGNBox(RGN, lpRect);
 end;
@@ -463,29 +463,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
+  function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 
   After the call, ARect will be the control area in screen coordinates.
   That means, Left and Top will be the screen coordinate of the TopLeft pixel
   of the Handle object and Right and Bottom will be the screen coordinate of
   the BottomRight pixel.
 ------------------------------------------------------------------------------}
-Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
+function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
   Result := WidgetSet.GetWindowRect(Handle, Rect);
 end;
 
 {------------------------------------------------------------------------------
-  Function GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+  function GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 
   Returns the Width and Height
 ------------------------------------------------------------------------------}
-Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 begin
   Result := WidgetSet.GetWindowSize(Handle, Width, Height);
 end;
 
-Function GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+function GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 begin
  Result := WidgetSet.GetWindowOrgEx(dc,P);
 end;
@@ -522,7 +522,7 @@ Begin
   Result := WidgetSet.IntersectClipRect(dc,Left,Top,Right,Bottom);
 end;
 
-Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
+function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
   Result := WidgetSet.InvalidateRect(aHandle, ARect, bErase);
 end;
@@ -666,7 +666,7 @@ begin
   Result := WidgetSet.SaveDC(DC)
 end;
 
-Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+function ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 begin
   Result := WidgetSet.ScreenToClient(Handle, P);
 end;
@@ -691,7 +691,7 @@ begin
   Result := WidgetSet.SetBkColor(DC, Color);
 end;
 
-Function SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+function SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
   Result := WidgetSet.SetBkMode(DC, bkMode);
 end;
@@ -721,7 +721,7 @@ begin
   Result := WidgetSet.SetCursorPos(X, Y);
 end;
 
-Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
+function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := WidgetSet.SetProp(Handle,Str,Data);
 end;
@@ -731,7 +731,7 @@ begin
   Result := WidgetSet.SetRop2(Dc, Mode);
 end;
 
-Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
   Result := WidgetSet.SelectClipRGN(DC, RGN);
 end;
@@ -774,7 +774,7 @@ begin
   Result := WidgetSet.SetSysColors(cElements, lpaElements, lpaRgbValues);
 end;
 
-Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
+function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
   Result := WidgetSet.SetTextCharacterExtra(_hdc, nCharExtra);
 end;
@@ -1141,7 +1141,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function IsCharAlphaNumeric(c : Char) : Boolean;
+function IsCharAlphaNumeric(c : Char) : Boolean;
 begin
   // your code here
   Result := c in ['a'..'z','A'..'Z','0'..'9'];
@@ -1215,7 +1215,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function PointtoSmallPoint(const P : TPoint) : TSmallPoint; inline;
+function PointtoSmallPoint(const P : TPoint) : TSmallPoint; inline;
 Begin
   Result.X := P.X;
   Result.Y := P.Y;
@@ -1231,7 +1231,7 @@ end;
   It is considered inside if it lies on the left top, or within the rectangle.
   It is outside ther rect if it's on the bottom or right.
  ------------------------------------------------------------------------------}
-Function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
+function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
 Begin
   Result := ((Point.X >= Rect.Left) and
              (Point.X < Rect.Right) and
@@ -1277,7 +1277,7 @@ end;
   Params:
   Returns:
  ------------------------------------------------------------------------------}
-Function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
+function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
 Begin
   Result := True;
   with ARect do begin
