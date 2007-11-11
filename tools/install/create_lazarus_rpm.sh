@@ -27,10 +27,7 @@ SrcTGZ=$(./rpm/get_rpm_source_dir.sh)/SOURCES/$Src
 TmpDir=/tmp/lazarus$LazVersion
 SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
-Arch=i386
-if [ -f /etc/rpm/platform ]; then
-  Arch=$(cat /etc/rpm/platform | sed -e 's/-.*//')
-fi
+Arch=$(rpm --eval "%{_arch}")
 
 # download lazarus svn if needed
 echo "creating lazarus tgz ..."

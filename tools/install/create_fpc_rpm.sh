@@ -78,10 +78,7 @@ if [ "$CompilerPatch" != "0" ]; then
 fi
 echo " $CompilerVersionStr-$FPCRelease"
 
-Arch=i386
-if [ -f /etc/rpm/platform ]; then
-  Arch=$(cat /etc/rpm/platform | sed -e 's/-.*//')
-fi
+Arch=$(rpm --eval "%{_arch}")
 
 
 #------------------------------------------------------------------------------
