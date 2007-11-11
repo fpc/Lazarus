@@ -1,8 +1,9 @@
-# translation of lazaruside.po to Arabic Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
+# translation of lazaruside.po to Arabic
+# Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
 msgid ""
 msgstr ""
 "Last-Translator: Mazen NEIFER <mazen.neifer@supaero.org>\n"
-"PO-Revision-Date: 2007-11-01 17:28+0100\n"
+"PO-Revision-Date: 2007-11-11 23:34+0100\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -180,7 +181,7 @@ msgstr "إمسح"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
-msgstr "إصدار"
+msgstr "تغيير"
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -1120,7 +1121,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
-msgstr ""
+msgstr "إحتل أوسط النافذة"
 
 #: lazarusidestrconsts:liscenters
 msgid "Centers"
@@ -1684,11 +1685,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmconfigurehelp
 msgid "Configure Help"
-msgstr ""
+msgstr "إعداد المعونة"
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr ""
+msgstr "إعداد المعونة ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -2516,7 +2517,7 @@ msgstr "بيئة"
 
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
-msgstr ""
+msgstr "تغيير"
 
 #: lazarusidestrconsts:liskmeditcodetemplates
 msgid "Edit Code Templates"
@@ -2524,11 +2525,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
-msgstr ""
+msgstr "غير الخيارات العامة"
 
 #: lazarusidestrconsts:srkmeditkeys
 msgid "Edit Keys"
-msgstr ""
+msgstr "غير المفاتيح"
 
 #: lazarusidestrconsts:lispckediteditoptionstocompilepackage
 msgid "Edit Options to compile package"
@@ -2536,7 +2537,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtexttooledittool
 msgid "Edit Tool"
-msgstr ""
+msgstr "غير الأدوات"
 
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
@@ -2560,7 +2561,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
-msgstr ""
+msgstr "غير"
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"
@@ -6356,7 +6357,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
-msgstr ""
+msgstr "كرر"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -6508,7 +6509,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrirename
 msgid "Rename"
-msgstr ""
+msgstr "أبدل الإسم"
 
 #: lazarusidestrconsts:lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
@@ -6544,7 +6545,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameto
 msgid "Rename to"
-msgstr ""
+msgstr "أبدل الإسم ب"
 
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
@@ -6552,7 +6553,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
-msgstr ""
+msgstr "إستبدل"
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
@@ -6560,7 +6561,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "Replace ..."
-msgstr ""
+msgstr "إستبدل ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -6628,11 +6629,11 @@ msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
-msgstr ""
+msgstr "إستعد مواقع النوافذ"
 
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
-msgstr ""
+msgstr "إستعد مساحات النوافذ"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
@@ -9096,7 +9097,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuundo
 msgid "Undo"
-msgstr ""
+msgstr "تراجع"
 
 #: lazarusidestrconsts:dlgundoaftersave
 msgid "Undo after save"
@@ -9104,7 +9105,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
-msgstr ""
+msgstr "حد التراجع"
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
@@ -9644,15 +9645,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
-msgstr ""
+msgstr "نافذة"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
-msgstr ""
+msgstr "مواقع النوافذ"
 
 #: lazarusidestrconsts:dlgwindows
 msgid "Windows"
-msgstr ""
+msgstr "نوافذ"
 
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
 msgid "With Packages"
@@ -9872,7 +9873,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "مفتاح النوافذ الأيسر"
 
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
@@ -9968,7 +9969,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "مفتاح النوافذ الأيمن"
 
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
