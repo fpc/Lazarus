@@ -113,7 +113,7 @@ type
     function GetToolStatus: TIDEToolStatus; override;
     procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
 
-    procedure mnuWindowsItemClick(Sender: TObject); virtual;
+    procedure mnuWindowItemClick(Sender: TObject); virtual;
     procedure OnMainBarDestroy(Sender: TObject); virtual;
     
     procedure ConnectOutputFilter;
@@ -149,7 +149,7 @@ type
     function DoOpenMacroFile(Sender: TObject; const AFilename: string
                              ): TModalResult; override;
 
-    procedure UpdateWindowsMenu; override;
+    procedure UpdateWindowMenu; override;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
 
@@ -178,7 +178,7 @@ uses
 
 { TMainIDEBase }
 
-procedure TMainIDEBase.mnuWindowsItemClick(Sender: TObject);
+procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -314,7 +314,7 @@ begin
     CreateMainMenuItem(mnuComponents,'Components',lisMenuComponents);
     CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
     CreateMainMenuItem(mnuEnvironment,'Environment',lisMenuEnvironent);
-    CreateMainMenuItem(mnuWindows,'Windows',lisMenuWindows);
+    CreateMainMenuItem(mnuWindow,'Window',lisMenuWindow);
     CreateMainMenuItem(mnuHelp,'Help',lisMenuHelp);
   end;
 end;
@@ -957,7 +957,7 @@ begin
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
-procedure TMainIDEBase.UpdateWindowsMenu;
+procedure TMainIDEBase.UpdateWindowMenu;
 var
   WindowsList: TFPList;
   i: Integer;
@@ -984,20 +984,22 @@ begin
     if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);
   end;
+  
   // create menuitems
   for i:=0 to WindowsList.Count-1 do begin
-    if mnuWindows.Count>i then
-      CurMenuItem:=mnuWindows.Items[i]
+    if mnuWindow.Count>i then
+      CurMenuItem:=mnuWindow.Items[i]
     else begin
-      CurMenuItem:=RegisterIDEMenuCommand(mnuWindows.GetPath,
+      CurMenuItem:=RegisterIDEMenuCommand(mnuWindow.GetPath,
                                           'Window'+IntToStr(i),'');
-      CurMenuItem.OnClick:=@mnuWindowsItemClick;
+      CurMenuItem.OnClick:=@mnuWindowItemClick;
     end;
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+    CurMenuItem.MenuItem.Checked := Screen.ActiveCustomForm = TCustomForm(WindowsList[i]);
   end;
   // remove unused menuitems
-  while mnuWindows.Count>WindowsList.Count do
-    mnuWindows.Items[mnuWindows.Count-1].Free;
+  while mnuWindow.Count>WindowsList.Count do
+    mnuWindow.Items[mnuWindow.Count-1].Free;
   // clean up
   WindowsList.Free;
 end;

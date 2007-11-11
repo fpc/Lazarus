@@ -350,8 +350,8 @@ var
       itmIDECacheSection: TIDEMenuSection;
 
     // windows menu
-    mnuWindows: TIDEMenuSection;
-      itmDesignerWindows: TIDEMenuSection;
+    mnuWindow: TIDEMenuSection;
+      itmDesignerWindow: TIDEMenuSection;
 
     // help menu
     mnuHelp: TIDEMenuSection;

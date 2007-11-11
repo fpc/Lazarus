@@ -301,7 +301,7 @@ type
         itmEnvRescanFPCSrcDir: TIDEMenuCommand;
 
     // windows menu
-    //mnuWindows: TIDEMenuSection;
+    //mnuWindow: TIDEMenuSection;
 
     // help menu
     //mnuHelp: TIDEMenuSection;

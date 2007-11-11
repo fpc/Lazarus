@@ -1133,7 +1133,7 @@ begin
   // load package configs
   HelpBoss.LoadHelpOptions;
 
-  UpdateWindowsMenu;
+  UpdateWindowMenu;
 end;
 
 procedure TMainIDE.StartIDE;
@@ -1744,7 +1744,7 @@ begin
       // create new project
       DoNewProject(ProjectDescriptorApplication);
 
-    UpdateWindowsMenu;
+    UpdateWindowMenu;
 
     // load the cmd line files
     if CmdLineFiles<>nil then begin
@@ -12381,7 +12381,7 @@ var
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
 begin
-  UpdateWindowsMenu;
+  UpdateWindowMenu;
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);

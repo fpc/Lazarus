@@ -142,7 +142,7 @@ resourcestring
   lisMenuComponents = '&Components';
   lisMenuTools = '&Tools';
   lisMenuEnvironent = 'E&nvironment';
-  lisMenuWindows = '&Windows';
+  lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
   
   lisMenuNewUnit = 'New Unit';
