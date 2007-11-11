@@ -232,157 +232,157 @@ PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages $(FPCDIR)/packages/base $(F
 override PACKAGE_NAME=lazarus/lcl
 PACKAGEDIR_MAIN:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /lazarus/lcl/Makefile.fpc,$(PACKAGESDIR))))))
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_UNITS+=interfaces
+override TARGET_UNITS+=interfaces2
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_IMPLICITUNITS+=gtk2int
@@ -691,310 +691,310 @@ ifeq ($(FULL_TARGET),powerpc64-embedded)
 override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_OPTIONS+=-gl -dgtk2
+override COMPILER_OPTIONS+=-gl -dgtk2 -Fi../gtk/
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_INCLUDEDIR+=../gtk
+override COMPILER_INCLUDEDIR+=.
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) ../gtk .
