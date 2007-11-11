@@ -1,16 +1,27 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TChooseKeySchemeDlg','FORMDATA',[
-  'TPF0'#19'TChooseKeySchemeDlg'#18'ChooseKeySchemeDlg'#7'CAPTION'#6#18'ChooseK'
-  +'eySchemeDlg'#12'CLIENTHEIGHT'#3#185#0#11'CLIENTWIDTH'#3#144#1#8'ONCREATE'#7
-  +#24'ChooseKeySchemeDlgCREATE'#8'POSITION'#7#14'poscreencenter'#18'HORZSCROLL'
-  +'BAR.PAGE'#3#145#1#18'VERTSCROLLBAR.PAGE'#3#186#0#4'LEFT'#3#150#1#6'HEIGHT'#3
-  +#185#0#3'TOP'#3'3'#1#5'WIDTH'#3#144#1#0#6'TLABEL'#9'NoteLabel'#7'CAPTION'#6#9
-  +'NoteLabel'#6'LAYOUT'#7#5'tltop'#8'WORDWRAP'#9#4'LEFT'#2#8#6'HEIGHT'#2'('#3
-  +'TOP'#2#8#5'WIDTH'#3#128#1#0#0#7'TBUTTON'#8'OkButton'#11'MODALRESULT'#2#1#7
-  +'CAPTION'#6#2'Ok'#7'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#2'p'#6'HEIGHT'#2#25#3
-  +'TOP'#3#152#0#5'WIDTH'#2'K'#0#0#7'TBUTTON'#12'CancelButton'#11'MODALRESULT'#2
-  +#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#2#4'LEFT'#3#216#0#6'HEI'
-  +'GHT'#2#25#3'TOP'#3#152#0#5'WIDTH'#2'K'#0#0#11'TRADIOGROUP'#16'SchemeRadiogr'
-  +'oup'#7'CAPTION'#6#6'Scheme'#9'ITEMINDEX'#2#0#13'ITEMS.Strings'#1#6#17'Defau'
-  +'lt (Lazarus)'#6#12'Classic (TP)'#0#4'LEFT'#2#8#6'HEIGHT'#2'R'#3'TOP'#2'8'#5
-  +'WIDTH'#3#128#1#0#0#0
+  'TPF0'#19'TChooseKeySchemeDlg'#18'ChooseKeySchemeDlg'#4'Left'#3#150#1#6'Heigh'
+  +'t'#3#219#0#3'Top'#3'3'#1#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18
+  +'VertScrollBar.Page'#3#218#0#13'ActiveControl'#7#8'OkButton'#7'Caption'#6#18
+  +'ChooseKeySchemeDlg'#12'ClientHeight'#3#219#0#11'ClientWidth'#3#144#1#8'OnCr'
+  +'eate'#7#24'ChooseKeySchemeDlgCREATE'#8'Position'#7#14'poScreenCenter'#0#6'T'
+  +'Label'#9'NoteLabel'#4'Left'#2#8#6'Height'#2','#3'Top'#2#10#5'Width'#3'~'#1#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#8#7'Caption'#6#9'No'
+  +'teLabel'#11'ParentColor'#8#8'WordWrap'#9#0#0#7'TButton'#8'OkButton'#4'Left'
+  +#2'l'#6'Height'#2#25#3'Top'#3#186#0#5'Width'#2'K'#7'Anchors'#11#6'akLeft'#8
+  +'akBottom'#0#7'Caption'#6#2'Ok'#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#7'TB'
+  +'utton'#12'CancelButton'#4'Left'#3#216#0#6'Height'#2#25#3'Top'#3#186#0#5'Wid'
+  +'th'#2'K'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#6'Cancel'#11'Mo'
+  +'dalResult'#2#2#8'TabOrder'#2#2#0#0#11'TRadioGroup'#16'SchemeRadiogroup'#4'L'
+  +'eft'#2#8#6'Height'#2't'#3'Top'#2'8'#5'Width'#3#128#1#7'Anchors'#11#5'akTop'
+  +#6'akLeft'#7'akRight'#8'akBottom'#0#8'AutoFill'#9#7'Caption'#6#6'Scheme'#28
+  +'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'C'
+  +'hildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing'
+  +'.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHoriz'
+  +'ontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChi'
+  +'lds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSiz'
+  +'ing.ControlsPerLine'#2#1#12'ClientHeight'#2'b'#11'ClientWidth'#3'|'#1#9'Ite'
+  +'mIndex'#2#0#13'Items.Strings'#1#6#17'Default (Lazarus)'#6#12'Classic (TP)'#6
+  +#8'Mac OS X'#0#8'TabOrder'#2#1#0#0#0
 ]);

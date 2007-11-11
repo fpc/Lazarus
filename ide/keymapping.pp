@@ -42,6 +42,7 @@ type
   TKeyMapScheme = (
     kmsLazarus,
     kmsClassic,
+    kmsMacOSX,
     kmsCustom
     );
 
@@ -186,6 +187,8 @@ procedure GetDefaultKeyForCommand(Command: word;
                                   var TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForClassicScheme(Command: word;
                                         var TheKeyA, TheKeyB: TIDEShortCut);
+procedure GetDefaultKeyForMacOSXScheme(Command: word;
+                                       var TheKeyA, TheKeyB: TIDEShortCut);
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToStr(Shift: TShiftState): string;
@@ -1063,12 +1066,80 @@ begin
 *)
 end;
 
+procedure GetDefaultKeyForMacOSXScheme(Command: word; var TheKeyA, TheKeyB: TIDEShortCut);
+
+  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
+    NewKeyB: word; NewShiftB: TShiftState);
+  begin
+    TheKeyA:=IDEShortCut(NewKeyA, NewShiftA, VK_UNKNOWN, []);
+    TheKeyB:=IDEShortCut(NewKeyB, NewShiftB, VK_UNKNOWN, []);
+  end;
+  
+begin
+  GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
+  
+  // override only problematic key commands
+  case Command of
+  // editing
+  ecInsertLine: SetResult(VK_N,[ssCtrl, ssShift],VK_UNKNOWN,[]);
+  ecDeleteEOL:  SetResult(VK_Y,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  
+  // marker
+  ecGotoMarker0: SetResult(VK_0,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker1: SetResult(VK_1,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker2: SetResult(VK_2,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker3: SetResult(VK_3,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker4: SetResult(VK_4,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker5: SetResult(VK_5,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker6: SetResult(VK_6,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker7: SetResult(VK_7,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker8: SetResult(VK_8,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker9: SetResult(VK_9,[ssCtrl],VK_UNKNOWN,[]);
+  
+  // file menu
+  ecNew: SetResult(VK_N,[ssCtrl],VK_UNKNOWN,[]);
+  ecSaveAs: SetResult(VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecSaveAll: SetResult(VK_S,[ssShift,ssAlt],VK_UNKNOWN,[]);
+  ecQuit: SetResult(VK_Q,[ssCtrl],VK_UNKNOWN,[]);
+  
+  // search & replace
+  ecFind: SetResult(VK_F,[ssCtrl],VK_UNKNOWN,[]);
+  ecFindNext: SetResult(VK_G,[ssCtrl],VK_UNKNOWN,[]);
+  ecFindPrevious: SetResult(VK_G,[ssCtrl, ssShift],VK_UNKNOWN,[]);
+  ecReplace: SetResult(VK_R,[SSCtrl],VK_UNKNOWN,[]);
+  ecGotoLineNumber: SetResult(VK_L,[ssCtrl],VK_UNKNOWN,[]);
+  ecProcedureList: SetResult(VK_P, [ssCtrl],VK_UNKNOWN,[]);
+  
+  // view menu
+  ecToggleObjectInsp: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[]);
+  ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
+
+  // project menu
+  ecOpenProject: SetResult(VK_F11,[ssAlt],VK_UNKNOWN,[]);
+  ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[]);
+  ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+
+  // run menu
+  ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
+  ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[]);
+  ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[]);
+  ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[]);
+  ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
+  
+  //codetools
+  ecFindBlockOtherEnd: SetResult(VK_END,[ssAlt],VK_UNKNOWN,[]);
+  ecFindBlockStart: SetResult(VK_HOME,[ssAlt],VK_UNKNOWN,[]);
+  end;
+end;
+
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 begin
   if (SchemeName='') or (AnsiCompareText(SchemeName,'Default')=0) then
     Result:=kmsLazarus
   else if (AnsiCompareText(SchemeName,'Classic')=0) then
     Result:=kmsClassic
+  else if (AnsiCompareText(SchemeName,'Mac OS X')=0) then
+    Result:=kmsMacOSX
   else
     Result:=kmsCustom;
 end;
@@ -2884,6 +2955,7 @@ begin
     kmsLazarus: GetDefaultKeyForCommand(CurRelation.Command,TheKeyA,TheKeyB);
     kmsClassic: GetDefaultKeyForClassicScheme(CurRelation.Command,
                                               TheKeyA,TheKeyB);
+    kmsMacOSX: GetDefaultKeyForMacOSXScheme(CurRelation.Command,TheKeyA,TheKeyB);
     kmsCustom: ;
     end;
     CurRelation.ShortcutA:=TheKeyA;

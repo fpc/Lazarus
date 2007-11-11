@@ -1,54 +1,71 @@
 object ChooseKeySchemeDlg: TChooseKeySchemeDlg
-  CAPTION = 'ChooseKeySchemeDlg'
-  CLIENTHEIGHT = 185
-  CLIENTWIDTH = 400
-  ONCREATE = ChooseKeySchemeDlgCREATE
-  POSITION = poscreencenter
-  HORZSCROLLBAR.PAGE = 401
-  VERTSCROLLBAR.PAGE = 186
-  LEFT = 406
-  HEIGHT = 185
-  TOP = 307
-  WIDTH = 400
-  object NoteLabel: TLABEL
-    CAPTION = 'NoteLabel'
-    LAYOUT = tltop
-    WORDWRAP = True
-    LEFT = 8
-    HEIGHT = 40
-    TOP = 8
-    WIDTH = 384
+  Left = 406
+  Height = 219
+  Top = 307
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 218
+  ActiveControl = OkButton
+  Caption = 'ChooseKeySchemeDlg'
+  ClientHeight = 219
+  ClientWidth = 400
+  OnCreate = ChooseKeySchemeDlgCREATE
+  Position = poScreenCenter
+  object NoteLabel: TLabel
+    Left = 8
+    Height = 44
+    Top = 10
+    Width = 382
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = 'NoteLabel'
+    ParentColor = False
+    WordWrap = True
   end
-  object OkButton: TBUTTON
-    MODALRESULT = 1
-    CAPTION = 'Ok'
-    TABSTOP = True
-    TABORDER = 1
-    LEFT = 112
-    HEIGHT = 25
-    TOP = 152
-    WIDTH = 75
+  object OkButton: TButton
+    Left = 108
+    Height = 25
+    Top = 186
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 0
   end
-  object CancelButton: TBUTTON
-    MODALRESULT = 2
-    CAPTION = 'Cancel'
-    TABSTOP = True
-    TABORDER = 2
-    LEFT = 216
-    HEIGHT = 25
-    TOP = 152
-    WIDTH = 75
+  object CancelButton: TButton
+    Left = 216
+    Height = 25
+    Top = 186
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
   end
-  object SchemeRadiogroup: TRADIOGROUP
-    CAPTION = 'Scheme'
-    ITEMINDEX = 0
-    ITEMS.Strings = (
+  object SchemeRadiogroup: TRadioGroup
+    Left = 8
+    Height = 116
+    Top = 56
+    Width = 384
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    Caption = 'Scheme'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 98
+    ClientWidth = 380
+    ItemIndex = 0
+    Items.Strings = (
       'Default (Lazarus)'
       'Classic (TP)'
+      'Mac OS X'
     )
-    LEFT = 8
-    HEIGHT = 82
-    TOP = 56
-    WIDTH = 384
+    TabOrder = 1
   end
 end

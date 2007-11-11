@@ -853,6 +853,7 @@ resourcestring
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
   lisKMClassic = 'Classic';
+  lisKMMacOSX = 'Mac OS X';
   lisPEFilename = 'Filename:';
   lisPEUnitname = 'Unitname:';
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
