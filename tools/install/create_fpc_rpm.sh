@@ -78,6 +78,10 @@ if [ "$CompilerPatch" != "0" ]; then
 fi
 echo " $CompilerVersionStr-$FPCRelease"
 
+Arch=i386
+if [ -f /etc/rpm/platform ]; then
+  Arch=$(cat /etc/rpm/platform | sed -e 's/-.*//')
+fi
 
 
 #------------------------------------------------------------------------------
@@ -163,7 +167,7 @@ else
   fi
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-$FPCVersion-$FPCRelease.i386.rpm"
+  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-$FPCVersion-$FPCRelease.$Arch.rpm"
 fi
 
 # end.
