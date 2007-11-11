@@ -4257,7 +4257,7 @@ begin
           if AnUnitInfo.Project.EnableI18N then begin
             Grubber:=TLRTGrubber.Create(Writer);
           end;
-          {$IFDEF EnableFakeMethods}
+          {$IFNDEF DisableFakeMethods}
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           {$ENDIF}
           AncestorUnit:=GetAncestorUnit(AnUnitInfo);

@@ -1057,7 +1057,7 @@ function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
   const AName: ShortString): TMethod;
 var
   OldCode: Pointer;
-  {$IFDEF EnableFakeMethods}
+  {$IFNDEF DisableFakeMethods}
   JITMethod: TJITMethod;
   {$ELSE}
   CodeTemplate, NewCode: Pointer;
@@ -1081,7 +1081,7 @@ begin
     Result.Code:=OldCode;
     exit;
   end;
-  {$IFDEF EnableFakeMethods}
+  {$IFNDEF DisableFakeMethods}
   // create a TJITMethod
   JITMethod:=JITMethods.Add(JITComponent.ClassType,AName);
   Result:=JITMethod.Method;
@@ -1379,19 +1379,19 @@ end;
   descendent, all methods and components are published members and TReader can
   set these values.
   But at design time we do not have the corresponding TForm descendent. And
-  there is no compiled code, thus it must be produced
-  (just-in-time).
+  there is no compiled code, thus it must be produced (just-in-time),
+  if fake methods are not used .
 }
 procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
-{$IFNDEF EnableFakeMethods}
+{$IFDEF DisableFakeMethods}
 var NewMethod: TMethod;
 {$ENDIF}
 begin
   {$IFDEF IDE_DEBUG}
   debugln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
   {$ENDIF}
-  {$IFDEF EnableFakeMethods}
+  {$IFNDEF DisableFakeMethods}
   RaiseGDBException('TJITComponentList.ReaderFindMethod this event should never be called -> this is a bug in TReader, or misuse of TReader.OnFindMethod');
   {$ELSE}
   if Address=nil then begin
@@ -1416,13 +1416,13 @@ end;
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
   Instance: TPersistent; PropInfo: PPropInfo; const TheMethodName: string;
   var Handled: boolean);
-{$IFDEF EnableFakeMethods}
+{$IFNDEF DisableFakeMethods}
 var
   Method: TMethod;
   JITMethod: TJITMethod;
 {$ENDIF}
 begin
-  {$IFDEF EnableFakeMethods}
+  {$IFNDEF DisableFakeMethods}
   debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' ',PropInfo^.Name,':=',TheMethodName);
   Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
   if Method.Code<>nil then begin

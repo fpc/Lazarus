@@ -1267,12 +1267,12 @@ end;
 procedure TCustomFormEditor.WriteMethodPropertyEvent(Writer: TWriter;
   Instance: TPersistent; PropInfo: PPropInfo;
   const MethodValue, DefMethodValue: TMethod; var Handled: boolean);
-{$IFDEF EnableFakeMethods}
+{$IFNDEF DisableFakeMethods}
 var
   CurName: String;
 {$ENDIF}
 begin
-  {$IFDEF EnableFakeMethods}
+  {$IFNDEF DisableFakeMethods}
   Handled:=true;
 
   //DebugLn(['TCustomFormEditor.WriteMethodPropertyEvent ',GlobalDesignHook.GetMethodName(MethodValue,nil)]);
