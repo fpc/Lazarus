@@ -7661,7 +7661,6 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <topic name="HowToUseStdCtrls">
-<<<<<<< .mine
 	      <short>How to use <i>StdCtrls</i>, <i>ComCtrls</i> or <i>ExtCtrls</i></short>
 	      <descr>
 		      <p>The Units <i>StdCtrls</i>, <i>ComCtrls</i> and <i>ExtCtrls</i> contain definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
