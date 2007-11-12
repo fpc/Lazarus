@@ -98,6 +98,7 @@ procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
   CloseBitBtn.Caption:=lisMenuClose;
+  ScopeGroupBox.Caption:=dlgScope;
   FileMustExistCheckBox.Caption:=lisPLDOnlyExistingFiles;
   ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
                                  +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
